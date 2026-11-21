@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
 
@@ -178,3 +180,10 @@ theorem samePart : ReciprocityTheory.Ty.Fin.St.SamePart := by
   rw [Finset.prod_mul_distrib, Fintype.prod_sum, Fintype.card_pi, Nat.cast_prod, Finset.prod_inv_distrib]
 
 end GlobalTheory.CompanionTheory.TyFinSamePart
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.same_partition_statement : ReciprocityTheory.Ty.Fin.St.SamePart := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFinSamePart.samePart

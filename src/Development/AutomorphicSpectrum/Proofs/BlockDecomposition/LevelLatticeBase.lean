@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsAdicCompleteOfEquiv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeFiltrationTopEqBot
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeFiltrationLTorsionFree
@@ -11,6 +10,7 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeLPowMemS
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeIsAdicComplete
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeFiltrationLAdicClosed
 
+section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
@@ -45,3 +45,10 @@ theorem latBase_lev : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l
   · exact GlobalTheory.CompanionTheory.LatClosed.closed _ _ l M k H (h.hc k)
 
 end GlobalTheory.CompanionTheory.LatCBase
+end
+end
+
+open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_lattice_base : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} {M : ℕ} (h : LevHyp l K M) (k : ℕ), 1 ≤ k → ∀ s, k ≤ s → LatBase (lev h k).γ l s := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LatCBase.latBase_lev

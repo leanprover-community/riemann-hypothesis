@@ -1,8 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LamGApply
-import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.WeylRowDivStable
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -157,3 +156,16 @@ theorem mem_weyl_add (R : Type) [CommRing R] (n k : ℕ) (ν : Fin n → ℕ) (f
       exact ⟨_, (ih _).2 ⟨g, hg, rfl⟩, by ring⟩
 
 end GlobalTheory.WeylShift
+end
+end
+
+open NumberField IsDedekindDomain
+open scoped TensorProduct
+open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.L2.Pj GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.ExpFrame GlobalTheory.ExpTie GlobalTheory.FrameOf
+open Formalism.CohomologicalDescent.DepthNonnegative Formalism.CohomologicalDescent.LD Formalism.GradedWeylDivisibility MvPolynomial
+open GlobalTheory.FrameRead
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_weylLattice_add_iff_det_pow_mul : ∀ (R : Type) [CommRing R] (n k : ℕ) (ν : Fin n → ℕ) (f : MvPolynomial (Fin n × Fin n) R), f ∈ weyl R n n le_rfl (fun a => ν a + k) ↔ ∃ g ∈ weyl R n n le_rfl ν, f = detPol R n ^ k * g := by
+  atlas_forward_decl GlobalTheory.WeylShift.mem_weyl_add

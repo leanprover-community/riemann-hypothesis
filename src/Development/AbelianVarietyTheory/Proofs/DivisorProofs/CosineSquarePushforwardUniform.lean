@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOnCosSq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StereographicMeasureChange
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MobiusChangeOfVariables
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 open MeasureTheory
@@ -184,3 +186,15 @@ theorem map_cosSq_fs (G : Matrix (Fin 2) (Fin 2) ℂ) (s : Bool) (hG : G.PosDef)
   · exact lintegral_true hG g hg
 
 end GlobalTheory.LineCos.FsLaw
+end
+end
+
+open MeasureTheory
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cosine_square_pushforward_uniform : ∀ (G : Matrix (Fin 2) (Fin 2) ℂ) (s : Bool), G.PosDef →
+    Measure.map (GlobalTheory.LineCos.cosSq s G)
+        (volume.withDensity fun x : ℂ => ENNReal.ofReal (G.det.re /
+          (Real.pi * (GlobalTheory.LineCos.hform G (GlobalTheory.LineCos.lineVec s x) (GlobalTheory.LineCos.lineVec s x)).re ^ 2))) =
+      volume.restrict (Set.Icc (0 : ℝ) 1) := by
+  atlas_forward_decl GlobalTheory.LineCos.FsLaw.map_cosSq_fs

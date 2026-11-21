@@ -3,8 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsGauss
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorRes
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsAlgClosedTiltFieldAndValuationRing
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UntiltNormUltrametricEqZero
-import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.PMon.Gauss
 
 open scoped Formalism.Per
@@ -143,3 +144,10 @@ theorem exists_root_approx : ∀ (l : ℕ) [Fact l.Prime] (y y' : Formalism.Per.
       _ = _ := one_mul _
 
 end GlobalTheory.TiltRootApprox
+end
+
+open GlobalTheory.PMon.Gauss
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_tilt_root_of_unity_approx_ratio : ∀ (l : ℕ) [Fact l.Prime] (y y' : Formalism.Per.Fl l), y' ≠ 0 → ‖(((y).untilt : Formalism.Per.OC l) : ℂ_[l])‖ = ‖(((y').untilt : Formalism.Per.OC l) : ℂ_[l])‖ → ∃ (ζ : Formalism.Per.Fl l) (o : ℕ), 0 < o ∧ ζ ^ (l ^ o) = ζ ∧ ζ ≠ 0 ∧ ‖(((y - ζ * y').untilt : Formalism.Per.OC l) : ℂ_[l])‖ < ‖(((y').untilt : Formalism.Per.OC l) : ℂ_[l])‖ := by
+  atlas_forward_decl GlobalTheory.TiltRootApprox.exists_root_approx

@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TwistApply
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShortExactFirstTermBundle
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubAndQuotientBundles
 
+section
 open GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Flat.DegCurve
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat.DegCurve
@@ -78,3 +78,9 @@ theorem subDeg_range_shortExact : ∀ (K : Type) [Field K] (C : ACurve K) (V : T
     f₀ g₀ hBW hSE0).2.2
 
 end GlobalTheory.CompanionTheory.Ar.Flat.DegCurve
+end
+
+open GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Flat.DegCurve
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.filtered_exact_sequence_projector_bundles : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (V' : Type) [AddCommGroup V'] [Module K V'] [FiniteDimensional K V'] (V'' : Type) [AddCommGroup V''] [Module K V''] [FiniteDimensional K V''] (L : C.I → AddSubgroup V) (L' : C.I → AddSubgroup V') (L'' : C.I → AddSubgroup V'') (f : V →ₗ[K] V') (g : V' →ₗ[K] V'') (P : V →ₗ[K] V) (P' : V' →ₗ[K] V') (P'' : V'' →ₗ[K] V''), IsBun C L' → ShortExact C L L' L'' f g → (∀ x, P (P x) = P x) → (∀ x, P' (P' x) = P' x) → (∀ x, P'' (P'' x) = P'' x) → (∀ x, f (P x) = P' (f x)) → (∀ y, g (P' y) = P'' (g y)) → IsHom C L' L' P' → subDeg C L' (LinearMap.range P') = subDeg C L (LinearMap.range P) + subDeg C L'' (LinearMap.range P'') := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.DegCurve.subDeg_range_shortExact

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.IsChainFirst
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Top.FlDeg
@@ -51,3 +53,10 @@ theorem toWt_gapDelta_eq_antisymDelta (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] 
   simp [PB.toWt]
 
 end GlobalTheory.CompanionTheory.Ar.Top.FlDeg
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Top.FlDeg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weight_gap_delta_eq_antisymmetric : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ), PB.toWt (gapDelta Ψ N) = GroundTheory.Heights₂.Heights.antisymDelta Ψ N := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.FlDeg.toWt_gapDelta_eq_antisymDelta

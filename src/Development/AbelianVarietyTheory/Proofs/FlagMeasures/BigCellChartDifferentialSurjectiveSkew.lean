@@ -1,9 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.Dchart
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LieAlgebraBesselModelMiddleUnitaryEntriesStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LieEntriesUnipotentBesselNCharacterizationStatement
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LieEntriesUnipotentBesselNCharacterization
 
+section
 open MeasureTheory Matrix Filter Topology Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf GlobalTheory.Amp GlobalTheory.CellDens
 open scoped InnerProductSpace ENNReal
 
@@ -135,3 +134,10 @@ theorem dchart_onto : ∀ (k r : ℕ) (Z : Mat k r), Zᴴ * Hpk k r + Hpk k r * 
     · rw [if_pos (by omega), if_neg (by split_ifs at l1 l2 <;> omega), if_neg (by omega)]; simp
 
 end GlobalTheory.CellDens.Onto
+end
+
+open MeasureTheory Matrix Filter Topology Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf GlobalTheory.Amp GlobalTheory.CellDens
+open scoped InnerProductSpace ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bigCellChartDifferential_surjective_skew : ∀ (k r : ℕ) (Z : Mat k r), Zᴴ * Hpk k r + Hpk k r * Z = 0 → ∃ v : EE k r, dchart k r v = Z := by
+  atlas_forward_decl GlobalTheory.CellDens.Onto.dchart_onto

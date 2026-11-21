@@ -1,5 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.UnramifiedSchwartzDensity.SchCut
+
+section
 noncomputable section
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
@@ -27,3 +29,11 @@ theorem finOpen : PositivityTheory.PfSWUS.SchInf.FinOpen := by
 
 end GlobalTheory.CompanionTheory.SW.FinOpenGram
 end
+end
+
+noncomputable section
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_part_open : PositivityTheory.PfSWUS.SchInf.FinOpen := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.FinOpenGram.finOpen

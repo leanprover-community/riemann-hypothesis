@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Filter Topology Metric PositivityTheory.RgEis PositivityTheory.RgEis.MG
@@ -220,3 +222,10 @@ theorem bGood : BGood := by
   simpa [avg] using this
 
 end GlobalTheory.CompanionTheory.RgEisLeft
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.boundary_term_good : BGood := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisLeft.bGood

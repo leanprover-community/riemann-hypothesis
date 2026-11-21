@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HsCodiscreteNeBot
+import BuildAid.ForwardExisting
+
+section
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ GlobalTheory.KZ.BettiB
 
@@ -39,3 +42,10 @@ theorem module_finite_z1_padicInt : ∀ (N l w : ℕ) [Fact l.Prime], 0 < N → 
   | mul x y _ _ hx hy => rw [c.2.2 x y, hx, hy, map_zero, add_zero]
 
 end GlobalTheory.KZ.BettiB
+end
+
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ GlobalTheory.KZ.BettiB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gammaOneGammaZeroHomogeneousCocycles_finite : ∀ (N l w : ℕ) [Fact l.Prime], 0 < N → Module.Finite ℤ_[l] (Z1 N l w) := by
+  atlas_forward_decl GlobalTheory.KZ.BettiB.module_finite_z1_padicInt

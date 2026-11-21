@@ -3,9 +3,8 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsIsSca
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsIsClassSystem
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChangeOfSplittingPair
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.WeilRepresentationUnitaryPair
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniversalAnticyclotomicCharacterLaws
-import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConvention
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.ExportSeries GlobalTheory.SeriesTie
 open Formalism.IndefR.Links
 open Neutral.B1 (Ideles)
@@ -53,3 +52,16 @@ theorem exists_isWeil : ∀ (D : D7) (S T : HSp D) (B : Base S T), GlobalTheory.
 end GlobalTheory.WeilTwistExists
 
 end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.ExportSeries GlobalTheory.SeriesTie
+open Formalism.IndefR.Links
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab toAb IsGlobalArtin)
+open Formalism.L2.Host (embLL0)
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 800000
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_weilRep_good_twist : ∀ (D : D7) (S T : HSp D) (B : Base S T), GlobalTheory.Published.WeilRepresentationUnitaryPair → B.Good → IsStdChar D B.F.ψ (-1) → ∀ t : Twist D Circle, t.Good → ∃ ω, B.IsWeil t.chi ω := by
+  atlas_forward_decl GlobalTheory.WeilTwistExists.exists_isWeil

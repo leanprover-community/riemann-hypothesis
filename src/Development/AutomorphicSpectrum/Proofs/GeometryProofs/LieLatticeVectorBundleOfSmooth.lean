@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapFromSpecStalk
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsVBOnDualAndBidual
 

@@ -1,15 +1,14 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SmallFam
-import Development.AbelianVarietyTheory.Definitions.Divisors.CharZeroFunctionField
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SmallSecTensTriv
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.VolGe
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsAlgClosedBaseChange
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PointHeightDualAndLinearComb
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SelfIntersectionLowerHeight
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemipositiveNonnegCombination
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InducedModelDominantCurveRestriction
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClassInt
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.VolBr GlobalTheory.HSNef
@@ -49,3 +48,12 @@ example : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] (X : Sch
     IsArithVar p D → ∀ L M : HermLB p, L.IsNef D → M.IsNef D → (L.tens M).IsNef D := isNef_tens
 
 end GlobalTheory.NefTens
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.VolBr GlobalTheory.HSNef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermLineBundle_isNef_tens : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ), IsArithVar p D → ∀ L M : HermLB p, L.IsNef D → M.IsNef D → (L.tens M).IsNef D := by
+  atlas_forward_decl GlobalTheory.NefTens.isNef_tens

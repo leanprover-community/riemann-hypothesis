@@ -1,16 +1,15 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.DifferentialFormsCech.AffineHodgeIsomorphisms.IsFormT
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.CosieveBot
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.RelativeLiftCosieves.TopRes
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.RelativeLiftCosieves.ZarAbs
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.Imports
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.GrCechFin
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CovGlue
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CupH0NormalCoboundary
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmMapEqMOm
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FunctorId
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OntoFormLaws
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RepresentativeRestrict
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers
 
@@ -234,3 +233,13 @@ theorem om_top : AffOm → OmNat → ∀ (K : Type) [Field K] [CharZero K] {X : 
     rw [hω, hy]
 
 end GlobalTheory.CompanionTheory.OmGlue
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers GlobalTheory.CechDR GlobalTheory.HodgeCoh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.affine_smooth_forms_bijective : CrystallineSemistableComparison.Onto.AffOm → CrystallineSemistableComparison.Onto.OmNat → ∀ (K : Type) [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K))
+    [IsAffine X] [Smooth q] (a : ℕ),
+    ∃ e : CrystallineSemistableComparison.Onto.Om K (CrystallineSemistableComparison.Onto.Sec q ⊤) a →ₗ[K] CrystallineSemistableComparison.Onto.HV q ⊤ a a, CrystallineSemistableComparison.Onto.IsOm q ⊤ a e ∧ Function.Bijective e := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.OmGlue.om_top

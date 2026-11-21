@@ -1,6 +1,5 @@
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASSnRepCut
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameEntries
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedLocSec
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt NumberField
@@ -93,13 +92,7 @@ theorem prWv_inWb {z y : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hy : in
 
 private theorem herm_Hpk_self_self_eq_neg_ofReal_Tz (z : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) z z = -((Tz k r z : ℝ) : ℂ) := by
-  have h := hswap (k := k) (r := r) z z
-  apply Complex.ext
-  · simp [Tz]
-  · have h2 := congrArg Complex.im h
-    simp only [Complex.conj_im] at h2
-    simp
-    linarith
+  apply herm_Hpk_self_eq_neg_Tz (z := z) <;> assumption
 
 theorem prWv_norm {z y : Fin (2 * r + k + 1) → ℂ} (hT : 0 < Tz k r z) (hy : inWb k r y) {ζ : ℂ} {T' : ℝ}
     (hyy : herm (Hpk k r) y y = -(T' : ℂ)) (hyz : herm (Hpk k r) y z = ζ) :

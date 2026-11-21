@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.EmbeddedFrames.PfD
 import Formalism.RealPlaceAnalysis.Complexify
+import BuildAid.ForwardExisting
 
+section
 open Finset Matrix PositivityTheory.RgHe.Frame
 
 namespace GlobalTheory.CompanionTheory.RgHe.Frame
@@ -107,3 +109,9 @@ theorem pfZero {m : ℕ} (d : Fin (m + 1) → ℝ) (d' : Fin m → ℝ)
   exact (mul_eq_zero.mp h.symm).resolve_right hQ
 
 end GlobalTheory.CompanionTheory.RgHe.Frame
+end
+
+open Finset Matrix PositivityTheory.RgHe.Frame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.partial_fraction_diagonal_identity : ∀ {m : ℕ} (d : Fin (m + 1) → ℝ) (d' : Fin m → ℝ), Function.Injective (Sum.elim d d') → ∀ i, d i - pfX d d' + ∑ j, pfR d d' j / (d i - d' j) = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgHe.Frame.pfZero

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.ProjectiveLattices.AxHLAM
 import Formalism.LocalToGlobal.ProjectiveLattices.SupPTGePf
 import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm

@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GapGeSubKapBase
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -140,3 +142,26 @@ theorem GlobalTheory.CharIndepAt.main : ∀ (X : Scheme.{0}) [IsIntegral X] (U :
   have := (IsLocalRing.residue_ne_zero_iff_isUnit _).2 hs
   rw [map_natCast, ← hc'] at this
   exact this hc
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open GlobalTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS GlobalTheory.CovTop GlobalTheory.HSApp GlobalTheory.Cartier
+open GlobalTheory.AllWt (Psi wtOf cuspOn cuspW secZ ptF LiesOn)
+open GlobalTheory.FlagMod (FlagCover)
+open GlobalTheory.CompHt (hodgeWt)
+open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.OrbitSep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_affineFunction_weighted_translates_unitAt : ∀ (X : Scheme.{0}) [IsIntegral X] (U : X.Opens), IsAffineOpen U → ∀ (x : X) (hx : x ∈ U)
+    (ι : Type) [Fintype ι] (σ : ι → X.functionField →+* X.functionField) (u : ι → X.functionField),
+    (∀ i f, RegAt x f → RegAt x (σ i f)) → (∀ i f, ZeroAt x f → ZeroAt x (σ i f)) →
+    (∀ i, RegAt x (u i)) →
+    (∀ i, (∀ f, RegAt x f → ZeroAt x (σ i f - f)) → ZeroAt x (u i - 1)) →
+    (∀ n : ℕ, n ≠ 0 → UnitAt x (n : X.functionField)) →
+    (∃ i, ∀ f, RegAt x f → ZeroAt x (σ i f - f)) →
+    ∃ a : Γ(X, U), UnitAt x (∑ i, σ i (fnOf U (gen_mem hx) a) * u i) := by
+  atlas_forward_decl GlobalTheory.CharIndepAt.main

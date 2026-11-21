@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix Filter Topology ValuativeRel
 
 namespace GlobalTheory.CompanionTheory.LocalFieldChar
@@ -86,3 +88,9 @@ theorem isOpen_addChar_ker : ∀ {k : Type} [Field k] [ValuativeRel k] [Topologi
   exact H.isOpen_of_mem_nhds hnh
 
 end GlobalTheory.CompanionTheory.LocalFieldChar
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpen_additive_character_kernel : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), Continuous ψ → IsOpen {x : k | ψ x = 1} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocalFieldChar.isOpen_addChar_ker

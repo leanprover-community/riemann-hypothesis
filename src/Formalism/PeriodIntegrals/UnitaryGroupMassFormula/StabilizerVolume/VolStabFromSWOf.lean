@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.VolFromSW
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.VolStabFromSWS
 
 noncomputable section

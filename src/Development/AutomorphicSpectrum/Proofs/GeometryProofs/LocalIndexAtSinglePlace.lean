@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PlaceEqOneOfNotMem
+import BuildAid.ForwardExisting
+
+section
 open NumberField Matrix IsDedekindDomain GlobalTheory.CompanionTheory.Ar.Cusp.LocFrame
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.LocIndex
@@ -153,3 +156,9 @@ theorem relIndex_locAt (L : Type) [Field L] [NumberField L] (W : Type) [AddCommG
   exact (Nat.card_congr (QuotientAddGroup.quotientKerEquivOfSurjective f hsurj).toEquiv).symm
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.LocIndex
+end
+
+open NumberField Matrix IsDedekindDomain GlobalTheory.CompanionTheory.Ar.Cusp.LocFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_index_at_single_place : ∀ (L : Type) [Field L] [NumberField L] (W : Type) [AddCommGroup W] [Module (𝓞 L) W] (v : FinitePlace L) (A B : Submodule (𝓞 L) W), B ≤ A → B.toAddSubgroup.relIndex A.toAddSubgroup ≠ 0 → (∀ w : FinitePlace L, w ≠ v → locAt w A = locAt w B) → (locAt v B).toAddSubgroup.relIndex (locAt v A).toAddSubgroup = B.toAddSubgroup.relIndex A.toAddSubgroup := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.LocIndex.relIndex_locAt

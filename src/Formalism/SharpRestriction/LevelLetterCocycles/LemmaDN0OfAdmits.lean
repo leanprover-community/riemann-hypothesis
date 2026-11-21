@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.LevelLetterCocycles.LatticeBoundsOfThreeParts
 import Formalism.SharpRestriction.LevelLetterCocycles.XDvdLevCQ
 import Formalism.SharpRestriction.LevelLetterCocycles.ConvEqSum
 import Formalism.SharpRestriction.LevelLetterCocycles.EqZeroOfMemSum

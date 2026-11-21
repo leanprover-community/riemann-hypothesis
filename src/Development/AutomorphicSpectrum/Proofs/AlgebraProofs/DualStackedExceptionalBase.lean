@@ -1,6 +1,9 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcChart
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DualStackedGraphBihomogeneous
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
@@ -211,3 +214,8 @@ theorem exc_base : DualStackedExcBase.Statement := by
 end
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_stacked_exceptional_base : GroundTheory.Heights₂.Heights.DualStackedExcBase.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.exc_base

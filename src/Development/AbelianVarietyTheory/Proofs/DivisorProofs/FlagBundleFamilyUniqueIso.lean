@@ -3,6 +3,8 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ScholzeWei
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.RegularAlteration
 import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
+
+section
 open NumberField MvPolynomial Filter Topology Formalism.BasicNotions Formalism.MainNotions Formalism.DegreeFormula GlobalTheory.FlagPoly GlobalTheory.Mean4 GlobalTheory.Mean4O GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.CovTest GlobalTheory.Published
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.ArInt
 open scoped Classical
@@ -82,3 +84,13 @@ theorem GlobalTheory.CovTest.flagBundle_iso_over : ∀ (B Y Y' : Scheme.{0}) (π
   have e₂ : g₂ ≫ g₁ = 𝟙 Y' :=
     (hu' _ ⟨_, carries_comp π' π π' g₂ g₁ w₂ w₁ fl' fl fl' c₂ c₁⟩).trans (hu' _ ⟨_, carries_id π' fl'⟩).symm
   exact ⟨⟨g₁, g₂, e₁, e₂⟩, w₁⟩
+end
+end
+
+open NumberField MvPolynomial Filter Topology Formalism.BasicNotions Formalism.MainNotions Formalism.DegreeFormula GlobalTheory.FlagPoly GlobalTheory.Mean4 GlobalTheory.Mean4O GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.CovTest GlobalTheory.Published
+open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.ArInt
+open scoped Classical
+open Formalism.BasicNotions.DV Formalism.MainNotions.WeightThresholdDefs GlobalTheory.FlagAr GlobalTheory.ShFam.Pad GlobalTheory.VB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_bundle_family_unique_iso : ∀ (B Y Y' : Scheme.{0}) (π : Y ⟶ B) (π' : Y' ⟶ B) (ι : Type) (E : ι → B.Modules) (r : ι → ℕ) (fl : ∀ a, Vert.Flag ((Scheme.Modules.pullback π).obj (E a)) (r a)) (fl' : ∀ a, Vert.Flag ((Scheme.Modules.pullback π').obj (E a)) (r a)), IsFlagBundle π E r fl → IsFlagBundle π' E r fl' → ∃ e : Y ≅ Y', e.hom ≫ π' = π := by
+  atlas_forward_decl GlobalTheory.CovTest.flagBundle_iso_over

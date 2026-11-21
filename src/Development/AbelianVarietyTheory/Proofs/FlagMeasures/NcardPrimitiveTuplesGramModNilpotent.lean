@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PrimOfIsUnitDet
+import BuildAid.ForwardExisting
 
+section
 open scoped Classical
 
 namespace GlobalTheory.GramCount
@@ -59,3 +61,10 @@ theorem ncard_gram_mod_eq_card_ker_pow_mul {A B : Type} [CommRing A] [Finite A] 
   rw [hset, ncard_preimage_surjective_eq φ hs m n, Nat.card_congr (Equiv.subtypeEquivRight hk)]
 
 end GlobalTheory.GramCount
+end
+
+open GlobalTheory.GramCount
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ncard_primitive_tuples_gram_mod_nilpotent : ∀ {A B : Type} [CommRing A] [Finite A] [CommRing B] (c : A →+* A) (c' : B →+* B), (∀ u, c (c u) = u) → ∀ (p : A), IsNilpotent p → ∀ (φ : A →+* B), Function.Surjective φ → (∀ u, φ (c u) = c' (φ u)) → (∀ u, φ u = 0 ↔ p ∣ u) → ∀ (m n : ℕ) (G : Matrix (Fin m) (Fin m) A), Set.ncard {x : Fin m → Fin n → A | Prim c x ∧ ∀ a b, p ∣ ip c (x b) (x a) - G a b} = Nat.card {u : A // p ∣ u} ^ (n * m) * Set.ncard (sols c' n (G.map φ)) := by
+  atlas_forward_decl GlobalTheory.GramCount.ncard_gram_mod_eq_card_ker_pow_mul

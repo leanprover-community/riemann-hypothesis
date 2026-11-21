@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsReducedOfSeparableMarkedCharpolyStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FgUnitsQuotIntegralUnitsFiniteFieldExtStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FgUnitsQuotIntegralUnitsReducedFiniteAlgebraStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FgUnitsQuotIntegralUnitsFiniteFieldExt
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FgUnitsQuotIntegralUnitsReducedFiniteAlgebra
+
+section
 open GlobalTheory.UnitLemma Polynomial
 
 namespace GlobalTheory.NormUnits
@@ -76,3 +77,9 @@ theorem exists_finset_normUnits : ∀ (K : UQ) (B : InvAlg K), B.P.Separable →
   rw [this]; exact hz
 
 end GlobalTheory.NormUnits
+end
+
+open GlobalTheory.UnitLemma Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finset_cosets_integral_norm_units : ∀ (K : UQ) (B : InvAlg K), B.P.Separable → ∃ F : Finset B.Aˣ, ∀ u : B.Aˣ, (∃ w ∈ intUnits K.O B.A, (w : B.A) = u * B.σ u) → ∃ f ∈ F, ∃ t ∈ B.T, u * f⁻¹ * t⁻¹ ∈ intUnits K.O B.A := by
+  atlas_forward_decl GlobalTheory.NormUnits.exists_finset_normUnits

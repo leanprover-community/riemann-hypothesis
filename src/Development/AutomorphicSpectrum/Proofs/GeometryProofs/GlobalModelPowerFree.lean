@@ -1,12 +1,12 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ToFirst
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FibrePowerFreePullbackStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ModelFibresPowerFreeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PowFnsOfAbelianGenericStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FibrePowerFreePullback
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ModelFibresPowerFree
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PowFnsOfAbelianGeneric
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLocalization
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PullbackStalkIsDomainEtale
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
@@ -155,3 +155,13 @@ theorem global_fibPF : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
   exact (GlobalTheory.T.fibre_power_free_pullback E H _ _ _ t _ m₁ z').1 ((GlobalTheory.T.fibre_power_free_pullback E H _ _ _ t f m₂ z').2 h₁)
 
 end GlobalTheory.CompanionTheory.Ar.GlobalFib
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1 GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.global_model_power_free : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (Y : ∀ (p : ℕ) (W : ValuationSubring ℂ), p.Prime → (p : ℂ) ∈ W.nonunits → LocalSystem Xo p W), (∀ p W hp hW i, (Y p W hp hW i).SplitFibres ∧ (Y p W hp hW i).N3) → ∀ (l : Level H) (c : Coeff l) (hg : ∀ p : ℕ, p.Prime → l.GoodAt p) (Ygl : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)), (∀ (p : ℕ) (W : ValuationSubring ℂ) (hp : p.Prime) (hW : (p : ℂ) ∈ W.nonunits) (b : 𝓞 c.F →+* c.V W), (∀ x, ((b x : c.V W) : c.F) = (x : c.F)) → Dominates Ygl (Y p W hp hW ⟨l, c, hg p hp⟩) b) → PowFns Ygl.t ∧ ∀ (p : ℕ), p.Prime → ∀ z : Ygl.X, (p : Ygl.X.residueField z) = 0 → FibPF Ygl.t z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.GlobalFib.global_fibPF

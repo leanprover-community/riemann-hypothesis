@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.SmoothForms NumberField Matrix
 open scoped ContDiff Topology
 
@@ -142,3 +144,10 @@ theorem mem_adjoin_polar (n d : ℕ) (T : Matrix (Fin d → Fin n) (Fin d → Fi
 end GlobalTheory.SymmTensor
 
 end
+end
+
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_adjoin_glAction_of_commute_tensorPerm : ∀ (n d : ℕ) (T : Matrix (Fin d → Fin n) (Fin d → Fin n) ℂ), (∀ π, T * permMat n d π = permMat n d π * T) → T ∈ Algebra.adjoin ℂ (Set.range fun p : Fin n × Fin n => polar n d p.1 p.2) := by
+  atlas_forward_decl GlobalTheory.SymmTensor.mem_adjoin_polar

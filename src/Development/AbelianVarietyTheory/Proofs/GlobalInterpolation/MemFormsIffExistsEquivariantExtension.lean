@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.FormsStable
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Classical NumberField GlobalTheory.LvT
 open Formalism.MainNotions.product_first_zeroth_parts (Ow tops wsum ten blk nfAll CSpan IntSpan Nm_succ wSh cTw)
 
@@ -35,3 +37,10 @@ theorem PtModel.mem_Fi_iff_exists_isExt : ∀ (D : D7) (u : D.what₂.Word) (X :
     rw [← h2, hg]
 
 end GlobalTheory.LvT
+end
+
+open Formalism.BasicNotions Classical NumberField GlobalTheory.LvT
+open Formalism.MainNotions.product_first_zeroth_parts (Ow tops wsum ten blk nfAll CSpan IntSpan Nm_succ wSh cTw)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_forms_iff_exists_equivariant_extension : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u) (i : ℕ) (M : PtModel X i) (φ : Fn X i), φ ∈ X.fm.Fi i ↔ ∃ Φ, M.IsExt φ Φ := by
+  atlas_forward_decl GlobalTheory.LvT.PtModel.mem_Fi_iff_exists_isExt

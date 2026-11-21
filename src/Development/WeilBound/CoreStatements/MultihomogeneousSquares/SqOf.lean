@@ -1,7 +1,7 @@
 import Development.WeilBound.CoreStatements.MultihomogeneousSquares.AntisymmetryFibreSquares
 import Development.WeilBound.CoreStatements.FlagImmersions.SumFundOnRoot
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerOriginVectorBundle
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RootModelOriginCompatibilityStatement
+import Mathlib
 
 noncomputable section
 

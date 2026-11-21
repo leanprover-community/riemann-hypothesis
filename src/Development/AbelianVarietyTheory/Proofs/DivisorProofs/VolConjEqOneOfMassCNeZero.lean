@@ -1,7 +1,6 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.PointSide
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MassMulVolumeCommensurableStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedCentralizerMassMapConjStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedCentralizerMassMapConj
 
 open GlobalTheory.LKCount
 

@@ -1,8 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ColGeR
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PatternGroupStatement
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin GlobalTheory.CompanionTheory.TyFin.ColStep
 
 noncomputable section
@@ -65,3 +66,11 @@ theorem ncard_patSet_colGe (K : Type) [Field K] [Fintype K] [DecidableEq K] (d j
     natCard_colGe d j hj, pow_add]
 
 end GlobalTheory.CompanionTheory.TyFin.ColStep
+end
+end
+
+open ReciprocityTheory.Ty.Fin GlobalTheory.CompanionTheory.TyFin.ColStep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pattern_set_card_column_step : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K] (d j : ℕ), j < d →
+    (patSet K (colGe d j)).ncard = Fintype.card K ^ j * (patSet K (colGe d (j + 1))).ncard := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.ColStep.ncard_patSet_colGe

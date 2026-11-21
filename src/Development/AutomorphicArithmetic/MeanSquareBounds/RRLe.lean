@@ -1,5 +1,4 @@
 import Development.AutomorphicArithmetic.MeanSquareBounds.PrimeSetTwoBounds
-import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MSqDiagA
 import Development.AutomorphicArithmetic.MeanSquareBounds.SumMinLeDiv
 
 open Finset Formalism.HermitianLattices.ZeroFreeRegionGL2 Formalism.HermitianLattices.Ext.LogarithmicIntegralBounds

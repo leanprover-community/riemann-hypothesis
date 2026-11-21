@@ -1,11 +1,10 @@
 import Mathlib
 import Formalism.PeriodIntegrals.DSInfCharCap
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.PseudoCoefficientSeparation
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-import Formalism.RealPlaceAnalysis.StatementE
-import Formalism.RealPlaceAnalysis.StatementB
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DifferentiableAtOrbit
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffSetIntegralNat
+import BuildAid.ForwardExisting
+
+section
 open scoped InnerProductSpace
 
 noncomputable section
@@ -59,3 +58,10 @@ theorem dRep_conj_Kset (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddComm
   exact (hL.comp_hasDerivAt (0 : ℝ) hd).deriv
 
 end GlobalTheory.GKLie
+end
+end
+
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.derivedRep_conj_maxCompact_intertwines : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), Formalism.QuantumDeterminants.IsCRepOn (Formalism.MainNotions.S.UJset ε) ρ → ∀ κ ∈ Formalism.REAL.Kset ε, ∀ X ∈ GlobalTheory.SmoothGlob.lieSet ε, ∀ v : H, Formalism.L2.Theta.SmoothVec (GlobalTheory.SmoothGlob.lieSet ε) ρ v → Formalism.L2.Theta.dRep ρ (κ * X * κ⁻¹) (ρ κ v) = ρ κ (Formalism.L2.Theta.dRep ρ X v) := by
+  atlas_forward_decl GlobalTheory.GKLie.dRep_conj_Kset

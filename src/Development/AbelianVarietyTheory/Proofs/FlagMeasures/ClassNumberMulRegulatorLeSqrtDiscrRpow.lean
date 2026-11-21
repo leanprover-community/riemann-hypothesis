@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.HermitianLattices.StatementMass
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RegulatorLeSumSmallIdealsInClassStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumAbsNormRpowNegLeDedekindZetaBoundStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumAbsNormRpowNegLeDedekindZetaBound
+
+section
 open MeasureTheory NumberField Finset
 
 namespace GlobalTheory
@@ -67,3 +68,9 @@ theorem classNumber_mul_regulator_le_sqrt_discr_rpow :
           (GlobalTheory.T.sum_absNorm_rpow_neg_le_dedekindZeta_bound K s hs T fun I hI => ((hmem I).1 hI).1) (Real.rpow_nonneg hY0 s)
 
 end GlobalTheory
+end
+
+open MeasureTheory NumberField Finset
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.classNumber_mul_regulator_le_sqrt_discr_rpow' : ∀ (K : Type) [Field K] [NumberField K], IsTotallyComplex K → ∀ s : ℝ, 1 < s → (classNumber K : ℝ) * Units.regulator K ≤ Real.sqrt |(discr K : ℝ)| ^ s * (s / (s - 1)) ^ Module.finrank ℚ K := by
+  atlas_forward_decl GlobalTheory.classNumber_mul_regulator_le_sqrt_discr_rpow

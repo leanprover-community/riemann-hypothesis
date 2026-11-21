@@ -1,6 +1,7 @@
 import Development.WeilBound.CoreStatements.CentralCharts.PshAt0
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSncAdaptedChartAtPointStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncAdaptedChartSectionFormStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncAdaptedChartSectionForm
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFubiniStudyPositive
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
 

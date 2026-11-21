@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.BigZe
+import BuildAid.ForwardExisting
 
+section
 open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume
 open scoped ENNReal InnerProductSpace
 open scoped ComplexOrder
@@ -50,3 +52,12 @@ theorem emb_eq_star_iff {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ :
       exact not_eq_conj hσ τ' τ fun a => (h a).symm
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.Univ.EmbConj
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+open GlobalTheory.CompanionTheory.Ar.Cusp.Univ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conjugate_embeddings_criterion : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Type} [Fintype Ψ] {j j' : ℕ} (σ : Ψ → (𝓞 E →+* ℂ)), IsCMFam σ → ∀ i k : Ix Ψ j j', (∀ a : 𝓞 E, emb σ i a = star (emb σ k a)) ↔ (i.2 = k.2 ∧ i.1.isLeft ≠ k.1.isLeft) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Univ.EmbConj.emb_eq_star_iff

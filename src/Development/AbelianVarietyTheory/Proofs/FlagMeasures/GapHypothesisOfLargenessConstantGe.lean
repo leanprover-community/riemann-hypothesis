@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ConstC
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ThmSOwn
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 namespace GlobalTheory.TypeAsm
 open Formalism.BasicNotions
@@ -44,3 +46,9 @@ theorem gapC : GapC :=
   ⟨1801, fun _ _ _ _ _ _ _ _ _ _ hCl h => gap_hypothesis_of_kernel_bound_large_constant hCl h⟩
 
 end GlobalTheory.TypeAsm
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gapC_holds : GlobalTheory.TypeAsm.GapC := by
+  atlas_forward_decl GlobalTheory.TypeAsm.gapC

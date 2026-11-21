@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrActApply
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg GlobalTheory.SteepMult
 
 namespace GlobalTheory.SteepMult.Equivariance
@@ -109,3 +112,11 @@ theorem phiN_tAct : ∀ (R S : ℕ) (M : GKMod R S) (N : Submodule ℂ M.V) (hN 
   exact sum_update_swap i (fun g g' y x => adP Z y x • word M.act g (Ψ g' : M.V))
 
 end GlobalTheory.SteepMult.Equivariance
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg GlobalTheory.SteepMult
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.filtration_map_equivariant : ∀ (R S : ℕ) (M : GKMod R S) (N : Submodule ℂ M.V) (hN : KStable M.act N) (k : ℕ) (Z : Mat R S),
+    IsKC Z → ∀ Ψ : (Fin k → NC R S) → N,
+      phiN M.act N k (tAct k (restrAct M.act N hN) Z Ψ) = M.act Z (phiN M.act N k Ψ) := by
+  atlas_forward_decl GlobalTheory.SteepMult.Equivariance.phiN_tAct

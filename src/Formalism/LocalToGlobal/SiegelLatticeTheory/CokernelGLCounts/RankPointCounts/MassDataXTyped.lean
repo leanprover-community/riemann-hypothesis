@@ -1,6 +1,5 @@
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.TheoremSRecursion
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataXLoc
-import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.LocMassTyp
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CovolumeFrames.StepSize
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.FrameStd
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataXSDLoc

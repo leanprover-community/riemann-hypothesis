@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ChLApply
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousCharactersLocallyConstantNonarchLocalF
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData
 
 namespace GlobalTheory.PartRed
@@ -26,3 +29,9 @@ theorem sb_mul_addChar_linear : ∀ (k : Type) [Field k] [ValuativeRel k] [Topol
   · exact h2.mul_left
 
 end GlobalTheory.PartRed
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartzBruhat_mul_addChar_linearForm : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), Continuous ψ → ∀ (R Q : Type) [Fintype R] [Fintype Q] (f : Matrix R Q k →ₗ[k] k) (z : k) (Φ : Matrix R Q k → ℂ), Φ ∈ SB (Matrix R Q k) → (fun x => (ψ (f x + z) : ℂ) * Φ x) ∈ SB (Matrix R Q k) := by
+  atlas_forward_decl GlobalTheory.PartRed.sb_mul_addChar_linear

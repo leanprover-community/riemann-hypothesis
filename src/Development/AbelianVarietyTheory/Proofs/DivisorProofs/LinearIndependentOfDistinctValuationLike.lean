@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Filter Topology
 
 namespace GlobalTheory
@@ -51,3 +53,9 @@ theorem linearIndependent_of_distinct_valuationLike :
   exact (key g _ hne (fun j hj => (Finset.mem_filter.1 hj).2)).1 hsum'
 
 end GlobalTheory
+end
+
+open Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearIndependent_of_injective_valuationLike : ∀ (C V Γ ι : Type) [Field C] [AddCommGroup V] [Module C V] [LinearOrder Γ] (ν : V → Γ), (∀ (c : C) (u : V), c ≠ 0 → ν (c • u) = ν u) → (∀ u v : V, u ≠ 0 → v ≠ 0 → ν u < ν v → u + v ≠ 0 ∧ ν (u + v) = ν u) → ∀ f : ι → V, (∀ i, f i ≠ 0) → Function.Injective (fun i => ν (f i)) → LinearIndependent C f := by
+  atlas_forward_decl GlobalTheory.linearIndependent_of_distinct_valuationLike

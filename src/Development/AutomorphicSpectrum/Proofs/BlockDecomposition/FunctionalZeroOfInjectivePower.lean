@@ -1,8 +1,10 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.UnitaryExtremality.SatPowNonvan
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsStrictDom
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsPermWOne
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemIwUIff
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct GlobalTheory.CompanionTheory.SatPow
 
 namespace GlobalTheory.CompanionTheory.SatPow
@@ -61,3 +63,9 @@ theorem functional_eq_zero_of_late_iterates :
   exact LinearMap.mem_ker.mp (hUl hv)
 
 end GlobalTheory.CompanionTheory.SatPow
+end
+
+open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct GlobalTheory.CompanionTheory.SatPow
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.functional_zero_of_injective_power : ∀ (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (A : V →ₗ[ℂ] V), Function.Injective A → ∀ (l : V →ₗ[ℂ] ℂ) (v : V) (j₀ : ℕ), (∀ j ≥ j₀, l ((A ^ j) v) = 0) → l v = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SatPow.functional_eq_zero_of_late_iterates

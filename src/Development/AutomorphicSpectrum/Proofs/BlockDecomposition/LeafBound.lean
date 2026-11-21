@@ -2,6 +2,7 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitTwistBound
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
@@ -121,3 +122,9 @@ theorem leafBound : DiscInf → TopInf → InfOfEq → LeafBound := by
 end GlobalTheory.CompanionTheory.EGlue.LeafB
 
 end
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.leaf_bound_alt : GlobalTheory.CompanionTheory.EGlue.DiscInf → GlobalTheory.CompanionTheory.EGlue.TopInf → GlobalTheory.CompanionTheory.EGlue.InfOfEq → GlobalTheory.CompanionTheory.EGlue.LeafBound := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.LeafB.leafBound

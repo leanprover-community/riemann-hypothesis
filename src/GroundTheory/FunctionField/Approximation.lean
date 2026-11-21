@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.FunctionField.PlaceDefs
 import GroundTheory.FunctionField.PlaceBasic
 set_option maxSynthPendingDepth 1
 

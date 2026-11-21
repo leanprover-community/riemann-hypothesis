@@ -1,7 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosure
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma Polynomial
 
 namespace GlobalTheory.UnitLemma
@@ -71,3 +73,9 @@ theorem exists_surjective_valuation_isIntegral_iff (K : UQ) (L : Type) [Field L]
       WithZero.coe_le_coe, ← Multiplicative.toAdd_le, toAdd_one]
 
 end GlobalTheory.UnitLemma
+end
+
+open GlobalTheory.UnitLemma Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_surjective_valuation_isIntegral_iff_nonneg : ∀ (K : UQ) (L : Type) [Field L] [Algebra K.E L] [Algebra K.O L] [IsScalarTower K.O K.E L] [FiniteDimensional K.E L], ∃ v : Lˣ →* Multiplicative ℤ, Function.Surjective v ∧ ∀ x : Lˣ, IsIntegral K.O (x : L) ↔ 0 ≤ Multiplicative.toAdd (v x) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.exists_surjective_valuation_isIntegral_iff

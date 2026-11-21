@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.VolSemiDirect
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.VolumeUnipotentOfModulusOne
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjContAll
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjRat

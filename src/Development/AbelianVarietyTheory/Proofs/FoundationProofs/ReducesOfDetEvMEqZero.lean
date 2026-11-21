@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIndexOfGammaLe
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLevelOneSimpleZeroFormAtPoint
 import Development.AbelianVarietyTheory.Definitions.Foundations.EtaSixProductDifferentiable
 
+section
 open UpperHalfPlane Filter GlobalTheory.OddFrame
 open ModularForm (E₄ E₆)
 open scoped MatrixGroups ModularForm Manifold Topology
@@ -311,3 +311,11 @@ theorem _root_.GlobalTheory.OddFrame.reduces_of_det_evM_eq_zero : ∀ (Γ : Subg
     rfl
 
 end GlobalTheory.OddFrame
+end
+
+open UpperHalfPlane Filter GlobalTheory.OddFrame
+open ModularForm (E₄ E₆)
+open scoped MatrixGroups ModularForm Manifold Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.reduces_of_det_evM_eq_zero' : ∀ (Γ : Subgroup SL(2, ℤ)) (r : ℕ) (s : Fin r → SL(2, ℤ)) (w : Fin r → ℤ) (F : Fin r → ℍ → ℂ) (τ₀ : ℍ), IsReps Γ s → (∀ j, Odd (w j) ∧ IsMF Γ (w j) (F j)) → (evM s w F τ₀).det = 0 → Reduces Γ w F := by
+  atlas_forward_decl GlobalTheory.OddFrame.reduces_of_det_evM_eq_zero

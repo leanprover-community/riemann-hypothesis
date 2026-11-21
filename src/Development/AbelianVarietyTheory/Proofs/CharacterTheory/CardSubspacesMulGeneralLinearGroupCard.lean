@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardSubspacesOfFinrankMulCardBasesStatement
+import BuildAid.ForwardExisting
 
+section
 open Polynomial GlobalTheory.CuspGL
 
 namespace GlobalTheory.CuspGL
@@ -36,3 +37,9 @@ theorem card_subspaces_mul_glCard : ∀ (F : Type) [Field F] [Finite F] (V : Typ
   exact_mod_cast key
 
 end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_subspaces_mul_generalLinearGroupCard : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] (a : ℕ), a ≤ Module.finrank F V → (Nat.card {W : Submodule F V // Module.finrank F W = a} : ℂ) * (Nat.card F : ℂ) ^ (a * (Module.finrank F V - a)) * glCard F a * glCard F (Module.finrank F V - a) = glCard F (Module.finrank F V) := by
+  atlas_forward_decl GlobalTheory.CuspGL.card_subspaces_mul_glCard

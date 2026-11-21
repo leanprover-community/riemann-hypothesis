@@ -2,7 +2,9 @@ import Mathlib
 import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.HypJ
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.SW.PrimV
@@ -402,3 +404,11 @@ theorem exists_compact_unimodular_vectors_mod_units : ∀ (F E : Type) [Field F]
   rfl
 
 end GlobalTheory.CompanionTheory.SW.PrimV
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_primitive_vector_compact_rescale : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (v : HeightOneSpectrum (𝓞 F)), ∃ Ω : Set (Fin 1 → Fin M → Fv F v ⊗[F] E), IsCompact Ω ∧ ∀ y : Fin 1 → Fin M → Fv F v ⊗[F] E, (∃ z : Fin M → Fv F v ⊗[F] E, z ⬝ᵥ y 0 = 1) → ∃ (a : (Fv F v ⊗[F] E)ˣ) (z : Fin 1 → Fin M → Fv F v ⊗[F] E), (a : Fv F v ⊗[F] E) • y ∈ Ω ∧ z ∈ Ω ∧ z 0 ⬝ᵥ ((a : Fv F v ⊗[F] E) • y) 0 = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.PrimV.exists_compact_unimodular_vectors_mod_units

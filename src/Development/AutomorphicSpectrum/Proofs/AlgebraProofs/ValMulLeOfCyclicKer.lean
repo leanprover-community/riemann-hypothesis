@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LieLatticeData
-import Development.AutomorphicSpectrum.Statements.AlgebraStatements.PolarisedFlagStatement
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderLatticeBaseStatement
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HasFinColengthOfHasLen
 import ReciprocityTheory.DualLattices.HasLenCokerDet

@@ -1,12 +1,10 @@
 import Mathlib
-import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.RegularHypothesesAndConclusion
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HasAffineChartId
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HasAffineChartIff
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartRestrictPreimageOpenStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.InvariantOpenChartPreimageStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GlueQuotientChartsCoverStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PullbackOfGluedChartsStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartRestrictPreimageOpen
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.InvariantOpenChartPreimage
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GlueQuotientChartsCover
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PullbackOfGluedCharts
 
+section
 noncomputable section
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
@@ -115,3 +113,13 @@ theorem GlobalTheory.CompanionTheory.FreeQuotGlue.exists_of_affineCharts : ∀ {
   · exact prop_of_charts @LocallyOfFinitePresentation.{0} π _ Y q em hcomm hpre hsurj fun U ↦ (hq U).lfp
   · exact prop_of_charts @Surjective.{0} π _ Y q em hcomm hpre hsurj fun U ↦ (hq U).surjective
   · exact GlobalTheory.T.pullback_of_glued_charts a b π _ Y q em hq hcomm hpre hsurj
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quotient_of_affine_chart_cover : ∀ {P X : Scheme.{0}} (a b : P ⟶ X), (∀ x : X, ∃ V : X.Opens, x ∈ V ∧ HasAffineChart a b V) → ∃ (Y : Scheme.{0}) (q : X ⟶ Y), IsFinite q ∧ Flat q ∧ LocallyOfFinitePresentation q ∧ Surjective q ∧ IsPullback a b q q := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FreeQuotGlue.exists_of_affineCharts

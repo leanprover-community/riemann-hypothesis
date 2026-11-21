@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetOff
+import BuildAid.ForwardExisting
+
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter GlobalTheory.CompanionTheory.Equi
 open scoped Classical
 
@@ -47,3 +50,10 @@ theorem cosetOff_empty_eq_latCoset (F : Type) [Field F] [NumberField F] (ι : Ty
     exact (forall_locMem_iff_exists_mem_ideal I (x i - x0 i)).mpr (h i) v
 
 end GlobalTheory.CompanionTheory.Equi
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter GlobalTheory.CompanionTheory.Equi
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coset_empty_places_lattice : ∀ (F : Type) [Field F] [NumberField F] (ι : Type) (I : Ideal (𝓞 F)) (x0 : ι → F), cosetOff (∅ : Finset (HeightOneSpectrum (𝓞 F))) I x0 = latCoset I x0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Equi.cosetOff_empty_eq_latCoset

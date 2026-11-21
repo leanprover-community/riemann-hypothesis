@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.IntChartCut
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsPtJ
 
 noncomputable section

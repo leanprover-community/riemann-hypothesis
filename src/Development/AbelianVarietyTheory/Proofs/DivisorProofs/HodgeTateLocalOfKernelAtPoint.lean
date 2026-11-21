@@ -1,12 +1,13 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTangentPresentationPrime
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitTorsOfGenericLevelStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelLocallyNoetherianStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenericPointLiftToFieldStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegrallyClosedPointExtensionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentBasisFrameMapStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitTorsOfGenericLevel
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelLocallyNoetherian
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenericPointLiftToField
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegrallyClosedPointExtension
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentBasisFrameMap
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -67,3 +68,10 @@ theorem htLocSt_of_hodgeTateKernel (hK : GlobalTheory.IndefiniteRowSideFullHecke
   exact neg_mem key
 
 end GlobalTheory.FlatModel
+end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_tate_local_of_kernel_at_point : GlobalTheory.IndefiniteRowSideFullHecke.HodgeTateKernel.HodgeTateKernelAtPoint → HTLocSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.htLocSt_of_hodgeTateKernel

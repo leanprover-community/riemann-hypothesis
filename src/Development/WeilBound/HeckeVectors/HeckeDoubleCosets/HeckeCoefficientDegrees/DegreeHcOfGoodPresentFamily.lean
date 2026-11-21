@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianFormalDegree.VUnitInvVal
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJmuDegG
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FdCons
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.TransportInt

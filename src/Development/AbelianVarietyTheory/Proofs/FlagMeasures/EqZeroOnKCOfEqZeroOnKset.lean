@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpectrumKFiniteDecomposition
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Dec
 open scoped InnerProductSpace
 
@@ -122,3 +124,10 @@ theorem eq_zero_on_KC_of_eq_zero_on_Kset : ∀ (n : ℕ) (ε : Fin n → Bool) (
   exact h12
 
 end GlobalTheory.Dec.KCIdent
+end
+
+open Matrix Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Dec
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_on_KC_of_eq_zero_on_Kset' : ∀ (n : ℕ) (ε : Fin n → Bool) (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E] (F : Matrix (Fin n) (Fin n) ℂ → E), DifferentiableOn ℂ (fun y : Fin n → Fin n → ℂ => F (Matrix.of y)) {y | Matrix.of y ∈ GlobalTheory.Dec.KC ε} → (∀ k ∈ Formalism.REAL.Kset ε, F k = 0) → ∀ y ∈ GlobalTheory.Dec.KC ε, F y = 0 := by
+  atlas_forward_decl GlobalTheory.Dec.KCIdent.eq_zero_on_KC_of_eq_zero_on_Kset

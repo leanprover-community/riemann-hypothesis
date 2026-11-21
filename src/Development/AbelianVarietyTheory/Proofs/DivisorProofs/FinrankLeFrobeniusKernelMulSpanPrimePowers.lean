@@ -2,7 +2,8 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.WittOnFalse
 import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobKerIdealLeAugIdeal
-import Development.AbelianVarietyTheory.Definitions.Divisors.FibreRankCompOfSurjective
+
+section
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
 set_option autoImplicit false
@@ -123,3 +124,10 @@ theorem finrank_le_frobKer_mul_span_pow (p : ℕ) [Fact p.Prime] (K H : Type) [F
       exact Submodule.smul_mem _ c (Submodule.subset_span ⟨a, rfl⟩)
 
 end GlobalTheory.PDiv
+end
+end
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_le_frobeniusKernel_mul_span_primePowers : ∀ (p : ℕ) [Fact p.Prime] (K H : Type) [Field K] [CharP K p] [CommRing H] [HopfAlgebra K H] [Module.Finite K H] (r : ℕ), Module.finrank K H ≤ Module.finrank K (H ⧸ frobKerIdeal (p ^ r) K H) * Module.finrank K (Submodule.span K (Set.range fun a : H => a ^ p ^ r)) := by
+  atlas_forward_decl GlobalTheory.PDiv.finrank_le_frobKer_mul_span_pow

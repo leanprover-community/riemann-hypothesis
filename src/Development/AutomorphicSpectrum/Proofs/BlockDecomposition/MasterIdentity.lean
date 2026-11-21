@@ -1,5 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
+
+section
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG
 
 noncomputable section
@@ -99,3 +102,10 @@ theorem master : AvgMem → DGood → HGood → BGood → Master := by
     rw [hOp, eis_smul, hEqL z hz g (J w), smul_smul, mul_comm z]
 
 end GlobalTheory.CompanionTheory.RgEisMG
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.master_identity : AvgMem → DGood → HGood → BGood → Master := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisMG.master

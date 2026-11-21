@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.ClassFin
 open scoped Kronecker ComplexOrder TensorProduct
 
@@ -17,3 +20,10 @@ theorem compact_subset_finite_leftCosets (G : Type) [Group G] [TopologicalSpace 
   exact ⟨t, ht, t⁻¹ * k, h, by simp⟩
 
 end GlobalTheory.ClassFin
+end
+
+open Matrix GlobalTheory.ClassFin
+open scoped Kronecker ComplexOrder TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_meets_finitely_many_leftCosets_open : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (U : Subgroup G) (K : Set G), IsOpen (U : Set G) → IsCompact K → ∃ T : Finset G, ∀ k ∈ K, ∃ t ∈ T, ∃ u ∈ U, k = t * u := by
+  atlas_forward_decl GlobalTheory.ClassFin.compact_subset_finite_leftCosets

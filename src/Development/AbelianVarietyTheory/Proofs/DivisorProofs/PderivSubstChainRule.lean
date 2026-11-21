@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -72,3 +73,10 @@ theorem pderiv_subst_chain {R σ τ : Type} [CommRing R] [Fintype σ] [Fintype �
   exact congrFun this f
 
 end GlobalTheory.PSChain
+end
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pderiv_subst_chain_rule : ∀ {R σ τ : Type} [CommRing R] [Fintype σ] [Fintype τ] (a : σ → MvPowerSeries τ R), (∀ s, constantCoeff (a s) = 0) → ∀ (f : MvPowerSeries σ R) (k : τ), pderiv R k (subst a f) = ∑ j, subst a (pderiv R j f) * pderiv R k (a j) := by
+  atlas_forward_decl GlobalTheory.PSChain.pderiv_subst_chain

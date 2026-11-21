@@ -1,10 +1,8 @@
 import Mathlib
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalRingCardinality.DataBu
 import Formalism.LocalRingCardinality.DataAmbForm
 import Formalism.LocalRingCardinality.DataDIV
 import Formalism.LocalRingCardinality.DataTheta
-import Formalism.SharpRestriction.ParConsts
 import Formalism.SharpRestriction.ParamsHeightRankConstant
 import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 import Formalism.SharpRestriction.Divisibility.SchurIrreducible

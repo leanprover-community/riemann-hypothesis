@@ -2,10 +2,10 @@ import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FamDefs
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NGVanish
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.StepAnalyticConstantsP
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
-import Formalism.HermitianCurvature.HeisenbergConjugationMeasurePreserving
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormChainLemmas
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped Classical
@@ -38,3 +38,10 @@ theorem rowNG_of_cut2P (hc : NGCut2P) : RowNGP := by
 example : NGCut2P → RowNGP := rowNG_of_cut2P
 
 end GlobalTheory.NGRow
+end
+end
+
+open Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic GlobalTheory.NGRow
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonGenericCorankOnePairsBound_of_splitFiniteRealRow : NGCut2P → RowNGP := by
+  atlas_forward_decl GlobalTheory.NGRow.rowNG_of_cut2P

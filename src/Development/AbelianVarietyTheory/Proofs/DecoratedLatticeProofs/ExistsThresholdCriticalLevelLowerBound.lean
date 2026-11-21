@@ -1,12 +1,11 @@
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.RowsPtAt
-import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyStatementOfItemsFourSeven
-import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
-import Formalism.SharpRestriction.CuspSpanNormBounds.BranchingAndRankConstants
-import Formalism.SharpRestriction.CuspSpanNormBounds.SBridge
 import Development.AbelianVarietyTheory.Statements.DiscreteSeriesShifts.ThmBpDS
 import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.FormalDegreeCompactDualIff
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsWordLetters
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma GlobalTheory.Core.Deg
 
 noncomputable section
@@ -208,3 +207,10 @@ theorem GlobalTheory.CritLevelSize.tcritLow_sizes : ∀ cb Cu : ℝ, 0 < cb → 
   intro cb Cu hcb
   exact ⟨2 * ((⌈max Cu 0 / cb⌉₊ + 4 : ℕ) : ℝ) + 40, fun D large₂ C' Cl Cg cT CT C0 hCl hVV =>
     GlobalTheory.CritLevelSize.tcrit_low_of_sizes D large₂ C' Cl Cg cb Cu cT CT C0 hcb hCl hVV⟩
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma GlobalTheory.Core.Deg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_threshold_criticalLevel_lower_bound : ∀ cb Cu : ℝ, 0 < cb → ∃ thr : ℝ, ∀ (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cT CT C0 : ℝ), thr ≤ Cl → (∀ τ, VV D τ = vand (lamSH D.R (D.hc τ))) → UnitaryVolumeMass.stTcritLow D large₂ C' Cl Cg cb Cu cT CT C0 := by
+  atlas_forward_decl GlobalTheory.CritLevelSize.tcritLow_sizes

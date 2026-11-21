@@ -2,8 +2,8 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PsiMapFst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AffineFiniteProjectiveRankAtStalk
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankEqMulOfRankAtStalk
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -104,3 +104,12 @@ theorem psiMap_finite_locallyFree : ∀ (K : Type) [Field K] [IsAlgClosed K] (A 
   rw [e, Nat.cast_mul, h0, zero_mul]
 
 end GlobalTheory.AmpleGen
+end
+end
+
+open CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AmpleGen
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.abelianVarietySquareLinearEndomorphism_finiteLocallyFree : ∀ (K : Type) [Field K] [IsAlgClosed K] (A : Over (Sp K)) [GrpObj A], IsAbelianScheme A → ∀ a₁ b₁ a₂ b₂ : ℤ, ((a₁ * b₂ - b₁ * a₂ : ℤ) : K) ≠ 0 → IsFinite (psiMap A a₁ b₁ a₂ b₂).left ∧ Flat (psiMap A a₁ b₁ a₂ b₂).left ∧ LocallyOfFinitePresentation (psiMap A a₁ b₁ a₂ b₂).left ∧ ∃ r : ℕ, (∀ y, (psiMap A a₁ b₁ a₂ b₂).left.finrank y = r) ∧ (r : K) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.AmpleGen.psiMap_finite_locallyFree

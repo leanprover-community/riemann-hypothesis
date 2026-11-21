@@ -1,5 +1,8 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SumRhoEqTrace
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Topology GlobalTheory.CompanionTheory.SW.Core GlobalTheory.CompanionTheory.SW.ThW
 open scoped ENNReal NNReal MatrixGroups Kronecker
 
@@ -18,3 +21,10 @@ theorem exists_integralBasis_infinitePlace (F : Type) [Field F] [NumberField F]
   exact ⟨(RingOfIntegers.basis F).reindex e⟩
 
 end GlobalTheory.CompanionTheory.SW.ThW
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology GlobalTheory.CompanionTheory.SW.Core GlobalTheory.CompanionTheory.SW.ThW
+open scoped ENNReal NNReal MatrixGroups Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.totally_real_integral_basis_exists : ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F → Nonempty (Module.Basis (InfinitePlace F) ℤ (𝓞 F)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.ThW.exists_integralBasis_infinitePlace

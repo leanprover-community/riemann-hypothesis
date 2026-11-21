@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InfDiagMulFinPartI
 
 noncomputable section

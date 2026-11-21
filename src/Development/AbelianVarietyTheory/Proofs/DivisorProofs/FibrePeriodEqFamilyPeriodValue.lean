@@ -4,11 +4,11 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBi
 import Development.AbelianVarietyTheory.Definitions.Divisors.AnalyticChartsRealizationCompPointEq
 import Development.AbelianVarietyTheory.Definitions.Divisors.FstTszeSec
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsPeriodHom
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DpExpEqSumRangeOfVanish
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedPowerFiltration
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeIsSeparatedOfAffineBase
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolomorphicPeriodsNaturalAlongCoveredMorphism
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodCompTranslationGroupHomStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodCompTranslationGroupHom
+
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj Filter Topology TopologicalSpace TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.AnPer
 attribute [local instance] Over.cartesianMonoidalCategory
@@ -35,3 +35,11 @@ theorem period_fibre_eq_value : PFix := by
   exact (Hol.fn_algebraMap _ hp).symm.trans h3
 
 end GlobalTheory.AnPer
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj Filter Topology TopologicalSpace TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.AnPer
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fibrePeriod_eq_familyPeriod_value : PFix := by
+  atlas_forward_decl GlobalTheory.AnPer.period_fibre_eq_value

@@ -2,7 +2,9 @@ import Mathlib
 import ReciprocityTheory.Hypotheses.GalCoh
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
 import GroundTheory.ProfiniteCohomology.ContinuousCochains
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
 
 namespace GlobalTheory.CompanionTheory.Cocycles
@@ -110,3 +112,9 @@ theorem finite_cocycles : ∀ (k G : Type) [CommRing k] [Group G] [TopologicalSp
     fun g c hc => cocycle_mul_mem hf g hc⟩
 
 end GlobalTheory.CompanionTheory.Cocycles
+end
+
+open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_continuous_crossed_homomorphisms : ∀ (k G : Type) [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (A : Rep.{0} k G) [IsDiscreteRep A], Finite A.V → (∀ N : ℕ, {H : Subgroup G | IsOpen (H : Set G) ∧ H.index ≠ 0 ∧ H.index ≤ N}.Finite) → {f : G → A.V | IsLocallyConstant f ∧ ∀ g h : G, f (g * h) = f g + A.ρ g (f h)}.Finite := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Cocycles.finite_cocycles

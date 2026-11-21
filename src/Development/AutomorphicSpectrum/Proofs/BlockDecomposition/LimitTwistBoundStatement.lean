@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitTwistBound
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.TwistStripLimits.BlockTypes
 open scoped Classical
 namespace PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5
 set_option maxHeartbeats 1000000 in

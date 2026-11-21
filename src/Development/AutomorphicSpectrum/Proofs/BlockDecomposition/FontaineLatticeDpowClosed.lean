@@ -1,8 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsAdicCompleteOfEquiv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeDpowClosedOfHyp
 
+section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
@@ -26,3 +26,10 @@ theorem hc_k : ∀ (l : ℕ) [Fact l.Prime] (M k : ℕ),
   · exact GlobalTheory.CompanionTheory.LatDP.dpClosed _ _ l M k (GlobalTheory.CompanionTheory.LatCHyp.hyp_k l k hk)
 
 end GlobalTheory.CompanionTheory.LatCHc
+end
+end
+
+open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fontaine_lattice_dpow_closed : ∀ (l : ℕ) [Fact l.Prime] (M k : ℕ), Lat.DPClosed (Lat.ι (Lat.fk l k) (xi0 l) l M) (Lat.γB (Lat.fk l k) (xi0 l)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LatCHc.hc_k

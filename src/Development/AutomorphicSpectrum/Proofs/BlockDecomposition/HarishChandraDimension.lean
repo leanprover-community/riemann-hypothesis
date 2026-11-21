@@ -1,7 +1,7 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HarishChandraCharacterStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HarishChandraCharacter
 
+section
 open ReciprocityTheory.Ty.Fin
 
 namespace GlobalTheory.CompanionTheory.TyFin
@@ -46,3 +46,9 @@ theorem hcDim : ReciprocityTheory.Ty.Fin.St.HCDim := by
   exact_mod_cast h2
 
 end GlobalTheory.CompanionTheory.TyFin
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.harish_chandra_dimension : ReciprocityTheory.Ty.Fin.St.HCDim := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.hcDim

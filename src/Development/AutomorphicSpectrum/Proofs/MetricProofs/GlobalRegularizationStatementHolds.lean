@@ -3,16 +3,18 @@ import ReciprocityTheory.AnalyticForms.LeviForms.RegGlue
 import ReciprocityTheory.AnalyticForms.LeviForms.RegChartC
 import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LoglogQuotNonneg
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalLeviPshRegularizationStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.GluedLocalRegularizationsOnAtlasStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizationGlueC2ExplicitStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RefineAdaptedAtlasWithGradientStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LeviNonnegInChartOfPshStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothOnOfChartLeviNonnegStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogBoundTransferBetweenRadiiStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.EpsilonSchedulePropertiesStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizationGlueBoundsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.C2TendstoPullbackThroughChartStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalLeviPshRegularization
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.GluedLocalRegularizationsOnAtlas
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizationGlueC2Explicit
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RefineAdaptedAtlasWithGradient
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LeviNonnegInChartOfPsh
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothOnOfChartLeviNonneg
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogBoundTransferBetweenRadii
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.EpsilonScheduleProperties
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizationGlueBounds
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.C2TendstoPullbackThroughChart
+
+section
 open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
 open scoped ContDiff
 
@@ -186,3 +188,10 @@ theorem regGlobalStatement_holds : RegGlobalStatement := by
   exact ⟨C, t₀, F, hC, hFC2⟩
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.global_regularization_statement_holds : RegGlobalStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.regGlobalStatement_holds

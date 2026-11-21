@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FunJetApply
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ProdPartialZpow
+import BuildAid.ForwardExisting
 
+section
 open Matrix MeasureTheory Filter Topology Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.SphJet
 open scoped InnerProductSpace ComplexOrder Matrix.Norms.L2Operator
 
@@ -83,3 +85,10 @@ theorem fderiv_Phi_upper : ∀ (n : ℕ) (lam : Fin n → ℝ) (y N : Matrix (Fi
   exact hcomp.unique (hasDerivAt_const 0 (Phi lam y))
 
 end GlobalTheory.PhiUpperDeriv
+end
+
+open Matrix MeasureTheory Filter Topology Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.SphJet
+open scoped InnerProductSpace ComplexOrder Matrix.Norms.L2Operator
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fderiv_leadingMinorPowerProduct_strictUpper_eq_zero : ∀ (n : ℕ) (lam : Fin n → ℝ) (y N : Matrix (Fin n) (Fin n) ℂ), y ∈ Omega n → (∀ i i' : Fin n, i' ≤ i → N i i' = 0) → fderiv ℂ (Phi lam) y (y * N) = 0 := by
+  atlas_forward_decl GlobalTheory.PhiUpperDeriv.fderiv_Phi_upper

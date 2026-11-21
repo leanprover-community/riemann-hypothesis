@@ -1,11 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsDetEltOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaTensorExists
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RingHomsDvrCardEqFinrank
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PsiDeterminantEigenPropertyStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeterminantElementProductStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdditiveFunctionOnMonoidLinearStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PsiDeterminantEigenProperty
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeterminantElementProduct
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdditiveFunctionOnMonoidLinear
 
+section
 noncomputable section
 
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
@@ -46,3 +46,10 @@ theorem log_val_lead_linear : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] 
   rfl
 
 end GlobalTheory.DetInv
+end
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.psi_determinant_valuation_bound : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O], v.Integers O → ∀ (ε : PreTilt O p), IsPrimitiveRoot (root ε).untilt p → ∀ (Λ : Type) [CommRing Λ] [IsDomain Λ] [IsDiscreteValuationRing Λ] [Algebra ℤ_[p] Λ] [Module.Finite ℤ_[p] Λ] [FaithfulSMul ℤ_[p] Λ], ∀ (ψ : RL p O Λ →+* RL p O Λ), IsPsi ψ → ∀ τ : Λ →+* O, ∃ (κ₀ : ℝ) (κ : (Λ →+* O) → ℝ), ∀ (N : ℕ) (Δ : RL p O Λ) (a : (Λ →+* O) → ℕ) (c : (Λ →+* O) → C), IsDetElt ε ψ N Δ → HasOrders C ε N Δ a c → Real.log (v (c τ)) = N * κ₀ + ∑ᶠ σ, (a σ : ℝ) * κ σ := by
+  atlas_forward_decl GlobalTheory.DetInv.log_val_lead_linear

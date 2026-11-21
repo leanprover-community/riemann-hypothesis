@@ -1,9 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsFirstChernClassOfLineBundle
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FunctionFieldClassGroupPowersStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ClassGroupNthPowerOfCongruentPointsModStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FunctionFieldClassGroupPowers
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ClassGroupNthPowerOfCongruentPointsMod
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegralNormNatDegreeModEqOne
 
+section
 open Polynomial
 
 namespace GlobalTheory
@@ -30,3 +31,9 @@ theorem classGroup_ringOfIntegers_divisible : GlobalTheory.NeedB.ClDiv := by
   exact GlobalTheory.T.classGroup_nthPower_of_congruent_points_mod k A N hN (GlobalTheory.T.function_field_class_group_powers k A N h) ⟨f, hf0, hdim⟩ c
 
 end GlobalTheory
+end
+
+open GlobalTheory.NeedB Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.classGroup_affineCurve_divisible_charZero : GlobalTheory.NeedB.ClDiv := by
+  atlas_forward_decl GlobalTheory.classGroup_ringOfIntegers_divisible

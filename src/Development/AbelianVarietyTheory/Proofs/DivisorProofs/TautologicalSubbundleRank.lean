@@ -4,16 +4,15 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvMulApplyEqZeroOf
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchubertCellOpenImmersion
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagPointInSomeCell
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEqFlagPtOfIsLocalRing
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsTorsionFreeOfForallExists
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOpenImmersionCellFl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagStalkColumnSpanStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CellFlagPointStalkStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CellFlagStalkSpanStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CellColumnsFrameStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubbundleFrameMembershipStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubbundleFrameExistsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubbundleFrameMembership
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubbundleFrameExists
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuotientBundleFrameExistsStatement
 
+section
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.FlagZ GlobalTheory.FlagZ.Univ
@@ -50,3 +49,11 @@ theorem isVB_F_and_isSubbundle_incl : ∀ (ι : Type) [Fintype ι] (N : ℕ) (τ
     exact ⟨_, e, hw, he⟩
 
 end GlobalTheory.FlagZ.Univ
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.FlagZ GlobalTheory.FlagZ.Univ
+open GlobalTheory.QCoh (freeModule)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tautological_subbundle_rank : ∀ (ι : Type) [Fintype ι] (N : ℕ) (τ : ι) (i : Fin (N + 1)), VB.IsVB (F ι N τ i) i ∧ VB.IsSubbundle (incl ι N τ i) := by
+  atlas_forward_decl GlobalTheory.FlagZ.Univ.isVB_F_and_isSubbundle_incl

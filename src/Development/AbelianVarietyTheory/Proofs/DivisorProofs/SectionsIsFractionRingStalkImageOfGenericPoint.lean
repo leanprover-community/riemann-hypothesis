@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormIdeal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FamIdeal
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory Limits
 
 namespace GlobalTheory.NormSheafDescent
@@ -37,3 +39,12 @@ theorem sections_isDomain_isFractionRing_stalk : ∀ (Y Z : Scheme.{0}) (π : Y 
   exact hl
 
 end GlobalTheory.NormSheafDescent
+end
+
+open AlgebraicGeometry CategoryTheory Limits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sections_isFractionRing_stalk_imageOfGenericPoint : ∀ (Y Z : Scheme.{0}) (π : Y ⟶ Z) [IsIntegral Y] [GlobalTheory.IsNormalScheme Z] (U : Z.Opens), IsAffineOpen U →
+    (U : Set Z) ⊆ Set.range π → ∀ h : GlobalTheory.NormSheafDescent.genPt π ∈ U,
+    IsDomain Γ(Z, U) ∧ (letI := GlobalTheory.NormSheafDescent.algAK π U h
+      IsFractionRing Γ(Z, U) (Z.presheaf.stalk (GlobalTheory.NormSheafDescent.genPt π))) := by
+  atlas_forward_decl GlobalTheory.NormSheafDescent.sections_isDomain_isFractionRing_stalk

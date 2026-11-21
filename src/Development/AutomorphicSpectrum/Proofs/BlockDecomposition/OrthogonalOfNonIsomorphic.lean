@@ -1,19 +1,18 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.InfinitesimalCharacterGlue
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SelfMemSpanK
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareIntegrableSmoothSubmoduleGL
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleDiscreteSpaces
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarRightInvariantStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralEqL2InnerStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RightTranslateIsometryStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LieSkewAdjointBisStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RepresentationUnitaryAverageStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsInvariantProjectionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsFiniteDimCompactStableStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOpenCompactSubgroupLeStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarRightInvariant
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralEqL2Inner
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RightTranslateIsometry
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LieSkewAdjointBis
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RepresentationUnitaryAverage
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsInvariantProjection
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsFiniteDimCompactStable
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOpenCompactSubgroupLe
 
+section
 open scoped Classical InnerProductSpace ComplexConjugate
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.AutomorphicL2Unitary GlobalTheory.SqIntGL
@@ -202,3 +201,14 @@ theorem GlobalTheory.CompanionTheory.FinDisc.integral_eq_zero_of_not_isoV :
   exact hno (isoV_of_ne μ hV hV' hφ hψ hne)
 
 end
+end
+
+open scoped Classical
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB.SpectralAccumulation
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orthogonal_of_non_isomorphic : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) [MeasurableSpace (GA E N)] [BorelSpace (GA E N)]
+  (μ : Measure (GA E N)) [μ.IsHaarMeasure] (F : Set (GA E N)), IsFundamentalDomain (latticeGL E N) F μ →
+  ∀ V V' : Submodule ℂ (Sm E N), IsDiscrete V → IsDiscrete V' → ¬ IsoV V V' →
+    ∀ φ ∈ V, ∀ ψ ∈ V', ∫ x in F, φ.1 x * (starRingEnd ℂ) (ψ.1 x) ∂μ = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FinDisc.integral_eq_zero_of_not_isoV

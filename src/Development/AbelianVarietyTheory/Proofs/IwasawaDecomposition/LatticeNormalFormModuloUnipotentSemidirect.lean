@@ -2,9 +2,16 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsAdmissibleIntegralBasisChangeOne
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LatticeNormalFormUnipotent
 
+section
 namespace GlobalTheory.Proof.latticeNormalForm_modulo_unipotentSemidirect
 
 theorem latticeNormalForm : GlobalTheory.IndefiniteRowSideFullHecke.FlagUnipotentSemidirect.LatticeNormalForm :=
   GlobalTheory.Proof.LatticeNormalFormUnipotent.latticeNormalForm
 
 end GlobalTheory.Proof.latticeNormalForm_modulo_unipotentSemidirect
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.latticeNormalForm_modulo_unipotentSemidirect : GlobalTheory.IndefiniteRowSideFullHecke.FlagUnipotentSemidirect.LatticeNormalForm := by
+  atlas_forward_decl GlobalTheory.Proof.latticeNormalForm_modulo_unipotentSemidirect.latticeNormalForm

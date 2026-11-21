@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Module Submodule
 
 namespace GlobalTheory
@@ -70,3 +72,8 @@ theorem extend_linearIndependent_rows_by_standard_basis
   exact (Matrix.isUnit_iff_isUnit_det _).mp hunit |>.ne_zero
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_standard_basis_extension_det_ne_zero : ∀ {K : Type} [Field K] {J : Type} [Fintype J] {n : ℕ} (v : J → Fin n → K), LinearIndependent K v → ∃ e : J → Fin n, Function.Injective e ∧ (Matrix.of (Function.extend e v (fun i => Pi.single i (1 : K)))).det ≠ 0 := by
+  atlas_forward_decl GlobalTheory.extend_linearIndependent_rows_by_standard_basis

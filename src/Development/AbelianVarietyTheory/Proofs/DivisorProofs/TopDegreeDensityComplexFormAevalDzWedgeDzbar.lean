@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ChernDegre
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TopPowerHermitianFormDensity
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TopDegreeFormCoeffEqTensorSquareTopCoefficient
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -136,3 +137,14 @@ theorem dens_aeval_sym (n : ℕ) (P : MvPolynomial (Fin n × Fin n) ℂ) :
     simp only [coeff_add, mul_add, Finset.sum_add_distrib]
 
 end GlobalTheory.ChernCalc.DensTop
+end
+end
+
+open CategoryTheory AlgebraicGeometry MvPolynomial MeasureTheory Filter Topology
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.L2DbarEstimates (V)
+open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.FlagBundle GlobalTheory.HermFrame GlobalTheory.GoodMetric GlobalTheory.CxForm GlobalTheory.LineForm GlobalTheory.ChernCalc
+open scoped Matrix ContDiff ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.topDegreeDensityComplexForm_aeval_dzWedgeDzbar : ∀ (n : ℕ) (P : MvPolynomial (Fin n × Fin n) ℂ), dens ((aeval sym P : Ev n) : Alt n) = topCoeff P / (Complex.I / 2) ^ n := by
+  atlas_forward_decl GlobalTheory.ChernCalc.DensTop.dens_aeval_sym

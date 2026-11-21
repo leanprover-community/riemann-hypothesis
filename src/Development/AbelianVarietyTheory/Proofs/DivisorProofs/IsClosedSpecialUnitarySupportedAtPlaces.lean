@@ -3,6 +3,9 @@ import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.No
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.PlaneStrongApproxGeneratorImports
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModerateGrowthOfHasCompactSupport
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClosureDivMem
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published
 open scoped TensorProduct Pointwise
 
@@ -33,3 +36,10 @@ theorem isClosed_SUSupp {F E : Type} [Field F] [NumberField F] [Field E] [Number
   exact h1.inter h2
 
 end GlobalTheory.SUSuppClosed
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published
+open scoped TensorProduct Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isClosed_specialUnitarySupportedAtPlaces : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (ε : AF F), IsClosed (SUSupp σ J ε) := by
+  atlas_forward_decl GlobalTheory.SUSuppClosed.isClosed_SUSupp

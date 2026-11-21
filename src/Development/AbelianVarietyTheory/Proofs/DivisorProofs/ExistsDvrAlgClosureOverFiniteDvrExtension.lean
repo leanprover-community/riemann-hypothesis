@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDominatingDvrContainingFinsetStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RamificationLeCardOfSpanStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDominatingDvrContainingFinset
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RamificationLeCardOfSpan
+
+section
 open IsLocalRing
 
 namespace GlobalTheory
@@ -93,3 +95,9 @@ theorem exists_dvr_over_finite_ext : ∀ (V W : Type) [CommRing V] [IsDomain V] 
     exact ⟨ϖ, hϖ, ((IsDiscreteValuationRing.associated_of_irreducible W hπ hπW).map g).trans hk⟩
 
 end GlobalTheory
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_dvr_algClosure_over_finite_dvr_extension : ∀ (V W : Type) [CommRing V] [IsDomain V] [IsLocalRing V] [CommRing W] [IsDomain W] [IsLocalRing W], GlobalTheory.LN.CDvr V → GlobalTheory.LN.CDvr W → ∀ io : V →+* W, io.Finite → Function.Injective io → ∀ (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing V) F] [Algebra (FractionRing W) F], (∀ v, algebraMap (FractionRing W) F (algebraMap W _ (io v)) = algebraMap (FractionRing V) F (algebraMap V _ v)) → ∃ N : ℕ, ∀ (T' : Subring F) (_ : IsDiscreteValuationRing T') (f : V →+* T'), (∀ v, (f v : F) = algebraMap (FractionRing V) F (algebraMap V _ v)) → (∀ π, Irreducible π → Irreducible (f π)) → ∃ (T'' : Subring F) (_ : IsDiscreteValuationRing T'') (g : W →+* T'') (e : ℕ), T' ≤ T'' ∧ (∀ w, (g w : F) = algebraMap (FractionRing W) F (algebraMap W _ w)) ∧ 1 ≤ e ∧ e ≤ N ∧ ∀ π, Irreducible π → ∃ ϖ : T'', Irreducible ϖ ∧ Associated (g π) (ϖ ^ e) := by
+  atlas_forward_decl GlobalTheory.exists_dvr_over_finite_ext

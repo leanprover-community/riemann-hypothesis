@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InstPreorder
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing GlobalTheory.Henselisation
 
 namespace GlobalTheory.Henselisation
@@ -23,3 +26,9 @@ theorem EtNbhd.trans_isLocalHom_injective (R : Type) [CommRing R] [IsLocalRing R
   exact RingHom.FaithfullyFlat.injective hff
 
 end GlobalTheory.Henselisation
+end
+
+open IsLocalRing GlobalTheory.Henselisation
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etaleNbhdLocalRingTransitionMap_isLocalHom_injective : ∀ (R : Type) [CommRing R] [IsLocalRing R] (i j : EtNbhd R) (h : i ≤ j), IsLocalHom (EtNbhd.trans h) ∧ Function.Injective (EtNbhd.trans h) := by
+  atlas_forward_decl GlobalTheory.Henselisation.EtNbhd.trans_isLocalHom_injective

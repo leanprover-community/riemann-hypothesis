@@ -1,12 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
 import Development.AbelianVarietyTheory.Definitions.Foundations.MemRingOfInR
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModQPrin
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModJTau
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmpPropsStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegralCuspExpansionJInvariantStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsCuspExpansionAtInfinityPropertiesStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.JTLevelOneStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmpProps
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegralCuspExpansionJInvariant
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsCuspExpansionAtInfinityProperties
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.JTLevelOne
+
+section
 open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
 open GlobalTheory.QFam GlobalTheory.WpFam GlobalTheory.KZ GlobalTheory.FN
 open ReciprocityTheory.ChartRestriction.L1 (DD jT IsMF)
@@ -32,3 +32,12 @@ theorem j_in_frac : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure �
   · rw [heq]; exact h3
 
 end GlobalTheory.FN
+end
+
+open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
+open GlobalTheory.QFam GlobalTheory.WpFam GlobalTheory.KZ GlobalTheory.FN
+open ReciprocityTheory.ChartRestriction.L1 (DD jT IsMF)
+open ModularForm (E₄ E₆)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_jInvariant_in_modularFunctionFractionField : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (T : Frac Ω ε), ∃ a : GlobalTheory.FN.ring ε.range, (a : ℍ → ℂ) = jT ∧ (∀ γ : SL(2, ℤ), T.sl (ofSL γ) (T.io a) = T.io a) ∧ (T.exp (T.io a)).coeff (-1) = 1 ∧ (∀ r : ℚ, r < -1 → (T.exp (T.io a)).coeff r = 0) ∧ ∀ r : ℚ, ∃ n : ℤ, (T.exp (T.io a)).coeff r = n := by
+  atlas_forward_decl GlobalTheory.FN.j_in_frac

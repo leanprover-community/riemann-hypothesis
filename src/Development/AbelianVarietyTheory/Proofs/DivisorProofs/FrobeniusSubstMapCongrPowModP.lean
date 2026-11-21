@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FormalExpMulFormalExpNeg
+
+section
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat GlobalTheory.FormalCalc
 
 namespace GlobalTheory.FrobCong
@@ -31,3 +33,9 @@ theorem frobenius_congr (p : ℕ) [hpf : Fact p.Prime] (B : Type) [CommRing B] (
   rw [hcomp, ← map_map, ← map_expand, map_frobenius_expand, sub_self, map_zero]
 
 end GlobalTheory.FrobCong
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat GlobalTheory.FormalCalc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_subst_map_congr_pow_mod_p : ∀ (p : ℕ) [Fact p.Prime] (B : Type) [CommRing B] (σB : B →+* B), (∀ b, (p : B) ∣ σB b - b ^ p) → ∀ (d : ℕ) (g : MvPowerSeries (Fin d) B) (α : Fin d →₀ ℕ), (p : B) ∣ coeff α (subst (fun i => (X i : MvPowerSeries (Fin d) B) ^ p) (map σB g) - g ^ p) := by
+  atlas_forward_decl GlobalTheory.FrobCong.frobenius_congr

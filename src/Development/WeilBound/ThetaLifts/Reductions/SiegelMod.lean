@@ -1,6 +1,6 @@
 import Development.WeilBound.ThetaLifts.Reductions.SiegelHaar
-import Formalism.SatakeDualWeyl.Statement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharEqOfIsOpenEmbeddingRestrictStatement
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharEqOfIsOpenEmbeddingRestrict
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharProdCongrStatement
 
 set_option linter.unusedSectionVars false

@@ -1,16 +1,13 @@
 import Mathlib
 import Formalism.LocalToGlobal.CharacterGerms.ContentLargeFromSupplies
 import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
-import Formalism.LocalToGlobal.CharacterGerms.LatticeInclusionFormsInjective
 import Formalism.LocalToGlobal.CharacterGerms.CoeffIterateZero
-import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ConstantCoeffSubstSame
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.BlockOfNormalForm
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.SumEqOfIsHomogeneous
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.BlockValueOnRowsEqStatement
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.RowDataMainTermNormalFormAndLevelOneStatement
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.MainTermImpliesRowHypothesisStatement
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.RowDataMainTermNormalFormAndLevelOne
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.MainTermImpliesRowHypothesis
 
+section
 noncomputable section
 open scoped BigOperators
 open Classical
@@ -176,3 +173,10 @@ theorem oddBlock_supply : BiSupply ∧ RF.BiSupply := by
     exact key
 
 end GlobalTheory
+end
+end
+
+open Formalism.L2.FormalSeriesBounds
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.oddLevelBlock_bound_attained : BiSupply ∧ RF.BiSupply := by
+  atlas_forward_decl GlobalTheory.oddBlock_supply

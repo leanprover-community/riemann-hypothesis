@@ -19,7 +19,6 @@ import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PHeightOfCycle
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PSphereLawUnitary
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PSpherePhase
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PSphereProjectionLaw
-import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PPointwiseLelong
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights

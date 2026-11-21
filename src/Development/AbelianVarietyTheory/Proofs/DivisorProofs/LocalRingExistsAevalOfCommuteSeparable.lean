@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeftMulMatrixTransfer
+import BuildAid.ForwardExisting
+
+section
 open Polynomial Matrix
 
 namespace GlobalTheory.LocalCommutant
@@ -63,3 +66,9 @@ example : ∀ (R : Type) [CommRing R] [IsLocalRing R] (n : ℕ) (Y T : Matrix (F
     Y.charpoly.Separable → T * Y = Y * T → ∃ p : R[X], T = aeval Y p := exists_aeval_of_comm
 
 end GlobalTheory.LocalCommutant
+end
+
+open Polynomial Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localRing_exists_aeval_of_commute_separable : ∀ (R : Type) [CommRing R] [IsLocalRing R] (n : ℕ) (Y T : Matrix (Fin n) (Fin n) R), Y.charpoly.Separable → T * Y = Y * T → ∃ p : R[X], T = aeval Y p := by
+  atlas_forward_decl GlobalTheory.LocalCommutant.exists_aeval_of_comm

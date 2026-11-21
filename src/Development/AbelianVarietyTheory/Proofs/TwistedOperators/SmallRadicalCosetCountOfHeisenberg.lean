@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl
@@ -226,3 +228,10 @@ theorem count_of_heis : Heis → LatIndex → TraceIndex → Count := by
   exact (Nat.card_eq_of_bijective Φ hΦ).symm
 
 end GlobalTheory.InertZeta
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smallRadicalCosetCount_of_heisenberg : Heis → LatIndex → TraceIndex → Count := by
+  atlas_forward_decl GlobalTheory.InertZeta.count_of_heis

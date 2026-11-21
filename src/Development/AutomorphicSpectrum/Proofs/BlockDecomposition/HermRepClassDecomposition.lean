@@ -7,7 +7,8 @@ import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CoheightEqOneOf
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLineBundleSectionsGenerateIdealSheaf
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClosedSubschemeModLProjective
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DimOfIsArithVar
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PointIdealMultiprojectivePrime
+
+section
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory AlgebraicGeometry Limits TopologicalSpace MvPolynomial
@@ -193,3 +194,18 @@ theorem GlobalTheory.CompanionTheory.MPDict.ClsRep.cls_eq_of_isHermRep : ∀ (m 
   obtain ⟨L, hL, fL, eL⟩ := GlobalTheory.CompanionTheory.MPDict.ClsRep.exists_hasFrame_cls (m := m) (n := n) A.a
   exact ((cls_eq_iff M.isLB hL).2 (GlobalTheory.CompanionTheory.MPDict.ClsRep.lbIso_of_hasFrame
     (GlobalTheory.CompanionTheory.MPDict.ClsRep.hasFrame_of_isHermRep h) fL)).trans eL
+end
+end
+
+set_option autoImplicit false
+noncomputable section
+open CategoryTheory AlgebraicGeometry Limits TopologicalSpace MvPolynomial
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.ProjSpace GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.ArInt
+open GroundTheory.Arith.SchemeCoh GroundTheory.Arith.SchemeCoh.ProjSpace
+open ReciprocityTheory.ChartRestriction.G.Geo (MRing IsMultiHomog IsRelevant IsMultiProjPrime divSupp multAt geoNum charOf)
+open GlobalTheory.CompanionTheory.MPDict GlobalTheory.CompanionTheory.MixZ GlobalTheory GlobalTheory.ProjBlowup
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermRep_class_decomposition : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ) (M : HermLB (mpStr ℤ m n)) (A : Geo.HermLine (Bk n)), IsHermRep M A → cls M.B M.isLB = ∑ k, A.a k • cls (pullO (prB n k) 1) (isLB_pullO _ 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MPDict.ClsRep.cls_eq_of_isHermRep

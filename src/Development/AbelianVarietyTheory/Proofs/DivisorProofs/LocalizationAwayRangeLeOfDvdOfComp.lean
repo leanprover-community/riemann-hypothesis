@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem away_range_le_of_dvd (R : Type) [CommRing R] (P : Type) [CommRing P] (g : R →+* P) (c c' : R)
@@ -22,3 +24,8 @@ theorem away_range_le_of_dvd' : ∀ (R : Type) [CommRing R] (P : Type) [CommRing
   fun R _ P _ g c c' h κ κ' hκ hκ' => away_range_le_of_dvd R P g c c' h κ κ' hκ hκ'
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localization_away_range_le_of_dvd_of_comp : ∀ (R : Type) [CommRing R] (P : Type) [CommRing P] (g : R →+* P) (c c' : R), c ∣ c' → ∀ (κ : Localization.Away c →+* P) (κ' : Localization.Away c' →+* P), κ.comp (algebraMap R (Localization.Away c)) = g → κ'.comp (algebraMap R (Localization.Away c')) = g → κ.range ≤ κ'.range := by
+  atlas_forward_decl GlobalTheory.away_range_le_of_dvd'

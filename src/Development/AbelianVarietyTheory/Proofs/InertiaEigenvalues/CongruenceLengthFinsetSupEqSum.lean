@@ -2,6 +2,9 @@ import Mathlib
 import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
 import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverAlg
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
 
 namespace GlobalTheory.CongruenceLengthSum
@@ -145,3 +148,9 @@ theorem GlobalTheory.congruence_length_finset_sup : ∀ (O V ι : Type) [CommRin
       hdj.mono (inf_le_left.trans le_sup_left) (inf_le_left.trans le_sup_left)
     rw [length_quot_sup _ _ _ _ hS₁ hS₂ hT, ih hSI (fun i hi => hdis i (Finset.mem_insert_of_mem hi))
       (fun i hi => hL i (Finset.mem_insert_of_mem hi))]
+end
+
+open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.congruenceLength_finset_sup_eq_sum : ∀ (O V ι : Type) [CommRing O] [AddCommGroup V] [Module O V] (F : Finset ι) (L G B : ι → Submodule O V), F.SupIndep (fun i => G i ⊔ B i) → (∀ i ∈ F, Disjoint (G i) (B i)) → (∀ i ∈ F, L i ≤ G i ⊔ B i) → Module.length O (↥(F.sup G ⊓ (F.sup L ⊔ F.sup B)) ⧸ (F.sup L ⊓ F.sup G).comap (F.sup G ⊓ (F.sup L ⊔ F.sup B)).subtype) = ∑ i ∈ F, Module.length O (↥(G i ⊓ (L i ⊔ B i)) ⧸ (L i ⊓ G i).comap (G i ⊓ (L i ⊔ B i)).subtype) := by
+  atlas_forward_decl GlobalTheory.congruence_length_finset_sup

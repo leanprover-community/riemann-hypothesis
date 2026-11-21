@@ -1,6 +1,5 @@
 import Mathlib
 import Development.DiscreteGroups.GlobalIrreducibility.DzGalTR
-import Development.DiscreteGroups.GlobalIrreducibility.DzGalRes
 import Development.DiscreteGroups.GlobalIrreducibility.DzGalFin
 import Development.DiscreteGroups.GlobalIrreducibility.DzIneEq
 import Development.DiscreteGroups.GlobalIrreducibility.ExistsIneOfVEqOne

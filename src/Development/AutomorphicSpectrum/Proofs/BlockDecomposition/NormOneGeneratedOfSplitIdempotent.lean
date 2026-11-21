@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousSingleV
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published Sa2 GlobalTheory.CompanionTheory.SaGen
@@ -198,3 +199,11 @@ theorem GlobalTheory.CompanionTheory.SaGen.normOneGen_of_split : ∀ {F E : Type
   rw [Matrix.range_cons_cons_empty, Submodule.mem_span_pair] at hr
   obtain ⟨a, b, hab⟩ := hr
   exact ⟨a, b, by rw [← hab, Algebra.smul_def, Algebra.smul_def]⟩
+end
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published Sa2 GlobalTheory.CompanionTheory.SaGen
+open scoped TensorProduct Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_one_generated_of_split_idempotent : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (K : Type) [Field K] [Algebra F K] (e : K ⊗[F] E), e * e = e → e + sigR K σ e = 1 → e * sigR K σ e = 0 → NormOneGen (sigR K σ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SaGen.normOneGen_of_split

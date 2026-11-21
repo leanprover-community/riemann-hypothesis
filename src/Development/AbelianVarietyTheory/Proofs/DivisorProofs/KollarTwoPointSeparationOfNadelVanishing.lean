@@ -1,10 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRationalBudgetsTwoPointInductionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SeparateTwoPointsNefBigStatement
-import Development.AbelianVarietyTheory.Definitions.Divisors.CentreAtOfIsAt
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsAlgClosedBaseChange
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PointSeparationPair
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRationalBudgetsTwoPointInduction
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SeparateTwoPointsNefBig
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -38,3 +36,12 @@ theorem pointSeparationPair_of_vanishing :
     exact hh e (Finset.mem_Icc.2 ⟨he, hle⟩) _ hZ'
 
 end GlobalTheory
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open GlobalTheory GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.PairStep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kollarTwoPointSeparation_of_nadelVanishing : GlobalTheory.Published.Principalisation → GlobalTheory.Published.NadelVanishingPair → GlobalTheory.Published.NefNumerics → GlobalTheory.Published.PointSeparationPair := by
+  atlas_forward_decl GlobalTheory.pointSeparationPair_of_vanishing

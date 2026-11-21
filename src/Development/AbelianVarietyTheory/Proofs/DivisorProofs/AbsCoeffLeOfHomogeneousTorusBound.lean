@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsRatioOfWeight
+
+section
 open Filter Topology MvPolynomial GlobalTheory.HSAmp
 
 namespace GlobalTheory.HSAmp.CoefTorus
@@ -114,3 +116,9 @@ theorem coeff_le_of_torus_bound : ∀ (D q : ℕ) (T : MvPolynomial (Fin (D + 1)
   simpa [Complex.norm_intCast] using this
 
 end GlobalTheory.HSAmp.CoefTorus
+end
+
+open Filter Topology MvPolynomial GlobalTheory.HSAmp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.abs_coeff_le_of_homogeneous_torus_bound : ∀ (D q : ℕ) (T : MvPolynomial (Fin (D + 1)) ℤ) (M : ℝ), T.IsHomogeneous q → (∀ z : Fin (D + 1) → ℂ, z 0 = 1 → (∀ l, ‖z l‖ = 1) → ‖aeval z T‖ ≤ M) → ∀ α, |((coeff α T : ℤ) : ℝ)| ≤ M := by
+  atlas_forward_decl GlobalTheory.HSAmp.CoefTorus.coeff_le_of_torus_bound

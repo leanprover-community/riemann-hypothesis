@@ -1,11 +1,6 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CentralFrameSplitPlaceNontrivialStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ThetaDataExists
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NormChoiceOfExtension
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NGalTied
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RingSpecNormalisedCharacterEq
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.BlockTriAt
-import Development.AutomorphicArithmetic.Foundations.LocalLanglands.IsRecTOfIsRec
 
 set_option synthInstance.maxHeartbeats 200000
 
@@ -21,5 +16,5 @@ theorem _root_.GlobalTheory.T.central_frame_split_place_nontrivial_alt : ∀ hL 
       (b : GL (Fin (w.st Z).toD7.R.nV) (Formalism.L2.DIV.kP s'.w)), s'.w ∈ t.r.z.R.Pg → GlobalTheory.CenFrame.IsResidue s' φ →
         GlobalTheory.CenFrame.FrameRed (GlobalTheory.FrameBlockDiagonal.rankV (w.st Z).toD7 k) (ad.PV k) (t.r.z.R.βV k) s' φ b →
         b ∈ Formalism.L2.DIV.blockTri (Formalism.L2.DIV.blk2 (w.st Z).toD7.R.r) := by
-  first | exact @_root_.GlobalTheory.FrameBlockTriangular.blockTri_at_alt | exact _root_.GlobalTheory.FrameBlockTriangular.blockTri_at_alt | (intros; apply _root_.GlobalTheory.FrameBlockTriangular.blockTri_at_alt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.FrameBlockTriangular.blockTri_at_alt
 end

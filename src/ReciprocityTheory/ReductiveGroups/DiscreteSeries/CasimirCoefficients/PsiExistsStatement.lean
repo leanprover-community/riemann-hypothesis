@@ -1,4 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedEmbeddingToM
 
 noncomputable section

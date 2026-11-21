@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
+import BuildAid.ForwardExisting
+
+section
 open DividedPowers GlobalTheory.Cris GlobalTheory.PDA
 
 namespace GlobalTheory.DerFil
@@ -82,3 +85,9 @@ theorem GlobalTheory.DerFil.deriv_fil_succ_le : ∀ (R B M : Type) [CommRing R] 
     rw [smul_eq_mul, Derivation.leibniz]
     exact add_mem (Submodule.smul_mem _ _ ih)
       (Submodule.mem_sup_left (Submodule.smul_mem_smul (fil_succ_le δ N hx) Submodule.mem_top))
+end
+
+open DividedPowers GlobalTheory.Cris GlobalTheory.PDA
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.derivation_dividedPowerFiltration_succ_le : ∀ (R B M : Type) [CommRing R] [CommRing B] [Algebra R B] [AddCommGroup M] [Module B M] [Module R M] [IsScalarTower R B M] (J : Ideal B) (δ : DividedPowers J) (D : Derivation R B M) (N₀ : Submodule B M), (∀ n, ∀ a ∈ J, D (δ.dpow (n + 1) a) - δ.dpow n a • D a ∈ N₀) → ∀ N, ∀ x ∈ fil δ (N + 1), D x ∈ fil δ N • (⊤ : Submodule B M) ⊔ N₀ := by
+  atlas_forward_decl GlobalTheory.DerFil.deriv_fil_succ_le

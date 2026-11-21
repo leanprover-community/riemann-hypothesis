@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergman
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChartCover
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.UnifBergmanLocal
 set_option maxSynthPendingDepth 1

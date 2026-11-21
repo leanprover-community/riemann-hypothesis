@@ -8,6 +8,8 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoordinatesRest
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatOfEtalePoly
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartIsGood
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartDividedPowersGradedConstant
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
@@ -75,3 +77,12 @@ theorem witt_level_one_filtration_vanish : ∀ {l : ℕ} [Fact l.Prime] {k : Typ
   exact van_on (Wc.pd l k 1) (Im_one_eq_bot l k) l hp hn q _ c' d (hd α) j
 
 end GlobalTheory.CompanionTheory.WittLevel.Van
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.witt_level_one_vanish_above_dim : ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] [PerfectRing k l] {O : Type} [CommRing O] {X : Scheme.{0}}
+    (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k) (U : Cov q) (d : ℕ), (∀ α, U.d α ≤ d) →
+    ∀ j, Subsingleton (CH.H (sq (sFil (St (γ := Wc.pd l k 1) (p := l) (q := q) (κ := (Wc.res l k 1).comp ρ) ⊤ (Set.range U.U)) ((d : ℤ) + 1)) (IdF.bot _)) j) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WittLevel.Van.witt_level_one_filtration_vanish

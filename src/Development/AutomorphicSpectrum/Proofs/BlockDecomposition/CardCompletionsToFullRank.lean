@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JpUnif
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.CompanionTheory.Jp
 
 namespace GlobalTheory.CompanionTheory.Jp.CntCols
@@ -104,3 +107,11 @@ theorem card_completions : ∀ (k : Type) [Field k] [Fintype k] (n ρ : ℕ) (D 
   simp [Nat.card_fun, pow_mul]
 
 end GlobalTheory.CompanionTheory.Jp.CntCols
+end
+
+open Matrix GlobalTheory.CompanionTheory.Jp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_completions_to_full_rank : ∀ (k : Type) [Field k] [Fintype k] (n ρ : ℕ) (D : Matrix (Fin n) (Fin n) k), D.rank = ρ →
+    Nat.card {C : Matrix (Fin n) (Fin n) k // (Matrix.fromCols C D).rank = n} =
+      Fintype.card k ^ (n * ρ) * ∏ j ∈ Finset.range (n - ρ), (Fintype.card k ^ n - Fintype.card k ^ j) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Jp.CntCols.card_completions

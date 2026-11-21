@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Polynomial IntermediateField
 
 namespace GlobalTheory
@@ -125,3 +127,8 @@ theorem finiteDimensional_fixedField_map_of_finiteIndex : ∀ {F E : Type} [Fiel
     (IntermediateField.inclusion_injective hLx)
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_fixedField_map_of_finiteIndex' : ∀ {F E : Type} [Field F] [Field E] [Algebra F E] (G : Type) [Group G] (act : G →* (E ≃ₐ[F] E)) (N : Subgroup G), N.FiniteIndex → (∀ x : E, (∀ g, act g x = x) → x ∈ (⊥ : IntermediateField F E)) → FiniteDimensional F (IntermediateField.fixedField (N.map act)) := by
+  atlas_forward_decl GlobalTheory.finiteDimensional_fixedField_map_of_finiteIndex

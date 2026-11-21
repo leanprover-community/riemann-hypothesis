@@ -1,16 +1,15 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.OrderedConst
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EigenvectorEqZeroOfMemTwistedSpanChainStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TwistedJacquetKernelMemTwistedSpanFiniteStageStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrincipalSeriesCongruenceSubgroupSmoothCharacterStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsStripClearingUpperRightPrincipalSeriesCongStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ConjBlockLowerMemPrincipalSeriesCongruenceStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrincipalSeriesTypeNotIntertwineOutsideStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactSubgroupSmoothCharacterDatumMonotoneStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrincipalSeriesUnipotentStripPropertiesStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StripsExhaustParabolicUnipotentRadicalStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrincipalSeriesTypeCharacterMulStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EigenvectorEqZeroOfMemTwistedSpanChain
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TwistedJacquetKernelMemTwistedSpanFiniteStage
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrincipalSeriesCongruenceSubgroupSmoothCharacter
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsStripClearingUpperRightPrincipalSeriesCong
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ConjBlockLowerMemPrincipalSeriesCongruence
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrincipalSeriesTypeNotIntertwineOutside
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactSubgroupSmoothCharacterDatumMonotone
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrincipalSeriesUnipotentStripProperties
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StripsExhaustParabolicUnipotentRadical
 
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.PsType
 
 namespace GlobalTheory.PsType
@@ -60,3 +59,9 @@ theorem eig_jacquet_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologica
     rw [h2, GlobalTheory.T.principalSeriesTypeCharacter_mul k (r + t) ψ hord _ hyinv _ hj, hθ1 0 _ ((hSD 0).inv y hy), one_mul]
 
 end GlobalTheory.PsType
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.PsType
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacquetModule_maximalParabolic_principalSeriesTypeEigen : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (r t : ℕ) (ψ : Fin (r + t) → kˣ →* ℂˣ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin (r + t)) k) V), IsSmooth π → (∀ i, IsSmoothChar (ψ i)) → Ordered ψ → Cut ψ r → ∀ v ∈ twKer π (unipRad k (two (stdSum (rfl : r + t = r + t)))) 1, IsEig π (grp ψ) (theta ψ) v → v = 0 := by
+  atlas_forward_decl GlobalTheory.PsType.eig_jacquet_zero

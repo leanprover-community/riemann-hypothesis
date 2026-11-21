@@ -3,7 +3,6 @@ import Formalism.LocalRingCardinality.HostCls
 import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.OffSmall
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.ShapeDegreeParity
-import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.TeichmullerFactorisation
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TauPlBijective
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NatCastMemPrimeOf
 

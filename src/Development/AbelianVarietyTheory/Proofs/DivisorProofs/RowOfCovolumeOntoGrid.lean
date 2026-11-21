@@ -10,7 +10,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitaryâ
 import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.SingleIndexPlacesAreTwisted
 import Development.AbelianVarietyTheory.Definitions.Divisors.SlopeTestRemainingChoicesAlt
-import Development.AbelianVarietyTheory.Definitions.Divisors.RowSideOfCompatibleThetaPair
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventualL3OfCovolumeTied
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventualFunctionGridLarge
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventualL6OfLowerBoundStatement
@@ -19,7 +18,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventualSmallOfPart
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndefiniteScaleThetaNonvanishingStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventualRowsOfClassSumsStatement
 import Formalism.LocalToGlobal.Divisibility.TupUsed
-import Formalism.SharpRestriction.GlobalSchurBounds.MainSup
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem.Top GlobalTheory.Fc
 
 namespace GlobalTheory.Fc.FourBoundsAtBundles

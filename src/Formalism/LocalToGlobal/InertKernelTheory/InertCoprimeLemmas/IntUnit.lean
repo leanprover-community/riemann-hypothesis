@@ -1,12 +1,10 @@
 import Formalism.LocalToGlobal.InertKernelTheory.DefsMMInv
 import Formalism.LocalToGlobal.InertKernelTheory.DefsBasis
-import Formalism.LocalToGlobal.InertKernelTheory.StatementCc
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.CurveIdealPrimeReduction
 import Formalism.LocalToGlobal.InertKernelTheory.StatementModel
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntBasis
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FormalExponentialAgree
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FirstGeometricConditionOfProperties
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupCommon.ExpLog
 
 noncomputable section
 

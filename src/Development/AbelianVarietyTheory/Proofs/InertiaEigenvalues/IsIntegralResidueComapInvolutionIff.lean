@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma Polynomial
 
 namespace GlobalTheory.UnitLemma.SwapInt
@@ -83,3 +85,9 @@ theorem GlobalTheory.UnitLemma.InvAlg.isIntegral_mk_comap_sigma_iff :
     have e : σr (σr x) = x := B.σ_σ x
     rw [e2, e] at this
     exact this
+end
+
+open GlobalTheory.UnitLemma Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIntegral_residue_comap_involution_iff : ∀ (K : UQ) (B : InvAlg K) (m : MaximalSpectrum B.A) (x : B.A), IsIntegral K.O (Ideal.Quotient.mk (m.asIdeal.comap B.σ) x) ↔ IsIntegral K.O (Ideal.Quotient.mk m.asIdeal (B.σ x)) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.InvAlg.isIntegral_mk_comap_sigma_iff

@@ -1,10 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdIPowLe
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeIntegral
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrismHomMapIdealEqStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrismHomMapIdealEq
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeltaAddSubMemPow
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsStablePrismHomComp
 
+section
 open GlobalTheory.Prism GlobalTheory.BSP CategoryTheory
 
 namespace GlobalTheory.BSP.PoUniv
@@ -234,3 +235,10 @@ theorem _root_.GlobalTheory.BSP.PoUniv.isPO_univ (l : ℕ) [Fact l.Prime] (R : T
   simpa only [_root_.GlobalTheory.BSP.qmap_mk] using hx
 
 end GlobalTheory.BSP.PoUniv
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prismPushoutModAdicPow_universal : ∀ (l : ℕ) [Fact l.Prime] (R : Type) [CommRing R] (B C B' C' : Obj l R) (h : Hom B C) (k : Hom B B') (k' : Hom C C') (h' : Hom B' C'), IsPO h k k' h' → ∀ (Q : Obj l R) (a : Hom C Q) (b : Hom B' Q), a.comp h = b.comp k → ∃! c : Hom C' Q, c.comp k' = a ∧ c.comp h' = b := by
+  atlas_forward_decl GlobalTheory.BSP.PoUniv.isPO_univ

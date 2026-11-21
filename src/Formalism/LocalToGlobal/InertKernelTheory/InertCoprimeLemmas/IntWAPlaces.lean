@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnimodGenus
-import Formalism.PeriodIntegrals.UnitaryApproxFin
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UnitaryApproxFin
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntWeak
 

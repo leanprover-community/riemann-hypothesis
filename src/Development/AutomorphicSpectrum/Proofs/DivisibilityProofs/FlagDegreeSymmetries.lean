@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 import Development.WeilBound.CoreStatements.FlagImmersions.DegFlSymmetryInvariance
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial Filter Topology GlobalTheory.CompanionTheory.Ar.Top
 
 namespace GlobalTheory.CompanionTheory.Ar.Top
@@ -9,3 +11,9 @@ theorem flag_integral_permutations : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq �
   @RootFieldNumerics.degFl_symmetry_invariance
 
 end GlobalTheory.CompanionTheory.Ar.Top
+end
+
+open MvPolynomial Filter Topology GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_degree_symmetries : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ), (∀ (τ : Ψ) (a b : Fin N) (F : RP Ψ N), a ≠ b → degFl (rename (fun x : Ψ × Fin N => if x.1 = τ then (x.1, Equiv.swap a b x.2) else x) F) = -degFl F) ∧ ∀ (σ : Equiv.Perm Ψ) (F : RP Ψ N), degFl (rename (fun x : Ψ × Fin N => (σ x.1, x.2)) F) = degFl F ∧ ∀ (j : ℕ) (τ : Ψ), Sh j (σ τ) (rename (fun x : Ψ × Fin N => (σ x.1, x.2)) F) = Sh j τ F ∧ Tot (σ τ) (rename (fun x : Ψ × Fin N => (σ x.1, x.2)) F) = Tot τ F := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.flag_integral_permutations

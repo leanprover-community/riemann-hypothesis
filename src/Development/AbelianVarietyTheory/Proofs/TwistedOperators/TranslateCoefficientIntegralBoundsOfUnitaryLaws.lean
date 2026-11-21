@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.OneMemNbh
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DiscreteBranchingUpq
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Ell
@@ -286,3 +288,12 @@ theorem intBounds_of (hE : EmbLaws) (hBo : Boost) (hP : PowInt) (hD : DecPow) : 
 theorem intBounds_main : EmbLaws → Boost → PowInt → DecPow → IntBounds := intBounds_of
 
 end GlobalTheory.SepReal
+end
+end
+
+open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Ell
+open scoped InnerProductSpace
+open GlobalTheory.SepReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.translateCoefficientIntegralBounds_of_unitary_laws : EmbLaws → Boost → PowInt → DecPow → IntBounds := by
+  atlas_forward_decl GlobalTheory.SepReal.intBounds_main

@@ -1,6 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.RangeShape
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndefiniteUnitaryLieAlgebraMemIffEntriesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndefiniteUnitaryLieAlgebraMemIffEntries
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousExpGAndToMInv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarRinvUJ
 

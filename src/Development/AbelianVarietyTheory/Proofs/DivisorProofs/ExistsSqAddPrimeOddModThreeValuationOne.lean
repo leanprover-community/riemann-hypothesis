@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DatumOfIsIntegersLattice
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDiscreteValuationRingValuationSubringAtPrime
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.AddMonoidHomEqZeroOfEventually
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationNatCastEqOneOfCoprimeStatement
+
+section
 open NumberField IsDedekindDomain WeierstrassCurve GlobalTheory GlobalTheory.Published GlobalTheory.CMModel Formalism.L2.Th1.F
 open scoped IntermediateField BigOperators Topology
 
@@ -52,3 +52,10 @@ theorem exists_sq_add_prime_odd_mod_three_unit :
     · exact ⟨6, 6 ^ 2 + p, rfl, by rw [Nat.odd_iff]; omega, by omega, by exact_mod_cast hv⟩
 
 end GlobalTheory.CMModel
+end
+
+open NumberField IsDedekindDomain WeierstrassCurve GlobalTheory GlobalTheory.Published GlobalTheory.CMModel Formalism.L2.Th1.F
+open scoped IntermediateField BigOperators Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_sq_add_prime_odd_mod_three_valuation_one : ∀ (p : ℕ) (V : ValuationSubring ℂ), p.Prime → 3 < p → ∃ a N : ℕ, N = a ^ 2 + p ∧ Odd N ∧ N % 3 = 2 ∧ V.valuation (N : ℂ) = 1 := by
+  atlas_forward_decl GlobalTheory.CMModel.exists_sq_add_prime_odd_mod_three_unit

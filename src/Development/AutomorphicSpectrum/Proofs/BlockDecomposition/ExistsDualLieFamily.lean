@@ -1,9 +1,9 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.HighestVectorsRegularLine
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WtRInjective
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryEuclideanModelStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCompactLieActionStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryEuclideanModel
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCompactLieAction
 
+section
 noncomputable section
 
 open Matrix Finset
@@ -40,3 +40,12 @@ theorem dualFam_exists : ∀ {n : ℕ} (E : KMod n), ∃ G : Fin n → Fin n →
       LinearEquiv.coe_coe]
 
 end GlobalTheory.CompanionTheory.RealCountG
+end
+end
+
+open Matrix Finset
+open scoped InnerProductSpace
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.RealCount GlobalTheory.CompanionTheory.RealCountG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_dual_lie_family : ∀ {n : ℕ} (E : KMod n), ∃ G : Fin n → Fin n → Module.End ℂ (E.V →L[ℂ] ℂ), IsDualFam E G := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RealCountG.dualFam_exists

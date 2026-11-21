@@ -1,4 +1,3 @@
-import Formalism.FlagUnipotentLattices.DetIndexProductHyperbolicInequality
 import Formalism.FlagUnipotentLattices.DetIndexProductPlacesInequalitySq
 import Formalism.HyperbolicPlaceProducts.SecondLevelArithmeticNorm
 import Formalism.HyperbolicPlaceProducts.ArithmeticCountRevised

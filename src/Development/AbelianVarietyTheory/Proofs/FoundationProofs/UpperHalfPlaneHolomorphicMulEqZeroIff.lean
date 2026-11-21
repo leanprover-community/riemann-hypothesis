@@ -1,7 +1,9 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
 import Development.AbelianVarietyTheory.Definitions.Foundations.MemRingOfInR
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModQPrin
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModJTau
+import BuildAid.ForwardExisting
+
+section
 open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
 open GlobalTheory.QFam GlobalTheory.WpFam GlobalTheory.KZ GlobalTheory.FN
 open ReciprocityTheory.ChartRestriction.L1 (DD jT IsMF)
@@ -26,3 +28,12 @@ theorem fn_mul_eq_zero_dom : ∀ f g : ℍ → ℂ, MDifferentiable 𝓘(ℂ) �
     simpa [Function.comp_apply, UpperHalfPlane.ofComplex_apply] using this
 
 end GlobalTheory
+end
+
+open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
+open GlobalTheory.QFam GlobalTheory.WpFam GlobalTheory.KZ GlobalTheory.FN
+open ReciprocityTheory.ChartRestriction.L1 (DD jT IsMF)
+open ModularForm (E₄ E₆)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.upperHalfPlane_holomorphic_mul_eq_zero_iff : ∀ f g : ℍ → ℂ, MDifferentiable 𝓘(ℂ) 𝓘(ℂ) f → MDifferentiable 𝓘(ℂ) 𝓘(ℂ) g → (∀ τ, f τ * g τ = 0) → f = 0 ∨ g = 0 := by
+  atlas_forward_decl GlobalTheory.fn_mul_eq_zero_dom

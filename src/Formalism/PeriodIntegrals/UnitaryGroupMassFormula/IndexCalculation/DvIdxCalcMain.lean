@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.IdxCalc
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IndexCalculation.SmulMemSpanSmul
 
 noncomputable section

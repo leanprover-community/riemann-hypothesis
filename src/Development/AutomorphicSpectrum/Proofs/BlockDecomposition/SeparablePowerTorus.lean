@@ -1,14 +1,10 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviMatchingWords.SplitPlaceGeneratorPowers
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingSecondBlockOf
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingTransferOf
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteUnitaryMultiplication
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DoubleCosetMultiplication
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.VLtOneOfOrdLEqOne
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeightExponentStrictlyAntitone
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CharpolyConjDiagonal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdealWeight
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Polynomial Matrix
@@ -90,3 +86,8 @@ theorem sepPowT : SepPowT := by
 end GlobalTheory.CompanionTheory.SepPow
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.separable_power_torus : PositivityTheory.Rg.BcB.F.MLM.SepPowT := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SepPow.sepPowT

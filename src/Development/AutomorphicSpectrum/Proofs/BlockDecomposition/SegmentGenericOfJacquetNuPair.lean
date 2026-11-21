@@ -6,7 +6,9 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Irreducibl
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LanglandsQuotientOfSpehTypeProductIsL
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConcatApplyEquiv
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL Zc Zc.Seg GlobalTheory.CompanionTheory.SegCoarse
@@ -135,3 +137,9 @@ theorem lSegGeneric_of_nuPair (k : Type) [Field k] [ValuativeRel k] [Topological
 end GlobalTheory.CompanionTheory.SegGenNu
 
 end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.segment_generic_of_jacquet_nu_pair : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.Published.IrreducibleAdmissibleGL → Zc.LSegJacquet k → GlobalTheory.BZSeg.NuPair k → GlobalTheory.BZSeg.LSegGeneric k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SegGenNu.lSegGeneric_of_nuPair

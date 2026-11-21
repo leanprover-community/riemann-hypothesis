@@ -4,6 +4,8 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.Wt
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatFrame
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ConstantCoeffSubst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetFactorDepthInChartIndependentClosedField
+
+section
 open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
 
 namespace GlobalTheory.DetDepthBasis
@@ -223,3 +225,9 @@ theorem main : ∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTo
 end
 
 end GlobalTheory.DetDepthBasis
+end
+
+open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.formalGroupDeterminantPowDepth_basis_change_invariant : ∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (i d c : ℕ) (G : LogFGL v d) (u : Fin i → Fin d → C) (g : Matrix (Fin i) (Fin i) C), v g.det = 0 → detDepth G (fun a => ∑ a', g a a' • u a') c = detDepth G u c := by
+  atlas_forward_decl GlobalTheory.DetDepthBasis.main

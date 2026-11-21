@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePProjFB
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Main
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.BoundedSums
 

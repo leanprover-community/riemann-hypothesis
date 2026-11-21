@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DifferentiableSqTh
+import BuildAid.ForwardExisting
+
+section
 open scoped BigOperators
 
 noncomputable section
@@ -77,3 +80,12 @@ theorem GlobalTheory.RootInt.intSer_root : ∀ (p : ℕ) [Fact p.Prime] (N : ℕ
   refine GlobalTheory.RootInt.intSer_of_pow ?_ hs0 hsN
   rw [← map_natCast (algebraMap ℚ_[p] ℂ_[p]), norm_algebraMap', Padic.norm_natCast_eq_one_iff]
   exact hcop.symm
+end
+end
+
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.powerSeriesCoeffNormLeOne_root_coprime_padic : ∀ (p : ℕ) [Fact p.Prime] (N : ℕ), 0 < N → Nat.Coprime N p →
+    ∀ s : PowerSeries ℂ_[p], PowerSeries.constantCoeff s = 1 →
+      GlobalTheory.EvenTheta.IntSer (s ^ N) → GlobalTheory.EvenTheta.IntSer s := by
+  atlas_forward_decl GlobalTheory.RootInt.intSer_root

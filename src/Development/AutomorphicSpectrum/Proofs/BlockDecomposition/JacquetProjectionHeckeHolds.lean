@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.IsJointGenEig
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantCosetRepsUnipotentStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorCosetFormulaStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantCosetRepsUnipotent
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorCosetFormula
+
+section
 open GlobalTheory.PRep PositivityTheory.SphericalProduct
 
 namespace GlobalTheory.CompanionTheory.Cass
@@ -29,3 +30,9 @@ theorem jacquet_projection_hecke_intertwines : ∀ (G : Type) [Group G] [Topolog
   rfl
 
 end GlobalTheory.CompanionTheory.Cass
+end
+
+open GlobalTheory.PRep PositivityTheory.SphericalProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacquet_projection_hecke_holds : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G], PositivityTheory.SphericalProduct.A2 G := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Cass.jacquet_projection_hecke_intertwines

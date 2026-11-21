@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.InertZeta
 
 noncomputable section
@@ -215,3 +218,10 @@ theorem pointwise_of_steps (hA : AddVec) (hD : Dual) (hS : SpanEq) (hH : Heis) :
 example : AddVec → Dual → SpanEq → Heis → Pointwise := pointwise_of_steps
 
 end GlobalTheory.InertZeta
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.leviRadicalProductLength_of_lattice_steps : AddVec → Dual → SpanEq → Heis → Pointwise := by
+  atlas_forward_decl GlobalTheory.InertZeta.pointwise_of_steps

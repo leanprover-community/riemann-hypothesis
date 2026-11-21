@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.AutLzFinite
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeAutomorphismFiniteness.AutLzFinMain
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar

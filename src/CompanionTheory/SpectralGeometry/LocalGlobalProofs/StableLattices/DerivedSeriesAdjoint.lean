@@ -1,9 +1,9 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.QuantumDeterminants CompanionTheory.D.Upq.Sm CompanionTheory.Bmu
 
 namespace GlobalTheory.CompanionTheory.BmuDsAd
@@ -69,3 +69,9 @@ theorem dsAd : DsAd := by
     rw [← hσ.rep.apply_mul (ex_mem_of_lie hX t) hy, ex_mul_eq hyu]
 
 end GlobalTheory.CompanionTheory.BmuDsAd
+end
+
+open CompanionTheory.Bmu
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.DerivedSeriesAdjoint : DsAd := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BmuDsAd.dsAd

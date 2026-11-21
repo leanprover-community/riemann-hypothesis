@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImV
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgAlg GlobalTheory.SgGlob GlobalTheory.SnMass GlobalTheory.SnMass.VolN GlobalTheory.SnMass.SkewVol
 open scoped TensorProduct ENNReal nonZeroDivisors Classical
 
@@ -17,3 +19,10 @@ theorem absNorm_dInv_eq_abs_discr_pow_inv :
   rw [inv_pow]
 
 end GlobalTheory.SnMass.VolN
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgAlg GlobalTheory.SgGlob GlobalTheory.SnMass GlobalTheory.SnMass.VolN GlobalTheory.SnMass.SkewVol
+open scoped TensorProduct ENNReal nonZeroDivisors Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absNorm_inverseDifferentIdealPow_eq_discr : ∀ (K : Type) [Field K] [NumberField K] (j : ℕ), (FractionalIdeal.absNorm (dInv K j) : ℝ) = (|(discr K : ℝ)| ^ j)⁻¹ := by
+  atlas_forward_decl GlobalTheory.SnMass.VolN.absNorm_dInv_eq_abs_discr_pow_inv

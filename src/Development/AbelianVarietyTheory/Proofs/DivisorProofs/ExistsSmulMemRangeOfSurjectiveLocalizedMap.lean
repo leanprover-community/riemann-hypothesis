@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing TensorProduct
 
 namespace GlobalTheory
@@ -44,3 +47,9 @@ theorem exists_smul_mem_range_of_surjective_localization_map
   exact ⟨a, ha⟩
 
 end GlobalTheory
+end
+
+open IsLocalRing TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_smul_mem_range_of_surjective_localized_map : ∀ (R A B : Type) [CommRing R] [CommRing A] [Algebra R A] [CommRing B] [Algebra R B] (p : Ideal R) [p.IsPrime] (ψ : A →ₐ[R] B), Function.Surjective (Algebra.TensorProduct.map (AlgHom.id (Localization.AtPrime p) (Localization.AtPrime p)) ψ) → ∀ b : B, ∃ t ∉ p, t • b ∈ ψ.range := by
+  atlas_forward_decl GlobalTheory.exists_smul_mem_range_of_surjective_localization_map

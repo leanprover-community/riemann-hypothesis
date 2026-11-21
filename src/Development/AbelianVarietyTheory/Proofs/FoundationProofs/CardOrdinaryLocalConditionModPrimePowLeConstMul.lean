@@ -5,7 +5,8 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocalCharacterH1
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUnitCharacterOfIntegralCyclotomicProduct
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormLePowIffDvd
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GreenbergOrdinaryOfVanishingOnCycloKernel
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharInertiaSurjective
+
+section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.Ord2.GwIneq
 open scoped Matrix
 
@@ -226,3 +227,12 @@ theorem card_ord : GlobalTheory.Mem.LiteralAutomorphy.LitCoh → ∀ (l : ℕ) [
   exact (card_ordCond_le c n W hint S hN hW.cont A hW.upper θ hθ).trans hcard
 
 end GlobalTheory.Ord2.GwIneq.CardOrd
+end
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.Ord2.GwIneq
+open scoped Matrix
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_ordinaryLocalConditionModPrimePow_le_const_mul : GlobalTheory.Mem.LiteralAutomorphy.LitCoh → ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (e : ℕ) (S : Finset Pl) (A : ValuationSubring Ω) (W : R2 Ω l), Nf e S A W → ∀ (c : Coef l) (hint : ∀ s i j, mat W s i j ∈ c.O) (hN : ∀ a ∈ NS Ω (S : Set Pl), W a = 1), ∃ C : ℕ, ∀ n : ℕ, 1 ≤ n → ∀ v : S, IsPlaceOver A v.1 → Nat.card (Lc c n W hint S hN A v) ≤ C * Nat.card (Qn c n) := by
+  atlas_forward_decl GlobalTheory.Ord2.GwIneq.CardOrd.card_ord

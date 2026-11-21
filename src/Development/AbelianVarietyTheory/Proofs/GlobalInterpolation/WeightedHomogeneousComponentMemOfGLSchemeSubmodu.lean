@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GoodTopBot
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
-import Formalism.GradedWeylDivisibility.FinalD
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
 
 noncomputable section
@@ -120,3 +121,10 @@ theorem weightedHomogeneousComponent_mem_of_isGLSubmodule (k : Type) [Field k] (
   exact hh
 
 end GlobalTheory.Alc
+end
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weightedHomogeneousComponent_mem_of_GLSchemeSubmodule : ∀ (k : Type) [Field k] (N : ℕ) (lam : DomWeight N) (M : Submodule k (MvPolynomial (Fin N × Fin N) k)), GlobalTheory.Published.IsGLSubmodule k N lam M → ∀ μ : Fin N → ℕ, ∀ f ∈ M, weightedHomogeneousComponent (rowW N N) μ f ∈ M := by
+  atlas_forward_decl GlobalTheory.Alc.weightedHomogeneousComponent_mem_of_isGLSubmodule

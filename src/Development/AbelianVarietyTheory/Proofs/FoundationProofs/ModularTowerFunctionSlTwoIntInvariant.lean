@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
 import Development.AbelianVarietyTheory.Definitions.Foundations.SiegelNeZeroIff
+import BuildAid.ForwardExisting
+
+section
 open scoped MatrixGroups
 open GlobalTheory.KZ
 
@@ -67,3 +70,11 @@ theorem fun_inv {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X :
 example : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (h : X.K) (φ : ℂ → ℂ), ContinuousOn φ Hs → X.an h = (φ : Mero) → (∀ γ : SL(2, ℤ), X.sl (ofSL γ) h = h) → ∀ γ : SL(2, ℤ), ∀ z ∈ Hs, φ (mob (ofSL γ) z) = φ z := @fun_inv
 
 end GlobalTheory.KZ.InvFun
+end
+end
+
+open scoped MatrixGroups
+open GlobalTheory.KZ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.modularTower_function_slTwoInt_invariant : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (h : X.K) (φ : ℂ → ℂ), ContinuousOn φ Hs → X.an h = (φ : Mero) → (∀ γ : SL(2, ℤ), X.sl (ofSL γ) h = h) → ∀ γ : SL(2, ℤ), ∀ z ∈ Hs, φ (mob (ofSL γ) z) = φ z := by
+  atlas_forward_decl GlobalTheory.KZ.InvFun.fun_inv

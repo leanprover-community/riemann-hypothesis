@@ -1,11 +1,12 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.PetEqRelIndexMulPetProd
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LevFiniteIndex
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AutomorphicRankinSelberg.VolMap
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AutomorphicRankinSelberg.StripIm
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AutomorphicRankinSelberg.TailFin
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AutomorphicRankinSelberg.VolumeOpenPosUpperHalfPlane
+import BuildAid.ForwardExisting
 
+section
 open UpperHalfPlane ModularForm CongruenceSubgroup MeasureTheory
 open scoped MatrixGroups ModularForm Manifold
 
@@ -78,3 +79,10 @@ theorem pet_self_pos (N l : ℕ) (k : ℤ) (hN : 0 < N) (hl : 0 < l) (f : CuspFo
   exact ⟨Finset.sum_pos' (fun q _ => hI0 q) ⟨_, Finset.mem_univ _, hIpos⟩, rfl⟩
 
 end GlobalTheory.Hk
+end
+
+open UpperHalfPlane ModularForm CongruenceSubgroup MeasureTheory
+open scoped MatrixGroups ModularForm Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.peterssonCosetIntegralSum_self_pos_gamma1InterGamma0 : ∀ (N l : ℕ) (k : ℤ), 0 < N → 0 < l → ∀ f : CuspForm (GlobalTheory.Hk.lev N l) k, f ≠ 0 → 0 < (GlobalTheory.Hk.pet (GlobalTheory.Hk.lev N l) k ⇑f ⇑f).re ∧ (GlobalTheory.Hk.pet (GlobalTheory.Hk.lev N l) k ⇑f ⇑f).im = 0 := by
+  atlas_forward_decl GlobalTheory.Hk.pet_self_pos

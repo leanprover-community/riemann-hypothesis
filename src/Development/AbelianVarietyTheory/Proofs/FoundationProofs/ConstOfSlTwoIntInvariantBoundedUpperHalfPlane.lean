@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
 import Development.AbelianVarietyTheory.Definitions.Foundations.SiegelNeZeroIff
+import BuildAid.ForwardExisting
+
+section
 open scoped MatrixGroups
 open GlobalTheory.KZ
 
@@ -47,3 +50,11 @@ theorem const_of_invariant_bounded :
   exact this
 
 end GlobalTheory.KZ.LevelOne
+end
+end
+
+open scoped MatrixGroups
+open GlobalTheory.KZ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.const_of_slTwoInt_invariant_bounded_upperHalfPlane : ∀ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs → (∀ γ : SL(2, ℤ), ∀ z ∈ Hs, φ (mob (ofSL γ) z) = φ z) → (∃ M t : ℝ, ∀ z ∈ Hs, t < z.im → ‖φ z‖ ≤ M) → ∃ c : ℂ, ∀ z ∈ Hs, φ z = c := by
+  atlas_forward_decl GlobalTheory.KZ.LevelOne.const_of_invariant_bounded

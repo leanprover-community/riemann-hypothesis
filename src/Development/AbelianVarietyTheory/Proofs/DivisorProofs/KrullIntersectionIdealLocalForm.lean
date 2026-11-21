@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem krull_inter_ideal_local (B : Type) [CommRing B] [IsNoetherianRing B] (I a a' : Ideal B)
@@ -33,3 +35,8 @@ theorem krull_inter_ideal_local (B : Type) [CommRing B] [IsNoetherianRing B] (I 
   exact (Submodule.Quotient.mk_eq_zero a').1 this
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.krull_intersection_ideal_local_form : ∀ (B : Type) [CommRing B] [IsNoetherianRing B] (I a a' : Ideal B), (∀ e : ℕ, a ≤ a' ⊔ I ^ (e + 1)) → ∃ r ∈ I, ∀ x ∈ a, (1 - r) * x ∈ a' := by
+  atlas_forward_decl GlobalTheory.krull_inter_ideal_local

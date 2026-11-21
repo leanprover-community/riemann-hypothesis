@@ -1,9 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.PseudoCoefficientSeparation
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsStandardIndModule
-import Formalism.RealPlaceAnalysis.StatementE
-import Formalism.RealPlaceAnalysis.StatementB
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
 open GlobalTheory.SmoothGlob (lieSet)
 open GlobalTheory.Dec (IsHaarSub HasInfChar UEquiv gelfVal)
@@ -86,3 +85,14 @@ theorem dualFn_values : ∀ (n : ℕ) (ε : Fin n → Bool) (I : Datum ε) (φ :
     simp
 
 end GlobalTheory.DualInd
+end
+end
+
+open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
+open GlobalTheory.SmoothGlob (lieSet)
+open GlobalTheory.Dec (IsHaarSub HasInfChar UEquiv gelfVal)
+open GlobalTheory.Orb (IsPseudoCoeff ujMat ujRep)
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.induced_k_finite_restriction : ∀ (n : ℕ) (ε : Fin n → Bool) (I : Datum ε) (φ : UJ ε → I.V), φ ∈ I.fns → IsKFinFun φ → (∃ f' ∈ I.dualFns, IsKFinFun f' ∧ ∀ k ∈ KG ε, f' k = φ k) ∧ IsKFinIn I.M I.σ (φ 1) ∧ (φ ≠ 0 → ∃ k ∈ KG ε, φ k ≠ 0) := by
+  atlas_forward_decl GlobalTheory.DualInd.dualFn_values

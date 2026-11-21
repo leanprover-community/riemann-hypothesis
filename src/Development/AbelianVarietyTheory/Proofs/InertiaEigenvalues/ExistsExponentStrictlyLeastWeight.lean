@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped BigOperators
 
 namespace GlobalTheory
@@ -47,3 +49,9 @@ theorem _root_.GlobalTheory.exists_exponent_strictly_least_weight :
   omega
 
 end GlobalTheory
+end
+
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_least_weight_exponent : ∀ (ρ : ℕ) (S : Set (Fin ρ → ℕ)), S.Nonempty → ∃ m ∈ S, ∀ c : Fin ρ → ℕ, (∀ i, ∑ i' ∈ Finset.Iio i, m i' * c i' < c i) → ∀ a ∈ S, a ≠ m → ∑ i, m i * c i < ∑ i, a i * c i := by
+  atlas_forward_decl GlobalTheory.exists_exponent_strictly_least_weight

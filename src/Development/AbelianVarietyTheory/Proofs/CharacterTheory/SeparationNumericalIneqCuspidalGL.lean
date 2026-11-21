@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
+import BuildAid.ForwardExisting
+
+section
 open Polynomial GlobalTheory.CuspGL GlobalTheory.BI
 
 namespace GlobalTheory.CuspGL
@@ -117,3 +120,9 @@ theorem sep_numerical_ineq : ∀ q n : ℕ, 2 ≤ q → 0 < n → ¬ (q = 2 ∧ 
     nlinarith
 
 end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.separation_numerical_ineq_cuspidalGL : ∀ q n : ℕ, 2 ≤ q → 0 < n → ¬ (q = 2 ∧ (n = 4 ∨ n = 6)) → (n - 1) ^ 2 + 4 * n ^ 2 * ∑ p ∈ n.primeFactors, (q ^ (n / p) - 2) < 2 * n * (q ^ n - 1) := by
+  atlas_forward_decl GlobalTheory.CuspGL.sep_numerical_ineq

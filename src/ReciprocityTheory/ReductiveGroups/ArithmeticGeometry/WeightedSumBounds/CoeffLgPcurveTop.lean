@@ -101,14 +101,8 @@ theorem coeff_lg_pcurve_top (G : LogFGL v d) {p : ℕ} (hp : p.Prime)
   rfl
 
 private theorem exists_subring_mem_iff_isIntV : ∃ S : Subring C, ∀ x, x ∈ S ↔ IsIntV v x :=
-  ⟨{ carrier := {x | 0 ≤ v x}
-     mul_mem' := fun {a b} ha hb => by
-       simp only [Set.mem_setOf_eq, AddValuation.map_mul] at *
-       exact add_nonneg ha hb
-     one_mem' := by simp
-     add_mem' := fun {a b} ha hb => le_trans (le_min ha hb) (AddValuation.map_add v a b)
-     zero_mem' := by simp
-     neg_mem' := fun {a} ha => by simpa [AddValuation.map_neg] using ha }, fun _ => Iff.rfl⟩
+  by
+  apply _root_.SharedProofs.LgCurvePcurve.exists_subring_iff_isIntV <;> assumption
 
 theorem ptx_int (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {γ : Fin d → Fin d → PowerSeries C}
     (hγ : ∀ a, IsCurve v (γ a)) (hγt : ∀ b, G.IsPTypical p (γ b)) (hdet : v (tmat γ).det = 0)
@@ -141,25 +135,7 @@ theorem ptx_int (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {γ : Fin d → Fin d 
 
 private theorem lgCurve_const_zero (G : LogFGL v d) (a : Fin d) :
     G.lgCurve (fun _ => (0 : PowerSeries C)) a = 0 := by
-  have h0 : HasSubst (fun _ : Fin d => (0 : PowerSeries C)) := by
-    first
-    | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => by simp)
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' (fun _ => by simp)
-  ext j
-  rw [map_zero]
-  change MvPowerSeries.coeff (Finsupp.single () j) (subst _ (G.lg a)) = 0
-  rw [MvPowerSeries.coeff_subst h0]
-  apply finsum_eq_zero_of_forall_eq_zero
-  intro e
-  by_cases he : e = 0
-  · subst he
-    rw [coeff_zero_eq_constantCoeff_apply, G.lg_const a, zero_smul]
-  · obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
-      exact he (Finsupp.ext hcon)
-    rw [Finsupp.prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (by simp [hs]),
-      map_zero, smul_zero]
+  apply _root_.SharedProofs.LgCurvePcurve.lgCurve_zero' (G := G) (a := a) <;> assumption
 
 private theorem lc_zero_eq_tangent_of_constantCoeff_eq_zero (G : LogFGL v d) (p : ℕ) (ga : Fin d → PowerSeries C)
     (h0 : ∀ b, PowerSeries.constantCoeff (ga b) = 0) : G.lc p ga 0 = tangent ga := by

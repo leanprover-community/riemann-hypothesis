@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.WaveSt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsMultOfFintype
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset
@@ -121,3 +122,15 @@ theorem coshT_mul_coshT (g g' : ℝ → ℝ) (T T' : ℝ) (c : ℂ) (h : IsBump 
   rw [integral_mul_const]
 
 end GlobalTheory.CompanionTheory.WaveMult.CoshMul
+end
+end
+
+open MeasureTheory Matrix Finset
+open scoped ContDiff ComplexConjugate InnerProductSpace
+open PositivityTheory.RgTw (Mat G)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.WaveMult
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cosh_transform_convolution : ∀ (g g' : ℝ → ℝ) (T T' : ℝ) (c : ℂ), IsBump g T → IsBump g' T' → coshT g c * coshT g' c = coshT (gconv g g') c := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WaveMult.CoshMul.coshT_mul_coshT

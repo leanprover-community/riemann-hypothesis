@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.QuadAtOf
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.ValuationCompleteness
@@ -133,3 +134,8 @@ theorem q2 : Q2 := by
 end GlobalTheory.CompanionTheory.ValuationCompleteness
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_quadratic_condition_two : PositivityTheory.SiegelWeilFormula.Gunr.Q2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ValuationCompleteness.q2

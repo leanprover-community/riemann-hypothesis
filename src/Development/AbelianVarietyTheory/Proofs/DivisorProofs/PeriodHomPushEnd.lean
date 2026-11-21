@@ -3,9 +3,9 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBi
 import Development.AbelianVarietyTheory.Definitions.Divisors.AnalyticChartsRealizationCompPointEq
 import Development.AbelianVarietyTheory.Definitions.Divisors.FstTszeSec
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsPeriodHom
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DpExpEqSumRangeOfVanish
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedPowerFiltration
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolomorphicPeriodsNaturalAlongCoveredMorphismStatement
+
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj Filter Topology TopologicalSpace TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.AnPer
 attribute [local instance] Over.cartesianMonoidalCategory
@@ -34,3 +34,11 @@ theorem periodHom_push_end : PEnd := by
   exact congrArg (fun f : Hol (fibFam u).V ↦ f.1 ⟨0, trivial⟩) key
 
 end GlobalTheory.AnPer
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj Filter Topology TopologicalSpace TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.AnPer
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.periodHom_push_end' : PEnd := by
+  atlas_forward_decl GlobalTheory.AnPer.periodHom_push_end

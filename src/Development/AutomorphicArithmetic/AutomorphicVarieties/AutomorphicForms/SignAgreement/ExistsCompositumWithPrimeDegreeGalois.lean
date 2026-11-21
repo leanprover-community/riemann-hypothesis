@@ -1,6 +1,5 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.GalUnitary
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BcDefs
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RTwist
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RDual2
 
 noncomputable section

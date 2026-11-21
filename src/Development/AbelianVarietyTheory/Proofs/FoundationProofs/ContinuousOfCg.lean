@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsZetaSystemFixedExponent
 import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleNewformZetaData
 import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleHodgeTateZetaClassParams
 import Development.AbelianVarietyTheory.Definitions.Foundations.HTPresNuOfPolys
@@ -9,7 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHtPresNu7
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HtPresNu7MonoLoss
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemIntegersOfNormLeOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UntwistedRepresentationOrdinaryTriangularShape
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharInertiaSurjective
 
 noncomputable section
 

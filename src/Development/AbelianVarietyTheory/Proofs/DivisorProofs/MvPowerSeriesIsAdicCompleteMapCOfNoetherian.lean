@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDerApply
 import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsPolynomialSubMem
 
+section
 open IsLocalRing GlobalTheory.FormalOrigin
 
 namespace GlobalTheory.PowerSeriesComplete
@@ -21,3 +22,9 @@ theorem isAdicComplete_map_C : ∀ (R : Type) [CommRing R] [IsNoetherianRing R] 
           toIsPrecomplete := IsPrecomplete.map_algebraMap_iff.2 hP }
 
 end GlobalTheory.PowerSeriesComplete
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mvPowerSeries_isAdicComplete_map_C_of_noetherian : ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R), IsAdicComplete I R → ∀ n : ℕ, IsAdicComplete (I.map (MvPowerSeries.C : R →+* MvPowerSeries (Fin n) R)) (MvPowerSeries (Fin n) R) := by
+  atlas_forward_decl GlobalTheory.PowerSeriesComplete.isAdicComplete_map_C

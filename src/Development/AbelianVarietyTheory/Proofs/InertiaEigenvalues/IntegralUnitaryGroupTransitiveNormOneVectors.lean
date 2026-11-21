@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnimodularHermitianMatrixCongruentOneStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnimodularHermitianMatrixCongruentOne
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 namespace GlobalTheory.UnitaryTransitive
@@ -173,3 +174,9 @@ theorem uO_transitive : ∀ (F E : Type) [NontriviallyNormedField F] [Nontrivial
   simpa [K, hσσ] using this
 
 end GlobalTheory.UnitaryTransitive
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralUnitaryGroup_transitive_norm_one_vectors : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (r : ℕ) (v : Fin (r + 1) → E), (∀ i, ‖v i‖ ≤ 1) → star v ⬝ᵥ v = 1 → ∃ k ∈ uO (r + 1) E, k.1 *ᵥ Pi.single (Fin.last r) 1 = v := by
+  atlas_forward_decl GlobalTheory.UnitaryTransitive.uO_transitive

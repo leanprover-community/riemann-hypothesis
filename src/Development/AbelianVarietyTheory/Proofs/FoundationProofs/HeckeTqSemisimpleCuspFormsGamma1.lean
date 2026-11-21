@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
-import Development.AbelianVarietyTheory.Definitions.Foundations.PetEqRelIndexMulPetProd
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeOperatorsOnHalfPlaneFunctionsAgreeExplicit
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeTOperatorExplicitSemisimpleCuspFormsStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeTOperatorExplicitSemisimpleCuspForms
 
+section
 open GlobalTheory.HeckeFamilyMatrices Polynomial UpperHalfPlane
 open scoped MatrixGroups ModularForm
 open scoped Manifold
@@ -29,3 +29,11 @@ theorem tq_semisimple : ∀ (N k q : ℕ) (σ : SL(2, ℤ)), 5 ≤ N → 3 ≤ k
   exact GlobalTheory.T.heckeTOperatorExplicit_semisimple_cuspForms N 1 q (k : ℤ) σ c n (by omega) one_pos hq (by simpa using hqN) hσ' g h
 
 end GlobalTheory.HeckeFamilyMatrices.SemisimpleLevelOne
+end
+
+open GlobalTheory.HeckeFamilyMatrices Polynomial UpperHalfPlane
+open scoped MatrixGroups ModularForm
+open scoped Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeTq_semisimple_cuspForms_gamma1 : ∀ (N k q : ℕ) (σ : SL(2, ℤ)), 5 ≤ N → 3 ≤ k → q.Prime → ¬ q ∣ N → IsDiam N 1 (q : ZMod N) σ → ∀ (f : CuspForm (CongruenceSubgroup.Gamma1 N) (k : ℤ)) (c : ℂ) (n : ℕ), (fun F => TqF (k : ℤ) q σ F - c • F)^[n] ⇑f = 0 → TqF (k : ℤ) q σ ⇑f = c • ⇑f := by
+  atlas_forward_decl GlobalTheory.HeckeFamilyMatrices.SemisimpleLevelOne.tq_semisimple

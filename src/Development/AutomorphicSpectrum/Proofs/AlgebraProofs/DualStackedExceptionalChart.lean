@@ -1,7 +1,9 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcChartParts
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedExcChart
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedExcGeoFirst
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
@@ -360,3 +362,8 @@ theorem dualStackedExcChart : GroundTheory.Heights₂.Heights.DualStackedExcChar
 end
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_stacked_exceptional_chart : GroundTheory.Heights₂.Heights.DualStackedExcChart.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.dualStackedExcChart

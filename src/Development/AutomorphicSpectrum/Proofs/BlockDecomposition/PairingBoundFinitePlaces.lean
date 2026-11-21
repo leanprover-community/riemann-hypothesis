@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.WedgeSub
+import BuildAid.ForwardExisting
 
+section
 open Matrix PositivityTheory.Rg.BcB.D1
 
 namespace GlobalTheory.CompanionTheory.Wedge
@@ -100,3 +102,9 @@ theorem pairF_of_mulF : MulF → PairF := by
     exact h1
 
 end GlobalTheory.CompanionTheory.Wedge
+end
+
+open Matrix PositivityTheory.Rg.BcB.D1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pairing_bound_finite_places : MulF → PairF := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Wedge.pairF_of_mulF

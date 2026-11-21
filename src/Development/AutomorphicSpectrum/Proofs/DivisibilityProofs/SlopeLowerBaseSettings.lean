@@ -1,9 +1,10 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasBaseDegreeSettingStrict
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestPolynomialShiftTotalStatement
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestPolynomialShiftTotal
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PZhangLowerX
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -118,3 +119,10 @@ theorem slope_lower_of_base_settings : ZhangLowerX.Statement → ∀ II : Inters
   exact Finset.sum_le_sum fun c _ => ppc_lower_of_setting hZ hII T hP.1 hN hB2 (hset B hB1 hB2 hB3 c)
 
 end GlobalTheory.CompanionTheory.Ar.Top
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.slope_lower_base_settings : GroundTheory.Heights₂.Heights.LowerBoundFree.ZhangLowerX.Statement → ∀ II : IntersectionSystem, IsIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) [Nonempty Ψ] (T : RootTower Ψ N) (Ch Cu rd Lval : ℝ), T.Proportional → 3 * (N - T.j) + 1 ≤ N → (∀ B : ℕ, 128 ≤ B → 4 * Fintype.card Ψ * N ^ 2 ≤ B → T.bad.card ≤ B → ∀ c, T.HasBaseDegreeSettingStrict II Ch Cu rd Lval B c) → T.SlopeLower II (Ch + Cu / 2) rd Lval := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.slope_lower_of_base_settings

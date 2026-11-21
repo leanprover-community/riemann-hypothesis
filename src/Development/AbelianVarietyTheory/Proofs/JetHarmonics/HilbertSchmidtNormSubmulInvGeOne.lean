@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
+import BuildAid.ForwardExisting
 
+section
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix
 
 namespace GlobalTheory.BesselNorm
@@ -12,3 +14,10 @@ theorem hilbertSchmidt_normInv : Formalism.FourierDecayAlt.ThreeDimData.NormInv 
     fun _ hx => ⟨PI.PolynomialProperness.GN.gN_inv hx, PI.PolynomialProperness.GN.gN_ge_one hx⟩⟩
 
 end GlobalTheory.BesselNorm
+end
+
+open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
+open scoped InnerProductSpace ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hilbertSchmidt_norm_submul_inv_ge_one : Formalism.FourierDecayAlt.ThreeDimData.NormInv := by
+  atlas_forward_decl GlobalTheory.BesselNorm.hilbertSchmidt_normInv

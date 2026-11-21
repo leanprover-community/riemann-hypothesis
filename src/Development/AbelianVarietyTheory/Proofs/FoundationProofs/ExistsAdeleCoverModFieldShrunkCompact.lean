@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValHalfInf
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRingModNumberField
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct NNReal Matrix
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
 
@@ -91,3 +92,10 @@ theorem exists_cover : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F
         rw [one_pow, one_mul, zero_add]
 
 end GlobalTheory.Eis.ConvCover
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_adele_cover_mod_field_shrunk_compact : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], ∃ (Ω : Set (AF F)) (C : ℝ), IsCompact Ω ∧ ∀ m : ℕ, ∃ Y : Finset (AF F), (Y.card : ℝ) ≤ C * ((2 : ℝ) ^ Fintype.card (InfinitePlace F)) ^ m ∧ ∀ a : AF F, ∃ x : F, ∃ y ∈ Y, ∃ ω ∈ Ω, a = algebraMap F (AF F) x + y + (halfInf F).1 ^ m * ω := by
+  atlas_forward_decl GlobalTheory.Eis.ConvCover.exists_cover

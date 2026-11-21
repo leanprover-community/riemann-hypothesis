@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Polynomial
 
 namespace GlobalTheory
@@ -49,3 +52,9 @@ theorem trace_adjoinRoot_map : ∀ (R S : Type) [CommRing R] [CommRing S] (g : R
   rw [hbi, ← map_mul, hr', hr, key]
 
 end GlobalTheory
+end
+
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.map_trace_adjoinRoot_eq_trace_map : ∀ (R S : Type) [CommRing R] [CommRing S] (g : R →+* S) (h : R[X]), h.Monic → ∀ x : AdjoinRoot h, g (Algebra.trace R (AdjoinRoot h) x) = Algebra.trace S (AdjoinRoot (h.map g)) (AdjoinRoot.map g h (h.map g) dvd_rfl x) := by
+  atlas_forward_decl GlobalTheory.trace_adjoinRoot_map

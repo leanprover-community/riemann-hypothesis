@@ -4,8 +4,10 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartUnitBasicOpenStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartUnitBasicOpen
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatesOfCoordsRegularStatement
+
+section
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
 namespace GlobalTheory.CompanionTheory.Ar.ChMorph
@@ -87,3 +89,9 @@ theorem existsUnique_dominates :
     ((specializes_of_dominates M M' hf hg q).antisymm (specializes_of_dominates M M' hg hf q)).eq
 
 end GlobalTheory.CompanionTheory.Ar.ChMorph
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.existsUnique_dominating_map : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (o' : Type) [CommRing o'] (Ω' : Type) [Field Ω'] [Algebra o' Ω'] (κ' : Type) [Finite κ'] (y : κ' → Ω') (M' : PModel o' y) (i : Ω →+* Ω'), (∀ p', p' ∈ ctrSet o x i M'.ξ) → ∃! f : M'.X ⟶ M.X, Dominates M'.ξ M.ξ f i := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ChMorph.existsUnique_dominates

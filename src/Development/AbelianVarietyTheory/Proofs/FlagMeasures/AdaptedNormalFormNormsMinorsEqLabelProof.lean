@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PerRowC
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagFramesSameGradedDefinitePartLatticeEq
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
@@ -134,3 +136,9 @@ theorem labC : LabC := by
       simp only [labT, if_neg hl, star_zero]
 
 end GlobalTheory.TypeAsm
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adaptedNormalForm_normsMinors_eq_label : GlobalTheory.TypeAsm.LabC := by
+  atlas_forward_decl GlobalTheory.TypeAsm.labC

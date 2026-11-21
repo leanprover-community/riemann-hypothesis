@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.LeviCartan
 import GroundTheory.AutomorphicForms.LeviStagesInduction
 set_option maxSynthPendingDepth 1
 

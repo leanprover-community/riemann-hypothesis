@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsPointVertRSteps
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsClosedPointChart
 set_option maxSynthPendingDepth 1
 

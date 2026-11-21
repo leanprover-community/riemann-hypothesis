@@ -1,9 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSubringEqOK
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFactsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIntegralOrInvIsIntegralFiniteExtUltrametricStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IdempotentDecompositionOfIntegralityStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIntegralOrInvIsIntegralFiniteExtUltrametric
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IdempotentDecompositionOfIntegrality
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 open scoped Pointwise ENNReal NNReal
 
@@ -312,3 +313,10 @@ theorem height_sq_lintegral_lt_top : ∀ (F E : Type) [NontriviallyNormedField F
     exact ENNReal.inv_lt_top.2 (tsub_pos_of_lt (hC1 i))
 
 end GlobalTheory.JR.HeightSquareIntegrable
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unimodularHeight_sq_lintegral_lt_top : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (A : Et F E) (μ : Measure A.K), μ.IsAddHaarMeasure → ∫⁻ z, (⨅ (s : A.Kˣ) (_ : (s : A.K) ∈ A.OK ∧ (s : A.K) * z ∈ A.OK ∧ ∃ α ∈ A.OK, ∃ β ∈ A.OK, α * s + β * (s * z) = 1), ENNReal.ofReal (A.absK s)) ^ 2 ∂μ < ⊤ := by
+  atlas_forward_decl GlobalTheory.JR.HeightSquareIntegrable.height_sq_lintegral_lt_top

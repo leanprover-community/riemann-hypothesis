@@ -1,18 +1,16 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.HasStepCharts
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SelM
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SumSqCompBlockMap
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsPermOfRange
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsValueAtOfTorus
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.HoloOnDivCongr
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPointsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockMetricExplicitMatrixFormStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogBlockMetricOffBoundaryStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockMetricGrassmannChartLocalStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockMetricRowEchelonLocalStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapPullbackFirstStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockMetricExplicitMatrixForm
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogBlockMetricOffBoundary
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockMetricRowEchelonLocal
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapPullbackFirst
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.StepW.ChartEx
@@ -286,3 +284,12 @@ theorem hasStepCharts (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (
 end Main
 
 end GlobalTheory.CompanionTheory.Ar.PB.StepW.ChartEx
+end
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.StepW GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_gap_pullback_third : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n : ℕ) (BM : BaseMetric M n) (p : Ψ × Fin N) (Kk : Type) [Fintype Kk] (ιk : Kk → Type) [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)) (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e) (pr : R.X → BM.Rb.X), IsStepHyp M BM p κ v R pr → HasStepCharts M BM p κ v R pr := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.StepW.ChartEx.hasStepCharts

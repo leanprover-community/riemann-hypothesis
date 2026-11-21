@@ -2,6 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OneMeasureSizes
 import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.ParabolicAtStandardWeylElement
 import Development.AbelianVarietyTheory.Counterexamples.TwistSurvey.ConjModelCast
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -42,3 +45,11 @@ theorem prod_dims (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) :
   rfl
 
 end GlobalTheory.DimProdLab
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prod_lowestKTypeDims_indep_complexEmbedding : ∀ (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (∏ ρ, ((dimK _ _ (kapAt (Wc D i) σ ρ) : ℚ) : ℂ)) = ((∏ τ, GlobalTheory.IndefiniteRowSideFullHecke.OneMeasureSizes.dimAt D i τ : ℝ) : ℂ) := by
+  atlas_forward_decl GlobalTheory.DimProdLab.prod_dims

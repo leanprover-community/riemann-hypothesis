@@ -2,7 +2,6 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.InfAdeleTensorBijective
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.MarkSpec
-import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
 import Formalism.LocalToGlobal.ProjectiveLattices.ComponentWModel
 import Formalism.LocalToGlobal.ProjectiveLattices.NormLaws

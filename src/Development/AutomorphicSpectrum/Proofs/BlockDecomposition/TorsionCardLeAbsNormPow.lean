@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLatIntVec
 
+section
 noncomputable section
 
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.CompanionTheory.SiegelND.Integ.Hua GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.HS
@@ -316,3 +317,12 @@ theorem tor_card : ∀ (K : Type) [Field K] [NumberField K] (m : ℕ)
   fun _ _ _ m L hL 𝔞 h𝔞 => torsion_card_le_by_rank 𝔞 h𝔞 m L hL
 
 end GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.TorCard
+end
+end
+
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.CompanionTheory.SiegelND.Integ.Hua GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.HS
+open scoped Matrix
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torsion_card_le_absNorm_pow : ∀ (K : Type) [Field K] [NumberField K] (m : ℕ) (L : Submodule (𝓞 K) (Fin m → K)), IsLat L → ∀ 𝔞 : Ideal (𝓞 K), 𝔞 ≠ ⊥ → Finite {x : (Fin m → K) ⧸ L // ∀ a ∈ 𝔞, a • x = 0} ∧ Nat.card {x : (Fin m → K) ⧸ L // ∀ a ∈ 𝔞, a • x = 0} ≤ Ideal.absNorm 𝔞 ^ m := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.TorCard.tor_card

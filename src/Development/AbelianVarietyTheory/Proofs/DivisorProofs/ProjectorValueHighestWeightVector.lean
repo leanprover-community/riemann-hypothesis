@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.LeviCut
 
 namespace GlobalTheory.LeviCut.StepScalarProof
@@ -138,3 +141,9 @@ theorem stepScalar : StepScalar := by
   rw [mul_comm, ← mul_assoc, hS, one_mul]
 
 end GlobalTheory.LeviCut.StepScalarProof
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projector_value_highest_weight_vector : GlobalTheory.LeviCut.StepScalar := by
+  atlas_forward_decl GlobalTheory.LeviCut.StepScalarProof.stepScalar

@@ -3,7 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
 import Development.AbelianVarietyTheory.Definitions.Divisors.TorsTransport
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModQPrin
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModJTau
+import BuildAid.ForwardExisting
 
+section
 open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
 open GlobalTheory.QFam
 open ReciprocityTheory.ChartRestriction.L1 (DD jT IsMF IsTauOf)
@@ -30,3 +32,14 @@ theorem sz_of_forall_rat_gt : ∀ (l : ℕ) [Fact l.Prime] (lam : algebraicClosu
   exact absurd ((Real.lt_logb_iff_rpow_lt hl1 ht).1 hq2) (not_lt.2 hle)
 
 end GlobalTheory.QFam
+end
+
+open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
+open GlobalTheory.QFam
+open ReciprocityTheory.ChartRestriction.L1 (DD jT IsMF IsTauOf)
+open ModularForm (E₄ E₆)
+open GlobalTheory.LatVal (Sz)
+open GlobalTheory.CMVal (latDisc)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.algebraicValuationAtLeast_of_forall_rat_gt : ∀ (l : ℕ) [Fact l.Prime] (lam : algebraicClosure ℚ ℂ →+* ℂ_[l]), ∀ (r : ℝ) (x : ℂ), (∀ q : ℚ, r < q → Sz l lam q x) → Sz l lam r x := by
+  atlas_forward_decl GlobalTheory.QFam.sz_of_forall_rat_gt

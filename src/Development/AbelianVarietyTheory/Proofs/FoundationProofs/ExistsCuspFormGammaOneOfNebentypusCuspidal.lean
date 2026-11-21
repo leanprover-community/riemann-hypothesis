@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashToGLSmul
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.HeckeFamilyMatrices UpperHalfPlane CongruenceSubgroup
 open scoped MatrixGroups ModularForm Manifold
 
@@ -19,3 +22,10 @@ theorem cuspForm_of_chiInv : ∀ (N : ℕ) (k : ℤ) (χ : DirichletCharacter �
     exact this
   · rintro _ ⟨γ, -, rfl⟩; exact ⟨γ, rfl⟩
 end GlobalTheory.HeckeFamilyMatrices
+end
+
+open GlobalTheory.HeckeFamilyMatrices UpperHalfPlane CongruenceSubgroup
+open scoped MatrixGroups ModularForm Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cuspForm_gammaOne_of_nebentypus_cuspidal : ∀ (N : ℕ) (k : ℤ) (χ : DirichletCharacter ℂ N) (G : ℍ → ℂ), 0 < N → CuspAll k G → ChiInv k N N χ G → ∃ f : CuspForm (Gamma1 N) k, ⇑f = G := by
+  atlas_forward_decl GlobalTheory.HeckeFamilyMatrices.cuspForm_of_chiInv

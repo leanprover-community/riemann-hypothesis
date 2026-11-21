@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PadicSubsetSums.CentralIdempotents.GaloisConjCentralIdempotent
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GreenLabelCharpoly.IrreducibleCharpolyInv
 
 open Polynomial CategoryTheory Formalism.IrreducibleCountingLemmas.TYPES

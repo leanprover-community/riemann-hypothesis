@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.RealPlaceAnalysis.InstMeasurableSpaceUJ
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
 
 open MeasureTheory

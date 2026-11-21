@@ -1,6 +1,5 @@
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinLowering.ZScalarVanish
 import Formalism.PeriodIntegrals.HwIrred
-import Formalism.GradedWeylDivisibility.FinalB
 import Formalism.GradedWeylDivisibility.FinalD
 
 noncomputable section

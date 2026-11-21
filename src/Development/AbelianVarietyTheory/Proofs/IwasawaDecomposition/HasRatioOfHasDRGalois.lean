@@ -3,13 +3,14 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasPRatio
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MultiplicationLatticeSecond
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalSystemModelMap
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSectionOfIsIsoRestrict
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAffineDomainFrameHasDRStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAffineDomainFrameHasDR
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RootsOfUnityAndPValuationStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitTorsOfGenericLevelStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitTorsOfGenericLevel
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TangentBasisOfSplitTorsionStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntegralFrameResidueStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PresentationTangentCombinationStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntegralFrameResidue
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PresentationTangentCombination
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField MonObj
@@ -281,3 +282,13 @@ theorem hasRatio : HTBoundSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     exact ⟨U, m, m', A, B, hz, hU, h⟩
 
 end GlobalTheory.HTLine.Ratio
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField MonObj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.LocM GlobalTheory.ShFam.Pad GlobalTheory.HTLine
+open Formalism.MainNotions.DIV.Cons (intO SCF)
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasRatio_of_hasDR_galois : HTBoundSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (Xo : ∀ l : Level H, Moduli Dw l) (p : ℕ) (W : ValuationSubring ℂ) (Y : LocalSystem Xo p W) (i₀ : Idx H p), p.Prime → (p : ℂ) ∈ W.nonunits → IsGalois ℚ E → ∀ (Z : Mdl Y i₀), HasDR Z → p ∣ Z.i.l.A → ∀ st (x : Letter Dw), letterOf Dw st = some x → HasRatio Z st := by
+  atlas_forward_decl GlobalTheory.HTLine.Ratio.hasRatio

@@ -1,7 +1,5 @@
 import Development.AutomorphicArithmetic.ResidueCharacters.FamilyBoundAtTwoThreeOfLocalBounds
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NRowOn
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.BoundAtTwoThreeFamilyFon
 
 set_option synthInstance.maxHeartbeats 200000
 

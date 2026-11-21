@@ -1,11 +1,10 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InnerProductCuspidalIso
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalIsomorphismProperties
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GreenLabelSurjective.Simple
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GreenLabelSurjective.Transp
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GreenLabelSurjective.ExistsNeZeroTensor
 
+section
 open Polynomial CategoryTheory
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
 open ReciprocityTheory.Ty.Fin PI.GreenLabelSurjWork
@@ -218,3 +217,10 @@ theorem main : ReciprocityTheory.Ty.Fin.St.MirrorsOf := by
   exact ⟨hcLabelO hE hU O, fun hP => ⟨labelSurjO O hP, sqfreeO hS O hP⟩⟩
 
 end GlobalTheory.CompanionTheory.TyFin.Mirrors
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mirror_partitions : ReciprocityTheory.Ty.Fin.St.MirrorsOf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.Mirrors.main

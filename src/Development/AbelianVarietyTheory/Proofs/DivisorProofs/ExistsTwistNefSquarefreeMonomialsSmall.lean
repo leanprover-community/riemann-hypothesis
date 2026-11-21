@@ -10,11 +10,12 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RepresentsHermitian
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAmpleNefHermitianSmallSection
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsNefPow
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianLineBundleIsNefShiftOfNonneg
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PairSectionMemBallExpOfProjArithVarietyStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsClearDenominatorsAmpleHermLineBundleStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianLineBundlePositivityPreservedIsometricStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHermPairSectionsChangeOfIsometricCombinatiStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PairSectionMemBallExpOfProjArithVariety
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsClearDenominatorsAmpleHermLineBundle
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianLineBundlePositivityPreservedIsometric
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHermPairSectionsChangeOfIsometricCombinati
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -91,3 +92,12 @@ theorem exists_twist : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRin
   exact ⟨(hv S).1, fun σ y => ((hv S).2 σ y).trans (Real.exp_le_exp.2 (hvu S))⟩
 
 end GlobalTheory.HSNef.BoxTwist
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.VolBr GlobalTheory.HSNef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_twist_nef_squarefree_monomials_small : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ), IsArithVar p D → ∀ (N : HermLB p) (x : Fin D → X.functionField), ∃ H : HermLB p, (N.tens H).IsNef D ∧ ∀ W : HermLB p, ∃ P : Pair p, P.L = W ∧ P.A = H ∧ ∀ S : Finset (Fin D), ∏ i ∈ S, x i ∈ P.Bl 0 1 1 := by
+  atlas_forward_decl GlobalTheory.HSNef.BoxTwist.exists_twist

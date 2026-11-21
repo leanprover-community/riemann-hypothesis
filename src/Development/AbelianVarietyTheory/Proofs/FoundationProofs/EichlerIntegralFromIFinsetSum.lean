@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.HeckeFamilyMatrices Polynomial UpperHalfPlane
 open scoped MatrixGroups ModularForm
 open scoped Manifold
@@ -39,3 +42,11 @@ theorem eichler_finset_sum (w : ℕ) {ι : Type} [Fintype ι] (g : ι → ℍ �
   simp only [Function.comp_apply, Finset.sum_apply, Finset.sum_mul]
 
 end GlobalTheory.EichlerSum
+end
+
+open GlobalTheory.HeckeFamilyMatrices Polynomial UpperHalfPlane
+open scoped MatrixGroups ModularForm
+open scoped Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eichlerIntegralFromI_finset_sum : ∀ (w : ℕ) {ι : Type} [Fintype ι] (g : ι → ℍ → ℂ), (∀ i, MDifferentiable 𝓘(ℂ) 𝓘(ℂ) (g i)) → ∀ τ : ℍ, eichler w (∑ i, g i) τ = ∑ i, eichler w (g i) τ := by
+  atlas_forward_decl GlobalTheory.EichlerSum.eichler_finset_sum

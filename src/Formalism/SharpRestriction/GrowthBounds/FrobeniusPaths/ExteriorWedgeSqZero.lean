@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
 import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.DividedPowerZeroOfGlActionZero
 
 noncomputable section

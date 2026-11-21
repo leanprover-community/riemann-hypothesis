@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CardRingHomRealEqNrRealPlacesStatement
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CardRingHomRealEqNrRealPlaces
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsQuadraticSqrtExtensionBasicFactsStatement
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsQuadraticSqrtExtensionIsGaloisAndEmbeddingStatement
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsQuadraticSqrtExtensionIsGaloisAndEmbedding
 
+section
 open NumberField IsDedekindDomain GlobalTheory.QNorm
 open scoped WithZero
 
@@ -70,3 +70,10 @@ theorem two_mul_card_infinitePlace_le :
   omega
 
 end GlobalTheory.QNorm
+end
+
+open NumberField IsDedekindDomain GlobalTheory.QNorm
+open scoped WithZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.two_mul_card_infinitePlace_le_quadratic : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (δ : F) (θ : E) (σ : E ≃ₐ[F] E), IsQuad δ θ σ → 2 * Fintype.card (InfinitePlace F) ≤ Fintype.card (InfinitePlace E) + tReal F δ := by
+  atlas_forward_decl GlobalTheory.QNorm.two_mul_card_infinitePlace_le

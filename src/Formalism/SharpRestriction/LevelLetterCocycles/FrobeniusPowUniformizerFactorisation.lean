@@ -9,7 +9,6 @@ import Formalism.WachLatticeTwists.LagrangeExtensionCocycles.DualWByLettersExten
 import Formalism.GaussValuationBounds.NokLemmaCVal
 import Formalism.GaussValuationBounds.GaussValueContraction.ScaledPowMemSpanCeil
 import Formalism.WeaklyAdmissibleFiltrations.PhtGalois
-import Formalism.SharpRestriction.LevelLetterCocycles.LiftingTheory
 import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingBounds
 
 noncomputable section
@@ -1191,9 +1190,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem frame_γD_smul (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (g : W.Gam) (a : LetA O n)
     (x : W.DD T) : W.γD T g (a • x) = W.γA g a • W.γD T g x := by
-  have := W.γD_smul T g (algebraMap (LetA O n) W.EE a) x
-  rw [algebraMap_smul, W.γE_ext, algebraMap_smul] at this
-  exact this
+  apply gammaD_semilinear (W := W) (T := T) (g := g) (a := a) (x := x) <;> assumption
 
 theorem frame_γA_letE (W : LocWach PD LL O v n) (g : W.Gam) (i : ZMod n) :
     W.γA g (letE i) = letE i := by

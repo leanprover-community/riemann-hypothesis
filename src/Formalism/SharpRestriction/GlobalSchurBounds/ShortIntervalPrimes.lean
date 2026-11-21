@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.DataParams₂
 import Formalism.SharpRestriction.ParConsts
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FiltrationCocycleLiftCriterion
 

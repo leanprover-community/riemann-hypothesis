@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PowForm
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Filter Topology
 
 namespace GlobalTheory.ConvSeries
@@ -60,3 +63,11 @@ theorem norm_coef_le_integral (E : Type) [NormedAddCommGroup E] [InnerProductSpa
   exact mul_le_mul_of_nonneg_left (norm_powForm_le j a) (norm_nonneg _)
 
 end GlobalTheory.ConvSeries
+end
+
+open MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_gaussianConvolutionSeriesCoefficient_le_integral : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] (b c : ℝ), 0 ≤ b → 0 ≤ c → ∀ (h : SchwartzMap E ℂ) (j : ℕ),
+    ‖GlobalTheory.ConvSeries.coef b c (⇑h) j‖ ≤ ∫ a, ‖GlobalTheory.ConvSeries.wt b c (⇑h) a‖ * ‖a‖ ^ j := by
+  atlas_forward_decl GlobalTheory.ConvSeries.norm_coef_le_integral

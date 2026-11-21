@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory Limits Scheme.AffineZariskiSite
 
 set_option backward.isDefEq.respectTransparency false
@@ -82,3 +85,9 @@ theorem normalization_basicOpen_cover (U X : Scheme.{0}) (f : U ⟶ X) [IsSepara
     exact ⟨b.1, Finset.mem_image_of_mem _ hbt, hxb⟩
 
 end GlobalTheory
+end
+
+open AlgebraicGeometry CategoryTheory Limits Scheme.AffineZariskiSite
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalization_basicOpen_cover' : ∀ (U X : Scheme.{0}) (f : U ⟶ X), ∀ [IsSeparated f] [LocallyOfFiniteType f] [QuasiCompact f] [LocallyQuasiFinite f] (V : X.AffineZariskiSite), ∃ G : Finset (f.normalizationDiagram.obj (Opposite.op V.1)), (∀ b ∈ G, letI := (f.normalizationDiagramMap.app (Opposite.op V.1)).hom.toAlgebra; Algebra.FiniteType Γ(X, V.1) (Localization.Away b)) ∧ ∀ x : U, f x ∈ V.1 → ∃ b ∈ G, f.toNormalization x ∈ f.normalizationOpenCover.f V '' (PrimeSpectrum.basicOpen b : Set (PrimeSpectrum (f.normalizationDiagram.obj (Opposite.op V.1)))) := by
+  atlas_forward_decl GlobalTheory.normalization_basicOpen_cover

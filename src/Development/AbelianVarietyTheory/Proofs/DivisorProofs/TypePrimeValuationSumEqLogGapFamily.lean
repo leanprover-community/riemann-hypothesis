@@ -1,9 +1,10 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.WeightDegreeSizes
 import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
-import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemHeightOneIdealIffAdditiveValuationPos
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions NumberField Classical
 
 noncomputable section
@@ -28,3 +29,10 @@ theorem typePrime_valuationSum_eq_logGap_family : ∀ {eps : ℝ} (Fm : FamP eps
   fun Fm x hx i => typePrime_valuationSum_eq_logGap_all (Fm.D x i) (Fm.ex x hx i).errX
 
 end GlobalTheory.TypeValNN
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions NumberField Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normDecompositionCond_famP : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x), Formalism.MainNotions.WeightDegreeSizes.NormDecompositionCond (Fm.D x i) (Fm.ex x hx i).errX := by
+  atlas_forward_decl GlobalTheory.TypeValNN.typePrime_valuationSum_eq_logGap_family

@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Filter Topology
@@ -533,3 +535,8 @@ theorem zv_eq_trilinear : Ad3.R.A1 → Ad3.R.A3 → Ad3.R.A4 → Ad3.R.A5 → Ad
 end GlobalTheory.CompanionTheory.RankinSelberg.Trilinear
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_sixth_of_earlier : Ad3.R.A1 → Ad3.R.A3 → Ad3.R.A4 → Ad3.R.A5 → Ad3.R.A6 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelberg.Trilinear.zv_eq_trilinear

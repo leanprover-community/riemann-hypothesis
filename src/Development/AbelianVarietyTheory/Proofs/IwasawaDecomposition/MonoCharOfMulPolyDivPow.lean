@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Matrix Polynomial
 
 namespace GlobalTheory
@@ -49,3 +52,9 @@ theorem mono_char_of_mul_poly_div_pow (χ : ℂ → ℂ)
   rw [zpow_sub₀ ht, zpow_natCast, zpow_natCast, eq_div_iff (pow_ne_zero _ ht), mul_comm, this]
 
 end GlobalTheory
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_zpow_of_multiplicative_of_pow_mul_eq_eval : ∀ (χ : ℂ → ℂ), (∀ s t : ℂ, s ≠ 0 → t ≠ 0 → χ (s * t) = χ s * χ t) → χ 1 = 1 → ∀ (N : ℕ) (p : Polynomial ℂ), (∀ t : ℂ, t ≠ 0 → t ^ N * χ t = p.eval t) → ∃ k : ℤ, ∀ t : ℂ, t ≠ 0 → χ t = t ^ k := by
+  atlas_forward_decl GlobalTheory.mono_char_of_mul_poly_div_pow

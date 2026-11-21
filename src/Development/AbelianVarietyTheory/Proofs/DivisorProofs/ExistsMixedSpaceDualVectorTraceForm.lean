@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsContOnOfLocal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdeleJoinZero
 
+section
 open IsDedekindDomain NumberField
 open scoped Classical
 
@@ -45,3 +46,14 @@ theorem dualform : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype
   exact ⟨u, fun x => by rw [← hu]; rfl⟩
 
 end GlobalTheory
+end
+
+open IsDedekindDomain NumberField
+open scoped Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_mixedSpace_dual_vector_traceForm : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (ℓ : mixedEmbedding.mixedSpace F →ₗ[ℝ] ℝ),
+    (∀ z : mixedEmbedding.mixedSpace F, z ≠ 0 → ∃ u, ℓ (z * u) ≠ 0) →
+    ∀ lam : (κ → mixedEmbedding.mixedSpace F) →ₗ[ℝ] ℝ, ∃ u : κ → mixedEmbedding.mixedSpace F,
+      ∀ x, ℓ (∑ k, x k * u k) = lam x := by
+  atlas_forward_decl GlobalTheory.dualform

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LatticeSlopes.Statement
 import Formalism.HarderNarasimhan.Statement
 import Formalism.LatticeSlopes.LatticeSlopesProofs.DegQuot
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolydiscIntegrality.ExistsCoordBound

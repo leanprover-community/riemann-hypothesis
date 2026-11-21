@@ -1,7 +1,5 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSerreConditions
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSerreSFlatAscent
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFlatDimFormula
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFlatLocalRegularSequence
 set_option maxSynthPendingDepth 1
 

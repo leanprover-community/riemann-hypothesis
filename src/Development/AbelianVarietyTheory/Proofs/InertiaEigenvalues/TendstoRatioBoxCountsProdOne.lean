@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Filter
 
 namespace GlobalTheory
@@ -31,3 +34,9 @@ theorem ratio_box_counts_tendsto_one (r : ℕ) (c : Fin r → ℕ) (m : ℕ) :
   rw [Nat.cast_prod, Nat.cast_prod, Finset.prod_div_distrib]
 
 end GlobalTheory
+end
+
+open Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tendsto_ratio_box_counts_prod_one : ∀ (r : ℕ) (c : Fin r → ℕ) (m : ℕ), Filter.Tendsto (fun k : ℕ => ((∏ i, (2 * (k + m) * c i + 1) : ℕ) : ℝ) / ((∏ i, (2 * k * c i + 1) : ℕ) : ℝ)) Filter.atTop (nhds 1) := by
+  atlas_forward_decl GlobalTheory.ratio_box_counts_tendsto_one

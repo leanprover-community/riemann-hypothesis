@@ -3,6 +3,9 @@ import Formalism.LocalToGlobal.Divisibility.QLocTied
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HostPins
 import Formalism.DoubleCosetMeasures.LatticeCoset
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HaarModulusProductFormulaTotallyReal
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DoubleCosetMeasures Formalism.L2.Host Formalism.L2.DIV Formalism.L2.DIV.QLoc GlobalTheory.Mem.HD
 
 namespace GlobalTheory.ResidueCardUnif
@@ -23,3 +26,10 @@ theorem card_kF_piP : ∀ (L : Type) [Field L] [NumberField L] (P : HeightOneSpe
   exact c
 
 end GlobalTheory.ResidueCardUnif
+end
+
+open MeasureTheory Matrix NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DoubleCosetMeasures Formalism.L2.Host Formalism.L2.DIV Formalism.L2.DIV.QLoc GlobalTheory.Mem.HD
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_residueRing_completion_chosenUniformiser : ∀ (L : Type) [Field L] [NumberField L] (P : HeightOneSpectrum (𝓞 L)) (h : ((piP P : (P.adicCompletion L)ˣ) : P.adicCompletion L) ∈ OP P), Nat.card (kF (OP P) ((piP P : (P.adicCompletion L)ˣ) : P.adicCompletion L) h) = qP P := by
+  atlas_forward_decl GlobalTheory.ResidueCardUnif.card_kF_piP

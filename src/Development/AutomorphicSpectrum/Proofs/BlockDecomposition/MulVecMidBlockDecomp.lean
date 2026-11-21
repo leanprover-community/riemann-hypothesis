@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUMOfMem
+import BuildAid.ForwardExisting
 
+section
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
 open scoped TensorProduct
 
@@ -22,3 +24,10 @@ theorem qp_mulVec_midV_exists_top (k : Type) [Field k] [ValuativeRel k] [Topolog
     rfl
 
 end GlobalTheory.CompanionTheory.BZPsiPG
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mulVec_mid_block_decomp : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (q : Qp k i t) (v : Fin t → k), ∃ x : Fin i → k, ((q : GL (Fin (i + t)) k) : Matrix (Fin (i + t)) (Fin (i + t)) k).mulVec (midV k i t v) = topV k i t x + midV k i t ((((qBlocks k i t q).2 : GL (Fin t) k) : Matrix (Fin t) (Fin t) k).mulVec v) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPsiPG.qp_mulVec_midV_exists_top

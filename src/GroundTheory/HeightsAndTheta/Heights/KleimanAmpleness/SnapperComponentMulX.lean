@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreFurther
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CechHcSubsingletonOfBlock
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestBis
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgCechSt

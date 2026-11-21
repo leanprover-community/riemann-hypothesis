@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerTail
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraAlt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestRest
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraLast

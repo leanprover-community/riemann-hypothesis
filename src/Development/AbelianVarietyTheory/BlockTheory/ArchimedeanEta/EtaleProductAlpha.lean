@@ -2,7 +2,6 @@ import Mathlib
 import Formalism.LocalToGlobal.ProjectiveLattices.IsBlockProd
 import Formalism.LocalToGlobal.ProjectiveLattices.EtArchPf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThetaValCAlpha
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.TorusPin
 
 noncomputable section
 

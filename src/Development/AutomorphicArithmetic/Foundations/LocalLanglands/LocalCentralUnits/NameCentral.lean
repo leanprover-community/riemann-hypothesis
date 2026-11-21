@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.Foundations.LocalLanglands.RecTTransport
 import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.PairCheckThreeTwo
 import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.NameLaws
 import Development.DiscreteGroups.GlobalIrreducibility.DzKSchur

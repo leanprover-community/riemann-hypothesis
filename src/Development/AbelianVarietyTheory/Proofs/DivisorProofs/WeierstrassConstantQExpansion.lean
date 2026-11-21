@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
+import BuildAid.ForwardExisting
 
+section
 open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
 open GlobalTheory.QFam GlobalTheory.WpFam
 
@@ -38,3 +40,10 @@ theorem hasQ_gN : ∀ (N : ℕ) [NeZero N], HasQ N gN (cG N) := by
     simp [cG, hd, h0]
 
 end GlobalTheory.WpFam
+end
+
+open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
+open GlobalTheory.QFam GlobalTheory.WpFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weierstrass_constant_q_expansion : ∀ (N : ℕ) [NeZero N], HasQ N gN (cG N) := by
+  atlas_forward_decl GlobalTheory.WpFam.hasQ_gN

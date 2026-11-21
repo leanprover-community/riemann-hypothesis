@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.OrderedConst
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsTrivialOnUnitsModConductorUnitCharacterValuePr
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.PsType
 
 noncomputable section
@@ -91,3 +92,10 @@ theorem GlobalTheory.PsType.grp_inv_mem : ∀ (k : Type) [Field k] [ValuativeRel
   intro i j hij
   rw [← map_inv]
   exact hinv i j hij
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.PsType
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.principalSeriesCongruenceSubgroup_inv_mem : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (ψ : Fin n → kˣ →* ℂˣ), Ordered ψ → ∀ a ∈ grp ψ, a⁻¹ ∈ grp ψ := by
+  atlas_forward_decl GlobalTheory.PsType.grp_inv_mem

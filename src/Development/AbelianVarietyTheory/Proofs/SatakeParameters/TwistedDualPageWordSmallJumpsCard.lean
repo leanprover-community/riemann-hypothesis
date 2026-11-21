@@ -1,11 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Alternates
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.FrobeniusOrbits.HostCorollaries
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TwistedDualOrbitPageWordBoxStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CloudLowJumpsReflectAndCardStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardSmallTwistedDualJumpsEqRankStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TwistedDualOrbitPageWordBox
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CloudLowJumpsReflectAndCard
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardSmallTwistedDualJumpsEqRank
 
+section
 open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
 
 namespace GlobalTheory.HTW
@@ -28,3 +28,9 @@ theorem twistedDualPageWord_small_jumps_card : ∀ {D : D7} (L : SizeData₂ D) 
   · exact ((GlobalTheory.T.cloudLowJumps_reflect_and_card (hcAt D (letter τ φ i)) j).2 (pos ε (letter τ φ i))).2.2.1
 
 end GlobalTheory.HTW
+end
+
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pageWord_T2_and_J2_card_of_roomy : ∀ {D : D7} (L : SizeData₂ D) (C : ℝ) (j : Fin D.R.m) (ε : ℤˣ) (τ φ : D.R.GG), Roomy L C → (pageWord L j ε τ φ).T2 ∧ ∀ i, ((pageWord L j ε τ φ).J2 i).card = D.R.r ∧ (((pageWord L j ε τ φ).J2 i).filter fun u : ℤ => |u| ≤ (etaHat L : ℤ)).card = D.R.m := by
+  atlas_forward_decl GlobalTheory.HTW.twistedDualPageWord_small_jumps_card

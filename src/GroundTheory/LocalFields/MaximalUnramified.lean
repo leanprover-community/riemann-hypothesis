@@ -1,16 +1,9 @@
 import Mathlib
-import GroundTheory.LocalFields.Interface
 import GroundTheory.LocalFields.FiniteExtension
 import GroundTheory.LocalFields.Uniqueness
 import GroundTheory.LocalFields.Integers
-import GroundTheory.LocalFields.UnitsPowers
-import GroundTheory.LocalFields.UnramifiedRootsOfUnity
-import GroundTheory.LocalFields.UnramifiedGalois
 import GroundTheory.LocalFields.UnramifiedExistence
-import GroundTheory.LocalFields.AbstractLocalReciprocity.ProfiniteInteger
-import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsEqNsmulOfProjEqZero
 import GroundTheory.LocalFields.AbstractLocalReciprocity.Frobenius
-import GroundTheory.LocalFields.AbstractLocalReciprocity.Valuation
 
 noncomputable section
 

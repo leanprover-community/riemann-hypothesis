@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FockTranslateSchwartzMajorant
 
+section
 noncomputable section
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal ComplexConjugate
@@ -282,3 +283,9 @@ theorem eucTotal : EucTotal := by
 end GlobalTheory.CompanionTheory.ThTot.EucT
 
 end
+end
+
+open GlobalTheory.CompanionTheory.ThTot
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.euclidean_total : EucTotal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ThTot.EucT.eucTotal

@@ -1,7 +1,5 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SqMap
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GeneratorRatioUnitExistsStatement
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GeneratorRatioUnitExists
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 noncomputable section

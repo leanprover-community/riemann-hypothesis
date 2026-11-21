@@ -1,7 +1,9 @@
-import ReciprocityTheory.L2DbarEstimates.Imports
 import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FourSignHolds
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.L2ExtensionLogCanonical
 import Development.AbelianVarietyTheory.Definitions.Divisors.EtaleEmpty
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
 open scoped ENNReal ContDiff
 
@@ -95,3 +97,10 @@ theorem nonempty_cover : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space 
       exact mem_ball.2 (lt_of_le_of_lt (mem_closedBall.1 hu) (by linarith [hε0 x]))
 
 end GlobalTheory.OTY
+end
+
+open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
+open scoped ENNReal ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonempty_atlasBallPartitionCover : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] [CompactSpace Y] (ι La : Type) [AddCommGroup La] (A : WeightedAtlas n Y ι La), Nonempty (Cover A) := by
+  atlas_forward_decl GlobalTheory.OTY.nonempty_cover

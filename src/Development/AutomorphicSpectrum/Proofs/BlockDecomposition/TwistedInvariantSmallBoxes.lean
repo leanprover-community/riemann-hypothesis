@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUnipMir
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep GlobalTheory.BZMir GroundTheory.LocalField Matrix GlobalTheory.CompanionTheory.MirFourier
 
 namespace GlobalTheory.CompanionTheory.MirFourier
@@ -39,3 +42,9 @@ theorem exists_mem_twKer_box (k : Type) [Field k] [ValuativeRel k] [TopologicalS
     exact ⟨a, fun j' hj' => Submodule.smul_mem _ c (ha j' hj')⟩
 
 end GlobalTheory.CompanionTheory.MirFourier
+end
+
+open GlobalTheory.PRep GlobalTheory.BZMir GroundTheory.LocalField Matrix GlobalTheory.CompanionTheory.MirFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twisted_invariant_small_boxes : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (Multiplicative (Fin n → k)) V) (χ : Multiplicative (Fin n → k) →* ℂˣ) (v : V), v ∈ twKer ρ ⊤ (χ.comp (⊤ : Subgroup (Multiplicative (Fin n → k))).subtype) → ∃ j : ℤ, ∀ j' ≤ j, v ∈ twKer ρ (box k n j') (χ.comp (box k n j').subtype) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MirFourier.exists_mem_twKer_box

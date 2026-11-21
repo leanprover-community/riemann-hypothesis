@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UpperDens
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Filter Topology
 open scoped ENNReal NNReal
 
@@ -74,3 +77,11 @@ theorem GlobalTheory.upperDens_bounds_of_almost_homogeneous : ∀ (V : Type) [No
       rw [htdef, ← mul_assoc, mul_div_cancel₀ _ he.ne']
     refine le_trans (measure_mono (Metric.closedBall_subset_ball ?_)) hs.1
     rw [hr]; nlinarith
+end
+end
+
+open MeasureTheory Filter Topology
+open scoped ENNReal NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.upperDensity_bounds_almost_homogeneous_measure : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (l ν : Measure V) [l.IsAddHaarMeasure] [IsFiniteMeasure ν] (c : ℝ≥0∞), c ≠ ⊤ → Tendsto (fun r : ℝ => ν (Metric.ball 0 r) / l (Metric.ball 0 r)) (𝓝[>] 0) (𝓝 c) → ∀ ε η : ℝ, 0 < ε → ε < 1 → (∀ x : V, ‖x‖ < η → ∀ᶠ r in 𝓝[>] (0:ℝ), ν (Metric.ball x ((1 - ε) * r)) ≤ ν (Metric.ball 0 r) ∧ ν (Metric.ball 0 r) ≤ ν (Metric.ball x ((1 + ε) * r))) → ∀ x : V, ‖x‖ < η → ENNReal.ofReal ((1 + ε)⁻¹ ^ Module.finrank ℝ V) * c ≤ GlobalTheory.HaarDensChart.upperDens l ν x ∧ GlobalTheory.HaarDensChart.upperDens l ν x ≤ ENNReal.ofReal (((1 + ε) / (1 - ε)) ^ Module.finrank ℝ V) * c := by
+  atlas_forward_decl GlobalTheory.upperDens_bounds_of_almost_homogeneous

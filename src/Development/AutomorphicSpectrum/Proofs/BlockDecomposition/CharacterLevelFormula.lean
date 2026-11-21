@@ -1,5 +1,6 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GunrLev
@@ -27,3 +28,8 @@ theorem psiLev_holds : PositivityTheory.SiegelWeilFormula.Gunr.PsiLev := by
 end GlobalTheory.CompanionTheory.GunrLev
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.character_level_formula : PositivityTheory.SiegelWeilFormula.Gunr.PsiLev := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrLev.psiLev_holds

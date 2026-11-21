@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsMatrixForm
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CohomZeroEquivContinuous
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.YonedaAddNaturalityLeft
 

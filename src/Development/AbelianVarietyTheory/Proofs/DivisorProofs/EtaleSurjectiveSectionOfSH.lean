@@ -2,6 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset
 import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StrictlyHenselianIff
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex TensorProduct GlobalTheory.EtC
 
 namespace GlobalTheory.EtC
@@ -42,3 +45,9 @@ theorem etale_surjective_section_of_SH : ∀ (A : Type) [CommRing A], SH A → �
   exact (congrArg Spec.map this).trans (Spec.map_id _)
 
 end GlobalTheory.EtC
+end
+
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex TensorProduct GlobalTheory.EtC
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_section_of_etale_surjective_of_SH : ∀ (A : Type) [CommRing A], SH A → ∀ (Y : Scheme.{0}) (f : Y ⟶ Spec (CommRingCat.of A)), Etale f → Surjective f → ∃ s : Spec (CommRingCat.of A) ⟶ Y, s ≫ f = 𝟙 _ := by
+  atlas_forward_decl GlobalTheory.EtC.etale_surjective_section_of_SH

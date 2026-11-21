@@ -1,10 +1,12 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOpenNbhdSectionFibreIsPreirreducibleStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOpenNbhdSectionFibreIsPreirreducible
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOpenSndImageMulMemOpenGroupSchemeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemUnitComponentMulMemStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemIdentityComponentsOfMulInvStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOpenOfStableUnderGeneralizationOfLocallyClosedStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StableUnderGeneralizationSectionComponentsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemUnitComponentMulMem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemIdentityComponentsOfMulInv
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOpenOfStableUnderGeneralizationOfLocallyClosed
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StableUnderGeneralizationSectionComponents
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj TopologicalSpace TensorProduct
 open scoped CategoryTheory.Obj
 
@@ -52,3 +54,10 @@ theorem isOpen_identityComponent : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G],
     (GlobalTheory.T.isOpen_snd_image_mul_mem_open_groupScheme S G hG) (GlobalTheory.T.mem_mul_preimage_of_mem_unitComponent S G hG) (GlobalTheory.T.mem_unitComponent_of_mul_mem S G hG)
 
 end GlobalTheory.IdCompOpen
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj TopologicalSpace TensorProduct
+open scoped CategoryTheory.Obj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpen_identityComponents_smooth_groupScheme : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G], Smooth G.hom → IsOpen {x : G.left | x ∈ connectedComponentIn (G.hom ⁻¹' {G.hom x}) ((η[G]).left (G.hom x))} := by
+  atlas_forward_decl GlobalTheory.IdCompOpen.isOpen_identityComponent

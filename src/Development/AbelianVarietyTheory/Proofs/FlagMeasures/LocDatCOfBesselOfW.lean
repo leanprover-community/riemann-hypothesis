@@ -3,7 +3,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarP
 import Formalism.HermitianCurvature.BesselNonvanishingReduction
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GoodLoc
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LoopLocPf
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.ChoiceFinal
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoefWeightedLocUncond
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InstFactDecLow
 

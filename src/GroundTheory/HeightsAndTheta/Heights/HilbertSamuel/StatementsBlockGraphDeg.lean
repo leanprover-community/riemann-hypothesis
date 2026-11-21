@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockGraphImage
 set_option maxSynthPendingDepth 1
 

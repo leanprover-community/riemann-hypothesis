@@ -5,7 +5,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfMemRangeAdjoint
 import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfRangeAdjoint
 import Formalism.LocalToGlobal.IndefiniteReal.FinrankISupLeSum
 import Formalism.LocalToGlobal.IndefiniteReal.CutPassage
-import Formalism.LocalToGlobal.IndefiniteReal.CxCutEP
 import Formalism.LocalToGlobal.IndefiniteReal.CxCutPO
 
 open Module NumberField IsDedekindDomain

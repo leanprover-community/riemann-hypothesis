@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboundaryConstantOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerTowerQqPowLevelEqQ
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.K5 GlobalTheory.KumDlog
 
 noncomputable section
@@ -84,3 +85,11 @@ theorem fixed_eq_div : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Alge
   exact hle hxE
 
 end GlobalTheory.FixFrac
+end
+end
+
+open GlobalTheory.K5 GlobalTheory.KumDlog
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.towerGaloisFixed_eq_div_levelElements : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω → ∀ (T : Tower p Ω) (x : Ω), (∀ h ∈ Hinf T, h x = x) →
+  ∃ m : ℕ, ∃ a ∈ Lev T m, ∃ b ∈ Lev T m, b ≠ 0 ∧ x = a / b := by
+  atlas_forward_decl GlobalTheory.FixFrac.fixed_eq_div

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.Friedrichs
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -105,3 +107,9 @@ theorem cptSob : CptSob := by
     R, hv.om hs.continuousOn⟩
 
 end GlobalTheory.CompanionTheory.CptSobProof
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_sobolev_embedding : PositivityTheory.RgBcC.Fc.CptSob := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CptSobProof.cptSob

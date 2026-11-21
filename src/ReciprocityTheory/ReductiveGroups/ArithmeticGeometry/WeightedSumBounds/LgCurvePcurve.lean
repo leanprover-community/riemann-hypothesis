@@ -49,6 +49,8 @@ private theorem lgCurve_zero' (G : LogFGL v d) (a : Fin d) :
     rw [Finsupp.prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (by simp [hs]),
       map_zero, smul_zero]
 
+alias _root_.SharedProofs.LgCurvePcurve.lgCurve_zero' := lgCurve_zero'
+
 private theorem lc_at_zero_eq_tangent (G : LogFGL v d) (p : ℕ) (ga : Fin d → PowerSeries C)
     (h0 : ∀ b, PowerSeries.constantCoeff (ga b) = 0) : G.lc p ga 0 = tangent ga := by
   funext a
@@ -199,6 +201,8 @@ private theorem exists_subring_iff_isIntV : ∃ S : Subring C, ∀ x, x ∈ S �
      add_mem' := fun {a b} ha hb => le_trans (le_min ha hb) (AddValuation.map_add v a b)
      zero_mem' := by simp
      neg_mem' := fun {a} ha => by simpa [AddValuation.map_neg] using ha }, fun _ => Iff.rfl⟩
+
+alias _root_.SharedProofs.LgCurvePcurve.exists_subring_iff_isIntV := exists_subring_iff_isIntV
 
 private theorem exists_subring_powerSeries_mem_iff_psIsInt : ∃ T : Subring (PowerSeries C), ∀ f, f ∈ T ↔ PsIsInt v f := by
   obtain ⟨S, hS⟩ := exists_subring_iff_isIntV (v := v)

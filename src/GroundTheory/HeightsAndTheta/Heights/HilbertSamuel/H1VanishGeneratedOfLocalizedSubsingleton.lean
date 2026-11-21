@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsSide
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGradedSubquot
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenSESStep
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgFiltSt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgCechSt

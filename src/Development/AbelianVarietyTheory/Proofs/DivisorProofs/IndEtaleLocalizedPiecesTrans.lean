@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EssEtaleLocalLeOfDirectedStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalRingEtaleOverIndEtaleDirectedUnionStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EssEtaleLocalLeOfDirected
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalRingEtaleOverIndEtaleDirectedUnion
+
 open IsLocalRing
 
 namespace GlobalTheory

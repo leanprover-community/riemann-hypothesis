@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsIterateDerivative
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal Matrix
 
 namespace GlobalTheory.BKReal
@@ -24,3 +26,9 @@ theorem descN_eq_X_pow_mul_iterate_derivative :
   · rw [Nat.descFactorial_of_lt (by omega), Nat.cast_zero, zero_mul]
 
 end GlobalTheory.BKReal
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.descN_eq_X_pow_mul_iterate_derivative' : ∀ (K : Type) [NormedField K] (p : ℕ) (f : K⟦X⟧), descN K p f = X ^ p * (⇑(derivative K))^[p] f := by
+  atlas_forward_decl GlobalTheory.BKReal.descN_eq_X_pow_mul_iterate_derivative

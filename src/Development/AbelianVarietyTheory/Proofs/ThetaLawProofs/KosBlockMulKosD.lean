@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.KeyFormula.DegProd
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubmatrixMulOfSupport
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAA
 open GlobalTheory.KeyKa

@@ -1,16 +1,16 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InhabitBis
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinFlagModelValueIndep
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinFlagPairValueIndep
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinFlagModelCommonModel
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ImportsAlt
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.JoinVerticalDivisorStatement
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.JoinTwoModels
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagModelJoinLeftStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagModelJoinRightStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagPlainValueIndependentStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagFurtherTermIndependentStatementStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagModelJoinLeft
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagModelJoinRight
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagPlainValueIndependent
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagFurtherTermIndependentStatement
 
+section
 namespace GlobalTheory.CompanionTheory.CommAlg.FlagModelValue
 
 open GroundTheory.Heights₂.Heights.NumbersDVR in
@@ -22,3 +22,8 @@ theorem main : FlagModelValueIndependence.Statement :=
       GlobalTheory.CompanionTheory.Heights.join_vertical_divisor_statement GlobalTheory.T.flag_model_join_left GlobalTheory.T.flag_model_join_right)
 
 end GlobalTheory.CompanionTheory.CommAlg.FlagModelValue
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_model_value_independent : GroundTheory.Heights₂.Heights.NumbersDVR.FlagModelValueIndependence.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CommAlg.FlagModelValue.main

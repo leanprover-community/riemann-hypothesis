@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.Hypotheses.GalCoh
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.Transport
 import Development.WeilBound.CoreStatements.EulerCharacteristicCounts.GcohFin
 import Development.WeilBound.CoreStatements.EulerCharacteristicCounts.GcohField

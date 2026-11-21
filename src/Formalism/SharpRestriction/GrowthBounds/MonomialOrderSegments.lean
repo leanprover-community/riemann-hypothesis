@@ -1,6 +1,5 @@
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.PlaneGramTheoremOfLemmas
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
-import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.SecondValuationOfAdmitted
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrRenExpandMonomial
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.UnitLevelOne
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrSpan

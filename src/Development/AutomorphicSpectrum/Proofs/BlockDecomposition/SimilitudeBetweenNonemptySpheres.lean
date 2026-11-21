@@ -3,6 +3,8 @@ import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BinaryMassMe
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SiegelWeilMeasureOfCongruentForm
 import Development.WeilBound.CoreStatements.ThetaDilations.ThetaLint
 import Development.WeilBound.CoreStatements.ThetaDilations.SdTransport
+
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 
@@ -88,3 +90,10 @@ theorem exists_similitude : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
 end GlobalTheory.CompanionTheory.SimilExists
 
 end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.similitude_between_nonempty_spheres : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ J : Matrix (Fin 2) (Fin 2) E, IsHermND σ J → ∀ β β' : F, β ≠ 0 → β' ≠ 0 → (PositivityTheory.Rg.Mass.sph σ J β).Nonempty → (PositivityTheory.Rg.Mass.sph σ J β').Nonempty → ∃ γ : GL (Fin 2) E, cT (σ : E →+* E) (γ : Matrix (Fin 2) (Fin 2) E) * J * (γ : Matrix (Fin 2) (Fin 2) E) = (algebraMap F E (β' / β)) • J := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SimilExists.exists_similitude

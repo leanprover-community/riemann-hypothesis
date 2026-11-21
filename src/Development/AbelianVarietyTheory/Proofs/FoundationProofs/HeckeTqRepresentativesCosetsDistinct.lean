@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.PetEqRelIndexMulPetProd
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
+import BuildAid.ForwardExisting
+
+section
 open UpperHalfPlane ModularForm CongruenceSubgroup
 open scoped MatrixGroups ModularForm
 open GlobalTheory.HeckeFamilyMatrices
@@ -50,3 +53,11 @@ theorem tqFam_cosets_distinct : ∀ (q : ℕ) (σ g : SL(2, ℤ)) (i i' : Fin (q
   · apply Fin.ext; omega
 
 end GlobalTheory
+end
+
+open UpperHalfPlane ModularForm CongruenceSubgroup
+open scoped MatrixGroups ModularForm
+open GlobalTheory.HeckeFamilyMatrices
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeTqRepresentatives_cosets_distinct : ∀ (q : ℕ) (σ g : SL(2, ℤ)) (i i' : Fin (q + 1)), q.Prime → tqFam q σ i = mat g * tqFam q σ i' → i = i' := by
+  atlas_forward_decl GlobalTheory.tqFam_cosets_distinct

@@ -2,13 +2,11 @@ import Mathlib
 import Formalism.LocalToGlobal.InertKernelTheory.DefsBeCob
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FormalExponentialAgree
 import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne
-import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.OneAddMulDerivLogSubst
-import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.InVarAddInVarNeZero
 import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.Joints
-import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PadicNormTwoHundredSixteenEqOneOfFiveLe
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.ShortModelTie
@@ -204,3 +202,9 @@ theorem phTie : Formalism.L2.KerInert.BeCob.PhTie := by
     exact v_integral hOk hLT (k + 1)
 
 end GlobalTheory.ShortModelTie
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.phEquiv_shortWeierstrassModel : Formalism.L2.KerInert.BeCob.PhTie := by
+  atlas_forward_decl GlobalTheory.ShortModelTie.phTie

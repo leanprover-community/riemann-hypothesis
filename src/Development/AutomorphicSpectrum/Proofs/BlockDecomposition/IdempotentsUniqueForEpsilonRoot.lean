@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsLimHom
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EpsilonCyclotomicElementPropertiesStatement
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
 
@@ -97,3 +99,14 @@ theorem idem_unique : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l) (t : PAlg l) (m 
   rw [map_mul, h3]
 
 end GlobalTheory.CompanionTheory.ContUniv
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.idempotents_unique_for_epsilon_root : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l) (t : PAlg l) (m : ℕ) (x : t.U) (e e' : ZMod (l ^ m) → t.A),
+  CompleteOrthogonalIdempotents e → CompleteOrthogonalIdempotents e' →
+  (∀ c, t.sharp (e c) * (x - t.sharp (t.s (ε.e m)) ^ c.val) = 0) →
+  (∀ c, t.sharp (e' c) * (x - t.sharp (t.s (ε.e m)) ^ c.val) = 0) → e = e' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ContUniv.idem_unique

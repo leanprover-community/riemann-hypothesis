@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsRatioOfWeight
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOnComplexHessianOfContDiffOnTwo
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -106,3 +106,12 @@ theorem exists_isRatio_chernInt : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [
   exact mul_comm _ _
 
 end GlobalTheory.HSAmp
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.VolBr GlobalTheory.HSAmp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_chernTopPower_volumeDensity_ratio : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ), IsArithVar p D → GenSmooth p D → ∀ (L : HermLB p), L.SemiPos D → ∀ (σ : k →+* ℂ) (ω : VolDens p σ D), ∃ ρ : CxPts p σ → ℝ, ω.IsRatio (L.φ σ) ρ ∧ (∀ y, 0 ≤ ρ y) ∧ ∀ f : CxPts p σ → ℝ, Continuous f → (L.φ σ).chernInt D Set.univ f = ∫ y, f y * ρ y ∂ω.meas := by
+  atlas_forward_decl GlobalTheory.HSAmp.exists_isRatio_chernInt

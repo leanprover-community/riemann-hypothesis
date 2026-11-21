@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsGaugeAll
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
 
 namespace GlobalTheory
@@ -47,3 +50,9 @@ theorem sum_two_pow_pred_mul_exp_neg_le :
   nlinarith [mul_nonneg h0.le h4, mul_le_mul_of_nonneg_right h3 h0.le]
 
 end GlobalTheory
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_two_pow_pred_mul_exp_neg_le_exp_neg_third : ∀ (q : ℕ) (x : ℝ), 15 ≤ x → ∑ J ∈ Finset.Icc 1 q, (2 : ℝ) ^ (J - 1) * Real.exp (-(1 / 2 * J * x)) ≤ Real.exp (-(1 / 3 * x)) := by
+  atlas_forward_decl GlobalTheory.sum_two_pow_pred_mul_exp_neg_le

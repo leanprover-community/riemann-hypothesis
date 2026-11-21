@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChPrime
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Dict
@@ -261,3 +262,10 @@ theorem ideal_isPrime_and_mem_iff (K : Type) [Fintype K] (ι : K → Type) [∀ 
       theta_eq_zero_iff Q p hp hf]
 
 end GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Dict
+end
+end
+
+open MvPolynomial ReciprocityTheory.AnForm.R GlobalTheory.CompanionTheory.Ar.Cmp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.affine_chart_ideal_prime_and_saturated : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Q : Ideal (MvPolynomial (Σ k, ι k) ℂ)) (p : (k : K) → ι k), IsMultiHomogIdeal Q → Q.IsPrime → (∀ k, (X ⟨k, p k⟩ : MvPolynomial (Σ k, ι k) ℂ) ∉ Q) → (SncRes.ideal Q p).IsPrime ∧ ∀ (f : MvPolynomial (Σ k, ι k) ℂ) (a : K → ℕ), IsMultiHomog f a → (bind₁ (SncRes.lift p) f ∈ SncRes.ideal Q p ↔ f ∈ Q) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Dict.ideal_isPrime_and_mem_iff

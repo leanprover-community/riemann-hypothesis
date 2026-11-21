@@ -1,5 +1,7 @@
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.MuQMemHarmSet
+import BuildAid.ForwardExisting
 
+section
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
 open Finset
 
@@ -268,3 +270,9 @@ theorem cone_weight_not_in_second : ConeWeightsNotSecondType := by
   linarith
 
 end GlobalTheory.CompanionTheory.ConeSecondWeights
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_no_second_weights : PositivityTheory.RgBcC.RealD.ConeWeightsNotSecondType := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConeSecondWeights.cone_weight_not_in_second

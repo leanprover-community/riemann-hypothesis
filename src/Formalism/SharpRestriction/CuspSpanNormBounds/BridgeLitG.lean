@@ -6,7 +6,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.TheoremBConstants
 import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplicity
 import Formalism.SharpRestriction.CuspSpanNormBounds.ExpansionFromLemmaB
 import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeGapDS
-import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyFormalDegreeLowerBound
 
 open MeasureTheory Matrix Filter Topology Finset
 open scoped InnerProductSpace ContDiff Convolution

@@ -6,6 +6,7 @@ import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.LocalDensity
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.LatticeTensorUnfolding
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ProductLocalDensitiesAdeleCharacter
 
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
 open scoped ENNReal TensorProduct
 
@@ -38,3 +39,11 @@ theorem nIdx_eq_zpow : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (A
   simp [_root_.zpow_neg]
 
 end GlobalTheory.DualIndexPow
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adicIntegersCharacterDualIndex_eq_residue_card_zpow : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (v : HeightOneSpectrum (𝓞 F)) (c : ℤ), (∀ t : Fv F v, (∀ s ∈ v.adicCompletionIntegers F, psiV F ψ v (t * s) = 1) ↔ Valued.v t ≤ WithZero.exp c) → LocalAdditiveCharacterDual.nIdx F ψ v = (PlaceSplittingTypes.resCard F v : ℝ) ^ c := by
+  atlas_forward_decl GlobalTheory.DualIndexPow.nIdx_eq_zpow

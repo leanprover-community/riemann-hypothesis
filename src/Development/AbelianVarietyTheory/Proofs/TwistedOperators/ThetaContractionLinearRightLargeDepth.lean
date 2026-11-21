@@ -1,11 +1,10 @@
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SumEqZeroOfMultilin
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapsSatisfyFlatLawsFinitePlaces
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatThetaMapsConvergeThetaFunctions
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.JacobiToBesselFlatSchwartzAddSmul
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousKappa
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpecialisedUniversalSeriesEqTwistedThetaSeries
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaPureTensorO
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmPureTensorOOfFinite
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal GlobalTheory.Unf
@@ -109,3 +108,10 @@ theorem contrLin_one_big : Big fun ch => GlobalTheory.ConnectionLinear.ContrLin 
   ⟨0, fun _ _ _ => ⟨0, fun _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ch _ _ => contrLin_one_of ch⟩⟩
 
 end GlobalTheory.ConLinR
+end
+end
+
+open GlobalTheory.RowClaim GlobalTheory.ConnectionLinear
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaContraction_linear_right_largeDepth : Big fun ch => GlobalTheory.ConnectionLinear.ContrLin ch 1 := by
+  atlas_forward_decl GlobalTheory.ConLinR.contrLin_one_big

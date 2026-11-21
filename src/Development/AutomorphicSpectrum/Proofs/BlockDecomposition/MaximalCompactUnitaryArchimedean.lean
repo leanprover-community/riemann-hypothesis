@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdjOne
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsStandardCartanInvolutionCommuteCompact
+
+section
 noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
@@ -25,3 +27,16 @@ theorem map_mul_conjTranspose_eq_one : ∀ (D : D7) (n : ℕ) (θ : InfFam D), I
   exact mul_eq_one_comm.1 hunit
 
 end GlobalTheory.CompanionTheory.MM.KUnitary
+end
+end
+
+noncomputable section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.IwaAd PositivityTheory.PfSWUS GlobalTheory.CompanionTheory.SiegelND GlobalTheory.CompanionTheory.MM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.maximal_compact_unitary_archimedean : ∀ (D : D7) (n : ℕ) (θ : InfFam D), IsInfFam θ → ∀ k ∈ K D n, ∀ τ, (mat k).map ((θ τ).comp (infPart D)) * ((mat k).map ((θ τ).comp (infPart D)))ᴴ = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MM.KUnitary.map_mul_conjTranspose_eq_one

@@ -3,14 +3,10 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InducesPl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateConstantEverywhere
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanExistenceEverywhere
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsLawsOfSignature
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FnAlgClosedOfFixedPoints
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntFrBelow
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TestValueEqConstMulReadingSecZ
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ModuliSchemeLevelMapsHeckePoints
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsModuliSchemePolarizedAbelianLevel
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LevelOfSplitAndLevelCoeffExist
 import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.FieldTwistConditions
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -249,3 +245,9 @@ theorem anyLev (hP : GlobalTheory.CovTop.Hypotheses2) : AnyLevSt := by
 end GlobalTheory.DetHT.AnyLev
 
 end
+end
+
+open GlobalTheory.DetHT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.anyLevSt_of_covering : GlobalTheory.CovTop.Hypotheses2 → AnyLevSt := by
+  atlas_forward_decl GlobalTheory.DetHT.AnyLev.anyLev

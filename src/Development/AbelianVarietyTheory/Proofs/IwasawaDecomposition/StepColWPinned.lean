@@ -3,7 +3,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TiedCo
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NotConditionOfFalse
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.JetsInOfIsTw
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsHalfSelectionSplitPlacesBase
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsColumnInputAssembled
 
 noncomputable section
 

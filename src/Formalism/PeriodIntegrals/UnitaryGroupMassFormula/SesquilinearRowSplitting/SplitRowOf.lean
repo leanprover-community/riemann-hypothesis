@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.SplitRow
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.CoreStep
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat

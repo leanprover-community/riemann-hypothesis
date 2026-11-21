@@ -3,7 +3,6 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSemiampleNef
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.XMemMIdealOverIff
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Assembly
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTwinEqSegreRealise
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSegreBase
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ZpowMemSubalgebraOfInvMem
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RelDimMIdealOverEqTrdeg
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsMultiProjPrimeSegreLift

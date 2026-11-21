@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.HypJ
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
@@ -190,3 +192,11 @@ theorem splitHyp : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
   exact ⟨M₁, rfl, g, J₁, h1, h3⟩
 
 end GlobalTheory.CompanionTheory.SW.HypSplit
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isotropic_vector_splits_hyperbolic_plane : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ x : Fin M → E, x ≠ 0 → hE σ J x x = 0 → ∃ (M₁ : ℕ) (hM : M = M₁ + 2) (g : GL (Fin (M₁ + 2)) E) (J₁ : Matrix (Fin M₁) (Fin M₁) E), IsHermND σ J₁ ∧ hypJ J₁ = cT (σ : E →+* E) (g : Matrix (Fin (M₁ + 2)) (Fin (M₁ + 2)) E) * (hM ▸ J) * (g : Matrix (Fin (M₁ + 2)) (Fin (M₁ + 2)) E) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.HypSplit.splitHyp

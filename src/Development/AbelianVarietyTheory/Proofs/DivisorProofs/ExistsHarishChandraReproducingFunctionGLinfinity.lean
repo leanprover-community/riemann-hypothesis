@@ -1,11 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.CentralNilGL
 import Development.AbelianVarietyTheory.Definitions.Divisors.GlRes
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsExpLieAlgebraComplexUnits
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmoothConvolutionEqDerivativeStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmoothConvolutionEqDerivative
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLaplacianPolynomialKillsHarishChandraFinitStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LaplacianPolynomialKernelOfPolynomialLaplacianStatement
 
+section
 noncomputable section
 
 open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCA GroundTheory.Automorphic
@@ -48,3 +48,9 @@ end
 end GlobalTheory.HCAlphaGLC
 
 end
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_harishChandra_reproducing_function_GLinfinity : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), ∀ (L : Subgroup (GL (Fin a) (Af E))), IsOpen (L : Set (GL (Fin a) (Af E))) → ∀ W : Submodule ℂ (Kinf E a → ℂ), FiniteDimensional ℂ W → ∀ X : Set (Module.End ℂ (Sm E a) → ℂ), X.Finite → ∀ N : ℕ, ∀ [MeasurableSpace (GL (Fin a) (Cinf E))] [BorelSpace (GL (Fin a) (Cinf E))] (μ : Measure (GL (Fin a) (Cinf E))), μ.IsHaarMeasure → ∃ α : GL (Fin a) (Cinf E) → ℂ, Continuous α ∧ HasCompactSupport α ∧ ∀ φ ∈ GlobalTheory.HCF.formsGL E a L W X N, ∀ g, ∫ y, φ.1 (g * infGL E a y) * α y ∂μ = φ.1 g := by
+  atlas_forward_decl GlobalTheory.HCAlphaGLC.exists_alpha

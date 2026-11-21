@@ -1,5 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeIntegral
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP
 open scoped Formalism.Per NNReal
 
@@ -96,3 +98,10 @@ theorem topBasis_comp_exists : ∀ (S A : Type) [CommRing S] [CommRing A] (s : S
   exact ⟨TB.comp TB', fun _ _ => rfl, fun _ _ _ => rfl⟩
 
 end GlobalTheory.BSP
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adicTopologicalBasis_exists_comp : ∀ (S A : Type) [CommRing S] [CommRing A] (s : S →+* A) (I : Ideal S) (ι : Type) (TB : TopBasis s I ι) (A' : Type) [CommRing A'] (t : A →+* A') (I' : Ideal A) (κ : Type) (TB' : TopBasis t I' κ), I' = I.map s → ∃ TC : TopBasis (t.comp s) I (ι × κ), (∀ i j, TC.b (i, j) = t (TB.b i) * TB'.b j) ∧ ∀ i j x, TC.c (i, j) x = TB.c i (TB'.c j x) := by
+  atlas_forward_decl GlobalTheory.BSP.topBasis_comp_exists

@@ -1,29 +1,23 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.ResCoeff
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.InclStd
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.GlobalSerreRelations.GlobSerreSt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubMemOfMk
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StCocycle
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormCocycle
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormAdd
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormAction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormLocalOfFrame
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SheafFiltrationProperty
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartIsGood
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartDividedPowersGradedConstant
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsChartFromCoordinates
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsChart
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LiftCocycleMem
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubMemOfLift
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedCechCohomologyFinite
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoverCupActionBasis
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StableCoverCechVanishing
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TruncatedWittIsNoetherian
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalGradedVanishing
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoordinatesRestrictAffineOpenStatement
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.GlobSerre
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.PolynomialSiteTraces.PolyAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PreimageMono
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Limits AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
@@ -106,3 +100,12 @@ theorem level_one_gr_finite : ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] 
 
 end GlobalTheory.CompanionTheory.FibGr
 end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.witt_level_one_graded_finite : ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] [PerfectRing k l] {O : Type} [CommRing O] {X : Scheme.{0}}
+    (q : X ⟶ Spec (CommRingCat.of O)) [IsProper q] (ρ : O →+* k) (U : Cov q) (r j : ℕ),
+    Module.Finite (Wc.Wm l k 1) (CH.H (sq (sFil (St (γ := Wc.pd l k 1) (p := l) (q := q) (κ := (Wc.res l k 1).comp ρ) ⊤ (Set.range U.U)) r) (sFil (St (γ := Wc.pd l k 1) (p := l) (q := q) (κ := (Wc.res l k 1).comp ρ) ⊤ (Set.range U.U)) ((r : ℤ) + 1))) j) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FibGr.level_one_gr_finite

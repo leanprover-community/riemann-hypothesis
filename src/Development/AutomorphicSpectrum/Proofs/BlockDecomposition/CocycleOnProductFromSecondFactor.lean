@@ -3,7 +3,9 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.HodgeWe
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueIsPullForm
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.USt
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -88,3 +90,14 @@ theorem exists_pull_of_vanish_fst (R : Type) [CommRing R] (C : Type) [Category.{
     exact e.symm
 
 end GlobalTheory.CompanionTheory.Axis
+end
+end
+
+open CategoryTheory AlgebraicGeometry TensorProduct Opposite MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR MainStatements.Hodge GlobalTheory.CompanionTheory.Axis
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cocycle_on_product_from_second_factor : ∀ (R : Type) [CommRing R] (C : Type) [Category.{0} C] (F : C ⥤ CommAlgCat.{0} R), USt F →
+    ∀ f : Z1 (box F), (∀ (a a' b : C) (φ : a ⟶ a'), f.1 (a, b) (a', b) (φ, 𝟙 b) = 0) →
+      ∃ y : Z1 F, (boxR F).pullbackOneCocycle y = f := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Axis.exists_pull_of_vanish_fst

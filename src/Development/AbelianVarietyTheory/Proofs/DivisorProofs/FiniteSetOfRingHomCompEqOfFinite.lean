@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Degenerations.InducedModelMorphismCompStructureMap
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
@@ -41,3 +44,10 @@ theorem finite_setOf_ringHom_comp_eq_of_finite : ∀ (A Ω K : Type) [CommRing A
       exact (RingHom.congr_fun h₁' a).trans (RingHom.congr_fun h₂' a).symm
 
 end GlobalTheory
+end
+
+open AlgebraicGeometry CategoryTheory
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_setOf_ringHom_comp_eq_of_finite' : ∀ (A Ω K : Type) [CommRing A] [CommRing Ω] [Field K] (φ : A →+* Ω) (ρ : A →+* K), φ.Finite → Set.Finite {τ : Ω →+* K | τ.comp φ = ρ} := by
+  atlas_forward_decl GlobalTheory.finite_setOf_ringHom_comp_eq_of_finite

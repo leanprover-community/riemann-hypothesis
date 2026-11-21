@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
+import BuildAid.ForwardExisting
 
+section
 open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
 open GlobalTheory.QFam GlobalTheory.WpFam
 
@@ -45,3 +47,10 @@ theorem hasSum_lambert : ∀ (e : ℕ) (Q : ℂ) (c : ℕ → ℕ → ℂ), ‖Q
       rw [Nat.div_mul_cancel (Nat.dvd_of_mem_divisors hm)]
 
 end GlobalTheory.WpFam
+end
+
+open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
+open GlobalTheory.QFam GlobalTheory.WpFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasSum_lambert_double_series_divisors : ∀ (e : ℕ) (Q : ℂ) (c : ℕ → ℕ → ℂ), ‖Q‖ < 1 → (∀ d m, ‖c d m‖ ≤ 1) → HasSum (fun k : ℕ => (∑ m ∈ k.divisors, (m : ℂ) ^ e * c (k / m) m) * Q ^ k) (∑' d : ℕ+, ∑' m : ℕ+, ((m : ℕ) : ℂ) ^ e * c d m * Q ^ ((d : ℕ) * (m : ℕ))) := by
+  atlas_forward_decl GlobalTheory.WpFam.hasSum_lambert

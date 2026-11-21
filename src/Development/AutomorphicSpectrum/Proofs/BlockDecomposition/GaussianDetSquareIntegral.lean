@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JoinCol
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaMultiplicityWeight
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory ReciprocityTheory.L2DbarEstimates GlobalTheory.CompanionTheory.FSCrofton
 open scoped ENNReal ComplexConjugate
 
@@ -262,3 +265,11 @@ theorem GlobalTheory.CompanionTheory.FSCrofton.lintegral_gW_norm_det_sq (d : ℕ
   rw [← hval, ofReal_integral_eq_lintegral_ofReal hint hnn]
   refine lintegral_congr fun C => ?_
   rw [gW, fR, ENNReal.ofReal_mul (Real.exp_pos _).le]
+end
+end
+
+open MeasureTheory ReciprocityTheory.L2DbarEstimates GlobalTheory.CompanionTheory.FSCrofton
+open scoped ENNReal ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussian_det_square_integral : ∀ (d : ℕ) (β : Type) [Fintype β] [DecidableEq β] (G : Matrix β (Fin d) ℂ), ∫⁻ C : Fin d → β → ℂ, gW d β C * ENNReal.ofReal (‖(Matrix.of C * G).det‖ ^ 2) = ENNReal.ofReal (Real.pi ^ (d * Fintype.card β) * (d.factorial : ℝ) * (G.conjTranspose * G).det.re) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FSCrofton.lintegral_gW_norm_det_sq

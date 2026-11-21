@@ -9,17 +9,13 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetMultipli
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetSubLeftOfAdmissible
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetMultiplicitySubquotientLe
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductIrreducibleFiniteLength
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SegmentProductJacquetShuffleCountStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SegmentProductJacquetShuffleCount
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetMultiplicityTransitiveLe
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnlinkedProductIrreducible
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardQuotientGenericOfIrreducible
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NontrivialTwJacquetOfSurjective
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivProdIrrTw
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIrreducibleSmoothQuotient
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicProductHasFiniteLengthGL
-import CompanionTheory.AutomorphicTheory.HeckeStandardModules.EqZeroOfCompAt
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Cos
@@ -402,3 +398,9 @@ theorem GlobalTheory.CompanionTheory.BZSeg.NuPairIrr.lUnlinkedIrr : ∀ (k : Typ
         (f := Representation.IntertwiningMap.equivLinearMapAsModule _ τ f) hf) hW (IsSubquotient.of_surjective f hf))
 
 end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lUnlinkedIrr_of_irreducibleAdmissible : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.Published.IrreducibleAdmissibleGL → Zc.LSegJacquet k → GlobalTheory.Published.GeometricLemmaFiltration → GlobalTheory.BZSeg.NuPair k → GlobalTheory.BZSeg.WhitRankStd k → GlobalTheory.BZSeg.ProdIrrFiniteLength k → GlobalTheory.BZSeg.LUnlinkedIrr k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZSeg.NuPairIrr.lUnlinkedIrr

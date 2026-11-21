@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TensorProductAction
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharpolyEqQuotientCharpolyPow
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct nonZeroDivisors
 open Polynomial
 
@@ -150,3 +151,15 @@ theorem exists_ramification_and_generator : ∀ (l : ℕ) [Fact l.Prime] (O : Ty
     exact ⟨hsep.map, rfl⟩
 
 end GlobalTheory.UnramifiedGenerator
+end
+
+open scoped TensorProduct nonZeroDivisors
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_uniformizer_separable_reduction : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+    [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O],
+    ∃ (e : ℕ) (π a : O) (u : Oˣ) (h : ℤ_[l][X]), 0 < e ∧ (l : O) = π ^ e * u ∧ h.Monic ∧
+      aeval a h ∈ Ideal.span {π} ∧ e * h.natDegree = Module.finrank ℤ_[l] O ∧
+      ∀ (κ : Type) [Field κ] [CharP κ l] (ψ : ℤ_[l] →+* κ), (h.map ψ).Separable ∧
+        (LinearMap.charpoly (LinearMap.mulLeft ℤ_[l] a)).map ψ = (h.map ψ) ^ e := by
+  atlas_forward_decl GlobalTheory.UnramifiedGenerator.exists_ramification_and_generator

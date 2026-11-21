@@ -2,13 +2,12 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviMatchingWords.SplitPlaceGeneratorPowers
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingSecondBlockOf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PowersDiagonalAtTBlock
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DoubleCosetMultiplication
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AvgEqZeroOfInfiniteRange
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingTransferOf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaGLMemIwGL
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompactClosureZpowersMap
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalizationQuotientSeparatedDvd
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Polynomial Matrix
@@ -97,3 +96,8 @@ theorem regPowT : RegPowT := by
 end GlobalTheory.CompanionTheory.RegPow
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.regular_power_torus : PositivityTheory.Rg.BcB.F.MLM.RegPowT := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RegPow.regPowT

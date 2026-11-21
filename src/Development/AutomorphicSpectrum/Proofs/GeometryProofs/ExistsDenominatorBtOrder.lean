@@ -2,8 +2,10 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Models
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDenominatorRegularStatement
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open GlobalTheory.CompanionTheory.Ar.BT GroundTheory.PAdicHodge
 
@@ -110,3 +112,10 @@ theorem GlobalTheory.CompanionTheory.Ar.BT.btOrder_full_rank : ∀ (R : Type) [C
     simp [δ, Finset.sum_apply, _root_.mul_comm, _root_.mul_left_comm, _root_.mul_assoc, Finset.mul_sum]
   rw [hf]
   exact Subalgebra.sum_mem _ fun s _ => Subalgebra.smul_mem _ (hmem s) _
+end
+
+open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
+open GlobalTheory.CompanionTheory.Ar.BT GroundTheory.PAdicHodge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_denominator_btOrder : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T), ∃ d : R, d ≠ 0 ∧ ∀ f : T → R, d • f ∈ Γ.btOrder ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.BT.btOrder_full_rank

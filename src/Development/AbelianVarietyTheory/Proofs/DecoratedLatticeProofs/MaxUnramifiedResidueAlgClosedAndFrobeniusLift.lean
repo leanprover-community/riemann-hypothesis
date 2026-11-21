@@ -2,9 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EndOmega
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.TranslateProduct
 import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementC
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementK
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsUnramifiedNearIntegralComplexPadicStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsUnramifiedNearIntegralComplexPadic
 
+section
 noncomputable section
 
 open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
@@ -145,3 +145,10 @@ theorem GlobalTheory.Honda.kur_resAlg_unr : ∀ (l : ℕ) [Fact l.Prime], 2 < l 
   calc ‖g.eval y - g.eval z‖ ≤ ‖y - z‖ := norm_eval_sub_eval_le g hgc hy1 hz1
     _ = ‖z - y‖ := norm_sub_rev _ _
     _ < 1 := hzy
+end
+end
+
+open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.maxUnramified_residueAlgClosed_and_frobeniusLift : ∀ (l : ℕ) [Fact l.Prime], 2 < l → ResAlg (MaximalUnramifiedExtension l) ∧ ∀ σ : MaximalUnramifiedExtension l →+* MaximalUnramifiedExtension l, Formalism.InvariantFactorPaths.G7.UnrOK (MaximalUnramifiedExtension l) l σ → Unr (MaximalUnramifiedExtension l) l σ := by
+  atlas_forward_decl GlobalTheory.Honda.kur_resAlg_unr

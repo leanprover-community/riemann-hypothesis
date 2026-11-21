@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommutatorPowOfCommutatorEqSmul
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.LeviCut
 
 noncomputable section
@@ -329,3 +331,10 @@ theorem GlobalTheory.LeviCut.gridInv_of_rankOne_rankTwo (h1 : RankOne) (h2 : Ran
   have hdown : ∀ k, k + 1 < a + b → D (k + 1) k (gridP D K a b a T) = 0 := fun k hk =>
     (h1 W (a + b) K D hD hB k (k + 1) (by omega) hk (by omega) _ (hZ k (by omega)) (hZ (k + 1) hk)).2 (hup k hk)
   exact fill hD _ hZ hup hdown
+end
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.grid_invariance_of_rank_one_two : GlobalTheory.LeviCut.RankOne → GlobalTheory.LeviCut.RankTwo → GlobalTheory.LeviCut.GridInv := by
+  atlas_forward_decl GlobalTheory.LeviCut.gridInv_of_rankOne_rankTwo

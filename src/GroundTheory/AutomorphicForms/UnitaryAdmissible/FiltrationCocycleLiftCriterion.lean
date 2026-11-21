@@ -1,9 +1,5 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.GKModules.GKModule
-import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.MultOne
-import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.MultOneC
 import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.KTypeExist
-import GroundTheory.AutomorphicForms.HarishChandraRegularity.CartanBasis
 
 namespace GroundTheory.Automorphic
 

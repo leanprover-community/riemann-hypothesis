@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits
 
 namespace GlobalTheory
@@ -97,3 +100,9 @@ theorem finrank_zmod_tensor_homology_zero :
   rw [← map_zsmul, hx, map_zero]
 
 end GlobalTheory
+end
+
+open CategoryTheory Limits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_zmod_tensor_homology_zero_of_noPTorsion : ∀ (C : CochainComplex (ModuleCat.{0} ℤ) ℕ) (p : ℕ) [Fact p.Prime], (∀ (x : C.X 0), (p : ℤ) • x = 0 → x = 0) → Module.Finite ℤ (C.homology 0) → Module.finrank (ZMod p) (TensorProduct ℤ (ZMod p) (C.homology 0)) = Module.finrank ℤ (C.homology 0) := by
+  atlas_forward_decl GlobalTheory.finrank_zmod_tensor_homology_zero

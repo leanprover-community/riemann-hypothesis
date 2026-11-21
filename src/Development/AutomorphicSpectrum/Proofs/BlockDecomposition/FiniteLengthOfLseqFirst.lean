@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.TwistedRepresentations.Tens
+import BuildAid.ForwardExisting
 
+section
 open TensorProduct CrystallineSemistableComparison CrystallineSemistableComparison.Tw
 
 namespace GlobalTheory.CompanionTheory.TowerLen
@@ -42,3 +44,9 @@ theorem isFiniteLength_level : ∀ (W : Type) [CommRing W] (l : ℕ) (S S' : Sys
     exact ⟨y, hy⟩
 
 end GlobalTheory.CompanionTheory.TowerLen
+end
+
+open TensorProduct CrystallineSemistableComparison CrystallineSemistableComparison.Tw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_length_of_lseq_first : ∀ (W : Type) [CommRing W] (l : ℕ) (S S' : Sys.{1} W) (_ : LSeq l S S'), IsFiniteLength W (S.M 1) → ∀ n, IsFiniteLength W (S.M n) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TowerLen.isFiniteLength_level

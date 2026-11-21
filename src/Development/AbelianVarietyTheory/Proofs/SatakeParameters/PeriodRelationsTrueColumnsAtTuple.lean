@@ -1,22 +1,13 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.JetSplitAmb
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.JetOpIntegral
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JetsInIffStepField
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ValidForConstructedPointClassesEventuallyWorking
-import Formalism.SharpRestriction.ElevenLe
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RamifiedColumnsTrueColumnsEqConcreteStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RowFormsCoefficientFieldFormComplexPeriodRowsStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RowFormsCoefficientFieldFormComplexPeriodRows
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.InducedCmType
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdSubConjEqNeg
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormalisedFamilySatisfiesEquivarianceLaws
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NormalisedThetaFamilyVectorsLatticesThetaZero
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinAfMemIntUIff
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevOkTwists
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertAtLeCongN
-import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.RamBasic
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ChainCompatibleTwistTransport
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HostFieldsPrimesTies
 import Formalism.LocalToGlobal.Divisibility.DivisibilityProofs.NumbersP
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.AtG
 
 open Formalism.L2.Col GlobalTheory.ColPeriodCompare
@@ -223,3 +214,9 @@ theorem tiesAt_true : ∀ {B : GlobalTheory.Mem.Base} {X : GlobalTheory.Mem.PreX
     exact hC _ hA
 
 end GlobalTheory.TiesTrue
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.AtG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.periodRelations_trueColumns_at_tuple : ∀ {B : GlobalTheory.Mem.Base} {X : GlobalTheory.Mem.PreX B.toPre} (I : GlobalTheory.Mem.Col2.TC B X) (h : I.Ok) (l : I.Laws) (Z : GlobalTheory.Mem.Col2.TC.Later B (I.cols l)) (l0 : I.Law0 l), GlobalTheory.Mem.Col2.ColIn.JetsIn I → ∀ (EX : ErrX (I.rec7 l Z)) (Dx : DivX (I.rec7 l Z)) (a : I.ι), EX.piG = X.piG → EX.piT = X.piT → I.QpIs Dx.Qp → RowPin I h l Z a → TiesAt (I.rec7 l Z) EX Dx a := by
+  atlas_forward_decl GlobalTheory.TiesTrue.tiesAt_true

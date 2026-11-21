@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbUnitary
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published GlobalTheory.QSA GlobalTheory.PlaneSU
 open scoped TensorProduct Quaternion
 
@@ -35,3 +38,10 @@ theorem emb_qm_continuous : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
     (continuous_finset_sum _ fun k _ => (hL _).comp ((hq k l).sub continuous_const)))
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published GlobalTheory.QSA GlobalTheory.PlaneSU
+open scoped TensorProduct Quaternion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_oneAddLowRankEmbedding_quaternionMatrix : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Algebra F E] (a b : F) (M : ℕ) (A : Matrix (Fin M) (Fin 2) (AF F ⊗[F] E)) (B : Matrix (Fin 2) (Fin M) (AF F ⊗[F] E)) (θ : AF F ⊗[F] E), Continuous fun x : DA F a b => emb A B (qm (algebraMap (AF F) (AF F ⊗[F] E)) θ x) := by
+  atlas_forward_decl GlobalTheory.emb_qm_continuous

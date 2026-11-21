@@ -1,8 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.LocalDefs
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResAlgSplitTwo
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedNondeg
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedQuotientCardStatement
+import BuildAid.ForwardExisting
+
+section
 open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
 
 noncomputable section
@@ -322,3 +323,9 @@ theorem herm_diag : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : �
 
 end GlobalTheory.CompanionTheory.HermDiag
 end
+end
+
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_matrix_diagonalizable : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ), IsUnrQuad R σ ϖ q ε → ∀ (n : ℕ) (h : Matrix (Fin n) (Fin n) R), cT σ h = h → ∃ (g g' : Matrix (Fin n) (Fin n) R) (d : Fin n → R), g * g' = 1 ∧ g' * g = 1 ∧ (∀ i, σ (d i) = d i) ∧ cT σ g * h * g = Matrix.diagonal d := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HermDiag.herm_diag

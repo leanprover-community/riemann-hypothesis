@@ -1,6 +1,4 @@
-import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LocalRepresentationL2
 import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ComapIrreducible
-import GroundTheory.AutomorphicForms.L2LocalComponents.NonEmpty
 
 open MeasureTheory NumberField IsDedekindDomain
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace

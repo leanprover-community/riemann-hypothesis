@@ -1,6 +1,8 @@
 import Mathlib
 import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
+import BuildAid.ForwardExisting
 
+section
 open Metric Filter Topology Set
 
 noncomputable section
@@ -111,3 +113,10 @@ theorem cauchyCoord_differentiableAt :
   exact key.differentiableAt
 
 end GlobalTheory
+end
+end
+
+open Metric Filter Topology Set
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.differentiableAt_coordinate_cauchy_integral : ∀ (n : ℕ) (U : Set (Fin n → ℂ)) (k : Fin n) (f : (Fin n → ℂ) → ℂ) (z₀ : Fin n → ℂ) (r : ℝ), 0 < r → z₀ k = 0 → IsOpen U → Metric.closedBall z₀ r ⊆ U → DifferentiableOn ℂ f {z | z ∈ U ∧ z k ≠ 0} → DifferentiableAt ℂ (fun z => ∮ t in C(0, r), (t - z k)⁻¹ • f (Function.update z k t)) z₀ := by
+  atlas_forward_decl GlobalTheory.cauchyCoord_differentiableAt

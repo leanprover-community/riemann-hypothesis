@@ -2,6 +2,8 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HeckeCharEqOfLAdicRealisation
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGaloisRepBaseChange
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisRepUniqueBaseChange
+
+section
 open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
 
 theorem GlobalTheory.StringRepresentationDecomposition.local_global_compat_of_adm : ∀ D : D7, SumRepresentations.AdmA D → LGC D := by
@@ -20,3 +22,9 @@ theorem GlobalTheory.StringRepresentationDecomposition.local_global_compat_of_ad
     · exact Or.inr (hl w hwl).1
     · exact Or.inl hwl
   exact ((ht.2.2.2.2.2 i).2.1 _ ρ _ hc Pm hPm).2.1 w hok
+end
+
+open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_global_compatibility : ∀ D : D7, SumRepresentations.AdmA D → LGC D := by
+  atlas_forward_decl GlobalTheory.StringRepresentationDecomposition.local_global_compat_of_adm

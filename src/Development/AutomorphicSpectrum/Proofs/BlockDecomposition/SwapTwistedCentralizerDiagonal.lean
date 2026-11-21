@@ -1,5 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
+
+section
 open GlobalTheory.BCT PositivityTheory.Rg.BcB.G8.Fin
 open scoped Classical
 
@@ -27,3 +29,10 @@ theorem twCent_swap : ∀ (H : Type) [Group H] (N : H),
     simp [hx']
 
 end GlobalTheory.CompanionTheory.SwapCent
+end
+
+open GlobalTheory.BCT PositivityTheory.Rg.BcB.G8.Fin
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.swap_twisted_centralizer_diagonal : ∀ (H : Type) [Group H] (N : H), twCent ((MulEquiv.prodComm : H × H ≃* H × H).toMonoidHom) (N, (1 : H)) = (twCent (MonoidHom.id H) N).map ((MonoidHom.id H).prod (MonoidHom.id H)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SwapCent.twCent_swap

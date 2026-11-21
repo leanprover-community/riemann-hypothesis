@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.ClassFin
 open scoped Kronecker ComplexOrder TensorProduct
 
@@ -155,3 +158,10 @@ theorem GlobalTheory.ClassFin.orbit_proper_of_isClosed : ∀ (ι : Type) [Fintyp
   · rw [act_mul', hav, ← act_mul', mul_adj hy, act_one']
   · rw [mul_assoc, adj_mul hy, mul_one]
     exact ha.2
+end
+
+open Matrix GlobalTheory.ClassFin
+open scoped Kronecker ComplexOrder TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensorSLOrbit_map_proper_of_isClosed : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (m : ℕ) (d : Fin m → ℕ) (v : TIdx ι d → ℂ), IsClosed (orb d v) → ∀ C : ℝ, ∃ C' : ℝ, ∀ y : Matrix ι ι ℂ, y.det = 1 → nsq (act d v y) ≤ C → ∃ h : Matrix ι ι ℂ, h.det = 1 ∧ act d v h = v ∧ ∀ i j, ‖(h * y) i j‖ ≤ C' := by
+  atlas_forward_decl GlobalTheory.ClassFin.orbit_proper_of_isClosed

@@ -1,8 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DetNeZeroOfIsWittBasis
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsField
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsOrthogonalSumAndHyperbolicSumSpaces
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
 
 noncomputable section
 

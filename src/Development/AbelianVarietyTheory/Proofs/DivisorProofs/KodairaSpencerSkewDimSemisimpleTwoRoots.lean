@@ -1,8 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.InfUniv
-import Development.AbelianVarietyTheory.Definitions.Divisors.KottwitzDimSignatureOneOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankMapEqOfKerEq
 
+section
 open Module GlobalTheory.UPel.Sm GlobalTheory.UPel.Sm.Model GlobalTheory.UPel.Sm.KSCount
 
 noncomputable section
@@ -281,3 +280,10 @@ theorem ksDim_of_eigen_reduce : ∀ (k : Type) (H : Type 1) (O : Type) [Field k]
   rwa [← hp, hfin, ← hd'] at this
 
 end GlobalTheory.UPel.Sm.KSCount
+end
+end
+
+open GlobalTheory.UPel.Sm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kodairaSpencer_skew_dim_semisimple_two_roots : ∀ (k : Type) (H : Type 1) (O : Type) [Field k] [AddCommGroup H] [Module k H] [FiniteDimensional k H] [Ring O] (ρ : O →+* Module.End k H) (st : O → O) (φ : LinearMap.BilinForm k H) (Fil Z : Submodule k H) (w : O) (r r' : k) (d : ℕ), Function.Surjective st → (∀ b x y, φ (ρ b x) y = φ x (ρ (st b) y)) → (∀ x y, φ x y = -φ y x) → (∀ x, (∀ y, φ x y = 0) → x = 0) → (∀ x ∈ Fil, ∀ y ∈ Fil, φ x y = 0) → 2 * Module.finrank k Fil = Module.finrank k H → (∀ a, ∀ x ∈ Fil, ρ a x ∈ Fil) → (∀ a, ρ w * ρ a = ρ a * ρ w) → (ρ w - r • 1) * (ρ w - r' • 1) = 0 → r ≠ r' → (∀ x y, φ (ρ w x) y = φ x ((r + r') • y - ρ w y)) → Z ≤ LinearMap.range (ρ w - r' • 1) → KSDim ρ 0 (Fil ⊔ LinearMap.range (ρ w - r • 1)) Z d → KSDim ρ φ Fil Z d := by
+  atlas_forward_decl GlobalTheory.UPel.Sm.KSCount.ksDim_of_eigen_reduce

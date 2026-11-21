@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FunJetApply
+import BuildAid.ForwardExisting
 
+section
 open Matrix MeasureTheory Filter Topology Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.SphJet
 open scoped InnerProductSpace ComplexOrder Matrix.Norms.L2Operator
 
@@ -67,3 +69,11 @@ theorem modJet_jetRel (V W : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ
     rw [← inner_sum, ← map_sum, h, map_zero, inner_zero_right]
 
 end GlobalTheory.SphJet.ModRel
+end
+end
+
+open Matrix MeasureTheory Filter Topology Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.SphJet
+open scoped InnerProductSpace ComplexOrder Matrix.Norms.L2Operator
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compressedWords_glWordJetRelations_of_no_types : ∀ (V W : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] [NormedAddCommGroup W] [InnerProductSpace ℂ W] (n : ℕ) (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ V) (Λ : Fin n → ℝ) (u : V) (j : W →ₗᵢ[ℂ] V), LowData ε E Λ u j → (∀ a b : Fin n, a < b → ε a ≠ ε b → ∀ x : V, KHighest ε E (Λ - root a b) x → x = 0) → JetRel ε E Λ u j (modJet E j) := by
+  atlas_forward_decl GlobalTheory.SphJet.ModRel.modJet_jetRel

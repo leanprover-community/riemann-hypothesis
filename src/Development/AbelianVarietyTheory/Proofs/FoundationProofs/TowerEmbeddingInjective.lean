@@ -3,6 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
 import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsTrDataGaussianIntOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBasisOnZetaPowMulQPow
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingCyclotomicTowerLevel
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.AlmostEt GlobalTheory.K5
 open scoped NNReal
 
@@ -33,3 +36,11 @@ theorem emb_injective : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Alg
   rwa [hker, Ideal.mem_bot] at this
 
 end GlobalTheory.K5.EmbInj
+end
+end
+
+open GlobalTheory.AlmostEt GlobalTheory.K5
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tower_embedding_injective : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω → ∀ (T : Tower p Ω) (n : ℕ), 1 ≤ n → ∀ ι : On p n →ₐ[O0 p] Ω, IsEmb T n ι → Function.Injective ι := by
+  atlas_forward_decl GlobalTheory.K5.EmbInj.emb_injective

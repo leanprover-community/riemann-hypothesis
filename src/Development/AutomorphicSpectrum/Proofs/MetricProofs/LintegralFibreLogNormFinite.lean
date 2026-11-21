@@ -1,30 +1,28 @@
 import Mathlib
 import Development.AutomorphicSpectrum.PublishedTheorems.Metrics₂.PoincareLelong
 import Development.AutomorphicSpectrum.PublishedTheorems.Metrics₂.SheetDensityEqSetSheetDensity
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRed
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.CxPosDens
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.CxSimple
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.SegreChartProjObjects
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSemiPosMassFinite
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.MemChartComponents
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SetFibreFiniteOfGoodProjStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.AemeasurableCxPosDensityStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntegralDensityIndependentProjectionStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntegrableChartAbsDensityStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ZeroSetChartIdealEqChartSetStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RingKrullDimChartComponentsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartComponentsFiniteProjectionStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntegralDensityIndependentProjection
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntegrableChartAbsDensity
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ZeroSetChartIdealEqChartSet
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RingKrullDimChartComponents
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartComponentsFiniteProjection
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartDensityIntegrableStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartSectionNotMemComponentsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsGoodProjFirstCoordinateStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MeasurableDomCellLogNormChartStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartSectionNotMemComponents
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsGoodProjFirstCoordinate
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.MeasurableDomCellLogNormChart
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.DomCellLogNormMeasurableInvariantStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSmoothMetricsNonnegDensityStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSmoothMetricsNonnegDensity
+
+section
 open MvPolynomial MeasureTheory ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.Pub.CxInt GlobalTheory.CompanionTheory.Ar.Pub.CxComp Filter Topology
 open ReciprocityTheory.AnForm.R (conePts)
 open GlobalTheory.CompanionTheory.Ar.Pub.CxChart (chartSet chartComponents chartSection domCell absLogNorm)
@@ -183,3 +181,18 @@ theorem GlobalTheory.CompanionTheory.Ar.Pub.CxChart.logNorm_mass_lt_top : ∀ (K
           (GlobalTheory.T.aemeasurable_cxPosDensity K ι Q e Ψ N (G i) hQ hΨ hN (hWm i).1 (hWm i).2).ennreal_ofReal]
     _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top
         (ENNReal.sum_lt_top.2 fun i _ => hcell i)
+end
+end
+
+open MvPolynomial MeasureTheory ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.Pub.CxInt GlobalTheory.CompanionTheory.Ar.Pub.CxComp Filter Topology
+open ReciprocityTheory.AnForm.R (conePts)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_fibre_logNorm_finite : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)]
+    (Q : Ideal (MRingOver ℂ ι)) (e : ℕ) (Ψ : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ))
+    (L : Fin e → HermLine ι) (A : HermLine ι) (s : MRingOver ℂ ι) (a : K → ℕ),
+    IsCxVar Q e → IsSetGoodProj (conePts Q) Ψ → (∀ j, IsSmoothHerm (L j)) → IsSmoothHerm A →
+    (∀ k, A.a k = a k) → IsMultiHomog s a → s ∉ Q →
+    ∫⁻ y, ENNReal.ofReal (∑ᶠ w ∈ setFibre (conePts Q) Ψ y,
+      |setSheetDensity (conePts Q) Ψ (pot L) (logNormC A s) y w|) < ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Pub.CxChart.logNorm_mass_lt_top

@@ -1,5 +1,8 @@
 import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BijectiveOfRetract
+import BuildAid.ForwardExisting
+
+section
 open ReciprocityTheory.Gal Formalism.RepresentationBoundsCohomology.LOC ReciprocityTheory.ChartRestriction.T2 GlobalTheory.FunctorialityH2
 
 namespace GlobalTheory.H2CardScalars
@@ -24,3 +27,9 @@ theorem card_H2_eq_of_same_action {R S : Type} [CommRing R] [CommRing S] {G : Ty
   exact hB _
 
 end GlobalTheory.H2CardScalars
+end
+
+open ReciprocityTheory.Gal Formalism.RepresentationBoundsCohomology.LOC ReciprocityTheory.ChartRestriction.T2 GlobalTheory.FunctorialityH2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_H2_eq_same_action : ∀ {R S : Type} [CommRing R] [CommRing S] {G : Type} [Group G] [TopologicalSpace G] {M : Type} [AddCommGroup M] [Module R M] [Module S M] [TopologicalSpace M] [IsTopologicalAddGroup M] [ContinuousConstSMul R M] [ContinuousConstSMul S M] (rho : Representation R G M) (rho' : Representation S G M), (∀ g m, rho g m = rho' g m) → Nat.card (H2 rho) = Nat.card (H2 rho') := by
+  atlas_forward_decl GlobalTheory.H2CardScalars.card_H2_eq_of_same_action

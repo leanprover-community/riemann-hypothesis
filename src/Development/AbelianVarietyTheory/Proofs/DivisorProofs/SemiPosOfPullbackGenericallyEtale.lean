@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SmallSecTe
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsAlgClosedBaseChange
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtLevi
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -85,3 +86,12 @@ theorem semiPos_of_pull_etale : ∀ (k : Type) [CommRing k] (X Y : Scheme.{0}) [
   exact h₁
 
 end GlobalTheory.SemiPosEtale
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.VolBr GlobalTheory.HSNef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.semiPos_of_pullback_generically_etale : ∀ (k : Type) [CommRing k] (X Y : Scheme.{0}) [IsIntegral X] [IsIntegral Y] (p : X ⟶ Sp k) (q : Y ⟶ Sp k) (D : ℕ), IsArithVar p D → IsArithVar q D → ∀ (π : Y ⟶ X) (hπ : π ≫ p = q) (V : Y.Opens), (V : Set Y).Nonempty → Etale (V.ι ≫ π) → ∀ L : HermLB p, (L.pull π hπ).SemiPos D → L.SemiPos D := by
+  atlas_forward_decl GlobalTheory.SemiPosEtale.semiPos_of_pull_etale

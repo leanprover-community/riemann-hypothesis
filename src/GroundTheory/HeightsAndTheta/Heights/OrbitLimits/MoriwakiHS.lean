@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.MoriwakiSt
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsNefCountLower
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsNefCountUpper
 set_option maxSynthPendingDepth 1

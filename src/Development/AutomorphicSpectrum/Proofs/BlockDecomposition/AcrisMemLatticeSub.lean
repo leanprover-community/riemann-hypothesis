@@ -1,7 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs
-import GroundTheory.PAdicHodge.ACrisBdRGalois
 
+section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option maxSynthPendingDepth 1
@@ -99,3 +99,10 @@ theorem cris_in (l : ℕ) [Fact l.Prime] (M k : ℕ) (c : Acris l) :
   exact pk_toB_mem l k M hs
 
 end GlobalTheory.CompanionTheory.LatCris
+end
+end
+
+open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.acris_mem_lattice_sub : ∀ (l : ℕ) [Fact l.Prime] (M k : ℕ) (c : Acris l), Lat.pk l k (ACris.iota ℂ_[l] l c) ∈ Lat.sub (Lat.fk l k) (xi0 l) l M := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LatCris.cris_in

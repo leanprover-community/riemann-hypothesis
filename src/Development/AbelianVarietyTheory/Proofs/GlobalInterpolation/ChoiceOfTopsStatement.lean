@@ -1,9 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ChoiceOfTops
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LFunctionPositiveConductorFourEight
-import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
 import Formalism.FrobeniusOrbits.HostCorollaries
-import Formalism.SharpRestriction.GlobalSchurBounds.MainIn
 import Formalism.SharpRestriction.GlobalSchurBounds.ZetaZeroFreeRegion
 open GlobalTheory.NT Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory Formalism.BasicNotions NumberField IsDedekindDomain
 set_option maxHeartbeats 1000000 in

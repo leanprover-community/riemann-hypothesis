@@ -1,10 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformVanishing
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsGloballyGeneratedIffGeneratingSections
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.BijectiveToPushforwardComp
-import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsAmpleLBOfRelAmpleOfIsAffine
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsFrameOfForallExists
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -36,3 +35,10 @@ theorem exists_coherent_epi_restrict {X : Scheme.{0}} [IsNoetherian X] (H : Reci
   exact ⟨P, ⟨hP.1, hP.2⟩, e.hom ≫ φ, epi_comp _ _⟩
 
 end GlobalTheory.CompanionTheory.GE.Present
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coherent_extension_surjection_open : ∀ {X : Scheme.{0}} [IsNoetherian X] (H : ReciprocityTheory.ChartRestriction.G.Semi.LB X), GlobalTheory.IsAmpleLB H → ∀ (O : X.Opens) (E : (O : Scheme.{0}).Modules), IsCoherent E → ∃ P : X.Modules, IsCoherent P ∧ ∃ f : P.restrict O.ι ⟶ E, Epi f := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.Present.exists_coherent_epi_restrict

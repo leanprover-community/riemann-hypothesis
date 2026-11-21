@@ -1,8 +1,10 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChowLemmaProjectiveModification
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsClosedImageClosureCompleteDVRSpecialFibreStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsClosedImageClosureCompleteDVRSpecialFibre
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniversallyClosedOfClosedCoverInUniversallyCloseStatement
+
+section
 open CategoryTheory Limits AlgebraicGeometry
 
 namespace GlobalTheory.FibreProper
@@ -62,3 +64,9 @@ theorem isProper_of_irreducible_of_isProper_specialFibre : ∀ (O : Type) [CommR
   exact ⟨⟩
 
 end GlobalTheory.FibreProper
+end
+
+open CategoryTheory Limits AlgebraicGeometry
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isProper_of_irreducible_properSpecialFibre_completeDvr : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (X : Scheme.{0}) (f : X ⟶ Spec (CommRingCat.of O)), IrreducibleSpace X → IsSeparated f → LocallyOfFiniteType f → QuasiCompact f → (∃ x : X, f x = IsLocalRing.closedPoint O) → IsProper (pullback.snd f (Spec.map (CommRingCat.ofHom (IsLocalRing.residue O)))) → IsProper f := by
+  atlas_forward_decl GlobalTheory.FibreProper.isProper_of_irreducible_of_isProper_specialFibre

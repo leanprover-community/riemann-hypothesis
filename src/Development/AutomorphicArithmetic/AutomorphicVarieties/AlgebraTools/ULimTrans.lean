@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.UltraDefs
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ULimKer
 
 open Filter UpperTheory.V.AlgebraTools

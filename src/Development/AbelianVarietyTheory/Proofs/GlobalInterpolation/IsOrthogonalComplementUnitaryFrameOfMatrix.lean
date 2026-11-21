@@ -5,7 +5,9 @@ import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ActionCoordi
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.LocalDensityEuler
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.LatticeTensorUnfolding
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FundamentalDomainNeZero
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
 open scoped ENNReal TensorProduct
 
@@ -47,3 +49,11 @@ theorem isPerpFrame_of_matrix : ∀ (P Q P' Q' : ℕ), P' + Q' + 1 = P + Q → �
   · simp only [ActionCoordinates.act, toLin'_apply, mulVec_mulVec, (hι g).1]
 
 end GlobalTheory.PerpFrameOfMatrix
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOrthogonalComplementUnitaryFrame_of_matrix : ∀ (P Q P' Q' : ℕ), P' + Q' + 1 = P + Q → ∀ x : ActionCoordinates.Wsp P Q, ActionCoordinates.qf x ≠ 0 → ∀ C : Matrix (Fin P ⊕ Fin Q) (Fin P' ⊕ Fin Q') ℂ, Cᴴ * Formalism.UG.Jpq P Q * C = Formalism.UG.Jpq P' Q' → (Cᴴ * Formalism.UG.Jpq P Q) *ᵥ x = 0 → ∀ ι : UpqT P' Q' → UpqT P Q, (∀ b, UpqT.mat (ι b) * C = C * UpqT.mat b ∧ UpqT.mat (ι b) *ᵥ x = x) → ActionCoordinates.IsPerpFrame x (Matrix.toLin' C) ι := by
+  atlas_forward_decl GlobalTheory.PerpFrameOfMatrix.isPerpFrame_of_matrix

@@ -1,10 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasTemperateGrowthElim
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClmSupBound
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialOperatorFderivFormulaStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialOperatorSchwartzSeminormBoundStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IteratedDerivativeBoundByPartialsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialOperatorFderivFormula
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialOperatorSchwartzSeminormBound
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IteratedDerivativeBoundByPartials
 
+section
 open GlobalTheory.SliceSchwartz
 open scoped ContDiff
 
@@ -106,3 +105,13 @@ theorem GlobalTheory.SliceOp.exists_tensor_clm : ∀ (V : Type) [NormedAddCommGr
     simp only [qOp, ← sliceRL_apply, map_smul, SchwartzMap.smul_apply, RingHom.id_apply]
   · intro f; exact contDiff_qOp P f
   · rintro ⟨k, n⟩; exact decay_qOp n P k
+end
+end
+
+open GlobalTheory.SliceSchwartz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_tensor_right_operator : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] (κ κ' κ₁' : Type)
+    [Fintype κ] [Fintype κ'] [Fintype κ₁'] (P : SchwartzMap (κ' → V) ℂ →L[ℂ] SchwartzMap (κ₁' → V) ℂ),
+    ∃ Q : SchwartzMap (κ ⊕ κ' → V) ℂ →L[ℂ] SchwartzMap (κ ⊕ κ₁' → V) ℂ,
+      ∀ (f : SchwartzMap (κ ⊕ κ' → V) ℂ) (s : κ ⊕ κ₁' → V), Q f s = P (sliceR f (s ∘ Sum.inl)) (s ∘ Sum.inr) := by
+  atlas_forward_decl GlobalTheory.SliceOp.exists_tensor_clm

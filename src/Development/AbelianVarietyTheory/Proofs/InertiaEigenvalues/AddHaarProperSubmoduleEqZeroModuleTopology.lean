@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 open Set Pointwise Metric
@@ -85,3 +88,9 @@ theorem addHaar_submodule_eq_zero (F : Type) [NontriviallyNormedField F] [Locall
     _ = 0 := by simp only [key, tsum_zero]
 
 end GlobalTheory.HaarNullSub
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.addHaar_proper_submodule_eq_zero_moduleTopology : ∀ (F : Type) [NontriviallyNormedField F] [LocallyCompactSpace F] (V : Type) [AddCommGroup V] [Module F V] [Module.Finite F V] [TopologicalSpace V] [IsModuleTopology F V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V), μ.IsAddHaarMeasure → ∀ s : Submodule F V, s ≠ ⊤ → μ (s : Set V) = 0 := by
+  atlas_forward_decl GlobalTheory.HaarNullSub.addHaar_submodule_eq_zero

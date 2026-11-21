@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.InertZeta
 
 namespace GlobalTheory.InertZeta.LeviSum
@@ -129,3 +131,9 @@ theorem step : Step := by
   exact hsum.hasSum
 
 end GlobalTheory.InertZeta
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_levi_summation_geometric_series : Step := by
+  atlas_forward_decl GlobalTheory.InertZeta.step

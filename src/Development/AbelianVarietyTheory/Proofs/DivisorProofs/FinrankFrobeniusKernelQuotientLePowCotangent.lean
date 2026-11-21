@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmu
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobKerIdealLeAugIdeal
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.AevalSurjectiveOfSpanCotangent
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -107,3 +108,10 @@ theorem finrank_quot_frobKerIdeal_le : ∀ (q : ℕ) (K H : Type) [Field K] [Com
   simpa [Fintype.card_fun, Fintype.card_fin] using h1
 
 end GlobalTheory.FrobKerDim
+end
+end
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_frobeniusKernelQuotient_le_pow_cotangent : ∀ (q : ℕ) (K H : Type) [Field K] [CommRing H] [Bialgebra K H] [Module.Finite K H], 0 < q → Module.finrank K (H ⧸ frobKerIdeal q K H) ≤ q ^ Module.finrank K (Cot K H) := by
+  atlas_forward_decl GlobalTheory.FrobKerDim.finrank_quot_frobKerIdeal_le

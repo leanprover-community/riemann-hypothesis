@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.IsPairLevel
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.BCT Formalism.L2.Host PositivityTheory.Rg.BcB.F.Ex0 PositivityTheory.Rg.Bc.ArchbcB.B
@@ -65,3 +66,10 @@ theorem unifEx : UnifEx := by
   · exact hv
 
 end GlobalTheory.CompanionTheory.UnifFix
+end
+end
+
+open NumberField GlobalTheory.BCT Formalism.L2.Host PositivityTheory.Rg.BcB.F.Ex0 PositivityTheory.Rg.Bc.ArchbcB.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniformizer_exists : UnifEx := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnifFix.unifEx

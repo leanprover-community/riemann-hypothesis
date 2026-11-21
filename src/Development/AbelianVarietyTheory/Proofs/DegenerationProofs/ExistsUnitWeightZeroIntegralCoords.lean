@@ -4,8 +4,10 @@ import Development.AbelianVarietyTheory.Definitions.Degenerations.IsAffineSplitT
 import Development.AbelianVarietyTheory.Definitions.Degenerations.CompanionTheory
 import Development.AbelianVarietyTheory.Statements.SemistableTorsion.UTorsSt
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ImmByWeightZeroStatement
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ImmByWeightZero
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.KbIsAlgClosedAndConj
+
+section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -43,3 +45,14 @@ theorem exists_unit_and_residue_point : Out.Laws → Out.Laws2 → ∀ (p : ℕ)
   exact (IsLocalRing.residue_ne_zero_iff_isUnit _).1 h₄.ne_zero
 
 end GlobalTheory.ZH.ModPrim
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
+attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_weightZero_integral_coords : Out.Laws → Out.Laws2 → ∀ (p : ℕ) [Fact p.Prime] (V : Type) [CommRing V] (j : V →+* OO p) (G : Over (Sp V)) [GrpObj G] (g N N' : ℕ) (X : Type) [AddCommGroup X] (q : QuadraticMap ℤ X ℝ) (H : LB G.left) (J : Type) [Fintype J] (σ : J → H.Sec) (cls : J → X) (m : Mod p j G g N q H σ cls), Big g N N' → ∀ (c : Sp (OO p) ⟶ G.left) (w : J → OO p), c ≫ G.hom = spMap j → Crd H σ c w → (∃ i, cls i = 0 ∧ IsUnit (w i)) ∧ ∃ x : m.Φ.Pt, x.left ≫ m.r = rPt p ≫ c ∧ Crd (m.Φ.H 1) m.F x.left (fun i => IsLocalRing.residue (OO p) (w i)) := by
+  atlas_forward_decl GlobalTheory.ZH.ModPrim.exists_unit_and_residue_point

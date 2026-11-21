@@ -2,7 +2,6 @@ import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSectionChowHeight
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRecQOfRecursion
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ArchOfPlacesEmbedding
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ContinuousHermNormGroup
 set_option maxSynthPendingDepth 1
 
 noncomputable section

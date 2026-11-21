@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.T2SpaceNumberFieldInfiniteAdeles
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.GaugeEx
 open scoped TensorProduct NNReal ENNReal
 
@@ -15,3 +17,10 @@ theorem continuous_pairOf_joint : ∀ (F E : Type) [Field F] [NumberField F] [Fi
         ((continuous_apply 0).comp (continuous_snd.comp continuous_snd)))
 
 end GlobalTheory.GaugeEx
+end
+
+open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.GaugeEx
+open scoped TensorProduct NNReal ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_unitaryTwoStepVectorAndTranslatePair : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R] (M : ℕ) (J : Matrix (Fin (M + 1)) (Fin (M + 1)) E) (B : Matrix (Fin (M + 1)) (Fin M) E), Continuous fun p : (Fin 1 → Fin (M + 1) → R ⊗[F] E) × HA R σ J × (Fin 1 → Fin M → R ⊗[F] E) => pairOf R σ J B p.1 p.2.1 p.2.2 := by
+  atlas_forward_decl GlobalTheory.GaugeEx.continuous_pairOf_joint

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.UnipotentAdelicQuotients.HaarProductClosedCompact
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarProductClosedCompactHolds
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SmulNn
 

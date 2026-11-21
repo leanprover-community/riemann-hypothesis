@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EvalMod
+
+section
 noncomputable section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
 open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
@@ -299,3 +301,22 @@ theorem GlobalTheory.CompanionTheory.LTPer.evalMod_sigma_of_congr : ∀ {B : Typ
   exact GlobalTheory.CompanionTheory.LTPer.QGal.finiteRing_sq_sub_mul_sq_eq_of_card env k m (Ideal.Quotient.mk I)
     (fun x => Ideal.Quotient.eq_zero_iff_mem.trans (hI x)) h h' hh (fun _ => rfl) π hπ q hq2 s hsS hs φ h0 hc
     σ hσS hσϖ v hvS hv M s0 hs0 hf0 Q hQS hQ hE
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lubin_tate_commuting_series_unique : ∀ {B : Type} [CommRing B] {S : Subring B} {F : ℕ → Ideal B} {ϖ : B} {R : Type} [CommRing R], PerEnv S F ϖ →
+    ∀ (h : R →+* B), (∀ c, h c ∈ S) → ∀ (π : R), h π = ϖ → ∀ (q : ℕ), 2 ≤ q → (∃ s ∈ S, (q : B) = ϖ * s) →
+    ∀ (φ : PowerSeries R), PowerSeries.constantCoeff φ = 0 →
+      PowerSeries.subst φ (PowerSeries.C π * PowerSeries.X + PowerSeries.X ^ q : PowerSeries R) = PowerSeries.subst (PowerSeries.C π * PowerSeries.X + PowerSeries.X ^ q : PowerSeries R) φ →
+    ∀ (σ : B →+* B), (∀ s ∈ S, σ s ∈ S) → (∀ k, ∀ x ∈ F k, σ x ∈ F k) → σ ϖ = ϖ →
+    ∀ (v : ℕ → B), (∀ n, v n ∈ S) → (∀ n, v (n + 1) ^ q = v n) →
+      (∃ M : ℕ, 0 < M ∧ Near S ϖ (F 1) 1 (v 0 ^ M)) →
+    ∀ Q ∈ S, (∀ n, ∃ a ∈ S, Q - ltIter ϖ q n (v n) = ϖ ^ (n + 1) * a) →
+      (∀ n, EvalMod S F ϖ h φ (v n) (σ (v n)) 1) → ∀ m, EvalMod S F ϖ h φ Q (σ Q) m := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.evalMod_sigma_of_congr

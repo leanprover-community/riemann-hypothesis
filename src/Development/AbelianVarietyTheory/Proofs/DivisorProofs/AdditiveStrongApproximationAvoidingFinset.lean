@@ -6,7 +6,9 @@ import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRi
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsPosNatMemOpenAdeleSubgroup
 import GroundTheory.GlobalFields.Adele.IntegersLattice
 import GroundTheory.GlobalFields.Adele.Approximation
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.QSA GlobalTheory.Published
@@ -211,3 +213,11 @@ theorem exists_approx_notMem : ∀ (F : Type) [Field F] [NumberField F], ∀ (S�
 end GlobalTheory.AddApproxPlaces
 
 end
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.QSA GlobalTheory.Published
+open Matrix
+open scoped Quaternion Topology TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additive_strongApproximation_avoiding_finset : ∀ (F : Type) [Field F] [NumberField F], ∀ (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (HeightOneSpectrum (𝓞 F))) (ε : AF F), IsPlacesIdem S₁ S₂ ε → (S₁.Nonempty ∨ S₂.Nonempty) → ∀ (x : AF F) (U : Set (AF F)), U ∈ 𝓝 x → ∀ Z : Finset F, ∃ t : F, t ∉ Z ∧ ∃ s : AF F, algebraMap F (AF F) t + ε * s ∈ U := by
+  atlas_forward_decl GlobalTheory.AddApproxPlaces.exists_approx_notMem

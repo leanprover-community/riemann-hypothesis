@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPolyRep
+import BuildAid.ForwardExisting
+
+section
 open Matrix Formalism.L2.NG ReciprocityTheory.Aut Formalism.AUTREP NumberField GlobalTheory.AlgWtHW
 
 namespace GlobalTheory.AlgWtHW
@@ -114,3 +117,9 @@ theorem eval_upt_eq_zero_of_skew (L : Type) [Field L] [NumberField L] [IsCMField
   rw [hcomb, ← heval, hQ', map_zero]
 
 end GlobalTheory.AlgWtHW
+end
+
+open Matrix Formalism.L2.NG ReciprocityTheory.Aut Formalism.AUTREP NumberField GlobalTheory.AlgWtHW
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mvPolynomial_eval_zero_of_vanishing_rational_skewHermitian : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (Q : MvPolynomial ((L →+* ℂ) × Fin n × Fin n) ℂ), (∀ S : Matrix (Fin n) (Fin n) L, S + (S.map (IsCMField.complexConj L : L →+* L))ᵀ = 0 → MvPolynomial.eval (upt (ratPt S)) Q = 0) → ∀ Y : (L →+* ℂ) → Matrix (Fin n) (Fin n) ℂ, (∀ σ, Y (ComplexEmbedding.conjugate σ) = -(Y σ)ᵀ) → MvPolynomial.eval (upt Y) Q = 0 := by
+  atlas_forward_decl GlobalTheory.AlgWtHW.eval_upt_eq_zero_of_skew

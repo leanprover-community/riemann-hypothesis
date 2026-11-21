@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ImageStableDegreeBounds
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilRingModHighDegreePropertyStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilRingModHighDegreeProperty
 
+section
 noncomputable section
 
 namespace GlobalTheory.NModHigh
@@ -543,3 +543,10 @@ theorem reduction : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametric
       fun c => imageStable_isotypic hR F c⟩⟩
 
 end GlobalTheory.NModHigh
+end
+end
+
+open PowerSeries GlobalTheory.BK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monodromy_reduction_modulo_high_degree : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [CompleteSpace K] [Algebra O K] [IsUnitBall O K] (l e a : ℕ) [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] [NeZero a] [TameDescentExponentData K l e a], GlobalTheory.IndefiniteRowSideFullHecke.ImageStableDegreeBounds.Reduction O K l e a := by
+  atlas_forward_decl GlobalTheory.NModHigh.reduction

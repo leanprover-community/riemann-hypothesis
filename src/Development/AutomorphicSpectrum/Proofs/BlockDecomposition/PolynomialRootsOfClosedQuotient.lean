@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
 
 namespace GlobalTheory.CompanionTheory.RootsUpToUnits
@@ -69,3 +71,9 @@ theorem roots_of_dich : ∀ {S : Type} [CommRing S] (ϖ : S), ϖ ∈ (⊥ : Idea
     rw [hr, h0]; push_cast; ring
 
 end GlobalTheory.CompanionTheory.RootsUpToUnits
+end
+
+open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polynomial_roots_of_closed_quotient : ∀ {S : Type} [CommRing S] (ϖ : S), ϖ ∈ (⊥ : Ideal S).jacobson → ϖ ∈ nonZeroDivisors S → Dich ϖ → Aic (S ⧸ Ideal.span {ϖ ^ 2}) → Roots ϖ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RootsUpToUnits.roots_of_dich

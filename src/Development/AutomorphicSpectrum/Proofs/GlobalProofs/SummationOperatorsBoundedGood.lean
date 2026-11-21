@@ -1,6 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuation
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.PartialSum
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsFurther
 

@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.HilbertSchmidtDecay.HaarExists
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset MeasureTheory Matrix
@@ -127,3 +129,9 @@ theorem growth : Growth := by
   exact key.2
 
 end GlobalTheory.CompanionTheory.PathGrowth
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.GrowthStatement : CompanionTheory.RgExh.Dec.L.Growth := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PathGrowth.growth

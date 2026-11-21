@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUnipMir
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep GlobalTheory.BZMir GroundTheory.LocalField Matrix GlobalTheory.CompanionTheory.MirFourier
 
 namespace GlobalTheory.CompanionTheory.MirFourier
@@ -27,3 +30,9 @@ theorem exists_GL_lastRow_eq (k : Type) [Field k] (m : ℕ) (a : Fin (m + 1) →
   rw [updateRow_self, Function.comp_apply, Equiv.swap_apply_self]
 
 end GlobalTheory.CompanionTheory.MirFourier
+end
+
+open GlobalTheory.PRep GlobalTheory.BZMir GroundTheory.LocalField Matrix GlobalTheory.CompanionTheory.MirFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_invertible_matrix_last_line_given : ∀ (k : Type) [Field k] (m : ℕ) (a : Fin (m + 1) → k), a ≠ 0 → ∃ g : GL (Fin (m + 1)) k, ∀ j, (g : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j = a j := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MirFourier.exists_GL_lastRow_eq

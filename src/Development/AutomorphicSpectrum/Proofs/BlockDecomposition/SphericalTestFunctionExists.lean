@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.IsEpCont
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelConj
+import BuildAid.ForwardExisting
 
+section
 set_option maxSynthPendingDepth 1
 set_option synthInstance.maxSize 1000
 
@@ -319,3 +321,9 @@ theorem testSph : TestSph := by
     exact zeta_ne c hcdef.symm.le φ₀ hφ₀ hx
 
 end GlobalTheory.CompanionTheory.RgEisTestSph
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.spherical_test_function_exists : PositivityTheory.RgEis.TestSph := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisTestSph.testSph

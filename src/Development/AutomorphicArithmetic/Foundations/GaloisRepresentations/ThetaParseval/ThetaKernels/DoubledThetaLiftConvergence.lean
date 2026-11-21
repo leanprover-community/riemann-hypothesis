@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaTransformHasLevelCmExtensionStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ThetaTrLevelK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -24,5 +22,5 @@ theorem _root_.GlobalTheory.T.doubled_theta_lift_convergence : ∀ (F E : Type) 
             ∀ u ∈ U, u.map (Formalism.IndefR.DatumF.infPartF F E) = 0 →
               Formalism.IndefR.DatumF.heisOF σ JS JT ξ₀ B.ψ u (GlobalTheory.WeilSchrodinger.thetaTr F co B.ψ φ) =
                 GlobalTheory.WeilSchrodinger.thetaTr F co B.ψ φ := by
-  first | exact @_root_.GlobalTheory.ThetaLevelCM.thetaTr_level_k | exact _root_.GlobalTheory.ThetaLevelCM.thetaTr_level_k | (intros; apply _root_.GlobalTheory.ThetaLevelCM.thetaTr_level_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.ThetaLevelCM.thetaTr_level_k
 end

@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.EffCartierIffForallCartAt
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocPrincipalSpan
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
@@ -89,3 +90,11 @@ theorem locPrincipal_of_cartAt : ∀ {X : Scheme.{0}} [IsIntegral X] (Z : X.Idea
   exact (PrimeSpectrum.mem_basicOpen f q).mp hq
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.locally_principal_of_cartier_at : ∀ {X : Scheme.{0}} [IsIntegral X] (Z : X.IdealSheafData) (U : X.affineOpens) (q : PrimeSpectrum Γ(X, U.1)), CartAt Z (U.2.fromSpec q) → LocPrincipal (Z.ideal U) q.asIdeal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver.locPrincipal_of_cartAt

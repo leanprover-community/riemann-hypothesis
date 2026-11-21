@@ -1,7 +1,6 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.RenameProdMapMul
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SphereMean
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogGaussNormSupportFinite
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ContinuousHermNormGroup
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.MahlerMul
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.HeightMul

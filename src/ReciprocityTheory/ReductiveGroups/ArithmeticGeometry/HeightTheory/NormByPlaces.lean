@@ -1,4 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.KTFiniteDimensional
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HNormB
 

@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyMeasAndReps
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DistribHaarCharTransport
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR MeasureTheory
 open scoped Pointwise
 
@@ -76,3 +77,9 @@ theorem absK_prod : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNo
       rw [this, mul_zero]
 
 end GlobalTheory.JR.EtProdAbs
+end
+
+open GlobalTheory.JR MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absK_mul_of_etale_splitting : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (A A₁ A₂ : Et F E) (eK : A.K ≃ₐ[F] A₁.K × A₂.K) (t : A.K), A.absK t = A₁.absK (eK t).1 * A₂.absK (eK t).2 := by
+  atlas_forward_decl GlobalTheory.JR.EtProdAbs.absK_prod

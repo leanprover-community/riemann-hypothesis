@@ -1,17 +1,14 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.MemRangeOfIsAlgebraicRatFun
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ModuliSchemeLevelMapsHeckePointsStatement
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CompactifiedModuliPartOneStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsValuationSubringComplexComapValEq
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LevelOfSplitAndLevelCoeffExist
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComponentGeometricallyIrreducibleStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsComponentSurjectsClopenStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLiftAlgebraicallyClosedPointStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComponentSurjectsOfOpenClosedStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelComponentIrreducibleStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComponentSurjectsOfOpenClosed
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelComponentIrreducible
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLevelChangeMapStatement
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -79,3 +76,9 @@ theorem coverSt_holds : CoverSt := by
 end GlobalTheory.FlatModel
 
 end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cover_statement_holds : CoverSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.coverSt_holds

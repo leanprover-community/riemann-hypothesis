@@ -1,14 +1,13 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CobOneEqZeroOfConnecting
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymmetricCocycleModIdealEqCoboundaryQuasiLogStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralCoboundaryRepresentativeCocycleRulesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymmetricCocycleModIdealEqCoboundaryQuasiLog
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralCoboundaryRepresentativeCocycleRules
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefectCompatStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffsInIdealOfPowerSeriesIffImage
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvPowerSeriesLiftQuotient
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffMemIdealOfFormalGroupCoboundaryOneCoeffMemAStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFormalSeriesOfCoboundaryDvdPStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffMemIdealOfFormalGroupCoboundaryOneCoeffMemA
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFormalSeriesOfCoboundaryDvdP
 
+section
 set_option autoImplicit false
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup
@@ -74,3 +73,9 @@ theorem additive_mod_p_is_defect : ∀ (p : ℕ) [Fact p.Prime] (O E : Type) [Co
   rw [smul_sub, ← this]; abel
 
 end GlobalTheory.QLog
+end
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additive_mod_prime_eq_quasiLogarithm_defect : ∀ (p : ℕ) [Fact p.Prime] (O E : Type) [CommRing O] [CommRing E] [Algebra O E], IsFrame p E (RingHom.id O) → ∀ (G : PDivGroup p O) (d : ℕ) (c : QLog.Chart G d), ∀ (b : G.A 1) (z : G.A 1 ⊗[O] G.A 1), cobOne O (G.A 1) b = (p : O) • z → ∃ (f : MvPowerSeries (Fin d) E) (s : MvPowerSeries (Fin d) O) (y : G.A 1), QL c.μ ⊤ f ∧ map (algebraMap O E) s = defect c.μ p f ∧ c.ev 1 s = b + (p : O) • y := by
+  atlas_forward_decl GlobalTheory.QLog.additive_mod_p_is_defect

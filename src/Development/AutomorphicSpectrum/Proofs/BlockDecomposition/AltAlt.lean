@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.IsCompl
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CofaceRel
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FaceFaceApply
 

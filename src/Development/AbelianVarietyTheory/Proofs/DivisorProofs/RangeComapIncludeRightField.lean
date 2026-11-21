@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj TopologicalSpace TensorProduct
 open scoped CategoryTheory.Obj
 
@@ -59,3 +61,10 @@ theorem range_comap_includeRight_field :
       ← RingHom.ker_eq_comap_bot, Ideal.ker_algebraMap_residueField]
 
 end GlobalTheory
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj TopologicalSpace TensorProduct
+open scoped CategoryTheory.Obj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.range_comap_includeRight_eq_comap_eq_ker : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B] (k : Type) [Field k] [Algebra A k], Set.range (PrimeSpectrum.comap (Algebra.TensorProduct.includeRight : B →ₐ[A] k ⊗[A] B).toRingHom) = {r : PrimeSpectrum B | r.asIdeal.comap (algebraMap A B) = RingHom.ker (algebraMap A k)} := by
+  atlas_forward_decl GlobalTheory.range_comap_includeRight_field

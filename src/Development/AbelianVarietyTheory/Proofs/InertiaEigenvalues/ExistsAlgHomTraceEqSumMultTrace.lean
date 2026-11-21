@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 open Matrix
@@ -52,3 +54,8 @@ theorem exists_algHom_trace_eq_sum_mult_trace : ∀ (k : Type) [Field k] (N : �
   exact Equiv.sum_comp e.symm (fun i => blockDiagMultAlgHom k N n m x i i)
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_algHom_trace_eq_sum_mul_trace : ∀ (k : Type) [Field k] (N : ℕ) (n m : Fin N → ℕ) (d : ℕ), ∑ i, m i * n i = d → ∃ ρ : (Π i, Matrix (Fin (n i)) (Fin (n i)) k) →ₐ[k] Matrix (Fin d) (Fin d) k, ∀ x, (ρ x).trace = ∑ i, (m i : k) * (x i).trace := by
+  atlas_forward_decl GlobalTheory.exists_algHom_trace_eq_sum_mult_trace

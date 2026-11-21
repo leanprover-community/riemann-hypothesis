@@ -1,5 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.FrobeniusWittActions.TeichmullerCongruence
+
+section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 1000000
 open CategoryTheory AlgebraicGeometry TensorProduct GroundTheory.PAdicHodge GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.Pb
@@ -69,3 +71,12 @@ theorem flat_acr (r : Res l K) (n : ℕ) :
     exact (Mid.wn_mk r n a).trans ((base l).cris_algebraMap n (WittVector.map r.s a))
 
 end GlobalTheory.CompanionTheory.CrisFlat
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 1000000
+open CategoryTheory AlgebraicGeometry TensorProduct GroundTheory.PAdicHodge GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flat_acris_truncated_witt : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} (r : Res l K) (n : ℕ), letI := (Mid.wn r n).toAlgebra; Module.Flat (Wc.Wm l r.k n) ((base l).Acr n) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CrisFlat.flat_acr

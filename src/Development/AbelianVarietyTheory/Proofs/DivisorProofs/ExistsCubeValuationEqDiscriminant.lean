@@ -1,11 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DatumOfIsIntegersLattice
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDiscreteValuationRingValuationSubringAtPrime
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.AddMonoidHomEqZeroOfEventually
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGaloisStableTorsionFamilyKerStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisStableLatticePointsSymmetricMemStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeierstrassPSubTwoMulUnitStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGaloisStableTorsionFamilyKer
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisStableLatticePointsSymmetricMem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeierstrassPSubTwoMulUnit
+
+section
 open NumberField IsDedekindDomain WeierstrassCurve GlobalTheory GlobalTheory.Published GlobalTheory.CMModel Formalism.L2.Th1.F
 open scoped IntermediateField BigOperators Topology
 
@@ -51,3 +50,10 @@ theorem exists_mem_valuation_cube_eq_Δ : ∀ (p : ℕ) (F : IntermediateField �
     ← pow_mul]
 
 end GlobalTheory.CMModel
+end
+
+open NumberField IsDedekindDomain WeierstrassCurve GlobalTheory GlobalTheory.Published GlobalTheory.CMModel Formalism.L2.Th1.F
+open scoped IntermediateField BigOperators Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cube_valuation_eq_discriminant : ∀ (p : ℕ) (F : IntermediateField ℚ ℂ) (L : PeriodPair) (t : ℂ), p.Prime → p % 4 = 3 → 3 < p → Datum p F L t → ∀ V : ValuationSubring ℂ, ∃ A ∈ F, A ≠ 0 ∧ V.valuation A ^ 3 = V.valuation (latticeCurve L).Δ := by
+  atlas_forward_decl GlobalTheory.CMModel.exists_mem_valuation_cube_eq_Δ

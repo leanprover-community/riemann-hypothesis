@@ -1,24 +1,25 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentSwapVarietiesArithmeticStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentSwapVarietiesArithmetic
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSecond
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsOrbitChartProjectiveLine
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.HoloMapOfLocalProductChartsStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagDimensionIndexEquivStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsContinuousOrbitSectionStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBaseChartAtGoodPointStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.OrbitChartTransitionAnalyticStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsContinuousOrbitSection
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBaseChartAtGoodPoint
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.OrbitChartTransitionAnalytic
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFromOrbitChartsStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartFirstStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartSecondStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartThirdStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartThird
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartFourthStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartFifthStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartFifth
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartSixthStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartSeventhStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartEighthStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartNinthStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentArithmeticHeightStatement
+
+section
 open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 open scoped ComplexOrder Classical
 open GlobalTheory.CompanionTheory.Ar.PB.WSq
@@ -165,3 +166,12 @@ theorem fibreSquare_atlas : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k,
     exact h2 ▸ (hB.2.2.2.2 _ hw).2.2.1
 
 end GlobalTheory.CompanionTheory.Ar.PB.WMan
+end
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+open GlobalTheory.CompanionTheory.Ar.PB.WSq
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_adjacent_rows_resolution : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n) (τ : Ψ) (a b : Fin N) (k₀ : K) (ca cb : Fin N), (b : ℕ) = a + 1 → ((b : ℕ) < j ∨ j ≤ (a : ℕ)) → M.blk (τ, a) = some k₀ → (ca : ℕ) = lastCol N j a → (cb : ℕ) = ca + 1 → IsArithVar (mCoordIdeal y) (d + 2) → d + 1 = n + Fintype.card Ψ * (j.choose 2 + (N - j).choose 2) → ∃ (RW : AnLogRes (mCoordIdeal (M.wCo (τ, a) k₀ ca cb RatFunc.X)) ⊤ (d + 2)) (pr : RW.X → Rb.X), IsWAtlas M Rb τ a k₀ ca cb RW pr := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.WMan.fibreSquare_atlas

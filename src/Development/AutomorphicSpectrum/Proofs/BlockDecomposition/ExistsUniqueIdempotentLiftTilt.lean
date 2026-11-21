@@ -4,7 +4,9 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LiftIdempotentAdicComplete
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SharpSurjectiveKerSpan
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UntiltAdicCompleteStatement
+import BuildAid.ForwardExisting
 
+section
 set_option backward.isDefEq.respectTransparency false
 
 open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
@@ -55,3 +57,10 @@ theorem existsUnique_idempotent_sharp {l : ℕ} [Fact l.Prime] (A : PAlg l) (e :
     rw [A.sharpMap_eq, A.sharpMap_eq, hs₁, hs₀]
 
 end GlobalTheory.CompanionTheory.Untilt
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.existsUnique_idempotent_lift_tilt : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l) (e : A.U), IsIdempotentElem e → ∃! e₀ : A.A, IsIdempotentElem e₀ ∧ A.sharp e₀ = e := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Untilt.existsUnique_idempotent_sharp

@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
 import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsTrDataGaussianIntOne
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.AlmostEt GlobalTheory.K5
 open scoped NNReal
 
@@ -25,3 +27,10 @@ theorem towerAlg_mem_iff (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebr
     exact this ▸ ht
 
 end GlobalTheory
+end
+
+open GlobalTheory.AlmostEt GlobalTheory.K5
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_towerUnionAdjoinIntegralClosure_iff : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω] (T : Tower p Ω) (s : (integralClosure (O0 p) Ω)), s ∈ towerAlg T ↔ (s : Ω) ∈ Algebra.adjoin (O0 p) (Set.range T.ζ ∪ Set.range T.qq) := by
+  atlas_forward_decl GlobalTheory.towerAlg_mem_iff

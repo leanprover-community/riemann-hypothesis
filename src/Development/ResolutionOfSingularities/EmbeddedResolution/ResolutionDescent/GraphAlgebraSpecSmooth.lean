@@ -1,5 +1,4 @@
 import Mathlib
-import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.GraphAlgebra
 import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.GraphAlgebraStandardSmooth
 
 universe u

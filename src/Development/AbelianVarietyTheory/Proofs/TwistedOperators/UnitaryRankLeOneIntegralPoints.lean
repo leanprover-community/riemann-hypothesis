@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl
@@ -70,3 +72,9 @@ theorem smallRank : SmallRank := by
 end GlobalTheory.InertZeta
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_rank_le_one_integral_points : SmallRank := by
+  atlas_forward_decl GlobalTheory.InertZeta.smallRank

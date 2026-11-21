@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OverExtAlgebraMap
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowerBasisOfCharpolySeparable
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.UnitLemma.Unr
@@ -52,3 +54,10 @@ theorem charpoly_overExt_separable : ∀ (K K' : UQ) (d : ℕ) (φ : K.E →+* K
   exact (hsep.map).of_dvd hdvd
 
 end GlobalTheory.UnitLemma.Unr
+end
+end
+
+open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Unr Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.separable_charpoly_invAlgBaseChangeUnramified : ∀ (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E), IsUnrExt K K' d φ → ∀ (B : InvAlg K) (ψ : K'.E →+* B.A) (hψ : ∀ e, ψ (φ e) = algebraMap K.E B.A e) (hσ : ∀ e, B.σ (ψ e) = ψ (K'.c e)), B.P.Separable → (overExt φ B ψ hψ hσ).P.Separable := by
+  atlas_forward_decl GlobalTheory.UnitLemma.Unr.charpoly_overExt_separable

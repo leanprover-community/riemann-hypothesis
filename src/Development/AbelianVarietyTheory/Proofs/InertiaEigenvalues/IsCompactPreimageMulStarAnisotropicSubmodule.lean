@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix
 
 namespace GlobalTheory
@@ -72,3 +75,9 @@ theorem mul_star_anisotropic_proper : ∀ (F E : Type) [NontriviallyNormedField 
     nlinarith [mul_le_mul_of_nonneg_left h1 (sq_nonneg ‖z‖)]
 
 end GlobalTheory
+end
+
+open GlobalTheory.JR Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCompact_preimage_mul_star_anisotropic_submodule : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (r : ℕ) (V : Submodule E (Matrix (Fin r) (Fin r) E)), (∀ z ∈ V, z * star z = 0 → z = 0) → ∀ B : Set (Matrix (Fin r) (Fin r) E), IsCompact B → IsCompact {z : Matrix (Fin r) (Fin r) E | z ∈ V ∧ z * star z ∈ B} := by
+  atlas_forward_decl GlobalTheory.mul_star_anisotropic_proper

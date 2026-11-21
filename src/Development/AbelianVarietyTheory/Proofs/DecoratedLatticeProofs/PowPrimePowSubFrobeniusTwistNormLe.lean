@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EndOmega
 import Formalism.TorsionNormIteration.InverseIntegralClasses.MemSpanOfNormLe
+import BuildAid.ForwardExisting
+
+section
 open PowerSeries GlobalTheory.Honda
 
 namespace GlobalTheory.Honda
@@ -47,3 +50,9 @@ theorem pow_frob_sub_le : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [
   exact Formalism.LT.FrobP.main l i hpr (σ ^ i) hp0 hl1 (isFrobLift_pow l σ hU i).1 A hA m
 
 end GlobalTheory.Honda
+end
+
+open PowerSeries GlobalTheory.Honda
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pow_prime_pow_sub_frobeniusTwist_norm_le : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [CharZero K] (l : ℕ) (σ : K →+* K), Unr K l σ → ∀ (s : Type) (A : MvPowerSeries s K), (∀ m, ‖MvPowerSeries.coeff m A‖ ≤ 1) → ∀ (i : ℕ) (h : l ^ i ≠ 0) (m : s →₀ ℕ), ‖MvPowerSeries.coeff m (A ^ (l ^ i) - MvPowerSeries.expand (l ^ i) h (MvPowerSeries.map (σ ^ i) A))‖ ≤ ‖(l : K)‖ := by
+  atlas_forward_decl GlobalTheory.Honda.pow_frob_sub_le

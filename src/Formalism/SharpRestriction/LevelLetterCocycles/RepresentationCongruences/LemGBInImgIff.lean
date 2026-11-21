@@ -249,14 +249,10 @@ theorem lemGB_Nl_le_N (T : LocLat G Qp LL O) (i : ZMod n) {x : W.DD T} (hx : x �
   exact (W.N T).smul_mem _ hy
 
 theorem lemGB_DelF_mul {δ δ' : W.Gam} (h : δ ∈ W.DelF) (h' : δ' ∈ W.DelF) : δ * δ' ∈ W.DelF := by
-  obtain ⟨k, hk, hk1⟩ := (W.DelF_def δ).mp h
-  obtain ⟨m, hm, hm1⟩ := (W.DelF_def δ').mp h'
-  refine (W.DelF_def _).mpr ⟨k * m, Nat.mul_pos hk hm, ?_⟩
-  rw [mul_pow, pow_mul, hk1, one_pow, one_mul, mul_comm k m, pow_mul, hm1, one_pow]
+  apply mul_mem_delF (h := h) (h' := h') <;> assumption
 
 theorem lemGB_DelF_inv {δ : W.Gam} (h : δ ∈ W.DelF) : δ⁻¹ ∈ W.DelF := by
-  obtain ⟨k, hk, hk1⟩ := (W.DelF_def δ).mp h
-  exact (W.DelF_def _).mpr ⟨k, hk, by rw [inv_pow, hk1, inv_one]⟩
+  apply inv_mem_delF (h := h) <;> assumption
 
 theorem lemGB_sum_inv (T : LocLat G Qp LL O) (x : W.DD T) (δ' : W.Gam) (h' : δ' ∈ W.DelF) :
     W.γD T δ' (∑ δ ∈ W.DelF, W.γD T δ x) = ∑ δ ∈ W.DelF, W.γD T δ x := by

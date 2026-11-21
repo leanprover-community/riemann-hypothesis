@@ -1,9 +1,10 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.BundleChernComparison
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyCN
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.OfSteps
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num
 
 namespace GlobalTheory.CompanionTheory.Ar.Num
@@ -107,3 +108,9 @@ theorem horizontal_vNumL_eq_zero : ∀ (O : Type) [CommRing O] [IsDomain O] [IsD
     (SpecialIdealMultiHomog.full O K ι W hWm) _ _ (relDim_lt_of_dim_lt _ _ hdim)
 
 end GlobalTheory.CompanionTheory.Ar.Num
+end
+
+open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.vertical_number_zero_of_horizontal : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ϖ : O), Irreducible ϖ → ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι O)) (d : ℕ), IsModelOver P d → ∀ (a : K → ℕ) (f : MRing ι O), IsMultiHomog f a → f ∉ P → ∀ W, divCycle P f W ≠ 0 → (C ϖ : MRing ι O) ∉ W → ∀ l : List (K → ℤ), l.length = d → vNumL W l = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.horizontal_vNumL_eq_zero

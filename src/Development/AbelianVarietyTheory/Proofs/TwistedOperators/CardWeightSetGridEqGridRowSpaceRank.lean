@@ -3,6 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NodeYPr
 import Formalism.LocalToGlobal.IndefiniteReal.LinksLemmas
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HighestWeightBelow
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GridMinimalGapEqChiGridGapGammaOne
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.IndefR Formalism.IndefR.Links
 
 namespace GlobalTheory.Grid
@@ -23,3 +26,9 @@ theorem card_weightX_grid : ∀ (D : D7), HostHyp D → ∀ (τ : D.what₂.Tau)
   rfl
 
 end GlobalTheory.Grid
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.IndefR Formalism.IndefR.Links
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_weightSet_grid_eq_gridRowSpaceRank : ∀ (D : D7), HostHyp D → ∀ (τ : D.what₂.Tau) (j : ℕ), 1 ≤ j → j ≤ D.R.m → ((GlobalTheory.Grid.grid D τ).weightX j).card = GlobalTheory.Grid.rkX D j := by
+  atlas_forward_decl GlobalTheory.Grid.card_weightX_grid

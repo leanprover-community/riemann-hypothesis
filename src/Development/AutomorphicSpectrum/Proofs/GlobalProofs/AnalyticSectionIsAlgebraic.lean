@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SerreHolomorphicSectionsHolds
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompactSpacePts
-import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.GagaSections
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.HolomorphicSectionModerateGrowthStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.HolomorphicSectionModerateGrowth
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Set
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.CxPts
@@ -47,3 +48,11 @@ theorem holomorphicSections_algebraic_of_isProper : ∀ (Y : Scheme.{0}) (p : Y 
     · exact (ev_of_notMem h _).trans (hsec.1.2 i y h).symm
 
 end GlobalTheory.CompanionTheory.Gaga
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Set
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.analytic_section_is_algebraic : ∀ (Y : Scheme.{0}) (p : Y ⟶ Sp ℂ) (D : ℕ), SmoothOfRelativeDimension D p → IsProper p → ∀ (R : AnRead p (RingHom.id ℂ) D) (B : LB Y), B.IsLB → ∀ s ∈ R.holSec B, ∃ t : B.Sec, secVal p (RingHom.id ℂ) t = s := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Gaga.holomorphicSections_algebraic_of_isProper

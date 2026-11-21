@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.PrimitiveCosets.CoreAtH
 import Development.AutomorphicArithmetic.PrimitiveCosets.GChiEq
 import Development.AutomorphicArithmetic.PrimitiveCosets.GzEq
 

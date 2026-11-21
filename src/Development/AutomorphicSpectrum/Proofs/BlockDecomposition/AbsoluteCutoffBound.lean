@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.Friedrichs
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Filter Topology
@@ -171,3 +173,9 @@ theorem absCut : AbsCut := by
 end Core
 
 end GlobalTheory.CompanionTheory.FcCut
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absolute_cutoff_bound : PositivityTheory.RgBcC.Fc.AbsCut := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FcCut.absCut

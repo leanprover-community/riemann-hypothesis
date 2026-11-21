@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.CapelliEigenvalues.BetaAtInfinityZero
 import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
@@ -110,3 +112,10 @@ theorem zuckerman_hypothesis_holds : ZuckH := by
 end GlobalTheory.CompanionTheory.ZuckTransport
 
 end
+end
+
+open CompanionTheory.Zuck BranchingSupport Matrix Finset
+open scoped InnerProductSpace Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.zuckerman_hypothesis : ZuckH := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ZuckTransport.zuckerman_hypothesis_holds

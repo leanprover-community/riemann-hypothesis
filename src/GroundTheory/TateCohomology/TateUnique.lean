@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.TateCohomology.CohTrivialBasic
-import GroundTheory.TateCohomology.DimensionShift
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh

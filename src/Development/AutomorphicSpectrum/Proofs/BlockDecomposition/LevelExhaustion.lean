@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GunrExhaust
@@ -55,3 +56,8 @@ theorem exhaust : Exhaust := by
 end GlobalTheory.CompanionTheory.GunrExhaust
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_exhaustion : PositivityTheory.SiegelWeilFormula.Gunr.Exhaust := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrExhaust.exhaust

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
+import BuildAid.ForwardExisting
 
+section
 open Polynomial GlobalTheory.CuspGL
 
 namespace GlobalTheory.CuspGL.ConvCancel
@@ -49,3 +51,9 @@ theorem conv_cancel : ∀ (F : Type) [Field F] (a b m : F[X] → ℂ), m 1 = 1 �
     simpa [hm] using h1
 
 end GlobalTheory.CuspGL.ConvCancel
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monicFactorizationConvolution_cancel_of_one : ∀ (F : Type) [Field F] (a b m : F[X] → ℂ), m 1 = 1 → (∀ P : F[X], P.Monic → conv a m P = conv b m P) → ∀ P : F[X], P.Monic → a P = b P := by
+  atlas_forward_decl GlobalTheory.CuspGL.ConvCancel.conv_cancel

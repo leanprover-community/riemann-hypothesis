@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsZetaSystemFixedExponent
 import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleNewformZetaData
 import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleHodgeTateZetaClassParams
 import Development.AbelianVarietyTheory.Definitions.Foundations.HTPresNuOfPolys

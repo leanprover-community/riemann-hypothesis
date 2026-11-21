@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.PetEqRelIndexMulPetProd
+import BuildAid.ForwardExisting
+
+section
 open UpperHalfPlane ModularForm CongruenceSubgroup MeasureTheory
 open scoped MatrixGroups ModularForm Manifold
 
@@ -48,3 +51,10 @@ theorem dia_mul_inv_mem_lev : ∀ (N l : ℕ) (d : ℤ) (σ τ : SL(2, ℤ)), 0 
     exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).2 (dvd_trans (dvd_mul_left _ _) hNl)
 
 end GlobalTheory.Hk
+end
+
+open UpperHalfPlane ModularForm CongruenceSubgroup MeasureTheory
+open scoped MatrixGroups ModularForm Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.diamond_mul_inv_mem_gamma1InterGamma0Level : ∀ (N l : ℕ) (d : ℤ) (σ τ : SL(2, ℤ)), 0 < N → GlobalTheory.Hk.IsDia N l d σ → GlobalTheory.Hk.IsDia N l d τ → τ * σ⁻¹ ∈ GlobalTheory.Hk.lev N l := by
+  atlas_forward_decl GlobalTheory.Hk.dia_mul_inv_mem_lev

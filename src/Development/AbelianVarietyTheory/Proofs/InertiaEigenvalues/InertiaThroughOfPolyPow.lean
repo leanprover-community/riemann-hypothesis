@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CentralIdemCoeff
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InertiaThroughOfPoly
 
 noncomputable section

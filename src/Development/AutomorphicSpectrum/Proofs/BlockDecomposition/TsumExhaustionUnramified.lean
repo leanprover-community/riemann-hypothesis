@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 
+section
 namespace GlobalTheory.CompanionTheory.Exhaustion
 
 open Filter Topology
@@ -29,3 +30,8 @@ theorem tsum_exhaust_prop : PositivityTheory.SiegelWeilFormula.Gunr.TsumExhaust 
   exact ⟨summable_norm_of_exhaustion hC hex hK, (tsum_exhaust hC hex hK).2⟩
 
 end GlobalTheory.CompanionTheory.Exhaustion
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tsum_exhaustion_unramified : PositivityTheory.SiegelWeilFormula.Gunr.TsumExhaust := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Exhaustion.tsum_exhaust_prop

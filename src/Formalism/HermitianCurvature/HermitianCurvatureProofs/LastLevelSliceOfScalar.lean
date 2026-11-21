@@ -1,5 +1,4 @@
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDomainMeasurable
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.BFCell
 
 open Matrix MeasureTheory Filter Topology
 open scoped ContDiff

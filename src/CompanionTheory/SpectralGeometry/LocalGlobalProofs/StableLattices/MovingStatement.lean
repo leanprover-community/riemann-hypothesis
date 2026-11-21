@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.Fl
 
 namespace GlobalTheory.CompanionTheory.CartanMove
@@ -64,3 +66,9 @@ theorem stMove : StMove := by
   · exact e.toHomeomorph.isCompact_preimage.2 hcK'
 
 end GlobalTheory.CompanionTheory.CartanMove
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.MovingStatement : StMove := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CartanMove.stMove

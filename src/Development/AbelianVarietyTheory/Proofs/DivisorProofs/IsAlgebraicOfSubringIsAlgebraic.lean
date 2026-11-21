@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 open Algebra in
@@ -33,3 +35,9 @@ theorem isAlgebraic_of_subring_isAlgebraic {L : Type} [Field L] [Algebra ℂ L]
   rwa [Algebra.adjoin_eq] at key
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isAlgebraic_of_isAlgebraic_over_algebraic_subring : ∀ {L : Type} [Field L] [Algebra ℂ L] (S : Subalgebra ℂ L) (B : Subring L) (z : L),
+  (∀ b ∈ B, IsAlgebraic S b) → IsAlgebraic B z → IsAlgebraic S z := by
+  atlas_forward_decl GlobalTheory.isAlgebraic_of_subring_isAlgebraic

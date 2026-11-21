@@ -1,21 +1,22 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsHermRingRat
 import Development.WeilBound.ThetaLifts.Reductions.SiegelPar
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlagTransitiveOfBaseStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMaxEvenAdaptedLatticeStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHermitianRingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHermitianHasBaseStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFormHermitianPerfectStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalWittFrameStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeMaxEvenAlmostAllStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeStabilizerCompactStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MaxEvenLatticeFlagTransitiveLocalStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockTriangularMemMinimalParabolicLocalStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockTriangularMemMinimalParabolicStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviMatrixMapBaseChangeStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviMatrixOneStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MaxEvenLatticeAdaptedBasisStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlagTransitiveOfBase
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMaxEvenAdaptedLattice
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHermitianRing
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHermitianHasBase
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFormHermitianPerfect
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalWittFrame
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeMaxEvenAlmostAll
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeStabilizerCompact
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MaxEvenLatticeFlagTransitiveLocal
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockTriangularMemMinimalParabolicLocal
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockTriangularMemMinimalParabolic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviMatrixMapBaseChange
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviMatrixOne
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MaxEvenLatticeAdaptedBasis
 
+section
 set_option linter.unusedSectionVars false
 
 noncomputable section
@@ -166,3 +167,11 @@ theorem exists_compact_iwasawa_good : ∀ (F E : Type) [Field F] [NumberField F]
 end GlobalTheory.CompanionTheory.KFin
 
 end
+end
+
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR
+open Formalism.UG (cT)
+open scoped TensorProduct NNReal ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_adelic_iwasawa_compact : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J → ∀ (r : ℕ) (X Y : Matrix (Fin n) (Fin r) E), IsWittFrame σ J X Y → ∃ K : Subgroup (GAd σ J), K ≤ finPts σ J ∧ IsCompact (K : Set (GAd σ J)) ∧ (∀ g ∈ finPts σ J, ∃ p ∈ minPar σ J X, p ∈ finPts σ J ∧ ∃ k ∈ K, g = p * k) ∧ GoodPosition σ J X Y K := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KFin.exists_compact_iwasawa_good

@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.PairingDivisors.StatementA
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsFinSetSplitPlacesCoprimeConductor
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.CMVal
 
 noncomputable section
@@ -180,3 +183,12 @@ end GlobalTheory.HeckeLBound
 
 example : ∀ (E : Type) [Field E] [NumberField E] (χ : HChar E) (Λ : ℂ → ℂ) (S : ℂ), IsUnitary χ → IsHeckeL χ Λ → 3 / 2 ≤ S.re → ‖Λ S‖ ≤ ‖riemannZeta (3 / 2)‖ ^ Module.finrank ℚ E :=
   GlobalTheory.HeckeLBound.norm_heckeL_le
+end
+end
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_heckeLFunction_le_zeta_three_halves_pow : ∀ (E : Type) [Field E] [NumberField E] (χ : HChar E) (Λ : ℂ → ℂ) (S : ℂ), IsUnitary χ → IsHeckeL χ Λ → 3 / 2 ≤ S.re → ‖Λ S‖ ≤ ‖riemannZeta (3 / 2)‖ ^ Module.finrank ℚ E := by
+  atlas_forward_decl GlobalTheory.HeckeLBound.norm_heckeL_le

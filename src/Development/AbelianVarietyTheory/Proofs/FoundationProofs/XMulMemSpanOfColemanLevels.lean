@@ -1,5 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.CyclotomicDvdExpandOfCoprime
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.Col PowerSeries
@@ -114,3 +116,10 @@ theorem X_mul_mem_span_of_levels (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.
     linear_combination hAB - om * ht'
 
 end GlobalTheory.Col
+end
+end
+
+open GlobalTheory.Col PowerSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.X_mul_mem_span_of_colemanLevels : ∀ (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime], IsDomain R → Prime (p : R) → IsAdicComplete (Ideal.span {(p : R)}) R → ∀ (h : PowerSeries R) (k c : ℕ), (∀ r, 1 ≤ r → r ≤ k → ∃ y : PowerSeries R, ev R p r h = ev R p r ((p : PowerSeries R) ^ c * y)) → ∀ j, j ≤ k → j ≤ c → X * h ∈ Ideal.span {(p : PowerSeries R) ^ (c - j), (1 + X) ^ (p ^ j) - 1} := by
+  atlas_forward_decl GlobalTheory.Col.X_mul_mem_span_of_levels

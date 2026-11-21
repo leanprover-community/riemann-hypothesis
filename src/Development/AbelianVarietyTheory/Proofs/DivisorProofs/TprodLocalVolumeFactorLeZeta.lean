@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TamagawaSpecialUnitary
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalFactorProductBound
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalFactorLowerBound
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD
 
 namespace GlobalTheory.EulerLocVol
@@ -215,3 +216,9 @@ theorem tprod_locFactor_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   exact le_of_tendsto hm.hasProd (Filter.Eventually.of_forall key)
 
 end GlobalTheory.EulerLocVol
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tprod_local_volume_factor_le_zeta : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ), 2 ≤ r → Multipliable (GlobalTheory.SUVol.locFactor E r) → ∏' v, GlobalTheory.SUVol.locFactor E r v ≤ (∏ i ∈ Finset.Icc 2 r, ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ i) ^ ReciprocityTheory.ChartRestriction.G.FD.fdeg E := by
+  atlas_forward_decl GlobalTheory.EulerLocVol.tprod_locFactor_le

@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FramePositiveSum
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnipotentRadicalBasic
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
 
 namespace GlobalTheory.CosetFn
@@ -106,3 +109,9 @@ theorem exists_isCosetFn (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace
     simp
 
 end GlobalTheory.CosetFn
+end
+
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_parabolicDoubleCosetFunction_eq_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ) (J : Subgroup (GL (n ⊕ Fin c) k)) (h : GL (n ⊕ Fin c) k), (∀ g ∈ prX (Cgrp J h), deltaR c g = 1) → ∃ f, IsCosetFn J h f ∧ f h = 1 := by
+  atlas_forward_decl GlobalTheory.CosetFn.exists_isCosetFn

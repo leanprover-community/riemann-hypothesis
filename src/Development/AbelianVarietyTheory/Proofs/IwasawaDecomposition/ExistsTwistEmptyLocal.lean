@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodChi
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCmConjugationOmegaStatement
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions GlobalTheory.Mem GlobalTheory.MemN NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
 
 set_option synthInstance.maxHeartbeats 400000 in
@@ -126,3 +128,9 @@ theorem GlobalTheory.MemN.exists_nTw_empty : ∀ (B : Base) (C : Cols B) (W : Ro
       psiL_ram := fun a => h.elim a
       psiL_l := fun a => h.elim a
       chi_tw := fun a => h.elim a }, (inferInstance : IsEmpty Empty)⟩
+end
+
+open Formalism.BasicNotions GlobalTheory.Mem GlobalTheory.MemN NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_twist_empty_local : ∀ (B : Base) (C : Cols B) (W : RowsRest B C) (nd : NData B.R B.host W.what₂), IsEmpty nd.Loc → ∃ tw : NTw B.R B.host W.what₂ B.LL0 nd, IsEmpty tw.Tw := by
+  atlas_forward_decl GlobalTheory.MemN.exists_nTw_empty

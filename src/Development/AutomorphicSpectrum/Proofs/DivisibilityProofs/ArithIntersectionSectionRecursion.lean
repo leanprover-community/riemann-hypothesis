@@ -8,7 +8,9 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.I
 import Development.WeilBound.CoreStatements.FlagImmersions.PointsIntegralSectionSnoc
 import Development.WeilBound.CoreStatements.HodgeTatePoints.GfForms
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleMul
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar.Top
 
 noncomputable section
@@ -298,3 +300,10 @@ theorem GlobalTheory.CompanionTheory.Ar.Top.eff_lat : ∀ II : IntersectionSyste
       exact mul_nonneg (Nat.cast_nonneg _) (hInn W hW.1 hW.2)
   rw [cutG, cutH] at hadd
   linarith
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.arith_intersection_section_recursion : ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ReciprocityTheory.ChartRestriction.G.Geo.DivSuppArithStatement → ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (e : ℕ) (L : Fin e → HermLine ι) (A : HermLine ι) (s : Ω), IsArithVar (mCoordIdeal y) (e + 2) → Birational y → (∀ j, IsSmoothHerm (L j)) → IsSmoothHerm A → s ≠ 0 → s ∈ chartLat y A.a 1 → (∀ W, IsArithVar W (e + 1) → mCoordIdeal y ≤ W → 0 ≤ ptsIntegral W (fun j z => Real.log ((L j).h z)) (fun _ => 1)) → 0 ≤ ptsIntegral (mCoordIdeal y) (fun j z => Real.log (((Fin.snoc L A : Fin (e + 1) → HermLine ι) j).h z)) (fun _ => 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.eff_lat

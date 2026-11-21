@@ -1,8 +1,6 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.FibDis
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.ExOmTOfSteps
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.TensTop
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.DensFibV
 
 noncomputable section
 

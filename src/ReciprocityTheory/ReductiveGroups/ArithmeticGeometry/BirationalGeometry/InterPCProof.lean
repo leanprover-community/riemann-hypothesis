@@ -1,6 +1,5 @@
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPC
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.BaseChangeC
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExtCContract
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.GenSmooth
 import Lemmata.GeneralBFactThirdLast.Imports

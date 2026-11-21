@@ -1,6 +1,5 @@
 import Formalism.LocalToGlobal.GlobalTheory.FamColC
 import Formalism.PadicSubsetSums.CentralIdempotents.StretchedExponentialDominance
-import Formalism.SharpRestriction.GlobalTheoremInputs
 import Formalism.SharpRestriction.LevelLetterCocycles.CylinderCountFamily
 
 open NumberField

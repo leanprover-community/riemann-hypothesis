@@ -2,8 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.SameKindIsometric
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlNormOneAdelicQuotientVolumeOneEqResidueStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlNormOneAdelicQuotientVolumeSiegelStepStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OneLeDedekindZetaRealValueAndLeZetaPowStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OneLeDedekindZetaRealValueAndLeZetaPow
 
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
 
 namespace GlobalTheory.FlagMeas
@@ -30,3 +31,9 @@ theorem genLinVolume : GenLinVolume := by
     ring
 
 end GlobalTheory.FlagMeas
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.genLin_tamagawa_volume : GenLinVolume := by
+  atlas_forward_decl GlobalTheory.FlagMeas.genLinVolume

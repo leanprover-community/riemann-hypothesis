@@ -3,7 +3,9 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ZOpMemCE
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryMemGLs
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LengthFunctionFactsHold
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -378,3 +380,9 @@ theorem kerW : KerW := by
     simp only [inv_inv_mat (mul_mem (val_mem z⁻¹) hx)]
 
 end GlobalTheory.CompanionTheory.KerWord
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernel_weight_facts : PositivityTheory.RgBcC.Fc.KerW := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KerWord.kerW

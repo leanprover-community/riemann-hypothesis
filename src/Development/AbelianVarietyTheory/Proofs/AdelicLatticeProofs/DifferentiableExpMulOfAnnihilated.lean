@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Matrix
 
 namespace GlobalTheory
@@ -69,3 +72,9 @@ theorem _root_.GlobalTheory.differentiable_exp_mul_of_annihilated :
   exact ⟨LinearMap.toContinuousLinearMap L, ContinuousLinearMap.ext fun z => rfl⟩
 
 end GlobalTheory
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.differentiable_exp_mul_of_annihilated' : ∀ (g : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ), Hm.IsHermitian → ∀ f : (Fin g → ℂ) → ℂ, Differentiable ℝ f → (∀ w z : Fin g → ℂ, (fderiv ℝ f w z + Real.pi * Complex.I * ((w ⬝ᵥ Hm.mulVec (star z)).im : ℂ) * f w) + Complex.I * (fderiv ℝ f w (Complex.I • z) + Real.pi * Complex.I * ((w ⬝ᵥ Hm.mulVec (star (Complex.I • z))).im : ℂ) * f w) = 0) → Differentiable ℂ fun w : Fin g → ℂ => Complex.exp (Real.pi / 2 * (w ⬝ᵥ Hm.mulVec (star w))) * f w := by
+  atlas_forward_decl GlobalTheory.differentiable_exp_mul_of_annihilated

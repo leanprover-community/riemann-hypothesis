@@ -3,9 +3,8 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoCo
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHeckeCharacterRestriction
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCharacterOfIdeleClass
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharExponentOfInfinityType
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteUnitaryClassSetFinite
-import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
+
+section
 open scoped TensorProduct
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.CuspRep
 
@@ -259,3 +258,10 @@ theorem exists_unitary_csd_half : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   exact ⟨H, h1, h5, expo_half H h5 fun a => (h4 a).trans (eta_infDiag hcm hη' a)⟩
 
 end GlobalTheory.HalfCsd
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conjugate_symplectic_character_exists : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], ∃ η : Formalism.L2.Host.HChar E, η.IsUnitary ∧ (CG.ofChar η).IsCsd ∧ ∀ τ : E →+* ℂ, ∃ k : ℤ, expo η τ = (k : ℂ) + 1 / 2 := by
+  atlas_forward_decl GlobalTheory.HalfCsd.exists_unitary_csd_half

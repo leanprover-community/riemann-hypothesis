@@ -114,24 +114,7 @@ theorem restrictSecondZero_inVar_one (f : PowerSeries K) :
 
 theorem coeff_evalYZero (h : MvPowerSeries (Fin 2) K) (k : ℕ) :
     PowerSeries.coeff k (ev0 h) = coeff (Finsupp.single 0 k) h := by
-  have hc : ∀ m : ℕ, MvPowerSeries.coeff (Finsupp.single () k) ((PowerSeries.X : PowerSeries K) ^ m) =
-      if k = m then 1 else 0 := fun m => PowerSeries.coeff_X_pow k m
-  show MvPowerSeries.coeff (Finsupp.single () k) (ev0 h) = _
-  unfold ev0
-  rw [MvPowerSeries.coeff_subst hasSubst_eval_second_zero, finsum_eq_single _ (Finsupp.single 0 k)]
-  · rw [Finsupp.prod_single_index (by simp)]
-    simp only [Matrix.cons_val_zero, hc, if_true, smul_eq_mul, mul_one]
-  · intro d hd
-    rw [Finsupp.prod_fintype _ _ (by simp), Fin.prod_univ_two]
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
-    by_cases h1 : d 1 = 0
-    · have hd0 : k ≠ d 0 := by
-        intro hk
-        apply hd
-        ext a
-        fin_cases a <;> simp [h1, hk]
-      rw [h1, pow_zero, mul_one, hc, if_neg hd0, smul_zero]
-    · rw [zero_pow h1, mul_zero, map_zero, smul_zero]
+  apply coeff_ev0_eq_coeff_single_zero (h := h) (k := k) <;> assumption
 
 theorem coeff_eq_zero_of_eval_second_zero {h : MvPowerSeries (Fin 2) K} (h0 : ev0 h = 0) (n : Fin 2 →₀ ℕ)
     (hn : n 1 = 0) : coeff n h = 0 := by

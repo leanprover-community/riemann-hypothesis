@@ -1,5 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
+
+section
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG
 
 noncomputable section
@@ -147,3 +150,10 @@ theorem sideConv : EpConv → TestSph → Lines → Term → SideConv := by
   exact hbound q
 
 end GlobalTheory.CompanionTheory.RgEisSide
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.side_term_convergence : EpConv → TestSph → Lines → Term → SideConv := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisSide.sideConv

@@ -1,14 +1,14 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocMulVec
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LenModSpanSUnionLeOfDirectedStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LenModMonoLeftStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMergedModulePushoutsContainBothStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LenModSpanSUnionLeOfDirected
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LenModMonoLeft
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMergedModulePushoutsContainBoth
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorLocalFieldIsCrystallineOverFamilyFieldStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DualLatticeRankBoundStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DualLatticeRankBound
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsTateDualLocalGaloisRepAtPlaceStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LiftAllOfBlochKatoLiftingFamilyAtPlaceStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LiftAllOfBlochKatoLiftingFamilyAtPlace
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PushoutsMemSpanLocalSelmerPushoutsStatement
 
+section
 noncomputable section
 
 namespace GlobalTheory.Pass.LocDirect
@@ -76,3 +76,10 @@ theorem main : StepLocDirect := by
         push_cast; ring
 
 end GlobalTheory.Pass.LocDirect
+end
+end
+
+open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localCountDirectLifting_proof : StepLocDirect := by
+  atlas_forward_decl GlobalTheory.Pass.LocDirect.main

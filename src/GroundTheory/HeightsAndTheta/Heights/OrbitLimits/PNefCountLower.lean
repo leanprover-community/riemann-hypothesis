@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsNefCountLower
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsNefCountAlongMultiples
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsNefSmallSectionEventually
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBoundedMul

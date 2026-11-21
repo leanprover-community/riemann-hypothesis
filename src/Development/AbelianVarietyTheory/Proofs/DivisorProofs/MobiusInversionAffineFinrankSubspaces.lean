@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantSubspaceMobiusInverseOneProdIco
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CuspGL
 
 theorem finsum_le_oneValue_finrank (K : Type) [Field K] [Finite K] (U : Type) [AddCommGroup U] [Module K U]
@@ -58,3 +60,8 @@ theorem moebius_affine_finrank (K : Type) [Field K] [Finite K] (U : Type) [AddCo
   rw [key, if_neg top_ne_bot, zero_add, finrank_top, oneValue, if_neg hU.ne']
 
 end GlobalTheory.CuspGL
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mobiusInversion_affine_finrank_subspaces : ∀ (K : Type) [Field K] [Finite K] (U : Type) [AddCommGroup U] [Module K U] [FiniteDimensional K U] (G : Submodule K U → ℂ) (c₀ c : ℂ), 0 < Module.finrank K U → (∀ A : Submodule K U, ∑ᶠ B : {B : Submodule K U // B ≤ A}, G B.1 = c₀ + c * (Module.finrank K A : ℂ)) → G ⊤ = c * ∏ i ∈ Finset.Ico 1 (Module.finrank K U), (1 - (Nat.card K : ℂ) ^ i) := by
+  atlas_forward_decl GlobalTheory.CuspGL.moebius_affine_finrank

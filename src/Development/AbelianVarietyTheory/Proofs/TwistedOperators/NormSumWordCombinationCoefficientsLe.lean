@@ -2,8 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.L2UnitaryRepresentationData
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaLiftUniqueUpToUnit
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockPolynomialVectorsInjectiveNonzeroVacuum
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HolomorphicDiscreteSeriesLowestKTypeSmoothIrredu
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowestKTypeSmoothModelsOnThetaTargets
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum
 open Formalism.IndefR.Mult (DSModel dualPar parA parB)
 open Formalism.MainNotions.SchurIrreducible (AdmGK ARi ARiiiUp ARiiiDown ARiiiLine DiscreteSeriesBlattner admQ5)
@@ -88,3 +89,20 @@ theorem ioUniq_of_discreteSeriesCover : GlobalTheory.Published.DiscreteSeriesCov
 end GlobalTheory.ArchRec.IoPhase
 
 end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum
+open Formalism.IndefR.Mult (DSModel dualPar parA parB)
+open Formalism.MainNotions.SchurIrreducible (AdmGK ARi ARiiiUp ARiiiDown ARiiiLine DiscreteSeriesBlattner admQ5)
+open GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction hiding Mat
+open GlobalTheory.IndefiniteRowSideFullHecke.BarMatrix (SignCompat plainMat barMat)
+open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (fockIp)
+open GlobalTheory.Chain (signed)
+open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
+open MeasureTheory Matrix
+open scoped TensorProduct InnerProductSpace ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.ArchRec
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lowestKTypeFockMap_unique_of_discreteSeries : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → ∀ D : D7, IoUniq D := by
+  atlas_forward_decl GlobalTheory.ArchRec.IoPhase.ioUniq_of_discreteSeriesCover

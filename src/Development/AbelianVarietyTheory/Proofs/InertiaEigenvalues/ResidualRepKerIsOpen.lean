@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.InjPrimeTo
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.TypeLeaf
@@ -51,3 +53,10 @@ theorem redF_ker_isOpen (D : D7) (i : D.nd.Loc) (ρ : G D.host.E D.nd.Om →* GL
   exact isOpen_ker_map_of_isOpen_ker _ (hk ▸ hm) ρ hρ
 
 end GlobalTheory.TypeLeaf
+end
+end
+
+open GlobalTheory.TypeLeaf Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.residualRep_ker_isOpen : ∀ (D : D7) (i : D.nd.Loc) (ρ : G D.host.E D.nd.Om →* GL (Fin D.R.r) (D.nd.O i)), Continuous (fun g => ((ρ g : GL _ _) : Matrix (Fin D.R.r) (Fin D.R.r) (D.nd.O i))) → IsOpen ((redF D i ρ).ker : Set (G D.host.E D.nd.Om)) := by
+  atlas_forward_decl GlobalTheory.TypeLeaf.redF_ker_isOpen

@@ -4,8 +4,9 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
 import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Assembly
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustStatementPfA
-import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PMahlerCompactness
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp
@@ -439,3 +440,11 @@ theorem exists_isFundSet : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   exact ⟨FF, h1, h2, h3, h4⟩
 
 end GlobalTheory.CompanionTheory.Ar.Cusp
+end
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume
+open scoped ENNReal InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_fundamental_set : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (Δ : GroupDict F) (Γ : Subgroup (Λ ≃ₗ[𝓞 E] Λ)), F.IsArith Γ → ∃ FF, F.IsFundSet Γ FF := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.exists_isFundSet

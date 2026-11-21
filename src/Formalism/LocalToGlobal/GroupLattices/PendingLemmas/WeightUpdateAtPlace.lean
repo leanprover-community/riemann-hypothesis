@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.HkLatTupUpdate
 
 noncomputable section

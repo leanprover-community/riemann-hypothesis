@@ -1,6 +1,7 @@
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.EFinalOf
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.IsometrySymmetry.IsoVSymm
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitVectorIdentityStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitVectorIdentity
 
 namespace PositivityTheory.Rg.BcB.SpectralAccumulation
 

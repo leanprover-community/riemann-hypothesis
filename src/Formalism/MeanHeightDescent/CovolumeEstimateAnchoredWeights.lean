@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.MeanHeightDescent.StatementA
 import Formalism.MeanHeightDescent.StatementF
 import Formalism.MeanHeightDescent.StatementJ
 

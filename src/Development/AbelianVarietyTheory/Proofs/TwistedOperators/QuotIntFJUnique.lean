@@ -1,10 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FourierJacobiAverage
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QuotientIntegralParabolicUnfolding
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilFormulaRootExchangeParabolicIntersection
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemNormalizerOfTri
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ProperTriple
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemFourierJacobiSubgroupIffParabolicMulColumn
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
 
 noncomputable section
@@ -205,3 +207,10 @@ theorem _root_.GlobalTheory.QuotIntFJ.quotIntFJ_unique : ∀ (k : Type) [Field k
   exact sub_eq_zero.1 key
 
 end GlobalTheory.QuotIntFJ
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_of_isQuotIntFJ_of_isQuotIntFJ : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c) (ν : Measure k) [ν.IsAddHaarMeasure] (μX : Measure (GL n k)) [μX.IsHaarMeasure] (μG : Measure (GL (n ⊕ Fin c) k)) [μG.IsHaarMeasure] (f : GL (n ⊕ Fin c) k → ℂ) (z z' : ℂ), IsQuotIntFJ ν μX μG ρ f z → IsQuotIntFJ ν μX μG ρ f z' → z = z' := by
+  atlas_forward_decl GlobalTheory.QuotIntFJ.quotIntFJ_unique

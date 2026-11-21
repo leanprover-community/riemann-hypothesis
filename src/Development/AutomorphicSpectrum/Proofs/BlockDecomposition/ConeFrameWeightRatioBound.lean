@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GoodConstOfAniso
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumFrameIdem
 
+section
 noncomputable section
 
 open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
@@ -185,3 +185,13 @@ theorem frameWt_div_le_div_ratio : ∀ (r : ℕ) (c : ℝ), 0 < c → ∃ K : �
 end GlobalTheory.CompanionTheory.RapidDecay
 
 end
+end
+
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
+open Formalism.UG (cT)
+open GlobalTheory.Orb (archMat)
+open scoped TensorProduct NNReal ENNReal Topology
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_frame_weight_ratio_bound : ∀ (r : ℕ) (c : ℝ), 0 < c → ∃ K : ℝ, 0 ≤ K ∧ ∀ (s : Fin r), ∀ t ∈ cone r c, ∀ α β : FrameIx r, frameLev s β < frameLev s α → frameWt t β / frameWt t α ≤ K / ratio t s := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RapidDecay.frameWt_div_le_div_ratio

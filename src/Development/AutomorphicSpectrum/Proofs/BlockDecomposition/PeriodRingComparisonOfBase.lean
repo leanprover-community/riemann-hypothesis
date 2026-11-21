@@ -1,6 +1,9 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.ConstantCoeffSurjective
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.GaloisTwistIdentitySection
+import BuildAid.ForwardExisting
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
 
@@ -126,3 +129,11 @@ theorem main : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l), IsBase l A →
   fun A h => ⟨⟨acrisZero_bijective_of_isBase A h, oC_bijective A h⟩, fun n => ⟨cris_surjective A h n, ker_cris A h n⟩⟩
 
 end GlobalTheory.CompanionTheory.BaseAcris
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.period_ring_comparison_of_base : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l), IsBase l A → (Function.Bijective A.cris0 ∧ Function.Bijective A.oC) ∧ ∀ n, Function.Surjective (A.cris n) ∧ RingHom.ker (A.cris n) = Ideal.span {(l : Acris l) ^ n} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BaseAcris.main

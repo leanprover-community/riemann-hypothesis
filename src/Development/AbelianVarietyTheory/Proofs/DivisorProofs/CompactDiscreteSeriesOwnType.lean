@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.DatumEquiv
 import Development.AbelianVarietyTheory.Definitions.Divisors.VdmSplit
 
 noncomputable section

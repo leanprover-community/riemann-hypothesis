@@ -6,15 +6,17 @@ import Formalism.SharpRestriction.LevelLetterCocycles.HerrClassFieldOfNorms
 import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.HerrDescriptionH1OfHerr
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HerrPartAEveryRecord
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HerrExtensionClassFormula
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineDcrisStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoDimFormulaAllLocalSituationsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.H1fGeneratorsAllStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoCrystallineExtensionCriterionStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.H1fGenerationUnramifiedStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeLaterClausesHoldStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GammaSubOneDivUniformiserAtLetterOfConclusionsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalConstantsFromAdmittedLocalGaloisStatementsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachModuleLocalConclusionsUsedFormsStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineDcris
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoDimFormulaAllLocalSituations
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.H1fGeneratorsAll
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoCrystallineExtensionCriterion
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.H1fGenerationUnramified
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeLaterClausesHold
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GammaSubOneDivUniformiserAtLetterOfConclusions
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalConstantsFromAdmittedLocalGaloisStatements
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachModuleLocalConclusionsUsedForms
+
+section
 open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
 
 namespace GlobalTheory.TheoremCAdm
@@ -37,3 +39,9 @@ theorem admissible_ranks_of_CMDatum : GlobalTheory.Published.BlochKatoLocal → 
     GlobalTheory.T.h1fGeneratorBoundAll_loc D⟩
 
 end GlobalTheory.TheoremCAdm
+end
+
+open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localLifting_theoremC_hypotheses_admitted : GlobalTheory.Published.BlochKatoLocal → Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK → ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), RamifiedCoefficientChains.admitted D HW F Cm 10 23 32 32 := by
+  atlas_forward_decl GlobalTheory.TheoremCAdm.admissible_ranks_of_CMDatum

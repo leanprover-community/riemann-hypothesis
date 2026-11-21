@@ -1,12 +1,12 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.FormalAlgebraisation.GEClosedProj
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.FormalAlgebraisation
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.VanIdealHomog
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HomogeneousLiftAdicFiltrationStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HomogeneousIdealFiltrationSaturatedStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HomogeneousLiftAdicFiltration
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HomogeneousIdealFiltrationSaturated
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThickeningVanishingIdealSystemStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HomogeneousIdealLeThickeningStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HomogeneousIdealLeThickening
 
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Out PositivityTheory.FormalThickening
 
 namespace GlobalTheory.CompanionTheory.GE
@@ -21,3 +21,9 @@ theorem geClosedProj : GEClosedProj := by
   exact GlobalTheory.T.homogeneous_ideal_le_thickening R I N Cs i β hi hβ J hJ (fun e => (h e).1) (fun e => (h e).2)
 
 end GlobalTheory.CompanionTheory.GE
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Out PositivityTheory.FormalThickening
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.grothendieck_existence_closed_proj : GEClosedProj := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.geClosedProj

@@ -1,6 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Statements
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsTildeTail
 set_option maxSynthPendingDepth 1
 

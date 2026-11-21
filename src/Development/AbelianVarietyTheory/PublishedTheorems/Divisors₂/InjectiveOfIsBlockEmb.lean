@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.LeviBlockCentreFinite
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsBlockEmb
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBlockEmb
 
 noncomputable section

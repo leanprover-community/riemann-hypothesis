@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsRowFrame
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaCharSymMulInvEqOne
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemZmuOfPowPred

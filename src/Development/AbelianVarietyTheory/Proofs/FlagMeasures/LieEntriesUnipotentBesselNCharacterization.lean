@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.Dchart
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnipotentRadicalBlockUnitriangularFlag
-import Formalism.FormalDegreeBessel.FinalG
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Matrix Filter Topology Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf GlobalTheory.Amp GlobalTheory.CellDens
 open scoped InnerProductSpace ENNReal Nat
 
@@ -257,3 +257,11 @@ theorem _root_.GlobalTheory.CellDens.LieN.lieE_Nset : ∀ (k r : ℕ)
   exact ⟨key x, fun hx => exp_mem_Nset_of_lieNCond _ ((key x).1 hx)⟩
 
 end GlobalTheory.CellDens.LieN
+end
+end
+
+open MeasureTheory Matrix Filter Topology Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf GlobalTheory.Amp GlobalTheory.CellDens
+open scoped InnerProductSpace ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lieEntries_unipotentBesselN_characterization : ∀ (k r : ℕ) (x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool)), (x ∈ lieE (Nset k r) ↔ ((unrealify x)ᴴ * Hpk k r + Hpk k r * unrealify x = 0 ∧ ∀ i j : Fin (2 * r + k + 1), lev k r j ≤ lev k r i → unrealify x i j = 0)) ∧ (x ∈ lieE (Nset k r) → NormedSpace.exp (unrealify x) ∈ Nset k r) := by
+  atlas_forward_decl GlobalTheory.CellDens.LieN.lieE_Nset

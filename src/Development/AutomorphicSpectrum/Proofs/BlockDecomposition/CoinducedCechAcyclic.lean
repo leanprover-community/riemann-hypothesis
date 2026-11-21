@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CubeResApply
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -130,3 +132,12 @@ example : ∀ {R : Type} [CommRing R] {P : Type} [SemilatticeInf P] {κ : Type} 
   fun e he M n ↦ isZero_homology e he M n
 
 end GlobalTheory.CompanionTheory.Hodge.Nerve.Acyc
+end
+end
+
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.CompanionTheory.Hodge.Nerve
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coinduced_cech_acyclic : ∀ {R : Type} [CommRing R] {P : Type} [SemilatticeInf P] {κ : Type} [LinearOrder κ] (e : κ → P),
+    Function.Surjective e → ∀ (M : P → ModuleCat.{0} R) (n : ℕ),
+    IsZero (((cechOf e).obj (coind M)).homology (n + 1)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hodge.Nerve.Acyc.isZero_homology

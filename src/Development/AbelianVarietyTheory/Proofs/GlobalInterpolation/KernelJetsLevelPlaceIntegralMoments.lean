@@ -4,8 +4,9 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TranslateMome
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.JetMomentsOfUnitPeriod
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EqAndAlg
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LatticeFactsAll
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.UnitPeriodTranslatesMomentsFiniteStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.UnitPeriodTranslatesMomentsFinite
 
+section
 open NumberField Formalism.BasicNotions Classical Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker GlobalTheory.MomN
 
 namespace GlobalTheory.MomTop
@@ -16,3 +17,9 @@ theorem jetMoments : GlobalTheory.IndefiniteRowSideFullHecke.JetSumTable.JetMome
     GlobalTheory.MomEq.eq_and_alg.1 GlobalTheory.MomLat.latticeFactsAll
 
 end GlobalTheory.MomTop
+end
+
+open NumberField Formalism.BasicNotions Classical Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker GlobalTheory.MomN
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernelJets_levelPlace_integralMoments : GlobalTheory.IndefiniteRowSideFullHecke.JetSumTable.JetMoments := by
+  atlas_forward_decl GlobalTheory.MomTop.jetMoments

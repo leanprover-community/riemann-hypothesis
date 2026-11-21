@@ -3,9 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.Jets.SupWOfSup
 import Development.AbelianVarietyTheory.Statements.DiscreteSeriesShifts.ThmBpDS
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Admissible
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ThresholdProductsBounded
-import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceEstimates
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsPlaceOfLocalBesselDatumInterlacingStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsPlaceOfLocalBesselDatumInterlacing
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UpqRepVocabularyAgree
+
 open BpJoin Formalism.FourierDecayAlt Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.QuantumDeterminants GlobalTheory.ThA
 
 namespace GlobalTheory

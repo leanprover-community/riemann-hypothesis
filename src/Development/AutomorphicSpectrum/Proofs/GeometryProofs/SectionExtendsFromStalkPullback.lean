@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory Limits
 
 namespace GlobalTheory.CompanionTheory.Ggeo.LocalLift
@@ -164,3 +167,9 @@ theorem exists_open_extension : ∀ {X Y Z : Scheme.{0}} (π : Y ⟶ X) (p : X) 
   exact exists_extension π p y₀ hy _ _ (IsPullback.of_hasPullback π (X.fromSpecStalk p)) c s
 
 end GlobalTheory.CompanionTheory.Ggeo.LocalLift
+end
+
+open AlgebraicGeometry CategoryTheory Limits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.section_extends_from_stalk_pullback : ∀ {X Y Z : Scheme.{0}} (π : Y ⟶ X) (p : X) (y₀ : Y), π y₀ = p → ∀ (c : Z ⟶ pullback π (X.fromSpecStalk p)) [IsClosedImmersion c] (s : Γ(Z, ⊤)), ∃ (W : Y.Opens) (f : Γ(Y, W)), y₀ ∈ W ∧ ((c ≫ pullback.fst π (X.fromSpecStalk p)).app W).hom f = Z.presheaf.map (homOfLE (le_top : (c ≫ pullback.fst π (X.fromSpecStalk p)) ⁻¹ᵁ W ≤ ⊤)).op s := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.LocalLift.exists_open_extension

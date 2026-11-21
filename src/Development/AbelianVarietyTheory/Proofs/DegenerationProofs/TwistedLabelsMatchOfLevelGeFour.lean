@@ -3,6 +3,8 @@ import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.RatTors
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsCoordPtFibre
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaCoordinatesExistUniqueSeparatePoints
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.HomTransport
+
+section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
 open scoped CategoryTheory.Obj BigOperators
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -67,3 +69,13 @@ theorem labels_of_four_le : GlobalTheory.UT.LL → EVSt → BrGtSt → AllS fun 
   exact (hF _ _).2 ((Over.OverMorphism.ext (hz.trans (he _).symm)).trans hy)
 
 end GlobalTheory.Ex.Trait.LevelFour
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex GlobalTheory.Ex.Trait
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twistedLabels_match_of_level_ge_four : GlobalTheory.UT.LL → EVSt → BrGtSt → AllS fun {_} _ _ _ {_} {_} {_} {_} {_} _ {_} {_} _ _ {_} _ {_} _ _ A u r {o} M _ {_} ν' J => M.P.TorsionIso → Realises o A.arc A.be u r → ∀ n : ℕ, Odd n → 3 ≤ n → Labels A u r M ν' J (n ^ 2) → ∀ k, 4 ≤ k → Labels A u r M ν' J k := by
+  atlas_forward_decl GlobalTheory.Ex.Trait.LevelFour.labels_of_four_le

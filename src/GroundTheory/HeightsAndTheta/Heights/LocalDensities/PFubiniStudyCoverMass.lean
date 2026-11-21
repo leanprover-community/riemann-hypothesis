@@ -8,7 +8,6 @@ import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
 import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FourB

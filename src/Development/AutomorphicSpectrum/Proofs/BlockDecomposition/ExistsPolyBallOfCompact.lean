@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AvgVanish
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocallyConstantCompactSupportUnipotent
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicDoubleCosetDecomposition
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicCellStructureData

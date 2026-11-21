@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.WChartsB
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
@@ -134,3 +136,11 @@ theorem blowup_of_eq_on_open : ∀ {X₁ X₂ : Scheme.{0}} (π : X₂ ⟶ X₁)
         exact eq_of_isIso_restrict _ (g ∣_ O₂) (by rw [morphismRestrict_ι, Category.assoc, ht'])
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.BlowupGlue
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blowup_of_agreeing_ideal_cartier : ∀ {X₁ X₂ : Scheme.{0}} (π : X₂ ⟶ X₁) (Z Z' : X₁.IdealSheafData) (O₁ O₂ : X₁.Opens), FinalTheorems.Blowup π Z → O₁ ⊔ O₂ = ⊤ → Z'.comap O₁.ι = Z.comap O₁.ι → (∀ x ∈ O₂, x ∉ Z'.support) → FinalTheorems.EffCartier (Z.comap O₂.ι) → FinalTheorems.Blowup π Z' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.BlowupGlue.blowup_of_eq_on_open

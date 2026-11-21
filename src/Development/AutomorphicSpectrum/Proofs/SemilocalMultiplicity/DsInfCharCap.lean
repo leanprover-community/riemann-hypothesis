@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FreeAlgebraActionCapelliDeterminantEqOperator
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CreApply
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CarImpFrel

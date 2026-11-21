@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.MumfordProportionality
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AntisymmEqChernRootsMulRootDiscr
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SelfInterLwInterPoly
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsGoodBase

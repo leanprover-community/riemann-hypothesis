@@ -40,11 +40,7 @@ theorem valAt'_top {T : Scheme.{0}} (x : Sp ℂ ⟶ T) (f : Γ(T, ⊤)) : valAt'
   simpa [ev, TrivSqZeroExt.algebraMap_eq_inl] using h2
 
 theorem evEps_top {T : Scheme.{0}} (x : Sp (DualNumber ℂ) ⟶ T) (h) (f : Γ(T, ⊤)) :
-    GlobalTheory.FibreDeriv.evEps x ⊤ h f = ev x f := by
-  have hx : x.appLE ⊤ ⊤ h = x.app ⊤ := by
-    rw [Scheme.Hom.app_eq_appLE]
-    rfl
-  simp only [GlobalTheory.FibreDeriv.evEps, ev, hx]
+    GlobalTheory.FibreDeriv.evEps x ⊤ h f = ev x f := ev_eps_eq_ev x h f
 
 def cst {R : Type} [CommRing R] (G : Over (Sp R)) (r : R) : Γ(G.left, ⊤) :=
   G.hom.appTop ((Scheme.ΓSpecIso (CommRingCat.of R)).inv r)

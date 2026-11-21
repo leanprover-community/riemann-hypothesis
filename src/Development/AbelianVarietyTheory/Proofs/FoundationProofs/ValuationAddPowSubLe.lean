@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.AlmostEt
 
 open scoped NNReal
@@ -41,3 +43,10 @@ theorem valuation_add_pow_sub_le (L : Type) [Field L] (v : Valuation L ℝ≥0) 
     _ = _ := by simp only [Nat.add_sub_cancel, ← hM]; ring
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_add_pow_sub_pow_sub_pow_le : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (p : ℕ), p.Prime → ∀ y β : L, v ((y + β) ^ p - y ^ p - β ^ p) ≤ v (p : L) * v β * (max (v y) (v β)) ^ (p - 1) := by
+  atlas_forward_decl GlobalTheory.AlmostEt.valuation_add_pow_sub_le

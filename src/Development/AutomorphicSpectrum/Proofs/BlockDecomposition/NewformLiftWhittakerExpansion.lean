@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -397,3 +399,8 @@ theorem whittaker_of_lift : Ad3.R.F2 := by
 end GlobalTheory.CompanionTheory.RsWhittaker
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_lift_whittaker_expansion : Ad3.R.F2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RsWhittaker.whittaker_of_lift

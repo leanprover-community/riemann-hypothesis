@@ -1,5 +1,4 @@
 import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
-import Formalism.LocalToGlobal.ProjectiveLattices.NonnegIffOfLiesTotal
 import Formalism.LocalToGlobal.ProjectiveLattices.RegularityR2Quotient
 
 noncomputable section

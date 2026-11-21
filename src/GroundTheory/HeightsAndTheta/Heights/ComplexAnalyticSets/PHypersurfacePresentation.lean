@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHypersurfacePresentation
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGenericPrimitive
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PGenericPrimitive
 set_option maxSynthPendingDepth 1
 

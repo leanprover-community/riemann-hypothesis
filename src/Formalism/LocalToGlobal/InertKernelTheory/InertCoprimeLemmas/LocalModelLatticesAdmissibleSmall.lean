@@ -2,7 +2,6 @@ import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepAdmRec
 import Formalism.LocalToGlobal.InertKernelTheory.ScalG
 import Formalism.LocalToGlobal.InertKernelTheory.DefsRepLt
 import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.FrecAt
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
 noncomputable section
 

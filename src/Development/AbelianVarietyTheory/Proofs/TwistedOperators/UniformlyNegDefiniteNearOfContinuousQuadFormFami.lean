@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairInfApply
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockFormApply
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory
 
 namespace GlobalTheory
@@ -62,3 +64,11 @@ theorem quadForm_unif_target : ∀ {V : Type} [NormedAddCommGroup V] [NormedSpac
   fun M hc hneg t₀ => quadForm_eventually_unif_negDef M hc hneg t₀
 
 end GlobalTheory
+end
+
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniformly_negDefinite_near_of_continuous_quadForm_family : ∀ {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] (M : ℝ → V →ₗ[ℝ] V →ₗ[ℝ] ℂ),
+    Continuous (fun p : ℝ × V => M p.1 p.2 p.2) → (∀ t v, v ≠ 0 → (M t v v).re < 0) →
+    ∀ t₀ : ℝ, ∃ ε > 0, ∀ᶠ t in nhds t₀, ∀ x, (M t x x).re ≤ -(ε * ‖x‖ ^ 2) := by
+  atlas_forward_decl GlobalTheory.quadForm_unif_target

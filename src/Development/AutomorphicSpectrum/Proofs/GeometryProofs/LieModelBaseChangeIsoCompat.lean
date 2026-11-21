@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.HodgeComparisonCompatibility
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductPullbackIffStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductPullbackIff
+
+section
 open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
@@ -202,3 +204,15 @@ theorem gramAt_move : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     · exact (GlobalTheory.T.hodge_inner_product_pullback_iff E H X X' t t' e.hom k z (v' p) (v' q) (v p) (v q) (Γ p q) (hv' p) (hv' q)).2 (hip p q)
 
 end GlobalTheory.CompanionTheory.Ar.GMove
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lie_model_base_change_iso_compat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X X' : Scheme.{0}) (e : X' ≅ X)
+    (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (ξ' : Sp Ω ⟶ X') (t : SAB H X) (t' : SAB H X') (k : SABMap t' t e.hom)
+    (V : Type) [AddCommGroup V] [Module Ω V] (M : LieModel t.G ξ V) (M' : LieModel t'.G ξ' V),
+    ξ' ≫ e.hom = ξ → (∀ v, (M'.pt v).left ≫ k.φ = (M.pt v).left) →
+    ∀ (z : Sp ℂ ⟶ X') (r : ℕ) (b : Fin r → V) (Γ : Matrix (Fin r) (Fin r) ℂ),
+      M'.GramAt t'.PP.L z b Γ ↔ M.GramAt t.PP.L (z ≫ e.hom) b Γ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.GMove.gramAt_move

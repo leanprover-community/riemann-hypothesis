@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.Statement
+import BuildAid.ForwardExisting
+
+section
 set_option autoImplicit false
 noncomputable section
 open NumberField
@@ -51,3 +54,14 @@ theorem cayley_mem_UJ {E : Type} [Field E] (σ : E →+* E) {n : ℕ} (J S : Mat
   exact key
 
 end GlobalTheory.CayleyUnitary
+end
+end
+
+set_option autoImplicit false
+noncomputable section
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cayleyTransform_skew_mem_unitaryGroup : ∀ {E : Type} [Field E] (σ : E →+* E) {n : ℕ} (J S : Matrix (Fin n) (Fin n) E),
+    J.det ≠ 0 → Formalism.UG.cT σ S * J + J * S = 0 → (1 - S).det ≠ 0 →
+    ∃ γ : GL (Fin n) E, γ ∈ Formalism.UG.UJ σ J ∧ (γ : Matrix (Fin n) (Fin n) E) = (1 + S) * (1 - S)⁻¹ := by
+  atlas_forward_decl GlobalTheory.CayleyUnitary.cayley_mem_UJ

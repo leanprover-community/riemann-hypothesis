@@ -104,18 +104,7 @@ theorem zerosIn_finite {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ
     ⟨2, DirichletCharacter.LFunction_ne_zero_of_one_le_re (χ := χ) (s := 2) (Or.inl hχ) (by norm_num)⟩ t T
 
 private theorem finite_zeros_in_strip_box_of_differentiable' {f : ℂ → ℂ} (hf : Differentiable ℂ f) (hne : ∃ z, f z ≠ 0) (t T : ℝ) :
-    {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im - t| ≤ T ∧ f ρ = 0}.Finite := by
-  by_contra hinf
-  obtain ⟨x, -, hx⟩ := Set.Infinite.exists_accPt_of_subset_isCompact hinf
-    ((isCompact_Icc (a := (0 : ℝ)) (b := 1)).reProdIm (isCompact_Icc (a := t - T) (b := t + T))) (by
-      rintro ρ ⟨h1, h2, h3, -⟩
-      rw [abs_le] at h3
-      exact ⟨⟨h1.le, h2.le⟩, ⟨by linarith, by linarith⟩⟩)
-  have han : AnalyticOnNhd ℂ f Set.univ := fun z _ => hf.analyticAt z
-  have hzero := han.eqOn_zero_of_preconnected_of_frequently_eq_zero isPreconnected_univ (Set.mem_univ x)
-    (frequently_nhdsWithin_iff.mpr ((accPt_iff_frequently.mp hx).mono fun y hy => ⟨hy.2.2.2.2, hy.1⟩))
-  obtain ⟨z, hz⟩ := hne
-  exact hz (hzero (Set.mem_univ z))
+    {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im - t| ≤ T ∧ f ρ = 0}.Finite := finite_zeros_in_strip_box_of_differentiable (hf := hf) (hne := hne) (t := t) (T := T)
 
 theorem zerosIn_finite_one {q : ℕ} [NeZero q] (t T : ℝ) :
     (zerosIn (1 : DirichletCharacter ℂ q) t T).Finite := by

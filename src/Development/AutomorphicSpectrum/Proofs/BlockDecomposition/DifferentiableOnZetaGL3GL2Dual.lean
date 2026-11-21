@@ -2,10 +2,12 @@ import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.RationalPrimesBelowPlaces
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.SquareIntegrable.SSmooth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TemperedBoundGL2
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableOnLaplaceIntegralRightHalfStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableOnLaplaceIntegralRightHalf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableModulusPowOnBoundedUnitsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualWhittakerIwasawaCoordinatesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasurableDualRankinSelbergIntegrandStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualWhittakerIwasawaCoordinates
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasurableDualRankinSelbergIntegrand
+
+section
 open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
 open GroundTheory.Automorphic.GodementSection (localChar)
 open GroundTheory.Global.AdicLiesOver
@@ -198,3 +200,14 @@ theorem holo : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [I
   simp only [GL2LocalData.zetaGL3GL2, iw_eq]
 
 end GlobalTheory.CompanionTheory.DualHolo
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open scoped ValuativeRel
+open GlobalTheory.CompanionTheory.DualHol
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.differentiableOn_zetaGL3GL2_dual : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (ψ : AddChar F Circle) (W : GL (Fin 3) F → ℂ) (W' : GL (Fin 2) F → ℂ), TemperedBoundGL3 W → TemperedBoundGL2 W' → DifferentiableOn ℂ (fun u => GL2LocalData.zetaGL3GL2 ψ (GL2LocalData.dW3 W) (GL2LocalData.dW2 W') u) {u : ℂ | 0 < u.re} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DualHolo.holo

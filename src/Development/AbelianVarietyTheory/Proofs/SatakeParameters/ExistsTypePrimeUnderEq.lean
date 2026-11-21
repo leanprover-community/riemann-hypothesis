@@ -1,6 +1,8 @@
 import Mathlib
-import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SubOneMemMapOfEq
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.L2.Col
 
 noncomputable section
@@ -70,3 +72,10 @@ theorem exists_vG_under : ∀ (X : Fields) (Pr : Primes X), X.Ok → Pr.Ok → �
   · exact ⟨P, (hvG P).2 h, rfl⟩
 
 end GlobalTheory.GprimUnder
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_typePrime_under_eq : ∀ (X : Fields) (Pr : Primes X), X.Ok → Pr.Ok → ∀ (i : Fin 2) (P : HeightOneSpectrum (𝓞 X.E)), ((Pr.g i : ℕ) : 𝓞 X.E) ∈ P.asIdeal → ∃ P' ∈ Pr.vG i, P'.under (𝓞 X.F) = P.under (𝓞 X.F) := by
+  atlas_forward_decl GlobalTheory.GprimUnder.exists_vG_under

@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.UnitarySplit
-import GroundTheory.AutomorphicForms.HermitianSpaces
 
 namespace GroundTheory.Automorphic
 

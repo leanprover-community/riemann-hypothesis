@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Filter Topology GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.R
@@ -473,3 +475,8 @@ theorem rankin_selberg_nonvanishing_of_whittaker : Ad3.Loc2 → Ad3.R.A10 → Ad
 end GlobalTheory.CompanionTheory.RSNonvanish
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_local_nonvanishing : Ad3.Loc2 → Ad3.R.A10 → Ad3.R.A11 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RSNonvanish.rankin_selberg_nonvanishing_of_whittaker

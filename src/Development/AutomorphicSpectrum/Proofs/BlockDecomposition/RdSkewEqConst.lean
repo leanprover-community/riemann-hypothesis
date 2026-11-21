@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Rr
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousOneParamDifferentiableStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SkewHermitianUnitaryFlowStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousOneParamDifferentiable
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SkewHermitianUnitaryFlow
+
 open MeasureTheory Matrix Finset
 open scoped ContDiff ComplexConjugate InnerProductSpace
 open PositivityTheory.RgBcC GlobalTheory.CompanionTheory.WaveSpd

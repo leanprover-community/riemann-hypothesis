@@ -5,6 +5,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSpecialisatio
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StrictHenselisationEtaleOverPolynomialStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEtaleFactorOfIndEtAtPrimeStatement
 
+section
 open IsLocalRing Polynomial
 
 noncomputable section
@@ -323,3 +324,10 @@ theorem divConstGeneric_of_divConstClosedPts : DivConstClosedPts → DivConstGen
     _ = _ := rfl
 
 end GlobalTheory.VertUnits
+end
+end
+
+open IsLocalRing Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.divisorsOfConstants_genericFibre_of_closedPoints : GlobalTheory.VertUnits.DivConstClosedPts → GlobalTheory.VertUnits.DivConstGeneric := by
+  atlas_forward_decl GlobalTheory.VertUnits.divConstGeneric_of_divConstClosedPts

@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboundaryConstantOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerTowerQqPowLevelEqQ
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.DerExt
@@ -197,3 +198,11 @@ theorem exists_ext : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebr
   exact ⟨Dext p u v tr d, Dext_isDer h hd, fun b hb => Dext_B h hd hb⟩
 
 end GlobalTheory.DerExt
+end
+end
+
+open GlobalTheory.K5 GlobalTheory.KumDlog
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_derivationModIntegral_extension_p_cube : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], ∀ (B C : Subalgebra (O0 p) Ω) (ι : Type) [Fintype ι] (u v : ι → Ω) (tr : Ω → Ω), DualData B C u v tr →
+  ∀ d : Ω → Ω, IsDer B d → ∃ D : Ω → Ω, IsDer C D ∧ ∀ b ∈ B, IsInt p (D b - (p : Ω) ^ 3 * d b) := by
+  atlas_forward_decl GlobalTheory.DerExt.exists_ext

@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.ClassS
 import Formalism.LocalToGlobal.ClassSK
 import Formalism.LocalToGlobal.ClassSLinks
 import Formalism.LocalToGlobal.ClassSR

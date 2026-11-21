@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLatIntVec
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.HS
@@ -53,3 +54,12 @@ theorem torsionOf_quot_lat_ne_bot : ∀ (K : Type) [Field K] [NumberField K] (m 
   exact ha ((Submodule.mem_bot _).1 hmem)
 
 end GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.HS
+end
+end
+
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.CompanionTheory.SiegelND.Integ.Hua GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.HS
+open scoped Matrix
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_quotient_torsion_nonzero : ∀ (K : Type) [Field K] [NumberField K] (m : ℕ) (L : Submodule (𝓞 K) (Fin m → K)), IsLat L → ∀ x : (Fin m → K) ⧸ L, Ideal.torsionOf (𝓞 K) ((Fin m → K) ⧸ L) x ≠ ⊥ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.HS.torsionOf_quot_lat_ne_bot

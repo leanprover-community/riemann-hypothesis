@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
+import BuildAid.ForwardExisting
+
+section
 open Polynomial GlobalTheory.CuspGL
 
 namespace GlobalTheory
@@ -47,3 +50,9 @@ theorem exists_equiv_of_sum_min_eq : ∀ (d d' : ℕ) (e : Fin d → ℕ) (e' : 
     fun i => Equiv.ofFiberEquiv_map _ i⟩
 
 end GlobalTheory
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_perm_of_sum_min_eq_positive_family : ∀ (d d' : ℕ) (e : Fin d → ℕ) (e' : Fin d' → ℕ), (∀ i, 0 < e i) → (∀ i, 0 < e' i) → (∀ j : ℕ, ∑ i, min j (e i) = ∑ i, min j (e' i)) → ∃ σ : Fin d ≃ Fin d', ∀ i, e' (σ i) = e i := by
+  atlas_forward_decl GlobalTheory.exists_equiv_of_sum_min_eq

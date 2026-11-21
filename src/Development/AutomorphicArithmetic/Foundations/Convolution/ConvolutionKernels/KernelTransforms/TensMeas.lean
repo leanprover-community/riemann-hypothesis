@@ -5,7 +5,6 @@ import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
 import GroundTheory.AutomorphicForms.MultiplicityOne.OpenSubgroupRep
 import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteLevelGroups
 import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteAdelicHaar
-import GroundTheory.AutomorphicForms.L2LocalComponents.CenterCommute
 import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.TensCont
 
 open MeasureTheory NumberField IsDedekindDomain

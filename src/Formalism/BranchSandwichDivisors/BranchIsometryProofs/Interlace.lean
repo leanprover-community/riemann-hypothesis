@@ -1,4 +1,3 @@
-import Formalism.BranchSandwichDivisors.StatementR
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.MemBranchRangeOfDefectEq
 
 open Finset

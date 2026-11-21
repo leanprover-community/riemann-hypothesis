@@ -1,8 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.ZetaUr
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsLocallyConstantCycMod
 import Development.AbelianVarietyTheory.Definitions.Foundations.IwSys2
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsZetaTW
 import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleNewformZetaData
 import Development.AbelianVarietyTheory.Definitions.Foundations.LiftSLMapMulInvMem
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.VanishOrdOfKatoUse

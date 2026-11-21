@@ -1,10 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KernSum
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankWsp
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeTraceFormsWeightEqFinrankMulStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeTraceVectorValuedEqFiniteKernelSumStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeTraceFormsWeightEqFinrankMul
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeTraceVectorValuedEqFiniteKernelSum
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceDualWeylModuleInvRationalPointEqConjCharAtStatement
 
+section
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 
@@ -26,3 +25,11 @@ theorem trOn_forms_hop_eq_kernSum : ∀ (E : Type) [Field E] [NumberField E] [Is
   exact Finset.prod_congr rfl fun v _ => GlobalTheory.T.trace_dualWeylModule_inv_rationalPoint_eq_conj_charAt E n (lam v) γ v
 
 end GlobalTheory.BCT
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeTrace_forms_eq_dim_mul_kernelSum : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ, 1 ≤ n → ∀ (S : Set (Pl E)), IsSection S → ∀ (lam : InfinitePlace E → DomWeight n) (K' : ∀ w : Pl E, Subgroup (UL n w)), IsLevelFam (fun w : Pl E => MonoidHom.id (UL n w)) (KL n) K' → ∀ f : ∀ w : Pl E, UL n w → ℂ, IsTest (KL n) K' f → trOn (forms S lam K') (hop S K' f) = dimW lam * kernSum S lam K' f := by
+  atlas_forward_decl GlobalTheory.BCT.trOn_forms_hop_eq_kernSum

@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FibreIff
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigenbasisBaseChange
 
 set_option autoImplicit false
 

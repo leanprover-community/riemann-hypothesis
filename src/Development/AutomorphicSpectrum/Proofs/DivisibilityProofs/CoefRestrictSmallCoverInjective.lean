@@ -3,10 +3,9 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PoincareDe
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianDeRhamStructure
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.BijectiveCechDeRhamComparisonDegreeOne
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianHodgeDeRham
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CubeTheorem
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CrystallineH2SmallCoverBijective
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -51,3 +50,12 @@ theorem pull_restrict_small_injective : ∀ (R : Type) [CommRing R] (X : Scheme.
       exact ⟨n, b, hb, fun i S u hu ↦ h i S.obj u.hom hu⟩).1
 
 end GlobalTheory.CompanionTheory.TrivSmall
+end
+end
+
+open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coef_restrict_small_cover_injective : ∀ (R : Type) [CommRing R] (X : Scheme.{0}) (s : X ⟶ Sp R) (K : Type) (U : K → X.Opens), ⨆ i, U i = ⊤ → Function.Injective (CoefMap.restrict ((IsTriv s).ι ⋙ O (dp0 R) s) (ObjectProperty.ι (fun T : (IsTriv s).FullSubcategory => IsSmall (dp0 R) s U T.obj))).pull2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TrivSmall.pull_restrict_small_injective

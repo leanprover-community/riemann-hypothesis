@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -33,3 +34,10 @@ theorem span_tBdR_pow_le_comap (l : ℕ) [Fact l.Prime] (K : IntermediateField �
   exact Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self _)
 
 end GlobalTheory.CompanionTheory.LatGal
+end
+end
+
+open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.galois_preserves_t_power_span : ∀ (l : ℕ) [Fact l.Prime] (K : IntermediateField ℚ_[l] (PadicAlgCl l)) (k : ℕ) (g : K.fixingSubgroup), Ideal.span {tBdR l ^ k} ≤ (Ideal.span {tBdR l ^ k}).comap (Lat.gP l g) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LatGal.span_tBdR_pow_le_comap

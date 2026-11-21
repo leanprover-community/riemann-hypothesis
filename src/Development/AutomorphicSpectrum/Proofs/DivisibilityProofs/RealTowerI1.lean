@@ -1,11 +1,11 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.AgreementPos
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.KillNoneFormPoly
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RealTowerArithAgreementStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PolarizationPolynomialCoeffBoundStatement
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RealTowerArithAgreement
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PolarizationPolynomialCoeffBound
 
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 
 noncomputable section
@@ -133,3 +133,10 @@ theorem tower_I1_of_reference_linked : PB.Coefficients → PB.AgreementPos → P
     exact mul_nonneg (add_nonneg (by positivity) hS0) hlog0
 
 end GlobalTheory.CompanionTheory.Ar.Top.TowerOverReals
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.real_tower_I1 : PB.Coefficients → PB.AgreementPos → PB.Inputs → ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T : RootTower Ψ N) (R : RealTower T), R.RefLinked II → T.I1 II := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.TowerOverReals.tower_I1_of_reference_linked

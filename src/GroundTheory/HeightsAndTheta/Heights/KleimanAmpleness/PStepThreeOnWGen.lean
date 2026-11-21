@@ -1,7 +1,6 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsStepThreeOnWGen
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsRestrictGenerated
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrLenRestrictSt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PNefRestrict
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTwistAlg
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepDataJProper

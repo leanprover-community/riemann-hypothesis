@@ -1,9 +1,10 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.UsedLocalConclusion
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsWeakTopologyWittTiltTensor
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZlTowerGen
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousAutCbCbTop
+import BuildAid.ForwardExisting
+
+section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices GlobalTheory.WeakClosed
 open scoped Topology PowerSeries.WithPiTopology
 set_option synthInstance.maxHeartbeats 400000
@@ -46,3 +47,13 @@ theorem continuous_orbit_twTop : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (
   exact (GlobalTheory.WeakTop.coords_map b _ _ y i).symm
 
 end GlobalTheory.WeakClosed
+end
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices GlobalTheory.WeakClosed
+open scoped Topology PowerSeries.WithPiTopology
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1600000
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_galois_orbit_wittTensorLatticeWeakTopology : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P) {K LL : FinExt l} (T : Lt K LL) {d : ℕ} (b : LatB T d) (y : TW (RW LL) T), letI := twTop T b; Continuous fun g : ↥(GK K) => TWact (AI.gRW LL (g : GQ l)) T g y := by
+  atlas_forward_decl GlobalTheory.WeakClosed.continuous_orbit_twTop

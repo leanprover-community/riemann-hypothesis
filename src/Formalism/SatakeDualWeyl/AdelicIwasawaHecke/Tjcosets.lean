@@ -1,4 +1,3 @@
-import Formalism.SatakeDualWeyl.StatementE
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.TjcosetsLoc
 
 noncomputable section

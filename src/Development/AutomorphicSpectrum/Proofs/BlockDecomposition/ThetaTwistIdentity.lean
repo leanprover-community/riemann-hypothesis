@@ -5,6 +5,7 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaSumInvaria
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousHalfTr
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockMatrixInjective
 
+section
 noncomputable section
 
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
@@ -382,3 +383,10 @@ theorem thTwist : ThTwist := by
   rw [t2, mul_one]
 
 end GlobalTheory.CompanionTheory.ThTw
+end
+end
+
+open PositivityTheory.Rg.Rsw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_twist_identity : ThTwist := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ThTw.thTwist

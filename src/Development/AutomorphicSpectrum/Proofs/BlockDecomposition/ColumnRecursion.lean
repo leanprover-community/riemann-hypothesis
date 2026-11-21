@@ -1,8 +1,7 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PatternGroupStatementStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerSymmetryStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RootExchangeStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RootExchange
 
 open ReciprocityTheory.Ty.Fin
 

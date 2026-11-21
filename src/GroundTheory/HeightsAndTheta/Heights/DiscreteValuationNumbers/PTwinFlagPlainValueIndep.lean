@@ -5,7 +5,6 @@ import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.TwoExpansio
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinPlainPolyPairNum
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumberExpansionKoszul
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsFieldIntersectionExample
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 set_option maxSynthPendingDepth 1
 
 noncomputable section

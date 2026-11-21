@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LocBasisSemi
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemilocalBasis.SmulMemOfMemSpan
 
 open NumberField

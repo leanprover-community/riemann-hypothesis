@@ -1,8 +1,9 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GaussianTailBound
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.InvBuild
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 open NumberField Complex ReciprocityTheory.ChartRestriction.G.I2 ReciprocityTheory.ChartRestriction.G.I2.ChA
 noncomputable section
@@ -205,3 +206,8 @@ theorem characters_of_nearestPlane_of_short_integers (hNP : Ext.NearestPlane)
 
 end
 end GlobalTheory
+end
+
+open NumberField Complex ReciprocityTheory.ChartRestriction.G.I2
+theorem _root_.GlobalTheory.T.cmCharacters_of_nearestPlane_of_short_integers : Ext.NearestPlane → (∀ (E : Type) [Field E] [NumberField E] [IsCMField E], ∃ ω : Fin (Module.finrank ℚ E) → 𝓞 E, LinearIndependent ℚ (fun j => (ω j : E)) ∧ ∀ j (τ : E →+* ℂ), ‖τ (ω j : E)‖ ≤ omStar (E := E)) → CharStatement := by
+  atlas_forward_decl GlobalTheory.characters_of_nearestPlane_of_short_integers

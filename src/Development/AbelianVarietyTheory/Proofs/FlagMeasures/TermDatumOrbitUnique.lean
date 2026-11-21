@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitRepsOver
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotField
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToZero
@@ -7,10 +6,12 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramePairCoordinates
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramePairCoordinatesTransportInnerData
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermsCorrespond
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesCommonStabiliserEqPairingMatrixStabiliser
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFacts
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesStabilizerActsOnTerms
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesComplementUnitaryActsOnTerms
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDatumOfTermReadOnLattice
+import BuildAid.ForwardExisting
+
+section
 open ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG GlobalTheory.LocOver
 open scoped Classical Pointwise
 
@@ -147,3 +148,11 @@ theorem orbit_over_unique : ∀ {F : Type} [Field F] [ValuativeRel F] [Topologic
   exact (hRel d1 d2).2 ⟨η, hη0, hd⟩
 
 end GlobalTheory.LocOver
+end
+end
+
+open ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG GlobalTheory.LocOver
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.term_datum_orbit_unique : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → ∀ {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V) (r : ℕ), ∀ (k : ℕ) (P : FPair H r), Module.finrank E V = k + 2 * r + 1 → P.RelG (theta M) → ∀ (d d' : Datum P) (t : Term V M r), Over P d t → Over P d' t → Datum.Rel d d' := by
+  atlas_forward_decl GlobalTheory.LocOver.orbit_over_unique

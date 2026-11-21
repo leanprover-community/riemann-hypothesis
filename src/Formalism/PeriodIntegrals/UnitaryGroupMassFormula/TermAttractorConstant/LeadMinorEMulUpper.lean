@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RelativeEquivalence.DCRelEquivAllHolds
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUpUniMulAlt
 
 noncomputable section

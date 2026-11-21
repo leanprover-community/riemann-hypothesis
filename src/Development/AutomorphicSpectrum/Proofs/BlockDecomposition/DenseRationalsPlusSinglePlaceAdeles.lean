@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeakApproximationIntegral
-import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
+import BuildAid.ForwardExisting
 
+section
 open scoped Pointwise Topology
 open IsDedekindDomain NumberField
 
@@ -104,3 +105,9 @@ theorem dense_add_place : ∀ (F : Type) [Field F] [NumberField F] (w : NumberFi
     simp [Function.update_of_ne hv]
 
 end GlobalTheory.CompanionTheory.AddSA
+end
+
+open scoped Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dense_rationals_plus_single_place_adeles : ∀ (F : Type) [Field F] [NumberField F] (w : NumberField.InfinitePlace F), Dense ((Set.range (algebraMap F (NumberField.AdeleRing (NumberField.RingOfIntegers F) F))) + {a : NumberField.AdeleRing (NumberField.RingOfIntegers F) F | a.2 = 0 ∧ ∀ w', w' ≠ w → a.1 w' = 0}) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.AddSA.dense_add_place

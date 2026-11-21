@@ -3,6 +3,9 @@ import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateM
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Models
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open GlobalTheory.CompanionTheory.Ar.BT GroundTheory.PAdicHodge
 
@@ -88,3 +91,11 @@ theorem GlobalTheory.CompanionTheory.Ar.BT.isFinOpenSub_preimage_baseChange :
     have hxi := hU.inv _ _ hx' z
     rw [← pushPt_inv h, pushPt_left, Scheme.Hom.comp_apply] at hxi
     exact (Scheme.Hom.mem_preimage F).mpr hxi
+end
+end
+
+open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
+open GlobalTheory.CompanionTheory.Ar.BT GroundTheory.PAdicHodge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isFinOpenSub_base_change : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (R' : Type) [CommRing R'] [IsDomain R'] [Algebra R R'] (Γ' : QFGroup R' T) (F : Γ'.G.left ⟶ Γ.G.left), Γ'.IsBaseChange Γ (algebraMap R R') F → ∀ U : Γ.G.left.Opens, Γ.IsFinOpenSub U → Γ'.IsFinOpenSub (F ⁻¹ᵁ U) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.BT.isFinOpenSub_preimage_baseChange

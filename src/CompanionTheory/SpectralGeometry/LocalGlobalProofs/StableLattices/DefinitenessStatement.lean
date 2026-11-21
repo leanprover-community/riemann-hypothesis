@@ -1,10 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StDefinite
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsLocalUnitaryGroupIsoConjIsometry
-import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.ExistsOrthogonalBasisDotProductApplyEq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmExtensionConjugationInvolutiveFixedField
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSquareOfValuedSubOneLt
 
+section
 noncomputable section
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField Filter Matrix
@@ -240,3 +239,9 @@ theorem stDefinite : StDefinite := by
 end GlobalTheory.CompanionTheory.DefiniteForm
 
 end
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.DefinitenessStatement : StDefinite := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DefiniteForm.stDefinite

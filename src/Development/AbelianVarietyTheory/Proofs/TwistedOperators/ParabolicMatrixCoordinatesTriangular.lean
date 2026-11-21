@@ -5,7 +5,8 @@ import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.Consta
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.AdjointRadical
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CuspidalNoRadicalFixed
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.StandardMaximalParabolic
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
+
+section
 open MeasureTheory Set Filter NumberField IsDedekindDomain
 open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary GlobalTheory.AutMult Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
@@ -67,3 +68,16 @@ theorem mem_pLoc_flag0_of_mul_eq_upper : ∀ (D : D7) (V : HSp D) (Φ : WittFram
   exact act_mem_of_mem_span (S := Φ.e '' {j | j.val < i.val}) (fun _ ⟨j, hj, e⟩ => e ▸ hgen j hj) hx
 
 end GlobalTheory.IwasawaTri
+end
+
+open MeasureTheory Set Filter NumberField IsDedekindDomain
+open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary GlobalTheory.AutMult Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
+open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
+open GlobalTheory.PRep (IsAdmissible)
+open GlobalTheory.TrMult
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.parabolic_matrix_coordinates_triangular : ∀ (D : D7) (V : HSp D) (Φ : WittFrame V) (v : HeightOneSpectrum (𝓞 D.host.F)) (p : GLoc D.sp.cm.sig V.gram v) (b : Matrix (Fin (wittIndex V)) (Fin (wittIndex V)) (TensorProduct D.host.F (Fv D.host.F v) D.host.E)), b.BlockTriangular id → (HA.mat (F := D.host.F) (Fv D.host.F v) D.sp.cm.sig V.gram p).1 * (Matrix.of fun (x : Fin V.rank) (i : Fin (wittIndex V)) => GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.coordR (F := D.host.F) V (Fv D.host.F v) (Φ.e i) x) = (Matrix.of fun (x : Fin V.rank) (i : Fin (wittIndex V)) => GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.coordR (F := D.host.F) V (Fv D.host.F v) (Φ.e i) x) * b → p ∈ PLoc Φ.flag0 v := by
+  atlas_forward_decl GlobalTheory.IwasawaTri.mem_pLoc_flag0_of_mul_eq_upper

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.QuotientEigenDifference
+import BuildAid.ForwardExisting
+
+section
 open scoped NNReal
 
 namespace GlobalTheory.EigenSubFree
@@ -98,3 +101,9 @@ theorem main : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (S : Type) [Fi
   fun _ _ _ _ _ _ a r τ ha => eigenSub_freeLattice a r τ ha
 
 end GlobalTheory.EigenSubFree
+end
+
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.piEigenSublattice_free_eq_differentScaled : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (r : ℕ) (τ : S), Function.Injective a → GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (W := fun _ => Fin r → C) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a r) τ = GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.flatLattice (r := r) a τ (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.diffGen a τ) := by
+  atlas_forward_decl GlobalTheory.EigenSubFree.main

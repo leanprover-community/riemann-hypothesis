@@ -1,12 +1,12 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootHeightDifferenceBoundStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinModelPointsLiftStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BoundedHeightPointsDenseStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootHeightDifferenceBound
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinModelPointsLift
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BoundedHeightPointsDense
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LineHeightInvariantScalingStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NumberFieldPointHeightStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominantWeightGapShiftStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NumberFieldPointHeight
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominantWeightGapShift
 
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Small GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.Ht
 
 noncomputable section
@@ -136,3 +136,10 @@ theorem tower_upper : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T
   linarith
 
 end GlobalTheory.CompanionTheory.Ar.Ht.UpperTower
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Small GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.Ht
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tower_i6_of_reference : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T : RootTower Ψ N) (II : IntersectionSystem) (R : T.Comp → RootModel Ψ N), IsIntersectionSystem II → HasRef T R → T.I6 II := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Ht.UpperTower.tower_upper

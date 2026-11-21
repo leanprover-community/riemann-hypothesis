@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.ExistsIdealDenominator
-import Formalism.PadicSubsetSums.CentralIdempotents.CentralIdempotentIntegral
 import Formalism.PadicSubsetSums.StableGradedCounts.TWBoundedSeriesIntegral
 import Formalism.PadicSubsetSums.StableGradedCounts.TWReuse
 import Formalism.PadicSubsetSums.StableGradedCounts.TWUnitBallLattice

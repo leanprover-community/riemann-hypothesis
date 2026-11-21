@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
+import BuildAid.ForwardExisting
 
+section
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
 open scoped TensorProduct Quaternion
 
@@ -220,3 +221,14 @@ theorem mem_closure_of_conj_mem : ∀ {F : Type} [Field F] [NumberField F] (d β
   exact hmem
 
 end GlobalTheory.CompanionTheory.PlaneSA.MemConj
+end
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
+open scoped TensorProduct Quaternion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.closure_conjugation_invariant : ∀ {F : Type} [Field F] [NumberField F] (d β : F), (∀ x : Q d β F, qn x = 0 → x = 0) →
+  ∀ s w : Pl F, ∀ a ∈ SuppAt d β {w}, ∀ c : (Q d β (AF F))ˣ,
+    ((c⁻¹ : (Q d β (AF F))ˣ) : Q d β (AF F)) * a * (c : Q d β (AF F)) ∈ closure (SAQ d β s) →
+    a ∈ closure (SAQ d β s) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PlaneSA.MemConj.mem_closure_of_conj_mem

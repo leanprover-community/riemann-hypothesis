@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowersMulZero
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointMajorantFramesGiveMajorants
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointRationalEquivariance
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas GlobalTheory.FlagBase GlobalTheory.RadCov
 
 namespace GlobalTheory.RadCov.Place
@@ -28,3 +30,9 @@ theorem placeMatch : ∀ (I : AutInst) (xf : I.Gf), PlaceMatch I.φ I.P (frm I (
     · exact Or.inr ⟨he.resolve_left h, if_neg h⟩
 
 end GlobalTheory.RadCov.Place
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas GlobalTheory.FlagBase GlobalTheory.RadCov
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.embeddingsMatchInfinitePlaces_autInstance : ∀ (I : AutInst) (xf : I.Gf), PlaceMatch I.φ I.P (frm I (1, xf)) := by
+  atlas_forward_decl GlobalTheory.RadCov.Place.placeMatch

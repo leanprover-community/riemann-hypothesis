@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsRealCoord
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicTransportMeasureFirst
 
+section
 noncomputable section
 
 open NumberField Matrix Formalism.MainNotions.S Formalism.UG
@@ -132,3 +133,11 @@ theorem naconj : ∀ (I : AutInst), ∀ γ ∈ I.GFset, ∀ W, I.IsIsot W → �
     · rw [hfin]; exact s2
 
 end GlobalTheory.CuspGeo
+end
+end
+
+open NumberField Matrix Formalism.MainNotions.S GlobalTheory.CuspGeo GlobalTheory.ClassFin
+open scoped Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rational_conj_unipotentRadical_isotropic : ∀ (I : AutInst), ∀ γ ∈ I.GFset, ∀ W, I.IsIsot W → ∃ W', I.IsIsot W' ∧ ∀ m ∈ I.NA W', γ⁻¹ * m * γ ∈ I.NA W := by
+  atlas_forward_decl GlobalTheory.CuspGeo.naconj

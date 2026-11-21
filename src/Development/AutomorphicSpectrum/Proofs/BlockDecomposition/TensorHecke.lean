@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.CosetCount
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.CuspRep
@@ -109,3 +111,9 @@ theorem tensHk : TensHk := by
 end GlobalTheory.CompanionTheory.TensHkSum
 
 end
+end
+
+namespace PositivityTheory.Rg.BcB.F.Tail.PExp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensor_hecke : PositivityTheory.Rg.BcB.F.Tail.PExp.TensHk := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TensHkSum.tensHk

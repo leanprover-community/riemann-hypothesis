@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.PoissonIntegralPuncturedDisc
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntegralAngMeas
 
+section
 open MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar.PB.Flat
 open scoped ContDiff
 
@@ -174,3 +174,11 @@ theorem polyPoisson_eq_self : ∀ (n : ℕ) (f : (Fin n → ℂ) → ℝ) (ρ R 
       _ = f z := hone
 
 end GlobalTheory.CompanionTheory.Ar.PB.Flat
+end
+end
+
+open MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar.PB.Flat
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polydisc_poisson_reproduces_harmonic : ∀ (n : ℕ) (f : (Fin n → ℂ) → ℝ) (ρ R M : ℝ), 0 < ρ → ρ < R → ContinuousOn f (punct R) → SepHarm R f → (∀ z ∈ punct R, |f z| ≤ M) → ∀ z ∈ punct ρ, polyPoisson ρ f z = f z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.Flat.polyPoisson_eq_self

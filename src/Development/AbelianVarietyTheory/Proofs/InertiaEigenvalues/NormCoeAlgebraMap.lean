@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOfLayers
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEmbOfFixed
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGamGamKTorsion
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUnitLat

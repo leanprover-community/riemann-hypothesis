@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.CharacterGerms.BiadditiveInSingleVariables
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LegendreAndCapelli
 open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds
 

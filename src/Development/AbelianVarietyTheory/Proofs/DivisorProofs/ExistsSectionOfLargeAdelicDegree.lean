@@ -1,11 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsAdmissibleIntegralBasisChangeOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldPlaceOrderCalculusStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannInequalityCofinalFunctionFieldStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldPlaceLocalIndexColengthStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldPlaceLocalIndexScaledUniformiserStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroLinearCombinationMemCommonKernelStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannInequalityCofinalFunctionField
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldPlaceLocalIndexScaledUniformiser
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroLinearCombinationMemCommonKernel
 
+section
 open scoped IntermediateField Polynomial RatFunc
 open GlobalTheory.Nef
 
@@ -126,3 +125,13 @@ theorem exists_section_of_large_deg : ∀ (k F : Type) [Field k] [IsAlgClosed k]
     intro i; have := hpb i; rw [hD'v] at this; simpa using this
 
 end GlobalTheory.Nef
+end
+end
+
+open scoped IntermediateField Polynomial RatFunc
+open GlobalTheory.Nef
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_section_of_large_adelic_degree : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZero k] [Field F] [Algebra k F], IsFF k F →
+  ∃ γ : ℕ, ∀ (n : ℕ) (g : Place k F → Matrix (Fin n) (Fin n) F), admitted g → (n : ℤ) * γ < deg g → ∃ p : Fin n → F, p ≠ 0 ∧ ∀ (v : Place k F) (i : Fin n), v.1 ((g v).mulVec p i) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.Nef.exists_section_of_large_deg

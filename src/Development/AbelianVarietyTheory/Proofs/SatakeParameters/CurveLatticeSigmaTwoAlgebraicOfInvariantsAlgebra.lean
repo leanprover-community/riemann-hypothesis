@@ -5,7 +5,9 @@ import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FourthTensor
 import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.ConjCls
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsRingEquivTranscendental
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AlgebraicIsogenyConstantOfIsogenyFormula
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CurveSigmaAlg
@@ -57,3 +59,9 @@ theorem secondEisensteinAlgebraic_of_invAlg : Formalism.L2.KerInert.Sigma.InvAlg
   exact mul_mem (inv_mem (natCast_mem _ _)) hc
 
 end GlobalTheory.CurveSigmaAlg
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.curveLattice_sigmaTwo_algebraic_of_invariants_algebraic : Formalism.L2.KerInert.Sigma.InvAlg → Formalism.L2.KerInert.Sigma.SecondEisensteinAlgebraic := by
+  atlas_forward_decl GlobalTheory.CurveSigmaAlg.secondEisensteinAlgebraic_of_invAlg

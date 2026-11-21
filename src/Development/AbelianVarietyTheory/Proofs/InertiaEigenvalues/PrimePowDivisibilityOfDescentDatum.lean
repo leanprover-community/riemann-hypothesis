@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ImagePolynomialAction
+import BuildAid.ForwardExisting
+
+section
 open PowerSeries GlobalTheory.BK
 
 namespace GlobalTheory.NgalDivisible
@@ -91,3 +94,9 @@ theorem GlobalTheory.divisible_of_BKDat : ∀ (O K : Type) [CommRing O] [NormedF
     (D : BKDat O K l e a ι η H), GlobalTheory.IndefiniteRowSideFullHecke.ImagePolynomialAction.Divisible D := by
   intro O K _ _ _ _ _ _ l e a ι _ _ _ _ _ _ _ η H D
   exact ⟨fun _ hw => NgalDivisible.l_pow_smul_Z D hw, fun _ hy => NgalDivisible.l_pow_smul_Y D hy⟩
+end
+
+open PowerSeries GlobalTheory.BK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prime_pow_divisibility_of_descentDatum : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [CompleteSpace K] [Algebra O K] [IsUnitBall O K] (l e a : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] [NeZero a] [TameDescentExponentData K l e a] (η H : ℕ) (D : BKDat O K l e a ι η H), GlobalTheory.IndefiniteRowSideFullHecke.ImagePolynomialAction.Divisible D := by
+  atlas_forward_decl GlobalTheory.divisible_of_BKDat

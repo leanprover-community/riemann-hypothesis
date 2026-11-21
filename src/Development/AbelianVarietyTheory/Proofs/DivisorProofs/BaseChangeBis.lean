@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SameIdIff
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseChangeStatement
 
+section
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
@@ -31,3 +31,13 @@ theorem HasRep.baseChange (S : Scheme.{0}) (A S' S'' : Over S) [GrpObj A] (g : �
   exact Good.good_of_isPullback' (sq.map (Over.forget S)) hGood
 
 end GlobalTheory.DualCon
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.baseChangeBis : ∀ (S : Scheme.{0}) (A S' S'' : Over S) [GrpObj A] (g : ℕ) (_ : S'' ⟶ S'), HasRep A g S' → HasRep A g S'' := by
+  atlas_forward_decl GlobalTheory.DualCon.HasRep.baseChange

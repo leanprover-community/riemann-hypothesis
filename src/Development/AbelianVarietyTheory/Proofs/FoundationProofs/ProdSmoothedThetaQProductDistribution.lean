@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.Imports
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
+import BuildAid.ForwardExisting
+
+section
 open scoped UpperHalfPlane MatrixGroups Manifold
 open GlobalTheory.Sieg GlobalTheory.QFam
 
@@ -242,3 +245,11 @@ theorem _root_.GlobalTheory.Sieg.prod_cth_mul_pow : ∀ (c m : ℕ) (Q t : ℂ),
   field_simp
 
 end GlobalTheory.Sieg.Distr
+end
+end
+
+open scoped UpperHalfPlane MatrixGroups Manifold
+open GlobalTheory.Sieg GlobalTheory.QFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prod_smoothedThetaQProduct_distribution : ∀ (c m : ℕ) (Q t : ℂ), 1 < c → Nat.Coprime c 6 → 0 < m → Nat.Coprime c m → ‖Q‖ < 1 → Q ≠ 0 → t ≠ 0 → (∀ n : ℤ, Q ^ n * t ^ c ≠ 1) → ∏ j ∈ Finset.range m, cth c (Q ^ m) (t * Q ^ j) = cth c Q t := by
+  atlas_forward_decl GlobalTheory.Sieg.prod_cth_mul_pow

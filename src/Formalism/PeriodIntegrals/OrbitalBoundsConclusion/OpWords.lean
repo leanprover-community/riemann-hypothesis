@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.OpBound
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialDifferentialWords.Assemble
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialDifferentialWords.VanishMain
 

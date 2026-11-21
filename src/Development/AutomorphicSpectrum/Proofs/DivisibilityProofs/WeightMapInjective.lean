@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.IsChainFirst
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Top.FlDeg
@@ -42,3 +44,10 @@ theorem toWt_leftInverse_injective (Ψ : Type) (N : ℕ) :
   rw [← ha, ← hb, hab]
 
 end GlobalTheory.CompanionTheory.Ar.Top.FlDeg
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Top.FlDeg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weight_map_injective : ∀ (Ψ : Type) (N : ℕ), Function.Injective (PB.toWt : MvPolynomial (Ψ × Fin N) ℝ →ₐ[ℝ] MvPolynomial (Ψ × Fin N) ℝ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.FlDeg.toWt_leftInverse_injective

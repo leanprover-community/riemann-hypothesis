@@ -2,7 +2,6 @@ import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPolLatticePlane
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.HTChartExists
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeilPairingBaseChangeUnit
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsGenericWeilPairing
 
 noncomputable section

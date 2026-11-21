@@ -1,8 +1,10 @@
 import Mathlib
-import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.ModDepthGE
 import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.ExistsIsRegularAppendOfModDepthGE
 import ReciprocityTheory.CommutativeAlgebra.MaximalIdealSquares.RingKrullDimQuotientSpanSingletonAddOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PurityFree
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing
 
 namespace GlobalTheory
@@ -53,3 +55,9 @@ theorem isSMulRegular_of_etale_punctured_of_depth_pos :
   exact t.2 htP
 
 end GlobalTheory
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isSMulRegular_of_etale_punctured_of_depth_pos' : ∀ (R A : Type) [CommRing R] [IsRegularLocalRing R] [CommRing A] [Algebra R A] [Module.Finite R A], ReciprocityTheory.CA.ModDepthGE R A 1 → (∀ (p : Ideal R) [p.IsPrime], p ≠ maximalIdeal R → Algebra.Etale (Localization.AtPrime p) (TensorProduct R (Localization.AtPrime p) A)) → ∀ f : R, f ≠ 0 → IsSMulRegular A f := by
+  atlas_forward_decl GlobalTheory.isSMulRegular_of_etale_punctured_of_depth_pos

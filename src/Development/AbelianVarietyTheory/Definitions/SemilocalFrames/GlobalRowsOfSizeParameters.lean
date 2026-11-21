@@ -2,11 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ToGlob0
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CosetExpUnique
 import Formalism.LocalRingCardinality.SpanPowerMembership.NZRowGat
-import Formalism.LocalRingCardinality.SpanPowerMembership.NZRowW
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyRecordOfLocStage
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsRecordOverChoices
 import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamily
-import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.FourMulQLeCondN
 
 noncomputable section
 

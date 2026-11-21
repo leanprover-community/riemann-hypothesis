@@ -1,12 +1,13 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameMinorValueFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockLUFactorizationStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockLUFactorization
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LUTwistRefactorizationStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartTenthStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartTenth
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameLUMinorValueStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.TwistedFrameValueFormulaStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.TwistedFrameValueFormula
+
+section
 open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 open scoped ComplexOrder Classical
 open GlobalTheory.CompanionTheory.Ar.PB.WSq GlobalTheory.CompanionTheory.Ar.PB.WMan
@@ -137,3 +138,12 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     exact hz₂ m
 
 end GlobalTheory.CompanionTheory.Ar.PB.WMan.Onto
+end
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+open GlobalTheory.CompanionTheory.Ar.PB.WSq GlobalTheory.CompanionTheory.Ar.PB.WMan
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_adjacent_chart_fifth : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n) (τ : Ψ) (a b : Fin N) (k₀ : K) (ca cb : Fin N) (F : FrameData ι Ψ N M.Ω M.blk) (kb : Fin Rb.A.n) (V : Set (Fin n → ℂ)) (bl : (Fin n → ℂ) → (Σ k, baseIdx ι M.blk k) → ℂ) (r : ((Σ k, baseIdx ι M.blk k) → ℂ) → Rb.X) (h : Ψ → Matrix (Fin N) (Fin N) ℂ) (ε : Fin n ⊕ LowIdx Ψ N j ⊕ Unit ≃ Fin (d + 2)), IsWCtx M Rb τ a b k₀ ca cb d F kb V bl r h → ∀ z ∈ wO M Rb τ a k₀ ca cb F kb V r h, wRho M Rb τ k₀ ca cb F kb r h ε z ∈ wD ε V ∧ SameOrbit (wPhi M F bl h ε k₀ τ ca cb (wRho M Rb τ k₀ ca cb F kb r h ε z)) z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.WMan.Onto.main

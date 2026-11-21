@@ -1,17 +1,15 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.VpBounds
-import Formalism.PairingDivisors.PairingDivisorProofs.Height
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EllipticOnePole
 import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.RootsOfUnityDivisibility
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsMulPowIntegral
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.DepthTie
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ReductionLemmaFirst
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsNormMinpolyCoeffZeroPowNumberFieldStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanInfLogNormEmbeddingEqLogNormDivStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationMinpolyCoeffZeroGeOfPowMulIntegralStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsNormMinpolyCoeffZeroPowNumberField
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanInfLogNormEmbeddingEqLogNormDiv
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationMinpolyCoeffZeroGeOfPowMulIntegral
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanValuationNormOverDegreeSmulEqAddValuationStatement
 
+section
 noncomputable section
 open NumberField Polynomial IsDedekindDomain
 open Formalism.DivisionValues (vw lw)
@@ -241,3 +239,10 @@ theorem thbSt_of_inputs : GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValua
   push_cast; ring
 
 end GlobalTheory.SqTop
+end
+end
+
+open GlobalTheory.SqTop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.toricValueHeightBound_of_denominatorsMeans : GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.ToricDenominator → FieldDat → TorEx → DenEx → DenSum → BetaArch → ThbSt := by
+  atlas_forward_decl GlobalTheory.SqTop.thbSt_of_inputs

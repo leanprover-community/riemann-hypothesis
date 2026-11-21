@@ -2,12 +2,13 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ScholzeWeinsteinB
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.RegularAlteration
-import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleBaseChangeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleFamilyUniqueIsoStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleTransportIsoStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VectorBundleLocallyFreeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FreeFlagBundleSmoothRelativeDimStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleBaseChange
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleFamilyUniqueIso
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleTransportIso
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VectorBundleLocallyFree
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FreeFlagBundleSmoothRelativeDim
+
+section
 open NumberField MvPolynomial Filter Topology Formalism.BasicNotions Formalism.MainNotions Formalism.DegreeFormula GlobalTheory.FlagPoly GlobalTheory.Mean4 GlobalTheory.Mean4O GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.CovTest GlobalTheory.Published
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.ArInt
 open scoped Classical
@@ -39,3 +40,12 @@ theorem smooth_of_isFlagBundle : ∀ (B Y : Scheme.{0}) (π : Y ⟶ B) (ι : Typ
        simpa using (inferInstance : SmoothOfRelativeDimension (0 + ∑ a, r a * (r a - 1) / 2) (e.inv ≫ π0)))
 
 end GlobalTheory.FlagSmooth
+end
+
+open NumberField MvPolynomial Filter Topology Formalism.BasicNotions Formalism.MainNotions Formalism.DegreeFormula GlobalTheory.FlagPoly GlobalTheory.Mean4 GlobalTheory.Mean4O GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.CovTest GlobalTheory.Published
+open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.ArInt
+open scoped Classical
+open Formalism.BasicNotions.DV Formalism.MainNotions.WeightThresholdDefs GlobalTheory.FlagAr GlobalTheory.ShFam.Pad GlobalTheory.VB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_bundle_smooth_relative_dimension : ∀ (B Y : Scheme.{0}) (π : Y ⟶ B) (ι : Type) [Fintype ι] (E : ι → B.Modules) (r : ι → ℕ) (fl : ∀ a, Vert.Flag ((Scheme.Modules.pullback π).obj (E a)) (r a)), (∀ a, GlobalTheory.VB.IsVB (E a) (r a)) → IsFlagBundle π E r fl → SmoothOfRelativeDimension (∑ a, r a * (r a - 1) / 2) π := by
+  atlas_forward_decl GlobalTheory.FlagSmooth.smooth_of_isFlagBundle

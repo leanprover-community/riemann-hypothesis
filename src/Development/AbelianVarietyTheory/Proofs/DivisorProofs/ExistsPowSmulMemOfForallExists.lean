@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.ModDepthGE
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing TensorProduct Pointwise
 
 namespace GlobalTheory
@@ -23,3 +26,9 @@ theorem Submodule.exists_pow_smul_mem_of_forall_exists :
   rwa [_root_.Submodule.mem_comap, LinearMap.smul_apply, LinearMap.id_apply] at this
 
 end GlobalTheory
+end
+
+open IsLocalRing TensorProduct Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pow_smul_mem_of_forall_exists' : ∀ (S : Type) [CommRing S] (I : Ideal S) (M : Type) [AddCommGroup M] [Module S M] [Module.Finite S M] (N : Submodule S M), (∀ y : M, ∃ k : ℕ, ∀ a ∈ I ^ k, a • y ∈ N) → ∃ k : ℕ, ∀ a ∈ I ^ k, ∀ y : M, a • y ∈ N := by
+  atlas_forward_decl GlobalTheory.Submodule.exists_pow_smul_mem_of_forall_exists

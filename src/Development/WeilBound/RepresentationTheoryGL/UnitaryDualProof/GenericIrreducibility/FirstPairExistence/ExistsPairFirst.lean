@@ -145,13 +145,7 @@ theorem pr_perm (hF : FactorIrr k) (hC : Comm2Irr k) {h : ℕ} (f : Fin h → Ir
 theorem prodIrr_cast {m n N : ℕ} (e : m = n) (f : Fin m → IrrGL k) (g : Fin n → IrrGL k)
     (hfg : f = g ∘ Fin.cast e) (hf : ∑ a, (f a).1 = N) (hg : ∑ a, (g a).1 = N) :
     Nonempty ((prodIrr f hf).Equiv (prodIrr g hg)) := by
-  subst e
-  have hfg' : f = g := by
-    rw [hfg]
-    funext a
-    simp
-  subst hfg'
-  exact ⟨Representation.Equiv.refl _⟩
+  apply nonempty_prodIrr_equiv_of_eq_comp_cast (e := e) (f := f) (g := g) (hfg := hfg) (hf := hf) (hg := hg) <;> assumption
 
 def lastPerm {r : ℕ} (j : Fin (r + 1)) : Equiv.Perm (Fin (r + 1)) :=
   finSuccEquivLast.trans (finSuccEquiv' j).symm

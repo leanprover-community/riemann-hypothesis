@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundStatement
 import Formalism.SharpRestriction.Divisibility.PlaceRankTwoOne
-import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.BadPrimesPeriodBound
 
 noncomputable section

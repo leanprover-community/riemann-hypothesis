@@ -7,8 +7,9 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEmbeddingPie
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenDegGeomDeg
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefOnGenericOfSemipos
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SmallSectionCountMonoLattice
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.PackingStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.PackingAlt
 
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.Small Filter Topology
 
 namespace GlobalTheory.CompanionTheory.Ar.Small
@@ -58,3 +59,9 @@ theorem selfIntersection_le_volNm_of_moriwakiBig : MoriwakiBigStatement → Bira
         ring
 
 end GlobalTheory.CompanionTheory.Ar.Small
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.Small Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.big_line_implies_height_positivity : MoriwakiBigStatement → BirationalPullbackPushforwardFormula := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Small.selfIntersection_le_volNm_of_moriwakiBig

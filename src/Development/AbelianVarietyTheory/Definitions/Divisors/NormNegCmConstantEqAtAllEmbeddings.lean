@@ -1,10 +1,8 @@
 import Mathlib
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Formalism.LocalToGlobal.IndefiniteReal.FWTie
 import Formalism.LocalToGlobal.ProjectiveLattices.ThClassPins
 import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
 import Formalism.SharpRestriction.Divisibility.PlaceRankTwoOne
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
 import Development.AbelianVarietyTheory.Definitions.Divisors.DividedWeightUnique

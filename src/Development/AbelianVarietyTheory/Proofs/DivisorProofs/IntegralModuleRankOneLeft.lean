@@ -1,10 +1,10 @@
 import Mathlib
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemNilRad
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixCompletionFirstColumnStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixCompletionFirstColumn
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuantumDetCentralCoeffsConjStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModuleOfCharPolyStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QdetPolyMapMonic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModuleOfCharPoly
+
+section
 open Matrix GlobalTheory.TorFin
 
 namespace GlobalTheory
@@ -134,3 +134,10 @@ theorem rho_vecMulVec_isIntMod_invAlg : ∀ (n : ℕ) (A : Type) [Ring A] [Algeb
     exact hTm _ _ _
 
 end GlobalTheory
+end
+
+open Matrix GlobalTheory.TorFin
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_module_rank_one_left : ∀ (n : ℕ) (A : Type) [Ring A] [Algebra ℂ A] (ρ : Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] A), IsLieRep ρ → ∀ v φ : Fin n → ℂ, φ ⬝ᵥ v = 1 → IsIntMod (invAlg ρ) (leftIdl ρ {Y | ∃ u, φ ⬝ᵥ u = 0 ∧ Y = vecMulVec u φ}) (ρ (vecMulVec v φ)) := by
+  atlas_forward_decl GlobalTheory.rho_vecMulVec_isIntMod_invAlg

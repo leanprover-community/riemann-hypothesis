@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.LocalRingCardinality.DataSpaces
 import Formalism.LocalToGlobal.Divisibility.TuplesLemmas
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.DIV
 
 namespace GlobalTheory
@@ -17,3 +20,9 @@ theorem cmData_sig_isConjOf : ∀ (F E : Type) [Field F] [NumberField F] [Field 
   omega
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.DIV
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cmData_conj_isConjOf : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : CMData F E), IsConjOf hc.sig := by
+  atlas_forward_decl GlobalTheory.cmData_sig_isConjOf

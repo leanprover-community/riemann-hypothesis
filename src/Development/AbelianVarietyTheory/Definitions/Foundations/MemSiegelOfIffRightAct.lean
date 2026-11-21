@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.Statement
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
 
 noncomputable section

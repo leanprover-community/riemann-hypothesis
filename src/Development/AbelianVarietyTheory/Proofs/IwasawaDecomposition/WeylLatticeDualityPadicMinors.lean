@@ -1,16 +1,15 @@
 import Mathlib
 import Formalism.UnipotentAdelicQuotients.WeylLatDual
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualWeylEqSpanColProd
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StandardWeylLatticesFockDual
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramInjectivity.InstFintypeColChoice
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WwCauchyBinet
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WwInjective
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnMinorProductsFockReproducingDualWeylStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnProductTransitionMatricesStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeylLatticeIntegralColumnMinorExpansionStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFockFunctionalOnNablaXProductsStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnMinorProductsFockReproducingDualWeyl
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnProductTransitionMatrices
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeylLatticeIntegralColumnMinorExpansion
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFockFunctionalOnNablaXProducts
 
+section
 open MvPolynomial
 
 attribute [local instance 2000] RelEmbedding.instFintype
@@ -333,3 +332,9 @@ theorem stmt_holds : WeylLatticeDuality.Stmt := by
     exact hψ1 J
 
 end GlobalTheory.WeylLatDualPf
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weyl_lattice_duality_padic_minors : WeylLatticeDuality.Stmt := by
+  atlas_forward_decl GlobalTheory.WeylLatDualPf.stmt_holds

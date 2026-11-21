@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.MetaplecticRepresentation
+import BuildAid.ForwardExisting
 
+section
 open scoped Matrix SchwartzMap ComplexConjugate
 
 namespace GlobalTheory.CompanionTheory.QuadChirp
@@ -69,3 +71,9 @@ theorem exists_schwartz_chirp_mul :
   rw [SchwartzMap.smulLeftCLM_apply_apply (GlobalTheory.CompanionTheory.QuadChirp.chirp_hasTemperateGrowth k b hb), smul_eq_mul]
 
 end GlobalTheory.CompanionTheory.QuadChirp
+end
+
+open scoped Matrix SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_quadratic_phase_multiplication : ∀ (m n : ℕ) (k : ℝ) (b : Matrix (Fin n) (Fin n) ℂ), bᴴ = b → ∀ φ : SchwartzMap (Fin m → Fin n → ℂ) ℂ, ∃ ψ : SchwartzMap (Fin m → Fin n → ℂ) ℂ, ⇑ψ = fun u => Complex.exp (2 * Real.pi * Complex.I * (k : ℂ) * Matrix.trace (b * ((Matrix.of u)ᴴ * Matrix.of u))) * φ u := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.QuadChirp.exists_schwartz_chirp_mul

@@ -3,10 +3,11 @@ import Formalism.PadicSubsetSums.CentralIdempotents.GaloisConjCentralIdempotent
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.CuspidalProductMultiplicity
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoeffZeroNeOfMonicIrr
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HarishChandraLabels.Basics
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIrrRepHarishChandraDistinctCuspidalLabelsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIrrRepHarishChandraDistinctCuspidalLabels
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraInductionCuspidalParabolicProductStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMonotoneBlocksSameHarishChandraCharacterStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMonotoneBlocksSameHarishChandraCharacter
 
+section
 open CategoryTheory Polynomial Formalism.IrreducibleCountingLemmas.TYPES
 
 noncomputable section
@@ -84,3 +85,10 @@ theorem isCuspProdChar_of_squarefree : ∀ (K : Type) [Field K] [Fintype K] [Dec
   exact hcp
 
 end GlobalTheory.SqfreeCuspProd
+end
+end
+
+open CategoryTheory Polynomial Formalism.IrreducibleCountingLemmas.TYPES
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.squarefreeLabel_isCuspidalParabolicProductCharacter : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K] (C : LabelConv K) (O : LabelMap K C) (r : ℕ) (τ : FDRep ℂ (GL (Fin r) K)) (f : K[X]), Simple τ → HasLabelO O τ f → Squarefree f → GlobalTheory.IndefiniteRowSideFullHecke.CuspidalProductMultiplicity.IsCuspProdChar (fun x : GL (Fin r) K => τ.character x) := by
+  atlas_forward_decl GlobalTheory.SqfreeCuspProd.isCuspProdChar_of_squarefree

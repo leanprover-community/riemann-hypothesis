@@ -1,10 +1,9 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.CubeTheorem.LBSpreads
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsProjOverOfIsProjOverBase
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CubeTheorem
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CubeOfIsLocallyNoetherian
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAdditiveSwapOfTrivAxes
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -168,3 +167,10 @@ theorem cubeTheorem_of_perfAll : GlobalTheory.SpreadingModels.PerfAll → Global
   cube hP hA L hL T a b c
 
 end GlobalTheory.CompanionTheory.CubePerf
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.AbLaw GlobalTheory.SpreadingModels
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cube_theorem_of_perfect : GlobalTheory.SpreadingModels.PerfAll → GlobalTheory.Published.CubeTheorem := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CubePerf.cubeTheorem_of_perfAll

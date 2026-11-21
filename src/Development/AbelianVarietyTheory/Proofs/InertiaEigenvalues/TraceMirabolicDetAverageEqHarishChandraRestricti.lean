@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SeriesKillsAvg
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.GLq GlobalTheory.MirAvg Polynomial
 
 namespace GlobalTheory.ResTr
@@ -212,3 +215,13 @@ theorem trace_mir (g : ℕ) [Fact g.Prime] (n : ℕ) (ψ : Gn g (n + 1) → ℂ)
       refine (Finset.sum_eq_zero (fun x _ => ?_)).symm
       rw [if_neg (fun e => H ((parBr_iff _).1 ⟨e.1, by simpa using e.2.2⟩)), mul_zero]
 end GlobalTheory.ResTr
+end
+
+open GlobalTheory.GLq GlobalTheory.MirAvg Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trace_mirabolicDetAverage_eq_harishChandraRestriction : ∀ (g : ℕ) [Fact g.Prime] (n : ℕ) (ψ : Gn g (n + 1) → ℂ) (θ : (ZMod g)ˣ →* ℂˣ),
+    tr (mirEl θ (Pi.single (Fin.last n) 1) false) ψ =
+        (g : ℂ) ^ n * ∑ x : Gn g 1, ((θ (Matrix.GeneralLinearGroup.det x) : ℂˣ) : ℂ) * res n 1 ψ 1 x ∧
+      tr (mirEl θ (Pi.single 0 1) true) ψ =
+        (g : ℂ) ^ n * ∑ x : Gn g 1, ((θ (Matrix.GeneralLinearGroup.det x) : ℂˣ) : ℂ) * res 1 n ψ x 1 := by
+  atlas_forward_decl GlobalTheory.ResTr.trace_mir

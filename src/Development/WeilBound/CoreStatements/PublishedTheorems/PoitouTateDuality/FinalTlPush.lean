@@ -1,6 +1,5 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PublishedTheorems.PoitouTateDuality.ExistsUniformizerOrd
-import Development.WeilBound.CoreStatements.PublishedTheorems.PoitouTateDuality.FinalPtfsHasse
 
 noncomputable section
 

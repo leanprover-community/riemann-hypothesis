@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.GIface
 
 noncomputable section

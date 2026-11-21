@@ -2,8 +2,6 @@ import Formalism.PieriBlockIdeals.BlockIdealBound5Derived
 import Formalism.PieriBlockIdeals.PieriColumnMinors.ProdInitialMinorsMemDetSpan
 import Formalism.PieriBlockIdeals.PieriColumnMinors.UnitNormBounds
 import Formalism.PieriBlockIdeals.PieriColumnMinors.JointCorollaryFiveBound
-import Formalism.GradedWeylDivisibility.FinalC
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDbasisLemmas
 import Formalism.RankGapBounds.RankGapProofs.FormsTensorLocalization
 import Formalism.PieriBlockIdeals.PieriColumnMinors.RegularCuspidalTrace
 

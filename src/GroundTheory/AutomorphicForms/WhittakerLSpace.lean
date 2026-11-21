@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.LocallyProfinite
 import GroundTheory.AutomorphicForms.LocallyConstantCompact
 
 namespace GroundTheory.Automorphic

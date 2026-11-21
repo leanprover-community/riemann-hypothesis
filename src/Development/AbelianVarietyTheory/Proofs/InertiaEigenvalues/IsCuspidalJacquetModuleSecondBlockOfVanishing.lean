@@ -5,6 +5,8 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InSupportOfIsSub
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitaryAdmissibleMatrixCoefficient
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCuspidalOfJacquetMin
+
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
 
 namespace GlobalTheory.JacMinCuspGL
@@ -90,3 +92,9 @@ theorem isCuspidal_jac₂_inr : ∀ (k : Type) [Field k] [ValuativeRel k] [Topol
   exact hle (hJ ▸ Submodule.mem_top)
 
 end GlobalTheory.JacMinCuspGL
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCuspidal_jacquetModule_second_block_of_vanishing : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b n : ℕ) (h : a + b = n) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V), IsSmooth π → (∀ (r t : ℕ) (h' : r + t = n), 0 < t → t < b → Subsingleton (Jacquet π (unipRad k (two (stdSum h'))))) → IsCuspidal (k := k) (n := Fin b) ((jac₂ (stdSum h) π).comp (MonoidHom.inr (GL (Fin a) k) (GL (Fin b) k))) := by
+  atlas_forward_decl GlobalTheory.JacMinCuspGL.isCuspidal_jac₂_inr

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiagScaleApply
+import BuildAid.ForwardExisting
+
+section
 open PowerSeries GlobalTheory.BK
 
 namespace GlobalTheory.PowKill
@@ -66,3 +69,9 @@ theorem main : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist 
   fun O K _ _ _ _ _ l _ _ _ _ _ h => exists_pow_smul_eq_zero (l_mem_maximal (K := K) l) h
 
 end GlobalTheory.PowKill
+end
+
+open PowerSeries GlobalTheory.BK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_prime_pow_kills_finiteLength_integralPowerSeries : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] (l : ℕ) [Fact l.Prime] [NormedAlgebra ℚ_[l] K] (Mo : Type) [AddCommGroup Mo] [Module (A O K) Mo], IsFiniteLength (A O K) Mo → ∃ m : ℕ, ∀ q : Mo, ((l : A O K) ^ m) • q = 0 := by
+  atlas_forward_decl GlobalTheory.PowKill.main

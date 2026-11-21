@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SandwichMaps
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
 
 namespace GlobalTheory
@@ -63,3 +66,9 @@ theorem jointEigen_ringHom_toIntegers (C : Type) [Field C] (v : Valuation C NNRe
   · intro a b; exact hv.hom_inj (by rw [hσf, map_add, hσf, hσf, hadd])
 
 end GlobalTheory
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ring_hom_of_joint_eigenvalue : ∀ (C : Type) [Field C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] (Λ : Type) [CommRing Λ] (h : ℕ), v.Integers O → ∀ (ρ : Λ →+* Matrix (Fin h) (Fin h) O) (χ : Λ → C), (⨅ a : Λ, Module.End.eigenspace (Matrix.toLin' ((ρ a).map (algebraMap O C))) (χ a)) ≠ ⊥ → ∃ σ : Λ →+* O, ∀ a, algebraMap O C (σ a) = χ a := by
+  atlas_forward_decl GlobalTheory.jointEigen_ringHom_toIntegers

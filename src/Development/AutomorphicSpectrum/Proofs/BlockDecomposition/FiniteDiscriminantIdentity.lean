@@ -1,13 +1,13 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.InfinitesimalCharacterGlue
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsFundamentalDomainGLStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AutomorphicNormFiniteNonzeroStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrthogonalOfNonIsomorphicStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsFundamentalDomainGL
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AutomorphicNormFiniteNonzero
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrthogonalOfNonIsomorphic
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TypedSpaceApproximationStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KernelSumBoundUniformStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KernelSumBoundUniform
 
+section
 open scoped Classical
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB.SpectralAccumulation
@@ -128,3 +128,10 @@ theorem main : FinDisc := by
 end GlobalTheory.CompanionTheory.FinDiscP
 
 end
+end
+
+open scoped Classical
+namespace PositivityTheory.Rg.BcB.SpectralAccumulation
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_discriminant_identity : PositivityTheory.Rg.BcB.SpectralAccumulation.FinDisc := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FinDiscP.main

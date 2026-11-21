@@ -1,9 +1,10 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.IsJointGenEig
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMemInfConjOfIsDom
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InterConjIsOpen
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupFiniteCosetReps
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.PRep PositivityTheory.SphericalProduct
 
 namespace GlobalTheory.CompanionTheory.Casselman
@@ -19,3 +20,9 @@ theorem exists_fin_coset_reps_of_isDom : ∀ (G : Type) [Group G] [TopologicalSp
     (exists_mem_inf_conj_of_isDom G D t ht)
 
 end GlobalTheory.CompanionTheory.Casselman
+end
+
+open GlobalTheory.PRep PositivityTheory.SphericalProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dominant_coset_reps_unipotent : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (D : PositivityTheory.SphericalProduct.CassData G), ∀ t : D.T, D.IsDom t → ∃ r : ℕ, 0 < r ∧ ∃ x : Fin r → G, (∀ i, x i ∈ D.J ⊓ D.N) ∧ ∀ y ∈ D.J, ∃! i, (x i)⁻¹ * y ∈ D.J ⊓ D.J.map (MulAut.conj (t : G)).toMonoidHom := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Casselman.exists_fin_coset_reps_of_isDom

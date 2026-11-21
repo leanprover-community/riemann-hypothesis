@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.FlB
 
 noncomputable section
@@ -211,3 +213,9 @@ theorem stFrame_of : StAniso → StPlane → StSplit → StFrame := by
 end GlobalTheory.CompanionTheory.HermFrame
 
 end
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frame_of_anisotropic_plane_splitting : StAniso → StPlane → StSplit → StFrame := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HermFrame.stFrame_of

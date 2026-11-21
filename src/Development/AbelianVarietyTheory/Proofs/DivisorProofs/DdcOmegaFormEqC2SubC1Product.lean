@@ -2,7 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineSCShortExact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPosFrameQuotIn
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubquotientCurvatureStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtTraceChartIndepStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtTraceChartIndep
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffOnExtTraceStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DdcEqOfLocalEqStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DdcOfValuesEqStatement
@@ -10,9 +10,9 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernAtTwoEqStateme
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OfValuesMulOfValuesStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FirstChernIsometricEq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankTwoFlagRationalSections
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetMetricShortExactIsoIsometric
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernOneEqNegDdcLogDet
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -208,3 +208,14 @@ theorem GlobalTheory.LineForm.ddc_omF_eq : ∀ (k : Type) [CommRing k] (X : Sche
     ∀ (E : X.Modules) (h : VMetric p E 2) (H : h.IsCInf) (fl : Vert.Flag E 2), (hX.atlas σ).ddc (fld _ (omF hX σ h fl)) =
       fld _ (c2F hX σ h fl - c1F hX σ (VMetric.grLB fl 0 H) * c1F hX σ (VMetric.grLB fl 1 H)) :=
   fun _ _ _ _ _ _ hX σ _ h H fl => GlobalTheory.LineForm.DdcLine.ddc_omF hX σ h H fl
+end
+end
+
+open CategoryTheory AlgebraicGeometry MvPolynomial MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxForm GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.Cartier GlobalTheory.CovTest GlobalTheory.CovTest.SwapLine GlobalTheory.LineForm
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ddc_omega_form_eq_c2_sub_c1_product : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ) (hX : IsRegVar p D) (σ : k →+* ℂ),
+    ∀ (E : X.Modules) (h : VMetric p E 2) (H : h.IsCInf) (fl : Vert.Flag E 2), (hX.atlas σ).ddc (fld _ (omF hX σ h fl)) = fld _ (c2F hX σ h fl - c1F hX σ (VMetric.grLB fl 0 H) * c1F hX σ (VMetric.grLB fl 1 H)) := by
+  atlas_forward_decl GlobalTheory.LineForm.ddc_omF_eq

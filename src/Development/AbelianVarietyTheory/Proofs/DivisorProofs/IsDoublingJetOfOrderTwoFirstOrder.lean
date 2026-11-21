@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivCompM
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.Nef
 
 namespace GlobalTheory.Nef.PathJet
@@ -45,3 +47,10 @@ theorem firstOrder_isJet : ∀ (A B R : Type) [CommRing A] [CommRing B] [CommRin
     simp [coeff_C, coeff_C_mul, coeff_X]
 
 end GlobalTheory.Nef.PathJet
+end
+
+open GlobalTheory.Nef
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isDoublingJetOfOrder_two_firstOrder : ∀ (A B R : Type) [CommRing A] [CommRing B] [CommRing R] (π : B →+* A) (ε : A →+* B) (m : A →+* A) (β : B →+* R) (δ : A →+ R), ε.comp π = RingHom.id B → m.comp π = π → ε.comp m = ε → (∀ f ∈ RingHom.ker ε, m f - 2 * f ∈ RingHom.ker ε ^ 2) → (∀ f g, δ (f * g) = β (ε f) * δ g + β (ε g) * δ f) → (∀ a, δ (π a) = 0) → GlobalTheory.Nef.PathJet.IsJet π ε m β δ 2 (fun f => PowerSeries.C (β (ε f)) + PowerSeries.C (δ f) * PowerSeries.X) := by
+  atlas_forward_decl GlobalTheory.Nef.PathJet.firstOrder_isJet

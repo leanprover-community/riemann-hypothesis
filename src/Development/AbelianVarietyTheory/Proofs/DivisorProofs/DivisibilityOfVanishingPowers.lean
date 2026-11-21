@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IotaScalarOne
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
 
 namespace GlobalTheory
@@ -34,3 +37,9 @@ example : ∀ (R C ι : Type) [CommRing R] [Field C] (f : ι → (R →+* C)) (�
   @DetInv.dvd_pow_of_local_dvd_pow
 
 end GlobalTheory
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.divisibility_of_vanishing_powers : ∀ (R C ι : Type) [CommRing R] [Field C] (f : ι → (R →+* C)) (ξ : R), ξ ∈ nonZeroDivisors R → (∀ i, f i ξ = 0) → (∀ r : R, (∀ i, f i r = 0) → ξ ∣ r) → ∀ (n : ℕ) (r : R), (∀ i, ∃ s : R, f i s ≠ 0 ∧ ξ ^ n ∣ s * r) → ξ ^ n ∣ r := by
+  atlas_forward_decl GlobalTheory.DetInv.dvd_pow_of_local_dvd_pow

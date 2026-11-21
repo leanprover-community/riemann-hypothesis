@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.GradedWeylDivisibility.StatementA
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.DualWeylNonDom
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.NonDomZero
 
 theorem exists_lt_lt_of_not_antitone {N : ℕ} {ν : Fin N → ℕ} (hν : ¬ Antitone ν) :
@@ -19,3 +20,8 @@ theorem dualWeyl_eq_bot_of_not_antitone :
   exact Formalism.GradedWeylDivisibility.dualWeylModuleNonDominant O N N ν (exists_lt_lt_of_not_antitone hν)
 
 end GlobalTheory.NonDomZero
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualWeyl_eq_bot_of_not_antitone' : ∀ (O : Type) [CommRing O] [IsDomain O] [CharZero O] (N : ℕ) (ν : Fin N → ℕ), ¬ Antitone ν → Formalism.GradedWeylDivisibility.dualWeyl O N N ν = ⊥ := by
+  atlas_forward_decl GlobalTheory.NonDomZero.dualWeyl_eq_bot_of_not_antitone

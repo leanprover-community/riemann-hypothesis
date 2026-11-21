@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NormPowLeNormFactorial
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.SndDualLiftAlgebraMap
+import BuildAid.ForwardExisting
+
+section
 open PowerSeries GlobalTheory.BK
 
 namespace GlobalTheory.WDivE
@@ -81,3 +83,9 @@ theorem GlobalTheory.weierstrassDiv_E_pow : ∀ (O K : Type) [CommRing O] [Norme
   refine ⟨c, g, hg, ?_⟩
   simp only [hc]
   rw [← GlobalTheory.WDivE.eq_sum_of_vanish hPv]
+end
+
+open PowerSeries GlobalTheory.BK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weierstrass_division_eisensteinPow_integral : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [CompleteSpace K] [Algebra O K] [IsUnitBall O K] (l e : ℕ) [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] (n : ℕ) (f : K⟦X⟧), f ∈ A O K → ∃ (c : Fin (e * n) → O) (g : K⟦X⟧), g ∈ A O K ∧ f = ∑ k : Fin (e * n), C (algebraMap O K (c k)) * X ^ (k : ℕ) + E K l e ^ n * g := by
+  atlas_forward_decl GlobalTheory.weierstrassDiv_E_pow

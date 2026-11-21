@@ -1,9 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.TwistedRepresentations.Tens
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitDivisibleOfVanishingLevelStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteLengthOfLseqFirstStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitDivisibleOfVanishingLevel
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteLengthOfLseqFirst
 import ReciprocityTheory.GroupCohomology.FinGen
 
+section
 open TensorProduct CrystallineSemistableComparison CrystallineSemistableComparison.Tw
 
 namespace GlobalTheory.CompanionTheory.TowerLim
@@ -57,3 +57,9 @@ theorem module_finite_lim : ∀ (W : Type) [CommRing W] (l : ℕ) [IsAdicComplet
   exact Module.Finite.of_surjective _ (surjective_of_mkQ_comp_surjective hsurj)
 
 end GlobalTheory.CompanionTheory.TowerLim
+end
+
+open TensorProduct CrystallineSemistableComparison CrystallineSemistableComparison.Tw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.module_finite_limit_of_lseq : ∀ (W : Type) [CommRing W] (l : ℕ) [IsAdicComplete (Ideal.span {(l : W)}) W] (S S' : Sys.{1} W) (_ : LSeq l S S'), IsFiniteLength W (S.M 1) → Module.Finite W S.lim := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TowerLim.module_finite_lim

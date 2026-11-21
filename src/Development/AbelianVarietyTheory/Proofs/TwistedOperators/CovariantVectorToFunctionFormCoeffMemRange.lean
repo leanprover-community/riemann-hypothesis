@@ -2,6 +2,8 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.InvVolConjLevelOne
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ReprMemOfCoeff
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BranchingPairingMemCoefficientField
+
+section
 open Formalism.L2.DIV MvPolynomial
 
 namespace GlobalTheory.RowFun
@@ -71,3 +73,9 @@ theorem coeff_funOf_mem_range {ι : Type} [Fintype ι] {n : ℕ} (σ : ι → Fo
   exact RingHom.mem_fieldRange.mp this
 
 end GlobalTheory.RowFun
+end
+
+open Formalism.L2.DIV MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.covariantVectorToFunctionForm_coeff_mem_range : ∀ {ι : Type} [Fintype ι] {n : ℕ} (σ : ι → Formalism.BasicNotions.DomWeight n) {L : Type} [Field L] (κ : L →+* ℂ), GlobalTheory.FunObj.ReadOK σ → ∀ (F : VV ℂ σ), (∀ m, MvPolynomial.coeff m F.1 ∈ Set.range κ) → ∀ m, MvPolynomial.coeff m (GlobalTheory.FunObj.funOf σ F).1 ∈ Set.range κ := by
+  atlas_forward_decl GlobalTheory.RowFun.coeff_funOf_mem_range

@@ -1,7 +1,6 @@
 import Formalism.SizeWindowBrackets.GrowthBoundGivesRiemannHypothesis
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.RiemannHypothesisOfPowerBound
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.StronglyIrreducible
-import Formalism.ThickAverageLoss.ThickAverageProofs.Balance
 import Formalism.ThickAverageLoss.ThickAverageProofs.ThickAverage
 import Formalism.ZetaNonvanishing.GzLipschitz
 import Mathlib.NumberTheory.Chebyshev

@@ -3,7 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EndOmega
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.TranslateProduct
 import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementC
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementK
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.SubKur
@@ -246,3 +248,10 @@ theorem le_Kur : ∀ (l : ℕ) [Fact l.Prime] (F : Subfield ℂ_[l]) (N : ℕ), 
     rwa [inv_inv] at this
 
 end GlobalTheory.SubKur
+end
+end
+
+open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_subfield_criterion : ∀ (l : ℕ) [Fact l.Prime] (F : Subfield ℂ_[l]) (N : ℕ), 0 < N → (∀ x ∈ F, ‖x‖ < 1 → ‖x‖ ≤ ‖(l : ℂ_[l])‖) → (∀ x ∈ F, ‖x‖ ≤ 1 → ‖x ^ (l ^ N) - x‖ < 1) → F ≤ MaximalUnramifiedExtension l := by
+  atlas_forward_decl GlobalTheory.SubKur.le_Kur

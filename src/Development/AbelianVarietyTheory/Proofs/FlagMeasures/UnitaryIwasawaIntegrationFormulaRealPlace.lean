@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.SameKindIsometric
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IwasawaIntegrationFormulaUpToConstantStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IwasawaIntegrationFormulaConstantStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IwasawaIntegrationFormulaConstant
 
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
 
 namespace GlobalTheory.FlagMeas
@@ -14,3 +14,9 @@ theorem iwasawaFormula : IwasawaFormula := by
   rw [hκ φ hφ, ← mul_assoc, hconst]
 
 end GlobalTheory.FlagMeas
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_iwasawa_integration_formula_real_place : IwasawaFormula := by
+  atlas_forward_decl GlobalTheory.FlagMeas.iwasawaFormula

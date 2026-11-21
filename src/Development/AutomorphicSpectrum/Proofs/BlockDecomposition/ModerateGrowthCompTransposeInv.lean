@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CstD
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -57,3 +59,15 @@ theorem hasModerateGrowth_comp_ti :
 end GlobalTheory.CompanionTheory.UnfoldingAlt
 
 end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open Ad3.R (G2 Jd md Dt KA Set0 Coord LInv pt dia2 pri)
+open GlobalTheory.CompanionTheory.UnfoldingAlt
+open scoped NumberField.AdeleRing ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.moderateGrowth_comp_transposeInv : ∀ φ : G3 → ℂ, HasModerateGrowth φ → HasModerateGrowth (fun g : G3 => φ (ti g)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnfoldingAlt.hasModerateGrowth_comp_ti

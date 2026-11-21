@@ -1,9 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardFixedByQuotientEqRelIndexOfPRegularStatement
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardFixedByPowPrimePowModEqStatement
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsCoprimeOrderOfPowPrimePowStatement
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsSylowOverSubgroupStatement
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardFixedByQuotientEqRelIndexOfPRegular
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardFixedByPowPrimePowModEq
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsCoprimeOrderOfPowPrimePow
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsSylowOverSubgroup
+
+section
 open GlobalTheory.BI
 namespace GlobalTheory.BI
 
@@ -45,3 +47,9 @@ theorem exists_abelianByPrimePower_not_dvd_card_fixedBy₂ :
     exact (h2.dvd_iff dvd_rfl).2 hd
 
 end GlobalTheory.BI
+end
+
+open GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_abelianByPrimePower_not_dvd_card_fixedBy : ∀ (G : Type) [Group G] [Finite G] (x : G) (p : ℕ), p.Prime → ∃ H : Subgroup G, AbByP H ∧ ¬ p ∣ Nat.card (MulAction.fixedBy (G ⧸ H) x) := by
+  atlas_forward_decl GlobalTheory.BI.exists_abelianByPrimePower_not_dvd_card_fixedBy₂

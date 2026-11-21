@@ -1,9 +1,10 @@
 import Mathlib
 import Formalism.LocalToGlobal.InertKernelTheory.DefsBeCob
-import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSq
 import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.Joints
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PadicNormTwoHundredSixteenEqOneOfFiveLe
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CobExactProof
@@ -113,3 +114,9 @@ theorem cobExact : Formalism.L2.KerInert.BeCob.CobExact := by
     (PowerSeries.HasSubst.of_constantCoeff_zero hFc0)]
 
 end GlobalTheory.CobExactProof
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_coordinates_exponent_is_coboundary : Formalism.L2.KerInert.BeCob.CobExact := by
+  atlas_forward_decl GlobalTheory.CobExactProof.cobExact

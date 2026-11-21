@@ -1,6 +1,5 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThetaWeightBounds
-import Formalism.LocalToGlobal.LatticeGeometry.CmTypeMeetsConjugatePair
 import Development.AbelianVarietyTheory.BlockTheory.JetGauges.LongGeneratorWeights
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormGeneratorIffPrincipal
 

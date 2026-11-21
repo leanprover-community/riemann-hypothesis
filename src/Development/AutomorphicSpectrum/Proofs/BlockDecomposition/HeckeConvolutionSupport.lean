@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumOutOfLe
 
+section
 open GlobalTheory.BCT PositivityTheory.Rg.BcB.G8.Fin
 open scoped Classical
 
@@ -69,3 +70,12 @@ theorem conv_isHecke : ∀ (H : Type) [Group H] [TopologicalSpace H] [IsTopologi
 end GlobalTheory.CompanionTheory.ConvHecke
 
 end
+end
+
+open GlobalTheory.BCT PositivityTheory.Rg.BcB.G8.Fin
+open scoped Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hecke_convolution_support : ∀ (H : Type) [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [T2Space H] (K L : Subgroup H) (f₁ f₂ : H → ℂ), L ≤ K → L.relIndex K ≠ 0 → IsHecke L f₁ → IsHecke L f₂ →
+  IsHecke L (fun y => hint K fun z => f₁ z * f₂ (z⁻¹ * y)) ∧ ∀ y, (hint K fun z => f₁ z * f₂ (z⁻¹ * y)) ≠ 0 → ∃ z, f₁ z ≠ 0 ∧ f₂ (z⁻¹ * y) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConvHecke.conv_isHecke

@@ -4,8 +4,6 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.LinEmbedSt
 import GroundTheory.HeightsAndTheta.Heights.Intersections.FlagDimSt
 import GroundTheory.HeightsAndTheta.Heights.Intersections.RelBaseChangeSt
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCauchyBinet
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.InhDivCycleOfSuppEmpty
 set_option maxSynthPendingDepth 1
 
 noncomputable section

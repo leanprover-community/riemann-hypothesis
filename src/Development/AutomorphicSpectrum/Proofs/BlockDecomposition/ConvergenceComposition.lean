@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
 
+section
 open Filter Topology
 open GlobalTheory.CompanionTheory.EGlue
 
@@ -13,3 +14,9 @@ theorem convComp_proved : ConvComp := by
   | node _ _ i₁ i₂ => exact Conv.node i₁ i₂
 
 end GlobalTheory.CompanionTheory.EGlue
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.convergence_composition : GlobalTheory.CompanionTheory.EGlue.ConvComp := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.convComp_proved

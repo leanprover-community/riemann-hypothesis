@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemConeOfMem
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NefFibPullback
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NefFibOfCurveDegreesNonneg
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -49,3 +49,10 @@ theorem nefOver_pull : ∀ (k : Type) [CommRing k] [Module.Finite ℤ k] (X Y : 
   exact (mul_nonneg_iff_of_pos_left hpos).mp h
 
 end GlobalTheory.VertForm
+end
+end
+
+open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.VertForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nef_hermitian_bundle_pullback : ∀ (k : Type) [CommRing k] [Module.Finite ℤ k] (X Y : Scheme.{0}) (p : X ⟶ Sp k) (q : Y ⟶ Sp k), IsProjOver p → IsProjOver q → ∀ (π : Y ⟶ X) (hπ : π ≫ p = q) (L : HermLB p) (l : ℕ), l.Prime → NefOver L l → NefOver (L.pull π hπ) l := by
+  atlas_forward_decl GlobalTheory.VertForm.nefOver_pull

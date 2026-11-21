@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
+import BuildAid.ForwardExisting
+
+section
 open Polynomial GlobalTheory.CuspGL GlobalTheory.BI
 
 namespace GlobalTheory.MonoEigen
@@ -166,3 +169,9 @@ theorem finrank_eigenspace_monomial_lift :
     exact hθ _ _ h2 one_ne_zero (by rw [h, map_one])
 
 end GlobalTheory.MonoEigen
+end
+
+open Polynomial GlobalTheory.CuspGL GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_eigenspace_monomial_matrix_lift : ∀ (k : Type) [Field k] (θ : k →* ℂ), (∀ x y : k, x ≠ 0 → y ≠ 0 → θ x = θ y → x = y) → ∀ (n : ℕ) (σ : Equiv.Perm (Fin n)) (c : Fin n → k), (∀ j, c j ≠ 0) → ∀ μ : k, μ ≠ 0 → Module.finrank k (Module.End.eigenspace (Matrix.toLin' (Matrix.of fun i j => if i = σ j then c j else 0)) μ) = Module.finrank ℂ (Module.End.eigenspace (Matrix.toLin' (Matrix.of fun i j => if i = σ j then θ (c j) else 0)) (θ μ)) := by
+  atlas_forward_decl GlobalTheory.MonoEigen.finrank_eigenspace_monomial_lift

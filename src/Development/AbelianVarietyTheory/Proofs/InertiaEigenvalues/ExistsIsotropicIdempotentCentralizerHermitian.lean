@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MatrixCommuteOfCommuteSeparableCharpoly
+import BuildAid.ForwardExisting
 
+section
 open Matrix Polynomial
 
 namespace GlobalTheory.IsoIdem
@@ -161,3 +163,9 @@ theorem isoIdem : ∀ (E : Type) [Field E] [StarRing E] (r : ℕ) (A₀ : Matrix
   exact hmax (f + g) hf'S (show r - (f + g).rank < r - f.rank by omega)
 
 end GlobalTheory.IsoIdem
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isotropic_idempotent_centralizer_hermitian : ∀ (E : Type) [Field E] [StarRing E] (r : ℕ) (A₀ : Matrix (Fin r) (Fin r) E), A₀.IsHermitian → A₀.charpoly.Separable → ∃ f : Matrix (Fin r) (Fin r) E, f * A₀ = A₀ * f ∧ f * f = f ∧ f * star f = 0 ∧ ∀ y : Matrix (Fin r) (Fin r) E, y * A₀ = A₀ * y → y * (1 - f - star f) * star (y * (1 - f - star f)) = 0 → y * (1 - f - star f) = 0 := by
+  atlas_forward_decl GlobalTheory.IsoIdem.isoIdem

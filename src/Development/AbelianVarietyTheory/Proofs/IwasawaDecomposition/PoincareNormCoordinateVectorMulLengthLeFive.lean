@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLieBase
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.HodgePeriodGram
+
+section
 open Matrix
 open scoped ComplexOrder Topology
 
@@ -57,3 +59,10 @@ theorem gnorm_mul_poinWt_le_five : ∀ (n a : ℕ) (ha : a ≤ n) (ρ : ℝ), ρ
       _ ≤ 5 := by rw [Real.sqrt_one]; norm_num
 
 end GlobalTheory.PoinLen
+end
+
+open Matrix
+open scoped ComplexOrder Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.poincareNorm_coordinateVector_mul_length_le_five : ∀ (n a : ℕ) (ha : a ≤ n) (ρ : ℝ), ρ ≤ 1 / 2 → ∀ v : ReciprocityTheory.L2DbarEstimates.V n, v.ofLp ∈ GlobalTheory.IndefiniteRowSideFullHecke.HodgePeriodGram.punctured ha ρ → ∀ k : Fin n, GlobalTheory.HermFrame.gnorm (GlobalTheory.IndefiniteRowSideFullHecke.HodgePeriodGram.poincareGram a v.ofLp) (Pi.single k 1) * GlobalTheory.GoodMetric.poinWt (Finset.univ.map (Fin.castLEEmb ha)) v k ≤ 5 := by
+  atlas_forward_decl GlobalTheory.PoinLen.gnorm_mul_poinWt_le_five

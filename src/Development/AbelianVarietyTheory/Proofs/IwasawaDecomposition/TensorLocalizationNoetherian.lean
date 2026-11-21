@@ -3,7 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalMod
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TensorResidueUnramifiedFinite
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalizationMaximalIdealMap
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalizationResidueFiniteUnram
+import BuildAid.ForwardExisting
 
+section
 open IsLocalRing GlobalTheory.Toroidal TensorProduct
 
 namespace GlobalTheory.LocalChart
@@ -59,3 +61,9 @@ theorem localised_base_change_at_prime : ∀ (A D R : Type) [CommRing A] [IsLoca
   · exact RingHom.Flat.comp ((RingHom.flat_algebraMap_iff).2 (Module.Flat.baseChange A D R)) ((RingHom.flat_algebraMap_iff).2 (IsLocalization.flat (Localization.AtPrime q) q.primeCompl))
 
 end GlobalTheory.LocalChart
+end
+
+open IsLocalRing GlobalTheory.Toroidal TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensor_localization_noetherian : ∀ (A D R : Type) [CommRing A] [IsLocalRing A] [CommRing D] [IsLocalRing D] [Algebra A D] [IsLocalHom (algebraMap A D)] [Algebra.EssFiniteType A D] [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [Algebra A R], IsEtaleCompletion (algebraMap A R) → ((residue R).comp (algebraMap A R)).FormallyUnramified → ∀ (q : Ideal (D ⊗[A] R)) [q.IsPrime], (∀ d ∈ maximalIdeal D, d ⊗ₜ[A] (1 : R) ∈ q) → IsNoetherianRing (Localization.AtPrime q) ∧ IsLocalHom ((algebraMap (D ⊗[A] R) (Localization.AtPrime q)).comp (algebraMap D (D ⊗[A] R))) ∧ ((algebraMap (D ⊗[A] R) (Localization.AtPrime q)).comp (algebraMap D (D ⊗[A] R))).Flat ∧ (maximalIdeal D).map ((algebraMap (D ⊗[A] R) (Localization.AtPrime q)).comp (algebraMap D (D ⊗[A] R))) = maximalIdeal (Localization.AtPrime q) ∧ ((residue (Localization.AtPrime q)).comp ((algebraMap (D ⊗[A] R) (Localization.AtPrime q)).comp (algebraMap D (D ⊗[A] R)))).Finite ∧ ((residue (Localization.AtPrime q)).comp ((algebraMap (D ⊗[A] R) (Localization.AtPrime q)).comp (algebraMap D (D ⊗[A] R)))).FormallyUnramified := by
+  atlas_forward_decl GlobalTheory.LocalChart.localised_base_change_at_prime

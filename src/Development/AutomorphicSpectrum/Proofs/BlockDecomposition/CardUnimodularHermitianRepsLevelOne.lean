@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResAlgSplitTwo
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResidueAlgebraUnramified
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardHermitianRepresentationsResidueStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardHermitianRepresentationsResidue
 
+section
 open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
 
 namespace GlobalTheory.CompanionTheory.UnrDens
@@ -67,3 +67,9 @@ theorem solCount_one : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q 
     (isUnit_det_red_one ϖ S hS'.2) h2 (isUnit_det_red_one ϖ T hT'.2)
 
 end GlobalTheory.CompanionTheory.UnrDens
+end
+
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_unimodular_hermitian_reps_level_one : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ), IsUnrQuad R σ ϖ q ε → ∀ (m n : ℕ), n ≤ m → ∀ (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R), IsUnimod σ S → IsUnimod σ T → (solCount σ ϖ S T 1 : ℝ) = (q : ℝ) ^ (2 * m * n - n ^ 2) * ∏ i : Fin n, (1 - ((ε : ℝ) / q) ^ (m - (i : ℕ))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnrDens.solCount_one

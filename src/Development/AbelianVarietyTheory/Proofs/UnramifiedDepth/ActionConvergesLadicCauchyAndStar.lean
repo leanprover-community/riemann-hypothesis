@@ -6,7 +6,9 @@ import Formalism.LocalToGlobal.CharacterGerms.NegMem
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
 import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ConstantCoeffEv
+import BuildAid.ForwardExisting
 
+section
 open scoped BigOperators
 open NumberField Formalism.IncomingBounds Formalism.L2.FormalSeriesBounds Formalism.L2.Pj GlobalTheory.RowLaw ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 
@@ -260,3 +262,10 @@ theorem main : ∀ (C : Type) [Field C] [CharZero C] (V : VF C) (O : Type) [Comm
   exact ⟨star y, by rw [← star_sub, hy, star_mul', star_pow, star_natCast]⟩
 
 end GlobalTheory.ActionLimit
+end
+
+open scoped BigOperators
+open NumberField Formalism.IncomingBounds Formalism.L2.FormalSeriesBounds Formalism.L2.Pj GlobalTheory.RowLaw ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.actionConverges_ladic_cauchy_and_star : ∀ (C : Type) [Field C] [CharZero C] (V : VF C) (O : Type) [CommRing O] [StarRing O] (dd : ℕ) (Y : FBChart C V O dd) (a : ℕ → O), (∀ n, ∃ y, a (n + 1) - a n = (V.l : O) ^ n * y) → ActCv Y a ∧ ActCv Y (fun n => star (a n)) := by
+  atlas_forward_decl GlobalTheory.ActionLimit.main

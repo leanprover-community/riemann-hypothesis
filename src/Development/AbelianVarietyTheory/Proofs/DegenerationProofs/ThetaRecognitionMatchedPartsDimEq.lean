@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Definitions.Degenerations.NotAllMatchRan
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationDataTorsionStructureAlgClosedStatement
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TxCosetCriterionStatement
 
+section
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Ex
 open scoped BigOperators
 
@@ -284,3 +285,10 @@ theorem match_parts : AllMatch fun μ g g' => μ.A ∧ g = g' := by
   omega
 
 end GlobalTheory.MatchParts
+end
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Ex
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaRecognition_matched_parts_dim_eq : AllMatch fun μ g g' => μ.A ∧ g = g' := by
+  atlas_forward_decl GlobalTheory.MatchParts.match_parts

@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.BlockTheory.JetGauges.SmoothDecompositio
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ContinuousRepSmoothOnUH
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CasimirEigenvalueCoefficients
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.HeckeMultiplication
 
 open Matrix Finset PI.UpqRep
 open scoped InnerProductSpace ContDiff

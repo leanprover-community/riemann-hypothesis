@@ -1,7 +1,9 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.RationalPrimesBelowPlaces
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetInd
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactWhittakerEqGodementLocal
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
 open GroundTheory.Automorphic.GodementSection (localChar)
@@ -22,3 +24,15 @@ theorem isSB_pF : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
     hm.2.comp_homeomorph (Homeomorph.finTwoArrow (X := F)).symm⟩
 
 end GlobalTheory.CompanionTheory.WS.PF
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.partial_fourier_schwartz_bruhat_plane : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Φ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Φ → GlobalTheory.CompanionTheory.WS.IsSB (GlobalTheory.CompanionTheory.WS.pF χ Φ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.PF.isSB_pF

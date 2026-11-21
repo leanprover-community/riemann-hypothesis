@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.CompanionTheory.Herm
@@ -53,3 +55,9 @@ theorem apply_eq_zero_of_isotropic {V : Type} [AddCommGroup V] [Module ℂ V]
   linarith
 
 end GlobalTheory.CompanionTheory.Herm
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_semidefinite_null_radical : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ), (∀ v w, B w v = starRingEnd ℂ (B v w)) → (∀ v, 0 ≤ (B v v).re) → ∀ x, (B x x).re = 0 → ∀ w, B x w = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Herm.apply_eq_zero_of_isotropic

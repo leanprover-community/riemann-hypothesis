@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdLiftDef
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LadjFrame
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LTheta
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LretrCancel

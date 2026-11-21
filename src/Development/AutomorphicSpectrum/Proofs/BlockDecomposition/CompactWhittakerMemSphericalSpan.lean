@@ -1,24 +1,23 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.RationalPrimesBelowPlaces
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetInd
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialFourierSchwartzBruhatPlaneStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerLowerLeftNonzeroStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerUpperTriangularCaseStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableTwistedSectionLineStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableSplitWhittakerDensityStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialFourierSchwartzBruhatPlane
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerLowerLeftNonzero
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerUpperTriangularCase
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableTwistedSectionLine
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableSplitWhittakerDensity
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzBruhatPlaneRightTranslateStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIndicatorSchwartzBruhatStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzBruhatPlaneCosetSpanStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpanSetEqLatticePreimageStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeAnnulusCosetDecompositionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIndicatorUnitScalingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardLatticeIntegralGL2InvariantStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitWhittakerLeftUnipotentStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InnerIntegralLatticeTorusFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedCharacterAnnulusIntegralStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchurPolynomialGL2SumStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ModulusHalfUniformizerPowerStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIndicatorSchwartzBruhat
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzBruhatPlaneCosetSpan
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpanSetEqLatticePreimage
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeAnnulusCosetDecomposition
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIndicatorUnitScaling
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardLatticeIntegralGL2Invariant
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitWhittakerLeftUnipotent
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InnerIntegralLatticeTorusFormula
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedCharacterAnnulusIntegral
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchurPolynomialGL2Sum
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ModulusHalfUniformizerPower
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -436,3 +435,16 @@ theorem WcS_mem_span : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpa
   exact WL_mem hχ h₁ h₂ u₁ u₂ (L_pF F χ hχ Φ hΦ)
 
 end GlobalTheory.CompanionTheory.WS
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_whittaker_mem_spherical_span : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ c₁ c₂ : Fˣ →* ℂˣ, IsUnit1 c₁ → IsUnit1 c₂ → IsUnramifiedChar c₁ → IsUnramifiedChar c₂ → ∀ Φ : F × F → ℂ, IsLocallyConstant Φ → HasCompactSupport Φ → GL2LocalData.WcS χ c₁ c₂ Φ ∈ Submodule.span ℂ {f : GL (Fin 2) F → ℂ | ∃ h : GL (Fin 2) F, f = fun g => Spherical.sphericalWhittaker (Circle.coeHom.compAddChar χ) ![c₁ (unifUnit F), c₂ (unifUnit F)] (g * h)} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.WcS_mem_span

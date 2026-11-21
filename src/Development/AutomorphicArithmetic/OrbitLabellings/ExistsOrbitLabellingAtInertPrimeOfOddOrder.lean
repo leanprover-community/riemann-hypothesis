@@ -1,7 +1,5 @@
 import Mathlib
-import Development.AutomorphicArithmetic.OrbitLabellings.RowDefs
 import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
-import Formalism.LocalToGlobal.CharacterGerms.SelfConjugateRowData
 import Development.AutomorphicArithmetic.OrbitLabellings.RowLab
 
 open scoped BigOperators

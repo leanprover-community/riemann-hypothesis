@@ -3,8 +3,8 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolyApproxZer
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPsCharOne
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteSemisimple
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousOfContinuousTrace
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemisimpleTraceForm.SemisimpleOfTraceFormNondegenerate
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemisimpleTraceForm.TraceNilpotentAscent
+
+section
 open Formalism.MainNotions.N GlobalTheory.Cong GlobalTheory.PsChar
 
 namespace GlobalTheory.TrFormNd
@@ -25,3 +25,9 @@ theorem eq_zero_of_trace_mul_eq_zero : ∀ (k Γ : Type) [Field k] [CharZero k] 
   | smul c y _ hy => rw [Matrix.mul_smul, Matrix.trace_smul, hy, smul_zero]
 
 end GlobalTheory.TrFormNd
+end
+
+open Formalism.MainNotions.N GlobalTheory.Cong GlobalTheory.PsChar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_of_trace_mul_eq_zero_semisimple_rep : ∀ (k Γ : Type) [Field k] [CharZero k] [Group Γ] (a : ℕ) (r : Γ →* GL (Fin a) k), IsSSRep r → ∀ M ∈ Submodule.span k (Set.range fun g => ((r g : GL (Fin a) k) : Matrix (Fin a) (Fin a) k)), (∀ g, (M * ((r g : GL (Fin a) k) : Matrix (Fin a) (Fin a) k)).trace = 0) → M = 0 := by
+  atlas_forward_decl GlobalTheory.TrFormNd.eq_zero_of_trace_mul_eq_zero

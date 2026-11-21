@@ -6,7 +6,6 @@ import Development.AutomorphicArithmetic.ResidueCharacters.PlaceTypeConj
 import Development.AutomorphicArithmetic.ResidueCharacters.LenUnitInvariantsLe
 import Development.AutomorphicArithmetic.ResidueCharacters.LocAll
 import Development.AutomorphicArithmetic.ResidueCharacters.NumRow
-import Development.AutomorphicArithmetic.CyclotomicBounds.SmallFacts
 import Development.AutomorphicArithmetic.CyclotomicBounds.NotInert
 
 open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.NLink

@@ -1,6 +1,8 @@
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.ConvGrOf
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.MulConjTransposeEqOneOfOrthonormal
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix
@@ -372,3 +374,9 @@ theorem convGrOf : BdetLaw → ExtLaw → ConvGrOf := by
   exact ⟨R₀, fun x hx => conv_of_line hB hE A hA.toGoodL t₀ x (hW.convR x hx)⟩
 
 end GlobalTheory.CompanionTheory.Plucker
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.convergence_group_of_block_det : PositivityTheory.RgEis.BdetLaw → PositivityTheory.RgEis.ExtLaw → PositivityTheory.RgEis.ConvGrOf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Plucker.convGrOf

@@ -1,9 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsArchOne
 import Development.AbelianVarietyTheory.BlockTheory.PoincareCuspForms.SmallUnipotentElements
-import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.IndCount
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.JetsPf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.DivStatementPfLE
+
+section
 open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
 
 namespace GlobalTheory.JetIndepAtPts
@@ -254,3 +253,9 @@ theorem leadM_coeff_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   exact all _ α hα rfl k
 
 end GlobalTheory.JetIndepAtPts
+end
+
+open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.leadingMonomialProducts_linearIndependent : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (Xa : ArchInM X) (Fl : FlatM X Xa) (F : Fin Fl.δ → Frame X.Ψ r → ℂ), (∀ j, DifferentiableOn ℂ (F j) X.dom) → (∀ j j', F j (Fl.xs j') = if j' = j then 1 else 0) → ∀ (T : ℕ) (cc : (Fin (nd X) → ℕ) → Fin Fl.δ → ℂ), (∀ x ∈ X.dom, leadM X Fl.s Fl.w0 F T (T + 1) cc x = 0) → ∀ α ∈ ReciprocityTheory.ChartRestriction.G.AR.multiLt (nd X) (T + 1), ∀ k, cc α k = 0 := by
+  atlas_forward_decl GlobalTheory.JetIndepAtPts.leadM_coeff_zero

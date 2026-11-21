@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLocalRingOfIdem
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.UnitLemma.Orbit
@@ -58,3 +59,10 @@ theorem orbSum_congr_coe {O O' A : Type} [CommRing O] [CommRing O'] [CommRing A]
     rw [stabLat_of_coe_eq L.1 (f L).1 (hf L), hG]
 
 end GlobalTheory.UnitLemma.Orbit
+end
+end
+
+open GlobalTheory.UnitLemma
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weightedOrbitSum_congr_coefficientRing : ∀ {O O' A : Type} [CommRing O] [CommRing O'] [CommRing A] [Algebra O A] [Algebra O' A] (G : Subgroup Aˣ) (X : Set (Submodule O A)) (X' : Set (Submodule O' A)), (∀ L ∈ X, ∃ L' ∈ X', (L' : Set A) = L) → (∀ L' ∈ X', ∃ L ∈ X, (L : Set A) = L') → intUnits O A ⊓ G = intUnits O' A ⊓ G → orbSum O' G X' (fun _ => 1) = orbSum O G X (fun _ => 1) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.Orbit.orbSum_congr_coe

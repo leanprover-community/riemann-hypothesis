@@ -4,7 +4,6 @@ import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCriticalFibreInfinite
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetOnlyNull
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantSheetCover
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBadSetSmaller
-import ReciprocityTheory.AnalyticForms.AnalyticCharts.NullZero
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights

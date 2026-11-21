@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped TensorProduct
 
@@ -85,3 +88,13 @@ theorem irreducibleSpace_pullback_of_cover : ∀ {F : Type} [Field F] {X : Schem
     exact ⟨p, (key V hVU hi).2.2 p (hpz ▸ hzV), (key V' hVU' hi').2.2 p (hpz ▸ hzV')⟩
 
 end GlobalTheory
+end
+
+open CategoryTheory Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.irreducibleSpace_pullback_field_of_irreducible_cover : ∀ {F : Type} [Field F] {X : Scheme.{0}} (h : X ⟶ Sp F) (k : Type) [Field k] (f : F →+* k) (U : X.Opens),
+    IsIrreducible (U : Set X) →
+    (∀ y ∈ U, ∃ V : X.Opens, V ≤ U ∧ y ∈ V ∧ IrreducibleSpace ↑(pullback (V.ι ≫ h) (spMap f))) →
+    IrreducibleSpace ↑(pullback (U.ι ≫ h) (spMap f)) := by
+  atlas_forward_decl GlobalTheory.irreducibleSpace_pullback_of_cover

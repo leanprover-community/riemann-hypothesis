@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsDominantOfSection
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace MvPolynomial
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.ZH GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.FlagBundle GlobalTheory.GoodMetric GlobalTheory.FlagPush
@@ -25,3 +27,12 @@ theorem GlobalTheory.FlagPush.trdeg_le_succ_of_ratFunc :
   have h2 := trdeg_add_eq F k (A := RatFunc k)
   calc Algebra.trdeg F L ≤ Algebra.trdeg F (RatFunc k) := h1
     _ = ((d + 1 : ℕ) : Cardinal) := by rw [← h2, hR, hd]; push_cast; rfl
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace MvPolynomial
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.ZH GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.FlagBundle GlobalTheory.GoodMetric GlobalTheory.FlagPush
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trdeg_le_succ_of_embedding_ratFunc : ∀ (F k L : Type) [Field F] [Field k] [Field L] [Algebra F k] [Algebra F L] (α : k →+* L) (j : L →+* RatFunc k) (d : ℕ), α.comp (algebraMap F k) = algebraMap F L → j.comp α = algebraMap k (RatFunc k) → Algebra.trdeg F k = d → Algebra.trdeg F L ≤ (d + 1 : ℕ) := by
+  atlas_forward_decl GlobalTheory.FlagPush.trdeg_le_succ_of_ratFunc

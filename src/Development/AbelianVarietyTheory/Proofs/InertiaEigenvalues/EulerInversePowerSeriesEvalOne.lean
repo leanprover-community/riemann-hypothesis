@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SchurEqJtDet
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.JSW
@@ -60,3 +62,11 @@ example : ∀ {ι : Type} [Fintype ι] (c : ℕ → ℂ), (Summable fun d => ‖
   fun c hc Q h => eulerInverse_eval_one c hc Q h
 
 end GlobalTheory.JSW
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eulerInverse_powerSeries_eval_one : ∀ {ι : Type} [Fintype ι] (c : ℕ → ℂ), (Summable fun d => ‖c d‖) → ∀ (Q : ι → ℂ),
+    PowerSeries.mk c * ∏ p, (1 - PowerSeries.C (Q p) * PowerSeries.X) = 1 →
+    (∏ p, (1 - Q p)) ≠ 0 ∧ HasSum c (∏ p, (1 - Q p))⁻¹ := by
+  atlas_forward_decl GlobalTheory.JSW.eulerInverse_eval_one

@@ -3,16 +3,16 @@ import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.RationalSchwartzBruhatAlgebraIntegralLinearStatement
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionSiegelParabolicExplicit
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionCommPositiveUnitaryGroupStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionCommPositiveUnitaryGroup
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.WeilActionLevelSupNormUniformInLatticeStatement
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FiniteClsAndStab
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SiegelWeilDifferenceAutomorphyLinearityStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SiegelWeilDifferenceAutomorphyLinearity
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsGoodSplitPrimeCmFieldStatement
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.NeBotOfNorm
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ClassSumNbStatement
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TwistAdmissible
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TwistedSiegelWeilDifferenceBoundedStatement
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HeckeRelationAdmissibleFamilyPointwiseStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ClassSumNb
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TwistedSiegelWeilDifferenceBounded
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HeckeRelationAdmissibleFamilyPointwise
+
+section
 open Matrix Complex NumberField GlobalTheory.SW Filter Topology
 open ReciprocityTheory.ChartRestriction.G.FD (cc herm)
 open scoped ComplexConjugate ComplexOrder Real Classical
@@ -277,3 +277,11 @@ theorem GlobalTheory.SW.swAt_succ : ∀ (E : Type) [Field E] [NumberField E] [Is
   rw [← norm_le_zero_iff.1 z]
   exact Base.classSum_congr fun Λ hΛ => by
     rw [(twist_admissible E _ _ M R φ _ h s1 s2).2.1 Λ hΛ]
+end
+
+open Matrix Complex NumberField GlobalTheory.SW Filter Topology
+open ReciprocityTheory.ChartRestriction.G.FD (cc herm)
+open scoped ComplexConjugate ComplexOrder Real Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.siegelWeil_formula_degree_succ : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Finset (E →+* ℂ)), IsType Ψ → ∀ (n N : ℕ), Even n → 4 * (N + 1) < n → SWAt Ψ n N → SWAt Ψ n (N + 1) := by
+  atlas_forward_decl GlobalTheory.SW.swAt_succ

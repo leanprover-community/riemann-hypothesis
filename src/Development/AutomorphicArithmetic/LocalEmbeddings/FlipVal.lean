@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.MirabolicMackeyTheory.StatementT
-import Formalism.LocalToGlobal.UnitaryNorms.CharProd
 import Development.AutomorphicArithmetic.DivisorFrames.ExistsPowLocKMulInfEqOneOfLevelLeTwo
 import Development.AutomorphicArithmetic.DivisorFrames.IsIntegralCmTypeUnitaryPartMulAbsNormPow
 open NumberField IsDedekindDomain

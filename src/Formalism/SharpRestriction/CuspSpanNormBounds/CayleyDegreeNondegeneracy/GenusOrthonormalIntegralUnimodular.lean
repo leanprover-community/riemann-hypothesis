@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.HermitianLattices.FinalNeighbourConstruct
 import Formalism.HermitianLattices.FinalMass
 import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.ShortVectorEveryPlace
 

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.GenericUnlinkedGL.UnlinkedRealize
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
 open scoped TensorProduct
 
@@ -21,3 +24,10 @@ theorem rank_piTensorProduct_le_one {α : Type} [Fintype α] (M : α → Type)
     exact ⟨r + s, by rw [add_smul, hr, hs]⟩
 
 end GlobalTheory.CompanionTheory.TensorRank
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensor_product_rank_le_one : ∀ {α : Type} [Fintype α] (M : α → Type) [∀ a, AddCommGroup (M a)] [∀ a, Module ℂ (M a)], (∀ a, Module.rank ℂ (M a) ≤ 1) → Module.rank ℂ (⨂[ℂ] a, M a) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TensorRank.rank_piTensorProduct_le_one

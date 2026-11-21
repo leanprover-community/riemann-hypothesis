@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.ClosedProperAlt
 import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.GalSplit
 
 open NumberField IsDedekindDomain GroundTheory.Global GroundTheory.Global.SemiLocal PositivityTheory.Rg.Tf.Geo

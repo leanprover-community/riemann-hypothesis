@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHasCls
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Set Filter Polynomial NumberField IsDedekindDomain
 open GlobalTheory.AdelicU GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots GlobalTheory.TrEll
@@ -48,3 +51,15 @@ theorem exists_linearEquiv_mulVec_of_charpoly (F E : Type) [Field F] [Field E] [
   rw [map_mul, hψα, Matrix.mulVec_mulVec]
 
 end GlobalTheory.TrEll
+end
+end
+
+open MeasureTheory Set Filter Polynomial NumberField IsDedekindDomain
+open GlobalTheory.AdelicU GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots GlobalTheory.TrEll
+open GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups (mapH diagH)
+open scoped TensorProduct ComplexConjugate Matrix
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_adjoinRoot_linearEquiv_of_charpoly_eq : ∀ (F E : Type) [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (P : PPol σ n) (A : Matrix (Fin n) (Fin n) E), A.charpoly = P.1 → ∃ φ : Fld P ≃ₗ[E] (Fin n → E), ∀ y, A *ᵥ φ y = φ (alpha P * y) := by
+  atlas_forward_decl GlobalTheory.TrEll.exists_linearEquiv_mulVec_of_charpoly

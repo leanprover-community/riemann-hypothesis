@@ -2,9 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NCoords
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnipotentLeviRadicalCoordsHomeomorph
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagUnipotentLebesgueMeasureIsHaarOn
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarLieIsHaarOnUnipotentRadicalStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarLieNilpotentEqLebesgueStatement
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf GlobalTheory.Amp GlobalTheory.SnMass
@@ -271,3 +271,11 @@ theorem haarLie_entries : ∀ (k r : ℕ), IsHaarOn (Nset k r) (haarLie (Nset k 
     exact congrArg _ entries_mp.map_eq
 
 end GlobalTheory.SnMass.NEntry
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgAlg GlobalTheory.SgGlob GlobalTheory.SnMass
+open scoped TensorProduct ENNReal nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.haar_lie_nilpotent_coordinates : ∀ (k r : ℕ), IsHaarOn (Nset k r) (haarLie (Nset k r) 1) ∧ Set.InjOn (nCoords k r) {x | Matrix.of x ∈ Nset k r} ∧ Set.SurjOn (nCoords k r) {x | Matrix.of x ∈ Nset k r} Set.univ ∧ (haarLie (Nset k r) 1).map (nCoords k r) = (2 : ℝ≥0∞) ^ (r * (r - 1) + r * (k + 1)) • volume := by
+  atlas_forward_decl GlobalTheory.SnMass.NEntry.haarLie_entries

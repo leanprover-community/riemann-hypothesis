@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddSmulVecMulVecMulVec
+
+section
 open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
 
 namespace GlobalTheory.UnipKill
@@ -22,3 +24,9 @@ theorem unit_pow_congr_one : ∀ (E : Type) [Field E] [NumberField E] (u : (𝓞
   exact Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp h2)
 
 end GlobalTheory.UnipKill
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dvd_unit_pow_sub_one : ∀ (E : Type) [Field E] [NumberField E] (u : (𝓞 E)ˣ) (M : 𝓞 E), M ≠ 0 → ∃ k : ℕ, 0 < k ∧ M ∣ ((u ^ k : (𝓞 E)ˣ) : 𝓞 E) - 1 := by
+  atlas_forward_decl GlobalTheory.UnipKill.unit_pow_congr_one

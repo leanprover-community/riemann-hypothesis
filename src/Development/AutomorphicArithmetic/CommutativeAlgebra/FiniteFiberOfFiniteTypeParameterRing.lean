@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TcoMem
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FibFiniteAndSep
 
 open GlobalTheory GlobalTheory.PD

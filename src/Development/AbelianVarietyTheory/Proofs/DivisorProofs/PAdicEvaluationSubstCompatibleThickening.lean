@@ -1,7 +1,6 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TailSubstPAdicallySmallOfIntegralDifferentialStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasValSubstPolyStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TailSubstPAdicallySmallOfIntegralDifferential
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasValSubstPoly
 
 set_option autoImplicit false
 

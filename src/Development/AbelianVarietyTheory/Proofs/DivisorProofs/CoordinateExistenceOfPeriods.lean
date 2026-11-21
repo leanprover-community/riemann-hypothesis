@@ -2,15 +2,14 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.StepsNonvacuous
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PeriodComparison
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDetGen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfFderivEqZero
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsHolUnifReparam
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeDeformationMultiplicationStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetOmegaEqConstMulDetStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeDeformationMultiplication
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetOmegaEqConstMulDet
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmTypeSeparatesEmbeddingsStatement
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -222,3 +221,10 @@ theorem coordEx (hGM : GlobalTheory.Published.GaussManinPeriods) (hJ : JetCalc) 
       Y.X'.A G.q G.pull.grp m' Y.i Y.pull.grp rfl Y.mor x d hd c }⟩
 
 end GlobalTheory.LatJet.An
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet GlobalTheory.LatJet.An
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coordinate_existence_of_periods : GlobalTheory.Published.GaussManinPeriods → JetCalc → DiagFrame → CoordEx := by
+  atlas_forward_decl GlobalTheory.LatJet.An.coordEx

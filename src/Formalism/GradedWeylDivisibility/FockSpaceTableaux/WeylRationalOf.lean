@@ -1,5 +1,4 @@
 import Formalism.GradedWeylDivisibility.StatementB
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 
 open MvPolynomial

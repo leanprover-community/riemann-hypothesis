@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ProjExists
+import BuildAid.ForwardExisting
+
+section
 open Matrix Finset Formalism.MainNotions.S Formalism.REAL GlobalTheory.SepReal
 
 noncomputable section
@@ -120,3 +123,9 @@ theorem exists_unitary_col (m : ℕ) (ε : Fin m → Bool) (z : Fin m) (u : Fin 
 end GlobalTheory.Twist.Boost
 
 end
+end
+
+open Matrix Finset Formalism.MainNotions.S Formalism.REAL GlobalTheory.SepReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unitary_positiveBlock_column_eq : ∀ (m : ℕ) (ε : Fin m → Bool) (z : Fin m) (u : Fin m → ℂ), ε z = true → (∀ i, ε i = false → u i = 0) → ∑ i, ‖u i‖ ^ 2 = 1 → ∃ k ∈ UJset ε, kᴴ * k = 1 ∧ ∀ i, k i z = u i := by
+  atlas_forward_decl GlobalTheory.Twist.Boost.exists_unitary_col

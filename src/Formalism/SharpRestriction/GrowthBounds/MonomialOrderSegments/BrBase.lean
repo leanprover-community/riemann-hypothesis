@@ -1,5 +1,4 @@
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.LiftBoundOfHypotheses
-import Formalism.SharpRestriction.GrowthBounds.Lemma5aAt
 import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
 import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
 

@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsPeriodMapDet
-import Formalism.FormalDegreeBessel.FinalG
 
 open Matrix MeasureTheory Finset Formalism.QuantumDeterminants Formalism.MainNotions.S
 open scoped InnerProductSpace ENNReal

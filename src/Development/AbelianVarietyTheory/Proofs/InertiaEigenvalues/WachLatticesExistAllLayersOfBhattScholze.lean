@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUnitOfOneTmul
 
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.HWL GlobalTheory.Prism
@@ -203,3 +204,10 @@ theorem main : GlobalTheory.Published.BhattScholzeCrystallineLattices →
   · rw [P.PD_χ, hg, Units.val_one]
 
 end GlobalTheory.WachLattice
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.HWL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wachLatticesExistAllLayers_of_bhattScholze : GlobalTheory.Published.BhattScholzeCrystallineLattices → ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → WachEx AI := by
+  atlas_forward_decl GlobalTheory.WachLattice.main

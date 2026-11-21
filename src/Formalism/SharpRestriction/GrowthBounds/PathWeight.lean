@@ -4,7 +4,6 @@ import Formalism.SharpRestriction.GrowthBounds.PathWeight.CoeUntopDLeAlt
 import Formalism.SharpRestriction.GrowthBounds.PathWeight.LetterWeightPos
 import Formalism.SharpRestriction.GrowthBounds.PathWeight.DvDegOtherMono
 import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeOldest
-import Formalism.SharpRestriction.GrowthBounds.PathWeight.LeadingDepthOneMemClosure
 import Formalism.SharpRestriction.GrowthBounds.PathWeight.SymbolGeneratorData
 
 noncomputable section

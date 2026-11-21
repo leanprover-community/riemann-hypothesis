@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.PeriodIntegrals.ZerosWindow
-import Formalism.PeriodIntegrals.ZerosWindowIn
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ZeroWindow.Assemble
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ZeroWindow.Transfer
 

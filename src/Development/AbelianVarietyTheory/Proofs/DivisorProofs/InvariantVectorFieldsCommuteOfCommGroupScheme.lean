@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDerApply
+
+section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
@@ -290,3 +291,16 @@ theorem GlobalTheory.InvFieldComm.invField_comm : ∀ (R : Type) [CommRing R] (G
   have h0 := hsub (G.left.presheaf.stalk y) (Spec.preimage (G.left.fromSpecStalk y ≫ G.hom)).hom
     (G.left.fromSpecStalk y) (Spec.map_preimage _).symm (top_le_fromSpecStalk hy)
   exact ((valR_fromSpecStalk hy _).symm.trans h0).trans (map_zero (G.left.presheaf.germ O y hy).hom).symm
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.LogKS (IsField)
+open GlobalTheory.Heat GlobalTheory.FormalOrigin
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invariantVectorFields_commute_of_commGroupScheme : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G] (v v' : TanM (𝟙 (Sp R)) G) (dd dd' : Fld G.left), IsInv G v dd → IsInv G v' dd' → ∀ O f, dd O (dd' O f) = dd' O (dd O f) := by
+  atlas_forward_decl GlobalTheory.InvFieldComm.invField_comm

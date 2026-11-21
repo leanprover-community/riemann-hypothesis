@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 
 namespace GlobalTheory
@@ -78,3 +81,9 @@ theorem repTrace_eq_mul_trace {E : Type} [Field E] [NumberField E] {r : ℕ} (ρ
   rw [Algebra.coe_trace_int]
 
 end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trace_ringHom_eq_mul_algebraTrace : ∀ {E : Type} [Field E] [NumberField E] {r : ℕ} (ρ : 𝓞 E →+* Matrix (Fin r) (Fin r) ℤ) (s : ℕ), r = s * Module.finrank ℚ E → ∀ a : 𝓞 E, (ρ a).trace = s * Algebra.trace ℤ (𝓞 E) a := by
+  atlas_forward_decl GlobalTheory.repTrace_eq_mul_trace

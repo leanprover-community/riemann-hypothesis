@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumLieCoord
 
+section
 noncomputable section
 open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.JSW
 
@@ -51,3 +52,11 @@ theorem isBCC_zero_and_add : ∀ (E : Type) [Field E] [NumberField E] [IsTotally
     · simp only [Pi.add_apply, Pi.smul_apply, hF.left, hG.left]
 
 end GlobalTheory.JSW
+end
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.JSW
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isBoundedContinuousCuspidalAutomorphic_zero_add_smul : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), IsBCC (0 : GA E a → ℂ) ∧
+    ∀ (c : ℂ) (F G : GA E a → ℂ), IsBCC F → IsBCC G → IsBCC (c • F + G) := by
+  atlas_forward_decl GlobalTheory.JSW.isBCC_zero_and_add

@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 section CancelSummand
@@ -135,3 +137,8 @@ theorem cancel_summand_nilpotent_or_bijective : ∀ (R M M' P : Type) [Ring R] [
   exact linearEquiv_cancel_of_nilpotent_or_bijective hP e
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cancel_prod_summand_nilpotent_or_bijective : ∀ (R M M' P : Type) [Ring R] [AddCommGroup M] [Module R M] [AddCommGroup M'] [Module R M'] [AddCommGroup P] [Module R P], (∀ f : Module.End R P, IsNilpotent f ∨ Function.Bijective f) → Nonempty ((M × P) ≃ₗ[R] (M' × P)) → Nonempty (M ≃ₗ[R] M') := by
+  atlas_forward_decl GlobalTheory.cancel_summand_nilpotent_or_bijective

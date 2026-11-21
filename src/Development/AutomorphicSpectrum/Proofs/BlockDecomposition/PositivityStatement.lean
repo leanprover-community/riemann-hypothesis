@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JpUnif
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 set_option linter.unusedSectionVars false
@@ -414,3 +416,9 @@ theorem GlobalTheory.CompanionTheory.Jp.Pos.jpPos : GlobalTheory.CompanionTheory
     exact Finset.sum_congr rfl fun g _ => hX g
 
 end
+end
+
+open GlobalTheory.CompanionTheory.Jp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.positivity_statement : GlobalTheory.CompanionTheory.Jp.JpPos := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Jp.Pos.jpPos

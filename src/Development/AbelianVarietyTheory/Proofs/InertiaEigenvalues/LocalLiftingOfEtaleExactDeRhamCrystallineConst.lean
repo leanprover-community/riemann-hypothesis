@@ -3,12 +3,13 @@ import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.Arc
 import Formalism.SharpRestriction.LevelLetterCocycles.UsedConclusionOfUsedInputs
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.OneSubPhiOntoOfFilZero
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeIntegral
-import Formalism.GaloisCohomology.LocalTateDualityK
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RationalDualityOfAllCoefficients
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.MainFinal
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleFunctorExactOnLattices
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankDdREOfIsCrys
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankIotaLetter
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Module
 
 namespace GlobalTheory.TheoremAFinal
@@ -20,3 +21,9 @@ theorem integralityFromMetric_of_le : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf 
     (GlobalTheory.CrysDdR.finrank_DdRE_of_isCrys D) (GlobalTheory.NL.IotaLetterRank.finrank_iota_letter D HW F Cm)
 
 end GlobalTheory.TheoremAFinal
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralityFromMetric_of_160_le : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), ∀ CA CB CK C : ℝ, 160 ≤ C → ElementDenominator.IntegralityFromMetric D HW F Cm CA CB CK C := by
+  atlas_forward_decl GlobalTheory.TheoremAFinal.integralityFromMetric_of_le

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceOpen
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.QSA
 open scoped Quaternion Topology
 
@@ -16,3 +19,10 @@ theorem infinitePlace_completion_nhdsNE_neBot : ∀ (F : Type) [Field F] [Number
       non_trivial := ⟨2, by rw [h2]; norm_num⟩ }
   exact NormedField.nhdsNE_neBot (0 : w.Completion)
 end GlobalTheory.QSA
+end
+
+open NumberField IsDedekindDomain GlobalTheory.QSA
+open scoped Quaternion Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.infinitePlace_completion_nhdsNE_zero_neBot : ∀ (F : Type) [Field F] [NumberField F] (w : InfinitePlace F), (𝓝[≠] (0 : w.Completion)).NeBot := by
+  atlas_forward_decl GlobalTheory.QSA.infinitePlace_completion_nhdsNE_neBot

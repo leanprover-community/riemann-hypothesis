@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open NumberField
 
 namespace GlobalTheory
@@ -55,3 +57,9 @@ theorem addValuation_nonneg_of_ringOfIntegers :
   exact lt_irrefl _ hlt
 
 end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.addValuation_nonneg_ringOfIntegers_numberField : ∀ (L : Type) [Field L] [NumberField L] (v : AddValuation L (WithTop ℤ)) (a : 𝓞 L), 0 ≤ v (a : L) := by
+  atlas_forward_decl GlobalTheory.addValuation_nonneg_of_ringOfIntegers

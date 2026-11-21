@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.EntryMulSubOne
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.CompanionTheory.CartGL
@@ -45,3 +47,9 @@ theorem isCompact_congK (L : Type) [NontriviallyNormedField L] [IsUltrametricDis
   exact h
 
 end GlobalTheory.CompanionTheory.CartGL
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.congruence_subgroup_is_compact : ∀ (L : Type) [NontriviallyNormedField L] [IsUltrametricDist L] [ProperSpace L] (n : ℕ) (r : ℝ) (h0 : 0 ≤ r) (h1 : r ≤ 1), IsCompact (GlobalTheory.CompanionTheory.CartGL.congK L n r h0 h1 : Set (GL (Fin n) L)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CartGL.isCompact_congK

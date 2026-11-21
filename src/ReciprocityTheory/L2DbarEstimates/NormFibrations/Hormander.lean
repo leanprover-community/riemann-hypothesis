@@ -1,9 +1,7 @@
-import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
 import ReciprocityTheory.L2DbarEstimates.NormFibrations.Imports
 import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.InhHasFDerivAtNormSq
 import ReciprocityTheory.L2DbarEstimates.Mollifiers.Imports
 import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.Imports
-import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.RegBall
 import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.HilbertLemmas
 import ReciprocityTheory.L2DbarEstimates.BasicIdentity.ImportsAlt
 import ReciprocityTheory.L2DbarEstimates.HormanderEstimate.HStatementOf

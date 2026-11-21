@@ -1,13 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.VpBounds
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToricSumEqHeckeLValueMulAuxiliaryFactors
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinPartEqOneOfLevel
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsValCharTwist
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HeckeTateFunctionalEquationCM
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HeckeLPartialContinuationHolds
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanValuationNormOverDegreeSmulEqAddValuation
 
+section
 open NumberField IsDedekindDomain Polynomial
 
 noncomputable section
@@ -107,3 +106,10 @@ theorem GlobalTheory.FunObj.SqNum.meanVal_vw_ge_of_intAt : ∀ {K : Type} [Field
   have h2 : -((m : ℝ) * Formalism.DivisionValues.vw w (l : K) + Formalism.DivisionValues.vw w c) ≤ (Formalism.DivisionValues.vw w (p.coeff 0) : ℝ) / p.natDegree := by
     rw [le_div_iff₀ hdpos]; linarith
   linarith
+end
+end
+
+open NumberField IsDedekindDomain Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.meanValuation_ge_of_integral_at_prime : ∀ {K : Type} [Field K] [NumberField K] (σ : K →+* ℂ) {β : ℂ} {p : K[X]}, GlobalTheory.FunObj.SqNum.IsMinPol σ β p → β ≠ 0 → ∀ {c : K}, c ≠ 0 → ∀ {l : ℕ}, l.Prime → ∀ {w : Formalism.PairingDivisionLocalBalance.Pl K}, (l : 𝓞 K) ∈ w.asIdeal → ∀ {m : ℕ}, GlobalTheory.CMVal.IntAt l ((l : ℂ) ^ m * (σ c * β)) → -((m : ℝ) * (Formalism.DivisionValues.vw w (l : K) : ℝ)) ≤ (Formalism.DivisionValues.vw w c : ℝ) + GlobalTheory.FunObj.SqNum.meanVal_vw w p := by
+  atlas_forward_decl GlobalTheory.FunObj.SqNum.meanVal_vw_ge_of_intAt

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SelfReciprocalLocalField
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsInfiniteDecomp
 
 noncomputable section

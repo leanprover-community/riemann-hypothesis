@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.Tuples
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.L2.DIV Formalism.UG
 open scoped TensorProduct
 
@@ -93,3 +96,11 @@ end GlobalTheory.CongNIndex
 theorem GlobalTheory.congN_finite_index : ∀ (L : Type) [Field L] [NumberField L] (N : ℕ), 0 < N →
     ∃ S : Finset (AfE ℚ L)ˣ, ∀ k ∈ intU ℚ L, ∃ s ∈ S, s⁻¹ * k ∈ congN ℚ L N :=
   fun L _ _ N hN => GlobalTheory.CongNIndex.exists_finset ℚ L N hN
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.DIV Formalism.UG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_units_finite_cosets : ∀ (L : Type) [Field L] [NumberField L] (N : ℕ), 0 < N →
+    ∃ S : Finset (AfE ℚ L)ˣ, ∀ k ∈ intU ℚ L, ∃ s ∈ S, s⁻¹ * k ∈ congN ℚ L N := by
+  atlas_forward_decl GlobalTheory.congN_finite_index

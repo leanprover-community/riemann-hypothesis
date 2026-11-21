@@ -1,5 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GoodTopBot
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
 
 namespace GlobalTheory.Alc
@@ -88,3 +91,9 @@ theorem hcVal_generating (R : Type) [CommRing R] (N : ℕ) (μ : Fin N → R) :
   exact h
 
 end GlobalTheory.Alc
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.traceEPowerHighestWeightValue_generating_series : ∀ (R : Type) [CommRing R] (N : ℕ) (μ : Fin N → R), (1 - PowerSeries.X * PowerSeries.mk (hcVal R μ)) * ∏ i, (1 - PowerSeries.C (shift R μ i) * PowerSeries.X) = ∏ i, (1 - PowerSeries.C (shift R μ i + 1) * PowerSeries.X) := by
+  atlas_forward_decl GlobalTheory.Alc.hcVal_generating

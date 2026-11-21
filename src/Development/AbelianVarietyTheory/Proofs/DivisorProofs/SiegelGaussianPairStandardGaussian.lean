@@ -1,6 +1,9 @@
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.MetaplecticRepresentation
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IteratedLineDerivMemWeylAlg
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsEqTransposeMulDiagonalMul
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Complex GlobalTheory.RealWeil
 open scoped Real SchwartzMap ComplexConjugate
 
@@ -44,3 +47,10 @@ theorem siegelGauss_pair_standard (l : Type) [Fintype l] [DecidableEq l] (τ : M
   rw [this, mul_one]
 
 end GlobalTheory
+end
+
+open MeasureTheory Matrix Complex GlobalTheory.RealWeil
+open scoped Real SchwartzMap ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.siegelGaussian_pair_standardGaussian : ∀ (l : Type) [Fintype l] [DecidableEq l] (τ : Matrix l l ℂ) (c : ℂ), GlobalTheory.IsSiegel τ → (∫ x : l → ℝ, c * cexp (π * I * ((fun i => (x i : ℂ)) ⬝ᵥ τ *ᵥ fun i => (x i : ℂ))) * conj (cexp (-π * ((x ⬝ᵥ x : ℝ) : ℂ)))) ^ 2 * (1 - I • τ).det = c ^ 2 := by
+  atlas_forward_decl GlobalTheory.siegelGauss_pair_standard

@@ -1,28 +1,19 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousMulVec
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenKerDerChar
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsFiniteSupport
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNontrivialDerivativeStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalTwistedKernelTopStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeZeroWhittakerKernelStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RestrictionMirabolicTwistedKernelStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalIsGeneric
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothIterPhi
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerCharEqOneOfMemUnipRad
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairIterPhiMir
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InvariantPairingMirabolicSmooth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativePreservesSubquotient
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EquivariantFunctionalsEqDualAnnihilator
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedEqFixedVectors
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnipBEqUnipotent
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspidalInvTranspose
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCuspProdCharTransport
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmoothContragredientIrreducibleAndReflexive
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLevelCharacterAtConjugateSplitPlace
 import GroundTheory.AutomorphicForms.ContragredientTranspose
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumFilterSuperdiag
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NontrivialTwJacquetOfSurjective
 
+section
 open Matrix MeasureTheory GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibOrd GlobalTheory.SplitWeil GlobalTheory.JHMult GlobalTheory.CompanionTheory.BZShell GlobalTheory.CompanionTheory.MirPair
 
 noncomputable section
@@ -506,3 +497,16 @@ theorem form_unique {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [
     exact not_rank_sum_le_one (mres A) _ _ (whit_line ψ hψ h1 m A hAc hAi).1 hr
 
 end GlobalTheory.CompanionTheory.StabForm
+end
+end
+
+open Matrix MeasureTheory GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibOrd GlobalTheory.SplitWeil GlobalTheory.JHMult GlobalTheory.CompanionTheory.BZShell GlobalTheory.CompanionTheory.MirPair
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidal_mirabolic_invariant_pairing_scalar : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (m : ℕ) (σ : IrrRep (GL (Fin (m + 1)) k)) (hc : IsCuspidal σ.ρ)
+    (β : σ.V →ₗ[ℂ] smoothPart σ.ρ.dual →ₗ[ℂ] ℂ)
+    (hβ : ∀ g : GL (Fin (m + 1)) k,
+      (g : Matrix (Fin (m + 1)) (Fin (m + 1)) k).mulVec (Pi.single (Fin.last m) 1) = Pi.single (Fin.last m) 1 →
+      ∀ a l, β (σ.ρ g a) (contra σ.ρ g l) = β a l),
+    ∃ c : ℂ, ∀ a l, β a l = c * (l : Module.Dual ℂ σ.V) a := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.StabForm.form_unique

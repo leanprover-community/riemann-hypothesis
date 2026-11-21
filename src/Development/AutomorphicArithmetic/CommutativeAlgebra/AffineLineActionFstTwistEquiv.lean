@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.BlowupCategories.SpanScale
 import Development.AutomorphicArithmetic.BlowupCategories.AffC
 import Development.AutomorphicArithmetic.CommutativeAlgebra.TateTwistAffineLineProjectionEquiv
 import Development.AutomorphicArithmetic.CommutativeAlgebra.IsIsoOfBijectiveOnSimplices

@@ -1,7 +1,7 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyInterleaving.Interleave
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ShuffleWeightSquareLengthLtStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ShuffleWeightSquareLengthLt
 
+section
 open Zc.Comb
 
 universe u
@@ -20,3 +20,10 @@ theorem wt_inSh_antisymm : ∀ {T : Type u} (s : T → T), Function.Injective s 
   exact lt_asymm h1 h2
 
 end GlobalTheory.CompanionTheory.SegmentWords
+end
+
+open Zc.Comb
+universe u
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shuffle_weight_antisymmetric_eq : ∀ {T : Type u} (s : T → T), Function.Injective s → (∀ (t : T) (j : ℕ), 0 < j → s^[j] t ≠ t) → ∀ (L M : List (ASeg T)), AOrdered s L → AOrdered s M → InSh s (M : Multiset (ASeg T)) (wt s L) → InSh s (L : Multiset (ASeg T)) (wt s M) → (L : Multiset (ASeg T)) = (M : Multiset (ASeg T)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SegmentWords.wt_inSh_antisymm

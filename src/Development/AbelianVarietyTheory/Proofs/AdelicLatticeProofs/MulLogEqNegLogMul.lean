@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.ClassFin
 open scoped Kronecker ComplexOrder TensorProduct
 
@@ -50,3 +53,10 @@ theorem mul_log_eq_neg_log_mul : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (
     _ = -(H' * x) := by rw [hU, Matrix.mul_one]
 
 end GlobalTheory.ClassFin
+end
+
+open Matrix GlobalTheory.ClassFin
+open scoped Kronecker ComplexOrder TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mul_log_eq_neg_log_mul' : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (x x' H H' : Matrix ι ι ℂ), IsLog H (xᴴ * x) → IsLog H' (x'ᴴ * x') → x' * x = 1 → x * H = -(H' * x) := by
+  atlas_forward_decl GlobalTheory.ClassFin.mul_log_eq_neg_log_mul

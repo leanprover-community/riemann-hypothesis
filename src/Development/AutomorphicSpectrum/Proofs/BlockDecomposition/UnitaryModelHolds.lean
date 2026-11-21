@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.SetupEig
 
+section
 noncomputable section
 
 open Matrix
@@ -246,3 +247,10 @@ theorem uModel : UModel := by
       exact hj (by simp [v, hb])
 
 end GlobalTheory.CompanionTheory.UMod
+end
+end
+
+open PositivityTheory.Rg.BcB.F.Eig
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_model_holds : UModel := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UMod.uModel

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.DecaysZero
 import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.Imports
 
 open MeasureTheory Filter Matrix Formalism.REAL Formalism.MainNotions.S GlobalTheory.FlagMeas GlobalTheory.RealInd UpperTheory.Lit.Cusp

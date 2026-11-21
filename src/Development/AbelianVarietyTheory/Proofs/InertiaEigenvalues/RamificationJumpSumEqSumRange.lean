@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NoTowerQ
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ValuativeRel GroundTheory.LocalField GlobalTheory.PMon.Ram
 
 namespace GlobalTheory.PMon.Ram
@@ -20,3 +21,9 @@ theorem jumpSum_eq_sum_range : ∀ (G : Type) [Group G] (R : ℕ → Subgroup G)
     exact ht (if_pos (not_not.1 (mt (h t).2 hn)))
 
 end GlobalTheory.PMon.Ram
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc ValuativeRel GroundTheory.LocalField GlobalTheory.PMon.Ram
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ramificationJumpSum_eq_sum_range : ∀ (G : Type) [Group G] (R : ℕ → Subgroup G) (A B : Subgroup G) (n : ℕ), Antitone R → (∀ t, t < n ↔ ¬ A ⊓ R t ≤ B) → jumpSum R A B = ∑ t ∈ Finset.range n, Nat.card ↥(A ⊓ R t) := by
+  atlas_forward_decl GlobalTheory.PMon.Ram.jumpSum_eq_sum_range

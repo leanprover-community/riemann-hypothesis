@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsHilbRep
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -83,3 +85,10 @@ theorem isHilbRep_transfer : ∀ {S Z S' Z' : Scheme.{0}} (z : Z ⟶ S) (z' : Z'
     · simp [hΦH]
 
 end GlobalTheory.HilbertSch
+end
+end
+
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits GlobalTheory.HilbertSch
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isHilbertSchemeRepresentable_of_iso : ∀ {S Z S' Z' : Scheme.{0}} (z : Z ⟶ S) (z' : Z' ⟶ S') (eS : S' ≅ S) (eZ : Z' ≅ Z), eZ.hom ≫ z = z' ≫ eS.hom → ∀ r : ℕ, IsHilbRep z' r → IsHilbRep z r := by
+  atlas_forward_decl GlobalTheory.HilbertSch.isHilbRep_transfer

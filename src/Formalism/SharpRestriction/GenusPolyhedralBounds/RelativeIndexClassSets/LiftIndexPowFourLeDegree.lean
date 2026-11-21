@@ -1,7 +1,6 @@
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.CombBound4Of
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.PvsDimYPos
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.TheoremZeroSplitOfLocalAndSum
-import Formalism.LocalRingCardinality.HeightBoundGeFourthPowerRank
 import Formalism.LocalRingCardinality.FourthPowerRankLeNF
 
 noncomputable section

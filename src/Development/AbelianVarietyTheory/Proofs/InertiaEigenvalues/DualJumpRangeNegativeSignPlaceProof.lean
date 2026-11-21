@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.StepJumpDirect
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDual1Dot
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.Pass.JumpDualStep
@@ -42,3 +44,10 @@ theorem jumpDual_main : StepJumpDual := by
     refine Finset.mem_coe.2 (Finset.mem_insert_of_mem (Finset.mem_image.2 ⟨-a - 1, hj x τ _ h1, by ring⟩))
 
 end GlobalTheory.Pass.JumpDualStep
+end
+end
+
+open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualJumpRangeNegativeSignPlace_proof : StepJumpDual := by
+  atlas_forward_decl GlobalTheory.Pass.JumpDualStep.jumpDual_main

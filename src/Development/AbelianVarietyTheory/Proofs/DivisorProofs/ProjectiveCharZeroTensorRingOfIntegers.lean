@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 open scoped TensorProduct
 
@@ -28,3 +31,10 @@ theorem projective_charZero_tensor_ringOfIntegers : ∀ (F : Type) [Field F] [Nu
   exact Module.projective_of_isSemisimpleRing _ _
 
 end GlobalTheory
+end
+
+open NumberField
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projective_charZero_tensor_ringOfIntegers' : ∀ (F : Type) [Field F] [NumberField F] (k : Type) [Field k] [CharZero k] (M : Type 1) [AddCommGroup M] [Module (k ⊗[ℤ] 𝓞 F) M], Module.Projective (k ⊗[ℤ] 𝓞 F) M := by
+  atlas_forward_decl GlobalTheory.projective_charZero_tensor_ringOfIntegers

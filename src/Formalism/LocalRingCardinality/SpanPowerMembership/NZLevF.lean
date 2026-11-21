@@ -1,6 +1,5 @@
 import Formalism.LocalRingCardinality.SpanPowerMembership.NZLevE
 import Formalism.LocalRingCardinality.SpanPowerMembership.NZLevA
-import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsLat
 import Formalism.LocalToGlobal.GroupLattices.FockModels.OperatorsPreserveLattices
 

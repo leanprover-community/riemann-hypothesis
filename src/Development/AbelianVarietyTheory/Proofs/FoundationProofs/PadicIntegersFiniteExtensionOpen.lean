@@ -2,6 +2,9 @@ import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.SelmerWindowSums
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankCyclotomicExtAndCyclotomicCharSurjective
+import BuildAid.ForwardExisting
+
+section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N TensorProduct
 
 namespace GlobalTheory
@@ -43,3 +46,9 @@ theorem isOpen_integers_finExt (l : ℕ) [Fact l.Prime] (LL : FinExt l) :
     exact Subalgebra.smul_mem _ (hc i) _
 
 end GlobalTheory
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.padic_integers_finite_extension_open : ∀ (l : ℕ) [Fact l.Prime] (LL : FinExt l), IsOpen ((OL LL : Subalgebra ℤ_[l] ↥LL.1) : Set ↥LL.1) := by
+  atlas_forward_decl GlobalTheory.isOpen_integers_finExt

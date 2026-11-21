@@ -4,6 +4,8 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PullbackPreservesLineBundleFlag
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShortExactVectorBundlesRankAdd
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsColimitCokernelCoforkBiprodMap
+
+section
 open CategoryTheory Limits AlgebraicGeometry
 
 set_option autoImplicit false
@@ -44,3 +46,13 @@ theorem shortExact_preimage_of_epi_mono : ∀ (X : Scheme.{0}) {A E₂ E₃ F : 
   fun X _ _ _ _ b ι _ _ f e _ hf => shortExact_pullback_mono b ι f e hf
 
 end GlobalTheory.PullbackSub
+end
+end
+
+open CategoryTheory Limits AlgebraicGeometry
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shortExact_of_pullback_cokernel : ∀ (X : Scheme.{0}) {A E₂ E₃ F : X.Modules} (b : E₂ ⟶ E₃) (ι : F ⟶ E₃) [Epi b] [Mono ι]
+    (f : A ⟶ E₂) (e : A ⟶ pullback b ι) [IsIso e], f = e ≫ pullback.fst b ι →
+    ∃ hz : f ≫ b ≫ cokernel.π ι = 0, (ShortComplex.mk f (b ≫ cokernel.π ι) hz).ShortExact := by
+  atlas_forward_decl GlobalTheory.PullbackSub.shortExact_preimage_of_epi_mono

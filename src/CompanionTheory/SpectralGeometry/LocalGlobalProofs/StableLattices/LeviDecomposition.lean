@@ -1,9 +1,9 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.QuantumDeterminants CompanionTheory.Bmu
 open scoped ComplexConjugate
 
@@ -277,3 +277,10 @@ theorem leviQ : LeviQ := by
       Matrix.inv_mul_of_invertible, Matrix.mul_one]
 
 end GlobalTheory.CompanionTheory.BesselLevi
+end
+end
+
+open CompanionTheory.Bmu
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.LeviDecomposition : LeviQ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BesselLevi.leviQ

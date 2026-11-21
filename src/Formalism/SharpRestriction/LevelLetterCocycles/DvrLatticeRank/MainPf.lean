@@ -8,7 +8,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ExtPfMultVE
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.NinLamPf
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.OneGenPf
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GamPiPf
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FrobPiNPf
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ClassMapPf
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPf
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.KapPiPf

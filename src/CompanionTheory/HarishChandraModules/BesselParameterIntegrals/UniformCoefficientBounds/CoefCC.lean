@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNormDegGCut
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJmuFacts
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormBallVolumes
 import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
 import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.UniformCoefficientBounds.CoefBoundUniform
 

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.EntryDegree
 import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
 

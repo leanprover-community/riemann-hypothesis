@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsEulerContraction
+
+section
 open GlobalTheory GlobalTheory.LogDR
 
 namespace GlobalTheory.LogDR.StabTheta
@@ -115,3 +117,9 @@ theorem GlobalTheory.LogDR.chartForms_stable_euler :
       show θ (c • ExteriorAlgebra.ιMulti K 0 v) = 0
       rw [map_smul, ExteriorAlgebra.ιMulti_zero_apply, hθ.1, smul_zero]
     exact key hη
+end
+
+open GlobalTheory GlobalTheory.LogDR
+
+theorem _root_.GlobalTheory.T.euler_contraction_chart_forms : ∀ (K : Type) [Field K] (A : Subring K) (n : ℕ) (x : Fin n → Kˣ) (J : Finset (Fin n)) (t : Kˣ) (i : Fin n) (θ : abelian₂ K →ₗ[K] abelian₂ K), (∀ j, (x j : K) ∈ A) → IsEulerContraction x i θ → (∀ q, ∀ η ∈ chartForms A x J t (q + 1), θ η ∈ chartForms A x J t q) ∧ ∀ η ∈ chartForms A x J t 0, θ η = 0 := by
+  atlas_forward_decl _root_.GlobalTheory.LogDR.chartForms_stable_euler

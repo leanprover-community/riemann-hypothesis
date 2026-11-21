@@ -1,4 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitC
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitOA
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceMinima
 

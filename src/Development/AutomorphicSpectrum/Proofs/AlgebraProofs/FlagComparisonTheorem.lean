@@ -1,26 +1,19 @@
 import Mathlib
-import ReciprocityTheory.DualLattices.CotangentSurjective
 import ReciprocityTheory.DualLattices.ProdDvdOfIso
 import ReciprocityTheory.DualLattices.InvolutionPermApplyZero
 import ReciprocityTheory.DualLattices.PowMemCarrier
 import Development.AbelianVarietyTheory.Counterexamples.UpperHalfSurvey.HasColenNotUniqueWithoutGuard
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsTight
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.StepOrderRes
 import Development.AutomorphicSpectrum.Statements.AlgebraStatements.PolarisedFlagStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderSubgroupGenerationStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderFundamentalLengthsStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderBasisIdealsStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderBasisLengthsStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TeichmullerCharacterOrderGeneratesStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderBasisColengthStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProductInequalitiesForceEqualityStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderFundamentalIdealStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FundamentalIdealFrobeniusValuationStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.NonFundamentalEigenLeSquareAugmentationStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FundamentalIdealFrobeniusProductStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CharacterIdealPrincipalEigenStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderSubgroupTranslationStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderSubgroupGeneration
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderFundamentalLengths
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderBasisIdeals
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderBasisLengths
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderBasisColength
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProductInequalitiesForceEquality
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FundamentalIdealFrobeniusValuation
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.NonFundamentalEigenLeSquareAugmentation
 
+section
 noncomputable section
 
 open ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up GlobalTheory.CompanionTheory.Ar.GR
@@ -318,3 +311,11 @@ theorem flagStatement_holds : FlagStatement := by
       (fun i => v (algebraMap R C (δ i s))) (fun i => hstepL i s) (hall s) j
 
 end GlobalTheory.CompanionTheory.Ar.GR
+end
+end
+
+open ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up GlobalTheory.CompanionTheory.Ar.GR
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_comparison_theorem : GlobalTheory.CompanionTheory.Ar.GR.FlagStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.GR.flagStatement_holds

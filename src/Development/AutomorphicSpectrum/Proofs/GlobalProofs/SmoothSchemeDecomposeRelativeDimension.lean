@@ -2,7 +2,8 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SerreHolomorphicSectionsHolds
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompactSpacePts
 import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.GagaSections
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Set
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.CxPts
@@ -76,3 +77,11 @@ theorem exists_clopen_smoothOfRelativeDimension :
   exact Opens.isOpen _
 
 end GlobalTheory.CompanionTheory.Gaga
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Set
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_scheme_decompose_relative_dimension : ∀ (X : Scheme.{0}) (s : X ⟶ Sp ℂ), Smooth s → ∃ W : ℕ → X.Opens, (∀ D, IsClosed (W D : Set X)) ∧ (∀ D, SmoothOfRelativeDimension D ((W D).ι ≫ s)) ∧ (⨆ D, W D) = ⊤ ∧ Pairwise fun D D' => W D ⊓ W D' = ⊥ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Gaga.exists_clopen_smoothOfRelativeDimension

@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LabelsCharOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspidalCharacterFormula
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesLabelExistsUniqueGLn
 
+section
 open Polynomial GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters GlobalTheory.ParamLabel
 
 namespace GlobalTheory.ParamLabel.Congr
@@ -126,3 +127,9 @@ theorem eq_and_congr : ∀ (p : ℕ) [Fact p.Prime] (L : GlobalTheory.GLq.LabelD
   exact pow_eq_iff L hd h h' _
 
 end GlobalTheory.ParamLabel.Congr
+end
+
+open Polynomial GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters GlobalTheory.ParamLabel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.labelled_characters_eq_and_congr_primeToPart : ∀ (p : ℕ) [Fact p.Prime] (L : GlobalTheory.GLq.LabelDatum p) (d : ℕ), 0 < d → ∀ (θ θ' : Tor p d →* ℂˣ) (x x' : Fbar p), LabelsChar L θ x → LabelsChar L θ' x' → (θ = θ' ↔ x = x') ∧ ∀ l : ℕ, l.Prime → (CongrMod l θ θ' ↔ Formalism.CyclotomicNorms.primeToPart l x = Formalism.CyclotomicNorms.primeToPart l x') := by
+  atlas_forward_decl GlobalTheory.ParamLabel.Congr.eq_and_congr

@@ -1,10 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsIsFolnerUWset
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ClosedSubgroupBesselHaarFiniteCompactPosOpenStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsCompactNormBoundedBesselClosedSubgroupStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselModelUnitaryGroupOpNormPropertiesStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsCompactNormBoundedBesselClosedSubgroup
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselModelUnitaryGroupOpNormProperties
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf
@@ -291,3 +291,11 @@ theorem normInt_lt_top : ∀ (k r : ℕ) (S : Set (Mat k r)) (μ : Measure (Mt k
         exact tsub_pos_of_lt (ENNReal.ofReal_lt_one.2 hq1)
 
 end GlobalTheory.SgGrowth
+end
+end
+
+open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.besselOpNormPowerIntegral_lt_top_closedSubgroup : ∀ (k r : ℕ) (S : Set (Mat k r)) (μ : Measure (Mt k r)) (A : ℝ), IsClosedSub k r S → IsHaarOn S μ → 2 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 < A → normInt μ A < ⊤ := by
+  atlas_forward_decl GlobalTheory.SgGrowth.normInt_lt_top

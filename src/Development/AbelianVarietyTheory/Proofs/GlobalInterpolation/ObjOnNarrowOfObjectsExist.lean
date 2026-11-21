@@ -1,11 +1,9 @@
 import Mathlib
 import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
-import Formalism.LocalToGlobal.GlobalTheory.IsResidueClassZero
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ThinScalesIffHostBound
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.FewBadPrimes
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NcardPrimesOverOfStabilizer
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.KitExOfHostWeightObj
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SamePointOfSameScale
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsRefill
 
 noncomputable section

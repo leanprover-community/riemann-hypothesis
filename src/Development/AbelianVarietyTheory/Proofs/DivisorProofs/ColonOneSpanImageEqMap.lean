@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.PointShiftSt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.Dets
+
+section
 open NumberField
 open scoped nonZeroDivisors
 
@@ -93,3 +94,13 @@ theorem _root_.GlobalTheory.colon_one_span_image_eq_map {E K : Type} [Field E] [
     | smul c x _ hx => rw [smul_comm]; exact Submodule.smul_mem _ c hx
 
 end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.colon_one_span_image_eq_map_colon : ∀ {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K]
+    (τ : 𝓞 E →+* 𝓞 K) (τE : E →+* K), (∀ x : 𝓞 E, τE x = ((τ x : 𝓞 K) : K)) →
+    ∀ (A : Submodule (𝓞 E) E), A.FG → (1 : E) ∈ A →
+    (1 : Submodule (𝓞 K) K).colon (Submodule.span (𝓞 K) (τE '' A) : Set K) =
+      ((1 : Submodule (𝓞 E) E).colon (A : Set E)).map τ := by
+  atlas_forward_decl GlobalTheory.colon_one_span_image_eq_map

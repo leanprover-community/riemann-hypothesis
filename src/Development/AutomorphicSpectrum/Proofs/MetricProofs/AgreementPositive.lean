@@ -1,13 +1,13 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.AgreementPos
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.Pull1
-import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MongeAmpereRegularizationLogLogBoundStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionDifferenceTelescopingIntegralStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.MongeAmpereRegularizationLogLogBound
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionDifferenceTelescopingIntegral
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.TendstoLimUnderOfCauchyRate
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LimRateMulLogSqLe
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.AbsCoeffProdXLeOne
 
+section
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo
 open ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB
 open GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
@@ -92,3 +92,10 @@ theorem agreementPos : AgreementPos := by
     _ = |abelian₂| ^ (D + 1) * (((D : ℝ) + 1) * (|C'| * 4)) * s := by ring
 
 end GlobalTheory.CompanionTheory.Ar.PB
+end
+end
+
+open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.agreement_positive : AgreementPos := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.agreementPos

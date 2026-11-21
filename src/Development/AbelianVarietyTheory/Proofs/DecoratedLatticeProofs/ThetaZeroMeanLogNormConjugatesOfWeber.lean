@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
-import Development.AbelianVarietyTheory.Definitions.Foundations.LatticeIntegralCoordinates
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.SignedLogMeans
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ClassMeanPeriods
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.EquidistributedConjugates
@@ -9,12 +8,11 @@ import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ThetaConstan
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.PeriodLatticeAgreement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsPeriodLatticeIff
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ThetaZeroNorm
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralJAndAlgebraicData
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjugateIdealLatticeDiscrOneHomotheticIdealStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MeanLogCovolumeConjugateLatticesEqStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsIntegralThetaEtaTwelfthPowerConjugatesStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjugateIdealLatticeDiscrOneHomotheticIdeal
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MeanLogCovolumeConjugateLatticesEq
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsIntegralThetaEtaTwelfthPowerConjugates
 
+section
 noncomputable section
 
 namespace GlobalTheory.Theta0MeanCore
@@ -153,3 +151,10 @@ theorem theta0Mean (hP : PeriodLatticeAgreement.LatticePeriodEta) (hW : ThetaCon
     linarith
 
 end GlobalTheory.Theta0MeanCore
+end
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric GlobalTheory.Glob.IntegralWittCoefficients GlobalTheory.IndefiniteRowSideFullHecke
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaZero_mean_log_norm_conjugates_of_weber : PeriodLatticeAgreement.LatticePeriodEta → ThetaConstantWeber.ThetaWeberStatement → SignedLogMeans.Theta0Mean := by
+  atlas_forward_decl GlobalTheory.Theta0MeanCore.theta0Mean

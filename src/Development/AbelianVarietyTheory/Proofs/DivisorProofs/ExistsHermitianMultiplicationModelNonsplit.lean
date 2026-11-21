@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjRelEquiv
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeftMulMatrixTransfer
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ReducedFreeAlgebraTraceFormPerfect
 
+section
 noncomputable section
 
 open NumberField GlobalTheory.UnitaryBC IsDedekindDomain Matrix Polynomial GlobalTheory.CuspRep Formalism.UG GlobalTheory.BCT GlobalTheory.KapLat
@@ -291,3 +292,11 @@ theorem exists_isModel : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   exact ⟨x, hσx, ⟨⟨x, y, hy, by rw [mul_comm]; exact hy⟩, rfl⟩, ψ, hψs, hmul, hform⟩
 
 end GlobalTheory.KapLat.ExModel
+end
+end
+
+open NumberField GlobalTheory.UnitaryBC IsDedekindDomain Matrix Polynomial GlobalTheory.CuspRep Formalism.UG GlobalTheory.BCT GlobalTheory.KapLat
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hermitianMultiplicationModel_nonsplit : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w : Pl E), ¬ IsSplitAt w → ∀ (K : GlobalTheory.UnitLemma.UQ) (e : K.E ≃+* w.adicCompletion E), Bridge w K e → ∀ (n : ℕ) (Q : (w.adicCompletion E)[X]) (B : GlobalTheory.UnitLemma.InvAlg K) (u : B.A), Q.Separable → Fits w e B Q u → ∀ γ : GLw n w, γ ∈ UL n w → γ.val.charpoly = Q → ∃ x : B.A, B.σ x = x ∧ IsUnit x ∧ IsModel w e B u x γ := by
+  atlas_forward_decl GlobalTheory.KapLat.ExModel.exists_isModel

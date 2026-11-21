@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPairingSingleNe
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeC
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FIwasawaB
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.BorelChar
@@ -161,3 +161,15 @@ theorem borel_char : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicativ
   omega
 
 end GlobalTheory.BorelChar
+end
+end
+
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.borelMultiplicative_eq_prod_diagonal_valuations : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → ∀ (n : ℕ) (f : GU σ n → ℂ), (∀ b b', IsBorelU b → IsBorelU b' → f (b * b') = f b * f b') → (∀ k ∈ KU σ n, IsBorelU k → f k = 1) → ∀ y : Fin (n / 2) → ℂ, (∀ (k : Fin (n / 2)) (t : GU σ n), t.1.1 = tMat ϖ n (n / 2) (Pi.single k 1) → f t = y k) → ∀ b, IsBorelU b → f b = ∏ k, y k ^ ordL (b.1.1 (lo n k) (lo n k)) := by
+  atlas_forward_decl GlobalTheory.BorelChar.borel_char

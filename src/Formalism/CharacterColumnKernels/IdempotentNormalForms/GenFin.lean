@@ -1,9 +1,7 @@
-import Formalism.CharacterColumnKernels.Statement
 import Formalism.CharacterColumnKernels.StatementG
 import Formalism.CharacterColumnKernels.StatementX
 import Formalism.CharacterColumnKernels.IdempotentNormalForms.GenRelMapApply
 import Formalism.CharacterColumnKernels.IdempotentNormalForms.LenCokerOfDetNeZero
-import Formalism.CharacterColumnKernels.IdempotentNormalForms.SingleEqSmul
 
 open Finset
 

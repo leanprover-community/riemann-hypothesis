@@ -1,8 +1,5 @@
-import Formalism.GradedWeylDivisibility.FinalD
-import Formalism.GradedWeylDivisibility.StatementE
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQHW
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQWordAdj
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 import Formalism.PieriBlockIdeals.PieriColumnMinors.LowerTriangularIntegral
 import Formalism.PieriBlockIdeals.PieriColumnMinors.LrfcApplyWordAppendSingle
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice

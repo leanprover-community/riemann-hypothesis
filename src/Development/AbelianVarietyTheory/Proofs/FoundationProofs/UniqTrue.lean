@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsEqSubOfMemCob
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIndexStabilizer
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFixedCongrAxLemmaOddPrimeStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TateDiscreteInertiaKummerCoboundaryBoundStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TateDiscreteInertiaKummerCoboundaryBound
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.ExistsApplyEqOfMemDec
+
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
 
 noncomputable section

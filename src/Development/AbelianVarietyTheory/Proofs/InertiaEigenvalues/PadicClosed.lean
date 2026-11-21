@@ -196,8 +196,7 @@ theorem near_series (ι : B →+* R) (io : LetA O n →+* B) (hu : IsUnit (ι (i
 
 private theorem near_mono_lemma_2 {A : Type} [CommRing A] (ι : A →+* R) (τ : A) {m : ℕ} {x : R}
     (h : Near ι p (ι τ) (m + 1) x) : Near ι p (ι τ) m x := by
-  obtain ⟨a, r, hx⟩ := h
-  exact ⟨τ * a, r, by rw [hx, map_mul, pow_succ]; ring⟩
+  apply near_mono_lemma (ι := ι) (τ := τ) (h := h) <;> assumption
 
 theorem near_closed (ι : B →+* R) (io : LetA O n →+* B) (al : LetA O n →+* E) (j : E →+* R)
     (hj : ∀ a, j (al a) = ι (io a)) (hu : IsUnit (ι (io letπ)))

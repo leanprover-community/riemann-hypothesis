@@ -1,6 +1,8 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.RationalPrimesBelowPlaces
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetInd
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
 open GroundTheory.Automorphic.GodementSection (localChar)
@@ -28,3 +30,16 @@ theorem inner_integrable : ∀ (F : Type) [Field F] [ValuativeRel F] [Topologica
   exact (hcg.mul hcχ).integrable_of_hasCompactSupport hs.mul_right
 
 end GlobalTheory.CompanionTheory.WS
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integrable_twisted_section_line : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Ψ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Ψ → ∀ u : Fˣ, Integrable (fun y : F => Ψ ((u : F), (u : F) * y) * (χ (-y) : ℂ)) (selfDualMeasure χ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.inner_integrable

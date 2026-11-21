@@ -1,9 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.EquivariantSections.EquivSection
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.InfChar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset MeasureTheory Matrix
@@ -356,3 +356,9 @@ theorem key_of_steps : LowAlg → HolFacts → EquivSection → RhoRep → ActEq
         hb hl h0).2 (by funext a; simp)
 
 end GlobalTheory.CompanionTheory.KeyAsm
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.key_proposition_of_components : PositivityTheory.RgDs.K.LowAlg → PositivityTheory.RgDs.K.HolFacts → PositivityTheory.RgDs.K.EquivSection → PositivityTheory.RgDs.K.RhoRep → PositivityTheory.RgDs.K.ActEquiv → PositivityTheory.RgDs.K.RhoTorus → PositivityTheory.RgDs.K.TorW → PositivityTheory.RgDs.K.Transfer → PositivityTheory.RgDs.K.Exhaust → PositivityTheory.RgDs.K.BetaWeight → PositivityTheory.RgDs.Key := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KeyAsm.key_of_steps

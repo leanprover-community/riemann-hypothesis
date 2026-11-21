@@ -1,11 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GapCondExample
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BundleDegreeEqSumValuationsStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DegreeMonoLatticeLeStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubAndQuotientBundlesStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubDegreeNonposTrivialLatticeStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DegreeMonoLatticeLe
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubDegreeNonposTrivialLattice
 
+section
 noncomputable section
 
 open GlobalTheory.CompanionTheory.Ar.Crv
@@ -178,3 +176,10 @@ theorem subDeg_max : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddComm
   exact ⟨W₀, fun W => hz _ ⟨W, rfl⟩⟩
 
 end GlobalTheory.CompanionTheory.Ar.Crv.SubdegMax
+end
+end
+
+open GlobalTheory.CompanionTheory.Ar.Crv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sub_degree_bot_and_max_exists : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (L : C.I → AddSubgroup V), IsBun C L → subDeg C L ⊥ = 0 ∧ ∃ W₀ : Submodule K V, ∀ W : Submodule K V, subDeg C L W ≤ subDeg C L W₀ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Crv.SubdegMax.subDeg_max

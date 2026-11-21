@@ -2,6 +2,8 @@ import Mathlib
 import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.Imports
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsFRepExteriorPowerStandardRep
 import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+
+section
 open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker ContDiff
 
@@ -55,3 +57,10 @@ theorem okWedge : OKWedge := by
           simp [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
 end GlobalTheory.CompanionTheory.ZuckWedge
+end
+
+open CompanionTheory.Zuck BranchingSupport Matrix Finset
+open scoped InnerProductSpace Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ExteriorPowerIntegral : OKWedge := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ZuckWedge.okWedge

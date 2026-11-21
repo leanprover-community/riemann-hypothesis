@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeChartArea
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFibre
 set_option maxSynthPendingDepth 1
 
 noncomputable section

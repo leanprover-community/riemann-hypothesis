@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsStepTwo
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrLenRestrictSt
 set_option maxSynthPendingDepth 1
 

@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPAmbOf
 import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.Outright
-import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.GMConjTranspose
 
 open NumberField IsDedekindDomain
 

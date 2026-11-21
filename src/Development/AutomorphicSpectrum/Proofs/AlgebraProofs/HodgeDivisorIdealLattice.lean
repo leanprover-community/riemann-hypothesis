@@ -1,12 +1,12 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LieLatticeData
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocallyFreeTestPointMembership
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MemOfTestIdeal
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowSpanLocFreeBaseChange
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeGoodBaseChange
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.KernelGraphBaseChangeHolds
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeSecondGoodness
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeAnnihilatorLatticeHolds
+
+section
 open GlobalTheory.CompanionTheory.Ar.Num
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.HaSteps.SlopeTestRemainingChoices
@@ -236,3 +236,9 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.HaSteps.main : ∀ {o Ω : Type} [Co
         fun C _ _ _ _ RC hRC => (h C RC hRC).symm)
     rw [pow_mul]
     exact mem_span R ⟨_, hm, rfl⟩
+end
+
+open GlobalTheory.CompanionTheory.Ar.Num
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_divisor_ideal_lattice : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {F : Type} [Zero F] [One F] [Fintype F] {n : ℕ} {Sg : Type} {r s : Sg → ℕ} (D : LieLatticeData Ω F n Sg r s) (R : Subalgebra o Ω) (p : ℕ) (w : Ω) (χ : Sg → F → Ω), CharData R p w χ → D.Base R p w → p.Prime → IsNoetherianRing R → IsFractionRing R Ω → IsIntegrallyClosedIn R Ω → ∀ φ : Equiv.Perm Sg, D.TestFacts R p w χ φ → D.Good₁ R p χ → D.Good₂ R p χ → (∀ τ i, D.dId R p (χ τ) i = D.xId (χ τ) i) ∧ (∀ τ (i : Fin n), (D.stepGraph τ (χ τ) i).map (AddMonoidHom.snd _ _) = D.kk τ i) ∧ ∀ τ i, (D.stepGraph (φ τ) (χ (φ τ)) i).comap (AddMonoidHom.inl _ _) = powSpan R p (D.xId (χ τ) i) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.HaSteps.main

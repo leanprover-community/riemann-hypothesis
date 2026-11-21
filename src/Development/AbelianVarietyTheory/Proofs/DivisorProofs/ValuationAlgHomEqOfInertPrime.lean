@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain
 open scoped Matrix
 
@@ -76,3 +79,11 @@ theorem val_conj : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
     intVal_phi σ v w hin, intVal_phi σ v w hin]
 
 end GlobalTheory.InertConjVal
+end
+end
+
+open NumberField IsDedekindDomain
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_algHom_eq_of_inertPrime : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (w : HeightOneSpectrum (𝓞 E)), Formalism.UG.IsInertAt F E v w → ∀ x : E, w.valuation E (σ x) = w.valuation E x := by
+  atlas_forward_decl GlobalTheory.InertConjVal.val_conj

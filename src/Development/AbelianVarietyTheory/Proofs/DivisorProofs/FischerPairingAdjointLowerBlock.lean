@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetSNeZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockFirstActionMatrixUnitEq
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RowDerivationChainRule.DetDer
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MvPolynomial Formalism.BasicNotions.TH GlobalTheory.CharPair GlobalTheory.DefLift.BilFischer
@@ -132,3 +134,9 @@ theorem pair_fockAct1_inr_inr_embS (P Q S : ℕ) (h : Q ≤ S) (k' : ℕ) (b b' 
 end GlobalTheory.CharPair.SecondBlockS
 
 end
+end
+
+open MvPolynomial Formalism.BasicNotions.TH GlobalTheory.CharPair
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fischer_pairing_adjoint_lower_block : ∀ (P Q S : ℕ) (h : Q ≤ S) (k' : ℕ) (b b' : Fin Q) (G : Mdl P Q) (f : Pol P Q 0 S), GlobalTheory.DefLift.BilFischer.pair (fockAct1 P Q 0 S (Eab (Sum.inr b) (Sum.inr b')) f) (embS P Q S h k' G) = GlobalTheory.DefLift.BilFischer.pair f (embS P Q S h k' (opS P Q S k' (Sum.inr b) (Sum.inr b') G)) := by
+  atlas_forward_decl GlobalTheory.CharPair.SecondBlockS.pair_fockAct1_inr_inr_embS

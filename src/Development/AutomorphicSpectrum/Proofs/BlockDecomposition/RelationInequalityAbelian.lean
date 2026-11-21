@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.LocalGlobalCompatibility.TemperedLocalGlobal.TemperednessTransfer
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
@@ -142,3 +143,10 @@ theorem relIneAb : RelIneAb := by
   exact charPol_eq x y hxy hab g hg
 
 end GlobalTheory.CompanionTheory.RelIneAbProof
+end
+end
+
+open LocalGlobalAboveLAlt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.relation_inequality_abelian : RelIneAb := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RelIneAbProof.relIneAb

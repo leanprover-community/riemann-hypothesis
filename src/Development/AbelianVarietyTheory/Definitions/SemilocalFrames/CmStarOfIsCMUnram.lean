@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.DataSpaces
 import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
 
 noncomputable section

@@ -1,4 +1,3 @@
-import Formalism.SatakeDualWeyl.StatementF
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FIwasawaE
 
 open Formalism.UG Matrix

@@ -1,9 +1,7 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.PadicUnitaryWeights.CrystallineUnitParts.ConradLocalTiedness
-import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoldsFinite
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.ExistsPrimeNotMem
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.HeckeLAdicCharacterDeRham
-import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
 
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 800000

@@ -4,17 +4,17 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitForm
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Models
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueBtOrderEmbeddingStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EmbeddingBaseChangeCompatStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEmbeddingOpenCoverStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsBaseChangeGroupStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderScalarExtensionStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HenselianQuasiFiniteFinitePartStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueBtOrderEmbedding
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EmbeddingBaseChangeCompat
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEmbeddingOpenCover
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderScalarExtension
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HenselianQuasiFiniteFinitePart
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsFinOpenSubOfFiniteStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderFlatBaseChangeStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsHenselianFlatOverPrimeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderIsHopfOrderNoetherianStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatLocalExtensionExistsStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderFlatBaseChange
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderIsHopfOrderNoetherian
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatLocalExtensionExists
+
+section
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open GlobalTheory.CompanionTheory.Ar.BT GroundTheory.PAdicHodge
 
@@ -145,3 +145,10 @@ theorem isOpenImmersion_emb_and_translatesCover : ∀ (R : Type) [CommRing R] [I
     exact h1
 
 end GlobalTheory.CompanionTheory.Ar.BT
+end
+
+open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
+open GlobalTheory.CompanionTheory.Ar.BT GroundTheory.PAdicHodge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.btOrder_embedding_open_immersion : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] [IsNoetherianRing R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (j : Γ.G.left ⟶ Spec (CommRingCat.of (Γ.btOrder ⊤))), Γ.IsEmb (Γ.btOrder ⊤) j → IsOpenImmersion j ∧ Γ.TranslatesCover (Γ.btOrder ⊤) j ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.BT.isOpenImmersion_emb_and_translatesCover

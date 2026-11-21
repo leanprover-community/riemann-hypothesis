@@ -1,7 +1,6 @@
 import Mathlib
 import GroundTheory.LocalFields.LocalFourier
 import GroundTheory.LocalFields.LocalFourierTrace
-import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
 import GroundTheory.LocalFields.MaximalUnramified
 import GroundTheory.LocalFields.NormCorrespondence
 

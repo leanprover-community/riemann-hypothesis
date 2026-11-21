@@ -1,5 +1,7 @@
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.InstBorelGL
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocalFieldTopologyNormBallsStatement
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GlobalTheory.CompanionTheory.QL
 open scoped ComplexConjugate ValuativeRel
 
@@ -69,3 +71,10 @@ theorem haarAdd_intMat : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalS
     rw [key dx hi h, key dy hj h']
 
 end GlobalTheory.CompanionTheory.QLHaarAdd
+end
+
+open MeasureTheory Matrix GlobalTheory.CompanionTheory.QL
+open scoped ComplexConjugate ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_additive_haar_normalized : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] {O : Subring F} {ϖ : F} {nrm : AbsoluteValue F ℝ} {q : ℕ}, LF O ϖ nrm q → ∀ n m : ℕ, BorelSpace (Matrix (Fin n) (Fin m) F) ∧ IsOpen (intMat O n m) ∧ IsCompact (intMat O n m) ∧ (∃ dx : Measure (Matrix (Fin n) (Fin m) F), dx.IsAddLeftInvariant ∧ dx (intMat O n m) = 1) ∧ (∀ (dx : Measure (Matrix (Fin n) (Fin m) F)), dx.IsAddLeftInvariant → dx (intMat O n m) = 1 → dx.IsAddHaarMeasure) ∧ (∀ (dx : Measure (Matrix (Fin n) (Fin m) F)), dx.IsAddLeftInvariant → dx (intMat O n m) = 1 → ∀ (dy : Measure (Matrix (Fin n) (Fin m) F)), dy.IsAddLeftInvariant → dy (intMat O n m) = 1 → dx = dy) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.QLHaarAdd.haarAdd_intMat

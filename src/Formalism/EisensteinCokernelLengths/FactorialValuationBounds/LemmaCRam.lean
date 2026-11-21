@@ -1,4 +1,3 @@
-import Formalism.EisensteinCokernelLengths.RationalTailBound
 import Formalism.EisensteinCokernelLengths.FactorialValuationBounds.GaussRam
 import Formalism.GaussValuationBounds.NokLemmaCVal
 

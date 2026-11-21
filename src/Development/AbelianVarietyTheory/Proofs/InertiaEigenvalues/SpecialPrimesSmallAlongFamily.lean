@@ -1,13 +1,11 @@
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BoundAtTwoAndThreeForFamily
-import Formalism.SharpRestriction.GlobalTheoremInputs
 import Development.AutomorphicArithmetic.CyclotomicBounds.SmallFacts
 import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.JointConditionTameBound
 import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.CrysOnCond
-import Formalism.SharpRestriction.LevelLetterCocycles.WachCoordinates
-import Formalism.SharpRestriction.LevelLetterCocycles.RamifiedCoefficientChains
-import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.BaseSizes
 import Formalism.SharpRestriction.LevelLetterCocycles.NEqRZeroMulXPow
+
+section
 open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.NLink
 
 noncomputable section
@@ -261,3 +259,11 @@ theorem GlobalTheory.SpecialSmall.special_primes_small : ∀ {eps : ℝ} (Fm : F
   exact GlobalTheory.SpecialSmall.at_one (Fm.L x i) (Fm.params x hx1 i) (Fm.sizes x hx1 i) C hC
     (by rw [hLx]; exact h3) (by rw [hLx, hLe]; exact h16) (by rw [hLx, Fm.L_ez]; exact h60)
     (by rw [hLx, hLe, hCt]; exact hbig) (by rw [hLx, hLe]; exact hbig2)
+end
+end
+end
+
+open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.NLink
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.specialPrimes_small_along_family : ∀ {eps : ℝ} (Fm : FamP eps), ∀ C : ℝ, 1 ≤ C → ∃ x0 : ℝ, ∀ x ≥ x0, Fm.x1 < x → ∀ i : Fm.Ix x, Small (Fm.L x i) C ∧ 8 ≤ (Fm.L x i).sc.L ∧ 60 ≤ (Fm.D x i).host.splitBound ∧ C ≤ (Fm.L x i).sc.b := by
+  atlas_forward_decl GlobalTheory.SpecialSmall.special_primes_small

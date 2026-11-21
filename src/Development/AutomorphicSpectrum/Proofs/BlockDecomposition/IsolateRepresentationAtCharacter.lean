@@ -1,11 +1,11 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.SubOfNonNil
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HkMemFixed
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumOutTranslate
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSmulEqOnFinset
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IrreducibleHomFixedVectorsStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IrreducibleHomFixedVectors
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IrreducibleSmoothAdmissibleGL
 
+section
 open MeasureTheory GlobalTheory.SmGL GlobalTheory.PRep PositivityTheory.Rg.BcN.F2
 
 noncomputable section
@@ -507,3 +507,10 @@ theorem isolateAt : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace 
     exact h2.symm
 
 end GlobalTheory.CompanionTheory.Isolate
+end
+end
+
+open MeasureTheory GlobalTheory.SmGL GlobalTheory.PRep PositivityTheory.Rg.BcN.F2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isolate_representation_at_character : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (ι : Type) [Fintype ι] [DecidableEq ι], IsolateAt F ι := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Isolate.isolateAt

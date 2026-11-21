@@ -1,4 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicCoefficientSplitting
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
 
 namespace ReciprocityTheory.ChartRestriction.G.FD.OrthonormalPerpBasis

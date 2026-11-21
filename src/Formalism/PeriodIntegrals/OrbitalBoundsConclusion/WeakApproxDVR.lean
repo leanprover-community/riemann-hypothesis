@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.WeakApproxDVR
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeakApproximationDVR.Development
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeakApproximationDVR.BigExistenceHolds
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeakApproximationDVR.RhoProjectionAssembly

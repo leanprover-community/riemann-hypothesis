@@ -1,5 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.GenericUnlinkedGL.UnlinkedRealize
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
 open scoped TensorProduct
 
@@ -60,3 +63,10 @@ theorem sup_eq_of_isIrreducible_subQuot :
     exact hsub
 
 end GlobalTheory.CompanionTheory.GenCore
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sup_eq_of_irreducible_subquotient : ∀ {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) (A B E : Subrepresentation ρ), B ≤ A → (subQuot A B).IsIrreducible → E ≤ A → ¬ E ≤ B → E ⊔ B = A := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GenCore.sup_eq_of_isIrreducible_subQuot

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.ProfiniteCohomology.CupProducts
 import GroundTheory.ProfiniteCohomology.CupProducts.Functoriality
 import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Descent
 set_option maxSynthPendingDepth 1

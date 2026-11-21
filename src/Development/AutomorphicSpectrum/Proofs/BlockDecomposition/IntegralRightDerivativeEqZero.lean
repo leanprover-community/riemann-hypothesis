@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrderedCechToCatCochainsOneApplyValueAtSubset
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
 
+section
 noncomputable section
 
 open Matrix Finset MeasureTheory
@@ -99,3 +99,15 @@ theorem integral_Rd_skew : ∀ (n : ℕ) [MeasurableSpace (Matrix.unitaryGroup (
     exact integral_mul_right_eq_self (fun y : Matrix.unitaryGroup (Fin n) ℂ => u y.1) (kt t)
 
 end GlobalTheory.CompanionTheory.ModelS.SkewInt
+end
+end
+
+open Matrix Finset MeasureTheory
+open scoped ContDiff ComplexConjugate InnerProductSpace
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+open PositivityTheory.RgTw (Mat)
+open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_right_derivative_eq_zero : ∀ (n : ℕ) [MeasurableSpace (Matrix.unitaryGroup (Fin n) ℂ)] [BorelSpace (Matrix.unitaryGroup (Fin n) ℂ)] (κ : Measure (Matrix.unitaryGroup (Fin n) ℂ)) [IsFiniteMeasure κ] [κ.IsMulRightInvariant] (u : Mat n → ℂ), ContDiffOn ℝ ∞ u (GLs n) → ∀ X : Mat n, Xᴴ = -X → ∫ k : Matrix.unitaryGroup (Fin n) ℂ, Rd X u k.1 ∂κ = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ModelS.SkewInt.integral_Rd_skew

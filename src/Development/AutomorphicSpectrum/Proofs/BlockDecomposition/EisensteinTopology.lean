@@ -1,10 +1,10 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.IwasawaUnipotent.IwaU
-import Development.AbelianVarietyTheory.Definitions.Foundations.HermitianSpaceBaseLatticeEqFrameLattice
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeterssonAdjointHeckeOperatorEqDualLabel
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictsToQuadraticSignPowOfRestrictsToQuadrati
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SiegelParabolicUnnMatrixBlockUpperTriangular
 
+section
 open scoped NNReal Matrix TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont
 open PositivityTheory.RgEis ResidueKilled.Tr PositivityTheory.Rg.SwEis
@@ -206,3 +206,9 @@ theorem eTop : ETop := by
       exact e) s₀
 
 end GlobalTheory.CompanionTheory.SwEisTop
+end
+
+open PositivityTheory.Rg.SwEis
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eisenstein_topology : ETop := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SwEisTop.eTop

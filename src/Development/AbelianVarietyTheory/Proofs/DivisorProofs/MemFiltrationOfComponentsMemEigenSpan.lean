@@ -1,8 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.QuotientEigenDifference
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.MultiplicationKernelIdentity
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemAddValuationIntegerRingNormalizedIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SingleMemOfMem
+import BuildAid.ForwardExisting
+
+section
 open scoped NNReal
 open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
 
@@ -35,3 +37,10 @@ theorem mem_of_components : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (
   exact sum_mem fun s _ => F.smul_mem _ (hbx s)
 
 end GlobalTheory.Div.KerFil
+end
+
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_filtration_of_components_mem_eigenSpan : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) (F : Submodule w.valuationSubring (S → Fin N → C)), Function.Injective a → GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.IsFiltration a F → ∀ x ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N, (∀ s, x s ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F s) → x ∈ F := by
+  atlas_forward_decl GlobalTheory.Div.KerFil.mem_of_components

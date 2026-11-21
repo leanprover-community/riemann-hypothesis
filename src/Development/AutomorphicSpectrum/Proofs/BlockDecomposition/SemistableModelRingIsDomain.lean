@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.SemistableLocal
 
 open MvPolynomial in
@@ -95,3 +97,8 @@ theorem isDomain_quotient_prod_X_sub_C :
   exact Ideal.Quotient.isDomain _
 
 end GlobalTheory.CompanionTheory.SemistableLocal
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.semistable_model_ring_isDomain : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ϖ : O), Irreducible ϖ → ∀ (m r : ℕ), 1 ≤ r → r ≤ m → IsDomain (MvPolynomial (Fin m) O ⧸ Ideal.span {(∏ i ∈ Finset.univ.filter (fun i : Fin m => (i : ℕ) < r), MvPolynomial.X i) - MvPolynomial.C ϖ}) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SemistableLocal.isDomain_quotient_prod_X_sub_C

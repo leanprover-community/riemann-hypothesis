@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantEqualityStatement
+import BuildAid.ForwardExisting
 
+section
 open Finset
 
 namespace GlobalTheory.CompanionTheory.HeckeCapelli
@@ -46,3 +48,8 @@ theorem omMinor : OmMinor := by
     simp [smul_sum, smul_comm x]
 
 end GlobalTheory.CompanionTheory.HeckeCapelli
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.OmegaMinor : CompanionTheory.RgExh.Hk.OmMinor := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeckeCapelli.omMinor

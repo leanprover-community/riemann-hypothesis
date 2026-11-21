@@ -1,4 +1,6 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinStable
+
+section
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
@@ -19,3 +21,12 @@ theorem absFn_tendsto_one : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyC
   simpa [hL] using h0
 
 end GlobalTheory.CompanionTheory.LimV
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tendsto_absolute_character_one : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ) (x : GA E N) (w : ℕ → ℂ), Tendsto w atTop (𝓝 0) → Tendsto (fun k => absFn N (w k) x) atTop (𝓝 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.absFn_tendsto_one

@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIdTorusEltOne
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdelicFrameTorusElementMatrixEqStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviElementPreservesWittColumnSpanStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WittFrameEigenvectorColumnFormStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdelicFrameTorusElementMatrixEq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviElementPreservesWittColumnSpan
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WittFrameEigenvectorColumnForm
+
 open NumberField Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.UAut GlobalTheory.StdPar GlobalTheory.IdTorus
 open Formalism.UG (cT)
 open GlobalTheory.Doubling (absE conjUnit)

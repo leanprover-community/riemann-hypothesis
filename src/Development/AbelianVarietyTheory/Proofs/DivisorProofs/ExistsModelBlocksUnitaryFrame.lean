@@ -1,15 +1,13 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MajINonneg
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm
-import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
-import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRationalDarbouxHermitianTensorAdeles
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdelicSchwartzThetaDistributionSumNeZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DarbouxCoordsGoodModelStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilEigenSchwartzSurjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymplecticBasisOfUnitaryFrameStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymplecticBasisOfUnitaryFrame
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymplecticBlockBasisOrthogonalStatement
 
+section
 noncomputable section
 
 open scoped TensorProduct NNReal Matrix
@@ -82,3 +80,16 @@ theorem exists_frame_model : GlobalTheory.ThK.KP → ∀ (F E : Type) [Field F] 
 end GlobalTheory.ThKFrameModel
 
 end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.ThKSoDecay GlobalTheory.ThKTorus
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_model_blocks_unitary_frame : GlobalTheory.ThK.KP → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
+    (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (χX χW : Chr F E) (om : Rep σ X W) (r s r' s' : ℕ),
+    IsPair B M χX χW om r s r' s' → ∀ (q : ℕ) (x y : Fin q → Fin n → E), IsFrameU σ X.J x y →
+    ∃ (M₁ : Model σ X W) (blk : Fin q → Finset (Fin n × Fin d)) (e : Fn F n d →ₗ[ℂ] Fn F n d) (c : ℂ),
+      M₁.IsGood B.ψ ∧ IsFrameCo σ X.J W.J x y M₁.co blk ∧ IsEv B M M₁ 1 1 ∅ e ∧ c ≠ 0 ∧
+      ∀ Φ ∈ schA F (Fin n × Fin d), thetaSum F (e Φ) = c * thetaSum F Φ := by
+  atlas_forward_decl GlobalTheory.ThKFrameModel.exists_frame_model

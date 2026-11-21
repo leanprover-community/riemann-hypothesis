@@ -3,7 +3,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.Period
 import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.MomTie
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AmpOrbClosed
 import Formalism.SharpRestriction.CuspSpanNormBounds.HCFiniteKMultiplicityGapped
-import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeGapDS
 
 set_option linter.unusedVariables false
 

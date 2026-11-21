@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.FglGram
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSubstitutionIntegral.Assemble
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSubstitutionIntegral.Expand
 

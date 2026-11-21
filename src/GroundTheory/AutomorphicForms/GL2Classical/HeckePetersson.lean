@@ -1,7 +1,6 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.GL2Classical.HeckeOperator
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Unimodular
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
 
 open NumberField IsDedekindDomain Matrix MeasureTheory CongruenceSubgroup ComplexConjugate
 open UpperHalfPlane hiding I I_re I_im

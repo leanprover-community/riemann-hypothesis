@@ -1,8 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
-import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.DifferentialBoundedSupport
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CanonicalAnticommutationRelationsConsequenceStatement
+import BuildAid.ForwardExisting
 
+section
 open Finset CompanionTheory.RgExh CompanionTheory.RgExh.U
 open CompanionTheory.D.LK (Pos Cn ann cre lift bd om cpt allT LocFin)
 open Formalism.REAL (GlRel KHighest IsWeight)
@@ -310,3 +311,16 @@ theorem GlobalTheory.CompanionTheory.LeviChain.lF_bd_comm : ∀ (n : ℕ) (lev :
     (fun a b => glRel_LT hE p q a b)
   rw [bd_eq E hx', lF_eq hm E hpq (Dl_mem E hx'), lF_eq hm E hpq hx', bd_eq E (Th_mem E p q hx')]
   exact LinearMap.congr_fun hc.eq x
+end
+end
+
+open Finset CompanionTheory.RgExh CompanionTheory.RgExh.U
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd om cpt allT LocFin)
+open Formalism.REAL (GlRel KHighest IsWeight)
+open CompanionTheory.D.DSIC (KUnit)
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_action_commutes_with_boundary : ∀ (n : ℕ) (lev : Fin n → ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V),
+    Monotone lev → GlRel E → ∀ p q : Fin n, lev p = lev q → ∀ x : Cn n V, SuppIn (inU lev) x →
+      lF E p q (bd (allT n) E x) = bd (allT n) E (lF E p q x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LeviChain.lF_bd_comm

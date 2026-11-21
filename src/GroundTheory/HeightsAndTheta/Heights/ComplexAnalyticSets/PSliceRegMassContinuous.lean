@@ -6,8 +6,6 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSheetFormCompa
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceIdeal
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceCutChain
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffDominated
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.GraphChartEventuallyEqSheet
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.LogIntegrableOnOfLogIntegrable
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights

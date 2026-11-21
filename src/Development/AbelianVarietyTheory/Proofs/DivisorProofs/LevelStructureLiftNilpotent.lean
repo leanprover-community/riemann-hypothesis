@@ -1,12 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HilbertKodairaSpencer
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDetGen
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCompletionPointClosedPointMemOfSmooth
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.FiniteLocalLifts.SmLift
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftTorsionPointNilpotentStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelStructureDescendsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftTorsionPointNilpotent
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelStructureDescends
 
+section
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj NumberField
@@ -47,3 +44,15 @@ theorem level_lift : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] 
   exact GlobalTheory.T.level_structure_descends h (fun Ω _ _ t => exists_factor_of_nil π hπ Ω t) α₀ q hq1 hq2
 
 end GlobalTheory.RealMult.LevelLift
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_structure_lift_nilpotent : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (𝔠 : FracId F) (N : ℕ), 1 ≤ N →
+    ∀ (R : Type) [CommRing R] [Algebra ℂ R] (π : R →ₐ[ℂ] ℂ), (∀ x ∈ RingHom.ker π, IsNilpotent x) →
+    ∀ (X' : Obj F 𝔠 (Sp R)) (X₀ : Obj F 𝔠 (Sp ℂ)) (i : X₀.A.left ⟶ X'.A.left),
+      X₀.IsPullBy X' (spMap (π : R →+* ℂ)) i → X₀.Level N → Nonempty (X'.Level N) := by
+  atlas_forward_decl GlobalTheory.RealMult.LevelLift.level_lift

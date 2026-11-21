@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OmegaFactorization
+import BuildAid.ForwardExisting
+
+section
 open NumberField Complex
 open scoped nonZeroDivisors
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization
@@ -41,3 +44,11 @@ theorem card_le_absNorm_of_forall_le : ∀ (F : Type) [Field F] [NumberField F] 
   exact h1
 
 end GlobalTheory
+end
+
+open NumberField Complex
+open scoped nonZeroDivisors
+open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_divisors_le_absNorm_numberField : ∀ (F : Type) [Field F] [NumberField F] (I : Ideal (𝓞 F)), I ≠ ⊥ → ∀ s : Finset (Ideal (𝓞 F)), (∀ J ∈ s, I ≤ J) → s.card ≤ Ideal.absNorm I := by
+  atlas_forward_decl GlobalTheory.card_le_absNorm_of_forall_le

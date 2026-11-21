@@ -1,6 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsRigFr
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBilRatio
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsRatioSer
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MixW
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField

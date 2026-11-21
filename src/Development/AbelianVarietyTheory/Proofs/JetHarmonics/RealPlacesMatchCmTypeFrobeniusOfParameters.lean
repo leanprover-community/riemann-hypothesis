@@ -1,12 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
 import Development.AbelianVarietyTheory.Definitions.Jets.CmQuadraticFormEqAlternatingForm
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConjCmHostRootNeSelf
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.RealPlaceLabelBijectiveCardEqF
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NotDvdDiscrHost
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ComapLiesOver
 
+section
 set_option autoImplicit false
 
 namespace GlobalTheory.GoodDepth
@@ -37,3 +37,9 @@ theorem placeTie_of_pins : ∀ (D : D7) (L : SizeData₂ D) (T : Core D), T.Q.Pi
     exact GlobalTheory.FrobPlace.frob_place D L T.Q.H _ T.Q.c la hla z x
 
 end GlobalTheory.GoodDepth
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.DIV Formalism.L2.Pj Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.L2.FormalSeriesBounds GlobalTheory.GoodDepth GlobalTheory.RunDepth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realPlaces_match_cmTypeFrobenius : ∀ (D : D7) (L : SizeData₂ D) (T : Core D), T.Q.Pins → PlaceTie (numOf D L) T.Q.c (fun z => DV.tauEmb D (plOf D z)) := by
+  atlas_forward_decl GlobalTheory.GoodDepth.placeTie_of_pins

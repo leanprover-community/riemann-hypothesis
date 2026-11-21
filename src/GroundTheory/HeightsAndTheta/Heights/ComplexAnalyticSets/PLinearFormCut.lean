@@ -1,6 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsConeAvoid
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHomogDimZeroPow
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLinearFormCut
 set_option maxSynthPendingDepth 1

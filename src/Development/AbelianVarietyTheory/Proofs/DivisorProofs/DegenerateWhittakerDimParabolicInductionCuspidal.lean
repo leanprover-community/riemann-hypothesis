@@ -1,11 +1,11 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.SplitDoublingNBlock
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsColReduced
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankEigenCoindMackeyDoubleCosetsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoindEigenEqBotOfRootInUnipotentRadicalStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoindEigenEqBotOfBlockCutCuspidalStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoindEigenSortingPermEqLeviWhittakerStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankEigenCoindMackeyDoubleCosets
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoindEigenEqBotOfRootInUnipotentRadical
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoindEigenEqBotOfBlockCutCuspidal
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoindEigenSortingPermEqLeviWhittaker
 
+section
 noncomputable section
 
 namespace GlobalTheory.FinGL.WhCutInd
@@ -246,3 +246,10 @@ theorem degenerateWhittakerDim_parabolicInduction (F : Type) [Field F] [Fintype 
       exact Or.inr ⟨pm F w, ⟨p, hp, u, hu, e⟩, GlobalTheory.T.coindEigen_eq_bot_of_root_in_unipotent_radical F ψ r V b σ hσ j w _ (pm_conj _ _) hψ a c hac h⟩
 
 end GlobalTheory.FinGL.WhCutInd
+end
+end
+
+open GlobalTheory.FinGL Formalism.L2.DIV Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.degenerateWhittakerDim_parabolicInduction_cuspidal : ∀ (F : Type) [Field F] [Fintype F] (ψ : AddChar F ℂ), ψ ≠ 1 → ∀ (r : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (b : Fin r → ℕ) (σ : Representation ℂ (blockTri (κ := F) b) V), IsCuspDatum b σ → ∀ j : ℕ, j < r ∨ j = 0 → whCut ψ (parInd b σ) j = splitDoublingNBlock b j * leviWh ψ b σ := by
+  atlas_forward_decl GlobalTheory.FinGL.WhCutInd.degenerateWhittakerDim_parabolicInduction

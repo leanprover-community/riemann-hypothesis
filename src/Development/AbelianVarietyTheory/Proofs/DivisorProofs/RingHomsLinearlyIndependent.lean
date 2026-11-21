@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SandwichMaps
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
 
 namespace GlobalTheory
@@ -25,3 +28,9 @@ theorem ringHom_independent_via_algebraMap :
   simpa [φ, Finset.sum_apply] using hsum a
 
 end GlobalTheory
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ring_homs_linearly_independent : ∀ (C : Type) [Field C] (O : Type) [CommRing O] [Algebra O C] (Λ : Type) [CommRing Λ], Function.Injective (algebraMap O C) → ∀ (S : Finset (Λ →+* O)) (c : (Λ →+* O) → C), (∀ a : Λ, ∑ σ ∈ S, c σ * algebraMap O C (σ a) = 0) → ∀ σ ∈ S, c σ = 0 := by
+  atlas_forward_decl GlobalTheory.ringHom_independent_via_algebraMap

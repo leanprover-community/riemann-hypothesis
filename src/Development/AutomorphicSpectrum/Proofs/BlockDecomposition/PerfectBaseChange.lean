@@ -3,6 +3,7 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.CubeThe
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsProjOverOfIsProjOverBase
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CubeTheorem
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -154,3 +155,10 @@ theorem perf_pull {R₀ R : Type} [CommRing R₀] [CommRing R] (φ : R₀ →+* 
       exact ⟨v, by rw [hD₀]; exact hv⟩ }⟩
 
 end GlobalTheory.CompanionTheory.PerfBase
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.AbLaw GlobalTheory.SpreadingModels
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.perfect_base_change : ∀ {R₀ R : Type} [CommRing R₀] [CommRing R] (φ : R₀ →+* R) {Y₀ Y : Scheme.{0}} (f₀ : Y₀ ⟶ Spec (CommRingCat.of R₀)) (f : Y ⟶ Spec (CommRingCat.of R)) (π : Y ⟶ Y₀), IsPullback π f f₀ (Spec.map (CommRingCat.ofHom φ)) → ∀ (M₀ : LB Y₀), M₀.IsLB → Perf f₀ M₀ → Nonempty (Perf f (M₀.pull π)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PerfBase.perf_pull

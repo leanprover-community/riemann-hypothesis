@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAlgebraMapSubEqSumConjugatesStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConjPlacesOfSamePrimeBelowStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrtApproxIntegralStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAlgebraMapSubEqSumConjugates
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConjPlacesOfSamePrimeBelow
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrtApproxIntegral
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne
@@ -114,3 +114,10 @@ theorem exists_base_near_of_dec_fixed : ∀ (E Ω : Type) [Field E] [NumberField
   exact Valuation.map_add_lt _ (Valuation.map_sum_lt _ hrv hsum) hyz
 
 end GlobalTheory
+end
+end
+
+open NumberField IsDedekindDomain Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_base_near_of_decomposition_fixed : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (z : Ω), (∀ d ∈ Dec (F := E) A, d z = z) → ∀ r : Ω, r ≠ 0 → ∃ e : E, A.valuation (algebraMap E Ω e - z) < A.valuation r := by
+  atlas_forward_decl GlobalTheory.exists_base_near_of_dec_fixed

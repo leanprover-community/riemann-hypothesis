@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.WeilQuotMeas
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientMeasure.StepBruhat
 
 noncomputable section

@@ -10,6 +10,7 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfIsCr
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OfShortExact
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamSubrepQuotientAndStrictness
 
+section
 noncomputable section
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Module TensorProduct
@@ -651,3 +652,10 @@ theorem bkADim_and_bkARightExact : ∀ D : D7, LocalSituation.adm5 D → LocalSi
     bkARightExact_of_core (D.locT l) K h1 (h5 l K) (h6 l K)⟩
 
 end GlobalTheory.CompanionTheory.BKDim
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Module TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blochKato_dimension_rightExact : ∀ D : D7, LocalSituation.adm5 D → LocalSituation.adm6 D → LocalSituation.adm7 D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l), LocalSituation.bkADim ((D.loc l).PD K) ∧ LocalSituation.bkARightExact ((D.loc l).PD K) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BKDim.bkADim_and_bkARightExact

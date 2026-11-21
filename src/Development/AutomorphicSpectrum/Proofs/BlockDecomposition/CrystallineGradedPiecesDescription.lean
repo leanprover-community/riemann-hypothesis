@@ -1,9 +1,10 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.ConstantCoeffSurjective
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.GaloisTwistIdentitySection
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CrystallineFiltrationSpanDividedPowers
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PerfectoidXiNonZeroDivisorStatement
+import BuildAid.ForwardExisting
 
+section
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -183,3 +184,11 @@ theorem crystalline_filtration_graded_pieces : ∀ {l : ℕ} [Fact l.Prime] (A :
     fun z hz => filtration_element_power_multiple_xi A r hz⟩
 
 end GlobalTheory.CompanionTheory.PerfFil
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.crystalline_graded_pieces_description : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l) (r : ℕ), (∀ z ∈ A.Fil0 r, ∃ w : A.W, z - algebraMap A.W A.Acr0 w * A.dxi0 r ∈ A.Fil0 (r + 1)) ∧ (∀ w : A.W, algebraMap A.W A.Acr0 w * A.dxi0 r ∈ A.Fil0 (r + 1) ↔ w ∈ Ideal.span {A.xi}) ∧ ∀ z ∈ A.Fil0 r, ∃ (N : ℕ) (w : A.W), (l : A.Acr0) ^ N * z = algebraMap A.W A.Acr0 (A.xi ^ r * w) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PerfFil.crystalline_filtration_graded_pieces

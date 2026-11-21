@@ -1,10 +1,11 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.QLocTied
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HostPins
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsUnrM
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsNrm
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAddHaarCompletionIntegralMatricesVolOne
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DoubleCosetMeasures Formalism.L2.Host Formalism.L2.DIV Formalism.L2.DIV.QLoc GlobalTheory.Mem.HD
 
 namespace GlobalTheory.ParahoricTopo
@@ -64,3 +65,9 @@ theorem isOpen_isCompact_parJ : ∀ (L : Type) [Field L] [NumberField L] (P : He
   exact ⟨GlobalTheory.SplitFlip.isOpen_KO.inter hBc.isOpen, GlobalTheory.SplitFlip.isCompact_KO.inter_right hBc.isClosed⟩
 
 end GlobalTheory.ParahoricTopo
+end
+
+open MeasureTheory Matrix NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DoubleCosetMeasures Formalism.L2.Host Formalism.L2.DIV Formalism.L2.DIV.QLoc GlobalTheory.Mem.HD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpen_isCompact_parahoric_GL_completion : ∀ (L : Type) [Field L] [NumberField L] (P : HeightOneSpectrum (𝓞 L)) (r c : ℕ), IsOpen (parJ (OP P) (piP P : P.adicCompletion L) r c) ∧ IsCompact (parJ (OP P) (piP P : P.adicCompletion L) r c) := by
+  atlas_forward_decl GlobalTheory.ParahoricTopo.isOpen_isCompact_parJ

@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
 import ReciprocityTheory.SemistableReduction.ExistsDualDerivations
 
 namespace ReciprocityTheory.MultiplicativeHeights

@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DifferentiableOnStarStar
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
 
@@ -289,3 +292,11 @@ theorem exists_famExp_of_conj : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [G
   fun _ _ _ _ _ _ _ _ _ e' => ⟨famExpOfConj e', mem_per_famExpOfConj e'⟩
 
 end GlobalTheory.CompanionTheory.Ar.Flat.ConjExp
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.family_exponential_conjugate : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] (g n : ℕ) (M : LieModel G (𝟙 (Sp R)) (Fin g → R)) (ρ : ℝ) (ψ : (Fin n → ℂ) → (R →+* ℂ)) (e' : Flat.FamExp G M (Metric.ball 0 ρ) (Flat.Conj.conjPts ψ)), ∃ e : Flat.FamExp G M (Metric.ball 0 ρ) ψ, ∀ b p, p ∈ e.per b ↔ star p ∈ e'.per (star b) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.ConjExp.exists_famExp_of_conj

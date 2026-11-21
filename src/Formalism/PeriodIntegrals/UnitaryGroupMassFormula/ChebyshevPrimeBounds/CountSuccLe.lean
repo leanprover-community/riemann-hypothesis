@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.PrimeCount
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChebyshevPrimeBounds.PrimeCountBoundOf
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChebyshevPrimeBounds.SmallLoop
 

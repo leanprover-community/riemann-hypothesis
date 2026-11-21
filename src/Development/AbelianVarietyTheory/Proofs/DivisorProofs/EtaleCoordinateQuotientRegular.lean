@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsRegularRingOfSmooth
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsWeaklyRegularMapCAppendMapLinForm
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial TensorProduct
 
 namespace GlobalTheory
@@ -28,3 +30,7 @@ theorem isRegularRing_quotient_etaleCoordinate : ∀ (p : ℕ) [Fact p.Prime] (A
   exact IsRegularRing.of_ringEquiv e.symm
 
 end GlobalTheory
+end
+
+theorem _root_.GlobalTheory.T.etale_coordinate_quotient_regular : ∀ (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A] [Algebra (ZMod p) A] {n : ℕ} (t : Fin n → A), (MvPolynomial.aeval (R := ZMod p) t).toRingHom.Etale → ∀ j : Fin n, IsRegularRing (A ⧸ Ideal.span {t j}) := by
+  atlas_forward_decl _root_.GlobalTheory.isRegularRing_quotient_etaleCoordinate

@@ -1,6 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.Direct
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
+import BuildAid.ForwardExisting
 
+section
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf Formalism.L2.SG.PoincareInHH.PoincareSetting GlobalTheory.CovDom
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -74,3 +75,11 @@ theorem GlobalTheory.CovDom.herm_selfDual : ∀ (D : D7) (X : HidaSetting D), Fo
       rw [hform v w] at hw
       obtain ⟨a, ha⟩ := hw
       exact Submodule.mem_one.mpr ⟨a, ha⟩
+end
+
+open scoped Classical ENNReal
+open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf Formalism.L2.SG.PoincareInHH.PoincareSetting GlobalTheory.CovDom
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.concrete_gram_hermitian_nondegenerate_lattice_selfDual : ∀ (D : D7) (X : HidaSetting D), Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsHermND D.sp.cm.sig (Jc X) ∧ GlobalTheory.SgGlob.SelfDual (D.sp.cm.sig : D.host.E →+* D.host.E) (Jc X) (Lc X) := by
+  atlas_forward_decl GlobalTheory.CovDom.herm_selfDual

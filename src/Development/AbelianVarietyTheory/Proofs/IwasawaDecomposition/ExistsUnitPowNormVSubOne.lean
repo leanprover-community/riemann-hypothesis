@@ -2,6 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host GlobalTheory.HeckeGal
 
 noncomputable section
@@ -67,3 +70,12 @@ theorem exists_unit_pow_normV_sub_one (E : Type) [Field E] [NumberField E] (v : 
   exact congrArg Subtype.val hrn
 
 end GlobalTheory.OneUnitRoot
+end
+end
+
+open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_pow_normV_sub_one' : ∀ (E : Type) [Field E] [NumberField E] (v : HeightOneSpectrum (𝓞 E)) (y : (v.adicCompletion E)ˣ),
+    Valued.v ((y : v.adicCompletion E) - 1) < 1 →
+    ∃ z : (v.adicCompletion E)ˣ, Valued.v (z : v.adicCompletion E) = 1 ∧ z ^ (normV v - 1) = y := by
+  atlas_forward_decl GlobalTheory.OneUnitRoot.exists_unit_pow_normV_sub_one

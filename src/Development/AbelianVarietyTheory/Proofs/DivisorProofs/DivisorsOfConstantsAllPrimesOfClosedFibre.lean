@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DivConstClosedPts
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsIntClosedLocalizationAndQuotient
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing Polynomial
 
 namespace GlobalTheory.VertUnits
@@ -110,3 +113,9 @@ theorem divConstAll_of_divConstLocal : DivConstLocal → DivConstAll := by
     IsScalarTower.algebraMap_apply T T' O u, ← map_mul, IsLocalization.mk'_spec]
 
 end GlobalTheory.VertUnits
+end
+
+open IsLocalRing Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.divisorsOfConstantsAllPrimes_of_closedFibre : GlobalTheory.VertUnits.DivConstLocal → GlobalTheory.VertUnits.DivConstAll := by
+  atlas_forward_decl GlobalTheory.VertUnits.divConstAll_of_divConstLocal

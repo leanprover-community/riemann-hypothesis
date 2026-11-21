@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.GradedWeylDivisibility TensorProduct
 
 noncomputable section
@@ -161,3 +163,10 @@ theorem resHw_holds : ResHw := by
   rfl
 
 end GlobalTheory.LeviCut
+end
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualWeyl_highest_weight_restriction_blockDiagonal : GlobalTheory.LeviCut.ResHw := by
+  atlas_forward_decl GlobalTheory.LeviCut.resHw_holds

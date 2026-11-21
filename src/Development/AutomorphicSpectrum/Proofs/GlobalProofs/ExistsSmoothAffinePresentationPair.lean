@@ -1,7 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.EffCartierIffForallCartAt
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocPrincipalSpan
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
 
@@ -30,3 +32,10 @@ theorem smooth_affine_chart {k : Type} [Field k] {X : Scheme.{0}} (g : X ⟶ Sp 
     exact (HasRingHomProperty.Spec_iff (P := @Smooth)).mp this
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.Charts
+end
+
+open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_smooth_affine_presentation_pair : ∀ {k : Type} [Field k] {X : Scheme.{0}} (g : X ⟶ Sp k) (Z : X.IdealSheafData) (U : X.affineOpens), Smooth g → Smooth (Z.subschemeι ≫ g) → ∃ φ : k →+* Γ(X, U.1), φ.Smooth ∧ ((Ideal.Quotient.mk (Z.ideal U)).comp φ).Smooth := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.Charts.smooth_affine_chart

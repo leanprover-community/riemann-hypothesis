@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellDef
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellInv
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellBru
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellMono

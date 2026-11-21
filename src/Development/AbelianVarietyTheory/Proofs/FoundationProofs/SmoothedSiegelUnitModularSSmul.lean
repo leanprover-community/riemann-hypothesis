@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.Imports
-import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedThetaQProductModularSTransformStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedThetaQProductModularSTransform
+
+section
 open scoped UpperHalfPlane MatrixGroups Manifold
 open GlobalTheory.Sieg GlobalTheory.QFam
 
@@ -50,3 +51,10 @@ theorem sg_S : ∀ (c : ℕ) (x : Fin 2 → ℚ) (τ : ℍ), admitted c x →
   exact GlobalTheory.T.smoothedThetaQProduct_modularS_transform c τ z hc hc6 hnot
 
 end GlobalTheory.Sieg
+end
+
+open scoped UpperHalfPlane MatrixGroups Manifold
+open GlobalTheory.Sieg GlobalTheory.QFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smoothedSiegelUnit_modularS_smul : ∀ (c : ℕ) (x : Fin 2 → ℚ) (τ : ℍ), admitted c x → sg c x (ModularGroup.S • τ) = sg c (act x ModularGroup.S) τ := by
+  atlas_forward_decl GlobalTheory.Sieg.sg_S

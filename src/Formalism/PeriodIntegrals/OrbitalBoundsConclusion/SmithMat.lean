@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.SmithMat
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SmithNormalForm.ExistsMoveRow
 
 theorem smith_normal_form_theory.{u} : PI.SmithMat.{u} := by

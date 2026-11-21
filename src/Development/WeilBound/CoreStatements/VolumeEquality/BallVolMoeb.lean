@@ -1,7 +1,8 @@
 import Development.WeilBound.CoreStatements.VolumeEquality.BallVolDefs
 import Development.WeilBound.CoreStatements.EqualVolumeCompactOpens.Master
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusHolomorphicPotentialChangeStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusMulStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusHolomorphicPotentialChange
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusMul
 
 noncomputable section
 

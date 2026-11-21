@@ -9,7 +9,6 @@ import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleProductPo
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPointDegreePos
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCutMultPos
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PClaimSeq
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PZeroIdealChart
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepTwoFilt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationExists
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepTwoReduce
@@ -19,12 +18,9 @@ import Development.WeilBound.CoreStatements.HodgeTatePoints.FullOfCharts
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PRestrictQuotX
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTwistSplit
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepThreeOnWLift
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepThreeOnWGen
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PRestrictGenerated
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Assembly
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPointGenerated
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDrop
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCount
 import Development.WeilBound.CoreStatements.HodgeTatePoints.A36
 
 namespace PositivityTheory.HtPt.Ktw

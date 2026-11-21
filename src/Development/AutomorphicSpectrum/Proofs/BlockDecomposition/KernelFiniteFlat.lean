@@ -1,8 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZarhinDualPolarisation.FlatFiniteFibres.FlatOfFibresFinite
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HasChartsOfForallIsAffineOpen
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -121,3 +121,9 @@ theorem kernelFinFlat : PositivityTheory.Tls2.Zar3.Ch1.KernelFinFlat := by
     exact ⟨χ, by rw [hχ, inv_mul_cancel]⟩
 
 end GlobalTheory.CompanionTheory.Ar.KerFF
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernel_finite_flat : PositivityTheory.Tls2.Zar3.Ch1.KernelFinFlat := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.KerFF.kernelFinFlat

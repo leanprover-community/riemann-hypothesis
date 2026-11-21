@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.WaveSt
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuotientIntegrationFormulaDiscreteSubgroupLeft
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Matrix
 open scoped NNReal
 
@@ -183,3 +185,8 @@ theorem unimod : PositivityTheory.RgBcC.Unimod := by
   exact ⟨hR, GlobalTheory.QuotDiscrete.isInvInvariant_of_isMulRightInvariant μ⟩
 
 end GlobalTheory.CompanionTheory.GLUnimod
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.general_linear_group_unimodular : PositivityTheory.RgBcC.Unimod := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GLUnimod.unimod

@@ -7,6 +7,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KappaConstantMulOfC
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSupportOfStTw2NeZero
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemProdOfMemTsupport
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
@@ -451,3 +452,9 @@ theorem g2c : EllLocal → KapOrbAE → ChWMap → GlobalComplexCoefficients := 
 end GlobalTheory.CompanionTheory.resultantFactorHypotheses
 
 end
+end
+
+open NumberField IsDedekindDomain Polynomial GlobalTheory.BCT PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.G2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.globalComplexCoefficients_of_local_orbit_character : EllLocal → KapOrbAE → ChWMap → GlobalComplexCoefficients := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.resultantFactorHypotheses.g2c

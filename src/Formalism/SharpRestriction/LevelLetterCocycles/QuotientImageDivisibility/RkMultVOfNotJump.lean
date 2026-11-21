@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.WeaklyAdmissibleFiltrations.Statement
 import Formalism.WeaklyAdmissibleFiltrations.CrystallineStableLifts.Window
 
 noncomputable section

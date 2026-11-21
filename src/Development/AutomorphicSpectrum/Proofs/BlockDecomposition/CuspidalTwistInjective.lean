@@ -2,7 +2,9 @@ import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.FineJacquetModules.SegDefs
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SegmentRepresentation
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg Matrix
@@ -142,3 +144,10 @@ theorem nu_natCast_inj : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalS
   exact_mod_cast sub_eq_zero.1 h3
 
 end GlobalTheory.CompanionTheory.SegNu
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidal_twist_injective : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (x : IrrGL k) (hx : x.IsCusp) (a b : ℕ) (h : x.nu (a : ℂ) = x.nu (b : ℂ)), a = b := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SegNu.nu_natCast_inj

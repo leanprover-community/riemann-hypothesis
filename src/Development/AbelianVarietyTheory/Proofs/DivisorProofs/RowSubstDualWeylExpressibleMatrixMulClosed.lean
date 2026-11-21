@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowSubst
+
+section
 open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
 
 set_option autoImplicit false
@@ -47,3 +49,10 @@ theorem expr_mul (O : Type) [CommRing O] (N : ℕ) (ν : Fin N → ℕ) (R : Typ
   rw [smul_smul, Module.End.mul_apply]
 
 end GlobalTheory.GenCoef
+end
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowSubstDualWeylExpressible_matrix_mul_closed : ∀ (O : Type) [CommRing O] (N : ℕ) (ν : Fin N → ℕ) (R : Type) [CommRing R] [Algebra O R] (Y Y' : Matrix (Fin N) (Fin N) R), Expr O N ν R Y → Expr O N ν R Y' → Expr O N ν R (Y * Y') := by
+  atlas_forward_decl GlobalTheory.GenCoef.expr_mul

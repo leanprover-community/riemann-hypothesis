@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.GoodXgFin
+import BuildAid.ForwardExisting
+
+section
 open Formalism.L2.DIV
 
 namespace GlobalTheory
@@ -51,3 +54,9 @@ theorem absIrrChar_mem_closure_primitiveRoot {G : Type} [Group G] [Fintype G] {K
   exact hy
 
 end GlobalTheory
+end
+
+open Formalism.L2.DIV
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absIrrChar_mem_closure_primitiveRoot_card : ∀ {G : Type} [inst : Group G] [inst_1 : Fintype G] {K : Type} [inst_2 : Field K] [inst_3 : CharZero K] (z : K), IsPrimitiveRoot z (Fintype.card G) → ∀ (χ : G → K), IsAbsIrrChar χ → ∀ g : G, χ g ∈ Subring.closure ({z} : Set K) := by
+  atlas_forward_decl GlobalTheory.absIrrChar_mem_closure_primitiveRoot

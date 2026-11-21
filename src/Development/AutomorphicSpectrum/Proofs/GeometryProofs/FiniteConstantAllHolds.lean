@@ -1,11 +1,12 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.FinConstFor
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProperNormalCompactificationStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HermitianSignatureBasisStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProperNormalCompactification
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HermitianSignatureBasis
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLinePAdicBoundStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeLatticeValuationAgreeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLinePAdicFrameStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeLatticeValuationAgree
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLinePAdicFrame
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat.FinAll
@@ -195,3 +196,9 @@ theorem finConstAll : FinConstAll := by
     (hwsp.trans heig') hu hM hord hκ' hrep hline
 
 end GlobalTheory.CompanionTheory.Ar.Flat.FinAll
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_constant_all_holds : GlobalTheory.CompanionTheory.Ar.Flat.FinConstAll := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.FinAll.finConstAll

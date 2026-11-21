@@ -1,4 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.NormLineSectionPow
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.PolyL2EqSqrtCoeffSum
 
 namespace ReciprocityTheory.ChartRestriction.G.T0

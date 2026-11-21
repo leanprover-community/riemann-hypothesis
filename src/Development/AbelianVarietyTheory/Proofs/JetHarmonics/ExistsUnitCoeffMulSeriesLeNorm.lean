@@ -4,10 +4,11 @@ import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsNumerator
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpSeriesCoeffNormBoundedRingLaws
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpTransportedTaylorSeriesInChartRingHomLaws
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormLeOfDistinct
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UwEllipticFlow
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralWeierstrassChartXyUnitSeries
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MulPowTwoLeTripleProdOfGe
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 open PowerSeries GlobalTheory.MomOne
 open scoped ComplexConjugate BigOperators Topology
@@ -409,3 +410,11 @@ theorem exists_unit_coeff : ∀ (q : ℕ) [Fact q.Prime] (M : Mdl q) (ℓ : ℂ_
   exact (hAD _ (hβP 0 (by omega))).1 (by simp [hD0])
 
 end GlobalTheory.MomOne.MulDegree
+end
+end
+
+open PowerSeries GlobalTheory.MomOne
+open scoped ComplexConjugate BigOperators Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_coeff_mul_series_le_norm : ∀ (q : ℕ) [Fact q.Prime] (M : Mdl q) (ℓ : ℂ_[q]⟦X⟧) (β : ℂ) (N : ℕ), M.Chart ℓ → β ≠ 0 → (∀ l ∈ M.L.lattice, β * l ∈ M.L.lattice) → (N : ℂ) = β * conj β → Bd 1 (hat M.ι ℓ (fun z => M.u (β * z))) → ∃ n ≤ N, ‖coeff n (hat M.ι ℓ (fun z => M.u (β * z)))‖ = 1 := by
+  atlas_forward_decl GlobalTheory.MomOne.MulDegree.exists_unit_coeff

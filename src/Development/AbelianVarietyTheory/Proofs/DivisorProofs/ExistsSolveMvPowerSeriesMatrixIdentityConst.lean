@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDerApply
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfForallMemFilt
+
+section
 open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
 
 namespace GlobalTheory
@@ -24,3 +25,9 @@ theorem powerSeries_matrix_solve : ∀ (n : ℕ) (R : Type) [CommRing R] (J : Fi
   exact Finset.sum_congr rfl (fun j _ => mul_comm _ _)
 
 end GlobalTheory
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_solve_mvPowerSeries_matrix_identity_const : ∀ (n : ℕ) (R : Type) [CommRing R] (J : Fin n → Fin n → MvPowerSeries (Fin n) R), (∀ i j, MvPowerSeries.constantCoeff (J i j) = if i = j then 1 else 0) → ∀ b : Fin n → MvPowerSeries (Fin n) R, ∃ G : Fin n → MvPowerSeries (Fin n) R, ∀ i, ∑ j, G j * J i j = b i := by
+  atlas_forward_decl GlobalTheory.powerSeries_matrix_solve

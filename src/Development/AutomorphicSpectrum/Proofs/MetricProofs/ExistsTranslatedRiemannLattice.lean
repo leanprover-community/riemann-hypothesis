@@ -2,10 +2,11 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
-import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Assembly
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
 import GroundTheory.HeightsAndTheta.Theta.CMDatum
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Rotate
@@ -302,3 +303,13 @@ theorem rotate_exists (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : T
 end Rot
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Rotate
+end
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_translated_riemann_lattice : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (R : RiemLat E g Λ) (a ai : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ), R.form = F.form → (∀ τ, a τ * ai τ = 1) → (∀ τ, (a τ)ᴴ * C.gr τ * a τ = C.gr τ) → ∃ R' : RiemLat E g Λ, R'.form = R.form ∧ R'.B = R.B ∧ (∀ x, R'.P x = C.perExt R fun τ => ai τ *ᵥ C.vec x τ) ∧ ∀ A, C.IsAdapted R A → C.IsAdapted R' fun τ => a τ * A τ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Rotate.rotate_exists

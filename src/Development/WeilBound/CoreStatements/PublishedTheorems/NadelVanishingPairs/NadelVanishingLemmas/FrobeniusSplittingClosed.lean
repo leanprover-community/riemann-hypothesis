@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsFlatLift
 import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.AlternatingProductCocycle
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory GlobalTheory.DI
 
 namespace GlobalTheory.DI.PhiClosed
@@ -81,3 +82,8 @@ theorem GlobalTheory.DI.phi_closed : ∀ {K : Type} [CommRing K] {V : Type} [Add
       rw [smul_smul]
       exact hy (c * a)
   exact ⟨fun x => by simpa using (key x 1).1, fun x => by simpa using (key x 1).2⟩
+end
+
+open GlobalTheory GlobalTheory.DI
+theorem _root_.GlobalTheory.T.frobenius_splitting_closed : ∀ {K : Type} [CommRing K] {V : Type} [AddCommGroup V] [Module K V] {ι : Type} [LinearOrder ι] (p : ℕ) [Fact p.Prime] [CharP K p] (d : ExteriorAlgebra K V →+ ExteriorAlgebra K V) (f : ι → V →+ V) (h : ι → ι → V →+ K) (Φ : ExteriorAlgebra K V →+ (Finset ι → ExteriorAlgebra K V)), IsOddDer d → IsDatum p d f h → IsPhi p f h Φ → (∀ x, Φ x ∅ = 0) ∧ ∀ x, Dtot d (Φ x) = 0 := by
+  atlas_forward_decl _root_.GlobalTheory.DI.phi_closed

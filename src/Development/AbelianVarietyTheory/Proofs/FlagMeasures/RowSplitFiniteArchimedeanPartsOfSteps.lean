@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FamDefs
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NGVanish
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.StepAnalyticConstantsP
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped Classical
@@ -47,3 +49,10 @@ theorem ngCut2P_of_steps (hM : StepAnalyticConstantsP) (hS : StepSizes) (hC : St
     hH2 C' Cl k1 k2 D large₂ X Y u u' hc νL νB ng⟩
 
 end GlobalTheory.NGRow
+end
+end
+
+open Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic GlobalTheory.NGRow
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowSplitFiniteArchimedeanParts_of_steps : StepAnalyticConstantsP → StepSizes → StepClass → StepNormals → StepPoints → StepHeight → NGCut2P := by
+  atlas_forward_decl GlobalTheory.NGRow.ngCut2P_of_steps

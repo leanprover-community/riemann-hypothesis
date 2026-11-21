@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UpqRep
-import Formalism.PeriodIntegrals.IsLowUnitH
 import Formalism.PeriodIntegrals.ZuckTensor
 import Formalism.PeriodIntegrals.DSExist
 

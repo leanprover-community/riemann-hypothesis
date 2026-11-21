@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
 import GroundTheory.LocalFields.Integers
+import BuildAid.ForwardExisting
 
+section
 open ValuativeRel PositivityTheory.Rg.Tf.Loc
 
 namespace GlobalTheory.CompanionTheory.Unram
@@ -203,3 +205,8 @@ theorem unramifiedDictionary_part_b : D0a → IntegralBasisUnramified := by
   exact ⟨x, hx, hx1⟩
 
 end GlobalTheory.CompanionTheory.Unram
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralBasisUnramified_of_d0a : PositivityTheory.Rg.Tf.Loc.D0a → PositivityTheory.Rg.Tf.Loc.IntegralBasisUnramified := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Unram.unramifiedDictionary_part_b

@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteReal.FWExist
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.TranslateRepresentations
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsRangeRestrictEq
 
 noncomputable section

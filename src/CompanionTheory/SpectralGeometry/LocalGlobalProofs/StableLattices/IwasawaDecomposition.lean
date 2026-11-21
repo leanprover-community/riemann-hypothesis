@@ -1,9 +1,9 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.BmuIwa
@@ -169,3 +169,10 @@ theorem iwaQ : IwaQ := by
   exact ⟨s, hs, κ, hκ, h1, h2, h3⟩
 
 end GlobalTheory.CompanionTheory.BmuIwa
+end
+end
+
+open CompanionTheory.Bmu
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.IwasawaDecomposition : IwaQ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BmuIwa.iwaQ

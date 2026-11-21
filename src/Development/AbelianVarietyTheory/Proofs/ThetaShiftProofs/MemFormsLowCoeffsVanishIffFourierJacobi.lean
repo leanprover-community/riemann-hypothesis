@@ -6,10 +6,10 @@ import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.Maxim
 import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkFD
 import Formalism.LocalToGlobal.LatticeGeometry.CmTypeMeetsConjugatePair
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.MaxCuspKilledCoefficientEqZero
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.MaxCuspsIffKilledCoeffVanish
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsIsMaximalMemSpan
 
+section
 set_option autoImplicit false
 
 namespace GlobalTheory.LowCoeff
@@ -321,3 +321,10 @@ theorem mem_iff_low_coeff_vanish : ∀ (D : D7) (T : Core D) (h : LawsCore T) (j
     exact (hsg cu χ).2 ((hmain cu.1.1).1 (H _) cu.1.2 χ.1 ((hexpo cu χ.1).2 ⟨χ.2.1, χ.2.2.2⟩) ((hkill cu χ).1 hK))
 
 end GlobalTheory.LowCoeff
+end
+
+open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
+open Formalism.L2.Pj Formalism.L2.Pj.QAt Formalism.MainNotions Formalism.BasicNotions Formalism.L2.LamCM GlobalTheory.ArcCM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_forms_low_coeffs_vanish_iff_fourierJacobi : ∀ (D : D7) (T : Core D) (h : LawsCore T) (j : ℕ) (ka : WeightFamilies.Wt D j) (CR Tt cc : ℝ), InR D j → j < D.R.m → ∀ F : (recB h).Cusp j ka, (∀ k, rdU (T.U j T.σ₀) F.1 k ∈ ((T.U j T.σ₀).X k).SS (laU (T.U j T.σ₀) (wtA ka) ka.n k)) ∧ (F ∈ WeightFamilies.MggK (recB h) CR Tt cc j ka ↔ ∀ k, rdU (T.U j T.σ₀) F.1 k ∈ ((T.U j T.σ₀).X k).SSgt (laU (T.U j T.σ₀) (wtA ka) ka.n k) (WeightFamilies.c1 D CR Tt cc j)) := by
+  atlas_forward_decl GlobalTheory.LowCoeff.mem_iff_low_coeff_vanish

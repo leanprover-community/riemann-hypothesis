@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.GL3MeanSquares.SecondEstimateOfIntervalHypothesis
 import Formalism.GL3MeanSquares.PrimePairOfBoxAndWeakMeanSquareHypotheses
 
 open Finset Classical

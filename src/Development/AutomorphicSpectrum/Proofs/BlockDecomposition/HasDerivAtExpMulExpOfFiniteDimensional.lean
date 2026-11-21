@@ -1,6 +1,6 @@
 import Mathlib
-import Formalism.UnipotentAdelicQuotients.SmComplete
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LieAlgebraOfTangentCurveStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LieAlgebraOfTangentCurve
+
 open SmoothVectors Filter Topology
 open scoped ContDiff Matrix.Norms.Elementwise
 

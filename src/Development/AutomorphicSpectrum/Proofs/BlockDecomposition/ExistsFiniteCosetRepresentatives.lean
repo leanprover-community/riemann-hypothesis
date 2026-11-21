@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.CompanionTheory.OpenSubgroupTransversal
@@ -38,3 +40,9 @@ theorem main : ∀ {X : Type} [TopologicalSpace X] [AddCommGroup X] [IsTopologic
   fun A H hA hH hHA => GlobalTheory.CompanionTheory.OpenSubgroupTransversal.finite_transversal A H hA hH hHA
 
 end GlobalTheory.CompanionTheory.OpenSubgroupTransversal
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_coset_representatives : ∀ {X : Type} [TopologicalSpace X] [AddCommGroup X] [IsTopologicalAddGroup X] (A H : AddSubgroup X), IsCompact (A : Set X) → IsOpen (H : Set X) → H ≤ A → ∃ T : Finset X, (∀ t ∈ T, t ∈ A) ∧ ∀ a ∈ A, ∃! t, t ∈ T ∧ a - t ∈ H := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.OpenSubgroupTransversal.main

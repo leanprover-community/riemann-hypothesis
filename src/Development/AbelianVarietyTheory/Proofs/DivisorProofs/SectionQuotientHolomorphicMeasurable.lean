@@ -1,9 +1,10 @@
 import Mathlib
-import ReciprocityTheory.L2DbarEstimates.Imports
 import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FourSignHolds
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.L2ExtensionLogCanonical
-import Development.AbelianVarietyTheory.Definitions.Divisors.EtaleEmpty
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtendByZeroOnSubsetApplyCoe
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
 open scoped ENNReal ContDiff
 
@@ -81,3 +82,10 @@ theorem _root_.GlobalTheory.OTY.TwEst.quot_holo_measurable : ∀ (n : ℕ) (Y : 
     rw [heq]
     exact hcont.measurable_piecewise continuousOn_const hopen.measurableSet
   · rw [hq, mul_div_cancel₀ _ (hβne y hy)]
+end
+
+open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
+open scoped ENNReal ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sectionQuotient_holomorphic_measurable : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] (ι La : Type) [AddCommGroup La] (A : WeightedAtlas n Y ι La), ∀ (la : La) (U Ω : Set Y) (β h : ι → Y → ℂ), IsOpen U → IsOpen Ω → A.IsFrameOn la U β → A.IsSecOn la Ω h → (∀ i y, y ∉ Ω → h i y = 0) → (∀ i, DifferentiableOn ℂ (GlobalTheory.OTY.TwEst.quot A h β ∘ (A.chart i).symm) ((A.chart i).target ∩ (A.chart i).symm ⁻¹' (U ∩ Ω))) ∧ Measurable (GlobalTheory.OTY.TwEst.ext0 U (fun y : U => GlobalTheory.OTY.TwEst.quot A h β y)) ∧ ∀ y ∈ U, h (A.pick y) y = β (A.pick y) y * GlobalTheory.OTY.TwEst.quot A h β y := by
+  atlas_forward_decl GlobalTheory.OTY.TwEst.quot_holo_measurable

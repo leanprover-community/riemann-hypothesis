@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.CentralNilGL
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlkEquivInl
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory GlobalTheory.CuspRep
 
 noncomputable section
@@ -91,3 +93,10 @@ theorem Eop_upper_blkGL_eq_zero :
     Pi.sub_apply, key, smul_zero, sub_zero]
 
 end GlobalTheory.LeviGA
+end
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrixUnitOp_upperBlock_levi_eq_zero : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a r : ℕ) (hr : r ≤ a) (f : Sm E a), (∀ (x : BlockIx a r → Ad E) (g : GA E a), f.1 (unip x * g) = f.1 g) → ∀ (τ : E →+* ℂ) (i j : Fin a), (i : ℕ) < r → r ≤ (j : ℕ) → ∀ (m₁ : GA E r) (m₂ : GA E (a - r)), (Eop τ i j f).1 (GlobalTheory.LeviGA.blkGL hr (m₁, m₂)) = 0 := by
+  atlas_forward_decl GlobalTheory.LeviGA.Eop_upper_blkGL_eq_zero

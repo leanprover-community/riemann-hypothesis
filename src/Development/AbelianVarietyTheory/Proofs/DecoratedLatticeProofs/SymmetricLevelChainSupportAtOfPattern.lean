@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.AllPositions
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SymmetricChainSupportOneOfPattern
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsRootExchangeParabolicMulPrincipalCongruencStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsRootExchangeParabolicMulPrincipalCongruenc
 
+section
 open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain GlobalTheory.SymSupport
 
 noncomputable section
@@ -189,3 +190,10 @@ theorem supportAt_of_pattern : ∀ (k : Type) [Field k] [ValuativeRel k] [Topolo
   fun _ _ _ _ _ s κ S t _ _ hP => supportAt s κ S t hP
 
 end GlobalTheory.SymSupportP
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symmetricLevelChain_supportAt_of_pattern : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (s κ : ℕ) (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t], S.Pattern t → S.SupportAt t := by
+  atlas_forward_decl GlobalTheory.SymSupportP.supportAt_of_pattern

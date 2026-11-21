@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.ModDepthGE
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing TensorProduct
 
 namespace GlobalTheory.EtaleAway
@@ -73,3 +76,9 @@ theorem formallyEtale_away : ∀ (R : Type) [CommRing R] [IsLocalRing R] [IsNoet
   infer_instance
 
 end GlobalTheory.EtaleAway
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.formallyEtale_away_of_etale_off_maximalIdeal : ∀ (R : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (A : Type) [CommRing A] [Algebra R A] [Module.Finite R A], (∀ (p : Ideal R) [p.IsPrime], p ≠ maximalIdeal R → Algebra.Etale (Localization.AtPrime p) (TensorProduct R (Localization.AtPrime p) A)) → ∀ g ∈ maximalIdeal R, Algebra.FormallyEtale (Localization.Away g) (TensorProduct R (Localization.Away g) A) := by
+  atlas_forward_decl GlobalTheory.EtaleAway.formallyEtale_away

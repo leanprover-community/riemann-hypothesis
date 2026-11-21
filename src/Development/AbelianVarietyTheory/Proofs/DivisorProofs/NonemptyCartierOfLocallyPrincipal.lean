@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.NonemptyCuspFrame
-import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.CoeNonzeroLocusCanonicalEqComplRange
 
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS
 
 namespace GlobalTheory.CompHS
@@ -19,3 +19,9 @@ theorem nonempty_cartier_of_locally_principal : ∀ (Y : Scheme.{0}) (I : Y.Idea
     rfl
 
 end GlobalTheory.CompHS
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonempty_cartier_of_locally_principal' : ∀ (Y : Scheme.{0}) (I : Y.IdealSheafData), (∀ y : Y, ∃ (W : Y.affineOpens) (a : Γ(Y, W.1)), y ∈ W.1 ∧ a ∈ nonZeroDivisors Γ(Y, W.1) ∧ I.ideal W = Ideal.span {a}) → Nonempty (Cartier I) := by
+  atlas_forward_decl GlobalTheory.CompHS.nonempty_cartier_of_locally_principal

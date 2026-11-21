@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TZero
+import BuildAid.ForwardExisting
 
+section
 open Finset GlobalTheory.CompanionTheory.CoefId
 
 namespace GlobalTheory.CompanionTheory.CoefId
@@ -68,3 +70,9 @@ theorem prod_one_add_div_mul_prod_pow {n : ℕ} (z : Fin n → ℂ) (hz : ∀ a,
   ring
 
 end GlobalTheory.CompanionTheory.CoefId
+end
+
+open Finset GlobalTheory.CompanionTheory.CoefId
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weyl_denominator_product : ∀ {n : ℕ} (z : Fin n → ℂ), (∀ a, z a ≠ 0) → (∏ a, ∏ b, (1 + z a / z b)) * (∏ a, z a) ^ (n - 1) = 2 ^ n * (∏ p ∈ prs n, (z p.1 + z p.2)) ^ 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CoefId.prod_one_add_div_mul_prod_pow

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsHolFormConst
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsRapoportOfBasis
 
 set_option autoImplicit false

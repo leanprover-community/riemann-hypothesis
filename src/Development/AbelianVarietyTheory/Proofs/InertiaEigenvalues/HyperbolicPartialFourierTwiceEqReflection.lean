@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WHyp
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -30,3 +33,10 @@ theorem pt_pt_eq_reflect : ∀ (F E : Type) [NontriviallyNormedField F] [Nontriv
   exact hsd.2 _ hf p.2
 
 end GlobalTheory.JR.Hyp
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hyperbolicPartialFourier_twice_eq_reflection : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (A : Et F E) (ψ : AddChar F ℂ) (x : A.K) (ν : Measure A.K), SelfDual ν (Hyp.kx A ψ x) → ∀ Φ : A.K × A.K → ℂ, IsTest Φ → Hyp.pt A ν ψ x (Hyp.pt A ν ψ x Φ) = fun p => Φ (p.1, -p.2) := by
+  atlas_forward_decl GlobalTheory.JR.Hyp.pt_pt_eq_reflect

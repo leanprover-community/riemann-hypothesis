@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.LocHom
 
 variable {R : Type*} [CommRing R]
@@ -128,3 +130,12 @@ theorem isLocalizedModule_compRight_away :
     simp [assemble, coord, ρ', map_sum]
 
 end GlobalTheory.CompanionTheory.LocHom
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localized_module_base_change : ∀ (R P C C' : Type) [CommRing R] [CommRing C] [CommRing C'] [Algebra R C] [Algebra R C'] (f t : R) [AddCommGroup P] [Module R P]
+  [Module (Localization.Away f) P] [IsScalarTower R (Localization.Away f) P] [Module.Finite (Localization.Away f) P]
+  [Module.Projective (Localization.Away f) P], IsUnit (algebraMap R C f) → ∀ c : C →ₐ[R] C',
+  IsLocalizedModule (Submonoid.powers t) c.toLinearMap →
+  IsLocalizedModule (Submonoid.powers t) (LinearMap.compRight R c.toLinearMap : (P →ₗ[R] C) →ₗ[R] (P →ₗ[R] C')) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocHom.isLocalizedModule_compRight_away

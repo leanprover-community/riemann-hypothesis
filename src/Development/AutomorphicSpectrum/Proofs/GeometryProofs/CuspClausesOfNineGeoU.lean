@@ -1,11 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.NineGeoU
 import Development.AutomorphicSpectrum.ParallelStatements.ParallelGeometry.CuspMeanBound
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspWeightRegularisationsTiedStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionSystemWeightLeftStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspWeightRegularisationsTied
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.DegreeOfIsIntersectionSystem
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.DegreeGenericOfDegree
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftSpread
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenDegGeomDeg
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGeneratedProductNonneg
@@ -18,7 +16,6 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSegrePrime
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSegreHilb
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSegreDimGe
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmIUnique
-import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ArithSystem
 
 noncomputable section

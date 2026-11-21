@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.AdeleIdempotents
@@ -108,3 +110,9 @@ theorem exists_orthogonal_idempotents_of_sum_mul_eq_one (F : Type) [Field F] [Nu
       · simp
 
 end GlobalTheory.AdeleIdempotents
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_orthogonal_idempotents_of_sum_mul_eq_one' : ∀ (F : Type) [Field F] [NumberField F] (ι : Type) [Fintype ι] (f s : ι → NumberField.AdeleRing (NumberField.RingOfIntegers F) F), ∑ i, s i * f i = 1 → ∃ e t : ι → NumberField.AdeleRing (NumberField.RingOfIntegers F) F, ∑ i, e i = 1 ∧ (∀ i j, i ≠ j → e i * e j = 0) ∧ ∀ i, t i * f i = e i := by
+  atlas_forward_decl GlobalTheory.AdeleIdempotents.exists_orthogonal_idempotents_of_sum_mul_eq_one

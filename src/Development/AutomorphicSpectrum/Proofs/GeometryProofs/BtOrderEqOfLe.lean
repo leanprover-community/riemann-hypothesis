@@ -2,10 +2,10 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Models
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularAtTranslateStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TranslateIntoSmallerOpenStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularAtTranslate
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TranslateIntoSmallerOpen
 
+section
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open GlobalTheory.CompanionTheory.Ar.BT GroundTheory.PAdicHodge
 
@@ -36,3 +36,10 @@ theorem QFGroup.btOrder_eq_of_le : ∀ (R : Type) [CommRing R] [IsDomain R] [IsI
   rw [QFGroup.btSet_eq_of_le R T Γ U U' hU hU' hle]
 
 end GlobalTheory.CompanionTheory.Ar.BT
+end
+
+open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
+open GlobalTheory.CompanionTheory.Ar.BT GroundTheory.PAdicHodge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.btOrder_eq_of_le_of_isFinOpenSub : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (U U' : Γ.G.left.Opens), Γ.IsFinOpenSub U → Γ.IsFinOpenSub U' → U' ≤ U → Γ.btOrder U = Γ.btOrder U' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.BT.QFGroup.btOrder_eq_of_le

@@ -1,4 +1,3 @@
-import ReciprocityTheory.GroupCohomology.CupConnRightStatement
 import ReciprocityTheory.GroupCohomology.Section
 
 namespace ReciprocityTheory.Coh.InflationTransgression

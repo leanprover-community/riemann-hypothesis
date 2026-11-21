@@ -1,4 +1,3 @@
-import GroundTheory.GlobalFields.Adele.Compact
 import Development.WeilBound.CoreStatements.EqualVolumeCompactOpens.DiagMulVecTmul
 
 noncomputable section

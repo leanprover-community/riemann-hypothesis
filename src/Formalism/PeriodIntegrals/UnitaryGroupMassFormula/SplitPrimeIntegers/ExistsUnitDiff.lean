@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.SplitIntLoc
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SplitPrimeIntegers.EmbMemOfIsIntegral
 
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum

@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDerApply
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfForallMemFilt
+
+section
 open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
 
 namespace GlobalTheory.FormalOrigin.Extend
@@ -20,3 +21,9 @@ theorem filt_mul_filt_le (σ R : Type) [CommRing R] (I : Ideal R) (j k : ℕ) :
   exact Ideal.pow_le_pow_right (by omega) h
 
 end GlobalTheory.FormalOrigin.Extend
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mvPowerSeriesDegreeAdicFiltration_mul_le : ∀ (σ R : Type) [CommRing R] (I : Ideal R) (j k : ℕ), filt (σ := σ) I j * filt I k ≤ filt I (j + k) := by
+  atlas_forward_decl GlobalTheory.FormalOrigin.Extend.filt_mul_filt_le

@@ -1,8 +1,10 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.UsedLocalConclusion
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsWeakTopologyWittTiltTensor
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZlTowerGen
+import BuildAid.ForwardExisting
+
+section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices GlobalTheory.WeakClosed
 open scoped Topology PowerSeries.WithPiTopology
 set_option synthInstance.maxHeartbeats 400000
@@ -43,3 +45,13 @@ theorem GlobalTheory.WeakClosed.continuous_zl_smul : ∀ {l : ℕ} [Fact l.Prime
   refine continuous_induced_rng.2 (continuous_pi fun i => ?_)
   simp only [Function.comp_apply, GlobalTheory.WeakTop.coords_algebraMap_smul]
   exact hW.mul continuous_const
+end
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices GlobalTheory.WeakClosed
+open scoped Topology PowerSeries.WithPiTopology
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1600000
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_padicInt_smul_latB : ∀ {l : ℕ} [Fact l.Prime] {K LL : FinExt l} (T : Lt K LL) {d : ℕ} (b : LatB T d) (m : TW (RW LL) T), letI := twTop T b; Continuous fun c : ℤ_[l] => algebraMap ℤ_[l] ↥(OL LL) c • m := by
+  atlas_forward_decl GlobalTheory.WeakClosed.continuous_zl_smul

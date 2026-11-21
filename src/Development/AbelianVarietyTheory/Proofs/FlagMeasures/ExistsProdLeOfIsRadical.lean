@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsReduction
 
 open MeasureTheory Formalism.MainNotions.S GlobalTheory.RowLev NumberField IsDedekindDomain Matrix

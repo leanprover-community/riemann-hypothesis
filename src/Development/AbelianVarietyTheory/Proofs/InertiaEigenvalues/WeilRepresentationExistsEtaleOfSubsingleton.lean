@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitting
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -49,3 +52,10 @@ theorem weilAt_of_subsingleton (F E : Type) [NontriviallyNormedField F] [Nontriv
       field_simp
 
 end GlobalTheory.JR
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weilRepresentationExistsEtale_of_subsingleton : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (A : Et F E), Subsingleton A.K → WeilAt A := by
+  atlas_forward_decl GlobalTheory.JR.weilAt_of_subsingleton

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.FormsStable
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FormsStableOfTgtEq
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LevelChainUOperatorCommutationOfPointPairLaw
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExtInOfValIn

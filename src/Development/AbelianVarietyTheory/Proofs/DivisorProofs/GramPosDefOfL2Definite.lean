@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsRatioOfWeight
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GramIsHermitianL2EqDoubleSumStatement
+
+section
 open Filter Topology MeasureTheory GlobalTheory.HSAmp
 open scoped ComplexOrder Matrix
 
@@ -28,3 +29,10 @@ theorem gram_posDef : ∀ (S : Type) (Y : S → Type) [∀ σ, MeasurableSpace (
   exact_mod_cast lt_of_le_of_ne h0 (Ne.symm hne)
 
 end GlobalTheory.HSAmp
+end
+
+open Filter Topology MeasureTheory GlobalTheory.HSAmp
+open scoped ComplexOrder Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gram_posDef_of_l2_definite : ∀ (S : Type) (Y : S → Type) [∀ σ, MeasurableSpace (Y σ)] (ι : Type) [Fintype ι] [DecidableEq ι] (μ : ∀ σ, Measure (Y σ)) (v : ∀ σ, Y σ → ι → ℂ), IsFam μ v → (∀ c : ι → ℂ, l2 μ v c = 0 → c = 0) → (gram μ v).PosDef := by
+  atlas_forward_decl GlobalTheory.HSAmp.gram_posDef

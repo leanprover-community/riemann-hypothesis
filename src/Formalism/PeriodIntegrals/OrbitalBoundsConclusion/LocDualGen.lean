@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LocDualGen
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalDualGenerator.LocDualGenOf
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalDualGenerator.UnramifiedDualGenerator
 

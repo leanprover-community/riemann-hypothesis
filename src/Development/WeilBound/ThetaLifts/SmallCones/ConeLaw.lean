@@ -1,4 +1,3 @@
-import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 import Development.WeilBound.ThetaLifts.SmallCones.ConeUnf
 
 set_option linter.unusedSectionVars false

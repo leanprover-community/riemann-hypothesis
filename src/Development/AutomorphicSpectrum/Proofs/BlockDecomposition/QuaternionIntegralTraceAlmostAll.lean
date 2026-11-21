@@ -1,8 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitNormFormAtOddPlace
+import BuildAid.ForwardExisting
 
+section
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
 open scoped TensorProduct Quaternion
 
@@ -71,3 +72,12 @@ theorem exists_integral_norm_one_trace :
   exact ⟨⟨a₀, a₁, a₂, a₃⟩, hn, htr, h₀, h₁, h₂, h₃⟩
 
 end GlobalTheory.CompanionTheory.PlaneSA
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
+open scoped TensorProduct Quaternion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quaternion_integral_trace_almost_all : ∀ {F : Type} [Field F] [NumberField F] (d β : F), d ≠ 0 → β ≠ 0 →
+  ∀ᶠ v in Filter.cofinite (α := HeightOneSpectrum (𝓞 F)), ∀ t ∈ Ov v,
+    ∃ b : Q d β (Kp (Sum.inr v : Pl F)), qn b = 1 ∧ 2 * b.re = t ∧ IntQ v b := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PlaneSA.exists_integral_norm_one_trace

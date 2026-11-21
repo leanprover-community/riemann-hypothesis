@@ -2,9 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PeriodComparison
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GaussManinPeriods
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TateUnramifiedOfTorsionUnramified
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PartialZetaFunctionalEquation
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsEqOfNatCastMulMem
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
@@ -14,7 +12,6 @@ import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmal
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ToricSymbols
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ZetaValueIdeals
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.VpBounds
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsValueTiedOfIsToricElt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToricRatioConjugatesOfTransport
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RatioConjOfToricRatioConjugates
@@ -36,6 +33,7 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GoodCuspidal
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SeriesRatOfSeriesRatS
 import Development.AbelianVarietyTheory.Definitions.Divisors.HypothesisBundleConversions
 
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.Mem.LiteralAutomorphy
 
 theorem GlobalTheory.MemberClose.hyps_of_litNE : LitNE → GlobalTheory.NRows.HypothesesX → HypE ∧ PrN ∧ SerN ∧ ∃ hL : GlobalTheory.Published.LocalLanglandsGL, HypN hL := by
@@ -61,3 +59,9 @@ theorem GlobalTheory.MemberClose.hyps_of_litNE : LitNE → GlobalTheory.NRows.Hy
         e25 := GlobalTheory.BlochKatoLocalOfHyp.blochKatoLocal_allPrimes_of_blochKato hCo.bk hCo.ltK hCo.leK }
   exact ⟨hE, hPr, hSer, hL, hPr, hSer, GlobalTheory.ArchFromLit.archCmp_of_lit hLoc hA hL,
     GlobalTheory.HeightCounting.Up.parSt_of_prN_sMt hPr (GlobalTheory.MtInMain.prN_sMt hPr) hL, GlobalTheory.HeightCounting.Up.pointStatements_of_hypotheses hPr hX hL, GlobalTheory.HeightCounting.Up.goodRowCuspParam_atMem hPr hL⟩
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.Mem.LiteralAutomorphy
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_langlands_hypotheses_of_literature : LitNE → GlobalTheory.NRows.HypothesesX → HypE ∧ PrN ∧ SerN ∧ ∃ hL : GlobalTheory.Published.LocalLanglandsGL, HypN hL := by
+  atlas_forward_decl GlobalTheory.MemberClose.hyps_of_litNE

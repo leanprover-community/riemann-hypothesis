@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
+
+section
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 
 namespace GlobalTheory.CobSwap
@@ -62,3 +64,9 @@ theorem swap_cob1_eq_of_swap_eq : ∀ (B Q : Type) [CommRing B] [CommRing Q] [Al
   abel
 
 end GlobalTheory.CobSwap
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.swapVariableGroups_formalGroupLawCoboundaryOne_comm : ∀ (B Q : Type) [CommRing B] [CommRing Q] [Algebra B Q] (d : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B), (∀ i, constantCoeff (μ i) = 0) → (∀ i, swap (μ i) = μ i) → ∀ g : MvPowerSeries (Fin d) Q, swap (cob1 (up Q μ) g) = cob1 (up Q μ) g := by
+  atlas_forward_decl GlobalTheory.CobSwap.swap_cob1_eq_of_swap_eq

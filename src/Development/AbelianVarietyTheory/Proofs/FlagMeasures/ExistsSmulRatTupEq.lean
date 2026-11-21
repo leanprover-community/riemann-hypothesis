@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QuadBaseChangeIsFieldOrSplit
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsEquivOfRetractions
 

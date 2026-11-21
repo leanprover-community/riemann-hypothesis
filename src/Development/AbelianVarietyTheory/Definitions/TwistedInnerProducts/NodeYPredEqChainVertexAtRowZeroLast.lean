@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
-import Development.AbelianVarietyTheory.Definitions.Foundations.StrictInterlaceIffDescEnum
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
 
 noncomputable section

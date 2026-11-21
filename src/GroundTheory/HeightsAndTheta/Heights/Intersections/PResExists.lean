@@ -5,7 +5,6 @@ import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIf
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.SchemeRes
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChart
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjLogResCOfCR
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.IfaceInh
 set_option maxSynthPendingDepth 1
 
 noncomputable section

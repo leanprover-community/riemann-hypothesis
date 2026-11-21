@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnifAt
+
+section
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
@@ -69,3 +71,11 @@ theorem absHalf_prodFormula : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     exact_mod_cast h1
 
 end GlobalTheory.ProdForm
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prodFormula_sqrt_normalizedAbsValues_CMField : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (x : E), x ≠ 0 → (Function.mulSupport fun w : Pl E => absHalf w (algebraMap E (w.adicCompletion E) x)).Finite ∧ (∏ᶠ w : Pl E, absHalf w (algebraMap E (w.adicCompletion E) x)) * ∏ v : InfinitePlace E, (‖v.embedding x‖ : ℂ) = 1 := by
+  atlas_forward_decl GlobalTheory.ProdForm.absHalf_prodFormula

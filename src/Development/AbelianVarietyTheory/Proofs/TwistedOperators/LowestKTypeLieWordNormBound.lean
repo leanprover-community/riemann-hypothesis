@@ -6,6 +6,7 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowestKTypeMultiplic
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowestKTypeInfinitesimalCharLargeGap
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmoothVectorsLieIff
 
+section
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Ell
 open scoped InnerProductSpace
 open GlobalTheory.SepReal
@@ -128,3 +129,11 @@ theorem GlobalTheory.SepReal.lieBound : LieBound := by
           refine mul_le_mul ?_ hrest (norm_nonneg _) (by positivity)
           rw [mul_comm]
           exact mul_le_mul_of_nonneg_right hcst hh
+end
+
+open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Ell
+open scoped InnerProductSpace
+open GlobalTheory.SepReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lowestKType_lieWord_normBound : LieBound := by
+  atlas_forward_decl GlobalTheory.SepReal.lieBound

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NodeYPredEqChainVertexAtRowZeroLast
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsGLSubmatrix
 

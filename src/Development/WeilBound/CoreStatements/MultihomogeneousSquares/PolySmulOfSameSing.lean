@@ -4,8 +4,8 @@ import Development.WeilBound.CoreStatements.VolumeEquality.DegPushPullB
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmpPairOfInputs
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ImageCptReflOfGenPt
 import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.CmpHodgeTied
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AgreementPositiveStatement
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaUniformisationComplexAbelianVarietiesStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.AgreementPositive
 
 noncomputable section
 

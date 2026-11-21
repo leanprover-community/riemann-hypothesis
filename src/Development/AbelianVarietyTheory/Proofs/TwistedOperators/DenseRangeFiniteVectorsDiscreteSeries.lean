@@ -1,9 +1,10 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SameBlockOfPosC
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfFactorialBound
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoverUpqClosureExpTopAndCartanStatement
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
 
 noncomputable section
@@ -133,3 +134,10 @@ theorem dense_range_of_factorial_bound : ∀ (p q : ℕ), 1 ≤ p + q → ∀ (T
     exact Submodule.dense_iff_topologicalClosure_eq_top.2 h
 
 end GlobalTheory.AnalyticDense
+end
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dense_range_finite_vectors_discrete_series : ∀ (p q : ℕ), 1 ≤ p + q → ∀ (T : GrpData p q) (D : DSRep T), Nontrivial D.HK.V → (∀ Y ∈ upq p q, ∀ y, ∃ C ρ : ℝ, 0 ≤ C ∧ 0 < ρ ∧ ∀ k : ℕ, ‖D.ι ((D.HK.act Y ^ k) y)‖ ≤ C * ρ ^ k * (k.factorial : ℝ)) → Dense (Set.range D.ι) := by
+  atlas_forward_decl GlobalTheory.AnalyticDense.dense_range_of_factorial_bound

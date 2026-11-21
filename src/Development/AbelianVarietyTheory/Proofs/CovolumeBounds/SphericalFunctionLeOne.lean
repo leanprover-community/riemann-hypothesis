@@ -1,12 +1,12 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsKMeas
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FrameIsotropicOrthonormal
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.GramPositiveVolumeContinuous
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.MaximalCompactSubgroupProperties
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.BlockEmbConjTranspose
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsCompactHaarMeasure
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.KsetTransitiveOfGram
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.HalfVolumeLeviRecursionStatement
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.HalfVolumeLeviRecursion
+
 open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 GlobalTheory.HCXi
 open scoped ENNReal ComplexOrder
 

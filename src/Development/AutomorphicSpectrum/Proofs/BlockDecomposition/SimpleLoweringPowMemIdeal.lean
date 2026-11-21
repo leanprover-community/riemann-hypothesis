@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ActEqZeroOfMem
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -125,3 +128,10 @@ theorem lower_locally_nilpotent {n : ℕ} (i j : Fin n) (x : U n) (hij : (j : �
   simpa using step x 1 h1
 
 end GlobalTheory.CompanionTheory.PresRho
+end
+end
+
+open GroundTheory.Automorphic.HarishChandra GlobalTheory.CompanionTheory.PresRho
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.simple_lowering_pow_mem_ideal : ∀ {n : ℕ} (i j : Fin n) (x : U n), (j : ℕ) = i + 1 → ∃ N : ℕ, e (j, i) ^ N * x ∈ Jp n := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PresRho.lower_locally_nilpotent

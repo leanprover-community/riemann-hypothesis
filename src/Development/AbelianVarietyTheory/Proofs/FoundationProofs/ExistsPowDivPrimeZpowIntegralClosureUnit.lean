@@ -1,8 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboundaryConstantOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompletedLaurentIsDVRStatement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnramifiedIntegersAdicComplete
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsAbsoluteValueCompleteSpaceOfDvr
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.K5
 open scoped NNReal
 
@@ -141,3 +143,11 @@ theorem exists_pow_div_p_zpow_isInt : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [
   rwa [map_natCast] at this
 
 end GlobalTheory.K5
+end
+
+open GlobalTheory.K5
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pow_div_prime_zpow_integralClosure_unit : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω →
+  ∀ x : Ω, x ≠ 0 → ∃ (a : ℤ) (b : ℕ), 0 < b ∧ IsInt p (x ^ b / (p : Ω) ^ a) ∧
+    IsInt p ((p : Ω) ^ a / x ^ b) := by
+  atlas_forward_decl GlobalTheory.K5.exists_pow_div_p_zpow_isInt

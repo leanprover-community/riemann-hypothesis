@@ -5,7 +5,6 @@ import Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.Densit
 import Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.Density
 import Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.CornerSimple
 import Formalism.CharacterColumnKernels.IdempotentNormalForms.MemCcIdealIffForall
-import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerOfDetEqZero
 
 open Finset Classical
 

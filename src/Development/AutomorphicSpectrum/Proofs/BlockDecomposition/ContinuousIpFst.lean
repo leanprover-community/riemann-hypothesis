@@ -3,7 +3,6 @@ import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.Hermit
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TestAlg
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AbscissaConvergenceIdentity
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JoinedBlockFormula
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousThetaKernelComponents
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IpSmulRight
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmulInvSub
 

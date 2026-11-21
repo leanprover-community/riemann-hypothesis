@@ -1,8 +1,5 @@
 import Mathlib
-import GroundTheory.GlobalFields.TateThesis.AdeleMeasure
-import GroundTheory.GlobalFields.TateThesis.FiniteAdeleScaling
 import GroundTheory.GlobalFields.TateThesis.AdeleScaling
-import GroundTheory.GlobalFields.LocalFieldAtPlace
 
 namespace GroundTheory.Global
 

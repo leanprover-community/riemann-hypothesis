@@ -2,7 +2,9 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.EmbeddedFrames.PfD
 import Formalism.RealPlaceAnalysis.Complexify
 import Development.WeilBound.CoreStatements.BranchingTraces.HeBranching
+import BuildAid.ForwardExisting
 
+section
 open Finset Matrix PositivityTheory.RgHe.Frame
 
 namespace GlobalTheory.CompanionTheory.RgHeFrame.SignWord
@@ -190,3 +192,9 @@ theorem heSign (n : ℕ) (ε : Fin (n + 1) → Bool) (d : Fin (n + 1) → ℝ) (
     fun j => sign_right _ _ (by simpa using hT (Sum.inr j))⟩
 
 end GlobalTheory.CompanionTheory.RgHeFrame.SignWord
+end
+
+open Finset Matrix PositivityTheory.RgHe.Frame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.interlacing_signature_parity : ∀ (n : ℕ) (ε : Fin (n + 1) → Bool) (d : Fin (n + 1) → ℝ) (ε' : Fin n → Bool) (d' : Fin n → ℝ) (e : Fin n ⊕ Unit ≃ Fin (n + 1)), PositivityTheory.UnitaryDecomposition.Fits ε ε' e → Function.Injective (Sum.elim d d') → PositivityTheory.UnitaryDecomposition.HeWord ε d ε' d' → (∀ i, (ε i = true ↔ Even (above d d' (d i)))) ∧ ∀ j, (ε' j = true ↔ ¬ Even (above d d' (d' j))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgHeFrame.SignWord.heSign

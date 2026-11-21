@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.CharIdem
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CharacterIdempotents.Development
 
 open CategoryTheory

@@ -4,15 +4,10 @@ import Formalism.HermitianCurvature.HerGenC
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimE
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermRateBound
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormsJointContinuity
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingOfHeads
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadGermSmoothExtension
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialExhaustion
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGCongr
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEX_UwTop
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCStep
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BaseCutoffIsTruncation
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegralBoundOfParts
+import BuildAid.ForwardExisting
 
+section
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P Formalism.QuantumDeterminants Filter Topology MeasureTheory
 open scoped ComplexConjugate InnerProductSpace ENNReal ComplexOrder
 
@@ -1047,3 +1042,10 @@ theorem latticeSum_of_cptCoef : P5.ThmPActualCpt → ∀ (Wp Wq : Type) [NormedA
     simp
 
 end GlobalTheory.LatticeGerm
+end
+end
+
+open Formalism.FourierDecayAlt Formalism.QuantumDeterminants
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.latticeSum_of_compactCoefficient_positivity : P5.ThmPActualCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : KB.Pl P Wp Wq) (nn : ℝ → ℝ) (G : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (Y : Finset ℝ) (K N : ℕ) (Cb : ℝ), KB.InDDplus2 P p.l0 p.T.base Cb p.Θ → KB.CptCoef p.T.base G → (∀ y, 0 < nn y) → TBB.BlockGrowthBound p nn G Y K N := by
+  atlas_forward_decl GlobalTheory.LatticeGerm.latticeSum_of_cptCoef

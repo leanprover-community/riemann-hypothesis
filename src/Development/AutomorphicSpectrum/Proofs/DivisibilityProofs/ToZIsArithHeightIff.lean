@@ -3,12 +3,12 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClass
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ArFormExists
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CodimOneIntegralSubschemeDim
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleProductOfEach
-import Development.AbelianVarietyTheory.Definitions.Divisors.GenericPointAsIdeal
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.SheetUnsheet
-import Development.AutomorphicSpectrum.PublishedTheorems.Divisibility₂.PairingExists
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ArchIntegrableIffOverIntegersStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SumLogNormEqSumEmbeddingsStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ArchIntegrableIffOverIntegers
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SumLogNormEqSumEmbeddings
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.WOverRestrPow
+
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -75,3 +75,13 @@ theorem isArithHeight_toZ_iff : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p 
     exact ⟨e₁.2 h₁, h₂.trans (congrArg (_ - ·) (e₂ h₁).symm)⟩
 
 end GlobalTheory.CompanionTheory.Ar.BaseZ
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open GlobalTheory GlobalTheory.Points GlobalTheory.ArInt GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ProjSpace GlobalTheory.CompanionTheory.Ar.BaseZ GlobalTheory.CompanionTheory.Ar.BGS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.toZ_isArithHeight_iff : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) (t : X ⟶ Sp ℤ) (D : ℕ), IsArithVar p D → ∀ (L : HermLB p) (hL : ∀ τ, (wZ L t τ).IsCInf) (h : X → ℝ), (toZ L t hL).IsArithHeight h ↔ L.IsArithHeight h := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.BaseZ.isArithHeight_toZ_iff

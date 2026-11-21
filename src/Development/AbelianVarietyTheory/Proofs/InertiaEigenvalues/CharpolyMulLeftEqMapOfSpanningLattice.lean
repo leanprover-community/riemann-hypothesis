@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Polynomial
 
 namespace GlobalTheory
@@ -53,3 +56,9 @@ theorem charpoly_mulLeft_eq_map_of_spanning_lattice (R F A S : Type) [CommRing R
   rw [← LinearMap.charpoly_toMatrix _ b', hM, Matrix.charpoly_map]
 
 end GlobalTheory
+end
+
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.charpoly_mulLeft_eq_map_of_span_range_eq : ∀ (R F A S : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field F] [Algebra R F] [IsFractionRing R F] [CommRing A] [Algebra F A] [Algebra R A] [IsScalarTower R F A] [Module.Finite F A] [CommRing S] [Algebra R S] [Module.Finite R S] (ι : S →ₐ[R] A), Function.Injective ι → Submodule.span F (Set.range ι) = ⊤ → ∃ (n : ℕ) (b : Module.Basis (Fin n) R S), ∀ x : S, (LinearMap.mulLeft F (ι x)).charpoly = ((LinearMap.toMatrix b b (LinearMap.mulLeft R x)).charpoly).map (algebraMap R F) := by
+  atlas_forward_decl GlobalTheory.charpoly_mulLeft_eq_map_of_spanning_lattice

@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
-import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolEval
+
+section
 open scoped TensorProduct Matrix Classical
 
 noncomputable section
@@ -58,3 +59,11 @@ theorem polMap_injective (W Λ : Type) [Fintype W] [DecidableEq W] :
   simp only [LinearMap.comp_apply, Module.Basis.linearCombination_repr, hxy]
 
 end GlobalTheory.CCRFock
+end
+end
+
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensorPolynomialsToProductVariables_injective : ∀ (W Λ : Type) [Fintype W] [DecidableEq W], Function.Injective (GlobalTheory.CCRFock.polMap W Λ) := by
+  atlas_forward_decl GlobalTheory.CCRFock.polMap_injective

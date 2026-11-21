@@ -1,6 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LeviRep
-import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.GodementJacquet MeasureTheory
 
 namespace GlobalTheory.GodementJacquet.TestNearE
@@ -138,3 +139,13 @@ theorem exists_test (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [
     exact hWS g this
 
 end GlobalTheory.GodementJacquet.TestNearE
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.GodementJacquet MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_schwartz_bump_near_identity : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (r t : ℕ) (S : Set (GL (Fin r) k)), IsOpen S → (1 : GL (Fin r) k) ∈ S →
+    ∃ Φ : Matrix (Fin (r + t)) (Fin r) k → ℂ, Φ ∈ SB (Matrix (Fin (r + t)) (Fin r) k) ∧
+      Φ (eMat k r t) = 1 ∧ (∀ x, Φ x = 0 ∨ Φ x = 1) ∧
+      ∀ g : GL (Fin r) k, Φ (eMat k r t * g.val) ≠ 0 → g ∈ S := by
+  atlas_forward_decl GlobalTheory.GodementJacquet.TestNearE.exists_test

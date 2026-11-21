@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.UniversalTripleFibreKeyDataNonemptyField
-import Development.AbelianVarietyTheory.Definitions.CMLattices.IntegralOf
 import Development.AbelianVarietyTheory.Statements.PrincipalLattices.ExistsPrincipalLattice
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
 import Formalism.LocalToGlobal.ProjectiveLattices.L2DefiniteCuspForms

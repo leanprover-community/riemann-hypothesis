@@ -1,8 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain Formalism.L2.Host
 
 namespace GlobalTheory.LocUnitPow
@@ -101,3 +102,9 @@ theorem loc_pow_eq_one : ∀ (L : Type) [Field L] [NumberField L] (χ : Formalis
   exact key.trans (WithZero.exp_le_exp.mpr (by omega))
 
 end GlobalTheory.LocUnitPow
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeChar_loc_pow_eq_one_on_localUnits : ∀ (L : Type) [Field L] [NumberField L] (χ : Formalism.L2.Host.HChar L) (v : HeightOneSpectrum (𝓞 L)) (x : (v.adicCompletion L)ˣ), Formalism.L2.Host.IsUnitAt v x → ∃ m : ℕ, 0 < m ∧ χ.loc v x ^ m = 1 := by
+  atlas_forward_decl GlobalTheory.LocUnitPow.loc_pow_eq_one

@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG GlobalTheory.SatakeWeyl
@@ -271,3 +272,9 @@ theorem indexThree : IntIndex → TraceZeroIndex → IndexThree := by
 end GlobalTheory.SatakeWeyl.Heis
 
 end
+end
+
+open Formalism.UG GlobalTheory.SatakeWeyl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryRankThreeRootIndex_of_cards : GlobalTheory.SatakeWeyl.IntIndex → GlobalTheory.SatakeWeyl.TraceZeroIndex → GlobalTheory.SatakeWeyl.IndexThree := by
+  atlas_forward_decl GlobalTheory.SatakeWeyl.Heis.indexThree

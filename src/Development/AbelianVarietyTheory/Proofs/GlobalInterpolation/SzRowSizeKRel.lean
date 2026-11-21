@@ -1,8 +1,9 @@
 import Mathlib
-import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.PairRowIffQdRows
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HostBoundsTwoMulRpowLogSqLe
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab GlobalTheory.EX NumberField
 
 namespace GlobalTheory.EX
@@ -163,3 +164,9 @@ theorem szRow_sizeKRel : SzRow (fun _ _ L => SizeKRel L) := by
   · exact (hx1 L.sc D.R D.host hLe ((le_max_left _ _).trans hx) hV.ranks hV.host).2.2.2.2.2.2.2.1
 
 end GlobalTheory.EX
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab GlobalTheory.EX NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sizes_sizeKRel : SzRow (fun _ _ L => SizeKRel L) := by
+  atlas_forward_decl GlobalTheory.EX.szRow_sizeKRel

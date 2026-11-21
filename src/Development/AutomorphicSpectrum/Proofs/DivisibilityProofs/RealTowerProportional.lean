@@ -1,12 +1,11 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagDegreeWeightFormula
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PolarizationPolynomialCoeffBoundStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagDegreeLinearFunctionalsStatement
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PolarizationPolynomialCoeffBound
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagDegreeLinearFunctionals
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RealTowerGeometricAgreementStatement
 
+section
 noncomputable section
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GroundTheory.Heights₂.Heights
@@ -207,3 +206,10 @@ theorem rootTower_proportional_of_unif : PB.Proportional → PB.Inputs → ∀ I
     exact sub_eq_zero.mp hL
 
 end GlobalTheory.CompanionTheory.Ar.Top
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.real_tower_proportional : PB.Proportional → PB.Inputs → ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) [Nonempty Ψ] (T : RootTower Ψ N) (R : RealTower T), R.Unif → T.Proportional := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.rootTower_proportional_of_unif

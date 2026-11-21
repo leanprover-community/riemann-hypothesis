@@ -1,5 +1,4 @@
 import Development.AutomorphicArithmetic.ThickFrames.MarkedLow
-import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 import Development.AutomorphicArithmetic.ThickFrames.MarkedLowBounds
 
 open Finset UpperTheory.BernoulliSumsFrobeniusOrbits Formalism.G0

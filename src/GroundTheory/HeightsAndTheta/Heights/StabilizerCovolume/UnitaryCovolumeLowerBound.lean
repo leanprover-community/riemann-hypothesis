@@ -3,7 +3,6 @@ import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ImportsBis
 import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ImportsFurther
 import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ImportsMore
 import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ImportsTer
-import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ULogBound
 set_option maxSynthPendingDepth 1
 
 noncomputable section

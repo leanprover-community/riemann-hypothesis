@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetSNeZero
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.BasicNotions.TH GlobalTheory.CharPair
 
 namespace GlobalTheory.CharPair.FirstBlock
@@ -140,3 +142,9 @@ theorem act_first_block : ∀ (P Q R : ℕ) (h : P ≤ R) (k : ℕ) (a a' : Fin 
   · simp
 
 end GlobalTheory.CharPair.FirstBlock
+end
+
+open MvPolynomial Formalism.BasicNotions.TH GlobalTheory.CharPair
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fock_action_upper_left_commutes_embedding : ∀ (P Q R : ℕ) (h : P ≤ R) (k : ℕ) (a a' : Fin P) (G : Mdl P Q), fockAct1 P Q R 0 (Eab (Sum.inl a) (Sum.inl a')) (embR P Q R h k G) = embR P Q R h k (opR P Q R k (Sum.inl a) (Sum.inl a') G) := by
+  atlas_forward_decl GlobalTheory.CharPair.FirstBlock.act_first_block

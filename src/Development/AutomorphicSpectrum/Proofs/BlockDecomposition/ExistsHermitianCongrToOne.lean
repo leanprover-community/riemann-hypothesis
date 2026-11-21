@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResAlgSplitTwo
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardOrthonormalFramesHermitianSpaceStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardOrthonormalFramesHermitianSpace
 
+section
 open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
 
 namespace GlobalTheory.CompanionTheory.UnrDens
@@ -60,3 +60,9 @@ theorem exists_congr_one : ∀ (E : Type) [CommRing E] (τ : E →+* E) (q : ℕ
   exact ⟨_, Matrix.isUnit_det_of_left_inverse hg, hg⟩
 
 end GlobalTheory.CompanionTheory.UnrDens
+end
+
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hermitian_congr_to_one : ∀ (E : Type) [CommRing E] (τ : E →+* E) (q : ℕ) (ε : ℤ), ResAlg E τ q ε → ∀ (n : ℕ) (T : Matrix (Fin n) (Fin n) E), cT τ T = T → IsUnit T.det → ∃ g : Matrix (Fin n) (Fin n) E, IsUnit g.det ∧ cT τ g * T * g = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnrDens.exists_congr_one

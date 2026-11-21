@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StZariskiObjects
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPolyGermPointPow
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.GradientAtPoint
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EvalSmulOfIsHomogeneous

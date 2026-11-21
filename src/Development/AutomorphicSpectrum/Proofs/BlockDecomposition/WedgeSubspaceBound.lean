@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.WedgeSub
+import BuildAid.ForwardExisting
 
+section
 open Matrix PositivityTheory.Rg.BcB.D1
 
 namespace GlobalTheory.CompanionTheory.WedgeNorm
@@ -47,3 +49,9 @@ theorem wedgeSub : WedgeSub := by
     exact mul_nonneg (h.nonneg _ _) (h.nonneg _ _)
 
 end GlobalTheory.CompanionTheory.WedgeNorm
+end
+
+open Matrix PositivityTheory.Rg.BcB.D1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wedge_subspace_bound : WedgeSub := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WedgeNorm.wedgeSub

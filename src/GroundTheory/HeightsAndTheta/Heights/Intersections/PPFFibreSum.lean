@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFFibreSum
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFFibreBij
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFFibreMult
 set_option maxSynthPendingDepth 1

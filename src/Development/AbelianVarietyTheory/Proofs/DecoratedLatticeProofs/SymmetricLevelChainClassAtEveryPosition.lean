@@ -3,10 +3,11 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.AllPositions
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwasawaBlockTriangular
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiagPartMulDiagPart
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OpEOmTargetUnipotent
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RootExchangeBlockDiagonalTargetEntryConditionsStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DoubleBlockTriangularMemIntegralMulLeviStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SymmetricLevelChainPhiSupportPeriodicStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RootExchangeBlockDiagonalTargetEntryConditions
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DoubleBlockTriangularMemIntegralMulLevi
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SymmetricLevelChainPhiSupportPeriodic
 
+section
 open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain
 
 namespace GlobalTheory.SymChain
@@ -89,3 +90,9 @@ theorem classAt_all : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpac
   exact mul_mem (inv_mem hK) hw
 
 end GlobalTheory.SymChain
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symmetricLevelChain_classAt_every_position : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k), IsUnitVol ν → ∀ (s κ : ℕ) (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t], S.ClassAt t ν := by
+  atlas_forward_decl GlobalTheory.SymChain.classAt_all

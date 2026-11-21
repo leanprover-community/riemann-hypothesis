@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonemptyRayDataOfNeZero
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.Mem.RayEx
@@ -189,3 +191,10 @@ theorem nonempty_rayData (K : Type) [Field K] [NumberField K] (M : ℕ) (hM : 2 
 end GlobalTheory.Mem.RayEx
 
 end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.Mem Complex
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ray_data_nonempty : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 ≤ M → Nonempty (RayData K M) := by
+  atlas_forward_decl GlobalTheory.Mem.RayEx.nonempty_rayData

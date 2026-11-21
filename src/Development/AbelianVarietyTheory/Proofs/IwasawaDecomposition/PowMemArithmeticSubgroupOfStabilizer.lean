@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddSmulVecMulVecMulVec
 
+section
 namespace GlobalTheory.UnipKill
 
 open ReciprocityTheory.ChartRestriction.G.FD NumberField
@@ -49,3 +50,9 @@ theorem pow_mem_of_isUStab : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   · exact key b a h hfab.symm
 
 end GlobalTheory.UnipKill
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pow_mem_arithmetic_subgroup_of_stabilizer : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) (X : Data E N) (g : GL (Fin N) E), IsUStab X.Gm X.Λ g → ∃ k : ℕ, 0 < k ∧ g ^ k ∈ X.Γ := by
+  atlas_forward_decl GlobalTheory.UnipKill.pow_mem_of_isUStab

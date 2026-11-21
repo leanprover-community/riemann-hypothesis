@@ -1,12 +1,12 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
-import Formalism.GaloisCohomology.LocalTateDualityK
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NatInvIsoOfLocalTateDualityCyclotomicTwistStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.H2TwistFromOpenUnionStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MapH2SubtypeInjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowPSmulMemOneFractionRingStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsFGTopPPowInverseLatticeStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NatInvIsoOfLocalTateDualityCyclotomicTwist
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.H2TwistFromOpenUnion
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MapH2SubtypeInjective
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowPSmulMemOneFractionRing
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsFGTopPPowInverseLattice
 
+section
 open ReciprocityTheory.Gal Formalism.RepresentationBoundsCohomology.LOC ReciprocityTheory.ChartRestriction.T2
 open Formalism.NG (KO)
 
@@ -177,3 +177,9 @@ theorem inv_iso (hT : Formalism.GaloisCohomology.LocalTateDualityK) : InvIso := 
   rfl
 
 end GlobalTheory.InvColim
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invIso_of_localTateDuality : Formalism.GaloisCohomology.LocalTateDualityK → ReciprocityTheory.ChartRestriction.T2.InvIso := by
+  atlas_forward_decl GlobalTheory.InvColim.inv_iso

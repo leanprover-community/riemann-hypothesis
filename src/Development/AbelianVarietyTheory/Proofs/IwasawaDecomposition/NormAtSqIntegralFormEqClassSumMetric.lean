@@ -1,11 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InnerEqOfNormSq
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StdLvPr
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IpMtTie
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsClassSumPairingFormsLat
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsClassSumPairingOfIsFormsOf
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
 
+section
 noncomputable section
 
 namespace GlobalTheory.Mem.Df
@@ -74,3 +72,11 @@ theorem normAt_sq_eq_cSum {B : Base} {X : PreX B.toPre} (I : TC B X) (hX : B.fie
   exact (herm_mk _ _ (GlobalTheory.PeriodClassSum.gramB_posDef _ _) _).trans (pairB_conj_map _ _ _).symm
 
 end GlobalTheory.Mem.Df
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Df
+attribute [local instance] GlobalTheory.Mem.Col2.starE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normAt_sq_integralForm_eq_classSumMetric : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (hX : B.fields.Ok) (a : I.ι) (x : (MtHL I hX a).V), ((Formalism.HermitianLatticesTheory.normAt (MtHL I hX a).b (MtHL I hX a).X (InfinitePlace.mk B.embLL) x ^ 2 : ℝ) : ℂ) = cSum I hX a (toCx I hX a x) (toCx I hX a x) := by
+  atlas_forward_decl GlobalTheory.Mem.Df.normAt_sq_eq_cSum

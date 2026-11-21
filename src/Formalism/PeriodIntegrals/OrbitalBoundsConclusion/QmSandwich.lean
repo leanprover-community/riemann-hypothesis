@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.RTTIndependence
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.EntrywiseSandwichCommute.Imports
 
 private theorem rtt_commutator_sandwich_eq_of_relations {M : Type} [Ring M] (R e2b e1b' e1q' e2q e1a' e2a : M)

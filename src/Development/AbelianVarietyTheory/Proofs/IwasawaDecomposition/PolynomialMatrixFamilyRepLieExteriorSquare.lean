@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SumSumEqSumPair
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AevalDualModel
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -42,3 +42,10 @@ theorem lie_wedge2 {ι : Type} [Fintype ι] {m : ι → ℕ} (ρ : PolyRep m) {R
 end GlobalTheory.GoodMetric.PolyRep
 
 end
+end
+
+open MvPolynomial GlobalTheory.FlagBundle GlobalTheory.GoodMetric GlobalTheory.GoodMetric.ChernSpan GlobalTheory.GoodMetric.PolyRep
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polynomialMatrixFamilyRep_lie_exteriorSquare : ∀ {ι : Type} [Fintype ι] {m : ι → ℕ} (ρ : PolyRep m) {R : Type} [CommRing R] (A : Mat m R), ρ.wedge2.lie A = wedge2Lie (ρ.lie A) := by
+  atlas_forward_decl GlobalTheory.GoodMetric.PolyRep.lie_wedge2

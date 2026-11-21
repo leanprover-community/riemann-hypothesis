@@ -2,6 +2,8 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LanglandsClassification
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IrreducibleKStableFiniteSubspaceStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MaxCompactIrreducibleHasHighestWeightAndIsoStatement
+
+section
 open Formalism.MainNotions.S
 
 namespace GlobalTheory.IrrAdm
@@ -40,3 +42,9 @@ theorem isIrrAdm_of_irred : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [Norm
     infer_instance
 
 end GlobalTheory.IrrAdm
+end
+
+open Formalism.MainNotions.S
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_irreducible_is_admissible : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] [Nontrivial H] (π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsURepOn (UJset ε) π → IsIrredOn (UJset ε) π → GlobalTheory.RealInd.IsIrrAdm ε π := by
+  atlas_forward_decl GlobalTheory.IrrAdm.isIrrAdm_of_irred

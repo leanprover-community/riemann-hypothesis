@@ -3,12 +3,11 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClass
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ArFormExists
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CodimOneIntegralSubschemeDim
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleProductOfEach
-import Development.AbelianVarietyTheory.Definitions.Divisors.GenericPointAsIdeal
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.SheetUnsheet
-import Development.AutomorphicSpectrum.PublishedTheorems.Divisibility₂.PairingExists
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogNormSheetEqStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogNormSheetEq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmallSectionHeightLowerBound
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -61,3 +60,13 @@ theorem sum_logNorm_curve : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsInte
   exact Finset.sum_congr rfl fun σ _ => Finset.sum_congr rfl fun y _ => h₁ σ y
 
 end GlobalTheory.CompanionTheory.Ar.BaseZ
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open GlobalTheory GlobalTheory.Points GlobalTheory.ArInt GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ProjSpace GlobalTheory.CompanionTheory.Ar.BaseZ GlobalTheory.CompanionTheory.Ar.BGS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_logNorm_eq_sum_embeddings : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (t : X ⟶ Sp ℤ) (τ : ℤ →+* ℂ), IsArithVar p 0 → ∀ (M : HermLB p) (ν : Weight t τ M.B), WOver M.φ ν → ∀ (r : M.B.ι → X.functionFieldˣ), IsRatSec M.B r → ∑ᶠ y : CxPts t τ, logNorm ν r y = ∑ᶠ σ : k →+* ℂ, ∑ᶠ y : CxPts p σ, logNorm (M.φ σ) r y := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.BaseZ.sum_logNorm_curve

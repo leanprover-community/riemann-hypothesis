@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.LeviCut
 
 namespace GlobalTheory.BetaDenProof
@@ -51,3 +53,9 @@ theorem GlobalTheory.LeviCut.betaDen : GlobalTheory.LeviCut.BetaDen := by
     exact Nat.not_dvd_ordCompl hl this hds
   · intro j k hjk
     exact GlobalTheory.BetaDenProof.beta_dvd (fun t ht htw => GlobalTheory.BetaDenProof.dvd_lam_of_le hl ht htw) k j hjk
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.beta_integral_denominator_bound : GlobalTheory.LeviCut.BetaDen := by
+  atlas_forward_decl GlobalTheory.LeviCut.betaDen

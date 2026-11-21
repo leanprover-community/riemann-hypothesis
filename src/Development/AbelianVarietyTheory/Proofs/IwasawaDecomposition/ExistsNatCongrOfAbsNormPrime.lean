@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 import ReciprocityTheory.Automorphisms.PlaceA
 

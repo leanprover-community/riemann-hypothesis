@@ -1,7 +1,5 @@
 import Mathlib
-import Formalism.LocalToGlobal.KernelLattices.ColumnData
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.AmbOfENeSd
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
 
 open NumberField IsDedekindDomain
 

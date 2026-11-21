@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsNormEmbId
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormSqIntegralSmulLe
 
+section
 noncomputable section
 
 open MeasureTheory GlobalTheory.CompanionTheory.UnitaryFramesMetricPeriods Filter Topology
@@ -99,3 +99,14 @@ theorem sq_integrable_and_bound (ρ : Γ → (B →L[ℂ] B)) (hρ : IsU ρ) (v 
 end GlobalTheory.CompanionTheory.GodementCoeff
 
 end
+end
+
+open MeasureTheory GlobalTheory.CompanionTheory.UnitaryFramesMetricPeriods
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_coefficient_integrable_square : ∀ {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [LocallyCompactSpace Γ]
+    [SecondCountableTopology Γ] [MeasurableSpace Γ] [BorelSpace Γ] (ν : Measure Γ) [ν.IsHaarMeasure] [ν.IsMulRightInvariant]
+    {B : Type} [NormedAddCommGroup B] [InnerProductSpace ℂ B] [CompleteSpace B] (ρ : Γ → (B →L[ℂ] B)), IsU ρ → ∀ v : B, Integrable (fun g => ⟪v, ρ g v⟫_ℂ) ν → ∀ b : B,
+    Integrable (fun g => ‖⟪b, ρ g v⟫_ℂ‖ ^ 2) ν ∧
+    ∫ g, ‖⟪b, ρ g v⟫_ℂ‖ ^ 2 ∂ν ≤ (∫ g, ‖⟪v, ρ g v⟫_ℂ‖ ∂ν) * ‖b‖ ^ 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementCoeff.sq_integrable_and_bound

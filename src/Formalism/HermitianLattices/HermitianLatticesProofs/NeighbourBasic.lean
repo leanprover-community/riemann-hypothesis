@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.HermitianLattices.StatementLat
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 

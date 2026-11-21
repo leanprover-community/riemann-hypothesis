@@ -1,12 +1,11 @@
 import Mathlib
 import Formalism.LocalToGlobal.InertKernelTheory.DefsBeCob
-import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
-import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FlowTwoTorsionWp
 import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.ChordEquation
 import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalC
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemClosureRootsOfUnity
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CoefWfUnram
@@ -54,3 +53,9 @@ theorem coefWf_phW : ∀ (p : ℕ) [Fact p.Prime] (W : WeierstrassCurve ℂ_[p])
   fun _ _ W h1 h2 h3 h4 h6 _ hs => coefWf_phW_of_kur W h1 h2 h3 h4 h6 hs
 
 end GlobalTheory.CoefWfUnram
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramifiedWeierstrassCurve_transform_coefficients_wellFormed : ∀ (p : ℕ) [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]), W.a₁ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → W.a₂ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → W.a₃ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → W.a₄ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → W.a₆ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → ∀ s2 : ℂ_[p], s2 ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p → Formalism.MainNotions.GL3Theta.CoefWf (Formalism.L2.Th1.B.phW W s2 : MvPowerSeries Unit ℂ_[p]) := by
+  atlas_forward_decl GlobalTheory.CoefWfUnram.coefWf_phW

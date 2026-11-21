@@ -3,7 +3,6 @@ import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.TwoLetterLatticeG
 import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.ContractionOfPairingLemmas
 import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.SubCoeffP
 import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.ImportsAlt
-import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.SubYDPsiMonomial
 import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.TopLinePOf
 import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.DetYNeZero
 import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.DetFactsP

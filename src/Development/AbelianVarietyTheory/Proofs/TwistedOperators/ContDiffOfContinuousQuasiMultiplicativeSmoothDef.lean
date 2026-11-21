@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairInfApply
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory
 
 open Metric Set Filter Topology Convolution
@@ -193,3 +196,11 @@ theorem contDiff_of_func_eq (c : ℝ → ℂ) (E : ℝ → ℝ → ℂ) (U : Set
   simp
 
 end GlobalTheory.FuncEqSmooth
+end
+
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contDiff_of_continuous_quasiMultiplicative_smoothDefect : ∀ (c : ℝ → ℂ) (E : ℝ → ℝ → ℂ) (U : Set (ℝ × ℝ)), Continuous c → c 0 ≠ 0 → IsOpen U → (∀ s, (s, 0) ∈ U) →
+    ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun p : ℝ × ℝ => E p.1 p.2) U → (∀ p ∈ U, c (p.1 + p.2) = c p.1 * c p.2 * E p.1 p.2) →
+    ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) c := by
+  atlas_forward_decl GlobalTheory.FuncEqSmooth.contDiff_of_func_eq

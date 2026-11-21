@@ -1,6 +1,8 @@
 import Mathlib
 import GroundTheory.GlobalFields.Artin.LogCharpoly
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 open Polynomial
@@ -44,3 +46,8 @@ theorem charpolyRev_mul_charpolyRev_eq_one_of_trace_pow_add_eq_zero
     exact hu.mul_left_eq_zero.mp hk
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.charpolyRev_mul_eq_one_of_trace_pow_add_eq_zero : ∀ {K R : Type} [Field K] [CharZero K] [CommRing R] [Algebra K R] {p q : ℕ} (M : Matrix (Fin p) (Fin p) R) (N : Matrix (Fin q) (Fin q) R), (∀ k, 1 ≤ k → (M ^ k).trace + (N ^ k).trace = 0) → M.charpolyRev * N.charpolyRev = 1 := by
+  atlas_forward_decl GlobalTheory.charpolyRev_mul_charpolyRev_eq_one_of_trace_pow_add_eq_zero

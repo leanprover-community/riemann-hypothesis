@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.OrderedConst
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.PsType
 
 namespace GlobalTheory.PsType
@@ -27,3 +30,9 @@ theorem twKer_one_mem_aug_stage : ∀ (G V : Type) [Group G] [AddCommGroup V] [M
     exact ⟨a, Submodule.smul_mem _ c ha⟩
 
 end GlobalTheory.PsType
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.PsType
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twistedJacquetKernel_mem_twistedSpan_finite_stage : ∀ (G V : Type) [Group G] [AddCommGroup V] [Module ℂ V] (π : Representation ℂ G V) (U : Subgroup G) (N : ℕ → Set G), Monotone N → (∀ y ∈ U, ∃ m, y ∈ N m) → ∀ v ∈ twKer π U 1, ∃ m, v ∈ aug π (N m) (fun _ => 1) := by
+  atlas_forward_decl GlobalTheory.PsType.twKer_one_mem_aug_stage

@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotCompactOfIdempotent
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.RegSS GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms
 open scoped TensorProduct
 
@@ -65,3 +66,9 @@ theorem plusTensorBijective : PlusTensorBijective := by
   rw [IsScalarTower.toAlgHom_apply, hE, h1, map_neg]
 
 end GlobalTheory.RegSS
+end
+
+open GlobalTheory.RegSS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.regularSemisimple_selfAdjointPart_tensor_bijective : GlobalTheory.RegSS.PlusTensorBijective := by
+  atlas_forward_decl GlobalTheory.RegSS.plusTensorBijective

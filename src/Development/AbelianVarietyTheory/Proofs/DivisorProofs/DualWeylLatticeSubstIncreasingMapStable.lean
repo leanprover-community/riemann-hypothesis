@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.GradedWeylDivisibility
 
 noncomputable section
@@ -111,3 +113,10 @@ theorem substMem : SubstMem := by
     rw [← e2, hf.2 (τ l) (τ j) (hτ hlj), e1]
 
 end GlobalTheory.LeviCut
+end
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualWeylLattice_subst_increasing_map_stable : GlobalTheory.LeviCut.SubstMem := by
+  atlas_forward_decl GlobalTheory.LeviCut.substMem

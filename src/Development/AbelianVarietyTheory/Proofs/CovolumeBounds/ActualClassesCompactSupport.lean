@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSE2
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSETopFinal
 
 namespace GlobalTheory

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped Matrix
 open NumberField IsDedekindDomain
 
@@ -70,3 +73,10 @@ theorem linearIndependent_vecMul_of_span_rat :
     simp [mul_comm]
 
 end GlobalTheory
+end
+
+open scoped Matrix
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearIndependent_vecMul_of_span_rat' : ∀ (E : Type) [Field E] [NumberField E] (R : Type) [CommRing R] [Algebra ℝ R] [FiniteDimensional ℝ R] (τ : E →+* R), Submodule.span ℝ (Set.range τ) = ⊤ → Module.finrank ℝ R = Module.finrank ℚ E → ∀ (n : ℕ) (ι : Type) [Fintype ι] (u : ι → Fin n → E), Fintype.card ι = Module.finrank ℚ E * n → Submodule.span ℚ (Set.range u) = ⊤ → ∀ g : GL (Fin n) R, LinearIndependent ℝ fun k => (fun i => τ (u k i)) ᵥ* g.1 := by
+  atlas_forward_decl GlobalTheory.linearIndependent_vecMul_of_span_rat

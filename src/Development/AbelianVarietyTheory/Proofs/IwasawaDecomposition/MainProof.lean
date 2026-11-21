@@ -1,11 +1,11 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IncreasingRowChoicePerColumn
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnMinorProductsFockReproducingIdentityStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DualBasesColProdStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntegralMinorsIffBasisStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PhiDeXExpandStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CombMemIffStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnMinorProductsFockReproducingIdentity
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DualBasesColProd
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntegralMinorsIffBasis
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PhiDeXExpand
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CombMemIff
 
+section
 open MvPolynomial
 
 noncomputable section
@@ -29,3 +29,9 @@ theorem mainProof : WeylLatticeDuality.Stmt := by
   rw [hfun, GlobalTheory.T.comb_mem_iff_alt p Lt T e he N ν ι b g Nc hNc h4 (fun s => by rw [hν s]; exact h5 s)]
 
 end GlobalTheory.WeylLatDualProof
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weyl_lattice_duality : WeylLatticeDuality.Stmt := by
+  atlas_forward_decl GlobalTheory.WeylLatDualProof.mainProof

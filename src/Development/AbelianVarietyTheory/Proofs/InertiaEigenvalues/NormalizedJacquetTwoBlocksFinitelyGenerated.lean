@@ -4,9 +4,10 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsIrreducibleIff
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InSupportOfIsSubquotient
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitaryAdmissibleMatrixCoefficient
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanOrbitEqTop
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
 
 namespace GlobalTheory.JacquetFinGen
@@ -69,3 +70,9 @@ theorem jacquet_fg : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace
   exact this
 
 end GlobalTheory.JacquetFinGen
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalizedJacquetTwoBlocks_finitelyGenerated : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b n : ℕ) (h : a + b = n) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V), IsSmooth π → π.IsIrreducible → ∃ s : Finset (Jacquet π (unipRad k (two (stdSum h)))), Submodule.span ℂ {w | ∃ g : GL (Fin a) k × GL (Fin b) k, ∃ v ∈ s, w = jac₂ (stdSum h) π g v} = ⊤ := by
+  atlas_forward_decl GlobalTheory.JacquetFinGen.jacquet_fg

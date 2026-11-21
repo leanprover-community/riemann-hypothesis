@@ -1,13 +1,14 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitChartAt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsModelWithRatio
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBlowupNormalizationCartierStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TestPointLiftProperStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeometricallyIrreduciblePullbackIsoStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitChartAtInvertiblePStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OpenImmersionRingFactorStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalizationUnitsChartsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBlowupNormalizationCartier
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TestPointLiftProper
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeometricallyIrreduciblePullbackIso
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitChartAtInvertibleP
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OpenImmersionRingFactor
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalizationUnitsCharts
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -105,3 +106,10 @@ theorem modSt_of_densSt : DensSt → ModSt := by
     exact ⟨yb', h1, fun κ hκ => by show κ ∈ K (yb' ≫ (ν ≫ b)); rw [h2]; exact hκ⟩
 
 end GlobalTheory.FlatModel
+end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.modularity_of_density : DensSt → ModSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.modSt_of_densSt

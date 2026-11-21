@@ -1,6 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import BuildAid.ForwardExisting
 
+section
 open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace GlobalTheory.GenericFibreOpen
@@ -61,3 +63,9 @@ theorem GlobalTheory.GenericFibreOpen.isOpen_preimage_range_spMap_fraction :
         exact hx (heq ▸ ha)
     rw [this]
     exact (PrimeSpectrum.basicOpen a).isOpen.preimage hc
+end
+
+open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.preimage_generic_fiber_isOpen : ∀ (O K R : Type) [CommRing O] [IsDedekindDomain O] [Field K] [Algebra O K] [IsFractionRing O K] [CommRing R] [IsLocalRing R] (g : Sp R ⟶ Sp O), IsOpen (g ⁻¹' Set.range (spMap (algebraMap O K))) := by
+  atlas_forward_decl GlobalTheory.GenericFibreOpen.isOpen_preimage_range_spMap_fraction

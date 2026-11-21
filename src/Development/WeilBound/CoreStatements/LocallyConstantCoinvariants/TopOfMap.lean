@@ -1,6 +1,7 @@
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LocConstChar
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoinvariantsFiniteOfSmoothLevi
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreRepresentationSmoothStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreRepresentationSmooth
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BernsteinUnitaryProductIrreducible
 
 noncomputable section

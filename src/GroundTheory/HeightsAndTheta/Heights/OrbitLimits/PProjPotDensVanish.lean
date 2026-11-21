@@ -2,9 +2,6 @@ import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsProjPotDensVanish
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PProjRegular
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PProjRankDropDens
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-import ReciprocityTheory.AnalyticForms.AnalyticCharts.MaDensCompEqZeroOfRankLt
-import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 set_option maxSynthPendingDepth 1
 
 noncomputable section

@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantMultiplierMirabolic
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.MirSides
@@ -130,3 +131,10 @@ theorem sideOf : StdGood → BdetLaw → SideOf := by
     rw [map_mul, modPow_mul, modPow_one_eq (Matrix.GeneralLinearGroup.det (π g)), ← h.vall g]
 
 end GlobalTheory.CompanionTheory.MirSides
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.side_term_identity : StdGood → BdetLaw → SideOf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MirSides.sideOf

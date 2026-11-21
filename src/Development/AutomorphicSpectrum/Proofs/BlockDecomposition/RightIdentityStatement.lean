@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.HeckeEta
 
+section
 open PositivityTheory.Rg.Rsw GlobalTheory.Cont
 
 namespace GlobalTheory.CompanionTheory.Dblock
@@ -55,3 +56,9 @@ theorem rightId : RightId := by
   exact hhA.eqOn_of_preconnected_of_eventuallyEq hgA hVconn (hHV hx₀) hev ⟨hzU, hzc⟩
 
 end GlobalTheory.CompanionTheory.Dblock
+end
+
+open PositivityTheory.Rg.Rsw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.right_identity_statement : RightId := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Dblock.rightId

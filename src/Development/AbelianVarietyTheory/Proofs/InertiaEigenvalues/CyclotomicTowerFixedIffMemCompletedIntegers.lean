@@ -1,9 +1,9 @@
 import Mathlib
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicTowerTraceAlmostSurjectiveStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumMulLeftTransversal
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.Cyc
 
 namespace GlobalTheory.CycInvariants
@@ -153,3 +153,9 @@ theorem fixed_iff_mem_Ohat : ∀ (l : ℕ) [Fact l.Prime]
     rw [hact.1, (IntermediateField.mem_fixingSubgroup_iff _ _).1 hh u hu]
 
 end GlobalTheory.CycInvariants
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.Cyc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cyclotomicTower_fixed_iff_mem_completedIntegers : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (PadicComplex l ≃+* PadicComplex l)), IsActC act → ∀ (K : FinExt l) (y : PadicComplex l), ‖y‖ ≤ 1 → ((∀ h ∈ Hinf K, act h y = y) ↔ y ∈ Ohat K) := by
+  atlas_forward_decl GlobalTheory.CycInvariants.fixed_iff_mem_Ohat

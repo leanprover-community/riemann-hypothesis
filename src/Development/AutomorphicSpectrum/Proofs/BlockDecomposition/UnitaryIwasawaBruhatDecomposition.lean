@@ -1,8 +1,10 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.UnitaryExtremality.SatPowNonvan
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsStrictDom
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsPermWOne
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemIwUIff
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct GlobalTheory.CompanionTheory.SatPow
 
 noncomputable section
@@ -594,3 +596,9 @@ theorem bruhat_iwasawa : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplic
 end GlobalTheory.CompanionTheory.BruhatIw
 
 end
+end
+
+open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct GlobalTheory.CompanionTheory.SatPow
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_iwasawa_bruhat_decomposition : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (σ : L →+* L) (n : ℕ), (∀ x, σ (σ x) = x) → (∀ x, Valued.v (σ x) = Valued.v x) → ∀ g : GU σ n, ∃ (b w i : GU σ n) (π : Equiv.Perm (Fin n)), IsBorelU b ∧ IsPermW w π ∧ i ∈ IwU σ n ∧ g = b * w * i := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BruhatIw.bruhat_iwasawa

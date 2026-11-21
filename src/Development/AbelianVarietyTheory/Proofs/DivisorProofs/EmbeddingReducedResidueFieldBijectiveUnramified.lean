@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidueEqZeroIffV
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FrTanDirAlg
+
+section
 open NumberField MvPowerSeries IsLocalRing ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FGDepth GlobalTheory.CharDepth GlobalTheory.FactorDepth GlobalTheory.IndefiniteRowSideFullHecke.TypedPartSplitPrimes GlobalTheory.PrimePart
 
 set_option autoImplicit false
@@ -115,3 +117,10 @@ theorem red_bijective (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Ho
     exact (mul_right_cancel₀ hσ this).symm
 
 end GlobalTheory.PrimePart
+end
+end
+
+open NumberField MvPowerSeries IsLocalRing ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FGDepth GlobalTheory.CharDepth GlobalTheory.FactorDepth GlobalTheory.IndefiniteRowSideFullHecke.TypedPartSplitPrimes GlobalTheory.PrimePart
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.embeddingReducedResidueField_bijective_unramified : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (l : Level H) (c : Coeff l) (p : ℕ) [Fact p.Prime] (T : CDVR) (io : c.F →+* T.Fr) (X : ValExt T p), UnramIn E p → Function.Bijective (red io X) := by
+  atlas_forward_decl GlobalTheory.PrimePart.red_bijective

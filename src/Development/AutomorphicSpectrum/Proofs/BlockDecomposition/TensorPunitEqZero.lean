@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.IsCompl
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeftCommLTensorNatural
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PerfectTensorProductStatement
 open TensorProduct CrystallineSemistableComparison.D

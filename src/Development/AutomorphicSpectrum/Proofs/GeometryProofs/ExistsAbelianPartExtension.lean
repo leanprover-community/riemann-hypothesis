@@ -9,9 +9,10 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.B
 import Development.AbelianVarietyTheory.PublishedTheorems.SemiabelianTori.GeometricallyConnectedSplitTorusAff
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCRing
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsTorusExtensionFiniteStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusExtensionAbelianQuotientStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusExtensionAbelianQuotient
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FinrankAbPartTorusPos
 
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField TensorProduct Filter Topology Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
 open scoped CategoryTheory.Obj
@@ -33,3 +34,11 @@ theorem abPart_exists (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Ho
   exact ⟨L', _, inferInstance, algebraMap L L', ⟨⟨_, m, τ, tB, e, he, ha, hp⟩⟩⟩
 
 end GlobalTheory.CompanionTheory.Ar
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField TensorProduct Filter Topology Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_abelian_part_extension : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (S : Scheme.{0}) (t : SAB H S) (L : Type) [Field L] [NumberField L] (z : Sp L ⟶ S), ∃ (L' : Type) (_ : Field L') (_ : NumberField L') (e : L →+* L'), Nonempty (AbPart t (spMap e ≫ z)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.abPart_exists

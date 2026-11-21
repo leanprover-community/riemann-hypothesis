@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LocLatSat
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalLatticeSaturation.BcGSmulR
 
 noncomputable section

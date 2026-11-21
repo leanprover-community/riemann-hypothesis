@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.WeaklyAdmissibleFiltrations.Statement
 import Formalism.WeaklyAdmissibleFiltrations.StatementTor
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CompactQuotientSubmodule
 

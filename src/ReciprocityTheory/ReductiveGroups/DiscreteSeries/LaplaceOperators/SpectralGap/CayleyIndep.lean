@@ -1,5 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.SpectralGap.NonvanishingHypotheses
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.SpectralGap.CayleyIndepA
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CayleyIndependent
 
 noncomputable section

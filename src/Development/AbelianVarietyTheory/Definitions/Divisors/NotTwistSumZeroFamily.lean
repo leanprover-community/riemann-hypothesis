@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.TwistAtEach
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsStalkZeta
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumIOfSumFMul
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisedMemberDividingThetaConstantNeZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsYy

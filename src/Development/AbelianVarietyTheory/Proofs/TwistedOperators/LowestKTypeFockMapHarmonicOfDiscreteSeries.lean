@@ -2,18 +2,15 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.L2UnitaryRepresentationData
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LieActionFockOperatorsScalarsTraceStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeilMaximalCompactFockSubstitutionCharacterStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsWeilDatumGeneratorRealOneParamGroup
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MixedLaplacianKillsProductOfMinors
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HolomorphicDiscreteSeriesLowestKTypeSmoothIrredu
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowestKTypeSmoothModelsOnThetaTargets
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockPolynomialVectorsInjectiveNonzeroVacuum
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowestKTypeCoefficientWeightEqMinorWeights
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSmoothAutomorphicFunctionTranslateAtRealPlace
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowestKTypeValuesKilledByLoweringPart
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PtYAndItYOfPair
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsArchimedeanLiftUnitaryGroupProduct
-import Development.AbelianVarietyTheory.Counterexamples.RotationExamples.OneLeAPlLast
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompAtMtEqInfMat
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum
 open Formalism.IndefR.Mult (DSModel dualPar parA parB)
 open Formalism.MainNotions.SchurIrreducible (AdmGK ARi ARiiiUp ARiiiDown ARiiiLine DiscreteSeriesBlattner admQ5)
@@ -489,3 +486,20 @@ theorem ioHarm : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Pub
 end GlobalTheory.ArchRec.IoHarmPf
 
 end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum
+open Formalism.IndefR.Mult (DSModel dualPar parA parB)
+open Formalism.MainNotions.SchurIrreducible (AdmGK ARi ARiiiUp ARiiiDown ARiiiLine DiscreteSeriesBlattner admQ5)
+open GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction hiding Mat
+open GlobalTheory.IndefiniteRowSideFullHecke.BarMatrix (SignCompat plainMat barMat)
+open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (fockIp)
+open GlobalTheory.Chain (signed)
+open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
+open MeasureTheory Matrix
+open scoped TensorProduct InnerProductSpace ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.ArchRec
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lowestKTypeFockMap_harmonic_of_discreteSeries : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → ∀ D : D7, IoHarm D := by
+  atlas_forward_decl GlobalTheory.ArchRec.IoHarmPf.ioHarm

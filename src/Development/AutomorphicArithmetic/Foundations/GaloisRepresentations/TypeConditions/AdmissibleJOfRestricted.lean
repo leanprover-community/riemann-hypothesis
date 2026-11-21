@@ -3,7 +3,6 @@ import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.Hecke
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ConclusionG5OfLocalDuality
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleJOfParams
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DutiesOfLarge
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AbsIrreducibleDistinctConstituents
 
 noncomputable section
 

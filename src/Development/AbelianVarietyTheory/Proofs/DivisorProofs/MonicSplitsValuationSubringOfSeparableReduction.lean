@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Polynomial IsLocalRing
 
 namespace GlobalTheory
@@ -65,3 +68,9 @@ theorem monic_splits_of_separable_residue (Ω : Type) [Field Ω] [IsSepClosed Ω
   exact ⟨q.roots, hqs.eq_prod_roots_of_monic hq⟩
 
 end GlobalTheory
+end
+
+open Polynomial IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monic_splits_valuationSubring_of_separable_reduction : ∀ (Ω : Type) [Field Ω] [IsSepClosed Ω] (V : ValuationSubring Ω) (q : Polynomial V), q.Monic → (q.map (IsLocalRing.residue V)).Separable → ∃ s : Multiset V, q = (s.map fun b => Polynomial.X - Polynomial.C b).prod := by
+  atlas_forward_decl GlobalTheory.monic_splits_of_separable_residue

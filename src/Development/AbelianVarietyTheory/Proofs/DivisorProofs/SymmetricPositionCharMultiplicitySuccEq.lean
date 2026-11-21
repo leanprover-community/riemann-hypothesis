@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SplitDoublingNBlock
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.FinGL.RootExchange
@@ -365,3 +367,10 @@ theorem nPos_succ (F : Type) [Field F] [Fintype F] (ψ : AddChar F ℂ) (hψ : �
 end Main
 
 end GlobalTheory.FinGL.RootExchange
+end
+end
+
+open GlobalTheory.FinGL Formalism.L2.DIV Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symmetricPositionCharMultiplicity_succ_eq : ∀ (F : Type) [Field F] [Fintype F] (ψ : AddChar F ℂ), ψ ≠ 1 → ∀ (r : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (τ : Representation ℂ (GL (Fin r) F) V) (ρ k : ℕ), ρ + k + 2 ≤ r → nPos ψ τ ρ k = nPos ψ τ (ρ + 1) k := by
+  atlas_forward_decl GlobalTheory.FinGL.RootExchange.nPos_succ

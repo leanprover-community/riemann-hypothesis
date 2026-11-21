@@ -1,18 +1,15 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.MoriwakiSt
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPieceDegree
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEmbeddingPieces
-import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPushDown
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefOnGenericOfSemipos
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HeightsNonnegOfIntersectionSystemStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GeneratedLineBundleNefOnFibresStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HeightsNonnegOfIntersectionSystem
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GeneratedLineBundleNefOnFibres
 
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology NumberField
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
@@ -32,3 +29,9 @@ theorem smallGenerated_count_upper_of_moriwakiHS :
     (hM K ι Ω y D A P0 II hII hY hb hS.normalForm_baseLattice_le_dualSpan_sup_line hS.semipos hconj hnef hgeneric hhts).limsup_eq
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hilbert_samuel_G7_of_moriwaki : MoriwakiHSStatement → GroundTheory.Heights₂.Heights.HilbertSamuel.G7.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.smallGenerated_count_upper_of_moriwakiHS

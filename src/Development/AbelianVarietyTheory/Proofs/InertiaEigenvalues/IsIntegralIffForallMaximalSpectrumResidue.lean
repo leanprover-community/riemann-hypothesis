@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma Polynomial
 
 namespace GlobalTheory.UnitLemma
@@ -41,3 +43,9 @@ theorem isIntegral_iff_forall_maximalSpectrum (K : UQ) (B : InvAlg K) (hred : Is
     exact IsReduced.eq_zero z ⟨k, hz⟩
 
 end GlobalTheory.UnitLemma
+end
+
+open GlobalTheory.UnitLemma Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIntegral_iff_forall_maximalSpectrum_residue : ∀ (K : UQ) (B : InvAlg K), IsReduced B.A → ∀ x : B.A, IsIntegral K.O x ↔ ∀ m : MaximalSpectrum B.A, IsIntegral K.O (Ideal.Quotient.mk m.asIdeal x) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.isIntegral_iff_forall_maximalSpectrum

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -162,3 +164,10 @@ theorem okCompact : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNo
   exact ((isCompact_closedBall 0 _).image hes).of_isClosed_subset hcl hsub
 
 end GlobalTheory.JR.OKCompact
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCompact_finiteEtaleHermitianPair_OK : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (A : Et F E), IsCompact A.OK := by
+  atlas_forward_decl GlobalTheory.JR.OKCompact.okCompact

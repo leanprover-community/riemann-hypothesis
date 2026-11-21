@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.MemPowSub
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Polynomial GlobalTheory.QNorm GlobalTheory.CNorm
 open scoped WithZero TensorProduct
 
@@ -78,3 +81,10 @@ theorem pIdx_pTor_ker_range_ne_zero :
     exact h1 (Nat.eq_zero_of_zero_dvd hdv)
 
 end GlobalTheory.CNorm
+end
+
+open NumberField IsDedekindDomain Polynomial GlobalTheory.QNorm GlobalTheory.CNorm
+open scoped WithZero TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.powIndex_torsion_finite_ker_range : ∀ (p : ℕ) (A A' : Type) [CommGroup A] [CommGroup A'] (g : A →* A'), pIdx p (⊤ : Subgroup A) ≠ 0 → pTor p (⊤ : Subgroup A) ≠ 0 → pTor p g.range ≠ 0 → pIdx p g.ker ≠ 0 ∧ pTor p g.ker ≠ 0 ∧ pIdx p g.range ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CNorm.pIdx_pTor_ker_range_ne_zero

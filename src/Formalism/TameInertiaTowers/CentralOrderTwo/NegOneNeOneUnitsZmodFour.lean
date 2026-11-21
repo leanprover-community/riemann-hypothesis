@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.TameInertiaTowers.StatementGroup
 import Formalism.TameInertiaTowers.CentralOrderTwo.TwoAdic
 
 namespace Formalism.TwoAdicCyclotomicDecomposition

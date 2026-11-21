@@ -1,4 +1,7 @@
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.LogAbsBasic
+import BuildAid.ForwardExisting
+
+section
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 namespace GlobalTheory.CompanionTheory.RadicalForm
@@ -160,3 +163,9 @@ theorem radical : Radical := by
   rw [nrm, Units.val_mul, ← mul_assoc, h2, one_mul, thetaR_val]
 
 end GlobalTheory.CompanionTheory.RadicalForm
+end
+
+open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.radical_subspace_facts : Radical := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RadicalForm.radical

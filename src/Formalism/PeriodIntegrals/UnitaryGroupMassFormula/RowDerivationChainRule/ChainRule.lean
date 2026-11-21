@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.RowLetter
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RowDerivationChainRule.Development
 
 open MvPolynomial

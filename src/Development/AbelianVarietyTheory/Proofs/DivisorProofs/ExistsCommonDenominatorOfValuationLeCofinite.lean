@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory.ValBoundDenom
@@ -50,3 +53,11 @@ theorem exists_common_denominator_of_valuation_le (E : Type) [Field E] [NumberFi
   exact r.isIntegral_coe
 
 end GlobalTheory.ValBoundDenom
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_common_denominator_of_valuation_le_cofinite : ∀ (E : Type) [Field E] [NumberField E] (β : IsDedekindDomain.HeightOneSpectrum (𝓞 E) → WithZero (Multiplicative ℤ)),
+    (∀ᶠ w in Filter.cofinite, β w ≤ 1) → ∃ D : 𝓞 E, D ≠ 0 ∧
+      ∀ x : E, (∀ w : IsDedekindDomain.HeightOneSpectrum (𝓞 E), w.valuation E x ≤ β w) → IsIntegral ℤ ((D : E) * x) := by
+  atlas_forward_decl GlobalTheory.ValBoundDenom.exists_common_denominator_of_valuation_le

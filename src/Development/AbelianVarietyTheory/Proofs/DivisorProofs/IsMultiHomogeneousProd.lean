@@ -1,8 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.JoinCastSucc
-import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.FramedLatticeZeroCycleHeight
-import Development.AbelianVarietyTheory.Definitions.Divisors.BlockSphereMeanLinForm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinSubstLinSubst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaussAbsEqISup
 

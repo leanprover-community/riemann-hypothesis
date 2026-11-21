@@ -1,11 +1,7 @@
 import Mathlib
 import Formalism.LocalToGlobal.LatticeGeometry.ViewsC
-import Formalism.SharpRestriction.Divisibility.PrinLevClass
-import Formalism.SharpRestriction.Divisibility.LatticeTransfer
-import Formalism.SharpRestriction.Divisibility.PlaceRankTwoOne
 import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
-import Formalism.SharpRestriction.Divisibility.ZetaProductPairs
 import Formalism.SharpRestriction.Divisibility.InnerProductFormulaField
 import Formalism.SharpRestriction.Divisibility.KudlaSiegelWeil
 import Formalism.SharpRestriction.Divisibility.LocalQuadraticParts
@@ -13,7 +9,6 @@ import Formalism.SharpRestriction.Divisibility.LocalNonemptiness.SubsingletonRan
 import Formalism.SharpRestriction.Divisibility.LocalNonemptiness.WeightAlgebra
 import Formalism.SharpRestriction.Divisibility.LocalNonemptiness.LiftErrorLocal
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ExampleSatisfiesConditionsAtFive
-import Formalism.LocalRingCardinality.DataExtra
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsProvisionalShimX
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SubRkOfPsiOfEqRkOfCEmb
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsProvisionalDivX

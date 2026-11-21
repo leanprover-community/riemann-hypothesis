@@ -1,6 +1,5 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.HermitianCellMeasures.EmDefs
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianMeasureConjugation
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousSmulH
 noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct

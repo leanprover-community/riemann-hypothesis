@@ -1,11 +1,9 @@
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalRingCardinality.DataDIVDefs
 import Formalism.LocalRingCardinality.DataLatDefs
 import Formalism.LocalRingCardinality.DataKap
 import Formalism.LocalRingCardinality.DataExtra
 import Formalism.LocalRingCardinality.DataParams
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.Rerealize
 
 open Module NumberField
 

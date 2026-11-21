@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.CharZeroFunctionField
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsBallFamMonoNegAdd
+
+section
 open Filter Topology
 open GlobalTheory GlobalTheory.VolBr
 
@@ -56,3 +57,10 @@ theorem isBallFam_pow_le_encard :
     _ ≤ (B (r * Q * R)).encard := Set.encard_le_encard hsub
 
 end GlobalTheory.VolBr
+end
+
+open Filter Topology
+open GlobalTheory GlobalTheory.VolBr
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.seminormBallFamily_pow_le_encard_of_linearIndependent : ∀ (G : Type) [AddCommGroup G] (Λ : AddSubgroup G) (B : ℝ → Set G), IsBallFam Λ B → ∀ (r Q : ℕ) (R : ℝ) (v : Fin r → G), 0 ≤ R → LinearIndependent ℤ v → (∀ j, v j ∈ B R) → ((Q ^ r : ℕ) : ℕ∞) ≤ (B (r * Q * R)).encard := by
+  atlas_forward_decl GlobalTheory.VolBr.isBallFam_pow_le_encard

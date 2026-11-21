@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SurjectiveHalf
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.H2EquivOfTorsionCharacter
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LatticeNhds

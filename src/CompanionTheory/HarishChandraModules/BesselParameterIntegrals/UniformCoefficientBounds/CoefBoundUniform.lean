@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.QuotInv
 import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.IntegralMemOfIsClosed
 
 open Matrix Filter Topology Set

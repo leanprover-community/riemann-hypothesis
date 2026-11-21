@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IndApplyOne
+
+section
 open GlobalTheory.BI GlobalTheory.BrauerZero
 
 namespace GlobalTheory
@@ -33,3 +35,9 @@ theorem exists_lt_commutator_mem_of_ne_top {G : Type} [Group G] [Finite G] [Grou
     (K.inv_mem hk')
 
 end GlobalTheory
+end
+
+open GlobalTheory.BI GlobalTheory.BrauerZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_gt_commutator_mem_of_ne_whole : ∀ {G : Type} [Group G] [Finite G] [Group.IsNilpotent G] (K : Subgroup G), K ≠ ⊤ → ∃ A : Subgroup G, K < A ∧ ∀ a ∈ A, ∀ b ∈ A, a * b * a⁻¹ * b⁻¹ ∈ K := by
+  atlas_forward_decl GlobalTheory.exists_lt_commutator_mem_of_ne_top

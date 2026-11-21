@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.FormsStable
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LevelPrimeIncidenceFiniteFibresStableStatement
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.LvT
@@ -188,3 +189,11 @@ theorem uop_isExt : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u) (i : ℕ) (M 
     rw [← e1, finsum_mem_eq_finite_toFinset_sum _ (hfin p).1, finsum_mem_eq_finite_toFinset_sum _ (hfin p).1, map_sum]
 
 end GlobalTheory.LvT
+end
+end
+
+open Formalism.BasicNotions Classical NumberField GlobalTheory.LvT
+open Formalism.MainNotions.product_first_zeroth_parts (Ow tops wsum ten blk nfAll CSpan IntSpan Nm_succ wSh cTw)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isExt_Uop_finsum_inc_of_isExt : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u) (i : ℕ) (M : PtModel X i) (v : X.A.vT) (φ : Fn X i) (Φ : M.Pt → M.Val), M.IsExt φ Φ → M.IsExt (Uop X i v φ) (fun p => ∑ᶠ p₁ ∈ {p₁ | M.Inc v p p₁}, Φ p₁) := by
+  atlas_forward_decl GlobalTheory.LvT.uop_isExt

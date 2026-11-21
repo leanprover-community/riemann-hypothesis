@@ -1,12 +1,11 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.HighestVectorsRegularLine
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WtRInjective
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CPoly
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualWeightSpacesSpanStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualWeightSpacesSpan
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorCharInjective
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeightPolynomialTraceIdentityStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominanceOfWeylCharacterCoeffStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeightPolynomialTraceIdentity
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominanceOfWeylCharacterCoeff
 
+section
 noncomputable section
 open Matrix Finset
 open scoped InnerProductSpace
@@ -49,3 +48,12 @@ theorem topeG : ∀ {n : ℕ} (lam : Fin n → ℤ), Antitone lam → ∀ (E : K
   exact_mod_cast this
 
 end GlobalTheory.CompanionTheory.RealCountG.TopeG
+end
+end
+
+open Matrix Finset
+open scoped InnerProductSpace
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.RealCount GlobalTheory.CompanionTheory.RealCountG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_weights_dominated : ∀ {n : ℕ} (lam : Fin n → ℤ), Antitone lam → ∀ (E : KMod n) (T : E.V →L[ℂ] E.V), IsLefK lam E T → (⨆ μ, wtDual E μ) = ⊤ ∧ ∀ μ, wtDual E μ ≠ ⊥ → DomLE (wtR μ) (m0 lam) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RealCountG.TopeG.topeG

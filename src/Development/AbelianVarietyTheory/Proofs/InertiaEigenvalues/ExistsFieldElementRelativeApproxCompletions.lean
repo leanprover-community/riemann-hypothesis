@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIdeleExistsLocalApprox
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory.WeakApprox
@@ -121,3 +123,9 @@ theorem exists_units_approx :
     _ = _ := by rw [htP P hP, map_mul]; ac_rfl
 
 end GlobalTheory.WeakApprox
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_field_element_relative_approx_completions : ∀ (L : Type) [Field L] [NumberField L] (R : Finset (HeightOneSpectrum (𝓞 L))) (z : ∀ P : HeightOneSpectrum (𝓞 L), P.adicCompletion L), (∀ P ∈ R, z P ≠ 0) → ∃ k : Lˣ, ∀ P ∈ R, Valued.v (z P - algebraMap L (P.adicCompletion L) (k : L)) ≤ WithZero.exp (-1 : ℤ) * Valued.v (z P) := by
+  atlas_forward_decl GlobalTheory.WeakApprox.exists_units_approx

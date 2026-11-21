@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KerInfMemLocSpan
-import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.StrongMultiplicityOne
 import GroundTheory.AutomorphicForms.MultiplicityOne.Injective
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CuspRep Formalism.UG GlobalTheory.LFun Matrix MeasureTheory
@@ -94,3 +95,10 @@ theorem GlobalTheory.JSW.MirSemi.locSpan_openInv : ∀ (E : Type) [Field E] [Num
   have h := GlobalTheory.JSW.MirSemi.locSpan_le (V := openInv E a) (S := S) (mem_openInv_of_mem hφ)
     (fun F hF h _ => rt_mem_openInv hF h) (fun F hF X _ ν _ k γ _ => kerInf_mem_openInv hF ν k γ) hF
   exact ⟨invSub F, h, fun u hu g => hu g⟩
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CuspRep Formalism.UG GlobalTheory.LFun Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedeanKernelSpan_cuspForm_right_invariant_open : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (S : Finset (HeightOneSpectrum (𝓞 E))) (π : CuspSub E a) (φ : Sm E a), φ ∈ π.V → ∀ F ∈ GlobalTheory.JSW.MirSemi.locSpan S φ.1, ∃ U : Subgroup (GL (Fin a) (Af E)), IsOpen (U : Set (GL (Fin a) (Af E))) ∧ ∀ u ∈ U, ∀ g, F (g * finGL E a u) = F g := by
+  atlas_forward_decl GlobalTheory.JSW.MirSemi.locSpan_openInv

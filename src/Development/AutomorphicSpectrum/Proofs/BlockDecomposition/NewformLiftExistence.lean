@@ -1,7 +1,9 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 import GroundTheory.GlobalFields.AnalyticClassNumber.DirichletHeckeCorrespondence
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain GroundTheory.Global GroundTheory.LocalField Ad3 Ad3.R
 open GroundTheory.Global.RationalSymbol (prime unitAt)
 open GroundTheory.Automorphic.GodementSection (adeleAt)
@@ -97,3 +99,9 @@ theorem f0 : Ad3.R.B0 → Ad3.R.F0 := fun _ _ _ χ =>
     heckeCharacter_ofFinite_mul χ d n h0 h1⟩⟩
 
 end GlobalTheory.CompanionTheory.RankinSelbergQ
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_lift_existence : Ad3.R.B0 → Ad3.R.F0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelbergQ.f0

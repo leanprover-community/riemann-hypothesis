@@ -1,9 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.InertKernelTheory.DefsBeCob
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PadicNormTwoHundredSixteenEqOneOfFiveLe
-import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.BridgeTwoMore
-import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FlowTwoTorsionWp
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.ShortModelTheta
@@ -239,3 +239,9 @@ theorem thetaTie_holds : ThetaTie := by
     (Finsupp.single () n)
 
 end GlobalTheory.ShortModelTheta
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaUnitFunction_shortModel_integral : Formalism.L2.KerInert.BeCob.ThetaTie := by
+  atlas_forward_decl GlobalTheory.ShortModelTheta.thetaTie_holds

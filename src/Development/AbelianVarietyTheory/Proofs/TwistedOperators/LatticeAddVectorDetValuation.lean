@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix
@@ -55,3 +57,10 @@ theorem addVec : AddVec := by
           exact Submodule.mem_sup_left (row_mem_rowLat _ _)
 
 end GlobalTheory.InertZeta
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_add_vector_det_valuation : AddVec := by
+  atlas_forward_decl GlobalTheory.InertZeta.addVec

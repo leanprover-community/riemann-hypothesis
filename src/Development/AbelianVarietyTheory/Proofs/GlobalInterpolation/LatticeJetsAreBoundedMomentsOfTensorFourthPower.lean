@@ -1,11 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.IsSemiChar
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MahlerCoefficientNormLeOneIffJetsBoundedMeasureMStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MahlerJetCoefficientMulStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MahlerJetCoefficientOfFamilyZeroOffEmbeddingStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MahlerJetCoefficientMulOfDisjointSupportStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MahlerCoefficientNormLeOneIffJetsBoundedMeasureM
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MahlerJetCoefficientMul
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MahlerJetCoefficientOfFamilyZeroOffEmbedding
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MahlerJetCoefficientMulOfDisjointSupport
 
+section
 open GlobalTheory.MomN Formalism.L2.Th1.H
 
 noncomputable section
@@ -128,3 +129,10 @@ theorem jets_root : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (n : T
   rw [key, map_pow, norm_pow] at hb
   exact (pow_le_one_iff_of_nonneg (norm_nonneg _) (by norm_num)).1 hb
 end GlobalTheory.MomRoot
+end
+end
+
+open GlobalTheory.MomN Formalism.L2.Th1.H
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.latticeJetsAreBoundedMoments_of_tensorFourthPower : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (n : Type) [Fintype n] (ω : ℂ_[q]) (Λ : AddSubgroup (n → ℂ)) (G : (n → ℂ) → ℂ), ContDiff ℂ ⊤ G → LatInt ι ω (pow4 Λ) (tens4 G) → LatInt ι ω Λ G := by
+  atlas_forward_decl GlobalTheory.MomRoot.jets_root

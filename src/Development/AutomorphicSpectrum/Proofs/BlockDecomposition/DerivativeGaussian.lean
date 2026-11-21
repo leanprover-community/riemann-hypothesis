@@ -1,6 +1,5 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocallyConstantMajorants.TemperedDerivatives.StepsD
-import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
 open Ad3.K.LC
 
 noncomputable section

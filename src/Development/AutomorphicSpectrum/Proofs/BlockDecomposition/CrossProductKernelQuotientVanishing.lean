@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IotaQInjective
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -214,3 +216,10 @@ theorem map_iotaQ_eq_zero (R : Type) [CommRing R] (C : Type) [Category.{0} C] [F
   rw [h1, huv, map_sub, h2, h3, sub_zero]
 
 end GlobalTheory.CompanionTheory.WedgeOf.Shuffle
+end
+end
+
+open CategoryTheory AlgebraicGeometry TensorProduct Opposite MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR MainStatements.Hodge GlobalTheory.CompanionTheory.WedgeOf
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cross_product_kernel_quotient_vanishing : ∀ (R : Type) [CommRing R] (C : Type) [Category.{0} C] [Finite C] [Quiver.IsThin C] (F : C ⥤ CommAlgCat.{0} R) (t : H1 F ⊗[R] H1 F), TensorProduct.lift (crossB F) t = 0 → TensorProduct.map (iotaQ F) (iotaQ F) t = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WedgeOf.Shuffle.map_iotaQ_eq_zero

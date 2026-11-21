@@ -1,8 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GaussManinPeriods
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianHodgeDeRham
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeDeformationComplexStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeDeformationComplex
 
 set_option autoImplicit false
 

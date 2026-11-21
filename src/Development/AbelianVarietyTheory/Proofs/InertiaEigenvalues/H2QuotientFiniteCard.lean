@@ -1,11 +1,12 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BijectiveOfRetract
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousCyclotomicCharacterLocalGaloisStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardH2LeCardLocalStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousCyclotomicCharacterLocalGalois
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardH2LeCardLocal
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotPowMaximalIdealDiscreteFiniteStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardH2EqSameActionStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NatCardH2CompEquivStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardH2EqSameAction
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NatCardH2CompEquiv
+
+section
 open ReciprocityTheory.Gal Formalism.RepresentationBoundsCohomology.LOC ReciprocityTheory.ChartRestriction.T2 GlobalTheory.FunctorialityH2
 
 namespace GlobalTheory.QuotientH2Count
@@ -76,3 +77,9 @@ theorem h2_quot_card : ∀ {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[
   exact h2_twist_card_of_zmod hTD hK i ε _ (k + 1) (Nat.succ_pos k) hc
 
 end GlobalTheory.QuotientH2Count
+end
+
+open ReciprocityTheory.Gal Formalism.RepresentationBoundsCohomology.LOC ReciprocityTheory.ChartRestriction.T2 GlobalTheory.FunctorialityH2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_H2_twist_quotient_pow_and_card_le : ∀ {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [TopologicalSpace O] [IsTopologicalRing O] {G : Type} [Group G] [TopologicalSpace G], Formalism.GaloisCohomology.LocalTateDualityK → FiniteDimensional ℚ_[p] K → PadicCoeff p O → ∀ (i : G ≃ₜ* GK p K) {ε : G →* Oˣ}, IsCyc p K (carry i ε) → ∀ k : ℕ, Finite (H2 (twist ε (O ⧸ IsLocalRing.maximalIdeal O ^ k))) ∧ Nat.card (H2 (twist ε (O ⧸ IsLocalRing.maximalIdeal O ^ k))) ≤ Nat.card (O ⧸ IsLocalRing.maximalIdeal O ^ k) := by
+  atlas_forward_decl GlobalTheory.QuotientH2Count.h2_quot_card

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
@@ -181,3 +183,10 @@ theorem term : Term := by
     rw [vec_kap_mul π d i κ ((S.mem r).1 hr), lineZeta_inv_smul, hm, hc, mul_one]
 
 end GlobalTheory.CompanionTheory.RgEisTerm
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.block_term_identity : Term := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisTerm.term

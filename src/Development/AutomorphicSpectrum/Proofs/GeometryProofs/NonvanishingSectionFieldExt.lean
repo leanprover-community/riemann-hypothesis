@@ -1,20 +1,19 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.KeyBadSt
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsThetaMeanSquareNorm
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.ZhangDimensionPushDownGrassmannianHeightBounds
 import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
-import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LeWchartOne
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EqZeroOfSmulEqZero
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PolarizedDataFieldExtensionStatement
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsNonzeroSectionPpDataStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionModuleDivisibleAtPrimeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionModuleBoundedDenominatorStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NonzeroSectionGenericFibreStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsSectionNotInSetStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionModuleFieldExtMapStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrincipalExtensionProjectiveModuleStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsNonzeroSectionPpData
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionModuleDivisibleAtPrime
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionModuleBoundedDenominator
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NonzeroSectionGenericFibre
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsSectionNotInSet
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionModuleFieldExtMap
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrincipalExtensionProjectiveModule
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights TensorProduct
@@ -98,3 +97,14 @@ theorem section_and_basis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   exact this.2
 
 end GlobalTheory.CompanionTheory.Ar.Sl.KeyGen
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+open GroundTheory.Heights₂.Heights TensorProduct
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonvanishing_section_field_ext : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (L : Type) [Field L] [NumberField L] (D : PPData H L), 1 ≤ D.g → ∃ (L' : Type) (_ : Field L') (_ : NumberField L') (_ : Algebra L L') (D' : PPData H L') (_ : D.Ext D') (s : Out.H0 D'.t.PP.L 1) (e : Fin D'.g → D'.B.carrier), KeyDeg.NonVan D'.t.G.hom s ∧ LinearIndependent (𝓞 L') e ∧ Submodule.span (𝓞 L') (Set.range e) = ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Sl.KeyGen.section_and_basis

@@ -1,8 +1,6 @@
 import Mathlib
-import GroundTheory.LocalFields.FiniteExtension
 import GroundTheory.LocalFields.Eisenstein
 import GroundTheory.LocalFields.SeparableClosure
-import GroundTheory.LocalFields.UnramifiedExistence
 import GroundTheory.LocalFields.MaximalUnramified
 set_option maxHeartbeats 4000000
 set_option synthInstance.maxHeartbeats 400000

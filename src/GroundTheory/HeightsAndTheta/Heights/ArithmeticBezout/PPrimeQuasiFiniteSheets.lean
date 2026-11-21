@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsPrimeQuasiFiniteSheets
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsFiniteFibresDimLe
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StDominantPrimitiveFibres
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSimpleRootBranch

@@ -4,9 +4,10 @@ import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.Eventual
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubobjectLeIffAffineSectionsStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuasicoherentSupSectionsStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoherentSubobjectCoherentStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RestrictedSystemKilledByIdealStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RestrictedSystemKilledByIdeal
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArtinReesClosedSystemStatement
 
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
 
 set_option autoImplicit false
@@ -124,3 +125,10 @@ theorem statement_of_mul_mem : ∀ {A : Type} [CommRing A] [IsNoetherianRing A] 
   exact halg (h₂ _ (GlobalTheory.T.coherent_subobject_coherent hE _ hDq) _ hS' (GlobalTheory.T.restricted_system_killed_by_ideal I J₂ _ S c' hkill) hP') hDP
 
 end GlobalTheory.CompanionTheory.GE.NonPrime
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.formal_existence_product_ideal : ∀ {A : Type} [CommRing A] [IsNoetherianRing A] (I : Ideal A) {X : Scheme.{0}} [X.Over (Spec (.of A))] [IsSeparated (X ↘ Spec (.of A))] [LocallyOfFiniteType (X ↘ Spec (.of A))] [QuasiCompact (X ↘ Spec (.of A))] (J J₁ J₂ : X.IdealSheafData), (∀ (U : X.affineOpens) (a b : Γ(X, U)), a ∈ J₁.ideal U → b ∈ J₂.ideal U → a * b ∈ J.ideal U) → Statement I J₁ → Statement I J₂ → Statement I J := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.NonPrime.statement_of_mul_mem

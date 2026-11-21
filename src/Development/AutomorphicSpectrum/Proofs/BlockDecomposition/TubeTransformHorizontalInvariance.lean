@@ -1,8 +1,7 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussTubeOfTubeGood
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContourShiftGaussianDecayStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContourShiftGaussianDecay
 
+section
 noncomputable section
 
 open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.CompanionTheory.TubeFourier
@@ -130,3 +129,10 @@ theorem GlobalTheory.CompanionTheory.TubeFourier.phi_shift_fst :
   exact GlobalTheory.T.contour_shift_gaussian_decay X
     (fun z : ℂ => Complex.exp (-GlobalTheory.CompanionTheory.TubeFourier.dot (z, ⟨c, y₂⟩) t) • G (z, ⟨c, y₂⟩))
     a b M hab hdiff hbound
+end
+end
+
+open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.CompanionTheory.TubeFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tube_transform_horizontal_invariance : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X] (Ω : Set (ℝ × ℝ)) (G : ℂ × ℂ → X), GaussTube G Ω → ∀ a b c : ℝ, a ≤ b → (∀ s ∈ Set.Icc a b, (s, c) ∈ Ω) → ∀ t : ℝ × ℝ, phi G (a, c) t = phi G (b, c) t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TubeFourier.phi_shift_fst

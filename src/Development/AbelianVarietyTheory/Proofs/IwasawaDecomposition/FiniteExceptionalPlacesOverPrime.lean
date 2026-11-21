@@ -2,6 +2,8 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSp
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SplitRep
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInertiaCyclotomicElement
 import Formalism.LocalToGlobal.NumberFieldFamilies.NPartCNd
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
 
 namespace GlobalTheory.PlacesExc
@@ -15,3 +17,9 @@ theorem finite_exceptional : ∀ (D : D7) (l : ℕ), l.Prime → ∃ F : Finset 
   exact ⟨fun h => hv (Or.inl h), fun h => hv (Or.inr h)⟩
 
 end GlobalTheory.PlacesExc
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_exceptional_places_over_prime : ∀ (D : D7) (l : ℕ), l.Prime → ∃ F : Finset (PlE D.host), ∀ v, v ∉ F → v ∉ placesOver D.host.E l ∧ v ∉ placesS D l := by
+  atlas_forward_decl GlobalTheory.PlacesExc.finite_exceptional

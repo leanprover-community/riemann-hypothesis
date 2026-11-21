@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StarMulOfMemKc
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CartanInt.Frob
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
 
@@ -73,3 +75,9 @@ theorem sum_norm_le_sum_singVal : ∀ (p q : ℕ) (B : Matrix (Fin p) (Fin q) �
         simp only [Finset.mul_sum, hd]
 
 end GlobalTheory.CartanInt.Frob
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_norm_entries_le_sum_singularValues : ∀ (p q : ℕ) (B : Matrix (Fin p) (Fin q) ℂ), ∑ i, ∑ j, ‖B i j‖ ≤ (((p + q : ℕ) : ℝ) + 1) / 2 * ∑ i ∈ Finset.range (min p q), singVal B i := by
+  atlas_forward_decl GlobalTheory.CartanInt.Frob.sum_norm_le_sum_singVal

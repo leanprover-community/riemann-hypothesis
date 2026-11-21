@@ -1,9 +1,9 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Bmu CompanionTheory.D.Upq.Sm Formalism.QuantumDeterminants
 
 noncomputable section
@@ -70,3 +70,9 @@ theorem factor : Factor := by
 end GlobalTheory.CompanionTheory.BmuFactor
 
 end
+end
+
+open CompanionTheory.Bmu
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.factorization' : Factor := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BmuFactor.factor

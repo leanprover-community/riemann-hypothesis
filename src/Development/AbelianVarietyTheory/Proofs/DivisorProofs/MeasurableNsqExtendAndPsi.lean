@@ -1,10 +1,10 @@
 import Mathlib
-import ReciprocityTheory.L2DbarEstimates.Imports
 import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FourSignHolds
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.L2ExtensionLogCanonical
 import Development.AbelianVarietyTheory.Definitions.Divisors.EtaleEmpty
-import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.APrimeI
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
 open scoped ENNReal ContDiff
 
@@ -31,3 +31,10 @@ theorem measurable_nsq_extend_and_psi : ∀ (n : ℕ) (Y : Type) [TopologicalSpa
     first | exact hq.log | fun_prop | measurability
 
 end GlobalTheory.OTY
+end
+
+open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
+open scoped ENNReal ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurable_nsq_and_psi_of_isSecOn : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] (ι La : Type) [AddCommGroup La] (A : WeightedAtlas n Y ι La), ∀ (la : La) (Ω : Set Y) (h : ι → Y → ℂ), IsOpen Ω → A.IsSecOn la Ω h → (∀ i y, y ∉ Ω → h i y = 0) → Measurable (A.nsq la h) ∧ ∀ (L : La) (s : Fin n → ι → Y → ℂ), (∀ k, A.IsSec L (s k)) → Measurable (psi A L s) := by
+  atlas_forward_decl GlobalTheory.OTY.measurable_nsq_extend_and_psi

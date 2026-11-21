@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.RankEqCardIffExistsFrameMatrixFirstColumnBlock
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.SplitFlip
 
 namespace GlobalTheory.FlipPathPairwise
@@ -59,3 +62,9 @@ theorem GlobalTheory.SplitFlip.isPath_flipPath : ∀ {γ : List Edge} {i j : ℕ
     simp only [List.head?_cons, Option.mem_def, Option.some.injEq] at hy
     subst hy
     exact h3 x hx (Edge.theta i j) rfl
+end
+
+open GlobalTheory.SplitFlip
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isSplitThetaGridPath_flipGridPathAtSquare : ∀ {γ : List Edge} {i j : ℕ}, IsPath γ → PassesThrough i j γ → IsPath (flipPath i j γ) := by
+  atlas_forward_decl GlobalTheory.SplitFlip.isPath_flipPath

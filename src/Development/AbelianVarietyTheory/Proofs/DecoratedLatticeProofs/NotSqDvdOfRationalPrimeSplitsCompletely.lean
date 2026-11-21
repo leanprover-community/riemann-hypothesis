@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryDatumLevelPrimeSplitDegreeGramFacts
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardAdditiveCharacterLocalNeOneSplitPrime
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory.St.G.SplitUnram
@@ -29,3 +31,9 @@ theorem not_sq_dvd_of_splitsIn : ∀ (E : Type) [Field E] [NumberField E] (T : �
   exact h2 (Ideal.le_of_dvd hdvd) he
 
 end GlobalTheory.St.G.SplitUnram
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.not_sq_dvd_of_rationalPrimeSplitsCompletely : ∀ (E : Type) [Field E] [NumberField E] (T : ℕ), T.Prime → GlobalTheory.St.G.SplitsIn E T → ∀ w : HeightOneSpectrum (𝓞 E), (T : 𝓞 E) ∈ w.asIdeal → ¬ w.asIdeal ^ 2 ∣ Ideal.span {(T : 𝓞 E)} := by
+  atlas_forward_decl GlobalTheory.St.G.SplitUnram.not_sq_dvd_of_splitsIn

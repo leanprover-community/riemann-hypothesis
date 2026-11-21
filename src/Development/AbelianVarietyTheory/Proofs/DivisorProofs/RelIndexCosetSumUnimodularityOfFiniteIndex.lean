@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG GlobalTheory.SatakeWeyl
 
 namespace GlobalTheory.SatakeWeyl
@@ -47,3 +48,9 @@ theorem unimod_of_unimodFin : UnimodFin → Unimod := by
   exact h
 
 end GlobalTheory.SatakeWeyl
+end
+
+open Formalism.UG GlobalTheory.SatakeWeyl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.relIndexCosetSumUnimodularity_of_finiteIndex : GlobalTheory.SatakeWeyl.UnimodFin → GlobalTheory.SatakeWeyl.Unimod := by
+  atlas_forward_decl GlobalTheory.SatakeWeyl.unimod_of_unimodFin

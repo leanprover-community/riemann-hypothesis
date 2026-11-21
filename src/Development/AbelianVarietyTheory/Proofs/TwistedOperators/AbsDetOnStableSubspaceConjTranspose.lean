@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
+import BuildAid.ForwardExisting
+
+section
 open Matrix
 open scoped ComplexOrder
 
@@ -57,3 +60,9 @@ theorem detOn_conjTranspose : ∀ (n : ℕ) (g : Matrix (Fin n) (Fin n) ℂ) (V 
   rw [hdet, norm_star]
 
 end GlobalTheory.FlagMeas.DetAdj
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absDetOnStableSubspace_conjTranspose : ∀ (n : ℕ) (g : Matrix (Fin n) (Fin n) ℂ) (V : Submodule ℂ (Fin n → ℂ)), (∀ y ∈ V, g *ᵥ y ∈ V) → (∀ y ∈ V, gᴴ *ᵥ y ∈ V) → GlobalTheory.FlagMeas.detOn gᴴ V = GlobalTheory.FlagMeas.detOn g V := by
+  atlas_forward_decl GlobalTheory.FlagMeas.DetAdj.detOn_conjTranspose

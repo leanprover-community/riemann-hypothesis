@@ -1,5 +1,4 @@
 import Formalism.SharpRestriction.SmoothDesignExistence.FamilyLevelPrimeInputsOfSizes
-import Formalism.SharpRestriction.SmoothDesignExistence.DesignExistsDes
 
 noncomputable section
 

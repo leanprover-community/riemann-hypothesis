@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OmAOneApply
+import BuildAid.ForwardExisting
 
+section
 open Matrix MeasureTheory ValuativeRel GlobalTheory.SplitFlip GlobalTheory.SmGL GlobalTheory.WeilM GlobalTheory.RankFibre GlobalTheory.SplitWeil GlobalTheory.RankFibreKer
 
 namespace GlobalTheory.RankFibreKer
@@ -39,3 +41,11 @@ theorem isFirstMax_eventually (k : Type) [Field k] [ValuativeRel k] [Topological
   · exact ⟨h.le, fun _ => h⟩
 
 end GlobalTheory.RankFibreKer
+end
+
+open Matrix MeasureTheory ValuativeRel GlobalTheory.SplitFlip GlobalTheory.SmGL GlobalTheory.WeilM GlobalTheory.RankFibre GlobalTheory.SplitWeil GlobalTheory.RankFibreKer
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.first_maximal_minor_locally_constant : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a d : ℕ) (Y : Matrix (Fin a) (Fin d) k) (J : Fin a ↪ Fin d), IsFirstMax Y J →
+    ∀ᶠ Y' in nhds Y, IsFirstMax Y' J := by
+  atlas_forward_decl GlobalTheory.RankFibreKer.isFirstMax_eventually

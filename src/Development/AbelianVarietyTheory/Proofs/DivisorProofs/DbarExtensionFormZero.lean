@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.HermitianCurvatureForms
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CovariantSecondFundamentalForm
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiagValExtTraceNonneg
+
+section
 open Matrix Complex ComplexConjugate Filter Topology
 open scoped ComplexOrder ContDiff
 open GlobalTheory.HermFrame GlobalTheory.IndefiniteRowSideFullHecke.HermitianCurvatureForms
@@ -54,3 +55,13 @@ theorem dbarAnti_extForm_eq_zero {m l : Type} [Fintype m] [Fintype l] [Decidable
   simp
 
 end GlobalTheory.DbarExt
+end
+end
+
+open Matrix Complex ComplexConjugate Filter Topology
+open scoped ComplexOrder ContDiff
+open GlobalTheory.HermFrame GlobalTheory.IndefiniteRowSideFullHecke.HermitianCurvatureForms
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dbar_extension_form_zero : ∀ {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedSpace ℝ V] [IsScalarTower ℝ ℂ V] {m l : Type} [Fintype m] [Fintype l] [DecidableEq m] [DecidableEq l] {U : Set V} {H : V → Matrix (m ⊕ l) (m ⊕ l) ℂ} {z : V} (h : IsHermFrame U H) (hs : ∀ x ∈ U, IsUnit (subGram (H x)).det) (hz : z ∈ U) (η₁ η₂ : V), dbarAnti (extForm H) z η₁ η₂ = 0 := by
+  atlas_forward_decl GlobalTheory.DbarExt.dbarAnti_extForm_eq_zero

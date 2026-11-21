@@ -2,6 +2,8 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemKilled
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FundamentalDomainMeasureFinite
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimensionalCentreAnnihilatorCompatibleMaps
+
+section
 open NumberField GlobalTheory.CuspRep GlobalTheory.AutGrowth
 
 namespace GlobalTheory.CapKilled
@@ -43,3 +45,9 @@ theorem zalg_mem_space : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComp
   · exact Zalg_stable (V := tame E b) (fun X _ h => lie_mem_tame X h) hz ψ h5
 
 end GlobalTheory.CapKilled
+end
+
+open NumberField GlobalTheory.CuspRep GlobalTheory.AutGrowth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tameInvariantKilledSmoothSpace_centre_mem : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (b : ℕ) (L : Subgroup (GL (Fin b) (Af E))) (W : Submodule ℂ (Kinf E b → ℂ)), FiniteDimensional ℂ W → ∀ (q : (E →+* ℂ) → ℂ → Polynomial ℂ) (z : Module.End ℂ (Sm E b)), z ∈ Zalg E b → ∀ ψ ∈ GlobalTheory.CapKilled.space E b L W q, z ψ ∈ GlobalTheory.CapKilled.space E b L W q := by
+  atlas_forward_decl GlobalTheory.CapKilled.zalg_mem_space

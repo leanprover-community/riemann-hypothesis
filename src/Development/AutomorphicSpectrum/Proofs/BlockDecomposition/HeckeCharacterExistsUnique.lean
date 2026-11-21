@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.TwistedIndependenceLemma.TwistedIndependence
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.PRep
@@ -261,3 +262,9 @@ theorem heckeExistsUnique : PositivityTheory.Lbc.HeckeExistsUnique := by
   exact existsUnique_isHeckeOn hπ hKc g
 
 end GlobalTheory.CompanionTheory.HeckeFixed
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hecke_character_exists_unique : PositivityTheory.Lbc.HeckeExistsUnique := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeckeFixed.heckeExistsUnique

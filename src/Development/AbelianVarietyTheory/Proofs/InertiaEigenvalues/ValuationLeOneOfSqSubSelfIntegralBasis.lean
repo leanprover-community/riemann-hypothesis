@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain TensorProduct
 
 namespace GlobalTheory
@@ -38,3 +41,9 @@ theorem integral_of_sq_sub_integral (E E' : Type) [Field E] [NumberField E] [Fie
   exact absurd h2 (not_le.2 this)
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_le_one_of_sq_sub_self_integral_basis : ∀ (E E' : Type) [Field E] [NumberField E] [Field E'] [NumberField E'] [Algebra E E'] {ι : Type} [Fintype ι] (b : Module.Basis ι E E'), (∀ i, IsIntegral ℤ (b i)) → ∀ (w : HeightOneSpectrum (𝓞 E)) (w'' : HeightOneSpectrum (𝓞 E')), w''.asIdeal.comap (algebraMap (𝓞 E) (𝓞 E')) = w.asIdeal → ∀ ε : E', (∀ i, w.valuation E (b.repr (ε * ε - ε) i) ≤ 1) → w''.valuation E' ε ≤ 1 := by
+  atlas_forward_decl GlobalTheory.integral_of_sq_sub_integral

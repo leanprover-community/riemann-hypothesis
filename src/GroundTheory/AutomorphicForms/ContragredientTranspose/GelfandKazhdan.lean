@@ -1,7 +1,6 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.WhittakerOrbit
 import GroundTheory.AutomorphicForms.WhittakerCriterion
-import GroundTheory.AutomorphicForms.WhittakerGroups
 import GroundTheory.AutomorphicForms.WhittakerDistribution
 import GroundTheory.AutomorphicForms.ContragredientTranspose.MatrixSimilarity
 

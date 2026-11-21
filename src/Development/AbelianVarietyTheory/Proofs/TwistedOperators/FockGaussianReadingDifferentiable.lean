@@ -1,10 +1,12 @@
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjMono
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.StdCharacterHalfSymplecticFormRealPoint
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FockVacuumAnnihilationEquationRealCoordinates
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockCreationPreservesFockVectorsTwoFrames
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockVacuumRealRestrictionGaussianEntire
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SymplecticFormFockMatrixEqNegSumImRealPlacesStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeisenbergTranslateFockVacuumCauchyRiemannStatement
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SymplecticFormFockMatrixEqNegSumImRealPlaces
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeisenbergTranslateFockVacuumCauchyRiemann
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open scoped TensorProduct ComplexConjugate
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -152,3 +154,14 @@ theorem rd_differentiable : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : 
   ring
 
 end GlobalTheory.FockEntire
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockGaussianReading_differentiable : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D), IsStdChar D ψ (-1) → GlobalTheory.FockCompare.Chart θ σ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (f : WO S T → ℂ), GlobalTheory.ChainFr.IsVacF ψ θ A B f → ∀ x, Differentiable ℂ (rd ψ σ A B f x) := by
+  atlas_forward_decl GlobalTheory.FockEntire.rd_differentiable

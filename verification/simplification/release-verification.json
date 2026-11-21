@@ -1,0 +1,368 @@
+{
+  "source_commit": "40e56bab026552e089d7afcfeff08d2defb9c005",
+  "input_archive_sha256": "9631b4f020199e580ba86178cb56c6e9b09f690c2369a80dc4334aa93f49c7fc",
+  "baseline": {
+    "modules": 175187,
+    "source_lines": 17374215,
+    "source_bytes": 1030531854
+  },
+  "final_graph": {
+    "staged_modules_before_pruning": 145546,
+    "staged_source_lines": 17362145,
+    "staged_source_bytes": 1016359834,
+    "unreachable_modules_removed": 6727,
+    "lines_in_unreachable_modules": 726195,
+    "reachable_modules_checked": 138819,
+    "files_with_shorter_import_headers": 74475,
+    "transitive_edges_screened": 279876,
+    "edges_retained_for_load_order": 80349,
+    "all_retained_depth_first_import_orders_equal_across_import_reduction": true,
+    "changed_headers_with_explicit_order_replay": 74475,
+    "transitive_local_edges_removed": 199527,
+    "duplicate_local_imports_removed": 263,
+    "final_local_import_edges": 427450,
+    "final_project_files": 138819,
+    "final_project_source_lines": 16436161,
+    "final_project_source_bytes": 952021356,
+    "final_main_includes_all_project_files": true,
+    "all_retained_local_reachability_sets_equal_across_import_reduction": true,
+    "all_retained_direct_external_import_lists_unchanged_across_import_reduction": true
+  },
+  "archive": {
+    "files_in_tar": 138823,
+    "verified_module_slices": 138819,
+    "archive_sha256": "9db66928e0ca72ed7cd29324af02732c3e919f0afaf8fa1f01132034da989a29",
+    "archive_bytes": 225404688,
+    "parts": 139
+  },
+  "rebuild": {
+    "source_commit": "40e56bab026552e089d7afcfeff08d2defb9c005",
+    "input_sha256": "9631b4f020199e580ba86178cb56c6e9b09f690c2369a80dc4334aa93f49c7fc",
+    "changed_or_new_files": 80502,
+    "tree_sha256": "1a359e1d19f04192543d48e2f6617fa0e0fe62b4afe123becc3f951b08214517",
+    "file_count": 138823,
+    "kit_bytes": 17736600
+  },
+  "five_endpoints": {
+    "declarations": [
+      "riemannHypothesis",
+      "riemannZeta_eq_zero_re",
+      "LFunction_ne_zero_of_half_lt_re",
+      "LFunction_eq_zero_re",
+      "LFunction_eq_zero_re_of_isPrimitive"
+    ],
+    "main_body_sha256": "68fc9bfd30faeb6cad8fac94bb68cd1d6f5bc715a0fd8dd21500cc119e66ac22",
+    "statements_body_sha256": "241dc462a6863878767c392dfa018fb7a2c93eeb939aa49a9b708ba559ab15bb",
+    "endpoints_and_original_bodies_preserved": true
+  },
+  "alias_consolidation": {
+    "candidate_count": 30667,
+    "scope": "Measured derived source before/after this stage; Main import graph only for reachability. No full-kernel assurance.",
+    "dry_run": false,
+    "action_counts": {
+      "merged_at_provider": 29565,
+      "shared_tactic": 1022,
+      "checked_pilot": 80
+    },
+    "retention_reasons": {
+      "facade imports outside provider environment": 1012,
+      "unresolved lexical scope": 7,
+      "possible private name collision": 2,
+      "module-sensitive command": 1
+    },
+    "baseline": {
+      "files": 175190,
+      "lines": 17372894,
+      "bytes": 1030456257
+    },
+    "output": {
+      "files": 145546,
+      "lines": 17362145,
+      "bytes": 1016359834
+    },
+    "before_main": {
+      "files": 165120,
+      "lines": 16644356,
+      "bytes": 981655030
+    },
+    "after_main": {
+      "files": 138819,
+      "lines": 16635950,
+      "bytes": 969054866
+    },
+    "changed_or_new_files": 36095,
+    "removed_files": 29645,
+    "post_graph_acyclic": true,
+    "unrelated_reachability_changes": 0
+  },
+  "lean_samples": {
+    "compiler": "4.33.1",
+    "exit_code": 0,
+    "scope": "Extracted proof bodies and public types with Mathlib, including branches later removed from the Main closure.",
+    "source_sha256": "f9bbb4283802069a212ecac6741c960b7886a22feddecc57a5a9682574dc671a",
+    "theorems": {
+      "GlobalTheory.T.local_hom_char_zero_units": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.card_divisors_sq_le_two_mul'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.fourier_parameter_derivative": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.coeff_aeval_one_add_X_pow_sub_one_ne_zero'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.volume_hermitian_ellipsoid'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.exists_compatible_generators_tower_local_ring": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.translate_finite_dim_matrix_coefficient": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.p_adic_product_formula": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.finite_image_lattice_of_hom_trivial_on_multiples": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.fourier_inversion_finite_dim": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.posDef_exists_conjTranspose_mul_mul_eq_one'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.exists_open_compact_lattice_containing": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.isDVR_of_principal_prime_localization": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.gl_adicCompletion_entries_bounded_of_isCompact": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.affine_change_fundamentalDomain_mean_periodic": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.tensor_points_separate": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.p_adic_embeddings_same_norm_conjugate": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.exists_coprime_orderOf_pow_prime_pow'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.gaussian_integrable_finite_dim": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.telescoping_coordinate_difference": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.natCard_homology_restrictScalars_alt": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.closedImmersion_residueField_surjective": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.valuation_eq_exp_neg_of_pow_eq_span_singleton": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.sesquilinear_eq_zero_of_diag_zero": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.norm_iteratedFDeriv_iteratedFDeriv'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.lSeries_twist_natPow_eq_shift": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.isTorsionFree_ringOfIntegers_of_isTorsionFree_int'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.continuous_linearMap_of_finite": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.finiteType_invariants_finite_group_and_finite": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.isPullback_whiskerLeft_left_snd": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.isReduced_of_smooth_over_field'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.primitive_element_finite_algebraic": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.exists_pos_mul_extend_int_linearForm'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.isTotallyComplex_of_primitiveRoot_three_le": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.dense_schwartz_multiple_nonvanishing": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.continuous_right_convolution_bounded_integrable": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.finrank_inf_ker_add_one_of_exists_ne_zero": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.prod_rel_index_ne_zero": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.exists_limit_family_of_finite_coefficients'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.eq_zero_of_forall_residueField_functional'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.schwartz_iteratedFDeriv_tendsto_zero_cocompact'": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.submodule_fg_of_span_eq_top_of_locally_pow_mul_mem": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.exists_separable_generator_card_eq_pow_natDegree": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.sum_mul_nonneg_and_pos_of_posDef_of_posSemidef": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.exists_equiv_dvr_fg_module_structure": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.finite_dim_functional_point_evaluations": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.exists_subfield_adjoin_rootsOfUnity_embedding_complex": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "GlobalTheory.T.isAlgebraic_of_isAlgebraic_over_algebraic_subring": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    "retained_in_release": 38,
+    "description": "Lean compared the original and merged public types for 48 sampled forwarding pairs. All passed the type and axiom checks. Of these, 38 remain reachable from Main."
+  },
+  "arithmetic_check": "Checks the changed declarations and selected downstream source bodies, with an explicit upstream arithmetic premise for Main. It does not compile the complete original callers or prove that premise.",
+  "comparison_against_compiled_extractions": true,
+  "full_lean_build": {
+    "command": "lake build +Main:olean",
+    "status": "incomplete",
+    "elapsed_seconds": 533.43,
+    "compiled_project_modules": 0,
+    "Main_compiled": false,
+    "full_root_axiom_check_ran": false,
+    "stopped_by": "Release operator after a measured local run. No final kernel verdict.",
+    "display": "The local build did not reach Main. The five final theorems still need an end-to-end Lean build and axiom check on this source tree."
+  },
+  "full_root_axioms": "unmeasured",
+  "checks": [
+    "All 138,819 retained modules are reachable from Main. The import cleanup preserves each module’s reachable dependencies and their depth-first load order.",
+    "The statements and proof bodies of all five final theorems match the submission after stripping imports. The release includes an independent type and axiom checker for use after a full build.",
+    "Lean compared the original and merged public types for 48 sampled forwarding pairs. All passed the type and axiom checks. Of these, 38 remain reachable from Main.",
+    "Lean 4.33.1 checked the shared averaging lemma, its six extracted callers, the Mellin calculation and the reflection argument. The reflection check takes nonvanishing for every character as an explicit premise.",
+    "Every source listing was compared byte for byte with the archived file. Rebuilding from the original submission reproduced all 138,823 files and the published tree fingerprint."
+  ]
+}

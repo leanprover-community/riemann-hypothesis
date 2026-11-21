@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousSingleV
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published Sa2 GlobalTheory.CompanionTheory.SaGen
@@ -327,3 +328,11 @@ theorem near_pair_main : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [N
     (fun i j => map_mem_HermR K σ J hJ.1 i j) (fun u₀ hu => exists_inv_near (K := K) u₀ hu) a₀ b₀ x hx V hV
 
 end GlobalTheory.CompanionTheory.SaGen.NearPair
+end
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published Sa2 GlobalTheory.CompanionTheory.SaGen
+open scoped TensorProduct Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_quadratic_pair_perturb_nearby : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ {M : ℕ} (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ {K : Type} [NontriviallyNormedField K] [Algebra F K] (a₀ b₀ : Fin M → K ⊗[F] E) (x : HA K σ J), IsQPairOf (sigR K σ) (JR K J) a₀ b₀ ((HA.mat K σ J x).1 : Matrix (Fin M) (Fin M) (K ⊗[F] E)) → ∀ V ∈ nhds x, ∀ᶠ p in nhds (a₀, b₀), ∃ x' ∈ V, IsQPairOf (sigR K σ) (JR K J) p.1 p.2 ((HA.mat K σ J x').1 : Matrix (Fin M) (Fin M) (K ⊗[F] E)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SaGen.NearPair.near_pair_main

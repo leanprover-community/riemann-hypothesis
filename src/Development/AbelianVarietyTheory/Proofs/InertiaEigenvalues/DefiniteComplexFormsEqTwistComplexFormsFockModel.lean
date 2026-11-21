@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FockOfApply
 import Development.AutomorphicArithmetic.CyclotomicBounds.DeRhamLattices.IoPTprodInjectiveRangeEqValSpace
 import Development.AutomorphicArithmetic.CyclotomicBounds.DeRhamLattices.IoPTprodIntertwinesAction
 import Development.AutomorphicArithmetic.CyclotomicBounds.DeRhamLattices.AutomorphicFormIffRationalLevelLaw

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ChLApply
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData
 
 namespace GlobalTheory.AffineSB
@@ -22,3 +25,9 @@ theorem mem_SB_comp_affine : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologi
   exact ⟨hΦ.1.comp_continuous e.continuous, hΦ.2.comp_homeomorph e⟩
 
 end GlobalTheory.AffineSB
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartzBruhat_comp_affine_matrix : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (R Q : Type) [Fintype R] [DecidableEq R] [Fintype Q] (A : GL R k) (a : Matrix R Q k) (Φ : Matrix R Q k → ℂ), Φ ∈ SB (Matrix R Q k) → (fun x => Φ (A.val * x + a)) ∈ SB (Matrix R Q k) := by
+  atlas_forward_decl GlobalTheory.AffineSB.mem_SB_comp_affine

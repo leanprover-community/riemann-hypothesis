@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NabBaseChange
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LevelCharacterApplyEqLevelFunctionSwap
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -53,3 +54,8 @@ theorem levLamRoot : LevLamRoot := by
 end GlobalTheory.BaseCmp
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levelCharacter_finiteOrder_definite_forms : GlobalTheory.BaseCmp.LevLamRoot := by
+  atlas_forward_decl GlobalTheory.BaseCmp.levLamRoot

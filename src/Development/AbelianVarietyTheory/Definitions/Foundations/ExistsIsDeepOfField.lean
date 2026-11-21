@@ -1,11 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.FacWithCsNonneg
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsCharsPrime
 import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.OrthonormalBaseFrameNeg
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsLatBasisHtLatIffSpanEq
-import Development.AbelianVarietyTheory.Definitions.Divisors.MemLevEigenIffTransl
-import Formalism.LocalToGlobal.ProjectiveLattices.CuspMulOf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
 
 set_option autoImplicit false
 

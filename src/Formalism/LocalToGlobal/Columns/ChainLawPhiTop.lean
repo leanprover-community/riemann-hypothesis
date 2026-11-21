@@ -130,12 +130,7 @@ private theorem intAt_of_redP_ne_zero {F : Type} [Field F] {Q : HeightOneSpectru
 
 private theorem redP_mul_of_intAt {F : Type} [Field F] [NumberField F] {Q : HeightOneSpectrum (𝓞 F)} {a b : F}
     (ha : IntAt Q a) (hb : IntAt Q b) : redP Q (a * b) = redP Q a * redP Q b := by
-  have h := redP_prod (P := Q) (Finset.univ : Finset (Fin 2)) ![a, b] (by
-    intro i _
-    fin_cases i
-    · exact ha
-    · exact hb)
-  simpa [Fin.prod_univ_two] using h
+  apply reduction_mul_of_integral' (ha := ha) (hb := hb) <;> assumption
 
 theorem clPfT_unitV_symm (hq0 : (q : E) ≠ 0) (χ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) {k₀ n c : ℕ} (hk : k₀ ≤ n)
     {γ : Sp E (n + c) ≃ₗ[E] Sp E (n + c)} (hγ : γ ∈ stabL E (n + c) (LocE.lamY P q n c fun i => i + 1)) :

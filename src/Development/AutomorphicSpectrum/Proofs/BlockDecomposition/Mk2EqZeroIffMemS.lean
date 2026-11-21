@@ -1,8 +1,5 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ConeSectionRestriction.CechDefs
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.TotPairing
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DvMemOf
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeZigzagCompat
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NegOneSmulCancel
 
 set_option autoImplicit false

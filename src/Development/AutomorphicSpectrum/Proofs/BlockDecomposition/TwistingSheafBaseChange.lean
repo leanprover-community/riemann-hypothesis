@@ -1,6 +1,9 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ConeSectionRestriction.IsTautologicalLineAt
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.TwistingSheafOneChartEqPreimageStandardChart
+import BuildAid.ForwardExisting
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
@@ -88,3 +91,10 @@ theorem isTwistingSheaf_pullback {R R' : Type} [CommRing R] [CommRing R'] (φ : 
     rw [nat, hc2]
 
 end GlobalTheory.CompanionTheory.ConeTwistingSheaf
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twisting_sheaf_base_change : ∀ {R R' : Type} [CommRing R] [CommRing R'] (φ : R →+* R') {X : Scheme.{0}} (p : X ⟶ Sp R) (D : E.LineData X), IsTautologicalLine p D → IsTautologicalLine (pullback.snd p (spMap φ)) (D.pb (pullback.fst p (spMap φ))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConeTwistingSheaf.isTwistingSheaf_pullback

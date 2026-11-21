@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.IncomingBounds.StatementThmP
 import Formalism.IncomingBounds.FlowDegreeBounds.ThmPExp
 import Formalism.IncomingBounds.FlowDegreeBounds.Cayley
 

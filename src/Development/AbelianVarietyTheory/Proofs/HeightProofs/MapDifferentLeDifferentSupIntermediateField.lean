@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.HeightFunctions.FiniteDimensionalOfSz
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 open NumberField IsDedekindDomain
@@ -129,3 +131,10 @@ theorem map_different_le_sup (F F' : IntermediateField ℚ ℂ) [NumberField F] 
   | mul x y hx hy ihx ihy => exact (map_mul ρ ⟨x, hx⟩ ⟨y, hy⟩).trans (by rw [ihx, ihy])
 
 end GlobalTheory.DiffBaseChange
+end
+
+open NumberField IsDedekindDomain GlobalTheory.FieldSize
+open scoped IntermediateField nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.map_different_le_different_sup_intermediateField : ∀ (F F' : IntermediateField ℚ ℂ) [NumberField F] [NumberField F'] [NumberField ↥(F ⊔ F')], letI : Algebra F ↥(F ⊔ F') := (IntermediateField.inclusion le_sup_left).toRingHom.toAlgebra; (differentIdeal ℤ (𝓞 F')).map (RingOfIntegers.mapRingHom (IntermediateField.inclusion (le_sup_right : F' ≤ F ⊔ F')).toRingHom) ≤ differentIdeal (𝓞 F) (𝓞 ↥(F ⊔ F')) := by
+  atlas_forward_decl GlobalTheory.DiffBaseChange.map_different_le_sup

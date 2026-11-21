@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.NApply
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.ChirpQ
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter

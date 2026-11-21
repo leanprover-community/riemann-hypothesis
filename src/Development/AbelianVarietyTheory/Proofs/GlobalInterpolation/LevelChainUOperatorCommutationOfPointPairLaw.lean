@@ -1,10 +1,9 @@
 import Mathlib
 import Formalism.GL3MeanSquares.HookFormulaTorsion.DoubleCosetDecompositionAll
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.FormsStable
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemFormsIffExistsEquivariantExtensionStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LevelPrimeIncidenceFiniteFibresStableStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.UopIsExtStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemFormsIffExistsEquivariantExtension
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.UopIsExt
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LevelChainTransitionIsExtKernelSumStatement
+
 open Formalism.BasicNotions Classical NumberField GlobalTheory.LvT
 open Formalism.MainNotions.product_first_zeroth_parts (Ow tops wsum ten blk nfAll CSpan IntSpan Nm_succ wSh cTw)
 

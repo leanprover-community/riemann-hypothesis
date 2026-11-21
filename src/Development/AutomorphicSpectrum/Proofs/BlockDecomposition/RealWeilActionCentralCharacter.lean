@@ -1,5 +1,4 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.PureThetaTransfer.ConstantTermModerateGrowth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmR
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RealWeilRepresentationHypothesis
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasTemperateGrowthConjPow

@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.ThresholdSelection
 import Formalism.SharpRestriction.GlobalSchurBounds.MassRatioUnfoldedOfTheoremTwo
-import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
 import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeFamilyOfFormalDegreeInput
 import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExactRanksAlongTiedFamily

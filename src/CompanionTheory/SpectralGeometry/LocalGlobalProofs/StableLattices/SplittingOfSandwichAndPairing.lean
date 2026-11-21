@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.FlB
 
 noncomputable section
@@ -320,3 +322,10 @@ theorem stSplit : StSandwich → StPairing → StSplit := by
     exact split_mem_iff hs hδ0 hh he hf hef hΛ.1 hpair heΛ hfΛ a b hw'.1 hw'.2
 
 end GlobalTheory.CompanionTheory.RgSplit
+end
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.splitting_of_sandwich_and_pairing : StSandwich → StPairing → StSplit := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgSplit.stSplit

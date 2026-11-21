@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryLeviNormalizesUnipotentRadical
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryBlockTriangularLeviPartUnitary
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl GlobalTheory.InertZeta
@@ -720,3 +722,9 @@ theorem cosetSurj : LeviExists → CosetSurj := by
 end GlobalTheory.CompanionTheory.InertCoset
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coset_surjective_of_levi : LeviExists → CosetSurj := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertCoset.cosetSurj

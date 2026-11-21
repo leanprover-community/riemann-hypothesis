@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.De
 import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.ArthurClozel
 import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RestrictsLpDimMono0CharPol
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.RootsCharpolyPowEqMapPow
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.MonodromyZeroIffRestricts
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N

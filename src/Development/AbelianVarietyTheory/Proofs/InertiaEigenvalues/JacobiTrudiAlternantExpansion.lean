@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SchurEqJtDet
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AddLeOfStrictAnti
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MvPolynomial Finset Equiv
@@ -238,3 +240,13 @@ example : alternant ℤ 2 (staircase 2) *
   alternant_staircase_mul_antidiagonal 2 1 (fun k => (k : ℤ) + 1)
 
 end GlobalTheory.JSW
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacobi_trudi_alternant_expansion : ∀ {A : Type} [CommRing A] (m d : ℕ) (h : ℕ → A),
+    GlobalTheory.JSW.alternant A m (GlobalTheory.JSW.staircase m) *
+                 ∑ k ∈ Finset.Nat.antidiagonalTuple m d, ∏ j, MvPolynomial.C (h (k j)) * MvPolynomial.X j ^ (k j) =
+      ∑ l ∈ GlobalTheory.JSW.antiParts m d,
+        MvPolynomial.C (GlobalTheory.JSW.jtDet m h l) * GlobalTheory.JSW.alternant A m (fun i => l i + GlobalTheory.JSW.staircase m i) := by
+  atlas_forward_decl GlobalTheory.JSW.alternant_staircase_mul_antidiagonal

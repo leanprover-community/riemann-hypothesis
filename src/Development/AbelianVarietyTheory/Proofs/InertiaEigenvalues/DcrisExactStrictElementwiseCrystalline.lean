@@ -1,9 +1,9 @@
 import Mathlib
 import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineMapLemmas
-import Formalism.SharpRestriction.LevelLetterCocycles.RamifiedCoefficientChains
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineDcrisStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineDcris
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions Formalism.MainNotions.N
 
 namespace GlobalTheory
@@ -22,3 +22,9 @@ theorem dcris_exact_strict_elementwise : ∀ D : D7, Formalism.MainNotions.Trunc
     exact (h4 a).2.ge ⟨hy, hyF⟩
 
 end GlobalTheory
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions Formalism.MainNotions.N
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dcris_exact_strict_elementwise_crystalline : ∀ D : D7, Formalism.MainNotions.TruncatedSeriesCountingBounds.adm9 D := by
+  atlas_forward_decl GlobalTheory.dcris_exact_strict_elementwise

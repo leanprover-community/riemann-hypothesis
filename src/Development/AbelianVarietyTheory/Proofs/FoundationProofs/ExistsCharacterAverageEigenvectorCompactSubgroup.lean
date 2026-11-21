@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.OrderedConst
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.PsType
 
 namespace GlobalTheory.PsType
@@ -91,3 +94,9 @@ theorem avg_eig : ∀ (G V : Type) [Group G] [TopologicalSpace G] [IsTopological
     exact hsum ⟨h, hh⟩
 
 end GlobalTheory.PsType
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.PsType
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_character_average_eigenvector_compact_subgroup : ∀ (G V : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V] (π : Representation ℂ G V), IsSmooth π → ∀ (H : Set G) (θ : G → ℂ), Datum H θ → ∀ w : V, ∃ R : Finset G, (1 : G) ∈ R ∧ (∀ j ∈ R, j ∈ H) ∧ IsEig π H θ (∑ j ∈ R, (θ j)⁻¹ • π j w) := by
+  atlas_forward_decl GlobalTheory.PsType.avg_eig

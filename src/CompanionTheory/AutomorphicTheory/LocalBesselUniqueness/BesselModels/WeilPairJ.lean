@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.SiegelLatticeTheory.WeightedGaugeFactors.FactsDS
 import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.StepIntGOf
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.WeilPairJ
 

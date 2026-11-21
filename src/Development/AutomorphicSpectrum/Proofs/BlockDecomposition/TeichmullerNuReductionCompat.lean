@@ -3,6 +3,7 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.Imports
 import BuildAid.D3
 
+section
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -50,3 +51,11 @@ theorem nu_red : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (Pa
     (red_phiP (Nat.le_succ n) N) (nu_pt r hT _ (Nat.le_succ n)) j x
 
 end GlobalTheory.CompanionTheory.NuRed
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory Limits AlgebraicGeometry TensorProduct GroundTheory.PAdicHodge GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison.PAlg CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.teichmuller_nu_reduction_compat : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} (r : CrystallineSemistableComparison.Res l K) {N : ℕ} (hT : Mid.TeichmullerCongruence r N) (M : Model l K) (n j : ℕ) (x : B.Hc (B.schFn M.p) (okToOC l K) true (n + 1) j), (redT r M (Nat.le_succ n)).pull j (Mid.nu r M (n + 1) j hT x) = Mid.nu r M n j hT (B.redHc (B.schFn M.p) (okToOC l K) true (Nat.le_succ n) j x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.NuRed.nu_red

@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableHermC
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousBlkM
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
@@ -22,3 +23,12 @@ theorem detW_eq_normSq_det_one_add_I_smul :
   rw [h1, Matrix.det_mul, Matrix.det_conjTranspose, Complex.star_def, Complex.mul_conj, Complex.ofReal_re]
 
 end GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
+end
+end
+
+open MeasureTheory Matrix
+open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.detW_eq_normSq_det_one_add_I : ∀ (n : ℕ) (b : Matrix (Fin n) (Fin n) ℂ), b.IsHermitian →
+    detW b = Complex.normSq (Matrix.det (1 + Complex.I • b)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt.detW_eq_normSq_det_one_add_I_smul

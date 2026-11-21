@@ -1,9 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmHostUnitAddConjEqOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLowerDatumOfIsotropicSaturated
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsCoprimeScaledIsometrySameSignature
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.HermitianLatticeSignatureSplitOfIndefinite
 
+section
 noncomputable section
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LowDat GlobalTheory.LowFilt
@@ -141,3 +140,14 @@ theorem exists_isIsoSat_finrank : ∀ {E : Type} [Field E] [NumberField E] [IsCM
     exact IsoSat.exists_succ D Z hZ hr
 
 end GlobalTheory.LowFilt
+end
+end
+
+noncomputable section
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LowDat GlobalTheory.LowFilt
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isotropicSaturatedSubmodule_of_finrank_le : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (D : Datum H) (r : ℕ), r ≤ min D.p D.q →
+    ∃ Z : Submodule (𝓞 E) D.La, IsIsoSat D Z ∧ Module.finrank (𝓞 E) Z = r := by
+  atlas_forward_decl GlobalTheory.LowFilt.exists_isIsoSat_finrank

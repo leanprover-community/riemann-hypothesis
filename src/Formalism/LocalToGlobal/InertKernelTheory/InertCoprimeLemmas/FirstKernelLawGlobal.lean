@@ -10,7 +10,6 @@ import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepDict
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.JetsOrth
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.GlobalOrthonormalBasisFour
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntWAPlaces
-import Formalism.LocalToGlobal.InertKernelTheory.AdmissibleEleventhInert
 import Formalism.LocalToGlobal.InertKernelTheory.KernelsIntegralInert
 
 noncomputable section

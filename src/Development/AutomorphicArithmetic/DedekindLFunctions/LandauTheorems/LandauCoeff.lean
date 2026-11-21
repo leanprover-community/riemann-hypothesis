@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.DedekindLFunctions.LandauZeroFreeCriterion
 import Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.IteratedDerivLaplace
 
 open Complex MeasureTheory Set Filter Topology

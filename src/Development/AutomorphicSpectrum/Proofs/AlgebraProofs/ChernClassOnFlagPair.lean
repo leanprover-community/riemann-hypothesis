@@ -14,8 +14,10 @@ import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinFlagPa
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinJoinPointModel
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinJoinPointVertDiv
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.VerticalDivisorsCommuteStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagModelValueIndependentStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagModelRootIndependentStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagModelValueIndependent
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagModelRootIndependent
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -72,3 +74,9 @@ theorem main : ChernClassOnFlagPair.Statement :=
     (PairNumberExpansionIndependence.proof GlobalTheory.T.vertical_divisors_commute) dividedDifferenceExpansion.proof
 
 end GlobalTheory.CompanionTheory.ChernFlagPairRootPolynomial
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chern_class_on_flag_pair : GroundTheory.Heights₂.Heights.NumbersDVR.ChernClassOnFlagPair.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ChernFlagPairRootPolynomial.main

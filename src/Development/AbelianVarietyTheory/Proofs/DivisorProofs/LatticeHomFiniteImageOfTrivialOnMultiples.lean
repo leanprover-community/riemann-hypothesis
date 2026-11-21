@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -43,3 +45,15 @@ theorem lattice_hom_finite_image_of_trivial_on_multiples :
     rw [hadd, hker _ q.2, one_mul]
 
 end GlobalTheory
+end
+end
+
+set_option autoImplicit false
+
+noncomputable section
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_image_lattice_of_hom_trivial_on_multiples : ∀ (g : ℕ) (Λ : Submodule ℤ (Fin g → ℂ)) (G : Type) [Group G] (e : (Fin g → ℂ) → G) (N : ℕ),
+    DiscreteTopology Λ → Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤ → (∀ z w, e (z + w) = e z * e w) → 0 < N →
+    (∀ l ∈ Λ, e ((N : ℂ) • l) = 1) → (e '' (Λ : Set (Fin g → ℂ))).Finite := by
+  atlas_forward_decl GlobalTheory.lattice_hom_finite_image_of_trivial_on_multiples

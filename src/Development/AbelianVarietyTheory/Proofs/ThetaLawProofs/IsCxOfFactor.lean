@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.KeyFormula.DegProd
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsIsUnitField
 open GlobalTheory.KeyKa
 

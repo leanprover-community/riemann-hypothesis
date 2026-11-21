@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneMemBand
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsNormRconvLeSiegel
-import GroundTheory.AutomorphicForms.ReductionSiegel
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
 open scoped ContDiff
 
@@ -33,3 +35,13 @@ theorem norm_toL_map_pInf_le : ∀ (E : Type) [Field E] [NumberField E] [IsTotal
   exact GroundTheory.Automorphic.CuspidalSpectrum.norm_entry_le_norm_archMatrix _ i j
 
 end GlobalTheory.GLCuspNorm
+end
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_toL_map_pInf_le' : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), ∃ c : ℝ, 0 ≤ c ∧
+    ∀ M : Matrix (Fin a) (Fin a) (Ad E),
+      ‖toL (M.map (pInf E))‖ ≤ c * ‖GroundTheory.Automorphic.CuspidalSpectrum.archMat E a M‖ := by
+  atlas_forward_decl GlobalTheory.GLCuspNorm.norm_toL_map_pInf_le

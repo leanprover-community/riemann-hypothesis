@@ -1,7 +1,5 @@
 import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.MaxCuspsSt
 import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.MaxCuspsPfA
-import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.MaxCuspsPfB
-import Formalism.LocalToGlobal.ProjectiveLattices.RdOrbIntOfLatZ
 
 namespace GlobalTheory.TraceRealPartConjugateSum
 

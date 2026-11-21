@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DifferentiableZterm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteRingClassGroupOfConductorNeZero
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt
@@ -36,3 +38,10 @@ theorem relIndex_congr_radN_ne_zero : ∀ (E : Type) [Field E] [NumberField E] (
   exact h2.1
 
 end GlobalTheory.CMVal.LatEnt
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralUnitCongruenceSubgroup_relIndex_ne_zero : ∀ (E : Type) [Field E] [NumberField E] (N : ℕ), 0 < N → (congr (radN E N)).relIndex (congr (fun _ => 1)) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CMVal.LatEnt.relIndex_congr_radN_ne_zero

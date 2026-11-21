@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.CharacterGerms.BiadditiveInSingleVariables
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.DetPowDiagonalRowsBlockJetRestrict
+import BuildAid.ForwardExisting
 
+section
 open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds Formalism.UnitaryBoundIntegral
 open scoped BigOperators
 
@@ -594,3 +596,9 @@ theorem _root_.GlobalTheory.blockValue_rows : _root_.Formalism.L2.FormalSeriesBo
           exact Nat.zero_le _
   unfold _root_.Formalism.IncomingBounds.LamP
   rw [hsplit, hR C n0 n hn (l ^ i) y _ _ hG hH hHc, hres]
+end
+
+open Formalism.L2.FormalSeriesBounds
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blockValue_on_rows_eq : BiValue := by
+  atlas_forward_decl GlobalTheory.blockValue_rows

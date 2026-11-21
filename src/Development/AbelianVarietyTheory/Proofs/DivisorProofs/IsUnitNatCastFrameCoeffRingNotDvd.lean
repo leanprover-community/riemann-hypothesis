@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasBlockOfOccurs
+
+section
 open GlobalTheory.ExpFrame Formalism.CohomologicalDescent.DepthNonnegative
 
 namespace GlobalTheory.ExpFrame.Frame
@@ -26,3 +28,9 @@ theorem isUnit_natCast_of_not_dvd : ∀ (l : ℕ) [Fact l.Prime] (ι : Type) [De
   exact IsUnit.of_mul_eq_one y h1
 
 end GlobalTheory.ExpFrame.Frame
+end
+
+open GlobalTheory.ExpFrame Formalism.CohomologicalDescent.DepthNonnegative
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isUnit_natCast_frameCoeffRing_not_dvd : ∀ (l : ℕ) [Fact l.Prime] (ι : Type) [DecidableEq ι] (N : ℕ) (F : Frame l ι N), F.Ok → ∀ n : ℕ, ¬ l ∣ n → IsUnit (n : F.O) := by
+  atlas_forward_decl GlobalTheory.ExpFrame.Frame.isUnit_natCast_of_not_dvd

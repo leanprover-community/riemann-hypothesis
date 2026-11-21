@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.TwistedKernels.ExPhiPlusOnto
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicBetaCompactInduction
 
 noncomputable section

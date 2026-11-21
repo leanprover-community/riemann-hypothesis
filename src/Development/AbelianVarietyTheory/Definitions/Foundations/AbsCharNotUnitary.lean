@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.UnitaryNorms.MemFIffReal
-import Development.AbelianVarietyTheory.Definitions.Foundations.ValuedAlgebraMapEqOne
 import Development.AbelianVarietyTheory.Definitions.Foundations.DiagUnitsEqLocalIdele
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsUnitaryOfOrder
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal

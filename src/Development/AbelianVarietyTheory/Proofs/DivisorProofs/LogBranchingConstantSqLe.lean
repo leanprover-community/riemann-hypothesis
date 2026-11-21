@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.FiniteDimensionalNablaSq
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions
 
 namespace GlobalTheory.BranchBound
@@ -139,3 +141,10 @@ theorem log_brBd_sq_le : ∀ {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg
   nlinarith
 
 end GlobalTheory.BranchBound
+end
+
+open Formalism.BasicNotions
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_branching_constant_sq_le : ∀ {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight n) (B : ℝ), 1 ≤ B → (N : ℝ) ≤ B → (∀ i, |((lam.w i : ℤ) : ℝ)| ≤ B) → Real.log (Formalism.MainNotions.PrimeDegreeVariant.brBd h lam sg ^ 2) ≤ 5 * N * B * Real.log (6 * B) := by
+  atlas_forward_decl GlobalTheory.BranchBound.log_brBd_sq_le

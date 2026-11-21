@@ -1,15 +1,14 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTransition
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsIntegralPosDefPerturbationStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UltrametricDetNormStableStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.NegDefBlockOfPosDefStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsOrthogonalLocalBasisStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocalBasisGramDeterminantBoundStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramSignatureOrthogonalSplitStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqSesquilinearSkewHermitianStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PeriodGramHermitianSignatureStatement
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.PadicLogIdealMaxElementStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsIntegralPosDefPerturbation
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UltrametricDetNormStable
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.NegDefBlockOfPosDef
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsOrthogonalLocalBasis
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocalBasisGramDeterminantBound
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramSignatureOrthogonalSplit
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PeriodGramHermitianSignature
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Fl.DSplit
@@ -235,3 +234,13 @@ theorem GlobalTheory.CompanionTheory.Ar.Fl.DSplit.exists_split_period : ∀ (E :
   obtain ⟨P, hP, hpure⟩ := GlobalTheory.T.gram_signature_orthogonal_split E H D g ty p q x₂ hty hpq hb₂.1 horth fun τ hτ =>
     ⟨hpos τ hτ, DSplit.neg_compl D hP₀ hty hpq x₂ hb₂.1 horth τ hτ (hpos τ hτ)⟩
   exact ⟨P, hP, x₂, hb₂, hpure⟩
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pure_period_local_basis_exists : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (P₀ : D.La →+ (Fin g → ℂ)) (p q : ℕ) (ℓ : Nat.Primes), IsPeriod D ty P₀ → IsTypeFn H p q ty → p + q = D.p + D.q → ∃ (P : D.La →+ (Fin g → ℂ)) (hP : IsPeriod D ty P) (x : Fin p ⊕ Fin q → D.La), IsLocBasis (𝓞 E) ℓ x ∧ IsPure hP x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Fl.DSplit.exists_split_period

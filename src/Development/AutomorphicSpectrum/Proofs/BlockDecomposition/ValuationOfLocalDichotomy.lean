@@ -1,8 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentLocalInduction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemIdempotentComplementIff
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
 
 namespace GlobalTheory.CompanionTheory.Idem
@@ -83,3 +84,9 @@ theorem val_of_dich : ∀ {S : Type} [CommRing S] (ϖ : S),
   exact ⟨d, hd, hdf, hdg⟩
 
 end GlobalTheory.CompanionTheory.Idem
+end
+
+open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_of_local_dichotomy : ∀ {S : Type} [CommRing S] (ϖ : S), (∀ m : Ideal S, m.IsMaximal → Dich (Ideal.Quotient.mk (compI m) ϖ)) → Val ϖ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Idem.val_of_dich

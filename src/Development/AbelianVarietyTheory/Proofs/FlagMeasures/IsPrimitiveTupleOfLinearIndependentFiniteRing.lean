@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PrimOfIsUnitDet
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.GramCount
 open scoped Classical
 
@@ -64,3 +66,10 @@ theorem prim_of_indep_of_isPrimitive : ∀ {B : Type} [CommRing B] [Fintype B] (
   rw [hz, Pi.single_apply]
 
 end GlobalTheory.GramCount
+end
+
+open GlobalTheory.GramCount
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isPrimitiveTuple_of_linearIndependent_finite_ring : ∀ {B : Type} [CommRing B] [Fintype B] (c : B →+* B), (∀ u, c (c u) = u) → ∀ (χ : AddChar B ℂ), χ.IsPrimitive → ∀ (k n : ℕ) (x : Fin k → Fin n → B), (∀ s : Fin k → B, ∑ a, s a • x a = 0 → s = 0) → Prim c x := by
+  atlas_forward_decl GlobalTheory.GramCount.prim_of_indep_of_isPrimitive

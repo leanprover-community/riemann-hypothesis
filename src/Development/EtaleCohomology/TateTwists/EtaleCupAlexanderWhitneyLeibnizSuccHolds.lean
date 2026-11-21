@@ -1,5 +1,4 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
-import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 import Development.EtaleCohomology.TateTwists.EtaleCupAlexanderWhitneyLeibnizOfSucc
 import Development.EtaleCohomology.TateTwists.EtaleAlexanderWhitneyCupLeibnizOfPairing
 

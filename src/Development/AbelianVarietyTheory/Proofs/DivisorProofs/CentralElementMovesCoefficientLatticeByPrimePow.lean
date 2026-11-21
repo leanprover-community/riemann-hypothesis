@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceOfAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FreeLowerBlockVectorMultipleKernelTranslate
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdelicIsometriesObj
 
+section
 set_option autoImplicit false
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 800000
@@ -61,3 +62,10 @@ theorem centLat : CentLat := by
   rwa [mul_inv_cancel_right] at this
 
 end GlobalTheory.CentralLattice
+end
+end
+
+open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp GlobalTheory.BigOn.Exp.SerBase
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.central_element_moves_coefficient_lattice_by_prime_pow : CentLat := by
+  atlas_forward_decl GlobalTheory.CentralLattice.centLat

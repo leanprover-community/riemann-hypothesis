@@ -3,14 +3,13 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClass
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ArFormExists
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CodimOneIntegralSubschemeDim
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleProductOfEach
-import Development.AbelianVarietyTheory.Definitions.Divisors.GenericPointAsIdeal
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.SheetUnsheet
-import Development.AutomorphicSpectrum.PublishedTheorems.Divisibility₂.PairingExists
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsArithVarInt
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.WZIsCInfStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ToZPowCombIsometricStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ToZIsArithHeightIffStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.WZIsCInf
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ToZPowCombIsometric
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ToZIsArithHeightIff
 
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -39,3 +38,12 @@ theorem isArFun_toZ_iff : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegr
   exact ⟨fun h => ⟨fun n => (key n _).1 (h.1 n), h.2⟩, fun h => ⟨fun n => (key n _).2 (h.1 n), h.2⟩⟩
 
 end GlobalTheory.CompanionTheory.Ar.BaseZ
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open GlobalTheory GlobalTheory.Points GlobalTheory.ArInt GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ProjSpace GlobalTheory.CompanionTheory.Ar.BaseZ GlobalTheory.CompanionTheory.Ar.BGS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.toZ_isArFun_iff : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (t : X ⟶ Sp ℤ) (D : ℕ), IsArithVar p D → ∀ (ι : Type) [Fintype ι] (L : ι → HermLB p) (hL : ∀ i τ, (wZ (L i) t τ).IsCInf) (Φ : MvPolynomial ι ℝ →ₗ[ℝ] ℝ), IsArFun (fun i => toZ (L i) t (hL i)) D Φ ↔ IsArFun L D Φ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.BaseZ.isArFun_toZ_iff

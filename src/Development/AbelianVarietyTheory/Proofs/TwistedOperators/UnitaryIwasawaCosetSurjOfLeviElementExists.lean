@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryBlockTriangularLeviPartUnitary
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryLeviNormalizesUnipotentRadical
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl
 
 namespace GlobalTheory.InertZeta
@@ -93,3 +95,9 @@ theorem cosetSurj_of_leviExists : LeviExists → CosetSurj := by
   exact ⟨(m⁻¹ * m') * (m'⁻¹ * b) * (m⁻¹ * m')⁻¹, hr, (m⁻¹ * m') * k, mul_mem hcK hk, by group⟩
 
 end GlobalTheory.InertZeta
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryIwasawaCosetSurj_of_leviElementExists : LeviExists → CosetSurj := by
+  atlas_forward_decl GlobalTheory.InertZeta.cosetSurj_of_leviExists

@@ -4,6 +4,7 @@ import Formalism.DegreeFormula.Statement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MeasurePreservingCompEquiv
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockSymApply
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -103,3 +104,9 @@ theorem curvPoly_model_zero : ∀ (ι : Type) [Fintype ι] (p q n : ℕ) (h : Fi
   simp [Finset.sum_ite_eq]
 
 end GlobalTheory.DomainDens
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.curvatureFormMatrix_boundedDomainModelMetric_at_zero : ∀ (ι : Type) [Fintype ι] (p q n : ℕ) (h : Fintype.card (ι × Fin p × Fin q) = n) (τ : ι), GlobalTheory.GoodMetric.curvPoly (fun u => Matrix.transpose (Formalism.DegreeFormula.hP (Formalism.DegreeFormula.unflat (GlobalTheory.UnifDens.flatL h u) τ))⁻¹) 0 = -GlobalTheory.DomainDens.blockSym h τ := by
+  atlas_forward_decl GlobalTheory.DomainDens.curvPoly_model_zero

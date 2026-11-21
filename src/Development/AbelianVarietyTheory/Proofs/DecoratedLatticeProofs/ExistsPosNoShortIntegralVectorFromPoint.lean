@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsRealCoord
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.FundamentalDomainCusps.HeightBoundSetup
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField Matrix Formalism.MainNotions.S GlobalTheory.CuspGeo GlobalTheory.ClassFin
@@ -85,3 +87,10 @@ theorem firstMin_pos : ∀ (I : AutInst) (y : I.Ginf), ∃ t : ℝ, 0 < t ∧ No
 end GlobalTheory.CuspGeo
 
 end
+end
+
+open NumberField Matrix Formalism.MainNotions.S GlobalTheory.CuspGeo GlobalTheory.ClassFin
+open scoped Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pos_noShortIntegralVectorFromPoint : ∀ (I : AutInst) (y : I.Ginf), ∃ t : ℝ, 0 < t ∧ NoShort I y t := by
+  atlas_forward_decl GlobalTheory.CuspGeo.firstMin_pos

@@ -1,7 +1,5 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.LocalLanglandsExistence.KernelCondGlob
 import Development.WeilBound.CoreStatements.AutomorphicKernels.LocalLanglandsExistence.WeilEquivOfLocalDegreeOne
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilGroupRestriction
-import GroundTheory.GlobalFields.CompletionAtPlace.Degree
 
 noncomputable section
 

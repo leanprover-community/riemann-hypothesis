@@ -1,7 +1,5 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
 import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.DetIneq
-import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.BoundsY
 import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Bounds
 set_option maxSynthPendingDepth 1
 

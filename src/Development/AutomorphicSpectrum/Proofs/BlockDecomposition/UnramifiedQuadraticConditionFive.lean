@@ -4,6 +4,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalEndomorphisms.Hens
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUTr
 import GroundTheory.GlobalFields.IdeleGroups.InfiniteProjInfiniteEmbeddingOfNe
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GunrInert
@@ -471,3 +472,8 @@ end Main
 end GlobalTheory.CompanionTheory.GunrInert
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_quadratic_condition_five : PositivityTheory.SiegelWeilFormula.Gunr.Q5 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrInert.isField_tensor_iff_isField_quot

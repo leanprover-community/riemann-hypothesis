@@ -3,9 +3,8 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DecaysOfMemSmo
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemContraIff
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MeasurePreservingToMixedPiSymm
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DifferentiableIntegralMulCpow
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFiniteMeasureQuotMeasure
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsFundamentalDomainIUnion
 
+section
 open NumberField Matrix MeasureTheory GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
 open scoped ENNReal
 
@@ -96,3 +95,14 @@ example : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (m : ℕ
         (GroundTheory.Global.IdeleGroup.ideleModule E (GeneralLinearGroup.det h) : ℝ)⁻¹) 𝓕 μ := integrableOn_min_absDet
 
 end GlobalTheory.FinVolGL
+end
+end
+
+open NumberField Matrix MeasureTheory GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integrableOn_min_absDet_inv_fundamentalDomain : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (m : ℕ), 0 < m →
+    ∀ (μ : Measure (GA E m)) [μ.IsHaarMeasure] (𝓕 : Set (GA E m)),
+      IsFundamentalDomain (ratGL E m).range 𝓕 μ →
+      IntegrableOn (fun h : GA E m => min (GroundTheory.Global.IdeleGroup.ideleModule E (GeneralLinearGroup.det h) : ℝ)
+        (GroundTheory.Global.IdeleGroup.ideleModule E (GeneralLinearGroup.det h) : ℝ)⁻¹) 𝓕 μ := by
+  atlas_forward_decl GlobalTheory.FinVolGL.integrableOn_min_absDet

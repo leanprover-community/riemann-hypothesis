@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.PolarisationModuleIndex
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.IndefiniteRowSideFullHecke.PolarisationModuleIndex
@@ -341,3 +343,12 @@ theorem GlobalTheory.PolModLattice.polMod_isUnit_mul_eq_dual : ∀ (E : Type) [F
       _ ≤ invDiff E * L * J := mul_le_mul_left h1 _
       _ = J * invDiff E * L := by rw [mul_comm, mul_assoc]
     exact h2 (Submodule.mem_span_singleton_self z)
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.IndefiniteRowSideFullHecke.PolarisationModuleIndex
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polarization_module_unit_dual : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (L : Submodule (OF E) E),
+    (∃ N : ℕ, 0 < N ∧ (∀ x : 𝓞 E, (N : E) * algebraMap (𝓞 E) E x ∈ L) ∧ ∀ x ∈ L, IsIntegral ℤ ((N : E) * x)) →
+    IsUnit (polMod L) ∧ polMod L * L = dualLat L := by
+  atlas_forward_decl GlobalTheory.PolModLattice.polMod_isUnit_mul_eq_dual

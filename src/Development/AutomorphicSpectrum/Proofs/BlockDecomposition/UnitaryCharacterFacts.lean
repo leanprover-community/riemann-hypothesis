@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.UnitaryExtremality.SatPowNonvan
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct
@@ -325,3 +327,9 @@ theorem charU : PositivityTheory.SphericalProduct.CharU := by
 end GlobalTheory.CompanionTheory.TorusChar
 
 end
+end
+
+open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_character_facts : PositivityTheory.SphericalProduct.CharU := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TorusChar.charU

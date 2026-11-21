@@ -5,7 +5,6 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsOrthonormalBas
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsContinuousMultilinearMapOfInnerProd
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsNormSqTensUpdate
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasDerivAtOrbitTens
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StepSpacePropsOfDiff
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.VPSubOfLocalBound
 
 open Formalism.MainNotions.S NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalPlaceBasis

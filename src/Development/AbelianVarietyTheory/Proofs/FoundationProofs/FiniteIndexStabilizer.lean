@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.GaloisValuations.Global
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharInertiaSurjective
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 

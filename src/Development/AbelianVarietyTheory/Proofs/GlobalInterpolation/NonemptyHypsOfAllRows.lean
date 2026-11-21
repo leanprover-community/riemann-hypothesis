@@ -1,12 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NotBaseCondFalse
-import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
 import Development.AutomorphicArithmetic.CharacterBoxes.ClassSel
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WorkingClassesFrozen
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WorkingFamClassCopiesEqFrozenStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.GenusMassEntryStatement
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.AllRows
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.APerTw
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Pk Formalism.MainNotions.Lnk Formalism.MainNotions.GlobalTheoryTheory Formalism.L2.GlobalTheoryTheory Formalism.MainNotions.RT GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Fc
 
 namespace GlobalTheory.Fc

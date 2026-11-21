@@ -3,6 +3,7 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.AdelicHeckeBlocks.PLocComm
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingSecondBlockOf
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain
@@ -61,3 +62,8 @@ theorem macInvOf : MacInvOf := by
 end GlobalTheory.CompanionTheory.MacInvPf
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.macdonald_inverse_of : PositivityTheory.Rg.BcB.F.MLM.MacInvOf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MacInvPf.macInvOf

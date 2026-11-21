@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped Matrix
 open NumberField IsDedekindDomain
 
@@ -37,3 +40,10 @@ theorem matrix_inv_entries_bounded (R : Type) [NormedCommRing R] [NormedAlgebra 
     exact le_trans (le_trans h3 h2) (le_max_right _ _)
 
 end GlobalTheory
+end
+
+open scoped Matrix
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_bound_inv_entries_of_bounded_entries : ∀ (R : Type) [NormedCommRing R] [NormedAlgebra ℝ R] [FiniteDimensional ℝ R] (n : ℕ) (G : Matrix (Fin n) (Fin n) R → ℝ), Continuous G → (∀ c, G c ≠ 0 → IsUnit c) → ∀ B ε : ℝ, 0 < ε → ∃ C : ℝ, (∀ c : Matrix (Fin n) (Fin n) R, (∀ i j, ‖c i j‖ ≤ B) → G c ≤ C) ∧ ∀ c : GL (Fin n) R, (∀ i j, ‖c.1 i j‖ ≤ B) → ε ≤ G c.1 → ∀ i j, ‖c⁻¹.1 i j‖ ≤ C := by
+  atlas_forward_decl GlobalTheory.matrix_inv_entries_bounded

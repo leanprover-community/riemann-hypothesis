@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FintypeResidue
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctionalSectionNonvanishing
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
@@ -88,3 +90,14 @@ theorem exists_mul_rowRep_inv_mem (F : Type) [Field F] [ValuativeRel F] [Topolog
   rwa [antiTrGL_antiTrGL] at h3
 
 end GlobalTheory.CompanionTheory.LFUDom
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
+open GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.Iwasawa GroundTheory.Automorphic.GLnLocal
+open scoped ValuativeRel
+open GlobalTheory.CompanionTheory.LFUDom
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_matrix_row_rep_exists : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (g : GL (Fin 2) F), (∀ a b, (g : Matrix (Fin 2) (Fin 2) F) a b ∈ 𝒪[F]) →
+  ∃ (i j : ℕ) (c : Fin j → 𝓀[F]), g * (rowRep i j c)⁻¹ ∈ integralGL F 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LFUDom.exists_mul_rowRep_inv_mem

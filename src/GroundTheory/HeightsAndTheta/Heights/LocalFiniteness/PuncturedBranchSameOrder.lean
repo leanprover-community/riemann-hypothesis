@@ -1,4 +1,3 @@
-import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.KleimanFibreHilbertFlat
 import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.PuncturedBranchInOneBranch
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPuncturedBranchSameOrder
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceReducedGeneral

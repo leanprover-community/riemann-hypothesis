@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPosHermFormV
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IntMIffInt
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SetIntegralCharImEqZeroStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SummableExpNegHermStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SetIntegralCharImEqZero
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SummableExpNegHerm
+
 open Complex MeasureTheory GlobalTheory.UnitaryTheta
 open scoped BigOperators ComplexConjugate Real Classical
 

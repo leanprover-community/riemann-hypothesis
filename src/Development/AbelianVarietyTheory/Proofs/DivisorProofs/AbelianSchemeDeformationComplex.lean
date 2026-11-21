@@ -2,9 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GaussManinPeriods
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianHodgeDeRham
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabComp
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham
 open scoped CategoryTheory.Obj
@@ -47,3 +47,11 @@ theorem exists_constLift : ∀ (A₀ : Over (Sp ℂ)) [GrpObj A₀] (g : ℕ), I
   · exact hq.cancel (isGrpPullback_of_eq_id A₀ e (pullback.lift_fst _ _ w)) (pullback.lift_snd _ _ w)
 
 end GlobalTheory.ConstLift
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.abelian_scheme_deformation_complex : ∀ (A₀ : Over (Sp ℂ)) [GrpObj A₀] (g : ℕ), IsAbelianScheme A₀ → SmoothOfRelativeDimension g A₀.hom → ∀ (D : Type) [CommRing D] [Algebra ℂ D] (π : D →+* ℂ), (∀ a : ℂ, π (algebraMap ℂ D a) = a) → ∃ (A' : Over (Sp D)) (_ : GrpObj A') (q : A'.left ⟶ A₀.left) (i : A₀.left ⟶ A'.left), IsAbelianScheme A' ∧ SmoothOfRelativeDimension g A'.hom ∧ IsGrpPullback A' A₀ (spMap (algebraMap ℂ D)) q ∧ IsGrpPullback A₀ A' (spMap π) i ∧ i ≫ q = 𝟙 _ := by
+  atlas_forward_decl GlobalTheory.ConstLift.exists_constLift

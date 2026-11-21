@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.HeckeActMem
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.AlgebraEquivSetup.HeckeTraceEq
 
 open Formalism.UG GlobalTheory.LKDef.HeckeTraceForms UpperTheory.Gal.W2.Seed

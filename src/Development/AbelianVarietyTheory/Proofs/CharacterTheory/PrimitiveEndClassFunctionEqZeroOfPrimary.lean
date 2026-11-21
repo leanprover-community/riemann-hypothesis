@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharpolyBlockAndInvariantUnderStabilizerNilradicStatement
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ConjOfPrimaryFinrankKerPowEqStatement
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.KerAevalAddStabilizerNilradicalSocleStatement
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.KerAevalAddStabilizerNilradicalSocle
 
+section
 open Polynomial GlobalTheory.CuspGL
 
 namespace GlobalTheory.CuspGL
@@ -73,3 +73,9 @@ theorem primitive_eq_zero_of_primary : ∀ (F : Type) [Field F] [Finite F] (V : 
   exact key _ g rfl hg
 
 end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.primitiveEndClassFunction_eq_zero_of_primary : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] (φ : Module.End F V → ℂ), IsClassFn φ → IsPrimitive φ → ∀ (f : F[X]) (m : ℕ), Irreducible f → (∀ g : Module.End F V, LinearMap.charpoly g = f ^ m → aeval g f = 0 → φ g = 0) → ∀ g : Module.End F V, LinearMap.charpoly g = f ^ m → φ g = 0 := by
+  atlas_forward_decl GlobalTheory.CuspGL.primitive_eq_zero_of_primary

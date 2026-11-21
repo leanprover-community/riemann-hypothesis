@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.GL2.GJGlobalModulus
-import GroundTheory.AutomorphicForms.GL2.GJMatrixSchwartz
 
 namespace GroundTheory.Automorphic.GJGlobal
 

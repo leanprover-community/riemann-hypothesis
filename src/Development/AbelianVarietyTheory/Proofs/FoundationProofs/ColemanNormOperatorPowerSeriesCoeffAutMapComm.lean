@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.CyclotomicDvdExpandOfCoprime
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.Col PowerSeries
 
 noncomputable section
@@ -38,3 +41,10 @@ theorem normOp_smap (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime] (σ : 
   rw [key2, ← smapEquiv_apply, ← smapEquiv_apply, RingEquiv.apply_symm_apply]
 
 end GlobalTheory.Col.NormCoeff
+end
+end
+
+open GlobalTheory.Col PowerSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.colemanNormOperator_powerSeriesCoeffAutMap_comm : ∀ (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime] (σ : R ≃+* R) (h : PowerSeries R), normOp p (smap σ h) = smap σ (normOp p h) := by
+  atlas_forward_decl GlobalTheory.Col.NormCoeff.normOp_smap

@@ -1,5 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GoodTopBot
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
 
 namespace GlobalTheory.AlcPerm
@@ -44,3 +47,9 @@ theorem perm_stable : ∀ (k : Type) [Field k] (N : ℕ) (lam : DomWeight N) (M 
   rwa [smul_smul, Units.inv_mul, one_smul] at this
 
 end GlobalTheory.AlcPerm
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.GLSchemeSubmodule_stable_under_row_perm : ∀ (k : Type) [Field k] (N : ℕ) (lam : DomWeight N) (M : Submodule k (MvPolynomial (Fin N × Fin N) k)), GlobalTheory.Published.IsGLSubmodule k N lam M → ∀ σ : Equiv.Perm (Fin N), ∀ f ∈ M, rename (fun v : Fin N × Fin N => (σ v.1, v.2)) f ∈ M := by
+  atlas_forward_decl GlobalTheory.AlcPerm.perm_stable

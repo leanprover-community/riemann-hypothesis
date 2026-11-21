@@ -1,3 +1,4 @@
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.Shared.HermitianInverse
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.LocDensHL
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.DensVDx
@@ -269,14 +270,8 @@ theorem hensAA_holds : HensAA := by
   have hTh : (TE.map (σ : E →+* E))ᵀ = TE := by
     ext i j
     exact hT i j
-  have hE1 : (TE⁻¹.map (σ : E →+* E))ᵀ * TE = 1 := by
-    calc (TE⁻¹.map (σ : E →+* E))ᵀ * TE
-        = (TE⁻¹.map (σ : E →+* E))ᵀ * (TE.map (σ : E →+* E))ᵀ := by rw [hTh]
-      _ = ((TE.map (σ : E →+* E)) * (TE⁻¹.map (σ : E →+* E)))ᵀ := (Matrix.transpose_mul _ _).symm
-      _ = ((TE * TE⁻¹).map (σ : E →+* E))ᵀ := by rw [Matrix.map_mul]
-      _ = 1 := by
-        rw [Matrix.mul_nonsing_inv _ hu, Matrix.map_one _ (map_zero _) (map_one _),
-          Matrix.transpose_one]
+  have hE1 : (TE⁻¹.map (σ : E →+* E))ᵀ * TE = 1 :=
+    Formalism.MassFormulaShared.inverseAdjoint_mul (σ : E →+* E) TE hTh hu
   have hTs : (Ti.map s)ᵀ * Tm = 1 := by
     have e : (Ti.map s)ᵀ = ((TE⁻¹.map (σ : E →+* E))ᵀ).map (inclR (Fv F v)) := by
       ext i j

@@ -1,11 +1,10 @@
 import Mathlib
 import Formalism.PeriodIntegrals.DSInfCharCap
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.PseudoCoefficientSeparation
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-import Formalism.RealPlaceAnalysis.StatementE
-import Formalism.RealPlaceAnalysis.StatementB
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LanglandsClassification
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RestrOfNotMem
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
 open GlobalTheory.SmoothGlob (lieSet)
 open GlobalTheory.Dec (IsHaarSub HasInfChar UEquiv gelfVal)
@@ -47,3 +46,16 @@ theorem isSplit_commute_flagM : ∀ {n a : ℕ} {ε : Fin n → Bool} {j : Fin a
     _ = t * m := by rw [this]
 
 end GlobalTheory.RealInd
+end
+
+open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
+open GlobalTheory.SmoothGlob (lieSet)
+open GlobalTheory.Dec (IsHaarSub HasInfChar UEquiv gelfVal)
+open GlobalTheory.Orb (IsPseudoCoeff ujMat ujRep)
+open scoped InnerProductSpace
+open PI.DSInfCharCap (actU Egl)
+open GlobalTheory.RealInd.Stages Finset GlobalTheory.FlagMeas Formalism.REAL
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_commutes_split_torus : ∀ {n a : ℕ} {ε : Fin n → Bool} {j : Fin a → ℕ} {W : Flag n a}, IsIsoFlag ε j W → ∀ {x : Fin a → ℝ} {t : UJ ε}, IsSplit ε W x t → ∀ m ∈ flagM ε W, m * t = t * m := by
+  atlas_forward_decl GlobalTheory.RealInd.isSplit_commute_flagM

@@ -1,4 +1,3 @@
-import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
 import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
 import ReciprocityTheory.L2DbarEstimates.BasicIdentity.BasicIdentityStatement
 

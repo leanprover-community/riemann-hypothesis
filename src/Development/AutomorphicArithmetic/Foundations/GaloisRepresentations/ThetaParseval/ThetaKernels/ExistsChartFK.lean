@@ -1,7 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRealChartAdeleTensorAdmissibleCMBase
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 
+section
 set_option synthInstance.maxHeartbeats 200000
 
 section
@@ -22,4 +22,19 @@ theorem exists_chartF_k : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
   rw [(B.emb w).2, InfinitePlace.mk_embedding]
 end GlobalTheory.RealWeilF.CMChart
 end
+end
+end
+
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open scoped TensorProduct Matrix BoundedContinuousFunction ContDiff
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF MeasureTheory Matrix GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open GlobalTheory.RealWeil GlobalTheory.RealWeilF
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_chart_archimedean_family : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
+    (B : Base F E), _root_.UpperTheory.TP.W.GoodK σ B → ∀ θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ),
+      IsInfFamF (fun w : InfinitePlace F => (B.emb w).1) θ → ∃ ι : (InfinitePlace F → ℂ) →+ AEF F E, IsChartF θ ι := by
+  atlas_forward_decl _root_.GlobalTheory.RealWeilF.CMChart.exists_chartF_k
 end

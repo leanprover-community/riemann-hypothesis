@@ -1,11 +1,12 @@
 import Mathlib
-import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.PairRowIffQdRows
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LogAddRpowMulLogPowLeRpow
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ConstMulRpowMulLogPowLeRpow
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.GoodTopCountLeConstMulLog
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SzRowSigGaps
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab GlobalTheory.EX NumberField
 
 namespace GlobalTheory.EX
@@ -175,3 +176,9 @@ theorem szRow_size_ratio : SzRow (fun C D L => (∀ j j' τ τ', 1 ≤ j → j �
     linarith
 
 end GlobalTheory.EX
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab GlobalTheory.EX NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.explicitChoice_rowWeight_ratio_and_lastCloud_le_twice_first : SzRow (fun C D L => (∀ j j' τ τ', 1 ≤ j → j ≤ D.R.m → 1 ≤ j' → j' ≤ D.R.m → wj D j τ ≤ L.sc.X'' D.R.n * wj D j' τ') ∧ (∀ τ (hm : 0 < D.R.m), (D.hc τ).b ⟨D.R.m - 1, by omega⟩ ≤ 2 * (D.hc τ).b ⟨0, hm⟩)) := by
+  atlas_forward_decl GlobalTheory.EX.szRow_size_ratio

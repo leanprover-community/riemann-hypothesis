@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.Hypotheses.GalCoh
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsPrimeMemAsIdeal
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.DualityForAbsGal
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CardH1EqCardH0MulCardH2

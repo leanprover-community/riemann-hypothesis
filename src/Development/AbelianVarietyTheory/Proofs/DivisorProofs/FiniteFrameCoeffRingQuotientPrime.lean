@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasBlockOfOccurs
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteQuotientPow
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
 
+section
 open GlobalTheory.ExpFrame Formalism.BasicNotions.Loc GlobalTheory.Cyc
 
 namespace GlobalTheory.FrameQuot
@@ -42,3 +42,9 @@ theorem finite_quot_prime (l : ℕ) [Fact l.Prime] (ι : Type) (N : ℕ) (F : Fr
   exact Finite.of_equiv _ (Ideal.quotientEquiv _ _ e hIJ).symm.toEquiv
 
 end GlobalTheory.FrameQuot
+end
+
+open GlobalTheory.ExpFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_frameCoeffRing_quotient_prime : ∀ (l : ℕ) [Fact l.Prime] (ι : Type) (N : ℕ) (F : Frame l ι N), F.Ok → Finite (F.O ⧸ Ideal.span {((l : ℕ) : F.O)}) := by
+  atlas_forward_decl GlobalTheory.FrameQuot.finite_quot_prime

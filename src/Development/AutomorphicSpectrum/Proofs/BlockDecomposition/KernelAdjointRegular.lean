@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.WaveSt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsMultOfFintype
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset
@@ -66,3 +67,15 @@ theorem adjoint_kernel_reg : LgFacts → ∀ (n : ℕ) (E : KMod n) (k : Mat n �
     rw [h2, adjoint_rho_inv, adjoint_rho_inv]
 
 end GlobalTheory.CompanionTheory.WaveMult
+end
+end
+
+open MeasureTheory Matrix Finset
+open scoped ContDiff ComplexConjugate InnerProductSpace
+open PositivityTheory.RgTw (Mat G)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.WaveMult
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernel_adjoint_regular : LgFacts → ∀ (n : ℕ) (E : KMod n) (k : Mat n → (E.V →L[ℂ] E.V)), KReg k → (∀ y ∈ GLs n, ∀ k₁ k₂ : Matrix.unitaryGroup (Fin n) ℂ, k (k₁.1 * y * k₂.1) = E.ρ k₁ * k y * E.ρ k₂) → (haveI := FiniteDimensional.complete ℂ E.V; KReg (fun y => ContinuousLinearMap.adjoint (k y⁻¹)) ∧ ∀ y ∈ GLs n, ∀ k₁ k₂ : Matrix.unitaryGroup (Fin n) ℂ, ContinuousLinearMap.adjoint (k (k₁.1 * y * k₂.1)⁻¹) = E.ρ k₁ * ContinuousLinearMap.adjoint (k y⁻¹) * E.ρ k₂) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WaveMult.adjoint_kernel_reg

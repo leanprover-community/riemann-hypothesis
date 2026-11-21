@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.EvalTOntoPsi
-import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
 
 noncomputable section
 

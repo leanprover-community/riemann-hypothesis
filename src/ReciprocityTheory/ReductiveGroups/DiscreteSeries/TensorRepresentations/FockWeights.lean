@@ -1,4 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.DSymmHypsInhabited
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.LowFock
 
 noncomputable section

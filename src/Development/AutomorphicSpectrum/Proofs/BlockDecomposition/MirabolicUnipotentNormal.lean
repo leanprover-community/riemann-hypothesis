@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCIndValue
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibPhi Topology
 open scoped TensorProduct
 
@@ -62,3 +65,11 @@ theorem mirUin_normal : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSp
     mul_one, mul_inv_cancel]
 
 end GlobalTheory.CompanionTheory.LeibPhi.UNorm
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibPhi Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mirabolic_unipotent_normal : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ), (MirUin k n).Normal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LeibPhi.UNorm.mirUin_normal

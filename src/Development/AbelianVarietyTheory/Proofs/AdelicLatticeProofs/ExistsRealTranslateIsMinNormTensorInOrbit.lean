@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TensorActionHermitianExpFixedOfMinNorm
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MatrixKroneckerPowerTensorActionAlgebra
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TensorPowerSumRightActionNormAndContinuity
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.ClassFin
 open scoped Kronecker ComplexOrder TensorProduct
 
@@ -319,3 +319,10 @@ theorem _root_.GlobalTheory.ClassFin.exists_real_translate_isMinVec : ∀ (ι : 
   rw [hwdef, ← hactmul, ← Matrix.mul_assoc, mul_nonsing_inv _ hg₀u, Matrix.one_mul]
 
 end GlobalTheory.ClassFin
+end
+
+open Matrix GlobalTheory.ClassFin
+open scoped Kronecker ComplexOrder TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_real_translate_isMinNormTensorInOrbit : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (m : ℕ) (d : Fin m → ℕ) (t : TIdx ι d → ℝ), (∃ w ∈ orb d (fun k => (t k : ℂ)), IsMinVec d w) → ∃ g : Matrix ι ι ℝ, g.det = 1 ∧ IsMinVec d (act d (fun k => (t k : ℂ)) (g.map (fun r : ℝ => (r : ℂ)))) := by
+  atlas_forward_decl GlobalTheory.ClassFin.exists_real_translate_isMinVec

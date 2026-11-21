@@ -3,7 +3,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.Re
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DetGramSmul
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FlagUnipotentFourierJacobiGroupStructure
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StabilizerInductionLaw
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBoundedUnitary
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SummableOfCount
 
 noncomputable section

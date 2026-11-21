@@ -1,9 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.AbelianHeightsDuality.GelfandKazhdanDuality.IsCuspFormDualMap
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothConjugateInverseMem
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartStarInvT
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsNormalisedThetaSub
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Topology Matrix MeasureTheory Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.ContraPair GlobalTheory.DiscSpec
@@ -259,3 +258,9 @@ theorem GlobalTheory.CompanionTheory.DualCusp.isCuspForm_conj_invA {E : Type} [F
   ⟨isAutForm_dual h.1, isCuspidal_dual h.1.left h.2⟩
 
 end
+end
+
+open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.ContraPair GlobalTheory.DiscSpec PositivityTheory.PRW.GKD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspForm_conjugate_inverse : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {a : ℕ}, ∀ (φ : Sm E a) (hψ : (fun g => star (φ.1 (invA E a g))) ∈ Sm E a), IsCuspForm φ → IsCuspForm (⟨fun g => star (φ.1 (invA E a g)), hψ⟩ : Sm E a) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DualCusp.isCuspForm_conj_invA

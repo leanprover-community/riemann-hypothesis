@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Topology
 
 namespace GlobalTheory
@@ -29,3 +32,9 @@ theorem measure_eq_zero_of_finite_inter_lines
       exact NeZero.ne ν)
 
 end GlobalTheory
+end
+
+open MeasureTheory Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measure_eq_zero_of_finite_inter_lines' : ∀ (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (Z : Set V), MeasurableSet Z → ∀ y : V, (∀ x : V, {t : K | x + t • y ∈ Z}.Finite) → μ Z = 0 := by
+  atlas_forward_decl GlobalTheory.measure_eq_zero_of_finite_inter_lines

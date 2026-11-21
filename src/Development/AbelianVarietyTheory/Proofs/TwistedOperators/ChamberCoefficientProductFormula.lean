@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LabesseWaldspurger
+
+section
 open MeasureTheory GlobalTheory.Chamber
 
 namespace GlobalTheory.Chamber.SumSplit
@@ -58,3 +60,9 @@ theorem volume_sum_split : ExpFamilyIntegral → FamilyProduct → ∀ (k : ℕ)
     exact eL_zero _
 
 end GlobalTheory.Chamber.SumSplit
+end
+
+open MeasureTheory GlobalTheory.Chamber
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chamber_coefficient_product_formula : ExpFamilyIntegral → FamilyProduct → ∀ (k : ℕ) (𝔞 : Submodule ℝ (A0 k)), IsLevi 𝔞 → ∀ X Y W : Finset (SV k) → A0 k, IsOrth 𝔞 X → IsOrth 𝔞 Y → (∀ P ∈ parF 𝔞 ∅, W P = X P + Y P) → ((∫ H : aMQ 𝔞 ∅, gamM 𝔞 ∅ W H : ℝ) : ℂ) = cM 𝔞 ∅ (expFam W) 0 ∧ cM 𝔞 ∅ (expFam W) 0 = ∑ Q ∈ parF 𝔞 ∅, cM 𝔞 Q (expFam X) 0 * cP Q ∅ (expFam Y) 0 ∧ cP ∅ ∅ (expFam Y) 0 = 1 := by
+  atlas_forward_decl GlobalTheory.Chamber.SumSplit.volume_sum_split

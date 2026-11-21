@@ -1,21 +1,18 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
-import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUSplittingTrRep
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjMapApply
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjMapPartRightEquivariant
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StarMemAdelicSchwartzSpaceNumberField
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStdCharNegOneOfStandardTraceAdelicAddChar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EvaluationGoodModelsIntertwineStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TameConjMapStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TamePartRightStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TamePartLeftStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TamePartLeft
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchroedingerPreservesAdelicSchwartzStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilEigenBijectivePairStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialFourierRightIsometryL2Statement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialFourierLeftIsometryL2Statement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EvaluationAutomorphismCommutesSchwartzStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilEigenBijectivePair
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialFourierRightIsometryL2
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialFourierLeftIsometryL2
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EvaluationAutomorphismCommutesSchwartz
 
+section
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.WeilTr MeasureTheory
 open GlobalTheory.DoublingEv
 open scoped Matrix ENNReal
@@ -241,3 +238,12 @@ theorem main : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField
 end GlobalTheory.DblGoodInt
 
 end
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.WeilTr MeasureTheory
+open scoped Matrix ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_eigen_bijective_paired_models : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (χX χW : Chr F E) (om : Rep σ X W) (r s r' s' : ℕ), IsPair B M χX χW om r s r' s' → ∀ M₁ : Model σ X W, M₁.IsGood B.ψ → ∀ e : Fn F n d →ₗ[ℂ] Fn F n d, IsEv B M M₁ 1 1 ∅ e → Set.BijOn e (schA F (Fin n × Fin d) : Set _) (schA F (Fin n × Fin d) : Set _) →
+    ∀ T : Fn F n d ≃ₗ[ℂ] Fn F n d, (∀ Φ ∈ schA F (Fin n × Fin d), T Φ = e Φ) →
+      HasDbl (cA σ) (adeleClass F) B.ψ (-1) (incM F X.J) (incM F W.J) M.co M₁.co T := by
+  atlas_forward_decl GlobalTheory.DblGoodInt.main

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory
@@ -33,3 +36,9 @@ theorem maxIdeal_exact_pow_dvd_span_prime : ∀ (L : Type) [Field L] [NumberFiel
   exact h3 (Ideal.subset_span (Set.mem_singleton _))
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_span_prime_eq_pow_mul_coprime : ∀ (L : Type) [Field L] [NumberField L] (l e : ℕ), l.Prime → ∀ (la : Ideal (𝓞 L)) [la.IsMaximal], ((l : ℕ) : 𝓞 L) ∈ la → ((l : ℕ) : 𝓞 L) ∉ la ^ (e + 1) → ∃ (e' : ℕ) (J : Ideal (𝓞 L)), 0 < e' ∧ e' ≤ e ∧ la ⊔ J = ⊤ ∧ Ideal.span {((l : ℕ) : 𝓞 L)} = la ^ e' * J := by
+  atlas_forward_decl GlobalTheory.maxIdeal_exact_pow_dvd_span_prime

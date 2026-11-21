@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne
 
 namespace GlobalTheory.PowFix
@@ -45,3 +48,9 @@ theorem exists_pos_pow_fix : ∀ (E Ω : Type) [Field E] [NumberField E] [Field 
   exact pow_apply_eq_of_apply_eq _ x (hk x) c
 
 end GlobalTheory.PowFix
+end
+
+open NumberField IsDedekindDomain Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pos_pow_galois_fixing_finset : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (σ : G E Ω) (s : Finset Ω), ∃ m : ℕ, 0 < m ∧ ∀ x ∈ s, (σ ^ m) x = x := by
+  atlas_forward_decl GlobalTheory.PowFix.exists_pos_pow_fix

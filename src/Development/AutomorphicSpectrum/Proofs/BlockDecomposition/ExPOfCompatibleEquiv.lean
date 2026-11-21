@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.NLeA
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AlgebraMapConeRing
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4
 open CrystallineSemistableComparison.Onto
@@ -57,3 +58,9 @@ theorem exP_of_addEquiv : ∀ {ι : Type} [DecidableEq ι] (M N : Finset ι → 
     exact h3.symm
 
 end GlobalTheory.CompanionTheory.SurjectionOntoH4
+end
+
+open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exP_of_compatible_equiv : ∀ {ι : Type} [DecidableEq ι] (M N : Finset ι → Type) [∀ S, AddCommGroup (M S)] [∀ S, AddCommGroup (N S)] (r : ∀ {S T : Finset ι}, S ⊆ T → M S → M T) (r' : ∀ {S T : Finset ι}, S ⊆ T → N S → N T) (e : ∀ S, M S ≃+ N S), (∀ {S T : Finset ι} (h : S ⊆ T) x, e T (r h x) = r' h (e S x)) → ExP M r → ExP N r' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SurjectionOntoH4.exP_of_addEquiv

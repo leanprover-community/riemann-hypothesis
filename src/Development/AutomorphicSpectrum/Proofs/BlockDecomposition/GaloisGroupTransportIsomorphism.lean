@@ -1,6 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.GelfandSpectralNormalisation.NormalisedInvariants.PTConclAt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NineTermExactIff
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.Published GlobalTheory.Published.PoitouTate PositivityTheory.PoitouTateConclusion GlobalTheory.CompanionTheory.PTIso
 
 namespace GlobalTheory.CompanionTheory.PTIso
@@ -107,3 +109,9 @@ theorem exists_galContinuousMulEquiv : ∀ (F Ω F' Ω' : Type) [Field F] [Numbe
     exact h
 
 end GlobalTheory.CompanionTheory.PTIso
+end
+
+open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.Published GlobalTheory.Published.PoitouTate PositivityTheory.PoitouTateConclusion GlobalTheory.CompanionTheory.PTIso
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.galois_group_transport_isomorphism : ∀ (F Ω F' Ω' : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] [Field F'] [NumberField F'] [Field Ω'] [Algebra F' Ω'] [IsAlgClosure F' Ω'] (e : F ≃+* F') (E : Ω ≃+* Ω'), (∀ x : F, E (algebraMap F Ω x) = algebraMap F' Ω' (e x)) → ∃ Φ : G F Ω ≃ₜ* G F' Ω', ∀ (σ : G F Ω) (x : Ω), Φ σ (E x) = E (σ x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PTIso.exists_galContinuousMulEquiv

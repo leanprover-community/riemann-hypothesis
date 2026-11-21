@@ -3,7 +3,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChar
 import ReciprocityTheory.DualLattices.ProdDvdOfIso
 import Development.AbelianVarietyTheory.BlockTheory.JetGauges.LieMatrixCoordinates
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NotIsUnitNatCastOfIsLocalHom
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscriminantGramUnit
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.OpExistsEqAdd
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IdempotentEmbeddingsCard
 

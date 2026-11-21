@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.Columns.TiedCls
 import Formalism.LocalToGlobal.Columns.TiedXp
 import Formalism.LocalToGlobal.Columns.TiedGlev
 import Formalism.LocalToGlobal.Columns.TiedGlChi

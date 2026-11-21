@@ -1,9 +1,9 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.QuantumDeterminants CompanionTheory.D.Upq.Sm CompanionTheory.Bmu
 
 noncomputable section
@@ -359,3 +359,10 @@ theorem adaptExists : AdaptExists := by
     module
 
 end GlobalTheory.CompanionTheory.BmuAdapt
+end
+end
+
+open CompanionTheory.Bmu
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.AdaptedBasisExistsAlt : AdaptExists := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BmuAdapt.adaptExists

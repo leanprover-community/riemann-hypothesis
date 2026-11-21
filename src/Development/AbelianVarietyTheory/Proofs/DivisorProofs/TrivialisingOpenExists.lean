@@ -5,6 +5,7 @@ import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.HodgeTateKernel
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeometricallyIntegralIffGeometricallyConnectedOf
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.RigidifiedOfChart
 
+section
 set_option autoImplicit false
 
 open CategoryTheory Limits AlgebraicGeometry
@@ -84,3 +85,9 @@ theorem hasTrivialisingOpen (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlg
   hasTrivialisingOpen_of_specialFibreNotInClosure p C v O Λ P h
 
 end GlobalTheory.WeilIntegral
+end
+
+open GlobalTheory GlobalTheory.HTLat GlobalTheory.PDivGroup GlobalTheory.WeilIntegral GlobalTheory.IndefiniteRowSideFullHecke.HodgeTateKernel TensorProduct CategoryTheory ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ChTor CategoryTheory.MonObj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trivialising_open_exists : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [Algebra ℤ_[p] O] [Algebra ℤ_[p] C] [IsScalarTower ℤ_[p] O C] (Λ : Type) [CommRing Λ] [StarRing Λ] (P : Point p v O Λ), SpecialFibreNotInClosure p O → HasTrivialisingOpen P := by
+  atlas_forward_decl GlobalTheory.WeilIntegral.hasTrivialisingOpen

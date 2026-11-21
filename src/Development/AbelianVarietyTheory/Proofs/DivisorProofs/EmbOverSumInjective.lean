@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.Brauer.TensorSimple
-import Development.AbelianVarietyTheory.Definitions.Divisors.PlacesOverU
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealRepTmul
 
 open NumberField Matrix GlobalTheory.UPel.HT

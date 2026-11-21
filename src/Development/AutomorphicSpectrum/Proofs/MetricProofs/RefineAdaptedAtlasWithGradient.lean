@@ -2,6 +2,9 @@ import Mathlib
 import ReciprocityTheory.AnalyticForms.LeviForms.RegGlue
 import ReciprocityTheory.AnalyticForms.LeviForms.RegChartC
 import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
 open scoped ContDiff
 
@@ -337,3 +340,10 @@ theorem refine_adapted_atlas : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] [Co
 end
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.refine_adapted_atlas_with_gradient : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X] [T2Space X] (A B : FinHolAtlas e X) (L th : LocPot X) (s : X → X → ℂ) (ph : X → ℝ) (C₅ : ℝ), (∀ y, logNormSec L s y ≤ 0) → IsAdaptedAtlas A B L s → IsGradBound B L s ph C₅ → ∃ (B' : FinHolAtlas e X) (x : Fin B'.n → X), IsAdaptedAtlas A B' L s ∧ IsGradBound B' L s ph |C₅| ∧ ∀ j, (B'.chart j).source ⊆ th.U (x j) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.refine_adapted_atlas

@@ -1,37 +1,29 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.BhattScholzeCrystallineLattices
-import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.DiscreteSeriesCoefficientsCuspidalIffOneSided
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DepthZeroSupport
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BoundAtTwoThreeFamily
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GeometricWeakTiesOfStrong
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GKeyFin
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnlocalizedSaturatedState
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DiscreteBranchingUpq
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LevelPlusSubgroup
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RhoMemOfMkEq
 import Development.AbelianVarietyTheory.Definitions.Divisors.HypothesisBundleConversions
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalityOfThetaHypothesesStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowRatWOfRowTest
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.Fun0FitOfJoin
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EvLgGGridAOfJoin
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilConvergenceOfSiegelSet
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocalMatchingOfHoweDualityStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaIntegralsOfMinguezStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LargeFieldLinkedBundlesExist
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OpenImpliesL3AtLinkedBundles
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OpenAndLinkedMonoExtension
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OntoXAndLamLowOfPublishedUE
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OpenFirstParametersOfPrintsUEStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OpenFirstParametersOfPublishedUE
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyHypsOfPublishedUE
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumRangeEqRoots
 import Development.AutomorphicArithmetic.CharacterBoxes.EveryCharacter
 import Development.AutomorphicArithmetic.ResidueCharacters.ClosedOfAll
 import Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.RealBranch
 import Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.ArakSwapCovol
 import Development.AutomorphicArithmetic.ThetaCorrespondence.PrismaticDieudonne.PrismaticDieudonneHodge
 import Development.WeilBound.ThetaLifts.Reductions.FiniteClosure.TheoremKOfMod
+
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.Mem.LiteralAutomorphy
 
 namespace UpperTheory.Lit
@@ -63,12 +55,6 @@ theorem hypsE₂ : S0.HypothesesUE → GlobalTheory.FunPr.Hypotheses₂ → Glob
     P.casselmanWallach P.rayClassFieldSt hX hL (NEa hL (GlobalTheory.HeightCounting.Up.NEo hL (max CF0 CF1)) (GridA (max CF0 CF1)))
     SExt.none (geoCl anyGeometry) (fun _ _ _ _ _ _ _ _ _ _ _ _ _ x => ⟨x.1.1.1⟩) hOpenA
   exact GlobalTheory.Fc.S0.StageU.nonempty_hyps_of_classicalTheoremsUE P hRat hL (max CF0 CF1) (GridA (max CF0 CF1)) hEv (hN (max CF0 CF1)) hFun hL3
-
-theorem everyE₂ (P : S0.HypothesesUE) (F : GlobalTheory.FunPr.Hypotheses₂) (hA : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree)
-    (hM : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching) (hX : GlobalTheory.CovTop.CovolX) (hL : GlobalTheory.Published.LocalLanglandsGL) (hV : VWin) :
-    UpperTheory.EveryCharacter :=
-  plugAll (GlobalTheory.GreenBridge.green_of_regular P.greenRegularCharacters) hV
-    (hypsE₂ P F hA hM hX hL fun cDep => UpperTheory.N.boundAtTwoThree_at_prm_of_prints P.nLink (prm1 hL cDep))
 
 structure CovE : Prop where
   res : GlobalTheory.CompanionTheory.Hypotheses₂.ResolutionCharZero

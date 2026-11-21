@@ -2,7 +2,6 @@ import Mathlib
 import GroundTheory.ArithmeticGeometry.EtaleCompletion.ArtinHenselCompletionNoetherian
 import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularUFD
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAffineCompletionNormal
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFlatNormalFibres
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFormalFibresRegular
 set_option maxSynthPendingDepth 1
 

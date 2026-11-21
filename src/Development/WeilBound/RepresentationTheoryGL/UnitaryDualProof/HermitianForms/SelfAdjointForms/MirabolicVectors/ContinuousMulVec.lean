@@ -1,5 +1,6 @@
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.HermitianForms.SelfAdjointForms.FixK
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RelIndexLatticeEqHaarDetStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RelIndexLatticeEqHaarDet
 
 noncomputable section
 

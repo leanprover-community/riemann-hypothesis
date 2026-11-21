@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open TensorProduct
 
 namespace GlobalTheory.CompanionTheory.PerfectFirstCohomology
@@ -35,3 +38,9 @@ theorem ker_baseChange_tower (R A K Q P : Type) [CommRing R] [CommRing A] [CommR
     simpa using hy
 
 end GlobalTheory.CompanionTheory.PerfectFirstCohomology
+end
+
+open TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernel_base_change_tower_equiv : ∀ (R A K Q P : Type) [CommRing R] [CommRing A] [CommRing K] [Algebra R A] [Algebra A K] [Algebra R K] [IsScalarTower R A K] [AddCommGroup Q] [Module R Q] [AddCommGroup P] [Module R P] (d : Q →ₗ[R] P), Nonempty (LinearMap.ker ((d.baseChange A).baseChange K) ≃ₗ[K] LinearMap.ker (d.baseChange K)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PerfectFirstCohomology.ker_baseChange_tower

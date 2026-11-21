@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddSmulVecMulVecMulVec
+
+section
 open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
 
 namespace GlobalTheory.UnipKill
@@ -45,3 +47,9 @@ theorem exists_nat_smul_mem_lattice : ∀ (E : Type) [Field E] [NumberField E] [
     exact X.Λ.smul_mem k h
 
 end GlobalTheory.UnipKill
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nat_smul_mem_lattice' : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) (X : Data E N) (v : Fin N → E), ∃ d : ℕ, 0 < d ∧ (d : E) • v ∈ X.Λ := by
+  atlas_forward_decl GlobalTheory.UnipKill.exists_nat_smul_mem_lattice

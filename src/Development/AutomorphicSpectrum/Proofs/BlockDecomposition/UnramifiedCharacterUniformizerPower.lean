@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FintypeResidue
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctionalSectionNonvanishing
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
@@ -46,3 +48,13 @@ theorem mp_uniformizerUnit_zpow_half (F : Type) [Field F] [ValuativeRel F] [Topo
   rfl
 
 end GlobalTheory.CompanionTheory.LFUDom
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
+open GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.Iwasawa GroundTheory.Automorphic.GLnLocal
+open scoped ValuativeRel
+open GlobalTheory.CompanionTheory.LFUDom
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_character_uniformizer_power : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (m t : ℤ), Ad3.mp (uniformizerUnit F ^ m) ((t : ℂ) / 2) = sqrtQ F ^ (-(t * m)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LFUDom.mp_uniformizerUnit_zpow_half

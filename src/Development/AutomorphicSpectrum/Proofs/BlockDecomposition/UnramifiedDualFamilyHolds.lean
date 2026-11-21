@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open IsLocalRing
 
 namespace GlobalTheory.CompanionTheory.UnramDual
@@ -259,3 +261,8 @@ theorem unramified_trace_one_dual_family : PositivityTheory.Rg.Tf.Loc.IntegralBa
   exact dual_of_basis σ b hbi hbr hres
 
 end GlobalTheory.CompanionTheory.UnramDual
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_dual_family_holds : PositivityTheory.Rg.Tf.Loc.IntegralBasisUnramified → PositivityTheory.Rg.Tf.Loc.TraceOneIntegralElement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnramDual.unramified_trace_one_dual_family

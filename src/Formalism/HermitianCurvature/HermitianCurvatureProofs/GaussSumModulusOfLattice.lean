@@ -1,5 +1,4 @@
 import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelNonzeroModulusDeterminantEq
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegralLatticeRefinementIdentity
 
 noncomputable section

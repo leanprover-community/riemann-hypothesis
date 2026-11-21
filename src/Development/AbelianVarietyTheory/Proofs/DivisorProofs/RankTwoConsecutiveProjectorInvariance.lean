@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.LeviCut
 
 noncomputable section
@@ -211,3 +213,10 @@ theorem rankTwo : RankTwo := by
   rw [← hT', hproj, hT5 K, hXpU, map_zero, smul_zero]
 
 end GlobalTheory.LeviCut.RankTwoProof
+end
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rank_two_consecutive_projector_invariance : GlobalTheory.LeviCut.RankTwo := by
+  atlas_forward_decl GlobalTheory.LeviCut.RankTwoProof.rankTwo

@@ -1,9 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TwoPowCardLeIndexIInfStatement
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TwoPowCardLeIndexIInf
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsApproxModLocalSquaresStatement
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsLocalNonnormOfNonsquareAdicCompletionStatement
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IndexUnitsLocalSquaresFiniteRealPlacesLeStatement
+
+section
 open NumberField IsDedekindDomain GlobalTheory.QNorm
 open scoped WithZero
 
@@ -98,3 +99,10 @@ theorem two_pow_le_index_locNorm :
         exact mem_normSub_real_of_pos _ _ _ (by simpa [hw] using hxσ τ.1)
 
 end GlobalTheory.QNorm
+end
+
+open NumberField IsDedekindDomain GlobalTheory.QNorm
+open scoped WithZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.two_pow_le_index_localNormsSqrtExtension : ∀ (F : Type) [Field F] [NumberField F] (δ : F) (S : Finset (HeightOneSpectrum (𝓞 F))), δ ≠ 0 → (locNorm F δ S).index ≠ 0 ∧ 2 ^ (tFin F δ S + tReal F δ) ≤ (locNorm F δ S).index := by
+  atlas_forward_decl GlobalTheory.QNorm.two_pow_le_index_locNorm

@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem exists_finiteDimensional_intermediateField_eq_range_fractionRing
@@ -48,3 +50,8 @@ theorem exists_finiteDimensional_intermediateField_eq_range_fractionRing
       exact div_mem (hO p) (hO q)
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.image_finite_extension : ∀ (l : ℕ) [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] (ι : FractionRing O →+* PadicAlgCl l), (∀ z : ℤ_[l], ι (algebraMap O (FractionRing O) (algebraMap ℤ_[l] O z)) = algebraMap ℚ_[l] (PadicAlgCl l) (z : ℚ_[l])) → ∃ L : IntermediateField ℚ_[l] (PadicAlgCl l), FiniteDimensional ℚ_[l] L ∧ ∀ y, y ∈ L ↔ ∃ a, ι a = y := by
+  atlas_forward_decl GlobalTheory.exists_finiteDimensional_intermediateField_eq_range_fractionRing

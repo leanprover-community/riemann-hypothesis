@@ -1,6 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.ComplexUniformizationSigOne
-import Development.AutomorphicArithmetic.RealSpanData.RealData
 import Development.AutomorphicArithmetic.RealSpanData.JSpan
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianCongrOfPositiveIndexEq
 

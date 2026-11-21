@@ -1,6 +1,4 @@
-import Formalism.LocalToGlobal.HermitianForms.TiedBr
 import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
-import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
 
 noncomputable section
 

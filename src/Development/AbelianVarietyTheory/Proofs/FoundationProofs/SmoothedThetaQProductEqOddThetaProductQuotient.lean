@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.Imports
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped UpperHalfPlane MatrixGroups Manifold
@@ -129,3 +131,11 @@ theorem cth_eq_th_quot : ∀ (c : ℕ) (τ : ℍ) (z : ℂ), 1 < c → Nat.Copri
   field_simp
 
 end GlobalTheory.Sieg.ThQuot
+end
+end
+
+open scoped UpperHalfPlane MatrixGroups Manifold
+open GlobalTheory.Sieg GlobalTheory.QFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smoothedThetaQProduct_eq_oddThetaProduct_quotient : ∀ (c : ℕ) (τ : ℍ) (z : ℂ), 1 < c → Nat.Coprime c 6 → th ((c : ℂ) * z) τ ≠ 0 → cth c (ee (τ : ℂ)) (ee z) = (-1) ^ (c * (c - 1) / 2) * th z τ ^ (c ^ 2) / th ((c : ℂ) * z) τ := by
+  atlas_forward_decl GlobalTheory.Sieg.ThQuot.cth_eq_th_quot

@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.VacOfShape
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselToJacobiFirstStepFlatMapSupportAllStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.JacobiToBesselSecondStepFlatSupportRamifiedStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.JacobiToBesselSecondStepFlatSupportRamified
 
+section
 set_option genSizeOfSpec false
 set_option genInjectivity false
 
@@ -56,3 +57,9 @@ theorem offOfShape_all : ∀ D : D7, OffOfShape D := fun D => offOfShape_of_supp
 end GlobalTheory.SeeSaw
 
 end
+end
+
+open Formalism.BasicNotions
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.seesaw_support_off_level_of_lattice_shape : ∀ D : D7, GlobalTheory.SeeSaw.OffOfShape D := by
+  atlas_forward_decl GlobalTheory.SeeSaw.offOfShape_all

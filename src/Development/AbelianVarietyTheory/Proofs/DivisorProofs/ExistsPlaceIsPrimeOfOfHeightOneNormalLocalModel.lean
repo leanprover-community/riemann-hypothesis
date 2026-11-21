@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsLocModelIsPrimeOf
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MemRangeOfForallHeightEqOneOfIsReflexive
+
+section
 open GlobalTheory GlobalTheory.FieldPair
 
 namespace GlobalTheory.FieldPair
@@ -86,3 +87,11 @@ theorem exists_place_isPrimeOf_of_height_eq_one {K : Type} [Field K] (cK : ℂ �
       exact P0.ord_eq_zero (u := algebraMap R V g) (hunit g hgp)
 
 end GlobalTheory.FieldPair
+end
+
+open GlobalTheory GlobalTheory.FieldPair
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_place_isPrimeOf_of_height_one_normal_localModel : ∀ {K : Type} [Field K] (cK : ℂ →+* K) (R : Subring K), IsLocModel cK R → IsIntegrallyClosed R →
+    ∀ p : Ideal R, p.IsPrime → p.height = 1 →
+    ∃ P0 : Place cK, P0.IsPrimeOf R ∧ ∀ g : R, g ≠ 0 → (P0.ord (g : K) = 0 ↔ g ∉ p) := by
+  atlas_forward_decl GlobalTheory.FieldPair.exists_place_isPrimeOf_of_height_eq_one

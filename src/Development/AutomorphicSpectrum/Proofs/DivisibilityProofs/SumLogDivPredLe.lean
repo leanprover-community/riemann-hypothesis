@@ -1,6 +1,6 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.SumPrimeLogDivLeStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.SumLogDivNSqLeTwoStatement
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.SumPrimeLogDivLe
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.SumLogDivNSqLeTwo
 
 namespace GlobalTheory.CompanionTheory.Ar.Small
 

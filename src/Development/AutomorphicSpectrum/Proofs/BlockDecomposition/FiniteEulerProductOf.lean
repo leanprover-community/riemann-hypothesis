@@ -1,7 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.LocCompareSplit
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralRestrictedProductFinprodStatement
 
+section
 noncomputable section
 open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host
@@ -44,3 +44,9 @@ theorem eulerFinOf' : EulerFinOf' := by
   exact key _ h.choose_spec.1 h.choose_spec.2
 
 end GlobalTheory.CompanionTheory.EulerAsm
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_euler_product_of : PositivityTheory.Rg.BcB.G8.Fin.EulerFinOf' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EulerAsm.eulerFinOf'

@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.AlmostEt
 open scoped NNReal
 
@@ -89,3 +92,10 @@ theorem klc_scale : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (p : ℕ)
   fun L _ v p hp F hA hp0 hp1 r hr x hx => exists_scale_shell L v p hp F hA hp0 hp1 r hr x hx
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pth_power_scale_thin_shell : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (p : ℕ), p.Prime → ∀ F : Subfield L, ApproxRoot p v F → 0 < v (p : L) → v (p : L) < 1 → ∀ r : ℝ≥0, r < 1 → ∀ x : L, x ≠ 0 → ∃ d ∈ F, d ≠ 0 ∧ r < v (x * d ^ p) ∧ v (x * d ^ p) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.AlmostEt.klc_scale

@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.BundleChernComparison
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Num
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
@@ -94,3 +96,9 @@ theorem exists_mixExpansion_mixDiff (σ : Type) [Fintype σ] (n : ℕ) (F : MvPo
 end
 
 end GlobalTheory.CompanionTheory.Ar.Num
+end
+
+open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_mixed_difference_expansion : ∀ (σ : Type) [Fintype σ] (n : ℕ) (F : MvPolynomial σ ℝ), F.IsHomogeneous n → ∃ Gs, IsMixExpansion (n - 1) (mixDiff F) Gs := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.exists_mixExpansion_mixDiff

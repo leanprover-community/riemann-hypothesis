@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.StandardFiveNontrivial
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ImportsMore
+import BuildAid.ForwardExisting
+
+section
 open Polynomial Classical GlobalTheory.BadShare
 
 namespace GlobalTheory.BadShare
@@ -78,3 +81,9 @@ theorem root_exchange : ∀ (G : Type) [Group G] [Fintype G] (M : Type) [AddComm
     rw [← hmul]; rfl
 
 end GlobalTheory.BadShare
+end
+
+open Polynomial Classical GlobalTheory.BadShare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.representation_root_subgroup_exchange : ∀ (G : Type) [Group G] [Fintype G] (M : Type) [AddCommGroup M] [Module ℂ M] [FiniteDimensional ℂ M] (ρ : Representation ℂ G M), ∀ (B X Y : Subgroup G) (χ : G → ℂ), (∀ x ∈ X, x ∈ B → x = 1) → (∀ b ∈ B, ∀ x ∈ X, ∃ x' ∈ X, ∃ b' ∈ B, b * x = x' * b' ∧ χ b' = χ b) → (∀ x ∈ X, ∀ y ∈ Y, y⁻¹ * x⁻¹ * y * x ∈ B) → (∀ x ∈ X, ∀ x' ∈ X, x ≠ x' → ∃ y ∈ Y, χ (y⁻¹ * x⁻¹ * y * x) ≠ χ (y⁻¹ * x'⁻¹ * y * x')) → ∀ (n : ℕ) (v : Fin n → M), LinearIndependent ℂ v → (∀ i, (∀ b ∈ B, ρ b (v i) = χ b • v i) ∧ ∀ y ∈ Y, ρ y (v i) = v i) → ∃ w : Fin n → M, LinearIndependent ℂ w ∧ ∀ i, (∀ b ∈ B, ρ b (w i) = χ b • w i) ∧ ∀ x ∈ X, ρ x (w i) = w i := by
+  atlas_forward_decl GlobalTheory.BadShare.root_exchange

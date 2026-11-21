@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.FmTools
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HintConstMul
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralOfTwistConjugatePlace
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousMapGLSpl

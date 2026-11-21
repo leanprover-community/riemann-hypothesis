@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiagScaleApply
+import BuildAid.ForwardExisting
+
+section
 open PowerSeries GlobalTheory.BK
 
 namespace GlobalTheory.CokerL
@@ -38,3 +41,9 @@ theorem isoProj_mem_L : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrame
   · exact Δ.act_mem_ext _ le_rfl rot_A hv
 
 end GlobalTheory.CokerL
+end
+
+open PowerSeries GlobalTheory.BK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isotypicProjector_mem_breuilKisinLattice : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] (l e a : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] [NeZero a] [TameDescentExponentData K l e a] (P : PhiMod O K l e a ι) (Δ : Descent P) (c : ZMod e) (v : Vec K a ι), v ∈ P.L → GlobalTheory.CokerL.isoProj Δ c v ∈ P.L := by
+  atlas_forward_decl GlobalTheory.CokerL.isoProj_mem_L

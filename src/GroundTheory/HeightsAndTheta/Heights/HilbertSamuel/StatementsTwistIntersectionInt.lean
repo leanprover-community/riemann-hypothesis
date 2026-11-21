@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEmbeddingWeight
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwistIntersection
 set_option maxSynthPendingDepth 1
 

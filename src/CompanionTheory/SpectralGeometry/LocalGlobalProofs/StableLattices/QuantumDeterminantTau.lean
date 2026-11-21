@@ -2,7 +2,9 @@ import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.HeckeDuality.GlRelTau
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CapPhi
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantEquality
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.CapelliTwist
@@ -24,3 +26,9 @@ theorem qdetTau : QdetTau := by
     Algebra.smul_def]
 
 end GlobalTheory.CompanionTheory.CapelliTwist
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.QuantumDeterminantTau : CompanionTheory.RgExh.Hk.QdetTau := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CapelliTwist.qdetTau

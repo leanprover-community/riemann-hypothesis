@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineSCShortExact
+
+section
 open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
 open ReciprocityTheory.L2DbarEstimates (V)
 open scoped ContDiff ComplexConjugate Topology
@@ -34,3 +36,13 @@ theorem contDiffOn_coef : ∀ (n : ℕ) (s : Set (V n)) (F : V n → Alt n), IsO
     exact ContDiffOn.sum fun a _ => ContDiffOn.sum fun S _ => (contDiffOn_dbar_dir hs (hF S) _).mul contDiffOn_const
 
 end GlobalTheory.CxForm.SmoothCoef
+end
+
+open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
+open ReciprocityTheory.L2DbarEstimates (V)
+open scoped ContDiff ComplexConjugate Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contDiffOn_coefficients_delOperator_dbarOperator : ∀ (n : ℕ) (s : Set (V n)) (F : V n → Alt n), IsOpen s →
+    (∀ S, ContDiffOn ℝ ∞ (fun v => (bas n).repr (F v) S) s) →
+    ∀ S, ContDiffOn ℝ ∞ (fun v => (bas n).repr (delAt F v) S) s ∧ ContDiffOn ℝ ∞ (fun v => (bas n).repr (dbarAt F v) S) s := by
+  atlas_forward_decl GlobalTheory.CxForm.SmoothCoef.contDiffOn_coef

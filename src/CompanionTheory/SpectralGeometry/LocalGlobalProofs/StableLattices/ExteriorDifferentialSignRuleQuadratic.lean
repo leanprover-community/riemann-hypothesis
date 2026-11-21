@@ -1,5 +1,8 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+import BuildAid.ForwardExisting
+
+section
 open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
@@ -92,3 +95,10 @@ theorem wedgeQ : StdD → (∀ (k r m : ℕ) (a b : Fin (2 * r + k + 1)) (J J' :
   simp only [Prod.mk.injEq, Subtype.ext_iff]
 
 end GlobalTheory.CompanionTheory.WedgeSplitCasimir
+end
+
+open CompanionTheory.Zuck BranchingSupport Matrix Finset
+open scoped InnerProductSpace Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exterior_differential_sign_rule_quadratic : StdD → (∀ (k r m : ℕ) (a b : Fin (2 * r + k + 1)) (J J' : Sub (2 * r + k + 1) m), (wedge k r m).dC (Matrix.single a b 1) J J' = if b ∈ J'.1 ∧ a ∉ J'.1.erase b ∧ J.1 = insert a (J'.1.erase b) then (-1) ^ ((J'.1.erase b).filter fun c => c < a).card * (-1) ^ ((J'.1.erase b).filter fun c => c < b).card else 0) → WedgeQ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WedgeSplitCasimir.wedgeQ

@@ -5,6 +5,7 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltWittEqZero
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsContinuousGaloisLatticeMatrixIntegral
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicActionOnRootTower
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.HWL
 
 namespace GlobalTheory.HWL.FixedBasis
@@ -544,3 +545,9 @@ theorem main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P),
 end Concrete
 
 end GlobalTheory.HWL.FixedBasis
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.HWL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cyclotomicKernelFixedBasis_wittTensorLattice : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), FaithH AI → ∀ (K LL : FinExt l) (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)), ∃ e : Module.Basis (Fin (Module.finrank ↥(OL LL) ↥T.L.T)) (RW LL) (TW (RW LL) T), FixBasis AI T e := by
+  atlas_forward_decl GlobalTheory.HWL.FixedBasis.main

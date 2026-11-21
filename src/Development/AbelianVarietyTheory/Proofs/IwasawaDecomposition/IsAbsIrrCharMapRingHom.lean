@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AbsIrrCharRealiseOfPrimitiveRootCard
+
+section
 open Formalism.L2.DIV
 
 noncomputable section
@@ -35,3 +37,10 @@ theorem isAbsIrrChar_map : ∀ {K K' G : Type} [Field K] [Field K'] [CharZero K]
   · rw [hch, hρ, hψ]
 
 end GlobalTheory.AbsIrrMap
+end
+end
+
+open Formalism.L2.DIV
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isAbsIrrChar_map_ringHom : ∀ {K K' G : Type} [Field K] [Field K'] [CharZero K] [CharZero K'] [Group G] [Fintype G] (φ : K →+* K') (χ : G → K), IsAbsIrrChar χ → IsAbsIrrChar (fun g => φ (χ g)) := by
+  atlas_forward_decl GlobalTheory.AbsIrrMap.isAbsIrrChar_map

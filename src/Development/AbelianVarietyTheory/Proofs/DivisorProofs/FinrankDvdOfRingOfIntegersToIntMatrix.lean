@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 
 namespace GlobalTheory
@@ -41,3 +44,9 @@ theorem finrank_dvd_of_ringOfIntegers_to_matrix (E : Type) [Field E] [NumberFiel
   exact this.symm
 
 end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_dvd_of_ringOfIntegers_to_int_matrix : ∀ (E : Type) [Field E] [NumberField E] {r : ℕ} (ρ : 𝓞 E →+* Matrix (Fin r) (Fin r) ℤ), ∃ s : ℕ, r = s * Module.finrank ℚ E := by
+  atlas_forward_decl GlobalTheory.finrank_dvd_of_ringOfIntegers_to_matrix

@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RootToFlag
+
+section
 open MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.GoodMetric GlobalTheory.LieBase GlobalTheory.GrassTop
 open Classical
 
@@ -31,3 +33,11 @@ theorem homogeneousComponent_chernRoots {ι : Type} (m : ι → ℕ) (Q : MvPoly
   | add p q hp hq => simp only [map_add, hp, hq]
 
 end GlobalTheory.GrassComp
+end
+
+open MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.GoodMetric GlobalTheory.LieBase GlobalTheory.GrassTop
+open Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.homogeneousComponent_chernClassesOfRoots : ∀ {ι : Type} (m : ι → ℕ) (Q : MvPolynomial (ι × ℕ) ℝ) (d : ℕ), homogeneousComponent d (chernRoots m Q) = chernRoots m (weightedHomogeneousComponent Prod.snd d Q) := by
+  atlas_forward_decl GlobalTheory.GrassComp.homogeneousComponent_chernRoots

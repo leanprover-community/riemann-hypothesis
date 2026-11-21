@@ -1,9 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuation
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CongSubgroup
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ComboNotMemSpan
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -330,3 +329,11 @@ theorem main : ∀ {V : Type} [AddCommGroup V] [Module ℚ V] (P : ConvexCone �
   exact tile_of_card_lt P l _ s (Nat.lt_succ_self _) hli hP
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones.TileSign
+end
+end
+
+open NumberField NumberField.Units NumberField.Units.dirichletUnitTheorem GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.simplicial_cone_tiles_sign : ∀ {V : Type} [AddCommGroup V] [Module ℚ V] (P : ConvexCone ℚ V) (l : V →ₗ[ℚ] ℚ) (s : Finset V), LinearIndepOn ℚ id (s : Set V) → (s : Set V) ⊆ P →
+    Tile (P : Set V) (SignConst l) (coneOn s) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones.TileSign.main

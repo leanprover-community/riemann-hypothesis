@@ -1,15 +1,15 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PeriodValuationTheory
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.WtSubOneLe
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatFrame
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogFGLDepthStagesLowAImports
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TypicalCurvesTangentAndBasesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RootExtractionLemmaSheafStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GluedBlocksMulInvIntegralUnitDetStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RootTrickFinsetCurvesBlockInverseStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RebasedTypicalCurvesIsBasisStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpanTangentOfTypeStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RootExtractionLemmaSheaf
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GluedBlocksMulInvIntegralUnitDet
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RootTrickFinsetCurvesBlockInverse
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RebasedTypicalCurvesIsBasis
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpanTangentOfType
 
+section
 open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh
 
 namespace GlobalTheory.DepthStages
@@ -321,3 +321,9 @@ theorem lowA_statement : LowAStatement := by
   exact ⟨γ, dp, conclusion_of_stageInv hI⟩
 
 end GlobalTheory.DepthStages
+end
+
+open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.logFGL_depth_stages_lowA : LowAStatement := by
+  atlas_forward_decl GlobalTheory.DepthStages.lowA_statement

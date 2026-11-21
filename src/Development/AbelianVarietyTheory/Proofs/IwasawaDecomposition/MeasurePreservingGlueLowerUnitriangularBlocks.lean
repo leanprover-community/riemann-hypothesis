@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBlockOrderedSumEquivTrueIndex
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.VecOfMulToMatMul
 
+section
 noncomputable section
 
 open Matrix NumberField MeasureTheory Formalism.DegreeFormula Formalism.MJ Formalism.UG Formalism.L2.Geo
@@ -83,3 +83,12 @@ theorem measurePreserving_glue (r p q : ℕ) (e : Fin r ≃ Fin p ⊕ Fin q) (he
     rfl
 
 end GlobalTheory.FlagFibre
+end
+end
+
+open Matrix NumberField MeasureTheory Formalism.DegreeFormula Formalism.MJ Formalism.UG Formalism.L2.Geo
+open ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates GlobalTheory.HodgeDomain GlobalTheory.TrueCx GlobalTheory.FlagFibre
+open scoped ComplexOrder ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurePreserving_glueLowerUnitriangularBlocks : ∀ (r p q : ℕ) (e : Fin r ≃ Fin p ⊕ Fin q), IsBlockSL2Embedding e → MeasurePreserving (glue e) volume volume := by
+  atlas_forward_decl GlobalTheory.FlagFibre.measurePreserving_glue

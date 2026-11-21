@@ -7,7 +7,6 @@ import Formalism.LocalToGlobal.CarriedPlMap
 import Formalism.LocalToGlobal.SelSideN
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TwArgs
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DivRows3GIff
-import Formalism.LocalToGlobal.Divisibility.ColPins
 
 noncomputable section
 

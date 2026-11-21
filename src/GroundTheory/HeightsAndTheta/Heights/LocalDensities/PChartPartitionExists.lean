@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeIntB
 import GroundTheory.HeightsAndTheta.Heights.LocalDensities.StatementsChartPartition
 set_option maxSynthPendingDepth 1

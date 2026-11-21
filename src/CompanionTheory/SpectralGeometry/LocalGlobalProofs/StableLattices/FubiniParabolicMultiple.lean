@@ -5,6 +5,7 @@ import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.FlagFac
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HaarExistence
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicMeasureModulus
 
+section
 noncomputable section
 
 open MeasureTheory Matrix
@@ -187,3 +188,9 @@ theorem fub2 : Fub2 := by
     exact key (muPar ε A ν) sρ hρ0 hρi hρne
 
 end GlobalTheory.CompanionTheory.FubNM
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.FubiniParabolicMultiple : CompanionTheory.RgExh.Dec.N.S.Fub2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FubNM.fub2

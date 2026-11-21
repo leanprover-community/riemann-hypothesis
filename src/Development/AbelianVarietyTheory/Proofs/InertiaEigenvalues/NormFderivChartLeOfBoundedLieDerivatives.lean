@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumLieCoord
 
+section
 noncomputable section
 
 open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.JSW
@@ -60,3 +61,12 @@ theorem norm_fderiv_chart_le : ∀ (E : Type) [Field E] [NumberField E] [IsTotal
     _ = a * D * ‖toL (y⁻¹).val‖ * ‖W‖ := by ring
 
 end GlobalTheory.JSW
+end
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.JSW
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_fderiv_chart_le_of_bounded_lieDerivatives : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (φ : Sm E a),
+    (∀ i, ∃ C : ℝ, ∀ g, ‖(lie E a (lieBasis E a i) φ).1 g‖ ≤ C) →
+      ∃ C : ℝ, ∀ (g : GA E a) (y : GL (Fin a) (Cinf E)), ‖fderiv ℝ (chart φ.1 g) (toL y.val)‖ ≤ C * ‖toL (y⁻¹).val‖ := by
+  atlas_forward_decl GlobalTheory.JSW.norm_fderiv_chart_le

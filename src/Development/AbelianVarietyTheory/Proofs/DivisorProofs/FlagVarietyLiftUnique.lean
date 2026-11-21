@@ -5,8 +5,8 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchubertCellOpenImm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagPointInSomeCell
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEqFlagPtOfIsLocalRing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClsDivPullEqVPull
-import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.MulLeftCompOfPullbackPointEquivMul
 
+section
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.FlagZ GlobalTheory.FlagZ.Univ
@@ -255,3 +255,11 @@ theorem lifts_unique : ∀ (ι : Type) [Fintype ι] (N : ℕ) (T : Scheme.{0}) (
   exact Finset.sum_congr rfl fun m _ => congrArg _ (Scheme.Hom.germ_stalkMap_apply g₁ U t hU _)
 
 end GlobalTheory.FlagZ.Univ.Uniq
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.FlagZ GlobalTheory.FlagZ.Univ
+open GlobalTheory.QCoh (freeModule)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_variety_lift_unique : ∀ (ι : Type) [Fintype ι] (N : ℕ) (T : Scheme.{0}) (g : T ⟶ Sp ℤ) (fl' : ι → Vert.Flag ((Scheme.Modules.pullback g).obj (freeModule (Sp ℤ) (Fin N))) N) (g₁ g₂ : T ⟶ Fl ι N), Lifts g fl' g₁ → Lifts g fl' g₂ → g₁ = g₂ := by
+  atlas_forward_decl GlobalTheory.FlagZ.Univ.Uniq.lifts_unique

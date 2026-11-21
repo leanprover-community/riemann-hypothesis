@@ -1,11 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.WeilDeligneCrystalline.ColmezLT
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfInAMul
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsKerPowDvd
-import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
-import Development.AbelianVarietyTheory.CrystallinePeriods.AdicMaps
-import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
 
+section
 noncomputable section
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.PZ GlobalTheory.AinfK GroundTheory.LocalField.FormalGroup GlobalTheory.AcrisK
@@ -274,3 +271,11 @@ theorem ltLog_ne_zero : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (π : ↥(OL
     (GlobalTheory.LTLog.coeff_one_log _ hπ hf) hx ev)
 
 end GlobalTheory.LogFirstOrder
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.PZ GlobalTheory.AinfK GroundTheory.LocalField.FormalGroup GlobalTheory.AcrisK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lubin_tate_log_ne_zero : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)) (hπ : Irreducible π) (f : PowerSeries ↥(OL K))
+    (hf : IsLubinTateSeries π f) (x : AK K) (hx : thetaK K x = 0), x ∉ RingHom.ker (thetaK K) ^ 2 → ltLog hπ hf x hx ≠ 0 := by
+  atlas_forward_decl GlobalTheory.LogFirstOrder.ltLog_ne_zero

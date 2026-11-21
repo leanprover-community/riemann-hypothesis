@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.InjectiveDecompositionAction
 import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.WtProj
+import BuildAid.ForwardExisting
 
+section
 open Finset
 
 noncomputable section
@@ -610,3 +612,10 @@ theorem injRL_of (hB : BdSqL) (hV : VanKL) : InjRL := by
   exact Nat.lt_succ_of_le (Finset.le_sup (f := fun A : Finset (Lt n) => potL A) (mem_univ _))
 
 end GlobalTheory.CompanionTheory.InjRL
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.injective_restriction_of_bdsq_vanish : PositivityTheory.RgBcC.RealD.BdSqL → PositivityTheory.RgBcC.RealD.VanKL → PositivityTheory.RgBcC.RealD.InjRL := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InjRL.injRL_of

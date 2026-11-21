@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct
 
 namespace GlobalTheory
@@ -71,3 +74,9 @@ theorem trdeg_complex_baseChange_eq : ∀ {K κ' : Type} [Field K] [Field κ'] [
   trdeg_tensorProduct_eq
 
 end GlobalTheory
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trdeg_tensor_complex_eq : ∀ {K κ' : Type} [Field K] [Field κ'] [Algebra ℂ K] [Algebra ℂ κ'] [IsDomain (K ⊗[ℂ] κ')], Algebra.trdeg K (K ⊗[ℂ] κ') = Algebra.trdeg ℂ κ' := by
+  atlas_forward_decl GlobalTheory.trdeg_complex_baseChange_eq

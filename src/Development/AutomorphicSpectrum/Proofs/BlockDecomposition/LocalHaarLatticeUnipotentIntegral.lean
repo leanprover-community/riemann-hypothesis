@@ -1,13 +1,14 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdjOne
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatAtIsCO
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeylUnipotentIwasawaHeightStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeImageLowerBlocksStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarImageGLScalingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHaarGLImageScalingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MaximalCompactUnitaryArchimedeanStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanHeightDeterminantFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AbsValueAdelicProductFormulaStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeylUnipotentIwasawaHeight
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeImageLowerBlocks
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarImageGLScaling
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHaarGLImageScaling
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MaximalCompactUnitaryArchimedean
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanHeightDeterminantFormula
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AbsValueAdelicProductFormula
+
+section
 noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
@@ -45,3 +46,16 @@ theorem heightNu : ∀ (D : D7) (n : ℕ) (θ : InfFam D), IsInfFam θ → ∀ (
   exact congrArg _ (finprod_congr hfin)
 
 end GlobalTheory.CompanionTheory.HeightNu
+end
+end
+
+noncomputable section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.IwaAd PositivityTheory.PfSWUS GlobalTheory.CompanionTheory.SiegelND GlobalTheory.CompanionTheory.MM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_haar_lattice_unipotent_integral : ∀ (D : D7) (n : ℕ) (θ : InfFam D), IsInfFam θ → ∀ (H : G D n → ℝ≥0), IsHeight H → ∀ (nb : hermA D n → G D n), IsNMap nb → ∀ w : G D n, mat w = blk4 0 1 (-1) 0 → ∀ (a : GL (Fin n) (AE D)) (lamG : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers D.host.F), Measure (Fin n → HeckeCharacterZeroLocus.SiegelWeilU.Fv D.host.F v ⊗[D.host.F] D.host.E)), (∀ v, (lamG v).IsAddHaarMeasure) → ∀ b : hermA D n, PositivityTheory.SiegelWeilFormula.Gen.nuA θ (gAt θ a) lamG (latAt a.1) (latAt (adj (a⁻¹).1)) b.1 = ((H (w * nb (pull a b)) : ℝ≥0) : ℝ)⁻¹ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeightNu.heightNu

@@ -1,8 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.PsiSide
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SwMeasPlaneOfNotRepresented
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology PositivityTheory.Rg.Base1
 open scoped TensorProduct ENNReal NNReal Matrix
 
@@ -178,3 +178,10 @@ theorem hasse : Hasse := by
   ring
 
 end GlobalTheory.CompanionTheory.SW.BaseHasse
+end
+end
+
+open PositivityTheory.Rg.Base1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasse_principle_hermitian : Hasse := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.BaseHasse.hasse

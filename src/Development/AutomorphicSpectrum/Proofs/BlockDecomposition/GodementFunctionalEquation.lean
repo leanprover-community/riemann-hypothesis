@@ -1,5 +1,4 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocallyConstantMajorants.GammaSplitting.FunctionalEquationGL2GL1Complex
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableMulCIff
 
 noncomputable section

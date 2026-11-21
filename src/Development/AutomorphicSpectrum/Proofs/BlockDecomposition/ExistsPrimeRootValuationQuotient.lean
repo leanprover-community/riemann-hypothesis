@@ -4,7 +4,9 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ComparableQuotientOfValuation
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SurjectivePreservesClosednessComparability
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SharpSurjectiveKerSpan
+import BuildAid.ForwardExisting
 
+section
 set_option backward.isDefEq.respectTransparency false
 
 open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
@@ -41,3 +43,10 @@ theorem untilt_mod_varpi_sq : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l), A.IsTes
     (GlobalTheory.CompanionTheory.SurjPass.absolutely_closed_comparable_surjective g hg).1 hA.1⟩
 
 end GlobalTheory.CompanionTheory.Untilt
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_prime_root_valuation_quotient : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l), A.IsTest → ∃ ϖ : A.U, ϖ ^ l = (l : A.U) ∧ R.Val0 (A.U ⧸ Ideal.span {ϖ ^ 2}) ∧ R.Aic (A.U ⧸ Ideal.span {ϖ ^ 2}) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Untilt.untilt_mod_varpi_sq

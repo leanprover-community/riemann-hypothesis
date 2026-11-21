@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ProjectionSurjective
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompletionUniversalLocalHomStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompletionUniversalLocalHom
+
+section
 open IsLocalRing GlobalTheory.Pat
 
 namespace GlobalTheory.Pat
@@ -22,3 +23,9 @@ theorem isCplAt_unique : ∀ (R S S' : Type) [CommRing R] [CommRing S] [IsLocalR
   exact ⟨RingEquiv.ofRingHom θ η u' u, hθ⟩
 
 end GlobalTheory.Pat
+end
+
+open IsLocalRing GlobalTheory.Pat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.completion_unique_up_to_iso : ∀ (R S S' : Type) [CommRing R] [CommRing S] [IsLocalRing S] [CommRing S'] [IsLocalRing S'] (q : Ideal R) [q.IsPrime] (φ : R →+* S) (φ' : R →+* S'), IsCplAt q φ → IsCplAt q φ' → ∃ e : S ≃+* S', (e : S →+* S').comp φ = φ' := by
+  atlas_forward_decl GlobalTheory.Pat.isCplAt_unique

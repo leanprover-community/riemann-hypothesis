@@ -1,11 +1,12 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.PullbackBijectiveDegreesOneTwo
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JoinedMapsAgreeCohomologyZeroOneInstancesStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JoinedMapsAgreeCohomologyTwoInstancesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VerticalH0BijectiveH1InjectiveUniversesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VerticalH1SurjectiveUniversesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VerticalH2InjectiveAllUniversesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VerticalH2SurjectiveUniversesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VerticalH0BijectiveH1InjectiveUniverses
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VerticalH1SurjectiveUniverses
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VerticalH2InjectiveAllUniverses
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VerticalH2SurjectiveUniverses
+
+section
 open CategoryTheory GlobalTheory.CxCoh
 
 set_option autoImplicit false
@@ -145,3 +146,10 @@ theorem GlobalTheory.CxCoh.collapse_resMap_bij : ∀ (C : Type 1) [Category.{0} 
   · rw [oE.2, CxMap.cohomOne_pullback_comp]
   · rw [tU, ← tW, CxMap.cohomTwo_pullback_comp]
   · rw [tE, CxMap.cohomTwo_pullback_comp]
+end
+end
+
+open CategoryTheory GlobalTheory.CxCoh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fourTermComplex_restriction_bijective_collapse : ∀ (C : Type 1) [Category.{0} C] (D : Type) [Category.{0} D] (K : Cx C) (ℓ : D ⥤ C) (q : C ⥤ D) (S : C ⥤ C) (u : 𝟭 C ⟶ S) (w : q ⋙ ℓ ⟶ S) (ε : 𝟭 D ⟶ ℓ ⋙ q), (∀ T, K.QAt (u.app T)) → (∀ U, K.QAt (ℓ.map (ε.app U) ≫ w.app (ℓ.obj U))) → (K.resMap ℓ).Bij := by
+  atlas_forward_decl GlobalTheory.CxCoh.collapse_resMap_bij

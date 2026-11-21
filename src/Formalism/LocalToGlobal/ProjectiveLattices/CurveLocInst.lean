@@ -1,5 +1,4 @@
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveAsm
-import Formalism.LocalToGlobal.ProjectiveLattices.CurveLoc
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveCountB
 
 noncomputable section

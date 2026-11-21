@@ -4,7 +4,6 @@ import Formalism.LocalToGlobal.HermitianColumns.SymAll
 import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
 import Formalism.LocalToGlobal.GlobalTheory.GL5.Statement
-import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric
 import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DisjointExceptional
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ThinScalesIffHostBound

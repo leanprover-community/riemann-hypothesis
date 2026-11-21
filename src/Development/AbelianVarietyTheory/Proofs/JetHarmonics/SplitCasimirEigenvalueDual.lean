@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LastComatrixRowInvertsDual
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TensorDualStandardRel
 

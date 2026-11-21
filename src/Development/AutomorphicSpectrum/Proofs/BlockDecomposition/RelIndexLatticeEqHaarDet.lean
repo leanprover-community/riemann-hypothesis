@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RelIndexMulMeasure
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Matrix
 open scoped ENNReal
 
@@ -62,3 +64,9 @@ theorem relIndex_eq_distribHaarChar_det_mul (k : Type) [Field k] [ValuativeRel k
   simpa using this
 
 end GlobalTheory.CompanionTheory.IndexDet
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.relIndex_lattice_eq_haar_det : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (g : GL (Fin n) k) (A₀ A : AddSubgroup (Fin n → k)), IsCompact (A : Set (Fin n → k)) → IsOpen (A₀ : Set (Fin n → k)) → A₀ ≤ A → A₀ ≤ A.comap (Matrix.mulVecLin (g : Matrix (Fin n) (Fin n) k)).toAddMonoidHom → ((A₀.relIndex A : ℕ) : ℝ) = (MeasureTheory.distribHaarChar k (Matrix.GeneralLinearGroup.det g) : ℝ) * ((A₀.relIndex (A.comap (Matrix.mulVecLin (g : Matrix (Fin n) (Fin n) k)).toAddMonoidHom) : ℕ) : ℝ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IndexDet.relIndex_eq_distribHaarChar_det_mul

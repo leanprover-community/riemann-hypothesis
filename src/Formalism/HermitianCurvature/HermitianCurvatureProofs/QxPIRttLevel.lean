@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementQ
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticFormLevel.Imports
 

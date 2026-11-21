@@ -2,10 +2,8 @@ import Mathlib
 import Development.AutomorphicArithmetic.FrobeniusLocalisation.RadBounds2
 import Formalism.LocalRingCardinality.HostCls
 import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings
-import Formalism.LocalRingCardinality.DataParamsT
 import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
-import Development.AbelianVarietyTheory.Definitions.Divisors.WellChosen
 import Development.AbelianVarietyTheory.Definitions.Divisors.MeanLogLeOfBounds
 import Development.AbelianVarietyTheory.Definitions.Divisors.WedgeNrmLeOfWedgeNormLe
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomWeightHomWeight

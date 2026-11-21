@@ -1,6 +1,5 @@
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJmuDeg
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJmuHC
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
 
 namespace Formalism.FourierDecayAlt.P.CutBP.Jmu
 

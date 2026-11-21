@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowSubst
+
+section
 open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
 
 set_option autoImplicit false
@@ -240,3 +242,10 @@ theorem rowDiv_mem_dwAlg : ∀ (O : Type) [CommRing O] (N : ℕ) (ν : Fin N →
     exact proj_rowAct a b hab k w _ (weightedHomogeneousComponent_isWeightedHomogeneous _ _)
 
 end GlobalTheory.GenCoef
+end
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dividedPowerRowOperator_mem_dualWeylEndSubalgebra : ∀ (O : Type) [CommRing O] (N : ℕ) (ν : Fin N → ℕ) (a b : Fin N), a ≠ b → ∀ k : ℕ, ∃ p ∈ dwAlg O N ν, ∀ f : dualWeyl O N N ν, (p f : MvPolynomial (Fin N × Fin N) O) = rowDiv O a b k (f : MvPolynomial (Fin N × Fin N) O) := by
+  atlas_forward_decl GlobalTheory.GenCoef.rowDiv_mem_dwAlg

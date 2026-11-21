@@ -1,7 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.EmbeddedFrames.PfD
-import Formalism.RealPlaceAnalysis.Complexify
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialFractionDiagonalIdentityStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialFractionDiagonalIdentity
+
+section
 open Finset Matrix PositivityTheory.RgHe.Frame
 
 namespace GlobalTheory.CompanionTheory.RgHeFrame
@@ -133,3 +134,9 @@ theorem pfDer : ∀ {m : ℕ} (d : Fin (m + 1) → ℝ) (d' : Fin m → ℝ),
   field_simp
 
 end GlobalTheory.CompanionTheory.RgHeFrame
+end
+
+open Finset Matrix PositivityTheory.RgHe.Frame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.partial_fraction_square_identity : ∀ {m : ℕ} (d : Fin (m + 1) → ℝ) (d' : Fin m → ℝ), Function.Injective (Sum.elim d d') → ∀ i, 1 - ∑ j, pfR d d' j / (d i - d' j) ^ 2 = pfD d d' i := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgHeFrame.pfDer

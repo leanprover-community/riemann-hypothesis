@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.AdBridge
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.FundamentalContinuity.AdelicIsomorphismStatement
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InvariantAlgebraComparison.JRMapTheta

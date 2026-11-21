@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.SharpRestriction.Divisibility.HookProducts.AdmPerTw
 import Formalism.SharpRestriction.Divisibility.HookProducts.AdmPtTw
 import Formalism.LocalToGlobal.GroupLattices.AdmissibleAtGeneratorPlaces
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions NumberField
@@ -53,3 +55,9 @@ theorem main : ∀ (D : D7) (Dx : DivX D) (T : TwForms D), (∀ u μ, μ ≠ D.w
 end GlobalTheory.PerRedU
 
 end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Forms
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.admissiblePeriodTwists_reduction_placeTuples : ∀ (D : D7) (Dx : DivX D) (T : TwForms D), (∀ u μ, μ ≠ D.what₂.mu0 → (∃ w, μ = D.what₂.muAt w) → Formalism.MainNotions.RT.PeriodPointConditions.PerDecTw D Dx T u μ) → Formalism.L2.G.Adm2InU.TwistedPeriodAdmissible D Dx T := by
+  atlas_forward_decl GlobalTheory.PerRedU.main

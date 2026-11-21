@@ -1,20 +1,19 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFrameCover
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIntegralFlagCellOfValuedFieldStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIntegralFlagCellOfValuedField
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SmoothBaseAndNormalCoordinateRingStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLieEmbeddingProjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAffineRefinementLieEmbeddingStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLieEmbeddingProjective
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAffineRefinementLieEmbedding
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TangentCombinationEigenActionStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FramesAgreeOnLieEmbeddingChartStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FramesAgreeOnLieEmbeddingChart
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsDescendingLetterChainStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsCoverNormalProjectiveChartsStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PreModelChartCompatibleStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PreModelChartTransitionStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsCoverNormalProjectiveCharts
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PreModelChartCompatible
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PreModelChartTransition
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PreModelChartFrameStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PreModelChartSectionStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PreModelChartSection
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PreModelChartValuesStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDiscreteValuationRingAndFiniteResidueFieldValu
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField
@@ -299,3 +298,12 @@ theorem GlobalTheory.FlagEmb.DR.exists_lineModel : ∀ (E : Type) [Field E] [Num
     GlobalTheory.T.pre_model_chart_section E H Dw Xo p W Y i₀ Z.toPre L aff M crd ι ρ g hT n u k h₀ h₁ L' ix q₀ q₁ r hL, fun y a j φ h h' => ?_⟩⟩
   rw [hln]
   exact GlobalTheory.T.pre_model_chart_values E H Dw Xo p W Y i₀ Z.toPre L aff M crd ι ρ g hT n u k h₀ h₁ L' ix q₀ q₁ r hL hu _ y.z a j φ h h'
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
+open Formalism.MainNotions.DIV.Cons (intO)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_system_model_exists : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (Xo : ∀ l : Level H, Moduli Dw l) (p : ℕ) (W : ValuationSubring ℂ) (Y : LocalSystem Xo p W) (i₀ : Idx H p), p.Prime → (p : ℂ) ∈ W.nonunits → (N2 Y ∧ ∀ i, (Y i).SplitFibres ∧ (Y i).N3 ∧ (Y i).N4) → ∀ i : Idx H p, i₀.l.Dvd i.l → i₀.c.F ≤ i.c.F → ∀ st x, letterOf Dw st = some x → ∃ Z : Mdl Y i₀, Z.i = i ∧ (Z.ty = fun τ => Finset.range (Dw.mult τ + 1)) ∧ Nonempty (LineModel Z false st x) := by
+  atlas_forward_decl GlobalTheory.FlagEmb.DR.exists_lineModel

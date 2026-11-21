@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalRingCardinality.DataArith
 import Formalism.FilteredPoleLength.LocalDescentLevels.InvFromBlocksApplyZero
-import Formalism.PeriodIntegrals.Transference
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceMinima
 import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 import Formalism.LogFactorialIndices.SignedSubspaceIndex.IdxBase

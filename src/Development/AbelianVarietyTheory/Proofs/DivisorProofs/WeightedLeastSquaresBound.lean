@@ -1,6 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CBinet
+import BuildAid.ForwardExisting
 
+section
 open scoped ComplexOrder Matrix
 
 namespace GlobalTheory.WeightedLS
@@ -102,3 +104,9 @@ theorem weighted_least_squares_bound : ∀ (M g : ℕ) (L : Matrix (Fin M) (Fin 
   exact le_of_mul_le_mul_right hb hdet
 
 end GlobalTheory.WeightedLS
+end
+
+open scoped ComplexOrder Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_norm_weighted_least_squares_le : ∀ (M g : ℕ) (L : Matrix (Fin M) (Fin g) ℝ), L.rank = g → ∃ K : ℝ, ∀ (D : Fin M → ℝ) (b : Fin M → ℝ), (∀ k, 0 < D k) → ‖((L.transpose * Matrix.diagonal D * L)⁻¹ * L.transpose * Matrix.diagonal D).mulVec b‖ ≤ K * ‖b‖ := by
+  atlas_forward_decl GlobalTheory.WeightedLS.weighted_least_squares_bound

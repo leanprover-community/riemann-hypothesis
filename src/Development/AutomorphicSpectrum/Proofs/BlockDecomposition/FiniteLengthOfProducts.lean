@@ -5,6 +5,7 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PiExteriorTensor
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IrreducibleSmoothAdmissibleGL
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ParabolicInductionFiniteLength
 
+section
 noncomputable section
 
 open MeasureTheory GlobalTheory.SmGL GlobalTheory.PRep GlobalTheory.SplitWeil PositivityTheory.Rg.BcN.F2
@@ -23,3 +24,10 @@ theorem prodFinLen : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace
     (hasFiniteLength_of_isIrreducible hirr)
 
 end GlobalTheory.CompanionTheory.ProdLen
+end
+end
+
+open MeasureTheory GlobalTheory.SmGL GlobalTheory.PRep PositivityTheory.Rg.BcN.F2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_length_of_products : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (ι : Type) [Fintype ι] [DecidableEq ι], ProdFinLen F ι := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ProdLen.prodFinLen

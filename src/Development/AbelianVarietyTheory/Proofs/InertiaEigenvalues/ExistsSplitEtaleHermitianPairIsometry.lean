@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -102,3 +105,10 @@ theorem GlobalTheory.JR.exists_split_et : ∀ (F E : Type) [NontriviallyNormedFi
   · intro y i
     show algebraMap F E (Algebra.norm (Fin r → F) y i) = y i * star (y i)
     rw [SplitEt.norm_pi_apply, SplitEt.algebraMap_norm_eq_mul_star]
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_split_etaleHermitianPair_isometry : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (r : ℕ), ∃ (A : Et F E) (e : A.K ≃ₐ[F] (Fin r → F)) (j : A.L ≃ₗ[E] (Fin r → E)), A.IsIsom 1 j ∧ ∀ y i, algebraMap F E (e (A.NL y) i) = j y i * star (j y i) := by
+  atlas_forward_decl GlobalTheory.JR.exists_split_et

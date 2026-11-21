@@ -1,12 +1,13 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResABound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialCoefficientSubStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialCoefficientUniformLimitStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialCoefficientRankZeroStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialCoefficientSub
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialCoefficientUniformLimit
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialCoefficientRankZero
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InvarianceOfConstantFourierCoefficientStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsInfFamFamily
 import Development.AutomorphicSpectrum.Proofs.HermitianForms.ExistsIsCharAFOfStd
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegrableOfMem
 
+section
 noncomputable section
 
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
@@ -158,3 +159,10 @@ theorem resMu_main : MapsExist → HtExist → HeckeEta → FJEis → PcBound �
       lim := fun f hc hl a ha => (resA_lim hS hp1 hH hC hcov f hc hl a ha).2 }
 
 end GlobalTheory.CompanionTheory.ResMu
+end
+end
+
+open PositivityTheory.Rg.Rsw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.residue_measure_identity : MapsExist → HtExist → HeckeEta → FJEis → PcBound → RSec → EisHol → ThTotal → PcFc → SphBound → PositivityTheory.PfSWUS.FourierZero → PositivityTheory.PfSWUS.CoefDataExists → ResMu := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ResMu.resMu_main

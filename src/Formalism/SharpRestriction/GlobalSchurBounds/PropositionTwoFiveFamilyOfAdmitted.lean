@@ -5,7 +5,6 @@ import Formalism.SharpRestriction.GlobalSchurBounds.MainSup
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FamilyExplicitFormulaHolds
 import Formalism.LocalToGlobal.GlobalTheory.GL2.Statement
 import Formalism.GL3MeanSquares.HookFormulaTorsion.MeanSquareOfPrimeNumberTheorem
-import Formalism.LandauZeroFreeBounds.NoZeroComplex
 
 noncomputable section
 

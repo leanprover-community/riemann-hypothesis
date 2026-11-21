@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CasimirFockAct1SubCasimirFockAct2
 
+section
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open Formalism.BasicNotions.TH GlobalTheory.FockAlg MvPolynomial
 
@@ -119,3 +120,10 @@ theorem hasForm_neg_of_formEx : FormEx → ∀ (P Q R S : ℕ) (x : ℚ) (k k' :
   fun hF P Q R S x k k' h1 h2 h3 h4 h5 h6 => hasForm_swap (hF P Q S R x k k' h1 h2 h3 h4 h5 h6)
 
 end GlobalTheory.RealLift
+end
+end
+
+open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasForm_neg_of_pair_bounds : GlobalTheory.RealLift.FormEx → ∀ (P Q R S : ℕ) (x : ℚ) (k k' : ℕ), P ≤ S → Q ≤ R → 0 < k → 0 < k' → x - Formalism.BasicNotions.TH.cPair S R = k → x + Formalism.BasicNotions.TH.cPair S R = k' → GlobalTheory.RealLift.HasForm P Q R S (-x) := by
+  atlas_forward_decl GlobalTheory.RealLift.hasForm_neg_of_formEx

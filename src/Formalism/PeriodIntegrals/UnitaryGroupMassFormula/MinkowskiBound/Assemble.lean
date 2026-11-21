@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.Minkowski
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MinkowskiBound.PowerSumStep
 
 namespace PI.Mk

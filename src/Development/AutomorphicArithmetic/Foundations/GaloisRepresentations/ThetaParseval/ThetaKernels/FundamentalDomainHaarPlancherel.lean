@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalLagrangianIntegralSiegelParabolicTransfo
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.FundamentalDomainPlancherelGlobal
 
 set_option synthInstance.maxHeartbeats 200000
@@ -25,5 +23,5 @@ theorem _root_.GlobalTheory.T.fundamental_domain_haar_plancherel : ∀ (F E : Ty
           mtF σ (GlobalTheory.WeilSchrodinger.DblTargetF.dblG JT) h * ((diagCols (Fin nT) : Matrix (Fin nT ⊕ Fin nT) (Fin nT) (AF F ⊗[F] E)).submatrix finSumFinEquiv.symm id) = ((diagCols (Fin nT) : Matrix (Fin nT ⊕ Fin nT) (Fin nT) (AF F ⊗[F] E)).submatrix finSumFinEquiv.symm id) * t.1 →
           ∀ f, IsThetaFunOF σ JS (GlobalTheory.WeilSchrodinger.DblTargetF.dblG JT) ξ₀ B.ψ f →
             GlobalTheory.LagrTheta.lagrInt ν 𝓕 ((diagCols (Fin nT) : Matrix (Fin nT ⊕ Fin nT) (Fin nT) (AF F ⊗[F] E)).submatrix finSumFinEquiv.symm id) (ωd (1, h) f) = (α t : ℂ) * ((((adeleClass F).modu (Units.map (Algebra.norm (AF F) : AF F ⊗[F] E →* AF F) (Matrix.GeneralLinearGroup.det t)) : ℝ) ^ ((Fintype.card (Fin nS) : ℝ) / 2) : ℝ) : ℂ) * GlobalTheory.LagrTheta.lagrInt ν 𝓕 ((diagCols (Fin nT) : Matrix (Fin nT ⊕ Fin nT) (Fin nT) (AF F ⊗[F] E)).submatrix finSumFinEquiv.symm id) f := by
-  first | exact @_root_.PositivityTheory.ThKW.fundamental_domain_plancherel_global | exact _root_.PositivityTheory.ThKW.fundamental_domain_plancherel_global | (intros; apply _root_.PositivityTheory.ThKW.fundamental_domain_plancherel_global <;> assumption)
+  atlas_forward_decl _root_.PositivityTheory.ThKW.fundamental_domain_plancherel_global
 end

@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
 import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
+import BuildAid.ForwardExisting
+
+section
 open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
 open scoped ENNReal Classical
 
@@ -69,3 +71,10 @@ theorem orbSum_restrict : ∀ (G α : Type) [Group G] [MulAction G α] (H : Subg
     (fun a ha => hret a _ q.2 (by rw [ha]; exact q.2))]
 
 end GlobalTheory.Mass.Slice
+end
+
+open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
+open scoped ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orbitWeightedStabilizerSum_restrict_slice : ∀ (G α : Type) [Group G] [MulAction G α] (H : Subgroup G) (X X₀ : Set α) (N : α → ℝ≥0∞), X₀ ⊆ X → Stable G X → Stable H X₀ → (∀ (g : G) x, N (g • x) = N x) → (∀ x ∈ X, ∃ g : G, g • x ∈ X₀) → (∀ (g : G), ∀ x ∈ X₀, g • x ∈ X₀ → g ∈ H) → orbSum H X₀ N = orbSum G X N := by
+  atlas_forward_decl GlobalTheory.Mass.Slice.orbSum_restrict

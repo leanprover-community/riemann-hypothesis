@@ -140,9 +140,7 @@ theorem tl_flip {a b : ℕ} (M : Mt g (a + b)) : tl b (flip M) = flip (br a b M)
   congr 1 <;> ext <;> simp only [Fin.val_rev] <;> omega
 
 private lemma entN_eq_apply_of_lt_of_lt {n : ℕ} (M : Mt g n) (x y : ℕ) (hx : x < n) (hy : y < n) :
-    entN M x y = M ⟨x, hx⟩ ⟨y, hy⟩ := by
-  unfold entN
-  rw [dif_pos ⟨hx, hy⟩]
+    entN M x y = M ⟨x, hx⟩ ⟨y, hy⟩ := entN_of_lt M x y hx hy
 
 theorem br_flip {a b : ℕ} (M : Mt g (a + b)) : br b a (flip M) = flip (tl a M) := by
   ext i j

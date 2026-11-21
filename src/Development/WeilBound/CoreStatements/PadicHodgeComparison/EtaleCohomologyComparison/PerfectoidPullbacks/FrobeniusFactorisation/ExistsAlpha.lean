@@ -1,7 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.TwistedRepresentations.Tens
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.CapOComp
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatBaseChangeLimitSystemStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatBaseChangeLimitSystem
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false

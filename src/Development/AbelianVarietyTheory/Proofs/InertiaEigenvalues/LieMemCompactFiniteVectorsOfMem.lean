@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DiscreteSpectrumResidual
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCommuteRtInfGL
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
 
@@ -37,3 +40,10 @@ theorem lie_mem_finVec : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComp
   exact key _ _ (Submodule.subset_span ⟨k, rfl⟩)
 
 end GlobalTheory.LieFin
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Host
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lie_mem_compactFiniteVectors_of_mem : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ} (X : Lie E N) (φ : Sm E N), φ ∈ finVec (cptRep E N) → lie E N X φ ∈ finVec (cptRep E N) := by
+  atlas_forward_decl GlobalTheory.LieFin.lie_mem_finVec

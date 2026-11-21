@@ -1,15 +1,14 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussTubeOfTubeGood
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TubeTransformIndependentOfBaseStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussianTubeTransformBoundStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussianTubeTransformContinuousStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExponentialDecayByMidpointsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InverseTransformLocallyBoundedStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InverseTransformContinuousStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InverseTransformHolomorphicLinesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InverseTransformRecoversFunctionStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TubeTransformIndependentOfBase
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussianTubeTransformBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussianTubeTransformContinuous
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExponentialDecayByMidpoints
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InverseTransformLocallyBounded
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InverseTransformContinuous
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InverseTransformHolomorphicLines
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InverseTransformRecoversFunction
 
+section
 open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.CompanionTheory.TubeFourier
 
 noncomputable section
@@ -136,3 +135,9 @@ theorem tubeChain : TubeChain := by
     simpa [G, gauss] using key
 
 end GlobalTheory.CompanionTheory.TubeFourier
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tube_chain_holds : PositivityTheory.RgEis.TubeChain := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TubeFourier.tubeChain

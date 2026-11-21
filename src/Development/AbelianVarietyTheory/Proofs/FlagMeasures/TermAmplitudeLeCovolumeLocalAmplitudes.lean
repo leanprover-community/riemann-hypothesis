@@ -1,14 +1,12 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ConstC
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalHaarMeasuresPullbackRealGroupStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitalIntegralTensorBoundHypProofStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalisingConstantsProductHypProofStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitalIntegralTensorBoundHypProof
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalisingConstantsProductHypProof
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.FormAll
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RelCharPfRat
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocJEqMeas
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LoopTermLem
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AmpFibreConstOf
 
+section
 noncomputable section
 open scoped Classical ENNReal
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
@@ -92,3 +90,9 @@ theorem factC_of (hP : PullC) (hTn : TensC) (hC : ConstC) : FactC := by
 theorem factC_holds : FactC := factC_of GlobalTheory.T.localHaarMeasures_pullback_realGroup GlobalTheory.T.orbitalIntegralTensorBoundHyp_proof GlobalTheory.T.normalisingConstantsProductHyp_proof
 
 end GlobalTheory.TypeAsm
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.termAmplitude_le_covolume_localAmplitudes : GlobalTheory.TypeAsm.FactC := by
+  atlas_forward_decl GlobalTheory.TypeAsm.factC_holds

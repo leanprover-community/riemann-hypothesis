@@ -1,12 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.CuspFrame
 import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.FarTermSum
-import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.FarTermsLatticeBound
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.SameKindIsometric
-import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.ConvolutionSmoothL2
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CountHypPAtAddQAt
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GapThresholdPaysFarTerms
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec
 open scoped InnerProductSpace ContDiff
 
@@ -113,3 +113,10 @@ theorem farModerate_of_farBound :
       ring
 
 end GlobalTheory.Deep
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec
+open scoped InnerProductSpace ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.farTermsModerateRegion_of_flagBound : GlobalTheory.FlagMeas.FlagMeasureBound → GlobalTheory.Deep.FarBound → GlobalTheory.IndefiniteRowSideFullHecke.FarTermsModerate.FarModerate := by
+  atlas_forward_decl GlobalTheory.Deep.farModerate_of_farBound

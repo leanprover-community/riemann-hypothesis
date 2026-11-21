@@ -1,6 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Alternates
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.FrobeniusOrbits.HostCorollaries
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
 
 namespace GlobalTheory.HTW
@@ -52,3 +54,9 @@ theorem jR_symm_card {R : Ranks} (P : HCParam R) (j : Fin R.m) :
       exact Multiset.map_le_map (Multiset.le_add_right _ _)
 
 end GlobalTheory.HTW
+end
+
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cloudLowJumps_reflect_and_card : ∀ {R : Ranks} (P : HCParam R) (j : Fin R.m), jR P j false = (jR P j true).map (fun u => (R.t : ℤ) - 1 - u) ∧ ∀ s, (jW P j s).card = R.r ∧ (jR P j s).card = R.nV ∧ (jT2 P j s).card = R.r ∧ jT2 P j s ≤ jT1 P j s := by
+  atlas_forward_decl GlobalTheory.HTW.jR_symm_card

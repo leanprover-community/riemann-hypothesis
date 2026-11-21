@@ -1,8 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviMatchingWords.SplitPlaceGeneratorPowers
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PowersDiagonalAtTBlock
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexNeZeroOfSubsetCpt
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Filter
@@ -58,3 +58,8 @@ theorem generator_pow_split_places_of_idempotent : SplitPowersOfIdempotents := f
 end GlobalTheory.CompanionTheory.SplitPlacePowers
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generator_pow_split_places_idempotent : PositivityTheory.Rg.BcB.F.MLM.SplitPowersOfIdempotents := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SplitPlacePowers.generator_pow_split_places_of_idempotent

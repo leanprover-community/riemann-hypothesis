@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct Polynomial
 
 namespace GlobalTheory
@@ -56,3 +59,8 @@ theorem exists_numberField_point_ne_zero :
   exact ⟨K, inferInstance, inferInstance, φ.comp ψ, (hu.map φ).ne_zero⟩
 
 end GlobalTheory
+end
+
+open scoped TensorProduct Polynomial
+theorem _root_.GlobalTheory.T.finite_type_to_number_field : ∀ (A : Type) [CommRing A] [IsDomain A] [CharZero A], Algebra.FiniteType ℤ A → ∀ a : A, a ≠ 0 → ∃ (K : Type) (_ : Field K) (_ : NumberField K) (χ : A →+* K), χ a ≠ 0 := by
+  atlas_forward_decl _root_.GlobalTheory.exists_numberField_point_ne_zero

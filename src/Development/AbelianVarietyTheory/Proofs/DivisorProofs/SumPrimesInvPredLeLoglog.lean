@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumPrimeLogDivPredLeLogAdd
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.PrimeRecipSum
 open Finset
 
@@ -119,3 +121,8 @@ theorem sum_inv_pred_le : ∀ y : ℕ, 3 ≤ y →
   linarith
 
 end GlobalTheory.PrimeRecipSum
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_primes_inv_pred_le_loglog : ∀ y : ℕ, 3 ≤ y → ∑ p ∈ (Finset.range (y + 1)).filter Nat.Prime, 1 / ((p : ℝ) - 1) ≤ 7 * Real.log (Real.log y) + 6 := by
+  atlas_forward_decl GlobalTheory.PrimeRecipSum.sum_inv_pred_le

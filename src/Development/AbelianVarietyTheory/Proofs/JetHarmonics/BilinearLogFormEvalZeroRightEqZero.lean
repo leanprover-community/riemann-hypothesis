@@ -1,8 +1,5 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeIntCut
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFix
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBMapPf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ConstantCoeffAddFirstSecond
 import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.BilLActRight
 

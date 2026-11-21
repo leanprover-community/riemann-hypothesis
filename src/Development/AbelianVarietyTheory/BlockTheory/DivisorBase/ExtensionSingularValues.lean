@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 
 open MvPolynomial Formalism.GradedWeylDivisibility Formalism.L2.DIV
 

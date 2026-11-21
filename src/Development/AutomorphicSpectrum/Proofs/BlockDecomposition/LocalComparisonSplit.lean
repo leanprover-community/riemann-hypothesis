@@ -1,14 +1,13 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.LocCompareSplit
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemTwCentSwTw
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalSupportFacts
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalGoodReduction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairLocalAuxiliaryStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairInvolutionContinuous
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitPlaceLocalElement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedOrbitalPairConvolutionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PLocPrjGOfNotMem
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedOrbitalPairConvolution
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter
@@ -122,3 +121,8 @@ theorem locCompareSplit : LocCompareSplit := by
 end GlobalTheory.CompanionTheory.LcSplit
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_comparison_split : PositivityTheory.Rg.BcB.G8.Fin.LocCompareSplit := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LcSplit.locCompareSplit

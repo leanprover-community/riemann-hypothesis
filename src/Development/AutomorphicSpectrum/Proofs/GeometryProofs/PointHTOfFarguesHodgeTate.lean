@@ -1,13 +1,13 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPolLatticePlane
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CompleteIntegersPropertiesStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedDivisibleGroupExistsStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionOneStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionTwoStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionThreeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionFourStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionFiveStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOverLocalRingStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedDivisibleGroupExists
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionOne
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionTwo
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionThree
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionFour
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionFive
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOverLocalRing
+
+section
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField GlobalTheory GlobalTheory.PDivGroup GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.BT GlobalTheory.CompanionTheory.Ar.HT ReciprocityTheory.ChartRestriction.G.Semi
 
 noncomputable section
@@ -64,3 +64,10 @@ theorem pointHT (hF : FarguesHodgeTate) : PointHT := by
   exact GlobalTheory.T.polarised_divisible_group_exists hF p C v O hv hp hO E c hc La EF N u hu L T ρL ζ κ hacts hrank hζ hζp hpe hκ
 
 end GlobalTheory.CompanionTheory.Ar.HT.Fargues
+end
+end
+
+open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField GlobalTheory GlobalTheory.PDivGroup GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.BT GlobalTheory.CompanionTheory.Ar.HT ReciprocityTheory.ChartRestriction.G.Semi
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pointHT_of_fargues_hodge_tate : FarguesHodgeTate → PointHT := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.Fargues.pointHT

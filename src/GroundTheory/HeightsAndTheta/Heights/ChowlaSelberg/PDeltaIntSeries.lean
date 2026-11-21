@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ChowlaSelberg.IntSeries
 import GroundTheory.HeightsAndTheta.Heights.ChowlaSelberg.DeltaIntSeries
 set_option maxSynthPendingDepth 1
 

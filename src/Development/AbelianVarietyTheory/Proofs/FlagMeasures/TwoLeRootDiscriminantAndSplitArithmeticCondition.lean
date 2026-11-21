@@ -1,4 +1,7 @@
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ResidEvFree
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
 
 namespace GlobalTheory
@@ -10,3 +13,9 @@ theorem two_le_rdE_and_arithmeticConditionsS0 : ∀ D : D7, 2 ≤ D.host.rdE ∧
     Formalism.L2.SG.ResidEvFree.splitsE_g _ 0, Formalism.L2.SG.ResidEvFree.splitsE_g _ 1, S.discriminant_eq_base_sq _ (UnusedSlot33.ramification_two_and_conjugation_at_q_and_d _)⟩
 
 end GlobalTheory
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.two_le_rootDiscriminant_and_split_arithmetic_conditions : ∀ D : D7, 2 ≤ D.host.rdE ∧ ArithmeticConditionsOfDatum D := by
+  atlas_forward_decl GlobalTheory.two_le_rdE_and_arithmeticConditionsS0

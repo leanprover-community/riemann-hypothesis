@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbAApply
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegrableWeightedHeckeThetaKernelHalfSpace
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory
 open scoped RealInnerProductSpace FourierTransform
 
@@ -23,3 +26,11 @@ theorem gauss_cont_bound : ∀ (I : Type) [Fintype I] (n : I → ℤ), Continuou
     rw [e]; exact h
 
 end GlobalTheory.HeckeTheta.GaussBound
+end
+end
+
+open NumberField MeasureTheory
+open scoped RealInnerProductSpace FourierTransform
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussianHarmonicProductKernel_continuous_bounded : ∀ (I : Type) [Fintype I] (n : I → ℤ), Continuous (fun w : EuclideanSpace ℂ I => GlobalTheory.HeckeTheta.gauss n (WithLp.ofLp w)) ∧ ∃ C : ℝ, ∀ w : EuclideanSpace ℂ I, ‖GlobalTheory.HeckeTheta.gauss n (WithLp.ofLp w)‖ ≤ C * Real.exp (-Real.pi * ‖w‖ ^ 2) := by
+  atlas_forward_decl GlobalTheory.HeckeTheta.GaussBound.gauss_cont_bound

@@ -2,6 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ThetaConstantWeber
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.ThetaLine
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DifferentiableOddTheta
+import BuildAid.ForwardExisting
+
+section
 open Complex
 
 noncomputable section
@@ -124,3 +127,10 @@ theorem exp_mul_oddTheta_eq_deriv_mul_sgStar :
   rw [this, ← h1, h2]
 
 end GlobalTheory.SgStarOddTheta
+end
+end
+
+open Complex
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussianOddJacobiTheta_eq_deriv_mul_sgStar : Formalism.L2.Th1.F.ThetaLine → Formalism.L2.Th1.F.SgStarBasic → ∀ (τ : UpperHalfPlane) (z : ℂ), Complex.exp ((Real.pi : ℂ) * z ^ 2 / (2 * ((τ.im : ℝ) : ℂ))) * GlobalTheory.ThetaWeberRoad.oddTheta τ z = deriv (GlobalTheory.ThetaWeberRoad.oddTheta τ) 0 * Formalism.L2.Th1.F.sgStar (GlobalTheory.periodPairOfTau τ) z := by
+  atlas_forward_decl GlobalTheory.SgStarOddTheta.exp_mul_oddTheta_eq_deriv_mul_sgStar

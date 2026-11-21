@@ -1,11 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.HeckeLAdicCharacterDeRham
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.DeRhamJacobian.IsdRJ
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasPeriods
 import Development.WeilBound.CoreStatements.CrystallinePeriodRings.TiedAInvOfTheta
-import GroundTheory.PAdicHodge.BCrisEigen
 import GroundTheory.PAdicHodge.BCrisRegularSenTate
-import Development.WeilBound.CoreStatements.CrystallinePeriodRings.MaximalIdealEqSpanT
 
 noncomputable section
 

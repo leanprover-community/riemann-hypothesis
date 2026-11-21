@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ConstC
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 open MeasureTheory Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
 namespace GlobalTheory.TypeAsm
@@ -19,3 +21,9 @@ theorem fundC_holds : FundC := by
   exact (mul_inv_eq_one.1 this).symm
 
 end GlobalTheory.TypeAsm
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.strict_fundamentalSet_integralStabilizer_exists : GlobalTheory.TypeAsm.FundC := by
+  atlas_forward_decl GlobalTheory.TypeAsm.fundC_holds

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IntegralLocallyConstCochainModPow
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.K5.ReprSpan
@@ -94,3 +96,12 @@ theorem exists_mul_mem_span : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω
   exact ⟨g, hg, (mem_adjoin_iff _).1 hgb⟩
 
 end GlobalTheory.K5.ReprSpan
+end
+end
+
+open GlobalTheory.K5
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_mul_mem_span_algebraicOverPadicIntegers : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω →
+    ∀ b ∈ Subfield.closure (Set.range (algebraMap (O0 p) Ω) ∪ {x | IsAlgZp p x}),
+    ∃ g : O0 p, g ≠ 0 ∧ algebraMap (O0 p) Ω g * b ∈ Submodule.span (O0 p) {x : Ω | IsAlgZp p x} := by
+  atlas_forward_decl GlobalTheory.K5.ReprSpan.exists_mul_mem_span

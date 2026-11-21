@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IntegralLocallyConstCochainModPow
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdicCompletionValuationRingCompleteValuationDoma
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.K5
@@ -25,3 +27,10 @@ theorem prime_natCast_completedLaurentRing : Prime (p : O0 p) := by
 theorem prime_natCast_completedLaurentRing_of_prime : ∀ (p : ℕ) [Fact p.Prime], Prime (p : O0 p) := fun p _ => prime_natCast_completedLaurentRing p
 
 end GlobalTheory.K5
+end
+end
+
+open GlobalTheory.K5
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prime_natCast_completed_laurent_ring : ∀ (p : ℕ) [Fact p.Prime], Prime (p : O0 p) := by
+  atlas_forward_decl GlobalTheory.K5.prime_natCast_completedLaurentRing_of_prime

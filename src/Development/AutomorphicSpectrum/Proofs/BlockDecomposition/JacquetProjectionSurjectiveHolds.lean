@@ -1,8 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.IsJointGenEig
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetProjectionHeckeHoldsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetVectorLiftDominantStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetProjectionHeckeHolds
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetVectorLiftDominant
 
+section
 open GlobalTheory.PRep PositivityTheory.SphericalProduct
 
 namespace GlobalTheory.CompanionTheory.Cass
@@ -55,3 +55,9 @@ theorem jacquet_projection_surjective : ∀ (G : Type) [Group G] [TopologicalSpa
   exact ⟨v, by rw [← hL]; exact hv⟩
 
 end GlobalTheory.CompanionTheory.Cass
+end
+
+open GlobalTheory.PRep PositivityTheory.SphericalProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacquet_projection_surjective_holds : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (D : PositivityTheory.SphericalProduct.CassData G), ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ G V), IsAdmissible π → ∀ t : D.T, D.IsStrDom t → ∀ U : Module.End ℂ (fixed π D.J), PositivityTheory.Lbc.IsHeckeOpG π D.J (t : G) U → ∀ w ∈ fixed (D.piN π) D.JT, ∃ v : fixed π D.J, D.proj π (v : V) = w := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Cass.jacquet_projection_surjective

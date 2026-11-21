@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SandwichMaps
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
 
 namespace GlobalTheory
@@ -48,3 +51,9 @@ theorem trace_eq_of_intertwined_by_quasi_inverse (A : Type) [CommRing A] [IsDoma
   exact mul_left_cancel₀ hμ e
 
 end GlobalTheory
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_sandwich_trace_eq : ∀ (A : Type) [CommRing A] [IsDomain A] (h : ℕ) (μ : A) (F G X Y : Matrix (Fin h) (Fin h) A), μ ≠ 0 → G * F = μ • (1 : Matrix (Fin h) (Fin h) A) → F * X = Y * F → F * G = μ • (1 : Matrix (Fin h) (Fin h) A) ∧ X * G = G * Y ∧ Y.trace = X.trace := by
+  atlas_forward_decl GlobalTheory.trace_eq_of_intertwined_by_quasi_inverse

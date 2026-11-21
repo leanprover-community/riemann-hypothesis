@@ -1,5 +1,6 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.LanglandsExhaustion.JuxtDefs
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalTwistInjectiveStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalTwistInjective
 
 noncomputable section
 

@@ -1,9 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ActAtApply
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemTensSpanOfKilled
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FischerDecompositionFockNoncompactParts
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockAdjoints
 
+section
 noncomputable section
 
 open scoped TensorProduct
@@ -51,3 +50,11 @@ theorem fock_locU : ∀ P Q R S : ℕ, LocU (fun a : Ix R S => a.isLeft) (units 
     rw [this, adjZ_Eab_of_isLeft hab]
 
 end GlobalTheory.HoweR
+end
+end
+
+open scoped TensorProduct
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift GlobalTheory.HoweR
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockAction_isLocallyBlockUnitary : ∀ P Q R S : ℕ, LocU (fun a : Ix R S => a.isLeft) (units (fockAct2 P Q R S)) := by
+  atlas_forward_decl GlobalTheory.HoweR.fock_locU

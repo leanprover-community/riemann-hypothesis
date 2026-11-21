@@ -1,16 +1,15 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChPrime
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinimalPrimesOfMultihomogSupStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularSystemOfParametersLocalRingStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartRegularAtConePointStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartRegularWithBoundaryChoiceStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartMultihomogOrderAtPointStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.UnitTimesParameterMonomialStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SymbolicPowerInAffineChartStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SymbolicPowerFromAffineChartStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartParametersAtConePointStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularSystemOfParametersLocalRing
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartRegularAtConePoint
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartRegularWithBoundaryChoice
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartMultihomogOrderAtPoint
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.UnitTimesParameterMonomial
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SymbolicPowerInAffineChart
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SymbolicPowerFromAffineChart
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartParametersAtConePoint
 
+section
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Par
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.Cmp
@@ -64,3 +63,10 @@ theorem exists_sncData_of_isSncModel : ∀ (K : Type) [Fintype K] (ι : K → Ty
   rfl
 
 end GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Par
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.Cmp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.snc_resolution_boundary_normal_crossing : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] [CharZero Ω] (y : (Σ k, ι k) → Ω) (e : ℕ) (J : Ideal (MRing ι)), IsArithVar (mCoordIdeal y) (e + 1) → IsMultiHomogIdeal J → ¬ J ≤ mCoordIdeal y → IsSncModel y e J → ∀ p : (k : K) → ι k, ∀ x ∈ SncRes.src (pC (mCoordIdeal y)) p, ∃ d : ReciprocityTheory.AnForm.R.SncData (SncRes.ideal (pC (mCoordIdeal y)) p) (SncRes.bd (pC (mCoordIdeal y)) (pC J) p) (SncRes.coord (pC (mCoordIdeal y)) p x) e (SncRes.rc (pC (mCoordIdeal y)) (pC J)), (∃ O : Set (SncRes.Pts (pC (mCoordIdeal y))), IsOpen O ∧ x ∈ O ∧ O ⊆ SncRes.src (pC (mCoordIdeal y)) p ∧ ∀ k, SncRes.comp (pC (mCoordIdeal y)) (pC J) k ∩ O = {x' ∈ O | ∃ l, d.σ l = some k ∧ eval (SncRes.coord (pC (mCoordIdeal y)) p x') (d.r l) = 0}) ∧ ∀ (f : MvPolynomial (Σ k, ι k) ℂ) (a : K → ℕ), ReciprocityTheory.AnForm.R.IsMultiHomog f a → f ∉ pC (mCoordIdeal y) → (∀ z ∈ ReciprocityTheory.AnForm.R.conePts (pC (mCoordIdeal y)), eval z f = 0 → z ∈ ReciprocityTheory.AnForm.R.conePts (pC J)) → ∃ u : ReciprocityTheory.AnForm.R.locRing (SncRes.ideal (pC (mCoordIdeal y)) p) (SncRes.coord (pC (mCoordIdeal y)) p x), IsUnit u ∧ algebraMap _ (ReciprocityTheory.AnForm.R.locRing (SncRes.ideal (pC (mCoordIdeal y)) p) (SncRes.coord (pC (mCoordIdeal y)) p x)) (bind₁ (SncRes.lift p) f) = u * ∏ l ∈ d.J, algebraMap _ (ReciprocityTheory.AnForm.R.locRing (SncRes.ideal (pC (mCoordIdeal y)) p) (SncRes.coord (pC (mCoordIdeal y)) p x)) (d.r l) ^ (d.σ l).elim 0 (fun k => SncRes.ordAlong (SncRes.compIdeal (pC (mCoordIdeal y)) (pC J) k) (pC (mCoordIdeal y)) f) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Par.exists_sncData_of_isSncModel

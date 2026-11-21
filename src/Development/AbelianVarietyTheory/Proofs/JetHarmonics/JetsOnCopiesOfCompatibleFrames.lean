@@ -8,7 +8,7 @@ import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrameNStHolds
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ValFinProdGen
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsPowFrame
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UniversalStatementStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UniversalJetsPowerProductStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UniversalJetsPowerProduct
 
 set_option autoImplicit false
 noncomputable section

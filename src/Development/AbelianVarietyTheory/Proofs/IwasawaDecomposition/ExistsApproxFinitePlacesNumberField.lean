@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory
@@ -82,3 +85,9 @@ theorem exists_approx_finite_places :
     _ ≤ _ := max_le (by rw [← map_sub, e3, e3]; exact hloc) (hbv i)
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_approx_finite_places_numberField : ∀ {F : Type} [Field F] [NumberField F] {ι : Type} [Fintype ι] (w : ι → HeightOneSpectrum (𝓞 F)), Function.Injective w → ∀ (y : ∀ i, (w i).adicCompletion F) (c : F), c ≠ 0 → ∃ a : F, ∀ i, Valued.v (algebraMap F ((w i).adicCompletion F) a - y i) ≤ Valued.v (algebraMap F ((w i).adicCompletion F) c) := by
+  atlas_forward_decl GlobalTheory.exists_approx_finite_places

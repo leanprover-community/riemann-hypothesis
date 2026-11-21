@@ -5,7 +5,9 @@ import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.SetUnipotentT
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LFunctionPositiveConductorFourEight
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NcardPrimesOverOfStabilizer
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapSplit
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Pj GlobalTheory.Mem GlobalTheory.EX GlobalTheory.FinalJoin GlobalTheory.FinalJoin2 GlobalTheory.FieldSize
 
 namespace GlobalTheory.SplitGen
@@ -40,3 +42,9 @@ theorem nonempty_errX : ∀ X : Stages, (∀ i, ∃ π : 𝓞 X.B.host.E, (π : 
   exact ⟨⟨pG, hG1, hG2, pT, hT1, hT2, hT3, φ, hφ1, hφ2⟩⟩
 
 end GlobalTheory.SplitGen
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Pj GlobalTheory.Mem GlobalTheory.EX GlobalTheory.FinalJoin GlobalTheory.FinalJoin2 GlobalTheory.FieldSize
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.error_data_of_norm_generators : ∀ X : Stages, (∀ i, ∃ π : 𝓞 X.B.host.E, (π : X.B.host.E) ∈ X.B.host.K ∧ (π : X.B.host.E) * X.B.host.conj (π : X.B.host.E) = (X.B.host.g i : X.B.host.E)) → Nonempty (ErrX X.toD7) := by
+  atlas_forward_decl GlobalTheory.SplitGen.nonempty_errX

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 
 namespace GlobalTheory
@@ -109,3 +112,12 @@ theorem card_torsion_pow_log_concave : ∀ (F : Type) [Field F] [NumberField F] 
     _ = Nat.card B * (Nat.card C * Nat.card h.range) := by ring
 
 end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torsion_count_log_concave_prime_powers : ∀ (F : Type) [Field F] [NumberField F] (M : Type) [AddCommGroup M] [Module (𝓞 F) M] (𝔭 : Ideal (𝓞 F)), 𝔭.IsMaximal → ∀ k : ℕ,
+    Finite {x : M // ∀ a ∈ 𝔭 ^ (k + 2), a • x = 0} →
+    Nat.card {x : M // ∀ a ∈ 𝔭 ^ (k + 2), a • x = 0} * Nat.card {x : M // ∀ a ∈ 𝔭 ^ k, a • x = 0} ≤
+      Nat.card {x : M // ∀ a ∈ 𝔭 ^ (k + 1), a • x = 0} ^ 2 := by
+  atlas_forward_decl GlobalTheory.card_torsion_pow_log_concave

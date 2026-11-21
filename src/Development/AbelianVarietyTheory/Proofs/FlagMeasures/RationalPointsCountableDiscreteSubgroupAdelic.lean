@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomain
 
 open MeasureTheory Formalism.MainNotions.S

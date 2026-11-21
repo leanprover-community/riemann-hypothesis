@@ -3,6 +3,7 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstEqOne
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JordanHolderMultiplicityNormalizedBorelJacquetUn
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel
@@ -34,3 +35,9 @@ theorem torusExp : PositivityTheory.Rg.BcB.F.Tail.PExp.TorusExp := by
 end GlobalTheory.CompanionTheory.TorusExpU
 
 end
+end
+
+namespace PositivityTheory.Rg.BcB.F.Tail.PExp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torus_exponent_tail : PositivityTheory.Rg.BcB.F.Tail.PExp.TorusExp := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TorusExpU.torusExp

@@ -1,6 +1,5 @@
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TwistChoiceExample
 import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
-import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 
 open NumberField
 

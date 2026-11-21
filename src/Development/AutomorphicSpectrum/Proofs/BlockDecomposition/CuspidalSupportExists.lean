@@ -3,6 +3,7 @@ import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExist
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IrreducibleCharacterSeries.FrobeniusSumFormula
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetModuleAll
 
+section
 open CategoryTheory Formalism.IrreducibleCountingLemmas.TYPES
 
 noncomputable section
@@ -69,3 +70,10 @@ theorem supportExistsAll : ReciprocityTheory.Ty.Fin.St.SupportExistsAll := by
   exact ⟨s, b, lam, hb, hlam, (PI.SerBridgeGLW.isConstituent_hc_iff K b lam τ).mpr ⟨ψ, hψ, hψeq⟩⟩
 
 end GlobalTheory.CompanionTheory.TyFinSupport
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidal_support_exists : ReciprocityTheory.Ty.Fin.St.SupportExistsAll := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFinSupport.supportExistsAll

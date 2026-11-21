@@ -2,10 +2,10 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureFiniteStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtChartLocalizationStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureFinite
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtChartLocalization
 
+section
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
 noncomputable section
@@ -82,3 +82,10 @@ theorem finite_integralClosure_chRing {o : Type} [CommRing o] [Algebra.EssFinite
   exact GlobalTheory.T.integral_closure_finite _ Ω Ω'
 
 end GlobalTheory.CompanionTheory.Ar.ChartFinite
+end
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_ring_integral_closure_finite : ∀ {o : Type} [CommRing o] [Algebra.EssFiniteType ℤ o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω} (M : PModel o x) (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [FiniteDimensional Ω Ω'] [Algebra o Ω'] [IsScalarTower o Ω Ω'] (c : κ), x c ≠ 0 → Module.Finite (chRing o (fun k => algebraMap Ω Ω' (x k)) c) (integralClosure (chRing o (fun k => algebraMap Ω Ω' (x k)) c) Ω') := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ChartFinite.finite_integralClosure_chRing

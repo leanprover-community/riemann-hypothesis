@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.LocalDensities.Statements
 import GroundTheory.HeightsAndTheta.Heights.LocalDensities.FlagPsDeriv
 set_option maxSynthPendingDepth 1
 

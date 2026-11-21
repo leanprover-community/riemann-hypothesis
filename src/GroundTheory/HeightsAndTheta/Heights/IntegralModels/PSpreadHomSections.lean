@@ -3,7 +3,6 @@ import GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsSpreadHomSe
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsRatDenominators
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsGenericPullInj
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PClearDenominators
-import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PVectorBundleRestrict
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PGenericSections
 set_option maxSynthPendingDepth 1
 

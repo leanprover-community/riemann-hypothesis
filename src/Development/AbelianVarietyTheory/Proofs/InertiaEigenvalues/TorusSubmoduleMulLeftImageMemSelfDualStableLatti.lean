@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma Polynomial
 
 noncomputable section
@@ -67,3 +70,10 @@ theorem torus_mem_X (K : UQ) (B : InvAlg K) (x : B.A) :
       rwa [e]
 
 end GlobalTheory.UnitLemma.TorusAction
+end
+end
+
+open GlobalTheory.UnitLemma Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torus_submoduleMulLeftImage_mem_selfDualStableLattices : ∀ (K : UQ) (B : InvAlg K) (x : B.A), ∀ t ∈ B.T, ∀ L ∈ B.X x, mulLat K.O (t : B.A) L ∈ B.X x := by
+  atlas_forward_decl GlobalTheory.UnitLemma.TorusAction.torus_mem_X

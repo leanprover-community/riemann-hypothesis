@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirecti
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.StarRingExtOfStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.BiextCoeffSecondLinear
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -193,3 +194,10 @@ theorem limActSt_of_epsSt (hε : EpsSt) : LimActSt := by
     exact le_v_pow_mul X N _
 
 end GlobalTheory.IsoTriv
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.limitActionLieAlgebra_of_primeIdempotentApprox : EpsSt → LimActSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.limActSt_of_epsSt

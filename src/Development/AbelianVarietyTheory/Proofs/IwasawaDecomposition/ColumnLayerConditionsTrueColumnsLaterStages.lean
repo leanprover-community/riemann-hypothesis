@@ -5,7 +5,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsStanda
 import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieTrF
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HermEqExtraTied
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TiedColumnData
-import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 
 noncomputable section
 

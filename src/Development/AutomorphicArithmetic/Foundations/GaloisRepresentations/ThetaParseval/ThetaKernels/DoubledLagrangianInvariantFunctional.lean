@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffThetaTransformArchimedeanCmStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ContDiffThetaTrRealFK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -22,5 +20,5 @@ theorem _root_.GlobalTheory.T.doubled_lagrangian_invariant_functional : ∀ (F E
             co.e (incM F x) = (fun i => algebraMap F (AF F) (y i), fun i => algebraMap F (AF F) (z i))) →
           ∀ Φ ∈ schA F κ, ∀ (k : ℕ) (L : (Fin k → ℝ) →+ WOF F E nS nT), Continuous L →
             (∀ t, (L t).map (finPartF F E) = 0) → ∀ w, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun t => GlobalTheory.WeilSchrodinger.thetaTr F co B.ψ Φ (w + L t) := by
-  first | exact @_root_.GlobalTheory.ThetaSmoothF.contDiff_thetaTr_realF_k | exact _root_.GlobalTheory.ThetaSmoothF.contDiff_thetaTr_realF_k | (intros; apply _root_.GlobalTheory.ThetaSmoothF.contDiff_thetaTr_realF_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.ThetaSmoothF.contDiff_thetaTr_realF_k
 end

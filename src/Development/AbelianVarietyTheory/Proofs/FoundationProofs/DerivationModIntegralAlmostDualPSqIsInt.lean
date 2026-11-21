@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboundaryConstantOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerTowerQqPowLevelEqQ
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.K5 GlobalTheory.KumDlog
 
 namespace GlobalTheory.KumDlog
@@ -57,3 +58,10 @@ theorem der_dual_p_sq_int : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] 
   exact int_congr (int_sub s2 (int_mul (int_nat p) s3)) (by ring)
 
 end GlobalTheory.KumDlog
+end
+
+open GlobalTheory.K5 GlobalTheory.KumDlog
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.derivationModIntegral_almostDual_p_sq_isInt : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], ∀ (B C : Subalgebra (O0 p) Ω) (ι : Type) [Fintype ι] (u v : ι → Ω) (tr : Ω → Ω), DualData B C u v tr →
+  ∀ D : Ω → Ω, IsDer C D → ∀ x ∈ C, (∀ k l, IsInt p (D (tr (u l * (x * v k))))) → IsInt p ((p : Ω) ^ 2 * D x) := by
+  atlas_forward_decl GlobalTheory.KumDlog.der_dual_p_sq_int

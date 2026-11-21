@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.HeckeInertComm
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PatchAtSelf
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Formalism.L2.Col GlobalTheory.InertExchange
 open Classical
 
@@ -61,3 +63,10 @@ theorem use₅ (Q : HeightOneSpectrum (𝓞 E)) (A B : Submodule (𝓞 E) (Sp E 
   rw [mem_localization_dual_iff Q A hA.fg, mem_localization_dual_iff Q B hB.fg, h]
 
 end GlobalTheory.DualLoc
+end
+
+open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Formalism.L2.Col GlobalTheory.InertExchange
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localization_hermitianDual_eq : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} (Q : HeightOneSpectrum (𝓞 E)) (A B : Submodule (𝓞 E) (Sp E n)), Submodule.IsLattice E A → Submodule.IsLattice E B → localization₂ (conjPrime₂ Q).asIdeal A = localization₂ (conjPrime₂ Q).asIdeal B → localization₂ Q.asIdeal (dual (hStd E n) A) = localization₂ Q.asIdeal (dual (hStd E n) B) := by
+  atlas_forward_decl GlobalTheory.DualLoc.use₅

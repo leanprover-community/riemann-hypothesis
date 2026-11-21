@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsAdmissibleIntegralBasisChangeOne
-import GroundTheory.FunctionField.PlaceSum
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 open scoped IntermediateField Polynomial RatFunc
@@ -98,3 +99,12 @@ theorem sum_ord_eq_finrank : ∀ (k F E : Type) [Field k] [IsAlgClosed k] [CharZ
     simp
 
 end GlobalTheory.Nef.FundId
+end
+
+open scoped IntermediateField Polynomial RatFunc
+open GlobalTheory.Nef
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.functionFieldPlace_sum_order_eq_finrank : ∀ (k F E : Type) [Field k] [IsAlgClosed k] [CharZero k] [Field F] [Field E] [Algebra k F] [Algebra k E] [Algebra F E] [IsScalarTower k F E] [FiniteDimensional F E], IsFF k F →
+  ∀ ρ : Place k E → Place k F, IsRes ρ → ∀ (v : Place k F) (π : F), π ≠ 0 → ord v π = 1 → {p | ρ p = v}.Finite ∧ ∑ᶠ p ∈ {p | ρ p = v}, ord p (algebraMap F E π) = Module.finrank F E := by
+  atlas_forward_decl GlobalTheory.Nef.FundId.sum_ord_eq_finrank

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OmAOneApply
+import BuildAid.ForwardExisting
+
+section
 open Matrix MeasureTheory ValuativeRel GlobalTheory.SplitFlip GlobalTheory.SmGL GlobalTheory.WeilM GlobalTheory.RankFibre GlobalTheory.SplitWeil GlobalTheory.RankFibreKer
 
 namespace GlobalTheory.RankFibreKer
@@ -28,3 +31,12 @@ theorem integral_tw_eq_zero_of_fibre_eq_zero :
   exact (mul_eq_zero.1 e).resolve_left hC
 
 end GlobalTheory.RankFibreKer
+end
+
+open Matrix MeasureTheory ValuativeRel GlobalTheory.SplitFlip GlobalTheory.SmGL GlobalTheory.WeilM GlobalTheory.RankFibre GlobalTheory.SplitWeil GlobalTheory.RankFibreKer
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orbital_integral_vanishes_of_fibre : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν β : kˣ →* ℂˣ) (a b : ℕ) (Φ : Matrix (Fin a) (Fin (a + b)) k → ℂ),
+    fibre ν β a b Φ = 0 → ∀ Y : Matrix (Fin a) (Fin (a + b)) k, Y.rank = a →
+    ∫ g : GL (Fin a) k, Φ (g.val * Y) * tw ν (a + b) g ∂(haarVol (KO k (Fin a))) = 0 := by
+  atlas_forward_decl GlobalTheory.RankFibreKer.integral_tw_eq_zero_of_fibre_eq_zero

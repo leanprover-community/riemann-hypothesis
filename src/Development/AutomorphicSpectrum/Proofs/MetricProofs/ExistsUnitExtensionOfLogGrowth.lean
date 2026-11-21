@@ -1,5 +1,5 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagDomainUnitaryTriangularStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagDomainUnitaryTriangular
 
 open Complex Metric
 

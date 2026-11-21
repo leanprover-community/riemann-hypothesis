@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StConePolar
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceDim
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StConeChartGram
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLinearNoetherNormalization

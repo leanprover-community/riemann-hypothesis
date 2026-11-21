@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.SamePartIffOfNeZero
+import BuildAid.ForwardExisting
 
+section
 open Polynomial Classical GlobalTheory.BadShare
 
 namespace GlobalTheory.BadShare
@@ -21,3 +23,9 @@ theorem mem_sqSet_iff (g : ℕ) [Fact g.Prime] (N : ℕ) (f : (ZMod g)[X]) :
     exact hm.as_sum.symm
 
 end GlobalTheory.BadShare
+end
+
+open Polynomial Classical GlobalTheory.BadShare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_monicSquarefreeUnitConstPolys_iff_monic_squarefree : ∀ (g : ℕ) [Fact g.Prime], ∀ (N : ℕ) (f : (ZMod g)[X]), f ∈ sqSet g N ↔ f.Monic ∧ f.natDegree = N ∧ Squarefree f ∧ f.coeff 0 ≠ 0 := by
+  atlas_forward_decl GlobalTheory.BadShare.mem_sqSet_iff

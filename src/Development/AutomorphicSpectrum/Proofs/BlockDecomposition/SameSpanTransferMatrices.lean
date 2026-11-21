@@ -1,6 +1,7 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.WeilSiegelTheta.EisCellsDefs
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsBlockMatrixTwoByTwoFinEq
+
+section
 open scoped Matrix
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions.EC
 
@@ -50,3 +51,10 @@ theorem exists_coeff_matrices_of_span_eq {K : Type} [Field K] {n r : ℕ}
   rwa [Matrix.sub_apply, sub_eq_zero] at h1
 
 end GlobalTheory.CompanionTheory.BruhatCoeffs
+end
+
+open scoped Matrix
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions.EC
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.same_span_transfer_matrices : ∀ {K : Type} [Field K] {n r : ℕ} (C : Matrix (Fin n) (Fin n) K) (c : Matrix (Fin r) (Fin n) K), LinearIndependent K c → Submodule.span K (Set.range c) = Submodule.span K (Set.range C) → ∃ (T : Matrix (Fin n) (Fin r) K) (L : Matrix (Fin r) (Fin n) K), C = T * c ∧ c = L * C ∧ L * T = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BruhatCoeffs.exists_coeff_matrices_of_span_eq

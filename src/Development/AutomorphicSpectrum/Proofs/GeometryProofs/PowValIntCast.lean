@@ -5,7 +5,6 @@ import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatPar
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.OverZpOfInFibre
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HTChartExistsHoldsStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateChartIntegralStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct
 
 noncomputable section
 

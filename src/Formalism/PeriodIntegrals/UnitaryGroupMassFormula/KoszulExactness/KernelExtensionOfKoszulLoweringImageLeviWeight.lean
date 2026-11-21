@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.KoszulExact
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KoszulExactness.Ii
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KoszulExactness.KoszulImageInIdeal
 
 universe u

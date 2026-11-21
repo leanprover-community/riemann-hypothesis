@@ -1,4 +1,3 @@
-import Formalism.PolynomialDimension.StatementHar
 import Formalism.PolynomialDimension.MultinomialDepth.HarmonicDecompositionHolds
 import Formalism.PolynomialDimension.MultinomialDepth.DiagLaplacianDivPowMemSqrtFockLattice
 

@@ -5,10 +5,10 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LargeF
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RootOneMemOfIsRayFieldIn
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContainsRayFieldSub
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemOfOrderDvd
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OmegaFieldDegreeRootDiscrBoundedByRingPolynomialStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.FieldSizeMonotone
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.JointQOfSmallField
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OmegaFieldDegreeRootDiscrBoundedByRingPolynomial
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RayFieldLeAndExistsBase
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Theta GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.AtMember
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -79,3 +79,10 @@ theorem fieldTies_of_ksExact : GlobalTheory.NT.RayField → ∀ (X : Stages) (f 
 end GlobalTheory.AtMember
 
 end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Theta GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.AtMember
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fieldTies_of_rayField_of_ksExact : GlobalTheory.NT.RayField → ∀ (X : Stages) (f : Fr X.B.toPre) (δ : Fld.FieldDat X.B.toPre), X.B.KsExact δ f → FieldTies X.toD7 (Fr.at X f) := by
+  atlas_forward_decl GlobalTheory.AtMember.fieldTies_of_ksExact

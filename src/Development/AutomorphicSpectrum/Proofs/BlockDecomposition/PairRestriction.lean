@@ -2,6 +2,7 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemProdSpanInf
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
@@ -56,3 +57,9 @@ theorem pairRestrict_holds : PairRestrict := by
 end GlobalTheory.CompanionTheory.EGlue
 
 end
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pair_restriction : GlobalTheory.CompanionTheory.EGlue.PairRestrict := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.pairRestrict_holds

@@ -2,7 +2,6 @@ import Formalism.BranchSandwichDivisors.BranchIsometryProofs.BoundsIVal
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.BranchScale
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.BranchMap
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.XiNorm
-import Formalism.BranchSandwichDivisors.BranchIsometryProofs.MemBranchRangeOfDefectEq
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.GoodDual
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.Interlace
 import Formalism.BranchSandwichDivisors.StatementJ
@@ -12,7 +11,6 @@ import Formalism.BranchSandwichDivisors.BranchIsometryProofs.Numeric
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.OrthSum
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.StepDiii
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.Transfer
-import Formalism.BranchSandwichDivisors.BranchIsometryProofs.TransferMean
 
 namespace Formalism.BranchingDeterminantCap
 

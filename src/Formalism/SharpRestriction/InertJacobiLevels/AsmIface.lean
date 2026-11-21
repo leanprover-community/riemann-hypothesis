@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.ParamsHeightRankConstant
 import Formalism.SharpRestriction.GlobalSchurBounds.MainIn
 
 noncomputable section

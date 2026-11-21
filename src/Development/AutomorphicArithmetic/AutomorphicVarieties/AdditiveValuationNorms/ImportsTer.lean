@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AdditiveValuationNorms.CokLenLeOfRangeLe
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AdditiveValuationNorms.PowIn
 
 open UpperTheory.V UpperTheory.V.PropA

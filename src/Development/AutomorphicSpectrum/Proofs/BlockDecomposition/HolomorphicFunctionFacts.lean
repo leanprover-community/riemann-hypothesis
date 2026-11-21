@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.EquivariantSections.EquivSection
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix ReciprocityTheory.ChartRestriction.DS.S7
@@ -312,3 +314,9 @@ end GlobalTheory.CompanionTheory.HolOm
 theorem GlobalTheory.CompanionTheory.HolOm.holFacts : PositivityTheory.RgDs.K.HolFacts := fun _ μ =>
   ⟨fun _ _ hF => GlobalTheory.CompanionTheory.HolOm.lop_mem hF, fun _ a b c d hF => GlobalTheory.CompanionTheory.HolOm.lop_rel a b c d hF,
     GlobalTheory.CompanionTheory.HolOm.PhiO_mem μ, GlobalTheory.CompanionTheory.HolOm.PhiO_weight μ, fun _ _ hab => GlobalTheory.CompanionTheory.HolOm.PhiO_lower μ hab⟩
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.holomorphic_function_facts : PositivityTheory.RgDs.K.HolFacts := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HolOm.holFacts

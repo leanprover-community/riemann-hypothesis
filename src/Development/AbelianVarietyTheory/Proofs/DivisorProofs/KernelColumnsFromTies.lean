@@ -1,12 +1,11 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.DivisibilityConstruction.ShiftOfColTie
-import Formalism.LocalToGlobal.IndefiniteReal.FaceOf3
 import Formalism.LocalToGlobal.Divisibility.ColPins
 import Development.AbelianVarietyTheory.Definitions.Divisors.KerSizes
-import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FramesTildeGammaValuesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemberRowsOfKernelDatumSizesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemberRowsOfKernelDatumSizes
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLatticeOfEqSpanFracSmul
+
 open Module NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows GlobalTheory.ColRows
 open scoped ComplexOrder
 

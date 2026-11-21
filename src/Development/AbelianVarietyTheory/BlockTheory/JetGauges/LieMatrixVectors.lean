@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UpqRep
-import Formalism.FormalDegreeBessel.StatementG
 import Formalism.FormalDegreeBessel.FinalG
 
 open Matrix

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.VolSemiDirect
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.Assemble
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.LocallyCompactAdelicUnitary
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.DiscAll

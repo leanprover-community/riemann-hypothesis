@@ -1,6 +1,5 @@
 import Mathlib
 import ReciprocityTheory.GaloisValuations.GlobalA
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsIntEKMulVbar
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.GalBasic
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtD
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtE

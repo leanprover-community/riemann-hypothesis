@@ -1,7 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactSpaceAxis
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EisensteinResidueLine
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeightFunctionScalingParabolicStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeightFunctionScalingParabolic
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviNormalizesUnipotentRadicalBisStatement
 
 open scoped TensorProduct NNReal ENNReal Matrix

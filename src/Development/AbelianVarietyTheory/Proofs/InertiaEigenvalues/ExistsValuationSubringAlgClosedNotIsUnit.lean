@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped NNReal
 
 namespace GlobalTheory
@@ -49,3 +51,9 @@ theorem exists_valuationSubring_not_isUnit_and_nonZeroDivisors_ne_zero :
       ((hg s).1 h1) hs
 
 end GlobalTheory
+end
+
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_valuationSubring_algClosed_not_isUnit : ∀ (S : Type) [CommRing S] (u : S), ¬ IsUnit u → ∃ (L : Type) (_ : Field L) (_ : IsAlgClosed L) (V : ValuationSubring L) (f : S →+* ↥V), ¬ IsUnit (f u) ∧ ∀ s ∈ nonZeroDivisors S, f s ≠ 0 := by
+  atlas_forward_decl GlobalTheory.exists_valuationSubring_not_isUnit_and_nonZeroDivisors_ne_zero

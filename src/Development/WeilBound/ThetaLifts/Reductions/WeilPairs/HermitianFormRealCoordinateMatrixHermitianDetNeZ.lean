@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.ImportsBis
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.ContinuousTheta
 open scoped TensorProduct Matrix BoundedContinuousFunction ContDiff
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF MeasureTheory Matrix GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels

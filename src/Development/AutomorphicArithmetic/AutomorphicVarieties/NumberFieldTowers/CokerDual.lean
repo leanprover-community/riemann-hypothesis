@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.XTwApplyApply
 import Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.DualKer
 import Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.LenDual
 

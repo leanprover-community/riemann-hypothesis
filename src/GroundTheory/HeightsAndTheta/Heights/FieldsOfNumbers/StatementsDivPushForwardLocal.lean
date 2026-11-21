@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsExamples
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivPushForward
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContractedDim
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PRelevantPrimeDimGe

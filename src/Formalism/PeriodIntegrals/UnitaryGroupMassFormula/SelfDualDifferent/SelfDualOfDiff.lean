@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.SelfDualOfDiff
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SelfDualDifferent.Imports
 
 noncomputable section

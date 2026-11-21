@@ -1,6 +1,4 @@
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
 import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PushAFinsumInter
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PushBForward
 
 namespace ReciprocityTheory.AnForm.M

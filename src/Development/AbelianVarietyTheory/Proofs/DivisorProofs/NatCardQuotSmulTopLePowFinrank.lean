@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 
 namespace GlobalTheory
@@ -44,3 +47,9 @@ theorem natCard_quot_smul_top_le_pow_finrank : ∀ (E : Type) [Field E] [NumberF
   exact pow_ne_zero _ hg.ne_zero
 
 end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.natCard_quot_smul_le_pow_finrank : ∀ (E : Type) [Field E] [NumberField E] (La : Type) [AddCommGroup La] [Module (𝓞 E) La], Module.Finite (𝓞 E) La → Module.Projective (𝓞 E) La → ∀ (I : Ideal (𝓞 E)) (g : ℕ), g.Prime → Ideal.absNorm I = g → Finite (La ⧸ I • (⊤ : Submodule (𝓞 E) La)) ∧ Nat.card (La ⧸ I • (⊤ : Submodule (𝓞 E) La)) ≤ g ^ Module.finrank (𝓞 E) La := by
+  atlas_forward_decl GlobalTheory.natCard_quot_smul_top_le_pow_finrank

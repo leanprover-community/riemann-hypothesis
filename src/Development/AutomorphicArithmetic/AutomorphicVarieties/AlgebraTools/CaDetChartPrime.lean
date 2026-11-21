@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CotInd
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.DetLocus
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaDetChartCot
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaPolyReg
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaCotQuot

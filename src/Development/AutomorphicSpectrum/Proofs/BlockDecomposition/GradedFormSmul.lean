@@ -1,7 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.GlobalSerreRelations.GlobSerreSt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StCocycle
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SheafFiltrationProperty
+import BuildAid.ForwardExisting
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
@@ -48,3 +50,10 @@ theorem stSmul : StSmul := by
   exact mul_mem_sFil_succ_of_mem_sFil_of_mem_J _ (hw _) (lft_str_sub _ (hP _ (s.obj (Fin.last r)).property) a (x I))
 
 end GlobalTheory.CompanionTheory.GrFormSmul
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_smul : GlobalTheory.CompanionTheory.GrForm.StSmul := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GrFormSmul.stSmul

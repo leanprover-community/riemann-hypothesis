@@ -1,4 +1,3 @@
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
 import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
 import ReciprocityTheory.AnalyticForms.PotentialTheory.LogInt
 import ReciprocityTheory.AnalyticForms.PotentialTheory.SNCAtlas

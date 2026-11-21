@@ -4,14 +4,13 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StabFiniteIndexOfSmooth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsStrictDom
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FormHeckeVecDosetInd
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SatakePowerNonvanishingStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SatakePowerNonvanishing
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NilpotentOfProjectionZero
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsDomMonoid
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CasselmanFirstPropertyStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCharacterExistsUniqueStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriUnipotentDatumStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCharacterExistsUnique
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriUnipotentDatum
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantUnipotentContractionStatement
 
+section
 open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct
 
 namespace GlobalTheory.CompanionTheory.JacSph
@@ -66,3 +65,9 @@ theorem jacNeU : JacNeU := by
     exact Submodule.zero_mem _
 
 end GlobalTheory.CompanionTheory.JacSph
+end
+
+open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_jacquet_nonzero : PositivityTheory.SphericalProduct.JacNeU := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.JacSph.jacNeU

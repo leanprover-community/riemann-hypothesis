@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.AuxiliaryPrimeNeTypePrime
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumCompLeSumOfInjOn
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRatios

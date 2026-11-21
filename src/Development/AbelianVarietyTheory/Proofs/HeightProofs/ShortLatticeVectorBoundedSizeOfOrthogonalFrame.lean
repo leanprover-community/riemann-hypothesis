@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
 import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsIntMulIsIntegralOfTrace
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.SmoothForms GlobalTheory.HermClass Module Submodule NumberField Matrix
 
 namespace GlobalTheory.SmoothForms.Short
@@ -354,3 +356,10 @@ theorem shortSmall (E : Type) [Field E] [NumberField E] [IsCMField E] (hfr : Fra
       _ = _ := by rw [hU, ← pow_mul, ← pow_add, ← pow_add]
 
 end GlobalTheory.SmoothForms.Short
+end
+
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shortLatticeVectorBoundedSize_of_orthogonalFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], FrameSmall E → ShortSmall E := by
+  atlas_forward_decl GlobalTheory.SmoothForms.Short.shortSmall

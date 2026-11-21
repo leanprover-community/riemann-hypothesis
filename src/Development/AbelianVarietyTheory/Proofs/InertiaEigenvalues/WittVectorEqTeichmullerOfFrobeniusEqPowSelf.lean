@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped NNReal
 
 namespace GlobalTheory
@@ -70,3 +72,9 @@ theorem wittVector_eq_teichmuller_of_frobenius_eq_pow :
   rw [hcoeff, zero_pow (pow_ne_zero _ (Fact.out : l.Prime).ne_zero)]
 
 end GlobalTheory
+end
+
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wittVector_eq_teichmuller_of_frobenius_eq_pow_self : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [CharP O l] [PerfectRing O l] (y : WittVector l O), WittVector.frobenius y = y ^ l → y = WittVector.teichmuller l (y.coeff 0) := by
+  atlas_forward_decl GlobalTheory.wittVector_eq_teichmuller_of_frobenius_eq_pow

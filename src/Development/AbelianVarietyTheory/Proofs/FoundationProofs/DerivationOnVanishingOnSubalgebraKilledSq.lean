@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsTrDataGaussianIntOne
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.AlmostEt
 
 namespace GlobalTheory.AlmostEt
@@ -54,3 +56,9 @@ theorem derOn_killed_sq : ∀ (A S M : Type) [CommRing A] [CommRing S] [Algebra 
   simpa using this
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.derivationOn_vanishing_on_subalgebra_killed_sq : ∀ (A S M : Type) [CommRing A] [CommRing S] [Algebra A S] [AddCommGroup M] [Module S M] (B C : Subalgebra A S) (tr : S → S) (n : ℕ) (a b : Fin n → S) (e : S), IsTrData B C tr a b e → ∀ D : S → M, IsDerOn C D → (∀ β ∈ B, D β = 0) → ∀ x ∈ C, (e * e) • D x = 0 := by
+  atlas_forward_decl GlobalTheory.AlmostEt.derOn_killed_sq

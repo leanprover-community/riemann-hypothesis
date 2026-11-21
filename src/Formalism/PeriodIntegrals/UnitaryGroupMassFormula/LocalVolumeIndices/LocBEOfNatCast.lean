@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataInst
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalVolumeIndices.LocLocGLInvVal
 
 noncomputable section

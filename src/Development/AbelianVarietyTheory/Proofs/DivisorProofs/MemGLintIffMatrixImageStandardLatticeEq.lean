@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.Statement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemMatLat
+import BuildAid.ForwardExisting
+
+section
 open Polynomial Matrix GlobalTheory.LatOrb
 
 namespace GlobalTheory.LatOrbGL
@@ -78,3 +81,10 @@ theorem GlobalTheory.LatOrb.mem_GLint_iff_matLat_std :
     refine ⟨⟨A, B, hAB, hBA⟩, ?_⟩
     ext i j
     rfl
+end
+
+open Polynomial Matrix GlobalTheory.LatOrb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_GLint_iff_matrixImage_standardLattice_eq : ∀ {K : Type} [Field K] (V : ValuationSubring K) (n : ℕ) (k : GL (Fin n) K),
+    k ∈ Formalism.UG.GLint (Fin n) V.toSubring ↔ matLat V k.val (stdLat V n) = stdLat V n := by
+  atlas_forward_decl GlobalTheory.LatOrb.mem_GLint_iff_matLat_std

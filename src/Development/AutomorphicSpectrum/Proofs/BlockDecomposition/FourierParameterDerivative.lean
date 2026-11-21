@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory
 
 namespace GlobalTheory.CompanionTheory.Analysis.OscPhase
@@ -43,3 +46,10 @@ theorem hasDerivAt_integral_oscillating_phase
   rwa [integral_const_mul] at hd
 
 end GlobalTheory.CompanionTheory.Analysis.OscPhase
+end
+
+open MeasureTheory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fourier_parameter_derivative : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (g : X → ℂ) (M : X → ℝ), Measurable M → Integrable g μ → Integrable (fun y => (M y : ℂ) * g y) μ → ∀ s : ℝ, HasDerivAt (fun t : ℝ => ∫ y, g y * Complex.exp (2 * Real.pi * Complex.I * ((t * M y : ℝ) : ℂ)) ∂μ) (2 * Real.pi * Complex.I * ∫ y, (M y : ℂ) * g y * Complex.exp (2 * Real.pi * Complex.I * ((s * M y : ℝ) : ℂ)) ∂μ) s := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Analysis.OscPhase.hasDerivAt_integral_oscillating_phase

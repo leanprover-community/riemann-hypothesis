@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.PAdicHodge.NormalizedTrace
 import GroundTheory.PAdicHodge.CyclotomicField
 set_option maxSynthPendingDepth 1
 

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsFlag
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.IsFlagIntegralOne
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagIntegralRealEqMulDdConst

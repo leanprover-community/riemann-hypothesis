@@ -1,6 +1,4 @@
-import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.Conclusion1OfGainBoundAll
 import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.TsumTruncatedShiftLe
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 import Development.AutomorphicArithmetic.OrbitLabellings.EvenAddOrderOfHPOfPowLe
 
 noncomputable section

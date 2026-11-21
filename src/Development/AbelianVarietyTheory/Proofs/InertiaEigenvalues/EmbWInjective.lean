@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NormLeOneOfMemOL
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOfLayers
 

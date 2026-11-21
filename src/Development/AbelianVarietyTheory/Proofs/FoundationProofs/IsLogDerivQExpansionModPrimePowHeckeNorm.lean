@@ -3,7 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsRootOfIsAl
 import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SubstUpperTriangularHahnMulAndOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaBasisLinearCombination
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.KZ GlobalTheory.CyclotomicQExpansion GlobalTheory.Glue GlobalTheory.ThAdd
@@ -299,3 +301,13 @@ theorem isDl_norm : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosed Ω]
     exact dv_norm ε l pa pb tφ (tx a ta) (tx b tb) c
 
 end GlobalTheory.NormDl
+end
+end
+
+open GlobalTheory.KZ GlobalTheory.CyclotomicQExpansion GlobalTheory.Glue
+open scoped MatrixGroups
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isLogDerivQExpansionModPrimePow_heckeNorm : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosed Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (A : ValuationSubring Ω) (l : ℕ) [Fact l.Prime] (n : ℕ) (f : X.K) (φ : HahnSeries ℚ Ω),
+  X.sl (ofSL ModularGroup.T) f = f → (∀ r : ℚ, φ.coeff r ≠ 0 → r.den = 1) → IsDl X A l n 1 f φ →
+  IsDl X A l n 1 (∏ j ∈ Finset.range l, X.sl (toGQ !![1, (j : ℤ); 0, (l : ℤ)]) f) (hq ε l φ) := by
+  atlas_forward_decl GlobalTheory.NormDl.isDl_norm

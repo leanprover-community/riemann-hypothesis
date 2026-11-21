@@ -1,9 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowsMeanC
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowsGenusWeightedSumComparisonStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BaseLatticeConstructionHoldsStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LatsDiscStable
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowsGenusWeightedSumComparison
+
+section
 noncomputable section
 open scoped Classical ENNReal
 open NumberField Formalism.HermitianLatticesTheory GlobalTheory.Mass
@@ -165,3 +163,9 @@ theorem rowsMean : RowsMeanC := by
   exact GlobalTheory.RowsMean.mass_le_orbMass _ _
 
 end GlobalTheory.TypeAsm
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowsMeanC_holds : GlobalTheory.TypeAsm.RowsMeanC := by
+  atlas_forward_decl GlobalTheory.TypeAsm.rowsMean

@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZeroMemSolSet
-import Formalism.UnipotentAdelicQuotients.EllRegCheck
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DwSmoothLocalLinear
+import BuildAid.ForwardExisting
 
+section
 open ZetaZeros.D.EllReg GlobalTheory.HCA MeasureTheory
 open scoped ContDiff BoundedContinuousFunction
 
@@ -136,3 +137,10 @@ theorem integral_mul_dw_eq_neg_pow : ∀ (d : ℕ) (U : Set (E d)), IsOpen U →
     simp [this]
 
 end GlobalTheory.HCA
+end
+
+open ZetaZeros.D.EllReg GlobalTheory.HCA MeasureTheory
+open scoped ContDiff BoundedContinuousFunction
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_mul_iterPartialDeriv_eq_neg_pow : ∀ (d : ℕ) (U : Set (E d)), IsOpen U → ∀ (w : List (Fin d)) (u φ : E d → ℂ), ContDiffOn ℝ ∞ u U → ContDiff ℝ ∞ φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x, u x * dw w φ x = (-1 : ℂ) ^ w.length * ∫ x, dw w u x * φ x := by
+  atlas_forward_decl GlobalTheory.HCA.integral_mul_dw_eq_neg_pow

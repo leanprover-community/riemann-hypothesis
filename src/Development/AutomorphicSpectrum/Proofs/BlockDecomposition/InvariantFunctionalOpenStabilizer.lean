@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Smooth
 
 def linearFormStabiliser {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
@@ -30,3 +32,8 @@ theorem isOpen_linearForm_stabiliser {G V : Type} [Group G] [TopologicalSpace G]
   Subgroup.isOpen_mono (H₁ := K) (H₂ := linearFormStabiliser ρ l) (fun x hx => hl x hx) hK
 
 end GlobalTheory.CompanionTheory.Smooth
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invariant_functional_open_stabilizer : ∀ {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) (K : Subgroup G), IsOpen (K : Set G) → ∀ l : Module.Dual ℂ V, (∀ x ∈ K, l ∘ₗ ρ x = l) → IsOpen {g : G | l ∘ₗ ρ g = l} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Smooth.isOpen_linearForm_stabiliser

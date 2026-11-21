@@ -3,12 +3,13 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenUse
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HypothesesX
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EventuallyConjunctionMono
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TypeNonzeroOfHoweUnramifiedStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CoefficientDutyTiedAllStatesStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CoefficientDutyTiedAllStates
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.JointCondThird
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseChangeDefiniteUnitaryStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseChangeDefiniteUnitary
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SeriesLocalOfHypothesisStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdmissibleAndLamUsedAllStatesStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdmissibleAndLamUsedAllStates
 
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.IndefR.NX ReciprocityTheory.Aut Formalism.AUTREP NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -36,3 +37,10 @@ theorem inputs_at_third : ∀ hL : GlobalTheory.Published.LocalLanglandsGL, PrN 
     GlobalTheory.T.type_nonzero_of_howe_unramified hP.decay hP.howe hX D' T.P.cf T.P.C T.P.tp T.X⟩⟩⟩
 
 end GlobalTheory.PtInputsX
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.IndefR.NX ReciprocityTheory.Aut Formalism.AUTREP NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coefficient_duty_inputs_all_states : ∀ hL : GlobalTheory.Published.LocalLanglandsGL, PrN → GlobalTheory.NRows.HypothesesX → AllSt fun _ _ _ _ _ _ x => ∀ l : LC hL x, GlobalTheory.CoefDuty.EvO l.a.A l.mt.M l.c.ch l.c.tp.tup fun D' => SumRepresentations.hypO D' → Nonempty (GlobalTheory.NRows.Inputs hL D') := by
+  atlas_forward_decl GlobalTheory.PtInputsX.inputs_at_third

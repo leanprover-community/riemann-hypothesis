@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsFirstChernClassOfLineBundle
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.RestrictedMultiplicativeH1Subsingleton
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.NeedB Polynomial
 
 namespace GlobalTheory
@@ -27,3 +29,10 @@ theorem hilbert90_locallyConstant_cocycle :
   simpa [div_eq_mul_inv] using this
 
 end GlobalTheory
+end
+
+open GlobalTheory.NeedB Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_eq_div_of_locallyConstant_cocycle : ∀ (K Ω : Type) [Field K] [CharZero K] [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω] (w : (Ω ≃ₐ[K] Ω) → Ωˣ),
+  IsLocallyConstant w → (∀ g h, ((w (g * h) : Ωˣ) : Ω) = w g * g (w h)) → ∃ t : Ωˣ, ∀ g, ((w g : Ωˣ) : Ω) = g t / t := by
+  atlas_forward_decl GlobalTheory.hilbert90_locallyConstant_cocycle

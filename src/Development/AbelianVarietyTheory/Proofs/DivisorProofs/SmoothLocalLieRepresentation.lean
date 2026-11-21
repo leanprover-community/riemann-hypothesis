@@ -1,13 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemNilRad
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.PolarConjTranspose
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.HasSmoothLogNearOneOfIsUnitaryLieExpData
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothInExponentialCoordsIffFirstSecondKind
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.RightDerivativeAlongLieSmoothAndLinear
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.RightDerivativeAlongLieCommutatorEqBracket
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLieGeneratorsRep
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsSigmaList
 
+section
 noncomputable section
 
 open Matrix GlobalTheory.TorFin GlobalTheory.SmoothForms
@@ -142,3 +136,12 @@ theorem exists_rightDer_rep : ∀ (n : ℕ) (G : Type) [Group G] (J : Matrix (Fi
   exact hasDerivAt_derL hJ hu hs ⟨Z, hZ⟩ φ g t
 
 end GlobalTheory.TorFin
+end
+end
+
+open Matrix GlobalTheory.TorFin
+open scoped ContDiff
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_local_lie_representation : ∀ (n : ℕ) (G : Type) [Group G] (J : Matrix (Fin n) (Fin n) ℂ) (s : Matrix (Fin n) (Fin n) ℂ → G), Jᴴ = J → IsUnit J.det → IsMulOn J s → ∃ ρ : Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] Module.End ℂ (smLoc J s), IsLieRep ρ ∧ IsRightDer J s ρ := by
+  atlas_forward_decl GlobalTheory.TorFin.exists_rightDer_rep

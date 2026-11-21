@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct
 
 namespace GlobalTheory.TorsionCount
@@ -139,3 +141,8 @@ theorem torsion_card : ∀ (R : Type) [CommRing R] [IsDedekindDomain R] (M : Typ
   exact ⟨Finite.of_surjective h hsurj, (Nat.card_le_card_of_surjective h hsurj).trans hcard.le⟩
 
 end GlobalTheory.TorsionCount
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_card_torsion_quot_smul_top_le_pow_finrank : ∀ (R : Type) [CommRing R] [IsDedekindDomain R] (M : Type) [AddCommGroup M] [Module R M] [Module.Finite R M] [Module.Projective R M] (I J : Ideal R), I.IsMaximal → Finite (R ⧸ I) → J ≠ ⊥ → Finite {y : M ⧸ J • (⊤ : Submodule R M) // ∀ a ∈ I, a • y = 0} ∧ Nat.card {y : M ⧸ J • (⊤ : Submodule R M) // ∀ a ∈ I, a • y = 0} ≤ Nat.card (R ⧸ I) ^ Module.finrank R M := by
+  atlas_forward_decl GlobalTheory.TorsionCount.torsion_card

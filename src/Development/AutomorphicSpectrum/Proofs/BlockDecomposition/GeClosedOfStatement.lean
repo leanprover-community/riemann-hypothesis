@@ -7,7 +7,9 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsPullbackOfKer
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubobjectLeIffAffineSections
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuasicoherentSupSections
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdealPowerSubobjectSections
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -428,3 +430,10 @@ theorem geClosed_of_statement :
 end Main
 
 end GlobalTheory.CompanionTheory.GE.Close
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.geClosed_of_statement_bot : (∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R), IsAdicComplete I R → ∀ (X : Scheme.{0}) [X.Over (Spec (.of R))] [IsSeparated (X ↘ Spec (.of R))] [LocallyOfFiniteType (X ↘ Spec (.of R))] [QuasiCompact (X ↘ Spec (.of R))], Statement I (⊥ : X.IdealSheafData)) → PositivityTheory.FormalThickening.GEClosed := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.Close.geClosed_of_statement

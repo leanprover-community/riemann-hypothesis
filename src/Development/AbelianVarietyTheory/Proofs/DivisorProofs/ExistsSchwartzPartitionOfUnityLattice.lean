@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSmoothPeriodicPartitionOfUnity
+import BuildAid.ForwardExisting
+
+section
 open scoped ContDiff Topology
 
 namespace GlobalTheory.LatticeSumOne
@@ -97,3 +100,10 @@ theorem exists_schwartz_hasCompactSupport_latticeTranslates_sum_one :
   exact LatticeSumOne.exists_schwartz_lattice_sum_one Λ
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_schwartz_partition_of_unity_lattice : ∀ {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (Λ : Submodule ℤ V) [DiscreteTopology Λ] [IsZLattice ℝ Λ],
+    ∃ h : SchwartzMap V ℂ, HasCompactSupport h ∧ ∀ x : V, HasSum (fun l : Λ => h (x + l)) 1 := by
+  atlas_forward_decl GlobalTheory.exists_schwartz_hasCompactSupport_latticeTranslates_sum_one

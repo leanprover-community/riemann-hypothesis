@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
@@ -172,3 +174,10 @@ theorem testK : StdGood → BdetLaw → TestFun → TestK := by
   · exact hone
 
 end GlobalTheory.CompanionTheory.EisTestK
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.test_function_spherical_K : StdGood → BdetLaw → TestFun → TestK := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EisTestK.testK

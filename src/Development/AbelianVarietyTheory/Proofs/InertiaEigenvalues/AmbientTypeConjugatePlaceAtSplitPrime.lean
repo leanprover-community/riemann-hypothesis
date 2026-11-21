@@ -2,8 +2,9 @@ import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.EmbeddingTypes
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.SplitPlaceTypes
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitRowAt
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EmbTypeUeIffLocalEmbeddingInCMHalfTypeStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EmbTypeUeIffLocalEmbeddingInCMHalfType
 
+section
 open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.IndefiniteRowSideFullHecke.SplitPlaceTypes
 
@@ -25,3 +26,9 @@ theorem ambTypeD_of_splitRow : ∀ (D : D7) (i : D.nd.Loc) (ep : Bool),
     exact h2 u hu τ ⟨hUin τ, hpu.2 τ⟩
 
 end GlobalTheory.TypeConjSplit
+end
+
+open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ambientType_conjugatePlace_at_splitPrime : ∀ (D : D7) (i : D.nd.Loc) (ep : Bool), GlobalTheory.IndefiniteRowSideFullHecke.SplitPlaceTypes.SplitRowPrime D.host (D.nd.l i) → EmbeddingTypes.ambTypeD (D := D) i ep := by
+  atlas_forward_decl GlobalTheory.TypeConjSplit.ambTypeD_of_splitRow

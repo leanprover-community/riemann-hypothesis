@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchLift
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchContainsNormalPoint
 set_option maxSynthPendingDepth 1

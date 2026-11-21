@@ -1,10 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MeasurePreservingMulRight
-import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.StepUnfold
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsDefiniteOfAllPlus
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairwiseFlatMapBand
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsHCTypeWConj
-import Development.AbelianVarietyTheory.Definitions.Foundations.StrictInterlaceIffDescEnum
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open GlobalTheory.ChiGrid GlobalTheory.RowReal GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries
 open scoped TensorProduct Matrix
@@ -115,3 +115,12 @@ theorem hw_basePar_eq_neg_lowK : ∀ (D : D7) (C : ℝ)
   ring
 
 end GlobalTheory.RowReal
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
+open GlobalTheory.ChiGrid GlobalTheory.RowReal GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries
+open scoped TensorProduct Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.highestWeight_basePar_eq_neg_lowestKType : ∀ (D : D7) (C : ℝ) (M : Formalism.IndefR.Mult.DSModel D.sp.X' (Formalism.IndefR.Mult.parB (Ptw D) D.R.m)) (τ : D.what₂.Tau) (i : Fin D.sp.X'.rank), (hw (rowEntries D C τ).basePar i : ℝ) = -(Formalism.QuantumDeterminants.lowK (M.ε τ) (M.lam τ)) (Fin.rev i) := by
+  atlas_forward_decl GlobalTheory.RowReal.hw_basePar_eq_neg_lowK

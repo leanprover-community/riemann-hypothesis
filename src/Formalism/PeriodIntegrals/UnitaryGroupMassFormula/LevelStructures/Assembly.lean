@@ -2,7 +2,6 @@ import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.InLevelSAtOfParts
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.KSpTop
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.CMInst
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.FrameStd
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.LatAdapted
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.ProdNH
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.GlobFromParts
@@ -10,7 +9,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.EvalVOp
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.UnipotentIntegralInLevel
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.PsiVMulVec
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.LevelKSplit
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Volumes
 
 noncomputable section
 

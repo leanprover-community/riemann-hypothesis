@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.Rigid0
 import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.TanDet
 import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.NormCob
 import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.AdRepBaseLiftApply

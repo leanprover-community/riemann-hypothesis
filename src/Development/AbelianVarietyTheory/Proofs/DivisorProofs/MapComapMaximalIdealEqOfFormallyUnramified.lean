@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open IsLocalRing
 
 namespace GlobalTheory
@@ -45,3 +47,8 @@ theorem map_comap_maximalIdeal_eq_of_formallyUnramified
   exact h
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.map_comap_maximalIdeal_eq_of_formallyUnramified' : ∀ (A B : Type) [CommRing A] [CommRing B] [IsLocalRing B] [Algebra A B] [Algebra.FormallyUnramified A B] [Algebra.EssFiniteType A B], ((IsLocalRing.maximalIdeal B).comap (algebraMap A B)).map (algebraMap A B) = IsLocalRing.maximalIdeal B := by
+  atlas_forward_decl GlobalTheory.map_comap_maximalIdeal_eq_of_formallyUnramified

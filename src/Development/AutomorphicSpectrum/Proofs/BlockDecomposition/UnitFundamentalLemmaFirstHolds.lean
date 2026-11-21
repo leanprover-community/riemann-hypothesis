@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Polynomial PositivityTheory.Rg.Tf.Loc
 open scoped ENNReal
 
@@ -552,3 +554,8 @@ theorem unit_fundamental_lemma_first : D0a → T0 → A1 → A2 → A3 → N4 �
 end
 
 end GlobalTheory.CompanionTheory.UnitFL
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unit_fundamental_lemma_first_holds : PositivityTheory.Rg.Tf.Loc.D0a → PositivityTheory.Rg.Tf.Loc.T0 → PositivityTheory.Rg.Tf.Loc.A1 → PositivityTheory.Rg.Tf.Loc.A2 → PositivityTheory.Rg.Tf.Loc.A3 → PositivityTheory.Rg.Tf.Loc.N4 → PositivityTheory.Rg.Tf.Loc.L2 → PositivityTheory.Rg.Tf.Loc.L3 → PositivityTheory.Rg.Tf.Loc.L4 → PositivityTheory.Rg.Tf.Loc.H2 → PositivityTheory.Rg.Tf.Loc.H3 → PositivityTheory.Rg.Tf.Loc.H4 → PositivityTheory.Rg.Tf.Loc.Z1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnitFL.unit_fundamental_lemma_first

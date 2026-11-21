@@ -1,4 +1,3 @@
-import Formalism.RealPlaceAnalysis.StatementE
 import Formalism.FormalDegreeBessel.StatementDS
 
 noncomputable section

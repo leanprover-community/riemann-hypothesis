@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.AlmostEt
 open scoped NNReal
 
@@ -25,3 +28,10 @@ theorem exists_surj_hom_zmod_of_isPGroup :
   exact e.surjective.comp (QuotientGroup.mk'_surjective K)
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_surjective_hom_zmod_of_isPGroup : ∀ (p : ℕ) [Fact p.Prime] (G : Type) [Group G] [Finite G] [Nontrivial G], IsPGroup p G → ∃ χ : G →* Multiplicative (ZMod p), Function.Surjective χ := by
+  atlas_forward_decl GlobalTheory.AlmostEt.exists_surj_hom_zmod_of_isPGroup

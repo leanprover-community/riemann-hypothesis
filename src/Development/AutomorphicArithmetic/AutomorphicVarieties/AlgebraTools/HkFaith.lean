@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HkDefs
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.SwapOne
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HkDedekind
 

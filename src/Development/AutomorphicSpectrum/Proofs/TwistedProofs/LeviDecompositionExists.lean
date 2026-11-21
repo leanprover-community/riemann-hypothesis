@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl GlobalTheory.InertZeta
@@ -127,3 +129,9 @@ theorem leviExists : LeviExists := by
 end GlobalTheory.CompanionTheory.InertLevi
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_decomposition_exists : LeviExists := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertLevi.leviExists

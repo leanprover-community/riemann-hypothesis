@@ -2,32 +2,25 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Jets.ExistsSecTieFOfTies
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
-import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
-import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
-import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.OEOsInjective
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.RPfVal
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SpanResCharNeBot
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ConjugateMinimaInstance
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GramSpace
-import Formalism.SharpRestriction.Divisibility.WeightAlgebra
-import Formalism.LocalToGlobal.ProjectiveLattices.DepRun
 import Formalism.LocalToGlobal.ProjectiveLattices.RegXInst
 import Formalism.LocalToGlobal.ProjectiveLattices.Adm3OfExtension
 import Formalism.LocalToGlobal.ProjectiveLattices.ExistsParameterConditions
-import Formalism.LocalToGlobal.ProjectiveLattices.DepthTie
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.TheoremZeroSplitOfLocalAndSum
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.StarRingExtOfStar
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NumericalConsequencesOfPins
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ThetaGeneratorsLeastValueOverLevelPrimeStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsProductDataCopiesTrivialisationValuation
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HalfPrincipalAndSplit
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SplitsInLevelPrime
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WeightOnDatum
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.EmbEqOfInPsi
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ThetaDepthLeScaledRuleValue
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsShortBasisUniformizationLattice
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniformisedModelIntegralChartAtPointStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniformisedModelIntegralChartAtPoint
 
+section
 set_option autoImplicit false
 noncomputable section
 open AlgebraicGeometry CategoryTheory NumberField IsLocalRing IsDedekindDomain
@@ -222,3 +215,13 @@ theorem depth_le_over_level : (∀ (p : ℕ) [Fact p.Prime], Pdiv.ChartF.HTFSt p
       simp
 
 end GlobalTheory.DepthOverLevel
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField IsLocalRing IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.MainNotions.Gaps.EtaleWeightGaps
+open GlobalTheory.PtTie
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaLatticeDepth_le_at_places_over_level : (∀ (p : ℕ) [Fact p.Prime], Pdiv.ChartF.HTFSt p) → ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (hinj : Function.Injective D.what₂.OtoLL) (EX : ErrX D) (w : WeightFamilies.Wt D j) (c : ℝ), Oriented T EX → RunNum D w c → ∀ (la : HeightOneSpectrum (𝓞 T.Q.c.F)) (i : Fin 2), ((D.host.g i : ℕ) : 𝓞 T.Q.c.F) ∈ la.asIdeal → ∀ y : T.PtA j la, (recPJ h j hj).depth (sWt (recB h.toLawsCore) hinj EX w) w la y ≤ ((nusOf (recB h.toLawsCore) w (nuWt T w) la + c * (recPJ h j hj).phiC la y : ℝ) : EReal) := by
+  atlas_forward_decl GlobalTheory.DepthOverLevel.depth_le_over_level

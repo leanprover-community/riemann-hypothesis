@@ -1,4 +1,3 @@
-import Formalism.TorsionNormIteration.InvIntegralOfClass
 import Formalism.TorsionNormIteration.InverseIntegralClasses.SigmaNormLeOne
 
 noncomputable section

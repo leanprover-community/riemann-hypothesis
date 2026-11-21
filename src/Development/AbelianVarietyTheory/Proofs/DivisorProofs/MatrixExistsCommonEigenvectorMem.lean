@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DvdTraceOfBalancedTensor
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory
@@ -21,3 +23,9 @@ theorem matrix_exists_common_eigenvector_mem :
   exact ⟨l, by simpa [Matrix.toLin'_apply] using hl⟩
 
 end GlobalTheory
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_common_eigenvector_mem_of_commute : ∀ (K : Type) [Field K] [IsAlgClosed K] (n : ℕ) (S : Set (Matrix (Fin n) (Fin n) K)), (∀ A ∈ S, ∀ B ∈ S, Commute A B) → ∀ (E : Submodule K (Fin n → K)), E ≠ ⊥ → (∀ A ∈ S, ∀ v ∈ E, A *ᵥ v ∈ E) → ∃ v ∈ E, v ≠ 0 ∧ ∀ A ∈ S, ∃ μ : K, A *ᵥ v = μ • v := by
+  atlas_forward_decl GlobalTheory.matrix_exists_common_eigenvector_mem

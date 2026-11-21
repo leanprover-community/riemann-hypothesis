@@ -3,9 +3,10 @@ import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.ConvolutionS
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpectrumKFiniteDecomposition
 import Formalism.HarderNarasimhan.ShiftInvariance
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomain
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DiscreteSeriesKernelSummableWithBoundStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ContinuousAutomorphicKernelDiscreteSeriesTestStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DiscreteSeriesKernelSummableWithBound
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ContinuousAutomorphicKernelDiscreteSeriesTest
 
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec
 open scoped InnerProductSpace ComplexOrder ContDiff
 
@@ -86,3 +87,10 @@ theorem kernelA : KernelA := by
     exact kern_symm B.I (phe B d) (phe_inv B d hd) x y
 
 end GlobalTheory.KernelConv
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec
+open scoped InnerProductSpace ComplexOrder ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.automorphicKernel_convergence_properties : KernelA := by
+  atlas_forward_decl GlobalTheory.KernelConv.kernelA

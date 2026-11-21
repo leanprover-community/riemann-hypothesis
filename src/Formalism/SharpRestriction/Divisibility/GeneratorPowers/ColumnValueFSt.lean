@@ -1,5 +1,4 @@
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FramedFamilyStatement
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 
 set_option autoImplicit false
 

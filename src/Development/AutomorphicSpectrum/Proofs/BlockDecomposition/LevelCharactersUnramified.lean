@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GunrLevChars
@@ -153,3 +154,8 @@ theorem levChars : PositivityTheory.SiegelWeilFormula.Gunr.LevChars := by
 end GlobalTheory.CompanionTheory.GunrLevChars
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_characters_unramified : PositivityTheory.SiegelWeilFormula.Gunr.LevChars := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrLevChars.levChars

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Matrix
 
 namespace GlobalTheory.CompanionTheory.Topology
@@ -51,3 +54,9 @@ theorem exists_finset_transversal_of_isCompact_of_isOpen
     rw [hq]
 
 end GlobalTheory.CompanionTheory.Topology
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_coset_reps_open_in_compact : ∀ (X : Type) [AddCommGroup X] [TopologicalSpace X] [IsTopologicalAddGroup X] (A L : AddSubgroup X), IsCompact (A : Set X) → IsOpen (L : Set X) → L ≤ A → ∃ T : Finset X, (∀ t ∈ T, t ∈ A) ∧ (∀ a ∈ A, ∃! t, t ∈ T ∧ a - t ∈ L) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Topology.exists_finset_transversal_of_isCompact_of_isOpen

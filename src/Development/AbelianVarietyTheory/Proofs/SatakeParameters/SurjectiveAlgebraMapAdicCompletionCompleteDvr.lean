@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.EqZeroOfForallLeExp
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain WithZero
 
 namespace GlobalTheory.DenseCompl
@@ -72,3 +74,9 @@ theorem surjective_algebraMap_adicCompletion : ∀ {W Qq : Type} [CommRing W] [I
   rw [map_div₀, map_pow, ← hL, ← hpdef, mul_div_cancel_right₀ _ (pow_ne_zero _ hp0)]
 
 end GlobalTheory.DenseCompl
+end
+
+open NumberField IsDedekindDomain WithZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.surjective_algebraMap_adicCompletion_complete_dvr : ∀ {W Qq : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq] [Algebra W Qq] [IsFractionRing W Qq] (π : W) (hπ : Irreducible π) (hc : IsAdicComplete (Ideal.span {π}) W) (v : HeightOneSpectrum W), Function.Surjective (algebraMap Qq (v.adicCompletion Qq)) := by
+  atlas_forward_decl GlobalTheory.DenseCompl.surjective_algebraMap_adicCompletion

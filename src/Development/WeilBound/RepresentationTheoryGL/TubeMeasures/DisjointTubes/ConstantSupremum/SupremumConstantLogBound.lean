@@ -1,8 +1,8 @@
 import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.ConstantSupremum.Imports
-import Development.AbelianVarietyTheory.Definitions.Divisors.UnifOfSpaceEq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SupremumConstantLogBound
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogFundamentalDomainVolumeLeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FundamentalDomainVolumeLowerStatement
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogFundamentalDomainVolumeLe
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FundamentalDomainVolumeLower
 
 noncomputable section
 

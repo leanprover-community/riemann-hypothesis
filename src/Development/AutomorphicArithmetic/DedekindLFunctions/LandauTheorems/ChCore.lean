@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.DedekindLFunctions.SplitInertia
 import Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.ChBalance
 
 open Finset

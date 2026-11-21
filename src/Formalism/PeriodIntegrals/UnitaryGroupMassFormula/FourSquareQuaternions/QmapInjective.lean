@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.KerIso
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FourSquareQuaternions.FourSqOf
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FourSquareQuaternions.QuatMatTransposeMul
 

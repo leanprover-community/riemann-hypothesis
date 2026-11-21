@@ -6,6 +6,7 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JumpIffMultNeZ
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineSummandAndDualFromInverseCharacterTwi
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmDecompIffDecompStatement
 
+section
 open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
 namespace GlobalTheory.AdmReadBridge
@@ -41,3 +42,9 @@ theorem main : ∀ D : D7, AdmissibleParameterJ.AdmRead D := by
     exact ⟨hw'.1, hw'.2, jm _ a, jm _ a⟩
 
 end GlobalTheory.AdmReadBridge
+end
+
+open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodgeTateJumpsReading_rowAdm : ∀ D : D7, AdmissibleParameterJ.AdmRead D := by
+  atlas_forward_decl GlobalTheory.AdmReadBridge.main

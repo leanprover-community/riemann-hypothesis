@@ -1,5 +1,6 @@
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SelfMemSpanK
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormLeOneOfSumSqLtOne
+
+section
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspQuot GlobalTheory.AutGrowth MeasureTheory Filter Topology
 
 noncomputable section
@@ -108,3 +109,10 @@ theorem smoothing_rt_Kinf (E : Type) [Field E] [NumberField E] [IsTotallyComplex
     rw [Matrix.mul_assoc _ (star _), Matrix.UnitaryGroup.star_mul_self, Matrix.mul_one]
 
 end GlobalTheory.AutGrowth
+end
+end
+
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspQuot GlobalTheory.AutGrowth MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smoothing_right_translate_maxCompact : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (ν : Measure (Lie E a)) [ν.IsAddHaarMeasure] (α : Lie E a → ℂ), KInv α → ∀ (ψ : GA E a → ℂ) (k : Kinf E a) (g : GA E a), smoothing ν α (fun x => ψ (x * infGL E a (Unitary.toUnits k))) g = smoothing ν α ψ (g * infGL E a (Unitary.toUnits k)) := by
+  atlas_forward_decl GlobalTheory.AutGrowth.smoothing_rt_Kinf

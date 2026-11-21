@@ -3,6 +3,8 @@ import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCycli
 import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.DiscreteSeriesInfinitesimalCharacter
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HolomorphicDiscreteSeries
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CompactFiniteAdelesAwayPBoundedDenominators
+
+section
 open Matrix GlobalTheory.HolDS
 open Formalism.REAL (GlRel IsUnitary IsWeight KHighest root Jm inG)
 open Formalism.QuantumDeterminants (lowK IsHCParam)
@@ -18,3 +20,15 @@ theorem kModExists_holds : CompanionTheory.D.LK.KModExists :=
     CompanionTheory.D.DSIC.hStabLink CompanionTheory.D.DSIC.hHWofType CompanionTheory.D.DSIC.hTypeOfHW
 
 end GlobalTheory.CompanionTheory.KModExistsStep
+end
+
+open Matrix GlobalTheory.HolDS
+open Formalism.REAL (GlRel IsUnitary IsWeight KHighest root Jm inG)
+open Formalism.QuantumDeterminants (lowK IsHCParam)
+open Formalism.MainNotions.S (IsURepOn IsIrredOn UJset IsKFin IsKTypeOf IsKStableOn IsDS lowKSub vNormSq)
+open CompanionTheory.D.DSIC (KRel KUnit KStab IsSmMod)
+open CompanionTheory.D.LK (IsKMod IsMin)
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_kFiniteModule_irreducible_unitary : CompanionTheory.D.LK.KModExists := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KModExistsStep.kModExists_holds

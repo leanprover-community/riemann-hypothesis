@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementJ
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OutsideSystemsBound
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.AxiomsFromFamilies
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChebyshevToThreshold

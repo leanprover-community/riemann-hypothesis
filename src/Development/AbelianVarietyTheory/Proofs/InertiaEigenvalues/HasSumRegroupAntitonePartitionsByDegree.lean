@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SchurEqJtDet
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.JSW
@@ -45,3 +47,13 @@ example : ∀ {m : ℕ} (G : (Fin m → ℕ) → ℂ),
   fun G hG => regroup_antiParts G hG
 
 end GlobalTheory.JSW
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasSum_regroup_antitonePartitions_by_degree : ∀ {m : ℕ} (G : (Fin m → ℕ) → ℂ),
+    (Summable fun l : {l : Fin m → ℕ // Antitone l} => ‖G l.1‖) →
+    Summable (fun d => ‖∑ l ∈ GlobalTheory.JSW.antiParts m d, G l‖) ∧
+    ∀ s, HasSum (fun d => ∑ l ∈ GlobalTheory.JSW.antiParts m d, G l) s →
+      HasSum (fun l : {l : Fin m → ℕ // Antitone l} => G l.1) s := by
+  atlas_forward_decl GlobalTheory.JSW.regroup_antiParts

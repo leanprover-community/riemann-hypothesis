@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MirabolicBound.Development
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MirabolicBound.LastRowMul
 
 namespace PI.GGMirBoundW

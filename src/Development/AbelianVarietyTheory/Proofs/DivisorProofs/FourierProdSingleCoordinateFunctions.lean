@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbAApply
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegrableMonomialMulConjComplexGaussian
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory
 open scoped RealInnerProductSpace FourierTransform
 
@@ -19,3 +22,10 @@ theorem fourier_prod_coord_complex (I : Type) [Fintype I] (f : I → ℂ → ℂ
     Complex.ofReal_sum, Finset.sum_mul]
 
 end GlobalTheory
+end
+
+open NumberField MeasureTheory
+open scoped RealInnerProductSpace FourierTransform
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fourier_prod_single_coordinate_functions : ∀ (I : Type) [Fintype I] (f : I → ℂ → ℂ), (∀ i, Integrable (f i)) → ∀ l : EuclideanSpace ℂ I, 𝓕 (fun w : EuclideanSpace ℂ I => ∏ i, f i (w i)) l = ∏ i, 𝓕 (f i) (l i) := by
+  atlas_forward_decl GlobalTheory.fourier_prod_coord_complex

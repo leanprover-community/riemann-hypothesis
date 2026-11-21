@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsLv
+
+section
 open scoped TensorProduct NNReal ENNReal Matrix
 open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.UAut GlobalTheory.EisLine GlobalTheory.SphEis
 open GlobalTheory.ResLine (IsHt SemiLat)
@@ -18,3 +20,14 @@ theorem compact_inter_ratPts_finite : ∀ (F E : Type) [Field F] [NumberField F]
     (IsDiscrete.mono (isDiscrete_iff_discreteTopology.2 hd) Set.inter_subset_right)
 
 end GlobalTheory.SphEis
+end
+
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.UAut GlobalTheory.EisLine GlobalTheory.SphEis
+open GlobalTheory.ResLine (IsHt SemiLat)
+open GlobalTheory.Doubling (absE npow)
+open Formalism.UG (cT bc)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_compact_inter_unitaryRationalPoints : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (K : Set (GAd σ J)), IsCompact K → (K ∩ ratPts σ J).Finite := by
+  atlas_forward_decl GlobalTheory.SphEis.compact_inter_ratPts_finite

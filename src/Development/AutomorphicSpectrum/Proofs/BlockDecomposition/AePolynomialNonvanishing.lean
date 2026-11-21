@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory
 
 namespace GlobalTheory.CompanionTheory.AePoly
@@ -94,3 +97,9 @@ theorem ae_eval_matrix_ne_zero : ∀ (M n : ℕ) (Q : MvPolynomial (Fin M × Fin
   rwa [hfun] at hC
 
 end GlobalTheory.CompanionTheory.AePoly
+end
+
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ae_polynomial_nonvanishing : ∀ (M n : ℕ) (Q : MvPolynomial (Fin M × Fin n) ℂ), Q ≠ 0 → ∀ᵐ C ∂(volume : Measure (Fin M → Fin n → ℂ)), MvPolynomial.eval (fun p => C p.1 p.2) Q ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.AePoly.ae_eval_matrix_ne_zero

@@ -1,12 +1,12 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsReps
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitPlaceEmbeddingPropertiesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalComponentRationalIdeleStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalNormAtInertPlaceStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitPlaceEmbeddingProperties
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalComponentRationalIdele
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalNormAtInertPlace
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitWeilActionTorusEquivariant
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitInducedRepresentationHypothesis
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsStdInvAndTrivialAndNontrivial
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentIdealRat
+
+section
 open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
 open GroundTheory.Automorphic.GodementSection (localChar)
 open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
@@ -79,3 +79,19 @@ theorem fL_mul_norm_one : ∀ (K : Type) [Field K] [NumberField K], Module.finra
     ring
 
 end GlobalTheory.CompanionTheory.FexTheta.SplitNormOne
+end
+
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open Ad3.R (G2 Jd md KA LInv IsLoc2 pt pri dia2)
+open scoped NumberField.AdeleRing ValuativeRel
+open GroundTheory.Global.AdicLiesOver
+open GlobalTheory.CompanionTheory.FexTheta
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.split_coefficient_norm_one_twist : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ K = 2 → ∀ (c : HeckeCharacter K) (v : Pl) (L : LM c v),
+  L.ok → L.IsSp → ∀ (g : GL (Fin 2) (Qv v)) (ξ : K) (κ : Kˣ), κ ∈ K1 K → ∀ x : (Qv v)ˣ,
+    fL L g (ξ * κ) x * cW L κ = fL L g ξ (x * k1 L κ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FexTheta.SplitNormOne.fL_mul_norm_one

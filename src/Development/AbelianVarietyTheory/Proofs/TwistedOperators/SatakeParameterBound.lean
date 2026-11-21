@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormSatakeLeOfUn
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PowDvdOfHermMatEq
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeParameterGLStarEqInvOfUnitarisable
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeActsByScalarCommutative
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactUnitaryIntegralPoints
 
 noncomputable section
 

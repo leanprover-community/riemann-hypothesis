@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ChainTwist
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TwistEulerFactorsRestoreNormalizingFactor
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexBlockLevel
 
+section
 open NumberField MeasureTheory IsDedekindDomain UniqueFactorizationMonoid
 open scoped Classical Pointwise
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
@@ -141,3 +142,26 @@ theorem locIdx_mul_locNorm_mul_dSfun : ∀ (D : D7) (𝔪 : Ideal (𝓞 D.host.E
   linear_combination (GlobalTheory.LFun.dSfun D.host.E (Sf : Set (HeightOneSpectrum (𝓞 D.host.F))) a (a + a') s) * hmain
 
 end GlobalTheory.NormRatio
+end
+end
+
+open NumberField MeasureTheory IsDedekindDomain UniqueFactorizationMonoid
+open scoped Classical Pointwise
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
+open GlobalTheory.NormDict GlobalTheory.NormExact GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum
+open GlobalTheory.SqTop (modT)
+open GlobalTheory.BottomIPData (sfB)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl Lat IsFockVec IsSphOff volQ)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
+open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
+open GlobalTheory.StdLoc (glVol blockIdx)
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.NormRatio
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localIndex_localNorm_normalizingFactor_eq_partial : ∀ (D : D7) (𝔪 : Ideal (𝓞 D.host.E)) (Sf : Finset (FinPl D)), GoodMod D 𝔪 Sf → ∀ a a' : ℕ, 1 ≤ a' →
+  (locIdx D 𝔪 a a' : ℂ) * (locNorm D 𝔪 a a' : ℂ) * GlobalTheory.LFun.dSfun D.host.E (∅ : Set (FinPl D)) a (a + a') ((a' : ℂ) / 2) =
+    GlobalTheory.LFun.dSfun D.host.E (Sf : Set (FinPl D)) a (a + a') ((a' : ℂ) / 2) := by
+  atlas_forward_decl GlobalTheory.NormRatio.locIdx_mul_locNorm_mul_dSfun

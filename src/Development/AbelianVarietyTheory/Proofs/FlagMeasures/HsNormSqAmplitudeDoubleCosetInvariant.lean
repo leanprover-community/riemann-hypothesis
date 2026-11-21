@@ -1,15 +1,13 @@
 import Mathlib
-import Formalism.SharpRestriction.CuspSpanNormBounds.NormalizedLocalScale
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RootMeasureTransportDoubleCosetStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselAmplitudeIndependentOfQuotientMeasureStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselAmplitudeIndependentOfQuotientMeasure
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselRootMeasureIndependentOfChoicesStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HcTypeWIrreducibleAndSchurAverage
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesCharactersAgreeCommonStabiliser
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselCharacterUnipotentRadicalProperties
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsIsFolnerUWset
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentLevelZeroEqOne
 
+section
 open MeasureTheory Matrix Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf
 open scoped ENNReal InnerProductSpace
 
@@ -253,3 +251,10 @@ theorem hsNormSq_amp_doubleCoset : ∀ (D : D7) τ w w' θ (W : LocW D.R.k D.R.r
   exact hsNormSq_ampJ_translate (ae_mem_of_quot (fun x hx => hx.1.1) hG hH hν) _ hγ hu U V hU hV
 
 end GlobalTheory.AmpCoset
+end
+
+open MeasureTheory Matrix Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hsNormSq_amplitude_doubleCoset_invariant : ∀ (D : D7) τ w w' θ (W : LocW D.R.k D.R.rS) (A : LocS W), GoodW D τ w w' θ W → 0 < Tr D w → 0 < Tr D w' → IsSPsiEquiv W.z (psiS D W.z) W.π A.Φ → IsSPsiEquiv W.z' (psiS D W.z') W.π' A.Φ' → ContinuousOn A.Φ (UH (Hpk D.R.k D.R.rS)) → ContinuousOn A.Φ' (UH (Hpk D.R.k D.R.rS)) → ∀ (γ a a' : MatKR D.R.k D.R.rS) (p : Point ℂ (D.R.rS + 1)) (ν ν' : Measure (Mt D.R.k D.R.rS)), RelPt D W.z W.z' γ p → a ∈ Sset D.R.k D.R.rS W.z → a' ∈ Sset D.R.k D.R.rS W.z' → RMeas D W γ 1 ν → RMeas D W (a * γ * a'⁻¹) 1 ν' → hsNormSq (A.J ν' (a * γ * a'⁻¹)) = hsNormSq (A.J ν γ) := by
+  atlas_forward_decl GlobalTheory.AmpCoset.hsNormSq_amp_doubleCoset

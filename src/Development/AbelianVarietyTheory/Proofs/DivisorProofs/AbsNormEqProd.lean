@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OmegaFactorization
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KFacDifferentiable
 
 open NumberField Complex

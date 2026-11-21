@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneMemBand
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsNormRconvLeSiegel
-import GroundTheory.AutomorphicForms.ReductionSiegel
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
 open scoped ContDiff
 open scoped NumberField.AdeleRing
@@ -59,3 +61,15 @@ theorem norm_le_of_altSum_scaledUnipFD : ∀ (E : Type) [Field E] [NumberField E
   rwa [hH0] at h0
 
 end GlobalTheory.CuspTail
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidal_norm_le_of_alternatingSum_scaledUnipFD : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a r : ℕ), 0 < r → r < a →
+    ∀ φ : GA E a → ℂ, (∀ γ g, φ (ratGL E a γ * g) = φ g) → IsCuspidal φ → Continuous φ →
+    ∀ M : ℕ, 0 < M → ∀ (x : GA E a) (m : ℕ) (B : ℝ),
+      (∀ y : Fin m → BlockIx a r → Ad E, (∀ i, y i ∈ GroundTheory.Automorphic.scaledUnipFD E a r M) →
+        ‖∑ ε : Fin m → Bool, (GroundTheory.Automorphic.altSign ε : ℂ) * φ (unip (GroundTheory.Automorphic.altPoint y ε) * x)‖ ≤ B) →
+      ‖φ x‖ ≤ B := by
+  atlas_forward_decl GlobalTheory.CuspTail.norm_le_of_altSum_scaledUnipFD

@@ -1,5 +1,6 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeightedFejerPositivityStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeightedFejerPositivity
+
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology
 
 namespace GlobalTheory

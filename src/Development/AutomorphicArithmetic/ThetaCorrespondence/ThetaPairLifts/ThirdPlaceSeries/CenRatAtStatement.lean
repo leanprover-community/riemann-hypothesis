@@ -1,9 +1,5 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CentralRationalAtMemberStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ThetaDataExists
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NormChoiceOfExtension
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CenRatAt
-import Development.AutomorphicArithmetic.Foundations.LocalLanglands.IsRecTOfIsRec
 
 set_option synthInstance.maxHeartbeats 200000
 
@@ -12,5 +8,5 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.cenRat_at_members : ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ _ _ _ _ t _ _ _ => GlobalTheory.CenLocAt.CenRat t.r.Y t.r.z.cG := by
-  first | exact @_root_.GlobalTheory.CenRatAt.cenRat_at_alt | exact _root_.GlobalTheory.CenRatAt.cenRat_at_alt | (intros; apply _root_.GlobalTheory.CenRatAt.cenRat_at_alt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.CenRatAt.cenRat_at_alt
 end

@@ -2,6 +2,8 @@ import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LocalSystemQuotients.ResVq
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemBiInf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CohomologyRestrictionBetweenStableFamilies
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Ls CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.LsG CrystallineSemistableComparison.Pb.SubquotientResolution
 
@@ -126,3 +128,10 @@ theorem main : ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] [Pe
   exact (top_F q ρ m 𝒱 hU _ j).comp ((scQ_bij q ρ m {⊤} c j).comp (top_res q ρ m c j))
 
 end GlobalTheory.CompanionTheory.ZariskiStratumQuotient
+end
+end
+
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Ls CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.LsG CrystallineSemistableComparison.Pb.SubquotientResolution
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.witt_site_quotient_restrict_bijective : ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] [PerfectRing k l] {O : Type} [CommRing O] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k) (m : ℕ) (𝒱 : Set X.Opens) (c : WittVector l k), sSup 𝒱 = ⊤ → ∀ j, Function.Bijective ((resVq q ρ m 𝒱 c).pull j) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ZariskiStratumQuotient.main

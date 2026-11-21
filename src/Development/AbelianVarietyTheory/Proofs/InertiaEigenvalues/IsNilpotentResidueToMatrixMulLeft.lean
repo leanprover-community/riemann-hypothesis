@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Polynomial
 
 namespace GlobalTheory
@@ -55,3 +58,9 @@ theorem isNilpotent_residue_toMatrix_mulLeft : ∀ (R S : Type) [CommRing R] [Is
   exact ⟨_, (huNb.mul_left_eq_zero).1 hCH⟩
 
 end GlobalTheory
+end
+
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isNilpotent_residue_toMatrix_mulLeft' : ∀ (R S : Type) [CommRing R] [IsLocalRing R] [CommRing S] [IsLocalRing S] [Algebra R S] (n : ℕ) (b : Module.Basis (Fin n) R S) (t : S), t ∈ IsLocalRing.maximalIdeal S → IsNilpotent ((LinearMap.toMatrix b b (LinearMap.mulLeft R t)).map (IsLocalRing.residue R)) := by
+  atlas_forward_decl GlobalTheory.isNilpotent_residue_toMatrix_mulLeft

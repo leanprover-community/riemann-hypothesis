@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StandardInnerSingleNe
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ImportsRest
 import GroundTheory.HeightsAndTheta.Heights.ArithDegreeIdeal
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.AssemblyLines

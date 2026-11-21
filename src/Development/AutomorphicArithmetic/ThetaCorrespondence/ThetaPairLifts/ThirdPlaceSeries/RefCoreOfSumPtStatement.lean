@@ -1,7 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReferenceCoreOfSumPointStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LiftLambdaBound
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RefTheta
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RefCoreOfSumPt
 
 set_option synthInstance.maxHeartbeats 200000
@@ -13,5 +10,5 @@ open GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.SlopeRec GlobalTheory
 attribute [local instance] Over.cartesianMonoidalCategory
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.reference_core_of_size_and_sum_point : _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.RefSum.SumPtAlt → _root_.GlobalTheory.RefSum.ReferenceCore := by
-  first | exact @_root_.GlobalTheory.RefSum.refCore_of_size_sumPt | exact _root_.GlobalTheory.RefSum.refCore_of_size_sumPt | (intros; apply _root_.GlobalTheory.RefSum.refCore_of_size_sumPt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.RefSum.refCore_of_size_sumPt
 end

@@ -1,6 +1,5 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RingHomExtAdicCompletion
 import Development.AutomorphicArithmetic.Foundations.UnitarySphericalFixing.SatakeParameters.GoodLem
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsSplitPlace
 
 section
 noncomputable section

@@ -1,9 +1,9 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.HaarUniq
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.ConstTop
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.OrbitPushCut
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.OrbitPushI
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Filter Topology Matrix
@@ -306,3 +306,9 @@ theorem orbRepY : OrbRepY := by
     ENNReal.mul_inv_cancel hb0 hbt, mul_one]
 
 end GlobalTheory.HypOrbitUnique
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hyperboloid_invariant_measure_orbit_representation : PI.RhsWLim.W.OrbRepY := by
+  atlas_forward_decl GlobalTheory.HypOrbitUnique.orbRepY

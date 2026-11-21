@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemNilRad
+
+section
 open Matrix GlobalTheory.TorFin
 
 namespace GlobalTheory
@@ -60,3 +62,10 @@ theorem frame_first_column_first_row :
     simp [e, dotProduct_single]
 
 end GlobalTheory
+end
+
+open Matrix GlobalTheory.TorFin
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_completion_first_column : ∀ (m : ℕ) (v φ : Fin (m + 1) → ℂ), φ ⬝ᵥ v = 1 → ∃ P P' : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ, P * P' = 1 ∧ (∀ i, P i 0 = v i) ∧ ∀ j, P' 0 j = φ j := by
+  atlas_forward_decl GlobalTheory.frame_first_column_first_row

@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CotInd
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsRegularOfSupportDimQuotientAddLengthLe
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaCotQuot
 
 open IsLocalRing UpperTheory.V.AlgebraTools

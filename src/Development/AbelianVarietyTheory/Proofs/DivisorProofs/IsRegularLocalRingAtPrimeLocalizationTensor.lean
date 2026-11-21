@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing
 open scoped TensorProduct
 
@@ -42,3 +45,10 @@ theorem isRegularLocalRing_atPrime_localization_tensor : ∀ (k K : Type) [Field
       (Localization.AtPrime 𝔪) K).symm.toRingEquiv 𝔫
 
 end GlobalTheory
+end
+
+open IsLocalRing
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isRegularLocalRing_localization_atPrime_tensor_field : ∀ (k K : Type) [Field k] [Field K] [Algebra k K] (r : ℕ) (𝔪 : Ideal (MvPolynomial (Fin r) k)) [𝔪.IsPrime] (𝔫 : Ideal (Localization.AtPrime 𝔪 ⊗[k] K)) [𝔫.IsPrime], IsRegularLocalRing (Localization.AtPrime 𝔫) := by
+  atlas_forward_decl GlobalTheory.isRegularLocalRing_atPrime_localization_tensor

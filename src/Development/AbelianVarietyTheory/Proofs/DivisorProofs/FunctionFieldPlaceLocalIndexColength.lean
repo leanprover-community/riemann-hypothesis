@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsAdmissibleIntegralBasisChangeOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldPlaceOrderCalculusStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldPlaceIsDVRAndResidueEqGroundStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionFieldPlaceIsDVRAndResidueEqGround
 
+section
 open scoped IntermediateField Polynomial RatFunc
 open GlobalTheory.Nef
 
@@ -183,3 +183,12 @@ theorem GlobalTheory.Nef.local_index : ∀ (k F : Type) [Field k] [IsAlgClosed k
   obtain ⟨φ, hφ⟩ := exists_functional_inv_mulVec_integral_of_order v (GlobalTheory.T.functionFieldPlace_isDVR_and_residue_eq_ground k F hF v).2 n N h⁻¹ hd' hi hN
   rw [Matrix.nonsing_inv_nonsing_inv h (isUnit_iff_ne_zero.2 hd)] at hφ
   exact ⟨N, φ, by rw [← hN, h1], hφ⟩
+end
+
+open scoped IntermediateField Polynomial RatFunc
+open GlobalTheory.Nef
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.functionFieldPlace_local_index_colength : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZero k] [Field F] [Algebra k F], IsFF k F →
+  ∀ (v : Place k F) (n : ℕ) (h : Matrix (Fin n) (Fin n) F), h.det ≠ 0 → (∀ i j, v.1 (h⁻¹ i j) ≤ 1) → ∃ (N : ℕ) (φ : (Fin n → F) →ₗ[k] (Fin N → k)), (N : ℤ) = -ord v h.det ∧ ∀ x : Fin n → F, (∀ i, v.1 (x i) ≤ 1) → φ x = 0 → ∀ i, v.1 (h.mulVec x i) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.Nef.local_index

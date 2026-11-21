@@ -8,8 +8,10 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ImportsBisAlt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatAtIsCO
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EventuallyMapLatLocEqLatO
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EventuallyMulClosed
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHaarLatticeUnipotentIntegralStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHaarLatticeUnipotentIntegral
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsAddHaarTens
+
+section
 noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
@@ -177,3 +179,14 @@ theorem matchMono : PositivityTheory.PfSWUS.MatchMono := by
     exact congrArg (fun t => npow (absA D (Matrix.GeneralLinearGroup.det a)) ((V.rank : ℂ) - n) * t)
       (ifrB_eq_meanC D n V ν hS.hν _ μH 𝓕H hμH hF β hβ)
 end GlobalTheory.CompanionTheory.MM
+end
+end
+
+noncomputable section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matching_monomial : PositivityTheory.PfSWUS.MatchMono := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MM.matchMono

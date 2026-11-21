@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LevelKSplit
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.LevelSAllOfHL
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.HeisenbergParabolicAll
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.LeviPartAll

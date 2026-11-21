@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import BuildAid.ForwardExisting
 
+section
 open Formalism.REAL
 
 namespace GlobalTheory.CompanionTheory.Clozel
@@ -42,3 +44,9 @@ theorem multiset_eq_map_neg_conj_of_polyEq :
   exact Multiset.map_congr rfl fun z _ => by simp
 
 end GlobalTheory.CompanionTheory.Clozel
+end
+
+open Formalism.REAL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.multiset_conjugate_neg_of_prod : ∀ (n : ℕ) (m m' : Multiset ℂ), Multiset.card m = n → Multiset.card m' = n → (∀ u : ℂ, (m.map (u + ·)).prod = (starRingEnd ℂ) (((-1 : ℂ) ^ n) * (m'.map (-(starRingEnd ℂ) u + ·)).prod)) → m' = m.map fun z => -(starRingEnd ℂ) z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Clozel.multiset_eq_map_neg_conj_of_polyEq

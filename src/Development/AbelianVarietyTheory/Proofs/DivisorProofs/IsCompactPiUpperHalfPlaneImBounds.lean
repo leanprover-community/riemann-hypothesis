@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OmegaFactorization
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PartialZetaFunctionalEquation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KFacDifferentiable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffOnHeckeEisensteinFourierTerm
+import BuildAid.ForwardExisting
+
+section
 open NumberField Complex
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.HeckeTwo
@@ -32,3 +33,12 @@ theorem isCompact_pi_upperHalfPlane_im_bounds :
   · exact (Finset.inf'_le _ (Finset.mem_univ i)).trans (hmle i z hz)
 
 end GlobalTheory
+end
+
+open NumberField Complex
+open scoped nonZeroDivisors ContDiff
+open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.HeckeTwo
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_im_bounds_of_isCompact_upperHalfPlane : ∀ (ι : Type) [Fintype ι] (L : Set (ι → ℂ)), IsCompact L → (∀ z ∈ L, ∀ i, 0 < (z i).im) →
+    ∃ c c' : ℝ, 0 < c ∧ ∀ z ∈ L, ∀ i, c ≤ (z i).im ∧ (z i).im ≤ c' := by
+  atlas_forward_decl GlobalTheory.isCompact_pi_upperHalfPlane_im_bounds

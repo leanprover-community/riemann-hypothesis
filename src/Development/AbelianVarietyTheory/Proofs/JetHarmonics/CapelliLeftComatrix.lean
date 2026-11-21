@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ExponentialFirstColumn.FirstColumnSplitBijective
+import BuildAid.ForwardExisting
 
+section
 open Formalism.REAL Finset
 
 namespace GlobalTheory
@@ -64,3 +66,9 @@ theorem capelli_left_comatrix :
     rw [hz, smul_zero]
 
 end GlobalTheory
+end
+
+open Formalism.REAL Finset
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.capelli_left_comatrix_qminor_eq : ∀ (A : Type) [Ring A] [Algebra ℂ A] (m : ℕ) (E : Fin (m + 1) → Fin (m + 1) → A), GlRel E → ∀ (u : ℂ) (j l : Fin (m + 1)), ∑ a : Fin (m + 1), ((-1 : ℂ) ^ ((a : ℕ) + (j : ℕ))) • (Tm E u a l * qminor E (Fin.succAbove a) (Fin.succAbove j) (u - 1)) = if l = j then qdet E u else 0 := by
+  atlas_forward_decl GlobalTheory.capelli_left_comatrix

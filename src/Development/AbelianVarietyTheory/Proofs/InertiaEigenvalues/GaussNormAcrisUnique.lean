@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsGauss
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Acris0TorsionFree
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AcrisGaussNormEventuallyMonomial
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped Formalism.Per
@@ -84,3 +85,10 @@ theorem isGauss_unique : ∀ (l : ℕ) [Fact l.Prime] (ρ : ℝ) (N N' : Formali
 end GlobalTheory.PMon.Gauss
 
 end
+end
+
+open GlobalTheory.PMon.Gauss
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussNormAcris_unique : ∀ (l : ℕ) [Fact l.Prime] (ρ : ℝ) (N N' : Formalism.Per.Acris l → ℝ), (l : ℝ)⁻¹ ≤ ρ → ρ < 1 → IsGauss l ρ N → IsGauss l ρ N' → N = N' := by
+  atlas_forward_decl GlobalTheory.PMon.Gauss.isGauss_unique

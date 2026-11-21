@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.Inputs
 import Formalism.LocalToGlobal.ExponentGrids.SecondComplementClosedValuation
-import Formalism.TranslateCocycles.Statement
 import Formalism.TranslateCocycles.StatementCEStep
 
 open Module NumberField IsDedekindDomain Finset

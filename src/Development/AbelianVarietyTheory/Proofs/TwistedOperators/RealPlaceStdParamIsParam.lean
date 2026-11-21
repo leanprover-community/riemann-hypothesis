@@ -1,8 +1,8 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonemptyGrpData
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonemptyFockModelOfUnitaryPairCoversStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonemptyFockModelOfUnitaryPairCovers
+
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
 
 namespace GlobalTheory

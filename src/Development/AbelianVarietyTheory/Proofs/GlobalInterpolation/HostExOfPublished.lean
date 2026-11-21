@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
-import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExplZeta
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExplChi
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LogDerOne
@@ -13,7 +11,6 @@ import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
 import Formalism.LocalToGlobal.GlobalTheory.IsResidueClassZero
 import Formalism.SharpRestriction.GrowthBounds.SmallOrderPrimes
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.PairRowIffQdRows
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DisjointExceptional
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ThinScalesIffHostBound
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LogCondLeThree
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.AuxiliaryPrimeMemAvoidedPrimes
@@ -21,8 +18,9 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HostExistence
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NormPrimesAndLevelPrimeStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QdChoiceOfHyp
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SmallPrimeOneOfTzRat
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ThinChoiceOfZeroDensityStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TopsChoiceStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ThinChoiceOfZeroDensity
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TopsChoice
+
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.GlobalTheoryTheory GlobalTheory.EX NumberField
 
 namespace GlobalTheory.EX

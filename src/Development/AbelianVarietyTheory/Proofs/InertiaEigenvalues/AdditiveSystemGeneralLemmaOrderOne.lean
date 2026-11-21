@@ -1,10 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MooreNorm
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIntegralSolutionFrobeniusSubMulVecEqStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LangCountFrobeniusEqMulVecSolutionsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdditiveSystemPreparationNormalFormOneStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIntegralSolutionFrobeniusSubMulVecEq
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LangCountFrobeniusEqMulVecSolutions
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdditiveSystemPreparationNormalFormOne
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUniqueIntegralAdditiveSystemFrobeniusPowerStatement
 
+section
 noncomputable section
 
 namespace GlobalTheory.PMonE
@@ -82,3 +82,9 @@ theorem gl1 : GLOnto 1 ∧ GLCount 1 := by
 end GlobalTheory.PMonE
 
 end
+end
+
+open GlobalTheory.PMonE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additiveSystem_generalLemma_orderOne : GLOnto 1 ∧ GLCount 1 := by
+  atlas_forward_decl GlobalTheory.PMonE.gl1

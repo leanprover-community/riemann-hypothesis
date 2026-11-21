@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.ZetaUr
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsLocallyConstantCycMod
 import Development.AbelianVarietyTheory.Definitions.Foundations.IwSys2
 
 noncomputable section

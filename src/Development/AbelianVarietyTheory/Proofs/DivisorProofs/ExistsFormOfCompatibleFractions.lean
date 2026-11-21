@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.ExistsAwayFracOfMemHomLoc
 import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.HomologyRestrictScalarsBijective
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.CubeComplexGradedModuleExactAtOfLargeDegree
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory CategoryTheory.Limits DirectSum MvPolynomial
 
 namespace GlobalTheory
@@ -145,3 +147,9 @@ theorem exists_form_of_compatible_fractions : ∀ (A : Type) [CommRing A] [IsNoe
   ring
 
 end GlobalTheory
+end
+
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_homogeneous_form_of_compatible_fractions : ∀ (A : Type) [CommRing A] [IsNoetherianRing A] (n : ℕ) (J : Ideal (MvPolynomial (Fin (n + 1)) A)), (∀ F ∈ J, ∀ d, homogeneousComponent d F ∈ J) → ∃ d₀ : ℕ, ∀ d, d₀ ≤ d → ∀ (N : ℕ) (F : Fin (n + 1) → MvPolynomial (Fin (n + 1)) A), (∀ i, (F i).IsHomogeneous (d + N)) → (∀ i j, ∃ L : ℕ, ((X i : MvPolynomial (Fin (n + 1)) A) * X j) ^ L * (X j ^ N * F i - X i ^ N * F j) ∈ J) → ∃ G : MvPolynomial (Fin (n + 1)) A, G.IsHomogeneous d ∧ ∀ i, ∃ L : ℕ, (X i : MvPolynomial (Fin (n + 1)) A) ^ L * (F i - X i ^ N * G) ∈ J := by
+  atlas_forward_decl GlobalTheory.exists_form_of_compatible_fractions

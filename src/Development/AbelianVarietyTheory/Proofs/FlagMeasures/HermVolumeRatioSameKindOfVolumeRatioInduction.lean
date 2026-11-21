@@ -1,11 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.SameKindIsometric
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSigmaFiniteHaarFiniteAdelicUnitary
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianVolumeDependsOnlyOnFieldSignatureStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianVolumeDependsOnlyOnFieldSignature
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RiemannianHaarGaugeExistsPosUniqueStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutInstDegreeRootDiscriminantRankStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MassRatioRankFactorStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MassRatioRankFactor
 
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
 
 namespace GlobalTheory.FlagMeas.VolRatio
@@ -197,3 +198,9 @@ theorem volumeRatio_of_volumeStep : VolumeStep → VolumeRatio := by
     simp only [rankFac_congr e he]
 
 end GlobalTheory.FlagMeas.VolRatio
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermVolumeRatioSameKind_of_volumeRatioInduction : VolumeStep → VolumeRatio := by
+  atlas_forward_decl GlobalTheory.FlagMeas.VolRatio.volumeRatio_of_volumeStep

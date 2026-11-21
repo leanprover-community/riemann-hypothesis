@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsCuspSpaceBot
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasCompactSupportDescend
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvariantIntegralUnipotentCompactStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvariantIntegralUnipotentCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmallOpenCompactNormalStatement
+
 open ValuativeRel Matrix MeasureTheory
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.Whittaker GlobalTheory.LocLanglands GlobalTheory.GamMul DiscreteGroups.sglob.LConv
 open scoped Pointwise

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Polynomial
 
 namespace GlobalTheory
@@ -26,3 +29,10 @@ theorem tcroot : ∀ (K : Type) [Field K] [NumberField K] (ζ : K) (m : ℕ), Is
   fun K _ _ ζ m hζ hm => isTotallyComplex_of_primitiveRoot K ζ m hζ hm
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isTotallyComplex_of_primitiveRoot_three_le : ∀ (K : Type) [Field K] [NumberField K] (ζ : K) (m : ℕ), IsPrimitiveRoot ζ m → 3 ≤ m →
+    NumberField.IsTotallyComplex K := by
+  atlas_forward_decl GlobalTheory.tcroot

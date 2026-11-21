@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IpLEqZeroOfMemSpan
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
 
 namespace GlobalTheory
@@ -85,3 +87,9 @@ theorem measurePreserving_triangular_shear (d : ℕ) (deg : Fin d → ℕ)
   exact hU (Finset.univ.sup deg + 1) 0 (by omega)
 
 end GlobalTheory
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurePreserving_add_of_triangular : ∀ (d : ℕ) (deg : Fin d → ℕ) (f : (Fin d → ℝ) → (Fin d → ℝ)), Measurable f → (∀ x y i, (∀ k, deg k < deg i → x k = y k) → f x i = f y i) → MeasurePreserving (fun x => x + f x) (volume : Measure (Fin d → ℝ)) volume := by
+  atlas_forward_decl GlobalTheory.measurePreserving_triangular_shear

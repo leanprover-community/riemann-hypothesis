@@ -4,12 +4,8 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardBlocksExponent
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExpSat
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SatBridge
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformizerPowTendstoZero
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetQuotientEigenvector
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SatakeParameterSphericalProductSpehQuotients
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIdempotentElemCharIdem
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.BernsteinZelevinskyFiniteness
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix
@@ -82,3 +78,9 @@ theorem expToSat : PositivityTheory.Rg.BcB.F.Tail.PExp.ExpToSat := by
 end GlobalTheory.CompanionTheory.ExpProd
 
 end
+end
+
+namespace PositivityTheory.Rg.BcB.F.Tail.PExp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exponent_to_saturation : PositivityTheory.Rg.BcB.F.Tail.PExp.ExpToSat := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ExpProd.expToSat

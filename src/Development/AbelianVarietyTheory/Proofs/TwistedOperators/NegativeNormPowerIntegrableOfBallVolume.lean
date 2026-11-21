@@ -1,5 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.OneMemNbh
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DiscreteBranchingUpq
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Ell
 open scoped InnerProductSpace
 open GlobalTheory.SepReal
@@ -147,3 +150,11 @@ theorem powInt_of_volBall : VolBall → PowInt := by
 end GlobalTheory.SepReal
 
 end
+end
+
+open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Ell
+open scoped InnerProductSpace
+open GlobalTheory.SepReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.negativeNormPowerIntegrable_of_ballVolume : VolBall → PowInt := by
+  atlas_forward_decl GlobalTheory.SepReal.powInt_of_volBall

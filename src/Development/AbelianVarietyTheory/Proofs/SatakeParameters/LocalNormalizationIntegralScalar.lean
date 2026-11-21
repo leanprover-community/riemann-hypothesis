@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.AlgebraicTheory.StatementNorm
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 open Formalism.L2.AlgTh
@@ -23,3 +25,8 @@ theorem locNormScale : LocNormScale := by
   · rw [tensorFourthPower_smul, heq, smul_smul]
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localNormalization_integral_scalar : Formalism.L2.AlgTh.LocNormScale := by
+  atlas_forward_decl GlobalTheory.locNormScale

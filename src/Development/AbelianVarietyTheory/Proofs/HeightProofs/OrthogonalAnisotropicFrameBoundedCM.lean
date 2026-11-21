@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.SmoothForms NumberField Matrix
 open scoped ContDiff Topology
 
@@ -163,3 +165,10 @@ theorem frameSmall : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Fra
   exact ⟨v, fun i => (h1 i).1, h2, h3⟩
 
 end GlobalTheory.SmoothForms
+end
+
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orthogonalAnisotropicFrame_bounded_CM : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], FrameSmall E := by
+  atlas_forward_decl GlobalTheory.SmoothForms.frameSmall

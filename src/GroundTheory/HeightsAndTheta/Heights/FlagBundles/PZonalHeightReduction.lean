@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.FlagBundles.Statements
 import GroundTheory.HeightsAndTheta.Heights.FlagBundles.StatementsSphereLongitude
 import GroundTheory.HeightsAndTheta.Heights.FlagBundles.StatementsZonalReduction
 set_option maxSynthPendingDepth 1

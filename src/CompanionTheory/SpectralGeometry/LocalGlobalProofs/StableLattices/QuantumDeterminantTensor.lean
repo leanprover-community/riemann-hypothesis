@@ -1,6 +1,6 @@
 import Mathlib
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.OmegaMinorStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HeckeRankOneStatement
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.OmegaMinor
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HeckeRankOne
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 
 noncomputable section

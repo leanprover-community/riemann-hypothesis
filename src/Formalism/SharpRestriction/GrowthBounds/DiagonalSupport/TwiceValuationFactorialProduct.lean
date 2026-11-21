@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.Proposition5Gram
 import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.MemLin
 
 noncomputable section

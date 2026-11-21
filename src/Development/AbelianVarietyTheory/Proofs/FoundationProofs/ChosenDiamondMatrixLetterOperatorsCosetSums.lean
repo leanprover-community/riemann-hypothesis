@@ -2,6 +2,9 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.IsRootOne
 import Development.AbelianVarietyTheory.Definitions.Foundations.LiftApplyOfMemAdmissibleSubalgebra
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
 import CompanionTheory.EightfoldTheory.VariationTheory.AutomorphicForms.Newform
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
 open scoped MatrixGroups
 
@@ -30,3 +33,10 @@ theorem sgD_fams : ∀ (N l : ℕ), 0 < N → l.Prime → ¬ l ∣ N → (∀ d 
   · simp [opL, GlobalTheory.HeckeFamilyMatrices.mat]
 
 end GlobalTheory.KZ.DiamondOperatorFamilies
+end
+
+open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
+open scoped MatrixGroups
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chosenDiamondMatrix_letterOperators_cosetSums : ∀ (N l : ℕ), 0 < N → l.Prime → ¬ l ∣ N → (∀ d : ℕ, Nat.Coprime d N → GlobalTheory.HeckeFamilyMatrices.IsDiam N l (d : ZMod N) (sgD N l d)) ∧ (∀ q : ℕ, opL ℂ N l (Letter.T q) = ∑ i, opP ℂ (GlobalTheory.HeckeFamilyMatrices.tqFam q (sgD N l q) i)) ∧ opL ℂ N l Letter.U = ∑ i, opP ℂ (GlobalTheory.HeckeFamilyMatrices.ulFam l i) ∧ ∀ d : ℕ, opL ℂ N l (Letter.D d) = ∑ _i : Unit, opP ℂ (GlobalTheory.HeckeFamilyMatrices.mat (sgD N l d)) := by
+  atlas_forward_decl GlobalTheory.KZ.DiamondOperatorFamilies.sgD_fams

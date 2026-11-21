@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilDatumDoubleSpaceActsUnitScalarSeesawCM
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.WeilPairGlobalCharacterLift
 
 set_option synthInstance.maxHeartbeats 200000
@@ -25,5 +23,5 @@ theorem _root_.GlobalTheory.T.weil_pair_global_character : ∀ (F E : Type) [Fie
       ∃ c : ℂ, ‖c‖ = 1 ∧ ∀ f₁ f₂ : Formalism.IndefR.DatumF.WOF F E nS nT → ℂ,
         Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ f₁ → Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ f₂ →
         ωd (1, hd) (GlobalTheory.DblTargetDelta.deltaT f₁ f₂) = c • GlobalTheory.DblTargetDelta.deltaT (ω (1, h) f₁) f₂ := by
-  first | exact @_root_.PositivityTheory.ThKW.weil_pair_global_character_lift | exact _root_.PositivityTheory.ThKW.weil_pair_global_character_lift | (intros; apply _root_.PositivityTheory.ThKW.weil_pair_global_character_lift <;> assumption)
+  atlas_forward_decl _root_.PositivityTheory.ThKW.weil_pair_global_character_lift
 end

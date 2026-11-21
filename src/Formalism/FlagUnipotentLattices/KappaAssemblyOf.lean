@@ -1,4 +1,3 @@
-import Formalism.FlagUnipotentLattices.CoveringRadius2
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.NearFarVolumeBounds
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.KappaConstantAssembly
 

@@ -1,4 +1,3 @@
-import Development.AbelianVarietyTheory.Definitions.Divisors.RangeShape
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PBConjTranspose
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StR
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousDen

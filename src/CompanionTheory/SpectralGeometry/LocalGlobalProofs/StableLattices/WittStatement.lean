@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WittExtensionTheorem
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open CompanionTheory.Rg.FlB
@@ -221,3 +223,9 @@ theorem stWitt : StWitt := by
 end GlobalTheory.CompanionTheory.FlWitt
 
 end
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.WittStatement : StWitt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FlWitt.stWitt

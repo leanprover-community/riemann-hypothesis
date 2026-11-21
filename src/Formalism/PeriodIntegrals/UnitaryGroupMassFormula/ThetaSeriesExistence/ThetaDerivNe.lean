@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LatDefs
 import Formalism.PeriodIntegrals.SigmaStarEx
 
 noncomputable section

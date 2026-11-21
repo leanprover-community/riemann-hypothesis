@@ -1,19 +1,18 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsLatFamilyCongr
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderFlatBaseChangeStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderFlatBaseChange
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LemmaBTHoldsStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumberStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsTensorOrderOfCover
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFunctionalBaseChange
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionEmbeddingGeometricPointsStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteProjectiveBis
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeSpanStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionSubgroupBaseChangeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianTorsionInjectiveStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralPointsEqOfGenericStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArithVarietyPrimeRelayStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericTorsionNoetherianChartStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeSpan
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionSubgroupBaseChange
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianTorsionInjective
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralPointsEqOfGeneric
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArithVarietyPrimeRelay
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericTorsionNoetherianChart
+
+section
 open AlgebraicGeometry CategoryTheory NumberField MvPolynomial ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top
 open GroundTheory.Heights₂.Heights.NumbersDVR (pointIdeal segreVec IsFlagFrame IsFlagPair SameGenericFibre IsModelOver divCycle)
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (mseg fnField)
@@ -788,3 +787,15 @@ theorem funfam_holds : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     exact thLat_overlap hp hpS hs ht (P s hs) (P t ht) pq sc hsurj hsec _ hv
 
 end GlobalTheory.CompanionTheory.Ar.Num.FamEx.Over
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField MvPolynomial ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top
+open GroundTheory.Heights₂.Heights.NumbersDVR (pointIdeal segreVec IsFlagFrame IsFlagPair SameGenericFibre IsModelOver divCycle)
+open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (mseg fnField)
+open Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.BT
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.arith_variety_hodge_prime_total : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O₀ : Type) [CommRing O₀] (β : O₀ →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] [DecidableEq K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (d : ℕ), IsArithVar (mCoordIdeal y) (d + 1) → 0 < D.p + D.q → ∀ (p : ℕ) [Fact p.Prime], p ∈ S → HT.HTFree 𝔐 p → p ≠ 2 → ¬ (p : ℤ) ∣ NumberField.discr E → ∀ (b : ∀ t, Fin (labelRk D t) → 𝔐.Li), (∀ t, LinearIndependent Ω (b t) ∧ Submodule.span Ω (Set.range (b t)) = 𝔐.Vgen t) → ∀ φ : Equiv.Perm (CMType H ⊕ CMType H), IsFrobLabels c p φ → ∀ (A : Type) [CommRing A] [Algebra A Ω] [IsIntegralClosure A ℤ Ω] (m : Ideal A) [m.IsPrime], (p : A) ∈ m → ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra A O] [IsLocalization.AtPrime O m] [Algebra O Ω] [IsScalarTower A O Ω], ∀ (t₀ : CMType H ⊕ CMType H) (Sg : Type) [Fintype Sg] (e : Sg → CMType H ⊕ CMType H) (φ' : Equiv.Perm Sg) (F : Type) [Field F] [Fintype F] [CharP F p] (pq : (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)}) →+* F) (sc : F →+ (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)})) (w : O) (σ : Sg → F →+* IsLocalRing.ResidueField O), IsOrbit O 𝔐 p φ t₀ e φ' pq w σ → IsSec pq sc → ∀ (G : GenTors 𝔐 p) (P : ∀ c' : ∀ k, J k, mseg y c' ≠ 0 → ChartPack G O c') (i : ∀ (c' : ∀ k, J k) (τ), (Fin (labelRk D (e τ)) → Ω) →ₗ[Ω] (Fin (D.p + D.q) → Ω)), IsLatFamily O y (fun c' => (famD e b pq sc w P i c').M) ∧ ∀ τ : Sg, IsLatFamily O y (fun c' => (famD e b pq sc w P i c').Th τ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.FamEx.Over.funfam_holds

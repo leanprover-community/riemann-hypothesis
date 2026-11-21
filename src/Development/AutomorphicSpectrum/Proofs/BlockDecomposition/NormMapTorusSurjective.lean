@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
 import GroundTheory.LocalFields.Uniqueness
+import BuildAid.ForwardExisting
 
+section
 open PositivityTheory.Rg.Tf.Loc GroundTheory.LocalField Topology
 open Matrix
 
@@ -158,3 +160,8 @@ theorem t0 : T0 := by
     exact isClosed_twCent σ (continuous_algHom σ.toAlgHom) n δ
 
 end GlobalTheory.CompanionTheory.LocTop
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_map_torus_surjective : PositivityTheory.Rg.Tf.Loc.T0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocTop.t0

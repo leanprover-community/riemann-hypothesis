@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationAddPowSubLeStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationAddPowSubLe
 
+section
 open GlobalTheory.AlmostEt
 open scoped NNReal
 
@@ -78,3 +78,10 @@ theorem exists_approxRoot_step : ∀ (L : Type) [Field L] (v : Valuation L ℝ�
   · exact max_le_max le_rfl (mul_le_mul_of_nonneg_right (le_max_right _ _) (by positivity))
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_improved_approx_kummer_generator : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (p : ℕ), p.Prime → ∀ (F : Subfield L) (θ : ℝ≥0), θ ≤ 1 → v (p : L) ≤ 1 → (∀ u ∈ F, ∃ w ∈ F, v (u - w ^ p) ≤ θ * v u) → ∀ α y : L, α ^ p ∈ F → y ∈ F → v (α - y) ≤ v α → ∃ y' ∈ F, v (α - y') ^ p ≤ max (v (p : L) * v (α - y) * v α ^ (p - 1)) (max θ (v (p : L)) * v (α - y) ^ p) := by
+  atlas_forward_decl GlobalTheory.AlmostEt.exists_approxRoot_step

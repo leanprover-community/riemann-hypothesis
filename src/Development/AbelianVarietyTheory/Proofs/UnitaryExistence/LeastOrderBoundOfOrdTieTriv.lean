@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.AgreementOfOrd
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIdempotentSectionFamily
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FnFGFnTrdeg
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteSupportAdmissible
-import ReciprocityTheory.SemistableReduction.AlgAll
 
 noncomputable section
 

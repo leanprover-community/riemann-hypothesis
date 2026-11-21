@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeNGLQ
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.JacobianTransvectionSplitting.DiscreteHaar
 
 noncomputable section

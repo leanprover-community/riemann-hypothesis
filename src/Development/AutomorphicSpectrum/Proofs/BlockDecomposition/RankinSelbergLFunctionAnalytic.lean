@@ -1,7 +1,8 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankinSelbergLocalFirst
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -248,3 +249,8 @@ theorem x1 (hL2 : Ad3.Loc2) (hB : B0) (h9 : A9) (h9g : LocalGammaFunctionalEquat
 end GlobalTheory.CompanionTheory.RankinSelbergLFunctionAnalytic
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_l_function_analytic : Ad3.Loc2 → Ad3.R.B0 → Ad3.R.A9 → Ad3.R.LocalGammaFunctionalEquation → Ad3.R.A10 → Ad3.R.A11 → Ad3.R.H1 → Ad3.R.F0b → Ad3.R.F1 → Ad3.R.X0 → Ad3.R.RealPlaceGammaFactors → Ad3.R.HalfPlaneAnalyticIdentities → Ad3.R.X1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelbergLFunctionAnalytic.x1

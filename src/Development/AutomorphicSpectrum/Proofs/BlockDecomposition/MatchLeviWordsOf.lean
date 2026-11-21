@@ -1,11 +1,16 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviMatchingWords.SplitPlaceGeneratorPowers
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingWordOf
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormalisedMatrixIntegralCompLinearEquivDetStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchLMWordSOf
 
+section
 namespace GlobalTheory.CompanionTheory.LeviMatchingWords
 
 theorem matchLMWordSOf : PositivityTheory.Rg.BcB.F.MLM.MatchLMWordSOf := GlobalTheory.CompanionTheory.MatchWordS.matchLMWordSOf
 
 end GlobalTheory.CompanionTheory.LeviMatchingWords
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.match_levi_words_of : PositivityTheory.Rg.BcB.F.MLM.MatchLMWordSOf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LeviMatchingWords.matchLMWordSOf

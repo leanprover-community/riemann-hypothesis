@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GCorSt
 import Formalism.LocalToGlobal.ProjectiveLattices.ConjNeSelfOfCM
-import Formalism.LocalToGlobal.ProjectiveLattices.BetaAtSymm
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsExtensionAllModelsUniformized
 
 open AlgebraicGeometry CategoryTheory NumberField IsLocalRing IsDedekindDomain

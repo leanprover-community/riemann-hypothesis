@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensSmooth
-import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.JGenLinLie
 import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.CapZcMemOfE
 
 open GroundTheory.Automorphic

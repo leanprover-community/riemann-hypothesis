@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivOfNotLinearIndependent
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardSubspacesSupEqTop
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.ExportSeries
 
 namespace GlobalTheory.ExportSeries
@@ -56,3 +59,9 @@ theorem sum_univCoef_eq_prim : ∀ (k C : Type) [Field k] [Finite k] [AddCommGro
     simp
 
 end GlobalTheory.ExportSeries
+end
+
+open Matrix GlobalTheory.ExportSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_universalDeterminantDatumCoeff_eq_primitive : ∀ (k C : Type) [Field k] [Finite k] [AddCommGroup C] [Fintype C] (r n : ℕ), r ≤ n → ∀ (β : DetBases k r n) (κ : kˣ →* Multiplicative C) (y : Matrix (Fin r) (Fin n) k), ∑ c, univCoef β κ c y = prim y := by
+  atlas_forward_decl GlobalTheory.ExportSeries.sum_univCoef_eq_prim

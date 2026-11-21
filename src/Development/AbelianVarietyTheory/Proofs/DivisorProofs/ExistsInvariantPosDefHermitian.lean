@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Matrix
 
 noncomputable section
@@ -114,3 +117,12 @@ theorem exists_invariant_posDef_hermitian {n : ℕ} (H : Subgroup (GL (Fin n) �
     rw [Matrix.mul_add, Matrix.add_mul, h1, h2]
 
 end GlobalTheory.CompactAvg
+end
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_posDef_hermitian_invariant_of_isCompact : ∀ {n : ℕ} (H : Subgroup (GL (Fin n) ℂ)), IsCompact (H : Set (GL (Fin n) ℂ)) →
+    ∃ P : Matrix (Fin n) (Fin n) ℂ, P.IsHermitian ∧ (∀ x : Fin n → ℂ, x ≠ 0 → 0 < (star x ⬝ᵥ P *ᵥ x).re) ∧
+      ∀ g ∈ H, (g : Matrix (Fin n) (Fin n) ℂ)ᴴ * P * g = P := by
+  atlas_forward_decl GlobalTheory.CompactAvg.exists_invariant_posDef_hermitian

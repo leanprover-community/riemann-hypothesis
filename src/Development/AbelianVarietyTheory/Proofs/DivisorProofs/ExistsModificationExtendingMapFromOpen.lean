@@ -1,9 +1,9 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GapGeSubKapBase
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsLiftClosedImmersionOfDense
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.WChartsC
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.JGenSpecializes
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDenominatorIdealSheafPrincipalisingFamilyStatement
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDenominatorIdealSheafPrincipalisingFamily
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRationalCoordinatesExtendProjectiveSpaceStatement
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -47,3 +47,19 @@ theorem GlobalTheory.CompHS.exists_modif_map_of_open : GlobalTheory.Published.Pr
     rw [← hit, ← Category.assoc, hr', hg1]
   · show (s ⁻¹ᵁ U).ι ≫ r = (s ∣_ U) ≫ r₀
     rw [← cancel_mono i, Category.assoc, hr', hg2, Category.assoc]
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open GlobalTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS GlobalTheory.CovTop GlobalTheory.HSApp GlobalTheory.Cartier
+open GlobalTheory.AllWt (Psi wtOf cuspOn cuspW secZ ptF LiesOn)
+open GlobalTheory.FlagMod (FlagCover)
+open GlobalTheory.CompHt (hodgeWt)
+open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.OrbitSep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_modification_extending_map_from_open : GlobalTheory.Published.Principalisation → ∀ (F : Type) [Field F] [CharZero F] (Y T : Scheme.{0}) [IsIntegral Y] (p : Y ⟶ Sp F) (d : ℕ) (t : T ⟶ Sp F) (U : Y.Opens) (r₀ : U.toScheme ⟶ T), SmoothOfRelativeDimension d p → IsProjOver p → IsProjOver t → (U : Set Y).Nonempty → r₀ ≫ t = U.ι ≫ p → ∃ (M : Modif p U d) (r : M.X ⟶ T), IsIntegral M.X ∧ r ≫ t = M.str ∧ M.opn.ι ≫ r = (M.σ ∣_ U) ≫ r₀ := by
+  atlas_forward_decl GlobalTheory.CompHS.exists_modif_map_of_open

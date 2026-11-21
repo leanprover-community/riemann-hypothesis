@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OverExtAlgebraMap
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemRangeOfValNonneg
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIntegerSpanningFamilyOfUnramifiedExtStatement
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.UnitLemma.Unr
@@ -50,3 +50,10 @@ theorem isIntegral_overExt_iff (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E) (hU :
     exact h.tower_top
 
 end GlobalTheory.UnitLemma.Unr
+end
+end
+
+open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Unr Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIntegral_unramifiedExt_iff_isIntegral_base : ∀ (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E), IsUnrExt K K' d φ → ∀ (B : InvAlg K) (ψ : K'.E →+* B.A) (hψ : ∀ e, ψ (φ e) = algebraMap K.E B.A e) (hσ : ∀ e, B.σ (ψ e) = ψ (K'.c e)) (a : B.A), @IsIntegral K'.O (overExt φ B ψ hψ hσ).A _ _ _ a ↔ IsIntegral K.O a := by
+  atlas_forward_decl GlobalTheory.UnitLemma.Unr.isIntegral_overExt_iff

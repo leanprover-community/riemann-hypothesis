@@ -1,5 +1,4 @@
 import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SExpDefs
-import GroundTheory.GlobalFields.TateThesis.EulerFactorsInfinite
 import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.HasTemperateGrowthArchPoly
 
 noncomputable section

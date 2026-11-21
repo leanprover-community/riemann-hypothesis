@@ -1,0 +1,151 @@
+{
+  "compiler": "Lean (version 4.33.1, x86_64-unknown-linux-gnu, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "mathlib_revision": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "release_archive_sha256": "9db66928e0ca72ed7cd29324af02732c3e919f0afaf8fa1f01132034da989a29",
+  "scope": "Lean compiled the three complete target files and their project imports from the Atlas source. The build used fresh project output with the pinned Mathlib cache.",
+  "lean_options": [
+    "--tstack=400000",
+    "-DautoImplicit=false",
+    "-DrelaxedAutoImplicit=false",
+    "-DmaxSynthPendingDepth=3",
+    "-Dpp.unicode.fun=true",
+    "-DmaxHeartbeats=4000000"
+  ],
+  "targets": [
+    {
+      "module": "Formalism.SatakeDualWeyl.AdelicIwasawaHecke.HeckeConvolutionMemHolds",
+      "exit_code": 0,
+      "project_modules_built": [
+        "Formalism.SatakeDualWeyl.Statement",
+        "Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset",
+        "Formalism.SatakeDualWeyl.AdelicIwasawaHecke.HeckeConvolutionMemHolds"
+      ]
+    },
+    {
+      "module": "Formalism.LocalToGlobal.ProjectiveLattices.IntegrableOnIntegrand",
+      "exit_code": 0,
+      "project_modules_built": [
+        "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature",
+        "Formalism.LocalToGlobal.ProjectiveLattices.IntegrableOnIntegrand"
+      ]
+    },
+    {
+      "module": "Formalism.GradedWeylDivisibility.FockSpaceTableaux.SSYTExists",
+      "exit_code": 0,
+      "project_modules_built": [
+        "Formalism.RealPlaceAnalysis.StatementA",
+        "Formalism.RealPlaceAnalysis.FockPairGl",
+        "Formalism.GradedWeylDivisibility.StatementA",
+        "Formalism.GradedWeylDivisibility.StatementC",
+        "Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCssytLemmas",
+        "Formalism.GradedWeylDivisibility.FockSpaceTableaux.SSYTExists"
+      ]
+    }
+  ],
+  "module_count": 11,
+  "modules": {
+    "Formalism.SatakeDualWeyl.Statement": {
+      "sha256": "ff0b4971b2c44e6b9eeac44013ff35e5aeb7a126a87d7640d2fd72277147696c",
+      "warnings": [
+        [
+          "23",
+          "0",
+          "automatically included section variable(s) unused in theorem `Formalism.UG.cT_one`:"
+        ]
+      ]
+    },
+    "Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset": {
+      "sha256": "e4de845ed38324f93183c95c27f1fbca1a0baab6f2c2ef464469a74f41963e1f",
+      "warnings": [
+        [
+          "16",
+          "2",
+          "Try this: "
+        ],
+        [
+          "37",
+          "2",
+          "Try this: "
+        ]
+      ]
+    },
+    "Formalism.SatakeDualWeyl.AdelicIwasawaHecke.HeckeConvolutionMemHolds": {
+      "sha256": "2e4567351548ee36b0715a5725543e446d5ac7a7995a54be955ecf25042907c3",
+      "warnings": [
+        [
+          "62",
+          "4",
+          "`push_neg` has been deprecated. Prefer using `push Not` instead."
+        ],
+        [
+          "70",
+          "54",
+          "`Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead"
+        ],
+        [
+          "97",
+          "67",
+          "`Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead"
+        ]
+      ]
+    },
+    "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature": {
+      "sha256": "a8b8f634c2368fd1bb369faebdc6d40cf11005747d4b16feda5dd1dabe11c054",
+      "warnings": []
+    },
+    "Formalism.LocalToGlobal.ProjectiveLattices.IntegrableOnIntegrand": {
+      "sha256": "b8e5dcec1adabc17ad00f9601e456eb68efaa08c67e2fc18a08e126fefa6da0b",
+      "warnings": []
+    },
+    "Formalism.RealPlaceAnalysis.StatementA": {
+      "sha256": "40e965df30265424c45c823f241f8ba07639f1273ff3495607e248101505725c",
+      "warnings": []
+    },
+    "Formalism.RealPlaceAnalysis.FockPairGl": {
+      "sha256": "78f113e12b44d0172f0165e5b3abb33f6f30eec8333e4d7a758d21f7c9454391",
+      "warnings": []
+    },
+    "Formalism.GradedWeylDivisibility.StatementA": {
+      "sha256": "7741f3f5e0c82b0774c93bbb7b966fd69d4b5665b8b947d00a40724fd388915d",
+      "warnings": []
+    },
+    "Formalism.GradedWeylDivisibility.StatementC": {
+      "sha256": "2a9bb8e0ff7ed8c5b6010217b3be589472d257226ed968d030c9fbd4c757cab8",
+      "warnings": []
+    },
+    "Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCssytLemmas": {
+      "sha256": "97f7380302e7921de30e195384236a416d316434697b1b775d76dd255e00ae65",
+      "warnings": [
+        [
+          "37",
+          "6",
+          "`Finsupp.finset_sum_apply` has been deprecated: Use `Finsupp.finsetSum_apply` instead"
+        ],
+        [
+          "55",
+          "6",
+          "`Finsupp.finset_sum_apply` has been deprecated: Use `Finsupp.finsetSum_apply` instead"
+        ],
+        [
+          "61",
+          "13",
+          "`Fin.coe_castLE` has been deprecated: Use `Fin.val_castLE` instead"
+        ]
+      ]
+    },
+    "Formalism.GradedWeylDivisibility.FockSpaceTableaux.SSYTExists": {
+      "sha256": "d6f4d156684aedaab62588cafa9777631e000c7fa510c7828e93135bfbd998b7",
+      "warnings": [
+        [
+          "31",
+          "6",
+          "`push_neg` has been deprecated. Prefer using `push Not` instead."
+        ]
+      ]
+    }
+  },
+  "main_compiled_in_this_check": false,
+  "full_five_theorem_axiom_check_ran": false,
+  "original_files_identical": 10,
+  "original_bodies_identical": 11
+}

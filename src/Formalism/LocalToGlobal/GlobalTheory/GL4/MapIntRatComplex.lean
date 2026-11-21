@@ -1,6 +1,5 @@
 import Formalism.LocalToGlobal.GlobalTheory.GL4.ApplyWordMemDualGen
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQRowAct
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.ClosedEqNabla
 
 noncomputable section
 

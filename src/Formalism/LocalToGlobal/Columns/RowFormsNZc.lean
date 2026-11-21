@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 import Formalism.LocalToGlobal.Columns.CoefColLemmas
 import Formalism.LocalToGlobal.Columns.RowFormsNZp

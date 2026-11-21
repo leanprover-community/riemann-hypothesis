@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.PullbackBijectiveDegreesOneTwo
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TowerComplexLiftAndExtensionLemmasStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TowerComplexLiftAndExtensionLemmas
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -349,3 +349,10 @@ theorem tower_two : ∀ (C : Type 1) [Category.{0} C] (D : Type) [Category.{0} D
       exact congrArg (fun q : (K.res (Q m).ι).T2 ↦ q.2.2 ⟨T, h1⟩) (had m)
 
 end GlobalTheory.CxTowerTwo
+end
+end
+
+open CategoryTheory GlobalTheory.CxCoh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bijective_restriction_fourTermComplex_of_exhaustion : ∀ (C : Type 1) [Category.{0} C] (D : Type) [Category.{0} D] (K : Cx C) (P : ℕ → ObjectProperty C) (ℓ : D ⥤ C) (N₀ : ℕ), (∀ m n T, m ≤ n → P m T → P n T) → (∀ T, ∃ n, P n T) → (∀ N, N₀ ≤ N → ∃ h : ∀ U, P N (ℓ.obj U), ((K.res (P N).ι).resMap ((P N).lift ℓ h)).Bij) → Function.Bijective (K.resMap ℓ).h2 := by
+  atlas_forward_decl GlobalTheory.CxTowerTwo.tower_two

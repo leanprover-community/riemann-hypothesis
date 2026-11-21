@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.IsChainFirst
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Top.FlDeg
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
@@ -37,3 +39,9 @@ theorem prod_rhoM_factorial (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) 
   simp only [Fin.lt_def]
 
 end GlobalTheory.CompanionTheory.Ar.Top.FlDeg
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Top.FlDeg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rho_factorial_product_eq : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ), ∏ p, (((rhoM Ψ N) p).factorial : ℝ) = ∏ _τ : Ψ, ∏ i : Fin N, ∏ k : Fin N, (if i < k then ((k : ℝ) - (i : ℝ)) else 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.FlDeg.prod_rhoM_factorial

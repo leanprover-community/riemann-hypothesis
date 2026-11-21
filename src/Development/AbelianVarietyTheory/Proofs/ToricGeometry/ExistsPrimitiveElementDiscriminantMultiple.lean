@@ -1,6 +1,4 @@
 import Mathlib
-import ReciprocityTheory.ThetaQuasiPeriods.ThetaQuasiPeriodStatement
-import ReciprocityTheory.ThetaQuasiPeriods.Transl
 import ReciprocityTheory.ThetaQuasiPeriods.Change
 import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.Integral
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.Imports

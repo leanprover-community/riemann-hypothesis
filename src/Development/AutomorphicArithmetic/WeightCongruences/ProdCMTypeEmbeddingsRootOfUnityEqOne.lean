@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.DataHost
 import Development.AutomorphicArithmetic.WeightCongruences.IsRootOfIntegral
 
 open NumberField Formalism.BasicNotions

@@ -1,9 +1,9 @@
 import Development.WeilBound.CoreStatements.MultihomogeneousSquares.SingSt
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatingRegularPushStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatingCoordsReindexedStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatingRegularPush
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatingCoordsReindexed
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsIffCentresStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValAtIffValueAtStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemAbLocusIff
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValAtIffValueAt
 
 noncomputable section
 

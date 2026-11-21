@@ -1,4 +1,3 @@
-import Formalism.LatticeSlopes.Statement
 import Formalism.LatticeSlopes.LatticeSlopesProofs.CovolEqGram
 
 open Module Submodule

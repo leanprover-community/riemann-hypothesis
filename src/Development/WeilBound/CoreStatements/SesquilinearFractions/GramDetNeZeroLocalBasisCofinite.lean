@@ -1,7 +1,8 @@
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTransition
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqSesquilinearSkewHermitianStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqUnimodularDualStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqSesquilinearSkewHermitian
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqUnimodularDual
 import Development.WeilBound.CoreStatements.SesquilinearFractions.DTrans
+
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl

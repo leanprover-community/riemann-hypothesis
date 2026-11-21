@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.GenericUnipotentCharacter
 import Formalism.LocalToGlobal.Divisibility.DefGroup
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory
@@ -29,3 +32,11 @@ theorem blockTriangular_blockIndexOf_iff_colBlockUT_twoBlocks :
   · simp only [(blockIndexOf_blockIndexTwo_eq_coarseBlocks_pointwise hn _).2]
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_blockTri_blkOf_and_blk2_iff_mem_blockUT : ∀ {κ : Type} [CommRing κ] {n r t : ℕ}, n = r + t → ∀ g : GL (Fin n) κ,
+    (g ∈ Formalism.L2.DIV.blockTri (Formalism.L2.DIV.blkOf r t) ↔ g ∈ Formalism.L2.Col.blockUT n κ r [t]) ∧
+      (g ∈ Formalism.L2.DIV.blockTri (Formalism.L2.DIV.blk2 r) ↔ g ∈ Formalism.L2.Col.blockUT n κ r [t]) := by
+  atlas_forward_decl GlobalTheory.blockTriangular_blockIndexOf_iff_colBlockUT_twoBlocks

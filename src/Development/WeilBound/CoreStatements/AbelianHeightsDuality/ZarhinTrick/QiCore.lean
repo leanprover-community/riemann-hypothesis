@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.AbelianHeightsDuality.ZarhinTrick.QiCoreDefs
 import Development.WeilBound.CoreStatements.AbelianHeightsDuality.ZarhinTrick.CompLmulMapId
 import Development.WeilBound.CoreStatements.AbelianHeightsDuality.ZarhinTrick.QiIdem
 import Development.WeilBound.CoreStatements.AbelianHeightsDuality.ZarhinTrick.QiStab

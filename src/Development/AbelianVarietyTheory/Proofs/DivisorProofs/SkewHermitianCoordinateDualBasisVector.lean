@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetNeZeroOfIsIdent
+
+section
 open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
 open Classical
 
@@ -36,3 +38,11 @@ theorem boxCoord_boxVec (E : Type) [Field E] [NumberField E] [IsCMField E] (r : 
   all_goals exact absurd ⟨rfl, rfl⟩ h3
 
 end GlobalTheory.CovTop.VolUp.FrameBox
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+open Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.skewHermitianCoordinate_dual_basisVector : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (d : Ψ → Fin r → ℝ) (z : Fin r), (∀ τ a, d τ a = 1 ∨ d τ a = -1) → ∀ j k, boxCoord z j (boxVec d z k) = if j = k then 1 else 0 := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.FrameBox.boxCoord_boxVec

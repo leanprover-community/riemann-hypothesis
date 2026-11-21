@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.MSplitDefs
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.TopNilDefs
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.SpBasis
 
 open Filter UpperTheory.V.AlgebraTools

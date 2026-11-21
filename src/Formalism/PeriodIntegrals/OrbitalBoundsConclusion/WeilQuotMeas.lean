@@ -1,8 +1,5 @@
 import Mathlib
-import Formalism.PeriodIntegrals.WeilQuotMeas
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientMeasure.StepBruhat
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientMeasure.InvInv
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientMeasure.LintegralMulAvgComm
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientMeasure.Bruhat
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QuotMeasUniq
 

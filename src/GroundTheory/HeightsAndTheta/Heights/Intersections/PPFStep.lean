@@ -1,8 +1,6 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFSecRed
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFVert
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFIntZero
-import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFHoriz
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFFibreSum
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 set_option maxSynthPendingDepth 1

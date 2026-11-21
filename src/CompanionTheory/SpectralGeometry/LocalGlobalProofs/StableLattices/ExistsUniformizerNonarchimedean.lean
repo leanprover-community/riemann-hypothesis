@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.EntryMulSubOne
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.CompanionTheory.CartGL
@@ -42,3 +44,9 @@ theorem exists_isUnif : ∀ (L : Type) [NontriviallyNormedField L] [IsUltrametri
   rw [← heq, _root_.inv_zpow']
 
 end GlobalTheory.CompanionTheory.CartGL
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_uniformizer_nonarchimedean : ∀ (L : Type) [NontriviallyNormedField L] [IsUltrametricDist L] [ProperSpace L], ∃ p : Lˣ, GlobalTheory.CompanionTheory.CartGL.IsUnif p := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CartGL.exists_isUnif

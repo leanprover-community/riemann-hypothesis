@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OneLeHtE
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain GlobalTheory.AdelicU
 open scoped TensorProduct NNReal
 open Classical
@@ -46,3 +48,11 @@ theorem minpoly_coeff_le_inf (F E : Type) [Field F] [NumberField F] [Field E] [N
   exact mul_le_mul hch hpow (by positivity) (by positivity)
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain GlobalTheory.AdelicU
+open scoped TensorProduct NNReal
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.infinitePlace_minpoly_coeff_le_pow_max_embeddings : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (x : E) (w : InfinitePlace F) (j : ℕ), w ((minpoly F x).coeff j) ≤ 2 ^ Module.finrank F E * ((max 1 (Finset.univ.sup fun τ : EmbOver E w => ‖τ.1 x‖₊) : ℝ≥0) : ℝ) ^ Module.finrank F E := by
+  atlas_forward_decl GlobalTheory.minpoly_coeff_le_inf

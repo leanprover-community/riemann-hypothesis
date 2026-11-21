@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -99,3 +100,10 @@ theorem frameSt_of (hAct : ActSt) (hUnit : UnitSt) : FrameSt := by
     exact subst_comp_subst_apply (hasSubst_of_constantCoeff_zero fun _ => hS) ht _
 
 end GlobalTheory.IsoTriv
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frameSeriesExpSum_of_actionLinear_logUnit : ActSt → UnitSt → FrameSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.frameSt_of

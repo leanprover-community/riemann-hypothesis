@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.Transference
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeTransference.Skeleton
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeTransference.Poisson
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeTransference.NumericMain

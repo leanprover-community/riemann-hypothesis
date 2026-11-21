@@ -1,9 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.AbelianDeRham.AbelianHodgeDeRham.H1DimGeAbelianDim
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsGenOfSmallExtension
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.CechHOneVanishesOnOpenOfIsAffineOpen
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TrMulTrInv
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -197,3 +196,12 @@ theorem depSt : DepSt := by
   exact e.symm
 
 end GlobalTheory.CompanionTheory.FewEq
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CechDR MainStatements.Hodge GlobalTheory.CompanionTheory.FewEq
+open GlobalTheory.AbLaw (rs)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dependency_statement : DepSt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FewEq.depSt

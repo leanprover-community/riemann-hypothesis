@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CmFieldAdeleSplitPlaceSupportIntegral
 
 open NumberField IsDedekindDomain ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 TensorProduct

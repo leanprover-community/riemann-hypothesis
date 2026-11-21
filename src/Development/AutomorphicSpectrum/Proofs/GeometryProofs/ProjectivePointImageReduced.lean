@@ -3,7 +3,9 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SncChartPoint
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ValRPullbackTwistingSheafTransition
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite MvPolynomial
@@ -42,3 +44,13 @@ theorem closure_reduced_dominant : ∀ (Ω : Type) [Field Ω] [CharZero Ω] (N :
   exact ⟨isReduced_image_of_quasiCompact _, inferInstance⟩
 
 end GlobalTheory.CompanionTheory.Ar.SncRes
+end
+end
+
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite MvPolynomial
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap PSpace valR)
+open ReciprocityTheory.ChartRestriction.G.Geo.ResK
+open GlobalTheory.ProjSpace GlobalTheory.Points GlobalTheory.TuplePoint GlobalTheory.CompanionTheory.Ar.SncRes
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projective_point_image_reduced : ∀ (Ω : Type) [Field Ω] [CharZero Ω] (N : ℕ) (x : Fin (N + 1) → Ω) (hx : x ≠ 0), IsReduced (point ℚ x hx).image ∧ IsDominant (point ℚ x hx).toImage := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.SncRes.closure_reduced_dominant

@@ -1,6 +1,5 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.AutEnd2OfAutPt
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AdmissibleResidues.AdmissibleResidualOfHyp
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BcPolar
 open private kills_open exists_two flag det_one sq_of_trace norm_lt' cont_val cont_of_open irr_sub comm_mem isIrr_of tw_tw det_star conj_mat from Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.AutEnd2OfAutPt
 open UpperTheory.GalN.V
 

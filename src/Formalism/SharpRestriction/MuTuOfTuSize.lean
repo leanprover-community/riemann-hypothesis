@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.GlobalTheoremInputs
 import Formalism.SharpRestriction.AdmissibleParameterJoins
 import Formalism.SharpRestriction.AdmissibleParameterJoins.SumLogPrimeFactorsLe
 import Formalism.SharpRestriction.LevelLetterCocycles.TwGood

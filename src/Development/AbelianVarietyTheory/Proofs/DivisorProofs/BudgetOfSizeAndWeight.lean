@@ -7,9 +7,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumLogDivPredLeReal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightDivisionL1Bound
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PosDividedSlopeWeightsBaseHeight
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpreadLeAt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumPadicValNatMulLogLeLog
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogDivPredMemOfPrime
-import Development.AutomorphicArithmetic.PrimeDiscriminants.BadCount
 
 set_option synthInstance.maxHeartbeats 400000
 

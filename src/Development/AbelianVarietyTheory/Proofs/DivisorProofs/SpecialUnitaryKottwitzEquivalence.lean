@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EmbGLMemRealSU
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 open scoped TensorProduct Matrix
 
@@ -46,3 +49,10 @@ theorem sequiv_of_rat {E : Type} [Field E] [NumberField E] [IsCMField E] {r : �
   · rw [Matrix.mul_assoc, h, ← Matrix.mul_assoc, ← ratM_mul, hinv', ratM_one, Matrix.one_mul]
 
 end GlobalTheory.SEquivOfRat
+end
+
+open NumberField
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.special_unitary_kottwitz_equivalence : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (G : Matrix (Fin r) (Fin r) E) (L : Set (Fin r → E)) (s s' M : Matrix (Fin r) (Fin r) (GlobalTheory.AdLat.RA (maximalRealSubfield E) E)) (γ : Matrix (Fin r) (Fin r) E), GlobalTheory.SUVol.IsSA G s → GlobalTheory.SUVol.IsSA G s' → GlobalTheory.UCls.IsKM (IsCMField.complexConj E) G L 1 M → s' * M = GlobalTheory.UCls.ratM (maximalRealSubfield E) γ * s → γ.det = 1 → GlobalTheory.SUVol.SEquiv G L 1 s' s := by
+  atlas_forward_decl GlobalTheory.SEquivOfRat.sequiv_of_rat

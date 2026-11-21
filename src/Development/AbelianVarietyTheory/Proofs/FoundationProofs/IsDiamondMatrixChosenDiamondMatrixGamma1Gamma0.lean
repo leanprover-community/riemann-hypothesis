@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
+import BuildAid.ForwardExisting
 
+section
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ
 
@@ -43,3 +45,10 @@ theorem isDiam_sgD_of_prime : ∀ (N l d : ℕ), l.Prime → 0 < N → Nat.Copri
   exact Classical.epsilon_spec (exists_isDiam_of_coprime N l d hNl hd)
 
 end GlobalTheory.KZ
+end
+
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isDiamondMatrix_chosenDiamondMatrixGamma1Gamma0 : ∀ (N l d : ℕ), l.Prime → 0 < N → Nat.Coprime N l → Nat.Coprime d N → IsDiam N l d (sgD N l d) := by
+  atlas_forward_decl GlobalTheory.KZ.isDiam_sgD_of_prime

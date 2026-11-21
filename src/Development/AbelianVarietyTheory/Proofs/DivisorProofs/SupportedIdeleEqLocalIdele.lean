@@ -1,5 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.TorsTransport
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsEqOfNatCastMulMem
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
 open scoped nonZeroDivisors
 
@@ -33,3 +36,10 @@ theorem supported_eq_localIdele : ∀ {K : Type} [Field K] [NumberField K] {v : 
     · exact ((localIdele_isSupportedAt K v x).2 w hw).trans (ha.2 w hw).symm
 
 end GlobalTheory.Div.SuppIdele
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.supportedIdele_eq_localIdele : ∀ {K : Type} [Field K] [NumberField K] {v : HeightOneSpectrum (𝓞 K)} {a : Ideles K}, IsSupportedAt K a v → ∃ x : (v.adicCompletion K)ˣ, (x : v.adicCompletion K) = (a : AdeleRing (𝓞 K) K).2 v ∧ localIdele K v x = a := by
+  atlas_forward_decl GlobalTheory.Div.SuppIdele.supported_eq_localIdele

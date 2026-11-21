@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsQuotPartGraded
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PQuotPartGraded
 set_option maxSynthPendingDepth 1
 

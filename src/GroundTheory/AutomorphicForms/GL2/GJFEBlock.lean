@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.GL2.GJFEDefs
 import GroundTheory.AutomorphicForms.GL2.GJFEBlockPoint
 
 noncomputable section

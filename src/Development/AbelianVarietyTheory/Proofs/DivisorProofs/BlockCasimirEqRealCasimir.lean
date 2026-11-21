@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrActApply
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg GlobalTheory.SteepMult
 
 namespace GlobalTheory.CasimirCoord
@@ -44,3 +47,9 @@ theorem casVal_eq_casK : ∀ (R S : ℕ) (μ : Ix R S → ℚ), GlobalTheory.Blo
   rw [sum_lt_sub R (fun i => μ (Sum.inl i)), sum_lt_sub S (fun j => μ (Sum.inr j))]
 
 end GlobalTheory.CasimirCoord
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg GlobalTheory.SteepMult
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.block_casimir_eq_real_casimir : ∀ (R S : ℕ) (μ : Ix R S → ℚ), GlobalTheory.BlockReps.casVal μ = GlobalTheory.RealLift.casK μ := by
+  atlas_forward_decl GlobalTheory.CasimirCoord.casVal_eq_casK

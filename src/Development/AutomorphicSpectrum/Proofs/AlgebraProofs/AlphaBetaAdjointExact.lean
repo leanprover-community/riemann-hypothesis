@@ -1,13 +1,14 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ConstantCoeffEv
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalBilinearTermProductStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowerSeriesPowPFrobeniusStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MultiplicationByPFactorsFrobeniusStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowOneSeriesPFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowTwoSymplecticRelationStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowOnePowTwoCommutationStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalBilinearTermProduct
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowerSeriesPowPFrobenius
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MultiplicationByPFactorsFrobenius
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowOneSeriesPFormula
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowTwoSymplecticRelation
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowOnePowTwoCommutation
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Conj.Isotropy
@@ -323,3 +324,10 @@ theorem beta_comp_alpha : ∀ (R : Type) [CommRing R] (p : ℕ) [Fact p.Prime] [
   rfl
 
 end GlobalTheory.CompanionTheory.Ar.Conj.Isotropy
+end
+end
+
+open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.alpha_beta_adjoint_exact : ∀ (R : Type) [CommRing R] (p : ℕ) [Fact p.Prime] [CharP R p] (d : ℕ) (O : Type) [CommRing O] [StarRing O] (B : FB R d O), (∀ u y, u ⬝ᵥ beta B p y = pairH B (alpha B p u) y) ∧ beta B p ∘ₗ alpha B p = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Conj.Isotropy.beta_comp_alpha

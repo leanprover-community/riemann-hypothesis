@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.Tuples
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsPowNormOneIdeleEqPrincipalMulIntegralUnit
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.L2.DIV Formalism.UG
 
 noncomputable section
@@ -33,3 +36,12 @@ theorem exists_rat_mul_intUnit : ∀ t : (FiniteAdeleRing (𝓞 ℚ) ℚ)ˣ, ∃
     rw [HeightOneSpectrum.mem_adicCompletionIntegers, hinv P]
 
 end GlobalTheory.RatIdele
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.DIV Formalism.UG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rational_finite_idele_factorization : ∀ t : (FiniteAdeleRing (𝓞 ℚ) ℚ)ˣ, ∃ (r : ℚˣ) (u : (FiniteAdeleRing (𝓞 ℚ) ℚ)ˣ),
+    (u : FiniteAdeleRing (𝓞 ℚ) ℚ) ∈ intAd ℚ ∧ ((u⁻¹ : (FiniteAdeleRing (𝓞 ℚ) ℚ)ˣ) : FiniteAdeleRing (𝓞 ℚ) ℚ) ∈ intAd ℚ ∧
+    t = Units.map (algebraMap ℚ (FiniteAdeleRing (𝓞 ℚ) ℚ)).toMonoidHom r * u := by
+  atlas_forward_decl GlobalTheory.RatIdele.exists_rat_mul_intUnit

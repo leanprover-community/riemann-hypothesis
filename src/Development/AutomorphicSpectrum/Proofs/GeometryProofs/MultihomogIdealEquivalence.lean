@@ -2,6 +2,9 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLatFlagPair
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.HeckeSectionsIsotropicCommutatorPairingPower
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial
 
 namespace GlobalTheory.CompanionTheory.Ggeo.CompMem
@@ -30,3 +33,9 @@ theorem comp_mem : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) 
   exact ha m (mem_support_iff.2 hm) k
 
 end GlobalTheory.CompanionTheory.Ggeo.CompMem
+end
+
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isMultiHomogIdeal_transfer : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MvPolynomial (Σ k, ι k) ℤ)), ReciprocityTheory.ChartRestriction.G.Geo.IsMultiHomogIdeal P → GroundTheory.Heights₂.Heights.NumbersDVR.IsMultiHomogIdeal P := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.CompMem.comp_mem

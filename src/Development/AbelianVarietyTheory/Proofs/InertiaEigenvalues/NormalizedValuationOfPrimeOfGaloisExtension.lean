@@ -1,8 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NoTowerQ
-import GroundTheory.LocalFields.Eisenstein
-import GroundTheory.LocalFields.LowerIndex
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ValuativeRel GroundTheory.LocalField GlobalTheory.PMon.Ram
 
 namespace GlobalTheory.PMon.Ram
@@ -23,3 +22,9 @@ theorem ordIs_of_ordIs_ext : ∀ (F L : Type) [Field F] [ValuativeRel F] [Topolo
   exact_mod_cast h.symm
 
 end GlobalTheory.PMon.Ram
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc ValuativeRel GroundTheory.LocalField GlobalTheory.PMon.Ram
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalizedValuationOfPrime_of_galoisExtension : ∀ (F L : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [Field L] [ValuativeRel L] [TopologicalSpace L] [IsNonarchimedeanLocalField L] [Algebra F L] [ValuativeExtension F L] [FiniteDimensional F L] [IsGalois F L] (p E : ℕ), OrdIs L p E → ∃ e : ℕ, OrdIs F p e ∧ E = ramificationIndex F L * e ∧ ramificationIndex F L = Nat.card ↥(lowerRamificationGroup F L 0) := by
+  atlas_forward_decl GlobalTheory.PMon.Ram.ordIs_of_ordIs_ext

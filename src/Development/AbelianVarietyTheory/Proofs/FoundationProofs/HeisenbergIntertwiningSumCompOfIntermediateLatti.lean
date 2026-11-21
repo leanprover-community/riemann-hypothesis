@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHeisTrivial
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumOpTransversal
+import BuildAid.ForwardExisting
 
+section
 open Classical GlobalTheory.FinWeil
 open scoped BigOperators
 
@@ -61,3 +62,10 @@ theorem sumOp_comp_of_between : ∀ {R X M : Type} [CommRing R] [AddCommGroup X]
     exact Finset.sum_congr rfl fun i _ => h.comp_of_mem hC (hgC j) (hfC i) v
 
 end GlobalTheory.FinWeil
+end
+
+open Classical GlobalTheory.FinWeil
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heisenbergIntertwiningSum_comp_of_intermediate_lattice : ∀ {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M}, IsHeis σ w γ W → ∀ (A B C : Submodule R X), SelfDual γ A → SelfDual γ B → SelfDual γ C → idx A B ≠ 0 → idx B C ≠ 0 → B ≤ (B ⊓ A) ⊔ (B ⊓ C) → idx A C = idx A B * idx B C ∧ ∀ v, Fixes W A v → sumOp W B C (sumOp W A B v) = sumOp W A C v := by
+  atlas_forward_decl GlobalTheory.FinWeil.sumOp_comp_of_between

@@ -1,7 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.TwoChartAtlas.AdditionLawSecondIdentity
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThetaSwapFirstTwo
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeUniqA
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeUniqB
 
 set_option autoImplicit false

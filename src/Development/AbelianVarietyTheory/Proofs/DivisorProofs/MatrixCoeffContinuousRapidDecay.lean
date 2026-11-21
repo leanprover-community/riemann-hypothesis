@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousMatrixCoefficientStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixCoeffDecayFirstPartStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixCoeffDecaySecondPartStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousMatrixCoefficient
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixCoeffDecayFirstPart
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixCoeffDecaySecondPart
+
+section
 open MeasureTheory GlobalTheory.RealWeil
 open scoped SchwartzMap
 
@@ -49,3 +50,12 @@ theorem matrixCoeff_continuous_rapidDecay : ∀ (n : ℕ) (g g' : Sch (Fin n)),
     _ ≤ C1 + C2 := by rw [mul_add]; exact add_le_add (h1 w) (h2 w)
 
 end GlobalTheory
+end
+
+open MeasureTheory GlobalTheory.RealWeil
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_coeff_continuous_rapid_decay : ∀ (n : ℕ) (g g' : Sch (Fin n)),
+    Continuous (fun w : Fin n ⊕ Fin n → ℝ => ∫ x, rhoFun w ⇑g x * starRingEnd ℂ (g' x)) ∧
+    ∀ N : ℕ, ∃ C : ℝ, ∀ w : Fin n ⊕ Fin n → ℝ, ‖∫ x, rhoFun w ⇑g x * starRingEnd ℂ (g' x)‖ * (1 + ‖w‖) ^ N ≤ C := by
+  atlas_forward_decl GlobalTheory.matrixCoeff_continuous_rapidDecay

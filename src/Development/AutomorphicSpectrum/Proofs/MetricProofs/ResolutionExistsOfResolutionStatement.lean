@@ -7,9 +7,10 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.I
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBirationalModelExists
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsArithVarOfBlockAlgebraic
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncModelEmbeddedLogResolutionStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MultihomogeneousLiftToJoinStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MultihomogeneousNonvanishingOnJoinStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.MultihomogeneousLiftToJoin
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.MultihomogeneousNonvanishingOnJoin
 
+section
 open MvPolynomial MeasureTheory ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 ReciprocityTheory.AnForm.M GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.PB Filter Topology
 open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap)
 
@@ -135,3 +136,9 @@ theorem resExists_of_resK : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKSt
       exact right_ne_zero_of_mul hne
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+open MvPolynomial MeasureTheory ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 ReciprocityTheory.AnForm.M GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.PB Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.resolution_exists_of_resolution_statement : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → ResExistsStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.resExists_of_resK

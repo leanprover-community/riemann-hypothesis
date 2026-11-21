@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InstPreorder
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BijectiveResidueCompEtaleHenselian
+import BuildAid.ForwardExisting
 
+section
 open IsLocalRing GlobalTheory.Henselisation
 
 namespace GlobalTheory.Henselisation.EtNbhd
@@ -53,3 +55,9 @@ theorem trans_system : ∀ (R : Type) [CommRing R] [IsLocalRing R], (∀ (i : Et
     exact congr($this x)
 
 end GlobalTheory.Henselisation
+end
+
+open IsLocalRing GlobalTheory.Henselisation
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pointedEtaleNbhd_transitionMap_directedSystem : ∀ (R : Type) [CommRing R] [IsLocalRing R], (∀ (i : EtNbhd R) (x : i.B), EtNbhd.trans (le_refl i) x = x) ∧ ∀ (i j k : EtNbhd R) (hij : i ≤ j) (hjk : j ≤ k) (x : i.B), EtNbhd.trans hjk (EtNbhd.trans hij x) = EtNbhd.trans (hij.trans hjk) x := by
+  atlas_forward_decl GlobalTheory.Henselisation.trans_system

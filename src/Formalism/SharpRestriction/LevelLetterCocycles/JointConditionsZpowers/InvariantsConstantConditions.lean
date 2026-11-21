@@ -1,5 +1,4 @@
 import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.BaseLen
-import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.CrysOnCond
 import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.KsMono
 import Formalism.SharpRestriction.LevelLetterCocycles.EmbeddingTypes
 

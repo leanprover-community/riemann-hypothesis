@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SumRhoEqTrace
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopologyStatement
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.SW.ThW.Lco
@@ -66,3 +68,11 @@ theorem main : ∀ (F : Type) [Field F] [NumberField F] (ι : Type) [Fintype ι]
     rw [indC, Set.indicator_of_notMem hx, Set.indicator_of_notMem hy']
 
 end GlobalTheory.CompanionTheory.SW.ThW.Lco
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology GlobalTheory.CompanionTheory.SW.Core GlobalTheory.CompanionTheory.SW.ThW
+open scoped ENNReal NNReal MatrixGroups Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelic_level_lattice_compact_open : ∀ (F : Type) [Field F] [NumberField F] (ι : Type) [Fintype ι] [DecidableEq ι] (N : ℕ), 0 < N → IsCompact (latN F ι N : Set (ι → A F)) ∧ IsOpen (latN F ι N : Set (ι → A F)) ∧ ∀ a : ι → F, SB (indC N a) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.ThW.Lco.main

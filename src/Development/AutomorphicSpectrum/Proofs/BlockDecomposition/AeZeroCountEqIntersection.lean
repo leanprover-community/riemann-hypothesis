@@ -1,19 +1,18 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ChernDegreeComplex
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsPresents
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallyExistsFiniteSubsetNonzeroLocus
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenericResidueLinearIndependence
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.InterNumEqSumLengthMulInterNumRed
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeometricallyConnectedOfSurjective
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GoodStalks
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AePolynomialNonvanishingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GenericSectionsCotangentIndepStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeaklyRegularOfCotangentIndepStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.VarietyStalkRegularDimStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HyperplaneCutGoodStalksStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EulerCharZeroDimSupportStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedPointsCountComplexStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AePolynomialNonvanishing
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GenericSectionsCotangentIndep
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeaklyRegularOfCotangentIndep
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.VarietyStalkRegularDim
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HyperplaneCutGoodStalks
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EulerCharZeroDimSupport
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedPointsCountComplex
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -137,3 +136,13 @@ theorem koszul_count : ∀ (Y : Var ℂ) (Δ : Y.Dv) (L : LB Y.X) (r : L.ι → 
   exact (Var.inter_eq_of_toPic_eq (fun _ => hL) (fun _ => hP.toPic_eq)).symm
 
 end GlobalTheory.CompanionTheory.KoszulCount
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.Published.ArDegreeModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ae_zero_count_eq_intersection : ∀ (Y : Var ℂ) (Δ : Y.Dv) (L : LB Y.X) (r : L.ι → Y.Fnˣ) (hL : L.IsLB) (n : ℕ) (b : Fin n → L.Sec) (hb : ⨆ j, nonzeroLocus (b j) = ⊤), Presents Δ L r → ∀ᵐ C ∂(volume : Measure (Fin Y.dim → Fin n → ℂ)), ((({y : CxPts Y.str (RingHom.id ℂ) | ∀ (k : Fin Y.dim) (i : L.ι), y ∈ ptsIn Y.str (RingHom.id ℂ) (L.U i) → ∑ j, C k j * secVal Y.str (RingHom.id ℂ) (b j) i y = 0}).ncard : ℕ) : ℤ) = Y.inter fun _ => Δ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KoszulCount.koszul_count

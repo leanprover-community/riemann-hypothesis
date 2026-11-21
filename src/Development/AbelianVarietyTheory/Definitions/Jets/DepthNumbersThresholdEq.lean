@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.CharacterGerms.RestNonneg
 import Development.AutomorphicArithmetic.OrbitLabellings.RowDefs
 import Formalism.LocalToGlobal.CharacterGerms.ValuationChoiceHypothesis
 import Formalism.LocalToGlobal.ProjectiveLattices.DepRun

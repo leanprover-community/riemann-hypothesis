@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeIntCut
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFix
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FrTanDirAlg
 
 open NumberField TensorProduct

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrActApply
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg GlobalTheory.SteepMult
 
 namespace GlobalTheory.SteepMult.AdPCasimir
@@ -62,3 +65,9 @@ theorem sum_adP_mul_adP (R S : ℕ) (z w : NC R S) :
     by_cases h1 : z1 = w1 <;> by_cases h2 : z2 = w2 <;> simp [h1, h2, eq_comm, add_comm]
 
 end GlobalTheory.SteepMult.AdPCasimir
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg GlobalTheory.SteepMult
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adjoint_block_orthogonality : ∀ (R S : ℕ) (z w : NC R S), ∑ a : Ix R S, ∑ b : Ix R S, (if sameBlock a b then ∑ y : NC R S, (starRingEnd ℂ) (adP (Eab b a) y z) * adP (Eab b a) y w else 0) = if z = w then ((R + S : ℕ) : ℂ) else 0 := by
+  atlas_forward_decl GlobalTheory.SteepMult.AdPCasimir.sum_adP_mul_adP

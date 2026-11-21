@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementG
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RemainderNormLeStrictUpper
 
 open Matrix

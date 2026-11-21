@@ -2,7 +2,9 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemOfAevalEqZero
 import Development.WeilBound.CoreStatements.HodgeTatePoints.GfForms
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.ArchBd
@@ -303,3 +305,10 @@ theorem section_bound : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fin
     _ ≤ (1 + |M|) * A.h z := mul_le_mul_of_nonneg_right hb3 hAz.le
 
 end GlobalTheory.CompanionTheory.Ar.ArchBd
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Small GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.Ht
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_value_bound : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (d : ℕ), IsArithVar (mCoordIdeal y) d → Birational y → ∀ (A : HermLine ι) (q m : ℕ) (u : Ω), IsSmoothHerm A → 0 < q → 0 < m → (m : Ω) * u ^ q ∈ chartLatNm y A.a q → ∃ C : ℝ, ∀ z ∈ ptsOver ℂ (mCoordIdeal y), ∀ val : ℂ, HasVal y A.a u z val → ‖val‖ ≤ Real.exp C * A.h z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ArchBd.section_bound

@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.SharpRestriction.GrowthBounds.ObjPol
-import Formalism.LocalRingCardinality.Params
 import Formalism.LocalRingCardinality.DataSpaces
 import Formalism.LocalRingCardinality.DataCoeff
 import Formalism.LocalRingCardinality.DataArith
@@ -11,28 +10,21 @@ import Formalism.SharpRestriction.GrowthBounds.DataG
 import Formalism.LocalRingCardinality.DataCD
 import Formalism.FrobeniusOrbits.DiscrMaximalRealCyclotomic
 import Formalism.FrobeniusOrbits.HostOrbitsPlaces
-import Formalism.FrobeniusOrbits.HostDiffSupport
 import Formalism.FrobeniusOrbits.HostThickExists
 import Formalism.FrobeniusOrbits.HostOrbitCountSg
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
-import Formalism.CoboundaryTransfers.Statement
 import Formalism.DegreeFormula.FlagDegFormula
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FrameTransport
-import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 import Formalism.SharpRestriction.GrowthBounds.DataGChain
 import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.RealCyclotomicSubfield
 import Formalism.LocalRingCardinality.DataLevel
-import Formalism.SatakeDualWeyl.Statement
 import Formalism.FormalDegreeBessel.StatementG
-import Formalism.FrobeniusOrbits.Statement
 import Formalism.FormalDegreeBessel.StatementDS
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.TameInertiaTowers.FinalGroup
 import Formalism.TameInertiaTowers.CentralOrderTwo.Galois
 import Formalism.TameInertiaTowers.CentralOrderTwo.ConjEqInvOfPowEqOne
 import Formalism.FormalDegreeBessel.StatementBF
 import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.RealPlaceAnalysis.StatementE
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactCasimirHighestWeight
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IsCompactInvariantCompactSpan
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IsCompactInvariantOrthogonalInf
@@ -40,8 +32,6 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.FirstSlotSliceSlotMixedCasimi
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IndefiniteUnitaryPreservesForm
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
-import Formalism.RealPlaceAnalysis.StatementU
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
 import Formalism.RealPlaceAnalysis.StatementD
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuadraticInequalityBoundHolds
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.SumOfSquaresIdentityHolds
@@ -51,9 +41,6 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.TrPowSumFilterZero
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
-import Formalism.RealPlaceAnalysis.SmoothOnG
-import Formalism.RealPlaceAnalysis.StatementA
-import Formalism.RealPlaceAnalysis.StatementC
 
 universe u_1 u_2
 

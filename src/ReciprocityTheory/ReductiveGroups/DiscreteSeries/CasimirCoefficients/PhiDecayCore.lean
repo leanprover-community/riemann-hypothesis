@@ -1,9 +1,7 @@
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DecPos
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DecLog
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DecMoments
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DecSum
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ToMKMulInv
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DecALogLower
 
 noncomputable section

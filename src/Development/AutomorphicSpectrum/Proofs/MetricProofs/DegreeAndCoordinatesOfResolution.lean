@@ -1,23 +1,19 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.ThmISt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 import Development.AutomorphicSpectrum.PublishedTheorems.Metrics₂.PoincareLelong
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFCoord
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.GenDeg
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ChangeOfModel
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PullWMemFibre
 import GroundTheory.HeightsAndTheta.Heights.Intersections.Assembly
 import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.SemilocResidueDegOfFibreIncomp
 import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.FibreIncomp
-import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.PtsIntegrable
-import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.NumbersDVRC3ResidualContractionComponent
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FibreDim
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Pub
 
 open GroundTheory.Heights₂.Heights
@@ -54,3 +50,8 @@ theorem genDeg_and_pfCoord :
   exact ⟨genDeg_of_resExists hE, pfCoord_of_genDeg (genDeg_of_resExists hE)⟩
 
 end GlobalTheory.CompanionTheory.Ar.Pub
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.degree_and_coordinates_of_resolution : ReciprocityTheory.ChartRestriction.G.Geo.ResExistsStatement → ReciprocityTheory.ChartRestriction.G.AI.I4.GenDegStatement ∧ ReciprocityTheory.ChartRestriction.G.AI.I4.PFCoordStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Pub.genDeg_and_pfCoord

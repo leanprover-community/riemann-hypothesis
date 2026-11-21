@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DwCons
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset
@@ -74,3 +76,16 @@ theorem Rw_left (n : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] 
     simp only [ContinuousLinearMap.comp_apply, lmul_apply, Matrix.mul_assoc]
 
 end GlobalTheory.CompanionTheory.SobGL.LeftTr
+end
+end
+
+open MeasureTheory Matrix Finset
+open scoped ContDiff
+open PositivityTheory.RgTw (Mat G)
+open PositivityTheory.RgBcC GlobalTheory.CompanionTheory.SobGL
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.left_translate_right_derivative : ∀ (n : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (f : Mat n → V),
+    ContDiffOn ℝ ∞ f (GLs n) → ∀ x ∈ GLs n, ContDiffOn ℝ ∞ (fun y => f (x * y)) (GLs n) ∧
+      ∀ (w : List (Idx n)), ∀ y ∈ GLs n, Rw w (fun y => f (x * y)) y = Rw w f (x * y) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SobGL.LeftTr.Rw_left

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProjectionGramMatrices.AlgebraMapNeZeroOfNotMem
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProjectionGramMatrices.IdxDet
 
 noncomputable section

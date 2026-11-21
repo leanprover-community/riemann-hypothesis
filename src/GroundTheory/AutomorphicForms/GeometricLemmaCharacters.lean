@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.GeometricLemmaJacquetCell
-import GroundTheory.AutomorphicForms.CuspidalAdmissible
 import GroundTheory.AutomorphicForms.JacquetAdmissible
 set_option maxSynthPendingDepth 1
 

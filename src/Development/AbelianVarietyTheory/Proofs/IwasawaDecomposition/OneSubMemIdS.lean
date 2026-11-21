@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.Columns.AdelicLemmas
 import Formalism.LocalToGlobal.Columns.TwQCmp
 import Formalism.LocalToGlobal.Columns.HeckeInertLemmas
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DivisorsAtInvDualLabelAndStabilizerMul

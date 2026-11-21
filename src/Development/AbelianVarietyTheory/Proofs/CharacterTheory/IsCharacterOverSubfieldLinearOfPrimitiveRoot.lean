@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.BI
 namespace GlobalTheory.BI
 
@@ -26,3 +29,9 @@ theorem isChar_linear : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (G : 
     simp
   rw [this, hμ]
 end GlobalTheory.BI
+end
+
+open GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCharacterOverSubfield_linear_of_primitiveRoot : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (G : Type) [Group G] (m : ℕ) (ζ : K) (lam : G →* Lˣ), m ≠ 0 → IsPrimitiveRoot ζ m → (∀ g : G, g ^ m = 1) → IsChar K L (fun g => (lam g : L)) := by
+  atlas_forward_decl GlobalTheory.BI.isChar_linear

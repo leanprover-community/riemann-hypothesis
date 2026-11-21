@@ -1,5 +1,8 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GlESymmApply
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemStabGLAdeleIff
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.L2.Forms Formalism.UG Formalism.L2.GlobalTheoryTheory.LocalLatticeBases NumberField IsDedekindDomain Matrix GlobalTheory.LevelHecke
 open scoped TensorProduct
 
@@ -107,3 +110,10 @@ theorem exists_smul_mem_of_mem_latS : ∀ (F E : Type) [Field F] [NumberField F]
   exact M.smul_mem _ (s j).2
 
 end GlobalTheory.LatticeDescent
+end
+
+open Formalism.BasicNotions Formalism.L2.Forms Formalism.UG Formalism.L2.GlobalTheoryTheory.LocalLatticeBases NumberField IsDedekindDomain Matrix GlobalTheory.LevelHecke
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_smul_mem_lattice_of_mem_completion : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (v : HeightOneSpectrum (𝓞 F)) (n : ℕ) (M : Submodule (𝓞 E) (Fin n → E)), Submodule.IsLattice E M → ∀ z : Fin n → E, (fun a => inclE (F := F) (v.adicCompletion F) (z a)) ∈ latS (F := F) (v.adicCompletion F) (intV E v) M → ∃ r : 𝓞 F, r ∉ v.asIdeal ∧ algebraMap (𝓞 F) (𝓞 E) r • z ∈ M := by
+  atlas_forward_decl GlobalTheory.LatticeDescent.exists_smul_mem_of_mem_latS

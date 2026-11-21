@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoDefs
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoLevFacts
 import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.SelmerDuality.Frobenius
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardDualZmodModuleEqCardStatement

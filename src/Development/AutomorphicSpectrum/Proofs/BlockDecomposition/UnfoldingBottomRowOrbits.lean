@@ -1,7 +1,9 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.HaarSK
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -306,3 +308,8 @@ theorem coord_exists : Ad3.R.G2a := by
 
 end GlobalTheory.CompanionTheory.RSCoord
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unfolding_bottom_row_orbits : Ad3.R.G2a := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RSCoord.coord_exists

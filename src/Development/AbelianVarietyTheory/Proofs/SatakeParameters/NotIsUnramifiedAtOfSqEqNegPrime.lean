@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NotSqMulUnit
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory.SqrtNegRam
@@ -39,3 +42,9 @@ theorem not_isUnramifiedAt_of_sq_eq_neg :
   exact GlobalTheory.UnramSquare.not_sq_mul_unit K w.asIdeal hZ p hp hpw y (-1) hu hy2
 
 end GlobalTheory.SqrtNegRam
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.not_isUnramifiedAt_of_sq_eq_neg_prime : ∀ (E K : Type) [Field E] [NumberField E] [Field K] [NumberField K] [Algebra E K] (p : ℕ), p.Prime → ¬ (p : ℤ) ∣ discr E → ∀ δ : K, δ ^ 2 = -(p : K) → ∀ w : HeightOneSpectrum (𝓞 K), (p : 𝓞 K) ∈ w.asIdeal → ¬ Algebra.IsUnramifiedAt (𝓞 E) w.asIdeal := by
+  atlas_forward_decl GlobalTheory.SqrtNegRam.not_isUnramifiedAt_of_sq_eq_neg

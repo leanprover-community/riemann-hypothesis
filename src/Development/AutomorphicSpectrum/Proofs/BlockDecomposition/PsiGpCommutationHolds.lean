@@ -6,15 +6,15 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothPsiMinus
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InvariantPairingMirabolicVanishing
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviIntegralFacts
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicProductTwoRepsEquivTwoBlockInduction
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GpProjContinuousStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HGPClosedStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HGPClosed
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemHGPIffParabolicStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GpProjLeviFormulaStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GpProjLeviFormula
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GpProjUnipotentStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GpProjUnipotentSurjectiveStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactInductionTwistedKernelStatement
 
+section
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib
 open scoped TensorProduct
 
@@ -387,3 +387,11 @@ theorem psiGP : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [
   exact psiMinus_cInd_equiv_smInd ρ τ hρ hτ
 
 end GlobalTheory.CompanionTheory.RgGu.PsiGP
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.psi_gp_commutation_holds : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], PsiGP k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgGu.PsiGP.psiGP

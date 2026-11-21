@@ -1,6 +1,4 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.AdFormOf
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanTateIntegral
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrablePowerWeightRealStatement
 
 open MeasureTheory

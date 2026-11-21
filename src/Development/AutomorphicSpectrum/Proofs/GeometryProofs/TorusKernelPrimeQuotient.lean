@@ -1,11 +1,10 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocharLie
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CharValMultiplicativeStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CharValMultiplicative
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CompactCentralizerTranslate
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsSurjectiveZmodOfNeZero
 
+section
 noncomputable section
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
@@ -219,3 +218,12 @@ theorem exists_mu_killed : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsSepar
   exact ⟨l, hl, ψ, hs, fun A _ g t ht => (hmain A g _ rfl t).2 fun y hy => ht y (hψ y hy)⟩
 
 end GlobalTheory.CompanionTheory.Ar.TsField
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torus_kernel_prime_quotient : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsSeparated G.hom] (X : Type) [AddCommGroup X] [Module.Finite ℤ X] (u : splitTorus S X ⟶ G) [IsMonHom u] (k : Type) [Field k] (b : Sp k ⟶ S) (M : LieModel (splitTorus S X) b (X →+ k)), IsCocharLie M → ∀ δ : X →+ k, δ ≠ 0 → M.pt δ ≫ u = 1 → ∃ (l : ℕ) (_ : l.Prime) (ψ : X →+ ZMod l), Function.Surjective ψ ∧ KillsOver u ψ.ker b := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.TsField.exists_mu_killed

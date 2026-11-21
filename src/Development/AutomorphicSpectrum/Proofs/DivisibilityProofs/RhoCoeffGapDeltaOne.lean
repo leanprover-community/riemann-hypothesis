@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.IsChainFirst
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Top.FlDeg.CoeffDelta
@@ -102,3 +104,10 @@ theorem coeff_rhoM_gapDelta (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) 
   exact h2
 
 end GlobalTheory.CompanionTheory.Ar.Top.FlDeg
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Top.FlDeg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rho_coeff_gap_delta_one : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ), coeff (rhoM Ψ N) (gapDelta Ψ N) = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.FlDeg.coeff_rhoM_gapDelta

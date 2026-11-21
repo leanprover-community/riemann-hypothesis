@@ -2,7 +2,7 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairStructureOnLine
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumMemOfStable
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CliffordHighestWeightVectorStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ParthasarathyRaoVaradarajanStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ParthasarathyRaoVaradarajan
 
 noncomputable section
 

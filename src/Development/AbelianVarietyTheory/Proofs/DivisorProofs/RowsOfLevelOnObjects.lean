@@ -8,7 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffSetI
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RePosOfIsMultIP
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLiftModelsOn
 import Formalism.LocalToGlobal.ProjectiveLattices.LevelPb
-import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 
 noncomputable section
 

@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfCharInfCharOfCommute
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiscreteSpectrumOfResidual
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiscreteAutomorphicRepGLExistsLocalComponent
 
+section
 noncomputable section
 
 open NumberField GlobalTheory.CuspRep GlobalTheory.UnitaryBC
@@ -25,3 +25,9 @@ theorem discInf : DiscInf := by
 end GlobalTheory.CompanionTheory.EGlue
 
 end
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.discrete_infimum : GlobalTheory.CompanionTheory.EGlue.DiscInf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.discInf

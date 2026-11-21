@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QSPow
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DomainPointStabilizerTrivial
 
+section
 open Matrix NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst GlobalTheory.ScalarPoin
 
 namespace GlobalTheory.ScalarPoin.BlockFree
@@ -47,3 +48,9 @@ theorem eq_one_of_gm_toBlocks₁₂ : ∀ (E : Type) [Field E] [NumberField E] [
   · exact (KU.lact_rmul' X γ x0 _).trans (funext e')
 
 end GlobalTheory.ScalarPoin.BlockFree
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst GlobalTheory.ScalarPoin MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_one_of_orthonormal_conj_block_upper_triangular : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (x0 : Frame X.Ψ r), IsOrth X x0 → ∀ γ ∈ X.Γ, (∀ τ, (KU.gm X x0 γ τ).toBlocks₁₂ = 0) → γ = 1 := by
+  atlas_forward_decl GlobalTheory.ScalarPoin.BlockFree.eq_one_of_gm_toBlocks₁₂

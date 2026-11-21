@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory
@@ -140,3 +143,9 @@ theorem intCast_trace_eq_trace_quotient_of_mem (L : Type) [Field L] [NumberField
   rw [this, Algebra.trace_prod_apply, map_zero, add_zero]
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.intCast_trace_eq_trace_quotient_of_mem' : ∀ (L : Type) [Field L] [NumberField L] (l b : ℕ) [Fact l.Prime] (I Q : Ideal (𝓞 L)), I ⊔ Q = ⊤ → I * Q = Ideal.span {((l ^ b : ℕ) : 𝓞 L)} → ∀ [Algebra (ZMod (l ^ b)) (𝓞 L ⧸ I)] (x : 𝓞 L), x ∈ Q → ((Algebra.trace ℤ (𝓞 L) x : ℤ) : ZMod (l ^ b)) = Algebra.trace (ZMod (l ^ b)) (𝓞 L ⧸ I) (Ideal.Quotient.mk I x) := by
+  atlas_forward_decl GlobalTheory.intCast_trace_eq_trace_quotient_of_mem

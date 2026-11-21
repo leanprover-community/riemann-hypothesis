@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OverExtAlgebraMap
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.UnitLemma.Unr
@@ -33,3 +35,10 @@ theorem map_int (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E) (hU : IsUnrExt K K' 
   exact IsDiscreteValuationRing.exists_lift_of_le_one (valuation_le_one_of_val_nonneg K' _ hφ hv)
 
 end GlobalTheory.UnitLemma.Unr
+end
+end
+
+open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Unr Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramifiedInvolutionExt_maps_integers_to_integers : ∀ (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E), IsUnrExt K K' d φ → ∀ x : K.O, ∃ y : K'.O, algebraMap K'.O K'.E y = φ (algebraMap K.O K.E x) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.Unr.map_int

@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.OrbitPushLoc
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.OrbitPushE
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.OrbitPushQ
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Filter Topology Matrix
@@ -239,3 +241,9 @@ theorem hypChart : HypChart := by
   rw [himg, hypM_eq_kapT k T' hT' _ (opEMeas k r T' ρ) (opE_subset k r T' hT' ρ)]
 
 end GlobalTheory.HypChartPf
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hyperboloid_chart_measure_formula : PI.RhsWLim.W.HypChart := by
+  atlas_forward_decl GlobalTheory.HypChartPf.hypChart

@@ -3,8 +3,9 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNot
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveModelNonempty
 import Development.WeilBound.CoreStatements.VolumeEquality.RegularFunctionChartAdjoin
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueDominatingMapStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsNormalisationStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueDominatingMap
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsNormalisation
+
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar
 
 noncomputable section

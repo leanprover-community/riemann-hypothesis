@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalRingCardinality.DataCD
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OmegaLebUnique
 
 open Formalism.BasicNotions MeasureTheory Filter Topology Matrix

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.SamePartIffOfNeZero
+import BuildAid.ForwardExisting
 
+section
 open Polynomial Classical GlobalTheory.BadShare
 namespace GlobalTheory.BadShare.TwoRoots
 
@@ -172,3 +174,9 @@ theorem card_irreducible_samePart_le : ∀ (g : ℕ) [Fact g.Prime], ∀ (N d l 
     _ = _ := by rw [← Real.rpow_add (by positivity)]; congr 1; ring
 
 end GlobalTheory.BadShare.TwoRoots
+end
+
+open Polynomial Classical GlobalTheory.BadShare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_irreducible_samePrimeToPart_roots_le : ∀ (g : ℕ) [Fact g.Prime], ∀ (N d l : ℕ), 2 ≤ d → d ≤ N → l.Prime → ¬ BB g N l → (((sqSet g d).filter fun P => Irreducible P ∧ ∃ x ∈ P.aroots (AlgebraicClosure (ZMod g)), ∃ y ∈ P.aroots (AlgebraicClosure (ZMod g)), x ≠ y ∧ SamePart l x y).card : ℝ) ≤ (g : ℝ) ^ ((3 * d : ℝ) / 4) := by
+  atlas_forward_decl GlobalTheory.BadShare.TwoRoots.card_irreducible_samePart_le

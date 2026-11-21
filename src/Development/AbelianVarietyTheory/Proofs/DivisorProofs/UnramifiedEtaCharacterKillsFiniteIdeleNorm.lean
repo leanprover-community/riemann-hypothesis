@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsOfBalanced
 
+section
 noncomputable section
 
 namespace GlobalTheory.EtaTildeNorm
@@ -105,3 +105,15 @@ open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 theorem GlobalTheory.EtaTildeNorm.map_finIdl_norm : ∀ (D : D7) (χ : HChar D.host.E), Formalism.L2.Host.IsEtaT D.host χ →
     ∀ x : (AE D)ˣ, χ.1 (finIdl D (x * sgU D x)) = 1 :=
   fun D χ hχ x => GlobalTheory.EtaTildeNorm.eq_one D χ hχ x
+end
+end
+
+open scoped Pointwise
+open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
+open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
+open Formalism.L2.Host (HChar)
+open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum
+open GlobalTheory.Mem.Col2.SplitChar (finIdl)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_eta_character_kills_finite_idele_norm : ∀ (D : D7) (χ : HChar D.host.E), Formalism.L2.Host.IsEtaT D.host χ → ∀ x : (AE D)ˣ, χ.1 (finIdl D (x * sgU D x)) = 1 := by
+  atlas_forward_decl GlobalTheory.EtaTildeNorm.map_finIdl_norm

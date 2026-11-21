@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.AlgValsFinMain
 open NumberField IsDedekindDomain Formalism.L2.Host
 noncomputable section

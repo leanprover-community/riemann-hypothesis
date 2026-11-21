@@ -1,8 +1,9 @@
 import Development.WeilBound.CoreStatements.FlagImmersions.TauInInjective
 import Development.WeilBound.CoreStatements.VolumeEquality.ChartMeetsPoint
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.NearRecordOfValue
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSystemSplitFibresStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatHermRootLineDegreeStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSystemSplitFibres
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatHermRootLineDegree
 
 noncomputable section
 

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbAApply
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField MeasureTheory
@@ -84,3 +86,11 @@ theorem _root_.GlobalTheory.HeckePoisson.Dilation.fourier_comp_dil (I : Type) [F
     abs_of_pos (inv_pos.mpr (Real.exp_pos _)), ← Real.exp_neg, Complex.real_smul]
 
 end GlobalTheory.HeckePoisson.Dilation
+end
+end
+
+open NumberField MeasureTheory
+open scoped RealInnerProductSpace FourierTransform
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fourier_comp_coordDilationByHalfExp : ∀ (I : Type) [Fintype I] (f : EuclideanSpace ℂ I → ℂ) (y : I → ℝ) (l : EuclideanSpace ℂ I), 𝓕 (fun w : EuclideanSpace ℂ I => f (WithLp.toLp 2 (GlobalTheory.HeckeTheta.dil y (WithLp.ofLp w)))) l = (Real.exp (-∑ i, y i) : ℂ) * 𝓕 f (WithLp.toLp 2 (GlobalTheory.HeckeTheta.dil (-y) (WithLp.ofLp l))) := by
+  atlas_forward_decl GlobalTheory.HeckePoisson.Dilation.fourier_comp_dil

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIndependentBasisCoprimeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankEqRankMulDegreeStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankEqRankMulDegree
+
+section
 open NumberField
 
 namespace GlobalTheory.LatticeModN
@@ -47,3 +49,9 @@ theorem exists_gen_modN : ∀ (F : Type) [Field F] [NumberField F] (M : Type) [A
         _ = _ := by rw [hb]; ring
 
 end GlobalTheory.LatticeModN
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_rank_two_basis_mod_N : ∀ (F : Type) [Field F] [NumberField F] (M : Type) [AddCommGroup M] [Module (𝓞 F) M] [Module.Finite ℤ M] [IsAddTorsionFree M], Module.finrank ℤ M = 2 * Module.finrank ℚ F → ∀ N : ℕ, 1 ≤ N → ∃ x : Fin 2 → M, (∀ m : M, ∃ (a b : 𝓞 F) (m' : M), m = a • x 0 + b • x 1 + N • m') ∧ ∀ a b : 𝓞 F, (∃ m' : M, a • x 0 + b • x 1 = N • m') → (N : 𝓞 F) ∣ a ∧ (N : 𝓞 F) ∣ b := by
+  atlas_forward_decl GlobalTheory.LatticeModN.exists_gen_modN

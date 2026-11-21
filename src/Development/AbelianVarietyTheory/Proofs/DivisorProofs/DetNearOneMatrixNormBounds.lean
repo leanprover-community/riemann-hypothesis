@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix Polynomial
 
 namespace GlobalTheory
@@ -61,3 +63,8 @@ theorem det_near_one_bounds (n : ℕ) (A : Matrix (Fin n) (Fin n) ℂ) (ε : ℝ
   exact pow_le_pow_left₀ (by norm_num) (by norm_num) n
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_near_one_matrix_norm_bounds : ∀ (n : ℕ) (A : Matrix (Fin n) (Fin n) ℂ) (ε : ℝ), (∀ i j, ‖A i j - (1 : Matrix (Fin n) (Fin n) ℂ) i j‖ ≤ ε) → (n : ℝ) * ε ≤ 1 / 2 → (1 / 2 : ℝ) ^ n ≤ ‖A.det‖ ∧ ‖A.det‖ ≤ 2 ^ n := by
+  atlas_forward_decl GlobalTheory.det_near_one_bounds

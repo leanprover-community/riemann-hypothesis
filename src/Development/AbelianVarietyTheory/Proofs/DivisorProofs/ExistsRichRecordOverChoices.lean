@@ -2,7 +2,6 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsRecordOverChoices
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.TotientDvdCardUnitsQuot
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletelySplitPrimeHostPlaceProperties
-import Development.AutomorphicArithmetic.WeightCongruences.ProdNegOneZpow
 
 noncomputable section
 

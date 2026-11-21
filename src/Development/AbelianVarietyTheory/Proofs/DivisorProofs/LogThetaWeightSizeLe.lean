@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Real
 
 namespace GlobalTheory
@@ -49,3 +52,9 @@ theorem log_theta_weight_size_le (f r Lb S sz : ℝ) (hf : 1 ≤ f) (hr : 1 ≤ 
   · exact (Real.log_le_iff_le_exp h).mpr key
 
 end GlobalTheory
+end
+
+open Real
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_le_twenty_mul_of_bounds : ∀ (f r Lb S sz : ℝ), 1 ≤ f → 1 ≤ r → 1 ≤ Lb → Real.log (f * r) ≤ Lb → (∃ N : ℕ, S = N) → Real.log S ≤ 10 * Lb → 0 ≤ sz → sz ≤ (1 + r) * S + r * f * (4 * (f * r + 1) + 1) → Real.log sz ≤ 20 * Lb := by
+  atlas_forward_decl GlobalTheory.log_theta_weight_size_le

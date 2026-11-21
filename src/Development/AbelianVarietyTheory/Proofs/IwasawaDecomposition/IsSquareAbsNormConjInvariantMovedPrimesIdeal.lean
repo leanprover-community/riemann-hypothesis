@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.ProjectiveLattices.ThClass
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 namespace GlobalTheory.SquareNorm
@@ -61,3 +63,9 @@ theorem isSquare_absNorm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   exact ⟨Ideal.absNorm 𝔞, by rw [ha, map_mul, hN]⟩
 
 end GlobalTheory.SquareNorm
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isSquare_absNorm_conjInvariant_movedPrimes_ideal : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (𝔡 : Ideal (𝓞 E)), 𝔡 ≠ ⊥ → 𝔡.map (H.bar : 𝓞 E →+* 𝓞 E) = 𝔡 → (∀ P : Ideal (𝓞 E), P.IsPrime → 𝔡 ≤ P → P.map (H.bar : 𝓞 E →+* 𝓞 E) ≠ P) → IsSquare (Ideal.absNorm 𝔡) := by
+  atlas_forward_decl GlobalTheory.SquareNorm.isSquare_absNorm

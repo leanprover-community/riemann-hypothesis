@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyInterleaving.Interleave
+import BuildAid.ForwardExisting
 
+section
 open Zc.Comb
 open Classical
 
@@ -639,3 +641,10 @@ theorem sqLen_lt_of_inSh {T : Type u} (s : T → T) (hs : Function.Injective s)
       h0 L (fun Δ h => Multiset.mem_add.2 (Or.inr h))]
 
 end GlobalTheory.CompanionTheory.MultiSeg.Rank
+end
+
+open Zc.Comb
+universe u
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shuffle_weight_square_length_lt : ∀ {T : Type u} (s : T → T), Function.Injective s → (∀ (t : T) (j : ℕ), 0 < j → s^[j] t ≠ t) → ∀ (L : List (ASeg T)) (n : Multiset (ASeg T)), AOrdered s L → InSh s n (wt s L) → n ≠ (L : Multiset (ASeg T)) → sqLen n < sqLen (L : Multiset (ASeg T)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MultiSeg.Rank.sqLen_lt_of_inSh

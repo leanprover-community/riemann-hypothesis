@@ -1,5 +1,7 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FactorRapid
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -89,3 +91,9 @@ theorem ltSob : LtSob := by
     simp only [Om, Pi.smul_apply, Pi.add_apply, ht]
 
 end GlobalTheory.CompanionTheory.KerFc
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.left_translate_sobolev : GlobalTheory.CompanionTheory.KerFc.LtSob := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KerFc.ltSob

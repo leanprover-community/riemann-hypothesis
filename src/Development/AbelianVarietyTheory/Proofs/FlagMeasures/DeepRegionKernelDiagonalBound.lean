@@ -6,10 +6,11 @@ import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.DeepSetBound
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DeepRegionExponents
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasureLeCardMul
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsLimitOfChart
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CanonicalLatticeFiltrationSizeProperties
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CanonicalLatticeFiltrationSizePropertiesStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LeftQuotientCovolumeEqFundamentalDomainInterStatement
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory NumberField Formalism.MainNotions.S GlobalTheory.Count
 
 namespace GlobalTheory.DeepRegion
@@ -150,3 +151,10 @@ theorem deepBound (hV : GlobalTheory.FlagMeas.AbsoluteVolume) (hK : GlobalTheory
         field_simp
 
 end GlobalTheory.DeepRegion
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec
+open scoped InnerProductSpace ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.deepRegion_kernelDiagonal_bound : GlobalTheory.FlagMeas.AbsoluteVolume → GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.DeepKernelBound → GlobalTheory.IndefiniteRowSideFullHecke.DeepSet.DeepBound := by
+  atlas_forward_decl GlobalTheory.DeepRegion.deepBound

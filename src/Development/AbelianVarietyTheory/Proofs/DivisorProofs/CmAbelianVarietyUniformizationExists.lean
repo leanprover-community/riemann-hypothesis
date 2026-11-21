@@ -3,17 +3,17 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PeriodComp
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeMultiplicationStableStatement
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.PolarisationModuleIndex
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeMultiplicationStable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDenominatorOfAdelicLatticeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationModuleUnitDualStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmTypeRealEmbeddingEquivStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmLatticeImageDiscreteStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmLatticeImageSpansRealStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmLatticeDualIntegralImageStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmTraceFormImaginaryPartStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmSkewIdealFractionalIdealStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationModuleUnitDual
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmTypeRealEmbeddingEquiv
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmLatticeImageDiscrete
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmLatticeImageSpansReal
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmLatticeDualIntegralImage
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmTraceFormImaginaryPart
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmSkewIdealFractionalIdeal
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -267,3 +267,17 @@ theorem GlobalTheory.LatTorus.exists_unif_of_lattice : ∀ (K : Type) [Field K] 
     rw [h4]
     have h5 := isAlgebraic_algebraMap (R := ℚ) (A := ℂ) ((4 * (N ^ 2 * d) : ℕ) : ℚ)
     rwa [map_natCast] at h5
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet
+open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.RealMult GlobalTheory.CMVal
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cm_abelian_variety_uniformization_exists : ∀ (K : Type) [Field K] [NumberField K] (d : ℕ) (δ : K) (io : K →+* ℂ), Module.finrank ℚ K = 2 → 0 < d → δ ^ 2 = -(d : K) →
+    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [Algebra K E] (I : Type) [Fintype I] (φ : I → E →+* ℂ),
+      IsCMType φ → (∀ i, (φ i).comp (algebraMap K E) = io) → ∀ (c : Ideal (OF E)) (y : (Af E)ˣ), c ≠ ⊥ →
+      ∃ (𝔠 : FracId (FR E)) (X : Obj (FR E) 𝔠 (Sp ℂ)) (U : Unif φ (lattice c y) 0 X),
+        ∀ i, U.h i ≠ 0 ∧ IsAlgebraic ℚ ((U.h i : ℂ) * (Real.sqrt d : ℝ)) := by
+  atlas_forward_decl GlobalTheory.LatTorus.exists_unif_of_lattice

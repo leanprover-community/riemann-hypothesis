@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.Columns.GoodXgTie
 import Formalism.PeriodIntegrals.XgNamed
 
 namespace PI

@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.HeightBoundStatement.HTBoundSt
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LineModel
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GrNormPush
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFlagFrame
 

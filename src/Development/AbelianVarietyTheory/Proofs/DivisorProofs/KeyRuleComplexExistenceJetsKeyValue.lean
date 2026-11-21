@@ -1,11 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsPolAVSectionInverseImage
 import Development.AbelianVarietyTheory.Definitions.Divisors.ToricPeriodBlockIsSymm
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbsoluteSiegel
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffTopMonEqZero
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.CmFieldHostElementAddConjEqOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DimensionZeroCase
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsClassicalThetaDescriptionAbelianPartStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsClassicalThetaDescriptionAbelianPart
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRealCoords
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetEqDetBlock
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValRPush
@@ -15,13 +13,12 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralLabel
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLevelOfLabels
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPosDefFromBlocks
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsQuad
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DifferentiableGen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TermsumTrFacDifferentiable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThJetOfNormalForm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullMulVec
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKeyRuleValueClassicalNormalForm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsKeyInNf
 
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory
 open GlobalTheory GlobalTheory.LieHt GlobalTheory.Cartier GlobalTheory.ThetaOnto GlobalTheory.MBModel GlobalTheory.KeyCl GlobalTheory.Ex GlobalTheory.MBLow GlobalTheory.SecJet
@@ -200,3 +197,13 @@ theorem arch_of_rule4 : ∀ κ : Rule, Rule4 κ → Arch κ := by
 end GlobalTheory.MBLow.ArchProof
 
 end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory
+open GlobalTheory GlobalTheory.LieHt GlobalTheory.Cartier GlobalTheory.ThetaOnto GlobalTheory.MBModel GlobalTheory.KeyCl GlobalTheory.Ex GlobalTheory.MBLow GlobalTheory.SecJet
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.keyRule_complex_existence_jets_key_value : ∀ κ : Rule, Rule4 κ → Arch κ := by
+  atlas_forward_decl GlobalTheory.MBLow.ArchProof.arch_of_rule4

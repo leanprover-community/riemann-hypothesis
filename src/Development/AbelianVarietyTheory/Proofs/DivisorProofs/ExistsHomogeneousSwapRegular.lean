@@ -2,16 +2,14 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.RegularAlteration
 import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OfSwap2
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SwapSumSwap
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTwoEmbeddingsOfTranscendental
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArithIntersectionFormExists
-import Development.AbelianVarietyTheory.Definitions.Divisors.GenericPointAsIdeal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClassInt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GradedMetricPullbackIsometric
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankTwoGradedDeterminantIsometricStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RegularBaseRankTwoMetricFamilyStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RegularBaseRankTwoMetricFamily
 
+section
 set_option autoImplicit false
 set_option synthInstance.maxHeartbeats 400000
 
@@ -96,3 +94,11 @@ theorem swapReg_exists : ArCalc → ∃ G, Homog G ∧ SwapReg G := by
 end GlobalTheory.CovTest.SwapLine
 
 end
+end
+
+open NumberField MvPolynomial Filter Topology Formalism.BasicNotions Formalism.MainNotions Formalism.DegreeFormula GlobalTheory.FlagPoly GlobalTheory.Mean4 GlobalTheory.Mean4O GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.CovTest GlobalTheory.Published
+open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.ArInt
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_homogeneous_swap_regular : ArCalc → ∃ G, Homog G ∧ SwapReg G := by
+  atlas_forward_decl GlobalTheory.CovTest.SwapLine.swapReg_exists

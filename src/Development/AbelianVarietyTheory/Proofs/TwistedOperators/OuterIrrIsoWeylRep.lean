@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonemptyInvFunEquiv
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPiTensorMvPolynomialProdEquivStatement
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MvPolynomial Matrix GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries GlobalTheory.OneFunctional Formalism.BasicNotions GlobalTheory.Branching
@@ -269,3 +270,11 @@ theorem outer_irr_iso_weylRep (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ
   exact iso_span_orbit _ (leftRep n) (detChar n fun τ => lam τ (n - 1)) j hj hequiv _ hv _ hw
 
 end GlobalTheory.OneFunctional.WeylTensor
+end
+end
+
+open MvPolynomial GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries GlobalTheory.OneFunctional Formalism.BasicNotions GlobalTheory.Branching
+open scoped TensorProduct DirectSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.outer_irr_iso_weylRep_of_pos : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ), 0 < n → ∀ (lam : ι → ℕ → ℤ) (μ : ι → DomWeight n), (∀ τ (i : Fin n), (μ τ).w i = lam τ i) → Iso (outer fun τ => irr n (μ τ)) (weylRep n lam) := by
+  atlas_forward_decl GlobalTheory.OneFunctional.WeylTensor.outer_irr_iso_weylRep

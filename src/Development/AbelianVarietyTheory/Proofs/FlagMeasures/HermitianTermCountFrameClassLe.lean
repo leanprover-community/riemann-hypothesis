@@ -1,14 +1,12 @@
 import Mathlib
-import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFacts
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetFrameClassProperties
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermExponentsNonnegAndDefectGroupBoundStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LatticeCountBoundFramesStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GluingCountStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EncardGluingHomKernelsLeStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GluingCount
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EncardGluingHomKernelsLe
 
+section
 open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL MeasureTheory
 open scoped Pointwise ENNReal Classical
 
@@ -89,3 +87,10 @@ theorem nT_cardI_le {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   ring
 
 end GlobalTheory.HL.TermCount
+end
+
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL MeasureTheory
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitianTermCount_frameClass_le : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k), ∀ (d : S.Datum) C (j : ℕ), (S.nT d C fun Λ => S.cardI d Λ = j) ≤ ENNReal.ofReal (S.Hp ^ (12 * (r + 1)) * (j : ℝ) ^ (k - 1)) := by
+  atlas_forward_decl GlobalTheory.HL.TermCount.nT_cardI_le

@@ -1,6 +1,5 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartFH
-import Development.AbelianVarietyTheory.Definitions.TwoChartAtlas.TwoChartSt
 import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsToJetEq
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing TensorProduct

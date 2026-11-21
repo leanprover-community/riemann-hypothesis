@@ -1,5 +1,4 @@
 import Formalism.SharpRestriction.GlobalSchurBounds.JointsL
-import Formalism.LocalRingCardinality.DataErr
 import Formalism.LocalToGlobal.HermitianColumns.ClsNonempty
 
 noncomputable section

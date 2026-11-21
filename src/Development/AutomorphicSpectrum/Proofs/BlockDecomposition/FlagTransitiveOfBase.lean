@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsHermRingRat
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.KFin.Flag
@@ -661,3 +662,11 @@ end Main
 end GlobalTheory.CompanionTheory.KFin.Flag
 
 end
+end
+
+open NumberField IsDedekindDomain Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.KFin
+open Formalism.UG (cT)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_transitive_of_base : ∀ {R : Type} [CommRing R] (c : R →+* R) (𝔬 : Subring R), IsHermRing c 𝔬 → HasBase c 𝔬 → FlagTransitive c 𝔬 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KFin.Flag.flagTransitive

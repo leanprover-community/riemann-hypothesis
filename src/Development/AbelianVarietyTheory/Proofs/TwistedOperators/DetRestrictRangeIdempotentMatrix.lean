@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotCompactOfIdempotent
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.RegSS
 
 noncomputable section
@@ -155,3 +157,10 @@ theorem idempotentDet : IdempotentDet := by
     rw [← Matrix.map_mul, hBA, Matrix.map_one _ (map_zero _) (map_one _)]
 
 end GlobalTheory.RegSS
+end
+end
+
+open GlobalTheory.RegSS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_restrict_range_idempotent_matrix : GlobalTheory.RegSS.IdempotentDet := by
+  atlas_forward_decl GlobalTheory.RegSS.idempotentDet

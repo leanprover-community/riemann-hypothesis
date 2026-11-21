@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.IntegralClosureLocal
 
 theorem mem_maximal_iff_not_inv_mem {K : Type} [Field K] (R : Subring K) [IsLocalRing R]
@@ -45,3 +47,8 @@ theorem mem_maximal_iff_not_inv_mem {K : Type} [Field K] (R : Subring K) [IsLoca
     exact Subtype.ext (mul_inv_cancel₀ hne)
 
 end GlobalTheory.CompanionTheory.IntegralClosureLocal
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.maximal_ideal_membership_of_local : ∀ {K : Type} [Field K] (R : Subring K) [IsLocalRing R] (P : Ideal (integralClosure R K).toSubring), P.IsMaximal → ∀ (t : (integralClosure R K).toSubring), (t : K) ∈ R → (t ∈ P ↔ ¬ ((t : K) ≠ 0 ∧ (t : K)⁻¹ ∈ R)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IntegralClosureLocal.mem_maximal_iff_not_inv_mem

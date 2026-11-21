@@ -5,8 +5,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdjacentRefl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BcDensEqOfGram
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidueDegreeOfIsOpenImmersion
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteExceptional
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GradedMetricPullbackIsometricStatement
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
 
 set_option autoImplicit false
 

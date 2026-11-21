@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemIdempotentComplementIff
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
 
 namespace GlobalTheory.CompanionTheory.CompDich
@@ -65,3 +66,9 @@ theorem dich_comp : ∀ {S : Type} [CommRing S] (ϖ : S) (P : Ideal S), P.IsPrim
     exact Ideal.Quotient.eq_zero_iff_mem.2 ((GlobalTheory.CompanionTheory.CompIdeal.mem_compI_iff P hP x).2 ⟨e, he, heP, h2⟩)
 
 end GlobalTheory.CompanionTheory.CompDich
+end
+
+open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.idempotent_localization_dichotomy : ∀ {S : Type} [CommRing S] (ϖ : S) (P : Ideal S), P.IsPrime → (Val ϖ → Dich (Ideal.Quotient.mk (compI P) ϖ)) ∧ (ϖ ∈ nonZeroDivisors S → Ideal.Quotient.mk (compI P) ϖ ∈ nonZeroDivisors (S ⧸ compI P)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CompDich.dich_comp

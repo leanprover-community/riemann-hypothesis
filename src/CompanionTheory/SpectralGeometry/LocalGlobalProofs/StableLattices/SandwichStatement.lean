@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Lattice
@@ -148,3 +150,10 @@ theorem stSandwich : StSandwich := by
   exact ⟨n, B, fun x => (hB x).trans (forall_congr' fun i => hmem _)⟩
 
 end GlobalTheory.CompanionTheory.Lattice
+end
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.SandwichStatement : StSandwich := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Lattice.stSandwich

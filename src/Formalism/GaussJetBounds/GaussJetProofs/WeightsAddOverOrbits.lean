@@ -1,5 +1,4 @@
 import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
-import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 import Formalism.IncomingBounds.WeightIdentities
 
 noncomputable section

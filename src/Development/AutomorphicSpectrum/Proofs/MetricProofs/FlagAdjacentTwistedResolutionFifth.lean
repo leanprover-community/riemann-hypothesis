@@ -1,15 +1,14 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BasePartFlagPt
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.BaseVectorProperties
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LiftToLogResolutionAnalytic
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAnalyticSpaceNonempty
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAnalyticProjectionBijective
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFunctorialHolomorphic
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentPluckerOrbit
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagPointInMultiprojectivePoints
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentTwistedResolutionThirdStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BaseChartHolomorphicCompositionStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentArithVarietyFirstStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentTwistedResolutionThird
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BaseChartHolomorphicComposition
+
+section
 open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 open scoped ComplexOrder Classical
 open GlobalTheory.CompanionTheory.Ar.PB.WSq
@@ -346,3 +345,12 @@ theorem charts : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (�
     rw [← hx₀, FA.Re.R.inj _ _ (hnot _) (orbit_trans o1 (orbit_trans o2 (orbit_symm o3)))]
 
 end GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh
+end
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+open GlobalTheory.CompanionTheory.Ar.PB.WSq
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_adjacent_twisted_resolution_fifth : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (BM : BaseMetric M n) (FA : FlagAn BM d) (τ : Ψ) (a b : Fin N) (k₀ : K) (ca cb : Fin N), (b : ℕ) = a + 1 → ((b : ℕ) < j ∨ j ≤ (a : ℕ)) → M.blk (τ, a) = some k₀ → (ca : ℕ) = lastCol N j a → (cb : ℕ) = ca + 1 → ∀ (RW : AnLogRes (mCoordIdeal (M.wCo (τ, a) k₀ ca cb RatFunc.X)) ⊤ (d + 2)) (q : Fin 2 → RW.X → FA.S.X), (∀ i, HoloMap RW.A FA.S.A (q i)) → (∀ x x₀, FA.Re.π x₀ = q 0 x → SameOrbit (FA.Re.R.lift x₀ x₀) (fstPt k₀ (RW.lift x x))) → (∀ x x₀, FA.Re.π x₀ = q 1 x → SameOrbit (FA.Re.R.lift x₀ x₀) (sndPt k₀ (RW.lift x x))) → (Function.Injective fun w => (q 0 w, q 1 w)) → ∀ (l : Fin BM.q) (Un : Set (Fin d → ℂ)) (H : Ψ → (Fin d → ℂ) → Matrix (Fin N) (Fin N) ℂ) (bp : (Fin d → ℂ) → BM.Rb.X), IsOpen Un → (∀ τ' r s, AnalyticOnNhd ℂ (fun w => H τ' w r s) Un) → ContinuousOn bp Un → (∀ k, AnalyticOnNhd ℂ (BM.Rb.A.chart k ∘ bp) (Un ∩ bp ⁻¹' (BM.Rb.A.chart k).source)) → (∀ w ∈ Un, bp w ∈ BM.O l \ bdry BM.s ∧ ∀ τ', IsBlockDiag j (H τ' w) ∧ (H τ' w).det ≠ 0) → ∃ (ΦY : (Fin (d + 1) → ℂ) → FA.S.X) (ΦW : (Fin (d + 2) → ℂ) → RW.X), ContinuousOn ΦY {z | Fin.tail z ∈ Un} ∧ (∀ k, AnalyticOnNhd ℂ (FA.S.A.chart k ∘ ΦY) ({z | Fin.tail z ∈ Un} ∩ ΦY ⁻¹' (FA.S.A.chart k).source)) ∧ ContinuousOn ΦW {z | Fin.tail (Fin.tail z) ∈ Un} ∧ (∀ k, AnalyticOnNhd ℂ (RW.A.chart k ∘ ΦW) ({z | Fin.tail (Fin.tail z) ∈ Un} ∩ ΦW ⁻¹' (RW.A.chart k).source)) ∧ (∀ z : Fin (d + 1) → ℂ, Fin.tail z ∈ Un → FA.pr (ΦY z) = bp (Fin.tail z) ∧ ∀ x₀, FA.Re.π x₀ = ΦY z → SameOrbit (FA.Re.R.lift x₀ x₀) (FC.flagPt M (BM.F l) (FC.bvec BM l (bp (Fin.tail z))) (Function.update (fun τ' => H τ' (Fin.tail z)) τ (H τ (Fin.tail z) * (1 + Matrix.single cb ca (z 0)))))) ∧ (∀ z : Fin (d + 2) → ℂ, Fin.tail (Fin.tail z) ∈ Un → SameOrbit (RW.lift (ΦW z) (ΦW z)) (FC.wVec M (BM.F l) (FC.bvec BM l (bp (Fin.tail (Fin.tail z)))) (Function.update (fun τ' => H τ' (Fin.tail (Fin.tail z))) τ (H τ (Fin.tail (Fin.tail z)) * (1 + Matrix.single cb ca (z 0)))) τ a k₀ ca cb (z 1 - z 0)) ∧ q 0 (ΦW z) = ΦY (Fin.cons (z 0) (Fin.tail (Fin.tail z))) ∧ q 1 (ΦW z) = ΦY (Fin.tail z)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh.charts

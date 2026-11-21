@@ -3,14 +3,16 @@ import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
 import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Assembly
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.CuspWeightInvariantUnderIsometryStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FirstMinimumAndCuspWeightBoundsStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.CuspWeightInvariantUnderIsometry
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FirstMinimumAndCuspWeightBounds
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallAutomorphismInverseExists
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ContinuousHermitianMatrixFamilyStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ContinuousFirstMinimumFamilyStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ContinuousCuspNormFamilyStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MeasurableCuspWeightFamilyStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ContinuousFirstMinimumFamily
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ContinuousCuspNormFamily
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.MeasurableCuspWeightFamily
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsometryPreservesHermitianAndActionStatement
+
+section
 open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume
 open scoped ENNReal InnerProductSpace
 
@@ -60,3 +62,10 @@ theorem first_minimum_cusp_weight_regular : ∀ (E : Type) [Field E] [NumberFiel
     exact ⟨b.symm, a.symm⟩
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.FamilyMeas
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume
+open scoped ENNReal InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.first_minimum_continuous_cusp_weight_measurable : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ), 1 ≤ j' → ContinuousOn (fun t => (F.R t).lam1) (ballDom F.q) ∧ Measurable ((ballDom F.q).indicator fun t => (F.R t).cuspW F.σ) ∧ IsOpen (ballDom F.q) ∧ ∀ t ∈ ballDom F.q, ∀ t' ∈ ballDom F.q, F.Eqv (autGrp F.form) t t' → (F.R t).lam1 = (F.R t').lam1 ∧ (F.R t).cuspW F.σ = (F.R t').cuspW F.σ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.FamilyMeas.first_minimum_cusp_weight_regular

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.PartialDifferential.Sobolev
 import GroundTheory.AutomorphicForms.PartialDifferential.SobolevDuality
 
 namespace GroundTheory.Automorphic.Sobolev

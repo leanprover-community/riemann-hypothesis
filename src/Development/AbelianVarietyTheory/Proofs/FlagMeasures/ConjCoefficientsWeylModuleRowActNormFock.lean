@@ -1,8 +1,9 @@
 import Mathlib
 import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.Forms Formalism.UG Matrix NumberField IsDedekindDomain
 open scoped InnerProductSpace TensorProduct
 
@@ -77,3 +78,11 @@ theorem conj_coefficients : ∀ (n : ℕ) (lam : DomWeight n), (∀ p ∈ delSq 
   rw [normFock, normFock, fockF_conj]
 
 end GlobalTheory.ConjCoeff
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.Forms Formalism.UG Matrix NumberField IsDedekindDomain
+open scoped InnerProductSpace TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conj_coefficients_weylModule_rowAct_normFock : ∀ (n : ℕ) (lam : DomWeight n), (∀ p ∈ delSq ℂ n lam, MvPolynomial.map (starRingEnd ℂ) p ∈ delSq ℂ n lam) ∧ (∀ (g : Matrix (Fin n) (Fin n) ℂ) (p : MvPolynomial (Fin n × Fin n) ℂ), MvPolynomial.map (starRingEnd ℂ) (Formalism.GradedWeylDivisibility.rowAct ℂ g p) = Formalism.GradedWeylDivisibility.rowAct ℂ (g.map (starRingEnd ℂ)) (MvPolynomial.map (starRingEnd ℂ) p)) ∧ ∀ p q : MvPolynomial (Fin n × Fin n) ℂ, normFock lam (MvPolynomial.map (starRingEnd ℂ) p) (MvPolynomial.map (starRingEnd ℂ) q) = normFock lam q p := by
+  atlas_forward_decl GlobalTheory.ConjCoeff.conj_coefficients

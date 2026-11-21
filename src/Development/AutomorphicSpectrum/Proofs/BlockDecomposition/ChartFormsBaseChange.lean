@@ -1,8 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.NLeA
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AlgebraMapConeRing
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsAlgHomOfIsBaseChange
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4
@@ -341,3 +342,10 @@ theorem isBaseChange_psi {K : Type} [Field K] {n d : ℕ} {A : Type} [CommRing A
     (fun v => v.2) (psi C θ hθ a) (fun _ => rfl)
 
 end GlobalTheory.CompanionTheory.SurjectionOntoH4
+end
+end
+
+open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_forms_base_change : ∀ {K : Type} [Field K] {n d : ℕ} {A : Type} [CommRing A] [Algebra K A] (C : ChartRings K A n d) {S : Finset (Fin d)} (θ : R0 K n d S →ₐ[K] C.R S) (hθ : ∀ b, θ (poly n K S b) = toR C S (phi C b)), IsBaseChange (Aa C) (thetaLin C θ hθ) → ∀ a : ℕ, IsBaseChange (Aa C) (psi C θ hθ a) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SurjectionOntoH4.isBaseChange_psi

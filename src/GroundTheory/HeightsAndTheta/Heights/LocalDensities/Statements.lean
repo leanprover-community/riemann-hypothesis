@@ -1,6 +1,4 @@
 import Mathlib
-import ReciprocityTheory.AnalyticForms.MaIntEmpty
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
 set_option maxSynthPendingDepth 1
 

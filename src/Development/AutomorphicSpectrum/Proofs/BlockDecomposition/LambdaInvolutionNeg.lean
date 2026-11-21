@@ -4,6 +4,7 @@ import GroundTheory.AutomorphicForms.AnisotropicHeight
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DegreePairingIdentity
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConjugatePlacesFacts
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Polynomial
@@ -78,3 +79,10 @@ theorem lam_sg (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (d :
 end GlobalTheory.CompanionTheory.TorusAdj
 
 end
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Tf.Loc PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4 GlobalTheory.CompanionTheory.TorusCh
+open scoped Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lambda_involution_neg : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (d : GL (Fin n) E) (e : Matrix (Fin n) (Fin n) E), e * e = e → ∀ t : GA E n, t ∈ adCent d → t.val * rm e = rm e * t.val → t.val * rm (sg d e) = rm (sg d e) * t.val → lam (sg d e) t = - lam e t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TorusAdj.lam_sg

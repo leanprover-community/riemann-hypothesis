@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CotInd
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaCotExtend
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaCotOfSpan
 

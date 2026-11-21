@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.PullbackBijectiveDegreesOneTwo
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory GlobalTheory.CxCoh GlobalTheory.CatCoh
 
 set_option autoImplicit false
@@ -118,3 +121,9 @@ theorem GlobalTheory.CxCoh.single_algebra_restriction_bijective : ∀ (R : Type)
   fun _ _ _ _ _ _ F G h1 h2 ↦
     ⟨⟨AlgDict.h1_injective F G h1.1, AlgDict.h1_surjective F G h1.2⟩,
       AlgDict.h2_injective F G h2.1, AlgDict.h2_surjective F G h2.2⟩
+end
+
+open CategoryTheory GlobalTheory.CxCoh GlobalTheory.CatCoh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.algebra_coefficients_restriction_bijective : ∀ (R : Type) [CommRing R] (C C' : Type 1) [Category.{0} C] [Category.{0} C'] (F : C ⥤ CommAlgCat.{0} R) (G : C' ⥤ C), Function.Bijective (CoefMap.restrict F G).pull1 → Function.Bijective (CoefMap.restrict F G).pull2 → ((Cx.single (Coef.ofAlg F)).resMap G).PullbackBijectiveDegreesOneTwo := by
+  atlas_forward_decl GlobalTheory.CxCoh.single_algebra_restriction_bijective

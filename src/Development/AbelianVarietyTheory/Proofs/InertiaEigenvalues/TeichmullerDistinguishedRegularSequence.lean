@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped NNReal
 
 namespace GlobalTheory
@@ -55,3 +57,9 @@ theorem teichmuller_distinguished_regular : ∀ (l : ℕ) [Fact l.Prime] (O : Ty
   rw [hb]; ring
 
 end GlobalTheory
+end
+
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.teichmuller_distinguished_regular_sequence : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [CharP O l] [PerfectRing O l] (x : O) (e : ℕ) (w E' : WittVector l O), x ≠ 0 → 0 < e → IsUnit w → E' = WittVector.teichmuller l x ^ e + ((l : ℕ) : WittVector l O) * w → ∀ (k : ℕ) (a : WittVector l O), (WittVector.teichmuller l x ^ k ∣ E' * a → WittVector.teichmuller l x ^ k ∣ a) ∧ (E' ∣ WittVector.teichmuller l x ^ k * a → E' ∣ a) := by
+  atlas_forward_decl GlobalTheory.teichmuller_distinguished_regular

@@ -1,4 +1,3 @@
-import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExistsHasLeadingCoeffOfMemSpanBelow
 import Formalism.HyperbolicPlaceProducts.SecondLevelArithmeticNorm
 

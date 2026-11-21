@@ -1,6 +1,8 @@
 import Mathlib
 import GroundTheory.GlobalFields.TateThesis.LatticePoisson
+import BuildAid.ForwardExisting
 
+section
 open Module
 open scoped RealInnerProductSpace FourierTransform SchwartzMap
 
@@ -101,3 +103,14 @@ theorem periodisation_hasSum_fourier_bilinForm {V : Type} [NormedAddCommGroup V]
     ring
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_dual_fourier_expansion_schwartz : ∀ {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (P : LinearMap.BilinForm ℝ V), P.Nondegenerate →
+    ∀ (Λ : Submodule ℤ V) [DiscreteTopology Λ] [IsZLattice ℝ Λ] (f : SchwartzMap V ℂ),
+    ∃ c : V → ℂ, (∀ N : ℕ, Summable (fun μ : {μ : V // ∀ l ∈ Λ, ∃ k : ℤ, P l μ = k} =>
+        ‖c μ‖ * (1 + ‖(μ : V)‖) ^ N)) ∧
+      ∀ x : V, HasSum (fun μ : {μ : V // ∀ l ∈ Λ, ∃ k : ℤ, P l μ = k} =>
+        c μ * Complex.exp (2 * Real.pi * Complex.I * (P x μ : ℂ))) (∑' l : Λ, f (x + l)) := by
+  atlas_forward_decl GlobalTheory.periodisation_hasSum_fourier_bilinForm

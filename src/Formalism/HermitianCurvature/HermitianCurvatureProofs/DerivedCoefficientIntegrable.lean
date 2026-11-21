@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementLE
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ShiftBound
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.DegreeOfProdLinearLe
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeightedL2BoundedMul

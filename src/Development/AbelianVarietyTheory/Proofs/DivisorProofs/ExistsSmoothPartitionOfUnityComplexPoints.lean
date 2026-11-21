@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.EndValuedForm11Coeffs
 
+section
 set_option autoImplicit false
 
 open MeasureTheory Filter Topology GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.ChartGlue GlobalTheory.FlagBundle GlobalTheory.HermFrame GlobalTheory.GoodMetric GlobalTheory.GoodTop
@@ -91,3 +92,11 @@ theorem exists_cInf_partition : ∀ {F : Type} [Field F] {σ : F →+* ℂ} {X :
   · rw [← Finset.sum_mul, mul_inv_cancel₀ (hT y)]
 
 end GlobalTheory.GoodTop
+end
+
+open MeasureTheory Filter Topology GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.ChartGlue GlobalTheory.FlagBundle GlobalTheory.HermFrame GlobalTheory.GoodMetric GlobalTheory.GoodTop
+open ReciprocityTheory.L2DbarEstimates (V)
+open scoped ContDiff Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_smooth_partition_of_unity_complexPoints : ∀ {F : Type} [Field F] {σ : F →+* ℂ} {X : Var F} (W : CxPts X.str σ → Set (CxPts X.str σ)), (∀ y, W y ∈ 𝓝 y) → ∃ (s : Finset (CxPts X.str σ)) (ρ : s → CxPts X.str σ → ℝ), (∀ i y, CInfAt (ρ i) y) ∧ (∀ i, tsupport (ρ i) ⊆ W i) ∧ ∀ y, ∑ i, ρ i y = 1 := by
+  atlas_forward_decl GlobalTheory.GoodTop.exists_cInf_partition

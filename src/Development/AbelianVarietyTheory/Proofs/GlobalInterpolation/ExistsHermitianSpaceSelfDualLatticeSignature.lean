@@ -1,5 +1,8 @@
 import Formalism.LocalToGlobal.GlobalTheory.GL5.PClassDecomp
 import Formalism.LocalToGlobal.GlobalTheory.GL5.PNamed
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -15,3 +18,11 @@ theorem exists_hSpace_sigOK_sig :
   congr 1 <;> omega
 
 end GlobalTheory
+end
+end
+
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hermitianSpace_with_signature : ∀ (D : D7) (P Q : ℕ), ∃ U : HSpace D.host.E, U.SigOK ∧ ∀ τ, U.sig τ = (P, Q) := by
+  atlas_forward_decl GlobalTheory.exists_hSpace_sigOK_sig

@@ -1,9 +1,5 @@
 import Mathlib
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.RecPairDefs
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.PairKEqZeroOfMemNormGrp
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.NormLimit
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.NormOpen
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.Kummer
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.BaseCase
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistenceA
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistenceB

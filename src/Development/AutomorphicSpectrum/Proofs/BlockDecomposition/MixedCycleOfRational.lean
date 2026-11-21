@@ -8,12 +8,12 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermRepMetricSm
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ComplexPointLiftsToMulticone
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RestrictedFormNonzeroOnGenericPoint
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HolomorphicLiftGivesHolomorphicSection
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjHypC
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagOrd
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinsumLengthMulLogCardEqNegLogAdicAbvNorm
 import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitChartMult
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MinimalPrimesMap
 
+section
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory AlgebraicGeometry Limits TopologicalSpace MvPolynomial
@@ -431,3 +431,9 @@ theorem cycleOfRat : CycleOfRat := by
   exact finsum_congr fun z => by rw [hmult, sub_mul]
 
 end GlobalTheory.CompanionTheory.MixZ.CycleRat
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mixed_cycle_of_rational : GlobalTheory.CompanionTheory.MixZ.CycleOfRat := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MixZ.CycleRat.cycleOfRat

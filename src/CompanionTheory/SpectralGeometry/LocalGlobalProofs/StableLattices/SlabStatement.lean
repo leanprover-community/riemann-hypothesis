@@ -1,6 +1,7 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.LineFormulas.LineFacts
 
+section
 open MeasureTheory Set
 open scoped ENNReal
 
@@ -163,3 +164,8 @@ theorem GlobalTheory.CompanionTheory.SlabLemma.slab : CompanionTheory.RgExh.Dec.
   have hprod : ∀ᵐ p ∂μN.prod μM, line F a c p < ⊤ := (Measure.ae_prod_iff_ae_ae hset).mpr key
   filter_upwards [hprod] with p hp
   exact lt_of_le_of_lt (setLIntegral_le_lintegral _ _) hp
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.SlabStatement : CompanionTheory.RgExh.Dec.N.S.Slab := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SlabLemma.slab

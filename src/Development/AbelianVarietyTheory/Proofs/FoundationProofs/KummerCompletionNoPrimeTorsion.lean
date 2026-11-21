@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HsCodiscreteNeBot
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerUnitClassModPrimePowProperties
+import BuildAid.ForwardExisting
+
+section
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ GlobalTheory.KZ.BettiB
 
@@ -54,3 +57,10 @@ theorem khat_no_l_torsion : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgCl
   exact (hker0 _ _).2 ⟨_, hf'⟩
 
 end GlobalTheory.KZ.BettiB
+end
+
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ GlobalTheory.KZ.BettiB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kummerCompletion_no_prime_torsion : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (x : X.Khat l), (l : ℤ_[l]) • x = 0 → x = 0 := by
+  atlas_forward_decl GlobalTheory.KZ.BettiB.khat_no_l_torsion

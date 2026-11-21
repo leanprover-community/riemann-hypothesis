@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsAlgebraMapEqRoot
+import BuildAid.ForwardExisting
+
+section
 open PowerSeries GlobalTheory.BK Filter Topology
 
 namespace GlobalTheory
@@ -28,3 +31,9 @@ theorem tendsto_const_pow_mul_pow_pow_zero : ∀ (C r : ℝ) (l : ℕ), 0 ≤ C 
     (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num))
 
 end GlobalTheory
+end
+
+open PowerSeries GlobalTheory.BK Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tendsto_const_pow_mul_pow_pow_zero' : ∀ (C r : ℝ) (l : ℕ), 0 ≤ C → 0 ≤ r → r < 1 → 2 ≤ l → Tendsto (fun n : ℕ => C ^ n * r ^ (l ^ n)) atTop (𝓝 0) := by
+  atlas_forward_decl GlobalTheory.tendsto_const_pow_mul_pow_pow_zero

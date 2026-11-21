@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsClosedFlagsIff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniMatBlockTriangular
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -99,3 +100,10 @@ theorem continuous_cellMap : ∀ (k : Type) [Field k] (ι : Type) [Fintype ι] (
   exact continuous_coinduced_rng.comp (CellCont.continuous_cellFrame b)
 
 end GlobalTheory.FlagPts
+end
+end
+
+open Module TopologicalSpace GlobalTheory.FlagPts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_cellMap' : ∀ (k : Type) [Field k] (ι : Type) [Fintype ι] (V : ι → Type) [∀ i, AddCommGroup (V i)] [∀ i, Module k (V i)] [∀ i, FiniteDimensional k (V i)] (b : Frames k V), Continuous (cellMap b) := by
+  atlas_forward_decl GlobalTheory.FlagPts.continuous_cellMap

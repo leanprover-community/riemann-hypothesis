@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowstLemmas
 
 open MvPolynomial
 open scoped Matrix

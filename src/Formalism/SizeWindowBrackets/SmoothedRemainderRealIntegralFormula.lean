@@ -1,6 +1,5 @@
 import Formalism.SizeWindowBrackets.Chain2aCoreNoAnalytic
 import Formalism.LandauZeroFreeBounds.SiegelWalfiszAP
-import Formalism.ZeroFreeRegion.Statement
 import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf
 
 open Finset Filter Topology ArithmeticFunction

@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.DataN
+import BuildAid.ForwardExisting
+
+section
 open Formalism.MainNotions.N
 
 namespace GlobalTheory
@@ -34,3 +37,9 @@ theorem isSSRep_of_isSemisimpleRing_range :
     exact hc.map (Submodule.restrictScalarsLatticeHom k ρ.range (Fin d → k))
 
 end GlobalTheory
+end
+
+open Formalism.MainNotions.N
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isSemisimpleRep_of_isSemisimpleRing_range : ∀ (Γ k : Type) [Group Γ] [Field k] (d : ℕ) (ρ : MonoidAlgebra k Γ →ₐ[k] Matrix (Fin d) (Fin d) k), IsSemisimpleRing ρ.range → IsSSRep ((ρ.toMonoidHom.comp (MonoidAlgebra.of k Γ)).toHomUnits) := by
+  atlas_forward_decl GlobalTheory.isSSRep_of_isSemisimpleRing_range

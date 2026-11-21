@@ -6,7 +6,9 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSLTwoPermutedModu
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEqDiscriminantPowMulEvalJInvariantStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QExpansionCoeffsInSubringRingClosedStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PermutedModularFamilySumEsymmSlashInvariantStatement
+import BuildAid.ForwardExisting
 
+section
 open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
 open GlobalTheory.QFam
 open ReciprocityTheory.ChartRestriction.L1 (DD jT IsMF IsTauOf)
@@ -44,3 +46,12 @@ theorem esymm_pow_twelve_div_mem : ∀ (ι : Type) [Fintype ι] (act : ι → SL
   exact R.sum_mem fun i _ => R.mul_mem (hP i) (R.pow_mem hj i)
 
 end GlobalTheory.QFam
+end
+
+open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
+open GlobalTheory.QFam
+open ReciprocityTheory.ChartRestriction.L1 (DD jT IsMF IsTauOf)
+open ModularForm (E₄ E₆)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.esymm_pow_twelve_div_discriminant_mem_subring : ∀ (ι : Type) [Fintype ι] (act : ι → SL(2, ℤ) → ι) (w N : ℕ) (f : ι → ℍ → ℂ) (R : Subring ℂ) (τ₀ : ℍ), 0 < N → ActBij act → IsFam act w f → (∀ i, QAll (· ∈ R) N (f i)) → jT τ₀ ∈ R → ∀ k : ℕ, (∑ t ∈ Finset.powersetCard k Finset.univ, ∏ i ∈ t, f i τ₀ ^ 12 / DD τ₀ ^ w) ∈ R := by
+  atlas_forward_decl GlobalTheory.QFam.esymm_pow_twelve_div_mem

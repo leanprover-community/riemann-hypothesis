@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformVanishing
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubsetOfClosedFibre
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
 

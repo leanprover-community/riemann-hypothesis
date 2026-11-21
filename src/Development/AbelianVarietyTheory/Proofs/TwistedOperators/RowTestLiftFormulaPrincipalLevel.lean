@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.StepUnfol
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RationalRowTestKernel
 
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
@@ -96,3 +97,9 @@ example : StepProj → StepFlip → StepUnfold → StepJets → ConstK → SumOK
 end GlobalTheory.RowClaim.FormulaTwo
 
 end
+end
+
+open GlobalTheory.RowClaim
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowTestLiftFormula_principalLevel : StepProj → StepFlip → StepUnfold → StepJets → ConstK → SumOKK → Formula2K := by
+  atlas_forward_decl GlobalTheory.RowClaim.FormulaTwo.formula2K

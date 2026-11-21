@@ -1,9 +1,12 @@
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.AdmissibleSignatures
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NumericalConditionsTheoremTLargePrimeStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MaxFrobeniusOrbitLengthDiffBoundsZmodStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrimePowSmulDescentPhiMemLatticeOfOrbitBoundStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrimePowSmulPhiMemLatticeOfMemFiltrationStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinLpowEisensteinPowTwistedDecompStatement
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MaxFrobeniusOrbitLengthDiffBoundsZmod
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrimePowSmulDescentPhiMemLatticeOfOrbitBound
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrimePowSmulPhiMemLatticeOfMemFiltration
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinLpowEisensteinPowTwistedDecomp
+
+section
 open PowerSeries GlobalTheory.BK
 
 namespace GlobalTheory.ZetaDenominator
@@ -83,3 +86,9 @@ theorem zetaBound : GlobalTheory.IndefiniteRowSideFullHecke.AdmissibleSignatures
   exact D.MM.smul_mem ⟨c, hc⟩ (add_mem hφX0 hφQ)
 
 end GlobalTheory.ZetaDenominator
+end
+
+open PowerSeries GlobalTheory.BK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.zeta_mem_pow_inv_phiModule_lattice : GlobalTheory.IndefiniteRowSideFullHecke.AdmissibleSignatures.ZetaBound := by
+  atlas_forward_decl GlobalTheory.ZetaDenominator.zetaBound

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.CyclotomicNorms.StatementT
 import Formalism.CyclotomicNorms.NonsquarefreeBounds.IrreducibilityOfRestriction
 
 noncomputable section

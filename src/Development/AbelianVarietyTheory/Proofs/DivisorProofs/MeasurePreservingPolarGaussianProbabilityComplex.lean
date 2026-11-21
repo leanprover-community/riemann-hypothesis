@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousFirstCoords
 import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
-import ReciprocityTheory.SemistableReduction.SJCoreA
-import ReciprocityTheory.SemistableReduction.SJCoreB
-import ReciprocityTheory.SemistableReduction.SJCoreD
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
 
 noncomputable section
@@ -76,3 +76,10 @@ theorem measurePreserving_polar_gaussProb (n : ℕ) (hn : 0 < n) :
     Measure.map_smul, hB.map_eq, hmass, ENNReal.mul_inv (Or.inl ha0) (Or.inl haT)]
 
 end GlobalTheory.SphereMeanDrop
+end
+end
+
+open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurePreserving_polar_gaussianProbabilityComplexSpace : ∀ (n : ℕ), 0 < n → MeasurePreserving (fun p : UnitSphereC n × Ioi (0:ℝ) => (p.2 : ℝ) • (p.1 : EuclideanSpace ℂ (Fin n))) ((sphereProb n).prod (radProb n)) (gaussProb n) := by
+  atlas_forward_decl GlobalTheory.SphereMeanDrop.measurePreserving_polar_gaussProb

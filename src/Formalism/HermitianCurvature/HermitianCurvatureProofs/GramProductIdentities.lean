@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.PositionExpansionTopCoefficients
 import Lemmata.HermitianSesquilinear.ConjEqOfNonnegReal
 
 namespace Formalism.FourierDecayAlt.P.GramProductIdentities

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.HarderNarasimhan.StatementPl
 import Formalism.QuotientMetricDivisors.Statement
 
 open Module NumberField

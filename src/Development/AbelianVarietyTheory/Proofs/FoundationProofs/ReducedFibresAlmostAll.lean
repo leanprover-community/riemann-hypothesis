@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Polynomial
 
 attribute [local instance] FractionRing.liftAlgebra
@@ -40,3 +43,9 @@ theorem reduced_fibres_almost_all (k A : Type) [Field k] [IsAlgClosed k] [CharZe
   exact hδQ
 
 end GlobalTheory
+end
+
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nonzero_sub_C_not_mem_sq_maximal : ∀ (k A : Type) [Field k] [IsAlgClosed k] [CharZero k] [CommRing A] [IsDedekindDomain A] [Algebra k A] [Algebra k[X] A] [IsScalarTower k k[X] A] [Module.Finite k[X] A] [Module.Free k[X] A], ∃ δ : k[X], δ ≠ 0 ∧ ∀ α : k, δ.eval α ≠ 0 → ∀ Q : Ideal A, Q.IsMaximal → algebraMap k[X] A (X - C α) ∉ Q ^ 2 := by
+  atlas_forward_decl GlobalTheory.reduced_fibres_almost_all

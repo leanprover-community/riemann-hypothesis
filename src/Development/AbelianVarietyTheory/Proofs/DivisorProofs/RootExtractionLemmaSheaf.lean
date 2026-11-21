@@ -1,9 +1,9 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PeriodValuationTheory
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.WtSubOneLe
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatFrame
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralUnimodularMatrixForDepthStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralUnimodularMatrixForDepth
 
+section
 namespace GlobalTheory.RootTrick
 
 open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
@@ -25,3 +25,9 @@ theorem root_statement : RootStatement := by
     exact hxk w hw
 
 end GlobalTheory.RootTrick
+end
+
+open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.root_extraction_lemma_sheaf : RootStatement := by
+  atlas_forward_decl GlobalTheory.RootTrick.root_statement

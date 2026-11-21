@@ -2,24 +2,23 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CentreSetDominatingPointStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatesRegAtLocalStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureFiniteStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureChartSpanStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueDominatingMapStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinCoordsChartIntegralStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartPrimeExistsUniquePointStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CentreSetDominatingPoint
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatesRegAtLocal
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureFinite
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureChartSpan
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueDominatingMap
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinCoordsChartIntegral
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveModelNonemptyStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtChartLocalizationStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralOverLocalizationScaledStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSubringIntegralClosureMaxStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MaximalIdealMembershipOfLocalStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSubringIntegralClosureMax
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MaximalIdealMembershipOfLocal
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeMemIffNotUnitLocalizationStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularFunctionsTwoComponentsStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartRingIntegralFractionStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartRingIntegralClosureFiniteStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartRingIntegralFraction
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartRingIntegralClosureFinite
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatingModelChartCompatStatement
+
+section
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
 noncomputable section
@@ -386,3 +385,10 @@ theorem exists_normalisation : ∀ (o : Type) [CommRing o] [Algebra.EssFiniteTyp
   · exact normAt_of_charts M Ω' M' f (fun c => (c, Sum.inl c)) hf hyne hB hC hN p
 
 end GlobalTheory.CompanionTheory.Ar.NormEx
+end
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_normal_dominating_model : ∀ (o : Type) [CommRing o] [Algebra.EssFiniteType ℤ o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [FiniteDimensional Ω Ω'] [Algebra o Ω'] [IsScalarTower o Ω Ω'], ∃ (κ' : Type) (_ : Finite κ') (y : κ' → Ω') (M' : PModel o y) (f : M'.X ⟶ M.X), Dominates M'.ξ M.ξ f (algebraMap Ω Ω') ∧ Flat.NormalCpt M'.ξ ∧ IsFinite f ∧ ∀ p : Cpt M.ξ, NormAt M'.ξ f (algebraMap Ω Ω') p := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.NormEx.exists_normalisation

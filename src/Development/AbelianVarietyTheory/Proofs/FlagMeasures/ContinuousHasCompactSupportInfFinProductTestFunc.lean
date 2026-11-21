@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MeasurableEmbeddingAdelicTupleLocalComponents
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open scoped TensorProduct ENNReal
 
@@ -72,3 +75,10 @@ theorem GlobalTheory.prod_continuous_hasCompactSupport : ∀ (F E : Type) [Field
   have hsub2 : tsupport Φ ⊆ glueTup b '' (tsupport Φi ×ˢ tsupport Φf) := fun X hX =>
     ⟨_, hsub hX, glueTup_proj b X⟩
   exact (hK.image (continuous_glueTup b)).of_isClosed_subset (isClosed_tsupport Φ) hsub2
+end
+
+open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open scoped TensorProduct ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_hasCompactSupport_infFin_product_testFunction : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (M n : ℕ) (Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ) (Φi : (Fin n → Fin M → Ainf F ⊗[F] E) → ℂ) (Φf : (Fin n → Fin M → Af F ⊗[F] E) → ℂ), Continuous Φi → HasCompactSupport Φi → Continuous Φf → HasCompactSupport Φf → IsProdInfFin Φ Φi Φf → Continuous Φ ∧ HasCompactSupport Φ := by
+  atlas_forward_decl GlobalTheory.prod_continuous_hasCompactSupport

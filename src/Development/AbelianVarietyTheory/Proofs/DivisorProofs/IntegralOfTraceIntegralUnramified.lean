@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmulMemOfIsIntegral
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FormallyUnramifiedRingOfIntegersIffDifferentIdea
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.FinrankLeOfMapLe
+import BuildAid.ForwardExisting
 
+section
 open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
 open scoped nonZeroDivisors
 
@@ -39,3 +41,9 @@ theorem isIntegral_of_trace_integral :
   exact RingOfIntegers.isIntegral_coe z
 
 end GlobalTheory.LieDisc
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_of_trace_integral_unramified : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ w : E, (∀ a : E, IsIntegral ℤ a → IsIntegral ℤ (w * a + cc (w * a))) → IsIntegral ℤ w := by
+  atlas_forward_decl GlobalTheory.LieDisc.isIntegral_of_trace_integral

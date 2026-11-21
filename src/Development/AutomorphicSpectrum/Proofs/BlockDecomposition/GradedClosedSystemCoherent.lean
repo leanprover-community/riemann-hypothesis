@@ -4,6 +4,8 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubobjectLeIffA
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuasicoherentSupSectionsStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdealPowerSubobjectSectionsStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoherentSubobjectCoherentStatement
+
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE GlobalTheory.CompanionTheory.GE.Step
 
 namespace GlobalTheory.CompanionTheory.GE.Step
@@ -28,3 +30,9 @@ theorem isCoherent_gr : ∀ {A : Type} [CommRing A] [IsNoetherianRing A] (I : Id
   exact isCoherent_cokernel (incl (anti hS) e) (isCoherent_lvl hP hS e)
 
 end GlobalTheory.CompanionTheory.GE.Step
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE GlobalTheory.CompanionTheory.GE.Step
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_closed_system_coherent : ∀ {A : Type} [CommRing A] [IsNoetherianRing A] (I : Ideal A) {X : Scheme.{0}} [X.Over (Spec (.of A))] [IsLocallyNoetherian X] {P : X.Modules}, IsCoherent P → ∀ (S : ℕ → Subobject P) (hS : ClosedSys I P S) (e : ℕ), IsCoherent (gr (anti hS) e) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.Step.isCoherent_gr

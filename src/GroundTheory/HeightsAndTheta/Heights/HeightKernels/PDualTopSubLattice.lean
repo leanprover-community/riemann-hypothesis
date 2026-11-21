@@ -1,7 +1,6 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopSubLattice
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopBasisChange
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopStacked
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedDegree
 set_option maxSynthPendingDepth 1
 

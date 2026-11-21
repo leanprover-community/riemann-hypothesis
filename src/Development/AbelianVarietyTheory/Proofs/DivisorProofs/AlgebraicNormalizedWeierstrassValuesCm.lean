@@ -7,6 +7,8 @@ import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.MulStableIntegral
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.QuasiPeriodConstIsogeny
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntegralWeierstrassPTorsionNonrealMultiplierStatement
+
+section
 open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
 open NumberField GlobalTheory.QFam GlobalTheory.WpFam GlobalTheory.LatVal ReciprocityTheory.ChartRestriction.L1 Formalism.L2.Th1.F
 open GlobalTheory.CMVal GlobalTheory.HeckeGal
@@ -75,3 +77,12 @@ theorem main : ∀ (L : PeriodPair) (β Ω : ℂ), MulStable L β → β.im ≠ 
   exact div_mem (sum_mem hP) (mul_mem hβm (sub_mem hβm hcm))
 
 end GlobalTheory.AlgebraicitySecondEisenstein
+end
+
+open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
+open NumberField GlobalTheory.QFam GlobalTheory.WpFam GlobalTheory.LatVal ReciprocityTheory.ChartRestriction.L1 Formalism.L2.Th1.F
+open GlobalTheory.CMVal GlobalTheory.HeckeGal
+open ModularForm (E₄ E₆)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.algebraic_normalized_weierstrass_values_cm : ∀ (L : PeriodPair) (β Ω : ℂ), MulStable L β → β.im ≠ 0 → Ω ^ 12 = latDisc L → IsAlgebraic ℚ (s2 L / Ω ^ 2) ∧ ∀ (M : ℕ) (P : ℂ), 0 < M → (M : ℂ) * P ∈ L.lattice → IsAlgebraic ℚ (L.weierstrassP P / Ω ^ 2) ∧ IsAlgebraic ℚ (L.derivWeierstrassP P / Ω ^ 3) := by
+  atlas_forward_decl GlobalTheory.AlgebraicitySecondEisenstein.main

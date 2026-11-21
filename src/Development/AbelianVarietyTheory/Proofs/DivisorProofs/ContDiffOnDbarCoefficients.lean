@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
+
+section
 open Set Filter Topology
 open ReciprocityTheory.L2DbarEstimates (V)
 open GlobalTheory.GoodMetric (coordVec)
@@ -28,3 +30,13 @@ theorem contDiffOn_repr_dbarAt {n : ℕ} {γ : V n → Alt n} {U : Set (V n)} (h
     (contDiffOn_dbar_const_dir hU (hγ S) _).mul contDiffOn_const
 
 end GlobalTheory.CxForm
+end
+
+open Set Filter Topology
+open ReciprocityTheory.L2DbarEstimates (V)
+open GlobalTheory.GoodMetric (coordVec)
+open GlobalTheory.CxForm
+open scoped ComplexConjugate ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contDiffOn_dbar_coefficients : ∀ {n : ℕ} {γ : V n → Alt n} {U : Set (V n)}, IsOpen U → (∀ S, ContDiffOn ℝ ∞ (fun v => (bas n).repr (γ v) S) U) → ∀ (T : Finset (Fin (n + n))), ContDiffOn ℝ ∞ (fun v => (bas n).repr (dbarAt γ v) T) U := by
+  atlas_forward_decl GlobalTheory.CxForm.contDiffOn_repr_dbarAt

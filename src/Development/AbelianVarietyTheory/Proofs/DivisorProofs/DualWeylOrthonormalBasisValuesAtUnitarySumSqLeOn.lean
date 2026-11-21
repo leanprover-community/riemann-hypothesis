@@ -3,7 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsAdelicOne
 import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementG
 import Formalism.PolynomialDimension.WeylDim
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DualWeylExtremalReproducingNormSqOne
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj GlobalTheory.DualWeyl GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.DefPt MvPolynomial
 open scoped Matrix
 
@@ -26,3 +28,10 @@ theorem sum_sq_norm_evalAt_onBasis_le_one : ∀ (n : ℕ) (la : Fin n → ℕ), 
   fun n la hla u => (sum_sq_norm_evalAt_onBasis_eq_one n la hla u).le
 
 end GlobalTheory.DualWeyl.EvBound
+end
+
+open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj GlobalTheory.DualWeyl GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.DefPt MvPolynomial
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualWeyl_orthonormal_basis_values_at_unitary_sum_sq_le_one : ∀ (n : ℕ) (la : Fin n → ℕ), Antitone la → ∀ u : UN n, ∑ i, ‖evalAt u.1 (((toSpace la).symm (onBasis la i) : nabla la ℂ) : Pol n ℂ)‖ ^ 2 ≤ 1 := by
+  atlas_forward_decl GlobalTheory.DualWeyl.EvBound.sum_sq_norm_evalAt_onBasis_le_one

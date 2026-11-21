@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotCompactOfIdempotent
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.UG GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms GlobalTheory.RegSS
 open scoped TensorProduct
 
@@ -48,3 +49,9 @@ theorem pointsCentraliser_of_commutant_of_adjoint :
     rw [← hg, ← hA F E n σ J γ hreg R, ← map_mul, hu', map_one]
 
 end GlobalTheory.RegSS
+end
+
+open GlobalTheory.RegSS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.regularSemisimple_centralizer_points_of_commutant_adjoint : GlobalTheory.RegSS.PointsCommutant → GlobalTheory.RegSS.PointsAdjoint → GlobalTheory.RegSS.PointsCentraliser := by
+  atlas_forward_decl GlobalTheory.RegSS.pointsCentraliser_of_commutant_of_adjoint

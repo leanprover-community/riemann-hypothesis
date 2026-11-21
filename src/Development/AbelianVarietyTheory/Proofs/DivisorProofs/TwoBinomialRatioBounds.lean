@@ -1,5 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsArchOne
 import Development.AbelianVarietyTheory.BlockTheory.PoincareCuspForms.SmallUnipotentElements
+
+section
 open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
 
 namespace GlobalTheory.BinomRatio
@@ -136,3 +138,9 @@ theorem two_binom_ratios : ∀ T n : ℕ, 2 ≤ n → 11 * n ^ 2 ≤ T →
   fun T n hn hT => ⟨first_ratio T n hn hT, second_ratio T n hn hT⟩
 
 end GlobalTheory.BinomRatio
+end
+
+open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.two_binomial_ratio_bounds : ∀ T n : ℕ, 2 ≤ n → 11 * n ^ 2 ≤ T → (T + 3 * n + 10).choose n ≤ 2 * (T + n).choose n ∧ (1 - (n : ℝ) * (n + 6) / T) * ((T + 2 * n + 6).choose n : ℕ) ≤ ((T + n).choose n : ℕ) := by
+  atlas_forward_decl GlobalTheory.BinomRatio.two_binom_ratios

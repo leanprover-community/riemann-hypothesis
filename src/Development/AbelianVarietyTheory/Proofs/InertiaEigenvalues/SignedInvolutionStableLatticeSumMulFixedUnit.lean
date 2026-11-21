@@ -1,12 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DltEqZero
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SgnLatSpanBasis
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFixedBasis
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowerBasisOfCharpolySeparable
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FullLatticeSandwichBetweenIntegralElements
 
+section
 open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Desc Polynomial Filter Topology
 
 noncomputable section
@@ -166,3 +164,10 @@ theorem HH_mul_unit : ∀ (K : UQ) (B : InvAlg K) (ι : Type) (π : ι → B.A) 
     ring
 
 end GlobalTheory.UnitLemma.Move
+end
+end
+
+open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Desc Polynomial Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.signedInvolutionStableLatticeSum_mul_fixed_unit : ∀ (K : UQ) (B : InvAlg K) (ι : Type) (π : ι → B.A) (I I' : Finset ι) (u s y : B.A), B.LieReg → B.Plus y → HH B π I I' (y * u) s = K.eta (Algebra.norm K.E y) * HH B π I I' u (y * s) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.Move.HH_mul_unit

@@ -5,9 +5,8 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.AnalyticChartsReali
 import Development.AbelianVarietyTheory.Definitions.Divisors.FstTszeSec
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsPeriodHom
 import Development.AbelianVarietyTheory.Definitions.Divisors.SubRedMem
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DpExpEqSumRangeOfVanish
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedPowerFiltration
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodClassInjectiveOfRichChartsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodClassInjectiveOfRichCharts
 
 set_option autoImplicit false
 

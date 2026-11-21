@@ -1,8 +1,6 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianOrder.Development
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianOrder.AbsVNeZero
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensTop
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 
 noncomputable section
 

@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DltEqZero
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsValuationSubringIntegralClosureCompleteDVR
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.UnitLemma.Desc
@@ -101,3 +101,10 @@ theorem isIntegral_or_isIntegral_of_fieldFactor : ∀ (K : UQ) (B : InvAlg K) (f
     rwa [← mul_assoc, hf.eq] at this
 
 end GlobalTheory.UnitLemma.Desc
+end
+end
+
+open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Desc Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIntegral_or_isIntegral_inv_in_fieldFactor : ∀ (K : UQ) (B : InvAlg K) (f y z : B.A), IsIdempotentElem f → (∀ w, f * w ≠ 0 → ∃ v, f * w * v = f) → f * y * z = f → IsIntegral K.O (f * y) ∨ IsIntegral K.O (f * z) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.Desc.isIntegral_or_isIntegral_of_fieldFactor

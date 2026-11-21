@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Degenerations.PullChartIsLB
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj

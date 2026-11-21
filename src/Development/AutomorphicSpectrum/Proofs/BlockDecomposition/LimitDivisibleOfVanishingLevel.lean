@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.TwistedRepresentations.Tens
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArtinianLimitLiftOfCompatibleStatement
 
+section
 open TensorProduct CrystallineSemistableComparison CrystallineSemistableComparison.Tw
 
 namespace GlobalTheory.CompanionTheory.Tower
@@ -49,3 +50,9 @@ theorem lim_eq_pow_smul : ∀ (W : Type) [CommRing W] (l : ℕ) (S S' : Sys.{1} 
     _ = ((l : W) ^ n) • z.1 c := by rw [rho_lim L z c (n + c) (Nat.le_add_left _ _)]
 
 end GlobalTheory.CompanionTheory.Tower
+end
+
+open TensorProduct CrystallineSemistableComparison CrystallineSemistableComparison.Tw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.limit_divisible_of_vanishing_level : ∀ (W : Type) [CommRing W] (l : ℕ) (S S' : Sys.{1} W) (_ : LSeq l S S'), (∀ n, IsArtinian W (S.M n)) → ∀ n (x : S.lim), x.1 n = 0 → ∃ y : S.lim, x = ((l : W) ^ n) • y := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Tower.lim_eq_pow_smul

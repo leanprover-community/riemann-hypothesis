@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 open scoped TensorProduct
 
@@ -109,3 +112,10 @@ theorem isIntegral_or_isEmpty_subscheme : ∀ (Y : Scheme.{0}) (I : Y.IdealSheaf
     exact (isEmpty_spec_top I (W a) h).false y
 
 end GlobalTheory.SubschemeIntegral
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIntegral_or_isEmpty_subscheme_of_prime_charts : ∀ (Y : Scheme.{0}) (I : Y.IdealSheafData) (ι : Type) (W : ι → Y.affineOpens), (⨆ a, (W a).1 = ⊤) → (∀ a, I.ideal (W a) = ⊤ ∨ (I.ideal (W a)).IsPrime) → (∀ a b (ha : (I.ideal (W a)).IsPrime), I.ideal (W b) ≠ ⊤ → (W a).2.fromSpec ⟨I.ideal (W a), ha⟩ ∈ (W b).1) → IsIntegral I.subscheme ∨ IsEmpty I.subscheme := by
+  atlas_forward_decl GlobalTheory.SubschemeIntegral.isIntegral_or_isEmpty_subscheme

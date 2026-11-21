@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LeadMinor
 import Development.WeilBound.CoreStatements.HodgeTatePoints.GcIncl
 import Development.WeilBound.CoreStatements.HodgeTatePoints.GcDescend
 import Development.WeilBound.CoreStatements.HodgeTatePoints.GcBase

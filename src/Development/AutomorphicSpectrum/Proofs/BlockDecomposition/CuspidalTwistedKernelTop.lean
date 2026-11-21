@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipotentDerivatives.DerUnipLeUnipB
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StdMaxParabolicRadicalLeBlockUnipotentRadical
+import BuildAid.ForwardExisting
 
+section
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir
 
 noncomputable section
@@ -124,3 +126,10 @@ theorem twKer_derUnip_eq_top_of_isCuspidal : ∀ (k : Type) [Field k] [Valuative
   exact eq_top_iff.2 (htop ▸ twKer_unipRad_two_le ψ h π)
 
 end GlobalTheory.CompanionTheory.BZMir
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidal_twisted_kernel_top : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle) (N n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), IsCuspidal π → 1 ≤ n → n < N → twKer π (derUnip k N n) (derChar k ψ N n) = ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZMir.twKer_derUnip_eq_top_of_isCuspidal

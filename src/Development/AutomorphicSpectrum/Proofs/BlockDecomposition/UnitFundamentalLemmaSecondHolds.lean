@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory PositivityTheory.Rg.Tf.Loc
 open scoped ENNReal
 
@@ -22,3 +24,8 @@ theorem unit_fundamental_lemma_second : PositivityTheory.Rg.Tf.Loc.L2 → Positi
   split_ifs <;> simp
 
 end GlobalTheory.CompanionTheory.UnitFL
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unit_fundamental_lemma_second_holds : PositivityTheory.Rg.Tf.Loc.L2 → PositivityTheory.Rg.Tf.Loc.N4 → PositivityTheory.Rg.Tf.Loc.Z2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnitFL.unit_fundamental_lemma_second

@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
 
+section
 set_option autoImplicit false
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog
@@ -86,3 +87,9 @@ theorem coeff_prod_pow_add (α : Fin d ⊕ Fin d →₀ ℕ) (a b e : Fin d →�
     exact hα ((expo_iff α a b e p (hmem p hp)).1 h).1
 
 end GlobalTheory.BinomLeft
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeff_prod_pow_first_add_second_threeGroups : ∀ {R : Type} [CommRing R] {d : ℕ} (α : Fin d ⊕ Fin d →₀ ℕ) (a b e : Fin d →₀ ℕ), coeff (Finsupp.sumElim a (Finsupp.sumElim b e)) (α.prod fun s k => (Sum.elim (fun i => (x1 i + x2 i : MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R)) x3 s) ^ k) = if α = Finsupp.sumElim (a + b) e then (∏ i, ((a + b) i).choose (a i) : R) else 0 := by
+  atlas_forward_decl GlobalTheory.BinomLeft.coeff_prod_pow_add

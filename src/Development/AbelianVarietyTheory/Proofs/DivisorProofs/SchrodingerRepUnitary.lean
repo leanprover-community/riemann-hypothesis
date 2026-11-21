@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory GlobalTheory.RealWeil
 open scoped SchwartzMap
 
@@ -21,3 +24,11 @@ theorem integral_rhoFun_mul_conj (n : ℕ) (w : Fin n ⊕ Fin n → ℝ) (u v : 
   exact integral_add_right_eq_self (fun x => u x * starRingEnd ℂ (v x)) (pPart w)
 
 end GlobalTheory.RealWeil
+end
+
+open MeasureTheory GlobalTheory.RealWeil
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schrodinger_rep_unitary : ∀ (n : ℕ) (w : Fin n ⊕ Fin n → ℝ) (u v : EuclideanSpace ℝ (Fin n) → ℂ),
+    ∫ x, rhoFun w u x * starRingEnd ℂ (rhoFun w v x) = ∫ x, u x * starRingEnd ℂ (v x) := by
+  atlas_forward_decl GlobalTheory.RealWeil.integral_rhoFun_mul_conj

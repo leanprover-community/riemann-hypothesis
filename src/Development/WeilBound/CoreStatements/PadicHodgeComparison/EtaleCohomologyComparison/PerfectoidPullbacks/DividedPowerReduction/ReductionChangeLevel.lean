@@ -4,8 +4,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PullInclRedMor
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DPullCEqZero
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InclRedM
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResKOne
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.Imports
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.DividedPowerReduction.IsFirstChernThickening
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false

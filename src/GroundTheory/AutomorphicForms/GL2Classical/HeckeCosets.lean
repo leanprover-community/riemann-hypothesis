@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.GL2Classical.Adelic
 import GroundTheory.AutomorphicForms.GL2Classical.ConstantTerm
 
 open NumberField IsDedekindDomain Matrix

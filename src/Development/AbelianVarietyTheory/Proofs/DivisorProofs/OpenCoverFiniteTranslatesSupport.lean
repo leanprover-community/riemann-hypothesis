@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullRk
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LastColsVal
+
+section
 open MeasureTheory GlobalTheory.SplitFlip ValuativeRel
 open scoped Matrix
 attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
@@ -33,3 +34,14 @@ theorem GlobalTheory.FullRankCoinv.fullRk_support_finite_cover : ∀ (k : Type) 
   simp only [Set.mem_iUnion, Set.mem_preimage] at this
   obtain ⟨E, hEt, hE⟩ := this
   exact ⟨E, hEt, hE⟩
+end
+
+open MeasureTheory GlobalTheory.SplitFlip ValuativeRel
+open scoped Matrix
+attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.open_cover_finite_translates_support : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n d : ℕ)
+    (S : Set (Matrix (Fin n) (Fin d) k)), IsOpen S →
+    (∀ Y : Matrix (Fin n) (Fin d) k, Y.rank = n → ∃ E : GL (Fin n) k, E.val * Y ∈ S) →
+    ∀ Ψ ∈ GlobalTheory.FullRankCoinv.fullRk k n d, ∃ s : Finset (GL (Fin n) k), ∀ Y, Ψ Y ≠ 0 → ∃ E ∈ s, E.val * Y ∈ S := by
+  atlas_forward_decl GlobalTheory.FullRankCoinv.fullRk_support_finite_cover

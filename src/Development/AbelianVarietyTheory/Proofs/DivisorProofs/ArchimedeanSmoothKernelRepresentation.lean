@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.MeasurableCompInfGL
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Classical MeasureTheory NumberField Topology
@@ -77,3 +79,10 @@ theorem isRapidInf_and_smoothInf_eq_kerInf :
     simp [h0]
 
 end GlobalTheory.JSW
+end
+end
+
+open Classical MeasureTheory NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_smooth_kernel_representation : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {a : ℕ} (f : GlobalTheory.CuspRep.Lie E a → ℂ), GlobalTheory.JSW.IsTestInf f → GlobalTheory.JSW.IsRapidInf (volume : Measure (GlobalTheory.CuspRep.Lie E a)) f (fun x : GlobalTheory.CuspRep.Lie E a => if h : IsUnit (Matrix.of x) then h.unit else (1 : GL (Fin a) (GlobalTheory.CuspRep.Cinf E))) ∧ ∀ F : GlobalTheory.CuspRep.GA E a → ℂ, GlobalTheory.JSW.smoothInf f F = GlobalTheory.JSW.kerInf (volume : Measure (GlobalTheory.CuspRep.Lie E a)) f (fun x : GlobalTheory.CuspRep.Lie E a => if h : IsUnit (Matrix.of x) then h.unit else (1 : GL (Fin a) (GlobalTheory.CuspRep.Cinf E))) F := by
+  atlas_forward_decl GlobalTheory.JSW.isRapidInf_and_smoothInf_eq_kerInf

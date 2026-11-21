@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory
 
 namespace GlobalTheory.CompanionTheory.Casselman
@@ -53,3 +55,8 @@ theorem mul_rpow_lt_one_of_memLp_geometric {X : Type} [MeasurableSpace X]
   exact absurd (lt_of_le_of_lt hle hI) (lt_irrefl _)
 
 end GlobalTheory.CompanionTheory.Casselman
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.not_mem_Lp_of_growth : ∀ {X : Type} [MeasurableSpace X] (μ : MeasureTheory.Measure X) (f : X → ℝ) (p : ℝ), 0 < p → MeasureTheory.MemLp f (ENNReal.ofReal p) μ → ∀ (E : ℕ → Set X), (∀ j, MeasurableSet (E j)) → Pairwise (Function.onFun Disjoint E) → ∀ (c D B r : ℝ), 0 < c → 0 < B → 0 ≤ r → (∀ j : ℕ, ENNReal.ofReal (c * D ^ j) ≤ μ (E j)) → (∀ j : ℕ, ∀ x ∈ E j, B * r ^ j ≤ |f x|) → D * r ^ p < 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Casselman.mul_rpow_lt_one_of_memLp_geometric

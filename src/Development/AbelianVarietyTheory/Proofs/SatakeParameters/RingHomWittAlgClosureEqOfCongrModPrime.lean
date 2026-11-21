@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceIffAdditiveMapsExist
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 open Formalism.L2.G.Pend in
@@ -59,3 +61,8 @@ theorem ringHom_wittKbar_eq_of_modp (p : ℕ) [Fact p.Prime] (n : ℕ) (W : Type
   exact sub_eq_zero.mp this
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ringHom_witt_algClosure_eq_of_congr_mod_prime : ∀ (p : ℕ) [Fact p.Prime] (n : ℕ) (W : Type) [CommRing W], 0 < n → (∀ x : W, (p : W) ∣ x ^ (p ^ n) - x) → ∀ f g : W →+* Formalism.L2.G.Pend.WW p, (∀ x, (p : Formalism.L2.G.Pend.WW p) ∣ f x - g x) → f = g := by
+  atlas_forward_decl GlobalTheory.ringHom_wittKbar_eq_of_modp

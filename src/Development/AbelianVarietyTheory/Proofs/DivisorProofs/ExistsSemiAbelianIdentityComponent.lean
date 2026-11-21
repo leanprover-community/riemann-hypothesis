@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsThetaMeanSquareNorm
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsSemiStable
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IdentityComponentOpen
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsIsoOfIsOpenImmersionOfGeometricallyConnected

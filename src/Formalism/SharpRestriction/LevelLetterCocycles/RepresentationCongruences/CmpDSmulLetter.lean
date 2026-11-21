@@ -134,10 +134,7 @@ variable (W : LocWach PD LL O v n)
 
 theorem nl_letter {T : LocLat G Qp LL O} {i : ZMod n} {x : W.DD T} (hx : x ∈ W.Nl T i) :
     (letE (O := O) i : LetA O n) • x = x := by
-  unfold LocWach.Nl at hx
-  obtain ⟨y, -, rfl⟩ := hx
-  simp only [LinearMap.smul_apply, LinearMap.id_apply]
-  rw [← mul_smul, letE_idem]
+  apply letE_smul_of_mem_Nl' (hx := hx) <;> assumption
 
 theorem cmpD_sum {T : LocLat G Qp LL O} {d : ℕ} (y : Fin d → W.DD T) (hy : ∀ m, y m ∈ W.N T) :
     cmpD W T (∑ m, y m) = ∑ m, cmpD W T (y m) := by

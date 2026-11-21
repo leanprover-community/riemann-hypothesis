@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.ConvGrOf
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 open scoped ComplexConjugate
 
@@ -812,3 +814,9 @@ theorem leviQ : BdetLaw → ExtLaw → GrpTop → LeviQ := by
   exact levi_pullback_iwasawa_unitary A ε hB hE hT hA hI
 
 end GlobalTheory.CompanionTheory.RgEisLeviQUnit
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_quotient_of_block_det : PositivityTheory.RgEis.BdetLaw → PositivityTheory.RgEis.ExtLaw → PositivityTheory.RgEis.GrpTop → PositivityTheory.RgEis.LeviQ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisLeviQUnit.leviQ

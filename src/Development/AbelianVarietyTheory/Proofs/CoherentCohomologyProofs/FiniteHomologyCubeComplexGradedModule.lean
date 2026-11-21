@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.ExistsAwayFracOfMemHomLoc
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.CubeComplexGrFreeFiniteAndExactAt
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory CategoryTheory.Limits DirectSum MvPolynomial TensorProduct GlobalTheory
 
 namespace GlobalTheory
@@ -46,3 +47,9 @@ theorem finite_cubeComplex_grCube_homology :
     exact finite_of_exact_of_finite hex hF hK
 
 end GlobalTheory
+end
+
+open CategoryTheory CategoryTheory.Limits DirectSum MvPolynomial TensorProduct GlobalTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_homology_cubeComplex_gradedModule : ∀ (ι : Type) [LinearOrder ι] [Fintype ι] (R : Type) [CommRing R] [IsNoetherianRing R] (M : Type) [AddCommGroup M] [Module R M] [Module (MvPolynomial ι R) M] [IsScalarTower R (MvPolynomial ι R) M] (ℳ : ℤ → Submodule R M) [PolyGradedSMul ι ℳ] [Decomposition ℳ], Module.Finite (MvPolynomial ι R) M → ∀ n p, Module.Finite R ((cubeComplex (grCube ι ℳ n)).homology p) := by
+  atlas_forward_decl GlobalTheory.finite_cubeComplex_grCube_homology

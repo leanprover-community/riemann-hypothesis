@@ -1,11 +1,12 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTransition
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormLeOneOfIntegralInt
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UltrametricDetNormLeStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IdealPadicGeneratorLogNormStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqUnimodularDualStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqSesquilinearSkewHermitianStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UltrametricDetNormLe
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IdealPadicGeneratorLogNorm
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqUnimodularDual
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqSesquilinearSkewHermitian
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Fl.GramDet
@@ -135,3 +136,13 @@ theorem log_norm_det_gramE : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   linarith
 
 end GlobalTheory.CompanionTheory.Ar.Fl.GramDet
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gram_determinant_log_different : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (I : Type) [Fintype I] [DecidableEq I] (x : I → D.La) (ℓ : Nat.Primes), IsLocBasis (𝓞 E) ℓ x → ∀ j : E →+* ℂ_[ℓ], Real.log ‖j (gramE D x).det‖ = -(Fintype.card I : ℝ) * logIdeal (j.comp (algebraMap (𝓞 E) E)) (differentIdeal ℤ (𝓞 E)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Fl.GramDet.log_norm_det_gramE

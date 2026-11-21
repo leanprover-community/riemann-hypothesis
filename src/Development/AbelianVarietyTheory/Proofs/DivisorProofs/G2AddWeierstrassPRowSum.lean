@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.Legendre
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
@@ -82,3 +84,11 @@ lemma _root_.GlobalTheory.WpFam.hasSum_rows_G2_add_weierstrassP (τ : ℍ) (z : 
   ring_nf
 
 end GlobalTheory.WpFam
+end
+end
+
+open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
+open GlobalTheory.QFam GlobalTheory.WpFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.G2_add_weierstrassP_row_sum : ∀ (τ : ℍ) (z : ℂ), HasSum (fun n : ℤ => ∑' m : ℤ, 1 / (z + n * (τ : ℂ) + m) ^ 2) (EisensteinSeries.G2 τ + (tauPair τ).weierstrassP z) := by
+  atlas_forward_decl GlobalTheory.WpFam.hasSum_rows_G2_add_weierstrassP

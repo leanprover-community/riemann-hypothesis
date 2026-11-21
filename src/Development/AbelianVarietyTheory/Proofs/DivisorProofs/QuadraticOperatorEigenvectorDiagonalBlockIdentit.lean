@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.ActAtApply
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct
 open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift GlobalTheory.HoweR
 
@@ -31,3 +34,10 @@ theorem qop_quadratic_on_eigenvector : ∀ (ι M : Type) [Fintype ι] [Decidable
     exact key
 
 end GlobalTheory.HoweR
+end
+
+open scoped TensorProduct
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift GlobalTheory.HoweR
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quadraticOperator_eigenvector_diagonalBlock_identity : ∀ (ι M : Type) [Fintype ι] [DecidableEq ι] [AddCommGroup M] [Module ℂ M] (s : ι → Bool) (F : ι → ι → Module.End ℂ M), ∀ (α β x : ℂ) (y : ι → M), (∀ a b, qop F α β a b = 0) → (∀ a, s a = false → y a = 0) → (∀ a, s a = true → ∑ b, F a b (y b) = x • y a) → (∀ j, s j = false → ∑ b, F j b (y b) = 0) → ∀ a, (x ^ 2 - α * x - β) • y a = 0 := by
+  atlas_forward_decl GlobalTheory.HoweR.qop_quadratic_on_eigenvector

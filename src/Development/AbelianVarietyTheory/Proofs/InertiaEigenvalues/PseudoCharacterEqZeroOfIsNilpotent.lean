@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPsCharOne
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.PsChar
 
 theorem alt_pow_eq_prod {M A : Type*} [Monoid M] [CommRing A] (T : M → A) (y : M)
@@ -55,3 +57,9 @@ theorem apply_eq_zero_of_isNilpotent (k R : Type) [Field k] [CharZero k] [Ring R
   simpa using key N 1 le_rfl (by omega)
 
 end GlobalTheory.PsChar
+end
+
+open Formalism.MainNotions.N GlobalTheory.PsChar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pseudoCharacter_eq_zero_of_isNilpotent : ∀ (k R : Type) [Field k] [CharZero k] [Ring R] [Algebra k R] (d : ℕ) (T : R →ₗ[k] k), IsPsChar d (fun x => T x) → ∀ x : R, IsNilpotent x → T x = 0 := by
+  atlas_forward_decl GlobalTheory.PsChar.apply_eq_zero_of_isNilpotent

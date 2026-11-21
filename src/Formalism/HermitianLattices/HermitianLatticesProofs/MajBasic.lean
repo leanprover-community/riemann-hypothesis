@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.HermitianLattices.StatementMaj
 import Formalism.HermitianLattices.HermitianLatticesProofs.OpBound
 
 open NumberField Matrix

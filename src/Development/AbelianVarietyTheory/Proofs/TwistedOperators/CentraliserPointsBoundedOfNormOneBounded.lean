@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotCompactOfIdempotent
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix Formalism.UG NumberField GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms
@@ -98,3 +99,10 @@ theorem matOfNormBounded : MatOfNormBounded := by
   rw [map_mul, map_mul, hx, hug, toMat_assoc_inclE, hδβ]
 
 end GlobalTheory.RegSS.MatBd
+end
+end
+
+open GlobalTheory.RegSS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.centraliser_points_bounded_of_normOne_bounded : GlobalTheory.RegSS.MatOfNormBounded := by
+  atlas_forward_decl GlobalTheory.RegSS.MatBd.matOfNormBounded

@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.PairingDivisors.StatementN
+import BuildAid.ForwardExisting
 
+section
 open Finset
 
 namespace GlobalTheory
@@ -160,3 +162,8 @@ theorem dividedPowerValuations_cESum : Formalism.PairingDivisionLocalBalance.CES
   nlinarith
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cmValues_exponent_log_sum_le : Formalism.PairingDivisionLocalBalance.CESum := by
+  atlas_forward_decl GlobalTheory.dividedPowerValuations_cESum

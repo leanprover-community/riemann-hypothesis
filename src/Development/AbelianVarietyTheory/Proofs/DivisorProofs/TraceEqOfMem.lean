@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.RangeShape
-import Development.AbelianVarietyTheory.Definitions.Divisors.DatumEquiv
 import Development.AbelianVarietyTheory.Definitions.Divisors.VdmSplit
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.Clause1
 import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.Weyl

@@ -1,4 +1,3 @@
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.RealLocalIntegrals.RealTemperedBounds.StepsD
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeightVectorExplicitFormula
 

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseLocal
 set_option maxSynthPendingDepth 1
 

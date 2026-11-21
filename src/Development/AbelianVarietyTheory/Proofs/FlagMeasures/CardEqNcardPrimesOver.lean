@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.HermitianPerpSubgroup
-import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.ColumnDimensionRational
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MulVecMemHatSmul
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIrreducible
 

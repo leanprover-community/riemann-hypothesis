@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZarhinDualPolarisation.FlatFiniteFibres.FlatOfFibresFinite
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -79,3 +80,9 @@ theorem finiteOfFibres : PositivityTheory.Tls2.Zar3.Ch1.FiniteOfFibres := by
   exact ⟨IsFinite.of_isProper_of_locallyQuasiFinite l.left, hsurj⟩
 
 end GlobalTheory.CompanionTheory.AbFibre
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_of_finite_fibres : PositivityTheory.Tls2.Zar3.Ch1.FiniteOfFibres := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.AbFibre.finiteOfFibres

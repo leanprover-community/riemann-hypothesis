@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.KernelLattices.ThDistC
+import BuildAid.ForwardExisting
+
+section
 open Formalism.L2.Ker MvPolynomial
 
 noncomputable section
@@ -136,3 +139,10 @@ theorem repr_jetOp_isAlgebraic : ∀ {ι : Type} [Fintype ι] {a b : ℕ} (lam :
   exact jetMap_mem J hJ nn (bVVfun_mem lam j)
 
 end GlobalTheory.JetAlg
+end
+end
+
+open Formalism.L2.Ker MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jetOperator_bideterminantBasis_repr_isAlgebraic : ∀ {ι : Type} [Fintype ι] {a b : ℕ} (lam : ι → Formalism.BasicNotions.DomWeight a) (lam' : ι → Formalism.BasicNotions.DomWeight b) (J : (DVar ι a b →₀ ℕ) → ℂ) (nn : ι → ℕ), (∀ m, IsAlgebraic ℚ (J m)) → JetInVV ℂ lam lam' nn → ∀ (i : Formalism.L2.DIV.VVIdx lam') (j : Formalism.L2.DIV.VVIdx lam), IsAlgebraic ℚ ((Formalism.L2.DIV.bVV ℂ lam').repr (jetOp lam lam' J nn (Formalism.L2.DIV.bVV ℂ lam j)) i) := by
+  atlas_forward_decl GlobalTheory.JetAlg.repr_jetOp_isAlgebraic

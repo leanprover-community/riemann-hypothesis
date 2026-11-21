@@ -1,10 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Statements.ShortVectorBound.ScaledLatticesInSupLattices
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ShortGeneratorPlaceValuationBoundProofStatement
-import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.WeightNormalizerAndExponentsOfWeightSumStatement
-import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ScaledThetaLatticeLeSupLatticeEveryWeightStatement
-import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ScaledShortLatticeLeOfShortGeneratorBoundStatement
+import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.WeightNormalizerAndExponentsOfWeightSum
+import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ScaledThetaLatticeLeSupLatticeEveryWeight
+import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ScaledShortLatticeLeOfShortGeneratorBound
 
+section
 set_option autoImplicit false
 noncomputable section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.DIV.Cons Formalism.L2.Pj GlobalTheory.PtTie GlobalTheory.PlaceTop
@@ -48,3 +48,10 @@ theorem scaledRunLatticesInSupLattices_proof : ScaledLatticesInSupLattices := by
   exact ⟨H, fun n => integralityCondition_of_addedPoints_secondNorm n _ _ _ _ ka wL wF H⟩
 
 end GlobalTheory.PlaceTop
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.DIV.Cons Formalism.L2.Pj GlobalTheory.PtTie GlobalTheory.PlaceTop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.scaledRunLattices_in_supLattices : ScaledLatticesInSupLattices := by
+  atlas_forward_decl GlobalTheory.PlaceTop.scaledRunLatticesInSupLattices_proof

@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG GlobalTheory.SatakeWeyl
 
 namespace GlobalTheory.SatakeWeyl
@@ -42,3 +43,9 @@ theorem chainIndex : ChainIndex := by
     rw [← Subgroup.relIndex_mul_relIndex _ _ _ ih.1 h1, ih.2, h2, hQ, pow_succ]
 
 end GlobalTheory.SatakeWeyl
+end
+
+open Formalism.UG GlobalTheory.SatakeWeyl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contracting_automorphism_subgroup_chain_index : GlobalTheory.SatakeWeyl.ChainIndex := by
+  atlas_forward_decl GlobalTheory.SatakeWeyl.chainIndex

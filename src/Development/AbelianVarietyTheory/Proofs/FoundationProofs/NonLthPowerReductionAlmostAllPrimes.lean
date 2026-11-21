@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaussValuationExtensionUniqueBertiniNoetherStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaussValuationExtensionUniqueBertiniNoether
+
+section
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ
 
@@ -266,3 +267,11 @@ theorem not_valuation_lt_one : ∀ {F : Type} [Field F] [CharZero F] [IsAlgClose
   exact core t hl hζ₀ s _ hθ _ hτ V hq hql hqV (hS₀ q hq hqS₀ V hqV) W hW h c hc0 hcV hciV
 
 end GlobalTheory.LthPowRed
+end
+end
+
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonLthPower_reduction_almost_all_primes : ∀ {F : Type} [Field F] [CharZero F] [IsAlgClosed F] [Algebra.IsAlgebraic ℚ F] {K : Type} [Field K] [Algebra F K] (t : K), Transcendental F t → FiniteDimensional (IntermediateField.adjoin F {t}) K → ∀ (l : ℕ), l.Prime → ∀ (s : K), (∀ u : K, u ^ l ≠ s) → ∃ S : Finset ℕ, ∀ q : ℕ, q.Prime → q ∉ S → ∀ V : ValuationSubring F, ((q : ℕ) : F) ∈ V.nonunits → ∀ W : ValuationSubring K, ((∀ a : F, algebraMap F K a ∈ W ↔ a ∈ V) ∧ (∀ P : Polynomial F, (∀ i, P.coeff i ∈ V) → (∃ i, P.coeff i ∈ V ∧ P.coeff i ≠ 0 ∧ (P.coeff i)⁻¹ ∈ V) → W.valuation (Polynomial.aeval t P) = 1)) → ∀ (h : K) (c : F), h ≠ 0 → c ≠ 0 → c ∈ V → c⁻¹ ∈ V → ¬ W.valuation (s * h ^ l - algebraMap F K c) < 1 := by
+  atlas_forward_decl GlobalTheory.LthPowRed.not_valuation_lt_one

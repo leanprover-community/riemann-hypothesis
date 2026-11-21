@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoMulInvOf
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.SWQ GlobalTheory.ThetaTransform
 open scoped Matrix Classical
 
@@ -54,3 +56,11 @@ theorem symV_realLine_eq_zero : ∀ (F : Type) [Field F] [NumberField F] (N : �
   exact Prod.ext hfst hsnd
 
 end GlobalTheory.ThetaTransform
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.SWQ GlobalTheory.ThetaTransform
+open scoped Matrix Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicSymplecticForm_realOneParamLine_eq_zero : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ), IsTotallyReal F → ∀ M : ℝ →+ VA F N, IsRealLine M → ∀ t s : ℝ, symV (M t) (M s) = 0 := by
+  atlas_forward_decl GlobalTheory.ThetaTransform.symV_realLine_eq_zero

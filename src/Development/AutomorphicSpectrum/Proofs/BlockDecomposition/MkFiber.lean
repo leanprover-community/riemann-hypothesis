@@ -1,13 +1,12 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.PExpbSt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriGlCasselmanDatum
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocallyConstantOrbit
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DiagPairs
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriDoubleCosetTorusNilpotentStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiltrationEqConjNilpotentIntegralStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiltrationRelIndexEqResidueCardPowStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumDiagPairsToNatEqWeightedSumStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiltrationEqConjNilpotentIntegral
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiltrationRelIndexEqResidueCardPow
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumDiagPairsToNatEqWeightedSum
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL Matrix ValuativeRel GlobalTheory.CompanionTheory.IwJac PositivityTheory.Rg.BcB.F.Tail.BS
@@ -142,3 +141,9 @@ theorem jacHk : JacHk := by
 end GlobalTheory.CompanionTheory.IwJac
 
 end
+end
+
+open PositivityTheory.Rg.BcB.F.Tail.BS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacquet_hecke_jacHk : JacHk := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IwJac.jacHk

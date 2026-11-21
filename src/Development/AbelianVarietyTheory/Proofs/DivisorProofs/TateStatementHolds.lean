@@ -1,13 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfCommute
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPushEquiv
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointLevelPowerStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTateModuleOfEvaluationsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointLevelPower
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTateModuleOfEvaluations
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateLatticeSpansStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilPairingUnitScalarStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeDataTateSpanStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilPairingUnitScalar
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeDataTateSpan
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -76,3 +75,10 @@ theorem tateSt : TateSt := by
   · exact GlobalTheory.T.lattice_data_tate_span E H Dw p P (c'.V W) β (embV c' W σ) J N a T S f hL hflin hspan
 
 end GlobalTheory.FlatModel
+end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tate_statement_holds : TateSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.tateSt

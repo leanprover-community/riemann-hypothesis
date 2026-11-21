@@ -1,4 +1,3 @@
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasurableToGLEntry
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnipotentLowerRowsLeviSetClosedSubgroupStatement
 open MeasureTheory GlobalTheory.JSW
 open scoped FourierTransform ContDiff

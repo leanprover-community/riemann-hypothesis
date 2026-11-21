@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Objects
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Statements
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsTwistSections
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.QuotGraded

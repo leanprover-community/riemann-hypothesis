@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.EisTube
 
 theorem norm_sq_le_sum_sq (ι : Type) [Fintype ι] (y : ι → ℝ) :
@@ -52,3 +54,10 @@ theorem polyGaussBdd : ∀ (ι : Type) [Fintype ι] (c : ℝ), 0 < c → ∀ N :
     _ = 2 ^ N * (N.factorial / c ^ N) * Real.exp c := by rw [h5]
 
 end GlobalTheory.CompanionTheory.EisTube
+end
+
+universe u
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polynomial_times_gaussian_bounded : ∀ (ι : Type) [Fintype ι] (c : ℝ), 0 < c → ∀ N : ℕ, ∃ M : ℝ, ∀ y : ι → ℝ,
+    (1 + ‖y‖) ^ N * Real.exp (-(c * ∑ i, y i ^ 2)) ≤ M := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EisTube.polyGaussBdd

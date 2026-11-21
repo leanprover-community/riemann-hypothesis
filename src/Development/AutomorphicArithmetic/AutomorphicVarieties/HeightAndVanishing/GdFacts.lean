@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.LayerLe
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.PartOrd
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CompAlg
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CompOrd

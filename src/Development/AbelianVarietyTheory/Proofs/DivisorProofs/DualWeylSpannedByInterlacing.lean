@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CapelliDeterminantFirstRowsMemBmW
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CoefficientSpaceEqSpanOrbitExtremalVector
 import Formalism.BranchSandwichDivisors.DivFromPassageAndNorm
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
 
 noncomputable section
@@ -118,3 +120,10 @@ theorem dualWeyl_le_span_piGen (K : Type) [Field K] [CharZero K] (n : ℕ) (lam 
   exact rowAct_piGen_mem lam sg _ _
 
 end GlobalTheory.BrCompare.Surj
+end
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_weyl_spanned_by_interlacing : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (lam : DomWeight (n + 1)) (sg : DomWeight n), GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg → GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.EqualLast lam sg → dualWeyl K n n sg.natW ≤ Submodule.span K (Set.range (GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.piGen K lam sg)) := by
+  atlas_forward_decl GlobalTheory.BrCompare.Surj.dualWeyl_le_span_piGen

@@ -11,10 +11,8 @@ import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieIwLevTieOf
 import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.CmpHyp0P
 import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.SelfDualAtColLevel
 import Formalism.LocalToGlobal.UnitaryNorms.CharGal
-import Formalism.LocalToGlobal.UnitaryNorms.DefsDatum
 import Formalism.LocalToGlobal.Divisibility.QLocTied
 import Formalism.LocalToGlobal.LatticeGeometry.GeoTiedP
-import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
 import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeilEq
 import Formalism.LocalToGlobal.JointCharacters.SameChr
 import Formalism.LocalToGlobal.GlobalTheory.LinkTiesOm

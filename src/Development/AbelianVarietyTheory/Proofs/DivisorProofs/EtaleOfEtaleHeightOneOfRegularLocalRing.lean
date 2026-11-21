@@ -3,10 +3,11 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleOfEtaleAtHeigh
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FreeOfIsIntegrallyClosed
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AtPrimeTensorIsDomainIsIntegrallyClosedFaithfulS
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleLocalizationAtPrimeOfHeightOne
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FreeOfEtalePuncturedStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FreeOfEtalePunctured
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleFractionFieldOfEtaleHeightOne
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RegularLocalRingNormalDomain
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsRegularLocalRingOfFlatOfMapEqMaximalIdeal
+
+section
 open IsLocalRing
 
 namespace GlobalTheory.BranchPurity
@@ -73,3 +74,9 @@ theorem etale_of_etale_height_one : ∀ (R A : Type) [CommRing R] [IsLocalRing R
   exact finiteRing_sq_sub_mul_sq_eq_of_card _ R A rfl hR hF hA
 
 end GlobalTheory.BranchPurity
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etale_of_etale_height_one_of_regularLocalRing : ∀ (R A : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [IsDomain R] [CommRing A] [IsDomain A] [IsIntegrallyClosed A] [Algebra R A] [Module.Finite R A] [FaithfulSMul R A], (((maximalIdeal R).spanFinrank : WithBot ℕ∞) = ringKrullDim R) → 1 ≤ ringKrullDim R → ¬ IsField R → (∀ (p : Ideal R) [p.IsPrime], p.height = 1 → Algebra.Etale (Localization.AtPrime p) (TensorProduct R (Localization.AtPrime p) A)) → Algebra.Etale R A := by
+  atlas_forward_decl GlobalTheory.BranchPurity.etale_of_etale_height_one

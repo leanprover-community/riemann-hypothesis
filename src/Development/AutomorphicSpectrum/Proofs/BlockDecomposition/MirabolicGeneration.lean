@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory PositivityTheory.RgEis PositivityTheory.RgEis.MG
@@ -94,3 +96,10 @@ theorem mirGen_of_core : SecLaw → TestSph → AvgMem → AvgInv → SideOf →
     rfl
 
 end GlobalTheory.CompanionTheory.EisMir
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mirabolic_generation : SecLaw → TestSph → AvgMem → AvgInv → SideOf → TestK → Core → MirGen := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EisMir.mirGen_of_core

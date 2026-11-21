@@ -1,9 +1,10 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.HilbertSchmidtDecay.HaarExists
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.InfChar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RightDerivativeToL2
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.NilpotentRightRule
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset Matrix MeasureTheory
@@ -472,3 +473,9 @@ theorem pack : CompanionTheory.RgExh.Dec.L.Pack := by
     (path_cont ss ⟨D, E, hK.gl⟩ _ χ js (base_cont hK.gl hσ _)) (fun v => hL (ξ, js) v) u h1
 
 end GlobalTheory.CompanionTheory.PackEmb
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rgExh_pack : CompanionTheory.RgExh.Dec.L.Pack := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PackEmb.pack

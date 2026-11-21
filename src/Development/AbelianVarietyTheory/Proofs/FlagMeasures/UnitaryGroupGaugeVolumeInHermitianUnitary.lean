@@ -1,8 +1,8 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.VolumeLieE
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.HaarUniq
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasDensityAtIdentityUnitaryGroupProbability
 
+section
 noncomputable section
 
 open MeasureTheory Filter Topology Matrix
@@ -666,3 +666,9 @@ theorem gaugeVolUk : W.GaugeVolUk := by
   rw [hνc, hc, one_smul, hu0]
 
 end GlobalTheory.GaugeVolFixer
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryGroup_gaugeVolume_in_hermitianUnitary : PI.RhsWLim.W.GaugeVolUk := by
+  atlas_forward_decl GlobalTheory.GaugeVolFixer.gaugeVolUk

@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.FiniteEtaleModels.LiftUnit
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.FiniteEtaleModels.OLevDown
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtModelForgetFiniteEtale
 

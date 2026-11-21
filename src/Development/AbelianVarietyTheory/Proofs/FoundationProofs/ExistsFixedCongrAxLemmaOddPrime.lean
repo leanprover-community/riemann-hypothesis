@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeNatCastIff
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsChooseSmallPadicValAxInductionStatement
 
+section
 open Polynomial
 
 namespace GlobalTheory.AxSen
@@ -210,3 +211,12 @@ theorem exists_fixed_congr (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (Ω : Type) [
   exact A.sub_mem hx (A.mul_mem _ _ (A.pow_mem (natCast_mem A l) m) hz)
 
 end GlobalTheory.AxSen
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_fixed_congr_axLemma_oddPrime : ∀ (l : ℕ) [Fact l.Prime], l ≠ 2 → ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (A : ValuationSubring Ω), OverL l A →
+  ∀ (H : Subgroup (G ℚ Ω)), H ≤ Dec (F := ℚ) A → ∀ (m : ℕ) (x : Ω), x ∈ A →
+  (∀ h ∈ H, GlobalTheory.Glue.CgA A l (m + 1) (h x) x) → ∃ y ∈ A, (∀ h ∈ H, h y = y) ∧ GlobalTheory.Glue.CgA A l m x y := by
+  atlas_forward_decl GlobalTheory.AxSen.exists_fixed_congr

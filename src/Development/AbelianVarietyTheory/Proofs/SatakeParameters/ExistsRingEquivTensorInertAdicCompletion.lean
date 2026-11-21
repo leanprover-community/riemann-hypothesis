@@ -1,9 +1,10 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.KpqSubgroupCompact
-import Formalism.SatakeDualWeyl.StatementG
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFieldAdicCompletionTensorOfInert
+import BuildAid.ForwardExisting
 
+section
 open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SelfDualGenus
 open scoped TensorProduct Matrix
 
@@ -154,3 +155,10 @@ theorem exists_ringEquiv_completion : ∀ (E : Type) [Field E] [NumberField E] [
     exact add_mem (fix _ ha1 ha2) (mul_mem (fix _ hb1 hb2) (locEmb_mem_locOrder v θ))
 
 end GlobalTheory.InertCompletion
+end
+
+open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SelfDualGenus
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ringEquiv_tensor_inert_adicCompletion : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [Algebra.Unramified (𝓞 (maximalRealSubfield E)) (𝓞 E)] (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (P : HeightOneSpectrum (𝓞 E)), IsInertAt (maximalRealSubfield E) E v P → ∀ σ : P.adicCompletion E →+* P.adicCompletion E, (∀ x : E, σ (algebraMap E (P.adicCompletion E) x) = algebraMap E (P.adicCompletion E) (ReciprocityTheory.ChartRestriction.G.FD.cc x)) → (∀ x, Valued.v (σ x) = Valued.v x) → ∃ ψ : LocAlg v ≃+* P.adicCompletion E, (∀ x : E, ψ (locEmb v x) = algebraMap E (P.adicCompletion E) x) ∧ (∀ z, ψ (locConj v z) = σ (ψ z)) ∧ ∀ z, z ∈ locOrder v ↔ Valued.v (ψ z) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.InertCompletion.exists_ringEquiv_completion

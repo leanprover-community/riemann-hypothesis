@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.LeviCommutantWordReduction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CreqAnnqTopqSame
+import BuildAid.ForwardExisting
 
+section
 open Finset
 open CompanionTheory.D.LK (Pos)
 open CompanionTheory.RgExh.U (adC)
@@ -209,3 +211,10 @@ theorem semiCls : SemiCls := by
     rw [h0, zero_smul]
 
 end GlobalTheory.CompanionTheory.SemiClass
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.semisimple_classification_real : PositivityTheory.RgBcC.RealD.SemiCls := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SemiClass.semiCls

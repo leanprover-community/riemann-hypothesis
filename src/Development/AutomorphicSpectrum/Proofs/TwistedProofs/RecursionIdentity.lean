@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.InertZeta
@@ -154,3 +156,9 @@ theorem step : Step := by
 end GlobalTheory.CompanionTheory.InertLevi
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.recursion_identity : Step := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertLevi.step

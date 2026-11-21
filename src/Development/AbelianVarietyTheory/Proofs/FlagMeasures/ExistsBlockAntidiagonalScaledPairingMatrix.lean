@@ -1,12 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsFundOne
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.BlockAnti
-import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
-import Formalism.FormalDegreeBessel.StatementG
-import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesPairingStabilizerBlockDiagonal
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SameBlockAppend
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.Amp.BlockFrame
@@ -118,3 +116,14 @@ theorem blockAnti_scaled_pairing : ∀ {K : Type} [Field K] {j r : ℕ} (hj : j 
         exact Fin.lt_def.mpr (by omega)
 
 end GlobalTheory.Amp.BlockFrame
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_blockAntidiagonal_scaled_pairing_matrix : ∀ {K : Type} [Field K] {j r : ℕ} (hj : j ≤ r) (w : Formalism.MainNotions.S.Loc.Pt K j),
+    ∃ β : Fin r → ℕ, Monotone β ∧ (∀ a b : Fin r, j ≤ b.val → (β a = β b ↔ j ≤ a.val)) ∧
+      ∀ (σ : K →+* ℂ) (sgn : Fin j → ℤˣ) (ρ : ℝ), 0 < ρ →
+      GlobalTheory.Amp.BlockAnti (fun a : Fin j => β (Fin.castLE hj a))
+        (Matrix.of fun a b : Fin j => (((ρ ^ (r - b.val))⁻¹ * (ρ ^ (r - a.val))⁻¹ : ℝ) : ℂ) *
+          σ (w.mat b a * ((sgn a : ℤ) : K))) := by
+  atlas_forward_decl GlobalTheory.Amp.BlockFrame.blockAnti_scaled_pairing

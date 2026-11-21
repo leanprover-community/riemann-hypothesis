@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalRingCardinality.SpanPowerMembership.FmZeroHLatEmpty
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsColumnChainNonempty
 open Formalism.BasicNotions NumberField
 

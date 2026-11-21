@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
-import Formalism.LocalToGlobal.IndefiniteReal.IsMultMapUnivZero
 import Formalism.LocalToGlobal.IndefiniteReal.ThetaFireRow
 import Formalism.LocalToGlobal.IndefiniteReal.TensCastR
 import Formalism.LocalToGlobal.IndefiniteReal.LinksStage

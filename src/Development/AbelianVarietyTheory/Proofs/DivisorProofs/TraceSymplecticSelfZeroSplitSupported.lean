@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.Un
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftPRouteSmall
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNatMulIntegralOfIsCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTranslatesEqPrimFrameLat
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoBarZero
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinPartIdemMulMemIff
 

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open Polynomial
 
 namespace GlobalTheory.CompanionTheory.UnitLattice
@@ -218,3 +220,8 @@ theorem cstable_iff_and_twCent : D0a → A1 → L4 := by
       rw [sigmaGL_incl, hcg]
 
 end GlobalTheory.CompanionTheory.UnitLattice
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_fourth_property : PositivityTheory.Rg.Tf.Loc.D0a → PositivityTheory.Rg.Tf.Loc.A1 → PositivityTheory.Rg.Tf.Loc.L4 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnitLattice.cstable_iff_and_twCent

@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZe
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.HodgeTateKernel
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfForallDual
 
+section
 open GlobalTheory GlobalTheory.HTLat TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
@@ -40,3 +41,9 @@ theorem annW_eq_span_bLie : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [I
     omega
 
 end GlobalTheory.HTLat.AnnKer
+end
+
+open GlobalTheory GlobalTheory.HTLat GlobalTheory.PDivGroup GlobalTheory.WeilIntegral GlobalTheory.IndefiniteRowSideFullHecke.HodgeTateKernel TensorProduct CategoryTheory ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ChTor CategoryTheory.MonObj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_tate_kernel_annihilator : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [Algebra ℤ_[p] O] [Algebra ℤ_[p] C] [IsScalarTower ℤ_[p] O C] (Λ : Type) [CommRing Λ] [StarRing Λ] (P : Point p v O Λ), (∀ x : P.V, (∀ y ∈ P.W, P.pairV x y = 0) ↔ x ∈ Submodule.span C (Set.range P.bLie)) ∧ Module.finrank C (Submodule.span C (Set.range P.bLie)) + Module.finrank C P.W = 2 * P.A.g := by
+  atlas_forward_decl GlobalTheory.HTLat.AnnKer.annW_eq_span_bLie

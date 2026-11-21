@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableHermC
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousBlkM
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix
 open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
 
@@ -34,3 +36,11 @@ theorem lintegral_one_add_normSq_rpow_ne_top :
   exact inv_anti₀ (Real.rpow_pos_of_pos ha t) (Real.rpow_le_rpow ha.le hab ht0.le)
 
 end GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
+end
+
+open MeasureTheory Matrix
+open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_complex_power_finite : ∀ (n : ℕ) (t : ℝ), (n : ℝ) < t →
+    ∫⁻ v : Fin n → ℂ, ENNReal.ofReal ((1 + ∑ i, Complex.normSq (v i)) ^ (-t)) ≠ ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt.lintegral_one_add_normSq_rpow_ne_top

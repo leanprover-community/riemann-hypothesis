@@ -3,6 +3,9 @@ import Formalism.LocalToGlobal.HermitianForms.TiedSym
 import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GSplit
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ComplexRootOfUnityMemRangeOfIsPrimitiveRoot
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG
 open scoped TensorProduct
 
@@ -19,3 +22,10 @@ theorem lamJ_zero_blocks_mem_range_and_pow_eq_one :
   exact ⟨complex_rootOfUnity_mem_range_of_isPrimitiveRoot K s p ζ hp.pos hζ _ h, h⟩
 
 end GlobalTheory
+end
+
+open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_character_no_blocks_pth_root_of_unity : ∀ (k K : Type) [Field k] [Field K] (s : K →+* ℂ) (p : ℕ), p.Prime → (p : k) = 0 → (∃ ζ : K, IsPrimitiveRoot ζ p) → ∀ (n : ℕ) (ψ : AddChar k ℂ) (χ : ℕ → MulChar k ℂ) (a t skip : ℕ) (M : Matrix (Fin n) (Fin n) k), (∃ r : K, s r = lamJ ψ χ a t 0 skip M) ∧ lamJ ψ χ a t 0 skip M ^ p = 1 := by
+  atlas_forward_decl GlobalTheory.lamJ_zero_blocks_mem_range_and_pow_eq_one

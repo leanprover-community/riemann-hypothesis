@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorRepApply
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.JR GlobalTheory.JR.WeilProd Filter Topology
 
 namespace GlobalTheory.JR.WeilProd.TensorTest
@@ -219,3 +221,9 @@ theorem isTestRep_tensorRep {G H X Y : Type} [Group G] [Group H] [TopologicalSpa
     rfl
 
 end GlobalTheory.JR.WeilProd
+end
+
+open GlobalTheory.JR GlobalTheory.JR.WeilProd
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isLocallyConstantTestRepresentation_tensorProduct : ∀ {G H X Y : Type} [Group G] [Group H] [TopologicalSpace X] [TopologicalSpace Y] (W₁ : G → (X → ℂ) → X → ℂ) (W₂ : H → (Y → ℂ) → Y → ℂ), IsTestRep W₁ → IsTestRep W₂ → IsTestRep (tensorRep W₁ W₂) ∧ ∀ f : X × Y → ℂ, IsTest f → (∀ u, IsTest (fun v => f (u, v))) ∧ ∀ h y, IsTest (fun u => W₂ h (fun v => f (u, v)) y) := by
+  atlas_forward_decl GlobalTheory.JR.WeilProd.isTestRep_tensorRep

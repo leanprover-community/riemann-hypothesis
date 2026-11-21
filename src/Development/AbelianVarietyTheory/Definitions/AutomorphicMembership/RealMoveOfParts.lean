@@ -3,7 +3,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Strict
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Forms
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.OfFirstStepLoc
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.SignAtBasePlaceEqEmbedding
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnlocalizedSaturatedState
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaPsi
 
 noncomputable section

@@ -1,6 +1,8 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
+import BuildAid.ForwardExisting
+
+section
 open Formalism.UG GlobalTheory.SatakeWeyl
 
 namespace GlobalTheory.SatakeWeyl
@@ -93,3 +95,9 @@ theorem leviStep_of_steps (hR : RankOne) (hE : EmbExists) (hM : EmbMem) (hT : Em
       rw [(hzc k₂).eq]
 
 end GlobalTheory.SatakeWeyl
+end
+
+open Formalism.UG GlobalTheory.SatakeWeyl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryCellSumLeviReduction_of_steps : GlobalTheory.SatakeWeyl.RankOne → GlobalTheory.SatakeWeyl.EmbExists → GlobalTheory.SatakeWeyl.EmbMem → GlobalTheory.SatakeWeyl.EmbTorus → GlobalTheory.SatakeWeyl.LeviRad → GlobalTheory.SatakeWeyl.UnipSplit → GlobalTheory.SatakeWeyl.Contract → GlobalTheory.SatakeWeyl.TorusConj → GlobalTheory.SatakeWeyl.LeviStep := by
+  atlas_forward_decl GlobalTheory.SatakeWeyl.leviStep_of_steps

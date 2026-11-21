@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
 
@@ -44,3 +47,10 @@ theorem isIso_restrict_of_closedImmersion_near_generic :
   exact isIso_of_isClosedImmersion_of_surjective _
 
 end GlobalTheory
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nonempty_isIso_restrict_of_generic_mem : ∀ {W W' Y Y₁ : Scheme.{0}} [IsIntegral W] [IsIntegral W'] (i : W ⟶ Y) [IsClosedImmersion i] (h : W' ⟶ W) (c : W' ⟶ Y₁) [IsClosedImmersion c] (s₁ : Y₁ ⟶ Y) (U : Y.Opens), IsIso (s₁ ∣_ U) → h ≫ i = c ≫ s₁ → i (genericPoint W) ∈ U → (∃ w', h w' = genericPoint W) → ∃ U' : W.Opens, (U' : Set W).Nonempty ∧ IsIso (h ∣_ U') := by
+  atlas_forward_decl GlobalTheory.isIso_restrict_of_closedImmersion_near_generic

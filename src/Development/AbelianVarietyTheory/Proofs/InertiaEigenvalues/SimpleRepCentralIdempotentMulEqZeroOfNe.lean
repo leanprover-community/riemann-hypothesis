@@ -1,9 +1,10 @@
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoeffZeroNeOfMonicIrr
 import Formalism.PadicSubsetSums.CentralIdempotents.HCDisjointO
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.DetCharacterMemPrincipalCongruenceFixedVectors
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwoBlockEqZeroIff
 import Formalism.PadicSubsetSums.StableGradedCounts.IRRCentralIdemOrthogonal
-import Formalism.PadicSubsetSums.CentralIdempotents.GaloisConjCentralIdempotent
+import BuildAid.ForwardExisting
+
+section
 open Formalism.IrreducibleCountingLemmas.TYPES Formalism.L2.NT GlobalTheory.SerOSys
 open Polynomial CategoryTheory
 
@@ -73,3 +74,11 @@ theorem zIdem_mul_eq_zero_of_ne : ∀ {Γ : Type} [Group Γ] [Fintype Γ] (τ τ
     (by rintro ⟨φ, hφ⟩; exact hne (zIdem_eq_of_linearEquiv τ τ' φ hφ))
 
 end GlobalTheory.SerOSys
+end
+end
+
+open Formalism.IrreducibleCountingLemmas.TYPES Formalism.L2.NT GlobalTheory.SerOSys
+open Polynomial CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.simpleRepCentralIdempotent_mul_eq_zero_of_ne : ∀ {Γ : Type} [Group Γ] [Fintype Γ] (τ τ' : FDRep ℂ Γ), Simple τ → Simple τ' → zIdem τ ≠ zIdem τ' → zIdem τ * zIdem τ' = 0 := by
+  atlas_forward_decl GlobalTheory.SerOSys.zIdem_mul_eq_zero_of_ne

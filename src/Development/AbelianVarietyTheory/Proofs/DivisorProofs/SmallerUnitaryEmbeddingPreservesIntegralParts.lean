@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG GlobalTheory.SatakeWeyl
 
 namespace GlobalTheory.SatakeWeyl
@@ -42,3 +43,9 @@ theorem embMem : EmbMem := by
     · exact h2 a b h
 
 end GlobalTheory.SatakeWeyl
+end
+
+open Formalism.UG GlobalTheory.SatakeWeyl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smaller_unitary_embedding_preserves_integral_parts : GlobalTheory.SatakeWeyl.EmbMem := by
+  atlas_forward_decl GlobalTheory.SatakeWeyl.embMem

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.HsLinksOfUse
 import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.GrassmannianHeightBoundOfSystems
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NineFreeOfIntersection
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField

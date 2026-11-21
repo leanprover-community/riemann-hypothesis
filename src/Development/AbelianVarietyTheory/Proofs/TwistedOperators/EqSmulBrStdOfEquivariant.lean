@@ -1,11 +1,11 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.FiniteIntertwining
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BranchesAlongOfIrreducible
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StatementWithTransposeOfBranching
-import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.InterlaceDifferenceShiftInvariant
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
 
 noncomputable section
@@ -351,3 +351,10 @@ theorem eq_smul_brStd_of_equivariant : ∀ {ι : Type} [Fintype ι] {N n : ℕ} 
   exact this
 
 end GlobalTheory.BranchMultOne
+end
+end
+
+open Formalism.BasicNotions Formalism.L2.DIV
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_eq_smul_brStd_of_equivariant : ∀ {ι : Type} [Fintype ι] {N n : ℕ} (hN : N = n + 1), 1 ≤ n → ∀ (Λ : ι → DomWeight N) (σ : ι → DomWeight n), (∀ τ, Formalism.L2.Col.Br.Interlace hN (Λ τ) (σ τ)) → (∀ τ, Formalism.L2.Col.Br.SameShift (Λ τ) (σ τ)) → ∀ φ : VV ℂ Λ →ₗ[ℂ] VV ℂ σ, (∀ (g : ι → GL (Fin n) ℂ) (v : VV ℂ Λ), φ (rhoK Λ (fun τ => Formalism.MainNotions.PrimeDegreeVariant.embGL ℂ n N hN.symm (g τ)) v) = rhoK σ g (φ v)) → ∃ c : ℂ, φ = c • Formalism.L2.Col.Br.brStd hN Λ σ := by
+  atlas_forward_decl GlobalTheory.BranchMultOne.eq_smul_brStd_of_equivariant

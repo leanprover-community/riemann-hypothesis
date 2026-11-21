@@ -1,12 +1,12 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddSmulVecMulVecMulVec
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsometryConjTransvectionScaleStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsotropicDualLatticeVectorStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PowMemArithmeticSubgroupOfStabilizerStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRealUnitNotRootOfUnityStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitaryStabilizerScalingIsotropicStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DvdUnitPowSubOneStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsometryConjTransvectionScale
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsotropicDualLatticeVector
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PowMemArithmeticSubgroupOfStabilizer
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRealUnitNotRootOfUnity
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitaryStabilizerScalingIsotropic
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DvdUnitPowSubOne
 
+section
 open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
 
 namespace GlobalTheory.UnipKill
@@ -105,3 +105,9 @@ theorem killsScaled : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N 
   exact mul_eq_left.1 eq4
 
 end GlobalTheory.UnipKill
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.character_trivial_on_unit_transvections : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) (X : Data E N), 1 < Module.finrank ℚ E / 2 → ∀ (φ : X.Γ →* Multiplicative ℝ) (ξ : Fin N → E), ξ ∈ X.Λ → ξ ≠ 0 → herm X.Gm ξ ξ = 0 → ∃ u : 𝓞 E, u ≠ 0 ∧ cc (u : E) = u ∧ ∀ t : E, cc t = t → IsIntegral ℤ t → ∀ γ : X.Γ, ((γ : GL (Fin N) E) : Matrix (Fin N) (Fin N) E) = transvMat X.Gm ξ (X.m * (u * t) * X.κ0) → φ γ = 1 := by
+  atlas_forward_decl GlobalTheory.UnipKill.killsScaled

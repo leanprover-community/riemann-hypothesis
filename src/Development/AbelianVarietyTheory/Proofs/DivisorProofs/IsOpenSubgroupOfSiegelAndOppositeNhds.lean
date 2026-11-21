@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.UnipVal
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuadExtTopologyStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuadExtTopology
 
+section
 open MeasureTheory Matrix GlobalTheory.KSp GlobalTheory.SplitUnitary Filter Topology
 open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
 open GlobalTheory.SplitWeil (SB nabs)
@@ -169,3 +169,12 @@ theorem isOpen_of_sieg_of_opp (F : Type) [Field F] [CharZero F] [ValuativeRel F]
   exact U.mul_mem (hpg (pOf_mem c g hd)) (hng (nOf_mem c g))
 
 end GlobalTheory.KSp
+end
+end
+
+open MeasureTheory Matrix GlobalTheory.KSp GlobalTheory.SplitUnitary
+open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
+open GlobalTheory.SplitWeil (SB nabs)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpen_subgroup_of_siegel_and_opposite_nhds : ∀ (F : Type) [Field F] [CharZero F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (E : Type) [Field E] [Algebra F E] [TopologicalSpace E] [IsModuleTopology F E] (c : E →ₐ[F] E) (δ : E) (hE : IsQuad c δ) (ν : Type) [Fintype ν] [DecidableEq ν] (U : Subgroup (UG c (stdJ ν E))), (∀ᶠ g in nhds (1 : UG c (stdJ ν E)), g ∈ sieg c ν → g ∈ U) → (∀ᶠ g in nhds (1 : UG c (stdJ ν E)), g ∈ sieg c ν → (weyl c ν)⁻¹ * g * weyl c ν ∈ U) → IsOpen (U : Set (UG c (stdJ ν E))) := by
+  atlas_forward_decl GlobalTheory.KSp.isOpen_of_sieg_of_opp

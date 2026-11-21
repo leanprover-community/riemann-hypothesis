@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SerFixOne
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteCosetsHeckeSetAtSplitPlaceOutsideLevel
+
+section
 open NumberField IsDedekindDomain ReciprocityTheory.Aut
 open scoped TensorProduct
 
@@ -151,3 +153,11 @@ theorem mem_Umax_of_isLift : ∀ (L : Type) [Field L] [NumberField L] [IsCMField
   exact adjugate_le_one Valued.v A hA i j
 
 end GlobalTheory.LiftInt
+end
+end
+
+open NumberField IsDedekindDomain ReciprocityTheory.Aut
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_maximalCompactUnitary_of_splitPlaceLift : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (s : ReciprocityTheory.Aut.SplitPlace L) (g : ℕ), g.Prime → ((g : 𝓞 L) ∈ s.w.asIdeal) → ∀ (x : Formalism.AUTREP.GAf L n) (γ : GL (Fin n) (ZMod g)), GlobalTheory.LabPin.IsLift s x γ → x ∈ ReciprocityTheory.Aut.Umax L n := by
+  atlas_forward_decl GlobalTheory.LiftInt.mem_Umax_of_isLift

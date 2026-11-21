@@ -1,7 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OmegaFactorization
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PartialZetaFunctionalEquation
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KFacDifferentiable
+import BuildAid.ForwardExisting
+
+section
 open NumberField Complex
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.HeckeTwo
@@ -113,3 +115,13 @@ theorem balanced_unit_multiple (F : Type) [Field F] [NumberField F] [IsTotallyRe
     _ = Real.exp (2 * M) * |τ' y| := by rw [Real.exp_add, Real.exp_log (hpos τ')]
 
 end GlobalTheory.BalancedUnits
+end
+end
+
+open NumberField Complex
+open scoped nonZeroDivisors ContDiff
+open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.HeckeTwo
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_balanced_unit_multiple_totallyReal : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], ∃ C : ℝ, 1 ≤ C ∧
+    ∀ b : F, b ≠ 0 → ∃ ε : (𝓞 F)ˣ, ∀ τ τ' : Emb F, |τ (((ε : 𝓞 F) : F) * b)| ≤ C * |τ' (((ε : 𝓞 F) : F) * b)| := by
+  atlas_forward_decl GlobalTheory.BalancedUnits.balanced_unit_multiple

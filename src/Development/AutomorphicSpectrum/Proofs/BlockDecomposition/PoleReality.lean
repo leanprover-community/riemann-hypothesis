@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.HeckeEta
 
+section
 open Filter Topology Metric
 open PositivityTheory.Rg.Rsw
 
@@ -186,3 +187,9 @@ theorem poleReal : PoleReal := by
       (k - 1) hwc hwd hw
 
 end GlobalTheory.CompanionTheory.PoleBound
+end
+
+open PositivityTheory.Rg.Rsw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pole_reality : PoleReal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PoleBound.poleReal

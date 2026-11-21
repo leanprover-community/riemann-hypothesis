@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ZetaValueIdeals
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TranslateWideInd
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 open NumberField Module Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.IndefiniteRowSideFullHecke.ZetaValueIdeals GlobalTheory.ZetaDenom
 open scoped nonZeroDivisors
@@ -29,3 +30,11 @@ theorem isRayL_top_wideInd_iff : ∀ {F : Type} [Field F] [NumberField F] (C : C
   simp [g, wideInd, h1]
 
 end GlobalTheory.ZetaDenom
+end
+end
+
+open NumberField Module Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.IndefiniteRowSideFullHecke.ZetaValueIdeals GlobalTheory.ZetaDenom
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isNarrowRayClassLFunction_top_wideIndicator_iff : ∀ {F : Type} [Field F] [NumberField F] (C : ClassGroup (𝓞 F)) (Z : ℂ → ℂ), IsRayL (⊤ : Ideal (𝓞 F)) (wideInd C) Z ↔ IsClassZeta C Z := by
+  atlas_forward_decl GlobalTheory.ZetaDenom.isRayL_top_wideInd_iff

@@ -1,4 +1,7 @@
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipotentDerivatives.DerUnipLeUnipB
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir
 
 noncomputable section
@@ -37,3 +40,10 @@ theorem twAct_isSmooth {G M V : Type} [Group G] [TopologicalSpace G] [IsTopologi
   exact Subgroup.isOpen_mono hle hop
 
 end GlobalTheory.CompanionTheory.BZMir
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twisted_action_smooth : ∀ {G M V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group M] [TopologicalSpace M] [IsTopologicalGroup M] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V), IsSmooth ρ → ∀ (N : Subgroup G) (θ : N →* ℂˣ) (s : M →* G), Continuous s → ∀ (hs : ∀ (m : M) (n : N), ∃ h : s m * (n : G) * (s m)⁻¹ ∈ N, θ ⟨_, h⟩ = θ n), IsSmooth (twAct ρ N θ s hs) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZMir.twAct_isSmooth

@@ -1,9 +1,5 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.FrameTieHolds
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDPf
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDVal
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.SectionScalarValuation
 
 set_option autoImplicit false

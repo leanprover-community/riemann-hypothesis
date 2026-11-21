@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.DistinguishedUnitIdeals.CoprimeProd
 import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.GroundTheory
 
 noncomputable section

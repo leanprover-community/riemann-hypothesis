@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.FrobeniusOrbits.Statement
 import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Galois
 import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ConjReal
 import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CoprimeTwoPow

@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuation
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CongSubgroup
+import BuildAid.ForwardExisting
 
+section
 open NumberField NumberField.Units NumberField.Units.dirichletUnitTheorem GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones
 
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.UnitLattice
@@ -36,3 +36,10 @@ theorem multiples_relativelyDense (F : Type) [Field F] [NumberField F] (e : ℕ)
   exact mul_le_mul_of_nonneg_left (h1.trans hfr) he0.le
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.UnitLattice
+end
+
+open NumberField NumberField.Units NumberField.Units.dirichletUnitTheorem GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unit_log_lattice_bounded_translate : ∀ (F : Type) [Field F] [NumberField F] (e : ℕ), 0 < e → ∃ C : ℝ, 0 ≤ C ∧ ∀ y : logSpace F, ∃ u : (𝓞 F)ˣ,
+    ∀ w, |y w + (e : ℝ) * logEmbedding F (Additive.ofMul u) w| ≤ C := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.UnitLattice.multiples_relativelyDense

@@ -2,7 +2,9 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.AllLeaves
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UfamConst
 import GroundTheory.AutomorphicForms.FourierWhittaker.PartialCoeffDiagonalBlockGLEqVecCoeff
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped ENNReal
@@ -45,3 +47,12 @@ theorem uFam_sm : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [Measurable
 end GlobalTheory.CompanionTheory.Conc
 
 end
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniform_family_smoothing : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ) (ι : Type) (f : ι → AdelicGLn.AdelicGL K n → ℂ), Ker ν β → UFam f → UFam (fun i => sm ν β (f i)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.uFam_sm

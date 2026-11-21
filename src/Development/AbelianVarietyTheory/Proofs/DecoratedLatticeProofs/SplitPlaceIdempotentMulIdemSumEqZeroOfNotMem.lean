@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TiedAt
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TensorOneApply
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSplit
 

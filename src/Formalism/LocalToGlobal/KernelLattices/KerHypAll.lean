@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 import Formalism.LocalToGlobal.KernelLattices.TopLawQ
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivStmt
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.MemGoodPrimesOfNoExceptional

@@ -1,11 +1,11 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.HighestVectorsRegularLine
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WtRInjective
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryEuclideanModelStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCompactLieActionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HighestWeightTensorDecompositionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeUnitaryActionStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryEuclideanModel
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCompactLieAction
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HighestWeightTensorDecomposition
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeUnitaryAction
 
+section
 noncomputable section
 
 open Matrix Finset
@@ -267,3 +267,12 @@ theorem exists_inv_multi : ∀ {n : ℕ} (V : Type) [NormedAddCommGroup V] [Inne
     exact this
 
 end GlobalTheory.CompanionTheory.RealCountG.ExtMulti
+end
+end
+
+open Matrix Finset
+open scoped InnerProductSpace
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.RealCount GlobalTheory.CompanionTheory.RealCountG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_invariant_extending : ∀ {n : ℕ} (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] (E1 E2 : Fin n → Fin n → Module.End ℂ V) (σ : Matrix.unitaryGroup (Fin n) ℂ →* (V →ₗ[ℂ] V)), IsPair E1 E2 → IsDerivK σ (kF E1 E2) → ∀ (E : KMod n) (G : Fin n → Fin n → Module.End ℂ (E.V →L[ℂ] ℂ)), IsDualFam E G → ∀ (M : Finset (Fin n → ℤ)) (f : ∀ μ : Fin n → ℤ, hwOf G (wtR μ) →ₗ[ℂ] hwSp E1 E2 (wtR μ)), ∃ t ∈ invA σ E, ∀ μ ∈ M, ∀ ξ : hwOf G (wtR μ), t ξ = f μ ξ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RealCountG.ExtMulti.exists_inv_multi

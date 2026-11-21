@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryPairPartnerCmExtensionStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.PairPartnerFK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -19,5 +17,5 @@ theorem _root_.GlobalTheory.T.doubled_lagrangian_intertwiner : ∀ (F E : Type) 
         ξ • incM F JB = incM F (ξ₀ • JS⁻¹) →
         ∀ (a : UG (cA σ) (incM F JA)) (b : UG (cA σ) (incM F JB)),
           ∃ (g : GAF σ JS) (h : GAF σ JT), mtF σ JT h = a.1.1 ∧ mtF σ JS g = (b⁻¹).1.1ᵀ := by
-  first | exact @_root_.GlobalTheory.WeilPairPartnerF.pair_partnerF_k | exact _root_.GlobalTheory.WeilPairPartnerF.pair_partnerF_k | (intros; apply _root_.GlobalTheory.WeilPairPartnerF.pair_partnerF_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.WeilPairPartnerF.pair_partnerF_k
 end

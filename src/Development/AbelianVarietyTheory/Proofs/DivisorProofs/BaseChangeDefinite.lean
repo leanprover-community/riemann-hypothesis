@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisOfPolarized
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 noncomputable section
 

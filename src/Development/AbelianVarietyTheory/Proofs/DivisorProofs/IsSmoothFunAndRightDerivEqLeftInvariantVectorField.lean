@@ -3,6 +3,8 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsExpLieAlgebraComp
 import Development.AbelianVarietyTheory.Definitions.Divisors.CentralNilGL
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfMemWeakIn
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CasKOp
+
+section
 open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.HCA GroundTheory.Automorphic GlobalTheory.HCAlpha
 open scoped ContDiff
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
@@ -55,3 +57,11 @@ theorem isSmoothFun_and_rightDeriv_eq_vecF : ∀ (E : Type) [Field E] [NumberFie
     exact h1.unique h3
 
 end GlobalTheory.GlVec
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.HCA GroundTheory.Automorphic GlobalTheory.HCAlpha
+open scoped ContDiff
+attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isSmoothFun_and_rightDeriv_eq_leftInvariantVectorField : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), ∀ f : Lie E a → ℂ, ContDiffOn ℝ ∞ f (invSet E a) → (glH E a).IsSmoothFun (fun y : glG E a => f (toL y.1.val)) ∧ ∀ X : glL E a, ContDiffOn ℝ ∞ (vecF E a (toL X.1) f) (invSet E a) ∧ (glH E a).rightDeriv X (fun y : glG E a => f (toL y.1.val)) = fun y : glG E a => vecF E a (toL X.1) f (toL y.1.val) := by
+  atlas_forward_decl GlobalTheory.GlVec.isSmoothFun_and_rightDeriv_eq_vecF

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.OneSTr
+import BuildAid.ForwardExisting
 
+section
 open CrystallineSemistableComparison.Pb.Kap
 
 namespace GlobalTheory.CompanionTheory.KapChain
@@ -22,3 +24,9 @@ theorem rho_smul : ∀ {Λ A B K : Type} [CommRing Λ] [CommRing A] [CommRing B]
     rw [← Finset.smul_sum, smul_comm]
 
 end GlobalTheory.CompanionTheory.KapChain
+end
+
+open CrystallineSemistableComparison.Pb.Kap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realization_smul : ∀ {Λ A B K : Type} [CommRing Λ] [CommRing A] [CommRing B] [Field K] (C : Chain.{1} Λ A B K) {j : ℕ} (c : Λ) (x : ∀ n, C.S n j) (f : Module.Dual K (C.V j) →+ B), C.Rho x f → C.Rho (c • x) ((AddMonoidHom.mulLeft (C.ι (C.lam c))).comp f) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KapChain.rho_smul

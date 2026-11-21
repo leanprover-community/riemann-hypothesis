@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.AdelicCompactOpens.IntAdelesCompactOpen
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicIntegersCompact.IsCompactAdicCompletionIntegers
 
 theorem finiteAdeleIntegers_compactOpen : Formalism.L2.Props.IntAdelesCompactOpen := PI.IntAdCpctOpenWork.main

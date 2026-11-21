@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.OnesRepresent
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulVecAuxiliaryBasisVectorSumFinApply
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory ValuativeRel Matrix
 
 noncomputable section
@@ -125,3 +127,10 @@ theorem oneClass_symChain (k : Type) [Field k] [ValuativeRel k] [TopologicalSpac
   exact hu
 
 end GlobalTheory.SymChain.LatClass
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symmetricChain_oneLatticeClass : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k), IsUnitVol ν → ∀ (s κ : ℕ) (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t], S.OneClass t ν := by
+  atlas_forward_decl GlobalTheory.SymChain.LatClass.oneClass_symChain

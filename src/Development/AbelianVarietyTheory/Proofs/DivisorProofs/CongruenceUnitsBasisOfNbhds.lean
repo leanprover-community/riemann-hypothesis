@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.Tuples
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FiniteAdeleVectorAnnihilatorsCompactOpenBasis
+
+section
 open NumberField IsDedekindDomain Formalism.L2.DIV Formalism.UG Topology Filter
 open scoped TensorProduct
 
@@ -154,3 +156,13 @@ theorem exists_congN_subset : ∀ (L : Type) [Field L] [NumberField L],
   simpa [Units.coe_map, map_inv] using this
 
 end GlobalTheory.CongOpen
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.DIV Formalism.UG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.congruence_units_basis_of_nbhds : ∀ (L : Type) [Field L] [NumberField L],
+    letI : Algebra (FiniteAdeleRing (𝓞 ℚ) ℚ) (AfE ℚ L) := Algebra.TensorProduct.rightAlgebra
+    letI : TopologicalSpace (AfE ℚ L) := moduleTopology (FiniteAdeleRing (𝓞 ℚ) ℚ) (AfE ℚ L)
+    ∀ V : Set (AfE ℚ L)ˣ, IsOpen V → (1 : (AfE ℚ L)ˣ) ∈ V → ∃ N : ℕ, 0 < N ∧ ∀ u ∈ congN ℚ L N, u ∈ V := by
+  atlas_forward_decl GlobalTheory.CongOpen.exists_congN_subset

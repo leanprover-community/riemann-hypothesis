@@ -1,10 +1,10 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HolomorphicSeriesUniformTubeStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionInvarianceCosetSumStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetSeriesSummableShiftedStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoarseLipschitzExponentialEstimateStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HolomorphicSeriesUniformTube
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionInvarianceCosetSum
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetSeriesSummableShifted
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoarseLipschitzExponentialEstimate
 
+section
 open Filter Topology PositivityTheory.RgEis
 
 namespace GlobalTheory.CompanionTheory.RgEisCross
@@ -145,3 +145,8 @@ theorem cross (hSec : SecLaw) (hHt : HtLip) (hSt : PiLocalization₂) (hWL : Wal
       simp
 
 end GlobalTheory.CompanionTheory.RgEisCross
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.crossing_of_walls_and_heights : PositivityTheory.RgEis.SecLaw → PositivityTheory.RgEis.HtLip → PositivityTheory.RgEis.PiLocalization₂ → PositivityTheory.RgEis.WallLaw → PositivityTheory.RgEis.Cross := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisCross.cross

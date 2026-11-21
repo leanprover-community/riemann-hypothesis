@@ -3,7 +3,9 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MulEqOfRangeLe
 import GroundTheory.AutomorphicForms.AnisotropicHeight
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasurableSdot
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OnlyStableSubspaces
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Tf.Loc PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4 GlobalTheory.CompanionTheory.TorusCh
@@ -57,3 +59,10 @@ theorem adCent_comm_rm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
 end GlobalTheory.CompanionTheory.TorusCh.CommMem
 
 end
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Tf.Loc PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4 GlobalTheory.CompanionTheory.TorusCh
+open scoped Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.commute_polynomial_of_mem_centralizer : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (d : GL (Fin n) E) (t : GA E n), t ∈ adCent d → ∀ e : Matrix (Fin n) (Fin n) E, IsPol (nrm d).val e → t.val * rm e = rm e * t.val := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TorusCh.CommMem.adCent_comm_rm

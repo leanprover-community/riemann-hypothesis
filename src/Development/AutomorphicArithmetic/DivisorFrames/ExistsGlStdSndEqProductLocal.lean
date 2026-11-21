@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.LocalEmbeddings.FinMatchDefs
 import Development.AutomorphicArithmetic.DivisorFrames.MemIntAfAndInIdIffSplitComponents
 import Development.AutomorphicArithmetic.DivisorFrames.UnitCharIdempotentSumEqProdOverSplitPlaces
 

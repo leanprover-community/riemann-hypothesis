@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InjectiveWedgeHighestCoefficient
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AnnEqZeroOfDegreeZero
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CreAnnApply
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BracketLeviModuleBoundaryPart
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset
@@ -430,3 +430,10 @@ theorem genCOU2_of (hR : LeviRel) : GenCOU2 := by
 theorem genCOU2 : GenCOU2 := genCOU2_of GlobalTheory.CompanionTheory.PairMult.leviRel
 
 end GlobalTheory.CompanionTheory.PairMult.COU
+end
+end
+
+open GlobalTheory.CompanionTheory.PairMult
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pair_multiplicity_generic_unitary : GlobalTheory.CompanionTheory.PairMult.GenCOU2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PairMult.COU.genCOU2

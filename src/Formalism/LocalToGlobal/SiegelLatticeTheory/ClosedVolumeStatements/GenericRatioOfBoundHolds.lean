@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.FourParts
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Corank
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GGMirabolic

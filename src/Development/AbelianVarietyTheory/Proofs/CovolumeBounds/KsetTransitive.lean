@@ -1,10 +1,11 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsKMeas
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FrameIsotropicOrthonormal
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.MaximalCompactSubgroupProperties
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsUnitaryOfGramEq
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsQr
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+import BuildAid.ForwardExisting
+
+section
 open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 GlobalTheory.HCXi
 open scoped ENNReal ComplexOrder
 
@@ -116,3 +117,10 @@ theorem iwasawa : ∀ k r : ℕ, 1 ≤ k → ∀ g ∈ GV k r, ∃ κ ∈ Kset k
   · rw [← Matrix.mul_assoc, hκ2, Matrix.one_mul]
 
 end GlobalTheory.HCXi
+end
+
+open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 GlobalTheory.HCXi
+open scoped ENNReal ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_mem_Kset_mul_mem_Pset_eq : ∀ k r : ℕ, 1 ≤ k → ∀ g ∈ GV k r, ∃ κ ∈ Kset k r, ∃ p ∈ Pset k r, g = κ * p := by
+  atlas_forward_decl GlobalTheory.HCXi.iwasawa

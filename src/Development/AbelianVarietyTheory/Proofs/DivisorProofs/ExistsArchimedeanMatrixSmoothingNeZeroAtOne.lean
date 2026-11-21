@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OnMatInfOfIsUnit
+import BuildAid.ForwardExisting
+
+section
 open NumberField GlobalTheory.CuspRep GlobalTheory.JSW GlobalTheory.JSW.MirCinf MeasureTheory
 open scoped FourierTransform ContDiff
 
@@ -82,3 +85,10 @@ theorem exists_smoothMatInf_ne_zero_at_one : ∀ (E : Type) [Field E] [NumberFie
   exact lt_irrefl _ key
 
 end GlobalTheory.JSW.MirCinf
+end
+
+open NumberField GlobalTheory.CuspRep GlobalTheory.JSW GlobalTheory.JSW.MirCinf MeasureTheory
+open scoped FourierTransform ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_archimedeanMatrixSmoothing_ne_zero_at_one : ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (W : GL (Fin n) (Cinf E) → ℂ), Continuous W → W 1 ≠ 0 → ∃ α : (Fin n → Fin n → Cinf E) → ℂ, ContDiff ℝ ∞ α ∧ HasCompactSupport α ∧ tsupport α ⊆ {x | IsUnit (Matrix.of x)} ∧ smoothMatInf α W 1 ≠ 0 := by
+  atlas_forward_decl GlobalTheory.JSW.MirCinf.exists_smoothMatInf_ne_zero_at_one

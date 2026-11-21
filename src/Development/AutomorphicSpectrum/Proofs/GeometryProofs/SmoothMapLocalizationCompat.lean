@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.LocalisedSmooth
 
 def denomMonoid {R : Type} [CommRing R] (c : R) : Submonoid R where
@@ -175,3 +177,13 @@ theorem GlobalTheory.CompanionTheory.Ar.LocalisedSmooth.smooth_localised
     haveI P : Algebra.IsPushout A₀ A₁ S T :=
       Algebra.isPushout_of_isLocalization (denomMonoid c₀) S A₁ T
     exact RingHom.Smooth.isStableUnderBaseChange A₀ A₁ S T hsm
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_map_localization_compat : ∀ (Ω₀ Ω : Type) [Field Ω₀] [Field Ω] [CharZero Ω₀] [CharZero Ω] [Algebra Ω₀ Ω] (A₀ : Subalgebra ℤ Ω₀)
+    (A₁ : Subalgebra ℤ Ω) (φ : A₀ →+* A₁), (∀ a, ((φ a : A₁) : Ω) = algebraMap Ω₀ Ω a) → φ.Smooth →
+    ∀ h : Ω₀, h ∈ Algebra.adjoin ℚ (A₀ : Set Ω₀) → h ≠ 0 → ∀ (S : Subalgebra ℚ Ω₀) (T : Subalgebra ℚ Ω),
+      S = Algebra.adjoin ℚ (insert h⁻¹ (A₀ : Set Ω₀)) →
+      T = Algebra.adjoin ℚ (insert (algebraMap Ω₀ Ω h)⁻¹ (A₁ : Set Ω)) →
+      ∃ ψ : S →+* T, (∀ s, ((ψ s : T) : Ω) = algebraMap Ω₀ Ω s) ∧ ψ.Smooth := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.LocalisedSmooth.smooth_localised

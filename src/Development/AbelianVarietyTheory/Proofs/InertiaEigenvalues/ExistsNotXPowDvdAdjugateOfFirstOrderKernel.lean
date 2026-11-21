@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Polynomial Matrix
 
 namespace GlobalTheory
@@ -237,3 +239,9 @@ theorem exists_not_X_pow_dvd_adjugate_of_firstOrderKernel (K : Type) [Field K] (
     (Finset.dvd_sum fun k _ => Dvd.dvd.mul_left (hcon k l) _) _
 
 end GlobalTheory
+end
+
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_not_X_pow_dvd_adjugate_of_first_order_kernel : ∀ (K : Type) [Field K] (a m : ℕ) (Ψ : Matrix (Fin a) (Fin a) (Polynomial K)), (∀ x0 x1 : Fin (1 + 1) → Fin a → K, (∀ j, (Ψ.map fun p => p.coeff 0).mulVec (x0 j) = 0 ∧ (Ψ.map fun p => p.coeff 1).mulVec (x0 j) + (Ψ.map fun p => p.coeff 0).mulVec (x1 j) = 0) → ¬ LinearIndependent K x0) → Module.finrank K (LinearMap.ker (Ψ.map fun p => p.coeff 0).mulVecLin) ≤ m + 1 → a ≠ 0 → ∃ b c, ¬ (Polynomial.X : Polynomial K) ^ (2 * m + 1) ∣ Ψ.adjugate b c := by
+  atlas_forward_decl GlobalTheory.exists_not_X_pow_dvd_adjugate_of_firstOrderKernel

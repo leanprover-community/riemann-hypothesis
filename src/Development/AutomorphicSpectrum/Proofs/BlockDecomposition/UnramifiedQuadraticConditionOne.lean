@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.QuadAtOf
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.ResidueInvolution
@@ -84,3 +85,8 @@ theorem q1 : PositivityTheory.SiegelWeilFormula.Gunr.Q1 := by
 end GlobalTheory.CompanionTheory.ResidueInvolution
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_quadratic_condition_one : PositivityTheory.SiegelWeilFormula.Gunr.Q1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ResidueInvolution.q1

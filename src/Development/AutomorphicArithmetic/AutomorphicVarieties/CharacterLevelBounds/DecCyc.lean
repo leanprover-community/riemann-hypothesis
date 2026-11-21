@@ -1,5 +1,4 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ShaFamMono
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PartsSign
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.DecGen
 import Mathlib.Topology.Algebra.ClopenNhdofOne
 

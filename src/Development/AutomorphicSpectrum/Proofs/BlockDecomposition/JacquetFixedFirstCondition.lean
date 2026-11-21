@@ -1,8 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.StrictDominanceCasselman.IsStrictlyDominant
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantIwahoriCosetRepsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorCosetSumStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantIwahoriCosetReps
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorCosetSum
 
+section
 open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel PositivityTheory.Lbc
 
 namespace GlobalTheory.CompanionTheory.Lbc
@@ -32,3 +32,9 @@ theorem hecke_dominant_mul : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologi
   field_simp
 
 end GlobalTheory.CompanionTheory.Lbc
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel PositivityTheory.Lbc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacquet_fixed_first_condition : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], PositivityTheory.Lbc.C1 k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Lbc.hecke_dominant_mul

@@ -1,10 +1,11 @@
 import Mathlib
-import ReciprocityTheory.GaloisValuations.Global
 import ReciprocityTheory.GaloisValuations.ArithOfA
 import ReciprocityTheory.NeutralLocalFields.HilbertClassField
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HilbertClassFieldA
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertiaElementEqOneOrLiesAboveFinitePlace
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Neutral.HilbertClassField
 open Pointwise
 
@@ -57,3 +58,14 @@ theorem hilbertSubgroup_le_ker : ∀ (E Ω : Type) [Field E] [NumberField E] [Fi
   · exact (hf g).2 (hC g hg)
 
 end GlobalTheory.HilbertKill
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Neutral.HilbertClassField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hilbertSubgroup_le_ker_of_kills_inertia : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
+    (Av : HeightOneSpectrum (𝓞 E) → ValuationSubring Ω), (∀ v, IsPlaceOver (Av v) v) →
+    ∀ (M : Type) [AddCommGroup M] (z : G E Ω → M), (∀ g h, z (g * h) = z g + z h) →
+    IsLocallyConstant z → (∀ v, ∀ σ ∈ Ine (F := E) (Av v), z σ = 0) →
+    (∀ c : Ω ≃ₐ[E] Ω, IsComplexConjugation c → z c = 0) →
+    ∀ σ ∈ hilbertSubgroup E Ω, z σ = 0 := by
+  atlas_forward_decl GlobalTheory.HilbertKill.hilbertSubgroup_le_ker

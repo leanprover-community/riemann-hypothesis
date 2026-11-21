@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantSubspaceMobiusInverseCharpolyLinearEqui
+import BuildAid.ForwardExisting
 
+section
 open Polynomial GlobalTheory.CuspGL
 
 namespace GlobalTheory.CuspGL
@@ -33,3 +34,9 @@ theorem charpoly_eq_finsum_psi (F : Type) [Field F] [Finite F] (V : Type) [AddCo
     rfl
 
 end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.apply_charpoly_eq_finsum_psi_invariant_submodules : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] (s : F[X] → ℂ) (g : Module.End F V), s (LinearMap.charpoly g) = ∑ᶠ W : {W : Submodule F V // ∀ x ∈ W, g x ∈ W}, psi s W.1 (g.restrict W.2) := by
+  atlas_forward_decl GlobalTheory.CuspGL.charpoly_eq_finsum_psi

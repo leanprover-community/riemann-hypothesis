@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TZero
+import BuildAid.ForwardExisting
 
+section
 open Finset GlobalTheory.CompanionTheory.CoefId
 
 namespace GlobalTheory.CompanionTheory.CoefId
@@ -69,3 +71,9 @@ theorem score_tZero_level : ∀ {n : ℕ} (lev : Fin n → ℕ), Monotone lev �
   linarith
 
 end GlobalTheory.CompanionTheory.CoefId
+end
+
+open Finset GlobalTheory.CompanionTheory.CoefId
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.score_tZero_eq_level_count : ∀ {n : ℕ} (lev : Fin n → ℕ), Monotone lev → ∀ a : Fin n, score (tZero lev) a = ((univ.filter fun b => lev a < lev b).card : ℤ) - ((univ.filter fun b => lev b < lev a).card : ℤ) + ((a : ℕ) : ℤ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CoefId.score_tZero_level

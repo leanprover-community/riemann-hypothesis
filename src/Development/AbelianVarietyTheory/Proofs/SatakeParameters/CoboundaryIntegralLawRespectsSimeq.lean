@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.InertKernelTheory.DefsBeCob
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CobSimeqProof
@@ -46,3 +48,9 @@ theorem cobSimeq : Formalism.L2.KerInert.BeCob.CobSimeq := by
   exact H
 
 end GlobalTheory.CobSimeqProof
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coboundary_integral_law_respects_simeq : Formalism.L2.KerInert.BeCob.CobSimeq := by
+  atlas_forward_decl GlobalTheory.CobSimeqProof.cobSimeq

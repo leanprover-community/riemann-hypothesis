@@ -8,6 +8,8 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchemeModelsSpr
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothSpreadsOutStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsProperSpreadsOutStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasModelOfSpreading
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.QCoh GlobalTheory.LogPair
@@ -38,3 +40,12 @@ theorem exists_smooth_proper_model : ∀ (k : Type) [CommRing k] (X : Scheme.{0}
   exact ⟨φ₂.range, _, _, _, ft₃, inferInstance, inferInstance, m₃.2.2.2.2⟩
 
 end GlobalTheory.SmoothProperModel
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CechPic GlobalTheory.QCoh GlobalTheory.LogPair
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_smooth_proper_model_finitelyGenerated_subring : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (f : X ⟶ Sp k), Smooth f → IsProper f → ∃ (R : Subring k) (X₀ : Scheme.{0}) (f₀ : X₀ ⟶ Sp R) (π : X ⟶ X₀), Algebra.FiniteType ℤ R ∧ Smooth f₀ ∧ IsProper f₀ ∧ IsPullback π f f₀ (spMap R.subtype) := by
+  atlas_forward_decl GlobalTheory.SmoothProperModel.exists_smooth_proper_model

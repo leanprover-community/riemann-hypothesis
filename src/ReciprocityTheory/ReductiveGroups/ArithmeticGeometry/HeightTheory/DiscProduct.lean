@@ -1,4 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscBDefs
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FiniteHeightFractionRepr
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscA
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HHINDC

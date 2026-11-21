@@ -1,8 +1,9 @@
 import Mathlib
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteChars
-import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicIntegersCompact.IsCompactAdicCompletionIntegers
+import BuildAid.ForwardExisting
+
+section
 open IsDedekindDomain NumberField
 
 namespace GlobalTheory.LevelChars
@@ -112,3 +113,9 @@ theorem rayClass_finite : ∀ (L : Type) [Field L] [NumberField L] (S : Set (Hei
   fun L _ _ S N hS => finiteIndex_range_sup_levSub L S N hS
 
 end GlobalTheory.LevelChars
+end
+
+open IsDedekindDomain NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rayClassGroup_idelic_finiteIndex : ∀ (L : Type) [Field L] [NumberField L] (S : Set (HeightOneSpectrum (𝓞 L))) (N : ℕ), S.Finite → ((Units.map (algebraMap L (AdeleRing (𝓞 L) L)).toMonoidHom).range ⊔ GlobalTheory.LevelChars.levSub L S N).FiniteIndex := by
+  atlas_forward_decl GlobalTheory.LevelChars.rayClass_finite

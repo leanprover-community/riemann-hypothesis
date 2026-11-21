@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.EquivariantSections.EquivSection
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset MeasureTheory Matrix
@@ -149,3 +151,9 @@ theorem exhaust : Exhaust := by
   simp only [Submodule.subtype_apply, Submodule.coe_sum]
 
 end GlobalTheory.CompanionTheory.WordFam
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_exhaustion_statement : PositivityTheory.RgDs.K.Exhaust := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WordFam.exhaust

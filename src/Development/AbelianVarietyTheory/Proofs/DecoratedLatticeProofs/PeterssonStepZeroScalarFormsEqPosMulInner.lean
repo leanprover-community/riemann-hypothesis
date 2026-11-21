@@ -5,16 +5,10 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.UnitRatio
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnitOfUnitary
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntegralDefiniteQuotientEqClassSumStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousFinGL
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnitaryClassRepresentativesBijective
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousPhiPrV
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsTransportAdelicCorrection
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChartNonempty
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBoundUnitary
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.LevelADef
-import Formalism.LocalRingCardinality.PosOfIsomEmb
 
+section
 noncomputable section
 
 namespace GlobalTheory.StepZeroNorm
@@ -263,3 +257,11 @@ theorem GlobalTheory.StepZeroNorm.integral_rd_eq_inner : ∀ (D : D7) (u : D.wha
   · intro z f g g'
     have e : (fun x => (z • g + g') (F.val0.eY x)) = z • (fun x => g (F.val0.eY x)) + fun x => g' (F.val0.eY x) := rfl
     simp only [e, map_add, map_smul, smul_eq_mul]
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum MeasureTheory NumberField IsDedekindDomain Matrix
+open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.FinPl GlobalTheory.SeeSaw ValuativeRel IsLocalRing
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.petersson_stepZeroScalarForms_eq_pos_mul_inner : ∀ (D : D7) (u : D.what₂.Word) (F : Formalism.L2.Forms.Forms0 D u) (θ : InfFam D), IsInfFam θ → CoCpt (D.sp.X 0) → ∀ (vS : Vol (D.sp.X 0)) (y : (D.mem u).C.Y 0), ∃ c : ℝ, 0 < c ∧ ∀ φ ψ : D.what₂.Mu u, ∫ g in vS.𝓕, (GlobalTheory.Core.Mi.chart0 F).rd θ (D.eMu u φ).1 y g * star ((GlobalTheory.Core.Mi.chart0 F).rd θ (D.eMu u ψ).1 y g) ∂vS.μ = (c : ℂ) * inner ℂ ψ φ := by
+  atlas_forward_decl GlobalTheory.StepZeroNorm.integral_rd_eq_inner

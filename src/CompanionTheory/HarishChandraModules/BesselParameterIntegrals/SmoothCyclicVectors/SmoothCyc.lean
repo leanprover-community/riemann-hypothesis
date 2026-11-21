@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LowCyc
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.LowSmooth
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.MaximalCompactIsCompact
 import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.IntegralMemOfIsClosed

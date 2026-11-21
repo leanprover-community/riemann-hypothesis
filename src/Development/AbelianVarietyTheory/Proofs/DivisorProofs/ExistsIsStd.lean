@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDividedPowersDividedPowerPolyAlgebraAugIdeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDividedPowersSplitAugmentationExtensionStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDividedPowersDividedPowerPolyAlgebraAugIde
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDividedPowersSplitAugmentationExtension
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLiftAndAugmentationMapStatement
 
+section
 set_option autoImplicit false
 
 open DividedPowers GlobalTheory.Cris GlobalTheory.PDA
@@ -20,3 +20,9 @@ theorem PDPoly.exists_isStd : ∀ (B : Type) [CommRing B] (J : Ideal B) (δ : Di
   rw [hθη n _ (Q.e_succ_mem_aug 0), hη]
 
 end GlobalTheory.PDA
+end
+
+open DividedPowers GlobalTheory.Cris GlobalTheory.PDA
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_dividedPowers_ext_isStd : ∀ (B : Type) [CommRing B] (J : Ideal B) (δ : DividedPowers J) (Q : PDPoly B), ∃ η : DividedPowers (Q.ext J), Q.IsStd δ η := by
+  atlas_forward_decl GlobalTheory.PDA.PDPoly.exists_isStd

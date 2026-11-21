@@ -1,14 +1,14 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.PolarisationModuleIndex
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDenominatorOfAdelicLatticeStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicLatticeOrderCoprimeIndexStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationModuleUnitDualStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationModuleUnitDual
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsImaginaryGeneratorCmTypeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexCoprimeOfTorsionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationLatticeFgStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexCoprimeOfTorsion
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationLatticeFg
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiscriminantMulTraceDualIntegralStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCoprimeIntegerInIdealStatement
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.IndefiniteRowSideFullHecke.PolarisationModuleIndex
@@ -155,3 +155,9 @@ theorem polarisationModule : PolarisationModule :=
   fun _ _ _ _ _ _ φ hφ e₀ => ⟨modulePart φ hφ e₀, sizePart φ hφ e₀⟩
 
 end GlobalTheory.PolarisationModuleProof
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polarisation_module_statement : GlobalTheory.IndefiniteRowSideFullHecke.PolarisationModuleIndex.PolarisationModule := by
+  atlas_forward_decl GlobalTheory.PolarisationModuleProof.polarisationModule

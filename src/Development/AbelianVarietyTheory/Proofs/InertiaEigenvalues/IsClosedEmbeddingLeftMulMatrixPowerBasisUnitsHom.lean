@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LeftMulTau
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 namespace GlobalTheory.JR.LinDesc
@@ -54,3 +57,9 @@ theorem tm_isClosedEmbedding : ∀ (F E : Type) [NontriviallyNormedField F] [Non
     rw [this]; exact hc.isClosed_range.preimage hM.continuous
 
 end GlobalTheory.JR.LinDesc
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isClosedEmbedding_leftMulMatrixPowerBasisUnitsHom : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (A : Et F E) (r : ℕ) (τ : A.K) (p : Fin r → F) (hG : A.IsGen τ p), Topology.IsClosedEmbedding (LinDesc.tm A hG) := by
+  atlas_forward_decl GlobalTheory.JR.LinDesc.tm_isClosedEmbedding

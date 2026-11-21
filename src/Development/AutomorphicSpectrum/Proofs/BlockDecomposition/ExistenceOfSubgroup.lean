@@ -1,9 +1,9 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.LocalGlobalCompatibility.TemperedLocalGlobal.LocalGlobalOfIwahori
 import Formalism.SharpRestriction.LevelLetterCocycles.WildPro
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTameGenAtOfValuationSubring
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InertiaTypePrimesOfAdmissible
 
+section
 noncomputable section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
 open GlobalTheory.WeilDeligne LocalGlobalAboveLAlt
@@ -309,3 +309,10 @@ theorem exSub : ExSub := by
   simp [LinearMap.charpoly_one]
 
 end GlobalTheory.CompanionTheory.ExSubLeaf
+end
+end
+
+open LocalGlobalAboveLAlt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.existence_of_subgroup : ExSub := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ExSubLeaf.exSub

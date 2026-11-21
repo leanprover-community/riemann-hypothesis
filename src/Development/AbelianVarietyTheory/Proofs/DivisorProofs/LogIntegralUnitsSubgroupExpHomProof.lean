@@ -1,8 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PtCoeffSingleSubst
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -86,3 +85,10 @@ theorem unitSt : UnitSt := by
 end Unit
 
 end GlobalTheory.IsoTriv
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.logIntegralUnitsSubgroupExpHom_proof : UnitSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.unitSt

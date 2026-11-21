@@ -31,13 +31,13 @@ theorem finite_tup (p : PtAt ex Csz) : Finite p.P.T := by
 
 set_option maxHeartbeats 1600000 in
 
-theorem setting_of_size (p : PtAt ex Csz) (hp : p.Rows) (hs : GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup.SizeRows L) (he : GlobalTheory.GLq.ESerTie D) :
+theorem setting_of_exAt (p : PtAt ex Csz) (hex : p.R.toRealDat.ExAt) (hs : GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup.SizeRows L) (he : GlobalTheory.GLq.ESerTie D) :
     HidaSetting L p.R.toRealDat p.F.lv2 where
   size := hs
   eser := he
   host := p.host
   hF := p.hF
-  core := (GlobalTheory.OneMapBridge.heckeChoiceClauses_of_weakCharacterisation_at_face D _ _ _ _ _ _ p.R p.F p.charW hp.exAt).1
+  core := (GlobalTheory.OneMapBridge.heckeChoiceClauses_of_weakCharacterisation_at_face D _ _ _ _ _ _ p.R p.F p.charW hex).1
   mu_off := p.charW.tup.mu_off
   mu_used := p.charW.tup.mu_used
   mu_ne := p.charW.tup.mu_ne
@@ -51,6 +51,10 @@ theorem setting_of_size (p : PtAt ex Csz) (hp : p.Rows) (hs : GlobalTheory.Indef
   std := p.stdChar
   stdX := p.stdX
   betaX := p.betaStd.2
+
+theorem setting_of_size (p : PtAt ex Csz) (hp : p.Rows) (hs : GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup.SizeRows L) (he : GlobalTheory.GLq.ESerTie D) :
+    HidaSetting L p.R.toRealDat p.F.lv2 :=
+  setting_of_exAt p hp.exAt hs he
 
 end GlobalTheory.BigTop.Fun.SetFromSize
 

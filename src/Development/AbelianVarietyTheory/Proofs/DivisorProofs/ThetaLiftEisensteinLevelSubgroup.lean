@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SphericalEisensteinSeriesOnGroup
 import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.EisensteinResidue
 import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.EisensteinMaximalParabolic
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSchwartzVectorField

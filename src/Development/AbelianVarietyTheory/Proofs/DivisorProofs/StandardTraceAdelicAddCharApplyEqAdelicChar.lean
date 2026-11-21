@@ -1,10 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalLagrangianInvariantForm
 import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
-import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStdCharNegOneOfStandardTraceAdelicAddChar
 
+section
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped Matrix TensorProduct FourierTransform
 open MeasureTheory GroundTheory.Automorphic.GJMatrix
@@ -56,3 +55,11 @@ theorem eq_adelicChar : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (
   exact congrArg _ (hall (Set.mem_univ x.2))
 
 end GlobalTheory.StdCharEq
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open scoped Matrix TensorProduct FourierTransform
+open MeasureTheory GroundTheory.Automorphic.GJMatrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.standardTraceAdelicAddChar_apply_eq_adelicChar : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ), IsStd ψ → ∀ x : AF F, ψ x = (GroundTheory.Global.adelicChar F x : ℂ) := by
+  atlas_forward_decl GlobalTheory.StdCharEq.eq_adelicChar

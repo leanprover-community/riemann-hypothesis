@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCutInside
 

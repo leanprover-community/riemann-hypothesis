@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MooreNorm
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RowTEqRowS
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MoorePowSubSelfEqProd
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.PMonE
@@ -158,3 +159,9 @@ theorem coefB_det (F : Type) [NormedField F] [IsUltrametricDist F] (p : ℕ) [Fa
       (mul_ne_zero (prod_ne_zero_iff.mpr fun j _ => pow_ne_zero _ (hy0 j)) hD0)
 
 end GlobalTheory.PMonE
+end
+
+open GlobalTheory.PMonE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalizedRowCoefficientMatrices_det_norm : ∀ (F : Type) [NormedField F] [IsUltrametricDist F] (p : ℕ) [Fact p.Prime] [CharP F p] [PerfectRing F p] (h : ℕ) (ϖ : F), ϖ ≠ 0 → ∀ lam π : Fin h → F, (∀ j, lam j ≠ 0) → (∀ j, π j ≠ 0) → Antitone (fun j => ‖lam j‖) → Orth p lam → ∀ L U : ℕ, ‖(coefB p ϖ lam π L U L).det‖ = 1 ∧ (coefB p ϖ lam π L U 0).det ≠ 0 := by
+  atlas_forward_decl GlobalTheory.PMonE.coefB_det

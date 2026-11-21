@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DltEqZero
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Desc Polynomial
 
 namespace GlobalTheory.UnitLemma.Desc
@@ -34,3 +35,9 @@ theorem smul_pow_integral (K : UQ) (B : InvAlg K) (a : K.O) (ha : K.Small a) (x 
   exact isIntegral_algebraMap.mul (hsm ▸ hmx)
 
 end GlobalTheory.UnitLemma.Desc
+end
+
+open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Desc Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isIntegral_smallElement_pow_smul : ∀ (K : UQ) (B : InvAlg K) (a : K.O), K.Small a → ∀ x : B.A, ∃ k : ℕ, IsIntegral K.O ((al K a ^ k) • x) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.Desc.smul_pow_integral

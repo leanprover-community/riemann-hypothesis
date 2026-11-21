@@ -1,10 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
 import Development.AbelianVarietyTheory.Definitions.Foundations.VanishOrdL
 import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.ZetaUr
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.KatoConj
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocPublishedOfLitCoh
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsOrdinaryNormalFormUnramifiedSourceStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsOrdinaryNormalFormUnramifiedSource
+
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
 open scoped Matrix
 

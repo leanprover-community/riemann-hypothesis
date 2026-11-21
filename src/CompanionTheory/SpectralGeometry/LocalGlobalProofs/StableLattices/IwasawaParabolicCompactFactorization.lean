@@ -1,6 +1,7 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HsConjTranspose
 
+section
 noncomputable section
 
 open Matrix
@@ -37,3 +38,11 @@ theorem iwasawa_psub : ∀ (n : ℕ) (ε : Fin n → Bool) (A : Matrix (Fin n) (
   exact ⟨⟨p, hp⟩, ⟨k, mem_KG_of_mem_maxK hk⟩, e⟩
 
 end GlobalTheory.CompanionTheory.UGeo
+end
+end
+
+open Matrix
+open CompanionTheory.RgExh.Dec CompanionTheory.RgExh.Dec.L ReciprocityTheory.ChartRestriction.DS GlobalTheory.CompanionTheory.PSubFlag GlobalTheory.CompanionTheory.UGeo
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.iwasawa_parabolic_compact_factorization : ∀ (n : ℕ) (ε : Fin n → Bool) (A : Matrix (Fin n) (Fin n) ℂ), IsGrad ε A → ∀ g : S7.UJ ε, ∃ (x : PSub ε A) (k : S7.KG ε), g = (x : S7.UJ ε) * (k : S7.UJ ε) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UGeo.iwasawa_psub

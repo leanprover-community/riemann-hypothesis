@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.FirstPointNeSecondPoint
-import GroundTheory.HeightsAndTheta.Heights.FubiniStudy
 import GroundTheory.HeightsAndTheta.Heights.FubiniStudyInvariance.Assembly
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.ProjectiveLine
 set_option maxSynthPendingDepth 1

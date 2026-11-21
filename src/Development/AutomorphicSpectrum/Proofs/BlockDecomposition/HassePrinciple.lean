@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BinaryMassMeans.MeanVal
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SwMeasPlaneOfNotRepresented
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology PositivityTheory.Rg.Mass
 open scoped TensorProduct ENNReal NNReal Matrix
 
@@ -44,3 +45,10 @@ theorem hasse : Hasse := by
   exact Measure.measure_univ_eq_zero.1 h1
 
 end GlobalTheory.CompanionTheory.SW.MassHasse
+end
+end
+
+open PositivityTheory.Rg.Mass
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasse_principle : Hasse := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.MassHasse.hasse

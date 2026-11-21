@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl
@@ -139,3 +140,10 @@ theorem smallCorner_of_heis_dual : Heis → Dual → SmallCorner := by
     exact Subring.mul_mem _ (Subring.mul_mem _ hτint (Subring.pow_mem _ hϖint _)) (Subring.sub_mem _ i₁ i₂)
 
 end GlobalTheory.InertZeta
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.small_corner_of_heisenberg_duality : Heis → Dual → SmallCorner := by
+  atlas_forward_decl GlobalTheory.InertZeta.smallCorner_of_heis_dual

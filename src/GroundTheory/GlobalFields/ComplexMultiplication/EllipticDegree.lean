@@ -1,9 +1,5 @@
 import Mathlib
-import GroundTheory.GlobalFields.ComplexMultiplication.EllipticFunctions
-import GroundTheory.GlobalFields.ComplexMultiplication.EllipticConstant
 import GroundTheory.GlobalFields.ComplexMultiplication.EllipticRational
-import GroundTheory.GlobalFields.ComplexMultiplication.Residue
-import GroundTheory.GlobalFields.ComplexMultiplication.ResidueTheorem
 import GroundTheory.GlobalFields.ComplexMultiplication.EllipticResidues
 
 open Complex Filter Topology Set

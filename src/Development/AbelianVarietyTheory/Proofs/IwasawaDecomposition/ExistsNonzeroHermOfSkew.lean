@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddSmulVecMulVecMulVec
+
+section
 open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
 
 namespace GlobalTheory.UnipKill
@@ -30,3 +32,9 @@ theorem exists_herm_mulVec_self_ne_zero : ∀ (E : Type) [Field E] [NumberField 
   exact eq_zero_of_herm G hdet _ (key x)
 
 end GlobalTheory.UnipKill
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nonzero_herm_of_skew : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) (G : Matrix (Fin N) (Fin N) E) (κ : E), (∀ a b, cc (G a b) = G b a) → G.det ≠ 0 → cc κ = -κ → κ ≠ 0 → ∀ n : Matrix (Fin N) (Fin N) E, IsSkew G n → n ≠ 0 → ∃ x, herm G (n.mulVec x) x ≠ 0 := by
+  atlas_forward_decl GlobalTheory.UnipKill.exists_herm_mulVec_self_ne_zero

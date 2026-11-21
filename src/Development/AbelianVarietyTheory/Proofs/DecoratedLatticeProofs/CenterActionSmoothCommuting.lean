@@ -8,7 +8,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.Eisenste
 import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.SiegelEisensteinPolesStd
 import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.SiegelEisensteinSimplePoleOfDoublingMethod
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.WeilThetaConvergence
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableOneP
 
 noncomputable section
 

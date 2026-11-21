@@ -2,11 +2,11 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PeriodComparison
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmPeriodFromEllipticLatticeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieCorrespondenceDifferentialsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmTypeDifferentialsAlgebraicStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmPeriodFromEllipticLattice
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieCorrespondenceDifferentials
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmTypeDifferentialsAlgebraic
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -68,3 +68,10 @@ theorem modelAlg : GlobalTheory.Published.PeriodComparison → GlobalTheory.Publ
     simpa using (algebraicClosure ℚ ℂ).algebraMap_mem (2 : ℚ)
 
 end GlobalTheory.ModelAlgProof
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.algebraic_model_of_de_rham : GlobalTheory.Published.PeriodComparison → GlobalTheory.Published.AbelianDeRham → GlobalTheory.Published.AbelianDualCrystal → ModelAlg := by
+  atlas_forward_decl GlobalTheory.ModelAlgProof.modelAlg

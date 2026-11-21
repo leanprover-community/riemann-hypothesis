@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Telescope
 
 theorem telescope_fin_positions (α : Type) (n : ℕ) (F : (Fin n → α) → ℝ) (a b : Fin n → α) :
@@ -13,3 +15,8 @@ theorem telescope_fin_positions (α : Type) (n : ℕ) (F : (Fin n → α) → �
   simp only [hG, Nat.lt_succ_iff, Fin.lt_def, Fin.le_def]
 
 end GlobalTheory.CompanionTheory.Telescope
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.telescoping_coordinate_difference : ∀ (α : Type) (n : ℕ) (F : (Fin n → α) → ℝ) (a b : Fin n → α), F a - F b = ∑ i : Fin n, (F (fun j => if j < i then b j else a j) - F (fun j => if j ≤ i then b j else a j)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Telescope.telescope_fin_positions

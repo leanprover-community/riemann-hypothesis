@@ -1,12 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDetGen
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetRingComplexEmbeddingStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetFamilyPullbackFirstStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetFamilyPullbackSecondStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetRingComplexEmbedding
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetFamilyPullbackFirst
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetFamilyPullbackSecond
 
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.RealMult DividedPowers GlobalTheory.LatJet
 attribute [local instance] Over.cartesianMonoidalCategory
@@ -59,3 +59,10 @@ theorem jetBC_of_grothendieckDeformation_abelianDeRham : GlobalTheory.Published.
   exact ⟨Y', τ, q, hτ, hq, hδ'⟩
 
 end GlobalTheory.LatJet
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jet_base_change_of_deformation : GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.Published.AbelianDeRham → JetBC := by
+  atlas_forward_decl GlobalTheory.LatJet.jetBC_of_grothendieckDeformation_abelianDeRham

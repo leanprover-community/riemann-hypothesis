@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.GlobalSerreRelations.CechAugRowU
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
@@ -126,3 +128,12 @@ theorem cechH_fullSubcategory_H : ∀ {R : Type} [CommRing R] {C : Type u} [Cate
     (fun n x => funext fun i => pull_pull_of_inv (downM F i) (upM F hW i) (up_down_pullC F hW i) q (x i)) p⟩
 
 end GlobalTheory.CompanionTheory.CechFull
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+universe u v w
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cech_cohomology_full_subcategory_iso : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] (F : C ⥤ ModuleCat.{w} R) (Q : ObjectProperty C) {ι : Type} (W : ι → ObjectProperty C), (∀ α, W α ≤ Q) → ∀ q p, Nonempty ((cechH (Q.ι ⋙ F) (fun α (T : Q.FullSubcategory) => W α T.obj) q).cx.H p ≃ₗ[R] (cechH F W q).cx.H p) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CechFull.cechH_fullSubcategory_H

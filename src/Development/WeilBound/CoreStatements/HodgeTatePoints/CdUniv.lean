@@ -1,5 +1,4 @@
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ToFirst
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DifBijectiveOfParam
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 

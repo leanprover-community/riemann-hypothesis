@@ -5,7 +5,9 @@ import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutom
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
 import GroundTheory.PAdicHodge.AxLemma
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormSubOnePowTotient
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.KZ GlobalTheory.Glue
 
 noncomputable section
@@ -603,3 +605,13 @@ theorem GlobalTheory.IntTate.integral_tate_inertia : ∀ (l : ℕ) [Fact l.Prime
     refine (mul_le_of_le_one_right (norm_nonneg _) ((hι x).1 hx)).trans (norm_le_of_toZModPow _ _ ?_)
     have : NeZero (l ^ n) := ⟨(pow_pos hl.out.pos _).ne'⟩
     rw [map_sub, map_pow, map_pow, map_natCast, hv, ZMod.natCast_zmod_val, sub_self]
+end
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.KZ GlobalTheory.Glue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_tate_inertia_cyclotomic_twist_torsion : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (A : ValuationSubring Ω), A.valuation (l : Ω) < 1 →
+  ∀ (j : ℕ), 1 ≤ j → ∀ F : Finset Ω, ∃ c : ℕ, ∀ (n : ℕ) (x : Ω), x ∈ A →
+  (∀ s ∈ Ine (F := ℚ) A, (∀ y ∈ F, s y = y) → CgA A l n (s x) ((((cycMod ℚ Ω l n s : ZMod (l ^ n)).val : ℕ) : Ω) ^ j * x)) →
+  CgA A l n ((l : Ω) ^ c * x) 0 := by
+  atlas_forward_decl GlobalTheory.IntTate.integral_tate_inertia

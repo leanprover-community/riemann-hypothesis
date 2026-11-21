@@ -1,8 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.PsiSide
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HermitianOneByOneIsScalarStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.EulerProductMeasureZeroStatement
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter
 open scoped TensorProduct ENNReal NNReal Matrix
 open PositivityTheory.SiegelWeilFormula.Densx PositivityTheory.Rg.Base1
@@ -117,3 +116,9 @@ theorem baseOne_of_parts : Prop1 → Simil → Hasse → Cnt → PositivityTheor
   exact ⟨c, hc, hC F E σ J d b li lam μ 𝓕 mi m hcm hJ hli hlam hμ h𝓕 hmi hm c hall⟩
 
 end GlobalTheory.CompanionTheory.Base1
+end
+
+open PositivityTheory.Rg.Base1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.siegel_weil_rank_one_base_case : Prop1 → Simil → Hasse → Cnt → PositivityTheory.SiegelWeilFormula.Densx.BaseOne := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Base1.baseOne_of_parts

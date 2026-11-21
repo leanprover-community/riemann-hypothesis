@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.UnipotentAdelicQuotients.JetMomFound
-import Development.AbelianVarietyTheory.Definitions.Jets.PowerSeriesHasSumAt
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FormalGroupNatMulSeriesProperties
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIsoMultiplicative
 

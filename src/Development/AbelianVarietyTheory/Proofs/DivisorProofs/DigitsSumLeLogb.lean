@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem digit_le_logb_succ (p d : ℕ) (hp : 1 < p) (hd : d < p) :
@@ -50,3 +52,8 @@ theorem digits_sum_le_logb (p n : ℕ) (hp : p.Prime) :
       nlinarith [mul_le_mul_of_nonneg_left hlog hpm]
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.digits_sum_le_mul_logb : ∀ (p n : ℕ), p.Prime → (((Nat.digits p n).sum : ℕ) : ℝ) ≤ ((p : ℝ) - 1) * Real.logb p ((n : ℝ) + 1) := by
+  atlas_forward_decl GlobalTheory.digits_sum_le_logb

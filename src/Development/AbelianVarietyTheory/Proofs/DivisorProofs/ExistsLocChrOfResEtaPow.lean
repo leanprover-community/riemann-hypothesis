@@ -1,6 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClosureUAt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftECompFinOfAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousLiftV
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapLiftEEqZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLocalNormsOfLiftUFEq

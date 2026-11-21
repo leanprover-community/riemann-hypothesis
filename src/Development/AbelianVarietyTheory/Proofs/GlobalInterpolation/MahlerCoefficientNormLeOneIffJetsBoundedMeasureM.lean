@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsMeasureOfBoundedMoments
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.Taylor
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.MomOne GlobalTheory.MomN PowerSeries
 open scoped ComplexConjugate ContDiff
 
@@ -265,3 +267,11 @@ theorem momInt_iff_norm_mahler_le : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+*
     rw [hfe, hP _ (monomial_mem_span _), jetL_monomial, jet_eq_monoJet hG j _ hmm]
 
 end GlobalTheory.MomCrit
+end
+end
+
+open GlobalTheory.MomOne GlobalTheory.MomN PowerSeries
+open scoped ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mahlerCoefficient_norm_le_one_iff_jets_boundedMeasureMoments : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (κ : Type) [Fintype κ] (v : κ → V) (G : V → ℂ), ContDiff ℂ ⊤ G → (MomInt ι v G ↔ ∀ n, ‖ι (mahler v G n)‖ ≤ 1) := by
+  atlas_forward_decl GlobalTheory.MomCrit.momInt_iff_norm_mahler_le

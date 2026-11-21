@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
 import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsIntMulIsIntegralOfTrace
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsNeZeroMemFractionalIdealNormSqLe
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.SmoothForms NumberField Matrix Module Submodule
 open scoped ContDiff Topology nonZeroDivisors
 
@@ -384,3 +386,10 @@ theorem anisoSmall_of_shortSmall (E : Type) [Field E] [NumberField E] [IsCMField
     exact ⟨Or.inl (Or.inr hρ), hρ0⟩
 
 end GlobalTheory.AnisoSize
+end
+
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.anisotropicFiniteLengths_of_shortLatticeVector : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], ShortSmall E → AnisoSmall E := by
+  atlas_forward_decl GlobalTheory.AnisoSize.anisoSmall_of_shortSmall

@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClosedFormsMulClosed
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernFormOfGramMatrixAtHolomorphicFrameChange
+
+section
 open Set Matrix Filter Topology
 open GlobalTheory.HermFrame GlobalTheory.CxForm
 open ReciprocityTheory.L2DbarEstimates (V)
@@ -231,3 +232,14 @@ theorem delAt_chernAt : ∀ {n : ℕ} {r : Type} [Fintype r] [DecidableEq r] (H 
   simp
 
 end GlobalTheory.CxForm.ChernDel
+end
+end
+
+open Set Matrix Filter Topology
+open GlobalTheory.HermFrame GlobalTheory.CxForm
+open ReciprocityTheory.L2DbarEstimates (V)
+open GlobalTheory.GoodMetric (coordVec chernPoly curvPoly)
+open scoped ContDiff ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.holomorphicDel_chernFormOfGramMatrix_eq_zero : ∀ {n : ℕ} {r : Type} [Fintype r] [DecidableEq r] (H : V n → Matrix r r ℂ) (s : Set (V n)), IsOpen s → (∀ a b, ContDiffOn ℝ ∞ (fun v => H v a b) s) → (∀ v ∈ s, IsUnit (H v).det) → ∀ (j : ℕ), ∀ v ∈ s, delAt (fun w => (chernAt H w j : Alt n)) v = 0 := by
+  atlas_forward_decl GlobalTheory.CxForm.ChernDel.delAt_chernAt

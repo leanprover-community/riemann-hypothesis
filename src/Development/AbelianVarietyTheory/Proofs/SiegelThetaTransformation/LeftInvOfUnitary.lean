@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.DataCD
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqIsMulRightInvariant
 
 noncomputable section

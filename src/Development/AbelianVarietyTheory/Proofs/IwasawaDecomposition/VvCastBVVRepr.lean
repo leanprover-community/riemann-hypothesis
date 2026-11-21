@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BrgStdR
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReadsDeco
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LamRdefEqSgTrue
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowActSmulOfWeight
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemSelfDualLatticeCoordsIffIntegralPosSpace

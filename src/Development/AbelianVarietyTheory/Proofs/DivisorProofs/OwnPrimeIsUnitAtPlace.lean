@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceOfAt
 import Formalism.LocalToGlobal.GroupLattices.JointServices.VwResChar
+
+section
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp GlobalTheory.BigOn.Exp.SerBase
 
 open NumberField IsDedekindDomain Formalism.BasicNotions
@@ -49,3 +51,9 @@ theorem ownUnit : OwnUnit := by
   exact (Units.mkOfMulEqOne (q : c.Oe w) y (by rw [mul_comm]; exact h2)).isUnit
 
 end GlobalTheory.BigOn.Exp.SerBase
+end
+
+open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp GlobalTheory.BigOn.Exp.SerBase
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ownPrime_isUnit_at_place : OwnUnit := by
+  atlas_forward_decl GlobalTheory.BigOn.Exp.SerBase.ownUnit

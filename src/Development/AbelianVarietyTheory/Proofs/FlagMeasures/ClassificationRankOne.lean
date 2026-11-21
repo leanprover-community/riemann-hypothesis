@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsIsHaarMeasureSUJ
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Dec GlobalTheory.DSId GlobalTheory.DSSU
 open scoped InnerProductSpace
 
@@ -144,3 +147,11 @@ theorem classS_one_classU_zero : (∀ ε : Fin 1 → Bool, ClassS ε) ∧ ClassU
   ⟨classS_one, classU_zero⟩
 
 end GlobalTheory.DSSU.Triv
+end
+end
+
+open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Dec GlobalTheory.DSId GlobalTheory.DSSU
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.classification_rank_one : (∀ ε : Fin 1 → Bool, ClassS ε) ∧ ClassU 0 := by
+  atlas_forward_decl GlobalTheory.DSSU.Triv.classS_one_classU_zero

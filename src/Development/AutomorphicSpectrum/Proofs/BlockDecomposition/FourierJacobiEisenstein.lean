@@ -1,22 +1,16 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.HeckeEta
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaLiftEisensteinLevelSubgroup
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TsumMeas
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CountableMatricesAndCosetsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierJacobiTermsSummableStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CountableMatricesAndCosets
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierJacobiTermsSummable
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionLeftInvariantRationalParabolicStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeTranslationPreservedStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaFourierJacobiLatticeSwapStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StronglyMeasurableCoefficientCompositionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierJacobiExpansionBoundedStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzLatticeSumBoundedAltBis
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StronglyMeasurableTwistedLatticeSumStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeisenbergCharacterBilinearLawsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeTransformInvarianceStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeTwistedSumPeriodicStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedLatticeSumsBoundedProductStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaFourierJacobiLatticeSwap
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StronglyMeasurableCoefficientComposition
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierJacobiExpansionBounded
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeTransformInvariance
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeTwistedSumPeriodic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedLatticeSumsBoundedProduct
 
+section
 noncomputable section
 
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
@@ -131,3 +125,10 @@ theorem GlobalTheory.CompanionTheory.FJE.fjEis : ZUnfold → ThTwist → FJEis :
   rw [e] at hfin2
   rw [h1, ← hfin2.tsum_eq, eisS, GlobalTheory.Eis.cosetSum]
   exact tsum_congr fun q => hI q
+end
+end
+
+open PositivityTheory.Rg.Rsw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fourier_jacobi_eisenstein : ZUnfold → ThTwist → FJEis := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.fjEis

@@ -1,10 +1,8 @@
 import Formalism.SharpRestriction.GrowthBounds.ObjSeg
-import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
 import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
 import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 import Formalism.SharpRestriction.GrowthBounds.FlipOneThree
-import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
 
 noncomputable section
 

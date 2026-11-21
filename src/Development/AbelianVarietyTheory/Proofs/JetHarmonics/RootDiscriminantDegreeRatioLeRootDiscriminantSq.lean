@@ -11,7 +11,6 @@ import Formalism.LocalToGlobal.ProjectiveLattices.DepRun
 import Formalism.LocalToGlobal.ProjectiveLattices.RegXInst
 import Formalism.LocalToGlobal.ProjectiveLattices.Adm3OfExtension
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.TheoremZeroSplitOfLocalAndSum
-import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ModulusPosOfThirdHypothesis
 
 set_option autoImplicit false
 open AlgebraicGeometry CategoryTheory NumberField IsLocalRing IsDedekindDomain

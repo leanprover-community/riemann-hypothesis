@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharacterOverSubfieldOfRepresentationStatement
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsCharacterQuotientOfInjectiveIntertwiningStatement
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsCharacterQuotientOfInjectiveIntertwining
+
+section
 open GlobalTheory.BI
 namespace GlobalTheory.BI
 
@@ -65,3 +65,9 @@ theorem exists_irrChar_add : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] 
   rfl
 
 end GlobalTheory.BI
+end
+
+open GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isIrrChar_add_isChar_of_ne_zero : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (G : Type) [Group G] (a : G → L), IsChar K L a → a ≠ 0 → ∃ φ c : G → L, IsIrrChar K L φ ∧ IsChar K L c ∧ a = φ + c := by
+  atlas_forward_decl GlobalTheory.BI.exists_irrChar_add

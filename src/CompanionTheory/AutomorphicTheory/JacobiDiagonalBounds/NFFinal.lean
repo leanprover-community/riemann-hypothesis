@@ -3,7 +3,6 @@ import CompanionTheory.AutomorphicTheory.NumberFieldModels.ModelPt
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.MatrixUnitZeroZeroEqInsert
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatBdd
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFModelNFg
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelsOfBuiltSetting
 
 namespace Formalism.FourierDecayAlt.P.NormalFormRelations
 

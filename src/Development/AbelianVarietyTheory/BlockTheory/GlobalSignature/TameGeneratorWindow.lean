@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.ParConsts
 import Formalism.SharpRestriction.ParamsHeightRankConstant
 import Formalism.SharpRestriction.GrowthBounds.SmallOrderPrimes
 import Formalism.LocalToGlobal.UnitaryNorms.CharHost

@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.SgC
-import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerAnEqSiegelUnitOnComplexStatement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelFunctionNeZero
 open scoped UpperHalfPlane MatrixGroups

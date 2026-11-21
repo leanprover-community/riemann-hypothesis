@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
 import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsIntMulIsIntegralOfTrace
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.SmoothForms NumberField Matrix
 open scoped ContDiff Topology
 
@@ -140,3 +142,10 @@ theorem orthoSmall_of_anisoSmall (E : Type) [Field E] [NumberField E] [IsCMField
         exact pow_le_pow_right₀ hB1 (Nat.le_add_left _ _)
 
 end GlobalTheory.SmoothForms
+end
+
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orthogonalFrame_of_anisotropicFiniteLengths : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], AnisoSmall E → OrthoSmall E := by
+  atlas_forward_decl GlobalTheory.SmoothForms.orthoSmall_of_anisoSmall

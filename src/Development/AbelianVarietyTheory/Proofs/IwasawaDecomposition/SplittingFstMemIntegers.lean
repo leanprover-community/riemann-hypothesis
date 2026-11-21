@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
-import Formalism.LocalRingCardinality.DataLevel
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain
 open scoped TensorProduct
 
@@ -41,3 +43,13 @@ theorem splitting_fst_mem_integers : ∀ {F E : Type} [Field F] [NumberField F] 
   exact key hz
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.splitting_fst_mem_integers' : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (v : HeightOneSpectrum (𝓞 F)) (spl : E ⊗[F] v.adicCompletion F ≃+* v.adicCompletion F × v.adicCompletion F),
+    (∀ a : v.adicCompletion F, spl ((1 : E) ⊗ₜ[F] a) = (a, a)) →
+    ∀ z ∈ Formalism.BasicNotions.intV E v, (spl z).1 ∈ v.adicCompletionIntegers F := by
+  atlas_forward_decl GlobalTheory.splitting_fst_mem_integers

@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.UnitaryAdmissible.FiltrationCocycleLiftCriterion
-import GroundTheory.AutomorphicForms.UnitaryAdmissible.Scalar
 import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspScalar
 import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspFinite
 

@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
 import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
+import BuildAid.ForwardExisting
 
+section
 open scoped Matrix
 open MeasureTheory GlobalTheory.RealWeil
 
@@ -168,3 +170,12 @@ theorem schur_rho_l2 : ∀ (l : Type) [Fintype l] (U : L2 l ≃ₗᵢ[ℂ] L2 l)
   simpa using this
 
 end GlobalTheory.RealWeil
+end
+end
+
+open scoped Matrix
+open MeasureTheory GlobalTheory.RealWeil
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schur_equivariant_isometry_scalar : ∀ (l : Type) [Fintype l] (U : L2 l ≃ₗᵢ[ℂ] L2 l), (∀ w v, U (rho w v) = rho w (U v)) →
+    ∃ a : ℂ, ∀ v, U v = a • v := by
+  atlas_forward_decl GlobalTheory.RealWeil.schur_rho_l2

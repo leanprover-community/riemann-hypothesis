@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigOfOmegaInjectiveOfEqZero
+import BuildAid.ForwardExisting
 
+section
 open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
 set_option autoImplicit false
@@ -43,3 +45,10 @@ theorem primTangent_bijective {R A : Type} [CommRing R] [CommRing A] [Bialgebra 
 end PDiv
 
 end GlobalTheory
+end
+end
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additiveFunctionCartierDualTangent_bijective : ∀ {R A : Type} [CommRing R] [CommRing A] [Bialgebra R A] [Module.Finite R A] [Module.Projective R A] [IsCocomm R A], Function.Bijective (primTangent R A) := by
+  atlas_forward_decl GlobalTheory.PDiv.primTangent_bijective

@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussTubeOfTubeGood
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.CompanionTheory.TubeFourier
 
 namespace GlobalTheory.CompanionTheory.TubeFourier
@@ -45,3 +46,9 @@ theorem norm_phi_le : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℂ X] 
         rw [integral_const_mul, integral_gauss_prod]; ring
 
 end GlobalTheory.CompanionTheory.TubeFourier
+end
+
+open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.CompanionTheory.TubeFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussian_tube_transform_bound : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℂ X] (G : ℂ × ℂ → X) (x : ℝ × ℝ) (M : ℝ), (∀ y : ℝ × ℝ, ‖G (pt x y)‖ ≤ M * Real.exp (-(y.1 ^ 2 + y.2 ^ 2))) → ∀ t : ℝ × ℝ, ‖phi G x t‖ ≤ M * Real.pi * Real.exp (-rdot x t) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TubeFourier.norm_phi_le

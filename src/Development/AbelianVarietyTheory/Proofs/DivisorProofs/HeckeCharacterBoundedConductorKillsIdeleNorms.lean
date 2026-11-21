@@ -1,13 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsOfBalanced
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdeleCharacterTrivialOnLocalUnits
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryDeterminantKernelOpenAndFactor
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmEmbeddingProperties
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUnitaryExtension
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TildeCharacterOnUnitary
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryHeckeCharacterValues
+
+section
 open scoped Pointwise
 open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
 open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
@@ -174,3 +168,15 @@ theorem chi_finIdl_norm_eq_one : ∀ (D : D7) (χ : HChar D.host.E) (n : D.what�
   rw [e2, map_mul, map_mul, map_inv, map_inv, h2, h1, inv_one, one_mul]
 
 end GlobalTheory.NormKill
+end
+end
+
+open scoped Pointwise
+open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
+open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
+open Formalism.L2.Host (HChar)
+open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum
+open GlobalTheory.Mem.Col2.SplitChar (finIdl)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeCharacter_bounded_conductor_kills_idele_norms : ∀ (D : D7) (χ : HChar D.host.E) (n : D.what₂.Tau → ℤ) (S : Finset ℕ) (k : ℕ), χ.TrivOn D.host.F → χ.HasInf (embT D) n → (∀ q ∈ S, q.Prime) → (∀ v, χ.UnrAt v ∨ ∃ q ∈ S, Formalism.L2.Host.OverP D.host q v ∧ χ.LevelLe v k) → ∀ x : (AE D)ˣ, χ.1 (finIdl D (x * sgU D x)) = 1 := by
+  atlas_forward_decl GlobalTheory.NormKill.chi_finIdl_norm_eq_one

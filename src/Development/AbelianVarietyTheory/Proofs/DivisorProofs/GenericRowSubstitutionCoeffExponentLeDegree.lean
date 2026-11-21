@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowSubst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TotalDegreeAevalLeOfDegLeOne
 
+section
 set_option autoImplicit false
 
 open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
@@ -30,3 +31,9 @@ theorem genSub_coeff_le : ∀ (O : Type) [CommRing O] (N : ℕ) (D : ℕ) (f : M
   exact h2.trans (h1.trans ((hdeg.trans hf)))
 
 end GlobalTheory.GenSubDeg
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.genericRowSubstitution_coeff_exponent_le_degree : ∀ (O : Type) [CommRing O] (N : ℕ) (D : ℕ) (f : MvPolynomial (Fin N × Fin N) O), f.totalDegree ≤ D → ∀ m, (GlobalTheory.HighWt.genSub O N f).coeff m ≠ 0 → ∀ v, m v ≤ D := by
+  atlas_forward_decl GlobalTheory.GenSubDeg.genSub_coeff_le

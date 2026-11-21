@@ -1,6 +1,7 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.CountingDefinitions.VoronoiMeans.VorFunEvalEqFineMean
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -180,3 +181,10 @@ theorem rcone_closed_seg (X : Type) [AddCommGroup X] [Module.Finite ℤ X] (m : 
   seg_mem_cone (fun i => toReal (γ i)) B B₀ h
 
 end GlobalTheory.CompanionTheory.Ar.Fan
+end
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan GlobalTheory.PolCell GlobalTheory.CompanionTheory.Ar.Fan
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_rational_cone_of_perturbation : ∀ (X : Type) [AddCommGroup X] [Module.Finite ℤ X] (m : ℕ) (γ : Fin m → LinearMap.BilinForm ℤ X) (B B₀ : X →ₗ[ℤ] X →ₗ[ℤ] ℝ), (∀ ε : ℝ, 0 < ε → B + ε • B₀ ∈ rcone γ) → B ∈ rcone γ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Fan.rcone_closed_seg

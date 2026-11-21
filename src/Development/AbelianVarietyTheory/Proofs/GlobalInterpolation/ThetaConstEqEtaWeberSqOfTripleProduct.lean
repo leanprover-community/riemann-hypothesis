@@ -2,6 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ThetaConstantWeber
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.ThetaLine
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DifferentiableOddTheta
+import BuildAid.ForwardExisting
+
+section
 open Complex
 open UpperHalfPlane hiding I
 open scoped Real
@@ -265,3 +268,10 @@ theorem _root_.GlobalTheory.ThetaWeberProof.thetaWeber_of_tripleProduct (hTP : _
   ⟨thetaConst_zero_zero_eq_eta_mul_weberF_sq hTP τ, thetaConst_zero_one_eq_eta_mul_weberF₁_sq hTP τ, thetaConst_one_zero_eq_eta_mul_weberF₂_sq hTP τ⟩
 
 end GlobalTheory.ThetaWeberProof
+end
+end
+
+open Complex
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaConstEqEtaWeberSq_of_tripleProduct : GlobalTheory.ThetaWeberRoad.TripleProduct → ∀ τ : UpperHalfPlane, GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.ThetaWeber τ := by
+  atlas_forward_decl GlobalTheory.ThetaWeberProof.thetaWeber_of_tripleProduct

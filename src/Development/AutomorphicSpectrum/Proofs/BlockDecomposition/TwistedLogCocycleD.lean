@@ -4,7 +4,6 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivi
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.Imports
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ChartGrConst
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeLiftRatioMemIdeal
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsConeLift
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PderivComp1PtZeroEqZero
 
 set_option autoImplicit false

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open FourierTransform MeasureTheory Filter Topology
 
 namespace GlobalTheory
@@ -52,3 +55,11 @@ theorem exists_equiv_euclidean_pi_mul_norm_sq_eq_re (V : Type) [NormedAddCommGro
   field_simp
 
 end GlobalTheory
+end
+
+open FourierTransform MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_euclidean_equiv_pi_mul_norm_sq_eq_re : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] (Q : V →L[ℝ] V →L[ℝ] ℂ) (c : ℝ),
+    0 < c → (∀ x, c * ‖x‖ ^ 2 ≤ (Q x x).re) →
+    ∃ A : V ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ V)), ∀ x, Real.pi * ‖A x‖ ^ 2 = (Q x x).re := by
+  atlas_forward_decl GlobalTheory.exists_equiv_euclidean_pi_mul_norm_sq_eq_re

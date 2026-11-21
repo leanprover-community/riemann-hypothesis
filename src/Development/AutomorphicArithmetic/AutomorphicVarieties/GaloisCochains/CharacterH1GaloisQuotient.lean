@@ -1,8 +1,6 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.GLinkQuot
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.LevelS
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.StrGen
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.GwTame
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.Places
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module UpperTheory.V UpperTheory.V.Fr UpperTheory.V.GC
 

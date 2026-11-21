@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.Smooth
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
@@ -114,3 +116,8 @@ theorem capelliH_local : PI.UnitaryGroupMassFormula.CapelliEig.Loc := by
 end GlobalTheory.CapelliLocality
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.capelli_operator_unitaryGroup_local : PI.UnitaryGroupMassFormula.CapelliEig.Loc := by
+  atlas_forward_decl GlobalTheory.CapelliLocality.capelliH_local

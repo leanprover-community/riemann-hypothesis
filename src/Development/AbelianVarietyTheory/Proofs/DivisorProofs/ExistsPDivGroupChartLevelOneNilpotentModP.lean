@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
+
+section
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 
 namespace GlobalTheory.AugNil
@@ -73,3 +75,9 @@ theorem aug_nil : ∀ (p : ℕ) (O : Type) [CommRing O] (G : PDivGroup p O) (d :
   simpa using dvd_add (hR.trans hsub) ha
 
 end GlobalTheory.AugNil
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pDivGroupChart_level_one_nilpotent_mod_p : ∀ (p : ℕ) (O : Type) [CommRing O] (G : PDivGroup p O) (d : ℕ) (c : QLog.Chart G d), ∃ N : ℕ, ∀ f : MvPowerSeries (Fin d) O, constantCoeff f = 0 → (p : G.A 1) ∣ c.ev 1 f ^ N := by
+  atlas_forward_decl GlobalTheory.AugNil.aug_nil

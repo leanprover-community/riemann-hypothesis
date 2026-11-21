@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ConvexNerveComplexes.NerveFaceClosed
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ConvexNerveComplexes.Sublevel
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ConvexNerveComplexes.VertFinite
 

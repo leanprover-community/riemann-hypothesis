@@ -3,7 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.CMLattices.ExistsIsThetaDegO
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthCommensurableSpanSpanOfDetNeZero
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthLocalizedModuleEqZeroOfNotAnnihilatorLe
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.OneMulConjFracOneEqInvDifferent
+import BuildAid.ForwardExisting
 
+section
 open NumberField Module ReciprocityTheory.GeometryOfNumbersTheory
 
 namespace GlobalTheory.LatticeExtension
@@ -421,3 +423,13 @@ theorem _root_.GlobalTheory.deg_span_image_eq :
   have hm := _root_.GlobalTheory.meanLog_comp j (fun σ => (h.gram σ v).det.re)
   unfold _root_.ReciprocityTheory.GeometryOfNumbersTheory.meanLog at hm
   rw [sub_div, sub_div, log_relIndex_map_lemma_4 j h h' hf r hΛ hv, mul_div_assoc, mul_div_assoc, hm]
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory
+open scoped CategoryTheory.Obj
+open GlobalTheory GlobalTheory.CM
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.deg_lattice_numberField_extension_eq : ∀ (K K' : Type) [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') (n : ℕ) (h : HermFam K (Fin n → K)) (h' : HermFam K' (Fin n → K')) (Λ : Submodule (𝓞 K) (Fin n → K)), Λ.FG → (∀ s a b, h'.form s (Pi.single a 1) (Pi.single b 1) = h.form (s.comp j) (Pi.single a 1) (Pi.single b 1)) → deg h' (Submodule.span (𝓞 K') ((fun c i => j (c i)) '' (Λ : Set (Fin n → K)))) = deg h Λ := by
+  atlas_forward_decl GlobalTheory.deg_span_image_eq

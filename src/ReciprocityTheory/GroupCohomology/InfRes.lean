@@ -1,5 +1,3 @@
-import ReciprocityTheory.GroupCohomology.CupConnRightStatement
-import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
 import ReciprocityTheory.GroupCohomology.LowHolds
 import ReciprocityTheory.GroupCohomology.InnerHolds
 

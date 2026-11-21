@@ -1,9 +1,10 @@
 import Mathlib
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicTowerTraceAlmostSurjectiveStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousOrbitPadicComplexStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ImportsRest
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.Cyc
 
 namespace GlobalTheory.Cyc.AveragingRankOne
@@ -169,3 +170,9 @@ theorem cyclotomic_maximalIdeal_smul_cocycle_isCoboundary : ∀ (l : ℕ) [Fact 
   exact ⟨x, hx, fun g hg => funext fun k => hx' k g hg⟩
 
 end GlobalTheory.Cyc.AveragingRankOne
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.Cyc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cyclotomic_tate_maximalIdeal_kills_first_cohomology : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (PadicComplex l ≃+* PadicComplex l)), IsActC act → ∀ (K : FinExt l) (r : ℕ) (a : PadicComplex l), a ∈ inC (Kinf K) → ‖a‖ < 1 → ∀ c : GQ l → Fin r → PadicComplex l, CocOn (Hinf K) (fun g y k => act g (y k)) (ball l r) c → CobOn (Hinf K) (fun g y k => act g (y k)) (ball l r) (fun g => a • c g) := by
+  atlas_forward_decl GlobalTheory.Cyc.AveragingRankOne.cyclotomic_maximalIdeal_smul_cocycle_isCoboundary

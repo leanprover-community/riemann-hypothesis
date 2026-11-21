@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.GaloisCohomology.LocalTateDualityK
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLengthEqAndCardEqPowOfIsFiniteLength
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology
 
 namespace GlobalTheory
@@ -87,3 +90,9 @@ theorem padicInt_length_eq_of_card_quotient_eq_card_submodule (l : ℕ) [Fact l.
   rw [padicInt_length_eq_top_of_infinite l X hX, padicInt_length_eq_top_of_infinite l Y hY]
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.padicInt_length_eq_of_card_quotient_eq : ∀ (l : ℕ) [Fact l.Prime] (X Y : Type) [AddCommGroup X] [Module ℤ_[l] X] [AddCommGroup Y] [Module ℤ_[l] Y] (N : ℕ → Submodule ℤ_[l] X) (P : ℕ → Submodule ℤ_[l] Y) (c : ℕ), Antitone N → (∀ x, (∀ r, x ∈ N r) → x = 0) → Monotone P → (∀ y, ∃ r, y ∈ P r) → (∀ r, c ≤ r → Finite (P r) ∧ Nat.card (X ⧸ N r) = Nat.card (P r)) → Module.length ℤ_[l] X = Module.length ℤ_[l] Y := by
+  atlas_forward_decl GlobalTheory.padicInt_length_eq_of_card_quotient_eq_card_submodule

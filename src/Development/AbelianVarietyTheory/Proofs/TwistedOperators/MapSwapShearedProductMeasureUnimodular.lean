@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NullMeasurableSetShearImage
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Function
 open scoped Pointwise
 
@@ -25,3 +28,10 @@ theorem map_swap_map_shear (H : Type) [Group H] [TopologicalSpace H] [IsTopologi
   rw [Measure.map_map measurable_swap hsh, hcomm, ← Measure.map_map hsh hT.measurable, hT.map_eq]
 
 end GlobalTheory.UnfoldNormal
+end
+
+open MeasureTheory Function
+open scoped Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.map_swap_sheared_product_measure_unimodular : ∀ (H : Type) [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [LocallyCompactSpace H] [SecondCountableTopology H] [T2Space H] [MeasurableSpace H] [BorelSpace H], ∀ (ν : Measure H) [ν.IsHaarMeasure] (N : Subgroup H), IsClosed (N : Set H) → ∀ (κ : Measure N), κ.IsHaarMeasure → κ.map (fun n => n⁻¹) = κ → ((κ.prod ν).map (GlobalTheory.UnfoldNormal.shear N)).map Prod.swap = (κ.prod ν).map (GlobalTheory.UnfoldNormal.shear N) := by
+  atlas_forward_decl GlobalTheory.UnfoldNormal.map_swap_map_shear

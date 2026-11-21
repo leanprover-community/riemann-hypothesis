@@ -1002,8 +1002,7 @@ theorem prime_sub_one_pos_alt : 0 < l - 1 := by
 theorem hasSubst_binomialSeriesSubOne (c : ℤ_[l]) : HasSubst (br l O c) := hasSubst_br_padic l O c
 
 theorem constantCoeff_pi0 : constantCoeff (pi0 l O) = 0 := by
-  rw [pi0, map_prod]
-  exact Finset.prod_eq_zero (one_mem_mu l) (constantCoeff_binomialSeriesSubOne l O 1)
+  apply constantCoeff_pi0_eq_zero <;> assumption
 
 theorem hasSubst_pi0_alt : HasSubst (pi0 l O) := by
   apply PowerSeries.HasSubst.of_constantCoeff_zero

@@ -1,11 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CrystallineCocycles
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistStep
-import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineCoboundaryLift
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DcrisFiniteOfIsDR
 
+section
 noncomputable section
 
 namespace GlobalTheory.HyodoFE
@@ -152,3 +151,10 @@ theorem GlobalTheory.HyodoFE.finrank_finite_le_exponential_add : ∀ (l : ℕ) [
   intro l _ P AI _ K V _ _ _ _ _ _ _ ρ _ hdR
   haveI := GlobalTheory.DcrisFin.dcris_finite_of_isDR l P K V ρ hdR
   exact GlobalTheory.HyodoFE.finrank_finite_cocycles_le (P.PD K) ρ
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N GlobalTheory.HyodoDef GlobalTheory.Pst TensorProduct Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_finite_le_exponential_cocycles : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → ∀ (K : FinExt l) (V : Type) [AddCommGroup V] [Module ℚ_[l] V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] [ContinuousAdd V] [ContinuousConstSMul ℚ_[l] V] (ρ : Representation ℚ_[l] ↥(GK K) V), (∀ v, Continuous fun g => ρ g v) → IsDR (P.PD K) ρ → finrank ℚ_[l] ↥(finiteCocycles (P.PD K) ρ) ≤ finrank ℚ_[l] ↥(crystallineCocycles (P.PD K) ρ) + finrank ℚ_[l] ↥(Dcris (P.PD K) ρ ⊓ LinearMap.ker (φVB (P.PD K) (LL := ℚ_[l]) (V := V) - LinearMap.id)) := by
+  atlas_forward_decl GlobalTheory.HyodoFE.finrank_finite_le_exponential_add

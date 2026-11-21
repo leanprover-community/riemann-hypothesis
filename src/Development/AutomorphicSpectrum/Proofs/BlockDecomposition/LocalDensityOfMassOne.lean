@@ -1,14 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.PsiSide
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LocalLatticeCompactOpenUnitVolumeStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramFiberMeasuresContinuityStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.IntegralAlmostAllPlaces
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LocalDensitiesBoundedAlmostAll
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSquareMulOfNonsquareUnits
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SiegelWeilFormulaRange
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TmulAlgebraMap
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter
 open PositivityTheory.SiegelWeilFormula.Densx PositivityTheory.Rg.Base1
 open scoped TensorProduct ENNReal NNReal
@@ -537,3 +531,10 @@ theorem locR : Scal → MassOne → LocR := by
 end Main
 
 end GlobalTheory.CompanionTheory.RankOneLoc
+end
+end
+
+open PositivityTheory.Rg.Base1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_density_of_mass_one : Scal → PositivityTheory.SiegelWeilFormula.Densx.MassOne → LocR := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankOneLoc.locR

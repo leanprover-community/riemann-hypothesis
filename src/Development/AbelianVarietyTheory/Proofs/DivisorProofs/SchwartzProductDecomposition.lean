@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
+import BuildAid.ForwardExisting
 
+section
 open Topology Filter Set
 open scoped Classical
 
@@ -106,3 +108,13 @@ theorem exists_sum_box (X : Type) [TopologicalSpace X] [LocallyCompactSpace X] [
       · simp [h1]
 
 end GlobalTheory.SBProd
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_product_decomposition : ∀ (X : Type) [TopologicalSpace X] [LocallyCompactSpace X] [T2Space X] [TotallyDisconnectedSpace X]
+    (κ κ' : Type) [Fintype κ] [Fintype κ'] (g : (κ ⊕ κ' → X) → ℂ), g ∈ GlobalTheory.WeilM.SB (κ ⊕ κ' → X) →
+    ∃ (ι : Type) (_ : Fintype ι) (g₁ : ι → (κ → X) → ℂ) (g₂ : ι → (κ' → X) → ℂ),
+      (∀ i, g₁ i ∈ GlobalTheory.WeilM.SB (κ → X)) ∧ (∀ i, g₂ i ∈ GlobalTheory.WeilM.SB (κ' → X)) ∧
+      g = ∑ i, fun z => g₁ i (z ∘ Sum.inl) * g₂ i (z ∘ Sum.inr) := by
+  atlas_forward_decl GlobalTheory.SBProd.exists_sum_box

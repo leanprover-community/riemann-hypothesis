@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocMulVec
+import BuildAid.ForwardExisting
 
+section
 open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass Formalism.MainNotions.PairedCharacterCondition
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 1000000
@@ -24,3 +26,11 @@ theorem lenMod_mono_left : ∀ {O M : Type} [CommRing O] [AddCommGroup M] [Modul
   exact Module.length_le_of_injective f hf
 
 end GlobalTheory
+end
+
+open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass Formalism.MainNotions.PairedCharacterCondition
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lenMod_mono_left' : ∀ {O M : Type} [CommRing O] [AddCommGroup M] [Module O M] (S S' H : Submodule O M), S ≤ S' → BlochKatoDuality.lenMod S H ≤ BlochKatoDuality.lenMod S' H := by
+  atlas_forward_decl GlobalTheory.lenMod_mono_left

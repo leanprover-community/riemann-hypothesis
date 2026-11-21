@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsContOnOfLocal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdeleJoinZero
 
+section
 open IsDedekindDomain NumberField
 open scoped Classical
 
@@ -40,3 +41,13 @@ theorem GlobalTheory.continuousMultilinear_norm_le_basis_sum : ∀ (E : Type) [N
       rw [Finset.mul_sum, Finset.sum_mul]
       refine Finset.sum_congr rfl fun cs _ => ?_
       ring
+end
+
+open IsDedekindDomain NumberField
+open scoped Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuousMultilinearMap_norm_le_sum_basis_values : ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (ι : Type) [Fintype ι] (b : Module.Basis ι ℝ E) (j : ℕ),
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ M : ContinuousMultilinearMap ℝ (fun _ : Fin j => E) ℂ,
+      ‖M‖ ≤ K * ∑ cs : Fin j → ι, ‖M (fun r => b (cs r))‖ := by
+  atlas_forward_decl GlobalTheory.continuousMultilinear_norm_le_basis_sum

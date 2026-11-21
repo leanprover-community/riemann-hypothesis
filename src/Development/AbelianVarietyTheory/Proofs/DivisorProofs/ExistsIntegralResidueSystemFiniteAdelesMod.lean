@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DifferentiableZterm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteRingClassGroupOfConductorNeZero
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt
@@ -50,3 +52,10 @@ theorem exists_residues : ∀ (E : Type) [Field E] [NumberField E] (N : ℕ), 0 
     rw [(mk_eq_iff hN z' (s q)).2 h, hs]
 
 end GlobalTheory.CMVal.LatEnt.Res
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_residue_system_finiteAdeles_mod : ∀ (E : Type) [Field E] [NumberField E] (N : ℕ), 0 < N → ∃ R : Finset (Af E), (∀ a ∈ R, ∀ w, Valued.v (a w) ≤ 1) ∧ ∀ z : Af E, (∀ w, Valued.v (z w) ≤ 1) → ∃! a, a ∈ R ∧ ∀ w, Valued.v (z w - a w) ≤ radN E N w := by
+  atlas_forward_decl GlobalTheory.CMVal.LatEnt.Res.exists_residues

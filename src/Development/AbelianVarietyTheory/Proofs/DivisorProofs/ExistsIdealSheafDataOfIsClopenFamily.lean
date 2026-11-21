@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormIdeal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FamIdeal
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory Limits
 
 namespace GlobalTheory.ClopenIdealSheaf
@@ -140,3 +142,13 @@ theorem exists_idealSheafData_of_isClopen : ∀ (Z : Scheme.{0}) (W : Set Z), Is
     exact hx 1 (Submodule.mem_top) (by rw [Scheme.basicOpen_one]; exact hxU)
 
 end GlobalTheory.ClopenIdealSheaf
+end
+
+open AlgebraicGeometry CategoryTheory Limits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_idealSheafData_of_isClopen_family : ∀ (Z : Scheme.{0}) (W : Set Z), IsClopen W → ∀ (F : ∀ U : Z.affineOpens, Ideal Γ(Z, U)),
+    (∀ (U : Z.affineOpens) (f : Γ(Z, U)), (U : Set Z) ⊆ W →
+      (F U).map (Z.presheaf.map (homOfLE (Z.basicOpen_le f)).op).hom = F (Z.affineBasicOpen f)) →
+    ∃ J : Z.IdealSheafData, (∀ U : Z.affineOpens, (U : Set Z) ⊆ W → J.ideal U = F U) ∧
+      (J.support : Set Z) ⊆ W := by
+  atlas_forward_decl GlobalTheory.ClopenIdealSheaf.exists_idealSheafData_of_isClopen

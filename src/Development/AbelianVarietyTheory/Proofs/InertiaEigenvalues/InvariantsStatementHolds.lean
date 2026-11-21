@@ -1,9 +1,9 @@
 import Mathlib
-import Formalism.SharpRestriction.LevelLetterCocycles.InvariantsGenerators
-import Formalism.SharpRestriction.LevelLetterCocycles.InvariantsIsoOfGenerators
 import Formalism.SharpRestriction.LevelLetterCocycles.ZlWCbInjective
 import Formalism.SharpRestriction.LevelLetterCocycles.NormLtOneIffToZMod
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.FixedByDense
@@ -341,3 +341,10 @@ theorem invariants_of_field_of_norms : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf
     (fun l _ K LL hA => FixedByDense.genFix_sit D.loc HW (D.locA l) K LL hA.2.1 hA.2.2)
 
 end GlobalTheory
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invariants_statement_holds : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), Formalism.MainNotions.InvariantsGenerators.H0InvariantsTheorem D HW F := by
+  atlas_forward_decl GlobalTheory.invariants_of_field_of_norms

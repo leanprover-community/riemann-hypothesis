@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.DetMemSubring
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory NumberField Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm
@@ -62,3 +65,16 @@ theorem tMat_main {Ψ : Type} {p q : ℕ} {Ω : Type} [Field Ω]
     rw [detFac, h1, h2]
 
 end GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tMat_blockDiag_det_factors : ∀ {Ψ : Type} {p q : ℕ} {Ω : Type} [Field Ω]
+    (Ts : ∀ s, Matrix (Fin (rk Ψ p q s)) (Fin (rk Ψ p q s)) Ω) (τ : Ψ),
+    IsBlockDiag p (tMat Ts τ) ∧ (tMat Ts τ).det = (Ts (.inr τ)).det * (Ts (.inl τ)).det ∧
+      ∀ i : Fin (p + q), detFac p i (tMat Ts τ) =
+        (if p ≤ (i : ℕ) + 1 then (Ts (.inl τ)).det else 1) * (if (i : ℕ) + 1 = p + q then (Ts (.inr τ)).det else 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm.tMat_main

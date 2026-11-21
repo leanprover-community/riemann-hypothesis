@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.GalMapMul
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.EtC
 
 namespace GlobalTheory
@@ -32,3 +35,10 @@ theorem exists_polySubring_maximal_integral (k K : Type) [Field k] [Field K] (φ
     exact ⟨y, hy, by rwa [Algebra.smul_def] at hint⟩
 
 end GlobalTheory
+end
+
+open GlobalTheory.EtC
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_polynomialSubring_maximal_integral : ∀ (k K : Type) [Field k] [Field K] (φ : k →+* K), ∃ (D : Subring K) (m₀ : Ideal D), φ.range ≤ D ∧ m₀.IsMaximal ∧
+    (∀ r : D, ∃ c : k, ∃ h : φ c ∈ D, r - ⟨φ c, h⟩ ∈ m₀) ∧ ∀ x : K, ∃ d : D, d ≠ 0 ∧ IsIntegral D ((d : K) * x) := by
+  atlas_forward_decl GlobalTheory.exists_polySubring_maximal_integral

@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.SmulBasisMemHatIff
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFiniteAdeleCompleteSeparated
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain GlobalTheory.AdLat
 open scoped TensorProduct Matrix nonZeroDivisors
 
@@ -287,3 +288,10 @@ theorem _root_.GlobalTheory.AdLat.Complete.hat_separated_complete : ∀ (F E : T
     fun x hx hstep => exists_limit_in_hat_of_cauchy_nsmul hgen hmem x hx hstep⟩
 
 end GlobalTheory.AdLat.Complete
+end
+
+open NumberField IsDedekindDomain GlobalTheory.AdLat
+open scoped TensorProduct Matrix nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicCompletion_lattice_separated_complete : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n : ℕ) (L : Submodule (𝓞 E) (Fin n → E)), L.FG → (∀ z : Fin n → RA F E, (∀ N : ℕ, 0 < N → ∃ w ∈ (hat F (L : Set (Fin n → E))), z = N • w) → z = 0) ∧ ∀ x : ℕ → (Fin n → RA F E), (∀ N, x N ∈ (hat F (L : Set (Fin n → E)))) → (∀ N m : ℕ, 0 < N → 0 < m → ∃ w ∈ (hat F (L : Set (Fin n → E))), x (N * m) = x N + N • w) → ∃ z ∈ (hat F (L : Set (Fin n → E))), ∀ N : ℕ, 0 < N → ∃ w ∈ (hat F (L : Set (Fin n → E))), z = x N + N • w := by
+  atlas_forward_decl GlobalTheory.AdLat.Complete.hat_separated_complete

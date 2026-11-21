@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubsingletonOfGiso
 
+section
 noncomputable section
 
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibOrd
@@ -71,3 +72,10 @@ theorem ses_of_mext (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [
 end GlobalTheory.CompanionTheory.LeibOrd
 
 end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibOrd
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mirabolic_extension_exact : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (A B C : MRep k n), MExt A B C → Ses A.ρ B.ρ C.ρ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LeibOrd.ses_of_mext

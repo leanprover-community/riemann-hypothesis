@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsScaleStable
+import BuildAid.ForwardExisting
 
+section
 set_option maxSynthPendingDepth 1
 
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
@@ -114,3 +116,13 @@ theorem logGap_basic : ∀ (n : ℕ) (h : HermNorm n) (u : Fin n → ℂ),
 end
 
 end GlobalTheory.CompanionTheory.Ar.Short.Crofton
+end
+
+set_option maxSynthPendingDepth 1
+open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
+open scoped ENNReal
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_gap_measurable_scale_stable : ∀ (n : ℕ) (h : HermNorm n) (u : Fin n → ℂ),
+  Measurable (logGap h u) ∧ ∀ s : ℝ≥0∞, IsOpen {y | s < logGap h u y} ∧ IsScaleStable {y | s < logGap h u y} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Short.Crofton.logGap_basic

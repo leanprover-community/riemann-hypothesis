@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.QuotientMetricDivisors.ProdFormula
-import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
 
 open Module IsDedekindDomain Formalism.HermitianLatticesTheory

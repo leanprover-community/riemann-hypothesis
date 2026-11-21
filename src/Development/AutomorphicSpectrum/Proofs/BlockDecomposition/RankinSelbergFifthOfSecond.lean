@@ -2,6 +2,7 @@ import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralCompSymm
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Filter Topology
@@ -451,3 +452,8 @@ theorem measure_plane_eq_rows : Ad3.R.A2 → Ad3.R.A5 := by
 end GlobalTheory.CompanionTheory.RSPlane
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_fifth_of_second : Ad3.R.A2 → Ad3.R.A5 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RSPlane.measure_plane_eq_rows

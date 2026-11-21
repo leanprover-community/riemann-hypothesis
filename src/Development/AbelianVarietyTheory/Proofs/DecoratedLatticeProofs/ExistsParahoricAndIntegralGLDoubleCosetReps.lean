@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCoType
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCompactParahoric
 import Formalism.LocalToGlobal.Columns.HeckeSp
 

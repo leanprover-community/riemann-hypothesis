@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RwAppend
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LpIntegralAePointwiseStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LpIntegralAePointwise
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RegularRepresentationContinuousStatement
+
+section
 open MeasureTheory Matrix Finset Filter Topology
 open scoped ContDiff ComplexConjugate InnerProductSpace ZeroAtInfty
 open PositivityTheory.RgTw (Mat G)
@@ -72,3 +73,15 @@ theorem mol_ae_lConv : ∀ (n : ℕ) [MeasurableSpace (G n)] [BorelSpace (G n)] 
   rw [e3]
 
 end GlobalTheory.CompanionTheory.PresSobA
+end
+end
+
+open MeasureTheory Matrix Finset Filter Topology
+open scoped ContDiff ComplexConjugate InnerProductSpace ZeroAtInfty
+open PositivityTheory.RgTw (Mat G)
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Fc GlobalTheory.CompanionTheory.PresSobA
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+noncomputable section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mollification_ae_eq_convolution : ∀ (n : ℕ) [MeasurableSpace (G n)] [BorelSpace (G n)] (μ : Measure (G n)) [μ.IsHaarMeasure] (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSpace V], Unimod → ∀ φ : Mat n → ℝ, IsTest φ → ∀ x : Lp V 2 μ, (fun y : G n => Mol μ φ (⇑x) y.val) =ᵐ[μ] lConv μ V φ x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PresSobA.mol_ae_lConv

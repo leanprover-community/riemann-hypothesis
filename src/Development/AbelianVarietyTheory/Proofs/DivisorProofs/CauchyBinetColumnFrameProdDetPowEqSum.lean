@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetGNeZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumNormRowSubProdMinors
+import BuildAid.ForwardExisting
+
+section
 open Classical MvPolynomial
 
 noncomputable section
@@ -74,3 +77,11 @@ theorem rsub_frame_detG_eq_sum : ∀ {ι : Type} [Fintype ι] (a d : ℕ) (n : �
   fun _ _ n x₀ => rsub_frame_detG n x₀
 
 end GlobalTheory.MinorFrame
+end
+end
+end
+
+open Classical MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cauchyBinet_columnFrame_prodDetPow_eq_sum : ∀ {ι : Type} [Fintype ι] (a d : ℕ) (n : ι → ℕ) (x₀ : GlobalTheory.MinorFrame.Var ι d a → ℂ), GlobalTheory.MinorFrame.rsub (GlobalTheory.MinorFrame.frameMat x₀).conjTranspose (GlobalTheory.MinorFrame.detG a n) = ∑ T : GlobalTheory.MinorFrame.Tup ι a d n, star (MvPolynomial.eval x₀ (GlobalTheory.MinorFrame.prodMinors T)) • GlobalTheory.MinorFrame.prodMinors T := by
+  atlas_forward_decl GlobalTheory.MinorFrame.rsub_frame_detG_eq_sum

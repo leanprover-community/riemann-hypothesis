@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.InertZeta
 
 noncomputable section
@@ -123,3 +125,10 @@ theorem genFun_holds : GenFun := by
   exact e.hasSum_iff.1 hsig
 
 end GlobalTheory.InertZeta
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.length_count_generating_series_formula : GenFun := by
+  atlas_forward_decl GlobalTheory.InertZeta.genFun_holds

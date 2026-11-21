@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelZeroKernel
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.UpperMinorOfLevelPoint
 
 open Matrix

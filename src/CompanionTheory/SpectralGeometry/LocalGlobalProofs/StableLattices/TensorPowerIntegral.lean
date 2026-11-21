@@ -1,5 +1,8 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+import BuildAid.ForwardExisting
+
+section
 open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
@@ -39,3 +42,10 @@ theorem okTens : OKTens := by
       _ = _ := by ring
 
 end GlobalTheory.CompanionTheory.ZuckTens
+end
+
+open CompanionTheory.Zuck BranchingSupport Matrix Finset
+open scoped InnerProductSpace Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.TensorPowerIntegral : OKTens := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ZuckTens.okTens

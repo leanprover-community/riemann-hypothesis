@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Statements
 import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PReductionSmallLast
 import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PReductionSmallFirst
 import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PInteriorDichotomy

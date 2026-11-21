@@ -1,5 +1,4 @@
 import Formalism.LocalToGlobal.GlobalTheory.GL6.ValuationClassTranslateMem
-import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.CharacterFiniteLevelZeroOfForms
 import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.EqOneOfCoprimeTorsionTwoPrimes
 import Formalism.LocalToGlobal.GlobalTheory.GL6.CoordMapInjective
 import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedLatticePropsOfModel

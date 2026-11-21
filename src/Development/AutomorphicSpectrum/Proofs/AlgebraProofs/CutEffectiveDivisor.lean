@@ -5,12 +5,11 @@ import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpVert
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpFibreDegree
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFiniteBirationalLength
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpDivisorPush
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AevalChartSubstMemOfMemBlowUpOf
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PHorizontalComponentModel
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyDimensionInequality
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BlowUpFibreSemilocalStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BlowUpFibreSemilocal
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProjectionFormulaDegreeStatement
 
+section
 set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.CutClosed
@@ -29,3 +28,8 @@ theorem main : CutByEffectiveDivisor.Statement.{0} :=
       NumbersDVR_BlowUpHorizontalCorresp HorizontalComponentModel.proof)
 
 end GlobalTheory.CompanionTheory.Ar.Num.CutClosed
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cut_effective_divisor : GroundTheory.Heights₂.Heights.NumbersDVR.CutByEffectiveDivisor.Statement.{0} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.CutClosed.main

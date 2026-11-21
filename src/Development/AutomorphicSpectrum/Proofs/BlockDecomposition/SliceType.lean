@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
@@ -61,3 +62,9 @@ theorem main : GlobalTheory.CompanionTheory.EGlue.SliceType := by
 end GlobalTheory.CompanionTheory.EGlue.SliceTypePf
 
 end
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.slice_type : GlobalTheory.CompanionTheory.EGlue.SliceType := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.SliceTypePf.main

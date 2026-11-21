@@ -3,6 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TermSumBoundOf
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.KloostermanDiagonalOfConditions
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MainEqWire
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.FullExistsTiedHolds
+import BuildAid.ForwardExisting
+
+section
 noncomputable section
 open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.RowsConc
@@ -26,3 +29,9 @@ theorem termSumBound_of_pairsAmplitude : TermSumBoundOfPairsAmplitude := by
     (Formalism.L2.SG.RowsOther.pairsDeg_of_amp _ hG0 _ _ _ _ hPg hA)
 
 end GlobalTheory.Core.Deg
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.deg_termSumBoundOfPairsAmplitude : GlobalTheory.Core.Deg.TermSumBoundOfPairsAmplitude := by
+  atlas_forward_decl GlobalTheory.Core.Deg.termSumBound_of_pairsAmplitude

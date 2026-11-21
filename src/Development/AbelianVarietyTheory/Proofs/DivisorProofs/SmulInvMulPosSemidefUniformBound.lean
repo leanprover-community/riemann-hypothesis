@@ -1,5 +1,5 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedLeastSquaresBoundStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedLeastSquaresBound
 
 open scoped ComplexOrder Matrix
 

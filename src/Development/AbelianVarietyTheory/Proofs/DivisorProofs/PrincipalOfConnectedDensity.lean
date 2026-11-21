@@ -1,12 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitChartAt
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDiscreteValuationRingAndFiniteResidueFieldValu
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormUniformizerConstantStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TestPointGenericFibreStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsChartsNormalProjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsChartsNormalProjectiveCoveringStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormUniformizerConstant
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TestPointGenericFibre
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsChartsNormalProjective
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsChartsNormalProjectiveCovering
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -55,3 +54,10 @@ theorem princSt_of_connSt_propZ_densSt : ConnSt → GlobalTheory.IndefiniteRowSi
   rw [← h2, ← h3, Real.pow_rpow_inv_natCast (norm_nonneg _) (by omega)]
 
 end GlobalTheory.FlatModel
+end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.principal_of_connected_density : ConnSt → GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits.PropZ → DensSt → PrincSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.princSt_of_connSt_propZ_densSt

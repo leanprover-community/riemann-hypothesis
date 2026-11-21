@@ -1,9 +1,10 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ColFlags
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameCoeffsRegularInChart
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsJoinBlocksStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsJoinBlocks
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DetT
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory NumberField Matrix
@@ -272,3 +273,12 @@ theorem coordTie_base : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
     (cc 𝔐 bW bO t.1.1) (hvb _) (htw _) (hbas _).2 P c' hc'
 
 end GlobalTheory.CompanionTheory.Ar.PB.FMX.Graph
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodgeCpt_frame_change_determinant : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K₀ : Type) [Fintype K₀] (J₀ : K₀ → Type) [∀ k, Fintype (J₀ k)] (x₀ : (Σ k, J₀ k) → Ω) (𝔐 : HodgeCpt Y S x₀) (bW : WBases 𝔐) (bO : OmBases 𝔐) (n m : CMType H ⊕ CMType H → ℕ) (φ : ∀ s, Fin (n s) → Module.Dual Ω (EE 𝔐)), FormsOK 𝔐 bW bO m φ → CoordTie ℤ 𝔐.ξ (seg (xb (p := D.p) (q := D.q) (aOf 𝔐 bW bO φ) x₀)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.FMX.Graph.coordTie_base

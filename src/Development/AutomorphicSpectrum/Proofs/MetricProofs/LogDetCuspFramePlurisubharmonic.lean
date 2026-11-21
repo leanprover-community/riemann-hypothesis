@@ -1,20 +1,20 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicFamilySmoothEntriesStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicSublatticeCovolumePositiveStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicEigencomponentConjugateFormStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjectionStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicSublatticeCovolumePositive
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicEigencomponentConjugateForm
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjection
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PlurisubharmonicLocal
 import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PhiISemipositive
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.EigenComponentPolynomialInActionStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicQuotientStructureStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicLocalQuotientMapStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.QuotientFamilyEigenFrameStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicSpanCoefficientsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsExtendLinearIndependentOfSpanStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.GramDetPosIffLinearIndependentStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.EigenComponentPolynomialInAction
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicQuotientStructure
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicLocalQuotientMap
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.QuotientFamilyEigenFrame
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicSpanCoefficients
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsExtendLinearIndependentOfSpan
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.GramDetPosIffLinearIndependent
+
+section
 open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.PhiI
@@ -263,3 +263,9 @@ theorem phi_isPsh_continuous : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
     rfl
 
 end GlobalTheory.CompanionTheory.Ar.Cusp
+end
+
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_det_cusp_frame_plurisubharmonic : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (Ψ : Type) [Fintype Ψ] (n : ℕ) (U : Set (Fin n → ℂ)) (R : (Fin n → ℂ) → RiemLat E g Λ) (σ : Ψ → (𝓞 E →+* ℂ)) (m : ℕ) (b : Ψ → Fin m → (Fin n → ℂ) → Fin g → ℂ) (I : Submodule (𝓞 E) Λ), IsOpen U → IsHolFam U R → IsCMFam σ → IsEigFrames U (fun t => (R t).B) σ b → (∀ t ∈ U, (R t).IsCusp I) → ReciprocityTheory.AnForm.A.IsPsh U (fun t => (R t).logDet (fun τ i => b τ i t) - Real.log ((R t).nz σ I)) ∧ ContinuousOn (fun t => (R t).nz σ I) U := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.phi_isPsh_continuous

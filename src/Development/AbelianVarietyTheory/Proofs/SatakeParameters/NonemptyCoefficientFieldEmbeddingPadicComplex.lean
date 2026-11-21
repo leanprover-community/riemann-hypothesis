@@ -1,8 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceIffAdditiveMapsExist
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.NonemptyPadicIntRingHomOfIsAdicComplete
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
+import BuildAid.ForwardExisting
 
+section
 open IsLocalRing
 
 namespace GlobalTheory
@@ -77,3 +78,8 @@ theorem nonempty_cEmb_of_pos_nV : ∀ (p : ℕ) [Fact p.Prime] (G : Formalism.Ma
   rw [hx, ← PadicComplex.coe_eq, PadicComplex.norm_extends]
   exact (mem_integralClosure_padicInt_iff K₀ _).1 (e₀ x).2
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonempty_coefficient_field_embedding_padic_complex : ∀ (p : ℕ) [Fact p.Prime] (G : Formalism.MainNotions.G.GAtP p), 0 < G.P.nV → Nonempty (Formalism.L2.G.Pend.CEmb G) := by
+  atlas_forward_decl GlobalTheory.nonempty_cEmb_of_pos_nV

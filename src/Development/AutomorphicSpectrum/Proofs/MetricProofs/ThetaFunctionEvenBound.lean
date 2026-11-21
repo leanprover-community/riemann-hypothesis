@@ -3,21 +3,21 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsThetaMeanSqu
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.ZhangDimensionPushDownGrassmannianHeightBounds
 import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
-import GroundTheory.HeightsAndTheta.Heights.KernelsMatrix
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.AssemblyAnalytic
 import GroundTheory.HeightsAndTheta.Heights.FactorialBounds.Assembly
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HasSumPolyDerivMulProdAddMatrix
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFundamentalDomainMeanNormSqThetaChar
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsUnitOfLagrangian
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.CoordSiegel
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSymplecticBasisPrincipalPolarizationStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HermitianFormPeriodMatrixNormalFormStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RealPartGramInSymplecticGroupStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SemicharacterThetaCharacteristicStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaFunctionCanonicalMultiplierStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaFunctionCanonicalFormStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaNormInPeriodCoordinatesStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaZeroDivisorJetBoundStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSymplecticBasisPrincipalPolarization
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HermitianFormPeriodMatrixNormalForm
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RealPartGramInSymplecticGroup
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SemicharacterThetaCharacteristic
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaFunctionCanonicalMultiplier
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaFunctionCanonicalForm
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaNormInPeriodCoordinates
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaZeroDivisorJetBound
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights TensorProduct
@@ -352,3 +352,12 @@ theorem nform : ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∀ {S : Scheme.{0}} {G : Over S}
     _ ≤ ∑ i, -Real.log (a.nrm 1 θ (r i) / b) := Finset.sum_le_sum fun i _ => hper i
 
 end GlobalTheory.CompanionTheory.Ar.NForm
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+open GroundTheory.Heights₂.Heights TensorProduct
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_function_even_bound : ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∀ {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {P : RigLB G} {z : Sp ℂ ⟶ S} {g : ℕ} (a : ArchFrame P z g), 1 ≤ g → (∀ l l' : a.u.Λ, ∃ k : ℤ, (a.herm l l').im = k) → (∀ w : Fin g → ℂ, (∀ l : a.u.Λ, ∃ k : ℤ, (a.herm w l).im = k) → w ∈ a.u.Λ) → (∀ l l' : a.u.Λ, a.χ (l + l') = a.χ l * a.χ l' * Complex.exp (Real.pi * Complex.I * (a.herm l l').im)) → (∀ l : a.u.Λ, a.χ l ^ 2 = 1) → ∀ (θ : (Fin g → ℂ) → ℂ) (b : ℝ), a.IsTheta 1 θ → a.IsThetaMeanSquareNorm θ b → ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ √(2 * g) ∧ (∀ w, a.nrm 1 θ w ≤ b * Real.exp (g * Real.log (1 + 1 / ρ) + C₀ * g * Real.log (2 * g))) ∧ ∀ᶠ m : ℕ in Filter.atTop, ∀ (Ix : Type) [Fintype Ix] (r : Ix → Fin g → ℂ), (∀ i, (m : ℂ) • r i ∈ a.u.Λ ∧ θ (r i) ≠ 0) → (∀ w : Fin g → ℂ, (m : ℂ) • w ∈ a.u.Λ → θ w ≠ 0 → ∃! i, w - r i ∈ a.u.Λ) → Nonempty Ix ∧ (Fintype.card Ix : ℝ) * (Real.pi / 96 * (ρ ^ 2)⁻¹ - (g * Real.log (1 + 1 / ρ) + C₀ * g * Real.log (2 * g))) ≤ ∑ i, -Real.log (a.nrm 1 θ (r i) / b) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.NForm.nform

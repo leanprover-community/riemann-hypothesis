@@ -1,6 +1,5 @@
 import Formalism.GaussJetBounds.GenLogInverse
 import Formalism.GaussJetBounds.StatementE
-import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 import Formalism.GaussJetBounds.GaussJetProofs.PureCrossTermWeight
 import Formalism.GaussJetBounds.GaussJetProofs.AsmRDotAddRight
 import Formalism.GaussJetBounds.GaussJetProofs.OneLetterRadiusIdentity

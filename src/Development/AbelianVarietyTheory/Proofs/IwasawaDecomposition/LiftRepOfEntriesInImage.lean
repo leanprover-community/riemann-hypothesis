@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SplitRep
+import BuildAid.ForwardExisting
+
+section
 open Formalism.ConjugateSelfDual Formalism.MainNotions.N Polynomial
 
 namespace GlobalTheory
@@ -22,3 +25,9 @@ theorem lift_rep_of_entries_in_image : ∀ {k L Γ : Type} [Field k] [Field L] [
   exact congrFun (congrFun (key g) i) j
 
 end GlobalTheory
+end
+
+open Formalism.ConjugateSelfDual Formalism.MainNotions.N Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_rep_lift_of_entries_mem_range : ∀ {k L Γ : Type} [Field k] [Field L] [Group Γ] (f : k →+* L) {b : ℕ} (τ : Γ →* GL (Fin b) L), (∀ g i j, ∃ x, f x = ((τ g : GL (Fin b) L) : Matrix (Fin b) (Fin b) L) i j) → ∃ σ : Γ →* GL (Fin b) k, mapRep f σ = τ := by
+  atlas_forward_decl GlobalTheory.lift_rep_of_entries_in_image

@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Lpart
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHolomorphyInParameter
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.GL2DualWhittakerPair
 open scoped ValuativeRel
 
@@ -35,3 +38,11 @@ theorem continuous_Rpart_Pf : ∀ (F : Type) [Field F] [ValuativeRel F] [Topolog
   exact hl.continuous
 
 end GlobalTheory.CompanionTheory.GL2DualWhittakerPair.PfCont
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.GL2DualWhittakerPair
+open scoped ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_right_partial_fourier : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (ψ : AddChar F Circle), IsStd ψ → ∀ Φ ∈ LFS.SB F, ∀ h : GL (Fin 2) F, Continuous fun z : GL (Fin 2) F => Rpart ψ (Pf Φ h z) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GL2DualWhittakerPair.PfCont.continuous_Rpart_Pf

@@ -1,4 +1,3 @@
-import Formalism.WindowSums.Statement
 import Formalism.WindowSums.AnnihilatorPolynomials.DistinctTerms
 
 noncomputable section

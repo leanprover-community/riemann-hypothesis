@@ -5,9 +5,8 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIsCentAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CentralUniformiserActsByDilationTameKernelStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TameKernelVectorUnitMulDilatedFlatStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompAtMtOfMemGfC
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmPureTensorOOfFinite
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsThetaFunOOfThetaAt
 
+section
 set_option autoImplicit false
 noncomputable section
 open NumberField IsDedekindDomain
@@ -86,3 +85,10 @@ theorem flatKer_holds : FlatKer := by
     map_smul, Pi.smul_apply, ← Module.End.mul_apply, ← map_mul, Prod.mk_mul_mk, mul_one]
 
 end GlobalTheory.BigOn.Exp.SerBase
+end
+end
+
+open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp GlobalTheory.BigOn.Exp.SerBase
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flatDatum_series_unit_times_kernel_series : FlatKer := by
+  atlas_forward_decl GlobalTheory.BigOn.Exp.SerBase.flatKer_holds

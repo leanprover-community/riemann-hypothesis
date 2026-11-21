@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.PointShiftSt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.Dets
+
+section
 open NumberField
 
 namespace GlobalTheory.IdxTensor
@@ -57,3 +58,11 @@ theorem dets_span_eq {F : Type} [Field F] [NumberField F] (p : ℕ) (S : Set (Fi
     exact ⟨y, fun i => Submodule.subset_span (hy i), rfl⟩
 
 end GlobalTheory.IdxTensor
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.latticeDeterminantSpan_span_eq_generator_dets : ∀ {F : Type} [Field F] [NumberField F] (p : ℕ) (S : Set (Fin p → F)),
+    GlobalTheory.IdxTensor.dets F p (Submodule.span (𝓞 F) S) =
+      Submodule.span (𝓞 F) {d | ∃ y : Fin p → Fin p → F, (∀ i, y i ∈ S) ∧ d = (Matrix.of y).det} := by
+  atlas_forward_decl GlobalTheory.IdxTensor.dets_span_eq

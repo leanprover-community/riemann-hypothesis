@@ -1,13 +1,12 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ModuleCpowDetInverseTwist
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiablePartialZetaIntegralStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableBoundaryZetaTermStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableOnLowerZetaIntegrandStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LowerZetaIntegralBoundaryRelationStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BoundaryZetaTermFunctionalEquationStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalZetaIntegralFunctionalEquationStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiablePartialZetaIntegral
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableBoundaryZetaTerm
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableOnLowerZetaIntegrand
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LowerZetaIntegralBoundaryRelation
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BoundaryZetaTermFunctionalEquation
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalZetaIntegralFunctionalEquation
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -130,3 +129,9 @@ theorem GlobalTheory.CompanionTheory.RSZeta.functional_equation : Ad3.R.G1a → 
     have : GlobalTheory.CompanionTheory.RSZeta.Bd μ 𝓕 H c 0 = 0 := by
       simpa [GlobalTheory.CompanionTheory.RSZeta.Bd] using h0
     simp [GlobalTheory.CompanionTheory.RSZeta.Ed, this]
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.global_zeta_integral_convergence : Ad3.R.G1a → Ad3.R.G3 → Ad3.R.AdelicThetaPoissonSummation → Ad3.R.G4 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RSZeta.functional_equation

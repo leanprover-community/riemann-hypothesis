@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 set_option backward.isDefEq.respectTransparency false
 open MvPolynomial
 
@@ -69,3 +72,10 @@ theorem trace_map_derivation : ∀ (K F L : Type) [Field K] [CharZero K] [Field 
   exact htr.symm
 
 end GlobalTheory.CompanionTheory.TraceDerivation
+end
+
+set_option backward.isDefEq.respectTransparency false
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.derivation_commutes_with_trace : ∀ (K F L : Type) [Field K] [CharZero K] [Field F] [Field L] [Algebra K F] [Algebra K L] [Algebra F L] [IsScalarTower K F L] [FiniteDimensional F L] (D : Derivation K L L) (D0 : Derivation K F F), (∀ x : F, D (algebraMap F L x) = algebraMap F L (D0 x)) → ∀ y : L, algebraMap F L (D0 (Algebra.trace F L y)) = algebraMap F L (Algebra.trace F L (D y)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TraceDerivation.trace_map_derivation

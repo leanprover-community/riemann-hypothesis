@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ShiftSubTranslat
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGenReadsOfUnitAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OscillatorModelExtensionThirdStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PureTensorOSmul
-import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.EmbeddingsDifferOnInteger
 import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.HkSupSizedOfHkSup
 
 set_option autoImplicit false

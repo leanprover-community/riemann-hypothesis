@@ -2,9 +2,7 @@ import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSecDegreeGe
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSecFiniteUnit
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSecRankSpecialize
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Assembly
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Imports
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChowFormHomog
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights

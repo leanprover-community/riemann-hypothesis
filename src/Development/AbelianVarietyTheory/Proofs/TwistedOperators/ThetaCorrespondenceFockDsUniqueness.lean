@@ -1,24 +1,23 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockDerivedActionsTensorMembersStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryHarishChandraDiscreteSeriesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MinFirstStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryHarishChandraDiscreteSeries
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockMinimalKTypeSecondMemberStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JointShapeUniqueAndDegWEqStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockPolynomialsLocallyFiniteRationalWeightsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockOperatorsLieRepresentationCommuteStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockModelDualPairCasimirApplyStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockModelDualPairCasimirApply
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CasimirNumberIdentityDualPairStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LowestLeastDegreeMirror
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EmbedsOfLowestTypeStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LowestKTypesJointHarmonicShapeStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EmbedsOfLowestType
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LowestKTypesJointHarmonicShape
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockKsetPreservesHomogeneousDegreeStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockPolynomialKFiniteBothMembersStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFiniteDimensionalForallMapMemStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFiniteDimensionalForallMapMem
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdjointIntertwinerDiscreteSeriesDescendsStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsLinearMapTensorOfPairingStatement
+
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg
 open TensorProduct
 
@@ -451,3 +450,10 @@ theorem theta_unique : ∀ X : ProvA, admH1 X → admH2 X → DiscreteSeriesBlat
     push_cast; ring
 
 end GlobalTheory.ThetaUnique
+end
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_correspondence_fock_ds_uniqueness : ∀ X : ProvA, admH1 X → admH2 X → DiscreteSeriesBlattner X → admQ5 X → admQ7 → admQ8 → ArchimedeanRallisFirst X → ArchimedeanRallisSecond X → ArchimedeanRallisUpDownLine X := by
+  atlas_forward_decl GlobalTheory.ThetaUnique.theta_unique

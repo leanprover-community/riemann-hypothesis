@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.CrystallinePeriods.AdicMaps
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
-import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeIntegral
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinSeedDiscNormBoundsStatement
-import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinSeedDiscNormBounds
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc
 open scoped Formalism.Per NNReal
 
@@ -263,3 +263,11 @@ theorem exists_acris_to_disc : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk :
 end Ext
 
 end GlobalTheory.AcrisDisc
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_acris_ring_hom_bounded : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K), ∃ γ : Per.Acris l →+* bk.DA bk.ρ₀, (∀ a : Ainf l, γ (algebraMap (Ainf l) (Per.Acris l) a) = bk.iA a) ∧ ∀ x, ‖γ x‖ ≤ 1 := by
+  atlas_forward_decl GlobalTheory.AcrisDisc.exists_acris_to_disc

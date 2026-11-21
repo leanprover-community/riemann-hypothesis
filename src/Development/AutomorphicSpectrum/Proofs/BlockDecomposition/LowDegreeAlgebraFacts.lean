@@ -1,5 +1,7 @@
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.EquivariantSections.EquivSection
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset
@@ -289,3 +291,9 @@ theorem lowAlg : LowAlg := by
     exact ⟨c, hc.symm⟩
 
 end GlobalTheory.CompanionTheory.GlLowest
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.low_degree_algebra_facts : PositivityTheory.RgDs.K.LowAlg := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GlLowest.lowAlg

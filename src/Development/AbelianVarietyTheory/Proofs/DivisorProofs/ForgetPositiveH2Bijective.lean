@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.PullbackBijectiveDegreesOneTwo
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory GlobalTheory.CxCoh
 
 namespace GlobalTheory.CxCoh
@@ -80,3 +82,10 @@ theorem fnMap_h2_bijective (C : Type 1) [Category.{0} C] (K : Cx C) (h11 : K.M1.
     refine ⟨QuotientAddGroup.mk a, ?_⟩
     change (QuotientAddGroup.mk (K.fnMap.z2 a) : (Cx.single K.M0).H2) = QuotientAddGroup.mk b
     congr 1
+end GlobalTheory.CxCoh
+end
+
+open CategoryTheory GlobalTheory.CxCoh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.forget_positive_h2_bijective : ∀ (C : Type 1) [Category.{0} C] (K : Cx C), K.M1.Ac1 → K.M1.Ac2 → K.M2.Ac0 → K.M2.Ac1 → K.M3.Ac0 → Function.Bijective K.fnMap.h2 := by
+  atlas_forward_decl GlobalTheory.CxCoh.fnMap_h2_bijective

@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HeckeTateFunctionalEquationCM
 import Development.AbelianVarietyTheory.Definitions.Foundations.TupleConstantsNeZero
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.HeckeEps
@@ -327,3 +327,10 @@ theorem locEps_mul_tame : ∀ (E : Type) [Field E] [NumberField E] (χ ξ : HCha
     ring
 
 end GlobalTheory.TameTwist
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.HeckeEps
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tateLocalEpsilonFactor_mul_tameChar : ∀ (E : Type) [Field E] [NumberField E] (χ ξ : HChar E) (w : HeightOneSpectrum (𝓞 E)) (q : ℕ) (s : ℂ), q.Prime → Nat.card (𝓞 E ⧸ w.asIdeal) = q → (q : 𝓞 E) ∉ w.asIdeal ^ 2 → ExpAt χ w 2 → ξ.TameAt w → ExpAt (χ * ξ) w 2 ∧ ∃ y : Eˣ, locEps (χ * ξ) w 2 s = ((ξ.locK w y : ℂˣ) : ℂ) * locEps χ w 2 s := by
+  atlas_forward_decl GlobalTheory.TameTwist.locEps_mul_tame

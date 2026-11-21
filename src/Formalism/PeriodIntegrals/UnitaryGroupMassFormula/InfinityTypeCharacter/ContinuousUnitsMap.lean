@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.InfTypeChar
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InfinityTypeCharacter.ExtensionEmbeddingAlgebraMap
 
 noncomputable section

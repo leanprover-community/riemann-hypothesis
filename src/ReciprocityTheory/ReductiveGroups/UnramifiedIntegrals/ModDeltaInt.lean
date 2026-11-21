@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEisInt
 
 noncomputable section

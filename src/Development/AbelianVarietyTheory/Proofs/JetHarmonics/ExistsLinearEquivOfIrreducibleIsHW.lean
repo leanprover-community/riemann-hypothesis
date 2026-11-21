@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsStableSubmoduleTopWeightLine
 open Formalism.REAL
 

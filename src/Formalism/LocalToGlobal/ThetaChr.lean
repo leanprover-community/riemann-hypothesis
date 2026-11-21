@@ -2,7 +2,6 @@ import Formalism.SharpRestriction.ParamsHeightRankConstant
 import Formalism.LocalToGlobal.GaloisLevelStructure.LinkHost
 import Formalism.LocalToGlobal.UnitaryNorms.LeastSplitAuxiliaryPrimeThetaChainSpec
 import Formalism.LocalToGlobal.UnitaryNorms.CharGal
-import Formalism.LocalToGlobal.HermitianForms.RankEqFirstLevel
 import Formalism.LocalToGlobal.HermitianForms.TiedTwAll
 import Formalism.LocalToGlobal.JointCharacters.SameChr
 import Formalism.LocalToGlobal.HilbertRowConditions.KaTiedIffKapDef

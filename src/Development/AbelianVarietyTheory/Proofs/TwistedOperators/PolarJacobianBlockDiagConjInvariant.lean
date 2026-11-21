@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousExptPY
 
 noncomputable section

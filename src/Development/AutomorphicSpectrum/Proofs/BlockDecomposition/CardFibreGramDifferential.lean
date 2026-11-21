@@ -1,6 +1,5 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResAlgSplitTwo
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianMatricesCardStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianMatricesCard
 
 open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
 

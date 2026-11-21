@@ -2,7 +2,9 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.CosetCount
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriTraceOfBorelCasselman
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsSideExtra
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel MeasureTheory Matrix GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets GlobalTheory.IwahoriTraceProof
@@ -98,3 +100,9 @@ theorem cosetCount : PositivityTheory.Rg.BcB.F.Tail.PExp.CosetCount := by
 end GlobalTheory.CompanionTheory.IwahoriCount
 
 end
+end
+
+namespace PositivityTheory.Rg.BcB.F.Tail.PExp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coset_count_tail : PositivityTheory.Rg.BcB.F.Tail.PExp.CosetCount := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IwahoriCount.cosetCount

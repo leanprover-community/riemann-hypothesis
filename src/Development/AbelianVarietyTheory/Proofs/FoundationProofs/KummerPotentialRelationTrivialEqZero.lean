@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsRootOne
-import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerClassEvalEqZeroOfVanishingOnCongruenceStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerClassEvalEqZeroOfVanishingOnCongruence
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GlTwoPosRatMobiusBasicLawsStatement
 
+section
 noncomputable section
 
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
@@ -63,3 +63,11 @@ theorem rel_triv_eq_zero : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω 
     toZModPow_eval_mulVec n hl, sub_self, Pi.zero_apply]
 
 end GlobalTheory.KZ.H3
+end
+end
+
+open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
+open scoped MatrixGroups TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kummerPotentialRelation_trivial_eq_zero : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (l : ℕ) [Fact l.Prime], ∀ (w : ℕ) (Γ : Subgroup SL(2, ℤ)) (M₀ : ℕ), 0 < M₀ → CongruenceSubgroup.Gamma M₀ ≤ Γ → ∀ b F, Rel X l b F → F ∈ Triv ℤ_[l] w Γ → b = 0 := by
+  atlas_forward_decl GlobalTheory.KZ.H3.rel_triv_eq_zero

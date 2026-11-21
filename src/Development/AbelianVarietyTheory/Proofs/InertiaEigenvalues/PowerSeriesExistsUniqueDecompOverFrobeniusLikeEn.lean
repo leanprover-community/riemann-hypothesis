@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped PowerSeries Pointwise
 
 namespace GlobalTheory.InertiaEigenvalues.PowerSeriesFree
@@ -65,3 +68,9 @@ theorem main : ∀ {O : Type} [CommRing O] (l : ℕ), 2 ≤ l → ∀ (φ : O⟦
     simp only [e1, e2]
 
 end GlobalTheory.InertiaEigenvalues.PowerSeriesFree
+end
+
+open scoped PowerSeries Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.powerSeries_existsUnique_decomp_over_frobeniusLike_endo : ∀ {O : Type} [CommRing O] (l : ℕ), 2 ≤ l → ∀ (φ : O⟦X⟧ →ₐ[O] O⟦X⟧), (∀ (f : O⟦X⟧) (m : ℕ), PowerSeries.coeff m (φ f) = if l ∣ m then PowerSeries.coeff (m / l) f else 0) → ∀ f : O⟦X⟧, ∃! g : Fin l → O⟦X⟧, f = ∑ j : Fin l, PowerSeries.X ^ j.val * φ (g j) := by
+  atlas_forward_decl GlobalTheory.InertiaEigenvalues.PowerSeriesFree.main

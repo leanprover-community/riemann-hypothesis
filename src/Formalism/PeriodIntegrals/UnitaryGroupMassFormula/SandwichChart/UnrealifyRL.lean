@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LongWeylElementSquare
-import Formalism.PeriodIntegrals.SwSand
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SandwichChart.SandwichOfOfCharts
 
 noncomputable section

@@ -2,8 +2,6 @@ import Mathlib
 import Formalism.GL3MeanSquares.CongruenceTorsion
 import Formalism.GL3MeanSquares.HookFormulaTorsion.DifferenceStableUnderAction
 import Formalism.GL3MeanSquares.HookFormulaTorsion.DifferentIdealConditions
-import Formalism.FrobeniusOrbits.HostCorollaries
-import Formalism.TameInertiaTowers.TowerFieldFoundations
 
 namespace Formalism.HermitianLattices.StabilizerLevels
 namespace PfB

@@ -1,6 +1,8 @@
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MetaplecticLowRank.LowC
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCentralContract
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.MoyPrasad
@@ -63,3 +65,11 @@ theorem lowC_central_contract : ∀ (k : Type) [Field k] [ValuativeRel k] [Topol
 end GlobalTheory.CompanionTheory.MoyPrasad
 
 end
+end
+
+open PositivityTheory.LowerBoundConstant GlobalTheory GlobalTheory.Published GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.central_torus_contracts_lower : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n s : ℕ) (d : Fin s → ℕ) (e : (Σ a, Fin (d a)) ≃ Fin n), ∀ U ∈ 𝓝 (1 : GL (Fin n) k),
+    ∃ t : Levi k (fun a => Fin (d a)), (∀ m, t * m = m * t) ∧
+      ∀ c ∈ lowC k e, (leviEmb k e t)⁻¹ * c * leviEmb k e t ∈ U := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MoyPrasad.lowC_central_contract

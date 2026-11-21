@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GenHom
+
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE GlobalTheory.CompanionTheory.GE.TwGen
 
 set_option autoImplicit false
@@ -44,3 +46,10 @@ theorem genSub_add_le {X : Scheme.{0}} {H : ReciprocityTheory.ChartRestriction.G
   exact imageSubobject_add_le _ _
 
 end GlobalTheory.CompanionTheory.GE.TwGen
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE GlobalTheory.CompanionTheory.GE.TwGen
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generated_subsheaf_add_le_sup : ∀ {X : Scheme.{0}} {H : ReciprocityTheory.ChartRestriction.G.Semi.LB X} (hH : H.IsLB) {P : X.Modules} (n : ℤ) (b c : Γ(GlobalTheory.twistZ P H n, ⊤)), genSub hH n (b + c) ≤ genSub hH n b ⊔ genSub hH n c := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.TwGen.genSub_add_le

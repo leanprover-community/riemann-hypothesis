@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.StatementsTruncPsh
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.GlueCharts
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartComparison

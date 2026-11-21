@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.PairingDivisors.StatementA
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsFinSetSplitPlacesCoprimeConductor
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValIotaLeOfMem
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.Euler
 
 namespace GlobalTheory.CMVal.CondExp
@@ -53,3 +55,9 @@ theorem condQ_exponents : ∀ (E : Type) [Field E] [NumberField E] (𝔣 : Ideal
     rw [hm, multiplicity_eq_zero.2 (fun h => hv ((dvd_prod_primes_iff Q v).1 h)), add_zero]
 
 end GlobalTheory.CMVal.CondExp
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.Euler
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conductorTimesSplitPrimes_exponents : ∀ (E : Type) [Field E] [NumberField E] (𝔣 : Ideal (OF E)) (Q : Finset (HeightOneSpectrum (OF E))), IsBaseCond 𝔣 → IsFinSetSplitPlacesCoprimeConductor 𝔣 Q → condQ 𝔣 Q ≠ ⊥ ∧ (∀ v : HeightOneSpectrum (OF E), v.asIdeal ∣ condQ 𝔣 Q → Splits v) ∧ (∀ v : HeightOneSpectrum (OF E), expIn (condQ 𝔣 Q) v ≠ 0 → v.asIdeal ∣ condQ 𝔣 Q) ∧ (∀ v ∈ Q, expIn (condQ 𝔣 Q) v = 1) ∧ (∀ v ∉ Q, expIn (condQ 𝔣 Q) v = expIn 𝔣 v) ∧ {v : HeightOneSpectrum (OF E) | expIn (condQ 𝔣 Q) v ≠ 0}.Finite := by
+  atlas_forward_decl GlobalTheory.CMVal.CondExp.condQ_exponents

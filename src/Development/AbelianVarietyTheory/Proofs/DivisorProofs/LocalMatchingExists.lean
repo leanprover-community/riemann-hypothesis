@@ -1,9 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
-import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKernelCoinvariantStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsINeZeroKind
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKernelCoinvariant
 
+section
 noncomputable section
 
 namespace GlobalTheory.ThK.Partner
@@ -143,3 +142,8 @@ theorem matchEx_of_classicalTheorems (hK : KP) : MatchEx := by
 end GlobalTheory.ThK
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_matching_exists : GlobalTheory.ThK.KP → GlobalTheory.ThK.MatchEx := by
+  atlas_forward_decl GlobalTheory.ThK.matchEx_of_classicalTheorems

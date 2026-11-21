@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicArithmetic.OrbitLabellings.RowDefs
-import Formalism.LocalToGlobal.CharacterGerms.RowTieMemCFin
 import Formalism.LocalToGlobal.CharacterGerms.RowTieFlagS
 
 noncomputable section

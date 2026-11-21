@@ -1,6 +1,5 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PublishedTheorems.PoitouTateDuality.PtfsDefs
-import GroundTheory.ProfiniteCohomology.PoitouTate.PoitouTateNineTermGs
 import Development.WeilBound.CoreStatements.PublishedTheorems.PoitouTateDuality.PfInvMatchNsmulB
 import Development.WeilBound.CoreStatements.PublishedTheorems.PoitouTateDuality.FinalPtfsInvGen
 

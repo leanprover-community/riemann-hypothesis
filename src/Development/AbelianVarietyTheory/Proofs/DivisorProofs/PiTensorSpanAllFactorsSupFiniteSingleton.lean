@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ActAtApply
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped TensorProduct
@@ -58,3 +60,11 @@ theorem main : ∀ (T : Type) [Fintype T] [DecidableEq T] (V : T → Type) [∀ 
   exact ⟨tensAll_sup_le U C, tensAll_fin U, tensAll_span_le⟩
 
 end GlobalTheory.HoweR.TensSup
+end
+end
+
+open scoped TensorProduct
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift GlobalTheory.HoweR
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.piTensorSpanAllFactors_sup_finite_singleton : ∀ (T : Type) [Fintype T] [DecidableEq T] (V : T → Type) [∀ w, AddCommGroup (V w)] [∀ w, Module ℂ (V w)], ∀ U C : ∀ w, Submodule ℂ (V w), tensAll (fun w => U w ⊔ C w) ≤ tensAll U ⊔ tensAny C ∧ ((∀ w, FiniteDimensional ℂ (U w)) → FiniteDimensional ℂ (tensAll U)) ∧ ∀ v : ∀ w, V w, tensAll (fun w => Submodule.span ℂ {v w}) ≤ Submodule.span ℂ {PiTensorProduct.tprod ℂ v} := by
+  atlas_forward_decl GlobalTheory.HoweR.TensSup.main

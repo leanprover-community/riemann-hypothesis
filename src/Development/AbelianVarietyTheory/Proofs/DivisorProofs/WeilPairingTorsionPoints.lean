@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.HermitianCurvatureForms
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CovariantSecondFundamentalForm
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiagValExtTraceNonneg
 import Development.AbelianVarietyTheory.Definitions.Divisors.CurvSubQuotTautPairGram
+
+section
 open Matrix Complex ComplexConjugate Filter Topology
 open scoped ComplexOrder ContDiff
 open GlobalTheory.HermFrame GlobalTheory.IndefiniteRowSideFullHecke.HermitianCurvatureForms
@@ -143,3 +144,13 @@ theorem blockSQ_curv_eq_covDelAnti_extForm {z : V} (h : IsHermFrame U H)
   abel
 
 end GlobalTheory.CurvSQ
+end
+end
+
+open Matrix Complex ComplexConjugate Filter Topology
+open scoped ComplexOrder ContDiff
+open GlobalTheory.HermFrame GlobalTheory.IndefiniteRowSideFullHecke.HermitianCurvatureForms
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.curvature_off_diagonal_block : ∀ {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedSpace ℝ V] [IsScalarTower ℝ ℂ V] {m l : Type} [Fintype m] [Fintype l] [DecidableEq m] [DecidableEq l] {U : Set V} {H : V → Matrix (m ⊕ l) (m ⊕ l) ℂ} {z : V} (h : IsHermFrame U H) (hs : ∀ x ∈ U, IsUnit (subGram (H x)).det) (hz : z ∈ U) (ξ η : V), blockSQ (H z) (curv H z ξ η) = covDelAnti (gramQ H) (gramS H) (extForm H) z ξ η := by
+  atlas_forward_decl GlobalTheory.CurvSQ.blockSQ_curv_eq_covDelAnti_extForm

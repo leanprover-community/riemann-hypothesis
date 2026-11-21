@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OmegaFactorization
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PartialZetaFunctionalEquation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KFacDifferentiable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsNormEqProd
+import BuildAid.ForwardExisting
+
+section
 open NumberField Complex
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.HeckeTwo
@@ -106,3 +107,13 @@ theorem fTerm_unit_move : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyRea
   fun _ _ _ _ σ z b ν ε => fTerm_unit_mul σ z b ν ε
 
 end GlobalTheory.HeckeTwoUnit
+end
+end
+
+open NumberField Complex
+open scoped nonZeroDivisors ContDiff
+open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.HeckeTwo
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeEisensteinFourierTerm_move_unit : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (σ : ℂ) (z : Emb F → ℂ) (b ν : F) (ε : (𝓞 F)ˣ),
+    fTerm σ z (((ε : 𝓞 F) : F) * b) ν = fTerm σ z b (((ε : 𝓞 F) : F) * ν) := by
+  atlas_forward_decl GlobalTheory.HeckeTwoUnit.fTerm_unit_move

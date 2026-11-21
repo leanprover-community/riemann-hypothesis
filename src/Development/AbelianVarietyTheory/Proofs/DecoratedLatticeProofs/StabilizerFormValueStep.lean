@@ -1,11 +1,9 @@
 import Mathlib
 import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.OffSmall
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsTwIffCanonEq
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HermitianCodeWordWeilElementMemQuadraticField
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TrueWtAddSSNonneg
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.KmapEq
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.KmapMemValCTrue
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdSubConjEqNeg
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.XiEntryInvariant
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FirstCoupledKernelEquivariantCosets
@@ -13,10 +11,8 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.KAtTopEquiv
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DifferentiableSumU
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PairKernelTermTargetStabiliserLaw
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PairKernelLawOfFiniteDatumLaw
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ColumnFieldRamificationIdxInEqOne
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemberBadPrimesNoConjugatePair
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DetUnitaryStabiliserSelfDualLatticeNormOne
 
+section
 noncomputable section
 
 namespace GlobalTheory.KerStab
@@ -322,3 +318,14 @@ theorem GlobalTheory.KerStab.Kmap_stab : ∀ {B : Base} {X : PreX B.toPre} (I : 
   fun I h _ _ l Z u _ hi c c' g f _ => GlobalTheory.KerStab.Kmap_stab_tuple I h l Z u I.mu0 hi c c' g f
 
 end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC
+attribute [local instance] GlobalTheory.Mem.Col2.starE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stabilizer_form_value_step : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → I.IsTw → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)) (u : B.Word) (i : ℕ), i < B.R.m →
+    ∀ (c : (I.stp u I.mu0 i).Cl) (c' : (I.stp u I.mu0 (i + 1)).Cl) (g : (I.stp u I.mu0 (i + 1)).Stab c')
+      (f : Fr B.fields.emb B.embLL (B.R.N i) → ℂ),
+      f ∈ Formalism.L2.Forms.ValC (Gr B.fields.emb B.embLL (B.R.N i)) (lamT (B.hcW u) i) →
+      (I.stp u I.mu0 (i + 1)).tr B.fields.emb B.embLL c'.1 g.1 ((I.chain l u I.mu0).Kmap i c c' f) = (I.chain l u I.mu0).Kmap i c c' f := by
+  atlas_forward_decl GlobalTheory.KerStab.Kmap_stab

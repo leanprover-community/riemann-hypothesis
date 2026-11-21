@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.CommutativeAlgebra.ChainConnInDim
 import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.IsSaturatedChain
 
 open IsLocalRing

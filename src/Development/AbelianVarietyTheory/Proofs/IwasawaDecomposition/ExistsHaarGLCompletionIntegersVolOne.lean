@@ -1,8 +1,10 @@
 import Formalism.LocalToGlobal.Divisibility.QLocTied
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HostPins
 import Formalism.DoubleCosetMeasures.LatticeCoset
-import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.IsClosedLowUni
 import ReciprocityTheory.GeneralLinearIntegers.AlgebraMapIntMemOint
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DoubleCosetMeasures Formalism.L2.Host Formalism.L2.DIV Formalism.L2.DIV.QLoc GlobalTheory.Mem.HD
 
 namespace GlobalTheory
@@ -20,3 +22,9 @@ theorem haar_glInt_one : ∀ (L : Type) [Field L] [NumberField L] (P : HeightOne
   exact Measure.haarMeasure_self
 
 end GlobalTheory
+end
+
+open MeasureTheory Matrix NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DoubleCosetMeasures Formalism.L2.Host Formalism.L2.DIV Formalism.L2.DIV.QLoc GlobalTheory.Mem.HD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_haar_GL_completion_integers_vol_one : ∀ (L : Type) [Field L] [NumberField L] (P : HeightOneSpectrum (𝓞 L)) (r : ℕ), ∃ μ : Measure (GL (Fin r) (P.adicCompletion L)), μ.IsMulLeftInvariant ∧ μ ((GLint (OP P) r : Subgroup (GL (Fin r) (P.adicCompletion L))) : Set (GL (Fin r) (P.adicCompletion L))) = 1 := by
+  atlas_forward_decl GlobalTheory.haar_glInt_one

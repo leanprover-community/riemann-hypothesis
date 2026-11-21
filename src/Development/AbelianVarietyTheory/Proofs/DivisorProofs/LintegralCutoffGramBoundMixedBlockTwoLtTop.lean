@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NmatEqLowMat
+import BuildAid.ForwardExisting
+
+section
 open ReciprocityTheory.ChartRestriction.G.FD MeasureTheory GlobalTheory.IntBall
 open scoped ENNReal Matrix
 
@@ -30,3 +33,10 @@ theorem lintegral_hB_one_two_lt_top : ∫⁻ w : Low 2 → ℂ, hB 1 w < ⊤ := 
   exact measure_closedBall_lt_top
 
 end GlobalTheory.IntBall
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD MeasureTheory GlobalTheory.IntBall
+open scoped ENNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_cutoffGramBoundMixedBlock_two_lt_top : ∫⁻ w : Low 2 → ℂ, hB 1 w < ⊤ := by
+  atlas_forward_decl GlobalTheory.IntBall.lintegral_hB_one_two_lt_top

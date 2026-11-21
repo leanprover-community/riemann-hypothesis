@@ -2,14 +2,13 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.StepsNonvacuous
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PeriodComparison
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDetGen
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyLevelStructureComplexStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelStructureLiftNilpotentStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmoothLocalFactorizationStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmoothDetGeneratedCoverStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyLevelStructureComplex
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelStructureLiftNilpotent
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmoothLocalFactorization
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmoothDetGeneratedCover
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -106,3 +105,10 @@ theorem chart_of_hilbertBlumenthal : GlobalTheory.Published.HilbertBlumenthal �
   exact ⟨B', _, _, inferInstance, X₂, δ, j', ψ', hψ'⟩
 
 end GlobalTheory.LatJet.An
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet GlobalTheory.LatJet.An
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_of_hilbert_blumenthal : GlobalTheory.Published.HilbertBlumenthal → Chart := by
+  atlas_forward_decl GlobalTheory.LatJet.An.chart_of_hilbertBlumenthal

@@ -1,16 +1,14 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InducesPl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatSectionFrameInvariance
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameChangeExistsUniqueOfSamePoint
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsCombAtGMulVec
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValueStatementHolds
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicFrobeniusPointComparisonStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointPeriodRelationStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CombinatorialTangentPointConditionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointTangentMapFormulaStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeEigenvectorHeightMatrixStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeightLatticeBasisOfEigenvectorsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicFrobeniusPointComparison
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointPeriodRelation
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CombinatorialTangentPointCondition
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointTangentMapFormula
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeEigenvectorHeightMatrix
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeightLatticeBasisOfEigenvectors
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -84,3 +82,10 @@ theorem pointSt_of : BridgeSt → EigSt → CovolSt → PointSt := by
   linarith
 
 end GlobalTheory.DetHT
+end
+end
+
+open GlobalTheory.DetHT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.point_count_of_eigen_covolume_hypotheses : BridgeSt → EigSt → CovolSt → PointSt := by
+  atlas_forward_decl GlobalTheory.DetHT.pointSt_of

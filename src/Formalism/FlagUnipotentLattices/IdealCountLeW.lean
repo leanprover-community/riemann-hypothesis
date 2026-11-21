@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.HyperbolicPlaceProducts.Statement
 import Formalism.FlagUnipotentLattices.LiftUnitaryFixesBase
 
 noncomputable section

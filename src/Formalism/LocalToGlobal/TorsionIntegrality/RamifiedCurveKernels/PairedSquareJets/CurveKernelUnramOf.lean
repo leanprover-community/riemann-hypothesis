@@ -1,6 +1,5 @@
 import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementU
 import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.FinalA
-import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveSecondLogDerivative
 
 noncomputable section
 open scoped BigOperators

@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.Foundations.LocalLanglands.RecTTransport
 import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.ArtEx
 import Development.DiscreteGroups.GlobalIrreducibility.ExistsIneOfVEqOne
 import Development.DiscreteGroups.GlobalIrreducibility.DzTame

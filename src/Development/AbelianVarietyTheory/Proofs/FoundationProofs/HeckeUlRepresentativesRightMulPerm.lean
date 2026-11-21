@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.HeckeFamilyMatrices Polynomial UpperHalfPlane
 open scoped MatrixGroups ModularForm
 open scoped Manifold
@@ -88,3 +91,11 @@ theorem ulFam_perm : ∀ (N l : ℕ), 5 ≤ N → l.Prime → ¬ l ∣ N → ∀
     first | ring1 | linear_combination he
 
 end GlobalTheory.HeckeFamilyMatrices
+end
+
+open GlobalTheory.HeckeFamilyMatrices Polynomial UpperHalfPlane
+open scoped MatrixGroups ModularForm
+open scoped Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeUlRepresentatives_right_mul_perm : ∀ (N l : ℕ), 5 ≤ N → l.Prime → ¬ l ∣ N → ∀ γ : Lev N l, ∃ π : Equiv.Perm (Fin l), ∀ i, ∃ γ' : Lev N l, ulFam l i * mat γ = mat γ' * ulFam l (π i) := by
+  atlas_forward_decl GlobalTheory.HeckeFamilyMatrices.ulFam_perm

@@ -5,7 +5,6 @@ import Formalism.ZetaNonvanishing.MellinSgen
 import Formalism.ZetaNonvanishing.MellinElem
 import Formalism.ZetaNonvanishing.ZetaRealNonvanish
 import Formalism.ZetaNonvanishing.LogDerivZeroFree
-import Formalism.ZetaNonvanishing.MellinDeriv
 
 open Complex MeasureTheory Set Filter Topology
 

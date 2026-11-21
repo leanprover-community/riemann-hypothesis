@@ -3,16 +3,15 @@ import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleF
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.TwistBCPf
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PowEqOneOfMultilinear
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsBoxFamilyMultilinearMap
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ProdPullZero
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GroupExpansionBijectiveOfCompleteDVR
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GermBoxProductEqProdGermsStatement
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpBijFOfAdmissibleBase
-import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsBoxSec
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsBoxMaps
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.LinOfSval
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsPhiRelSmul
 
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.ExpBijectiveUniformisation Formalism.MainNotions.ModuliIntegralCharts.H1.GSt
@@ -63,3 +62,15 @@ theorem boxTup_of_columns : Laws → Laws2 → Laws4 → TwistBaseChangeStatemen
       (fun i => (h i).2.2.2.2.2.2.2.2.2) ((hbx _ _).2 rfl) hσ'
 
 end GlobalTheory
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.ExpBijectiveUniformisation Formalism.MainNotions.ModuliIntegralCharts.H1.GSt
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
+attribute [local instance] Over.cartesianMonoidalCategory
+open Formalism.MainNotions.ModuliIntegralCharts.H1.BoxTuple Formalism.MainNotions.ModuliIntegralCharts.H1.BidegreeTwoJet GlobalTheory GlobalTheory.PowGerm
+open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.boxTupSt_of_laws_of_twistBaseChange : Laws → Laws2 → Laws4 → TwistBaseChangeStatement → BoxTupSt := by
+  atlas_forward_decl GlobalTheory.boxTup_of_columns

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergmanIntegrable
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanSectionPairing
 set_option maxSynthPendingDepth 1
 

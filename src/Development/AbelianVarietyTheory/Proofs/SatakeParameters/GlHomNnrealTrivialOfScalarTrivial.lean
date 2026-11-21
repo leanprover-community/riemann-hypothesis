@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 open Matrix
 
@@ -186,3 +188,8 @@ theorem gl_hom_nnreal_trivial_of_scalar :
 
 end HomTriv3
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gl_hom_nnreal_trivial_of_scalar_trivial : ∀ (k : Type) [Field k], (∃ x : k, x ≠ 0 ∧ x ≠ 1) → ∀ (N : ℕ) (φ : GL (Fin N) k →* NNReal), (∀ z : kˣ, φ (Matrix.GeneralLinearGroup.scalar (Fin N) z) = 1) → ∀ g, φ g = 1 := by
+  atlas_forward_decl GlobalTheory.gl_hom_nnreal_trivial_of_scalar

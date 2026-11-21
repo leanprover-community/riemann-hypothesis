@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.BernsteinUnitaryProducts.BernsteinTheoremA.FrobeniusReciprocity.SupportedInIffOfFrob
 import GroundTheory.AutomorphicForms.LocallyProfinite
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory MeasureTheory.Measure GlobalTheory.SplitWeil PositivityTheory.PfBern.Frob
 
 noncomputable section
@@ -214,3 +216,10 @@ theorem exists_eq_mul_integral :
   field_simp
 
 end GlobalTheory.CompanionTheory.FrobHaarR
+end
+end
+
+open MeasureTheory MeasureTheory.Measure GlobalTheory.SplitWeil PositivityTheory.PfBern.Frob
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invariant_functional_eq_haar_multiple : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [LocallyCompactSpace G] [TotallyDisconnectedSpace G] [MeasurableSpace G] [BorelSpace G], IsUnimod G → ∀ (μ : Measure G) [μ.IsHaarMeasure] (L : SB G →ₗ[ℂ] ℂ), (∀ (g : G) (α : SB G), L (pullHomeo (Homeomorph.mulRight g) α) = L α) → ∃ c : ℂ, ∀ α : SB G, L α = c * ∫ x, (α : G → ℂ) x ∂μ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FrobHaarR.exists_eq_mul_integral

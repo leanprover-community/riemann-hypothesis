@@ -1,5 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.LeviCut
 
 namespace GlobalTheory.LeviCut
@@ -155,3 +157,9 @@ theorem rankOne : RankOne := by
     simpa using this
 
 end GlobalTheory.LeviCut
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rank_one_projector_weight_zero_invariance : GlobalTheory.LeviCut.RankOne := by
+  atlas_forward_decl GlobalTheory.LeviCut.rankOne

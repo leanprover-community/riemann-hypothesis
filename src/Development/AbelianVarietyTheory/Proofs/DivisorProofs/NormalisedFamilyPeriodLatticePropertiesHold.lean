@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetRefinement
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TopPlaceLogTheta
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ExistsIntegralMulOrderElement
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.ColNorms
@@ -17,3 +18,9 @@ theorem periodLattices : PeriodLattices := by
       laFacts_ambOf s B χ cD N N' hok hcc hδ (s.admissible_of_selfDual_lattices hok ha hb hN hN')⟩⟩
 
 end GlobalTheory.ColNorms
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalisedFamily_periodLattice_properties_hold : GlobalTheory.ColNorms.PeriodLattices := by
+  atlas_forward_decl GlobalTheory.ColNorms.periodLattices

@@ -1,7 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.MultiplicationKernelIdentity
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PreEig
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsSaturatedSubmoduleIffExistsIsComplOfValuationR
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HermitianPreEigenvalues Polynomial Module
 
 namespace GlobalTheory
@@ -37,3 +39,9 @@ theorem finrank_addValuationInteger_submodule_eq_finrank_span : ∀ (C : Type) [
   rw [hspan, finrank_span_eq_card hliC, Module.finrank_eq_card_chooseBasisIndex]
 
 end GlobalTheory
+end
+
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HermitianPreEigenvalues Polynomial Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_int0_submodule_eq_finrank_span : ∀ (C : Type) [Field C] (v : AddValuation C (WithTop ℝ)) (N : ℕ) (X : Submodule (Int0 v) (Fin N → Int0 v)), Module.Finite (Int0 v) X → finrank (Int0 v) X = finrank C (Submodule.span C ((fun (x : Fin N → Int0 v) (i : Fin N) => (x i : C)) '' (X : Set (Fin N → Int0 v)))) := by
+  atlas_forward_decl GlobalTheory.finrank_addValuationInteger_submodule_eq_finrank_span

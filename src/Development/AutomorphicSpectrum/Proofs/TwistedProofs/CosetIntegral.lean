@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory GlobalTheory.InertZeta
 
 namespace GlobalTheory.CompanionTheory.InertZeta
@@ -68,3 +70,9 @@ theorem cosetIntegral : CosetIntegral := by
   exact (hasSum_subtype_support.1 hsum).unique hZ
 
 end GlobalTheory.CompanionTheory.InertZeta
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cosetIntegral' : CosetIntegral := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertZeta.cosetIntegral

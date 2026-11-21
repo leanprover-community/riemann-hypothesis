@@ -1,5 +1,7 @@
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic
 
@@ -47,3 +49,8 @@ theorem rs_of (hB : B0) (h0 : F0) (h1 : F1) (h7 : F7) (hX : X1) : RS := by
 example : B0 → F0 → F1 → F7 → X1 → RS := rs_of
 
 end GlobalTheory.CompanionTheory.RankinSelbergTop
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_theorem : Ad3.R.B0 → Ad3.R.F0 → Ad3.R.F1 → Ad3.R.F7 → Ad3.R.X1 → Ad3.RS := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelbergTop.rs_of

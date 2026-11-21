@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory
 open scoped ContDiff
 
@@ -96,3 +98,10 @@ theorem value_at_zero_eq_sum_integral_kernel_iteratedDeriv :
       ring
 
 end GlobalTheory
+end
+
+open MeasureTheory
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_kernels_eval_zero_eq_sum_integral_iteratedDeriv : ∀ ε : ℝ, 0 < ε → ∃ κ : Fin 3 → ℝ → ℂ, (∀ n, Continuous (κ n) ∧ tsupport (κ n) ⊆ Set.Icc (-ε) ε) ∧ ∀ u : ℝ → ℂ, ContDiff ℝ ∞ u → u 0 = ∑ n : Fin 3, ∫ t, κ n t * iteratedDeriv n u t := by
+  atlas_forward_decl GlobalTheory.value_at_zero_eq_sum_integral_kernel_iteratedDeriv

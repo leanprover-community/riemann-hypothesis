@@ -1,12 +1,8 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.Imports
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.SaturatedOrdinaryIdealCutsOutCrystallineLocusStatement
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.UnramifiedLiftDeformation
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.CrLift
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.SaturatedOrdinaryIdealCutsOutCrystallineLocus
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.SmoothCompl
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsTypeAndIsLocallyCrystallineRz
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.PtCont
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.UnivEx
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
 
 namespace GlobalTheory.OrdLoc.SmoothPushforward
@@ -115,3 +111,9 @@ theorem GlobalTheory.OrdLoc.saturatedOrdinaryIdeal_smooth_at_residualRep : Local
       exact (hQ _ hP).2 rfl
   have hIt : GlobalTheory.OrdLoc.It D U = P := by rw [GlobalTheory.OrdLoc.It, h0, sInf_singleton]
   exact ⟨n, P, φ, hφ, hIP, hy, hIt.symm, h0, hdim⟩
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unique_ordinaryPrime_dim_succ_near_base : LocalPublishedTheorems → ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] [IsAdicComplete (maximalIdeal O) O] (D : Dat3 l O) (U : D.Univ) (E : Type) [Field E] [Algebra ℚ_[l] E] [Module.Finite ℚ_[l] E] [Algebra O E] [Algebra ℤ_[l] E] [IsScalarTower ℤ_[l] O E] [IsScalarTower ℤ_[l] ℚ_[l] E] [IsFractionRing O E] (x : U.R →ₐ[O] O), IsBase D.η D.Ψ U.r.hom x → GlobalTheory.OrdLoc.IY D U ≤ RingHom.ker x ∧ ∃ (n : ℕ) (P : Ideal U.R) (φ : U.R →ₐ[O] MvPowerSeries (Fin n) E), UpperTheory.V.Loc.IsCompl P x φ ∧ GlobalTheory.OrdLoc.IY D U ≤ P ∧ (∃ y, x y ≠ 0 ∧ ∀ a ∈ P, y * a ∈ GlobalTheory.OrdLoc.IY D U) ∧ P = GlobalTheory.OrdLoc.It D U ∧ GlobalTheory.OrdLoc.primesAt0 D U = {P} ∧ ringKrullDim (U.R ⧸ P) = (n + 1 : ℕ) := by
+  atlas_forward_decl GlobalTheory.OrdLoc.saturatedOrdinaryIdeal_smooth_at_residualRep

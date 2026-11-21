@@ -1,11 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FirstIndexEqOfUnfolded
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSelfDualTr
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LinearIndependentSingleAdd
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsAdelicMatrix
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsCongrIffTraceFormsIsometricCm
+
+section
 open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped nonZeroDivisors Matrix
 
@@ -160,3 +158,10 @@ theorem exists_isotropic_of_isSelfDualTr : ∀ (E : Type) [Field E] [NumberField
     exact IsoPlane.iso_rank_two H Y (by omega) hY
 
 end GlobalTheory.EqCovol
+end
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isotropic_indefinite_selfDualTraceForm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (r : ℕ) (Y : Data E r), 1 ≤ Y.p0 → Y.p0 < r → GlobalTheory.EqCovol.IsSelfDualTr Y → ∃ z : Fin r → E, z ≠ 0 ∧ herm Y.Gm z z = 0 := by
+  atlas_forward_decl GlobalTheory.EqCovol.exists_isotropic_of_isSelfDualTr

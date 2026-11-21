@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits
 
 namespace GlobalTheory
@@ -106,3 +109,9 @@ theorem card_quot_prime_smul_eq_card_ker_mul_pow_finrank (M : Type) [AddCommGrou
     p (Fact.out : p.Prime).ne_zero
 
 end GlobalTheory
+end
+
+open CategoryTheory Limits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_quot_range_prime_smul_eq_card_ker_mul_pow_finrank : ∀ (M : Type) [AddCommGroup M] [Module ℤ M] [Module.Finite ℤ M] (p : ℕ) [Fact p.Prime], Nat.card (M ⧸ LinearMap.range ((p : ℤ) • (LinearMap.id : M →ₗ[ℤ] M))) = Nat.card (LinearMap.ker ((p : ℤ) • (LinearMap.id : M →ₗ[ℤ] M))) * p ^ Module.finrank ℤ M := by
+  atlas_forward_decl GlobalTheory.card_quot_prime_smul_eq_card_ker_mul_pow_finrank

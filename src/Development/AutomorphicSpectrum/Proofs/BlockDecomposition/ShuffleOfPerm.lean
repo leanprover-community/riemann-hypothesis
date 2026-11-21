@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyInterleaving.Interleave
+import BuildAid.ForwardExisting
 
+section
 open Zc.Comb
 
 universe u
@@ -51,3 +53,10 @@ theorem shuffle_perm {T : Type u} (us us' : List (List T)) (w : List T)
   | trans _ _ ih₁ ih₂ => exact ih₂ _ (ih₁ _ h)
 
 end GlobalTheory.CompanionTheory.ShuffleWords
+end
+
+open Zc.Comb
+universe u
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shuffle_of_perm : ∀ {T : Type u} (us us' : List (List T)) (w : List T), Shuffle us w → us.Perm us' → Shuffle us' w := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ShuffleWords.shuffle_perm

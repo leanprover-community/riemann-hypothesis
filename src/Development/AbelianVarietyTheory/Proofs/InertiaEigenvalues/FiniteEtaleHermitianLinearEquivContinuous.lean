@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 namespace GlobalTheory.JR
@@ -18,3 +21,9 @@ theorem et_equiv_continuous (F E : Type) [NontriviallyNormedField F] [Nontrivial
   · exact LinearMap.continuous_of_finiteDimensional (j.symm.toLinearMap.restrictScalars F)
 
 end GlobalTheory.JR
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteEtaleHermitian_linearEquiv_continuous : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (A : Et F E) (r : ℕ) (j : A.L ≃ₗ[E] (Fin r → E)), Continuous j ∧ Continuous j.symm := by
+  atlas_forward_decl GlobalTheory.JR.et_equiv_continuous

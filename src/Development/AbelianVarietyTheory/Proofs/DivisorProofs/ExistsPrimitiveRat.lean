@@ -1,8 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.MemPass
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
-import Development.AbelianVarietyTheory.Definitions.Divisors.HasLevelStd
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModLatTau
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal UpperHalfPlane ReciprocityTheory.ChartRestriction.L1

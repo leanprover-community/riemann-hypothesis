@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemBalBil
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal
 
+section
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PolFan
 
 noncomputable section
@@ -188,3 +188,10 @@ theorem two_mul_finrank_balForms (H : Host E) (X : Type) [AddCommGroup X] [Modul
   omega
 
 end GlobalTheory.BalRankSym
+end
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PolFan
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.two_mul_finrank_balancedSymmIntBilinForms : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Type) [AddCommGroup X] [Module (𝓞 E) X] [Module.Free ℤ X] [Module.Finite ℤ X], 2 * Module.finrank ℤ (balForms H.bar X) = Module.finrank ℤ (GlobalTheory.BalRank.balBil H.bar X) := by
+  atlas_forward_decl GlobalTheory.BalRankSym.two_mul_finrank_balForms

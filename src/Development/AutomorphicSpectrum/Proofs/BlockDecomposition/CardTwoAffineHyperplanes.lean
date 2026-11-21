@@ -1,4 +1,7 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemRiemannRochSpaceIffRegularAtEverywhere
+import BuildAid.ForwardExisting
+
+section
 open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
 
 namespace GlobalTheory.CompanionTheory.GapOpCount
@@ -76,3 +79,10 @@ theorem card_two_equations (k : Type) [Field k] [Fintype k] (n : ℕ) (a b : Fin
   rw [hcard, ← pow_add, hrank]
 
 end GlobalTheory.CompanionTheory.GapOpCount
+end
+
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_two_affine_hyperplanes : ∀ (k : Type) [Field k] [Fintype k] (n : ℕ) (a b : Fin (n + 1) → k), a ≠ 0 → (∀ s : k, b ≠ s • a) →
+  Fintype.card k ^ 2 * (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GapOpCount.card_two_equations

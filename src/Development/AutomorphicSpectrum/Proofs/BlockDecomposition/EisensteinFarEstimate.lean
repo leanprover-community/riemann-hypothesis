@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.IwasawaUnipotent.IwaU
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CosetSumAlongMulEquivSubgroups
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.FarSeries
@@ -126,3 +127,9 @@ theorem eFar : EFar := by
 end GlobalTheory.CompanionTheory.FarSeries
 
 end
+end
+
+open PositivityTheory.Rg.SwEis
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eisenstein_far_estimate : EFar := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FarSeries.eFar

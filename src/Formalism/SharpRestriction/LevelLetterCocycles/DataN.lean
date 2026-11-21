@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.Params
 import Formalism.LocalRingCardinality.DataHost
 import Formalism.LocalRingCardinality.DataRows
 import Formalism.GaloisCohomology.Statement

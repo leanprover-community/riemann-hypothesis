@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing TensorProduct
 
 namespace GlobalTheory
@@ -38,3 +41,9 @@ theorem exists_surj_localization_mvPolynomial_of_essFiniteType :
   exact ha.trans (mul_comm _ _)
 
 end GlobalTheory
+end
+
+open IsLocalRing TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_surj_localization_mvPolynomial_of_essFiniteType_local : ∀ (Λ R : Type) [CommRing Λ] [CommRing R] [IsLocalRing R] [Algebra Λ R] [Algebra.EssFiniteType Λ R], ∃ (n : ℕ) (P : Ideal (MvPolynomial (Fin n) Λ)) (_ : P.IsPrime) (φ : Localization.AtPrime P →ₐ[Λ] R), Function.Surjective φ := by
+  atlas_forward_decl GlobalTheory.exists_surj_localization_mvPolynomial_of_essFiniteType

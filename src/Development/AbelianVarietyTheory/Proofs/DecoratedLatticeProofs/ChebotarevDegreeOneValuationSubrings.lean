@@ -2,6 +2,7 @@ import Mathlib
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModChebOm
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChebotarevDegreeOne
 
+section
 noncomputable section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
@@ -23,3 +24,9 @@ theorem chebOmSt_holds : ReciprocityTheory.ChartRestriction.L1.ChebOmSt := by
     simpa [mul_assoc] using this
 
 end GlobalTheory
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chebotarev_degreeOne_valuationSubrings : ReciprocityTheory.ChartRestriction.L1.ChebOmSt := by
+  atlas_forward_decl GlobalTheory.chebOmSt_holds

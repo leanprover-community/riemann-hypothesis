@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.TorMatch
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PowNotMemMaximalIdealPowSucc
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalFibreIsReducedOfField
 

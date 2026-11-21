@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.EchEqOneIff
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FinsumQuotientOfLe
+import BuildAid.ForwardExisting
+
+section
 open Matrix Complex GlobalTheory.SW GlobalTheory.SW.FourierJ
 open scoped ComplexConjugate Real
 
@@ -128,3 +131,10 @@ theorem _root_.GlobalTheory.SW.FourierJ.haar_eq_sum_rep : ∀ (κ ι : Type) [Fi
   exact Finset.sum_congr rfl fun n _ => hper _
 
 end GlobalTheory.SW.FourierJ
+end
+
+open Matrix Complex GlobalTheory.SW GlobalTheory.SW.FourierJ
+open scoped ComplexConjugate Real
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartzBruhatIntegral_eq_sum_residueRepresentatives : ∀ (κ ι : Type) [Fintype κ] [Fintype ι] [DecidableEq κ] [DecidableEq ι] (R : ℕ) (φ : Matrix κ ι ℚ → ℂ), 0 < R → HasLevel R φ → haar φ = ((R : ℂ) ^ (Fintype.card κ * Fintype.card ι))⁻¹ * ∑ n : κ → ι → Fin (R * R), φ (rep R n) := by
+  atlas_forward_decl GlobalTheory.SW.FourierJ.haar_eq_sum_rep

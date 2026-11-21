@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped BigOperators
 open Polynomial IntermediateField
 
@@ -85,3 +87,9 @@ theorem exists_pow_eq_of_forall_derivation_eq_zero (K : Type) [Field K] (p : ℕ
   exact one_ne_zero (h3.symm.trans h2)
 
 end GlobalTheory
+end
+
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pth_root_of_derivation_zero : ∀ (K : Type) [Field K] (p : ℕ) [Fact p.Prime] [CharP K p] (f : K), (∀ D : Derivation ℤ K K, D f = 0) → ∃ h : K, h ^ p = f := by
+  atlas_forward_decl GlobalTheory.exists_pow_eq_of_forall_derivation_eq_zero

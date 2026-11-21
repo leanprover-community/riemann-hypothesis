@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain TensorProduct
 
 namespace GlobalTheory
@@ -45,3 +48,9 @@ theorem norm_eq_mul_norm_idem_corner : ∀ (K A : Type) [Field K] [CommRing A] [
   rw [map_mul, norm_scale_idem_add_compl ψ e he hea, mul_comm]
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_eq_mul_norm_idempotent_corner : ∀ (K A : Type) [Field K] [CommRing A] [Algebra K A] [Module.Finite K A] (ψ : A →ₐ[K] K) (e : A), ψ e = 1 → (∀ a, e * a = algebraMap K A (ψ a) * e) → ∀ a : A, Algebra.norm K a = ψ a * Algebra.norm K (e + (1 - e) * a) := by
+  atlas_forward_decl GlobalTheory.norm_eq_mul_norm_idem_corner

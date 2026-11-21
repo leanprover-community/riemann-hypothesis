@@ -1,11 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MonoSpMapRingOfIntegersAlt
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddSmulVecMulVecMulVec
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SkewEqSumRankOneIsotropicStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SumRankOneIntegralRescalingStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CharacterTrivialOnIntegralTransvectionsStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CharacterTrivialOnSumTransvectionsStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SkewEqSumRankOneIsotropic
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SumRankOneIntegralRescaling
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CharacterTrivialOnIntegralTransvections
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CharacterTrivialOnSumTransvections
 
+section
 namespace GlobalTheory.UnipKill
 
 open ReciprocityTheory.ChartRestriction.G.FD NumberField
@@ -50,3 +49,10 @@ theorem char_eq_one_of_sq_eq_zero : ∀ (E : Type) [Field E] [NumberField E] [Is
   have h0 := (smul_eq_zero.1 this).resolve_left hk.ne'
   exact Multiplicative.toAdd.injective (by simpa using h0)
 end GlobalTheory.UnipKill
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.L2.Pj GlobalTheory.Toroidal GlobalTheory.Cartier GlobalTheory.ShFam GlobalTheory.ShFam.BdArc Filter Topology
+open ReciprocityTheory.ChartRestriction.G.FD (Data Frame Bor rmul lact mat col dmin Wt)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.character_trivial_on_unipotent : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) (X : Data E N), 1 < Module.finrank ℚ E / 2 → ∀ (φ : X.Γ →* Multiplicative ℝ) (γ : X.Γ), (((γ : GL (Fin N) E) : Matrix (Fin N) (Fin N) E) - 1) ^ 2 = 0 → φ γ = 1 := by
+  atlas_forward_decl GlobalTheory.UnipKill.char_eq_one_of_sq_eq_zero

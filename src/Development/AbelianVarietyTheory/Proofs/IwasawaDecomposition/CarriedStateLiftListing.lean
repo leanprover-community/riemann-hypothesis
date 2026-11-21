@@ -1,15 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnlocalizedSaturatedState
-import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DsExistsOfDiscreteSeriesExists
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenUsedOfCenReal
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SettingsFormsExistList
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PlaceModelImp
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DofOTw
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyPtsOfReading
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GridStaircaseLatticeFirstColumnTransportStages
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CarriedThTw
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLb2OfThetaTieStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GeometricLawsAllStatesStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GeometricLawsAllStates
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.TwistChoice
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -40,3 +36,11 @@ theorem points_carried : PrN → SerN → ∀ hL : GlobalTheory.Published.LocalL
     ⟨(by with_unfolding_all exact (hF.values :)), (by with_unfolding_all exact (hF.roots :))⟩, (by with_unfolding_all exact (hTie :))⟩
 
 end GlobalTheory.HeightCounting.Up
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.TwistChoice
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.carried_state_lift_listing : PrN → SerN → ∀ hL : GlobalTheory.Published.LocalLanglandsGL, AllSt fun _ _ _ _ _ P x => ∀ D0 : D7, SeriesLevel hL x → Carried D0 (Dof x) → ∃ x' : St P, Nonempty (StrictHenselianAcyclic hL x') ∧ Carried D0 (Dof x') ∧ ∀ cDep : ℝ, ListSt cDep x → ListSt cDep x' := by
+  atlas_forward_decl GlobalTheory.HeightCounting.Up.points_carried

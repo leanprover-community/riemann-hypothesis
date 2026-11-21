@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.Foundations.Convolution.TwistedLocalOrbits.Match
 import Development.AutomorphicArithmetic.Foundations.Convolution.TwistedLocalOrbits.Bridge
 import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.SeparableOfMap
 import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalField

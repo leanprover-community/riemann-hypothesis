@@ -1,7 +1,4 @@
-import Formalism.HarderNarasimhan.DegSupermodZ
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.ExistsSmulMemOfFinrankEq
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SatBasic
-import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
 
 open Module Submodule
 

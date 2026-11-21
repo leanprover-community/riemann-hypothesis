@@ -1,6 +1,5 @@
 import Formalism.SubspaceCounting.SubspaceCountingProofs.AllButLESmith
 import Formalism.SubspaceCounting.SubspaceCountingProofs.ChoiceOfTops
-import Formalism.SubspaceCounting.SubspaceCountingProofs.LengthLayers
 import Formalism.SubspaceCounting.SubspaceCountingProofs.ManyOrbits
 import Formalism.SubspaceCounting.SubspaceCountingProofs.QVandermonde
 import Formalism.SubspaceCounting.SubspaceCountingProofs.TopsChoicePartA
@@ -13,7 +12,6 @@ import Formalism.SubspaceCounting.SubspaceCountingProofs.TailConcavity
 import Formalism.SubspaceCounting.SubspaceCountingProofs.TailSums
 import Formalism.SubspaceCounting.SubspaceCountingProofs.TypeIIDown
 import Formalism.SubspaceCounting.SubspaceCountingProofs.TypeIIUp
-import Formalism.SubspaceCounting.SubspaceCountingProofs.WalkSharp
 import Formalism.SubspaceCounting.SubspaceCountingProofs.ManyOrbitsRefined
 import Formalism.SubspaceCounting.SubspaceCountingProofs.ChoiceOfTopsRefined
 import Formalism.SubspaceCounting.SubspaceCountingProofs.MarkedRun

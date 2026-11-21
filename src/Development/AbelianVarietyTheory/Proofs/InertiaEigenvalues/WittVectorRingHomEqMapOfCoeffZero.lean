@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped NNReal
 
 namespace GlobalTheory.WittMapUniq
@@ -58,3 +61,9 @@ theorem eq_map_of_coeff_zero : ∀ (l : ℕ) [Fact l.Prime] (R O : Type) [CommRi
   exact h' m (Nat.lt_succ_self m)
 
 end GlobalTheory.WittMapUniq
+end
+
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wittVector_ringHom_eq_map_of_coeff_zero : ∀ (l : ℕ) [Fact l.Prime] (R O : Type) [CommRing R] [CharP R l] [PerfectRing R l] [CommRing O] [CharP O l] [PerfectRing O l] (F : WittVector l R →+* WittVector l O) (ψ : R →+* O), (∀ a, (F a).coeff 0 = ψ (a.coeff 0)) → F = WittVector.map ψ := by
+  atlas_forward_decl GlobalTheory.WittMapUniq.eq_map_of_coeff_zero

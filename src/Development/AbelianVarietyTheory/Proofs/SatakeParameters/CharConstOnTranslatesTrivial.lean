@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousCharUnitsComplexStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousCharUnitsComplex
 
+section
 open Filter Topology
 
 namespace GlobalTheory.ArchChar
@@ -277,3 +278,8 @@ theorem GlobalTheory.charConstOnTranslates_trivial : ∀ (ι : Type) [Fintype ι
   refine Finset.prod_eq_one fun i _ => ?_
   have := DFunLike.congr_fun (hcomp i) (z i)
   simpa using this
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_one_of_continuous_char_const_on_translates : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (ψ : (ι → ℂˣ) →* ℂˣ) (θ : ι → ℂ) (T : Set (ι → ℝ)) (C : ℝ) (c : ℂˣ), Continuous ψ → (∀ i, (θ i).im ≠ 0) → (∀ y : ι → ℝ, ∃ a ∈ T, ‖a - y‖ ≤ C) → (∀ a ∈ T, ∀ z : ι → ℂˣ, (∀ i, (z i : ℂ) = a i + θ i) → ψ z = c) → ψ = 1 := by
+  atlas_forward_decl GlobalTheory.charConstOnTranslates_trivial

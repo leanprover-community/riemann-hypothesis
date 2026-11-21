@@ -3,7 +3,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.Imports
 import CompanionTheory.EightfoldTheory.VariationTheory.AutomorphicForms.RealStructures.Imports
 import CompanionTheory.EightfoldTheory.VariationTheory.AutomorphicForms.ImportsBis
-import PositivityTheory.AutomorphicForms.PublishedInputs.RealGaloisRepresentations.IwahoriSphericalTransfer.HeckeCharacterEqOfCofinite
+import PositivityTheory.AutomorphicForms.PublishedInputs.RealGaloisRepresentations.IwahoriSphericalTransfer.ImportsFurther
 
 open NumberField IsDedekindDomain Filter
 open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Published GroundTheory.Global

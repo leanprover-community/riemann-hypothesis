@@ -1,11 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsIsHaarMeasureSUJ
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmulOneMem
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HarishChandraParameterDescentStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExtensionPreservesPropertiesStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowestTypeParameterAscentStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryToSpecialUnitaryLocalStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SquareIntegrableIffExtensionStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowestTypeParameterAscent
+
+section
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Dec GlobalTheory.DSId GlobalTheory.DSSU
 open scoped InnerProductSpace
 
@@ -105,3 +103,10 @@ theorem classF_of_classS : ∀ (n : ℕ), 1 ≤ n → ∀ ε : Fin n → Bool, C
 
 end GlobalTheory.SUtoU
 end
+end
+
+open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Dec GlobalTheory.DSId GlobalTheory.DSSU
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.classification_of_special_unitary : ∀ (n : ℕ), 1 ≤ n → ∀ ε : Fin n → Bool, ClassS ε → ClassF ε := by
+  atlas_forward_decl GlobalTheory.SUtoU.classF_of_classS

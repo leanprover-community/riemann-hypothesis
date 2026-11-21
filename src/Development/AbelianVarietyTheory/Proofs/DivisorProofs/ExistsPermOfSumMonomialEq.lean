@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMvPolynomialPickPoint
+import BuildAid.ForwardExisting
+
+section
 open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
 open GlobalTheory.QFam
 
@@ -44,3 +46,10 @@ theorem exists_perm_of_sum_monomial_eq :
   exact (Equiv.ofFiberEquiv_map _ i).symm
 
 end GlobalTheory.QFam
+end
+
+open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
+open GlobalTheory.QFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_perm_of_sum_monomial_eq' : ∀ (ι S : Type) [Fintype ι] [Fintype S] (x y : ι → S → ℂ), (∀ μ : S → ℕ, ∑ i, ∏ s, x i s ^ μ s = ∑ i, ∏ s, y i s ^ μ s) → ∃ ρ : Equiv.Perm ι, ∀ i, x i = y (ρ i) := by
+  atlas_forward_decl GlobalTheory.QFam.exists_perm_of_sum_monomial_eq

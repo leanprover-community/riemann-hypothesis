@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasBlockOfOccurs
+
+section
 open GlobalTheory.ExpFrame
 
 namespace GlobalTheory.ExpFrame
@@ -26,3 +28,9 @@ theorem Frame.prime_not_isUnit : ∀ (l : ℕ) [Fact l.Prime] (ι : Type) (N : �
   linarith
 
 end GlobalTheory.ExpFrame
+end
+
+open GlobalTheory.ExpFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frameCoeffRing_prime_not_isUnit : ∀ (l : ℕ) [Fact l.Prime] (ι : Type) (N : ℕ) (F : Frame l ι N), F.Ok → ¬ IsUnit ((l : ℕ) : F.O) := by
+  atlas_forward_decl GlobalTheory.ExpFrame.Frame.prime_not_isUnit

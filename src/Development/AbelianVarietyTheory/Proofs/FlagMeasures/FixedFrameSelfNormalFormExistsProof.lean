@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowsMeanC
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryHostFieldArithmeticConditionsProofStatement
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 open scoped Classical
 open NumberField Formalism.BasicNotions
@@ -357,3 +358,9 @@ theorem idNFC_holds : GlobalTheory.TypeAsm.IdNFC := by
 end D7
 
 end GlobalTheory.IdNF
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fixedFrameSelfNormalFormExists_proof : GlobalTheory.TypeAsm.IdNFC := by
+  atlas_forward_decl GlobalTheory.IdNF.idNFC_holds

@@ -1,6 +1,5 @@
 import Development.WeilBound.ThetaLifts.CartanFactorisation.Kills0Of
 import Development.WeilBound.ThetaLifts.CartanFactorisation.KillInf
-import Development.WeilBound.ThetaLifts.CartanFactorisation.Factor
 import Development.WeilBound.ThetaLifts.CartanFactorisation.ExistsEnlarge
 import Development.WeilBound.ThetaLifts.CartanFactorisation.RealTrans
 import Development.WeilBound.ThetaLifts.CartanFactorisation.ArchimedeanEvaluationVector

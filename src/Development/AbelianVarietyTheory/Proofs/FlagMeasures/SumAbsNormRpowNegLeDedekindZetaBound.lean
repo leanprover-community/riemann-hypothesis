@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.HermitianLattices.StatementMass
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsIdealInClassOfNormLeSqrtDiscr
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory NumberField Finset
 open scoped ArithmeticFunction.zeta
 
@@ -97,3 +99,9 @@ theorem sum_absNorm_rpow_neg_le : ∀ (K : Type) [Field K] [NumberField K] (s : 
       le_sup (f := fun I => Ideal.absNorm I) hI⟩
 
 end GlobalTheory.IdealZetaSum
+end
+
+open MeasureTheory NumberField Finset
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_absNorm_rpow_neg_le_dedekindZeta_bound : ∀ (K : Type) [Field K] [NumberField K] (s : ℝ), 1 < s → ∀ (S : Finset (Ideal (𝓞 K))), (∀ I ∈ S, I ≠ ⊥) → ∑ I ∈ S, (Ideal.absNorm I : ℝ) ^ (-s) ≤ (s / (s - 1)) ^ Module.finrank ℚ K := by
+  atlas_forward_decl GlobalTheory.IdealZetaSum.sum_absNorm_rpow_neg_le

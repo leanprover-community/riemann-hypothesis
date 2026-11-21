@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgebraMapNormCoeff
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open CategoryTheory Polynomial TensorProduct
@@ -91,3 +93,11 @@ theorem normCoeff_mul : ∀ {A B : Type} [CommRing A] [IsDomain A] [IsIntegrally
   rw [map_mul, map_pow, algebraMap_normCoeff _ _ _ _ (hrev _), algebraMap_normCoeff _ _ _ _ (hrev _), key]
 
 end GlobalTheory.NormalDescent
+end
+end
+
+open CategoryTheory Polynomial GlobalTheory.NormalDescent
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.reversedCharpolyCoeffInDomain_mul : ∀ {A B : Type} [CommRing A] [IsDomain A] [IsIntegrallyClosed A] [CommRing B] (φ : A →+* B)
+    (hφ : φ.Finite) (u : A) (b : B) (k : ℕ), normCoeff φ hφ (φ u * b) k = u ^ k * normCoeff φ hφ b k := by
+  atlas_forward_decl GlobalTheory.NormalDescent.normCoeff_mul

@@ -2,8 +2,9 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumOutOfLe
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelFamInf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousPairProjection
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexNeZeroOfIsOpen
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ImportsBisExtra
+
+section
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.BCT GlobalTheory.LFun PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.CG
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.FA
@@ -42,3 +43,18 @@ theorem finite_cosets_of_components_mem
     · exact QuotientGroup.eq.mp (congrFun hfq ⟨i, hi⟩)
 
 end GlobalTheory.CompanionTheory.FinActS
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter
+open GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.BCT GlobalTheory.LFun PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.CG
+open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.FA
+open scoped Classical
+open GlobalTheory.CompanionTheory.FinActS
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_restricted_product_quotient : ∀ {ι Γ : Type} [Group Γ] {Hl : ι → Type} [∀ i, Group (Hl i)] (p : ∀ i, Γ →* Hl i) (V : ∀ i, Subgroup (Hl i)) (Q : ∀ i, Set (Hl i))
+    (hQ : ∀ i, ∀ x ∈ Q i, ∀ u ∈ V i, x * u ∈ Q i)
+    (hQf : ∀ i, {q : Hl i ⧸ V i | q.out ∈ Q i}.Finite)
+    (hQV : ∀ᶠ i in cofinite, Q i ⊆ V i),
+    {q : Γ ⧸ (⨅ i, (V i).comap (p i)) | ∀ i, p i q.out ∈ Q i}.Finite := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FinActS.finite_cosets_of_components_mem

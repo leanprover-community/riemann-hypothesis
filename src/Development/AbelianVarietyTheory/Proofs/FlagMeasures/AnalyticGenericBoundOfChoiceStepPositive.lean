@@ -1,6 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.StepLocGenPinnedGP
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MainEqWire
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped Classical
@@ -31,3 +33,10 @@ theorem stepAnalyticGP_of (hTi : TieOfCtx) (hB : StepChoiceConstantsC) (hA : Ste
     a8, a9, a10, a11⟩
 
 end GlobalTheory.SnPos
+end
+end
+
+open Formalism.FourierDecayAlt Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.L2.SG.Pf.MainEqCut Formalism.L2.SG.Pf.MainEqSteps Formalism.L2.SG.Pf.MainEqAna GlobalTheory.SnPos
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.analyticGenericBound_of_choiceStep_positive : TieOfCtx → StepChoiceConstantsC → StepAnalyticCGP → StepAnalyticGP := by
+  atlas_forward_decl GlobalTheory.SnPos.stepAnalyticGP_of

@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelLevelPPowerStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelLevelPPowerTangentStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelLevelPPower
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelLevelPPowerTangent
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -34,3 +34,10 @@ theorem ptSt_of_steps : GlobalTheory.IndefiniteRowSideFullHecke.HodgeTateKernel.
       β hβ g e U₁ U₂ h h1 h2 h3 h4, hcl β hβ g e U₁ U₂ h h1 h2 h3 h4⟩⟩
 
 end GlobalTheory.FlatModel
+end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pointwise_of_tate_value_bound : GlobalTheory.IndefiniteRowSideFullHecke.HodgeTateKernel.HodgeTateKernelAtPoint → TateSt → ValueSt → BoundSt → PtSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.ptSt_of_steps

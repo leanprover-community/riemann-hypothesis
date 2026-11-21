@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChPrime
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Homog
@@ -205,3 +206,10 @@ theorem relation_homogenises (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fi
     (Ideal.mem_map_of_mem _ (Ideal.mem_sup_left hs₀Q))
 
 end GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Homog
+end
+end
+
+open MvPolynomial ReciprocityTheory.AnForm.R GlobalTheory.CompanionTheory.Ar.Cmp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symbolic_power_in_affine_chart : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (P Q : Ideal (MvPolynomial (Σ k, ι k) ℂ)) (p : (k : K) → ι k) (f : MvPolynomial (Σ k, ι k) ℂ) (a : K → ℕ) (n : ℕ) (s' : MvPolynomial (Fin (Fintype.card (Σ k, ι k))) ℂ), IsMultiHomogIdeal P → IsMultiHomogIdeal Q → Q.IsPrime → (∀ k, (X ⟨k, p k⟩ : MvPolynomial (Σ k, ι k) ℂ) ∉ Q) → IsMultiHomog f a → s' ∉ SncRes.ideal Q p → s' * bind₁ (SncRes.lift p) f ∈ SncRes.ideal Q p ^ n ⊔ SncRes.ideal P p → ∃ s ∉ Q, s * f ∈ Q ^ n ⊔ P := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Homog.relation_homogenises

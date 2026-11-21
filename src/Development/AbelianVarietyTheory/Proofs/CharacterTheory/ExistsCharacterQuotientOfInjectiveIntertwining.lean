@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharacterOverSubfieldOfRepresentationStatement
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.LinearMapShortExactCommuteStatement
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.LinearMapShortExactCommute
+
+section
 open GlobalTheory.BI
 namespace GlobalTheory.BI
 
@@ -21,3 +22,9 @@ theorem exists_isChar_eq_add_of_injective : ∀ (K L : Type) [Field K] [Field L]
   ext v
   rfl
 end GlobalTheory.BI
+end
+
+open GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_character_quotient_of_injective_intertwining : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (G : Type) [Group G] (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (W : Type) [AddCommGroup W] [Module K W] [FiniteDimensional K W] (ρ : Representation K G V) (σ : Representation K G W) (f : Representation.IntertwiningMap σ ρ), Function.Injective f → ∃ c : G → L, IsChar K L c ∧ ∀ g, algebraMap K L (ρ.character g) = algebraMap K L (σ.character g) + c g := by
+  atlas_forward_decl GlobalTheory.BI.exists_isChar_eq_add_of_injective

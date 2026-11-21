@@ -1,9 +1,9 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
-import GroundTheory.GlobalFields.TateThesis.HeckeTheorem
-import GroundTheory.GlobalFields.TateThesis.Nonvanishing
 import GroundTheory.GlobalFields.TateThesis.FiniteOrderParams
+import BuildAid.ForwardExisting
 
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -476,3 +476,8 @@ theorem partial_functional_equation : B0 → E2 → H1 := by
 end GlobalTheory.CompanionTheory.HeckePartial
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.global_functional_equation_h1 : Ad3.R.B0 → Ad3.R.E2 → Ad3.R.H1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeckePartial.partial_functional_equation

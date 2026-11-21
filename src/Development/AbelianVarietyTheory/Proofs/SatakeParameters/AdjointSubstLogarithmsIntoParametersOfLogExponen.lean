@@ -2,7 +2,6 @@ import Mathlib
 import Formalism.SharpRestriction.Divisibility.OrbitPlaces
 import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionHypothesesOfLevelOne
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Cobdry
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.DualOm

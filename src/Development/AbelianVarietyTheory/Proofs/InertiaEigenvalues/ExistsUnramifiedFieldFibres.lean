@@ -1,9 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUnitaryOfTraceEq
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsWeightZeroSectionOfPeriodSpaceFunction
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsDatumRankOne
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CoeffFieldAlgClosedFunctionFieldOfTorsionDefined
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCoeffFieldCurveStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCoeffFieldCurve
 
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Pj GlobalTheory.Member
 open scoped TensorProduct Matrix

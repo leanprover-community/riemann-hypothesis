@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SimpleOver
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DixmierSchurOfRankLeAleph0
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct
 
 namespace GlobalTheory.TensHead
@@ -124,3 +126,15 @@ theorem simple_tensor :
   | add x y hx hy => exact U.add_mem hx hy
 
 end GlobalTheory.TensHead
+end
+
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.simple_tensor_product_operatorStable_countable : ∀ {S₀ S₁ : Type} [AddCommGroup S₀] [Module ℂ S₀] [AddCommGroup S₁] [Module ℂ S₁]
+    (A : Set (Module.End ℂ S₀)) (B : Set (Module.End ℂ S₁)),
+    Module.rank ℂ S₀ ≤ Cardinal.aleph0 →
+    (∀ U : Submodule ℂ S₀, GlobalTheory.TensHead.Stab A U → U = ⊥ ∨ U = ⊤) →
+    (∀ U : Submodule ℂ S₁, GlobalTheory.TensHead.Stab B U → U = ⊥ ∨ U = ⊤) →
+    ∀ U : Submodule ℂ (S₀ ⊗[ℂ] S₁), GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps A B) U → U = ⊥ ∨ U = ⊤ := by
+  atlas_forward_decl GlobalTheory.TensHead.simple_tensor

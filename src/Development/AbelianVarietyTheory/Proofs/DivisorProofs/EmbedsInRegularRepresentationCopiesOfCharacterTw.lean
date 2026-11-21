@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.BadElt
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.ArithmeticCylinders GlobalTheory.BadCount Module
 
 namespace GlobalTheory.BadCount
@@ -52,3 +54,9 @@ theorem embReg_twist : ∀ (K Γ V : Type) [Field K] [Group Γ] [AddCommGroup V]
     simp
 
 end GlobalTheory.BadCount
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.ArithmeticCylinders GlobalTheory.BadCount Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.embedsInRegularRepresentationCopies_of_characterTwist : ∀ (K Γ V : Type) [Field K] [Group Γ] [AddCommGroup V] [Module K V] (ρ ρ' : Representation K Γ V) (χ : Γ →* Kˣ), (∀ g v, ρ' g v = ((χ g : Kˣ) : K) • ρ g v) → ∀ (H : Subgroup Γ) (n : ℕ), EmbReg ρ H n → EmbReg ρ' H n := by
+  atlas_forward_decl GlobalTheory.BadCount.embReg_twist

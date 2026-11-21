@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.EllFamNontrivial
 import Development.AbelianVarietyTheory.Definitions.Divisors.FstTszeSec
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 open CategoryTheory GlobalTheory.CatCoh GlobalTheory.AnPer GlobalTheory.AnPer.Charts TopologicalSpace
@@ -34,3 +35,9 @@ theorem eq_zero_of_cst_composable : ∀ {I : Type} [Fintype I] {g : ℕ} {Λ : T
   exact h
 
 end GlobalTheory.AnPer.Charts
+end
+
+open CategoryTheory GlobalTheory.CatCoh GlobalTheory.AnPer GlobalTheory.AnPer.Charts TopologicalSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.parameter_function_eq_zero_of_composable : ∀ {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : Fam I g Λ} (K : Charts F), K.Rich → ∀ (l m : Λ) (p : Hol F.V), (∀ (k k' k'' : K.K), K.le l k' k → K.le m k'' k' → K.cst k'' p = 0) → p = 0 := by
+  atlas_forward_decl GlobalTheory.AnPer.Charts.eq_zero_of_cst_composable

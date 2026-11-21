@@ -1,5 +1,3 @@
-import Development.AutomorphicArithmetic.MeanSquareBounds.PrimeSetTwoBounds
-import Development.AutomorphicArithmetic.MeanSquareBounds.TailKExp
 import Development.AutomorphicArithmetic.MeanSquareBounds.kappaC
 import Formalism.GL3MeanSquares.ZeroFreeRegionGl2PrimeChoiceResults
 

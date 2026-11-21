@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GunrClassLev
@@ -46,3 +47,8 @@ theorem classLev : ClassLev := by
 end GlobalTheory.CompanionTheory.GunrClassLev
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.class_level_formula : PositivityTheory.SiegelWeilFormula.Gunr.ClassLev := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrClassLev.classLev

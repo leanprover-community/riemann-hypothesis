@@ -2,25 +2,20 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsPeriodAtRestrict
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EmbedsGeneric
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.PotentialsBoundedRegSettingEqReference
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionRegularLocalRingStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionCoverAndCone
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.AnChart
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.LocTransfer
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.StalkLocA
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjectiveLineMultihomogClassify
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterAlgRes
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterMinor
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RationalRelationInChartIdealStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartIdealLocalizationMapStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartIdealLocalizationMap
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdjoinInverseElementFormStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KaehlerDifferentialsSpanLocalStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularLocalChartCoordsStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteTorusTranslatesCoverStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KaehlerDifferentialsSpanLocal
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularLocalChartCoords
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteTorusTranslatesCover
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBis
+
+section
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
 open MvPolynomial
 
@@ -406,3 +401,10 @@ theorem exists_sncCharts : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, F
   rw [mul_assoc, ← this, ← mul_assoc, inv_mul_cancel₀ (hc q.1), one_mul]
 
 end GlobalTheory.CompanionTheory.Ar.SncCpt
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_torus_stable_snc_charts : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [CharZero Ω] (y : (Σ k, J k) → Ω) (n : ℕ) (bd : Ideal (MRing J)), Cmp.IsSncModel y n bd → IsArithVar (mCoordIdeal y) (n + 1) → (∀ z ∈ mcPts (mCoordIdeal y) ∩ mcPts bd, ∀ c : K → ℂ, (∀ k, c k ≠ 0) → torusSmul c z ∈ mcPts (mCoordIdeal y) ∩ mcPts bd) → ∃ (nc : ℕ) (χ : Fin nc → SncChart (mCoordIdeal y) n (mcPts (mCoordIdeal y) ∩ mcPts bd)), ∀ z ∈ mcPts (mCoordIdeal y), ∃ a, ∃ t : Fin n → ℂ, ‖t‖ ≤ 1 / 2 ∧ ∃ c : K → ℂ, (∀ k, c k ≠ 0) ∧ z = torusSmul c ((χ a).γ t) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.SncCpt.exists_sncCharts

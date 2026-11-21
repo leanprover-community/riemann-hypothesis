@@ -1,9 +1,6 @@
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaRoundFreeHolds
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.BaseCh

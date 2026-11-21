@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Saturated
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.GradedSeries
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharpolyOfDiagWith
@@ -10,8 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankSpanIma
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanIsLinesOfGraded
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIsPtPrimitiveRoot
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ISupIndepDdRE
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeEqFiltrationSumAtLevelStatement
 
 noncomputable section

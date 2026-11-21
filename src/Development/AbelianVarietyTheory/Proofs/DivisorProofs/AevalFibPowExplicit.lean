@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HPolyAddTwo
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralCompFsDens
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DivFractionsBilinearFormula
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfEvalHermitian

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MultiDimensional
+import BuildAid.ForwardExisting
+
+section
 open scoped ENNReal
 
 namespace GlobalTheory.CompanionTheory.Count
@@ -102,3 +105,10 @@ theorem tsum_le_prod_of_injOn {S P : Type} [Fintype P] (m : S → P → ℤ) (b 
         Finset.prod_le_prod' fun p _ => one_dim (b p) (hb p)
 
 end GlobalTheory.CompanionTheory.Count
+end
+
+open scoped ENNReal
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_sum_decay_bound : ∀ {S P : Type} [Fintype P] (m : S → P → ℤ) (b : P → ℝ), (∀ p, 0 < b p) → ∀ (h : S → ℝ≥0∞), Set.InjOn m {ξ | h ξ ≠ 0} → (∀ ξ, h ξ ≤ ∏ p, ENNReal.ofReal (((1 + |(m ξ p : ℝ)| / b p) ^ 2)⁻¹)) → ∑' ξ, h ξ ≤ ∏ p, ENNReal.ofReal (1 + 2 * b p) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Count.tsum_le_prod_of_injOn

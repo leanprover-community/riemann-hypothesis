@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.CalcSteps
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FunctionalCalculusCurve
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Filter Topology
@@ -193,3 +195,9 @@ theorem pwdecay : PWdecay := by
   ring
 
 end GlobalTheory.CompanionTheory.WaveCurve.Decay
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.paley_wiener_decay : PositivityTheory.RgBcC.Fc.PWdecay := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WaveCurve.Decay.pwdecay

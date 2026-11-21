@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThreeLeScaleOfPo
 import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.OrientationExclusive
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsPageRunRecord
 
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.Pj
 
 namespace GlobalTheory.TopDegLower
@@ -67,3 +68,9 @@ theorem two_pi_nW_le_topDeg_sq : ∀ (D : D7) (L : SizeData₂ D) (Pm : Paramete
   nlinarith
 
 end GlobalTheory.TopDegLower
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.two_pi_mul_weightLength_le_maxWeightDegree_sq : ∀ (D : D7) (L : SizeData₂ D) (Pm : ParameterChoice' D L) (Tp : ParamsT D L Pm) (hK : DV.KapDef D), 2 * Real.pi * (Tp.nWn : ℝ) ≤ (GlobalTheory.IndexAssembly.topDeg Tp hK : ℝ) ^ 2 := by
+  atlas_forward_decl GlobalTheory.TopDegLower.two_pi_nW_le_topDeg_sq

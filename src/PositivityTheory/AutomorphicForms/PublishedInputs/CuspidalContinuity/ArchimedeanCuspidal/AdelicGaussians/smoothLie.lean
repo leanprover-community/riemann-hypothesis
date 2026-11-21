@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.HarishChandraRegularity.ExpHaar
-import GroundTheory.AutomorphicForms.GKModules.RightRegular
 
 noncomputable section
 

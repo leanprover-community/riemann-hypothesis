@@ -1,13 +1,13 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocalWhittakerDuality.WSteps
-import GroundTheory.LocalFields.QuadraticAbelian.WeilRepQuadratic
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormFormIntegralFourierFactorizationStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormFormBallIntegralStabilizesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormFormBallIntegralScalingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NonNormBallIntegralVanishesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NonNormGaussIntegralSignStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NonNormWeilConstantValueStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormFormBallIntegralStabilizes
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormFormBallIntegralScaling
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NonNormBallIntegralVanishes
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NonNormGaussIntegralSign
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NonNormWeilConstantValue
 
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData
 open GroundTheory.LocalField.FiltrationCocycleLiftCriterion.WeilRep
 open scoped ValuativeRel
@@ -63,3 +63,11 @@ theorem wGaussEx : Ad3.K.GL2LocalData.WGaussEx := by
     linear_combination e
 
 end GlobalTheory.CompanionTheory.WGaussEx
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData
+open scoped ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_gauss_sum_existence_hypothesis : Ad3.K.GL2LocalData.WGaussEx := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WGaussEx.wGaussEx

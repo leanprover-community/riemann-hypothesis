@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.ValExt
 
 theorem ker_isMaximal (Ω k : Type) [Field Ω] [Field k] (A : Subring Ω) (h : A →+* k)
@@ -231,3 +233,9 @@ theorem exists_valuationSubring_ext : ∀ (W Ω k : Type) [CommRing W] [Field Ω
   exact hGf _ m1 _ (hGb w) rfl
 
 end GlobalTheory.ValExt
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_valuationSubring_extending_ringHom : ∀ (W Ω k : Type) [CommRing W] [Field Ω] [Field k] [IsAlgClosed k] (j : W →+* Ω), Function.Injective j → ∀ g : W →+* k, ∃ (U : ValuationSubring Ω) (hU : ∀ w, j w ∈ U) (h : U →+* k), ∀ w, h ⟨j w, hU w⟩ = g w := by
+  atlas_forward_decl GlobalTheory.ValExt.exists_valuationSubring_ext

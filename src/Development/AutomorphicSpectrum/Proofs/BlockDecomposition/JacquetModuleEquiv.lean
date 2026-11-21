@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.GeometricLemmaFiltration
 import GroundTheory.AutomorphicForms.GeometricLemma
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 open GlobalTheory.SmGL
 open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical)
@@ -49,3 +52,14 @@ theorem nonempty_jacquetRep_equiv : ∀ (F : Type) [Field F] [ValuativeRel F] [T
   rw [hc]
 
 end GlobalTheory.CompanionTheory.JacquetEquiv
+end
+
+set_option maxSynthPendingDepth 1
+open GlobalTheory.SmGL
+open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical)
+open GroundTheory.Automorphic.Iwasawa (blockUpper)
+open GroundTheory.Automorphic (permGL indRep)
+open DoubleCoset (doubleCoset)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacquet_module_equiv : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (n : ℕ) (γ : Fin n → ℕ) {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] (π : Representation ℂ (GL (Fin n) F) V) (π' : Representation ℂ (GL (Fin n) F) V'), π.Equiv π' → Nonempty ((jacquetRep F n γ π).Equiv (jacquetRep F n γ π')) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.JacquetEquiv.nonempty_jacquetRep_equiv

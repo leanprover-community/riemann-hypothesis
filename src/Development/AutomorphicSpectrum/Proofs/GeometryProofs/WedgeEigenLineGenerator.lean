@@ -6,23 +6,24 @@ import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
 import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.GagaSections
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeEqSpanOfIsFrameAt
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordDegreeBoundOfFlag
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundleStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsValFam
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombMatrixMulStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombMatrixMul
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombIdentityMatrixStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenvectorLinearCombinationStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombFieldExtensionStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombFieldExtension
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenFrameFieldExtensionStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemSpanOfIotaMultiProportionalStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IotaMultiChangeOfBasisDetStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IotaMultiNeZeroOfLinIndepStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentSpecializationTangentCombStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentSpecializationFieldExtStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentPointCmEigenFrameStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentSpecializationTangentComb
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentSpecializationFieldExt
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentPointCmEigenFrame
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl GlobalTheory.CompanionTheory.Ar.Flat Filter Topology Metric
 
@@ -515,3 +516,11 @@ theorem exists_frameFn_of_gen : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
   exact ⟨Rep.repFn Z τ a b, Rep.isLineFn_repFn hβ hτ hg, Rep.represents_repFn hβ hτ hg⟩
 
 end GlobalTheory.CompanionTheory.Ar.Flat
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl GlobalTheory.CompanionTheory.Ar.Flat Filter Topology Metric
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wedge_eigen_line_generator : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (U : Set (Xo.XF c)) (Z : CptOver Y U) (τ : E →+* ℂ) (a : ⋀[Z.Ω]^D.p Z.V) (b : ⋀[Z.Ω]^D.q Z.V), (Function.Injective β ∧ IsNoetherianRing O ∧ ∀ x : c.F, ∃ a b : O, β b ≠ 0 ∧ x * β b = β a) → τ (H.rt : E) = H.rt0 → IsLineGenOn (Z.eig τ) (Z.eig (ComplexEmbedding.conjugate τ)) D.p D.q a b Z.genFib → ∃ φ : FrameFn Xo c, IsLineFn U τ φ ∧ Represents Y U τ Z.M a b φ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.exists_frameFn_of_gen

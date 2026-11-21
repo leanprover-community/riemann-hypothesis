@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.StepJumpDirect
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardMulIdemFromCenter
 import Development.AbelianVarietyTheory.Counterexamples.DegenerateExamples.NotAdmissibleWithAmbientTop
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.Pass.CentralStep
@@ -49,3 +51,9 @@ theorem main : StepCentral := by
 end GlobalTheory.Pass.CentralStep
 
 end
+end
+
+open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.central_elements_from_idempotent_coeffs : StepCentral := by
+  atlas_forward_decl GlobalTheory.Pass.CentralStep.main

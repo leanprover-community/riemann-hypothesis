@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDerApply
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfForallMemFilt
+
+section
 open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
 
 namespace GlobalTheory
@@ -37,3 +38,9 @@ theorem mvPowerSeries_derivation_coeffwise (σ R : Type) [CommRing R] (D : Deriv
     rfl
 
 end GlobalTheory
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_coeffwise_derivation_mvPowerSeries : ∀ (σ R : Type) [CommRing R] (D : Derivation ℤ R R), ∃ E : Derivation ℤ (MvPowerSeries σ R) (MvPowerSeries σ R), ∀ F α, MvPowerSeries.coeff α (E F) = D (MvPowerSeries.coeff α F) := by
+  atlas_forward_decl GlobalTheory.mvPowerSeries_derivation_coeffwise

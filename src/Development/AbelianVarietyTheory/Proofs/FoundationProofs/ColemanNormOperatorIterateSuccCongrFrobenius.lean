@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.CyclotomicDvdExpandOfCoprime
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormOpCongrStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormOpFrobStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ColemanNormOperatorPowerSeriesCoeffAutMapCommStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormOpCongr
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormOpFrob
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ColemanNormOperatorPowerSeriesCoeffAutMapComm
+
+section
 open GlobalTheory.Col PowerSeries
 
 namespace GlobalTheory
@@ -34,3 +35,9 @@ theorem normOp_iterate_congr : ∀ (R : Type) [CommRing R] (p : ℕ) [hp : Fact 
     rw [Function.iterate_succ_apply' (normOp p) (j + 1), hr', GlobalTheory.T.colemanNormOperator_powerSeriesCoeffAutMap_comm R p σ, ← Function.iterate_succ_apply' (normOp p) j]
 
 end GlobalTheory
+end
+
+open GlobalTheory.Col PowerSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.colemanNormOperator_iterate_succ_congr_frobenius : ∀ (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime] (σ : R ≃+* R), FrobLift R p σ → ∀ (h : PowerSeries R), IsUnit h → ∀ j : ℕ, ∃ r : PowerSeries R, (normOp p)^[j + 1] h = smap σ ((normOp p)^[j] h) + (p : PowerSeries R) ^ (j + 1) * r := by
+  atlas_forward_decl GlobalTheory.normOp_iterate_congr

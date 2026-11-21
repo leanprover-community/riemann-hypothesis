@@ -2,6 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.EntireEqOfHalfPlane
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteRingClassGroupOfConductorNeZero
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNeZeroAdeleCharEqCompMulTotallyReal
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.CMVal
 
 namespace GlobalTheory.CMVal.ApproxHatO
@@ -34,3 +37,9 @@ theorem exists_sub_mul_mem_hatO : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   rwa [← mul_assoc, ← mul_assoc, e, one_mul] at key
 
 end GlobalTheory.CMVal.ApproxHatO
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_adele_approximation_mod_conductor : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (c : Ideal (OF E)), c ≠ ⊥ → ∀ (y : (Af E)ˣ) (z : Af E), ∃ x : E, (z - algebraMap E (Af E) x) * ((y⁻¹ : (Af E)ˣ) : Af E) ∈ hatO c := by
+  atlas_forward_decl GlobalTheory.CMVal.ApproxHatO.exists_sub_mul_mem_hatO

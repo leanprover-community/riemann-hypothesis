@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
@@ -103,3 +105,10 @@ theorem sideUnfold : EpConv → Unfold → Lines → Term → ZetaK → SideUnfo
   rw [avg_const_mul, _root_.smul_apply, eis_smul]
 
 end GlobalTheory.CompanionTheory.RgEisSide
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.side_term_unfolding : EpConv → Unfold → Lines → Term → ZetaK → SideUnfold := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisSide.sideUnfold

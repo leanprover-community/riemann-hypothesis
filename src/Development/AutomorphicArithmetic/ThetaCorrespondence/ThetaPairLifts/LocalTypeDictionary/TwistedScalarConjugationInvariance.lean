@@ -1,5 +1,4 @@
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.DiscreteSpectrumResidualClassification
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoublingMethodConsequence
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoublingMethodConsequenceStatement
 
 section

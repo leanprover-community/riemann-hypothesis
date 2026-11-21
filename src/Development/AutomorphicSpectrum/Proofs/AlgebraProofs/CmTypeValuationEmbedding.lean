@@ -1,15 +1,15 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LinearIndependentEigProj
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.EigCoordApply
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StatementUnavailableOneStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SumEigenProjectionsEqSelfStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CmTypePolynomialVanishingCriterionStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeSpanIntersectionBasisStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeLatticeDualEigenDecompositionStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DualModuleConjugateEigenActionStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ValuationLatticeMatrixReductionStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ConjugateEmbeddingsValuationRankBoundStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StatementUnavailableOne
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SumEigenProjectionsEqSelf
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CmTypePolynomialVanishingCriterion
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeSpanIntersectionBasis
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeLatticeDualEigenDecomposition
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DualModuleConjugateEigenAction
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ValuationLatticeMatrixReduction
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ConjugateEmbeddingsValuationRankBound
 
+section
 open scoped NNReal
 open AlgebraicGeometry CategoryTheory Limits NumberField GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Flat.ExG
 
@@ -302,3 +302,10 @@ theorem det_adapted_eq_unit_mul_const : ∀ (E : Type) [Field E] [NumberField E]
   GlobalTheory.T.conjugate_embeddings_valuation_rank_bound ExG.targetO
 
 end GlobalTheory.CompanionTheory.Ar.Flat
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cm_type_valuation_embedding : ∀ (E : Type) [Field E] [NumberField E] (V C : Type) [CommRing V] [IsDomain V] [ValuationRing V] [Field C] [CharZero C] [Algebra V C] [IsFractionRing V C] (bar : 𝓞 E ≃+* 𝓞 E) (σ σ' : E →+* C) (rk : (E →+* C) → ℕ) (p q : ℕ) (ν : Valuation C NNReal), ν.Integers V → (∃ ℓ : C, 0 < ν ℓ ∧ ν ℓ < 1) → (∀ (s : E →+* C) (a : 𝓞 E), s (a : E) ∈ (algebraMap V C).range) → Nat.card (E →+* C) = Module.finrank ℚ E → (∀ a : 𝓞 E, σ' (a : E) = σ (bar a : 𝓞 E)) → (∀ a, bar (bar a) = a) → ∃ γ : C, γ ≠ 0 ∧ ∀ (W : Type) [AddCommGroup W] [Module C W] [Module V W] [IsScalarTower V C W] [FiniteDimensional C W] (ρ : 𝓞 E →+* Module.End C W) (ρH : 𝓞 E →+* Module.End C (W × Module.Dual C W)) (HV : Submodule V (W × Module.Dual C W)) (Lie : Submodule V W) (x : Fin (p + q) → W × Module.Dual C W) (v : Fin p → W) (w : Fin q → W) (u : Fin (p + q) → W × Module.Dual C W) (A : Matrix (Fin (p + q)) (Fin (p + q)) C), (∀ a y, (ρH a y).1 = ρ a y.1) → (∀ a φ, ρH a (0, φ) = (0, φ ∘ₗ ρ (bar a))) → HV.map ((LinearMap.fst C W (Module.Dual C W)).restrictScalars V) = Lie → (∀ φ : Module.Dual C W, (0, φ) ∈ HV ↔ ∀ e ∈ Lie, φ e ∈ (algebraMap V C).range) → HT.IsFreeOn ρH HV x → (∀ s, Module.finrank C (HT.eigSp ρ s) = rk s) → LinearIndependent C v → Submodule.span V (Set.range v) = HT.eigSub ρ σ Lie → LinearIndependent C w → Submodule.span V (Set.range w) = HT.eigSub ρ σ' Lie → IsAdapted ρH σ v w u → LinearIndependent C (fun i => ∑ j, A i j • u j) → Submodule.span V (Set.range fun i => ∑ j, A i j • u j) = HT.eigQuot ρH σ HV → ∃ ε : Vˣ, A.det = algebraMap V C ε * γ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.det_adapted_eq_unit_mul_const

@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
-import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 import Formalism.LocalToGlobal.Columns.DecoFin
 import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 

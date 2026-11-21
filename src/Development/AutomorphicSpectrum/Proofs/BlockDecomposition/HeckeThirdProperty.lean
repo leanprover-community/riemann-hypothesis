@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.TwistedCent
 
 open PositivityTheory.Rg.Tf.Loc
@@ -23,3 +25,8 @@ theorem mem_twCent_twConj_iff {G : Type} [Group G] (θ : Monoid.End G) (g δ x :
 theorem h3 : PositivityTheory.Rg.Tf.Loc.H3 := fun _ _ θ g δ x => mem_twCent_twConj_iff θ g δ x
 
 end GlobalTheory.CompanionTheory.TwistedCent
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hecke_third_property : PositivityTheory.Rg.Tf.Loc.H3 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TwistedCent.h3

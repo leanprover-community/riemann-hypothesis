@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
 
+section
 open Filter Topology
 open GlobalTheory.CompanionTheory.EGlue PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation
 
@@ -81,3 +82,9 @@ theorem mCloseFacts_holds : MCloseFacts := by
     exact H _ hk
 
 end GlobalTheory.CompanionTheory.EGlue
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.closure_facts_alt : GlobalTheory.CompanionTheory.EGlue.MCloseFacts := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.mCloseFacts_holds

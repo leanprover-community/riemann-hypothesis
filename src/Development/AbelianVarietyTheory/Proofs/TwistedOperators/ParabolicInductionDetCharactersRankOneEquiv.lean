@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InstAddCommGroupTwo
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
@@ -108,3 +110,10 @@ theorem nonempty_equiv_multiProd_unit (k : Type) [Field k] [ValuativeRel k] [Top
       rw [map_one, Units.val_one, one_smul, L.apply_symm_apply]
 
 end GlobalTheory.SmGL.RankOneProduct
+end
+end
+
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.parabolicInduction_detCharacters_rank_one_equiv : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (α : Type) [Fintype α] [LinearOrder α] (c : α → Type) [∀ i, Fintype (c i)] [∀ i, DecidableEq (c i)] (g : (Σ i, c i) ≃ Unit) (ψ : α → kˣ →* ℂˣ), (∀ i, IsSmoothChar (ψ i)) → Nonempty ((multiProd g fun i => detRep (c i) (ψ i)).Equiv (detRep Unit (ψ (g.symm ()).1))) := by
+  atlas_forward_decl GlobalTheory.SmGL.RankOneProduct.nonempty_equiv_multiProd_unit

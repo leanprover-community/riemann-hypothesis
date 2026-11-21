@@ -1,10 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuation
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CongSubgroup
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsUnitPowerInCongruenceStatement
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.UnitLogLatticeBoundedTranslateStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsUnitPowerInCongruence
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.UnitLogLatticeBoundedTranslate
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -121,3 +119,12 @@ theorem balance : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (�
     _ = Real.exp (2 * (n * C)) * τ ξ := by rw [Real.exp_add, Real.exp_log (hξpos τ)]
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Balance
+end
+end
+
+open NumberField NumberField.Units NumberField.Units.dirichletUnitTheorem GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_congruence_unit_balancing_embeddings : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (𝔣 : Ideal (𝓞 F)), 𝔣 ≠ ⊥ →
+    ∃ M : ℝ, ∀ x : F, TotPos F x → ∃ u : (𝓞 F)ˣ, u ∈ congUnits 𝔣 ∧
+      ∀ σ τ : F →+* ℝ, σ (((u : 𝓞 F) : F) * x) ≤ M * τ (((u : 𝓞 F) : F) * x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Balance.balance

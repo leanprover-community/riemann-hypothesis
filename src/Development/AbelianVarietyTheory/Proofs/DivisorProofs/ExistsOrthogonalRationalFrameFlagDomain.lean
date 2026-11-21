@@ -2,7 +2,9 @@ import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImEmbHermSelf
+import BuildAid.ForwardExisting
 
+section
 open NumberField Complex ReciprocityTheory.ChartRestriction.G.FD
 open scoped ComplexConjugate
 
@@ -165,3 +167,9 @@ theorem exists_ortho_frm (E : Type) [Field E] [NumberField E] [IsCMField E] (r :
 end
 
 end GlobalTheory.OrthoFrame.GramSchmidt
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_orthogonal_rational_frame_flagDomain : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (u : Fin r → Fin r → E), GlobalTheory.OrthoFrame.frm X.Ψ u ∈ X.dom → ∃ v : Fin r → Fin r → E, (∀ j k, j ≠ k → ReciprocityTheory.ChartRestriction.G.FD.herm X.Gm (v j) (v k) = 0) ∧ GlobalTheory.OrthoFrame.frm X.Ψ v ∈ X.dom := by
+  atlas_forward_decl GlobalTheory.OrthoFrame.GramSchmidt.exists_ortho_frm

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LieLatticeData
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Num.HhGraded
 
 open GlobalTheory.CompanionTheory.Ar.Num
@@ -77,3 +79,9 @@ theorem main : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (R : Sub
     · simp only [hfix i le_rfl, Pi.single_eq_same, mul_one]
 
 end GlobalTheory.CompanionTheory.Ar.Num.HhGraded
+end
+
+open GlobalTheory.CompanionTheory.Ar.Num
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_lattice_coordinate_generator : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (R : Subalgebra o Ω) (n : ℕ) (L : AddSubgroup (Fin n → Ω)), LocFree R n L → (∀ i, Summand L (annSub Ω n i)) → ∀ (i : Fin n) (u : Ω), u ≠ 0 → (∀ c, c ∈ (L ⊓ (annSub Ω n i).toAddSubgroup).map (Pi.evalAddMonoidHom (fun _ => Ω) i) ↔ ∃ a ∈ R, c = a * u) → ∀ t : Ω, (∃ v ∈ dotDual R L, (∀ j, i < j → v j = 0) ∧ v i = t) ↔ ∃ a ∈ R, t = a * u⁻¹ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.HhGraded.main

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Matrix Topology Filter
 
 namespace GlobalTheory.CompanionTheory.IwaGen
@@ -44,3 +47,9 @@ theorem exists_regular_point : ∀ {n : ℕ} (𝔞 : Submodule ℝ (Matrix (Fin 
   exact sub_eq_zero.1 hA'
 
 end GlobalTheory.CompanionTheory.IwaGen
+end
+
+open Matrix Topology Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_regular_element_abelian : ∀ {n : ℕ} (𝔞 : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ)) (U : Matrix (Fin n) (Fin n) ℂ), ∃ H ∈ 𝔞, ∀ i j, (Uᴴ * H * U) i i = (Uᴴ * H * U) j j → ∀ A ∈ 𝔞, (Uᴴ * A * U) i i = (Uᴴ * A * U) j j := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IwaGen.exists_regular_point

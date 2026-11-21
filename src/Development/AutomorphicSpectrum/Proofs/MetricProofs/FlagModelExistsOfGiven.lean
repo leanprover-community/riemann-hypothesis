@@ -4,27 +4,28 @@ import Development.AutomorphicSpectrum.Statements.MetricStatements.ExistsFlagMod
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.RootOnFund
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ColFlags
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsTwistedGeneratorsStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameViaTwistedGeneratorsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptIsVectorBundleRankStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameViaTwistedGenerators
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptIsVectorBundleRank
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptBasesLinearIndependentSpanStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlkFProperStepInjectiveBlockDiagStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlkFProperStepInjectiveBlockDiag
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.GMatIsGenericFlagStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.DetFacGMatEqOneStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BasePartYvEqAlgebraMapXbStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BasePartYvEqAlgebraMapXb
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.YvEqSumMinorsGMatStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsNonzeroXbOfLeftInverseStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameChangeDeterminantStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameChangeRegularStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameMinorValuationStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameOrderBoundStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameChangeDeterminant
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameChangeRegular
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameMinorValuation
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameOrderBound
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameUnitCriterionStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameGenericRankStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameLeadingTermStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameDegreeFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptBaseChangeCompatibleStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameDivisorFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameHeightFormulaStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameGenericRank
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameLeadingTerm
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameDegreeFormula
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptBaseChangeCompatible
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameDivisorFormula
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameHeightFormula
 
+section
 open AlgebraicGeometry CategoryTheory NumberField Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun
@@ -89,3 +90,10 @@ theorem GlobalTheory.CompanionTheory.Ar.PB.FMX.flagModelExists : GlobalTheory.Co
     have h2 : M.lam (τ, i) = 1 := rfl
     rw [h1, h2]
     rcases M.blk (τ, i) with _ | b <;> simp
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_model_exists_of_given : Given → PB.FlagModelExists := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.FMX.flagModelExists

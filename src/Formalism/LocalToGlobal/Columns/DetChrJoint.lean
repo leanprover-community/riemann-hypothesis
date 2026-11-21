@@ -3,7 +3,6 @@ import Formalism.LocalToGlobal.Columns.DetChrLeaves
 import Formalism.LocalToGlobal.Columns.HeckeExHost
 import Formalism.LocalToGlobal.Columns.ChainInstY
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
-import Formalism.LocalToGlobal.Divisibility.TuplesLemmas
 
 open NumberField IsDedekindDomain
 open scoped TensorProduct

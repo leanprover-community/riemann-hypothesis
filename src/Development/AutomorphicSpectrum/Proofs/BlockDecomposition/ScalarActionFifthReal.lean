@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.LeviCommutantWordReduction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CommutingHeckeCapelliOperators
 
+section
 open Finset
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
 
@@ -691,3 +692,10 @@ theorem capScal : CapelliProductsScalar := by
     simp
 
 end GlobalTheory.CompanionTheory.CapScal
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.scalar_action_fifth_real : PositivityTheory.RgBcC.RealD.CapelliProductsScalar := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CapScal.capScal

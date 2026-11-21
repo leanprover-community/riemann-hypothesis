@@ -1,10 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ZetaValueIdeals
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusPointPermutationSignStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeterminantNonzeroDifferentialsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolydiscCmUniformizationStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusPointPermutationSign
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeterminantNonzeroDifferentials
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolydiscCmUniformization
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -179,3 +180,10 @@ theorem eisRule_of (hQ : GlobalTheory.RealMult.QExpansionOnAll) (hExp : EisExp) 
   exact key 𝔠 1 𝔠 (by simp)
 
 end GlobalTheory.EisRuleProof
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eisenstein_rule_of_q_expansion : GlobalTheory.RealMult.QExpansionOnAll → EisExp → EisMod → EisFourier → TorusForm → EisRule := by
+  atlas_forward_decl GlobalTheory.EisRuleProof.eisRule_of

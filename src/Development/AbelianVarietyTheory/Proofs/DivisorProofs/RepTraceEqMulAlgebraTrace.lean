@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SandwichMaps
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FaithfulRepMulVecInjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceLsmulEqFinrankMulTraceStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FaithfulRepMulVecInjective
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceLsmulEqFinrankMulTrace
+
+section
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
 
 namespace GlobalTheory
@@ -39,3 +40,9 @@ theorem traceOnLattice_eq_rank_mul_trace : ∀ (p : ℕ) [Fact p.Prime] (Λ : Ty
   rw [hlin, Matrix.trace_toLin'_eq]
 
 end GlobalTheory
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rep_trace_eq_mul_algebra_trace : ∀ (p : ℕ) [Fact p.Prime] (Λ : Type) [CommRing Λ] [IsDomain Λ] [IsDiscreteValuationRing Λ] [Algebra ℤ_[p] Λ] [Module.Finite ℤ_[p] Λ] [FaithfulSMul ℤ_[p] Λ] (N h : ℕ), h = Module.finrank ℤ_[p] Λ * N → ∀ (ρ : Λ →ₐ[ℤ_[p]] Matrix (Fin h) (Fin h) ℤ_[p]) (a : Λ), (ρ a).trace = (N : ℤ_[p]) * Algebra.trace ℤ_[p] Λ a := by
+  atlas_forward_decl GlobalTheory.traceOnLattice_eq_rank_mul_trace

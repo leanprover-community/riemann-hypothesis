@@ -1,13 +1,6 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.LeftTranslate
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Height
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ArchSliceUAction
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.HasModerateGrowthZero
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Translation
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.SmoothKZ
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStructure
 
 open NumberField IsDedekindDomain Topology Filter Set MeasureTheory

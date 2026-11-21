@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped Matrix
 
 namespace GlobalTheory
@@ -80,3 +83,9 @@ theorem exists_corner_unit_of_right_inverse :
   linear_combination (M.det * (e ^ n * p * (e * p * w)) - M.det - (e ^ n * p * (e * p * w)) + 2) * he + e * hab
 
 end GlobalTheory
+end
+
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_corner_unit_of_right_inverse' : ∀ {F R : Type} [Field F] [CommRing R] [Algebra F R] (e : R), e * e = e → (∀ ψ : Polynomial R, (∀ (Ω : Type) [Field Ω] (φ : R →+* Ω), φ e = 1 → ψ.map φ ≠ 0) → ∃ t : F, IsUnit (e * ψ.eval (algebraMap F R t) + (1 - e))) → ∀ {n : ℕ} (D C P Q : Matrix (Fin n) (Fin n) R), D * P + C * Q = 1 → ∃ x : Matrix (Fin n) (Fin n) R, IsUnit (e * (D + C * x).det + (1 - e)) := by
+  atlas_forward_decl GlobalTheory.exists_corner_unit_of_right_inverse

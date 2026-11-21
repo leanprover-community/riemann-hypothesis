@@ -50,6 +50,17 @@ theorem mellin_ramp (n : ℕ) (hn : 1 ≤ n) (s : ℂ) (hs : 1 < s.re) :
   field_simp
   ring
 
+theorem mellin_ramp_integrable (n : ℕ) (s : ℂ) (hs : 1 < s.re) :
+    IntegrableOn (fun y : ℝ => ((max (y / n - 1) 0 : ℝ) : ℂ) * (y : ℂ) ^ (-s - 1)) (Ioi 1) := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp
+  apply Integrable.of_integral_ne_zero
+  rw [mellin_ramp n hn s hs]
+  have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
+  have hs1 : 0 < (s - 1).re := by simpa [Complex.sub_re] using sub_pos.mpr hs
+  exact div_ne_zero (cpow_ne_zero_iff.mpr (Or.inl hnC))
+    (mul_ne_zero (Complex.ne_zero_of_one_lt_re hs) (Complex.ne_zero_of_re_pos hs1))
+
 end Deduction
 
 end

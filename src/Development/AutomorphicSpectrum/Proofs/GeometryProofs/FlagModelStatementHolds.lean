@@ -1,10 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlagModelStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagModelCommonRefinementStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeFlagVectorBundleStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeSubQuotientSplitStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagModelCommonRefinement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeFlagVectorBundle
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.FlagModel
@@ -110,3 +109,10 @@ theorem flagModel : FlagModelStatement := by
   · exact hat p hp fun q => hfr q.1 q.2
 
 end GlobalTheory.CompanionTheory.Ar.FlagModel
+end
+end
+
+open GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.FlagModelStatement_holds : FlagModelStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.FlagModel.flagModel

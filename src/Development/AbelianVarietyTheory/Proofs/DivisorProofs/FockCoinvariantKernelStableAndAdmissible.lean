@@ -1,12 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.ActAtApply
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HoweHighestWeightSupStableLeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockHarmonicsSupCoinvariantsEqTopStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockActionsLieRationalWeightsCommuteStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockActionIsLocallyBlockUnitaryStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockHarmonicsGradedCompactStable
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemTensSpanOfKilled
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HoweHighestWeightSupStableLe
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockHarmonicsSupCoinvariantsEqTop
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockActionsLieRationalWeightsCommute
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockActionIsLocallyBlockUnitary
 
+section
 noncomputable section
 
 open scoped TensorProduct
@@ -61,3 +59,10 @@ theorem coinv_stab_adm : ∀ (P Q R S : ℕ) (x : ℂ),
 end GlobalTheory.HoweR
 
 end
+end
+
+open scoped TensorProduct
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift GlobalTheory.HoweR
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockCoinvariantKernel_stable_and_admissible : ∀ (P Q R S : ℕ) (x : ℂ), Stab (fockAct2 P Q R S) (coinv P Q R S x) ∧ AdmMod (fockAct2 P Q R S) (coinv P Q R S x) := by
+  atlas_forward_decl GlobalTheory.HoweR.coinv_stab_adm

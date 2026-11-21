@@ -1,8 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.ProIsoAt
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProIsometryOfLocalIsometriesStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CmProjectiveModulePairingPStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PadicIsometryEquivarianceStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProIsometryOfLocalIsometries
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CmProjectiveModulePairingP
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PadicIsometryEquivariance
 
 open NumberField TensorProduct GlobalTheory.CompanionTheory.Ar
 

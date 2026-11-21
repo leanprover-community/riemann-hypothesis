@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsStokesLimitTTop
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsTopNMixed
 set_option maxSynthPendingDepth 1
 

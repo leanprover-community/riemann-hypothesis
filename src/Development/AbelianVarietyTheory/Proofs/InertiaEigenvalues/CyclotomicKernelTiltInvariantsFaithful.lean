@@ -2,9 +2,9 @@ import Mathlib
 import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ConvZero
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormRootSubOneLt
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicTowerTraceAlmostSurjective
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.HWL GlobalTheory.Cyc GlobalTheory.Cyc.TraceTilt
 
 namespace GlobalTheory.TiltFaithful
@@ -383,3 +383,9 @@ theorem faithH : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P
     rwa [h2] at h1
 
 end GlobalTheory.TiltFaithful
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.HWL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cyclotomicKernel_tilt_invariants_faithful : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), FaithH AI := by
+  atlas_forward_decl GlobalTheory.TiltFaithful.faithH

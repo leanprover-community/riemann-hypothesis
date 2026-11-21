@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPthPowerScaleThinShellStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowMulApproxPowOfAlmostEtaleSeparatingFamilyStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPthPowerScaleThinShell
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowMulApproxPowOfAlmostEtaleSeparatingFamily
 
+section
 open GlobalTheory.AlmostEt
 open scoped NNReal
 
@@ -60,3 +60,10 @@ theorem approxRoot_fix_of_almostSep : ∀ (L : Type) [Field L] (v : Valuation L 
       rw [map_mul, map_pow, map_pow]; ring
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.approxPthRoot_fixedSubfield_of_almostEtale : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (p : ℕ), p.Prime → 0 < v (p : L) → v (p : L) < 1 → ∀ (G : Type) [Group G] [MulSemiringAction G L], (∀ (g : G) (x : L), v (g • x) = v x) → ∀ N : Subgroup G, N.FiniteIndex → AlmostSep v N → ApproxRoot p v (Fix L (⊤ : Subgroup G)) → ApproxRoot p v (Fix L N) := by
+  atlas_forward_decl GlobalTheory.AlmostEt.approxRoot_fix_of_almostSep

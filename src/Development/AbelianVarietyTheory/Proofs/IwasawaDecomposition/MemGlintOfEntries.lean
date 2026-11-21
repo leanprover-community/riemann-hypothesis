@@ -1,4 +1,3 @@
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DatVtEq
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StdMaximalCompactReductionPropertiesStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitPlaceDoubleCosetOperatorsCommuteSpherical
 

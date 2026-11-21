@@ -3,7 +3,6 @@ import Development.AbelianVarietyTheory.Definitions.HeightFunctions.FiniteDimens
 import Development.AbelianVarietyTheory.Definitions.HeightFunctions.NormComparisonConstants
 import Formalism.LocalToGlobal.ProjectiveLattices.DepthTie
 import Development.AbelianVarietyTheory.Definitions.Jets.EmbShortThLeThetaPlain
-import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.PowClassNumberIntegral
 
 noncomputable section

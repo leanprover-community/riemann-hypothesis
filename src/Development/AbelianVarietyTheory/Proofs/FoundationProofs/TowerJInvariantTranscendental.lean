@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
+import BuildAid.ForwardExisting
+
+section
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ
 
@@ -59,3 +62,10 @@ theorem Tower.jK_transcendental {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω
   exact hp0 (Polynomial.leadingCoeff_eq_zero.mp hc.symm)
 
 end GlobalTheory.KZ
+end
+
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.towerJInvariant_transcendental : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε), Transcendental Ω X.jK := by
+  atlas_forward_decl GlobalTheory.KZ.Tower.jK_transcendental

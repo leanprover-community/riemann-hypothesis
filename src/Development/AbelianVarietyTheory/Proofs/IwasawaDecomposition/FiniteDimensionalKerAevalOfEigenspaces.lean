@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Filter Topology
 open scoped ContDiff
 
@@ -47,3 +49,10 @@ theorem finiteDimensional_ker_aeval_of_eigenspaces
     exact (Module.Finite.iff_fg).mpr hfg
 
 end GlobalTheory
+end
+
+open MeasureTheory Filter Topology
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_ker_aeval_of_eigenspaces' : ∀ (M : Type) [AddCommGroup M] [Module ℂ M] (T : Module.End ℂ M), (∀ lam : ℂ, FiniteDimensional ℂ (T.eigenspace lam)) → ∀ p : Polynomial ℂ, p ≠ 0 → FiniteDimensional ℂ (LinearMap.ker (Polynomial.aeval T p)) := by
+  atlas_forward_decl GlobalTheory.finiteDimensional_ker_aeval_of_eigenspaces

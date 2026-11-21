@@ -8,6 +8,7 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SphericalRepGLEx
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PrincipalSeriesSubquotientOfCharacters
 import GroundTheory.AutomorphicForms.Satake
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.Published GlobalTheory.SplitWeil
@@ -166,3 +167,12 @@ theorem indSp_mem_principalSeriesSpace : ∀ (k : Type) [Field k] [ValuativeRel 
   exact ⟨fun p g => addChar_theta_law_rearrangement_identity α f p g, induced_vector_smooth_open_subgroup _ f⟩
 
 end GlobalTheory.CompanionTheory.SphSupp.PsBridge
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.Published GlobalTheory.SplitWeil
+open GroundTheory.Automorphic.Spherical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.induced_in_principal_series : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (α : Fin n → ℂˣ) (f : IndSp (points (Fin n)) ((GlobalTheory.SmGL.ofChar (torusChar fun i => unrChar k (α i))).comp (leviTorus k (Fin n)).symm.toMonoidHom)), (fun g => f.1.1 g) ∈ principalSeriesSpace k n (paramChar k α) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SphSupp.PsBridge.indSp_mem_principalSeriesSpace

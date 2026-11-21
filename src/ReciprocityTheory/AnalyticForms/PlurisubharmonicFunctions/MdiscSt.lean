@@ -1,4 +1,3 @@
-import ReciprocityTheory.AnalyticForms.MaIntEmpty
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscPos
 
 namespace ReciprocityTheory.AnForm.A

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.RgEis
 
 open PositivityTheory.RgEis
@@ -114,3 +116,8 @@ theorem stage : PiLocalization₂ := by
     _ = ∑' r : Cos Δ Γ, ∑' q : Cos P Δ, φ ⟨r, q⟩ := hφs.tsum_sigma' hfib
 
 end GlobalTheory.CompanionTheory.RgEis
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.staged_estimate_holds : PositivityTheory.RgEis.PiLocalization₂ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEis.stage

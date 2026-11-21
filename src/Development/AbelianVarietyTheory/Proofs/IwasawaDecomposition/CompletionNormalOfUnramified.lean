@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCompleteUnramifiedExtension
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletionUnramifiedNormal
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletionIsDomainAndIsIntegrallyClosed
 
+section
 open IsLocalRing GlobalTheory.Toroidal TensorProduct
 
 namespace GlobalTheory.EtaleCompletionCharZero
@@ -37,3 +37,9 @@ theorem completion_isDomain_and_isIntegrallyClosed :
     exact hfu.comp (RingHom.FormallyUnramified.of_surjective hres)
 
 end GlobalTheory.EtaleCompletionCharZero
+end
+
+open IsLocalRing GlobalTheory.Toroidal TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.completion_normal_of_unramified : ∀ (D T : Type) [CommRing D] [IsDomain D] [IsLocalRing D] [IsIntegrallyClosed D] [CharZero D] [Algebra.EssFiniteType ℤ D] [CommRing T] [IsLocalRing T] (h : D →+* T), IsNoetherianRing T → IsLocalHom h → h.Flat → (maximalIdeal D).map h = maximalIdeal T → ((residue T).comp h).Finite → ((residue T).comp h).FormallyUnramified → IsDomain (AdicCompletion (maximalIdeal T) T) ∧ IsIntegrallyClosed (AdicCompletion (maximalIdeal T) T) := by
+  atlas_forward_decl GlobalTheory.EtaleCompletionCharZero.completion_isDomain_and_isIntegrallyClosed

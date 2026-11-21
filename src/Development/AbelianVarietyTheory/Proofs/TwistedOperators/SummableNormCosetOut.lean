@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory
 
 namespace GlobalTheory
@@ -50,3 +53,9 @@ theorem summable_norm_coset_out (G : Type) [Group G] [TopologicalSpace G] [IsTop
         setIntegral_le_integral hnorm (Filter.Eventually.of_forall (fun y => norm_nonneg _))
 
 end GlobalTheory
+end
+
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.summable_norm_coset_out' : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsMulLeftInvariant] (K : Subgroup G), IsOpen (K : Set G) → μ K = 1 → ∀ F : G → ℂ, (∀ g, ∀ k ∈ K, F (g * k) = F g) → Integrable F μ → Summable (fun x : G ⧸ K => ‖F x.out‖) := by
+  atlas_forward_decl GlobalTheory.summable_norm_coset_out

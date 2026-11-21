@@ -1,8 +1,9 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.ElementaryCosets.JPred
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EqOneOfLowerParab
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousInvOfPowEqOne
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel PositivityTheory.Lbc
 
 namespace GlobalTheory.CompanionTheory.Lbc.Contraction
@@ -24,3 +25,9 @@ theorem e1 : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
   group
 
 end GlobalTheory.CompanionTheory.Lbc.Contraction
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twisted_iwahori_first_identity : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], PositivityTheory.Lbc.E1 k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Lbc.Contraction.e1

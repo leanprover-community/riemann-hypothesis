@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.CentralNilGL
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlkEquivInl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlkGLOneCorner
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory GlobalTheory.CuspRep
 
 namespace GlobalTheory.SliceTwo
@@ -44,3 +45,9 @@ theorem isOpen_levelSub : ∀ (E : Type) [Field E] [NumberField E] (a r : ℕ) (
   exact hL.preimage hc
 
 end GlobalTheory.SliceTwo
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpen_diagonalSliceLevelSubgroup : ∀ (E : Type) [Field E] [NumberField E] (a r : ℕ) (hr : r ≤ a) (t : GL (Fin a) (Af E)) (L : Subgroup (GL (Fin a) (Af E))), IsOpen (L : Set (GL (Fin a) (Af E))) → IsOpen (GlobalTheory.SliceTwo.levelSub hr t L : Set (GL (Fin (a - r)) (Af E))) := by
+  atlas_forward_decl GlobalTheory.SliceTwo.isOpen_levelSub

@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviMatchingWords.SplitPlaceGeneratorPowers
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Polynomial
@@ -24,3 +25,9 @@ theorem muInert : PositivityTheory.Rg.BcB.F.MLM.MuInert := by
   exact match_indep hw μ μ' f φ
 
 end GlobalTheory.CompanionTheory.MuInertPlace
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.multiplicity_inert : PositivityTheory.Rg.BcB.F.MLM.MuInert := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MuInertPlace.muInert

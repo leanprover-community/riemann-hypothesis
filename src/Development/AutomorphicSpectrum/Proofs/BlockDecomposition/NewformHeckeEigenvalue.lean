@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.GLnLocal
@@ -394,3 +396,8 @@ theorem eq_zero_of_eigen : C1 → U1 := by
 end GlobalTheory.CompanionTheory.WhitU
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_hecke_eigenvalue : Ad3.R.C1 → Ad3.R.U1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WhitU.eq_zero_of_eigen

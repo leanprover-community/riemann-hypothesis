@@ -2,8 +2,8 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.PsiSide
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GramFibreMeasureLocal
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanBinaryGramDensity
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.RankOneFiberMeasureBlockExtension
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 
@@ -279,3 +279,10 @@ theorem scal : PositivityTheory.Rg.Base1.Scal := by
   rw [key, div_self ha0, one_smul, GlobalTheory.CompanionTheory.SW.MassSimil.scalH_hermScal]
 
 end GlobalTheory.CompanionTheory.RgBase.ScalFib
+end
+end
+
+open PositivityTheory.Rg.Base1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.scalar_fibration_formula : Scal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgBase.ScalFib.scal

@@ -1,7 +1,6 @@
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DegSupermodZ
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.ExistsSmulMemOfFinrankEq
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.FinSup
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SatBasic
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.RatioMax
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DegSupermod
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.MuChar
@@ -14,12 +13,9 @@ import Formalism.HarderNarasimhan.HarderNarasimhanProofs.Duality
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HNExtreme
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.PiSumForallInsertOnly
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.Example
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.PlaceSplit
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.GramBlock
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.RescaleCovol
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.TwistFinrankEq
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtImage
@@ -27,7 +23,6 @@ import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeIneq
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.Rerealize
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.FrameHermSharpB
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.QuotRealize
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.FrameLinearAlgebraFirst
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.TheoremFSharp
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
 

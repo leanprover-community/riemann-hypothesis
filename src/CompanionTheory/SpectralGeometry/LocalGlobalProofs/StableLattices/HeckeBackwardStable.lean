@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset
@@ -34,3 +36,9 @@ theorem backStable : BackStable := fun _ X z a b _ hx =>
   Module.End.mapsTo_maxGenEigenspace_of_comm (commute_tensVd_eeVd X a b).symm (-z - cn _) hx
 
 end GlobalTheory.CompanionTheory.RgHeckeBack
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.HeckeBackwardStable : CompanionTheory.RgExh.Hk.BackStable := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgHeckeBack.backStable

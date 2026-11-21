@@ -3,7 +3,9 @@ import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrde
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenFixedOfSubgroup
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirProjEqOneOfMem
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviIntegralFacts
+import BuildAid.ForwardExisting
 
+section
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib
 
 namespace GlobalTheory.CompanionTheory.MirGP
@@ -15,3 +17,9 @@ theorem isClosed_HGP : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
   exact h.2.2.2.2.2.2.1.preimage continuous_subtype_val
 
 end GlobalTheory.CompanionTheory.MirGP
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isClosed_mirabolicParabolic : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (m j : ℕ), IsClosed (MirabolicParabolic k m j : Set (Mir k (m + j))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MirGP.isClosed_HGP

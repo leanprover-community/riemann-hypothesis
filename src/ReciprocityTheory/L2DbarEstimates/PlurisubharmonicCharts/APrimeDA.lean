@@ -1,7 +1,6 @@
 import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.GROWCountStatement
 import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
 import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.DifferentiableAtChart
-import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
 
 open Complex ComplexConjugate Filter Topology
 open scoped ContDiff

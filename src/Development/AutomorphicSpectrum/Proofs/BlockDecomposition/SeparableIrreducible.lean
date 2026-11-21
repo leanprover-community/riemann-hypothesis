@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SimpleIffIrreducibleStatement
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory ReciprocityTheory.Ty.Fin
 
 noncomputable section
@@ -93,3 +94,10 @@ theorem sepIrr : ReciprocityTheory.Ty.Fin.St.SepIrr := by
   simpa using h1 1
 
 end GlobalTheory.CompanionTheory.FinRep
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.separable_irreducible : ReciprocityTheory.Ty.Fin.St.SepIrr := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FinRep.sepIrr

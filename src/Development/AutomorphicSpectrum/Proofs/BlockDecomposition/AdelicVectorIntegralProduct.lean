@@ -1,5 +1,6 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LastRowMulRowGLInv
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
@@ -40,3 +41,11 @@ theorem integral_split {k : ℕ} (A : (Fin k → Cinf E) → ℂ) (B : (Fin k �
   rfl
 
 end GlobalTheory.CompanionTheory.CutOff.Split
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelic_vector_integral_product : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {k : ℕ} (A : (Fin k → Cinf E) → ℂ) (B : (Fin k → Af E) → ℂ), ∫ y, A (fun i => pInf E (y i)) * B (fun i => pFin E (y i)) ∂vecMeasure E (Fin k) = (∫ x, A x ∂nuInf E k) * ∫ f, B f ∂nuFin E k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CutOff.Split.integral_split

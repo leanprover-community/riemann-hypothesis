@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.SelfDualLoc
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SelfDualLocalBasis.DualBasis
 
 namespace Bl.PaddedFamilies

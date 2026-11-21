@@ -1,11 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ChernDegreeComplex
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsPresents
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallyExistsFiniteSubsetNonzeroLocus
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenericResidueLinearIndependence
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.InterNumEqSumLengthMulInterNumRed
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GoodStalks
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -103,3 +102,15 @@ theorem mono_cutHom_and_goodStalks_cut {X : Scheme.{0}} [IsLocallyNoetherian X] 
   exact h₂
 
 end GlobalTheory.CompanionTheory.KoszulCount
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.Published.ArDegreeModel GlobalTheory.QCoh
+open IsLocalRing
+open GlobalTheory.CompanionTheory.KoszulCount
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hyperplane_cut_good_stalks : ∀ {X : Scheme.{0}} [IsLocallyNoetherian X] {L : LB X} (hL : L.IsLB) (F : X.Modules) [IsFiniteQC F] {d : ℕ} (s : L.Sec) (t : Fin d → L.Sec), GoodStalks F (Fin.cons s t : Fin (d + 1) → L.Sec) → Mono (cutHom F hL s) ∧ GoodStalks (cut F hL s) t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KoszulCount.mono_cutHom_and_goodStalks_cut

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Finset Polynomial
 
 namespace GlobalTheory
@@ -98,3 +101,9 @@ theorem newton_recursion_poly_unique : ∀ (m N : ℕ) (p : ℕ → ℂ) (f r : 
   exact leadingCoeff_eq_zero.mp hc
 
 end GlobalTheory
+end
+
+open Finset Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.poly_eq_zero_of_newton_recursion : ∀ (m N : ℕ) (p : ℕ → ℂ) (f r : ℂ[X]), m < N → p 0 = (m : ℂ) + 1 → f.natDegree ≤ m → r.natDegree ≤ m → (∀ u : ℂ, (u - m) ^ (N + 1) * (f.eval (u + 1) - f.eval u) - f.eval u * ∑ k ∈ range (N + 1), (-1) ^ k * (u - m) ^ (N - k) * p k = r.eval u) → f = 0 := by
+  atlas_forward_decl GlobalTheory.newton_recursion_poly_unique

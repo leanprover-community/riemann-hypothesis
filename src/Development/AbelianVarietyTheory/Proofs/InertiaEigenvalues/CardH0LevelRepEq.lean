@@ -1,8 +1,10 @@
 import Mathlib
 import Formalism.CharacterColumnKernels.StatementRho
 import Formalism.GaloisCohomology.LocalTateDualityK
-import ReciprocityTheory.Hypotheses.GalCohDefs
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LevRepZApply
+import BuildAid.ForwardExisting
+
+section
 open ReciprocityTheory.Gal
 
 namespace GlobalTheory.ShapeNeg
@@ -56,3 +58,12 @@ theorem card_H0_level_rep : ∀ {O : Type} [CommRing O] {G : Type} [Group G] [To
   exact card_ker_eq_card_quot_range _
 
 end GlobalTheory.ShapeNeg
+end
+
+open ReciprocityTheory.Gal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_H0_level_rep_eq : ∀ {O : Type} [CommRing O] {G : Type} [Group G] [TopologicalSpace G] {M : Type} [AddCommGroup M]
+    [Module O M] (ρ : Representation O G M) (c : O), Finite ρ.invariants →
+    Nat.card (ReciprocityTheory.Gal.H0 (GlobalTheory.ShapeNeg.levRep ρ c)) =
+      Nat.card (ρ.invariants ⧸ LinearMap.range (c • LinearMap.id : ρ.invariants →ₗ[O] ρ.invariants)) := by
+  atlas_forward_decl GlobalTheory.ShapeNeg.card_H0_level_rep

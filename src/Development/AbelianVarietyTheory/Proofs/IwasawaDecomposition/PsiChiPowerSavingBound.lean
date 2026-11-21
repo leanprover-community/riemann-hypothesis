@@ -1,8 +1,6 @@
 import Mathlib
 import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
 import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
-import Formalism.CyclotomicNorms.StatementI
-import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExplChi
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LogDerOne
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ZeroCount
@@ -11,6 +9,9 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DirichletLZe
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DirichletLZeroSymmetry
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SumIndicatorLeZsumR
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Psi0TruncatedExplicitFormula
+import BuildAid.ForwardExisting
+
+section
 open Finset ArithmeticFunction NumberField IsDedekindDomain Filter Topology GlobalTheory.Mem.An Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab
 open scoped nonZeroDivisors
 
@@ -185,3 +186,10 @@ theorem psiChi_bound_of_goodFor : GlobalTheory.Mem.An.ExplChi → GlobalTheory.M
   linarith
 
 end GlobalTheory.Mem.An.GoodBound
+end
+
+open Finset ArithmeticFunction NumberField IsDedekindDomain Filter Topology GlobalTheory.Mem.An Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.psi_chi_power_saving_bound : GlobalTheory.Mem.An.ExplChi → GlobalTheory.Mem.An.LogDerOne → GlobalTheory.Mem.An.ZeroCount → Formalism.ZeroFreeDirichlet.ZFRDirichlet → GlobalTheory.Mem.An.ExplZeta → ∃ C₁ : ℝ, 0 < C₁ ∧ ∀ (Q : ℝ) (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), 3 ≤ Q → χ ≠ 1 → GlobalTheoryTheory.GoodFor Q χ → ∀ u : ℝ, 2 ≤ u → ‖psiChi χ u‖ ≤ C₁ * (u ^ (1 - (1 : ℝ) / 400) * Real.log (u * Q) ^ 2 + u / Q * Real.log (u * Q) ^ 2) := by
+  atlas_forward_decl GlobalTheory.Mem.An.GoodBound.psiChi_bound_of_goodFor

@@ -1,12 +1,12 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.MonomialLinesPermutationStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FunctionalProductLinearFormsStatement
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.MonomialLinesPermutation
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FunctionalProductLinearForms
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.LowerBoundOfBaseSetting
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FormPolyIsHomogeneousAndEval
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHFlProdLinear
 
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 
 noncomputable section
@@ -80,3 +80,10 @@ theorem hhFl_linRoot_pow : ∀ II : IntersectionSystem, IsFullIntersectionSystem
       (fun k => GroundTheory.Heights₂.Heights.LowerBoundFree.xLine Ψ N (w k)) * h2
 
 end GlobalTheory.CompanionTheory.Ar.Top
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_height_polynomial_eval : ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) [Nonempty Ψ] (lam : Wt Ψ N), 2 ≤ N → IsArithVar (GroundTheory.Heights₂.Heights.LowerBoundFree.PFl Ψ N) (dimFl Ψ N + 1) → hhFl Ψ N II (linRoot lam ^ (dimFl Ψ N + 1)) = eval (fun x => lam x.1 x.2) (PB.hFlPoly Ψ N II) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.hhFl_linRoot_pow

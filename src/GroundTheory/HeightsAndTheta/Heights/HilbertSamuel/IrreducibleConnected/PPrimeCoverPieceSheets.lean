@@ -7,7 +7,6 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscrAdjoin
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFunctionFieldDegree
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantCover
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimitiveElementFibres
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel

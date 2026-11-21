@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.WordDerivatives
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffOfContinuousOneParameter
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.OneParamUnitary
@@ -67,3 +69,10 @@ theorem oneParam_eq_exp_lieU {n : ℕ} (G : Matrix (Fin n) (Fin n) ℂ) (u : ℝ
   exact this.symm
 
 end GlobalTheory.OneParamUnitary
+end
+
+open Matrix
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.oneParamUnitaryMatrix_eq_exp_lieAlgebra : ∀ {n : ℕ} (G : Matrix (Fin n) (Fin n) ℂ) (u : ℝ → Matrix (Fin n) (Fin n) ℂ), Continuous u → u 0 = 1 → (∀ s t, u (s + t) = u s * u t) → (∀ t, u t ∈ Formalism.QuantumDeterminants.UH G) → ∃ Y ∈ GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU G, ∀ t : ℝ, u t = NormedSpace.exp (t • Y) := by
+  atlas_forward_decl GlobalTheory.OneParamUnitary.oneParam_eq_exp_lieU

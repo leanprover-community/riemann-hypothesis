@@ -1,4 +1,3 @@
-import Development.EtaleCohomology.EtaleSheaves.LineZeroCut
 import Development.EtaleCohomology.EtaleSheaves.LZProperCut
 
 noncomputable section

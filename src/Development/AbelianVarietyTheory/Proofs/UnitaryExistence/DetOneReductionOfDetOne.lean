@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 open scoped TensorProduct
@@ -101,3 +103,9 @@ theorem det_baseChange_quot_eq_one : ∀ (R K : Type) [CommRing R] [IsDomain R] 
   exact hQ
 
 end GlobalTheory.DetMod
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_one_reduction_of_det_one : ∀ (R K : Type) [CommRing R] [IsDomain R] [Field K] [Algebra R K] [IsFractionRing R K] (L : Type) [AddCommGroup L] [Module R L] [Module.Finite R L] [Module.Projective R L] (I : Ideal R) [Finite (R ⧸ I)] (γ : L →ₗ[R] L), LinearMap.det (LinearMap.baseChange K γ) = 1 → LinearMap.det (LinearMap.baseChange (R ⧸ I) γ) = 1 := by
+  atlas_forward_decl GlobalTheory.DetMod.det_baseChange_quot_eq_one

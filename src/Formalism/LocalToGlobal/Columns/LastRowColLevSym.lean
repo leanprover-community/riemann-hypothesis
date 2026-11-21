@@ -1,6 +1,5 @@
 import Formalism.LocalToGlobal.Columns.TopInvHolds
 import Formalism.LocalToGlobal.Columns.RecLevelSym
-import Formalism.LocalToGlobal.Columns.LevGCount
 
 open NumberField IsDedekindDomain Module Matrix
 

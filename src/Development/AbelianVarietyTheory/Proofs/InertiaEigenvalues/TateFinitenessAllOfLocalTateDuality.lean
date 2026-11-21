@@ -5,6 +5,7 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.Ra
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1PeriodDatumStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicIntegersFiniteExtGoodCoefficientRingStatement
 
+section
 open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.WeaklyAdmissibleFiltrations
 
 namespace GlobalTheory
@@ -16,3 +17,9 @@ theorem finAll_of_localTateDuality : Formalism.GaloisCohomology.LocalTateDuality
     (GlobalTheory.T.padicIntegers_finiteExt_goodCoefficientRing (D.nd.l i) C.LL)
 
 end GlobalTheory
+end
+
+open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.WeaklyAdmissibleFiltrations
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tateFinitenessAll_of_localTateDuality : Formalism.GaloisCohomology.LocalTateDualityK → ∀ D : D7, Formalism.MainNotions.N.K.Rows.FinAll D := by
+  atlas_forward_decl GlobalTheory.finAll_of_localTateDuality

@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
 import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
 noncomputable section
@@ -115,3 +118,10 @@ theorem hom_free_injective (R : Type) [CommRing R] (J : Shv R) [Injective J] (P 
   exact h4
 
 end GlobalTheory.EtC.HomInj
+end
+end
+
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.moduleInjective_hom_free_etaleSheaf_injective : ∀ (R : Type) [CommRing R] (J : Shv R) [Injective J] (P : PSh), Module.Injective (ULift.{1} R) ((free R).obj P ⟶ J) := by
+  atlas_forward_decl GlobalTheory.EtC.HomInj.hom_free_injective

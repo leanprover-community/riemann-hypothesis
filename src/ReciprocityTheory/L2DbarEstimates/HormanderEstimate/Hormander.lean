@@ -1,6 +1,5 @@
 import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStatement
 import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.Imports
-import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.HilbertLemmas
 import ReciprocityTheory.L2DbarEstimates.HormanderEstimate.GmSingleIsTestForm
 
 namespace ReciprocityTheory.L2DbarEstimates.F

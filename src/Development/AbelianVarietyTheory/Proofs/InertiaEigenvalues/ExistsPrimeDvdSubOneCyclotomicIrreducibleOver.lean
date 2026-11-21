@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain Polynomial
 
 namespace GlobalTheory
@@ -98,3 +100,9 @@ theorem exists_prime_dvd_sub_one_irreducible_cyclotomic :
   omega
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_prime_dvd_sub_one_cyclotomic_irreducible_over : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ), n ≠ 0 → ∃ m : ℕ, m.Prime ∧ n ∣ m - 1 ∧ Irreducible (cyclotomic m K) := by
+  atlas_forward_decl GlobalTheory.exists_prime_dvd_sub_one_irreducible_cyclotomic

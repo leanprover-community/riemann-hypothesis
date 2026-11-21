@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
 
@@ -229,3 +231,10 @@ theorem cuspVanish : ReciprocityTheory.Ty.Fin.St.CuspVanish := by
   exact vanish b β lam hcusp (b i₀) i₀ j₀ rfl hb.symm hβ H F hH hF
 
 end GlobalTheory.CompanionTheory.TyFin.CuspVan
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidal_vanishing : ReciprocityTheory.Ty.Fin.St.CuspVanish := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.CuspVan.cuspVanish

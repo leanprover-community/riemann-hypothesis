@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.GlobalSchurBounds.KernelEntryData
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.KernelEntryData
 
 noncomputable section

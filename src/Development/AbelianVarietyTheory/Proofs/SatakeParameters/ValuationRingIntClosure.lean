@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.ShapeDegreeParity
-import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.TeichmullerFactorisation
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TauPlBijective
 set_option synthInstance.maxHeartbeats 400000
 

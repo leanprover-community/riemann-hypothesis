@@ -1,10 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowerBasisOfCharpolySeparableStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharpolyDvdPowOfAevalEqZero
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.UnitLemma Matrix MeasureTheory
 
 namespace GlobalTheory.UnitLemma.TraceDet
@@ -39,3 +39,9 @@ theorem det_trace_pow_mul_ne_zero : ∀ (K : UQ) (B : InvAlg K), B.P.Separable �
   exact (Fintype.linearIndependent_iff.1 e.linearIndependent) v hw0 |> funext
 
 end GlobalTheory.UnitLemma.TraceDet
+end
+
+open GlobalTheory.UnitLemma Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_trace_pow_add_mul_unit_ne_zero : ∀ (K : UQ) (B : InvAlg K), B.P.Separable → ∀ u : B.A, IsUnit u → (Matrix.of fun k l : Fin (Module.finrank K.E B.A) => Algebra.trace K.E B.A (B.g ^ ((k : ℕ) + (l : ℕ)) * u)).det ≠ 0 := by
+  atlas_forward_decl GlobalTheory.UnitLemma.TraceDet.det_trace_pow_mul_ne_zero

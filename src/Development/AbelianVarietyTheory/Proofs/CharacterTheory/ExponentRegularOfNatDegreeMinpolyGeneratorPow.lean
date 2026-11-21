@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
+import BuildAid.ForwardExisting
+
+section
 open Polynomial GlobalTheory.CuspGL GlobalTheory.BI
 
 namespace GlobalTheory.CuspGL
@@ -20,3 +23,9 @@ theorem exponent_regular_of_natDegree_minpoly_pow : ∀ (F : Type) [Field F] [Fi
   exact absurd (Nat.le_of_dvd hi h3) (not_le.mpr hid)
 
 end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exponent_regular_of_natDegree_minpoly_generator_pow : ∀ (F : Type) [Field F] [Finite F] (d k : ℕ) (ζ : AlgebraicClosure F), 0 < d → orderOf ζ = Nat.card F ^ d - 1 → (minpoly F (ζ ^ k)).natDegree = d → ∀ i : ℕ, 0 < i → i < d → ¬ k * Nat.card F ^ i ≡ k [MOD Nat.card F ^ d - 1] := by
+  atlas_forward_decl GlobalTheory.CuspGL.exponent_regular_of_natDegree_minpoly_pow

@@ -1,6 +1,5 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.RankOneEisenstein.Theta2Integral
-import GroundTheory.GlobalFields.TateThesis.TateThetaDecay
 set_option maxSynthPendingDepth 1
 
 open NumberField NumberField.mixedEmbedding IsDedekindDomain IsDedekindDomain.HeightOneSpectrum

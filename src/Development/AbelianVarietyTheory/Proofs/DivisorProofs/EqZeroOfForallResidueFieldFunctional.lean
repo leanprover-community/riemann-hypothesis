@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem eq_zero_of_forall_residueField_functional (A M : Type) [CommRing A] [IsReduced A]
@@ -21,3 +23,8 @@ theorem eq_zero_of_forall_residueField_functional (A M : Type) [CommRing A] [IsR
   simpa [← LinearMap.comp_apply, hfg] using this
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_of_forall_residueField_functional' : ∀ (A M : Type) [CommRing A] [IsReduced A] [AddCommGroup M] [Module A M] [Module.Finite A M] [Module.Projective A M] (x : M), (∀ (p : Ideal A) [p.IsPrime] (l : M →ₗ[A] p.ResidueField), l x = 0) → x = 0 := by
+  atlas_forward_decl GlobalTheory.eq_zero_of_forall_residueField_functional

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
+import BuildAid.ForwardExisting
+
+section
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ
 
@@ -31,3 +34,10 @@ theorem exists_root_of_unity_close_of_pow_close : ∀ {Ω K : Type} [Field Ω] [
   exact hcon a ha'
 
 end GlobalTheory
+end
+
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_rootOfUnity_close_of_pow_reduces_one : ∀ {Ω K : Type} [Field Ω] [IsAlgClosed Ω] [CharZero Ω] [Field K] [Algebra Ω K] (W : ValuationSubring K) (x : K) (N : ℕ), 0 < N → W.valuation (x ^ N - 1) < 1 → ∃ ζ : Ω, ζ ^ N = 1 ∧ W.valuation (x - algebraMap Ω K ζ) < 1 := by
+  atlas_forward_decl GlobalTheory.exists_root_of_unity_close_of_pow_close

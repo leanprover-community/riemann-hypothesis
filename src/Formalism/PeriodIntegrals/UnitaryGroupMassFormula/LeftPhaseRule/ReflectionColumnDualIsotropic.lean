@@ -1,5 +1,4 @@
 import Formalism.HermitianCurvature.StatementQ
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LeftPhaseRule.MulApplyS
 
 open Matrix

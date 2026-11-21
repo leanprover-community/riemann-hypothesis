@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.RegularHypothesesAndConclusion
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HasAffineChartId
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFreeHom
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSecImageNonzeroLocus

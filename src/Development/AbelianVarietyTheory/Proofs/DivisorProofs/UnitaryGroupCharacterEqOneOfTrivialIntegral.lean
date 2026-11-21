@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.StatementF
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG Matrix GlobalTheory.UnitarySwap
 
 noncomputable section
@@ -257,3 +259,10 @@ theorem char_eq_one : ∀ (L : Type) [Field L] [CharZero L] [Valued L (WithZero 
   fun _ _ _ _ _ _ _ _ _ _ hU _ hJ hh ν hν g => eq_one hU hJ hh ν hν g
 
 end GlobalTheory.UnitaryCharacter
+end
+end
+
+open Formalism.UG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryGroup_character_eq_one_of_trivial_integral : ∀ (L : Type) [Field L] [CharZero L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : L) (σ : L →+* L) (q n : ℕ) (J : GL (Fin n) L), IsUnramInv ϖ σ q → Valued.v (2 : L) = 1 → J ∈ GLint (Fin n) (intL L) → (∀ i j, σ ((J : Matrix (Fin n) (Fin n) L) i j) = (J : Matrix (Fin n) (Fin n) L) j i) → ∀ ν : UJ σ (J : Matrix (Fin n) (Fin n) L) →* Circle, (∀ k : UJ σ (J : Matrix (Fin n) (Fin n) L), (k : GL (Fin n) L) ∈ GLint (Fin n) (intL L) → ν k = 1) → ∀ g, ν g = 1 := by
+  atlas_forward_decl GlobalTheory.UnitaryCharacter.char_eq_one

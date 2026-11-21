@@ -3,7 +3,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.Cu
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.CuspidalMultiplicityOne
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowMulIsUnitary
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspSubZeroVEqTop
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsHasCentChar
 open GlobalTheory.Published
 
 noncomputable section

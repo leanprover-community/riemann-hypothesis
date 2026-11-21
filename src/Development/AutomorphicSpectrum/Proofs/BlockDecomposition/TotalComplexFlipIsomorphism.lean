@@ -1,5 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.MapHComp
+import BuildAid.ForwardExisting
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH
 universe w w' w'' t t' v u v' u' v'' u''
@@ -63,3 +66,11 @@ theorem flip_tot : ∀ {R : Type} [CommRing R] (K : DCx.{w} R), ∃ φ : Cx.Hom 
       exact sign_smul_sign_smul (p * q) (y.1 q p)
 
 end GlobalTheory.CompanionTheory.DCFlip
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH
+universe w w' w'' t t' v u v' u' v'' u''
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.total_complex_flip_isomorphism : ∀ {R : Type} [CommRing R] (K : DCx.{w} R), ∃ φ : Cx.Hom K.tot K.flip.tot (RingHom.id R), (∀ n, Function.Bijective (φ.f n)) ∧ ∀ n (x : K.tot.X n) p q, (φ.f n x).1 q p = (-1 : ℤ) ^ (p * q) • x.1 p q := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DCFlip.flip_tot

@@ -1,6 +1,7 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StDefinite
 
+section
 noncomputable section
 
 open CompanionTheory.Rg.Fl GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace GlobalTheory.AutMult
@@ -47,3 +48,9 @@ theorem stIso : StIso := by
 end GlobalTheory.CompanionTheory.FactorIso
 
 end
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.IsomorphismStatement : StIso := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FactorIso.stIso

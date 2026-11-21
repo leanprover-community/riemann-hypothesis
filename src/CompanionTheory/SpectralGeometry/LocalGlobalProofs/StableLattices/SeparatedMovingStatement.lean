@@ -1,5 +1,7 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StDefinite
+
+section
 open CompanionTheory.Rg.Fl
 
 namespace GlobalTheory.CompanionTheory.RgFl
@@ -65,3 +67,9 @@ theorem stSepMove : StSepMove := by
       ⟨e (γ : G), hmem γ⟩ (by rw [← hact, hxy])
 
 end GlobalTheory.CompanionTheory.RgFl
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.SeparatedMovingStatement : StSepMove := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgFl.stSepMove

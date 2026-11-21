@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Proofs.CharacterTheory.OrthogonalIntVect
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.RegularIffNatDegreeAndExistsEllipticGL
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InnerProductRootPowerSumEqOfFrobeniusModEq
 
+section
 open ReciprocityTheory.Ty.Fin
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
 open Polynomial CategoryTheory
@@ -407,3 +408,12 @@ theorem hasCuspLabel_unique : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq 
 end Label
 
 end GlobalTheory.CompanionTheory.TyFin.LabelUniq
+end
+
+open ReciprocityTheory.Ty.Fin
+open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
+open Polynomial CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidal_label_unique : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K] (C : LabelConv K) (ι : Type) [Fintype ι] [DecidableEq ι] (τ : FDRep ℂ (GL ι K)) (P P' : K[X]),
+    HasCuspLabel C τ P → HasCuspLabel C τ P' → P = P' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.LabelUniq.hasCuspLabel_unique

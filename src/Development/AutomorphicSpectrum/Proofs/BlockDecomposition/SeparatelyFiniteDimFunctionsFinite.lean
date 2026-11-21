@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneMemGoodCT
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsFinsetSeparating
+import BuildAid.ForwardExisting
 
+section
 open NumberField GlobalTheory.CuspRep MeasureTheory PositivityTheory.Affgl GlobalTheory.CompanionTheory.CTFin
 
 namespace GlobalTheory.CompanionTheory.CTFin.ProdTrick
@@ -42,3 +44,9 @@ theorem exists_finiteDimensional_of_slices :
   exact ⟨S, this, fun f h1 h2 => ⟨h1, h2⟩⟩
 
 end GlobalTheory.CompanionTheory.CTFin.ProdTrick
+end
+
+open NumberField GlobalTheory.CuspRep MeasureTheory PositivityTheory.Affgl GlobalTheory.CompanionTheory.CTFin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.separately_finite_dim_functions_finite : ∀ (X Y : Type) (V₁ : Submodule ℂ (X → ℂ)) (V₂ : Submodule ℂ (Y → ℂ)), FiniteDimensional ℂ V₁ → FiniteDimensional ℂ V₂ → ∃ 𝓥 : Submodule ℂ (X × Y → ℂ), FiniteDimensional ℂ 𝓥 ∧ ∀ f : X × Y → ℂ, (∀ y, (fun x => f (x, y)) ∈ V₁) → (∀ x, (fun y => f (x, y)) ∈ V₂) → f ∈ 𝓥 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CTFin.ProdTrick.exists_finiteDimensional_of_slices

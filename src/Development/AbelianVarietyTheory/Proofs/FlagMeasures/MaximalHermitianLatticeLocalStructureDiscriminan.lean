@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
 import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice

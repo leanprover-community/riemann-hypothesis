@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.EquivariantSections.EquivSection
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset Matrix
@@ -53,3 +55,9 @@ theorem rhoTorus : RhoTorus := by
     exact absurd (Finset.mem_univ _) h
 
 end GlobalTheory.CompanionTheory.RgTorus
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torus_restriction_representation : PositivityTheory.RgDs.K.RhoTorus := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgTorus.rhoTorus

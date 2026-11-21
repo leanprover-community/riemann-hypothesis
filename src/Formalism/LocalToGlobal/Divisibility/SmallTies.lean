@@ -3,7 +3,6 @@ import Formalism.LocalToGlobal.Divisibility.LinkDef
 import Formalism.LocalToGlobal.Divisibility.ConstantGeTwentyEight
 import Formalism.LocalToGlobal.Divisibility.TiedLemmas
 import Formalism.LocalToGlobal.GlobalTheory.FamRowsP
-import Formalism.LocalRingCardinality.DataParams₂
 
 open Module NumberField IsDedekindDomain
 

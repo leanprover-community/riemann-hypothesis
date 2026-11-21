@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+import BuildAid.ForwardExisting
+
+section
 open NumberField ReciprocityTheory.ChartRestriction.G.FD
 
 namespace GlobalTheory
@@ -113,3 +116,9 @@ theorem baire_one_candidate {E : Type} [Field E] [NumberField E] [IsCMField E] {
 end
 
 end GlobalTheory
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_candidate_borel_move_open_frames_baire : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r) (S : Set (GL (Fin r) E)) (a c : GL (Fin r) E) (W : Set (Frame X.Ψ r)), IsOpen W → W.Nonempty → W ⊆ X.dom → (∀ z ∈ W, ∃ γ ∈ S, ∃ b ∈ Bor X.Ψ r, lact c z = rmul (lact γ (lact a z)) b) → ∃ γ ∈ S, ∃ V : Set (Frame X.Ψ r), IsOpen V ∧ V.Nonempty ∧ V ⊆ X.dom ∧ ∀ x ∈ V, ∃ b ∈ Bor X.Ψ r, lact ((γ * a)⁻¹ * c) x = rmul x b := by
+  atlas_forward_decl GlobalTheory.baire_one_candidate

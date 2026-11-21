@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.HermitianLattices.StatementMass
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CovolumeLeSumVolumeOfCover
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.VolumePosSimplexLe
 

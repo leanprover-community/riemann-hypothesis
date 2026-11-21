@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TateUnramifiedOfTorsionUnramified
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -183,3 +184,10 @@ theorem exists_integral_mul_eq_of_isAbove : ∀ (R K Ω : Type) [CommRing R] [Is
   · exact isIntegral_of_mul_pow_mem n y b fun t ht => partialSum_mul_pow_mem c n y hsum hjn (by omega)
 
 end GlobalTheory.ValAbove
+end
+end
+
+open GlobalTheory.Published.AbVarRed IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_quotient_of_valuationSubring_above_dvr : ∀ (R K Ω : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K] [Field Ω] [Algebra K Ω] [IsSepClosure K Ω] (V : ValuationSubring Ω), IsAbove R K V.toSubring → ∀ y ∈ V, ∃ a s : Ω, ((algebraMap K Ω).comp (algebraMap R K)).IsIntegralElem a ∧ ((algebraMap K Ω).comp (algebraMap R K)).IsIntegralElem s ∧ V.valuation s = 1 ∧ y * s = a := by
+  atlas_forward_decl GlobalTheory.ValAbove.exists_integral_mul_eq_of_isAbove

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosDisc
+import BuildAid.ForwardExisting
+
+section
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Lin
 open scoped Classical
 
@@ -76,3 +79,10 @@ theorem _root_.GlobalTheory.Lin.zeros_eq_zeros_primitiveCharacter :
       analyticOrderAt_eq_zero.2 (Or.inr hEne), add_zero]
 
 end GlobalTheory.Lin
+end
+
+open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Lin
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dirichletL_zeros_eq_primitiveCharacter_zeros : ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (s : ℂ), 0 < s.re → (χ ≠ 1 ∨ s ≠ 1) → haveI : NeZero χ.conductor := ⟨χ.conductor_ne_zero⟩; (LFunction χ s = 0 ↔ LFunction χ.primitiveCharacter s = 0) ∧ ord χ s = ord χ.primitiveCharacter s := by
+  atlas_forward_decl GlobalTheory.Lin.zeros_eq_zeros_primitiveCharacter

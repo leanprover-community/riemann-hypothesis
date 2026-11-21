@@ -1,8 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.GlobalTheory.GL5.PClassDecomp
-import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsHermitianSpaceSelfDualLatticeSignatureStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.VolumeRatioUpPositiveLineStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsHermitianSpaceSelfDualLatticeSignature
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.VolumeRatioUpPositiveLine
+
+section
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -43,3 +44,10 @@ theorem vol_eq_massI_of_two_le_rank : ∀ D : D7, VolTie D → Conclusion2 D →
   · exact h2v.2 W P Q hW hs hP
 
 end GlobalTheory.Glob
+end
+
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.vol_eq_mass_selfDual_rank_ge_two : ∀ D : D7, VolTie D → Conclusion2 D → DefiniteVolumeEqMass D → ∀ (W : HSpace D.host.E) (P Q : ℕ), W.SigOK → (∀ τ, W.sig τ = (P, Q)) → 2 ≤ P + Q → D.vol W = massI D (P + Q) := by
+  atlas_forward_decl GlobalTheory.Glob.vol_eq_massI_of_two_le_rank

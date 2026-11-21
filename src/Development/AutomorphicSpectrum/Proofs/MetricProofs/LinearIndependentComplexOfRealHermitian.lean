@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjectionStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.QuotientLatticeByIsotropicSubmoduleStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjection
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.QuotientLatticeByIsotropicSubmodule
+
+section
 open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
 
 namespace GlobalTheory.CompanionTheory.Ar.RealFormIndep
@@ -57,3 +57,9 @@ theorem linearIndependent_complex_of_real_form :
   exact Complex.ext (by simpa using h1) (by simpa using h2)
 
 end GlobalTheory.CompanionTheory.Ar.RealFormIndep
+end
+
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearIndependent_complex_of_real_hermitian : ∀ (g k : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ), (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm *ᵥ star z).re) → ∀ u : Fin k → Fin g → ℂ, LinearIndependent ℝ u → (∀ i j, (u i ⬝ᵥ Hm *ᵥ star (u j)).im = 0) → LinearIndependent ℂ u := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.RealFormIndep.linearIndependent_complex_of_real_form

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.BetaLUniq
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.BetaLUniqOfAnisoEigen
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.EigenvalueLastLineOne
 

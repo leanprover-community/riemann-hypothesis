@@ -4,6 +4,8 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompactGroupRe
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsConjIntegral
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRingEquivFinExtIntegersPadicIntOf
 import Formalism.LocalRingCardinality.SpanPowerMembership.NDLocE
+
+section
 open Formalism.BasicNotions
 
 noncomputable section
@@ -137,3 +139,10 @@ theorem exists_finExt_conj_intOf : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Gro
   exact ⟨(z : L.1).2, (Formalism.BasicNotions.Examples₂.LB.mem_OL L _).1 z.2⟩
 
 end GlobalTheory.IntegralConjFinExt
+end
+end
+
+open Formalism.BasicNotions
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finExt_conj_entries_mem_intOf : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ] [T2Space Γ] (a : ℕ) (ρ : Γ →* GL (Fin a) (PadicAlgCl l)), Continuous (fun g => ((ρ g : GL (Fin a) (PadicAlgCl l)) : Matrix (Fin a) (Fin a) (PadicAlgCl l))) → ∃ (L : Loc.FinExt l) (P : GL (Fin a) (PadicAlgCl l)), ∀ g i k, ((P⁻¹ * ρ g * P : GL (Fin a) (PadicAlgCl l)) : Matrix (Fin a) (Fin a) (PadicAlgCl l)) i k ∈ Formalism.L2.TwC.intOf l L.1 := by
+  atlas_forward_decl GlobalTheory.IntegralConjFinExt.exists_finExt_conj_intOf

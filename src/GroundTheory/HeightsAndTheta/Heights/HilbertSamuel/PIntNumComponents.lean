@@ -2,7 +2,6 @@ import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsIntNumComponents
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPerturb
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PBaseChange
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPCProof
 set_option maxSynthPendingDepth 1
 

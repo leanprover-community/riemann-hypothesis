@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Filter Topology
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG
 
@@ -125,3 +127,9 @@ theorem avgInv_of_avgMem : AvgMem → AvgInv := by
     exact congrArg Subtype.val (e.apply_symm_apply w)
 
 end GlobalTheory.CompanionTheory.RgEisAvg
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.average_invariance : AvgMem → AvgInv := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisAvg.avgInv_of_avgMem

@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsGreenReg
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ConeBall
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFsLogIntegrable
 set_option maxSynthPendingDepth 1
 

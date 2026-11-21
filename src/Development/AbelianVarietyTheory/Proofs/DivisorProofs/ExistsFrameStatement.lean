@@ -2,10 +2,6 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InducesPl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistenceOfComparison
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComparisonStatementHolds
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsHTFrameCpAndNonempty
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ModuliPointIntegralFrameAfterFiniteExtension
-import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsUniformisedChartAfterValuationRingExt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCommonExtension
 
 set_option autoImplicit false
 

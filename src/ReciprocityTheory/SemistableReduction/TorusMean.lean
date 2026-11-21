@@ -1,4 +1,3 @@
-import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
 import ReciprocityTheory.SemistableReduction.TorusMeanD
 
 noncomputable section

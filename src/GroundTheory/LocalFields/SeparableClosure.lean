@@ -1,7 +1,5 @@
 import Mathlib
-import GroundTheory.LocalFields.Interface
 import GroundTheory.LocalFields.FiniteExtension
-import GroundTheory.LocalFields.Uniqueness
 import GroundTheory.LocalFields.IntermediateField
 
 noncomputable section

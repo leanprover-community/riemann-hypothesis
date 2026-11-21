@@ -3,7 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.StdBases
 import Formalism.LocalToGlobal.KernelLattices.AdaptedEnt
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsRBasisOfLocBasis
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormTauEmbPosPlConjEq
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PartnerPlaceInvolutiveNormConjEqStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PartnerPlaceInvolutiveNormConjEq
+
+section
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.TaylorLogMetric GlobalTheory.KerStd Classical
 
 noncomputable section
@@ -247,3 +249,13 @@ theorem stdBases_of_basR : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (lam : Qbar →
     exact dualM_left _ (hdet _)
 
 end GlobalTheory.KerStd
+end
+end
+end
+end
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.TaylorLogMetric GlobalTheory.KerStd Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isStandardBasesLatticeAtPlace_of_adapted_bases : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (N : ℕ) (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (P : D.what₂.Tau → Matrix (Fin N) (Fin N) D.host.E), L.FG → (∀ τ, GL3Columns.BasR D lam τ L ((P τ).map (tauEmb D lam τ))) → (∀ τ τ', Formalism.L2.Ker.ConjPr lam τ τ' → P τ' = Formalism.L2.Ker.dualM (P τ)) → StdBases D lam L P := by
+  atlas_forward_decl GlobalTheory.KerStd.stdBases_of_basR

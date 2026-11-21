@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RangeAlgebraMapEqIInfDiscreteValuationSubring
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain Formalism.L2.Pj IsLocalRing
 
 namespace GlobalTheory.GaussPoint
@@ -108,3 +110,9 @@ theorem exists_gaussPoint (T : CDVR) (ϖ : T.V) (hϖ : Irreducible ϖ) :
     exact hirr'.not_isUnit (isUnit_of_dvd_unit hs (hunit s h))
 
 end GlobalTheory.GaussPoint
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_gaussPoint' : ∀ (T : CDVR) (ϖ : T.V), Irreducible ϖ → ∃ (T' : CDVR) (ev : PowerSeries T.V →+* T'.V) (i : T.Fr →+* T'.Fr), Function.Injective ev ∧ IsUnit (ev PowerSeries.X) ∧ (∀ s, ev (PowerSeries.C ϖ) ∣ ev s → PowerSeries.C ϖ ∣ s) ∧ (∀ a, i (algebraMap T.V T.Fr a) = algebraMap T'.V T'.Fr (ev (PowerSeries.C a))) ∧ ∀ x, vV T'.V (i x) = vV T.V x := by
+  atlas_forward_decl GlobalTheory.GaussPoint.exists_gaussPoint

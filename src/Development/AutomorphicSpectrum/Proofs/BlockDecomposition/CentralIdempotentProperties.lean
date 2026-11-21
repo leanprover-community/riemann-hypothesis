@@ -1,9 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralIdempotentAction
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SeparableIrreducibleStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SimpleIffIrreducibleStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SeparableIrreducible
 
+section
 open ReciprocityTheory.Ty.Fin CategoryTheory
 
 namespace GlobalTheory.CompanionTheory.TyFin
@@ -66,3 +65,9 @@ theorem zIdemFacts : ReciprocityTheory.Ty.Fin.St.ZIdemFacts := by
     simp
 
 end GlobalTheory.CompanionTheory.TyFin
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.central_idempotent_properties : ReciprocityTheory.Ty.Fin.St.ZIdemFacts := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.zIdemFacts

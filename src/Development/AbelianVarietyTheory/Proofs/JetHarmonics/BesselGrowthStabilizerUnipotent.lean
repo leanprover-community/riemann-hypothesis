@@ -1,10 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
-import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HilbertSchmidtNormSubmulInvGeOneStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HilbertSchmidtNormSubmulInvGeOne
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GrowthUnitaryGroupRpowNegIntegrableStatement
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
 
+section
 open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
 open scoped InnerProductSpace ENNReal
 
@@ -88,3 +88,10 @@ theorem besselGrowthS : Formalism.FourierDecayAlt.ThreeDimData.GrowthS :=
   BesselGrowth.growthS_of GlobalTheory.T.hilbertSchmidt_norm_submul_inv_ge_one GlobalTheory.T.growth_unitaryGroup_rpow_neg_integrable
 
 end GlobalTheory
+end
+
+open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
+open scoped InnerProductSpace ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.besselGrowth_stabilizer_unipotent : Formalism.FourierDecayAlt.ThreeDimData.GrowthS := by
+  atlas_forward_decl GlobalTheory.besselGrowthS

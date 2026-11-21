@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.ExistsRationalDarbouxHermitianTensorAdeles
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes

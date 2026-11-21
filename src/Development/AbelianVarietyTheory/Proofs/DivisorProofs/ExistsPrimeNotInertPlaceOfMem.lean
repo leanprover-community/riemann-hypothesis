@@ -2,6 +2,8 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPlaceModelPlaceMap
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinPartConjMem
+
+section
 open scoped Pointwise
 open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
 open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
@@ -52,3 +54,14 @@ theorem exists_prime_notInert_place : ∀ {D : D7} {T : Type} {L : LevCh D T} (P
   exact h2 (zero_mem _)
 
 end GlobalTheory.FunObj.SqNum
+end
+
+open scoped Pointwise
+open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
+open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
+open Formalism.L2.Host (HChar)
+open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum
+open GlobalTheory.Mem.Col2.SplitChar (finIdl)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_prime_notInert_place_of_mem : ∀ {D : D7} {T : Type} {L : LevCh D T} (P : Places L) (v : HeightOneSpectrum (𝓞 D.host.F)), v ∈ P.S0 → ∃ q : ℕ, q.Prime ∧ ¬ InertQ D q ∧ ((q : ℕ) : 𝓞 D.host.F) ∈ v.asIdeal := by
+  atlas_forward_decl GlobalTheory.FunObj.SqNum.exists_prime_notInert_place

@@ -1,4 +1,3 @@
-import Formalism.PeriodIntegrals.NormGramAtOrigin
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrthogonalFamilyExistence.ExistsOrthFamily
 
 private lemma hform_add_right_orbital_bounds_conclusion {E : Type} [Field E] (σ : E →+* E) {n : ℕ}

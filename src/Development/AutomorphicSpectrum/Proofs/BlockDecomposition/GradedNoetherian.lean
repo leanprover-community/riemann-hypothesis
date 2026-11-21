@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformVanishing
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -213,3 +214,10 @@ theorem gradedNoeth : GradedNoeth := by
   rwa [DirectSum.lof_eq_of, DirectSum.of_eq_same] at h5
 
 end GlobalTheory.CompanionTheory.GE.GNoeth
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_noetherian : GradedNoeth := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.GNoeth.gradedNoeth

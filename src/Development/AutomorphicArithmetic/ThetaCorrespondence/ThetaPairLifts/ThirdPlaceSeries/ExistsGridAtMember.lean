@@ -1,4 +1,5 @@
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCharacterGridDataStatement
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCharacterGridData
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PublishedInputsThirdLayer
 

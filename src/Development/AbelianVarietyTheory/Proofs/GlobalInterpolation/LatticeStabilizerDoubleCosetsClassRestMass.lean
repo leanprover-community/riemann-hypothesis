@@ -1,7 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.GlobalTheory.GL5.PClassDecomp
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DoubleCosetsMassLevel
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DefClassDecompIff
+
+section
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -17,3 +18,10 @@ theorem defClassRest : ∀ D : D7, DefClassRest D := by
   exact ⟨n, g, hcov, hdisj, hsum⟩
 
 end GlobalTheory.ClassRestObj
+end
+
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_stabilizer_doubleCosets_classRest_mass : ∀ D : D7, DefClassRest D := by
+  atlas_forward_decl GlobalTheory.ClassRestObj.defClassRest

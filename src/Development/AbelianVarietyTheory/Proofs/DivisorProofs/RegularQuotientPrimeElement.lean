@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RegularLocalRingNormalDomain
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem prime_algebraMap_localization_of_isRegularRing_quotient :
@@ -45,3 +47,7 @@ theorem prime_algebraMap_localization_of_isRegularRing_quotient :
   exact (Ideal.span_singleton_prime hne).1 hprime
 
 end GlobalTheory
+end
+
+theorem _root_.GlobalTheory.T.regular_quotient_prime_element : ∀ (A : Type) [CommRing A] [IsDomain A] (P : Ideal A) [P.IsPrime] (x : A), x ≠ 0 → x ∈ P → IsRegularRing (A ⧸ Ideal.span {x}) → Prime (algebraMap A (Localization.AtPrime P) x) := by
+  atlas_forward_decl _root_.GlobalTheory.prime_algebraMap_localization_of_isRegularRing_quotient

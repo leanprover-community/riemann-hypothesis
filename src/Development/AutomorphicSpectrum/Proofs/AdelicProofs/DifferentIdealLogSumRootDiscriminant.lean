@@ -1,7 +1,9 @@
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.RatProductFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.SumLogIdealEqLogAbsNormStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.AdelicProofs.RatProductFormula
+import Development.AutomorphicSpectrum.Proofs.AdelicProofs.SumLogIdealEqLogAbsNorm
+
+section
 open NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 
 namespace GlobalTheory.CompanionTheory.Ar.Fl
@@ -31,3 +33,9 @@ theorem different_sum_eq_neg_finrank_mul_log_rootDiscr : ∀ (E : Type) [Field E
   linarith
 
 end GlobalTheory.CompanionTheory.Ar.Fl
+end
+
+open NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.different_ideal_log_sum_root_discriminant : ∀ (E : Type) [Field E] [NumberField E], {p : Nat.Primes | ∑ j : E →+* ℂ_[p], logIdeal (j.comp (algebraMap (𝓞 E) E)) (differentIdeal ℤ (𝓞 E)) ≠ 0}.Finite ∧ ∑ᶠ p : Nat.Primes, ∑ j : E →+* ℂ_[p], logIdeal (j.comp (algebraMap (𝓞 E) E)) (differentIdeal ℤ (𝓞 E)) = -(Module.finrank ℚ E : ℝ) * Real.log (rootDiscr E) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Fl.different_sum_eq_neg_finrank_mul_log_rootDiscr

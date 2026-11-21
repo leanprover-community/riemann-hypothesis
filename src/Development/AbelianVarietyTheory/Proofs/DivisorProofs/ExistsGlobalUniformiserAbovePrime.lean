@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 open scoped TensorProduct
 
@@ -47,3 +50,10 @@ theorem exists_global_uniformiser_above_prime :
     exact (Ideal.isRadical_iff_quotient_reduced J).mp (Ideal.radical_isRadical _)
 
 end GlobalTheory
+end
+
+open NumberField
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_global_uniformizer_above_prime : ∀ (p : ℕ) [Fact p.Prime] (F : Type) [Field F] [NumberField F], ∃ ϖ z : 𝓞 F, ϖ * z - (p : 𝓞 F) ∈ Ideal.span {(p : 𝓞 F) ^ 2} ∧ (∃ n : ℕ, ϖ ^ n ∈ Ideal.span {(p : 𝓞 F)}) ∧ IsReduced (𝓞 F ⧸ Ideal.span {(p : 𝓞 F), ϖ}) := by
+  atlas_forward_decl GlobalTheory.exists_global_uniformiser_above_prime

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ColRepSemisimple
 
 open Formalism.MainNotions.N Polynomial

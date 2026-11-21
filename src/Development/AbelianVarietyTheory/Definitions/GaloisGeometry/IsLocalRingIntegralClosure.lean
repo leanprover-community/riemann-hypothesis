@@ -1,8 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsContinuousForgetForget
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PullPreservesFiniteLimits
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteMaximalSpectrumOfFiniteOfIsLocalRing
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PullHXApply
 
 noncomputable section

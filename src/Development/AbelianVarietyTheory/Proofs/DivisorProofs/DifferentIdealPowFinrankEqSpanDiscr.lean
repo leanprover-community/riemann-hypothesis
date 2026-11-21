@@ -1,5 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasLevelStd
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
+import BuildAid.ForwardExisting
+
+section
 open NumberField UpperHalfPlane GlobalTheory.HilbFam GlobalTheory.QFam
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization (Emb Frac latM qPow upperHalf cK omegaFactor IsPartialZeta HasExpansion)
 open GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates (iterD partialD)
@@ -82,3 +85,12 @@ theorem differentIdeal_pow_finrank_eq_span_discr :
   rw [hL, Ideal.absNorm_eq_one_iff.mp h3, Ideal.mul_top]
 
 end GlobalTheory.GalDiff
+end
+
+open NumberField UpperHalfPlane GlobalTheory.HilbFam GlobalTheory.QFam
+open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization (Emb Frac latM qPow upperHalf cK omegaFactor IsPartialZeta HasExpansion)
+open GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates (iterD partialD)
+open scoped Classical MatrixGroups nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.differentIdeal_pow_finrank_eq_span_discr' : ∀ (F : Type) [Field F] [NumberField F] [IsGalois ℚ F], differentIdeal ℤ (𝓞 F) ^ Module.finrank ℚ F = Ideal.span {((discr F : ℤ) : 𝓞 F)} := by
+  atlas_forward_decl GlobalTheory.GalDiff.differentIdeal_pow_finrank_eq_span_discr

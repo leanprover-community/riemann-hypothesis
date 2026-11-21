@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoConjOfIsCsd
+import BuildAid.ForwardExisting
 
+section
 open NumberField GlobalTheory.CuspRep
 
 namespace GlobalTheory.CuspRep.KFin
@@ -38,3 +40,9 @@ theorem kfin_lie (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : 
     (Submodule.mem_map_of_mem (Submodule.subset_span ⟨k, rfl⟩)))
 
 end GlobalTheory.CuspRep.KFin
+end
+
+open NumberField GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_span_compact_orbit_lieDerivative : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (X : GlobalTheory.CuspRep.Lie E a) (φ : GlobalTheory.CuspRep.Sm E a), FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k => GlobalTheory.CuspRep.cptRep E a k φ)) → FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k => GlobalTheory.CuspRep.cptRep E a k (GlobalTheory.CuspRep.lie E a X φ))) := by
+  atlas_forward_decl GlobalTheory.CuspRep.KFin.kfin_lie

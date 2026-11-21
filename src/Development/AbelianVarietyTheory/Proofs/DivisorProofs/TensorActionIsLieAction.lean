@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrActApply
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg GlobalTheory.SteepMult
 
 namespace GlobalTheory.SteepMult.TLie
@@ -140,3 +142,10 @@ theorem isKLieAct_tAct (R S k : ℕ) (W : Type) [AddCommGroup W] [Module ℂ W]
   abel
 
 end GlobalTheory.SteepMult.TLie
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg GlobalTheory.SteepMult
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensor_action_is_lie_action : ∀ (R S k : ℕ) (W : Type) [AddCommGroup W] [Module ℂ W] (actW : Mat R S →ₗ[ℂ] Module.End ℂ W),
+    IsKLieAct actW → IsKLieAct (tAct k actW) := by
+  atlas_forward_decl GlobalTheory.SteepMult.TLie.isKLieAct_tAct

@@ -1,4 +1,3 @@
-import Formalism.LandauZeroFreeBounds.SiegelWalfiszAP
 import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf
 
 open Finset Complex ArithmeticFunction

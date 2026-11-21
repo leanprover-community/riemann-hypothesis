@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.SqfDivDeg
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarefreeDivisorDegree.Assemble
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarefreeDivisorDegree.CardMonicTwoRootsLe
 

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutComponentSt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutZeroNotLeSt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutNonemptySt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutDimLowerSt

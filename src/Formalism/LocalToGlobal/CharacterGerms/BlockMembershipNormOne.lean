@@ -1,5 +1,4 @@
 import Formalism.LocalToGlobal.CharacterGerms.ValBlocksChart
-import Formalism.LocalToGlobal.ProjectiveLattices.RowDeg
 
 noncomputable section
 

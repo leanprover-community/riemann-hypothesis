@@ -1,11 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.RegConst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaAtMove
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TupleMatch
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridFramesDoublingPolynomialExistsStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareTowerFrameCompat
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHaarSmul
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareStandingTripleThetaSecond
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.XiAwayIm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPowClose
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsRestRest

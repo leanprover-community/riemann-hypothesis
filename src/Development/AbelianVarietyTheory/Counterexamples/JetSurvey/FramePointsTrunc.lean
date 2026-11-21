@@ -4,7 +4,6 @@ import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpActOf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.LinEig
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeUniqH
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeBeta
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsTorusAndQuotientHom
 
 set_option autoImplicit false

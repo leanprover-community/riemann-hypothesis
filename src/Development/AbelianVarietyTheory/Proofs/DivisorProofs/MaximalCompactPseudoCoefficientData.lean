@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.RangeShape
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceEqOfMem
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HarishChandraModulesIndefiniteUnitaryGroup
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HighestWeightKernelLowestType
@@ -25,6 +24,8 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SupertraceCarriedBy
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolyCoefIrrepHasDerivedAction
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylFormulaCompactTorusIdentityOfIngredients
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolyOnKConj
+
+section
 open GlobalTheory.PsCo.Pc1
 
 namespace GlobalTheory.PsCo.Pc1
@@ -41,3 +42,9 @@ theorem maximalCompact_pseudoCoefficientData' : StKData :=
     GlobalTheory.PsCo.PcEF.gapConditions_of_largeGaps GlobalTheory.PsCo.PcEF.unitaryRep_upq_matrixFunction GlobalTheory.HcPort.casimirActsByScalar_indefUnitary
 
 end GlobalTheory.PsCo.Pc1
+end
+
+open GlobalTheory.PsCo.Pc1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.maximalCompact_pseudoCoefficientData : StKData := by
+  atlas_forward_decl GlobalTheory.PsCo.Pc1.maximalCompact_pseudoCoefficientData'

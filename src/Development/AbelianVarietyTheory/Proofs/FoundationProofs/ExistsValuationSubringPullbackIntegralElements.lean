@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.ApplyEqOfMemAdjo
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExists
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGaloisInvariantValuationIntegersEqIntegral
 
+section
 open scoped MatrixGroups
 open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
 
@@ -25,3 +26,10 @@ theorem exists_valuationSubring_isInt_comap :
     exact hv (j x)
 
 end GlobalTheory.K5
+end
+
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_valuationSubring_pullback_integral_elements : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ j : Ω →+* Ωl, ∃ B : ValuationSubring Ω, ((p : ℕ) : Ω) ∈ B.nonunits ∧ ∀ x, x ∈ B ↔ IsInt p (j x) := by
+  atlas_forward_decl GlobalTheory.K5.exists_valuationSubring_isInt_comap

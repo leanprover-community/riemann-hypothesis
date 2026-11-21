@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrderedCechToCatCochainsOneApplyValueAtSubset
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
+
+section
 open Matrix Finset MeasureTheory
 open scoped ContDiff ComplexConjugate InnerProductSpace
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
@@ -21,3 +22,14 @@ theorem exists_rightInvariant_measure_unitaryGroup
   refine ⟨μ.inv, inferInstance, inferInstance, inferInstance⟩
 
 end GlobalTheory.CompanionTheory.ModelS
+end
+
+open Matrix Finset MeasureTheory
+open scoped ContDiff ComplexConjugate InnerProductSpace
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+open PositivityTheory.RgTw (Mat)
+open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_haar_unitary_group : ∀ (n : ℕ) [MeasurableSpace (Matrix.unitaryGroup (Fin n) ℂ)] [BorelSpace (Matrix.unitaryGroup (Fin n) ℂ)], ∃ κ : Measure (Matrix.unitaryGroup (Fin n) ℂ), IsFiniteMeasure κ ∧ κ.IsMulRightInvariant ∧ κ.IsOpenPosMeasure := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ModelS.exists_rightInvariant_measure_unitaryGroup

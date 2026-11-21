@@ -1,10 +1,7 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KCoinvOfDict
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.SoCoinvariantsOfBernstein
 import Development.WeilBound.ThetaLifts.LocalTheory.DixmierCommutants.RamifiedMultiplicityOneOfBernstein
 import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.SplitTop
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.TopOfMap
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.FullOfSoLoc
 
 noncomputable section
 

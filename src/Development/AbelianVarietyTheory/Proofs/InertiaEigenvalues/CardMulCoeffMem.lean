@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped BigOperators
 
 namespace GlobalTheory.CentralIdemIntegral
@@ -90,3 +92,9 @@ theorem card_mul_coeff_mem :
     (isIntegral_card_mul_coeff e he hc g).tower_top
 
 end GlobalTheory.CentralIdemIntegral
+end
+
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_card_mul_coeff_central_idempotent : ∀ (G O K : Type) [Group G] [Fintype G] [CommRing O] [IsDomain O] [IsIntegrallyClosed O] [Field K] [CharZero K] [Algebra O K] [IsFractionRing O K] (e : MonoidAlgebra K G), e * e = e → (∀ x, e * x = x * e) → ∀ g, ∃ c : O, algebraMap O K c = (Fintype.card G : K) * e.coeff g := by
+  atlas_forward_decl GlobalTheory.CentralIdemIntegral.card_mul_coeff_mem

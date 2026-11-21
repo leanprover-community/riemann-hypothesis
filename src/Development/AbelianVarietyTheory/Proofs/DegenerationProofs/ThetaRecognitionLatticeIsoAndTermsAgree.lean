@@ -1,10 +1,11 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Degenerations.NotAllMatchRankZero
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaMatchingExistsRightTorusTorsion
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaConstantTermRepresentativeDependenceStatement
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationSeriesTermsNestStatement
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationSeriesTermsNest
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.NormRepGeneratorsAndThetaSeriesTermStatement
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationDataTorsionStructureAlgClosedStatement
+
+section
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Ex Filter
 open scoped BigOperators Topology
 
@@ -148,3 +149,10 @@ theorem main : AllMatch fun μ _ _ => μ.A → ∃ e, μ.B e ∧ μ.Term e := by
     fun j => ⟨0, by simp⟩
 
 end GlobalTheory.MatchTerm
+end
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Ex
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaRecognition_lattice_iso_and_terms_agree : AllMatch fun μ _ _ => μ.A → ∃ e, μ.B e ∧ μ.Term e := by
+  atlas_forward_decl GlobalTheory.MatchTerm.main

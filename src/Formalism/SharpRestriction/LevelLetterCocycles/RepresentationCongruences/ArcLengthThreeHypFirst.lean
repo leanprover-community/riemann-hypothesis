@@ -1,7 +1,4 @@
-import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ImportsAlt
 import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.RepVVSmulA
-import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.CmpDSmulLetter
-import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.IsUnitPi0InEE
 
 noncomputable section
 

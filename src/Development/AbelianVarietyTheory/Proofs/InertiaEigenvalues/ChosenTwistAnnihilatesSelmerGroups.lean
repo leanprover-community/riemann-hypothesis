@@ -1,6 +1,9 @@
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BoundAtTwoThreeFamily
 import Formalism.SharpRestriction.GlobalTheoremInputs
 import Development.AutomorphicArithmetic.CyclotomicBounds.CyclotomicOrders.NuHost
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.NLink
 
 namespace GlobalTheory.NLink
@@ -32,3 +35,9 @@ theorem twist_kills_selmer : ∀ (D : D7) (C : NChoice D) (I : TwIn D) (ρ : Fam
     exact le_trans (mul_le_mul_of_nonneg_left hA2 (Nat.cast_nonneg _)) hD
 
 end GlobalTheory.NLink
+end
+
+open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.NLink
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chosenTwist_annihilates_selmerGroups : ∀ (D : D7) (C : NChoice D) (I : TwIn D) (ρ : FamilyRepresentationConstants.RhoFam D), NChTie D C → TwGoodAt D C I → KillingConditions.SignatureChoiceCondition ρ C → KillingConditions.KillAt ρ := by
+  atlas_forward_decl GlobalTheory.NLink.twist_kills_selmer

@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Finset
 
 namespace GlobalTheory
@@ -36,3 +38,9 @@ theorem hasSum_eq_sum_of_matching_family : ∀ (C : Type 1) (n : ℕ) (m : C →
   rw [(h3 _ _ (hg i)).1, (h3 _ _ (hg i)).2]
 
 end GlobalTheory
+end
+
+open Finset
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_sum_of_hasSum_of_bijective_matching : ∀ (C : Type 1) (n : ℕ) (m : C → ℕ) (t : C → ℂ) (m' : Fin n → ℕ) (c : Fin n → ℂ) (R : C → Fin n → Prop) (s : ℂ), HasSum (fun x => (m x : ℂ) * t x) s → (∀ x, m x ≠ 0 → t x ≠ 0 → ∃ i, R x i) → (∀ i, m' i ≠ 0 → ∃ x, R x i) → (∀ x i, R x i → m x = m' i ∧ t x = c i) → (∀ x i j, R x i → R x j → i = j) → (∀ x y i, R x i → R y i → x = y) → s = ∑ i, (m' i : ℂ) * c i := by
+  atlas_forward_decl GlobalTheory.hasSum_eq_sum_of_matching_family

@@ -1,12 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SecValAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PropertyOfCodimOneLocalUnitsStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelOpenNoetherianStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelMapExtensionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelMapUniquenessStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelMapCompatibilityStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelMapUniqueness
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelMapCompatibility
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -46,3 +44,9 @@ theorem genSt_of_hypotheses : GlobalTheory.CovTop.Hypotheses2 → GlobalTheory.P
   exact ⟨f, fun k _ _ φ yy hyy => hf k φ _ yy hyy⟩
 end GlobalTheory.FlatModel
 end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generic_statement_of_canonical_extension : GlobalTheory.CovTop.Hypotheses2 → GlobalTheory.Published.CanonicalExtensionRankOne → GlobalTheory.Published.DeRhamCanonicalExtension → GenSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.genSt_of_hypotheses

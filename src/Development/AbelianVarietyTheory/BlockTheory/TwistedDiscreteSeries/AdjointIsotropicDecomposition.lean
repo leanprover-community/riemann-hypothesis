@@ -1,7 +1,5 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsStepWeil
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsGrowthSobNeTopOfIsAutFunSm
-import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
 
 noncomputable section
 

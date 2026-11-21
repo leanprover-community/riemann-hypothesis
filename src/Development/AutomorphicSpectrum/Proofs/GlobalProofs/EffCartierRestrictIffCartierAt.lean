@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.EffCartierIffForallCartAt
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.WChartsB
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
@@ -95,3 +96,11 @@ theorem effCartier_comap_opens_iff : ∀ {X : Scheme.{0}} (J : X.IdealSheafData)
     exact cartAt_comap_of_cartAt J O.ι x (h x.1 x.2)
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.effCartier_restrict_iff_cartier_at : ∀ {X : Scheme.{0}} (J : X.IdealSheafData) (O : X.Opens), FinalTheorems.EffCartier (J.comap O.ι) ↔ ∀ x ∈ O, CartAt J x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver.effCartier_comap_opens_iff

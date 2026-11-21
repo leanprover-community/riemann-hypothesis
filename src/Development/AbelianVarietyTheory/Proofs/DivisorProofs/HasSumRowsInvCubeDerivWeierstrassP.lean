@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
+import BuildAid.ForwardExisting
 
+section
 open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
 open GlobalTheory.QFam GlobalTheory.WpFam
 
@@ -32,3 +34,10 @@ theorem hasSum_rows_derivWeierstrassP : ∀ (τ : ℍ) (z : ℂ), HasSum (fun n 
   exact h.prod_fiberwise fun n => (h.summable.prod_factor n).hasSum
 
 end GlobalTheory.WpFam
+end
+
+open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
+open GlobalTheory.QFam GlobalTheory.WpFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasSum_rows_inv_cube_derivWeierstrassP : ∀ (τ : ℍ) (z : ℂ), HasSum (fun n : ℤ => ∑' m : ℤ, 1 / (z + n * (τ : ℂ) + m) ^ 3) (-(1 / 2) * (tauPair τ).derivWeierstrassP z) := by
+  atlas_forward_decl GlobalTheory.WpFam.hasSum_rows_derivWeierstrassP

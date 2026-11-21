@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CharacterBlocksAttainBound
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.MonomialBlockSupplyBothTypingsStatement
+import BuildAid.ForwardExisting
 
+section
 open Formalism.L2.FormalSeriesBounds GlobalTheory.GoodDepth
 open scoped BigOperators
 
@@ -161,3 +163,9 @@ end GlobalTheory.SplitPackageBound
 
 theorem GlobalTheory.GoodDepth.splitBd : SplitBd :=
   GlobalTheory.SplitPackageBound.splitBd_of_supplies GlobalTheory.CharBlock.chSupply.2 GlobalTheory.T.monomialBlock_supply_both_typings.2
+end
+
+open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds Formalism.UnitaryBoundIntegral Formalism.L2.DIV Formalism.L2.Pj Formalism.BasicNotions GlobalTheory.GoodDepth NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.splitPrimeDepthContentBound_proof : SplitBd := by
+  atlas_forward_decl GlobalTheory.GoodDepth.splitBd

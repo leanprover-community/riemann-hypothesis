@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsRapidInf
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep Matrix
 
 namespace GlobalTheory.UnitsDense
@@ -47,3 +50,9 @@ theorem exists_unit_mem_open :
   simp [hxu]
 
 end GlobalTheory.UnitsDense
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CuspRep Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_field_unit_mem_open_archimedean_units : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (V : Set (Cinf E)ˣ), IsOpen V → V.Nonempty → ∃ α : Eˣ, Units.map ((pInf E).comp (algebraMap E (Ad E))).toMonoidHom α ∈ V := by
+  atlas_forward_decl GlobalTheory.UnitsDense.exists_unit_mem_open

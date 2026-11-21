@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.LineFormulas.RightRule
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Set Filter
@@ -315,3 +317,9 @@ theorem odeB : CompanionTheory.RgExh.Dec.N.OdeB := by
     ofReal_norm_eq_enorm]
 
 end GlobalTheory.CompanionTheory.OdeRoots.Above
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.NilpotentOdeSecond : CompanionTheory.RgExh.Dec.N.OdeB := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.OdeRoots.Above.odeB

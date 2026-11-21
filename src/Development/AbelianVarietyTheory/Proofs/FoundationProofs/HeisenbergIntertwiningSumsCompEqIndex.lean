@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHeisTrivial
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PerfectPairingQuotients
 open Classical GlobalTheory.FinWeil
 open scoped BigOperators

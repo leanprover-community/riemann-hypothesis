@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PrimOfIsUnitDet
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.GramCount
 open scoped Classical
 
@@ -78,3 +80,10 @@ theorem norm_gauss_sum_ip_le {B : Type} [CommRing B] [Fintype B] (c : B →+* B)
   exact ((pow_left_inj₀ (norm_nonneg _) (by positivity) two_ne_zero).1 h3).le
 
 end GlobalTheory.GramCount
+end
+
+open GlobalTheory.GramCount
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_gauss_sum_hermitian_form_linear_le : ∀ {B : Type} [CommRing B] [Fintype B] (c : B →+* B), (∀ u, c (c u) = u) → ∀ (q : ℕ), 2 ≤ q → Fintype.card B = q ^ 2 → ∀ (χ : AddChar B ℂ), χ.IsPrimitive → (∀ u, χ (c u) = χ u) → ∀ (n : ℕ) (a : B), IsUnit (a + c a) → ∀ (v : Fin n → B), ‖∑ y : Fin n → B, χ (a * ip c y y + ip c y v)‖ ≤ (q : ℝ) ^ n := by
+  atlas_forward_decl GlobalTheory.GramCount.norm_gauss_sum_ip_le

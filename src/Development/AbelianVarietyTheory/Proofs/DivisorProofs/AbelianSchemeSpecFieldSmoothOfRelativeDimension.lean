@@ -1,7 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.TateHonda
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsDimEqOne
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceSpecOfIsLocalRing
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.Et
 open scoped TensorProduct DirectSum
 open ReciprocityTheory.ChartRestriction.G.Semi

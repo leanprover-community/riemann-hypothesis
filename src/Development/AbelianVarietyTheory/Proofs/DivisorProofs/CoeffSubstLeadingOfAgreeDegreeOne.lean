@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.WittOnFalse
 import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul
 
+section
 noncomputable section
 
 namespace GlobalTheory
@@ -92,3 +93,10 @@ theorem coeff_subst_leading :
       rwa [map_sub, sub_eq_zero] at h
 
 end GlobalTheory
+end
+end
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeff_subst_leading_of_agree_degree_one : ∀ (R : Type) [CommRing R] (σ τ : Type) [Finite σ] (u v : σ → MvPowerSeries τ R) (N : ℕ) (f : MvPowerSeries σ R), (∀ i, constantCoeff (u i) = 0) → (∀ i, constantCoeff (v i) = 0) → (∀ i (γ : τ →₀ ℕ), γ.degree = 1 → coeff γ (u i) = coeff γ (v i)) → (∀ α : σ →₀ ℕ, α.degree < N → coeff α f = 0) → ∀ γ : τ →₀ ℕ, (γ.degree < N → coeff γ (subst u f) = 0) ∧ (γ.degree ≤ N → coeff γ (subst u f) = coeff γ (subst v f)) := by
+  atlas_forward_decl GlobalTheory.coeff_subst_leading

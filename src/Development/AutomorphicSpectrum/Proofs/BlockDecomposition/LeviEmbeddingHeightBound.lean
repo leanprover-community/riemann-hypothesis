@@ -2,6 +2,7 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CommuteRtOfMemZalg
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ModerateGrowthConvolutionIntegral
 
+section
 open NumberField GlobalTheory.CuspRep GlobalTheory.CompanionTheory.CTFin Matrix
 
 noncomputable section
@@ -58,3 +59,9 @@ theorem GlobalTheory.CompanionTheory.CTFin.Slice1.height_lev_mul_le : ∀ (E : T
   linarith
 
 end
+end
+
+open NumberField GlobalTheory.CuspRep GlobalTheory.CompanionTheory.CTFin Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_embedding_height_bound : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (r s : ℕ) (c : GL (Fin (r + s)) (Cinf E)), ∃ B : ℝ, 0 ≤ B ∧ ∀ y : GL (Fin r) (Cinf E), height (lev (Cinf E) r s (y, 1) * c) ≤ B * height y := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CTFin.Slice1.height_lev_mul_le

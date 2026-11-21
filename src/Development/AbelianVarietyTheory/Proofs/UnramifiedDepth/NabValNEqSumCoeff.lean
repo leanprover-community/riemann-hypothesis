@@ -1,7 +1,7 @@
 import Mathlib
-import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.NablaValueCopiesBilinearStatement
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.InvariantValueCopiesEqZeroOfLowCoeffStatement
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.InvariantValueCopiesEqZeroOfLowCoeff
+
 open scoped BigOperators
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Formalism.L2.Pj NumberField
 

@@ -1,8 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardParabolicSubgroupStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HarishChandraDimensionStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardParabolicSubgroup
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HarishChandraDimension
 
+section
 open ReciprocityTheory.Ty.Fin
 
 namespace GlobalTheory.CompanionTheory.TyFin
@@ -65,3 +65,9 @@ theorem sqfreeDimAll : ReciprocityTheory.Ty.Fin.St.SqfreeDimAll := by
   linear_combination hZ
 
 end GlobalTheory.CompanionTheory.TyFin
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.squarefree_dimension_formula : ReciprocityTheory.Ty.Fin.St.SqfreeDimAll := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.sqfreeDimAll

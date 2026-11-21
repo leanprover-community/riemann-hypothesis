@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InstPreorder
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing GlobalTheory.Henselisation
 
 namespace GlobalTheory.Henselisation
@@ -29,3 +32,9 @@ theorem Hens.of_algebraMap (R : Type) [CommRing R] [IsLocalRing R] (i : EtNbhd R
     ← IsScalarTower.algebraMap_apply R i.A i.B r]
 
 end GlobalTheory.Henselisation
+end
+
+open IsLocalRing GlobalTheory.Henselisation
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etaleNbhdLocalRingToHenselisation_algebraMap : ∀ (R : Type) [CommRing R] [IsLocalRing R] (i : EtNbhd R) (r : R), Hens.of i (algebraMap R i.B r) = algebraMap R (Hens R) r := by
+  atlas_forward_decl GlobalTheory.Henselisation.Hens.of_algebraMap

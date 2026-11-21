@@ -1,13 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrbitThickSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajorantConjugateTransfer
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.QuadraticCoefficientForms
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMatMulVec
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IntegerApproximationCountHolds
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.EventuallyComparable
-import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsIntMulIntegral
 
+section
 open NumberField Complex ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CuspFrom
 open scoped ComplexConjugate
 
@@ -258,3 +255,9 @@ theorem orbitThick_of_flowMaj : FlowMajSt → OrbitThickSt := by
     exact prod_lower_of_ne X (fun τ v w => (hF2 _ hy τ v w).1) hξ.1 hv h
 
 end GlobalTheory.CuspFrom.OrbitThick
+end
+
+open NumberField Complex ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CuspFrom
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flowOrbitFirstMinimum_of_isotropicFlowMajorant : FlowMajSt → OrbitThickSt := by
+  atlas_forward_decl GlobalTheory.CuspFrom.OrbitThick.orbitThick_of_flowMaj

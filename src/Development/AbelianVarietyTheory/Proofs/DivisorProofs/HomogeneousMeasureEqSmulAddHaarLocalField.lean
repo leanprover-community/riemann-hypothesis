@@ -1,6 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.UnipVal
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Matrix GlobalTheory.KSp GlobalTheory.SplitUnitary
 open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
 open GlobalTheory.SplitWeil (SB nabs)
@@ -239,3 +240,13 @@ theorem eq_smul_haar_of_homog : ∀ (F : Type) [Field F] [CharZero F] [Valuative
     smul_eq_mul]
   have hk := measure_mul_measure_units_eq lam n hn0 hn' hs
   rw [div_eq_mul_inv, mul_right_comm, ← hk, mul_assoc, ENNReal.mul_inv_cancel hlU0 hlU, mul_one]
+end GlobalTheory.KSp.Homog
+end
+end
+
+open MeasureTheory Matrix GlobalTheory.KSp GlobalTheory.SplitUnitary
+open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
+open GlobalTheory.SplitWeil (SB nabs)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.homogeneousMeasure_eq_smul_addHaar_localField : ∀ (F : Type) [Field F] [CharZero F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (lam : Measure F) [lam.IsAddHaarMeasure] (n : Measure F) [IsFiniteMeasureOnCompacts n], n {0} = 0 → (∀ u : Fˣ, n.map (fun x => (u : F) * x) = (distribHaarChar F u)⁻¹ • n) → ∃ r : NNReal, n = r • lam := by
+  atlas_forward_decl GlobalTheory.KSp.Homog.eq_smul_haar_of_homog

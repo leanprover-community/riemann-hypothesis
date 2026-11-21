@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.ScPiExists
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianFrameExistence.FrameHolds
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianFrameExistence.FrameHypothesesRankZero
 

@@ -1,10 +1,11 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.InjectiveDecompositionAction
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
-import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.DifferentialBoundedSupport
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwLMulSelf
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CanonicalAnticommutationRelationsConsequence
+import BuildAid.ForwardExisting
 
+section
 open Finset PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.LvChain
 open CompanionTheory.D.LK (Pos)
 open Formalism.REAL (GlRel)
@@ -482,3 +483,14 @@ theorem lv_bd_comm : ∀ (n : ℕ) (lev : Fin n → ℕ) (V : Type) [AddCommGrou
       (comm_same hm hs.2.1 h2 hpq))).eq
 
 end GlobalTheory.CompanionTheory.LvComm
+end
+end
+
+open Finset PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.LvChain
+open CompanionTheory.D.LK (Pos)
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_commute_unipotent_boundary : ∀ (n : ℕ) (lev : Fin n → ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (E1 E2 : Fin n → Fin n → Module.End ℂ V),
+    Monotone lev → IsPairA E1 E2 → ∀ p q : Fin n, lev p = lev q →
+      (Lv lev E1 E2 p q * bdL (inUU lev) E1 E2 : Module.End ℂ (Cq n V)) = bdL (inUU lev) E1 E2 * Lv lev E1 E2 p q := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LvComm.lv_bd_comm

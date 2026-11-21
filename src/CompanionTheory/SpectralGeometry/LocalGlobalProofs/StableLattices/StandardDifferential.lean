@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSecondOrder.HasDerivAtDOf
 import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
@@ -49,3 +51,10 @@ theorem stdD : StdD := by
     rw [Matrix.transpose_add, Matrix.transpose_smul, neg_add, smul_neg]
 
 end GlobalTheory.CompanionTheory.ZuckStdD
+end
+
+open CompanionTheory.Zuck BranchingSupport Matrix Finset
+open scoped InnerProductSpace Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.StandardDifferential : StdD := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ZuckStdD.stdD

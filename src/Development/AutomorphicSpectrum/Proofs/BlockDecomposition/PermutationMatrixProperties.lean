@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
 
@@ -91,3 +93,9 @@ theorem pmFacts : ReciprocityTheory.Ty.Fin.St.PmFacts := by
     (σ.subtypeEquiv (p := fun i => (b ∘ σ) i = c) (q := fun j => b j = c) fun _ => Iff.rfl) fun _ => rfl)
 
 end GlobalTheory.CompanionTheory.TyFin.Pm
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.permutation_matrix_properties : ReciprocityTheory.Ty.Fin.St.PmFacts := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.Pm.pmFacts

@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LiftQMk
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConstOneMem
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleModuleIffLatticeQuotients
+
+section
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 1000000
 open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pass GlobalTheory.Cut GlobalTheory.UseLoc Module TensorProduct GlobalTheory.UseLoc.Cases
@@ -45,3 +46,11 @@ theorem finite_Xq {l : ℕ} [Fact l.Prime] (LL : FinExt l) (lam : ↥(OL LL)) (h
   exact this.symm
 
 end GlobalTheory.UseLoc.Cases
+end
+
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pass GlobalTheory.Cut GlobalTheory.UseLoc Module TensorProduct GlobalTheory.UseLoc.Cases
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_lambdaPowerTorsionFieldModInt : ∀ {l : ℕ} [Fact l.Prime] (LL : FinExt l) (lam : ↥(OL LL)), Irreducible lam → ∀ a : ℕ, Finite ↥(Xq ↥LL.1 lam a) := by
+  atlas_forward_decl GlobalTheory.UseLoc.Cases.finite_Xq

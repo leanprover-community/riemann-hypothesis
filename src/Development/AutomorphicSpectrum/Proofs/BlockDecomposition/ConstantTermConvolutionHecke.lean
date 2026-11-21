@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviOf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCosetSumCompact
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermLocallyConstant
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HintConstMulSum

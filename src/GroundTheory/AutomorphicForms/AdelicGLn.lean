@@ -1,10 +1,8 @@
 import Mathlib
 import GroundTheory.GlobalFields.LocalFieldAtPlace
 import GroundTheory.GlobalFields.Adele.Topology
-import GroundTheory.GlobalFields.Adele.Discrete
 import GroundTheory.GlobalFields.Adele.Compact
 import GroundTheory.AutomorphicForms.GLnLocal
-import GroundTheory.AutomorphicForms.LocallyProfinite
 import GroundTheory.AutomorphicForms.RestrictedProductMatrix
 
 open NumberField IsDedekindDomain Topology Filter Set

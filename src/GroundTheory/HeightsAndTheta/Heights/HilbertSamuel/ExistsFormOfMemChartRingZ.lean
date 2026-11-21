@@ -1,6 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEmbeddingWeight
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwistIntersectionInt
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsUnitApprox
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsConstantsRegular

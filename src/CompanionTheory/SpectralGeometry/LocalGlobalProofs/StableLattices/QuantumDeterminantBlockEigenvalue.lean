@@ -1,8 +1,8 @@
 import Mathlib
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HasCharSub
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantAntiHomomorphismStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CommutingLocallyNilpotentCommonKernelStatement
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantAntiHomomorphism
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CommutingLocallyNilpotentCommonKernel
 
+section
 noncomputable section
 
 open Finset
@@ -68,3 +68,10 @@ theorem qdet_eigen_of_killed {n : ℕ} (Q : GMod n) (d : Fin 3 → ℕ) (h : ∑
   simp only [e1, hc, map_smul, smul_smul, Fin.prod_univ_three]
 
 end GlobalTheory.CompanionTheory.RgTransport
+end
+end
+
+open CompanionTheory.RgExh CompanionTheory.RgExh.Dec CompanionTheory.RgExh.Dec.J Formalism.REAL ReciprocityTheory.ChartRestriction.DS GlobalTheory.SmGL GlobalTheory.CompanionTheory.RgTransport
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quantum_determinant_block_eigenvalue : ∀ {n : ℕ} (Q : GMod n) (d : Fin 3 → ℕ) (h : ∑ i, d i = n) (w : Q.V), (∀ a b, blk (stdBlocks d h) b < blk (stdBlocks d h) a → Q.E a b w = 0) → ∀ c : Fin 3 → ℂ → ℂ, (∀ i Y, Qd Q d h i Y w = c i Y • w) → ∀ Y : ℂ, qdet Q.E (Y + ((n : ℂ) - 1) / 2) w = (∏ i, c i Y) • w := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgTransport.qdet_eigen_of_killed

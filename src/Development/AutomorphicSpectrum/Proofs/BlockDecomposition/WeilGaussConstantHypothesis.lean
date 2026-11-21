@@ -1,19 +1,19 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocalWhittakerDuality.WSteps
-import GroundTheory.LocalFields.QuadraticAbelian.WeilRepQuadratic
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GTil
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilModulusHypothesis
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsHaarMeasureComapSubtype
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuadraticExtensionTestVectorBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSchwartzZetaSeparatingCharacterStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuadraticCharacterNormGroupStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilConstantQuadraticCharacterStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormGroupIndexTwoStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzNormFormPullbackStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousAlgebraNormStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilGaussConstantSquareStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilGaussConstantNormOneStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousEqOfSchwartzPairingStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSchwartzZetaSeparatingCharacter
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuadraticCharacterNormGroup
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilConstantQuadraticCharacter
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormGroupIndexTwo
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzNormFormPullback
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousAlgebraNorm
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilGaussConstantSquare
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilGaussConstantNormOne
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousEqOfSchwartzPairing
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData
 open scoped ValuativeRel NNReal ENNReal
 
@@ -188,3 +188,11 @@ theorem wGaussLam : Ad3.K.GL2LocalData.WGaussLam := by
   · exact sub_eq_zero.1 h
 
 end GlobalTheory.CompanionTheory.GaussLam
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData
+open scoped ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_gauss_constant_hypothesis : Ad3.K.GL2LocalData.WGaussLam := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GaussLam.wGaussLam

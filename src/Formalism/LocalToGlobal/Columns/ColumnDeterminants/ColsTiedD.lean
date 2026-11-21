@@ -1,9 +1,7 @@
-import Formalism.LocalToGlobal.Columns.TiedLv
 import Formalism.LocalToGlobal.Columns.TiedFv
 import Formalism.LocalToGlobal.Columns.TiedValAll
 import Formalism.LocalToGlobal.Columns.TiedUpDnRec
 import Formalism.LocalToGlobal.Columns.TiedGlExt
-import Formalism.LocalToGlobal.Columns.TiedGlChi
 import Formalism.LocalToGlobal.Columns.TiedGlSplit
 import Formalism.LocalToGlobal.Columns.TiedXpX
 import Formalism.LocalToGlobal.Columns.TiedXpB
@@ -11,8 +9,6 @@ import Formalism.LocalToGlobal.Columns.TiedPtSurj
 import Formalism.LocalToGlobal.Columns.TiedTilC
 import Formalism.LocalToGlobal.Columns.TiedPerDat
 import Formalism.LocalToGlobal.Columns.LevPackFrLat
-import Formalism.LocalToGlobal.Columns.CharactersLevelZeroAgree
-import Formalism.LocalToGlobal.Columns.CoordLatticeSelfDualEqStd
 import Formalism.LocalToGlobal.Columns.TiedHIw
 import Formalism.LocalToGlobal.Columns.TiedHDisc
 import Formalism.LocalToGlobal.Columns.TiedHFv

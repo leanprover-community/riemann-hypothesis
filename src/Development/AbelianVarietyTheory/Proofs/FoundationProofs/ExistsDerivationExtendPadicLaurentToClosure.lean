@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IntegralLocallyConstCochainModPow
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.K5
 
 noncomputable section
@@ -92,3 +94,12 @@ theorem derivation_extend : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] 
   exact exists_extend_of_formallySmooth D
 
 end GlobalTheory.K5.DerExt
+end
+end
+
+open GlobalTheory.K5
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_derivation_extend_padicLaurent_to_closure : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω →
+    ∀ D : Derivation ℤ (O0 p) (O0 p),
+    ∃ E : Derivation ℤ Ω Ω, ∀ x, E (algebraMap (O0 p) Ω x) = algebraMap (O0 p) Ω (D x) := by
+  atlas_forward_decl GlobalTheory.K5.DerExt.derivation_extend

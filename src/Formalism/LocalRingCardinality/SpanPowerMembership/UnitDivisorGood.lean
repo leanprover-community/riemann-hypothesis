@@ -1,5 +1,4 @@
 import Formalism.LocalRingCardinality.SpanPowerMembership.TrivialLocalDataRank
-import Formalism.CyclotomicNorms.StatementT
 
 noncomputable section
 

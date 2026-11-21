@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NBasisLoc
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.WachLettersFree
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.LettersFreeOfRank

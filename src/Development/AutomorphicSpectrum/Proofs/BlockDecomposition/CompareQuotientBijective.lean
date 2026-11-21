@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LocalSystemQuotients.RedMk
 
+section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
@@ -49,3 +50,9 @@ theorem cmpq_bijective (R : Type) [CommRing R] (C : Type 1) [Category.{0} C]
 end GlobalTheory.CompanionTheory.LsCmp
 
 end
+end
+
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.LsQ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compare_quotient_bijective : ∀ (R : Type) [CommRing R] (C : Type 1) [Category.{0} C] (A : C ⥤ CommAlgCat.{0} R) (l n i : ℕ), Function.Bijective ((cmpq A l n).f i) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LsCmp.cmpq_bijective

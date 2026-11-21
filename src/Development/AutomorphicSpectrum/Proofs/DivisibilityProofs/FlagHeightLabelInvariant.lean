@@ -1,11 +1,10 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.LowerBoundOfBaseSetting
 import Development.WeilBound.CoreStatements.FlagImmersions.ExistsWord
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PBlockRatioAlg
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHFlProdLinear
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
@@ -157,3 +156,10 @@ theorem hhFl_labelInv : ∀ II : IntersectionSystem, IsFullIntersectionSystem II
     · rw [HhModel.hhFl_monomial_of_ne II _ _ (by rwa [degree_mapDomain]), HhModel.hhFl_monomial_of_ne II _ _ hm]
 
 end GlobalTheory.CompanionTheory.Ar.Top
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_height_label_invariant : ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) [Nonempty Ψ], 2 ≤ N → IsArithVar (GroundTheory.Heights₂.Heights.LowerBoundFree.PFl Ψ N) (dimFl Ψ N + 1) → LabelInv (Ψ := Ψ) (N := N) (hhFl Ψ N II) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.hhFl_labelInv

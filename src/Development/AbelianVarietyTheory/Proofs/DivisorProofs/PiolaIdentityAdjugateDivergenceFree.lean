@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.PiolaAlg
 
 open Finset Matrix
@@ -91,3 +93,9 @@ theorem piola_identity : ∀ {K R : Type} [CommRing K] [CommRing R] [Algebra K R
   fun δ M hM j => piola δ M hM j
 
 end GlobalTheory.PiolaAlg
+end
+
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.piola_identity_adjugate_divergence_free : ∀ {K R : Type} [CommRing K] [CommRing R] [Algebra K R] {ι : Type} [Fintype ι] [DecidableEq ι] (δ : ι → Derivation K R R) (M : Matrix ι ι R), (∀ h i j, δ h (M i j) = δ i (M h j)) → ∀ j, ∑ i, δ i (M.adjugate j i) = 0 := by
+  atlas_forward_decl GlobalTheory.PiolaAlg.piola_identity

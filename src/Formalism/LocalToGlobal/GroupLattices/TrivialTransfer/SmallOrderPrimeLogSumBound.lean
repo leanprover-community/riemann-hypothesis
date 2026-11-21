@@ -1,6 +1,5 @@
 import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GramTotallyDefinite
 import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.ProGTransfer
-import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 

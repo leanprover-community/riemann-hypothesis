@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntegralAngMeas
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar.PB.Flat
 open scoped ContDiff
 
@@ -158,3 +160,11 @@ theorem contDiffOn_polyPoisson :
   exact contDiffOn_integral_angMeas _ hh k ℝ _ (contDiffOn_prod_pker hρ)
 
 end GlobalTheory.CompanionTheory.Ar.PB.Flat.Smooth
+end
+end
+
+open MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar.PB.Flat
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polydisc_poisson_smooth : ∀ (n : ℕ) (ρ : ℝ) (h : (Fin n → ℂ) → ℝ), 0 < ρ → Continuous (fun θ : Fin n → ℝ => h (torusPt ρ θ)) → ContDiffOn ℝ ∞ (polyPoisson ρ h) (Metric.ball 0 ρ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.Flat.Smooth.contDiffOn_polyPoisson

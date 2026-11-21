@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.Fl
 open scoped InnerProductSpace ComplexConjugate
 
@@ -364,3 +366,9 @@ theorem stMod : StMod := by
 end GlobalTheory.CompanionTheory.HeckeCoinv
 
 end
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ModularityStatement : StMod := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeckeCoinv.stMod

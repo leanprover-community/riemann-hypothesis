@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Filter Topology
@@ -584,3 +586,9 @@ theorem GlobalTheory.CompanionTheory.RankinSelbergTorusIntegrals.main : Ad3.R.A2
   obtain ⟨C₀, hC₀, h1, h2'⟩ := h2 F ψ hψ
   exact ⟨C₀ ^ 3, pow_ne_zero _ hC₀, fun μ₁ μ₂ c hμ₁ hμ₂ hc φ₁ φ₃ hφ₁ hφ₃ s hs =>
     GlobalTheory.CompanionTheory.RankinSelbergTorusIntegrals.key hψ h1 h2' h4 hμ₁ hμ₂ hc hφ₁ hφ₃ hs⟩
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_third_of_second_fourth : Ad3.R.A2 → Ad3.R.A4 → Ad3.R.A3 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelbergTorusIntegrals.main

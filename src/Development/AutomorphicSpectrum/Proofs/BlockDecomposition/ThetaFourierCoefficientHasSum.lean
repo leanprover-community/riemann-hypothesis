@@ -1,11 +1,12 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsReps
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.PureThetaTransfer.ConstantTermModerateGrowth
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RealWeilActionLocalBoundContinuousStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SummableInverseQuarticOverLatticeStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RealWeilActionLocalBoundContinuous
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SummableInverseQuarticOverLattice
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitMeasureFiniteCompactSupportStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedCoefficientMeasurableBoundedStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductThetaLocallyConstantBoundedStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductThetaLocallyConstantBounded
+
+section
 open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
 open GroundTheory.Automorphic.GodementSection (localChar)
 open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
@@ -78,3 +79,20 @@ theorem hasSum_aT : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ
   exact key
 
 end GlobalTheory.CompanionTheory.FexTheta
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open Ad3.R (G2 Jd md KA LInv IsLoc2 pt pri dia2)
+open scoped NumberField.AdeleRing ValuativeRel
+open GroundTheory.Global.AdicLiesOver
+open GlobalTheory.CompanionTheory.FexTheta
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_fourier_coefficient_hasSum : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ K = 2 → IsTotallyComplex K → ∀ (c : HeckeCharacter K)
+  (n : ℤ) (t : ℝ) (M : ∀ v : Pl, LM c v), AdmM M → ∀ (Sv : Finset Pl) (m : Pl →₀ ℤ), ∀ g ∈ Gp M,
+    HasSum (fun ξ : K => aT n t M Sv g m ξ) (∫ u, ctM M Sv m u * thP n t (twM M Sv m u) g ∂muU Sv) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FexTheta.hasSum_aT

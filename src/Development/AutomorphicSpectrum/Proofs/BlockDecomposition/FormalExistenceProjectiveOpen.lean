@@ -1,16 +1,16 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformVanishing
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedNoetherianStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformVanishingOfGradedNoetherianStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformGenerationOfVanishingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AmpleTwistedSectionsApproximationStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedSectionsFiniteGeneratorsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedSectionsUniformGeneratorsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoherentExtensionSurjectionOpenStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedSystemRestrictionOpenStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedNoetherian
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformVanishingOfGradedNoetherian
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformGenerationOfVanishing
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AmpleTwistedSectionsApproximation
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedSectionsFiniteGenerators
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedSectionsUniformGenerators
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoherentExtensionSurjectionOpen
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedSystemRestrictionOpen
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedSystemRestrictionSubobjectStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedSystemOpenIdealContainmentStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedSystemOpenIdealContainment
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -56,3 +56,10 @@ theorem statement_open_projective : ∀ {A : Type} [CommRing A] [IsNoetherianRin
   exact ⟨B, hBq', GlobalTheory.T.closed_system_open_ideal_containment I hI O hPc hE f hf (Sb 0) T hcl (hc 0) Bb hBq (hBb 0) B hBs, hB⟩
 
 end GlobalTheory.CompanionTheory.GE
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.formal_existence_projective_open : ∀ {A : Type} [CommRing A] [IsNoetherianRing A] (I : Ideal A), IsAdicComplete I A → ∀ {N : ℕ} {Y : Scheme.{0}} (i : Y ⟶ projectiveSpace A N), IsClosedImmersion i → ∀ (O : Y.Opens), letI : (O : Scheme.{0}).Over (Spec (.of A)) := ⟨O.ι ≫ i ≫ ProjSpace.toSpecBase A N⟩; Statement I (⊥ : (O : Scheme.{0}).IdealSheafData) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.statement_open_projective

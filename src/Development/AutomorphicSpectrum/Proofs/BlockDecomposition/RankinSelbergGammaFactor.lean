@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GroundTheory.LocalField
@@ -70,3 +72,8 @@ theorem gam_strip : Ad3.R.LocalGammaFunctionalEquation := by
 end GlobalTheory.CompanionTheory.TateGamma
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_gamma_factor : Ad3.R.LocalGammaFunctionalEquation := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TateGamma.gam_strip

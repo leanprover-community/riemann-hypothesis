@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsConstAddEquivOfRangeEq
+import BuildAid.ForwardExisting
+
+section
 open Set
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat
@@ -203,3 +206,9 @@ theorem exists_global_marking_of_local : ∀ (n g : ℕ) (Λ : Type) [AddCommGro
     exact ⟨P, hP.1, hP.2⟩
 
 end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+open Set
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.holomorphic_lattice_family_local : ∀ (n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Countable Λ] (B : Set (Fin n → ℂ)), IsOpen B → Convex ℝ B → ∀ (Γ : (Fin n → ℂ) → AddSubgroup (Fin g → ℂ)) (Q : (Fin n → ℂ) → (Fin g → ℂ) → (Fin g → ℂ) → ℝ) (e : Λ → Λ → ℝ), (∀ b₀ ∈ B, ∃ N : Set (Fin n → ℂ), IsOpen N ∧ b₀ ∈ N ∧ N ⊆ B ∧ ∃ P : (Fin n → ℂ) → (Λ →+ (Fin g → ℂ)), (∀ x, DifferentiableOn ℂ (fun b => P b x) N) ∧ ∀ b ∈ N, Function.Injective (P b) ∧ (P b).range = Γ b ∧ ∀ x y, Q b (P b x) (P b y) = e x y) → ∃ P : (Fin n → ℂ) → (Λ →+ (Fin g → ℂ)), (∀ x, DifferentiableOn ℂ (fun b => P b x) B) ∧ ∀ b ∈ B, Function.Injective (P b) ∧ (P b).range = Γ b ∧ ∀ x y, Q b (P b x) (P b y) = e x y := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.exists_global_marking_of_local

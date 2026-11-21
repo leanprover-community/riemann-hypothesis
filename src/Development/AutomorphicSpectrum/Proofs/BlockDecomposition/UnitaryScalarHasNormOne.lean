@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OfE
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
 open scoped TensorProduct ENNReal NNReal Matrix Classical
 
@@ -30,3 +31,10 @@ theorem isNm_ue_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
   exact he.symm.trans (by ring)
 
 end GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_scalar_has_norm_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (J : Matrix (Fin 1) (Fin 1) E), IsHermND σ J → ∀ h : HA (AF F) σ J, IsNm σ (ue (AF F) σ J h) 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.isNm_ue_one

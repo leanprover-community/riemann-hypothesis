@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistStep
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon
 open scoped Formalism.Per
 
@@ -18,3 +20,10 @@ theorem finiteIndex_of_isOpen : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (H :
   exact Subgroup.finiteIndex_of_finite_quotient
 
 end GlobalTheory.OpenFiniteIndex
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteIndex_of_isOpen_absGalois_finExt : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (H : Subgroup ↥(GK K)), IsOpen (H : Set ↥(GK K)) → H.FiniteIndex := by
+  atlas_forward_decl GlobalTheory.OpenFiniteIndex.finiteIndex_of_isOpen

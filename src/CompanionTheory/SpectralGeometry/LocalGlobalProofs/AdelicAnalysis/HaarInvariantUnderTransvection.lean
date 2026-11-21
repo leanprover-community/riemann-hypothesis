@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.UnipotentAdelicQuotients.SWXSDefs
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Topology Matrix
 open scoped ENNReal NNReal
 
@@ -79,3 +82,10 @@ end GlobalTheory.CompanionTheory.SW.Transv
 theorem GlobalTheory.CompanionTheory.SW.transvection_map_addHaar : ∀ (K : Type) [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [LocallyCompactSpace K] [SecondCountableTopology K] [T2Space K] [MeasurableSpace K] [BorelSpace K] (ι : Type) [Fintype ι] [DecidableEq ι] (μ : Measure (ι → K)) [μ.IsAddHaarMeasure] (t : Matrix.TransvectionStruct ι K), μ.map (fun x => t.toMatrix *ᵥ x) = μ := by
   intro K _ _ _ _ _ _ _ _ ι _ _ μ _ t
   exact GlobalTheory.CompanionTheory.SW.Transv.map_toMatrix_mulVec K ι μ t
+end
+
+open MeasureTheory Topology Matrix
+open scoped ENNReal NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.haar_invariant_under_transvection : ∀ (K : Type) [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [LocallyCompactSpace K] [SecondCountableTopology K] [T2Space K] [MeasurableSpace K] [BorelSpace K] (ι : Type) [Fintype ι] [DecidableEq ι] (μ : Measure (ι → K)) [μ.IsAddHaarMeasure] (t : Matrix.TransvectionStruct ι K), μ.map (fun x => t.toMatrix *ᵥ x) = μ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.transvection_map_addHaar

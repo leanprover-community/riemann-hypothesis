@@ -1,5 +1,4 @@
 import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.PrimitiveMeanOverWords
-import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.IdxRules
 
 noncomputable section

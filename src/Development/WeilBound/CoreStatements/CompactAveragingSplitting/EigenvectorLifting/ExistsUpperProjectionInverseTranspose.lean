@@ -1,6 +1,5 @@
 import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.SplitDict
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EventuallyDeepSubset
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableZetaIntegrand
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocallyConstantExtensionByZero
 

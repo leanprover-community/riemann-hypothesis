@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.SemisimplificationConstituents
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
 
 namespace GlobalTheory.IrredOfAbsIrred
@@ -72,3 +75,9 @@ theorem isIrred_of_absIrrSub :
       exact hinj (by rw [h3]; simp)
 
 end GlobalTheory.IrredOfAbsIrred
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIrred_of_absIrr : ∀ {k Γ : Type} [Field k] [Group Γ] {a : ℕ} (ρ : Γ →* GL (Fin a) k), AbsIrrSub ρ ⊤ → GlobalTheory.IndefiniteRowSideFullHecke.SemisimplificationConstituents.IsIrred (matRep ((Units.coeHom _).comp ρ)) := by
+  atlas_forward_decl GlobalTheory.IrredOfAbsIrred.isIrred_of_absIrrSub

@@ -3,6 +3,9 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGr
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIsNonarchimedeanLocalField
 import GroundTheory.LocalFields.FiniteExtension
 import GroundTheory.LocalFields.UnitsPowers
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma
 
 namespace GlobalTheory.UnitLemma
@@ -16,3 +19,9 @@ theorem UQ.finite_units_mod_sq : ∀ (K : UQ) (L : Type) [Field L] [Algebra K.E 
   exact GroundTheory.LocalField.finite_quotient_range_pow_of_charZero (K := L) two_ne_zero
 
 end GlobalTheory.UnitLemma
+end
+
+open GlobalTheory.UnitLemma
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_units_mod_squares_of_unramifiedQuadratic : ∀ (K : UQ) (L : Type) [Field L] [Algebra K.E L] [FiniteDimensional K.E L], Finite (Lˣ ⧸ (powMonoidHom 2 : Lˣ →* Lˣ).range) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.UQ.finite_units_mod_sq

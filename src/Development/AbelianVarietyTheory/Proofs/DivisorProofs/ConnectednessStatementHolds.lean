@@ -1,12 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
-import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompleteDvrExtensionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseChangeCompleteConnectedStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompleteDvrExtension
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseChangeCompleteConnected
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpecialFibreConnectedOfProperStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpecialFibreConnectedOfBaseChangeStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpecialFibreConnectedOfBaseChange
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -29,3 +28,10 @@ theorem connected_of_hypotheses (hP : GlobalTheory.CovTop.Hypotheses2) : ConnSt 
   exact GlobalTheory.T.special_fibre_connected_of_base_change V O φ hφl X s hsp
 
 end GlobalTheory.FlatModel
+end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.connectedness_statement_holds : GlobalTheory.CovTop.Hypotheses2 → ConnSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.connected_of_hypotheses

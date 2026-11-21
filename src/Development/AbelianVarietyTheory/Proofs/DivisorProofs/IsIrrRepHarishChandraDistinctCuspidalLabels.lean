@@ -2,15 +2,14 @@ import Mathlib
 import Formalism.PadicSubsetSums.CentralIdempotents.GaloisConjCentralIdempotent
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.CuspidalProductMultiplicity
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.BlockEmbeddingFactors
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.BlockProductIsomorphism
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IrrParIffCuspidalProduct
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimensionalOfIrr
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasLabelTransportEquiv
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviTensorBlockExt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviPiTensorRepresentationIsIrreducibleStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspidalPiTensorNoBlockUnipotentFixedStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCuspidalFactorAtBlockLeviPiTensorStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviPiTensorRepresentationIsIrreducible
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspidalPiTensorNoBlockUnipotentFixed
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCuspidalFactorAtBlockLeviPiTensor
 
+section
 noncomputable section
 namespace GlobalTheory.HcIrr
 open Formalism.IrreducibleCountingLemmas.TYPES Formalism.L2.DIV Polynomial CategoryTheory
@@ -192,3 +191,10 @@ theorem isIrrRep_hcRep : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K] (r
     (fun c c' h => hinj (by simpa [hlab] using h)) hm)
 
 end GlobalTheory.HcIrr
+end
+end
+
+open CategoryTheory Polynomial Formalism.IrreducibleCountingLemmas.TYPES
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIrrRep_harishChandra_distinct_cuspidal_labels : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K] (r s : ℕ) (b : Fin r → Fin s) (lam : ∀ c : Fin s, FDRep ℂ (GL {i // b i = c} K)), Function.Surjective b → (∀ c, Simple (lam c) ∧ IsCuspidal K (lam c)) → ∀ (C : LabelConv K) (O : LabelMap K C), Function.Injective (fun c => labO O (lam c)) → IsIrrRep (hcRep K b lam) := by
+  atlas_forward_decl GlobalTheory.HcIrr.isIrrRep_hcRep

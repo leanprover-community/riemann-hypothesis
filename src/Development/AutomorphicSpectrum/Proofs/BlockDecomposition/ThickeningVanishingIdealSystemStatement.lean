@@ -1,10 +1,11 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThickeningVanishingIdealSystem
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.VanIdealHomog
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemVanishingIdealIffKillsFormStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartVanishingKillsFormMulPowStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThickeningSectionHomogeneousFormStatement
+import BuildAid.ForwardExisting
+
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Out MvPolynomial GlobalTheory.CompanionTheory.GE
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (PSpace)
 set_option maxHeartbeats 1000000 in
@@ -21,4 +22,4 @@ theorem _root_.GlobalTheory.T.thickening_vanishing_ideal_system : ∀ (R : Type)
     (∀ e, ∀ f ∈ vanIdeal (i e ≫ thickι R I N e), ∀ k, ∃ m : ℕ, X k ^ m * f ∈
         vanIdeal (i (e + 1) ≫ thickι R I N (e + 1)) ⊔
           (I ^ (e + 1)).map (C : R →+* MvPolynomial (Fin (N + 1)) R)) := by
-  first | exact @GlobalTheory.CompanionTheory.GE.Family.vanIdeal_family | exact GlobalTheory.CompanionTheory.GE.Family.vanIdeal_family | (intros; apply GlobalTheory.CompanionTheory.GE.Family.vanIdeal_family <;> assumption)
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.Family.vanIdeal_family

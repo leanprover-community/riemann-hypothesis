@@ -4,6 +4,9 @@ import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.No
 import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 import CompanionTheory.AutomorphicTheory.UnitriangularMeasure.AdeleCoordinateMeasure.GJGlobalModulus
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RationalVectorsAdelesFundamentalDomainMassOne
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.QSA GlobalTheory.Published
 open Matrix
 open scoped Quaternion Topology TensorProduct
@@ -128,3 +131,11 @@ theorem exists_compact_mulVec_rat_mem : ∀ (F : Type) [Field F] [NumberField F]
     exact ⟨(φ a, φ b), ⟨ha, hb⟩, rfl⟩
 
 end GlobalTheory.AdelicMinkowski
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.QSA GlobalTheory.Published
+open Matrix
+open scoped Quaternion Topology TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelic_minkowski_exists_short_rational_vector : ∀ (F : Type) [Field F] [NumberField F] (n : ℕ), 0 < n → ∃ B : Set (Fin n → AF F), IsCompact B ∧ ∀ g : Matrix (Fin n) (Fin n) (AF F), IsUnit g.det → (∃ u : (AF F)ˣ, (u : AF F) = g.det ∧ (GroundTheory.Global.IdeleGroup.ideleModule F u : ℝ) ≤ 1) → ∃ ξ : Fin n → F, ξ ≠ 0 ∧ g *ᵥ (fun i => algebraMap F (AF F) (ξ i)) ∈ B := by
+  atlas_forward_decl GlobalTheory.AdelicMinkowski.exists_compact_mulVec_rat_mem

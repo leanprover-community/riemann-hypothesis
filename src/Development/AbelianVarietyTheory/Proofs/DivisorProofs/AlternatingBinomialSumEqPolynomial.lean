@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.LineSCShortExact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AevalFibPowExplicit
 import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.LogDetSt
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -191,3 +192,10 @@ theorem sum_choose_hs_eq_pm : ∀ m : ℕ, ∑ j ∈ Finset.range (m + 1),
   rw [map_sub, eval_lhs a b hab m, eval_rhs a b m, sub_self]
 
 end GlobalTheory.LineForm
+end
+end
+
+open MvPolynomial GlobalTheory.LineForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.alternating_binomial_sum_eq_polynomial : ∀ m : ℕ, ∑ j ∈ Finset.range (m + 1), C ((-1) ^ j * (m.choose j : ℝ) / (m + j + 1 : ℝ)) * X 0 ^ (m - j) * hs (m + j) = pm m := by
+  atlas_forward_decl GlobalTheory.LineForm.sum_choose_hs_eq_pm

@@ -1,11 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SerreHolomorphicSectionsHolds
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompactSpacePts
-import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.GagaSections
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousSectionPolynomialGrowth
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CompactSpaceCxPtsOfIsProper
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.RegularFunctionPolynomialGrowthStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.RegularFunctionPolynomialGrowth
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -51,3 +50,12 @@ theorem continuous_section_polynomial_growth_of_isProper : ∀ (Y : Scheme.{0}) 
     _ ≤ _ := mul_le_mul_of_nonneg_right hFy hT
 
 end GlobalTheory.CompanionTheory.Gaga
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Set
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.holomorphic_section_moderate_growth : ∀ (Y : Scheme.{0}) (p : Y ⟶ Sp ℂ), IsProper p → ∀ (B : LB Y), B.IsLB → ∀ s ∈ fibSec p (RingHom.id ℂ) B, (∀ j, ContinuousOn (s j) (ptsIn p (RingHom.id ℂ) (B.U j))) → ∀ (i : B.ι) (V : Y.Opens), IsAffineOpen V → V ≤ B.U i → ∃ (n : ℕ) (u : Fin n → Γ(Y, V)) (C : ℝ) (m : ℕ), ∀ y ∈ ptsIn p (RingHom.id ℂ) V, ‖s i y‖ ≤ C * (1 + ∑ l, ‖ev p (RingHom.id ℂ) V (u l) y‖) ^ m := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Gaga.continuous_section_polynomial_growth_of_isProper

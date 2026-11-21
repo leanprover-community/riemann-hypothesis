@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SpecialFibreUnits
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsEqnIffGeneratesAtInv
 
+section
 open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Opposite
 open ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits GlobalTheory.Cartier
 
@@ -40,3 +41,11 @@ theorem exists_reducedSpecialFibre_of_not_mem_basicOpen : ∀ (O : Type) [CommRi
   exact hp
 
 end GlobalTheory
+end
+
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Opposite
+open ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits GlobalTheory.Cartier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_reduced_fibre_point : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ϖ : O), Irreducible ϖ → ∀ (Z : Scheme.{0}) (f : Z ⟶ Spec (.of O)) (z : Z),
+  z ∉ Z.basicOpen (f.appTop.hom ((Scheme.ΓSpecIso (.of O)).inv.hom ϖ)) → ∃ y : reducedSpecialFibre f, reducedSpecialι f y = z := by
+  atlas_forward_decl GlobalTheory.exists_reducedSpecialFibre_of_not_mem_basicOpen

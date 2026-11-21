@@ -5,7 +5,8 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenUse
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HtCard
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroWild
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroSupport
-import ReciprocityTheory.Hypotheses.GalCoh
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.NPin GlobalTheory.NFacts
 
 namespace GlobalTheory.EtaInfType
@@ -22,3 +23,9 @@ theorem main : ∀ (D : D7) (cf : CharFrame D) (C : NChoice D) (tp : TupTied D c
   rfl
 
 end GlobalTheory.EtaInfType
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.NPin GlobalTheory.NFacts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.infinityType_etaTilde_at_cmTypeEmbeddings_eq_half : ∀ (D : D7) (cf : CharFrame D) (C : NChoice D) (tp : TupTied D cf C), NCharTied D cf C tp → ∀ t, D.naut.infG D.naut.etaT (Formalism.L2.embT D t) = {(1 / 2 : ℂ)} := by
+  atlas_forward_decl GlobalTheory.EtaInfType.main

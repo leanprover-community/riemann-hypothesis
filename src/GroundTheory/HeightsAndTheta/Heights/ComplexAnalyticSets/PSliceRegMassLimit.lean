@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceRegMassLimit
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceCutOffLimit
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceFormLelongCompact
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceFormMass
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartMassCompact
@@ -10,7 +9,6 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceComponents
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarIntAdd
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFormIntSymm
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLelongRegularise
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceSectionMass
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights

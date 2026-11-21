@@ -1,16 +1,15 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCliff
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HighestWeightAntitoneOfFiniteDimensionalStable
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCliffordLowestVectorStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CliffordVectorSpinWeightStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpinGlRelationsAdjointStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsHighestWeightModuleStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Sl2SquareKillsVectorStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpinTensorHighestWeightStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCliffordLowestVector
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CliffordVectorSpinWeight
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpinGlRelationsAdjoint
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsHighestWeightModule
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Sl2SquareKillsVector
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpinTensorHighestWeight
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.KTypeIntDomStatement
 import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.DiscreteSeriesInfinitesimalCharacter
 
+section
 open Matrix Finset
 open scoped InnerProductSpace
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.RealCount
@@ -264,3 +263,18 @@ theorem spin_parthasarathy_rao_varadarajan : ∀ n : ℕ, ∃ (ι : Type) (_ : F
   exact assemble c hc q hq0 h1 h2 V Kf S ν v hK hKu hfd hst hvS hv0 hv
 
 end GlobalTheory.CompanionTheory.SpinPRV
+end
+end
+
+open Matrix Finset
+open scoped InnerProductSpace
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.RealCount
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.parthasarathy_rao_varadarajan : ∀ n : ℕ, ∃ (ι : Type) (_ : Fintype ι) (_ : DecidableEq ι) (c : Fin n → Fin n → Matrix ι ι ℂ), IsCliff c ∧
+    ∀ (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] (Kf : Fin n → Fin n → Module.End ℂ V)
+      (S : Submodule ℂ V) (ν : Fin n → ℤ) (v : V), Formalism.REAL.GlRel Kf →
+      (∀ a b (x y : V), ⟪Kf a b x, y⟫_ℂ = ⟪x, Kf b a y⟫_ℂ) → FiniteDimensional ℂ S → (∀ a b, ∀ w ∈ S, Kf a b w ∈ S) →
+      v ∈ S → v ≠ 0 → Formalism.REAL.KHighest (fun _ => true) Kf (wtR ν) v →
+      ∃ w : Equiv.Perm (Fin n), Antitone (fun a => wtR ν (w a) - rhoV n (w a)) ∧ ∃ x : ι → V, x ≠ 0 ∧
+        Formalism.REAL.KHighest (fun _ => true) (yF Kf c) (fun a => wtR ν (w a) - rhoV n (w a)) x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SpinPRV.spin_parthasarathy_rao_varadarajan

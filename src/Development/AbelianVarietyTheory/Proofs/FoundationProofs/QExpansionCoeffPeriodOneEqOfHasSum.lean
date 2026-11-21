@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.PetEqRelIndexMulPetProd
+import BuildAid.ForwardExisting
 
+section
 open UpperHalfPlane ModularForm CongruenceSubgroup MeasureTheory Filter Topology
 open scoped MatrixGroups ModularForm Manifold
 
@@ -74,3 +76,10 @@ theorem coef_of_hasSum : ∀ (f : ℍ → ℂ) (a : ℕ → ℂ),
   simpa using congr_arg (FormalMultilinearSeries.coeff · n) (h2.eq_formalMultilinearSeries h1)
 
 end GlobalTheory.Hk
+end
+
+open UpperHalfPlane ModularForm CongruenceSubgroup MeasureTheory
+open scoped MatrixGroups ModularForm Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.qExpansionCoeffPeriodOne_eq_of_hasSum : ∀ (f : ℍ → ℂ) (a : ℕ → ℂ), (∀ τ : ℍ, HasSum (fun m => a m • Function.Periodic.qParam 1 τ ^ m) (f τ)) → ∀ n, GlobalTheory.Hk.coef f n = a n := by
+  atlas_forward_decl GlobalTheory.Hk.coef_of_hasSum

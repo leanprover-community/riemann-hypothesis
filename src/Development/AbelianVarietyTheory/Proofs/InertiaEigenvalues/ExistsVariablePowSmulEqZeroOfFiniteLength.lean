@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MapMemA
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ImageStableDegreeBounds
+import BuildAid.ForwardExisting
 
+section
 open PowerSeries GlobalTheory.BK Matrix GlobalTheory.LiftCoker
 
 namespace GlobalTheory.UPow
@@ -57,3 +59,9 @@ theorem exists_uIn_pow_smul_eq_zero : ∀ (O K : Type) [CommRing O] [NormedField
   simpa [smul_smul] using this
 
 end GlobalTheory.UPow
+end
+
+open PowerSeries GlobalTheory.BK Matrix GlobalTheory.LiftCoker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_variable_pow_smul_eq_zero_of_finiteLength : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] (M : Type) [AddCommGroup M] [Module (A O K) M], IsFiniteLength (A O K) M → ∃ n : ℕ, ∀ x : M, (uIn (A O K)) ^ n • x = 0 := by
+  atlas_forward_decl GlobalTheory.UPow.exists_uIn_pow_smul_eq_zero

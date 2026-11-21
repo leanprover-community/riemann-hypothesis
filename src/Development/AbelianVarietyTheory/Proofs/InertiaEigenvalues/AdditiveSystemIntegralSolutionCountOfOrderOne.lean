@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MooreNorm
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.PMonE.LinCount
@@ -157,3 +159,9 @@ theorem glCount_of_one : ∀ N : ℕ, 1 ≤ N → GLCount 1 → GLCount N := by
 end GlobalTheory.PMonE.LinCount
 
 end
+end
+
+open GlobalTheory.PMonE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additiveSystemIntegralSolutionCount_of_order_one : ∀ N : ℕ, 1 ≤ N → GLCount 1 → GLCount N := by
+  atlas_forward_decl GlobalTheory.PMonE.LinCount.glCount_of_one

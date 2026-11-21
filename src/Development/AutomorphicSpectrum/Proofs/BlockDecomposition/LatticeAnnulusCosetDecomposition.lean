@@ -1,6 +1,8 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.RationalPrimesBelowPlaces
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetInd
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
 open GroundTheory.Automorphic.GodementSection (localChar)
@@ -194,3 +196,16 @@ theorem main : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [I
       rw [Set.indicator_of_notMem hB, Set.indicator_of_notMem hA, sub_self]
 
 end GlobalTheory.CompanionTheory.WS.Orbit
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_annulus_coset_decomposition : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (n : ℤ) (x : F × F), x ∉ GlobalTheory.CompanionTheory.WS.Ln F n → ∃ s : Finset Fˣ, s.Nonempty ∧ (∀ t ∈ s, t ∈ unitFiltrationUnits F 0) ∧ (GlobalTheory.CompanionTheory.WS.spanSet n x).indicator (1 : F × F → ℂ) - (GlobalTheory.CompanionTheory.WS.spanSet n (((unifUnit F : Fˣ) : F) • x)).indicator (1 : F × F → ℂ) = ∑ t ∈ s, GlobalTheory.CompanionTheory.WS.cosetInd n ((t : F) • x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.Orbit.main

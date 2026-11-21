@@ -1,6 +1,5 @@
 import Formalism.NormUnitaryBounds.DetPolynomialWeights.ShearHypothesisOneHolds
 import Formalism.NormUnitaryBounds.DetPolynomialWeights.ShearHypothesisTwo
-import Formalism.NormUnitaryBounds.DetPolynomialWeights.ShearCoefficients
 import Formalism.NormUnitaryBounds.DetPolynomialWeights.LtSuccOfMemWeightCompositions
 import Formalism.NormUnitaryBounds.DetPolynomialWeights.NormUnitary
 import Formalism.NormUnitaryBounds.DetPolynomialWeights.NormMul

@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TautologicalInnerProductLift
 import Development.AbelianVarietyTheory.Definitions.Divisors.MemSmallSecTrivShift
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -99,3 +100,12 @@ theorem isometric_grLB_one : (VMetric.grLB flag 1 stdH.cInf).Isometric (hermitia
   rw [nsqV_eq_one_add j hy, det_quotGram_one_add, Complex.ofReal_re, Real.log_inv, neg_neg]
 
 end GlobalTheory.TautFlag
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_second_isometric_O1 : (VMetric.grLB TautFlag.flag 1 TautFlag.stdH.cInf).Isometric (ProjSpace.hermitianTwistingSheaf ℤ 1) := by
+  atlas_forward_decl GlobalTheory.TautFlag.isometric_grLB_one

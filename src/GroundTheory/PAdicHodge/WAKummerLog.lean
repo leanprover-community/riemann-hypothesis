@@ -1,8 +1,6 @@
 import Mathlib
 import GroundTheory.PAdicHodge.WAKummerEps
-import GroundTheory.PAdicHodge.FundamentalSeqLog
 import GroundTheory.PAdicHodge.FundamentalSeqBCris
-import GroundTheory.PAdicHodge.ACrisFrobFixed
 set_option maxSynthPendingDepth 1
 
 noncomputable section

@@ -1,8 +1,6 @@
 import Mathlib
-import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 import Formalism.LocalToGlobal.ProjectiveLattices.ThClass
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.NoCommonZeroIffOfSec
-import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.AdelicNormWeight
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsNatMulInt
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsValueBelow
 import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ZeroNotAdmissibleOfRankPos

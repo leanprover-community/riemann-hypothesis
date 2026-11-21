@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotCompactOfIdempotent
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.RegSS GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms
@@ -87,3 +88,10 @@ theorem separatingPoints : SeparatingPoints := by
     rw [AlgHom.comp_apply, h1, h0, map_zero, map_zero]
 
 end GlobalTheory.RegSS
+end
+end
+
+open GlobalTheory.RegSS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conjugate_factor_points_separate : GlobalTheory.RegSS.SeparatingPoints := by
+  atlas_forward_decl GlobalTheory.RegSS.separatingPoints

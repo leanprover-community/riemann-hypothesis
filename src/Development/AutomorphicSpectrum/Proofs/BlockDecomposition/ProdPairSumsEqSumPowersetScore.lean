@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TZero
+import BuildAid.ForwardExisting
 
+section
 open Finset GlobalTheory.CompanionTheory.CoefId
 
 namespace GlobalTheory.CompanionTheory.CoefId
@@ -22,3 +24,9 @@ theorem prod_pairs_add_eq_sum_score {n : ℕ} (z : Fin n → ℂ) :
   rw [this, zpow_natCast, pow_add]
 
 end GlobalTheory.CompanionTheory.CoefId
+end
+
+open Finset GlobalTheory.CompanionTheory.CoefId
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prod_pair_sums_eq_sum_powerset_score : ∀ {n : ℕ} (z : Fin n → ℂ), ∏ p ∈ prs n, (z p.1 + z p.2) = ∑ T ∈ (prs n).powerset, ∏ a, z a ^ score T a := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CoefId.prod_pairs_add_eq_sum_score

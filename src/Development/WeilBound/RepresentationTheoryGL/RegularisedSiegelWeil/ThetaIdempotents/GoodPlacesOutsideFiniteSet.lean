@@ -1,6 +1,7 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionEigenfunctionMaximalCompact
 import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.ConjUnitIdeleAt
 
+section
 noncomputable section
 
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
@@ -110,3 +111,8 @@ theorem PositivityTheory.Rg.Rsw.jacquet_piatetski_first_bound : GoodPlacesOutsid
     rw [← mul_inv_cancel_left u a, map_mul, map_mul, hχu, hχw, mul_one]
 
 end
+end
+
+open GlobalTheory.CompanionTheory.Jp
+theorem _root_.GlobalTheory.T.jacquet_piatetski_bound_holds : GlobalTheory.CompanionTheory.Jp.GoodPlacesOutsideFiniteSet := by
+  atlas_forward_decl PositivityTheory.Rg.Rsw.jacquet_piatetski_first_bound

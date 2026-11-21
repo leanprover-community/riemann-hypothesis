@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.ClassNumImQ
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticDedekindZeta.Development
 
 open NumberField

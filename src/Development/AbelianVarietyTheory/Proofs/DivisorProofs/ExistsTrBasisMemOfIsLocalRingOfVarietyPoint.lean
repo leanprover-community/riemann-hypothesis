@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsLocModelIsPrimeOf
 import Development.AbelianVarietyTheory.Definitions.Divisors.NotDominatesTopPlace
+
+section
 open GlobalTheory.FieldPair
 
 namespace GlobalTheory.FieldPair
@@ -37,3 +38,10 @@ end GlobalTheory.FieldPair
 example : ∀ {K : Type} [Field K] (c : ℂ →+* K) (R : Subring K) (n : ℕ), IsLocModel c R →
     (∃ x : Fin n → K, TrBasis c x) → ∃ xi : Fin n → R, TrBasis c (fun j => (xi j : K)) :=
   @GlobalTheory.FieldPair.exists_trBasis_mem_of_isLocModel
+end
+
+open GlobalTheory.FieldPair
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_trBasis_mem_of_isLocalRingOfVarietyPoint : ∀ {K : Type} [Field K] (c : ℂ →+* K) (R : Subring K) (n : ℕ), IsLocModel c R →
+    (∃ x : Fin n → K, TrBasis c x) → ∃ xi : Fin n → R, TrBasis c (fun j => (xi j : K)) := by
+  atlas_forward_decl GlobalTheory.FieldPair.exists_trBasis_mem_of_isLocModel

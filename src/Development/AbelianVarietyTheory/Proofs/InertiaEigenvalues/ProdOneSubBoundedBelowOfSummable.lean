@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Filter Topology
 open scoped InnerProductSpace BigOperators
 
@@ -66,3 +68,10 @@ theorem prod_one_sub_bounded_below :
     (Finset.prod_nonneg fun v _ => (hfac v).le)
 
 end GlobalTheory
+end
+
+open MeasureTheory Filter Topology
+open scoped InnerProductSpace BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prod_one_sub_bounded_below_of_summable : ∀ (ι : Type) (s : ι → ℝ), (∀ v, 0 ≤ s v) → (∀ v, s v < 1) → Summable s → ∃ δ : ℝ, 0 < δ ∧ ∀ S : Finset ι, δ ≤ ∏ v ∈ S, (1 - s v) := by
+  atlas_forward_decl GlobalTheory.prod_one_sub_bounded_below

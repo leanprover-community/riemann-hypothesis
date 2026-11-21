@@ -3,6 +3,7 @@ import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicIntegersCompact.IsCompactAdicCompletionIntegers
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SelfDualVol
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GunrVol
@@ -273,3 +274,8 @@ theorem volLat : VolLat := by
 end GlobalTheory.CompanionTheory.GunrVol
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_volume_unramified : PositivityTheory.SiegelWeilFormula.Gunr.VolLat := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrVol.volLat

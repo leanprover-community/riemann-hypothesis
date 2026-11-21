@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomogeneityOfIsTauOfStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomogeneityOfIsTauOf
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTauOfUpperHalfPlaneLatticeSmulSL2Z
 
+section
 open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
 open GlobalTheory.QFam GlobalTheory.WpFam
 
@@ -139,3 +139,10 @@ theorem _root_.GlobalTheory.WpFam.isFam_wp_wpd : ∀ (N : ℕ) [NeZero N],
     ring
 
 end GlobalTheory.WpFam
+end
+
+open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate
+open GlobalTheory.QFam GlobalTheory.WpFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weierstrassP_torsion_isModularFamily : ∀ (N : ℕ) [NeZero N], IsFam (vact N) 2 (wp N) ∧ IsFam (vact N) 3 (wpd N) := by
+  atlas_forward_decl GlobalTheory.WpFam.isFam_wp_wpd

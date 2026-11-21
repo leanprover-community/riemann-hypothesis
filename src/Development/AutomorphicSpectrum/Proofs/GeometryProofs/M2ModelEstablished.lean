@@ -1,9 +1,10 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.CurveSemiAbelianConjecture
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.SeparableFormGroupElementFixesUniquePositiveLine
-import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Proportional
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.M2ModelOfCurveBoundStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.M2CurveEstablishedStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.M2ModelOfCurveBound
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.M2CurveEstablished
+
+section
 open AlgebraicGeometry CategoryTheory NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 
@@ -12,3 +13,10 @@ namespace GlobalTheory.CompanionTheory.Ar.Conj
 theorem m2Model_holds : RootLineDeRhamModel := GlobalTheory.T.rootLineDeRhamModel_of_curveSemiAbelian GlobalTheory.T.curveSemiAbelianConjecture
 
 end GlobalTheory.CompanionTheory.Ar.Conj
+end
+
+open AlgebraicGeometry CategoryTheory NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rootLineDeRhamModel_holds : RootLineDeRhamModel := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Conj.m2Model_holds

@@ -3,6 +3,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsBottomOfIsCoprime
 
+section
 open GlobalTheory.SqTop Formalism.BasicNotions
 
 namespace GlobalTheory.SqTop
@@ -16,3 +17,9 @@ theorem botEx_holds (_ : ∀ D, GlobalTheory.NormSum.Inp D) : BotEx := by
   exact ⟨δ, t0, fun ij => h ij.1 ij.2⟩
 
 end GlobalTheory.SqTop
+end
+
+open GlobalTheory.SqTop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bottomPairs_exist_baseTuple : (∀ D, GlobalTheory.NormSum.Inp D) → BotEx := by
+  atlas_forward_decl GlobalTheory.SqTop.botEx_holds

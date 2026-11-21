@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.QNorm
 open scoped WithZero
 
@@ -84,3 +87,10 @@ theorem index_sqs_top_of_fg : ∀ (G : Type) [CommGroup G] [Group.FG G],
   congr 1
 
 end GlobalTheory.QNorm
+end
+
+open NumberField IsDedekindDomain GlobalTheory.QNorm
+open scoped WithZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.index_sqs_of_fg : ∀ (G : Type) [CommGroup G] [Group.FG G], (sqs (⊤ : Subgroup G)).index = 2 ^ Module.finrank ℤ (Additive G) * Nat.card {a : G // a ^ 2 = 1} := by
+  atlas_forward_decl GlobalTheory.QNorm.index_sqs_top_of_fg

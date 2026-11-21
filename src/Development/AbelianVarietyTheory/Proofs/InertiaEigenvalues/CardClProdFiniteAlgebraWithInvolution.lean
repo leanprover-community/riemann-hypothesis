@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DltEqZero
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Desc Polynomial Filter Topology
 
 noncomputable section
@@ -57,3 +58,10 @@ theorem card_cl_prod (K : UQ) (B₁ B₂ : InvAlg K) :
   rw [Nat.card_congr (clEquiv B₁ B₂), Nat.card_prod]
 
 end GlobalTheory.UnitLemma.InvAlg.ClProd
+end
+end
+
+open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Desc Polynomial Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_cl_prod_finiteAlgebraWithInvolution : ∀ (K : UQ) (B₁ B₂ : InvAlg K), Nat.card (B₁.prod B₂).Cl = Nat.card B₁.Cl * Nat.card B₂.Cl := by
+  atlas_forward_decl GlobalTheory.UnitLemma.InvAlg.ClProd.card_cl_prod

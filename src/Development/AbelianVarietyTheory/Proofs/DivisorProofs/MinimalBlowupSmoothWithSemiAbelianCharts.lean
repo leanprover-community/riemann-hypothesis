@@ -1,9 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsMinAt
-import Development.AbelianVarietyTheory.Definitions.Divisors.MinSt5OfMinSt4
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothOfRelativeDimensionBlowupStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPreChartSiegelNormalizedBlowupStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothOfRelativeDimensionBlowup
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPreChartSiegelNormalizedBlowup
 
+section
 namespace GlobalTheory.SiegJoin
 
 theorem chartSt5_holds : ChartSt5 :=
@@ -12,3 +11,8 @@ theorem chartSt5_holds : ChartSt5 :=
       GlobalTheory.T.exists_preChart_siegel_normalizedBlowup g hg φ h₁ h₂ n hn ho F Z z i OZ d S π j BD hM hB⟩
 
 end GlobalTheory.SiegJoin
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.minimalBlowup_smooth_with_semiAbelianCharts : GlobalTheory.SiegJoin.ChartSt5 := by
+  atlas_forward_decl GlobalTheory.SiegJoin.chartSt5_holds

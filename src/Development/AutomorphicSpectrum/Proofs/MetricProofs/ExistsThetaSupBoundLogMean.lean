@@ -5,12 +5,14 @@ import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.CoordWeak
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ThetaFunctionArchimedeanFrameStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ThetaMultiplierQuadraticCharacterStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionValueUniqueBaseChangeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFullTorsionNumberFieldStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ThetaMultiplierQuadraticCharacter
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionValueUniqueBaseChange
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFullTorsionNumberField
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionValueIntegralStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.TorsionValueNormEqThetaNormStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaFunctionEvenBoundStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaFunctionEvenBound
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights TensorProduct
@@ -556,3 +558,13 @@ theorem mean_log_sup : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [Number
     linarith
 
 end GlobalTheory.CompanionTheory.Ar.Sl.Sup
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+open GroundTheory.Heights₂.Heights TensorProduct
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_theta_sup_bound_log_mean : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (L : Type) [Field L] [NumberField L] (D : PPData H L) (th : Out.H0 D.t.PP.L 1) (Φ : ℝ), 1 ≤ D.g → 0 ≤ Φ → D.HasTheta th Φ → ∃ M : (L →+* ℂ) → ℝ, (∀ σ, 0 < M σ) ∧ D.SupLe th M ∧ mean L (fun σ => Real.log (M σ)) ≤ Φ + C * D.g * Real.log (2 + D.g + Φ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Sl.Sup.mean_log_sup

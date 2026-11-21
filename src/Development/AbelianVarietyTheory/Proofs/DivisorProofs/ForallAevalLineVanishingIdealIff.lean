@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.PointHeight
 import Development.AbelianVarietyTheory.Definitions.Divisors.BlockSphereMeanLinForm
 
 set_option autoImplicit false

@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Lpart
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DetThreePointsEqExpansion
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.GL2DualWhittakerPair
 open scoped ValuativeRel
 
@@ -50,3 +53,10 @@ theorem inner_integral_long_weyl_transpose_inv : ∀ (F : Type) [Field F] [Valua
   rw [Matrix.mul_assoc, block_long_weyl3_diag_concatenation, GlobalTheory.CompanionTheory.KTwoWhittakerSubgroup.mul_concat_column, Matrix.mul_assoc]
 
 end GlobalTheory.CompanionTheory.InnerIntegralLongWeyl
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.GL2DualWhittakerPair
+open scoped ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inner_integral_eq_left_partial_fourier : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (ψ : AddChar F Circle), ∀ (Φ : Matrix (Fin 2) (Fin 3) F → ℂ) (y h : GL (Fin 2) F), LFS.inn ψ Φ y⁻¹ (w3 * tinv (em h)) = Lpart ψ (Pf Φ h y) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InnerIntegralLongWeyl.inner_integral_long_weyl_transpose_inv

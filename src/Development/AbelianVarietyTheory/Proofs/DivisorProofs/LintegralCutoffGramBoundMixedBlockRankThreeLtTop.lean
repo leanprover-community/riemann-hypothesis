@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NmatEqLowMat
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LintegralFintypeProdEqProd
+import BuildAid.ForwardExisting
+
+section
 open ReciprocityTheory.ChartRestriction.G.FD MeasureTheory GlobalTheory.IntBall
 open scoped ENNReal Matrix
 
@@ -78,3 +81,10 @@ theorem lintegral_hB_lt_top : ∀ p0 : ℕ, (p0 = 1 ∨ p0 = 2) → ∫⁻ w : L
   exact ENNReal.prod_lt_top fun _ _ => lintegral_dom_lt_top
 
 end GlobalTheory.IntBall.Fin3
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD MeasureTheory GlobalTheory.IntBall
+open scoped ENNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_cutoffGramBoundMixedBlock_rankThree_lt_top : ∀ p0 : ℕ, (p0 = 1 ∨ p0 = 2) → ∫⁻ w : Low 3 → ℂ, hB p0 w < ⊤ := by
+  atlas_forward_decl GlobalTheory.IntBall.Fin3.lintegral_hB_lt_top

@@ -1,11 +1,10 @@
 import Mathlib
 import Formalism.PeriodIntegrals.DSInfCharCap
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.PseudoCoefficientSeparation
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-import Formalism.RealPlaceAnalysis.StatementE
-import Formalism.RealPlaceAnalysis.StatementB
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LanglandsClassification
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RestrOfNotMem
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
 open GlobalTheory.SmoothGlob (lieSet)
 open GlobalTheory.Dec (IsHaarSub HasInfChar UEquiv gelfVal)
@@ -79,3 +78,16 @@ theorem GlobalTheory.RealInd.Stages.unip_conj_refine : ∀ {n a b : ℕ} {ε : F
   intro n a b ε j W W' β p hW hW' hp hlast hβ m hm u hu
   exact GlobalTheory.RealInd.Stages.UnipConj.flagN_le_refine hW'.2.1 hp hlast hβ _
     (GlobalTheory.RealInd.Stages.UnipConj.conj_mem_flagN m hm u hu)
+end
+
+open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
+open GlobalTheory.SmoothGlob (lieSet)
+open GlobalTheory.Dec (IsHaarSub HasInfChar UEquiv gelfVal)
+open GlobalTheory.Orb (IsPseudoCoeff ujMat ujRep)
+open scoped InnerProductSpace
+open PI.DSInfCharCap (actU Egl)
+open GlobalTheory.RealInd.Stages Finset GlobalTheory.FlagMeas Formalism.REAL
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_conjugates_unipotent_refined : ∀ {n a b : ℕ} {ε : Fin n → Bool} {j : Fin a → ℕ} {W : Flag n a} {W' : Flag n b} {β : Fin b → Fin a} {p : Fin (a + 1) → Fin (b + 1)}, IsIsoFlag ε j W → IsIsoFlag ε (fun _ => 1) W' → (∀ i, W' (p i) = W i) → W' (Fin.last b) = W (Fin.last a) → (∀ l i, β l = i ↔ p i.castSucc ≤ l.castSucc ∧ l.castSucc < p i.succ) → ∀ m ∈ flagM ε W, ∀ u ∈ flagN ε W, m * u * m⁻¹ ∈ flagN ε W' := by
+  atlas_forward_decl GlobalTheory.RealInd.Stages.unip_conj_refine

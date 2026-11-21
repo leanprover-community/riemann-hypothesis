@@ -1,6 +1,5 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.RankOneEisenstein.Theta2Integral
-import GroundTheory.GlobalFields.TateThesis.AdelePoissonUniform
 set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.EisRk1Bound

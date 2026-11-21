@@ -1,4 +1,3 @@
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnifAt
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.EigInert
 
 noncomputable section

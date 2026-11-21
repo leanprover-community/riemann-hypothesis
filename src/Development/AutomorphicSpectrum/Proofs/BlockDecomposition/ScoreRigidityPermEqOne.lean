@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TZero
+import BuildAid.ForwardExisting
 
+section
 open Finset GlobalTheory.CompanionTheory.CoefId
 
 namespace GlobalTheory.CompanionTheory.CoefId.Unique
@@ -309,3 +311,9 @@ theorem tournament_unique : ∀ {n : ℕ} (lev : Fin n → ℕ), Monotone lev �
     omega
 
 end GlobalTheory.CompanionTheory.CoefId.Unique
+end
+
+open Finset GlobalTheory.CompanionTheory.CoefId
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.score_rigidity_perm_eq_one : ∀ {n : ℕ} (lev : Fin n → ℕ), Monotone lev → ∀ L : Fin n → ℤ, StrictAnti L → (∀ a b, lev a = lev b → L a - L b = ((b : ℕ) : ℤ) - ((a : ℕ) : ℤ)) → (∀ a b, lev a = lev b → score (tZero lev) a - ((a : ℕ) : ℤ) = score (tZero lev) b - ((b : ℕ) : ℤ)) → ∀ (σ : Equiv.Perm (Fin n)) (T : Finset (Fin n × Fin n)), T ⊆ prs n → (∀ a, score T a = score (tZero lev) a + 2 * (L a - L (σ a))) → σ = 1 ∧ T = tZero lev := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CoefId.Unique.tournament_unique

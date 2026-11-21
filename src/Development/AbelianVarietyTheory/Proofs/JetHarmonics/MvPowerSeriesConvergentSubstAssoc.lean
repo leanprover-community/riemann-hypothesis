@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Jets.PowerSeriesHasSumAt
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvPowerSeriesConvergentSubstHasSumAndBounds
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvPowerSeriesIntegralBoundedClosure
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvPowerSeriesConvergentSubstIsRingHomOnBoundedStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvPowerSeriesConvergentSubstIsRingHomOnBounded
 
+section
 open GlobalTheory.ConvSer Filter Topology
 
 namespace GlobalTheory.ConvSer
@@ -102,3 +102,9 @@ theorem csub_assoc : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [Compl
   exact hB'.tsum_eq.trans hA.tsum_eq.symm
 
 end GlobalTheory.ConvSer
+end
+
+open GlobalTheory.ConvSer
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mvPowerSeriesConvergentSubst_assoc : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [CompleteSpace K] (ρ σ τ : Type) [Fintype ρ] [Fintype σ] (s : ρ → MvPowerSeries σ K) (t : σ → MvPowerSeries τ K) (S : MvPowerSeries ρ K), (∀ j, Small (s j)) → (∀ i, Small (t i)) → Bdd S → (∀ j, Small (csub t (s j))) ∧ csub t (csub s S) = csub (fun j => csub t (s j)) S := by
+  atlas_forward_decl GlobalTheory.ConvSer.csub_assoc

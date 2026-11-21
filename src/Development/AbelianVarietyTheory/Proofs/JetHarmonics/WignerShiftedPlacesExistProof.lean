@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.DiscreteSeriesShifts.ShiftExists
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WignerMapsThreePlacesExistsStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsShiftedTypesLowerBound
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WithRightAction
 
+section
 open Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P.CutBP2
 
 namespace GlobalTheory.wignerShiftedPlacesExist_proof
@@ -129,3 +129,8 @@ theorem shiftExists_of (hA : GlobalTheory.WigSh.AmapsShExists) : GlobalTheory.Wi
 theorem shiftExists : GlobalTheory.WigSh.ShiftExists := shiftExists_of GlobalTheory.T.wignerMapsThreePlaces_exists
 
 end GlobalTheory.wignerShiftedPlacesExist_proof
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wignerShiftedPlacesExist_proof : GlobalTheory.WigSh.ShiftExists := by
+  atlas_forward_decl GlobalTheory.wignerShiftedPlacesExist_proof.shiftExists

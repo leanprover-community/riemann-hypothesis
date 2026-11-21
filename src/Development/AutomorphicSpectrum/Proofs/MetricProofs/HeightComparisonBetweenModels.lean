@@ -1,23 +1,21 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.PotentialsBoundedRegSettingEqReference
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.BoundedStatements
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.PositionPot
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FubiniStudyMetricSmooth
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightPshAndBoundsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightTendstoC2Statement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedIntegralTendstoOffDivisorStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularChartDataPropertiesStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalHolomorphicSectionOfPotentialStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightTendstoC2
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedIntegralTendstoOffDivisor
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalHolomorphicSectionOfPotential
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionNumberMetricChangeStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedHodgeMetricSmoothStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.VerticalHodgeMetricLogFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsContinuousMetricRatioStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsPositivePotentialDominatingStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightTendstoUniformlyStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothOnAtlasContinuousStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedHodgeHeightLimitStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.VerticalHodgeMetricLogFormula
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsContinuousMetricRatio
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsPositivePotentialDominating
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightTendstoUniformly
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothOnAtlasContinuous
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedHodgeHeightLimit
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField Matrix Filter Topology
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp
@@ -240,3 +238,13 @@ theorem arLim_exists_eq : Top.Given → PtsIntegrableStatement → ∀ (K : Type
 
 end Main
 end GlobalTheory.CompanionTheory.Ar.Cusp
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField Matrix Filter Topology
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp
+open ReciprocityTheory.AnForm (levi)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.height_comparison_between_models : Top.Given → PtsIntegrableStatement → ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D) (M M' : XModel D) (S : LogLogRegularisationSetting M D.Xo (muLine Hd)) (S₁ : LogLogRegularisationSetting M' D.Xo (muLine Hd)) (B : ℕ), IsFullIntersectionSystem II → S.IsTied → S₁.IsTied → ArLimExists Hd S B ∧ arLim Hd S B = arLim Hd S₁ B := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.arLim_exists_eq

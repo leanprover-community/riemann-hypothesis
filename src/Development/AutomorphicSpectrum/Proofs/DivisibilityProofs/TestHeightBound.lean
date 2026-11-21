@@ -4,12 +4,13 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.I
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.HeckeSectionsIsotropicCommutatorPairingPower
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.KleimanSt
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CutoffCoefficientsBoundStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerHeightIdentityExpansionStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.HomogeneousPowerSumDecompositionStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestPolynomialShiftTotalStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestPolynomialRemainderBoundStatement
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CutoffCoefficientsBound
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerHeightIdentityExpansion
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.HomogeneousPowerSumDecomposition
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestPolynomialShiftTotal
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestPolynomialRemainderBound
+
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar.Top
 
 namespace GlobalTheory.CompanionTheory.Ar.Top
@@ -142,3 +143,9 @@ theorem test_height_bound_slope_flat : ∀ II : IntersectionSystem, ∀ (Ψ : Ty
     nlinarith
 
 end GlobalTheory.CompanionTheory.Ar.Top
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.test_height_bound : ∀ II : IntersectionSystem, ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T : RootTower Ψ N) [Nonempty Ψ] (hh : RP Ψ N →ₗ[ℝ] ℝ) (frob : ℕ → Ψ → ℕ → Ψ ⊕ Ψ) (C C' rd Lval : ℝ), 0 ≤ C → 0 ≤ C' → 1 ≤ rd → T.Proportional → I9 (Ψ := Ψ) (N := N) hh → T.PropF II C' rd Lval → T.SlopeLower II C rd Lval → hh (testPoly T.j) ≤ ((dimX Ψ N T.j : ℝ) + 1) * testDeg Ψ N T.j * (Fintype.card Ψ * ((min T.j (N - T.j) : ℕ) / 2 * Real.log (N + 1))) → T.LowerBoundAtBase II hh frob (2 * (C + C') + 3) rd Lval := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.test_height_bound_slope_flat

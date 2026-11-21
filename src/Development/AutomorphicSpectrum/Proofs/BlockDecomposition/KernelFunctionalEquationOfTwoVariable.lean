@@ -2,7 +2,9 @@ import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousOfTrivialInteger
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerRightTranslation
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.R
@@ -220,3 +222,8 @@ theorem kernel_local_functional_equation : A7 → A8 := by
 end GlobalTheory.CompanionTheory.RSKernel
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernel_functional_equation_of_two_variable : Ad3.R.A7 → Ad3.R.A8 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RSKernel.kernel_local_functional_equation

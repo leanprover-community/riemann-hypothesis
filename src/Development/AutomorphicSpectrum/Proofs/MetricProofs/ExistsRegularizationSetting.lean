@@ -1,7 +1,5 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.PotentialsBoundedRegSettingEqReference
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.BoundedStatements
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.PMaxOscillation
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.PMollifierLowerBound
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.PBoundedChartComparison
@@ -11,6 +9,8 @@ import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsPotentialCharts
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedSubsetsForPotentialCharts
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsCutoffFamilySymmetric
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SymmetricChartsOfRegularization
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField Matrix Filter Topology
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp
@@ -46,3 +46,12 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.exists_regularization_setting 
     filter_upwards [Ioo_mem_nhdsGT ht₀] with t ht j k x hx
     exact (hcmp t ht.1 ht.2 j k x hx).trans (le_max_right _ _)
   exact ⟨S', hT, GlobalTheory.CompanionTheory.Relay.symmetric_charts_of_regularization K J II Ψ Ω W D Hd M w S' κ hT hsym hρ hcc hrc (hcj hrc hO)⟩
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField Matrix Filter Topology
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp
+open ReciprocityTheory.AnForm (levi)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_regularization_setting : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D) (M : XModel D) (w : ((Σ k, J k) → ℂ) → ℝ), LogHom D Hd.aMu w → ChartPsh D w → ChartCont D w → ChartBdd D w → ConjOff D w → ∃ S' : BoundedRegularisationSetting M D.Xo Hd.aMu w, S'.IsTied ∧ ConjU S' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Relay.exists_regularization_setting

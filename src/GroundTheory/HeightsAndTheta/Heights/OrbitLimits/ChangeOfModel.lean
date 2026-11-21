@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChangeOfModel
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PIsomInvariance
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero

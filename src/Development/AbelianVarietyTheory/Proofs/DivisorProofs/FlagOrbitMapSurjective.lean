@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.NormSqColGrLineOfOr
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOfValILeOne
 
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Matrix
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FlagZ GlobalTheory.FlagPoly Formalism.DegreeFormula
 open IsLocalRing
@@ -62,3 +63,10 @@ theorem surjective_orbit : ∀ (ι κ : Type) [Fintype ι] [Finite κ] (N : ℕ)
   exact mem_range_orbit_of_specializes a l _ y (hη.specializes (Set.mem_univ y))
 
 end GlobalTheory.FlagZ
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Matrix
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FlagZ GlobalTheory.FlagPoly Formalism.DegreeFormula
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_orbit_map_surjective : ∀ (ι κ : Type) [Fintype ι] [Finite κ] (N : ℕ) (a : κ → ι) (l : κ → Fin (N + 1)), Function.Surjective (orbit a l) := by
+  atlas_forward_decl GlobalTheory.FlagZ.surjective_orbit

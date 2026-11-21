@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUnramifiedOddDegreeQuadraticLocalExt
+import BuildAid.ForwardExisting
 
+section
 open Polynomial IsLocalRing
 
 namespace GlobalTheory.UnitLemma.InvolRes
@@ -41,3 +43,9 @@ theorem residue_pow_and_roots : ∀ (S : Type) [CommRing S] [IsLocalRing S] [Fin
   · rw [h1, map_pow]
 
 end GlobalTheory.UnitLemma.InvolRes
+end
+
+open Polynomial IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.involution_residue_pow_and_roots_of_unity : ∀ (S : Type) [CommRing S] [IsLocalRing S] [Finite (ResidueField S)] (M : ℕ), Nat.card (ResidueField S) = M ^ 2 → ∀ τ : S →+* S, (∀ x, τ (τ x) = x) → (∃ x, residue S (τ x) ≠ residue S x) → (∀ x, residue S (τ x) = residue S x ^ M) ∧ ∀ w : S, w ^ (M ^ 2 - 1) = 1 → τ w = w ^ M := by
+  atlas_forward_decl GlobalTheory.UnitLemma.InvolRes.residue_pow_and_roots

@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.Statements
-import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.SymbolExtensionProperty
 import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.MemSectionsOfHolLineBundleEquiv
 import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.JetOfMonomialSumStatement
 set_option maxSynthPendingDepth 1

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsStandardIndModule
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.Count GlobalTheory.FlagMeas GlobalTheory.FlagLeviGroup GlobalTheory.GKModule GlobalTheory.RealInd
 open scoped InnerProductSpace
 
@@ -29,3 +31,12 @@ theorem integral_norm_sq_pos_of_ne_zero : ∀ (n : ℕ) (ε : Fin n → Bool) (D
     (HasCompactSupport.of_compactSpace _) (fun _ => by positivity) (by simpa using hfk)
 
 end GlobalTheory.RealInd
+end
+end
+
+open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.Count GlobalTheory.FlagMeas GlobalTheory.FlagLeviGroup GlobalTheory.GKModule GlobalTheory.RealInd
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.induced_function_l2_positive : ∀ (n : ℕ) (ε : Fin n → Bool) (D : Datum ε) (f : UJ ε → D.V), f ∈ D.fns → ∀ g, f g ≠ 0 →
+    0 < ∫ k : KG ε, ‖f k‖ ^ 2 ∂muK ε := by
+  atlas_forward_decl GlobalTheory.RealInd.integral_norm_sq_pos_of_ne_zero

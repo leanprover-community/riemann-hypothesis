@@ -1,8 +1,10 @@
 import Mathlib
 import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 import Formalism.SharpRestriction.LevelLetterCocycles.RamifiedCoefficientChains
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoboundaryIffIsCrys
+import BuildAid.ForwardExisting
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions Formalism.MainNotions.N
 
 namespace GlobalTheory.ExtCrysCrit
@@ -53,3 +55,9 @@ theorem blochKato_ext_all : ∀ D : D7, Formalism.MainNotions.RamifiedCoefficien
   exact ⟨fun h => key.1 h.2, fun h => ⟨⟨hcont, hcoc⟩, key.2 h⟩⟩
 
 end GlobalTheory.ExtCrysCrit
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions Formalism.MainNotions.N
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blochKato_crystalline_extension_criterion : ∀ D : D7, Formalism.MainNotions.RamifiedCoefficientChains.adm15 D := by
+  atlas_forward_decl GlobalTheory.ExtCrysCrit.blochKato_ext_all

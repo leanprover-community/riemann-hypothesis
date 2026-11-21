@@ -4,9 +4,7 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.PetEqRelIndexMul
 import CompanionTheory.EightfoldTheory.VariationTheory.AutomorphicForms.Newform
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerShimuraConjCocyclesCoboundariesPeriodSmul
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeBoundMain
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsEichlerShimuraDecompositionCocycleStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CuspFormsEqZeroOfPeriodSubConjCoboundaryStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CuspidalOfEichlerPeriodSubConjMemCoboundariesStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsEichlerShimuraDecompositionCocycle
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PeriodMapEquivariantStatement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeDoubleCosetRepsGammaOneGammaZeroLevelStatement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeOperatorOnCocycleMapsCocycleCoboundaryConjStatement
@@ -14,14 +12,11 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TendstoSlashValu
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TqFSemisimple
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiamondGenEigenEigen
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashSmulPos
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeOperatorsOnHalfPlaneFunctionsAgreeExplicit
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiamondOperatorOfMatrixModularFormGamma1InterGamStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiamondOperatorOfMatrixCuspFormGamma1InterGamma0Statement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeUOperatorPreservesModularFormGamma1InterGamStatement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsZeroAtFinsetSum
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeTOperatorExplicitModularFormStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeTOperatorExplicitCuspFormStatement
 
+section
 open GlobalTheory.HeckeFamilyMatrices Polynomial UpperHalfPlane
 open scoped MatrixGroups ModularForm
 
@@ -407,3 +402,24 @@ theorem GlobalTheory.HeckeFamilyMatrices.hecke_semisimple_at_newform : ∀ (k : 
     · rwa [pow_one] at this
     · rw [← hf']; exact sub_eq_zero.2 (eD1 d)
     · exact sub_eq_zero.2 (eD2 d)
+end
+
+open GlobalTheory.HeckeFamilyMatrices Polynomial
+open scoped MatrixGroups
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hecke_semisimple_generalised_eigen_newform_gamma1Gamma0 : ∀ (k : ℕ) (g : UpperTheory.V.Af.Newform k) (N l : ℕ) (hN : g.M ∣ N), 5 ≤ N → l.Prime → ¬ l ∣ N → Odd k → 3 ≤ k →
+  ∀ α : ℂ, α ^ 2 - g.a l * α + g.χ (l : ZMod g.M) * (l : ℂ) ^ (k - 1) = 0 →
+  α ^ 2 ≠ g.χ (l : ZMod g.M) * (l : ℂ) ^ (k - 1) → α ^ 2 ≠ g.χ (l : ZMod g.M) * (l : ℂ) ^ (k - 2) →
+  ∀ (σT : ℕ → SL(2, ℤ)) (σD : (ZMod N)ˣ → SL(2, ℤ)),
+    (∀ q : ℕ, q.Prime → ¬ q ∣ N * l → IsDiam N l (q : ZMod N) (σT q)) →
+    (∀ d : (ZMod N)ˣ, IsDiam N l (d : ZMod N) (σD d)) →
+  ∀ z ∈ Z1 (Lev N l) (k - 2), ∀ n : ℕ,
+    (∀ q : ℕ, q.Prime → ¬ q ∣ N * l →
+      ((TqZ (Lev N l) (k - 2) q (σT q) - g.a q • 1) ^ n) z ∈ B1 (Lev N l) (k - 2)) →
+    ((UlZ (Lev N l) (k - 2) l - α • 1) ^ n) z ∈ B1 (Lev N l) (k - 2) →
+    (∀ d : (ZMod N)ˣ, ((DdZ (Lev N l) (k - 2) (σD d) - g.χ (ZMod.castHom hN (ZMod g.M) (d : ZMod N)) • 1) ^ n) z ∈ B1 (Lev N l) (k - 2)) →
+    (∀ q : ℕ, q.Prime → ¬ q ∣ N * l →
+      (TqZ (Lev N l) (k - 2) q (σT q) - g.a q • 1) z ∈ B1 (Lev N l) (k - 2)) ∧
+    (UlZ (Lev N l) (k - 2) l - α • 1) z ∈ B1 (Lev N l) (k - 2) ∧
+    (∀ d : (ZMod N)ˣ, (DdZ (Lev N l) (k - 2) (σD d) - g.χ (ZMod.castHom hN (ZMod g.M) (d : ZMod N)) • 1) z ∈ B1 (Lev N l) (k - 2)) := by
+  atlas_forward_decl GlobalTheory.HeckeFamilyMatrices.hecke_semisimple_at_newform

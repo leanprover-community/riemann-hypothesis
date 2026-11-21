@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbAApply
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsValuedHeckeCharRamified
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory
 open scoped RealInnerProductSpace FourierTransform
 
@@ -84,3 +87,11 @@ theorem lat_isZLattice : ∀ (K : Type) [Field K] [NumberField K] [NumberField.I
   exact ⟨inferInstance, inferInstance⟩
 
 end GlobalTheory.HeckePoisson
+end
+end
+
+open NumberField MeasureTheory
+open scoped RealInnerProductSpace FourierTransform
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeIdealEuclideanLattice_isZLattice : ∀ (K : Type) [Field K] [NumberField K] [NumberField.IsTotallyComplex K] (I : Type) [Fintype I] (φ : I → K →+* ℂ), GlobalTheory.CMVal.IsCMType φ → ∀ M : Ideal (𝓞 K), M ≠ ⊥ → ∃ _ : DiscreteTopology (GlobalTheory.HeckePoisson.lat φ M), IsZLattice ℝ (GlobalTheory.HeckePoisson.lat φ M) := by
+  atlas_forward_decl GlobalTheory.HeckePoisson.lat_isZLattice

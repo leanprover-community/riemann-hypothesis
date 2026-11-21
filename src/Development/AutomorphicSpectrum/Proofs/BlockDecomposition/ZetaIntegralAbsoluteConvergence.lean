@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField Matrix MeasureTheory Filter Topology
@@ -124,3 +126,8 @@ theorem theta_functional_equation : Ad3.R.AdelicThetaPoissonSummation := by
 end GlobalTheory.CompanionTheory.RankinSelberg
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.zeta_integral_absolute_convergence : Ad3.R.AdelicThetaPoissonSummation := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelberg.theta_functional_equation

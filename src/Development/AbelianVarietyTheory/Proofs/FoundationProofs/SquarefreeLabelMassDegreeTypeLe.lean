@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.SamePartIffOfNeZero
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemMonicSquarefreeUnitConstPolysIffMonicSquarefrStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusCardBoundsAndMulStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemMonicSquarefreeUnitConstPolysIffMonicSquarefr
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusCardBoundsAndMul
 
+section
 open Polynomial Classical UniqueFactorizationMonoid
 namespace GlobalTheory.BadShare
 
@@ -263,3 +263,9 @@ theorem _root_.GlobalTheory.BadShare.mass_degType_le : ∀ (g : ℕ) [Fact g.Pri
             ring
 
 end GlobalTheory.BadShare
+end
+
+open Polynomial Classical GlobalTheory.BadShare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.squarefreeLabelMass_degreeType_le : ∀ (g : ℕ) [Fact g.Prime], ∀ (N : ℕ) (μ : Multiset ℕ), (mass g N fun f => degType g f = μ) ≤ (∏ d ∈ μ.toFinset, ((d : ℝ) ^ μ.count d * (μ.count d).factorial))⁻¹ := by
+  atlas_forward_decl GlobalTheory.BadShare.mass_degType_le

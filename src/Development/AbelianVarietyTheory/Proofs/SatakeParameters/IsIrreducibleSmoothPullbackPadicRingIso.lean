@@ -2,6 +2,8 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.DetCharacterMemPrincipalCongruenceFixedVectors
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.BlockSplitAll
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTypeGroupBlockLift
+
+section
 open GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.SerSys
 
 namespace GlobalTheory.SerSys
@@ -38,3 +40,9 @@ theorem irrSm_pullback (g : ℕ) [Fact g.Prime] (F : Type) [Field F] [ValuativeR
   · exact (σ.smooth v).preimage (continuous_glMap e he n)
 
 end GlobalTheory.SerSys
+end
+
+open GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.SerSys
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIrreducibleSmooth_pullback_padic_ringIso : ∀ (g : ℕ) [Fact g.Prime] (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (e : ℚ_[g] ≃+* F), Continuous e → ∀ (n : ℕ) (σ : GlobalTheory.SmGL.IrrRep (GL (Fin n) F)), IrrSm (Rep.of (σ.ρ.comp (Matrix.GeneralLinearGroup.map e.toRingHom)) : QRep g n) := by
+  atlas_forward_decl GlobalTheory.SerSys.irrSm_pullback

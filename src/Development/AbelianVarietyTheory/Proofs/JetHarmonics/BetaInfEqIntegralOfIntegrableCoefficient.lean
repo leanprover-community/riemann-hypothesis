@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegrandAestronglyMeasurable
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.RegularisedIntegral
@@ -155,3 +157,11 @@ theorem betaInf_eq_integral :
   fun _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hA hF hΦ => betaInfTau_eq_integral hA hF hF hΦ (1, 1)
 
 end GlobalTheory.RegularisedIntegral
+end
+end
+
+open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
+open scoped InnerProductSpace ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.betaInf_eq_integral_of_integrable_coefficient : ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp] [FiniteDimensional ℂ Wp] (Wq : Type) [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [CompleteSpace Wq] [FiniteDimensional ℂ Wq] (D : B.RealPlaceData k r Wp Wq) (A : ℝ) (F : Mx k r → (Wq →L[ℂ] Wp)), B.AB k r ≤ A → B.InCC A 4 F → Integrable (B.Ph D F F) D.μSS → B.betaInf D F F = ∫ p, B.xiTau D (1, 1) p * B.Ph D F F p ∂D.μSS := by
+  atlas_forward_decl GlobalTheory.RegularisedIntegral.betaInf_eq_integral

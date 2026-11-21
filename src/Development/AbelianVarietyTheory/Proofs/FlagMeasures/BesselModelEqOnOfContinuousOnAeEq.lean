@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 import Formalism.FormalDegreeBessel.FinalG
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf
@@ -70,3 +72,11 @@ theorem eqOn_of_ae (k r : ℕ) {B : Type} [NormedAddCommGroup B] (μG : Measure 
   exact hμ.2.1 (Measure.measure_univ_eq_zero.1 huniv)
 
 end GlobalTheory.SgInf.AeqCont
+end
+end
+
+open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.besselModel_eqOn_of_continuousOn_ae_eq : ∀ (k r : ℕ) {B : Type} [NormedAddCommGroup B] (μG : Measure (Mt k r)) (f g : Mat k r → B), IsHaarOn (GG k r) μG → ContinuousOn f (GG k r) → ContinuousOn g (GG k r) → (fun x : Mt k r => f (Matrix.of x)) =ᵐ[μG] (fun x => g (Matrix.of x)) → ∀ x ∈ GG k r, f x = g x := by
+  atlas_forward_decl GlobalTheory.SgInf.AeqCont.eqOn_of_ae

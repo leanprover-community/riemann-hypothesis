@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IndApplyOne
+
+section
 open GlobalTheory.BI GlobalTheory.BrauerZero
 
 namespace GlobalTheory.BrauerZero
@@ -54,3 +56,9 @@ theorem ind_ind_of_le {G : Type} [Group G] [Finite G] (K A : Subgroup G) (hKA : 
   field_simp
 
 end GlobalTheory.BrauerZero
+end
+
+open GlobalTheory.BI GlobalTheory.BrauerZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inducedClassFunctionFromSubgroup_trans : ∀ {G : Type} [Group G] [Finite G] (K A : Subgroup G), K ≤ A → ∀ (ψ : K → ℂ), ind A (ind (K.subgroupOf A) (fun k => ψ ⟨((k : A) : G), k.2⟩)) = ind K ψ := by
+  atlas_forward_decl GlobalTheory.BrauerZero.ind_ind_of_le

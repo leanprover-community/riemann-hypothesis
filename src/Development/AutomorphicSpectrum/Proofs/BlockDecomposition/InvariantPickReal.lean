@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.LeviCommutantWordReduction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsEvaluationOfMemAdjoin
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.InvPickKP
@@ -51,3 +53,10 @@ theorem invPick : InvPick := by
   exact ⟨toKP a, invKP_toKP ha, by rw [evalCartan_toCartan, hav]⟩
 
 end GlobalTheory.CompanionTheory.InvPickKP
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invariant_pick_real : PositivityTheory.RgBcC.RealD.InvPick := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InvPickKP.invPick

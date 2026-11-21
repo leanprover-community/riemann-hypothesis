@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ActEqZeroOfMem
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 open GroundTheory.Automorphic.HarishChandra GlobalTheory.CompanionTheory.PresRho
@@ -138,3 +141,9 @@ theorem mem_sqSpan_of_mem_lowSpan_of_mem_Jp : ∀ {n : ℕ} (x : U n), x ∈ low
   exact lowSq_le_sqSpan hs
 
 end GlobalTheory.CompanionTheory.PresRho.LowMeet
+end
+
+open GroundTheory.Automorphic.HarishChandra GlobalTheory.CompanionTheory.PresRho
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.low_span_inf_ideal_le_square_span : ∀ {n : ℕ} (x : U n), x ∈ lowSpan n → x ∈ Jp n → x ∈ sqSpan n := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PresRho.LowMeet.mem_sqSpan_of_mem_lowSpan_of_mem_Jp

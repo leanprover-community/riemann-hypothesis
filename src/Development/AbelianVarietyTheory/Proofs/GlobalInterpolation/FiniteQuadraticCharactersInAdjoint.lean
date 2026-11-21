@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.DataN
+import BuildAid.ForwardExisting
+
+section
 open Formalism.MainNotions.N
 
 namespace GlobalTheory
@@ -63,3 +66,9 @@ theorem finite_quadratic_characters_in_adjoint :
   exact Set.toFinite S
 
 end GlobalTheory
+end
+
+open Formalism.MainNotions.N
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_quadratic_characters_in_adjoint' : ∀ (Γ k : Type) [Group Γ] [Field k] [CharZero k] (n : ℕ) (r : Γ →* GL (Fin n) k), Set.Finite {χ : Γ →* ℤˣ | ∃ X : Matrix (Fin n) (Fin n) k, X ≠ 0 ∧ ∀ g, ((r g : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) * X = ((χ g : ℤ) : k) • (X * ((r g : GL (Fin n) k) : Matrix (Fin n) (Fin n) k))} := by
+  atlas_forward_decl GlobalTheory.finite_quadratic_characters_in_adjoint

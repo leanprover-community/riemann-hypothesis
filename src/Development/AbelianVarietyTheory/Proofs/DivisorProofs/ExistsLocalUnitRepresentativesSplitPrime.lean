@@ -1,10 +1,10 @@
 import Mathlib
 import Formalism.PairingDivisors.StatementA
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsFinSetSplitPlacesCoprimeConductor
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValIotaLeOfMem
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SplitsInCMFieldTwoPrimesDegreeOne
 import ReciprocityTheory.Automorphisms.PlaceA
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.Euler
@@ -148,3 +148,10 @@ theorem exists_representatives : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     rw [(key c).1 h]
 
 end GlobalTheory.CMVal.Euler.Resid
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.Euler
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_local_unit_representatives_split_prime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (q : HeightOneSpectrum (OF E)) (P : HeightOneSpectrum (𝓞 E)), Splits q → Over P q → ∃ R : Finset (P.adicCompletion E)ˣ, R.card + 1 = Ideal.absNorm q.asIdeal ∧ (∀ r ∈ R, Valued.v (r : P.adicCompletion E) = 1) ∧ ∀ y : (Af E)ˣ, (∀ P', Over P' q → Valued.v ((y : Af E) P') = 1) → ∃! r, r ∈ R ∧ LocIn 1 q (((single P r)⁻¹ * y : (Af E)ˣ) : Af E) := by
+  atlas_forward_decl GlobalTheory.CMVal.Euler.Resid.exists_representatives

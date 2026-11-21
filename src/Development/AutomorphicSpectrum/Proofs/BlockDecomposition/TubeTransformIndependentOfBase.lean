@@ -1,9 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussTubeOfTubeGood
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TubeTransformHorizontalInvarianceStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TubeTransformVerticalInvarianceStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TubeTransformHorizontalInvariance
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TubeTransformVerticalInvariance
 
+section
 open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.CompanionTheory.TubeFourier
 
 namespace GlobalTheory.CompanionTheory.TubeFourier
@@ -56,3 +55,9 @@ theorem phi_eq_of_convex : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace �
     (Set.mem_univ (⟨x', hx'⟩ : Ω))
 
 end GlobalTheory.CompanionTheory.TubeFourier
+end
+
+open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.CompanionTheory.TubeFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tube_transform_independent_of_base : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X] (Ω : Set (ℝ × ℝ)) (G : ℂ × ℂ → X), IsOpen Ω → Convex ℝ Ω → GaussTube G Ω → ∀ x ∈ Ω, ∀ x' ∈ Ω, ∀ t : ℝ × ℝ, phi G x t = phi G x' t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TubeFourier.phi_eq_of_convex

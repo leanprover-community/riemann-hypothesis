@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ClosedFamilyAdmissibleTwistLink
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TSelF
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.GServT
 
 set_option synthInstance.maxHeartbeats 200000

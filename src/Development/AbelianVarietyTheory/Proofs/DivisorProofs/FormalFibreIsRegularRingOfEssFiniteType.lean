@@ -1,7 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSurjLocalizationMvPolynomialOfEssFiniteTypStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRegularRingFormalFibreMvPolynomialPerfectStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdicCompletionTensorQuotientRingEquivStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSurjLocalizationMvPolynomialOfEssFiniteTyp
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRegularRingFormalFibreMvPolynomialPerfect
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdicCompletionTensorQuotientRingEquiv
+
+section
 open IsLocalRing TensorProduct
 
 namespace GlobalTheory
@@ -34,3 +36,9 @@ theorem formalFibre_isRegularRing_of_essFiniteType :
   exact IsRegularRing.of_ringEquiv e.symm
 
 end GlobalTheory
+end
+
+open IsLocalRing TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isRegularRing_formalFibre_of_essFiniteType : ∀ (Λ : Type) [CommRing Λ] [IsDomain Λ] [IsRegularRing Λ] [PerfectField (FractionRing Λ)] (R K : Type) [CommRing R] [IsLocalRing R] [Algebra Λ R] [Algebra.EssFiniteType Λ R] [Field K] [Algebra R K] [Algebra.EssFiniteType R K], (∀ a : Λ, algebraMap R K (algebraMap Λ R a) = 0 → a = 0) → IsRegularRing (AdicCompletion (maximalIdeal R) R ⊗[R] K) := by
+  atlas_forward_decl GlobalTheory.formalFibre_isRegularRing_of_essFiniteType

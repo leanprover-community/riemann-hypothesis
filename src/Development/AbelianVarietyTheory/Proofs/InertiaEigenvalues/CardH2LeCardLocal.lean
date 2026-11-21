@@ -3,6 +3,8 @@ import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BijectiveOfRetract
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1H2Local
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardDualZmodLeCard
+
+section
 open ReciprocityTheory.Gal Formalism.RepresentationBoundsCohomology.LOC ReciprocityTheory.ChartRestriction.T2 GlobalTheory.FunctorialityH2
 
 namespace GlobalTheory
@@ -37,3 +39,9 @@ theorem card_H2_le_of_local_duality : Formalism.GaloisCohomology.LocalTateDualit
     _ ≤ Nat.card M := GlobalTheory.card_dual_zmod_le_card (l ^ r) M
 
 end GlobalTheory
+end
+
+open ReciprocityTheory.Gal Formalism.RepresentationBoundsCohomology.LOC ReciprocityTheory.ChartRestriction.T2 GlobalTheory.FunctorialityH2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_H2_le_card_local : Formalism.GaloisCohomology.LocalTateDualityK → ∀ (l : ℕ) [Fact l.Prime] (K : IntermediateField ℚ_[l] (PadicAlgCl l)), FiniteDimensional ℚ_[l] K → ∀ (r : ℕ) (M : Type) [AddCommGroup M] [Module (ZMod (l ^ r)) M] [Finite M] [TopologicalSpace M] [DiscreteTopology M] (rho : Representation (ZMod (l ^ r)) (Formalism.GaloisCohomology.GK l K) M), 0 < r → ContAction rho → Finite (H2 rho) ∧ Nat.card (H2 rho) ≤ Nat.card M := by
+  atlas_forward_decl GlobalTheory.card_H2_le_of_local_duality

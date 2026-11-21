@@ -1,6 +1,5 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.TargetSt
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKodairaGeneric
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionsDimZero
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChartDenominator
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ExistsLinearIndependentOfGenerates
@@ -9,10 +8,8 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PKodairaGeneric
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefSectionGrowth
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefShiftPolynomial
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftSectionBound
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftQuotientBound
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHyperplaneQuotientBound
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHyperplaneSectionBound
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.ForSecondHalf

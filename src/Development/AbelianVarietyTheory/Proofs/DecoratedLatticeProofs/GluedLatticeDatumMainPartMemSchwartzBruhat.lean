@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.T2SpaceMatrixOfIsNonarchimedeanLocalField
 
+section
 open MeasureTheory ValuativeRel Matrix IsLocalRing GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.FinPl
 open GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData (cosetInd mainDatum qvec)
 
@@ -19,3 +20,11 @@ theorem mainDatum_mem_SB (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace
   exact Submodule.sum_mem _ fun f' _ => Submodule.smul_mem _ _ (GlobalTheory.IndefiniteRowSideFullHecke.IndicatorFunctionIdentity.phiOne_mem _ _)
 
 end GlobalTheory.FinPl.Comm
+end
+
+open MeasureTheory ValuativeRel Matrix IsLocalRing GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.FinPl
+open GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData (cosetInd mainDatum)
+open GlobalTheory.FinPl.Comm (fpair)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gluedLatticeDatum_mainPart_mem_schwartzBruhat : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (q : Unif k) (χ : AddChar 𝓀[k] ℂ) (ε : 𝓀[k]ˣ) (P : Pair k n') (Q : Pair k n), mainDatum q χ ε P Q ∈ SB (Matrix n n' k) := by
+  atlas_forward_decl GlobalTheory.FinPl.Comm.mainDatum_mem_SB

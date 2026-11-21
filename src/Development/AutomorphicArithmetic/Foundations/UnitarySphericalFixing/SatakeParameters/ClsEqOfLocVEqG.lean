@@ -3,7 +3,6 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValuationLtOne
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConjugateCompletionIso
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PointsEqualEigenMatch
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.OrdinaryJacquetModules.ConjTor
-import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.ClBasic
 
 noncomputable section
 

@@ -2,14 +2,14 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.StepsNonvacuous
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PeriodComparison
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.MemAnalyticAtZeroOfEventuallyDifferentiableAt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetRingProdEqFactorialSmulStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetRingProdEqZeroOfLongStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardMultisetWordsMulFactorialStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetRingReprMulPowerSeriesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetRingProdEqFactorialSmul
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetRingProdEqZeroOfLong
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardMultisetWordsMulFactorial
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetRingReprMulPowerSeries
 
+section
 set_option autoImplicit false
 noncomputable section
 open GlobalTheory.LatVal GlobalTheory.LatJet GlobalTheory.LatJet.An
@@ -189,3 +189,10 @@ theorem jetCalc : JetCalc := by
     rw [e, prod_t_list_eq_zero J _ (by rw [List.length_ofFn]; omega)]
 
 end GlobalTheory.JetCalcPf
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet GlobalTheory.LatJet.An
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jet_calculus_statement : JetCalc := by
+  atlas_forward_decl GlobalTheory.JetCalcPf.jetCalc

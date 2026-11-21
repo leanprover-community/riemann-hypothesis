@@ -1,6 +1,5 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.SamePartIffOfNeZero
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MassDegTypeLeCycleTypeStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MassDegTypeLeCycleType
 
 open Polynomial Classical GlobalTheory.BadShare
 namespace GlobalTheory.BadShare

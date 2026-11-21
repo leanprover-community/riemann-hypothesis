@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MooreNorm
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RowTEqRowS
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.PMonE
@@ -91,3 +92,9 @@ theorem win_inner : ∀ (F : Type) [NormedField F] (p : ℕ) [Fact p.Prime] [Cha
 end GlobalTheory.PMonE
 
 end
+end
+
+open GlobalTheory.PMonE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_windowZeros_inner_eq_shifted_outer : ∀ (F : Type) [NormedField F] (p : ℕ) [Fact p.Prime] [CharP F p] [PerfectRing F p] (h K : ℕ) (ϖ : F), ϖ ≠ 0 → 1 ≤ K → ∀ lam π : Fin h → F, Nat.card {x : Fin h → F // (∀ j, ‖x j‖ ≤ ‖π j‖ ^ p ^ h) ∧ ∀ r, rowT p ϖ lam K x r = 0} = Nat.card {x : Fin h → F // (∀ j, ‖x j‖ ≤ ‖π j‖) ∧ ∀ r, rowS p ϖ lam (K - 1) (K + 1) x r = 0} := by
+  atlas_forward_decl GlobalTheory.PMonE.win_inner

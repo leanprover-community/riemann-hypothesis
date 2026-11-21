@@ -2,7 +2,9 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MulEqOfRangeLe
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormCVPosIdele
 import GroundTheory.AutomorphicForms.AnisotropicHeight
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Tf.Loc PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4 GlobalTheory.CompanionTheory.TorusCh
@@ -34,3 +36,10 @@ theorem logAbs_eq_log_ideleModule (E : Type) [Field E] [NumberField E] [IsCMFiel
 end GlobalTheory.CompanionTheory.TorusCh
 
 end
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Tf.Loc PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4 GlobalTheory.CompanionTheory.TorusCh
+open scoped Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_abs_eq_log_idele_module : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (s : (Ad E)ˣ), logAbs (s : Ad E) = Real.log (GroundTheory.Global.IdeleGroup.ideleModule E s : ℝ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TorusCh.logAbs_eq_log_ideleModule

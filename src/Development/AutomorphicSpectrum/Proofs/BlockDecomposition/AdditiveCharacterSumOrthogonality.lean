@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ColGeR
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin GlobalTheory.CompanionTheory.TyFin.ColStep
 
 namespace GlobalTheory.CompanionTheory.TyFin.Orth
@@ -54,3 +55,10 @@ theorem orth : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K] (j : ℕ) (�
   fun K _ _ _ j ψ₀ hψ x => sum_inv_addChar_dot K j ψ₀ hψ x
 
 end GlobalTheory.CompanionTheory.TyFin.Orth
+end
+
+open ReciprocityTheory.Ty.Fin GlobalTheory.CompanionTheory.TyFin.ColStep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additive_character_sum_orthogonality : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K] (j : ℕ) (ψ₀ : AddChar K ℂ), ψ₀ ≠ 1 → ∀ x : Fin j → K,
+    (∑ r : Fin j → K, (ψ₀ (∑ i, r i * x i))⁻¹) = if x = 0 then (Fintype.card K : ℂ) ^ j else 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.Orth.orth

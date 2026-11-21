@@ -7,8 +7,6 @@ import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.LevelKSplit
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.VolumeUnipotentOne
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.VolStabSW
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SupportDatum
-import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.LocProdFormula
-import Formalism.PeriodIntegrals.LocProdFormula
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.DiffGenLoc
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilySeparationBound
 

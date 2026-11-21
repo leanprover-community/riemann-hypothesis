@@ -1,17 +1,12 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.UsedLocalConclusion
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeHeightsFromHodgeJumpsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachNCokernelKilledByPowerStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NBasisLoc
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachInclusionXQFrobenius
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachNCokernelKilledByPower
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OneNotMemFilOne
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RingsCyclotomic
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValOfPowAssociated
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.XXPowMemOfQQPowMulMemMapPhi
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PhiFree
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OfShortExact
 
+section
 noncomputable section
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
@@ -435,3 +430,10 @@ theorem GlobalTheory.NL.CokerKill.X_pow_kills_coker : ∀ (D : Formalism.BasicNo
     (fun hJ => GlobalTheory.T.wachLattice_heights_from_hodgeJumps D HW F Cm l K s LL hG T₂ M h c2 fun τ i hτ a ha =>
       hJ τ i hτ a ((hj τ a).2 (Or.inr ha)))
     (GlobalTheory.T.wachN_cokernel_killed_by_power D HW F Cm l K s LL hG T₀ T₁ T₂ ι π c0 c1 c2 hses)
+end
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cokernel_crystalline_surjection_killed_by_X_pow : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), lem3 D HW F := by
+  atlas_forward_decl GlobalTheory.NL.CokerKill.X_pow_kills_coker

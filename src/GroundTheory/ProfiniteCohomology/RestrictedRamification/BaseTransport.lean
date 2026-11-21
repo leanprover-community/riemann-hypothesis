@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeModules
-import GroundTheory.ProfiniteCohomology.PoincarePairs.ConeProduct
 import GroundTheory.ProfiniteCohomology.PoincarePairs.MackeyCup
 set_option maxSynthPendingDepth 1
 

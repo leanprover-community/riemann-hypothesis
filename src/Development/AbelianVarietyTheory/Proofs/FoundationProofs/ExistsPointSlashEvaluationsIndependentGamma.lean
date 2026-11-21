@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIndexOfGammaLe
+import BuildAid.ForwardExisting
+
+section
 open UpperHalfPlane Filter GlobalTheory.OddFrame
 open ModularForm (E₄ E₆)
 open scoped MatrixGroups ModularForm Manifold Topology
@@ -108,3 +111,12 @@ theorem _root_.GlobalTheory.CosetEval.evals_independent : ∀ M : ℕ, 0 < M →
   exact hc _ _ p.2
 
 end GlobalTheory.CosetEval
+end
+end
+
+open UpperHalfPlane Filter GlobalTheory.OddFrame
+open ModularForm (E₄ E₆)
+open scoped MatrixGroups ModularForm Manifold Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_point_slashEvaluations_independent_gamma : ∀ M : ℕ, 0 < M → (∀ x : SL(2, ℤ), x ∉ CongruenceSubgroup.Gamma M → ∃ (k : ℤ) (f : ℍ → ℂ), IsMF (CongruenceSubgroup.Gamma M) k f ∧ f ∣[k] x ≠ f) → ∃ τ₀ : ℍ, ∀ (ι : Type) [Fintype ι] (x : ι → SL(2, ℤ)) (c : ι → ℂ), (∀ i j, x i * (x j)⁻¹ ∈ CongruenceSubgroup.Gamma M → i = j) → (∀ (k : ℤ) (f : ℍ → ℂ), IsMF (CongruenceSubgroup.Gamma M) k f → ∑ i, c i * (f ∣[k] x i) τ₀ = 0) → c = 0 := by
+  atlas_forward_decl GlobalTheory.CosetEval.evals_independent

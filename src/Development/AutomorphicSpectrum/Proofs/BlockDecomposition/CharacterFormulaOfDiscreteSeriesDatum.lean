@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.DiscreteSeriesHilbert.StepSqInt
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset Matrix MeasureTheory Filter Topology
@@ -257,3 +259,9 @@ theorem stepFormulaF (hDatum : StepDatum) : StepFormulaF := by
   exact formulaF_of hP (hDatum n ε lam T Ψ hP) hst hU hg v v'
 
 end GlobalTheory.CompanionTheory.Hilb
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.character_formula_of_discrete_series_datum : PositivityTheory.RgDs.Hilb.StepDatum → PositivityTheory.RgDs.Hilb.StepFormulaF := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hilb.stepFormulaF

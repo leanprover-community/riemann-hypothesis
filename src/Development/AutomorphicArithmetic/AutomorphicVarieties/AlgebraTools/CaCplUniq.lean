@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IsCplAtSelf
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaCplLift
 
 open IsLocalRing UpperTheory.V.AlgebraTools

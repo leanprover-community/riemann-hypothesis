@@ -5,10 +5,9 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchubertCellOpenImm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagPointInSomeCell
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEqFlagPtOfIsLocalRing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ColSec
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOpenImmersionCellFl
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsTorsionFreeOfForallExists
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TautologicalSubbundleRankStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TautologicalSubbundleRank
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClsDivPullEqVPull
+
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.FlagZ GlobalTheory.FlagZ.Univ
 open GlobalTheory.QCoh (freeModule)
 open GlobalTheory.Twist (resM)

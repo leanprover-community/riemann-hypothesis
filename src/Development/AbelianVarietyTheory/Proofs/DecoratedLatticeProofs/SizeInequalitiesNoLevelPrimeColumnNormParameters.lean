@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.LocalRingCardinality.HostCls
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.RecHeightSWith
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogLeLOfLeCond
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FockPartitionRowsNumericDatumMemIccStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FockPartitionRowsNumericDatumMemIcc
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Core GlobalTheory.Core.Ht2 GlobalTheory.CoreHt
 open GlobalTheory.ColumnNormCompare (numDatumOfParameters codeRec plRec)
 attribute [local instance] GlobalTheory.Mem.Col2.starE
@@ -84,3 +86,11 @@ theorem sizeRowsS_numRec : ∀ (D : D7) (L : SizeData₂ D) (CY : ℝ), HtRowsS 
     linarith
 
 end GlobalTheory.CoreHt.SizeRowsRec
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Core GlobalTheory.Core.Ht2 GlobalTheory.CoreHt
+open GlobalTheory.ColumnNormCompare (numDatumOfParameters codeRec plRec)
+attribute [local instance] GlobalTheory.Mem.Col2.starE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sizeInequalitiesNoLevelPrime_columnNormParameters : ∀ (D : D7) (L : SizeData₂ D) (CY : ℝ), HtRowsS L CY → ∀ (u : D.what₂.Word), SizeRowsS CY (numDatumOfParameters D L) (codeRec L u) := by
+  atlas_forward_decl GlobalTheory.CoreHt.SizeRowsRec.sizeRowsS_numRec

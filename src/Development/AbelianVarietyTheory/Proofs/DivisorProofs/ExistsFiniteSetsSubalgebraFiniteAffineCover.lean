@@ -1,6 +1,9 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubNatCompSubIncl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AffineInterFiniteBasicOpenCoverStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemAdjoinRestrictedSectionsOfLocalStatement
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemAdjoinRestrictedSectionsOfLocal
+
+section
 open AlgebraicGeometry CategoryTheory Limits Opposite GlobalTheory.QcSub
 
 namespace GlobalTheory.SubChoose
@@ -66,3 +69,9 @@ theorem GlobalTheory.sub_choose_finite : ∀ (X : Scheme.{0}), IsNoetherian X �
   refine ⟨X.basicOpen h, (hV j).basicOpen h, hyh, hDi i j h hh, X.basicOpen_le h, ?_⟩
   exact GlobalTheory.SubChoose.mem_gen_of_eq F α h _ (Set.mem_range_self (⟨i, ⟨x, hx⟩, ⟨h, hh⟩⟩ : Σ i, (S i) × (s i j))) _ _
     (ha j ⟨i, ⟨x, hx⟩, ⟨h, hh⟩⟩)
+end
+
+open AlgebraicGeometry CategoryTheory Limits Opposite GlobalTheory.QcSub
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_sets_subalgebra_finite_affine_cover : ∀ (X : Scheme.{0}), IsNoetherian X → ∀ (F : X.Opensᵒᵖ ⥤ CommRingCat) (α : X.presheaf ⟶ F), ((Scheme.AffineZariskiSite.toOpensFunctor X).op.whiskerLeft α).Coequifibered → ∀ {ι : Type} [Finite ι] (V : ι → X.Opens), (∀ j, IsAffineOpen (V j)) → ∀ (S : ∀ j, Set (F.obj (op (V j)))), (∀ j, (S j).Finite) → ∃ T : ∀ j, Set (F.obj (op (V j))), (∀ j, (T j).Finite) ∧ ∀ i, S i ⊆ sub F α V T (V i) := by
+  atlas_forward_decl GlobalTheory.sub_choose_finite

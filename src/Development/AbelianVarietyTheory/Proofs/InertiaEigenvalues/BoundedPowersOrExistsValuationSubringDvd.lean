@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsValuationSubringAlgClosedNotIsUnitStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsValuationSubringAlgClosedNotIsUnit
 
+section
 open scoped NNReal
 open Polynomial
 
@@ -96,3 +97,9 @@ theorem bounded_powers_or_exists_valuationSubring_dvd :
       exact Subtype.ext ht.symm
 
 end GlobalTheory
+end
+
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pow_dvd_bound_or_exists_valuationSubring_dvd : ∀ (R : Type) [CommRing R] (u x : R) (M : ℕ), u ∈ nonZeroDivisors R → (∀ r, IsUnit (1 - u * r)) → (∃ c : ℕ, ∀ n : ℕ, u ^ (M * n) ∣ u ^ c * x ^ n) ∨ ∃ (L : Type) (_ : Field L) (_ : IsAlgClosed L) (V : ValuationSubring L) (f : R →+* ↥V), f u ≠ 0 ∧ ¬ IsUnit (f u) ∧ f x ∣ f u ^ M := by
+  atlas_forward_decl GlobalTheory.bounded_powers_or_exists_valuationSubring_dvd

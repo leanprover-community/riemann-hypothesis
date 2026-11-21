@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTopologicalRingAE
 import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCB
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct Matrix BoundedContinuousFunction ContDiff
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF MeasureTheory Matrix GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.RealWeil GlobalTheory.RealWeilF
@@ -30,3 +33,14 @@ theorem exists_realZero_add_iotaVF : ∀ (F E : Type) [Field F] [NumberField F] 
   rw [← this, h0, map_zero]
 
 end GlobalTheory.RealWeilF
+end
+
+open scoped TensorProduct Matrix BoundedContinuousFunction ContDiff
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF MeasureTheory Matrix GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open GlobalTheory.RealWeil GlobalTheory.RealWeilF
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finiteAdelic_add_realChartPoint : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (nS nT : ℕ)
+    (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)) (ι : (InfinitePlace F → ℂ) →+ AEF F E), IsChartF θ ι →
+      ∀ w : WOF F E nS nT, ∃ (u : WOF F E nS nT) (v : IxF F nS nT → ℂ), u.map (infPartF F E) = 0 ∧ w = u + iotaVF ι v := by
+  atlas_forward_decl GlobalTheory.RealWeilF.exists_realZero_add_iotaVF

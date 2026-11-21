@@ -1,10 +1,10 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.Statement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemMatLat
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCyclicVectorOfSeparableCharpolyStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralAevalEqAevalMapOfCoprimeCharpolyStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqMulIntegralClosureOfSeparableInvolutionAlgebra
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralAevalEqAevalMapOfCoprimeCharpoly
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqSubmoduleMulLeftImageIntegralClosureOfSeparabl
+
+section
 open Polynomial Matrix GlobalTheory.LatOrb
 
 noncomputable section
@@ -158,3 +158,16 @@ theorem exists_unit_eq_matLat : ∀ {O K : Type} [CommRing O] [IsDomain O] [IsDi
     rw [← Units.val_mul, inv_mul_cancel_right]
 
 end GlobalTheory.LatOrb.Stab
+end
+end
+
+open Polynomial Matrix GlobalTheory.LatOrb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_eq_of_stable_lattices : ∀ {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+    [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [Field K] [Algebra O K] [IsFractionRing O K]
+    (n : ℕ) (P₀ : O[X]), IsCoprime P₀ (derivative P₀) →
+    ∀ γ : Matrix (Fin n) (Fin n) K, γ.charpoly = P₀.map (algebraMap O K) →
+    ∀ M₁ M₂ : Submodule O (Fin n → K), IsLatV O M₁ → IsLatV O M₂ →
+    (∀ v ∈ M₁, γ *ᵥ v ∈ M₁) → (∀ v ∈ M₂, γ *ᵥ v ∈ M₂) →
+    ∃ p : K[X], IsUnit (aeval γ p) ∧ M₂ = matLat O (aeval γ p) M₁ := by
+  atlas_forward_decl GlobalTheory.LatOrb.Stab.exists_unit_eq_matLat

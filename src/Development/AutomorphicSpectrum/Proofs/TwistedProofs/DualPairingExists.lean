@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl GlobalTheory.InertZeta
@@ -167,3 +169,9 @@ theorem dual : Dual := by
 end GlobalTheory.CompanionTheory.InertDual
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_pairing_exists : Dual := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertDual.dual

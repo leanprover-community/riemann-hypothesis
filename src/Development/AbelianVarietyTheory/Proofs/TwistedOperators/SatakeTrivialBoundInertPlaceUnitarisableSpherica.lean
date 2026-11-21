@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.TrivialParameterBound
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnramifiedDoublingIntegralInertPlace
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SatakeTrivialBoundOfBoundedZonalSphericalUnitaryStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SatakeTrivialBoundOfBoundedZonalSphericalUnitary
 
+section
 noncomputable section
 
 namespace GlobalTheory.SatBoundInert
@@ -71,3 +72,8 @@ theorem satakeBoundInert : GlobalTheory.IndefiniteRowSideFullHecke.TrivialParame
 end GlobalTheory.SatBoundInert
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.satakeTrivialBound_inertPlace_unitarisable_spherical : GlobalTheory.IndefiniteRowSideFullHecke.TrivialParameterBound.SatakeBoundInert := by
+  atlas_forward_decl GlobalTheory.SatBoundInert.satakeBoundInert

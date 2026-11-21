@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WHyp
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -38,3 +41,10 @@ theorem isLocallyConstant_psiK_kerL (F E : Type) [NontriviallyNormedField F] [No
     exact hl.comp_continuous hc
 
 end GlobalTheory.JR.Hyp
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isLocallyConstant_etaleTraceAddChar_hermitianKernel : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (A : Et F E) (ψ : AddChar F ℂ), IsStdChar ψ → IsLocallyConstant (A.psiK ψ) ∧ ∀ (x : A.K) (y' : A.L), IsLocallyConstant (fun y => A.kerL ψ x y y') := by
+  atlas_forward_decl GlobalTheory.JR.Hyp.isLocallyConstant_psiK_kerL

@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationConstantOfPowerEq
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsCompleteDvrIntegralClosureFinite
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -204,3 +205,10 @@ theorem packSt : PackSt := by
   rfl
 
 end GlobalTheory.FlatModel
+end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.packing_statement_holds : PackSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.packSt

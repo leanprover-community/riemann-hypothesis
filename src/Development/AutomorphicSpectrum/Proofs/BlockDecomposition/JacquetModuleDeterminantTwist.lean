@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.GeometricLemmaFiltration
 import GroundTheory.AutomorphicForms.GeometricLemma
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -310,3 +313,15 @@ theorem jac_equiv_jacquetRep (k : Type) [Field k] [ValuativeRel k] [TopologicalS
 end Main
 
 end GlobalTheory.CompanionTheory.JacBridge
+end
+end
+
+set_option maxSynthPendingDepth 1
+open GlobalTheory.SmGL
+open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical)
+open GroundTheory.Automorphic.Iwasawa (blockUpper)
+open GroundTheory.Automorphic (permGL indRep)
+open DoubleCoset (doubleCoset)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jac_equiv_jacquetRep_comp_levi_equiv : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {β' : Type} [Fintype β'] [LinearOrder β'] {m' : β' → Type} [∀ j, Fintype (m' j)] [∀ j, DecidableEq (m' j)] {N : ℕ} (e' : (Σ j, m' j) ≃ Fin N) (γ : Fin N → ℕ), (∀ x y, γ x < γ y ↔ blk e' x < blk e' y) → ∀ (φ' : Levi k m' ≃* levi k N γ), (∀ g, ((φ' g : levi k N γ) : GL (Fin N) k) = leviEmb k e' g) → ∀ {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), Nonempty ((jac e' π).Equiv ((jacquetRep k N γ π).comp φ'.toMonoidHom)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.JacBridge.jac_equiv_jacquetRep

@@ -1,11 +1,12 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.LocalAtPlaces
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.LocalPairSplitSumStatement
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.LocalPairSplitSum
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CycNumIntAndComb
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CycleNumberLinearStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.DivisorCycleSubstitutionStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CycleNumberRenameStatement
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CycleNumberLinear
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.DivisorCycleSubstitution
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CycleNumberRename
+
+section
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top GroundTheory.Heights₂.Heights.ModelLeaves
 open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar IsHorizontal mcPts mCoordIdeal IsIntersectionFamily IsIntersectionSystem IntersectionSystem ptsIntegral geoNum charOf recR arInt ChartBundle chartRing)
 
@@ -130,3 +131,10 @@ theorem flag_m3_of_local_m3 : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscre
   ring
 
 end GlobalTheory.CompanionTheory.Ar.Num
+end
+
+open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top GroundTheory.Heights₂.Heights.ModelLeaves
+open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar IsHorizontal mcPts mCoordIdeal IsIntersectionFamily IsIntersectionSystem IntersectionSystem ptsIntegral geoNum charOf recR arInt ChartBundle chartRing)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_m3_from_local : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ϖ : O), Irreducible ϖ → ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι O)) (d : ℕ), IsModelOver P d → ∀ (p : ℕ), (p : O) ≠ 0 → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (j j' : ℕ) (φ : Equiv.Perm (Ψ ⊕ Ψ)) (T : LocPair ι O (Ψ × Fin (j + j'))) (lie : ∀ σ, LocPair ι O (Fin ((Sum.elim (fun _ : Ψ => j) (fun _ : Ψ => j')) σ))) (om : ∀ σ, LocPair ι O (Fin ((Sum.elim (fun _ : Ψ => j') (fun _ : Ψ => j)) σ))), (∀ τ, lie (Sum.inl τ) = T.comp fun i : Fin j => (τ, Fin.castAdd j' i)) → (∀ τ, om (Sum.inl τ) = T.comp fun i : Fin j' => (τ, Fin.natAdd j i)) → (∀ τ k Q, Q.length + k = d + 1 → laNum P (p : O) (lie (Sum.inr τ)).x k Q = laNum P (p : O) (fun i : Fin j' => -T.x (τ, Fin.natAdd j i)) k Q) → LabelChernComparison P d p φ lie om → FlagChernComparison P d p j φ T := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.flag_m3_of_local_m3

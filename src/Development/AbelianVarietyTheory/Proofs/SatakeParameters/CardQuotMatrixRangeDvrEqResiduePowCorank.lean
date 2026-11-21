@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.EsymmInvMulEsymmCard
 
+section
 open GlobalTheory.LatHecke GlobalTheory.SatakeInv
 
 namespace GlobalTheory.IdxRank
@@ -83,3 +84,9 @@ theorem card_quot_range (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuatio
   rfl
 
 end GlobalTheory.IdxRank
+end
+
+open GlobalTheory.LatHecke GlobalTheory.SatakeInv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_quot_matrix_range_dvr_eq_residue_pow_corank : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Finite (IsLocalRing.ResidueField O)] (r : ℕ) (A : Matrix (Fin r) (Fin r) O), IsLocalRing.maximalIdeal O • (⊤ : Submodule O (Fin r → O)) ≤ LinearMap.range A.mulVecLin → Nat.card ((Fin r → O) ⧸ LinearMap.range A.mulVecLin) = qRes O ^ (r - (A.map (IsLocalRing.residue O)).rank) := by
+  atlas_forward_decl GlobalTheory.IdxRank.card_quot_range

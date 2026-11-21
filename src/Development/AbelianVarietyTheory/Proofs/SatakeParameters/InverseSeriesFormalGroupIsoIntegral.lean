@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.LocalToGlobal.InertKernelTheory.DefsBeCob
 import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PadicNormTwoHundredSixteenEqOneOfFiveLe
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.InverseSeriesIntegral
@@ -75,3 +77,9 @@ theorem v_integral : ∀ (l : ℕ) [Fact l.Prime] (g : G1 l), g.Ok → ∀ (hLT 
   simpa using this
 
 end GlobalTheory.InverseSeriesIntegral
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inverse_series_formalGroup_iso_integral : ∀ (l : ℕ) [Fact l.Prime] (g : Formalism.MainNotions.GL3Theta.G1 l), g.Ok → ∀ (hLT : Formalism.L2.G.Pend.LTIso g) (n : ℕ), ‖PowerSeries.coeff n (Formalism.L2.KerInert.BeCob.vLT hLT)‖ ≤ 1 := by
+  atlas_forward_decl GlobalTheory.InverseSeriesIntegral.v_integral

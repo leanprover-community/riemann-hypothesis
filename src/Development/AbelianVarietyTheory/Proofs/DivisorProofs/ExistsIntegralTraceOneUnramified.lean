@@ -1,6 +1,8 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmulMemOfIsIntegral
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisAutMemAdelicCompletionIntegral
+import BuildAid.ForwardExisting
 
+section
 open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
 
 noncomputable section
@@ -73,3 +75,10 @@ theorem exists_integral_add_cc_eq_one : ∀ (E : Type) [Field E] [NumberField E]
   exact h.symm
 
 end GlobalTheory.LieDisc
+end
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_trace_one_unramified : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∃ t : E, IsIntegral ℤ t ∧ t + cc t = 1 := by
+  atlas_forward_decl GlobalTheory.LieDisc.exists_integral_add_cc_eq_one

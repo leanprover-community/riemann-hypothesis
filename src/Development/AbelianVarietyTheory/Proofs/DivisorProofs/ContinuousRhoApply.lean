@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSchwartzTranslate
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Complex
@@ -79,3 +80,11 @@ theorem continuous_rho : ∀ (l : Type) [Fintype l] (v : L2 l), Continuous fun w
     (Continuous.prodMk continuous_const continuous_id)
 
 end GlobalTheory.RealWeil
+end
+end
+
+open scoped Matrix
+open MeasureTheory GlobalTheory.RealWeil
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_rho_apply : ∀ (l : Type) [Fintype l] (v : L2 l), Continuous fun w : l ⊕ l → ℝ => rho w v := by
+  atlas_forward_decl GlobalTheory.RealWeil.continuous_rho

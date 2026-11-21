@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FactorRapid
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -32,3 +34,9 @@ theorem rowExists_of_factor (hFac : FactorRapid) (hEv : EvAdj) : RowExists := by
   exact hrow φ₂ f' hφ₂S hφ₂E hf'S hf'E hmul
 
 end GlobalTheory.CompanionTheory.KerFc
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernel_row_exists : GlobalTheory.CompanionTheory.KerFc.FactorRapid → GlobalTheory.CompanionTheory.KerFc.EvAdj → GlobalTheory.CompanionTheory.KerFc.RowExists := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KerFc.rowExists_of_factor

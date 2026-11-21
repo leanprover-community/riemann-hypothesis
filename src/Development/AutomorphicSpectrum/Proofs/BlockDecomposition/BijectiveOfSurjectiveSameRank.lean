@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IotaQInjective
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory AlgebraicGeometry TensorProduct Opposite MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR MainStatements.Hodge GlobalTheory.CompanionTheory.WedgeOf
 
 namespace GlobalTheory.CompanionTheory.WedgeOf
@@ -48,3 +50,9 @@ theorem bijective_of_surjective_of_VB : ∀ (R A B : Type) [CommRing R] [AddComm
   simpa using congrArg Subtype.val this
 
 end GlobalTheory.CompanionTheory.WedgeOf
+end
+
+open CategoryTheory AlgebraicGeometry TensorProduct Opposite MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR MainStatements.Hodge GlobalTheory.CompanionTheory.WedgeOf
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bijective_of_surjective_same_rank : ∀ (R A B : Type) [CommRing R] [AddCommGroup A] [Module R A] [AddCommGroup B] [Module R B] (n : ℕ), VB R A n → VB R B n → ∀ f : A →ₗ[R] B, Function.Surjective f → Function.Bijective f := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WedgeOf.bijective_of_surjective_of_VB

@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.ClassNumImQ
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticDedekindZeta.Development
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticDedekindZeta.SpanNatCastSupEqTop
 
 open NumberField

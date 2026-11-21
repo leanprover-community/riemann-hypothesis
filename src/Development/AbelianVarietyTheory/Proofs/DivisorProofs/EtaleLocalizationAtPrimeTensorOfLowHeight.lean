@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionFreeOver
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GalMapGalElt
 
 open scoped TensorProduct

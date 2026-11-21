@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIdempotentElemIdemSf
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConjLowUni
 
 noncomputable section

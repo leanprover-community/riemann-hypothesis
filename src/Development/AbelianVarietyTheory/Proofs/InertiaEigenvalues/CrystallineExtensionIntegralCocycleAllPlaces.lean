@@ -4,10 +4,11 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqTopOfSpanImage
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeGaloisTrivialModUniformizer
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeHeightsFromHodgeJumpsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemWachNOfMapMemSaturatedStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineAndDecompletion
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemWachNOfMapMemSaturated
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OneNotMemFilOne
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LevLawsOfEvLaw
+
+section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
 
 noncomputable section
@@ -131,3 +132,10 @@ theorem crystalline_extension_integral_cocycle_all_places : ∀ (D : Formalism.B
   exact core _ T Tp ι π M (fun y hy => (hexact y).1 hy) hsat h5 h2 e hφe hγe x hx c hc
 
 end GlobalTheory.NL.NygaardFrobeniusPower
+end
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.p8_of_cmpOf : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), P8 D HW F := by
+  atlas_forward_decl GlobalTheory.NL.NygaardFrobeniusPower.crystalline_extension_integral_cocycle_all_places

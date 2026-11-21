@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsBasisLatticeNear
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.AddHomExtSingle
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsAdaptedBasisTestLattice
 import Development.AbelianVarietyTheory.Definitions.Degenerations.BaseFacts
 import Development.AbelianVarietyTheory.Definitions.Degenerations.IsAffineSplitTorusLeft

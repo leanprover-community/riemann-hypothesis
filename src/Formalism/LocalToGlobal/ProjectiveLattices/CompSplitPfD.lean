@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
 import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 import Formalism.LocalToGlobal.ProjectiveLattices.CompSplitPfC
 

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSupportComp
+import BuildAid.ForwardExisting
+
+section
 open Matrix Topology
 
 noncomputable section
@@ -76,3 +79,10 @@ theorem exists_charSum_eq_on_compact : ∀ {F : Type} [NormedField F] (ψ : AddC
   simp only [Finsupp.sum, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, χ]
 
 end GlobalTheory.JSW.KirFin
+end
+end
+
+open Matrix Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_characterSum_eq_locallyConstant_on_compact : ∀ {F : Type} [NormedField F] (ψ : AddChar F ℂ), IsLocallyConstant ψ → ψ ≠ 1 → ∀ {ι : Type} [Fintype ι] (K : Set (ι → F)), IsCompact K → ∀ Φ : (ι → F) → ℂ, IsLocallyConstant Φ → ∃ T : (ι → F) →₀ ℂ, ∀ r ∈ K, (T.sum fun v c => c * ψ (r ⬝ᵥ v)) = Φ r := by
+  atlas_forward_decl GlobalTheory.JSW.KirFin.exists_charSum_eq_on_compact

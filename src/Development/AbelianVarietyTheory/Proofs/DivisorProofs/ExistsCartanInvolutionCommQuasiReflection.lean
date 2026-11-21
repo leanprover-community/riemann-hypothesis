@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.IndefR.Datum
 open scoped ComplexOrder MatrixOrder
 
@@ -164,3 +166,10 @@ theorem exists_cartan_comm_quasiReflection : ∀ (n : ℕ) (G : Matrix (Fin n) (
   simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, Matrix.smul_mul, Matrix.mul_smul, hsM]
 
 end GlobalTheory.CartanRefl
+end
+
+open Matrix Formalism.IndefR.Datum
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cartanInvolution_comm_quasiReflection : ∀ (n : ℕ) (G : Matrix (Fin n) (Fin n) ℂ), Gᴴ = G → G.det ≠ 0 → ∀ x : Fin n → ℂ, star x ⬝ᵥ G *ᵥ x ≠ 0 → ∃ s, IsCartanInv G s ∧ ∀ c : ℂ, s * (1 + c • Matrix.vecMulVec x (star x ᵥ* G)) = (1 + c • Matrix.vecMulVec x (star x ᵥ* G)) * s := by
+  atlas_forward_decl GlobalTheory.CartanRefl.exists_cartan_comm_quasiReflection

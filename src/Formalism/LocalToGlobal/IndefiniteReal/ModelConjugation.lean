@@ -3,8 +3,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ZuckermanTensor.Discret
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.HarishChandraMultiplicityBound
 import Formalism.LocalToGlobal.IndefiniteReal.LowestKType
 import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.WeylBridge
 
 noncomputable section
 

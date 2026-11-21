@@ -1,14 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GoodTopBot
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalB
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.GlMatrixUnitPowCommutatorAndTraceCentralStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TraceGlMatrixUnitPowHighestWeightModStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RowPolarizationOperatorsRelationsDivPowBaseChangStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RowPolarizationOperatorsActionOnRowWeightStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TraceGlMatrixUnitPowHighestWeightMod
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RowPolarizationOperatorsRelationsDivPowBaseChang
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RowPolarizationOperatorsActionOnRowWeight
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CommRowDivOfCommRowE
 
+section
 open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
 
 noncomputable section
@@ -63,3 +61,10 @@ theorem gel_dualWeyl_rat (N : ℕ) (ν : Fin N → ℕ) (hν : Antitone ν) (k :
   exact ((hmem f).1 (heq ▸ hf)).2
 
 end GlobalTheory.Alc
+end
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.traceRowOperatorPower_dualWeyl_highestWeight : ∀ (N : ℕ) (ν : Fin N → ℕ), Antitone ν → ∀ k : ℕ, ∀ f ∈ dualWeyl ℚ N N ν, gel ℚ N N k f = hcVal ℚ (fun i => (ν i : ℚ)) k • f := by
+  atlas_forward_decl GlobalTheory.Alc.gel_dualWeyl_rat

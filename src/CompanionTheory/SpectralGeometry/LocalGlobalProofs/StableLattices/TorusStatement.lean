@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.FlB
 
 noncomputable section
@@ -176,3 +178,9 @@ theorem stTor : StTor := by
 end GlobalTheory.CompanionTheory.FrameTorus
 
 end
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.TorusStatement : StTor := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FrameTorus.stTor

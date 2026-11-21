@@ -1,7 +1,5 @@
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalLanglandsSpehProductStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RecSpehQuot
-import Development.AutomorphicArithmetic.Foundations.LocalLanglands.IsRecTOfIsRec
 
 set_option synthInstance.maxHeartbeats 200000
 
@@ -18,5 +16,5 @@ theorem _root_.GlobalTheory.T.local_langlands_speh_product' : ∀ (E Ω : Type) 
       IsUnitarisable σ.ρ → IsGeneric σ.ρ → IsSpehQuot hd σ σ' →
       rc (cls (ParLaws.toRep σ')) =
         sumList ((List.range d).map fun k : ℕ => (rc (cls (ParLaws.toRep σ))).lpTw (((d : ℝ) - 1) / 2 - k)) := by
-  first | exact @_root_.GlobalTheory.SpehRec.rec_spehQuot_alt | exact _root_.GlobalTheory.SpehRec.rec_spehQuot_alt | (intros; apply _root_.GlobalTheory.SpehRec.rec_spehQuot_alt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.SpehRec.rec_spehQuot_alt
 end

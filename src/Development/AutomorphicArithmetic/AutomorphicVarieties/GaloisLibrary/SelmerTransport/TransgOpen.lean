@@ -148,9 +148,7 @@ private theorem exists_ext (ρ : Representation R G M) (hρ : ContAction ρ) {U'
 
 private theorem exists_normal_conj_inclusion {K : Type} [Group K] {U' U : Subgroup K} [U'.Normal] (h : U' ≤ U) (u : U')
     (g : U) : ∃ v : U', Subgroup.inclusion h u * g = g * Subgroup.inclusion h v := by
-  refine ⟨⟨(g : K)⁻¹ * u * g, Subgroup.Normal.conj_mem' ‹_› _ u.2 _⟩, ?_⟩
-  apply Subtype.ext
-  simp [mul_assoc]
+  apply exists_inclusion_mul_eq_mul_inclusion_of_normal (h := h) (u := u) (g := g) <;> assumption
 
 omit [IsTopologicalGroup G] [DiscreteTopology M] in
 

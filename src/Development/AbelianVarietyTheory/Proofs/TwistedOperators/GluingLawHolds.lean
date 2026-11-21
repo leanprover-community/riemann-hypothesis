@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ChosenSeries
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MonomialMemRangeGlue
 
 noncomputable section

@@ -1,6 +1,5 @@
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.H1algStatement
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.LemmaBStatement
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 
 set_option autoImplicit false
 

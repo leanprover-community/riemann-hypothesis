@@ -1,21 +1,15 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsHolToModulipointExpOfHolomorphicPeriodsStatement
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLocalPeriodLift
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsHolToModulipointExpOfHolomorphicPeriods
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPointOfIsPeriod
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniformisationAtPointClosed
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaFrameFamily
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PointEqIffIsometryClosed
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsHolomorphicChart
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FiniteImageOfLocallyConstantOnHolomorphicFamilie
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FamilyUnifOfParts
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DatumExistsPeriod
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsFormEqOne
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ModNOfDvdModulus
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSimTrivialOfMult
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj TensorProduct
@@ -31,3 +25,11 @@ theorem familyUnif_of_thetaUnif : ThetaUnifAV → Out.Laws → N1c := fun hU hL 
     (GlobalTheory.SimMult.exists_sim_trivial_of_mult GlobalTheory.SimAlg.sim_group GlobalTheory.exists_sim_lift)
 
 end GlobalTheory
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.familyUniformisation_of_abelianVariety_uniformisation : ThetaUnifAV → Out.Laws → N1c := by
+  atlas_forward_decl GlobalTheory.familyUnif_of_thetaUnif

@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormRatioRealizationSameStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowAtOfRatStep
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SeriesUnit
 
 set_option synthInstance.maxHeartbeats 200000
@@ -22,5 +20,5 @@ theorem _root_.GlobalTheory.T.norm_ratio_realization_same_alt : GlobalTheory.Pub
     ∀ f f', rdAt p w j hρ ν f = ρ.theta ((Fm.ex x hx i).nch.twI w) j ((Fm.ex x hx i).nch.sd w) h P →
       rdAt p w j hρ' ν' f' = ρ.theta ((Fm.ex x hx i).nch.twI w) j ((Fm.ex x hx i).nch.sd w) h P →
       ∃ u : FractionRing ((Fm.D x i).ntw.O ((Fm.ex x hx i).nch.twI w)), (∃ n : ℕ, n ≠ 0 ∧ u ^ n = 1) ∧ f' = u • f := by
-  first | exact @_root_.GlobalTheory.BigOn.Exp.seriesUnit_alt | exact _root_.GlobalTheory.BigOn.Exp.seriesUnit_alt | (intros; apply _root_.GlobalTheory.BigOn.Exp.seriesUnit_alt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.BigOn.Exp.seriesUnit_alt
 end

@@ -1,7 +1,5 @@
 import Mathlib
-import Formalism.UnipotentAdelicQuotients.ThmBInSatake
 import GroundTheory.IdeleRoots.TorusPowers.SatakeBoundReps
-import GroundTheory.GlobalFields.LocalFieldAtPlace
 import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
 set_option maxSynthPendingDepth 1
 

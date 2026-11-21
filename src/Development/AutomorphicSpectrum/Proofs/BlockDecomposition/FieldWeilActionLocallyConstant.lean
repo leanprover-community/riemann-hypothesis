@@ -3,11 +3,9 @@ import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.Arch
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnstatedLocalWeilLemma
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RWConstMul
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NsgDivNorm
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilRepresentationHypothesisStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilInducedRepresentationHypothesisStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilInducedRepresentationHypothesis
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilSmoothnessHypothesis
 
+section
 open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
 open GroundTheory.Automorphic.GodementSection (localChar)
 open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
@@ -224,3 +222,19 @@ theorem piE_locConst : GL2LocalData.ForEF fun F _ _ _ _ _ _ _ E _ _ _ _ _ _ _ χ
     _ = piE E χ σ η c g₀ Φ := by rw [he]
 
 end GlobalTheory.CompanionTheory.WeilLocConst
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open Ad3.R (G2 Jd md KA LInv IsLoc2 pt pri dia2)
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.field_weil_action_locally_constant : GL2LocalData.ForEF fun F _ _ _ _ _ _ _ E _ _ _ _ _ _ _ χ σ η =>
+  ∀ c : Eˣ →* ℂˣ, IsUnit1 c → ∀ Φ ∈ GL2LocalData.SBc F E c, ∀ g₀ : GL (Fin 2) F,
+    (∃ t : Eˣ, Algebra.norm F (t : E) = (g₀.val).det) →
+    ∃ U ∈ nhds g₀, ∀ g ∈ U, GL2LocalData.piE E χ σ η c g Φ = GL2LocalData.piE E χ σ η c g₀ Φ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WeilLocConst.piE_locConst

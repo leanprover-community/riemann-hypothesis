@@ -13,11 +13,11 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctional
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctionalWhittakerCharacter
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctionalWhittakerCentral
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctionalWhittakerSmooth
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctionalSectionSupport
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerIwasawaGrowthBound
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalDoubleIntegralIdentity
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalTorusReduction
 
+section
 noncomputable section
 
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
@@ -455,3 +455,14 @@ theorem temperedBoundGL3_of_lift : ∀ (F : Type) [Field F] [ValuativeRel F] [To
       exact this
 
 end GlobalTheory.CompanionTheory.LFTempered
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open scoped ValuativeRel
+open GlobalTheory.CompanionTheory.DualHol
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.temperedBoundGL3_lifted_whittaker : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (ψ : AddChar F Circle) (ν : Fˣ →* ℂˣ) (W' : GL (Fin 2) F → ℂ) (Φ : Matrix (Fin 2) (Fin 3) F → ℂ), LFS.Hyp ψ ν W' Φ → TemperedBoundGL3 (LFS.Wp ψ W' Φ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LFTempered.temperedBoundGL3_of_lift

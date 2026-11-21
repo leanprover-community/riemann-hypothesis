@@ -1,5 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.UnramifiedSchwartzDensity.SchCut
+
+section
 open MeasureTheory Filter
 open scoped ENNReal NNReal Topology
 
@@ -107,3 +109,11 @@ theorem integrable_continuousAt_of_linear_push : PositivityTheory.PfSWUS.SchInf.
       integral_map (L s).continuous.aemeasurable hg.aestronglyMeasurable, NNReal.smul_def]
 
 end GlobalTheory.CompanionTheory.PushFam
+end
+
+noncomputable section
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_family_continuity : PositivityTheory.PfSWUS.SchInf.FamCont := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PushFam.integrable_continuousAt_of_linear_push

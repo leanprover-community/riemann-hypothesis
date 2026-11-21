@@ -1,7 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsProjOverOfIsProjOverBase
-import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
+
+section
 open AlgebraicGeometry CategoryTheory
 
 open TopologicalSpace
@@ -106,3 +107,9 @@ theorem bijective_appTop_restrict : ∀ (Y Z : Scheme.{0}) (π : Y ⟶ Z) [IsPro
   exact this
 
 end GlobalTheory.ZariskiSections
+end
+
+open AlgebraicGeometry CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bijective_sections_preimage_affine_proper_birational : ∀ (Y Z : Scheme.{0}) (π : Y ⟶ Z) [IsProper π] [IsIntegral Y] [IsIntegral Z] [IsLocallyNoetherian Z], ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme Z → ∀ U : Z.Opens, (U : Set Z).Nonempty → IsIso (π ∣_ U) → ∀ V : Z.Opens, IsAffineOpen V → Function.Bijective (π ∣_ V).appTop := by
+  atlas_forward_decl GlobalTheory.ZariskiSections.bijective_appTop_restrict

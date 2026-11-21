@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JpUnif
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix
@@ -153,3 +155,9 @@ theorem jpIw : JpIw := by
 end GlobalTheory.CompanionTheory.Jp.Iw
 
 end
+end
+
+open GlobalTheory.CompanionTheory.Jp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.iwasawa_decomposition_statement : GlobalTheory.CompanionTheory.Jp.JpIw := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Jp.Iw.jpIw

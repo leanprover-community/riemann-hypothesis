@@ -1,16 +1,16 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MooreNorm
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RowTEqRowS
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsWindowRadii
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdditiveSystemGeneralLemmaAllOrdersStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusWindowSeriesTermNormLeRowBoundStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormFrobeniusWindowSeriesTermMonoStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WindowSummedRowPowEqAdditiveSystemPowerSumStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormalizedRowCoefficientMatricesDetNormStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormalOfInvMulStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardWindowZerosEqIntegralAdditiveSystemStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardWindowZerosInnerEqShiftedOuterStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdditiveSystemGeneralLemmaAllOrders
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusWindowSeriesTermNormLeRowBound
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormFrobeniusWindowSeriesTermMono
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WindowSummedRowPowEqAdditiveSystemPowerSum
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormalizedRowCoefficientMatricesDetNorm
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormalOfInvMul
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardWindowZerosEqIntegralAdditiveSystem
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardWindowZerosInnerEqShiftedOuter
 
+section
 noncomputable section
 
 namespace GlobalTheory.PMonE
@@ -165,3 +165,10 @@ theorem winThm : WinThm := by
     exact absurd hle (not_le.2 (Nat.pow_lt_pow_right hq1 (by omega)))
 
 end GlobalTheory.PMonE
+end
+end
+
+open GlobalTheory.PMonE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_polydisc_windows_surjective_bounds_zero : WinThm := by
+  atlas_forward_decl GlobalTheory.PMonE.winThm

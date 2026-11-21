@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FinrankEqZeroIff
-import ReciprocityTheory.GaloisValuations.GlobalB
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Pointwise
@@ -102,3 +102,13 @@ theorem embSt : EmbSt := by
   exact ⟨ι, fun x _ => h1 x, fun x hx => h2 x hx⟩
 
 end GlobalTheory.LocM.Cht
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField TopologicalSpace IsLocalRing
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.ModuliIntegralCharts GlobalTheory.ShFam
+open Formalism.MainNotions.DIV.Cons (SCF intO)
+open GlobalTheory.LocM GlobalTheory.LocM.Cht
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_embedding_holds : GlobalTheory.LocM.Cht.EmbSt := by
+  atlas_forward_decl GlobalTheory.LocM.Cht.embSt

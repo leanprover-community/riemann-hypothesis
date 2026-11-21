@@ -2,7 +2,6 @@ import Mathlib
 import Formalism.LocalToGlobal.Divisibility.LiftLatInst
 import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
 import Formalism.LocalToGlobal.Columns.RowFormsRat
-import Formalism.LocalToGlobal.Columns.WmLemmas
 import Formalism.LocalToGlobal.Columns.AnisotropicOfPositiveDefinite
 import Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundStatement
 

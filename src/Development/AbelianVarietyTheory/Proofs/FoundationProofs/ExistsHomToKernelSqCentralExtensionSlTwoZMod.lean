@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiagMod
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Sl2CentralExtensionCommutatorSqStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSymplecticBasisToMatrixOffDiagDvd
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Sl2CentralExtensionCommutatorSq
+
+section
 open scoped MatrixGroups TensorProduct commutatorElement
 open Matrix GlobalTheory.KZ GlobalTheory.KZ.ES
 
@@ -267,3 +267,10 @@ theorem exists_hom_to_kernel_eq_sq_on_kernel_of_central_ext_sl2 : ∀ (l n m : �
     (sq_eq_one l n hl m hm hc E π hs hcen hk)
 
 end GlobalTheory.CentralExt
+end
+
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ GlobalTheory.KZ.ES
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hom_to_kernel_sq_centralExtension_slTwoZMod : ∀ (l n m : ℕ), l.Prime → 0 < m → Nat.Coprime m (6 * l) → ∀ (E : Type) [Group E] (π : E →* Matrix.SpecialLinearGroup (Fin 2) (ZMod m)), Function.Surjective π → π.ker ≤ Subgroup.center E → (∀ x ∈ π.ker, x ^ (l ^ n) = 1) → ∃ ψ : E →* E, (∀ e, ψ e ∈ π.ker) ∧ ∀ x ∈ π.ker, ψ x = x ^ 2 := by
+  atlas_forward_decl GlobalTheory.CentralExt.exists_hom_to_kernel_eq_sq_on_kernel_of_central_ext_sl2

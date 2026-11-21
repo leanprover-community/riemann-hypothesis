@@ -1,7 +1,8 @@
 import Mathlib
-import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
 import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.CmpbHessAtAddConst
+import BuildAid.ForwardExisting
 
+section
 open Filter Topology MeasureTheory Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y ComplexConjugate
 open scoped ComplexOrder
 
@@ -36,3 +37,10 @@ theorem cHess_posSemidef_of_levi_nonneg (n : ℕ) (φ : V n → ℝ) (z : V n) (
   · simpa using him.symm
 
 end GlobalTheory
+end
+
+open Filter Topology MeasureTheory Metric ReciprocityTheory.L2DbarEstimates
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.complexHessian_posSemidef_of_leviForm_nonneg : ∀ (n : ℕ) (φ : V n → ℝ) (z : V n), ContDiffAt ℝ 2 φ z → (∀ ξ : Fin n → ℂ, 0 ≤ (leviV n (fun v => (φ v : ℂ)) z ξ).re) → (cHess n (fun v => (φ v : ℂ)) z).PosSemidef := by
+  atlas_forward_decl GlobalTheory.cHess_posSemidef_of_levi_nonneg

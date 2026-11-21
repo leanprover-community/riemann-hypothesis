@@ -1,11 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetRefinement
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TopPlaceLogTheta
 import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.Period
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeanLogPeriodConjugatesEqChowlaSelberg
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ExistsPowPrincipalFractionalIdeal
 
+section
 noncomputable section
 
 namespace GlobalTheory.MeanPeriodClosed
@@ -85,3 +85,9 @@ theorem meanPeriod : GlobalTheory.IndefiniteRowSideFullHecke.MeanPeriodLogarithm
   fun D cc δ hcc hδ => meanPeriodAt D cc δ hcc hδ
 
 end GlobalTheory.MeanPeriodClosed
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.meanLogPeriod_chowlaSelberg : GlobalTheory.IndefiniteRowSideFullHecke.MeanPeriodLogarithms.MeanPeriod := by
+  atlas_forward_decl GlobalTheory.MeanPeriodClosed.meanPeriod

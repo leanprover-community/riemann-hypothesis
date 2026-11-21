@@ -1,10 +1,10 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.RealLocalIntegrals.RealGammaLimits.UnipotentTateFunctionalEquation
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.RealLocalIntegrals.RealGammaLimits.FunctionalEquationGL2GL1Complex
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ValMeasurableEmbedding
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AbsIntegralTranslatesBound
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrablePhi
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Set
@@ -131,3 +131,12 @@ theorem integrable_firstColumn : ∀ σ : ℝ, 0 < σ → σ < 1 → Integrable 
     _ = _ := by ring
 
 end GlobalTheory.CompanionTheory.PerUInt.Outer
+end
+end
+
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integrable_radial_cutoff_weight : ∀ σ : ℝ, 0 < σ → σ < 1 → Integrable (fun p : ℝ × ℝ =>
+    (p.1 ^ 2 + p.2 ^ 2) ^ (-1 - σ / 2) * ((p.1 ^ 2 + p.2 ^ 2) / max |p.1| |p.2|) *
+      (GlobalTheory.CompanionTheory.PerUInt.phi p.1 * GlobalTheory.CompanionTheory.PerUInt.phi p.2)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PerUInt.Outer.integrable_firstColumn

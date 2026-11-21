@@ -1,5 +1,6 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.BasisSet
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Gunr
@@ -70,3 +71,8 @@ theorem locMat : LocMat := by
 end GlobalTheory.CompanionTheory.Gunr
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_matrix_integral : PositivityTheory.SiegelWeilFormula.Gunr.LocMat := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Gunr.locMat

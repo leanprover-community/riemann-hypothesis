@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsFinSetSplitPlacesCoprimeConductor
+import BuildAid.ForwardExisting
+
+section
 open NumberField GlobalTheory.CMVal
 open scoped ComplexConjugate
 
@@ -73,3 +76,11 @@ theorem cmType_trace_im_coeff : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
   rw [hc, mul_div_cancel₀ _ h2I]
 
 end GlobalTheory
+end
+
+open NumberField GlobalTheory.CMVal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cm_type_trace_imaginary_part : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (I : Type) [Fintype I] (φ : I → E →+* ℂ),
+    IsCMType φ → ∀ (h : I → ℝ) (mu : E), (∀ z : E, ((Algebra.trace ℚ E (mu * z) : ℚ) : ℝ) = ∑ i, h i * (φ i z).im) →
+    ∀ i, 2 * Complex.I * φ i mu = (h i : ℂ) := by
+  atlas_forward_decl GlobalTheory.cmType_trace_im_coeff

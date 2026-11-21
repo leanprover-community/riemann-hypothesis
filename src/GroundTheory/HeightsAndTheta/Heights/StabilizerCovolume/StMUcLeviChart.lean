@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.StMUcChartSemipos
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarLeviChart
 import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.StMUcSmooth
 set_option maxSynthPendingDepth 1
 

@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
-import Formalism.SharpRestriction.ParamsHeightRankConstant
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.SplitPlaceTypes
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.SplitPlacesEmbeddingType
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NotDvdDiscrHost

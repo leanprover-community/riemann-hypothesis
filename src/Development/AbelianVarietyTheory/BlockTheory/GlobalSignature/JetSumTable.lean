@@ -4,7 +4,6 @@ import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 import Formalism.LocalToGlobal.Columns.ScaledRamifiedLattice
 import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
-import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 import Formalism.LocalToGlobal.KernelLattices.ThDistC
 
 open NumberField IsDedekindDomain

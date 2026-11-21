@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.NonemptyValExtOfOverLa
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentVectorsUniversalBasis
 
 set_option autoImplicit false

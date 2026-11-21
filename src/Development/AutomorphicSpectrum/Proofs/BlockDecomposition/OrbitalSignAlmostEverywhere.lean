@@ -1,12 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.WeylSplitting.WeylSplit
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbitalIntegralUnitIndicatorEventuallyOneClass
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KapOrbUnitEqOne
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralElementCharPolyNonsplit
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHermitianFormCharPoly
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyExistsIntegralCharpolySplitPlace
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsConjSameSeparableCharpolySplitPlace
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyUnitaryConjOfSameEllipticCharpolyInert
+
+section
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.G2
 open scoped Classical TensorProduct
@@ -155,3 +151,9 @@ theorem GlobalTheory.CompanionTheory.KapOrbAE.kapOrbAE : KapOrbAE := by
     rw [hw]
     exact h
   exact Filter.eventually_cofinite.1 hall
+end
+
+open NumberField IsDedekindDomain Polynomial GlobalTheory.BCT PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.G2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orbital_sign_almost_everywhere : KapOrbAE := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KapOrbAE.kapOrbAE

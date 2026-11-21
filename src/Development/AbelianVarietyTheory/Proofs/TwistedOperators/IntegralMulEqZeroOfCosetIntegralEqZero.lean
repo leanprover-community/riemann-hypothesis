@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.ContinuousOfMemCcSmooth
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory GlobalTheory.AutomorphicL2Unitary Topology Set Filter
 open scoped Pointwise
 
@@ -165,3 +167,10 @@ theorem integral_mul_eq_zero_of_coset_integral_eq_zero : ∀ (G : Type) [Group G
   exact key
 
 end GlobalTheory.CosetIntegralZero
+end
+end
+
+open MeasureTheory GlobalTheory.AutomorphicL2Unitary
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_mul_eq_zero_of_coset_integral_eq_zero_alt : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [T2Space G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (H : Subgroup G), IsClosed (H : Set G) → ∀ (ν : Measure H) [ν.IsHaarMeasure] (μ : Measure G) [μ.IsHaarMeasure] (f w : G → ℂ), Continuous f → HasCompactSupport f → LocallyIntegrable w μ → (∀ u ∈ H, (fun g => w (u * g)) =ᵐ[μ] w) → (∀ g, ∫ u : H, f (u * g) ∂ν = 0) → ∫ g, f g * w g ∂μ = 0 := by
+  atlas_forward_decl GlobalTheory.CosetIntegralZero.integral_mul_eq_zero_of_coset_integral_eq_zero

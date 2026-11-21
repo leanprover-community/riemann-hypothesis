@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.PAdicHodge.BCrisEigenWitt
-import GroundTheory.PAdicHodge.LocalBridge
 import GroundTheory.PAdicHodge.UnramifiedACris
 import GroundTheory.PAdicHodge.UnramifiedClosure
 import GroundTheory.LocalFields.WeilGroupDefs

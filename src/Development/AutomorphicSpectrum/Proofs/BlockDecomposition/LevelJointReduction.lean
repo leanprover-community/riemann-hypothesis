@@ -1,9 +1,10 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SeriesEqDens
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeVolumeUnramifiedStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelCharactersUnramifiedStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeVolumeUnramified
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelCharactersUnramified
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GunrJt
@@ -282,3 +283,8 @@ theorem jtLev : JtLev := by
 
 end GlobalTheory.CompanionTheory.GunrJt
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_joint_reduction : PositivityTheory.SiegelWeilFormula.Gunr.JtLev := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrJt.jtLev

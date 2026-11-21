@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCombIn
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace GlobalTheory.SecGlue
@@ -46,3 +49,11 @@ theorem exists_basicOpen_cover_affine (S : Type) [CommRing S] (Y : Scheme.{0}) (
     exact hWs _ _ (spMap_away_mem_basicOpen _ x)
 
 end GlobalTheory.SecGlue
+end
+
+open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_basicOpen_cover_affineOpen_spec : ∀ (S : Type) [CommRing S] (Y : Scheme.{0}) (u : Sp S ⟶ Y),
+    ∃ (n : ℕ) (s : Fin n → S) (W : Fin n → Y.Opens), Ideal.span (Set.range s) = ⊤ ∧
+      (∀ i, IsAffineOpen (W i)) ∧ ∀ i, (spMap (algebraMap S (Localization.Away (s i))) ≫ u) ⁻¹ᵁ W i = ⊤ := by
+  atlas_forward_decl GlobalTheory.SecGlue.exists_basicOpen_cover_affine

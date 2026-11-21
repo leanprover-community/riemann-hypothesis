@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealDatumRationalNormalizationStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowAtOfRatStep
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExpConj
 
 set_option synthInstance.maxHeartbeats 200000
@@ -27,5 +25,5 @@ theorem _root_.GlobalTheory.T.real_datum_rational_normalization_alt : GlobalTheo
         ∃ c : ℂ, (∃ m : ℕ, m ≠ 0 ∧ c ^ m = 1) ∧
           ∑ k, τ (ρ.e ((Fm.ex x hx i).nch.twI w) ((Fm.ex x hx i).nch.sd w) (a k)) • evW p.nexp p.v₀ j (g k).val =
             c • ∑ k, ρ.e ((Fm.ex x hx i).nch.twI w) ((Fm.ex x hx i).nch.sd w) (a k) • evW p.nexp p.v₀ j (g k).val := by
-  first | exact @_root_.GlobalTheory.BigOn.Exp.expConj_alt | exact _root_.GlobalTheory.BigOn.Exp.expConj_alt | (intros; apply _root_.GlobalTheory.BigOn.Exp.expConj_alt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.BigOn.Exp.expConj_alt
 end

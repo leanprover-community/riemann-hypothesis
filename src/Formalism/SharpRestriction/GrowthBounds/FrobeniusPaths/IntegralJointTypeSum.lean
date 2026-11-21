@@ -1,6 +1,4 @@
 import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
-import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
-import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.JointTypeLatticeSaturated
 import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.IntegralJointTypeSumOfParts
 
 noncomputable section

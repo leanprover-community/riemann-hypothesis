@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Exists
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReadsUnique
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpectralComparisonTransportedDivisionLatticeChanStatement
 
+section
 noncomputable section
 
 namespace GlobalTheory.Mem.SRe.SxPass
@@ -90,3 +91,8 @@ end Slot
 end GlobalTheory.Mem.SRe.SxPass
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.spectralStageData_transfer_lattices_heights : GlobalTheory.Mem.SRe.SxMv := by
+  atlas_forward_decl GlobalTheory.Mem.SRe.SxPass.sxMv

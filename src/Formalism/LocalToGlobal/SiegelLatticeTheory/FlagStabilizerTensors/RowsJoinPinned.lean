@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowsJoinS
-import Formalism.LocalToGlobal.IndefiniteReal.RationalEmbedding
 
 noncomputable section
 

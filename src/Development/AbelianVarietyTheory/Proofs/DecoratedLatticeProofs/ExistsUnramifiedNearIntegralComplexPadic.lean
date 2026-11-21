@@ -2,6 +2,9 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EndOmega
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.TranslateProduct
 import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementC
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementK
+import BuildAid.ForwardExisting
+
+section
 open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
 
 noncomputable section
@@ -187,3 +190,10 @@ theorem exists_near_kur : ∀ (l : ℕ) [Fact l.Prime] (x : ℂ_[l]), ‖x‖ �
     rw [e]; exact lt_of_le_of_lt (IsUltrametricDist.norm_add_le_max _ _) (max_lt hx' hd)
 
 end GlobalTheory.ResidueUnr
+end
+end
+
+open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unramified_near_integral_complexPadic : ∀ (l : ℕ) [Fact l.Prime] (x : ℂ_[l]), ‖x‖ ≤ 1 → ∃ y ∈ MaximalUnramifiedExtension l, ‖y‖ ≤ 1 ∧ ‖x - y‖ < 1 := by
+  atlas_forward_decl GlobalTheory.ResidueUnr.exists_near_kur

@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.EisensteinChartSplitting.TChartSplit
 
+section
 noncomputable section
 
 open scoped Topology
@@ -122,3 +123,9 @@ theorem div_multiplier : ResidueKilled.Tr.Div := by
 end GlobalTheory.CompanionTheory.DivMult
 
 end
+end
+
+open ResidueKilled.Tr
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.divisibility_statement : Div := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DivMult.div_multiplier

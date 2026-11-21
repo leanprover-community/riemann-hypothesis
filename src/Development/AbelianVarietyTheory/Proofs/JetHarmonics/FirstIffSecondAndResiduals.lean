@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.JetGauges.ThetaSpanAdjoint
-import Development.AbelianVarietyTheory.BlockTheory.JetGauges.UnitaryDetClass
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PushMemHarmK
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ColumnMapShift
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.EqOneOfSameClass
@@ -11,7 +10,6 @@ import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ChartCoverFOfSectionBaseChange
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFramedPointBaseChangeAlgebraMap
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllSixAbelianSchemeLawsHold
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ShortThetaValueExistsUniqueNaturalOfLawsStatement
 

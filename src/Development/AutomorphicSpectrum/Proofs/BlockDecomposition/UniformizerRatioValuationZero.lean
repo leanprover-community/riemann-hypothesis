@@ -3,7 +3,9 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.Po
 import GroundTheory.LocalFields.MainTheorem
 import GroundTheory.GlobalFields.LocalFieldAtPlace
 import GroundTheory.LocalFields.LocalFourierHaar
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ValuativeRel
 
 namespace GlobalTheory.CompanionTheory.Uniformiser
@@ -49,3 +51,9 @@ theorem ord_ratio_eq_zero : ∀ (F : Type) [Field F] [NumberField F] (v : Height
   exact mul_right_cancel₀ WithZero.exp_ne_zero (h.trans (one_mul _).symm)
 
 end GlobalTheory.CompanionTheory.Uniformiser
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniformizer_ratio_valuation_zero : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (ϖ ϖ' : 𝓞 F), ϖ ∈ v.asIdeal → ϖ ∉ v.asIdeal ^ 2 → ϖ' ∈ v.asIdeal → ϖ' ∉ v.asIdeal ^ 2 → ∀ U : (v.adicCompletion F)ˣ, (U : v.adicCompletion F) * algebraMap F (v.adicCompletion F) (ϖ : F) = algebraMap F (v.adicCompletion F) (ϖ' : F) → GroundTheory.LocalField.ord (U : v.adicCompletion F) = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Uniformiser.ord_ratio_eq_zero

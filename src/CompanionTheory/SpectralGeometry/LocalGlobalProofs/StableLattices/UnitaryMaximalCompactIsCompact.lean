@@ -1,7 +1,7 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HsConjTranspose
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
 
+section
 open Matrix
 open CompanionTheory.RgExh.Dec CompanionTheory.RgExh.Dec.L ReciprocityTheory.ChartRestriction.DS GlobalTheory.CompanionTheory.PSubFlag GlobalTheory.CompanionTheory.UGeo
 
@@ -86,3 +86,10 @@ theorem isCompact_KG_set : ∀ (n : ℕ) (ε : Fin n → Bool),
   exact isCompact_range hφ
 
 end GlobalTheory.CompanionTheory.UGeo
+end
+
+open Matrix
+open CompanionTheory.RgExh.Dec CompanionTheory.RgExh.Dec.L ReciprocityTheory.ChartRestriction.DS GlobalTheory.CompanionTheory.PSubFlag GlobalTheory.CompanionTheory.UGeo
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_maximal_compact_is_compact : ∀ (n : ℕ) (ε : Fin n → Bool), IsCompact ((S7.KG ε : Subgroup (S7.UJ ε)) : Set (S7.UJ ε)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UGeo.isCompact_KG_set

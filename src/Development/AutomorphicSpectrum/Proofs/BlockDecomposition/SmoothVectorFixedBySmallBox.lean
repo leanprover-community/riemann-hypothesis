@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUnipMir
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.PRep GlobalTheory.BZMir GroundTheory.LocalField Matrix GlobalTheory.CompanionTheory.MirFourier
 open scoped Topology
 
@@ -32,3 +34,9 @@ theorem exists_box_fixed : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologica
   exact ⟨N, fun x hx => by simpa using hN x hx⟩
 
 end GlobalTheory.CompanionTheory.MirFourier
+end
+
+open GlobalTheory.PRep GlobalTheory.BZMir GroundTheory.LocalField Matrix GlobalTheory.CompanionTheory.MirFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_vector_fixed_by_small_box : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (Multiplicative (Fin n → k)) V), IsSmooth ρ → ∀ v : V, ∃ N : ℤ, ∀ x ∈ box k n N, ρ x v = v := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MirFourier.exists_box_fixed

@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ChSumSubCMul
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormSubOnePowThreeLe
 import Development.AbelianVarietyTheory.Definitions.Foundations.MapEvalOfFixCoeff
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ PowerSeries GlobalTheory.KZ.Cmp
@@ -123,3 +124,10 @@ theorem rSum_cg : ∀ (l : ℕ) [Fact l.Prime] (φ : DirichletCharacter (Qbar l)
   exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le h1 h2)
 
 end GlobalTheory.KZ.Cmp.RiemannDirac
+end
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ PowerSeries GlobalTheory.KZ.Cmp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.amiceRiemannSum_congr_dirac_coefficients : ∀ (l : ℕ) [Fact l.Prime] (φ : DirichletCharacter (Qbar l) l) (e : ℕ) (F : PowerSeries (Qbar l)) (a : ℕ → Qbar l) (N r : ℕ) (ξ : Qbar l), 1 ≤ r → l ^ (3 * r) ≤ N → (∀ n, ‖F.coeff n‖ ≤ 1) → (∀ j, ‖a j‖ ≤ 1) → (∀ y : Qbar l, tval F N y = ∑ j ∈ Finset.range N, a j * y ^ j) → IsPrimitiveRoot ξ (l ^ r) → Cg (2 * r) (rSum φ e F r ξ) ((l : Qbar l) ^ r * ∑ j ∈ Finset.range N, a j * (φ (j : ZMod l) * (j : Qbar l) ^ e)) := by
+  atlas_forward_decl GlobalTheory.KZ.Cmp.RiemannDirac.rSum_cg

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.GL3MeanSquares.RationalMatrixPrimeOrderBound
 import Formalism.GL3MeanSquares.HookFormulaTorsion.LengthQuotientBoundGeneral
 
 namespace Formalism.HermitianLattices.RamifiedHeckeModels

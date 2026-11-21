@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.KappaLambdaEmbedding
-import Formalism.ThetaLiftIndependence.FinalThetaLiftAMFKIndep
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.RowsOfLevel
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormGoodRowsFiniteGroupActionStatement

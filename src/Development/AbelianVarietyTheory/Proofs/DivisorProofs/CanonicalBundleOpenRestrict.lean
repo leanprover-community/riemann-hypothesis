@@ -5,6 +5,8 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAffineOpenPreimag
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsEtCoord
 import Development.AbelianVarietyTheory.Definitions.Divisors.SameDiv
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsAffineRefinementSplitExtCharts
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.QCoh GlobalTheory.LogPair
@@ -131,3 +133,12 @@ theorem cls_canonLB_openImmersion : ∀ (R : Type) [CommRing R] (X Y : Scheme.{0
     _ = CechPic.pull e (cls K.bundle K.isLB) := cls_pull K.isLB e hp
 
 end GlobalTheory
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CechPic GlobalTheory.QCoh GlobalTheory.LogPair
+open scoped TensorProduct
+theorem _root_.GlobalTheory.T.canonical_bundle_open_restrict : ∀ (R : Type) [CommRing R] (X Y : Scheme.{0}) (f : X ⟶ Sp R) (e : Y ⟶ X) [IsOpenImmersion e] (d : ℕ) [SmoothOfRelativeDimension d f] [SmoothOfRelativeDimension d (e ≫ f)] (K : CanonLB f d) (K' : CanonLB (e ≫ f) d), cls K'.bundle K'.isLB = CechPic.pull e (cls K.bundle K.isLB) := by
+  atlas_forward_decl _root_.GlobalTheory.cls_canonLB_openImmersion

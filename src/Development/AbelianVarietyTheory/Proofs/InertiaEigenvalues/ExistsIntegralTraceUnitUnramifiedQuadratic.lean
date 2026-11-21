@@ -1,5 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 namespace GlobalTheory.TraceUnit
@@ -175,3 +177,9 @@ theorem exists_trace_unit : ∀ (F E : Type) [NontriviallyNormedField F] [Nontri
   linarith [hfar (v ^ 2 ^ m)]
 
 end GlobalTheory.TraceUnit
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_trace_unit_unramifiedQuadratic : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E], (∀ y : E, algebraMap F E (Algebra.trace F E y) = y + star y) → ∃ u : E, ‖u‖ ≤ 1 ∧ ‖Algebra.trace F E u‖ = 1 := by
+  atlas_forward_decl GlobalTheory.TraceUnit.exists_trace_unit

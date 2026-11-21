@@ -1,10 +1,10 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BinaryMassMeans.MeanVal
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramFiberMeasuresContinuityStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LocalQuadraticDensityNearOne
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LocalQuadraticDensityBoundNonzero
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.RankOneLocalDensityAlmostAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DensityUnitLattice
+
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 
@@ -287,3 +287,10 @@ theorem locMass : PositivityTheory.Rg.Mass.LocMass := by
     exact div_le_div_of_nonneg_right (by norm_num) (by positivity)
 
 end GlobalTheory.CompanionTheory.SW.LocBin
+end
+end
+
+open PositivityTheory.Rg.Mass
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_mass_formula : LocMass := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.LocBin.locMass

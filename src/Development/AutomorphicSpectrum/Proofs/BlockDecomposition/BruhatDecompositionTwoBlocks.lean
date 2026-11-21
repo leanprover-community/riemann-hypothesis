@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import GroundTheory.AutomorphicForms.FiniteBruhat
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin Formalism.IrreducibleCountingLemmas.TYPES GroundTheory.Automorphic
 
 noncomputable section
@@ -99,3 +101,10 @@ theorem bruhatTwo : ReciprocityTheory.Ty.Fin.St.BruhatTwo :=
     fun _ b g => bruhat_parab_uni b g⟩
 
 end GlobalTheory.CompanionTheory.TyFin.Bruhat
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bruhat_decomposition_two_blocks : ReciprocityTheory.Ty.Fin.St.BruhatTwo := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.Bruhat.bruhatTwo

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
 
 namespace GlobalTheory.CompanionTheory.MonicSplit
@@ -38,3 +41,9 @@ theorem monic_splits : ∀ {S : Type} [CommRing S], Aic S → ∀ P : Polynomial
   exact exists_multiset_of_natDegree_eq hS _ P hP rfl
 
 end GlobalTheory.CompanionTheory.MonicSplit
+end
+
+open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absolutely_closed_polynomial_splits : ∀ {S : Type} [CommRing S] , Aic S → ∀ P : Polynomial S, P.Monic → ∃ s : Multiset S, P = (s.map fun b => Polynomial.X - Polynomial.C b).prod := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MonicSplit.monic_splits

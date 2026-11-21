@@ -5,16 +5,15 @@ import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.BaseChangeIndex
 import GroundTheory.HeightsAndTheta.Heights.FactorialBounds.Assembly
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsThetaSectionsBoundedStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IteratedDerivBoundGaussianGrowthStatement
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.IntegralFlagEmbeddingCriterionStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PolarizedDataFieldExtensionStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsThetaSectionsBounded
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IteratedDerivBoundGaussianGrowth
+import Development.AutomorphicSpectrum.Proofs.AdelicProofs.IntegralFlagEmbeddingCriterion
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionSupNormFieldExtensionStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ThetaFunctionArchimedeanFrameStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsIntegralJetBasisStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaDerivativeBoundStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsThetaSupBoundLogMeanStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ThetaMultiplierQuadraticCharacterStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsIntegralJetBasis
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaDerivativeBound
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsThetaSupBoundLogMean
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights TensorProduct
@@ -373,3 +372,13 @@ theorem line_of_key : KeyDegSt → LineSt := by
     _ ≤ _ := mul_le_mul_of_nonneg_right (le_max_left _ _) hlogY0
 
 end GlobalTheory.CompanionTheory.Ar.Sl.LineProof
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+open GroundTheory.Heights₂.Heights TensorProduct
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.line_of_key_degree : KeyDegSt → LineSt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Sl.LineProof.line_of_key

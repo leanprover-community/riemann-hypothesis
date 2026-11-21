@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedGLMassFormula
+
+section
 open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical
@@ -43,3 +45,15 @@ theorem twCent_ratF_comm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   rw [Units.val_mul, Units.val_mul, hp, hq, ← map_mul, ← map_mul, mul_comm]
 
 end GlobalTheory.CompanionTheory.RatCentComm
+end
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter
+open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twCent_comm_of_charpoly_separable : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (δ : GL (Fin n) E),
+  (δ * thE E n δ).val.charpoly.Separable →
+  ∀ a ∈ twCent (thF E n) (ratF E n δ), ∀ b ∈ twCent (thF E n) (ratF E n δ), a * b = b * a := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RatCentComm.twCent_ratF_comm

@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsOrthFull
 import Development.WeilBound.CoreStatements.AmpleLineBundles.SpanLeOfMem
+import BuildAid.ForwardExisting
+
+section
 open GroundTheory.Heights₂.Heights NumberField TensorProduct ComplexAt GlobalTheory.CompanionTheory.Ar Matrix
 open scoped BigOperators ComplexOrder
 
@@ -151,3 +153,10 @@ theorem normDegree_rank_iSup : ∀ (K : Type) [Field K] [NumberField K] (E : Her
   rw [hd, Finset.sum_div]
 
 end GlobalTheory.CompanionTheory.Ar.OrthSum
+end
+
+open GroundTheory.Heights₂.Heights NumberField TensorProduct ComplexAt GlobalTheory.CompanionTheory.Ar Matrix
+open scoped BigOperators ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalized_degree_orthogonal_sum : ∀ (K : Type) [Field K] [NumberField K] (E : HermitianBundle.{0} K) (I : Type) [Fintype I] (F : I → Submodule (𝓞 K) E.carrier), (∀ a b, a ≠ b → OrthAt E (F a) (F b)) → E.normDegree (⨆ a, F a) = ∑ a, E.normDegree (F a) ∧ E.rank (⨆ a, F a) = ∑ a, E.rank (F a) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.OrthSum.normDegree_rank_iSup

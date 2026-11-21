@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.TangentEqLcZero
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -81,3 +81,10 @@ theorem log_sum_additive_preserves_integrality : AddSt := by
       · exact cc_expPt G hw'.1 b
 
 end GlobalTheory.IsoTriv
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.logarithm_sum_integral_additive : AddSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.log_sum_additive_preserves_integrality

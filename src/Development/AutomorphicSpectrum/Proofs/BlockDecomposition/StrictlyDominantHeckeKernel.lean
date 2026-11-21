@@ -1,10 +1,9 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.StrictDominanceCasselman.IsStrictlyDominant
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsDominantOneAndMul
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetFixedFirstConditionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StrictlyDominantContractsUnipotentStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedVectorZeroOfDualStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetFixedFirstCondition
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StrictlyDominantContractsUnipotent
 
+section
 open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel PositivityTheory.Lbc
 
 namespace GlobalTheory.CompanionTheory.Lbc
@@ -78,3 +77,9 @@ theorem heckeOp_nilpotent_on_ker :
   exact Subtype.ext h0
 
 end GlobalTheory.CompanionTheory.Lbc
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel PositivityTheory.Lbc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.strictly_dominant_hecke_kernel : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (N h : ℕ) (d : Fin h → ℕ) (hd : ∑ a, d a = N) (J : Subgroup (GL (Fin N) k)), IsOpen (J : Set (GL (Fin N) k)) → IsCompact (J : Set (GL (Fin N) k)) → HasIwahoriFact k N J d hd → (∀ a, 0 < d a) → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), IsSmooth π → ∀ t : Levi k (Bl d), IsStrictlyDominant k N J d hd t → ∀ T : Module.End ℂ (fixed π J), IsHeckeOp π J (leviEmb k (stdBlocks d hd) t) T → ∀ v : fixed π J, (Submodule.Quotient.mk (v : V) : Jacquet π (unipRad k (stdBlocks d hd))) = 0 → ∃ r : ℕ, (T ^ r) v = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Lbc.heckeOp_nilpotent_on_ker

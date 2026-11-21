@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG GlobalTheory.SatakeWeyl
 
 namespace GlobalTheory.SatakeWeyl.TorusConjProof
@@ -62,3 +63,9 @@ theorem torusConj : GlobalTheory.SatakeWeyl.TorusConj := by
     rw [h0, mul_zero, mul_zero]
 
 end GlobalTheory.SatakeWeyl.TorusConjProof
+end
+
+open Formalism.UG GlobalTheory.SatakeWeyl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_levi_centre_diagonal_conjugation_eq : GlobalTheory.SatakeWeyl.TorusConj := by
+  atlas_forward_decl GlobalTheory.SatakeWeyl.TorusConjProof.torusConj

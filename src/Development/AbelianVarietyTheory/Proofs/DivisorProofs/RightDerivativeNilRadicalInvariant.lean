@@ -1,6 +1,6 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemNilRad
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NilradicalAdjointExpStableStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NilradicalAdjointExpStable
+
 open Matrix GlobalTheory.TorFin
 open scoped ContDiff
 

@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Complex
@@ -102,3 +104,8 @@ theorem main : Ad3.R.RealPlaceGammaFactors := by
 end GlobalTheory.CompanionTheory.RankinSelberg.RealGamma
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_gamma_bound : Ad3.R.RealPlaceGammaFactors := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelberg.RealGamma.main

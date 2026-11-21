@@ -1,9 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.LatCDefs
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegerMemLatticeSubBoundStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegerMemLatticeSubBound
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsFinsetGenerators
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PadicIntMemSub
 
+section
 open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
 
 namespace GlobalTheory.CompanionTheory.LatCOK
@@ -32,3 +32,9 @@ theorem exists_uniform_mem_sub : ∀ (l : ℕ) [Fact l.Prime]
     (hc i _ k (Nat.mul_le_mul_left 2 (Finset.le_sup hi)))
 
 end GlobalTheory.CompanionTheory.LatCOK
+end
+
+open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_lattice_bound_integers : ∀ (l : ℕ) [Fact l.Prime] (K : IntermediateField ℚ_[l] (PadicAlgCl l)) [FiniteDimensional ℚ_[l] K], ∃ M : ℕ, ∀ (k : ℕ) (a : OK l K), Lat.pk l k (Lat.kP l K a) ∈ Lat.sub (Lat.fk l k) (xi0 l) l M := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LatCOK.exists_uniform_mem_sub

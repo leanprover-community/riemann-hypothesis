@@ -1,10 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.LtChar
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfInAMul
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsKerPowDvd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LubinTatePeriodFiltrationExactStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LubinTatePeriodFiltrationExact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodRingEmbeddingPropertiesStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLubinTatePeriodElementStatement
+
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.PZ GlobalTheory.PMC GlobalTheory.AinfK GlobalTheory.AcrisK
 
 theorem GlobalTheory.LTDegOne.main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), Nonempty (LocTied l P AI) →

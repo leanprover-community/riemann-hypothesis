@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.AdelicScalarSectionLift
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TwistedLevelValues
 import Development.AbelianVarietyTheory.Counterexamples.RotationExamples.LevelVectorSizeBounds
 import Formalism.LocalToGlobal.IndefiniteReal.FWExist
 

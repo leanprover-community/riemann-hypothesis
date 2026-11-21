@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
 
+section
 open GlobalTheory.CompanionTheory.EGlue
 
 namespace GlobalTheory.CompanionTheory.EGlue
@@ -34,3 +35,9 @@ theorem pairEmb_of_steps : PairSlices → PairStep₁ → PairStep₂ → PairEm
   exact ⟨fun i => ap₂ e₂ (ap₁ e₁ (G i)), n₂, p₂, t₂, fun h c hc => c₂ h c (c₁ h c hc)⟩
 
 end GlobalTheory.CompanionTheory.EGlue
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pair_embedding : GlobalTheory.CompanionTheory.EGlue.PairSlices → GlobalTheory.CompanionTheory.EGlue.PairStep₁ → GlobalTheory.CompanionTheory.EGlue.PairStep₂ → GlobalTheory.CompanionTheory.EGlue.PairEmb := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.pairEmb_of_steps

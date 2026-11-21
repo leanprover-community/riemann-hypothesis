@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped InnerProductSpace
 
 namespace GlobalTheory.CompanionTheory.Glob
@@ -48,3 +50,9 @@ theorem finiteDimensional_of_compact_coercive :
   exact Submodule.finiteDimensional_of_le S.le_topologicalClosure
 
 end GlobalTheory.CompanionTheory.Glob
+end
+
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_of_isCompactOperator_coercive : ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (A : H →L[ℂ] H), IsCompactOperator A → ∀ (S : Submodule ℂ H) (c : ℝ), 0 < c → (∀ u ∈ S, c * ‖u‖ ^ 2 ≤ (⟪u, A u⟫_ℂ).re) → FiniteDimensional ℂ S := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Glob.finiteDimensional_of_compact_coercive

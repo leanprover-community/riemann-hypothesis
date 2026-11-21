@@ -2,7 +2,8 @@ import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifDefs
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsValLineLogNormAtIffEmbedding
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicFamilyConjugateStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicFamilyConjugate
 
 noncomputable section
 

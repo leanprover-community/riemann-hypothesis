@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ZeroNotAdmissibleOfRankPos
 
 set_option autoImplicit false

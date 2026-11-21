@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.EffCartierIffForallCartAt
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
 
@@ -20,3 +22,10 @@ theorem cartAt_of_notMem_support {X : Scheme.{0}} (J : X.IdealSheafData) (x : X)
     (X.toRingedSpace.isUnit_res_basicOpen f)
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+end
+
+open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cartier_at_of_not_mem_support : ∀ {X : Scheme.{0}} (J : X.IdealSheafData) (x : X), x ∉ J.support → CartAt J x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver.cartAt_of_notMem_support

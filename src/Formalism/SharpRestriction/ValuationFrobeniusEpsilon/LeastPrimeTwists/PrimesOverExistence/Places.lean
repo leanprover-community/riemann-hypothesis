@@ -1,4 +1,3 @@
-import Formalism.ConjugateSelfDual.Statement
 import Formalism.ConjugateSelfDual.StatementRest
 
 noncomputable section

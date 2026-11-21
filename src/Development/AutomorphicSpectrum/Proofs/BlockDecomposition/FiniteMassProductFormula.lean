@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
 
+section
 noncomputable section
 
 open GlobalTheory.BCT
@@ -120,3 +121,8 @@ theorem massProd : PositivityTheory.Rg.BcB.G8.Fin.MassProd := by
 end GlobalTheory.CompanionTheory.MassProd
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_mass_product_formula : PositivityTheory.Rg.BcB.G8.Fin.MassProd := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MassProd.massProd

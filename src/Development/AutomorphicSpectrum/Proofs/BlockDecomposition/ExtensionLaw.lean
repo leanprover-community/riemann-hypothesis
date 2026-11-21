@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.ConvGrOf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionLawHolds
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open PositivityTheory.RgEis
@@ -63,3 +65,9 @@ theorem extLaw : ExtLaw := by
       exact (hfc.preimage_isClosed_of_isClosed hP hC).mul_right_of_isCompact hK
 
 end GlobalTheory.CompanionTheory.RgEisExt
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.extension_law : PositivityTheory.RgEis.ExtLaw := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisExt.extLaw

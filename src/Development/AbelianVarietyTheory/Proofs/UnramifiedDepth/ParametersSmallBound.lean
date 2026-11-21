@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.DropLevelBounds.Statement
+import BuildAid.ForwardExisting
+
+section
 open Formalism.UnitaryBoundIntegral Formalism.IncomingBounds
 
 namespace GlobalTheory.FlowParameters
@@ -104,3 +107,9 @@ theorem sizeDataSmall : ParametersSmall := by
   linarith
 
 end GlobalTheory.FlowParameters
+end
+
+open Formalism.UnitaryBoundIntegral
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sizeData_small_bound : ParametersSmall := by
+  atlas_forward_decl GlobalTheory.FlowParameters.sizeDataSmall

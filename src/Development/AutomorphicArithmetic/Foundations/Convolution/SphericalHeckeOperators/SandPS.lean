@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.SymSum
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.DcoShape
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.EigBasis
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.VandSum
@@ -6,7 +5,6 @@ import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeO
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.HlEval
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.GapDom
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.PsDimDecomp
-import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.IntegralConv
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.ThPMul
 
 open MeasureTheory GroundTheory.Automorphic GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.GLnLocal GroundTheory.Automorphic.Iwasawa UpperTheory.ConvolutionTheory.H

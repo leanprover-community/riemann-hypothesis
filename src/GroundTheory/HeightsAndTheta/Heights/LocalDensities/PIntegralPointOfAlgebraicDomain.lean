@@ -1,8 +1,6 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.LocalDensities.StatementsIntegralPointAlgebraic
 import GroundTheory.HeightsAndTheta.Heights.LocalDensities.NormLeOneIffIsIntegralElemOfEquiv
-import GroundTheory.GlobalFields.LocalFieldAtPlace
-import GroundTheory.GlobalFields.CompletionAtPlace
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 set_option maxSynthPendingDepth 1
 

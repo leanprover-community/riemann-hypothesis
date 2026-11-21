@@ -2,15 +2,16 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.AllTorsMap
 import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFrame
 import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.ExistsUniquePairIff
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TorsionDescentFiniteEtaleCoverStatement
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TorsionDescentFiniteEtaleCover
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsTorsionToG
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.HomExtOfIsFinite
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAdicColimitOfIsFiniteNoetherian
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinitePartImageGenericStatement
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.GenericPartImagePullbackStatement
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TorsionRepresentableFiniteEtaleStatement
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TorsionRepresentableFiniteEtale
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsPtsEquiv
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LinearUniformisationTorsionIsomorphism
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
@@ -159,3 +160,14 @@ theorem exists_repMap : AllFlat fun {E} _ _ _ {H} {R} _ _ _ {t} P {W} ψW k => �
   rwa [← hv', Over.comp_left, ← Category.assoc, e₁] at this
 
 end GlobalTheory.TorsRepMap
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+open GlobalTheory.FlatTors GlobalTheory.IndefiniteRowSideFullHecke.FlatIsoUnitGenerator
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_torsion_hom_image : AllFlat fun {E} _ _ _ {H} {R} _ _ _ {t} P {W} ψW k => ∀ y N p₀, PairRep ψW k y N p₀ → ∃ v : overW W N ⟶ t.G, v ^ k = 1 ∧ ∀ (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing R) F] (x : Sp F ⟶ N.left), OverGen F (overW W N) x → ∀ q : QkPt P.D.toPre F k, QkPtW.IsPullF F x p₀ q → IsImage P F k q (x ≫ v.left) := by
+  atlas_forward_decl GlobalTheory.TorsRepMap.exists_repMap

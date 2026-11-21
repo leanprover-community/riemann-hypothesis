@@ -1,8 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.IsJointGenEig
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantCosetRepsUnipotentStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorCosetFormulaStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantCosetRepsUnipotent
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorCosetFormula
 
+section
 noncomputable section
 
 open GlobalTheory.PRep PositivityTheory.SphericalProduct
@@ -31,3 +31,9 @@ theorem hecke_dominant_mul_abstract (G : Type) [Group G] [TopologicalSpace G] [I
 end GlobalTheory.CompanionTheory.Casselman
 
 end
+end
+
+open GlobalTheory.PRep PositivityTheory.SphericalProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.casselman_first_property : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G], PositivityTheory.SphericalProduct.A1 G := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Casselman.hecke_dominant_mul_abstract

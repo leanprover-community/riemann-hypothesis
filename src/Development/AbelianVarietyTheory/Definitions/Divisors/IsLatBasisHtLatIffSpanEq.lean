@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.FlatImageOf
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsPointGaussian
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsLimDeg
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAdicCompleteDualNumber
 
 set_option autoImplicit false

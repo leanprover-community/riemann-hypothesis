@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmulMemOfIsIntegral
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisAutMemAdelicCompletionIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.LieDisc
@@ -58,3 +60,10 @@ example : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : 
   exists_endLat_trace_eq_one
 
 end GlobalTheory.LieDisc
+end
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_end_lattice_trace_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)), 1 ≤ r → SelfDualLat G Λ → ∃ Z ∈ endLat Λ, Z.trace = 1 := by
+  atlas_forward_decl GlobalTheory.LieDisc.exists_endLat_trace_eq_one

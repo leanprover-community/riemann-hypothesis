@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Degenerations.NotAllMatchRankZero
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TwistTermsStatement
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Ex

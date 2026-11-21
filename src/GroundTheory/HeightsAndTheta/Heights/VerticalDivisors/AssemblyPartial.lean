@@ -6,7 +6,6 @@ import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PPrimitiveUnit
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PGaussEq
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PParAlgIndep
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSecBLinInj
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PNormFormEval
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChowSecDegree
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PNormIdentity
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.POrdEq

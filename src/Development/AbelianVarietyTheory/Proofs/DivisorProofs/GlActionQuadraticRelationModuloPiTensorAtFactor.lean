@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.ActAtApply
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct
 open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift GlobalTheory.HoweR
 
@@ -61,3 +64,10 @@ theorem GlobalTheory.HoweR.quadMod_actAt : ∀ (T : Type) [Fintype T] [Decidable
     exact mem_of_atPl C w _ (fun x => (h i j x Submodule.mem_top).1) v
   · rw [hn, qop_atPl]
     exact mem_of_atPl C w _ (fun x => (h i j x Submodule.mem_top).2) v
+end
+
+open scoped TensorProduct
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift GlobalTheory.HoweR
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.glActionQuadraticRelationModulo_piTensorAtFactor : ∀ (T : Type) [Fintype T] [DecidableEq T] (V : T → Type) [∀ w, AddCommGroup (V w)] [∀ w, Module ℂ (V w)], ∀ (C : ∀ w, Submodule ℂ (V w)) (w : T) (p q : ℕ) (a : Mat p q →ₗ[ℂ] Module.End ℂ (V w)) (α β α' β' : ℂ), QuadMod a α β α' β' (C w) ⊤ → QuadMod (actAt w a) α β α' β' (tensAny C) ⊤ := by
+  atlas_forward_decl GlobalTheory.HoweR.quadMod_actAt

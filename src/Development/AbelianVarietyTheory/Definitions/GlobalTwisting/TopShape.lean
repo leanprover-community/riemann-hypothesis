@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.CharacterBoxes.ExS
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DRS
 import Formalism.LocalToGlobal.TieTwRecOf
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.JoinSISel

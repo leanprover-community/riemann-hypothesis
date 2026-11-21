@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsSmoothFreeAway
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct
 
 namespace GlobalTheory
@@ -44,3 +47,9 @@ theorem exists_smooth_subalgebra_of_finset : ∀ (F K : Type) [Field F] [CharZer
     rfl
   · exact Algebra.Smooth.of_equiv (AlgEquiv.ofInjective g hginj)
 end GlobalTheory
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_smooth_subalgebra_containing_finset_charZero : ∀ (F K : Type) [Field F] [CharZero F] [Field K] [Algebra F K] (s : Finset K), ∃ R : Subalgebra F K, (↑s : Set K) ⊆ (R : Set K) ∧ Algebra.Smooth F R := by
+  atlas_forward_decl GlobalTheory.exists_smooth_subalgebra_of_finset

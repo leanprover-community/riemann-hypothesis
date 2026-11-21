@@ -3,8 +3,8 @@ import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.OneMemN
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DiscreteBranchingUpq
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowestKTypeDecayGapOfCompressionFormulaGap
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowestKTypeCompressionFormulaOfStrictLowestKType
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormPosOfIsUnit
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Ell
@@ -171,3 +171,11 @@ theorem decPow : DecPow := by
 end GlobalTheory.SepReal
 
 end
+end
+
+open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Ell
+open scoped InnerProductSpace
+open GlobalTheory.SepReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lowest_Ktype_coefficient_explicit_power_decay : DecPow := by
+  atlas_forward_decl GlobalTheory.SepReal.decPow

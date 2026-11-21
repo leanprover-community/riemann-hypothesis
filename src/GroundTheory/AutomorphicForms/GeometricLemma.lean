@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.GeometricLemmaUnnormalized
 import GroundTheory.AutomorphicForms.GeometricLemmaNormal
 set_option maxSynthPendingDepth 1
 

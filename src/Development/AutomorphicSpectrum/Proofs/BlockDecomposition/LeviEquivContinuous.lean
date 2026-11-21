@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.GeometricLemmaFiltration
 import GroundTheory.AutomorphicForms.GeometricLemma
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 open GlobalTheory.SmGL
 open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical leviPar normLeviParSqrtModular)
@@ -76,3 +79,14 @@ theorem levi_iso_homeo (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k
         ((Units.continuous_coe_inv (M := Matrix (Fin N) (Fin N) k)).comp continuous_subtype_val))
 
 end GlobalTheory.CompanionTheory.LeviCont
+end
+
+set_option maxSynthPendingDepth 1
+open GlobalTheory.SmGL
+open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical leviPar normLeviParSqrtModular)
+open GroundTheory.Automorphic.Iwasawa (blockUpper)
+open GroundTheory.Automorphic (permGL indRep)
+open DoubleCoset (doubleCoset)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_equiv_continuous : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {α : Type} [Fintype α] {N : ℕ} {m : α → Type} [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)] (e : (Σ i, m i) ≃ Fin N) (β : Fin N → ℕ) (φ : Levi k m ≃* levi k N β), (∀ g, ((φ g : levi k N β) : GL (Fin N) k) = leviEmb k e g) → Continuous φ ∧ Continuous φ.symm := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LeviCont.levi_iso_homeo

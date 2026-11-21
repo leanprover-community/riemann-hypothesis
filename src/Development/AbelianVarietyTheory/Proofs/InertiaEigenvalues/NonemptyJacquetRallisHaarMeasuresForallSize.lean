@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -88,3 +90,10 @@ theorem meas_nonempty : ∀ (F E : Type) [NontriviallyNormedField F] [Nontrivial
            volF := Measure.addHaarMeasure_self, volE := Measure.addHaarMeasure_self }⟩
 
 end GlobalTheory.JR.HaarExist
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonempty_jacquetRallisHaarMeasures_forall_size : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (r : ℕ), Nonempty (Meas r F E) := by
+  atlas_forward_decl GlobalTheory.JR.HaarExist.meas_nonempty

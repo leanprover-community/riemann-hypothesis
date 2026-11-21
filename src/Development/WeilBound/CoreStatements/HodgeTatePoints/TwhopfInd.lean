@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
 open GlobalTheory.CompanionTheory.Ar.BT TensorProduct
 

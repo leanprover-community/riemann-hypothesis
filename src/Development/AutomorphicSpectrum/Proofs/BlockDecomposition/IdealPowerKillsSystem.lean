@@ -2,9 +2,9 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PowIdeal
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoherentSubobjectCoherent
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExactAndSurjectiveAppOfExactOfEpi
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.QcohLocal
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.QcqsPushforward
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -165,3 +165,10 @@ theorem exists_uniform_pow_kills : ∀ {X : Scheme.{0}} [IsLocallyNoetherian X] 
   exact mem_killIdeal.1 (hk ha') n _ ⟨_, rfl⟩
 
 end GlobalTheory.CompanionTheory.GE.Globalize
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ideal_power_kills_system : ∀ {X : Scheme.{0}} [IsLocallyNoetherian X] [CompactSpace X] {E : X.Modules}, IsCoherent E → ∀ (D : Subobject E), (D : X.Modules).IsQuasicoherent → ∀ (S : ℕ → Subobject E), (∀ n, (S n : X.Modules).IsQuasicoherent) → ∀ J₀ : X.IdealSheafData, (∀ (V : X.affineOpens) (f : Γ(X, V)), f ∈ J₀.ideal V → ∀ x ∈ secs D V, ∃ k : ℕ, ∀ n, f ^ k • x ∈ secs (S n) V) → ∃ m : ℕ, ∀ (n : ℕ) (U : X.affineOpens) (a : Γ(X, U)), a ∈ (powIdeal J₀ m).ideal U → ∀ x ∈ secs D U, a • x ∈ secs (S n) U := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.Globalize.exists_uniform_pow_kills

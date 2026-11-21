@@ -1,7 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
 import GroundTheory.AutomorphicForms.HermitianBinaryValues
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -145,3 +147,14 @@ theorem exists_qn_eq_one_two_mul_re {F : Type} [Field F] [NumberField F] (d β t
   exact exists_qn_of_quadraticAlgebra two_ne_zero hβd hxy
 
 end GlobalTheory.CompanionTheory.PlaneSA.GlobalTrace
+end
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
+open scoped TensorProduct Quaternion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasse_principle_norm_trace : ∀ {F : Type} [Field F] [NumberField F] (d β t : F), (∀ x : Q d β F, qn x = 0 → x = 0) →
+  (∀ u : Pl F, (∀ x : Q d β (Kp u), qn x = 0 → x = 0) →
+    ∀ r : Kp u, r ^ 2 ≠ algebraMap F (Kp u) (t ^ 2 - 4)) →
+  ∃ x : Q d β F, qn x = 1 ∧ 2 * x.re = t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PlaneSA.GlobalTrace.exists_qn_eq_one_two_mul_re

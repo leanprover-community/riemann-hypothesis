@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.HermitianCurvature.StatementU
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCost.UnitarySumCostOfParts
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCost.ContinuousBlockDiagEmbedRingHom
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCost.Letters

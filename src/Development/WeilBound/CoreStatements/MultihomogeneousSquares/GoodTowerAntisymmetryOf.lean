@@ -1,7 +1,7 @@
 import Development.WeilBound.CoreStatements.MultihomogeneousSquares.ChooseTwoAdd
 import Development.WeilBound.CoreStatements.MultihomogeneousSquares.SqOf
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AntisymmetryStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AgreementPositiveStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.Antisymmetry
 
 noncomputable section
 

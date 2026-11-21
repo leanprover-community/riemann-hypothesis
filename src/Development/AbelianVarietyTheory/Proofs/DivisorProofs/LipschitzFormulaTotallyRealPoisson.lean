@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TraceDualDifferent
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RembApply
 import Formalism.LatticeTheta.ThetaShiftInversion
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiscreteTopologyFractionalIdealRealLatticeImageStatement
@@ -9,7 +8,9 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualLatticeImageEqL
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FourierLipschitzOneVariableKernelEqStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousIsBigORpowLipschitzProductKernelStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SummableLipschitzLatticeNormPowSummandStatement
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 open NumberField nonZeroDivisors MeasureTheory
 open scoped FourierTransform RealInnerProductSpace
@@ -189,3 +190,9 @@ theorem lipschitz : Lipschitz := by
   field_simp
 
 end GlobalTheory.LipschitzTR
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lipschitz_formula_totally_real_poisson : GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent.Lipschitz := by
+  atlas_forward_decl GlobalTheory.LipschitzTR.lipschitz

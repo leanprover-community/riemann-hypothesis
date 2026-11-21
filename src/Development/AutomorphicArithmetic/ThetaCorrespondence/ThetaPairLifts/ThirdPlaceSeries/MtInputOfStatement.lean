@@ -1,11 +1,6 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CentralFrameSplitNontrivialAtStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ThetaDataExists
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NormChoiceOfExtension
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NGalTied
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RingSpecNormalisedCharacterEq
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.MtInputOf
-import Development.AutomorphicArithmetic.Foundations.LocalLanglands.IsRecTOfIsRec
 
 set_option synthInstance.maxHeartbeats 200000
 
@@ -32,5 +27,5 @@ theorem _root_.GlobalTheory.T.central_frame_split_nontrivial_at_alt : ∀ hL : _
         (i.val < (w.st Z).toD7.R.r → i = j → (b * Matrix.GeneralLinearGroup.map φ y * b⁻¹).val i j = 1)) →
         ∃ c : ℂ, ∀ g, f (g * κ) = c * f g) ∧
       (Matrix.GeneralLinearGroup.map φ y = 1 → ∀ g, f (g * κ) = f g)) := by
-  first | exact @_root_.GlobalTheory.FrameTypes.main_alt_alt | exact _root_.GlobalTheory.FrameTypes.main_alt_alt | (intros; apply _root_.GlobalTheory.FrameTypes.main_alt_alt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.FrameTypes.main_alt_alt
 end

@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.LogDetSt
+import BuildAid.ForwardExisting
 
+section
 open Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants
 
 namespace GlobalTheory.MinorJet
@@ -192,3 +194,9 @@ theorem deriv_leadMinor_exp : ∀ (n : ℕ) (Y : Matrix (Fin n) (Fin n) ℂ), Y.
     rw [h3.deriv, hv, trace_block Y hY l hl, Complex.ofReal_re]
 
 end GlobalTheory.MinorJet
+end
+
+open Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.deriv_leadMinor_exp_hermitian_zeroDiag : ∀ (n : ℕ) (Y : Matrix (Fin n) (Fin n) ℂ), Y.IsHermitian → (∀ a, Y a a = 0) → ∀ (l : ℕ) (hl : l ≤ n), deriv (fun t : ℝ => (leadMinor (NormedSpace.exp ((t : ℂ) • Y)) l hl).re) 0 = 0 ∧ deriv (deriv (fun t : ℝ => (leadMinor (NormedSpace.exp ((t : ℂ) • Y)) l hl).re)) 0 = ∑ a : Fin n, ∑ b : Fin n, if l ≤ a.val ∧ b.val < l then ‖Y a b‖ ^ 2 else 0 := by
+  atlas_forward_decl GlobalTheory.MinorJet.deriv_leadMinor_exp

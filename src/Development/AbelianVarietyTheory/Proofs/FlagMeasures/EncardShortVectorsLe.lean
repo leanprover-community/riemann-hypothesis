@@ -1,9 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
 import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
 import Formalism.HermitianLattices.FinalNeighbourConstruct
 import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
+import BuildAid.ForwardExisting
 
+section
 open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
 open scoped ENNReal Classical
 
@@ -209,3 +210,10 @@ theorem encard_shortVectors_le : ∀ (K V : Type) [Field K] [NumberField K] [Sta
         ENNReal.ofReal_le_ofReal (hcount.trans hpow)
 
 end GlobalTheory.Mass
+end
+
+open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
+open scoped ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.encard_shortVectors_le' : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K), IsCMUnram K → h.IsSymm → PD h → ∀ L : Submodule (𝓞 K) V, IsIntLat h L → ∀ B : ℝ, 0 ≤ B → (({x : V | x ∈ L ∧ ∀ τ : K →+* ℂ, (τ (h x x)).re ≤ B}.encard : ℕ∞) : ℝ≥0∞) ≤ ENNReal.ofReal ((1 + 2 * Real.sqrt B) ^ (2 * Module.finrank K V * fDeg K)) := by
+  atlas_forward_decl GlobalTheory.Mass.encard_shortVectors_le

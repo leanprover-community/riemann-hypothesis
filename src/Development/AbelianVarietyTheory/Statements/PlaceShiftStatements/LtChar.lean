@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LtSeries
 import Development.AbelianVarietyTheory.Statements.WeilDeligneCrystalline.ColmezLT
 
 noncomputable section

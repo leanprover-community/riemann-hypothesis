@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.IncomingBounds.IncomingBound
 import Formalism.IncomingBounds.FlowDegreeBounds.LemmaFd
 import Development.AutomorphicArithmetic.OrbitLabellings.ExistsMaxFlowAttainedAndIsOptDual
 

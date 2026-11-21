@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.NormSqColGrLineOfOrthogonal
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Matrix
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FlagZ GlobalTheory.FlagPoly Formalism.DegreeFormula
 open GlobalTheory.ProjSpace
@@ -139,3 +140,10 @@ theorem isImmersion_plPt_cellGL : ∀ (ι κ : Type) [Fintype ι] [Finite κ] (N
   exact mul_mem (intCast_mem _ _) (mul_mem ⟨_, rfl⟩ (intCast_mem _ _))
 
 end GlobalTheory.FlagZ
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Matrix
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FlagZ GlobalTheory.FlagPoly Formalism.DegreeFormula
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schubert_cell_point_immersion : ∀ (ι κ : Type) [Fintype ι] [Finite κ] (N : ℕ) (a : κ → ι) (l : κ → Fin (N + 1)) (w : ι → Equiv.Perm (Fin N)), IsImmersion (plPt a l (cellGL a l w)) := by
+  atlas_forward_decl GlobalTheory.FlagZ.isImmersion_plPt_cellGL

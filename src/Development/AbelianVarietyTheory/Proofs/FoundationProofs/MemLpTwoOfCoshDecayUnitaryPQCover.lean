@@ -1,11 +1,12 @@
 import Mathlib
-import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.HeckeCharacterParameters
 import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.CartanCoshPower
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SameBlockOfPosC
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsMinf
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
 open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod pOf)
 open GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower Matrix
@@ -72,3 +73,11 @@ theorem memLp_two_of_decay : GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshP
   exact pow_le_pow_left₀ (norm_nonneg _) h4 2
 
 end GlobalTheory.CoshSqInt
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.memLp_two_of_cosh_decay_unitaryPQCover : GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower.CoshIntegral → ∀ (p q n : ℕ), p + q < n → ∀ (T : GrpData p q) (f : T.G → ℂ) (C : ℝ), Continuous f → (∀ k ∈ T.Kset, ∀ X ∈ pR p q, ‖f (k * T.expt X)‖ ≤ C * decay n X) → MemLp f 2 T.haar := by
+  atlas_forward_decl GlobalTheory.CoshSqInt.memLp_two_of_decay

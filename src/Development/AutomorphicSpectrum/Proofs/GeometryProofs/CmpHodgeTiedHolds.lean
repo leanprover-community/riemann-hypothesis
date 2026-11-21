@@ -1,12 +1,12 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Statements.GeometryStatements.HodgeComparisonCompatibility
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentTwistAutomorphismStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelTwistedComparisonStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentTwistFrameCompatStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentTwistEigenCompatStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelTwistedComparison
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentTwistFrameCompat
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentTwistEigenCompat
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentTwistLatticeCompatStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeIsoCompatStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeIsoCompat
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.CmpTied
@@ -48,3 +48,9 @@ theorem cmpHodgeTied : HodgeComparisonCompatibility := by
   · exact (Category.assoc _ _ _).trans ((congrArg (fun f => w.left ≫ f) key).trans (Category.assoc _ _ _).symm)
 
 end GlobalTheory.CompanionTheory.Ar.CmpTied
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.CmpHodgeTied_holds : GlobalTheory.CompanionTheory.Ar.HodgeComparisonCompatibility := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.CmpTied.cmpHodgeTied

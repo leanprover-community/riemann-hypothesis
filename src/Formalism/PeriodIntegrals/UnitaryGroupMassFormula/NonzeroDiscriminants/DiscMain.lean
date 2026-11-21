@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.DiscrNe
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NonzeroDiscriminants.DiscLat
 
 open ModularForm EisensteinSeries UpperHalfPlane

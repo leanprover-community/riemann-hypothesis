@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.ConvGrOf
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open PositivityTheory.RgEis
@@ -106,3 +108,9 @@ theorem parLaw : BdetLaw → ExtLaw → GrpTop → ParLaw := by
     exact ((ext_gl hB hE hT A hA (ι ⊕ ι) (Sum.inl '' s)).2 p.1 hp k.1 hk).symm
 
 end GlobalTheory.CompanionTheory.RgEisPar
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.parabolic_law_of_block_det : PositivityTheory.RgEis.BdetLaw → PositivityTheory.RgEis.ExtLaw → PositivityTheory.RgEis.GrpTop → PositivityTheory.RgEis.ParLaw := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisPar.parLaw

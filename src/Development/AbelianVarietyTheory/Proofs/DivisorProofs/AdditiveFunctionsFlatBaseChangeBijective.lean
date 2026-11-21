@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigOfOmegaInjectiveOfEqZero
+import BuildAid.ForwardExisting
+
+section
 open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
 namespace GlobalTheory.PDiv
@@ -55,3 +58,9 @@ theorem liftSemi_prim_baseChange_bijective {R A : Type} (R' : Type) [CommRing R]
     exact ⟨y, Subtype.ext ((hsub y).trans hy)⟩
 
 end GlobalTheory.PDiv
+end
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additiveFunctions_flatBaseChange_bijective : ∀ {R A : Type} (R' : Type) [CommRing R] [CommRing A] [Bialgebra R A] [CommRing R'] [Algebra R R'] [Module.Flat R R'], Function.Bijective (liftSemi (toBaseChange R R' A).prim) := by
+  atlas_forward_decl GlobalTheory.PDiv.liftSemi_prim_baseChange_bijective

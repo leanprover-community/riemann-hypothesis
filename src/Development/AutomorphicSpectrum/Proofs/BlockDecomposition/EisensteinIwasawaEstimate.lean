@@ -1,8 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.IwasawaUnipotent.IwaU
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdelicIwasawaDoubledGroupSelfDualLattice
-import Development.AbelianVarietyTheory.Definitions.Foundations.EisValueAtIffEisPoleLE
 
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont
@@ -33,3 +33,9 @@ theorem eIwa : EIwa := fun hC D χ n =>
 end GlobalTheory.CompanionTheory.SwEisIwa
 
 end
+end
+
+open PositivityTheory.Rg.SwEis
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eisenstein_iwasawa_estimate : EIwa := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SwEisIwa.eIwa

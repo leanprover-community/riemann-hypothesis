@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace GlobalTheory
@@ -41,3 +44,9 @@ theorem factor_through_fractionField_of_range :
   simp [ψ]
 
 end GlobalTheory
+end
+
+open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.factor_through_generic_fiber : ∀ (O K : Type) [CommRing O] [IsDomain O] [Field K] [Algebra O K] [IsFractionRing O K] (T : Scheme.{0}) (g : T ⟶ Sp O), Set.range g ⊆ Set.range (spMap (algebraMap O K)) → ∃ f : T ⟶ Sp K, f ≫ spMap (algebraMap O K) = g := by
+  atlas_forward_decl GlobalTheory.factor_through_fractionField_of_range

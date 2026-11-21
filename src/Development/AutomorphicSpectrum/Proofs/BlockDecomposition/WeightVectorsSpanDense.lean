@@ -1,5 +1,7 @@
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.DiscreteSeriesHilbert.StepSqInt
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.RgDsHilb
@@ -53,3 +55,9 @@ theorem stepWtSpan : PositivityTheory.RgDs.Hilb.StepWtSpan := by
     _ = 0 := h2
 
 end GlobalTheory.CompanionTheory.RgDsHilb
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weight_vectors_span_dense : PositivityTheory.RgDs.Hilb.StepWtSpan := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgDsHilb.stepWtSpan

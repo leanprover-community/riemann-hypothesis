@@ -1,5 +1,6 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.AlmostGoodOf
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Gunr.TraceDual
@@ -142,3 +143,8 @@ theorem traceDualAt : TraceDualAt := by
 end GlobalTheory.CompanionTheory.Gunr.TraceDual
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trace_dual_at_place : PositivityTheory.SiegelWeilFormula.Gunr.TraceDualAt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Gunr.TraceDual.traceDualAt

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits
 
 namespace GlobalTheory
@@ -28,3 +31,9 @@ theorem card_zmod_tensor_eq_card_quot' : ∀ (M : Type) [AddCommGroup M] [Module
   fun M _ _ p => card_zmod_tensor_eq_card_quot M p
 
 end GlobalTheory
+end
+
+open CategoryTheory Limits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_zmod_tensor_eq_card_quot_prime_multiples : ∀ (M : Type) [AddCommGroup M] [Module ℤ M] (p : ℕ), Nat.card (TensorProduct ℤ (ZMod p) M) = Nat.card (M ⧸ LinearMap.range ((p : ℤ) • (LinearMap.id : M →ₗ[ℤ] M))) := by
+  atlas_forward_decl GlobalTheory.card_zmod_tensor_eq_card_quot'

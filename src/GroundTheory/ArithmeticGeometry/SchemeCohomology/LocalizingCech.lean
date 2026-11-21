@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.ConsCompSuccAboveZero
 import GroundTheory.ArithmeticGeometry.SchemeCohomology.Cartan
 set_option maxSynthPendingDepth 1
 

@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OfE
 
+section
 set_option maxSynthPendingDepth 1
 set_option synthInstance.maxSize 1000
 
@@ -129,3 +130,11 @@ theorem ideleModule_ideleEquiv_ofF : ∀ (F E : Type) [Field F] [NumberField F] 
 end
 
 end GlobalTheory.CompanionTheory.SW.MdBase
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.idele_module_base_change_sq : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ a : (AF F)ˣ, (IdeleGroup.ideleModule E (GroundTheory.BlockD.ThmBHecke.ideleEquiv F E (ofF a)) : ℝ) = md a ^ 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.MdBase.ideleModule_ideleEquiv_ofF

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.NormalRepresentationLattice
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatticeBounds
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsValuationEqZpow
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulMemOfHatCosetIndNeZero

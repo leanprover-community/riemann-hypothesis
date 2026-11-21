@@ -1,9 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CoeffRingsHaveRootsOfUnity
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOpenSubgroup
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.RootsCharpolyPowEqMapPow
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqOneOfPowEqOneOfCharpoly
 
+section
 noncomputable section
 
 namespace GlobalTheory.PendOf.LabIneAll
@@ -171,3 +170,10 @@ theorem main : ∀ D : D7, IneRep D → LabDepth D → LabGen D → ∃ Ω : Tam
   rw [hΩ k w hw x (hs0 x hx)]
 
 end GlobalTheory.PendOf.LabIneAll
+end
+end
+
+open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.L2 NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module Polynomial GlobalTheory.Pass GlobalTheory.PendOf
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_label_inertia_eigenvalues : ∀ D : D7, IneRep D → LabDepth D → LabGen D → ∃ Ω : TameOm D, LabIne Ω := by
+  atlas_forward_decl GlobalTheory.PendOf.LabIneAll.main

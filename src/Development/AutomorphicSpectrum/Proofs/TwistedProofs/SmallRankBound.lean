@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG GlobalTheory.SatakeWeyl GlobalTheory.InertZeta
 
 namespace GlobalTheory.CompanionTheory.InertZeta
@@ -49,3 +51,9 @@ theorem smallRank : SmallRank := by
   · exact mem_range_bc_of_entries_mem_intL _ (entry_lemma_2 hσ.2.1 g) (entry_lemma_2 hσ.2.1 g⁻¹)
 
 end GlobalTheory.CompanionTheory.InertZeta
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.small_rank_bound : SmallRank := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertZeta.smallRank

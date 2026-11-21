@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothFormsCalculusHolomorphicAtlasStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralEqEuclideanIntegralOfSupportInChartStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralReTopDegreeDensityDbarEqZeroStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralReTopDegreeDensityDbarEqZero
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -99,3 +99,12 @@ theorem integral_dbar_fn_mul_eq_zero : ∀ {M : Type} [TopologicalSpace M] [Comp
   exact GlobalTheory.T.integral_re_topDegreeDensity_dbar_eq_zero F hFC hFs
 
 end GlobalTheory.CxForm.DbarLocStokes
+end
+end
+
+open Set Matrix MeasureTheory
+open GlobalTheory.HermFrame
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_dbar_cutoff_mul_form_eq_zero_local_stokes : ∀ {M : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M] [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] {n : ℕ} (A : GlobalTheory.CxForm.HolAtlas M n) (γ : A.Fld) (χ : M → ℝ) (i : A.ι), A.IsForm γ → A.SmoothOn univ (fun y => (χ y : ℂ)) → tsupport χ ⊆ (A.e i).source → A.integral (A.dbar (A.fn χ * γ)) = 0 := by
+  atlas_forward_decl GlobalTheory.CxForm.DbarLocStokes.integral_dbar_fn_mul_eq_zero

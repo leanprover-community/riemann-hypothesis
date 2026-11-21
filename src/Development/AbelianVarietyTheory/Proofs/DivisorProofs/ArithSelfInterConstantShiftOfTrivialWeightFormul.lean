@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ResidueDegreeOfIsClosedImmersion
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClassInt
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqGenericPoint
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ArFormExists
 
+section
 namespace GlobalTheory.Published
 
 theorem arShift_of_arChange : GlobalTheory.Published.ArExists → GlobalTheory.Published.ArChange → GlobalTheory.Published.ArShift := by
@@ -13,3 +13,8 @@ theorem arShift_of_arChange : GlobalTheory.Published.ArExists → GlobalTheory.P
   exact h
 
 end GlobalTheory.Published
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.arithSelfInter_constantShift_of_trivialWeightFormula : GlobalTheory.Published.ArExists → GlobalTheory.Published.ArChange → GlobalTheory.Published.ArShift := by
+  atlas_forward_decl GlobalTheory.Published.arShift_of_arChange

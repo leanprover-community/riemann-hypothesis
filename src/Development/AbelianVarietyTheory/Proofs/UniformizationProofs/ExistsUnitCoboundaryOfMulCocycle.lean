@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsUnitAddMonoidAlgebraIffOfTwoUniqueSums
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 open AddMonoidAlgebra
@@ -195,3 +197,7 @@ theorem exists_unit_coboundary_of_mul_cocycle (B : Type) [CommRing B] (I : Ideal
   exact ⟨g, (mem_map_algebraMap_iff _ _).1 hg, hg'⟩
 
 end GlobalTheory
+end
+
+theorem _root_.GlobalTheory.T.exists_unit_coboundary_of_cocycle_addMonoidAlgebra : ∀ (B : Type) [CommRing B] (I : Ideal B), IsNilpotent I → ∀ (X : Type) [AddCommGroup X] (f : AddMonoidAlgebra B (X × X)), (∀ p, (f - 1).coeff p ∈ I) → AddMonoidAlgebra.mapDomain (fun p : X × X => (p.1, p.1, p.2)) f * AddMonoidAlgebra.mapDomain (fun p : X × X => (p.1, p.2, (0 : X))) f = AddMonoidAlgebra.mapDomain (fun p : X × X => (p.1, p.2, p.2)) f * AddMonoidAlgebra.mapDomain (fun p : X × X => ((0 : X), p.1, p.2)) f → ∃ g : (AddMonoidAlgebra B X)ˣ, (∀ x, (g.val - 1).coeff x ∈ I) ∧ f * AddMonoidAlgebra.mapDomain (fun x : X => (x, x)) g.val = AddMonoidAlgebra.mapDomain (fun x : X => (x, (0 : X))) g.val * AddMonoidAlgebra.mapDomain (fun x : X => ((0 : X), x)) g.val := by
+  atlas_forward_decl GlobalTheory.exists_unit_coboundary_of_mul_cocycle

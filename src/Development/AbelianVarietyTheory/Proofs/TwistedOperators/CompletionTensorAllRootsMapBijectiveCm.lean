@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CxRootsInjective
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Set Filter Polynomial NumberField IsDedekindDomain
 open GlobalTheory.AdelicU GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots GlobalTheory.TrEll GlobalTheory.TrEll.RealTorus
@@ -95,3 +98,13 @@ theorem PsiAll_bijective : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
   exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (f := f) hd).2 hs
 
 end GlobalTheory.TrEll.RealTorus
+end
+end
+
+open MeasureTheory Set Filter Polynomial NumberField IsDedekindDomain
+open GlobalTheory.AdelicU GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots GlobalTheory.TrEll GlobalTheory.TrEll.RealTorus
+open scoped TensorProduct ComplexConjugate Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.completionTensorAllRootsMap_bijective_cm : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (r : ℕ) (P : PPol σ r) (w : InfinitePlace F) (τ : EmbOver E w), Function.Bijective (PsiAll P τ) := by
+  atlas_forward_decl GlobalTheory.TrEll.RealTorus.PsiAll_bijective

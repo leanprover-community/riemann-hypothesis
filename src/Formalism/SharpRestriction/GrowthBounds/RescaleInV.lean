@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.CharacterGerms.RowTieDefs
 import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
 
 set_option autoImplicit false

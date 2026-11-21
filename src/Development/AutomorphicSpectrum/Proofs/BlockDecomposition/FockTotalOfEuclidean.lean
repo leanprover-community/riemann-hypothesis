@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IkedaParti
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.GaussianIsSchwartzFunction
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TamePartRight
 
+section
 noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
@@ -339,3 +340,9 @@ theorem fockTotal_of_eucTotal : EucTotal → FockTotal := by
 
 end GlobalTheory.CompanionTheory.ThTot
 end
+end
+
+open GlobalTheory.CompanionTheory.ThTot
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fock_total_of_euclidean : EucTotal → FockTotal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ThTot.fockTotal_of_eucTotal

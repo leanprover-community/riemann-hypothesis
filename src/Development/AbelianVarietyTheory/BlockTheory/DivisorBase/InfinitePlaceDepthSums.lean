@@ -1,7 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.HarderNarasimhan.StatementPl
-import Formalism.HarderNarasimhan.QuotRealize
 import Formalism.PairingDivisors.StatementH
 
 open Module NumberField IsDedekindDomain

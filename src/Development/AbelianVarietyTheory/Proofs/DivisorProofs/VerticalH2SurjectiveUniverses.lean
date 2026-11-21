@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.PullbackBijectiveDegreesOneTwo
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory GlobalTheory.CxCoh
 
 set_option autoImplicit false
@@ -122,3 +125,9 @@ theorem inst : VertHas.{1,1} (fun m ↦ Function.Surjective m.h2) ∧
   ⟨main, main, main⟩
 
 end GlobalTheory.CxCoh.VertSurjTwo
+end
+
+open CategoryTheory GlobalTheory.CxCoh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.vertical_h2_surjective_universes : VertHas.{1,1} (fun m ↦ Function.Surjective m.h2) ∧ VertHas.{1,0} (fun m ↦ Function.Surjective m.h2) ∧ VertHas.{0,0} (fun m ↦ Function.Surjective m.h2) := by
+  atlas_forward_decl GlobalTheory.CxCoh.VertSurjTwo.inst

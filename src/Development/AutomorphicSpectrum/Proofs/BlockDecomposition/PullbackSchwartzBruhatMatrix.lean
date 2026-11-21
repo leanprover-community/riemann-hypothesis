@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Lpart
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.GL2DualWhittakerPair
 open scoped ValuativeRel
 
@@ -57,3 +60,11 @@ theorem GlobalTheory.CompanionTheory.GL2DualWhittakerPair.pullback_schwartz_bruh
   calc (A⁻¹).val * (A.val * M * B.val) * (B⁻¹).val
       = ((A⁻¹).val * A.val) * M * (B.val * (B⁻¹).val) := by simp only [Matrix.mul_assoc]
     _ = M := by rw [h1, h2]; simp
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.GL2DualWhittakerPair
+open scoped ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pullback_schwartz_bruhat_matrix : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (Φ : Matrix (Fin 2) (Fin 3) F → ℂ), Φ ∈ LFS.SB F → ∀ h z : GL (Fin 2) F, SB2 (Pf Φ h z) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GL2DualWhittakerPair.pullback_schwartz_bruhat_M2

@@ -3,13 +3,14 @@ import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.La
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ConstantTermVanishing
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.AdjointRadical
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CuspidalNoRadicalFixed
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.StandardMaximalParabolic
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocalDecompositionNonsplitPlaceStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocalDecompositionSplitPlaceStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocalIwasawaBlockTriangularStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralLeviElementExistsStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicMatrixCoordinatesTriangularStatement
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocalIwasawaBlockTriangular
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralLeviElementExists
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicMatrixCoordinatesTriangular
+
+section
 open MeasureTheory Set Filter NumberField IsDedekindDomain
 open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary GlobalTheory.AutMult Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
@@ -56,3 +57,16 @@ theorem iwasawa_minPar_fin : ∀ (D : D7) (V : HSp D) (Φ : WittFrame V) (L : _)
 end GlobalTheory.IwFinFlag
 
 end
+end
+
+open MeasureTheory Set Filter NumberField IsDedekindDomain
+open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary GlobalTheory.AutMult Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
+open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
+open GlobalTheory.PRep (IsAdmissible)
+open GlobalTheory.TrMult
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_iwasawa_decomposition : ∀ (D : D7) (V : HSp D) (Φ : WittFrame V) (L : _) (a : _), Φ.IsGood D.sp.cm L a → ∀ v (g : GLoc D.sp.cm.sig V.gram v), ∃ p ∈ PLoc Φ.flag0 v, ∃ k ∈ stabLoc D.sp.cm.sig V.gram L v, g = p * k := by
+  atlas_forward_decl GlobalTheory.IwFinFlag.iwasawa_minPar_fin

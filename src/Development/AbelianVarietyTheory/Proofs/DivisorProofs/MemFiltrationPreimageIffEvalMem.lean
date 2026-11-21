@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.QuotientEigenDifference
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.MultiplicationKernelIdentity
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemAddValuationIntegerRingNormalizedIff
+import BuildAid.ForwardExisting
+
+section
 open scoped NNReal
 open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
 
@@ -66,3 +68,10 @@ theorem filPre_mem_iff : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v :
     exact Submodule.subset_span hx
 
 end GlobalTheory.FilPreMem
+end
+
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_filtrationPreimage_iff_eval_mem : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ)) (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) (F : Submodule w.valuationSubring (S → Fin N → C)), (∀ x ∈ F, GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.unif a x ∈ F) → ∀ x, x ∈ filPre (liftA hv a) F ↔ evalVec (liftA hv a) N x ∈ F := by
+  atlas_forward_decl GlobalTheory.FilPreMem.filPre_mem_iff

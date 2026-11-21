@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetNeZeroOfIsIdent
+
+section
 open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
 
 namespace GlobalTheory.CovTop.VolUp.FrameBox
@@ -51,3 +53,10 @@ theorem norm_boxVec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r 
   · simp
 
 end GlobalTheory.CovTop.VolUp.FrameBox
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_skewHermitianBasisVector_eq_sqrt_two : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (d : Ψ → Fin r → ℝ) (z : Fin r), (∀ τ a, d τ a = 1 ∨ d τ a = -1) → ∀ k, ‖boxVec d z k‖ = √2 := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.FrameBox.norm_boxVec

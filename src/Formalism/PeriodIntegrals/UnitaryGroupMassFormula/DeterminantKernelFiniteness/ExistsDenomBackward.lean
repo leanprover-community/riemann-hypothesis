@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.KerIso
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DeterminantKernelFiniteness.ExistsNatMulMemFracFam
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DeterminantKernelFiniteness.ValuationLeOneOfDenom
 
 noncomputable section

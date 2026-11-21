@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ResidualConstruction
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSpanRingCornerIdealModuleIff
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
 
 namespace GlobalTheory
@@ -46,3 +48,9 @@ theorem exists_injective_roots_of_ncard_rootSet {A O : Type} [CommRing A] [IsDom
   simp [hβ]
 
 end GlobalTheory
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_injective_roots_of_ncard_rootSet' : ∀ {A O : Type} [CommRing A] [IsDomain A] [CommRing O] [IsDomain O] [IsIntegrallyClosed O] [Algebra A O] (t : ℕ) (P : Polynomial A) (α : Fin t → FractionRing O), Function.Injective (algebraMap A O) → ((P.map (toFr A)).rootSet (AlgebraicClosure (FractionRing A))).ncard = t → P.map ((toFr O).comp (algebraMap A O)) = ∏ c, (Polynomial.X - Polynomial.C (α c)) → ∃ β : Fin t → O, Function.Injective β ∧ P.map (algebraMap A O) = ∏ c, (Polynomial.X - Polynomial.C (β c)) := by
+  atlas_forward_decl GlobalTheory.exists_injective_roots_of_ncard_rootSet

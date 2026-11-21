@@ -1,9 +1,11 @@
 import ReciprocityTheory.Hypotheses.GalCoh
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
 import GroundTheory.ProfiniteCohomology.ContinuousCochains
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.DifferentDvdRamifiedPrimePowerStatement
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.RamifiedPrimeContainsDiscriminantStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.DifferentDvdRamifiedPrimePower
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.RamifiedPrimeContainsDiscriminant
 
+section
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
 
 namespace GlobalTheory.CompanionTheory.HermiteMinkowski
@@ -72,3 +74,9 @@ theorem GlobalTheory.CompanionTheory.HermiteMinkowski.finite_unramified_bounded_
     Nat.pow_le_pow_right hb (Nat.mul_le_mul hd hd)
   rw [hM, Int.abs_eq_natAbs]
   exact_mod_cast hle.trans hle2
+end
+
+open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermite_finitely_many_unramified_extensions : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (S : Finset (HeightOneSpectrum (𝓞 F))) (N : ℕ), {E : IntermediateField F Ω | FiniteDimensional F E ∧ IsUnramifiedOutside (S : Set (HeightOneSpectrum (𝓞 F))) E ∧ Module.finrank F E ≤ N}.Finite := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HermiteMinkowski.finite_unramified_bounded_degree

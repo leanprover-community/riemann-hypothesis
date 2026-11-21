@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Topology Filter
 
 namespace GlobalTheory
@@ -38,3 +40,10 @@ theorem span_finiteDimensional_of_bounded_forms {V : Type} [AddCommGroup V] [Mod
   exact hfd
 
 end GlobalTheory
+end
+
+open Topology Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_span_of_forall_linear_bounded : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] (s : Set V),
+    (∀ l : V →ₗ[ℂ] ℂ, ∃ C : ℝ, ∀ x ∈ s, ‖l x‖ ≤ C) → FiniteDimensional ℂ (Submodule.span ℂ s) := by
+  atlas_forward_decl GlobalTheory.span_finiteDimensional_of_bounded_forms

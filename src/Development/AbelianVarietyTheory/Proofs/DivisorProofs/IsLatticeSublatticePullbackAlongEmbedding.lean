@@ -1,7 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLowLat
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsBisRest
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct Matrix nonZeroDivisors
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.PlaneSkew
@@ -47,3 +49,12 @@ theorem isLattice_lowLat : ∀ (E : Type) [Field E] [NumberField E] (n n₁ : �
     exact Submodule.smul_mem _ _ (Submodule.subset_span hmem)
 
 end GlobalTheory.PlaneSkew
+end
+
+open scoped TensorProduct Matrix nonZeroDivisors
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.PlaneSkew
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isLattice_sublatticePullbackAlongEmbedding : ∀ (E : Type) [Field E] [NumberField E] (n n₁ : ℕ) (L : Submodule (𝓞 E) (Fin n → E))
+    (ι : Matrix (Fin n) (Fin n₁) E), L.IsLattice E → Function.Injective ι.mulVec → (lowLat ι L).IsLattice E := by
+  atlas_forward_decl GlobalTheory.PlaneSkew.isLattice_lowLat

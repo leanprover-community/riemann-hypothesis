@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.BI
 namespace GlobalTheory.BI
 
@@ -40,3 +43,9 @@ theorem _root_.GlobalTheory.BI.isChar_zero_and_add : ∀ (K L : Type) [Field K] 
     rw [Pi.add_apply, hρ g, hσ g, hτ g, map_add]
 
 end GlobalTheory.BI
+end
+
+open GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCharacterOverSubfield_zero_and_add : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (G : Type) [Group G], IsChar K L (0 : G → L) ∧ ∀ a b : G → L, IsChar K L a → IsChar K L b → IsChar K L (a + b) := by
+  atlas_forward_decl GlobalTheory.BI.isChar_zero_and_add

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SecondLabelsNonempty
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.Diag.PG
 
 namespace GlobalTheory.Diag.PG
@@ -101,3 +103,9 @@ theorem rankNums_rootDisc :
       _ ≤ X * X := mul_le_mul_of_nonneg_left hXC hX0
 
 end GlobalTheory.Diag.PG
+end
+
+open GlobalTheory.Diag.PG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.globalRankNumberBounds_rootDiscriminant_clauses : ∀ eps CD : ℝ, 0 < eps → eps < 1 / 52 → 3 ≤ CD → ∀ C : ℝ, 0 < C → ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ m f k lrd Del : ℝ, RankNums x eps CD m f k lrd Del → C * (m * (lrd - Real.log 2)) ≤ k ∧ C * (m ^ 3 * x ^ eps * lrd) ≤ k * Real.log k ^ 2 ∧ lrd ≤ x ^ eps / C := by
+  atlas_forward_decl GlobalTheory.Diag.PG.rankNums_rootDisc

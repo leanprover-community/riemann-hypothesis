@@ -1,13 +1,12 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
-import ReciprocityTheory.GaloisValuations.Global
-import Formalism.WachLatticeTwists.CoprimeLiftBounds.Statement
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
-import ReciprocityTheory.NeutralLocalFields.HilbertClassField
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HilbertClassFieldOfGlobalArtinReciprocityStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LengthAddMonoidHomFiniteGroupFractionQuotientLeStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HilbertSubgroupLeKerOfKillsInertiaStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisAddHomVanishesComplexConjugationStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LengthAddMonoidHomFiniteGroupFractionQuotientLe
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HilbertSubgroupLeKerOfKillsInertia
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisAddHomVanishesComplexConjugation
+
+section
 open Formalism.NG Formalism.RepresentationBoundsCohomology.BR NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
 namespace GlobalTheory.UnramifiedClassBound
@@ -79,3 +78,8 @@ theorem vhE_of_globalArtinReciprocity (hA : GlobalTheory.Published.GlobalArtinRe
         rwa [show Nat.card (Additive (ClassGroup (𝓞 E))) = classNumber E from by
           rw [NumberField.classNumber, ← Nat.card_eq_fintype_card]; rfl] at this
 end GlobalTheory.UnramifiedClassBound
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramifiedGaloisHoms_bounded_classNumber_of_artinReciprocity : GlobalTheory.Published.GlobalArtinReciprocity → ReciprocityTheory.ChartRestriction.T2.VhE := by
+  atlas_forward_decl GlobalTheory.UnramifiedClassBound.vhE_of_globalArtinReciprocity

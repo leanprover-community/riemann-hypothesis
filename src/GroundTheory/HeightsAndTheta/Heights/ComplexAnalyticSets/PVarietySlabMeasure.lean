@@ -1,9 +1,7 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarietySlabMeasure
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarietyProjectionMass
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteProjectionsGeneric
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.RingKrullDimQuotBotOne
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.AffineOfCone
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmaller
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound

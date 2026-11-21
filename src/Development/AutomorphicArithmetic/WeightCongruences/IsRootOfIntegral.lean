@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalRingCardinality.DataHost
-import Development.AutomorphicArithmetic.WeightCongruences.ProdNegOneZpow
 import Development.AutomorphicArithmetic.WeightCongruences.ExistsShiftWeightCongruenceLtTorsionOrder
 import Development.AutomorphicArithmetic.WeightCongruences.ProdCmTypeEqNormAndWeightCongruenceOne
 

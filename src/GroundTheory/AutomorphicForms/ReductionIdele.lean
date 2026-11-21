@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
 import GroundTheory.GlobalFields.TateThesis.IdeleMeasureNormOne
 
 open NumberField Set

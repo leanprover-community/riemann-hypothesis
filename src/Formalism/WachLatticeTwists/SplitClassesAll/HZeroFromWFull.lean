@@ -1,5 +1,4 @@
 import Formalism.WachLatticeTwists.CharacterSplitJumps.WachTwistSplitTheoremFromTorsionBound
-import Formalism.WachLatticeTwists.SandwichH1Classes.StatTBW
 import Formalism.WachLatticeTwists.SandwichH1Classes.InvariantsOfTwistedModule
 
 noncomputable section

@@ -2,11 +2,9 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Development.WeilBound.CoreStatements.HodgeTatePoints.MbLCentre
 import Development.WeilBound.CoreStatements.HodgeTatePoints.McCramer
 import Development.WeilBound.CoreStatements.HodgeTatePoints.MbLPulllocCentre
-import Development.WeilBound.CoreStatements.HodgeTatePoints.MaBase
 import Development.WeilBound.CoreStatements.HodgeTatePoints.MaSerre
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 

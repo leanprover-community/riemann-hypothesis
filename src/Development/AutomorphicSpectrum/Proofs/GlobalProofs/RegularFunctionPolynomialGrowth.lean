@@ -3,6 +3,8 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SerreHolomorphicSec
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompactSpacePts
 import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.GagaSections
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsAffineOpenAndIsPushout
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Set
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.CxPts
@@ -172,3 +174,12 @@ theorem exists_gens_bound : ∀ (Y : Scheme.{0}) (p : Y ⟶ Sp ℂ), IsSeparated
   exact key
 
 end GlobalTheory.CompanionTheory.Gaga
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Set
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.regular_function_polynomial_growth : ∀ (Y : Scheme.{0}) (p : Y ⟶ Sp ℂ), IsSeparated p → LocallyOfFiniteType p → ∀ (V : Y.Opens), IsAffineOpen V → ∃ (n : ℕ) (u : Fin n → Γ(Y, V)), ∀ (W : Y.Opens), IsAffineOpen W → ∀ g : Γ(Y, V ⊓ W), ∃ (r m : ℕ) (w : Fin r → Γ(Y, W)), ∀ y ∈ ptsIn p (RingHom.id ℂ) (V ⊓ W), ‖ev p (RingHom.id ℂ) (V ⊓ W) g y‖ ≤ (∑ k, ‖ev p (RingHom.id ℂ) W (w k) y‖) * (1 + ∑ l, ‖ev p (RingHom.id ℂ) V (u l) y‖) ^ m := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Gaga.exists_gens_bound

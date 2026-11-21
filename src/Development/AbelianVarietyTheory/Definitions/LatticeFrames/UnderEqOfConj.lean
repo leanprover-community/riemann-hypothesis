@@ -1,7 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.StepExactNS
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TowerAtPre
-import Formalism.LocalToGlobal.IndefiniteReal.IsMultMapUnivZero
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeckeCharTameAtOfFactorsThroughResidue
 
 noncomputable section

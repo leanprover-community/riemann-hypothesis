@@ -3,7 +3,7 @@ import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsAdapted
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.RelatedPairsOrbitalTermEq
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProjSumSumEmbeddingsEqTrace
 import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PDifferentLatIndex
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.EigenLatticesDifferentStatementHoldsStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.EigenLatticesDifferentStatementHolds
 
 noncomputable section
 

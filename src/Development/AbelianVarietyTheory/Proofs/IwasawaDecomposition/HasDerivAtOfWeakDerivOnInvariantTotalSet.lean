@@ -1,8 +1,8 @@
 import Mathlib
-import Formalism.LocalRingCardinality.DataTheta
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.OscActMonomialOfUnique
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsNegBaseY
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.Mem.Osc
 
 theorem hasDerivAt_of_weak_on_invariant_total
@@ -69,3 +69,10 @@ theorem hasDerivAt_of_weak_on_invariant_total
   exact h9.congr_of_eventuallyEq (Filter.Eventually.of_forall hF)
 
 end GlobalTheory.Mem.Osc
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH GlobalTheory.Mem.Osc GlobalTheory.OscGauss Matrix
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasDerivAt_of_weak_deriv_on_invariant_total_set : ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (U : ℝ → H →L[ℂ] H) (D : Set H) (x w : H), U 0 = 1 → (∀ s t, U (s + t) = U s * U t) → (∀ t y, ‖U t y‖ = ‖y‖) → (∀ y, Continuous fun t => U t y) → Dense (Submodule.span ℂ D : Set H) → (∀ t, ∀ y ∈ D, U t y ∈ D) → (∀ y ∈ D, HasDerivAt (fun t : ℝ => inner ℂ (U t x) y) (inner ℂ w y) 0) → HasDerivAt (fun t : ℝ => U t x) w 0 := by
+  atlas_forward_decl GlobalTheory.Mem.Osc.hasDerivAt_of_weak_on_invariant_total

@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 open Filter Topology
 
 namespace GlobalTheory.CompanionTheory.RankinSelberg
@@ -124,3 +126,8 @@ theorem x1a : Ad3.R.HalfPlaneAnalyticIdentities := by
       (mul_ne_zero hg1 hZ1)
 
 end GlobalTheory.CompanionTheory.RankinSelberg
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_archimedean_factor : Ad3.R.HalfPlaneAnalyticIdentities := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelberg.x1a

@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
-import Formalism.PairingDivisors.StatementH
+
+section
 open NumberField Polynomial IsDedekindDomain
 open Formalism.DivisionValues (vw lw)
 
@@ -48,3 +49,10 @@ theorem abs_norm_coeff_zero_pow (K : Type) [Field K] [NumberField K] (σ : K →
   rw [key, ← pow_mul, mul_comm, ← hdeg2, hdeg]
 
 end GlobalTheory.NormTower
+end
+
+open NumberField Polynomial IsDedekindDomain
+open Formalism.DivisionValues (vw lw)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.abs_norm_minpoly_coeff_zero_pow_numberField : ∀ (K : Type) [Field K] [NumberField K] (σ : K →+* ℂ) (β : ℂ) (p : K[X]), GlobalTheory.FunObj.SqNum.IsMinPol σ β p → IsAlgebraic ℚ β → |(Algebra.norm ℚ (p.coeff 0) : ℚ)| ^ (minpoly ℚ β).natDegree = |(minpoly ℚ β).coeff 0| ^ (p.natDegree * Module.finrank ℚ K) := by
+  atlas_forward_decl GlobalTheory.NormTower.abs_norm_coeff_zero_pow

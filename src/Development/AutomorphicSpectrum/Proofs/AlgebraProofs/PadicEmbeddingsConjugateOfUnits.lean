@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain GlobalTheory.CompanionTheory.Ar.Fl
 
 noncomputable section
@@ -185,3 +187,10 @@ theorem exists_isometry_conj_of_unit_ball (K : Type) [Field K] [NumberField K] (
   exact congrArg _ key
 
 end GlobalTheory.CompanionTheory.Ar.Br.Conj
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CompanionTheory.Ar.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.padic_embeddings_conjugate_of_units : ∀ (K : Type) [Field K] [NumberField K] (p : Nat.Primes) (κ κ' : K →+* ℂ_[p]), (∀ a : K, ‖κ a‖ ≤ 1 ↔ ‖κ' a‖ ≤ 1) → ∃ g : ℂ_[p] ≃+* ℂ_[p], (∀ z, ‖g z‖ = ‖z‖) ∧ ∀ a, g (κ a) = κ' a := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Br.Conj.exists_isometry_conj_of_unit_ball

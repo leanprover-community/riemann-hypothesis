@@ -2,7 +2,6 @@ import Mathlib
 import Formalism.LocalToGlobal.LatticeGeometry.AmpleOnAbelianBase
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.SameObj
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRootOfKeyFormula
-import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRuleOneOfKeyFormula
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.LintegralLintegralNormSqRiemannTheta
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyInNormalFormAndArchimedeanConstant
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ChiGen
@@ -17,7 +16,6 @@ import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.FamHomogOfHomog
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ThetaKeyRuleValuationUnitOfFunctorialStatement
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.KeyFormulaPowAndDegree
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.NonemptyRingHomComplex
-import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TorusAlgebraicHolds
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.KeyFormulaAndKeyCore
 
 set_option autoImplicit false

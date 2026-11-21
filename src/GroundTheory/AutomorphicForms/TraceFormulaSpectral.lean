@@ -1,7 +1,6 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.DiscreteSpectrumAbstract
 import GroundTheory.AutomorphicForms.TraceClass
-import GroundTheory.AutomorphicForms.UnitaryRepresentations
 
 open MeasureTheory ContinuousLinearMap
 open scoped ENNReal InnerProductSpace InnerProduct

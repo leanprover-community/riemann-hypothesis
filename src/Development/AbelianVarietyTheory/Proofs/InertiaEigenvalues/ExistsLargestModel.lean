@@ -1,10 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistedModelAdmissibleCocycles
-import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.OnePlusPowerAssembly
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModelSupStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModelObjAndAbcStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModelSup
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModelObjAndAbc
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PhiGammaLatticeFamiliesShiftInclusionStatement
 
+section
 open GlobalTheory.PhiGam GlobalTheory.AdmLoc GlobalTheory.Models
 open scoped LaurentSeries PowerSeries
 namespace GlobalTheory.Models
@@ -54,3 +54,10 @@ theorem exists_largest_model : ∀ {k G : Type} [Field k] [Group G] {l n : ℕ} 
   rwa [sh_sh_eq, neg_add_cancel, sh_zero_eq] at h
 
 end GlobalTheory.Models
+end
+
+open GlobalTheory.PhiGam GlobalTheory.AdmLoc GlobalTheory.Models
+open scoped LaurentSeries PowerSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_largest_model' : ∀ {k G : Type} [Field k] [Group G] {l n : ℕ} [Fact l.Prime] [CharP k l] [NeZero n] {R : RingPG k l} (F : DFun R n G) {r : ℕ} {Dt : TopData n r} (M : ModTh F Dt) (A : Ob k G) (N₀ : Lats k n A.m), M.Model A N₀ → ∃ N, M.Model A N ∧ ∀ N', M.Model A N' → ∀ i, N' i ≤ N i := by
+  atlas_forward_decl GlobalTheory.Models.exists_largest_model

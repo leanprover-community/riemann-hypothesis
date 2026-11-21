@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.BCT
 
 namespace GlobalTheory.ConjRegroup
@@ -81,3 +84,9 @@ theorem finsum_eq_finsum_classes {H : Type} [Group H] (a : H → ℂ) (ha : (Fun
   rw [← finsum_mem_def, ← range_conj c, finsum_mem_range (conj_injective (TwCl.rep c))]
 
 end GlobalTheory.ConjRegroup
+end
+
+open GlobalTheory.BCT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finsum_eq_finsum_conjugacyClasses_centraliserCosets : ∀ {H : Type} [Group H] (a : H → ℂ), (Function.support a).Finite → ∑ᶠ γ, a γ = ∑ᶠ c : TwCl (MonoidHom.id H), ∑ᶠ δ : H ⧸ twCent (MonoidHom.id H) c.rep, a (Quotient.out δ * c.rep * (Quotient.out δ)⁻¹) := by
+  atlas_forward_decl GlobalTheory.ConjRegroup.finsum_eq_finsum_classes

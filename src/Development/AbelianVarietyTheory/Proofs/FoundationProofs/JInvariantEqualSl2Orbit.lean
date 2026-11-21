@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIndexOfGammaLe
 import GroundTheory.GlobalFields.ComplexMultiplication.JInvariantHomothety
+import BuildAid.ForwardExisting
 
+section
 open UpperHalfPlane Filter GlobalTheory.OddFrame
 open ModularForm (E₄ E₆)
 open scoped MatrixGroups ModularForm Manifold Topology
@@ -95,3 +97,11 @@ theorem exists_smul_of_E₄_E₆ :
   exact exists_smul_of_homothetic τ σ hc hl
 
 end GlobalTheory.JOrbit
+end
+
+open UpperHalfPlane Filter GlobalTheory.OddFrame
+open ModularForm (E₄ E₆)
+open scoped MatrixGroups ModularForm Manifold Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.j_invariant_equal_sl2_orbit : ∀ τ σ : ℍ, E₄ τ ^ 3 * E₆ σ ^ 2 = E₆ τ ^ 2 * E₄ σ ^ 3 → ∃ γ : SL(2, ℤ), τ = γ • σ := by
+  atlas_forward_decl GlobalTheory.JOrbit.exists_smul_of_E₄_E₆

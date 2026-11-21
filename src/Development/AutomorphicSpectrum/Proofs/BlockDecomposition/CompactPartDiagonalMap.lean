@@ -1,5 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
+
+section
 open GlobalTheory.BCT PositivityTheory.Rg.BcB.G8.Fin
 open scoped Classical
 
@@ -35,3 +37,10 @@ theorem cptPart_diag : ∀ (H : Type) [Group H] [TopologicalSpace H] [IsTopologi
     exact ⟨Subgroup.mem_map_of_mem _ ht, isCompact_closure_zpowers_image _ hcont t hc⟩
 
 end GlobalTheory.CompanionTheory.CptDiag
+end
+
+open GlobalTheory.BCT PositivityTheory.Rg.BcB.G8.Fin
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_part_diagonal_map : ∀ (H : Type) [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [T2Space H] (Z : Subgroup H), cptPart (Z.map ((MonoidHom.id H).prod (MonoidHom.id H))) = (cptPart Z).map ((MonoidHom.id H).prod (MonoidHom.id H)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CptDiag.cptPart_diag

@@ -3,7 +3,6 @@ import Formalism.LocalRingCardinality.PosOfIsomEmb
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceMinima
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.UpperSlopeOfMaximalConstant
 import Formalism.LocalToGlobal.GlobalTheory.GL4.PShortFrame
-import Formalism.LocalToGlobal.GlobalTheory.GL4.PCoord
 import Formalism.LocalToGlobal.GlobalTheory.GL4.BranchingIntegralNormalised
 import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 

@@ -3,7 +3,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.EightDvdNCol
 import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 import Development.AbelianVarietyTheory.Definitions.Divisors.MulSmulIdemMem
 import Development.AbelianVarietyTheory.Definitions.Divisors.WedgeNrmLeOfWedgeNormLe
-import Development.AbelianVarietyTheory.Definitions.Divisors.CongModRefl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSecOfMemCuspWWtZ
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuotientWeightGapBoundsStatement
 

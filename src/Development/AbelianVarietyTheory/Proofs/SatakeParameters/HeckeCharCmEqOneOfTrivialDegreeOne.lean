@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.DegOneIffSurjective
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousIdeleCharLocalFactorizationStatement
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeCharInfTrivialOfTrivAtDegOneStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeCharTrivialAtPlaceOfDegOneCofiniteTrivialStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeCharTrivialAtPlaceOfDegOneCofiniteTrivial
 
+section
 open NumberField IsDedekindDomain HeckeValGen GlobalTheory.HeckeSplit
 
 namespace GlobalTheory.HeckeSplit
@@ -21,3 +21,9 @@ theorem heckeChar_eq_one_of_degOne : ∀ (F E : Type) [Field F] [NumberField F] 
   simp
 
 end GlobalTheory.HeckeSplit
+end
+
+open NumberField IsDedekindDomain HeckeValGen GlobalTheory.HeckeSplit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeChar_cm_eq_one_of_trivial_degree_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [IsTotallyComplex E] [Algebra.IsQuadraticExtension F E] (χ : Ideles E →* ℂˣ), IsHeckeChar E χ → (∀ᶠ w in Filter.cofinite, DegOne F w → TrivAt χ w) → χ = 1 := by
+  atlas_forward_decl GlobalTheory.HeckeSplit.heckeChar_eq_one_of_degOne

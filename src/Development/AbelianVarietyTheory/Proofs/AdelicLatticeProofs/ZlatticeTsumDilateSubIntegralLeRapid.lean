@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LatticeTheta.ThetaShiftInversion
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical
 open scoped ContDiff nonZeroDivisors
 open scoped FourierTransform RealInnerProductSpace SchwartzMap
@@ -88,3 +90,10 @@ theorem latticeSum_dilate_sub_integral_le (V : Type) [NormedAddCommGroup V]
     _ = _ := by rw [pow_add t A d]; field_simp
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical
+open scoped ContDiff nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.zlattice_tsum_dilate_sub_integral_le_rapid : ∀ (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (L : Submodule ℤ V) [DiscreteTopology L] [IsZLattice ℝ L] (f : V → ℂ), ContDiff ℝ ∞ f → HasCompactSupport f → ∀ A : ℕ, ∃ C : ℝ, ∀ (x₀ : V) (t : ℝ), 0 < t → t ≤ 1 → ‖∑' l : L, f (t • ((l : V) + x₀)) - (∫ x, f x) / ((ZLattice.covolume L * t ^ Module.finrank ℝ V : ℝ) : ℂ)‖ ≤ C * t ^ A := by
+  atlas_forward_decl GlobalTheory.latticeSum_dilate_sub_integral_le

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.MuQMemHarmSet
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset
@@ -145,3 +147,10 @@ theorem harm_cone : N1 := by
   exact sub_eq_zero.1 h5
 
 end GlobalTheory.CompanionTheory.HarmCone
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.real_first_nilpotent : PositivityTheory.RgBcC.RealD.N1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HarmCone.harm_cone

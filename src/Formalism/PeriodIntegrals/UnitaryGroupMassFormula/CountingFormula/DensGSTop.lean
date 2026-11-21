@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensGSB
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensGSO
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DoubleSumEqDotProduct
 
 namespace PI.UnitaryGroupMassFormula.CntFormula

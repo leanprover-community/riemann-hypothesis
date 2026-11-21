@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.SmallPI
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open CompanionTheory.Rg.Fl CompanionTheory.D.gk.admitted
@@ -144,3 +146,10 @@ theorem stStar : StStar := by
   rw [map_add, hPW w hw, hPperp x hx, add_zero, LinearMap.zero_apply]
 
 end GlobalTheory.CompanionTheory.RgFl.StarPf
+end
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.StatementStar : StStar := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgFl.StarPf.stStar

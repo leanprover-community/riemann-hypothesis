@@ -1,5 +1,8 @@
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
+import BuildAid.ForwardExisting
+
+section
 open NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 
 namespace GlobalTheory.CompanionTheory.Ar.Fl
@@ -19,3 +22,9 @@ theorem exists_comp_eq_of_numberField (k k' A : Type) [Field k] [NumberField k] 
   exact (IsAlgClosed.lift : k' →ₐ[k] A).commutes x
 
 end GlobalTheory.CompanionTheory.Ar.Fl
+end
+
+open NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_extension_embedding_alg_closed : ∀ (k k' A : Type) [Field k] [NumberField k] [Field k'] [NumberField k'] [Field A] [CharZero A] [IsAlgClosed A] (f : k →+* k') (j : k →+* A), ∃ j' : k' →+* A, j'.comp f = j := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Fl.exists_comp_eq_of_numberField

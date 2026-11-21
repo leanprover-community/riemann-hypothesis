@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasTemperateGrowthElim
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClmSupBound
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.SliceSchwartz GlobalTheory.SliceOp
 open scoped ContDiff
 
@@ -42,3 +43,12 @@ theorem GlobalTheory.norm_iteratedFDeriv_succ_le_sum_partial :
         exact Finset.single_le_sum (f := fun j => ‖L j‖) (fun j _ => norm_nonneg _) (Finset.mem_univ i)
     _ = (∑ j, ‖L j‖) * ∑ i, ‖iteratedFDeriv ℝ n (fun w => fderiv ℝ g w (b i)) z‖ := by
         rw [Finset.mul_sum]
+end
+
+open GlobalTheory.SliceSchwartz GlobalTheory.SliceOp
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.iterated_derivative_bound_by_partials : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X],
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (g : X → ℂ), ContDiff ℝ ∞ g → ∀ (n : ℕ) (z : X),
+      ‖iteratedFDeriv ℝ (n + 1) g z‖ ≤ C * ∑ i, ‖iteratedFDeriv ℝ n (fun w => fderiv ℝ g w (Module.finBasis ℝ X i)) z‖ := by
+  atlas_forward_decl GlobalTheory.norm_iteratedFDeriv_succ_le_sum_partial

@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.InFlagDomainOne
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsOpenFlagDomainNondegenerateMinorsStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsOpenFlagDomainNondegenerateMinors
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.PB
@@ -149,3 +149,11 @@ theorem flagDomain_open_and_minors : ∀ (N j : ℕ), j ≤ N →
   fun N j hj => ⟨isOpen_inFlagDomain N j, fun g hg k => gramHead_det_ne_zero N j hj g hg k⟩
 
 end GlobalTheory.CompanionTheory.Ar.PB
+end
+end
+
+open Matrix GlobalTheory.CompanionTheory.Ar.PB
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpen_flag_domain_nondegenerate_minors : ∀ (N j : ℕ), j ≤ N → IsOpen {g : Matrix (Fin N) (Fin N) ℂ | InFlagDomain N j g} ∧ ∀ g : Matrix (Fin N) (Fin N) ℂ, InFlagDomain N j g → ∀ k, (gramHead (sigForm N j) k g).det ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.flagDomain_open_and_minors

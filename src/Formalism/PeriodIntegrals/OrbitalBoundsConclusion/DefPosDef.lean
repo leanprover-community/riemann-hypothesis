@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.FinOrdAd
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PositiveDefiniteness.Development
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PositiveDefiniteness.SplittingOfExtension
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PositiveDefiniteness.PositiveDefiniteSecond
 

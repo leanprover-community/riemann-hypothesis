@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JoinCol
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaMultiplicityWeight
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory ReciprocityTheory.L2DbarEstimates GlobalTheory.CompanionTheory.FSCrofton
 open scoped ENNReal ComplexConjugate
 
@@ -193,3 +196,10 @@ theorem measurable_zeroCnt : ∀ (d : ℕ) (α : Type) [Fintype α] (U A : Set (
   exact measurable_zeroCnt_of_continuousOn hA fun j => (hb j).mono hAU
 
 end GlobalTheory.CompanionTheory.FSCrofton
+end
+
+open MeasureTheory ReciprocityTheory.L2DbarEstimates GlobalTheory.CompanionTheory.FSCrofton
+open scoped ENNReal ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurable_zero_count : ∀ (d : ℕ) (α : Type) [Fintype α] (U A : Set (V d)) (b : α → V d → ℂ), (∀ j, ContinuousOn (b j) U) → A ⊆ U → IsSigmaCompact A → Measurable (zeroCnt d A b : (Fin d → α → ℂ) → ℝ≥0∞) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FSCrofton.measurable_zeroCnt

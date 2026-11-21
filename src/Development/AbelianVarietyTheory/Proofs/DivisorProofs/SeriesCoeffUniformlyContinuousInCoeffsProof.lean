@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -109,3 +110,10 @@ theorem contSt_holds : ContSt := by
   linarith [Nat.le_ceil K]
 
 end GlobalTheory.IsoTriv
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.seriesCoeffUniformlyContinuousInCoeffs_proof : ContSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.contSt_holds

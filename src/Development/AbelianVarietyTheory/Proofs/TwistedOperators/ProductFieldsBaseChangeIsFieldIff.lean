@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotCompactOfIdempotent
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.RegSS
 open scoped TensorProduct
 
@@ -57,3 +58,9 @@ theorem tensorFieldIff : TensorFieldIff := by
   exact isField_pi_fin_iff _
 
 end GlobalTheory.RegSS
+end
+
+open GlobalTheory.RegSS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.product_fields_baseChange_isField_iff : GlobalTheory.RegSS.TensorFieldIff := by
+  atlas_forward_decl GlobalTheory.RegSS.tensorFieldIff

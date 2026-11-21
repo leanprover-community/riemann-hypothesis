@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrderedCechToCatCochainsOneApplyValueAtSubset
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.CommuteGelfandInvariantMatrixUnitsOfGlRel
 
+section
 open Matrix Finset MeasureTheory
 open scoped ContDiff ComplexConjugate InnerProductSpace
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
@@ -29,3 +29,14 @@ theorem gelA_central : ∀ (n : ℕ) (V : Type) [NormedAddCommGroup V] [InnerPro
     Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
 
 end GlobalTheory.CompanionTheory.ModelS
+end
+
+open Matrix Finset MeasureTheory
+open scoped ContDiff ComplexConjugate InnerProductSpace
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+open PositivityTheory.RgTw (Mat)
+open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gelfand_invariant_commute_generator : ∀ (n : ℕ) (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] (E : Fin n → Fin n → Module.End ℂ V), Formalism.REAL.GlRel E → ∀ (m : ℕ) (a b : Fin n), gelA E m * E a b = E a b * gelA E m := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ModelS.gelA_central

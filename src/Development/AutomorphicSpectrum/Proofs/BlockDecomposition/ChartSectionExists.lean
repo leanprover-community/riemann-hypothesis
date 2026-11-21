@@ -3,9 +3,10 @@ import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisen
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousStandardUnitaryChartAndSymmStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsStandardUnitaryChartDoubledSpaceStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StandardUnitaryChartMemRationalIffStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemDoublingSiegelParabolicIffChartMemSiegelUnnStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StandardUnitaryChartSiegelLeviDetEqStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSiegelParabolicConjDoubledCompactStatement
+
+section
 open ResidueKilled.Tr
 open scoped NNReal Matrix TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn
@@ -66,3 +67,9 @@ theorem tChart : TChart := by
     rw [e]
 
 end GlobalTheory.CompanionTheory.TChartProof
+end
+
+open ResidueKilled.Tr
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_section_exists : TChart := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TChartProof.tChart

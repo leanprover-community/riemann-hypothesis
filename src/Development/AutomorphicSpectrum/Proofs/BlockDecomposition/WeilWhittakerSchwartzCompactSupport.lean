@@ -1,7 +1,8 @@
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.RationalPrimesBelowPlaces
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntInd
 import GroundTheory.LocalFields.QuadraticAbelian.WeilRepQuadratic
-import GroundTheory.AutomorphicForms.MacdonaldWhittaker
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
 open GroundTheory.Automorphic.GodementSection (localChar)
@@ -108,3 +109,16 @@ theorem GlobalTheory.CompanionTheory.WeilRd.main : ∀ (F : Type) [Field F] [Val
     linear_combination (((c t : ℂˣ) : ℂ) * ((c s : ℂˣ) : ℂ) * ((modulus (g.val).det : ℝ) : ℂ) ^ (1 / 2 : ℂ) * ((modulus (m : F) : ℝ) : ℂ) ^ (1 / 2 : ℂ) * GL2LocalData.rW χ σ μ lam (g.val 0 0 / (g.val).det) (g.val 0 1) (g.val 1 0 / (g.val).det) (g.val 1 1) (fun x => (fun z => Φ (z * (s : E))) (x * (t : E))) 1) * hcu
   · have h' : ¬ ∃ t : Eˣ, Algebra.norm F (t : E) = ((g * dg2 m 1).val).det := fun q => h (hiff.1 q)
     rw [dif_neg h', dif_neg h, mul_zero]
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 GlobalTheory.CompanionTheory.SphTheta
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_whittaker_schwartz_compact_support : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (E : Type) [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E] [MeasurableSpace E] [BorelSpace E] [Algebra F E] [ValuativeExtension F E], Module.finrank F E = 2 → ∀ (χ : AddChar F Circle) (σ : E ≃ₐ[F] E) (μ : Measure E) (lam : ℂ) (c : Eˣ →* ℂˣ), ∀ Φ ∈ GL2LocalData.SBc F E c, ∀ (s : Eˣ) (g : GL (Fin 2) F), GL2LocalData.Wc χ σ μ lam c Φ (g * dg2 (Units.map (Algebra.norm F : E →* F) s) 1) = ((c s : ℂˣ) : ℂ) * (((modulus (Algebra.norm F (s : E)) : ℝ) : ℂ) ^ (1 / 2 : ℂ)) * GL2LocalData.Wc χ σ μ lam c (fun z => Φ (z * (s : E))) g := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WeilRd.main

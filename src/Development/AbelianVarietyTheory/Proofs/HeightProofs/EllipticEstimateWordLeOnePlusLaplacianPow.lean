@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.InvSqrtTwo
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsHermitianJmBracket
 
+section
 noncomputable section
 
 open Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.SmoothGlob GlobalTheory.TypeSum GlobalTheory.TypeSum.CasBasis GlobalTheory.LowTypeDetermined
@@ -362,3 +363,11 @@ theorem word_le_lapOne : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedA
 end GlobalTheory.TypeSum.Elliptic
 
 end
+end
+
+open Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.SmoothGlob GlobalTheory.TypeSum GlobalTheory.TypeSum.CasBasis GlobalTheory.LowTypeDetermined
+open scoped InnerProductSpace
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.elliptic_estimate_word_le_onePlusLaplacian_pow : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (σ : Mx n → (H →L[ℂ] H)), Std ε σ → ∀ l : List (Mx n), (∀ X ∈ l, X ∈ lieSet ε) → ∃ (s : ℕ) (C : ℝ), ∀ v, Sm ε σ v → ‖Dw σ l v‖ ≤ C * ‖(lapOne ε σ)^[s] v‖ := by
+  atlas_forward_decl GlobalTheory.TypeSum.Elliptic.word_le_lapOne

@@ -1,9 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HeckeCharEqOfLAdicRealisation
-import ReciprocityTheory.Hypotheses.GalCoh
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalCohomologyVanishesTameInertiaNoFixedStatement
 import Formalism.SharpRestriction.LevelLetterCocycles.CohomologyScalarsVanish.PfCohScalarsVanish
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.HOneTwoLevel
@@ -217,3 +218,10 @@ theorem hOneTwo_holds : LocalFiniteness → LocalTateDuality → LocalEulerChar 
   exact ⟨hk.2.1, hk.2.2⟩
 
 end GlobalTheory.HOneTwoLevel
+end
+end
+
+open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hOneTwo_of_localFiniteness_tateDuality_eulerChar : LocalFiniteness → LocalTateDuality → LocalEulerChar → ∀ D : D7, HOneTwo D := by
+  atlas_forward_decl GlobalTheory.HOneTwoLevel.hOneTwo_holds

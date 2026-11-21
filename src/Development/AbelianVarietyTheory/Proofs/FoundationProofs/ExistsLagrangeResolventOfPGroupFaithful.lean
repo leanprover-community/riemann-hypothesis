@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSurjHomZmodOfIsPGroupStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSurjHomZmodOfIsPGroup
 
+section
 open GlobalTheory.AlmostEt
 open scoped NNReal
 
@@ -66,3 +66,10 @@ theorem exists_lagrange_resolvent : ∀ (L : Type) [Field L] (p : ℕ), p.Prime 
     rw [smul_pow', hact g, mul_pow, hψp, one_mul]
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_lagrange_resolvent_of_pGroup_faithful : ∀ (L : Type) [Field L] (p : ℕ), p.Prime → ∀ (G : Type) [Group G] [MulSemiringAction G L] [Finite G] [Nontrivial G] [FaithfulSMul G L], IsPGroup p G → ∀ ζ : L, IsPrimitiveRoot ζ p → (∀ g : G, g • ζ = ζ) → ∃ (σ : G) (α : L), α ≠ 0 ∧ σ • α = ζ * α ∧ ∀ g : G, g • α ^ p = α ^ p := by
+  atlas_forward_decl GlobalTheory.AlmostEt.exists_lagrange_resolvent

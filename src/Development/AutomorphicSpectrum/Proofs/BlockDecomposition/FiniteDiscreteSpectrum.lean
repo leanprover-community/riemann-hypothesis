@@ -1,10 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.FiniteDiscreteFamilies.FinCut
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleDiscreteSpaces
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiscreteAutomorphicRepGLExistsLocalComponent
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EquivOfISupRange
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryDivisorDualLabel
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix
@@ -451,3 +449,8 @@ end Main
 end GlobalTheory.CompanionTheory.FinDiscN
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_discrete_spectrum : PositivityTheory.Rg.BcB.F.F5.FinDiscN := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FinDiscN.finDiscN

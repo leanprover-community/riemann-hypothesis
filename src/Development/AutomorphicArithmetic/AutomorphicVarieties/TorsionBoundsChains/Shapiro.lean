@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.FaceDSingle
 import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.IndPerm
 
 open CategoryTheory UpperTheory.V.KH

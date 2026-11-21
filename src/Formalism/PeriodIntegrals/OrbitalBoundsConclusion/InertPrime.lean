@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.InertPrime
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InertPrimeJacobi.NotIsSquareOfJacobi
 
 open NumberField

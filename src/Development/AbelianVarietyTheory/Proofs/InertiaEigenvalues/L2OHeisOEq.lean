@@ -1,4 +1,3 @@
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LengthPosOfPosDef
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdjFormula
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ParamsEx
 import Formalism.LocalToGlobal.IndefiniteReal.LinksStage

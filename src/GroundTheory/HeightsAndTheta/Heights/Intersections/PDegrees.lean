@@ -7,8 +7,6 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.PZIntAdd
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StZIntPoint
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
-import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PLCurveA
 set_option maxSynthPendingDepth 1
 
 noncomputable section

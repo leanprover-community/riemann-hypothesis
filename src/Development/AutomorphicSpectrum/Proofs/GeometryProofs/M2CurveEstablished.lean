@@ -5,9 +5,10 @@ import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Proportion
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubAndQuotientBundles
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DegreeInvariantLinearEquiv
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.EigenFlagSlopeBoundStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CurveLieEigenDegreeStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.EigenFlagSlopeBound
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CurveLieEigenDegree
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Conj.CurveDegreeNonneg
@@ -75,3 +76,11 @@ theorem m2Curve_holds : CurveSemiAbelianConjecture := by
   simpa only [subDeg_map C (Y.lieLat M) D.lie e D.lie_bun hlie, f] using key
 
 end GlobalTheory.CompanionTheory.Ar.Conj.CurveDegreeNonneg
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.curveSemiAbelianConjecture : CurveSemiAbelianConjecture := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Conj.CurveDegreeNonneg.m2Curve_holds

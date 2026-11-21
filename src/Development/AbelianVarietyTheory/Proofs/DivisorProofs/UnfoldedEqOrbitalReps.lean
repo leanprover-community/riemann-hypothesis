@@ -1,8 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.MaxWeightGL1EqOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StabilizerEquivLocPart
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MassFormulaConjugationActionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbitSumLocalParts
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MassFormulaConjugationAction
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConstantsMonomialApproximation
 
 open scoped Classical
 

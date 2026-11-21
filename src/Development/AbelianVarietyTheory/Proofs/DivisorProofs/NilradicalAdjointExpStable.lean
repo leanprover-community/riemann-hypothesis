@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemNilRad
+
+section
 open Matrix GlobalTheory.TorFin
 open scoped ContDiff
 
@@ -88,3 +90,12 @@ theorem nilRad_adj_exp : ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) ℂ), Jᴴ = 
   exact (nilRad J x).add_mem hY ((nilRad J x).smul_mem _ (sq_mem hY))
 
 end GlobalTheory.TorFin.NilAdj
+end
+end
+
+open Matrix GlobalTheory.TorFin
+open scoped ContDiff
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nilradical_adjoint_exp_stable : ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) ℂ), Jᴴ = J → IsUnit J.det → ∀ (x : Fin n → ℂ) (Y : Matrix (Fin n) (Fin n) ℂ), Y ∈ nilRad J x → J⁻¹ * Yᴴ * J ∈ nilRad J x ∧ NormedSpace.exp Y - 1 ∈ nilRad J x := by
+  atlas_forward_decl GlobalTheory.TorFin.NilAdj.nilRad_adj_exp

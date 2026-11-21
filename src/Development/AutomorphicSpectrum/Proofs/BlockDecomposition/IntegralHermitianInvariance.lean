@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GunrInv
@@ -117,3 +118,8 @@ theorem integrand_invariant_integral_hermitian : HermitianLatticeInvariance := b
 end GlobalTheory.CompanionTheory.GunrInv
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_hermitian_invariance : PositivityTheory.SiegelWeilFormula.Gunr.HermitianLatticeInvariance := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrInv.integrand_invariant_integral_hermitian

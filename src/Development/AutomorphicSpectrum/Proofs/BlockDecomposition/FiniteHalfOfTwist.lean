@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter
@@ -87,3 +88,8 @@ theorem finHalfOf : FinHalfOf := by
 end GlobalTheory.CompanionTheory.FinHalfAsm
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_half_of_twist : PositivityTheory.Rg.BcB.G8.Fin.FinHalfOf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FinHalfAsm.finHalfOf

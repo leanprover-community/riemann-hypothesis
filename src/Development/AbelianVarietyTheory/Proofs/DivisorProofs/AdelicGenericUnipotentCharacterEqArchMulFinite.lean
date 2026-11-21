@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SuperDiagEqSdM
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep Matrix MeasureTheory GlobalTheory.WhitBump
 open scoped ContDiff
 
@@ -25,3 +28,10 @@ theorem psiN_split : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex 
   rw [h, AddChar.map_add_eq_mul, Circle.coe_mul]
 
 end GlobalTheory.WhitBump
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CuspRep Matrix MeasureTheory GlobalTheory.WhitBump
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicGenericUnipotentCharacter_eq_arch_mul_finite : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (n : ℕ) (u : GA E n), GlobalTheory.JSW.psiN u = psiInf (sdM ((GeneralLinearGroup.map (pInf E) u : GL (Fin n) (Cinf E)) : Matrix (Fin n) (Fin n) (Cinf E))) * psiFin (GlobalTheory.Whittaker.superDiag (GeneralLinearGroup.map (pFin E) u)) := by
+  atlas_forward_decl GlobalTheory.WhitBump.psiN_split

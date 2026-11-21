@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsFlatLift
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory GlobalTheory.DI
 
 namespace GlobalTheory
@@ -46,3 +49,8 @@ theorem flat_zmod_sq_mul_p_eq_zero_iff : ∀ (p : ℕ) [Fact p.Prime] {B : Type}
     rw [← mul_assoc, ← Nat.cast_mul, ← pow_two, this, zero_mul]
 
 end GlobalTheory
+end
+
+open GlobalTheory GlobalTheory.DI
+theorem _root_.GlobalTheory.T.flat_mod_p_squared_torsion : ∀ (p : ℕ) [Fact p.Prime] {B : Type} [CommRing B] (φ : ZMod (p ^ 2) →+* B), φ.Flat → ∀ w : B, (p : B) * w = 0 ↔ ∃ v, w = p * v := by
+  atlas_forward_decl _root_.GlobalTheory.flat_zmod_sq_mul_p_eq_zero_iff

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.WhittakerLSpace
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.BernsteinExponentBounds.IsInvForm
 
 noncomputable section

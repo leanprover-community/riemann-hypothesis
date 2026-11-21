@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BrauerDegreeZero
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RealInducedCharacters.Induced
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.Published
 
 noncomputable section
@@ -94,3 +97,9 @@ theorem inducedRep_cyclic_trace (G : Type) [Group G] [Fintype G] (H : Subgroup G
 end GlobalTheory.InertiaEigenvalues
 
 end
+end
+
+open GlobalTheory.Published
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.induced_representation_character : ∀ (G : Type) [Group G] [Fintype G] (H : Subgroup G) (χ : H →* ℂˣ), ∃ (R : Representation ℂ G (Fin H.index → ℂ)) (v : Fin H.index → ℂ), (∀ σ : H, R σ v = (χ σ : ℂ) • v) ∧ Submodule.span ℂ (Set.range fun g => R g v) = ⊤ ∧ ∀ g, LinearMap.trace ℂ (Fin H.index → ℂ) (R g) = indFun H (fun x => (χ x : ℂ)) g := by
+  atlas_forward_decl GlobalTheory.InertiaEigenvalues.inducedRep_cyclic_trace

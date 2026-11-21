@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.DiscreteSeriesHilbert.StepSqInt
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory ReciprocityTheory.ChartRestriction.DS
@@ -45,3 +47,9 @@ theorem stepMoll : PositivityTheory.RgDs.Hilb.StepMoll := by
     exact opConv_mem_of_isClosed ε (rreg ε) α W hWc hWs (hSW hw)
 
 end GlobalTheory.CompanionTheory.HilbMoll
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mollifier_approximation_hilbert : PositivityTheory.RgDs.Hilb.StepMoll := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HilbMoll.stepMoll

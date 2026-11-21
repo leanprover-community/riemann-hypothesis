@@ -1,7 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteReal.CxCutE
-import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
-import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 
 open Module NumberField IsDedekindDomain Polynomial
 open scoped Matrix ComplexOrder InnerProductSpace

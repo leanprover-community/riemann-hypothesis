@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTopologicalRingAE
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct Matrix BoundedContinuousFunction ContDiff
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF MeasureTheory Matrix GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.RealWeil GlobalTheory.RealWeilF
@@ -40,3 +42,15 @@ theorem symplOHF_fin_real_orth (F E : Type) [Field F] [NumberField F] [Field E] 
   exact ⟨rfl, rfl⟩
 
 end GlobalTheory.WeilDatumF
+end
+end
+
+open scoped TensorProduct Matrix BoundedContinuousFunction ContDiff
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF MeasureTheory Matrix GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open GlobalTheory.RealWeil GlobalTheory.RealWeilF
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.halvedSymplecticForm_finite_real_orthogonal : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (nS nT : ℕ)
+    (JS : Matrix (Fin nS) (Fin nS) E) (JT : Matrix (Fin nT) (Fin nT) E) (ξ₀ : E) (u x : WOF F E nS nT),
+      u.map (infPartF F E) = 0 → x.map (finPartF F E) = 0 → symplOHF σ JS JT ξ₀ u x = 0 ∧ symplOHF σ JS JT ξ₀ x u = 0 := by
+  atlas_forward_decl GlobalTheory.WeilDatumF.symplOHF_fin_real_orth

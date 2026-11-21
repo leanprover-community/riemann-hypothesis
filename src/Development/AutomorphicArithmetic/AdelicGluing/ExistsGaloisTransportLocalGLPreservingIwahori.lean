@@ -1,5 +1,4 @@
 import Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.HeckeFinAlt
-import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
 import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Places
 import Development.AutomorphicArithmetic.AdelicQuotients.FinAtMapGLGalAdMemIwahori
 import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.GalAdEq

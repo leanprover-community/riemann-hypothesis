@@ -1,15 +1,14 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BinaryMassMeans.MeanVal
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TsumNeZeroEqSum
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsIntegralMultipleBoundedPlacesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteProductDifferenceBoundStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TailSumOverPlacesSmallStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultipliableLocalFactorsStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteProductDifferenceBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TailSumOverPlacesSmall
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultipliableLocalFactors
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFactorSandwichApproxStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EulerProductConvergenceBoundStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TruncatedSumLimitStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHaarMeasureSingletonStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EulerProductConvergenceBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TruncatedSumLimit
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHaarMeasureSingleton
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW GlobalTheory.CompanionTheory.Mass.MeanV PositivityTheory.Rg.Mass NumberField IsDedekindDomain MeasureTheory Topology Filter
 open scoped ENNReal NNReal Classical
 
@@ -390,3 +389,9 @@ theorem meanVal_of_equi_countBd : Equi → CountBd → MeanVal := by
 end GlobalTheory.CompanionTheory.Mass.MeanV
 
 end
+end
+
+open PositivityTheory.Rg.Mass
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mean_value_formula : Equi → CountBd → MeanVal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Mass.MeanV.meanVal_of_equi_countBd

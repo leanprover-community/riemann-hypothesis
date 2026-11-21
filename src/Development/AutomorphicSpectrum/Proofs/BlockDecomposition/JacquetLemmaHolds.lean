@@ -1,8 +1,9 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.IsJointGenEig
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProjMemFixedPiN
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetProjectionSurjectiveHoldsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCharacterExistsUniqueStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetProjectionSurjectiveHolds
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCharacterExistsUnique
+
+section
 open GlobalTheory.PRep PositivityTheory.SphericalProduct
 
 namespace GlobalTheory.CompanionTheory.Cass
@@ -22,3 +23,9 @@ theorem sphericalProduct_A4 : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsT
   exact GlobalTheory.T.jacquet_projection_surjective_holds G D V π hπ t ht U hU
 
 end GlobalTheory.CompanionTheory.Cass
+end
+
+open GlobalTheory.PRep PositivityTheory.SphericalProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacquet_lemma_holds : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G], PositivityTheory.SphericalProduct.A4 G := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Cass.sphericalProduct_A4

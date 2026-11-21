@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix Finset Real
 
 namespace GlobalTheory
@@ -35,3 +37,9 @@ theorem exp_quadratic_lower_and_log_linear_lower :
   ⟨one_add_add_sq_div_three_le_exp, three_mul_div_four_le_log_one_add⟩
 
 end GlobalTheory
+end
+
+open Matrix Finset Real
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exp_quadratic_lower_and_log_linear_lower' : (∀ u : ℝ, |u| ≤ 1 → 1 + u + u ^ 2 / 3 ≤ Real.exp u) ∧ ∀ u : ℝ, 0 ≤ u → u ≤ 1 / 3 → 3 * u / 4 ≤ Real.log (1 + u) := by
+  atlas_forward_decl GlobalTheory.exp_quadratic_lower_and_log_linear_lower

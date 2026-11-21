@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.StepLocGenPinnedGP
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MainEqWire
+import BuildAid.ForwardExisting
+
+section
 open Formalism.FourierDecayAlt Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.L2.SG.Pf.MainEqCut Formalism.L2.SG.Pf.MainEqSteps Formalism.L2.SG.Pf.MainEqAna GlobalTheory.SnPos
 
 noncomputable section
@@ -44,3 +47,10 @@ example : StepPinExists → StepTermVanishG → StepLocGenPinnedG → StepThmBGP
   stepAnalyticCGP_of_steps
 
 end GlobalTheory.SnPos
+end
+end
+
+open Formalism.FourierDecayAlt Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.L2.SG.Pf.MainEqCut Formalism.L2.SG.Pf.MainEqSteps Formalism.L2.SG.Pf.MainEqAna GlobalTheory.SnPos
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.analyticConstantGenericBound_of_normalisedSteps : StepPinExists → StepTermVanishG → StepLocGenPinnedG → StepThmBGP → StepAnalyticCGP := by
+  atlas_forward_decl GlobalTheory.SnPos.stepAnalyticCGP_of_steps

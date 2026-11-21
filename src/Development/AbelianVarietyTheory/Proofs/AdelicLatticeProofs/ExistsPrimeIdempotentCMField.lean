@@ -1,8 +1,9 @@
 import Mathlib
-import Formalism.UnipotentAdelicQuotients.ThmBInHecke
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CmConjugationOnPrimesProperties
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CmExtensionAdelesStandardModelDictionaryStatement
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CmExtensionAdelesStandardModelDictionary
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AdeleIdemPrimeCriterion
+
+section
 open NumberField IsDedekindDomain NumberField.mixedEmbedding Complex Classical HeckeCharacterZeroLocus.ThmBIn
 open scoped TensorProduct ContDiff nonZeroDivisors
 
@@ -140,3 +141,10 @@ theorem exists_isPrimeIdem : ∀ (F E : Type) [Field F] [NumberField F] [Field E
           · rw [he0 _ hQ, hc0 _ hQ', add_zero, if_neg (by tauto)]
 
 end GlobalTheory.PrimeIdemExists
+end
+
+open NumberField IsDedekindDomain NumberField.mixedEmbedding Complex Classical HeckeCharacterZeroLocus.ThmBIn
+open scoped TensorProduct ContDiff nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_primeIdempotent_CMField : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ P : HeightOneSpectrum (𝓞 E), ∃ e f, IsPrimeIdem σ P e f := by
+  atlas_forward_decl GlobalTheory.PrimeIdemExists.exists_isPrimeIdem

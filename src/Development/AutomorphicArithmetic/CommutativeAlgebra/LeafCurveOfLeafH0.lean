@@ -1,5 +1,4 @@
 import Mathlib
-import Development.EtaleCohomology.EtaleSheaves.H0TwistOverClosedField
 import Development.EtaleCohomology.EtaleSheaves.LeafCurveCut
 import Development.EtaleCohomology.EtaleSheaves.LeafAffCoverVanishPfEmpty
 import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.CurveMayerVietorisOfDegreeZero

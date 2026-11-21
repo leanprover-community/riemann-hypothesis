@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl
@@ -165,3 +167,10 @@ theorem Heisenberg₂ : Heis := by
     exact ⟨g, mem_radQ_of_shape hs, funext hs.2.1, hs.2.2.1⟩
 
 end GlobalTheory.InertZeta.HeisCoord
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_heisenberg_radical_coordinates : Heis := by
+  atlas_forward_decl GlobalTheory.InertZeta.HeisCoord.Heisenberg₂

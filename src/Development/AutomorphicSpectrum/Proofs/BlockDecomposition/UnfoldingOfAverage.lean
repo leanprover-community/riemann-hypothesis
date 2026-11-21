@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Filter Topology
@@ -115,3 +117,10 @@ theorem unfold : SecLaw → AvgMem → Unfold := by
   rw [e1, hpk q, hΛ _ _ (κ₁ q).2, hsec _ hmem _ (hp q), smul_smul, mul_comm]
 
 end GlobalTheory.CompanionTheory.RgEisUnfold
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unfolding_of_average : SecLaw → AvgMem → Unfold := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisUnfold.unfold

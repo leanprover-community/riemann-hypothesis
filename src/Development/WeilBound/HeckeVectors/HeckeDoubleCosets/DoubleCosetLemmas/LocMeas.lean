@@ -3,7 +3,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsNrm
 import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocalFieldTopologyNormBallsStatement
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MatrixHaarRightTranslateStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MatrixHaarRightTranslate
 
 noncomputable section
 

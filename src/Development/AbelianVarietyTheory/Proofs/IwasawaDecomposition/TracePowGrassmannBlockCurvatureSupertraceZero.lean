@@ -1,5 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.VecMulVecComm
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MvPolynomial TensorProduct
@@ -122,3 +124,9 @@ theorem GlobalTheory.GrassModel.trace_pow_blockPoly_add_trace_pow_neg_blockPolyB
   · rw [h.neg_pow, Matrix.trace_neg, trace_swap A B hA hB m]
     have : Even m := by rcases h with ⟨t, ht⟩; exact ⟨t, by omega⟩
     rw [this.neg_one_pow]; simp
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trace_pow_grassmannBlockCurvature_supertrace_zero : ∀ {n p q : ℕ} (e : Fin p × Fin q → Fin n) (k : ℕ), 1 ≤ k → ((GlobalTheory.GrassModel.blockPoly e).map (GlobalTheory.GrassModel.toEven n) ^ k).trace + ((-GlobalTheory.GrassModel.blockPolyBar e).map (GlobalTheory.GrassModel.toEven n) ^ k).trace = 0 := by
+  atlas_forward_decl GlobalTheory.GrassModel.trace_pow_blockPoly_add_trace_pow_neg_blockPolyBar

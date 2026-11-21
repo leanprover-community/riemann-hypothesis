@@ -1,13 +1,12 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GapCondExample
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FrobeniusLatticeDegreeMulP
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LinearIndependentMapVec
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubDegreeMonoInjectiveHomStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubDegreeBotAndMaxExistsStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShortExactSubDegreeBoundStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DotDualSubDegreeAnnihilatorStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubDegreeMonoInjectiveHom
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubDegreeBotAndMaxExists
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShortExactSubDegreeBound
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DotDualSubDegreeAnnihilator
 
+section
 open GlobalTheory.CompanionTheory.Ar.Crv
 
 namespace GlobalTheory.CompanionTheory.Ar.Crv.FrobEst
@@ -60,3 +59,9 @@ theorem frob_estimate : ∀ (K : Type) [Field K] (C : ACurve K) (p : ℕ) [Fact 
     linarith
 
 end GlobalTheory.CompanionTheory.Ar.Crv.FrobEst
+end
+
+open GlobalTheory.CompanionTheory.Ar.Crv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lie_sub_degree_bound_by_dual : ∀ (K : Type) [Field K] (C : ACurve K) (p : ℕ) [Fact p.Prime] [CharP K p] (O : Type) [CommRing O] [StarRing O] (d : ℕ) (D : ConjData C p O d), 2 < p → 0 ≤ deg C (dotDual C D.lie) ∧ ∀ W : Submodule K (Fin d → K), ((p : ℤ) - 2) * subDeg C D.lie W ≤ deg C (dotDual C D.lie) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Crv.FrobEst.frob_estimate

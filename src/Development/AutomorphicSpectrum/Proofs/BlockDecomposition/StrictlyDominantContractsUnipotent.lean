@@ -1,7 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.StrictDominanceCasselman.IsStrictlyDominant
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel PositivityTheory.Lbc Topology Filter Matrix
 
 namespace GlobalTheory.CompanionTheory.ExpandN
@@ -117,3 +118,9 @@ theorem exists_pow_conj_mem_KN : ∀ (k : Type) [Field k] [ValuativeRel k] [Topo
   simpa [smul_smul, inv_mul_cancel₀ hc0'] using hmem'
 
 end GlobalTheory.CompanionTheory.ExpandN
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel PositivityTheory.Lbc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.strictly_dominant_contracts_unipotent : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (N h : ℕ) (d : Fin h → ℕ) (hd : ∑ a, d a = N) (J : Subgroup (GL (Fin N) k)), IsOpen (J : Set (GL (Fin N) k)) → IsCompact (J : Set (GL (Fin N) k)) → HasIwahoriFact k N J d hd → (∀ a, 0 < d a) → ∀ t : Levi k (Bl d), IsStrictlyDominant k N J d hd t → ∀ n ∈ unipRad k (stdBlocks d hd), ∃ r : ℕ, leviEmb k (stdBlocks d hd) t ^ r * n * (leviEmb k (stdBlocks d hd) t ^ r)⁻¹ ∈ KN k N J d hd := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ExpandN.exists_pow_conj_mem_KN

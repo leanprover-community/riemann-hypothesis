@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.AlgebraStatements.RelationsStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UniformizerModelPermModuleLatticeStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DescentRelationsFromModelsStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UniformizerModelPermModuleLattice
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DescentRelationsFromModels
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Num.TopRel
 
 open MvPolynomial GlobalTheory.CompanionTheory.Ar.Num GroundTheory.Heights₂.Heights.NumbersDVR
@@ -43,3 +44,8 @@ theorem relations : GlobalTheory.CompanionTheory.Ar.Num.RelationsStatement := by
     (VO := fun τ => Fin (s τ) → Ω) Lie W Om OmHT hsame hck lie om hflag
 
 end GlobalTheory.CompanionTheory.Ar.Num.TopRel
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.arithmetic_relations_statement_holds : GlobalTheory.CompanionTheory.Ar.Num.RelationsStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.TopRel.relations

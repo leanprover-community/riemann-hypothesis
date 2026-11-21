@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DomBy
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartPrimeExistsUniquePointStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtChartLocalizationStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartPrimeExistsUniquePoint
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtChartLocalization
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.OrVert
@@ -92,3 +92,10 @@ theorem exists_domBy_chart : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k,
     exact mul_mem hvu.2.1 hU.2.2
 
 end GlobalTheory.CompanionTheory.Ar.OrVert
+end
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.OrVert
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_ring_centre_in_chart : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω Ω' : Type) [Field Ω] [Field Ω'] (y : (Σ k, J k) → Ω) (X : Scheme.{0}) (ξ : Spec (CommRingCat.of Ω) ⟶ X), (∀ q : X, genPt ξ ⤳ q) → CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) → ∀ (i : Ω →+* Ω') (W : ValuationSubring Ω') (c : (k : K) → J k), (∀ k, y ⟨k, c k⟩ ≠ 0) → (∀ k j, i (y ⟨k, j⟩ / y ⟨k, c k⟩) ∈ W) → ∃ q : Cpt ξ, InChart ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) c q ∧ DomBy W.toSubring i ξ q := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.OrVert.exists_domBy_chart

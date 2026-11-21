@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.InFlagDomainOne
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.PB
@@ -376,3 +378,11 @@ theorem exists_unitary_translate_flag :
   · rw [Matrix.mul_inv_rev, Matrix.mul_assoc, nonsing_inv_mul g hg.1, Matrix.mul_one]
 
 end GlobalTheory.CompanionTheory.Ar.PB
+end
+end
+
+open Matrix GlobalTheory.CompanionTheory.Ar.PB
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_domain_unitary_triangular : ∀ (N j : ℕ), j ≤ N → ∀ g : Matrix (Fin N) (Fin N) ℂ, InFlagDomain N j g → ∃ u b : Matrix (Fin N) (Fin N) ℂ, gramOf (sigForm N j) u = diagonal (fun i => ((sigForm N j i : ℝ) : ℂ)) ∧ b.BlockTriangular id ∧ IsUnit b.det ∧ u * g = b := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.exists_unitary_translate_flag
