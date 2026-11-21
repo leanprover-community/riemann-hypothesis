@@ -1,17 +1,17 @@
 # riemann-hypothesis
 
-[![checks](https://github.com/leanprover-community/riemann-hypothesis/actions/workflows/checks.yml/badge.svg)](https://github.com/leanprover-community/riemann-hypothesis/actions/workflows/checks.yml)
+[![checks](https://github.com/mmmbeer/riemann-hypothesis/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/mmmbeer/riemann-hypothesis/actions/workflows/checks.yml)
 
 A [Comparator](https://github.com/leanprover/comparator) setup for the Lean formalization that
-claims a proof of the Riemann Hypothesis, and of GRH for Dirichlet L-functions, announced on
+claims a proof of the Riemann Hypothesis and of GRH for Dirichlet L-functions, announced on
 2026-11-20 at <https://alpo.ge/remark.pdf>.
 
-This branch contains the [Proof Atlas simplification](https://riemann.fairway3games.com/simplification)
-and the existing Comparator setup. The release retains 138,819 Lean modules. The five theorem
-statements and proof bodies in `src/Main.lean` match the submission. A complete Lean build and
-axiom audit of this branch are pending. See the [simplification verification records](verification/simplification/README.md).
+This fork contains the [Proof Atlas simplification](https://riemann.fairway3games.com/simplification).
+The release retains 138,819 Lean modules. The five theorem statements and proof bodies in
+`src/Main.lean` match the submission. A complete Lean build and axiom audit are pending.
+See the [simplification verification records](verification/simplification/README.md).
 
-The Comparator setup includes the following files.
+The fork also includes the Comparator setup and the upstream cache infrastructure.
 
 | File | What it is |
 |---|---|
@@ -19,6 +19,21 @@ The Comparator setup includes the following files.
 | [`comparator.json`](comparator.json) | the Comparator config |
 | [`export-targets.txt`](export-targets.txt) | the declarations to export |
 | [`verification/`](verification/NOTES.md) | our notes, and the results once there are some |
+| [`scripts/`](scripts/) | public Lake cache configuration and reproducible bootstrap/publishing tools |
+
+## Build cache
+
+Fetch the Mathlib cache before building the simplified source:
+
+```bash
+lake exe mathlib/cache get
+```
+
+The upstream `lake exe cache get` command also looks for project artifacts that match the
+current source and falls back to the cache for the original submission. That fallback requires
+the original source tree. The [upstream cache notes](verification/CACHE.md) describe how the
+community publishes and restores project artifacts. Use the clean-build instructions below
+for proof verification.
 
 ## What is claimed
 
@@ -34,16 +49,17 @@ The Comparator setup includes the following files.
 
 ```bash
 export LEAN_ABORT_ON_PANIC=1   # as Comparator sets it: stop on an internal error, don't continue
+export LAKE_ARTIFACT_CACHE=false   # rebuild the submission even if cache-env.sh was sourced earlier
 export MATHLIB_CACHE_GET_URL=https://cache.mathlib.org/mathlib4   # Mathlib's current cache server
 
 # 1. Export the challenge. Clean clone at $CLEAN, Lean v4.33.1.
 cd "$CLEAN"
-lake exe cache get
+lake exe mathlib/cache get
 lake build Challenge
 lake env lean4export Challenge -- $(cat export-targets.txt) > challenge.export
 
 # 2. Build the solution. Second clone, inside a sandbox with no network. Takes hours.
-lake exe cache get      # before entering the sandbox
+lake exe mathlib/cache get      # before entering the sandbox
 lake build Main         # inside the sandbox
 
 # 3. Export the solution. Still inside the sandbox; only solution.export comes out.
@@ -60,10 +76,9 @@ What to know before running it:
   only from Lean 4.35. So the proof is built and exported with `v4.33.1` and judged with
   `v4.36.0`. The exporter is [lean4export](https://github.com/leanprover/lean4export) at tag
   `v4.33.0`, built with Lean `v4.33.1`.
-- **Challenge first.** Compiling the submission runs its code, so the challenge is exported
-  where none of that code has been compiled. CI does step 1 on every push and publishes the
-  result as the `challenge-export` artifact. Its sha256 is
-  `bd484ac9886a96f26b1d9a7a59ebd45b7a70d102c015d4f31f9302bbdd6ab2b9`.
+- **Challenge first.** Export `Challenge` from a clean clone before compiling the proof.
+  The hosted check builds `Challenge` against Mathlib. Step 1 creates the export used by
+  Comparator.
 - **Cost.** Hours on a large machine, about 100 GB of disk, and a lot of memory for step 4.
 
 The [notes](verification/NOTES.md) have the details: where the source came from, the Lean

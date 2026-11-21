@@ -1,3 +1,6 @@
+# Cache infrastructure; the original submission starts below this block.
+platformIndependent = true
+
 name = "tree"
 srcDir = "src"
 defaultTargets = ["BuildAid", "CompanionTheory", "Development", "Formalism", "GroundTheory", "GroundTheoryFields", "Lemmata", "PositivityTheory", "ReciprocityTheory", "Supplements", "Main"]
@@ -64,3 +67,19 @@ roots = ["Statements", "Main"]
 [[lean_lib]]
 name = "Challenge"
 roots = ["Challenge"]
+
+# Project cache entrypoint. The original submission above is unchanged.
+[[lean_exe]]
+name = "cache"
+root = "scripts.Cache"
+srcDir = ".."
+
+# Stock Lake also reads this file as its cache-service configuration.
+[cache]
+defaultService = "riemann-hypothesis"
+
+[[cache.service]]
+name = "riemann-hypothesis"
+kind = "s3"
+artifactEndpoint = "https://rh-cache.taucetiproject.org/artifacts"
+revisionEndpoint = "https://rh-cache.taucetiproject.org/revisions"

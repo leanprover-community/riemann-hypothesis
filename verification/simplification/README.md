@@ -18,5 +18,5 @@ The receipts below apply to the Atlas archive before those two declarations were
   cusp integration, and tableau modules and their dependencies.
 - [Split torus check](issue3-split-torus.json) records the `GrpObj` and `MonObj` instance checks.
 
-The complete build and transitive axiom audit are pending. The inherited mirror check expects
-the original submission byte for byte and will fail on a simplified source tree.
+The complete build and transitive axiom audit are pending. The upstream mirror check compares
+the original submission byte for byte. This fork runs the Mathlib-only `Challenge` check.

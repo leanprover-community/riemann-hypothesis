@@ -1,0 +1,190 @@
+name: Build PR
+run-name: "Build PR #${{ github.event.pull_request.number || inputs.pr_number }} ${{ github.event.pull_request.head.sha || 'manual' }}"
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request whose proposed merge result should be built
+        type: number
+        required: true
+      runner_pool:
+        description: Runner pool (small requires reviewed warm cache and bounded build work)
+        type: choice
+        default: rh-build
+        options:
+          - rh-build
+          - rh-build-small
+
+permissions:
+  contents: read
+  pull-requests: read
+
+# Preserve running builds and their partial caches when a PR advances. Distinct
+# heads may use separate available runners; repeat events for one head coalesce.
+# Manual dispatches serialize separately because they resolve the head at runtime.
+concurrency:
+  group: rh-build-pr-${{ github.event.pull_request.number || inputs.pr_number }}-${{ github.event.pull_request.head.sha || 'manual' }}
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    if: github.repository == 'leanprover-community/riemann-hypothesis'
+    runs-on: ubuntu-latest
+    outputs:
+      candidate: ${{ steps.resolve.outputs.candidate }}
+      reuse: ${{ steps.resolve.outputs.reuse }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          sparse-checkout: scripts
+      - name: Resolve immutable candidate using trusted code
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          args=(--pr "$PR_NUMBER" --output request.json)
+          if [[ -n "$PR_HEAD" ]]; then args+=(--head "$PR_HEAD"); fi
+          python3 scripts/ci-prepare.py resolve "${args[@]}"
+          python3 - <<'PY'
+          import json, os
+          request = json.load(open('request.json'))
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              print('candidate=' + request['expected']['candidate_head'], file=output)
+              print('reuse=' + request.get('reuse_from', ''), file=output)
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ci-input
+          path: request.json
+          overwrite: true
+          retention-days: 7
+
+  build:
+    needs: resolve
+    if: ${{ needs.resolve.outputs.reuse == '' }}
+    runs-on:
+      group: RiemannHypothesisBuild
+      # Automatic PR builds and unspecified dispatches always use the heavy pool.
+      # Select small only after reviewing cache warmth and the remaining build work.
+      labels: ${{ github.event_name == 'workflow_dispatch' && inputs.runner_pool == 'rh-build-small' && 'rh-build-small' || 'rh-build' }}
+    timeout-minutes: 1440
+    steps:
+      - name: Clear disposable outputs from earlier jobs
+        run: rm -rf -- staging identity rh-ci-build-*
+      - name: Checkout trusted harness
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: trusted
+          persist-credentials: false
+          sparse-checkout: |
+            scripts
+            lakefile.toml
+            lake-manifest.json
+            lean-toolchain
+          sparse-checkout-cone-mode: false
+      - name: Checkout candidate as data
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.resolve.outputs.candidate }}
+          path: candidate
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: ci-input
+          path: identity
+      - name: Prepare trusted toolchain and public caches
+        run: |
+          umask 077
+          export PATH="$HOME/.elan/bin:$PATH"
+          printf '%s\n' "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          python3 trusted/scripts/ci-prepare.py prepare --trusted trusted --candidate candidate \
+            --state "${RH_CI_STATE_DIR:-$HOME/.local/share/riemann-build-state}" \
+            --request identity/request.json --output identity/paths.json
+      - name: Build candidate
+        id: build
+        continue-on-error: true
+        run: |
+          umask 077
+          tail -n 0 -F staging/build.log 2>/dev/null &
+          tail_pid=$!
+          trap 'kill "$tail_pid" 2>/dev/null || true' EXIT
+          set +e
+          python3 - <<'PY'
+          import json, os, subprocess
+          paths = json.load(open('identity/paths.json'))
+          jobs = int(os.environ.get('RH_CI_JOBS', min(8, os.cpu_count() or 1)))
+          total_kib = int(next(line for line in open('/proc/meminfo') if line.startswith('MemTotal:')).split()[1])
+          memory = int(os.environ.get('RH_CI_MEMORY_GIB', max(4, total_kib // 1024**2 * 4 // 5)))
+          args = ['python3', 'trusted/scripts/ci-build.py', '--candidate', 'candidate',
+                  '--packages', paths['packages'], '--output', 'staging', '--jobs', str(jobs),
+                  '--memory-gib', str(memory), '--baseline-cache', paths['baseline_cache'],
+                  '--baseline-manifest', paths['baseline_manifest'], '--baseline-map', paths['baseline_map']]
+          if paths['latest_map']:
+              args += ['--cache-map', paths['latest_map']]
+          result = subprocess.run(args)
+          code = result.returncode if result.returncode >= 0 else 128 - result.returncode
+          subprocess.run(['python3', 'trusted/scripts/ci-prepare.py', 'expected', '--request',
+                          'identity/request.json', '--exit-code', str(code), '--output', 'identity/expected.json'], check=True)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              print('exit_code=' + str(code), file=output)
+          raise SystemExit(code)
+          PY
+          code=$?
+          exit "$code"
+      - name: Upload trusted build identity
+        if: ${{ always() && steps.build.outputs.exit_code != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ci-request
+          path: |
+            identity/request.json
+            identity/expected.json
+          overwrite: true
+          retention-days: 7
+      - name: Upload completed modules, including partial failed builds
+        id: cache_upload
+        if: ${{ always() && hashFiles('staging/receipt.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ci-cache
+          path: |
+            staging/receipt.json
+            staging/outputs.jsonl
+            staging/module-manifest.jsonl.gz
+            staging/artifacts/*.ltar
+          compression-level: 0
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - name: Release successful raw work after durable upload
+        if: ${{ always() && steps.cache_upload.outcome == 'success' && steps.build.outputs.exit_code == '0' }}
+        env:
+          CACHE_ARTIFACT_ID: ${{ steps.cache_upload.outputs.artifact-id }}
+          CACHE_ARTIFACT_DIGEST: ${{ steps.cache_upload.outputs.artifact-digest }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          checkpoint = json.load(open('staging/work-checkpoint.json'))['checkpoint']
+          subprocess.run(['python3', 'trusted/scripts/ci-build.py', '--release-work', checkpoint,
+                          '--uploaded-artifact-id', os.environ['CACHE_ARTIFACT_ID'],
+                          '--uploaded-artifact-digest', os.environ['CACHE_ARTIFACT_DIGEST']], check=True)
+          PY
+      - name: Remove disposable build outputs
+        if: ${{ always() }}
+        run: rm -rf -- staging identity rh-ci-build-*
+      - name: Report build result
+        if: ${{ always() }}
+        env:
+          BUILD_EXIT: ${{ steps.build.outputs.exit_code }}
+        run: |
+          test -n "$BUILD_EXIT" || exit 1
+          exit "$BUILD_EXIT"
