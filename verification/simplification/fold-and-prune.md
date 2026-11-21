@@ -12,7 +12,7 @@ The baseline is the fork after the quotient and interlacing pilot, at `576bebfc0
 
 The pass removed 34,025 theorems and lemmas from 7,745 files, totaling 374,270 lines. The largest reductions were in Development/AbelianVarietyTheory (98,477 lines), Formalism/LocalToGlobal (52,271) and Formalism/SharpRestriction (52,100).
 
-Each removed command met these conditions:
+The removal pass applied the following checks.
 
 - The complete original module body occurs at the same fork path, and the declaration maps to an ordinary, single theorem or lemma command at that location.
 - The original five-theorem kernel dependency graph excludes the declaration and its shared auxiliary lemmas.
@@ -31,9 +31,13 @@ Consolidation added 12,550 net lines for scopes, separators and import changes. 
 
 ## Verification
 
-A source readback checks every surviving module. It matches each untouched file byte for byte and checks each grouped file's ordered imports, original proof bodies and inserted scope boundaries. The upstream kernel dataset describes the original proof. A clean build of the reduced `Main`, its five endpoint axiom reports and Comparator remain pending.
+A readback matched all 62,768 ungrouped source files byte for byte against the pruned tree. It checked the ordered imports, all 76,024 nonempty original module bodies and the inserted scope boundaries in all 15,856 groups. GitHub independently reproduced the final source tree and both manifest digests.
 
-[Independent source reconstruction and targeted Lean builds](https://github.com/mmmbeer/riemann-hypothesis/actions/runs/44913736053)
+Lean 4.33.1 and the pinned Mathlib built 28 targets from clean checkouts. Their combined import closure contained 104 distinct project modules, including 48 changed modules. The three downstream targets were `HeckeWeightTwoContinuationEqLatticeSeries`, `PIntDomainDim` and `GaloisActionSiegelUnitInTower`. Those three builds checked 77 project modules, including dependencies.
+
+The original kernel dataset supplied the pruning evidence. A clean build of the reduced `Main`, its five endpoint axiom reports and Comparator remain pending.
+
+[25 targeted Lean builds and independent source reconstruction](https://github.com/mmmbeer/riemann-hypothesis/actions/runs/44913736053) · [Three downstream Lean builds](https://github.com/mmmbeer/riemann-hypothesis/actions/runs/44914177747)
 
 ## Reproduce
 
