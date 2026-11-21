@@ -508,10 +508,6 @@ lemma W_smul (w : List (Bool × Mat k r)) (a : ℂ) (f : Mat k r → E) : W w (a
   | nil => rfl
   | cons x w ih => rw [W_cons, W_cons, ih, op_smul]
 
-lemma W_rsmul (w : List (Bool × Mat k r)) (a : ℝ) (f : Mat k r → E) : W w (a • f) = a • W w f := by
-  induction w with
-  | nil => rfl
-  | cons x w ih => rw [W_cons, W_cons, ih, op_rsmul]
 
 lemma W_sub {f f₂ : Mat k r → E} (w : List (Bool × Mat k r)) (hw : AllLie w)
     (hf : CkOn ((w.length : ℕ) : ℕ∞) (GV k r) f) (hf₂ : CkOn ((w.length : ℕ) : ℕ∞) (GV k r) f₂) :

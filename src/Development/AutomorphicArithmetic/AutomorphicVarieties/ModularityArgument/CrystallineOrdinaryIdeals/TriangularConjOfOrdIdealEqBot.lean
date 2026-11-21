@@ -15,9 +15,6 @@ theorem conjBy_right_eq {G C : Type} [Group G] [CommRing C] (h : GL (Fin 3) C) (
     (conjBy h r g).right = (r g).right := by
   simp [conjBy, MulAut.conj_apply]
 
-theorem conjBy_left_eq {G C : Type} [Group G] [CommRing C] (h : GL (Fin 3) C) (r : G →* GG 3 C) (g : G)
-    (hg : (r g).right = 1) : (conjBy h r g).left = h * (r g).left * h⁻¹ := by
-  simp [conjBy, GG.ofGL, SemidirectProduct.mul_left, SemidirectProduct.mul_right, SemidirectProduct.inv_left, SemidirectProduct.inv_right, hg]
 
 end GlobalTheory.OrdLoc
 

@@ -88,8 +88,6 @@ theorem localization_mono₃ {L L' : Submodule (𝓞 D.host.E) (VS D).V} (hle : 
   obtain ⟨s, hs, h⟩ := (mem_LP P).mp hx
   exact (mem_LP P).mpr ⟨s, hs, hle h⟩
 
-theorem add_mem_localization {L : Submodule (𝓞 D.host.E) (VS D).V} {x y : (VS D).V} (hx : x ∈ LP P L) (hy : y ∈ LP P L) :
-    x + y ∈ LP P L := add_mem hx hy
 
 theorem sub_mem_localization {L : Submodule (𝓞 D.host.E) (VS D).V} {x y : (VS D).V} (hx : x ∈ LP P L) (hy : y ∈ LP P L) :
     x - y ∈ LP P L := sub_mem hx hy

@@ -119,18 +119,10 @@ theorem CuspLeSpan.genNeZero (h : CuspLeSpan Δ hK nV cusp) : GenNeZero Δ hK nV
   push Not at h0
   exact hne (le_bot_iff.1 ((h a n hr).trans (Submodule.span_eq_bot.2 h0).le))
 
-theorem CuspLeSpan.cuspEqSpan (h : CuspLeSpan Δ hK nV cusp) (h' : ShortInCusp Δ hK nV cusp) :
-    CuspEqSpan Δ hK nV cusp :=
-  fun a n hr hp => le_antisymm (h a n hr) (Submodule.span_le.2 (h' a n hr.2.1 hp))
 
 theorem SpanCanonical.neZero (h : SpanCanonical Xo c) : NeZeroCanonical Xo c :=
   fun nab hn r U hU Δ hK nV => (h nab hn r U hU Δ hK nV).1.genNeZero
 
-theorem exists_spanRange (hr : 3 ≤ Dw.p + Dw.q) (hA : l.A = 1) : ∃ a n, SpanRange Dw l a n ∧ OnePos Dw a := by
-  obtain ⟨τ, hτ⟩ := exists_inPsi H
-  refine ⟨fun _ => 1, 8 * (Module.finrank ℚ E / 2) * (Dw.p + Dw.q) + 4,
-    ⟨hA, ⟨fun _ => antitone_const, ⟨4 * (Module.finrank ℚ E / 2) * (Dw.p + Dw.q) + 2, by ring⟩⟩, hr, le_rfl⟩,
-    τ, hτ, fun _ => le_rfl⟩
 
 theorem StdFourier.unit (h : StdFourier Xo c nab) : StdFourierUnit Xo c nab := by
   intro n N β hN hβ

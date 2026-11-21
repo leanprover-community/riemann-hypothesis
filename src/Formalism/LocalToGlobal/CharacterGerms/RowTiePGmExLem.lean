@@ -60,14 +60,6 @@ theorem mm_sum {ι : Type*} {s : Finset ι} {f : ι → C} (h : ∀ i ∈ s, V.M
 theorem v_eq_zero_of {a : C} (h0 : V.Ge 0 a) (h : ¬ V.MM a) : V.v a = 0 :=
   le_antisymm (not_lt.1 h) (by simpa [VF.Ge] using h0)
 
-theorem ge_pow' {r : ℝ} {a : C} (h : V.Ge r a) (k : ℕ) : V.Ge ((k : ℝ) * r) (a ^ k) := by
-  induction k with
-  | zero => rw [Nat.cast_zero, zero_mul, pow_zero]; exact VF.Ge.one
-  | succ k ih =>
-    rw [pow_succ]
-    have := ih.mul h
-    convert this using 1
-    push_cast; ring
 
 theorem ge_natCast' (n : ℕ) : V.Ge 0 (n : C) := by
   induction n with
@@ -126,26 +118,6 @@ theorem ge_of_isIntegral {z : C} (hz : IsIntegral ℤ z) : V.Ge 0 z := by
   rw [← h1] at this
   exact not_mm_one this
 
-theorem ge_inv_two [CharZero C] (hl2 : V.l ≠ 2) : V.Ge 0 ((2 : C)⁻¹) := by
-  have hcop : IsCoprime ((2 : ℕ) : ℤ) ((V.l : ℕ) : ℤ) :=
-    Nat.isCoprime_iff_coprime.2 ((Nat.coprime_primes Nat.prime_two V.l_prime).2 (Ne.symm hl2))
-  obtain ⟨a, b, hab⟩ := hcop
-  have h1 : (a : C) * 2 + (b : C) * (V.l : C) = 1 := by
-    have := congrArg (Int.cast : ℤ → C) hab
-    push_cast at this
-    exact this
-  have hn2 : ¬ V.MM (2 : C) := by
-    intro h
-    apply not_mm_one (V := V)
-    rw [← h1]
-    exact mm_add (mm_int_mul (ge_intCast' a) h) (mm_int_mul (ge_intCast' b) mm_l)
-  have h2int : V.Ge 0 (2 : C) := by
-    have := (VF.Ge.one (V := V)).add (VF.Ge.one (V := V)); rwa [one_add_one_eq_two] at this
-  have hv2 : V.v (2 : C) = 0 := v_eq_zero_of h2int hn2
-  have e : V.v (2 : C) + V.v (2 : C)⁻¹ = 0 := by
-    rw [← V.v.map_mul, mul_inv_cancel₀ two_ne_zero, V.v.map_one]
-  rw [hv2, zero_add] at e
-  unfold VF.Ge; rw [e]; simp
 
 theorem geom_int {A B : C} (hA : V.Ge 0 A) (hB : V.Ge 0 B) (n : ℕ) :
     V.Ge 0 (∑ i ∈ Finset.range n, A ^ i * B ^ (n - 1 - i)) :=
@@ -159,38 +131,7 @@ theorem mm_pow_sub {A B : C} (hA : V.Ge 0 A) (hB : V.Ge 0 B) (h : V.MM (A - B)) 
     V.MM (A ^ n - B ^ n) := by
   rw [← geom_sum₂_mul]; exact mm_int_mul (geom_int hA hB n) h
 
-theorem ge_pow_l_sub {A B : C} (hA : V.Ge 0 A) (hB : V.Ge 0 B) {w ε : ℝ} (h : V.Ge w (A - B))
-    (hε : ε ≤ 1) (hεw : ε ≤ w) : V.Ge (w + ε) (A ^ V.l - B ^ V.l) := by
-  rw [← geom_sum₂_mul, show w + ε = ε + w from add_comm w ε]
-  refine VF.Ge.mul ?_ h
-  have e2 : ∀ i ∈ Finset.range V.l, B ^ i * B ^ (V.l - 1 - i) = B ^ (V.l - 1) := by
-    intro i hi
-    rw [← pow_add]; congr 1
-    have := Finset.mem_range.1 hi; omega
-  have e : ∑ i ∈ Finset.range V.l, A ^ i * B ^ (V.l - 1 - i) =
-      ∑ i ∈ Finset.range V.l, (A ^ i - B ^ i) * B ^ (V.l - 1 - i) + (V.l : C) * B ^ (V.l - 1) := by
-    rw [show (V.l : C) * B ^ (V.l - 1) = ∑ i ∈ Finset.range V.l, B ^ i * B ^ (V.l - 1 - i) by
-      rw [Finset.sum_congr rfl e2, Finset.sum_const, Finset.card_range, nsmul_eq_mul]]
-    rw [← Finset.sum_add_distrib]
-    exact Finset.sum_congr rfl fun i _ => by ring
-  rw [e]
-  refine VF.Ge.add (VF.Ge.sum fun i _ => ?_) ?_
-  · rw [mul_comm]; exact (hB.pow _).mul_int ((ge_pow_sub hA hB h i).mono hεw)
-  · rw [mul_comm]; exact (hB.pow _).mul_int ((VF.ge_l (V := V)).mono hε)
 
-theorem ge_pow_lpow_sub {A B : C} (hA : V.Ge 0 A) (hB : V.Ge 0 B) {w ε : ℝ} (h : V.Ge w (A - B))
-    (hε0 : 0 ≤ ε) (hε : ε ≤ 1) (hεw : ε ≤ w) (k : ℕ) :
-    V.Ge (w + k * ε) (A ^ (V.l ^ k) - B ^ (V.l ^ k)) := by
-  induction k with
-  | zero => simpa using h
-  | succ k ih =>
-    rw [pow_succ, pow_mul, pow_mul]
-    have hk : ε ≤ w + k * ε := by
-      have : (0 : ℝ) ≤ k * ε := mul_nonneg (Nat.cast_nonneg k) hε0
-      linarith
-    have h2 := ge_pow_l_sub (hA.pow _) (hB.pow _) ih hε hk
-    convert h2 using 1
-    push_cast; ring
 
 theorem tele (z : ℕ → C) {ε : ℝ} (hε : 0 ≤ ε) (h : ∀ k : ℕ, V.Ge ((k + 1 : ℝ) * ε) (z (k + 1) - z k))
     (k j : ℕ) (hkj : k ≤ j) : V.Ge ((k + 1 : ℝ) * ε) (z j - z k) := by
@@ -205,45 +146,12 @@ theorem tele (z : ℕ → C) {ε : ℝ} (hε : 0 ≤ ε) (h : ∀ k : ℕ, V.Ge 
 
 def Kf (ε : ℝ) (n : ℕ) : ℕ := ⌈(n : ℝ) / ε⌉₊
 
-theorem Kf_spec {ε : ℝ} (hε : 0 < ε) (n : ℕ) : (n : ℝ) ≤ (Kf ε n : ℝ) * ε := by
-  have := Nat.le_ceil ((n : ℝ) / ε)
-  unfold Kf
-  rwa [div_le_iff₀ hε] at this
 
-theorem Kf_mono {ε : ℝ} (hε : 0 < ε) {n m : ℕ} (h : n ≤ m) : Kf ε n ≤ Kf ε m := by
-  unfold Kf
-  exact Nat.ceil_mono (div_le_div_of_nonneg_right (by exact_mod_cast h) hε.le)
 
 def Cpl (V : VF C) : Prop :=
   ∀ s : ℕ → C, (∀ n : ℕ, V.Ge n (s (n + 1) - s n)) → ∃ x, ∀ n : ℕ, V.Ge n (x - s n)
 
-theorem lim_of (z : ℕ → C) {ε : ℝ} (hC : Cpl V) (hε : 0 < ε)
-    (h : ∀ k : ℕ, V.Ge ((k + 1 : ℝ) * ε) (z (k + 1) - z k)) :
-    ∃ t, ∀ n : ℕ, V.Ge n (t - z (Kf ε n)) := by
-  refine hC (fun n => z (Kf ε n)) fun n => ?_
-  refine (tele z hε.le h _ _ (Kf_mono hε (Nat.le_succ n))).mono ?_
-  have := Kf_spec hε n
-  rw [add_mul, one_mul]
-  linarith
 
-theorem eps_of_mm {ι : Type} [Finite ι] (f : ι → C) (h : ∀ i, V.MM (f i)) :
-    ∃ ε : ℝ, 0 < ε ∧ ε ≤ 1 ∧ ∀ i, V.Ge ε (f i) := by
-  have h1 : ∀ i, ∃ e : ℝ, 0 < e ∧ e ≤ 1 ∧ V.Ge e (f i) := by
-    intro i
-    have hi := h i
-    unfold VF.MM at hi
-    induction hv : V.v (f i) using WithTop.recTopCoe with
-    | top => exact ⟨1, one_pos, le_rfl, by unfold VF.Ge; rw [hv]; exact le_top⟩
-    | coe r =>
-      rw [hv] at hi
-      have hr : 0 < r := by exact_mod_cast hi
-      exact ⟨min r 1, lt_min hr one_pos, min_le_right _ _, by
-        unfold VF.Ge; rw [hv]; exact_mod_cast min_le_left r 1⟩
-  choose e he0 he1 heg using h1
-  rcases isEmpty_or_nonempty ι with hι | hι
-  · exact ⟨1, one_pos, le_rfl, fun i => (IsEmpty.false i).elim⟩
-  · obtain ⟨i0, hi0⟩ := Finite.exists_min e
-    exact ⟨e i0, he0 i0, he1 i0, fun i => (heg i).mono (hi0 i)⟩
 
 theorem eq_one_of {u : C} {N : ℕ} (hN : V.MM ((N : C) + 1)) (hu1 : u ^ N = 1) (hum : V.MM (u - 1)) : u = 1 := by
   have hui : V.Ge 0 u := by

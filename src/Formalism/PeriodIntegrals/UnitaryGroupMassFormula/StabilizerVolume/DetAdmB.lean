@@ -155,9 +155,6 @@ theorem boxes_seq : ∃ bs : ℕ → Set (ι → Af F), (∀ n, bs n ∈ boxes F
   refine ⟨bs, fun n => hTS (mem_range_self n), ?_⟩
   rw [← sUnion_range, hTU, hU]
 
-theorem isCountablySpanning_boxes : IsCountablySpanning (boxes F ι) := by
-  obtain ⟨bs, h1, h2⟩ := boxes_seq (F := F) (ι := ι)
-  exact ⟨bs, h1, h2⟩
 
 open Classical in
 

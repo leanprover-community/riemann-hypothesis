@@ -548,14 +548,6 @@ theorem mem_SS_of_le_one_add_inv (X : Data E r) (la : Wt X.Ψ r) (Q : Frame X.Ψ
     (hcusp : ∀ ξ, X.IsIso ξ → ∀ x ∈ X.dom, X.fj la ξ 0 Q x = 0) : Q ∈ X.SS la :=
   mem_SS_of_isModerate X la Q hsec (isModerate_of_le_one_add_inv X la Q C A hC) hcusp
 
-theorem decay_of_isModerate (X : Data E r) (la : Wt X.Ψ r) (Q : Frame X.Ψ r → ℂ)
-    (hsec : X.IsSec la Q) (hmod : X.IsModerate la Q)
-    (hcusp : ∀ ξ, X.IsIso ξ → ∀ x ∈ X.dom, X.fj la ξ 0 Q x = 0) :
-    ∃ c C : ℝ, 0 < c ∧ Q ∈ X.SSgt la c ∧
-      ∀ x ∈ X.dom, X.pnorm la Q x ^ 2 ≤ C * Real.exp (-2 * Real.pi * c / X.firstMinimumSq x) := by
-  obtain ⟨c, hc, hQ⟩ := spectralGap_holds r X la Q (mem_SS_of_isModerate X la Q hsec hmod hcusp)
-  obtain ⟨C, hC⟩ := cuspidalDecay_holds r X la Q c hc.le hQ
-  exact ⟨c, C, hc, hQ, hC⟩
 
 theorem main (X : Data E r) (la : Wt X.Ψ r) (Q : Frame X.Ψ r → ℂ) :
     (∀ (ξ : Fin r → E) (x : Frame X.Ψ r) (ι : Type) [Countable ι] (A : ι → ℂ)

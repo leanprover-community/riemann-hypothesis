@@ -28,8 +28,6 @@ def toRec (j : E ≃+* L) (k : AlgebraicClosure L ≃+* Ω) (hk : FrameOver j k)
     ext x
     simp
 
-theorem toRec_apply (j : E ≃+* L) (k : AlgebraicClosure L ≃+* Ω) (hk : FrameOver j k)
-    (σ : AlgebraicClosure L ≃ₐ[L] AlgebraicClosure L) (x : Ω) : toRec j k hk σ x = k (σ (k.symm x)) := rfl
 
 def ofRec (j : E ≃+* L) (k : AlgebraicClosure L ≃+* Ω) (hk : FrameOver j k) :
     (Ω ≃ₐ[E] Ω) →* (AlgebraicClosure L ≃ₐ[L] AlgebraicClosure L) where
@@ -48,18 +46,8 @@ def ofRec (j : E ≃+* L) (k : AlgebraicClosure L ≃+* Ω) (hk : FrameOver j k)
     ext x
     simp
 
-theorem ofRec_apply (j : E ≃+* L) (k : AlgebraicClosure L ≃+* Ω) (hk : FrameOver j k)
-    (g : Ω ≃ₐ[E] Ω) (x : AlgebraicClosure L) : ofRec j k hk g x = k.symm (g (k x)) := rfl
 
-theorem toRec_ofRec (j : E ≃+* L) (k : AlgebraicClosure L ≃+* Ω) (hk : FrameOver j k) (g : Ω ≃ₐ[E] Ω) :
-    toRec j k hk (ofRec j k hk g) = g := by
-  ext x
-  simp [toRec_apply, ofRec_apply]
 
-theorem ofRec_toRec (j : E ≃+* L) (k : AlgebraicClosure L ≃+* Ω) (hk : FrameOver j k)
-    (σ : AlgebraicClosure L ≃ₐ[L] AlgebraicClosure L) : ofRec j k hk (toRec j k hk σ) = σ := by
-  ext x
-  simp [toRec_apply, ofRec_apply]
 
 end frame
 

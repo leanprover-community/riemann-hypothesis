@@ -279,8 +279,6 @@ def G1.ePhI {p : ℕ} [Fact p.Prime] (g : G1 p) (ι : Type) [Fintype ι] : MvPow
   if p = 2 then 1 else
     ∏ i : ι, (PowerSeries.subst (MvPowerSeries.X i : MvPowerSeries ι ℂ_[p]) (ePhi1 g.lam g.abelian₂ g.C g.wq))⁻¹
 
-theorem G1.ePhI_fin {p : ℕ} [Fact p.Prime] (g : G1 p) (r : ℕ) :
-    g.ePhI (Fin r) = ePh g.lam g.abelian₂ g.C g.wq r := rfl
 
 def intOrtho (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (e : FamE D) : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (g : G1 p), At D cc δ g → p ≠ D.host.d →
@@ -492,9 +490,6 @@ theorem rhoDet'_eq (D : D7) (u : D.what₂.Word) (i : ℕ) (c : (D.mem u).C.cls 
     (D.mem u).C.rhoDet' i c = ((rhoCh' D i (D.detCls u (i + 1) c) : ℂˣ) : ℂ) := by
   exact D.rhoDetPrime_eq_muTilde_mul_chi_pow u i c
 
-theorem member_chain_has_characters (D : D7) (u : D.what₂.Word) : CarriesTupleCharacters D (D.mem u).C D.muTil (D.detCls u) := by
-  intro i _
-  exact ⟨fun c => rhoDet_eq D u i c, fun c => rhoDet'_eq D u i c⟩
 
 def Mod1E (x : ℂ) : Prop := ∃ hx : x ∈ Qbar, ∀ ρ : Qbar →+* ℂ, ‖ρ ⟨x, hx⟩‖ = 1
 
@@ -577,21 +572,6 @@ def liftTie (D : D7) (T : Tor D) (e : FamE D) {u : D.what₂.Word} {C : ColumnCh
     C.unf i c c' (fun y => evFr D Q (O.frm i y)) y' =
       applyAt0 D (polD D O.dgen Q (O.frm (i + 1) y')) (O.Th i c c')
 
-theorem lift_formula (D : D7) (T : Tor D) (e : FamE D) {u : D.what₂.Word}
-    {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} (O : LiftObj D C) (i : ℕ) (hi : i < D.R.m) (h : liftTie D T e O i)
-    (φ : C.cls i → C.Y i → ℂ) (Q : C.cls i → MvPolynomial (FrV D (D.R.N i)) ℂ)
-    (hQ : ∀ c, C.sharp i (φ c) = fun y => evFr D (Q c) (O.frm i y)) (c' : C.cls (i + 1)) (y' : C.Y (i + 1)) :
-    C.K i φ c' y' = ∑ c, (((Nat.card (C.stab i c) : ℕ) : ℂ)⁻¹) *
-      ((((rhoOf D O.mt i (O.dt i c) : ℂˣ) : ℂ) * ((rhoOf' D O.mt i (O.dt (i + 1) c') : ℂˣ) : ℂ)) *
-        ((∏ τ, (C.de (i + 1) y' τ) ^ (C.sDiv i τ))⁻¹ *
-          applyAt0 D (polD D O.dgen (Q c) (O.frm (i + 1) y')) (O.Th i c c'))) := by
-  obtain ⟨-, h2⟩ := h
-  rw [lift_eqC D C O.mt O.dt O.c13 i hi φ c', Finset.sum_apply]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  have key := h2 c c' (Q c) y'
-  rw [hQ c]
-  simp only [Pi.smul_apply, smul_eq_mul, Formalism.BasicNotions.ColumnChain.divDe, Formalism.BasicNotions.mulFun, LinearMap.coe_mk,
-    AddHom.coe_mk, key]
 
 def LiftObj.IsMem {D : D7} {u : D.what₂.Word} (O : LiftObj D (D.mem u).C) : Prop :=
   letI := D.host.cmStar
@@ -632,14 +612,6 @@ def relDetP (D : D7) : Prop :=
     ∃ (h : ℕ) (z : unitary D.host.E), 0 < h ∧ PUnit D lam (z : D.host.E) ∧
       D.relDet N L₀ L ^ h = QuotientGroup.mk (D.e1Dt z)
 
-theorem relDetP_of_relDetPinned (D : D7) (idl : D.Dt ⧸ D.UO → IdE D) (h : RelDetPinned D idl) (hd : detIdP D) :
-    relDetP D := by
-  obtain ⟨hinj, -, hm, hz, hdet⟩ := h
-  intro p _ lam N L L₀ hL
-  obtain ⟨n, z, hn, hp, hnz⟩ := hd p lam N L L₀ hL
-  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  refine ⟨m + 1, z, hn, hp, hinj ?_⟩
-  rw [idl_pow hm, hdet, hnz, hz]
 
 def repUnitsOf (D : D7) (mt : ℕ → D.Dt →* ℂˣ) : Prop :=
   letI := D.host.cmStar
@@ -672,18 +644,7 @@ def rhoUse (D : D7) : Prop :=
   ∀ (u : D.what₂.Word) (C : ColumnChain D.R D.what₂.Tau (D.hcW u)) (mt : ℕ → D.Dt →* ℂˣ), rhoThreeOf D C mt →
     repUnitsOf D mt ∧ rhoValOf D C mt ∧ brRhoOf D C mt
 
-theorem chiUnitAll (D : D7) (h : chiUnitInert D) (ha : PowRatAll D) (p : ℕ) [Fact p.Prime]
-    (lam : Qbar →+* ℂ_[p]) (h2 : p ≠ 2) (hp : InertK D p) (t : D.Dt) :
-    ‖lamC lam ((D.chiD t : ℂˣ) : ℂ)‖ = 1 := by
-  obtain ⟨n, z, hz⟩ := ha t
-  exact h p lam h2 hp t n z hz
 
-theorem chiQ_move (D : D7) (idl : D.Dt ⧸ D.UO → IdE D) (h : RelDetPinned D idl) (N : ℕ)
-    (L L'' : (letI := D.host.cmStar; SDLat D.host.E N)) (x : D.Dt ⧸ D.UO) (i : ℕ)
-    (hi : detId D L.1 L''.1 = idl x ^ (i + 1)) : chiQ D (D.relDet N L L'') = chiQ D x ^ (i + 1) := by
-  obtain ⟨hinj, -, hm, -, hdet⟩ := h
-  have hx : D.relDet N L L'' = x ^ (i + 1) := hinj (by rw [hdet, hi, idl_pow hm])
-  rw [hx, map_pow]
 
 open IsDedekindDomain in
 
@@ -780,15 +741,6 @@ def PhiHat (D : D7) (T : Tor D) (δ : ℂ) {N N' r : ℕ} (p n : ℕ) [Fact p.Pr
   ((p : ℂ) ^ (n * r))⁻¹ * ∑ a : Fin r → Fin (p ^ n), Φ (fun i => (((a i : ℕ) : ℤ_[p]))) *
     (kap D T (vecN D T δ p n b a) (liftY D T δ p n ε b y))⁻¹
 
-theorem xi_formula (D : D7) (T : Tor D) (δ : ℂ) {N N' r : ℕ} (p n : ℕ) [Fact p.Prime] (ε : 𝓞 D.host.K)
-    (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (Φ : LocallyConstant (Fin r → ℤ_[p]) ℂ)
-    (G : VC D N N' → ℂ) (z : VC D N N') :
-    XiF D T δ p n ε b Φ G z =
-      ∑ y : Fin r → Fin (p ^ n), PhiHat D T δ p n ε b Φ y * Wop D T p (liftY D T δ p n ε b y) G z := by
-  simp only [XiF, PhiHat, Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
-  ring
 
 def xiOne (D : D7) : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ),
@@ -929,14 +881,7 @@ def Adm3s (D : D7) : Prop := admJ D ∧ InducedCMType D ∧ HostFieldConditions 
 
 def Stmt (D : D7) : Prop := Adm3s D → aux₃ D
 
-theorem relative_determinant_of_split_model (D : D7) (h : SplitModelProperties D) : Pinned D → relDetP D ∧ PowRatAll D := by
-  obtain ⟨-, -, -, -, -, hn, -, hd, -⟩ := h
-  rintro ⟨idl, hi⟩
-  exact ⟨relDetP_of_relDetPinned D idl hi hd, powRatAll_of D idl hi hn⟩
 
-theorem repUnits_of (D : D7) (h : aux₃ D) (u : D.what₂.Word) (h3 : rhoThree D) : repUnits D := by
-  obtain ⟨-, -, ⟨hu, -⟩, -⟩ := h
-  exact (hu u (D.mem u).C D.muTil (h3 u)).1
 
 def TwistedThetaTheorem (D : D7) (C : ℝ) (X : Ideal (𝓞 D.host.K) → ℂ → FamE D → Prop) : Prop :=
   ∀ cc : Ideal (𝓞 D.host.K), IsCurveIdeal D cc → ∀ δ : ℂ, IsDiscriminantTwelfthRootOfIdealLattice D cc δ →
@@ -956,13 +901,6 @@ theorem TwistedThetaTheorem.mono {D : D7} {C : ℝ} {X X' : Ideal (𝓞 D.host.K
   obtain ⟨e, he, hf, hx⟩ := h3 χ hχ
   exact ⟨e, he, hf, hX _ _ _ hx⟩
 
-theorem TwistedThetaTheorem.toTaylorLogMetric {D : D7} {C : ℝ} {X : Ideal (𝓞 D.host.K) → ℂ → FamE D → Prop} (h : TwistedThetaTheorem D C X) :
-    TaylorLogMetric.aux₃ D C := by
-  intro cc hcc δ hδ
-  obtain ⟨h1, h2, h3⟩ := h cc hcc δ hδ
-  refine ⟨h1, h2, fun χ hχ => ?_⟩
-  obtain ⟨e, he, -⟩ := h3 χ hχ
-  exact ⟨e, he⟩
 
 theorem TwistedThetaTheorem.rec {D : D7} {C : ℝ} {X : Ideal (𝓞 D.host.K) → ℂ → FamE D → Prop} (h : TwistedThetaTheorem D C X)
     (idl : D.Dt ⧸ D.UO → IdE D) (hi : RelDetPinned D idl) (cc : Ideal (𝓞 D.host.K)) (hcc : IsCurveIdeal D cc) (δ : ℂ)

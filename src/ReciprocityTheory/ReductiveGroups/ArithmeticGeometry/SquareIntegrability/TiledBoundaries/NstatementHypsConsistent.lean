@@ -22,7 +22,6 @@ def dim0 : (E4 →+* ℂ) → ℕ := fun _ => 0
 
 instance : IsEmpty (Idx dim0) := ⟨fun i => i.2.elim0⟩
 
-theorem card_coordIndex_zeroDim : Fintype.card (Idx dim0) = 0 := Fintype.card_eq_zero
 
 instance : Subsingleton (Vsp dim0) := ⟨fun x y => PiLp.ext fun i => isEmptyElim i⟩
 
@@ -68,12 +67,6 @@ theorem inhab (q n : ℕ) (_hq : 1 ≤ q) :
   · simp [X0]
   · rw [hermFormPi_zeroTorus, hermFormPi_zeroTorus]; simp [X0]
 
-theorem nstatement_hyps_consistent (q n : ℕ) (hq : 1 ≤ q) :
-    ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E) (X : PT E)
-      (π : Vsp X.dim →ₗ[ℂ] Vsp X.dim) (s : (Fin 1 → Vsp X.dim) → ℂ)
-      (K : Finset (Fin n → Vsp X.dim)),
-      1 ≤ q ∧ IsPi X q π ∧ s ∈ X.Sec 1 1 ∧ s ≠ 0 ∧ IsReps X q n π K :=
-  ⟨E4, inferInstance, inferInstance, inferInstance, X0, LinearMap.id, fun _ => 1, {0}, hq, inhab q n hq⟩
 
 end
 

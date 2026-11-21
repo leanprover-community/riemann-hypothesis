@@ -112,7 +112,6 @@ structure Rows (D : D7) : Prop where
 theorem an_iff {D : D7} : (T2.SumRepresentations.StrongMultiplicityOneCuspidalSums D.nd D.naut ↔ IsobaricCuspidalStrongMultiplicityOne D.nd D.naut) ∧ (T2.SumRepresentations.IsobaricMultiplicityOne D.nd D.naut ↔ IsobaricDiscreteSelfDualStrongMultiplicityOne D.nd D.naut) :=
   ⟨Iff.rfl, Iff.rfl⟩
 
-theorem analyticRigidity_of_admissible {D : D7} (h : SumRepresentations.adm5 D) : T2.SumRepresentations.StrongMultiplicityOneCuspidalSums D.nd D.naut ∧ T2.SumRepresentations.IsobaricMultiplicityOne D.nd D.naut := ⟨h.1, h.2.1⟩
 
 theorem LamUsed.at {D : D7} (h : LamUsed D) {μ} (hμ : μ = D.what₂.mu0 ∨ ∃ w, μ = D.what₂.muAt w) {j : ℕ}
     (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : LamPos D μ j := by
@@ -126,8 +125,6 @@ theorem LamUsed.loc {D : D7} (h : LamUsed D) (i : D.nd.Loc) : LamPos D (D.nd.mu 
 theorem goodIdempotentFixes_of_onlySeriesOfLabelActs {D : D7} (h : GlobalTheory.TypeLeaf.SerLoc D) : GoodIdempotentFixesLocalisationForms D := fun i σ' F hF hg =>
   (PlaceLabelTeichmuller.idempotent_action_on_forms D (D.ntypes.cenMt (D.nd.mu i) (D.nd.j i)) σ' F fun k v f hf => h i σ' k v f F hF hf).1 hg
 
-theorem goodIdempotent_of_goodProjector {D : D7} (h : ArithmeticCylinders.Conclusion4 D) : GoodIdempotentFixesLocalisationForms D :=
-  fun i σ' F hF hg => (h.2.2.2.2.1 _ _ (D.nd.j_range i).1 (D.nd.j_range i).2 σ' F hF).1 hg
 
 theorem partsGive_of {D : D7} (h1 : SumRepresentations.AdmAt D → SumRepresentations.ReducedFamilyProposition D)
     (h2 : SumRepresentations.AdmAt D → RowSize D → HeckeSplitOne D → (∀ i : D.nd.Loc, LamPos D (D.nd.mu i) (D.nd.j i)) → ThetaOne D →
@@ -169,9 +166,6 @@ theorem Conclusion1 (h : PartsGive D) (a : RowsA D) (b : RowsB D) : SumRepresent
 
 end Inputs
 
-theorem nonempty_inputs_iff {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} :
-    Nonempty (Inputs hL D) ↔ ∃ T : Tied hL D, Named T :=
-  ⟨fun ⟨I⟩ => ⟨I.toRowSideFamily, I.named⟩, fun ⟨T, h⟩ => ⟨⟨T, h⟩⟩⟩
 
 example (D : D7) (h : ∀ μ j f, D.what₂.thetaP μ j (D.what₂.thetaT μ j f) = f) (h1 : ∀ μ j σ, D.what₂.lamP μ j σ = 1) :
     LamUsed D := fun μ _ j σ =>

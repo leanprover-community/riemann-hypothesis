@@ -47,7 +47,6 @@ noncomputable def colTo (j : ℕ) : (C.cls 0 → C.Y 0 → ℂ) →ₗ[ℂ] (C.c
   Nat.rec (motive := fun j => (C.cls 0 → C.Y 0 → ℂ) →ₗ[ℂ] (C.cls j → C.Y j → ℂ)) LinearMap.id
     (fun i f => (C.Klin i).comp f) j
 
-theorem colTo_succ (j : ℕ) : colTo C (j + 1) = (C.Klin j).comp (colTo C j) := rfl
 
 theorem colTo_eq (j : ℕ) (φ : C.cls 0 → C.Y 0 → ℂ) : colTo C j φ = Formalism.ThetaLiftIndependence.chainOpM C.wt C.Kmap j φ := by
   induction j with
@@ -103,7 +102,6 @@ def dualH {K : Type} [Field K] [NumberField K] [StarRing K] (A : HLat K) : HLat 
   X := A.dualX
   L := A.dualL
 
-theorem dualH_muMax {K : Type} [Field K] [NumberField K] [StarRing K] (A : HLat K) : (dualH A).muMax = A.muMaxDual := rfl
 
 variable (D : D7) (Am : AmbForm D (RowSide.sharp D)) (u : D.what₂.Word)
 
@@ -149,34 +147,8 @@ def HtPhiLe (h : ℝ) : Prop := PhiRat D Am u ∧ (Phi D Am u ≠ 0 → htPhi D 
 def PhiInt (N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) : Prop :=
   PhiRat D Am u ∧ ∀ x ∈ N, Phi D Am u x ∈ (MtDual D Am).L
 
-theorem phiInt_iff_exists (N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) :
-    PhiInt D Am u N ↔ ∃ Φ, IsPhi D Am u Φ ∧ ∀ x ∈ N, Φ x ∈ (MtDual D Am).L := by
-  constructor
-  · rintro ⟨h, h'⟩
-    exact ⟨_, isPhi_Phi D Am u h, h'⟩
-  · rintro ⟨Φ, h, h'⟩
-    refine ⟨⟨Φ, h⟩, ?_⟩
-    rw [← IsPhi.eq_Phi D Am u h]
-    exact h'
 
-theorem phiInt_iff (N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) :
-    PhiInt D Am u N ↔ PhiRat D Am u ∧ ∀ x ∈ N, ∀ z ∈ (Mt D Am).L, ∃ a : 𝓞 D.what₂.LL,
-      D.what₂.embLL (a : D.what₂.LL) = D.what₂.perCol u D.what₂.mu0 (D.jN u x) (Am.jAmb D.what₂.mu0 z) := by
-  refine and_congr_right fun h => ?_
-  refine forall₂_congr fun x _ => forall₂_congr fun z _ => exists_congr fun a => ?_
-  rw [← isPhi_Phi D Am u h x z]
-  exact (D.what₂.embLL.injective.eq_iff).symm
 
-theorem htPhiLe_iff_exists (h : ℝ) : HtPhiLe D Am u h ↔ ∃ Φ, IsPhi D Am u Φ ∧
-    (Φ ≠ 0 → Formalism.HN.htMap (D.div.Nu u).b (D.div.Nu u).X (MtDual D Am).b (MtDual D Am).X Φ ≤ h) := by
-  constructor
-  · rintro ⟨hr, h'⟩
-    exact ⟨_, isPhi_Phi D Am u hr, h'⟩
-  · rintro ⟨Φ, hΦ, h'⟩
-    refine ⟨⟨Φ, hΦ⟩, ?_⟩
-    unfold htPhi
-    rw [← IsPhi.eq_Phi D Am u hΦ]
-    exact h'
 
 def basN : Basis (D.div.Nu u).ι ℂ (D.mem u).A.Mram :=
   (Basis.mk (D.jN_basis u).1 (D.jN_basis u).2.ge).map (D.eMu u)
@@ -184,9 +156,6 @@ def basN : Basis (D.div.Nu u).ι ℂ (D.mem u).A.Mram :=
 def basM : Basis (Mt D Am).ι ℂ (D.mem u).P.Mt :=
   (Basis.mk (Am.jAmb_basis _ (Or.inl rfl)).1 (Am.jAmb_basis _ (Or.inl rfl)).2.ge).map (D.eMt u).symm
 
-theorem finrank_Nu : finrank D.what₂.LL (D.div.Nu u).V = dU D u := by
-  rw [finrank_eq_card_basis (D.div.Nu u).b]
-  exact (finrank_eq_card_basis (basN D u)).symm
 
 theorem toMatrix_PhiC {Φ} (h : IsPhi D Am u Φ) :
     LinearMap.toMatrix (basN D u) (basM D Am u).dualBasis (PhiC (D.mem u).C (D.mem u).A (D.mem u).P) =
@@ -211,11 +180,6 @@ theorem rkL_eq (h : PhiRat D Am u) : rkL D Am u = rkC (D.mem u).C (D.mem u).A (D
     toMatrix_PhiC D Am u (isPhi_Phi D Am u h)]
   exact (rank_map_field D.what₂.embLL _).symm
 
-theorem rkl_iff : RKL D Am u ↔ PhiRat D Am u ∧ RK D u := by
-  refine and_congr_right fun h => ?_
-  unfold RK RKC
-  rw [rkL_eq D Am u h, finrank_Nu]
-  rfl
 
 theorem RKL.phi_ne_zero (h : RKL D Am u) : Phi D Am u ≠ 0 := by
   intro h0
@@ -224,8 +188,6 @@ theorem RKL.phi_ne_zero (h : RKL D Am u) : Phi D Am u ≠ 0 := by
   rw [h0, LinearMap.range_zero, finrank_bot] at h1
   omega
 
-theorem RKL.htPhi_le (h : RKL D Am u) {t : ℝ} (ht : HtPhiLe D Am u t) : htPhi D Am u ≤ t :=
-  ht.2 (RKL.phi_ne_zero D Am u h)
 
 theorem PhiInt.mono {N N' : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V} (h : PhiInt D Am u N) (hle : N' ≤ N) :
     PhiInt D Am u N' := ⟨h.1, fun x hx => h.2 x (hle hx)⟩

@@ -172,9 +172,6 @@ def holSec : Submodule ℂ (B.ι → CxPts p σ → ℂ) where
   add_mem' hs ht := ⟨add_mem hs.1 ht.1, fun i j => (hs.2 i j).add (ht.2 i j)⟩
   smul_mem' c _ hs := ⟨Submodule.smul_mem _ c hs.1, fun i j => (hs.2 i j).const_smul c⟩
 
-theorem holSec_eq (R R' : AnRead p σ D) (B : LB Y) : R.holSec B = R'.holSec B :=
-  Submodule.ext fun _ => and_congr_right fun _ =>
-    forall_congr' fun _ => holoOn_iff R R' (isOpen_ptsIn _)
 
 variable (R) in
 
@@ -188,10 +185,6 @@ def valC : SecC p σ B →ₗ[ℂ] R.holSec B :=
 
 @[simp] theorem coe_valC (x : SecC p σ B) : (R.valC B x : B.ι → CxPts p σ → ℂ) = SecC.val x := rfl
 
-theorem secTens_mem_holSec {s : A.ι → CxPts p σ → ℂ} {t : B.ι → CxPts p σ → ℂ}
-    (hs : s ∈ R.holSec A) (ht : t ∈ R.holSec B) : secTens s t ∈ R.holSec (tens A B) :=
-  ⟨secTens_mem hs.1 ht.1, fun c => ((hs.2 c.1).mono (ptsIn_mono inf_le_left)).mul
-    ((ht.2 c.2).mono (ptsIn_mono inf_le_right))⟩
 
 end AnRead
 
@@ -300,15 +293,6 @@ theorem rv_mul_jacobian {a : K.bundle.ι} (hy : y ∈ ptsIn p σ c.U)
   exact mul_left_cancel₀ (rv_ne_zero c.isFrame c.isFrame hy hy)
     ((rv_mul _ _ _ hy hy hy).trans (mul_one _).symm)
 
-theorem rv_mul_jacobian_eq_det {a : K.bundle.ι} {W : Y.Opens} (h : W ≤ K.bundle.U a)
-    (g : Fin D → Γ(Y, W)) (hy : y ∈ c.e.source) (hW : y ∈ ptsIn p σ W) :
-    rv σ c.isFrame (K.isFrame a) y * ev p σ W (K.jacobian a h g) y = (c.jacMat g y).det := by
-  have hy' : y ∈ ptsIn p σ (c.U ⊓ W) := mem_ptsIn_inf.2 ⟨c.source_subset hy, hW⟩
-  rw [← c.jacMat_res inf_le_right g hy hy', ← c.ev_coeff_dOn inf_le_left _ hy hy',
-    c.isFrame.coeff_change (K.isFrame a) inf_le_left (inf_le_right.trans h), ev_mul,
-    ← ev_res inf_le_right hy', K.resG_jacobian, rv, ← ev_res (inf_le_inf_left _ h) hy',
-    IsFrame.resG_ratio]
-  rfl
 
 def topDens (y : CxPts p σ) : ℝ :=
   2 ^ D * (‖c.topCoeff K f (pick K.isLB y) (pick φ.isLB y) y‖ ^ 2 *
@@ -548,14 +532,7 @@ theorem atlas_g_wt (a : κ) (c c' : F.Idx) (y : CxPts p σ) :
 theorem atlas_ph_wt (a : κ) (c : F.Idx) (y : CxPts p σ) :
     F.atlas.ph (wt a) c y = (F.φ a).φ (c.2.2 a) y := F.atlas_ph_single _ c y
 
-theorem pos_wt {a : κ} (h : (F.φ a).SemiPos R) : F.atlas.Pos (wt a) fun _ => 0 :=
-  fun c y hy ξ => by
-  simp only [WeightedAtlas.leviAt, atlas_ph_wt, add_zero]
-  exact h _ c.1 y ⟨hy.1, mem_L hy a⟩ ξ
 
-theorem holoOn_iff_atlas {S : Set (CxPts p σ)} (hS : IsOpen S) {f : CxPts p σ → ℂ} :
-    R.HoloOn S f ↔ ∀ c, DifferentiableOn ℂ (f ∘ (F.atlas.chart c).symm)
-      ((F.atlas.chart c).target ∩ (F.atlas.chart c).symm ⁻¹' S) := holoOn_iff R F.refine hS
 
 structure Reading (B : LB Y) (m : Option κ → ℤ) where
 
@@ -606,44 +583,8 @@ theorem isSec_read (hs : s ∈ R.holSec B) : F.atlas.IsSec m (r.read s) := by
 theorem isSec_read_secVal (s : B.Sec) : F.atlas.IsSec m (r.read (secVal p σ s)) :=
   r.isSec_read (R.secVal_mem_holSec s)
 
-theorem isSec_read_val (x : SecC p σ B) : F.atlas.IsSec m (r.read (SecC.val x)) :=
-  r.isSec_read (R.valC B x).2
 
-theorem eq_of_read_eq (hs : s ∈ fibSec p σ B) (ht : t ∈ fibSec p σ B)
-    (h : ∀ c, ∀ y ∈ (F.atlas.chart c).source, r.read s c y = r.read t c y) : s = t := by
-  funext i y
-  by_cases hi : y ∈ ptsIn p σ (B.U i)
-  · have hc := F.atlas.mem_pick y
-    exact mul_left_cancel₀ (r.ne _ i y hc hi)
-      ((r.read_eq hs hc hi).symm.trans ((h _ y hc).trans (r.read_eq ht hc hi)))
-  · rw [hs.2 i y hi, ht.2 i y hi]
 
-theorem exists_read_eq {G : F.Idx → CxPts p σ → ℂ} (hG : F.atlas.IsSec m G) :
-    ∃ s ∈ R.holSec B, ∀ c, ∀ y ∈ (F.atlas.chart c).source, r.read s c y = G c y := by
-  classical
-  let s (i : B.ι) (y : CxPts p σ) : ℂ := if y ∈ ptsIn p σ (B.U i) then
-    (r.u (F.atlas.pick y) i y)⁻¹ * G (F.atlas.pick y) y else 0
-  have key {c i j y} (h : y ∈ (F.atlas.chart c).source) (hi : y ∈ ptsIn p σ (B.U i))
-      (hj : y ∈ ptsIn p σ (B.U j)) : (r.u c i y)⁻¹ * G c y = gv p σ B i j y * s j y := by
-    have hc := F.atlas.mem_pick y
-    have e := r.compat c _ i j y h hc hi hj
-    have h₁ := r.ne c i y h hi
-    have h₂ := r.ne _ j y hc hj
-    rw [hG.2 c _ y trivial h hc, (eq_mul_inv_iff_mul_eq₀ h₂).2 e]
-    simp only [s, if_pos hj]
-    field_simp
-  have key' {c i y} (h : y ∈ (F.atlas.chart c).source) (hi : y ∈ ptsIn p σ (B.U i)) :
-      s i y = (r.u c i y)⁻¹ * G c y := by rw [key h hi hi, gv_self r.isLB hi, one_mul]
-  have hs : s ∈ fibSec p σ B := ⟨fun i j y hi hj =>
-    (key' (F.atlas.mem_pick y) hi).trans (key (F.atlas.mem_pick y) hi hj), fun i y h => if_neg h⟩
-  refine ⟨s, ⟨hs, fun i => holoOn_of_cover (fun c => (F.atlas.chart c).open_source)
-    (fun y _ => ⟨_, F.atlas.mem_pick y⟩) fun c => ?_⟩, fun c y h => ?_⟩
-  · rw [inter_comm]
-    exact (((r.holo c i).inv fun y hy => r.ne c i y hy.1 hy.2).mul
-      ((holoOn_of_chart (F.refine.chart c) (hG.1 c)).mono fun _ hy => ⟨hy.1, trivial⟩)).congr
-      fun y hy => key' hy.1 hy.2
-  · have hi := mem_pick r.isLB y
-    rw [r.read_eq hs h hi, key' h hi, mul_inv_cancel_left₀ (r.ne c _ y h hi)]
 
 def Isometric (φ : Weight p σ B) : Prop :=
   ∀ c i y, y ∈ (F.atlas.chart c).source → y ∈ ptsIn p σ (B.U i) →
@@ -669,9 +610,6 @@ def ofMem (a : κ) : F.Reading (F.L a) (wt a) where
     rw [atlas_g_wt, gv_mul (F.φ a).isLB (mem_L h a) (mem_L h' a) hi',
       gv_mul (F.φ a).isLB (mem_L h a) hi hi']
 
-theorem read_ofMem {a : κ} {s : (F.L a).ι → CxPts p σ → ℂ} (hs : s ∈ fibSec p σ (F.L a))
-    (h : y ∈ (F.atlas.chart c).source) : (ofMem F a).read s c y = s (c.2.2 a) y :=
-  (hs.1 _ _ y (mem_L h a) (mem_pick _ y)).symm
 
 theorem isometric_ofMem (a : κ) : (ofMem F a).Isometric (F.φ a) := fun c i y h hi => by
   rw [atlas_ph_wt, (F.φ a).trans _ i y (mem_L h a) hi]
@@ -688,14 +626,6 @@ def canon (K : CanonLB p D) : F.Reading K.bundle F.atlas.kap where
     rw [atlas_kap, atlas_g_single, gv_canon, rv_mul _ _ _ (mem_U h) hi hi']
     exact rv_mul _ _ _ (mem_U h) (mem_U h') hi'
 
-theorem isometric_canon : (canon F F.K).Isometric F.φK := fun c i y h hi => by
-  have e := (log_normSq_mul (rv_ne_zero (R.chart c.1).isFrame (F.K.isFrame c.2.1) (mem_U h) (mem_K h))
-    (rv_ne_zero _ (F.K.isFrame i) (mem_K h) hi)).symm.trans
-    (congrArg (fun z => Real.log (‖z‖ ^ 2)) (rv_mul _ _ _ (mem_U h) (mem_K h) hi))
-  refine (F.atlas_ph_single none c y).trans ?_
-  rw [F.φK.trans _ i y (mem_K h) hi, gv_canon]
-  simp only [ph₀, canon]
-  linarith
 
 variable (F) in
 
@@ -708,8 +638,6 @@ def triv : F.Reading (LB.triv Y) 0 where
     rw [gv_self (LB.isLB_triv Y) hi, atlas_g]
     simp
 
-theorem isometric_triv : (triv F).Isometric (Weight.ofFun fun _ => 0) := fun _ _ _ _ _ => by
-  simp [atlas_ph, triv, Weight.ofFun]
 
 def cast (h : m = m') : F.Reading B m' :=
   ⟨r.isLB, r.u, r.holo, r.ne, h ▸ r.compat⟩
@@ -744,12 +672,6 @@ theorem Isometric.tens {r' : F.Reading A m'} {ψ : Weight p σ A} {φ : Weight p
   simp only [Reading.tens, Weight.tens, log_normSq_mul (r'.ne c _ y hc e.1) (r.ne c _ y hc e.2)]
   ring
 
-theorem read_tens (r' : F.Reading A m') {s' : A.ι → CxPts p σ → ℂ} (hs' : s' ∈ fibSec p σ A)
-    (hs : s ∈ fibSec p σ B) (h : y ∈ (F.atlas.chart c).source) :
-    (r'.tens r).read (secTens s' s) c y = r'.read s' c y * r.read s c y := by
-  have e := mem_ptsIn_inf.1 (mem_pick (r'.tens r).isLB y)
-  rw [r'.read_eq hs' h e.1, r.read_eq hs h e.2]
-  exact mul_mul_mul_comm _ _ _ _
 
 def zpow (n : ℤ) : F.Reading (LB.LinComb B (K := PUnit) (fun _ => 𝟙 Y) fun _ => n) (n • m) where
   isLB := Semi.LB.isLB_linComb r.isLB _ _

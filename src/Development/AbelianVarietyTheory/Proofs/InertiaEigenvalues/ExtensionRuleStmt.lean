@@ -94,8 +94,5 @@ theorem extension_rule (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) :
     (fun h2 => absurd (((D.loc l).PD_p K).symm.trans h2) hA.2.1)
     (dense_DelF_gamK (D.loc l) S.W (D.locA l) fun h2 => absurd h2 hA.2.1)
 
-theorem extension_rule_stmt :
-    ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), InvariantsGenerators.HerrExtensionEtaleTheorem D HW F :=
-  fun D HW F _ => extension_rule D HW F
 
 end GlobalTheory.ExtDict

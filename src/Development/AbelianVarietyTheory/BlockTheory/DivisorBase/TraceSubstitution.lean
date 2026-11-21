@@ -60,37 +60,8 @@ def PolyFunctorOpNorm : Prop :=
     IsOpNorm le_rfl h ν x (∏ i, singVal x i ^ ν i) ∧
     IsOpNorm le_rfl h ν (x.map (starRingEnd ℂ)) (∏ i, singVal x i ^ ν i)
 
-theorem substTr_mul {r r' r'' n : ℕ} (x' : Matrix (Fin r'') (Fin r') ℂ) (x : Matrix (Fin r') (Fin r) ℂ) :
-    substTr n (x' * x) = (substTr n x').comp (substTr n x) := by
-  apply MvPolynomial.algHom_ext
-  intro v
-  simp only [substTr, AlgHom.comp_apply, aeval_X, map_sum, map_mul, algHom_C, Matrix.mul_apply, algebraMap_eq,
-    Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
-  ring
 
-theorem substTr_vec {r r' n : ℕ} (x : Matrix (Fin r') (Fin r) ℂ) (v : Fin r → ℂ) (s : Fin n) :
-    substTr n x (∑ a, C (v a) * X (a, s)) = ∑ b, C ((x *ᵥ v) b) * X (b, s) := by
-  simp only [substTr, aeval_X, map_sum, map_mul, algHom_C, algebraMap_eq, Matrix.mulVec, dotProduct,
-    Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
-  ring
 
-theorem fockS_re_pos {σ : Type} {f : MvPolynomial σ ℂ} (hf : f ≠ 0) : 0 < (fockS f f).re := by
-  unfold fockS
-  rw [Complex.re_sum]
-  refine Finset.sum_pos (fun m hm => ?_) (support_nonempty.mpr hf)
-  have hc : f.coeff m ≠ 0 := mem_support_iff.mp hm
-  have hm0 : 0 < mfact m := Finset.prod_pos fun k _ => Nat.factorial_pos _
-  have e : star (f.coeff m) * f.coeff m * (mfact m : ℂ) = ((Complex.normSq (f.coeff m) * mfact m : ℝ) : ℂ) := by
-    rw [Complex.ofReal_mul, Complex.normSq_eq_conj_mul_self]; simp
-  rw [e, Complex.ofReal_re]
-  exact mul_pos (Complex.normSq_pos.mpr hc) (by exact_mod_cast hm0)
 
-theorem invNorm_hw {r n : ℕ} (hn : n ≤ r) (ν : Fin n → ℕ) (hν : Antitone ν) :
-    invNorm hn ν ⟨hw ℂ hn ν, hwMem ℂ r n hn ν hν⟩ = 1 := by
-  rw [invNorm, div_self (fockS_re_pos (hwNe ℂ r n hn ν)).ne', Real.sqrt_one]
 
 end GlobalTheory.IndefiniteRowSideFullHecke.TraceSubstitution

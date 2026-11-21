@@ -204,10 +204,5 @@ theorem idelesCohomologyEquiv_symm_apply {n : ℕ} (hn : 1 ≤ n) (x : cohomolog
   conv_rhs => rw [← (idelesCohomologyEquiv hn).apply_symm_apply x, idelesCohomologyEquiv_apply]
   exact (placeProj_idelesCohomologySum n _ v).symm
 
-theorem idelesCohomologyLocalEquiv_apply {n : ℕ} (hn : 1 ≤ n) (x : cohomology (ideleRep K L) n)
-    (v : Place K) :
-    idelesCohomologyLocalEquiv hn x v = placeShapiro n v ((cohomologyMap (placeProj v) n).hom x) := by
-  rw [idelesCohomologyLocalEquiv, AddEquiv.trans_apply, DFinsupp.mapRange.addEquiv_apply,
-    DFinsupp.mapRange_apply, idelesCohomologyEquiv_symm_apply]
 
 end GroundTheory.ProfCoh

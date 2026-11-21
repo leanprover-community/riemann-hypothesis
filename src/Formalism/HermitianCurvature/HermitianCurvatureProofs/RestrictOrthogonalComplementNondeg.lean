@@ -631,89 +631,9 @@ theorem exists_sigma (hq : Fintype.card K = q ^ 2) :
     refine ⟨t / (t + σ t), ?_⟩
     rw [map_div₀, map_add, hinv, add_comm (σ t) t, ← add_div, div_self ht]
 
-theorem c_count_succ [DecidableEq K] (n : ℕ) (c : K) :
-    (univ.filter (fun w : Fin (n + 1) → K => ∑ i, w i ^ q * w i = c)).card =
-      ∑ x : K, (univ.filter (fun w : Fin n → K => ∑ i, w i ^ q * w i = c - x ^ q * x)).card := by
-  rw [Finset.card_eq_sum_card_fiberwise (f := fun w => w 0) (t := univ) (fun _ _ => mem_univ _)]
-  refine Finset.sum_congr rfl fun x _ => ?_
-  symm
-  refine Finset.card_bij (fun w _ => Fin.cons x w) ?_ ?_ ?_
-  · intro w hw
-    simp only [mem_filter, mem_univ, true_and] at hw ⊢
-    refine ⟨?_, by simp⟩
-    rw [Fin.sum_univ_succ]
-    simp [hw]
-  · intro w _ w' _ h
-    funext i
-    have h1 := congrFun h i.succ
-    simpa using h1
-  · intro w hw
-    simp only [mem_filter, mem_univ, true_and] at hw
-    refine ⟨Fin.tail w, ?_, ?_⟩
-    · simp only [mem_filter, mem_univ, true_and]
-      have h1 := hw.1
-      rw [Fin.sum_univ_succ, hw.2] at h1
-      rw [← h1]
-      simp [Fin.tail]
-    · rw [← hw.2]
-      exact Fin.cons_self_tail w
 
-theorem c_nu [DecidableEq K] (hq : Fintype.card K = q ^ 2) (c : K) (hc : c ^ q = c) :
-    (univ.filter (fun x : K => c - x ^ q * x = 0)).card = if c = 0 then 1 else q + 1 := by
-  have h1 : univ.filter (fun x : K => c - x ^ q * x = 0) = univ.filter (fun x : K => x ^ (q + 1) = c) := by
-    ext x
-    simp only [mem_filter, mem_univ, true_and, pow_succ, sub_eq_zero]
-    exact eq_comm
-  rw [h1]
-  by_cases h0 : c = 0
-  · rw [if_pos h0, h0]
-    have : univ.filter (fun x : K => x ^ (q + 1) = 0) = {0} := by
-      ext x
-      simp
-    rw [this, card_singleton]
-  · rw [if_neg h0]
-    exact c_fibre K q hq c hc h0
 
-theorem c_count [DecidableEq K] (hq : Fintype.card K = q ^ 2) (n : ℕ) : ∀ c : K, c ^ q = c →
-    (q : ℤ) * (univ.filter (fun w : Fin n → K => ∑ i, w i ^ q * w i = c)).card =
-      if c = 0 then (q : ℤ) ^ (2 * n) + (-1) ^ n * (q - 1) * q ^ n else q ^ n * (q ^ n - (-1) ^ n) := by
-  obtain ⟨σ, hσ⟩ := c_exists_frob K q hq
-  induction n with
-  | zero =>
-    intro c _
-    by_cases h0 : c = 0
-    · simp [h0]
-    · simp [h0, Ne.symm h0]
-  | succ n ih =>
-    intro c hc
-    have hfix : ∀ x : K, (c - x ^ q * x) ^ q = c - x ^ q * x := by
-      intro x
-      rw [← hσ, map_sub, map_mul, hσ, hσ, hσ, hc, c_pow_pow K q hq, mul_comm]
-    rw [c_count_succ, Nat.cast_sum, Finset.mul_sum, Finset.sum_congr rfl (fun x _ => ih _ (hfix x)),
-      Finset.sum_ite, sum_const, sum_const, c_nu K q hq c hc]
-    have h3 : ((univ.filter (fun x : K => ¬ (c - x ^ q * x = 0))).card : ℤ) =
-        (q : ℤ) ^ 2 - (if c = 0 then 1 else q + 1 : ℕ) := by
-      have h4 := Finset.card_filter_add_card_filter_not (s := (univ : Finset K)) (fun x : K => c - x ^ q * x = 0)
-      rw [c_nu K q hq c hc, card_univ, hq] at h4
-      have h5 : (((if c = 0 then 1 else q + 1 : ℕ) + (univ.filter (fun x : K => ¬ (c - x ^ q * x = 0))).card : ℕ) : ℤ)
-          = ((q ^ 2 : ℕ) : ℤ) := by rw [h4]
-      push_cast at h5 ⊢
-      linarith
-    rw [nsmul_eq_mul, nsmul_eq_mul, h3]
-    by_cases h0 : c = 0
-    · simp only [h0, if_true]
-      push_cast
-      ring
-    · simp only [h0, if_false]
-      push_cast
-      ring
 
-theorem card_norm_one (hq : Fintype.card K = q ^ 2) (n : ℕ) :
-    (q : ℤ) * Nat.card {w : Fin n → K // ∑ i, (w i) ^ q * w i = 1} = q ^ n * (q ^ n - (-1) ^ n) := by
-  classical
-  have h := c_count K q hq n 1 (one_pow q)
-  rw [if_neg one_ne_zero] at h
-  rw [← h, Nat.card_eq_fintype_card, Fintype.card_subtype]
 
 end PartC
 
@@ -731,192 +651,16 @@ lemma hJ_apply {n : ℕ} (J : Matrix (Fin n) (Fin n) K) (u v : Fin n → K) :
   simp only [RingHom.id_apply, smul_eq_mul]
   ring
 
-lemma d_gram_entry {q : ℕ} (hσ : ∀ x, σ x = x ^ q) {n : ℕ} {α β : Type} [Fintype α] [Fintype β]
-    (J : Matrix (Fin n) (Fin n) K) (X : Matrix (Fin n) α K) (Y : Matrix (Fin n) β K) (i : α) (j : β) :
-    (fconj q X * J * Y) i j = hJ σ J (fun k => X k i) (fun k => Y k j) := by
-  rw [hJ_apply]
-  simp only [Matrix.mul_apply, fconj, Matrix.transpose_apply, Matrix.map_apply, hσ, Finset.sum_mul]
-  rw [Finset.sum_comm]
 
-lemma d_fconj_eq {q : ℕ} (hσ : ∀ x, σ x = x ^ q) {α β : Type} (X : Matrix α β K) :
-    fconj q X = (X.map σ)ᵀ := by
-  ext i j
-  simp [fconj, hσ]
 
-lemma d_fconj_mul {q : ℕ} (hσ : ∀ x, σ x = x ^ q) {α β γ : Type} [Fintype β] (X : Matrix α β K)
-    (Y : Matrix β γ K) : fconj q (X * Y) = fconj q Y * fconj q X := by
-  rw [d_fconj_eq hσ, d_fconj_eq hσ, d_fconj_eq hσ, Matrix.map_mul, Matrix.transpose_mul]
 
-lemma d_fconj_one {q : ℕ} (hσ : ∀ x, σ x = x ^ q) {α : Type} [DecidableEq α] :
-    fconj q (1 : Matrix α α K) = 1 := by
-  rw [d_fconj_eq hσ, Matrix.map_one _ (map_zero σ) (map_one σ), Matrix.transpose_one]
 
-lemma d_herm {q : ℕ} (hσ : ∀ x, σ x = x ^ q) (hi : Inv σ) {n : ℕ} (J : Matrix (Fin n) (Fin n) K)
-    (hJh : fconj q J = J) : Herm (hJ σ J) := by
-  intro u v
-  rw [hJ_apply, hJ_apply, map_sum, Finset.sum_comm]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [map_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  have h1 : σ (J j i) = J i j := by
-    have := congrFun (congrFun hJh i) j
-    simpa [fconj, hσ] using this
-  rw [map_mul, map_mul, hi.invol, h1]
-  ring
 
-lemma d_nondeg {n : ℕ} (J : Matrix (Fin n) (Fin n) K) (hJu : IsUnit J.det) : Nondeg (hJ σ J) := by
-  intro u hu
-  have h1 : (fun i => σ (u i)) ᵥ* J = 0 := by
-    ext j
-    have := hu (Pi.single j 1)
-    rw [hJ_apply] at this
-    simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true] at this
-    simpa [Matrix.vecMul, dotProduct] using this
-  have h2 := Matrix.eq_zero_of_vecMul_eq_zero hJu.ne_zero h1
-  ext i
-  have := congrFun h2 i
-  simpa using this
 
-lemma d_li_of_rank {n a : ℕ} (X : Matrix (Fin n) (Fin a) K) (hX : X.rank = a) :
-    LinearIndependent K (fun (i : Fin a) (k : Fin n) => X k i) := by
-  rw [linearIndependent_iff_card_eq_finrank_span, Fintype.card_fin]
-  have h1 := Matrix.range_mulVecLin X
-  unfold Matrix.rank at hX
-  rw [h1] at hX
-  exact hX.symm
 
-theorem d_wittHerm : WittHerm := by
-  intro K _ _ q n a J X Y hq hJh hJu hX hY hXY
-  obtain ⟨σ, hσ, hi⟩ := exists_sigma K q hq
-  obtain ⟨g, hg, hgx⟩ := witt hi (hJ σ J) (d_herm hσ hi J hJh) (d_nondeg J hJu)
-    (fun (i : Fin a) (k : Fin n) => X k i) (fun (i : Fin a) (k : Fin n) => Y k i)
-    (d_li_of_rank X hX) (d_li_of_rank Y hY) (by
-      intro i j
-      rw [← d_gram_entry hσ, ← d_gram_entry hσ, hXY])
-  have hcol : ∀ (α : Type) [Fintype α] (Z : Matrix (Fin n) α K) (i : α),
-      (fun k => (LinearMap.toMatrix' g.toLinearMap * Z) k i) = g (fun k => Z k i) := by
-    intro α _ Z i
-    have : g (fun k => Z k i) = LinearMap.toMatrix' g.toLinearMap *ᵥ (fun k => Z k i) := by
-      rw [LinearMap.toMatrix'_mulVec]; rfl
-    rw [this]
-    ext k
-    simp [Matrix.mul_apply, Matrix.mulVec, dotProduct]
-  refine ⟨LinearMap.toMatrix' g.toLinearMap, ?_, ?_⟩
-  · ext i j
-    have h1 := d_gram_entry hσ J (LinearMap.toMatrix' g.toLinearMap * 1)
-      (LinearMap.toMatrix' g.toLinearMap * 1) i j
-    rw [hcol, hcol, hg, ← d_gram_entry hσ, d_fconj_one hσ] at h1
-    simpa using h1
-  · ext k i
-    have := congrFun (hcol _ X i) k
-    rw [hgx] at this
-    exact this
 
-lemma d_densP (η : ℤ) (q b : ℕ) :
-    densP η q 1 b = ∏ i ∈ Finset.range b, (1 - (η : ℝ) ^ (i + 1) * ((q : ℝ) ^ (i + 1))⁻¹) := by
-  unfold densP
-  have h1 : Finset.Icc (1 : ℤ) b = (Finset.range b).image (fun i : ℕ => ((i : ℤ) + 1)) := by
-    ext x
-    simp only [Finset.mem_Icc, Finset.mem_image, Finset.mem_range]
-    constructor
-    · rintro ⟨h1, h2⟩
-      refine ⟨(x - 1).toNat, by omega, by omega⟩
-    · rintro ⟨i, hi, rfl⟩
-      omega
-  rw [h1, Finset.prod_image (by intro x _ y _ hxy; simpa using hxy)]
-  refine Finset.prod_congr rfl fun i _ => ?_
-  have h2 : ((i : ℤ) + 1) = ((i + 1 : ℕ) : ℤ) := by push_cast; ring
-  rw [h2, zpow_natCast, _root_.zpow_neg, zpow_natCast]
 
-lemma d_arith (q : ℕ) (hq : 0 < q) (s : ℕ → ℕ)
-    (hs : ∀ n, (q : ℤ) * s n = q ^ n * (q ^ n - (-1) ^ n)) (b : ℕ) :
-    ((∏ j ∈ Finset.range b, s (j + 1) : ℕ) : ℝ) = (q : ℝ) ^ (b ^ 2) * densP (-1) q 1 b := by
-  rw [d_densP]
-  have hq' : (q : ℝ) ≠ 0 := by positivity
-  induction b with
-  | zero => simp
-  | succ b ih =>
-    rw [Finset.prod_range_succ, Finset.prod_range_succ, Nat.cast_mul, ih]
-    have h1 : (q : ℝ) * s (b + 1) = q ^ (b + 1) * (q ^ (b + 1) - (-1) ^ (b + 1)) := by
-      exact_mod_cast hs (b + 1)
-    have h2 : (s (b + 1) : ℝ) = q ^ b * (q ^ (b + 1) - (-1) ^ (b + 1)) := by
-      apply mul_left_cancel₀ hq'
-      rw [h1]; ring
-    rw [h2]
-    have h3 : (b + 1) ^ 2 = b ^ 2 + b + (b + 1) := by ring
-    rw [h3, pow_add, pow_add]
-    generalize (∏ i ∈ Finset.range b, (1 - ((-1 : ℤ) : ℝ) ^ (i + 1) * ((q : ℝ) ^ (i + 1))⁻¹)) = Q
-    have h4 : (q : ℝ) ^ (b + 1) * (1 - ((-1 : ℤ) : ℝ) ^ (b + 1) * ((q : ℝ) ^ (b + 1))⁻¹) =
-        q ^ (b + 1) - (-1) ^ (b + 1) := by
-      push_cast
-      field_simp
-    linear_combination (-(q : ℝ) ^ (b ^ 2) * Q * q ^ b) * h4
 
-theorem d_unitaryOrder : UnitaryOrder := by
-  intro K _ _ q b J hq hJh hJu
-  obtain ⟨σ, hσ, hi⟩ := exists_sigma K q hq
-  have hq0 : 0 < q := by
-    rcases Nat.eq_zero_or_pos q with h | h
-    · subst h
-      have := Fintype.card_pos (α := K)
-      omega
-    · exact h
-  have hH := d_herm hσ hi J hJh
-  have hN : Nondeg (hJ σ J) := d_nondeg J hJu
-  obtain ⟨bs, hbs⟩ := exists_orthonormal hi b (Fin b → K) (hJ σ J) hH hN (by simp)
-  set P : Matrix (Fin b) (Fin b) K := Matrix.of fun k i => bs i k with hP
-  have hPJ : fconj q P * J * P = 1 := by
-    ext i j
-    rw [d_gram_entry hσ, Matrix.one_apply]
-    exact hbs i j
-  have hPu : IsUnit P.det := by
-    have := congrArg Matrix.det hPJ
-    rw [Matrix.det_mul, Matrix.det_one] at this
-    exact IsUnit.of_mul_eq_one _ (by rw [mul_comm]; exact this)
-  have hPP : P * P⁻¹ = 1 := Matrix.mul_nonsing_inv P hPu
-  have hPP' : P⁻¹ * P = 1 := Matrix.nonsing_inv_mul P hPu
-  have hJP : J = fconj q P⁻¹ * P⁻¹ := by
-    calc J = fconj q (P * P⁻¹) * J * (P * P⁻¹) := by rw [hPP, d_fconj_one hσ]; simp
-      _ = fconj q P⁻¹ * (fconj q P * J * P) * P⁻¹ := by
-          rw [d_fconj_mul hσ]; simp only [Matrix.mul_assoc]
-      _ = _ := by rw [hPJ]; simp
-  let e1 : {g : Matrix (Fin b) (Fin b) K // fconj q g * J * g = J} ≃
-      {Z : Matrix (Fin b) (Fin b) K // fconj q Z * J * Z = 1} :=
-    { toFun := fun g => ⟨g.1 * P, by
-        rw [d_fconj_mul hσ]
-        calc fconj q P * fconj q g.1 * J * (g.1 * P) = fconj q P * (fconj q g.1 * J * g.1) * P := by
-              simp only [Matrix.mul_assoc]
-          _ = 1 := by rw [g.2, hPJ]⟩
-      invFun := fun Z => ⟨Z.1 * P⁻¹, by
-        rw [d_fconj_mul hσ]
-        calc fconj q P⁻¹ * fconj q Z.1 * J * (Z.1 * P⁻¹)
-            = fconj q P⁻¹ * (fconj q Z.1 * J * Z.1) * P⁻¹ := by simp only [Matrix.mul_assoc]
-          _ = J := by rw [Z.2, hJP]; simp⟩
-      left_inv := fun g => by
-        apply Subtype.ext
-        simp [Matrix.mul_assoc, hPP]
-      right_inv := fun Z => by
-        apply Subtype.ext
-        simp [Matrix.mul_assoc, hPP'] }
-  let e2 : {Z : Matrix (Fin b) (Fin b) K // fconj q Z * J * Z = 1} ≃
-      {f : Fin b → (Fin b → K) // Ortho (hJ σ J) f} :=
-    { toFun := fun Z => ⟨fun i k => Z.1 k i, by
-        intro i j
-        rw [← d_gram_entry hσ, Z.2, Matrix.one_apply]⟩
-      invFun := fun f => ⟨Matrix.of fun k i => f.1 i k, by
-        ext i j
-        rw [d_gram_entry hσ, Matrix.one_apply]
-        exact f.2 i j⟩
-      left_inv := fun Z => rfl
-      right_inv := fun f => rfl }
-  rw [Nat.card_congr (e1.trans e2),
-    card_frames hi (fun n => Nat.card {w : Fin n → K // ∑ i, σ (w i) * w i = 1}) (fun _ => rfl) b
-      (Fin b → K) (hJ σ J) hH hN (by simp)]
-  refine d_arith q hq0 (fun n => Nat.card {w : Fin n → K // ∑ i, σ (w i) * w i = 1}) ?_ b
-  intro n
-  have := card_norm_one K q hq n
-  simpa only [hσ] using this
 
 end PartD
 
@@ -924,8 +668,6 @@ end Formalism.FourierDecayAlt.P.S3x6
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem unitary_group_order : Formalism.FourierDecayAlt.S3.UnitaryOrder := S3x6.d_unitaryOrder
 
-theorem witt_hermitian_frames : Formalism.FourierDecayAlt.S3.WittHerm := S3x6.d_wittHerm
 
 end Formalism.FourierDecayAlt.P

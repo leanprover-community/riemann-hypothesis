@@ -266,31 +266,8 @@ def awayEquiv : LocalizedModule.Away (SecRing.of m σ) (SecModule F L W) ≃ₗ[
   haveI := isLocalizedModule_res (F := F) hL σ hW hW' h hV
   IsLocalizedModule.iso _ (res F L h)
 
-theorem pow_smul_awayEquiv (k : ℕ) (y : SecModule F L W) :
-    SecRing.of m σ ^ k • awayEquiv hL σ hW hW' h hV (awayFrac _ _ k y) = res F L h y := by
-  haveI := isLocalizedModule_res (F := F) hL σ hW hW' h hV
-  rw [← map_smul, pow_smul_awayFrac, awayFrac_zero]
-  exact IsLocalizedModule.iso_mk_one _ (res F L h) y
 
-theorem awayEquiv_awayFrac_eq_iff (k : ℕ) {d : ℤ} (hd : n + k * m = d) (a : Γ(twistZ F L d, W))
-    (b : Γ(twistZ F L n, V)) :
-    awayEquiv hL σ hW hW' h hV (awayFrac _ _ k (of d a)) = of n b ↔
-      resM _ h a = (mulSecOfEq F (zpowSec σ k) hd).app V b := by
-  rw [← (of_injective d).eq_iff, ← res_of, ← of_pow_smul_of, ← pow_smul_awayEquiv hL σ hW hW' h hV k]
-  exact (IsSMulRegular.pow k (smul_bijective hL σ (hV.le.trans inf_le_right)).1).eq_iff.symm
 
-theorem mem_awayPiece_iff (z : LocalizedModule.Away (SecRing.of m σ) (SecModule F L W)) :
-    z ∈ awayPiece F σ W n ↔ ∃ b : Γ(twistZ F L n, V), awayEquiv hL σ hW hW' h hV z = of n b := by
-  constructor
-  · rintro ⟨k, a, rfl⟩
-    obtain ⟨b, hb⟩ := (bijective_mulSecOfEq_app (F := F) hL (zpowSec σ k) (n := n) rfl
-      ((hV.le.trans inf_le_right).trans (nonzeroLocus_le_zpowSec hL σ k))).2 (resM _ h a)
-    exact ⟨b, (awayEquiv_awayFrac_eq_iff hL σ hW hW' h hV k rfl a b).2 hb.symm⟩
-  · rintro ⟨b, hb⟩
-    obtain ⟨k, hk⟩ := (eventually_exists_resM_eq_mulSecOfEq_zpowSec hL σ hW hW' h hV b).exists
-    obtain ⟨a, ha⟩ := hk _ rfl
-    exact ⟨k, a, (awayEquiv hL σ hW hW' h hV).injective
-      (((awayEquiv_awayFrac_eq_iff hL σ hW hW' h hV k rfl a b).2 ha).trans hb.symm)⟩
 
 end Degree
 

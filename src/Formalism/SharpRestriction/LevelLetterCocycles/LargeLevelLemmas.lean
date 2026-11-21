@@ -158,18 +158,7 @@ def HodgeTateFromSandwich (D : D7) : Prop := ∀ i : D.nd.Loc, Conclusion2 i
 
 def Stmt (D : D7) : Prop := IntegralityFromMetric D ∧ HodgeTateFromSandwich D
 
-theorem hypotheses_of_local_inputs {i : D.nd.Loc} {r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))}
-    {ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))} {π : D.nd.X i}
-    {dc : Formalism.MainNotions.TruncatedSeriesCountingIdentities.Decl D i} {lenRow : HeightOneSpectrum (𝓞 D.host.E) → ℚ}
-    {e' : HeightOneSpectrum (𝓞 D.host.E) → ℕ} {cB : ℕ} (h : admitted i r ρ π)
-    (hR : Formalism.MainNotions.TruncatedSeriesCountingIdentities.LengthBoundAtPlaces i r ρ π dc lenRow) (hL : Formalism.MainNotions.TruncatedSeriesCountingIdentities.LiftExponentAtPlaces i r dc e')
-    (hT : Formalism.MainNotions.TruncatedSeriesCountingIdentities.admTB i r π cB) : Formalism.MainNotions.TruncatedSeriesCountingIdentities.admitted i r ρ π dc lenRow e' cB := by
-  obtain ⟨-, -, -, -, g1, g2, g3, g4, -, g5, g5x, g6, bk, -, ct, ss, dcm, ep, tie, sh, fo, h2, -, cft⟩ := h
-  exact ⟨g1, g2, g3, g4, g5, g5x, g6, bk, hT, hR, hL, ct, ss, dcm, ep, tie, sh, fo, h2, cft⟩
 
-theorem positive_case_of_general (h : Formalism.MainNotions.TruncatedSeriesCountingIdentities.IntegralityFromMetric D) : IntegralityFromMetric D :=
-  fun i r ρ π dc lenRow e' cB hG hA _ hR hL hT =>
-    h i r ρ π dc lenRow e' cB hG (hypotheses_of_local_inputs hA hR hL hT)
 
 theorem zgoodSubsetZ (i : D.nd.Loc) : D.nd.Zgood i ⊆ D.nd.Z i := by
   intro x hx
@@ -180,7 +169,5 @@ theorem zgoodSubsetZ (i : D.nd.Loc) : D.nd.Zgood i ⊆ D.nd.Z i := by
 theorem endomorphism_bound_at_good_points (h : Formalism.MainNotions.TruncatedSeriesCountingIdentities.HodgeTateFromSandwich D) : HodgeTateFromSandwich D :=
   fun i α A hA hc h1 h0 => h i (D.nd.Zgood i) (zgoodSubsetZ i) α A hA hc h1 h0
 
-theorem global_theorems_of_general (h : Formalism.MainNotions.TruncatedSeriesCountingIdentities.Stmt D) : Stmt D :=
-  ⟨positive_case_of_general h.1, endomorphism_bound_at_good_points h.2⟩
 
 end Formalism.MainNotions.LargeLevelLemmas

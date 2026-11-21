@@ -97,8 +97,6 @@ def whittakerOf (T : cuspIntertwiners μ σ) : Module.Dual ℂ (smoothSpan μ σ
       Eq.subst (motive := fun φ => HasContRep μ φ (c • F)) (map_smul T.1 c (w : H)).symm (h₁.smul c)
     rw [whittakerAt_eq h, whittakerAt_eq h₁, whittakerOne_smul, RingHom.id_apply, smul_eq_mul]
 
-theorem whittakerOf_apply (T : cuspIntertwiners μ σ) (w : smoothSpan μ σ) :
-    whittakerOf T w = whittakerAt μ σ T w := rfl
 
 theorem whittakerOf_mk (T : cuspIntertwiners μ σ) {a : H} (ha : a ∈ smoothSpan μ σ)
     {F : normOneGL K n → ℂ} (h : HasContRep μ (T.1 a) F) :

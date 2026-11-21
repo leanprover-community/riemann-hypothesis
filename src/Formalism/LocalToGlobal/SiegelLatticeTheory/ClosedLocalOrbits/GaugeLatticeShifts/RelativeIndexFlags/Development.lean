@@ -40,27 +40,6 @@ def StabAutConjP : Prop :=
       ∃ g : GLR D, g ∈ loGen (D.R.rS + 1) D.host.E ∧
         stabAut D u u' F0 what₂ t F₂ L₂ = cj g (stabAut D u u' F0 what₂ t F₁ L₁)
 
-theorem stabInt_le_loGen (δ : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, (D.s.atP p).Fp)
-    (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, Formalism.MainNotions.S.Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
-    (w : Point D.host.E (D.R.rS + 1)) :
-    stabInt D u u' δ M w ≤ loGen (D.R.rS + 1) D.host.E := by
-  unfold stabInt loGen
-  refine Subgroup.closure_mono ?_
-  intro a ha
-  exact ha.1
 
-theorem volume_index_representation_of_finite (hC : StabAutConjP D u u' F0 what₂) (hFin : VolIdxFinP D u u' F0 what₂)
-    (hU : UniConjIdx (D.R.rS + 1) D.host.E) : Formalism.L2.SG.Pf.RelativeIndexFlags.VolumeIndexRepresentationNonzero D u u' F0 what₂ := by
-  intro δ M hAg t w F₁ F₂ L₁ U₁ L₂ U₂ hrel hgen h1 hG1 h2 hG2
-  obtain ⟨g, hg, he⟩ := hC t w F₁ F₂ L₁ U₁ L₂ U₂ h1 h2
-  obtain ⟨a1, a2⟩ := hFin δ M hAg t w F₁ L₁ U₁ hrel hgen h1 hG1
-  obtain ⟨b1, b2⟩ := hFin δ M hAg t w F₂ L₂ U₂ hrel hgen h2 hG2
-  rw [he] at b1 b2
-  change ratio (stabAut D u u' F0 what₂ t F₁ L₁) (stabInt D u u' δ M w) =
-    ratio (stabAut D u u' F0 what₂ t F₂ L₂) (stabInt D u u' δ M w)
-  rw [he]
-  symm
-  exact ratio_cj_of _ _ g a1 a2 b1 b2
-    (hU _ g hg (stabInt_le_loGen D u u' δ M w))
 
 end Formalism.L2.SG.Pf.RelativeIndexFlags

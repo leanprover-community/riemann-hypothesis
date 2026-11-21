@@ -30,19 +30,6 @@ def PhiH (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (γ h : B.Mat k r) :
     Matrix (Fin (r + 1) ⊕ Fin (r + 1)) (Fin (r + 1) ⊕ Fin (r + 1)) ℂ :=
   Matrix.fromBlocks (C2.uMap k r z h) 0 0 (C2.uMap k r z' (γ⁻¹ * h * γ))
 
-lemma Hst_iff {z z' : Fin (2 * r + k + 1) → ℂ} {γ : B.Mat k r} (hγ : IsUnit γ.det) (h : B.Mat k r) :
-    h ∈ C2.Hst k r z z' γ ↔ h ∈ Sset k r z ∧ γ⁻¹ * h * γ ∈ Sset k r z' := by
-  constructor
-  · rintro ⟨hs, s', hs', rfl⟩
-    refine ⟨hs, ?_⟩
-    have : γ⁻¹ * (γ * s' * γ⁻¹) * γ = s' := by
-      simp only [Matrix.mul_assoc]
-      rw [Matrix.nonsing_inv_mul_cancel_left _ _ hγ, Matrix.nonsing_inv_mul _ hγ, Matrix.mul_one]
-    rw [this]; exact hs'
-  · rintro ⟨hs, hs'⟩
-    refine ⟨hs, _, hs', ?_⟩
-    simp only [Matrix.mul_assoc]
-    rw [Matrix.mul_nonsing_inv _ hγ, Matrix.mul_one, Matrix.mul_nonsing_inv_cancel_left _ _ hγ]
 
 lemma mulV {z z' : Fin (2 * r + k + 1) → ℂ} (hstd : C2.Std k r z z') {γ : B.Mat k r} (hγ : IsUnit γ.det)
     {h : B.Mat k r} (hs : h ∈ Sset k r z) (hs' : γ⁻¹ * h * γ ∈ Sset k r z') :
@@ -66,28 +53,8 @@ lemma mulV {z z' : Fin (2 * r + k + 1) → ℂ} (hstd : C2.Std k r z z') {γ : B
     rw [Matrix.mulVec_mulVec, e, ← Matrix.mulVec_mulVec, hU'.1 b, Matrix.mulVec_sum]
     simp only [Matrix.mulVec_smul]
 
-lemma Phi_unit {z z' : Fin (2 * r + k + 1) → ℂ} (hstd : C2.Std k r z z') {γ h : B.Mat k r}
-    (hs : h ∈ Sset k r z) (hs' : γ⁻¹ * h * γ ∈ Sset k r z') : IsUnit (PhiH k r z z' γ h).det := by
-  have hU := (unipotent_map_frame k r z hstd.2.1).1 h hs
-  have hU' := (unipotent_map_frame k r z' hstd.2.2).1 _ hs'
-  unfold PhiH
-  rw [Matrix.det_fromBlocks_zero₂₁]
-  exact (C2x2.ut_unit hU.2.1).mul (C2x2.ut_unit hU'.2.1)
 
-lemma Phi_gram {n ι : Type*} [Fintype n] [DecidableEq n] [Fintype ι] [DecidableEq ι] (H : Matrix n n ℂ)
-    (V : Matrix n ι ℂ) (g : Matrix n n ℂ) (Φ : Matrix ι ι ℂ) (hg : gᴴ * H * g = H) (hgV : g * V = V * Φ) :
-    Φᴴ * (Vᴴ * H * V) * Φ = Vᴴ * H * V := by
-  calc Φᴴ * (Vᴴ * H * V) * Φ = (V * Φ)ᴴ * H * (V * Φ) := by
-        rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = (g * V)ᴴ * H * (g * V) := by rw [hgV]
-    _ = Vᴴ * (gᴴ * H * g) * V := by rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Vᴴ * H * V := by rw [hg]
 
-lemma KU_V {z z' : Fin (2 * r + k + 1) → ℂ} {γ κ : B.Mat k r} (hκ : κ ∈ C2.KU k r z z' γ) :
-    κ * gnB k r z z' γ = gnB k r z z' γ := by
-  apply mat_ext_col; intro j
-  rw [col_mul, hκ.2 j]
-  funext a; simp [gnB]
 
 lemma flag_mem (z : Fin (2 * r + k + 1) → ℂ) (u : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (hu : u ∈ C2.UTset (r + 1))
     (b : Fin (r + 1)) : (∑ c, u c b • fvec k r z c) - fvec k r z b ∈ C2.flagSpan k r z b := by
@@ -120,32 +87,7 @@ lemma cancel_right {m : Type*} [Fintype m] [DecidableEq m] (A X Y : Matrix m m �
     _ = Y * A * A⁻¹ := by rw [h]
     _ = Y := by rw [Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hA, Matrix.mul_one]
 
-lemma Rst_rho {z z' : Fin (2 * r + k + 1) → ℂ} (hstd : C2.Std k r z z') {γ : B.Mat k r}
-    (hpos : C2.PosPt k r z z' γ) {ρ : B.Mat k r} (hρ : ρ ∈ C2.Rst k r z z' γ) :
-    ρ = rhoOf (Hpk k r) (gnB k r z z' γ) (PhiH k r z z' γ ρ) := by
-  have hγ : IsUnit γ.det := WeylGroupFacts.isUnit_of_uh hpos.1
-  obtain ⟨hs, hs'⟩ := (Hst_iff hγ ρ).mp hρ.1
-  apply eq_rhoOf _ _ _ (gram_det z z' γ hstd hpos) ρ (mulV hstd hγ hs hs')
-  intro x hx
-  exact hρ.2 x ((mem_Uperp z z' γ x).mpr hx)
 
-lemma Rst_unip {z z' : Fin (2 * r + k + 1) → ℂ} (hstd : C2.Std k r z z') {γ : B.Mat k r}
-    (hpos : C2.PosPt k r z z' γ) {ρ : B.Mat k r} (hρ : ρ ∈ C2.Rst k r z z' γ) :
-    (ρ - 1) ^ (2 * r + k + 1) = 0 := by
-  have hγ : IsUnit γ.det := WeylGroupFacts.isUnit_of_uh hpos.1
-  obtain ⟨hs, hs'⟩ := (Hst_iff hγ ρ).mp hρ.1
-  have hU := (unipotent_map_frame k r z hstd.2.1).1 ρ hs
-  have hU' := (unipotent_map_frame k r z' hstd.2.2).1 _ hs'
-  have e := Rst_rho hstd hpos hρ
-  have hΦ : (PhiH k r z z' γ ρ - 1) ^ (r + 1) = 0 := by
-    unfold PhiH
-    have e1 : Matrix.fromBlocks (C2.uMap k r z ρ) 0 0 (C2.uMap k r z' (γ⁻¹ * ρ * γ)) - 1 =
-        Matrix.fromBlocks (C2.uMap k r z ρ - 1) 0 0 (C2.uMap k r z' (γ⁻¹ * ρ * γ) - 1) := by
-      rw [← Matrix.fromBlocks_one]
-      ext (i | i) (j | j) <;> simp [Matrix.one_apply]
-    rw [e1, blk_pow, ut_sub_pow hU.2.1, ut_sub_pow hU'.2.1, Matrix.fromBlocks_zero]
-  rw [e, rhoOf_sub_one_pow _ _ _ (gram_det z z' γ hstd hpos),
-    HermitianProjections.pow_eq_zero_of_le hΦ (by omega), Matrix.mul_zero, Matrix.zero_mul]
 
 end FlagGramRestriction
 

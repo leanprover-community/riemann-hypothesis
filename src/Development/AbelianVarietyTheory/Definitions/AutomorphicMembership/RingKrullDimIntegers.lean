@@ -495,34 +495,13 @@ theorem nrmInf_triv (σ : F →+* ℂ) (τ : ℕ) (y : Pts Y σ) : (triv C Y).nr
   erw [one_pow, this]
   simp [triv, ratVal_one]
 
-theorem nrmFin_triv (v : HeightOneSpectrum (𝓞 F)) (τ : ℕ) (e : Ext v) (y : AlgPt Y) :
-    (triv C Y).nrmFin v τ 1 e y = 1 := by
-  obtain ⟨h₀, h⟩ := valAt_zpow y.1 (unitAt_eqn_zero (below y.1))
-  have h₁ := h τ
-  have h₂ := e.w.pos h₀
-  simp only [zpow_natCast] at h₁
-  simp only [nrmFin, triv, PNat.val_ofNat, Nat.cast_one, div_one, one_pow, one_mul, h₁, map_pow, Real.rpow_one,
-    mul_neg, Real.exp_neg, Real.exp_nat_mul, Real.exp_log h₂]
-  exact mul_inv_cancel₀ (pow_pos h₂ _).ne'
 
 theorem IsModel.divide (h : A.IsModel) (j : ℕ+) : (A.divide j).IsModel :=
   have ⟨M, L, k, _, h⟩ := h; ⟨M, L, k, _, h.divide j⟩
 
-theorem nefFib_triv (C : CxSt F) (M : Model Y) : (triv C Y).NefFib :=
-  ⟨_, _, _, _, induced_triv C M, (HermLB.isNef_triv _ 0).vertical⟩
 
-theorem isModel_triv_proj (C : CxSt F) (n : ℕ) {c : HeightOneSpectrum (𝓞 F) → ℝ} (hc : (Function.support c).Finite)
-    (j : ℕ+) : (((triv C (proj F n)).twist 0 c).divide j).IsModel :=
-  IsModel.divide ⟨_, _, _, _, (induced_triv C (Model.pspace F n)).twist_fin hc⟩ j
 
-theorem mSmooth_triv (σ : F →+* ℂ) : C.mSmooth Y σ 0 ((triv C Y).m σ) :=
-  (C.mSmooth_ofWeight_iff Y σ 0 presents_zero _).2 (Weight.isCInf_ofFun (CxPts.cInfAt_const 0))
 
-theorem one_mem_small_triv (τ : ℕ) : 1 ∈ (triv C Y).small τ := by
-  refine ⟨?_, fun σ y => (nrmInf_triv σ τ y).le, fun v e y => (nrmFin_triv v τ e y).le⟩
-  change 1 ^ _ ∈ Y.H0 (τ • 0)
-  rw [one_pow, smul_zero]
-  exact Var.eff_iff_one_mem.1 Y.eff_zero
 
 end Adl
 

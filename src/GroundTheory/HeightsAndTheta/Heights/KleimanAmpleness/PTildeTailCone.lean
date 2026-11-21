@@ -47,8 +47,6 @@ variable {S x}
 
 theorem coneLaurent_smul (p : Poly S N) (w : ConeLaurent S x) : p • w = coneLaurent S x p * w := rfl
 
-theorem coneLaurent_smul_scalar (s : S) (w : ConeLaurent S x) :
-    s • w = algebraMap S (Poly S N) s • w := rfl
 
 theorem coneLaurent_of_isHomogeneous {f : Poly S N} {e : ℕ} (hf : f.IsHomogeneous e) :
     coneLaurent S x f = ConeLaurent.ofLP S x (AddMonoidAlgebra.single (e : ℤ) (aeval x f)) := by
@@ -144,8 +142,6 @@ def FinGradedSub.coneSub : Submodule (Poly S N) (ConeLaurent S x) where
     have := M.smul_mem e (c - e) _ _ (homogeneousComponent_isHomogeneous e p) (hw (c - e))
     rwa [sub_add_cancel, smul_eq_mul] at this
 
-theorem FinGradedSub.mem_coneSub {w : ConeLaurent S x} : w ∈ M.coneSub ↔ ∀ c, coeffAt S x c w ∈ M.piece c :=
-  Iff.rfl
 
 theorem FinGradedSub.coneSingle_mem_coneSub {c : ℤ} {v : Ω} (hv : v ∈ M.piece c) :
     coneSingle S x c v ∈ M.coneSub := fun d => by

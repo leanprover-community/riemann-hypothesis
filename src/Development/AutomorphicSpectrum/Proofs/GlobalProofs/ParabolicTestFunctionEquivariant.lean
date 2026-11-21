@@ -21,9 +21,6 @@ theorem unramifiedCharExt_mul (δ : Fˣ →* ℂˣ) {x y : F} (hx : x ≠ 0) (hy
   rw [show Units.mk0 (x * y) hxy = Units.mk0 x hx * Units.mk0 y hy from Units.ext rfl, map_mul,
     Units.val_mul]
 
-theorem unramifiedCharExt_ne_zero (δ : Fˣ →* ℂˣ) {x : F} (hx : x ≠ 0) : chi0 δ x ≠ 0 := by
-  simp only [chi0, dif_neg hx]
-  exact Units.ne_zero _
 
 theorem extendedCharacter_congr_of_tame (nrm : AbsoluteValue F ℝ) (δ : Fˣ →* ℂˣ)
     (tame : ∀ x : Fˣ, nrm ((x : F) - 1) < 1 → δ x = 1) {u v : F} (hu : u ≠ 0) (hv : v ≠ 0)
@@ -183,44 +180,6 @@ theorem step (hLF : LF O ϖ nrm q) (δ : Fˣ →* ℂˣ) (hδ : Del nrm δ) {r d
     rw [Matrix.det_mul] at hVne ⊢
     exact unramifiedCharExt_mul δ (left_ne_zero_of_mul hVne) (right_ne_zero_of_mul hVne)
 
-theorem phiQ_eigen : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
-    [IsNonarchimedeanLocalField F] {O : Subring F} {ϖ : F} {nrm : AbsoluteValue F ℝ} {q : ℕ},
-    LF O ϖ nrm q → ∀ δ : Fˣ →* ℂˣ, Del nrm δ → ∀ r d c : ℕ, ∀ k ∈ parJ O ϖ r c,
-    ∀ x : Matrix (Fin (r + d)) (Fin (r + c)) F,
-    ((δ (Matrix.GeneralLinearGroup.det k) : ℂˣ) : ℂ) *
-        phiQ O ϖ δ r d c (x * (k : Matrix (Fin (r + c)) (Fin (r + c)) F)) =
-      lamJ δ k * phiQ O ϖ δ r d c x := by
-  intro F _ _ _ _ O ϖ nrm q hLF δ hδ r d c k hk x
-  by_cases hx : Supp O ϖ x
-  · obtain ⟨hs, hc⟩ := step hLF δ hδ hk hx
-    have hp1 : phiQ O ϖ δ r d c x = (chi0 δ (bAA x).det)⁻¹ := by
-      unfold phiQ; exact if_pos hx
-    have hp2 : phiQ O ϖ δ r d c (x * (k : Matrix (Fin (r + c)) (Fin (r + c)) F)) =
-        (chi0 δ (bAA (x * (k : Matrix (Fin (r + c)) (Fin (r + c)) F))).det)⁻¹ := by
-      unfold phiQ; exact if_pos hs
-    have hdet := ((GlobalTheory.T.parahoric_character_modulus_properties hLF δ hδ r c).2.1 k hk).2.2.2.1
-    have hAd := ((Jset_iff hLF _).1 hx.1).2
-    have hadet := ((GlobalTheory.T.parahoric_character_modulus_properties hLF δ hδ r c).2.1 k hk).2.1
-    have hAne : (bAA x).det ≠ 0 := fun h => by
-      rw [h, map_zero] at hAd; exact zero_ne_one hAd
-    have hane : (bAA (k : Matrix (Fin (r + c)) (Fin (r + c)) F)).det ≠ 0 := fun h => by
-      rw [h, map_zero] at hadet; exact zero_ne_one hadet
-    have h1 := unramifiedCharExt_ne_zero δ hAne
-    have h2 := unramifiedCharExt_ne_zero δ hane
-    rw [hp1, hp2, hc, hdet]
-    field_simp
-  · have hinv : k⁻¹ ∈ parJ O ϖ r c := by
-      obtain ⟨J, hJ, -⟩ := Par.parJ_compact_open hLF r c
-      rw [← hJ] at hk ⊢
-      exact J.inv_mem hk
-    have hs : ¬ Supp O ϖ (x * (k : Matrix (Fin (r + c)) (Fin (r + c)) F)) := fun h => hx (by
-      have := (step hLF δ hδ hinv h).1
-      rwa [Matrix.mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.mul_one] at this)
-    have hp1 : phiQ O ϖ δ r d c x = 0 := by
-      unfold phiQ; exact if_neg hx
-    have hp2 : phiQ O ϖ δ r d c (x * (k : Matrix (Fin (r + c)) (Fin (r + c)) F)) = 0 := by
-      unfold phiQ; exact if_neg hs
-    rw [hp1, hp2, mul_zero, mul_zero]
 
 end Local
 

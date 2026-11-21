@@ -12,27 +12,6 @@ section Diagonalize
 variable {F A : Type*} [Field F] [Field A] [Algebra F A] [Algebra.IsQuadraticExtension F A]
   [Algebra.IsSeparable F A]
 
-theorem exists_isometric_diagForm : ∀ (n : ℕ) {V : Type*} [AddCommGroup V] [Module A V]
-    [FiniteDimensional A V] (h : HermitianForm F A V), finrank A V = n →
-      ∃ a : Fin n → Fˣ, HermitianForm.Isometric h (diagForm a) := by
-  intro n
-  induction n with
-  | zero =>
-    intro V _ _ _ h hV
-    have : Subsingleton V := Module.finrank_zero_iff.1 hV
-    refine ⟨Fin.elim0, LinearEquiv.ofFinrankEq V (Fin 0 → A) (by simp [hV]), fun x y => ?_⟩
-    rw [Subsingleton.elim x 0, Subsingleton.elim y 0, diagForm_apply]
-    simp
-  | succ n ih =>
-    intro V _ _ _ h hV
-    have : Nontrivial V := Module.nontrivial_of_finrank_eq_succ hV
-    obtain ⟨v, hv⟩ := h.exists_apply_self_ne_zero
-    obtain ⟨a, ha⟩ := h.toSesq_self_mem_range v
-    have ha0 : a ≠ 0 := by rintro rfl; rw [map_zero] at ha; exact hv ha.symm
-    obtain ⟨W, h₀, H, hW⟩ := h.exists_isometric_prod_ofUnit (a := Units.mk0 a ha0) ha.symm
-    obtain ⟨b, hb⟩ := ih h₀ (by have := hW inferInstance; omega)
-    exact ⟨Fin.cons (Units.mk0 a ha0) b, H.symm.trans
-      (((HermitianForm.Isometric.refl _).prod hb).trans (isometric_prod_diagForm_cons _ b))⟩
 
 end Diagonalize
 

@@ -343,31 +343,6 @@ theorem ampleV_line (S : Type) [CommRing S] :
   rw [nsmul_eq_mul, mul_one, mul_one]
   omega
 
-theorem LiftModel.hyps_inhabited_line :
-    IsArithVar (mCoordIdeal (ι := GlobalTheory (Fin 2)) ProjLine.y) (1 + 1) ∧ Birational (ι := GlobalTheory (Fin 2)) ProjLine.y ∧
-      KH.AmpleV ℚ (KH.genIdeal (ι := GlobalTheory (Fin 2)) ProjLine.y) (fun _ => 1) ∧
-      (∃ c : ℕ, 1 ≤ c ∧
-        KH.AmpleV ℚ (KH.genIdeal (ι := GlobalTheory (Fin 2)) ProjLine.y) (c • (fun _ => (1 : ℤ)) - fun _ => 1)) ∧
-      ∀ ℓ : ℕ, ℓ.Prime → KH.AmpleV (ZMod ℓ) (fibreIdeal (ι := GlobalTheory (Fin 2)) ℓ ProjLine.y) (fun _ => 1) := by
-  have hP : mCoordIdeal (ι := GlobalTheory (Fin 2)) ProjLine.y = ⊥ := ProjLine.mCoordIdeal_y
-  refine ⟨Lift.hyps_inhabited.1, Lift.hyps_inhabited.2.1, ?_, ⟨2, by norm_num, ?_⟩, fun ℓ _ => ?_⟩
-  · rw [KH.genIdeal, hP, Ideal.map_bot]
-    exact ampleV_line ℚ
-  · have h2 : (2 • (fun _ => (1 : ℤ)) - fun _ => 1 : Unit → ℤ) = fun _ => 1 := by
-      funext
-      simp
-    rw [h2, KH.genIdeal, hP, Ideal.map_bot]
-    exact ampleV_line ℚ
-  · rw [fibreIdeal, hP, Ideal.map_bot]
-    exact ampleV_line (ZMod ℓ)
 
-theorem LiftModel.apply_line (h : LiftModel.Statement) :
-    ∃ (a : ℕ) (ι' : Type) (_ : Fintype ι') (x' : ι' → ProjLine.FnField),
-      1 ≤ a ∧ (∀ j, x' j ∈ chartLat ProjLine.y (a • fun _ : Unit => (1 : ℤ)) 1) ∧
-        KH.GeneratesOn ProjLine.y (a • fun _ : Unit => (1 : ℤ)) x' ∧
-        Birational (fun p : Σ _ : Unit, ι' => x' p.2) :=
-  h Unit (GlobalTheory (Fin 2)) ProjLine.FnField ProjLine.y 1 (fun _ => 1) LiftModel.hyps_inhabited_line.1
-    LiftModel.hyps_inhabited_line.2.1 LiftModel.hyps_inhabited_line.2.2.1 LiftModel.hyps_inhabited_line.2.2.2.1
-    LiftModel.hyps_inhabited_line.2.2.2.2
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

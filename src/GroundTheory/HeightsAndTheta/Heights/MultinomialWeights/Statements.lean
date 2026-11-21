@@ -272,9 +272,6 @@ abbrev d1 : IndexData := ⟨1, 2, 1, le_rfl, le_rfl, by norm_num⟩
 
 abbrev d2 : IndexData := ⟨1, 3, 2, by norm_num, by norm_num, by norm_num⟩
 
-theorem textRange_inhabited : (⟨3, 2, 1, le_rfl, le_rfl, by norm_num⟩ : IndexData).TextRange := by
-  show 2 < 3 * (2 - 1)
-  norm_num
 
 theorem rankTwo_D : d1.D = 1 := rfl
 
@@ -439,15 +436,6 @@ theorem DecompositionBound.hypotheses_inhabited :
         uSpace d1 ⊔ V' = vSpace d1 :=
   ⟨unitWallFamily_isWallFamily d1, exists_complement_of_le uSpace_le_vSpace_rankTwo⟩
 
-theorem zero_mem_KSet_rankTwo : (0 : Weight d1) ∈ KSet d1 0 (quarterInverseN d1) := by
-  refine ⟨by rw [norm_zero]; norm_num, by simp [gap], ?_, ?_⟩
-  · intro τ hτ
-    exact absurd (Subsingleton.elim τ 0) hτ
-  · rintro τ a b ⟨hab, hbj⟩
-    exfalso
-    have hb : b.val < 2 := b.isLt
-    have hbj' : b.val ≠ 1 := hbj
-    omega
 
 theorem KRationalDense.hypotheses_inhabited : (0 : ℚ) < 1 / 2 ∧ (1 / 2 : ℚ) ≤ 1 := by norm_num
 

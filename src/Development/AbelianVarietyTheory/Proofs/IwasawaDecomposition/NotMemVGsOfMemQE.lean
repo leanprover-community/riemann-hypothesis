@@ -66,10 +66,6 @@ theorem homBdd_mono {N N' a b : ℕ} (h : N ≤ N') {Psi : Loc.SF E K a b} (H : 
   rw [pow_add, mul_smul]
   exact H.2 x _ (intHom_pow_smul k hy)
 
-theorem homBdd_add {N B a b : ℕ} (h : N ≤ B) {Psi : Loc.SF E K a b} (H : HomBdd P N Psi) (x y : (Fin a → E) →ₗ[E] (Fin b → E))
-    (hy : IntHom P (((qOf P : E) ^ B)⁻¹ • y)) : Psi (x + y) = Psi x := by
-  have := (homBdd_mono h H).2 x _ hy
-  rwa [smul_inv_smul₀ (pow_ne_zero _ (qOf_ne_zero P))] at this
 
 open GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz in
 theorem integrand_funBdd {n' c' n c : ℕ} {psi : E → K} {D N : ℕ} {Psi : Loc.SF E K (n' + c') (n + c)}

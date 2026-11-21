@@ -126,9 +126,5 @@ end GlobalTheory.ArtinSchreierTilt
 
 namespace GlobalTheory
 
-theorem frobSubOne_onto : Formalism.MainNotions.ElementDenominator.ArtinSchreierWittOnto := by
-  intro l _ x
-  exact PI.ArtSch.main_of witt_lift
-    (tiltSurjectiveOfParts rootModP_holds ArtinSchreierTilt.tiltDiv smallSurjective) l x
 
 end GlobalTheory

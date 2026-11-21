@@ -49,7 +49,6 @@ section Points
 
 variable {k : Type} [CommRing k] {X X' : Scheme.{0}} {p : X ⟶ Sp k} {q : X' ⟶ Sp k} {ι : k →+* AlgebraicClosure ℚ}
 
-theorem GeomPt.base_push (π : X' ⟶ X) (hπ : π ≫ p = q) (z : GeomPt q ι) : (z.push π hπ).base = π z.base := rfl
 
 def GeomPt.emb (z : GeomPt p ι) : X.residueField z.base →+* AlgebraicClosure ℚ :=
   (Scheme.descResidueField (Scheme.stalkClosedPointTo z.1)).hom
@@ -323,18 +322,12 @@ theorem TieArOn.mono {A : SlopeTestRemainingChoices Y} {S T : Set Y.ALB} (h : Ti
     have ⟨m, b, h₁, h₂⟩ := h c
     ⟨m, b, h₁, fun L hL => h₂ L (hS hL)⟩⟩
 
-theorem approx_mono (A : SlopeTestRemainingChoices Y) {s t : ℝ} (h : s ≤ t) : approx A s ⊆ approx A t :=
-  fun _ ⟨B, u, r, h₁, h₂, h₃, h₄, h₅⟩ => ⟨B, u, r, h₁, h₂, h₃, h₄.trans h, h₅⟩
 
-theorem TieArOn.tieAr {A : SlopeTestRemainingChoices Y} (h : TieArOn A Set.univ) : TieAr A := ⟨1, one_pos, h.mono (Set.subset_univ _)⟩
 
 theorem TieAr.on_pos {A : SlopeTestRemainingChoices Y} (h : TieAr A) : TieArOn A {L | Y.semipos L ∧ Y.nefFib L} :=
   have ⟨_, _, h⟩ := h
   h.mono Set.subset_union_left
 
-theorem TieAr.on_approx {A : SlopeTestRemainingChoices Y} (h : TieAr A) : ∃ s₀ : ℝ, 0 < s₀ ∧ TieArOn A (approx A s₀) :=
-  have ⟨s, hs, h⟩ := h
-  ⟨s, hs, h.mono Set.subset_union_right⟩
 
 def IsRelModel (A : SlopeTestRemainingChoices Y) (c : Y.Comp) (L : Y.ALB) (m : ArMod (dimY Y)) (H : HermLB m.p) : Prop :=
   ∃ (n : ℕ) (ν : ℝ) (r : m.X → Y.Pt → Prop), 0 < n ∧ 0 < ν ∧
@@ -396,13 +389,6 @@ theorem TieAr.exists_rel {A : SlopeTestRemainingChoices Y} (h : TieAr A) {L : Y.
   have ⟨m, H, h₁, h₂, h₃⟩ := h.on_pos.exists_family (L := L) ⟨hs, hn⟩
   ⟨m c, H c, h₁.1 hs c, h₂.1 hn c, h₃ c⟩
 
-theorem IsCompModel.dense_comp {A : SlopeTestRemainingChoices Y} {c : Y.Comp} {m : ArMod (dimY Y)} {b : Y.Pt → m.X}
-    (h : IsCompModel A c m b) : A.dense c (Y.compPt ⁻¹' {c}) ∧ ¬ A.dense c ∅ := by
-  obtain ⟨⟨ι, -⟩, hr, hZ⟩ := h
-  refine ⟨(hZ _).2 ⟨le_rfl, ?_⟩, fun h0 => ?_⟩
-  · rw [hr]
-    exact (dense_range_base m.av ι).mono (by rintro _ ⟨z, rfl⟩; exact z.isAlgPt m.av)
-  · simpa using ((hZ _).1 h0).2.nonempty
 
 def thick (Y : ShimX D.what₂.Tau) (F : Type) : ShimX D.what₂.Tau :=
   { Y with
@@ -509,57 +495,9 @@ def aux (D : D7) : SlopeTestRemainingChoices (shim D) where
   ht L y := htFn (bun (dm D) (L y.1)) y.2.base / Nat.card ((PSpace ℤ (dm D)).residueField y.2.base →+* ℂ)
   dense c Z := Z ⊆ Prod.fst ⁻¹' {c} ∧ Dense (GeomPt.base '' (Prod.mk c ⁻¹' Z))
 
-theorem tieArOn_univ (hE : GlobalTheory.Published.ArExists) (D : D7) : TieArOn (aux D) Set.univ := by
-  refine ⟨fun L c => (bun (dm D) (L c)).SemiPos (dm D), fun L c => NefFib (bun (dm D) (L c)),
-    fun L _ => ⟨Iff.rfl, Iff.rfl⟩, fun c => ?_⟩
-  have av := (ArMod.proj (dm D)).av
-  refine ⟨ArMod.proj (dm D), fun y => y.2.base, ⟨⟨emb, ?_⟩, ?_, fun Z => ?_⟩, fun L _ => ?_⟩
-  · have := GlobalTheory.ProjSpace.isIntegral_of_isDomain (AlgebraicClosure ℚ) (dm D)
-    exact (GlobalTheory.ProjSpace.isPullback_baseChange (dm D) emb).isoPullback.hom.homeomorph.irreducibleSpace_iff.1
-      inferInstance
-  · ext x
-    refine ⟨by rintro ⟨y, -, rfl⟩; exact y.2.isAlgPt av, fun hx => ?_⟩
-    obtain ⟨w, hw⟩ := exists_geomPt av emb hx
-    exact ⟨(c, w), rfl, hw⟩
-  · refine and_congr_right fun hs => iff_of_eq (congrArg Dense ?_)
-    ext x
-    constructor
-    · rintro ⟨w, hw, rfl⟩
-      exact ⟨(c, w), hw, rfl⟩
-    · rintro ⟨⟨a, w⟩, hw, rfl⟩
-      obtain rfl : a = c := hs hw
-      exact ⟨w, hw, rfl⟩
-  · have hh : (bun (dm D) (L c)).IsArithHeight (htFn (bun (dm D) (L c))) :=
-      Classical.epsilon_spec ((@hE ℤ _ _ (ArMod.proj (dm D)).int _ _ av).1 _)
-    have h1 : Module.finrank ℤ (ArMod.proj (dm D)).k = 1 := Module.finrank_self ℤ
-    refine ⟨_, (ArMod.proj (dm D)).int, _, 𝟙 _, Category.id_comp _, bun (dm D) (L c), 1, 1, av,
-      inferInstance, Scheme.Hom.residueDegree_id _, one_pos, one_pos, ⟨_, hh, ?_⟩, ?_, Iff.rfl, Iff.rfl, ?_⟩
-    · simp only [h1, Nat.cast_one, one_pow, one_mul]
-      rfl
-    · simp only [h1, Nat.cast_one, one_pow, one_mul]
-      rfl
-    · rintro ⟨a, w⟩ ha x - e
-      obtain rfl : a = c := ha
-      obtain rfl : x = w.base := e
-      have h0 : (Nat.card ((PSpace ℤ (dm D)).residueField w.base →+* ℂ) : ℝ) ≠ 0 :=
-        Nat.cast_ne_zero.2 (w.card_emb_pos av).ne'
-      refine ⟨_, hh, ?_⟩
-      rw [Nat.cast_one, one_mul]
-      exact (div_mul_cancel₀ _ h0).symm
 
-theorem tieAr (hE : GlobalTheory.Published.ArExists) (D : D7) : TieAr (aux D) := (tieArOn_univ hE D).tieAr
 
-theorem tieAr_thick (hE : GlobalTheory.Published.ArExists) (D : D7) : TieAr (thickeningHeights (aux D) ℕ) :=
-  ((tieArOn_univ hE D).thick ℕ).tieAr
 
-theorem mem_approx (D : D7) {s₀ : ℝ} (h : 0 < s₀) : (fun _ => (1, 0) : (shim D).ALB) ∈ approx (aux D) s₀ := by
-  obtain ⟨s, h₁, h₂⟩ := exists_rat_btwn h
-  refine ⟨2, 0, s, le_rfl, fun _ _ => ⟨0, by simp⟩, by exact_mod_cast h₁, h₂.le, ?_, rfl⟩
-  have e : (aux D).sh 0 s = fun _ _ => 0 := by
-    funext τ i
-    simp [SlopeTestRemainingChoices.sh, aux]
-  rw [e]
-  simp [Dominant]
 
 example (D : D7) : (bun (dm D) (1, 0)).B = lbPow (GlobalTheory.ProjSpace.O1 ℤ (dm D)) 1 := rfl
 

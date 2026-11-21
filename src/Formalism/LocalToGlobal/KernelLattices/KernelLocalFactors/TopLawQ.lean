@@ -920,13 +920,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
   (A : Amb X) (u : Pr.Word) (m2 : ℕ)
 
-theorem cp2EquivOn_of_ok {G : ChGlob X R.m} (hL : L.Ok Ch sel mu cst G m2) (hS : QSep Pr sel mu) (hU : QUnif sel mu) (hR : PosT sel mu u)
-    (hT : 0 < Pr.T u) (hPr : Pr.Ok) (hOk : ChTh.Ok (Ch := Ch) cst (chTh W Ch sel mu cst A u m2))
-    (b : L.β (m2 + 1)) (hY : YbHyp (R := R) sel mu cst L u m2 b) (P : LevFam X.E X.K R.r Pr.vGs)
-    (hTop : TopLaw Ch sel mu cst L P m2 b) :
-    Cp2EquivOn W Ch sel mu cst L (chTh W Ch sel mu cst A u m2) b hY P :=
-  cp2EquivOn_ofQ W Ch sel mu cst L A u m2 hS hR hL.depthQ hT hPr hL.cst_ok hOk b hY P (phiTop_inv Ch sel mu cst hL.hm) hTop
-    (top_local_law_at_Q_primes Ch sel mu cst L hL hU P b)
 
 theorem qSep_of (hPr : Pr.Ok) (hsel : IsSel X sel) (hS : ∀ i, Pr.g i ∈ S) : QSep Pr sel mu :=
   fun P hP hw => QE_disj mu hPr hsel hS P hw hP

@@ -38,20 +38,5 @@ theorem val_det_le {K : Type} [Field K] [NumberField K] (w : HeightOneSpectrum (
   rw [e2]
   exact mul_le_of_le_one_right' (w.valuation_le_one _)
 
-theorem detIndex : DetIndex := by
-  intro K _ _ w r B B' M' i q _ hM hB
-  set C : Matrix (Fin r) (Fin r) K :=
-    (B : Matrix (Fin r) (Fin r) K) * Matrix.diagonal (fun j => if j = i then q else 1) with hC
-  have hd : C.det = q * (B : Matrix (Fin r) (Fin r) K).det := by
-    rw [hC, Matrix.det_mul, Matrix.det_diagonal, mul_comm]
-    simp
-  have hf : (fun j : Fin r => fun α : Fin r =>
-      (if j = i then q else 1) * (B : Matrix (Fin r) (Fin r) K) α j) = fun j : Fin r => fun α : Fin r => C α j := by
-    funext j α
-    rw [hC, Matrix.mul_diagonal, mul_comm]
-  rw [hf] at hM
-  have he := hB.symm.trans hM
-  rw [← hd]
-  exact le_antisymm (val_det_le w _ _ he.le) (val_det_le w _ _ he.ge)
 
 end GlobalTheory.DetIndexPf

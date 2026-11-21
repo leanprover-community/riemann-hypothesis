@@ -9,17 +9,6 @@ open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor R
 
 variable {D : D7}
 
-theorem spanIn_ne_bot {K : Type} [Field K] [NumberField K] {R : ℕ → Type} [∀ j, CommRing (R j)] [∀ j, Algebra K (R j)]
-    [∀ j, Algebra (𝓞 K) (R j)] [∀ j, IsScalarTower (𝓞 K) K (R j)] (C : ∀ j, WeightFamilies.Wt D j → Submodule K (R j))
-    (j : ℕ) (w : WeightFamilies.Wt D j) {s : Set (R j)} {f : R j} (hf : f ∈ s) (hc : f ∈ cutR C j w) (h0 : f ≠ 0) :
-    spanIn C j w s ≠ ⊥ := by
-  intro hb
-  apply h0
-  have hmem : (⟨f, hc⟩ : cutR C j w) ∈ spanIn C j w s := by
-    unfold spanIn
-    exact Submodule.subset_span hf
-  rw [hb] at hmem
-  exact congrArg Subtype.val ((Submodule.mem_bot _).1 hmem)
 
 variable (T : Top D)
 
@@ -77,13 +66,5 @@ theorem recPJ_vAt_inc (j : ℕ) (hj : InR D j) (la : HeightOneSpectrum (𝓞 T.Q
       rw [(isVal_vAt y).zero]
       exact le_top
 
-theorem recPJ_thAll_ne_bot (j : ℕ) (hj : InR D j) (hm' : j < D.R.m) (w : WeightFamilies.Wt D j) (hn : 0 < w.n)
-    (hr : (T.Q.Dw j).p + (T.Q.Dw j).q ≤ w.n) (hD : DF (T.Q.Dw j) (wtA w) + 2 ≤ T.Q.l.M)
-    (hl : LastPos (T.Q.Dw j) (wtA w)) (hP : ∃ P ∈ harmA (Dw := T.Q.Dw j) T.Q.c (wtA w) w.n, P ≠ 0) :
-    (recPJ h j hj).thAll w ≠ ⊥ := by
-  obtain ⟨f, hf, hf0⟩ := h.thNe j hj.1 hm' _ _ (dom_wtA w) hn hr hD hP
-  have hc : f ∈ cutR T.C j w := by
-    rw [cutR_eq T.C hj]; exact h.thCusp j hj _ _ (dom_wtA w) hl f hf
-  exact spanIn_ne_bot T.C j w hf hc hf0
 
 end Formalism.L2.Pj

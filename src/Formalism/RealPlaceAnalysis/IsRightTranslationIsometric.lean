@@ -60,18 +60,7 @@ def settingQ {n : ℕ} (ε : Fin n → Bool) (S : Subgroup (UJ ε)) (E : Type) [
     [InnerProductSpace ℂ E] [CompleteSpace E] (σ : S → E →ₗᵢ[ℂ] E) (ph : UJ ε → ℝ≥0∞) : HidaSetting n ε :=
   { E := E, S := S, σ := σ, ν := (muG ε).withDensity ph }
 
-lemma mem_admissible_setting {n : ℕ} (ε : Fin n → Bool) (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℂ E]
-    [CompleteSpace E] (F : UJ ε → E) : F ∈ (settingG ε E).adm := by
-  intro s g
-  have hs : (s : UJ ε) = 1 := Subgroup.mem_bot.mp s.2
-  simp only [settingG, hs, one_mul]
-  rfl
 
-lemma rs_mem_adm {n : ℕ} {ε : Fin n → Bool} (P : HidaSetting n ε) (F : UJ ε → P.E) (hF : F ∈ P.adm)
-    (h : UJ ε) : Rs h F ∈ P.adm := by
-  intro s g
-  simp only [Rs, mul_assoc]
-  exact hF s (g * h)
 
 lemma rs_mul {n : ℕ} {ε : Fin n → Bool} {E : Type*} (h₁ h₂ : UJ ε) (F : UJ ε → E) :
     Rs (h₁ * h₂) F = Rs h₁ (Rs h₂ F) := by

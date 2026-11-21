@@ -250,9 +250,6 @@ theorem map_log (f : R →+* S) (u : Ainf p R) (hu : Ainf.theta p R u = 1)
     (hv : Ainf.theta p S (Ainf.map p f u) = 1) : map p f (log u hu) = log (Ainf.map p f u) hv :=
   extend_log _ _ _ _ _ (AcrisZero.map_algebraMap f u)
 
-theorem frob_log (u : Ainf p R) (hu : Ainf.theta p R u = 1)
-    (hv : Ainf.theta p R (Ainf.frob p R u) = 1) : frob p R (log u hu) = log (Ainf.frob p R u) hv :=
-  extend_log _ _ _ _ _ (AcrisZero.frob_algebraMap u)
 
 @[simp] theorem map_logTeich (f : R →+* S) (η : tateModule p R) :
     map p f (logTeich η) = logTeich (tateModule.map p f η) :=
@@ -486,24 +483,7 @@ theorem induction_on {P : Bst p R → Prop} (x : Bst p R)
 @[simp] theorem monodromy_algebraMap (a : Bcris p R) : monodromy p R (algebraMap _ _ a) = 0 :=
   Derivation.map_algebraMap _ a
 
-theorem monodromy_frob (x : Bst p R) :
-    monodromy p R (frob p R x) = p * frob p R (monodromy p R x) := by
-  induction x using induction_on with
-  | h₁ a => simp
-  | h₂ x y hx hy => simp only [map_add, hx, hy, mul_add]
-  | h₃ x ϖ hx =>
-    simp only [map_mul, map_add, Derivation.leibniz, smul_eq_mul, frob_logFlat, monodromy_logFlat,
-      hx, Derivation.map_natCast, map_neg, map_one]
-    ring
 
-theorem monodromy_map (f : R →+* S) (hf : Function.Injective f) (x : Bst p R) :
-    monodromy p S (map p f hf x) = map p f hf (monodromy p R x) := by
-  induction x using induction_on with
-  | h₁ a => simp
-  | h₂ x y hx hy => simp only [map_add, hx, hy]
-  | h₃ x ϖ hx =>
-    simp only [map_mul, map_add, Derivation.leibniz, smul_eq_mul, map_logFlat, monodromy_logFlat,
-      hx, map_neg, map_one]
 
 end Bst
 

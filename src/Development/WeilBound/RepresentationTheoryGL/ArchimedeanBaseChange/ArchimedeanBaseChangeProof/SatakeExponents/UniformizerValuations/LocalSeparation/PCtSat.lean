@@ -38,10 +38,5 @@ theorem ordL_one' {w : Pl E} : ordL (1 : w.adicCompletion E) = 0 := by
   rw [Units.val_one] at h1
   omega
 
-theorem ordL_div' {w : Pl E} {x y : w.adicCompletion E} (hx : x ≠ 0) (hy : y ≠ 0) :
-    ordL (x / y) = ordL x - ordL y := by
-  have := Formalism.UG.P.fIwasawa_ordL_mul (x / y) y (div_ne_zero hx hy) hy
-  rw [div_mul_cancel₀ x hy] at this
-  omega
 
 end PositivityTheory.Rg.BcB.F.RS

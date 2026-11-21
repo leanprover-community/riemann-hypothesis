@@ -272,8 +272,6 @@ theorem listDuality_cpt (hRMF : Formalism.FourierDecayAlt.JC.RadialModuleForm) :
   obtain ⟨y, hy, rfl⟩ := List.mem_map.1 hz
   exact hqpos y hy
 
-theorem listDuality_cpt_of_bessel (h : GlobalTheory.HCXi.BesselXiIntegrable) : Formalism.FourierDecayAlt.KB.SizeStdCpt :=
-  listDuality_cpt (GlobalTheory.RadialModule.radialModuleForm_of_bessel h)
 
 end
 

@@ -486,10 +486,6 @@ def RegModZX : Prop :=
 def InvariantSubspaceNonzeroAtBase (Xg : Finset (G0 X.E Pr.vGs R.r → X.K)) (P : LevFam X.E X.K R.r Pr.vGs) : Prop :=
   goodAt Xg P.grp P.chr * v0eZ (v0Z Pr.vGs R.r) (torsionScalarCharacterAtBase W Ch sel mu) ≠ 0 → V0X W Ch sel mu Xg P ≠ ⊥
 
-theorem invariantSubspaceNonzeroX_of_regular (h : RegModZX W Ch sel mu) (Xg : Finset (G0 X.E Pr.vGs R.r → X.K)) (P : LevFam X.E X.K R.r Pr.vGs) :
-    InvariantSubspaceNonzeroAtBase W Ch sel mu Xg P := by
-  intro hne hbot
-  exact h _ hne (LinearMap.range_eq_bot.mp hbot)
 
 open Classical in
 
@@ -526,10 +522,6 @@ def RegModZV (j : ℕ) : Prop :=
 def InvariantSubspaceNonzeroAtLevel (j : ℕ) (Xg : Finset (G0 X.E Pr.vGs R.r → X.K)) (P : LevFam X.E X.K R.r Pr.vGs) : Prop :=
   goodAt Xg P.grp P.chr⁻¹ * v0eZ (v0Z Pr.vGs R.r) (torsionScalarCharacterAtLevel W Ch sel mu j) ≠ 0 → invariantSubspaceOfForms W Ch sel mu j Xg P ≠ ⊥
 
-theorem invariantSubspaceNonzeroV_of_regular (j : ℕ) (h : RegModZV W Ch sel mu j) (Xg : Finset (G0 X.E Pr.vGs R.r → X.K))
-    (P : LevFam X.E X.K R.r Pr.vGs) : InvariantSubspaceNonzeroAtLevel W Ch sel mu j Xg P := by
-  intro hne hbot
-  exact h _ hne (LinearMap.range_eq_bot.mp hbot)
 
 end Rows
 
@@ -1123,84 +1115,6 @@ section Card
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-theorem exists_separating_residues (hconj : ∀ (φ : E →+* ℂ) (x : E), φ (star x) = starRingEnd ℂ (φ x)) (w : HeightOneSpectrum (𝓞 E))
-    (r : ℕ) (hcard : r * Nat.card (NumberField.Units.torsion E) < Nat.card (𝓞 E ⧸ w.asIdeal)) :
-    ∃ c : ℕ → 𝓞 E, (∀ i < r, c i ∉ w.asIdeal) ∧
-      ∀ i i', i < r → i' < r → ∀ z : 𝓞 E, star ((z : 𝓞 E) : E) * ((z : 𝓞 E) : E) = 1 →
-        c i' - z * c i ∈ w.asIdeal → i' = i := by
-  classical
-  set Q := 𝓞 E ⧸ w.asIdeal
-  set red : NumberField.Units.torsion E → Q := fun ζ => Ideal.Quotient.mk w.asIdeal ((ζ : (𝓞 E)ˣ) : 𝓞 E)
-  have hfin : Finite Q := Nat.finite_of_card_ne_zero (by omega)
-  have := Fintype.ofFinite Q
-  have hQ : Nat.card Q = Fintype.card Q := Nat.card_eq_fintype_card
-  have hμ : Nat.card (NumberField.Units.torsion E) = Fintype.card (NumberField.Units.torsion E) := Nat.card_eq_fintype_card
-  have hμ1 : 1 ≤ Fintype.card (NumberField.Units.torsion E) := Fintype.card_pos
-  have step : ∀ k, k ≤ r → ∃ x : ℕ → Q, (∀ i < k, x i ≠ 0) ∧
-      ∀ i i' (ζ : NumberField.Units.torsion E), i < k → i' < k → x i' = red ζ * x i → i' = i := by
-    intro k
-    induction k with
-    | zero => exact fun _ => ⟨fun _ => 0, fun i hi => absurd hi (Nat.not_lt_zero _), fun i _ _ hi => absurd hi (Nat.not_lt_zero _)⟩
-    | succ k ih =>
-      intro hk
-      obtain ⟨x, hx0, hx⟩ := ih (by omega)
-      let F : Finset Q := insert 0 ((Finset.range k ×ˢ (Finset.univ : Finset (NumberField.Units.torsion E))).image
-        fun p => red p.2 * x p.1)
-      have hF : F.card < Fintype.card Q := by
-        have h1 : F.card ≤ 1 + k * Fintype.card (NumberField.Units.torsion E) := by
-          have h3 := Finset.card_insert_le (0 : Q) ((Finset.range k ×ˢ (Finset.univ : Finset (NumberField.Units.torsion E))).image
-            fun p => red p.2 * x p.1)
-          have h4 := Finset.card_image_le (s := Finset.range k ×ˢ (Finset.univ : Finset (NumberField.Units.torsion E)))
-            (f := fun p => red p.2 * x p.1)
-          rw [Finset.card_product, Finset.card_range, Finset.card_univ] at h4
-          show (insert 0 _ : Finset Q).card ≤ _
-          omega
-        have h2 : k * Fintype.card (NumberField.Units.torsion E) + Fintype.card (NumberField.Units.torsion E) ≤
-            r * Fintype.card (NumberField.Units.torsion E) := by
-          rw [← Nat.succ_mul]
-          exact Nat.mul_le_mul_right _ hk
-        rw [← hQ]
-        rw [hμ] at hcard
-        omega
-      obtain ⟨y, hy⟩ : ∃ y : Q, y ∉ F := by
-        by_contra hc
-        push Not at hc
-        have : (Finset.univ : Finset Q) ⊆ F := fun y _ => hc y
-        have := Finset.card_le_card this
-        rw [Finset.card_univ] at this
-        omega
-      have hy0 : y ≠ 0 := fun h => hy (h ▸ Finset.mem_insert_self _ _)
-      have hyF : ∀ i < k, ∀ ζ, y ≠ red ζ * x i := fun i hi ζ h => hy (Finset.mem_insert_of_mem
-        (Finset.mem_image.mpr ⟨(i, ζ), Finset.mem_product.mpr ⟨Finset.mem_range.mpr hi, Finset.mem_univ _⟩, h.symm⟩))
-      refine ⟨fun i => if i = k then y else x i, fun i hi => ?_, fun i i' ζ hi hi' e => ?_⟩
-      · dsimp only
-        by_cases hik : i = k
-        · rw [if_pos hik]
-          exact hy0
-        · rw [if_neg hik]
-          exact hx0 i (by omega)
-      · dsimp only at e
-        by_cases hik : i = k <;> by_cases hik' : i' = k
-        · rw [hik, hik']
-        · rw [if_pos hik, if_neg hik'] at e
-          exfalso
-          have hrinv : red ζ⁻¹ * red ζ = 1 := by
-            simp only [red]
-            rw [← map_mul, ← Units.val_mul, ← Subgroup.coe_mul, inv_mul_cancel, Subgroup.coe_one, Units.val_one, map_one]
-          exact hyF i' (by omega) ζ⁻¹ (by rw [e, ← mul_assoc, hrinv, one_mul])
-        · rw [if_neg hik, if_pos hik'] at e
-          exact absurd e (hyF i (by omega) ζ)
-        · rw [if_neg hik, if_neg hik'] at e
-          exact hx i i' ζ (by omega) (by omega) e
-  obtain ⟨x, hx0, hx⟩ := step r le_rfl
-  choose c hc using fun i => Ideal.Quotient.mk_surjective (I := w.asIdeal) (x i)
-  refine ⟨c, fun i hi h0 => hx0 i hi (by rw [← hc i]; exact Ideal.Quotient.eq_zero_iff_mem.mpr h0),
-    fun i i' hi hi' z hz hm => ?_⟩
-  obtain ⟨ζ, hζ⟩ := normOne_integer_is_torsion hconj hz
-  refine hx i i' ζ hi hi' ?_
-  have h1 := Ideal.Quotient.eq_zero_iff_mem.mpr hm
-  rw [map_sub, map_mul, hc, hc, ← hζ] at h1
-  exact sub_eq_zero.mp h1
 
 end Card
 
@@ -1209,21 +1123,7 @@ section RowsCard
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-theorem regModZX_of_card (hX : X.Ok) (hPr : Pr.Ok) (hCh : Ch.Ok) (hW : W.Ok)
-    (hpar : ∀ a : Fin (R.N R.m - 1), R.r ≤ a.val → Even (∑ τ, (W.sgTrue τ).w (posX R a))) (hg : ∀ i, 2 * X.f + 1 < Pr.g i)
-    (hξ : XiSign Pr sel (mu : Chr X.F X.E X.K))
-    (hsize : ∃ w1 ∈ Pr.vG 0, R.r * Nat.card (NumberField.Units.torsion X.E) < Nat.card (𝓞 X.E ⧸ w1.asIdeal)) :
-    RegModZX W Ch sel mu := by
-  obtain ⟨w1, h1, hs⟩ := hsize
-  exact regModZX_of W Ch sel mu hX hPr hCh hW hpar hg hξ ⟨w1, h1, exists_separating_residues hX.conjE w1 R.r hs⟩
 
-theorem regModZV_of_card (hX : X.Ok) (hPr : Pr.Ok) (hCh : Ch.Ok) (hW : W.Ok) (j : ℕ) (hj1 : 1 ≤ j) (hj2 : j ≤ R.m)
-    (hpar : ∀ a : Fin R.nV, R.r ≤ a.val → Even (∑ τ, (W.lamV j τ).w (posV R j a))) (hg : ∀ i, 2 * X.f + 1 < Pr.g i)
-    (hξ : XiSign Pr sel (mu : Chr X.F X.E X.K))
-    (hsize : ∃ w1 ∈ Pr.vG 0, R.r * Nat.card (NumberField.Units.torsion X.E) < Nat.card (𝓞 X.E ⧸ w1.asIdeal)) :
-    RegModZV W Ch sel mu j := by
-  obtain ⟨w1, h1, hs⟩ := hsize
-  exact regModZV_of W Ch sel mu hX hPr hCh hW j hj1 hj2 hpar hg hξ ⟨w1, h1, exists_separating_residues hX.conjE w1 R.r hs⟩
 
 end RowsCard
 

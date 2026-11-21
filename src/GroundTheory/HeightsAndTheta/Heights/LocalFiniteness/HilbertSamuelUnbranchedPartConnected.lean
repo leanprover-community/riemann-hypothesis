@@ -24,8 +24,6 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_DivCycleHomLoc.{u} 
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3ResidualCompare.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.ResidualComparison.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.ResidualComparison.proof.{u} GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3BlowUpPieces GroundTheory.Heights₂.Heights.NumbersDVR.ResidualDisjoint.proof GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3ResidualContraction
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadIsoLoc : GroundTheory.Heights₂.Heights.Model.SpreadIsoLoc.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadIsoLoc.proof GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomLoc GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomInjLoc
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.TubeEuclMass : GroundTheory.Heights₂.Heights.TubeEuclMass.Statement :=
   @GroundTheory.Heights₂.Heights.TubeEuclMass.proof GroundTheory.Heights₂.Heights.HilbertSamuel.Closed.TubeCollarMass GroundTheory.Heights₂.Heights.AutoClose.TubeDeepMass

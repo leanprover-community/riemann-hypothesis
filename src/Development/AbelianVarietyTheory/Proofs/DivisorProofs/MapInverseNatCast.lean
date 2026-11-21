@@ -246,9 +246,6 @@ theorem IsGenLab.exists_conj (hx : IsGenLab ρ ρ' lab φ P₀ a a' x) (σ : Ω'
       exact ((Category.assoc _ _ _).symm.trans (congrArg (· ≫ _) hs)).symm
     · rw [Category.assoc, Category.assoc, ht₂, reassoc_of% e₀, e₀, Category.comp_id]
 
-theorem eStd_nsmul_right {g n : ℕ} (b b' : Fin g ⊕ Fin g → ZMod n) (k : ℕ) : eStd g n b (k • b') = k • eStd g n b b' := by
-  simp only [eStd, Pi.smul_apply, nsmul_eq_mul, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun _ _ => by ring
 
 open Classical in
 

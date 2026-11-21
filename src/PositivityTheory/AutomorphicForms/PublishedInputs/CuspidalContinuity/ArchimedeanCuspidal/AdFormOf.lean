@@ -277,13 +277,5 @@ def AdForm : Prop :=
     (∀ (W : V) h g, (U ⟨fun x => W.1 (x * h), hV.stable _ W.2 h⟩ : G3 → ℂ) g = (U W : G3 → ℂ) (g * h)) ∧
     ∀ (W : V) i j, U ⟨_, hV.lie _ W.2 i j⟩ = EA i j (U W)
 
-theorem adForm_of (h1 : LocF) (h2 : LocU) (h3 : LocR) (h4 : Mellin) (h5 : Glob) (h6 : ConvA) (h7 : Shim) (h8 : RS)
-    (h9 : EulOf) (h10 : AnOf) : AdForm := by
-  intro k N _ hk χ hχ f a hf ha hp
-  obtain ⟨D, rfl, hs, hfe⟩ := h8 k N hk χ hχ f a hf ha hp
-  rcases h10 a D hfe (h9 h7 N χ D f a hf ha hs) with h | h
-  · exact Or.inl h
-  obtain ⟨V, hV, hg⟩ := h5 h1 h2 h3 h4 D h
-  exact Or.inr ⟨D, rfl, hs, V, hV, hg, h6 V hV hg.1⟩
 
 end Ad3

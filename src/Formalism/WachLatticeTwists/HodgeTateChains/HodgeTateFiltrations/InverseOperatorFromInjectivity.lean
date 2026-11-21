@@ -196,32 +196,7 @@ theorem reindex : StatReindex := by
     · omega
   · intro k _; rfl
 
-theorem bkSubspace : StatBKSubspace := by
-  intro O F _ _ _ _ _ hO HV HV' _ _ _ _ pair Hf Hf' hann a
-  constructor
-  · intro h
-    rw [hann]
-    intro b hb
-    by_contra hne
-    obtain ⟨t, ht0, htu⟩ := Ring.exists_not_isUnit_of_not_isField hO
-    have hinj := IsFractionRing.injective O F
-    have ht : algebraMap O F t ≠ 0 := by
-      intro h0; exact ht0 (hinj (by rw [h0, map_zero]))
-    obtain ⟨o, ho⟩ := h (((algebraMap O F t)⁻¹ / pair a b) • b) (Hf'.smul_mem _ hb)
-    rw [map_smul, smul_eq_mul, div_mul_cancel₀ _ hne] at ho
-    apply htu
-    refine IsUnit.of_mul_eq_one o (hinj ?_)
-    rw [map_mul, ho, map_one, mul_inv_cancel₀ ht]
-  · intro h b hb
-    exact ⟨0, by rw [map_zero, (hann a).1 h b hb]⟩
 
-theorem bkc : StatBKc := by
-  intro O _ ϖ r Hr HD HV Z H0 _ _ _ _ _ _ _ _ _ _ io pr j q dl Hf hsq hkill hlift hker hdl b ⟨β, hβ, hb⟩
-  obtain ⟨z, hz⟩ := hlift β (by rw [← hb, ← map_smul, hkill, map_zero])
-  obtain ⟨h, hh⟩ := hker (b - q z) (by rw [map_sub, hsq, hz, hb, sub_self])
-  refine ⟨z + dl h, ?_, ?_⟩
-  · rw [map_add, hdl, add_zero, hz]; exact hβ
-  · rw [map_add, ← hh]; abel
 
 theorem lemmaA : StatLemmaA := by
   intro ℓ Bm _ Am T hsat hcl hT hstep x hx

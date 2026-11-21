@@ -150,9 +150,6 @@ theorem convFun_apply (f : Lp ℂ 2 μ) (x : C) :
   rw [RCLike.inner_apply', row, hy]
   simp [rowCM, kerFun]
 
-theorem convFun_add (f g : Lp ℂ 2 μ) : convFun μ ψ (f + g) = convFun μ ψ f + convFun μ ψ g := by
-  ext x
-  simp [convFun_def, inner_add_right]
 
 theorem convFun_smul (c : ℂ) (f : Lp ℂ 2 μ) : convFun μ ψ (c • f) = c • convFun μ ψ f := by
   ext x
@@ -416,10 +413,6 @@ theorem exists_char_ne_one_alt {g : C} (hg : g ≠ 1) : ∃ χ : C →ₜ* Circl
 
 end Metrizable
 
-theorem exists_char_ne_one_of_secondCountable [SecondCountableTopology C] {g : C} (hg : g ≠ 1) :
-    ∃ χ : C →ₜ* Circle, χ g ≠ 1 := by
-  borelize C
-  exact exists_char_ne_one_alt (μ := Measure.haar) hg
 
 theorem exists_char_ne_one {g : C} (hg : g ≠ 1) : ∃ χ : C →ₜ* Circle, χ g ≠ 1 :=
   _root_.UpperTheory.Reformulated.B.CharactersSeparatePoints.exists_char_ne_one hg
@@ -474,8 +467,6 @@ def charAlgebra : StarSubalgebra ℂ C(C, ℂ) :=
       | add x y _ _ hx hy => rw [star_add]; exact Submodule.add_mem _ hx hy
       | smul c x _ hx => rw [star_smul]; exact Submodule.smul_mem _ _ hx }
 
-theorem mem_charAlgebra {f : C(C, ℂ)} :
-    f ∈ charAlgebra (C := C) ↔ f ∈ Submodule.span ℂ (Set.range (charCM (C := C))) := Iff.rfl
 
 theorem charAlgebra_separatesPoints : (charAlgebra (C := C)).SeparatesPoints := by
   intro x y hxy
@@ -578,23 +569,7 @@ def charBasis : HilbertBasis (C →ₜ* Circle) ℂ (Lp ℂ 2 μ) :=
 theorem coe_charBasis : ⇑(charBasis (C := C) μ) = charL2 μ :=
   HilbertBasis.coe_mk _ _
 
-theorem hasSum_fourier (f : Lp ℂ 2 μ) :
-    HasSum (fun χ : C →ₜ* Circle => ⟪charL2 μ χ, f⟫_ℂ • charL2 μ χ) f := by
-  have h := (charBasis μ).hasSum_repr f
-  simpa only [HilbertBasis.repr_apply_apply, coe_charBasis] using h
 
-theorem hasSum_norm_sq_fourier (f : Lp ℂ 2 μ) :
-    HasSum (fun χ : C →ₜ* Circle => ‖⟪charL2 μ χ, f⟫_ℂ‖ ^ 2) (‖f‖ ^ 2) := by
-  have h := (charBasis μ).hasSum_inner_mul_inner f f
-  rw [inner_self_eq_norm_sq_to_K] at h
-  simp only [coe_charBasis] at h
-  have e : ∀ χ, ⟪f, charL2 μ χ⟫_ℂ * ⟪charL2 μ χ, f⟫_ℂ = ((‖⟪charL2 μ χ, f⟫_ℂ‖ ^ 2 : ℝ) : ℂ) :=
-    fun χ => by rw [← inner_conj_symm, Complex.conj_mul']; push_cast; ring
-  have h2 : HasSum (fun χ => ((‖⟪charL2 μ χ, f⟫_ℂ‖ ^ 2 : ℝ) : ℂ)) ((‖f‖ ^ 2 : ℝ) : ℂ) := by
-    simp only [e] at h
-    rw [Complex.ofReal_pow]
-    exact h
-  exact Complex.hasSum_ofReal.1 h2
 
 theorem inner_charL2_toLp (χ : C →ₜ* Circle) (f : C(C, ℂ)) :
     ⟪charL2 μ χ, ContinuousMap.toLp 2 μ ℂ f⟫_ℂ = ∫ x, conj (χ x : ℂ) * f x ∂μ := by

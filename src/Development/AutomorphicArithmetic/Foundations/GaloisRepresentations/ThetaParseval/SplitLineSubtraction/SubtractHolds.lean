@@ -55,12 +55,10 @@ theorem charEx : CharEx :=
       (UpperTheory.Lit.CharWD.algebraicCharacterWD GlobalTheory.globalArtinReciprocity_holds HodgeLocalDeRhamField.HLdR.field_outright GlobalTheory.deRham_potentiallySemistable) pstOfDR
       contLeft_holds) charInj_holds
 
-theorem weakIso : WeakIso := weakIso_holds satAE_holds
 
 theorem atPlace : AtPlace :=
   atPlace_holds charEx satAE_holds (frobId_holds (denseId_holds cpFacts_holds dgFacts_holds) cpFacts_holds) peelAll clTw
     clAway_holds contLeft_holds sSLeft_holds
 
-theorem subtract_holds : Subtract := subtract_of atPlace splitEx_holds weakIso clConj
 
 end UpperTheory.Gal.TP.Sub

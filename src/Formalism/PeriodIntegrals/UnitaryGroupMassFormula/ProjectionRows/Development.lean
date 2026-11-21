@@ -16,9 +16,5 @@ def PartB : Prop :=
       degL A (cutE A e A.L ⊓ U.restrictScalars (𝓞 K)) - degL A (cutE A e A.L) ≤
         ∑ᶠ w, lw K w * (γ w : ℝ)
 
-theorem dvProjRows_of (hB : PartB) : PI.Dv.division_rows_base_level := by
-  intro K _ _ _ _ _ A e n h hS hP hH hC hD U hU
-  exact ⟨fun w k hk => partA A e n h hP hH hD U hU w k hk,
-    fun γ hγ => hB K A e n h hS hP hH hC hD U hU γ hγ, partC A e U⟩
 
 end PI.DvRows

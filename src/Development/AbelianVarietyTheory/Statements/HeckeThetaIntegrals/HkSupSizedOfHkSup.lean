@@ -36,7 +36,6 @@ def ThetaSpanAll : Prop :=
     (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A),
     GlobalTheory.IndefiniteRowSideFullHecke.ThetaTranslateSize.ThetaSpan R F
 
-theorem hkSupSized_of_hkSup (h : GlobalTheory.IndefiniteRowSideFullHecke.LatticesOverBalls.HkSup) : HkSupSized := fun D _ => h D
 
 section Checks
 
@@ -55,22 +54,7 @@ theorem pinned (hL : R.toLevCh.Is A.μ0) (hP : R.IsThP) (ht : TieIn T R κ v₀)
   ⟨hP.ωP i _, (hP.vP i A.μ0).1, chiTie_of_chiR T R ht.alg ht.laws.pins.2.2.1 ht.chiR i, hL.mu0 i, hL.xi_base,
     ht.laws.spaceW _ ⟨Nat.le_add_left _ _, i.2⟩ _ T.toCore.good_σ₀⟩
 
-theorem pin_reads_congr (nW : Fin D.R.m → ℕ)
-    (FW : ∀ i, Arith.FormsL D.what₂.LL T.Q.c.F (Fin (nW i) → D.what₂.LL) (fun σ => (R.HW i σ).H) G)
-    (mu : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers D.what₂.LL) → T0)
-    (twPl : Finset (IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers D.what₂.LL))) (kap : ℝ)
-    (lam : Fin D.R.m → T0 → A.fam.base.Ix → NumberField.InfinitePlace D.what₂.LL → ℝ)
-    (i : Fin D.R.m) (σ : T.Q.c.F →+* ℂ) (hV : T.V ((i : ℕ) + 1) σ = Wc D i) (w : WeightFamilies.Wt D ((i : ℕ) + 1)) :
-    (FramePin T { R with nW := nW, FW := FW, mu := mu, twPl := twPl, kap := kap, lam := lam } i σ hV ↔ FramePin T R i σ hV) ∧
-    (ReadsAt T { R with nW := nW, FW := FW, mu := mu, twPl := twPl, kap := kap, lam := lam } i σ hV w ↔ ReadsAt T R i σ hV w) :=
-  ⟨Iff.rfl, Iff.rfl⟩
 
-theorem tieIn_const (ht : TieIn T R κ v₀) (c' : ∀ (j : ℕ) (σ : T.Q.c.F →+* ℂ), (T.U j σ).Comp → ℂ)
-    (h : ∀ j, InR D j → ∀ σ, GoodEmb T.Q.c σ → CUnit (c' j σ)) :
-    @TieIn D G _ _ Pl0 T0 A { T with cE := c' } iA R κ v₀ :=
-  @TieIn.mk D G _ _ Pl0 T0 A { T with cE := c' } iA R κ v₀
-    ⟨ht.laws.toLawsM, h, ht.laws.muVal, ht.laws.muConj, ht.laws.intAll, ht.laws.modelW, ht.laws.familyUniformisationBasePointOrthogonal, ht.laws.kfHalf,
-      ht.laws.adPin⟩ ht.alg ht.kap ht.hv₀ ht.chiR ht.x0
 
 omit iA in
 

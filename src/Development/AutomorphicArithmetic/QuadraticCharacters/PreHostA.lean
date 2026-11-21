@@ -75,17 +75,6 @@ def IsRangeText (T : HostType) (x : ℝ) (e : ℕ) : Prop :=
 def IsRangeN (T : HostType) (x : ℝ) (e : ℕ) : Prop :=
   2 ≤ e ∧ x ^ (2 + 8 * T.eps) / (2 * T.o) ≤ (2 ^ e : ℝ) ∧ (2 ^ e : ℝ) ≤ 2 * x ^ (2 + 8 * T.eps)
 
-theorem IsRangeText.isRangeN {T : HostType} {x : ℝ} {e : ℕ} (h : IsRangeText T x e) (hx : 3 ≤ x) :
-    IsRangeN T x e := by
-  have h1 : x ^ (2 : ℝ) ≤ x ^ (2 + 8 * T.eps) :=
-    Real.rpow_le_rpow_of_exponent_le (by linarith) (by linarith [T.eps_pos])
-  rw [Real.rpow_two] at h1
-  have h2 := h.1
-  have ho : (1 : ℝ) ≤ T.o := by exact_mod_cast T.o_pos
-  refine ⟨?_, le_trans (div_le_div_of_nonneg_left (by positivity) (by norm_num) (by linarith)) h2, h.2⟩
-  by_contra hlt
-  have h4 : (2 : ℝ) ^ e ≤ 2 ^ 1 := pow_le_pow_right₀ (by norm_num) (by omega)
-  nlinarith
 
 abbrev GalRealCyclotomic (n : ℕ) : Type := (ZMod (4 * n))ˣ ⧸ Subgroup.zpowers (-1 : (ZMod (4 * n))ˣ)
 

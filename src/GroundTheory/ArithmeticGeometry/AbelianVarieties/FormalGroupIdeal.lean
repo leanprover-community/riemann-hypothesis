@@ -51,9 +51,6 @@ theorem hasEval_adicRing {σ : Type*} [Finite σ] {a : σ → 𝒪}
 theorem psEvalAt_X {σ : Type*} (a : σ → 𝒪) (i : σ) : psEvalAt (MvPowerSeries.X i) a = a i := by
   simp [psEvalAt, MvPowerSeries.eval₂_X]
 
-theorem psEvalAt_C {σ : Type*} (a : σ → 𝒪) (r : 𝒪) : psEvalAt (MvPowerSeries.C r) a = r := by
-  simp [psEvalAt, MvPowerSeries.eval₂_C]
-  rfl
 
 variable [IsAdicComplete (IsLocalRing.maximalIdeal 𝒪) 𝒪]
 

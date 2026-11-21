@@ -191,9 +191,6 @@ def X {l : ℕ} [Fact l.Prime] (c : Coef l) (e : ℕ) : Finset (DirichletCharact
 theorem mem_X {l : ℕ} [Fact l.Prime] {c : Coef l} {e : ℕ} {ψ : DirichletCharacter c.O h.N} :
     ψ ∈ h.X c e ↔ h.IsChar ψ ∧ PsiEven e ψ := Set.Finite.mem_toFinset _
 
-theorem host_q1_mod_four_eq_three : h.q1 % 4 = 3 := by
-  obtain ⟨-, h8, -⟩ := h.pair
-  omega
 theorem d_mod : h.d % 4 = 3 := by
   obtain ⟨-, -, -, h16, -⟩ := h.pair
   omega

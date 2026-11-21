@@ -239,47 +239,8 @@ theorem model (k : Type) [Field k] (d : ℕ) :
 
 section Extra
 
-theorem isFinCover_complex : IsFinCover ℝ ℂ (F := ℝ) (d := 0) (fun _ => (1 : ℝ)) := by
-  refine { pd := ?_, fin := inferInstance, smooth := fun i => ?_, sep := inferInstance }
-  · exact
-      { ne := fun _ => one_ne_zero
-        indep := algebraicIndependent_empty_type
-        gen := by
-          rw [eq_top_iff]
-          intro z _
-          exact IntermediateField.algebraMap_mem _ z }
-  ·
-    have htop : rB ℝ ℂ (fun _ : Fin 1 => (1 : ℝ)) {i} = ⊤ := by
-      rw [eq_top_iff]
-      intro z _
-      rw [rB, Subalgebra.mem_restrictScalars, mem_integralClosure_iff]
-      exact (Algebra.IsIntegral.isIntegral (R := ℝ) z).tower_top
-    rw [htop]
-    have : Algebra.FormallyEtale ℝ ℂ := Algebra.FormallyEtale.of_isSeparable ℝ ℂ
-    have : Algebra.FinitePresentation ℝ ℂ := Algebra.FinitePresentation.of_finiteType.1 inferInstance
-    have : Algebra.Smooth ℝ ℂ := ⟨inferInstance, inferInstance⟩
-    exact Algebra.Smooth.of_equiv Subalgebra.topEquiv.symm
 
-theorem mem_omA_iff_tw {k F : Type} [Field k] [Field F] [Algebra k F] {d : ℕ} (x : Fin (d + 1) → F)
-    (hx : ∀ i, x i ≠ 0) (I : Finset (Fin (d + 1))) (f : F) :
-    f ∈ omA k x I ↔ (∏ j, x 0 / x j) * f ∈ tw k x (-((d : ℤ) + 1)) I := by
-  have hprod : ∀ a : F, ∏ j, a / x j = a ^ (d + 1) / ∏ j, x j := by
-    intro a
-    rw [Finset.prod_div_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
-  simp only [omA, tw, Submodule.mem_iInf, Submodule.mem_comap, LinearMap.mulLeft_apply, Subalgebra.mem_toSubmodule]
-  refine forall₂_congr fun i _ => ?_
 
-  have e : (x 0 / x i) ^ (-((d : ℤ) + 1)) * ((∏ j, x 0 / x j) * f) = (∏ j, x i / x j) * f := by
-    rw [hprod, hprod, show (-((d : ℤ) + 1)) = -((d + 1 : ℕ) : ℤ) by omega, zpow_neg, zpow_natCast, ← inv_pow,
-      inv_div, ← mul_assoc]
-    congr 1
-    rw [div_pow, div_mul_div_comm, mul_comm (x 0 ^ (d + 1)) (∏ j, x j), mul_div_mul_right _ _ (pow_ne_zero _ (hx 0))]
-  rw [e]
-
-theorem formPair_eq_cup {k K : Type} [Field k] [Field K] [Algebra k K] {ι : Type} [LinearOrder ι] [Fintype ι]
-    (t : GlobalTheory.CechDR.DR k K →ₗ[k] k) (a b : Finset ι → GlobalTheory.CechDR.DR k K) :
-    formPair k t a b = t (cup (sg k K) a b Finset.univ) := by
-  simp [formPair, cup, map_sum]
 
 end Extra
 

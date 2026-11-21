@@ -47,28 +47,9 @@ theorem eff_ofEff (C : EffCartierData X) : (ofEff C).Eff := by
   change C.idealSheaf ≤ (EffCartierData.zero X).idealSheaf
   rw [idealSheaf_zero]; exact le_top
 
-theorem stalkId_comap_eq_top (I : X.IdealSheafData) (g : X' ⟶ X) (x : X') :
-    FinalTheorems.stalkId (I.comap g) x = ⊤ ↔ g x ∉ I.support := by
-  rw [← not_iff_not, not_not, ← ne_eq, ← mem_support_iff_stalkId, Scheme.IdealSheafData.support_comap]
-  rfl
 
-theorem posAt_ofEff (C : EffCartierData X) (g : X' ⟶ X) (x : X') :
-    (ofEff C).PosAt g x ↔ g x ∈ C.idealSheaf.support := by
-  have h : FinalTheorems.stalkId ((ofEff C).neg.comap g) x = ⊤ :=
-    (stalkId_comap_eq_top _ g x).2 (by change _ ∉ (EffCartierData.zero X).idealSheaf.support; rw [idealSheaf_zero, Scheme.IdealSheafData.support_top]; exact fun h => h)
-  rw [PosAt, h, lt_top_iff_ne_top, ne_eq, stalkId_comap_eq_top, not_not]
-  rfl
 
-theorem zeroAt_ofEff (C : EffCartierData X) (g : X' ⟶ X) (x : X') :
-    (ofEff C).ZeroAt g x ↔ g x ∉ C.idealSheaf.support := by
-  have h : FinalTheorems.stalkId ((ofEff C).neg.comap g) x = ⊤ :=
-    (stalkId_comap_eq_top _ g x).2 (by change _ ∉ (EffCartierData.zero X).idealSheaf.support; rw [idealSheaf_zero, Scheme.IdealSheafData.support_top]; exact fun h => h)
-  rw [ZeroAt, h, stalkId_comap_eq_top]
-  rfl
 
-theorem eff_opp_ofEff (C : EffCartierData X) : (ofEff C).opp.Eff ↔ C.idealSheaf = ⊤ := by
-  change (EffCartierData.zero X).idealSheaf ≤ C.idealSheaf ↔ _
-  rw [idealSheaf_zero, top_le_iff]
 
 end CDiv
 
@@ -207,9 +188,6 @@ theorem exists_code (Z' : GModel Xo c) (h : DomLoc Y hg Z') :
   obtain ⟨Z, e, he⟩ := exists_preCode Z'
   exact ⟨⟨Z, Z', e, he, h⟩, e, he⟩
 
-theorem exists_code_tor {Z' : GModel Xo c} (h : DomLoc Y hg Z') (T : TorModel Z') :
-    ∃ (Z : Code Y c hg) (e : T.Z.X ≅ Z.X), Z.Iso T.Z e :=
-  exists_code T.Z fun p W hp hW b hb => dominates_tor T (h p W hp hW b hb)
 
 namespace Code
 
@@ -241,38 +219,7 @@ def PosBd (B : CDiv Z.X) : Prop :=
 def AmpleHodge (m : ℕ) (B : CDiv Z.X) : Prop :=
   ∃ (Z' : GModel Xo c) (e : Z'.X ≅ Z.X), Z.Iso Z' e ∧ B.AmpleTw e.hom (lbPow (GlobalTheory.FlagMod.detOm Z') m)
 
-theorem ampleHodge_of_ample {Z' : GModel Xo c} (T : TorModel Z') (h : IsRecTor T) (e : T.Z.X ≅ Z.X) (he : Z.Iso T.Z e)
-    {B : CDiv Z.X} (h₁ : B.pos.comap e.hom = T.BD.idealSheaf) (h₂ : B.neg = ⊤) : Z.AmpleHodge T.m0 B := by
-  refine ⟨T.Z, e, he, T.BD, .zero _, h₁.symm, by rw [h₂, CDiv.idealSheaf_zero, Scheme.IdealSheafData.comap_top], ?_⟩
-  have a := isLB_lbPow h.isLB_detOm T.m0
-  have z := (EffCartierData.zero T.Z.X).isLB_lb
-  have d := GlobalTheory.CechPic.isLB_dual T.BD.isLB_lb
-  have z0 : GlobalTheory.CechPic.cls _ z = 0 := (GlobalTheory.CechPic.cls_eq_zero_iff z).2 ⟨⟨fun _ => 1⟩, fun i j => by
-    have : (1 : Γ(T.Z.X, _)ˣ) = (EffCartierData.zero T.Z.X).trans i j :=
-      (EffCartierData.zero T.Z.X).eq_trans i j (one_mul _).symm
-    exact (map_one _).trans ((mul_one _).symm.trans (congrArg₂ (· * ·) this (map_one _).symm))⟩
-  have l := GlobalTheory.CechPic.isLB_tens (GlobalTheory.CechPic.isLB_tens a z) d
-  refine h.ample.of_lbIso l ((GlobalTheory.CechPic.cls_eq_iff l h.ample.isLB).1 ?_)
-  exact (GlobalTheory.CechPic.cls_tens (GlobalTheory.CechPic.isLB_tens a z) d _).trans (Eq.trans
-    (by rw [GlobalTheory.CechPic.cls_tens a z, z0, add_zero]) (GlobalTheory.CechPic.cls_tens a d _).symm)
 
-theorem exists_eff_posBd {Z' : GModel Xo c} (T : TorModel Z') (e : T.Z.X ≅ Z.X) (he : Z.Iso T.Z e) :
-    ∃ B : CDiv Z.X, B.pos.comap e.hom = T.BD.idealSheaf ∧ B.neg = ⊤ ∧ B.Eff ∧ Z.PosBd B := by
-  let C := T.BD.pull e.inv (T.BD.keepsRegular_of_flat _)
-  have hC : C.idealSheaf = T.BD.idealSheaf.comap e.inv := T.BD.idealSheaf_pull _ _
-  have hs : ∀ x, e.hom x ∈ C.idealSheaf.support ↔ x ∈ T.BD.idealSheaf.support := fun x => by
-    rw [hC, Scheme.IdealSheafData.support_comap]
-    change e.inv (e.hom x) ∈ T.BD.idealSheaf.support ↔ _
-    rw [← Scheme.Hom.comp_apply, e.hom_inv_id]
-    rfl
-  refine ⟨.ofEff C, ?_, CDiv.idealSheaf_zero _, CDiv.eff_ofEff C, Z', T, genι T.Z ≫ e.hom, ?_, ?_,
-    fun x _ => ⟨fun hx => ?_, fun hx => ?_⟩⟩
-  · change C.idealSheaf.comap e.hom = _
-    rw [hC, ← Scheme.IdealSheafData.comap_comp, e.hom_inv_id, Scheme.IdealSheafData.comap_id]
-  · rw [Category.assoc, he.1, pullback.condition]
-  · rw [← Category.assoc]; exact he.2
-  · exact (CDiv.posAt_ofEff _ _ _).2 ((hs _).2 (T.BD_pos x hx))
-  · exact (CDiv.zeroAt_ofEff _ _ _).2 fun h => hx (mem_genBd_iff.2 (T.BD_supp _ ((hs _).1 h)))
 
 section BC
 
@@ -387,14 +334,6 @@ def bcOf {S : Sig A N j} {κ : Lv A} {M : ℕ → Type} (dflt : ∀ p, M p) (a :
     if h : ∃ Z', IsBCAt (a p hp) Z Z' then emb p hp h.choose else dflt p
   else dflt p
 
-theorem bcOf_eq {S : Sig A N j} {κ : Lv A} {M : ℕ → Type} (dflt : ∀ p, M p) (a : ∀ p, p.Prime → At S κ p)
-    (emb : ∀ p hp, (a p hp).Mdl → M p) {p : ℕ} (hp : p.Prime) (Z : CodeAt S κ) (h : ∃ Z', IsBCAt (a p hp) Z Z') :
-    bcOf dflt a emb p Z = emb p hp h.choose := by
-  classical
-  have e : bcOf dflt a emb p Z = if h : ∃ Z', IsBCAt (a p hp) Z Z' then emb p hp h.choose else dflt p := by
-    delta bcOf
-    exact dif_pos hp
-  exact e.trans (dif_pos h)
 
 theorem choose_eq_blowUp {S : Sig A N j} {κ : Lv A} {p : ℕ} (ct : At S κ p) (Z : CodeAt S κ) (X : ct.Mdl) (J : ct.Idl X)
     (h : ∃ Z', IsBCAt ct Z Z') (hJ : ∀ Z', IsBCAt ct Z Z' ↔ IsNBlow X J Z') : h.choose = ct.blowUp X J := by
@@ -420,12 +359,6 @@ def globSt (S : Sig A N j) (κ : Lv A) (M : ℕ → Type) (dflt : ∀ p, M p) (a
   ampleGen := QLB.AmpleGen
   limRA := QLB.LimRA
 
-theorem exists_codeAt_iso_with_positive_ample_divisor {S : Sig A N j} {κ : Lv A} (s : FinalTheorems S κ) :
-    ∃ (Z : CodeAt S κ) (e : s.T.Z.X ≅ Z.X) (B : CDiv Z.X), Z.Iso s.T.Z e ∧ B.pos.comap e.hom = s.T.BD.idealSheaf ∧
-      B.neg = ⊤ ∧ B.Eff ∧ Z.PosBd B ∧ Z.AmpleHodge s.T.m0 B := by
-  obtain ⟨Z, e, he⟩ := exists_code_tor (Y := S.sys.Y) (hg := κ.good) s.glob.2.1 s.T
-  obtain ⟨B, h₁, h₂, h₃, h₄⟩ := Z.exists_eff_posBd s.T e he
-  exact ⟨Z, e, B, he, h₁, h₂, h₃, h₄, Z.ampleHodge_of_ample s.T s.isRec e he h₁ h₂⟩
 
 instance nonempty_codeAt (S : Sig A N j) (κ : Lv A) : Nonempty (CodeAt S κ) :=
   (exists_code (Y := S.sys.Y) _ (S.tor.glob κ.l κ.c κ.good).2.1).elim fun Z _ => ⟨Z⟩

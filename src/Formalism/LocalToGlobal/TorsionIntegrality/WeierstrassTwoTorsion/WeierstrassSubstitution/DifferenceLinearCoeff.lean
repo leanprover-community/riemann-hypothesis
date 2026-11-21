@@ -193,12 +193,6 @@ end Q1
 
 open Q1 CubeR
 
-theorem formal_group_difference : FglDiff.{u} := by
-  intro R _ W
-  obtain ⟨n₁, h0, h⟩ := first W
-  refine ⟨n₁, _, h0, ?_, h, second W h⟩
-  rw [cc_subst (hasSubst2 (X_cc 1) (iSer_subst_cc W (X_cc 0)))
-    (Fin.forall_fin_two.2 ⟨X_cc 1, iSer_subst_cc W (X_cc 0)⟩), h0]
 
 theorem cube_mem' : CubeMem.{u} := by
   intro R _ W S h1 h2 h3 h4 h6

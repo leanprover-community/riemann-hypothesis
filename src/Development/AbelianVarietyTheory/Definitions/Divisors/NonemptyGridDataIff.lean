@@ -168,24 +168,8 @@ theorem nonempty_gridData_iff {T : Type} (L : LevCh D T) (μ0 : T) (hL : L.Is μ
   obtain ⟨G, -⟩ := exists_gridData L sc P h (GlobalTheory.ChiGrid.colY_isV D T L μ0 hL 0 (Nat.zero_le _)).sd
   exact ⟨G⟩
 
-theorem isV_all {T : Type} {L : LevCh D T} {μ0 : T} (hL : L.Is μ0) {sc : Consts} (G : GridData L sc) {X : Node}
-    (h : X.InRange D.R.m) : (G.node X).IsV (X.rank D) (X.neg D.R.m) := by
-  by_cases h0 : ∀ j, X ≠ .grid 0 j
-  · exact G.isV h h0
-  · push Not at h0
-    obtain ⟨j, rfl⟩ := h0
-    exact GlobalTheory.ChiGrid.colY_isV D T L μ0 hL j h.2
 
-theorem chiH_ne_one {T : Type} {L : LevCh D T} {P : Places L} {C : ℝ} (X : Chars P C) {i : ℕ} (h : 1 ≤ i)
-    (h' : i ≤ D.R.m) : X.chiH i ≠ 1 := fun e =>
-  (X.lev0 i h h' _ (P.under_w (P.mem_S0_of_sum_eq.2 (Or.inl rfl)))).2 (by rw [e]; intro x _; rfl)
 
-theorem modul_ne_top {T : Type} {L : LevCh D T} (P : Places L) (sc : Consts) : P.modul sc ≠ ⊤ := by
-  intro e
-  have h : (P.w P.v0).asIdeal ∣ P.modul sc :=
-    (dvd_pow_self _ (P.depth_pos sc _).ne').trans (Finset.dvd_prod_of_mem _ (P.mem_S0_of_sum_eq.2 (Or.inl rfl)))
-  rw [e, Ideal.dvd_iff_le, top_le_iff] at h
-  exact (P.w P.v0).isPrime.ne_top h
 
 theorem nonempty_gridData {T : Type} (L : LevCh D T) (μ0 : T) (hL : L.Is μ0) (sc : Consts)
     (hg : ∀ k, D.host.g k % LevelStarExponents.condE D = 1) (h1 : D.host.pde % LevelStarExponents.condE D = 1) (h2 : D.host.pde' % LevelStarExponents.condE D = 1)
@@ -200,18 +184,7 @@ theorem exists_levCh_gridData (C : Formalism.L2.Host.CharFrame D) (sc : Consts)
   refine ⟨L, hC, hL, nonempty_gridData L () hL sc hg h1 h2 h3 fun t PP hP => ?_⟩
   exact absurd (by rw [hL.xi_base]; intro x _; rfl) ((hL.Q_ram () PP).2 (Or.inl hP))
 
-theorem isEmpty_gridData {T : Type} (L : LevCh D T) (sc : Consts) (h : q0 D = D.host.g 0) : IsEmpty (GridData L sc) :=
-  ⟨fun G => G.ch.basePlace_not_mem_chiGridBadPlaces ((S1_mem_OmF D).2 (Or.inl (h ▸ G.pl.basePlace_over_qZero)))⟩
 
-theorem ratio_st {T : Type} {L : LevCh D T} (P : Places L) (sc : Consts) :
-    P.stA sc * P.stAbar sc * (P.modul sc : Ideal (𝓞 D.host.E)) * (P.modulBar sc : Ideal (𝓞 D.host.E)) =
-      D.host.AA * D.host.AAbar := by
-  have h1 : ((P.modul sc : Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) ≠ 0 :=
-    FractionalIdeal.coeIdeal_ne_zero.2 (P.modul_ne_bot sc)
-  have h2 : ((P.modulBar sc : Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) ≠ 0 := fun h =>
-    ((GlobalTheory.ChiGrid.StairConj.conj_AA_and_stA D).2 T L P sc).1 (by rw [Places.stA, h]; simp)
-  unfold Places.stA Places.stAbar
-  field_simp
 
 open GlobalTheory.SignedHC in
 

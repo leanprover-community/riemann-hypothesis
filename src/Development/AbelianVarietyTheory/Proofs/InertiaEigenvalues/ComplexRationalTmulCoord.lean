@@ -54,18 +54,6 @@ def SeriesLaw : Prop :=
 def LatticeLaw : Prop :=
   ∀ (γ : C.HF) h (k : C.J), C.LL (γ * h * k) = (C.LL h).map ((C.rho γ).toLinearMap.restrictScalars A)
 
-theorem thetaReps_eq_thetaAll (h1 : C.SeriesLaw) (h2 : C.LatticeLaw) : C.thetaReps = C.thetaAll := by
-  refine le_antisymm (Submodule.span_mono ?_) (Submodule.span_le.2 ?_)
-  · rintro _ ⟨h, -, P, hP, rfl⟩
-    exact ⟨h, P, hP, rfl⟩
-  · rintro _ ⟨h, P, hP, rfl⟩
-    obtain ⟨r, hr, γ, k, rfl⟩ := C.reps_cover h
-    rw [h2] at hP
-    obtain ⟨P', hP', rfl⟩ := hP
-    have := h1 γ r k P'
-    refine (show C.ser (γ * r * k) (C.rho γ P') ∈ C.thetaReps from ?_)
-    rw [this]
-    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨r, hr, P', hP', rfl⟩)
 
 theorem exists_smul_mem [IsDomain A] [CharZero A] [CharZero K] {Λ : Submodule A M} {θ : M →ₗ[A] W}
     (h : C.ClassSum Λ θ) {f : M} (hf : f ∈ Λ) : ∃ c : A, c ≠ 0 ∧ c • θ f ∈ C.thetaReps := by
@@ -201,19 +189,6 @@ end CxDat
 
 end Cx
 
-theorem exists_smul_mem_map {A K M W : Type} [CommRing A] [IsDomain A] [IsPrincipalIdealRing A] [CharZero A] [Field K]
-    [CharZero K] [Algebra A K] [AddCommGroup M] [Module A M] [AddCommGroup W] [Module A W]
-    (C : ClassDat A K M W) (Z : CxDat A M W) {Λ : Submodule A M} (hΛ : ∀ m, ∃ d : A, d ≠ 0 ∧ d • m ∈ Λ)
-    {S : Submodule A W} {θ : M →ₗ[A] W} {e : W →ₗ[A] W} (h0 : C.ClassSum Λ θ)
-    (h1 : Z.OrthSum S) (h2 : Z.PosScalar θ) (h3 : Z.GoodProj S e) {x : W} (hx : x ∈ S.map e) :
-    ∃ c : A, c ≠ 0 ∧ c • x ∈ C.thetaReps.map e := by
-  obtain ⟨y, hy, rfl⟩ := hx
-  obtain ⟨c, hc, m, hm⟩ := Z.exists_smul_mem_range h1 h2 h3 hy
-  obtain ⟨d, hd, hdm⟩ := hΛ m
-  obtain ⟨n, hn, hnm⟩ := C.exists_smul_mem h0 hdm
-  refine ⟨n * d * c, mul_ne_zero (mul_ne_zero hn hd) hc, _, hnm, ?_⟩
-  rw [mul_smul, mul_smul, ← hm]
-  simp
 
 namespace Model
 
@@ -240,8 +215,6 @@ def c2 : ℂ ⊗[ℤ] (Fin 2 → ℚ) ≃ₗ[ℂ] EuclideanSpace ℂ (Fin 2) :=
   (TensorProduct.piRight ℤ ℂ ℂ fun _ : Fin 2 => ℚ) ≪≫ₗ (LinearEquiv.piCongrRight fun _ => cq) ≪≫ₗ
     (WithLp.linearEquiv 2 ℂ (Fin 2 → ℂ)).symm
 
-theorem complex_rational_tmul_coord (z : ℂ) (w : Fin 2 → ℚ) (a : Fin 2) : c2 (z ⊗ₜ[ℤ] w) a = z * w a := by
-  simp [c2, cq]
 
 def lat : Submodule ℤ (Fin 2 → ℚ) := Submodule.pi Set.univ fun _ => (1 : Submodule ℤ ℚ)
 
@@ -291,9 +264,7 @@ theorem classSum : cls.ClassSum lat LinearMap.id := by
   funext a
   simp
 
-theorem seriesLaw : cls.SeriesLaw := fun _ _ _ P => (one_smul ℤ ((2 : ℤ) • (show Fin 2 → ℚ from P))).symm
 
-theorem latticeLaw : cls.LatticeLaw := fun _ _ _ => (Submodule.map_id lat).symm
 
 theorem subC_top : cx.subC ⊤ = ⊤ := by
   show ((⊤ : Submodule ℤ (Fin 2 → ℚ)).baseChange ℂ).map c2.toLinearMap = ⊤
@@ -314,62 +285,10 @@ theorem orthSum : cx.OrthSum ⊤ := by
     have h' : (a : Fin 2) ≠ a' := h
     simp [EuclideanSpace.inner_single_left, h']
 
-theorem mapC_id : cx.mapC LinearMap.id = LinearMap.id := by
-  show c2.toLinearMap ∘ₗ (LinearMap.id : (Fin 2 → ℚ) →ₗ[ℤ] _).baseChange ℂ ∘ₗ c2.symm.toLinearMap = LinearMap.id
-  ext1 x
-  simp
 
-theorem posScalar : cx.PosScalar LinearMap.id := fun _ _ => ⟨1, one_pos, fun x _ => by
-  rw [mapC_id]
-  show (LinearMap.adjoint (LinearMap.id : EuclideanSpace ℂ (Fin 2) →ₗ[ℂ] _)) x = _
-  rw [LinearMap.adjoint_id]
-  exact (one_smul ℂ x).symm⟩
 
-theorem goodProj : cx.GoodProj ⊤ pr := by
-  intro x _
-  have h1 : cx.goodSum = (ℂ ∙ EuclideanSpace.single (0 : Fin 2) (1 : ℂ) : Submodule ℂ (EuclideanSpace ℂ (Fin 2))) :=
-    iSup_singleton (f := cx.part) (b := (0 : Fin 2))
-  have h2 : ∀ y, c2 (pr.baseChange ℂ y) = (c2 y 0) • EuclideanSpace.single (0 : Fin 2) (1 : ℂ) := fun y => by
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | add a b ha hb => rw [map_add, map_add, ha, hb, map_add, PiLp.add_apply, add_smul]
-    | tmul z w =>
-      ext a
-      rw [LinearMap.baseChange_tmul, complex_rational_tmul_coord, complex_rational_tmul_coord]
-      fin_cases a <;> simp [pr]
-  have h3 : cx.endC pr x = ((show EuclideanSpace ℂ (Fin 2) from x) 0) • EuclideanSpace.single (0 : Fin 2) (1 : ℂ) := by
-    have := h2 (c2.symm x)
-    rw [LinearEquiv.apply_symm_apply] at this
-    exact this
-  rw [h3]
-  symm
-  refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ ?_ |>.trans rfl
-  · rw [h1]
-    exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _)
-  · intro w hw
-    rw [h1] at hw
-    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hw
-    revert x
-    intro (x : EuclideanSpace ℂ (Fin 2)) _ _
-    show inner ℂ (x - x 0 • EuclideanSpace.single (0 : Fin 2) (1 : ℂ)) (c • EuclideanSpace.single (0 : Fin 2) (1 : ℂ)) = 0
-    simp [inner_smul_right, EuclideanSpace.inner_single_right]
 
-theorem all_hold : cls.ClassSum lat LinearMap.id ∧ cls.SeriesLaw ∧ cls.LatticeLaw ∧ cx.OrthSum ⊤ ∧
-    cx.PosScalar LinearMap.id ∧ cx.GoodProj ⊤ pr ∧ pr ≠ 0 ∧ pr ≠ LinearMap.id ∧ ∀ h, Nat.card (cls.Gam h) = 2 := by
-  refine ⟨classSum, seriesLaw, latticeLaw, orthSum, posScalar, goodProj, fun h => ?_, fun h => ?_, card_gam⟩
-  · simpa [pr] using congrFun (LinearMap.congr_fun h 1) 0
-  · simpa [pr] using congrFun (LinearMap.congr_fun h 1) 1
 
-theorem not_posScalar_zero : ¬ cx.PosScalar 0 := by
-  intro h
-  have hne : (EuclideanSpace.single (0 : Fin 2) (1 : ℂ) : EuclideanSpace ℂ (Fin 2)) ≠ 0 := by simp
-  obtain ⟨c, hc, hx⟩ := h (0 : Fin 2) (fun h0 => hne (Submodule.span_singleton_eq_bot.1 h0))
-  have h1 := hx _ (Submodule.mem_span_singleton_self _)
-  have h0 : cx.mapC 0 = 0 := by simp [CxDat.mapC]
-  rw [h0, LinearMap.zero_apply] at h1
-  rcases smul_eq_zero.1 h1.symm with h2 | h2
-  · exact hc.ne' (by exact_mod_cast h2)
-  · exact hne h2
 
 end Model
 
@@ -405,87 +324,15 @@ theorem map_baseChange {O O' V : Type} [CommRing O] [CommRing O'] [Algebra O O']
   · rintro ⟨_, ⟨v, hv, rfl⟩, rfl⟩
     exact ⟨_, ⟨v, hv, rfl⟩, rfl⟩
 
-theorem map_allK (i : X.Tw) (j : ℕ) (b : Bool) (k : ℕ) :
-    (allK Y i j b k).map (eK Y i j b k) = ((V0 Y i j b).restrictScalars (X.O i)).baseChange (X.Ok i k) :=
-  map_baseChange _ _
 
-theorem charZero_Ok (i : X.Tw) (k : ℕ) : CharZero (X.Ok i k) := by
-  haveI := GlobalTheory.FullRankTest.charZero_K (X := X) i
-  haveI : CharZero (X.O i) :=
-    (RingHom.charZero_iff (IsFractionRing.injective (X.O i) (FractionRing (X.O i)))).2 inferInstance
-  exact (RingHom.charZero_iff (X.Ok_inj i k)).1 inferInstance
 
-theorem thPsi_one_eq (i : X.Tw) (j : ℕ) (b : Bool) (k : ℕ) (Sg : Set (Y.Dat i j b)) :
-    ThPsi Y i j b k ∅ 1 Sg = (Th Y i j b Sg).baseChange (X.Ok i k) := by
-  rw [ThPsi, Th, Submodule.baseChange_span]
-  congr 1
-  ext x
-  simp only [Y.thPsi_one, Set.mem_iUnion, Set.mem_singleton_iff]
-  constructor
-  · rintro ⟨a, ha, rfl⟩
-    exact ⟨_, ⟨a, ha, rfl⟩, rfl⟩
-  · rintro ⟨_, ⟨a, ha, rfl⟩, rfl⟩
-    exact ⟨a, ha, rfl⟩
 
-theorem exists_smul_mem_cut (i : X.Tw) (j : ℕ) (b : Bool) (k : ℕ) (Q : Finset (PlE D.host))
-    (ψ : G D.host.E N.Om →* (X.Ok i k)ˣ) (C : ClassAt Y i j b k Q ψ) (Z : CxAt Y i j b k Q ψ)
-    (h0 : C.ClassSum (Y.MtLat i j b k Q ψ) (Y.thP i j b k Q ψ)) (h1 : Z.OrthSum (allK Y i j b k))
-    (h2 : Z.PosScalar (Y.thP i j b k Q ψ)) (h3 : Z.GoodProj (allK Y i j b k) (eK Y i j b k))
-    (T : Submodule (X.Ok i k) (X.Ok i k ⊗[X.O i] Y.Fm i j b)) (hT : C.thetaReps ≤ T) :
-    ∀ x ∈ ((V0 Y i j b).restrictScalars (X.O i)).baseChange (X.Ok i k),
-      ∃ c : X.Ok i k, c ≠ 0 ∧ c • x ∈ T.map (eK Y i j b k) := by
-  intro x hx
-  haveI := charZero_Ok (X := X) i k
-  haveI : CharZero (FractionRing (X.Ok i k)) :=
-    (RingHom.charZero_iff (IsFractionRing.injective (X.Ok i k) (FractionRing (X.Ok i k)))).1 inferInstance
-  rw [← map_allK] at hx
-  have hΛ : ∀ m, ∃ d : X.Ok i k, d ≠ 0 ∧ d • m ∈ Y.MtLat i j b k Q ψ := fun m => by
-    obtain ⟨d, hd⟩ := multiple_mem_span_of_mem_localization_span (nonZeroDivisors (X.Ok i k)) (FractionRing (X.Ok i k))
-      (Y.MtLat i j b k Q ψ : Set (Y.MtV i j b k Q ψ)) m (Y.MtLat_span i j b k Q ψ ▸ Submodule.mem_top)
-    rw [Submodule.span_eq] at hd
-    exact ⟨d, nonZeroDivisors.coe_ne_zero d, hd⟩
-  obtain ⟨c, hc, h⟩ := exists_smul_mem_map C Z hΛ h0 h1 h2 h3 hx
-  exact ⟨c, hc, Submodule.map_mono hT h⟩
 
-theorem eThPsi_full (i : X.Tw) (j : ℕ) (b : Bool) (k : ℕ) (Q : Finset (PlE D.host))
-    (ψ : G D.host.E N.Om →* (X.Ok i k)ˣ) (C : ClassAt Y i j b k Q ψ) (Z : CxAt Y i j b k Q ψ)
-    (h0 : C.ClassSum (Y.MtLat i j b k Q ψ) (Y.thP i j b k Q ψ)) (h1 : Z.OrthSum (allK Y i j b k))
-    (h2 : Z.PosScalar (Y.thP i j b k Q ψ)) (h3 : Z.GoodProj (allK Y i j b k) (eK Y i j b k))
-    (Sg : Set (Y.Dat i j b)) (hT : C.thetaReps ≤ ThPsi Y i j b k Q ψ Sg)
-    (hP : ∀ a ∈ Sg, Y.thPsi i j b k Q ψ a ⊆ (allK Y i j b k : Set (X.Ok i k ⊗[X.O i] Y.Fm i j b))) :
-    eThPsi Y i j b k Q ψ Sg ≤ ((V0 Y i j b).restrictScalars (X.O i)).baseChange (X.Ok i k) ∧
-      ∀ x ∈ ((V0 Y i j b).restrictScalars (X.O i)).baseChange (X.Ok i k),
-        ∃ c : X.Ok i k, c ≠ 0 ∧ c • x ∈ eThPsi Y i j b k Q ψ Sg := by
-  refine ⟨?_, exists_smul_mem_cut Y i j b k Q ψ C Z h0 h1 h2 h3 _ hT⟩
-  rw [← map_allK]
-  exact Submodule.map_mono (Submodule.span_le.2 (Set.iUnion₂_subset hP))
 
 def SeriesRational (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : Bool) (k : ℕ) (C : ClassAt Y i j b k ∅ 1) : Prop :=
   ∀ h ∈ C.reps, ∀ P ∈ C.LL h, C.ser h P ∈ (ThJ Y E i j b).baseChange (X.Ok i k)
 
-theorem fullRk_at (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : Bool) (k : ℕ) (C : ClassAt Y i j b k ∅ 1)
-    (Z : CxAt Y i j b k ∅ 1) (h0 : C.ClassSum (Y.MtLat i j b k ∅ 1) (Y.thP i j b k ∅ 1))
-    (hR : SeriesRational Y E i j b k C) (h1 : Z.OrthSum (allK Y i j b k))
-    (h2 : Z.PosScalar (Y.thP i j b k ∅ 1)) (h3 : Z.GoodProj (allK Y i j b k) (eK Y i j b k)) :
-    FullRk Y E i j b (SgJ Y E i j b) := by
-  rw [GlobalTheory.FullRankTest.fullRk_iff]
-  intro x hx
-  have hT : C.thetaReps ≤ (ThJ Y E i j b).baseChange (X.Ok i k) := by
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨h, hh, P, hP, rfl⟩
-    exact hR h hh P hP
-  obtain ⟨c, hc, h⟩ := exists_smul_mem_cut Y i j b k ∅ 1 C Z h0 h1 h2 h3 _ hT _
-    (Submodule.tmul_mem_baseChange_of_mem 1 hx)
-  rw [eK, map_baseChange] at h
-  exact GlobalTheory.FullRankTest.descent (X.Ok_inj i k) _ x c hc h
 
-theorem thetaAll_le (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : Bool) (k : ℕ) (C : ClassAt Y i j b k ∅ 1)
-    (hR : SeriesRational Y E i j b k C) (h1 : C.SeriesLaw) (h2 : C.LatticeLaw) :
-    C.thetaAll ≤ (ThJ Y E i j b).baseChange (X.Ok i k) := by
-  rw [← C.thetaReps_eq_thetaAll h1 h2]
-  refine Submodule.span_le.2 ?_
-  rintro _ ⟨h, hh, P, hP, rfl⟩
-  exact hR h hh P hP
 
 abbrev ClassFam (D : D7) (k : ℕ) : Type 1 :=
   ∀ i : D.ntw.Tw, D.ntw.NonzeroIndexPlace i → ∀ (j : ℕ) (b : Bool), ClassAt D.nexp i j b k ∅ 1
@@ -508,12 +355,6 @@ def ThetaGramPos (D : D7) (k : ℕ) (Z : CxFam D k) : Prop :=
 def GoodProjector (D : D7) (k : ℕ) (Z : CxFam D k) : Prop :=
   ∀ i hi, ∀ j ∈ Finset.Icc 1 D.R.m, ∀ b, (Z i hi j b).GoodProj (allK D.nexp i j b k) (eK D.nexp i j b k)
 
-theorem fullRk_of_inputs (D : D7) (E : XD D) (k : ℕ) (C : ClassFam D k) (Z : CxFam D k)
-    (h0 : ClassSumFormula D k C) (hR : Rationality D E k C) (h1 : PartsSum D k Z) (h2 : ThetaGramPos D k Z)
-    (h3 : GoodProjector D k Z) :
-    ∀ i, D.ntw.NonzeroIndexPlace i → ∀ j ∈ Finset.Icc 1 D.R.m, ∀ b : Bool, FullRk D.nexp E i j b (SgJ D.nexp E i j b) :=
-  fun i hi j hj b => fullRk_at D.nexp E i j b k (C i hi j b) (Z i hi j b) (h0 i hi j hj b) (hR i hi j hj b)
-    (h1 i hi j hj b) (h2 i hi j hj b) (h3 i hi j hj b)
 
 end Record
 

@@ -104,21 +104,6 @@ theorem kForm_semi {H X : Type} [AddCommGroup H] [Module ℂ H] [AddCommGroup X]
 
 end Semi
 
-theorem hMod_exists {X : Type} [AddCommGroup X] [Module ℂ X] (V : Submodule ℂ X) [FiniteDimensional ℂ V]
-    (ip : X → X → ℂ) (hadd : ∀ x ∈ V, ∀ y ∈ V, ∀ z ∈ V, ip (x + y) z = ip x z + ip y z)
-    (hsm : ∀ (c : ℂ), ∀ x ∈ V, ∀ y ∈ V, ip (c • x) y = star c * ip x y)
-    (hsym : ∀ x ∈ V, ∀ y ∈ V, star (ip y x) = ip x y) (hpos : ∀ x ∈ V, 0 ≤ (ip x x).re)
-    (hdef : ∀ x ∈ V, ip x x = 0 → x = 0) : ∃ M : HMod X, M.Is V ip := by
-  let core : InnerProductSpace.Core ℂ V :=
-    { inner := fun x y => ip x y
-      conj_inner_symm := fun x y => hsym x x.2 y y.2
-      re_inner_nonneg := fun x => hpos x x.2
-      add_left := fun x y z => hadd x x.2 y y.2 z z.2
-      smul_left := fun x y r => hsm r x x.2 y y.2
-      definite := fun x h => Subtype.ext (hdef x x.2 h) }
-  letI : NormedAddCommGroup V := core.toNormedAddCommGroup
-  letI : InnerProductSpace ℂ V := InnerProductSpace.ofCore core.toCore
-  exact ⟨{ H := V, fH := ‹FiniteDimensional ℂ V›, e := V.subtype }, V.injective_subtype, V.range_subtype, fun _ _ => rfl⟩
 
 theorem vw_root {K : Type} [Field K] [NumberField K] [StarRing K] (w : HeightOneSpectrum (𝓞 K)) (a : K) (n : ℕ) (hn : 0 < n)
     (h : a ^ n = 1) : Formalism.DivisionValues.vw w a = 0 := by
@@ -422,13 +407,6 @@ def primPkg {s : ℕ} (hOk : A.fam.Ok s) (hsep : A.fam.TypesSep) (R : RealDat D 
     IndefPkg A.fam.amb (faceOf A F.P0 F.ψ0 F.P1 F.ψ1 F.Dc F.Sp F.Zsc) C CH :=
   cxPkgF A hOk hsep F.P0 F.ψ0 F.P1 F.ψ1 F.Dc F.Sp F.Zsc (R.toCx F) Y.toCol C CH (cxLinks_of_prims hOk hsep hC hY hP)
 
-theorem primPkg_spec {s : ℕ} (hOk : A.fam.Ok s) (hsep : A.fam.TypesSep) (R : RealDat D A Ks) (F : Face D A)
-    (Y : RealDat.RealCol R F) (C CH : ℝ) (hC : R.Char F) (hY : Y.Char) (hP : PrimLinks R F Y C CH) :
-    (primPkg hOk hsep R F Y C CH hC hY hP).Zs = (R.toCx F).zs ∧
-      (primPkg hOk hsep R F Y C CH hC hY hP).core.base.toIndefData = (R.toCx F).data F.cr false ∧
-      (primPkg hOk hsep R F Y C CH hC hY hP).core.cols.toIndefData = (R.toCx F).data F.cr true ∧
-      (primPkg hOk hsep R F Y C CH hC hY hP).core.base.μ = R.mu :=
-  ⟨rfl, rfl, rfl, rfl⟩
 
 end Prim
 

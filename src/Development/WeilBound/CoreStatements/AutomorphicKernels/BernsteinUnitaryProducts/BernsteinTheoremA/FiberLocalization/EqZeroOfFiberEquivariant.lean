@@ -40,52 +40,7 @@ variable {Y : Type*} [TopologicalSpace Y] [T2Space Y] [LocallyCompactSpace Y]
 def FiberStable (p : X → Y) (W : Submodule ℂ (SC X)) : Prop :=
   ∀ V : Set Y, IsClopen V → ∀ hpV : IsClopen (p ⁻¹' V), ∀ w ∈ W, mulInd (p ⁻¹' V) hpV w ∈ W
 
-theorem eq_top_of_fiber {p : X → Y} (hp : Continuous p) (W : Submodule ℂ (SC X))
-    (hW : FiberStable p W)
-    (hfib : ∀ (y : Y) (D : Distr X), (∀ w ∈ W, D w = 0) → SupportedIn D (p ⁻¹' {y}) → D = 0) :
-    W = ⊤ := by
-  classical
-  rw [eq_top_iff]
-  intro g _
-  let W' : Submodule ℂ (X → ℂ) := W.map (SC X).subtype
-  have hmem : (g : X → ℂ) ∈ W' := by
-    refine mem_of_forall_fiber (U := univ) (C := univ) isClosed_univ hp ?_ ?_ ⟨g.2, subset_univ _⟩ ?_
-    · rintro f ⟨-, hf0⟩
-      have : f = 0 := funext fun x => hf0 x (mem_univ x)
-      rw [this]
-      exact W'.zero_mem
-    · rintro V hV w ⟨w0, hw0, rfl⟩
-      exact ⟨mulInd (p ⁻¹' V) (hV.preimage hp) w0, hW V hV (hV.preimage hp) w0 hw0, rfl⟩
-    · intro y
-      let K : Submodule ℂ (SC X) := (vanishingOn (p ⁻¹' {y})).comap (SC X).subtype
-      have hgM : g ∈ W ⊔ K := by
-        by_contra hg
-        obtain ⟨D, hDg, hDM⟩ := Submodule.exists_le_ker_of_notMem hg
-        have hD0 : D = 0 := by
-          refine hfib y D (fun w hw => hDM (Submodule.mem_sup_left hw)) ?_
-          intro f hf
-          refine hDM (Submodule.mem_sup_right ?_)
-          intro x hx
-          by_contra hfx
-          exact hf hfx hx
-        exact hDg (by rw [hD0, LinearMap.zero_apply])
-      obtain ⟨w, hw, k, hk, hwk⟩ := Submodule.mem_sup.1 hgM
-      refine Submodule.mem_sup.2 ⟨(w : X → ℂ), ⟨w, hw, rfl⟩, (k : X → ℂ),
-        ⟨⟨k.2, subset_univ _⟩, fun x hx => hk x hx.2⟩, ?_⟩
-      rw [← hwk]
-      rfl
-  obtain ⟨w, hw, hwg⟩ := hmem
-  have : w = g := Subtype.ext hwg
-  exact this ▸ hw
 
-theorem eq_zero_of_fiber {p : X → Y} (hp : Continuous p) (W : Submodule ℂ (SC X))
-    (hW : FiberStable p W)
-    (hfib : ∀ (y : Y) (D : Distr X), (∀ w ∈ W, D w = 0) → SupportedIn D (p ⁻¹' {y}) → D = 0)
-    (D : Distr X) (hD : ∀ w ∈ W, D w = 0) : D = 0 := by
-  have htop := eq_top_of_fiber hp W hW hfib
-  ext f
-  rw [LinearMap.zero_apply]
-  exact hD f (htop ▸ Submodule.mem_top)
 
 def IsEquivariant {ι : Type*} (e : ι → X ≃ₜ X) (χ : ι → ℂ) (D : Distr X) : Prop :=
   ∀ (i : ι) (f : SC X), D (compHomeoL (e i) f) = χ i * D f
@@ -93,19 +48,6 @@ def IsEquivariant {ι : Type*} (e : ι → X ≃ₜ X) (χ : ι → ℂ) (D : Di
 def relSpanH {ι : Type*} (e : ι → X ≃ₜ X) (χ : ι → ℂ) : Submodule ℂ (SC X) :=
   Submodule.span ℂ (range fun q : ι × SC X => compHomeoL (e q.1) q.2 - χ q.1 • q.2)
 
-theorem isEquivariant_iff {ι : Type*} (e : ι → X ≃ₜ X) (χ : ι → ℂ) (D : Distr X) :
-    IsEquivariant e χ D ↔ ∀ w ∈ relSpanH e χ, D w = 0 := by
-  constructor
-  · intro hD w hw
-    have hle : relSpanH e χ ≤ LinearMap.ker D := by
-      refine Submodule.span_le.2 ?_
-      rintro _ ⟨⟨i, f⟩, rfl⟩
-      simp [hD i f]
-    exact hle hw
-  · intro hD i f
-    have := hD _ (Submodule.subset_span ⟨(i, f), rfl⟩)
-    rw [map_sub, map_smul, smul_eq_mul, sub_eq_zero] at this
-    exact this
 
 omit [TopologicalSpace Y] [T2Space Y] [LocallyCompactSpace Y] [TotallyDisconnectedSpace Y] in
 theorem mulInd_compHomeoL {p : X → Y} (e : X ≃ₜ X) (he : ∀ x, p (e x) = p x) (V : Set Y)
@@ -128,13 +70,6 @@ theorem fiberStable_relSpanH {ι : Type*} {p : X → Y} (e : ι → X ≃ₜ X) 
     exact Submodule.subset_span ⟨(i, mulInd (p ⁻¹' V) hpV f), rfl⟩
   exact hle hw
 
-theorem eq_zero_of_fiber_equivariant {ι : Type*} {p : X → Y} (hp : Continuous p)
-    (e : ι → X ≃ₜ X) (χ : ι → ℂ) (he : ∀ i x, p (e i x) = p x)
-    (hfib : ∀ (y : Y) (D : Distr X), IsEquivariant e χ D → SupportedIn D (p ⁻¹' {y}) → D = 0)
-    (D : Distr X) (hD : IsEquivariant e χ D) : D = 0 :=
-  eq_zero_of_fiber hp (relSpanH e χ) (fiberStable_relSpanH e χ he)
-    (fun y D' hD' hsupp => hfib y D' ((isEquivariant_iff e χ D').2 hD') hsupp)
-    D ((isEquivariant_iff e χ D).1 hD)
 
 end General
 

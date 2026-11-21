@@ -178,22 +178,5 @@ open GlobalTheory.KZ
 
 attribute [local instance] algMdl
 
-theorem wkTop_spec : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε)
-    (l n r N : ℕ) (x : ZMod N) (c d : ℕ), l.Prime → 0 < N → 1 ≤ r + n → Nat.Coprime l N → 1 < c → 1 < d →
-    Nat.Coprime c (6 * l * N) → Nat.Coprime d (6 * l * N) →
-    (∃ η, IsTopEta X (l ^ (r + n) * N) (topChar X (l ^ (r + n) * N) l n (topU X l (r + n) N x c))
-      (topChar X (l ^ (r + n) * N) l n (topV X l (r + n) N d)) η) ∧
-    ∀ σ ∈ fixMu Ω (l ^ (r + n) * N),
-      IsTopW (K := topL X (l ^ (r + n) * N)) (topZeta X (l ^ (r + n) * N) l n)
-        (topChar X (l ^ (r + n) * N) l n (topU X l (r + n) N x c))
-        (topChar X (l ^ (r + n) * N) l n (topV X l (r + n) N d))
-        (topEta X (l ^ (r + n) * N) (topChar X (l ^ (r + n) * N) l n (topU X l (r + n) N x c))
-          (topChar X (l ^ (r + n) * N) l n (topV X l (r + n) N d)))
-        (topLift X (l ^ (r + n) * N) σ)⁻¹ ⟨wkTop X l n r N x c d σ, wkTop_mem X l n r N x c d σ⟩ := by
-  intro Ω _ _ _ ε X l n r N x c d hl hN hs hlN hc1 hd1 hc hd
-  obtain ⟨hu, hv⟩ := TopUnits.isTopUnit_topU_topV X x hl hN hs hlN hc1 hd1 hc hd
-  obtain ⟨h1, h2⟩ := TopEta.spec_of_units X (mul_ne_zero (pow_ne_zero _ hl.ne_zero) hN.ne') hl.ne_zero
-    (pow_dvd_topLevel l n r N) hu hv
-  exact ⟨h1, fun σ _ => h2 _⟩
 
 end GlobalTheory.K4

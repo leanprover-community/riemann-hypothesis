@@ -28,14 +28,6 @@ theorem psiT_of_mem_GfC' {h : GA D V} (hh : h ∈ GfC V) (τ : D.what₂.Tau) : 
   rw [RingHom.coe_comp, ← Matrix.map_map, h1]
   exact Matrix.map_one _ (map_zero _) (map_one _)
 
-theorem comm_GinfC_GfC' : ∀ a ∈ GinfC V, ∀ b ∈ GfC V, a * b = b * a := by
-  intro a ha b hb
-  apply Eqv.matA_inj D V
-  rw [Eqv.matA_mul, Eqv.matA_mul]
-  apply Eqv.mat_ext D
-  · intro τ
-    rw [Matrix.map_mul, Matrix.map_mul, psiT_of_mem_GfC' hb τ, Matrix.mul_one, Matrix.one_mul]
-  · rw [Matrix.map_mul, Matrix.map_mul, (Eqv.mem_GinfC D V a).1 ha, Matrix.mul_one, Matrix.one_mul]
 
 theorem inf_GinfC_GfC' : GinfC V ⊓ GfC V = ⊥ := by
   rw [eq_bot_iff]
@@ -121,7 +113,6 @@ section GenAd
 variable {G Γ : Type} [Group G] [Group Γ] {ι : Γ →* G} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
   {ρ : Γ →* Module.End ℂ W} {J : Subgroup G} {χ : J →* ℂˣ} {F : G → W}
 
-theorem mem_adF_iff : F ∈ Bridge.AdForms ι ρ J χ ↔ ∀ (γ : Γ) (h : G) (k : J), F (ι γ * h * k) = (χ k : ℂ) • ρ γ (F h) := Iff.rfl
 
 theorem adF_mul (hF : F ∈ Bridge.AdForms ι ρ J χ) (h : G) (k : J) : F (h * k) = (χ k : ℂ) • F h := by
   simpa using hF 1 h k
@@ -217,7 +208,6 @@ theorem coef_rho (γ : GA D V) (hγ : γ ∈ GQ V) (w : c.W) : c.coef.ρ ⟨γ, 
 theorem ratF_eq' (γ : GQ V) : Bridge.ratF V γ = (finHom V).rangeRestrict (γ : GA D V) := by
   rfl
 
-theorem coef_rho' (γ : GQ V) (w : c.W) : c.coef.ρ γ w = c.ρ (γ : GA D V) w := rfl
 
 theorem adForms_rat (hF : F ∈ Bridge.AdForms (Bridge.ratF V) c.coef.ρ J' χ')
     (γ : GA D V) (hγ : γ ∈ GQ V) (h : Bridge.Gf V) : F ((finHom V).rangeRestrict γ * h) = c.ρ γ (F h) := by
@@ -507,13 +497,6 @@ theorem topMult_of (R : RealDat D A Ks) (hcX : R.cX.Is) (hprX : IsDualPair R.θ 
     obtain ⟨F, hF, hFT⟩ := exists_adForm hcX hprX hinf hperf hst hlev2 hT
     exact ⟨F, hF, hFT⟩
 
-theorem topMultH_of (R : RealDat D A Ks) (hcX : R.cX.Is) (hprX : IsDualPair R.θ R.MX R.cX R.prX)
-    (hHX : R.models_HX) (hinf : IsInfFam R.θ) (hsm : AutFunDefIffSm D) (hsig : D.sp.X'.SigOK)
-    (hdef : D.sp.X'.IsDefinite)
-    (hani : ∀ (r : ℕ) (C : Matrix (Fin D.sp.X'.rank) (Fin r) D.host.E), ¬ IsIsoFrame D.sp.X' C)
-    (hfd : ∀ τ, FiniteDimensional ℂ (R.MX.H τ)) (hst : SmStable R.MX) (hperf : Function.Bijective R.prX)
-    (hU : ∀ t, OpenLev D.sp.X' (levEnv _ R.βX (R.datXt t)).J (levEnv _ R.βX (R.datXt t)).χ) :
-    Formalism.IndefR.RecTie.TopMultH R := topMult_of R hcX hprX hHX hinf hsm hsig hdef hani hfd hst hperf hU
 
 end Real
 

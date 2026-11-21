@@ -34,7 +34,5 @@ theorem etSideS (h4 : GlobalTheory.EtC.E4) (h8 : GlobalTheory.EtC.E8) : EtSideS 
 theorem cstSmooth_of_p (hP : BocksteinBaseChangeP) (h : EtSideS) : CstSmooth :=
   cstSmooth_of_etSide glueL glueE glueB factsC resEx h (chapters_of hP)
 
-theorem crysPhiP_of_p (hP : BocksteinBaseChangeP) (hF : FSeamP) (h : EtSideS) : CrysPhiP :=
-  glueP factsC h (chapters_of hP) (fun _ _ K ζ => HT.etMapP K ζ) hF
 
 end CrystallineSemistableComparison

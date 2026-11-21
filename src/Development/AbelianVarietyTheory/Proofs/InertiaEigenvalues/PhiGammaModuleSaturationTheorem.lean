@@ -12,14 +12,6 @@ variable {k : Type} [Field k]
 section
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k V] {l n : ℕ} {R : RingPG k l}
 
-theorem linearIndependent_phi (D : ModPG R n V) (i : ZMod n) {ι : Type} {v : ι → V}
-    (hv : LinearIndependent k⸨X⸩ v) : LinearIndependent k⸨X⸩ fun j => D.φ i (v j) := by
-  have h1 := hv.linearIndepOn_id
-  have h2 := D.linearIndependent_φ i (Module.Basis.extend h1)
-  have h3 := h2.comp (fun j : ι => ⟨v j, h1.subset_extend _ ⟨j, rfl⟩⟩)
-    (fun a b h => hv.injective (congrArg Subtype.val h))
-  convert h3 using 2 with j
-  simp [Module.Basis.extend_apply_self]
 
 end
 

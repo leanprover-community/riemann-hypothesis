@@ -394,7 +394,6 @@ def primeOf : Ideal (Poly S N) := ReciprocityTheory.ChartRestriction.G.Geo.coord
 
 theorem primeOf_eq : primeOf (S := S) x = RingHom.ker (cone (S := S) x) := rfl
 
-theorem coordRing_eq : coordRing (S := S) x = (cone (S := S) x).range := rfl
 
 instance : (primeOf (S := S) x).IsPrime := by rw [primeOf_eq]; exact RingHom.ker_isPrime _
 
@@ -922,24 +921,12 @@ theorem lineX_ne_zero (i : Fin (1 + 1)) : lineX k i ≠ 0 := by
   · simp [lineX]
   · simp [lineX, RatFunc.X_ne_zero]
 
-theorem support_lineX : support (lineX k) = Finset.univ := by
-  ext i
-  simp [mem_support, lineX_ne_zero]
 
-theorem isMultiProjPrime_line :
-    NumbersDVR.IsMultiProjPrime (primeOfOne (S := k) (lineX k)) :=
-  isMultiProjPrime_primeOfOne _ fun h => lineX_ne_zero k 0 (congrFun h 0)
 
 def tautologicalLineBundle : LineBundle k (lineX k) := twistBundle k (lineX k) 1
 
 def lineChart0 : Chart (lineX k) := singleChart (lineX_ne_zero k 0)
 
-theorem lineO1_chart_nontrivial : Nontrivial ((tautologicalLineBundle k).toSubFamily.toFamily.F (lineChart0 k)) := by
-  have h1 : (1 : RatFunc k) ∈ (tautologicalLineBundle k).sub (lineChart0 k) := by
-    have := mem_twistMod_one (S := k) (lineChart0 k) 0
-    change (1 : RatFunc k) ∈ twistMod k (lineX k) 1 (lineChart0 k)
-    simpa [lineX] using this
-  exact ⟨⟨⟨1, h1⟩, 0, fun e => one_ne_zero (congrArg Subtype.val e)⟩⟩
 
 end Line
 

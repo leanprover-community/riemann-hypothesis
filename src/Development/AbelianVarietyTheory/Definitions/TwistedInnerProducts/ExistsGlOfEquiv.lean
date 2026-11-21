@@ -234,8 +234,6 @@ theorem eq_glue_iff (h : IsGlue L e) {P : Pair k n} : P = glue h ↔ P.ker = L �
 theorem Pair.glue_self {P : Pair k n} (he : P.HasVal e 1) : glue (Pair.isGlue he) = P :=
   ((eq_glue_iff _).2 ⟨rfl, he⟩).symm
 
-theorem glue_eq_glue_iff (h : IsGlue L e) (h' : IsGlue L' e') : glue h = glue h' ↔ L = L' ∧ e' - e ∈ L := by
-  rw [eq_glue_iff, glue_ker, Pair.hasVal_one_iff (glue_hasVal h), glue_ker]
 
 end
 
@@ -427,8 +425,6 @@ theorem up_hasVal_iff (x : {x : Red L // x ≠ 0}) (y : L) :
   rw [up, Pair.hasVal_one_iff (glue_hasVal _), glue_ker, ← smul_sub, ← Submodule.coe_sub, ← Red.mk_eq_zero q,
     map_sub, Red.mk_out, sub_eq_zero]
 
-theorem up_mk {y : L} (hy : Red.mk L y ≠ 0) : up L q ⟨_, hy⟩ = glue (isGlue_inv_smul L q hy) :=
-  (eq_glue_iff _).2 ⟨up_ker _ _ _, (up_hasVal_iff _ _ _ _).2 rfl⟩
 
 def kerEquiv : {x : Red L // x ≠ 0} ≃ {P : Pair k n // P.ker = L} :=
   Equiv.ofBijective (fun x => ⟨up L q x, up_ker L q x⟩) <| by
@@ -490,11 +486,6 @@ theorem cross_hasVal (q : Unif k) {P₁ P : Pair k n} (h : P.lat = P₁.ker) {e 
   have h2 : q.1 • (e - P₁.vec) ∈ P.ker := Pair.smul_mem_ker q.mem_max (h ▸ Pair.sub_vec_mem he)
   simpa [smul_sub, cross] using (Pair.mem_ker.1 h2).add (Pair.hasVal_ev h1)
 
-theorem cross_up (q : Unif k) (P : Pair k n) (x : {x : Red P.lat // x ≠ 0}) :
-    cross q (up P.lat q x) P = P.red x.1 := by
-  have h := cross_hasVal q (P := P) (up_ker P.lat q x).symm ((up_hasVal_iff _ q x x.1.out).2 (Red.mk_out _))
-  rw [q.smul_inv_smul] at h
-  rw [h.unique (P.hasVal_fn _), ← P.red_mk, Red.mk_out]
 
 theorem cross_up_ofDual (q : Unif k) (L : Submodule 𝒪[k] (n → k)) [L.IsLattice k] (x : {x : Red L // x ≠ 0})
     (f : {f : Module.Dual 𝓀[k] (Red L) // f ≠ 0}) : cross q (up L q x) (ofDual L f) = f.1 x.1 := by

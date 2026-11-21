@@ -288,6 +288,5 @@ end Formalism.FourierDecayAlt.P.LeftToRightConversion
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem two_sided_derivative_rule : C2.TwoSided := LeftToRightConversion.twoSided
 
 end Formalism.FourierDecayAlt.P

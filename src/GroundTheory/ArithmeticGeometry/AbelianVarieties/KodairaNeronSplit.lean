@@ -267,30 +267,6 @@ theorem split_equiv [IsMinimal 𝒪 (W.map (algebraMap 𝒪 K))]
     ((quotientE0VariableChangeEquiv K _ ⟨1, r, s, t⟩).trans
       (eT.trans (ZMod.ringEquivCongr (by rw [hv])).toAddEquiv)))⟩
 
-theorem kodaira_neron [IsMinimal 𝒪 (W.map (algebraMap 𝒪 K))] :
-    Finite ((curveK K W).Point ⧸ E0 K W) ∧
-    (¬(W.map (algebraMap 𝒪 K)).HasSplitMultiplicativeReduction 𝒪 →
-      Nat.card ((curveK K W).Point ⧸ E0 K W) ≤ 4) ∧
-    ((W.map (algebraMap 𝒪 K)).HasSplitMultiplicativeReduction 𝒪 →
-      IsAddCyclic ((curveK K W).Point ⧸ E0 K W) ∧
-        (Nat.card ((curveK K W).Point ⧸ E0 K W) : ℕ∞) = v W.Δ) := by
-  obtain ⟨π, hπ⟩ := exists_irreducible 𝒪
-  by_cases hs : (W.map (algebraMap 𝒪 K)).HasSplitMultiplicativeReduction 𝒪
-  · obtain ⟨e⟩ := split_equiv K W hs
-    have hΔ0 : W.Δ ≠ 0 := Δ_ne_zero_of_isElliptic K W
-    have hn : v W.Δ ≠ ⊤ := v_ne_top hΔ0
-    have hn1 : 1 ≤ (v W.Δ).toNat := by
-      have h1 := (one_le_v_iff hπ).2 (dvd_Δ_of_hasMultiplicativeReduction K W hπ
-        hs.toHasMultiplicativeReduction)
-      lift v W.Δ to ℕ using hn with m hm
-      simp only [ENat.toNat_natCast]
-      exact_mod_cast h1
-    have : NeZero (v W.Δ).toNat := ⟨by omega⟩
-    refine ⟨Finite.of_equiv _ e.toEquiv.symm, fun h => absurd hs h, fun _ => ⟨?_, ?_⟩⟩
-    · exact isAddCyclic_of_surjective e.symm.toAddMonoidHom e.symm.surjective
-    · rw [Nat.card_congr e.toEquiv, Nat.card_zmod, ENat.natCast_toNat hn]
-  · have hb := knBound_of_not_split K W hπ hs
-    exact ⟨hb.1, fun _ => hb.2, fun h => absurd h hs⟩
 
 end Main
 

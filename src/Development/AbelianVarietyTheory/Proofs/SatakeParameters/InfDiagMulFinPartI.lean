@@ -94,11 +94,5 @@ theorem exists_pow_mem {I : Type} [Fintype I] (φ : I → L →+* ℂ) (K : Subf
     Units.val_inv_eq_inv_val, inv_pow, mul_comm, pow_mul]
   exact inv_mem (pow_mem hK _)
 
-theorem exists_pow_mem_host {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R) (χ : HChar H.E) (hχ : χ.IsUnitary)
-    (n : R.Psi → ℤ) (hn : χ.HasInf (embPsi H) n) (x : Ideles H.E) (hx : IsFinIdele x) :
-    ∃ m : ℕ, 0 < m ∧ ((χ.1 x : ℂˣ) : ℂ) ^ m ∈ H.φ₀.fieldRange := by
-  have hcm : IsCMField H.E := H.isCMField_hostE
-  refine exists_pow_mem (embPsi H) H.φ₀.fieldRange (fun i y => ⟨H.sigmaOf _ y, rfl⟩) (fun i y => ?_) χ hχ n hn x hx
-  exact ⟨IsCMField.complexConj H.E (H.sigmaOf _ y), IsCMField.complexEmbedding_complexConj H.E H.φ₀ _⟩
 
 end GlobalTheory.UnUnitCmp.Val

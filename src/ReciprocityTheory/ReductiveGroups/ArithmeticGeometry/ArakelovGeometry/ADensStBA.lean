@@ -118,11 +118,6 @@ theorem adb_measurable_cxHessian (f : (Fin D → ℂ) → ℝ) (i j : Fin D) :
   exact (((Complex.measurable_ofReal.comp ((hap _ _).add (hap _ _))).add
     (measurable_const.mul (Complex.measurable_ofReal.comp ((hap _ _).sub (hap _ _))))).div_const 4)
 
-theorem adb_continuous_mixedDisc :
-    Continuous (mixedDisc : (Fin D → Matrix (Fin D) (Fin D) ℂ) → ℂ) := by
-  unfold mixedDisc
-  exact continuous_const.mul (continuous_finset_sum _ fun S _ => continuous_const.mul
-    ((continuous_finset_sum _ fun k _ => continuous_apply k).matrix_det))
 
 theorem adb_measurable_maDensity (φ : Fin D → (Fin D → ℂ) → ℝ) : Measurable (maDensity φ) := by
   have hcx : ∀ k i j, Measurable fun z => cxHessian (φ k) z i j := fun k i j =>
@@ -137,15 +132,6 @@ theorem adb_measurable_maDensity (φ : Fin D → (Fin D → ℂ) → ℝ) : Meas
 def IsConeSetB (s : Set (Ix κ → ℂ)) : Prop :=
   ∀ (c : ℂ) (z : Ix κ → ℂ), c ≠ 0 → (c • z ∈ s ↔ z ∈ s)
 
-theorem isConeSetB_coneOver (U : Set (Fin D → ℂ)) (γ : (Fin D → ℂ) → Ix κ → ℂ) :
-    IsConeSetB (coneOver U γ) := by
-  intro c z hc
-  constructor
-  · rintro ⟨y, hy, c', hc', hz⟩
-    refine ⟨y, hy, c⁻¹ * c', mul_ne_zero (inv_ne_zero hc) hc', ?_⟩
-    rw [mul_smul, ← hz, smul_smul, inv_mul_cancel₀ hc, one_smul]
-  · rintro ⟨y, hy, c', hc', rfl⟩
-    exact ⟨y, hy, c * c', mul_ne_zero hc hc', by rw [mul_smul]⟩
 
 theorem IsConeSetB.inter {s t : Set (Ix κ → ℂ)} (hs : IsConeSetB s) (ht : IsConeSetB t) :
     IsConeSetB (s ∩ t) := fun c z hc => by

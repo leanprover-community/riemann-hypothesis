@@ -65,14 +65,8 @@ theorem Cht.genEx (ct : At S κ p) : Cht.GenEx ct :=
 
 def chtTrue (ct : At S κ p) : ChtSt ct := Cht.chtOf ct (Cht.goodIff ct) (Cht.genEx ct)
 
-theorem chtTrue_genK (ct : At S κ p) {Z : ct.Mdl} (η : ct.Gen Z) : Cht.IsGenK η ((chtTrue ct).genK η) :=
-  (Cht.genEx ct Z η).choose_spec
 
-theorem chtTrue_yEta (ct : At S κ p) {Z : ct.Mdl} (η : ct.Gen Z) :
-    (chtTrue ct).yEta η = (chtTrue ct).ptK Z ((chtTrue ct).genK η) := rfl
 
-theorem Cht.nonempty_dvp (ct : At S κ p) {Z : ct.Mdl} (η : ct.Gen Z) : ∃ y : Cht.DVP ct, Nonempty (Cht.Ext y) :=
-  ⟨(chtTrue ct).genK η, Cht.nonempty_ext _⟩
 
 example {ct : At S κ p} {y : Cht.DVP ct} (e : Cht.Ext y) (h : e.π = p) : Cht.vpi e = 1 := by
   have h1 : ((e.π : ↥e.L) : ↥y.C.S) = p := by rw [h]; simp

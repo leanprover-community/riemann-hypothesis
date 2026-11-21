@@ -290,8 +290,6 @@ theorem sgnZ_injective : Function.Injective sgnZ := by
   rcases Int.units_eq_one_or s with rfl | rfl <;> rcases Int.units_eq_one_or s' with rfl | rfl <;>
     simp [sgnZ] at h ⊢
 
-theorem iotaHInv_injective (e : Formalism.HC.Frame) : Function.Injective e.iotaInv := fun a b h => by
-  rw [← e.iota_iotaInv a, h, e.iota_iotaInv]
 
 theorem gcode_injective (e : Formalism.HC.Frame) : Function.Injective (gcode e) := by
   intro g g' h
@@ -301,11 +299,6 @@ theorem gcode_injective (e : Formalism.HC.Frame) : Function.Injective (gcode e) 
   exact Prod.ext (Prod.ext (sgnZ_injective h2) (sgnZ_injective h1))
     (Formalism.HC.Frame.A.val_injective _ h3)
 
-theorem mcode_injective (e : Formalism.HC.Frame) : Function.Injective (mcode e) := by
-  intro g g' h
-  unfold mcode at h
-  simp only [Prod.mk.injEq] at h
-  exact Prod.ext h.1 (hval_injective e h.2)
 
 theorem card_PhiSet (e : Formalism.HC.Frame) : (PhiSet (H := e.A)).card = 2 * e.ord := by
   have h : PhiSet (H := e.A) =
@@ -1876,16 +1869,6 @@ namespace Formalism.MainNotions
 
 open Formalism.MainNotions.Lnk
 
-theorem linkGLOBAL {eps : ℝ} (Fm : FamP eps) (Cabs CH C0 eL : ℝ) (hCabs : 0 ≤ Cabs) (hCH : 0 ≤ CH) (heL : 0 ≤ eL)
-    (hCount : CountF Fm) (hSM : SlopesMF Fm)
-    (hSN : LinkG Fm → LinkMu Fm → SlopesNF Fm)
-    (hNF : NuFullF Fm) (hRank : J.MuRank Fm) (hRR : RRRankF Fm)
-    (hFr : ChosenProviso Fm C0 → ChosenCode Fm C0 CH → LinkS Fm C0 → LinkIRR Fm → LinkDIV Fm Cabs CH → FrameF Fm CH)
-    (hLoss : ∀ Cb : ℝ, 0 < Cb → ChosenTT Fm → ChosenBad Fm Cb → LinkG Fm → LossF Fm eL)
-    (hChar : CharF Fm) (hCov : Fm.CoverAll) :
-    LinkGLOBAL Fm Cabs CH C0 Cabs eL :=
-  linkGLOBAL_of Fm Cabs CH C0 eL hCabs hCH heL hCount hSM hSN (fun lD => latF Fm lD hNF hRank hRR) (nodesF Fm) hFr hLoss hChar
-    (fun cT2 => size_windows_of_thick_set Fm cT2) hCov
 
 end Formalism.MainNotions
 

@@ -23,9 +23,5 @@ instance isDiscreteRep_resTo {K : FiniteSubfield} (S : Set (HeightOneSpectrum (ð
     IsDiscreteRep (resTo S K' hK' M) :=
   isDiscreteRep_res_gsBaseChange_symm S hK' _
 
-theorem isTotallyComplex_of_odd (L' L : FiniteSubfield) [Fact (L' â‰¤ L)]
-    (hodd : Odd (Module.finrank L'.1 L.1)) (htc : NumberField.IsTotallyComplex L.1) :
-    NumberField.IsTotallyComplex L'.1 :=
-  TotallyComplexOfOdd.isTotallyComplex_of_odd L' L hodd htc
 
 end PositivityTheory.Lit1.GEN.W_killed_a

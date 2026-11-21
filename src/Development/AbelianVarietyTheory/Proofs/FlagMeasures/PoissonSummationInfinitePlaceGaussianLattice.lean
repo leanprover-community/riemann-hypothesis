@@ -55,14 +55,6 @@ theorem _root_.GlobalTheory.FlagBase.PoissonV.norm_sq_coords (x : EuclideanSpace
   rw [EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type]
   rfl
 
-theorem inner_coords (x y : EuclideanSpace ℂ (ι × κ)) :
-    ∑ w, (coords ι κ x w ⬝ᵥ star (coords ι κ y w)).re = inner ℝ x y := by
-  rw [PiLp.inner_apply, Fintype.sum_prod_type]
-  refine Finset.sum_congr rfl fun w _ => ?_
-  rw [dotProduct, Complex.re_sum]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  simp [coords_apply, Complex.inner]
-  ring
 
 end GlobalTheory.FlagBase.PoissonV
 

@@ -163,7 +163,6 @@ end Family
 
 theorem stLoss7 : ThickDensitySizeWindowsForAllFamilies := fun _ Fm h1 h2 h3 => losses_of_small_share_weight Fm h1 h2 h3
 
-theorem stLoss7W : StLoss7W := fun _ Fm h1 h2 hW h3 => Lnk.lossF_of_7W Fm (losses_of_small_share_weight Fm h1 h2 h3) hW
 
 section Size
 
@@ -340,9 +339,7 @@ theorem loss_requirements_of_small_shares (C0 CH : ℝ) (h : ChosenE Fm C0 CH) (
 
 end Family
 
-theorem small_share_weight_exists : SmallShareWeightExists := fun _ Fm hG => chosenW_of Fm hG
 
-theorem stOld7 : StOld7 := fun _ Fm C0 CH h hG hc => loss_requirements_of_local_input Fm C0 CH h hG hc
 
 example {eps : ℝ} (Fm : FamP eps) : ChosenTT Fm → ChosenBadp Fm → LinkG Fm → Lnk.LossesSmallShares Fm := stLoss7 eps Fm
 

@@ -77,9 +77,6 @@ theorem relab_rt_iff (hσ : GoodEmb c σ) (τ' : E →+* ℂ) :
       Subtype.ext (by rw [hcoe, h]; rfl)
     rw [e, map_neg, hσρ, h]
 
-theorem conjEmb_eq' (τ : E →+* ℂ) : conjEmb τ = NumberField.ComplexEmbedding.conjugate τ := by
-  ext x
-  simp [conjEmb, NumberField.ComplexEmbedding.conjugate_coe_eq]
 
 variable (M) in
 

@@ -12,9 +12,6 @@ def principalPolarisationOneSection : Prop :=
 
 namespace principalPolarisationOneSection
 
-theorem of_h0Field (h : GlobalSectionsRankAlgClosed) : principalPolarisationOneSection := by
-  intro K _ _ P
-  simpa using h K P 1 le_rfl
 
 theorem exists_ne_zero (h : principalPolarisationOneSection) (K : Type) [Field K] [IsAlgClosed K]
     (P : PolAV (Spec (CommRingCat.of K))) :

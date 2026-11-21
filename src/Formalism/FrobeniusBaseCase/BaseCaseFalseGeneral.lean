@@ -6,14 +6,7 @@ namespace Formalism.BaseCaseIdentities.Final
 
 open Formalism.BaseCaseIdentities
 
-theorem identity_twenty : Id20 := id20_statement
-theorem identity_twenty_a : SlopeSumIdentity := slopeSumIdentity_statement
-theorem identity_twenty_b : GeomSlopeIdentity := geomSlopeIdentity_statement
-theorem identity_twenty_c : SqMulIdentity := sqMulIdentity_statement
-theorem identity_of_base_case : PowMulThreeEighthsIdentity := identity_twenty_d
-theorem identity_E : IdE := identity_e
 alias frobenius_spectrum := frobeniusSubstSpec
-theorem base_case_false : BaseCaseFalse := base_case_false_holds
 alias psi_is_limit := Data.opIsLimit
 alias chainI := Data.chainI_holds
 alias contractionAlt := Data.contracts

@@ -44,9 +44,5 @@ theorem harmLink_holds : HarmLinkSt := by
   simp_rw [key]
   rw [← map_sum, colSum_zero c a n P hP τ hτ i i', map_zero]
 
-theorem colLink_holds : ColLinkSt := by
-  intro E _ _ _ H Dw n m b
-  ext ℓ
-  rfl
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1

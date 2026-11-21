@@ -47,30 +47,12 @@ def Good (Bs : B.RealPlaceData k r Wp Wq) (ε : Fin (2 * r + k + 1) → Bool) (l
 
 end JDat
 
-theorem coef_eq_zero_of (μG : Measure (Formalism.QuantumDeterminants.Mt k r)) (A : JDat k r Wp Wq) (h0 : A.l A.w0 = 0 ∨ A.l' A.w0 = 0) :
-    A.coef μG = 0 := by
-  funext g
-  have hs : A.scal μG = 0 := by
-    unfold JDat.scal
-    rcases h0 with h | h <;> simp [h]
-  simp [JDat.coef, hs]
 
 theorem coef_apply (μG : Measure (Formalism.QuantumDeterminants.Mt k r)) (A : JDat k r Wp Wq) (g : B.Mat k r) (x : Wq) :
     A.coef μG g x = (((A.scal μG : ℝ) : ℂ) * (⟪A.l' A.w0, x⟫_ℂ * ⟪A.w0, A.σ g A.w0⟫_ℂ)) • A.l A.w0 := by
   show ((A.scal μG : ℝ) : ℂ) • (⟪A.l' A.w0, x⟫_ℂ • (⟪A.w0, A.σ g A.w0⟫_ℂ • A.l A.w0)) = _
   rw [smul_smul, smul_smul, mul_assoc]
 
-theorem inner_rank_one_normalized (A : JDat k r Wp Wq) (hl : A.l A.w0 ≠ 0) (hl' : A.l' A.w0 ≠ 0) :
-    ⟪A.l A.w0, (((‖A.l A.w0‖ ^ 2 * ‖A.l' A.w0‖ ^ 2)⁻¹ : ℝ) : ℂ) •
-      (innerSL ℂ (A.l' A.w0)).smulRight (A.l A.w0) (A.l' A.w0)⟫_ℂ = 1 := by
-  have h1 : ‖A.l A.w0‖ ≠ 0 := norm_ne_zero_iff.2 hl
-  have h2 : ‖A.l' A.w0‖ ≠ 0 := norm_ne_zero_iff.2 hl'
-  have h3 : ((‖A.l A.w0‖ : ℂ)) ^ 2 * (‖A.l' A.w0‖ : ℂ) ^ 2 ≠ 0 := by simp [h1, h2]
-  simp only [ContinuousLinearMap.smulRight_apply, innerSL_apply_apply,
-    inner_smul_right, inner_self_eq_norm_sq_to_K]
-  push_cast
-  rw [inv_mul_eq_one₀ h3]
-  exact mul_comm _ _
 
 def lamOf {n : ℕ} (sh : ℝ) (μ : Fin n → ℤ) : Fin n → ℝ := fun i => (μ i : ℝ) + sh
 
@@ -91,17 +73,7 @@ open Classical in
 def J (Bs : B.RealPlaceData k r Wp Wq) (F : JFam k r Wp Wq) (μ : Fin (2 * r + k + 1) → ℤ) : B.Mat k r → (Wq →L[ℂ] Wp) :=
   if Formalism.QuantumDeterminants.IsHCParam (lamOf F.sh μ) then (F.A μ).coef Bs.μG else 0
 
-theorem J_of_hc (Bs : B.RealPlaceData k r Wp Wq) (F : JFam k r Wp Wq) (μ : Fin (2 * r + k + 1) → ℤ)
-    (h : Formalism.QuantumDeterminants.IsHCParam (lamOf F.sh μ)) : F.J Bs μ = (F.A μ).coef Bs.μG := by
-  classical
-  unfold J
-  rw [if_pos h]
 
-theorem J_of_not_hc (Bs : B.RealPlaceData k r Wp Wq) (F : JFam k r Wp Wq) (μ : Fin (2 * r + k + 1) → ℤ)
-    (h : ¬ Formalism.QuantumDeterminants.IsHCParam (lamOf F.sh μ)) : F.J Bs μ = 0 := by
-  classical
-  unfold J
-  rw [if_neg h]
 
 variable [CompleteSpace Wp] [CompleteSpace Wq]
 

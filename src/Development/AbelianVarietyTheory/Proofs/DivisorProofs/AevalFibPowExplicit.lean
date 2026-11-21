@@ -91,9 +91,5 @@ theorem aeval_fibPow {R : Type} [CommRing R] [Algebra ℂ R] (H : Matrix (Fin 2)
       (1 / ((k : ℂ) + 1)) • MvPolynomial.aeval ![H.trace, H.det] (hPoly k) := by
   rw [fibPow_eq, map_smul, eval_trDet]
 
-theorem aeval_fibPow_explicit : ∀ (R : Type) [CommRing R] [Algebra ℂ R] (H : Matrix (Fin 2) (Fin 2) R) (k : ℕ),
-    MvPolynomial.aeval (entries H) (fibPow k) =
-      (1 / ((k : ℂ) + 1)) • MvPolynomial.aeval ![H.trace, H.det] (hPoly k) :=
-  fun _ _ _ H k => aeval_fibPow H k
 
 end GlobalTheory.FibLine

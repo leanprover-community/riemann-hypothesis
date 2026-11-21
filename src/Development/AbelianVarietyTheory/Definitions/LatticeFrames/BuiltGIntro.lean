@@ -14,9 +14,6 @@ def BuiltG (D : D7) (EX : ErrX D) : Prop :=
     I.Ok ∧ I.JetsIn ∧ I.Law0 l ∧
       (⟨D, EX.piG⟩ : Σ D' : D7, (Fin 2 → 𝓞 D'.host.E)) = ⟨I.rec7 l Z, X.piG⟩
 
-theorem builtG_intro {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)) (h : I.Ok)
-    (hJ : I.JetsIn) (l0 : I.Law0 l) (EX : ErrX (I.rec7 l Z)) (e : EX.piG = X.piG) : BuiltG (I.rec7 l Z) EX :=
-  ⟨B, X, I, l, Z, h, hJ, l0, by rw [e]⟩
 
 theorem builtG_ind {Q : ∀ D : D7, ErrX D → Prop}
     (H : ∀ (B : GlobalTheory.Mem.Base) (X : PreX B.toPre) (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)), I.Ok → I.JetsIn → I.Law0 l →

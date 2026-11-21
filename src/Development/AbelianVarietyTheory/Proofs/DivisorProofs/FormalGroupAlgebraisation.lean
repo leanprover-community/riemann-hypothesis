@@ -126,28 +126,6 @@ theorem exists_grpObj [IsNoetherianRing R] (hM : GlobalTheory.Published.FormalAl
   have := hc e
   rw [lift_braiding_hom_assoc, hm e T x y _ _ hx hy, hm e T y x _ _ hy hx, _root_.mul_comm]
 
-theorem exists_grpObj_of_thickenings : GlobalTheory.Published.FormalAlgebraisation.Morphisms → ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R), IsAdicComplete I R → ∀ (Y : ∀ e : ℕ, Over (Spec (CommRingCat.of (R ⧸ I ^ (e + 1))))) [∀ e, GrpObj (Y e)] (β : ∀ e, (Y e).left ⟶ (Y (e + 1)).left), (∀ e, IsCommMonObj (Y e)) → (∀ e, IsGrpPullback (Y e) (Y (e + 1)) (thickTrans R I e) (β e)) → ∀ (B : Over (Spec (CommRingCat.of R))) (b : ∀ e, (Y e).left ⟶ B.left), IsProper B.hom → (∀ e, IsPullback (b e) (Y e).hom B.hom (thick R I e)) → (∀ e, β e ≫ b (e + 1) = b e) → ∃ _ : GrpObj B, IsCommMonObj B ∧ ∀ e, IsGrpPullback (Y e) B (thick R I e) (b e) := by
-  intro hM R _ _ I hc Y _ β hY hβ B b hB hb hβb
-  obtain ⟨mu, hm⟩ := exists_word hM hc hβ hB hb hβb
-    (FreeGroup.of true * FreeGroup.of false) (B ⊗ B) (isProper_tensorObj_over hB hB)
-    (fun i => bif i then fst B B else snd B B)
-  obtain ⟨io, hi⟩ := exists_word hM hc hβ hB hb hβb
-    (FreeGroup.of ())⁻¹ B hB (fun _ => 𝟙 B)
-  obtain ⟨un, hu⟩ := exists_word hM hc hβ hB hb hβb
-    (1 : FreeGroup Empty) (𝟙_ _) (inferInstanceAs (IsProper (𝟙 _))) Empty.elim
-  exact exists_grpObj hM hc hY hB hb mu io un
-    (fun e T x y x₀ y₀ hx hy => by
-      have := hm e T (lift x₀ y₀) (fun i => bif i then x else y) (fun i => by
-        cases i
-        · simpa using hy
-        · simpa using hx)
-      rwa [map_mul, FreeGroup.lift_apply_of, FreeGroup.lift_apply_of] at this)
-    (fun e T x x₀ hx => by
-      have := hi e T x₀ (fun _ => x) (fun _ => by rwa [Category.comp_id])
-      rwa [map_inv, FreeGroup.lift_apply_of] at this)
-    (fun e T => by
-      have := hu e T (toUnit _) Empty.elim (fun i => i.elim)
-      rwa [map_one] at this)
 
 end GlobalTheory.AlgGroupAdic
 end

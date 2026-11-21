@@ -51,25 +51,5 @@ def EqVolSD : Prop :=
     ∀ (x : Frame X.Ψ r) (x' : Frame X'.Ψ r) (FF : Set (V (nd X))) (FF' : Set (V (nd X'))),
       IsOrth X x → IsOrth X' x' → IsFundSet X x FF → IsFundSet X' x' FF' → muF X x FF = muF X' x' FF'
 
-theorem eqVolSD_of (hL : GlobalTheory.Published.Landherr) (hH : GlobalTheory.Published.HasseNormSt) (h0 : EqVolFD) (h1 : Isotropic)
-    (h2 : DualTransport) (h3 : LocalToAdelic) : EqVolSD := by
-  intro E _ _ _ _ r X X' L L' 𝔞 hΨ hp hr hp0 hpr hL₁ hL₂ hSD h𝔞 hN hO hO'
-  obtain ⟨P, hP, hPG⟩ := (GlobalTheory.selfDual_lattices_one_genus X.Gm_herm X'.Gm_herm X.Gm_det X'.Gm_det hL₁ hL₂ hSD).2.2
-    hL hH (X.Ψ : Set (E →+* ℂ))
-    (fun τ => by
-      by_cases h : τ ∈ X.Ψ
-      · exact Or.inl h
-      · exact Or.inr (by_contra fun h' => h ((X.cmType τ).2 h')))
-    (fun τ hτ => ⟨X.p0, X.signature ⟨τ, hτ⟩, hp ▸ X'.signature ⟨τ, hΨ ▸ hτ⟩⟩)
-  let a : GL (Fin r) E := Matrix.GeneralLinearGroup.mkOfDetNeZero P hP
-  have ha : (a : Matrix (Fin r) (Fin r) E)ᵀ * X.Gm * (a : Matrix (Fin r) (Fin r) E).map (ccH E) = X'.Gm := hPG.symm
-  obtain ⟨aL', haL', hmap, t1, t2⟩ := h2 E r X.Gm X'.Gm a L' ha hL₂
-  have hSD' : SDPair X.Gm aL' X.Gm L := by
-    rcases hSD with ⟨s, s'⟩ | ⟨ξ, e1, e2, s, s'⟩
-    · exact Or.inl ⟨t1 s', s⟩
-    · exact Or.inr ⟨ξ, e1, e2, t2 ξ s', s⟩
-  have hg := h3 E r X.Gm L aL' hL₁ haL'
-    ((GlobalTheory.selfDual_lattices_one_genus X.Gm_herm X.Gm_herm X.Gm_det X.Gm_det haL' hL₁ hSD').2.1 rfl)
-  exact h0 E r X X' a L L' aL' 𝔞 hΨ hp ha (h1 E r X hr hp0 hpr) hL₁ hL₂ haL' hmap hg h𝔞 hN hO hO'
 
 end PositivityTheory.EqVol

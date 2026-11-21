@@ -98,10 +98,6 @@ theorem mInt_eq (g : X → ℝ) : mInt A Φ g = mInt A Ψ g := by
       (A.chart j).open_target.measurableSet fun y hy => by simp only [locDens_eq h hy]
   · rfl
 
-theorem mIntegrable_iff (g : X → ℝ) : MIntegrable A Φ g ↔ MIntegrable A Ψ g :=
-  forall_congr' fun _ => forall_congr' fun _ => forall_congr' fun hK => forall_congr' fun hc =>
-    MeasureTheory.integrableOn_congr_fun (fun y hy => by simp only [locDens_eq h (hK hy)])
-      hc.measurableSet
 
 end SameForm
 
@@ -197,8 +193,6 @@ def finAtlasOf (s : Finset R.ι) (hs : ∀ y, ∃ i ∈ s, y ∈ (R.chart i).e.s
 def finAtlas [CompactSpace (CxPts p σ)] : FinHolAtlas D (CxPts p σ) :=
   R.finAtlasOf R.exists_finite.choose R.exists_finite.choose_spec
 
-theorem finAtlasOf_chart (s : Finset R.ι) (hs) (j : Fin s.card) :
-    (R.finAtlasOf s hs).chart j = (R.chart (s.equivFin.symm j)).finChart := rfl
 
 theorem isAlgAtlas_finAtlasOf (s : Finset R.ι) (hs) : IsAlgAtlas (R.finAtlasOf s hs) :=
   fun _ => ⟨_, rfl⟩
@@ -259,9 +253,6 @@ namespace AnRead
 
 variable (R R' : AnRead p σ D) {S : Set (CxPts p σ)}
 
-theorem finAtlasOf_compatible (s : Finset R.ι) (hs) (s' : Finset R'.ι) (hs') :
-    (R.finAtlasOf s hs).Compatible (R'.finAtlasOf s' hs') :=
-  (R.isAlgAtlas_finAtlasOf s hs).compatible (R'.isAlgAtlas_finAtlasOf s' hs')
 
 variable {R} in
 
@@ -280,8 +271,6 @@ theorem HoloOn.exists_log {g : CxPts p σ → ℂ} (h : R.HoloOn S g) (hS : IsOp
 
 variable [CompactSpace (CxPts p σ)]
 
-theorem finAtlas_compatible : R.finAtlas.Compatible R'.finAtlas :=
-  R.isAlgAtlas_finAtlas.compatible R'.isAlgAtlas_finAtlas
 
 theorem isCompatChart_finAtlas (c : AlgChart p σ D) : IsCompatChart R.finAtlas c.finChart :=
   R.isAlgAtlas_finAtlas.isCompatChart c
@@ -292,10 +281,6 @@ theorem finAtlas_holoOn_iff (hS : IsOpen S) {f : CxPts p σ → ℂ} :
 theorem finAtlas_smoothOn_iff (hS : IsOpen S) {f : CxPts p σ → ℝ} :
     R.finAtlas.SmoothOn S f ↔ R.SmoothOn S f := R.isAlgAtlas_finAtlas.smoothOn_iff R hS
 
-theorem mInt_finAtlas_eq [T2Space (CxPts p σ)] {Φ : Fin D → LocPot (CxPts p σ)}
-    (hΦ : ∀ i, IsPotential R.finAtlas (Φ i)) {g : CxPts p σ → ℝ} (hg : MIntegrable R.finAtlas Φ g) :
-    MIntegrable R'.finAtlas Φ g ∧ mInt R.finAtlas Φ g = mInt R'.finAtlas Φ g :=
-  mIntAtlasIndep _ _ (R.finAtlas_compatible R') Φ hΦ g hg
 
 end AnRead
 
@@ -316,7 +301,6 @@ def locSec (φ : Weight p σ B) (s : B.ι → CxPts p σ → ℂ) : CxPts p σ �
 
 variable {φ : Weight p σ B}
 
-theorem locPot_U (x : CxPts p σ) : φ.locPot.U x = ptsIn p σ (B.U (pick φ.isLB x)) := rfl
 
 theorem locPot_φ (x y : CxPts p σ) : φ.locPot.φ x y = φ.φ (pick φ.isLB x) y / 2 := rfl
 
@@ -347,17 +331,6 @@ theorem IsSmooth.isPotential (h : φ.IsSmooth R) (hA : IsAlgAtlas A) : IsPotenti
   obtain ⟨W, hW, hy, G, hG, e⟩ := φ.exists_half_eq R hy.1 hy.2
   exact ⟨W, hW, hy, G, (hA.holoOn_iff R hW).2 hG, fun z hz => sub_eq_iff_eq_add'.2 (e z hz.1.1)⟩
 
-theorem isSmooth_of_isPotential (hA : IsAlgAtlas A) (h : IsPotential A φ.locPot) :
-    φ.IsSmooth R := fun i =>
-  smoothOn_of_cover (T := φ.locPot.U) φ.locPot.isOpen_U (fun y _ => ⟨y, φ.locPot.mem_U y⟩) fun x =>
-    SmoothOn.congr (f := fun y => 2 * φ.locPot.φ x y +
-        Real.log (‖gv p σ B i (pick φ.isLB x) y‖ ^ 2))
-      (fun c => (contDiffOn_const.mul (((hA.smoothOn_iff R (isOpen_ptsIn _)).1 (h.1 x)).mono
-        inter_subset_right c)).add ((holoOn_ev_of_subset _ fun _ => mem_ptsIn_inf.2).smoothOn_log
-          ((isOpen_ptsIn _).inter (isOpen_ptsIn _)) (fun _ hy => gv_ne_zero hy.1 hy.2) c))
-      fun y hy => by
-        rw [locPot_φ, φ.trans i _ y hy.1 hy.2]
-        ring
 
 variable (φ) in
 
@@ -495,18 +468,7 @@ theorem IsSmooth.sameForm_tens {ψ : Weight p σ B'} (h' : ψ.IsSmooth R) (h : �
     ⟨(pick ψ.isLB x, pick φ.isLB x), mem_ptsIn_inf.2 ⟨mem_pick ψ.isLB x, mem_pick φ.isLB x⟩,
       fun _ => add_div _ _ _⟩
 
-theorem IsSmooth.sameForm_zpow (h : φ.IsSmooth R) (hA : IsAlgAtlas A) (n : ℤ) :
-    SameForm A (φ.zpow n).locPot (φ.locPot.zsmul n) :=
-  sameForm_of_eq _ hA (isPotentialZsmul A n _ (h.isPotential hA)) fun x =>
-    ⟨fun _ => pick φ.isLB x, mem_pow_iff.2 (mem_pick _ x), fun z => by
-      rw [φ.zpow_φ n _ z]
-      exact mul_div_assoc _ _ _⟩
 
-theorem IsSmooth.sameForm_dual (h : φ.IsSmooth R) (hA : IsAlgAtlas A) :
-    SameForm A φ.dual.locPot (φ.locPot.zsmul (-1)) :=
-  sameForm_of_eq _ hA (isPotentialZsmul A _ _ (h.isPotential hA)) fun x =>
-    ⟨(pick φ.isLB x : B.ι), mem_pick φ.isLB x, fun z => by
-      simp [Weight.dual, LocPot.zsmul, locPot_φ, neg_div]⟩
 
 variable (φ) in
 
@@ -517,19 +479,6 @@ theorem sameForm_addFn (A : FinHolAtlas D (CxPts p σ)) (u : CxPts p σ → ℝ)
 theorem sameForm_ofFun (A : FinHolAtlas D (CxPts p σ)) (u : CxPts p σ → ℝ) :
     SameForm A (ofFun u).locPot (LocPot.ofFun fun y => u y / 2) := fun _ _ _ => rfl
 
-theorem IsSmooth.sameForm_ofIso (h : φ.IsSmooth R) (hA : IsAlgAtlas A) (hB' : B'.IsLB)
-    (w : LB.Iso B B') (hw : w.IsGen) : SameForm A (φ.ofIso hB' w hw).locPot φ.locPot :=
-  sameForm_of_re (R := R) _ hA (h.isPotential hA) fun x => by
-    have ha := mem_pick hB' x
-    have hb := mem_pick φ.isLB x
-    obtain ⟨W, hW, hx, hs, G, hG, e⟩ :=
-      (R.holoOn_ev _ (w.s (pick hB' x, pick φ.isLB x)).val).exists_log (isOpen_ptsIn _)
-        (mem_ptsIn_inf.2 ⟨ha, hb⟩) (ev_iso_ne_zero w hb ha)
-    refine ⟨_, ha, W, hW, hx, G, hG, fun z hz => ?_⟩
-    rw [Weight.ofIso, ofPairs_φ (mem_ptsIn_inf.1 (hs hz)).1 (mem_ptsIn_inf.1 (hs hz)).2, e z hz,
-      locPot_φ, Real.log_pow]
-    push_cast
-    ring
 
 theorem IsSmooth.sameForm_pull (h : φ.IsSmooth R) (hA : IsAlgAtlas A) {Y' : Scheme.{0}}
     {q : Y' ⟶ Sp k} {D' : ℕ} {A' : FinHolAtlas D' (CxPts q σ)} (hA' : IsAlgAtlas A') (f : Y' ⟶ Y)
@@ -541,47 +490,20 @@ theorem IsSmooth.sameForm_pull (h : φ.IsSmooth R) (hA : IsAlgAtlas A) {Y' : Sch
         ((mem_ptsIn_preimage (f := f) (m := PtsOver.map f hf _) fun _ => rfl).2 (mem_pick _ _)),
       fun z => congrArg (· / 2) (φ.pull_φ f hf _ z)⟩
 
-theorem locDens_locPot (hA : IsAlgAtlas A) {L : Fin D → LB Y} {χ : ∀ a, Weight p σ (L a)}
-    (h : ∀ a, (χ a).IsSmooth R) {j : Fin A.n} {z : Fin D → ℂ} (hz : z ∈ (A.chart j).target)
-    {i : ∀ a, (L a).ι} (hi : ∀ a, (A.chart j).symm z ∈ ptsIn p σ ((L a).U (i a))) :
-    locDens A (fun a => (χ a).locPot) j z =
-      maDens (fun a v => (χ a).φ (i a) ((A.chart j).symm v) / 2) z :=
-  maDens_congr_hessC _ _ _ fun a => by
-    obtain ⟨W, hW, hx, G, hG, e⟩ := (χ a).exists_half_eq R (mem_pick (χ a).isLB _) (hi a)
-    refine (hessCGerm _ _ _ ?_).trans (ReciprocityTheory.AnForm.A.hessC_add_re_analytic _ _ _ ?_
-      ((hA.holoOn_iff R hW).2 hG j z ⟨hz, hx⟩))
-    · exact eventually_of_mem (((A.chart j).isOpen_inter_preimage_symm hW).mem_nhds ⟨hz, hx⟩)
-        fun w hw => e _ hw.2
-    · exact ((((hA.smoothOn_iff R (isOpen_ptsIn _)).2 (h a (i a)) j).contDiffAt
-        (((A.chart j).isOpen_inter_preimage_symm (isOpen_ptsIn _)).mem_nhds ⟨hz, hi a⟩)).of_le
-        (WithTop.coe_le_coe.2 le_top)).div_const 2
 
 variable [CompactSpace (CxPts p σ)]
 
 theorem isPotential_locPot (h : φ.IsSmooth R) : IsPotential R.finAtlas φ.locPot :=
   h.isPotential R.isAlgAtlas_finAtlas
 
-theorem isPotential_locPot_iff : IsPotential R.finAtlas φ.locPot ↔ φ.IsSmooth R :=
-  ⟨isSmooth_of_isPotential R.isAlgAtlas_finAtlas, isPotential_locPot⟩
 
 variable (φ) in
 
 theorem isSection_locSec {s : B.ι → CxPts p σ → ℂ} (hs : s ∈ R.holSec B) :
     IsSection R.finAtlas φ.locPot (φ.locSec s) := φ.isSection_of_isAlgAtlas R.isAlgAtlas_finAtlas hs
 
-theorem isPsh_iff_semiPos (h : φ.IsSmooth R) : IsPsh R.finAtlas φ.locPot ↔ φ.SemiPos R :=
-  h.isPsh_iff R.isAlgAtlas_finAtlas
 
-theorem isPosPot_iff_strictPos (h : φ.IsSmooth R) : IsPosPot R.finAtlas φ.locPot ↔ φ.StrictPos R :=
-  h.isPosPot_iff R.isAlgAtlas_finAtlas
 
-theorem mInt_locPot_eq [T2Space (CxPts p σ)] {L : Fin D → LB Y} {χ : ∀ a, Weight p σ (L a)}
-    (h : ∀ a, (χ a).IsSmooth R) (R' : AnRead p σ D) {g : CxPts p σ → ℝ} (hg : Continuous g) :
-    MIntegrable R.finAtlas (fun a => (χ a).locPot) g ∧
-      mInt R.finAtlas (fun a => (χ a).locPot) g = mInt R'.finAtlas (fun a => (χ a).locPot) g :=
-  have hΦ := fun a => isPotential_locPot (h a)
-  have hi := mIntegrableCont _ _ hΦ g hg
-  ⟨hi, (R.mInt_finAtlas_eq R' hΦ hi).2⟩
 
 end Weight
 

@@ -48,12 +48,6 @@ abbrev piPart {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation �
     Submodule ℂ (GlobalTheory.HkPart.fix π Kf →ₗ[ℂ] coh G Kf ξ₀ q) :=
   GlobalTheory.HkPart.part π Kf (heckeRel G Kf ξ₀ q)
 
-theorem mem_piPart {V : Type} [AddCommGroup V] [Module ℂ V] {π : Representation ℂ (Gf G) V}
-    {Kf : Subgroup (Gf G)} {d : ℕ} {ξ₀ : G.GQ →* Matrix (Fin d) (Fin d) ℂ} {q : ℕ}
-    {φ : GlobalTheory.HkPart.fix π Kf →ₗ[ℂ] coh G Kf ξ₀ q} :
-    φ ∈ piPart G π Kf ξ₀ q ↔ ∀ ⦃n : ℕ⦄ (z : Fin n → Gf G) (hz : IsHeckeFam Kf z),
-      φ ∘ₗ GlobalTheory.HkPart.op π hz = hecke G hz ξ₀ q ∘ₗ φ :=
-  GlobalTheory.HkPart.mem_part_ofFun
 
 section Classes
 
@@ -67,11 +61,6 @@ def pt (c : Classes G Kf) : Gf G ⧸ Kf := letI := act G Kf; Quotient.out c
 
 def gam (y : Gf G ⧸ Kf) : Subgroup G.GQ := letI := act G Kf; MulAction.stabilizer G.GQ y
 
-theorem mem_gam_mk (x : Gf G) (γ : G.GQ) : γ ∈ gam G Kf (x : Gf G ⧸ Kf) ↔ x⁻¹ * toF G γ * x ∈ Kf := by
-  letI := act G Kf
-  change (toF G γ • (x : Gf G ⧸ Kf) : Gf G ⧸ Kf) = x ↔ _
-  rw [MulAction.Quotient.smul_mk, QuotientGroup.eq, smul_eq_mul, _root_.mul_inv_rev, ← Kf.inv_mem_iff,
-    show (x⁻¹ * (toF G γ)⁻¹ * x : Gf G)⁻¹ = x⁻¹ * toF G γ * x by group]
 
 theorem pt_cover : letI := act G Kf; ∀ y : Gf G ⧸ Kf, ∃ c : Classes G Kf, ∃ g : G.GQ, g • pt G Kf c = y := by
   letI := act G Kf
@@ -130,8 +119,6 @@ def UJpm (ε : T → Fin n → Bool) : Subgroup (MatT T n)ˣ where
           rw [← hg τ]; simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
       _ = (s : ℂ) • Jm (ε τ) := by rw [h1]; simp
 
-theorem UJfam_le_UJpm (ε : T → Fin n → Bool) : UJfam ε ≤ UJpm ε :=
-  fun g hg => ⟨1, Or.inl rfl, fun τ => by simpa using hg τ⟩
 
 end UJpm
 
@@ -146,12 +133,6 @@ theorem Jm_eps (v : InfinitePlace G.F) :
   funext i
   by_cases h : 0 < (G.gram_herm v).eigenvalues i <;> simp [h]
 
-theorem pOf_eps (v : InfinitePlace G.F) : pOf (eps G v) = sigPosH (G.gram_herm v) := by
-  unfold pOf eps sigPosH
-  rw [Fintype.card_subtype]
-  congr 1
-  ext i
-  simp
 
 def frame (v : InfinitePlace G.F) : GL (Fin G.n) ℂ :=
   (GlobalTheory.HermCongruence.exists_congr_signVec (G.gram_herm v) (G.gram_det v)).choose
@@ -297,9 +278,6 @@ def realPointsToUnitaryGroup : G.GR →* UJpm (eps G) :=
       · left; rw [sign_pos h]; rfl,
      fun v => mat_normR_sim G g v⟩
 
-theorem realPointsToUnitaryGroup_val (g : G.GR) (v : InfinitePlace G.F) :
-    ((realPointsToUnitaryGroup G g : (MatT (InfinitePlace G.F) G.n)ˣ) : MatT (InfinitePlace G.F) G.n) v =
-      mat G (normR G g : ℝ ⊗[ℚ] G.C) v := rfl
 
 def PosSim : Prop := ∀ g : G.GR, 0 < (((g : (ℝ ⊗[ℚ] G.C)ˣ × ℝˣ).2 : ℝˣ) : ℝ)
 
@@ -309,8 +287,6 @@ def toUJ (h : PosSim G) : G.GR →* UJfam (eps G) :=
     rw [sign_pos (h g)] at this
     simpa using this
 
-theorem coe_toUJ (h : PosSim G) (g : G.GR) :
-    ((toUJ G h g : UJfam (eps G)) : (MatT (InfinitePlace G.F) G.n)ˣ) = realPointsToUnitaryGroup G g := rfl
 
 def rho1 : G.GQ →* UJpm (eps G) := (realPointsToUnitaryGroup G).comp G.toR
 

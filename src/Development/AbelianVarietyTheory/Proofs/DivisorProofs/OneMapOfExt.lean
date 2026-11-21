@@ -58,8 +58,6 @@ def extA {K : Type} [Field K] [NumberField K] [StarRing K] {m : ℕ} (A : FamIn 
   leftGroupActionLift j τ := Sum.rec (A.leftGroupActionLift j) (X.actL j) τ
   heckeL j τ := Sum.rec (A.heckeL j) (X.opL j) τ
 
-theorem extA_comap {K : Type} [Field K] [NumberField K] [StarRing K] {m : ℕ} (A : FamIn K G Pl0 T m)
-    (X : NewFam A N) : (extA A X).comap Sum.inl A.μ0 = A := rfl
 
 variable {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 

@@ -51,44 +51,7 @@ theorem AA_ne_zero (D : D7) : D.host.AA ≠ 0 := by
   rw [h, FractionalIdeal.mem_zero_iff] at h1
   exact D.host.ccK_ne_bot (Ideal.absNorm_eq_zero_iff.1 (by exact_mod_cast h1))
 
-theorem lattice_and_constant_unique {D : D7} (T : Core D) (j : ℕ) (σ : T.Q.c.F →+* ℂ) (k : (T.U j σ).Comp)
-    (X Y : DataX D.host.E D.R.r) (hX : Fits T j σ k X) (hY : Fits T j σ k Y) : X.L' = Y.L' ∧ X.k0 = Y.k0 := by
-  have e : X.toData = Y.toData := hX.1.trans hY.1.symm
-  have eΛ : X.Λ = Y.Λ := congrArg Data.Λ e
-  refine ⟨le_antisymm (le_of_span_le _ (AA_ne_zero D) _ _ ?_) (le_of_span_le _ (AA_ne_zero D) _ _ ?_), ?_⟩
-  · rw [← hX.2.2, ← hY.2.2, eΛ]
-  · rw [← hX.2.2, ← hY.2.2, eΛ]
-  · obtain ⟨τ⟩ : Nonempty X.Ψ := by
-      obtain ⟨τ⟩ : Nonempty (D.host.E →+* ℂ) := inferInstance
-      by_cases e : τ ∈ X.Ψ
-      · exact ⟨⟨τ, e⟩⟩
-      · exact ⟨⟨_, not_not.1 (fun e' => e ((X.cmType τ).2 e'))⟩⟩
-    have h1 := X.ξ0_abs τ
-    have h2 := Y.ξ0_abs ⟨τ.1, (congrArg Data.Ψ e : X.Ψ = Y.Ψ) ▸ τ.2⟩
-    rw [show X.ξ0 = Y.ξ0 from congrArg Data.ξ0 e] at h1
-    simp only at h2
-    linarith
 
-theorem indices_unbounded {D : D7} (T : Core D) (j : ℕ) (σ : T.Q.c.F →+* ℂ) (k : (T.U j σ).Comp)
-    (X : DataX D.host.E D.R.r) (hX : Fits T j σ k X) (B : ℕ) :
-    ∃ Y : DataX D.host.E D.R.r, Fits T j σ k Y ∧ B < Y.NA ∧ B < Y.NC := by
-  refine ⟨{ X with
-    NA := (B + 1) * X.NA
-    NC := (B + 1) * X.NC
-    NA_pos := Nat.mul_pos (by omega) X.NA_pos
-    NC_pos := Nat.mul_pos (by omega) X.NC_pos
-    NA_sub := fun x hx => ?_
-    NC_sub := fun x hx => ?_ }, hX, ?_, ?_⟩
-  · rw [Nat.cast_mul, mul_smul, Nat.cast_smul_eq_nsmul]
-    exact nsmul_mem (X.NA_sub x hx) _
-  · rw [Nat.cast_mul, mul_smul, Nat.cast_smul_eq_nsmul]
-    exact nsmul_mem (X.NC_sub x hx) _
-  · have := X.NA_pos
-    show B < (B + 1) * X.NA
-    nlinarith
-  · have := X.NC_pos
-    show B < (B + 1) * X.NC
-    nlinarith
 
 theorem holds_by_value (D : D7) (T : Core D) (h : LawsCore T) (j : ℕ) (hj : InR D j) (σ : T.Q.c.F →+* ℂ)
     (hσ : GoodEmb T.Q.c σ) (k : (T.U j σ).Comp) :
@@ -145,13 +108,6 @@ theorem log_absNorm_le (D : D7) :
   push_cast at this
   linarith
 
-theorem holds_without_rows (D : D7) (T : Core D) (h : LawsCore T) (j : ℕ) (hj : InR D j) (σ : T.Q.c.F →+* ℂ)
-    (hσ : GoodEmb T.Q.c σ) (k : (T.U j σ).Comp) :
-    ∃ X : DataX D.host.E D.R.r, Fits T j σ k X ∧ X.k0 = 2 * xiR D ∧
-      Real.log X.NA ≤ (fdeg D.host.E : ℝ) * Real.log (ReciprocityTheory.ChartRestriction.G.FD.rdE D.host.E) ∧
-      X.NC = Ideal.absNorm D.host.ccK := by
-  obtain ⟨X, hF, hk, hA, hC⟩ := holds_by_value D T h j hj σ hσ k
-  exact ⟨X, hF, hk, by rw [hA]; exact log_absNorm_le D, hC⟩
 
 theorem intersectionNumber_baseChange (D : D7) (T : Top D) (j : ℕ) : Formalism.L2.Pj.QAt.DataXOfModelSt T j := by
   intro h _ hj large₂ w hrows _ σ hσ k
@@ -160,9 +116,5 @@ theorem intersectionNumber_baseChange (D : D7) (T : Top D) (j : ℕ) : Formalism
   · rw [hA]; exact log_absNorm_le D
   · rw [hC]; exact hrows.2.2.2.1
 
-theorem indices_bounded {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : DataX E r) (a b : ℝ)
-    (hA : Real.log X.NA ≤ a) (hC : Real.log X.NC ≤ b) : (X.NA : ℝ) ≤ Real.exp a ∧ (X.NC : ℝ) ≤ Real.exp b :=
-  ⟨(Real.log_le_iff_le_exp (by exact_mod_cast X.NA_pos)).1 hA,
-    (Real.log_le_iff_le_exp (by exact_mod_cast X.NC_pos)).1 hC⟩
 
 end GlobalTheory.ModelLatticeCheck

@@ -66,15 +66,7 @@ theorem isOpen_levelSubgroup {U : Subgroup (AdelicGLn.FiniteAdelicGL K n)}
     IsOpen (levelSubgroup K n U : Set (normOneGL K n)) :=
   hU.preimage continuous_finComp
 
-theorem archProj_mem_levelSubgroup (U : Subgroup (AdelicGLn.FiniteAdelicGL K n)) (A : ArchUnits K n) :
-    archProj K n A ∈ levelSubgroup K n U := by
-  rw [mem_levelSubgroup, finComp_archProj]
-  exact U.one_mem
 
-theorem finProj_mem_levelSubgroup {U : Subgroup (AdelicGLn.FiniteAdelicGL K n)}
-    {u : AdelicGLn.FiniteAdelicGL K n} (hu : u ∈ U) : finProj K n u ∈ levelSubgroup K n U := by
-  rw [mem_levelSubgroup, finComp_finProj]
-  exact hu
 
 theorem exists_of_mem_levelSubgroup {U : Subgroup (AdelicGLn.FiniteAdelicGL K n)}
     {x : normOneGL K n} (hx : x ∈ levelSubgroup K n U) :

@@ -180,28 +180,5 @@ theorem exists_prod [Finite F] {b : Fin r → ℕ} (e : (Σ a, Fin (d a)) ≃ Fi
   · rw [← hprod x, Representation.character, act_eq e he hσ p x hx]
     rfl
 
-theorem character_eq_prod_blocks : ∀ (F : Type) [Field F] [Finite F] (r : ℕ) (b : Fin r → ℕ) (n : ℕ) (σ : Representation ℂ (blockTri (κ := F) b) (Fin n → ℂ)), IsCuspDatum b σ → ∃ χ : ∀ c : ℕ, GL (Fin (Fintype.card {a : Fin r // b a = c})) F → ℂ, (∀ c ∈ Finset.univ.image b, IsIrrChar ℂ ℂ (χ c) ∧ IsPrimitive (extZero (χ c))) ∧ ∀ (p : blockTri (κ := F) b) (x : ∀ c : ℕ, GL (Fin (Fintype.card {a : Fin r // b a = c})) F), (∀ c, (x c : Matrix _ _ F) = Matrix.reindex (Fintype.equivFin _) (Fintype.equivFin _) (blkMat b c p)) → σ.character p = ∏ c ∈ Finset.univ.image b, χ c (x c) := by
-  intro F _ _ r b n σ hσ
-  let f : (Σ c : ↥(Finset.univ.image b), Fin (Fintype.card {a : Fin r // b a = c.1})) → Fin r :=
-    fun x => ((Fintype.equivFin {a : Fin r // b a = x.1.1}).symm x.2).1
-  have hf : ∀ x, b (f x) = x.1.1 := fun x => ((Fintype.equivFin {a : Fin r // b a = x.1.1}).symm x.2).2
-  have hbij : Function.Bijective f := by
-    constructor
-    · rintro ⟨c, i⟩ ⟨c', j⟩ h
-      obtain rfl : c = c' := Subtype.ext ((hf ⟨c, i⟩).symm.trans ((congrArg b h).trans (hf ⟨c', j⟩)))
-      obtain rfl : i = j := (Fintype.equivFin {a : Fin r // b a = c.1}).symm.injective (Subtype.ext h)
-      rfl
-    · intro i
-      refine ⟨⟨⟨b i, Finset.mem_image_of_mem _ (Finset.mem_univ _)⟩, Fintype.equivFin _ ⟨i, rfl⟩⟩, ?_⟩
-      simp only [f, Equiv.symm_apply_apply]
-  obtain ⟨ψ, hψ, hprod⟩ := exists_prod (F := F) (b := b) (Equiv.ofBijective f hbij) (fun x y => by
-    rw [Equiv.ofBijective_apply, Equiv.ofBijective_apply, hf, hf, Subtype.ext_iff]) hσ
-  refine ⟨fun c => if h : c ∈ Finset.univ.image b then ψ ⟨c, h⟩ else 0, fun c hc => ?_, fun p x hx => ?_⟩
-  · simp only [dif_pos hc]
-    exact hψ ⟨c, hc⟩
-  · rw [hprod p (fun c => x c.1) fun c i j => by rw [hx]; rfl,
-      ← Finset.prod_coe_sort (Finset.univ.image b)]
-    refine Finset.prod_congr rfl fun c _ => ?_
-    simp only [dif_pos c.2]
 
 end GlobalTheory.FinGL.LeviChar

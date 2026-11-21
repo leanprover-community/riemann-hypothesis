@@ -15,28 +15,7 @@ namespace UpperTheory.V.Sd
 
 variable {F : Type} [Field F] [NumberField F]
 
-private theorem val_pow (ω : HChar F) (w : Pl F) (n : ℕ) : (ω ^ n).val w = ω.val w ^ n := by
-  induction n with
-  | zero => simp [HChar.val, HChar.locK, HChar.loc]
-  | succ n ih => rw [pow_succ, pow_succ, HChar.val_mul, ih]
 
-private theorem norm_chiI {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (ω : HChar F) (hω : IsOfFinOrder ω) (c : Pl F → ℕ)
-    (I : Ideal (𝓞 F)) : ‖ι.symm (chiI ω c I)‖ ≤ 1 := by
-  obtain ⟨n, hn, h⟩ := isOfFinOrder_iff_pow_eq_one.1 hω
-  refine finprod_induction (fun x : ℂ => ‖ι.symm x‖ ≤ 1) (by simp) ?_ ?_
-  · intro x y hx hy
-    rw [map_mul, norm_mul]
-    exact mul_le_one₀ hx (norm_nonneg _) hy
-  · intro w
-    rw [map_pow, norm_pow]
-    refine pow_le_one₀ (norm_nonneg _) ?_
-    split_ifs
-    · have h1 : (ι.symm ((ω.val w : ℂˣ) : ℂ)) ^ n = 1 := by
-        rw [← map_pow, ← Units.val_pow_eq_pow_val, ← val_pow, h, ← pow_zero ω, val_pow]; simp
-      have h2 := congrArg norm h1
-      rw [norm_pow, norm_one] at h2
-      exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) hn.ne').1 h2).le
-    · simp
 
 private abbrev Idx (F : Type) [Field F] : Type := {𝔪 : Ideal (𝓞 F) // 𝔪 ≠ ⊥}
 
@@ -108,16 +87,7 @@ private def Phi {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (k : ℕ) (c : 
     rw [cf_eq (z • ψ) e2]
     simp
 
-private theorem Phi_eq {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {k : ℕ} {c : Pl F → ℕ} {ω : HChar F} (φ : SS k c ω) {c₀ a}
-    (h : HasExp φ.1.1 k c₀ a) (𝔪 : Idx F) : Phi ι k c ω φ 𝔪 = ι.symm (a 𝔪.1) := congrArg ι.symm (cf_eq φ h 𝔪)
 
-private theorem fT_Phi {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {k : ℕ} {c : Pl F → ℕ} {ω : HChar F} (φ : SS k c ω) {c₀ a}
-    (h : HasExp φ.1.1 k c₀ a) (w : Pl F) (𝔪 : Idx F) :
-    fT w (ι.symm (chiI ω c w.asIdeal * (normV w : ℂ) ^ (k - 1))) (Phi ι k c ω φ) 𝔪 = ι.symm (hkCoef k c ω w a 𝔪.1) := by
-  rw [fT_apply, Phi_eq ι φ h, hkCoef, map_add, map_mul ι.symm _ (coefDiv _ _ _), coefDiv]
-  split_ifs with hd
-  · rw [Phi_eq ι φ h]
-  · rw [map_zero]
 
 private def hkS {k : ℕ} (hk1 : 1 ≤ k) (c : Pl F → ℕ) {ω : HChar F} (hω : IsOfFinOrder ω) (w : Pl F) (φ : SS k c ω) : SS k c ω :=
   ⟨hk k w (c w) φ.1, (holHk F k hk1 c ω hω φ.1 φ.2.1 w).1, by
@@ -125,22 +95,6 @@ private def hkS {k : ℕ} (hk1 : 1 ≤ k) (c : Pl F → ℕ) {ω : HChar F} (hω
     obtain ⟨d, hd⟩ := (holHk F k hk1 c ω hω φ.1 φ.2.1 w).2.2 _ _ h
     exact ⟨d, _, hd⟩⟩
 
-private theorem Phi_hkS {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {k : ℕ} (hk1 : 1 ≤ k) (c : Pl F → ℕ) {ω : HChar F}
-    (hω : IsOfFinOrder ω) (w : Pl F) (φ : SS k c ω) :
-    fT w (ι.symm (chiI ω c w.asIdeal * (normV w : ℂ) ^ (k - 1))) (Phi ι k c ω φ) = Phi ι k c ω (hkS hk1 c hω w φ) := by
-  funext 𝔪
-  obtain ⟨_, h⟩ := cf_spec φ
-  obtain ⟨d, hd⟩ := (holHk F k hk1 c ω hω φ.1 φ.2.1 w).2.2 _ _ h
-  rw [fT_Phi ι φ h, Phi_eq ι (hkS hk1 c hω w φ) hd]
 
-private theorem Phi_inj {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {k : ℕ} (hk1 : 1 ≤ k) (c : Pl F → ℕ) {ω : HChar F}
-    (hω : IsOfFinOrder ω) : Function.Injective (Phi ι k c ω) := by
-  rw [injective_iff_map_eq_zero]
-  intro φ h0
-  obtain ⟨_, h⟩ := cf_spec φ
-  refine Subtype.ext (expInj F k hk1 c ω hω φ.1 φ.2.1 _ _ h fun 𝔪 h𝔪 => ?_)
-  have := congrFun h0 ⟨𝔪, h𝔪⟩
-  rw [Phi_eq ι φ h] at this
-  simpa using this
 
 end UpperTheory.V.Sd

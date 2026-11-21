@@ -247,8 +247,6 @@ noncomputable def quotientDiagram : StableAffineOpens ρ ⥤ Scheme.{u} where
     ext s
     exact (presheaf_map_map_apply _ _ _).symm
 
-theorem quotientDiagram_obj (U : StableAffineOpens ρ) :
-    (quotientDiagram ρ).obj U = Spec (.of (invariantSections ρ U.toOpens U.stable)) := rfl
 
 instance isAffine_quotientDiagram_obj (U : StableAffineOpens ρ) :
     IsAffine ((quotientDiagram ρ).obj U) :=
@@ -498,9 +496,6 @@ theorem π_apply_eq_iff (x y : X) : π ρ x = π ρ y ↔ ∃ g, (ρ g).hom x = 
 
 theorem isOpenQuotientMap_π : IsOpenQuotientMap (π ρ) := by exact ⟨(π ρ).surjective, (π ρ).continuous, (isAffineQuotient ρ).isOpenMap⟩
 
-theorem app_injective_and_range (W : (finiteQuotient ρ).Opens) :
-    Function.Injective ((π ρ).app W) ∧
-      Set.range ((π ρ).app W) = {s | IsInvariantSection ρ (π ρ ⁻¹ᵁ W) s} := by exact ⟨(isAffineQuotient ρ).app_injective W, (isAffineQuotient ρ).range_app W⟩
 
 noncomputable def desc (f : X ⟶ Z) (hf : ∀ g, (ρ g).hom ≫ f = f) : finiteQuotient ρ ⟶ Z :=
   (isAffineQuotient ρ).desc f hf
@@ -702,10 +697,6 @@ theorem IsAffineQuotient.isAffineOpen_of_preimage [Finite G] {ρ : G →* Aut X}
   rw [hW.fromSpec_preimage_basicOpen] at hx3
   exact hx3 hbQ
 
-theorem exists_isAffineOpen_of_finite_opens_proj {σ : Type*} {A : Type u} [CommRing A]
-    [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜] (O : (Proj 𝒜).Opens)
-    (s : Set O.toScheme) (hs : s.Finite) :
-    ∃ U : O.toScheme.Opens, IsAffineOpen U ∧ s ⊆ U := by exact FiniteSubsetsInAffineOpens.exists_isAffineOpen s hs
 
 section Stages
 

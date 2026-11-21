@@ -66,51 +66,6 @@ end Compact
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [MeasurableSpace F] [BorelSpace F]
 
-theorem continuous_Atau {f : F → ℂ} {c : Fˣ →* ℂˣ} (hf : Continuous f) (hc : IsUnit1 c) (s lam : ℂ) :
-    Continuous (Atau f c s lam) := by
-  unfold Atau
-  exact ((hf.comp Units.continuous_val).mul
-    (Units.continuous_val.comp hc.1.inv)).mul (continuous_mp _)
 
-theorem integrable_and_integral_Atau : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (f : F → ℂ) (c : Fˣ →* ℂˣ), Continuous f → (∃ r R : ℝ, 0 < r ∧ ∀ x, f x ≠ 0 → r ≤ (modulus x : ℝ) ∧ (modulus x : ℝ) ≤ R) → IsUnit1 c → ∀ s lam : ℂ, Integrable (Atau f c s lam) (rho F) ∧ ∫ τ, Atau f c s lam τ ∂rho F = kq F * localZeta f c⁻¹ (1 - s - lam) := by
-  intro F _ _ _ _ _ _ f c hf ⟨r, R, hr, hsupp⟩ hc s lam
-  have hmodc : Continuous fun τ : Fˣ => (modulus (τ : F) : ℝ) :=
-    NNReal.continuous_coe.comp (continuous_modulus.comp Units.continuous_val)
-  set k : ℝ := ((multHaarConst F).toReal)⁻¹ with hk
-  have hk0 : 0 ≤ k := inv_nonneg.2 ENNReal.toReal_nonneg
-  set g : Fˣ → ENNReal := fun τ => ENNReal.ofReal (k * (modulus (τ : F) : ℝ) ^ 2) with hg
-  have hgm : Measurable g := (continuous_const.mul (hmodc.pow 2)).measurable.ennreal_ofReal
-  have hglt : ∀ᵐ τ ∂multHaar F, g τ < ⊤ := Eventually.of_forall fun τ => ENNReal.ofReal_lt_top
-  have hgr : ∀ τ, (g τ).toReal = k * (modulus (τ : F) : ℝ) ^ 2 := fun τ =>
-    ENNReal.toReal_ofReal (by positivity)
-  have hA := continuous_Atau hf hc s lam
-  have hcont : Continuous fun τ : Fˣ => (g τ).toReal • Atau f c s lam τ := by
-    simp only [hgr]
-    exact (continuous_const.mul (hmodc.pow 2)).smul hA
-  have hcs : HasCompactSupport fun τ : Fˣ => (g τ).toReal • Atau f c s lam τ := by
-    refine HasCompactSupport.intro (isCompact_shell hr R) fun τ hτ => ?_
-    have h0 : f (τ : F) = 0 := by
-      by_contra h
-      exact hτ (hsupp _ h)
-    simp [Atau, h0]
-  have hsm : Integrable (fun τ : Fˣ => (g τ).toReal • Atau f c s lam τ) (multHaar F) :=
-    hcont.integrable_of_hasCompactSupport hcs
-  refine ⟨(integrable_withDensity_iff_integrable_smul' hgm hglt).2 hsm, ?_⟩
-  have hrho : rho F = (multHaar F).withDensity g := rfl
-  rw [hrho, integral_withDensity_eq_integral_toReal_smul hgm hglt, localZeta, kq,
-    ← integral_const_mul]
-  refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
-  have hm0 : (((modulus (τ : F) : ℝ)) : ℂ) ≠ 0 := by
-    exact_mod_cast modulus_ne_zero τ.ne_zero
-  have hpow : (((modulus (τ : F) : ℝ)) : ℂ) ^ (1 - s - lam) =
-      (((modulus (τ : F) : ℝ)) : ℂ) ^ 2 * mp τ (-s - 1 - lam) := by
-    rw [mp, ← Complex.cpow_ofNat, ← Complex.cpow_add _ _ hm0]
-    congr 1
-    push_cast
-    ring
-  simp only [hgr, Atau, hpow, MonoidHom.inv_apply, Complex.real_smul]
-  rw [hk]
-  push_cast
-  ring
 
 end GlobalTheory.CompanionTheory.LFDual.ZRho

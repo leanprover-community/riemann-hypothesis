@@ -39,8 +39,6 @@ def ChartLawLocSt : Prop :=
 
 variable {R : Type} [CommRing R]
 
-theorem algOverHom_eq {A B : Type} [CommRing A] [Algebra R A] [CommRing B] [Algebra R B] (ψ : A →ₐ[R] B) :
-    algOverHom ψ = spMap ψ := rfl
 
 variable {G : Over (Spec (CommRingCat.of R))} [GrpObj G]
 

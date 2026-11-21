@@ -18,106 +18,34 @@ namespace Formalism.L2.Col
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem plEquiv_eq_plOf (w : HeightOneSpectrum (𝓞 K)) : plEquiv K w = Formalism.LFunctionChainParameters.LBrDiv.plOf w := rfl
 
-theorem prW_eq_prBelow (w : HeightOneSpectrum (𝓞 K)) :
-    prW w = Formalism.LFunctionChainParameters.LChain2.prBelow (plEquiv K w) := rfl
 
-theorem eW_eq_ramE (w : HeightOneSpectrum (𝓞 K)) :
-    (eW w : ℝ) = Formalism.LFunctionChainParameters.LChain2.ramE (plEquiv K w) := rfl
 
-theorem eW_eq_eWL (w : HeightOneSpectrum (𝓞 K)) : eW w = Formalism.BasicNotions.eWL K w := rfl
 
-theorem lW_eq_ell (w : HeightOneSpectrum (𝓞 K)) : lW w = Formalism.LFunctionChainParameters.slopeLatticeData.ell (plEquiv K w) := rfl
 
 theorem lW_eq_lw (w : HeightOneSpectrum (𝓞 K)) : lW w = Formalism.LFunctionChainParameters.LBrDiv.lw w := rfl
 
-theorem lW_mul_eW (w : HeightOneSpectrum (𝓞 K)) :
-    lW w * (eW w : ℝ) = Formalism.LFunctionChainParameters.LChain2.lE (plEquiv K w) := rfl
 
 theorem lW_eq_lw₂ (w : HeightOneSpectrum (𝓞 K)) : lW w = Formalism.BasicNotions.lw K w := rfl
 
-theorem plEquiv_symm_eq_hs (p : Formalism.LFunctionChainParameters.slopeLatticeData.FinPl K) :
-    (plEquiv K).symm p = Formalism.L2.GlobalTheoryTheory.Arith.hs p := rfl
 
-theorem hs_plEquiv (w : HeightOneSpectrum (𝓞 K)) : Formalism.L2.GlobalTheoryTheory.Arith.hs (plEquiv K w) = w := rfl
 
-theorem prW_eq_pOf (w : HeightOneSpectrum (𝓞 K)) : prW w = Formalism.L2.GlobalTheoryTheory.Arith.pOf w := by
-  unfold Formalism.L2.GlobalTheoryTheory.Arith.pOf
-  have hdvd : ringChar (𝓞 K ⧸ w.asIdeal) ∣ prW w := by
-    apply ringChar.dvd
-    rw [← map_natCast (Ideal.Quotient.mk w.asIdeal), Ideal.Quotient.eq_zero_iff_mem]
-    exact natCast_prW_mem w
-  rcases (Nat.dvd_prime (prW_prime w)).1 hdvd with h | h
-  · exfalso
-    have : Nontrivial (𝓞 K ⧸ w.asIdeal) := Ideal.Quotient.nontrivial_iff.2 w.isPrime.ne_top
-    exact CharP.ringChar_ne_one h
-  · exact h.symm
 
-theorem prW_eq_resCharW (w : HeightOneSpectrum (𝓞 K)) : prW w = Formalism.BasicNotions.Examples₂.PlacesToy.resCharW w :=
-  (eq_prW_of_mem w (Formalism.BasicNotions.Examples₂.PlacesToy.resCharW_prime w) (Formalism.BasicNotions.Examples₂.PlacesToy.resCharW_mem w)).symm
 
-theorem owToK_eq_rlocToK (w : HeightOneSpectrum (𝓞 K)) :
-    owToK w = Formalism.LFunctionChainParameters.LJC.rlocToK (plEquiv K w) := rfl
 
-theorem owAlgebra_eq_rlocAlgebra (w : HeightOneSpectrum (𝓞 K)) :
-    (owAlgebra w : Algebra (Ow w) K) = Formalism.LFunctionChainParameters.LJC.rlocAlgebra (plEquiv K w) := rfl
 
-theorem owModule_eq_rlocModule (w : HeightOneSpectrum (𝓞 K)) (V : Type) [AddCommGroup V] [Module K V] :
-    owModule w V = Formalism.LFunctionChainParameters.LJC.rlocModule (plEquiv K w) V := rfl
 
-theorem rlocModule_eq_rlocModule (p : Formalism.LFunctionChainParameters.slopeLatticeData.FinPl K) (V : Type) [AddCommGroup V] [Module K V] :
-    Formalism.L2.Col.rlocModule V p = Formalism.LFunctionChainParameters.LJC.rlocModule p V := rfl
 
 section Len
 variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-theorem lenW_eq_lenAt (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (𝓞 K) V) :
-    lenW w A B = Formalism.LFunctionChainParameters.slopeLatticeData.lenAt (plEquiv K w) A B := by
-  have h1 : Formalism.LFunctionChainParameters.slopeLatticeData.lenAt (plEquiv K w) A B = Formalism.LFunctionChainParameters.slopeLatticeData.lenAt (plEquiv K w) A (A ⊓ B) := by
-    unfold Formalism.LFunctionChainParameters.slopeLatticeData.lenAt
-    have : (A ⊓ B).comap A.subtype = B.comap A.subtype := by
-      ext x; simp
-    rw [this]
-  rw [h1, ← lenW_inf]
-  exact (@Formalism.LFunctionChainParameters.slopeLatticeData.length_at_span K V _ _ _ _ (plEquiv K w) (owModule w V) (owTowerO w V) A
-    (A ⊓ B) inf_le_left).symm
 
-theorem lenW_eq_lenLoc (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (𝓞 K) V) :
-    lenW w A B = Formalism.BasicNotions.DV.lenLoc w B A := lenW_eq_lenAt w A B
 
-theorem scalW_symm_eq_locScal (p : Formalism.LFunctionChainParameters.slopeLatticeData.FinPl K) (c : K) (L : Submodule (𝓞 K) V) :
-    scalW ((plEquiv K).symm p) c L =
-      @Formalism.LFunctionChainParameters.slopeLatticeData.locScal K V _ _ _ _ _ p (Formalism.L2.Col.rlocModule V p) c L :=
-  scalW_eq_locScal _ c L
 
-theorem lenW_symm_eq_lenAt (p : Formalism.LFunctionChainParameters.slopeLatticeData.FinPl K) (A B : Submodule (𝓞 K) V) :
-    lenW ((plEquiv K).symm p) A B = Formalism.LFunctionChainParameters.slopeLatticeData.lenAt p A B := lenW_eq_lenAt _ A B
 
-theorem lenW_ne_top (w : HeightOneSpectrum (𝓞 K)) {A B : Submodule (𝓞 K) V} (hA : A.FG) {d : 𝓞 K}
-    (hd : d ≠ 0) (h : ∀ x ∈ A, d • x ∈ B) : lenW w A B ≠ ⊤ := by
-  rw [lenW_eq_length]
-  exact Module.length_ne_top_iff.mpr
-    (Formalism.HermitianLatticesTheory.indexBasic_finLen w.asIdeal A B hA (mem_nonZeroDivisors_of_ne_zero hd) h)
 
-theorem lenW_eq_lenUW_mul (w : HeightOneSpectrum (𝓞 K)) {A B : Submodule (𝓞 K) V} (hA : A.FG) {d : 𝓞 K}
-    (hd : d ≠ 0) (h : ∀ x ∈ A, d • x ∈ B) :
-    ∃ n : ℕ, lenW w A B = n ∧ (n : ℚ) = lenUW w A B * (eW w : ℚ) := by
-  refine ⟨(lenW w A B).toNat, (ENat.natCast_toNat (lenW_ne_top w hA hd h)).symm, (lenUW_mul_eW w A B).symm⟩
 
-theorem unitRule_lenUW_real (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (𝓞 K) V) :
-    Formalism.BasicNotions.unitRule K w ((lenUW w A B : ℚ) : ℝ) = ((lenW w A B).toNat : ℝ) := by
-  have h := lenUW_mul_eW w A B
-  have h' : ((lenUW w A B : ℚ) : ℝ) * (eW w : ℝ) = ((lenW w A B).toNat : ℝ) := by exact_mod_cast h
-  unfold Formalism.BasicNotions.unitRule
-  rw [mul_comm]
-  exact h'
 
-theorem lenUW_eq_lenUnit (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (𝓞 K) V) :
-    lenUW w A B =
-      Formalism.BasicNotions.lenUnit (O := Ow w) (prW w) (atW w A ⧸ (atW w B).comap (atW w A).subtype) := by
-  unfold lenUW Formalism.BasicNotions.lenUnit lenW
-  rw [length_ow_quot_prW, ENat.toNat_natCast]
 
 end Len
 
@@ -167,14 +95,7 @@ theorem mem_locW_iff (w : HeightOneSpectrum (𝓞 K)) (L : Submodule (𝓞 K) V)
 
 end Rec
 
-theorem mem_locW_D (D : Formalism.BasicNotions.D7) (w : D.what₂.places.Pl) {V : Type} [AddCommGroup V]
-    [Module D.what₂.LL V] [Module (𝓞 D.what₂.LL) V] [IsScalarTower (𝓞 D.what₂.LL) D.what₂.LL V]
-    (A : Submodule (𝓞 D.what₂.LL) V) (y : V) :
-    y ∈ Formalism.BasicNotions.locW D.what₂.places w A ↔ y ∈ atW (D.plEq w) A := by
-  rw [D.mem_locW_iff, mem_atW_iff]; rfl
 
-theorem eW_D (D : Formalism.BasicNotions.D7) (w : D.what₂.places.Pl) : eW (D.plEq w) = D.what₂.places.ramIdx w :=
-  (D.ram_eq w).symm
 
 theorem prW_D (D : Formalism.BasicNotions.D7) (w : D.what₂.places.Pl) : prW (D.plEq w) = D.what₂.places.resChar w := by
   refine (eq_prW_of_mem _ (D.what₂.places.resChar_prime w) ?_).symm
@@ -183,12 +104,6 @@ theorem prW_D (D : Formalism.BasicNotions.D7) (w : D.what₂.places.Pl) : prW (D
   have := D.what₂.places.ramIdx_pos w
   omega
 
-theorem unitRule_lenUW (D : Formalism.BasicNotions.D7) (w : D.what₂.places.Pl) {V : Type} [AddCommGroup V]
-    [Module D.what₂.LL V] [Module (𝓞 D.what₂.LL) V] (A B : Submodule (𝓞 D.what₂.LL) V) :
-    Formalism.BasicNotions.Rows.unitRule D.what₂.places w (lenUW (D.plEq w) A B) =
-      ((lenW (D.plEq w) A B).toNat : ℚ) := by
-  unfold Formalism.BasicNotions.Rows.unitRule
-  rw [← eW_D, mul_comm, lenUW_mul_eW]
 
 open Formalism.BasicNotions (vAdd)
 
@@ -440,12 +355,6 @@ theorem lidxW_eq_vAdd_det (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (�
   unfold lidxW lenW
   rw [atW_inf]
 
-theorem lidxUW_eq_vAdd_det (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (𝓞 K) V) (γ : V ≃ₗ[K] V)
-    (hfg : A.FG) (hsp : Submodule.span K (A : Set V) = ⊤)
-    (h : (atW w A).map ((γ : V →ₗ[K] V).restrictScalars (Ow w)) = atW w B) :
-    lidxUW w A B = (vAdd w (LinearMap.det (γ : V →ₗ[K] V)) : ℚ) / (eW w : ℚ) := by
-  unfold lidxUW
-  rw [lidxW_eq_vAdd_det w A B γ hfg hsp h]
 
 theorem bridge_lidx_det_holds : Formalism.BasicNotions.bridge_lidx_det := by
   intro K V _ _ _ _ _ _ _ w A B γ hA h

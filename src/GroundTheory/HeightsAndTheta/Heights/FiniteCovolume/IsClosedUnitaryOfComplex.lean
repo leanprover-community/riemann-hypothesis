@@ -385,8 +385,6 @@ instance (V : HermSpace E N) : LocallyCompactSpace (RealPts V) := by
     inferInstanceAs (LocallyCompactSpace (Fin N → Fin N → ℂ))
   exact (isClosed_realPoints V).isClosedEmbedding_subtypeVal.locallyCompactSpace
 
-theorem haar_isHaarMeasure (V : HermSpace E N) :
-    (Measure.haar : Measure (RealPts V)).IsHaarMeasure := inferInstance
 
 def hypPlane (E : Type) [Field E] [NumberField E] [IsCMField E] : HermSpace E 2 where
   J := !![0, 1; 1, 0]
@@ -418,12 +416,6 @@ def intCoords (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) :
     rw [← IsScalarTower.algebraMap_smul E c x, Pi.smul_apply, smul_eq_mul]
     exact (show IsIntegral ℤ (algebraMap (𝓞 E) E c) from c.isIntegral_coe).mul (hx i)
 
-theorem stdLattice_le_intCoords : stdLattice E N ≤ intCoords E N := by
-  rw [stdLattice, Submodule.span_le]
-  rintro _ ⟨i, rfl⟩ j
-  by_cases h : j = i
-  · subst h; simpa using (isIntegral_one : IsIntegral ℤ (1 : E))
-  · simpa [Pi.single_apply, h] using (isIntegral_zero : IsIntegral ℤ (0 : E))
 
 theorem isLattice_stdLattice : IsLattice (stdLattice E N) := by
   refine ⟨Submodule.fg_span (Set.finite_range _), ?_⟩
@@ -432,22 +424,7 @@ theorem isLattice_stdLattice : IsLattice (stdLattice E N) := by
       Set.range (Pi.basisFun E (Fin N)) by ext; simp [Pi.basisFun_apply]]
   exact (Pi.basisFun E (Fin N)).span_eq
 
-theorem isIntegral_h_of_coords (V : HermSpace E N) (hJ : ∀ i j, IsIntegral ℤ (V.J i j))
-    {x y : Fin N → E} (hx : ∀ i, IsIntegral ℤ (x i)) (hy : ∀ i, IsIntegral ℤ (y i)) :
-    IsIntegral ℤ (V.h x y) := by
-  unfold HermSpace.h ReciprocityTheory.ChartRestriction.G.SA.hf
-  refine IsIntegral.sum _ (fun i _ => IsIntegral.sum _ (fun j _ => ?_))
-  refine ((hx i).mul (hJ i j)).mul ?_
-  simpa using (hy j).map (conjE E).toIntAlgHom
 
-theorem stdLattice_isDIntegral :
-    IsDIntegral (hypPlane E)
-      ((stdLattice E 2).toAddSubgroup.relIndex (dual (hypPlane E) (stdLattice E 2)).toAddSubgroup)
-      (stdLattice E 2) := by
-  refine ⟨isLattice_stdLattice, fun x hx y hy => ?_, le_rfl⟩
-  refine isIntegral_h_of_coords _ (fun i j => ?_) (stdLattice_le_intCoords hx)
-    (stdLattice_le_intCoords hy)
-  fin_cases i <;> fin_cases j <;> simp [hypPlane, isIntegral_zero, isIntegral_one]
 
 def e₀ (E : Type) [Field E] [NumberField E] [IsCMField E] : Fin 2 → E := Pi.single 0 1
 
@@ -467,22 +444,6 @@ theorem isIsotropicLine_e₀ : IsIsotropicLine (hypPlane E) (Submodule.span E {e
   obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.1 hx
   simp [HermSpace.h, ReciprocityTheory.ChartRestriction.G.SA.hf, hypPlane, e₀, Fin.sum_univ_two]
 
-theorem exists_vr : ∃ vr : ℝ,
-    Submodule.span ℚ {x : E | IsIntegral ℤ x ∧ ∀ φ : E →+* ℂ, ‖φ x‖ ≤ vr} = ⊤ := by
-  classical
-  refine ⟨∑ i, ∑ φ : E →+* ℂ, ‖φ (integralBasis E i)‖, eq_top_iff.2 ?_⟩
-  rw [← (integralBasis E).span_eq]
-  apply Submodule.span_mono
-  rintro _ ⟨i, rfl⟩
-  refine ⟨?_, fun φ => ?_⟩
-  · rw [integralBasis_apply]
-    exact RingOfIntegers.isIntegral_coe _
-  · calc ‖φ (integralBasis E i)‖ ≤ ∑ φ' : E →+* ℂ, ‖φ' (integralBasis E i)‖ :=
-          Finset.single_le_sum (f := fun φ' : E →+* ℂ => ‖φ' (integralBasis E i)‖)
-            (fun _ _ => norm_nonneg _) (Finset.mem_univ φ)
-      _ ≤ _ :=
-          Finset.single_le_sum (f := fun i' => ∑ φ' : E →+* ℂ, ‖φ' (integralBasis E i')‖)
-            (fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _) (Finset.mem_univ i)
 
 theorem hf_mulVec {R : Type*} [CommRing R] {ι : Type*} [Fintype ι] [DecidableEq ι] (σ : R →+* R)
     (J g : Matrix ι ι R) (x y : ι → R) :
@@ -509,75 +470,13 @@ theorem h_unitary (V : HermSpace E N) (g : unitaryGroup V) (x y : Fin N → E) :
   rw [hg]
   rfl
 
-theorem linO_injective (γ : GL (Fin N) E) : Function.Injective (linO γ) := by
-  intro a b hab
-  have := congrArg (fun u => ((γ⁻¹ : GL (Fin N) E) : Matrix (Fin N) (Fin N) E) *ᵥ u) hab
-  simpa [linO, Matrix.mulVec_mulVec] using this
 
-theorem lineIndex_mulVec (V : HermSpace E N) (L : Submodule (𝓞 E) (Fin N → E))
-    (g : unitaryGroup V) (hg : g ∈ stab V L) (v : Fin N → E) :
-    lineIndex L (((g : GL (Fin N) E) : Matrix (Fin N) (Fin N) E) *ᵥ v) = lineIndex L v := by
-  set γ : GL (Fin N) E := (g : GL (Fin N) E)
-  have h1 : Submodule.span (𝓞 E) {(γ : Matrix (Fin N) (Fin N) E) *ᵥ v} =
-      (Submodule.span (𝓞 E) {v}).map (linO γ) := by
-    rw [Submodule.map_span, Set.image_singleton]
-    rfl
-  have h2 : (Submodule.span E {(γ : Matrix (Fin N) (Fin N) E) *ᵥ v}).restrictScalars (𝓞 E) =
-      ((Submodule.span E {v}).restrictScalars (𝓞 E)).map (linO γ) := by
-    ext u
-    simp only [Submodule.restrictScalars_mem, Submodule.mem_span_singleton, Submodule.mem_map]
-    constructor
-    · rintro ⟨a, rfl⟩
-      exact ⟨a • v, ⟨a, rfl⟩, by simp [linO]⟩
-    · rintro ⟨w, ⟨a, rfl⟩, rfl⟩
-      exact ⟨a, by simp [linO]⟩
-  have hL : L.map (linO γ) = L := hg
-  have h3 : L ⊓ ((Submodule.span E {v}).restrictScalars (𝓞 E)).map (linO γ) =
-      (L ⊓ (Submodule.span E {v}).restrictScalars (𝓞 E)).map (linO γ) := by
-    rw [Submodule.map_inf _ (linO_injective γ), hL]
-  unfold lineIndex
-  rw [h1, h2, h3, Submodule.map_toAddSubgroup, Submodule.map_toAddSubgroup,
-    AddSubgroup.relIndex_map_map_of_injective _ _ (linO_injective γ)]
 
 def orbitSet (V : HermSpace E N) (L : Submodule (𝓞 E) (Fin N → E)) (v : Fin N → E) :
     Set (Fin N → E) :=
   {u | ∃ g : unitaryGroup V, g ∈ stab V L ∧ u = ((g : GL (Fin N) E) : Matrix (Fin N) (Fin N) E) *ᵥ v}
 
-theorem orbitSet_hyps (V : HermSpace E N) (L : Submodule (𝓞 E) (Fin N → E)) (v : Fin N → E)
-    (hv : v ∈ L) (hv0 : v ≠ 0) (hvv : V.h v v = 0) :
-    v ∈ orbitSet V L v ∧ orbitSet V L v ⊆ L ∧ (∀ u ∈ orbitSet V L v, u ≠ 0 ∧ V.h u u = 0) ∧
-    (∀ g : unitaryGroup V, g ∈ stab V L → ∀ u ∈ orbitSet V L v,
-      ((g : GL (Fin N) E) : Matrix (Fin N) (Fin N) E) *ᵥ u ∈ orbitSet V L v) ∧
-    (∃ C : ℕ, ∀ u ∈ orbitSet V L v, lineIndex L u ≤ C) := by
-  refine ⟨⟨1, (stab V L).one_mem, by simp⟩, ?_, ?_, ?_, ⟨lineIndex L v, ?_⟩⟩
-  · rintro _ ⟨g, hg, rfl⟩
-    have : linO (g : GL (Fin N) E) v ∈ act (g : GL (Fin N) E) L := Submodule.mem_map_of_mem hv
-    rwa [show act (g : GL (Fin N) E) L = L from hg] at this
-  · rintro _ ⟨g, hg, rfl⟩
-    refine ⟨fun h0 => hv0 ?_, by rw [h_unitary, hvv]⟩
-    have := congrArg (fun u => (((g : GL (Fin N) E)⁻¹ : GL (Fin N) E) : Matrix (Fin N) (Fin N) E) *ᵥ u) h0
-    simpa [Matrix.mulVec_mulVec] using this
-  · rintro g hg _ ⟨g', hg', rfl⟩
-    exact ⟨g * g', (stab V L).mul_mem hg hg', by simp [Matrix.mulVec_mulVec]⟩
-  · rintro _ ⟨g, hg, rfl⟩
-    rw [lineIndex_mulVec V L g hg]
 
-theorem hyp_example :
-    IsDIntegral (hypPlane E)
-      ((stdLattice E 2).toAddSubgroup.relIndex (dual (hypPlane E) (stdLattice E 2)).toAddSubgroup)
-      (stdLattice E 2) ∧
-    e₀ E ∈ stdLattice E 2 ∧ e₀ E ≠ 0 ∧ (hypPlane E).h (e₀ E) (e₀ E) = 0 ∧
-    orbitSet (hypPlane E) (stdLattice E 2) (e₀ E) ⊆ stdLattice E 2 ∧
-    (∀ u ∈ orbitSet (hypPlane E) (stdLattice E 2) (e₀ E), u ≠ 0 ∧ (hypPlane E).h u u = 0) ∧
-    (∀ g : unitaryGroup (hypPlane E), g ∈ stab (hypPlane E) (stdLattice E 2) →
-      ∀ u ∈ orbitSet (hypPlane E) (stdLattice E 2) (e₀ E),
-        ((g : GL (Fin 2) E) : Matrix (Fin 2) (Fin 2) E) *ᵥ u ∈
-          orbitSet (hypPlane E) (stdLattice E 2) (e₀ E)) ∧
-    (∃ C : ℕ, ∀ u ∈ orbitSet (hypPlane E) (stdLattice E 2) (e₀ E),
-      lineIndex (stdLattice E 2) u ≤ C) := by
-  obtain ⟨-, h2, h3, h4, h5⟩ := orbitSet_hyps (hypPlane E) (stdLattice E 2) (e₀ E) e₀_mem
-    e₀_ne_zero e₀_isotropic
-  exact ⟨stdLattice_isDIntegral, e₀_mem, e₀_ne_zero, e₀_isotropic, h2, h3, h4, h5⟩
 
 instance : IsCMField (CyclotomicField 4 ℚ) := by
   have : NeZero ((4 : ℕ) : ℚ) := ⟨by norm_num⟩

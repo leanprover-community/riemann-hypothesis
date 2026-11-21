@@ -137,34 +137,10 @@ def levelsOfCh_tie (hS : HidaSetting p n' W Qq O Kf ι σ j w) (r : ℕ)
     rw [MulAut.conj_apply, inv_inv]
     rfl
 
-theorem levelsOfCh_cover (hS : HidaSetting p n' W Qq O Kf ι σ j w) (r : ℕ)
-    (lam0 : Fin nV → Fin n' → Fin (m + 1) → ℤ) (dom : ∀ v, IsDominant (lam0 v)) (hk : m + 1 = R.k)
-    (I : LocId L p nV W Qq) (ψ : Formalism.L2.Herm.awayFrom₂ L p →* Oˣ)
-    (y : compL L p → UPts sp.cm.sig sp.gram0 (Formalism.L2.Herm.Af F)) [Finite (compL L p)] (e : ℕ)
-    (Fl : Fills (gatOfLevel L hS nV r lam0 dom hk I ψ y e)) (M : ℕ) (Nj : ℕ → ℕ)
-    (hN : ∀ i, i < M → m + (i + 1) * (Fl.t + 1) + 1 = Nj i) (Ch : ∀ i, i < M → Type) [∀ i h, Finite (Ch i h)]
-    (St : ∀ i (h : i < M), Ch i h → StepAt I O (Nj i)) (i : ℕ) (hi : i < M)
-    (c : (levelsOfCh hS r lam0 dom hk I ψ y e Fl M Nj hN Ch St).compS i) :
-    ∃! x : Σ β : Ch i hi, (St i hi β).comp, c = ⟨hi, x.1, x.2⟩ :=
-  ⟨c.2, rfl, fun x hx => by rw [hx]⟩
 
 def ChartsCover {p : ℕ} {G : GAtP p} {Fl : Fills G} (Lv : Levels Fl) (i : ℕ) {Cb : Type} {cmp : Cb → Type}
     (em : ∀ β, cmp β → Lv.compS i) : Prop :=
   Function.Bijective (fun x : Σ β, cmp β => em x.1 x.2)
 
-theorem levelsOfCh_chartsCover (hS : HidaSetting p n' W Qq O Kf ι σ j w) (r : ℕ)
-    (lam0 : Fin nV → Fin n' → Fin (m + 1) → ℤ) (dom : ∀ v, IsDominant (lam0 v)) (hk : m + 1 = R.k)
-    (I : LocId L p nV W Qq) (ψ : Formalism.L2.Herm.awayFrom₂ L p →* Oˣ)
-    (y : compL L p → UPts sp.cm.sig sp.gram0 (Formalism.L2.Herm.Af F)) [Finite (compL L p)] (e : ℕ)
-    (Fl : Fills (gatOfLevel L hS nV r lam0 dom hk I ψ y e)) (M : ℕ) (Nj : ℕ → ℕ)
-    (hN : ∀ i, i < M → m + (i + 1) * (Fl.t + 1) + 1 = Nj i) (Ch : ∀ i, i < M → Type) [∀ i h, Finite (Ch i h)]
-    (St : ∀ i (h : i < M), Ch i h → StepAt I O (Nj i)) (i : ℕ) (hi : i < M) :
-    ChartsCover (levelsOfCh hS r lam0 dom hk I ψ y e Fl M Nj hN Ch St) i
-      (fun (β : Ch i hi) (a : (St i hi β).comp) => ⟨hi, β, a⟩) :=
-  ⟨fun x x' h => by
-      obtain ⟨b, a⟩ := x
-      obtain ⟨b', a'⟩ := x'
-      simpa using h,
-    fun c => ⟨c.2, rfl⟩⟩
 
 end Formalism.L2.G

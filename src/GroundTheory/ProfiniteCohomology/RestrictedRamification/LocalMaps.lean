@@ -74,12 +74,6 @@ theorem exists_eq_comp_of_normal [Normal K E] (ι ι' : E →ₐ[K] Ωv) :
   ext x
   exact (AlgHom.restrictNormal_commutes ι' E x).symm
 
-theorem decompHom_comp [Normal K E] (ι : E →ₐ[K] Ωv) (g : Gal(E/K)) (σ : Gal(Ωv/Kv)) :
-    decompHom Kv (ι.comp (g : E →ₐ[K] E)) σ = g⁻¹ * decompHom Kv ι σ * g := by
-  rw [decompHom_eq_iff]
-  intro x
-  simp only [AlgHom.comp_apply, AlgEquiv.coe_toAlgHom, AlgEquiv.mul_apply, AlgEquiv.aut_inv,
-    AlgEquiv.apply_symm_apply, decompHom_apply]
 
 theorem decompHom_comp_val [Normal K E] (ι : E →ₐ[K] Ωv) (N : IntermediateField K E) [Normal K N] :
     decompHom Kv (ι.comp N.val) = (AlgEquiv.restrictNormalHom N).comp (decompHom Kv ι) := by
@@ -166,15 +160,6 @@ noncomputable def localCohomologyMap (ι : E →ₐ[K] Ωv) (A : Rep.{u} k Gal(E
     (n : ℕ) : cohomology A n ⟶ cohomology (Rep.res (decompHom Kv ι) A) n :=
   cohomologyMapAlong (decompHom Kv ι) (continuous_decompHom ι) (𝟙 _) n
 
-theorem localCohomologyMap_comp (ι : E →ₐ[K] Ωv) (g : Gal(E/K)) (A : Rep.{u} k Gal(E/K))
-    [IsDiscreteRep A] (n : ℕ) :
-    localCohomologyMap Kv (ι.comp (g : E →ₐ[K] E)) A n =
-      localCohomologyMap Kv ι A n ≫
-        cohomologyMapAlong (MonoidHom.id _) continuous_id
-          (conjResMor (φ := decompHom Kv ι) (φ' := decompHom Kv (ι.comp (g : E →ₐ[K] E))) A g
-            (decompHom_comp ι g)) n :=
-  cohomologyMapAlong_conj A (continuous_decompHom ι) (continuous_decompHom _) g
-    (decompHom_comp ι g) n
 
 end Local
 

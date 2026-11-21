@@ -253,11 +253,7 @@ def wkTop (X : Tower Ω ε) (l n r N : ℕ) (x : ZMod N) (c d : ℕ) (σ : Ω �
       (topChar X (l ^ (r + n) * N) l n (topV X l (r + n) N d)))
     (topLift X (l ^ (r + n) * N) σ)⁻¹ : topL X (l ^ (r + n) * N)) : X.K)
 
-theorem wkTop_mem (X : Tower Ω ε) (l n r N : ℕ) (x : ZMod N) (c d : ℕ) (σ : Ω ≃ₐ[ℚ] Ω) :
-    wkTop X l n r N x c d σ ∈ topL X (l ^ (r + n) * N) := Subtype.property _
 
-theorem pow_dvd_topLevel (l n r N : ℕ) : l ^ n ∣ l ^ (r + n) * N :=
-  (pow_dvd_pow l (Nat.le_add_left n r)).mul_right N
 
 example : topT 3 1 5 = 2 ∧ topT 3 2 5 = 4 := by
   have h : ∀ s k : ℕ, k < 5 → (3 : ZMod 5) ^ s * (k : ZMod 5) = 1 → topT 3 s 5 = k := fun s k hk e => by

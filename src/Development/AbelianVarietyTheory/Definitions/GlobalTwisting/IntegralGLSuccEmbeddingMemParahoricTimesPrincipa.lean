@@ -661,19 +661,6 @@ example (hPr : Pr.Ok) (u : Pr.Word) : TilOk Pr sel (mu0 X.F X.E X.K S) u :=
     rw [twistPrimes_trivialTuple_empty] at hP
     simp at hP
 
-theorem levelGroup_lastColumn_congruence {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {n N : ℕ} (hN : N = n + 1) {P : HeightOneSpectrum (𝓞 E)}
-    (l : Lev (𝓞 E ⧸ P.asIdeal) K n) (c : ℕ) {k : GLint E N P} (hk : k ∈ K1 hN l c) :
-    ((qOf P : E) ^ c)⁻¹ • (k.1 (Pi.single (Br.iL hN) 1) - Pi.single (Br.iL hN) 1) ∈ stdAt E N P := by
-  obtain ⟨j, -, κ, hκ, rfl⟩ := (mem_parahoricTimesPrincipalCongruence_iff hN l c).1 hk
-  have h1 := glint_mem (extI hN P j) (hκ _ (single_mem_stdAt (Br.iL hN)))
-  have h0 : prH E hN (Pi.single (Br.iL hN) 1) = 0 := by
-    funext i
-    rw [prH_apply, Pi.single_eq_of_ne fun e => i.2.ne (congrArg Fin.val e)]
-    rfl
-  have h2 : (extI hN P j).1 (Pi.single (Br.iL hN) 1) = Pi.single (Br.iL hN) 1 :=
-    ext_prH hN (by rw [extI_val, prH_sumE, h0, map_zero]) (by rw [extI_val, sumE_last, Units.val_one, one_mul])
-  rw [map_smul, map_sub, h2] at h1
-  exact h1
 
 example (R : Ranks) (h : R.m = 2) : (default : TopDepth R 1).1 = 9 ∧ (default : TopDepth R 5).1 = 14 := by
   constructor

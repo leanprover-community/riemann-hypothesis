@@ -34,10 +34,6 @@ lemma tateRes_app (n : ℤ) (A : Rep.{u} k G) :
     Functor.associator_hom_app, Functor.whiskerLeft_app, Category.id_comp]
   rfl
 
-theorem tateRes_naturality {A B : Rep.{u} k G} (f : A ⟶ B) (n : ℤ) :
-    (tateCohomologyFunctor n).map f ≫ (tateRes S n).app B =
-      (tateRes S n).app A ≫ (resFunctor S.subtype ⋙ tateCohomologyFunctor n).map f :=
-  (tateRes S n).naturality f
 
 @[simps]
 noncomputable def resCoindUnitShortComplex (X : ShortComplex (Rep.{u} k G)) :
@@ -82,10 +78,6 @@ lemma tateCores_app (n : ℤ) (A : Rep.{u} k G) :
     Functor.associator_inv_app, Functor.whiskerLeft_app, Category.id_comp]
   rfl
 
-theorem tateCores_naturality {A B : Rep.{u} k G} (f : A ⟶ B) (n : ℤ) :
-    (resFunctor S.subtype ⋙ tateCohomologyFunctor n).map f ≫ (tateCores S n).app B =
-      (tateCores S n).app A ≫ (tateCohomologyFunctor n).map f :=
-  (tateCores S n).naturality f
 
 @[simps]
 noncomputable def indResCounitShortComplex (X : ShortComplex (Rep.{u} k G)) :

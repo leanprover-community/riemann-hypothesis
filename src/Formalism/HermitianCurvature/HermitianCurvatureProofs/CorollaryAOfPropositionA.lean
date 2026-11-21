@@ -441,7 +441,6 @@ end Formalism.FourierDecayAlt.P.Sz2
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem zeta_tail_bound : Formalism.FourierDecayAlt.Sz.ZetaTail := Sz2.zetaTail
 
 theorem exponent_sizes : Formalism.FourierDecayAlt.Sz.EaSize := Sz2.eaSize
 

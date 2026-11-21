@@ -25,19 +25,5 @@ def PhaseOne : Prop :=
       exp ((Real.pi : ℂ) * (x * (starRingEnd ℂ) (2 * (m : ℂ) * ω) -
         (2 * (m : ℂ) * ω) * (starRingEnd ℂ) x) / (2 * (area (lat2 w₁ w₂) : ℂ))) = 1
 
-theorem transInvLat_of_phase (h : PhaseOne) : PI.TransInvLat := by
-  intro w₁ w₂ hD G hG x ω m hm hx hω
-  have hy : 2 * (m : ℂ) * ω ∈ lat2 w₁ w₂ := by
-    have : 2 * (m : ℂ) * ω = (2 * m : ℕ) • ω := by rw [nsmul_eq_mul]; push_cast; ring
-    rw [this]; exact AddSubgroup.nsmul_mem _ hω _
-  have hy2 : 2 * (m : ℂ) * ω / 2 ∈ lat2 w₁ w₂ := by
-    have : 2 * (m : ℂ) * ω / 2 = m • ω := by rw [nsmul_eq_mul]; ring
-    rw [this]; exact AddSubgroup.nsmul_mem _ hω _
-  have hG' := hG _ hy
-  simp only [if_pos hy2, one_mul] at hG'
-  funext z
-  unfold U1
-  rw [map_add]
-  exact shift_core _ _ G x _ _ _ (fun z => hG' z) (h w₁ w₂ hD x ω m hm hx hω) z
 
 end PI.TransInvLatW

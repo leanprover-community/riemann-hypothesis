@@ -272,8 +272,5 @@ theorem b4 {be : MvPowerSeries (ZMod d) ℂ_[l]} (h : IsBe d be) : product_zerot
       · simp only [hs, decide_false, if_false, if_true]
         rw [subst_X hJ, rename_laAt1]
 
-theorem is_be_four_conditions : ∀ (l : ℕ) [Fact l.Prime] (d : ℕ) [NeZero d], Even d → ∀ be : MvPowerSeries (ZMod d) ℂ_[l],
-    GlobalTheory.ThStr.IsBe d be → product_zeroth_first_parts.B1 l d be ∧ product_zeroth_first_parts.B2 l d be ∧ product_zeroth_first_parts.B3 l d be ∧ product_zeroth_first_parts.B4 l d be :=
-  fun _ _ _ _ _ be h => ⟨b1 h, b2 h, b3 h, b4 h⟩
 
 end GlobalTheory.BeProps

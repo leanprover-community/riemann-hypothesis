@@ -12,19 +12,6 @@ namespace Formalism.IndefR.NX
 
 section PsiU
 
-theorem psiU_tied (D : D7)
-    (θ : ∀ i, ∀ k : Fin 2, Multiplicative (ZMod (D.host.g k)) →* (FractionRing (D.ntw.O i))ˣ)
-    (hθ : 2 ≤ D.R.r → ∀ i k, θ i k ≠ 1) (hU : D.nexp.U = U D.nd)
-    (hψ : ∀ i b (u : D.nexp.U), D.nexp.psiU i b u = psiUD D i (θ i) b ⟨u.1, by rw [← hU]; exact u.2⟩) :
-    D.nexp.U = Uup (fun kv : (Σ k : Fin 2, D.nd.PlG k) => D.host.g kv.1) D.R.r ∧
-    (∀ i b, IsStdGeneric (fun kv : (Σ k : Fin 2, D.nd.PlG k) => D.host.g kv.1) D.R.r (D.nexp.psiU i b)) ∧
-    (∀ i (u : D.nexp.U), D.nexp.psiU i false u = (D.nexp.psiU i true u)⁻¹) ∧
-    (∀ i b, ∃ θ : ∀ kk : Fin 2, Multiplicative (ZMod (D.host.g kk)) →* (FractionRing (D.ntw.O i))ˣ,
-      (2 ≤ D.R.r → ∀ kk, θ kk ≠ 1) ∧ ∀ u : D.nexp.U, D.nexp.psiU i b u = ∏ kv : (Σ kk : Fin 2, D.nd.PlG kk),
-        θ kv.1 (Multiplicative.ofAdd (xiRed D kv *
-          supSum D.R.r (((u : G0g D.nd) kv : GL (Fin D.R.r) (ZMod (D.host.g kv.1))) :
-            Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g kv.1)))))) :=
-  tied_U_clauses D θ (fun _ => xiRedNZ D) hθ hU hψ
 
 end PsiU
 
@@ -115,34 +102,6 @@ end LevNX
 
 section ChrG
 
-theorem supSum_block {R : Type} [CommRing R] {r n : ℕ} (h : r ≤ n) (M : Matrix (Fin n) (Fin n) R) :
-    Formalism.L2.NX.supSum r (M.submatrix (Fin.castLE h) (Fin.castLE h)) =
-      Formalism.L2.Col.supSum r (Finset.range (r - 1)) M := by
-  classical
-  unfold Formalism.L2.NX.supSum Formalism.L2.Col.supSum
-  have hout : ∀ F : Fin n → R, (∀ i : Fin n, r ≤ i.val → F i = 0) →
-      ∑ i : Fin n, F i = ∑ a : Fin r, F (Fin.castLE h a) := by
-    intro F hF
-    symm
-    calc ∑ a : Fin r, F (Fin.castLE h a) = ∑ i ∈ Finset.univ.map (Fin.castLEEmb h), F i := by
-          rw [Finset.sum_map]; rfl
-      _ = ∑ i : Fin n, F i := Finset.sum_subset (Finset.subset_univ _) fun i _ hi => hF i (by
-          by_contra hlt
-          exact hi (Finset.mem_map.2 ⟨⟨i.val, by omega⟩, Finset.mem_univ _, Fin.ext rfl⟩))
-  rw [hout]
-  · refine Finset.sum_congr rfl fun a _ => ?_
-    rw [hout]
-    · refine Finset.sum_congr rfl fun c _ => ?_
-      simp only [Fin.val_castLE, Matrix.submatrix_apply, Finset.mem_range]
-      have hcl := c.isLt
-      by_cases hc : (c : ℕ) = a + 1
-      · rw [if_pos hc, if_pos ⟨hc.symm, hcl, by omega⟩]
-      · rw [if_neg hc, if_neg fun h' => hc h'.1.symm]
-    · intro j hj
-      rw [if_neg fun ⟨_, h2, _⟩ => by omega]
-  · intro i hi
-    refine Finset.sum_eq_zero fun j _ => ?_
-    rw [if_neg fun ⟨h1, h2, _⟩ => by omega]
 
 theorem supSum_map {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {r : ℕ} (A : Matrix (Fin r) (Fin r) R) :
     Formalism.L2.NX.supSum r (A.map f) = f (Formalism.L2.NX.supSum r A) := by
@@ -164,18 +123,7 @@ theorem intLift_of_mem (v : HeightOneSpectrum (𝓞 L⁺)) (y : v.adicCompletion
   unfold intLift
   rw [dif_pos h]
 
-theorem isUnit_det_of_uniTri {R : Type} [CommRing R] {r : ℕ} {A : Matrix (Fin r) (Fin r) R} (h : IsUniTri r A) :
-    IsUnit A.det := by
-  rw [Matrix.det_of_upperTriangular h.1]
-  simp [h.2]
 
-theorem lamGen_val {κ K : Type} [CommRing κ] [Field K] {m r : ℕ} (ψ : AddChar κ K) (ξ : κˣ →* Kˣ) (S : Finset ℕ)
-    (M : uniUT m κ r [m - r]) :
-    ((lamGen ψ (fun _ => ξ) m r [m - r] S M : Kˣ) : K) =
-      ψ (Formalism.L2.Col.supSum r S (M.1 : Matrix (Fin m) (Fin m) κ)) *
-        ((ξ (blkDet m κ (coarse r [m - r]) 1 (Subgroup.inclusion (uniUT_le_blockUT m κ r [m - r]) M)) : Kˣ) : K) := by
-  simp only [lamGen, MonoidHom.mul_apply, Units.val_mul, supChar_val, MonoidHom.comp_apply, detChar_apply,
-    List.length_singleton, Finset.prod_range_one, zero_add]
 
 end RedGen
 
@@ -252,15 +200,6 @@ def tauNX (i : D.ntw.Tw) (j : ℕ) (b : Bool) (kv : Σ kk : Fin 2, D.nd.PlG kk) 
     (ZMod (D.host.g kv.1))ˣ →* (FractionRing (D.ntw.O i))ˣ :=
   if h : TauTame D i j b kv then h.choose else 1
 
-theorem twisted_character_value (hT : ∀ i j b kv, pG D kv ∉ placesOver D.host.E (D.ntw.l i) → TauTame D i j b kv) :
-    ∀ i j b kv (x : (ZMod (D.host.g kv.1))ˣ) (u : 𝓞 D.host.E), pG D kv ∉ placesOver D.host.E (D.ntw.l i) →
-      (((x : ZMod (D.host.g kv.1)).val : 𝓞 D.host.E) - u) ∈ (pG D kv).asIdeal →
-      ((tauNX D i j b kv x : (FractionRing (D.ntw.O i))ˣ) : FractionRing (D.ntw.O i)) =
-        ringHomOfBaseOrderToFraction D i (tameVal (D.ntw.chi1 i j b) (pG D kv) ((1 : ℤ) * 1) u).1 := by
-  intro i j b kv x u hl hu
-  have h := hT i j b kv hl
-  rw [one_mul, tauNX, dif_pos h]
-  exact h.choose_spec x u hu
 
 end Tau
 

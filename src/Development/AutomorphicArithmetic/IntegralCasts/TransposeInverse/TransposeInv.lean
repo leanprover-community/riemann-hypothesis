@@ -32,22 +32,13 @@ def transposeInv : GL n R ≃* GL n R where
 @[simp] theorem coe_transposeInv (g : GL n R) :
     ((transposeInv g : GL n R) : Matrix n n R) = ((g⁻¹ : GL n R) : Matrix n n R)ᵀ := rfl
 
-theorem coe_transposeInv_inv (g : GL n R) :
-    (((transposeInv g)⁻¹ : GL n R) : Matrix n n R) = (g : Matrix n n R)ᵀ := rfl
 
-theorem transposeInv_apply (g : GL n R) (i j : n) :
-    (transposeInv g : GL n R) i j = (g⁻¹ : GL n R) j i := rfl
 
 @[simp] theorem transposeInv_transposeInv (g : GL n R) :
     transposeInv (transposeInv g) = g := transposeInvFun_involutive g
 
 @[simp] theorem transposeInv_symm : (transposeInv : GL n R ≃* GL n R).symm = transposeInv := rfl
 
-theorem det_transposeInv (g : GL n R) :
-    GeneralLinearGroup.det (transposeInv g) = (GeneralLinearGroup.det g)⁻¹ := by
-  rw [← map_inv]
-  apply Units.ext
-  simp only [GeneralLinearGroup.val_det_apply, coe_transposeInv, det_transpose]
 
 theorem map_transposeInv {S : Type*} [CommRing S] (f : R →+* S) (g : GL n R) :
     GeneralLinearGroup.map f (transposeInv g) = transposeInv (GeneralLinearGroup.map f g) := by

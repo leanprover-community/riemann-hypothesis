@@ -39,15 +39,11 @@ variable {D n}
 
 def nElt (b : hermN D n) : StdUnn.G D n := ((StdUnn.Model.exists_unip b.1).2 b.2).choose
 
-theorem mat_nElt (b : hermN D n) : StdUnn.mat (nElt b) = StdUnn.blk4 1 b.1 0 1 :=
-  ((StdUnn.Model.exists_unip b.1).2 b.2).choose_spec
 
 variable (D n)
 
 def wElt : StdUnn.G D n := (StdUnn.Model.exists_weyl (D := D) (n := n)).choose
 
-theorem mat_wElt : StdUnn.mat (wElt D n) = StdUnn.blk4 0 1 (-1) 0 :=
-  (StdUnn.Model.exists_weyl (D := D) (n := n)).choose_spec
 
 variable {D n}
 

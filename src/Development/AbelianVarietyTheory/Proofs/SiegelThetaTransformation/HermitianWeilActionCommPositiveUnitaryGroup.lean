@@ -45,10 +45,6 @@ theorem unit_map {h : Matrix (Fin n) (Fin n) E} (hh : ccT h * h = 1) (τ : E →
   ext i j
   simp [ccT, emb_cc]
 
-theorem unit_map' {h : Matrix (Fin n) (Fin n) E} (hh : ccT h * h = 1) (τ : E →+* ℂ) :
-    (h.map τ)ᵀ * (h.map τ).map conj = 1 := by
-  have h1 := congrArg Matrix.transpose (unit_map hh τ)
-  simpa [Matrix.transpose_mul] using h1
 
 def mv (h : Matrix (Fin n) (Fin n) E) (z : CM Ψ n N) : CM Ψ n N :=
   fun τ => (h.map τ.1).map conj * z τ

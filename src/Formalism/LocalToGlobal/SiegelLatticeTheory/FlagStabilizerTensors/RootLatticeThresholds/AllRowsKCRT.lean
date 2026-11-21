@@ -17,7 +17,6 @@ def pm (u : R) (X : Matrix n n R) : Matrix n n R := 1 + u • (X - 1)
 
 theorem pm_one (u : R) : pm u (1 : Matrix n n R) = 1 := by simp [pm]
 
-theorem pm_sub_one (u : R) (X : Matrix n n R) : pm u X - 1 = u • (X - 1) := by simp [pm]
 
 theorem one_add_mul_one_add (a b : Matrix n n R) : (1 + a) * (1 + b) = 1 + a + b + a * b := by noncomm_ring
 
@@ -27,10 +26,6 @@ theorem pm_mul {u : R} (hu : u * u = u) (X Y : Matrix n n R) : pm u X * pm u Y =
   rw [one_add_mul_one_add, smul_mul_smul_comm, hu, e, smul_add, smul_add]
   abel
 
-theorem pm_mul_compl {u v : R} (h0 : u * v = 0) (h1 : u + v = 1) (X : Matrix n n R) : pm u X * pm v X = X := by
-  unfold pm
-  rw [one_add_mul_one_add, smul_mul_smul_comm, h0, zero_smul, add_zero, add_assoc, ← add_smul, h1, one_smul]
-  abel
 
 theorem cT_pm (σ : R →+* R) {u : R} (hu : σ u = u) (X : Matrix n n R) :
     Formalism.UG.cT σ (pm u X) = pm u (Formalism.UG.cT σ X) := by
@@ -135,57 +130,14 @@ def mkG (u : I.E ⊗[I.F] Af I.F) (hu : u * u = u) (hσ : Formalism.UG.sigR I.cm
     rw [cT_pm _ hσ]
     exact pm_form hu _ _ _ hx⟩
 
-theorem fmat_mkG (u : I.E ⊗[I.F] Af I.F) (hu : u * u = u) (hσ : Formalism.UG.sigR I.cm.sig (Af I.F) u = u) (x : I.Gf) :
-    I.fmat (mkG I u hu hσ x) = pm u (I.fmat x) := rfl
 
 theorem smul_Lf {u : I.E ⊗[I.F] Af I.F} (hI : u ∈ IntAf I.F I.E) {y : Fin I.n → I.E ⊗[I.F] Af I.F}
     (hy : y ∈ I.Lf) : u • y ∈ I.Lf :=
   I.Lf.smul_mem ⟨u, hI⟩ hy
 
-theorem pm_mv_mem {u : I.E ⊗[I.F] Af I.F} (hI : u ∈ IntAf I.F I.E) {x : I.Gf} (hx : x ∈ I.Kset)
-    {y : Fin I.n → I.E ⊗[I.F] Af I.F} (hy : y ∈ I.Lf) : pm u (I.fmat x) *ᵥ y ∈ I.Lf := by
-  have e : pm u (I.fmat x) *ᵥ y = y + u • ((I.fmat x - 1) *ᵥ y) := by
-    rw [pm, Matrix.add_mulVec, Matrix.one_mulVec, Matrix.smul_mulVec]
-  rw [e]
-  exact add_mem hy (smul_Lf I hI (K_sub_mv I hx hy))
 
-theorem mkG_K {u : I.E ⊗[I.F] Af I.F} (hu : u * u = u) (hσ : Formalism.UG.sigR I.cm.sig (Af I.F) u = u)
-    (hI : u ∈ IntAf I.F I.E) {x : I.Gf} (hx : x ∈ I.Kset) : mkG I u hu hσ x ∈ I.Kset := by
-  intro y
-  show y ∈ I.Lf ↔ pm u (I.fmat x) *ᵥ y ∈ I.Lf
-  refine ⟨fun hy => pm_mv_mem I hI hx hy, fun hy => ?_⟩
-  have e : pm u (I.fmat x⁻¹) *ᵥ (pm u (I.fmat x) *ᵥ y) = y := by
-    rw [Matrix.mulVec_mulVec, pm_mul hu, fmat_inv_mul, pm_one, Matrix.one_mulVec]
-  rw [← e]
-  exact pm_mv_mem I hI (K_inv I hx) hy
 
-theorem mkG_Kg {u : I.E ⊗[I.F] Af I.F} (hu : u * u = u) (hσ : Formalism.UG.sigR I.cm.sig (Af I.F) u = u)
-    (hI : u ∈ IntAf I.F I.E) {m : ℕ} {c : I.E ⊗[I.F] Af I.F} (hc : c ∈ IntAf I.F I.E)
-    (huc : u = (m : I.E ⊗[I.F] Af I.F) * c) {x : I.Gf} (hx : x ∈ I.Kset) : mkG I u hu hσ x ∈ I.Kg m := by
-  refine ⟨mkG_K I hu hσ hI hx, fun y hy => ⟨c • ((I.fmat x - 1) *ᵥ y), smul_Lf I hc (K_sub_mv I hx hy), ?_⟩⟩
-  rw [fmat_mkG, pm_sub_one, Matrix.smul_mulVec, huc, mul_smul]
 
-theorem kcrt_holds {m₁ m₂ : ℕ} (h : Nat.Coprime m₁ m₂) : Formalism.L2.SG.AllRowsOf.KCRT I m₁ m₂ := by
-  intro x hx
-  obtain ⟨c₁, hc₁, e₁⟩ := compl_eq (F := I.F) m₁
-  obtain ⟨c₂, hc₂, e₂⟩ := idem_eq (F := I.F) h
-  set s : Af I.F := eT (Tm (F := I.F) m₁) with hs
-  have hss : s * s = s := eT_idem _
-  have hsI : s ∈ Formalism.UG.intAd I.F := eT_mem _
-  have hu₁ : iA I (1 - s) * iA I (1 - s) = iA I (1 - s) := by
-    rw [← map_mul]; congr 1; linear_combination hss
-  have hu₂ : iA I s * iA I s = iA I s := by rw [← map_mul, hss]
-  have hI₁ : iA I (1 - s) ∈ IntAf I.F I.E := iA_mem I (sub_mem (one_mem _) hsI)
-  have hI₂ : iA I s ∈ IntAf I.F I.E := iA_mem I hsI
-  have hC₁ : iA I (1 - s) = (m₁ : I.E ⊗[I.F] Af I.F) * iA I c₁ := by rw [e₁, map_mul, map_natCast]
-  have hC₂ : iA I s = (m₂ : I.E ⊗[I.F] Af I.F) * iA I c₂ := by rw [e₂, map_mul, map_natCast]
-  have h0 : iA I (1 - s) * iA I s = 0 := by rw [← map_mul, sub_mul, one_mul, hss, sub_self, map_zero]
-  have h1 : iA I (1 - s) + iA I s = 1 := by rw [← map_add, sub_add_cancel, map_one]
-  refine ⟨mkG I _ hu₁ (sig_iA I _) x, mkG_Kg I hu₁ (sig_iA I _) hI₁ (iA_mem I hc₁) hC₁ hx,
-    mkG I _ hu₂ (sig_iA I _) x, mkG_Kg I hu₂ (sig_iA I _) hI₂ (iA_mem I hc₂) hC₂ hx, ?_⟩
-  refine Subtype.ext (Units.ext ?_)
-  show I.fmat x = pm (iA I (1 - s)) (I.fmat x) * pm (iA I s) (I.fmat x)
-  rw [pm_mul_compl h0 h1]
 
 end Inst
 

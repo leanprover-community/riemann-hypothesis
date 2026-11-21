@@ -84,19 +84,7 @@ theorem exists_acts (D : D7) {V : Type} [AddCommGroup V] [Module ℂ V]
         rw [← h1, map_sum, LinearMap.sum_apply]
     _ = 0 := Finset.sum_eq_zero fun f _ => hne f
 
-theorem exists_onMt (D : D7) (μ j) (k : Fin 2) (v : D.nd.PlG k) (F : D.what₂.Mt μ j) (hF : F ≠ 0) :
-    ∃ f, D.ntypes.onMt μ j (atPlace D k v (D.ntypes.eSer k f)) F ≠ 0 := by
-  obtain ⟨f, hf⟩ := exists_acts D (D.ntypes.cenMt μ j) k v F hF
-  refine ⟨f, ?_⟩
-  rw [NTypes.onMt, dif_pos (atPlace_central D k v _ (D.ntypes.eSer_central k f))]
-  exact hf
 
-theorem exists_onAmb (D : D7) (μ) (k : Fin 2) (v : D.nd.PlG k) (F : D.what₂.Amb μ) (hF : F ≠ 0) :
-    ∃ f, D.ntypes.onAmb μ (atPlace D k v (D.ntypes.eSer k f)) F ≠ 0 := by
-  obtain ⟨f, hf⟩ := exists_acts D (D.ntypes.cenAmb μ) k v F hF
-  refine ⟨f, ?_⟩
-  rw [NTypes.onAmb, dif_pos (atPlace_central D k v _ (D.ntypes.eSer_central k f))]
-  exact hf
 
 private theorem exists_equiv_monicOf_of_perm {K : Type} [Field K] (N : ℕ) (π : Equiv.Perm K[X])
     (hπ : ∀ f, ((π f).Monic ∧ (π f).natDegree = N) ↔ (f.Monic ∧ f.natDegree = N)) :
@@ -187,32 +175,7 @@ def rel (D : D7) (P : Relabel D) : D7 :=
     rbar_tie := D.rbar_tie
     mtpar_tie := D.mtpar_tie }
 
-theorem not_admissible_relabel (D : D7) (P : Relabel D) (h : adm3 D) (μ j) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m)
-    (σ : D.ntypes.Par) (F) (hF : F ∈ D.ntypes.MtPar μ j σ) (h0 : F ≠ 0) (k : Fin 2) (v : D.nd.PlG k)
-    (hm : P.π k (D.ntypes.labPar k σ v) ≠ D.ntypes.labPar k σ v) :
-    (rel D P).what₂ = D.what₂ ∧ (rel D P).ntypes.e0 = D.ntypes.e0 ∧ ¬ adm3 (rel D P) := by
-  refine ⟨rfl, relabel_types_e0 D P, fun hr => hm ?_⟩
-  obtain ⟨f0, hf0⟩ := exists_onMt D μ j k v F h0
-  have hL : f0 = D.ntypes.labPar k σ v := h.2.1 μ j h1 h2 σ k v f0 F hF hf0
-  subst hL
-  have hne : D.ntypes.onMt μ j (atPlace D k v (D.ntypes.eSer k
-      (P.π k ((P.π k).symm (D.ntypes.labPar k σ v))))) F ≠ 0 := by
-    rwa [Equiv.apply_symm_apply]
-  have e := hr.2.1 μ j h1 h2 σ k v _ F hF hne
-  have e2 := congrArg (P.π k) e
-  rw [Equiv.apply_symm_apply] at e2
-  exact e2.symm
 
-theorem galois_rel (D : D7) (P : Relabel D) (h : adm3 D)
-    (hc : ∀ τ k f, IsLabel D k f → P.π k (labAct D τ k f) = labAct D τ k (P.π k f))
-    (τ : ℂ ≃+* ℂ) (k : Fin 2) (f) (hf : IsLabel (rel D P) k f) :
-    ((rel D P).ntypes.eSer k f).coeff.mapRange τ (map_zero τ) =
-      ((rel D P).ntypes.eSer k (labAct (rel D P) τ k f)).coeff := by
-  have hf' : IsLabel D k f := hf
-  show (D.ntypes.eSer k (P.π k f)).coeff.mapRange τ (map_zero τ) =
-    (D.ntypes.eSer k (P.π k (labAct D τ k f))).coeff
-  rw [hc τ k f hf']
-  exact h.1 τ k _ ((P.lab k f).2 hf')
 
 def swapRel (D : D7) (a b : ∀ k : Fin 2, (ZMod (D.host.g k))[X]) (ha : ∀ k, IsLabel D k (a k))
     (hb : ∀ k, IsLabel D k (b k)) (ha' : ∀ k, ¬ Squarefree (a k)) (hb' : ∀ k, ¬ Squarefree (b k)) : Relabel D := by
@@ -442,35 +405,7 @@ def dualRel (D : D7) : Relabel D where
       funext k v; exact dualFun_invol D k _
     exact e ▸ this
 
-theorem not_admissible_dual_relabel (D : D7) (h : adm3 D) (μ j) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m)
-    (σ : D.ntypes.Par) (F) (hF : F ∈ D.ntypes.MtPar μ j σ) (h0 : F ≠ 0) (k : Fin 2) (v : D.nd.PlG k)
-    (hl : IsLabel D k (D.ntypes.labPar k σ v))
-    (hm : dualLab D k (D.ntypes.labPar k σ v) ≠ D.ntypes.labPar k σ v) :
-    (rel D (dualRel D)).what₂ = D.what₂ ∧ (rel D (dualRel D)).ntypes.e0 = D.ntypes.e0 ∧
-      ¬ adm3 (rel D (dualRel D)) := by
-  refine not_admissible_relabel D (dualRel D) h μ j h1 h2 σ F hF h0 k v ?_
-  show dualFun D k (D.ntypes.labPar k σ v) ≠ D.ntypes.labPar k σ v
-  unfold dualFun
-  rw [if_pos hl]
-  exact hm
 
-theorem not_admissible_with_ambient_top (D : D7) (μ) (F : D.what₂.Amb μ) (h0 : F ≠ 0) (σ σ' : D.ntypes.Par)
-    (k : Fin 2) (v : D.nd.PlG k)
-    (hne : dualLab D k (D.ntypes.labPar k σ v) ≠ dualLab D k (D.ntypes.labPar k σ' v)) :
-    ¬ adm3 (GlobalTheory.GoodProjectorTest.withAmb D fun _ _ => ⊤) := by
-  intro hA
-  obtain ⟨f, hf⟩ := exists_onAmb D μ k v F h0
-  have hT : F ∈ (⊤ : Submodule ℂ (D.what₂.Amb μ)) := Submodule.mem_top
-  have e1 := hA.2.2 μ σ k v f F hT hf
-  have e2 := hA.2.2 μ σ' k v f F hT hf
-  exact hne (e1.symm.trans e2)
 
-theorem admissible_with_ambient_bot (D : D7) (h : adm3 D) : adm3 (GlobalTheory.GoodProjectorTest.withAmb D fun _ _ => ⊥) := by
-  refine ⟨h.1, h.2.1, ?_⟩
-  rintro (μ : D.what₂.Tup) σ' k v f (F : D.what₂.Amb μ) hF hne
-  have hF' : F ∈ (⊥ : Submodule ℂ (D.what₂.Amb μ)) := hF
-  have hF0 : @Eq (D.what₂.Amb μ) F 0 := (Submodule.mem_bot ℂ).mp hF'
-  have hne' : D.ntypes.onAmb μ (atPlace D k v (D.ntypes.eSer k f)) F ≠ 0 := hne
-  exact (hne' (by rw [hF0]; exact map_zero _)).elim
 
 end GlobalTheory.SeriesSupportTest

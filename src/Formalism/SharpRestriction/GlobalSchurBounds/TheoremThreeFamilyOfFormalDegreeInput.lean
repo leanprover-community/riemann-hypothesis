@@ -34,13 +34,7 @@ theorem landherrSmall_of_hasse (D : D7) (h : Formalism.L2.GlobalTheoryTheory.Gen
   obtain ⟨b, -, hb⟩ := h W hW hsig
   exact ⟨b, hb⟩
 
-theorem part_four_of_class_number_landherr (D : D7) (Lv : LevelData D) (C3 : ℝ) (hn : ClassNumberFormula₂ D Lv) (hs : LandherrSmall D) :
-    ThetaChernBoundOfLastLine D Lv C3 :=
-  levelStatement_remaining D Lv C3 (levels_pro_g_on_columns D Lv) hn hs
 
-theorem levelStatement_of_adm17 (D : D7) (Lv : LevelData D) (C3 : ℝ) (h2 : VolumeMass D) (h3 : PointsLemma D C3) (hn : ClassNumberFormula₂ D Lv)
-    (hs : LandherrSmall D) : StandardLatticeProperties D Lv C3 :=
-  part_four_of_class_number_landherr D Lv C3 hn hs h2 h3 (content_bound_clause D Lv)
 
 section Fam
 
@@ -111,21 +105,11 @@ section Fam3
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-theorem familyLowestKType_of_multOne (hL : DiscreteSeriesWeylDimension.LowKMultOne) : ∀ x (i : Fm.Ix x), FamilyMassLastLine (Fm.D x i) :=
-  fun x i => lowest_K_type_dimension_of_multiplicity (Fm.D x i) hL
 
 theorem stabiliser_family_of_definite (hF : ∀ x (i : Fm.Ix x), PlaceDegreeData.DiscreteSeriesLowestKTypeFormula (Fm.D x i)) (hL : DiscreteSeriesWeylDimension.LowKMultOne) : FamilyTheoremThreeAdmitted Fm :=
   fun x i => theorem_three_hypotheses_of_multiplicity (Fm.D x i) (hF x i) hL
 
-theorem theorem_three_family_of_formal_degree (C3 : ℝ) (hC3 : 1 ≤ C3)
-    (hHC : ∀ x (i : Fm.Ix x), Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.HCFormalDegree (Fm.D x i)) (hL : DiscreteSeriesWeylDimension.LowKMultOne) :
-    FamilyTheoremThreeGeneral Fm C3 :=
-  fun x i => Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.theorem_three_all_unitary (Fm.D x i) C3 hC3 (Fm.ties x i).cdScale_tie (hHC x i)
-    (lowest_K_type_dimension_of_multiplicity (Fm.D x i) hL)
 
-theorem theorem_three_family_of_formal_degree_input (C3 : ℝ) (hC3 : 1 ≤ C3) (hHC : RT.HCFdegR) (hL : DiscreteSeriesWeylDimension.LowKMultOne) :
-    FamilyTheoremThreeGeneral Fm C3 :=
-  theorem_three_family_of_formal_degree Fm C3 hC3 (fun x i => RT.hcFormalDegree_of_R hHC (Fm.D x i)) hL
 
 theorem familyRestriction_of_harishChandra (hHC : ∀ x (i : Fm.Ix x), Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.HCFormalDegree (Fm.D x i))
     (hL : DiscreteSeriesWeylDimension.LowKMultOne) (hE : DiscreteSeriesWeylDimension.DiscreteSeriesExists) : FamilySigmaDegreeTwoSidedBound Fm :=
@@ -137,8 +121,6 @@ theorem familyFormalDegree_of_harishChandra (C3 : ℝ) (hC3 : 8192 ≤ C3)
     (hL : DiscreteSeriesWeylDimension.LowKMultOne) (hE : DiscreteSeriesWeylDimension.DiscreteSeriesExists) : FamilyTheoremThree Fm C3 :=
   fun x i => theorem_three_sigma_of_explicit (Fm.D x i) C3 hC3 (familyRestriction_of_harishChandra Fm hHC hL hE x i)
 
-theorem slopeEstimate_of_lemmaB_slopeLine_alt (D : D7) (hT : VolTie D) (hU : RT.MassRatioUnderVolume D) (hv : RT.GenusMassUnderVolume D) : VolumeMass D :=
-  volumeMass_of_definiteVolume D (volumeMass_of_unfolding D (hU hT)) (hv hT)
 
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
 
@@ -148,9 +130,6 @@ theorem massStatement_of_classData (D : D7) (hT : VolTie D) (hV : Formalism.L2.G
   ⟨Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.theorem_two_of_volume_ratio D hV hT, Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.volume_mass_of_items D hT hV hI0 hI1 hI2,
     Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.standardLattice_aux2b D, massIdentity_holds D⟩
 
-theorem familyOpNorm_of_sup_jet_alt (tVol : VolTieF Fm) (hU : ∀ x (i : Fm.Ix x), RT.MassRatioUnderVolume (Fm.D x i))
-    (hv : ∀ x (i : Fm.Ix x), RT.GenusMassUnderVolume (Fm.D x i)) : FamilyMassVolumeBounds Fm :=
-  fun x i => slopeEstimate_of_lemmaB_slopeLine_alt (Fm.D x i) (tVol x i) (hU x i) (hv x i)
 
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
 theorem lemma_two_family_of_class_conditions (tVol : VolTieF Fm) (hV : Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.VolRatioTrueF Fm)

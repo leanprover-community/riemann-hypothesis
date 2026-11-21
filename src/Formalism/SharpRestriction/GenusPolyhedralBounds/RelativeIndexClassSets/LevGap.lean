@@ -443,20 +443,9 @@ theorem asm_minkM_pos (n : ℕ) : 0 < minkM n := by
   unfold Formalism.HermitianLatticeCounting.S6.minkowskiM
   exact Finset.prod_pos fun p hp => pow_pos (Nat.Prime.pos (Finset.mem_filter.1 hp).2) _
 
-theorem levGap_of (h1 : FactSplitG) (h2 : FactLb) (h3 : FactFMCard) (h4 : FactIwLe) (h5 : FactUCompact)
-    (h6 : FactUOpen) (h7 : FactClsFinite) (h8 : FactStabTriv) (h9 : FactTNeG) (h10 : FactPlacesT)
-    (h11 : FactTau) : Formalism.MainNotions.Inhab.LevGap :=
-  levGapGen_of (fun R => minkM (2 * R.f * R.N R.m)) (fun _ => asm_minkM_pos _) h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11
 
-theorem levGapGen (dOf : Ranks → ℕ) (hd : ∀ R, 0 < dOf R) : LevGapGen dOf :=
-  levGapGen_of dOf hd factSplitG Formalism.MainNotions.Gaps.LevGap.factLb factFMCard factIwLe Formalism.MainNotions.Gaps.LevGap.factUCompact
-    Formalism.MainNotions.Gaps.LevGap.factUOpen factClsFinite factStabTriv Formalism.MainNotions.Gaps.LevGap.factTNeG
-    Formalism.MainNotions.Gaps.LevGap.factPlacesT Formalism.MainNotions.Gaps.LevGap.factTau
 
-theorem levGap : Formalism.MainNotions.Inhab.LevGap :=
-  levGapGen (fun R => minkM (2 * R.f * R.N R.m)) (fun _ => asm_minkM_pos _)
 
-theorem levGapOne : LevGapGen (fun _ => 1) := levGapGen (fun _ => 1) (fun _ => one_pos)
 
 end Formalism.MainNotions.Gaps.LG
 

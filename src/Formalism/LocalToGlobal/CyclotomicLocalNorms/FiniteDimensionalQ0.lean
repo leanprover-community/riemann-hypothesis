@@ -89,7 +89,6 @@ theorem FrobQ_spec (x : Om l) (hx : ‖x‖ ≤ 1) : ‖FrobQ l x - x ^ l‖ < 1
   have := LocalClassField.isFrob_frobK (finiteDimensional_Q0_alt (l := l)) x hx
   rwa [qK_bot] at this
 
-theorem norm_GQ (g : GQ l) (x : Om l) : ‖g x‖ = ‖x‖ := LocalClassField.norm_GK l (Q0 l) (ofGQ g) x
 
 section Fin
 

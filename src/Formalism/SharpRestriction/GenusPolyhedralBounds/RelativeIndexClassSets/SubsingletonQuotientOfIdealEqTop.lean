@@ -13,83 +13,10 @@ section Lem
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ}
 
-theorem hypC_large {large₂ : SizeData₂ D} {X : PJ D B P j} {H : KHyp} {C2 A2 CR CT : ℝ} {S : Scal B}
-    {ka wL wF : WeightFamilies.Wt D j} {T nP nW : ℕ} {h0 : ℝ} {nus : HeightOneSpectrum (𝓞 B.KO) → ℝ}
-    (h : HypC large₂ X H C2 A2 CR 0 CT S ka wL wF T nP nW h0 nus) :
-    large₂.sc.x ≤ (D.R.f : ℝ) * D.R.r ∧ (1000 : ℝ) ^ 20 ≤ (D.R.f : ℝ) * D.R.r * large₂.sc.x ^ large₂.sc.eps := by
-  obtain ⟨hpa, hsc, -⟩ := h
-  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hdom⟩ := hsc
-  obtain ⟨h1, h2, -⟩ := hdom
-  refine ⟨hpa.1, ?_⟩
-  have h3 : (1000 : ℝ) ^ 20 ≤ H.C1 ^ 20 := pow_le_pow_left₀ (by norm_num) h1 20
-  have h4 : Zb D large₂ = (D.R.f : ℝ) * D.R.r * large₂.sc.x ^ large₂.sc.eps := rfl
-  linarith
 
-theorem not_hypC_of_le {large₂ : SizeData₂ D} {X : PJ D B P j} {H : KHyp} {C2 A2 CR CT : ℝ} {S : Scal B}
-    {ka wL wF : WeightFamilies.Wt D j} {T nP nW : ℕ} {h0 : ℝ} {nus : HeightOneSpectrum (𝓞 B.KO) → ℝ}
-    (hfr : (D.R.f : ℝ) * D.R.r ≤ 72) : ¬ HypC large₂ X H C2 A2 CR 0 CT S ka wL wF T nP nW h0 nus := by
-  intro h
-  obtain ⟨hx, hZ⟩ := hypC_large h
-  have hx1 : 1 ≤ large₂.sc.x := large₂.sc.one_lt_alt.le
-  have he : large₂.sc.eps ≤ 1 := by linarith [large₂.sc.eps_lt]
-  have hxe : large₂.sc.x ^ large₂.sc.eps ≤ large₂.sc.x := by
-    calc large₂.sc.x ^ large₂.sc.eps ≤ large₂.sc.x ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hx1 he
-      _ = large₂.sc.x := Real.rpow_one _
-  have hfr0 : 0 ≤ (D.R.f : ℝ) * D.R.r := by positivity
-  have : (D.R.f : ℝ) * D.R.r * large₂.sc.x ^ large₂.sc.eps ≤ 72 * 72 := by
-    calc (D.R.f : ℝ) * D.R.r * large₂.sc.x ^ large₂.sc.eps ≤ 72 * large₂.sc.x :=
-          mul_le_mul hfr hxe (by positivity) (by norm_num)
-      _ ≤ 72 * 72 := by linarith
-  norm_num at hZ
-  linarith
 
-theorem not_hypC_Rt (s : ℕ) (hR : D.R = Formalism.MainNotions.Inhab.Rt s) {large₂ : SizeData₂ D} {X : PJ D B P j} {H : KHyp}
-    {C2 A2 CR CT : ℝ} {S : Scal B} {ka wL wF : WeightFamilies.Wt D j} {T nP nW : ℕ} {h0 : ℝ}
-    {nus : HeightOneSpectrum (𝓞 B.KO) → ℝ} : ¬ HypC large₂ X H C2 A2 CR 0 CT S ka wL wF T nP nW h0 nus := by
-  apply not_hypC_of_le
-  have h1 : D.R.f = 8 := by rw [hR]; rfl
-  have h2 : D.R.r = 9 := by rw [hR]; rfl
-  rw [h1, h2]; norm_num
 
-theorem shares_force (d rq rz del R Dm T : ℕ) (hcount : d ≤ rq + R * del + rz)
-    (hrz : (rz : ℝ) ≤ 22 * (Dm : ℝ) ^ 2 * d / T) (hrq : (rq : ℝ) ≤ 22 * (Dm : ℝ) ^ 2 * d / T)
-    (hT : 44 * Dm ^ 2 < T) :
-    (1 ≤ d → 1 ≤ del) ∧ (1 - 44 * (Dm : ℝ) ^ 2 / T) * d ≤ R * del := by
-  have hT' : (44 * (Dm : ℝ) ^ 2) < T := by exact_mod_cast hT
-  have hT0 : (0 : ℝ) < T := lt_of_le_of_lt (by positivity) hT'
-  have hc : ((rq + R * del + rz : ℕ) : ℝ) = rq + R * del + rz := by push_cast; ring
-  have hcount' : (d : ℝ) ≤ rq + R * del + rz := by rw [← hc]; exact_mod_cast hcount
-  have hsum : (rq : ℝ) + rz ≤ 44 * (Dm : ℝ) ^ 2 / T * d := by
-    have : 22 * (Dm : ℝ) ^ 2 * d / T + 22 * (Dm : ℝ) ^ 2 * d / T = 44 * (Dm : ℝ) ^ 2 / T * d := by ring
-    linarith
-  refine ⟨fun hd => ?_, ?_⟩
-  · by_contra hdel
-    have h0 : del = 0 := by omega
-    have hd' : (1 : ℝ) ≤ d := by exact_mod_cast hd
-    have hlt : 44 * (Dm : ℝ) ^ 2 / T < 1 := by rw [div_lt_one hT0]; exact hT'
-    have : 44 * (Dm : ℝ) ^ 2 / T * d < d := by nlinarith
-    rw [h0] at hcount'
-    simp at hcount'
-    linarith
-  · have : (1 - 44 * (Dm : ℝ) ^ 2 / T) * d = d - 44 * (Dm : ℝ) ^ 2 / T * d := by ring
-    rw [this]
-    linarith
 
-theorem rk_le_rq_add {large₂ : SizeData₂ D} {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyData X ka wL wF) {S : Scal B}
-    {CRm : ℝ} {T : ℕ} {c Ch Ah : ℝ} (hLat : LatAt B j ka) (hQ : G.TiedQ large₂ S CRm T c Ch Ah) :
-    X.rk ka (B.Mlat j ka) ≤ G.rq + finrank B.KO (WeightFamilies.MggK B CRm T c j ka) := by
-  have hsp : Submodule.span B.KO ((B.Mlat j ka : Set (B.Cusp j ka))) = ⊤ := hLat.span_eq_top
-  have hrk : X.rk ka (B.Mlat j ka) = finrank B.KO (B.Cusp j ka) := by
-    unfold PJ.rk; rw [hsp, finrank_top]
-  have hsup := hQ.2.2.1
-  have h1 := Submodule.finrank_sup_add_finrank_inf_eq
-    (Submodule.span B.KO (Set.range fun i => ((G.th i : B.Mlat j ka) : B.Cusp j ka))) (WeightFamilies.MggK B CRm T c j ka)
-  rw [hsup, finrank_top] at h1
-  have h2 : finrank B.KO (Submodule.span B.KO (Set.range fun i => ((G.th i : B.Mlat j ka) : B.Cusp j ka))) ≤ G.rq := by
-    have := finrank_range_le_card (R := B.KO) (b := fun i => ((G.th i : B.Mlat j ka) : B.Cusp j ka))
-    simpa [Set.finrank] using this
-  rw [hrk]
-  omega
 
 end Lem
 
@@ -150,10 +77,6 @@ theorem subsingleton_quotient_of_ideal_eq_top (h : Jid X la w = ⊤) (u : Weight
   rw [h, Submodule.top_smul]
   exact quot_top_sub
 
-theorem wK_sub (h : Jid X la w = ⊤) (u : WeightFamilies.Wt D j) (a : ℕ) : Subsingleton (WK X la w u a) := by
-  unfold WK
-  rw [h, Ideal.top_pow, Submodule.top_smul]
-  exact quot_top_sub
 
 theorem pts_empty (G : GlobalFamilyData X ka wL wF) (h : Jid X la G.w = ⊤) : IsEmpty (PtsG G la) := by
   have := osK_sub h
@@ -220,12 +143,6 @@ theorem heights_of (G : GlobalFamilyData X ka wL wF) (Qf : ∀ la, LocalPointDat
   · simp only [hN, zero_mul]; exact summable_zero
   · simp only [hN, zero_mul, tsum_zero, zero_div, hd, mul_zero, zero_mul, add_zero, le_refl]
 
-theorem inContainZ_of (G : GlobalFamilyData X ka wL wF) (la : HeightOneSpectrum (𝓞 B.KO)) (S : Scal B) (T : ℕ)
-    (h0 : Subsingleton (B.Cusp j (X.wF0 wL wF))) : InContainZ G la S T := by
-  refine Submodule.span_le.2 ?_
-  rintro v ⟨al, θ, -, -, rfl⟩
-  rw [Subsingleton.elim θ 0, map_zero, map_zero, mul_zero]
-  exact zero_mem _
 
 theorem inContainM_of (G : GlobalFamilyData X ka wL wF) (la : HeightOneSpectrum (𝓞 B.KO)) (CRm : ℝ) (T : ℕ) (c : ℝ)
     (hk : Subsingleton (B.Cusp j ka)) : InContainM G la CRm T c := by
@@ -260,7 +177,6 @@ instance wtACM (D : D7) (j : ℕ) : AddCommMonoid (WeightFamilies.Wt D j) where
   nsmul_zero _ := rfl
   nsmul_succ _ _ := rfl
 
-theorem wt_add_def (w w' : WeightFamilies.Wt D j) : w + w' = wadd w w' := rfl
 
 end Wt
 
@@ -550,12 +466,7 @@ variable {D : D7} {K : Type} [Field K] [NumberField K] (e : 𝓞 K ≃+* D.what�
   (h1 : j < D.R.m → P.rk dat = D.R.r) (h2 : j < D.R.m → P.jj dat = (D.R.sigW j).1)
   (hPt : ∀ p, Nonempty ((P.loc dat p).Pt (P.loc dat p).YY))
 
-theorem pjS_inc (w : WeightFamilies.Wt D j) (F : (provS D K e Sg).Cusp j w) :
-    (pjS e Sg hadd P j dat h1 h2 hPt).inc w F = AddMonoidAlgebra.single w (F : K) := rfl
 
-theorem pjS_vAt (la : HeightOneSpectrum (𝓞 K)) (y : (pjS e Sg hadd P j dat h1 h2 hPt).Pt la)
-    (F : (pjS e Sg hadd P j dat h1 h2 hPt).Forms) :
-    (pjS e Sg hadd P j dat h1 h2 hPt).vAt la y F = vE la (evS (D := D) (K := K) j F) := rfl
 
 theorem vAt_inc_oneS {w : WeightFamilies.Wt D j} (h : Sg j w) (la : HeightOneSpectrum (𝓞 K))
     (y : (pjS e Sg hadd P j dat h1 h2 hPt).Pt la) :
@@ -626,17 +537,6 @@ def CombHyps (large₂ : SizeData₂ D) (X : Prov D B P) (K : KAdm) (H : KHyp) (
   CombBound G S (cc D large₂ C2 A2 CR wL) nus ∧
   Heights Qf Gc PH Prw Pet
 
-theorem concl_of_combHyps (hP : Conclusion1OfComb (D := D) (B := B) (P := P)) {large₂ : SizeData₂ D} {X : Prov D B P} {K : KAdm}
-    {H : KHyp} {Ch Ah Cq Aq C2 A2 CR CT : ℝ} {j : ℕ} {h1 : 1 ≤ j} {h2 : j ≤ D.R.m} {S : Scal B}
-    {ka wL wF : WeightFamilies.Wt D j} {T nP nW : ℕ} {h0 : ℝ} {nus : HeightOneSpectrum (𝓞 B.KO) → ℝ}
-    {G : GlobalFamilyData (X j h1 h2) ka wL wF} {Gc PH Prw Pet Pd : ℝ} {Qf : ∀ la, LocalPointData G la}
-    (h : CombHyps large₂ X K H Ch Ah Cq Aq C2 A2 CR CT j h1 h2 S ka wL wF T nP nW h0 nus G Gc PH Prw Pet Pd Qf) :
-    Concl (X j h1 h2) S ka wL wF T nus
-      ((X j h1 h2).rk ka (B.Mlat j ka) * D.R.f * D.R.m * large₂.sc.b * large₂.de2) := by
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23,
-    a24, a25, a26⟩ := h
-  exact hP large₂ X K H Ch Ah Cq Aq C2 A2 CR CT j h1 h2 S ka wL wF T nP nW h0 nus a1 a2 a3 a4 a5 G Gc PH Prw Pet Pd Qf
-    a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26
 
 def lastP (D : D7) (j : ℕ) : Fin (D.R.sigW j).1 :=
   ⟨D.R.k + j - 1 - 1, by have := D.R.m_add_three_le_k; simp only [Ranks.sigW]; omega⟩
@@ -665,8 +565,6 @@ def SetCn (large₂ : SizeData₂ D) (B : WeightFamilies.Prov D) {j : ℕ} (CK C
   OPO large₂ B ∧
   DomAt D large₂ j nW C1
 
-theorem setC_of_setCn {large₂ : SizeData₂ D} {j : ℕ} {X : PJ D B P j} {CK C1 A1 : ℝ} {ka wL wF : WeightFamilies.Wt D j} {T nP nW : ℕ}
-    {h0 : ℝ} (h : SetCn large₂ B CK C1 ka wL wF T nP nW h0) : SetC large₂ X CK C1 A1 ka wL wF T nP nW h0 := h
 
 theorem L_nonneg' (large₂ : SizeData₂ D) : 0 ≤ large₂.sc.L := Real.rpow_nonneg (by linarith [large₂.sc.one_lt_alt]) _
 
@@ -1035,17 +933,6 @@ theorem exists_moduli_model_nonempty_points (D : D7) : ∃ P : ModuliIntegralCha
     fun r j h1 h2 => ⟨⟨(r, j), h1, h2⟩, rfl, rfl⟩
   exact ⟨P, fun j h1 _ => HasDat_of_full P hfull j h1, fun _ _ => ⟨()⟩⟩
 
-theorem combHyps_inhabited_of_num {D : D7} (K : Type) [Field K] [NumberField K] (e : 𝓞 K ≃+* D.what₂.O)
-    (τ0 : D.what₂.Tau) (large₂ : SizeData₂ D) (Kc : KAdm) (H : KHyp) (Ch Ah Cq Aq C2 A2 CR CT G0 PH Prw Pet Pd h0 : ℝ)
-    (ka wL wF : WeightFamilies.Wt D D.R.m) (T nP nW : ℕ)
-    (hN : NumRun large₂ (provS D K e (SgOf τ0 (wL.aP τ0 (lastP D D.R.m)) wL.n)) Kc H Ch Ah Cq Aq C2 A2 CR CT G0 PH Prw Pet Pd
-      ka wL wF T nP nW h0 τ0) :
-    ∃ (P : ModuliIntegralCharts.Prov D) (X : Prov D (provS D K e (SgOf τ0 (wL.aP τ0 (lastP D D.R.m)) wL.n)) P)
-      (S : Scal (provS D K e (SgOf τ0 (wL.aP τ0 (lastP D D.R.m)) wL.n)))
-      (G : GlobalFamilyData (X D.R.m (h1m D) le_rfl) ka wL wF) (Qf : ∀ la, LocalPointData G la),
-      CombHyps large₂ X Kc H Ch Ah Cq Aq C2 A2 CR CT D.R.m (h1m D) le_rfl S ka wL wF T nP nW h0 0 G G0 PH Prw Pet Pd Qf := by
-  obtain ⟨P, hP, hPt⟩ := exists_moduli_model_nonempty_points D
-  exact ⟨P, combHyps_inhabited K e P hP hPt τ0 large₂ Kc H Ch Ah Cq Aq C2 A2 CR CT G0 PH Prw Pet Pd h0 ka wL wF T nP nW hN⟩
 
 end P66Model
 

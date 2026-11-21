@@ -69,8 +69,6 @@ theorem sum_source :
 
 end Indicator
 
-theorem indicatorIdentity : IndicatorIdentity := fun _ _ _ _ _ _ _ _ _ q _ _ he Q x =>
-  ⟨sum_target q he Q x, sum_source q he Q x⟩
 
 theorem card_withKer (q : Unif k) (L : Submodule 𝒪[k] (n → k)) [L.IsLattice k] :
     (withKer L).card = (withLat L).card := by
@@ -236,36 +234,8 @@ theorem FFStar_KK {t : ℕ} (ht : Fintype.card n = Fintype.card n' + (t + 1)) (q
     exact sum_mem fun c _ => Submodule.smul_mem _ _ (dia_mem_EqForm _ hφ)
   rw [FFStar_eq_U_GsStar q χ h, FFStar_eq_U_GsStar q χ (KK_ram hμ hθ P₀ Q₀ hφ h), h1, U_KK hμ hθ P₀ Q₀ ht q h2]
 
-theorem scal_mul_scal (t : ℕ) : scal k t * scal k t = (resCard k : ℂ) ^ (t + 1) := by
-  rw [scal, ← sq, ← Complex.ofReal_pow, ← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg _)]
-  rw [show ((t : ℝ) + 1) / 2 * (2 : ℕ) = ((t + 1 : ℕ) : ℝ) by push_cast; ring, Real.rpow_natCast]
-  push_cast
-  rfl
 
-theorem FF_KK {t : ℕ} (ht : Fintype.card n = Fintype.card n' + (t + 1)) (q : Unif k) {χ : AddChar 𝓀[k] ℂ}
-    (hχ : χ ≠ 1) {φ : Form k n' V'} (hφ : φ ∈ EqForm π') (h : φ ∈ Mram k n' V') :
-    FF q χ (KK hμ hθ P₀ Q₀ φ) = scal k t • KK hμ hθ P₀ Q₀ (FF q χ φ) := by
-  have h1 := mem_ram (FF_dia q χ) h
-  have h2 := FF_mem_EqForm q χ hφ
-  have h3 := congrArg (FF q χ) (FFStar_KK hμ hθ P₀ Q₀ ht q χ h2 h1)
-  rw [FF_FFStar_ram q hχ (KK_ram hμ hθ P₀ Q₀ h2 h1), FFStar_FF_ram q hχ h, map_smul, map_smul, map_smul, ht,
-    pow_add, ← scal_mul_scal, smul_smul] at h3
-  have hs : scal k t ≠ 0 := fun h0 => by
-    have := scal_mul_scal (k := k) t
-    rw [h0, mul_zero] at this
-    exact pow_ne_zero _ resCard_ne_zero this.symm
-  refine smul_right_injective _ (mul_ne_zero hs (pow_ne_zero (Fintype.card n') (resCard_ne_zero (k := k)))) ?_
-  simp only
-  rw [← h3, smul_smul]
-  congr 1
-  ring
 
-theorem operatorRules : OperatorRules :=
-  fun _ _ _ _ _ _ _ _ _ _ _ _ ht q _ hψ _ hμ _ _ _ _ _ _ _ _ _ _ _ _ hθ P₀ Q₀ =>
-    ⟨fun φ => U_KK hμ hθ P₀ Q₀ ht q φ.2, fun s φ => KK_dia hμ hθ P₀ Q₀ s φ.2, fun φ h =>
-      ⟨KK_ram hμ hθ P₀ Q₀ φ.2 h, FF_KK hμ hθ P₀ Q₀ ht q (resChar_ne_one hψ q) φ.2 h,
-        FFStar_KK hμ hθ P₀ Q₀ ht q _ φ.2 h⟩⟩
 
-theorem kernelsCommute : KernelsCommute := ⟨indicatorIdentity, operatorRules⟩
 
 end GlobalTheory.KernelComm

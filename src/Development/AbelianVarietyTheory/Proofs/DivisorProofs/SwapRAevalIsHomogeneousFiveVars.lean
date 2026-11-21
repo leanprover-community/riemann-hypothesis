@@ -151,9 +151,6 @@ theorem aeval_swapSum {S : Type*} [CommRing S] [Algebra ℝ S] (d : ℕ) (a b : 
   rw [h2, ← h1]
   exact Finset.sum_congr rfl fun i _ => mul_comm _ _
 
-theorem swapSum_eq (d : ℕ) (a b : ℤ) : swapSum d a b =
-    ∑ i ∈ Finset.range (d + 3), (X 0 * X 1) ^ i * aeval ![X 0 + X 1, X 2] (swapR d a b i) := by
-  rw [← aeval_swapSum d a b X, aeval_X_left_apply]
 
 def swapP (d : ℕ) (a b : ℤ) : MvPolynomial (Fin 5) ℝ :=
   ∑ i ∈ Finset.range (d + 3), (∑ k ∈ Finset.range i, (X 3 * X 4) ^ k * (X 0 * (X 3 + X 4 - X 0)) ^ (i - 1 - k)) *
@@ -219,35 +216,12 @@ theorem aeval_fibPoly (m : ℕ) (a b : ℝ) :
   rw [intervalIntegral.integral_const_mul]
   ring
 
-theorem fibPoly_aeval_isHomogeneous (m : ℕ) :
-    (aeval ![X 0 + X 1, X 0 * X 1] (fibPoly m) : MvPolynomial (Fin 3) ℝ).IsHomogeneous (2 * m) := by
-  simp only [fibPoly, map_sum, map_mul, map_pow, aeval_C, aeval_X, Matrix.cons_val_zero, Matrix.cons_val_one,
-    Matrix.head_cons, algebraMap_eq]
-  refine IsHomogeneous.sum _ _ _ fun j hj => ?_
-  have hj := Finset.mem_range.1 hj
-  have h0 := isHomogeneous_X ℝ (0 : Fin 3)
-  have h1 := isHomogeneous_X ℝ (1 : Fin 3)
-  exact hom_cast (((isHomogeneous_C _ _).mul (isHomogeneous_C _ _)).mul
-    (((h0.add h1).pow (2 * j)).mul ((h0.mul h1).pow (m - j)))) (by omega)
 
 def swapG : ℕ → ℤ → ℤ → MvPolynomial (Fin 3) ℝ
   | 0, _, _ => 0
   | d + 1, a, b => C (1 / 2 : ℝ) * X 0 * ∑ i ∈ Finset.range (d + 3), ∑ k ∈ Finset.range i,
       (X 0 * X 1) ^ k * aeval ![X 0 + X 1, X 0 * X 1] (fibPoly (i - 1 - k)) * aeval ![X 0 + X 1, X 2] (swapR d a b i)
 
-theorem swapG_homog : Homog swapG := by
-  intro D a b
-  rcases D with _ | d
-  · exact isHomogeneous_zero _ _ _
-  · have h0 := isHomogeneous_X ℝ (0 : Fin 3)
-    have h1 := isHomogeneous_X ℝ (1 : Fin 3)
-    refine hom_cast (((isHomogeneous_C _ _).mul h0).mul (IsHomogeneous.sum _ _ d fun i _ =>
-      IsHomogeneous.sum _ _ d fun k hk => ?_)) (by omega)
-    have hk := Finset.mem_range.1 hk
-    have hR : (aeval ![X 0 + X 1, X 2] (swapR d a b i) : MvPolynomial (Fin 3) ℝ).IsHomogeneous (1 * (d + 2 - 2 * i)) :=
-      (swapR_isHomogeneous d a b i).aeval _ (Fin.forall_fin_two.2 ⟨h0.add h1, isHomogeneous_X ℝ 2⟩)
-    refine hom_mul_of (((h0.mul h1).pow k).mul (fibPoly_aeval_isHomogeneous (i - 1 - k))) hR fun h => ?_
-    rw [swapR_eq_zero d a b (by omega), map_zero]
 
 section Universal
 

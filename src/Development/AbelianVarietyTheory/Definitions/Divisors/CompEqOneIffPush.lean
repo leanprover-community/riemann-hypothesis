@@ -206,19 +206,6 @@ theorem existsUnique_close (i : Fin (n + 1)) {a : O} (ha : a ∈ 𝔴) :
     rwa [GrpObj.div_comp, div_eq_one] at h2
   exact ⟨g, hg, fun g' hg' => by rw [← cancel_epi (C.π i), hg, hg']⟩
 
-theorem exists_iso_last {ϖ : O} (h𝔴 : 𝔴 = Ideal.span {ϖ}) {e : ℕ} (hϖ : IsIsogDeg (ρ.act ϖ) e) :
-    ∃ g : C.B (Fin.last n) ≅ A, C.π (Fin.last n) ≫ g.hom = ρ.act ϖ := by
-  obtain ⟨g, hg, -⟩ := C.existsUnique_close (Fin.last n) (a := ϖ) (h𝔴 ▸ Ideal.subset_span rfl)
-  have := hϖ.fin; have := hϖ.flat; have := hϖ.surj; have := hϖ.epi
-  have := (C.π_deg (Fin.last n)).epi
-  have := (C.π_lin (Fin.last n)).hom
-  have := ρ.hom ϖ
-  obtain ⟨g', hg'⟩ := AbelianQuotient.exists_desc (ρ.act ϖ) (C.π (Fin.last n)) fun W x y e => by
-    have h1 : (x / y) ≫ ρ.act ϖ = 1 := by rw [GrpObj.div_comp, e, div_self']
-    have h2 := (C.ker_last W _).2 (h𝔴 ▸ (killedBy_span ρ {ϖ} _).2 fun a ha => by rw [ha]; exact h1)
-    rwa [GrpObj.div_comp, div_eq_one] at h2
-  exact ⟨⟨g, g', by rw [← cancel_epi (C.π (Fin.last n)), ← Category.assoc, hg, hg', Category.comp_id],
-    by rw [← cancel_epi (ρ.act ϖ), ← Category.assoc, hg', hg, Category.comp_id]⟩, hg⟩
 
 def connSteps {k : Type} [Field k] (x : Sp k ⟶ S) : Set (Fin n) :=
   {i | ∀ y : Over.mk x ⟶ C.B i.castSucc, y ≫ C.φ i = 1 → y = 1}

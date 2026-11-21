@@ -468,44 +468,11 @@ namespace GlobalTheory
 
 open SemiRigid
 
-theorem semiAbelian_rigidity :
-    (∀ (K : Type) [Field K] (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
-      (B : Over (Spec (CommRingCat.of K))) [GrpObj B], IsAbelianScheme B →
-      ∀ f : splitTorus (Spec (CommRingCat.of K)) X ⟶ B,
-        (∃ b : 𝟙_ _ ⟶ B, f = toUnit _ ≫ b) ∧ (IsMonHom f → f = toUnit _ ≫ η[B])) ∧
-    (∀ (K : Type) [Field K] (G H : Over (Spec (CommRingCat.of K))) [GrpObj G] [GrpObj H],
-      Nonempty (TorusExtension G) → Nonempty (TorusExtension H) →
-      (∀ f : G ⊗ G ⟶ H, lift (𝟙 G) (toUnit G ≫ η[G]) ≫ f = toUnit G ≫ η[H] →
-        lift (toUnit G ≫ η[G]) (𝟙 G) ≫ f = toUnit G ≫ η[H] → f = toUnit _ ≫ η[H]) ∧
-      ∀ φ : G ⟶ H, η[G] ≫ φ = η[H] → IsMonHom φ) ∧
-    (∀ (S : Scheme.{0}) [IsReduced S] (G H : Over S) [GrpObj G] [GrpObj H],
-      IsSemiAbelian G → IsSemiAbelian H →
-      (∀ f : G ⊗ G ⟶ H, lift (𝟙 G) (toUnit G ≫ η[G]) ≫ f = toUnit G ≫ η[H] →
-        lift (toUnit G ≫ η[G]) (𝟙 G) ≫ f = toUnit G ≫ η[H] → f = toUnit _ ≫ η[H]) ∧
-      ∀ φ : G ⟶ H, η[G] ≫ φ = η[H] → IsMonHom φ) ∧
-    (∀ (K : Type) [Field K] (G H : Over (Spec (CommRingCat.of K))) [GrpObj G] [GrpObj H]
-      (D : TorusExtension G) (E : TorusExtension H) (φ : G ⟶ H), IsMonHom φ →
-      letI := D.addCommGroup; letI := E.addCommGroup; letI := D.grpB; letI := E.grpB
-      (∃! α : splitTorus (Spec (CommRingCat.of K)) D.X ⟶ splitTorus (Spec (CommRingCat.of K)) E.X,
-        IsMonHom α ∧ α ≫ E.i = D.i ≫ φ) ∧
-      (∃! β : D.B ⟶ E.B, IsMonHom β ∧ D.q ≫ β = φ ≫ E.q)) := by
-  refine ⟨fun K _ X _ _ _ B _ hB f ↦ ?_, fun K _ G H _ _ ⟨D⟩ ⟨E⟩ ↦ ?_, fun S _ G H _ _ hG hH ↦ ?_,
-    fun K _ G H _ _ D E φ _ ↦ exists_torus_and_quotient_hom D E φ⟩
-  · have := hB.proper
-    exact ⟨⟨_, torus_const X B f⟩, fun _ ↦ torus_hom_eq_one X B f⟩
-  · exact ⟨square_eq_one D E, isMonHom_of_axes (square_eq_one D E)⟩
-  · exact ⟨family_square_eq_one hG hH, isMonHom_of_axes (family_square_eq_one hG hH)⟩
 
 theorem isMonHom_of_isSemiAbelian {S : Scheme.{0}} [IsReduced S] {G H : Over S} [GrpObj G]
     [GrpObj H] (hG : IsSemiAbelian G) (hH : IsSemiAbelian H) (φ : G ⟶ H) (hφ : η[G] ≫ φ = η[H]) :
     IsMonHom φ :=
   isMonHom_of_axes (family_square_eq_one hG hH) φ hφ
 
-theorem mul_eq_of_isSemiAbelian {S : Scheme.{0}} [IsReduced S] {G : Over S} (m₁ m₂ : GrpObj G)
-    (h₁ : @IsSemiAbelian S G m₁) (h₂ : @IsSemiAbelian S G m₂)
-    (h : m₁.toMonObj.one = m₂.toMonObj.one) : m₁.toMonObj.mul = m₂.toMonObj.mul := by
-  have := @IsMonHom.mul_hom _ _ _ G G m₁.toMonObj m₂.toMonObj (𝟙 G)
-    (@isMonHom_of_isSemiAbelian S _ G G m₁ m₂ h₁ h₂ (𝟙 G) ((Category.comp_id _).trans h))
-  simpa using this
 
 end GlobalTheory

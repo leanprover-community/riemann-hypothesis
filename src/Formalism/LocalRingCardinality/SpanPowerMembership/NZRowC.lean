@@ -155,37 +155,11 @@ section Gen
 
 variable {R : Ranks} (D : Rows.Data R)
 
-theorem recordBaseSubspace_top {μ} (he : D.eOp μ = LinearMap.id) : D.V0 μ = ⊤ := by
-  unfold Rows.Data.V0; rw [he]; exact LinearMap.range_id
 
-theorem rUsp_bot {μ} (he : D.eOp μ = LinearMap.id) (hi : Function.Injective (D.iota μ)) : D.Usp μ = ⊥ := by
-  unfold Rows.Data.Usp; rw [recordBaseSubspace_top D he, LinearMap.ker_eq_bot.mpr hi, inf_bot_eq]
 
-theorem rQsp_top {μ} (he : D.eOp μ = LinearMap.id) (hi : Function.Injective (D.iota μ)) : D.Qsp μ = ⊤ := by
-  unfold Rows.Data.Qsp; rw [recordBaseSubspace_top D he, rUsp_bot D he hi, Submodule.bot_orthogonal_eq_top, inf_top_eq]
 
-theorem buDefQ_of (he : D.eOp D.mu0 = LinearMap.id) (hi : Function.Bijective (D.iota D.mu0))
-    (h : ∀ u φ F, D.Bu u φ (D.iota D.mu0 F) = D.perCol u D.mu0 φ F) : Rows.BuDefQ D := by
-  intro u φ x
-  obtain ⟨F, rfl⟩ := hi.2 x
-  rw [D.sec_iota _ F (by rw [rQsp_top D he hi.1]; trivial), h]
 
 end Gen
 
-theorem rowsN_buDefQ {R : Ranks} (LL : Type) [Field LL] [NumberField LL] (embLL : LL →+* ℂ) (P : Rows.Places LL)
-    (Tau : Type) [Fintype Tau] (hTau : Fintype.card Tau = R.f) (Dst : ℝ)
-    (sha : ℕ → ℕ → ℚ) (hsha : ∀ l e, 0 ≤ sha l e) (cg : ℕ) (hcg : 0 < cg)
-    (kb : ∀ j, Tau → Fin (R.sigW j).1 → ℤ) (ks : ∀ j, Tau → Fin (R.sigW j).2 → ℤ)
-    (tw : P.Pl → Bool) (htw : ∀ w, tw (P.conj w) = tw w)
-    (Word : Type) (cI : Word → Type) [∀ u, Fintype (cI u)] (d Dall d0 : ℕ) (hd : d ≤ Dall)
-    (FT : Type) [Fintype FT] [DecidableEq FT] (ft : Fin d → FT) (ft0 : Fin d0 → FT)
-    (per : ∀ u : Word, Bool → EuclideanSpace ℂ (cI u) → En d → ℂ)
-    (eta : ℕ → P.Pl → ℚ) (heta : ∀ j w, 0 ≤ eta j w) :
-    Rows.BuDefQ (rowsN (R := R) LL embLL P Tau hTau Dst sha hsha cg hcg kb ks tw htw Word cI d Dall d0 hd FT ft ft0
-      per eta heta) := by
-  refine buDefQ_of _ rfl ?_ ?_
-  · rw [rowsN_iota]; exact Function.bijective_id
-  · intro u φ F
-    rw [rowsN_iota]; rfl
 
 end Formalism.BasicNotions.Examples₂.NZ

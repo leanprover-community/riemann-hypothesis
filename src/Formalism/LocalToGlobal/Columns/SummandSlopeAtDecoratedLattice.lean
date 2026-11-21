@@ -19,8 +19,6 @@ def formAt {V ι : Type} [AddCommGroup V] [Module K V] [Fintype ι] (b : Basis �
     (v : InfinitePlace K) (x y : V) : ℂ :=
   ∑ i, ∑ j, starRingEnd ℂ (v.embedding (b.repr x i)) * v.embedding (P (b i) (b j)) * v.embedding (b.repr y j)
 
-theorem GSD.pairAt_eq_formAt (S : GSD K) (v : InfinitePlace K) (x y : S.V) :
-    S.pairAt v x y = formAt S.bV S.pair v x y := rfl
 
 @[reducible] def GSD.valH (S : GSD K) (d : S.D) : HLat K := ofFormB S.bV (S.Del d) fun v => S.pairAt v
 
@@ -181,9 +179,6 @@ def MaxSlopeNablaSharpBound (K : Type) [Field K] [NumberField K] [StarRing K] {n
   (stdNabH K lam).muMax ≤ (wt (plus (castW h lam)) : ℝ) * Real.log ((κ : ℝ) + 1)
     + ((κ : ℝ) + 1) * (κ : ℝ) / 2 * Real.log ((plus (castW h lam) 0 : ℝ) + (κ : ℝ) + 1)
 
-theorem brz_plus_nonneg {κ : ℕ} (lam : Fin (κ + 1) → ℤ) (hl : Antitone lam) (i : Fin (κ + 1)) : 0 ≤ plus lam i := by
-  unfold plus
-  exact sub_nonneg.2 (hl (Fin.le_last i))
 
 def StdWeylSlopes : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] [StarRing K] [IsTotallyComplex K] (n κ : ℕ) (h : κ + 1 = n) (lam : DomWeight n),

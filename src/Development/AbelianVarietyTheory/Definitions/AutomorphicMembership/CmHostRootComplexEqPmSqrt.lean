@@ -79,13 +79,6 @@ theorem IsHoriz.support_eq {T : TorModel Y} (h : IsHoriz T) :
     (T.BD.idealSheaf.support : Set T.Z.X) = closure (genι T.Z '' (genBd T.Z : Set (gen T.Z))) :=
   h.antisymm (closure_minimal (by rintro _ ⟨x, hx, rfl⟩; exact T.BD_pos x hx) T.BD.idealSheaf.support.isClosed)
 
-theorem IsStable.levelActs {T : TorModel Y} (h : IsStable T) : T.Z.LevelActs := by
-  intro r ν _ _ hr _ _
-  have e : ∀ (R : Type) [CommRing R], spMap (RingEquiv.refl R).toRingHom = 𝟙 _ := fun R _ =>
-    Spec.map_id (CommRingCat.of R)
-  obtain ⟨ρ, mu, h1, h2, h3, -⟩ := h (RingEquiv.refl _) (RingEquiv.refl _) (RingEquiv.refl _) r
-    ((TwMap.reflEquiv _ _ _).symm ν) rfl (fun _ _ => rfl) (fun _ => rfl) (by rw [e, Category.comp_id, hr])
-  exact ⟨ρ, TwMap.reflEquiv _ _ _ mu, by rw [h1, e, Category.comp_id], h2, h3⟩
 
 theorem IsRecTor.isLB_detOm {T : TorModel Y} (h : IsRecTor T) : (GlobalTheory.FlagMod.detOm T.Z).IsLB := by
   refine GlobalTheory.CechPic.isLB_dual (GlobalTheory.FlagMod.isLB_of_ev _ (eq_top_iff.2 fun x _ => ?_)
@@ -121,8 +114,6 @@ structure Sys (Xo : ∀ l : Level H, Moduli Dw l) : Type 1 where
   clauses : ∀ p W hp hW, N2 (Y p W hp hW) ∧
     ∀ i, (Y p W hp hW i).SplitFibres ∧ (Y p W hp hW i).N3 ∧ (Y p W hp hW i).N4
 
-theorem nonempty_sys (h : 1 ≤ Dw.p + Dw.q) (Xo : ∀ l : Level H, Moduli Dw l) : Nonempty (Sys Xo) :=
-  (GlobalTheory.T.compactifiedModuli_partOne.2 E H Dw h Xo).elim fun Y hY => ⟨⟨Y, hY.1⟩⟩
 
 structure TorSys {Xo : ∀ l : Level H, Moduli Dw l} (s : Sys Xo) : Type 1 where
 
@@ -508,19 +499,10 @@ theorem cs_le (κ : Lv A) : F.cs.F ≤ κ.c.F := by
 def Ts (N j : ℕ) (hN : 2 ≤ N) (hj : j ≤ N) : TorModel ((F.sig N j hN hj).tor.Ygl F.κg.l F.cs F.κg.good) :=
   (F.sig N j hN hj).tor.T F.κg.l F.cs F.κg.good
 
-theorem trans_Ts (N j : ℕ) (hN : 2 ≤ N) (hj : j ≤ N) (κ : Lv A) (h : F.κg.l.Dvd κ.l) (b : 𝓞 F.cs.F →+* 𝓞 κ.c.F)
-    (hb : ∀ x, (((b x : 𝓞 κ.c.F) : κ.c.F) : ℂ) = ((x : F.cs.F) : ℂ)) :
-    IsTorTrans (F.Ts N j hN hj) (F.src N j hN hj κ).T b :=
-  (F.sig N j hN hj).tor.trans _ _ _ _ _ _ b h hb
 
 def Upar (j : ℕ) (σ : F.par.c.F →+* ℂ) : Unf (F.par.Xo j) F.par.c σ D.R.r :=
   { Comp := ((F.Us j).U σ).Comp, fin := ((F.Us j).U σ).fin, X := ((F.Us j).U σ).X, un := ((F.Us j).U σ).un }
 
-theorem upar_spec (j : ℕ) (σ : F.par.c.F →+* ℂ) (hσ : GoodEmb F.par.c σ) :
-    IsUnf (F.Upar j σ) ∧ ∀ k (τ : D.host.E →+* ℂ), ‖τ ((F.Upar j σ).X k).ξ0‖ = xiR D := by
-  refine ⟨((F.Us j).unf (one_le_two.trans (Formalism.L2.Geo.two_le_r D)) σ hσ).1, fun k τ => ?_⟩
-  have : ((F.Upar j σ).X k).ξ0 = -D.host.xi0 := (F.Us j).xi_eq σ k
-  rw [this, map_neg, norm_neg, norm_embedding_xi_zero]
 
 end SrcFam
 

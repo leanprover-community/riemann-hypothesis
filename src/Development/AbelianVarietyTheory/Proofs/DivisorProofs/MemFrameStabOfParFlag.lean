@@ -51,39 +51,5 @@ theorem scales_inv {x : Matrix (Fin n) (Fin 1) E} {p : GAd σ J} {l : (AF F ⊗[
     Matrix.mul_smul, smul_smul, Units.inv_mul, one_smul] at this
   exact this.symm
 
-theorem levi_dec_line : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (r : ℕ) (X Y : Matrix (Fin n) (Fin (r + 1)) E), IsCMExt F E σ → IsHermND σ J → IsWittFrame σ J X Y → ∀ p l, Scales σ J (col X) p l → ∃ u ∈ unipRad σ J (col X), ∃ m ∈ levi σ J X Y {0}, p = u * m ∧ Scales σ J (col X) m l ∧ (p ∈ ratPts σ J → m ∈ ratPts σ J) ∧ (absE F E l = 1 → m ∈ leviOne σ J X Y {0}) := by
-  intro F E _ _ _ _ _ σ n J r X Y h hJ hW p l hp
-  have sub : ∀ A B : Matrix (Fin n) (Fin (r + 1)) E, Formalism.UG.cT (σ : E →+* E) (col A) * J * col B =
-      (Formalism.UG.cT (σ : E →+* E) A * J * B).submatrix (fun _ => 0) fun _ => 0 := fun A B => rfl
-  have one : (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) E).submatrix (fun _ : Fin 1 => 0) (fun _ : Fin 1 => 0) = 1 :=
-    Matrix.ext fun i j => by obtain rfl := Subsingleton.elim i j; simp
-  have xy : Formalism.UG.cT (σ : E →+* E) (col X) * J * col Y = 1 := by rw [sub, hW.xy, one]
-  have yx' : Formalism.UG.cT (σ : E →+* E) (col Y) * J * col X = 1 := by rw [sub, yx h hJ hW, one]
-  have sc : ∀ {g : GAd σ J} {l : (AF F ⊗[F] E)ˣ}, Scales σ J (col X) g l →
-      (matHom _ σ J g).1 * adMat F (col X) = adMat F (col X) * (l.1 • (1 : Matrix (Fin 1) (Fin 1) (AF F ⊗[F] E))) :=
-    fun e => by rw [Matrix.mul_smul, Matrix.mul_one]; exact e
-  have hpF : p ∈ GlobalTheory.UAut.parFlag σ J (col X) fun _ => 0 :=
-    ⟨⟨_, fun _ _ hlt => absurd hlt (lt_irrefl _), sc hp⟩, _, fun _ _ hlt => absurd hlt (lt_irrefl _), sc (scales_inv hp)⟩
-  obtain ⟨u, hu, m, hmF, hpm, hr⟩ := (GlobalTheory.LeviFlag.levi_decomposition F E σ h n J hJ 1 (col X) (col Y) (fun _ => 0)
-    (by rw [sub, hW.xx]; rfl) (by rw [sub, hW.yy]; rfl) xy).1 p hpF
-  rw [GlobalTheory.UAut.unipFlag_const] at hu
-  have hm : m ∈ levi σ J X Y {0} := by
-    simp only [levi, Subgroup.mem_iInf, Finset.mem_singleton]
-    rintro k rfl
-    rw [initCols_zero, initCols_zero]
-    exact ⟨mem_frameStab_of_parFlag yx' hmF.1, mem_frameStab_of_parFlag xy hmF.2⟩
-  have hml : Scales σ J (col X) m l := by
-    have e : m = u⁻¹ * p := by rw [hpm, inv_mul_cancel_left]
-    have hp' : (matHom _ σ J p).1 * adMat F (col X) = l.1 • adMat F (col X) := hp
-    unfold Scales
-    rw [e, map_mul, Units.val_mul, Matrix.mul_assoc, hp', Matrix.mul_smul, unipRad_fix (inv_mem hu)]
-  refine ⟨u, hu, m, hm, hpm, hml, hr, fun hl => Subgroup.mem_inf.2 ⟨hm, ?_⟩⟩
-  simp only [Subgroup.mem_iInf, Finset.mem_singleton]
-  rintro k rfl
-  rw [initCols_zero]
-  let B : GL (Fin 1) (AF F ⊗[F] E) := ⟨l.1 • 1, (l⁻¹).1 • 1, by simp [smul_smul], by simp [smul_smul]⟩
-  refine ⟨B, ?_, sc hml⟩
-  have e : Matrix.GeneralLinearGroup.det B = l := Units.ext (by simp [B])
-  exact (congrArg (absE F E) e).trans hl
 
 end GlobalTheory.ResLineLevi

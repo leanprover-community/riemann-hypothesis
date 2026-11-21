@@ -43,15 +43,8 @@ theorem class_mass_of_genus_classes (hM : PI.UJClassMass2.UJClassMass) (D : D7) 
 theorem classMass_of_steps (hG : ClassSteps.LatGenus) (hS : PI.UnitaryGroupMassFormula.UJClassMass.SurjStep) (D : D7) : ClassMass D :=
   class_mass_of_genus_classes (ClassSteps.uJClassMass_of_genus hG hS) D
 
-theorem defClassDecomp_of_UJ (hM : PI.UJClassMass2.UJClassMass) (D : D7) : DefClassDecomp D :=
-  defClassDecomp_of_rest D (defClassRest_of D (class_number_finite D) (class_mass_of_genus_classes hM D))
 
-theorem volume_mass_of_genus_classes (D : D7) (hT : VolTie D) (hG : GenusMassStd D) (hM : PI.UJClassMass2.UJClassMass) :
-    DefiniteVolumeEqMass D :=
-  volume_mass_of_class_items D hT hG (class_number_finite D) (class_mass_of_genus_classes hM D)
 
-theorem Link2_of_UJ (hM : PI.UJClassMass2.UJClassMass) : Link2 :=
-  Link2_of_items (fun _ _ _ _ => class_number_finite _) (fun _ _ _ _ => class_mass_of_genus_classes hM _)
 
 theorem isIntegralLat_of_unimod {E : Type} [Field E] [NumberField E] [StarRing E] (W : HSpace E) :
     Formalism.HermitianLatticesTheory.IsIntegralLat W.hT W.L0 := by

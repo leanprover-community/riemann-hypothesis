@@ -74,26 +74,7 @@ theorem exists_weyl : ∃ g : G D n, mat g = blk4 0 1 (-1) 0 := by
   · simp [submatrix_fromBlocks_mul, block_matrix_one]
   · simp [adelicConjTranspose_blockMatrixTwoByTwoFin, submatrix_fromBlocks_mul, adj_zero, adj_one, adj_neg]
 
-theorem weyl_unip_cube {R : Type} [CommRing R] :
-    (blk4 0 1 (-1) 0 * blk4 1 1 0 1 : Matrix (Fin (n + n)) (Fin (n + n)) R) ^ 3 = 1 := by
-  simp [pow_succ, submatrix_fromBlocks_mul, block_matrix_one]
 
-theorem isWeilSch_rank_zero (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (V : HSp D) (hV : V.rank = 0)
-    (μ : Measure (Mx D V.rank n)) (𝓕 : Set (Mx D V.rank n)) (hμ : IsCovolOne (ratMx D V.rank n) μ 𝓕) :
-    IsWeilSch ψ 1 θ V μ 1 := by
-  have hs : Subsingleton (Mx D V.rank n) := ⟨fun x y => by ext i; exact absurd i.2 (by omega)⟩
-  have hi : ∀ x y : Mx D V.rank n, inner V x y = 0 := fun x y => by
-    rw [Subsingleton.elim x 0, StdUnn.inner, adj_zero, Matrix.zero_mul]
-  have hu : μ Set.univ = 1 := by
-    rcases 𝓕.eq_empty_or_nonempty with h | h
-    · have := hμ.2.2; simp [h] at this
-    · rw [← hμ.2.2, Subsingleton.eq_univ_of_nonempty h]
-  refine ⟨fun g a _ Φ x => ?_, fun g b _ Φ x => ?_, fun g _ Φ x => ?_⟩
-  · simpa [npow, hV] using congrArg Φ.1 (Subsingleton.elim _ _)
-  · simp [hi, halfTr]
-  · simp only [hi, Matrix.trace_zero, map_zero, AddChar.map_zero_eq_one, mul_one]
-    rw [integral_congr_ae (g := fun _ => Φ.1 x) (.of_forall fun y => by rw [Subsingleton.elim y x])]
-    simp [Measure.real, hu]
 
 theorem lower_eq_zero {p : G D n} (hp : p ∈ P D n) (i j : Fin n) :
     mat p (finSumFinEquiv (.inr i)) (finSumFinEquiv (.inl j)) = 0 := by

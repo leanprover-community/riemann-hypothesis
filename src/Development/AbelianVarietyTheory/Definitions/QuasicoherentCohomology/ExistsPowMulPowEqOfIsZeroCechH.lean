@@ -24,8 +24,6 @@ def sectionsPresheafMap {F G : X.Modules} (φ : F ⟶ G) :
   naturality _ _ i := ModuleCat.hom_ext (LinearMap.ext fun x =>
     (sectionsOn.res_map R φ i.unop.le x).symm)
 
-theorem presheafRes_sectionsPresheaf (F : X.Modules) {W W' : X.Opens} (h : W' ≤ W) :
-    presheafRes (sectionsPresheaf R F) h = sectionsOn.res R F h := rfl
 
 theorem isSheaf_sectionsPresheaf (F : X.Modules) :
     Presheaf.IsSheaf (Opens.grothendieckTopology X) (sectionsPresheaf R F) :=
@@ -57,16 +55,9 @@ variable (F : X.Modules) {G H : X.Modules} (V : X.Opens) (U : ι → X.Opens)
 
 def cechCube : Cube.{u} ι R := presheafCube (sectionsPresheaf R F) V U
 
-theorem cechCube_def : cechCube R F V U = presheafCube (sectionsPresheaf R F) V U := rfl
 
-theorem cechCube_obj (s : Finset ι) :
-    (cechCube R F V U).obj s = ModuleCat.of R (sectionsOn F (V ⊓ ⨅ i ∈ s, U i)) := rfl
 
-theorem cechCube_obj' (s : Finset ι) :
-    (cechCube R F V U).obj s = ModuleCat.of R (sectionsOn F (cechOpen V U s)) := rfl
 
-theorem res_cechCube {s t : Finset ι} (h : s ⊆ t) :
-    Cube.res (cechCube R F V U) h = sectionsOn.res R F (cechOpen_anti V U h) := rfl
 
 variable {F} in
 
@@ -89,14 +80,10 @@ def cechCubeFunctor : X.Modules ⥤ Cube.{u} ι R where
 instance cechCubeFunctor_additive : (cechCubeFunctor R V U).Additive where
   map_add := rfl
 
-theorem cechCubeMap_smulHom (r : R) :
-    cechCubeMap R V U (smulHom F (algebraMap R Γ(X, ⊤) r)) = r • 𝟙 (cechCube R F V U) := rfl
 
 def cechCubeEmptyEquiv : sectionsOn F V ≃ₗ[R] (cechCube R F V U).obj ∅ :=
   presheafCubeEmptyEquiv (sectionsPresheaf R F) V U
 
-theorem cechCubeEmptyEquiv_apply (x : sectionsOn F V) :
-    cechCubeEmptyEquiv R F V U x = sectionsOn.res R F (cechOpen_le V U ∅) x := rfl
 
 variable {V U} in
 
@@ -231,8 +218,6 @@ theorem cechModulesFunctor_shortExact (S : ShortComplex X.Modules)
   cechFunctor_shortExact (S.map (cechCubeFunctor R V U)) fun s hs =>
     ModuleCat.shortComplex_shortExact _ (h s hs).2.1 (h s hs).1 (h s hs).2.2
 
-theorem isZero_cech_X [Fintype ι] {n : ℕ} (h : Fintype.card ι ≤ n) :
-    IsZero ((cech R F V U).X n) := isZero_cechComplex_X _ h
 
 theorem isZero_cechH [Fintype ι] {n : ℕ} (h : Fintype.card ι ≤ n) :
     IsZero (cechH R F V U n) := isZero_cechComplex_homology _ h
@@ -269,9 +254,6 @@ theorem d_cechRestrictions (x : sectionsOn F V) :
 
 def toCechH : sectionsOn F V →ₗ[R] cechH R F V U 0 := presheafToCechH (sectionsPresheaf R F) V U
 
-theorem toCechH_apply (x : sectionsOn F V) : toCechH R F V U x =
-    cechClass (cechCube R F V U) 0 ⟨cechRestrictions R F V U x, d_cechRestrictions R F V U x⟩ :=
-  presheafToCechH_apply (sectionsPresheaf R F) V U x
 
 variable {F} in
 
@@ -390,12 +372,7 @@ def cechHScalarsEquiv (n : ℕ) : cechH R F V U n ≃+ cechH S F V U n :=
   AddEquiv.ofBijective ((cechCubeScalars R F V U S).homology n).toAddMonoidHom
     ((cechCubeScalars R F V U S).homology_bijective (fun _ _ => Function.bijective_id) n)
 
-theorem cechHScalarsEquiv_apply (n : ℕ) (x : cechH R F V U n) :
-    cechHScalarsEquiv R F V U S n x = (cechCubeScalars R F V U S).homology n x := rfl
 
-theorem cechHScalarsEquiv_smul (n : ℕ) (r : R) (x : cechH R F V U n) :
-    cechHScalarsEquiv R F V U S n (r • x) = algebraMap R S r • cechHScalarsEquiv R F V U S n x :=
-  map_smulₛₗ ((cechCubeScalars R F V U S).homology n) r x
 
 variable {F} in
 
@@ -409,8 +386,6 @@ def cechAbHEquiv (n : ℕ) : cechAbH F.presheaf V U n ≃+ cechH R F V U n :=
   AddEquiv.ofBijective ((cechAbCubeToCube R F V U).homology n).toAddMonoidHom
     ((cechAbCubeToCube R F V U).homology_bijective (fun _ _ => Function.bijective_id) n)
 
-theorem cechAbHEquiv_apply (n : ℕ) (x : cechAbH F.presheaf V U n) :
-    cechAbHEquiv R F V U n x = (cechAbCubeToCube R F V U).homology n x := rfl
 
 variable {F} in
 
@@ -420,10 +395,6 @@ theorem cechAbHEquiv_map (φ : F ⟶ G) (n : ℕ) (x : cechAbH F.presheaf V U n)
   (cechAbCubeToCube R F V U).homology_naturality (cechAbCubeToCube R G V U)
     (cechAbCubeMap V U φ.mapPresheaf) (cechCubeMap R V U φ) (fun _ _ _ => rfl) n x
 
-theorem smul_cechAbHEquiv (r : R) (n : ℕ) (x : cechAbH F.presheaf V U n) :
-    r • cechAbHEquiv R F V U n x = cechAbHEquiv R F V U n
-      ((cechAbHMap V U (smulHom F (algebraMap R Γ(X, ⊤) r)).mapPresheaf n).hom x) := by
-  rw [cechAbHEquiv_map, cechHMap_smulHom_apply]
 
 theorem cechAbHEquiv_toCechAbH (x : sectionsOn F V) :
     cechAbHEquiv R F V U 0 (toCechAbH F.presheaf V U (sectionsOn.toΓ F V x)) =
@@ -477,9 +448,6 @@ def cechCubeMapOver :
       ((sectionsOn.res_res S G _ _ _).trans
         (sectionsOn.res_res S G _ (cechOpen_anti _ _ h) _).symm)
 
-theorem cechCubeMapOver_app (s : Finset ι) (x : sectionsOn F (cechOpen V U s)) :
-    (cechCubeMapOver V U hσ φ).app s x = sectionsOn.res S G (preimage_cechOpen g V U s).ge
-      (sectionsOn.mapOver hσ φ (cechOpen V U s) x) := rfl
 
 theorem cechCubeMapOver_id_bijective (s : Finset ι) : Function.Bijective
     ((cechCubeMapOver V U hσ (𝟙 ((Scheme.Modules.pushforward g).obj G))).app s) :=
@@ -496,10 +464,6 @@ def cechCubePushforwardIso : cechCube R ((Scheme.Modules.pushforward g).obj G) V
     (cechCubeMapOver_id_bijective (σ := RingHom.id R) V U hg s))
     (cechCubeMapOver (σ := RingHom.id R) V U hg (𝟙 _)).app_res
 
-theorem cechCubePushforwardIso_hom_app_apply (s : Finset ι)
-    (x : sectionsOn G (g ⁻¹ᵁ cechOpen V U s)) :
-    ((cechCubePushforwardIso V U G hg).hom.app s).hom x =
-      sectionsOn.res R G (preimage_cechOpen g V U s).ge x := rfl
 
 @[reassoc]
 theorem cechCubePushforwardIso_naturality {G' : Y.Modules} (ψ : G ⟶ G') :
@@ -544,14 +508,7 @@ theorem cechTwo_d (x : (cech R F V U).X 0) :
     ((sectionsOn.res_res R F _ _ _).trans
       (sectionsOn.res_res R F (cechOpen_singleton V U 0).ge _ _).symm)
 
-theorem cechTwoXZero_cechRestrictions (x : sectionsOn F V) :
-    cechTwoXZero R F V U (cechRestrictions R F V U x) =
-      (sectionsOn.res R F inf_le_left x, sectionsOn.res R F inf_le_left x) :=
-  Prod.ext (sectionsOn.res_res R F _ (cechOpen_singleton V U 0).ge x)
-    (sectionsOn.res_res R F _ (cechOpen_singleton V U 1).ge x)
 
-theorem isZero_cechTwo_X {n : ℕ} (h : 2 ≤ n) : IsZero ((cech R F V U).X n) :=
-  isZero_cech_X R F V U (by rwa [Fintype.card_fin])
 
 theorem isZero_cechH_one_iff_surjective :
     IsZero (cechH R F V U 1) ↔ Function.Surjective ((cech R F V U).d 0 1).hom := by
@@ -576,8 +533,6 @@ theorem res_tildeToSections {W W' : (Spec A).Opens} (h : W' ≤ W) (m : M) :
 
 def basicOpenFamily (f : ι → A) : ι → (Spec A).Opens := fun i => PrimeSpectrum.basicOpen (f i)
 
-theorem basicOpenFamily_apply (f : ι → A) (i : ι) :
-    basicOpenFamily f i = PrimeSpectrum.basicOpen (f i) := rfl
 
 theorem isLocalizedModule_tildeToSections (f : A) {W : (Spec A).Opens}
     (h : W = PrimeSpectrum.basicOpen f) : IsLocalizedModule.Away f (tildeToSections M W) := by
@@ -626,10 +581,6 @@ def cechHZeroTildeEquiv [LinearOrder ι] {f : ι → A} (hf : Ideal.span (Set.ra
   cechHZeroEquiv A (tilde M) ((iSup_basicOpenFamily_eq_top_iff f).2 hf).ge ≪≫ₗ
     sectionsOn.specEquiv (tilde M) ⊤ ≪≫ₗ (tilde.isoTop M).toLinearEquiv.symm
 
-theorem cechHZeroTildeEquiv_symm_apply [LinearOrder ι] {f : ι → A}
-    (hf : Ideal.span (Set.range f) = ⊤) (m : M) :
-    (cechHZeroTildeEquiv M hf).symm m =
-      toCechH A (tilde M) ⊤ (basicOpenFamily f) (tildeToSections M ⊤ m) := rfl
 
 def awayTransition {a b : A} (h : a ∣ b) :
     LocalizedModule (.powers a) M →ₗ[A] LocalizedModule (.powers b) M :=
@@ -669,9 +620,7 @@ variable (f g : A)
 
 abbrev twoCharts : Fin 2 → (Spec A).Opens := basicOpenFamily ![f, g]
 
-theorem twoCharts_zero : twoCharts f g 0 = PrimeSpectrum.basicOpen f := rfl
 
-theorem twoCharts_one : twoCharts f g 1 = PrimeSpectrum.basicOpen g := rfl
 
 theorem twoCharts_inf : ⊤ ⊓ (twoCharts f g 0 ⊓ twoCharts f g 1) = PrimeSpectrum.basicOpen (f * g) :=
   (top_inf_eq _).trans (PrimeSpectrum.basicOpen_mul f g).symm
@@ -694,11 +643,6 @@ theorem twoCharts_d (x : (cech A (tilde M) ⊤ (twoCharts f g)).X 0) :
       (sectionsAwayEquiv_res M _ (top_inf_eq _) _ _ _)
       (sectionsAwayEquiv_res M _ (top_inf_eq _) _ _ _)))
 
-theorem twoChartsXZero_cechRestrictions (m : M) :
-    twoChartsXZero M f g (cechRestrictions A (tilde M) ⊤ (twoCharts f g) (tildeToSections M ⊤ m)) =
-      (LocalizedModule.mk m 1, LocalizedModule.mk m 1) :=
-  Prod.ext (sectionsAwayEquiv_tildeToSections M f (top_inf_eq _) m)
-    (sectionsAwayEquiv_tildeToSections M g (top_inf_eq _) m)
 
 theorem isZero_cechH_twoCharts_one_iff : IsZero (cechH A (tilde M) ⊤ (twoCharts f g) 1) ↔
     ∀ z, ∃ a b, awayTransition M (dvd_mul_left g f) b - awayTransition M (dvd_mul_right f g) a =
@@ -718,8 +662,6 @@ theorem span_range_pair_one_sub : Ideal.span (Set.range ![f, 1 - f]) = ⊤ :=
     simpa using Ideal.add_mem _ (Ideal.subset_span (s := Set.range ![f, 1 - f]) ⟨0, rfl⟩)
       (Ideal.subset_span ⟨1, rfl⟩))
 
-theorem iSup_twoCharts_one_sub : ⨆ i, twoCharts f (1 - f) i = ⊤ :=
-  (iSup_basicOpenFamily_eq_top_iff _).2 (span_range_pair_one_sub f)
 
 def cechHZeroTwoChartsEquiv : cechH A (tilde M) ⊤ (twoCharts f (1 - f)) 0 ≃ₗ[A] M :=
   cechHZeroTildeEquiv M (span_range_pair_one_sub f)

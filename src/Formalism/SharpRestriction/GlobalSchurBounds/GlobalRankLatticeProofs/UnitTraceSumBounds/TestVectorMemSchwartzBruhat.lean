@@ -79,10 +79,5 @@ theorem okp_zero : (0 : ℂ_[p] × ℂ_[p]) ∈ OKp D lam := by
   refine ⟨0, ?_⟩
   simp [tauK, tauKc, h0]
 
-theorem okp_hP {ι : Type} [Fintype ι] (x y : ι → ℂ_[p] × ℂ_[p]) (hx : InOKp D lam x) (hy : InOKp D lam y) :
-    hP x y ∈ OKp D lam := by
-  show (∑ k, x k * (y k).swap) ∈ OKp D lam
-  exact Finset.sum_induction _ (· ∈ OKp D lam) (fun a b ha hb => okp_add D lam a b ha hb)
-    (okp_zero D lam) (fun k _ => okp_mul D lam _ _ (hx k) (okp_swap D lam _ (hy k)))
 
 end Formalism.MainNotions.Ext

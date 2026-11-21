@@ -43,30 +43,8 @@ def BlockSystem.degree (S : BlockSystem dim n) : ℕ :=
 def IsBlockPolynomial (P : MvPolynomial (Letter dim n) ℂ) (D : ℕ) : Prop :=
   ∃ S : BlockSystem dim n, S.poly = P ∧ S.degree = D
 
-theorem Block.isHomogeneous_entry (B : Block dim n) (a b : Fin B.size) :
-    (B.entry a b).IsHomogeneous 1 := by
-  unfold Block.entry
-  refine MvPolynomial.IsHomogeneous.sum _ _ _ fun k _ => ?_
-  simpa using (MvPolynomial.isHomogeneous_C _ (B.vec a k)).mul
-    (MvPolynomial.isHomogeneous_X ℂ ((B.col b, ⟨B.emb, k⟩) : Letter dim n))
 
-theorem Block.isHomogeneous_poly (B : Block dim n) :
-    B.poly.IsHomogeneous (B.size * B.expo) := by
-  unfold Block.poly
-  refine MvPolynomial.IsHomogeneous.pow ?_ _
-  rw [Matrix.det_apply']
-  refine MvPolynomial.IsHomogeneous.sum _ _ _ fun σ _ => ?_
-  have h1 : (∏ i, (Matrix.of fun a b => B.entry a b) (σ i) i).IsHomogeneous
-      (∑ _i : Fin B.size, 1) :=
-    MvPolynomial.IsHomogeneous.prod _ _ _ fun i _ => B.isHomogeneous_entry _ _
-  have h2 : (((Equiv.Perm.sign σ : ℤ) : MvPolynomial (Letter dim n) ℂ)).IsHomogeneous 0 := by
-    have := MvPolynomial.isHomogeneous_C (Letter dim n) (((Equiv.Perm.sign σ : ℤ) : ℂ))
-    simpa using this
-  simpa using h2.mul h1
 
-theorem BlockSystem.isHomogeneous_poly (S : BlockSystem dim n) :
-    S.poly.IsHomogeneous S.degree :=
-  MvPolynomial.IsHomogeneous.prod _ _ _ fun j _ => (S.block j).isHomogeneous_poly
 
 def exampleBlock : Block (fun _ : Fin 2 => 2) 3 where
   emb := 0
@@ -285,13 +263,6 @@ def pThirteenMin (f n m : ℕ) : ℝ := 16200 * Real.pi * n * (m : ℝ) ^ 4 * (d
 
 def cCoeff (rd PP : ℝ) (D q : ℕ) : ℝ := bigR rd * PP * (D : ℝ) ^ 2 / q
 
-theorem exp_pTwo (f m : ℕ) : Real.exp (pTwo f m) = 2 * (3 * (dStar f m : ℝ)) ^ dStar f m := by
-  unfold pTwo
-  refine Real.exp_log ?_
-  rcases Nat.eq_zero_or_pos (dStar f m) with h | h
-  · simp [h]
-  · have : (0 : ℝ) < dStar f m := by exact_mod_cast h
-    positivity
 
 def jetBound (f r : ℕ) (rd : ℝ) (D n q : ℕ) (R₀ : ℝ) (m : ℕ) (la : Set.Ioi (0 : ℝ)) : ℝ :=
   ((4 : ℝ) ^ n)⁻¹ * ((6 * (2 * (dStar f m : ℝ)) ^ ((dStar f m : ℝ) / 2)) ^ n)⁻¹ *
@@ -314,13 +285,6 @@ def pTwo : ℝ := WordBlockPolynomials.pTwo f P.m
 
 def pThree : ℝ := WordBlockPolynomials.pThree f r P.q P.m
 
-theorem jetBound_pos (la : Set.Ioi (0 : ℝ)) : 0 < P.jetBound la := by
-  have hf : 1 ≤ f := le_trans (Nat.one_le_pow _ _ P.one_le_m) P.m_pow_le
-  have hd : (0 : ℝ) < dStar f P.m := by
-    have := P.one_le_m
-    exact_mod_cast (show 0 < 2 * f * P.m by positivity)
-  unfold Params.jetBound WordBlockPolynomials.jetBound
-  positivity
 
 end Params
 

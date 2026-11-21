@@ -113,39 +113,6 @@ def ThLoc : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : 
   (∀ (w : Plc E) (hw : IsSplitAt w) (y : GLw n w), th (loc hw y) = loc hw (invT n _ y)) ∧
     (0 < n → ∀ (x : E) (w : Plc E) (z : GUf E n), IsCen x w z → th z = z⁻¹)
 
-theorem seedG_of (h0 : SeedGU) (h1 : XiTh) (h2 : ThLoc) (h3 : LevOpen) (h4 : LevCompact) : SeedG := by
-  intro E _ _ _ n hn d x hd hx π W hW c Up hUp w₀ hw₀ hu J χ hJo hJc hT
-  obtain ⟨S, Kw, Φ, κ, hS, hJ, hχ, -, -, hsph, hΦ, hκ⟩ := h0 E n hn d x hd hx π W hW (jOf W c) Up hUp w₀ hw₀ hu J χ hJo hJc hT
-  have hS' : Shape Up w₀ S (levT Kw) := by
-    refine ⟨hS.mem, fun w hw => (hS.opn w hw).preimage (GlobalTheory.SplitPts.continuous_invT _), fun w hw => ?_, fun w hw hne y hy => ?_, hS.up⟩
-    · convert (hS.cpt w hw).image (GlobalTheory.SplitPts.continuous_invT (n := n) _) using 1
-      ext y
-      exact ⟨fun h => ⟨_, h, invT_invT' y⟩, fun ⟨z, hz, e⟩ => e ▸ (show invT n _ (invT n _ z) ∈ Kw w by rwa [invT_invT'])⟩
-    · simpa using invT_mem_KGL (hS.le w hw hne hy)
-  refine ⟨S, levT Kw, fun g => Φ (th g), κ, hS', by rw [levT, hJ], hχ, h3 E n S _ hS'.opn, h4 E n Up w₀ hw₀ S _ hS', hsph,
-    fun h => hΦ.ne (funext fun g => by simpa using congrFun h (th g)), fun γ g => ?_, fun k hk h g => ?_, fun w hw a b B hB => ?_,
-    hκ.alg, hκ.unr, fun w a b z hz g => ?_⟩
-  · rw [map_mul, th_rat, hΦ.left, h1]
-  · have h' : comp w₀ (th k) ∈ J := by rwa [comp_th]
-    rw [map_mul, hΦ.right _ (th_mem_lev.2 hk) h']
-    congr 3
-  · obtain ⟨s1, s2, s3, s4⟩ := hΦ.sat w hw a b B hB
-    let L : (GUf E n → Module.Dual ℂ W.Sp) ≃ₗ[ℂ] (GUf E n → Module.Dual ℂ W.Sp) :=
-      LinearEquiv.funCongrLeft ℂ _ ⟨th, th, th_th, th_th⟩
-    have hL : ∀ y Ψ, L (((rightReg ℂ (GUf E n) (Module.Dual ℂ W.Sp)).comp (loc hw)) y Ψ) =
-        (((rightReg ℂ (GUf E n) (Module.Dual ℂ W.Sp)).comp (loc hw)).comp (invT n _)) y (L Ψ) := fun y Ψ => funext fun g => by
-      show Ψ (th g * loc hw y) = Ψ (th (g * loc hw (invT n _ y)))
-      rw [map_mul, (h2 E n).1, invT_invT']
-    refine ⟨fun h => s1 (L.map_eq_zero_iff.1 h), GlobalTheory.LGrp.mem_fixed.2 fun k hk => ?_, s3, fun p hp i hi => ?_⟩
-    · exact (hL k Φ).symm.trans (congrArg L (GlobalTheory.LGrp.mem_fixed.1 s2 k hk))
-    · have e := congrArg L (s4 p hp i hi)
-      rw [map_smul] at e
-      refine Eq.trans ?_ e
-      unfold heckeVec
-      rw [show L (∑ᶠ c, _) = _ from L.toAddEquiv.map_finsum _]
-      refine finsum_congr fun c => ?_
-      exact ((congrArg _ (hL _ Φ)).symm.trans (L.map_smul _ _).symm)
-  · rw [map_mul, map_inv, (h2 E n).2 hn x w z hz, inv_inv, hκ.cen w a b z hz]
 
 end UpperTheory.Gal.CertificateRingHomMap
 

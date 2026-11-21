@@ -12,11 +12,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 noncomputable section
 namespace GlobalTheory.LN.PelModel
 
-theorem ne_top_of_admissibleBase {R : Type} [CommRing R] {I : Ideal R} (h : AdmBase R I) : I ≠ ⊤ := by
-  rintro rfl
-  haveI := h.2.1
-  haveI := h.2.2.2
-  exact not_subsingleton R (IsHausdorff.subsingleton (inferInstance : IsHausdorff (⊤ : Ideal R) R))
 
 theorem admissibleBase_powerSeries_span_X : AdmBase (PowerSeries ℚ) (Ideal.span {PowerSeries.X}) := admissibleBase_powerSeries ℚ
 
@@ -34,7 +29,6 @@ def zeroTriple : SAB H (Sp R) :=
 def zeroU [IsHausdorff I R] : Unif I (UnifZero.zeroData R I) (Inh.zeroPolAV (Sp (FractionRing R))) (zeroTriple H R I).G :=
   ⟨UnifZero.zeroPre R I, fun k _ => UnifZero.expBij k⟩
 
-theorem zeroU_LG [IsHausdorff I R] : (zeroU H R I).LG = (zeroTriple H R I).PP := rfl
 
 theorem exists_hyp (h : AdmBase R I) : ∃ (t : SAB H (Sp R)) (D : DegData R I) (A : PolAV (Sp (FractionRing R)))
     (U : Unif I D A t.G), U.LG = t.PP := by

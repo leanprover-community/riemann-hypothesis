@@ -68,26 +68,7 @@ theorem fv_mem_hat {n : ℕ} {L : Set (Fin n → E)} {x : Fin n → E} (hx : x �
 def freeLat {n : ℕ} {ι : Type} (b : Module.Basis ι F (Fin n → E)) : Set (Fin n → E) :=
   {x | ∀ j, b.coord j x ∈ (algebraMap (𝓞 F) F).range}
 
-theorem latOf_one_freeLat {n : ℕ} {ι : Type} (b : Module.Basis ι F (Fin n → E)) :
-    latOf F 1 (freeLat b) = freeLat b := by
-  ext w
-  simp only [latOf, Set.mem_setOf_eq, Set.mem_image, Matrix.one_mulVec, exists_eq_right,
-    SetLike.mem_coe]
-  exact ⟨fun h j => functional_integral (freeLat b) (b.coord j) (fun x hx => hx j) h, fv_mem_hat⟩
 
-theorem smul_basis_mem_hat_iff {n : ℕ} {ι : Type} (b : Module.Basis ι F (Fin n → E)) (j : ι) (t : F) :
-    fv F (t • b j) ∈ hat F (freeLat b) ↔ t ∈ (algebraMap (𝓞 F) F).range := by
-  classical
-  constructor
-  · intro h
-    simpa using functional_integral (freeLat b) (b.coord j) (fun x hx => hx j) h
-  · intro ht
-    refine fv_mem_hat fun k => ?_
-    by_cases hk : j = k
-    · subst hk; simpa using ht
-    · simp only [Module.Basis.coord_apply, map_smul, Module.Basis.repr_self, smul_eq_mul,
-        Finsupp.single_eq_of_ne (Ne.symm hk), mul_zero]
-      exact zero_mem _
 
 open NumberField IsDedekindDomain in
 open scoped TensorProduct in
@@ -96,9 +77,6 @@ theorem _root_.GlobalTheory.AdLat.Model.sg_tmul (c : E ≃ₐ[F] E) (a : FiniteA
     _root_.GlobalTheory.AdLat.sg (FiniteAdeleRing (𝓞 F) F) c (a ⊗ₜ x) = a ⊗ₜ c x := by
   simp [_root_.GlobalTheory.AdLat.sg]
 
-theorem hermA_fv (c : E ≃ₐ[F] E) {n : ℕ} (G : Matrix (Fin n) (Fin n) E) (x y : Fin n → E) :
-    hermA c G (fv F x) (fv F y) = (1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ ∑ a, ∑ b, x a * G a b * c (y b) := by
-  simp [hermA, fv, sg_tmul, TensorProduct.tmul_sum]
 
 open NumberField IsDedekindDomain in
 open scoped TensorProduct in
@@ -159,27 +137,5 @@ theorem fv_mulVec {n : ℕ} (γ : Matrix (Fin n) (Fin n) E) (x : Fin n → E) :
   funext i
   simp [fv, Matrix.mulVec, dotProduct, TensorProduct.tmul_sum]
 
-theorem latOf_rational {n : ℕ} (γ : Matrix (Fin n) (Fin n) E) (L : Set (Fin n → E)) :
-    latOf F (γ.map fun e => ((1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ e : RA F E)) L = latOf F 1 (γ.mulVec '' L) := by
-  set g := γ.map fun e => ((1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ e : RA F E) with hg
-  have h1 : ∀ (a : FiniteAdeleRing (𝓞 F) F) (x : Fin n → E),
-      g.mulVec (fun i => a ⊗ₜ x i) = fun i => a ⊗ₜ γ.mulVec x i := by
-    intro a x
-    funext i
-    simp [hg, Matrix.mulVec, dotProduct, TensorProduct.tmul_sum]
-  have h2 : (hat F L).map (Matrix.mulVecLin g).toAddMonoidHom = hat F (γ.mulVec '' L) := by
-    unfold hat
-    rw [AddMonoidHom.map_closure]
-    congr 1
-    ext z
-    constructor
-    · rintro ⟨_, ⟨a, ha, x, hx, rfl⟩, rfl⟩
-      exact ⟨a, ha, _, ⟨x, hx, rfl⟩, h1 a x⟩
-    · rintro ⟨a, ha, _, ⟨x, hx, rfl⟩, rfl⟩
-      exact ⟨_, ⟨a, ha, x, hx, rfl⟩, h1 a x⟩
-  ext w
-  simp only [latOf, Set.mem_setOf_eq, Set.mem_image, Matrix.one_mulVec, exists_eq_right,
-    SetLike.mem_coe, ← h2, AddSubgroup.mem_map]
-  rfl
 
 end GlobalTheory.AdLat.Model

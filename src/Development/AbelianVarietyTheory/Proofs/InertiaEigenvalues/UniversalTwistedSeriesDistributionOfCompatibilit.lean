@@ -365,12 +365,6 @@ end GlobalTheory.DistRel
 namespace GlobalTheory.DistRel
 open Classical
 
-theorem thURel_of_exportTie {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T : Type}
-    {A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-    {Rl : Links.RealDat3 D A3 Ks} {cG : G0 Rl.Pg D.R.r ≃* G0g D.nd} {S : NX.RatDat D.ntw} {YS : NX.NExpRealS Rl cG S}
-    {v₀ : (j : Fin D.R.m) → (σ : D.what₂.LL →+* ℂ) → (Rl.MW j σ).Vec} (Z : ExportTie YS v₀)
-    (hRat : ∀ i, D.ntw.NonzeroIndexPlace i → ∀ j b, RatUniv (Z.rd i j b)) (hRH : ∀ i j b, RatHecke (Z.rd i j b)) : GlobalTheory.TwSys.ThURel D.nexp :=
-  thURel_of_tie Z.good Z.rd Z.tie Z.univ (fun _ _ _ => Z.heckeRead (hRH _ _ _)) hRat
 
 end GlobalTheory.DistRel
 

@@ -130,24 +130,7 @@ lemma pt₃_law₂φ {T : Over S} (a b b' : T ⟶ G) :
   fin_cases k <;> refine (pt₃_pt G _ _ _ _ _).trans ?_ <;>
     simp [law₂φ, padd, x3, comp_lift_assoc]
 
-lemma sum_ulift_three (f : ULift.{u} (Fin 3) → ℤ) : ∑ k, f k = f ⟨0⟩ + f ⟨1⟩ + f ⟨2⟩ := by
-  rw [← Equiv.ulift.symm.sum_comp, Fin.sum_univ_three]; rfl
 
-lemma compat_sameSum {T : Over S} (a a' b b' : T ⟶ G) :
-    LB.SameSum
-      (Sum.elim (law₂φ G (padd G a a') b b') (Sum.elim (law₁φ G a a' b) (law₁φ G a a' b')))
-      (Sum.elim lawε (Sum.elim lawε lawε))
-      (Sum.elim (law₁φ G a a' (padd G b b')) (Sum.elim (law₂φ G a b b') (law₂φ G a' b b')))
-      (Sum.elim lawε (Sum.elim lawε lawε)) := by
-  intro ψ
-  classical
-  obtain ⟨c, hc⟩ : ∃ c : (T.left ⟶ (G2 G).left) → ℤ, ∀ (χ) (n : ℤ) (d : Decidable (χ = ψ)),
-      (@ite _ (χ = ψ) d n 0) = n * c χ :=
-    ⟨fun χ => if χ = ψ then 1 else 0, fun χ n d => by split_ifs <;> simp [*]⟩
-  simp only [hc]
-  simp only [Fintype.sum_sum_type, sum_ulift_three, Sum.elim_inl, Sum.elim_inr, law₁φ, law₂φ, lawε,
-    Matrix.cons_val, Matrix.cons_val_zero, Matrix.cons_val_one]
-  ring
 
 def trivLB (X : Scheme.{u}) : LB X := ⟨PUnit, fun _ => ⊤, fun _ _ => 1⟩
 

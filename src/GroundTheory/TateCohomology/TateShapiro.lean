@@ -385,10 +385,6 @@ lemma homologyMap_tateShapiroMap_comp_tateCoindIso_hom (B : Rep.{u} k S) (n : �
     HomologicalComplex.homologyMap (tateShapiroMap S B) n ≫ (tateCoindIso S B n).hom = 𝟙 _ :=
   (asIso (HomologicalComplex.homologyMap (tateShapiroMap S B) n)).hom_inv_id
 
-theorem tateCoindIso_naturality {B B' : Rep.{u} k S} (f : B ⟶ B') (n : ℤ) :
-    (tateCohomologyFunctor n).map (coindMap S.subtype f) ≫ (tateCoindIso S B' n).hom =
-      (tateCoindIso S B n).hom ≫ (tateCohomologyFunctor n).map f :=
-  (tateCoindNatIso S n).hom.naturality f
 
 theorem tateCoindIso_δ {X : ShortComplex (Rep.{u} k S)} (hX : X.ShortExact) (n : ℤ) :
     TateCohomology.δ (shortExact_map_coindFunctor S hX) n ≫ (tateCoindIso S X.X₁ (n + 1)).hom =
@@ -421,10 +417,6 @@ noncomputable def tateIndIso (B : Rep.{u} k S) (n : ℤ) :
     tateCohomology (ind S.subtype B) n ≅ tateCohomology B n :=
   (tateIndNatIso S n).app B
 
-theorem tateIndIso_naturality {B B' : Rep.{u} k S} (f : B ⟶ B') (n : ℤ) :
-    (tateCohomologyFunctor n).map ((indFunctor k S.subtype).map f) ≫ (tateIndIso S B' n).hom =
-      (tateIndIso S B n).hom ≫ (tateCohomologyFunctor n).map f :=
-  (tateIndNatIso S n).hom.naturality f
 
 omit [Fintype S] in
 

@@ -185,71 +185,12 @@ section Mat
 attribute [local instance] Matrix.linftyOpNormedAddCommGroup Matrix.linftyOpNormedSpace
   Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
 
-theorem entry_le_linftyA {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) : ‖A i j‖ ≤ ‖A‖ := by
-  rw [Matrix.linfty_opNorm_def]
-  have h1 : ‖A i j‖₊ ≤ ∑ k, ‖A i k‖₊ :=
-    Finset.single_le_sum (f := fun k => ‖A i k‖₊) (fun _ _ => zero_le) (Finset.mem_univ j)
-  have h2 : ∑ k, ‖A i k‖₊ ≤ (Finset.univ : Finset (Fin n)).sup fun i => ∑ k, ‖A i k‖₊ :=
-    Finset.le_sup (f := fun i => ∑ k, ‖A i k‖₊) (Finset.mem_univ i)
-  exact_mod_cast h1.trans h2
 
-theorem trotter_entry {n : ℕ} (A B : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
-    Tendsto (fun k : ℕ => ((NormedSpace.exp ((k : ℝ)⁻¹ • A) * NormedSpace.exp ((k : ℝ)⁻¹ • B)) ^ k) i j)
-      atTop (𝓝 (NormedSpace.exp (A + B) i j)) := by
-  have : Nonempty (Fin n) := ⟨i⟩
-  have : CompleteSpace (Matrix (Fin n) (Fin n) ℂ) := FiniteDimensional.complete ℝ _
-  have h := trotter (𝔸 := Matrix (Fin n) (Fin n) ℂ) A B
-  rw [tendsto_iff_norm_sub_tendsto_zero] at h
-  rw [tendsto_iff_norm_sub_tendsto_zero]
-  refine squeeze_zero (fun _ => norm_nonneg _) (fun k => ?_) h
-  rw [← Matrix.sub_apply]
-  exact entry_le_linftyA _ i j
 
 end Mat
 
-theorem trotter_mat {n : ℕ} (A B : Matrix (Fin n) (Fin n) ℂ) :
-    Tendsto (fun k : ℕ => (NormedSpace.exp ((k : ℝ)⁻¹ • A) * NormedSpace.exp ((k : ℝ)⁻¹ • B)) ^ k) atTop
-      (𝓝 (NormedSpace.exp (A + B))) :=
-  tendsto_pi_nhds.mpr fun i => tendsto_pi_nhds.mpr fun j => trotter_entry A B i j
 
-theorem uMat_powA {n : ℕ} {ε : Fin n → Bool} (g : Formalism.REAL.UJ ε) (k : ℕ) : uMat (g ^ k) = uMat g ^ k := by
-  induction k with
-  | zero => rfl
-  | succ k ih =>
-    rw [pow_succ, pow_succ, ← ih]
-    rfl
 
-theorem lie_add_alt : LieAdd := by
-  intro n ε K hK X hX Y hY t
-  have hX' : ∀ s : ℝ, ∃ h ∈ K, uMat h = NormedSpace.exp ((s : ℂ) • X) := hX
-  have hY' : ∀ s : ℝ, ∃ h ∈ K, uMat h = NormedSpace.exp ((s : ℂ) • Y) := hY
-  choose h1 hh1 e1 using fun k : ℕ => hX' (t / k)
-  choose h2 hh2 e2 using fun k : ℕ => hY' (t / k)
-  have hs : ∀ (k : ℕ) (Z : Matrix (Fin n) (Fin n) ℂ), ((t / k : ℝ) : ℂ) • Z = (k : ℝ)⁻¹ • ((t : ℂ) • Z) := by
-    intro k Z
-    rw [← smul_assoc, Complex.real_smul, ← Complex.ofReal_mul, inv_mul_eq_div]
-  set g : ℕ → Formalism.REAL.UJ ε := fun k => (h1 k * h2 k) ^ k with hg
-  have hgK : ∀ k, g k ∈ K := fun k => K.pow_mem (K.mul_mem (hh1 k) (hh2 k)) k
-  have hu : ∀ k : ℕ, (NormedSpace.exp ((k : ℝ)⁻¹ • ((t : ℂ) • X)) *
-      NormedSpace.exp ((k : ℝ)⁻¹ • ((t : ℂ) • Y))) ^ k = uMat (g k) := by
-    intro k
-    rw [hg, uMat_powA, ← hs, ← hs, ← e1, ← e2]
-    rfl
-  have hT := (trotter_mat ((t : ℂ) • X) ((t : ℂ) • Y)).congr hu
-  have hemb := (Formalism.REAL.isClosedEmbeddingMatrix n ε).1
-  have hmem : NormedSpace.exp ((t : ℂ) • X + (t : ℂ) • Y) ∈
-      Set.range (fun g : Formalism.REAL.UJ ε => ((g : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ)) :=
-    hemb.isClosed_range.mem_of_tendsto hT (Eventually.of_forall fun k => ⟨g k, rfl⟩)
-  obtain ⟨g0, hg0⟩ := hmem
-  have hlim : Tendsto g atTop (𝓝 g0) := by
-    rw [hemb.toIsEmbedding.toIsInducing.tendsto_nhds_iff]
-    have hg0' : uMat g0 = NormedSpace.exp ((t : ℂ) • X + (t : ℂ) • Y) := hg0
-    show Tendsto (fun k => uMat (g k)) atTop (𝓝 (uMat g0))
-    rw [hg0']
-    exact hT
-  refine ⟨g0, hK.mem_of_tendsto hlim (Eventually.of_forall hgK), ?_⟩
-  rw [smul_add]
-  exact hg0
 
 end PI.IwaMeasEx.Gauge.ZetaZeros
 

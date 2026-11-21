@@ -264,8 +264,6 @@ def cast {n n' : ℕ} (e : n = n') (w : Pt E n) : Pt E n' := ⟨w.blocks, w.size
 
 end Pt
 
-theorem add_natPred_succ (m : ℕ) (s : ℕ+) : m + (s : ℕ) = (m + s.natPred) + 1 := by
-  rw [add_assoc, PNat.natPred_add_one]
 
 def ofPoint {n : ℕ} (p : Formalism.MainNotions.S.Point E n) (hu : ∀ b ∈ p.1, IsUnit b.1) : Pt E n where
   blocks := p.1.attach.map fun b => ((hu b.1 b.2).unit, ⟨b.1.2, by have := (p.2.1 b.1 b.2).2; omega⟩)

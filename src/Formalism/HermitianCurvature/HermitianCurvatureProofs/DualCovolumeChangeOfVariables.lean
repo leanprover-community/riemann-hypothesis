@@ -309,15 +309,6 @@ theorem t_DualMeasureBound : DualMeasureBound := by
   apply inv_anti₀ hn
   nlinarith
 
-theorem t_DualCovolumeCV : DualCovolumeCV := by
-  intro hL hE hB E _ _ _ hDL hCD hU g ν s hg
-  obtain ⟨a, b, c⟩ := hB hL hE E hU g ν s hg
-  have := a
-  have : IsZLattice ℝ (eLat E (S6.perLat E g ν s) (S6.rd E ^ (-ν))) := ⟨b⟩
-  obtain ⟨d1, d2⟩ := hDL (eLat E (S6.perLat E g ν s) (S6.rd E ^ (-ν)))
-  have := d1
-  have := d2
-  rw [hCD (eLat E (S6.perLat E g ν s) (S6.rd E ^ (-ν))), c]
 
 section Poisson
 
@@ -384,17 +375,13 @@ end Formalism.FourierDecayAlt.P.Jx3
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem trace_pairing : Formalism.FourierDecayAlt.J.TracePairing := Jx3.t_TracePairing
 
 theorem trace_dual_alt : Formalism.FourierDecayAlt.J.TraceDual := Jx3.t_TraceDual
 
 theorem block_frame : Formalism.FourierDecayAlt.J.BlockFrame := Jx3.t_BlockFrame
 
-theorem dual_covolume : Formalism.FourierDecayAlt.J.DualCovolume := Jx3.t_DualCovolume
 
-theorem dual_measure_bound : Formalism.FourierDecayAlt.J.DualMeasureBound := Jx3.t_DualMeasureBound
 
-theorem dual_covolume_change_of_variables : Formalism.FourierDecayAlt.J.DualCovolumeCV := Jx3.t_DualCovolumeCV
 
 theorem poisson_joint : Formalism.FourierDecayAlt.J.PoissonJoint := Jx3.t_PoissonJoint
 

@@ -89,10 +89,6 @@ theorem sharp_RRset (μ) : (RowSide.sharp D).RRset μ = D.what₂.RRset μ := by
   unfold RowSide.RRset Rows.Data.RRset
   rw [sharp_iota, sharp_LamSet]; rfl
 
-theorem rrDef_sharp_iff : DV.RRDef D ↔ (RowSide.sharp D).RRDef := by
-  unfold DV.RRDef RowSide.RRDef
-  simp only [sharp_RRset]
-  rfl
 
 end Sharp
 
@@ -145,32 +141,14 @@ local notation "DR" => (hostLevelRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hg
 theorem row_OFull : OFull DR := fun z =>
   ⟨fun ⟨y, hy⟩ => ⟨y, hy.symm⟩, fun ⟨c, hc⟩ => ⟨c, hc.symm⟩⟩
 
-theorem row_Drows : (DR).what₂.Drows = d := rfl
-theorem rowRecord_baseDimension : (DR).what₂.D0 = d0 := rfl
-theorem row_Dall : (DR).what₂.Dall = Dall := rfl
 
-theorem row_rrDef : DV.RRDef DR := by
-  letI : StarRing H.E := H.cmStar
-  rw [rrDef_sharp_iff]
-  refine rrDef_of (RowSide.sharp DR) (stdH H.E d).L (fun w y => ?_) rfl
-  have hi : (RowSide.sharp DR).iota ((DR).what₂.muAt w) = (LinearMap.id : En d →ₗ[ℂ] En d) :=
-    (sharp_iota DR _).trans (rowsN_iota (hd := hd) _)
-  rw [RRset_eq _ rfl (by rw [hi]; exact Function.injective_id), hi]
-  have e : (⇑(LinearMap.id : En d →ₗ[ℂ] En d)) '' ((RowSide.sharp DR).Mtilde ((DR).what₂.muAt w)).carrier =
-      (oB (eb d) (H.φ₀.comp (algebraMap (𝓞 H.E) H.E))).carrier := Set.image_id _
-  exact (iff_of_eq (congrArg (fun s => jB H.φ₀ (eb d) y ∈ s) e)).trans
-    (jB_mem_oB H.φ₀ (eb d) (algebraMap (𝓞 H.E) H.E) (row_OFull H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat) y)
 
-theorem row_rrFull : (RowSide.sharp DR).RRFull :=
-  letI : StarRing H.E := H.cmStar
-  (stdH_good H.E d).2
 
 def levelRecordSharpAmbientForm : AmbForm DR (RowSide.sharp DR) :=
   ambOf DR _ (fun _ => d) (fun _ => eb d) (fun _ => rfl)
 
 def levelRecordDivisor : DivX DR := divXStd DR (fun _ => d0) (fun _ => eb d0) (fun _ => rfl) 1 one_pos
 
-theorem row_buDef : Rows.BuDefQ (DR).what₂ := rowsN_buDefQ H.E H.φ₀ _ (Tau2 R) _ Dst _ _ _ _ kb ks tw htw W _ d Dall d0 hd FT ft ft0 _ _ _
 
 theorem row_lamDef : DV.LamDef DR := by
   refine lamDef_of DR fun μ j π x _ => ?_
@@ -179,59 +157,11 @@ theorem row_lamDef : DV.LamDef DR := by
   show x = ((1 : ℝ) : ℂ) • x
   simp
 
-theorem row_kapR : DV.KapRBase (levelRecordDivisor H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat) := by
-  have hi : (RowSide.sharp DR).iota (DR).what₂.mu0 = (LinearMap.id : En d →ₗ[ℂ] En d) :=
-    (sharp_iota DR _).trans (rowsN_iota (hd := hd) _)
-  exact (kapOf_one (RowSide.sharp DR) _ (iiStar_id _ rfl (fun x y => by rw [hi]; rfl)
-    (by rw [hi]; exact Function.surjective_id)) (fun _ _ => rfl)).symm
 
-theorem row_memTjL (μ j) (x : Fin d0 → H.E) :
-    x ∈ Idx.TjL DR μ j ↔ x ∈ (@stdH H.E _ _ H.cmStar d0).L := by
-  letI : StarRing H.E := H.cmStar
-  have hset : ∀ y : Fin d0 → H.E, (DR).what₂.jMt μ j y ∈ (DR).what₂.TjSet μ j ↔ y ∈ (stdH H.E d0).L := fun y => by
-    have e : (DR).what₂.TjSet μ j = (oB (eb d0) (H.φ₀.comp (algebraMap (𝓞 H.E) H.E))).carrier := rowsN_TjSet (hd := hd) μ j
-    rw [e]
-    exact jB_mem_oB H.φ₀ (eb d0) (algebraMap (𝓞 H.E) H.E) (row_OFull H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat) y
-  constructor
-  · intro hx
-    induction hx using Submodule.span_induction with
-    | mem y hy => exact (hset y).mp hy
-    | zero => exact zero_mem _
-    | add y z _ _ hy hz => exact add_mem hy hz
-    | smul a y _ hy =>
-      exact (stdH H.E d0).L.smul_mem a hy
-  · intro hx
-    exact Submodule.subset_span ((hset x).mpr hx)
 
-theorem row_idx : IdxDefs DR (levelRecordDivisor H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat) := by
-  letI : StarRing H.E := H.cmStar
-  refine ⟨fun μ j w _ _ => (ijIdx_zero _ μ j w ?_).symm, fun μ j w _ _ => (jwIdx_zero DR μ j w ?_).symm⟩
-  · ext y
-    constructor
-    · intro hy
-      exact ⟨y, (row_memTjL H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat μ j y).mpr hy, rfl⟩
-    · rintro ⟨x, hx, e⟩
-      have : y = x := jB_inj H.φ₀ (eb d0) e
-      rw [this]
-      exact (row_memTjL H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat μ j x).mp hx
-  · ext x
-    refine (row_memTjL H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat μ j x).trans ?_
-    constructor
-    · intro hx
-      refine ⟨Submodule.subset_span ((row_memTjL H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat μ j x).mpr hx), fun a ha => ?_⟩
-      exact (dual_std H.φ₀ (fun z => emb_star H H.φ₀ z) (eb d0) x).mpr hx a
-        ((row_memTjL H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat μ j a).mp ha)
-    · rintro ⟨-, h⟩
-      exact (dual_std H.φ₀ (fun z => emb_star H H.φ₀ z) (eb d0) x).mp fun a ha =>
-        h a ((row_memTjL H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat μ j a).mpr ha)
 
-theorem row_ftOcc (h : ∀ π : FT, (∃ σ, ft σ = π) ∨ ∃ σ, ft0 σ = π) :
-    ∀ π, (∃ σ, (DR).what₂.ft σ = π) ∨ ∃ σ, (DR).what₂.ft0 σ = π := h
 
-theorem row_goodFT : ∀ σ, (DR).nd.goodRow σ :=
-  goodRow_ndG H Lb (rowsHN H hcW K Dst kb ks tw htw d Dall d0 hd FT ft ft0 per) (nHypN H hcW K Dst kb ks tw htw d Dall d0 hd FT ft ft0 per hg)
 
-theorem rowRecord_idempotent_ne_zero : (DR).ntypes.e0 ≠ 0 := labelNewtypes_idempotent_ne_zero H Lb _ _ ht G.tame
 
 def levelRecordCentralCharacterOne : CentralCharacterOne DR where
   χ := omL H Lb (rowsHN H hcW K Dst kb ks tw htw d Dall d0 hd FT ft ft0 per) (nHypN H hcW K Dst kb ks tw htw d Dall d0 hd FT ft ft0 per hg) ht
@@ -244,11 +174,7 @@ def levelRecordCentralCharacterOne : CentralCharacterOne DR where
 
 def levelRecordBaseSide : BaseLevelRowSide DR := standardBaseSide DR (levelRecordCentralCharacterOne H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat)
 
-theorem row_rr0Def : (levelRecordBaseSide H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat).s.RRDef := standardBaseSide_latticeDefined DR _ (row_OFull H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat)
 
-theorem row_rr0Full : (levelRecordBaseSide H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat).BaseRowLatticeFull :=
-  letI : StarRing H.E := H.cmStar
-  (stdH_good H.E d0).2
 
 def levelRecordAmbientForm : AmbForm DR (levelRecordBaseSide H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat).s := standardAmbientForm DR _
 

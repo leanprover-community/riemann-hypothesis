@@ -151,12 +151,5 @@ theorem goodAt_of_gapGe : GlobalTheory.CovTop.Hypotheses2 → ∀ (D : D7) (T : 
   exact ⟨hasGram_nrm_of_good D T j Y e o hY _, GlobalTheory.T.weight_lattice_finitely_generated hP D T j Y e o hY hf la hla hfd,
     GlobalTheory.T.weight_lattice_span_eq_top hP D T j Y e o hY hf la hla hfd⟩
 
-theorem goodAt_hs : GlobalTheory.CovTop.Hypotheses2 → ∀ (D : D7) (T : Core D) (j : ℕ) (Y : Deep T j) (e : ℕ) (o : ℝ), Y.Good e o →
-    2 < Module.finrank ℚ D.host.E / 2 → ∀ P : WtPar (T.Q.Dw j), WtBig P →
-      Y.GoodAt (wtOf _ P.u₁ 0) ∧ Y.GoodAt (wtOf _ P.u₂ 0) ∧ ∀ i ≤ P.T, Y.GoodAt (wtOf _ (P.wt i) 0) := by
-  intro hP D T j Y e o hY hf P hB
-  obtain ⟨h1, h2, h3⟩ := GlobalTheory.HSApp.GapArith.gaps_main _ _ _ P hB
-  exact ⟨goodAt_of_gapGe hP D T j Y e o hY hf _ h1, goodAt_of_gapGe hP D T j Y e o hY hf _ h2,
-    fun i _ => goodAt_of_gapGe hP D T j Y e o hY hf _ (h3 i)⟩
 
 end GlobalTheory.HSApp

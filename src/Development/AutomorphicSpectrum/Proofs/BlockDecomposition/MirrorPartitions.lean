@@ -81,10 +81,6 @@ theorem cuspIso_of_labO_eq (O : LabelMap K C) [Nonempty α] [Nonempty β] {lam :
   exact cuspIso_trans (cuspIso_transp _ lam) (cuspIso_trans (cuspIso_transp (finCongr hab) _)
     (cuspIso_trans (cuspIso_of_iso hi) (cuspIso_symm (cuspIso_transp _ mu))))
 
-theorem labO_eq_iff (O : LabelMap K C) [Nonempty α] [Nonempty β] {lam : FDRep ℂ (GL α K)}
-    {mu : FDRep ℂ (GL β K)} (hl : Simple lam) (hlc : IsCuspidal K lam) (hm : Simple mu)
-    (hmc : IsCuspidal K mu) : labO O lam = labO O mu ↔ CuspIso K lam mu :=
-  ⟨cuspIso_of_labO_eq O hl hlc hm hmc, labO_eq_of_cuspIso O hl hm⟩
 
 theorem fiber_nonempty {ι : Type} {s : ℕ} {b : ι → Fin s} (hb : Function.Surjective b) (c : Fin s) :
     Nonempty {i // b i = c} :=

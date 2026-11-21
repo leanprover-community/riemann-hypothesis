@@ -421,9 +421,6 @@ theorem ArithmeticVolumeBig.arithmeticVolumeBig_smoothFibre (h : ArithmeticVolum
   intro K _ ι _ Ω _ _ y D A II hD hII har hb _ hs hnef hc
   exact h K ι Ω y D A (mCoordIdeal y) II hD hII har hb le_rfl hs hnef hc
 
-theorem ArithmeticVolumeBig.arithmeticVolumeBig_resolution (h : ArithmeticVolumeBig.Statement) : SuccessiveMinimaResolution := by
-  intro _ _ K _ ι _ Ω _ _ y D A II hD hII har hb hs hnef hc
-  exact h K ι Ω y D A (mCoordIdeal y) II hD hII har hb le_rfl hs hnef hc
 
 theorem G6.statementB_of_G6Prime (h : ArithmeticVolumeBig.Statement) : G6.StatementB := by
   intro K _ ι _ Ω _ _ y D M P0 II hD hII har hb hM

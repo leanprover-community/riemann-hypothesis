@@ -53,15 +53,6 @@ theorem isClosedEmbedding_toHomUnits {H n : Type} [Group H] [TopologicalSpace H]
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} {n : ℕ} (J : Matrix (Fin n) (Fin n) E)
 
-theorem exists_sum_conv_ccArch (hDM : Published.DixmierMalliavinFactorisation) (h : IsCMExt F E σ) (w : InfinitePlace F)
-    (μ : Measure (GArch σ J w)) [μ.IsHaarMeasure] {V : Set (GArch σ J w)} (hV : V ∈ 𝓝 1) {f : GArch σ J w → ℂ}
-    (hf : f ∈ CcArch σ J w) :
-    ∃ (N : ℕ) (g h : Fin N → GArch σ J w → ℂ),
-      (∀ i, g i ∈ CcArch σ J w ∧ h i ∈ CcArch σ J w ∧ tsupport (g i) ⊆ V ∧ tsupport (h i) ⊆ tsupport f) ∧
-      f = ∑ i, conv μ (g i) (h i) := by
-  let τ : EmbOver E w := Classical.arbitrary _
-  rw [ccArch_eq h τ] at hf ⊢
-  exact hDM _ _ _ (isClosedEmbedding_toHomUnits (isEmbedding_archMat J h τ)) μ V hV f hf
 
 open Classical in
 variable (σ) in

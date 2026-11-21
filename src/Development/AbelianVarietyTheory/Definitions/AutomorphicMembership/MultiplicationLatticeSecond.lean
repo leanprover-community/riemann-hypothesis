@@ -720,7 +720,6 @@ def loc : ModuliIntegralCharts.Loc D N j p where
   degLie := @CrDSt.degLie _ _ _ _ _ _ _ _ st.cd
   degLdR := @CrDSt.degLdR _ _ _ _ _ _ _ _ st.cd
 
-theorem bs_loc (b : Option ℕ) : bs st.loc b = ct.B.X b := by cases b <;> rfl
 
 def ex : ModuliIntegralCharts.ExtA D st.loc where
   FlagData := @FlgSt.FlagData _ _ _ _ _ _ _ _ st.fg

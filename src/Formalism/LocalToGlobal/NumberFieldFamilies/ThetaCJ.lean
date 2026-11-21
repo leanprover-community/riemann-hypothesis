@@ -73,9 +73,6 @@ theorem cont_act {R : Type} [CommRing R] [TopologicalSpace R] [IsTopologicalRing
     Continuous fun x : Matrix (Fin m) (Fin n) R => c • (A * x * B) :=
   ((continuous_const.matrix_mul continuous_id).matrix_mul continuous_const).const_smul c
 
-theorem quadruple_sum_map_zero {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {m n : ℕ} (a : Fin m → Fin n → Fin m → Fin n → R)
-    (y : Matrix (Fin m) (Fin n) R) (h : ∀ k l, f (y k l) = 0) : f (∑ i, ∑ j, ∑ k, ∑ l, a i j k l * y k l) = 0 := by
-  simp only [map_sum, map_mul, h, mul_zero, Finset.sum_const_zero]
 
 theorem alg_trace_gen {F E R : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E] [CommRing R] [Algebra F R]
     (σ : E →ₐ[F] E) (h : ∀ e, algebraMap F E (Algebra.trace F E e) = e + σ e) (z : R ⊗[F] E) :
@@ -96,26 +93,6 @@ end Gen
 
 variable {D : D7}
 
-theorem real_pt (V : HSp D) (z : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ)
-    (hz : ∀ τ, (z τ)ᴴ * gramAt D V τ * z τ = gramAt D V τ) :
-    ∃ h ∈ GinfC V, ∀ τ, (mt V h).map (cmpAt D τ) = z τ := by
-  classical
-  have key : ∀ S : Finset D.what₂.Tau, ∃ h ∈ GinfC V, ∀ τ, (mt V h).map (cmpAt D τ) = if τ ∈ S then z τ else 1 := by
-    intro S
-    induction S using Finset.induction_on with
-    | empty => exact ⟨1, one_mem _, fun τ => (infMat_one (th0 D τ) V).trans (if_neg (Finset.notMem_empty τ)).symm⟩
-    | insert σ S hσ ih =>
-      obtain ⟨h, a, b⟩ := ih
-      have s := atTau_spec (atTauU D) (hz σ)
-      refine ⟨atTau (th0 D) V σ (z σ) * h, mul_mem s.1 a, fun τ => ?_⟩
-      rw [← infMat_eq, infMat_mul, infMat_eq V τ h, b]
-      by_cases e : τ = σ
-      · subst e
-        rw [s.2.1, if_neg hσ, if_pos (Finset.mem_insert_self _ _), Matrix.mul_one]
-      · rw [s.2.2 τ e, Matrix.one_mul]
-        simp [e]
-  obtain ⟨h, a, b⟩ := key Finset.univ
-  exact ⟨h, a, fun τ => (b τ).trans (if_pos (Finset.mem_univ τ))⟩
 
 theorem inf_ext {V : HSp D} {g h : GA D V} (hg : g ∈ GinfC V) (hh : h ∈ GinfC V)
     (e : ∀ τ, (mt V g).map (cmpAt D τ) = (mt V h).map (cmpAt D τ)) : g = h := by
@@ -124,20 +101,6 @@ theorem inf_ext {V : HSp D} {g h : GA D V} (hg : g ∈ GinfC V) (hh : h ∈ Ginf
   exact Subtype.ext (Units.ext (mat_ext (M := mt V g) (N := mt V h) e
     ((congrArg Units.val a).trans (congrArg Units.val b).symm)))
 
-theorem cartan_pt (V : HSp D) (hV : V.SigOK) : ∃ s ∈ GinfC V, s * s = 1 ∧
-    (∀ k, IsKinf (th0 D) V (cptC V) k → s * k = k * s) ∧
-    ∀ τ, gramAt D V τ * (mt V s).map (cmpAt D τ) = (cptC V τ)ᴴ * cptC V τ ∧
-      ∃ A' : Matrix (Fin V.rank) (Fin (V.sig (tauE D τ)).1 ⊕ Fin (V.sig (tauE D τ)).2) ℂ, A' * cptC V τ = 1 := by
-  choose z A' h1 h2 h3 h4 h5 using fun τ =>
-    cartan (gramAt D V τ) (gramAt_unit V τ) (hV (tauE D τ)).choose (cptC V τ) (cptC_gram V hV τ)
-  obtain ⟨s, a, b⟩ := real_pt V z h3
-  refine ⟨s, a, inf_ext (mul_mem a a) (one_mem _) fun τ => ?_, fun k hk => inf_ext (mul_mem a hk.1) (mul_mem hk.1 a) fun τ => ?_,
-    fun τ => ⟨by rw [b, h2], A' τ, h1 τ⟩⟩
-  · rw [mt_mul, Matrix.map_mul, b, h4]
-    exact (infMat_one (th0 D τ) V).symm
-  · obtain ⟨c, hc, e⟩ := hk.2 τ
-    rw [mt_mul, mt_mul, Matrix.map_mul, Matrix.map_mul, b]
-    exact h5 τ c _ hc e
 
 variable {V W : HSp D}
 
@@ -162,28 +125,8 @@ theorem actHom_add (g : GA D V) (h : GA D W) (x y : WA V W) :
   unfold actHom
   split_ifs <;> rw [Matrix.mul_add, Matrix.add_mul]
 
-theorem hHom_smul (c c' : AE D) (x y : WA V W) : hHom V W (c • x) (c' • y) = cA D c * c' * hHom V W x y := by
-  unfold hHom
-  split_ifs <;>
-  · simp only [Finset.mul_sum, Matrix.smul_apply, smul_eq_mul, RingHom.map_mul]
-    refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ =>
-      Finset.sum_congr rfl fun _ _ => ?_
-    ring
 
-theorem hHom_real {x y : WA V W} (hy : IsRealW V W y) : finPart D (hHom V W x y) = 0 := by
-  have e : ∀ k l, finPart D (y k l) = 0 := fun k l => congrFun (congrFun hy k) l
-  unfold hHom
-  split_ifs <;> exact quadruple_sum_map_zero (finPart D) _ y e
 
-theorem alg_trace (z : AE D) : algebraMap (AF D.host.F) (AE D) (Algebra.trace (AF D.host.F) (AE D) z) = z + cA D z := by
-  refine alg_trace_gen D.sp.cm.sig (fun e => ?_) z
-  obtain ⟨t, ht⟩ := (D.sp.cm.fixed (e + star e)).1 (by rw [star_add, star_star, add_comm])
-  have h1 : Algebra.trace D.host.F D.host.E (star e) = Algebra.trace D.host.F D.host.E e :=
-    Algebra.trace_eq_of_algEquiv (AlgEquiv.ofBijective D.sp.cm.sig star_involutive.bijective) e
-  have h2 := congrArg (Algebra.trace D.host.F D.host.E) ht
-  rw [Algebra.trace_algebraMap, D.sp.cm.deg2, LinearMap.map_add, h1, two_smul, ← two_mul, ← two_mul] at h2
-  rw [← mul_left_cancel₀ two_ne_zero h2]
-  exact ht
 
 theorem realPlace_imaginaryGenerator_re_eq_zero (τ : D.what₂.Tau) : (tauE D τ D.host.xi0).re = 0 := by
   unfold Host.xi0
@@ -211,7 +154,6 @@ def iE : AE D := mkAE (fun _ => Complex.I) 0
 
 theorem iE_cmp (τ : D.what₂.Tau) : cmpAt D τ (iE D) = Complex.I := cmpAt_mkAE _ _ τ
 
-theorem iE_fin : finPart D (iE D) = 0 := finPart_mkAE _ _
 
 def fockJ (s : GA D V) (t : GA D W) : WA V W →+ WA V W :=
   AddMonoidHom.mk' (fun x => iE D • actHom V W s t x) fun x y => by rw [actHom_add, smul_add]
@@ -258,25 +200,7 @@ theorem fock_pos {s : GA D V} {t : GA D W} (τ : D.what₂.Tau)
     rw [Matrix.map_mul, Matrix.map_mul, Matrix.transpose_map, cmp_cM, Matrix.transpose_transpose]
     simpa only [Matrix.mul_assoc] using this
 
-theorem fock_val (s : GA D V) (t : GA D W) (τ : D.what₂.Tau) (x : WA V W) : valTau (th0 D) τ (sympl V W (fockJ s t x) x) =
-    -(2 * (tauE D τ D.host.xi0).im * (cmpAt D τ (hHom V W x (actHom V W s t x))).re) := by
-  have e := hHom_smul 1 (iE D) x (actHom V W s t x)
-  rw [one_smul, RingHom.map_one, one_mul] at e
-  show (cmpAt D τ (algebraMap (AF D.host.F) (AE D) (sympl V W (fockJ s t x) x))).re = _
-  unfold sympl
-  rw [alg_trace, RingHom.map_add, cmpAt_cA, fockJ_apply, e, RingHom.map_mul, RingHom.map_mul, cmpAt_incA, iE_cmp]
-  simp only [Complex.add_re, Complex.conj_re, Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, realPlace_imaginaryGenerator_re_eq_zero]
-  ring
 
-theorem fock_cont (s : GA D V) (t : GA D W) : Continuous (fockJ s t) := by
-  have := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.isTopRing (F := D.host.F) (E := D.host.E)
-  show Continuous fun x => iE D • actHom V W s t x
-  unfold actHom
-  by_cases h : V.rank ≤ W.rank
-  · simp only [if_pos h]
-    exact cont_act (iE D) (cM (mt V s)) (mt W t).transpose
-  · simp only [if_neg h]
-    exact cont_act (iE D) (mt V s) (cM (mt W t)).transpose
 
 theorem fock_sq {s : GA D V} {t : GA D W} (s2 : s * s = 1) (t2 : t * t = 1) {x : WA V W} (hx : IsRealW V W x) :
     fockJ s t (fockJ s t x) = -x := by
@@ -288,32 +212,7 @@ theorem fock_sq {s : GA D V} {t : GA D W} (s2 : s * s = 1) (t2 : t * t = 1) {x :
   · rw [RingHom.map_mul, RingHom.map_mul, iE_cmp, Complex.I_mul_I, RingHom.map_neg, neg_one_mul]
   · rw [RingHom.map_mul, RingHom.map_neg, e, mul_zero, neg_zero]
 
-theorem fock_symp (s : GA D V) (t : GA D W) {x : WA V W} (hx : IsRealW V W x) (y : WA V W) :
-    sympl V W (fockJ s t x) (fockJ s t y) = sympl V W x y := by
-  have e : cA D (iE D) * iE D * hHom V W y x = hHom V W y x := by
-    refine ae_ext' (fun τ => ?_) ?_
-    · rw [RingHom.map_mul, RingHom.map_mul, cmpAt_cA, iE_cmp, Complex.conj_I, neg_mul, Complex.I_mul_I, neg_neg, one_mul]
-    · rw [RingHom.map_mul, hHom_real hx, mul_zero]
-  unfold sympl
-  rw [fockJ_apply, fockJ_apply, hHom_smul, hHom_actHom, e]
 
-theorem fockCxEx (D : D7) : FockCxEx D := by
-  intro V W _ hV hW
-  obtain ⟨s, s1, s2, s3, s4⟩ := cartan_pt V hV
-  obtain ⟨t, t1, t2, t3, t4⟩ := cartan_pt W hW
-  refine ⟨fockJ s t, fock_cont s t, fun x _ => ?_, fun x hx => fock_sq s2 t2 hx, fun x y hx _ => fock_symp s t hx y,
-    fun k k' hk hk' x _ => ?_, -1, Or.inr rfl, fun x hx => ⟨fun τ => ?_, fun h => ?_⟩⟩
-  · refine Matrix.ext fun i j => ?_
-    show finPart D (iE D * actHom V W s t x i j) = 0
-    rw [RingHom.map_mul, iE_fin, zero_mul]
-  · rw [fockJ_apply, fockJ_apply, actHom_smul, actHom_mul, actHom_mul, s3 k hk, t3 k' hk']
-  · rw [fock_val, neg_one_mul, neg_neg]
-    exact mul_nonneg (mul_nonneg zero_le_two (xi_zero_im_pos D τ).le) (fock_pos τ (s4 τ) (t4 τ) x).1
-  · refine mat_ext (fun τ => ?_) (hx.trans (Matrix.map_zero _ (RingHom.map_zero _)).symm)
-    have e := h τ
-    rw [fock_val, neg_eq_zero, mul_eq_zero] at e
-    rw [(fock_pos τ (s4 τ) (t4 τ) x).2 (e.resolve_left (mul_pos two_pos (xi_zero_im_pos D τ)).ne'),
-      Matrix.map_zero _ (RingHom.map_zero _)]
 
 end Formalism.L2.Fam.ThC
 

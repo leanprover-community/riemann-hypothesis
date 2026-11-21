@@ -149,16 +149,6 @@ theorem quotIntegrable_iff_cutoff (hT : IsClosed (T : Set G)) {β : G → NNReal
     integrable_withDensity_iff_integrable_smul hβ.1]
   exact integrable_congr (Filter.Eventually.of_forall fun x => by simp only [Function.comp, apply_out_mk hF]; rfl)
 
-theorem quotInt_of_isCompact (hT : IsCompact (T : Set G)) {F : G → ℂ} (hm : Measurable F)
-    (hF : ∀ t ∈ T, ∀ x, F (t * x) = F x) : quotInt T μ μT F = ((μT.real Set.univ : ℝ) : ℂ)⁻¹ * ∫ x, F x ∂μ := by
-  have : CompactSpace T := isCompact_iff_compactSpace.1 hT
-  have h0 : μT Set.univ ≠ 0 := (isOpen_univ.measure_pos μT ⟨1, trivial⟩).ne'
-  have h1 : μT Set.univ ≠ ⊤ := measure_ne_top _ _
-  have hβ : IsCosetCutoff T μT fun _ => (μT Set.univ).toNNReal⁻¹ := ⟨measurable_const, fun x => by
-    rw [lintegral_const, ENNReal.coe_inv (ENNReal.toNNReal_ne_zero.2 ⟨h0, h1⟩), ENNReal.coe_toNNReal h1,
-      ENNReal.inv_mul_cancel h0 h1]⟩
-  rw [quotInt_eq_cutoff hT.isClosed hβ hm hF, integral_smul]
-  simp [Measure.real, ENNReal.toReal]
 
 end Exist
 

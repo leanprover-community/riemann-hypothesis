@@ -121,41 +121,6 @@ theorem idem_conj {e : R} {a a' b d : Matrix (Fin k) (Fin k) R} (h : a * a' = 1)
   rw [← Matrix.mul_smul, hb1, Matrix.mul_smul, Matrix.mul_one, ← Matrix.smul_mul, h2, Matrix.smul_mul,
     Matrix.one_mul]
 
-theorem mov_iff {H A B : AddSubgroup (Fin k → R)} {a a' b b' d : Matrix (Fin k) (Fin k) R}
-    (ha : a * a' = 1) (hA : ∀ u, u ∈ A ↔ ∃ u₀ ∈ H, u = a *ᵥ u₀)
-    (hB : ∀ u, u ∈ B ↔ ∃ u₀ ∈ H, u = b *ᵥ u₀) (hb : b * b' = 1) {d' : Matrix (Fin k) (Fin k) R}
-    (hd : d' * d = 1) :
-    (∀ u, u ∈ H ↔ ∃ u₀ ∈ H, u = (a' * d * b) *ᵥ u₀) ↔ ∀ u, u ∈ B ↔ d *ᵥ u ∈ A := by
-  have ha' : a' * a = 1 := mul_eq_one_comm.1 ha
-  have hb' : b' * b = 1 := mul_eq_one_comm.1 hb
-  have hd' : d * d' = 1 := mul_eq_one_comm.1 hd
-  have mA : ∀ u, u ∈ A ↔ a' *ᵥ u ∈ H := fun u => by
-    rw [hA]
-    constructor
-    · rintro ⟨u₀, h₀, rfl⟩; rwa [Matrix.mulVec_mulVec, ha', Matrix.one_mulVec]
-    · intro h; exact ⟨_, h, by rw [Matrix.mulVec_mulVec, ha, Matrix.one_mulVec]⟩
-  constructor
-  · intro h u
-    rw [hB, mA, h]
-    refine exists_congr fun u₀ => and_congr_right fun _ => ⟨?_, fun e => ?_⟩
-    · rintro rfl; simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc]
-    · have := congrArg (fun w => (d' * a) *ᵥ w) e
-      simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc] at this
-      simp only [← Matrix.mul_assoc a, ha, Matrix.one_mul, hd, ← Matrix.mul_assoc d', Matrix.one_mulVec] at this
-      exact this
-  · intro h u
-    constructor
-    · intro hu
-      have h1 : (d' * a) *ᵥ u ∈ B := by
-        rw [h, hA]
-        exact ⟨u, hu, by rw [Matrix.mulVec_mulVec, ← Matrix.mul_assoc, hd', Matrix.one_mul]⟩
-      obtain ⟨u₀, h₀, e⟩ := (hB _).1 h1
-      refine ⟨u₀, h₀, ?_⟩
-      rw [← Matrix.mulVec_mulVec, ← e, Matrix.mulVec_mulVec, Matrix.mul_assoc, ← Matrix.mul_assoc d, hd',
-        Matrix.one_mul, ha', Matrix.one_mulVec]
-    · rintro ⟨u₀, h₀, rfl⟩
-      have := (mA _).1 ((h _).1 ((hB _).2 ⟨u₀, h₀, rfl⟩))
-      rwa [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec] at this
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -295,25 +260,7 @@ theorem mulVec_mem_latHat {L L' : Set (Fin k → E)} {δ : Matrix (Fin k) (Fin k
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
 
-theorem conj_mem_latHat [NumberField E] (σ : E →ₐ[F] E) {u : Fin k → Af F ⊗[F] E}
-    (hu : u ∈ latHat F E (stdL E k : Set (Fin k → E))) :
-    (fun i => sigR (Af F) σ (u i)) ∈ latHat F E (stdL E k : Set (Fin k → E)) := by
-  refine map_mem_latHat ((sigR (Af F) σ).toAddMonoidHom.compLeft _) (fun b hb x hx => ?_) hu
-  have hx' : (fun i => σ (x i)) ∈ stdL E k := by
-    rw [SetLike.mem_coe] at hx
-    rw [SW.Base.mem_stdL] at hx ⊢
-    exact fun a => (hx a).map (σ : E →+* E).toIntAlgHom
-  exact tmul_mem hb hx'
 
-theorem idem_sub {R R' : Type} [CommRing R] [CommRing R'] (φ : R →+* R') {ε : R}
-    {m : Matrix (Fin k) (Fin k) R} {i j : Fin k} (h : ε * (m - 1) i j = 0) :
-    φ ε * φ (m i j) = φ ε * (1 : Matrix (Fin k) (Fin k) R') i j := by
-  have := congrArg φ h
-  rw [map_mul, map_zero, Matrix.sub_apply, map_sub, mul_sub, sub_eq_zero] at this
-  rw [this]
-  by_cases hij : i = j
-  · subst hij; simp only [Matrix.one_apply_eq, map_one]
-  · simp only [Matrix.one_apply_ne hij, map_zero]
 
 end Adelic
 

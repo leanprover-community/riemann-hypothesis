@@ -17,12 +17,7 @@ def algOp (σ : Γ →* (K →L[ℂ] K)) (c : Γ →₀ ℂ) : K →L[ℂ] K := 
 def typeOf (σ : Γ →* (K →L[ℂ] K)) (v : K) : Submodule ℂ K :=
   ⨅ c ∈ {c : Γ →₀ ℂ | ∀ γ, algOp σ c (σ γ v) = 0}, LinearMap.ker (algOp σ c : K →ₗ[ℂ] K)
 
-theorem mem_typeOf {σ : Γ →* (K →L[ℂ] K)} {v w : K} :
-    w ∈ typeOf σ v ↔ ∀ c : Γ →₀ ℂ, (∀ γ, algOp σ c (σ γ v) = 0) → algOp σ c w = 0 := by
-  simp only [typeOf, Submodule.mem_iInf, LinearMap.mem_ker, Set.mem_setOf_eq, ContinuousLinearMap.coe_coe]
 
-theorem self_mem_typeOf (σ : Γ →* (K →L[ℂ] K)) (v : K) : v ∈ typeOf σ v :=
-  mem_typeOf.2 fun c hc => by simpa using hc 1
 
 def orbitSpan (σ : Γ →* (K →L[ℂ] K)) (v : K) : Submodule ℂ K := Submodule.span ℂ (Set.range fun γ => σ γ v)
 
@@ -36,8 +31,6 @@ structure IsTestGL (f : GA E a → ℂ) : Prop where
   smooth : (fun g => f g⁻¹) ∈ Sm E a
   level : IsOpen {k : GL (Fin a) (Af E) | ∀ g, f (finGL E a k * g) = f g}
 
-theorem isTestGL_zero : IsTestGL (fun _ : GA E a => (0 : ℂ)) :=
-  ⟨continuous_const, HasCompactSupport.zero, (Sm E a).zero_mem, by simp⟩
 
 structure IsDirac (μ : Measure (GA E a)) (U : Subgroup (GL (Fin a) (Af E))) (N : Set (GL (Fin a) (Cinf E)))
     (f : GA E a → ℂ) : Prop where

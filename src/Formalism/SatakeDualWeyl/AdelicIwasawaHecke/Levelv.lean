@@ -26,22 +26,6 @@ theorem levelv_relIndex_ne_zero {G : Type*} [Group G] (H K : Subgroup G) {β : T
   show (H.subgroupOf K).index ≠ 0
   exact Subgroup.index_ne_zero_of_finite
 
-theorem levelv_nat_denom {R K : Type*} [CommRing R] [IsDomain R] [Field K] [Algebra R K]
-    [IsFractionRing R K] (hfin : ∀ s : R, s ≠ 0 → Finite (R ⧸ Ideal.span {s})) (x : K) :
-    ∃ N : ℕ, N ≠ 0 ∧ ∃ y : R, algebraMap R K y = N • x := by
-  obtain ⟨a, s, hs, rfl⟩ := IsFractionRing.div_surjective (A := R) x
-  have hs0 : s ≠ 0 := nonZeroDivisors.ne_zero hs
-  haveI := hfin s hs0
-  have hN : ringChar (R ⧸ Ideal.span {s}) ≠ 0 :=
-    CharP.char_ne_zero_of_finite (R ⧸ Ideal.span {s}) (ringChar (R ⧸ Ideal.span {s}))
-  have hmem : ((ringChar (R ⧸ Ideal.span {s}) : ℕ) : R) ∈ Ideal.span {s} := by
-    rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
-    exact ringChar.Nat.cast_ringChar
-  obtain ⟨t, ht⟩ := Ideal.mem_span_singleton'.mp hmem
-  refine ⟨ringChar (R ⧸ Ideal.span {s}), hN, t * a, ?_⟩
-  have hs' : algebraMap R K s ≠ 0 := IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors hs
-  rw [nsmul_eq_mul, ← map_natCast (algebraMap R K), ← ht, map_mul, map_mul]
-  field_simp <;> ring
 
 section Local
 
@@ -267,9 +251,6 @@ section GLact
 
 variable {R : Type*} [CommRing R] {n : Type*} [Fintype n] [DecidableEq n]
 
-theorem levelv_mulVec_mul (k l : GL n R) (x : n → R) :
-    ((k * l : GL n R) : Matrix n n R) *ᵥ x = (k : Matrix n n R) *ᵥ ((l : Matrix n n R) *ᵥ x) := by
-  rw [Units.val_mul, Matrix.mulVec_mulVec]
 
 theorem levelv_inv_mulVec (k : GL n R) (x : n → R) :
     ((k⁻¹ : GL n R) : Matrix n n R) *ᵥ ((k : Matrix n n R) *ᵥ x) = x := by

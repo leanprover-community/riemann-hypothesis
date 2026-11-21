@@ -18,7 +18,6 @@ def PushLocalStatement : Prop :=
     ∀ g : X → ℝ, tsupport g ⊆ V → MIntegrable A Φ g →
       mInt A Φ g = ∫ y in q '' V, ∑ᶠ x ∈ q ⁻¹' {y} ∩ V, g x * pushDens A Φ q x
 
-theorem pushForward : PushForwardStatement := pushB_forward
 
 end
 

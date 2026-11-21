@@ -16,12 +16,6 @@ def posPairs (N : ℕ) : Finset (Fin N × Fin N) := Finset.univ.filter fun p => 
 
 def Uv {N : ℕ} (lam : DomWeight N) : Fin N → ℤ := fun i => lam.w i + ((N : ℤ) - 1 - (i : ℤ))
 
-theorem Uv_antitone {N : ℕ} (lam : DomWeight N) : Antitone (Uv lam) := by
-  intro i j hij
-  have h1 := lam.anti hij
-  have h2 : (i : ℤ) ≤ (j : ℤ) := by exact_mod_cast hij
-  simp only [Uv]
-  linarith
 
 def eF {N : ℕ} (l : ℕ) (lam : DomWeight N) : ℕ :=
   ∑ p ∈ posPairs N, maxVal l (Uv lam p.1 - Uv lam p.2 - 1).toNat
@@ -35,15 +29,6 @@ def eRest {N : ℕ} (l : ℕ) (lam : DomWeight N) (a : ℕ) : ℕ := ePart l lam
 
 def eCross {N : ℕ} (l : ℕ) (lam : DomWeight N) (a : ℕ) : ℕ := ePart l lam fun p => (p.1 : ℕ) < a ∧ a ≤ (p.2 : ℕ)
 
-theorem eF_split {N : ℕ} (l : ℕ) (lam : DomWeight N) (a : ℕ) :
-    eF l lam = eCl l lam a + eRest l lam a + eCross l lam a := by
-  classical
-  simp only [eF, eCl, eRest, eCross, ePart, Finset.sum_filter, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun p hp => ?_
-  have h12 : (p.1 : ℕ) < p.2 := by
-    simp only [posPairs, Finset.mem_filter, Finset.mem_univ, true_and] at hp
-    exact hp
-  split_ifs <;> omega
 
 def primeTo (l : ℕ) : Submonoid ℤ where
   carrier := {n | IsCoprime n (l : ℤ)}
@@ -99,36 +84,7 @@ def tightSh {N : ℕ} (kc : ℕ) (U : Fin N → ℤ) (sh : ShapeData) : ShapeDat
     xp := if h : 0 < N then U ⟨0, h⟩ else sh.xp
     xm := if h : kc - 1 < N then U ⟨kc - 1, h⟩ else sh.xm }
 
-theorem tight_tightSh {N : ℕ} (kc : ℕ) (U : Fin N → ℤ) (sh : ShapeData) : Tight kc U (tightSh kc U sh) := by
-  intro i
-  refine ⟨fun h0 _ => ?_, fun h1 => ?_⟩
-  · have hN : 0 < N := lt_of_le_of_lt (Nat.zero_le _) i.2
-    simp only [tightSh, dif_pos hN]
-    congr 1
-    ext
-    simp [h0]
-  · have hk : kc - 1 < N := by omega
-    simp only [tightSh, dif_pos hk]
-    congr 1
-    ext
-    simp only
-    omega
 
-theorem HasShape.tight {N kc t m : ℕ} {U : Fin N → ℤ} {sh : ShapeData} (hU : Antitone U) (hk : 0 < kc)
-    (h : HasShape kc t m U sh) :
-    HasShape kc t m U (tightSh kc U sh) ∧ sh.xm ≤ (tightSh kc U sh).xm ∧ (tightSh kc U sh).xp ≤ sh.xp := by
-  obtain ⟨h1, h2, h3, h4⟩ := h
-  have hkN : kc - 1 < N := by omega
-  have h0N : 0 < N := by omega
-  have e1 : (tightSh kc U sh).xp = U ⟨0, h0N⟩ := by simp only [tightSh, dif_pos h0N]
-  have e2 : (tightSh kc U sh).xm = U ⟨kc - 1, hkN⟩ := by simp only [tightSh, dif_pos hkN]
-  refine ⟨⟨h1, h2, fun i hi => ?_, h4⟩, ?_, ?_⟩
-  · rw [e1, e2]
-    exact ⟨hU (show (i : ℕ) ≤ kc - 1 by omega), hU (show (0 : ℕ) ≤ i from Nat.zero_le _)⟩
-  · rw [e2]
-    exact (h3 ⟨kc - 1, hkN⟩ (show kc - 1 < kc by omega)).1
-  · rw [e1]
-    exact (h3 ⟨0, h0N⟩ (show 0 < kc from hk)).2
 
 def IsLow (kc t : ℕ) (sh : ShapeData) (i : ℕ) : Prop :=
   kc ≤ i ∧ ¬ (kc + sh.j ≤ i ∧ i < kc + sh.j + t)
@@ -180,10 +136,6 @@ def tensSub {R : Type} [CommRing R] {ι : Type} {N : ℕ}
 
 def kCl (D : D7) : ℕ := D.R.k - 1
 
-theorem kCl_pos (D : D7) : 0 < kCl D := by
-  have := D.R.m_add_three_le_k
-  simp only [kCl]
-  omega
 
 abbrev Cg (R : Type) [CommRing R] (ι : Type) (N : ℕ) : Type := (ι → GL (Fin N) R) × Rˣ
 
@@ -462,9 +414,6 @@ theorem BlockGAt.blockAt {X : Prov D} {l : ℕ} [Fact l.Prime] {h : ℕ} {sh : D
   rw [hrm, Pi.mul_apply, Finset.prod_apply]
   rfl
 
-theorem IsBlockG.isBlock {X : Prov D} {l : ℕ} [Fact l.Prime] {h : ℕ} {c : X.Lev l} {mt : Ideal (X.Hk l c)}
-    {sh : D.what₂.Tau → ShapeData} (H : IsBlockG X l h c mt sh) : IsBlock X l h c mt sh :=
-  ⟨H.1, fun rm hrm => (H.2 rm hrm).blockAt⟩
 
 def excSet (D : D7) : Finset ℕ := D.host.small ∪ {D.host.q, D.host.d, D.host.pde, D.host.pde'}
 
@@ -690,22 +639,6 @@ theorem S2.mono {L : SizeData₂ D} {A0 A0' : ℝ} (hA : A0 ≤ A0') {h : ℕ} {
   have := mul_le_mul_of_nonneg_left hx hb
   linarith [(hlo i).2]
 
-theorem S2.tight {L : SizeData₂ D} {A0 : ℝ} {h : ℕ} {eta S h0 lStar : ℝ}
-    {lam : D.what₂.Tau → DomWeight D.R.nV} {sh : D.what₂.Tau → ShapeData}
-    (H : S2 D L A0 h eta S h0 lStar lam sh) :
-    S2 D L A0 h eta S h0 lStar lam (fun τ => tightSh (kCl D) (Uv (lam τ)) (sh τ)) := by
-  obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15, h16, h17, h18, h19⟩ := H
-  refine ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10,
-    fun τ => (HasShape.tight (Uv_antitone (lam τ)) (kCl_pos D) (h11 τ)).1, fun τ hτ => ?_,
-    h13, h14, h15, h16, h17, h18, h19⟩
-  obtain ⟨_, hm, hp⟩ := HasShape.tight (Uv_antitone (lam τ)) (kCl_pos D) (h11 τ)
-  obtain ⟨a, b, c⟩ := h12 τ hτ
-  refine ⟨?_, b, c⟩
-  have e : ((tightSh (kCl D) (Uv (lam τ)) (sh τ)).xp - (tightSh (kCl D) (Uv (lam τ)) (sh τ)).xm : ℤ) ≤
-      (sh τ).xp - (sh τ).xm := by linarith
-  have e' : (((tightSh (kCl D) (Uv (lam τ)) (sh τ)).xp - (tightSh (kCl D) (Uv (lam τ)) (sh τ)).xm : ℤ) : ℝ) ≤
-      (((sh τ).xp - (sh τ).xm : ℤ) : ℝ) := by exact_mod_cast e
-  exact e'.trans a
 
 def Saturated (X : Prov D) (l : ℕ) (c : X.Lev l) (lam : D.what₂.Tau → DomWeight D.R.nV)
     (Z : Submodule (X.Hk l c) (Frm X l c lam)) : Prop :=
@@ -716,10 +649,6 @@ def CorIdeal (L : SizeData₂ D) (X : Prov D) (l : ℕ) [Fact l.Prime] (h : ℕ)
   l ∈ excSet D ∨ (∃ i : Fin 2, l = D.host.g i) ∨ (l : ℝ) ≤ lJ D L h ∨ h + D.R.nV < l ∨
     (X.hyp l c ∧ IsBlock X l h c mt sh)
 
-theorem corIdeal_tightSh (L : SizeData₂ D) (X : Prov D) (l : ℕ) [Fact l.Prime] (h : ℕ) (c : X.Lev l) (mt : Ideal (X.Hk l c))
-    (kc : ℕ) (U : D.what₂.Tau → Fin D.R.nV → ℤ) (sh : D.what₂.Tau → ShapeData) :
-    CorIdeal L X l h c mt (fun τ => tightSh kc (U τ) (sh τ)) ↔ CorIdeal L X l h c mt sh := by
-  simp only [CorIdeal, isBlock_tightSh]
 
 def CorIncl {D : D7} (L : SizeData₂ D) (X : Prov D) (h : ℕ) (lam : D.what₂.Tau → DomWeight D.R.nV)
     (sh : D.what₂.Tau → ShapeData) (J : ℕ → ℕ) : Prop :=
@@ -767,7 +696,6 @@ def Conclusion2Family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : Pr
 
 def a0Of (l : List ℝ) : ℝ := max (l.getD 0 0 + 1) 6
 
-theorem initial_exponent_of_output {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : a0Of Fm.cOut = max (Fm.Ct + 1) 6 := rfl
 
 def Conclusion3Family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ProvF Fm) : Prop :=
   ∀ A0 : ℝ, ∃ x0 : ℝ,
@@ -776,9 +704,6 @@ def Conclusion3Family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : Pr
 def AdmF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ProvF Fm) : Prop :=
   ∃ x0 : ℝ, ∀ x : ℝ, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x), admitted (Fm.D x i) (XF x hx i)
 
-theorem AdmF.admissible_family_of_threshold {eps : ℝ} {Fm : Formalism.MainNotions.FamP eps} {XF : ProvF Fm}
-    (h : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), admitted (Fm.D x i) (XF x hx i)) : AdmF Fm XF :=
-  ⟨0, fun x _ hx i => h x hx i⟩
 
 def LiteratureHypotheses (D : D7) (X : Prov D) : Prop := adm3 D X ∧ ArchimedeanSignatureMatching D X ∧ adm6 D X ∧ adm7 D X
 
@@ -796,20 +721,6 @@ theorem AdmF.of_parts {eps : ℝ} {Fm : Formalism.MainNotions.FamP eps} {XF : Pr
 def KudlaFamilyStatement {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ProvF Fm) : Prop :=
   AdmF Fm XF → WeightModularityFamily Fm XF ∧ Conclusion1Family Fm XF ∧ Conclusion2Family Fm XF ∧ Conclusion3Family Fm XF
 
-theorem stmtF_of_all {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ProvF Fm)
-    (h : ∀ A0 : ℝ, ∃ x0 : ℝ, ∀ x : ℝ, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x),
-      Stmt (Fm.D x i) (Fm.L x i) (XF x hx i) A0 30 2)
-    (h0 : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), admitted (Fm.D x i) (XF x hx i) →
-      ConclusionW (Fm.D x i) (XF x hx i) ∧ Conclusion1 (Fm.D x i) (Fm.L x i) (XF x hx i) ∧ Conclusion2 (Fm.D x i) (XF x hx i)) :
-    KudlaFamilyStatement Fm XF := by
-  intro hA
-  obtain ⟨x0, hx0⟩ := hA
-  refine ⟨⟨x0, fun x hx hx1 i => (h0 x hx1 i (hx0 x hx hx1 i)).1⟩,
-    ⟨x0, fun x hx hx1 i => (h0 x hx1 i (hx0 x hx hx1 i)).2.1⟩,
-    ⟨x0, fun x hx hx1 i => (h0 x hx1 i (hx0 x hx hx1 i)).2.2⟩, fun A0 => ?_⟩
-  obtain ⟨x1, hx1'⟩ := h A0
-  exact ⟨max x0 x1, fun x hx hx1 i =>
-    (hx1' x (le_of_max_le_right hx) hx1 i (hx0 x (le_of_max_le_left hx) hx1 i)).2.2.2⟩
 
 end Formalism.MainNotions.JumpSetsAlt
 

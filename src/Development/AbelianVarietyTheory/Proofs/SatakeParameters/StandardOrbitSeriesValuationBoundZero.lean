@@ -105,9 +105,6 @@ theorem hur_exp : Hur R ((PowerSeries.exp K : PowerSeries K) : MvPowerSeries Uni
 
 end Gen
 
-theorem hur_mvExp {K : Type} [NormedField K] [CharZero K] (R : Subring K) {τ : Type} [Finite τ] {h : MvPowerSeries τ K}
-    (h0 : MvPowerSeries.constantCoeff h = 0) (hh : Hur R h) : Hur R (Formalism.DworkPowerSeriesWeights.mvExp h) :=
-  hur_psubst R h0 hh (hur_exp R)
 
 section Cp
 

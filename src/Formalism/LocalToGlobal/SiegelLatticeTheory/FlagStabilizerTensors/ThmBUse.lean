@@ -79,63 +79,6 @@ def jointNormBoundUnrotated (D : D7) (Aw Ch Cg Cb : ℝ) : Prop :=
       ENNReal.ofReal (Real.exp (Cb * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 5 * (Fintype.card D.what₂.Tau : ℝ) * Real.log b)) *
         jSqG D X
 
-theorem point_sum_of_theoremB {Ch Cg Cb : ℝ} {T T' A : ℕ} {b TB : ℝ} (hB3 : jointNormBoundUnrotated D (A : ℝ) Ch Cg Cb)
-    (hJ0 : ∀ γ, 0 ≤ N.jacobianSquareBound γ) (hTB : 0 ≤ TB) (h : Ties X N Ch Cg T T' b A Cb TB) :
-    PN.PointSumInput X N (A * (D.R.rS + 1) ^ 2) TB := by
-  classical
-  obtain ⟨Bd, Cw, Cj, hCw, hCj, hgap, hP, hW, hJ, hN⟩ := h
-  intro S hS
-  have hw : ∀ γ ∈ S, ∃ w : Point D.host.E (D.R.rS + 1), RowsConc.toPts w = γ ∧ IsRowPt D T T' w :=
-    fun γ hγ => hP γ (hS γ hγ)
-  choose wf hwf using hw
-  have hRB : ∀ {w : Point D.host.E (D.R.rS + 1)}, IsRowPt D T T' w → IsBPt D T T' w := by
-    intro w hw'
-    unfold IsRowPt at hw'
-    exact hw'.1
-  let F : Point D.host.E (D.R.rS + 1) → ℝ≥0∞ := fun w =>
-    ENNReal.ofReal (wPt D w * ptWeightG D (rhoReal D) T T' w.1 *
-      normWt D T T' w ^ ((A : ℝ) * ((D.R.rS : ℝ) + 1) ^ 2)) * JSq D Bd w
-  have hsum : ∑ γ ∈ S.attach, F (wf γ.1 γ.2) ≤
-      BSum D Bd (fun w => normWt D T T' w ^ ((A : ℝ) * ((D.R.rS : ℝ) + 1) ^ 2)) := by
-    let g : S → {w // IsBPt D T T' w} := fun γ => ⟨wf γ.1 γ.2, hRB (hwf γ.1 γ.2).2⟩
-    have hg : Function.Injective g := by
-      intro a c hac
-      apply Subtype.ext
-      have h1 := (hwf a.1 a.2).1
-      have h2 := (hwf c.1 c.2).1
-      have h3 : wf a.1 a.2 = wf c.1 c.2 := congrArg Subtype.val hac
-      rw [← h1, ← h2, h3]
-    calc ∑ γ ∈ S.attach, F (wf γ.1 γ.2) = ∑ γ ∈ S.attach, F (g γ).1 := rfl
-      _ = ∑ x ∈ S.attach.image g, F x.1 := by
-        rw [Finset.sum_image (fun a _ c _ h => hg h)]
-      _ ≤ ∑' x : {w // IsBPt D T T' w}, F x.1 := ENNReal.sum_le_tsum _
-      _ = BSum D Bd (fun w => normWt D T T' w ^ ((A : ℝ) * ((D.R.rS : ℝ) + 1) ^ 2)) := by
-        unfold BSum
-        rfl
-  have key : ENNReal.ofReal (∑ γ ∈ S, Formalism.HermitianLatticeCounting.ExpansionTerms.blockMinorWeight γ * N.n γ * (N.NG γ * N.ND γ) ^ (A * (D.R.rS + 1) ^ 2) * N.jacobianSquareBound γ)
-      ≤ ENNReal.ofReal TB := by
-    calc _ ≤ ∑ γ ∈ S, ENNReal.ofReal
-            (Formalism.HermitianLatticeCounting.ExpansionTerms.blockMinorWeight γ * N.n γ * (N.NG γ * N.ND γ) ^ (A * (D.R.rS + 1) ^ 2) * N.jacobianSquareBound γ) :=
-          Finset.le_sum_of_subadditive ENNReal.ofReal ENNReal.ofReal_zero.le (fun x y => ENNReal.ofReal_add_le) S _
-      _ = ∑ γ ∈ S.attach, ENNReal.ofReal (Formalism.HermitianLatticeCounting.ExpansionTerms.blockMinorWeight γ.1 * N.n γ.1 *
-            (N.NG γ.1 * N.ND γ.1) ^ (A * (D.R.rS + 1) ^ 2) * N.jacobianSquareBound γ.1) :=
-          (Finset.sum_attach S _).symm
-      _ ≤ ∑ γ ∈ S.attach, ENNReal.ofReal Cw * ENNReal.ofReal Cj * F (wf γ.1 γ.2) := by
-          apply Finset.sum_le_sum
-          intro γ _
-          exact term_le X N Bd hCw hJ0 hW hJ γ.1 (wf γ.1 γ.2) (hS γ.1 γ.2) (hwf γ.1 γ.2).1 (hwf γ.1 γ.2).2
-      _ = ENNReal.ofReal (Cw * Cj) * ∑ γ ∈ S.attach, F (wf γ.1 γ.2) := by
-          rw [Finset.mul_sum, ENNReal.ofReal_mul hCw]
-      _ ≤ ENNReal.ofReal (Cw * Cj) *
-            BSum D Bd (fun w => normWt D T T' w ^ ((A : ℝ) * ((D.R.rS : ℝ) + 1) ^ 2)) :=
-          by gcongr
-      _ ≤ ENNReal.ofReal (Cw * Cj) * (ENNReal.ofReal (Real.exp (Cb * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 5 *
-            (Fintype.card D.what₂.Tau : ℝ) * Real.log b)) * jSqG D Bd) :=
-          by
-          have hB := hB3 T T' b Bd hgap
-          gcongr
-      _ ≤ ENNReal.ofReal TB := hN
-  exact (ENNReal.ofReal_le_ofReal_iff hTB).1 key
 
 end Sum
 

@@ -53,10 +53,6 @@ theorem exists_sReps (G : Matrix (Fin r) (Fin r) E) (L : Set (Fin r → E)) (M :
   rw [← i.out_eq, ← j.out_eq]
   exact Quotient.sound h
 
-theorem not_isSReps_empty (G : Matrix (Fin r) (Fin r) E) (L : Set (Fin r → E)) (M : ℕ)
-    (s : Empty → Matrix (Fin r) (Fin r) (RA (maximalRealSubfield E) E)) : ¬ IsSReps G L M s := fun h => by
-  obtain ⟨j, -⟩ := h.2.2 1 ⟨(isKM_one _ G L M).1, det_one⟩
-  exact j.elim
 
 variable (E) in
 
@@ -86,81 +82,8 @@ theorem exists_skew : ∃ δ : E, δ ≠ 0 ∧ IsIntegral ℤ δ ∧ cc δ = -δ
   simp only [map_div₀, AlgEquiv.one_apply]
   exact congrArg₂ (· / ·) ha hb'
 
-theorem exists_lie_one : ∃ e : Fin (2 ^ 2 - 1) → Matrix (Fin 2) (Fin 2) E,
-    (∀ i, e i ∈ lieLat 1 (intVec E 2)) ∧ LinearIndependent (maximalRealSubfield E) e := by
-  obtain ⟨δ, h0, hi, hc⟩ := exists_skew E
-  simp only [cc] at hc
-  let e : Fin 3 → Matrix (Fin 2) (Fin 2) E := ![!![δ, 0; 0, -δ], !![0, 1; -1, 0], !![0, δ; δ, 0]]
-  refine ⟨e, fun (i : Fin 3) => ⟨?_, fun x y => ?_, fun x hx => ?_⟩, ?_⟩
-  · fin_cases i <;> simp [e, trace_fin_two]
-  · fin_cases i <;> simp [e, herm, cc, mulVec, dotProduct, hc, one_apply] <;> ring
-  · rw [mem_intVec] at hx ⊢
-    intro a
-    have h1 := hx 0
-    have h2 := hx 1
-    have h3 := hi.mul h1
-    have h4 := hi.mul h2
-    fin_cases i <;> fin_cases a <;> simp [e, mulVec, dotProduct] <;> first | assumption | exact IsIntegral.neg ‹_›
-  · change LinearIndependent (maximalRealSubfield E) e
-    rw [Fintype.linearIndependent_iff]
-    intro g hg
-    have h1 := congrFun (congrFun hg 0) 0
-    have h2 := congrFun (congrFun hg 0) 1
-    have h3 := congrFun (congrFun hg 1) 0
-    simp [e, Fin.sum_univ_three, Subfield.smul_def, h0] at h1 h2 h3
-    have h4 : (g 1 : E) = 0 := by linear_combination (1 / 2 : E) * h2 - (1 / 2 : E) * h3
-    have h5 : (g 2 : E) * δ = 0 := by linear_combination (1 / 2 : E) * h2 + (1 / 2 : E) * h3
-    intro i
-    fin_cases i
-    · simpa using h1
-    · simpa using h4
-    · simpa [h0] using h5
 
-theorem exists_lie_hyp : ∃ e : Fin (2 ^ 2 - 1) → Matrix (Fin 2) (Fin 2) E,
-    (∀ i, e i ∈ lieLat !![0, 1; 1, 0] (intVec E 2)) ∧ LinearIndependent (maximalRealSubfield E) e := by
-  obtain ⟨δ, h0, hi, hc⟩ := exists_skew E
-  simp only [cc] at hc
-  let e : Fin 3 → Matrix (Fin 2) (Fin 2) E := ![!![1, 0; 0, -1], !![0, δ; 0, 0], !![0, 0; δ, 0]]
-  refine ⟨e, fun (i : Fin 3) => ⟨?_, fun x y => ?_, fun x hx => ?_⟩, ?_⟩
-  · fin_cases i <;> simp [e, trace_fin_two]
-  · fin_cases i <;> simp [e, herm, cc, mulVec, dotProduct, hc] <;> ring
-  · rw [mem_intVec] at hx ⊢
-    intro a
-    have h1 := hx 0
-    have h2 := hx 1
-    have h3 := hi.mul h1
-    have h4 := hi.mul h2
-    fin_cases i <;> fin_cases a <;> simp [e, mulVec, dotProduct] <;>
-      first | assumption | exact IsIntegral.neg ‹_› | exact isIntegral_zero
-  · change LinearIndependent (maximalRealSubfield E) e
-    rw [Fintype.linearIndependent_iff]
-    intro g hg
-    have h1 := congrFun (congrFun hg 0) 0
-    have h2 := congrFun (congrFun hg 0) 1
-    have h3 := congrFun (congrFun hg 1) 0
-    simp [e, Fin.sum_univ_three, Subfield.smul_def, h0] at h1 h2 h3
-    intro i
-    fin_cases i
-    · simpa using h1
-    · simpa using h2
-    · simpa using h3
 
-theorem joint_hyp : ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E) (Ψ : Finset (E →+* ℂ)),
-    Unr E ∧ (∀ τ : E →+* ℂ, τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ) ∧
-    ∀ G : Matrix (Fin 2) (Fin 2) E, G = 1 ∨ G = !![0, 1; 1, 0] →
-      ∃ (Λ : Submodule (𝓞 E) (Fin 2 → E)) (e : Fin (2 ^ 2 - 1) → Matrix (Fin 2) (Fin 2) E)
-        (J : Type) (s : J → Matrix (Fin 2) (Fin 2) (RA (maximalRealSubfield E) E)),
-        SelfDualLat G Λ ∧ (∀ i, e i ∈ lieLat G Λ) ∧ LinearIndependent (maximalRealSubfield E) e ∧
-          IsSReps G (Λ : Set (Fin 2 → E)) 1 s := by
-  obtain ⟨E, _, _, _, hU, -⟩ := exists_field
-  obtain ⟨Ψ, hΨ⟩ := exists_cmType E
-  refine ⟨E, inferInstance, inferInstance, inferInstance, Ψ, hU, hΨ, fun G hG => ?_⟩
-  obtain ⟨J, s, -, hs⟩ := exists_sReps G (intVec E 2 : Set (Fin 2 → E)) 1
-  rcases hG with rfl | rfl
-  · obtain ⟨e, h1, h2⟩ := exists_lie_one (E := E)
-    exact ⟨_, e, J, s, selfDual_one, h1, h2, hs⟩
-  · obtain ⟨e, h1, h2⟩ := exists_lie_hyp (E := E)
-    exact ⟨_, e, J, s, selfDual_hyp.1, h1, h2, hs⟩
 
 theorem mem_ratStab_of (G : Matrix (Fin r) (Fin r) E) (L : Set (Fin r → E)) (s k) (γ : GL (Fin r) E)
     (h1 : (γ : Matrix (Fin r) (Fin r) E).det = 1)

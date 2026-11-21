@@ -41,29 +41,6 @@ theorem IsProjSurface.finiteCoh (h : IsProjSurface k T) {E : T.Modules} {r : ℕ
 theorem degCh2_congr {E E' : T.Modules} (φ : E ≅ E') (r : ℕ) : degCh2 k E r = degCh2 k E' r := by
   rw [degCh2, degCh2, chi_congr k φ, chi_congr k (dualIso φ)]
 
-theorem IsProjSurface.degCh2_rank_one (h : IsProjSurface k T) {E : T.Modules} (hE : IsVB E 1) :
-    degCh2 k E 1 = (topSelfIntersection k (det E 1) 2 : ℚ) / 2 := by
-  have := (isVB_structureModule T).isFiniteQC
-  have hL := hE.isLB_det
-  have e₁ : chi k E = chiPic k (structureModule T) (cls _ hL) :=
-    (chi_congr k hE.isoDet).trans (chi_congr k (Twist.unitTwistIso _)).symm
-  have e₂ : chi k (VB.dual E) = chiPic k (structureModule T) (-cls _ hL) := by
-    rw [← cls_dual hL (isLB_dual hL),
-      (cls_eq_iff (isLB_dual hL) hE.dual.isLB_det).2 hE.lbIso_det_dual]
-    exact (chi_congr k hE.dual.isoDet).trans (chi_congr k (Twist.unitTwistIso _)).symm
-  have hv : DiffVanish (2 + 1) (chiPic k (structureModule T)) :=
-    diffVanish_chiPic_of_isProjOver (algebraMap_eq_strHom k T) _ h.2.2
-      ((QCoh.suppDim_le _).trans h.2.1.le)
-  have e₃ := congrFun (hv fun _ => cls _ hL) (cls _ hL)
-  rw [degCh2, e₁, e₂, ← chiPic_zero, topSelf_def, interNum_eq_multiDiff k _ fun _ => hL]
-  generalize cls _ hL = c at e₃ ⊢
-  generalize chiPic k (structureModule T) = φ at e₃ ⊢
-  rw [multiDiff_const] at e₃ ⊢
-  simp only [Function.iterate_succ, Function.iterate_zero, Function.comp_apply, id, bwdDiff_apply,
-    sub_self, zero_sub, Pi.zero_apply] at e₃ ⊢
-  congr 2
-  push_cast
-  omega
 
 theorem isProjSurface_plane (k : Type) [Field k] :
     letI : Algebra k Γ(PSpace k 2, ⊤) :=
@@ -149,9 +126,5 @@ def RecordIsGeometric (D : D7) (X : DivX D) : Prop :=
       SmoothOfRelativeDimension g A.hom ∧ (∃ c, IsPrincipalPol A c) ∧
         X.surfFpCh2 s = (degCh2 (ZMod p) (hodge A) g : ℝ)
 
-theorem recordVanishes_of (h : Ch2HodgeVanishes) {D : D7} {X : DivX D}
-    (hX : RecordIsGeometric D X) : RecordVanishes D X := fun s => by
-  obtain ⟨p, _, T, _, A, _, g, hT, hA, hg, hc, e⟩ := hX s
-  rw [e, h p T hT A g hA hg hc, Rat.cast_zero]
 
 end GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase

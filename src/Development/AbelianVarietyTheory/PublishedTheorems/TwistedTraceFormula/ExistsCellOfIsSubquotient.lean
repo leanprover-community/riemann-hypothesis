@@ -339,19 +339,6 @@ theorem nonempty_jac_det_equiv (e : (Σ _ : Fin l, Fin 1) ≃ n) (χ : kˣ →* 
   simp only [LinearMap.comp_apply]
   rw [key, Model.jac_detRep, map_smul]
 
-theorem exists_det_embedding (e : (Σ _ : Fin l, Fin 1) ≃ n) {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) :
-    ∃ φ : (detRep n (χ * absPow k (((l : ℂ) - 1) / 2))).IntertwiningMap
-      (multiProd e (segTerm (detRep (Fin 1) χ) l)), Function.Injective φ := by
-  obtain ⟨ψ⟩ := nonempty_jac_det_equiv e χ
-  obtain ⟨φ, hφ⟩ := (Model.evalOne_bijective e ((isSmooth_ofChar_iff _).2
-    (hχ.mul (isSmoothChar_of_isUnram (isUnram_absPow k _))).detChar) _).2 ψ.toIntertwiningMap
-  refine ⟨φ, (injective_iff_map_eq_zero _).2 fun v hv => ?_⟩
-  have h1 : ψ (Submodule.Quotient.mk v) = (φ v).1.1 1 :=
-    (congrArg (fun F => F (Submodule.Quotient.mk v)) hφ).symm
-  replace h1 : ψ (Submodule.Quotient.mk v) = 0 := h1.trans (congrArg (fun F => F.1.1 1) hv)
-  have h2 : v ∈ twKer (detRep n (χ * absPow k (((l : ℂ) - 1) / 2))) (unipRad k e) 1 :=
-    (Submodule.Quotient.mk_eq_zero _).1 ((map_eq_zero_iff ψ ψ.injective).1 h1)
-  rwa [twKer_detRep] at h2
 
 theorem IsSegmentClass.ofChar {Z : ∀ Δ : Segment k, IrrCl (GL (Fin (Δ.len * Δ.d)) k)}
     (hZ : IsSegmentClass k Z) {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) (hl : 0 < l) :

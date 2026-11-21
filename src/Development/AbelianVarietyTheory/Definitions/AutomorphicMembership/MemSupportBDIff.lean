@@ -333,33 +333,9 @@ def reg (k : s.Comp) (σ : D.what₂.LL →+* ℂ) (u : D.what₂.Tau → Fin N 
 
 variable (k : s.Comp) (σ : D.what₂.LL →+* ℂ)
 
-theorem reg_add (u v : D.what₂.Tau → Fin N → ℝ) (t : ℝ) (y : Pts (Φ.C k).Y σ) :
-    P.reg k σ (u + v) t y = P.reg k σ u t y + P.reg k σ v t y := by
-  simp only [reg, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => ?_
-  simp only [coef, Pi.add_apply]
-  split_ifs <;> ring
 
-theorem reg_smul (r : ℝ) (u : D.what₂.Tau → Fin N → ℝ) (t : ℝ) (y : Pts (Φ.C k).Y σ) :
-    P.reg k σ (r • u) t y = r * P.reg k σ u t y := by
-  simp only [reg, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => ?_
-  simp only [coef, Pi.smul_apply, smul_eq_mul]
-  split_ifs <;> ring
 
-theorem reg_zero (u : D.what₂.Tau → Fin N → ℝ) {y : Pts (Φ.C k).Y σ} (hy : y ∈ offBd Φ k σ) :
-    P.reg k σ u 0 y = phW hm h0 k σ u y := by
-  rw [phW_eq_sum]
-  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => congrArg _ ?_
-  simp [regFund, extBd, hy, rho_zero (P.om_kaehler k σ) (P.exph_is k σ)]
 
-theorem reg_central {u : D.what₂.Tau → Fin N → ℝ} (hu : ∀ τ a b, u τ a = u τ b) (t : ℝ) {y : Pts (Φ.C k).Y σ}
-    (hy : y ∈ offBd Φ k σ) : P.reg k σ u t y = phW hm h0 k σ u y := by
-  rw [phW_eq_sum]
-  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => ?_
-  by_cases h : (i : ℕ) + 1 < N
-  · simp [coef, h, hu τ i ⟨i + 1, h⟩]
-  · simp [regFund, extBd, hy, h]
 
 def gens (B : ℝ) : Option (DV.Rt D.what₂.Tau N) → Adl (cxSt D.what₂.LL) (Φ.C k).Y := fun o => o.elim (P.ab k) fun x =>
   adlOf (Φ.C k) (fun _ => h0 k) (rootSym S.Dw (ArIn.ind (setB κ B)) none (DV.tauEmb D x.1) x.2)

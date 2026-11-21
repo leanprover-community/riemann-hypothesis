@@ -27,31 +27,6 @@ theorem chain_from_primitive_data : ChainFromPrimitiveData := by
   refine ⟨D, hD, ⟨i1, i2, i3', i4, i5, hT, fun Z => ?_⟩, fun Z => by rw [hpπ]; exact cv Z⟩
   exact displayFree O' X (bcT O' T) d G (bcR O' r) π t ht bl _ _ cP cA _ _ cI g₀ _ cX D hD hT Z
 
-theorem chain_with_extension_of_split (hE : StatSplitExt) : ChainWithExtension := by
-  intro O _ _ _ _ X _ T d _ _ G _ r π t ht bl χ₁ ε g₀ hyp L ϖ hϖ
-  obtain ⟨eB, e₁, s, hAB, hall⟩ := chain_from_primitive_data O X T d G r π t ht bl χ₁ ε g₀ hyp L ϖ hϖ
-  refine ⟨eB, e₁, s, hAB, ?_⟩
-  obtain ⟨hI, ⟨m, jj, a, hja, hs⟩, hsep⟩ := hAB
-  obtain ⟨-, b2, b3, -⟩ := bridge O X T d G r π eB hI.1 hI.2.2.1 m jj a hja (ϖ ^ L)
-  rw [← hs] at b2 b3
-  let ι : O →+* FractionRing O := algebraMap O (FractionRing O)
-  have hι : Function.Injective ι := IsFractionRing.injective O (FractionRing O)
-  have hmon : ∀ x, (blockPoly (eB x) (eB x * r g₀ x * eB x + s x)).Monic := by
-    intro x
-    have hbb : eB x * eB x = eB x := congrFun hI.2.2.1 x
-    have hbs : eB x * s x = s x := congrFun b2 x
-    have hsb : s x * eB x = s x := congrFun b3 x
-    refine Polynomial.monic_of_injective hι ?_
-    rw [blockPoly_map]
-    refine (bcSplit (FractionRing O) d _ _ t ?_ ?_ ?_ (hI.2.2.2.2.2.2.1 x)).1
-    · rw [← Matrix.map_mul, hbb]
-    · rw [← Matrix.map_mul, mul_add, ← mul_assoc, ← mul_assoc, hbb, hbs]
-    · rw [← Matrix.map_mul, add_mul, mul_assoc, hbb, hsb]
-  obtain ⟨O', i1, i2, i3, i4, i5, i6, e, he, hspl⟩ := hE O X
-    (fun x => blockPoly (eB x) (eB x * r g₀ x * eB x + s x)) hmon
-    (fun x => by rw [blockPoly_map]; exact hsep x)
-  exact ⟨O', i1, i2, i3, i4, i5, i6, e, he, hall O' e he hspl⟩
 
-theorem chain_with_extension_holds : ChainWithExtension := chain_with_extension_of_split splitExt
 
 end Formalism.RepresentationBoundsCohomology.ringDataObjects

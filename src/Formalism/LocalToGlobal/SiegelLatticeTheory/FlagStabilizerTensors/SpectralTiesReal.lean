@@ -274,10 +274,6 @@ theorem STies.concTie (T : STies D) (hF : FinX T.Y) (hK : T.X.LevelSubgroupNorma
   exact ⟨hK, hN, fun u => T.duC_eq hF u, T.dstC_eq, hW, hph,
     ⟨T.hb, T.ψ, T.measTie, T.ψ_char, T.ψ_std, T.measCompat, T.locCompat, hLT⟩, hTF⟩
 
-theorem STies.sConc (T : STies D) (hF : FinX T.Y) (hK : T.X.LevelSubgroupNormalized) (hCL : ∀ u, ColsLink T.X u T.Y.hK) (hW : Formalism.L2.SG.WuDecay.WuDecay T.X)
-    (hph : Integrable T.X.ph (Formalism.L2.SG.ProjRows.muInf T.X.B.I)) : SConc D := by
-  unfold SConc
-  exact ⟨T.X, T.hb, T.Y, hF, T.autTie, hK, hCL, T.measTie, ⟨T.ψ, T.ψ_char, T.ψ_std, T.measCompat⟩, hW, hph, ⟨T.hI hF⟩⟩
 
 end STies
 

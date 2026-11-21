@@ -19,10 +19,6 @@ section General
 
 variable {X Y Z : Scheme.{0}} {L : LB X} {K K' : Type} [Fintype K] [Fintype K']
 
-theorem corr_iff_val (hL : L.IsLB) {φ : K → (Y ⟶ X)} {ε : K → ℤ} {φ' : K' → (Y ⟶ X)} {ε' : K' → ℤ}
-    (t : LB.Gen (LB.LinComb L φ ε)) (t' : LB.Gen (LB.LinComb L φ' ε')) :
-    LB.Gen.Corr L φ ε φ' ε' t t' ↔ ∀ y J, Good L y J → val t (𝟙 Y) y J = val t' (𝟙 Y) y J :=
-  ⟨fun h _ _ hJ => val_corr hJ h _, corr_of_val hL⟩
 
 theorem isGen_iff_gm {M : LB Y} (t : LB.Gen M) :
     t.IsGen ↔ ∀ i j y, y ∈ M.U i ⊓ M.U j →
@@ -53,9 +49,6 @@ theorem val_genCast {φ φ' : K → (Y ⟶ X)} (ε : K → ℤ) (h : φ = φ') (
     (r : Z ⟶ Y) (z : Z) (J : (Z ⟶ X) → L.ι) : val (genCast ε h t) r z J = val t r z J := by
   subst h; rw [genCast_rfl]
 
-theorem isGen_genCast {φ φ' : K → (Y ⟶ X)} (ε : K → ℤ) (h : φ = φ') (t : LB.Gen (LB.LinComb L φ ε)) :
-    (genCast ε h t).IsGen ↔ t.IsGen := by
-  subst h; rw [genCast_rfl]
 
 theorem le_div (φ : K → (X ⟶ X)) (ε : K → ℤ) (j : Fin 1 ⊕ K → L.ι) :
     LB.wchart L (Sum.elim (fun _ : Fin 1 => 𝟙 X) φ) j ≤
@@ -195,20 +188,8 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X₀ :
 
 def primEquiv : PrimIso t ≃ PrimTyG t := divEquiv (cφG t ![𝟙 t.G, t.act.act H.w0]) (cε 2)
 
-theorem isGen_primEquiv (w : PrimIso t) : (primEquiv t w).IsGen ↔ w.IsGen := isGen_divEquiv _ _ w
 
-theorem val_primEquiv (w : PrimIso t) {Z : Scheme.{0}} (r : Z ⟶ t.G.left) (z : Z)
-    {J : (Z ⟶ t.G.left) → t.PP.L.ι} (hJ : Good t.PP.L z J) :
-    val (primEquiv t w) r z J = (val (primGen t.G t.PP.L (t.act.act H.w0) w) r z J)⁻¹ :=
-  (gm_res r z _ (hJ.mem _ r) _).trans ((map_inv _ _).trans
-    (congrArg (·⁻¹) (gm_res r z _ (hJ.mem (primφ t.G (t.act.act H.w0)) r) _).symm))
 
-theorem isPrim_iff_isPrimG (w : PrimIso t) : GlobalTheory.IndefiniteRowSideFullHecke.PrimitiveGermFrames.IsPrim t w ↔ IsPrimG t (primEquiv t w) := by
-  refine and_congr (isGen_primEquiv t w).symm ?_
-  refine (corr_iff_val t.PP.isLB _ _).trans (Iff.trans ?_ (corr_iff_val t.PP.isLB _ _).symm)
-  refine forall_congr' fun y => forall_congr' fun J => forall_congr' fun hJ => ?_
-  rw [val_mul hJ, val_pull hJ, val_pull hJ, val_one, val_primEquiv t w _ y hJ]
-  exact mul_eq_one_iff_inv_eq
 
 theorem corr_pow (hL : t.PP.L.IsLB) {T : Over X₀} {p : T ⟶ t.G} {K : Type} [Fintype K]
     {φ : K → (T.left ⟶ t.G.left)} {ε : K → ℤ}
@@ -220,7 +201,6 @@ theorem corr_pow (hL : t.PP.L.IsLB) {T : Over X₀} {p : T ⟶ t.G} {K : Type} [
 
 variable {S : Type} [CommRing S] (x : Sp S ⟶ X₀) {d : ℕ}
 
-theorem funOn_eq {B : Type} [CommRing B] (b : B) : funOn b = toΓ B b := rfl
 
 theorem algMap_eq {B B' : Type} [CommRing B] [Algebra S B] [CommRing B'] [Algebra S B'] (f : B →ₐ[S] B') :
     algMap x f = homAt x f := rfl
@@ -263,109 +243,13 @@ theorem frameEquiv_apply (j : JetPts t.G x d) (e : FrameFam t.G x t.PP.L j) (m :
 
 variable {t x}
 
-theorem isGen_frameEquiv {j : JetPts t.G x d} (e : FrameFam t.G x t.PP.L j) (m : ℕ) :
-    (frameEquiv t x j e m).IsGen ↔ (e m).IsGen := by
-  rw [frameEquiv_apply]
-  exact isGen_genCast (L := t.PP.L) lamε (lamφ_eq t x j m) (e m)
 
 variable {j : JetPts t.G x d} (act : 𝓞 E → Germ.Pt S 1 d) (e : FrameFam t.G x t.PP.L j) (w : PrimIso t)
 
-theorem val_eLG (m : ℕ) (y : (jOG x d m 1).left) {J : ((jOG x d m 1).left ⟶ t.G.left) → t.PP.L.ι}
-    (hJ : Good t.PP.L y J) :
-    val (eLG t x d (chartEquiv t x j) act (frameEquiv t x j e) (primEquiv t w) m) (𝟙 _) y J =
-      (val (LB.pullGen t.PP.L _ _ (primGen t.G t.PP.L (t.act.act H.w0) w) (jPt t.G x j 1 m 0).left) (𝟙 _) y J)⁻¹ *
-        val (frAt e (n := 1) m (Germ.pt S d 0) (Germ.comp1 (act H.w0) (Germ.pt S d 0))) (𝟙 _) y J := by
-  refine (val_mul hJ _ _ _).trans (congrArg₂ (· * ·) ?_ ?_)
-  · exact (val_pull hJ _ _ _).trans ((val_primEquiv t w _ y hJ).trans (congrArg (·⁻¹) (val_pull hJ _ _ _).symm))
-  · refine (val_pull hJ _ _ _).trans (Eq.trans ?_ (val_pull hJ _ _ _).symm)
-    rw [subst2_eq, frameEquiv_apply]
-    exact val_genCast (L := t.PP.L) lamε (lamφ_eq t x j m) (e m) _ y J
 
-theorem frameL_clause_iff (m : ℕ)
-    (u : LB.Gen (LB.LinComb t.PP.L (Y := (algO x (Jet S (Fin 1 × Fin d) m)).left) (K := Fin 1)
-      (fun _ => (jPt t.G x j 1 m 0).left) (fun _ => 1))) :
-    LB.Gen.Corr t.PP.L _ _ _ _
-      (LB.mulGen t.PP.L _ _ _ _
-        (LB.pullGen t.PP.L _ _ (primGen t.G t.PP.L (t.act.act H.w0) w) (jPt t.G x j 1 m 0).left) u)
-      (frAt e (n := 1) m (Germ.pt S d 0) (Germ.comp1 (act H.w0) (Germ.pt S d 0))) ↔
-    LB.Gen.Corr t.PP.L _ _ _ _ u (eLG t x d (chartEquiv t x j) act (frameEquiv t x j e) (primEquiv t w) m) := by
-  refine (corr_iff_val t.PP.isLB _ _).trans (Iff.trans ?_ (corr_iff_val t.PP.isLB _ _).symm)
-  refine forall_congr' fun y => forall_congr' fun J => forall_congr' fun hJ => ?_
-  rw [val_mul hJ, val_eLG act e w m y hJ]
-  exact eq_inv_mul_iff_mul_eq.symm
 
-theorem isFrameLVia_iff (eL : FrameL t.G x t.PP.L j) :
-    IsFrameLVia w e (act H.w0) eL ↔ GlobalTheory.IndefiniteRowSideFullHecke.RigidAdjointFrameLaws.IsFrame e ∧ EndIs t.G x j (t.act.act H.w0) (act H.w0) ∧
-      ∀ m, (eL m).IsGen ∧ LB.Gen.Corr t.PP.L _ _ _ _ (eL m)
-        (eLG t x d (chartEquiv t x j) act (frameEquiv t x j e) (primEquiv t w) m) :=
-  and_congr_right fun _ => and_congr_right fun _ => forall_congr' fun m =>
-    and_congr_right fun _ => frameL_clause_iff act e w m (eL m)
 
-theorem isGermIn_iff (eL : FrameL t.G x t.PP.L j)
-    (h : ∀ m, LB.Gen.Corr t.PP.L _ _ _ _ (eL m)
-      (eLG t x d (chartEquiv t x j) act (frameEquiv t x j e) (primEquiv t w) m))
-    (k : ℕ) (F : LB.Sec (Out.LPow t.G t.PP.L k (Over.mk x))) (f : Germ.PS S 1 d) :
-    IsGermIn eL (k : ℤ) F f ↔
-      IsGermG t x d (chartEquiv t x j) act (frameEquiv t x j e) (primEquiv t w) k F f := by
-  have hL := t.PP.isLB
-  have hc : ∀ m, LB.Gen.Corr t.PP.L _ _ _ _ (Out.powFrame t.G t.PP.L (jPt t.G x j 1 m 0) (eL m) (k : ℤ))
-      (genPowG t _ _ (eLG t x d (chartEquiv t x j) act (frameEquiv t x j e) (primEquiv t w) m) k) := fun m =>
-    corr_pow t hL _ _ k (h m)
-  constructor
-  · intro hh m
-    obtain ⟨F', h1, h2⟩ := hh m
-    refine ⟨F', Out.powFrame t.G t.PP.L (jPt t.G x j 1 m 0) (eL m) (k : ℤ), ?_, ?_, ?_⟩
-    · exact h1
-    · exact hc m
-    · exact h2
-  · intro hh m
-    obtain ⟨F', τ, h1, h2, h3⟩ := hh m
-    have hτ := Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun.gen_eq_of_corr _ hL _ _ _ _ _ _ _ h2 (hc m)
-    rw [hτ] at h3
-    refine ⟨F', ?_, ?_⟩
-    · exact h1
-    · exact h3
 
-theorem exists_frameL (hw : w.IsGen) (he : ∀ m, (e m).IsGen)
-    (hA : ∀ m, chartEquiv t x j m ≫ t.act.act H.w0 =
-      homAt x (jetSubstP m fun p : Fin 1 × Fin d => psTrunc m (act H.w0 p.2)) ≫ chartEquiv t x j m) :
-    ∃ eL : FrameL t.G x t.PP.L j, ∀ m, (eL m).IsGen ∧ LB.Gen.Corr t.PP.L _ _ _ _ (eL m)
-      (eLG t x d (chartEquiv t x j) act (frameEquiv t x j e) (primEquiv t w) m) := by
-  have hL := t.PP.isLB
-  have hφ : ∀ (m : ℕ) (I : ULift (Finset (Fin 2))),
-      (chartEquiv t x j m).left ≫ cφG t ![𝟙 t.G, t.act.act H.w0] I =
-        (homAt x (sL m (act H.w0))).left ≫ cφG t ![jptG t x d (chartEquiv t x j) m (0 : Fin 2),
-          jptG t x d (chartEquiv t x j) m (1 : Fin 2)] I := by
-    intro m I
-    have hpt : (fun i => chartEquiv t x j m ≫ (![𝟙 t.G, t.act.act H.w0] : Fin 2 → (t.G ⟶ t.G)) i) =
-        fun i => homAt x (sL m (act H.w0)) ≫ (![jptG t x d (chartEquiv t x j) m (0 : Fin 2),
-          jptG t x d (chartEquiv t x j) m (1 : Fin 2)] : Fin 2 → (jOG x d m 2 ⟶ t.G)) i := by
-      funext i
-      fin_cases i
-      · show chartEquiv t x j m ≫ 𝟙 t.G =
-          homAt x (sL m (act H.w0)) ≫ homAt x (jetCopy d m (0 : Fin 2)) ≫ chartEquiv t x j m
-        rw [Category.comp_id, ← Category.assoc, homAt_comp, sL_copy0, homAt_id, Category.id_comp]
-      · show chartEquiv t x j m ≫ t.act.act H.w0 =
-          homAt x (sL m (act H.w0)) ≫ homAt x (jetCopy d m (1 : Fin 2)) ≫ chartEquiv t x j m
-        rw [← Category.assoc, homAt_comp, sL_copy1, hA m]
-    exact (comp_lamφ _ _ I).trans ((congrArg (fun p => lamφ t.G p I) hpt).trans (comp_lamφ _ _ I).symm)
-  have hex : ∀ m, ∃ u : LB.Gen (LB.LinComb t.PP.L (Y := (jOG x d m 1).left) (K := Fin 1)
-      (fun _ => (chartEquiv t x j m).left) fun _ => (1 : ℤ)), u.IsGen ∧ LB.Gen.Corr t.PP.L _ _ _ _ u
-      (eLG t x d (chartEquiv t x j) act (frameEquiv t x j e) (primEquiv t w) m) := by
-    intro m
-    have hg : (eLG t x d (chartEquiv t x j) act (frameEquiv t x j e) (primEquiv t w) m).IsGen :=
-      DVR.mulGen_isGen_of_isGen _ (DVR.pullGen_isGen_of_isGen _ _ _ ((isGen_primEquiv t w).2 hw) _) _
-        (DVR.pullGen_isGen_of_isGen _ _ _ ((isGen_frameEquiv e m).2 (he m)) _)
-    obtain ⟨u, hu, hv⟩ := exists_gen hL (K' := Fin 1) (φ' := fun _ => (chartEquiv t x j m).left)
-      (ε' := fun _ => (1 : ℤ)) (by
-        intro U _ hU
-        rw [Fintype.prod_sum_type, Fintype.prod_sum_type]
-        simp only [Fintype.prod_sum_type, Sum.elim_inl, Sum.elim_inr, Fin.prod_univ_one, Category.comp_id, hφ m]
-        rw [_root_.mul_assoc, ← Finset.prod_mul_distrib]
-        simp only [← zpow_add, neg_add_cancel, zpow_zero, Finset.prod_const_one, _root_.mul_one]) _ hg
-    exact ⟨u, hu, corr_of_val hL fun y J hJ => hv _ _ y J hJ⟩
-  choose u hu using hex
-  exact ⟨u, hu⟩
 
 end Compare
 

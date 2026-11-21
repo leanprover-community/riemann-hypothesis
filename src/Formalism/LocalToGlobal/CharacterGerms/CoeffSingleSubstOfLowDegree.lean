@@ -495,13 +495,6 @@ theorem sys_P (Y : FBChart C V O dd) (p : PairData Y d I) {g : Fin 2} (hg : (Y.r
 
 end Sys1
 
-private theorem v_sum_lemma {K : Type} [Field K] (w : AddValuation K (WithTop ℝ)) {ι : Type} (s : Finset ι)
-    (x : ι → K) (hx : ∀ i ∈ s, (0 : WithTop ℝ) ≤ w (x i)) : (0 : WithTop ℝ) ≤ w (∑ i ∈ s, x i) :=
-  Finset.sum_induction x (fun y => (0 : WithTop ℝ) ≤ w y) (fun a b ha hb => le_trans (le_min ha hb) (AddValuation.map_add w a b))
-    (by
-      show (0 : WithTop ℝ) ≤ w 0
-      rw [AddValuation.map_zero]
-      exact le_top) hx
 
 end FormalGermZero
 

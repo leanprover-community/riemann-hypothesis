@@ -150,9 +150,6 @@ theorem infW_alg (W : Wt E n) (τ : E →+* ℂ) :
   obtain ⟨k, -, rfl⟩ := hx
   exact ⟨(W.at τ).w k - (k : ℕ), by push_cast; ring⟩
 
-theorem infW_conjugate (W : Wt E n) (τ : E →+* ℂ) :
-    infW W (ComplexEmbedding.conjugate τ) = (infW W τ).map fun z => -z := by
-  rw [infW, W.at_conjugate, GlobalTheory.DefiniteBC.infOfWeight_dual, infW]
 
 def cAll : UA E n →* (InfinitePlace E → GL (Fin n) ℂ) := MonoidHom.pi fun v => cEmb v.embedding
 
@@ -261,10 +258,6 @@ theorem mem_finPart {W : Wt E n} {f : algForms W} : f ∈ π.finPart W ↔ ∀ v
 def finRep (W : Wt E n) : Representation ℂ (finU E n) (π.finPart W) :=
   sub (algRep W) (π.finPart W) fun k _ h => mem_finPart.2 fun v => π.isAut.stable k _ (mem_finPart.1 h v)
 
-theorem isSmooth_finRep (W : Wt E n) : IsSmooth (π.finRep W) := fun f => by
-  convert isSmooth_algRep W f.1 using 1
-  ext k
-  exact Subtype.ext_iff
 
 def IsLocComp (w : HeightOneSpectrum (𝓞 E)) (σ : SmIrr (GL (Fin n) (w.adicCompletion E))) : Prop :=
   IsCompAlong π.V (locU n w) ((cLoc w).comp (locU n w).subtype) σ.ρ
@@ -371,32 +364,11 @@ def AutSub.ofChar (χ : Formalism.L2.Host.HChar E) : AutSub E n where
     fun h => detFn_ne_zero χ (Submodule.span_singleton_eq_bot.1 h),
     fun _ hW _ => (nonzero_span_atom _ (detFn_ne_zero χ)).le_iff.1 hW⟩
 
-theorem AutSub.rep_ofChar (χ : Formalism.L2.Host.HChar E) (x : UA E n) (φ : (AutSub.ofChar n χ).V) :
-    (AutSub.ofChar n χ).rep x φ = (detChar n χ x : ℂ) • φ := by
-  obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.1 φ.2
-  refine Subtype.ext ?_
-  change RU E n x φ.1 = _ • φ.1
-  rw [← hc, map_smul, RU_detFn, smul_comm]
 
 variable (E n) in
 
 def AutSub.triv : AutSub E n := ⟨Submodule.span ℂ {(fun _ => 1 : UA E n → ℂ)}, isAutRepU_const⟩
 
-theorem AutSub.mult_ofChar (χ : Formalism.L2.Host.HChar E) : (AutSub.ofChar n χ).mult = 1 := by
-  refine (finrank_eq_one_iff_of_nonzero' _ (AutSub.ofChar n χ).incl_ne_zero).2 fun f => ?_
-  let e : (AutSub.ofChar n χ).V := ⟨detFn n χ, Submodule.mem_span_singleton_self _⟩
-  have h1 : (f e).1 = (f e).1 1 • detFn n χ := funext fun g => by
-    have h := congrFun (congrArg Subtype.val (f.isIntertwining _ _ g e)) 1
-    rw [AutSub.rep_ofChar, map_smul] at h
-    have h' : detFn n χ g * (f e).1 1 = (f e).1 (1 * g) := h
-    rw [one_mul] at h'
-    rw [← h', mul_comm]
-    rfl
-  refine ⟨(f e).1 1, DFunLike.ext _ _ fun φ => ?_⟩
-  obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.1 φ.2
-  obtain rfl : c • e = φ := Subtype.ext hc
-  rw [map_smul, map_smul]
-  exact congrArg _ (Subtype.ext h1.symm)
 
 variable (E n) in
 
@@ -451,9 +423,6 @@ def sat (π : AU E n) (w : HeightOneSpectrum (𝓞 E)) : Multiset ℂ := Finset.
 theorem sat_card (π : AU E n) (w : HeightOneSpectrum (𝓞 E)) : Multiset.card (π.sat w) = n / 2 := by
   simp [sat]
 
-theorem zero_notMem_sat (π : AU E n) (w : HeightOneSpectrum (𝓞 E)) : (0 : ℂ) ∉ π.sat w := fun h => by
-  obtain ⟨i, -, e⟩ := Multiset.mem_map.1 h
-  exact (π.satVec w i).ne_zero e
 
 def HasWt (π : AU E n) (τ : E →+* ℂ) (lam : DomWeight n) : Prop :=
   Quotient.liftOn π (fun π => HasWeightAt π.V τ lam) fun _ _ h =>
@@ -493,49 +462,12 @@ theorem HasWt.wt {π : AU E n} {τ : E →+* ℂ} {lam : DomWeight n} (h : π.Ha
 
 def ofChar (n : ℕ) (χ : Formalism.L2.Host.HChar E) : AU E n := mk (AutSub.ofChar n χ)
 
-theorem ofChar_eq_iff {χ χ' : Formalism.L2.Host.HChar E} : ofChar n χ = ofChar n χ' ↔ detChar n χ = detChar n χ' := by
-  constructor
-  · intro h
-    obtain ⟨e⟩ := mk_eq_mk.1 h
-    have := Submodule.nontrivial_iff_ne_bot.2 (AutSub.ofChar n χ).isAut.ne_bot
-    obtain ⟨φ, hφ⟩ := exists_ne (0 : (AutSub.ofChar n χ).V)
-    ext x
-    have h1 : e ((AutSub.ofChar n χ).rep x φ) = (AutSub.ofChar n χ').rep x (e φ) :=
-      LinearMap.congr_fun (e.isIntertwining' x) φ
-    rw [AutSub.rep_ofChar, AutSub.rep_ofChar, map_smul] at h1
-    exact smul_left_injective ℂ ((map_ne_zero_iff e e.injective).2 hφ) h1
-  · intro h
-    refine congrArg mk (AutSub.ext ?_)
-    change Submodule.span ℂ {detFn n χ} = Submodule.span ℂ {detFn n χ'}
-    unfold detFn
-    rw [h]
 
-theorem mult_ofChar (χ : Formalism.L2.Host.HChar E) : (ofChar n χ).mult = 1 := AutSub.mult_ofChar χ
 
-theorem ofChar_one : ofChar n (1 : Formalism.L2.Host.HChar E) = mk (AutSub.triv E n) := rfl
 
-theorem sph_triv (w : HeightOneSpectrum (𝓞 E)) : (mk (AutSub.triv E n)).Sph w := isUnramU_const w
 
-theorem isLoc_triv (w : HeightOneSpectrum (𝓞 E)) : (mk (AutSub.triv E n)).IsLoc w (Quotient.mk _ (SmIrr.triv _)) :=
-  isCompAlong_const _ _ (.refl _)
 
-theorem infW_wt_triv (τ : E →+* ℂ) : infW (mk (AutSub.triv E 1)).wt τ = {0} := by
-  have h := weight_eq_zero_of_const τ _ (HasWt.wt (π := mk (AutSub.triv E 1)) (hasWeightAt_const τ))
-  simp [infW, infOfWeight, h]
 
-theorem hasWt_ofChar_one (χ : Formalism.L2.Host.HChar E) (τ : E →+* ℂ) (lam : DomWeight 1)
-    (h : ∀ x ∈ embU 1 τ, (detChar 1 χ x : ℂ) = cEmb τ x 0 0 ^ lam.w 0) : (ofChar 1 χ).HasWt τ lam := by
-  have h0 : GlobalTheory.Branching.RankTwo.one' lam ≠ 0 := fun h => one_ne_zero (congrArg Subtype.val h)
-  let e : ℂ ≃ₗ[ℂ] nablaSq ℂ 1 lam := LinearEquiv.ofBijective
-    (LinearMap.toSpanSingleton ℂ _ (GlobalTheory.Branching.RankTwo.one' lam))
-    ⟨smul_left_injective ℂ h0, fun f => ⟨_, (GlobalTheory.Branching.RankTwo.eq_smul_one lam f).symm⟩⟩
-  have : IsSimpleModule ℂ (nablaSq ℂ 1 lam) := IsSimpleModule.congr e.symm
-  refine ⟨(CuspRep.isIrreducible_iff _).2 ⟨inferInstance, fun W _ => eq_bot_or_eq_top W⟩,
-    e.symm.toLinearMap.smulRight (detFn 1 χ), fun h1 => detFn_ne_zero (n := 1) χ ?_,
-    fun v => Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _), fun x v => ?_⟩
-  · simpa using LinearMap.congr_fun h1 (e 1)
-  · rw [GlobalTheory.Branching.RankTwo.small_act, map_smul, LinearMap.smulRight_apply, map_smul, RU_detFn, h x x.2, smul_comm]
-    rfl
 
 end AU
 
@@ -545,33 +477,6 @@ example (τ : E →+* ℂ) : infW (Wt.ofFam fun _ => zeroWt 2) τ = {1 / 2, -1 /
   norm_num
   rfl
 
-theorem finPart_triv_ne_bot : (AutSub.triv E n).finPart (fun _ => zeroWt n) ≠ ⊥ := by
-  let W : Wt E n := fun _ => zeroWt n
-  let l : W.Sp →ₗ[ℂ] ℂ := (MvPolynomial.aeval (0 : InfinitePlace E × Fin n × Fin n → ℂ)).toLinearMap.comp
-    (Submodule.subtype _)
-  have hl : ∀ x v, l (W.rep x v) = l v := fun x v => by
-    have h1 : ∀ g, Formalism.L2.DIV.detTwK (K := ℂ) W g = 1 := fun g => Finset.prod_eq_one fun τ _ => by
-      have : (W τ).detShift = 0 := by simp [W, zeroWt, DomWeight.detShift]
-      simp [this, detPow]
-    have h2 : ∀ g : InfinitePlace E → GL (Fin n) ℂ, (MvPolynomial.aeval (0 : InfinitePlace E × Fin n × Fin n → ℂ)).comp
-        (Formalism.L2.DIV.trAct g) = MvPolynomial.aeval 0 := fun g => MvPolynomial.algHom_ext fun i => by
-      simp [Formalism.L2.DIV.trAct, Formalism.GradedWeylDivisibility.blockAct]
-    change MvPolynomial.aeval 0 (Formalism.L2.DIV.detTwK W (cAll x.1) • Formalism.L2.DIV.trAct (cAll x.1) v.1) = _
-    rw [h1, one_smul]
-    exact AlgHom.congr_fun (h2 _) v.1
-  have h0 : (zeroWt n).natW = 0 := funext fun i => by simp [zeroWt, DomWeight.detShift, DomWeight.natW]
-  have h1 : (1 : Formalism.L2.DIV.Pol ℂ (InfinitePlace E) n) ∈ Formalism.L2.DIV.VV ℂ W :=
-    Submodule.subset_span ⟨fun _ => 1, fun _ => by
-      have := Formalism.GradedWeylDivisibility.hwMem ℂ n n le_rfl 0 antitone_const
-      simpa [nablaSq, W, h0, Formalism.GradedWeylDivisibility.hw] using this, by simp⟩
-  have hm : ∀ v, l.smulRight (fun _ => 1 : UA E n → ℂ) v ∈ (AutSub.triv E n).V := fun v =>
-    Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _)
-  refine (Submodule.ne_bot_iff _).2 ⟨⟨l.smulRight (fun _ => 1), fun v => (AutSub.triv E n).le_autU (hm v), fun x v => ?_⟩,
-    AutSub.mem_finPart.2 hm, fun h => ?_⟩
-  · rw [LinearMap.smulRight_apply, hl]
-    rfl
-  · have := congrFun (LinearMap.congr_fun (congrArg Subtype.val h) ⟨1, h1⟩) 1
-    simp [l] at this
 
 section Par
 
@@ -580,11 +485,6 @@ variable {LP : HeightOneSpectrum (𝓞 E) → Type}
 def locPar (rc : ∀ w m, SmIrr (GL (Fin m) (w.adicCompletion E)) → LP w) (π : AU E n) (w : HeightOneSpectrum (𝓞 E)) : LP w :=
   rc w n (π.loc w).out
 
-theorem locPar_eq {rc : ∀ w m, SmIrr (GL (Fin m) (w.adicCompletion E)) → LP w} {w : HeightOneSpectrum (𝓞 E)}
-    (hrc : ∀ σ σ' : SmIrr (GL (Fin n) (w.adicCompletion E)), Nonempty (σ.ρ.Equiv σ'.ρ) → rc w n σ = rc w n σ')
-    {π : AU E n} {σ : SmIrr (GL (Fin n) (w.adicCompletion E))} (h : π.loc w = Quotient.mk _ σ) :
-    locPar rc π w = rc w n σ :=
-  hrc _ _ (Quotient.exact ((Quotient.out_eq _).trans h))
 
 end Par
 
@@ -602,8 +502,6 @@ abbrev HostWt (_j : ℕ) : Type := Wt H.E R.nV
 
 variable {H} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
 
-theorem isSat_iff {n : ℕ} (π : AutSub H.E n) (w : PlE H) (α : Fin (n / 2) → ℂˣ) : π.IsSat w α ↔ IsSatAt π.V w α :=
-  Iff.rfl
 
 def nbc (rc : RecMap A) (emb : ∀ i, A.AV i → HostAU H (N.j i)) (inj : ∀ i, Function.Injective (emb i))
     (loc : ∀ i (P : A.AV i) w, A.locV i P w = locPar rc (emb i P) w)
@@ -628,21 +526,6 @@ def nbc (rc : RecMap A) (emb : ∀ i, A.AV i → HostAU H (N.j i)) (inj : ∀ i,
   embAV_sph := sph
   embAV_inf := inf
 
-theorem unitaryRead_nbc {rc : RecMap A} {emb inj loc sat sph inf}
-    (hrc : ∀ w (σ σ' : LocIrr w R.nV), Nonempty (σ.ρ.Equiv σ'.ρ) → rc w R.nV σ = rc w R.nV σ')
-    (hloc : ∀ (π : AU H.E R.nV) w σ σ', IsSplitPl H w → π.IsLoc w σ → π.IsLoc w σ' → σ = σ')
-    (hsat : ∀ (π : AU H.E R.nV) w, ¬ IsSplitPl H w → π.Sph w → ∃ α, π.IsSat w α)
-    (hwt : ∀ (π : AU H.E R.nV) τ, ∃ lam, π.HasWt τ lam) :
-    UnitaryRead (nbc rc emb inj loc sat sph inf) rc := by
-  intro j _ _ π
-  obtain ⟨U, rfl⟩ := AU.mk_surjective π
-  refine ⟨U.V, U.isAut, fun w hw σ hσ => ?_, fun w hw hs => ?_, fun τ => ?_⟩
-  · have h : (AU.mk U).IsLoc w (Quotient.mk _ σ) := hσ
-    exact locPar_eq (hrc w) (hloc _ w _ _ hw h.loc h)
-  · obtain ⟨α, h⟩ := hsat (AU.mk U) w hw hs
-    exact ⟨_, h.satVec, rfl⟩
-  · obtain ⟨lam, h⟩ := hwt (AU.mk U) τ
-    exact ⟨_, h.wt, rfl⟩
 
 end Host
 

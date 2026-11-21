@@ -725,13 +725,6 @@ instance : Inhabited (CG E 1) := ⟨mk (CuspSub.triv E le_rfl)⟩
 
 instance : Inhabited (CG E 0) := ⟨mk (CuspSub.triv E zero_le_one)⟩
 
-theorem isRegAlg_triv : (mk (CuspSub.triv E (le_refl 1))).IsRegAlg := fun τ => by
-  have h : (mk (CuspSub.triv E (le_refl 1))).HasInfChar τ {0} := ⟨rfl, fun u φ hφ => by
-    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hφ
-    rw [map_smul, cap_oneFn, smul_comm]
-    simp⟩
-  rw [h.infChar_eq]
-  exact ⟨by simp, fun z hz => ⟨0, by simpa using hz⟩⟩
 
 end CG
 

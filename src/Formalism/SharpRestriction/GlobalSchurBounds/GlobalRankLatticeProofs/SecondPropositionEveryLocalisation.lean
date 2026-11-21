@@ -58,8 +58,6 @@ theorem orderOf_iotaH (e : ℕ) (i : ZMod (2 ^ e)) : orderOf (iotaH e i) = addOr
   rw [orderOf_ofAdd_eq_addOrderOf] at h
   exact h
 
-theorem ordH_eq (e : ℕ) (x : HGrp e) : ordH (iotaHInv e x) = orderOf x := by
-  rw [ordH, ← orderOf_iotaH, iotaH_iotaHInv]
 
 theorem cc_mul_cc (φ : Formalism.HC.Frame) : φ.cc * φ.cc = 1 := φ.cc_mul_cc
 

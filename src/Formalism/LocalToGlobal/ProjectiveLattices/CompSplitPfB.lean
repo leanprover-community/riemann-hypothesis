@@ -106,29 +106,7 @@ theorem cspB_idem_map {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Al
   rw [cspB_idem_spec C hC z hz q, cspB_lift_map φ hx hz hzx]
   exact cspB_idem_spec C hC x hx (PrimeSpectrum.comap φ.toRingHom q)
 
-theorem cspB_idem_field_one {K' : Type} [Field K'] [Algebra c.F K'] (x : Sp K' ⟶ Xo.X)
-    (hx : x ≫ Xo.s = sOf c K') (q : PrimeSpectrum K') (hq : cspB_lift x hx q ∈ C) :
-    cspB_idem C hC x hx = 1 := by
-  have hi := cspB_idem_idem C hC x hx
-  have hne : cspB_idem C hC x hx ≠ 0 := by
-    intro h0
-    have h3 := (cspB_idem_spec C hC x hx q).mpr hq
-    rw [h0] at h3
-    exact h3 q.asIdeal.zero_mem
-  have h2 : cspB_idem C hC x hx * (cspB_idem C hC x hx - 1) = 0 := by
-    rw [mul_sub, mul_one, hi.eq, sub_self]
-  rcases mul_eq_zero.mp h2 with h | h
-  · exact absurd h hne
-  · exact sub_eq_zero.mp h
 
-theorem cspB_idem_field_zero {K' : Type} [Field K'] [Algebra c.F K'] (x : Sp K' ⟶ Xo.X)
-    (hx : x ≫ Xo.s = sOf c K') (q : PrimeSpectrum K') (hq : cspB_lift x hx q ∉ C) :
-    cspB_idem C hC x hx = 0 := by
-  have h1 : cspB_idem C hC x hx ∈ q.asIdeal := by
-    by_contra h
-    exact hq ((cspB_idem_spec C hC x hx q).mp h)
-  by_contra hne
-  exact q.isPrime.ne_top (Ideal.eq_top_of_isUnit_mem _ h1 (Ne.isUnit hne))
 
 variable (Xo c) in
 
@@ -145,19 +123,6 @@ theorem cspB_rule_bor (p : TRing c.F) (t : Ix Dw → (p.R)ˣ) (y y' : FrPt Xo c 
     cspB_rule Xo c C hC p y' = cspB_rule Xo c C hC p y := by
   exact cspB_idem_congr C hC y.x_over y'.x_over hb.1
 
-theorem cspB_rule_mul_mem {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {g : Rul Xo c} (hg : g ∈ sec Xo c a n) :
-    cspB_rule Xo c C hC * g ∈ sec Xo c a n := by
-  have hg' : _ ∧ _ := hg
-  obtain ⟨hgN, hgW⟩ := hg'
-  show _ ∧ _
-  refine ⟨?_, ?_⟩
-  · intro p q φ y z hyz
-    show cspB_rule Xo c C hC q z * g q z = φ (cspB_rule Xo c C hC p y * g p y)
-    rw [map_mul, ← cspB_rule_natural C hC p q φ y z hyz, ← hgN p q φ y z hyz]
-  · intro p t y y' hb
-    show cspB_rule Xo c C hC p y' * g p y' = wchar (ex Dw a n) t * (cspB_rule Xo c C hC p y * g p y)
-    rw [cspB_rule_bor C hC p t y y' hb, hgW p t y y' hb]
-    ring
 
 theorem split_rule_mem_weight_zero : cspB_rule Xo c C hC ∈ sec Xo c 0 0 := by
   show _ ∧ _
@@ -197,23 +162,6 @@ theorem cspB_genPt_mem (Z : Comp Xo c) : genPt Z ∈ (Z : Set (Xo.XF c)) := by
   rw [hcl.closure_eq] at hg
   exact hg.mem
 
-theorem cspB_lift_genFr (hG : GenFrEx Xo c) (Z : Comp Xo c) (q : PrimeSpectrum (Om Z)) :
-    cspB_lift (genFr hG Z).x (genFr hG Z).x_over q = genPt Z := by
-  have e0 : Spec.map (CommRingCat.ofHom (algebraMap c.F (kap Z))) = genSp Z ≫ strK := by
-    show Spec.map (CommRingCat.ofHom (Spec.preimage (genSp Z ≫ strK)).hom) = _
-    rw [CommRingCat.ofHom_hom, Spec.map_preimage]
-  have e : cspB_lift (genFr hG Z).x (genFr hG Z).x_over = spMap (algebraMap (kap Z) (Om Z)) ≫ genSp Z := by
-    apply pullback.hom_ext
-    · rw [cspB_lift_fst, (isGenFr_genFr hG Z).1, Category.assoc]
-      rfl
-    · rw [cspB_lift_snd, Category.assoc]
-      show _ = spMap (algebraMap (kap Z) (Om Z)) ≫ (genSp Z ≫ strK)
-      rw [← e0]
-      show Spec.map _ = Spec.map _ ≫ Spec.map _
-      rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
-  rw [e]
-  exact (Scheme.Hom.comp_apply (spMap (algebraMap (kap Z) (Om Z))) (genSp Z) q).trans
-    (Scheme.fromSpecResidueField_apply (genPt Z) _)
 
 theorem cspB_isClopen (hdisj : ∀ Z Z' : Comp Xo c, Z ≠ Z' → Disjoint (Z : Set (Xo.XF c)) Z')
     (Z : Comp Xo c) : IsClopen (Z : Set (Xo.XF c)) := by

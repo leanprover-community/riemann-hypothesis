@@ -80,23 +80,7 @@ section Above
 
 variable {U : Scheme.{0}} {F O : Type} [Field F] [CommRing O] {c : U ⟶ Sp F} {t₀ : SAB H U} {β : O →+* F}
 
-theorem above_refl (C : Cpt c t₀ β) : ∃ ν : SABMap t₀ t₀ (𝟙 U), ν.φ = 𝟙 _ ∧
-    Nonempty (C.Above C (RingHom.id O) (𝟙 U) ν) ∧ C.ExtendsAut (Iso.refl U) ν := by
-  obtain ⟨ν, hν⟩ := ObjMaps.exists_sab_id t₀
-  obtain ⟨mu, hmu⟩ := ObjMaps.exists_sab_id C.t
-  have e : spMap (RingHom.id O) = 𝟙 _ := Spec.map_id _
-  have w : 𝟙 C.X ≫ C.s = C.s ≫ spMap (RingHom.id O) := by simp [e]
-  have hφ : C.m.φ ≫ mu.φ = ν.φ ≫ C.m.φ := by rw [hν, hmu]; simp
-  refine ⟨ν, hν, ⟨⟨𝟙 _, w, ?_, mu, by simp, hφ⟩⟩, Iso.refl _, mu, by simp, by simp, hφ⟩
-  have : IsIso (spMap (RingHom.id O)) := e ▸ inferInstance
-  have h : pullback.lift (𝟙 C.X) C.s w ≫ pullback.fst _ _ = 𝟙 _ := pullback.lift_fst _ _ _
-  have : IsIso (pullback.lift (𝟙 C.X) C.s w) := IsIso.of_isIso_fac_right h
-  infer_instance
 
-theorem abLocus_open_part (C : Cpt c t₀ β) : abLocus t₀.G = Set.univ := by
-  refine Set.eq_univ_of_forall fun x => (abLocus_pullback abLocusOne C.t.semi C.m.cart.1 x).1 ?_
-  have h : C.jQ x ∈ pullback.fst C.s (spMap β) ⁻¹' abLocus C.t.G := C.ab_gen ▸ Set.mem_range_self x
-  simpa using h
 
 end Above
 
@@ -163,26 +147,7 @@ theorem exists_gaussian : IsDedFrac (algebraMap ℤ ℚ) ∧
     exact good_zeroTriple _
   exact key _ _ h₁ h₄
 
-theorem system_primes_distinct_levels_ge_three {D : Datum H} {Xo : ∀ l : Level H, Moduli D l} (S : System Xo) :
-    S.n true ≠ S.n false ∧ ∀ i, 3 ≤ S.n i ^ S.J i := by
-  refine ⟨fun h => ?_, fun i => ?_⟩
-  · have := S.ch_ne (S.n true)
-    cases hc : S.ch (S.n true) <;> simp_all
-  · obtain ⟨hp, ho, -⟩ := S.aux i
-    have h2 := hp.two_le
-    have h3 : 3 ≤ S.n i := by
-      obtain ⟨k, hk⟩ := ho
-      omega
-    exact h3.trans (Nat.le_self_pow (by have := S.J_pos i; omega) _)
 
-theorem isPrimeToPart_unique {l₀ l₀' l : Level H} {p : ℕ} (h : IsPrimeToPart l₀ l p) (h' : IsPrimeToPart l₀' l p) :
-    l₀ = l₀' := by
-  obtain ⟨a, b, c⟩ := h
-  obtain ⟨a', b', c'⟩ := h'
-  cases l₀; cases l₀'
-  simp only at a b c a' b' c'
-  subst a b c a' b' c'
-  rfl
 
 theorem exists_isInc (l : Level H) (n : ℕ) : ∃ β : RZ H n l.A →+* KA l,
     IsInc (RZ H n l.A).subtype (KA l).val.toRingHom β := by

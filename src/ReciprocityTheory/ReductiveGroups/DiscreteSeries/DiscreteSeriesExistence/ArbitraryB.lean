@@ -25,7 +25,6 @@ def arbMulB (n : ℕ) :
         (Matrix (Fin n) (Fin n) ℂ →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ) ≃ₗ[ℝ] _).toLinearMap.comp
       (LinearMap.mul ℝ (Matrix (Fin n) (Fin n) ℂ)))
 
-theorem arbMulB_apply (a b : Matrix (Fin n) (Fin n) ℂ) : arbMulB n a b = a * b := rfl
 
 def arbSharp (ε : Fin n → Bool) : Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
   LinearMap.toContinuousLinearMap

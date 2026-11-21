@@ -285,19 +285,6 @@ open DirichletCharacter
 
 variable {N : ℕ} [NeZero N]
 
-lemma re_gChi (ξ : DirichletCharacter ℂ N) (h : ξ ≠ 1) (y : ℝ) : (An.gChi ξ y).re = Gchi ξ y := by
-  unfold An.gChi Gchi Schi An.sumLamChi An.logDerivativeAtOne
-  rw [if_neg h, add_re, re_sum, re_ofReal_mul, mul_comm y]
-  congr 1
-  refine Finset.sum_congr rfl fun n hn => ?_
-  have hn' := Finset.mem_Icc.mp hn
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn'.1
-  have hy : (1 : ℝ) ≤ y := by
-    have : 1 ≤ ⌊y⌋₊ := hn'.1.trans hn'.2
-    exact_mod_cast (Nat.one_le_floor_iff y).1 this
-  have hny : (n : ℝ) ≤ y := (Nat.cast_le.mpr hn'.2).trans (Nat.floor_le (by linarith))
-  have h0 : 0 ≤ y / n - 1 := by rw [sub_nonneg, le_div_iff₀ hn0]; linarith
-  rw [max_eq_left h0, re_mul_ofReal, re_ofReal_mul]
 
 lemma lseries_re (ξ : DirichletCharacter ℂ N) {s : ℂ} (hs : 1 < s.re) :
     LSeries (fun n => ((Λ n * (ξ n).re : ℝ) : ℂ)) s =
@@ -517,13 +504,6 @@ theorem landau_family {ι : Type} (c : ι → PChar) (τ : ι → ι) (hτ : ∀
 
 end Family
 
-theorem inv_eq_of_isReal {ψ : PChar} (h : ψ.IsReal) : ψ.inv = ψ := by
-  obtain ⟨N, χ, hp⟩ := ψ
-  simp only [PChar.inv]
-  congr 1
-  refine MulChar.ext fun a => ?_
-  rw [← MulChar.star_apply']
-  exact Complex.conj_eq_iff_im.2 (h a)
 
 theorem eq_one_of_chi {ψ : PChar} (h : ψ.χ = 1) : ψ = PChar.one := by
   obtain ⟨N, χ, hp⟩ := ψ
@@ -535,57 +515,6 @@ theorem eq_one_of_chi {ψ : PChar} (h : ψ.χ = 1) : ψ = PChar.one := by
 
 theorem one_inv : PChar.one.inv = PChar.one := eq_one_of_chi (inv_one (G := DirichletCharacter ℂ 1))
 
-theorem zero_free_of_Chebyshev_growth (Lv : Level) : Lv.ChebyshevGrowthImpliesZeroFree := by
-  classical
-  intro θ h0 h1 y0 hG ψ hψ s hs
-  have hmem : ∀ ξ, ξ ∈ Lv.Nt ↔ ξ ≠ PChar.one ∧ ξ ∈ Lv.KEPT := fun ξ => by
-    unfold Level.Nt
-    rw [Finset.mem_erase]
-  set k : PChar → ℕ := fun ξ => if Lv.psK = some ξ then 3 * Lv.o + 1 else 1 with hk
-  have hps : ∀ ξ, Lv.psK = some ξ → Lv.psK = some ξ.inv := fun ξ h => by
-    rw [inv_eq_of_isReal (Lv.psK_spec ξ h).2.2]; exact h
-  have hki : ∀ ξ, k ξ.inv = k ξ := fun ξ => by
-    have : Lv.psK = some ξ.inv ↔ Lv.psK = some ξ := ⟨fun h => by simpa only [PChar.inv_inv] using hps _ h, hps ξ⟩
-    simp only [hk, this]
-  have hk0 : ∀ ξ, 0 < k ξ := fun ξ => by
-    simp only [hk]
-    split_ifs <;> omega
-  have hp : (0 : ℝ) < 3 * (Lv.o : ℝ) + 1 := by positivity
-  have hkw : ∀ ξ, (k ξ : ℝ) = (3 * (Lv.o : ℝ) + 1) * Lv.wt ξ := fun ξ => by
-    simp only [hk, Level.wt]
-    split_ifs
-    · push_cast; ring
-    · rw [mul_inv_cancel₀ hp.ne', Nat.cast_one]
-  have hne : ∀ ξ ∈ Lv.Nt, ξ.χ ≠ 1 := fun ξ h e => ((hmem ξ).1 h).1 (eq_one_of_chi e)
-  have key := landau_family (ι := Σ _ : PChar, ℕ) (fun i => i.1) (fun i => ⟨i.1.inv, i.2⟩)
-    (fun i => by obtain ⟨a, b⟩ := i; simp only [PChar.inv_inv]) (fun _ => rfl)
-    (Lv.Nt.sigma fun ξ => Finset.range (k ξ)) (fun i h => hne _ (Finset.mem_sigma.1 h).1)
-    (fun i h => by
-      obtain ⟨a1, a2⟩ := Finset.mem_sigma.1 h
-      obtain ⟨b1, b2⟩ := (hmem _).1 a1
-      refine Finset.mem_sigma.2 ⟨(hmem _).2 ⟨fun e => b1 ?_, Lv.inv_mem _ b2⟩, ?_⟩
-      · have e' : i.1.inv = PChar.one := e
-        rw [← i.1.inv_inv, e', one_inv]
-      · show i.2 ∈ Finset.range (k i.1.inv)
-        rw [hki]; exact a2)
-    (3 * Lv.o + 1) (by omega) θ h0 h1 (3 * Lv.o + 1) y0 (fun y hy => by
-      have e := hG y hy
-      unfold Level.Gm at e
-      have e3 := mul_le_mul_of_nonneg_left e hp.le
-      rw [mul_add, Finset.mul_sum] at e3
-      rw [Finset.sum_sigma]
-      push_cast
-      refine le_of_eq_of_le ?_ e3
-      congr 1
-      refine Finset.sum_congr rfl fun ξ h => ?_
-      show ∑ _j ∈ Finset.range (k ξ), Gchi ξ.χ y = _
-      rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, hkw, re_gChi ξ.χ (hne ξ h) y, mul_assoc]) s hs
-  by_cases e : ψ = PChar.one
-  · subst e
-    have : DirichletCharacter.LFunction PChar.one.χ = riemannZeta := DirichletCharacter.LFunction_modOne_eq (χ := (1 : DirichletCharacter ℂ 1))
-    rw [this]
-    exact key.1
-  · exact key.2 ⟨ψ, 0⟩ (Finset.mem_sigma.2 ⟨(hmem ψ).2 ⟨e, hψ⟩, Finset.mem_range.2 (hk0 ψ)⟩)
 
 end Formalism.HC.Landau
 

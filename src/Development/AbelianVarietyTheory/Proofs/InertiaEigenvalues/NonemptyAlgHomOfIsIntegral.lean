@@ -213,20 +213,7 @@ variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T : Type}
 
 variable {YS v₀ i j b}
 
-theorem ratUniv_of_unram {ν : ℂ} (hν : ν ≠ 0)
-    (hinj : ∀ P ∈ (ρ.B i j b).valSpace, harmFn (Wc D j).rank (ρ.B i j b).w (ρ.B i j b).F.BS P = 0 → P = 0)
-    (honto : ∀ F : VV ↥D.LL0 (ρ.B i j b).w.lam, ∃ P ∈ (ρ.B i j b).valSpace, harmFn (Wc D j).rank (ρ.B i j b).w (ρ.B i j b).F.BS P =
-      coefFn (embLL0 D) (ρ.B i j b).w.lam (F : Pol ↥D.LL0 D.what₂.Tau (Vc D j).rank))
-    (h : RatUnivUr YS v₀ ρ i j b ν) : RatUniv (realRd YS v₀ hρ i j b ν) := fun Q M hQ s g _ hd hs a =>
-  mem_range_of_small _ (xiLin ρ D.nexp i j b Q M g a) hinj honto
-    (fun P' h1 F h2 => (h Q M hQ s g ⟨hd.split, hd.off, hd.fin, hd.supp, zero_mem _⟩ hs P' h1 F h2 a).mem_range hρ hν) hd.mem
 
-theorem scalar_mem_range {ν u : ℂ} (hu : u ≠ 0) (hF : Faithful (realRd YS v₀ hρ i j b ν))
-    (h1 : RatBase (realRd YS v₀ hρ i j b ν)) (h2 : RatBase (realRd YS v₀ hρ i j b (u * ν))) {s g P}
-    (hd : ρ.IsDatum i j b s g P) (h0 : ρ.theta i j b g P ≠ 0) : ∃ y, ρ.e i b y = u := by
-  obtain ⟨f, hf⟩ := h2 s g P hd
-  refine hF.mem_range_of_smul h0 (h1 s g P hd) ⟨f, ?_⟩
-  rw [← hf, realRd_apply YS v₀ hρ i j b ν, realRd_apply YS v₀ hρ i j b (u * ν), smul_smul, mul_inv, mul_inv_cancel_left₀ hu]
 
 end Main
 

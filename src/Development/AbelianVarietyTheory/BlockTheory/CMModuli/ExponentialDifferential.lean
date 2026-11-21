@@ -80,8 +80,6 @@ instance : DiscreteTopology E.lat := E.discrete
 
 instance : IsZLattice ℝ E.lat := ⟨E.span⟩
 
-theorem exp_add_lat (z : Fin g → ℂ) (la : E.lat) : E.exp (z + la) = E.exp z := by
-  rw [E.exp_add, (E.mem_lat la).1 la.2, _root_.mul_one]
 
 def IsDiff (w : Fin g → ℂ) (v : EpsPt A) : Prop := IsDiffAt E.exp w v
 
@@ -172,22 +170,6 @@ theorem exists_chart (z : Fin g → ℂ) : ∃ i, z ∈ pre F.exp (L.U i) := by
   subst hp
   exact hi
 
-theorem IsSec.add_lat {F : Unif A L g} {a : F.toExp.lat → (Fin g → ℂ) → ℂ} (ha : F.HasFactor a) {s : L.Sec}
-    {θ : (Fin g → ℂ) → ℂ} (hs : F.IsSec s θ) (la : F.toExp.lat) (z : Fin g → ℂ) :
-    θ (z + la) = a la z * θ z := by
-  obtain ⟨i, h⟩ := F.exists_chart z
-  have e : F.exp (z + la) = F.exp z := F.toExp.exp_add_lat z la
-  have h' : z + la ∈ pre F.exp (L.U i) := by
-    change In (F.exp (z + la)).mor _
-    rw [e]; exact h
-  have hv : ∀ (x y : Pt A) (_ : x = y) (hx : In x.mor (L.U i)) (hy : In y.mor (L.U i)),
-      val x.mor hx (s.f i) = val y.mor hy (s.f i) := by
-    intro x y hxy hx hy; subst hxy; rfl
-  have h1 := hs i z h
-  have h2 := hs i (z + la) h'
-  rw [hv _ _ e h' h, h1, ha la z i h h'] at h2
-  apply mul_right_cancel₀ (F.fr_ne i _ h')
-  rw [← h2]; ring
 
 end Unif
 

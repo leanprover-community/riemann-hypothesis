@@ -92,51 +92,11 @@ def StepF : Prop :=
     cIG X J c * nBound X J c * (∏ i, glG X (c.blocksFun i)) ≤
       gRatio X J * Formalism.L2.S.S7.DensityConstant.densityConstant X J c
 
-theorem ofReal_mul_le (a b : ℝ) : ENNReal.ofReal a * ENNReal.ofReal b ≤ ENNReal.ofReal (a * b) := by
-  by_cases ha : 0 ≤ a
-  · rw [ENNReal.ofReal_mul ha]
-  · rw [ENNReal.ofReal_of_nonpos (le_of_lt (not_le.mp ha)), zero_mul]
-    exact zero_le
 
 theorem rd_nonneg (X : CData) : 0 ≤ X.I.rd := by
   unfold AutInst.rd
   exact Real.rpow_nonneg (abs_nonneg _) _
 
-theorem iwasawa_volume_bound_of (G : GPred) (hEx : StepEx G) (hB : StepB G) (hC : StepC G) (hD : StepD G)
-    (hE : StepE G) (hL : LPos) (hF : StepF) : IwasawaVolumeBound := by
-  intro X n₀ A J hH c D hmul hT μK μN μM cIw FN FM Om VM pK pN pM pI pF pL
-  obtain ⟨sc, hs0, hsT, -, -, -, -, hG⟩ :=
-    hEx X n₀ A J hH c D hmul hT ⟨μK, μN, μM, cIw, FN, FM, Om, VM, pK, pN, pM, pI, pF, pL⟩
-  have hb := hB X n₀ A J hH c D _ sc hG
-  have hc := hC X n₀ A J hH c D _ sc hG
-  obtain ⟨hv0, hd⟩ := hD X n₀ A J hH c D _ sc hG
-  have he := hE X n₀ A J hH c D _ sc hG
-  have hl := hL X n₀ A J hH
-  have hf := hF X n₀ A J hH c hl
-  change cIw * sc.s = _ at hb
-  change sc.sN * μN FN ≤ _ at hc
-  change sc.sM * VM = _ at hd
-  have hfin : X.I.muA X.μf X.fund ≠ ⊤ := hH.2.1
-  have hgR : 0 ≤ sc.vU0 * gRatio X J :=
-    mul_nonneg hv0.le (mul_nonneg (Real.rpow_nonneg (rd_nonneg X) _) hl.le)
-  rw [← ENNReal.mul_le_mul_iff_left hs0 hsT]
-  calc cIw * μN FN * VM * sc.s = (cIw * sc.s) * (μN FN * VM) := by ring
-    _ = ENNReal.ofReal (cIG X J c) * ((sc.sN * μN FN) * (sc.sM * VM)) := by rw [hb]; ring
-    _ ≤ ENNReal.ofReal (cIG X J c) * (ENNReal.ofReal (nBound X J c) *
-          ENNReal.ofReal ((∏ i, glG X (c.blocksFun i)) * sc.vU0)) := by
-        rw [hd]; gcongr
-    _ ≤ ENNReal.ofReal (cIG X J c * (nBound X J c * ((∏ i, glG X (c.blocksFun i)) * sc.vU0))) :=
-        le_trans (by gcongr; exact ofReal_mul_le _ _) (ofReal_mul_le _ _)
-    _ ≤ ENNReal.ofReal (gRatio X J * Formalism.L2.S.S7.DensityConstant.densityConstant X J c * sc.vU0) := by
-        refine ENNReal.ofReal_le_ofReal ?_
-        rw [show cIG X J c * (nBound X J c * ((∏ i, glG X (c.blocksFun i)) * sc.vU0)) =
-          (cIG X J c * nBound X J c * (∏ i, glG X (c.blocksFun i))) * sc.vU0 by ring]
-        exact mul_le_mul_of_nonneg_right hf hv0.le
-    _ = ENNReal.ofReal (sc.vU0 * gRatio X J) * ENNReal.ofReal (Formalism.L2.S.S7.DensityConstant.densityConstant X J c) := by
-        rw [← ENNReal.ofReal_mul hgR]; congr 1; ring
-    _ = ENNReal.ofReal (X.I.vol X.μf X.fund * Formalism.L2.S.S7.DensityConstant.densityConstant X J c) * sc.s := by
-        rw [← he, AutInst.vol, ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hfin]
-        ring
 
 end PI.IwaMeasEx.KV
 

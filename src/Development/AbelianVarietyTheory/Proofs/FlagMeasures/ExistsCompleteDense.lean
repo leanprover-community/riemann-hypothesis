@@ -77,23 +77,5 @@ theorem exists_extension {X L : Type} [NormedAddCommGroup L] [InnerProductSpace 
   simp only [S, A, Finsupp.linearCombination_single, one_smul, Function.comp_apply] at h
   exact h
 
-theorem exists_isHilbTensor (I : AutInst) (H : NumberField.InfinitePlace I.F → Type)
-    [∀ v, NormedAddCommGroup (H v)] [∀ v, InnerProductSpace ℂ (H v)]
-    (σ : ∀ v, Matrix (Fin I.n) (Fin I.n) ℂ → (H v →L[ℂ] H v))
-    (hσ : ∀ v (g : Formalism.REAL.UJ (I.ε v)) x y, ⟪σ v (uMat g) x, σ v (uMat g) y⟫_ℂ = ⟪x, y⟫_ℂ) :
-    ∃ (Hs : Type) (_ : NormedAddCommGroup Hs) (_ : InnerProductSpace ℂ Hs) (_ : CompleteSpace Hs)
-      (σs : I.Ginf → (Hs →L[ℂ] Hs)) (tens : (∀ v, H v) → Hs), I.IsHilbTensor σ σs tens := by
-  obtain ⟨K, iK, iK', t, ht⟩ := exists_pre H
-  obtain ⟨L, iL, iL', iL'', s, hs, hd⟩ := exists_complete_dense t
-  have hext : ∀ g : I.Ginf, ∃ T : L →L[ℂ] L,
-      ∀ x, T (s x) = s (fun v => σ v (uMat (g v)) (x v)) := by
-    intro g
-    refine exists_extension s hd (fun x v => σ v (uMat (g v)) (x v)) (fun x y => ?_)
-    simp only [hs, ht]
-    exact Finset.prod_congr rfl fun v _ => hσ v (g v) (x v) (y v)
-  choose σs hσs using hext
-  refine ⟨L, iL, iL', iL'', σs, s, ?_⟩
-  unfold Formalism.MainNotions.S.AutInst.IsHilbTensor
-  exact ⟨fun x y => by rw [hs, ht], hσs, hd⟩
 
 end GlobalTheory.HilbTensorExists

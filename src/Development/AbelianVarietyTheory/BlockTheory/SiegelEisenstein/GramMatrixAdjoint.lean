@@ -176,17 +176,7 @@ theorem bddAbove_witt {m : ℕ} (T : Matrix (Fin m) (Fin m) D.host.E) :
       (∀ x ∈ W, ∀ y ∈ W, hE D.sp.cm.sig T x y = 0) ∧ Module.finrank D.host.E W = r} :=
   ⟨m, by rintro _ ⟨W, -, rfl⟩; simpa using W.finrank_le⟩
 
-theorem upperLeft_blocks {R : Type} {n : ℕ} (a b c d : Matrix (Fin n) (Fin n) R) : upperLeft (blocks a b c d) = a := by
-  ext i j; simp [upperLeft, blocks]
 
-theorem mem_siegel_of_blocks {n : ℕ} {g : GG D n} {a b d : Mx D n n} (h : mat g = blocks a b 0 d) : g ∈ siegel D n := by
-  change (mat g).BlockTriangular _
-  rw [h]
-  intro i j hij
-  obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
-  obtain ⟨j, rfl⟩ := finSumFinEquiv.surjective j
-  simp only [blocks, Matrix.submatrix_apply, Equiv.symm_apply_apply]
-  rcases i with i | i <;> rcases j with j | j <;> simp [blockIdx] at hij ⊢
 
 example {θ : InfFam D} {m n : ℕ} {T : Matrix (Fin m) (Fin m) D.host.E} (α : GG D n → ℝ≥0) (ω : Rep θ n T)
     (Φ : Sch θ m n) (g : GG D n) : sect α ω Φ (s0 m n) g = (ω (g, 1) Φ).1 0 := by simp [sect]

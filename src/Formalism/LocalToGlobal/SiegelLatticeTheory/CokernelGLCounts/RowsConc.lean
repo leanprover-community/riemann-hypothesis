@@ -115,9 +115,6 @@ theorem dd_nonneg (h : ConcTie X Y) (u u' : D.what₂.Word) : 0 ≤ ddC X Y u u'
   have h2 : 0 ≤ duC X Y u' := Nat.cast_nonneg _
   exact div_nonneg (mul_nonneg h1 h2) (dst_pos h u).le
 
-theorem cu_fd (h : ConcTie X Y) (u : D.what₂.Word) (hC : Formalism.L2.SG.PoincareInHH.Cut.ClassFin X u Y.hK) :
-    FiniteDimensional ℂ (Cu X u Y.hK) :=
-  (Formalism.L2.SG.PoincareInHH.Cut.cols_dim_of_neat X u Y.hK (h.2.1 u) hC).1
 
 end Facts
 
@@ -169,17 +166,6 @@ def LoopsCutC : Prop :=
         Formalism.L2.SG.RowsOther.LoopsAmp (Y.tO u u') Al C D.R.k D.R.rS D.R.f large₂.sc.b (X.B.g : ℝ) D.host.v Gam Xi
           (ddC X Y u u')
 
-theorem rowLoopsC_of_cut (hL : PN.LoopCores) (hSub : PB.SubFamily) (hc : LoopsCutC) :
-    RowLoopsC := by
-  intro Cg cb Cw cT CT C0 A
-  obtain ⟨C, hC, hK⟩ := hc Cg cb Cw cT CT C0 A
-  obtain ⟨K₀, hJ⟩ := Formalism.L2.SG.RowsOther.rowLoops_of_input hL hSub C hC
-  obtain ⟨C'₀, Cl₀, h⟩ := hK K₀
-  refine ⟨C'₀, Cl₀, fun C' Cl h1 h2 D large₂ X Y u u' hH hT ha => ?_⟩
-  obtain ⟨Al, NT, Gam, Xi, hA1, hP, hX, h6, hAmp⟩ := h C' Cl h1 h2 D large₂ X Y u u' hH hT
-  exact hJ _ _ _ _ _ (Y.tO u u') D.R.k D.R.rS D.R.f Al large₂.sc.b (X.B.g : ℝ) D.host.v NT Gam Xi (ddC X Y u u')
-    hA1 hP hX h6 (dd_nonneg hT u u') ha
-    (Formalism.L2.SG.RowsOther.loopsInput_of_amp _ ha.2.2.le _ _ _ _ _ _ _ _ _ _ _ hAmp)
 
 def PairsDegCutC : Prop :=
   ∀ Cg cb Cw cT CT C0 : ℝ, ∃ C'₀ Cl₀ : ℝ, ∀ C' Cl : ℝ, C'₀ ≤ C' → Cl₀ ≤ Cl →
@@ -210,41 +196,6 @@ def DiagNumC : Prop :=
       max CB C4 + 1 ≤ large₂.CGam →
       (√(PgC Y * (gamB D large₂ CB + 2 * epsL D)) + √(PgC Y * (epsL D + epsNG D large₂ C4))) ^ 2 ≤ (D.mem u).A.GamP
 
-theorem diagC_of_rows (hA : PB.PairBoundAbstract) (hP : PB.NormSqBoundOfEqualIota) (hE : PB.GramSumLeOfPosSemidef) (hS : PB.PairSplit)
-    (hSub : PB.SubFamily) (hGG : Formalism.L2.SG.GGMirabolic.TermsGGBound)
-    (hNS : NormExpSatTied) (hC : CorankPosC) (hId : IdOneC) (hL : RowLoopsC) (hNG : RowNGC) (hM : RowMainEqC)
-    (hNum : DiagNumC) : DiagC := by
-  intro Cg cb Cw cT CT C0 A
-  obtain ⟨CB, hCB, C'₁, Cl₁, hM'⟩ := hM Cg cb Cw cT CT C0 A
-  obtain ⟨C4, hC4, C'₂, Cl₂, hNG'⟩ := hNG Cg cb Cw cT CT C0
-  obtain ⟨C'₃, Cl₃, hL'⟩ := hL Cg cb Cw cT CT C0 A
-  obtain ⟨C'₄, Cl₄, hNum'⟩ := hNum Cg cb Cw cT CT C0 A CB C4 hCB hC4
-  refine ⟨CB, C4, hCB, hC4, max (max C'₁ C'₂) (max C'₃ C'₄), max (max Cl₁ Cl₂) (max Cl₃ Cl₄),
-    fun C' Cl h1 h2 D large₂ X Y u hH hK2 hT ha hG => ?_⟩
-  have a1 : C'₁ ≤ C' := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) h1
-  have a2 : C'₂ ≤ C' := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) h1
-  have a3 : C'₃ ≤ C' := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) h1
-  have a4 : C'₄ ≤ C' := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) h1
-  have b1 : Cl₁ ≤ Cl := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) h2
-  have b2 : Cl₂ ≤ Cl := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) h2
-  have b3 : Cl₃ ≤ Cl := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) h2
-  have b4 : Cl₄ ≤ Cl := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) h2
-  have h0 : Formalism.MainNotions.S.Cnt.Hyp0 D large₂ C' Cl Cg cb Cw cT CT C0 := hH.1
-  have hs : Formalism.MainNotions.S.Cnt.Stand D u u := hH.2.1
-  have hPg : 0 ≤ PgC Y := Finset.prod_nonneg fun v _ => by positivity
-  have hdd := dd_nonneg hT u u
-  obtain ⟨r1, r2⟩ := hL' C' Cl a3 b3 D large₂ X Y u u hH hT ha
-  have r3 := hM' C' Cl a1 b1 D large₂ X Y u hH hT ha
-  have r4 := hNG' C' Cl a2 b2 D large₂ X Y u u h0 hs hT ha
-  have hGB : (Y.tO u u).GGBound (PgC Y) :=
-    Formalism.L2.SG.TermOp.ggBound Y.TR (Y.cs u) (Y.cs u) (Y.FN u) (Y.FN u) hGG Y.psi_ne
-      (fun v => card_ge_three hK2 Y.TR v)
-  have hD := Formalism.L2.SG.RowsOther.diag_of_abstract (Y.tO u u) hA hP hE hS hSub (oneC X Y u) (PgC Y)
-    (gamB D large₂ CB) (epsL D) (epsNG D large₂ C4) (ddC X Y u u) hPg hdd ha (hNS D X Y u u hT) hGB
-    (Formalism.L2.SG.TermOp.rowOrth Y.TR (Y.cs u) (Y.cs u) (Y.FN u) (Y.FN u)) (hC D X Y u u hT) (hId D X Y u hT)
-    r1 r2 r3 r4
-  unfold Formalism.L2.SG.RowsOther.DiagRow at hD ⊢
-  exact hD.trans (mul_le_mul_of_nonneg_right (hNum' C' Cl a4 b4 D large₂ X Y u hH hK2 hT hG) hdd)
 
 end Cut
 
@@ -259,13 +210,6 @@ theorem absConvTied_of_full (hFo : FoldOKC) (hF : FundExistsC) (hO : OOIntAllC)
   have f2 := hFo D X Y u' hT.1 hT.2.2.2.2.1
   exact hA D X Y u u' f1 f2 (hF D X Y u u') (hO D X Y u u' f1 f2 (hF D X Y u u'))
 
-theorem normExpSatTied_of_full (hFo : FoldOKC) (hF : FundExistsC) (hO : OOIntAllC)
-    (hA : AbsConvC) (hAW : AmpWellDefC) (hCh : ChiNIndepC) (hN : NormExpSatC) : NormExpSatTied := by
-  intro D X Y u u' hT
-  have f1 := hFo D X Y u hT.1 hT.2.2.2.2.1
-  have f2 := hFo D X Y u' hT.1 hT.2.2.2.2.1
-  have hOO := hO D X Y u u' f1 f2 (hF D X Y u u')
-  exact hN D X Y u u' (hAW D X Y u u' hOO) (hCh D X Y u u') (absConvTied_of_full hFo hF hO hA D X Y u u' hT)
 
 theorem hasSum_hsEmb {ι : Type*} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [FiniteDimensional ℂ W]
     {f : ι → W →L[ℂ] W} {a : W →L[ℂ] W} (h : HasSum f a) :
@@ -440,19 +384,6 @@ def NGCutC : Prop :=
           (((Tu D u : ℕ) : ℝ) * ((Tu D u' : ℕ) : ℝ)) (PN.abelian₂ (2 * D.host.v) D.R.rS D.R.k D.R.f * B.AA) e1 ∧
         Formalism.L2.SG.RowsOther.NGReal (Y.tO u u') (NOf Y u u') D.R.f A CB large₂.sc.b cSt Ire
 
-theorem rowNGC_of_cut (hR : PN.RowNGJoint) (hC : PN.NGChain) (hc : NGCutC) : RowNGC := by
-  intro Cg cb Cw cT CT C0
-  obtain ⟨C1, C0n, A, CB, CSt, Cgs, CTs, h1, h2, h3, h4, hA, C'₀, Cl₀, h⟩ := hc Cg cb Cw cT CT C0
-  obtain ⟨Cn, hCn, hK⟩ := Formalism.L2.SG.RowsOther.rowNG_of_cut hR hC C1 C0n A CB CSt Cgs CTs h1 h2 h3 h4 hA
-  refine ⟨Cn, hCn, C'₀, Cl₀, fun C' Cl a b D large₂ X Y u u' h0 hs hT ha => ?_⟩
-  obtain ⟨P, iP, B, cSt, e1, Irat, Ire, hG, hdd, hN, hF, hS, hFin, hRe⟩ := h C' Cl a b D large₂ X Y u u' h0 hs hT
-  have hcard := Formalism.MainNotions.LatticeGluingRadicals.d_card D
-  have key := hK D.host.E (TauC Y u u') _ _ _ _ (Y.tO u u') D.R.rS D.R.k (Set (TauC Y u u')) (TauC Y u u')
-    (NOf Y u u') P B large₂.sc.b (2 * D.host.v) (X.B.g : ℝ) (((Tu D u : ℕ) : ℝ) * ((Tu D u' : ℕ) : ℝ)) cSt e1 Irat Ire
-  rw [hcard] at key
-  have r := key ha hG hN hF hS hFin hRe
-  rw [hdd] at r
-  exact r
 
 end NGCut
 

@@ -33,18 +33,7 @@ instance instIsModTopTens : IsModuleTopology R (R ⊗[F] E) := ⟨rfl⟩
 instance instContAddTens : ContinuousAdd (R ⊗[F] E) :=
   IsModuleTopology.toContinuousAdd R (R ⊗[F] E)
 
-theorem cont_mul_const (c d : R ⊗[F] E) : Continuous (fun a : R ⊗[F] E => c * a * d) := by
-  refine (IsModuleTopology.continuous_of_linearMap (R := R)
-    ((LinearMap.mulRight R d).comp (LinearMap.mulLeft R c))).congr fun a => ?_
-  simp
 
-theorem cont_sandwich {T : Type*} [TopologicalSpace T] {m n p q : Type*} [Fintype n] [Fintype p]
-    (C : Matrix m n (R ⊗[F] E)) (D : Matrix p q (R ⊗[F] E)) {f : T → Matrix n p (R ⊗[F] E)}
-    (hf : Continuous f) : Continuous (fun t => C * f t * D) := by
-  refine continuous_matrix fun i j => ?_
-  simp only [Matrix.mul_apply, Finset.sum_mul]
-  refine continuous_finset_sum _ fun l _ => continuous_finset_sum _ fun k _ => ?_
-  exact (cont_mul_const R (C i k) (D l j)).comp (hf.matrix_elem k l)
 
 theorem cont_HA_iff {T : Type*} [TopologicalSpace T] {n : ℕ} {J : Matrix (Fin n) (Fin n) E}
     (f : T → HA R σ J) :
@@ -59,16 +48,6 @@ theorem cont_HA_iff {T : Type*} [TopologicalSpace T] {n : ℕ} {J : Matrix (Fin 
       Units.continuous_iff.2 ⟨h1, h2⟩
     exact h3.subtype_mk (fun t => (toHR (f t)).2)
 
-theorem cont_transl {n : ℕ} {J : Matrix (Fin n) (Fin n) E} (h : HA R σ J) :
-    Continuous (fun g : HA R σ J => h * g) := by
-  have hid := (cont_HA_iff R (fun g : HA R σ J => g)).1 continuous_id
-  refine (cont_HA_iff R (fun g : HA R σ J => h * g)).2 ⟨?_, ?_⟩
-  · have h1 := cont_sandwich R (mt h) (1 : Matrix (Fin n) (Fin n) (R ⊗[F] E)) hid.1
-    simp only [Matrix.mul_one] at h1
-    exact h1
-  · have h1 := cont_sandwich R (1 : Matrix (Fin n) (Fin n) (R ⊗[F] E)) (mtI h) hid.2
-    simp only [Matrix.one_mul] at h1
-    exact h1
 
 end Cont
 
@@ -102,41 +81,7 @@ theorem mtI_eq {M' : ℕ} {J' : Matrix (Fin M') (Fin M') E}
   rw [map_inv e g]
   rfl
 
-theorem stepTransl : StepTransl F E σ := by
-  intro M J h
-  exact cont_transl (AF F) h
 
-theorem stepHomeo : StepHomeo F E σ := by
-  intro M J J' x β B hH e he
-  obtain ⟨fA, fB⟩ := frame_formulas hH e he
-  have hid := (cont_HA_iff (AF F) (fun g : HA (AF F) σ J => g)).1 continuous_id
-  have hid' := (cont_HA_iff (AF F) (fun g : HA (AF F) σ J' => g)).1 continuous_id
-  have hs1 : Continuous (fun g : Hstab (AF F) σ J x => mt (g : HA (AF F) σ J)) :=
-    hid.1.comp continuous_subtype_val
-  have hs2 : Continuous (fun g : Hstab (AF F) σ J x => mtI (g : HA (AF F) σ J)) :=
-    hid.2.comp continuous_subtype_val
-  constructor
-  · refine (cont_HA_iff (AF F) e).2 ⟨?_, ?_⟩
-    · exact (cont_sandwich (AF F) ((Lm σ J J' B).map ι) (B.map ι) hs1).congr fun g => (fA g).symm
-    · refine (cont_sandwich (AF F) ((Lm σ J J' B).map ι) (B.map ι) hs2).congr fun g => ?_
-      rw [mtI_eq e g, fA g⁻¹]
-      rfl
-  · have hc : Continuous (fun g' : HA (AF F) σ J' => (e.symm g' : HA (AF F) σ J)) := by
-      refine (cont_HA_iff (AF F) _).2 ⟨?_, ?_⟩
-      · refine (Continuous.add (continuous_const : Continuous fun _ : HA (AF F) σ J' =>
-          (Xc x).map ι * (qm σ J x (algebraMap F E β)).map ι)
-          (cont_sandwich (AF F) (B.map ι) ((Rm σ J J' B x (algebraMap F E β)).map ι) hid'.1)).congr
-          fun g' => ?_
-        rw [fB (e.symm g'), MulEquiv.apply_symm_apply]
-        rfl
-      · refine (Continuous.add (continuous_const : Continuous fun _ : HA (AF F) σ J' =>
-          (Xc x).map ι * (qm σ J x (algebraMap F E β)).map ι)
-          (cont_sandwich (AF F) (B.map ι) ((Rm σ J J' B x (algebraMap F E β)).map ι) hid'.2)).congr
-          fun g' => ?_
-        show _ = mt (((e.symm g')⁻¹ : Hstab (AF F) σ J x) : HA (AF F) σ J)
-        rw [fB ((e.symm g')⁻¹), map_inv, MulEquiv.apply_symm_apply]
-        rfl
-    exact hc.subtype_mk (fun g' => (e.symm g').2)
 
 instance instNontrivialAF : Nontrivial (AF F) :=
   inferInstanceAs (Nontrivial (NumberField.InfiniteAdeleRing F ×

@@ -55,34 +55,9 @@ variable (d : ℕ) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [No
 
 def quadInc : KQ d →+* CoF ι LL := (tauLL hE (KQ d).val).toRingHom
 
-theorem quadInc_val (x : KQ d) : CoF.val ι LL (quadInc d ι LL hE x) = (x : Qb) :=
-  tauLL_coe hE (KQ d).val x
 
-theorem quad_ext {w : Qb} (hw : w ∈ sqrts (-(d : ℤ))) (s s' : KQ d →ₐ[ℚ] Qb)
-    (h : s ⟨w, sqrts_sub _ hw⟩ = s' ⟨w, sqrts_sub _ hw⟩) : s = s' := by
-  refine algHom_ext_of_eq_adjoin _ (rfl : KQ d = adjoin ℚ (sqrts (-(d : ℤ)))) ?_
-  intro z hz
-  have hz' : z ^ 2 = w ^ 2 := by
-    rw [show z ^ 2 = ((-(d : ℤ) : ℤ) : Qb) from hz, show w ^ 2 = ((-(d : ℤ) : ℤ) : Qb) from hw]
-  rcases sq_eq_sq_iff_eq_or_eq_neg.mp hz' with h1 | h1
-  · subst h1; exact h
-  · subst h1
-    exact (map_neg s ⟨w, sqrts_sub _ hw⟩).trans ((congrArg Neg.neg h).trans (map_neg s' ⟨w, sqrts_sub _ hw⟩).symm)
 
-theorem quad_conjE (φ : KQ d →+* ℂ) (x : KQ d) : φ (cLL ι (KQ d) x) = starRingEnd ℂ (φ x) := by
-  obtain ⟨τ, hτ⟩ := exists_ext ι (KQ d) φ
-  calc φ (cLL ι (KQ d) x) = τ ((cLL ι (KQ d) x : KQ d) : Qb) := (hτ _).symm
-    _ = τ (conjQb ι x) := congrArg τ (cLL_coe ι (KQ d) x)
-    _ = starRingEnd ℂ (τ x) := sqLeCm ι _ x.2 τ
-    _ = starRingEnd ℂ (φ x) := congrArg _ (hτ x)
 
-theorem quad_emb_star (x : KQ d) :
-    quadInc d ι LL hE (cLL ι (KQ d) x) = (star (quadInc d ι LL hE x) : CoF ι LL) := by
-  apply CoF.val_injective ι LL
-  calc CoF.val ι LL (quadInc d ι LL hE (cLL ι (KQ d) x)) = ((cLL ι (KQ d) x : KQ d) : Qb) := quadInc_val d ι LL hE _
-    _ = conjQb ι x := cLL_coe ι (KQ d) x
-    _ = conjQb ι (CoF.val ι LL (quadInc d ι LL hE x)) := congrArg _ (quadInc_val d ι LL hE x).symm
-    _ = CoF.val ι LL (star (quadInc d ι LL hE x)) := (CoF.val_star ι LL _).symm
 
 theorem conj_sqrt_ne {d : ℕ} (hd : 0 < d) {w : Qb} (hw : w ∈ sqrts (-(d : ℤ))) : conjQb ι w ≠ w := by
   have hw2 : w ^ 2 = ((-(d : ℤ) : ℤ) : Qb) := hw
@@ -95,64 +70,8 @@ theorem conj_sqrt_ne {d : ℕ} (hd : 0 < d) {w : Qb} (hw : w ∈ sqrts (-(d : �
   apply conj_ne_of_sq_neg hneg hιw
   rw [← conjQb_spec, h]
 
-theorem quad_emb_ne (hd : 0 < d) (h : ∀ x : KQ d, quadInc d ι LL hE x = quadInc d ι LL hE (cLL ι (KQ d) x)) : False := by
-  obtain ⟨w, hw⟩ := exists_sqrt (-(d : ℤ))
-  apply conj_sqrt_ne ι hd hw
-  have h1 := congrArg (CoF.val ι LL) (h ⟨w, sqrts_sub _ hw⟩)
-  exact ((cLL_coe ι (KQ d) ⟨w, sqrts_sub _ hw⟩).symm.trans (quadInc_val d ι LL hE _).symm).trans
-    (h1.symm.trans (quadInc_val d ι LL hE _))
 
-theorem quad_emb_all (hd : 0 < d) (φ : KQ d →+* CoF ι LL) :
-    (∀ x, φ x = quadInc d ι LL hE x) ∨ ∀ x, φ x = quadInc d ι LL hE (cLL ι (KQ d) x) := by
-  obtain ⟨w, hw⟩ := exists_sqrt (-(d : ℤ))
-  have hw2 : w ^ 2 = ((-(d : ℤ) : ℤ) : Qb) := hw
-  have hcw := conj_sqrt_ne ι hd hw
-  let s : KQ d →ₐ[ℚ] Qb := RingHom.toRatAlgHom ((CoF.val ι LL).comp φ)
-  have hs : ∀ x, s x = CoF.val ι LL (φ x) := fun _ => rfl
-  have hsw : (s ⟨w, sqrts_sub _ hw⟩) ^ 2 = w ^ 2 := by
-    have e1 : (⟨w, sqrts_sub _ hw⟩ : KQ d) ^ 2 = ((-(d : ℤ) : ℤ) : KQ d) := Subtype.val_injective (by
-      show w ^ 2 = _
-      rw [hw2]; simp)
-    exact (map_pow s _ 2).symm.trans ((congrArg s e1).trans ((map_intCast s _).trans hw2.symm))
-  have hcw2 : conjQb ι w = -w := by
-    have : (conjQb ι w) ^ 2 = w ^ 2 := by rw [← map_pow, hw2, map_intCast]
-    rcases sq_eq_sq_iff_eq_or_eq_neg.mp this with h | h
-    · exact absurd h hcw
-    · exact h
-  rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsw with h | h
-  · left
-    have e : s = (KQ d).val := quad_ext d hw s _ h
-    intro x
-    apply CoF.val_injective ι LL
-    exact (hs x).symm.trans ((DFunLike.congr_fun e x).trans (quadInc_val d ι LL hE x).symm)
-  · right
-    have e : s = (KQ d).val.comp ((cLL ι (KQ d) : KQ d ≃ₐ[ℚ] KQ d) : KQ d →ₐ[ℚ] KQ d) := by
-      apply quad_ext d hw
-      exact h.trans (hcw2.symm.trans (cLL_coe ι (KQ d) ⟨w, sqrts_sub _ hw⟩).symm)
-    intro x
-    apply CoF.val_injective ι LL
-    exact (hs x).symm.trans ((DFunLike.congr_fun e x).trans (quadInc_val d ι LL hE _).symm)
 
-theorem quadFields_ok (hd : 0 < d) : (quadFields d ι LL hE).Ok where
-  realF := inferInstanceAs (IsTotallyReal ℚ)
-  rankE := finrank_KQ hd
-  star_F := fun x => (congrArg (cLL ι (KQ d)) (eq_ratCast (algebraMap ℚ (KQ d)) x)).trans
-    ((map_ratCast (cLL ι (KQ d)) x).trans (eq_ratCast (algebraMap ℚ (KQ d)) x).symm)
-  conjE := quad_conjE d ι
-  cplxE := totComplex ι (KQ d) d hd le_rfl
-  emb_star := fun _ x => quad_emb_star d ι LL hE x
-  card_Tau := (Module.finrank_self ℚ).symm
-  emb_inj := fun _ _ _ => rfl
-  emb_ne := fun _ _ h => quad_emb_ne d ι LL hE hd fun x => RingHom.congr_fun h x
-  emb_all := fun φ => ⟨(), (quad_emb_all d ι LL hE hd φ).imp (fun h => RingHom.ext h) (fun h => RingHom.ext h)⟩
-  cplxK := totComplex ι LL d hd hE
-  normalK := ‹Normal ℚ LL›
-  conjK := ⟨sig0 ι LL, sig0Conj ι LL⟩
-  quad := by
-    have htop : ∀ x : (quadFields d ι LL hE).E, x ∈ (quadFields d ι LL hE).Kq := fun x _ _ => rfl
-    let f : (quadFields d ι LL hE).Kq →ₗ[ℚ] KQ d := (RingHom.toRatAlgHom (quadFields d ι LL hE).Kq.subtype).toLinearMap
-    have hf : Function.Bijective f := ⟨Subtype.val_injective, fun x => ⟨⟨x, htop x⟩, rfl⟩⟩
-    exact (LinearEquiv.ofBijective f hf).finrank_eq.trans (finrank_KQ hd)
 
 end QuadOk
 
@@ -474,17 +393,6 @@ theorem chi_at (w : HeightOneSpectrum (𝓞 (gaussFields ι LL hE).E)) {p : ℕ}
 
 end GaussChars2
 
-theorem gaussian_field_le_cyclotomic : KQ 1 ≤ cycQ 780 := by
-  unfold KQ sqQ cycQ
-  apply adjoin.mono
-  intro z hz
-  have h : z ^ 2 = -1 := by
-    have h1 : z ^ 2 = ((-((1 : ℕ) : ℤ) : ℤ) : Qb) := hz
-    rw [h1]; simp
-  show z ^ 780 = 1
-  have : z ^ 780 = (z ^ 2) ^ 390 := by rw [← pow_mul]
-  rw [this, h]
-  norm_num
 
 instance fin_cyc : FiniteDimensional ℚ (cycQ 780) := fin_adjoin (finite_pow_eq 780 (by norm_num) 1)
 

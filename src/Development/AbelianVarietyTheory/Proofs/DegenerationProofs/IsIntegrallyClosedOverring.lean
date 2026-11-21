@@ -30,43 +30,6 @@ namespace GlobalTheory.ZH.GoodOut
 
 open GlobalTheory.Points
 
-theorem isIntegrallyClosed_overring {o Ω : Type} [CommRing o] [IsDedekindDomain o] [Field Ω] [Algebra o Ω]
-    [IsFractionRing o Ω] (R : Subalgebra o Ω) : IsIntegrallyClosed R := by
-  have hfr : IsFractionRing R Ω := IsFractionRing.of_field _ _ fun z => by
-    obtain ⟨a, b, -, h⟩ := IsFractionRing.div_surjective (A := o) z
-    exact ⟨algebraMap o R a, algebraMap o R b, h.symm⟩
-  refine (isIntegrallyClosed_iff Ω).2 fun {x} hx => ?_
-  let I : Ideal R := (LinearMap.range (Algebra.linearMap R Ω)).comap (LinearMap.toSpanSingleton R Ω x)
-  by_contra hn
-  have hI : I ≠ ⊤ := fun h => hn (by
-    obtain ⟨a, ha⟩ : (1 : R) ∈ I := h ▸ Submodule.mem_top
-    exact ⟨a, ha.trans (one_smul _ _)⟩)
-  obtain ⟨m, hm, hIm⟩ := Ideal.exists_le_maximal I hI
-  let p : Ideal o := m.comap (algebraMap o R)
-  have hp : p.IsPrime := Ideal.comap_isPrime _ _
-  have hp' : ∀ y : Ω, ∃ a s : o, s ∉ p ∧ (y = algebraMap o Ω a * (algebraMap o Ω s)⁻¹ ∨
-      y⁻¹ = algebraMap o Ω a * (algebraMap o Ω s)⁻¹) := fun y => by
-    by_cases h0 : p = ⊥
-    · obtain ⟨a, b, hb, h⟩ := IsFractionRing.div_surjective (A := o) y
-      exact ⟨a, b, h0 ▸ nonZeroDivisors.ne_zero hb, Or.inl (h.symm.trans (div_eq_mul_inv _ _))⟩
-    · let V := Localization.subalgebra.ofField Ω p.primeCompl p.primeCompl_le_nonZeroDivisors
-      have := IsLocalization.AtPrime.isDiscreteValuationRing_of_dedekind_domain o h0 V
-      rcases ValuationRing.isInteger_or_isInteger V y with ⟨⟨_, a, s, hs, rfl⟩, h⟩ | ⟨⟨_, a, s, hs, rfl⟩, h⟩
-      · exact ⟨a, s, hs, Or.inl h.symm⟩
-      · exact ⟨a, s, hs, Or.inr h.symm⟩
-  have := hm.isPrime
-  let T := Localization.subalgebra.ofField Ω m.primeCompl m.primeCompl_le_nonZeroDivisors
-  have : ValuationRing T := (ValuationRing.iff_isInteger_or_isInteger T Ω).2 fun y => by
-    obtain ⟨a, s, hs, h⟩ := hp' y
-    exact h.imp (fun h => ⟨⟨y, algebraMap o R a, algebraMap o R s, hs, h⟩, rfl⟩)
-      (fun h => ⟨⟨y⁻¹, algebraMap o R a, algebraMap o R s, hs, h⟩, rfl⟩)
-  obtain ⟨⟨_, a, s, hs, rfl⟩, h⟩ := IsIntegrallyClosed.isIntegral_iff.1 (hx.tower_top (A := T))
-  refine hs (hIm ⟨a, ?_⟩)
-  have hs0 : algebraMap R Ω s ≠ 0 := fun e => hs ((show s = 0 from Subtype.ext e) ▸ m.zero_mem)
-  show algebraMap R Ω a = s • x
-  rw [← h, Algebra.smul_def]
-  show _ = algebraMap R Ω s * (algebraMap R Ω a * (algebraMap R Ω s)⁻¹)
-  field_simp
 
 theorem exists_hom_ker {R : Type} [CommRing R] (z : PrimeSpectrum R) :
     ∃ (K : Type) (_ : Field K) (_ : IsAlgClosed K) (f : R →+* K), ∀ t, f t = 0 ↔ t ∈ z.asIdeal :=
@@ -541,12 +504,6 @@ theorem nonempty_out (hL : Laws) (hL₂ : Laws2) [hA : ArithBase o Ω] [IsIntegr
       exact h₃ K _ v ⟨j, u, (le_chart_iff ρ.P _ x j).1 hj, fun l =>
         (hv l).trans (congrArg (_ * ·) (valR_tr ρ.P (ρ.s l) x j hj))⟩ }⟩
 
-theorem exists_out_dim_one : Laws → Laws2 → ∃ (o Ω : Type) (_ : CommRing o) (_ : Field Ω) (_ : Algebra o Ω) (_ : ArithBase o Ω) (S : ThetaSys o Ω) (ρ : S.Real) (M : RatModel o Ω) (U₀ : M.Z.Opens) (EE : M.Lat S.J), S.g = 1 ∧ (U₀ : Set M.Z).Nonempty ∧ Nonempty (ZHOut ρ M U₀ EE) := by
-  intro hL hL₂
-  obtain ⟨o, Ω, _, _, _, hA, S, ρ, hg, -, hfr⟩ := RealInhabitant.exists_real_dim_one_isFractionRing hL hL₂
-  have := hA.ded
-  have := isIntegrallyClosed_overring S.R
-  exact ⟨o, Ω, _, _, _, hA, S, ρ, _, ⊤, _, hg, ⟨genericPoint _, trivial⟩, nonempty_out ρ hL hL₂⟩
 
 end GlobalTheory.ZH.GoodOut
 

@@ -290,10 +290,6 @@ def eOm (σ : D.host.E →+* ℂ) : y.Om →ₗ[↥y.C.S] y.Om :=
 def eLat (σ : D.host.E →+* ℂ) : AddSubgroup y.Om :=
   (y.lat (epsSub ct Z σ)).comap (DistribSMul.toAddMonoidHom _ (y.fK (dif ct Z σ : Z.i.c.F)))
 
-theorem actOm_eOm (σ : D.host.E →+* ℂ) (a : 𝓞 D.host.E) (v : y.Om) :
-    y.actOm a (y.eOm σ v) = y.fK (embK Z.i.c σ a) • y.eOm σ v := by
-  classical
-  exact EigenSplit.mem_eigenSub.1 (EigenSplit.proj_mem ((isSplitting_embK Z.i.c).map y.fK) y.actOm σ v) a
 
 end IntPt
 
@@ -346,10 +342,6 @@ def eOmPIso (Z : ct.Mdl) (s : Bool) (τ : PsiT D) :
     ((htmTrue ct).eOmP Z s τ).toMod ≅ (epsSub ct Z (embB D s τ)).toMod :=
   @At.presIso _ _ _ _ _ _ _ ct Z _ (isFiniteQC_epsOm ct _ _)
 
-theorem latticeAt_omega_eq_inf_hodgeTateSpan {n : ℕ} (h : HTOn (ct.Xn n) n) (y : ct.Pt (ct.Xn n)) :
-    latAt ct y (omP h) = (htpTrue ct).om y ⊓ (Ospan (C := (ct.fld y).C) (Set.range (htEval ct h y)) ⊔
-      ((htpTrue ct).om y).map (DistribSMul.toAddMonoidHom ((htpTrue ct).OmV y) ((p : (ct.fld y).C) ^ n))) :=
-  latAt_omP ct h y (pow_dvd_A ct n) (isValAt_htEval ct h y)
 
 theorem htSES_k₀ {Z : ct.Mdl} {n : ℕ} (H : IsHTBlowup ct Z (ct.Xn n)) (τ : PsiT D) :
     At.SES.k₀ ((htmTrue ct).htSES Z τ) = n - 2 := by

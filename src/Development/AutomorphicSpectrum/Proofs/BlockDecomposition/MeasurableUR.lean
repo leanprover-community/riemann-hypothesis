@@ -12,8 +12,6 @@ def uR (ε : Bool) (θ : ℝ) : Fin 2 → ℝ := ![-Real.sin θ, if ε then -Rea
 
 def sgE (ε : Bool) : ℝ := if ε then -1 else 1
 
-theorem sgE_ne_zero (ε : Bool) : sgE ε ≠ 0 := by
-  cases ε <;> simp [sgE]
 
 theorem rotR_val (θ : ℝ) :
     (rotR θ).val = !![Real.cos θ, Real.sin θ; -Real.sin θ, Real.cos θ] := by
@@ -49,13 +47,6 @@ theorem Psi_eq (ε : Bool) (p : ℝˣ × ℝˣ × ℝ) :
       rw [this, mul_one]
     rw [e]; ring
 
-theorem measurable_uR (ε : Bool) : Measurable (uR ε) := by
-  refine measurable_pi_iff.2 fun i => ?_
-  fin_cases i
-  · simpa [uR] using Real.measurable_sin
-  · cases ε
-    · simpa [uR] using Real.measurable_cos
-    · simpa [uR] using Real.measurable_cos
 
 end GlobalTheory.CompanionTheory.GL2LocalData.RealWhittakerFirst.Push
 

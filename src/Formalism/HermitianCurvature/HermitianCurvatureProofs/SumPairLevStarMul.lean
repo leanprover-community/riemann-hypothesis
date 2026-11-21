@@ -70,21 +70,7 @@ theorem pairLev_zero_left (Ψ : RadSp k r z z' π π') (c : Fin r → ℂ) : pai
     rwa [zero_smul, zero_mul] at this
   simp [h0]
 
-theorem pairLev_sum_left (hI : IntLevOn μ i U) {c : Fin r → ℂ} (hc : c ∈ OmX r) {ι : Type} (s : Finset ι)
-    (Φ : ι → RadSp k r z z' π π') (hΦ : ∀ j, Φ j ∈ U) {Ψ : RadSp k r z z' π π'} (hΨ : Ψ ∈ U) :
-    pairLev μ i (∑ j ∈ s, Φ j) Ψ c = ∑ j ∈ s, pairLev μ i (Φ j) Ψ c := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp only [Finset.sum_empty]; exact pairLev_zero_left Ψ c
-  | insert j s hj ih =>
-    rw [Finset.sum_insert hj, Finset.sum_insert hj, pairLev_add_left hI hc (hΦ j) (U.sum_mem fun j' _ => hΦ j') hΨ,
-      ih]
 
-theorem pairLev_sum_right (hI : IntLevOn μ i U) {c : Fin r → ℂ} (hc : c ∈ OmX r) {ι : Type} (s : Finset ι)
-    {Φ : RadSp k r z z' π π'} (hΦ : Φ ∈ U) (Ψ : ι → RadSp k r z z' π π') (hΨ : ∀ j, Ψ j ∈ U) :
-    pairLev μ i Φ (∑ j ∈ s, Ψ j) c = ∑ j ∈ s, pairLev μ i Φ (Ψ j) c := by
-  rw [pairLev_swap, pairLev_sum_left hI hc s Ψ hΨ hΦ, map_sum]
-  exact Finset.sum_congr rfl fun j _ => (pairLev_swap (μ := μ) (i := i) (Ψ j) Φ c).symm
 
 def adjLev (μ : Measure (Mt k r)) (i : Fin (r + 1)) (U : Submodule ℂ (RadSp k r z z' π π')) (hI : IntLevOn μ i U)
     (c : Fin r → ℂ) (hc : c ∈ OmX r) : StarSubalgebra ℂ (Pr (RadSp k r z z' π π')) where
@@ -115,21 +101,11 @@ def adjLev (μ : Measure (Mt k r)) (i : Fin (r + 1)) (U : Submodule ℂ (RadSp k
     change pairLev μ i (a.2.unop Φ) Ψ c = pairLev μ i Φ (a.1 Ψ) c
     rw [pairLev_swap (Φ := Ψ), ← ha Ψ hΨ Φ hΦ, ← pairLev_swap]
 
-theorem adjLev_pres {hI : IntLevOn μ i U} {c : Fin r → ℂ} {hc : c ∈ OmX r} {a : Pr (RadSp k r z z' π π')}
-    (ha : a ∈ adjLev μ i U hI c hc) : a ∈ presAlg U := ⟨ha.1, ha.2.1⟩
 
 theorem act_mem_pres (M : SlopeTestRemainingChoices S (Pr (RadSp k r z z' π π'))) (hM : ∀ a b, M a b ∈ presAlg U)
     (x : Ix S → RadSp k r z z' π π') (hx : ∀ a, x a ∈ U) (a : Ix S) : act M x a ∈ U := U.sum_mem fun b _ => (hM a b).1 _ (hx b)
 
-theorem mul_mem_pres (M N : SlopeTestRemainingChoices S (Pr (RadSp k r z z' π π'))) (hM : ∀ a b, M a b ∈ presAlg U)
-    (hN : ∀ a b, N a b ∈ presAlg U) (a b : Ix S) : (M * N) a b ∈ presAlg U := by
-  rw [Matrix.mul_apply]
-  exact (presAlg U).sum_mem fun c _ => (presAlg U).mul_mem (hM a c) (hN c b)
 
-theorem star_mem_pres (M : SlopeTestRemainingChoices S (Pr (RadSp k r z z' π π'))) (hM : ∀ a b, M a b ∈ presAlg U) (a b : Ix S) :
-    (star M) a b ∈ presAlg U := by
-  rw [Matrix.star_apply]
-  exact star_mem (hM b a)
 
 theorem form_eq_sum (hI : IntLevOn μ i U) {c : Fin r → ℂ} (hc : c ∈ OmX r) (u v : Ix S → RadSp k r z z' π π')
     (hu : ∀ a, u a ∈ U) (hv : ∀ a, v a ∈ U) : form μ i u v c = ∑ a, pairLev μ i (u a) (v a) c := by
@@ -137,32 +113,7 @@ theorem form_eq_sum (hI : IntLevOn μ i U) {c : Fin r → ℂ} (hc : c ∈ OmX r
   simp only [Finset.mul_sum]
   exact integral_finsetSum _ fun a _ => (hI c hc _ (hu a) _ (hv a)).2
 
-theorem form_int (hI : IntLevOn μ i U) {c : Fin r → ℂ} (hc : c ∈ OmX r) (u v : Ix S → RadSp k r z z' π π')
-    (hu : ∀ a, u a ∈ U) (hv : ∀ a, v a ∈ U) :
-    Integrable (fun c' : Cf r i => ((∏ j, ‖c' j‖ ^ (-2 : ℤ) : ℝ) : ℂ) * ∑ a, pairAt μ (u a) (v a) (glue i c c')) := by
-  simp only [Finset.mul_sum]
-  exact integrable_finsetSum _ fun a _ => (hI c hc _ (hu a) _ (hv a)).2
 
-theorem sum_pairLev_star_mul (hI : IntLevOn μ i U) {c : Fin r → ℂ} (hc : c ∈ OmX r)
-    (M N : SlopeTestRemainingChoices S (Pr (RadSp k r z z' π π'))) (hM : ∀ a b, M a b ∈ adjLev μ i U hI c hc)
-    (hN : ∀ a b, N a b ∈ presAlg U) (x y : Ix S → RadSp k r z z' π π') (hx : ∀ a, x a ∈ U) (hy : ∀ a, y a ∈ U) :
-    ∑ a, pairLev μ i (act (star M * N) x a) (y a) c = ∑ e, pairLev μ i (act N x e) (act M y e) c := by
-  have hu : ∀ e, act N x e ∈ U := act_mem_pres N hN x hx
-  rw [act_mul]
-  have h1 : ∀ a, act (star M) (act N x) a = ∑ e, (M e a).2.unop (act N x e) := by
-    intro a
-    simp only [act, Matrix.star_apply]
-    rfl
-  simp only [h1]
-  rw [Finset.sum_congr rfl fun a _ =>
-    pairLev_sum_left hI hc Finset.univ _ (fun e => (hM e a).2.1 _ (hu e)) (hy a)]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun e _ => ?_
-  have hs : ∀ a, pairLev μ i ((M e a).2.unop (act N x e)) (y a) c = pairLev μ i (act N x e) ((M e a).1 (y a)) c :=
-    fun a => (star_mem (hM e a) : star (M e a) ∈ adjLev μ i U hI c hc).2.2 _ (hu e) _ (hy a)
-  rw [Finset.sum_congr rfl fun a _ => hs a]
-  rw [← pairLev_sum_right hI hc Finset.univ (hu e) _ fun a => (hM e a).1 _ (hy a)]
-  rfl
 
 end Lev
 
@@ -171,49 +122,6 @@ section Top
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {S : Type} [Fintype S] [DecidableEq S]
 
-theorem stepDens_of (P : M.Par) (z z' : Fin (2 * P.r + P.k + 1) → ℂ) (π : Mx P.k P.r → (Wp →L[ℂ] Wp))
-    (π' : Mx P.k P.r → (Wq →L[ℂ] Wq)) (μ : Measure (Mt P.k P.r))
-    (L : R.LevelData (Pr (RadSp P.k P.r z z' π π')) P.r) (st : Fr.Start (Pr (RadSp P.k P.r z z' π π')))
-    (K : Fin (P.r + 1) → Submodule ℂ (RadSp P.k P.r z z' π π')) (l0 : ℕ)
-    (U : Fin P.r → Submodule ℂ (RadSp P.k P.r z z' π π')) (hKU : ∀ l, K l.castSucc ≤ U l)
-    (hI : ∀ l, IntLevOn μ l.castSucc (U l))
-    (hSite : ∀ w : List (Letter ℂ S), WordOK P z z' π π' st l0 w → ∀ l : Fin P.r,
-      star (bTl L l w) * RRi L st l.succ w * bTl L l w = RRi L st l.castSucc w)
-    (hB : ∀ w : List (Letter ℂ S), WordOK P z z' π π' st l0 w → ∀ (l : Fin P.r) (c : Fin P.r → ℂ) (hc : c ∈ OmX P.r),
-      ∀ a b, bTl L l w a b ∈ adjLev μ l.castSucc (U l) (hI l) c hc)
-    (hR : ∀ w : List (Letter ℂ S), WordOK P z z' π π' st l0 w → ∀ (l : Fin P.r) a b,
-      RRi L st l.succ w a b ∈ presAlg (U l))
-    (hPh : ∀ w : List (Letter ℂ S), WordOK P z z' π π' st l0 w → ∀ (l : Fin P.r) (x y : Ix S → RadSp P.k P.r z z' π π'),
-      InK (K l.castSucc) x → InK (K l.castSucc) y → ∀ c ∈ OmX P.r,
-      ∃ φ : ℂ → ℂ, Continuous φ ∧ (∀ t, t ≠ 0 → φ t = ph L st μ l w x y c t) ∧
-        ∃ C : ℝ, ∀ t, ‖φ t‖ ≤ C * (1 + ‖t‖) ^ (-4 : ℤ)) :
-    StepDens (S := S) P z z' π π' μ L st K l0 := by
-  intro w hw l x y hx hy c hc
-  obtain ⟨φ, hφc, hφe, hC⟩ := hPh w hw l x y hx hy c hc
-  refine ⟨φ, hφc, hφe, hC, ?_⟩
-  have h1 : ∫ t, φ t = ∫ t, ph L st μ l w x y c t := integral_congr_ae (ae_complex_ne_zero.mono fun t ht => hφe t ht)
-  rw [h1]
-  have hxU : ∀ a, x a ∈ U l := fun a => hKU l (hx a)
-  have hyU : ∀ a, y a ∈ U l := fun a => hKU l (hy a)
-  have hBm : ∀ a b, bTl L l w a b ∈ adjLev μ l.castSucc (U l) (hI l) c hc := hB w hw l c hc
-  have hBp : ∀ a b, bTl L l w a b ∈ presAlg (U l) := fun a b => adjLev_pres (hBm a b)
-  have hN : ∀ a b, (RRi L st l.succ w * bTl L l w) a b ∈ presAlg (U l) := mul_mem_pres _ _ (hR w hw l) hBp
-  have hRR : RRi L st l.castSucc w = star (bTl L l w) * (RRi L st l.succ w * bTl L l w) := by
-    rw [← hSite w hw l, mul_assoc]
-  have hu : ∀ e, act (RRi L st l.succ w * bTl L l w) x e ∈ U l := act_mem_pres _ hN x hxU
-  have hv : ∀ e, act (bTl L l w) y e ∈ U l := act_mem_pres _ hBp y hyU
-  have hu0 : ∀ a, act (RRi L st l.castSucc w) x a ∈ U l := by
-    rw [hRR]; exact act_mem_pres _ (mul_mem_pres _ _ (star_mem_pres _ hBp) hN) x hxU
-  symm
-  show form μ l.castSucc (act (RRi L st l.castSucc w) x) y c = _
-  rw [form_eq_sum (hI l) hc _ _ hu0 hyU]
-  simp only [hRR]
-  rw [sum_pairLev_star_mul (hI l) hc _ _ hBm hN x y hxU hyU, ← form_eq_sum (hI l) hc _ _ hu hv,
-    form_split μ l _ _ c (form_int (hI l) hc _ _ hu hv)]
-  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-  show _ = ((‖t‖ ^ (-2 : ℤ) : ℝ) : ℂ) * form μ l.succ (act (RRi L st l.succ w) (act (bTl L l w) x))
-    (act (bTl L l w) y) (Function.update c l t)
-  rw [act_mul]
 
 end Top
 

@@ -103,14 +103,6 @@ theorem cW_succ (hS : WpShape.{0}) (hR : WpRecursion.{0}) {K : Type} [Field K] [
       rw [div_mul_eq_mul_div, div_eq_iff (mul_ne_zero hne1 hne2)]
       linear_combination -hrec
 
-theorem coeff_X_mul_derivative' {K : Type} [Field K] (f : K⟦X⟧) (n : ℕ) :
-    coeff n (X * derivative K f) = (n : K) * coeff n f := by
-  cases n with
-  | zero => simp
-  | succ k =>
-    rw [coeff_succ_X_mul, coeff_derivative]
-    push_cast
-    ring
 
 end BridgeK
 
@@ -162,13 +154,6 @@ theorem wpNumEq_of (hS : WpShape.{0}) (hR : WpRecursion.{0}) : WpNumEq := by
         ring
       · ring
 
-theorem wpRegInv_of (hS : WpShape.{0}) (hR : WpRecursion.{0}) : WpRegInv := by
-  unfold WpRegInv
-  intro K _ _ W W' h2 h3
-  ext n
-  obtain ⟨k, rfl | rfl⟩ := Nat.even_or_odd' n
-  · rw [← BridgeK.cW_succ hS hR W k, ← BridgeK.cW_succ hS hR W' k, h2, h3]
-  · rw [(hS K W).2.2.1 _ (odd_two_mul_add_one k), (hS K W').2.2.1 _ (odd_two_mul_add_one k)]
 
 theorem uSerEq_of (hS : WpShape.{0}) (hR : WpRecursion.{0}) : USerEq := by
   intro K _ _ g2 g3

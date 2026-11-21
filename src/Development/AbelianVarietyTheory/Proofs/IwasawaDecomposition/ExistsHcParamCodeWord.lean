@@ -63,9 +63,5 @@ def hcParamOfCodeWord (R : Ranks) (G b₀ h : ℕ) (hG : 2 ≤ G) (hh : R.t + 3 
   v_int i := ⟨G * (R.k - 1 - i.1), by push_cast; ring⟩
   b_int j := ⟨b₀ + 2 * h * j.1, by push_cast; ring⟩
 
-theorem exists_hcParam_codeWord : ∀ (R : Ranks) (G b₀ h : ℕ), 2 ≤ G → R.t + 3 ≤ h → ∃ P : (Fin R.k → Bool) → HCParam R, (∀ c i, (P c).v i = (G : ℚ) * (R.k - 1 - i.1)) ∧ (∀ c j, (P c).b j = b₀ + 2 * h * j.1) ∧ (∀ c j, (P c).e j = b₀ + 2 * h * j.1 + h) ∧ (∀ c (i : Fin R.k), (P c).u i = if i.1 = 0 then (G : ℚ) * (R.k - 1) + 1 / 2 else if i.1 = R.k - 1 then (G : ℚ) - 1 / 2 else if c i then (G : ℚ) * (R.k - i.1) - 1 / 2 else (G : ℚ) * (R.k - 1 - i.1) + 1 / 2) :=
-  fun R G b₀ h hG hh =>
-    ⟨hcParamOfCodeWord R G b₀ h hG hh, fun _ _ => rfl, fun _ _ => rfl, fun _ _ => rfl,
-      fun _ _ => rfl⟩
 
 end GlobalTheory

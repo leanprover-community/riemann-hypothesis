@@ -11,46 +11,8 @@ namespace GlobalTheory.TwSys.Test
 section Ord
 variable (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
-theorem ordHyp_X (l M : ℕ) :
-    OrdHyp O l M 1 1 0 (MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 0)) := by
-  refine ⟨MvPolynomial.X (Sum.inl 0), 1, ?_, ?_, 1, fun _ => 1, by simp, fun _ => le_rfl, by simp⟩
-  · apply Ideal.subset_span
-    left
-    exact ⟨0, by ring⟩
-  · simp
 
-theorem addVal_le_of_ordHyp {l M R v : ℕ} (hl : l ≠ 0) {f : MvPolynomial (Fin R ⊕ Fin R) O}
-    (h : OrdHyp O l M R 0 v f) : IsDiscreteValuationRing.addVal O (f.coeff 0) ≤ v := by
-  obtain ⟨Dd, g, h1, h2, u, n, hu, hn, h3⟩ := h
-  have hn0 : ∀ i, n i = 0 := fun i => Nat.le_zero.1 (hn i)
-  have e1 : MvPolynomial.constantCoeff (f - Dd * g) = 0 := by
-    have : Ideal.span (Set.range (fun i : Fin R => (MvPolynomial.X (Sum.inr i) : MvPolynomial (Fin R ⊕ Fin R) O)) ∪
-      Set.range (fun i : Fin R => (1 + MvPolynomial.X (Sum.inl i)) ^ (l ^ M) - 1)) ≤
-        RingHom.ker MvPolynomial.constantCoeff := by
-      rw [Ideal.span_le]
-      rintro _ (⟨i, rfl⟩ | ⟨i, rfl⟩) <;> simp
-    exact this h1
-  have e2 : MvPolynomial.constantCoeff (Dd.map (IsLocalRing.residue O) - u * ∏ i, MvPolynomial.X (Sum.inl i) ^ n i) = 0 := by
-    have : Ideal.span (Set.range fun q =>
-          (MvPolynomial.X q : MvPolynomial (Fin R ⊕ Fin R) (IsLocalRing.ResidueField O)) ^ (l ^ M)) ≤
-        RingHom.ker MvPolynomial.constantCoeff := by
-      rw [Ideal.span_le]
-      rintro _ ⟨i, rfl⟩
-      simp [hl]
-    exact this h3
-  simp only [hn0, pow_zero, Finset.prod_const_one, mul_one, map_sub, MvPolynomial.constantCoeff_map, sub_eq_zero] at e2
-  have hD : IsUnit (MvPolynomial.constantCoeff Dd) := by
-    rw [← IsLocalRing.residue_ne_zero_iff_isUnit, e2]
-    exact hu
-  rw [map_sub, map_mul, sub_eq_zero] at e1
-  have : f.coeff 0 = MvPolynomial.constantCoeff Dd * g.coeff 0 := e1
-  rw [this, IsDiscreteValuationRing.addVal_mul, IsDiscreteValuationRing.addVal_eq_zero_iff.2 hD, zero_add]
-  exact h2
 
-theorem not_ordHyp_X {l M v : ℕ} (hl : l ≠ 0) : ¬ OrdHyp O l M 1 0 v (MvPolynomial.X (Sum.inr 0)) := by
-  intro h
-  have := addVal_le_of_ordHyp O hl h
-  simp at this
 
 end Ord
 
@@ -95,24 +57,6 @@ theorem toLam_surjective (i : X.Tw) (M : ℕ) (ι : Type) [Fintype ι] : Functio
     | smul r f hf => exact Subalgebra.smul_mem _ hf r
   exact this
 
-theorem galois_export_of_matrix_det_bounds (bkP : BKPh X) (hS : ThmS bkP) (hS4 : SelmerLengthsByDeterminant bkP) (h3 : ResidualBoundOddPrimes bkP) (hC : ThmC bkP) : GaloisSideTwistedSelmerAuxiliaryPrimes bkP := by
-  intro i T hT
-  have hO : OrdBound bkP i (IsDiscreteValuationRing.addVal (X.O0 i) ((X.l i : X.O0 i) ^ nu X i)) := by
-    rcases Nat.eq_zero_or_pos (nu X i) with h | h
-    · rw [h, pow_zero, IsDiscreteValuationRing.addVal_one]
-      exact h3 i h
-    · exact hC i h
-  obtain ⟨R, Dd, M₀, h⟩ := hO T hT
-  refine ⟨R, Dd, max M₀ 1, le_max_right _ _, fun M hM H S d hd z hz H' h1 h2 A => ?_⟩
-  obtain ⟨P, hA, hSt, hF⟩ := h M (le_of_max_le_left hM) H S d hd z hz H' h1 h2 A
-  refine ⟨P, hA, hSt, fun s hs Q hQ => ?_⟩
-  have hA0 : SlopeTestRemainingChoices X i M ∅ P (fun q => d (P q)) :=
-    ⟨fun q v hv => by
-      obtain ⟨a, b, c, d', -, f⟩ := hA.1 q v hv
-      exact ⟨a, b, c, d', by simp, f⟩, hA.2⟩
-  obtain ⟨a, Φ, hΦ, -⟩ := hS i s (hT s hs) M _ P _ Q (le_of_max_le_right hM) hA0 hQ
-  obtain ⟨F, hFd⟩ := toLam_surjective i M (Fin R ⊕ Fin R) Φ.det
-  exact ⟨F, hS4 i s M _ P _ Q (le_of_max_le_right hM) hA0 hQ a Φ hΦ F hFd, hF s hs Q hQ a Φ hΦ F hFd⟩
 
 end GlobalTheory.TwSys.Test
 

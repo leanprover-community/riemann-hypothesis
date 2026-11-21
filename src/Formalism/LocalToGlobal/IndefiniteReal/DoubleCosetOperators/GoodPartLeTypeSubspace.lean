@@ -78,9 +78,6 @@ instance modFmO (i : C.Tw) (j : ℕ) (b : Bool) : Module (C.O i) (Fm C i j b) :=
 instance towFm (i : C.Tw) (j : ℕ) (b : Bool) : IsScalarTower (C.O i) (FractionRing (C.O i)) (Fm C i j b) :=
   IsScalarTower.of_algebraMap_smul fun _ _ => rfl
 
-theorem finiteDimensional_Fm (i : C.Tw) (j : ℕ) (b : Bool) [FiniteDimensional C.Ks (FmK C j)] :
-    FiniteDimensional (FractionRing (C.O i)) (Fm C i j b) :=
-  (inferInstance : Module.Finite (KB C i b) (KB C i b ⊗[C.Ks] FmK C j))
 
 def Bsup (i : C.Tw) (j : ℕ) (b : Bool) : Submodule (C.O i) (Fm C i j b) :=
   Submodule.span (C.O i)
@@ -205,9 +202,6 @@ def thK {Dat : Type} (j : ℕ) (σ0 : C.L0 →+* ℂ) (thC : Dat → C.W j σ0) 
     C.L0 ⊗[C.Ks] FmK C j :=
   (h d).choose
 
-theorem thK_spec {Dat : Type} (j : ℕ) (σ0 : C.L0 →+* ℂ) (thC : Dat → C.W j σ0) (h : ThExists C j σ0 thC)
-    (d : Dat) : IsThOf C j σ0 (thC d) (thK C j σ0 thC h d) :=
-  (h d).choose_spec
 
 def rdKs (i : C.Tw) (b : Bool) : C.L0 →ₗ[C.Ks] KB C i b where
   toFun := rd C i b

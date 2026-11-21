@@ -255,34 +255,6 @@ private theorem H_affine_combination_eq_of_quadratic_relation (t : TT Y u u') (w
   rw [eq_div_iff (by exact_mod_cast hf2)]
   exact h2.symm
 
-theorem volPinGC_of (hD : DictC) (hC : CovolOneC)
-    (hBin : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), PrimeHyp D u (Tu D u') →
-      ∀ (t : TT Y u u') (w : Point D.host.E (D.R.rS + 1)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E))
-        (L U : Formalism.L2.SG.PairVal.MatR D), t.relevant → t.toTerm.generic →
-        Formalism.L2.SG.PairVal.NormRep t.toTerm w F' L U → Gval (lf D (X.Fu u)) F' ≠ 0 →
-        (Formalism.L2.SG.PairVal.stabAut D u u' (X.Fu u) (Y.what₂ u) t.toTerm F' L : Set (Formalism.L2.SG.PairVal.GLR D)) ⊆
-          Formalism.L2.SG.Pf.StabilizerIndexVolumes.StSet (ptMat w))
-    (hFin : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), PrimeHyp D u (Tu D u') →
-      Formalism.L2.SG.Pf.StabilizerIndexVolumes.VolumeIndexFiniteNonzero D u u' (X.Fu u) (Y.what₂ u) Y.δ Y.M) :
-    Formalism.L2.SG.VolPin.VolPinGC := by
-  intro D X Y u u' hP t hrel hgen hG w hw μR hpin K hK hKu F' L U hN
-  obtain ⟨γw, s, s', μw, hpt, hs, hs', hdec, hμw, hmap, rfl⟩ := hpin
-  obtain ⟨c, Φ, hDict⟩ := hD D X Y u u' t hrel hG w hw F' L U hN γw s s' hpt hs hs' hdec
-  obtain ⟨KA, hKA, hKAu, hKA1⟩ :=
-    hC D X Y u u' t hrel hG w hw F' L U hN γw s s' μw hpt hs hs' hdec hμw hmap c Φ hDict
-  have hGv := gval_of_normRep t w F' L U hN hG
-  have hAut : Formalism.L2.SG.PairVal.stabAut D u u' (X.Fu u) (Y.what₂ u) t.toTerm F' L ≤ StG w :=
-    fun a ha => hBin D X Y u u' hP t w F' L U hrel hgen hN hGv ha
-  have hInt : Formalism.L2.SG.PairVal.stabInt D u u' Y.δ Y.M w ≤ StG w := by
-    unfold Formalism.L2.SG.PairVal.stabInt
-    refine (Subgroup.closure_le _).mpr ?_
-    intro a ha
-    obtain ⟨h1, b, hb, hwb, -⟩ := ha
-    show a ∈ Formalism.L2.SG.Pf.StabilizerIndexVolumes.StSet (ptMat w)
-    exact ⟨h1, b, hb, hwb⟩
-  obtain ⟨hf1, hf2⟩ := hFin D X Y u u' hP Y.agree t.toTerm w F' L U hrel hgen hN hGv
-  exact H_affine_combination_eq_of_quadratic_relation t w F' L γw s c Φ hDict _ (pinned_haar t w γw s s' μw hs hs' hdec hμw) KA hKA hKAu hKA1
-    K hK hKu hAut hInt hf1 hf2
 
 theorem volume_generic_odd_of (hD : DictC) (hC : CovolOne3C)
     (hBin : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), PrimeHyp D u (Tu D u') →

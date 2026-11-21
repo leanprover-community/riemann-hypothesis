@@ -17,9 +17,6 @@ theorem evalZero_mem_adelicSchwartzAdmittedForms (κ : Type) [Fintype κ] : ev0 
   rw [e]
   exact GlobalTheory.MixUniq.adelicCoordinatesEvalZeroForm_mem_admissible κ
 
-theorem eval_zero_schrodinger_zero {κ : Type} [Fintype κ] (ψ : AddChar (AF F) ℂ) (v : κ → AF F) (Ψ : (κ → AF F) → ℂ) :
-    ev0 κ (schr ψ (0, v) Ψ) = ev0 κ Ψ := by
-  simp [ev0, schr]
 
 theorem schr_zero_fst {κ : Type} [Fintype κ] (ψ : AddChar (AF F) ℂ) (v : κ → AF F) (Ψ : (κ → AF F) → ℂ) :
     schr ψ (0, v) Ψ = fun x => ψ (x ⬝ᵥ v) * Ψ x := by

@@ -192,9 +192,5 @@ theorem key (snf : Basis.SmithNormalForm P ι n) (π : O) (hπ : Irreducible π)
 
 end AllButLESmithP
 
-theorem all_but_le_smith : AllButLESmith := by
-  unfold AllButLESmith
-  intro O M ι _ _ _ _ _ _ π hπ P n snf g E
-  exact AllButLESmithP.key snf π hπ g E _ (fun i => by simp)
 
 end Formalism.G0

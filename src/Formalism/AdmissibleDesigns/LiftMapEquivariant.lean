@@ -72,7 +72,6 @@ def psiR : (Γ → Dt.T') →ₛₗ[(eO : O →+* Ow)] (G → TrV e VT') where
     show tr e (a • ((c (ι g) : VT'))) = eO a • tr e ((c (ι g) : VT'))
     rw [smul_eO heO]
 
-theorem psiR_apply (c : Γ → Dt.T') (g : G) : psiR e eO heO ι Dt c g = tr e ((c (ι g) : VT')) := rfl
 
 theorem psiR_inj (hι : Function.Bijective ι) : Function.Injective (psiR e eO heO ι Dt) := by
   intro a b h
@@ -86,7 +85,6 @@ def FsG : Submodule O (ReciprocityTheory.Gal.H1 Dt.ρTl') :=
   ((Submodule.span (FractionRing O) (finiteClassesContinuous e PD ι Dt.ρT' Dt.ρT' LinearMap.id :
     Set (ReciprocityTheory.Gal.H1 Dt.ρT'))).restrictScalars O).comap Dt.j'
 
-theorem coe_rhoTl' (γ : Γ) (t : Dt.T') : ((Dt.ρTl' γ t : Dt.T') : VT') = Dt.ρT' γ t := rfl
 
 theorem mem_FsG (hcob : ∀ v : VT', (fun γ => Dt.ρT' γ v - v) ∈ finZ e PD Dt.ρT' ι)
     (x : ReciprocityTheory.Gal.Z1 Dt.ρTl') :

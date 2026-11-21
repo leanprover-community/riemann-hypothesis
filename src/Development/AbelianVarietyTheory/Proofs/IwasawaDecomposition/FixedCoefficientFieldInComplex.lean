@@ -27,17 +27,6 @@ theorem SeedW.mono {K : Ctx} {P : Pre} {f : Fr P} {F F₀ : IntermediateField �
   obtain ⟨B₀, f₀, T₀, w₀, Z₀, hX₀, Wt₀, z₀, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12⟩ := h
   exact ⟨B₀, f₀, T₀, w₀, Z₀, hX₀, Wt₀, z₀, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, fun v hv => hS (a11 v hv), a12.trans hL⟩
 
-theorem enl_of_fields {B₀ B : Base} (hP : B₀.toPre = B.toPre) (hKs : B₀.KsC = B.KsC) (hL0 : B₀.fixedCoefficientFieldInComplex = B.fixedCoefficientFieldInComplex)
-    (hLL : B₀.LLC ≤ B.LLC) : Enl B₀ B := by
-  refine ⟨hP.symm, ?_, ?_, ?_⟩
-  · have := congrArg (fun F : IntermediateField ℚ ℂ => (F : Set ℂ)) hKs
-    simp only [Base.KsC, IntermediateField.coe_map] at this
-    exact this.symm
-  · have := congrArg (fun F : IntermediateField ℚ ℂ => (F : Set ℂ)) hL0
-    simp only [Base.fixedCoefficientFieldInComplex, IntermediateField.coe_map] at this
-    exact this.symm
-  · rintro _ ⟨x, rfl⟩
-    exact (B.mem_LLC).1 (hLL ((B₀.mem_LLC).2 ⟨x, rfl⟩))
 
 end GlobalTheory.Mem.R3.Rw
 

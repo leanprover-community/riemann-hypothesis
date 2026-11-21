@@ -575,9 +575,6 @@ def LemmaBInt (CB : ℝ) : Prop :=
       MeasureTheory.Integrable (fun x : Fin (L.r + 1) → ℂ => (((∏ a : Fin L.r, Complex.normSq (cOf x a))⁻¹ : ℝ) : ℂ) *
         Formalism.MainNotions.S.hsInner (L.B (lJ L h F) x) (L.B (lJ L h F') x))
 
-theorem lbeta_eq_integral (L : Lev) (h : L.Haar) (F F' : L.GF) :
-    lbeta L h F F' = ∫ x : Fin (L.r + 1) → ℂ, (((∏ a : Fin L.r, Complex.normSq (cOf x a))⁻¹ : ℝ) : ℂ) *
-      Formalism.MainNotions.S.hsInner (L.B (lJ L h F) x) (L.B (lJ L h F') x) := rfl
 
 def LemmaBThreeClauses (CB : ℝ) : Prop := LemmaBCont CB ∧ LemmaBAdj CB ∧ LemmaBRad CB
 

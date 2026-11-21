@@ -20,10 +20,6 @@ def IsTate (f : X ⟶ X) (hf : f ≫ p = p) (L : HermLB p) (w : LB.Iso (L.pull f
       ((L.pow 4).φ σ).φ a y + 4 * u σ y = ((L.pull f hf).φ σ).φ b y + u σ (PtsOver.map f hf _ y) +
         Real.log (‖ev p σ _ (w.s (a, b)).val y‖ ^ 2)
 
-theorem exists_isTate_zero {f : X ⟶ X} {hf : f ≫ p = p} {L : HermLB p}
-    (h : (L.pull f hf).Isometric (L.pow 4)) : ∃ w, w.IsGen ∧ IsTate f hf L w fun _ _ => 0 := by
-  obtain ⟨w, hw, h⟩ := h
-  exact ⟨w, hw, fun σ a b y ha hb => by simpa using h σ a b y ha hb⟩
 
 theorem IsTate.isometric {f : X ⟶ X} {hf : f ≫ p = p} {L : HermLB p}
     {w : LB.Iso (L.pull f hf).B (L.pow 4).B} (hw : w.IsGen) {u : ∀ σ : k →+* ℂ, CxPts p σ → ℝ}

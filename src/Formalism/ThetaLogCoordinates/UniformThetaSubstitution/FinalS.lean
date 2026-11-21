@@ -17,11 +17,8 @@ namespace Formalism.InvariantFactorPaths.G7.Top
 
 open Formalism.InvariantFactorPaths.G7
 
-theorem g_zero_relation : OddLogRelation := g_zero_relation_holds
-theorem identityB : IdentityB := identity_b
 theorem frobExprG : FrobExprG := frobenius_expression_g
 theorem valTable : ValTable := valuation_table
-theorem piFactorial : PiFactorial := pi_factorial
 theorem expIntegral : ExpIntegral := exp_integral
 theorem classChange : ClassChange := classChange_statement
 theorem classMul : ClassMul := class_multiplication
@@ -60,6 +57,5 @@ theorem stepIV : StepIV := StepIV_of dworkMv
 theorem mapSimeq : MapSimeq := mapSimeq_statement
 theorem betaIsG : BetaIsG :=
   BetaIsG_of zeroCondition stepI stepII stepH stepIII stepIV swapRules simeqRules
-theorem thmSFull : ThmSFull := ThmSFull_of betaIsG theorem_s_from_k_one mapSimeq
 
 end Formalism.InvariantFactorPaths.G7.Top

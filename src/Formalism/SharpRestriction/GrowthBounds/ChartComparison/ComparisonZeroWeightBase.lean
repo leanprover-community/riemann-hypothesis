@@ -47,7 +47,6 @@ theorem cmpZeroMu_int : Submodule.span (D.gat u w h).O
     (cmpZeroMu c Tw u μ w h '' (((Tw.fm u μ).lat 0).L : Set _)) = (D.gat u w h).M := by
   rw [cmpZeroMu_image, c.cmp_M]
 
-theorem cmpZeroMu_muAt : cmpZeroMu c Tw u (D.what₂.muAt w) w h = cmpZero c Tw u w h := rfl
 
 end Zero
 
@@ -64,10 +63,7 @@ theorem KLxMu_eq (j : ℕ) (x : ((Tw.fm u μ).lat j).V) (y : ((Tw.fm u μ).lat (
     (hxy : (Tw.fm u μ).emb (j + 1) y = (D.chTw u μ).K j ((Tw.fm u μ).emb j x)) : KLxMu Tw u μ j x = y :=
   ratMap_eq _ _ _ _ x y hxy
 
-theorem KLxMu_eq_KL (j : ℕ) (hK : (Tw.fm u μ).KRat j) : KLxMu Tw u μ j = (Tw.fm u μ).KL j hK :=
-  LinearMap.ext fun x => KLxMu_eq j x _ ((Tw.fm u μ).KL_spec j hK x)
 
-theorem KLxMu_muAt (w : D.what₂.places.Pl) (j : ℕ) : KLxMu Tw u (D.what₂.muAt w) j = KLx Tw u w j := rfl
 
 end KL
 
@@ -119,42 +115,9 @@ theorem chainMu_cmp_K (S : CmpUpMu c Tw u μ w h Lv) : ∀ j, j < D.R.m →
   intro j hj x y hxy
   rw [chainMu_apply S j hj, KLxMu_eq j x y hxy]
 
-theorem chainMu_KL (S : CmpUpMu c Tw u μ w h Lv) (j : ℕ) (hj : j < D.R.m) (hK : (Tw.fm u μ).KRat j)
-    (x : ((Tw.fm u μ).lat j).V) : (chainMu S).Kz j (S.cmp j x) = S.cmp (j + 1) ((Tw.fm u μ).KL j hK x) := by
-  rw [chainMu_apply S j hj, KLxMu_eq_KL j hK]
 
-theorem chainMu_unique (S : CmpUpMu c Tw u μ w h Lv) (Ch : Chain Lv) (j : ℕ) (hj : j < D.R.m)
-    (hK : (Tw.fm u μ).KRat j)
-    (hC : ∀ (x : ((Tw.fm u μ).lat j).V) (y : ((Tw.fm u μ).lat (j + 1)).V),
-      (Tw.fm u μ).emb (j + 1) y = (D.chTw u μ).K j ((Tw.fm u μ).emb j x) → S.cmp (j + 1) y = Ch.Kz j (S.cmp j x))
-    (F : Lv.Fm j) (hF : F ∈ spanK (S.cmp j)) : Ch.Kz j F = (chainMu S).Kz j F := by
-  rw [chainMu_Kz S j hj]
-  refine extK_unique _ _ _ _ _ (Ch.Kz j) (fun x => ?_) F hF
-  rw [KLxMu_eq_KL j hK]
-  exact (hC x _ ((Tw.fm u μ).KL_spec j hK x)).symm
 
-theorem chainMu_chainK_mem (S : CmpUpMu c Tw u μ w h Lv) (j : ℕ) (hj : j ≤ D.R.m) (F : Lv.Fm 0)
-    (hF : F ∈ spanK (S.cmp 0)) : (chainMu S).chainK j F ∈ spanK (S.cmp j) := by
-  cases j with
-  | zero => exact hF
-  | succ j =>
-    show (chainMu S).Kz j ((chainMu S).chainK j F) ∈ _
-    rw [chainMu_Kz S j (by omega)]
-    exact extK_mem_spanK _ _ _ _ _ _
 
-theorem chainK_forcedMu (S : CmpUpMu c Tw u μ w h Lv) (Ch : Chain Lv)
-    (hK : ∀ j, j < D.R.m → (Tw.fm u μ).KRat j)
-    (hC : ∀ j, j < D.R.m → ∀ (x : ((Tw.fm u μ).lat j).V) (y : ((Tw.fm u μ).lat (j + 1)).V),
-      (Tw.fm u μ).emb (j + 1) y = (D.chTw u μ).K j ((Tw.fm u μ).emb j x) → S.cmp (j + 1) y = Ch.Kz j (S.cmp j x))
-    (j : ℕ) (hj : j ≤ D.R.m) (F : Lv.Fm 0) (hF : F ∈ spanK (S.cmp 0)) :
-    Ch.chainK j F = (chainMu S).chainK j F := by
-  induction j with
-  | zero => rfl
-  | succ j ih =>
-    show Ch.Kz j (Ch.chainK j F) = (chainMu S).Kz j ((chainMu S).chainK j F)
-    rw [ih (by omega)]
-    exact chainMu_unique S Ch j (by omega) (hK j (by omega)) (hC j (by omega)) _
-      (chainMu_chainK_mem S j (by omega) F hF)
 
 theorem li_stepMu (j : ℕ) (f : ((Tw.fm u μ).lat j).V →ₛₗ[c.embW u w h] Lv.Fm j) (hinj : Function.Injective f)
     (hrat : ∀ x, RatFnP (Fl.Pj j) (Lv.comp j) (c.embW u w h) (f x)) :
@@ -190,7 +153,6 @@ variable {c Tw u μ w h Lv}
 
 def StepsMu.up (X : StepsMu c Tw u μ w h Lv) : CmpUpMu c Tw u μ w h Lv := CmpUpMu.ofRat X.cmpS X.injS X.ratS
 
-theorem StepsMu.up_cmp_succ (X : StepsMu c Tw u μ w h Lv) (j : ℕ) : X.up.cmp (j + 1) = X.cmpS j := rfl
 
 theorem StepsMu.intS (X : StepsMu c Tw u μ w h Lv) (hd : DescUp c u w h Lv) (j : ℕ) (hj : j + 1 ≤ D.R.m) :
     Submodule.span (D.gat u w h).O

@@ -15,14 +15,6 @@ namespace UpperTheory.Gal.Spc.Iw
 private def LI {G : Type} [Group G] (K : Subgroup G) (g : G) : Prop :=
   ∃ φ ∈ Hecke ℂ K, conv K φ (dosetInd ℂ K g) = dosetInd ℂ K 1
 
-private theorem LI.congr {G : Type} [Group G] {K : Subgroup G} {g g' : G}
-    (h : g' ∈ DoubleCoset.doubleCoset g (K : Set G) (K : Set G)) (hg : LI K g) : LI K g' := by
-  have e : dosetInd ℂ K g' = dosetInd ℂ K g := by
-    unfold dosetInd
-    rw [DoubleCoset.doubleCoset_eq_of_mem h]
-  unfold LI
-  rw [e]
-  exact hg
 
 private theorem LI.one {G : Type} [Group G] (K : Subgroup G) : LI K (1 : G) :=
   ⟨_, Final.DosetIndMem G K ℂ 1, (Final.HeckeUnit G K ℂ _ (Final.DosetIndMem G K ℂ 1)).1⟩

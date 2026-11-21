@@ -574,30 +574,7 @@ def ClosedAbsoluteShare (𝒞 : Formalism.MainNotions.FamClass) : Prop :=
       (LF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc (Fm.D x i) (Fm.X x i) (YF x hx i)),
       ShareFamilyAtConstant Fm YF LF C)
 
-theorem local_admissible_of_admissible {D : Formalism.BasicNotions.D7} {X : DivX D} {Y : ModuliIntegralCharts.Prov D} {Lc : Loc D X Y} (hA : admitted D X Y Lc)
-    (s : D.jet.Sit) (y : Lc.Pt s) : (Lc.loc s y).AdmLoc :=
-  ⟨(hA.1 s y).1, (hA.1 s y).2, hA.2.1 s y, hA.2.2.1 s y, hA.2.2.2.2.1 s y, hA.2.2.2.2.2.1 s y⟩
 
-theorem family_statement_of_all_local (h : RealisationStatementAll) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-    (YF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ModuliIntegralCharts.Prov (Fm.D x i))
-    (LF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc (Fm.D x i) (Fm.X x i) (YF x hx i)) (CH : ℝ) :
-    KudlaFamilyStatement Fm YF LF CH := by
-  intro hA
-  obtain ⟨x0, -, hx1, -, ⟨i0⟩⟩ := Fm.toFamCore.exists_pt 0
-  have hA0 := hA _ hx1 i0
-  obtain ⟨hP, C, hC⟩ := h hA0.2.2.2.1 hA0.2.2.2.2.2.2
-  exact ⟨fun x hx i s y => (hC _ _ _ (local_admissible_of_admissible (hA x hx i) s y)).1, hP,
-    fun x hx i s y => (hC _ _ _ (local_admissible_of_admissible (hA x hx i) s y)).2.1,
-    fun x hx i s y => (hC _ _ _ (local_admissible_of_admissible (hA x hx i) s y)).2.2.1, C,
-    fun x hx i s y => (hC _ _ _ (local_admissible_of_admissible (hA x hx i) s y)).2.2.2⟩
 
-theorem closed_statement_of_all_local (h : RealisationStatementAll) (h4 : CayleyId) (h7 : LPDual) (𝒞 : Formalism.MainNotions.FamClass) :
-    ClosedAbsoluteShare 𝒞 := by
-  obtain ⟨hP, C, hC⟩ := h h4 h7
-  refine ⟨C, 1, one_pos, fun eps _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm _ _ _ YF LF hA => ?_⟩⟩
-  exact ⟨fun x hx i s y => (hC _ _ _ (local_admissible_of_admissible (hA x hx i) s y)).1, hP,
-    fun x hx i s y => (hC _ _ _ (local_admissible_of_admissible (hA x hx i) s y)).2.1,
-    fun x hx i s y => (hC _ _ _ (local_admissible_of_admissible (hA x hx i) s y)).2.2.1,
-    fun x hx i s y => (hC _ _ _ (local_admissible_of_admissible (hA x hx i) s y)).2.2.2⟩
 
 end Formalism.MainNotions.CartierLocalBounds

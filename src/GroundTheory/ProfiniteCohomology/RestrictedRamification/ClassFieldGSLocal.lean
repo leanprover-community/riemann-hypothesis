@@ -87,19 +87,6 @@ theorem liftNormal_localArtinMap_apply (v : HeightOneSpectrum (𝓞 K)) (b : (v.
 
 variable {S : Set (HeightOneSpectrum (𝓞 K))} {n : ℕ}
 
-theorem charToSIdelePos_finiteEmbedding
-    (χ : ContinuousMonoidHom (galUnramifiedOutside K Ω S) (Multiplicative (ZMod n)))
-    (v : HeightOneSpectrum (𝓞 K)) (ι : Ω →ₐ[K] AlgebraicClosure (v.adicCompletion K))
-    (b : (v.adicCompletion K)ˣ) {g : Gal(AlgebraicClosure (v.adicCompletion K)/v.adicCompletion K)}
-    (hg : ∀ (y : AlgebraicClosure (v.adicCompletion K))
-      (hy : y ∈ maximalAbelianExtension (v.adicCompletion K) (AlgebraicClosure (v.adicCompletion K))),
-      g y = (localArtinMap (v.adicCompletion K) (AlgebraicClosure (v.adicCompletion K)) b ⟨y, hy⟩ :
-        AlgebraicClosure (v.adicCompletion K))) :
-    charToSIdelePos χ (SIdeleClassGroupPos.mk S (finiteEmbedding v b)) =
-      χ (decompHomS (v.adicCompletion K) S ι g) := by
-  rw [charToSIdelePos_mk_eq χ _ (decompHom (v.adicCompletion K) ι g)
-    (decompHom_apply_of_localArtinMap v ι b hg), decompHomS_eq]
-  rfl
 
 theorem charEquiv_finiteEmbedding [IsAlgClosure K Ω] (hS : S.Finite) [NeZero n]
     (h : Odd n ∨ IsTotallyComplex K)
@@ -151,18 +138,6 @@ end Cup
 
 section Frobenius
 
-theorem unramifiedDegree_liftNormal_localArtinMap_localUniformizer {K : Type} [Field K] [NumberField K]
-    (v : HeightOneSpectrum (𝓞 K)) :
-    unramifiedDegree (v.adicCompletion K) (AlgebraicClosure (v.adicCompletion K))
-      ((localArtinMap (v.adicCompletion K) (AlgebraicClosure (v.adicCompletion K))
-        (localUniformizer v)).liftNormal (AlgebraicClosure (v.adicCompletion K))) =
-      Multiplicative.ofAdd 1 := by
-  have e := unramifiedDegree_of_mk_eq_localReciprocityLimit
-    (mk_eq_localReciprocityLimit_of_forall (liftNormal_localArtinMap_apply v (localUniformizer v)))
-  have ho : GroundTheory.LocalField.ord ((localUniformizer v : (v.adicCompletion K)ˣ) : v.adicCompletion K) = 1 :=
-    ord_eq_one_of_valued_eq_exp v (valued_localUniformizer v)
-  refine e.trans ?_
-  rw [ho, Int.cast_one]
 
 variable {K : FiniteSubfield} {S : Set (HeightOneSpectrum (𝓞 K.1))} {n : ℕ}
 
@@ -195,17 +170,6 @@ theorem charEquiv_sPresentation_single_of (hS : S.Finite) [NeZero n] (h : Odd n 
   rw [map_mul, map_inv, inv_mul_eq_one] at h2
   rw [sPresentation_single, charEquiv_finiteEmbedding hS h χ v ι (localUniformizer v) hg, h2]
 
-theorem charEquiv_sPresentation_single (hS : S.Finite) [NeZero n] (h : Odd n ∨ IsTotallyComplex K.1)
-    (χ : ContinuousMonoidHom (galUnramifiedOutside K.1 ℚ̄ S) (Multiplicative (ZMod n)))
-    (v : HeightOneSpectrum (𝓞 K.1)) (hv : v ∉ S) (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure (v.adicCompletion K.1))
-    (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1))
-    (hσ : unramifiedDegree (v.adicCompletion K.1) (AlgebraicClosure (v.adicCompletion K.1)) σ =
-      Multiplicative.ofAdd 1) :
-    have := hS.to_subtype
-    χ (decompHomS (v.adicCompletion K.1) S ι σ) =
-      charEquiv ℚ̄ hS h χ (sPresentation S (1, Multiplicative.ofAdd (Finsupp.single ⟨v, hv⟩ 1))) :=
-  charEquiv_sPresentation_single_of hS h χ v hv ι σ _ hσ (liftNormal_localArtinMap_apply v _)
-    (unramifiedDegree_liftNormal_localArtinMap_localUniformizer v)
 
 end Frobenius
 

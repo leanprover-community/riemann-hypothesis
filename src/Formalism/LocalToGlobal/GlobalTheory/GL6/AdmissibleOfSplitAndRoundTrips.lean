@@ -196,11 +196,6 @@ theorem local_diamonds_of_split (Tf : FormsTied D u) (hs : SplitAtT Tf.atT) : Lo
 theorem diamond_elements_of_split (Tf : FormsTied D u) (hs : SplitAtT Tf.atT) : DiamondElementsExist Tf :=
   diamond_elements_of_local Tf (local_diamonds_of_split Tf hs)
 
-theorem admissible_of_split_and_round_trips
-    (hS : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf → SplitAtT Tf.atT)
-    (hR : ∀ (D : D7) (u : D.what₂.Word), FormsCompatible D u → Formalism.MainNotions.product_first_zeroth_parts.RoundUp D u ∧ Formalism.MainNotions.product_first_zeroth_parts.RoundDn D u) :
-    LinkAdmT :=
-  admissible_of_diamonds_and_round_trips (fun D u Tf hc => diamond_elements_of_split Tf (hS D u Tf hc)) hR
 
 end Tied
 

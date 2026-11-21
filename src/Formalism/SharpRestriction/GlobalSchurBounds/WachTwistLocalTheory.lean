@@ -138,16 +138,6 @@ section Fm
 
 variable (D : D7) (u : D.what₂.Word)
 
-theorem gUop_fm (i : ℕ) (v : (D.mem u).A.vT) : gUop (D.fm u) i v = Uop D u i v := rfl
-theorem gDop_fm (i : ℕ) (v : (D.mem u).A.vT) : gDop (D.fm u) i v = Dop D u i v := rfl
-theorem gdia_fm (i : ℕ) (v : (D.mem u).A.vT) (a) : gdia (D.fm u) i v a = dia D u i v a := rfl
-theorem gMramI_fm (i : ℕ) : gMramI (D.fm u) i = MramI D u i := rfl
-theorem gUprod_fm (i : ℕ) (w) : gUprod (D.fm u) (tops D) i w = Uprod D u i w := rfl
-theorem general_t3_of_forms_iff (Cc : ℝ) : gT3withWeights (D.fm u) (tops D) (Wt D u) Cc ↔ PointsLemma D u Cc := Iff.rfl
-theorem general_t4_of_forms_iff (Cc : ℝ) : gT4withWeights (D.fm u) (Wt D u) Cc ↔ Conclusion4 D u Cc := Iff.rfl
-theorem general_t4_exact_of_forms_iff : klinIntertwinesUop (D.fm u) ↔ LevelChainUOperatorCommutation D u := Iff.rfl
-theorem general_adm0_of_forms_iff : gadm0 (D.fm u) ↔ UpDownIncidenceInverse D u := Iff.rfl
-theorem gadmT_fm : gadmT (D.fm u) ↔ admT D u := Iff.rfl
 
 end Fm
 
@@ -159,23 +149,9 @@ def UnrT (Dx : DivX D) (u : D.what₂.Word) (μ : D.what₂.Tup) : Prop := (D.me
 
 def UnrAllT (Dx : DivX D) : Prop := ∀ u μ, UnrT D Dx u μ
 
-theorem unramified_at_reference_tuple (Dx : DivX D) (u : D.what₂.Word) : UnrT D Dx u D.what₂.mu0 := by
-  unfold UnrT; rw [Dx.degreeZero_partial_set_empty]; exact Finset.notMem_empty _
 
 variable {D}
 
-theorem lamTw_eq (T : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (j : ℕ) (hj : j ≤ D.R.m) (τ : D.what₂.Tau) :
-    (T.fm u μ).lam j τ = (D.fm u).lam j τ := by
-  have h : ((T.fm u μ).lam j τ).w = ((D.fm u).lam j τ).w := by
-    funext i
-    have h1 := (T.fm u μ).lam_eq j hj τ i
-    have h2 := (D.fm u).lam_eq j hj τ i
-    exact_mod_cast h1.trans h2.symm
-  cases h1 : (T.fm u μ).lam j τ
-  cases h2 : (D.fm u).lam j τ
-  simp only [h1, h2] at h
-  subst h
-  rfl
 
 variable (D)
 
@@ -194,8 +170,6 @@ def BaseConventionGeneral (u : D.what₂.Word) (cl : ℕ → Type)
             y = a + D.host.conj (π : D.host.E) • b) ∧
           (QuotientGroup.mk (det i c) : D.Dt ⧸ D.UO) = D.relDet (D.R.N i) L0 Ln
 
-theorem base_convention_general_of_forms_iff (u : D.what₂.Word) :
-    BaseConventionGeneral D u (fun i => (D.mem u).C.cls i) (D.clsLat u) (D.detCls u) ↔ admB D u := Iff.rfl
 
 structure PendTw (u : D.what₂.Word) (μ : D.what₂.Tup) where
 
@@ -274,13 +248,7 @@ def TupleChainSharpColumnValuation (Dx : DivX D) (T : TwForms D) (u : D.what₂.
     ∀ μ, D.what₂.places.resChar w ∉ Dx.Qp μ → ∀ x ∈ LT.Nlam D u w,
       Formalism.MainNotions.WeilJacquetShalikaLaw.ColGeTw T u μ w x (-((D.R.m : ℝ) * EatT D u w))
 
-theorem sharp_t5_twist_of_each_tuple (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word)
-    (h : ∀ μ, UnrT D Dx u μ → SharpT5TwistColumnAt T u μ) : TupleChainSharpColumnValuation Dx T u :=
-  fun w hw μ hμ x hx => h μ (by unfold UnrT; rw [← hw]; exact hμ) w hw x hx
 
-theorem sharp_t5_twist_at_of_all (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (h : TupleChainSharpColumnValuation Dx T u) (μ : D.what₂.Tup)
-    (hμ : UnrT D Dx u μ) : SharpT5TwistColumnAt T u μ :=
-  fun w hw x hx => h w hw μ (by rw [hw]; exact hμ) x hx
 
 def TwistedBoundsAt (T : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (C : ℝ) : Prop :=
   TwistedT3KernelBoundAt T u μ C ∧ TwistedT4BoundAt T u μ C ∧ TwistedT5ColumnBound T u μ C ∧ TwistedT4ExactAt T u μ ∧ SharpT5TwistColumnAt T u μ
@@ -288,10 +256,6 @@ def TwistedBoundsAt (T : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (C
 def TwistedBounds (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (C : ℝ) : Prop :=
   TwistedT3KernelBoundAll Dx T u C ∧ TwistedT4Bound Dx T u C ∧ TwistedT5BoundAll Dx T u C ∧ TwistedT4ExactAll Dx T u ∧ TupleChainSharpColumnValuation Dx T u
 
-theorem twistedBounds_of_twistedBoundsAt (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (C : ℝ)
-    (h : ∀ μ, UnrT D Dx u μ → TwistedBoundsAt T u μ C) : TwistedBounds Dx T u C :=
-  ⟨fun μ hμ => (h μ hμ).1, fun μ hμ => (h μ hμ).2.1, fun μ hμ => (h μ hμ).2.2.1, fun μ hμ => (h μ hμ).2.2.2.1,
-    sharp_t5_twist_of_each_tuple Dx T u fun μ hμ => (h μ hμ).2.2.2.2⟩
 
 def TwistStatementAtTuple (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (C : ℝ) : Prop :=
   HidaSetting D u → AdmE D u → UnrT D Dx u μ → AdmETw T u μ → TwistedBoundsAt T u μ C
@@ -301,16 +265,10 @@ def TwistStatementAllTuples (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (
 def AdmTwAll (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) : Prop :=
   AdmE D u ∧ ∀ μ, UnrT D Dx u μ → AdmETw T u μ
 
-theorem twisted_conclusion_of_statement (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (C : ℝ) (h : TwistStatementAllTuples Dx T u C)
-    (hS : HidaSetting D u) (hA : AdmTwAll Dx T u) : TwistedBounds Dx T u C :=
-  twistedBounds_of_twistedBoundsAt Dx T u C fun μ hμ => h μ hS hA.1 hμ (hA.2 μ hμ)
 
 def SharpT5TwistMember (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) : Prop :=
   HidaSetting D u → AdmTwAll Dx T u → TupleChainSharpColumnValuation Dx T u
 
-theorem sharp_t5_member_of_twist_statement (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (C : ℝ) (h : TwistStatementAllTuples Dx T u C) :
-    SharpT5TwistMember Dx T u :=
-  fun hS hA => (twisted_conclusion_of_statement Dx T u C h hS hA).2.2.2.2
 
 end Tw
 
@@ -336,32 +294,17 @@ def TwistPointwiseFamilyConst (C : ℝ) : Prop :=
 
 def TwistPointwiseFamilyExists : Prop := ∃ C : ℝ, TwistPointwiseFamilyConst Fm C
 
-theorem twist_family_statement_of_pointwise (C : ℝ) (h : TwistPointwiseFamilyConst Fm C) : TwistFamilyStatement Fm C := by
-  obtain ⟨x0, h⟩ := h
-  rintro ⟨x1, hA⟩
-  exact ⟨max x0 x1, fun x hx hx0 i u hS =>
-    twisted_conclusion_of_statement _ _ u C (h x hx (le_trans (le_max_left _ _) hx0) i u) hS
-      (hA x hx (le_trans (le_max_right _ _) hx0) i u)⟩
 
-theorem twist_family_exists_of_pointwise (h : TwistPointwiseFamilyExists Fm) : TwistFamilyStatementExists Fm := by
-  obtain ⟨C, h⟩ := h
-  exact fun hA => ⟨C, twist_family_statement_of_pointwise Fm C h hA⟩
 
 def SharpT5AllTuplesFamily : Prop :=
   ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ (i : Fm.Ix x) (u : (Fm.D x i).what₂.Word),
     HidaSetting (Fm.D x i) u → TupleChainSharpColumnValuation (Fm.X x i) (Fm.ex x hx i).tw u
 
-theorem sharp_t5_family_of_twisted_family (C : ℝ) (h : TwistedBoundsAlongFamily Fm C) : SharpT5AllTuplesFamily Fm := by
-  obtain ⟨x0, h⟩ := h
-  exact ⟨x0, fun x hx hx0 i u hS => (h x hx hx0 i u hS).2.2.2.2⟩
 
 def SharpT5TwistFamily : Prop :=
   ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ (i : Fm.Ix x) (u : (Fm.D x i).what₂.Word),
     SharpT5TwistMember (Fm.X x i) (Fm.ex x hx i).tw u
 
-theorem sharp_t5_twist_family_of_pointwise (C : ℝ) (h : TwistPointwiseFamilyConst Fm C) : SharpT5TwistFamily Fm := by
-  obtain ⟨x0, h⟩ := h
-  exact ⟨x0, fun x hx hx0 i u => sharp_t5_member_of_twist_statement _ _ u C (h x hx hx0 i u)⟩
 
 end Fam
 
@@ -374,25 +317,6 @@ open Formalism.BasicNotions.DV
 
 variable {D : D7}
 
-theorem sharp_t5_packet_shape_of_twisted (T : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (h : SharpT5TwistColumnAt T u μ) :
-    SharpT5PacketShapeAt T u μ := by
-  intro w hw c n hc hn x hx
-  obtain ⟨y, hy, a, z, hz, rfl, ha⟩ := h w hw x hx
-  have hca : (0 : WithTop ℤ) ≤ D.what₂.places.val w (c * a) := by
-    by_cases h0 : a = 0
-    · subst h0; simp
-    · have ha' := ha.resolve_left h0
-      rw [AddValuation.map_mul, hc, D.val_eq w a h0, ← WithTop.coe_add, ← WithTop.coe_zero, WithTop.coe_le_coe]
-      have h1 : ur D w (-((D.R.m : ℝ) * ET D u w)) =
-          -((D.what₂.places.ramIdx w : ℝ) * ((D.R.m : ℝ) * ET D u w)) := by unfold ur; ring
-      rw [h1] at ha'
-      have h2 : (0 : ℝ) ≤ (n : ℝ) + (vAdd (D.plEq w) a : ℝ) := by linarith
-      exact_mod_cast h2
-  refine ⟨(⟨c * a, hca⟩ : intW D.what₂.places w) • z, Submodule.smul_mem _ _ hz, ?_⟩
-  rw [Subring.smul_def]
-  show (T.fm u μ).emb D.R.m ((c * a) • z) = _
-  rw [mul_smul, LinearMap.map_smulₛₗ, hy]
-  rfl
 
 def ReferenceTupleIdentity (D : D7) (u : D.what₂.Word) : Prop := ∀ φ, HEq (D.e0Tw u D.what₂.mu0 φ) φ
 
@@ -414,19 +338,7 @@ theorem eMu0_symm_loc (T : TwForms D) (u : D.what₂.Word) (j : ℕ) (hj : j ≤
     rw [Subring.smul_def, map_smul, ← Subring.smul_def]
     exact Submodule.smul_mem _ r hx
 
-theorem sharp_t5_of_twisted_sharp (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (hE : ReferenceTupleIdentity D u) (h : TupleChainSharpColumnValuation Dx T u) :
-    Conclusion5Sharp D u := by
-  intro w hw c n hc hn x hx
-  obtain ⟨y, hy, he⟩ := sharp_t5_packet_shape_of_twisted T u D.what₂.mu0 (sharp_t5_twist_at_of_all Dx T u h _ (unramified_at_reference_tuple D Dx u)) w hw c n hc hn x hx
-  refine ⟨(T.eMu0 u D.R.m le_rfl).symm y, eMu0_symm_loc T u D.R.m le_rfl w y hy, ?_⟩
-  have h1 := T.eMu0_emb u D.R.m le_rfl ((T.eMu0 u D.R.m le_rfl).symm y)
-  rw [LinearEquiv.apply_symm_apply, he] at h1
-  exact eq_of_heq (h1.symm.trans (col_heq (D.memberColumns_twistedChain_base u) _ _ _ (hE _)))
 
-theorem sharp_t5_twist_at_place_tuple (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (h : TupleChainSharpColumnValuation Dx T u) (w : D.what₂.places.Pl)
-    (hw : OverT D u w) : ∀ x ∈ Nlam D u w,
-      Formalism.MainNotions.WeilJacquetShalikaLaw.ColGeTw T u (D.what₂.muAt w) w x (-((D.R.m : ℝ) * ET D u w)) :=
-  fun x hx => h w hw _ (Dx.Qp_muAt w) x hx
 
 end Ref
 

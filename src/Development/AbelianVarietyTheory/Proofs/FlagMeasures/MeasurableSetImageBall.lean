@@ -25,12 +25,8 @@ def GLaw {N : ℕ} (H : Matrix (Fin N) (Fin N) ℂ) (a : ℕ) (μ : Measure (Fin
         ENNReal.ofReal (C * ‖(hOf t).det‖ ^ (N - a)) *
           ∫⁻ g, Φ (Matrix.of.symm (Matrix.of g * Matrix.of (s t))) ∂μ
 
-theorem gDef_iff {k r a : ℕ} (X : Tup k r a) : GDef (Hpk k r) X ↔ DefPerp X := Iff.rfl
 
-theorem gGram_eq (k r a : ℕ) : GGram (Hpk k r) a = DefGram k r a := rfl
 
-theorem gLaw_iff (k r a : ℕ) (μ : Measure (Mt k r)) (C : ℝ) : GLaw (Hpk k r) a μ C ↔ IsGramConst k r a μ C :=
-  Iff.rfl
 
 def Sgn {a : ℕ} (d : Fin a → ℂ) : Prop := ∀ i, d i = 1 ∨ d i = -1
 
@@ -144,27 +140,9 @@ theorem hOf_cont {a : ℕ} : Continuous (hOf : HCo a → Matrix (Fin a) (Fin a) 
   unfold hOf
   split_ifs <;> fun_prop
 
-theorem hOf_zero {a : ℕ} : hOf (0 : HCo a) = 0 := by
-  ext i j; unfold hOf; split_ifs <;> simp
 
-theorem hOf_neg {a : ℕ} (v : HCo a) : hOf (-v) = -hOf v := by
-  ext i j; simp only [hOf, Matrix.neg_apply]; split_ifs <;> simp
 
-theorem hOf_coOf {a : ℕ} {T : Matrix (Fin a) (Fin a) ℂ} (hT : Tᴴ = T) : hOf (coOf T) = T := by
-  ext i j
-  have h := congrFun (congrFun hT i) j
-  rw [Matrix.conjTranspose_apply] at h
-  rcases lt_trichotomy i j with hij | rfl | hij
-  · simp [hOf, coOf, hij]
-  · simp only [hOf, coOf, lt_irrefl, dite_false]
-    exact Complex.conj_eq_iff_re.1 h
-  · simp only [hOf, coOf, hij, hij.not_gt, dite_false, dite_true]
-    exact h
 
-theorem coOf_hOf {a : ℕ} (t : HCo a) : coOf (hOf t) = t := by
-  refine Prod.ext (funext fun i => ?_) (funext fun p => ?_)
-  · simp [coOf, hOf]
-  · simp [coOf, hOf, p.2]
 
 theorem blockM_cont {X : Type} [TopologicalSpace X] {a b : ℕ} {P : X → Matrix (Fin a) (Fin a) ℂ}
     {Q : X → Matrix (Fin a) (Fin b) ℂ} {R : X → Matrix (Fin b) (Fin a) ℂ} {S : X → Matrix (Fin b) (Fin b) ℂ}
@@ -196,12 +174,7 @@ theorem chi_cont {a : ℕ} (d : Fin a → ℂ) (m : ℕ) : Continuous (chi d m) 
 
 theorem psiB_cont (m : ℕ) : Continuous (psiB m) := exp_cont.comp (hOf_cont.fun_const_smul _)
 
-theorem xu_zero {a : ℕ} (d : Fin a → ℂ) : xu d 0 = 1 := by simp [xu, hOf_zero]
 
-theorem hOf_tau {a : ℕ} {d : Fin a → ℂ} (hd : Sgn d) (u : HCo a) :
-    hOf (tau d u) = (xu d u)ᴴ * Matrix.diagonal d * xu d u :=
-  hOf_coOf (by simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, diag_herm hd,
-    Matrix.mul_assoc])
 
 theorem blockM_herm {a b : ℕ} (P : Matrix (Fin a) (Fin a) ℂ) (Q : Matrix (Fin a) (Fin b) ℂ)
     (R : Matrix (Fin b) (Fin a) ℂ) (S : Matrix (Fin b) (Fin b) ℂ) :
@@ -234,9 +207,6 @@ theorem psiB_mem (m : ℕ) (v : HCo m) : psiB m v ∈ UH (1 : Matrix (Fin m) (Fi
   rw [Matrix.one_mul (Complex.I • hOf v)] at this
   exact CCRuleCW.exp_mem_UH _ _ this
 
-theorem psiB_neg (m : ℕ) (v : HCo m) : psiB m (-v) = (psiB m v)ᴴ := by
-  rw [psiB, psiB, ← Matrix.exp_conjTranspose, Matrix.conjTranspose_smul, (hOf_isHermitian v).eq, hOf_neg]
-  simp
 
 theorem embB_mem {a : ℕ} (d : Fin a → ℂ) {m : ℕ} {b : Matrix (Fin m) (Fin m) ℂ}
     (hb : b ∈ UH (1 : Matrix (Fin m) (Fin m) ℂ)) : embB a b ∈ UH (Dg d m) := by
@@ -249,37 +219,11 @@ theorem embB_mem {a : ℕ} (d : Fin a → ℂ) {m : ℕ} {b : Matrix (Fin m) (Fi
 theorem phiG_mem {a : ℕ} {d : Fin a → ℂ} (hd : Sgn d) (m : ℕ) (p : MP a m × HCo m) : phiG d m p ∈ UH (Dg d m) :=
   CCRuleCW.UH_mul _ _ _ (exp_Ym_mem hd m _) (embB_mem d (psiB_mem m _))
 
-theorem embB_one (a m : ℕ) : embB a (1 : Matrix (Fin m) (Fin m) ℂ) = 1 := by
-  simp [embB, blockM]
 
-theorem Ym_zero {a : ℕ} (d : Fin a → ℂ) (m : ℕ) : Ym d m 0 = 0 := by
-  have : (Matrix.of (0 : Fin m → Fin a → ℂ) : Matrix (Fin m) (Fin a) ℂ) = 0 := rfl
-  simp [Ym, blockM, hOf_zero, this]
 
-theorem psiB_zero (m : ℕ) : psiB m 0 = 1 := by simp [psiB, hOf_zero]
 
-theorem phiG_zero {a : ℕ} (d : Fin a → ℂ) (m : ℕ) : phiG d m 0 = 1 := by
-  simp [phiG, Ym_zero, psiB_zero, embB_one]
 
-theorem block_embed_mul_E0 (a : ℕ) {m : ℕ} (b : Matrix (Fin m) (Fin m) ℂ) : embB a b * E0 a m = E0 a m := by
-  ext i j
-  rw [Matrix.mul_apply, Finset.sum_eq_single (Fin.castAdd m j)]
-  · refine Fin.addCases (fun i => ?_) (fun i => ?_) i <;>
-      simp [E0, embB, blockM, Matrix.one_apply, Fin.ext_iff]
-    omega
-  · intro l _ hl; simp [E0, hl]
-  · simp
 
-theorem gram_E0_diagonal {a : ℕ} (d : Fin a → ℂ) (m : ℕ) : (E0 a m)ᴴ * Dg d m * E0 a m = Matrix.diagonal d := by
-  ext i j
-  rw [Matrix.mul_apply, Finset.sum_eq_single (Fin.castAdd m j)]
-  · rw [Dg, Matrix.mul_diagonal]
-    by_cases h : i = j
-    · subst h; simp [E0]
-    · have : ¬ j = i := fun e => h e.symm
-      simp [E0, h, this]
-  · intro l _ hl; simp [E0, hl]
-  · simp
 
 open MeasureTheory Matrix Filter Topology in
 open scoped ENNReal in

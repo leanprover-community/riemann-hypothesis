@@ -30,7 +30,6 @@ scoped instance algWA : Algebra (W0 K) (Ainf l) := (wA l (fK K)).toRingHom.toAlg
 
 scoped instance algWO : Algebra (W0 K) ↥(OL K) := (thetaW (fK K) K).toRingHom.toAlgebra
 
-theorem algebraMap_WA (w : W0 K) : algebraMap (W0 K) (Ainf l) w = wA l (fK K) w := rfl
 
 theorem algebraMap_WO (w : W0 K) : algebraMap (W0 K) ↥(OL K) w = thetaW (fK K) K w := rfl
 

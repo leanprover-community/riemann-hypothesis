@@ -19,38 +19,10 @@ def resAt (ι : H →* G) (φ : G → W) (g : G) : H → W := fun y => φ (g * �
 
 def RightInv (S : Set G) (φ : G → W) : Prop := ∀ g, ∀ s ∈ S, φ (g * s) = φ g
 
-theorem opAt_eq_hAct (ι : H →* G) (KH : Subgroup H) (f : H → k) (φ : G → W) (g : G) :
-    opAt ι KH f φ g = hAct KH f (resAt ι φ g) 1 := by
-  unfold opAt hAct resAt
-  simp only [one_mul]
 
-theorem resAt_opAt (ι : H →* G) (KH : Subgroup H) (f : H → k) (φ : G → W) (g : G) :
-    resAt ι (opAt ι KH f φ) g = hAct KH f (resAt ι φ g) := by
-  funext y
-  unfold resAt opAt hAct
-  refine finsum_congr fun x => ?_
-  simp only [map_mul, mul_assoc]
 
-theorem resAt_mem {ι : H →* G} {KH : Subgroup H} {φ : G → W} (hφ : RightInv (ι '' (KH : Set H)) φ) (g : G) :
-    resAt ι φ g ∈ AMF k (⊥ : Subgroup H) KH (1 : Representation k (⊥ : Subgroup H) W) := by
-  intro γ y κ
-  have hγ : (γ : H) = 1 := Subgroup.mem_bot.mp γ.2
-  simp only [hγ, one_mul, MonoidHom.one_apply, Module.End.one_apply, resAt, map_mul]
-  rw [← mul_assoc]
-  exact hφ _ _ ⟨κ, κ.2, rfl⟩
 
-theorem opAt_mul {ι : H →* G} {KH : Subgroup H} (hK : IsCommensurated KH) {f₁ f₂ : H → k}
-    (hf₁ : f₁ ∈ Hecke k KH) (hf₂ : f₂ ∈ Hecke k KH) {φ : G → W} (hφ : RightInv (ι '' (KH : Set H)) φ) :
-    opAt ι KH f₁ (opAt ι KH f₂ φ) = opAt ι KH (conv KH f₁ f₂) φ := by
-  funext g
-  rw [opAt_eq_hAct, resAt_opAt, opAt_eq_hAct]
-  exact (congrFun (Formalism.UG.Final.HeckeActMul H ⊥ KH k W 1 hK f₁ hf₁ f₂ hf₂ (resAt ι φ g) (resAt_mem hφ g)) 1).symm
 
-theorem opAt_comm_same {ι : H →* G} {KH : Subgroup H} (hK : IsCommensurated KH) {f₁ f₂ : H → k}
-    (hf₁ : f₁ ∈ Hecke k KH) (hf₂ : f₂ ∈ Hecke k KH) (hc : conv KH f₁ f₂ = conv KH f₂ f₁) {φ : G → W}
-    (hφ : RightInv (ι '' (KH : Set H)) φ) :
-    opAt ι KH f₁ (opAt ι KH f₂ φ) = opAt ι KH f₂ (opAt ι KH f₁ φ) := by
-  rw [opAt_mul hK hf₁ hf₂ hφ, opAt_mul hK hf₂ hf₁ hφ, hc]
 
 theorem opAt_eq_sum (ι : H →* G) (KH : Subgroup H) (f : H → k) (φ : G → W) (g : G) (S : Finset (H ⧸ KH))
     (hS : ∀ x : H ⧸ KH, f x.out ≠ 0 → x ∈ S) :
@@ -59,24 +31,6 @@ theorem opAt_eq_sum (ι : H →* G) (KH : Subgroup H) (f : H → k) (φ : G → 
   refine finsum_eq_sum_of_support_subset _ fun x hx => hS x fun h0 => hx ?_
   simp [h0]
 
-theorem opAt_comm_diff {H' : Type} [Group H'] {ι : H →* G} {ι' : H' →* G} {KH : Subgroup H} {KH' : Subgroup H'}
-    (hK : IsCommensurated KH) (hK' : IsCommensurated KH') {f : H → k} {f' : H' → k}
-    (hf : f ∈ Hecke k KH) (hf' : f' ∈ Hecke k KH') (hc : ∀ a b, ι a * ι' b = ι' b * ι a) (φ : G → W) :
-    opAt ι KH f (opAt ι' KH' f' φ) = opAt ι' KH' f' (opAt ι KH f φ) := by
-  classical
-  funext g
-  set S := (Formalism.UG.P.finite_supp KH hK f hf).toFinset
-  set S' := (Formalism.UG.P.finite_supp KH' hK' f' hf').toFinset
-  have hS : ∀ x : H ⧸ KH, f x.out ≠ 0 → x ∈ S := fun x hx => by simpa [S] using hx
-  have hS' : ∀ x : H' ⧸ KH', f' x.out ≠ 0 → x ∈ S' := fun x hx => by simpa [S'] using hx
-  have e1 : ∀ (ψ : G → W) (g : G), opAt ι KH f ψ g = ∑ x ∈ S, f x.out • ψ (g * ι x.out) :=
-    fun ψ g => opAt_eq_sum ι KH f ψ g S hS
-  have e2 : ∀ (ψ : G → W) (g : G), opAt ι' KH' f' ψ g = ∑ y ∈ S', f' y.out • ψ (g * ι' y.out) :=
-    fun ψ g => opAt_eq_sum ι' KH' f' ψ g S' hS'
-  simp only [e1, e2, Finset.smul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun y _ => Finset.sum_congr rfl fun x _ => ?_
-  rw [smul_comm, mul_assoc, mul_assoc, hc]
 
 end Op
 
@@ -113,20 +67,7 @@ theorem conv_twist {KH : Subgroup H} (hK : IsCommensurated KH) (χ : H →* k) {
       = (χ x.out * χ (x.out⁻¹ * g)) * (f₁ x.out * f₂ (x.out⁻¹ * g)) := by ring
     _ = χ g * (f₁ x.out * f₂ (x.out⁻¹ * g)) := by rw [this]
 
-theorem conv_twist_comm {KH : Subgroup H} (hK : IsCommensurated KH) (χ : H →* k) {f₁ f₂ : H → k}
-    (hf₁ : f₁ ∈ Hecke k KH) (hf₂ : f₂ ∈ Hecke k KH) (hc : conv KH f₁ f₂ = conv KH f₂ f₁) :
-    conv KH (twist χ f₁) (twist χ f₂) = conv KH (twist χ f₂) (twist χ f₁) := by
-  rw [conv_twist hK χ hf₁, conv_twist hK χ hf₂, hc]
 
-theorem twist_dosetInd {KH : Subgroup H} {χ : H →* k} (hχ : ∀ κ ∈ KH, χ κ = 1) (α : H) :
-    twist χ (dosetInd k KH α) = χ α • dosetInd k KH α := by
-  funext x
-  simp only [twist, dosetInd, Pi.smul_apply, smul_eq_mul]
-  by_cases hx : x ∈ DoubleCoset.doubleCoset α (KH : Set H) (KH : Set H)
-  · rw [Set.indicator_of_mem hx]
-    obtain ⟨a, ha, b, hb, rfl⟩ := DoubleCoset.mem_doubleCoset.mp hx
-    simp [map_mul, hχ a ha, hχ b hb]
-  · simp [Set.indicator_of_notMem hx]
 
 end Twist
 
@@ -136,15 +77,9 @@ variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (
 
 abbrev Kv : Subgroup (GL (Fin n) (v.adicCompletion F)) := GLint (Fin n) (Ov F v)
 
-theorem Kv_comm : IsCommensurated (Kv v n) := Formalism.UG.Final.GLintComm F v n
 
 variable {v n} {G : Type} [Group G] {W : Type} [AddCommGroup W] [Module ℂ W]
 
-theorem opAt_comm_GL (ι : GL (Fin n) (v.adicCompletion F) →* G) {f₁ f₂ : GL (Fin n) (v.adicCompletion F) → ℂ}
-    (hf₁ : f₁ ∈ Hecke ℂ (Kv v n)) (hf₂ : f₂ ∈ Hecke ℂ (Kv v n)) {φ : G → W}
-    (hφ : RightInv (ι '' (Kv v n : Set (GL (Fin n) (v.adicCompletion F)))) φ) :
-    opAt ι (Kv v n) f₁ (opAt ι (Kv v n) f₂ φ) = opAt ι (Kv v n) f₂ (opAt ι (Kv v n) f₁ φ) :=
-  opAt_comm_same (Kv_comm v n) hf₁ hf₂ (Formalism.UG.Final.HeckeCommGL F v n ℂ f₁ hf₁ f₂ hf₂) hφ
 
 def hkN (ι : GL (Fin n) (v.adicCompletion F) →* G) (χ : GL (Fin n) (v.adicCompletion F) →* ℂ)
     (ϖ : v.adicCompletion F) (k : ℕ) (φ : G → W) : G → W :=
@@ -154,22 +89,7 @@ theorem hkN_fun_mem {χ : GL (Fin n) (v.adicCompletion F) →* ℂ} (hχ : ∀ �
     {ϖ : v.adicCompletion F} (hϖ : ϖ ≠ 0) (k : ℕ) : twist χ (Tj ℂ n (Ov F v) ϖ k) ∈ Hecke ℂ (Kv v n) :=
   twist_mem hχ (Formalism.UG.Final.TjMem _ (Ov F v) ϖ ℂ n k hϖ)
 
-theorem hkN_comm_same (ι : GL (Fin n) (v.adicCompletion F) →* G) {χ : GL (Fin n) (v.adicCompletion F) →* ℂ}
-    (hχ : ∀ κ ∈ Kv v n, χ κ = 1) {ϖ : v.adicCompletion F} (hϖ : ϖ ≠ 0) (k k' : ℕ) {φ : G → W}
-    (hφ : RightInv (ι '' (Kv v n : Set (GL (Fin n) (v.adicCompletion F)))) φ) :
-    hkN ι χ ϖ k (hkN ι χ ϖ k' φ) = hkN ι χ ϖ k' (hkN ι χ ϖ k φ) := by
-  have h1 := Formalism.UG.Final.TjMem _ (Ov F v) ϖ ℂ n k hϖ
-  have h2 := Formalism.UG.Final.TjMem _ (Ov F v) ϖ ℂ n k' hϖ
-  exact opAt_comm_same (Kv_comm v n) (twist_mem hχ h1) (twist_mem hχ h2)
-    (conv_twist_comm (Kv_comm v n) χ h1 h2 (Formalism.UG.Final.HeckeCommGL F v n ℂ _ h1 _ h2)) hφ
 
-theorem hkN_comm_diff {v' : HeightOneSpectrum (𝓞 F)} (ι : GL (Fin n) (v.adicCompletion F) →* G)
-    (ι' : GL (Fin n) (v'.adicCompletion F) →* G) (hc : ∀ a b, ι a * ι' b = ι' b * ι a)
-    {χ : GL (Fin n) (v.adicCompletion F) →* ℂ} {χ' : GL (Fin n) (v'.adicCompletion F) →* ℂ}
-    (hχ : ∀ κ ∈ Kv v n, χ κ = 1) (hχ' : ∀ κ ∈ Kv v' n, χ' κ = 1)
-    {ϖ : v.adicCompletion F} {ϖ' : v'.adicCompletion F} (hϖ : ϖ ≠ 0) (hϖ' : ϖ' ≠ 0) (k k' : ℕ) (φ : G → W) :
-    hkN ι χ ϖ k (hkN ι' χ' ϖ' k' φ) = hkN ι' χ' ϖ' k' (hkN ι χ ϖ k φ) :=
-  opAt_comm_diff (Kv_comm v n) (Kv_comm v' n) (hkN_fun_mem hχ hϖ k) (hkN_fun_mem hχ' hϖ' k') hc φ
 
 end GLv
 
@@ -220,11 +140,6 @@ theorem opAt_smul (ι : H →* G) (KH : Subgroup H) (c : k) (f : H → k) (φ : 
   refine Finset.sum_congr rfl fun x _ => ?_
   rw [Pi.smul_apply, smul_eq_mul, mul_smul]
 
-theorem opAt_twist_dosetInd {ι : H →* G} {KH : Subgroup H} {χ : H →* k} (hχ : ∀ κ ∈ KH, χ κ = 1) {α : H}
-    {R : Finset H} (hR : IsDCSys KH α R) {φ : G → W} (hφ : RightInv (ι '' (KH : Set H)) φ) (g : G) :
-    opAt ι KH (twist χ (dosetInd k KH α)) φ g = χ α • ∑ γ ∈ R, φ (g * ι γ) := by
-  classical
-  rw [twist_dosetInd hχ, opAt_smul ι KH _ _ φ g _ (dosetInd_supp hR), opAt_dosetInd hR hφ]
 
 theorem isDCSys_map [DecidableEq G] {ι : H →* G} {KH : Subgroup H} {K Kc : Subgroup G}
     (hKH : ∀ a ∈ KH, ι a ∈ K) (hKc : Kc ≤ K) (hdec : ∀ κ ∈ K, ∃ a ∈ KH, ∃ c ∈ Kc, κ = ι a * c)
@@ -308,13 +223,6 @@ def hkGA {V : HSp D} {K : Set (GA D V)} (S : SplitEmb V K) (v : HeightOneSpectru
     (f : GL (Fin V.rank) (v.adicCompletion D.host.F) → ℂ) (φ : GA D V → ℂ) : GA D V → ℂ :=
   opAt (S.emb v) (Kv v V.rank) f φ
 
-theorem hkGA_comm {V : HSp D} {K : Set (GA D V)} (S : SplitEmb V K) {v v' : HeightOneSpectrum (𝓞 D.host.F)}
-    {f : GL (Fin V.rank) (v.adicCompletion D.host.F) → ℂ} {f' : GL (Fin V.rank) (v'.adicCompletion D.host.F) → ℂ}
-    (hf : f ∈ Hecke ℂ (Kv v V.rank)) (hf' : f' ∈ Hecke ℂ (Kv v' V.rank)) {φ : GA D V → ℂ} (hφ : RightInv K φ) :
-    hkGA S v f (hkGA S v' f' φ) = hkGA S v' f' (hkGA S v f φ) := by
-  rcases eq_or_ne v v' with rfl | h
-  · exact opAt_comm_GL (S.emb v) hf hf' fun g s ⟨a, ha, e⟩ => e ▸ hφ g _ (S.emb_K v a ha)
-  · exact opAt_comm_diff (Kv_comm v V.rank) (Kv_comm v' V.rank) hf hf' (S.emb_comm v v' h) φ
 
 variable {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
 
@@ -327,13 +235,6 @@ def HkTie (Y : NExp D.R D.host D.what₂ D.LL0 N X) : Prop :=
     (∀ k P, Formalism.MainNotions.IntegralHeckeForms.HkIdx (X := X) i k P → hf k P ∈ Hecke ℂ (Kv (vP P) V.rank)) ∧
     ∀ k P, Formalism.MainNotions.IntegralHeckeForms.HkIdx (X := X) i k P → ∀ f, ev (Y.hkF i j b k P f) = hkGA S (vP P) (hf k P) (ev f)
 
-theorem hecke_commute_of_compatibility {Y : NExp D.R D.host D.what₂ D.LL0 N X} (h : HkTie Y) : Formalism.MainNotions.LatticeVariant.HeckeOperatorsCommute Y := by
-  intro i _ j b k k' P P' hk hk'
-  obtain ⟨V, K, S, ev, vP, hf, hinj, hinv, -, hmem, htie⟩ := h i j b
-  show Y.hkF i j b k P * Y.hkF i j b k' P' = Y.hkF i j b k' P' * Y.hkF i j b k P
-  refine LinearMap.ext fun f => hinj ?_
-  rw [Module.End.mul_apply, Module.End.mul_apply, htie k P hk, htie k' P' hk', htie k' P' hk', htie k P hk]
-  exact hkGA_comm S (hmem k P hk) (hmem k' P' hk') (hinv f)
 
 end Concrete
 

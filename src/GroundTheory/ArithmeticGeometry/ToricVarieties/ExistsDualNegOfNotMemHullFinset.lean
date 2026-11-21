@@ -90,12 +90,6 @@ theorem exists_dual_neg_of_not_mem {C : PointedCone 𝕜 V} (hC : C.FG) {x : V} 
   obtain ⟨f, hf, hfx⟩ := exists_dual_neg_of_not_mem_hull_finset S hx
   exact ⟨f, fun y hy => nonneg_of_mem_hull hf hy, hfx⟩
 
-theorem mem_iff_forall_dual {C : PointedCone 𝕜 V} (hC : C.FG) {x : V} :
-    x ∈ C ↔ ∀ f : Dual 𝕜 V, (∀ y ∈ C, 0 ≤ f y) → 0 ≤ f x := by
-  refine ⟨fun hx f hf => hf x hx, fun h => ?_⟩
-  by_contra hx
-  obtain ⟨f, hf, hfx⟩ := exists_dual_neg_of_not_mem hC hx
-  exact (h f hf).not_gt hfx
 
 theorem fg_top [FiniteDimensional 𝕜 V] : (⊤ : PointedCone 𝕜 V).FG := by
   classical
@@ -216,19 +210,6 @@ theorem dual_dual_flip_of_fg (p : M →ₗ[𝕜] N →ₗ[𝕜] 𝕜) (hp : Func
   · intro m hm
     simpa using hm hx
 
-theorem fg_iff_dualFG [FiniteDimensional 𝕜 M] [FiniteDimensional 𝕜 N]
-    (p : M →ₗ[𝕜] N →ₗ[𝕜] 𝕜) (hp : Function.Surjective p) {C : PointedCone 𝕜 N} :
-    C.FG ↔ C.DualFG p := by
-  constructor
-  · intro hC
-    obtain ⟨T, hT⟩ := fg_dual p.flip hC
-    refine ⟨T, ?_⟩
-    rw [← dual_hull]
-    change dual p (Submodule.span _ (T : Set M) : Set M) = C
-    rw [hT]
-    exact dual_dual_flip_of_fg p hp hC
-  · rintro ⟨s, rfl⟩
-    exact fg_dual_finset p s
 
 end Field
 

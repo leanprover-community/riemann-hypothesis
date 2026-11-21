@@ -32,9 +32,6 @@ def ThetaNormConjugateIndependent (D : Car) (T : Tor D) (e : FamE D) : Prop :=
         normSq D (torConj D T M ρ) (La D (torConj D T M ρ) L₁ L₁') (fnConj D M ρ (e N N' L₁ L₁')) =
           normSq D (torConj D T M ρ) (La D (torConj D T M ρ) L₂ L₂') (fnConj D M ρ (e N N' L₂ L₂'))
 
-theorem theta_vector_family_iff_parts (D : Car) (T : Tor D) (e : FamE D) : vec22 D T e ↔ NonzeroThetaVectorFamily D T e ∧ TaylorCoeffsInNumberField D e :=
-  ⟨fun h => ⟨fun N N' L L' hA => ⟨(h N N' L L' hA).1, (h N N' L L' hA).2.1⟩, fun N N' L L' hA => (h N N' L L' hA).2.2⟩,
-    fun h N N' L L' hA => ⟨(h.1 N N' L L' hA).1, (h.1 N N' L L' hA).2, h.2 N N' L L' hA⟩⟩
 
 def EigenvectorPacketProperties {D : Car} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (C : ℝ) (χ : IdE D → ℂ) : Prop :=
   TaylorCoeffsInNumberField D (B.eNat χ) ∧ ThetaMeanBound D (tor0 D cc δ) C (B.eNat χ) ∧ ThetaNormConjugateIndependent D (tor0 D cc δ) (B.eNat χ) ∧
@@ -91,17 +88,7 @@ theorem theta_link_holds : LinkThE :=
   fun D cc hcc δ hδ B hS χ hχ =>
     ⟨B.th_indep hcc hδ (base_linkage_nonempty D cc δ B) hS χ hχ, B.th_U hcc hδ (base_linkage_nonempty D cc δ B) hS χ hχ⟩
 
-theorem seven_family_properties : SevenFamilyProperties := by
-  intro D cc hcc δ hδ B hS C χ hχ ⟨r1, r2, r3, r4, r5, r6, r7⟩
-  have hT := theta_link_holds D cc hcc δ hδ B hS χ hχ
-  exact ⟨(theta_vector_family_iff_parts D _ _).2 ⟨vector_link_holds D cc hcc δ hδ B hS χ hχ, r1⟩, ⟨hT.1, r2, r3, hT.2⟩, r4, r5, r6, r7⟩
 
-theorem eigen_linkage_holds : LinkStandardBase := by
-  intro D C hA hper h
-  refine conclusion_of_hecke_commutation D C hper (character_linkage_holds D hA) ?_
-  intro cc hcc δ hδ
-  obtain ⟨B, hS, hB⟩ := h cc hcc δ hδ
-  exact ⟨B, fun χ hχ => seven_family_properties D cc hcc δ hδ B hS C χ hχ (hB χ hχ)⟩
 
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity
 

@@ -139,13 +139,6 @@ theorem isLocalHom_of_injective_integralClosure {B : Type*} [CommRing B] [Algebr
   rw [g.comp_algebraMap]
   exact fun x => (Algebra.IsIntegral.isIntegral x : IsIntegral ℤ_[p] x)
 
-theorem natCast_mem_maximalIdeal_integralClosure :
-    (p : integralClosure ℤ_[p] K) ∈ maximalIdeal (integralClosure ℤ_[p] K) := by
-  haveI := ReciprocityTheory.ChartRestriction.G.T0.FiniteAlgebraLocalCompletion.cl_faithful ℤ_[p] ℚ_[p] K
-  haveI := ReciprocityTheory.ChartRestriction.G.T0.FiniteAlgebraLocalCompletion.cl_isLocalHom ℤ_[p] K
-  have : (p : ℤ_[p]) ∈ maximalIdeal ℤ_[p] := by
-    rw [PadicInt.maximalIdeal_eq_span_p]; exact Ideal.mem_span_singleton_self _
-  simpa using map_nonunit (algebraMap ℤ_[p] (integralClosure ℤ_[p] K)) _ this
 
 variable {L : Type*} [Field L] [Algebra ℚ_[p] L] [Algebra ℤ_[p] L]
   [IsScalarTower ℤ_[p] ℚ_[p] L] [FiniteDimensional ℚ_[p] L]

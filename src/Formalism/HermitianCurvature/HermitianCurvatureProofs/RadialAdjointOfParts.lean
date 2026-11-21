@@ -87,23 +87,5 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Fo
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem radial_adjoint_of_parts : Formalism.FourierDecayAlt.P.JFxG.RadAdjOfParts := by
-  intro hE hJ hB k r Wp Wq _ _ _ _ _ _ D Θ f f' K hI hS hC hf hf' hEf hEf' hK hKQ hvan
-  obtain ⟨F, hF, hFc, hFf⟩ := hE k r Wp Wq D f K hf hEf hK hKQ fun q hq hqK => (hvan q hq hqK).1
-  obtain ⟨F', hF', hF'c, hF'f⟩ := hE k r Wp Wq D f' K hf' hEf' hK hKQ fun q hq hqK => (hvan q hq hqK).2
-  have hB' := hB k r Wp Wq D Θ F F' hI hS hC hF hF' hFc hF'c
-  have hO := PositiveOrbitOpen.omPlus_open (k := k) (r := r) D.z D.z'
-  have p1 : ∀ g ∈ Om k r D.z D.z', hsVec (opApply Θ f g) = hsVec (JF D (opApply Θ F) g) := by
-    intro g hg
-    rw [(hJ k r Wp Wq D Θ F hS hC hF hFc g hg).1,
-      PositiveOrbitOpen.op_local Θ hO (fun x hx hxG => (hFf x ⟨hxG, hx⟩).symm) g hg.2 hg.1]
-  have p2 : ∀ g ∈ Om k r D.z D.z', hsVec (opAdj Θ f' g) = hsVec (JF D (opAdj Θ F') g) := by
-    intro g hg
-    rw [(hJ k r Wp Wq D Θ F' hS hC hF' hF'c g hg).2,
-      JFxG.adj_local Θ hO (fun x hx hxG => (hF'f x ⟨hxG, hx⟩).symm) g hg.2 hg.1]
-  have p3 : ∀ g ∈ Om k r D.z D.z', hsVec (f g) = hsVec (JF D F g) := fun g hg => by rw [hFf g hg]
-  have p4 : ∀ g ∈ Om k r D.z D.z', hsVec (f' g) = hsVec (JF D F' g) := fun g hg => by rw [hF'f g hg]
-  rw [JFxG.betaBig_congr D p1 p4, JFxG.betaBig_congr D p3 p2]
-  exact hB'
 
 end Formalism.FourierDecayAlt.P

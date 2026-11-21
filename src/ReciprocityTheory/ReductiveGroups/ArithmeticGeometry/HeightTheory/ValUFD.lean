@@ -67,10 +67,6 @@ theorem loc_dvr (p : Ideal R) [p.IsPrime] (hp : p.height = 1) (g : R) (hg : p = 
     rw [IsUnit.unit_spec, ← map_pow, IsLocalization.mul_mk'_eq_mk'_of_mul]
   exact ⟨hdvr, hϖ.irreducible⟩
 
-theorem isUnit_mvPolynomial {σ K : Type*} [Field K] (κ : MvPolynomial σ K) (h : IsUnit κ) :
-    ∃ k : K, k ≠ 0 ∧ κ = MvPolynomial.C k := by
-  obtain ⟨r, hr, rfl⟩ := MvPolynomial.isUnit_iff_eq_C_of_isReduced.mp h
-  exact ⟨r, hr.ne_zero, rfl⟩
 
 section Factor
 

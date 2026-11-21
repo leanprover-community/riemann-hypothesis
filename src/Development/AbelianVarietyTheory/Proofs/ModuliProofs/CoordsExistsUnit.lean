@@ -43,8 +43,6 @@ theorem hasCoords_iff : HasCoords y β v ↔ ∃ h, y = ProjPoint.ofHom (homogen
   have := ProjPoint.map_irrelevant_comp _ h (Scheme.ΓSpecIso (CommRingCat.of R)).hom.hom
   rwa [← RingHom.comp_assoc, ← CommRingCat.hom_comp, Iso.inv_hom_id, CommRingCat.hom_id, RingHom.id_comp] at this
 
-theorem coords_span (h : HasCoords y β v) : Ideal.span (Set.range v) = ⊤ :=
-  (map_irrelevant_iff β v).1 (hasCoords_iff.1 h).1
 
 theorem exists_hasCoords (β : B →+* R) (hv : Ideal.span (Set.range v) = ⊤) : ∃ y : Sp R ⟶ PJ σ B, HasCoords y β v :=
   ⟨_, hasCoords_iff.2 ⟨(map_irrelevant_iff β v).2 hv, rfl⟩⟩
@@ -52,67 +50,10 @@ theorem exists_hasCoords (β : B →+* R) (hv : Ideal.span (Set.range v) = ⊤) 
 theorem coords_eq {y' : Sp R ⟶ PJ σ B} (h : HasCoords y β v) (h' : HasCoords y' β v) : y = y' :=
   h.2.trans h'.2.symm
 
-theorem coords_over (h : HasCoords y β v) :
-    y ≫ Proj.toSpecZero _ ≫ spMap (algebraMap B ↥(homogeneousSubmodule σ B 0)) = spMap β := by
-  replace h := hasCoords_iff.1 h
-  obtain ⟨h, rfl⟩ := h
-  rw [← Category.assoc, ProjPoint.ofHom_toSpecZero]
-  refine (spMap_comp _ _).trans (congrArg spMap (RingHom.ext fun r => eval₂Hom_C β v r))
 
-theorem coords_baseChange (h : HasCoords y β v) (φ : R →+* R') :
-    HasCoords (spMap φ ≫ y) (φ.comp β) fun a => φ (v a) := by
-  replace h := hasCoords_iff.1 h
-  obtain ⟨h, rfl⟩ := h
-  have e := comp_eval₂Hom β v φ
-  refine hasCoords_iff.2 ⟨e ▸ ProjPoint.map_irrelevant_comp _ h φ, (ProjPoint.SpecMap_ofHom _ _ h φ).trans ?_⟩
-  congr 1
 
-theorem coords_unit_mul (h : HasCoords y β v) (u : Rˣ) : HasCoords y β fun a => u * v a := by
-  have hs : Ideal.span (Set.range fun a => u * v a) = ⊤ := by
-    rw [_root_.eq_top_iff, ← coords_span h, Ideal.span_le]
-    rintro _ ⟨a, rfl⟩
-    simpa using Ideal.mul_mem_left (Ideal.span (Set.range fun a => u * v a)) (u⁻¹ : Rˣ) (Ideal.subset_span ⟨a, rfl⟩)
-  replace h := hasCoords_iff.1 h
-  obtain ⟨h, rfl⟩ := h
-  refine hasCoords_iff.2 ⟨(map_irrelevant_iff _ _).2 hs, (ProjPoint.ofHom_eq_of_scale _ h _ (u : R) fun n F hF => ?_).symm⟩
-  have hF' : F.IsHomogeneous n := hF
-  simp only [coe_eval₂Hom, eval₂_eq, Finset.mul_sum, mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
-  refine Finset.sum_congr rfl fun d hd => ?_
-  rw [show ∑ i ∈ d.support, d i = n from by
-    rw [← hF' (mem_support_iff.1 hd), Finsupp.weight_apply]; simp [Finsupp.sum]]
-  ring
 
-theorem coords_minor (h : HasCoords y β v) (h' : HasCoords y β w) {i : σ} (hi : IsUnit (v i)) (a c : σ) :
-    v a * w c = v c * w a := by
-  replace h := hasCoords_iff.1 h
-  obtain ⟨h, rfl⟩ := h
-  obtain ⟨h', e⟩ := hasCoords_iff.1 h'
-  have hX : X i ∈ homogeneousSubmodule σ B 1 := isHomogeneous_X B i
-  have hi₁ : IsUnit (eval₂Hom β v (X i)) := by simpa using hi
-  have hi₂ : IsUnit (eval₂Hom β w (X i)) := by
-    have := ProjPoint.ofHom_preimage_basicOpen _ _ h' one_pos hX
-    rw [← e, ProjPoint.ofHom_preimage_basicOpen _ _ h one_pos hX] at this
-    rw [← Ideal.span_singleton_eq_top, ← PrimeSpectrum.zeroLocus_empty_iff_eq_top, PrimeSpectrum.zeroLocus_span,
-      ← Set.compl_univ_iff, ← PrimeSpectrum.basicOpen_eq_zeroLocus_compl, ← this,
-      PrimeSpectrum.basicOpen_eq_zeroLocus_compl, Set.compl_univ_iff, ← PrimeSpectrum.zeroLocus_span,
-      PrimeSpectrum.zeroLocus_empty_iff_eq_top, Ideal.span_singleton_eq_top]
-    exact hi₁
-  rw [ProjPoint.ofHom_eq_awayι _ _ h one_pos hX hi₁, ProjPoint.ofHom_eq_awayι _ _ h' one_pos hX hi₂, cancel_mono] at e
-  have e' := spMap_injective e
-  have k₁ := fun a => ProjPoint.awayLift_mk_mul (homogeneousSubmodule σ B) _ hi₁ hX 1 (X a) (isHomogeneous_X B a)
-  have k₂ := fun a => ProjPoint.awayLift_mk_mul (homogeneousSubmodule σ B) _ hi₂ hX 1 (X a) (isHomogeneous_X B a)
-  simp only [← e', pow_one, eval₂Hom_X'] at k₁ k₂
-  rw [← k₁ a, ← k₁ c, ← k₂ a, ← k₂ c]; ring
 
-theorem coords_exists_unit (h : HasCoords y β v) (h' : HasCoords y β w) : ∃ u : Rˣ, ∀ a, v a = u * w a := by
-  refine ThetaClosed.exists_unit_of_minors (coords_span h) (coords_span h') fun a c => ?_
-  refine SegreCoord.eq_of_away fun q => ?_
-  obtain ⟨i, hi⟩ : ∃ i, v i ∉ q.asIdeal := by
-    by_contra! hc
-    exact q.2.ne_top (top_le_iff.1 (coords_span h ▸ Ideal.span_le.2 (by rintro _ ⟨i, rfl⟩; exact hc i)))
-  refine ⟨v i, hi, ?_⟩
-  simpa only [map_mul] using coords_minor (coords_baseChange h (algebraMap R (Localization.Away (v i))))
-    (coords_baseChange h' _) (i := i) (IsLocalization.Away.algebraMap_isUnit _) a c
 
 end Coords
 
@@ -130,14 +71,6 @@ theorem isMonHom_mul {G : Over S} [GrpObj G] [IsCommMonObj G] (f h : G ⟶ G) [I
     simp only [← Category.assoc, tensorHom_fst, tensorHom_snd, MonObj.comp_mul]
     exact mul_mul_mul_comm _ _ _ _
 
-theorem isMonHom_ev (X : ThObj g M I ζ s) (t : EndTerm I) : IsMonHom (X.ev t) := by
-  letI := X.P.isAb.comm
-  induction t with
-  | var i => exact X.endo_hom i
-  | one => exact inferInstanceAs (IsMonHom (𝟙 _))
-  | add t t' h h' => exact isMonHom_mul (X.ev t) (X.ev t')
-  | neg t h => exact inferInstanceAs (IsMonHom (X.ev t)⁻¹)
-  | mul t t' h h' => exact inferInstanceAs (IsMonHom (X.ev t' ≫ X.ev t))
 
 theorem ev_comm {X' : ThObj g M I ζ s'} {X : ThObj g M I ζ s} {f : S' ⟶ S} {φ : X'.P.A.left ⟶ X.P.A.left}
     (h : IsGrpPullback X'.P.A X.P.A f φ) (he : ∀ i, (X'.endo i).left ≫ φ = φ ≫ (X.endo i).left) (t : EndTerm I) :

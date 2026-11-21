@@ -853,8 +853,6 @@ def IdCellDiagNeatC : Prop :=
     FundExists X u u (X.Fu u) (X.Fu u) (Y.what₂ u) (Y.what₂ u) →
     Formalism.L2.SG.TermOp.IdCellDiag (X.Fu u) (Y.cs u) (Y.FN u)
 
-theorem idCellDiagNeatC_of (hV : VolPosC) (hI : PiIrrC) (hM : IdMeetC) : IdCellDiagNeatC :=
-  fun D X Y u hC hFE => idCellDiag_of (Y.cs u) (Y.FN u) (idDiagBlocksC hV hI hM D X Y u hC hFE)
 
 theorem idCellDiagC_of_steps (hV : VolPosC) (hI : PiIrrC) (hM : IdMeetC) (hN : NeatC) : IdCellDiagC :=
   idCellDiagC_of fun D X Y u _ hFE _ => idDiagBlocksC hV hI hM D X Y u (hN D X Y u) hFE

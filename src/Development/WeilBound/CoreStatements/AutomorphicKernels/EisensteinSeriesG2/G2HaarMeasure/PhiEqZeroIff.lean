@@ -101,26 +101,8 @@ theorem proj_add (c : B →+* B) (J K : Matrix n n B) (h : B) (X Y : Matrix n n 
   congr 1
   abel
 
-theorem phi_proj (c : B →+* B) (hc : ∀ x, c (c x) = x) {J K : Matrix n n B} (ε : B) (hε : ε * ε = 1)
-    (hJc : (J.map c)ᵀ = ε • J) (hKc : (K.map c)ᵀ = ε • K) (hJK : J * K = 1) (hKJ : K * J = 1) (h : B) (hh : c h = h)
-    (X : Matrix n n B) : phi c J (proj c J K h X) = 0 := by
-  rw [phi_eq_zero_iff c hJK hKJ]
-  unfold proj
-  rw [tau_smul c J K h hh, tau_add, tau_tau c hc ε hε hJc hKc hJK, add_comm]
 
-theorem proj_of_phi (c : B →+* B) {J K : Matrix n n B} (hJK : J * K = 1) (hKJ : K * J = 1) (h : B) (h2 : h * 2 = 1)
-    (X : Matrix n n B) (hX : phi c J X = 0) : proj c J K h X = X := by
-  unfold proj
-  rw [(phi_eq_zero_iff c hJK hKJ X).1 hX, ← two_smul B X, smul_smul, h2, one_smul]
 
-theorem hKc_of (c : B →+* B) {J K : Matrix n n B} (ε : B) (hε : ε * ε = 1) (hJc : (J.map c)ᵀ = ε • J)
-    (hJK : J * K = 1) (hKJ : K * J = 1) : (K.map c)ᵀ = ε • K := by
-  have hm : (K.map c)ᵀ * (ε • J) = 1 := by
-    rw [← hJc, ← transpose_mul, ← Matrix.map_mul, hJK, Matrix.map_one _ (map_zero c) (map_one c), transpose_one]
-  calc (K.map c)ᵀ = (K.map c)ᵀ * ((ε • J) * (ε • K)) := by
-        simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, hε, one_smul, hJK, Matrix.mul_one]
-    _ = ((K.map c)ᵀ * (ε • J)) * (ε • K) := (Matrix.mul_assoc _ _ _).symm
-    _ = ε • K := by rw [hm, Matrix.one_mul]
 
 theorem unip_iff_blk (M : Matrix (n ⊕ n) (n ⊕ n) B) :
     ((M - 1) * Matrix.fromRows (1 : Matrix n n B) (1 : Matrix n n B) = 0 ∧
@@ -161,9 +143,6 @@ theorem unip_iff_blk (M : Matrix (n ⊕ n) (n ⊕ n) B) :
     constructor <;> ext i j <;> (try rcases i with i | i) <;> (try rcases j with j | j) <;>
       simp [Matrix.fromRows, Matrix.fromCols, Sum.elim_inl, Sum.elim_inr] <;> rfl
 
-theorem blk_map' {B' : Type} [CommRing B'] (f : B →+* B') (X : Matrix n n B) : (blk X).map f = blk (X.map f) := by
-  have e : ∀ M : Matrix n n B, M.map f = f.mapMatrix M := fun _ => rfl
-  simp only [blk, fromBlocks_map, e, map_add, map_sub, map_neg, map_one]
 
 theorem proj_map {B' : Type} [CommRing B'] (f : B →+* B') (c : B →+* B) (c' : B' →+* B')
     (hf : ∀ x, f (c x) = c' (f x)) (J K : Matrix n n B) (h : B) (X : Matrix n n B) :

@@ -16,6 +16,5 @@ theorem covering_radius_bound₂ : Formalism.HermitianLatticeCounting.S7.Coverin
 
 theorem covering_of_transference : Formalism.HermitianLatticeCounting.LatticeSumBounds.CoveringO := coveringO_of_transference transference_principle
 
-theorem covering_of_transference_variant : Formalism.HermitianLatticeCounting.LatticeSumBounds.CoveringO' := coveringO'_of_transference transference_principle
 
 end Formalism.HermitianLatticeCounting.P

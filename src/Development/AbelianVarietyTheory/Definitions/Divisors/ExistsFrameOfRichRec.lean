@@ -100,87 +100,8 @@ theorem coreTies_of_is {L : SizeData₂ D} {EX : ErrX D} {J : CoreJ D} [Algebra 
     (v₂ : ∀ x, ((R.C.del'.1 x : ℂˣ) : ℂ) ∈ FO D) : CoreTies L EX J R :=
   ⟨hc, hcan, hr, hE, h₁, h₂, hs, level_of_is hc.toLawsM hL hO, (oneHalf_of_is R hL).imp fun _ h v _ => h v, v₁, v₂⟩
 
-theorem exists_frame_of_richRec (D : D7) (EX : ErrX D) (h : RichRec D) (h₁ : FieldOK0 D D.host.pde)
-    (h₂ : FieldOK0 D D.host.pde') : ∃ C : Formalism.L2.Host.CharFrame D,
-      (∀ k, barE D (EX.piG k) ∈ (C.P.pb k).asIdeal.map (algebraMap (𝓞 D.host.K) (𝓞 D.host.E))) ∧
-      (∀ x, ((C.del.1 x : ℂˣ) : ℂ) ∈ FO D) ∧ (∀ x, ((C.del'.1 x : ℂˣ) : ℂ) ∈ FO D) ∧
-      ∃ Lc : LevCh D (Option Bool), Lc.C = C ∧ Lc.Is none ∧ Lc.xiH (some false) = C.del ∧ Lc.xiH (some true) = C.del' ∧
-        (∃ PP ∈ Lc.Q (some false), ((D.host.pde : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal) ∧
-        ∃ PP ∈ Lc.Q (some true), ((D.host.pde' : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := by
-  choose pb g1 g2 using exists_prime_bar_piG D EX
-  obtain ⟨C, hC⟩ := exists_charFrame D ⟨pb, g1⟩ h.1 h.2.1 h.2.2.1
-  obtain ⟨P₁, hP₁⟩ := GlobalTheory.exists_heightOneSpectrum_natCast_mem D.host.K D.host.pde_prime
-  obtain ⟨P₂, hP₂⟩ := GlobalTheory.exists_heightOneSpectrum_natCast_mem D.host.K D.host.pde'_prime
-  obtain ⟨Lc, a1, a2, a3, a4, a5, a6⟩ := exists_levCh_twisted C h.1 h.2.1 h₁.split h₂.split P₁ P₂ hP₁ hP₂
-  obtain ⟨w₁, hw₁⟩ := aboveK_nonempty P₁
-  obtain ⟨w₂, hw₂⟩ := aboveK_nonempty P₂
-  exact ⟨C, by rw [hC]; exact g2, isDelta_mem C.isDel h.2.2.2, isDelta_mem C.isDel' h.2.2.2, Lc, a1, a2, a3, a4,
-    ⟨w₁, a5 ▸ hw₁, overP_of_under hP₁ (mem_aboveK.1 hw₁)⟩, w₂, a6 ▸ hw₂, overP_of_under hP₂ (mem_aboveK.1 hw₂)⟩
 
-theorem exists_runsHold : ∃ CK x₁ : ℝ, ∀ (D : D7) (G : Type) (J : CoreJ D) (r : TwoRuns J G) (EX : ErrX D) (L : SizeData₂ D)
-    (Pm : ParameterChoice' D L) (Tp : ParamsT D L Pm) (hK : DV.KapDef D),
-    (∀ v j, InR D j → ParOK (r.used v).full.toTop EX (ownAt D v) j) → PageNum Tp x₁ → FieldSmall D L →
-      RunsHold Tp hK EX CK r := by
-  obtain ⟨x₀, hrun⟩ := GlobalTheory.FinalJoin.runHolds_of_parOK
-  obtain ⟨CK, hCK⟩ := GlobalTheory.FinalJoin.RecordRun.exists_pageRun_record_sub_four
-  refine ⟨CK, max ((10 : ℝ) ^ 60) (x₀ 20 CK), ?_⟩
-  rintro D G J r EX L Pm Tp hK hpar ⟨S, hCnW, hg, hC, hCZ, hx⟩ hF v h hinj j hj
-  have hP := hCK D L Pm Tp hK S hCnW hg ((le_max_left _ _).trans hx) hC hCZ _ _ j (recPJ h j hj) hj
-    ((GlobalTheory.FinalJoin2.fieldSmall_iff_opo D _ h L).1 hF)
-  exact (hrun D _ h hinj EX _ (hpar v) j hj L _ _ _ _ _ _ _ _ _ _ _ hP ((le_max_right _ _).trans hx)).2
 
-theorem exists_all : ∃ CK x₁ : ℝ, ∀ (D : D7), RecOK D x₁ → RichRec D → ∀ (G : Type) [Group G] [Fintype G],
-    ∃ (L : SizeData₂ D) (Pm : ParameterChoice' D L) (Tp : ParamsT D L Pm) (hK : DV.KapDef D) (EX : ErrX D) (C : Formalism.L2.Host.CharFrame D)
-      (J : CoreJ D) (r : TwoRuns J G), LawsJ J ∧ J.pb = C.P.pb ∧ (∀ v, LawsFull (r.used v).full) ∧
-      OwnPin r ∧ PageNum Tp x₁ ∧ RunsHold Tp hK EX CK r ∧
-      (∃ Lc : LevCh D (Option Bool), Lc.C = C ∧ Lc.Is none ∧ Lc.xiH (some false) = C.del ∧ Lc.xiH (some true) = C.del' ∧
-        (∃ PP ∈ Lc.Q (some false), ((D.host.pde : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal) ∧
-        ∃ PP ∈ Lc.Q (some true), ((D.host.pde' : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal) ∧
-      (∃ a : Algebra J.Q.c.F D.what₂.LL, @AlgTie D J a) ∧
-      ∀ (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) [Algebra J.Q.c.F D.what₂.LL] (R : RealDat D A J.Q.c.F) (μ0 : T0),
-        R.C = C → R.toLevCh.Is μ0 → ∀ (mu : HeightOneSpectrum (𝓞 D.what₂.LL) → T0) (S : Finset (HeightOneSpectrum (𝓞 D.what₂.LL))),
-          CoreTies L EX J R ∧ CoreTies L EX J { R with mu := mu, twPl := S } := by
-  obtain ⟨CK, x₁, H⟩ := exists_runsHold
-  refine ⟨CK, x₁, fun D hD hR G _ _ => ?_⟩
-  obtain ⟨x₀, hext⟩ := GlobalTheory.FinalJoin2.exists_full_runHolds_of_core
-  obtain ⟨EX⟩ := hD.err
-  obtain ⟨C, c1, c2, c3, c4⟩ := exists_frame_of_richRec D EX hR hD.one hD.two
-  obtain ⟨J, hJ, hC, hcan, hJpb, hrk, -⟩ :=
-    exists_coreJ_of_chiOK_noVol D hD.one.full hD.one.zetaM C.P.pb C.P.pb_over _ (chiOK_one D)
-  have hE : HalfEX J.toCore EX := fun i => by
-    show barE D (EX.piG i) ∈ (J.pb i).asIdeal.map _
-    rw [hJpb]
-    exact c1 i
-  obtain ⟨T, -, -, hT⟩ := hext D J EX hJ hC hcan hrk hE hD.one.kpsi
-  obtain ⟨P₁, hP₁⟩ := GlobalTheory.exists_heightOneSpectrum_natCast_mem D.host.K D.host.pde_prime
-  obtain ⟨P₂, hP₂⟩ := GlobalTheory.exists_heightOneSpectrum_natCast_mem D.host.K D.host.pde'_prime
-  obtain ⟨xi₁, hxi₁⟩ := hD.xi1
-  obtain ⟨xi₂, hxi₂⟩ := hD.xi2
-  obtain ⟨_, T₁, h₁, -, hJ₁, -, -, -, hpar₁, -⟩ := hT _ hD.one P₁ hP₁ xi₁ hxi₁
-  obtain ⟨_, T₂, h₂, -, hJ₂, -, -, -, hpar₂, -⟩ := hT _ hD.two P₂ hP₂ xi₂ hxi₂
-  subst hJ₁
-  obtain ⟨r₂, hr₂⟩ : ∃ r₂ : RunData T₁.J, r₂.full = T₂ := by
-    rw [← hJ₂]; exact ⟨RunData.of T₂, rfl⟩
-  obtain ⟨L, Pm, Tp, hK, S, hCnW, hg, hCP, hCZ, hx, hF⟩ := hD.num
-  let r : TwoRuns T₁.J G := ⟨RunData.of T₁, r₂, fun _ _ => 1⟩
-  have hpar : ∀ v j, InR D j → ParOK (r.used v).full.toTop EX (ownAt D v) j := by
-    intro v j hj
-    unfold TwoRuns.used ownAt
-    split_ifs
-    · show ParOK r₂.full.toTop EX _ j
-      rw [hr₂]; exact hpar₂ j hj
-    · exact hpar₁ j hj
-  have hnum : PageNum Tp x₁ := ⟨S, hCnW, hg, hCP, hCZ, hx⟩
-  refine ⟨L, Pm, Tp, hK, EX, C, T₁.J, r, hJ, hJpb, fun v => ?_, fun v j n hj => (hpar v j hj).own n, hnum,
-    H D G _ r EX L Pm Tp hK hpar hnum hF, c4, ⟨_, algTie_algTop _ hJ.pins.2.2.1⟩, ?_⟩
-  · unfold TwoRuns.used
-    split_ifs
-    · show LawsFull r₂.full
-      rw [hr₂]; exact h₂
-    · exact h₁
-  · rintro Pl0 T0 A _ R μ0 rfl hL mu S
-    exact ⟨coreTies_of_is hL hJpb hC hcan hrk hE hD.one hD.two hF c2 c3,
-      coreTies_of_is (R := { R with mu := mu, twPl := S }) hL hJpb hC hcan hrk hE hD.one hD.two hF c2 c3⟩
 
 end GlobalTheory.BigOn.CoreWit
 

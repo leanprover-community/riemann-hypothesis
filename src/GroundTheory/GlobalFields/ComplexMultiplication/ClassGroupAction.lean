@@ -109,10 +109,6 @@ section Quadratic
 variable (hK : finrank ℚ K = 2) [IsTotallyComplex K]
 include hK
 
-theorem exists_idealLattice_of_ringEquiv (L : PeriodPair) (e : latticeEnd L ≃+* 𝓞 K) :
-    ∃ (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ) (c : ℂ), c ≠ 0 ∧
-      (L.lattice : Set ℂ) = (c * ·) '' idealLattice σ I :=
-  exists_idealLattice_of_latticeEnd_eq σ hK L (latticeEnd_eq_cmRing_of_ringEquiv σ hK L e)
 
 theorem CMCurve.exists_lattice (E : CMCurve K) :
     ∃ (L : PeriodPair) (C : VariableChange ℂ) (hL : latticeEnd L = cmRing σ),
@@ -237,11 +233,6 @@ theorem existsUnique_smul_eq (x y : ELL K) :
     rw [ellMulAction_smul] at ha
     rw [← ha, Equiv.symm_apply_apply, mul_inv_cancel_right]
 
-theorem ell_isPretransitive :
-    letI := ellMulAction σ hK
-    MulAction.IsPretransitive (ClassGroup (𝓞 K)) (ELL K) := by
-  letI := ellMulAction σ hK
-  exact ⟨fun x y ↦ (existsUnique_smul_eq σ hK x y).exists⟩
 
 theorem ell_smul_eq_self_iff (a : ClassGroup (𝓞 K)) (x : ELL K) :
     (ellMulAction σ hK).smul a x = x ↔ a = 1 := by
@@ -252,9 +243,6 @@ theorem ell_smul_eq_self_iff (a : ClassGroup (𝓞 K)) (x : ELL K) :
   · rintro rfl
     rw [ellMulAction_smul, one_mul, Equiv.apply_symm_apply]
 
-theorem card_ell : Nat.card (ELL K) = classNumber K := by
-  let τ : K →+* ℂ := (IsAlgClosed.lift : K →ₐ[ℚ] ℂ).toRingHom
-  rw [← Nat.card_congr (ellEquiv τ hK), classNumber, Nat.card_eq_fintype_card]
 
 theorem finite_ell : Finite (ELL K) :=
   Finite.of_equiv _ (ellEquiv (IsAlgClosed.lift : K →ₐ[ℚ] ℂ).toRingHom hK)
@@ -277,10 +265,6 @@ theorem existsUnique_normalized (E : CMCurve K) :
     simp [ι]
   exact ⟨ι, hι, fun ι' hι' ↦ RingEquiv.ext fun a ↦ endConst_injective ((hι' a).trans (hι a).symm)⟩
 
-theorem normalized_ofLattice (L : PeriodPair) (hL : latticeEnd L = cmRing σ) (a : 𝓞 K) :
-    endConst (weierstrassCurve L)
-      (latticeEndEquiv L ⟨σ (algebraMap (𝓞 K) K a), hL ▸ ⟨a, rfl⟩⟩) = σ (algebraMap (𝓞 K) K a) :=
-  endConst_latticeEndEquiv L _
 
 end Quadratic
 

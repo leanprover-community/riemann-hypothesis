@@ -31,10 +31,6 @@ theorem adm3 (D : D7) (Lv : LevelData D) : flipTwoThree.adm3 D := fun u c => sta
 
 theorem admS (D : D7) (Lv : LevelData D) (u : D.what₂.Word) : product_first_zeroth_parts.admS D u := stabZero_rec D Lv u
 
-theorem proper_of_split_completion (h1 : IwProG) (h2 : ProGTransfer) (D : D7) (Lv : LevelData D)
-    (halg : ∀ (u : D.what₂.Word) (i : Fin 2) (v : HeightOneSpectrum (𝓞 D.host.F)) (h : (D.host.g i : 𝓞 D.host.F) ∈ v.asIdeal)
-      (a : v.adicCompletion D.host.F), (Lv u).splitG i v h ((1 : D.host.E) ⊗ₜ[D.host.F] a) = (a, a)) : StandardLattice.Conclusion4p D Lv :=
-  fun u => proG_of h1 h2 (Lv u) D.host.g_prime (isUnit_det_gram0 D.sp) (halg u)
 
 end Formalism.L2.G.Triv
 

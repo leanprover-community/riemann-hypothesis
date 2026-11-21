@@ -359,9 +359,6 @@ theorem continuous_adelicChar_mul (ξ : K) :
     Continuous fun x : 𝔸[K] => adelicChar K (algebraMap K 𝔸[K] ξ * x) :=
   (continuous_adelicChar (K := K)).comp (continuous_const.mul continuous_id)
 
-theorem adelicChar_mul_algebraMap (ξ k : K) :
-    adelicChar K (algebraMap K 𝔸[K] ξ * algebraMap K 𝔸[K] k) = 1 := by
-  rw [← map_mul, adelicChar_algebraMap]
 
 end
 

@@ -92,55 +92,5 @@ theorem isUnitri_pow_char (g : ℕ) [Fact g.Prime] [CharP F g] [Nontrivial F]
 
 end aux
 
-theorem idxFacts : IdxFacts := by
-  refine ⟨fun g k hg => ?_, ?_⟩
-  · have : Fact g.Prime := ⟨hg⟩
-    have hpow : ∀ x : GL (Fin k) (ZMod g), IsUnitri (x : Matrix (Fin k) (Fin k) (ZMod g)) →
-        x ^ (g ^ k) = 1 := by
-      intro x hx
-      apply Units.ext
-      rw [Units.val_pow_eq_pow_val, Units.val_one]
-      exact isUnitri_pow_char g hx
-    let U : Subgroup (GL (Fin k) (ZMod g)) :=
-      { carrier := {x | IsUnitri (x : Matrix (Fin k) (Fin k) (ZMod g))}
-        mul_mem' := fun {a b} ha hb => by
-          show IsUnitri ((a * b : GL (Fin k) (ZMod g)) : Matrix (Fin k) (Fin k) (ZMod g))
-          rw [Units.val_mul]
-          exact isUnitri_mul ha hb
-        one_mem' := by
-          show IsUnitri ((1 : GL (Fin k) (ZMod g)) : Matrix (Fin k) (Fin k) (ZMod g))
-          rw [Units.val_one]
-          exact isUnitri_one
-        inv_mem' := fun {a} ha => by
-          show IsUnitri ((a⁻¹ : GL (Fin k) (ZMod g)) : Matrix (Fin k) (Fin k) (ZMod g))
-          have hpos : 0 < g ^ k := pow_pos hg.pos k
-          have h1 : a ^ (g ^ k - 1) * a = 1 := by
-            rw [← pow_succ, Nat.sub_add_cancel hpos]
-            exact hpow a ha
-          have h2 : a⁻¹ = a ^ (g ^ k - 1) := (eq_inv_of_mul_eq_one_left h1).symm
-          rw [h2, Units.val_pow_eq_pow_val]
-          exact isUnitri_pow ha _ }
-    have hmem : ∀ x, x ∈ U ↔ IsUnitri (x : Matrix (Fin k) (Fin k) (ZMod g)) := fun x => Iff.rfl
-    have hcard : Nat.card U =
-        Nat.card {A : GL (Fin k) (ZMod g) // IsUnitri (A : Matrix (Fin k) (Fin k) (ZMod g))} := rfl
-    have hUpos : 0 < Nat.card U := Nat.card_pos
-    have hidx : U.index * Nat.card U = Nat.card (GL (Fin k) (ZMod g)) := U.index_mul_card
-    refine ⟨U, hmem, ?_, ?_, fun x hx => ⟨k, hpow x hx⟩⟩
-    · unfold idxColLoc idxLoc
-      rw [← hcard, ← hidx, Nat.cast_mul, mul_div_assoc, div_self, mul_one]
-      exact_mod_cast hUpos.ne'
-    · exact Nat.pos_of_ne_zero U.index_ne_zero_of_finite
-  · intro G X _ _ _ _ hfree
-    classical
-    have : Fintype (MulAction.orbitRel.Quotient G X) := Fintype.ofFinite _
-    rw [Nat.card_congr (MulAction.selfEquivSigmaOrbitsQuotientStabilizer G X), Nat.card_sigma]
-    refine Finset.dvd_sum fun ω _ => ?_
-    have hb : MulAction.stabilizer G ω.out = ⊥ := by
-      rw [eq_bot_iff]
-      intro a ha
-      exact Subgroup.mem_bot.mpr (hfree _ a (MulAction.mem_stabilizer_iff.mp ha))
-    rw [hb]
-    have : Nat.card (G ⧸ (⊥ : Subgroup G)) = Nat.card G := Subgroup.index_bot
-    rw [this]
 
 end Formalism.MainNotions.Gaps.MI

@@ -173,9 +173,6 @@ theorem vV_nonneg (T : CDVR) (a : T.V) : 0 ≤ vV T.V (algebraMap T.V T.Fr a) :=
     simp only [WithZero.log_one] at this
     simp only [vV]; omega
 
-theorem vV_add_inv (T : CDVR) {x : T.Fr} (hx : x ≠ 0) : vV T.V x + vV T.V x⁻¹ = 0 := by
-  rw [← vV_mul hx (inv_ne_zero hx), mul_inv_cancel₀ hx]
-  simp [vV]
 
 theorem exists_local_restrict (T T' : CDVR) (iT : T.Fr →+* T'.Fr) (e : ℕ) (he : 0 < e)
     (hv : ∀ a : T.Fr, vV T'.V (iT a) = (e : ℤ) * vV T.V a) :

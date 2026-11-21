@@ -236,19 +236,6 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_val {M R : ℕ} {φ : _root_.Globa
   rw [← adm_apply_mul_congr_one_mod_sq hφ hΛ x hs hc0, Nat.mul_comm hex.choose s,
     adm_apply_mul_congr_one_mod_sq hφ hΛ x hex.choose_spec.1 hx]
 
-theorem twist_std {M R : ℕ} {φ : Fam E n N} (hφ : admitted M R φ) {Λ : Lt E n} (hΛ : Λ ∈ Vset E n M) :
-    twist R (stdL E N) φ Λ = φ Λ := by
-  have hA : Agree (R * M) (stdL E N) (stdL E N) :=
-    ⟨1, one_pos, Nat.coprime_one_left _, fun v hv => by simpa using hv, fun v hv => by simpa using hv⟩
-  funext x
-  by_cases h : ∀ ξ ∈ stdL E N, (R : E) • (x *ᵥ ξ) ∈ Λ
-  · rw [twist_val hφ hA hΛ x 1 rfl h (cols_of_cond (fun v hv => by simpa using hv) h)]
-    simp
-  · rw [twist_eq φ (exists_mult hφ.pos.2 hA), if_neg h]
-    by_contra h0
-    refine h fun ξ hξ => ?_
-    rw [← Matrix.smul_mulVec]
-    exact colsIn_mulVec (hφ.supp Λ hΛ x (Ne.symm h0)) hξ
 
 open Matrix Complex NumberField Filter Topology in
 open scoped ComplexConjugate ComplexOrder Real Classical in

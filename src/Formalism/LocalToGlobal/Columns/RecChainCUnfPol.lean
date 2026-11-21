@@ -38,8 +38,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Λ : Le
   Nab _ := (colVal W u j (Pr.vT u) Pr.vGs).Nab
   Del _ := (colVal W u j (Pr.vT u) Pr.vGs).Del
 
-theorem stepF_mem (u : Pr.Word) (j : ℕ) (b : Λ.β j) :
-    (stepF W Λ u j).mem b = formGSD (colVal W u j (Pr.vT u) Pr.vGs) (Λ.lev j b) := rfl
 
 theorem stepFOk (hX : X.Ok) (u : Pr.Word) (j : ℕ) : (stepF W Λ u j).Ok :=
   fun _ => formGSD_ok _ _ hX (colVal_eqv W hX u j _ _)
@@ -56,22 +54,7 @@ open Classical in
 def recDGamC (hX : X.Ok) : ℕ :=
   Finset.univ.lcm fun u : Pr.Word => (Finset.range (R.m + 1)).lcm fun j => famLcm (stepF W Λ u j) (stepFOk W Λ hX u j)
 
-theorem recDGamC_dvd (hX : X.Ok) (u : Pr.Word) (j : ℕ) (hj : j ≤ R.m) (c : StClC W Λ u j) :
-    Nat.card (FamStab (stepF W Λ u j) c) ∣ recDGamC W Λ hX := by
-  classical
-  refine Dvd.dvd.trans ?_ (Finset.dvd_lcm (Finset.mem_univ u))
-  refine Dvd.dvd.trans ?_ (Finset.dvd_lcm (Finset.mem_range.2 (Nat.lt_succ_of_le hj)))
-  exact famLcm_dvd _ _ c
 
-theorem recDGamC_pos (hX : X.Ok) : 0 < recDGamC W Λ hX := by
-  classical
-  refine Nat.pos_of_ne_zero ?_
-  unfold recDGamC
-  rw [Ne, Finset.lcm_eq_zero_iff]
-  rintro ⟨u, -, h⟩
-  rw [Finset.lcm_eq_zero_iff] at h
-  obtain ⟨j, -, h⟩ := h
-  exact (famLcm_pos _ _).ne' h
 
 @[irreducible] def recDGamAllC (Λ : LevCh X Pr R) {σ₀ : X.K →+* ℂ} (hX : X.Ok) (G : ChainGlob W σ₀) : ℕ := dGamAut X R
 
@@ -157,20 +140,6 @@ def recChainC (hX : X.Ok) (σ₀ : X.K →+* ℂ) (G : ChainGlob W σ₀) (u : P
   recChainF (W.hc u) (stepF W Λ u) (stepFOk W Λ hX u) σ₀ (recDGamAllC W Λ hX G) (recDGamAllC_pos W Λ hX G)
     (fun j hj c => recDGamAllC_dvd W Λ hX G u j hj c) A.toF
 
-theorem recChainC_Kmap (hX : X.Ok) (σ₀ : X.K →+* ℂ) (G : ChainGlob W σ₀) (u : Pr.Word) (A : ChainArgC W Λ G u) (i : ℕ)
-    (c : StClC W Λ u i) (c' : StClC W Λ u (i + 1)) (x : VV X.K (W.lamTrue u i)) :
-    (recChainC hX σ₀ G u A).Kmap i c c' (evV X.emb 1 (W.lamTrue u i) σ₀ x) =
-      evV X.emb 1 (W.lamTrue u (i + 1)) σ₀ ((A.kk i c.1 c'.1).k (repC c) (repC c') x) := by
-  set r := σ₀ (rhoPt G.chr i (repC c) : X.K) with hr
-  set r' := σ₀ (rhoPt' G.chr i (repC c') : X.K) with hr'
-  have h0 : r * r' ≠ 0 := by
-    refine mul_ne_zero ?_ ?_
-    · intro h; have := rhoPt_norm G i (repC c); rw [← hr, h, norm_zero] at this; exact zero_ne_one this
-    · intro h; have := rhoPt'_norm G i (repC c'); rw [← hr', h, norm_zero] at this; exact zero_ne_one this
-  funext (y' : FrS X σ₀ (R.N (i + 1)))
-  refine (congrArg (fun z : ℂ => (r * r') * z) (congrFun (A.unf_ev i c c' x) y')).trans ?_
-  show (r * r') * ((r * r')⁻¹ * _) = _
-  rw [← mul_assoc, mul_inv_cancel₀ h0, one_mul]
 
 end Chain
 
@@ -256,11 +225,6 @@ def ChainArgC.ofXi {σ₀ : X.K →+* ℂ} {G : ChainGlob W σ₀} (hE : XiEquiv
       exact ((congrArg (fun f : FrS X σ₀ (R.N (i + 1)) → ℂ =>
         (σ₀ (rhoPt G.chr i (repC c) : X.K) * σ₀ (rhoPt' G.chr i (repC c') : X.K))⁻¹ • f) h0).trans (smul_zero _)).symm
 
-theorem recChainC_unf_pol (hX : X.Ok) {σ₀ : X.K →+* ℂ} {G : ChainGlob W σ₀} (hE : XiEquivC W Λ Ch sel mu cst Am u Ξ)
-    (H : XiHypC W Λ Ch sel mu cst Am u Ξ G) (i : ℕ) (c : StClC W Λ u i) (c' : StClC W Λ u (i + 1)) (Q : Pol ℂ X.Tau (R.N i)) :
-    (recChainC hX σ₀ G u (ChainArgC.ofXi hE H)).unf i c c' (polFn σ₀ (R.N i) Q) =
-      polFn σ₀ (R.N (i + 1)) (jetMap (ι := X.Tau) (jetC Am.cD (xiThC W Λ sel mu cst Am u Ξ i c c')) (fun _ => 0) Q) :=
-  unfTh_polFn σ₀ Am.cD _ Q
 
 end Xi
 

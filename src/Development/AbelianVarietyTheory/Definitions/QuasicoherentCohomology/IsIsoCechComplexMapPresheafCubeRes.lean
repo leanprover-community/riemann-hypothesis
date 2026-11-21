@@ -17,7 +17,6 @@ def cechOpen (V : Opens T) (U : ι → Opens T) (s : Finset ι) : Opens T := V �
 
 variable (V : Opens T) (U : ι → Opens T)
 
-theorem cechOpen_def (s : Finset ι) : cechOpen V U s = V ⊓ ⨅ i ∈ s, U i := rfl
 
 theorem cechOpen_eq_inf (s : Finset ι) : cechOpen V U s = V ⊓ s.inf U := by
   rw [cechOpen, Finset.inf_eq_iInf]
@@ -163,11 +162,7 @@ variable (V : Opens T) (U : ι → Opens T)
 
 def presheafCube : Cube.{v} ι R := cechOpenFunctor V U ⋙ P
 
-theorem presheafCube_obj (s : Finset ι) :
-    (presheafCube P V U).obj s = P.obj (op (cechOpen V U s)) := rfl
 
-theorem res_presheafCube {s t : Finset ι} (h : s ⊆ t) :
-    Cube.res (presheafCube P V U) h = presheafRes P (cechOpen_anti V U h) := rfl
 
 variable {P} in
 
@@ -236,8 +231,6 @@ end Restrict
 def presheafCubeEmptyEquiv : P.obj (op V) ≃ₗ[R] (presheafCube P V U).obj ∅ :=
   presheafCongr P (cechOpen_empty V U).symm
 
-theorem presheafCubeEmptyEquiv_apply (x : P.obj (op V)) :
-    presheafCubeEmptyEquiv P V U x = presheafRes P (cechOpen_le V U ∅) x := rfl
 
 variable [LinearOrder ι]
 
@@ -257,13 +250,7 @@ def presheafCubeUpperFaceIso :
     (presheafRes_presheafRes P _ _ x).trans
       (presheafRes_presheafRes P _ (cechOpen_anti (V ⊓ U i) _ hst) x).symm
 
-theorem presheafCubeLowerFaceIso_hom_app (s : Finset κ) :
-    ((presheafCubeLowerFaceIso P V U e).hom.app s).hom =
-      presheafRes P (cechOpen_map V U e.toEmbedding s).ge := rfl
 
-theorem presheafCubeUpperFaceIso_hom_app (s : Finset κ) :
-    ((presheafCubeUpperFaceIso P V U e i).hom.app s).hom =
-      presheafRes P (cechOpen_insert_map V U e.toEmbedding i s).ge := rfl
 
 @[reassoc]
 theorem faceMap_presheafCube :
@@ -280,11 +267,7 @@ def presheafCech : CochainComplex (ModuleCat.{v} R) ℕ := cechComplex (presheaf
 
 def presheafCechH (n : ℕ) : ModuleCat.{v} R := (presheafCech P V U).homology n
 
-theorem isZero_presheafCech_X [Fintype ι] {n : ℕ} (h : Fintype.card ι ≤ n) :
-    IsZero ((presheafCech P V U).X n) := isZero_cechComplex_X _ h
 
-theorem isZero_presheafCechH [Fintype ι] {n : ℕ} (h : Fintype.card ι ≤ n) :
-    IsZero (presheafCechH P V U n) := isZero_cechComplex_homology _ h
 
 variable {V U} in
 
@@ -447,11 +430,7 @@ variable {T : Type w} [TopologicalSpace T] {ι : Type}
 
 def cechAbCube : Cube.{v} ι ℤ := presheafCube (P ⋙ abToIntModule) V U
 
-theorem cechAbCube_obj (s : Finset ι) :
-    (cechAbCube P V U).obj s = ModuleCat.of ℤ (P.obj (op (cechOpen V U s))) := rfl
 
-theorem res_cechAbCube {s t : Finset ι} (h : s ⊆ t) (x : P.obj (op (cechOpen V U s))) :
-    Cube.res (cechAbCube P V U) h x = P.map (homOfLE (cechOpen_anti V U h)).op x := rfl
 
 variable {P} in
 
@@ -480,12 +459,7 @@ def cechAb : CochainComplex (ModuleCat.{v} ℤ) ℕ := cechComplex (cechAbCube P
 
 def cechAbH (n : ℕ) : ModuleCat.{v} ℤ := (cechAb P V U).homology n
 
-theorem cechAb_X (p : ℕ) : (cechAb P V U).X p =
-    ModuleCat.of ℤ (∀ s : {s : Finset ι // s.card = p + 1}, P.obj (op (cechOpen V U s.1))) := rfl
 
-theorem cechAb_d (p : ℕ) :
-    (cechAb P V U).d p (p + 1) = ModuleCat.ofHom (Cube.d (cechAbCube P V U) (p + 1)) :=
-  cechComplex_d _ p
 
 variable {P} in
 
@@ -541,14 +515,8 @@ theorem cechAbFunctor_shortExact (S : ShortComplex ((Opens T)ᵒᵖ ⥤ AddCommG
   cechFunctor_shortExact (S.map (cechAbCubeFunctor V U)) fun s hs =>
     ModuleCat.shortComplex_shortExact _ (h s hs).2.1 (h s hs).1 (h s hs).2.2
 
-theorem isZero_cechAb_X [Fintype ι] {n : ℕ} (h : Fintype.card ι ≤ n) :
-    IsZero ((cechAb P V U).X n) := isZero_cechComplex_X _ h
 
-theorem isZero_cechAbH [Fintype ι] {n : ℕ} (h : Fintype.card ι ≤ n) :
-    IsZero (cechAbH P V U n) := isZero_cechComplex_homology _ h
 
-theorem subsingleton_cechAbH [Fintype ι] {n : ℕ} (h : Fintype.card ι ≤ n) :
-    Subsingleton (cechAbH P V U n) := ModuleCat.isZero_iff_subsingleton.1 (isZero_cechAbH P V U h)
 
 variable {V U} in
 
@@ -578,10 +546,6 @@ theorem isSheaf_comp_abToIntModule (hP : Presheaf.IsSheaf (Opens.grothendieckTop
 
 variable [LinearOrder ι]
 
-theorem cechAbCube_exactAt_zero_one (hP : Presheaf.IsSheaf (Opens.grothendieckTopology T) P)
-    (hc : V ≤ ⨆ i, U i) :
-    (cubeComplex (cechAbCube P V U)).ExactAt 0 ∧ (cubeComplex (cechAbCube P V U)).ExactAt 1 :=
-  presheafCube_exactAt_zero_one (isSheaf_comp_abToIntModule hP) hc
 
 def cechAbHZeroEquiv (hP : Presheaf.IsSheaf (Opens.grothendieckTopology T) P)
     (hc : V ≤ ⨆ i, U i) : cechAbH P V U 0 ≃ₗ[ℤ] P.obj (op V) :=

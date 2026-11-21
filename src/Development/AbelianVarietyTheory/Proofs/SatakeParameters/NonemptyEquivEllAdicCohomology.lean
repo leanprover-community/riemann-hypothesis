@@ -63,21 +63,6 @@ theorem ext_bijective {A : Type u₁} [Category.{v₁} A] [Abelian A] [HasExt.{w
       (fun x₁ ↦ Ext.covariant_sequence_exact₁ _ hS x₁ (by subsingleton) rfl)
       (fun y₁ ↦ Ext.covariant_sequence_exact₁ _ (hS.map Φ) y₁ (by subsingleton) rfl)
 
-theorem nonempty_ext_equiv {A : Type u₁} [Category.{v₁} A] [Abelian A] [HasExt.{w} A] [EnoughInjectives A]
-    {B : Type u₂} [Category.{v₂} B] [Abelian B] [HasExt.{w'} B]
-    (Φ : A ⥤ B) (h : Good Φ) {Z : A} {Z' : B} (e : ∀ F : A, (Z ⟶ F) ≃ (Z' ⟶ Φ.obj F))
-    (he : ∀ {F G : A} (g : Z ⟶ F) (f : F ⟶ G), e G (g ≫ f) = e F g ≫ Φ.map f)
-    (n : ℕ) (F : A) (F' : B) (i : Φ.obj F ≅ F') : Nonempty (Ext.{w} Z F n ≃+ Ext.{w'} Z' F' n) := by
-  obtain ⟨_, _, _⟩ := h
-  have : Φ.Additive := by
-    have := preservesBinaryBiproducts_of_preservesBinaryCoproducts Φ
-    exact Functor.additive_of_preservesBinaryBiproducts _
-  have hb := ext_bijective.{w, w'} Φ (e Z (𝟙 Z)) (fun F => by
-    convert (e F).bijective using 1
-    ext g
-    rw [← he, Category.id_comp]) n F
-  exact ⟨(AddEquiv.ofBijective _ hb).trans
-    (((extFunctor.{w'} n).obj (op Z')).mapIso i).addCommGroupIsoToAddEquiv⟩
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -219,8 +204,6 @@ def freeOnEquiv (X : Scheme.{0}) (F : Shv R) : ((freeOn R).obj X ⟶ F) ≃ F.ob
     (((((ModuleCat.adj (ULift.{1} R)).whiskerRight Scheme.{0}ᵒᵖ)).homEquiv (uliftYoneda.{1}.obj X) F.obj).trans
       uliftYonedaEquiv)
 
-theorem freeOnEquiv_comp (X : Scheme.{0}) {F G : Shv R} (g : (freeOn R).obj X ⟶ F) (f : F ⟶ G) :
-    freeOnEquiv R X G (g ≫ f) = f.hom.app (op X) (freeOnEquiv R X F g) := rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
 
@@ -229,31 +212,7 @@ def isTerminalId (X : Scheme.{0}) : IsTerminal (Scheme.ProEt.mk (𝟙 X)) :=
 
 variable [TopologicalSpace R] [IsTopologicalRing R]
 
-theorem isSheaf_coefPre : Presheaf.IsSheaf Scheme.proetaleTopology.{0} (coefPre R) := by
-  refine (Presheaf.isSheaf_iff_isSheaf_forget Scheme.proetaleTopology.{0} (coefPre R)
-    (forget (ModuleCat.{1} (ULift.{1} R)))).2 ?_
-  change Presheaf.IsSheaf _ (continuousMapPresheaf R ⋙ uliftFunctor.{1})
-  rw [isSheaf_iff_isSheaf_of_type, Presieve.isSheaf_comp_uliftFunctor_iff, ← isSheaf_iff_isSheaf_of_type]
-  exact .of_le Scheme.proetaleTopology_le_fpqcTopology (isSheaf_fpqcTopology_continuousMapPresheaf R)
 
-theorem nonempty_equiv_ellAdicCohomology (l : ℕ) [Fact l.Prime] (X : Scheme.{0}) (n : ℕ) :
-    Nonempty (H ℤ_[l] n X ≃+ X.EllAdicCohomology l n) := by
-  let i : (restrict ℤ_[l] X).obj (coef ℤ_[l]) ≅
-      (sheafCompose _ AddCommGrpCat.uliftFunctor.{1}).obj (X.ellAdicSheaf l) :=
-    ((restrict ℤ_[l] X).mapIso (sheafificationIso ⟨coefPre ℤ_[l], isSheaf_coefPre ℤ_[l]⟩)).symm ≪≫ Iso.refl _
-  let e' (G : Sheaf (Scheme.ProEt.topology X) Ab.{1}) :
-      ((constantSheaf _ Ab.{1}).obj (AddCommGrpCat.of (ULift.{1} ℤ)) ⟶ G) ≃ G.obj.obj (op (Scheme.ProEt.mk (𝟙 X))) :=
-    ((constantSheafAdj _ Ab.{1} (isTerminalId X)).homEquiv _ G).trans (AddCommGrpCat.uliftZMultiplesAddEquiv _).toEquiv
-  have he' {G G' : Sheaf (Scheme.ProEt.topology X) Ab.{1}} (g : _ ⟶ G) (f : G ⟶ G') :
-      e' G' (g ≫ f) = f.hom.app _ (e' G g) := rfl
-  refine nonempty_ext_equiv.{1, 1} (restrict ℤ_[l] X) (good_restrict _ X)
-    (fun F => (freeOnEquiv ℤ_[l] X F).trans (e' ((restrict ℤ_[l] X).obj F)).symm) ?_ n _ _ i
-  intro F G g f
-  apply (e' _).injective
-  rw [he']
-  simp only [Equiv.trans_apply]
-  erw [Equiv.apply_symm_apply, Equiv.apply_symm_apply]
-  exact freeOnEquiv_comp _ X g f
 
 end GlobalTheory.Et.Small
 

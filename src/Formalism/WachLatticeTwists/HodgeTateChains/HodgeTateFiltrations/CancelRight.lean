@@ -7,45 +7,6 @@ namespace Formalism.RepresentationBoundsCohomology.TorsionBoundCyclotomic
 
 open Matrix
 
-theorem hypWComm : StatHypWComm := by
-  intro ℓ _ As AA WC _ _ _ _ jA ι φ Gg _ H act r ρ πs ξ M0 h0 W hfix hinj h hh h' hh'
-  have e1 := W.fixH h hh
-  have e2 := W.fixH h' hh'
-  have e3 := W.fixH (h * h') (H.mul_mem hh hh')
-  generalize hR : ((ρ h : Matrix (Fin r) (Fin r) ℤ_[ℓ]).map (algebraMap ℤ_[ℓ] WC)) = R at *
-  generalize hR' : ((ρ h' : Matrix (Fin r) (Fin r) ℤ_[ℓ]).map (algebraMap ℤ_[ℓ] WC)) = R' at *
-  have e6 : ((ρ (h * h') : Matrix (Fin r) (Fin r) ℤ_[ℓ]).map (algebraMap ℤ_[ℓ] WC)) = R * R' := by
-    rw [map_mul, Units.val_mul, Matrix.map_mul, hR, hR']
-  have e4 : (W.Xx.map (act h')).map (act h) * R' = W.Xx.map (act h) := by
-    have h1 : (W.Xx.map (act h') * R').map (act h) = W.Xx.map (act h) := by rw [e2]
-    rw [← h1]
-    ext i j
-    simp only [Matrix.mul_apply, Matrix.map_apply, map_sum, map_mul]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [← hR']
-    simp [Matrix.map_apply, hfix]
-  have e5 : W.Xx.map (act (h * h')) = (W.Xx.map (act h')).map (act h) := by
-    ext i j; simp [Matrix.map_apply, map_mul]
-  generalize (W.Xx.map (act h')).map (act h) = Y at *
-  have k1 : Y * (R' * R) = W.Xx := by rw [← Matrix.mul_assoc, e4, e1]
-  have k2 : Y * (R * R') = W.Xx := by rw [← e6, ← e5]; exact e3
-  have hYl : ((R' * R) * W.Xi) * Y = 1 := by
-    have : Y * ((R' * R) * W.Xi) = 1 := by rw [← Matrix.mul_assoc, k1, W.inv1]
-    exact mul_eq_one_comm.mp this
-  have k3 : R' * R = R * R' := by
-    calc R' * R = (((R' * R) * W.Xi) * Y) * (R' * R) := by rw [hYl, Matrix.one_mul]
-      _ = ((R' * R) * W.Xi) * (Y * (R' * R)) := by simp only [Matrix.mul_assoc]
-      _ = ((R' * R) * W.Xi) * (Y * (R * R')) := by rw [k1, k2]
-      _ = (((R' * R) * W.Xi) * Y) * (R * R') := by simp only [Matrix.mul_assoc]
-      _ = R * R' := by rw [hYl, Matrix.one_mul]
-  apply Units.ext
-  rw [Units.val_mul, Units.val_mul]
-  have : ((ρ h : Matrix (Fin r) (Fin r) ℤ_[ℓ]) * (ρ h' : Matrix (Fin r) (Fin r) ℤ_[ℓ])).map
-        (algebraMap ℤ_[ℓ] WC)
-      = ((ρ h' : Matrix (Fin r) (Fin r) ℤ_[ℓ]) * (ρ h : Matrix (Fin r) (Fin r) ℤ_[ℓ])).map
-        (algebraMap ℤ_[ℓ] WC) := by
-    rw [Matrix.map_mul, Matrix.map_mul, hR, hR', k3]
-  exact Matrix.map_injective hinj this
 
 theorem wSandwich' : StatWSandwich' := by
   intro ℓ _ As AA WC OC _ _ _ _ _ jA ι φ Gg _ H act GK _ inc r ρ πs ξ x M0 h0 W ϑ c hL hinj hx hξ hc
@@ -200,22 +161,6 @@ theorem torsAll (ℓ : ℕ) [Fact ℓ.Prime] (w : ℤ_[ℓ]ˣ) (m : ℕ) (hm : 1
     rw [Finset.sum_eq_sum_Ico_succ_bot hij, add_comm, pow_add, mul_smul, ← hy', ← map_smul, h1,
       map_zero]
 
-theorem freeGm' : StatFreeGm' := by
-  intro ℓ _ w m hm h2 hw U a D hD hP hc hex
-  refine freeGm ℓ w m hm h2 hw U a D hD hP hc fun i j hij => ?_
-  refine torsAll ℓ w m hm h2 hw U a D hD hP (fun i k j hik hkj x hx => ?_) (j - i - 1) i j (by omega)
-  obtain ⟨z, rfl⟩ := (hex i k j hik hkj x).1 hx
-  exact (hD i k j hik hkj).2.2.2.2 z
 
-theorem freeKTop : StatFreeKTop := by
-  intro ℓ _ InvariantsKilledOverCyclotomic H1K H1m H0m H0KQ H1KQ H0mQ H1mQ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ cupK b0 b1 cupKQ resQ
-    res cup a0 a1 r0 cupQ al h1 h2 h3 h4 hinj hsur htf hker hpb hF y
-  obtain ⟨z, hz⟩ := hsur (b1 y)
-  obtain ⟨zm, hzm⟩ := freeK ℓ H1K H1m H0m H0KQ H0mQ H1mQ res cup a0 a1 r0 cupQ al h1 hinj htf hF y z
-    (by rw [h3, ← hz, h4])
-  obtain ⟨zK, hzK⟩ := hpb (((ℓ : ℤ_[ℓ]) ^ al) • z) zm (by rw [hzm, map_smul])
-  obtain ⟨t, ht⟩ := hker (((ℓ : ℤ_[ℓ]) ^ al) • y - cupK zK) (by
-    rw [map_sub, map_smul, h2, hzK, map_smul, hz, sub_self])
-  exact ⟨zK, t, ht⟩
 
 end Formalism.RepresentationBoundsCohomology.TorsionBoundCyclotomic

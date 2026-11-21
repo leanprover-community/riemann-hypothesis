@@ -35,40 +35,10 @@ def rowSwapEquiv : M22 ≃ᵐ M22 where
   measurable_toFun := measurePreserving_rowSwap.measurable
   measurable_invFun := measurePreserving_rowSwap.measurable
 
-theorem rr_rowSwap (h : M22) : rr (rowSwap h) = rr h := by
-  simp [rr, add_comm]
 
-theorem dd_rowSwap (h : M22) : dd (rowSwap h) = dd h := by
-  unfold dd
-  simp only [Matrix.det_fin_two, Matrix.of_apply, rowSwap_zero, rowSwap_one]
-  rw [← norm_neg]
-  congr 1
-  ring
 
-theorem yy_rowSwap (h : M22) : yy (rowSwap h) = yy h := by
-  simp [yy, rr_rowSwap, dd_rowSwap]
 
-theorem norm_rowSwap (h : M22) : ‖rowSwap h‖ = ‖h‖ := by
-  apply le_antisymm
-  · exact (pi_norm_le_iff_of_nonneg (norm_nonneg h)).2 fun i => norm_le_pi_norm h _
-  · refine (pi_norm_le_iff_of_nonneg (norm_nonneg (rowSwap h))).2 fun i => ?_
-    have := norm_le_pi_norm (rowSwap h) (Equiv.swap 0 1 i)
-    simpa [rowSwap] using this
 
-theorem Fh_rowSwap (σ : ℝ) (h : M22) : Fh σ (rowSwap h) = Fh σ h := by
-  simp only [Fh, rr_rowSwap, dd_rowSwap, yy_rowSwap, norm_rowSwap]
 
-theorem integrable_Fh_of_half : ∀ σ : ℝ, IntegrableOn (Fh σ) {h : M22 | ‖h 1 0‖ ≤ ‖h 0 0‖} → Integrable (Fh σ) := by
-  intro σ hS
-  have h2 : IntegrableOn (Fh σ ∘ rowSwap) (rowSwap ⁻¹' {h : M22 | ‖h 1 0‖ ≤ ‖h 0 0‖}) :=
-    (measurePreserving_rowSwap.integrableOn_comp_preimage rowSwapEquiv.measurableEmbedding).2 hS
-  have e : Fh σ ∘ rowSwap = Fh σ := funext (Fh_rowSwap σ)
-  rw [e] at h2
-  have hu : {h : M22 | ‖h 1 0‖ ≤ ‖h 0 0‖} ∪ rowSwap ⁻¹' {h : M22 | ‖h 1 0‖ ≤ ‖h 0 0‖} = Set.univ := by
-    ext h
-    simpa using le_total ‖h 1 0‖ ‖h 0 0‖
-  have := hS.union h2
-  rw [hu] at this
-  exact integrableOn_univ.1 this
 
 end GlobalTheory.CompanionTheory.PuBndC.RowSwap

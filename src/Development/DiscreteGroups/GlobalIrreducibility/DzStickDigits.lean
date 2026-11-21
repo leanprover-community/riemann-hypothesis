@@ -42,11 +42,6 @@ theorem dsum_legendre {p : ℕ} (hp : 2 ≤ p) (f : ℕ) : ∀ a : ℕ, a < p ^ 
     have h4 : (k + 1) * (a / (k + 1)) = k * (a / (k + 1)) + a / (k + 1) := by ring
     omega
 
-theorem dsum_modEq {p : ℕ} (hp : 2 ≤ p) (a : ℕ) : dsum p a ≡ a [MOD p - 1] := by
-  have h := dsum_legendre hp a a (Nat.lt_pow_self (by omega))
-  unfold Nat.ModEq
-  conv_rhs => rw [← h]
-  rw [Nat.mul_add_mod]
 
 theorem dsum_compl {p : ℕ} (hp : 2 ≤ p) (f a : ℕ) (ha : a ≤ p ^ f - 1) :
     dsum p a + dsum p (p ^ f - 1 - a) = f * (p - 1) := by
@@ -166,32 +161,5 @@ theorem dsum_frac {p : ℕ} (hp : 2 ≤ p) {f a : ℕ} (ha : a < p ^ f - 1) :
       _ = M * dsum p a + M * (k * S) := by ring
   exact Nat.add_right_cancel key
 
-theorem dsum_frac_dvd {p : ℕ} (hp : 2 ≤ p) {f N d b : ℕ} (hN : N * d = p ^ f - 1) (hb : b < N) :
-    (p - 1) * ∑ i ∈ Finset.range f, p ^ i * b % N = N * dsum p (d * b) := by
-  rcases Nat.eq_zero_or_pos d with rfl | hd
-  · have hf : f = 0 := by
-      by_contra hf
-      have : p ^ 1 ≤ p ^ f := Nat.pow_le_pow_right (by omega) (Nat.pos_of_ne_zero hf)
-      simp at hN this
-      omega
-    subst hf
-    simp [dsum_zero]
-  · have ha : d * b < p ^ f - 1 := by
-      rw [← hN, mul_comm N d]
-      exact Nat.mul_lt_mul_of_pos_left hb hd
-    have h := dsum_frac hp ha
-    rw [← hN] at h
-    have h2 : ∑ i ∈ Finset.range f, p ^ i * (d * b) % (N * d)
-        = d * ∑ i ∈ Finset.range f, p ^ i * b % N := by
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro i _
-      rw [mul_comm N d, mul_left_comm, Nat.mul_mod_mul_left]
-    rw [h2] at h
-    apply Nat.eq_of_mul_eq_mul_left hd
-    calc d * ((p - 1) * ∑ i ∈ Finset.range f, p ^ i * b % N)
-        = (p - 1) * (d * ∑ i ∈ Finset.range f, p ^ i * b % N) := by ring
-      _ = N * d * dsum p (d * b) := h
-      _ = d * (N * dsum p (d * b)) := by ring
 
 end DiscreteGroups.sglob.Stick

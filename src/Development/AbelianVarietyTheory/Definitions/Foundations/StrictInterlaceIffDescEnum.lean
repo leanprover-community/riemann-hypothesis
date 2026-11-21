@@ -238,11 +238,6 @@ theorem mem_ncDists {S : SPar} {d : ℚ} : d ∈ ncDists S ↔ ∃ x ∈ S, ∃ 
   · rintro ⟨x, ⟨⟨h1, h2⟩, h3⟩, h4⟩; exact ⟨_, h1, _, h2, h3, h4⟩
   · rintro ⟨x, h1, y, h2, h3, h4⟩; exact ⟨(x, y), ⟨⟨h1, h2⟩, h3⟩, h4⟩
 
-theorem le_ncGap_iff {S : SPar} {h : ℚ} :
-    (h : WithTop ℚ) ≤ ncGap S ↔ ∀ x ∈ S, ∀ y ∈ S, x.2 ≠ y.2 → h ≤ |x.1 - y.1| := by
-  rw [ncGap, Finset.le_min_iff]
-  simp only [mem_ncDists, WithTop.coe_le_coe]
-  exact ⟨fun H x hx y hy hs => H _ ⟨x, hx, y, hy, hs, rfl⟩, by rintro H _ ⟨x, hx, y, hy, hs, rfl⟩; exact H x hx y hy hs⟩
 
 theorem ncGap_eq_top_iff {S : SPar} : ncGap S = ⊤ ↔ ∀ x ∈ S, ∀ y ∈ S, x.2 = y.2 := by
   rw [ncGap, Finset.min_eq_top, eq_empty_iff_forall_notMem]
@@ -250,23 +245,7 @@ theorem ncGap_eq_top_iff {S : SPar} : ncGap S = ⊤ ↔ ∀ x ∈ S, ∀ y ∈ S
   exact ⟨fun H x hx y hy => by_contra fun hs => H _ ⟨x, hx, y, hy, hs, rfl⟩,
     by rintro H _ ⟨x, hx, y, hy, hs, -⟩; exact hs (H x hx y hy)⟩
 
-theorem ncGap_eq_coe_iff {S : SPar} {g : ℚ} : ncGap S = (g : WithTop ℚ) ↔
-    (∃ x ∈ S, ∃ y ∈ S, x.2 ≠ y.2 ∧ |x.1 - y.1| = g) ∧ ∀ x ∈ S, ∀ y ∈ S, x.2 ≠ y.2 → g ≤ |x.1 - y.1| := by
-  rw [← mem_ncDists, ← le_ncGap_iff]
-  exact ⟨fun h => ⟨mem_of_min h, h.ge⟩, fun h => le_antisymm (min_le h.1) h.2⟩
 
-theorem lt_ncGap_iff {S : SPar} {h : ℚ} :
-    (h : WithTop ℚ) < ncGap S ↔ ∀ x ∈ S, ∀ y ∈ S, x.2 ≠ y.2 → h < |x.1 - y.1| := by
-  constructor
-  · intro H x hx y hy hs
-    have := H.trans_le (min_le (mem_ncDists.2 ⟨x, hx, y, hy, hs, rfl⟩))
-    exact_mod_cast this
-  · intro H
-    cases hg : ncGap S with
-    | top => exact WithTop.coe_lt_top _
-    | coe g =>
-      obtain ⟨⟨x, hx, y, hy, hs, rfl⟩, -⟩ := ncGap_eq_coe_iff.1 hg
-      exact_mod_cast H x hx y hy hs
 
 @[simp] theorem ncGap_plus (E : Finset ℚ) : ncGap (plus E) = ⊤ :=
   ncGap_eq_top_iff.2 fun _ hx _ hy => by rw [(mem_plus.1 hx).2, (mem_plus.1 hy).2]
@@ -350,9 +329,6 @@ theorem entries_lift (o : Orientation) (c : ℚ) (t : ℕ) (S : SPar) :
   cases o <;> simp only [lift, liftPlus, liftMinus, entries_union, entries_plus] <;> congr 1 <;>
     simp only [entries, image_image] <;> rfl
 
-theorem liftMinus_eq_negate (c : ℚ) (t : ℕ) (S : SPar) : liftMinus c t S = negate (liftPlus (-c) t (negate S)) := by
-  ext x
-  simp only [mem_liftMinus, mem_negate, mem_liftPlus, neg_mem_block, neg_neg, neg_le_neg_iff, neg_lt_neg_iff]
 
 theorem lift_shift (o : Orientation) (c h : ℚ) (t : ℕ) (S : SPar) :
     lift o (c + h) t (shift h S) = shift h (lift o c t S) := by
@@ -361,12 +337,6 @@ theorem lift_shift (o : Orientation) (c h : ℚ) (t : ℕ) (S : SPar) :
     simp only [lift, mem_liftMinus, mem_shift, mem_liftPlus, sub_mem_block, le_sub_iff_add_le, sub_lt_iff_lt_add,
       sub_le_iff_le_add, lt_sub_iff_add_lt]
 
-theorem FarFrom.disjoint_block {c : ℚ} {t : ℕ} {S : SPar} (h : FarFrom c (((t : ℚ) + 1) / 2) S) :
-    Disjoint (entries S) (TPar.block c t) := by
-  refine disjoint_left.2 fun x hx hb => ?_
-  have := h x hx
-  have := abs_sub_le_of_mem_block hb
-  linarith
 
 theorem IsRegular.lift {S : SPar} (hS : IsRegular S) (o : Orientation) {c : ℚ} {t : ℕ}
     (h : Disjoint (entries S) (TPar.block c t)) : IsRegular (lift o c t S) := by
@@ -394,39 +364,8 @@ theorem InCoset.lift {c : ℚ} {t : ℕ} {S : SPar} (h : InCoset (c + ((t : ℚ)
   rw [entries_lift, mem_union] at hx
   exact hx.elim (h x) (inCoset_block c t x)
 
-theorem nMinus_change (P : ℚ → Prop) [DecidablePred P] (S : SPar) (E : Finset ℚ) :
-    nMinus ((S.image fun y => (y.1, if P y.1 then !y.2 else y.2)) ∪ plus E) =
-      (S.filter fun x => ¬ P x.1 ∧ x.2 = false).card + (S.filter fun x => P x.1 ∧ x.2 = true).card := by
-  rw [← card_union_of_disjoint (disjoint_filter.2 fun x _ h1 h2 => h1.1 h2.1), nMinus]
-  symm
-  refine card_bij (fun x _ => (x.1, false)) ?_ ?_ ?_
-  · rintro ⟨a, s⟩ hx
-    simp only [mem_union, mem_filter, mem_image_change (P := P)] at hx ⊢
-    rcases hx with ⟨h1, h2, rfl⟩ | ⟨h1, h2, rfl⟩
-    · exact ⟨Or.inl (Or.inl ⟨h2, h1⟩), trivial⟩
-    · exact ⟨Or.inl (Or.inr ⟨h2, h1⟩), trivial⟩
-  · rintro ⟨a, s⟩ hx ⟨a', s'⟩ hy e
-    obtain rfl : a = a' := congrArg Prod.fst e
-    simp only [mem_union, mem_filter] at hx hy
-    rcases hx with ⟨-, h2, rfl⟩ | ⟨-, h2, rfl⟩ <;> rcases hy with ⟨-, h3, rfl⟩ | ⟨-, h3, rfl⟩ <;>
-      first | rfl | contradiction
-  · rintro ⟨a, s⟩ hx
-    simp only [mem_union, mem_filter, mem_image_change (P := P), mem_plus] at hx ⊢
-    obtain ⟨h, rfl⟩ := hx
-    rcases h with (⟨h1, h2⟩ | ⟨h1, h2⟩) | ⟨-, h⟩
-    · exact ⟨(a, false), Or.inl ⟨h2, h1, rfl⟩, rfl⟩
-    · exact ⟨(a, true), Or.inr ⟨h2, h1, rfl⟩, rfl⟩
-    · exact absurd h (by simp)
 
-theorem nMinus_liftPlus (c : ℚ) (t : ℕ) (S : SPar) : nMinus (liftPlus c t S) =
-    (S.filter fun x => c ≤ x.1 ∧ x.2 = false).card + (S.filter fun x => x.1 < c ∧ x.2 = true).card := by
-  rw [liftPlus, nMinus_change (fun y => y < c)]
-  simp only [not_lt]
 
-theorem nMinus_liftMinus (c : ℚ) (t : ℕ) (S : SPar) : nMinus (liftMinus c t S) =
-    (S.filter fun x => x.1 ≤ c ∧ x.2 = false).card + (S.filter fun x => c < x.1 ∧ x.2 = true).card := by
-  rw [liftMinus, nMinus_change (fun y => c < y)]
-  simp only [not_lt]
 
 def ofIx {p q : ℕ} (lam : Ix p q → ℚ) : SPar := univ.image fun a => (lam a, a.isLeft)
 
@@ -442,28 +381,7 @@ theorem mem_ofIx_ofBlocks {p q : ℕ} {l₁ l₂ : List ℚ} (hp : l₁.length =
   · rintro ⟨i, rfl, rfl⟩; exact ⟨⟨i, i.2, by simp⟩, rfl⟩
   · rintro ⟨⟨i, hi, rfl⟩, rfl⟩; exact ⟨⟨i, hi⟩, by simp [hi], rfl⟩
 
-theorem liftPlus_lamA (t : ℕ) {al be ga de : List ℚ} (hp : ∀ e ∈ al ++ ga, 0 < e) (hn : ∀ e ∈ be ++ de, e < 0) :
-    liftPlus 0 t (ofIx (lamA al be ga de)) = ofIx (lamA' t al be ga de) := by
-  ext ⟨a, s⟩
-  have hb : a ∈ TPar.block 0 t ↔ a ∈ Formalism.BasicNotions.TH.block t := by
-    simp [mem_block, Formalism.BasicNotions.TH.block, eq_comm]
-  have hl : (Formalism.BasicNotions.TH.block t).length = t := by simp [Formalism.BasicNotions.TH.block]
-  simp only [List.mem_append] at hp hn
-  have h1 : a ∈ al → 0 < a := fun h => hp a (Or.inl h)
-  have h2 : a ∈ ga → 0 < a := fun h => hp a (Or.inr h)
-  have h3 : a ∈ be → a < 0 := fun h => hn a (Or.inl h)
-  have h4 : a ∈ de → a < 0 := fun h => hn a (Or.inr h)
-  rw [mem_liftPlus, lamA, lamA', mem_ofIx_ofBlocks (by simp) (by simp), mem_ofIx_ofBlocks (by simp) (by simp),
-    mem_ofIx_ofBlocks (by simp [hl]; omega) (by simp), hb]
-  simp only [List.mem_append]
-  cases s <;> simp <;> grind
 
-theorem gapGt_iff {p q : ℕ} (lam : Ix p q → ℚ) (h : ℚ) : GapGt lam (h : ℝ) ↔ (h : WithTop ℚ) < ncGap (ofIx lam) := by
-  rw [lt_ncGap_iff, GapGt]
-  simp only [ofIx, forall_mem_image, mem_univ, true_implies]
-  refine forall₂_congr fun a b => imp_congr ?_ ?_
-  · cases a <;> cases b <;> simp [sameBlock]
-  · rw [← Rat.cast_abs, Rat.cast_lt]
 
 def Adjacent (E : Finset ℚ) (x y : ℚ) : Prop := x ∈ E ∧ y ∈ E ∧ y < x ∧ ∀ z ∈ E, ¬ (y < z ∧ z < x)
 
@@ -708,24 +626,6 @@ theorem strictInterlace_iff {A B : Finset ℚ} : StrictInterlace A B ↔
 
 instance (A B : Finset ℚ) : Decidable (StrictInterlace A B) := decidable_of_iff _ strictInterlace_iff.symm
 
-theorem strictInterlace_iff_he {A B : Finset ℚ} : StrictInterlace A B ↔
-    HeInterlace (plus A) (plus B) ∧ A.Nonempty ∧ (∀ y ∈ B, ∃ x ∈ A, y < x) ∧ ∀ y ∈ B, ∃ x ∈ A, x < y := by
-  have hl : ∀ x ∈ A ∪ B, letter (plus A) (plus B) x = if x ∈ A then .plus else .circPlus := by
-    intro x hx
-    by_cases h : x ∈ A
-    · simp [letter, sign, h]
-    · simp [letter, sign, h, (mem_union.1 hx).resolve_left h]
-  have hq : ∀ x ∈ A ∪ B, ∀ y ∈ A ∪ B,
-      HePair (letter (plus A) (plus B) x) (letter (plus A) (plus B) y) ↔ (x ∈ A ↔ y ∉ A) := by
-    intro x hx y hy
-    rw [hl x hx, hl y hy]
-    by_cases h : x ∈ A <;> by_cases h' : y ∈ A <;> simp [h, h'] <;> decide
-  rw [strictInterlace_iff, heInterlace_iff, entries_plus, entries_plus]
-  constructor
-  · rintro ⟨h1, h2, h3, h4, h5⟩
-    exact ⟨⟨isRegular_plus _, isRegular_plus _, h1, fun x hx y hy a b => (hq x hx y hy).2 (h5 x hx y hy a b)⟩, h2, h3, h4⟩
-  · rintro ⟨⟨-, -, h1, h5⟩, h2, h3, h4⟩
-    exact ⟨h1, h2, h3, h4, fun x hx y hy a b => (hq x hx y hy).1 (h5 x hx y hy a b)⟩
 
 structure GridData where
 
@@ -838,11 +738,6 @@ theorem nearMid_of_floor (h : ∀ i ∈ Icc 1 G.m, G.cen i = ⌊G.mid i⌋) : G.
   have h2 := Int.lt_floor_add_one (G.mid i)
   rw [h i hi, abs_le]; constructor <;> linarith
 
-theorem nearMid_of_ceil (h : ∀ i ∈ Icc 1 G.m, G.cen i = ⌈G.mid i⌉ - 1) : G.NearMid := by
-  intro i hi
-  have h1 := Int.le_ceil (G.mid i)
-  have h2 := Int.ceil_lt_add_one (G.mid i)
-  rw [h i hi, abs_le]; push_cast; constructor <;> linarith
 
 variable {G}
 
@@ -886,8 +781,6 @@ variable (G)
 theorem entries_lam : entries G.lam = G.tops ∪ G.cloudHalf := by
   rw [lam, entries_union, entries_plus, entries, image_image]; rfl
 
-theorem entries_discrete_parameter : entries G.parD0 = G.cloud ∪ G.lows := by
-  rw [parD0, entries_union, entries_plus, entries, image_image]; rfl
 
 theorem entries_parD (i j : ℕ) : entries (G.parD i j) =
     G.cloud ∪ G.lows ∪ (Icc 1 j).biUnion G.blockM ∪ (Icc (G.m - i + 1) G.m).biUnion G.blockC := by
@@ -1025,35 +918,13 @@ def exGrid : GridData where
   v_anti := by intro i j _ _ _; omega
   b_mono := by intro i j _ _ _; omega
 
-theorem exGrid_lam : exGrid.lam =
-    {(53 / 2, true), (37 / 2, false), (21 / 2, true), (3 / 2, true), (1 / 2, true), (-1 / 2, true)} := by decide +kernel
 
-theorem example_discrete_parameter : exGrid.parD0 = {(2, true), (1, true), (0, true), (-1, true), (-7, false)} := by decide +kernel
 
-theorem exGrid_parD : exGrid.parD 1 1 =
-    plus {15, 14, 13, 2, 1, 0, -1, -3, -4, -5, -7} := by decide +kernel
 
-theorem exGrid_parPi : exGrid.parPi 1 = {(53 / 2, false), (37 / 2, true), (29 / 2, true), (27 / 2, true), (21 / 2, true),
-    (3 / 2, true), (1 / 2, true), (-1 / 2, true)} := by decide +kernel
 
-theorem exGrid_signature : signature exGrid.lam = (5, 1) ∧ signature exGrid.parD0 = (4, 1) ∧
-    ncGap exGrid.lam = ((8 : ℚ) : WithTop ℚ) ∧ ncGap exGrid.parD0 = ((6 : ℚ) : WithTop ℚ) ∧ exGrid.NearMid := by
-  decide +kernel
 
-theorem exGrid_word : word exGrid.lam exGrid.parD0 =
-    [.plus, .minus, .plus, .circPlus, .plus, .circPlus, .plus, .circPlus, .plus, .circPlus, .circMinus] := by
-  rw [word_eq (L := [53 / 2, 37 / 2, 21 / 2, 2, 3 / 2, 1, 1 / 2, 0, -1 / 2, -1, -7]) (by decide +kernel)
-    (by decide +kernel)]
-  decide +kernel
 
-theorem exGrid_interlace : HeInterlace exGrid.lam exGrid.parD0 ∧
-    StrictInterlace (exGrid.weightX 2) (entries (exGrid.parD 2 2)) ∧
-    ¬ StrictInterlace (exGrid.weightX 1) (entries (exGrid.parD 2 2)) := by decide +kernel
 
-theorem exGrid_lift : exGrid.parD 1 0 = liftMinus 14 3 (exGrid.parD 0 0) ∧
-    exGrid.parD 0 1 = liftPlus (-4) 3 (exGrid.parD 0 0) ∧ exGrid.parPi 1 = liftMinus 14 2 (exGrid.parPi 0) ∧
-    exGrid.parD 1 0 ≠ liftPlus 14 3 (exGrid.parD 0 0) ∧ exGrid.parD 0 1 ≠ liftMinus (-4) 3 (exGrid.parD 0 0) := by
-  decide +kernel
 
 example : HeInterlace {(5, true), (3, false), (1, false)} {(5 / 2, false), (1 / 2, false)} ∧
     ¬ HeInterlace {(5, true), (3, false), (1, false)} {(5 / 2, false), (3 / 2, false)} := by decide +kernel

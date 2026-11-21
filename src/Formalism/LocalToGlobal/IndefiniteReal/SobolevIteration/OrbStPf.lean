@@ -122,17 +122,6 @@ theorem orbit_eq (θ : InfFam D) (M : DSModel V S) (J : Set (GA D V)) (χ : GA D
     | (refine Eq.trans ?_ (congrFun h x).symm; rfl)
     | (convert (congrFun h x).symm using 1)
 
-lemma sum_isLittleO {ι F : Type*} [NormedAddCommGroup F] (L : List ι) (g : ι → ℝ → F)
-    (h : ∀ l ∈ L, g l =o[𝓝 0] (fun t : ℝ => t - 0)) :
-    (fun t => (L.map fun l => ‖g l t‖).sum) =o[𝓝 0] (fun t : ℝ => t - 0) := by
-
-  induction L with
-  | nil =>
-    simp only [List.map_nil, List.sum_nil]
-    exact isLittleO_zero _ _
-  | cons a L ih =>
-    simp only [List.map_cons, List.sum_cons]
-    exact ((h a (by simp)).norm_left).add (ih fun l hl => h l (by simp [hl]))
 
 end Formalism.IndefR.Tow.OrbStPf
 
@@ -142,62 +131,6 @@ open OrbStPf
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem orbitDerMult_holds (D : D7) : OrbitDerMult D := by
-  classical
-  intro θ _ V Ss M J χ T hT τ X hX v w hd x
-  have hU1 : (1 : Matrix (Fin V.rank) (Fin V.rank) ℂ) ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ) := by
-    change (1 : Matrix (Fin V.rank) (Fin V.rank) ℂ)ᴴ * gramAt D V τ * 1 = gramAt D V τ
-    simp
-  have hUm : ∀ a ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∀ b ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ),
-      a * b ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ) := fun a ha b hb => uh_mul _ a b ha hb
-  have hρ : ∀ a ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∀ b ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ),
-      M.rep τ (a * b) = (M.rep τ a).comp (M.rep τ b) := fun a ha b hb => rep_mul M τ a b ha hb
-  have hexp : ∀ Y ∈ lieAt V τ, ∀ t : ℝ, NormedSpace.exp (t • Y) ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ) :=
-    fun Y hY t => exp_mem_UH M τ Y hY t
-  have hρ1 : M.rep τ 1 = 1 := rep_one M τ
-  have hsm : ∀ a, a ∈ M.sm τ ↔ SmoothVec (lieAt V τ) (M.rep τ) a := fun a => by
-    unfold DSModel.sm; exact mem_span_smoothVec
-  have hu : SmoothVec (lieAt V τ) (M.rep τ) (v τ) := (hsm _).1 (v τ).2
-  have hw : SmoothVec (lieAt V τ) (M.rep τ) (w : M.H τ) := (hsm _).1 w.2
-  obtain ⟨ℓ, hℓS, hℓ⟩ := hT.cont τ v x
-  obtain ⟨SS, C, hSL, hC⟩ := hℓS
-  have hut : ∀ t : ℝ, SmoothVec (lieAt V τ) (M.rep τ) (M.rep τ (NormedSpace.exp (t • X)) (v τ)) :=
-    fun t => smoothVec_rep_exp hU1 hUm hρ hexp hX t hu
-  have hf : ∀ t : ℝ, T v (x * oneP θ V τ X t) = ℓ (M.rep τ (NormedSpace.exp (t • X)) (v τ)) := by
-    intro t
-    have hs := (hsm _).2 (hut t)
-    rw [orbit_eq θ M J χ T hT τ X hX v t hs x]
-    exact (hℓ ⟨_, hs⟩).symm
-  have hut0 : M.rep τ (NormedSpace.exp ((0 : ℝ) • X)) (v τ) = v τ := by
-    simp [hρ1]
-  let Dt : ℝ → M.H τ := fun t =>
-    M.rep τ (NormedSpace.exp (t • X)) (v τ) + (-1 : ℝ) • (v τ : M.H τ) + (-t) • (w : M.H τ)
-  have hDs : ∀ t, SmoothVec (lieAt V τ) (M.rep τ) (Dt t) := fun t =>
-    smoothVec_add (smoothVec_add (hut t) (smoothVec_rsmul _ hu)) (smoothVec_rsmul _ hw)
-  have hg : ∀ l ∈ SS, (fun t : ℝ => l.foldr (dRep (M.rep τ)) (Dt t)) =o[𝓝 0] (fun t : ℝ => t - 0) := by
-    intro l hl
-    have hL := hSL l hl
-    have hder := word_deriv hU1 hUm hρ hexp hρ1 l hL hX hu hw hd
-    refine (hasDerivAt_iff_isLittleO.1 hder).congr_left (fun t => ?_)
-    simp only [Dt]
-    rw [word_lin hU1 hUm hρ hexp hρ1 l hL hX (smoothVec_add (hut t) (smoothVec_rsmul _ hu)) hw,
-      word_lin hU1 hUm hρ hexp hρ1 l hL hX (hut t) hu, hut0]
-    simp only [neg_smul, one_smul, sub_eq_add_neg, neg_zero, add_zero]
-  have hbig : (fun t => ℓ (Dt t)) =O[𝓝 0]
-      (fun t => (SS.map fun l => ‖l.foldr (dRep (M.rep τ)) (Dt t)‖).sum) := by
-    refine IsBigO.of_bound |C| (Filter.Eventually.of_forall fun t => ?_)
-    have h1 := hC (Dt t) (hDs t)
-    have hnn : 0 ≤ (SS.map fun l => ‖l.foldr (dRep (M.rep τ)) (Dt t)‖).sum :=
-      List.sum_nonneg (fun a ha => by obtain ⟨l, -, rfl⟩ := List.mem_map.1 ha; exact norm_nonneg _)
-    rw [Real.norm_of_nonneg hnn]
-    exact h1.trans (mul_le_mul_of_nonneg_right (le_abs_self C) hnn)
-  have ho := hbig.trans_isLittleO (sum_isLittleO SS _ hg)
-  rw [← hℓ w, hasDerivAt_iff_isLittleO]
-  refine ho.congr_left (fun t => ?_)
-  rw [hf t, hf 0, hut0]
-  simp only [Dt, map_add, LinearMap.map_smul_of_tower, Complex.real_smul, sub_zero]
-  push_cast
-  ring
 
 end Formalism.IndefR.Tow
 

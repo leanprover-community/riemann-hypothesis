@@ -3,6 +3,5 @@ import Formalism.FilteredPoleLength.LocalDescentLevels.LeadingTermLength
 
 namespace Formalism.LatticeBaseChangeAlt
 
-theorem localStepClosed : LocalStepClosed := localStepClosed_of leadingTermLength
 
 end Formalism.LatticeBaseChangeAlt

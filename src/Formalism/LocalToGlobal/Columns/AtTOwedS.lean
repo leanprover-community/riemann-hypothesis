@@ -282,36 +282,7 @@ theorem VVTc_eq (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) (w : HeightOneSpectrum (
     rintro ⟨τ, -, e⟩
     exact h (seenC_of_one hPr (τ := τ) (by rw [e]; exact P.2))
 
-theorem expTc_eq (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) :
-    expTc W u w = (R.m : ℤ) * ∑ P ∈ VVTc W u w, W.bTop u (tauOfC w P.1) := by
-  classical
-  unfold expTc
-  congr 1
-  have hmem : ∀ τ ∈ topsP W u w, pullW τ w ∈ Pr.vT u := fun τ hτ => (Finset.mem_filter.1 hτ).2
-  refine Finset.sum_bij (fun τ hτ => (⟨pullW τ w, hmem τ hτ⟩ : {P // P ∈ Pr.vT u})) ?_ ?_ ?_ ?_
-  · intro τ hτ
-    exact (mem_VVTc W u w _).2 ⟨τ, hτ, rfl⟩
-  · intro τ hτ τ' _ e
-    exact pullW_injective hX hPr u w ((seenC_of_one hPr (hmem τ hτ)).T_mem hX hPr) (congrArg Subtype.val e)
-  · intro P hP
-    obtain ⟨τ, hτ, e⟩ := (mem_VVTc W u w P).1 hP
-    exact ⟨τ, hτ, Subtype.ext e⟩
-  · intro τ hτ
-    rw [tauOfC_pullW hX hPr u w τ (hmem τ hτ)]
 
-theorem card_VVTc (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) :
-    (VVTc W u w).card = (topsP W u w).card := by
-  classical
-  have hmem : ∀ τ ∈ topsP W u w, pullW τ w ∈ Pr.vT u := fun τ hτ => (Finset.mem_filter.1 hτ).2
-  symm
-  refine Finset.card_bij (fun τ hτ => (⟨pullW τ w, hmem τ hτ⟩ : {P // P ∈ Pr.vT u})) ?_ ?_ ?_
-  · intro τ hτ
-    exact (mem_VVTc W u w _).2 ⟨τ, hτ, rfl⟩
-  · intro τ hτ τ' _ e
-    exact pullW_injective hX hPr u w ((seenC_of_one hPr (hmem τ hτ)).T_mem hX hPr) (congrArg Subtype.val e)
-  · intro P hP
-    obtain ⟨τ, hτ, e⟩ := (mem_VVTc W u w P).1 hP
-    exact ⟨τ, hτ, Subtype.ext e⟩
 
 end Seen
 
@@ -319,71 +290,8 @@ section Exist
 
 variable {X : Fields} {Pr : Primes X}
 
-theorem owedS_exists_prime (τ : X.Tau) {x : 𝓞 X.E} (hx0 : x ≠ 0) (hx : ¬ IsUnit x) :
-    ∃ w : HeightOneSpectrum (𝓞 X.K), X.embO τ x ∈ w.asIdeal := by
-  have hx0' : (x : X.E) ≠ 0 := by
-    intro h
-    exact hx0 (RingOfIntegers.ext h)
-  have hnu : ¬ IsUnit (X.embO τ x) := by
-    intro hu
-    obtain ⟨y, hy⟩ := hu.exists_right_inv
-    have hy' : X.emb τ (x : X.E) * (y : X.K) = 1 := congrArg (fun z : 𝓞 X.K => (z : X.K)) hy
-    have e : X.emb τ ((x : X.E)⁻¹) = (y : X.K) := by
-      rw [map_inv₀]
-      exact inv_eq_of_mul_eq_one_right hy'
-    have hint : IsIntegral ℤ ((x : X.E)⁻¹) := by
-      have h1 : IsIntegral ℤ ((X.emb τ).toIntAlgHom ((x : X.E)⁻¹)) := by
-        show IsIntegral ℤ (X.emb τ ((x : X.E)⁻¹))
-        rw [e]
-        exact y.isIntegral_coe
-      exact (isIntegral_algHom_iff (X.emb τ).toIntAlgHom (X.emb τ).injective).1 h1
-    apply hx
-    refine IsUnit.of_mul_eq_one (IsIntegralClosure.mk' (𝓞 X.E) _ hint) ?_
-    apply RingOfIntegers.ext
-    show (x : X.E) * algebraMap (𝓞 X.E) X.E (IsIntegralClosure.mk' (𝓞 X.E) _ hint) = 1
-    rw [IsIntegralClosure.algebraMap_mk', mul_inv_cancel₀ hx0']
-  obtain ⟨M, hM, hle⟩ := Ideal.exists_le_maximal (Ideal.span {X.embO τ x})
-    (fun h => hnu (Ideal.span_singleton_eq_top.1 h))
-  have hmem : X.embO τ x ∈ M := hle (Ideal.mem_span_singleton_self _)
-  refine ⟨⟨M, hM.isPrime, ?_⟩, hmem⟩
-  intro hb
-  rw [hb, Ideal.mem_bot] at hmem
-  apply hx0'
-  have : X.emb τ (x : X.E) = 0 := congrArg (fun z : 𝓞 X.K => (z : X.K)) hmem
-  exact (map_eq_zero (X.emb τ)).1 this
 
-theorem exists_seenC (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) : ∃ w : HeightOneSpectrum (𝓞 X.K), seenC Pr u w := by
-  obtain ⟨τ⟩ := hX.nonempty_Tau
-  obtain ⟨P, hP⟩ : (Pr.vT u).Nonempty := by
-    rw [← Finset.card_pos, hPr.vT_card u]
-    exact hX.f_pos
-  have hmem : Pr.piT u ∈ P.asIdeal := (mem_divs (hPr.piT_ne_zero u) P).1 hP
-  obtain ⟨w, hw⟩ := owedS_exists_prime τ (hPr.piT_ne_zero u)
-    (fun hu => P.isPrime.ne_top (Ideal.eq_top_of_isUnit_mem _ hmem hu))
-  exact ⟨w, seenC_of_one hPr ((pullW_mem_vT hPr u τ w).2 hw)⟩
 
-theorem exists_seenBarC (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) : ∃ w : HeightOneSpectrum (𝓞 X.K), seenBarC Pr u w := by
-  obtain ⟨τ⟩ := hX.nonempty_Tau
-  obtain ⟨P, hP⟩ : (Pr.vT u).Nonempty := by
-    rw [← Finset.card_pos, hPr.vT_card u]
-    exact hX.f_pos
-  have hmem : Pr.piT u ∈ P.asIdeal := (mem_divs (hPr.piT_ne_zero u) P).1 hP
-  have hmem' : X.conjO (Pr.piT u) ∈ (conjPrime₂ P).asIdeal := by
-    rw [mem_conjP]
-    show cO X.E (cO X.E (Pr.piT u)) ∈ P.asIdeal
-    rw [cO_cO]
-    exact hmem
-  have h0 : X.conjO (Pr.piT u) ≠ 0 := by
-    intro h
-    apply hPr.piT_ne_zero u
-    rw [← cO_cO (Pr.piT u)]
-    show cO X.E (X.conjO (Pr.piT u)) = 0
-    rw [h, map_zero]
-  obtain ⟨w, hw⟩ := owedS_exists_prime τ h0
-    (fun hu => (conjPrime₂ P).isPrime.ne_top (Ideal.eq_top_of_isUnit_mem _ hmem' hu))
-  refine ⟨w, fun τ' => ?_⟩
-  rw [embO_of_Kq (conjO_mem_Kq hX (hPr.piT_Kq u)) τ' τ]
-  exact hw
 
 end Exist
 

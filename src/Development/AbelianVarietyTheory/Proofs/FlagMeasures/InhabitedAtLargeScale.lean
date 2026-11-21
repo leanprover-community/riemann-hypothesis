@@ -161,21 +161,6 @@ theorem rankNums_of_rankVal (eps CD : ℝ) (h0 : 0 < eps) (h1 : eps < 1 / 52) (h
     have a2 : x ^ (eps / 10) ≤ x ^ (eps / 2) := mono (by linarith)
     nlinarith
 
-theorem exists_rankNums (eps CD : ℝ) (h0 : 0 < eps) (h1 : eps < 1 / 52) (hCD : 0 ≤ CD) :
-    ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∃ m e k Del : ℕ, Even m ∧ Even k ∧
-      RankNums x eps CD m ((2 * 2 ^ e : ℕ) : ℝ) k 1 Del ∧
-      ∀ lrd, Real.log 2 ≤ lrd → lrd ≤ x ^ (eps / 2) → RankNums x eps CD m ((2 * 2 ^ e : ℕ) : ℝ) k lrd Del := by
-  obtain ⟨x1, h⟩ := rankNums_of_rankVal eps CD h0 h1 hCD
-  obtain ⟨x2, hR⟩ := exists_ranks_cyclic_frame eps h0 h1
-  refine ⟨max (max x1 x2) 2, fun x hx => ?_⟩
-  have hx2 : 2 ≤ x := le_of_max_le_right hx
-  let s : Scale := ⟨x, eps, by linarith, h0, h1, 1, le_rfl⟩
-  obtain ⟨R, hV, -, hφ⟩ := hR s rfl (le_of_max_le_right (le_of_max_le_left hx))
-  obtain ⟨-, -, hn⟩ := h s R rfl (le_of_max_le_left (le_of_max_le_left hx)) hV
-  rw [show (R.f : ℝ) = ((2 * 2 ^ R.e : ℕ) : ℝ) by rw [← (UpperTheory.Host.cyclic_two_power_frame_facts hφ).2.2]; rfl] at hn
-  refine ⟨R.m, R.e, R.k, delOf x eps CD R, R.m_even, R.k_even, hn 1 ?_ ?_, hn⟩
-  · have := Real.log_two_lt_d9; linarith
-  · exact Real.one_le_rpow (by show 1 ≤ x; linarith) (by linarith)
 
 theorem rd_bounds {R : Ranks} (H : Host R) : 2 ≤ H.rdE ∧ H.rdE ≤ (H.QS : ℝ) * H.q * H.d :=
   ⟨UpperTheory.Ram.Rd.two_le_rdE H, UpperTheory.Ram.Rd.rdE_le_cond H⟩
@@ -486,16 +471,6 @@ theorem exists_record (eps CD CG : ℝ) (h0 : 0 < eps) (h1 : eps < 1 / 52) (hCD 
   · show _ ≤ H.Lw
     rw [lw, Lwv]; omega
 
-theorem inhabited_at_large_scale (eps CD CG : ℝ) (h0 : 0 < eps) (h1 : eps < 1 / 52) (hCD : 0 ≤ CD) (hCG : 0 < CG) :
-    (∃ x0 : ℝ, ∀ x, x0 ≤ x → ∃ (m e k : ℕ) (lrd Del : ℝ), Even m ∧ Even k ∧
-      RankNums x eps CD m ((2 * 2 ^ e : ℕ) : ℝ) k lrd Del) ∧
-    ∃ x0 : ℝ, ∀ x, x0 ≤ x → 1 < x ∧ ∃ (D : D7) (eta : ℝ), D.host.TT.Nonempty ∧ (∃ τ, Top D τ) ∧ (∃ τ, ¬ Top D τ) ∧
-      Glob D x eps CD 9 1 ∧ OneScale D x eps eta ∧ Nodes D x eps ∧ Labels D x eps CG := by
-  refine ⟨?_, exists_record eps CD CG h0 h1 hCD hCG⟩
-  obtain ⟨x0, h⟩ := exists_rankNums eps CD h0 h1 hCD
-  refine ⟨x0, fun x hx => ?_⟩
-  obtain ⟨m, e, k, Del, a1, a2, a3, -⟩ := h x hx
-  exact ⟨m, e, k, 1, Del, a1, a2, a3⟩
 
 end GlobalTheory.Diag.PG.Inhab
 

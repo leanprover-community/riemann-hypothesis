@@ -62,29 +62,13 @@ theorem data (D : D7) (A V : HSp D) : ∃ (ψ : AddChar (AF D.host.F) ℂ) (χ :
 theorem ranks (D : D7) (n m : ℕ) : ∃ A V : HSp D, A.rank = n ∧ V.rank = m ∧ IsAniso V :=
   ⟨GlobalTheory.OrthSumSp.posSp D n, GlobalTheory.OrthSumSp.posSp D m, rfl, rfl, GlobalTheory.RegSW.WeakModel.isAniso_pos D m⟩
 
-theorem height_unique {H H' : G D n → ℝ≥0} (h : IsHeight H) (h' : IsHeight H') : H = H' := funext fun g => by
-  obtain ⟨p, hp, k, hk, rfl⟩ := GlobalTheory.StdUnn.Iwasawa.exists_mul D n g
-  obtain ⟨a, ha⟩ := LeftInvSect.exists_blkA hp
-  rw [h p hp a ha k hk, h' p hp a ha k hk]
 
 theorem leftInv {V : HSp D} {ψ χ θ μ} {ω : G D n →* Module.End ℂ (schwartzA θ V.rank n)} (hχ : IsHeckeChar D χ)
     (hω : IsWeilSch ψ χ θ V μ ω) {H : G D n → ℝ≥0} (hH : IsHeight H) (Φ : schwartzA θ V.rank n) (z : ℂ) :
     LeftInv (P D n ⊓ GF D n) (sect ω H Φ z) :=
   LeftInvSect.leftInv_sect D n (GlobalTheory.StdUnn.Iwasawa.exists_mul D n) V ψ χ θ μ ω hχ hω H hH Φ z
 
-theorem conclusion_zero {V : HSp D} {θ} (ω : G D n →* Module.End ℂ (schwartzA θ V.rank n)) (H : G D n → ℝ≥0)
-    (ν : Measure (GA D V)) (c : ℂ) (g : G D n) :
-    HolValueAt (fun z => Eis.cosetSum (P D n) (GF D n) (sect ω H 0 z) g) (s0 V n) (c * thetaInt ω ν 0 g) := by
-  have h1 : (fun z => Eis.cosetSum (P D n) (GF D n) (sect ω H 0 z) g) = fun _ => 0 := by
-    funext z; simp [Eis.cosetSum, Eis.term, sect]
-  have h2 : thetaInt ω ν 0 g = 0 := by
-    simp [thetaInt, theta, AutomorphicL2Unitary.descend]
-  rw [h1, h2, mul_zero]
-  exact holValueAt_const 0 _
 
-theorem const_unique {h : ℂ → ℂ} {s I : ℂ} (h1 : HolValueAt h s (1 * I)) (h2 : HolValueAt h s (2 * I)) : I = 0 := by
-  have := h1.unique h2
-  linear_combination -this
 
 end GlobalTheory.AnisoStdModel
 

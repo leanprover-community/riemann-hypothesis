@@ -72,52 +72,8 @@ def NormNe : Prop :=
     vNormSq ε (lowK ε (μ + Pi.single s 1)) ≠ vNormSq ε (lowK ε (μ + Pi.single s' 1)) ∧
     vNormSq ε (lowK ε (μ - Pi.single s 1)) ≠ vNormSq ε (lowK ε (μ - Pi.single s' 1))
 
-theorem fam_of (hE : PI.DSExist) {n : ℕ} (ε : Fin n → Bool) (ν : Fin n → Fin n → ℝ) :
-    ∃ F : Fam n, ∀ s, IsHCParam (ν s) → IsDS ε (ν s) (F.σs s) := by
-  classical
-  have key : ∀ s, ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H) (_ : CompleteSpace H)
-      (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsHCParam (ν s) → IsDS ε (ν s) σ := by
-    intro s
-    by_cases h : IsHCParam (ν s)
-    · obtain ⟨H, i1, i2, σ, hσ⟩ := hE n ε (ν s) h
-      exact ⟨H, i1, i2, hσ.1, σ, fun _ => hσ⟩
-    · exact ⟨ℂ, inferInstance, inferInstance, inferInstance, fun _ => 0, fun h' => absurd h' h⟩
-  choose Hs i1 i2 i3 σs hσ using key
-  exact ⟨{ Hs := Hs, nH := i1, iH := i2, cH := i3, σs := σs }, hσ⟩
 
-theorem zuck_of (hE : PI.DSExist) (hI : Ineq) (hN : NormNe) (hT : ToSum) (hO : OfSum) : Zuck := by
-  classical
-  intro n ε μ H _ _ _ σ hμ hσ hg
-  obtain ⟨F, hF⟩ := fam_of hE ε (fun s => μ + Pi.single s 1)
-  refine ⟨{ Sm := Finset.univ.filter fun s => IsHCParam (μ + Pi.single s 1)
-            Hs := F.Hs, σs := F.σs
-            ds := fun s hs => ⟨(Finset.mem_filter.1 hs).2, hF s (Finset.mem_filter.1 hs).2⟩
-            inequiv := fun s hs s' hs' hne =>
-              hI n ε (μ + Pi.single s 1) (μ + Pi.single s' 1) (hN n ε μ hμ s s' hne).1 (F.Hs s) (F.σs s) (hF s (Finset.mem_filter.1 hs).2) (F.Hs s') (F.σs s')
-                (hF s' (Finset.mem_filter.1 hs').2)
-            toSum := fun v w x y hv hw => by
-              obtain ⟨ι, i1, sI, vI, wI, h1, h2⟩ := hT n ε μ H σ hμ hσ hg F hF v w x y hv hw
-              exact ⟨ι, i1, sI, vI, wI, fun i => ⟨Finset.mem_filter.2 ⟨Finset.mem_univ _, (h1 i).1⟩, (h1 i).2⟩, h2⟩
-            ofSum := fun s hs v w hv hw =>
-              hO n ε μ H σ hμ hσ hg s (Finset.mem_filter.1 hs).2 (F.Hs s) (F.σs s) (hF s (Finset.mem_filter.1 hs).2) v w hv hw }, fun s => ?_⟩
-  simp
 
-theorem zuckDual_of (hE : PI.DSExist) (hI : Ineq) (hN : NormNe) (hT : ToSumd) (hO : OfSumd) : ZuckDual := by
-  classical
-  intro n ε μ H _ _ _ σ hμ hσ hg
-  obtain ⟨F, hF⟩ := fam_of hE ε (fun s => μ - Pi.single s 1)
-  refine ⟨{ Sm := Finset.univ.filter fun s => IsHCParam (μ - Pi.single s 1)
-            Hs := F.Hs, σs := F.σs
-            ds := fun s hs => ⟨(Finset.mem_filter.1 hs).2, hF s (Finset.mem_filter.1 hs).2⟩
-            inequiv := fun s hs s' hs' hne =>
-              hI n ε (μ - Pi.single s 1) (μ - Pi.single s' 1) (hN n ε μ hμ s s' hne).2 (F.Hs s) (F.σs s) (hF s (Finset.mem_filter.1 hs).2) (F.Hs s') (F.σs s')
-                (hF s' (Finset.mem_filter.1 hs').2)
-            toSum := fun v w x y hv hw => by
-              obtain ⟨ι, i1, sI, vI, wI, h1, h2⟩ := hT n ε μ H σ hμ hσ hg F hF v w x y hv hw
-              exact ⟨ι, i1, sI, vI, wI, fun i => ⟨Finset.mem_filter.2 ⟨Finset.mem_univ _, (h1 i).1⟩, (h1 i).2⟩, h2⟩
-            ofSum := fun s hs v w hv hw =>
-              hO n ε μ H σ hμ hσ hg s (Finset.mem_filter.1 hs).2 (F.Hs s) (F.σs s) (hF s (Finset.mem_filter.1 hs).2) v w hv hw }, fun s => ?_⟩
-  simp
 
 end PI.ZuckTensorWork
 end

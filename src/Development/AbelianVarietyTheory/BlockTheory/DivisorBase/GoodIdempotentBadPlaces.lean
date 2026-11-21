@@ -116,17 +116,8 @@ def heckePart (c : EigSys D) : Submodule ℂ (MMap M) :=
 def occurring : Set (EigSys D) :=
   IxFull θ M (levP0 pb ψ j β) (chiP0 pb ψ j β) (badPl D) (eW h om ψ j β)
 
-theorem heckePart_le (c : EigSys D) : heckePart θ h om ψ j β M c ≤ goodForms θ h om ψ j β M := inf_le_right
 
-theorem mem_heckePart (c : EigSys D) (T : MMap M) :
-    T ∈ heckePart θ h om ψ j β M c ↔ T ∈ goodForms θ h om ψ j β M ∧
-      ∀ P d R, Hecke₂ (D.sp.W j) (levP0 pb ψ j β) (chiP0 pb ψ j β) (badPl D) P d R →
-        ∀ v, heckeLin (D.sp.W j) R (T v) = c P d • T v := by
-  constructor
-  · exact fun hT => ⟨hT.2, ((mem_partFull θ M _ _ _ c T).1 hT.1).2⟩
-  · exact fun hT => ⟨(mem_partFull θ M _ _ _ c T).2 ⟨hT.1.1, hT.2⟩, hT.1⟩
 
-theorem heckePart_ne_bot {c : EigSys D} (hc : c ∈ occurring θ h om ψ j β M) : heckePart θ h om ψ j β M c ≠ ⊥ := hc.2
 
 def IsOrthSum (I : Set (EigSys D)) : Prop :=
   I.Finite ∧

@@ -86,7 +86,6 @@ theorem hol_single (τ : E →+* ℂ) (L : Lie E a →ₗ[ℝ] N) (i j : Fin a) 
 
 end Hol
 
-theorem eL_dmat (Ξ : AlgRep E a) (τ : E →+* ℂ) : eL Ξ.dmat τ = WeylC.eOf Ξ.mat τ := rfl
 
 theorem dualE_eq (Ξ : AlgRep E a) (τ : E →+* ℂ) (i j : Fin a) :
     GlobalTheory.WignerGL.dualE Ξ τ i j = -(eL Ξ.dmat τ i j)ᵀ := by
@@ -175,7 +174,6 @@ theorem lieA_apply (π : CuspSub E a) (Ξ : AlgRep E a) (X : Lie E a) : lieA π 
 theorem lieB_apply (π : CuspSub E a) (Ξ : AlgRep E a) (X : Lie E a) :
     lieB π Ξ X = (Matrix.toLin' (Ξ.dmat X)).lTensor _ := rfl
 
-theorem tensorLie_eq (π : CuspSub E a) (Ξ : AlgRep E a) : tensorLie π Ξ = lieA π Ξ + lieB π Ξ := rfl
 
 theorem lieA_commute (π : CuspSub E a) (Ξ : AlgRep E a) (X Y : Lie E a) : Commute (lieA π Ξ X) (lieB π Ξ Y) :=
   TensorProduct.ext' fun _ _ => rfl
@@ -187,6 +185,5 @@ def eEnd (Ξ : AlgRep E a) (τ : E →+* ℂ) (i j : Fin a) : Module.End ℂ (Fi
 def IsAlgIso (Ξ Ξ' : AlgRep E a) (T : (Fin Ξ.d → ℂ) ≃ₗ[ℂ] (Fin Ξ'.d → ℂ)) : Prop :=
   (∀ y v, T (Ξ.mat y *ᵥ v) = Ξ'.mat y *ᵥ T v) ∧ ∀ X v, T (Ξ.dmat X *ᵥ v) = Ξ'.dmat X *ᵥ T v
 
-theorem isAlgIso_refl (Ξ : AlgRep E a) : IsAlgIso Ξ Ξ (LinearEquiv.refl _ _) := ⟨fun _ _ => rfl, fun _ _ => rfl⟩
 
 end UpperTheory.V.AlgRepEndIrreducible

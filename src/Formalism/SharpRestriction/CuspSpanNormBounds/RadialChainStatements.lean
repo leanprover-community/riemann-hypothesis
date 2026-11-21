@@ -17,11 +17,6 @@ export Formalism.MainNotions.S.UnitaryLevelOperators (Jop scalMat mulAfter Op4 o
   IsPosDefZ zpt fhat headEl headLt levOf haarOf lenI mid3 wnormSq Msq mm minv mdet psiC psiLow psiUp lowOf upOf
   sdScale muLow muUp stabU muStab IsOrbMeas OmG gTC gZW fNorm)
 
-theorem levOf_J {k0 r : ℕ} (L : LocBessel (k0 + 1) r) (μsec : ℂ → Matrix (Fin (k0 + 1 + 1)) (Fin (k0 + 1 + 1)) ℂ)
-    (hc : L.c = cStd) (F : (levOf L μsec).GF) : L.J F = lJ (levOf L μsec) (haarOf L μsec) F := by
-  funext g
-  simp only [LocBessel.J, lJ, hc]
-  rfl
 
 def adm1 (_D : Formalism.BasicNotions.D7) (CB : ℝ) : Prop := LemmaB CB
 

@@ -244,10 +244,6 @@ theorem mem_natural_sections_of_degree_zero (F : Fin (flatAtlas 1).n → (Fin 1 
   refine lt_of_le_of_lt (le_of_eq (lintegral_congr fun y => ?_)) (lintegral_gaussian_complex_line_lt_top (2 * ‖c‖ ^ 2))
   simp [exOne]
 
-theorem exSJac (c : Fin (flatAtlas 1).n) (x : Fin 1 → ℂ) :
-    sJac (flatAtlas 1) (fun i => lin exE (exC i)) c x = 1 := by
-  simp only [sJac, sJacMap, exSMap, fderiv_id]
-  rw [ContinuousLinearMap.coe_id, LinearMap.det_id]
 
 abbrev exSpace : SpaceDatum exEmb 2 where
   β := 1
@@ -276,49 +272,8 @@ abbrev exSpace : SpaceDatum exEmb 2 where
     rw [Real.sq_sqrt ENNReal.toReal_nonneg, one_pow, ENNReal.ofReal_one, one_mul]
     exact ENNReal.ofReal_toReal_le
 
-theorem exResOnto : ResOnto exZ exSpace := by
-  intro g
-  refine ⟨g 0 • exOne, ?_, fun x hx => ?_⟩
-  · show g 0 • exOne ∈ exV 0
-    simp only [exV, ↓reduceIte]
-    exact Submodule.smul_mem _ _ (Submodule.subset_span rfl)
-  · have hx' : x ∈ zeroSet (flatAtlas 1) (fun i => lin exE (exC i)) := hx
-    rw [exZero, mem_singleton_iff] at hx'
-    subst hx'
-    show (g 0 • exOne) _ 0 / sJac (flatAtlas 1) (fun i => lin exE (exC i)) _ 0 = g 0
-    rw [exSJac]
-    simp [exOne]
 
-theorem inhabited_at_embedding :
-    ∃ (X : EmbDatum 1) (Z : ZeroDatum X) (Y : SpaceDatum X 2), ResOnto Z Y ∧ Z.S.Nonempty :=
-  ⟨exEmb, exZ, exSpace, exResOnto, ⟨0, by
-    change (0 : Fin 1 → ℂ) ∈ zeroSet (flatAtlas 1) (fun i => lin exE (exC i))
-    rw [exZero]; rfl⟩⟩
 
-theorem hormander_hyp :
-    IsAlgCover (flatAtlas 1) ∧
-    (∀ j, (flatAtlas 1).SmoothOn ((flatAtlas 1).chart j).source (exPhiA.φ j)) ∧
-    (∀ j k, ∀ x ∈ ((flatAtlas 1).chart j).source ∩ ((flatAtlas 1).chart k).source,
-      exPhiA.φ j x = exPhiA.φ k x + Real.log (‖(trivLB (flatAtlas 1)).g j k x‖ ^ 2)) ∧
-    (∀ j, ∀ y ∈ ((flatAtlas 1).chart j).target, ∀ w : Fin 1 → ℂ,
-      0 ≤ levi (exPhiA.φ j ∘ ((flatAtlas 1).chart j).symm) y w) ∧
-    (∀ j, ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (exOne j ∘ ((flatAtlas 1).chart j).symm)
-      ((flatAtlas 1).chart j).target) ∧
-    (∀ j k, ∀ x ∈ ((flatAtlas 1).chart j).source ∩ ((flatAtlas 1).chart k).source,
-      exOne j x = jac (flatAtlas 1) j k x * (trivLB (flatAtlas 1)).g j k x * exOne k x) ∧
-    (∀ j, ∀ x ∉ ((flatAtlas 1).chart j).source, exOne j x = 0) ∧
-    (∀ j, ∀ y ∈ ((flatAtlas 1).chart j).target, ∀ ξ : Fin 1 → ℂ,
-      ‖∑ l, dbarC (exOne j ∘ ((flatAtlas 1).chart j).symm) y l * starRingEnd ℂ (ξ l)‖ ^ 2 ≤
-        (0 : ℝ) * levi (exPhiA.φ j ∘ ((flatAtlas 1).chart j).symm) y ξ) := by
-  refine ⟨isAlgCover_flat 1, exPhiA.smooth, fun j k x _ => ?_, exPhiA.psh, fun j => ?_,
-    fun j k x _ => by simp [exOne, jac_flat, trivLB], fun j x hx => absurd (by simp) hx,
-    fun j y _ ξ => ?_⟩
-  · simp [exPhiA, trivLB]
-  · exact contDiffOn_const
-  · have h1 : (exOne j ∘ ((flatAtlas 1).chart j).symm) = fun _ => (1 : ℂ) := rfl
-    simp only [dbarC]
-    rw [h1]
-    simp
 
 end
 

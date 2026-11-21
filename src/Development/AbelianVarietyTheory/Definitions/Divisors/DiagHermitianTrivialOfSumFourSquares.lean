@@ -186,19 +186,6 @@ theorem _root_.GlobalTheory.LKDef.DPair.rel_out (P : _root_.GlobalTheory.LKDef.D
       (Quot.out (Quot.mk (_root_.GlobalTheory.LKDef.DPair.Rel (G := G)) P)) :=
   (_root_.GlobalTheory.LKDef.DPair.mk_eq_iff P _).mp (Quot.out_eq _).symm
 
-theorem beta_ne_pair (P : DPair G) (Q : Pair G) (v : InfinitePlace G.F) (hv : sigPosH (G.gram_herm v) = 1)
-    (y : Fin G.n → ℂ) (hy : (star y ⬝ᵥ (G.gram v *ᵥ y)).re < 0) : P.β ≠ Q.β := by
-  intro h
-  obtain ⟨Z, hZ⟩ := Pair.gram_psi_inv_congr p G Q v
-  have hy0 : y ≠ 0 := by rintro rfl; simp at hy
-  have e : (Z : Matrix (Fin G.n) (Fin G.n) ℂ) *ᵥ (((Z⁻¹ : GL (Fin G.n) ℂ) : Matrix (Fin G.n) (Fin G.n) ℂ) *ᵥ y) = y := by
-    rw [Matrix.mulVec_mulVec, Units.mul_inv, Matrix.one_mulVec]
-  have hx : ((Z⁻¹ : GL (Fin G.n) ℂ) : Matrix (Fin G.n) (Fin G.n) ℂ) *ᵥ y ≠ 0 := fun h0 => hy0 (by
-    rw [← e, h0, Matrix.mulVec_zero])
-  have h1 := (P.posR v _ hx).1 hv
-  rw [h, hZ, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, e, Matrix.dotProduct_mulVec (star _) (_ᴴ),
-    ← Matrix.star_mulVec, e] at h1
-  exact lt_asymm h1 hy
 
 end DPair
 
@@ -214,12 +201,6 @@ def MoveDef : Prop :=
       0 < r → (∀ k ∈ Kf, ∀ g, f (k⁻¹ * g * k) = f g) → (∀ k ∈ K, ∀ g, φ (k⁻¹ * g * sigG G r k) = φ g) →
       markedSumIrr G wt sel Kf f r K φ = dSumIrr G wt Kf f r K φ
 
-theorem MoveDef.of_isTest (H : MoveDef) (G : HTGroup p) (ha : G.a = 1) (hn : Odd G.n) (wt sel : Polynomial G.F → ℂ)
-    (hsel : IsSel G sel) (L : G.Level) (f : G.GAf → ℂ)
-    (hf : IsTest (MonoidHom.id _) L.K.toSubgroup L.K.toSubgroup f) (r : ℕ) (hr : 0 < r) (K : Subgroup (Gr G r))
-    (φ : Gr G r → ℂ) (hφ : IsTest (sigG G r) (KHT p G.m G.n r G.Fw) K φ) :
-    markedSumIrr G wt sel L.K.toSubgroup f r K φ = dSumIrr G wt L.K.toSubgroup f r K φ :=
-  H p G ha hn wt sel hsel _ f r K φ hr hf.2.2.1 hφ.2.2.1
 
 namespace Example
 
@@ -459,14 +440,9 @@ def unitaryOneTwoGaussian : HTGroup 5 :=
     (haveI : Algebra.IsAlgebraic ℚ (AlgebraicClosure ℚ) := AlgebraicClosure.isAlgebraic ℚ;
       (IsAlgClosed.lift : AlgebraicClosure ℚ →ₐ[ℚ] ℂ).toRingHom)
 
-theorem unitaryOneTwo_rank_eq_three : unitaryOneTwoGaussian.n = 3 := rfl
 
 theorem signature_unitaryOneTwo (v : InfinitePlace unitaryOneTwoGaussian.F) : sigPosH (unitaryOneTwoGaussian.gram_herm v) = 1 := (signature_diagHermitian v.embedding).1
 
-theorem unitaryOneTwo_numSignaturePlaces : unitaryOneTwoGaussian.a = 1 := by
-  show Fintype.card {v : InfinitePlace QI // sigPos isHermitian_diagHermitian v.embedding = 1} = 1
-  simp only [fun v : InfinitePlace QI => (signature_diagHermitian v.embedding).1]
-  rw [Fintype.card_subtype_true, card_infinitePlace_QI]
 
 def b3 : (Matrix (Fin 3) (Fin 3) QI)ˣ := ⟨H3, H3, diagHermitian_mul_self, diagHermitian_mul_self⟩
 
@@ -503,24 +479,9 @@ def definitePairUnitaryOneTwo : DPair unitaryOneTwoGaussian where
     open scoped ComplexOrder in
     exact (Complex.pos_iff.1 (dotProduct_star_self_pos_iff.2 hx)).1
 
-theorem definitePair_minpoly : definitePairUnitaryOneTwo.pol = Polynomial.X ^ 3 - Polynomial.C (5 * (2 + gi)) := minpoly_cubeRootMatrix
 
-theorem definitePair_minpoly_irreducible : Irreducible definitePairUnitaryOneTwo.pol := by
-  rw [definitePair_minpoly]; exact irreducible_cubic
 
-theorem definitePair_unit_ne_pairUnit (Q : Pair unitaryOneTwoGaussian) : definitePairUnitaryOneTwo.β ≠ Q.β := by
-  obtain ⟨v⟩ : Nonempty (InfinitePlace unitaryOneTwoGaussian.F) := inferInstance
-  refine definitePairUnitaryOneTwo.beta_ne_pair Q v (signature_unitaryOneTwo v) (![0, 1, 0] : Fin 3 → ℂ) ?_
-  suffices h : ∀ τ : QI →+* ℂ, (star (![0, 1, 0] : Fin 3 → ℂ) ⬝ᵥ (gramAt H3 τ *ᵥ ![0, 1, 0])).re < 0 from
-    h v.embedding
-  intro τ
-  rw [gramMatrix_diagHermitian]
-  simp [dotProduct, Fin.sum_univ_three, Matrix.mulVec_diagonal]
 
-theorem exists_rank_three : ∃ G : HTGroup 5, G.n = 3 ∧ G.a = 1 ∧ Odd G.n ∧ (∃ sel, IsSel G sel) ∧
-    Nonempty G.Level ∧ ∃ q : DCls G, Irreducible (Quot.out q).pol :=
-  ⟨unitaryOneTwoGaussian, rfl, unitaryOneTwo_numSignaturePlaces, ⟨1, rfl⟩, exists_isSel _ unitaryOneTwo_numSignaturePlaces.le, GlobalTheory.LKTrip.LevelExists.level_exists 5 unitaryOneTwoGaussian,
-    Quot.mk _ definitePairUnitaryOneTwo, by rw [DPair.pol_eq_of_rel definitePairUnitaryOneTwo.rel_out]; exact definitePair_minpoly_irreducible⟩
 
 example : (ex 1 one_ne_zero).a = 1 ∧ Odd (ex 1 one_ne_zero).n ∧ (∃ sel, IsSel (ex 1 one_ne_zero) sel) ∧
     ∃ q : DCls (ex 1 one_ne_zero), Irreducible (Quot.out q).pol :=

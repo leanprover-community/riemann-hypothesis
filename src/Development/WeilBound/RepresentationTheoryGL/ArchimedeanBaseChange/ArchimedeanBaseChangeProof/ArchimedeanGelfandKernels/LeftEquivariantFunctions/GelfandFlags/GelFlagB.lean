@@ -27,9 +27,6 @@ theorem mul_mem_GLs {a y b : Mat n} (ha : a ∈ GLs n) (hy : y ∈ GLs n) (hb : 
   rw [Matrix.det_mul, Matrix.det_mul]
   exact mul_ne_zero (mul_ne_zero ha hy) hb
 
-theorem comp_lmul {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {F : Mat n → V} (hF : ContDiffOn ℝ ∞ F (GLs n))
-    {a b : Mat n} (ha : a ∈ GLs n) (hb : b ∈ GLs n) : ContDiffOn ℝ ∞ (fun y => F (a * y * b)) (GLs n) :=
-  hF.comp (lmul a b).contDiff.contDiffOn fun _ hy => mul_mem_GLs ha hy hb
 
 theorem gel_sub (hGC : GelComm) {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] (s : Bool) (m : ℕ)
     {F₁ F₂ : Mat n → V} (h₁ : ContDiffOn ℝ ∞ F₁ (GLs n)) (h₂ : ContDiffOn ℝ ∞ F₂ (GLs n)) {g₀ : Mat n} (hg₀ : g₀ ∈ GLs n) :
@@ -46,22 +43,6 @@ theorem gel_sub (hGC : GelComm) {V : Type} [NormedAddCommGroup V] [NormedSpace �
   rw [e1] at c1; rw [e2] at c2; rw [e3] at c3
   rw [c1, c2, c3]; simp
 
-theorem gel_transport (hGC : GelComm) {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] (s : Bool) (m : ℕ)
-    {F : Mat n → V} (hF : ContDiffOn ℝ ∞ F (GLs n)) {a b : Mat n} (ha : a ∈ GLs n) (hb : b ∈ GLs n) :
-    gel s m (fun y => F (a * y * b)) 1 = gel s m F (a * b) := by
-  have hF' : ContDiffOn ℝ ∞ (fun y => F (a * y)) (GLs n) := by
-    simpa using comp_lmul hF ha (show (1 : Mat n) ∈ GLs n by show (1 : Mat n).det ≠ 0; simp)
-  have h1 := ((hGC n V V s m _ hF').2 1 (show (1 : Mat n) ∈ GLs n by show (1 : Mat n).det ≠ 0; simp)).2.1 b hb
-  have h2 := ((hGC n V V s m _ hF).2 b hb).2.1 a ha
-  have e : (fun y => F (a * y * b)) = fun y => (fun y' => F (a * y')) (y * b) := by
-    funext y; simp [Matrix.mul_assoc]
-  rw [e, h1.2, one_mul, h2.1]
 
-theorem map_eq_of_le {W : Submodule ℂ (Fin n → ℂ)} {q : Mat n} (hq : IsUnit q) (h : ∀ v ∈ W, q *ᵥ v ∈ W) :
-    W.map (Matrix.mulVecLin q) = W := by
-  have hinj : Function.Injective (Matrix.mulVecLin q) := Matrix.mulVec_injective_iff_isUnit.2 hq
-  refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
-  · rintro _ ⟨v, hv, rfl⟩; exact h v hv
-  · exact (LinearEquiv.finrank_eq (Submodule.equivMapOfInjective _ hinj W)).symm
 
 end PositivityTheory.RgBcC.VC.GFB

@@ -27,13 +27,11 @@ theorem adj_eq (x : HomE E a b) : JetSumTable.adj x = StandardKernelAtTorus.adj 
 
 variable {ST SG SG' : Finset (HeightOneSpectrum (𝓞 E))}
 
-theorem suppBar_eq (d : Deco E a ST SG) (d' : Deco E b ST SG') : JetSumTable.suppBar d d' = StandardKernelAtTorus.suppPts d d' := rfl
 
 theorem support_eq_dualPoints (d : Deco E a ST SG) (d' : Deco E b ST SG') : JetSumTable.suppP d d' = StandardKernelAtTorus.dualPts d d' := by
   ext x
   simp only [JetSumTable.suppP, StandardKernelAtTorus.dualPts, Set.mem_setOf_eq, adj_eq]
 
-theorem stdAtT_iff {n : ℕ} (d : Deco E n ST SG) : JetSumTable.StdAtT d ↔ StandardKernelAtTorus.StdAtT d := Iff.rfl
 
 end Notions
 
@@ -161,11 +159,7 @@ theorem off_of_datum (hT0 : T ≠ 0) (hT : ∀ P ∈ SB, (T : 𝓞 X.E) ∉ P.as
 
 variable (A : Amb X)
 
-theorem jetSum_eq (cB : ℕ) (Ξ : HomE X.E a b → X.K) :
-    JetSumTable.jetSum A Sall cA cB N N' Ξ = StandardKernelAtTorus.kerTable A Sall cA cB N N' Ξ := rfl
 
-theorem ratIdx_eq (cB : ℕ) (Ξ : HomE X.E a b → X.K) :
-    JetSumTable.RatIdx A Sall cA cB N N' Ξ = {m | StandardKernelAtTorus.RatAt A Sall cA cB N N' Ξ m} := rfl
 
 theorem jetSum_congr (cB : ℕ) {Ξ Ξ' : HomE X.E a b → X.K} (h : ∀ x ∈ divLat cA (homAt Sall N N'), Ξ x = Ξ' x) :
     JetSumTable.jetSum A Sall cA cB N N' Ξ = JetSumTable.jetSum A Sall cA cB N N' Ξ' := by

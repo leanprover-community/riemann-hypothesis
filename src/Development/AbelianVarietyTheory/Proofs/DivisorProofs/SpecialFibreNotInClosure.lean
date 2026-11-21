@@ -20,7 +20,6 @@ variable {S : Scheme.{0}} {X T : Over S}
 
 def InOpen (U : X.left.Opens) (w : T ⟶ X) : Prop := w.left ⁻¹ᵁ U = ⊤
 
-theorem inOpen_top (w : T ⟶ X) : InOpen ⊤ w := rfl
 
 theorem InOpen.comp {U : X.left.Opens} {w : T ⟶ X} (h : InOpen U w) {T' : Over S} (u : T' ⟶ T) :
     InOpen U (u ≫ w) := by
@@ -124,8 +123,6 @@ def WeilIntegralLocal : Prop :=
 def WeilIntegralFinite : Prop :=
   ∀ (B : Type) [CommRing B] [Algebra O B] [Module.Finite O B] [Module.Flat O B], WeilIntegralOn P B
 
-theorem toA_isGeneric (x : specO O O ⟶ P.Gt) : IsGeneric P (P.toG x) (P.toA x) :=
-  (P.eq_toA_iff x _).1 rfl
 
 end AtPoint
 

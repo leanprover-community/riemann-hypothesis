@@ -95,8 +95,6 @@ def fracAlg [Fintype ι] (b : Frames k V) : Subalgebra k (Frames k V → k) wher
   algebraMap_mem' := fun r =>
     ⟨algebraMap k _ r, Subalgebra.algebraMap_mem _ r, 0, fun g _ => by simp⟩
 
-theorem regFns_le_fracAlg [Fintype ι] (b : Frames k V) : regFns k V ≤ fracAlg b :=
-  fun f hf => ⟨f, hf, 0, fun g _ => by simp⟩
 
 example [Fintype ι] (b : Frames k V) : cellDisc b b = 1 := by
   refine Finset.prod_eq_one fun i _ => Finset.prod_eq_one fun m _ => ?_

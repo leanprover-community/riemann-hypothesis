@@ -143,40 +143,8 @@ theorem exists_base {Y V : HSp D} (d : HermitianOrthogonalExtensionData Y V 1 1)
   exact ⟨p, ⟨h1, h2, fun τ => ⟨(h3 τ).1, decayAt_of_pos M τ (hε τ) _ _ _⟩, h4⟩,
     fun τ => ⟨(h3 τ).1, fun a _ => decayAt_of_pos M τ (hε τ) _ _ _⟩, fun τ => (h3 τ).2⟩
 
-theorem v_ne_zero (θ : InfFam D) {Y V : HSp D} (d : HermitianOrthogonalExtensionData Y V 1 1) {S : D.what₂.Tau → SPar} {S' : D.what₂.Tau → SPar}
-    {M₀ : DSModel Y S'} {M : DSModel V S} (p : Pack M₀ M) (hb : p.Base d) {Q : ℝ} {m : Measure (GinfC Y)} {c : ℂ}
-    (h : p.RealAt θ d Q m c) (τ : D.what₂.Tau) : p.v θ τ ≠ 0 := by
-  intro h0
-  have h1 := h.act fun τ => p.w τ
-  have h2 : ∀ g, coefR θ M (p.v θ) (p.v θ) g = 0 := fun g =>
-    Finset.prod_eq_zero (Finset.mem_univ τ) (by rw [h0, inner_zero_left])
-  simp only [h2, zero_mul, integral_zero] at h1
-  exact mul_ne_zero h.ne (Finset.prod_ne_zero_iff.2 fun σ _ => inner_self_ne_zero.2 (hb.ne σ)) h1.symm
 
-theorem exists_pays (D : D7) (Q : ℝ) : ∃ N, Pays D Q N := by
-  set K : ℝ := Real.exp Q * ((D.R.r : ℝ) ^ 2 * Fintype.card D.what₂.Tau * (D.host.g 0 * D.host.g 1 : ℕ) * rdisc D) with hK
-  have hK0 : 0 ≤ K := by unfold rdisc at hK; rw [hK]; positivity
-  have hm : D.R.m ≠ 0 := by have := D.R.two_le_m; omega
-  set t : ℝ := 1 / (2 * (K + 1)) with ht
-  have ht0 : 0 < t := by positivity
-  have ht1 : t ≤ 1 := by rw [ht, div_le_one (by positivity)]; linarith
-  set s : ℝ := t ^ D.R.m / 2 with hs
-  have hs0 : 0 < s := by positivity
-  set R : ℝ := 2 * Real.exp (Q + (6 * ((D.R.r : ℝ) + 1) + 9) * Fintype.card D.what₂.Tau) with hR
-  have hR0 : 0 < R := by positivity
-  have e : s ^ Fintype.card D.what₂.Tau * Real.sqrt (((R + 2) / s ^ Fintype.card D.what₂.Tau) ^ 2) = R + 2 := by
-    rw [Real.sqrt_sq (by positivity)]; field_simp
-  refine ⟨((R + 2) / s ^ Fintype.card D.what₂.Tau) ^ 2, s, hs0, ?_, ?_, by rw [e]; linarith, by rw [e]; linarith⟩
-  · have := pow_le_one₀ ht0.le ht1 (n := D.R.m); rw [hs]; linarith
-  · have e2 : (2 * s) ^ ((1 : ℝ) / D.R.m) = t := by
-      rw [hs, mul_div_cancel₀ _ (two_ne_zero), one_div, Real.pow_rpow_inv_natCast ht0.le hm]
-    rw [e2, ← mul_assoc, ← hK, ht, mul_one_div, div_le_iff₀ (by positivity)]
-    linarith
 
-theorem not_pays_one (D : D7) (Q : ℝ) : ¬ Pays D Q 1 := by
-  rintro ⟨s, h0, h1, -, -, h⟩
-  have := pow_le_one₀ h0.le (by linarith : s ≤ 1) (n := Fintype.card D.what₂.Tau)
-  simp at h; linarith
 
 end GlobalTheory.SepPer.Model
 

@@ -122,8 +122,6 @@ variable {R B : Type} [CommRing R] [CommRing B] [Algebra R B]
 def coneTerm (q : ℕ) : Om R B q →ₗ[R] Term F 0 q :=
   LinearMap.pi fun s ↦ (SemiHom.of_algHom (e (s.obj (Fin.last 0)))).mOm q
 
-theorem coneTerm_apply {q : ℕ} (ω : Om R B q) (s : ComposableArrows C 0) :
-    coneTerm e q ω s = (SemiHom.of_algHom (e (s.obj (Fin.last 0)))).mOm q ω := rfl
 
 include he in
 

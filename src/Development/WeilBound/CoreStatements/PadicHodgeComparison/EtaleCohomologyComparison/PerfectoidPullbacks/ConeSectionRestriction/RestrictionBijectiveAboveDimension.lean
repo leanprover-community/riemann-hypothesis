@@ -102,15 +102,6 @@ theorem test_factor (D : E.LineData X) (S : ℕ) (x : HdR q 2)
   refine (cls_congr _ (funext fun σ => plogK_congr _ hsS (hs _) (r_sub_one_mem _ σ)) hz2 hz1).trans ?_
   exact (pull_cls_zK q ΛS g' S _ hz1).symm
 
-theorem isFirstChernDeRham_unique_of (d : ℕ) [SmoothOfRelativeDimension d q] (D : E.LineData X) (hD : IsTautologicalLine q D) (c c' : HdR q 2)
-    (hc : IsFirstChernDeRham q D c) (hc' : IsFirstChernDeRham q D c') : c = c' := by
-  have hk := restriction_bijective_above_dimension q d D hD
-  let Λ₀ := (lift_exists q D (d + 1)).some
-  obtain ⟨z, hz, hzf, hzc⟩ := hc (d + 1) _ (KS q (d + 1) (𝒱D D)).ι (ks_pd q _ _) (ks_sec q D _) Λ₀
-  obtain ⟨z', hz', hzf', hzc'⟩ := hc' (d + 1) _ (KS q (d + 1) (𝒱D D)).ι (ks_pd q _ _) (ks_sec q D _) Λ₀
-  have e : z = z' := funext fun σ => (hzf σ).trans (hzf' σ).symm
-  subst e
-  exact (hk (d + 1) (by omega)).1 (hzc.symm.trans hzc')
 
 theorem isFirstChernDeRham_exists_of (d : ℕ) [SmoothOfRelativeDimension d q] (D : E.LineData X) (hD : IsTautologicalLine q D) :
     ∃ c : HdR q 2, IsFirstChernDeRham q D c := by

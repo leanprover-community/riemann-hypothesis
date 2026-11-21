@@ -47,8 +47,6 @@ theorem mul_jX (q : stab d) : mt T q ⬝ d.jX = d.jX ⬝ (onX d q).1 := q.2.choo
 
 theorem levi_mem (α : GL (Fin r) (AE D)) : d.levi α ∈ stab d := ⟨α, d.levi_jX α⟩
 
-theorem onX_levi (α : GL (Fin r) (AE D)) : onX d ⟨_, levi_mem d α⟩ = α :=
-  Units.ext ((eq_of_mul_jX d (mul_jX d _)).trans (eq_of_mul_jX d (d.levi_jX α)).symm)
 
 def absDet : stab d →* ℝ≥0 := (absA D).comp (Matrix.GeneralLinearGroup.det.comp (onX d))
 
@@ -111,12 +109,6 @@ def EisensteinContinues : Prop :=
     (∀ s₀, ∃ k, EisensteinRegularAt d b s₀ k) ∧ eisensteinResidue d b ≠ 0 ∧
     ∀ h, PoleLE (sphericalEisenstein d b h) (rhoH T r) 1 ∧ ResidueAt (sphericalEisenstein d b h) (rhoH T r) (eisensteinResidue d b)
 
-theorem sphericalSection_levi_mul {d : HypDec T T₀ r} {b : GL (Fin T.rank) (AE D)} (h : HasIw d (Kmax T b)) (s : ℂ)
-    (α : GL (Fin r) (AE D)) {k : GA D T} (hk : k ∈ Kmax T b) :
-    sphericalSection d b s (d.levi α * k) = npow (absA D (Matrix.GeneralLinearGroup.det α)) (s + rhoH T r) := by
-  have := h.isIwasawa.iwAbs_mul ⟨_, levi_mem d α⟩ hk
-  rw [absDet, MonoidHom.comp_apply, MonoidHom.comp_apply, onX_levi] at this
-  exact congrArg (npow · _) this
 
 end SlopeTestRemainingChoices
 
@@ -147,11 +139,6 @@ def omCentreS (p : MvPolynomial ℕ ℂ) (φ : WO S T → ℂ) : WO S T → ℂ 
 def omCentreT (p : MvPolynomial ℕ ℂ) (φ : WO S T → ℂ) : WO S T → ℂ :=
   fun w => centreAct θ τ T p (fun h => om (1, h) φ w) 1
 
-theorem omCentreT_C (c : ℂ) (φ : WO S T → ℂ) : omCentreT om θ τ (MvPolynomial.C c) φ = c • φ := by
-  funext w
-  by_cases hc : c = 0
-  · simp [omCentreT, centreAct, polyAct, hc]
-  · simp [omCentreT, centreAct, polyAct, opPow, MvPolynomial.support_C, hc, show ((1 : GA D S), (1 : GA D T)) = 1 from rfl]
 
 end Schwartz
 

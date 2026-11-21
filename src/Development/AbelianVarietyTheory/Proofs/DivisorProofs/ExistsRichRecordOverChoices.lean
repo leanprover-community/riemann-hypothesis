@@ -73,51 +73,6 @@ theorem exists_rich_record_over_choices (hR : GlobalTheory.NT.RayField) (eps cD 
     (fun t => hP.win t.1 t.2) (fun τ t h ht => hP.top P.u₀ τ t h ht) e4
   exact ⟨L, l1, l4⟩
 
-theorem exists_richRec_of_zeroFreeRegion : GlobalTheory.Mem.An.ExplZeta → GlobalTheory.Mem.An.ExplChi → GlobalTheory.Mem.An.LogDerOne → GlobalTheory.Mem.An.ZeroCount → Formalism.ZeroFreeDirichlet.ZFRDirichlet → GlobalTheory.Mem.An.TZRat → GlobalTheory.Mem.An.PageThm → GlobalTheory.Mem.An.Jutila → GlobalTheory.Mem.An.QuadraticHeckeZeroEstimates → GlobalTheory.NT.RayField → ∀ x : ℝ, ∃ D : D7, RecOK D x ∧ RichRec D := by
-  intro p1 p2 p3 p4 p5 p6 p7 p8 p9 hR x
-  have hH := DC.hostExQ_of_hostEx (smallPrimeOne_of_tzRat p6) (hostEx_of_zeroFreeRegion p1 p2 p3 p4 p5 p6 p7 p8 p9)
-  have hLP := (normPrimes_and_levelPrime p9).2
-  have he : (0 : ℝ) < 1 / 53 := by norm_num
-  have he52 : (1 / 53 : ℝ) < 1 / 52 := by norm_num
-  obtain ⟨CT2, C8, C5, c6, Cb, hC8, -, -, -, hK⟩ := exists_chGood_unb hH _ he he52
-  obtain ⟨C, hStd, hCT2, hCp, -⟩ := exists_std_large ⟨0, 0, fun _ => 0, fun _ => 0⟩
-    ⟨0, 0, fun _ => 0, fun _ => 0⟩ CT2 C8 hC8
-  obtain ⟨c1, hN⟩ := szRow_numAt _ he he52 C hStd
-  obtain ⟨c2, hN⟩ := hN (max c1 0) (le_max_left _ _)
-  obtain ⟨x1, hN⟩ := hN (max c2 402) (le_max_left _ _)
-  have hK := hK C hStd hCT2 hCp (max c1 0) (le_max_right _ _) (max c2 402) (le_max_right _ _)
-  obtain ⟨x3, h3⟩ := exists_levCh_of_levelPrime hLP _ 1 C he he52 one_pos hStd
-  obtain ⟨x4, h4⟩ := exists_rich_record_over_choices hR _ (max c1 0) (max c2 402) C he he52 hStd (le_max_right _ _) (le_max_right _ _)
-  obtain ⟨s, hs, hy, hK⟩ := hK (max (10 ^ 60) (max x1 (max x3 (max x4 (max x (C.T.CP ^ 20))))))
-  simp only [max_le_iff] at hy
-  obtain ⟨hy60, hy1, hy3, hy4, hyx, hyP⟩ := hy
-  obtain ⟨P, a, b, c, hP, -⟩ := hK 0
-  have hfk : (0 : ℝ) < (P.R.f : ℝ) * P.R.k := by
-    have h1 := P.R.m_add_three_le_k
-    have h2 : 0 < P.R.f := by have := P.R.ord_pos; show 0 < 2 * P.R.ord; omega
-    have h3 : 0 < P.R.k := by omega
-    positivity
-  obtain ⟨Ds, hDs, hlog⟩ := exists_window_start _ (1 * P.R.m * s.L) (GamS C s P.R) hfk (Real.exp_pos _)
-  obtain ⟨Lv, -, -, l3⟩ := h3 _ _ s P _ a b c (fun _ => 1) Ds hs hy3 hP.ok (fun _ => one_pos) hDs (fun _ => hlog)
-  obtain ⟨D, ⟨⟨h1, h2, h3, h4, h5⟩, hZ⟩, hE, hkap, hA, L, hsc, hV⟩ := h4 s P _ a b c Lv hs hy4 hP.ok l3
-  have hsx : L.sc.x = s.x := by rw [hsc]
-  have hse : L.sc.eps = 1 / 53 := by rw [hsc, hs]
-  obtain ⟨⟨N⟩, -, -⟩ := hN _ _ hse (hy1.trans hsx.ge) hV hA
-  have hCP : N.parT.CP = C.T.CP := (List.cons.inj N.parT_K).1
-  have hg : ∀ j, Real.log (D.host.g j) ≤ 9 * L.sc.L + 1 := fun j => by
-    have hL : 0 ≤ L.sc.L := by
-      unfold Scale.L; exact Real.rpow_nonneg (zero_le_one.trans L.sc.one_lt_alt.le) _
-    have hlo : 0 < ((D.host.g j : ℕ) : ℝ) := by exact_mod_cast (D.host.g_prime j).pos
-    have := (Real.log_le_iff_le_exp hlo).2 (N.g_le j)
-    linarith
-  obtain ⟨hHS, hFS⟩ := hostSz_of_sizes D L N.params N.parT N.sizes hg (hy60.trans hsx.ge)
-  refine ⟨D, ⟨h1, h2, h3, h4, hE, L, N.params, N.parT, hkap, N.sizes,
-    N.CnW_eq.trans hStd.1.2.2.2.2.2.2.2.1, hg, ?_, ?_, hyx.trans hsx.ge, hFS (h5 _ hHS)⟩,
-    (GlobalTheory.Mem.Chr.ncard_places_eq_primesOver D.host.pde_prime).trans hA.2.2.1.1,
-    (GlobalTheory.Mem.Chr.ncard_places_eq_primesOver D.host.pde'_prime).trans hA.2.2.1.2, hV.hc.2.2.2, hZ⟩
-  · rw [hCP]; exact hStd.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-  · rw [hCP]
-    exact hyP.trans (hsx.ge.trans (x_le_zBase_of_pow_le_n L N.win.1.1))
 
 end GlobalTheory.BigOn.Inhab
 

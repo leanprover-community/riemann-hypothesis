@@ -140,9 +140,6 @@ theorem constantCoeff_two_variable_law (a b : Fin 3) : MvPowerSeries.constantCoe
   rw [F2, constantCoeff_subst_of_zero _ (fun i => by fin_cases i <;> simp [Y3]),
     (FK F).zero_constantCoeff]
 
-theorem constantCoeff_three_variable_law : MvPowerSeries.constantCoeff (F3 F) = 0 := by
-  rw [F3, constantCoeff_subst_of_zero _ (fun i => by fin_cases i <;> simp [Y3, constantCoeff_two_variable_law]),
-    (FK F).zero_constantCoeff]
 
 theorem pderiv_two_variable_law_other (a b k : Fin 3) (ha : a ≠ k) (hb : b ≠ k) :
     MvPowerSeries.pderiv K k (F2 F a b) = 0 := by
@@ -242,22 +239,10 @@ theorem integral_chain (hN : NPderiv.{u}) (φ : PowerSeries K) (h : InN (triDiff
     rw [Function.iterate_succ_apply']
     exact integral_Dj F 0 ih
 
-theorem constantCoeff_subst_three_variable_law (ψ : PowerSeries K) :
-    MvPowerSeries.constantCoeff (ψ.subst (F3 F)) = PowerSeries.constantCoeff ψ := by
-  rw [PowerSeries.subst_def, constantCoeff_subst_of_zero _ (fun _ => constantCoeff_three_variable_law F)]
-  rfl
 
 end Formalism.ELL.FormalGroupCubeJets
 
 namespace Formalism.ELL
 
-theorem jetsCube_of (hN : Formalism.ELL.NPderiv.{u}) : Formalism.ELL.JetsCube.{u} := by
-  intro K _ _ _ F φ h i hi
-  obtain ⟨k, rfl⟩ : ∃ k, i = k + 3 := ⟨i - 3, by omega⟩
-  have hI := FormalGroupCubeJets.integral_chain F hN φ h k
-  rw [FormalGroupCubeJets.chain] at hI
-  have := hI 0
-  rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, FormalGroupCubeJets.constantCoeff_subst_three_variable_law] at this
-  exact this
 
 end Formalism.ELL

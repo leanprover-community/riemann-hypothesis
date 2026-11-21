@@ -469,30 +469,6 @@ theorem OnePlaceEstimates.AdmF_of (Gm : HereditaryPositivity.GM) (Ks : ℕ) (C0 
 
 end Assembly
 
-theorem S1.family_statements_all {CB Co Cd Cs Cg₁ Cg₂ c C₁ eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (Gm : HereditaryPositivity.GM) (Ks : ℕ)
-    (CL Ca Cv C1 C2 E₀ Eg E₁ E₂ E₃ Gg GI C0 CA C C' Ch Aw Cu Bg Bq Bg' B1 B2 Bb BB2 Bgf Bf Ss C₃ : ℝ) (hC1 : 0 < C1) (hCo : 0 < Co)
-    (s25a : ChoiceOfModulusAndDiscriminant.FamilyStatementAtConstants Fm CL Ca) (s25 : ChoiceOfModulusAndDiscriminant.FamilyStatementAtConstants Fm CL CB) (s25b : RadialRules.FamilyStatementAtConstants Fm CL Ca CB Cv C1 C2)
-    (s07c : RadialRuleConsequences.KudlaFamilyStatement Fm CB Co Cd Cv C1 C2 Cs c C₁ Gg GI C0 CA)
-    (s07b : HereditaryPositivity.KudlaFamilyStatement Fm Gm CB Co Cd Cv C1 C2 Cs c C₁ Ks E₀ Eg E₁ E₂ E₃)
-    (s07a : BlockEstimateTheorem.KudlaFamilyStatement Fm Gm Ks CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ E₀ Eg E₁ E₂ E₃ C C')
-    (s47 : OnePlaceEstimates.FamilyStatementAtConstants Fm Gm CB Co Cd C0 CA Cg₁ Cg₂ c C₁ Ks E₀ Eg E₁ E₂ E₃ Ss C₃ Ch Aw Cu Bg Bq Bg' B1 B2 Bb BB2 Bgf Bf)
-    (hBL : PX.lemmaB CL) (hX : PX.S1 CB Co Cd Cs Cg₁ Cg₂) (hd : ∀ x (i : Fm.Ix x), PX.decay (Fm.D x i) c C₁)
-    (hp : ∀ x (i : Fm.Ix x), PX.topPos (Fm.D x i) Gm Ks E₀ Eg)
-    (hw : ∀ x (i : Fm.Ix x), PX.topWave (Fm.D x i) Gm Ks E₀ Eg)
-    (hl : ∀ x (i : Fm.Ix x), PX.lowPos (Fm.D x i) Ks E₀ Eg) (h71 : ∀ x (i : Fm.Ix x), PX.LettersOnCells (Fm.D x i) CB)
-    (hs : ∀ x (i : Fm.Ix x), PX.shortGrids (Fm.D x i) Gm CB Ss C₃)
-    (h3d : ∀ x (i : Fm.Ix x), PX.s3d0 (Fm.D x i) Ch Bg Bq) (hL : PX.ClassicalAnalysisAndRepresentationTheorems) :
-    ChoiceOfModulusAndDiscriminant.FamilyTargetsAtConstants Fm CB ∧ RadialRules.FamilyTargetsAtConstants Fm CB Cv C1 C2 ∧ (RadialRuleConsequences.ConclusionF1 Fm Gg GI ∧ RadialRuleConsequences.ConclusionF2 Fm C0 CA) ∧
-      HereditaryPositivity.OrbitValuationBound Fm Gm Ks E₀ Eg E₁ E₂ E₃ ∧ BlockEstimateTheorem.OrbitValuationBound Fm Gm C C' Ks ∧
-      OnePlaceEstimates.FamilyTargetsAtConstants Fm Ch Aw Cu Bg Bq Bg' B1 B2 Bb BB2 Bgf Bf := by
-  have p25a : ChoiceOfModulusAndDiscriminant.FamilyTargetsAtConstants Fm Ca := s25a (ChoiceOfModulusAndDiscriminant.AdmF_of Fm hBL hL)
-  have p25 : ChoiceOfModulusAndDiscriminant.FamilyTargetsAtConstants Fm CB := s25 (ChoiceOfModulusAndDiscriminant.AdmF_of Fm hBL hL)
-  have p25b : RadialRules.FamilyTargetsAtConstants Fm CB Cv C1 C2 := s25b (RadialRules.AdmF_of Fm Ca p25a hBL hL)
-  have p07c := s07c (RadialRuleConsequences.AdmF_of Fm Cv C1 C2 hC1 hCo p25 p25b hX hd hL)
-  have p07b := s07b (HereditaryPositivity.AdmF_of Fm Gm Ks E₀ Eg Cv C1 C2 hC1 hCo p25 p25b hX hd hp hw hl hL)
-  have p07a := s07a (BlockEstimateTheorem.AdmF_of Fm Gm Ks E₀ Eg E₁ E₂ E₃ Cv C1 C2 hC1 hCo p25 p25b p07b hX hd hp hw hl hL)
-  have p47 := s47 (OnePlaceEstimates.AdmF_of Fm Gm Ks C0 CA E₀ Eg E₁ E₂ E₃ Ss C₃ Ch Bg Bq hCo p25 p07c.2 p07b hX hd h71 hs h3d hL)
-  exact ⟨p25, p25b, p07c, p07b, p07a, p47⟩
 
 section Family
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C : ℝ)

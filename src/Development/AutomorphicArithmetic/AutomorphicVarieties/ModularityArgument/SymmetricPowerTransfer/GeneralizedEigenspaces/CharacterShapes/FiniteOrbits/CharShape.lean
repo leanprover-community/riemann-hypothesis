@@ -91,14 +91,7 @@ private theorem Dm.sg {d : ∀ v, Fin 3 → G v} (h : L.Dm d) : L.Dm (sg d) := b
     Matrix.head_cons, Matrix.tail_cons, od_inv]
   constructor <;> linarith
 
-private theorem dm_one : L.Dm 1 := by
-  intro v hv
-  simp
 
-private theorem Dm.pow {d : ∀ v, Fin 3 → G v} (h : L.Dm d) (N : ℕ) : L.Dm (d ^ N) := by
-  induction N with
-  | zero => simpa using dm_one
-  | succ n ih => rw [pow_succ]; exact ih.mul h
 
 variable (L) in
 
@@ -109,14 +102,6 @@ structure Ch (χ : (∀ v, Fin 3 → G v) → ℂ) : Prop where
 
 variable {χ : (∀ v, Fin 3 → G v) → ℂ}
 
-private theorem Ch.pow (hχ : L.Ch χ) {d : ∀ v, Fin 3 → G v} (hd : L.Dm d) (N : ℕ) :
-    χ (d ^ N) = χ d ^ N := by
-  induction N with
-  | zero =>
-    simp only [pow_zero]
-    exact hχ.lev 1 (fun v _ i => by simp [Subgroup.one_mem])
-  | succ n ih =>
-    rw [pow_succ, pow_succ, hχ.mul _ _ (hd.pow n) hd, ih]
 
 section X
 

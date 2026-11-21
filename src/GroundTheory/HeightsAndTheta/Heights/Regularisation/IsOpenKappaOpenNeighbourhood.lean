@@ -270,12 +270,6 @@ def HodgeDerivative.Statement : Prop :=
             ((F y)ᴴ * (P.Hmat y).map (fun x : ℝ => (x : ℂ)) * F y).det.re) z‖ ≤
           C' * rPer a z ^ C' * Real.exp (rPer a z / 2)
 
-theorem polydisc_hyps_inhabited (D : ℕ) :
-    IsOpen (Set.univ : Set (Fin D → ℂ)) ∧
-      ReciprocityTheory.AnForm.A.IsPsh Set.univ (fun z : Fin D → ℂ => ∑ j, ‖z j‖ ^ 2) ∧
-      closedBall (0 : Fin D → ℂ) (2 * 1) ⊆ Set.univ ∧ (1 : ℝ) ≤ 1 ∧ (0 : ℝ) < 1 ∧ (1 : ℝ) * 1 < 2 :=
-  ⟨isOpen_univ, (ReciprocityTheory.AnForm.A.isPshInhabit_thm D).1, Set.subset_univ _, le_rfl, one_pos,
-    by norm_num⟩
 
 theorem mollifier_bounded_inhabited (D : ℕ) : ∃ (ρ : Mollifier D) (B : ℝ), ∀ w, ρ.toFun w ≤ B := by
   obtain ⟨ρ⟩ := ReciprocityTheory.AnForm.A.mollifierInhabit_thm D
@@ -338,43 +332,10 @@ def periodGenusOne : PeriodPolydisc 1 1 1 := diagPeriod 1 ![1]
 
 def periodGenusTwo : PeriodPolydisc 1 1 2 := diagPeriod 2 ![1, 0]
 
-theorem periodGenusOne_B : periodGenusOne.B 0 = 1 := by
-  ext p q; fin_cases p; fin_cases q; rfl
 
-theorem periodGenusTwo_B : periodGenusTwo.B 0 = diagonal ![1, 0] := by
-  ext p q; fin_cases p <;> fin_cases q <;> rfl
 
-theorem diagPeriod_tau0Cov (g : ℕ) (d : Fin g → ℕ) (w : Fin 1 → ℂ) :
-    (diagPeriod g d).tau0Cov w = diagonal (fun _ => Complex.I) := by
-  ext p q
-  simp only [PeriodPolydisc.tau0Cov, PeriodPolydisc.Bc, diagPeriod, Fin.sum_univ_one,
-    Matrix.sub_apply, Matrix.smul_apply, Matrix.map_apply, diagonal_apply]
-  split_ifs
-  · push_cast
-    ring
-  · simp
 
-theorem kernelPositive_hyps_inhabited :
-    ∃ τ₀ : (Fin 1 → ℂ) → Matrix (Fin 2) (Fin 2) ℂ,
-      (∀ p q, AnalyticOnNhd ℂ (fun z => τ₀ z p q) (ball 0 1)) ∧
-      (∀ w ∈ coverSet 1 1, τ₀ (expCov 1 w) = periodGenusTwo.tau0Cov w) ∧
-      ∃ v : Fin 2 → ℝ, v ≠ 0 ∧ ∀ i, periodGenusTwo.Br i *ᵥ v = 0 := by
-  refine ⟨fun _ => diagonal (fun _ => Complex.I), fun p q => fun _ _ => analyticAt_const,
-    fun w _ => (diagPeriod_tau0Cov 2 ![1, 0] w).symm, ![0, 1], ?_, ?_⟩
-  · intro h
-    have := congrFun h 1
-    simp at this
-  · intro i
-    have hi0 : i = 0 := Subsingleton.elim _ _
-    subst hi0
-    ext k
-    fin_cases k <;> simp [PeriodPolydisc.Br, periodGenusTwo, diagPeriod, mulVec, dotProduct,
-      diagonal_apply]
 
-theorem hodgeFrame_hyps_inhabited :
-    (∀ p q, AnalyticOnNhd ℂ (fun _ : Fin 1 → ℂ => (1 : Matrix (Fin 1) (Fin 1) ℂ) p q) (ball 0 1)) ∧
-      (1 : Matrix (Fin 1) (Fin 1) ℂ).rank = 1 :=
-  ⟨fun _ _ _ _ => analyticAt_const, by simp [rank_one]⟩
 
 section ProjectiveLine
 
@@ -668,7 +629,6 @@ def projLineChartData : RegChartData p1 where
     rw [projLineCharts_potential_zero]
     simp
 
-theorem regChartData_inhabited : Nonempty (RegChartData p1) := ⟨projLineChartData⟩
 
 def projLineBoundedPotential : BoundedThPsh projLineCharts where
   φ _ := 0
@@ -738,7 +698,6 @@ theorem projLine_cutoffFamily : ∃ C : ℝ, projLineCharts.IsCutoffFamily C pro
       rw [← mul_assoc]
       exact mul_le_mul_of_nonneg_right this (by positivity)
 
-theorem glue_hyps_inhabited : ∃ C : ℝ, projLineChartData.IsCutoffFamily C projLineCutoff := projLine_cutoffFamily
 
 end ProjectiveLine
 

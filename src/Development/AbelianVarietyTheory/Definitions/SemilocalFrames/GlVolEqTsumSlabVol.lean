@@ -107,40 +107,8 @@ theorem exists_isAdapted : ∃ (I I₀ : AutInst) (e : I₀.E ≃+* I.E) (xf : I
   obtain ⟨I, -⟩ := exists_signature 0 0
   exact ⟨_, _, _, _, _, _, _, _, _, _, rfl, rfl, isAdapted_rank_three I.cm⟩
 
-theorem IsAdapted_flag {I I₀ : AutInst} {e : I₀.E ≃+* I.E} {xf : I.Gf} {a : ℕ} {j : Fin a → ℕ}
-    {S : Fin (a + 1) → Submodule (𝓞 I.E) (Fin I.n → I.E)} {Λ : ∀ i, Submodule (𝓞 I.E) (Fin (j i) → I.E)}
-    {x₀ : I₀.Gf} {T T' : ∀ i, Matrix (Fin I.n) (Fin (j i)) I.E} {T₀ : Matrix (Fin I.n) (Fin I₀.n) I.E}
-    (h : IsAdapted I I₀ e xf j S Λ x₀ T T' T₀) : S 0 = ⊥ ∧ Monotone S ∧ ∀ k, S k ≤ lamX I (1, xf) := by
-  obtain ⟨-, -, -, -, -, -, hL, hS⟩ := h
-  refine ⟨eq_bot_iff.2 fun z hz => ?_, fun k l hkl z hz => ?_, fun k z hz => ?_⟩
-  · obtain ⟨u, -, h0, rfl⟩ := (hS 0 z).1 hz
-    simp [fun i => h0 i (by simp)]
-  · obtain ⟨u, hu, h0, rfl⟩ := (hS k z).1 hz
-    exact (hS l _).2 ⟨u, hu, fun i hi => h0 i fun h => hi (h.trans_le hkl), rfl⟩
-  · obtain ⟨u, hu, -, rfl⟩ := (hS k z).1 hz
-    refine (hL _).2 ⟨u, 0, 0, hu, fun i t _ => by simp, zero_mem _, ?_⟩
-    simp only [Pi.zero_apply, Matrix.mulVec_zero, Finset.sum_const_zero, map_zero, add_zero]
-    rw [show (fun _ : Fin I₀.n => (0 : I.E)) = 0 from rfl, Matrix.mulVec_zero, add_zero]
 
-theorem one_mem_leviGroup (I : AutInst) (xf : I.Gf) {a : ℕ}
-    (S : Fin (a + 1) → Submodule (𝓞 I.E) (Fin I.n → I.E)) : (1 : I.Ginf) ∈ leviGroup I xf S := by
-  have hu : ∀ v, uMat ((1 : I.Ginf) v) = 1 := fun v => rfl
-  have hL : (1 : I.Ginf) ∈ latGroup I xf := by
-    refine ⟨1, ⟨1, one_mem _, fun v => ?_, ?_⟩, rfl, ?_⟩
-    · have := (Matrix.isUnit_iff_isUnit_det _).1 (I.P_unit v)
-      rw [show uMat ((1 : I.GA).1 v) = 1 from rfl]
-      simp [Matrix.nonsing_inv_mul _ this]
-    · rw [show I.fmat (1 : I.GA).2 = 1 from rfl]
-      simp
-    · simp only [Prod.snd_one, mul_one, inv_mul_cancel]
-      exact one_mem (Formalism.UG.stabGL I.Lf)
-  refine ⟨fun v i y hy => (by rw [hu]; simp [hy]), 1, ⟨hL, fun v k y hy => (by rw [hu]; simp [hy])⟩, 1,
-    fun v => ⟨fun i y _ => (by rw [hu]; simp), fun y _ => (by rw [hu]; simp)⟩, by simp⟩
 
-theorem glVol_eq_tsum_slabVol (E : Type) [Field E] [NumberField E] (j : ℕ) :
-    glVol E j = ∑' c : Quot (fun Λ Λ' : {Λ : Submodule (𝓞 E) (Fin j → E) // Submodule.IsLattice E Λ} =>
-      ∃ γ : GL (Fin j) E, ∀ y, (γ : Matrix (Fin j) (Fin j) E) *ᵥ y ∈ Λ'.1 ↔ y ∈ Λ.1),
-      slabVol E j (Quot.out c).1 := rfl
 
 theorem mem_dualAt (E : Type) [Field E] [NumberField E] (j : ℕ) (L : Submodule ℤ (VecInf E j)) (y : VecInf E j) :
     y ∈ dualAt E j L ↔ ∀ x ∈ L, ∃ z : ℤ, ∑ w, (x w ⬝ᵥ y w).re = z := by

@@ -59,9 +59,6 @@ def LabSGeoCoreSt : Prop :=
     ∀ (k : ℕ) (Y : FBChart C V (𝓞 E) (chD C3.ch)), IsBC C3 ι k Y →
     ∀ (Orb : Type) (d : ℕ) [NeZero d] (lab : LabS E C Orb d), LabSArith V io ι lab → LabSGeoCore C3 ι Y lab
 
-theorem labSGeo_of_core (h : LabSGeoCoreSt Xo c) : LabSGeoSt Xo c :=
-  fun hstar T io y C3 C _ _ V ι hι k Y hY Orb d _ lab ha =>
-    labSGeo_of hstar hι ha (h hstar T io y C3 C V ι hι k Y hY Orb d lab ha)
 
 theorem rank_maximal_self_charts_of_nondegenerate (h1 : RankMaximalSelfOfNondegenerate) (h2 : NondegenerateCharts Xo c) : RankMaximalSelfCharts Xo c :=
   fun hstar T io y C3 C _ _ V ι hι k Y hY _ d _ _ ha hg hr o Hc =>

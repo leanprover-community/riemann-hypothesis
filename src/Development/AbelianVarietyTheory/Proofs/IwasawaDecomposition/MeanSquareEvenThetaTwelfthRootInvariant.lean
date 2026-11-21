@@ -297,21 +297,5 @@ theorem exists_field (hF : FieldOK D.host D.what₂.embLL D.embE) (h : IsDiscrim
   · exact le_sup_right (a := coefM D) (IntermediateField.subset_adjoin ℚ S (by simp [S, tor0]))
   · exact le_sup_right (a := coefM D) (IntermediateField.subset_adjoin ℚ S (by simp [S, tor0]))
 
-theorem retie_periods : ∀ D : D7, FieldOK D.host D.what₂.embLL D.embE →
-    (∃ δ, IsDiscriminantTwelfthRootOfIdealLattice D D.host.ccK δ) ∧ ∀ δ, IsDiscriminantTwelfthRootOfIdealLattice D D.host.ccK δ →
-      (∃ (M : IntermediateField ℚ ℂ) (_ : NumberField M), (∀ x, D.what₂.embLL x ∈ M) ∧
-        DataIn D (tor0 D D.host.ccK δ) M) ∧
-      ∀ (M : IntermediateField ℚ ℂ) [NumberField M] (hL : ∀ x, D.what₂.embLL x ∈ M),
-        DataIn D (tor0 D D.host.ccK δ) M →
-        ∃ c : D.what₂.Tau → D.what₂.LL, (∀ τ, Submodule.span (𝓞 M) {into D M hL (c τ)} = ellT D M τ) ∧
-          ∀ ρ : M →ₐ[ℚ] ℂ,
-            (∀ τ, (retie D).gx.Om τ ((ρ : M →+* ℂ).comp (into D M hL)) =
-              Real.exp (-logMet M (lamOf D D.host.ccK δ) ρ (into D M hL (c τ)))) ∧
-            ∀ t, GL3Theta.IsTwoTorsionPointUnkilled D (lamConj M ρ (lamOf D D.host.ccK δ)) t →
-              (retie D).gx.thOne ((ρ : M →+* ℂ).comp (into D M hL)) ^ 2 =
-                GL3Theta.normSq1 (lamConj M ρ (lamOf D D.host.ccK δ))
-                  (GL3Theta.th0 (lamConj M ρ (lamOf D D.host.ccK δ)) t) :=
-  fun D hF => ⟨exists_discriminantTwelfthRoot_of_ideal D, fun _ h => ⟨exists_field hF h, fun _ _ hL hM =>
-    ⟨_, span_gen hF hL, fun ρ => ⟨om_eq hF h hL hM ρ _ fun _ => rfl, thOne_sq hF h hL hM ρ _ fun _ => rfl⟩⟩⟩⟩
 
 end GlobalTheory.Mem.TruePeriods

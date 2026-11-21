@@ -63,17 +63,6 @@ def xiAt0 : ∀ j, (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt j → (sys
       rdH s rd cls j La La' (homRe hr.1 hr.2 (inFr ((fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).trG j La).symm ((fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).trG (j + 1) La').symm z))
     else 0
 
-theorem movD_xiAt0 (j : ℕ) (La : (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt j) (La' : (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt (j + 1))
-    (hr : ((sysAt Ch std vp unif eO eO_spec dG dG_spec om).Pj j).m + 1 = D.R.N j ∧ ((sysAt Ch std vp unif eO eO_spec dG dG_spec om).Pj (j + 1)).m + 1 = D.R.N (j + 1)) :
-    movD (xiAt0 Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad s rd cls j La La') ((fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).trG j La) ((fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).trG (j + 1) La') =
-      fun x => rdH s rd cls j La La' (homRe hr.1 hr.2 x) := by
-  funext x
-  unfold movD xiAt0
-  rw [dif_pos hr]
-  congr 2
-  apply LinearMap.ext
-  intro y
-  simp [inFr]
 
 include I L0 in
 
@@ -81,26 +70,8 @@ theorem rankAt : ∀ j, j ≤ D.R.m → (sysAt Ch std vp unif eO eO_spec dG dG_s
   | 0, _, _ => by exact L0.A.rk
   | i + 1, hi, La => by exact ((I.at' i hi).st.loc ((I.at' i hi).st.eC.symm La.1).1).rk
 
-theorem movD_xiAt0_step (j : ℕ) (hj : j + 1 ≤ D.R.m) (La : (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt j) (La' : (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt (j + 1)) :
-    movD (xiAt0 Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad s rd cls j La La') ((fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).trG j La) ((fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).trG (j + 1) La') =
-      fun x => rdH s rd cls j La La'
-        (homRe (rankAt Ch std vp unif eO eO_spec dG dG_spec om I L0 j (by omega) La) (rankAt Ch std vp unif eO eO_spec dG dG_spec om I L0 (j + 1) hj La') x) :=
-  movD_xiAt0 Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad s rd cls j La La' ⟨rankAt Ch std vp unif eO eO_spec dG dG_spec om I L0 j (by omega) La, rankAt Ch std vp unif eO eO_spec dG dG_spec om I L0 (j + 1) hj La'⟩
 
-theorem xiAway_xiAt0 (H : RdAway (D.what₂.places.resChar w) rd) :
-    Formalism.L2.KerInert.RepRec.XiAway (sysAt Ch std vp unif eO eO_spec dG dG_spec om) D (xiAt0 Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad s rd cls) := by
-  obtain ⟨S₀, hp, hS⟩ := H
-  refine ⟨S₀, hp, fun j La La' y => ?_⟩
-  unfold xiAt0
-  split_ifs
-  · exact hS _ _ _ _
-  · exact intOff_zero S₀
 
-theorem dataAway_xiAt0 (cl : ℕ) (hcl : Formalism.L2.KerInert.RepRec.ClAway (D.what₂.places.resChar w) cl)
-    (H : RdAway (D.what₂.places.resChar w) rd) :
-    Formalism.L2.KerInert.RepRec.ClAway (D.what₂.places.resChar w) cl ∧
-      Formalism.L2.KerInert.RepRec.XiAway (sysAt Ch std vp unif eO eO_spec dG dG_spec om) D (xiAt0 Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad s rd cls) :=
-  ⟨hcl, xiAway_xiAt0 Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad s rd cls H⟩
 
 def sameChartAt : ∀ j, (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt j → (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt j → Prop
   | 0, _, _ => True
@@ -136,17 +107,7 @@ def xiAtRec : ∀ j, (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt j → (s
     HomE D.host.E (((sysAt Ch std vp unif eO eO_spec dG dG_spec om).Pj j).m + 1) (((sysAt Ch std vp unif eO eO_spec dG dG_spec om).Pj (j + 1)).m + 1) → ℂ :=
   xiAt0 Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad t.seam (t.rd u μ) KA.cls
 
-theorem movD_xiAtRec_step (j : ℕ) (hj : j + 1 ≤ D.R.m) (La : (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt j) (La' : (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt (j + 1)) :
-    movD (xiAtRec Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad t KA j La La') ((fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).trG j La) ((fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).trG (j + 1) La') =
-      fun x => (t.rd u μ).Xi j (KA.cls j La.1 La.2) (KA.cls (j + 1) La'.1 La'.2)
-        (homIE t.seam (homRe (rankAt Ch std vp unif eO eO_spec dG dG_spec om I L0 j (by omega) La) (rankAt Ch std vp unif eO eO_spec dG dG_spec om I L0 (j + 1) hj La') x)) :=
-  movD_xiAt0_step Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad t.seam (t.rd u μ) KA.cls j hj La La'
 
-theorem dataAway_xiAtRec (cl : ℕ) (hcl : Formalism.L2.KerInert.RepRec.ClAway (D.what₂.places.resChar w) cl)
-    (H : RdAway (D.what₂.places.resChar w) (t.rd u μ)) :
-    Formalism.L2.KerInert.RepRec.ClAway (D.what₂.places.resChar w) cl ∧
-      Formalism.L2.KerInert.RepRec.XiAway (sysAt Ch std vp unif eO eO_spec dG dG_spec om) D (xiAtRec Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad t KA) :=
-  dataAway_xiAt0 Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad t.seam (t.rd u μ) KA.cls cl hcl H
 
 def XiChartRec : Prop := XiChartAt Ch std vp unif eO eO_spec dG dG_spec om I (xiAtRec Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad t KA)
 

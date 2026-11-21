@@ -118,27 +118,6 @@ theorem rrc_norm_le (hmul : ∀ g h, π (g * h) = π g ∘L π h) (hone : π 1 =
         _ = _ := by ring
     exact le_of_mul_le_mul_left this hpos
 
-theorem rrc_tendsto_vec (hmul : ∀ g h, π (g * h) = π g ∘L π h) (hone : π 1 = 1) (hn : ∀ g x, ‖π g x‖ = ‖x‖)
-    (hm : ∀ x y, AEStronglyMeasurable (fun g => ⟪x, π g y⟫_ℂ) μ)
-    {k : Set G} (hk : IsCompact k) {v w : H} (hw : ∀ u, ⟪w, u⟫_ℂ = ∫ g in k, ⟪π g v, u⟫_ℂ ∂μ) :
-    Tendsto (fun h => π h w) (𝓝 1) (𝓝 w) := by
-  have t1 : Tendsto (fun h : G => μ (h • k \ k)) (𝓝 1) (𝓝 0) :=
-    tendsto_measure_smul_sdiff_isCompact_isClosed hk hk.isClosed
-  have t2 : Tendsto (fun h : G => μ (k \ h • k)) (𝓝 1) (𝓝 0) := by
-    have e : ∀ h : G, μ (k \ h • k) = μ (h⁻¹ • k \ k) := fun h => by
-      rw [← measure_smul μ h⁻¹ (k \ h • k), Set.smul_set_sdiff, inv_smul_smul]
-    simp only [e]
-    have ti : Tendsto (fun h : G => h⁻¹) (𝓝 1) (𝓝 1) := by
-      simpa using (continuous_inv (G := G)).tendsto 1
-    exact t1.comp ti
-  have r1 : Tendsto (fun h : G => μ.real (h • k \ k)) (𝓝 1) (𝓝 0) :=
-    (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp t1
-  have r2 : Tendsto (fun h : G => μ.real (k \ h • k)) (𝓝 1) (𝓝 0) :=
-    (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp t2
-  have r : Tendsto (fun h : G => ‖v‖ * (μ.real (h • k \ k) + μ.real (k \ h • k))) (𝓝 1) (𝓝 0) := by
-    simpa using (r1.add r2).const_mul ‖v‖
-  rw [tendsto_iff_norm_sub_tendsto_zero]
-  exact squeeze_zero (fun _ => norm_nonneg _) (fun h => rrc_norm_le hmul hone hn hm hk hw h) r
 
 def rrc_C (π : G → (H →L[ℂ] H)) : Submodule ℂ H where
   carrier := {x | Tendsto (fun h => π h x) (𝓝 1) (𝓝 x)}
@@ -152,64 +131,7 @@ def rrc_C (π : G → (H →L[ℂ] H)) : Submodule ℂ H where
     have := Tendsto.const_smul ha c
     simpa only [mem_ofPred_eq, map_smul] using this
 
-theorem rrc_orth [TopologicalSpace.SeparableSpace H] (hmul : ∀ g h, π (g * h) = π g ∘L π h) (hone : π 1 = 1)
-    (hn : ∀ g x, ‖π g x‖ = ‖x‖) (hm : ∀ x y, AEStronglyMeasurable (fun g => ⟪x, π g y⟫_ℂ) μ) :
-    (rrc_C π)ᗮ = ⊥ := by
-  rw [Submodule.eq_bot_iff]
-  intro u hu
-  rw [Submodule.mem_orthogonal] at hu
-  have hz : ∀ v, (fun g => ⟪π g v, u⟫_ℂ) =ᵐ[μ] 0 := by
-    intro v
-    apply ae_eq_zero_of_forall_setIntegral_isCompact_eq_zero'
-    · rw [locallyIntegrable_iff]
-      intro k hk
-      exact rrc_intOn hn hm hk.measure_lt_top v u
-    · intro k hk
-      obtain ⟨w, hw⟩ := rrc_exists_vec hn hm hk.measure_lt_top v
-      rw [← hw u]
-      exact hu w (rrc_tendsto_vec hmul hone hn hm hk hw)
-  have hall : ∀ᵐ g ∂μ, ∀ n, ⟪π g (TopologicalSpace.denseSeq H n), u⟫_ℂ = 0 := ae_all_iff.2 fun n => hz _
-  obtain ⟨g, hg⟩ := hall.exists
-  have hfun : (fun v => ⟪π g v, u⟫_ℂ) = fun _ => 0 :=
-    (TopologicalSpace.denseRange_denseSeq H).equalizer ((π g).continuous.inner continuous_const) continuous_const
-      (funext hg)
-  have h0 := congrFun hfun (π g⁻¹ u)
-  have e1 : π g (π g⁻¹ u) = u := by
-    rw [← ContinuousLinearMap.comp_apply, ← hmul, mul_inv_cancel, hone]; rfl
-  simp only [e1] at h0
-  exact inner_self_eq_zero.1 h0
 
-theorem rr_cont_of_meas [TopologicalSpace.SeparableSpace H] (hmul : ∀ g h, π (g * h) = π g ∘L π h) (hone : π 1 = 1)
-    (hn : ∀ g x, ‖π g x‖ = ‖x‖) (hm : ∀ x y, AEStronglyMeasurable (fun g => ⟪x, π g y⟫_ℂ) μ) (x : H) :
-    Continuous fun g => π g x := by
-  have hd : Dense ((rrc_C π : Submodule ℂ H) : Set H) := by
-    rw [Submodule.dense_iff_topologicalClosure_eq_top, Submodule.topologicalClosure_eq_top_iff]
-    exact rrc_orth hmul hone hn hm
-  have h1 : ∀ x, Tendsto (fun h => π h x) (𝓝 1) (𝓝 x) := by
-    intro x
-    rw [Metric.tendsto_nhds]
-    intro ε hε
-    obtain ⟨s, hs, hxs⟩ := hd.exists_dist_lt x (by positivity : 0 < ε / 3)
-    have hs' : Tendsto (fun h => π h s) (𝓝 1) (𝓝 s) := hs
-    filter_upwards [(Metric.tendsto_nhds.1 hs') (ε / 3) (by positivity)] with h hh
-    have a : dist (π h x) (π h s) = dist x s := by
-      rw [dist_eq_norm, ← map_sub, hn, dist_eq_norm]
-    calc dist (π h x) x ≤ dist (π h x) (π h s) + dist (π h s) s + dist s x := dist_triangle4 _ _ _ _
-      _ < ε / 3 + ε / 3 + ε / 3 := by
-          rw [a, dist_comm s x]
-          linarith
-      _ = ε := by ring
-  rw [continuous_iff_continuousAt]
-  intro g₀
-  have e : (fun g => π g x) = fun g => π g₀ (π (g₀⁻¹ * g) x) := by
-    funext g
-    rw [← ContinuousLinearMap.comp_apply, ← hmul, mul_inv_cancel_left]
-  have t : Tendsto (fun g => g₀⁻¹ * g) (𝓝 g₀) (𝓝 1) := by
-    simpa using (continuous_const_mul g₀⁻¹).tendsto g₀
-  have c := ((π g₀).continuous.tendsto x).comp ((h1 x).comp t)
-  show Tendsto (fun g => π g x) (𝓝 g₀) (𝓝 (π g₀ x))
-  rw [e]
-  exact c
 
 end Cont
 

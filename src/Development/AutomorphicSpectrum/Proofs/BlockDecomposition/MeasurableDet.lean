@@ -27,12 +27,7 @@ theorem gW_nonneg (J : ℕ) (c : ℝ) (g : M22) : 0 ≤ gW J c g := by
   have := nrm_nonneg (Matrix.of g)
   unfold gW; positivity
 
-theorem dK_nonneg (β K : ℝ) {N : ℝ} (hN : 0 ≤ N) (d : ℝ) : 0 ≤ dK β K N d := by
-  unfold dK; split_ifs with h
-  · have := h.le; positivity
-  · exact le_rfl
 
-theorem measurable_nv : Measurable nv := by unfold nv; fun_prop
 
 theorem measurable_det : Measurable fun g : M22 => (Matrix.of g).det := by
   simp only [Matrix.det_fin_two, Matrix.of_apply]; fun_prop

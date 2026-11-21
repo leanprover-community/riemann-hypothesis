@@ -80,13 +80,6 @@ theorem PushForwardOpen.hyps_inhabited :
     have hb : b = y 0 := congrFun (Set.mem_singleton_iff.1 h2) 0
     rw [ha, hb]
 
-theorem PushForwardOpen.pushforwardOpen_projLine (h : PushForwardOpen.Statement) :
-    mInt p1 (fun _ : Fin 1 => fsPot) (fun _ => (1 : ℝ)) =
-      ∫ y, ∑ᶠ x ∈ PushForwardOpen.projLineAffineCoordinate ⁻¹' {y} ∩ PushForwardOpen.finitePlane,
-        (fun _ : OnePoint ℂ => (1 : ℝ)) x * pushDens p1 (fun _ : Fin 1 => fsPot)
-          PushForwardOpen.projLineAffineCoordinate x := by
-  obtain ⟨hΦ, hO, hq, hd, hf, hg⟩ := PushForwardOpen.hyps_inhabited
-  exact (h p1 _ hΦ PushForwardOpen.projLineAffineCoordinate _ hO hq hd hf _ hg).2
 
 abbrev ProjRegular.pointV : Set ProjectiveLineResolution.res.X := {((0 : ℂ) : OnePoint ℂ)}
 
@@ -134,27 +127,7 @@ theorem ProjRegularDens.hyps_inhabited :
       ∀ x ∈ ProjRegular.pointV, ProjRegular.projFirstCoordinate (segre (ProjectiveLineResolution.res.lift x x)) ≠ 0 :=
   ⟨fun j => j.elim0, ProjRegular.holoMap_pointV, isClosed_singleton, ProjRegular.projFirstCoord_segre_lift_ne_zero⟩
 
-theorem ProjRegular.applies_to_point (h : ProjRegular.Statement) :
-    IsOpen (projRegular ProjectiveLineResolution.res ProjRegular.projFirstCoordinate (ptAtlas ProjRegular.pointV)) :=
-  (h Unit (PBlk 2) ⊥ ProjectiveLineResolution.JJ 0 ProjectiveLineResolution.res ProjRegular.projFirstCoordinate ProjRegular.pointV
-    (ptAtlas ProjRegular.pointV) ProjRegular.hyps_inhabited).1
 
-theorem ProjRegularFibre.applies_to_point (h : ProjRegularFibre.Statement) :
-    ∀ᵐ y, ((projCoord ProjectiveLineResolution.res ProjRegular.projFirstCoordinate ∘ Subtype.val : ProjRegular.pointV → Fin 0 → ℂ)
-      ⁻¹' {y} ∩ projRegular ProjectiveLineResolution.res ProjRegular.projFirstCoordinate (ptAtlas ProjRegular.pointV)).Finite := by
-  obtain ⟨h1, h2, h3⟩ := ProjRegularFibre.hyps_inhabited
-  exact h Unit (PBlk 2) ⊥ ProjectiveLineResolution.JJ 0 ProjectiveLineResolution.res ProjRegular.projFirstCoordinate ProjRegular.pointV
-    (ptAtlas ProjRegular.pointV) h1 h2 h3
 
-theorem ProjRegularDens.applies_to_point (h : ProjRegularDens.Statement) :
-    ∀ j, ∀ᵐ u, u ∈ ((ptAtlas ProjRegular.pointV).chart j).target →
-      ((ptAtlas ProjRegular.pointV).chart j).symm u ∉
-        projRegular ProjectiveLineResolution.res ProjRegular.projFirstCoordinate (ptAtlas ProjRegular.pointV) →
-      locDens (ptAtlas ProjRegular.pointV)
-        (fun i => (potOf ProjectiveLineResolution.res ((Fin.elim0 : Fin 0 → HermLine (PBlk 2)) i)).pullback
-          Subtype.val continuous_subtype_val) j u = 0 := by
-  obtain ⟨h0, h1, h2, h3⟩ := ProjRegularDens.hyps_inhabited
-  exact h Unit (PBlk 2) ⊥ ProjectiveLineResolution.JJ 0 ProjectiveLineResolution.res Fin.elim0 ProjRegular.projFirstCoordinate ProjRegular.pointV
-    (ptAtlas ProjRegular.pointV) h0 h1 h2 h3
 
 end GroundTheory.Heights₂.Heights.Targets

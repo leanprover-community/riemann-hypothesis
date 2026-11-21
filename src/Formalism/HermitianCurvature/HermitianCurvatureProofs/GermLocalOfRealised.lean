@@ -128,6 +128,3 @@ end
 
 end Formalism.FourierDecayAlt.P.GermRealisation
 
-theorem Formalism.FourierDecayAlt.P.germ_local_of_realised : Formalism.FourierDecayAlt.P.GermRealisation.GermLocOfRealised := by
-  intro E _ _ _ Wp Wq _ _ _ _ S v hR hC
-  exact Formalism.FourierDecayAlt.P.GermRealisation.germLoc_of_realised hR hC

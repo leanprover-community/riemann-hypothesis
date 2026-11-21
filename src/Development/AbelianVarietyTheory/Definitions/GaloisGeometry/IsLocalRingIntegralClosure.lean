@@ -62,8 +62,6 @@ theorem galInt_one (x : integralClosure O Ω) : galInt O K (1 : Ω ≃ₐ[K] Ω)
 def galRes (σ : Ω ≃ₐ[K] Ω) : ResidueField (integralClosure O Ω) ≃+* ResidueField (integralClosure O Ω) :=
   ResidueField.mapEquiv (galInt O K σ)
 
-theorem galRes_residue (σ : Ω ≃ₐ[K] Ω) (x : integralClosure O Ω) :
-    galRes σ (residue _ x) = residue _ (galInt O K σ x) := rfl
 
 variable (O K Ω)
 
@@ -291,11 +289,6 @@ variable {O : Type} [CommRing O] [HenselianLocalRing O] {K : Type} [Field K] [Al
   {Ω : Type} [Field Ω] [Algebra K Ω] [Algebra O Ω] [IsScalarTower O K Ω]
   {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of O))
 
-theorem galC_natural {F G : Shv R} (φ : F ⟶ G) (σ : Ω ≃ₐ[K] Ω) :
-    (pullC R (galSpMap p σ)).map (nbCMap R (iSp Ω p) (jGen K Ω p) φ) ≫ galC R p G σ =
-      galC R p F σ ≫ nbCMap R (iSp Ω p) (jGen K Ω p) φ :=
-  (NatTrans.mapHomologicalComplex (transFlat R (bcSq (galSpMap_i p σ)).hom (galGen_j p σ)) _).naturality
-    (resMap R φ)
 
 def galHFam (l : ℕ) [Fact l.Prime] (n : ℤ) (σ : Ω ≃ₐ[K] Ω) :
     HPsiL l K Ω p n →+ (∀ k, HPsi ℤ_[l] K Ω p (lam l k) n) where

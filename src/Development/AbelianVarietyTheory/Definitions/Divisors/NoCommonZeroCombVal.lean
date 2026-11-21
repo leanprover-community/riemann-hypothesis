@@ -120,9 +120,6 @@ private theorem ev_units_val_eq_evHom {V₁ : Y.Opens} {y₁ : CxPts p σ} (h : 
   rw [ev_eq h]
   rfl
 
-private theorem pullU_val' {Y₁ : Scheme.{0}} (g : Y₁ ⟶ Y) (W₁ : Y.Opens) (u : Γ(Y, W₁)ˣ) :
-    (pullU g W₁ u).val = (g.app W₁).hom u.val :=
-  rfl
 
 private theorem ev_app_pullback_eq_ev {k₁ : Type} [CommRing k₁] {Y₁ : Scheme.{0}} {p₁ : Y₁ ⟶ Sp k₁}
     {σ₁ : k₁ →+* ℂ} (g : Y₁ ⟶ Y) {W₁ : Y.Opens} {z₁ : CxPts p₁ σ₁} {y₁ : CxPts p σ}
@@ -538,24 +535,7 @@ def fs (hB : B.IsLB) (e : α → B.ι → CxPts p σ → ℂ) (he : ∀ a, e a �
     rw [Real.log_mul (by positivity) (h.sum_pos hj).ne']
     ring
 
-theorem nsq_fs {hB : B.IsLB} {he : ∀ a, e a ∈ fibSec p σ B} {h : NoCommonZero e}
-    (hs : s ∈ fibSec p σ B) {i : B.ι} (hi : y ∈ ptsIn p σ (B.U i)) :
-    (fs hB e he h).nsq s y = ‖s i y‖ ^ 2 / ∑ a, ‖e a i y‖ ^ 2 := by
-  rw [nsq_eq _ hs hi]
-  simp only [fs]
-  rw [Real.exp_neg, Real.exp_log (h.sum_pos hi), div_eq_mul_inv]
 
-theorem nsq_fs_le {hB : B.IsLB} {he : ∀ a, e a ∈ fibSec p σ B} {h : NoCommonZero e} (c : α → ℂ)
-    (y : CxPts p σ) : (fs hB e he h).nsq (∑ a, c a • e a) y ≤ ∑ a, ‖c a‖ ^ 2 := by
-  have hi := mem_pick hB y
-  have hpos := h.sum_pos hi
-  simp only [nsq, fs]
-  rw [Real.exp_neg, Real.exp_log hpos, ← div_eq_mul_inv, div_le_iff₀ hpos]
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-  calc ‖∑ a, c a * e a (pick hB y) y‖ ^ 2 ≤ (∑ a, ‖c a‖ * ‖e a (pick hB y) y‖) ^ 2 := by
-        gcongr
-        exact (norm_sum_le _ _).trans_eq (by simp [norm_mul])
-    _ ≤ _ := Finset.sum_mul_sq_le_sq_mul_sq _ _ _
 
 theorem sum_nsq_fs {hB : B.IsLB} {he : ∀ a, e a ∈ fibSec p σ B} {h : NoCommonZero e}
     (y : CxPts p σ) : ∑ a, (fs hB e he h).nsq (e a) y = 1 := by

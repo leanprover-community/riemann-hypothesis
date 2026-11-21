@@ -31,23 +31,7 @@ section Ideals
 variable {K L A B G : Type*} [Field K] [Field L] [Algebra K L] [Ring A] [Ring B] [Algebra K A]
   [Algebra K B] [Algebra L B] [IsScalarTower K L B] {j : A →ₐ[K] B}
 
-theorem restrictScalars_map_eq_span (hj : IsBaseChange L j.toLinearMap) (I : Ideal A) :
-    (I.map j).restrictScalars L =
-      Submodule.span L (j.toLinearMap '' (I.restrictScalars K : Submodule K A)) := by
-  first
-  | exact @_root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span
-  | exact _root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span
-  | (apply _root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span <;> assumption)
-  | (intros; apply _root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span ..)
 
-theorem ideal_comap_map (hj : IsBaseChange L j.toLinearMap) (I : Ideal A) :
-    (I.map j).comap j = I := by
-  ext a
-  have := SetLike.ext_iff.1 (comap_span_image hj (I.restrictScalars K)) a
-  rw [← restrictScalars_map_eq_span hj] at this
-  exact this
 
 theorem ideal_map_comap_of_span (I : Ideal B) (N : Submodule K A)
     (h : Submodule.span L (j.toLinearMap '' N) = I.restrictScalars L) :

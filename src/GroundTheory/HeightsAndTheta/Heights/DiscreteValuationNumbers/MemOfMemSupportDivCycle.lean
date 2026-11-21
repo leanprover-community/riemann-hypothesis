@@ -131,26 +131,9 @@ section Inhabitants
 
 variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 
-theorem mem_of_mem_support_divCycle {R : Type*} [CommRing R] [IsNoetherianRing R]
-    {P W : Ideal (MRingOver R ι)} {s : MRingOver R ι} (h : W ∈ (divCycle P s).support) :
-    W.IsPrime ∧ s ∈ W := by
-  classical
-  have hW : W ∈ divSupp P s := by
-    by_contra hn
-    apply Finsupp.mem_support_iff.mp h
-    simp only [divCycle]
-    rw [Finsupp.ofSupportFinite_coe, if_neg hn]
-  exact ⟨hW.1.1.1, hW.1.1.2 (Ideal.mem_sup_right (Ideal.mem_span_singleton_self s))⟩
 
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
-theorem mem_of_mem_support_divO {P W : Ideal (MRingOver O ι)} {f g : MRingOver O ι}
-    (h : W ∈ (divO P f g).support) :
-    W ∈ (divCycle P f).support ∨ W ∈ (divCycle P g).support := by
-  classical
-  rcases Finset.mem_union.mp (Finsupp.support_sub h) with h1 | h1
-  · exact Or.inl (Finsupp.support_mapRange h1)
-  · exact Or.inr (Finsupp.support_mapRange h1)
 
 omit [Fintype K] [IsDomain O] [IsDiscreteValuationRing O] in
 
@@ -162,13 +145,6 @@ theorem isMultiHomog_C (a : O) : IsMultiHomog (C a : MRingOver O ι) 0 := by
   · subst h0; simp
   · exact absurd rfl hm
 
-theorem isVerticalDiv_unif (ϖ : O) {P : Ideal (MRingOver O ι)} (hP : P.IsPrime) :
-    IsVerticalDiv ϖ P 0 (C ϖ) 1 := by
-  refine ⟨⟨0, 0, isMultiHomog_C ϖ, by simpa using isMultiHomog_C (ι := ι) (1 : O), by simp⟩,
-    hP.one_notMem, fun W hW => ?_⟩
-  rcases mem_of_mem_support_divO hW with h | h
-  · exact (mem_of_mem_support_divCycle h).2
-  · exact absurd (mem_of_mem_support_divCycle h).2 (mem_of_mem_support_divCycle h).1.one_notMem
 
 variable (O) in
 

@@ -42,15 +42,7 @@ theorem IsTransRep.unique {W : Type} [NormedAddCommGroup W] [InnerProductSpace �
   ext g x
   exact hM ((h₁ g x).unique (h₂ g x))
 
-theorem IsTransRep.eq_of_translate {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] {G : Type} [Group G]
-    {eG : G ≃* G0 L.Pg L.r} {M : HMod (Bridge.Gf V → W)} (hM : Function.Injective M.e) {ρ : Representation ℂ G M.H}
-    (h : IsTransRep V β L eG M ρ) {g : G} {x x' : M.H} (hx : IsTranslate V β L (eG g) (M.e x) (M.e x')) : x' = ρ g x :=
-  hM (hx.unique (h g x))
 
-theorem IsTranslate.eq_g0Act {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] {g₀ : G0 L.Pg L.r}
-    {F F' : Bridge.Gf V → W} (h : IsTranslate V β L g₀ F F') (κ : (levEnv V β L).Q) (hκ : LiftsTo V β L κ g₀) :
-    F' = Bridge.g0Act (levEnv V β L).ch κ F :=
-  funext (h.2 κ hκ)
 
 end Space
 
@@ -75,17 +67,6 @@ def GEquivAdj : Prop :=
   (∀ t, ∃ ρ, IsActX R t ρ ∧ Commutes R.gE ρ (LinearMap.adjoint (R.Th t))) ∧
     ∀ i t, ∃ ρ, IsActV R i t ρ ∧ Commutes (R.gW i (sg0 D A)) ρ (LinearMap.adjoint (R.thG i t))
 
-theorem GEquiv.th_of_translate (h : GEquiv R) (t : T) (hinj : Function.Injective (R.HX t).e) (g : G) (x x' : (R.HX t).H)
-    (hx : IsTranslate D.sp.X' R.βX (R.datXt t) (R.eG g) ((R.HX t).e x) ((R.HX t).e x')) :
-    R.Th t x' = R.gE g (R.Th t x) := by
-  unfold GEquiv at h
-  refine (h.1 t).elim fun ρ hh => ?_
-  have hρ := hh.1
-  have hc := hh.2
-  unfold IsActX at hρ
-  have e : x' = ρ g x := IsTransRep.eq_of_translate (V := D.sp.X') (β := R.βX) (L := R.datXt t) (eG := R.eG) hinj hρ hx
-  rw [e]
-  exact hc g x
 
 variable (D) in
 

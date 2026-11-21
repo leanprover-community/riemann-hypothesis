@@ -81,63 +81,7 @@ theorem finite_of_dominates {X Y : Scheme.{0}} {Ω Ω₀ : Type} [Field Ω] [Fie
   algebraize [i]
   exact .of_quasiFinite
 
-theorem genPt_of_dominates {X Y : Scheme.{0}} {Ω Ω₀ : Type} [Field Ω] [Field Ω₀] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
-    {ξ₀ : Spec (CommRingCat.of Ω₀) ⟶ Y} {f : X ⟶ Y} {i : Ω₀ →+* Ω}
-    (h : GlobalTheory.CompanionTheory.Ar.Dominates ξ ξ₀ f i) : f (GlobalTheory.CompanionTheory.Ar.genPt ξ) = GlobalTheory.CompanionTheory.Ar.genPt ξ₀ := by
-  refine (Scheme.Hom.comp_apply ξ f _).symm.trans ?_
-  rw [show ξ ≫ f = _ from h]
-  exact (Scheme.Hom.comp_apply _ ξ₀ _).trans
-    (congrArg ξ₀ (Subsingleton.elim (α := PrimeSpectrum Ω₀) _ _))
 
-theorem isPrimitiveRoot_of_level {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H}
-    {X : Scheme.{0}} {t : SAB H X} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {N : ℕ} (hN : 0 < N) {z : Ωˣ}
-    {ev : D.La → (Over.mk ξ ⟶ t.G)} (h : XR.IsFullLevelAt D t ξ N z ev) : IsPrimitiveRoot (z : Ω) N := by
-  obtain ⟨I, hI, -⟩ := h (AlgebraicClosure Ω) (algebraMap Ω _)
-  refine IsPrimitiveRoot.of_map_of_injective (f := algebraMap Ω (AlgebraicClosure Ω)) ?_ (RingHom.injective _)
-  rw [← hI]
-  exact IsPrimitiveRoot.coe_units_iff.2 (I.ζ_prim N hN)
 
-theorem exists_hodgeCpt_flag : Out.WeilSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (R : ℕ → ℕ) (e₀ : Y.X), e₀ ∈ genericPoints Y.X → (∀ p ∈ S, p.Prime) → (∀ p : ℕ, p.Prime → (p : ℤ) ∣ NumberField.discr E → p ∈ S) → (∀ p ∈ S, 4 ≤ R p) → ∃ (Ω : Type) (_ : Field Ω) (_ : CharZero Ω) (K : Type) (_ : Fintype K) (J : K → Type) (_ : ∀ k, Fintype (J k)) (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (Fl : 𝔐.Flag) (xdeg : CMType H × Fin (D.p + D.q) → K → ℤ) (e : CMType H × Fin (D.p + D.q) → Ω), 𝔐.f (GlobalTheory.CompanionTheory.Ar.genPt 𝔐.ξ) = e₀ ∧ 𝔐.R = R ∧ (∀ p ∈ S, HT.HTFree 𝔐 p) ∧ Fl.RootLines xdeg e ∧ ∀ s, (𝔐.dR s).IsFlagVBOn Set.univ (Fl.b s) := by
-  intro hW E _ _ _ H D l Xo c Y S R e₀ he hS hd hR
-  have hN : 0 < ∏ p ∈ S, p ^ R p := Finset.prod_pos fun p hp => pow_pos (hS p hp).pos _
-  obtain ⟨Ω, _, _, n, x, M, f, y₀, t, m, z, ev, hnorm, hfin, hf, hy, hlev, htor, -⟩ :=
-    GlobalTheory.T.LevelCoverSt_holds E H D l Xo c Y e₀ he _ hN
-  have hz := isPrimitiveRoot_of_level hN hlev
-  have hζ : ∀ p ∈ S, ∃ ζ : Ω, IsPrimitiveRoot ζ (p ^ R p) := fun p hp => by
-    obtain ⟨m, hm⟩ := Finset.dvd_prod_of_mem (fun p => p ^ R p) hp
-    exact ⟨_, hz.pow hN (hm.trans (mul_comm _ _))⟩
-  let M₁ : PModel ℤ (fun c' : (k : Unit) → Fin n => ∏ k, (fun q : Σ _ : Unit, Fin n => x q.2) ⟨k, c' k⟩) :=
-    ⟨M.X, M.ξ, M.s, M.hover, M.all,
-      coordTie_reindex M.tie (fun c' => c' ()) (fun a => ⟨fun _ => a, rfl⟩) _ fun c' => by simp⟩
-  obtain ⟨K₁, _, J₁, _, y₁, -, -, A, g₁, -, -, hg₁, hAf, hAR, hA, -⟩ :=
-    GlobalTheory.T.hodge_cpt_projective_model hW E H D l Xo c Y S R Ω Unit (fun _ => Fin n) (fun q => x q.2) M₁ f y₀ hnorm hy (hf ▸ he) hS hd hR
-      (fun p hp => fullTorsion_push m.cart (Finset.dvd_prod_of_mem (fun p => p ^ R p) hp) htor) hζ
-  have hg₁' : A.ξ ≫ g₁ = M.ξ := by
-    rw [hg₁]
-    simp [M₁]
-  have hAy : A.ξ ≫ A.f = y₀ ≫ Y.j := by rw [hAf, ← Category.assoc, hg₁', hy]
-  have hdom : GlobalTheory.CompanionTheory.Ar.Dominates M.ξ A.ξ₀ f A.fn := by
-    have := A.fn_over
-    unfold GlobalTheory.CompanionTheory.Ar.Dominates at this ⊢
-    rw [← this, hAy, hy]
-  have hcov : A.IsCover (letI := A.fn.toAlgebra; Module.finrank A.Ω₀ Ω) := by
-    refine ⟨?_, rfl⟩
-    let := A.fn.toAlgebra
-    have : Module.Finite A.Ω₀ Ω := finite_of_dominates M.tie.gen f hdom
-    exact Module.finrank_pos
-  obtain ⟨Ω', _, _, i, K₂, _, J₂, _, y₂, B, g₂, b, Li₀, a₀, m₀, M₀, j, V₀, hg₂, hBf, hBR, hB, hb, hj, hV, hgen⟩ :=
-    GlobalTheory.T.hodge_cpt_good_reduction_degree hW E H D l Xo c Y S Ω K₁ J₁ y₁ A y₀ _ hAy hd hA (by rw [hAR]; exact hζ) hcov
-  have hBy : B.ξ ≫ B.f = (spMap i ≫ y₀) ≫ Y.j := by
-    rw [hBf, ← Category.assoc, hg₂, Category.assoc, hAy, Category.assoc]
-  obtain ⟨K₃, _, J₃, _, y₃, -, -, C, g₃, Fl, xdeg, e, -, -, hg₃, hCf, hCR, -, hC, -, -, hroot, hdR, -⟩ :=
-    GlobalTheory.T.hodge_cpt_label_bases hW E H D l Xo c Y S Ω' K₂ J₂ y₂ B (spMap i ≫ y₀) b Li₀ a₀ m₀ M₀ j V₀ _ hBy hd hB
-      (fun p hp => by
-        obtain ⟨ζ, hζ'⟩ := hζ p hp
-        exact ⟨i ζ, by rw [hBR, hAR]; exact hζ'.map_of_injective i.injective⟩) hb hj hV hgen
-  refine ⟨Ω', inferInstance, inferInstance, K₃, inferInstance, J₃, inferInstance, y₃, C, Fl, xdeg, e, ?_,
-    by rw [hCR, hBR, hAR], hC, hroot, hdR⟩
-  rw [hCf, Scheme.Hom.comp_apply, genPt_of_dominates hg₃, hBf, Scheme.Hom.comp_apply, genPt_of_dominates hg₂, hAf,
-    Scheme.Hom.comp_apply, genPt_of_dominates hg₁]
-  exact hf
 
 end GlobalTheory.CompanionTheory.Ar.HodgeExists

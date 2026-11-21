@@ -16,7 +16,6 @@ theorem actRat : ActRat := actionRational_holds
 theorem pairNondeg : PairNondeg := pairingNondegenerate_holds
 theorem pairPos : PairPos := pairingPositive_holds
 theorem basisAtEx : BasisAtEx := latticeBasisExists_holds
-theorem delIndep : DelIndep := deltaIndependence_holds
 theorem nabDelFree : NabDelFree := nablaDeltaFree_holds
 theorem nabDelLoc : NabDelLoc := nablaDeltaLocal_holds
 theorem nabDelLattice : NabDelLattice := nablaDeltaLattice_holds

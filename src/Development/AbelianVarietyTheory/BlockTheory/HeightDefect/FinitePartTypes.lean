@@ -71,18 +71,6 @@ def typeSub (S : SPar) : Submodule ℂ (GA D V → ℂ) where
     have h2 := (lt_div_iff₀ hc).1 (h1 x hx)
     nlinarith [norm_nonneg c, norm_nonneg (a x - ψ x)]
 
-theorem HasTypeAt.eq_zero_of_not_good {S : SPar} (hS : ∀ p q, ¬ GoodPar V.rank p q S) {φ : GA D V → ℂ}
-    (h : HasTypeAt θ V τ S φ) : φ = 0 := by
-  have hb : finPartOfType θ V τ S = ⊥ := by
-    rw [finPartOfType, sSup_eq_bot]
-    rintro W ⟨H, _, _, σ, lam, ε, P, T, h1, h2, -⟩
-    exact (hS _ _ ⟨lam, ε, h1, h2, rfl, rfl⟩).elim
-  funext x
-  by_contra hx
-  obtain ⟨ψ, hψ, h1⟩ := h {x} isCompact_singleton ‖φ x‖ (norm_pos_iff.2 hx)
-  rw [hb, Submodule.mem_bot] at hψ
-  have := h1 x rfl
-  simp [hψ] at this
 
 end GlobalTheory.IndefiniteRowSideFullHecke.FinitePartTypes
 

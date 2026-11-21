@@ -249,13 +249,7 @@ theorem ralg_iff (C : CGTrue hL D T) {a} (π : D.naut.CG a) :
   have := host_isCMField D.host
   exact (CG.isRegAlg_iff (C.e a π).1).symm
 
-theorem not_nonempty_zero (C : CGTrue hL D T) : ¬ Nonempty (D.naut.CG 0) :=
-  not_nonempty_iff.2 C.zero
 
-theorem nontrivial_one (C : CGTrue hL D T) : Nontrivial (D.naut.CG 1) :=
-  haveI := host_isCMField D.host
-  haveI : Nontrivial (HostCGu D.host 1) := inferInstanceAs (Nontrivial (CGu D.host.E 1))
-  (C.equiv 1 one_pos).nontrivial
 
 theorem frob_one (C : CGTrue hL D T) (π : D.naut.CG 1) (w)
     (hu : haveI := host_isCMField D.host; (CGu.equivChar _ (C.e 1 π)).1.UnrAt w) :

@@ -62,22 +62,10 @@ def prodFac {A B : Type} [CommMonoid B] (g : ℕ → ℕ → A → B) : ℕ → 
   | _, [] => 1
   | a, (t, s) :: rest => g a s t ^ s * prodFac g (a + s) rest
 
-theorem prodFac_append {A B : Type} [CommMonoid B] (g : ℕ → ℕ → A → B) (l1 l2 : List (A × ℕ)) (a : ℕ) :
-    prodFac g a (l1 ++ l2) = prodFac g a l1 * prodFac g (a + (l1.map Prod.snd).sum) l2 := by
-  induction l1 generalizing a with
-  | nil => simp [prodFac]
-  | cons x l ih =>
-    obtain ⟨t, s⟩ := x
-    simp [prodFac, ih, mul_assoc, add_assoc]
 
 def Hm (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp) (p : PlF D) (a m : ℕ) : (D.s.atP p).Ep :=
   ∏ k ∈ Finset.range m, hF D δ p (a + k) 1
 
-theorem Hm_add (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp) (p : PlF D) (a m m' : ℕ) :
-    Hm D δ p a (m + m') = Hm D δ p a m * Hm D δ p (a + m) m' := by
-  unfold Hm
-  rw [Finset.prod_range_add]
-  simp only [add_assoc]
 
 theorem sum_nu (r a s : ℕ) (ha : 1 ≤ a) (hs : a + s ≤ r + 2) :
     ∑ k ∈ Finset.range s, nu r (a + k) (a + k + 1 - 1) = nu r a (a + s - 1) * s := by
@@ -111,19 +99,5 @@ theorem hF_pow (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).
   · rw [twist_one_pow p s, ← pow_mul, pow_mod_two_of_sq _ (twist_sq p) (s * s), hmod,
       ← pow_mod_two_of_sq _ (twist_sq p) s]
 
-theorem prodFac_noTop (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp) (T T' : ℕ) (p : PlF D)
-    (bs : List (D.host.E × ℕ)) (a : ℕ) (ha : 1 ≤ a) (hsz : ∀ b ∈ bs, 1 ≤ b.2)
-    (hend : a + (bs.map Prod.snd).sum ≤ D.R.rS + 1) :
-    prodFac (gF D δ T T' p) a bs = Hm D δ p a (bs.map Prod.snd).sum := by
-  induction bs generalizing a with
-  | nil => simp [prodFac, Hm]
-  | cons b rest ih =>
-    obtain ⟨t, s⟩ := b
-    have hs1 : 1 ≤ s := hsz (t, s) (by simp)
-    have hrest : ∀ b ∈ rest, 1 ≤ b.2 := fun b hb => hsz b (by simp [hb])
-    simp only [List.map_cons, List.sum_cons] at hend ⊢
-    have hnt : ¬ (a + s - 1 = D.R.rS + 1 ∧ s = 1) := by omega
-    rw [prodFac, gF, if_neg hnt, hF_pow D δ p a s ha (by omega),
-      ih (a + s) (by omega) hrest (by omega), ← Hm_add]
 
 end PI.SupportDatumW

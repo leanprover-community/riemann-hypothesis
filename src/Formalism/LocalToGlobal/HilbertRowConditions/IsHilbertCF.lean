@@ -82,8 +82,6 @@ structure KsPieces (D : D7) (T : HostTied D) where
 
   E_le_KPs : T.fr.j.fieldRange ≤ KPs
 
-theorem KsPieces.K_le_M {D : D7} {T : HostTied D} (P : KsPieces D T) : Formalism.L2.Host.KQ D.host.d ≤ P.M :=
-  le_trans (P.HK_hilb.1.1) P.HK_le_M
 
 def rootOrders (D : D7) : List ℕ :=
   [Nat.card (G0g D.nd), D.host.g 0 * (D.host.g 0 - 1), D.host.g 1 * (D.host.g 1 - 1), 3 ^ 4, 5 ^ 4]

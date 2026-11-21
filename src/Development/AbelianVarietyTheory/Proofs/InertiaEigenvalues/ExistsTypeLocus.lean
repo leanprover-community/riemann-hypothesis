@@ -104,12 +104,6 @@ variable (D : D7) (μ : D.what₂.Tup) (j : ℕ)
 
 local notation "CZ" => Subalgebra.center ℂ (MonoidAlgebra ℂ (G0g D.nd))
 
-theorem onMt_mul {a b : MonoidAlgebra ℂ (G0g D.nd)} (ha : a ∈ CZ) (hb : b ∈ CZ) :
-    D.ntypes.onMt μ j (a * b) = D.ntypes.onMt μ j a * D.ntypes.onMt μ j b := by
-  unfold NTypes.onMt
-  rw [dif_pos (Subalgebra.mul_mem _ ha hb), dif_pos ha, dif_pos hb]
-  have e : (⟨a * b, Subalgebra.mul_mem _ ha hb⟩ : ↥CZ) = ⟨a, ha⟩ * ⟨b, hb⟩ := Subtype.ext rfl
-  rw [e, map_mul]
 
 theorem onMt_add {a b : MonoidAlgebra ℂ (G0g D.nd)} (ha : a ∈ CZ) (hb : b ∈ CZ) :
     D.ntypes.onMt μ j (a + b) = D.ntypes.onMt μ j a + D.ntypes.onMt μ j b := by
@@ -142,15 +136,6 @@ theorem onMt_sum {ι : Type} (S : Finset ι) (a : ι → MonoidAlgebra ℂ (G0g 
         (Subalgebra.sum_mem _ fun x hx => ha x (Finset.mem_insert_of_mem hx)),
       ih fun x hx => ha x (Finset.mem_insert_of_mem hx)]
 
-theorem onMt_prod (L : List (MonoidAlgebra ℂ (G0g D.nd))) (hL : ∀ a ∈ L, a ∈ CZ) :
-    D.ntypes.onMt μ j L.prod = (L.map (D.ntypes.onMt μ j)).prod ∧ L.prod ∈ CZ := by
-  induction L with
-  | nil => exact ⟨onMt_one D μ j, Subalgebra.one_mem _⟩
-  | cons a L ih =>
-    obtain ⟨h1, h2⟩ := ih fun b hb => hL b (List.mem_cons_of_mem a hb)
-    have ha := hL a List.mem_cons_self
-    rw [List.prod_cons, List.map_cons, List.prod_cons, onMt_mul D μ j ha h2, h1]
-    exact ⟨rfl, Subalgebra.mul_mem _ ha h2⟩
 
 end OnMt
 

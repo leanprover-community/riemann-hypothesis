@@ -275,45 +275,16 @@ theorem not_isCuspidal_trivial (hn : 1 < n) :
   intro h
   exact one_ne_zero (h (lineFlag n F hn) (lineFlag_isProper hn) 1 (fun g _ ↦ by simp))
 
-theorem Flag.not_isProper_one (𝓕 : Flag 1 F) : ¬ 𝓕.IsProper := by
-  rintro ⟨i, h0, h1⟩
-  haveI : IsSimpleModule F (Fin 1 → F) := isSimpleModule_iff_finrank_eq_one.mpr (by simp)
-  rcases IsSimpleOrder.eq_bot_or_eq_top (𝓕.space i) with h | h
-  · exact h0 h
-  · exact h1 h
 
-theorem isCuspidal_one {V : Type*} [AddCommGroup V] [Module ℂ V]
-    (ρ : Representation ℂ (GL (Fin 1) F) V) : IsCuspidal 1 F ρ :=
-  fun 𝓕 h ↦ absurd h 𝓕.not_isProper_one
 
-theorem isIrreducible_trivial (G : Type*) [Group G] :
-    (Representation.trivial ℂ G ℂ).IsIrreducible := by
-  have hbt : ((⊥ : Subrepresentation (Representation.trivial ℂ G ℂ)).toSubmodule) ≠
-      (⊤ : Subrepresentation (Representation.trivial ℂ G ℂ)).toSubmodule :=
-    bot_ne_top (α := Submodule ℂ ℂ)
-  refine { toNontrivial := ⟨⟨⊥, ⊤, fun h ↦ hbt (congrArg _ h)⟩⟩, eq_bot_or_eq_top := fun σ ↦ ?_ }
-  rcases IsSimpleOrder.eq_bot_or_eq_top σ.toSubmodule with h | h
-  · exact Or.inl (Subrepresentation.toSubmodule_injective h)
-  · exact Or.inr (Subrepresentation.toSubmodule_injective h)
 
 def upperTwo (x : F) : GL (Fin 2) F :=
   ⟨!![1, x; 0, 1], !![1, -x; 0, 1], by
     ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two], by
     ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]⟩
 
-theorem upperTwo_mem (x : F) : upperTwo x ∈ upperUnipotent 2 F := by
-  refine ⟨fun i j hij ↦ ?_, fun i ↦ ?_⟩
-  · fin_cases i <;> fin_cases j <;> simp_all [upperTwo]
-  · fin_cases i <;> simp [upperTwo]
 
-theorem genericChar_upperTwo (ψ₀ : AddChar F ℂ) (x : F) :
-    genericChar 2 F ψ₀ ⟨upperTwo x, upperTwo_mem x⟩ = ψ₀ x := by
-  simp [genericChar, superdiagSum, Fin.sum_univ_two, upperTwo]
 
-theorem exists_genericChar_ne_one {ψ₀ : AddChar F ℂ} (hψ₀ : ψ₀ ≠ 1) :
-    ∃ u, genericChar 2 F ψ₀ u ≠ 1 := by
-  obtain ⟨x, hx⟩ := AddChar.ne_one_iff.mp hψ₀
-  exact ⟨⟨upperTwo x, upperTwo_mem x⟩, by rwa [genericChar_upperTwo]⟩
 
 variable [NeZero n]
 
@@ -348,14 +319,6 @@ variable (n F) in
 def mirabolicDelta (ψ₀ : AddChar F ℂ) : MirabolicInducedSpace n F ψ₀ :=
   ⟨mirabolicDeltaFun n F ψ₀, mirabolicDeltaFun_mem ψ₀⟩
 
-theorem mirabolicDelta_ne_zero (ψ₀ : AddChar F ℂ) : mirabolicDelta n F ψ₀ ≠ 0 := by
-  intro h
-  have h1 := congrArg (fun f : MirabolicInducedSpace n F ψ₀ ↦ (f : mirabolic n F → ℂ) 1) h
-  have hone : ((1 : mirabolic n F) : GL (Fin n) F) ∈ upperUnipotent n F := one_mem _
-  simp only [mirabolicDelta, mirabolicDeltaFun, dif_pos hone] at h1
-  rw [show (⟨((1 : mirabolic n F) : GL (Fin n) F), hone⟩ : upperUnipotent n F) = 1 from rfl,
-    map_one] at h1
-  exact one_ne_zero h1
 
 end Inhabitants
 

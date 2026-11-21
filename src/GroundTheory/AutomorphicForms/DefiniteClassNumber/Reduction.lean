@@ -24,8 +24,6 @@ def latticeDual (L : AddSubgroup X) : AddSubgroup X where
     obtain ⟨m, hm⟩ := ha x hx
     exact ⟨-m, by rw [inner_neg_left, hm]; push_cast; ring⟩
 
-theorem mem_latticeDual {L : AddSubgroup X} {y : X} :
-    y ∈ latticeDual L ↔ ∀ x ∈ L, ∃ n : ℤ, ⟪y, x⟫ = n := Iff.rfl
 
 theorem eq_zero_of_forall_inner_eq_zero {s : Set X} (hs : span ℝ s = ⊤) {y : X}
     (hy : ∀ x ∈ s, ⟪y, x⟫ = 0) : y = 0 := by

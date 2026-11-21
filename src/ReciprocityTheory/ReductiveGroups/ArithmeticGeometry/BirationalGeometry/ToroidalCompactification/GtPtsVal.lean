@@ -42,32 +42,6 @@ theorem gm_comp_top (r : W ⟶ Z) (τ : Z ⟶ Y) (w : W) (c : Γ(Y, ⊤)ˣ) (c' 
   rw [← h]
   rfl
 
-theorem appTop_inj_of_epi (p : W ⟶ Z) [Epi p] {a b : Γ(Z, ⊤)} (h : p.appTop.hom a = p.appTop.hom b) : a = b := by
-  classical
-
-  let R := CommRingCat.of (Polynomial ℤ)
-  let g : Γ(Z, ⊤) → (R ⟶ Γ(Z, ⊤)) := fun c =>
-    CommRingCat.ofHom (Polynomial.eval₂RingHom (Int.castRingHom _) c)
-  let φ : Γ(Z, ⊤) → (Z ⟶ Spec R) := fun c => Z.toSpecΓ ≫ Spec.map (g c)
-  have hrec : ∀ c, ((Scheme.ΓSpecIso R).inv ≫ (φ c).appTop).hom Polynomial.X = c := by
-    intro c
-    have e : (Scheme.ΓSpecIso R).inv ≫ (φ c).appTop = g c := by
-      simp only [φ, Scheme.Hom.comp_appTop, Scheme.toSpecΓ_appTop, Scheme.ΓSpecIso_naturality,
-        Iso.inv_hom_id_assoc]
-    rw [e]
-    exact Polynomial.eval₂_X _ _
-  have hg : g a ≫ p.appTop = g b ≫ p.appTop := by
-    apply CommRingCat.hom_ext
-    apply Polynomial.ringHom_ext
-    · intro n
-      simp [g]
-    · simp [g, h]
-  have hφ : φ a = φ b := by
-    rw [← cancel_epi p]
-    simp only [φ]
-    rw [← Category.assoc, ← Category.assoc, Scheme.toSpecΓ_naturality, Category.assoc,
-      Category.assoc, ← Spec.map_comp, ← Spec.map_comp, hg]
-  rw [← hrec a, ← hrec b, hφ]
 
 theorem exists_ratio {X : Scheme.{0}} {L : LB X} (hL : L.IsLB) {K : Type} [Fintype K] {φ φ' : K → (Y ⟶ X)}
     {ε : K → ℤ} (hφ : φ = φ') (t : LB.Gen (LB.LinComb L φ ε)) (t' : LB.Gen (LB.LinComb L φ' ε)) (ht : t.IsGen)

@@ -327,20 +327,6 @@ def AnnV : Prop := InCtx fun F E _ _ _ _ _ σ M J a _X0 _hT =>
     AnnAt (V := Fin a → Fin M → Fv F v ⊗[F] E) (fun X Y => psiV F ψ v (BR (Fv F v) σ J X Y)) ∧
     AnnAt (V := HermR (Fv F v) σ a) (fun S T => psiV F ψ v (pairHerm (Fv F v) σ a S T))
 
-theorem sdTestV_of (h : AnnV) : SdTestV := by
-  intro F E _ _ _ _ _ σ hCM M J hJ h1 h2 a h3 h4 X0 hT hdet ψ hψ v
-  have : FiniteDimensional F E := Module.finite_of_finrank_pos (by rw [hCM.2.2.1]; norm_num)
-  have := secondCountable_Fv F v
-  have := locallyCompact_Fv F v
-  obtain ⟨⟨L, hLc, hLo, hA, K, hK, hAK⟩, ⟨L', hLc', hLo', hA', K', hK', hAK'⟩⟩ :=
-    h F E σ hCM M J hJ h1 h2 a h3 h4 X0 hT hdet ψ hψ v
-  refine ⟨fun μ hμ => ?_, fun ν hν => ?_⟩
-  · have := hμ.1
-    exact testEx_of_lattice μ _ (fun X T Y => by rw [BR_add, psiV_add]) L hLc hLo hA K
-      hK hAK
-  · have := hν.1
-    exact testEx_of_lattice ν _ (fun S T U => by rw [pairHerm_add, psiV_add]) L' hLc'
-      hLo' hA' K' hK' hAK'
 
 def DualLatV : Prop := InCtx fun F E _ _ _ _ _ σ M J a _X0 _hT =>
   ∀ v : HeightOneSpectrum (𝓞 F),
@@ -395,7 +381,6 @@ theorem sdUniq_of (hI : SdTestInf) (hV : SdTestV) : SdUniq := by
   exact ⟨fun μ1 μ2 e1 e2 => eq_of_testEx e1 e2 (hVW μ1 e1),
     fun ν1 ν2 e1 e2 => eq_of_testEx e1 e2 (hVH ν1 e1)⟩
 
-theorem sdUniq_of_ann (hI : SdTestInf) (hA : AnnV) : SdUniq := sdUniq_of hI (sdTestV_of hA)
 
 theorem sdUniq_of_dual (hI : SdTestInf) (hD : DualLatV) : SdUniq :=
   sdUniq_of hI (sdTestV_of_dual hD)

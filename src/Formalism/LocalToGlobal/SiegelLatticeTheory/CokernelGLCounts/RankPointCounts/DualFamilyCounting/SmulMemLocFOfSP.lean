@@ -11,21 +11,6 @@ open Formalism.HermitianLattices.Ext.L3 Formalism.L2.SG.Pf.Cnt Formalism.Hermiti
 
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 
-theorem inP_alg_iff {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) (k : ℕ) (a : 𝓞 F) :
-    InP 𝔭 k (algebraMap F K (a : F)) ↔ a ∈ 𝔭 ^ k := by
-  haveI := h𝔭.isPrime
-  rw [← idealPowerSpanBounds.mem_pow_iff (K := K)]
-  constructor
-  · rintro ⟨t, ht, z, hz, hzeq⟩
-    have hz' : z = algebraMap (𝓞 F) (𝓞 K) t * algebraMap (𝓞 F) (𝓞 K) a := by
-      apply IsFractionRing.injective (𝓞 K) K
-      rw [hzeq, map_mul]
-      rfl
-    refine idealPowerSpanBounds.mem_of_mul_mem h𝔭 (v := 0) (d := t) (by simpa using ht) ?_
-    rw [zero_add, ← hz']
-    exact hz
-  · intro ha
-    exact inP_jK ha
 
 private theorem mem_pow_vF_of_ne_zero {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {a : 𝓞 F} (ha : a ≠ 0) :
     a ∈ 𝔭 ^ vF 𝔭 a ∧ a ∉ 𝔭 ^ (vF 𝔭 a + 1) := by

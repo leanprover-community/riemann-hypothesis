@@ -54,8 +54,6 @@ theorem sfCr_self (hc : IsCoc W c) (U : Z.Opens) (i : J) (h : U ≤ W i ⊓ W i)
   have e2 : sfCr W c U i i h + sfCr W c U i i h = sfCr W c U i i h := e
   linear_combination e2
 
-theorem sfCr_congr (U : Z.Opens) {i j i' : J} (e : i = j) (h : U ≤ W i ⊓ W i') (h' : U ≤ W j ⊓ W i') :
-    sfCr W c U i i' h = sfCr W c U j i' h' := by subst e; rfl
 
 theorem sfCr_congr2 (U : Z.Opens) {i i' j' : J} (e : i' = j') (h : U ≤ W i ⊓ W i') (h' : U ≤ W i ⊓ W j') :
     sfCr W c U i i' h = sfCr W c U i j' h' := by subst e; rfl

@@ -94,9 +94,6 @@ theorem uq_mul (a b c : Spec (CommRingCat.of A) ⟶ D.Y) (h : a ≫ D.f = b ≫ 
   rw [uq, uq, ← map_mul, D.coc]
   rfl
 
-theorem uq_self (a : Spec (CommRingCat.of A) ⟶ D.Y) : uq D a a rfl = 1 := by
-  have := uq_mul D a a a rfl rfl
-  simpa using this
 
 theorem uq_congr {a a' b b' : Spec (CommRingCat.of A) ⟶ D.Y} (ea : a = a') (eb : b = b')
     (h : a ≫ D.f = b ≫ D.f) (h' : a' ≫ D.f = b' ≫ D.f) : uq D a b h = uq D a' b' h' := by

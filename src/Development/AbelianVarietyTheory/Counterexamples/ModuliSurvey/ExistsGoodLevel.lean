@@ -75,11 +75,6 @@ theorem goodAt_of_coprime (l : Level H) (a b : ℕ) (ha : 3 ≤ a) (hb : 3 ≤ b
     exact Nat.eq_one_of_dvd_coprimes hab h h'
   · exact key a ha (hM ▸ dvd_mul_right _ _) h
 
-theorem not_goodAt_pow (l : Level H) (p k : ℕ) (hp : p.Prime) (hM : l.M = p ^ k) : ¬ l.GoodAt p := by
-  unfold Level.GoodAt
-  rw [hM, Nat.factorization_pow, Finsupp.smul_apply, hp.factorization_self, smul_eq_mul, mul_one,
-    Nat.div_self (pow_pos hp.pos k)]
-  omega
 
 theorem exists_good_level (H : Host E) : ∃ l : Level H, l.A = 1 ∧ ∀ p : ℕ, p.Prime → l.GoodAt p := by
   have hd := H.d_mod

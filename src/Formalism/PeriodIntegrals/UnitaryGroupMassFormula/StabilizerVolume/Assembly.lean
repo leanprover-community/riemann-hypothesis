@@ -49,12 +49,7 @@ theorem nuInv_holds : NuInv := nuInv_of_pin detAdm_holds compG_holds fibPin_clos
 theorem volStabFromSW_of_nuNe (hN : NuNeZero) : PI.VolStabS.VolStabFromSWS := volStabFromSW_of exChar_holds exOmT_holds (exStab_of_nu nuInv_holds nuFin_holds hN)
     exFDStab_holds sWeqOm_closed unfold_holds posTest_holds
 
-theorem volStabFromSW_of_open_orb (hOP : OrbProper) (hFV : FinVolStab) :
-    PI.VolStabS.VolStabFromSWS := volStabFromSW_of_nuNe (nuNeZero_of_dens archPos_holds locPos_holds
-    (densAA_of_open volAA_holds hensAA_holds idxH_holds cntAA_holds) qvSum_holds)
 
-theorem volStabFromSW_of_finVol (h : FinVolStab) : PI.VolStabS.VolStabFromSWS := volStabFromSW_of_nuNe (nuNeZero_of_dens archPos_holds locPos_holds
-    (densAA_of_open volAA_holds hensAA_holds idxH_holds cntAA_holds) qvSum_holds)
 
 theorem volStabFromSW_of_open_dens (hDA : DensAA) : PI.VolStabS.VolStabFromSWS := volStabFromSW_of_nuNe (nuNeZero_of_dens archPos_holds locPos_holds hDA qvSum_holds)
 

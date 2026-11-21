@@ -209,22 +209,8 @@ namespace SSAtlas
 variable {ϖ : O} {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {ι A : Type} [Fintype ι]
   {k : Type} [CommRing k] (κ : O →+* k)
 
-theorem logFun_In (C : SSAtlas ϖ X q ι A) (α : A) {B : CommRingCat.{0}} (y : (C.logFun κ).Pt.obj B) :
-    (C.logFun κ).In α y ↔ ⊤ ≤ (show PtOver X q κ B from y).1.2 ⁻¹ᵁ C.U α := Iff.rfl
 
-theorem logFun_f (C : SSAtlas ϖ X q ι A) (α : A) (i : ι) {B : CommRingCat.{0}} (y : PtOver X q κ B)
-    (h : ⊤ ≤ y.1.2 ⁻¹ᵁ C.U α) : (C.logFun κ).f α i (B := B) y = GlobalTheory.Cris.evalAt y.1.2 (C.U α) h (C.F α i) :=
-  dif_pos h
 
-theorem logFun_g (C : SSAtlas ϖ X q ι A) (α β : A) (i : ι) {B : CommRingCat.{0}} (y : PtOver X q κ B)
-    (h : ⊤ ≤ y.1.2 ⁻¹ᵁ (C.U α ⊓ C.U β)) :
-    ((C.logFun κ).g α β i (B := B) y : B) = GlobalTheory.Cris.evalAt y.1.2 (C.U α ⊓ C.U β) h (C.G α β i) := by
-  classical
-  change ((if h : ⊤ ≤ y.1.2 ⁻¹ᵁ (C.U α ⊓ C.U β) then
-      Units.map (GlobalTheory.Cris.evalAt (B := B) y.1.2 (C.U α ⊓ C.U β) h : Γ(X, C.U α ⊓ C.U β) →* B) (C.G α β i)
-      else 1 : Bˣ) : B) = _
-  rw [dif_pos h]
-  rfl
 
 end SSAtlas
 

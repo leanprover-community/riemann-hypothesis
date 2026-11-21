@@ -12,27 +12,8 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 variable {V V₁ V₂ : Type*} [AddCommGroup V] [Module Ω V] [AddCommGroup V₁] [Module Ω V₁]
   [AddCommGroup V₂] [Module Ω V₂]
 
-theorem pow_add_smul_mem {x : (Σ k, ι k) → Ω} {A : (∀ k, ι k) → AddSubgroup V}
-    (hA : IsLatFamily o x A) {s t : ∀ k, ι k} (ht : mseg x t ≠ 0) {v : V} {m : ℕ} (n : ℕ)
-    (h : (mseg x s / mseg x t) ^ m • v ∈ A t) : (mseg x s / mseg x t) ^ (n + m) • v ∈ A t := by
-  rw [pow_add, mul_smul]
-  exact hA.1 t ht _ (pow_mem (div_mem_chartRing _ _ _) _) _ h
 
-theorem isLatFamily_lat {x : (Σ k, ι k) → Ω} {N : ℕ} (E : ChartBundle o (mseg x) N V) :
-    IsLatFamily o x E.lat :=
-  ⟨fun s _ => E.stable s, E.overlap⟩
 
-theorem quotEquiv_of_quotIso {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    [Algebra O Ω] {x : (Σ k, ι k) → Ω} {N N₁ : ℕ} {E E' : ChartBundle O (mseg x) N V}
-    {F F' : ChartBundle O (mseg x) N₁ V₁} (h : QuotIso O x E E' F F') :
-    QuotEquiv O x E.lat E'.lat F.lat F'.lat := by
-  obtain ⟨P, hP⟩ := h
-  refine ⟨P.lat, ⟨isLatFamily_lat P, fun s hs => ?_⟩, fun s hs => ?_⟩
-  · obtain ⟨h1, h2, h3, h4⟩ := hP s hs
-    exact ⟨fun v w h => ⟨(h2 v).1 ⟨w, h⟩, (h4 w).1 ⟨v, h⟩⟩, fun v hv => (h2 v).2 hv, h3,
-      fun v hv => (h1 v).2 hv⟩
-  · obtain ⟨h1, h2, h3, h4⟩ := hP s hs
-    exact ⟨fun v h => (h1 v).1 h, fun w hw => (h4 w).2 hw⟩
 
 def idGraph (A B' : (∀ k, ι k) → AddSubgroup V) : (∀ k, ι k) → AddSubgroup (V × V) := fun s =>
   (A s).comap (AddMonoidHom.fst V V) ⊓
@@ -42,54 +23,9 @@ theorem mem_idGraph {A B' : (∀ k, ι k) → AddSubgroup V} {s} {v w : V} :
     (v, w) ∈ idGraph A B' s ↔ v ∈ A s ∧ w - v ∈ B' s := by
   simp [idGraph, AddSubgroup.mem_comap]
 
-theorem isLatFamily_idGraph {x : (Σ k, ι k) → Ω} {A B' : (∀ k, ι k) → AddSubgroup V}
-    (hA : IsLatFamily o x A) (hB : IsLatFamily o x B') : IsLatFamily o x (idGraph A B') := by
-  refine ⟨fun s hs a ha ⟨v, w⟩ h => ?_, fun s t hs ht ⟨v, w⟩ h => ?_⟩
-  · rw [mem_idGraph] at h
-    rw [Prod.smul_mk, mem_idGraph, ← smul_sub]
-    exact ⟨hA.1 s hs a ha _ h.1, hB.1 s hs a ha _ h.2⟩
-  · rw [mem_idGraph] at h
-    obtain ⟨m, hm⟩ := hA.2 s t hs ht _ h.1
-    obtain ⟨n, hn⟩ := hB.2 s t hs ht _ h.2
-    refine ⟨n + m, ?_⟩
-    rw [Prod.smul_mk, mem_idGraph, ← smul_sub]
-    exact ⟨pow_add_smul_mem hA ht n hm, add_comm m n ▸ pow_add_smul_mem hB ht m hn⟩
 
-theorem isQuotHom_idGraph {x : (Σ k, ι k) → Ω} {A A' B B' : (∀ k, ι k) → AddSubgroup V}
-    (hA : IsLatFamily o x A) (hB : IsLatFamily o x B') (h1 : ∀ s, A' s ≤ A s)
-    (h2 : ∀ s, B' s ≤ B s) (h3 : ∀ s, A s ≤ B s) (h4 : ∀ s, A' s ≤ B' s) :
-    IsQuotHom o x A A' B B' (idGraph A B') := by
-  refine ⟨isLatFamily_idGraph hA hB, fun s _ => ⟨fun v w h => ?_, fun v hv => ⟨v, ?_⟩,
-    fun w => ?_, fun v hv => ?_⟩⟩
-  · rw [mem_idGraph] at h
-    exact ⟨h.1, by simpa using add_mem (h2 s h.2) (h3 s h.1)⟩
-  · simp [mem_idGraph, hv]
-  · simp [mem_idGraph]
-  · simp [mem_idGraph, h1 s hv, h4 s hv]
 
-theorem quotExact_tower {x : (Σ k, ι k) → Ω} {A A' A'' : (∀ k, ι k) → AddSubgroup V}
-    (hA : IsLatFamily o x A) (hA' : IsLatFamily o x A') (hA'' : IsLatFamily o x A'')
-    (h1 : ∀ s, A' s ≤ A s) (h2 : ∀ s, A'' s ≤ A' s) : QuotExact o x A' A'' A A'' A A' := by
-  refine ⟨_, _, isQuotHom_idGraph hA' hA'' h2 (fun s => (h2 s).trans (h1 s)) h1 fun _ => le_rfl,
-    isQuotHom_idGraph hA hA' (fun s => (h2 s).trans (h1 s)) h1 (fun _ => le_rfl) h2,
-    fun s _ => ⟨fun v h => ?_, fun c hc => ⟨c, ?_⟩, fun b => ?_⟩⟩
-  · simpa using (mem_idGraph.1 h).2
-  · simp [mem_idGraph, hc]
-  · simp only [mem_idGraph, zero_sub, neg_mem_iff]
-    constructor
-    · rintro ⟨-, h⟩
-      exact ⟨b, h, by simp⟩
-    · rintro ⟨a, ha, h⟩
-      have : b ∈ A' s := by simpa using add_mem (h2 s h) ha
-      exact ⟨h1 s this, this⟩
 
-theorem quotEquiv_refl {x : (Σ k, ι k) → Ω} {A A' : (∀ k, ι k) → AddSubgroup V}
-    (hA : IsLatFamily o x A) (hA' : IsLatFamily o x A') (h : ∀ s, A' s ≤ A s) :
-    QuotEquiv o x A A' A A' := by
-  refine ⟨_, isQuotHom_idGraph hA hA' h h (fun _ => le_rfl) fun _ => le_rfl,
-    fun s _ => ⟨fun v h => ?_, fun c hc => ⟨c, ?_⟩⟩⟩
-  · simpa using (mem_idGraph.1 h).2
-  · simp [mem_idGraph, hc]
 
 theorem quotEquiv_symm {x : (Σ k, ι k) → Ω} {A A' : (∀ k, ι k) → AddSubgroup V}
     {B B' : (∀ k, ι k) → AddSubgroup V₁} (h : QuotEquiv o x A A' B B') :
@@ -125,41 +61,8 @@ theorem isLine_lineFam (x : (Σ k, ι k) → Ω) (u : Ω) (a : K → ℤ) :
   simp only [lineFam, AddSubgroup.mem_map]
   exact ⟨fun ⟨r, hr, h⟩ => ⟨r, hr, h.symm⟩, fun ⟨r, hr, h⟩ => ⟨r, hr, h.symm⟩⟩
 
-theorem isScaled_line {x : (Σ k, ι k) → Ω} {u c : Ω} {a : K → ℤ} {A A'}
-    (hA : IsLine o x u a A) (hA' : IsLine o x (c * u) a A') : IsScaled x c A A' := by
-  intro s hs v
-  rw [hA' s hs]
-  constructor
-  · rintro ⟨r, hr, rfl⟩
-    exact ⟨_, (hA s hs _).2 ⟨r, hr, rfl⟩, by rw [smul_eq_mul]; ring⟩
-  · rintro ⟨e, he, rfl⟩
-    obtain ⟨r, hr, rfl⟩ := (hA s hs _).1 he
-    exact ⟨r, hr, by rw [smul_eq_mul]; ring⟩
 
-theorem chartMon_mul_neg {x : (Σ k, ι k) → Ω} {s} (hs : mseg x s ≠ 0) (a : K → ℤ) :
-    chartMon x s a * chartMon x s (-a) = 1 := by
-  unfold chartMon
-  rw [← Finset.prod_mul_distrib]
-  refine Finset.prod_eq_one fun k _ => ?_
-  have : x ⟨k, s k⟩ ≠ 0 := (Finset.prod_ne_zero_iff.1 hs) k (Finset.mem_univ k)
-  rw [← zpow_add₀ this]; simp
 
-theorem isDualLat_line {x : (Σ k, ι k) → Ω} {u : Ω} (hu : u ≠ 0) {a : K → ℤ} {A B}
-    (hA : IsLine o x u a A) (hB : IsLine o x u⁻¹ (-a) B) :
-    IsDualLat o x (LinearMap.mul Ω Ω) A B := by
-  refine ⟨⟨fun w w' h => by simpa using LinearMap.congr_fun h 1,
-    fun f => ⟨f 1, by ext; simp⟩⟩, fun s hs w => ?_⟩
-  have key : (u * chartMon x s a) * (u⁻¹ * chartMon x s (-a)) = 1 := by
-    rw [mul_mul_mul_comm, mul_inv_cancel₀ hu, chartMon_mul_neg hs, one_mul]
-  rw [hB s hs]
-  constructor
-  · rintro ⟨r, hr, rfl⟩ v hv
-    obtain ⟨r', hr', rfl⟩ := (hA s hs _).1 hv
-    rw [LinearMap.mul_apply', mul_mul_mul_comm, key, mul_one]
-    exact mul_mem hr' hr
-  · intro h
-    refine ⟨_, h _ ((hA s hs _).2 ⟨1, one_mem _, rfl⟩), ?_⟩
-    rw [LinearMap.mul_apply', one_mul, mul_right_comm, key, one_mul]
 
 end General
 
@@ -179,8 +82,6 @@ theorem chartMon_pt (t : Ω) (s : Unit → Fin 2) (a : Unit → ℤ) :
 theorem t_mem (t : Ω) : t ∈ chartRing o (mseg (pt t)) (fun _ => 0) := by
   simpa [mseg_pt] using div_mem_chartRing (o := o) (mseg (pt t)) (fun _ => 0) (fun _ => 1)
 
-theorem tinv_mem (t : Ω) : t⁻¹ ∈ chartRing o (mseg (pt t)) (fun _ => 1) := by
-  simpa [mseg_pt] using div_mem_chartRing (o := o) (mseg (pt t)) (fun _ => 1) (fun _ => 0)
 
 theorem chart_cases (s : Unit → Fin 2) : s = (fun _ => 0) ∨ s = fun _ => 1 := by
   have : s = fun _ => s () := rfl
@@ -188,47 +89,6 @@ theorem chart_cases (s : Unit → Fin 2) : s = (fun _ => 0) ∨ s = fun _ => 1 :
   generalize s () = i
   fin_cases i <;> simp
 
-theorem trivFlagMod_euler (ϖ : o) {t : Ω} (ht : t ≠ 0) :
-    TrivFlagMod o ϖ (pt t) 2 ![fun _ => -1, fun _ => 1] := by
-  have h0 := t_mem (o := o) t
-  have h1 := tinv_mem (o := o) t
-  refine ⟨fun s => ![!![1, 0; t, 1], !![t⁻¹, -1; 1, 0]] (s ()), fun s _ => ?_, fun s r _ _ => ?_⟩
-  · rcases chart_cases s with rfl | rfl
-    · refine ⟨fun i j => ?_, 1, one_mem _, 0, zero_mem _, by simp⟩
-      fin_cases i <;> fin_cases j <;> simp [h0]
-    · refine ⟨fun i j => ?_, 1, one_mem _, 0, zero_mem _, by simp⟩
-      fin_cases i <;> fin_cases j <;> simp [h1]
-  · rcases chart_cases s with rfl | rfl <;> rcases chart_cases r with rfl | rfl
-    · refine ⟨0, 1, 0, fun i j => ?_, fun i j => ?_, fun i j h => ?_, fun i => ?_, fun i j => ?_, by simp⟩
-      · fin_cases i <;> fin_cases j <;> simp
-      · simp
-      · exact Matrix.one_apply_ne h.ne'
-      · simp [chartMon_pt]
-      · fin_cases i <;> fin_cases j <;> simp [h0]
-    · refine ⟨1, !![1, t⁻¹; 0, t⁻¹ * t⁻¹], 0, fun i j => ?_, fun i j => ?_, fun i j h => ?_,
-        fun i => ?_, fun i j => ?_, ?_⟩
-      · fin_cases i <;> fin_cases j <;> simp [h1, mul_mem, -mul_inv_rev]
-      · simp
-      · fin_cases i <;> fin_cases j <;> simp_all
-      · fin_cases i <;> simp [chartMon_pt, mseg_pt, ht]
-      · fin_cases i <;> fin_cases j <;> simp [mseg_pt, h1, ht]
-      · ext i j
-        fin_cases i <;> fin_cases j <;> simp [mseg_pt, ht, Matrix.mul_apply, Fin.sum_univ_two]
-    · refine ⟨1, !![1, -t; 0, t * t], 0, fun i j => ?_, fun i j => ?_, fun i j h => ?_,
-        fun i => ?_, fun i j => ?_, ?_⟩
-      · fin_cases i <;> fin_cases j <;> simp [h0, mul_mem]
-      · simp
-      · fin_cases i <;> fin_cases j <;> simp_all
-      · fin_cases i <;> simp [chartMon_pt, mseg_pt, ht]
-      · fin_cases i <;> fin_cases j <;> simp [mseg_pt, h0, ht]
-      · ext i j
-        fin_cases i <;> fin_cases j <;> simp [mseg_pt, ht, Matrix.mul_apply, Fin.sum_univ_two]
-    · refine ⟨0, 1, 0, fun i j => ?_, fun i j => ?_, fun i j h => ?_, fun i => ?_, fun i j => ?_, by simp⟩
-      · fin_cases i <;> fin_cases j <;> simp
-      · simp
-      · exact Matrix.one_apply_ne h.ne'
-      · fin_cases i <;> simp [chartMon_pt, ht]
-      · fin_cases i <;> fin_cases j <;> simp [h1]
 
 theorem exists_poly_zero {t a : Ω} (ha : a ∈ chartRing o (mseg (pt t)) (fun _ => 0)) :
     ∃ P : Polynomial o, Polynomial.aeval t P = a := by
@@ -322,29 +182,8 @@ theorem not_trivFlagMod_one {ϖ : o} (hϖ : ¬ IsUnit ϖ) {t : Ω} (ht0 : t ≠ 
     exact (dvd_add_left (dvd_mul_right _ _)).1 this
   exact hϖ (isUnit_C.1 (isUnit_of_dvd_one h1'))
 
-theorem isLatFamily_lineFam_zero {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
-    (x : (Σ k, ι k) → Ω) (u : Ω) : IsLatFamily o x (lineFam o x u 0) := by
-  refine ⟨fun s hs a ha v hv => ?_, fun s t hs ht v hv => ?_⟩
-  · obtain ⟨r, hr, rfl⟩ := (isLine_lineFam x u 0 s hs v).1 hv
-    exact (isLine_lineFam x u 0 s hs _).2 ⟨_, mul_mem ha hr, by rw [smul_eq_mul, mul_assoc]⟩
-  · obtain ⟨r, hr, rfl⟩ := (isLine_lineFam x u 0 s hs v).1 hv
-    obtain ⟨m, hm⟩ := exists_pow_mul_mem_chartRing (mseg x) s t hs hr
-    exact ⟨m, (isLine_lineFam x u 0 t ht _).2 ⟨_, hm, by simp [chartMon, mul_assoc]⟩⟩
 
-theorem lineFam_mul_le {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
-    (x : (Σ k, ι k) → Ω) (c : o) (u : Ω) (a : K → ℤ) (s) :
-    lineFam o x (algebraMap o Ω c * u) a s ≤ lineFam o x u a s := by
-  rintro _ ⟨r, hr, rfl⟩
-  exact ⟨r * algebraMap o Ω c, (chartRing o (mseg x) s).mul_mem hr (Subalgebra.algebraMap_mem _ c), by simp; ring⟩
 
-theorem quotExact_const {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
-    (x : (Σ k, ι k) → Ω) (ϖ : o) :
-    QuotExact o x (lineFam o x (algebraMap o Ω ϖ * 1) 0)
-      (lineFam o x (algebraMap o Ω ϖ * (algebraMap o Ω ϖ * 1)) 0) (lineFam o x 1 0)
-      (lineFam o x (algebraMap o Ω ϖ * (algebraMap o Ω ϖ * 1)) 0) (lineFam o x 1 0)
-      (lineFam o x (algebraMap o Ω ϖ * 1) 0) :=
-  quotExact_tower (isLatFamily_lineFam_zero _ _) (isLatFamily_lineFam_zero _ _)
-    (isLatFamily_lineFam_zero _ _) (lineFam_mul_le x ϖ _ _) (lineFam_mul_le x ϖ _ _)
 
 open Polynomial in
 
@@ -367,22 +206,9 @@ open Polynomial
 
 noncomputable def genT : FractionRing ℤ[X] := algebraMap ℤ[X] (FractionRing ℤ[X]) X
 
-theorem transc_genT : Transcendental ℤ genT :=
-  (transcendental_algebraMap_iff (IsFractionRing.injective _ _)).2 (transcendental_X ℤ)
 
-theorem genT_ne_zero : genT ≠ 0 := fun h => transc_genT (h ▸ isAlgebraic_zero)
 
-theorem euler_order :
-    TrivFlagMod ℤ 2 (pt genT) 2 ![fun _ => -1, fun _ => 1] ∧
-    ¬ TrivFlagMod ℤ 2 (pt genT) 2 ![fun _ => 1, fun _ => -1] :=
-  ⟨trivFlagMod_euler _ genT_ne_zero, not_trivFlagMod_one (by decide) genT_ne_zero
-    (transcendental_iff_injective.1 transc_genT)
-    (transcendental_iff_injective.1 fun h => transc_genT (by simpa using h.inv)) _ rfl⟩
 
-theorem quot_two_ne_zero (B : (Unit → Fin 2) → AddSubgroup (FractionRing ℤ[X])) :
-    ¬ QuotEquiv ℤ (pt genT) (lineFam ℤ (pt genT) 1 0)
-      (lineFam ℤ (pt genT) (algebraMap ℤ _ 2 * 1) 0) B B :=
-  not_quotEquiv_zero (by decide) (transcendental_iff_injective.1 transc_genT) B
 
 end Concrete
 

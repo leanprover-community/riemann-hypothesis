@@ -43,8 +43,6 @@ def pdIdeal : Ideal (AInf K p) where
     rw [smul_eq_mul, mul_comm, dpow_mul]
     exact Subalgebra.mul_mem _ (hx n) (Subalgebra.pow_mem _ (Subalgebra.algebraMap_mem _ c) n)
 
-theorem mem_pdIdeal {x : AInf K p} : x ∈ pdIdeal K p ↔ ∀ n, dpow n x ∈ ACrisZero K p :=
-  Iff.rfl
 
 theorem ker_le_pdIdeal : RingHom.ker θ ≤ pdIdeal K p := fun _ hx n => dpow_mem hx n
 

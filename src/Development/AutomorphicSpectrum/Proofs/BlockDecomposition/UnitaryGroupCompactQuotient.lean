@@ -35,20 +35,12 @@ theorem JR_map (H : Matrix (Fin n) (Fin n) E) :
 def toGLH (H : Matrix (Fin n) (Fin n) E) : HH H →* GL (Fin n) (Af E) :=
   (GeneralLinearGroup.map (AEq (E := E))).comp (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.HR (AFr E) (sg E) H).subtype
 
-theorem toGLH_val (H : Matrix (Fin n) (Fin n) E) (g : HH H) : (toGLH H g).val = g.1.val.map AEq := rfl
 
 theorem continuous_toGLH (H : Matrix (Fin n) (Fin n) E) : Continuous (toGLH H) := by
   have h1 : Continuous (GeneralLinearGroup.map (AEq (E := E)) : GL (Fin n) _ → GL (Fin n) (Af E)) :=
     Continuous.units_map _ (continuous_id.matrix_map continuous_finAdEquiv)
   exact h1.comp continuous_subtype_val
 
-theorem toGLH_mem (H : Matrix (Fin n) (Fin n) E) (g : HH H) :
-    toGLH H g ∈ UJ (conjFin (cc E)) (H.map (algebraMap E (Af E))) := by
-  have hg : cT (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR (AFr E) (sg E)) g.1.val * Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.JR (AFr E) H * g.1.val =
-      Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.JR (AFr E) H := g.2
-  have h := herm_map (AEq (E := E)) _ _ AEq_sig _ _ hg
-  rw [JR_map] at h
-  exact h
 
 theorem exists_toGLH (H : Matrix (Fin n) (Fin n) E) (y : GL (Fin n) (Af E))
     (hy : y ∈ UJ (conjFin (cc E)) (H.map (algebraMap E (Af E)))) : ∃ t : HH H, toGLH H t = y := by

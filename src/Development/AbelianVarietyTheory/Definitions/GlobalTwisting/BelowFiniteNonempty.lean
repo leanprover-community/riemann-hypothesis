@@ -206,12 +206,7 @@ theorem ram_mem (h : Hyp Z s cc δ χ cD sel S mu cst u) {p : ℕ} (hp : p.Prime
   · rw [(Nat.prime_dvd_prime_iff_eq hp H.host.hyp.2.1).1 h1]
     exact h.host (by simp [hostS])
 
-theorem moveHyp (h : Hyp Z s cc δ χ cD sel S mu cst u) {SG : Finset (HeightOneSpectrum (𝓞 Z.X.E))}
-    (hSG : SG ⊆ rowSG Z.Pr sel mu) (P : Z.Pr.vT u) : MoveHyp (Z.Pr.vT u) SG P :=
-  moveHyp_of_notMem h.ok.primes (fun w hw => T_notMem_rowSG mu h.ok.primes h.isSel h.T_mem w (hSG hw)) P
 
-theorem alcoveAt (h : Hyp Z s cc δ χ cD sel S mu cst u) {j : ℕ} (hj : j ≤ Z.R.m) : AlcoveAt Z.W u j :=
-  alcoveAt_of_sizes h.ok.sizes hj
 
 end Hyp
 

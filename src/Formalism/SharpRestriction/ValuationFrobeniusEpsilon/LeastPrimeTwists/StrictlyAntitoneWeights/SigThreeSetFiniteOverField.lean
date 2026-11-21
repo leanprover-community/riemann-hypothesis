@@ -98,10 +98,6 @@ def Ord3 {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ QbarQ} [FiniteDimen
   l ≠ 2 ∧ Formalism.ConjugateSelfDual.Irred (VData.toRecRep ρ) ∧ IsCSDOne (VData.toRecRep ρ) ∧
     OrdFixAbove (VData.toRecRep ρ) ![(e : ℤ), 0, -(e : ℤ)] M
 
-theorem strictAnti_wts {e : ℕ} (he : 1 ≤ e) : StrictAnti ![(e : ℤ), 0, -(e : ℤ)] := by
-  have he' : (0 : ℤ) < e := by exact_mod_cast he
-  intro i j hij
-  fin_cases i <;> fin_cases j <;> simp_all <;> omega
 
 theorem wts_eq (e : ℕ) (i : Fin 3) :
     ![(e : ℤ) + 1, 1, 1 - (e : ℤ)] i = -(![(e : ℤ), 0, -(e : ℤ)] i.rev) - (-1) := by

@@ -86,32 +86,7 @@ theorem exAt_zero : exAt Y (fun _ : Fin dd => (0 : MvPowerSeries τ C)) = fun _ 
         Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (zero_pow hs)
       rw [h0, map_zero, smul_zero]
 
-theorem exAt_list : ∀ L : List (Fin dd → MvPowerSeries τ C),
-    (∀ a ∈ L, ∀ i, MvPowerSeries.constantCoeff (a i) = 0) →
-    exAt Y (fun m => (L.map fun a => a m).sum) = sumL Y (L.map (exAt Y))
-  | [], _ => exAt_zero Y
-  | a :: L, h => by
-      have hL : ∀ m, MvPowerSeries.constantCoeff ((L.map fun a => a m).sum) = 0 := by
-        intro m
-        rw [map_list_sum, List.map_map]
-        refine List.sum_eq_zero ?_
-        intro x hx
-        obtain ⟨b, hb, rfl⟩ := List.mem_map.1 hx
-        exact h b (List.mem_cons_of_mem _ hb) m
-      show exAt Y (fun m => ((a :: L).map fun a => a m).sum) = addAt Y (exAt Y a) (sumL Y (L.map (exAt Y)))
-      rw [← exAt_list L fun b hb => h b (List.mem_cons_of_mem _ hb), ← ex_add Y (h a List.mem_cons_self) hL]
-      rfl
 
-theorem sumL_subst [Finite τ] {A : τ → MvPowerSeries τ' C} (hA : ∀ s, MvPowerSeries.constantCoeff (A s) = 0) :
-    ∀ L : List (Fin dd → MvPowerSeries τ C), (∀ a ∈ L, GoodPt V a) → ∀ i,
-      MvPowerSeries.subst A (sumL Y L i) = sumL Y (L.map fun a j => MvPowerSeries.subst A (a j)) i
-  | [], _, _ => subst_zero' hA
-  | a :: L, h, i => by
-      show MvPowerSeries.subst A (addAt Y a (sumL Y L) i) = addAt Y _ (sumL Y _) i
-      rw [addAt_subst Y hA (h a List.mem_cons_self).1 (good_sumL Y L fun b hb => h b (List.mem_cons_of_mem _ hb)).1]
-      congr 1
-      funext j
-      exact sumL_subst hA L (fun b hb => h b (List.mem_cons_of_mem _ hb)) j
 
 end VP
 
@@ -144,43 +119,7 @@ theorem toAllS_expPt (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o)) (o :
   rw [VP.subst_smul (fun _ => VP.cc_X _), VP.subst_X (fun _ => VP.cc_X _)]
   rfl
 
-theorem sumProj_holds (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o)) : SumProjSt Y p := by
-  intro _ π hπ i
-  have hgood : ∀ a ∈ projList π, VP.GoodPt V a := by
-    intro a ha
-    obtain ⟨s, -, rfl⟩ := List.mem_map.1 ha
-    exact ⟨hπ.cc s.1 s.2, hπ.int s.1 s.2⟩
-  have hA := VP.cc_pull1Pt Y p
-  have h1 : pull1 Y p (VP.sumL Y (projList π) i) =
-      VP.sumL Y (((Finset.univ : Finset (Orb × Fin 2)).toList.map (zePart Y p)).map (VP.exAt Y)) i := by
-    unfold pull1
-    rw [VP.sumL_subst Y hA _ hgood]
-    unfold projList
-    rw [List.map_map, List.map_map]
-    congr 2
-    funext s j
-    exact (hπ.pull s.1 s.2 j).trans (toAllS_expPt Y p s.1 s.2 j)
-  rw [h1, ← VP.exAt_list Y _ (by
-    intro a ha
-    obtain ⟨s, -, rfl⟩ := List.mem_map.1 ha
-    exact cc_zePart Y p s)]
-  unfold pull1
-  rw [show MvPowerSeries.subst (fun q : Fin 1 × Fin dd => expAll Y p q.2) (pt C dd (0 : Fin 1) i) = expAll Y p i from
-    VP.subst_X hA _]
-  unfold expAll VP.exAt
-  congr 1
-  funext m
-  rw [List.map_map, Finset.sum_map_toList, Fintype.sum_prod_type, Fintype.sum_sigma]
-  refine Finset.sum_congr rfl fun o _ => ?_
-  rw [Fintype.sum_sigma]
-  rfl
 
-theorem biadd_holds (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o)) : BiaddSt Y p :=
-  biadd_of_sum Y p (sumProj_holds Y p)
 
-theorem value_equation_of_projectors (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o)) (H : ∀ o, (Y.raw (p o)).Hyps V)
-    (Ls : LetSys C dd) (n : ℕ) (hP : ProjPullSt Y p) (hT : ∀ o, RawChart.TCoordSt (H o).cartH)
-    (h2 : CrossSt Y p) : ValEqPSt Y p H Ls n :=
-  valuation_eq_pair_of_biadditive_cross Y p H Ls n hP hT (biadd_holds Y p) h2
 
 end Formalism.L2.FormalSeriesBounds

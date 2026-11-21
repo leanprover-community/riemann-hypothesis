@@ -142,9 +142,6 @@ def splitAt (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word)
       · rfl)
     (fun P hP => (T_unif hX hPr u ⟨P, hP⟩).1) (fun P hP => (T_unif hX hPr u ⟨P, hP⟩).2)
 
-theorem splitAt_off (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word)
-    (hQ : ∀ w ∈ QE sel (mu : Chr X.F X.E X.K), (Pr.T u : 𝓞 X.E) ∉ w.asIdeal) (j : ℕ) (b) (p q : PtAt R sel mu cst u j) :
-    ((splitAt sel mu cst L Tp hX hPr u hQ j).off b).r p q ↔ SameOffPt sel mu cst u p q := Iff.rfl
 
 theorem frsF_eq (hPr : Pr.Ok) (u : Pr.Word) (hQ : ∀ w ∈ QE sel (mu : Chr X.F X.E X.K), (Pr.T u : 𝓞 X.E) ∉ w.asIdeal) {j : ℕ}
     {p q : PtAt R sel mu cst u j} (h : SameOffPt sel mu cst u p q) : frsF sel mu p.1.1 = frsF sel mu q.1.1 := by
@@ -155,22 +152,6 @@ theorem frsF_eq (hPr : Pr.Ok) (u : Pr.Word) (hQ : ∀ w ∈ QE sel (mu : Chr X.F
     simp only [localization_eq_of_sameOff sel mu hPr u hQ h.1 P, h.2.1]
   · rw [h.2.2.1]
 
-theorem exists_above_ne (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word)
-    (hQ : ∀ w ∈ QE sel (mu : Chr X.F X.E X.K), (Pr.T u : 𝓞 X.E) ∉ w.asIdeal) (j : ℕ) (b) (P : Pr.vT u) (p : PtAt R sel mu cst u j) :
-    ∃ q, Above (tdatAt sel mu cst L Tp u j) b P p q ∧ SameOffPt sel mu cst u p q ∧ q ≠ p := by
-  classical
-  obtain ⟨-, x, hx, hf, -⟩ := p.1.1.deco.upSet_nonempty P (moveHyp_of_ok hPr u P) (T_unif hX hPr u P).1 (T_unif hX hPr u P).2
-  refine ⟨_, ⟨x, hx, hf, rfl⟩, (splitAt sel mu cst L Tp hX hPr u hQ j).off_up b p P x hx hf, fun e => ?_⟩
-  have h := (tdatAt_tied sel mu cst L Tp hX hPr u hQ j).up_deco b p P x hx hf
-  rw [e] at h
-  have h3 : p.1.1.deco.1.f P x = if x ∈ localization₂ P.1.asIdeal (upN P.1.asIdeal p.1.1.deco.1.N x)
-      then p.1.1.deco.1.f P ((Pr.T u : 𝓞 X.E) • x) else 0 := by
-    have := congrFun (congrFun (congrArg Deco.f h) P) x
-    simp only [Deco.up, Function.update_self] at this
-    exact this
-  rw [p.1.1.deco.2.f_smul P _ x (le_locP _ _ hx), Ideal.Quotient.eq_zero_iff_mem.2 (T_unif hX hPr u P).1, zero_mul, ite_self, hf] at h3
-  haveI := P.1.isPrime
-  exact one_ne_zero h3
 
 end Chain
 
@@ -178,35 +159,12 @@ section Side
 
 variable {D : D7} {u : D.what₂.Word} {B : Dat D u} {i : ℕ} {sp : Split (B.J.A i) B.J.T} {M : PtModel B.ch i}
 
-theorem act_of_zeta (R : B.Real i sp M) (ζ : CommGroup.torsion (D.what₂.LL)ˣ) (b) (g : (B.I.S i).G b)
-    (h1 : (B.I.S i).gam b g = 1) (h2 : (B.I.S i).chr b g = ζ.1) (d) (y : M.Val) :
-    R.zeta ζ • R.pt b d = R.hom b g • R.pt b d ∧ M.act (R.zeta ζ) y = M.act (R.hom b g) y := by
-  refine ⟨by rw [← R.pt_smul]; exact (R.inj ζ b d _).2 ⟨g, h1, h2, rfl⟩, Subtype.ext ?_⟩
-  rw [R.act_hom, R.act_zeta]
-  funext z
-  refine Eq.trans ?_ (trFr_apply B.emb D.what₂.embLL _ _ y.1 z).symm
-  rw [h1, h2, inv_one]
-  exact congrArg (fun t => D.what₂.embLL _ * y.1 t) (frMul_one B.emb D.what₂.embLL z).symm
 
-theorem src_of_kerIs {sp' : Split (B.J.A (i + 1)) B.J.T} {M' : PtModel B.ch (i + 1)} (R : B.Real i sp M)
-    (R' : B.Real (i + 1) sp' M') (K : KerPt M M') (k : B.Ker i) (h : Dat.KerIs R R' K k) (b b') (g : (B.I.S i).G b) (d d') (F : B.V i)
-    (y : M.Val) (hy : y.1 = B.ev i F) :
-    B.ev (i + 1) (k b b' (g • d) d' ((B.I.S i).rho B.emb (B.lam i) b g F)) = B.ev (i + 1) (k b b' d d' F) := by
-  rw [← h b b' d d' F y hy, ← h b b' (g • d) d' _ (M.act (R.hom b g) y), R.pt_smul, K.src]
-  rw [R.act_hom, hy]
-  exact (BuiltChain.evV_rho B.emb D.what₂.embLL (B.I.S i) (B.lam i) b g F).symm
 
 end Side
 
 namespace KerInh
 
-theorem kerEq_unique {D : D7} {u : D.what₂.Word} {B : Dat D u} {i : ℕ} (k k' : B.Ker i) (h : Dat.KerEq k) (h' : Dat.KerEq k') : k = k' := by
-  funext b b' d d'
-  have e : k b b' ((B.I.S i).rep ((B.I.S i).cl b d)) ((B.I.S (i+1)).rep ((B.I.S (i+1)).cl b' d')) =
-      k' b b' ((B.I.S i).rep ((B.I.S i).cl b d)) ((B.I.S (i+1)).rep ((B.I.S (i+1)).cl b' d')) := by
-    refine LinearMap.ext fun F => evV_injective B.emb 1 (B.lam (i+1)) D.what₂.embLL (stdFrC _) ?_
-    exact (h.kmap ((B.I.S i).cl b d) ((B.I.S (i+1)).cl b' d') F).symm.trans (h'.kmap ((B.I.S i).cl b d) ((B.I.S (i+1)).cl b' d') F)
-  rw [← (B.I.S i).mv_smul b d, ← (B.I.S (i+1)).mv_smul b' d', h.equiv, h'.equiv, e]
 
 section K
 variable {D : D7} {u : D.what₂.Word} (B : Dat D u)

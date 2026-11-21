@@ -142,11 +142,6 @@ theorem pairing_iff (a : Ht q (sch.obj Z) b i) (c : Ht q (sch.obj X) (b + 2 * ((
     simp only [form, pairing, AddMonoidHom.comp_apply, Ht.castHom_apply, cup_cast_right, Ht.cast_cast] at this ⊢
     exact this.symm
 
-theorem exists_isTranspose (hX : IsPerfect q dX tX) : ∃ γ, IsTranspose q f dZ dX tZ tX b i γ := by
-  choose c hc hu using fun a => hX _ _ (form f dZ dX tZ b i a)
-  refine ⟨AddMonoidHom.mk' c fun a a' => ?_, fun a y => ((pairing_iff a (c a)).1 (hc a)) y⟩
-  refine (hu (a + a') _ fun y => ?_).symm
-  rw [form_add, AddMonoidHom.add_apply, hc a y, hc a' y, pairing_add]
 
 theorem IsTranspose.unique (hX : IsPerfect q dX tX) {γ γ' : Ht q (sch.obj Z) b i →+ Ht q (sch.obj X) (b + 2 * ((dX : ℤ) - dZ)) (i + ((dX : ℤ) - dZ))}
     (h : IsTranspose q f dZ dX tZ tX b i γ) (h' : IsTranspose q f dZ dX tZ tX b i γ') : γ = γ' := by
@@ -154,34 +149,14 @@ theorem IsTranspose.unique (hX : IsPerfect q dX tX) {γ γ' : Ht q (sch.obj Z) b
   obtain ⟨c, _, hu⟩ := hX _ _ (form f dZ dX tZ b i a)
   exact (hu _ ((pairing_iff a (γ a)).2 (h a))).trans (hu _ ((pairing_iff a (γ' a)).2 (h' a))).symm
 
-theorem pushWith_isTranspose (hX : IsPerfect q dX tX) : IsTranspose q f dZ dX tZ tX b i (pushWith q f dZ dX tZ tX b i) :=
-  pick_spec (exists_isTranspose hX)
 
-theorem pushWith_eq_iff (hX : IsPerfect q dX tX) (γ : Ht q (sch.obj Z) b i →+ Ht q (sch.obj X) (b + 2 * ((dX : ℤ) - dZ)) (i + ((dX : ℤ) - dZ))) :
-    pushWith q f dZ dX tZ tX b i = γ ↔ IsTranspose q f dZ dX tZ tX b i γ :=
-  ⟨fun e => e ▸ pushWith_isTranspose hX, fun h => (pushWith_isTranspose hX).unique hX h⟩
 
-theorem pushWith_id {d : ℕ} {t : Ht q (sch.obj X) (2 * d) d →+ ZMod q} (ht : IsPerfect q d t) :
-    pushWith q (𝟙 X) d d t t b i = Ht.castHom (by ring) (by ring) := by
-  rw [pushWith_eq_iff ht]
-  intro a y
-  rw [CategoryTheory.Functor.map_id, pull_id, Ht.castHom_apply, cup_cast_left, Ht.cast_cast]
 
 end API
 
 theorem tr_spec (h : ∃ T, IsTraceFam T) : IsTraceFam tr := pick_spec h
 
-theorem gysin_isTranspose (h : ∃ T, IsTraceFam T) (k : Type) [Field k] [IsAlgClosed k] (q : ℕ) [NeZero q]
-    (hq : IsUnit (q : k)) {Z X : Scheme.{0}} (f : Z ⟶ X) (p : X ⟶ Spec (CommRingCat.of k)) [IsProper p] (dZ dX : ℕ)
-    [SmoothOfRelativeDimension dX p] (b i : ℤ) :
-    IsTranspose q f dZ dX (tr q Z dZ) (tr q X dX) b i (gysin q f dZ dX b i) :=
-  pushWith_isTranspose ((tr_spec h k).1 q hq p dX)
 
-theorem gysin_id (h : ∃ T, IsTraceFam T) (k : Type) [Field k] [IsAlgClosed k] (q : ℕ) [NeZero q]
-    (hq : IsUnit (q : k)) {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) [IsProper p] (d : ℕ)
-    [SmoothOfRelativeDimension d p] (b i : ℤ) :
-    gysin q (𝟙 X) d d b i = Ht.castHom (by ring) (by ring) :=
-  pushWith_id ((tr_spec h k).1 q hq p d)
 
 example : ¬ IsTraceFam 0 := by
   intro h
@@ -200,11 +175,6 @@ def gysinHQ {Z X : Scheme.{0}} (f : Z ⟶ X) (dZ dX : ℕ) (b i : ℤ) :
     HQ l (sch.obj Z) b i →ₗ[ℚ_[l]] HQ l (sch.obj X) (b + 2 * ((dX : ℤ) - dZ)) (i + ((dX : ℤ) - dZ)) :=
   (gysinHl l f dZ dX b i).baseChange ℚ_[l]
 
-theorem gysinHl_apply {Z X : Scheme.{0}} (f : Z ⟶ X) (dZ dX : ℕ) (b i : ℤ)
-    (h : ∃ g : Hl l (sch.obj Z) b i →ₗ[ℤ_[l]] Hl l (sch.obj X) (b + 2 * ((dX : ℤ) - dZ)) (i + ((dX : ℤ) - dZ)),
-      ∀ (x : Hl l (sch.obj Z) b i) (k : ℕ), (g x).1 k = gysin (l ^ k) f dZ dX b i (x.1 k))
-    (x : Hl l (sch.obj Z) b i) (k : ℕ) : (gysinHl l f dZ dX b i x).1 k = gysin (l ^ k) f dZ dX b i (x.1 k) :=
-  pick_spec h x k
 
 example {ι : Type} [LinearOrder ι] {X : Scheme.{0}} (I : ι → X.IdealSheafData) (s : ℕ) (j : Fin (s + 2)) (d : ℕ)
     (hs : s + 1 ≤ d) (b i : ℤ) :

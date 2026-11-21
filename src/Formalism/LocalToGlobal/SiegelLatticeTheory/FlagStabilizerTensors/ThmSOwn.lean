@@ -37,7 +37,6 @@ def ClDiag : Prop :=
   ∀ u, hsNormSq (Kmat D.s u u - AdmissibleBoundsFromSource.Kpp D u u - ContinuousLinearMap.id ℂ (D.s.Cu u)) ≤
     AdmissibleBoundsFromSource.Gam D * AdmissibleBoundsFromSource.du D u ^ 2 / AdmissibleBoundsFromSource.Dst D
 
-theorem Theorem_E_iff_lift : AdmissibleBoundsFromSource.Conclusion1 D large₂ ↔ ClKppOff D ∧ ClKppDiag D ∧ ClOff D large₂ ∧ ClDiag D := Iff.rfl
 
 end Record
 
@@ -79,25 +78,6 @@ def caZero : AdmissibleBoundsFromSource.AdmC where
   C2 := 0
   c5 := 0
 
-theorem linkS_concrete (𝒞 : FamClass) (C0 : ℝ) (c30 : List ℝ → CountingConstants) (h1 : 1 ≤ C0)
-    (hc30 : ∀ {eps : ℝ} (Fm : FamP eps), 0 ≤ (c30 Fm.cOut).C ∧ 2 * (Fm.CYL + 1) ≤ (c30 Fm.cOut).A)
-    (hRes : Closed 𝒞 fun Fm _ => ResidEv Fm)
-    (hRows : Closed 𝒞 fun Fm _ => ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, ∃ X : RowsAut, PlaceDegreeData.RowsTie (Fm.D x i) X)
-    (hK1 : Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClKppOff D)
-    (hK2 : Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClKppDiag D)
-    (hK3 : Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D L => ClOff D L)
-    (hK4 : Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClDiag D)
-    (S30 : Closed 𝒞 fun Fm _ => PlaceDegreeData.KudlaFamilyStatement Fm (c30 Fm.cOut).Cres (c30 Fm.cOut).n0 (c30 Fm.cOut).A (c30 Fm.cOut).Cb
-      (c30 Fm.cOut).C (c30 Fm.cOut).c (c30 Fm.cOut).cb)
-    (A30 : Closed 𝒞 fun Fm _ => PlaceDegreeData.AdmF Fm (c30 Fm.cOut).Cres) :
-    Closed 𝒞 fun Fm _ => TuSize Fm → Formalism.MainNotions.LinkS Fm C0 :=
-  closed_of_large (linkThresholds (fun _ => caZero) c30)
-    (hRes.and (hRows.and (hK1.and (hK2.and (hK3.and (hK4.and (S30.and A30)))))))
-    fun Fm CH hL h a0 => by
-      obtain ⟨-, g2, g3, g4⟩ := link_thresholds_spec Fm CH (fun _ => caZero) c30 hL
-      obtain ⟨a1, a2, k1, k2, k3, k4, a6, a7⟩ := h
-      exact linkS_of_kudla_family Fm (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0 _ _ _ _ _ _ _ h1 (hc30 Fm).1 (hc30 Fm).2 g2 g3
-        (standing_hypotheses_hold_family Fm C0 h1 ⟨g4, a0, a1⟩) a2 (thmSOwn_of_clauses k1 k2 k3 k4) a6 a7
 
 end Closed
 
@@ -428,8 +408,6 @@ theorem closed_of_th {𝒞 : FamClass} {P : ∀ {eps : ℝ}, FamP eps → ℝ �
       th (Fm.cOut ++ Fm.cMid CH) ≤ sC' Fm → th (Fm.cOut ++ Fm.cMid CH) ≤ sCl Fm → P Fm CH) : Closed 𝒞 P :=
   closed_with (closed_true 𝒞) thm th fun Fm CH hc _ => h Fm CH hc
 
-theorem cOut_CYL {eps : ℝ} (Fm : FamP eps) : Fm.cOut.getD 6 0 = Fm.CYL := rfl
-theorem cOut_CTu {eps : ℝ} (Fm : FamP eps) : Fm.cOut.getD 13 0 = Fm.CTu := rfl
 
 variable (C0 : ℝ)
 
@@ -437,47 +415,11 @@ def closedThreshold (hC : Formalism.L2.SG.RowsConc.KppOffC) (l : List ℝ) : ℝ
   max 3 (max (hC (l.getD 6 0 + 1) (1 / 4) 3 (1 / 2) (l.getD 13 0) C0).choose
     (hC (l.getD 6 0 + 1) (1 / 4) 3 (1 / 2) (l.getD 13 0) C0).choose_spec.choose)
 
-theorem hypOwn_kppOff (hC : Formalism.L2.SG.RowsConc.KppOffC) {𝒞 : FamClass}
-    (sel : CSel 𝒞) :
-    Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClKppOff D := by
-  refine closed_of_th (fun _ => 0) (closedThreshold C0 hC) fun Fm CH hc _ h1 h2 => ⟨max (sel Fm hc).1 (Fm.x1 + 1), fun x hx i hH => ?_⟩
-  have hx1 : Fm.x1 < x := by have := le_trans (le_max_right _ _) hx; linarith
-  have c := (sel Fm hc).2 x hx1 (le_trans (le_max_left _ _) hx) i
-  have hs := (hC (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0).choose_spec.choose_spec
-  have e : closedThreshold C0 hC (Fm.cOut ++ Fm.cMid CH) = max 3 (max (hC (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0).choose
-      (hC (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0).choose_spec.choose) := rfl
-  rw [e] at h1 h2
-  have hC' : 1 ≤ sC' Fm := le_trans (by norm_num) (le_trans (le_max_left _ _) h1)
-  have hK2 := Formalism.MainNotions.NonGenericAndKTwoTheorems.Hyp_of _ _ _ _ _ _ _ _ _ _ hH.1 hH.2.1 hH.2.2 hC'
-  intro u u' hne
-  exact kpp_zero c.hI (hs _ _ (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) h1))
-    (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) h2)) _ _ c.X c.Y u u' hK2 c.tie hne)
 
 def quadratic_base_change_GL3 (hC : Formalism.L2.SG.RowsConc.KppDiagC) (l : List ℝ) : ℝ :=
   max 3 (max (hC (l.getD 6 0 + 1) (1 / 4) 3 (1 / 2) (l.getD 13 0) C0).choose
     (hC (l.getD 6 0 + 1) (1 / 4) 3 (1 / 2) (l.getD 13 0) C0).choose_spec.choose)
 
-theorem hypOwn_kppDiag (hC : Formalism.L2.SG.RowsConc.KppDiagC) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied) {𝒞 : FamClass}
-    (sel : CSel 𝒞) :
-    Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClKppDiag D := by
-  refine closed_of_th (fun _ => 0) (quadratic_base_change_GL3 C0 hC) fun Fm CH hc _ h1 h2 => ⟨max (sel Fm hc).1 (Fm.x1 + 1), fun x hx i hH => ?_⟩
-  have hx1 : Fm.x1 < x := by have := le_trans (le_max_right _ _) hx; linarith
-  have c := (sel Fm hc).2 x hx1 (le_trans (le_max_left _ _) hx) i
-  have hs := (hC (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0).choose_spec.choose_spec
-  have e : quadratic_base_change_GL3 C0 hC (Fm.cOut ++ Fm.cMid CH) = max 3 (max (hC (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0).choose
-      (hC (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0).choose_spec.choose) := rfl
-  rw [e] at h1 h2
-  have hC' : 1 ≤ sC' Fm := le_trans (by norm_num) (le_trans (le_max_left _ _) h1)
-  have hK2 := Formalism.MainNotions.NonGenericAndKTwoTheorems.Hyp_of _ _ _ _ _ _ _ _ _ _ hH.1 hH.2.1 hH.2.2 hC'
-  intro u
-  have hA := hAbs _ c.X c.Y u u c.tie
-  have hd := (hs _ _ (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) h1))
-    (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) h2)) _ _ c.X c.Y u hK2 c.tie hA).2
-  unfold Formalism.L2.SG.RowsOther.KppDiag at hd
-  rw [c.tie.2.2.1 u] at hd
-  rw [hsNormSq_Kpp c.hI hA]
-  unfold AdmissibleBoundsFromSource.du AdmissibleBoundsFromSource.xK
-  exact hd
 
 end Family
 
@@ -490,11 +432,6 @@ def DiagCW : Prop :=
       Formalism.L2.SG.RowsOther.DiagRow (Y.tO u u) (Formalism.L2.SG.RowsConc.oneC X Y u) (D.mem u).A.GamP
         (Formalism.L2.SG.RowsConc.ddC X Y u u)
 
-theorem diagCW_of (h : Formalism.L2.SG.RowsConc.DiagC) : DiagCW := by
-  intro Cg cb Cw cT CT C0 A
-  obtain ⟨CB, C4, h1, h2, C'₀, Cl₀, H⟩ := h Cg cb Cw cT CT C0 A
-  exact ⟨CB, C4, h1, h2, fun CG hG => ⟨C'₀, Cl₀, fun C' Cl a b D large₂ X Y u h3 h4 h5 h6 h7 =>
-    H C' Cl a b D large₂ X Y u h3 h4 h5 h6 (h7 ▸ hG)⟩⟩
 
 section Family2
 
@@ -514,106 +451,13 @@ def thD (hC : DiagCW) (l : List ℝ) : ℝ :=
       ((cDiag C0 hC (l.take 16)).choose_spec.choose_spec.2.2 (l.getD 17 0) h).choose_spec.choose)
   else 3
 
-theorem hypOwn_diag (hC : DiagCW) (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
-    {𝒞 : FamClass} (sel : CSel 𝒞) :
-    Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClDiag D := by
-  refine closed_of_th (thmD C0 hC) (thD C0 hC) fun Fm CH hc hm h1 h2 => ⟨max (sel Fm hc).1 (Fm.x1 + 1), fun x hx i hH => ?_⟩
-  have hx1 : Fm.x1 < x := by have := le_trans (le_max_right _ _) hx; linarith
-  have c := (sel Fm hc).2 x hx1 (le_trans (le_max_left _ _) hx) i
-  have e0 : (Fm.cOut ++ Fm.cMid CH).take 16 = Fm.cOut := rfl
-  have e17 : (Fm.cOut ++ Fm.cMid CH).getD 17 0 = Fm.CGam := rfl
-  have hm' : thmD C0 hC ((Fm.cOut ++ Fm.cMid CH).take 16) ≤ (Fm.cOut ++ Fm.cMid CH).getD 17 0 := by
-    rw [e0, e17]; exact hm
-  have e1 : thD C0 hC (Fm.cOut ++ Fm.cMid CH) = max 3
-      (max ((cDiag C0 hC ((Fm.cOut ++ Fm.cMid CH).take 16)).choose_spec.choose_spec.2.2 _ hm').choose
-        ((cDiag C0 hC ((Fm.cOut ++ Fm.cMid CH).take 16)).choose_spec.choose_spec.2.2 _ hm').choose_spec.choose) :=
-    dif_pos hm'
-  have hs := ((cDiag C0 hC ((Fm.cOut ++ Fm.cMid CH).take 16)).choose_spec.choose_spec.2.2 _ hm').choose_spec.choose_spec
-  rw [e1] at h1 h2
-  have hC' : 1 ≤ sC' Fm := le_trans (by norm_num) (le_trans (le_max_left _ _) h1)
-  have hCl : 2 < sCl Fm := lt_of_lt_of_le (by norm_num) (le_trans (le_max_left _ _) h2)
-  have hK2 := Formalism.MainNotions.NonGenericAndKTwoTheorems.Hyp_of _ _ _ _ _ _ _ _ _ _ hH.1 hH.2.1 hH.2.2 hC'
-  intro u
-  have hH5 := Formalism.MainNotions.count_hypotheses_diagonal_words _ _ _ _ _ _ _ _ _ _ 1 hH.1 hH.2.1 hH.2.2 hCl hC' le_rfl u
-  have hA := hAbs _ c.X c.Y u u c.tie
-  have hG : (Fm.L x i).CGam = (Fm.cOut ++ Fm.cMid CH).getD 17 0 := by rw [e17]; exact Fm.CGam_eq x i
-  have hd := hs _ _ (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) h1))
-    (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) h2)) _ _ c.X c.Y u hH5 hK2.2 c.tie hA hG
-  unfold Formalism.L2.SG.RowsOther.DiagRow Formalism.L2.SG.RowsConc.ddC at hd
-  rw [c.tie.2.2.1 u, c.tie.2.2.2.1, (Fm.D x i).GamP_eq u] at hd
-  rw [hsNormSq_diag c.hI (hExp _ c.X c.Y u u c.tie) hA (Formalism.L2.SG.Pf.SatGram.idDegenerate_tO c.Y u u)]
-  unfold AdmissibleBoundsFromSource.Gam AdmissibleBoundsFromSource.du AdmissibleBoundsFromSource.Dst
-  calc _ ≤ _ := hd
-    _ = _ := by ring
 
-theorem hypOwn_off (hC : Formalism.L2.SG.RowsConc.KppOffC) (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
-    {𝒞 : FamClass} (sel : CSel 𝒞)
-    (hO : Closed 𝒞 fun Fm _ => ∀ hc : 𝒞 Fm, TheoremSDifferentWords Fm C0 (sel Fm hc)) :
-    Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D L => ClOff D L := by
-  refine closed_with hO (fun _ => 0) (closedThreshold C0 hC) fun Fm CH hc hO' _ h1 h2 => ?_
-  obtain ⟨x0, H⟩ := hO' hc
-  refine ⟨max x0 (max (sel Fm hc).1 (Fm.x1 + 1)), fun x hx i hH => ?_⟩
-  have hx' := le_trans (le_max_right _ _) hx
-  have hx1 : Fm.x1 < x := by have := le_trans (le_max_right _ _) hx'; linarith
-  have h0 : (sel Fm hc).1 ≤ x := le_trans (le_max_left _ _) hx'
-  let c := (sel Fm hc).2 x hx1 h0 i
-  have hs := (hC (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0).choose_spec.choose_spec
-  have e : closedThreshold C0 hC (Fm.cOut ++ Fm.cMid CH) = max 3 (max (hC (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0).choose
-      (hC (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0).choose_spec.choose) := rfl
-  rw [e] at h1 h2
-  have hC' : 1 ≤ sC' Fm := le_trans (by norm_num) (le_trans (le_max_left _ _) h1)
-  have hK2 := Formalism.MainNotions.NonGenericAndKTwoTheorems.Hyp_of _ _ _ _ _ _ _ _ _ _ hH.1 hH.2.1 hH.2.2 hC'
-  intro u u' hne
-  have hZ := hs _ _ (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) h1))
-    (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) h2)) _ _ c.X c.Y u u' hK2 c.tie hne
-  have hb : 0 ≤ (Fm.L x i).sc.b := le_trans zero_le_two (Formalism.MainNotions.S.two_le_scb _)
-  rw [hsNormSq_off c.hI (hExp _ c.X c.Y u u' c.tie) (hAbs _ c.X c.Y u u' c.tie)
-    (Formalism.L2.SG.Pf.SatGram.idDegenerate_tO c.Y u u') hZ]
-  have hK := H x (le_trans (le_max_left _ _) hx) i hH hx1 h0 u u' hne
-  unfold AdmissibleBoundsFromSource.eta0 AdmissibleBoundsFromSource.du AdmissibleBoundsFromSource.Dst
-  rw [Formalism.L2.SG.PackageTie.rpow_neg_six hb]
-  calc _ ≤ _ := hK
-    _ = _ := by ring
 
-theorem linkS_conc (𝒞 : FamClass) (sel : CSel 𝒞) (c30 : List ℝ → CountingConstants)
-    (h1 : 1 ≤ C0)
-    (hc30 : ∀ {eps : ℝ} (Fm : FamP eps), 0 ≤ (c30 Fm.cOut).C ∧ 2 * (Fm.CYL + 1) ≤ (c30 Fm.cOut).A)
-    (hRes : Closed 𝒞 fun Fm _ => ResidEv Fm)
-    (hRows : Closed 𝒞 fun Fm _ => ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, ∃ X : RowsAut, PlaceDegreeData.RowsTie (Fm.D x i) X)
-    (hK2a : Formalism.L2.SG.RowsConc.KppOffC) (hK2b : Formalism.L2.SG.RowsConc.KppDiagC) (hDg : DiagCW)
-    (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
-    (hO : Closed 𝒞 fun Fm _ => ∀ hc : 𝒞 Fm, TheoremSDifferentWords Fm C0 (sel Fm hc))
-    (S30 : Closed 𝒞 fun Fm _ => PlaceDegreeData.KudlaFamilyStatement Fm (c30 Fm.cOut).Cres (c30 Fm.cOut).n0 (c30 Fm.cOut).A (c30 Fm.cOut).Cb
-      (c30 Fm.cOut).C (c30 Fm.cOut).c (c30 Fm.cOut).cb)
-    (A30 : Closed 𝒞 fun Fm _ => PlaceDegreeData.AdmF Fm (c30 Fm.cOut).Cres) :
-    Closed 𝒞 fun Fm _ => TuSize Fm → Formalism.MainNotions.LinkS Fm C0 :=
-  linkS_concrete 𝒞 C0 c30 h1 hc30 hRes hRows (hypOwn_kppOff C0 hK2a sel) (hypOwn_kppDiag C0 hK2b hAbs sel)
-    (hypOwn_off C0 hK2a hExp hAbs sel hO) (hypOwn_diag C0 hDg hExp hAbs sel) S30 A30
 
 end Family2
 
 section ClosedE
 
-theorem linkS_concreteE (𝒞 : FamClass) (C0 : ℝ) (c30 : List ℝ → CountingConstants) (h1 : 1 ≤ C0)
-    (hc30 : ∀ {eps : ℝ} (Fm : FamP eps), 0 ≤ (c30 Fm.cOut).C ∧ 2 * (Fm.CYL + 1) ≤ (c30 Fm.cOut).A)
-    (hRes : Closed 𝒞 fun Fm _ => ResidEv Fm)
-    (hRows : Closed 𝒞 fun Fm _ => ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, ∃ X : RowsAut,
-      CountE.RowsTieP CountE.PLev (Fm.D x i) X)
-    (hK1 : Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClKppOff D)
-    (hK2 : Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClKppDiag D)
-    (hK3 : Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D L => ClOff D L)
-    (hK4 : Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClDiag D)
-    (S30 : Closed 𝒞 fun Fm _ => CountE.ShareFamilyAtConstant CountE.PLev Fm (c30 Fm.cOut).Cres (c30 Fm.cOut).n0 (c30 Fm.cOut).A
-      (c30 Fm.cOut).Cb (c30 Fm.cOut).C (c30 Fm.cOut).c (c30 Fm.cOut).cb)
-    (A30 : Closed 𝒞 fun Fm _ => PlaceDegreeData.AdmF Fm (c30 Fm.cOut).Cres) :
-    Closed 𝒞 fun Fm _ => TuSize Fm → Formalism.MainNotions.LinkS Fm C0 :=
-  closed_of_large (linkThresholds (fun _ => caZero) c30)
-    (hRes.and (hRows.and (hK1.and (hK2.and (hK3.and (hK4.and (S30.and A30)))))))
-    fun Fm CH hL h a0 => by
-      obtain ⟨-, g2, g3, g4⟩ := link_thresholds_spec Fm CH (fun _ => caZero) c30 hL
-      obtain ⟨a1, a2, k1, k2, k3, k4, a6, a7⟩ := h
-      exact CountE.linkS_of_thmSP CountE.PLev Fm (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0 _ _ _ _ _ _ _ h1
-        (hc30 Fm).1 (hc30 Fm).2 g2 g3 (standing_hypotheses_hold_family Fm C0 h1 ⟨g4, a0, a1⟩) a2 (thmSOwn_of_clauses k1 k2 k3 k4) a6 a7
 
 end ClosedE
 
@@ -621,20 +465,6 @@ section FamilyE
 
 variable (C0 : ℝ)
 
-theorem linkS_concE (𝒞 : FamClass) (sel : CSel 𝒞) (c30 : List ℝ → CountingConstants) (h1 : 1 ≤ C0)
-    (hc30 : ∀ {eps : ℝ} (Fm : FamP eps), 0 ≤ (c30 Fm.cOut).C ∧ 2 * (Fm.CYL + 1) ≤ (c30 Fm.cOut).A)
-    (hRes : Closed 𝒞 fun Fm _ => ResidEv Fm)
-    (hRows : Closed 𝒞 fun Fm _ => ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, ∃ X : RowsAut,
-      CountE.RowsTieP CountE.PLev (Fm.D x i) X)
-    (hK2a : Formalism.L2.SG.RowsConc.KppOffC) (hK2b : Formalism.L2.SG.RowsConc.KppDiagC) (hDg : DiagCW)
-    (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
-    (hO : Closed 𝒞 fun Fm _ => ∀ hc : 𝒞 Fm, TheoremSDifferentWords Fm C0 (sel Fm hc))
-    (S30 : Closed 𝒞 fun Fm _ => CountE.ShareFamilyAtConstant CountE.PLev Fm (c30 Fm.cOut).Cres (c30 Fm.cOut).n0 (c30 Fm.cOut).A
-      (c30 Fm.cOut).Cb (c30 Fm.cOut).C (c30 Fm.cOut).c (c30 Fm.cOut).cb)
-    (A30 : Closed 𝒞 fun Fm _ => PlaceDegreeData.AdmF Fm (c30 Fm.cOut).Cres) :
-    Closed 𝒞 fun Fm _ => TuSize Fm → Formalism.MainNotions.LinkS Fm C0 :=
-  linkS_concreteE 𝒞 C0 c30 h1 hc30 hRes hRows (hypOwn_kppOff C0 hK2a sel) (hypOwn_kppDiag C0 hK2b hAbs sel)
-    (hypOwn_off C0 hK2a hExp hAbs sel hO) (hypOwn_diag C0 hDg hExp hAbs sel) S30 A30
 
 end FamilyE
 
@@ -664,30 +494,9 @@ def TheoremSSelected {eps : ℝ} (Fm : FamP eps) (C0 : ℝ) (s : SSelF Fm) : Pro
       ‖((s.2 x hx h0 i).Y.tO u u').K0‖ ^ 2 ≤ (1 + ((Fm.L x i).sc.b ^ 6)⁻¹) *
         (((Fm.D x i).duS u : ℝ) * ((Fm.D x i).duS u') / (Fm.D x i).what₂.Dstar)
 
-theorem theoremS_different_of_selected {𝒞 : FamClass} (sel : SSel 𝒞)
-    (hOK : ∀ {eps : ℝ} (Fm : FamP eps) (hc : 𝒞 Fm) x (hx : Fm.x1 < x) (h0 : (sel Fm hc).1 ≤ x) (i : Fm.Ix x),
-      STiesOK ((sel Fm hc).2 x hx h0 i)) {eps : ℝ} (Fm : FamP eps) (hc : 𝒞 Fm) (C0 : ℝ)
-    (h : TheoremSSelected Fm C0 (sel Fm hc)) : TheoremSDifferentWords Fm C0 (cselOf sel hOK Fm hc) := h
 
 variable (C0 : ℝ)
 
-theorem linkS_sel (𝒞 : FamClass) (sel : SSel 𝒞)
-    (hOK : ∀ {eps : ℝ} (Fm : FamP eps) (hc : 𝒞 Fm) x (hx : Fm.x1 < x) (h0 : (sel Fm hc).1 ≤ x) (i : Fm.Ix x),
-      STiesOK ((sel Fm hc).2 x hx h0 i))
-    (c30 : List ℝ → CountingConstants) (h1 : 1 ≤ C0)
-    (hc30 : ∀ {eps : ℝ} (Fm : FamP eps), 0 ≤ (c30 Fm.cOut).C ∧ 2 * (Fm.CYL + 1) ≤ (c30 Fm.cOut).A)
-    (hRes : Closed 𝒞 fun Fm _ => ResidEv Fm)
-    (hRows : Closed 𝒞 fun Fm _ => ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, ∃ X : RowsAut,
-      CountE.RowsTieP CountE.PLev (Fm.D x i) X)
-    (hK2a : Formalism.L2.SG.RowsConc.KppOffC) (hK2b : Formalism.L2.SG.RowsConc.KppDiagC) (hDg : DiagCW)
-    (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
-    (hO : Closed 𝒞 fun Fm _ => ∀ hc : 𝒞 Fm, TheoremSSelected Fm C0 (sel Fm hc))
-    (S30 : Closed 𝒞 fun Fm _ => CountE.ShareFamilyAtConstant CountE.PLev Fm (c30 Fm.cOut).Cres (c30 Fm.cOut).n0 (c30 Fm.cOut).A
-      (c30 Fm.cOut).Cb (c30 Fm.cOut).C (c30 Fm.cOut).c (c30 Fm.cOut).cb)
-    (A30 : Closed 𝒞 fun Fm _ => PlaceDegreeData.AdmF Fm (c30 Fm.cOut).Cres) :
-    Closed 𝒞 fun Fm _ => TuSize Fm → Formalism.MainNotions.LinkS Fm C0 :=
-  linkS_concE C0 𝒞 (cselOf sel hOK) c30 h1 hc30 hRes hRows hK2a hK2b hDg hExp hAbs
-    (hO.imp fun Fm _ _ h hc => theoremS_different_of_selected sel hOK Fm hc C0 (h hc)) S30 A30
 
 end Sel
 
@@ -846,38 +655,6 @@ theorem hypOwnE_kppDiag (hC : Formalism.L2.SG.RowsConc.KppDiagC) (hAbs : Formali
   unfold AdmissibleBoundsFromSource.du AdmissibleBoundsFromSource.xK
   exact hd
 
-theorem hypOwnE_diag (hC : DiagCW) (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied) {𝒞 : FamClass}
-    (hE : Closed 𝒞 fun Fm _ => ConcEv C0 Fm) :
-    Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClDiag D := by
-  refine closed_with hE (thmD C0 hC) (thD C0 hC) fun Fm CH _ hE' hm h1 h2 => ?_
-  obtain ⟨x0, H⟩ := hE'
-  refine ⟨x0, fun x hx i hH => ?_⟩
-  obtain ⟨c⟩ := H x hx i hH
-  have e0 : (Fm.cOut ++ Fm.cMid CH).take 16 = Fm.cOut := rfl
-  have e17 : (Fm.cOut ++ Fm.cMid CH).getD 17 0 = Fm.CGam := rfl
-  have hm' : thmD C0 hC ((Fm.cOut ++ Fm.cMid CH).take 16) ≤ (Fm.cOut ++ Fm.cMid CH).getD 17 0 := by
-    rw [e0, e17]; exact hm
-  have e1 : thD C0 hC (Fm.cOut ++ Fm.cMid CH) = max 3
-      (max ((cDiag C0 hC ((Fm.cOut ++ Fm.cMid CH).take 16)).choose_spec.choose_spec.2.2 _ hm').choose
-        ((cDiag C0 hC ((Fm.cOut ++ Fm.cMid CH).take 16)).choose_spec.choose_spec.2.2 _ hm').choose_spec.choose) :=
-    dif_pos hm'
-  have hs := ((cDiag C0 hC ((Fm.cOut ++ Fm.cMid CH).take 16)).choose_spec.choose_spec.2.2 _ hm').choose_spec.choose_spec
-  rw [e1] at h1 h2
-  have hC' : 1 ≤ sC' Fm := le_trans (by norm_num) (le_trans (le_max_left _ _) h1)
-  have hCl : 2 < sCl Fm := lt_of_lt_of_le (by norm_num) (le_trans (le_max_left _ _) h2)
-  have hK2 := Formalism.MainNotions.NonGenericAndKTwoTheorems.Hyp_of _ _ _ _ _ _ _ _ _ _ hH.1 hH.2.1 hH.2.2 hC'
-  intro u
-  have hH5 := Formalism.MainNotions.count_hypotheses_diagonal_words _ _ _ _ _ _ _ _ _ _ 1 hH.1 hH.2.1 hH.2.2 hCl hC' le_rfl u
-  have hA := hAbs _ c.X c.Y u u c.tie
-  have hG : (Fm.L x i).CGam = (Fm.cOut ++ Fm.cMid CH).getD 17 0 := by rw [e17]; exact Fm.CGam_eq x i
-  have hd := hs _ _ (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) h1))
-    (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) h2)) _ _ c.X c.Y u hH5 hK2.2 c.tie hA hG
-  unfold Formalism.L2.SG.RowsOther.DiagRow Formalism.L2.SG.RowsConc.ddC at hd
-  rw [c.tie.2.2.1 u, c.tie.2.2.2.1, (Fm.D x i).GamP_eq u] at hd
-  rw [hsNormSq_diag c.hI (hExp _ c.X c.Y u u c.tie) hA (Formalism.L2.SG.Pf.SatGram.idDegenerate_tO c.Y u u)]
-  unfold AdmissibleBoundsFromSource.Gam AdmissibleBoundsFromSource.du AdmissibleBoundsFromSource.Dst
-  calc _ ≤ _ := hd
-    _ = _ := by ring
 
 theorem hypOwnS_off (hC : Formalism.L2.SG.RowsConc.KppOffC) (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
     {𝒞 : FamClass} (sel : SSel 𝒞)
@@ -911,24 +688,6 @@ theorem hypOwnS_off (hC : Formalism.L2.SG.RowsConc.KppOffC) (hExp : KExpTied) (h
   calc _ ≤ _ := hK
     _ = _ := by ring
 
-theorem linkS_selH (𝒞 : FamClass) (sel : SSel 𝒞)
-    (hOK : Closed 𝒞 fun Fm _ => ∀ hc : 𝒞 Fm, SelOK C0 Fm (sel Fm hc))
-    (c30 : List ℝ → CountingConstants) (h1 : 1 ≤ C0)
-    (hc30 : ∀ {eps : ℝ} (Fm : FamP eps), 0 ≤ (c30 Fm.cOut).C ∧ 2 * (Fm.CYL + 1) ≤ (c30 Fm.cOut).A)
-    (hRes : Closed 𝒞 fun Fm _ => ResidEv Fm)
-    (hRows : Closed 𝒞 fun Fm _ => ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, ∃ X : RowsAut,
-      CountE.RowsTieP CountE.PLev (Fm.D x i) X)
-    (hK2a : Formalism.L2.SG.RowsConc.KppOffC) (hK2b : Formalism.L2.SG.RowsConc.KppDiagC) (hDg : DiagCW)
-    (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
-    (hO : Closed 𝒞 fun Fm _ => ∀ hc : 𝒞 Fm, TheoremSSelected Fm C0 (sel Fm hc))
-    (S30 : Closed 𝒞 fun Fm _ => CountE.ShareFamilyAtConstant CountE.PLev Fm (c30 Fm.cOut).Cres (c30 Fm.cOut).n0 (c30 Fm.cOut).A
-      (c30 Fm.cOut).Cb (c30 Fm.cOut).C (c30 Fm.cOut).c (c30 Fm.cOut).cb)
-    (A30 : Closed 𝒞 fun Fm _ => PlaceDegreeData.AdmF Fm (c30 Fm.cOut).Cres) :
-    Closed 𝒞 fun Fm _ => TuSize Fm → Formalism.MainNotions.LinkS Fm C0 :=
-  have hE : Closed 𝒞 fun Fm _ => ConcEv C0 Fm :=
-    closed_with hOK (fun _ => 0) (fun _ => 0) fun Fm _ hc h _ _ _ => concEv_of_sel C0 (h hc)
-  linkS_concreteE 𝒞 C0 c30 h1 hc30 hRes hRows (hypOwnE_kppOff C0 hK2a hE) (hypOwnE_kppDiag C0 hK2b hAbs hE)
-    (hypOwnS_off C0 hK2a hExp hAbs sel hOK hO) (hypOwnE_diag C0 hDg hExp hAbs hE) S30 A30
 
 theorem sTiesOK_of (hFX : Formalism.L2.SG.PoincareAmplitudeLowerBounds.FinXC) (hWu : Formalism.L2.SG.Pf.WuDecayOfGap) {D : D7}
     (T : Formalism.L2.SG.SpectralTiesReal.STies D) (hG : Formalism.L2.SG.ConcreteSettingExists.GapHyp D) (hL : Formalism.L2.SG.Pf.LocCP.LocTied D)
@@ -984,15 +743,6 @@ def TheoremSClosedHypotheses : Prop :=
       ‖(T.Y.tO u u').K0‖ ^ 2 ≤ (1 + (L.sc.b ^ 6)⁻¹) * ((D.duS u : ℝ) * (D.duS u') / D.what₂.Dstar) ∧
       L.hsSq u u' ≤ (1 + L.sc.b ^ (-(6 : ℝ))) * (D.duS u : ℝ) * (D.duS u' : ℝ) / D.what₂.Dstar
 
-theorem theoremS_single_of_closed (h : TheoremSClosedHypotheses) : TheoremSSingle := by
-  intro Cthr
-  obtain ⟨C₄, CA, C, a1, a2, a3, a4, a5, hrest⟩ := h Cthr
-  refine ⟨C₄, CA, C, a1, a2, a3, a4, a5, fun C0 CG CDel cT Cb b1 b2 b3 b4 b5 b6 => ?_⟩
-  obtain ⟨k0, hk⟩ := hrest C0 CG CDel cT Cb b1 b2 b3 b4 b5 b6
-  refine ⟨k0, fun Cg cb Cw cTf CT C0f => ?_⟩
-  obtain ⟨Cn, C'₀, Cl₀, hn, hh⟩ := hk Cg cb Cw cTf CT C0f
-  exact ⟨Cn, C'₀, Cl₀, hn, fun C' Cl c1 c2 D L T u u' hne hb hS hH0 hSt hK hG hL hT hR1 hR2 =>
-    (hh C' Cl c1 c2 D L T u u' hne hb hS hH0 hSt hK hG hL hT hR1 hR2).1⟩
 
 variable (C0 : ℝ)
 

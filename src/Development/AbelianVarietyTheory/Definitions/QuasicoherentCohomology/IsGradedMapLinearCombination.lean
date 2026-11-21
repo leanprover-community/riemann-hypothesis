@@ -116,10 +116,6 @@ theorem polyGradedSMul_of_X_smul_mem [IsScalarTower R (MvPolynomial ι R) M]
       rw [vadd_eq_add, add_comm]
       exact smul_mem_of_isHomogeneous ℳ hX (mem_polyGrading_natCast.1 hp) n m hm
 
-theorem polyGradedSMul_iff [IsScalarTower R (MvPolynomial ι R) M] (ℳ : ℤ → Submodule R M) :
-    PolyGradedSMul ι ℳ ↔
-      ∀ (i : ι) (n : ℤ), ∀ m ∈ ℳ n, (X i : MvPolynomial ι R) • m ∈ ℳ (n + 1) :=
-  ⟨fun _ => X_smul_mem_gr ℳ, polyGradedSMul_of_X_smul_mem ℳ⟩
 
 def IsGradedMap (ℳ : ℤ → Submodule R M) (𝒩 : ℤ → Submodule R N)
     (f : M →ₗ[MvPolynomial ι R] N) : Prop :=
@@ -217,24 +213,6 @@ theorem exact_piece {f : M →ₗ[MvPolynomial ι R] N} {g : N →ₗ[MvPolynomi
   · rintro ⟨m, rfl⟩
     exact Subtype.ext (h.apply_apply_eq_zero m)
 
-theorem exact_of_exact_piece [Decomposition 𝒬] {f : M →ₗ[MvPolynomial ι R] N}
-    {g : N →ₗ[MvPolynomial ι R] P} (hf : IsGradedMap ℳ 𝒩 f) (hg : IsGradedMap 𝒩 𝒬 g)
-    (h : ∀ n, Function.Exact (hf.piece n) (hg.piece n)) : Function.Exact f g := by
-  intro y
-  constructor
-  · intro hy
-    obtain ⟨T, hT⟩ := exists_sum_grProj 𝒩 y
-    rw [← hT]
-    refine (LinearMap.range f).sum_mem fun n _ => ?_
-    obtain ⟨m, hm⟩ := (h n ⟨_, proj_mem 𝒩 n y⟩).1 (Subtype.ext (by
-      change g (proj 𝒩 n y) = 0
-      rw [← hg.proj_apply, hy, map_zero]))
-    exact ⟨m, congrArg Subtype.val hm⟩
-  · rintro ⟨m, rfl⟩
-    obtain ⟨T, hT⟩ := exists_sum_grProj ℳ m
-    rw [← hT, map_sum, map_sum]
-    exact Finset.sum_eq_zero fun n _ =>
-      congrArg Subtype.val ((h n).apply_apply_eq_zero ⟨_, proj_mem ℳ n m⟩)
 
 theorem symm {e : M ≃ₗ[MvPolynomial ι R] N} (he : IsGradedMap ℳ 𝒩 e.toLinearMap) :
     IsGradedMap 𝒩 ℳ e.symm.toLinearMap := fun n y hy => by
@@ -252,9 +230,6 @@ theorem grShift_apply (ℳ : ℤ → Submodule R M) (d n : ℤ) : grShift ℳ d 
 theorem grShift_zero (ℳ : ℤ → Submodule R M) : grShift ℳ 0 = ℳ := by
   funext n; simp
 
-theorem grShift_grShift (ℳ : ℤ → Submodule R M) (d e : ℤ) :
-    grShift (grShift ℳ d) e = grShift ℳ (d + e) := by
-  funext n; simp only [grShift_apply]; congr 1; ring
 
 instance grShift.polyGradedSMul (ℳ : ℤ → Submodule R M) [PolyGradedSMul ι ℳ] (d : ℤ) :
     PolyGradedSMul ι (grShift ℳ d) where
@@ -289,10 +264,6 @@ theorem isGradedMap_lsmul (ℳ : ℤ → Submodule R M) [PolyGradedSMul ι ℳ] 
     IsGradedMap ℳ (grShift ℳ d) (LinearMap.lsmul (MvPolynomial ι R) M p) :=
   fun _ _ h => grSMul_mem ℳ hp h
 
-theorem isGradedMap_lsmul' (ℳ : ℤ → Submodule R M) [PolyGradedSMul ι ℳ] {p : MvPolynomial ι R}
-    {d : ℤ} (hp : p ∈ polyGrading ι R d) :
-    IsGradedMap (grShift ℳ (-d)) ℳ (LinearMap.lsmul (MvPolynomial ι R) M p) :=
-  fun _ _ h => by simpa using grSMul_mem ℳ hp h
 
 theorem isGradedMap_toSpanSingleton (ℳ : ℤ → Submodule R M) [PolyGradedSMul ι ℳ] {m : M} {d : ℤ}
     (hm : m ∈ ℳ d) : IsGradedMap (grShift (polyGrading ι R) (-d)) ℳ
@@ -339,8 +310,6 @@ instance grQuot.polyGradedSMul (ℳ : ℤ → Submodule R M) [PolyGradedSMul ι 
 theorem isGradedMap_subtype (ℳ : ℤ → Submodule R M) (K : Submodule (MvPolynomial ι R) M) :
     IsGradedMap (grSub ℳ K) ℳ K.subtype := fun _ _ h => h
 
-theorem isGradedMap_mkQ (ℳ : ℤ → Submodule R M) (K : Submodule (MvPolynomial ι R) M) :
-    IsGradedMap ℳ (grQuot ℳ K) K.mkQ := fun _ m h => ⟨m, h, rfl⟩
 
 omit [IsScalarTower R (MvPolynomial ι R) M] in
 

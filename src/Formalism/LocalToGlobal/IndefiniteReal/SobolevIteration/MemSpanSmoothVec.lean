@@ -34,16 +34,6 @@ lemma smoothVec_rsmul (c : ℝ) {a : E} (ha : SmoothVec Lie ρ a) : SmoothVec Li
   rw [← Complex.coe_smul]
   exact smoothVec_smul (c : ℂ) ha
 
-lemma mem_span_smoothVec {a : E} : a ∈ Submodule.span ℂ {w | SmoothVec Lie ρ w} ↔ SmoothVec Lie ρ a := by
-  constructor
-  · intro h
-    induction h using Submodule.span_induction with
-    | mem x hx => exact hx
-    | zero => exact smoothVec_zero
-    | add x y _ _ hx hy => exact smoothVec_add hx hy
-    | smul c x _ hx => exact smoothVec_smul c hx
-  · intro h
-    exact Submodule.subset_span h
 
 end SV
 

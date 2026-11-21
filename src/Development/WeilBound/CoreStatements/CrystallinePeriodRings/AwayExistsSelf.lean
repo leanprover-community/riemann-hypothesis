@@ -165,23 +165,6 @@ theorem bcris_regular (K : FinExt l) {b : Per6.Bcris l} (hb0 : b ≠ 0)
 
 end Concrete
 
-theorem tied_regular : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P),
-    LocTied6 l P AI → ∀ (K : FinExt l) (b : P.R.B), b ≠ 0 →
-      (∀ g ∈ GK K, ∃ x : ℚ_[l], P.actQ g b = x • b) → IsUnit b := by
-  intro l _ P AI T K b hb0 hb
-  have h : IsUnit (T.eB b) := bcris_regular K ((map_ne_zero_iff _ T.eB.injective).2 hb0)
-    fun g hg => by
-      obtain ⟨q, hq⟩ := hb g hg
-      exact ⟨q, by rw [← T.actB, hq, Algebra.smul_def, map_mul, tie_q]⟩
-  simpa using h.map T.eB.symm
 
-theorem tied_fund_onto : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P),
-    LocTied6 l P AI → ∀ (K : FinExt l) (w : P.R.BdR),
-      ∃ x : P.R.B, P.φB x = x ∧ P.ιB x - w ∈ (P.PD K).Fil 0 := by
-  intro l _ P AI T K w
-  obtain ⟨x, hx, c, hc⟩ := fund_onto (T.eD w)
-  obtain ⟨x, rfl⟩ := T.eB.surjective x
-  refine ⟨x, T.eB.injective ((T.frob x).trans hx), (tie_fil_zero T K _).2 ⟨c, ?_⟩⟩
-  rw [map_sub, tie_ι, hc]
 
 end PositivityTheory.LocInh

@@ -21,7 +21,6 @@ abbrev sw (D : D7) : Af D.host.F ⊗[D.host.F] D.host.E ≃+* ReciprocityTheory.
 
 theorem sw_tmul (a : Af D.host.F) (x : D.host.E) : sw D (a ⊗ₜ x) = x ⊗ₜ a := rfl
 
-theorem sw_symm_tmul (a : Af D.host.F) (x : D.host.E) : (sw D).symm (x ⊗ₜ a) = a ⊗ₜ x := rfl
 
 theorem sw_sig (y : ReciprocityTheory.Aut.AL D.host.E) :
     (sw D).symm (ReciprocityTheory.Aut.conjAL D.host.E y) = sigR (Af D.host.F) D.sp.cm.sig ((sw D).symm y) := by
@@ -286,33 +285,7 @@ theorem conj_diag {A : Type} [CommRing A] {m n : ℕ} (β : Matrix (Fin m) (Fin 
     (β * (Matrix.diagonal fun _ => c : Matrix (Fin n) (Fin n) A) : Matrix (Fin m) (Fin n) A) * β' = c • (1 : Matrix (Fin m) (Fin m) A) := by
   rw [← Matrix.smul_one_eq_diagonal, Matrix.mul_smul, Matrix.mul_one, Matrix.smul_mul, h]
 
-theorem not_stdPsi_twist {V : HSp D} {n : ℕ} (hn : 0 < n) {P : RowPsi V n} (h : StdPsi (hostF_eq D) P) :
-    ¬ StdPsi (hostF_eq D) (twist P) := by
-  intro h'
-  have hr := rank_eq h
-  obtain ⟨u, hu, hne⟩ := exists_normOne D.host.E
-  obtain ⟨⟨β, β', h1, -, h2⟩, -⟩ := h
-  obtain ⟨⟨γ, γ', k1, -, k2⟩, -⟩ := h'
-  have a := (h2 (conjG D.host.E n (scalG n hu))).symm.trans (k2 (scalG n hu))
-  have e1 : ((conjG D.host.E n (scalG n hu)).1.1 : Matrix (Fin n) (Fin n) (ReciprocityTheory.Aut.AL D.host.E)).map (sw D).symm =
-      Matrix.diagonal fun _ => (1 : Af D.host.F) ⊗ₜ[D.host.F] (IsCMField.complexConj D.host.E u) := by
-    change ((Matrix.diagonal fun _ => (u ⊗ₜ 1 : ReciprocityTheory.Aut.AL D.host.E)).map (ReciprocityTheory.Aut.conjAL D.host.E)).map (sw D).symm = _
-    rw [Matrix.diagonal_map (RingHom.map_zero _), Matrix.diagonal_map (RingEquiv.map_zero _)]
-    rfl
-  have e2 : ((scalG n hu).1.1 : Matrix (Fin n) (Fin n) (ReciprocityTheory.Aut.AL D.host.E)).map (sw D).symm =
-      Matrix.diagonal fun _ => (1 : Af D.host.F) ⊗ₜ[D.host.F] u := by
-    change (Matrix.diagonal fun _ => (u ⊗ₜ 1 : ReciprocityTheory.Aut.AL D.host.E)).map (sw D).symm = _
-    rw [Matrix.diagonal_map (RingEquiv.map_zero _)]
-    rfl
-  rw [e1, e2, conj_diag _ _ h1, conj_diag _ _ k1] at a
-  have b := congrFun (congrFun a ⟨0, hr ▸ hn⟩) ⟨0, hr ▸ hn⟩
-  rw [Matrix.smul_apply, Matrix.smul_apply, Matrix.one_apply_eq, smul_eq_mul, smul_eq_mul, mul_one, mul_one] at b
-  exact hne (incl_inj D.host.F D.host.E b)
 
-theorem exists_std_and_not (D : D7) {n : ℕ} (hn : 0 < n) :
-    ∃ (V : HSp D) (P Q : RowPsi V V.rank), V.rank = n ∧ StdPsi (hostF_eq D) P ∧ ¬ StdPsi (hostF_eq D) Q := by
-  obtain ⟨V, P, h1, h2⟩ := exists_stdPsi D n
-  exact ⟨V, P, twist P, h1, h2, not_stdPsi_twist (h1 ▸ hn) h2⟩
 
 end GlobalTheory.StdFrameModel
 

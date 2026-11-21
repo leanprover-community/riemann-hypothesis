@@ -144,13 +144,7 @@ theorem isNormalised_triv (ha : a ≤ 1) : IsNormalised (CuspSub.triv E ha) := f
   obtain ⟨z, rfl⟩ := Submodule.mem_span_singleton.1 hφ
   rfl
 
-theorem isNormalised_of_isDiscrete {π : CuspSub E a} (h : IsDiscrete π.V) : IsNormalised π :=
-  fun φ hφ => (h.sqInt φ hφ).1
 
-theorem isIsoGL_iff (π π' : CuspSub E a) : IsIsoGL π.V π'.V ↔ π.Iso π' := by
-  refine exists_congr fun T => ⟨fun h o φ => Subtype.ext (h o φ _ rfl), fun h o φ ψ e => ?_⟩
-  rw [show ψ = π.op o φ from Subtype.ext e, h]
-  rfl
 
 end GlobalTheory.DiscSpec
 

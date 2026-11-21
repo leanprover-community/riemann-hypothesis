@@ -107,21 +107,6 @@ def NGCut2C : Prop :=
           (X.B.g : ℝ) (((Tu D u : ℕ) : ℝ) * ((Tu D u' : ℕ) : ℝ)) (PN.abelian₂ (2 * D.host.v) D.R.rS D.R.k D.R.f * B.AA) e1 ∧
         Formalism.L2.SG.RowsOther.NGReal (Y.tO u u') (NOf2 Y u u' νL νB ng) D.R.f A CB large₂.sc.b cSt Ire
 
-theorem counting_bound_of_joint_chain (hR : PN.RowNGJoint) (hC : PN.NGChain) (hc : NGCut2C) : RowNGC := by
-  intro Cg cb Cw cT CT C0
-  obtain ⟨C1, C0n, A, CB, CSt, Cgs, CTs, h1, h2, h3, h4, hA, C'₀, Cl₀, h⟩ := hc Cg cb Cw cT CT C0
-  obtain ⟨Cn, hCn, hK⟩ := Formalism.L2.SG.RowsOther.rowNG_of_cut hR hC C1 C0n A CB CSt Cgs CTs h1 h2 h3 h4 hA
-  refine ⟨Cn, hCn, C'₀, Cl₀, fun C' Cl a b D large₂ X Y u u' h0 hs hT ha => ?_⟩
-  obtain ⟨P, iP, B, cSt, e1, Irat, Ire, νL, νB, ng, _, _, hG, hdd, hN, hF, hS, hFin, hRe⟩ :=
-    h C' Cl a b D large₂ X Y u u' h0 hs hT
-  have hcard := Formalism.MainNotions.LatticeGluingRadicals.d_card D
-  have key := hK D.host.E (TauC Y u u') _ _ _ _ (Y.tO u u') D.R.rS D.R.k (Set (TauC Y u u')) (NuC D)
-    (NOf2 Y u u' νL νB ng) P B large₂.sc.b (2 * D.host.v) (X.B.g : ℝ) (((Tu D u : ℕ) : ℝ) * ((Tu D u' : ℕ) : ℝ))
-    cSt e1 Irat Ire
-  rw [hcard] at key
-  have r := key ha hG hN hF hS hFin hRe
-  rw [hdd] at r
-  exact r
 
 end Cut
 

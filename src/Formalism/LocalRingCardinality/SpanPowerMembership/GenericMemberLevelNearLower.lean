@@ -534,17 +534,6 @@ def genericRecord : D7 :=
     gat_d := fun _ _ _ => (gAtPExample_d _).trans (finrank_bot ℂ _).symm
     Y_sigval := spacesG_Ysig s _ _ _ _ _ _ _ }
 
-theorem genericRecord_host : (⟨(genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).R, (genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).host⟩ : Σ R : Ranks, Host R) = ⟨Rt s, H⟩ := rfl
-theorem genericRecord_ranks : (genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).R = Rt s := rfl
-theorem genericRecord_word (u : (genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).what₂.Word) : u = (genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).u₀ := rfl
-theorem genericRecord_sign (τ) : (genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).hc τ = hc := rfl
-theorem genericRecord_weight_sign (u τ) : (genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).hcW u τ = hc := rfl
-theorem genericRecord_eta (j w) : (genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).what₂.etaJ j w = 0 := rfl
-theorem genericRecord_mem_A_T (u) : ((genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).mem u).A.T = T := rfl
-theorem genericRecord_lowerLevel (u) : ((genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).mem u).A.Tstar = Ts := memG_Tstar hc T Ts hTs Gam hG
-theorem genericRecord_gamma (u) : ((genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).mem u).A.GamP = Gam := rfl
-theorem genericRecord_delta : (genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).s.Del = 1 := rfl
-theorem genericRecord_letter (u l) : (genericRecord H hc hgap hlet T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).s.letter u l = false := rfl
 
 end Record
 

@@ -305,20 +305,7 @@ lemma jac_q_d {q d : ℕ} (h : HostHyp q d) : jacobiSym (q : ℤ) d = 1 := by
   rw [jacobiSym.neg _ hodd, ZMod.χ₄_nat_three_mod_four h4] at h1
   linarith
 
-lemma jac_d_q {q d : ℕ} (h : HostHyp q d) : jacobiSym (d : ℤ) q = -1 := by
-  have h4 : q % 4 = 3 := by have := h.2.2.1; omega
-  have hodd : Odd q := Nat.odd_iff.2 (by omega)
-  have h1 := h.2.2.2.2
-  rw [jacobiSym.neg _ hodd, ZMod.χ₄_nat_three_mod_four h4] at h1
-  linarith
 
-lemma jac_flip {l m : ℕ} (hl : l % 4 = 3) (hm : Odd m) : jacobiSym (m : ℤ) l = jacobiSym (-(l : ℤ)) m := by
-  rw [jacobiSym.neg _ hm]
-  have hl' : Odd l := Nat.odd_iff.2 (by omega)
-  rcases Nat.odd_mod_four_iff.1 (Nat.odd_iff.1 hm) with h1 | h3
-  · rw [ZMod.χ₄_nat_one_mod_four h1, one_mul, jacobiSym.quadratic_reciprocity_one_mod_four h1 hl']
-  · rw [ZMod.χ₄_nat_three_mod_four h3, jacobiSym.quadratic_reciprocity_three_mod_four h3 hl]
-    ring
 
 lemma sgn2_toAdd_eq_ite (s : ℤˣ) : Multiplicative.toAdd (sgn2 s) = if (s : ℤ) = 1 then 0 else 1 := by
   change (if s = 1 then (0 : ZMod 2) else 1) = _
@@ -344,37 +331,8 @@ lemma recMap_of_modEq {e q d : ℕ} [Fact q.Prime] [Fact d.Prime] [NeZero (hostN
   rw [sgn2_toAdd_eq_ite, sgn2_toAdd_eq_ite, legU_of_modEq _ u kd h1, legU_of_modEq _ u kq h2,
     (unitsMap_eq_unitOfCoprime_iff _ hk2 u).2 h3]
 
-lemma unitOfCoprime_modEq {N m c : ℕ} [NeZero N] (hm : m.Coprime N) (hc : c ∣ N) :
-    ((ZMod.unitOfCoprime m hm : (ZMod N)ˣ) : ZMod N).val ≡ m [MOD c] := by
-  rw [ZMod.coe_unitOfCoprime, ZMod.val_natCast]
-  exact (Nat.mod_modEq m N).of_dvd hc
 
-lemma ite_zmod2 (J : ℤ) (hJ : J = 1 ∨ J = -1) :
-    (((if J = 1 then (0 : ZMod 2) else 1) = 0 ↔ J = 1) ∧ ((if J = 1 then (0 : ZMod 2) else 1) = 1 ↔ J = -1)) := by
-  rcases hJ with rfl | rfl
-  · simp
-  · simp
 
-theorem reciprocity_kronecker : RecKronecker := by
-  intro e q d _ _ h m hm hm2
-  have : NeZero (hostN e q d) := ⟨hostN_ne_zero e h⟩
-  have hodd : Odd m := by
-    have : m.Coprime 2 := Nat.Coprime.coprime_dvd_right (dvd_pow_self 2 (by omega)) hm2
-    exact Nat.Coprime.odd_of_right this
-  have hd4 : d % 4 = 3 := by have := h.2.2.2.1; omega
-  have hq4 : q % 4 = 3 := by have := h.2.2.1; omega
-  rw [recMap_of_modEq _ m m m hm2 (unitOfCoprime_modEq hm (d_dvd_hostN e q d))
-    (unitOfCoprime_modEq hm (q_dvd_hostN e q d)) (unitOfCoprime_modEq hm (two_dvd_hostN e q d)),
-    jac_flip hd4 hodd, jac_flip hq4 hodd]
-  have hJd : jacobiSym (-(d : ℤ)) m = 1 ∨ jacobiSym (-(d : ℤ)) m = -1 := by
-    apply jacobiSym.eq_one_or_neg_one
-    rw [Int.neg_gcd, Int.gcd_natCast_natCast]
-    exact (Nat.Coprime.coprime_dvd_right (d_dvd_hostN e q d) hm).symm
-  have hJq : jacobiSym (-(q : ℤ)) m = 1 ∨ jacobiSym (-(q : ℤ)) m = -1 := by
-    apply jacobiSym.eq_one_or_neg_one
-    rw [Int.neg_gcd, Int.gcd_natCast_natCast]
-    exact (Nat.Coprime.coprime_dvd_right (q_dvd_hostN e q d) hm).symm
-  exact ⟨(ite_zmod2 _ hJd).1, (ite_zmod2 _ hJd).2, (ite_zmod2 _ hJq).1, (ite_zmod2 _ hJq).2, rfl⟩
 
 def sQ (l : ℕ) [Fact l.Prime] (x : (ZMod l)ˣ) : ZMod 2 :=
   Multiplicative.toAdd (sgn2 ((quadraticChar (ZMod l)).toUnitHom x))
@@ -561,24 +519,9 @@ lemma host_frob_q (h : HostHyp q d) (hq : q.Coprime (2 ^ (e + 2))) :
     jac_q_d h, Nat.cast_one, jacobiSym.one_left]
   rfl
 
-lemma host_frob_d (h : HostHyp q d) (hd : d.Coprime (2 ^ (e + 2))) :
-    (hostData e q d).frob d = ((0, 1), Additive.ofMul (hcl e (ZMod.unitOfCoprime d hd))) := by
-  have : NeZero (hostN e q d) := ⟨hostN_ne_zero e h⟩
-  obtain ⟨hP, hM⟩ := (extension_local_parts e q d h).2.2
-  obtain ⟨w1, w2⟩ := frobUnit_modEq (N := hostN e q d) h.2.1
-  rw [hM] at w1
-  rw [hP] at w2
-  change Multiplicative.toAdd (recMap e q d (frobUnit (hostN e q d) d)) = _
-  rw [recMap_of_modEq _ 1 d d hd w2 (w1.of_dvd (dvd_mul_left q _)) (w1.of_dvd (dvd_mul_right _ q)),
-    jac_d_q h, Nat.cast_one, jacobiSym.one_left]
-  rfl
 
 end
 
-theorem extension_local : HostLocal := by
-  intro e q d _ _ h
-  exact ⟨fun p hp hpp => host_unram h p hp hpp, ⟨host_inertia_two h, host_frob_two h⟩,
-    ⟨host_inertia_q h, host_frob_q h⟩, ⟨host_inertia_d h, host_frob_d h⟩⟩
 
 lemma coprime_hostN (e : ℕ) {q d p : ℕ} (h : HostHyp q d) (hp : p.Prime) (h2 : p ≠ 2) (hq : p ≠ q) (hd : p ≠ d) :
     p.Coprime (hostN e q d) := by
@@ -609,113 +552,18 @@ theorem extension_facts : HostFactsHost := by
       rw [hp', host_frob_q h cq]
       rfl
 
-theorem balance_for_extension : BalanceHost := by
-  intro e q d _ _ h ell a t w ha hw N hN
-  exact colour_balance (hostData e q d) (extension_facts e q d h) ell a t w ha hw N hN
 
-lemma chC_val {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] (g : E0 × H) :
-    (chC : AddChar (E0 × H) ℂ) g = if g.1.1 = 0 then 1 else -1 := rfl
 
 section
 variable {e q d : ℕ} [Fact q.Prime] [Fact d.Prime]
 
-lemma chC_trivial_two (h : HostHyp q d) : ∀ x ∈ (hostData e q d).inertia 2, (chC : AddChar (E0 × HA e) ℂ) x = 1 := by
-  intro x hx
-  rw [chC_val, (host_inertia_two h x).1 hx]
-  simp
 
-lemma chC_trivial_q (h : HostHyp q d) : ∀ x ∈ (hostData e q d).inertia q, (chC : AddChar (E0 × HA e) ℂ) x = 1 := by
-  intro x hx
-  rw [chC_val]
-  rcases (host_inertia_q h x).1 hx with rfl | rfl <;> simp [sg]
 
-lemma chC_nontrivial_d (h : HostHyp q d) :
-    ¬ ∀ x ∈ (hostData e q d).inertia d, (chC : AddChar (E0 × HA e) ℂ) x = 1 := by
-  intro hh
-  have h1 := hh sgc0 ((host_inertia_d h _).2 (Or.inr rfl))
-  rw [chC_val] at h1
-  simp [sgc0] at h1
-  norm_num at h1
 
-lemma jac_self (d : ℕ) (hd : 1 < d) : jacobiSym (d : ℤ) d = 0 := by
-  rw [jacobiSym.mod_left, Int.emod_self, jacobiSym.zero_left hd]
 
-lemma cosetMean_chC (h : HostHyp q d) (p i : ℕ) (hp : p.Prime) (hi : i ≠ 0) :
-    cosetMean ((hostData e q d).inertia p) (i • (hostData e q d).frob p) chC
-      = (((jacobiSym (p : ℤ) d) ^ i : ℤ) : ℂ) := by
-  have : NeZero (hostN e q d) := ⟨hostN_ne_zero e h⟩
-  obtain ⟨hq2, hd2, hqd⟩ := HostHyp_ne h
-  by_cases hpd : p = d
-  · subst hpd
-    rw [cosetMean_of_nontrivial _ _ _ (chC_nontrivial_d h), jac_self p hp.one_lt, zero_pow hi]
-    simp
-  by_cases hp2 : p = 2
-  · subst hp2
-    rw [cosetMean_of_trivial _ _ _ (chC_trivial_two h), AddChar.map_nsmul_eq_pow, host_frob_two h, jac_two_d h, chC_val]
-    simp [sg]
-  by_cases hpq : p = q
-  · subst hpq
-    have cq : p.Coprime (2 ^ (e + 2)) := Nat.Coprime.pow_right _ ((Nat.coprime_primes h.1 Nat.prime_two).2 hq2)
-    rw [cosetMean_of_trivial _ _ _ (chC_trivial_q h), AddChar.map_nsmul_eq_pow, host_frob_q h cq, jac_q_d h, chC_val]
-    simp
-  have hcop := coprime_hostN e h hp hp2 hpq hpd
-  obtain ⟨h1, h2⟩ := host_unram (e := e) h p hcop hp
-  have c2 : p.Coprime (2 ^ (e + 2)) := Nat.Coprime.pow_right _ ((Nat.coprime_primes hp Nat.prime_two).2 hp2)
-  rw [cosetMean_of_trivial _ _ _ (by
-      intro x hx
-      rw [h1, AddSubgroup.mem_bot] at hx
-      rw [hx, AddChar.map_zero_eq_one]), AddChar.map_nsmul_eq_pow, h2,
-    recMap_of_modEq _ p p p c2 (unitOfCoprime_modEq hcop (d_dvd_hostN e q d))
-      (unitOfCoprime_modEq hcop (q_dvd_hostN e q d)) (unitOfCoprime_modEq hcop (two_dvd_hostN e q d)), chC_val]
-  have hJ : jacobiSym (p : ℤ) d = 1 ∨ jacobiSym (p : ℤ) d = -1 := by
-    apply jacobiSym.eq_one_or_neg_one
-    rw [Int.gcd_natCast_natCast]
-    exact (Nat.coprime_primes hp h.2.1).2 hpd
-  rcases hJ with hJ | hJ <;> rw [hJ] <;> simp
 
 end
 
-theorem character_conductor : ChConductor := by
-  intro e q d _ _ h
-  have hN := hostN_ne_zero e h
-  constructor
-  · have i2 := (inertia_conductor (H := HA e) (hostN e q d) q d (recMap e q d) chC 2 hN Nat.prime_two).1
-      (chC_trivial_two h)
-    have iq := (inertia_conductor (H := HA e) (hostN e q d) q d (recMap e q d) chC q hN h.1).1
-      (chC_trivial_q h)
-    have id : d ∣ (dirChar (recMap e q d) chC).conductor := by
-      by_contra hh
-      exact chC_nontrivial_d h
-        ((inertia_conductor (H := HA e) (hostN e q d) q d (recMap e q d) chC d hN h.2.1).2 hh)
-    have hdvd : (dirChar (recMap e q d) chC).conductor ∣ 2 ^ (e + 2) * q * d :=
-      DirichletCharacter.conductor_dvd_level _
-    have c2 : ((dirChar (recMap e q d) chC).conductor).Coprime (2 ^ (e + 2)) :=
-      Nat.Coprime.pow_right _ ((Nat.Prime.coprime_iff_not_dvd Nat.prime_two).2 i2).symm
-    have cq : ((dirChar (recMap e q d) chC).conductor).Coprime q :=
-      ((Nat.Prime.coprime_iff_not_dvd h.1).2 iq).symm
-    exact Nat.dvd_antisymm (Nat.Coprime.dvd_of_dvd_mul_left (Nat.Coprime.mul_right c2 cq) hdvd) id
-  · intro n hn
-    let φ : ℤ →* ℤ :=
-      { toFun := fun a => jacobiSym a d
-        map_one' := jacobiSym.one_left d
-        map_mul' := fun a b => jacobiSym.mul_left a b d }
-    have hφ : jacobiSym (n : ℤ) d = ∏ p ∈ n.primeFactors, (jacobiSym (p : ℤ) d) ^ n.factorization p := by
-      conv_lhs => rw [← Nat.prod_factorization_pow_eq_self hn]
-      rw [Nat.prod_factorization_eq_prod_primeFactors, Nat.cast_prod]
-      change φ _ = _
-      rw [map_prod]
-      apply Finset.prod_congr rfl
-      intro p _
-      rw [Nat.cast_pow, map_pow]
-      rfl
-    rw [hφ, Int.cast_prod]
-    unfold primVal
-    apply Finset.prod_congr rfl
-    intro p hp
-    have hi : n.factorization p ≠ 0 := by
-      have := (Nat.support_factorization n ▸ hp : p ∈ n.factorization.support)
-      exact Finsupp.mem_support_iff.1 this
-    exact cosetMean_chC h p _ (Nat.prime_of_mem_primeFactors hp) hi
 
 theorem dirichlet_character_injective : DirCharInjective := by
   intro e q d _ _ h ψ ψ' hψ
@@ -730,40 +578,12 @@ theorem dirichlet_character_injective : DirCharInjective := by
   rw [h1, h2] at h3
   exact h3
 
-lemma sign_injective : ∀ s s' : ℤˣ, Multiplicative.toAdd (sgn2 s) = Multiplicative.toAdd (sgn2 s') → s = s' := by decide
 
-lemma sgn2_toAdd_surjective : ∀ x : ZMod 2, ∃ s : ℤˣ, Multiplicative.toAdd (sgn2 s) = x := by decide
 
-lemma galois_map_mul (e : ℕ) (g g' : FrobeniusOrbits.GG e) : galoisToProduct e (g * g') = galoisToProduct e g + galoisToProduct e g' := by
-  unfold galoisToProduct
-  simp only [Prod.fst_mul, Prod.snd_mul, map_mul]
-  rfl
 
-lemma galois_map_one (e : ℕ) : galoisToProduct e 1 = 0 := by
-  unfold galoisToProduct
-  simp only [Prod.fst_one, Prod.snd_one, map_one]
-  rfl
 
-lemma galois_map_injective (e : ℕ) : Function.Injective (galoisToProduct e) := by
-  intro g g' hg
-  unfold galoisToProduct at hg
-  simp only [Prod.mk.injEq] at hg
-  obtain ⟨⟨h1, h2⟩, h3⟩ := hg
-  exact Prod.ext (Prod.ext (sign_injective _ _ h2) (sign_injective _ _ h1)) (Additive.ofMul.injective h3)
 
-theorem galois_map_iso : GaloisToProductIsIso := by
-  intro e
-  refine ⟨⟨galois_map_injective e, ?_⟩, galois_map_mul e⟩
-  rintro ⟨⟨x, y⟩, t⟩
-  obtain ⟨s, hs⟩ := sgn2_toAdd_surjective x
-  obtain ⟨s', hs'⟩ := sgn2_toAdd_surjective y
-  exact ⟨((s', s), Additive.toMul t), by unfold galoisToProduct; simp only [hs, hs']; rfl⟩
 
-lemma galois_map_apply (e : ℕ) (g : FrobeniusOrbits.GG e) :
-    galoisToProduct e g = ((if ((g.1.2 : ℤˣ) : ℤ) = 1 then 0 else 1, if ((g.1.1 : ℤˣ) : ℤ) = 1 then 0 else 1),
-      Additive.ofMul g.2) := by
-  unfold galoisToProduct
-  rw [sgn2_toAdd_eq_ite, sgn2_toAdd_eq_ite]
 
 section Field
 
@@ -773,79 +593,17 @@ open Formalism.TwoAdicCyclotomicDecomposition (IsLayer galMap layerGalois odd_cy
 
 variable {e q d : ℕ} {L : Type} [Field L] [NumberField L] {ζ a b : L}
 
-lemma galE_mul' (h : HostHyp q d) (hL : IsLayer (e + 2) q d ζ a b) (σ τ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) :
-    galE e ζ a b (σ * τ) = galE e ζ a b σ * galE e ζ a b τ :=
-  (hostGalois e q d h.toHypOdd L ζ a b hL).2.2.1 σ τ
 
-lemma galE_one' (h : HostHyp q d) (hL : IsLayer (e + 2) q d ζ a b) :
-    galE e ζ a b (1 : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) = 1 := by
-  have := galE_mul' h hL 1 1
-  rw [mul_one] at this
-  exact mul_eq_left.mp this.symm
 
-lemma galois_map_mul_inv (h : HostHyp q d) (hL : IsLayer (e + 2) q d ζ a b)
-    (σ τ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) :
-    galoisToProduct e (galE e ζ a b (σ * τ⁻¹)) = galoisToProduct e (galE e ζ a b σ) - galoisToProduct e (galE e ζ a b τ) := by
-  rw [eq_sub_iff_add_eq, ← galois_map_mul, ← galE_mul' h hL, inv_mul_cancel_right]
 
 lemma sgn2_toAdd_eq_zero_iff : ∀ s : ℤˣ, Multiplicative.toAdd (sgn2 s) = 0 ↔ s = 1 := by decide
 
-lemma galois_map_first_eq_zero_iff (g : FrobeniusOrbits.GG e) : (galoisToProduct e g).1 = 0 ↔ g.1 = 1 := by
-  change ((Multiplicative.toAdd (sgn2 g.1.2), Multiplicative.toAdd (sgn2 g.1.1)) : E0) = 0 ↔ _
-  rw [Prod.ext_iff, Prod.ext_iff]
-  change (Multiplicative.toAdd (sgn2 g.1.2) = 0 ∧ Multiplicative.toAdd (sgn2 g.1.1) = 0) ↔ (g.1.1 = 1 ∧ g.1.2 = 1)
-  rw [sgn2_toAdd_eq_zero_iff, sgn2_toAdd_eq_zero_iff, and_comm]
 
-lemma galois_map_sign : galoisToProduct e (FrobeniusOrbits.sg e) = sg := by
-  rw [galois_map_apply]
-  simp [FrobeniusOrbits.sg, sg]
 
-lemma galois_map_complex_conjugation : galoisToProduct e (((1, -1), 1) : FrobeniusOrbits.GG e) = sgc0 := by
-  rw [galois_map_apply]
-  simp [sgc0]
 
 variable [Fact q.Prime] [Fact d.Prime]
 
-lemma field_inertia (h : HostHyp q d) (hL : IsLayer (e + 2) q d ζ a b) (p : ℕ) [Fact p.Prime]
-    (P : Ideal (𝓞 (hostE ζ a b))) [P.IsPrime] [hPl : P.LiesOver (span {(p : ℤ)})]
-    (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) :
-    (∀ x : 𝓞 (hostE ζ a b), σ • x - x ∈ P) ↔ galoisToProduct e (galE e ζ a b σ) ∈ (hostData e q d).inertia p := by
-  have hI := hostInertia e q d h L ζ a b hL σ
-  have hinj := galois_map_injective e
-  by_cases hp2 : p = 2
-  · subst hp2
-    have : P.LiesOver (span {(2 : ℤ)}) := by simpa using hPl
-    rw [hI.1 P, host_inertia_two h, galois_map_first_eq_zero_iff]
-  by_cases hpq : p = q
-  · subst hpq
-    rw [hI.2.1 P, host_inertia_q h, ← galois_map_one e, ← galois_map_sign, hinj.eq_iff, hinj.eq_iff]
-  by_cases hpd : p = d
-  · subst hpd
-    rw [hI.2.2 P, host_inertia_d h, ← galois_map_one e, ← galois_map_complex_conjugation, hinj.eq_iff, hinj.eq_iff]
-  have hp : p.Prime := Fact.out
-  rw [(hostFrob_of hostGalois hostGalSpec e q d h.toHypOdd L ζ a b hL p hp2 hpq hpd P).2.2 σ,
-    (host_unram h p (coprime_hostN e h hp hp2 hpq hpd) hp).1, AddSubgroup.mem_bot, ← galois_map_one e, hinj.eq_iff,
-    ← galE_one' h hL, (hostGalois e q d h.toHypOdd L ζ a b hL).2.2.2.1.eq_iff]
 
-lemma field_frob_of (h : HostHyp q d) (hL : IsLayer (e + 2) q d ζ a b) (p : ℕ) [Fact p.Prime]
-    (P : Ideal (𝓞 (hostE ζ a b))) [P.IsPrime] [P.LiesOver (span {(p : ℤ)})]
-    (σ₀ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) (h₀ : IsArithFrobAt ℤ σ₀ P)
-    (h1 : galoisToProduct e (galE e ζ a b σ₀) - (hostData e q d).frob p ∈ (hostData e q d).inertia p)
-    (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) :
-    IsArithFrobAt ℤ σ P ↔
-      galoisToProduct e (galE e ζ a b σ) - (hostData e q d).frob p ∈ (hostData e q d).inertia p := by
-  constructor
-  · intro hσ
-    have h2 : ∀ x : 𝓞 (hostE ζ a b), (σ * σ₀⁻¹) • x - x ∈ P :=
-      AddSubgroup.mem_inertia.mp (hσ.mul_inv_mem_inertia h₀)
-    rw [field_inertia h hL p P, galois_map_mul_inv h hL] at h2
-    have := AddSubgroup.add_mem _ h2 h1
-    rwa [sub_add_sub_cancel] at this
-  · intro hσ
-    have h2 := AddSubgroup.sub_mem _ hσ h1
-    rw [sub_sub_sub_cancel_right, ← galois_map_mul_inv h hL, ← field_inertia h hL p P] at h2
-    have := FrobeniusOrbits.Frob.frob_mul_inertia P (σ * σ₀⁻¹) σ₀ (AddSubgroup.mem_inertia.mpr h2) h₀
-    rwa [inv_mul_cancel_right] at this
 
 omit [Fact q.Prime] [Fact d.Prime] in
 
@@ -959,39 +717,6 @@ lemma exists_frob_two (h : HostHyp q d) (hL : IsLayer (e + 2) q d ζ a b)
     · exact h1
   exact ⟨σ₀, h₀, Prod.ext ha1 hb1⟩
 
-theorem extension_data_field : HostDataField := by
-  intro e q d _ _ h L _ _ ζ a b hL p _ P _ _ σ
-  refine ⟨field_inertia h hL p P σ, ?_⟩
-  have hp : p.Prime := Fact.out
-  obtain ⟨hq2, hd2, hqd⟩ := HostHyp_ne h
-  by_cases hp2 : p = 2
-  · subst hp2
-    obtain ⟨σ₀, h₀, h1⟩ := exists_frob_two h hL P
-    refine field_frob_of h hL 2 P σ₀ h₀ ?_ σ
-    rw [host_inertia_two h, host_frob_two h, galois_map_apply, h1]
-    simp [sg]
-  obtain ⟨σ₀, h₀, hH, ha, hb⟩ := exists_frob_odd h hL p hp2 P
-  have c2 : p.Coprime (2 ^ (e + 2)) := Nat.Coprime.pow_right _ ((Nat.coprime_primes hp Nat.prime_two).2 hp2)
-  refine field_frob_of h hL p P σ₀ h₀ ?_ σ
-  rw [galois_map_apply, hH c2]
-  by_cases hpq : p = q
-  · subst hpq
-    rw [hb hqd, h.2.2.2.2, host_frob_q h c2, host_inertia_q h]
-    by_cases hs : (((galE e ζ a b σ₀).1.1 : ℤˣ) : ℤ) = 1 <;> simp [hs, sg]
-  by_cases hpd : p = d
-  · subst hpd
-    rw [ha hqd.symm, FrobeniusOrbits.hostRecip q p h, host_frob_d h c2, host_inertia_d h]
-    by_cases hs : (((galE e ζ a b σ₀).1.2 : ℤˣ) : ℤ) = 1 <;> simp [hs, sgc0]
-  have : NeZero (hostN e q d) := ⟨hostN_ne_zero e h⟩
-  have hcop := coprime_hostN e h hp hp2 hpq hpd
-  have hodd : Odd p := hp.odd_of_ne_two hp2
-  have hd4 : d % 4 = 3 := by have := h.2.2.2.1; omega
-  have hq4 : q % 4 = 3 := by have := h.2.2.1; omega
-  rw [ha hpq, hb hpd, (host_unram h p hcop hp).2,
-    recMap_of_modEq _ p p p c2 (unitOfCoprime_modEq hcop (d_dvd_hostN e q d))
-      (unitOfCoprime_modEq hcop (q_dvd_hostN e q d)) (unitOfCoprime_modEq hcop (two_dvd_hostN e q d)),
-    jac_flip hd4 hodd, jac_flip hq4 hodd, sub_self]
-  exact AddSubgroup.zero_mem _
 
 end Field
 

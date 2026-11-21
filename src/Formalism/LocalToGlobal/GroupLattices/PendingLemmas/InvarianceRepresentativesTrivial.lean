@@ -159,20 +159,9 @@ theorem delt_spec (j : ℕ) (c : X.Lv.comp j) (L : (X.Pj j).Tup) (h : (X.Pj j).I
   exact ⟨_, (Classical.choose_spec (repOf_ex X.Lv hfin j c L h).exists).1,
     (Classical.choose_spec (repOf_ex X.Lv hfin j c L h).exists).2.choose_spec⟩
 
-theorem chiN_rep (hK : KapStab X Kc) (j : ℕ) (c : X.Lv.comp j) (L0 : (X.Pj j).Tup)
-    (h0 : (c, L0) ∈ repOf X.Lv hfin j) : chiN X Kc hfin j (c, L0) = 1 := by
-  have hL := repOf_lat X.Lv hfin j (c, L0) h0
-  obtain ⟨L1, h1, e1⟩ := delt_spec X hfin j c L0 hL
-  have h10 : L1 = L0 := (repOf_ex X.Lv hfin j c L0 hL).unique ⟨h1, _, e1⟩ ⟨h0, 1, (lsmul_one _ L0).symm⟩
-  subst h10
-  show (kapG X Kc j c (delt X hfin j c L1))⁻¹ = 1
-  rw [hK j c L1 _ hL e1.symm, inv_one]
 
 include hp0
 
-theorem kapStab_of_trivStab (h : ∀ j c, (X.Lv.lev j c).TrivStab) : KapStab X Kc := by
-  intro j c L γ hL hγ
-  rw [h j c γ L hL hγ, kapG_one X Kc hp0]
 
 theorem chiN_smul (hK : KapStab X Kc) (j : ℕ) (c : X.Lv.comp j) (γ : (X.Lv.lev j c).Γ) (L : (X.Pj j).Tup)
     (hL : (X.Pj j).IsLatTup L) :
@@ -313,45 +302,7 @@ def StabGeo : Prop :=
   ∀ j (c : X.Lv.comp j) (L0 : (X.Pj j).Tup) (La' : X.Lt (j + 1)) (ε : (X.Lv.lev j c).Γ), (c, L0) ∈ repOf X.Lv hfin j →
     (X.Lv.lev j c).smul ε L0 = L0 → SA X Kc j (gamAt X j c ε) (ThR j (c, L0) La') = ThR j (c, L0) La'
 
-theorem geoLaw_thGeo (hS : StabGeo X Kc hfin ThR) : GeoLaw X Kc (thGeo X Kc hfin ThR) := by
-  intro j c L La' γ hL
-  have hL' : (X.Pj j).IsLatTup ((X.Lv.lev j c).smul γ L) := (Formalism.MainNotions.FormalGroupSystem.Pf.latTup_smul _ _ γ L).2 hL
-  obtain ⟨L0, h0, e0⟩ := delt_spec X hfin j c L hL
-  obtain ⟨L1, h1, e1⟩ := delt_spec X hfin j c _ hL'
-  show SA X Kc j (gamAt X j c (delt X hfin j c ((X.Lv.lev j c).smul γ L)))
-      (ThR j (c, (X.Lv.lev j c).smul (delt X hfin j c ((X.Lv.lev j c).smul γ L))⁻¹ ((X.Lv.lev j c).smul γ L)) La') =
-    SA X Kc j (gamAt X j c γ) (SA X Kc j (gamAt X j c (delt X hfin j c L))
-      (ThR j (c, (X.Lv.lev j c).smul (delt X hfin j c L)⁻¹ L) La'))
-  set δ := delt X hfin j c L with hδ
-  set δ' := delt X hfin j c ((X.Lv.lev j c).smul γ L) with hδ'
-  have e2 : (X.Lv.lev j c).smul γ L = (X.Lv.lev j c).smul (γ * δ) L0 := by
-    rw [lsmul_mul, ← e0]
-  have h10 : L1 = L0 := (repOf_ex X.Lv hfin j c _ hL').unique ⟨h1, δ', e1⟩ ⟨h0, γ * δ, e2⟩
-  subst h10
-  have hst : (X.Lv.lev j c).smul ((γ * δ)⁻¹ * δ') L1 = L1 := by
-    rw [lsmul_mul, ← e1, e2, lsmul_inv_lsmul]
-  have r1 : (X.Lv.lev j c).smul δ'⁻¹ ((X.Lv.lev j c).smul γ L) = L1 := by
-    conv_lhs => rw [e1]
-    exact lsmul_inv_lsmul _ _ _
-  have r0 : (X.Lv.lev j c).smul δ⁻¹ L = L1 := by
-    conv_lhs => rw [e0]
-    exact lsmul_inv_lsmul _ _ _
-  rw [r1, r0, SA_mul, ← gamAt_mul]
-  have hd : δ' = (γ * δ) * ((γ * δ)⁻¹ * δ') := by group
-  conv_lhs => rw [hd, gamAt_mul, ← SA_mul, hS j c L1 La' _ h0 hst]
 
-theorem thGeo_rep (hS : StabGeo X Kc hfin ThR) (j : ℕ) (c : X.Lv.comp j) (L0 : (X.Pj j).Tup) (La' : X.Lt (j + 1))
-    (h0 : (c, L0) ∈ repOf X.Lv hfin j) : thGeo X Kc hfin ThR j (c, L0) La' = ThR j (c, L0) La' := by
-  have hL := repOf_lat X.Lv hfin j (c, L0) h0
-  obtain ⟨L1, h1, e1⟩ := delt_spec X hfin j c L0 hL
-  have h10 : L1 = L0 := (repOf_ex X.Lv hfin j c L0 hL).unique ⟨h1, _, e1⟩ ⟨h0, 1, (lsmul_one _ L0).symm⟩
-  subst h10
-  show SA X Kc j (gamAt X j c (delt X hfin j c L1))
-    (ThR j (c, (X.Lv.lev j c).smul (delt X hfin j c L1)⁻¹ L1) La') = _
-  generalize delt X hfin j c L1 = δ at e1 ⊢
-  have r : (X.Lv.lev j c).smul δ⁻¹ L1 = L1 :=
-    (congrArg (fun T => (X.Lv.lev j c).smul δ⁻¹ T) e1).trans (lsmul_inv_lsmul (X.Lv.lev j c) δ L1)
-  rw [r, hS j c L1 La' _ h0 e1.symm]
 
 theorem gamAt_one (j : ℕ) (c : X.Lv.comp j) : gamAt X j c 1 = fun _ => 1 := by
   funext v
@@ -372,9 +323,6 @@ theorem SA_one (j : ℕ) (f : MvPowerSeries (X.ZA j) Kc) : SA X Kc j (fun _ => 1
   rw [this]
   exact congrFun MvPowerSeries.subst_self f
 
-theorem stabGeo_of_trivStab (h : ∀ j c, (X.Lv.lev j c).TrivStab) : StabGeo X Kc hfin ThR := by
-  intro j c L0 La' ε h0 hε
-  rw [h j c ε L0 (repOf_lat X.Lv hfin j (c, L0) h0) hε, gamAt_one, SA_one]
 
 end Geo
 
@@ -398,73 +346,16 @@ abbrev pendN : Pend X :=
   letI := algKfC E
   pendC X E hfin hst be (thFN X ℂ_[p] hfin Th0)
 
-theorem invariance_on_equivariant_values {Gd : ∀ j, (X.Pj j).Xsp → Prop} :
-    letI := wittFractionAlgebraCp p
-    letI := algKfC E
-    DelEquivOn X ℂ_[p] Gd → GeoLaw X ℂ_[p] Th0 → KapStab X ℂ_[p] → RationalInvarianceOnValues (pendN X E hfin hst be Th0) Gd := by
-  let _ := wittFractionAlgebraCp p
-  let _ := algKfC E
-  intro hD hG hK j _ c L La' γ G hGd hL _
-  exact ker_smul X ℂ_[p] hfin Th0 pC_ne_zero hD hG hK j c L La' γ G hL hGd _
 
-theorem invariance_normalised_kernel (D : Formalism.BasicNotions.D7) {Gd : ∀ j, (X.Pj j).Xsp → Prop} :
-    letI := wittFractionAlgebraCp p
-    letI := algKfC E
-    DelEquivOn X ℂ_[p] Gd → VtIn X Gd → GeoLaw X ℂ_[p] Th0 → KapStab X ℂ_[p] →
-      Formalism.MainNotions.FormalGroupSystem.MinkowskiCounting D X (pendN X E hfin hst be Th0) := by
-  let _ := wittFractionAlgebraCp p
-  let _ := algKfC E
-  intro hD hV hG hK j hj c L La' γ G hGv hL hL'
-  exact invariance_on_equivariant_values X E hfin hst be Th0 hD hG hK j hj c L La' γ G (hV j G hGv) hL hL'
 
-theorem thFN_rep :
-    letI := wittFractionAlgebraCp p
-    letI := algKfC E
-    KapStab X ℂ_[p] → ∀ j (La : X.Lt j) (La' : X.Lt (j + 1)), La ∈ repOf X.Lv hfin j →
-      thFN X ℂ_[p] hfin Th0 j La La' = Th0 j La La' := by
-  let _ := wittFractionAlgebraCp p
-  let _ := algKfC E
-  rintro hK j ⟨c, L0⟩ La' h0
-  unfold thFN
-  rw [chiN_rep X ℂ_[p] hfin hK j c L0 h0, map_one, one_mul]
 
 abbrev pendR (ThR : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (X.ZA j) ℂ_[p]) : Pend X :=
   letI := wittFractionAlgebraCp p
   letI := algKfC E
   pendN X E hfin hst be (thGeo X ℂ_[p] hfin ThR)
 
-theorem pendR_ThF_rep (ThR : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (X.ZA j) ℂ_[p]) :
-    letI := wittFractionAlgebraCp p
-    letI := algKfC E
-    StabGeo X ℂ_[p] hfin ThR → KapStab X ℂ_[p] → ∀ j (La : X.Lt j) (La' : X.Lt (j + 1)), La ∈ repOf X.Lv hfin j →
-      (pendR X E hfin hst be ThR).ThF j La La' = ThR j La La' := by
-  let _ := wittFractionAlgebraCp p
-  let _ := algKfC E
-  rintro hS hK j ⟨c, L0⟩ La' h0
-  show thFN X ℂ_[p] hfin (thGeo X ℂ_[p] hfin ThR) j (c, L0) La' = _
-  rw [thFN_rep X E hfin _ hK j (c, L0) La' h0, thGeo_rep X ℂ_[p] hfin ThR hS j c L0 La' h0]
 
-theorem invariance_representatives (D : Formalism.BasicNotions.D7) (ThR : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (X.ZA j) ℂ_[p])
-    {Gd : ∀ j, (X.Pj j).Xsp → Prop} :
-    letI := wittFractionAlgebraCp p
-    letI := algKfC E
-    DelEquivOn X ℂ_[p] Gd → VtIn X Gd → StabGeo X ℂ_[p] hfin ThR → KapStab X ℂ_[p] →
-      Formalism.MainNotions.FormalGroupSystem.MinkowskiCounting D X (pendR X E hfin hst be ThR) := by
-  let _ := wittFractionAlgebraCp p
-  let _ := algKfC E
-  intro hD hV hS hK
-  exact invariance_normalised_kernel X E hfin hst be _ D hD hV (geoLaw_thGeo X ℂ_[p] hfin ThR hS) hK
 
-theorem invariance_representatives_trivial (D : Formalism.BasicNotions.D7) (ThR : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (X.ZA j) ℂ_[p])
-    {Gd : ∀ j, (X.Pj j).Xsp → Prop} (hT : ∀ j c, (X.Lv.lev j c).TrivStab) :
-    letI := wittFractionAlgebraCp p
-    letI := algKfC E
-    DelEquivOn X ℂ_[p] Gd → VtIn X Gd → Formalism.MainNotions.FormalGroupSystem.MinkowskiCounting D X (pendR X E hfin hst be ThR) := by
-  let _ := wittFractionAlgebraCp p
-  let _ := algKfC E
-  intro hD hV
-  exact invariance_representatives X E hfin hst be D ThR hD hV (stabGeo_of_trivStab X ℂ_[p] hfin ThR hT)
-    (kapStab_of_trivStab X ℂ_[p] pC_ne_zero hT)
 
 theorem sig_pow_int (v : X.Pl) (s : ℕ) (x : X.G.P.W v) :
     ∃ y : X.G.P.W v, (X.G.P.σ v ^ s) (algebraMap (X.G.P.W v) (X.G.P.Qq v) x) = algebraMap (X.G.P.W v) (X.G.P.Qq v) y := by

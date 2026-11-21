@@ -231,9 +231,6 @@ macro "pos_tac" : tactic =>
 macro "onele_tac" : tactic =>
   `(tactic| (repeat' (first | exact one_le_pow₀ (by assumption) | apply one_le_mul_of_one_le_of_one_le)) <;> assumption)
 
-theorem le_mul_one_le {a z t : ℝ} (ha : 0 ≤ a) (hz : 1 ≤ z) (ht : a * z = t) : a ≤ t := by
-  rw [← ht]
-  exact le_mul_of_one_le_right ha hz
 
 set_option maxHeartbeats 4000000 in
 

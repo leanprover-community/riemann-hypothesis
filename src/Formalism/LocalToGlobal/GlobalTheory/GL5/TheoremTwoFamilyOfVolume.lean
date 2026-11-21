@@ -28,10 +28,6 @@ theorem landherrSmall_of_hasse (D : D7) (h : LandherrHasse D) : LandherrSmall D 
   obtain ⟨b, -, hb⟩ := h W hW hsig
   exact ⟨b, hb⟩
 
-theorem theorem_two_family_of_volume {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (hR : TiedRealF Fm) (hV : VolRatioTrueF Fm)
-    (v0 : ∀ x (i : Fm.Ix x), DefiniteVolumeEqMass (Fm.D x i)) : FamilyMassVolumeBounds Fm :=
-  fun x i => volumeMass_of_definiteVolume (Fm.D x i)
-    (theorem_two_of_volume_ratio (Fm.D x i) (hV x i) (Formalism.L2.Theta.VolTieG.volTie (hR x i).vol)) (v0 x i)
 
 end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 

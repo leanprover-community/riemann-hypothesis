@@ -400,20 +400,7 @@ theorem X_notMem {c : ∀ k, J k} {p : Cpt ξ} (h : InChart ξ (seg y) c p) (k :
   rw [mem_Wp_iff tie h (homog_X _), dh_X_self y c (ne_of_seg h.1), not_not]
   exact unitAt_one p
 
-theorem Wp_isMultiProjPrime (p : Cpt ξ) : IsMultiProjPrime (Wp tie p) := by
-  obtain ⟨c, h⟩ := tie.cover p
-  exact ⟨RingHom.ker_isPrime _, Wp_homog tie p, fun k => ⟨c k, X_notMem tie h k⟩⟩
 
-theorem coord_le_Wp (p : Cpt ξ) : mCoordIdeal y ≤ Wp tie p := by
-  obtain ⟨c, h⟩ := tie.cover p
-  have hc := ne_of_seg h.1
-  refine ideal_le_of_forms (GroundTheory.Heights₂.Heights.CoordinateConeArithVar.isMultiHomogIdeal y) fun g d hg hgP => ?_
-  rw [mem_Wp_iff tie h hg]
-  intro hu
-  have e := aeval_eq_dh_mul y c hc hg
-  rw [(mem_coord_iff y hg).1 hgP] at e
-  have h0 : (∏ k, y ⟨k, c k⟩ ^ d k) ≠ 0 := Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (hc k)
-  exact mul_ne_zero hu.1 h0 e.symm
 
 theorem inChart_iff (p : Cpt ξ) (c : ∀ k, J k) :
     InChart ξ (seg y) c p ↔ ∀ k, (X ⟨k, c k⟩ : MRing J) ∉ Wp tie p := by
@@ -505,13 +492,6 @@ theorem regAt_iff (p : Cpt ξ) (a : Ω) :
     rw [this]
     exact mul_mem (dh_mem hp g) hW.2.2
 
-theorem inFibre_iff (p : Cpt ξ) (r : ℕ) : InFibre ξ r p ↔ (r : MRing J) ∈ Wp tie p := by
-  obtain ⟨c, hp⟩ := tie.cover p
-  have hr : IsMultiHomog (r : MRing J) (0 : K → ℕ) := by
-    have := homog_C (J := J) (r : ℤ)
-    simpa using this
-  rw [mem_Wp_iff tie hp hr, map_natCast]
-  rfl
 
 end Chart
 
@@ -600,23 +580,5 @@ theorem exists_point (tie : CoordTie ℤ ξ (seg y)) {W : Ideal (MRing J)} (hW :
 
 end Points
 
-theorem points_equiv_primes : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω), CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) → ∃ e : Cpt ξ ≃ {W : Ideal (MRing J) // IsMultiProjPrime W ∧ mCoordIdeal y ≤ W}, (∀ p q : Cpt ξ, p.1 ⤳ q.1 ↔ (e p).1 ≤ (e q).1) ∧ (∀ (p : Cpt ξ) (c : (k : K) → J k), InChart ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) c p ↔ ∀ k, (MvPolynomial.X ⟨k, c k⟩ : MRing J) ∉ (e p).1) ∧ (∀ (p : Cpt ξ) (a : Ω), a ∈ regAt ξ p ↔ ∃ (d : K → ℕ) (g h : MRing J), IsMultiHomog g d ∧ IsMultiHomog h d ∧ h ∉ (e p).1 ∧ MvPolynomial.aeval y g = a * MvPolynomial.aeval y h) ∧ ∀ (p : Cpt ξ) (r : ℕ), InFibre ξ r p ↔ (r : MRing J) ∈ (e p).1 := by
-  intro X Ω _ ξ K _ J _ y tie
-  have hinj : Function.Injective (fun p : Cpt ξ =>
-      (⟨Wp tie p, Wp_isMultiProjPrime tie p, coord_le_Wp tie p⟩ :
-        {W : Ideal (MRing J) // IsMultiProjPrime W ∧ mCoordIdeal y ≤ W})) := by
-    intro p q h
-    have h' : Wp tie p = Wp tie q := congrArg Subtype.val h
-    have h1 := (specializes_iff tie p q).2 h'.le
-    have h2 := (specializes_iff tie q p).2 h'.ge
-    exact Subtype.ext (h1.antisymm h2).eq
-  have hsurj : Function.Surjective (fun p : Cpt ξ =>
-      (⟨Wp tie p, Wp_isMultiProjPrime tie p, coord_le_Wp tie p⟩ :
-        {W : Ideal (MRing J) // IsMultiProjPrime W ∧ mCoordIdeal y ≤ W})) := by
-    rintro ⟨W, hW, hPW⟩
-    obtain ⟨p, rfl⟩ := exists_point tie hW hPW
-    exact ⟨p, rfl⟩
-  exact ⟨Equiv.ofBijective _ ⟨hinj, hsurj⟩, specializes_iff tie, fun p c => inChart_iff tie p c,
-    regAt_iff tie, inFibre_iff tie⟩
 
 end GlobalTheory.CompanionTheory.Ar.TiePrimes

@@ -5,12 +5,6 @@ open scoped ComplexOrder
 
 namespace Formalism.HermitianLatticeCounting.P
 
-theorem gap_sum_bound : GapSum := by
-  intro lam a b hab
-  induction a, hab using Nat.le_induction with
-  | base => simp
-  | succ a hab ih =>
-    rw [Finset.sum_Ico_succ_top hab, ih]; push_cast; ring
 
 theorem coefficient_le_operator_norm : CoeffLeOp := by
   intro H _ _ E U w hE hw hn
@@ -22,14 +16,6 @@ theorem coefficient_le_operator_norm : CoeffLeOp := by
     _ ≤ ‖w‖ * (‖E ∘L U ∘L E‖ * ‖w‖) := by gcongr; exact ContinuousLinearMap.le_opNorm _ _
     _ = _ := by rw [hn]; ring
 
-theorem projection_coefficient : ProjCoeff := by
-  intro G H _ _ U P m hP hPU v hv hn g
-  have h1 := congrArg (fun T : H →L[ℂ] H => T v) (hPU g)
-  simp only [ContinuousLinearMap.comp_apply, hv, _root_.smul_apply] at h1
-  calc inner ℂ v (U g v) = inner ℂ (P v) (U g v) := by rw [hv]
-    _ = inner ℂ v (P (U g v)) := hP _ _
-    _ = inner ℂ v (m g • v) := by rw [h1]
-    _ = m g := by rw [inner_smul_right, inner_self_eq_norm_sq_to_K, hn]; simp
 
 theorem minimum_linear_form : MinLinear := by
   intro q ε s hq hε h1 hs
@@ -40,30 +26,7 @@ theorem minimum_linear_form : MinLinear := by
   have : 0 < s := by linarith
   nlinarith
 
-theorem iterated_supremum_bound : IterSup := by
-  intro a θ Θ P₀ hθ ha hstep
-  induction P₀ with
-  | zero => simp
-  | succ P ih =>
-    have h1 := ih (fun Q hQ => hθ Q (by omega)) (fun Q hQ => hstep Q (by omega))
-    have h2 := hstep P (by omega)
-    have h3 := hθ P (by omega)
-    have hΘ : 0 ≤ Θ := h3.1.trans h3.2
-    calc a 0 ≤ Θ ^ P * a P := h1
-      _ ≤ Θ ^ P * (Θ * a (P + 1)) := by
-          gcongr
-          exact h2.trans (mul_le_mul_of_nonneg_right h3.2 (ha _))
-      _ = _ := by ring
 
-theorem type_count : TypeCount := by
-  intro q
-  simp only [composition_card]
-  induction q with
-  | zero => simp
-  | succ q ih =>
-    rw [Finset.sum_Icc_succ_top (by omega)]
-    simp only [Nat.add_sub_cancel]
-    rw [pow_succ]; omega
 
 theorem trace_diagonal_bis : TraceDiag := by
   intro X ι _ μ _ _ F h
@@ -92,28 +55,6 @@ theorem trace_diagonal_bis : TraceDiag := by
     exact_mod_cast this
   simp [h2]
 
-theorem tau_integral_formula : TauIntegral := by
-  intro f j n0 hf hj hn
-  have hpos : 1 ≤ j * n0 * f := Nat.one_le_iff_ne_zero.mpr (by positivity)
-  obtain ⟨M, hM⟩ : ∃ M, 2 * j * n0 * f = (M + 1) + 1 := ⟨2 * (j * n0 * f) - 2, by
-    have : 2 * j * n0 * f = 2 * (j * n0 * f) := by ring
-    omega⟩
-  have e : ∀ t : ℝ, t ^ (2 * j * n0 * f) * (2 * (f:ℝ) * j / t) = 2 * (f:ℝ) * j * t ^ (M + 1) := by
-    intro t
-    rw [hM]
-    by_cases ht : t = 0
-    · subst ht; simp
-    · field_simp
-      ring
-  simp_rw [e]
-  rw [intervalIntegral.integral_const_mul, integral_pow]
-  have hMr : ((M + 1 : ℕ) : ℝ) + 1 = 2 * j * n0 * f := by exact_mod_cast hM.symm
-  rw [hM, hMr]
-  have : (0:ℝ) < j := by exact_mod_cast hj
-  have : (0:ℝ) < f := by exact_mod_cast hf
-  have : (0:ℝ) < n0 := by exact_mod_cast hn
-  field_simp
-  simp
 
 theorem diagonal_splitting : DiagSplit := by
   intro X _ μ _ K Rm Mod k0 hM hK hKR
@@ -194,154 +135,10 @@ theorem threshold_head_region : ThreshHead := by
       _ = 32 * (n:ℝ)^2 := by ring
       _ < h := by linarith
 
-theorem delta_small : DeltaSmall := by
-  intro n q f c hn hf hq hc hc9
-  have hn' : (1:ℝ) ≤ n := by exact_mod_cast hn
-  have hf' : (1:ℝ) ≤ f := by exact_mod_cast hf
-  have hqn1 : (q:ℝ) ≤ n := by
-    have : q ≤ n := le_trans (Nat.le_self_pow (by norm_num) q) hq
-    exact_mod_cast this
-  have hq0 : (0:ℝ) ≤ q := Nat.cast_nonneg _
-  have hn0 : (0:ℝ) < n := by linarith
-  have hf0 : (0:ℝ) < f := by linarith
-  have e1 : (n:ℝ) * epsN c n f = c / ((n:ℝ)^7 * (f:ℝ)^2) := by
-    unfold epsN; field_simp
-  have k1 : (n:ℝ) * epsN c n f ≤ (1 / (300 * (n:ℝ)^3 * f))^2 := by
-    rw [e1]
-    have e2 : (1 / (300 * (n:ℝ)^3 * f))^2 = (1/90000) / ((n:ℝ)^6 * (f:ℝ)^2) := by
-      field_simp; norm_num
-    rw [e2]
-    apply div_le_div₀ (by norm_num) hc9 (by positivity)
-    have : (n:ℝ)^6 ≤ (n:ℝ)^7 := pow_le_pow_right₀ hn' (by norm_num)
-    gcongr
-  have k2 : Real.sqrt ((n:ℝ) * epsN c n f) ≤ 1 / (300 * (n:ℝ)^3 * f) :=
-    Real.sqrt_le_iff.mpr ⟨by positivity, k1⟩
-  have hn3 : (1:ℝ) ≤ (n:ℝ)^3 := one_le_pow₀ hn'
-  have k3 : 1 / (300 * (n:ℝ)^3 * f) ≤ 1 / 300 := by
-    apply div_le_div_of_nonneg_left (by norm_num) (by norm_num)
-    nlinarith
-  have he0 : 0 < epsN c n f := by unfold epsN; positivity
-  have k4 : (n:ℝ) * epsN c n f ≤ 1 := by
-    refine k1.trans ?_
-    have : 0 ≤ 1 / (300 * (n:ℝ)^3 * f) := by positivity
-    nlinarith
-  refine ⟨?_, by linarith, k4, ?_⟩
-  · calc 3 * Real.sqrt ((n:ℝ) * epsN c n f) * q * n * f
-        ≤ 3 * (1 / (300 * (n:ℝ)^3 * f)) * n * n * f := by gcongr
-      _ = 1 / (100 * n) := by field_simp; norm_num
-      _ ≤ 1 / 100 := by
-        apply div_le_div_of_nonneg_left (by norm_num) (by norm_num)
-        linarith
-  · have : (n:ℝ) * epsN c n f ≤ (1/300)^2 := by
-      refine k1.trans ?_
-      have : 0 ≤ 1 / (300 * (n:ℝ)^3 * f) := by positivity
-      gcongr
-    nlinarith
 
-theorem covering_arithmetic : CoverArith := by
-  intro n f N rd ρ hf hN hrd hρ
-  have hf' : (1:ℝ) ≤ f := by exact_mod_cast hf
-  have hN' : (N:ℝ) ≤ 2 * (n:ℝ)^2 * f := by exact_mod_cast hN
-  have hs0 : 0 < Real.sqrt (f:ℝ) := Real.sqrt_pos.mpr (by linarith)
-  have hss : Real.sqrt (f:ℝ) * Real.sqrt (f:ℝ) = f := Real.mul_self_sqrt (by linarith)
-  have hs1 : 1 ≤ Real.sqrt (f:ℝ) := Real.one_le_sqrt.mpr hf'
-  have h52 : (f:ℝ)^((5:ℝ)/2) = (f:ℝ)^2 * Real.sqrt f := by
-    rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_add (by linarith)]; norm_num
-  have hN0 : (0:ℝ) ≤ N := Nat.cast_nonneg _
-  have hn0 : (0:ℝ) ≤ n := Nat.cast_nonneg _
-  rw [h52]
-  generalize Real.sqrt (f:ℝ) = s at *
-  have hfs : (f:ℝ) = s * s := hss.symm
-  refine ⟨?_, ?_, ?_⟩
-  · rw [div_le_iff₀ (by positivity)]
-    have : 2 * (n:ℝ)^2 * s * rd * ρ * (s / (2 * rd * ρ)) = (n:ℝ)^2 * (s * s) := by field_simp
-    rw [this, ← hfs]; linarith
-  · rw [div_le_iff₀ (by positivity)]
-    have : 8 * (n:ℝ)^4 * ((f:ℝ)^2 * s) * rd * ρ * (s / (2 * rd * ρ)) = 4 * (n:ℝ)^4 * (f:ℝ)^2 * (s * s) := by
-      field_simp; ring
-    rw [this, ← hfs]
-    have h2 : (N:ℝ)^2 ≤ (2 * (n:ℝ)^2 * f)^2 := by gcongr
-    have h3 : (2 * (n:ℝ)^2 * f)^2 * 1 ≤ (2 * (n:ℝ)^2 * f)^2 * f := by gcongr
-    nlinarith
-  · rw [div_le_iff₀ (by positivity)]
-    have : 8 * (n:ℝ)^6 * ((f:ℝ)^2 * s) * rd * ρ * (2 * (s / (2 * rd * ρ))) = 8 * (n:ℝ)^6 * (f:ℝ)^2 * (s * s) := by
-      field_simp
-    rw [this, ← hfs]
-    have h2 : (N:ℝ)^3 ≤ (2 * (n:ℝ)^2 * f)^3 := by gcongr
-    nlinarith
 
-theorem log_volume_formula : LogVolume := by
-  intro f j ts h0 h1
-  simp_rw [div_eq_mul_inv]
-  rw [intervalIntegral.integral_const_mul, integral_inv_of_pos h0 (by norm_num)]
-  congr 2
-  field_simp
 
-theorem gap_pigeonhole : GapPigeonhole := by
-  intro a q τ ha haq hτ hlast h1
-  by_contra hcon
-  push Not at hcon
-  have hq0 : q ≠ 0 := by omega
-  have hx0 : 0 < (2 * τ 1) ^ ((1:ℝ) / q) := Real.rpow_pos_of_pos (by have := hτ 1; linarith) _
-  have hx1 : (2 * τ 1) ^ ((1:ℝ) / q) ≤ 1 :=
-    Real.rpow_le_one (by have := hτ 1; linarith) (by linarith) (by positivity)
-  have hxq : ((2 * τ 1) ^ ((1:ℝ) / q)) ^ q = 2 * τ 1 := by
-    rw [one_div]
-    exact Real.rpow_inv_natCast_pow (by have := hτ 1; linarith) hq0
-  generalize (2 * τ 1) ^ ((1:ℝ) / q) = x at *
-  have key : ∀ k, 1 ≤ k → k ≤ a → x ^ k * τ (k + 1) < τ 1 := by
-    intro k hk
-    induction k, hk using Nat.le_induction with
-    | base =>
-      intro _
-      have := hcon 1 le_rfl ha
-      rw [lt_div_iff₀ (hτ _)] at this
-      simpa using this
-    | succ k hk ih =>
-      intro hka
-      have h2 := hcon (k + 1) (by omega) hka
-      rw [lt_div_iff₀ (hτ _)] at h2
-      have h3 := ih (by omega)
-      calc x ^ (k + 1) * τ (k + 1 + 1) = x ^ k * (x * τ (k + 1 + 1)) := by ring
-        _ ≤ x ^ k * τ (k + 1) := by gcongr
-        _ < τ 1 := h3
-  have h4 := key a ha le_rfl
-  rw [hlast] at h4
-  have h5 : x ^ q ≤ x ^ a := pow_le_pow_of_le_one hx0.le hx1 haq
-  linarith
 
-theorem far_region_count : FarCount := by
-  intro ι _ _ n r τ k hτ hτ1 hk hr
-  have hf0 : (Fintype.card ι) ≠ 0 := Fintype.card_ne_zero
-  have hfpos : (0:ℝ) < Fintype.card ι := by exact_mod_cast Nat.pos_of_ne_zero hf0
-  have hk0 : 0 < k := by linarith
-  have eP : (∏ v, k * Real.exp (r v)) ^ ((1 : ℝ) / Fintype.card ι)
-      = k * Real.exp ((∑ v, r v) / Fintype.card ι) := by
-    rw [Finset.prod_mul_distrib, Finset.prod_const, ← Real.exp_sum, Finset.card_univ,
-      Real.mul_rpow (by positivity) (by positivity), one_div,
-      Real.pow_rpow_inv_natCast hk0.le hf0, ← Real.exp_mul, div_eq_mul_inv]
-  rw [eP]
-  have hR : 0 ≤ (∑ v, r v) / Fintype.card ι := div_nonneg (Finset.sum_nonneg fun v _ => hr v) hfpos.le
-  set E := Real.exp ((∑ v, r v) / Fintype.card ι) with hE
-  have hE1 : 1 ≤ E := Real.one_le_exp hR
-  have hτ2 : τ ^ 2 ≤ 1 := pow_le_one₀ hτ.le hτ1
-  have hτ20 : 0 < τ ^ 2 := by positivity
-  have h1 : 1 ≤ k * E / τ ^ 2 := by
-    rw [le_div_iff₀ hτ20]; nlinarith
-  have h2 : 1 + 2 * (k * E) / τ ^ 2 ≤ 3 * k / τ ^ 2 * E := by
-    have e : 3 * k / τ ^ 2 * E = 3 * (k * E / τ ^ 2) := by ring
-    have e' : 2 * (k * E) / τ ^ 2 = 2 * (k * E / τ ^ 2) := by ring
-    rw [e, e']; linarith
-  calc (1 + 2 * (k * E) / τ ^ 2) ^ (2 * n ^ 2 * Fintype.card ι)
-      ≤ (3 * k / τ ^ 2 * E) ^ (2 * n ^ 2 * Fintype.card ι) := by
-        apply pow_le_pow_left₀ (by positivity) h2
-    _ = (3 * k / τ ^ 2) ^ (2 * n ^ 2 * Fintype.card ι) * E ^ (2 * n ^ 2 * Fintype.card ι) := mul_pow _ _ _
-    _ = _ := by
-      congr 1
-      rw [hE, ← Real.exp_nat_mul]
-      congr 1
-      push_cast
-      field_simp
 
 theorem far_region_prefactor : FarPrefactor := by
   intro n f τs hn hf hτ hnτ
@@ -370,80 +167,7 @@ theorem far_region_prefactor : FarPrefactor := by
         have h4 : 0 < τs ^ 4 := by positivity
         nlinarith
 
-theorem near_region_product : NearProduct := by
-  intro R _ la d n q J f de k hla hde hk hk24 hd hJ hsmall
-  rw [← Finset.prod_mul_distrib]
-  have h1 : ∀ r, (1 + k * de / la r) ^ (d r * f) * la r ^ (d r * f)
-      ≤ Real.exp (k * de * (d r * f : ℕ)) := by
-    intro r
-    have hl := hla r
-    rw [← mul_pow]
-    have e : (1 + k * de / la r) * la r = la r + k * de := by
-      field_simp [hl.1.ne']
-    rw [e, mul_comm (k * de), Real.exp_nat_mul]
-    apply pow_le_pow_left₀ (by have := mul_nonneg hk hde; linarith)
-    have := Real.add_one_le_exp (k * de)
-    linarith
-  calc ∏ r, (1 + k * de / la r) ^ (d r * f) * la r ^ (d r * f)
-      ≤ ∏ r, Real.exp (k * de * (d r * f : ℕ)) :=
-        Finset.prod_le_prod (fun r _ => by
-          have h := hla r
-          have h2 := div_nonneg (mul_nonneg hk hde) h.1.le
-          exact mul_nonneg (pow_nonneg (by linarith) _) (pow_nonneg h.1.le _))
-          (fun r _ => h1 r)
-    _ = Real.exp (k * de * ((∑ r, d r : ℕ) * f)) := by
-        rw [← Real.exp_sum, ← Finset.mul_sum]
-        congr 2
-        push_cast
-        rw [Finset.sum_mul]
-    _ ≤ Real.exp (48 / 100) := by
-        apply Real.exp_le_exp.mpr
-        have hd' : ((∑ r, d r : ℕ) : ℝ) ≤ 2 * J * n := by exact_mod_cast hd
-        have hJ' : (J:ℝ) ≤ q := by exact_mod_cast hJ
-        have hn0 : (0:ℝ) ≤ n := Nat.cast_nonneg _
-        have hf0 : (0:ℝ) ≤ f := Nat.cast_nonneg _
-        calc k * de * ((∑ r, d r : ℕ) * f) ≤ 24 * de * ((2 * q * n) * f) := by
-              gcongr
-              exact hd'.trans (by gcongr)
-          _ = 48 * (de * q * n * f) := by ring
-          _ ≤ 48 / 100 := by linarith
-    _ ≤ 2 := by
-        rw [← Real.le_log_iff_exp_le (by norm_num)]
-        have := Real.log_two_gt_d9
-        linarith
 
-theorem probability_nonzero_index : ProbINonzero := by
-  intro c hc
-  refine ⟨c / 2, by positivity, ⌈Real.exp (2 / c)⌉₊, ?_⟩
-  intro n q J f hn hq hJ hf
-  have hn1 : Real.exp (2 / c) ≤ n := Nat.ceil_le.mp hn
-  have hn0 : (0:ℝ) < n := lt_of_lt_of_le (Real.exp_pos _) hn1
-  have hlog : 2 / c ≤ Real.log n := (Real.le_log_iff_exp_le hn0).mpr hn1
-  have hlog' : 2 ≤ c * Real.log n := by
-    rw [div_le_iff₀ hc] at hlog; linarith
-  have hqn1 : (q:ℝ) ≤ n := by
-    have : q ≤ n := le_trans (Nat.le_self_pow (by norm_num) q) hq
-    exact_mod_cast this
-  have hJ' : (1:ℝ) ≤ J := by exact_mod_cast hJ
-  have hf' : (1:ℝ) ≤ f := by exact_mod_cast hf
-  have e2 : (2:ℝ) ^ q = Real.exp (q * Real.log 2) := by
-    rw [mul_comm, ← Real.rpow_def_of_pos (by norm_num), Real.rpow_natCast]
-  rw [e2, ← Real.exp_add]
-  apply Real.exp_le_exp.mpr
-  have hl2 : Real.log 2 ≤ 1 := by
-    have := Real.log_two_lt_d9; linarith
-  have hl20 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
-  have hq0 : (0:ℝ) ≤ q := Nat.cast_nonneg _
-  have a1 : (q:ℝ) * Real.log 2 ≤ n := by nlinarith
-  have hx : 0 ≤ c * Real.log n := by linarith
-  have a2 : c * Real.log n * (n * f) ≤ c * Real.log n * (J * (n * f)) := by
-    apply mul_le_mul_of_nonneg_left _ hx
-    have : 0 ≤ (n:ℝ) * f := by positivity
-    nlinarith
-  have a3 : 2 * ((n:ℝ) * 1) ≤ c * Real.log n * (n * f) := by
-    apply mul_le_mul hlog' _ (by positivity) hx
-    gcongr
-  nlinarith
 
 theorem final_sum_near_far : FinalSum := by
   intro c A hc hA
@@ -580,61 +304,6 @@ lemma b1_bound_le_power {n q f : ℕ} {b Y : ℝ} (hqn : q ≤ n) (hY : 2 ≤ Y)
   have h9 : 0 < Y ^ 9 := by positivity
   nlinarith
 
-theorem deep_region_chain_height : DeepChainY := by
-  intro C n q f Y τ₁ τs θ Kxx Bs D volG volK hC hq hY hτ hττ hD hvK hvG hθ0 hθ hK hB hvol
-  have hY0 : 0 < Y := by linarith
-  have hq0 : q ≠ 0 := by omega
-  set m : ℕ := n ^ 2 * f with hm
-  have hmr : (m:ℝ) = (n:ℝ) ^ 2 * f := by rw [hm]; push_cast; ring
-  have hP : 2 * P0 n q f = q * (16 * m) := by rw [hm]; unfold P0; ring
-  have e4 : 4 * n ^ 2 * f = 4 * m := by rw [hm]; ring
-  have e12 : 12 * n ^ 2 * f = 12 * m := by rw [hm]; ring
-  rw [hP] at hK
-  rw [e4] at hB
-  rw [e12]
-  have eC : C * (n:ℝ) ^ 2 * f = C * m := by rw [hmr]; ring
-  rw [eC] at hB hvol
-  have hT : θ ^ (q * (16 * m)) ≤ Y ^ (16 * q * C * m) * (2 * τ₁) ^ (16 * m) := by
-    calc θ ^ (q * (16 * m)) ≤ (Y ^ C * (2 * τ₁) ^ ((1:ℝ) / q)) ^ (q * (16 * m)) :=
-          pow_le_pow_left₀ hθ0 hθ _
-      _ = (Y ^ C) ^ (q * (16 * m)) * ((2 * τ₁) ^ ((1:ℝ) / q)) ^ (q * (16 * m)) := mul_pow _ _ _
-      _ = _ := by
-        congr 1
-        · rw [← Real.rpow_mul_natCast hY0.le]
-          congr 1; push_cast; ring
-        · rw [pow_mul, one_div, Real.rpow_inv_natCast_pow (by linarith) hq0]
-  set a := Y ^ (C * m) with ha
-  have ha0 : 0 < a := Real.rpow_pos_of_pos hY0 _
-  have hT0 : 0 ≤ θ ^ (q * (16 * m)) := pow_nonneg hθ0 _
-  have hi0 : 0 < (1 / τ₁) ^ (4 * m) := by positivity
-  have s1 : volG * Kxx ≤ θ ^ (q * (16 * m)) * a * (1 / τ₁) ^ (4 * m) * D * a := by
-    calc volG * Kxx ≤ volG * (θ ^ (q * (16 * m)) * (a * (1 / τ₁) ^ (4 * m) * D / volK)) := by
-          apply mul_le_mul_of_nonneg_left _ hvG
-          exact hK.trans (mul_le_mul_of_nonneg_left hB hT0)
-      _ = θ ^ (q * (16 * m)) * a * (1 / τ₁) ^ (4 * m) * D * (volG / volK) := by ring
-      _ ≤ _ := by gcongr
-  have s2 : (2 * τ₁) ^ (16 * m) * (1 / τ₁) ^ (4 * m) = 2 ^ (16 * m) * τ₁ ^ (12 * m) := by
-    have : 16 * m = 12 * m + 4 * m := by ring
-    rw [mul_pow, one_div, inv_pow]
-    conv_lhs => rw [this, pow_add τ₁]
-    have h4 : τ₁ ^ (4 * m) ≠ 0 := by positivity
-    rw [← this]
-    field_simp
-  have s3 : (2:ℝ) ^ (16 * m) * τ₁ ^ (12 * m) ≤ Y ^ (16 * m) * τs ^ (12 * m) := by
-    gcongr
-  have eY : Y ^ ((16 * q * C + 2 * C + 16) * (n:ℝ) ^ 2 * f)
-      = Y ^ (16 * q * C * m) * a * a * Y ^ (16 * m) := by
-    rw [ha, ← Real.rpow_natCast Y (16 * m), ← Real.rpow_add hY0, ← Real.rpow_add hY0,
-      ← Real.rpow_add hY0]
-    congr 1; push_cast; rw [hmr]; ring
-  rw [eY]
-  have hb0 : 0 < Y ^ (16 * q * C * m) := Real.rpow_pos_of_pos hY0 _
-  calc volG * Kxx ≤ θ ^ (q * (16 * m)) * a * (1 / τ₁) ^ (4 * m) * D * a := s1
-    _ ≤ (Y ^ (16 * q * C * m) * (2 * τ₁) ^ (16 * m)) * a * (1 / τ₁) ^ (4 * m) * D * a := by gcongr
-    _ = D * (Y ^ (16 * q * C * m) * a * a) * ((2 * τ₁) ^ (16 * m) * (1 / τ₁) ^ (4 * m)) := by ring
-    _ ≤ D * (Y ^ (16 * q * C * m) * a * a) * (Y ^ (16 * m) * τs ^ (12 * m)) := by
-        rw [s2]; gcongr
-    _ = _ := by ring
 
 theorem deep_region_bound_height : DeepBoundY := by
   intro C hC
@@ -693,100 +362,6 @@ theorem deep_region_bound : DeepBound := by
         have hm0 : 0 ≤ (n:ℝ) ^ 2 * f := by positivity
         nlinarith
 
-theorem deep_region_chain : DeepChain := by
-  intro C hC
-  refine ⟨C ^ 2 + 12 * C + 31, by nlinarith, ?_⟩
-  intro n q f rd g b τ₁ τs ρ Kxx Bs D volG volK hn hq hqn hf hrd hg hb hτ hττ hD hvK hvG hρ0 hρ hK hB hvol
-  obtain ⟨hY, hnY, hfY, hrdY, hgY, hbY⟩ := ydat_facts hn hf hrd hg hb
-  have hqn' : q ≤ n := le_trans (Nat.le_self_pow (by norm_num) q) hqn
-  have hb1 := b1_bound_le_power (f := f) hqn' hY hnY hfY (by linarith) hbY
-  have hb10 : 0 ≤ b1 n q f b := by unfold b1; positivity
-  generalize Ydat n f rd g b = Y at *
-  generalize b1 n q f b = b₁ at *
-  have hY0 : 0 < Y := by linarith
-  have hY1 : 1 ≤ Y := by linarith
-  have hq0 : q ≠ 0 := by omega
-  have hn0 : (0:ℝ) ≤ n := Nat.cast_nonneg _
-  have hf0 : (0:ℝ) ≤ f := Nat.cast_nonneg _
-  set m : ℕ := n ^ 2 * f with hm
-  have hmr : (m:ℝ) = (n:ℝ) ^ 2 * f := by rw [hm]; push_cast; ring
-  have hP : 2 * P0 n q f = q * (16 * m) := by rw [hm]; unfold P0; ring
-  have e4 : 4 * n ^ 2 * f = 4 * m := by rw [hm]; ring
-  have e12 : 12 * n ^ 2 * f = 12 * m := by rw [hm]; ring
-  have e16 : 16 * q * n ^ 2 * f = q * (16 * m) := by rw [hm]; ring
-  rw [hP] at hK
-  rw [e4] at hB
-  rw [e12, e16]
-  set W := (n:ℝ) ^ 4 * (f:ℝ) ^ 2 * g * rd * b₁ with hW
-  have hW0 : 0 ≤ W := by rw [hW]; positivity
-  have hx0 : 0 ≤ (2 * τ₁) ^ ((1:ℝ) / q) := by positivity
-  have hT : (C * ρ * (n:ℝ) ^ 2 * f * b₁) ^ (q * (16 * m)) ≤ (C ^ 2 * W) ^ (q * (16 * m)) * (2 * τ₁) ^ (16 * m) := by
-    calc (C * ρ * (n:ℝ) ^ 2 * f * b₁) ^ (q * (16 * m))
-        ≤ (C * (C * (n:ℝ) ^ 2 * f * g * rd * (2 * τ₁) ^ ((1:ℝ) / q)) * (n:ℝ) ^ 2 * f * b₁) ^ (q * (16 * m)) := by
-          gcongr
-      _ = ((C ^ 2 * W) * (2 * τ₁) ^ ((1:ℝ) / q)) ^ (q * (16 * m)) := by
-          congr 1; rw [hW]; ring
-      _ = (C ^ 2 * W) ^ (q * (16 * m)) * ((2 * τ₁) ^ ((1:ℝ) / q)) ^ (q * (16 * m)) := mul_pow _ _ _
-      _ = _ := by
-        congr 1
-        rw [pow_mul, one_div, Real.rpow_inv_natCast_pow (by linarith) hq0]
-  have hT0 : 0 ≤ (C * ρ * (n:ℝ) ^ 2 * f * b₁) ^ (q * (16 * m)) := by positivity
-  have s1 : volG * Kxx ≤ (C * ρ * (n:ℝ) ^ 2 * f * b₁) ^ (q * (16 * m)) * D
-      * (C * (n:ℝ) ^ 2 * b₁) ^ m * (C / τ₁) ^ (4 * m) * (C * n * rd * g) ^ m := by
-    calc volG * Kxx ≤ volG * ((C * ρ * (n:ℝ) ^ 2 * f * b₁) ^ (q * (16 * m))
-          * (D * volK⁻¹ * (C * (n:ℝ) ^ 2 * b₁) ^ m * (C / τ₁) ^ (4 * m))) := by
-          apply mul_le_mul_of_nonneg_left _ hvG
-          exact hK.trans (mul_le_mul_of_nonneg_left hB hT0)
-      _ = (C * ρ * (n:ℝ) ^ 2 * f * b₁) ^ (q * (16 * m)) * D
-          * (C * (n:ℝ) ^ 2 * b₁) ^ m * (C / τ₁) ^ (4 * m) * (volG / volK) := by
-          rw [div_eq_mul_inv]; ring
-      _ ≤ _ := by gcongr
-  have s2 : (2 * τ₁) ^ (16 * m) * (C / τ₁) ^ (4 * m) = (2 ^ 16 * C ^ 4) ^ m * τ₁ ^ (12 * m) := by
-    have : 16 * m = 12 * m + 4 * m := by ring
-    rw [mul_pow 2 τ₁, div_pow]
-    conv_lhs => rw [this, pow_add τ₁]
-    have h4 : τ₁ ^ (4 * m) ≠ 0 := by positivity
-    rw [← this, mul_pow, ← pow_mul, ← pow_mul]
-    field_simp
-  have hCY := le_rpow_two_mul hY (by linarith : 0 ≤ C)
-  have s3 : 2 ^ 16 * C ^ 4 * (C * (n:ℝ) ^ 2 * b₁) * (C * n * rd * g) ≤ Y ^ (12 * C + 31) := by
-    have e : Y ^ (12 * C + 31) = Y ^ 16 * (Y ^ (2 * C)) ^ 4 * (Y ^ (2 * C) * Y ^ 2 * Y ^ 10)
-        * (Y ^ (2 * C) * Y * Y * Y) := by
-      rw [Real.rpow_add hY0]
-      have h31 : Y ^ (31:ℝ) = Y ^ 31 := by exact_mod_cast Real.rpow_natCast Y 31
-      have h12 : Y ^ (12 * C) = (Y ^ (2 * C)) ^ 6 := by
-        rw [← Real.rpow_mul_natCast hY0.le]; congr 1; push_cast; ring
-      rw [h31, h12]; ring
-    rw [e]
-    gcongr
-  have s4 : (2 ^ 16 * C ^ 4) ^ m * (C * (n:ℝ) ^ 2 * b₁) ^ m * (C * n * rd * g) ^ m
-      ≤ Y ^ ((C ^ 2 + 12 * C + 31) * (n:ℝ) ^ 2 * f) := by
-    rw [← mul_pow, ← mul_pow]
-    calc _ ≤ (Y ^ (12 * C + 31)) ^ m := by
-          apply pow_le_pow_left₀ (by positivity) s3
-      _ = Y ^ ((12 * C + 31) * m) := (Real.rpow_mul_natCast hY0.le _ _).symm
-      _ ≤ _ := by
-        apply Real.rpow_le_rpow_of_exponent_le hY1
-        rw [hmr]
-        have hm0 : 0 ≤ (n:ℝ) ^ 2 * f := by positivity
-        nlinarith [sq_nonneg C]
-  have s5 : (C ^ 2 * W) ^ (q * (16 * m)) ≤ ((C ^ 2 + 12 * C + 31) * (n:ℝ) ^ 4 * (f:ℝ) ^ 2 * g * rd * b₁) ^ (q * (16 * m)) := by
-    apply pow_le_pow_left₀ (by positivity)
-    have : (C ^ 2 + 12 * C + 31) * (n:ℝ) ^ 4 * (f:ℝ) ^ 2 * g * rd * b₁ = (C ^ 2 + 12 * C + 31) * W := by
-      rw [hW]; ring
-    rw [this]
-    apply mul_le_mul_of_nonneg_right _ hW0
-    linarith
-  have s6 : τ₁ ^ (12 * m) ≤ τs ^ (12 * m) := by gcongr
-  calc volG * Kxx ≤ (C * ρ * (n:ℝ) ^ 2 * f * b₁) ^ (q * (16 * m)) * D
-      * (C * (n:ℝ) ^ 2 * b₁) ^ m * (C / τ₁) ^ (4 * m) * (C * n * rd * g) ^ m := s1
-    _ ≤ ((C ^ 2 * W) ^ (q * (16 * m)) * (2 * τ₁) ^ (16 * m)) * D
-      * (C * (n:ℝ) ^ 2 * b₁) ^ m * (C / τ₁) ^ (4 * m) * (C * n * rd * g) ^ m := by gcongr
-    _ = D * ((2 * τ₁) ^ (16 * m) * (C / τ₁) ^ (4 * m) * (C * (n:ℝ) ^ 2 * b₁) ^ m * (C * n * rd * g) ^ m)
-        * (C ^ 2 * W) ^ (q * (16 * m)) := by ring
-    _ = D * ((2 ^ 16 * C ^ 4) ^ m * (C * (n:ℝ) ^ 2 * b₁) ^ m * (C * n * rd * g) ^ m)
-        * (C ^ 2 * W) ^ (q * (16 * m)) * τ₁ ^ (12 * m) := by rw [s2]; ring
-    _ ≤ _ := by gcongr
 
 lemma log_ydat {n f : ℕ} {rd g b : ℝ} (hn : 1 ≤ n) (hf : 1 ≤ f) (hrd : 1 ≤ rd) (hg : 1 ≤ g)
     (hb : 2 ≤ b) : Real.log (Ydat n f rd g b)
@@ -918,173 +493,18 @@ theorem far_region_negligible : FarNegligible := by
               linarith
         nlinarith
 
-lemma vsph_pos (i : ℕ) : 0 < Vsph i := by
-  unfold Vsph; exact Finset.prod_pos fun l _ => by positivity
 
-lemma vsph_add (k J : ℕ) : Vsph (k + J)
-    = Vsph k * ∏ i ∈ range J, (2 * Real.pi ^ (k + i + 1) / ((k + i).factorial : ℝ)) := by
-  induction J with
-  | zero => simp
-  | succ J ih =>
-    rw [Finset.prod_range_succ, ← mul_assoc, ← ih]
-    unfold Vsph
-    rw [← add_assoc, Finset.prod_Icc_succ_top (by omega)]
-    simp
 
 noncomputable def sfac (k : ℕ) : ℝ := ∏ i ∈ range k, (i.factorial : ℝ)
 
 lemma sfac_pos (k : ℕ) : 0 < sfac k := by
   unfold sfac; exact Finset.prod_pos fun l _ => by positivity
 
-lemma sfac_mul_le (a b : ℕ) : sfac a * sfac b ≤ sfac (a + b) := by
-  unfold sfac
-  rw [Finset.prod_range_add]
-  apply mul_le_mul_of_nonneg_left _ (by positivity)
-  apply Finset.prod_le_prod (fun i _ => by positivity)
-  intro i _
-  exact_mod_cast Nat.factorial_le (by omega)
 
-lemma sfac_prod_le {ι : Type} (s : Finset ι) (j : ι → ℕ) :
-    ∏ x ∈ s, sfac (j x) ≤ sfac (∑ x ∈ s, j x) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [sfac]
-  | insert x s hx ih =>
-    rw [Finset.prod_insert hx, Finset.sum_insert hx]
-    calc sfac (j x) * ∏ x ∈ s, sfac (j x) ≤ sfac (j x) * sfac (∑ x ∈ s, j x) := by
-          apply mul_le_mul_of_nonneg_left ih (sfac_pos _).le
-      _ ≤ _ := sfac_mul_le _ _
 
-lemma one_le_two_pi_pow (l : ℕ) : 1 ≤ 2 * Real.pi ^ l := by
-  have hπ : 3 < Real.pi := Real.pi_gt_three
-  have : 1 ≤ Real.pi ^ l := one_le_pow₀ (by linarith)
-  linarith
 
-lemma inv_sfac_le_vsph (k : ℕ) : (sfac k)⁻¹ ≤ Vsph k := by
-  have h := vsph_add 0 k
-  have h0 : Vsph 0 = 1 := by simp [Vsph]
-  rw [zero_add, h0, one_mul] at h
-  rw [h]
-  unfold sfac
-  rw [← Finset.prod_inv_distrib]
-  apply Finset.prod_le_prod (fun i _ => by positivity)
-  intro i _
-  rw [zero_add, div_eq_mul_inv]
-  have := one_le_two_pi_pow (i + 1)
-  have h2 : (0:ℝ) ≤ ((i.factorial : ℝ))⁻¹ := by positivity
-  nlinarith
 
-lemma vratio_base (p q k : ℕ) (hp : 1 ≤ p) (hq : 1 ≤ q) :
-    2 * Real.pi ^ p / (k.factorial : ℝ) * (2 * Real.pi ^ q)
-      ≤ (2 * Real.pi * Real.exp 1) ^ (p + q) * ((2 * Real.pi * Real.exp 1) / (p:ℝ)) ^ k := by
-  have hπ : 3 < Real.pi := Real.pi_gt_three
-  have he : 1 ≤ Real.exp 1 := Real.one_le_exp (by norm_num)
-  have hp0 : (0:ℝ) < p := by exact_mod_cast hp
-  have hC1 : 1 ≤ 2 * Real.pi * Real.exp 1 := by nlinarith
-  have h1 := Real.pow_div_factorial_le_exp (p:ℝ) hp0.le k
-  have hk0 : (0:ℝ) < k.factorial := by exact_mod_cast k.factorial_pos
-  have h2 : 1 / (k.factorial:ℝ) ≤ Real.exp p / (p:ℝ)^k := by
-    rw [div_le_div_iff₀ hk0 (by positivity)]
-    rw [div_le_iff₀ hk0] at h1
-    linarith
-  have h3 : 1 / (p:ℝ)^k ≤ ((2 * Real.pi * Real.exp 1) / (p:ℝ)) ^ k := by
-    rw [div_pow]
-    gcongr
-    exact one_le_pow₀ hC1
-  have h4 : 4 * Real.pi ^ (p+q) * Real.exp p ≤ (2 * Real.pi * Real.exp 1) ^ (p + q) := by
-    rw [mul_pow, mul_pow]
-    have a : (4:ℝ) ≤ 2^(p+q) := by
-      calc (4:ℝ) = 2^2 := by norm_num
-        _ ≤ 2^(p+q) := pow_le_pow_right₀ (by norm_num) (by omega)
-    have b : Real.exp p ≤ Real.exp 1 ^ (p+q) := by
-      rw [← Real.exp_nat_mul, mul_one]; apply Real.exp_le_exp.mpr; push_cast
-      linarith [(Nat.cast_nonneg q : (0:ℝ) ≤ q)]
-    gcongr
-  calc 2 * Real.pi ^ p / (k.factorial : ℝ) * (2 * Real.pi ^ q)
-      = 4 * Real.pi^(p+q) * (1 / (k.factorial:ℝ)) := by rw [pow_add]; ring
-    _ ≤ 4 * Real.pi^(p+q) * (Real.exp p / (p:ℝ)^k) := by gcongr
-    _ = (4 * Real.pi^(p+q) * Real.exp p) * (1 / (p:ℝ)^k) := by ring
-    _ ≤ _ := by gcongr
 
-theorem volume_ratio : VRatio := by
-  have hπ : 3 < Real.pi := Real.pi_gt_three
-  have he : 1 ≤ Real.exp 1 := Real.one_le_exp (by norm_num)
-  refine ⟨2 * Real.pi * Real.exp 1, by nlinarith, ?_⟩
-  intro p q a j hJq hqp
-  have hPi : (sfac (∑ x, j x))⁻¹ ≤ ∏ x, Vsph (j x) := by
-    calc (sfac (∑ x, j x))⁻¹ ≤ (∏ x, sfac (j x))⁻¹ := by
-          apply inv_anti₀ (Finset.prod_pos fun x _ => sfac_pos _) (sfac_prod_le _ _)
-      _ = ∏ x, (sfac (j x))⁻¹ := (Finset.prod_inv_distrib _).symm
-      _ ≤ _ := Finset.prod_le_prod (fun x _ => (inv_pos.mpr (sfac_pos _)).le)
-          (fun x _ => inv_sfac_le_vsph _)
-  generalize (∏ x, Vsph (j x)) = Pj at *
-  generalize (∑ x, j x) = J at *
-  obtain ⟨k', rfl⟩ := Nat.exists_eq_add_of_le' hJq
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le' (le_trans (Nat.le_add_left J k') hqp)
-  rw [Nat.add_sub_cancel, Nat.add_sub_cancel, vsph_add k J, vsph_add k' J]
-  have hS := sfac_pos J
-  have hPj : 0 < Pj := lt_of_lt_of_le (inv_pos.mpr hS) hPi
-  have hVk := vsph_pos k
-  have hVk' := vsph_pos k'
-  set P1 := ∏ i ∈ range J, (2 * Real.pi ^ (k + i + 1) / ((k + i).factorial : ℝ)) with hP1
-  set P2 := ∏ i ∈ range J, (2 * Real.pi ^ (k' + i + 1) / ((k' + i).factorial : ℝ)) with hP2
-  have hP10 : 0 ≤ P1 := Finset.prod_nonneg fun i _ => by positivity
-  have hP20 : 0 ≤ P2 := Finset.prod_nonneg fun i _ => by positivity
-  have e : Vsph k * P1 * (Vsph k' * P2) / (Vsph k * Vsph k' * Pj) = P1 * P2 / Pj := by
-    field_simp
-  rw [e]
-  have b1 : P1 ≤ (2 * Real.pi ^ (k + J) / (k.factorial : ℝ)) ^ J := by
-    rw [hP1]
-    conv_rhs => rw [← Finset.card_range J, ← Finset.prod_const, Finset.card_range]
-    apply Finset.prod_le_prod (fun i _ => by positivity)
-    intro i hi
-    have hi' := Finset.mem_range.mp hi
-    have h1 : Real.pi ^ (k + i + 1) ≤ Real.pi ^ (k + J) :=
-      pow_le_pow_right₀ (by linarith) (by omega)
-    have h2 : (k.factorial : ℝ) ≤ ((k + i).factorial : ℝ) := by
-      exact_mod_cast Nat.factorial_le (by omega)
-    have h3 : (0:ℝ) < k.factorial := by exact_mod_cast k.factorial_pos
-    gcongr
-  have b2 : P2 ≤ (2 * Real.pi ^ (k' + J)) ^ J * (sfac J)⁻¹ := by
-    rw [hP2]
-    unfold sfac
-    rw [← Finset.prod_inv_distrib]
-    conv_rhs => rw [← Finset.card_range J, ← Finset.prod_const, Finset.card_range]
-    rw [← Finset.prod_mul_distrib]
-    apply Finset.prod_le_prod (fun i _ => by positivity)
-    intro i hi
-    have hi' := Finset.mem_range.mp hi
-    have h1 : Real.pi ^ (k' + i + 1) ≤ Real.pi ^ (k' + J) :=
-      pow_le_pow_right₀ (by linarith) (by omega)
-    have h2 : (i.factorial : ℝ) ≤ ((k' + i).factorial : ℝ) := by
-      exact_mod_cast Nat.factorial_le (by omega)
-    have h3 : (0:ℝ) < i.factorial := by exact_mod_cast i.factorial_pos
-    rw [← div_eq_mul_inv]
-    gcongr
-  have hJJ : 1 ≤ (J:ℝ) ^ ((J:ℝ) ^ 2 / 2) := by
-    rcases Nat.eq_zero_or_pos J with rfl | hJ
-    · simp
-    · exact Real.one_le_rpow (by exact_mod_cast hJ) (by positivity)
-  have b3 : P1 * P2 / Pj ≤ (2 * Real.pi ^ (k + J) / (k.factorial : ℝ) * (2 * Real.pi ^ (k' + J))) ^ J := by
-    calc P1 * P2 / Pj ≤ P1 * P2 / (sfac J)⁻¹ := by gcongr
-      _ = P1 * (P2 * sfac J) := by rw [div_inv_eq_mul]; ring
-      _ ≤ (2 * Real.pi ^ (k + J) / (k.factorial : ℝ)) ^ J
-            * ((2 * Real.pi ^ (k' + J)) ^ J * (sfac J)⁻¹ * sfac J) := by gcongr
-      _ = _ := by
-          rw [mul_assoc ((2 * Real.pi ^ (k' + J)) ^ J), inv_mul_cancel₀ hS.ne', mul_one, ← mul_pow]
-  have b4 : (2 * Real.pi ^ (k + J) / (k.factorial : ℝ) * (2 * Real.pi ^ (k' + J))) ^ J
-      ≤ (2 * Real.pi * Real.exp 1) ^ (J * (k + J + (k' + J)))
-        * ((2 * Real.pi * Real.exp 1) / ((k + J : ℕ):ℝ)) ^ (J * k) := by
-    rcases Nat.eq_zero_or_pos J with rfl | hJ
-    · simp
-    · rw [mul_comm J, mul_comm J, pow_mul, pow_mul, ← mul_pow]
-      apply pow_le_pow_left₀ (by positivity)
-      exact vratio_base (k + J) (k' + J) k (by omega) (by omega)
-  calc P1 * P2 / Pj ≤ _ := b3
-    _ ≤ _ := b4
-    _ = (2 * Real.pi * Real.exp 1) ^ (J * (k + J + (k' + J)))
-        * ((2 * Real.pi * Real.exp 1) / ((k + J : ℕ):ℝ)) ^ (J * k) * 1 := (mul_one _).symm
-    _ ≤ _ := by gcongr
 
 theorem fibre_count_alt : FibreCount := by
   classical
@@ -1144,129 +564,9 @@ theorem fibre_count_alt : FibreCount := by
 
 def IsW (t : ℤ) : Prop := t = 0 ∨ ∃ k : ℕ, t = 4 ^ k ∨ t = -(4 ^ k)
 
-lemma sq_sum_fin {a : ℕ} (j : Fin a → ℕ) :
-    (∑ x, j x) ^ 2 = (∑ x, j x ^ 2)
-      + 2 * ∑ x, ∑ y ∈ univ.filter (fun y => x < y), j x * j y := by
-  have h : ∀ x y : Fin a, j x * j y = (if x < y then j x * j y else 0)
-      + (if y < x then j y * j x else 0) + (if x = y then j x ^ 2 else 0) := by
-    intro x y
-    rcases lt_trichotomy x y with h | h | h
-    · simp [h, h.ne, h.le.not_gt]
-    · subst h; simp [sq]
-    · simp [h, h.ne', h.le.not_gt, mul_comm]
-  rw [sq, Finset.sum_mul_sum]
-  simp_rw [Finset.sum_filter]
-  calc ∑ x, ∑ y, j x * j y
-      = ∑ x, ∑ y, ((if x < y then j x * j y else 0)
-      + (if y < x then j y * j x else 0) + (if x = y then j x ^ 2 else 0)) := by
-        apply Finset.sum_congr rfl; intro x _
-        apply Finset.sum_congr rfl; intro y _
-        exact h x y
-    _ = (∑ x, ∑ y, (if x < y then j x * j y else 0))
-        + (∑ x, ∑ y, (if y < x then j y * j x else 0)) + ∑ x, ∑ y, (if x = y then j x ^ 2 else 0) := by
-        simp_rw [Finset.sum_add_distrib]
-    _ = _ := by
-        rw [Finset.sum_comm (f := fun x y => if y < x then j y * j x else 0)]
-        simp
-        ring
 
-theorem dimension_identity : DimIdentity := by
-  intro a j n0
-  have hsq := sq_sum_fin j
-  have hd : dimN j n0 = 4 * (∑ x, ∑ y ∈ univ.filter (fun y => x < y), j x * j y)
-      + (∑ x, j x ^ 2) + 2 * (∑ x, j x) * n0 := by
-    unfold dimN
-    have e1 : (∑ x, ∑ y ∈ univ.filter (fun y => x < y), 2 * j x * j y)
-        = 2 * ∑ x, ∑ y ∈ univ.filter (fun y => x < y), j x * j y := by
-      simp_rw [mul_assoc, ← Finset.mul_sum]
-    have e2 : (∑ x, 2 * j x * n0) = 2 * (∑ x, j x) * n0 := by
-      rw [Finset.mul_sum, Finset.sum_mul]
-    rw [e1, e2]; ring
-  have h1 : (n0 + 2 * ∑ x, j x) ^ 2 = n0 ^ 2 + 2 * (∑ x, j x ^ 2) + 2 * dimN j n0 := by
-    rw [hd]
-    have : (n0 + 2 * ∑ x, j x) ^ 2 = n0 ^ 2 + 4 * n0 * (∑ x, j x) + 4 * (∑ x, j x) ^ 2 := by ring
-    rw [this, hsq]; ring
-  refine ⟨h1, ?_, ?_⟩
-  · rw [hd]
-    have : 2 * (∑ x, j x) * (n0 + 2 * ∑ x, j x) = 2 * (∑ x, j x) * n0 + 4 * (∑ x, j x) ^ 2 := by ring
-    rw [this, hsq]
-    generalize (∑ x, ∑ y ∈ univ.filter (fun y => x < y), j x * j y) = T
-    generalize (∑ x, j x ^ 2) = Q
-    generalize 2 * (∑ x, j x) * n0 = R
-    omega
-  · have h1r : ((n0:ℝ) + 2 * ∑ x, (j x : ℝ)) ^ 2
-        = (n0:ℝ) ^ 2 + 2 * (∑ x, (j x : ℝ) ^ 2) + 2 * (dimN j n0 : ℝ) := by exact_mod_cast h1
-    linarith
 
-lemma resolution_sq {Ω T : Type} [MeasurableSpace Ω] (μ : Measure Ω) [NormedAddCommGroup T]
-    [InnerProductSpace ℂ T] (v : Ω → T)
-    (hres : ∀ x y : T, (∫ k, inner ℂ x (v k) * inner ℂ (v k) y ∂μ) = inner ℂ x y) (x : T) :
-    Integrable (fun k => ‖inner ℂ x (v k)‖ ^ 2) μ ∧ (∫ k, ‖inner ℂ x (v k)‖ ^ 2 ∂μ) = ‖x‖ ^ 2 := by
-  have e : ∀ k, inner ℂ x (v k) * inner ℂ (v k) x = ((‖inner ℂ x (v k)‖ ^ 2 : ℝ) : ℂ) := by
-    intro k
-    rw [← inner_conj_symm (v k) x, Complex.mul_conj']; push_cast; rfl
-  have h1 : (∫ k, ((‖inner ℂ x (v k)‖ ^ 2 : ℝ) : ℂ) ∂μ) = ((‖x‖ ^ 2 : ℝ) : ℂ) := by
-    have := hres x x
-    simp only [e] at this
-    rw [this, inner_self_eq_norm_sq_to_K]; push_cast; rfl
-  have hint : Integrable (fun k => ‖inner ℂ x (v k)‖ ^ 2) μ := by
-    by_cases hx : x = 0
-    · subst hx; simp
-    by_contra hn
-    have h2 : ¬ Integrable (fun k => ((‖inner ℂ x (v k)‖ ^ 2 : ℝ) : ℂ)) μ := fun hi => hn (by
-      have h4 := hi.re
-      simpa [← Complex.ofReal_pow] using h4)
-    have h3 := integral_undef h2
-    rw [h1] at h3
-    have : ‖x‖ ^ 2 = 0 := by exact_mod_cast h3
-    exact hx (by simpa using this)
-  refine ⟨hint, ?_⟩
-  rw [integral_complex_ofReal] at h1
-  exact_mod_cast h1
 
-theorem resolution_norm_bound : ResolutionNorm := by
-  intro Ω T _ μ _ _ v c M A hM hres hc hA
-  have key : ∀ (x y : T) (t : ℝ), 0 < t →
-      ‖inner ℂ x (A y)‖ ≤ M * ((t * ‖x‖ ^ 2 + ‖y‖ ^ 2 / t) / 2) := by
-    intro x y t ht
-    obtain ⟨ix, ex⟩ := resolution_sq μ v hres x
-    obtain ⟨iy, ey⟩ := resolution_sq μ v hres y
-    rw [hA x y]
-    have hg : Integrable (fun k => M * ((t * ‖inner ℂ x (v k)‖ ^ 2 + ‖inner ℂ y (v k)‖ ^ 2 / t) / 2)) μ :=
-      (((ix.const_mul t).add (iy.div_const t)).div_const 2).const_mul M
-    refine (norm_integral_le_of_norm_le hg (Filter.Eventually.of_forall fun k => ?_)).trans ?_
-    · rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_inner_symm (v k) y]
-      set p := ‖inner ℂ x (v k)‖
-      set q := ‖inner ℂ y (v k)‖
-      have hp : 0 ≤ p := norm_nonneg _
-      have hq : 0 ≤ q := norm_nonneg _
-      have h1 : p * q ≤ (t * p ^ 2 + q ^ 2 / t) / 2 := by
-        have h0 : 0 ≤ (t * p - q) ^ 2 / t := by positivity
-        have e : (t * p - q) ^ 2 / t = t * p ^ 2 - 2 * (p * q) + q ^ 2 / t := by
-          field_simp; ring
-        linarith
-      exact mul_le_mul (hc k) h1 (by positivity) hM
-    · apply le_of_eq
-      rw [integral_const_mul, integral_div, integral_add (ix.const_mul t) (iy.div_const t),
-        integral_const_mul, integral_div, ex, ey]
-  apply ContinuousLinearMap.opNorm_le_bound _ hM
-  intro y
-  by_cases hy : y = 0
-  · subst hy; simp
-  by_cases hAy : A y = 0
-  · rw [hAy, norm_zero]; positivity
-  have ha : 0 < ‖A y‖ := norm_pos_iff.mpr hAy
-  have hb : 0 < ‖y‖ := norm_pos_iff.mpr hy
-  have h := key (A y) y (‖y‖ / ‖A y‖) (by positivity)
-  rw [inner_self_eq_norm_sq_to_K] at h
-  have e1 : ‖((‖A y‖ : ℂ)) ^ 2‖ = ‖A y‖ ^ 2 := by
-    rw [norm_pow, Complex.norm_real, norm_norm]
-  have e2 : (‖y‖ / ‖A y‖ * ‖A y‖ ^ 2 + ‖y‖ ^ 2 / (‖y‖ / ‖A y‖)) / 2 = ‖A y‖ * ‖y‖ := by
-    field_simp; ring
-  erw [e1] at h
-  rw [e2] at h
-  have : ‖A y‖ * ‖A y‖ ≤ ‖A y‖ * (M * ‖y‖) := by nlinarith
-  exact le_of_mul_le_mul_left this ha
 
 theorem positive_type_bound : PosTypeBound := by
   classical
@@ -1321,94 +621,6 @@ theorem positive_type_bound : PosTypeBound := by
   simp at this
   linarith
 
-theorem coefficient_isometry : CoeffIso := by
-  intro G H₁ H₂ _ _ _ _ _ _ _ U₁ U₂ hU₁ hU₂ v₁ v₂ hcoef hcyc
-  have hin₁ : ∀ g x y, inner ℂ (U₁ g x) (U₁ g y) = inner ℂ x y := fun g x y =>
-    (LinearIsometry.mk (U₁ g).toLinearMap (hU₁ g)).inner_map_map x y
-  have hin₂ : ∀ g x y, inner ℂ (U₂ g x) (U₂ g y) = inner ℂ x y := fun g x y =>
-    (LinearIsometry.mk (U₂ g).toLinearMap (hU₂ g)).inner_map_map x y
-  have hmul₁ : ∀ g h x, U₁ (g * h) x = U₁ g (U₁ h x) := by
-    intro g h x; rw [map_mul]; rfl
-  have hmul₂ : ∀ g h x, U₂ (g * h) x = U₂ g (U₂ h x) := by
-    intro g h x; rw [map_mul]; rfl
-  have hpair₁ : ∀ g h, inner ℂ (U₁ g v₁) (U₁ h v₁) = inner ℂ v₁ (U₁ (g⁻¹ * h) v₁) := by
-    intro g h
-    have : U₁ h v₁ = U₁ g (U₁ (g⁻¹ * h) v₁) := by
-      rw [← hmul₁]; simp
-    rw [this, hin₁]
-  have hpair₂ : ∀ g h, inner ℂ (U₂ g v₂) (U₂ h v₂) = inner ℂ v₂ (U₂ (g⁻¹ * h) v₂) := by
-    intro g h
-    have : U₂ h v₂ = U₂ g (U₂ (g⁻¹ * h) v₂) := by
-      rw [← hmul₂]; simp
-    rw [this, hin₂]
-  set T₁ : (G →₀ ℂ) →ₗ[ℂ] H₁ := Finsupp.linearCombination ℂ (fun g => U₁ g v₁) with hT₁
-  set T₂ : (G →₀ ℂ) →ₗ[ℂ] H₂ := Finsupp.linearCombination ℂ (fun g => U₂ g v₂) with hT₂
-  have hinner : ∀ c d, inner ℂ (T₁ c) (T₁ d) = inner ℂ (T₂ c) (T₂ d) := by
-    intro c d
-    simp only [hT₁, hT₂, Finsupp.linearCombination_apply, Finsupp.sum, sum_inner, inner_sum,
-      inner_smul_left, inner_smul_right, hpair₁, hpair₂, hcoef]
-  have hnorm : ∀ c, ‖T₁ c‖ = ‖T₂ c‖ := by
-    intro c
-    have := hinner c c
-    rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at this
-    have h2 : ‖T₁ c‖ ^ 2 = ‖T₂ c‖ ^ 2 := by exact_mod_cast this
-    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h2
-  have hr₂ : LinearMap.range T₂ = Submodule.span ℂ (Set.range fun g => U₂ g v₂) :=
-    Finsupp.range_linearCombination _
-  have hr₁ : LinearMap.range T₁ = Submodule.span ℂ (Set.range fun g => U₁ g v₁) :=
-    Finsupp.range_linearCombination _
-  have hdense : DenseRange T₂ := by
-    have := (Submodule.dense_iff_topologicalClosure_eq_top).mpr hcyc
-    rw [← hr₂] at this
-    exact this
-  have hbd : ∃ C : ℝ, ∀ x, ‖T₁ x‖ ≤ C * ‖T₂ x‖ := ⟨1, fun x => by rw [hnorm, one_mul]⟩
-  set J0 := T₁.extendOfNorm T₂ with hJ0def
-  have hJ0 : ∀ c, J0 (T₂ c) = T₁ c := fun c => LinearMap.extendOfNorm_eq hdense hbd c
-  have hJnorm : ∀ x, ‖J0 x‖ = ‖x‖ := by
-    refine hdense.induction ?_ (isClosed_eq (by fun_prop) continuous_norm)
-    rintro _ ⟨c, rfl⟩
-    rw [hJ0, hnorm]
-  have hs₁ : ∀ g (a : ℂ), T₁ (Finsupp.single g a) = a • U₁ g v₁ := by
-    intro g a; simp [hT₁]
-  have hs₂ : ∀ g (a : ℂ), T₂ (Finsupp.single g a) = a • U₂ g v₂ := by
-    intro g a; simp [hT₂]
-  have horb : ∀ g, J0 (U₂ g v₂) = U₁ g v₁ := by
-    intro g
-    have := hJ0 (Finsupp.single g 1)
-    rwa [hs₁, hs₂, one_smul, one_smul] at this
-  refine ⟨⟨J0.toLinearMap, hJnorm⟩, ?_, ?_, ?_⟩
-  · have := horb 1
-    simpa using this
-  · intro g
-    show ∀ x, J0 (U₂ g x) = U₁ g (J0 x)
-    refine hdense.induction ?_ (isClosed_eq (by fun_prop) (by fun_prop))
-    rintro _ ⟨c, rfl⟩
-    induction c using Finsupp.induction_linear with
-    | zero => simp
-    | add c d hc hd => simp only [map_add, hc, hd]
-    | single h a =>
-      rw [hs₂, map_smul, map_smul, map_smul, map_smul, ← hmul₂, horb, horb, hmul₁]
-  · apply Set.Subset.antisymm
-    · rintro _ ⟨x, rfl⟩
-      show J0 x ∈ _
-      revert x
-      refine hdense.induction ?_ ?_
-      · rintro _ ⟨c, rfl⟩
-        rw [hJ0]
-        apply Submodule.le_topologicalClosure
-        rw [← hr₁]
-        exact LinearMap.mem_range_self _ _
-      · exact (Submodule.isClosed_topologicalClosure _).preimage J0.continuous
-    · have hcl : IsClosed ((LinearMap.range J0.toLinearMap : Submodule ℂ H₁) : Set H₁) := by
-        have hiso : Isometry J0 := AddMonoidHomClass.isometry_of_norm J0 hJnorm
-        exact hiso.isClosedEmbedding.isClosed_range
-      have hle : Submodule.span ℂ (Set.range fun g => U₁ g v₁) ≤ LinearMap.range J0.toLinearMap := by
-        rw [Submodule.span_le]
-        rintro _ ⟨g, rfl⟩
-        exact ⟨U₂ g v₂, horb g⟩
-      intro y hy
-      obtain ⟨x, hx⟩ := Submodule.topologicalClosure_minimal _ hle hcl hy
-      exact ⟨x, hx⟩
 
 theorem kernel_bound_bis : KernelBound := by
   intro X ι _ μ _ _ F c hF horth y

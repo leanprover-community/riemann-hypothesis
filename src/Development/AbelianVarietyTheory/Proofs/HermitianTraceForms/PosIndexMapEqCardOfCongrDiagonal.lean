@@ -30,17 +30,10 @@ theorem isGreatest_posIndex (G : Matrix n n ℂ) : IsGreatest (posDims G) (posIn
   have hb : BddAbove (posDims G) := ⟨_, fun _ hd => le_card_of_mem_posDims hd⟩
   exact ⟨Nat.sSup_mem ⟨0, zero_mem_posDims G⟩ hb, fun _ hd => le_csSup hb hd⟩
 
-theorem isGreatest_negIndex (G : Matrix n n ℂ) :
-    IsGreatest {d | ∃ W : Submodule ℂ (n → ℂ), finrank ℂ W = d ∧
-      ∀ x ∈ W, x ≠ 0 → (x ⬝ᵥ G *ᵥ star x).re < 0} (negIndex G) := by
-  have h := isGreatest_posIndex (-G)
-  simpa only [negIndex, posDims, neg_mulVec, dotProduct_neg, Complex.neg_re, Left.neg_pos_iff] using h
 
 theorem posIndex_le_card (G : Matrix n n ℂ) : posIndex G ≤ Fintype.card n :=
   le_card_of_mem_posDims (isGreatest_posIndex G).1
 
-theorem negIndex_le_card (G : Matrix n n ℂ) : negIndex G ≤ Fintype.card n :=
-  posIndex_le_card _
 
 @[simp] theorem posIndex_neg (G : Matrix n n ℂ) : posIndex (-G) = negIndex G := rfl
 
@@ -236,11 +229,6 @@ theorem posIndex_eq_card_eigenvalues {G : Matrix n n ℂ} (hG : G.IsHermitian) :
   rw [posIndex_eq_card_of_congr_diagonal hP hd]
   simp
 
-theorem negIndex_eq_card_eigenvalues {G : Matrix n n ℂ} (hG : G.IsHermitian) :
-    negIndex G = (Finset.univ.filter fun k => hG.eigenvalues k < 0).card := by
-  obtain ⟨P, hP, hd⟩ := exists_congr_diagonal_eigenvalues hG
-  rw [negIndex_eq_card_of_congr_diagonal hP hd]
-  simp
 
 open scoped ComplexOrder in
 
@@ -498,11 +486,6 @@ theorem posIndex_map_data (X : FD.Data E r) (τ : E →+* ℂ) : posIndex (X.Gm.
     by_contra h'
     exact h ((X.cmType τ).2 h')
 
-theorem negIndex_map_data (X : FD.Data E r) (τ : E →+* ℂ) :
-    negIndex (X.Gm.map τ) = r - X.p0 := by
-  rw [← posIndex_neg,
-    posIndex_neg_eq_sub (isHermitian_map τ X.Gm_herm) (det_map_ne_zero τ X.Gm_det),
-    posIndex_map_data, Fintype.card_fin]
 
 end CM
 

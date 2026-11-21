@@ -16,18 +16,8 @@ abbrev period2 : PeriodMap R0 (chain1 Tau) where
   lowerMap := LinearMap.id
   period := LinearMap.mul ℂ ℂ
 
-theorem chain1_K (i : ℕ) (z : ℂ) : (chain1 Tau).K i (fun _ _ => z) = fun _ _ => z := by
-  funext _ _
-  simp [ColumnChain.K, Formalism.ThetaLiftIndependence.kerOpM, ColumnChain.Kmap, ColumnChain.divDe, ColumnChain.sharp, mulFun,
-    chain1_wt]
 
-theorem chain1_col (z : ℂ) : (chain1 Tau).col (fun _ _ => z) = fun _ _ => z := by
-  show (chain1 Tau).K 1 ((chain1 Tau).K 0 (fun _ _ => z)) = _
-  rw [chain1_K, chain1_K]
 
-theorem period2_PtilCol (z F : ℂ) : (period2 Tau).PtilCol (fun _ _ => z) F = z * F := by
-  show ((chain1 Tau).col (fun _ _ => z)) () () * F = z * F
-  rw [chain1_col]
 
 def oneOLat {O : Type} [CommRing O] (φ : O →+* ℂ) : Rows.OLat O φ ℂ :=
   ⟨{1}, by rw [Finset.coe_singleton]; exact span_one_C⟩
@@ -156,8 +146,6 @@ abbrev div2 : DivData K Unit :=
     HH_ge := le_refl _
     Dall := 1 }
 
-theorem unitDivisor_good : (div2 K).RR.Good ∧ ∀ u, ((div2 K).Nu u).Good :=
-  ⟨oneHLat_good K, fun _ => oneHLat_good K⟩
 
 end Div
 
@@ -200,9 +188,6 @@ def forms2 : MemberForms LL embLL Pl Tau (fun _ => hc0) (chain1 Tau) (baseColumn
     (period2 Tau) :=
   { forms1 Tau T embLL Pl hTau Dst hD with }
 
-theorem forms2_ipC (φ ψ : FU) :
-    (forms2 Tau T embLL Pl hTau Dst hD).ipC 0 φ ψ = starRingEnd ℂ (φ () ()) * ψ () () :=
-  forms1_ipC Tau T embLL Pl hTau Dst hD φ ψ
 
 end Forms
 

@@ -85,15 +85,6 @@ noncomputable def singleL [DecidableEq ι] (i : ι) : E i →L[ℂ] lp E 2 :=
 omit [∀ i, CompleteSpace (E i)] in
 lemma singleL_apply [DecidableEq ι] (i : ι) (a : E i) : singleL i a = lp.single 2 i a := rfl
 
-theorem singleL_mem_intertwiners [DecidableEq ι] (i : ι) :
-    singleL i ∈ (ρ i).intertwiners (directSum ρ) := by
-  intro g a
-  refine lp.ext (funext fun j => ?_)
-  rw [singleL_apply, directSum_apply, singleL_apply]
-  by_cases h : j = i
-  · subst h
-    simp
-  · rw [lp.single_apply_ne 2 i _ h, lp.single_apply_ne 2 i _ h, map_zero]
 
 end directSum
 
@@ -110,11 +101,6 @@ noncomputable def equivDirectSumOfIsHilbertSum {π : UnitaryRep G H} {V : ι →
       (π g).map_tsum (hV.OrthogonalFamily.summable_of_lp _)]
     rfl
 
-theorem isEquivalent_directSum_of_isHilbertSum {π : UnitaryRep G H} {V : ι → Submodule ℂ H}
-    [∀ i, CompleteSpace (V i)] (hinv : ∀ i, π.IsInvariant (V i))
-    (hV : IsHilbertSum ℂ (fun i => V i) fun i => (V i).subtypeₗᵢ) :
-    π.IsEquivalent (directSum fun i => π.restrict (V i) (hinv i)) :=
-  ⟨equivDirectSumOfIsHilbertSum hinv hV⟩
 
 end UnitaryRep
 

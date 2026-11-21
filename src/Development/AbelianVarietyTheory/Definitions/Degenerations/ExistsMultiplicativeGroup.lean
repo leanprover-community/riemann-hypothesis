@@ -15,8 +15,6 @@ attribute [local instance] SplitExt.free SplitExt.finite
 noncomputable section
 namespace GlobalTheory.ZH
 
-theorem valR_eq_valF {F : Type} [Field F] {X : Scheme.{0}} (x : Sp F ⟶ X) (U : X.Opens) (f : Γ(X, U)) :
-    GlobalTheory.ZH.valR x U f = valF x U f := rfl
 
 theorem FibPre.isLB_H {k : Type} [Field k] (Φ : FibPre k) (d : ℕ) : (Φ.H d).IsLB := by
   have key : ∀ (U V : Φ.E.B.left.Opens) (h : V ≤ U) (h' : Φ.D.q.left ⁻¹ᵁ V ≤ Φ.D.q.left ⁻¹ᵁ U) (u : Γ(Φ.E.B.left, U)ˣ),
@@ -137,61 +135,7 @@ theorem exists_good (E : SplitExt (Sp k)) (G : Over (Sp k)) [GrpObj G] [IsCommMo
     by_contra hi
     exact hi ((hiff α i).1 (ha' i hi) ▸ h0)
 
-theorem exists_fibPre (k : Type) [Field k] (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] :
-    ∃ (Φ : FibPre k) (_ : Φ.E.X ≃ₗ[ℤ] X), (∀ N, ∃ π : Φ.Pol N, π.PB.g = 0) ∧
-      ∀ (N : ℕ) (q : QuadraticMap ℤ Φ.E.X ℝ), Filter.Tendsto q Filter.cofinite Filter.atTop →
-        ∀ (J : Type) [Fintype J] (c : Φ.E.X → J), Function.Surjective c → (∀ α β, c α = c β ↔ ∃ m, α = β + N • m) →
-          ∃ (cls : J → Φ.E.X) (F : J → (Φ.H 1).Sec), (∀ i, c (cls i) = i) ∧ Φ.Good N q cls F := by
-  let P := Out.Inh.zeroPolAV (Sp k)
-  obtain ⟨O, h₁, h₂, h₃, D, -⟩ := GlobalTheory.UU.exists_gtDatum_prod (X := X) P.A P.isAb
-  let E : SplitExt (Sp k) := SplitExt.mk P.A P.isAb X O h₁ h₂ h₃
-  have := P.isAb.comm
-  have : IsIso E.B.hom := by show IsIso (𝟙 (Sp k)); infer_instance
-  have ha : IsAffine E.B.left := by show IsAffine (Sp k); infer_instance
-  have hch : ∀ M : LB (Sp k), M.IsLB → ∃ i, ⊤ ≤ M.U i := by
-    intro M hM
-    have : (default : PrimeSpectrum k) ∈ ⨆ i, M.U i := by rw [hM.cover]; trivial
-    obtain ⟨i, hi⟩ := TopologicalSpace.Opens.mem_iSup.1 this
-    exact ⟨i, fun x _ => by
-      have : x = (default : PrimeSpectrum k) := Subsingleton.elim (α := PrimeSpectrum k) _ _
-      rw [this]; exact hi⟩
-  have hiso : ∀ L M : LB (Sp k), L.IsLB → M.IsLB → LBIso L M := fun L M hL hM =>
-    DVR.exists_gen_of_isLB_local (V := k) _ (LB.isLB_div hM hL)
-  choose j hj using fun b => hch (E.O (E.basis b)).L (E.O (E.basis b)).isLB
-  have hj' : ⊤ ≤ E.chart j := by
-    intro x _
-    have : (⨅ b, (E.O (E.basis b)).L.U (j b)) = ⊤ := iInf_eq_top.2 fun b => top_unique (hj b)
-    show x ∈ ⨅ b, (E.O (E.basis b)).L.U (j b)
-    rw [this]; trivial
-  refine ⟨trivPre E _ D ha j hj', LinearEquiv.refl ℤ X, fun N => ⟨⟨P, Iso.refl _, ?_, fun _ => 1, ?_, fun α => ?_⟩, rfl⟩,
-    fun N q hq J _ c hc hcl => exists_good E _ D ha j hj' N q hq J c hc hcl⟩
-  · show IsMonHom (𝟙 P.A); infer_instance
-  · exact hiso _ _ (Out.Inh.trivLB_isLB _) (LB.isLB_pull (LB.isLB_linComb P.isLB _ _) _)
-  · exact hiso _ _ (E.O α).isLB (LB.isLB_linComb P.isLB _ _)
 
-theorem exists_multiplicativeGroup (k : Type) [Field k] :
-    ∃ (Φ : FibPre k) (q : QuadraticMap ℤ Φ.E.X ℝ) (cls : ZMod 81 → Φ.E.X) (F : ZMod 81 → (Φ.H 1).Sec) (π : Φ.Pol 81),
-      Φ.Good 81 q cls F ∧ π.PB.g + Module.finrank ℤ Φ.E.X = 1 ∧ Function.Injective cls := by
-  obtain ⟨Φ, e, hP, hG⟩ := exists_fibPre k ℤ
-  obtain ⟨π, hπ⟩ := hP 81
-  let q₀ : QuadraticMap ℤ ℤ ℝ := (Algebra.linearMap ℤ ℝ).compQuadraticMap QuadraticMap.sq
-  have h₀ : Filter.Tendsto q₀ Filter.cofinite Filter.atTop := by
-    have h1 : Filter.Tendsto (fun n : ℤ => n * n) Filter.cofinite Filter.atTop := by
-      rw [Int.cofinite_eq, Filter.tendsto_sup]
-      exact ⟨Filter.tendsto_id.atBot_mul_atBot₀ Filter.tendsto_id, Filter.tendsto_id.atTop_mul_atTop₀ Filter.tendsto_id⟩
-    refine (tendsto_intCast_atTop_atTop.comp h1).congr fun n => ?_
-    simp [q₀]
-  obtain ⟨cls, F, hc, hg⟩ := hG 81 (q₀.comp e.toLinearMap) (h₀.comp e.injective.tendsto_cofinite) (ZMod 81)
-    (fun α => (e α : ZMod 81)) (ZMod.intCast_surjective.comp e.surjective) (fun α β => by
-      rw [eq_comm, ZMod.intCast_eq_intCast_iff_dvd_sub]
-      constructor
-      · rintro ⟨m, hm⟩
-        refine ⟨e.symm m, e.injective ?_⟩
-        rw [map_add, map_nsmul, e.apply_symm_apply, nsmul_eq_mul]; linarith
-      · rintro ⟨m, rfl⟩
-        exact ⟨e m, by rw [map_add, map_nsmul, nsmul_eq_mul]; ring⟩)
-  refine ⟨Φ, _, cls, F, π, hg, ?_, fun i j h => by rw [← hc i, ← hc j, h]⟩
-  rw [hπ, e.finrank_eq]; simp
 
 end TorusFibre
 
@@ -421,43 +365,11 @@ theorem immBy_iff {J : Type} (a : J → X) (j₀ : J) (h₀ : a j₀ = 0) :
     · rintro _ rfl
       exact (aux _ hW).2 h
 
-theorem immBy_three : ImmBy (torusFib k ℤ).G.hom ((torusFib k ℤ).H 1)
-    (fun j => torusSec k ℤ 1 (AddMonoidAlgebra.single (![0, 1, -1] j) 1)) {(0 : Fin 3)} := by
-  refine (immBy_iff k ℤ _ 0 rfl).2 (top_le_iff.1 fun n _ => ?_)
-  obtain ⟨m, rfl | rfl⟩ := Int.eq_nat_or_neg n
-  · simpa using nsmul_mem (AddSubmonoid.subset_closure (s := Set.range ![(0 : ℤ), 1, -1]) ⟨1, rfl⟩) m
-  · simpa using nsmul_mem (AddSubmonoid.subset_closure (s := Set.range ![(0 : ℤ), 1, -1]) ⟨2, rfl⟩) m
 
-theorem not_immBy_two : ¬ ImmBy (torusFib k ℤ).G.hom ((torusFib k ℤ).H 1)
-    (fun j => torusSec k ℤ 1 (AddMonoidAlgebra.single (![0, 1] j) 1)) {(0 : Fin 2)} := by
-  intro h
-  have h' := (immBy_iff k ℤ _ 0 rfl).1 h
-  have : AddSubmonoid.closure (Set.range ![(0 : ℤ), 1]) ≤ AddSubmonoid.nonneg ℤ := by
-    rw [AddSubmonoid.closure_le]
-    rintro _ ⟨j, rfl⟩
-    fin_cases j <;> simp
-  exact absurd (this (h'.ge (AddSubmonoid.mem_top (-1)))) (by simp)
 
 end MonomialImmersion
 
-theorem hilb_univ {k J : Type} [Field k] [Infinite k] [Finite J] (d : ℕ) :
-    hilb (Set.univ : Set (J → k)) d = Module.finrank k (MvPolynomial.homogeneousSubmodule J k d) := by
-  refine (LinearEquiv.finrank_eq (Submodule.equivMapOfInjective _ ?_ _)).symm
-  intro p q h
-  exact MvPolynomial.funext fun v => congrFun h ⟨v, trivial⟩
 
-theorem not_good_empty (k : Type) [Field k] (N : ℕ) :
-    ¬ (torusFib k ℤ).Good N squareForm (J := Empty) Empty.elim Empty.elim := by
-  intro h
-  obtain ⟨a, -, ha⟩ := h.onto (0 : ℤ) (show Short squareForm N (0 : ℤ) from fun m => by
-      simp only [squareForm_apply]; exact_mod_cast by positivity)
-    (torusSec k ℤ 1 (AddMonoidAlgebra.single 0 1)) (by
-      rintro β ⟨l, hl⟩
-      by_contra hβ
-      exact hl ((wt_torusSec k ℤ 1 _ β l).trans (Finsupp.single_eq_of_ne hβ)))
-  have := (wt_torusSec k ℤ 1 _ (0 : ℤ) PUnit.unit).symm.trans (ha PUnit.unit)
-  simp at this
-  exact one_ne_zero (α := Γ(Sp k, ⊤)) this
 
 end GlobalTheory.ZH
 end

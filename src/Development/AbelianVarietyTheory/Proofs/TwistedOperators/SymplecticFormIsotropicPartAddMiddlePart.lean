@@ -89,9 +89,6 @@ theorem adj_zero {m n : ℕ} : adj D (0 : Matrix (Fin m) (Fin n) D.host.E) = 0 :
   unfold adj Formalism.UG.cT
   simp
 
-theorem gram_sandwich (V : HSp D) {m n : ℕ} (A : Matrix (Fin m) (Fin V.rank) D.host.E)
-    (B' : Matrix (Fin V.rank) (Fin n) D.host.E) : A * V.gram * V.gram⁻¹ * (V.gram * B') = A * V.gram * B' := by
-  rw [Matrix.mul_nonsing_inv_cancel_right (h := GlobalTheory.LatVac.gram_det_isUnit V), Matrix.mul_assoc]
 
 section Split
 

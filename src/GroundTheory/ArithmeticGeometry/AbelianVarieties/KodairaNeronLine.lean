@@ -52,41 +52,7 @@ section Counting
 
 variable {G : Type*} [AddCommGroup G] (H : AddSubgroup G)
 
-theorem card_quotient_le_of_rel {T : Type*} (s : Finset T) (R : G → T → Prop)
-    (hex : ∀ P, P ∉ H → ∃ t ∈ s, R P t)
-    (hinj : ∀ P Q t, P ∉ H → Q ∉ H → R P t → R Q t → P - Q ∈ H) :
-    Finite (G ⧸ H) ∧ Nat.card (G ⧸ H) ≤ s.card + 1 := by
-  classical
-  let f : G ⧸ H → Option s := fun q =>
-    if h : q.out ∈ H then none else some ⟨(hex _ h).choose, (hex _ h).choose_spec.1⟩
-  have hf : Function.Injective f := by
-    intro q₁ q₂ e
-    by_cases h₁ : q₁.out ∈ H <;> by_cases h₂ : q₂.out ∈ H <;> simp only [f, h₁, h₂, dif_pos,
-      dif_neg, not_false_eq_true, reduceCtorEq, Option.some.injEq, Subtype.mk.injEq] at e
-    · rw [← QuotientAddGroup.out_eq' q₁, ← QuotientAddGroup.out_eq' q₂,
-        (QuotientAddGroup.eq_zero_iff _).2 h₁, (QuotientAddGroup.eq_zero_iff _).2 h₂]
-    · have hR₁ := (hex _ h₁).choose_spec.2
-      have hR₂ := (hex _ h₂).choose_spec.2
-      rw [e] at hR₁
-      have := hinj _ _ _ h₁ h₂ hR₁ hR₂
-      rw [← QuotientAddGroup.out_eq' q₁, ← QuotientAddGroup.out_eq' q₂, QuotientAddGroup.eq]
-      have h' := H.neg_mem this
-      rwa [neg_sub, sub_eq_neg_add] at h'
-  have : Finite (G ⧸ H) := Finite.of_injective f hf
-  refine ⟨this, ?_⟩
-  calc Nat.card (G ⧸ H) ≤ Nat.card (Option s) := Nat.card_le_card_of_injective f hf
-    _ = s.card + 1 := by simp
 
-theorem card_quotient_le_two (hno : ∀ P Q R, P ∉ H → Q ∉ H → R ∉ H → P + Q + R ≠ 0) :
-    Finite (G ⧸ H) ∧ Nat.card (G ⧸ H) ≤ 2 := by
-  have := card_quotient_le_of_rel H ({()} : Finset Unit) (fun _ _ => True)
-    (fun _ _ => ⟨(), Finset.mem_singleton_self _, trivial⟩)
-    (fun P Q _ hP hQ _ _ => by
-      by_contra hPQ
-      have hQ' : -Q ∉ H := fun h => hQ (by simpa using H.neg_mem h)
-      have hR : Q - P ∉ H := fun h => hPQ (by simpa using H.neg_mem h)
-      exact hno P (-Q) (Q - P) hP hQ' hR (by abel))
-  simpa using this
 
 end Counting
 
@@ -224,19 +190,6 @@ theorem exists_of_notMem_E0Set (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) (h6 : �
   have he := equation_of_map K W h.1
   exact ⟨x, y, h, rfl, he, dvd_of_singular_origin W hπ h3 h4 h6 he hs⟩
 
-theorem origin_vc {x₀ y₀ : 𝒪} (h : W.toAffine.Equation x₀ y₀)
-    (hs : ¬(curveRed W).Nonsingular (residue 𝒪 x₀) (residue 𝒪 y₀)) :
-    (((⟨1, x₀, 0, y₀⟩ : VariableChange 𝒪) • W).a₆ = 0 ∧
-      π ∣ ((⟨1, x₀, 0, y₀⟩ : VariableChange 𝒪) • W).a₃ ∧
-      π ∣ ((⟨1, x₀, 0, y₀⟩ : VariableChange 𝒪) • W).a₄) := by
-  obtain ⟨hA, hB⟩ := dvd_partials_of_singular W hπ h hs
-  rw [WeierstrassCurve.Affine.equation_iff] at h
-  simp only [variableChange_a₃, variableChange_a₄, variableChange_a₆, inv_one, Units.val_one,
-    one_pow, one_mul]
-  refine ⟨by linear_combination -h, ?_, ?_⟩
-  · convert hB using 1; ring
-  · have := hA.neg_right
-    convert this using 1; ring
 
 theorem triple_origin [DecidableEq K] (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) (h6 : π ∣ W.a₆)
     {P₁ P₂ P₃ : (curveK K W).Point} (hP₁ : P₁ ∉ E0Set K W) (hP₂ : P₂ ∉ E0Set K W)

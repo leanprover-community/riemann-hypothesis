@@ -275,11 +275,6 @@ def oneZ : LinearMap.ker (d F 0) := ⟨oneC μ, LinearMap.mem_ker.2 (d_oneC μ)�
 
 def oneH : H F 0 := Submodule.Quotient.mk (oneZ μ)
 
-theorem oneH_ne_zero (s : ComposableArrows C 0) (h : μ.one (s.obj (Fin.last 0)) ≠ 0) : oneH μ ≠ 0 := by
-  intro h0
-  have h1 := (Submodule.Quotient.mk_eq_zero _).1 h0
-  have h2 : (oneZ μ : Cn F 0) = 0 := (Submodule.mem_bot R).1 h1
-  exact h (congrFun h2 s)
 
 end Cup
 
@@ -416,8 +411,6 @@ theorem IsFirstChernClassOfLineBundle.pull {b' : Base} {L' : b'.Fun} {σ : b.R �
   obtain ⟨u, ℓ, hu, hℓ, rfl⟩ := hz
   exact ⟨fun φ => u (M.map φ), M.catMor.pullZ 2 ℓ, fun φ => hu (M.map φ), fun s => hℓ (s ⋙ M.functor), rfl⟩
 
-theorem one_node_ne_zero : (one Ex.nodeL : H Ex.nodeL 0) ≠ 0 :=
-  CatH.oneH_ne_zero _ (ComposableArrows.mk₀ Ex.T) (one_ne_zero (α := Ex.D))
 
 example : IsFirstChernClassOfLineBundle (LB.triv : LB Ex.nodeL) 0 := firstChernClass_trivialBundle
 

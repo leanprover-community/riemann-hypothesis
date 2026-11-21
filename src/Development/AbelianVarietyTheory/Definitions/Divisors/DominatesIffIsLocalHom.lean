@@ -9,18 +9,6 @@ namespace GlobalTheory.FieldPair
 
 variable {k K L : Type} [Field k] [Field K] [Field L]
 
-theorem nonUnit_coe_iff {R : Subring K} (x : R) : NonUnit R (x : K) ↔ ¬ IsUnit x := by
-  constructor
-  · rintro ⟨_, h | h⟩ hu
-    · exact hu.ne_zero (Subtype.ext h)
-    · obtain ⟨y, hy⟩ := hu.exists_right_inv
-      have e : (x : K) * y = 1 := congrArg Subtype.val hy
-      exact h ((eq_inv_of_mul_eq_one_right e) ▸ y.2)
-  · intro h
-    refine ⟨x.2, ?_⟩
-    by_contra hc
-    push Not at hc
-    exact h (IsUnit.of_mul_eq_one ⟨_, hc.2⟩ (Subtype.ext (mul_inv_cancel₀ hc.1)))
 
 namespace PolyTower
 
@@ -110,88 +98,15 @@ theorem IsEtTower.poly {c : k →+* K} {R : Subring K} [IsLocalRing R] (h : IsLo
     have := Algebra.FormallyEtale.of_isLocalization (Rₘ := topRing R r) (origin R r).primeCompl
     exact RingHom.formallyEtale_algebraMap.2 this
 
-theorem IsEtTower.nonUnit_coord {cK : k →+* K} {R : Subring K} {cL : k →+* L} {T : Subring L}
-    {r : ℕ} {ι : R →+* T} {ψ : T →+* R} {τ : Fin r → T} (h : IsEtTower cK R cL T ι ψ τ)
-    (i : Fin r) : NonUnit T (τ i) := by
-  rw [nonUnit_coe_iff]
-  intro hu
-  have := hu.map ψ
-  rw [h.zero] at this
-  exact not_isUnit_zero this
 
-theorem IsEtTower.ratRes {cK : k →+* K} {R : Subring K} {cL : k →+* L} {T : Subring L}
-    {r : ℕ} {ι : R →+* T} {ψ : T →+* R} {τ : Fin r → T} (h : IsEtTower cK R cL T ι ψ τ)
-    (hR : RatRes cK R) : RatRes cL T := by
-  intro t ht
-  obtain ⟨a, ha⟩ := hR (ψ ⟨t, ht⟩) (ψ ⟨t, ht⟩).2
-  refine ⟨a, ?_⟩
-  have e : t - cL a = ((⟨t, ht⟩ - ι ⟨cK a, h.base.const_mem a⟩ : T) : L) := by
-    rw [← h.const]; rfl
-  rw [e, nonUnit_coe_iff]
-  intro hu
-  have hu' := hu.map ψ
-  rw [map_sub, h.retr] at hu'
-  exact (nonUnit_coe_iff _).1 ha hu'
 
-theorem exists_isEtTower_line (k : Type) [Field k] :
-    ∃ (L : Type) (_ : Field L) (cL : k →+* L) (T : Subring L) (ι : (⊤ : Subring k) →+* T)
-      (ψ : T →+* (⊤ : Subring k)) (τ : Fin 1 → T),
-      IsEtTower (RingHom.id k) ⊤ cL T ι ψ τ ∧ τ 0 ≠ 0 ∧ NonUnit T (τ 0) ∧ RatRes cL T ∧
-        Dominates cL T ⊤ := by
-  haveI : IsLocalRing (⊤ : Subring k) := (isLocModel_self (k := k)).isLocalRing
-  have hn : IsIntegrallyClosed (⊤ : Subring k) :=
-    IsIntegrallyClosed.of_equiv (Subring.topEquiv (R := k)).symm
-  have h := IsEtTower.poly (isLocModel_self (k := k)) hn 1
-  refine ⟨_, _, _, _, _, _, _, h, PolyTower.coord_ne_zero _ _ 0, h.nonUnit_coord 0,
-    h.ratRes fun x _ => ⟨x, trivial, Or.inl (sub_self x)⟩, fun f _ => ⟨h.top.const_mem f, ?_⟩⟩
-  rintro ⟨_, rfl | hf⟩
-  · exact ⟨h.top.const_mem 0, Or.inl (map_zero _)⟩
-  · exact (hf trivial).elim
 
-theorem not_dominates_top (ρ : K →+* L) {O : Subring K} {f : K} (hf : NonUnit O f) (h0 : f ≠ 0) :
-    ¬ Dominates ρ ⊤ O := fun h => by
-  rcases ((h f hf.1).2 hf).2 with e | e
-  · exact h0 ((map_eq_zero ρ).1 e)
-  · exact e trivial
 
-theorem ratRes_iff_surjective {c : k →+* K} {R : Subring K} [IsLocalRing R] (hc : ∀ a, c a ∈ R) :
-    RatRes c R ↔ Function.Surjective ((IsLocalRing.residue R).comp (c.codRestrict R hc)) := by
-  constructor
-  · intro h x
-    obtain ⟨x, rfl⟩ := IsLocalRing.residue_surjective x
-    obtain ⟨a, ha⟩ := h x x.2
-    refine ⟨a, ?_⟩
-    have hn : ¬ IsUnit (x - ⟨c a, hc a⟩ : R) := (nonUnit_coe_iff _).1 ha
-    have := (IsLocalRing.residue_eq_zero_iff _).2 ((IsLocalRing.mem_maximalIdeal _).2 hn)
-    rw [map_sub, sub_eq_zero] at this
-    exact this.symm
-  · intro h x hx
-    obtain ⟨a, ha⟩ := h (IsLocalRing.residue R ⟨x, hx⟩)
-    refine ⟨a, (nonUnit_coe_iff (⟨x, hx⟩ - ⟨c a, hc a⟩ : R)).2 ?_⟩
-    have : IsLocalRing.residue R (⟨x, hx⟩ - ⟨c a, hc a⟩) = 0 := by
-      rw [map_sub, sub_eq_zero]; exact ha.symm
-    exact (IsLocalRing.mem_maximalIdeal _).1 ((IsLocalRing.residue_eq_zero_iff _).1 this)
 
-theorem not_ratRes_complex : ¬ RatRes (algebraMap ℝ ℂ) ⊤ := by
-  intro h
-  obtain ⟨a, -, h | h⟩ := h Complex.I trivial
-  · simpa using congrArg Complex.im h
-  · exact h trivial
 
 example (R : Subring K) : RatRes (RingHom.id K) R :=
   fun r _ => ⟨r, by rw [RingHom.id_apply, sub_self]; exact ⟨R.zero_mem, Or.inl rfl⟩⟩
 
-theorem dominates_iff_isLocalHom {ρ : K →+* L} {B : Subring L} {O : Subring K} :
-    Dominates ρ B O ↔ ∃ h : ∀ f ∈ O, ρ f ∈ B, IsLocalHom (ρ.restrict O B h) := by
-  constructor
-  · intro h
-    refine ⟨fun f hf => (h f hf).1, ⟨fun a ha => ?_⟩⟩
-    by_contra hn
-    exact (nonUnit_coe_iff (ρ.restrict O B (fun f hf => (h f hf).1) a)).1
-      ((h a a.2).2 ((nonUnit_coe_iff a).2 hn)) ha
-  · rintro ⟨h, hl⟩ f hf
-    refine ⟨h f hf, fun hn => (nonUnit_coe_iff (ρ.restrict O B h ⟨f, hf⟩)).2 fun hu => ?_⟩
-    exact (nonUnit_coe_iff (⟨f, hf⟩ : O)).1 hn (hl.map_nonunit _ hu)
 
 theorem IsEtTower.exists_deriv {cK : k →+* K} {R : Subring K} {cL : k →+* L} {T : Subring L}
     {r : ℕ} {ι : R →+* T} {ψ : T →+* R} {τ : Fin r → T} (h : IsEtTower cK R cL T ι ψ τ)

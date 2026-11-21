@@ -54,9 +54,6 @@ theorem isVB_of_same {u : A ⟶ F} {v : A' ⟶ F} (h : Same u v) {m r : ℕ} (h�
   have ⟨ψ, _⟩ := exists_cokerIso h
   ⟨h₁.of_iso e.symm, h₂.of_iso ψ.symm⟩
 
-theorem mono_of_same {u : A ⟶ F} {v : A' ⟶ F} (h : Same u v) [Mono v] : Mono u := by
-  obtain ⟨e, rfl⟩ := h
-  infer_instance
 
 end Basic
 
@@ -174,7 +171,6 @@ def fct : Scheme.{0}ᵒᵖ ⥤ Type where
     ext x
     exact map_eq_iff.2 ((R_map _ x).comp (R_map _ _))
 
-theorem fct_map (a : Z' ⟶ Z) (x : Pt E m r Z) : (fct E m r).map a.op x = x.map a := rfl
 
 theorem tr_rfl (a : Z' ⟶ Z) {g : Z ⟶ B} {A : Z.Modules} (u : A ⟶ (Scheme.Modules.pullback g).obj E) :
     tr a rfl u = (Scheme.Modules.pullback a).map u ≫ (Scheme.Modules.pullbackComp a g).hom.app E :=

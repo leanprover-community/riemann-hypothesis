@@ -1614,9 +1614,6 @@ theorem stRules_of_core (C : Ctx B r) (h : (Fin (r + 1) → ℂ) → E →L[ℂ]
       rw [← Complex.mul_conj, div_eq_mul_inv, pow_two, mul_inv_rev, mul_inv_rev]
       simp only [Complex.star_def]; ring
 
-theorem level_rules_of_known (C : Ctx B r) (h : (Fin (r + 1) → ℂ) → E →L[ℂ] E)
-    (SS : Fin B.k0 → (Fin (r + 1) → ℂ) → E →L[ℂ] E) (H : RulesHyp C h SS) :
-    Formalism.MainNotions.RadialRules.LevelOperatorRules C h SS := stRules_of_core C h SS H
 
 end Formalism.MainNotions.LevelRaisingOperators
 
@@ -1747,11 +1744,6 @@ theorem RulesOpen.hyp {Lt : Lev} {h : (Fin 1 → ℂ) → Lt.Hom →L[ℂ] Lt.Ho
   nab_SSs := K.nab_SSs
   nabs_SSs := K.nabs_SSs
 
-theorem level_rules_base_context_of_known (Lt : Lev) (u u' : Fin (Lt.k0 + 1) → ℝ) (I : Set ℝ) (hr : Lt.r + 0 = Lt.r)
-    (R : ℂ → Matrix (Fin 2) (Fin 2) (Lt.down Lt.r 0 hr).POp) (h : (Fin 1 → ℂ) → Lt.Hom →L[ℂ] Lt.Hom)
-    (SS : Fin Lt.k0 → (Fin 1 → ℂ) → Lt.Hom →L[ℂ] Lt.Hom) (hS : Lt.Std) (K : RulesOpen Lt h SS) :
-    Formalism.MainNotions.S.UnitaryLevelOperators.stRules (ctx0 Lt u u' I hr R) (pullZ h) (fun l => pullZ (SS l)) :=
-  stRules_of_core _ _ _ (K.hyp hS u u' I hr R)
 
 open Formalism.MainNotions.S.UnitaryLevelOperators in
 
@@ -1771,17 +1763,7 @@ def stLevelOpen (C Cv C1 C2 : ℝ) : Prop :=
         pullZ h SS ∧
       stRes (ctxR Lt u u' I hr R (Lt.down Lt.r 0 hr).Img) C1 C2 SS
 
-theorem stLevel_of_open {C Cv C1 C2 : ℝ}
-    (hOm : ∀ Lt : Lev, Lt.Std → Formalism.MainNotions.S.UnitaryLevelOperators.stOm (Lt.k0 + 1) Lt.r Lt.z Lt.z') (H : stLevelOpen C Cv C1 C2) :
-    Formalism.MainNotions.S.UnitaryLevelOperators.stLevel C Cv C1 C2 := by
-  intro Lt u u' I hr h1 h2 R hR
-  obtain ⟨h, SS, a, b, c, d, e, f, g⟩ := H Lt u u' I hr h1 h2 R hR
-  exact ⟨h, SS, a, b, level_rules_base_context_of_known Lt u u' I hr R h SS h1.1 c, d, e, f,
-    hOm Lt h1.1, g⟩
 
-theorem level_statement_of_open (D : Formalism.BasicNotions.D7) {C Cv C1 C2 : ℝ}
-    (hOm : ∀ Lt : Lev, Lt.Std → Formalism.MainNotions.S.UnitaryLevelOperators.stOm (Lt.k0 + 1) Lt.r Lt.z Lt.z') (H : stLevelOpen C Cv C1 C2) :
-    Formalism.MainNotions.RadialRules.aux₃ D C Cv C1 C2 := stLevel_of_open hOm H
 
 end Formalism.MainNotions.LevelRaisingOperators
 
@@ -1789,31 +1771,7 @@ namespace Formalism.MainNotions.LevelRaisingOperators
 
 open Formalism.REAL Formalism.QuantumDeterminants
 
-theorem stQ_cap_of_core : Formalism.MainNotions.S.UnitaryLevelOperators.stQ_cap :=
-  ⟨capCentralH, capLeftH, capHWH, capComatrix, qMinorLeft, glRelAd, eabHGl, eabHTransport⟩
 
-theorem stQ_anti_of_core : Formalism.MainNotions.S.UnitaryLevelOperators.stQ_anti := by
-  intro n t ε E _ _ H P Q f a b σ u g hQP hPQ hH hf hg
-  have hsm := ioh_smooth ε H P Q f hPQ hH hf
-  have hg' := ioh_inUJ ε H P Q g hPQ hH hg
-  obtain ⟨x, hx⟩ := io_rep_mk hsm
-  have hR := ioh_repr (ε := ε) (E := E) P Q
-  have key : ∀ α β : Fin t → Fin n,
-      qminorOp (EabH H) α β u f g = (qminor (iohE ε E P Q) α β u x).1 ⟨_, hg'⟩ := by
-    intro α β
-    rw [ioh_qminor ε H P Q hQP hPQ hH]
-    exact ioh_qminor_rep hR α β u hx _ hg'
-  constructor
-  · rw [key, key, qSkewRow (Module.End ℂ (ioS ε E)) n t (iohE ε E P Q) a b σ u, Module.End.mul_apply,
-      Module.End.intCast_apply, ← Int.cast_smul_eq_zsmul ℂ]
-    rfl
-  · rw [key, key, qSkewCol (Module.End ℂ (ioS ε E)) n t (iohE ε E P Q) (ioh_gl glRelAd P Q hQP) a b σ u,
-      Module.End.mul_apply, Module.End.intCast_apply, ← Int.cast_smul_eq_zsmul ℂ]
-    rfl
 
-theorem level_quotient_capacity_of_known (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.RadialRules.adm3 D := stQ_cap_of_core
-theorem radial_archimedean_signature_matching (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.RadialRules.ArchimedeanSignatureMatching D := stQ_anti_of_core
-theorem quotient_capacity_of_known (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.ChoiceOfModulusAndDiscriminant.adm3 D := stQ_cap_of_core
-theorem quotient_antitone_of_known (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.ChoiceOfModulusAndDiscriminant.ArchimedeanSignatureMatching D := stQ_anti_of_core
 
 end Formalism.MainNotions.LevelRaisingOperators

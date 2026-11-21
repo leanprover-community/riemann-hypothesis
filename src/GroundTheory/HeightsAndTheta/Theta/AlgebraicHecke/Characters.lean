@@ -62,11 +62,7 @@ def IsAttached (w : ℤ) (χ : HeckeCharacter E) : Prop :=
             (-(w : ℝ) / 2) : ℝ)) ∧
   ∀ σ : E →+* ℂ, HasAngularType χ σ (ch.infType σ - ch.infType (ComplexEmbedding.conjugate σ))
 
-theorem isDefinedModulo_modulus : ch.IsDefinedModulo ch.modulus :=
-  ⟨dvd_rfl, ch.map_principal⟩
 
-theorem modulus_le_conductor : ch.modulus ≤ ch.conductor :=
-  le_sSup ch.isDefinedModulo_modulus
 
 end AlgHeckeCharacter
 
@@ -160,36 +156,9 @@ def normCharacter : AlgHeckeCharacter E LL ι where
 
 variable {E LL ι}
 
-theorem normCharacter_apply (I : idealsPrimeTo ((normCharacter E LL ι).modulus)) :
-    (((normCharacter E LL ι).toHom I : LLˣ) : LL) =
-      ((FractionalIdeal.absNorm ((I : (FractionalIdeal (𝓞 E)⁰ E)ˣ) :
-        FractionalIdeal (𝓞 E)⁰ E) : ℚ) : LL) := by
-  change algebraMap ℚ LL ((absNormUnits E (I : (FractionalIdeal (𝓞 E)⁰ E)ˣ) : ℚˣ) : ℚ) = _
-  rw [absNormUnits_apply, eq_ratCast]
 
-theorem normCharacter_hasWeight : (normCharacter E LL ι).HasWeight 2 := by
-  intro σ
-  simp [normCharacter]
 
-theorem normCharacter_conductor : (normCharacter E LL ι).conductor = ⊤ :=
-  top_le_iff.1 (normCharacter E LL ι).modulus_le_conductor
 
-theorem normCharacter_isAttached : (normCharacter E LL ι).IsAttached 2 1 := by
-  refine ⟨fun x hx ↦ ?_, fun σ ↦ ?_⟩
-  · have hne : (FractionalIdeal.absNorm ((IdeleGroup.toFractionalIdeal x :
-        (FractionalIdeal (𝓞 E)⁰ E)ˣ) : FractionalIdeal (𝓞 E)⁰ E) : ℚ) ≠ 0 :=
-      FractionalIdeal.absNorm_eq_zero_iff.not.2 (Units.ne_zero _)
-    have hne' : ((FractionalIdeal.absNorm ((IdeleGroup.toFractionalIdeal x :
-        (FractionalIdeal (𝓞 E)⁰ E)ˣ) : FractionalIdeal (𝓞 E)⁰ E) : ℚ) : ℝ) ≠ 0 := by
-      exact_mod_cast hne
-    rw [normCharacter_apply, map_ratCast]
-    change ((1 : Circle) : ℂ) = _
-    rw [Circle.coe_one]
-    norm_num
-    rw [Real.rpow_neg_one, Complex.ofReal_inv]
-    push_cast
-    field_simp
-  · simpa [normCharacter] using one_hasAngularType_zero σ
 
 end NormCharacter
 

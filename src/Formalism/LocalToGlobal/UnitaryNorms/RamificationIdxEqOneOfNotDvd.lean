@@ -13,14 +13,6 @@ open Formalism.BasicNotions Formalism.FrobeniusOrbits
 
 variable {R : Ranks} (H : Formalism.BasicNotions.Host R)
 
-theorem ne_two_and_ne_q_and_ne_d_of_not_dvd_condN (p : ℕ) (hnd : ¬ p ∣ H.condN) : p ≠ 2 ∧ p ≠ H.q ∧ p ≠ H.d := by
-  refine ⟨?_, ?_, ?_⟩
-  · rintro rfl
-    exact hnd (dvd_mul_of_dvd_left (dvd_mul_of_dvd_left H.two_dvd_QS _) _)
-  · rintro rfl
-    exact hnd (dvd_mul_of_dvd_left (dvd_mul_left _ _) _)
-  · rintro rfl
-    exact hnd (dvd_mul_left _ _)
 
 theorem span_isPrime (p : ℕ) [hp : Fact p.Prime] : (span {(p : ℤ)}).IsPrime := by
   exact (Ideal.span_singleton_prime (by exact_mod_cast hp.out.ne_zero)).mpr (Nat.prime_iff_prime_int.mp hp.out)
@@ -57,9 +49,6 @@ theorem ramificationIdx_eq_one (p : ℕ) [Fact p.Prime] (hnd : ¬ p ∣ H.condN)
     exact AddSubgroup.mem_inertia.trans (inertia_trivial H p hnd P σ)
   rw [← Formalism.TwoAdicCyclotomicDecomposition.odd_card H.E p P, hbot, Subgroup.card_bot]
 
-theorem ramificationIdx_eq_one_of_not_dvd (p : ℕ) [Fact p.Prime] (hnd : ¬ p ∣ H.condN)
-    (P : Ideal (𝓞 H.E)) [P.IsPrime] [P.LiesOver (span {(p : ℤ)})] : P.ramificationIdx ℤ = 1 := by
-  exact ramificationIdx_eq_one H p hnd P
 
 theorem ramificationIdx'_eq_one (p : ℕ) [Fact p.Prime] (hnd : ¬ p ∣ H.condN)
     (P : Ideal (𝓞 H.E)) [P.IsPrime] [P.LiesOver (span {(p : ℤ)})] :

@@ -157,50 +157,16 @@ theorem not_dvd_of_inert {φ : Formalism.HC.Frame} {H : Formalism.HC.HostRaw φ}
     (h : primeClass H p = PrimeClass.inertClass ∨ primeClass H p = PrimeClass.signal) : ¬ p ∣ H.condN :=
   h.elim (not_dvd_conductor_of_inert hp) (not_dvd_of_signal hp)
 
-theorem eq_d_of_ramD {φ : Formalism.HC.Frame} {H : Formalism.HC.HostRaw φ} {p : ℕ} (h : primeClass H p = PrimeClass.ramD) : p = H.d := by
-  unfold Formalism.BasicNotions.primeClass at h
-  split_ifs at h <;> simp_all
 
 section Cases
 
 variable (j : ℕ) {p : ℕ}
 
-theorem FjP_g (hg : p = N.g 0 ∨ p = N.g 1) : N.FjP j p = N.FTypeG j := by
-  unfold NumDatum.FjP
-  exact if_pos hg
 
-theorem FjP_d (hg : ¬ (p = N.g 0 ∨ p = N.g 1)) (hd : N.cls p = PrimeClass.ramD) : N.FjP j p = N.FRamD j := by
-  unfold NumDatum.FjP
-  rw [if_neg hg, if_pos hd]
 
-theorem FjP_inert (hg : ¬ (p = N.g 0 ∨ p = N.g 1)) (hc : N.cls p = PrimeClass.inertClass ∨ N.cls p = PrimeClass.signal)
-    (hX : (p : ℝ) ≤ N.sc.X'' N.R.n) : N.FjP j p = N.FInert j p := by
-  unfold NumDatum.FjP
-  have hd : N.cls p ≠ PrimeClass.ramD := by rcases hc with h | h <;> simp [h]
-  rw [if_neg hg, if_neg hd, if_pos ⟨hc, hX⟩]
 
-theorem FjP_split (hg : ¬ (p = N.g 0 ∨ p = N.g 1)) (hc : N.cls p = PrimeClass.splitK ∨ N.cls p = PrimeClass.ram2 ∨
-    N.cls p = PrimeClass.ramQ) : N.FjP j p = 0 := by
-  unfold NumDatum.FjP
-  have hd : N.cls p ≠ PrimeClass.ramD := by rcases hc with h | h | h <;> simp [h]
-  have hi : ¬ ((N.cls p = PrimeClass.inertClass ∨ N.cls p = PrimeClass.signal) ∧ (p : ℝ) ≤ N.sc.X'' N.R.n) := by
-    rcases hc with h | h | h <;> simp [h]
-  rw [if_neg hg, if_neg hd, if_neg hi]
 
-theorem FjP_above (hX : N.sc.X'' N.R.n < (p : ℝ)) (hg : ¬ (p = N.g 0 ∨ p = N.g 1)) (hd : p ≠ N.d) : N.FjP j p = 0 := by
-  unfold NumDatum.FjP
-  have hr : N.cls p ≠ PrimeClass.ramD := fun h => hd (eq_d_of_ramD h)
-  rw [if_neg hg, if_neg hr, if_neg (fun h => absurd h.2 (not_le.mpr hX))]
 
-theorem FjP_off_supp (hp : p.Prime) (hs : p ∉ N.suppP) : N.FjP j p = 0 := by
-  unfold NumDatum.suppP at hs
-  simp only [Finset.mem_union, Finset.mem_filter, Finset.mem_range, Finset.mem_insert,
-    Finset.mem_singleton, not_or] at hs
-  obtain ⟨h1, h2, h3, h4⟩ := hs
-  have hfl : ⌊N.sc.X'' N.R.n⌋₊ < p := by
-    by_contra hc
-    exact h1 ⟨by omega, hp⟩
-  exact N.FjP_above j (Nat.lt_of_floor_lt hfl) (fun h => h.elim h2 h3) h4
 
 end Cases
 
@@ -208,10 +174,6 @@ def FjConj : Prop :=
   ∀ (N : NumDatum) (K : Type) [Field K] [NumberField K] [StarRing K] (j : ℕ) (w : HeightOneSpectrum (𝓞 K)),
     N.Fj j (Formalism.DivisionValues.conjPl w) = N.Fj j w
 
-theorem fjConj_of (h : Formalism.EigenvalueLevelCeiling.RamBasic) : FjConj := by
-  intro N K _ _ _ j w
-  unfold Fj
-  rw [(h K w).2.2.1]
 
 theorem nu_eq_originRow (δ : Code N) (j : ℕ) (hj : 1 ≤ j) (z : RPl N.R) (i : ℕ) :
     ((N.nu δ j z i : ℚ) : ℝ) =
@@ -461,40 +423,11 @@ def RowsArePartitions : Prop :=
     (∀ c, c + 1 < (N.R.sigW j).2 → N.aMinus j z c ≤ N.aMinus j z (c + 1)) ∧
     (0 < (N.R.sigW j).2 → 1 ≤ N.aMinus j z 0)
 
-theorem rowsArePartitions : RowsArePartitions :=
-  fun N j h1 h2 z => ⟨fun i hi => N.aPlus_step j h2 z i hi, N.aPlus_last j h1 h2 z,
-    fun c hc => N.aMinus_step j z c hc, fun hq => N.aMinus_zero j h1 z hq⟩
 
 def ChiKIsKronecker : Prop :=
   ∀ N : NumDatum, (∀ n : ℕ, Odd n → N.chiK (n : ZMod N.d) = ((jacobiSym (-(N.d : ℤ)) n : ℤ) : ℂ)) ∧
     N.chiK (2 : ZMod N.d) = 1
 
-theorem chiKIsKronecker : ChiKIsKronecker := by
-  intro N
-  have : Fact N.d.Prime := ⟨N.hyp.2.1⟩
-  have hd16 := N.hyp.2.2.2.1
-  have hd4 : N.d % 4 = 3 := by omega
-  have hdodd : Odd N.d := Nat.odd_iff.2 (by omega)
-  constructor
-  · intro n hn
-    have h1 : N.chiK (n : ZMod N.d) = ((legendreSym N.d n : ℤ) : ℂ) := by
-      unfold chiK legendreSym
-      simp [MulChar.ringHomComp_apply]
-    rw [h1]
-    congr 1
-    rw [jacobiSym.legendreSym.to_jacobiSym, neg_eq_neg_one_mul, jacobiSym.mul_left, jacobiSym.at_neg_one hn]
-    rcases Nat.odd_mod_four_iff.1 (Nat.odd_iff.1 hn) with h | h
-    · rw [ZMod.χ₄_nat_one_mod_four h, one_mul, jacobiSym.quadratic_reciprocity_one_mod_four h hdodd]
-    · rw [ZMod.χ₄_nat_three_mod_four h, jacobiSym.quadratic_reciprocity_three_mod_four hd4 h]; ring
-  · have h2 : IsSquare (2 : ZMod N.d) := (ZMod.exists_sq_eq_two_iff (by omega)).2 (Or.inr (by omega))
-    have hne : (2 : ZMod N.d) ≠ 0 := by
-      intro h
-      have h' : ((2 : ℕ) : ZMod N.d) = 0 := by exact_mod_cast h
-      have := Nat.le_of_dvd (by norm_num) ((ZMod.natCast_eq_zero_iff 2 N.d).1 h')
-      omega
-    unfold chiK
-    rw [MulChar.ringHomComp_apply, (quadraticChar_one_iff_isSquare hne).2 h2]
-    simp
 
 def FoPlaces : Prop :=
   ∀ (N : NumDatum) (K : Type) [Field K] [NumberField K],
@@ -541,62 +474,16 @@ theorem hookLower_of (h : Formalism.DivisionValues.RowsHook) : HookLower := by
 
 end NumDatum
 
-theorem hFrob_five (e : ℕ) : hFrob e 5 = 1 := by
-  have hc : Nat.Coprime 5 (2 ^ (e + 2)) := Nat.Coprime.pow_right _ (by norm_num)
-  unfold hFrob
-  rw [dif_pos hc]
-  have hu : ZMod.unitOfCoprime 5 hc = Formalism.TwoAdicCyclotomicDecomposition.u5 (e + 2) := rfl
-  rw [hu, ← iotaH_one, iotaHInv_iotaH]
 
 def HFrobMul : Prop := ∀ (e a b : ℕ), Odd a → Odd b → hFrob e (a * b) = hFrob e a + hFrob e b
 
 theorem iotaH_iotaHInv (e : ℕ) (x : HGrp e) : iotaH e (iotaHInv e x) = x := Formalism.BasicNotions.iotaH_iotaHInv e x
 
-theorem coprime_of_odd (e : ℕ) {a : ℕ} (ha : Odd a) : Nat.Coprime a (2 ^ (e + 2)) :=
-  Nat.Coprime.pow_right _ (Nat.coprime_comm.mp ((Nat.Prime.coprime_iff_not_dvd Nat.prime_two).mpr ha.not_two_dvd_nat))
 
-theorem hFrobMul : HFrobMul := by
-  intro e a b ha hb
-  have hca := coprime_of_odd e ha
-  have hcb := coprime_of_odd e hb
-  have hcab := coprime_of_odd e (ha.mul hb)
-  unfold hFrob
-  rw [dif_pos hcab, dif_pos hca, dif_pos hcb]
-  have hu : ZMod.unitOfCoprime (a * b) hcab = ZMod.unitOfCoprime a hca * ZMod.unitOfCoprime b hcb := by
-    ext
-    simp
-  apply (iotaH_bijective e).1
-  rw [iotaH_add, iotaH_iotaHInv, iotaH_iotaHInv, iotaH_iotaHInv, hu]
-  rfl
 
 def HFrobZero : Prop :=
   ∀ (e p : ℕ), Odd p → (hFrob e p = 0 ↔ (p : ZMod (2 ^ (e + 2))) = 1 ∨ (p : ZMod (2 ^ (e + 2))) = -1)
 
-theorem hFrobZero : HFrobZero := by
-  intro e p hp
-  have cp := coprime_of_odd e hp
-  have h0 : iotaH e 0 = 1 := by unfold iotaH; simp
-  unfold hFrob
-  rw [dif_pos cp]
-  constructor
-  · intro h
-    have h1 : hcl e (ZMod.unitOfCoprime p cp) = hcl e 1 := by
-      rw [← iotaH_iotaHInv e (hcl e (ZMod.unitOfCoprime p cp)), h, h0, hcl_one]
-    rcases (hcl_eq_hcl_iff _ _).1 h1 with h2 | h2
-    · left
-      have := congrArg (fun u : (ZMod (2 ^ (e + 2)))ˣ => (u : ZMod (2 ^ (e + 2)))) h2
-      simpa [ZMod.coe_unitOfCoprime] using this
-    · right
-      have := congrArg (fun u : (ZMod (2 ^ (e + 2)))ˣ => (u : ZMod (2 ^ (e + 2)))) h2
-      simpa [ZMod.coe_unitOfCoprime] using this
-  · intro h
-    have h1 : hcl e (ZMod.unitOfCoprime p cp) = hcl e 1 := by
-      refine (hcl_eq_hcl_iff _ _).2 ?_
-      rcases h with h | h
-      · exact Or.inl (Units.ext (by rw [ZMod.coe_unitOfCoprime, h]; rfl))
-      · exact Or.inr (Units.ext (by rw [ZMod.coe_unitOfCoprime, h]; simp))
-    apply (factIota e).1.1
-    rw [iotaH_iotaHInv, h1, h0, hcl_one]
 
 open Formalism.MainNotions.G
 
@@ -656,18 +543,7 @@ theorem hP_eq_ofRecord {p : ℕ} (hp : p.Prime) (hN : ¬ p ∣ D.host.condN) :
   unfold NumDatum.hP
   rw [dif_pos hc]
 
-theorem hP_eq_hFrob {p : ℕ} (hp : p.Prime) (hN : ¬ p ∣ D.host.condN) :
-    iotaHInv D.R.e (D.R.hH (D.R.iota (Formalism.MainNotions.G.hP D p))) = hFrob D.R.e p := by
-  have hc : Nat.Coprime p D.host.condN := hp.coprime_iff_not_dvd.2 hN
-  have hd : 2 ^ (D.R.e + 2) ∣ D.host.condN := (D.host.tower_dvd.mul_right _).mul_right _
-  have hc2 : Nat.Coprime p (2 ^ (D.R.e + 2)) := hc.coprime_dvd_right hd
-  have h1 := D.host.art_h (ZMod.unitOfCoprime p hc) (ZMod.unitOfCoprime p hc2) (by
-    rw [ZMod.coe_unitOfCoprime, ZMod.coe_unitOfCoprime, ZMod.val_natCast, ZMod.natCast_eq_natCast_iff]
-    exact ((Nat.mod_modEq _ _).of_dvd hd).symm)
-  unfold hFrob
-  rw [dif_pos hc2, hP_eq_art D hp hc, Formalism.HC.Frame.iota_iotaInv, h1]
 
-theorem ofRecord_cls (p : ℕ) : (ofRecord D L Del h0).cls p = D.host.cls p := rfl
 
 theorem ofRecord_w {j : ℕ} (hj : 1 ≤ j) (z : Bool × HH D) : (ofRecord D L Del h0).w j z = wPl D j z := by
   unfold NumDatum.w NumDatum.eQ wPl wj
@@ -842,12 +718,6 @@ theorem ofRecord_aT (t : D.host.TT) : (((ofRecord D L Del h0).aT t.1 : ℚ) : �
   show (L.aT t : ℝ) + ((D.R.k : ℝ) - 1) / 2 - ((D.R.k : ℝ) - 1) / 2 = L.aT t
   ring
 
-theorem ofRecord_mainT (u : D.what₂.Word) : (ofRecord D L Del h0).mainT (D.mem u).A.T = L.MAIN u := by
-  unfold NumDatum.mainT SizeData₂.MAIN
-  rw [← Finset.sum_coe_sort]
-  refine Finset.sum_congr rfl (fun t _ => ?_)
-  rw [ofRecord_aT D L Del h0 t, ofRecord_logOm]
-  rfl
 
 theorem ofRecord_kerPlace (hDel : D.s.Del = (Del : ℚ)) (u : D.what₂.Word) (j : ℕ) (z : Bool × HH D) :
     (ofRecord D L Del h0).kerPlace (letterOf D L Del h0 u) j z = DV.kerPlace D L u j (tauPl D z) := by
@@ -865,20 +735,6 @@ theorem ofRecord_kerPlace (hDel : D.s.Del = (Del : ℚ)) (u : D.what₂.Word) (j
   rw [s2, ofRecord_logOm]
   exact congrArg (fun s => s - (∑ i ∈ Finset.range (D.R.N (j - 1)), DV.nuRow D u j (tauPl D z) i) * L.logOm) s1
 
-theorem ofRecord_hB (hDel : D.s.Del = (Del : ℚ)) (C : ℝ) (u : D.what₂.Word) (j : ℕ) :
-    DV.SZbK D L C u j = (ofRecord D L Del h0).hB C (letterOf D L Del h0 u) j +
-      C * (D.R.f : ℝ) * (D.R.N D.R.m : ℝ) ^ 2 * (D.host.d : ℝ) ^ C := by
-  have s : (∑ z : Bool × HH D, (ofRecord D L Del h0).kerPlace (letterOf D L Del h0 u) j z) =
-      ∑ ρ : D.what₂.Tau, DV.kerPlace D L u j ρ :=
-    (Finset.sum_congr rfl (fun z _ => ofRecord_kerPlace D L Del h0 hDel u j z)).trans
-      ((tauPl_bijective D).sum_comp (fun ρ => DV.kerPlace D L u j ρ))
-  have e : (ofRecord D L Del h0).hB C (letterOf D L Del h0 u) j =
-      (∑ z : Bool × HH D, (ofRecord D L Del h0).kerPlace (letterOf D L Del h0 u) j z) +
-        C * (D.R.f : ℝ) * (D.R.N D.R.m : ℝ) ^ 2 * (ofRecord D L Del h0).La +
-        C * (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3 * (D.R.N D.R.m : ℝ) ^ 2 * L.sc.L := rfl
-  rw [e, s, ofRecord_La]
-  unfold DV.SZbK
-  ring
 
 theorem ofRecord_hA (hDel : D.s.Del = (Del : ℚ)) (hEta : L.etaSz = (D.R.m : ℝ) * (h0 : ℝ)) (C : ℝ) (u : D.what₂.Word) :
     DV.SZbP D L C u = (ofRecord D L Del h0).hA C (D.mem u).A.T := by
@@ -900,65 +756,16 @@ theorem ofRecord_hA (hDel : D.s.Del = (Del : ℚ)) (hEta : L.etaSz = (D.R.m : �
   rw [e, s, hS, hE, ofRecord_La]
   rfl
 
-theorem ofRecord_exch : (ofRecord D L Del h0).exch = exch D := rfl
 
-theorem ofRecord_EatC (c : ErrC) {j : ℕ} (hj : 1 ≤ j) (p : ℕ) :
-    (ofRecord D L Del h0).EatC c.dig j p = EatC L c j p := by
-  have s : (∑ z : Bool × HH D, (ofRecord D L Del h0).w j z) = ∑ τ : D.what₂.Tau, wj D j τ :=
-    (Finset.sum_congr rfl (fun z _ => ofRecord_w D L Del h0 hj z)).trans
-      ((tauPl_bijective D).sum_comp (fun τ => wj D j τ))
-  have e : (ofRecord D L Del h0).EatC c.dig j p =
-      c.dig * (D.R.f : ℝ) * Nm D ^ 2 * Real.logb p L.sc.a +
-        (∑ z : Bool × HH D, (ofRecord D L Del h0).w j z) / ((p : ℝ) ^ 2 - 1) := rfl
-  rw [e, s]
-  rfl
 
-theorem ofRecord_nuAbs (hDel : D.s.Del = (Del : ℚ)) (u : D.what₂.Word) (j : ℕ) (z : Bool × HH D) :
-    (((ofRecord D L Del h0).nuAbs (letterOf D L Del h0 u) j z : ℚ) : ℝ) = nuAbs D u j (tauPl D z) := by
-  unfold NumDatum.nuAbs nuAbs
-  rw [Rat.cast_sum]
-  exact Finset.sum_congr rfl (fun i _ => ofRecord_nu D L Del h0 hDel u j z i)
 
-theorem ofRecord_ctD (hDel : D.s.Del = (Del : ℚ)) (u : D.what₂.Word) (j : ℕ) (t : HH D) :
-    (((ofRecord D L Del h0).ctD (letterOf D L Del h0 u) j t : ℚ) : ℝ) = ctD D u j t := by
-  have a0 := ofRecord_nuAbs D L Del h0 hDel u j (false, t)
-  have a1 := ofRecord_nu D L Del h0 hDel u j (false, t) 0
-  have a2 := ofRecord_nu D L Del h0 hDel u j (false, t) 1
-  have a3 := ofRecord_nu D L Del h0 hDel u j (true, t) 0
-  unfold NumDatum.ctD ctD
-  by_cases h : t ∈ D.host.TT
-  · simp only [h, if_true]
-    push_cast
-    rw [a0, a1, a2, a3]
-  · simp only [h, if_false, sub_zero, add_zero]
-    exact a0
 
 open Classical in
 
 abbrev codeOf : Finset (Code (ofRecord D L Del h0)) := Finset.univ.image (letterOf D L Del h0)
 
-theorem codeOf_nonempty : (codeOf D L Del h0).Nonempty :=
-  ⟨letterOf D L Del h0 D.u₀, by unfold codeOf; exact Finset.mem_image_of_mem _ (Finset.mem_univ _)⟩
 
-theorem ofRecord_EatD (hDel : D.s.Del = (Del : ℚ)) {j : ℕ} (hj : 1 ≤ j) :
-    (ofRecord D L Del h0).EatD (codeOf D L Del h0) (codeOf_nonempty D L Del h0) j = EatD D j := by
-  unfold NumDatum.EatD EatD
-  rw [ofRecord_FRamD D L Del h0 hj]
-  congr 2
-  rw [Finset.sup'_image]
-  refine Finset.sup'_congr _ rfl (fun u _ => ?_)
-  show (((∑ t : HH D, (ofRecord D L Del h0).ctD (letterOf D L Del h0 u) j t : ℚ)) : ℝ) = ∑ t : HH D, ctD D u j t
-  rw [Rat.cast_sum]
-  exact Finset.sum_congr rfl (fun t _ => ofRecord_ctD D L Del h0 hDel u j t)
 
-theorem ofRecord_EatG (hK : DV.KapDef D) (hEta : L.etaSz = (D.R.m : ℝ) * (h0 : ℝ)) (X : ErrX D) (c : ErrC) (i : Fin 2)
-    (u : D.what₂.Word) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (w : D.what₂.places.Pl) (bar : Bool)
-    (hv : vNN X i u j w = if bar then (((ofRecord D L Del h0).Dpi (letterOf D L Del h0 u) j : ℚ) : ℝ) else 0) :
-    (ofRecord D L Del h0).EatG c.g (letterOf D L Del h0 u) j bar = EatG L X c i u j w := by
-  have hE : (ofRecord D L Del h0).eta = L.etaSz := hEta.symm
-  unfold NumDatum.EatG EatG
-  rw [ofRecord_FTypeG D L Del h0 hK h1 h2, hv, hE]
-  rfl
 
 open Classical in
 include hh in
@@ -995,26 +802,10 @@ theorem ofRecord_EatI (hDel : D.s.Del = (Del : ℚ)) (hEta : L.etaSz = (D.R.m : 
   rw [hX, kA, kB, kT, s1, s2, ofRecord_ordP D L Del h0 hh, hS, hE]
   rfl
 
-theorem errG_compare (N : NumDatum) (y : ℝ) (hy : 0 ≤ y) :
-    (N.Nm : ℝ) ^ 2 + y ≤ (N.Nm : ℝ) * ((N.Nm : ℝ) + N.R.t) + y ∧
-      (N.Nm : ℝ) * ((N.Nm : ℝ) + N.R.t) + y ≤ 2 * ((N.Nm : ℝ) ^ 2 + y) := by
-  have hNt : N.R.t ≤ N.Nm := by
-    unfold NumDatum.Nm Formalism.BasicNotions.Ranks.N
-    calc N.R.t ≤ 2 * (N.R.t + 1) := by omega
-      _ ≤ N.R.m * (N.R.t + 1) := Nat.mul_le_mul_right _ N.R.two_le_m
-      _ ≤ N.R.k + N.R.m * (N.R.t + 1) := Nat.le_add_left _ _
-  have hNt' : (N.R.t : ℝ) ≤ N.Nm := by exact_mod_cast hNt
-  have h0 : (0 : ℝ) ≤ N.Nm := Nat.cast_nonneg _
-  have ht : (0 : ℝ) ≤ N.R.t := Nat.cast_nonneg _
-  constructor
-  · nlinarith
-  · nlinarith [mul_le_mul_of_nonneg_left hNt' h0]
 
 theorem ofRecord_aPlus (j : ℕ) (z : Bool × HH D) (i : ℕ) :
     (ofRecord D L Del h0).aPlus j z i = DV.aPlusQ D j (tauPl D z) i := rfl
 
-theorem ofRecord_aMinus (j : ℕ) (z : Bool × HH D) (c : ℕ) :
-    (ofRecord D L Del h0).aMinus j z c = DV.aMinusQ D j (tauPl D z) c := rfl
 
 end Record
 
@@ -1030,13 +821,6 @@ def hostEx : Formalism.HC.HostAx Examples₂.R0.toFrame :=
     layerEx.choose_spec.choose_spec.choose _ _ _
     layerEx.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec
 
-theorem hostEx_q : hostEx.q = 11 := rfl
-theorem hostEx_d : hostEx.d = 7 := rfl
-theorem hostEx_QS : hostEx.QS = 16 := rfl
-theorem hostEx_psQ : hostEx.toHostRaw.PsQ :=
-  @Formalism.HC.D7.psQ Examples₂.R0.toFrame Examples₂.exampleRanks_h_injective 11 7 hostHypEx le_rfl layerEx.choose layerEx.choose_spec.choose
-    layerEx.choose_spec.choose_spec.choose _ _ _
-    layerEx.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec
 
 def numEx : NumDatum where
   R := Examples₂.R0
@@ -1057,96 +841,20 @@ def numEx : NumDatum where
   hc := fun _ => Examples₂.hc0
 
 theorem ex_e : numEx.R.e = 2 := rfl
-theorem ex_k : numEx.R.k = 8 := rfl
-theorem ex_m : numEx.R.m = 2 := rfl
 theorem numEx_t_eq_fifteen : numEx.R.t = 15 := rfl
-theorem ex_nV : numEx.R.nV = 24 := rfl
-theorem example_rank_first : numEx.R.N (1 - 1) = 8 := rfl
-theorem example_rank_second : numEx.R.N 1 = 24 := rfl
-theorem ex_Del : numEx.Del = 1 := rfl
 
-theorem example_exponent_first (z : RPl numEx.R) : numEx.eQ 1 z = 100 := by
-  rfl
 
-theorem example_weight_first (z : RPl numEx.R) : numEx.w 1 z = 100 := by
-  unfold NumDatum.w
-  rw [example_exponent_first]
-  norm_num
 
-theorem ex_aPlus_first (z : RPl numEx.R) : numEx.aPlus 1 z 0 = 109 := by
-  have hs : numEx.sigPar z 0 = 24 := rfl
-  unfold NumDatum.aPlus
-  rw [hs, example_exponent_first, ex_nV, ex_k, ex_m]
-  norm_num
 
-theorem ex_aPlus_last (z : RPl numEx.R) : numEx.aPlus 1 z 7 = 1 := by
-  have hs : numEx.sigPar z 7 = -91 := rfl
-  unfold NumDatum.aPlus
-  rw [hs, example_exponent_first, ex_nV, ex_k, ex_m]
-  norm_num
 
-theorem ex_aMinus (z : RPl numEx.R) : numEx.aMinus 1 z 0 = 1 := by
-  unfold NumDatum.aMinus
-  rw [dif_pos (show 1 + 0 < numEx.R.m by decide)]
-  change (109 : ℚ) - numEx.eQ 1 z - ((numEx.R.t : ℚ) + 1 + 2 * ((0 : ℕ) : ℚ)) / 2 = 1
-  rw [example_exponent_first, numEx_t_eq_fifteen]
-  norm_num
 
-theorem ex_nu_first (δ : Code numEx) (z : RPl numEx.R) : numEx.nu δ 1 z 0 = 141 := by
-  have h : (0 : ℕ) < numEx.R.k := by show 0 < 8; norm_num
-  have h' : ¬ (1 ≤ (⟨0, h⟩ : Fin numEx.R.k).1 ∧ (⟨0, h⟩ : Fin numEx.R.k).1 + 1 < numEx.R.k) := by
-    rintro ⟨a, -⟩; exact absurd a (by norm_num)
-  unfold NumDatum.nu NumDatum.srcPar NumDatum.uW
-  rw [dif_pos h, dif_neg h', example_exponent_first]
-  have e1 : (numEx.hc z).u ⟨0, h⟩ = 113 / 2 := rfl
-  rw [e1, example_rank_first, example_rank_second]
-  norm_num
 
-theorem ex_nu_second (δ : Code numEx) (z : RPl numEx.R) :
-    numEx.nu δ 1 z 1 = if δ ⟨0, by show 0 < 8 - 2; norm_num⟩ then 108 else 109 := by
-  have h : (1 : ℕ) < numEx.R.k := by show 1 < 8; norm_num
-  have h' : 1 ≤ (⟨1, h⟩ : Fin numEx.R.k).1 ∧ (⟨1, h⟩ : Fin numEx.R.k).1 + 1 < numEx.R.k :=
-    ⟨le_rfl, by show 1 + 1 < 8; norm_num⟩
-  unfold NumDatum.nu NumDatum.srcPar NumDatum.uW
-  rw [dif_pos h, dif_pos h', example_exponent_first]
-  have e1 : (numEx.hc z).v ⟨(⟨1, h⟩ : Fin numEx.R.k).1 - 1, by show 1 - 1 < 8 - 1; norm_num⟩ = 24 := rfl
-  rw [e1, example_rank_first, example_rank_second, ex_Del]
-  by_cases hδ : δ ⟨0, by show 0 < 8 - 2; norm_num⟩ = true
-  · rw [if_pos hδ, if_pos (show δ ⟨(⟨1, h⟩ : Fin numEx.R.k).1 - 1, _⟩ = true from hδ)]
-    norm_num
-  · rw [if_neg hδ, if_neg (show ¬ δ ⟨(⟨1, h⟩ : Fin numEx.R.k).1 - 1, _⟩ = true from hδ)]
-    norm_num
 
-theorem ex_FRamD : numEx.FRamD 1 = -1400 := by
-  unfold NumDatum.FRamD
-  simp only [example_weight_first, min_self, Finset.sum_const, Finset.card_univ]
-  rw [Formalism.HC.Frame.card_A, show numEx.R.ord = 4 from rfl, ex_k]
-  norm_num
 
-theorem ex_FjP_d : numEx.FjP 1 7 = -1400 := by
-  rw [numEx.FjP_d 1 (p := 7) (by show ¬ (7 = 3697 ∨ 7 = 7393); norm_num) (primeClass_d hostEx.toHostRaw), ex_FRamD]
 
-theorem ex_FjP_2 : numEx.FjP 1 2 = 0 :=
-  numEx.FjP_split 1 (p := 2) (by show ¬ (2 = 3697 ∨ 2 = 7393); norm_num) (Or.inr (Or.inl (primeClass_two hostEx.toHostRaw)))
 
-theorem ex_FjP_q : numEx.FjP 1 11 = 0 :=
-  numEx.FjP_split 1 (p := 11) (by show ¬ (11 = 3697 ∨ 11 = 7393); norm_num) (Or.inr (Or.inr (primeClass_q hostEx.toHostRaw)))
 
-theorem ex_aT : numEx.aT 0 = 53 := by
-  unfold NumDatum.aT
-  have e1 : (numEx.hc (false, 0)).u ⟨0, by show 0 < 8; norm_num⟩ = 113 / 2 := rfl
-  rw [e1, ex_k]
-  norm_num
 
-theorem example_prime_three_signal : numEx.cls 3 = PrimeClass.signal := by
-  have h1 : jacobiSym (-((7 : ℕ) : ℤ)) 3 = -1 := by norm_num
-  have h2 : jacobiSym (-((11 : ℕ) : ℤ)) 3 = 1 := by norm_num
-  have hN : ¬ 3 ∣ hostEx.condN := by
-    show ¬ 3 ∣ 16 * 11 * 7
-    norm_num
-  refine (primeClass_eq_signal_iff' (H := hostEx.toHostRaw) Nat.prime_three).2 ⟨hN, h1, ?_⟩
-  rw [hostEx_psQ.psAt_prime Nat.prime_three hN]
-  exact h2
 
 end Formalism.L2.DIV
 

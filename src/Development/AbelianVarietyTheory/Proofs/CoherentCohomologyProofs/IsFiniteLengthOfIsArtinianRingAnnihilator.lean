@@ -565,8 +565,6 @@ theorem hdim_twist_of_suppDim_le_zero {M : LB X} (hM : M.IsLB) (n : ℕ) :
     hdim k (twist F M) n = hdim k F n :=
   (nonempty_twist_iso_of_suppDim_le_zero h hM).elim (hdim_congr k n)
 
-theorem chi_twist_of_suppDim_le_zero {M : LB X} (hM : M.IsLB) : chi k (twist F M) = chi k F :=
-  (nonempty_twist_iso_of_suppDim_le_zero h hM).elim (chi_congr k)
 
 theorem chi_eq_hdim_zero_of_suppDim_le_zero : chi k F = hdim k F 0 :=
   chi_eq_hdim_zero k fun _ hn => subsingleton_coh_of_suppDim_le_zero h hn

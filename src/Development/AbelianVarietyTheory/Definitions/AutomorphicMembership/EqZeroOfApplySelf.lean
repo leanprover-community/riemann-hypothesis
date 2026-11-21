@@ -7,22 +7,6 @@ open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroi
 
 namespace GlobalTheory.LocM.TorCheck
 
-theorem ordGe_pow_iff {R : Type} [CommRing R] [IsDomain R] {u : R} (h0 : u ≠ 0) (hu : ¬ IsUnit u) (e a b n : ℕ) (i : ℚ) :
-    OrdGe (u ^ e) i n (Ideal.span {u ^ a}) (Ideal.span {u ^ b}) ↔ i * ((a : ℚ) - b) ≤ e * n := by
-  rw [ordGe_span_iff]
-  simp only [← pow_mul, ← pow_add]
-  rw [pow_dvd_pow_iff h0 hu]
-  have hd : (0 : ℚ) < i.den := by exact_mod_cast i.den_pos
-  have hi : i * i.den = i.num := Rat.mul_den_eq_num i
-  have hn : ((i.num.toNat : ℤ) : ℚ) - (((-i.num).toNat : ℤ) : ℚ) = i.num := by
-    exact_mod_cast Int.toNat_sub_toNat_neg i.num
-  simp only [Int.cast_natCast] at hn
-  rw [← Nat.cast_le (α := ℚ), ← mul_le_mul_iff_of_pos_right (b := i * ((a : ℚ) - b)) hd]
-  push_cast
-  have : i * ((a : ℚ) - b) * i.den = ((i.num.toNat : ℚ) - ((-i.num).toNat : ℚ)) * ((a : ℚ) - b) := by
-    rw [hn, ← hi]; ring
-  rw [this]
-  constructor <;> intro h <;> linarith
 
 variable {O : Type} [CommRing O] {X : Type} [AddCommGroup X] [Module O X] [Module.Finite O X]
 
@@ -76,40 +60,5 @@ theorem eq_zero_of_apply_self {β : LinearMap.BilinForm ℤ (𝓞 E)} (hβ : β 
   rw [e, map_smul, LinearMap.smul_apply, smul_eq_mul] at h2
   exact (mul_eq_zero.1 h2).resolve_left hN
 
-theorem exists_isPiece (M : ℕ) (hM : M ≠ 0) :
-    0 < (InvFun.minVal (𝓞 E)).evalZ ((M : ℤ) • HostModel.trForm H) ∧
-    (InvFun.minVal (𝓞 E)).LinearOn ![(M : ℤ) • HostModel.trForm H] ∧
-    ∃ ℓ, IsPiece H (InvFun.minVal (𝓞 E)) 1 ![(M : ℤ) • HostModel.trForm H] ℓ := by
-  set γ := (M : ℤ) • HostModel.trForm H with hγ
-  have pos : ∀ y : 𝓞 E, y ≠ 0 → 0 < γ y y := fun y hy =>
-    mul_pos (by exact_mod_cast Nat.pos_of_ne_zero hM) (HostModel.trForm_pos H hy)
-  obtain ⟨y₀, hy₀, hmin⟩ : ∃ y₀ : 𝓞 E, y₀ ≠ 0 ∧ ∀ y, y ≠ 0 → γ y₀ y₀ ≤ γ y y := by
-    obtain ⟨y₀, h0, h⟩ := (measure fun y : 𝓞 E => (γ y y).toNat).wf.has_min {y | y ≠ 0} ⟨1, one_ne_zero⟩
-    refine ⟨y₀, h0, fun y hy => ?_⟩
-    have h1 : ¬ (γ y y).toNat < (γ y₀ y₀).toNat := h y hy
-    have := pos y hy
-    have := pos y₀ h0
-    omega
-  have hv : (InvFun.minVal (𝓞 E)).evalZ γ = γ y₀ y₀ := by
-    rw [InvFun.evalZ, minVal_eval]
-    refine IsLeast.csInf_eq ⟨⟨⟨y₀, rfl⟩, ?_⟩, ?_⟩
-    · simpa using (pos y₀ hy₀).ne'
-    · rintro _ ⟨⟨y, rfl⟩, h⟩
-      exact_mod_cast hmin y fun e => h (by rw [e])
-  refine ⟨hv ▸ by exact_mod_cast pos y₀ hy₀, minVal_linearOn γ,
-    (LinearMap.applyₗ y₀) ∘ₗ (LinearMap.applyₗ y₀), fun i => ?_, fun β hβ hp => ?_⟩
-  · fin_cases i
-    simp [hv]
-  · simp only [Nat.cast_one, one_mul, LinearMap.comp_apply, LinearMap.applyₗ_apply_apply, InvFun.evalZ, minVal_eval]
-    by_cases h : β y₀ y₀ = 0
-    · rw [h]
-      refine le_of_eq ?_
-      rw [Int.cast_zero]
-      convert Real.sInf_empty
-      exact Set.eq_empty_of_forall_notMem fun x ⟨⟨y, e⟩, h'⟩ => h' (by
-        rw [← e, eq_zero_of_apply_self H hβ hp hy₀ h y]; simp)
-    · refine csInf_le ⟨0, ?_⟩ ⟨⟨y₀, rfl⟩, by simpa using h⟩
-      rintro _ ⟨⟨y, rfl⟩, -⟩
-      exact_mod_cast hp y
 
 end GlobalTheory.LocM.TorCheck

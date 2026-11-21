@@ -185,11 +185,6 @@ theorem mem_principal {a : Repartition k K} : a ∈ principal k K ↔ ∃ x : K,
 theorem diag_mem_principal (x : K) : diag x ∈ principal k K :=
   ⟨x, rfl⟩
 
-theorem mul_mem_principal (x : K) {a : Repartition k K} (ha : a ∈ principal k K) :
-    mul x a ∈ principal k K := by
-  obtain ⟨y, rfl⟩ := ha
-  rw [mul_diag]
-  exact diag_mem_principal _
 
 end Repartition
 

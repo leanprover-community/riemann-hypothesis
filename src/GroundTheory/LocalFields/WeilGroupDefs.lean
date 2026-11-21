@@ -163,14 +163,7 @@ theorem degree_eq_iff (σ : WeilGroup K Ω) (n : ℤ) :
   exact ⟨fun h ↦ by rw [h, toAdd_ofAdd], fun h ↦
     Multiplicative.toAdd.injective (injective_zpow_maximalUnramifiedExtensionFrobenius K Ω h)⟩
 
-theorem unramifiedDegree_toGal (σ : WeilGroup K Ω) :
-    unramifiedDegree K Ω (toGal K Ω σ) = Multiplicative.ofAdd (((degree K Ω σ).toAdd : ℤ) : ℤ̂) :=
-  (restrictNormal_eq_frobenius_zpow_iff _ _).1 (restrictNormal_toGal σ)
 
-theorem degree_eq_iff_unramifiedDegree (σ : WeilGroup K Ω) (n : ℤ) :
-    degree K Ω σ = Multiplicative.ofAdd n ↔
-      unramifiedDegree K Ω (toGal K Ω σ) = Multiplicative.ofAdd (n : ℤ̂) := by
-  rw [degree_eq_iff, restrictNormal_eq_frobenius_zpow_iff]
 
 theorem degree_surjective : Function.Surjective (degree K Ω) := by
   intro n
@@ -237,8 +230,6 @@ theorem continuous_iff {X : Type*} [TopologicalSpace X] {f : X → WeilGroup K �
 theorem isOpen_inertia : IsOpen (inertia K Ω : Set (WeilGroup K Ω)) :=
   (isOpen_discrete ({1} : Set (Multiplicative ℤ))).preimage continuous_degree
 
-theorem isClosed_inertia : IsClosed (inertia K Ω : Set (WeilGroup K Ω)) :=
-  OpenSubgroup.isClosed ⟨inertia K Ω, isOpen_inertia⟩
 
 variable (K Ω) in
 
@@ -278,17 +269,8 @@ instance : LocallyCompactSpace (WeilGroup K Ω) :=
   isCompact_inertia.locallyCompactSpace_of_mem_nhds_of_group
     (isOpen_inertia.mem_nhds (Subgroup.one_mem _))
 
-theorem denseRange_toGal : DenseRange (toGal K Ω) := by
-  have h := dense_weilSubgroup K Ω
-  rw [← range_toGal, MonoidHom.coe_range] at h
-  exact h
 
-theorem isOpen_preimage_toGal {U : Set (Ω ≃ₐ[K] Ω)} (hU : IsOpen U) :
-    IsOpen (toGal K Ω ⁻¹' U) :=
-  hU.preimage continuous_toGal
 
-theorem exists_degree_eq_one : ∃ φ : WeilGroup K Ω, degree K Ω φ = Multiplicative.ofAdd 1 :=
-  degree_surjective _
 
 end WeilGroup
 

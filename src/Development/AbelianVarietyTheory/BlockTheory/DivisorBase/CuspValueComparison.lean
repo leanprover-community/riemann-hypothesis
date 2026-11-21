@@ -45,10 +45,6 @@ def IsTameLabel (ω : Fbar g →*₀ ℂ) (η : (ZMod g)ˣ → ℂ) (c : (ZMod g
   ∀ z : (ZMod g)ˣ, η z =
     labelChar ω 1 (algebraMap (ZMod g) (Fbar g) (c : ZMod g)) (algebraMap (ZMod g) (Fbar g) (z : ZMod g))
 
-theorem labelChar_one_right (ω : Fbar g →*₀ ℂ) (d : ℕ) (x : Fbar g) : labelChar ω d x 1 = 1 := by
-  have : sInf {a : ℕ | ω 1 = rootC (g ^ d - 1) ^ a} = 0 := by
-    rw [Nat.sInf_eq_zero]; left; simp
-  rw [labelChar, this, pow_zero]
 
 example (ω : Fbar g →*₀ ℂ) : IsTameLabel ω (fun _ => 1) 1 := by
   intro z; simp [labelChar]

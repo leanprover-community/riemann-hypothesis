@@ -116,9 +116,6 @@ def orderAtGenericPoint {X : Scheme.{u}} (I : X.IdealSheafData) {C : Set X}
     (hC : IsIrreducible C) : ℕ∞ :=
   orderAt I hC.genericPoint
 
-theorem orderAtGenericPoint_eq_orderAt {X : Scheme.{u}} (I : X.IdealSheafData) {C : Set X}
-    (hC : IsIrreducible C) :
-    orderAtGenericPoint I hC = orderAt I hC.genericPoint := rfl
 
 theorem isClosed_of_maximal_irreducible_subset_support {X : Scheme.{u}} (D : X.IdealSheafData)
     {C : Set X} (hC : IsIrreducible C) (hCsub : C ⊆ (D.support : Set X))

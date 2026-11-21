@@ -9,27 +9,8 @@ open AlgebraicGeometry CategoryTheory NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles
 
-theorem isCp_two : IsCp 2 (4 : ℚ) := by
-  unfold GlobalTheory.CompanionTheory.Ar.HT.IsCp
-  simp
 
-theorem isCp_exists (p : ℕ) (hp : p ≠ 0) : ∃ κ : ℂ, IsCp p κ := by
-  by_cases h2 : p = 2
-  · refine ⟨4, ?_⟩
-    unfold GlobalTheory.CompanionTheory.Ar.HT.IsCp
-    simp [h2]
-  · refine ⟨Complex.exp (2 * Real.pi * Complex.I / p) - 1, ?_⟩
-    unfold GlobalTheory.CompanionTheory.Ar.HT.IsCp
-    rw [if_neg h2]
-    exact ⟨_, Complex.isPrimitiveRoot_exp p hp, rfl⟩
 
-theorem isCp_ne_zero {Ω : Type} [Field Ω] [CharZero Ω] {p : ℕ} (hp : p.Prime) {κ : Ω} (h : IsCp p κ) : κ ≠ 0 := by
-  unfold GlobalTheory.CompanionTheory.Ar.HT.IsCp at h
-  split_ifs at h with h2
-  · rw [h]
-    norm_num
-  · obtain ⟨ζ, hζ, rfl⟩ := h
-    exact sub_ne_zero.mpr (hζ.ne_one hp.one_lt)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F} {Y : Model Xo c β} {S : Finset ℕ}
@@ -76,17 +57,6 @@ theorem dR_le (p : ℕ) (s : CMType H ⊕ CMType H) (q : Cpt 𝔐.ξ) :
   refine ⟨he.2, fun w hw => ?_⟩
   exact omP_le 𝔐 p q hw e he.1
 
-theorem sandwich_iff (p : ℕ) (κ : Ω) : Sandwich 𝔐 p κ ↔ ∀ q, InFibre 𝔐.ξ p q → κ ∈ regAt 𝔐.ξ q ∧
-    (∀ w ∈ 𝔐.M.omLat q, κ • w ∈ omP 𝔐 p q) ∧
-    ∀ s, ∀ e ∈ 𝔐.M.htDual 𝔐.t.PP.L (p ^ 𝔐.R p) 𝔐.ρ (𝔐.emb s) q, κ • e ∈ 𝔐.dR s q := by
-  unfold GlobalTheory.CompanionTheory.Ar.HT.Sandwich
-  constructor
-  · intro h q hq
-    obtain ⟨h1, -, h3, h4⟩ := h q hq
-    exact ⟨h1, h3, fun s => (h4 s).2⟩
-  · intro h q hq
-    obtain ⟨h1, h3, h4⟩ := h q hq
-    exact ⟨h1, omP_le 𝔐 p q, h3, fun s => ⟨dR_le 𝔐 p s q, h4 s⟩⟩
 
 variable {𝔐} {p : ℕ} {o : Type} [CommRing o] [Algebra o Ω]
   {Dc Dc' : ∀ s : {s : ∀ k, J k // mseg y s ≠ 0},

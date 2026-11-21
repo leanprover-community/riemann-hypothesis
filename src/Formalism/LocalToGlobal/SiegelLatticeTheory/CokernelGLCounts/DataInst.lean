@@ -98,19 +98,6 @@ private theorem isPtL_of_ptOfList_ne_none {i : ℕ} {z : TB.Pt D.host.E} (hz : p
   · exact (isPtL_signPt _ _ _).mp hh
   · exact absurd rfl hz
 
-theorem KrOf_of_not (δ : ∀ p : PlF D, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
-    (T T' : ℕ) {i : ℕ} (hi : i ≠ 0) {x y : TB.Pt D.host.E}
-    (h : ¬ (Formalism.L2.S.IsPtL x i ∧ Formalism.L2.S.IsPtL y i)) : KrOf δ M T T' i x y = 0 := by
-  simp only [KrOf, if_neg hi]
-  split_ifs
-  · rfl
-  · cases hx : ptOfList i x with
-    | none => rfl
-    | some a =>
-      cases hy : ptOfList i y with
-      | none => rfl
-      | some b =>
-        exact absurd ⟨isPtL_of_ptOfList_ne_none (by simp [hx]), isPtL_of_ptOfList_ne_none (by simp [hy])⟩ h
 
 def ThOf : ℕ → ℕ → D.host.E → TB.Pt D.host.E → TB.Pt D.host.E → ℂ := fun _ _ _ _ _ => 0
 

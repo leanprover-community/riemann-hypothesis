@@ -273,14 +273,7 @@ def Hyp.pull (n : ℕ) : Hyp F n →ₛₗ[σ] Hyp F' n :=
 def HypF.pull (p n : ℕ) : HypF F p n →ₛₗ[σ] HypF F' p n :=
   Submodule.mapQ _ _ (pullZF m p n) fun _ hc ↦ pullTot_mem_BF m hc
 
-theorem HypF.toHyp_pull {p n : ℕ} (c : HypF F p n) :
-    HypF.toHyp F' p n (HypF.pull m p n c) = Hyp.pull m n (HypF.toHyp F p n c) := by
-  obtain ⟨c, rfl⟩ := HypF.mk_surjective F p n c; rfl
 
-theorem Hyp.pull_mem_fil {p n : ℕ} {x : Hyp F n} (hx : x ∈ Hyp.fil F p n) :
-    Hyp.pull m n x ∈ Hyp.fil F' p n := by
-  obtain ⟨c, rfl⟩ := hx
-  exact ⟨_, HypF.toHyp_pull m c⟩
 
 theorem pullTot_id {n : ℕ} (c : Tot F n) : pullTot (CoefMap.id F) n c = c :=
   funext fun b ↦ funext fun s ↦ SemiHom.mOm_id _ (fun _ ↦ rfl) (c b s)

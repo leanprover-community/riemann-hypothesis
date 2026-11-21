@@ -25,7 +25,6 @@ variable {l : ℕ} [Fact l.Prime]
 
 theorem tensorInj (h : FontaineBcris) (C : Core l) : C.TensorInj := (h l C).1
 
-theorem phiInj (h : FontaineBcris) (C : Core l) : C.PhiInj := (h l C).2.1
 
 theorem iotaInj (h : FontaineBcris) (C : Core l) : C.IotaInj := (h l C).2.2.1
 

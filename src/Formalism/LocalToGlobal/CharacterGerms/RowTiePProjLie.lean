@@ -175,29 +175,6 @@ theorem proj_core (Y : FBChart C V O dd) (ε : O) (hε : ∃ y, ε * ε - ε = (
     rw [eq] at L
     exact L.unique R
 
-theorem projLie_of (hK : KeySt) (hS : SplitSt) : ProjLieSt := by
-  intro C _ _ V O _ _ dd Y d _ I _ p g ε hε hε1 hεx e he v
-  obtain ⟨e0, hidem, hcomm⟩ := proj_core Y ε hε e he
-  have hinj : Function.Injective (fun c : ZMod d => p.em g c) := by
-    intro c c' h
-    by_contra hne
-    obtain ⟨x, hx⟩ := p.em_sep (g, c) (g, c') (by simp [hne])
-    have h2 : p.em g c = p.em g c' := h
-    rw [h2, sub_self, AddValuation.map_zero] at hx
-    simp at hx
-  have hPP : linM e * linM e = linM e := by rw [← lin_comp1 e0, hidem]
-  have hPM : ∀ x, linM e * linHom Y x = linHom Y x * linM e := fun x => by
-    show linM e * linM (Y.B.A.act x) = linM (Y.B.A.act x) * linM e
-    rw [← lin_comp1 (Y.B.A.const x), ← lin_comp1 e0, hcomm x]
-  obtain ⟨w, hw, hwe⟩ := hS C O dd (ZMod d) (linHom Y) (linM e) (fun c => p.em g c) hPP hPM hinj
-    (fun x => hK C V O dd Y d I p g ε hε hε1 hεx e he x) v
-  have hb : ∀ c, ∃ b : I g → C, (∀ c', p.ty g c' ≠ c → b c' = 0) ∧ w c = ∑ c', b c' • p.u g c' := fun c =>
-    p.u_full g c (w c) fun x => by rw [linAct_eq]; exact hwe c x
-  choose b _ hbw using hb
-  refine ⟨fun c' => ∑ c, b c c', ?_⟩
-  rw [linAct_eq, hw]
-  simp_rw [hbw, Finset.sum_smul]
-  exact Finset.sum_comm
 
 end Glue
 

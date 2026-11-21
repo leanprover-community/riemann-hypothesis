@@ -109,8 +109,6 @@ def ModelsAt (p : ℕ) (Xo : Moduli D l) (c : Coeff l) : Prop :=
 def towerOf {p : ℕ} {Xo : Moduli D l} {c : Coeff l} (h : ModelsAt p Xo c) : AtLevel p D :=
   (Classical.choice h).1
 
-theorem towerOf_at {p : ℕ} {Xo : Moduli D l} {c : Coeff l} (h : ModelsAt p Xo c) : TowerAt (towerOf h).T :=
-  (Classical.choice h).2.2.2.1
 
 end Tower
 
@@ -128,6 +126,5 @@ def fld {p : ℕ} {T : Tower p Xo c} : ∀ {Z : MdlC}, Pt T Z → Formalism.Main
 
 def toXm {p : ℕ} {T : Tower p Xo c} (y : Pt T .yy) : Pt T .xm := ⟨y.1, y.2.1, y.2.2.1⟩
 
-theorem fld_toXm {p : ℕ} {T : Tower p Xo c} (y : Pt T .yy) : fld (toXm y) = fld y := rfl
 
 end Formalism.L2.Pj.PointsOfFlagModel

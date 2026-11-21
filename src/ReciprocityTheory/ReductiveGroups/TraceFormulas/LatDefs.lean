@@ -455,12 +455,6 @@ theorem GlobAlg.isOpen_range_OL {l : ℕ} [Fact l.Prime] (LL : Formalism.BasicNo
 
 end Wrap
 
-theorem quotShape_congr {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {X : Type} [AddCommGroup X] [Module O X]
-    (Hc F F' : Submodule O X) (d : ℕ) (h : ∀ x ∈ Hc, x ∈ F ↔ x ∈ F') (hs : QuotShape Hc F d) : QuotShape Hc F' d := by
-  have e : F.comap Hc.subtype = F'.comap Hc.subtype := Submodule.ext fun x => h x.1 x.2
-  unfold QuotShape at hs ⊢
-  rw [← e]
-  exact hs
 
 theorem tate_compat_iso {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [TopologicalSpace O] [TopologicalSpace (FractionRing O)]

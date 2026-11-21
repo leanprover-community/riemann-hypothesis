@@ -87,20 +87,6 @@ theorem gauss_full {R : Type} [CommRing R] {σ : R →+* R} {ϖ : R} {q : ℕ} {
   simp only [hx]
   rw [Finset.prod_pow_eq_pow_sum]
 
-theorem seriesEqDens : SeriesEqDens := by
-  intro R _ σ ϖ q ε hR ψ hψ m n _ S T hS hT α hα
-  have hfin : ∀ k, Finite (R ⧸ lev ϖ k) := fun k => Nat.finite_of_card_ne_zero (by
-    rw [GlobalTheory.T.unramified_quotient_card R σ ϖ q ε hR k]
-    have := hR.one_lt
-    exact pow_ne_zero _ (by omega))
-  letI : ∀ k, Fintype (R ⧸ lev ϖ k) := fun k => Fintype.ofFinite _
-  have hε : (ε : ℂ) ^ 2 = 1 := by
-    rcases hR.eps with ⟨rfl, -⟩ | ⟨rfl, -⟩ <;> simp
-  have : siegAt ϖ σ ψ q ε m T = fun k => ((densAt σ ϖ S T k : ℝ) : ℂ) := funext fun k =>
-    GlobalTheory.T.hermitian_rep_count_fourier_expansion R σ ϖ q ε hR ψ hψ m n k S T hS.1 hT.1 (GlobalTheory.T.hermitian_character_orthogonality R σ ϖ q ε hR ψ hψ n k)
-      (fun B hB => gauss_full hR hψ hε k S hS B hB)
-  rw [this]
-  exact (Complex.continuous_ofReal.tendsto α).comp hα
 
 end GlobalTheory.CompanionTheory.SiegLoc
 end

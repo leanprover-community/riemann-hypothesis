@@ -39,9 +39,6 @@ theorem isOpen_degreeLevel (m : ℕ+) : IsOpen (degreeLevel m : Set Gal(ℚ̄/�
 def layerGroup (L : FiniteSubfield) (m : ℕ+) : OpenSubgroup Gal(ℚ̄/ℚ) :=
   ⟨L.1.fixingSubgroup ⊓ degreeLevel m, L.1.fixingSubgroup_isOpen.inter (isOpen_degreeLevel m)⟩
 
-theorem mem_layerGroup {L : FiniteSubfield} {m : ℕ+} {τ : Gal(ℚ̄/ℚ)} :
-    τ ∈ (layerGroup L m : Subgroup Gal(ℚ̄/ℚ)) ↔ τ ∈ L.1.fixingSubgroup ∧ τ ∈ degreeLevel m :=
-  Iff.rfl
 
 def layerField (L : FiniteSubfield) (m : ℕ+) : FiniteSubfield :=
   ofOpenSubgroup (layerGroup L m)
@@ -74,12 +71,6 @@ theorem le_powerSubgroup (U : Subgroup Gal(ℚ̄/ℚ)) (s : Gal(ℚ̄/ℚ))
   | exact GroundTheory.Variant₂.N1.le_powerSubgroup₂ ..
   | (intros; apply GroundTheory.Variant₂.N1.le_powerSubgroup₂ <;> assumption)
 
-theorem mem_powerSubgroup_self (U : Subgroup Gal(ℚ̄/ℚ)) (s : Gal(ℚ̄/ℚ))
-    (hU : ∀ (k : ℤ), ∀ x ∈ U, s ^ k * x * (s ^ k)⁻¹ ∈ U) : s ∈ powerSubgroup U s hU := by
-  first
-  | exact @GroundTheory.Variant₂.N1.mem_mulZPowers_self U s hU
-  | exact GroundTheory.Variant₂.N1.mem_mulZPowers_self ..
-  | (intros; apply GroundTheory.Variant₂.N1.mem_mulZPowers_self <;> assumption)
 
 section Fields
 
@@ -274,10 +265,6 @@ theorem abstractSymbol_mk_finiteEmbedding (v : HeightOneSpectrum (𝓞 K.1))
     exact abstractSymbol_ideleClassNorm_eq_one K L _
   rw [hx, map_mul, map_mul, map_mul, hy1, h2, mul_one]
 
-theorem abstractSymbol_comp_finiteEmbedding (v : HeightOneSpectrum (𝓞 K.1)) :
-    ((abstractSymbol K L).comp (IdeleClassGroup.mk K.1)).comp (finiteEmbedding v) =
-      Abelianization.of.comp (localSymbol L.1 v) :=
-  MonoidHom.ext fun x ↦ abstractSymbol_mk_finiteEmbedding K L v x
 
 end Main
 

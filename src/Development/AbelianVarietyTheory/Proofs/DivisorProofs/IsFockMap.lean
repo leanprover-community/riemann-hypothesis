@@ -234,8 +234,6 @@ def Parity : Prop :=
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
     ∀ w, Even (B.mα w - B.mβ w)
 
-theorem lines_eq {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
-    (X : Spc F E n) : Lines σ X = RLines σ (incM F X.J) := rfl
 
 example : IsFrame (P := 1) (Q := 1) (Jm 1 1) 1 := ⟨by simp [Matrix.map_one], 1, by simp⟩
 

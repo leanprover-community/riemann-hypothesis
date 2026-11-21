@@ -140,16 +140,5 @@ theorem idealSheaf_stable_iff_exists_comap (s : G → L →ₐ[K] L)
   · rintro ⟨J, rfl, -⟩ g
     rw [← Scheme.IdealSheafData.comap_comp, twist_fst]
 
-theorem existsUnique_comap_eq_vanishingIdeal (s : G → L →ₐ[K] L)
-    (hs : ∀ x, (∀ g, s g x = x) → x ∈ Set.range (algebraMap K L)) (Z : Closeds Y)
-    (hZ : ∀ g, ∀ y ∈ Z, twist H (s g) y ∈ Z) :
-    ∃! J : X.IdealSheafData, J.comap π = Scheme.IdealSheafData.vanishingIdeal Z := by
-  refine (idealSheaf_stable_iff_exists_comap H s hs _).1 fun g => ?_
-  rw [← Scheme.IdealSheafData.le_support_iff_le_vanishingIdeal,
-    Scheme.IdealSheafData.support_comap]
-  intro y hy
-  change twist H (s g) y ∈ ((Scheme.IdealSheafData.vanishingIdeal Z).support : Set Y)
-  rw [Scheme.IdealSheafData.coe_support_vanishingIdeal]
-  exact hZ g y hy
 
 end GlobalTheory.GaloisDescent

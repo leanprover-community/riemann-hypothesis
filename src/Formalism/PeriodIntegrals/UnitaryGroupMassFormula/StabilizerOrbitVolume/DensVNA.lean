@@ -169,7 +169,5 @@ theorem densVLC_of_lat (hT : TensAll) (hC : DensVLat) : DensVLC := by
 theorem densV_of_lat (hT : TensAll) (hC : DensVLat) : DensV :=
   densV_of hT tensNA_holds (densVLC_of_lat hT hC)
 
-theorem densV_of_core (hT : TensAll) (hC : DensVCs) : DensV :=
-  densV_of_cos hT tensNA_holds hC
 
 end PI.VolStabSW

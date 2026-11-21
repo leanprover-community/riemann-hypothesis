@@ -40,12 +40,7 @@ theorem galEps_of_art (hA : ArtExists) (hT : TameRec) : GalEps := by
   rw [e, e]
   exact pow_prod_eq R _ _ hR
 
-theorem artExists_of_LL (hLL : GlobalTheory.Published.LocalLanglandsGL) : ArtExists := by
-  intro L Ω _ _ _ _ _ A v h
-  obtain ⟨rc, ⟨a, ha, -⟩, -⟩ := hLL.1 L Ω A v h
-  exact ⟨a, ha⟩
 
-theorem lGal : LGal := fun hLL hT => galEps_of_art (artExists_of_LL hLL) hT
 
 end DiscreteGroups.sglob.DzType
 

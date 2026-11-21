@@ -175,13 +175,6 @@ theorem lemmaDN_core {d : ℕ} {T₁ T₂ : LocLat G Qp LL O} {F : LatHom T₁.L
     push_cast
     exact mul_le_mul_of_nonneg_right hV' (Nat.cast_nonneg k)
 
-theorem lemmaDN_of_det (h0 : DetRed W) (h1 : DetCols W) :
-    LemmaDN W := by
-  intro d T₁ T₂ F b S η m hS i hi
-  obtain ⟨r, red, hred⟩ := h0 d T₁ T₂ F b S η m hS i hi
-  obtain ⟨m', hm', g, hgN, cols, hcols, V, hV, hdet⟩ := h1 d T₁ T₂ F b S η m hS i hi r red hred
-  obtain ⟨hsurj, hker⟩ := hred
-  exact lemmaDN_core W hS i red hsurj hker hm' g hgN cols hcols V hV hdet
 
 def DetColsE : Prop :=
   ∀ (d : ℕ) (T₁ T₂ : LocLat G Qp LL O) (F : LatHom T₁.L T₂.L) (b : ZMod n → ℕ) (S η m : ℕ),

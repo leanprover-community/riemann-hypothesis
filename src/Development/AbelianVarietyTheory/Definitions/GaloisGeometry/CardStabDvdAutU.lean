@@ -68,13 +68,10 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
   Nab := (colValF W sel mu u R.m).Nab
   Del := (colValF W sel mu u R.m).Del
 
-theorem frmMem_gsd : (frmMem W sel mu L u Λ Θ).gsd = frmGSD (colValF W sel mu u R.m) Λ Θ := rfl
 
 @[reducible] def cplMem : MemOn (chF W sel mu L u (m2 + 1)) :=
   MemOn.pairs (chF W sel mu L u (m2 + 1)) b (ybCpl W sel mu cst L u m2 b hY)
 
-theorem cplMem_gsd : (cplMem W sel mu cst L u m2 b hY).gsd =
-    cplGSD (midGSD W sel mu L u m2 b) (ybCpl W sel mu cst L u m2 b hY) := rfl
 
 @[reducible] def levFam : ℕ → GFam X.K :=
   spFam (chF W sel mu L u) m2 R.m (cplMem W sel mu cst L u m2 b hY) (frmMem W sel mu L u Λ Θ)
@@ -107,17 +104,8 @@ theorem levPt_smul (i : ℕ) (β : (levFam W sel mu cst L u m2 b hY Λ Θ i).β)
     (d : (levFam W sel mu cst L u m2 b hY Λ Θ i).D β) : levPt i β (g • d) = levGrp i β g • levPt i β d := by
   rcases β with _ | rfl | rfl <;> rfl
 
-theorem levFam_rho (i : ℕ) (β : (levFam W sel mu cst L u m2 b hY Λ Θ i).β) (g : (levFam W sel mu cst L u m2 b hY Λ Θ i).G β) :
-    (levFam W sel mu cst L u m2 b hY Λ Θ i).ρ β g = frmRho (colValF W sel mu u i) (levG i β) (levQ i β) (levGrp i β g) := by
-  rcases β with _ | rfl | rfl <;> rfl
 
-theorem levFam_nab (i : ℕ) (β : (levFam W sel mu cst L u m2 b hY Λ Θ i).β) (d : (levFam W sel mu cst L u m2 b hY Λ Θ i).D β) :
-    (levFam W sel mu cst L u m2 b hY Λ Θ i).Nab β d = nabAtr X.emb (W.lamTrue u i) (levPt i β d).deco.1.Lsh := by
-  rcases β with _ | rfl | rfl <;> rfl
 
-theorem levFam_del (i : ℕ) (β : (levFam W sel mu cst L u m2 b hY Λ Θ i).β) (d : (levFam W sel mu cst L u m2 b hY Λ Θ i).D β) :
-    (levFam W sel mu cst L u m2 b hY Λ Θ i).Del β d = delAtr X.emb (W.lamTrue u i) (levPt i β d).deco.1.Lsh := by
-  rcases β with _ | rfl | rfl <;> rfl
 
 theorem card_stab_dvd_autU (i : ℕ) (β : (levFam W sel mu cst L u m2 b hY Λ Θ i).β) (d : (levFam W sel mu cst L u m2 b hY Λ Θ i).D β) :
     Nat.card (MulAction.stabilizer ((levFam W sel mu cst L u m2 b hY Λ Θ i).G β) d) ∣ Nat.card (autU (levPt i β d).deco.1.N) := by

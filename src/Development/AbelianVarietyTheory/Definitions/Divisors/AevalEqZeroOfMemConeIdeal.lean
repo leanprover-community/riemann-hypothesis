@@ -80,8 +80,6 @@ theorem coneIdeal_smul {a : Ω} (ha : a ≠ 0) (y : Fin N → Ω) : coneIdeal K 
   rw [← h2, h, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X, mul_eq_zero,
     or_iff_right (pow_ne_zero _ ha)]
 
-theorem coneIdeal_eq_bot {y : Fin N → Ω} (h : AlgebraicIndependent K y) : coneIdeal K y = ⊥ :=
-  le_bot_iff.1 fun g hg => h.eq_zero_of_aeval_eq_zero g (aeval_eq_zero_of_mem_coneIdeal hg)
 
 def coordSubst {N' : ℕ} (M : Matrix (Fin N) (Fin N') K) : MvPolynomial (Fin N') K →ₐ[K] MvPolynomial (Fin N) K :=
   aeval fun k => ∑ j, C (M j k) * X j
@@ -281,9 +279,6 @@ abbrev StdField (N : ℕ) : Type := FractionRing (MvPolynomial (Fin N) ℚ)
 def pointOf (K : Type) [Field K] {Ω : Type} [Field Ω] [Algebra K Ω] {N : ℕ} (y : Fin N → Ω) : (Fin N → K) →ₗ[K] Ω :=
   (Pi.basisFun K (Fin N)).constr K y
 
-theorem imageIdeal_pointOf (K : Type) [Field K] {Ω : Type} [Field Ω] [Algebra K Ω] {N : ℕ} (y : Fin N → Ω) :
-    imageIdeal (pointOf K y) (Pi.basisFun K (Fin N)) = coneIdeal K y := by
-  simp only [imageIdeal, pointOf, Basis.constr_basis]
 
 abbrev stdPoint (N : ℕ) := pointOf ℚ fun j : Fin N => algebraMap (MvPolynomial (Fin N) ℚ) (StdField N) (X j)
 
@@ -291,10 +286,6 @@ def stdNorm (N : ℕ) (σ : ℚ →+* ℂ) (x : Fin N → ℚ) : ℝ := Real.sqr
 
 def stdLat (N : ℕ) : Submodule (𝓞 ℚ) (Fin N → ℚ) := Submodule.span (𝓞 ℚ) (Set.range (Pi.basisFun ℚ (Fin N)))
 
-theorem imageIdeal_std (N : ℕ) : imageIdeal (stdPoint N) (Pi.basisFun ℚ (Fin N)) = ⊥ := by
-  rw [imageIdeal_pointOf]
-  exact coneIdeal_eq_bot <| (MvPolynomial.algebraicIndependent_X (Fin N) ℚ).map'
-    (f := (algebraMap (MvPolynomial (Fin N) ℚ) (StdField N)).toRatAlgHom) (IsFractionRing.injective _ _)
 
 end Model
 

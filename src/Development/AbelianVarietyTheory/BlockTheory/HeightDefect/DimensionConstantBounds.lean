@@ -119,9 +119,6 @@ theorem PP_eq_PPv {D : D7} (L : SizeData₂ D) (CP : ℝ) : PP L CP = PPv D L CP
   unfold PP grade PPv
   rw [Z_eq, show (12 : ℝ) = ((12 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
 
-theorem PP_eq_of_eP_eq_twelve {D : D7} {L : SizeData₂ D} {P : ParameterChoice' D L} (T : ParamsT D L P) (h : T.eP = 12) :
-    PP L T.CP = T.PP := by
-  rw [PP_eq_PPv, ← h, PPv_rec]
 
 theorem RR_eq (D : D7) : RR D = RRv D 7 := by
   unfold RR RRv
@@ -137,22 +134,13 @@ theorem lrd_eq (D : D7) : lrd D = logdE D / (2 * (D.R.f : ℝ)) := by
 theorem q_pos (D : D7) : 0 < q D :=
   lt_min (D.host.g_prime 0).pos (D.host.g_prime 1).pos
 
-theorem dimFlag_pos (D : D7) : 0 < dimFlag D := by
-  have h1 := D.R.two_le_m
-  have h2 := D.R.m_add_three_le_k
-  have hr : 2 ≤ D.R.r := by unfold Ranks.r; omega
-  exact Nat.mul_pos (f_pos D) (Nat.choose_pos hr)
 
 theorem Dp_eq {D : D7} {L : SizeData₂ D} {P : ParameterChoice' D L} (T : ParamsT D L P) : T.Dp = dimFlag D := T.Dp_eq
 
 theorem half_f (D : D7) : (D.R.f : ℝ) / 2 = D.R.n := by
   unfold Ranks.f; push_cast; ring
 
-theorem fieldSize_O {D : D7} (X : Prov D) :
-    fieldSize X.KO = Real.log (degO X) + Real.log (rdO X) := rfl
 
-theorem fieldSize_E (D : D7) :
-    fieldSize D.host.E = Real.log (Module.finrank ℚ D.host.E : ℝ) + lrd D := rfl
 
 theorem logdE_nonneg (D : D7) : 0 ≤ logdE D := by
   unfold logdE
@@ -171,10 +159,6 @@ theorem Sizes.halves {D : D7} {L : SizeData₂ D} {C : ℝ} (h : Sizes L C) :
   rw [div_le_iff₀ (by positivity)] at h4
   linarith
 
-theorem dimBound_le_dimBoundMax (D : D7) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : n0 D j ≤ dimBoundMax D := by
-  unfold n0 dimBoundMax
-  have : dimX D j ≤ (Finset.Icc 1 D.R.m).sup (dimX D) := Finset.le_sup (Finset.mem_Icc.2 ⟨h1, h2⟩)
-  gcongr
 
 end GlobalTheory.IndefiniteRowSideFullHecke.DimensionConstantBounds
 

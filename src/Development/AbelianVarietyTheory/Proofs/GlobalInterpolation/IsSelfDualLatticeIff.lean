@@ -167,8 +167,6 @@ theorem resCard_eq : GlobalTheory.IndefiniteRowSideFullHecke.SelfDualUnramifiedP
   unfold GlobalTheory.IndefiniteRowSideFullHecke.SelfDualUnramifiedPlaces.resCard GlobalTheory.IndefiniteRowSideFullHecke.PlaceSplittingTypes.resCard
   rw [Ideal.absNorm_apply, Submodule.cardQuot_apply]
 
-theorem maxOrder_eq :
-    GlobalTheory.IndefiniteRowSideFullHecke.SelfDualUnramifiedPlaces.maxOrder F E v = (GlobalTheory.IndefiniteRowSideFullHecke.PlaceSplittingTypes.maxOrder F E v).toSubring := rfl
 
 variable {F E}
 

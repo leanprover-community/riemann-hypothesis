@@ -714,13 +714,6 @@ def Stmt (D : D7) (large₂ : SizeData₂ D) (X : TermTie D) (Cw : ℝ) (Y : ∀
   Ties D → admitted D large₂ X Cw Y Z cN Vm Ca Cq CA CA' C3 → hyp D large₂ C0 C' Cl Cg cb Cu cT CT →
     Conclusion1 D CA CA' Ce ∧ Conclusion2 D large₂ C1 C2 C3' C4 c5 CA
 
-theorem statement_of_degree_and_bound {D : D7} {large₂ : SizeData₂ D} {X : TermTie D} {Cw : ℝ} {Y : ∀ u u', LoopTie D large₂ X u u' Cw} {Z : TermLocs D X}
-    {cN : D.what₂.Word → D.what₂.Word → ℝ} {Vm : ValMap D.R.k D.R.rS}
-    {Ca Cq C3 C0 C' Cl Cg cb Cu cT CT CA CA' Ce C1 C2 C3' C4 c5 ep0 CV : ℝ}
-    (h1 : IntegralityFromMetric D large₂ X Cw Y Z cN Vm Ca Cq C0 C' Cl Cg cb Cu cT CT CA CA' Ce)
-    (h2 : HodgeTateFromSandwich D large₂ C3 C0 C' Cl Cg cb Cu cT CT C1 C2 C3' C4 c5 CA ep0 CV) :
-    Stmt D large₂ X Cw Y Z cN Vm Ca Cq C3 C0 C' Cl Cg cb Cu cT CT CA CA' Ce C1 C2 C3' C4 c5 :=
-  fun hT hA hH => ⟨h1 hT hA.1 hH, (h2 hT hA.2 hH).1⟩
 
 end One
 
@@ -825,9 +818,6 @@ def DeterminantValueFamily (C0 Cg cb Cu cT CT C3 C1 C2 C3' C4 c5 CA ep0 CV : ℝ
 def FamilyUnfoldingCount (C0 Cg cb Cu cT CT : ℝ) : Prop :=
   SecondSizeStatement Fm → BesselFormLine Fm → FamilyRanksHypothesis Fm C0 Cg cb Cu cT CT → FamilyBesselBoundFirstPart Fm C0 Cg cb Cu cT CT
 
-theorem FamilyUnfoldingCount.ClosedSizeStatements {Fm : Formalism.MainNotions.FamP eps} {C0 Cg cb Cu cT CT C3 : ℝ} (h : FamilyUnfoldingCount Fm C0 Cg cb Cu cT CT)
-    (hA : SecondFiltrationHypotheses Fm C0 Cg cb Cu cT CT C3) : FamilyBesselBoundFirstPart Fm C0 Cg cb Cu cT CT :=
-  h hA.2.1 hA.2.2.1 hA.2.2.2.1
 
 def OrbitValuationBound (C0 Cg cb Cu cT CT CA CA' Ce C1 C2 C3' C4 c5 ep0 CV : ℝ) : Prop :=
   ConclusionF1 Fm C0 Cg cb Cu cT CT CA CA' Ce ∧ ConclusionF2 Fm C0 Cg cb Cu cT CT C1 C2 C3' C4 c5 CA ep0 CV
@@ -840,15 +830,6 @@ def KudlaFamilyStatement (X : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.
   GivOk C0 Cg cb Cu cT CT → AdmF Fm X Cw Y Z cN Vm C0 Cg cb Cu cT CT Ca Cq CA CA' C3 →
     OrbitValuationBound Fm C0 Cg cb Cu cT CT CA CA' Ce C1 C2 C3' C4 c5 ep0 CV
 
-theorem family_statement_of_parts {Fm : Formalism.MainNotions.FamP eps} {X : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i)} {Cw : ℝ}
-    {Y : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) u u', LoopTie (Fm.D x i) (Fm.L x i) (X x hx i) u u' Cw}
-    {Z : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), TermLocs (Fm.D x i) (X x hx i)}
-    {cN : ∀ x (i : Fm.Ix x), (Fm.D x i).what₂.Word → (Fm.D x i).what₂.Word → ℝ} {Vm : ∀ k r, ValMap k r}
-    {C0 Cg cb Cu cT CT Ca Cq C3 CA CA' Ce C1 C2 C3' C4 c5 ep0 CV : ℝ}
-    (h1 : PeriodFamilyStatement Fm X Cw Y Z cN Vm C0 Cg cb Cu cT CT Ca Cq CA CA' Ce)
-    (h2 : DeterminantValueFamily Fm C0 Cg cb Cu cT CT C3 C1 C2 C3' C4 c5 CA ep0 CV) :
-    KudlaFamilyStatement Fm X Cw Y Z cN Vm C0 Cg cb Cu cT CT Ca Cq C3 CA CA' Ce C1 C2 C3' C4 c5 ep0 CV :=
-  fun hG hA => ⟨h1 hG hA.1, h2 hG hA.2⟩
 
 end Family
 

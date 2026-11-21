@@ -101,7 +101,5 @@ theorem densMultInt_of (h1 : LocSelfDual) (h2 : GaPlusDiag) (h5 : DensProdVal) :
   have := Real.multipliable_one_add_of_summable hs
   simpa using this
 
-theorem densAll_of' (h1 : LocSelfDual) (h2 : GaPlusDiag) (h3 : NotIntDens) (h5 : DensProdVal) : DensAll :=
-  densAll_of h1 h2 h3 h5 (densMultInt_of h1 h2 h5)
 
 end Formalism.L2.SG.Pf.Cnt

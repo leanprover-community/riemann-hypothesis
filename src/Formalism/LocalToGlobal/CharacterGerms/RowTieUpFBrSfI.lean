@@ -283,11 +283,6 @@ def CharacterHypothesisSelfUnramified : Prop :=
     ∀ (Orb : Type) (d : ℕ) [NeZero d] (lab : LabS E C Orb d) (ha : LabSArith V io ie lab) (hg : LabSGeo C3 ie Y lab),
     lab.RankOK Dw → ∀ o (Hc : ∀ g, (Y.rawSelf (selfOfLab ha hg o)).CartHyp V g), RawChart.CHSt Hc
 
-theorem chart_hypothesis_self_unramified_of_forms (hUp : ∀ (p : ℕ) [Fact p.Prime], UpFSt p) (hPlace : Pl.PlaceCriterionOfIdempotent) (hGeo : GeoJA3St Xo c) :
-    CharacterHypothesisSelfUnramified Xo c :=
-  fun hstar T io y C3 _ _ _ V _ hie hd _ Y hY _ _ _ _ ha hg hr o Hc =>
-    chStSelf_of_upChar Y (selfOfLab ha hg o) (rankHyp_ofLabS ha hg hr o) Hc
-      (upCharS_at_chart (hUp V.l) hPlace (hGeo hstar T io y C3) hie hd hY ha hg hr o Hc)
 
 end Chart
 

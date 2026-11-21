@@ -1056,32 +1056,6 @@ def cjL (Pc : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ →L[ℝ]
 
 theorem cjL_apply (g : Matrix (Fin n) (Fin n) ℂ) : cjL Pc g = cj Pc g := rfl
 
-theorem Cls_smooth (hP : IsCay ε Hm Pc) {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ)
-    (w : H) {F : Matrix (Fin n) (Fin n) ℂ → V} (hF : Cls Hm Pc hσ w F) : Formalism.QuantumDeterminants.SmoothOnH Hm F := by
-  obtain ⟨ι, _, x', x, c, hx', hx, hF⟩ := hF
-  intro g₀ hg₀
-  have hs : ∀ i, ∃ (U : Set (Matrix (Fin n) (Fin n) ℂ)) (G : Matrix (Fin n) (Fin n) ℂ → ℂ),
-      IsOpen U ∧ cj Pc g₀ ∈ U ∧ ContDiffOn ℝ ∞ G U ∧ ∀ g ∈ U, Formalism.QuantumDeterminants.inUH (Jm ε) g →
-        ⟪x' i, σ g (x i)⟫_ℂ = G g := by
-    intro i
-    obtain ⟨Φ, hΦ, hxi⟩ := hx i
-    rw [hxi]
-    exact smooth_coef hσ (x' i) w hΦ (cj Pc g₀) (cj_mem hP hg₀)
-  choose U G hU hmem hG hagree using hs
-  refine ⟨⋂ i, (cjL Pc) ⁻¹' (U i), fun g => ∑ i, G i (cjL Pc g) • c i, ?_, ?_, ?_, ?_⟩
-  · exact isOpen_iInter_of_finite fun i => (hU i).preimage (cjL Pc).continuous
-  · exact Set.mem_iInter.2 fun i => hmem i
-  · apply ContDiffOn.sum
-    intro i _
-    apply ContDiffOn.smul _ contDiffOn_const
-    apply (hG i).comp (cjL Pc).contDiff.contDiffOn
-    intro g hg
-    exact Set.mem_iInter.1 hg i
-  · intro g hg hgU
-    rw [hF g hgU]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [hagree i (cj Pc g) (Set.mem_iInter.1 hg i) (cj_mem hP hgU)]
-    rfl
 
 end Model2
 
@@ -1126,17 +1100,6 @@ theorem trace_Hpk (k r : ℕ) : (Formalism.QuantumDeterminants.Hpk k r).trace = 
   rw [e1, e2]
   simp
 
-theorem sig_of_cayley (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool)
-    (P : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (hP : IsCayleyU k r ε P) :
-    pOf ε = r + k ∧ qOf ε = r + 1 := by
-  have a2 : P * Pᴴ = 1 := Matrix.mem_unitaryGroup_iff.1 hP.2
-  have h1 : (Jm ε).trace = (Formalism.QuantumDeterminants.Hpk k r).trace := by
-    rw [← hP.1.2, Matrix.trace_mul_comm, ← Matrix.mul_assoc, a2, Matrix.one_mul]
-  rw [trace_Jm, trace_Hpk] at h1
-  have h2 := pOf_add_qOf ε
-  have h3 : ((pOf ε : ℤ) : ℂ) - ((qOf ε : ℤ) : ℂ) = ((k : ℤ) : ℂ) - 1 := by exact_mod_cast h1
-  have h4 : (pOf ε : ℤ) - (qOf ε : ℤ) = (k : ℤ) - 1 := by exact_mod_cast h3
-  omega
 
 end Sig
 
@@ -1152,8 +1115,6 @@ def HCAdmDS : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsDS ε lam σ → AdmProjAt ε σ
 
-theorem HCAdmDS_of_HCAdm (h : HCAdm) : HCAdmDS :=
-  fun n ε _ H _ _ _ σ hDS => h n ε H σ hDS.2.2.1 hDS.2.2.2.1
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -1171,149 +1132,7 @@ theorem clm_expand {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSpace �
   refine Finset.sum_congr rfl fun i _ => ?_
   simp [smul_smul, mul_comm]
 
-theorem coefT_Cls {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool}
-    {σ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (H →L[ℂ] H)}
-    {Pc : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hPc : IsCayleyU k r ε Pc)
-    (hσ : IsURepOn (UJset ε) (fun g => σ (Pc⁻¹ * g * Pc))) (hirr : IsIrredOn (UJset ε) (fun g => σ (Pc⁻¹ * g * Pc)))
-    (hadm : AdmProjAt ε (fun g => σ (Pc⁻¹ * g * Pc))) {w : H} (hw : w ≠ 0)
-    {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
-    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-    {f : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (Wq →L[ℂ] Wp)} (hf : UnitaryLevelOperators.IsKFinCoefT σ f) :
-    Cls (Formalism.QuantumDeterminants.Hpk k r) Pc hσ w f := by
-  have hP : IsCay ε (Formalism.QuantumDeterminants.Hpk k r) Pc := ⟨hPc.2, hPc.1.2⟩
-  have iP : Pc⁻¹ = Pcᴴ := Matrix.inv_eq_left_inv (cay1 hP)
-  obtain ⟨a, ha, b, hb, P0, Q0, hQ, hP0, hfe⟩ := hf
-  have kf : ∀ y : H, IsKFinHpk (k := k) (r := r) σ y → IsKFin ε (fun g => σ (Pc⁻¹ * g * Pc)) y := by
-    rintro y ⟨S, hfd, hyS, hst⟩
-    exact ⟨S, hfd, hyS, fun g hg u hu => hst _ (compact_to_unitary_hermitian _ _ _ Pc g hPc hg) u hu⟩
-  obtain ⟨α, hα⟩ := exists_UJ (cj_mem hP ha)
-  obtain ⟨β, hβ⟩ := exists_UJ (cj_mem hP hb)
-  set σ' : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (H →L[ℂ] H) := fun g => σ (Pc⁻¹ * g * Pc) with hσ'
-  refine ⟨Fin (Module.finrank ℂ Wp) × Fin (Module.finrank ℂ Wq), inferInstance,
-    fun p => σ' (umat α) (ContinuousLinearMap.adjoint P0 (stdOrthonormalBasis ℂ Wp p.1)),
-    fun p => σ' (umat β⁻¹) (Q0 (stdOrthonormalBasis ℂ Wq p.2)),
-    fun p => (innerSL ℂ (stdOrthonormalBasis ℂ Wq p.2)).smulRight (stdOrthonormalBasis ℂ Wp p.1), ?_, ?_, ?_⟩
-  · intro p
-    exact Vsub_stable hσ w α (kfin_mem_Vsub hσ hirr hadm hw (kf _ (hP0 _)))
-  · intro p
-    exact Vsub_stable hσ w β⁻¹ (kfin_mem_Vsub hσ hirr hadm hw (kf _ (hQ _)))
-  · intro g hg
-    obtain ⟨γ, hγ⟩ := exists_UJ (cj_mem hP hg)
 
-    have back : ∀ m : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ, Pcᴴ * cj Pc m * Pc = m := by
-      intro m
-      unfold cj
-      calc Pcᴴ * (Pc * m * Pcᴴ) * Pc = (Pcᴴ * Pc) * m * (Pcᴴ * Pc) := by simp only [Matrix.mul_assoc]
-        _ = m := by rw [cay1 hP]; simp
-    set g' := Pcᴴ * umat (α⁻¹ * γ * β⁻¹) * Pc with hg'
-    have e1 : a * g' * b = g := by
-      rw [← back a, ← back b, ← back g, ← hα, ← hβ, ← hγ, hg']
-      calc Pcᴴ * umat α * Pc * (Pcᴴ * umat (α⁻¹ * γ * β⁻¹) * Pc) * (Pcᴴ * umat β * Pc)
-          = Pcᴴ * (umat α * (Pc * Pcᴴ) * umat (α⁻¹ * γ * β⁻¹) * (Pc * Pcᴴ) * umat β) * Pc := by
-            simp only [Matrix.mul_assoc]
-        _ = Pcᴴ * umat (α * (α⁻¹ * γ * β⁻¹) * β) * Pc := by
-            rw [cay2 hP, Matrix.mul_one, Matrix.mul_one]; rfl
-        _ = Pcᴴ * umat γ * Pc := by congr 3; group
-    have e2 : f g = P0.comp ((σ' (umat (α⁻¹ * γ * β⁻¹))).comp Q0) := by
-      rw [← e1]
-      have := hfe g'
-      simp only at this
-      rw [this, hσ', hg', iP]
-    rw [e2]
-    conv_lhs => rw [clm_expand (P0.comp ((σ' (umat (α⁻¹ * γ * β⁻¹))).comp Q0))]
-    refine Finset.sum_congr rfl fun p _ => ?_
-    congr 1
-    show ⟪stdOrthonormalBasis ℂ Wp p.1, P0 (σ' (umat (α⁻¹ * γ * β⁻¹)) (Q0 (stdOrthonormalBasis ℂ Wq p.2)))⟫_ℂ = _
-    rw [← ContinuousLinearMap.adjoint_inner_left, rep_mul hσ, rep_mul hσ, rep_inner_left hσ α, hγ]
-
-theorem stDecay_of (D : D7) {c C₁ : ℝ} (hc : 0 < c) (hc8 : c ≤ 1 / 8) (hC1 : 120 ≤ C₁)
-    (ha2 : PlaceDegreeData.adm2 D) (h1 : PlaceDegreeData.DiscreteSeriesDecayBound D) (hadm : HCAdmDS) : UnitaryLevelOperators.stDecay D c C₁ := by
-  have hsq2 : (1 : ℝ) ≤ Real.sqrt 2 := Real.one_le_sqrt.2 (by norm_num)
-  refine ⟨hc, by linarith, hC1, fun k0 hk L hgap f hf mm => ?_⟩
-  obtain ⟨Pc, hPc, hDS⟩ := L.hσ
-  have hP : IsCay L.ε (Formalism.QuantumDeterminants.Hpk (k0 + 1) D.R.rS) Pc := ⟨hPc.2, hPc.1.2⟩
-  have hσ : IsURepOn (UJset L.ε) (fun g => L.σ (Pc⁻¹ * g * Pc)) := hDS.2.2.1
-  have hirr : IsIrredOn (UJset L.ε) (fun g => L.σ (Pc⁻¹ * g * Pc)) := hDS.2.2.2.1
-  obtain ⟨w, hw⟩ := exists_highest_weight_unit L.ε L.lam _ hDS
-  have hw0 : w ≠ 0 := by
-    intro h0
-    have := hw.1
-    rw [h0, norm_zero] at this
-    norm_num at this
-  have hlow : IsLowUnit L.ε L.lam (fun g => L.σ (Pc⁻¹ * g * Pc)) w := ⟨hw.1, hw.2.1⟩
-  have : FiniteDimensional ℂ (lowKSub L.ε L.lam (fun g => L.σ (Pc⁻¹ * g * Pc))) :=
-    (ha2 _ L.ε L.lam L.hlam L.Hs _ hDS).1.1
-  have hE := star_projection_is_orth_proj (lowKSub L.ε L.lam (fun g => L.σ (Pc⁻¹ * g * Pc)))
-  obtain ⟨hp, hq⟩ := sig_of_cayley (k0 + 1) D.R.rS L.ε Pc hPc
-  set h : ℝ := UnitaryLevelOperators.ncGap L.ε L.lam with hh
-  have hgapAt : Formalism.QuantumDeterminants.GapAtLeast L.ε L.lam h := fun a b hab =>
-    csInf_le ⟨0, by rintro d ⟨a, b, _, rfl⟩; exact abs_nonneg _⟩ ⟨a, b, hab, rfl⟩
-  have hmin : min (pOf L.ε) (qOf L.ε) = D.R.rS + 1 := by rw [hp, hq]; omega
-  have hm := two_rS_add_two D
-  have hmR : (2 : ℝ) * ((D.R.rS + 1 : ℕ) : ℝ) = (D.R.m : ℝ) := by rw [← hm]; push_cast; ring
-  have hm2 : (2 : ℝ) ≤ (D.R.m : ℝ) := by exact_mod_cast D.R.two_le_m
-  have hN : ((2 * D.R.rS + (k0 + 1) + 1 : ℕ) : ℝ) = (D.R.r : ℝ) := by rw [hk]; exact nS_cast D
-  have hN6 := six_le_n D
-  set N : ℝ := (D.R.r : ℝ) with hNdef
-  set m : ℝ := (D.R.m : ℝ) with hmdef
-  have hth : 120 * ((2 * D.R.rS + (k0 + 1) + 1 : ℕ) : ℝ) *
-      ((min (pOf L.ε) (qOf L.ε) : ℕ) : ℝ) ^ ((3 : ℝ) / 2) ≤ h := by
-    rw [hmin, hN]
-    refine le_trans ?_ hgap
-    have hqm : ((D.R.rS + 1 : ℕ) : ℝ) = m / 2 := by linarith
-    rw [hqm]
-    have e0 : 0 ≤ (m / 2) ^ ((3 : ℝ) / 2) := Real.rpow_nonneg (by linarith) _
-    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hC1 (by linarith)) e0
-  have hh0 : 0 ≤ h := le_trans (by positivity) hth
-  have hsm : 0 < Real.sqrt m := Real.sqrt_pos.2 (by linarith)
-  set A : ℝ := c * h * m ^ (-(1 : ℝ) / 2) with hA
-  have hmpow : m ^ (-(1 : ℝ) / 2) = (Real.sqrt m)⁻¹ := by
-    rw [Real.sqrt_eq_rpow, ← Real.rpow_neg (by linarith)]
-    norm_num
-  have hA0 : 0 ≤ A := by rw [hA, hmpow]; positivity
-  have hAle : A ≤ h / (8 * Real.sqrt m) := by
-    rw [hA, hmpow, div_eq_mul_inv, mul_inv]
-    have : 0 ≤ h * (Real.sqrt m)⁻¹ := by positivity
-    nlinarith
-  obtain ⟨C0, hC0, hdec⟩ : ∃ C0 : ℝ, 0 ≤ C0 ∧ ∀ γ : UJ L.ε,
-      ‖⟪w, L.σ (Pc⁻¹ * umat γ * Pc) w⟫_ℂ‖ ≤ C0 * Real.sqrt (hs (umat γ)) ^ (-A) := by
-    refine ⟨Real.sqrt ((2 * D.R.rS + (k0 + 1) + 1 : ℕ) : ℝ) ^ (h / (8 * Real.sqrt m)) *
-      Real.exp (h / (8 * Real.sqrt m) / Real.sqrt m), ?_, fun γ => ?_⟩
-    rotate_left
-    · have key := poly_decay_of_decay_statement D h1 _ L.ε L.lam L.hlam L.Hs _ hDS _ hE h hgapAt hth
-        (by rw [hmin]; omega) w hlow (umat γ) (umat_mem γ)
-      rw [hmin, hmR] at key
-      refine le_trans key ?_
-      apply mul_le_mul_of_nonneg_left _ (by positivity)
-      apply Real.rpow_le_rpow_of_exponent_le
-      · exact Real.one_le_sqrt.2 (one_le_hilbert_schmidt_of_mem _ _ (umat_mem γ) ⟨0, by omega⟩)
-      · linarith
-    · positivity
-  have hcls := coefT_Cls hPc hσ hirr (hadm _ L.ε L.lam L.Hs _ hDS) hw0 hf
-  refine ⟨Cls_smooth hP hσ w hcls, fun ws _ hws => ?_⟩
-  obtain ⟨C, hC⟩ := Cls_bound hP hσ w hA0 hC0 hdec (Cls_rdWord hP hσ w hcls ws hws)
-  refine ⟨max C 0 * 2 ^ A, fun g hg => ?_⟩
-  have e1 : (∑ i, ∑ j, Complex.normSq (g i j)) = hs g := by
-    unfold hs; simp only [Complex.normSq_eq_norm_sq]
-  rw [e1]
-  have hs1 : 1 ≤ Real.sqrt (hs g) := by
-    rw [← hs_unitary_conj Pc g hP.1]
-    exact Real.one_le_sqrt.2 (one_le_hilbert_schmidt_of_mem _ _ (cj_mem hP hg) ⟨0, by omega⟩)
-  refine le_trans (hC g hg) ?_
-  set s := Real.sqrt (hs g) with hs_def
-  have p1 : 0 < s ^ A := Real.rpow_pos_of_pos (by linarith) _
-  have p2 : 0 < (1 + s) ^ A := Real.rpow_pos_of_pos (by linarith) _
-  have e2 : (1 + s) ^ A ≤ 2 ^ A * s ^ A := by
-    rw [← Real.mul_rpow (by norm_num) (by linarith)]
-    exact Real.rpow_le_rpow (by linarith) (by linarith) hA0
-  have e3 : s ^ (-A) ≤ 2 ^ A * (1 + s) ^ (-A) := by
-    rw [Real.rpow_neg (by linarith), Real.rpow_neg (by linarith), ← div_eq_mul_inv, le_div_iff₀ p2,
-      inv_mul_le_iff₀ p1]
-    linarith
-  calc C * s ^ (-A) ≤ max C 0 * s ^ (-A) :=
-        mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.rpow_nonneg (by linarith) _)
-    _ ≤ max C 0 * (2 ^ A * (1 + s) ^ (-A)) := mul_le_mul_of_nonneg_left e3 (le_max_right _ _)
-    _ = _ := by ring
 
 end Final
 
@@ -1389,93 +1208,8 @@ section PK
 
 open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData Formalism.BasicNotions
 
-theorem decay_K_finite_coefficients (D : D7) {c0 : ℝ} (hc0 : 0 ≤ c0) (hc8 : c0 ≤ 1 / 8)
-    (ha2 : PlaceDegreeData.adm2 D) (h1 : PlaceDegreeData.DiscreteSeriesDecayBound D) (hadm : HCAdmDS) : CayleySignature.adm3 D c0 := by
-  intro k r z c u v b hSet H _ _ _ σ P hP hDS x x' hx hx' ws ws' hws hws' h hlow
-  obtain ⟨hk1, _, _, _, _, _, hlam, _, _, t, _, ht, _, hgapT⟩ := hSet
-  have hσ : IsURepOn (UJset (CayleySignature.eps48 k r)) (fun g => σ (P⁻¹ * g * P)) := hDS.2.2.1
-  have hirr : IsIrredOn (UJset (CayleySignature.eps48 k r)) (fun g => σ (P⁻¹ * g * P)) := hDS.2.2.2.1
-  obtain ⟨w, hw⟩ := exists_highest_weight_unit _ _ _ hDS
-  have hw0 : w ≠ 0 := by
-    intro h0
-    have := hw.1
-    rw [h0, norm_zero] at this
-    norm_num at this
-  have hlowU : IsLowUnit (CayleySignature.eps48 k r) (CayleySignature.lam48 k r v b) (fun g => σ (P⁻¹ * g * P)) w := ⟨hw.1, hw.2.1⟩
-  have : FiniteDimensional ℂ (lowKSub (CayleySignature.eps48 k r) (CayleySignature.lam48 k r v b) (fun g => σ (P⁻¹ * g * P))) :=
-    (ha2 _ _ _ hlam H _ hDS).1.1
-  have hE := star_projection_is_orth_proj (lowKSub (CayleySignature.eps48 k r) (CayleySignature.lam48 k r v b) (fun g => σ (P⁻¹ * g * P)))
-  obtain ⟨hp, hq⟩ := sig_of_cayley k r _ P hP
-  have hmin : min (pOf (CayleySignature.eps48 k r)) (qOf (CayleySignature.eps48 k r)) = r + 1 := by rw [hp, hq]; omega
-  set T0 : ℝ := 2 * ((CayleySignature.rk48 k r + (2 * r + 2) * t : ℕ) : ℝ) ^ 3 + (t : ℝ) + 3 with hT0
-  set hh : ℝ := max h T0 with hhh
-  have hlow' : CayleySignature.LowGapGe hh r b := fun j hj => max_le (hlow j hj) (hgapT j hj).le
-  have hgapAt := gap_at_least_of_low_gap k r v b hh hk1 hlam.1 hlow'
-  have hth0 : 120 * ((2 * r + k + 1 : ℕ) : ℝ) * ((r + 1 : ℕ) : ℝ) ^ ((3 : ℝ) / 2) ≤ T0 := by
-    set a : ℝ := ((2 * r + k + 1 : ℕ) : ℝ) with ha
-    set q : ℝ := ((r + 1 : ℕ) : ℝ) with hq'
-    have ha0 : 0 ≤ a := Nat.cast_nonneg _
-    have hq1 : 1 ≤ q := by rw [hq']; exact_mod_cast Nat.succ_le_succ (Nat.zero_le r)
-    have htt : a + 5 ≤ (t : ℝ) := by
-      have : 2 * r + k + 1 + 5 ≤ t := ht
-      rw [ha]; exact_mod_cast this
-    have hM : ((CayleySignature.rk48 k r + (2 * r + 2) * t : ℕ) : ℝ) = a + 2 * q * t := by
-      rw [ha, hq']; unfold CayleySignature.rk48; push_cast; ring
-    have e1 : q ^ ((3 : ℝ) / 2) ≤ q ^ (2 : ℕ) := by
-      rw [← Real.rpow_natCast]
-      exact Real.rpow_le_rpow_of_exponent_le hq1 (by norm_num)
-    have e2 : 2 * q * (a + 5) ≤ a + 2 * q * t := by nlinarith
-    have e3 : (2 * q * (a + 5)) ^ 3 ≤ (a + 2 * q * t) ^ 3 := pow_le_pow_left₀ (by positivity) e2 3
-    have e4 : 75 * a ≤ (a + 5) ^ 3 := by nlinarith [sq_nonneg a, mul_nonneg ha0 (sq_nonneg a)]
-    have e5 : q ^ 2 ≤ q ^ 3 := by nlinarith [sq_nonneg q]
-    have e6 : 120 * a * q ^ 2 ≤ 2 * (2 * q * (a + 5)) ^ 3 := by
-      have : (2 * q * (a + 5)) ^ 3 = 8 * q ^ 3 * (a + 5) ^ 3 := by ring
-      rw [this]
-      have h7 : q ^ 2 * (75 * a) ≤ q ^ 3 * (a + 5) ^ 3 := mul_le_mul e5 e4 (by positivity) (by positivity)
-      nlinarith [mul_nonneg ha0 (sq_nonneg q)]
-    rw [hT0, hM]
-    have h8 : 120 * a * q ^ ((3 : ℝ) / 2) ≤ 120 * a * q ^ 2 := mul_le_mul_of_nonneg_left e1 (by positivity)
-    have h9 : (0 : ℝ) ≤ t := Nat.cast_nonneg _
-    linarith
-  have hth : 120 * ((2 * r + k + 1 : ℕ) : ℝ) *
-      ((min (pOf (CayleySignature.eps48 k r)) (qOf (CayleySignature.eps48 k r)) : ℕ) : ℝ) ^ ((3 : ℝ) / 2) ≤ hh := by
-    rw [hmin]; exact le_trans hth0 (le_max_right _ _)
-  have hh0 : 0 ≤ hh := le_trans (by positivity) hth
-  have hsq : (2 : ℝ) * ((r + 1 : ℕ) : ℝ) = 2 * (r : ℝ) + 2 := by push_cast; ring
-  set sm : ℝ := Real.sqrt (2 * (r : ℝ) + 2) with hsm
-  have hsm0 : 0 < sm := Real.sqrt_pos.2 (by positivity)
-  set A : ℝ := hh / (8 * sm) with hA
-  have hA0 : 0 ≤ A := by positivity
-  have hAle : c0 * h / sm ≤ A := by
-    rw [hA, div_le_div_iff₀ hsm0 (by positivity)]
-    have e1 : c0 * h ≤ hh / 8 := by
-      have : c0 * h ≤ c0 * hh := mul_le_mul_of_nonneg_left (le_max_left _ _) hc0
-      nlinarith
-    nlinarith [mul_le_mul_of_nonneg_right e1 hsm0.le]
-  have hdec : ∀ γ : UJ (CayleySignature.eps48 k r), ‖⟪w, σ (P⁻¹ * umat γ * P) w⟫_ℂ‖ ≤
-      (Real.sqrt ((2 * r + k + 1 : ℕ) : ℝ) ^ A * Real.exp (A / sm)) * Real.sqrt (hs (umat γ)) ^ (-A) := by
-    intro γ
-    have key := poly_decay_of_decay_statement D h1 _ _ _ hlam H _ hDS _ hE hh hgapAt hth
-      (by rw [hmin]; omega) w hlowU (umat γ) (umat_mem γ)
-    rw [hmin, hsq] at key
-    exact key
-  obtain ⟨Cf, hCf⟩ := kfin_decay_UJ hσ hirr (hadm _ _ _ H _ hDS) hw0 hA0 (by positivity) hdec hx hx' ws ws' hws hws'
-  refine ⟨max Cf 0, fun g hg => ?_⟩
-  refine le_trans (hCf g hg) ?_
-  have hs1 : 1 ≤ Real.sqrt (hs g) := Real.one_le_sqrt.2 (one_le_hilbert_schmidt_of_mem _ _ hg ⟨0, by omega⟩)
-  calc Cf * Real.sqrt (hs g) ^ (-A) ≤ max Cf 0 * Real.sqrt (hs g) ^ (-A) :=
-        mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.rpow_nonneg (by linarith) _)
-    _ ≤ max Cf 0 * Real.sqrt (hs g) ^ (-(c0 * h / sm)) := by
-        apply mul_le_mul_of_nonneg_left _ (le_max_right _ _)
-        exact Real.rpow_le_rpow_of_exponent_le hs1 (by linarith)
 
-theorem pK_of {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) {c0 : ℝ} (hc0 : 0 < c0) (hc8 : c0 ≤ 1 / 8)
-    (h2 : PlaceDegreeData.admF2 Fm) (h1 : PlaceDegreeData.FamilyDiscreteSeriesDecay Fm) (hadm : HCAdmDS) : PX.KFinDecayF Fm c0 :=
-  ⟨hc0, fun x i => decay_K_finite_coefficients (Fm.D x i) hc0.le hc8 (h2 x i) (h1 x i) hadm⟩
 
-theorem pd_of {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) {cD C₁ : ℝ} (hc : 0 < cD) (hc8 : cD ≤ 1 / 8) (hC1 : 120 ≤ C₁)
-    (h2 : PlaceDegreeData.admF2 Fm) (h1 : PlaceDegreeData.FamilyDiscreteSeriesDecay Fm) (hadm : HCAdmDS) : ∀ x (i : Fm.Ix x), PX.decay (Fm.D x i) cD C₁ :=
-  fun x i => stDecay_of (Fm.D x i) hc hc8 hC1 (h2 x i) (h1 x i) hadm
 
 end PK
 
@@ -1708,8 +1442,6 @@ def HCMultDS : Prop :=
     ∀ S : Submodule ℂ H, FiniteDimensional ℂ S → IsKStableOn ε σ S →
       FiniteDimensional ℂ (eqImg (fun k : KG ε => σ (toMK k)) S)
 
-theorem HCMultDS_of_HCMult (h : HCMult) : HCMultDS :=
-  fun n ε _ H _ _ _ σ hDS => h n ε H σ hDS.2.2.1 hDS.2.2.2.1
 
 theorem HCAdmDS_of (h : HCMultDS) (hc : CompactProj) : HCAdmDS := by
   intro n ε lam H _ _ _ σ hDS x hx
@@ -1731,13 +1463,7 @@ theorem HCAdm_of_mult (h : HCMult) : HCAdm := HCAdm_of h compactProj
 
 theorem HCAdmDS_of_mult (h : HCMultDS) : HCAdmDS := HCAdmDS_of h compactProj
 
-theorem pd_of_mult {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) {cD C₁ : ℝ} (hc : 0 < cD) (hc8 : cD ≤ 1 / 8) (hC1 : 120 ≤ C₁)
-    (h2 : PlaceDegreeData.admF2 Fm) (h1 : PlaceDegreeData.FamilyDiscreteSeriesDecay Fm) (h : HCMultDS) : ∀ x (i : Fm.Ix x), PX.decay (Fm.D x i) cD C₁ :=
-  pd_of Fm hc hc8 hC1 h2 h1 (HCAdmDS_of_mult h)
 
-theorem pK_of_mult {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) {c0 : ℝ} (hc0 : 0 < c0) (hc8 : c0 ≤ 1 / 8)
-    (h2 : PlaceDegreeData.admF2 Fm) (h1 : PlaceDegreeData.FamilyDiscreteSeriesDecay Fm) (h : HCMultDS) : PX.KFinDecayF Fm c0 :=
-  pK_of Fm hc0 hc8 h2 h1 (HCAdmDS_of_mult h)
 
 end FromMult
 

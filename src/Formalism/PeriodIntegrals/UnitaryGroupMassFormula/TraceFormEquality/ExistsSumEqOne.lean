@@ -11,11 +11,6 @@ section Ideal
 
 variable {K : Type} [Field K] {G : Type} [Group G] [Fintype G]
 
-lemma asAlg_apply {V : Type} [AddCommGroup V] [Module K V] (ρ : Representation K G V)
-    (a : MonoidAlgebra K G) (x : V) : ρ.asAlgebraHom a x = ∑ g : G, a.coeff g • ρ g x := by
-  rw [Representation.asAlgebraHom_def, MonoidAlgebra.lift_apply,
-    Finsupp.sum_fintype _ _ (by intro g; simp)]
-  simp [LinearMap.sum_apply]
 
 def phi (T : GoodSet K G) (s : T.S) : Module.End K (T.W s) →ₗ[K] MonoidAlgebra K G :=
   ∑ y : G, ((((Module.finrank K (T.W s) : ℕ) : K) / ((Fintype.card G : ℕ) : K)) •

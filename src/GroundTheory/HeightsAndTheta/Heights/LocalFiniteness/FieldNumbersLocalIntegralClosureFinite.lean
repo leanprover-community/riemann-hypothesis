@@ -60,8 +60,6 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3ResidualContracti
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3NoCommon.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.NoCommonComponentCase.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.NoCommonComponentCase.of_open.{u} GroundTheory.Heights₂.Heights.NumbersDVR.LeftTermSupport.proof GroundTheory.Heights₂.Heights.NumbersDVR.RightTermSupport.proof GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_LocalCoeffRing
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_GenericProjClosureModel : GroundTheory.Heights₂.Heights.NumbersDVR.GenericProjClosureModel.Statement :=
-  @GroundTheory.Heights₂.Heights.NumbersDVR.GenericProjClosureModel.proof GroundTheory.Heights₂.Heights.NumbersDVR.TwistedDualGensExist.proof GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_GenericProjClosureDim GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_GenericProjClosureDivisor
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_SegreFlagProjSpecialDim : GroundTheory.Heights₂.Heights.NumbersDVR.SegreFlagProjSpecialDim.Statement :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.SegreFlagProjSpecialDim.proof GroundTheory.Heights₂.Heights.NumbersDVR.PrimeDimLeTrdeg.proof GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_FlagProjTrdegLe
@@ -72,20 +70,10 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_HomLocRingLocal.{u}
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3ExceptionalCompare.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.ExceptionalComparison.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.ExceptionalComparison.proof.{u} GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3BlowUpPieces GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_BlowUpOrderLe GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3ExceptionalContraction
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomLoc : GroundTheory.Heights₂.Heights.Model.SpreadHomLoc.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadHomLoc.proof GroundTheory.Heights₂.Heights.Model.DescendHom.proof GroundTheory.Heights₂.Heights.AutoClose.Model_PullInjLoc GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomSectionsLoc
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomNbhd : GroundTheory.Heights₂.Heights.Model.SpreadHomNbhd.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadHomNbhd.proof GroundTheory.Heights₂.Heights.Model.DescendHom.proof GroundTheory.Heights₂.Heights.AutoClose.Model_GenericPullInj GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomSections
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadIso : GroundTheory.Heights₂.Heights.Model.SpreadIso.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadIso.of_open GroundTheory.Heights₂.Heights.Model.DescendHom.proof GroundTheory.Heights₂.Heights.AutoClose.Model_GenericPullInj GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomSections
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHom : GroundTheory.Heights₂.Heights.Model.SpreadHom.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadHom.of_open GroundTheory.Heights₂.Heights.Model.DescendHom.proof GroundTheory.Heights₂.Heights.AutoClose.Model_GenericPullInj GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomSections
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.spread_isomorphism_holds : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.SpreadIso.Statement :=
-  @GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.SpreadIso.of_open GroundTheory.Heights₂.Heights.Model.DescendHom.proof GroundTheory.Heights₂.Heights.AutoClose.Model_GenericPullInj GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomSections
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.TubeDeepMass : GroundTheory.Heights₂.Heights.TubeDeepMass.Statement :=
   @GroundTheory.Heights₂.Heights.TubeDeepMass.proof GroundTheory.Heights₂.Heights.TubeDeepRankOne.proof GroundTheory.Heights₂.Heights.AutoClose.TubeDeepAreaCount GroundTheory.Heights₂.Heights.HilbertSamuel.Closed.TubeDeepWeightMass

@@ -310,15 +310,6 @@ theorem isAdmissible_iff_bijective [FiniteDimensional F V] :
   have := (LinearEquiv.ofBijective (comparison B ρ) hbij).finrank_eq
   rwa [Module.finrank_baseChange, Module.finrank_baseChange] at this
 
-theorem isAdmissible_of_linearIndependent [FiniteDimensional F V] {ι : Type*} [Fintype ι]
-    {x : ι → DB B ρ} (hx : LinearIndependent B (fun i => (x i : B ⊗[F] V)))
-    (hcard : finrank F V ≤ Fintype.card ι) : IsAdmissible B ρ := by
-  letI := h.field
-  haveI := h.free ρ
-  haveI := h.finite ρ
-  have hE : LinearIndependent (invariantRing G F B) x :=
-    LinearIndependent.of_comp (DB B ρ).subtype (hx.restrict_scalars' (invariantRing G F B))
-  exact le_antisymm (h.finrank_le ρ) (hcard.trans hE.fintype_card_le_finrank)
 
 noncomputable def basisOfIsAdmissible [FiniteDimensional F V] (hadm : IsAdmissible B ρ)
     {ι : Type*} [Fintype ι] (b : Basis ι (invariantRing G F B) (DB B ρ)) :

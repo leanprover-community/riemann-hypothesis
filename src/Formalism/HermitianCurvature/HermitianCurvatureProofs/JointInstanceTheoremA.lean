@@ -5,50 +5,6 @@ open Finset NumberField Formalism.FourierDecayAlt Formalism.FourierDecayAlt.J
 namespace Formalism.FourierDecayAlt.P.Jx7
 
 section frames
-theorem t_FrameProducts : FrameProducts := by
-  intro r i s C rd g N I A TT hi hs hrd hg
-  obtain ⟨j, rfl⟩ : ∃ j, i = j + 1 := ⟨i - 1, by omega⟩
-  obtain ⟨t, rfl⟩ : ∃ t, s = t + 1 := ⟨s - 1, by omega⟩
-  have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
-  have e1 : 2 * r + 2 - 1 = 2 * r + 1 := by omega
-  have e2 : 2 * (j + 1 - 1) + (t + 1) - 1 = 2 * j + t := by omega
-  have e3 : 2 * (j + 1) - 1 = 2 * j + 1 := by omega
-  have e4 : 2 * (j + 1) - 2 = 2 * j := by omega
-  have e5 : 2 * (j + 1 - 1) = 2 * j := by omega
-  constructor
-  · unfold Sz.lamThreshold Sz.lamHat S6.nuBlock
-    rw [e1, e2]
-    have hz : rd ^ ((2 * (r : ℤ) + 3 - 2 * ((j + 1 : ℕ) : ℤ) - ((t + 1 : ℕ) : ℤ)) + 1) =
-        rd ^ (2 * r + 1) / rd ^ (2 * j + t) := by
-      rw [← zpow_natCast, ← zpow_natCast, ← zpow_sub₀ hrd.ne']
-      congr 1; push_cast; ring
-    rw [hz]
-    have hb : C * (2 * Real.pi / g) * N / I = C * (2 * Real.pi / rd) * N / (g * I) * rd := by
-      by_cases hI : I = 0
-      · simp [hI]
-      · field_simp
-    rw [hb, mul_pow]
-    generalize (C * (2 * Real.pi / rd) * N / (g * I)) ^ (2 * j + t) = Z
-    simp only [div_pow]
-    field_simp
-    ring
-  · unfold Sz.lamPrimeSq Sz.lamPrimeHat S6.nuBlock
-    rw [e1, e3, e4, e5]
-    have hz : rd ^ (2 * (r : ℤ) + 3 - 2 * ((j + 1 : ℕ) : ℤ) - ((r : ℤ) + 2 - ((j + 1 : ℕ) : ℤ))) =
-        rd ^ r / rd ^ j := by
-      rw [← zpow_natCast, ← zpow_natCast, ← zpow_sub₀ hrd.ne']
-      congr 1; push_cast; ring
-    rw [hz]
-    have hbpos : 0 ≤ g * (rd ^ r / rd ^ j) := by positivity
-    rw [← Real.sqrt_sq hbpos, ← Real.sqrt_mul' _ (sq_nonneg _)]
-    congr 1
-    have hb : C * (2 * Real.pi / rd) * N / I = C * N / I * (2 * Real.pi / rd) := by ring
-    rw [hb, mul_pow (C * N / I)]
-    generalize (C * N / I) ^ (2 * j) = Z
-    generalize (√TT)⁻¹ = S
-    simp only [div_pow, mul_pow]
-    field_simp
-    ring
 
 end frames
 
@@ -139,19 +95,7 @@ lemma supA_nonneg (hg : 0 < G.g) (hka : 0 < G.ka) (p : Prop) [Decidable p] (w : 
 
 lemma N_nonneg : 0 ≤ G.N := by unfold Sz.Glob.N; positivity
 
-lemma thrS_nonneg (hg : 0 < G.g) (hka : 0 < G.ka) (hC : 0 ≤ C) (hI : 0 < G.lenI) (b s : ℕ) (w : ι) :
-    0 ≤ thrS G C de de' T T' l b s w := by
-  unfold thrS Sz.lamThreshold
-  have h1 := supA_nonneg G de de' T T' l hg hka (b = 1 ∧ s = 1) w
-  have h2 := N_nonneg G
-  have := Real.pi_pos
-  positivity
 
-lemma lamHat_nonneg (hg : 0 < G.g) (hka : 0 < G.ka) (hC : 0 ≤ C) (hI : 0 < G.lenI) (b s : ℕ) (x : ℝ)
-    (hx : 0 ≤ x) : 0 ≤ Sz.lamHat b s C G.ka G.N G.lenI G.g x := by
-  unfold Sz.lamHat
-  have h2 := N_nonneg G
-  positivity
 
 lemma memS (hX : XIsLamOne) (b s : ℕ) (hb : 1 ≤ b) (hs : 1 ≤ s) (hbs : b + s ≤ G.r + 2) :
     (∏ w, Sz.lamHat b s C G.ka G.N G.lenI G.g (sp G de de' T T' l (b = 1 ∧ s = 1) w)) ∈
@@ -181,132 +125,6 @@ lemma memP (b : ℕ) (hb : 1 ≤ b) (hbs : b ≤ G.r + 1) :
 
 end Gl
 
-theorem t_InstSizes : InstSizes := by
-  intro hL hI hN hDeg hFP hX E W _ _ _ D e G C de de' T T' l Θ hU hInst hg1 hg2 hC hlen hΘ hGr
-  obtain ⟨hr, hK, hPl, hv, hLa, hLap, hLad, hszD, hszL, hvol⟩ := hInst
-  have hgN : 0 < G.g1 * G.g2 := Nat.mul_pos hg1 hg2
-  have hGg : G.g = ((G.g1 * G.g2 : ℕ) : ℝ) := by unfold Sz.Glob.g; push_cast; ring
-  have hgpos : 0 < G.g := by rw [hGg]; exact_mod_cast hgN
-  have hrd := rd_pos E
-  have hka : G.ka = 2 * Real.pi / S6.rd E := by
-    unfold Sz.Glob.ka; rw [hv]; field_simp
-  have hkapos : 0 < G.ka := by rw [hka]; have := Real.pi_pos; positivity
-  have hcard : Fintype.card (InfinitePlace E) = S6.deg E := (hDeg E).2.1
-  have hf : D.f = Fintype.card (InfinitePlace E) := by simpa using Fintype.card_congr e
-  have hGf : G.f = Fintype.card (InfinitePlace E) := rfl
-  have hM : ∀ x ∈ G.thrSet C de de' T T' l, x ≤ (Θ ^ G.f)⁻¹ := fun x hx => hGr.2 hx
-  have BL := fun b s => t_BlockLattices hL hI hN E hU (G.g1 * G.g2) G.r b s hgN
-
-  have key : ∀ b s : ℕ, 1 ≤ b → 1 ≤ s → ∀ w, thrS G C de de' T T' l b s w *
-      (G.g * S6.rd E ^ (S6.nuBlock G.r b s + 1)) =
-      Sz.lamHat b s C G.ka G.N G.lenI G.g (sp G de de' T T' l (b = 1 ∧ s = 1) w) := by
-    intro b s hb hs w
-    have := (hFP G.r b s C (S6.rd E) G.g G.N G.lenI
-      (supA G de de' T T' l (decide (b = 1 ∧ s = 1)) w) 0 hb hs hrd hgpos).1
-    unfold thrS
-    rw [show G.m = 2 * G.r + 2 from rfl, this, ← hka]
-    congr 1
-    exact supA_mul G de de' T T' l hgpos hkapos _ w
-  have keyP : ∀ b : ℕ, 1 ≤ b → ∀ w, thrP G C de de' T T' l b w *
-      (G.g * S6.rd E ^ (S6.nuBlock G.r b ((G.r : ℤ) + 2 - b))) =
-      Sz.lamPrimeHat b C G.ka G.N G.lenI G.g (G.supI de de' T T' l w) (T * T') := by
-    intro b hb w
-    have := (hFP G.r b 1 C (S6.rd E) G.g G.N G.lenI
-      (supA G de de' T T' l false w) (T * T') hb le_rfl hrd hgpos).2
-    unfold thrP
-    rw [show G.m = 2 * G.r + 2 from rfl, this, ← hka]
-    congr 1
-    exact supA_mul G de de' T T' l hgpos hkapos False w
-
-  have prodkey : ∀ b s : ℕ, 1 ≤ b → 1 ≤ s → ∏ w, thrS G C de de' T T' l b s w =
-      (∏ w, Sz.lamHat b s C G.ka G.N G.lenI G.g (sp G de de' T T' l (b = 1 ∧ s = 1) w)) *
-        √(FractionalIdeal.absNorm (S6.dualIdl E (G.g1 * G.g2) (S6.nuBlock G.r b s)) : ℝ) := by
-    intro b s hb hs
-    have hc : 0 < G.g * S6.rd E ^ (S6.nuBlock G.r b s + 1) := by positivity
-    unfold S6.dualIdl
-    rw [sqrt_idl hN E _ _ hgN, ← hGg, ← hcard, ← Finset.card_univ, ← Finset.prod_const,
-      ← div_eq_mul_inv, ← Finset.prod_div_distrib]
-    exact Finset.prod_congr rfl fun w _ => eq_div_of_mul_eq hc.ne' (key b s hb hs w)
-  have Ppos : ∀ b s : ℕ, 0 ≤ ∏ w, Sz.lamHat b s C G.ka G.N G.lenI G.g
-      (sp G de de' T T' l (b = 1 ∧ s = 1) w) := fun b s =>
-    Finset.prod_nonneg fun w _ => lamHat_nonneg G C hgpos hkapos hC hlen b s _
-      (sp_nonneg G de de' T T' l hgpos.le hkapos.le _ w)
-  have Ple : ∀ b s : ℕ, 1 ≤ b → 1 ≤ s → b + s ≤ G.r + 2 →
-      ∏ w, Sz.lamHat b s C G.ka G.N G.lenI G.g (sp G de de' T T' l (b = 1 ∧ s = 1) w) ≤
-        (Θ ^ G.f)⁻¹ := fun b s hb hs hbs => hM _ (memS G C de de' T T' l hX b s hb hs hbs)
-  have Npos : ∀ ν : ℤ, 0 < √(FractionalIdeal.absNorm (S6.dualIdl E (G.g1 * G.g2) ν) : ℝ) := by
-    intro ν
-    unfold S6.dualIdl
-    rw [sqrt_idl hN E _ _ hgN]
-    have : (0 : ℝ) < ((G.g1 * G.g2 : ℕ) : ℝ) := by exact_mod_cast hgN
-    positivity
-  refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
-  · intro b s
-    rw [hvol]
-    apply div_nonneg (sq_nonneg _)
-    exact_mod_cast FractionalIdeal.absNorm_nonneg _
-  · intro b s hb hs hbs
-    rw [hr] at hbs
-    rw [hvol, prodkey b s hb hs, mul_pow, Real.sq_sqrt (Real.sqrt_pos.1 (Npos _)).le,
-      mul_div_assoc, div_self (Real.sqrt_pos.1 (Npos _)).ne', mul_one, hf, ← hGf]
-    exact pow_le_pow_left₀ (Ppos b s) (Ple b s hb hs hbs) 2
-  · intro i hi1 hi2
-    rw [hr] at hi2
-    refine ⟨(BL i 1).2.2.2.1, ?_, fun v => ?_, ?_⟩
-    · intro x hx; rw [hLad] at hx; exact (BL i 1).1 x hx
-    · rw [hszD]; exact thrS_nonneg G C de de' T T' l hgpos hkapos hC hlen _ _ _
-    · have h1 : ∏ v, D.szD i v = ∏ w, thrS G C de de' T T' l i 1 w := by
-        rw [← Equiv.prod_comp e]; exact Finset.prod_congr rfl fun v _ => hszD i v
-      rw [h1]
-      have h2 := prodkey i 1 hi1 le_rfl
-      rw [Nat.cast_one] at h2
-      beta_reduce
-      rw [h2, one_div, inv_pow, hf, ← hGf]
-      exact mul_le_mul_of_nonneg_right (Ple i 1 hi1 le_rfl (by omega)) (Real.sqrt_nonneg _)
-  · intro b s hb hs hbs hne
-    rw [hr] at hbs hne
-    refine ⟨(BL b s).2.2.2.2.1, ?_, fun v => ?_, ?_⟩
-    · intro x hx; rw [hLap] at hx; exact (BL b s).2.2.1 x hx
-    · rw [hszL]; split_ifs
-      · exact thrS_nonneg G C de de' T T' l hgpos hkapos hC hlen _ _ _
-      · unfold thrP; positivity
-    · have h2Θ : (Θ ^ G.f)⁻¹ ≤ (2 / Θ) ^ D.f := by
-        rw [hf, ← hGf, div_pow, div_eq_mul_inv]
-        have : (1 : ℝ) ≤ 2 ^ G.f := one_le_pow₀ (by norm_num)
-        have h0 : 0 ≤ (Θ ^ G.f)⁻¹ := by positivity
-        nlinarith
-      by_cases hc : b + s ≤ G.r + 1
-      · have h1 : ∏ v, D.szL b s v = ∏ w, thrS G C de de' T T' l b (s + 1) w := by
-          rw [← Equiv.prod_comp e]
-          exact Finset.prod_congr rfl fun v _ => by rw [hszL, if_pos hc]
-        beta_reduce
-        rw [h1, prodkey b (s + 1) hb (by omega), (BL b s).2.2.2.2.2.1]
-        exact mul_le_mul_of_nonneg_right ((Ple b (s + 1) hb (by omega) (by omega)).trans h2Θ)
-          (Real.sqrt_nonneg _)
-      · have hs' : (s : ℤ) = (G.r : ℤ) + 2 - b := by omega
-        have h1 : ∏ v, D.szL b s v = 2 ^ D.f * ∏ w, thrP G C de de' T T' l b w := by
-          calc ∏ v, D.szL b s v = ∏ v, (2 * thrP G C de de' T T' l b (e v)) :=
-                Finset.prod_congr rfl fun v _ => by rw [hszL, if_neg hc]
-            _ = 2 ^ D.f * ∏ v, thrP G C de de' T T' l b (e v) := by
-                rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
-            _ = _ := by rw [Equiv.prod_comp e (fun w => thrP G C de de' T T' l b w)]
-        have hcpos : 0 < G.g * S6.rd E ^ (S6.nuBlock G.r b s) := by positivity
-        have h2 : ∏ w, thrP G C de de' T T' l b w =
-            (∏ w, Sz.lamPrimeHat b C G.ka G.N G.lenI G.g (G.supI de de' T T' l w) (T * T')) *
-              √(FractionalIdeal.absNorm (S6.liftIdl E (G.g1 * G.g2) (S6.nuBlock G.r b s)) : ℝ) := by
-          unfold S6.liftIdl
-          rw [sqrt_idl hN E _ _ hgN, ← hGg, ← hcard, ← Finset.card_univ, ← Finset.prod_const,
-            ← div_eq_mul_inv, ← Finset.prod_div_distrib]
-          refine Finset.prod_congr rfl fun w _ => eq_div_of_mul_eq hcpos.ne' ?_
-          rw [hs']; exact keyP b hb w
-        beta_reduce
-        rw [h1, h2, ← mul_assoc]
-        apply mul_le_mul_of_nonneg_right _ (Real.sqrt_nonneg _)
-        have h3 := hM _ (memP G C de de' T T' l b hb (by omega))
-        rw [div_pow, div_eq_mul_inv, hf, ← hGf]
-        exact mul_le_mul_of_nonneg_left h3 (by positivity)
-  · unfold TB.Data.Ntop Sz.Glob.N
-    rw [hK, hr]; push_cast; ring
 
 end sizes
 
@@ -435,109 +253,11 @@ theorem t_LatticeSumsJoint : LatticeSumsJoint := by
 end sums
 
 section positivity
-theorem t_GlobPositive : GlobPositive := by
-  intro CDel Cb hCDel hCb
-  refine ⟨max 3 ⌈2 / Cb⌉₊, ?_⟩
-  intro ι _ G bb hk hyp
-  have hk3 : 3 ≤ G.k := le_trans (le_max_left _ _) hk
-  have hkC : 2 / Cb ≤ (G.k : ℝ) :=
-    le_trans (Nat.le_ceil _) (by exact_mod_cast le_trans (le_max_right _ _) hk)
-  have hk3r : (3 : ℝ) ≤ G.k := by exact_mod_cast hk3
-  have hk0 : (0 : ℝ) < G.k := by linarith
-  have hbb := hyp.hbb
-  have hbb0 : 0 < bb := by linarith
-  have hpos : 0 < ((G.k : ℝ) * bb) ^ 8 := by positivity
-  have hg1 : 0 < G.g1 := by
-    have : (0 : ℝ) < G.g1 := lt_of_lt_of_le hpos hyp.hg1
-    exact_mod_cast this
-  have hg2 : 0 < G.g2 := by
-    have : (0 : ℝ) < G.g2 := lt_of_lt_of_le hpos hyp.hg2
-    exact_mod_cast this
-  refine ⟨hg1, hg2, ?_⟩
-  have hm2 : 2 ≤ G.m := by unfold Sz.Glob.m; omega
-  have hf2 : 2 ≤ G.f := le_trans hm2 hyp.hmf
-  have hne : Nonempty ι := by
-    apply Fintype.card_pos_iff.1
-    have : G.f = Fintype.card ι := rfl
-    omega
-  obtain ⟨w⟩ := hne
-  have h1 : (G.k : ℝ) ^ Cb ≤ G.b w 1 := hyp.hnode w 1 le_rfl (by omega)
-  have h2 : G.b w 1 ≤ bb ^ 2 := (hyp.hsmall w).hbj 1 le_rfl (by
-    show 1 ≤ 2 * G.r + 2
-    omega)
-  have h3 : (G.k : ℝ) ^ Cb ≤ bb ^ 2 := le_trans h1 h2
-  have h4 : Cb * Real.log G.k ≤ 2 * Real.log bb := by
-    have := Real.log_le_log (Real.rpow_pos_of_pos hk0 Cb) h3
-    rw [Real.log_rpow hk0, Real.log_pow] at this
-    exact_mod_cast this
-  have hlogk : 1 ≤ Real.log G.k := by
-    rw [Real.le_log_iff_exp_le hk0]
-    have := Real.exp_one_lt_d9
-    linarith
-  have hlogbb : Cb / 2 ≤ Real.log bb := by nlinarith
-  have hkCb : 2 ≤ (G.k : ℝ) * Cb := by
-    rw [div_le_iff₀ hCb] at hkC
-    exact hkC
-  have hf2r : (2 : ℝ) ≤ G.f := by exact_mod_cast hf2
-  have hbase : 2 ≤ (G.k : ℝ) * G.f * Real.log bb := by
-    have e1 : (G.k : ℝ) * 2 * (Cb / 2) ≤ (G.k : ℝ) * G.f * Real.log bb := by
-      apply mul_le_mul _ hlogbb (by positivity) (by positivity)
-      exact mul_le_mul_of_nonneg_left hf2r hk0.le
-    nlinarith
-  have h16 : (16 : ℝ) ≤ ((G.k : ℝ) * G.f * Real.log bb) ^ CDel := by
-    calc (16 : ℝ) = (2 : ℝ) ^ (4 : ℝ) := by norm_num
-      _ ≤ (2 : ℝ) ^ CDel := Real.rpow_le_rpow_of_exponent_le (by norm_num) hCDel.le
-      _ ≤ _ := Real.rpow_le_rpow (by norm_num) hbase (by linarith)
-  have hD : 16 ≤ G.Del := le_trans h16 hyp.hDel
-  unfold Sz.Glob.lenI
-  linarith
 
 end positivity
 
 section main
 open scoped ComplexOrder
-theorem t_SizesToRecursion : SizesToRecursion := by
-  intro hS CA C0 CG CDel cT Cb C C' hCA hC0 hCG hCDel hcT hCb hcTb hC hCCA
-  obtain ⟨k0, hk0⟩ := hS CA C0 CG CDel cT Cb hCA hC0 hCG hCDel hcT hCb hcTb
-  have hc : 0 < Sz.cExp CDel cT Cb := by
-    unfold Sz.cExp
-    have : 0 < min ((CDel - 4) / 2) ((cT * Cb - 1) / 4) := lt_min (by linarith) (by linarith)
-    positivity
-  have hMpos : 0 < max C' 5 := lt_of_lt_of_le (by norm_num) (le_max_right _ _)
-  refine ⟨max k0 (⌈(max C' 5) ^ (1 / Sz.cExp CDel cT Cb)⌉₊), ?_⟩
-  intro ι _ G bb Cp Cf Th de de' T T' du du' l hk hyp h16 hCf
-  obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15, h16', h17, h18, h19⟩ := hyp
-  have hmain := hk0 ι G bb Cp Cf Th de de' T T' du du' l (le_trans (le_max_left _ _) hk) h1 h2 h3 h4 h5
-    h6 h7 h8 h9 h10 h11 h12 h13 h14 h15 h16' h17 h18 h19
-  obtain ⟨hTh, hrest⟩ := hmain
-  obtain ⟨hr1, hr2⟩ := hrest h16 hCf
-  have hkM : (max C' 5) ^ (1 / Sz.cExp CDel cT Cb) ≤ (G.k : ℝ) :=
-    le_trans (Nat.le_ceil _) (by exact_mod_cast le_trans (le_max_right _ _) hk)
-  have hMle : max C' 5 ≤ (G.k : ℝ) ^ Sz.cExp CDel cT Cb := by
-    calc max C' 5 = ((max C' 5) ^ (1 / Sz.cExp CDel cT Cb)) ^ Sz.cExp CDel cT Cb := by
-          rw [← Real.rpow_mul hMpos.le, one_div, inv_mul_cancel₀ hc.ne', Real.rpow_one]
-      _ ≤ _ := Real.rpow_le_rpow (by positivity) hkM hc.le
-  have hMTh : max C' 5 ≤ Th := le_trans hMle hTh
-  have hpow : (C / Th) ^ G.f ≤ (CA / Th) ^ G.f :=
-    pow_le_pow_left₀ (div_nonneg hC h18.le) (div_le_div_of_nonneg_right hCCA h18.le) _
-  have hpn : 0 ≤ (C / Th) ^ G.f := pow_nonneg (div_nonneg hC h18.le) _
-  have hbb : (bb ^ 7)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (one_le_pow₀ h1.hbb.le)
-  have hr0 : (0 : ℝ) ≤ G.r := Nat.cast_nonneg _
-  have hA1 : ((G.r : ℝ) + 1) * (CA / Th) ^ G.f ≤ CA * ((G.r : ℝ) + 1) * (CA / Th) ^ G.f := by
-    have : 0 ≤ ((G.r : ℝ) + 1) * (CA / Th) ^ G.f :=
-      mul_nonneg (by linarith) (le_trans hpn hpow)
-    nlinarith
-  refine ⟨le_trans (le_max_left _ _) hMTh, lt_of_lt_of_le (by norm_num) (le_trans (le_max_right _ _) hMTh),
-    le_trans (mul_le_mul_of_nonneg_left hpow hr0) hr1, ?_, ?_⟩
-  · calc ((G.r : ℝ) + 1) * (C / Th) ^ G.f ≤ ((G.r : ℝ) + 1) * (CA / Th) ^ G.f :=
-          mul_le_mul_of_nonneg_left hpow (by linarith)
-      _ ≤ _ := hA1
-      _ ≤ _ := hr2
-      _ ≤ 1 := hbb
-  · calc C * ((G.r : ℝ) + 1) * (C / Th) ^ G.f ≤ CA * ((G.r : ℝ) + 1) * (CA / Th) ^ G.f := by
-          apply mul_le_mul _ hpow hpn (by positivity)
-          exact mul_le_mul_of_nonneg_right hCCA (by linarith)
-      _ ≤ _ := hr2
 
 theorem jn_nonneg {E W : Type} [Field E] (D : TB.Data E W) (jn : ℝ) (hG : D.GramPSD) (hE : D.EstE jn) :
     0 ≤ jn := by
@@ -557,151 +277,10 @@ theorem jn_nonneg {E W : Type} [Field E] (D : TB.Data E W) (jn : ℝ) (hG : D.Gr
     simpa using this
   rw [D.wt_emp, div_one]; exact hre
 
-theorem t_MainJoint : MainJoint := by
-  intro hA hS C₁ C₄ Cthr h1 h4
-  obtain ⟨CT, CT', hT⟩ := hA C₁ C₄ h1 h4
-  refine ⟨max (max Cthr 1) |CT|, |CT|, le_trans (le_max_left _ _) (le_max_left _ _),
-    le_trans (le_max_right _ _) (le_max_left _ _), abs_nonneg _, le_max_right _ _, ?_⟩
-  intro C0 CG CDel cT Cb hC0 hCG hCDel hcT hCb hcTb
-  obtain ⟨k0, hk0⟩ := t_SizesToRecursion hS (max (max Cthr 1) |CT|) C0 CG CDel cT Cb |CT| CT'
-    (le_trans (le_max_right _ _) (le_max_left _ _)) hC0 hCG hCDel hcT hCb hcTb (abs_nonneg _)
-    (le_max_right _ _)
-  refine ⟨k0, ?_⟩
-  intro ι _ G bb Cp Cf Th de de' T T' du du' l hk hyp h16 hCf E W _ D jn H _ _ _ Vt c hr hf hrec he
-    P _ B hI hδ hSm
-  obtain ⟨s1, s2, s3, s4, s5⟩ := hk0 ι G bb Cp Cf Th de de' T T' du du' l hk hyp h16 hCf
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17⟩ := hrec
-  have hjn := jn_nonneg D jn a5 a15
-  have habs : (CT / Th) ^ D.f ≤ (|CT| / Th) ^ D.f := by
-    calc (CT / Th) ^ D.f ≤ |(CT / Th) ^ D.f| := le_abs_self _
-      _ = (|CT| / Th) ^ D.f := by rw [abs_pow, abs_div, abs_of_pos a3]
-  have hpn : 0 ≤ (|CT| / Th) ^ D.f := by positivity
-  have hr0 : (0 : ℝ) ≤ D.r := Nat.cast_nonneg _
-  have hsm : (D.r : ℝ) * (CT / Th) ^ D.f ≤ 1 := by
-    refine le_trans (mul_le_mul_of_nonneg_left habs hr0) ?_
-    rw [hr, hf]; exact s3
-  constructor
-  · unfold S3.MassData.InTheoremA
-    apply hSm
-    intro R
-    have := hT E W D Th jn H Vt c a1 a2 a3 s1 hsm a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 R
-    rw [Finset.prod_eq_one (fun i hi => by rw [he i hi, add_zero]), mul_one] at this
-    refine le_trans this ?_
-    rw [hδ, hI]
-    apply mul_le_mul_of_nonneg_right _ hjn
-    have h2 : CT * ((D.r : ℝ) + 1) * (CT / Th) ^ D.f ≤ |CT| * ((D.r : ℝ) + 1) * (|CT| / Th) ^ D.f := by
-      calc CT * ((D.r : ℝ) + 1) * (CT / Th) ^ D.f ≤ |CT * ((D.r : ℝ) + 1) * (CT / Th) ^ D.f| := le_abs_self _
-        _ = |CT| * ((D.r : ℝ) + 1) * (|CT| / Th) ^ D.f := by
-            rw [abs_mul, abs_mul, abs_pow, abs_div, abs_of_pos a3, abs_of_nonneg (by linarith : (0:ℝ) ≤ (D.r : ℝ) + 1)]
-    linarith
-  · rw [hδ, hr, hf]; exact s5
 
-theorem t_InstLatticeSums : InstLatticeSums := by
-  intro hLJ hIS hBox hLat hId hNorm hDeg hFP hX
-  obtain ⟨C, hC1, hC⟩ := hLJ hBox
-  refine ⟨C * 2 ^ ((5 : ℝ) - 5 / 2), ?_, ?_⟩
-  · have : (1 : ℝ) ≤ 2 ^ ((5 : ℝ) - 5 / 2) := Real.one_le_rpow (by norm_num) (by norm_num)
-    nlinarith
-  intro E W _ _ _ D e G Cc de de' T T' l Θ hU hInst hg1 hg2 hCc hlen hΘ hGr
-  obtain ⟨hSB, hIdl, _⟩ := hIS hLat hId hNorm hDeg hFP hX E W D e G Cc de de' T T' l Θ hU hInst hg1 hg2 hCc
-    hlen (by linarith) hGr
-  refine ⟨hSB, ?_⟩
-  have hK : D.K = 5 := hInst.2.1
-  have := hC E W D e _ _ Θ 2 hInst.2.2.1 (by omega) (by norm_num) (by linarith) hIdl
-  have hK' : (D.K : ℝ) = 5 := by exact_mod_cast hK
-  rw [hK'] at this ⊢
-  exact this
 
-theorem t_XIsLamOne : XIsLamOne := by
-  intro m i C ka N I A g B
-  have h : 2 * i - 2 = 2 * (i - 1) + 1 - 1 := by omega
-  constructor <;> simp only [Sz.xThreshold, Sz.lamThreshold, Sz.xHat, Sz.lamHat, h]
 
-theorem t_MainJointForm : MainJointForm := by
-  intro hA hS C₁ C₄ Cthr h1 h4
-  obtain ⟨CT, CT', hT⟩ := hA C₁ C₄ h1 h4
-  refine ⟨max (max Cthr 1) |CT|, |CT|, le_trans (le_max_left _ _) (le_max_left _ _),
-    le_trans (le_max_right _ _) (le_max_left _ _), abs_nonneg _, le_max_right _ _, ?_⟩
-  intro C0 CG CDel cT Cb hC0 hCG hCDel hcT hCb hcTb
-  obtain ⟨k0, hk0⟩ := t_SizesToRecursion hS (max (max Cthr 1) |CT|) C0 CG CDel cT Cb |CT| CT'
-    (le_trans (le_max_right _ _) (le_max_left _ _)) hC0 hCG hCDel hcT hCb hcTb (abs_nonneg _)
-    (le_max_right _ _)
-  refine ⟨k0, ?_⟩
-  intro ι _ G bb Cp Cf Th de de' T T' du du' l hk hyp h16 hCf E W _ D jn H _ _ _ Vt c hr hf hrec he
-    P _ B he1 hI hδ hrow
-  obtain ⟨s1, s2, s3, s4, s5⟩ := hk0 ι G bb Cp Cf Th de de' T T' du du' l hk hyp h16 hCf
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17⟩ := hrec
-  have hjn := jn_nonneg D jn a5 a15
-  have habs : (CT / Th) ^ D.f ≤ (|CT| / Th) ^ D.f := by
-    calc (CT / Th) ^ D.f ≤ |(CT / Th) ^ D.f| := le_abs_self _
-      _ = (|CT| / Th) ^ D.f := by rw [abs_pow, abs_div, abs_of_pos a3]
-  have hpn : 0 ≤ (|CT| / Th) ^ D.f := by positivity
-  have hr0 : (0 : ℝ) ≤ D.r := Nat.cast_nonneg _
-  have hsm : (D.r : ℝ) * (CT / Th) ^ D.f ≤ 1 := by
-    refine le_trans (mul_le_mul_of_nonneg_left habs hr0) ?_
-    rw [hr, hf]; exact s3
-  have hprod : ∏ i ∈ Icc 1 (D.r + 1), (1 + D.e i) = B.e1 := by
-    rw [Finset.prod_Icc_succ_top (by omega : 1 ≤ D.r + 1),
-      Finset.prod_eq_one (fun i hi => by rw [he i hi, add_zero]), one_mul, he1]
-  have he0 : 0 ≤ D.e (D.r + 1) := (a9 (D.r + 1) 1 le_rfl (by omega) le_rfl).1.1
-  have he1p : 0 ≤ B.e1 := by rw [← he1]; linarith
-  refine ⟨?_, ?_, ?_⟩
-  · have key := hrow ((1 + B.δ) * B.e1 * B.IntN) (fun R => by
-      have := hT E W D Th jn H Vt c a1 a2 a3 s1 hsm a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 R
-      rw [hprod] at this
-      refine le_trans this ?_
-      rw [hδ, hI]
-      have h2 : CT * ((D.r : ℝ) + 1) * (CT / Th) ^ D.f ≤
-          |CT| * ((D.r : ℝ) + 1) * (|CT| / Th) ^ D.f := by
-        calc CT * ((D.r : ℝ) + 1) * (CT / Th) ^ D.f
-            ≤ |CT * ((D.r : ℝ) + 1) * (CT / Th) ^ D.f| := le_abs_self _
-          _ = |CT| * ((D.r : ℝ) + 1) * (|CT| / Th) ^ D.f := by
-              rw [abs_mul, abs_mul, abs_pow, abs_div, abs_of_pos a3,
-                abs_of_nonneg (by linarith : (0:ℝ) ≤ (D.r : ℝ) + 1)]
-      apply mul_le_mul_of_nonneg_right _ hjn
-      apply mul_le_mul_of_nonneg_right _ he1p
-      linarith)
-    calc B.c0 * B.c0' * B.KV ≤ B.n0c * ((1 + B.δ) * B.e1 * B.IntN) := key
-      _ = _ := by ring
-  · rw [hδ]; positivity
-  · rw [hδ, hr, hf]; exact s5
 
-theorem t_MainJointInst : MainJointInst := by
-  intro hA hS hBox hLat hId hNorm hDeg C₄ Cthr h4
-  obtain ⟨C₁, hC1, hIL⟩ := t_InstLatticeSums t_LatticeSumsJoint t_InstSizes hBox hLat
-    hId hNorm hDeg t_FrameProducts t_XIsLamOne
-  obtain ⟨CA, C, b1, b2, b3, b4, hM⟩ := t_MainJointForm hA hS C₁ C₄ Cthr hC1 h4
-  refine ⟨CA, C, b1, b2, b3, b4, ?_⟩
-  intro C0 CG CDel cT Cb hC0 hCG hCDel hcT hCb hcTb
-  obtain ⟨k1, hk1⟩ := hM C0 CG CDel cT Cb hC0 hCG hCDel hcT hCb hcTb
-  obtain ⟨k2, hk2⟩ := t_SizesToRecursion hS CA C0 CG CDel cT Cb C 0 b2 hC0 hCG hCDel hcT hCb hcTb
-    b3 b4
-  obtain ⟨k3, hk3⟩ := t_GlobPositive CDel Cb hCDel hCb
-  refine ⟨max (max k1 k2) k3, ?_⟩
-  intro E W _ _ _ D e G bb Cp Cf Th de de' T T' du du' l hk hyp h16 hCf hU hInst jn H
-    _ _ _ Vt c hrec he P _ B he1 hI hδ hrow
-  obtain ⟨hg1, hg2, hlen⟩ := hk3 (InfinitePlace E) G bb (le_trans (le_max_right _ _) hk) hyp.1
-  have s := hk2 (InfinitePlace E) G bb Cp Cf Th de de' T T' du du' l
-    (le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hk) hyp h16 hCf
-  have hTh4 : 4 < Th := s.2.1
-  have hGr : IsGreatest (G.thrSet CA de de' T T' l) ((Th ^ G.f)⁻¹) := by
-    obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, h⟩ := hyp
-    exact h
-  obtain ⟨hSB, hLS⟩ := hIL E W D e G CA de de' T T' l Th hU hInst hg1 hg2 (by linarith) hlen hTh4 hGr
-  have hf : D.f = G.f := by
-    have := Fintype.card_congr e
-    rw [Fintype.card_fin] at this
-    exact this
-  have hf1 : 1 ≤ D.f := by
-    obtain ⟨_, d2, d3⟩ := hDeg E
-    rw [hf]; unfold Sz.Glob.f; omega
-  have hK : 4 ≤ D.K := by rw [hInst.2.1]; norm_num
-  obtain ⟨r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12⟩ := hrec
-  exact hk1 (InfinitePlace E) G bb Cp Cf Th de de' T T' du du' l
-    (le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hk) hyp h16
-    hCf E W D jn H Vt c hInst.1 hf
-    ⟨hK, hf1, by linarith, hSB, r1, r2, r3, r4, r5, r6, r7, r8, r9, hLS, r10, r11, r12⟩ he P B he1 hI hδ
-    hrow
 
 end main
 
@@ -904,11 +483,8 @@ end Formalism.FourierDecayAlt.P.Jx7
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem joint_theorem_A : Formalism.FourierDecayAlt.J.MainJoint := Jx7.t_MainJoint
 
-theorem joint_form_theorem_A : Formalism.FourierDecayAlt.J.MainJointForm := Jx7.t_MainJointForm
 
-theorem joint_instance_theorem_A : Formalism.FourierDecayAlt.J.MainJointInst := Jx7.t_MainJointInst
 
 theorem schur_product : Formalism.FourierDecayAlt.J.SchurProduct := Jx7.t_SchurProduct
 

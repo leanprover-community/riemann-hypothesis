@@ -246,8 +246,6 @@ def homOfIso {N N' : NumD O} (I : NumD.Iso N N') : NumD.Hom (RingHom.id O) N N' 
   c_eq := I.c_eq
   ψ_eq := I.ψ_eq
 
-theorem homOfIso_rel {N N' : NumD O} (I : NumD.Iso N N') (g : N.Gt) (g' : N'.Gt) :
-    (homOfIso I).Rel g g' ↔ I.Rel g g' := Iff.rfl
 
 def tateHom {O' : Type} [CommRing O'] (f : O →+* O') (q : Oˣ) :
     NumD.Hom f (tate q) (tate (Units.map f.toMonoidHom q)) where
@@ -281,49 +279,7 @@ theorem _root_.GlobalTheory.Ex.TateInh.evT_one (N : _root_.GlobalTheory.Ex.NumD 
   simp only [_root_.GlobalTheory.Ex.NumD.Gt.generator_inv_base,
     _root_.GlobalTheory.Ex.NumD.Gt.one_b, one_mul, N.cub.N_one]
 
-theorem phi_factor (N : NumD O) {k : ℕ} (p : N.QT k) (h : N.Gt) (α : N.X) :
-    h.s (p.1.1.toAdd + α) * N.uV k (N.c α) p.1.2.b h.b * p.1.2.s α =
-      h.s p.1.1.toAdd * cubN N.θ k 1 p.1.2.b h.b * (h * p.1.2).s α := by
-  have a := congrArg Additive.ofMul (h.mult p.1.1.toAdd α)
-  rw [NumB.uV, N.cub.N_split k (N.c α), N.QT_pow_b, NumD.Gt.mul_s, N.cub.s01 (N.c α) (N.c _) h.b]
-  apply Additive.ofMul.injective
-  simp only [ofMul_mul, ofMul_div] at a ⊢
-  linear_combination (norm := abel) a
 
-theorem txT_twist (N : NumD O) {k : ℕ} (β : N.Form k) (u : Oˣ) (m : ℕ) (hm : m ^ 2 ∣ k) (ho : Odd m)
-    (p : N.QT (m ^ 2)) (χ : N.X) :
-    (N.twist β u).txT m (N.twQ β u hm p) χ =
-      (u ^ (β.be (p.1.1.toAdd + m • χ) (p.1.1.toAdd + m • χ) / (2 * m ^ 2)) : Oˣ) * N.txT m p χ := by
-  set y := p.1.1.toAdd with hy
-  have h' := N.twG_pow β u p.1.2 (fun z => β.be y z / ((m ^ 2 : ℕ) : ℤ)) (β.div_add hm _) m
-  have hd : ∀ a b, (2 * m ^ 2 : ℤ) ∣ β.be a b := fun a b =>
-    (mul_dvd_mul_left 2 (by exact_mod_cast hm)).trans (β.dvd a b)
-  obtain ⟨a, ha⟩ := hd y y
-  obtain ⟨b, hb⟩ := hd y χ
-  obtain ⟨c, hc⟩ := hd χ χ
-  obtain ⟨r, hr⟩ : Odd (m ^ 2) := ho.pow
-  have hm0 : (m : ℤ) ≠ 0 := by exact_mod_cast ho.pos.ne'
-  have hr' : (m : ℤ) ^ 2 = 2 * r + 1 := by exact_mod_cast hr
-  have e0 : β.be (y + m • χ) (y + m • χ) / (2 * m ^ 2) = a + 2 * b * m + c * m ^ 2 := by
-    simp only [map_add, LinearMap.add_apply, map_nsmul, LinearMap.smul_apply, β.symm χ y, ha, hb, hc, nsmul_eq_mul]
-    exact Int.ediv_eq_of_eq_mul_right (by positivity) (by ring)
-  have e1 : β.be y y / 2 = a * (2 * r + 1) := Int.ediv_eq_of_eq_mul_right two_ne_zero (by rw [ha, hr']; ring)
-  have e2 : β.be χ χ / 2 = c * m ^ 2 := Int.ediv_eq_of_eq_mul_right two_ne_zero (by rw [hc]; ring)
-  have e3 : β.be y y / ((m ^ 2 : ℕ) : ℤ) = 2 * a := Int.ediv_eq_of_eq_mul_right (by push_cast; positivity) (by rw [ha]; push_cast; ring)
-  have e4 : β.be y χ / ((m ^ 2 : ℕ) : ℤ) = 2 * b := Int.ediv_eq_of_eq_mul_right (by push_cast; positivity) (by rw [hb]; push_cast; ring)
-  have e5 : (m ^ 2 - 1) / 2 = r := by omega
-  change ((N.ψ y * u ^ (β.be y y / 2) * mulq N.θ N.σ (m ^ 2) p.1.2.b /
-      (p.1.2.s y * u ^ (β.be y y / ((m ^ 2 : ℕ) : ℤ)) * cubN N.θ (m ^ 2) 1 p.1.2.b p.1.2.b / dbl N.θ N.σ p.1.2.b ^ (m ^ 2)) ^ ((m ^ 2 - 1) / 2)
-      / mulq N.θ N.σ m p.1.2.b : Oˣ) : O) *
-      ((N.ψ χ * u ^ (β.be χ χ / 2) * (N.twG β u p.1.2 (fun z => β.be y z / ((m ^ 2 : ℕ) : ℤ)) (β.div_add hm _) ^ m).s χ : Oˣ) *
-        N.th (N.c χ * (show N.A from (N.twG β u p.1.2 (fun z => β.be y z / ((m ^ 2 : ℕ) : ℤ)) (β.div_add hm _) ^ m).b))) = _
-  erw [h'.1, h'.2]
-  rw [ e0, e1, e2, e3, e4]
-  simp only [NumD.txT, NumD.vt, NumD.wQ, NumB.wS, ← hy, e5, ← mul_assoc, ← Units.val_mul]
-  congr 2
-  apply Additive.ofMul.injective
-  simp only [ofMul_mul, ofMul_div, ofMul_pow, ofMul_zpow]
-  module
 
 def sv {q : Oˣ} (g : (tate q).Gt) (a : ℤ) : Oˣ := g.s a
 
@@ -427,47 +383,10 @@ def tateMatch {C : Type} [NormedField C] (q : Cˣ) (n : ℕ) (hn : Odd n) : Matc
   c₀_ne := one_ne_zero
   tx _ _ _ h := by rw [one_mul]; exact tate_tx hn.pow h
 
-theorem not_allMatch_rank_zero : ¬ AllMatch fun {_} _ {N} {_} {_} _ _ _ => Subsingleton N.X := by
-  intro h
-  have h2 : ((2 : ℕ) : ℂ_[2]) ≠ 0 := Nat.cast_ne_zero.2 two_ne_zero
-  have n2 : ‖((2 : ℕ) : ℂ_[2])‖ < 1 := by
-    have : ‖((2 : ℕ) : ℂ_[2])‖ = ‖((2 : ℕ) : ℚ_[2])‖ := by
-      rw [← map_natCast (algebraMap ℚ_[2] ℂ_[2]), norm_algebraMap']
-    rw [this]; exact Padic.norm_p_lt_one
-  have n3 : ‖((3 : ℕ) : ℂ_[2])‖ = 1 := by
-    rw [← map_natCast (algebraMap ℚ_[2] ℂ_[2]), norm_algebraMap']
-    exact Padic.norm_natCast_eq_one_iff.2 (by norm_num)
-  have := h ℂ_[2] (tate (Units.mk0 _ h2)) (tate (Units.mk0 _ h2)) _ _ 3 0 0 Nat.prime_three (by decide) n3
-    (tate_int _ n2) (tate_int _ n2) (tate_tors _ _) (tate_tors _ _) (tateMatch _ 3 (by decide))
-  exact absurd (show (0 : ℤ) = 1 from this.elim (0 : ℤ) (1 : ℤ)) zero_ne_one
 
-theorem tateMatch_A {C : Type} [NormedField C] (q : Cˣ) (n : ℕ) (hn : Odd n) : (tateMatch q n hn).A := by
-  refine ⟨norm_one, fun j p p' h => ⟨?_, ?_⟩⟩
-  · obtain ⟨z, h1, -⟩ := h
-    exact ⟨fun ⟨w, hw⟩ => ⟨w + z, by rw [h1, hw, smul_add]⟩, fun ⟨w, hw⟩ => ⟨w - z, by rw [smul_sub, ← hw, h1, add_sub_cancel_right]⟩⟩
-  · have E := (tate q).qEq_equivalence (n ^ j)
-    exact ⟨fun ⟨r, a, b⟩ => ⟨r, E.trans (E.symm h) a, b⟩, fun ⟨r, a, b⟩ => ⟨r, E.trans h a, b⟩⟩
 
-theorem tateMatch_B {C : Type} [NormedField C] (q : Cˣ) (n : ℕ) (hn : Odd n) : (tateMatch q n hn).B (AddEquiv.refl _) :=
-  fun _ _ _ ⟨z, h, _⟩ => ⟨z, h⟩
 
-theorem tateMatch_not_B (r : ℂˣ) : ¬ (tateMatch (r ^ 3 ^ 1) 3 (by decide)).B (AddEquiv.neg ℤ) := by
-  intro h
-  obtain ⟨z, hz⟩ := h 1 (tateQ r _ 1) (tateQ r _ 1) (((tate _).qEq_equivalence _).refl _)
-  have key : ∀ w : ℤ, ¬ (1 : ℤ) = -1 + (3 ^ 1 : ℕ) • w := fun w => by
-    simp only [nsmul_eq_mul]; push_cast; omega
-  exact key z hz
 
-theorem tateMatch_term {C : Type} [NormedField C] (q : Cˣ) (n : ℕ) (hn : Odd n) : (tateMatch q n hn).Term (AddEquiv.refl _) := by
-  rintro j p p' ⟨z, h1, h2⟩ a b χ
-  rw [a, b, toAdd_one, zero_add] at h1
-  have hz : z = 0 := by
-    have key : ∀ w : ℤ, 0 = (n ^ j) ^ 2 • w → w = 0 := fun w hw =>
-      (smul_eq_zero_iff_right (pow_ne_zero _ (pow_ne_zero _ hn.pos.ne'))).1 hw.symm
-    exact key z h1
-  rw [hz, NumD.io_zero, mul_one] at h2
-  have : p' = p := Subtype.ext (Prod.ext (b.trans a.symm) h2)
-  rw [this]; exact (one_mul _).symm
 
 def isoRefl (N : NumD O) : NumD.Iso N N where
   φ := MulEquiv.refl _
@@ -481,47 +400,11 @@ def isoRefl (N : NumD O) : NumD.Iso N N where
   c_eq _ := rfl
   ψ_eq _ := mul_one _
 
-theorem isoRefl_rel (N : NumD O) (g g' : N.Gt) : (isoRefl N).Rel g g' ↔ g' = g :=
-  ⟨fun h => NumD.Gt.ext h.1 (funext fun χ => by simpa [isoRefl] using h.2 χ), by
-    rintro rfl; exact ⟨rfl, fun χ => by simp [isoRefl]⟩⟩
 
-theorem tateMatch_onQ {C : Type} [NormedField C] (q : Cˣ) (n : ℕ) (hn : Odd n) : (tateMatch q n hn).OnQ (isoRefl _) :=
-  fun _ _ _ a b => ⟨0, by rw [smul_zero, add_zero]; exact a, by rw [NumD.io_zero, mul_one]; exact (isoRefl_rel _ _ _).1 b⟩
 
-theorem tateMatch_onG {C : Type} [NormedField C] (q : Cˣ) (n : ℕ) (hn : Odd n) : (tateMatch q n hn).OnG (isoRefl _) := by
-  rintro j p p' ⟨z, h1, h2⟩ a b
-  rw [a, b, toAdd_one, zero_add] at h1
-  have key : ∀ w : ℤ, 0 = (n ^ j) • w → w = 0 := fun w hw =>
-    (smul_eq_zero_iff_right (pow_ne_zero _ hn.pos.ne')).1 hw.symm
-  have hz : z = 0 := key z h1
-  rw [hz, NumD.io_zero, mul_one] at h2
-  exact (isoRefl_rel _ _ _).2 h2
 
-theorem not_inG (r : Oˣ) : ¬ (tate (r ^ 3)).InG (tateQ r 3 1) := by
-  rintro ⟨z, hz⟩
-  have key : ∀ w : ℤ, ¬ (1 : ℤ) = (3 : ℕ) • w := fun w => by
-    simp only [nsmul_eq_mul]; push_cast; omega
-  exact key z hz
 
-theorem arcTx_coeff_one :
-    PowerSeries.coeff 1 ((tate (1 : ℤˣ)).arcTx (tateBe 1 1 one_ne_zero).be 1 1) = 2 := by
-  rw [NumD.arcTx, PowerSeries.coeff_mk]
-  have e : ∀ χ : ℤ, (tate (1 : ℤˣ)).txT 1 1 χ = 1 := fun χ => by
-    rw [tate_txT]
-    have : sv (1 : (tate (1 : ℤˣ)).QT (1 ^ 2)).1.2 χ = 1 := rfl
-    rw [this]; simp
-  have : (∑ᶠ (χ : ℤ) (_ : χ ∈ ({1, -1} : Finset ℤ)), (1 : ℤ)) = 2 := by
-    rw [finsum_mem_finset_eq_sum]; rfl
-  refine Eq.trans ?_ this
-  refine finsum_congr fun (χ : ℤ) => ?_
-  rw [e]
-  refine finsum_congr_Prop (propext ?_) fun _ => rfl
-  change (2 * (1 : ℕ) : ℤ) * ((0 + 1 • χ) * (0 + 1 • χ)) / (2 * ((1 : ℕ) : ℤ) ^ 2) = ((1 : ℕ) : ℤ) ↔ _
-  simp only [Nat.cast_one, mul_one, one_pow, zero_add, one_smul, Finset.mem_insert, Finset.mem_singleton]
-  rw [Int.mul_ediv_cancel_left _ two_ne_zero, mul_self_eq_one_iff]
 
-theorem tateMatch_onB {C : Type} [NormedField C] (q : Cˣ) (n : ℕ) (hn : Odd n) :
-    (tateMatch q n hn).OnB (isoRefl _).toIso := fun _ _ _ _ _ _ => rfl
 
 example (N : NumD O) (h : N.A → Oˣ) (h₁ : h 1 = 1) : (homOfIso (N.regaugeIso h h₁)).h = h := rfl
 end TateInh

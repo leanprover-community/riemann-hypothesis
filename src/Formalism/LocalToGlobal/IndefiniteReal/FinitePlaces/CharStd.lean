@@ -34,9 +34,6 @@ theorem trace_int (y : 𝓞 F) : ∃ z : ℤ, Algebra.trace ℚ F (y : F) = z :=
   obtain ⟨z, hz⟩ := IsIntegrallyClosed.isIntegral_iff.mp h
   exact ⟨z, by rw [← hz]; simp⟩
 
-theorem one_mem_invDiff : (1 : F) ∈ invDiff F := by
-  simp only [invDiff, Set.mem_setOf_eq, one_mul]
-  exact trace_int
 
 theorem exp_two_pi_int (n : ℤ) : Complex.exp (2 * Real.pi * Complex.I * n) = 1 := by
   rw [show (2 * Real.pi * Complex.I * n : ℂ) = n * (2 * Real.pi * Complex.I) by ring]
@@ -131,16 +128,11 @@ theorem psi_fin_rat (hψ : IsStdChar D ψ (-1)) (q : D.host.F) :
   simp only [← mul_assoc, ← Complex.exp_add, add_neg_cancel, Complex.exp_zero, one_mul, mul_one] at h2
   exact h2
 
-theorem finite_pairing_sub (X Y : Af D.host.F) :
-    pairA D.host.F 0 (X - Y) = pairA D.host.F 0 X - pairA D.host.F 0 Y := by
-  rw [eq_sub_iff_add_eq, ← pairA_add, add_zero, sub_add_cancel]
 
 theorem psi_pair0_add (a b : Af D.host.F) :
     ψ (pairA D.host.F 0 (a + b)) = ψ (pairA D.host.F 0 a) * ψ (pairA D.host.F 0 b) := by
   rw [← AddChar.map_add_eq_mul, ← pairA_add, add_zero]
 
-theorem mem_Ohat_of_intAf (y : Af D.host.F) (hy : y ∈ intAf D.host.F) : y ∈ Formalism.IndefR.PHeisFC.Ohat D.host.F := by
-  exact hy
 
 theorem psi_invDiff (hψ : IsStdChar D ψ (-1)) (d : D.host.F) (hd : d ∈ invDiff D.host.F) (y : Af D.host.F)
     (hy : y ∈ intAf D.host.F) : ψ (pairA D.host.F 0 (algebraMap D.host.F (Af D.host.F) d * y)) = 1 := by
@@ -211,8 +203,6 @@ theorem intAf_of_isInt (y : Af D.host.F) (hy : ReciprocityTheory.UG.AdeleIntA.Is
 theorem intAf_mul {x y : Af D.host.F} (hx : x ∈ intAf D.host.F) (hy : y ∈ intAf D.host.F) : x * y ∈ intAf D.host.F := by
   exact intAf_of_isInt _ (ReciprocityTheory.UG.AdeleIntA.isInt_mul (isInt_of_intAf _ hx) (isInt_of_intAf _ hy))
 
-theorem intAf_add {x y : Af D.host.F} (hx : x ∈ intAf D.host.F) (hy : y ∈ intAf D.host.F) : x + y ∈ intAf D.host.F := by
-  exact intAf_of_isInt _ (ReciprocityTheory.UG.AdeleIntA.isInt_add (isInt_of_intAf _ hx) (isInt_of_intAf _ hy))
 
 theorem intAf_int (r : 𝓞 D.host.F) : algebraMap D.host.F (Af D.host.F) (r : D.host.F) ∈ intAf D.host.F := by
   have h := ReciprocityTheory.UG.AdeleIntA.isInt_R (K := D.host.F) r
@@ -222,148 +212,11 @@ theorem intAf_int (r : 𝓞 D.host.F) : algebraMap D.host.F (Af D.host.F) (r : D
 theorem one_intAf : (1 : Af D.host.F) ∈ intAf D.host.F := by
   simpa using intAf_int (D := D) 1
 
-theorem invDiffAf_mem (hψ : IsStdChar D ψ (-1)) (α : Af D.host.F) (hα : α ∈ invDiffAf D.host.F)
-    (x : Af D.host.F) (hx : x ∈ intAf D.host.F) : ψ (pairA D.host.F 0 (α * x)) = 1 := by
-  obtain ⟨n, d, y, hd, hy, rfl⟩ := hα
-  rw [Finset.sum_mul]
-  have key : ∀ s : Finset (Fin n),
-      ψ (pairA D.host.F 0 (∑ i ∈ s, algebraMap D.host.F (Af D.host.F) (d i) * y i * x)) = 1 := by
-    intro s
-    refine Finset.induction_on s ?_ ?_
-    · simp only [Finset.sum_empty]
-      exact ψ.map_zero_eq_one
-    · intro i s hi ih
-      rw [Finset.sum_insert hi, psi_pair0_add, ih, mul_one, mul_assoc]
-      exact psi_invDiff hψ (d i) (hd i) _ (intAf_mul (hy i) hx)
-  exact key Finset.univ
 
-theorem mem_invDiffAf_of (hψ : IsStdChar D ψ (-1)) (α : Af D.host.F)
-    (h : ∀ x ∈ intAf D.host.F, ψ (pairA D.host.F 0 (α * x)) = 1) : α ∈ invDiffAf D.host.F := by
-  obtain ⟨u, hu⟩ := ReciprocityTheory.UG.AdeleIntA.exists_approx_adele (R := 𝓞 D.host.F) α
-  have hu' : α - algebraMap D.host.F (Af D.host.F) u ∈ intAf D.host.F := intAf_of_isInt _ hu
-  have huD : u ∈ invDiff D.host.F := by
-    intro b
-    have h1 := h _ (intAf_int b)
-    have h2 := psi_invDiff hψ 1 one_mem_invDiff _ (intAf_mul hu' (intAf_int b))
-    rw [map_one, one_mul] at h2
-    have e : algebraMap D.host.F (Af D.host.F) (u * b) =
-        α * algebraMap D.host.F (Af D.host.F) (b : D.host.F) -
-          (α - algebraMap D.host.F (Af D.host.F) u) * algebraMap D.host.F (Af D.host.F) (b : D.host.F) := by
-      rw [map_mul]; ring
-    have h3 : ψ (pairA D.host.F 0 (algebraMap D.host.F (Af D.host.F) (u * b))) = 1 := by
-      rw [e, finite_pairing_sub, AddChar.map_sub_eq_div, h1, h2, div_one]
-    rw [psi_fin_rat hψ] at h3
-    obtain ⟨n, hn⟩ := Complex.exp_eq_one_iff.1 h3
-    refine ⟨n, ?_⟩
-    have hpi : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by
-      simp [Real.pi_ne_zero, Complex.I_ne_zero]
-    have : ((Algebra.trace ℚ D.host.F (u * b) : ℚ) : ℂ) = ((n : ℚ) : ℂ) := by
-      have := hn
-      rw [mul_comm (2 * Real.pi * Complex.I : ℂ)] at this
-      push_cast
-      exact mul_right_cancel₀ hpi this
-    exact_mod_cast this
-  refine ⟨2, ![u, 1], ![1, α - algebraMap D.host.F (Af D.host.F) u], ?_, ?_, ?_⟩
-  · intro i; fin_cases i
-    · exact huD
-    · exact one_mem_invDiff
-  · intro i; fin_cases i
-    · exact one_intAf
-    · exact hu'
-  · simp [Fin.sum_univ_two]
 
-theorem exists_invDiff_bound : ∃ r : 𝓞 D.host.F, r ≠ 0 ∧
-    ∀ d ∈ invDiff D.host.F, ∃ s : 𝓞 D.host.F, (r : D.host.F) * d = s := by
-  classical
-  obtain ⟨a, ha, hint⟩ := (FractionalIdeal.dual ℤ ℚ (1 : FractionalIdeal (nonZeroDivisors (𝓞 D.host.F)) D.host.F)).isFractional
-  refine ⟨a, nonZeroDivisors.ne_zero ha, fun d hd => ?_⟩
-  have h1 : (1 : FractionalIdeal (nonZeroDivisors (𝓞 D.host.F)) D.host.F) ≠ 0 := by
-    intro h
-    have h2 : (1 : D.host.F) ∈ (1 : FractionalIdeal (nonZeroDivisors (𝓞 D.host.F)) D.host.F) := by
-      rw [FractionalIdeal.mem_one_iff]
-      exact ⟨1, map_one _⟩
-    rw [h, FractionalIdeal.mem_zero_iff] at h2
-    exact one_ne_zero h2
-  have hmem : d ∈ FractionalIdeal.dual ℤ ℚ (1 : FractionalIdeal (nonZeroDivisors (𝓞 D.host.F)) D.host.F) := by
-    rw [FractionalIdeal.mem_dual h1]
-    intro y hy
-    rw [FractionalIdeal.mem_one_iff] at hy
-    obtain ⟨y, rfl⟩ := hy
-    obtain ⟨z, hz⟩ := hd y
-    refine ⟨z, ?_⟩
-    simp only [Algebra.traceForm_apply, algebraMap_int_eq, Int.coe_castRingHom]
-    exact hz.symm
-  obtain ⟨s, hs⟩ := hint d hmem
-  refine ⟨s, ?_⟩
-  rw [Algebra.smul_def] at hs
-  exact hs.symm
 
-theorem psi_nondeg_fin (hψ : IsStdChar D ψ (-1)) (b : Af D.host.F)
-    (h : ∀ y : Af D.host.F, ψ (pairA D.host.F 0 (b * y)) = 1) : b = 0 := by
-  obtain ⟨r, hr0, hr⟩ := exists_invDiff_bound (D := D)
-  refine Eqv.AdelDual.eq_zero_of_mem_factorial b fun n => ?_
-  have hrF : (r : D.host.F) ≠ 0 := by exact_mod_cast hr0
-  have hc : (r : D.host.F) * (n.factorial : D.host.F) ≠ 0 :=
-    mul_ne_zero hrF (Nat.cast_ne_zero.2 (Nat.factorial_ne_zero n))
-  set α := b * algebraMap D.host.F (Af D.host.F) (1 / ((r : D.host.F) * n.factorial)) with hα
-  have hαm : α ∈ invDiffAf D.host.F := mem_invDiffAf_of hψ α fun x _ => by rw [hα, mul_assoc]; exact h _
-  obtain ⟨k, d, y, hd, hy, hsum⟩ := hαm
-  refine ⟨algebraMap D.host.F (Af D.host.F) (r : D.host.F) * α, ?_, ?_⟩
-  · apply mem_Ohat_of_intAf
-    rw [hsum, Finset.mul_sum]
-    refine Finset.sum_induction _ (· ∈ intAf D.host.F) (fun _ _ => intAf_add)
-      (intAf_of_isInt _ ReciprocityTheory.UG.AdeleIntA.isInt_zero) fun i _ => ?_
-    obtain ⟨s, hs⟩ := hr (d i) (hd i)
-    rw [← mul_assoc, ← map_mul, hs]
-    exact intAf_mul (intAf_int s) (hy i)
-  · rw [hα, nsmul_eq_mul, show (n.factorial : Af D.host.F) = algebraMap D.host.F (Af D.host.F) (n.factorial : D.host.F) by
-      simp, ← mul_assoc, ← map_mul, mul_comm (n.factorial : D.host.F) (r : D.host.F), mul_left_comm, ← map_mul,
-      mul_one_div_cancel hc, map_one, mul_one]
 
-theorem psi_nondeg_inf (hψ : IsStdChar D ψ (-1)) (a : Ainf D.host.F)
-    (h : ∀ s : Ainf D.host.F, ψ (pairA D.host.F (a * s) 0) = 1) : a = 0 := by
-  classical
-  funext w
-  by_contra hne
-  obtain ⟨τ0, rfl⟩ : ∃ τ0, Eqv.plW D τ0 = w := ⟨_, Eqv.plW_symm D w⟩
-  have hinj : Function.Injective (Eqv.plW D) := by
-    intro τ τ' h'
-    rw [Eqv.plW_eq_tauPl, Eqv.plW_eq_tauPl] at h'
-    exact (Formalism.L2.Host.tauPl D).injective h'
-  let s : Ainf D.host.F := Pi.single (Eqv.plW D τ0) ((a (Eqv.plW D τ0))⁻¹ * 2⁻¹)
-  have hs := h s
-  rw [psi_inf hψ] at hs
-  have hsum : ∑ τ, Eqv.gW D (Eqv.plW D τ) (a * s) = 2⁻¹ := by
-    rw [Finset.sum_eq_single τ0]
-    · rw [map_mul, Eqv.gW_apply, Eqv.gW_apply,
-        show s (Eqv.plW D τ0) = (a (Eqv.plW D τ0))⁻¹ * 2⁻¹ from Pi.single_eq_same _ _,
-        ← map_mul, mul_inv_cancel_left₀ hne, map_inv₀, map_ofNat]
-    · intro τ _ hτ
-      rw [map_mul, Eqv.gW_apply, Eqv.gW_apply,
-        show s (Eqv.plW D τ) = 0 from Pi.single_eq_of_ne (hinj.ne hτ) _, map_zero, mul_zero]
-    · intro h0
-      exact absurd (Finset.mem_univ τ0) h0
-  rw [hsum] at hs
-  have he : Complex.exp (-(2 * Real.pi * Complex.I * 2⁻¹)) = -1 := by
-    rw [show -(2 * Real.pi * Complex.I * 2⁻¹ : ℂ) = -(Real.pi * Complex.I) by ring, Complex.exp_neg,
-      Complex.exp_pi_mul_I]
-    norm_num
-  rw [he] at hs
-  norm_num at hs
 
-theorem psi_nondeg (hψ : IsStdChar D ψ (-1)) (b : AF D.host.F) (h : ∀ y : AF D.host.F, ψ (b * y) = 1) : b = 0 := by
-  obtain ⟨b1, b2⟩ := b
-  have h1 : b1 = 0 := psi_nondeg_inf hψ b1 fun s => by
-    have := h (pairA D.host.F s 0)
-    change ψ (pairA D.host.F (b1 * s) (b2 * 0)) = 1 at this
-    rwa [mul_zero] at this
-  have h2 : b2 = 0 := psi_nondeg_fin hψ b2 fun y => by
-    have := h (pairA D.host.F 0 y)
-    change ψ (pairA D.host.F (b1 * 0) (b2 * y)) = 1 at this
-    rwa [mul_zero] at this
-  subst h1
-  subst h2
-  rfl
 
 end Kernel
 
@@ -477,9 +330,6 @@ theorem exists_stdChar : ∃ ψ : AddChar (AF D.host.F) ℂ, IsStdChar D ψ (-1)
       rw [Eqv.thetaC_tmul, map_one, mul_one]
     rw [e]; push_cast; ring
 
-theorem stdCharExists (D : D7) : StdCharExists D := by
-  unfold StdCharExists
-  exact ⟨exists_stdChar, fun ψ hψ α => ⟨mem_invDiffAf_of hψ α, fun hα x hx => invDiffAf_mem hψ α hα x hx⟩⟩
 
 end Exist
 

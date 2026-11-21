@@ -39,24 +39,8 @@ theorem imaginary_root_ne_zero : starRingEnd ℂ H.rt0 ≠ H.rt0 := by
 theorem mult_of_mem {τ : E →+* ℂ} (h : τ (H.rt : E) = H.rt0) : Dw.mult τ = Dw.p := by
   simp [Datum.mult, h]
 
-theorem mult_conj_of_mem {τ : E →+* ℂ} (h : τ (H.rt : E) = H.rt0) : Dw.mult (conjEmb τ) = Dw.q := by
-  have : conjEmb τ (H.rt : E) ≠ H.rt0 := by
-    simpa [conjEmb, h] using imaginary_root_ne_zero (H := H)
-  simp [Datum.mult, this]
 
-theorem expo_root_first (a : ℕ → Bool) (R : Option ℝ) {τ : E →+* ℂ} (h : τ (H.rt : E) = H.rt0) (i : ℕ) (hi : i < Dw.p) :
-    expo Dw (rootSym Dw a R τ i) ⟨τ, ⟨i, by rw [mult_of_mem Dw h]; exact hi⟩⟩ = 1 := by
-  have : i < Dw.mult τ := by rw [mult_of_mem Dw h]; exact hi
-  simp [rootSym, hi, expo_single, letterOf, this]
 
-theorem expo_root_second (a : ℕ → Bool) (R : Option ℝ) {τ : E →+* ℂ} (h : τ (H.rt : E) = H.rt0) (i : ℕ)
-    (hi : Dw.p ≤ i) (hi' : i < Dw.p + Dw.q) :
-    expo Dw (rootSym Dw a R τ i)
-      ⟨conjEmb τ, ⟨Dw.p + Dw.q - 1 - i, by rw [mult_conj_of_mem Dw h]; omega⟩⟩ = -1 := by
-  have : Dw.p + Dw.q - 1 - i < Dw.mult (conjEmb τ) := by rw [mult_conj_of_mem Dw h]; omega
-  have h' : ¬ i < Dw.p := by omega
-  rw [rootSym, if_neg h', expo_single]
-  simp [letterOf, this]
 
 theorem parOf_eq {w : Sym E →₀ ℤ} {R : Option ℝ} (h0 : w ≠ 0) (h : ∀ a ∈ w.support, a.2.1 = R) : parOf w = R := by
   have hne : w.support.Nonempty := Finsupp.support_nonempty_iff.2 h0
@@ -80,8 +64,6 @@ variable {Dw} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {O : Type} [CommRin
 theorem divOf_add (n n' : Letter Dw → ℤ) : divOf Y (n + n') = divOf Y n + divOf Y n' := by
   simp [divOf, add_smul, Finset.sum_add_distrib]
 
-theorem divOf_eq_neg (ex : Ix Dw → ℤ) : divOf Y (fun x => ex (some x)) = -Y.LEx ex := by
-  simp [divOf, FlagCpt.LEx]
 
 theorem isEqn_divOf (n : Letter Dw → ℤ) (y : Y.Y.X) :
     (divOf Y n).IsEqn y (∏ x : Letter Dw, (Y.gr_spec y).choose_spec.choose_spec.choose x.1 x.2 ^ n x) := by
@@ -100,25 +82,5 @@ theorem residueCharacteristic_prime (v : HeightOneSpectrum (𝓞 F)) : (resP v).
 
 variable {D : D7} {A : Amb D}
 
-theorem mem_setB (κ : Lv A) (B : ℝ) (hB : 0 ≤ B) (p : ℕ) :
-    p ∈ setB κ B ↔ p.Prime ∧ ((p : ℝ) ≤ B ∨ p = 2 ∨ p ∣ (discr D.host.E).natAbs ∨ p ∣ κ.l.M') := by
-  have h1 : (discr D.host.E).natAbs ≠ 0 := by simpa using discr_ne_zero D.host.E
-  have h2 : κ.l.M' ≠ 0 := Nat.lcm_ne_zero (by have := κ.l.three_le; omega) κ.l.A_pos.ne'
-  simp only [setB, Finset.mem_union, Finset.mem_filter, Finset.mem_range, Nat.mem_primeFactors, Nat.lt_succ_iff,
-    Nat.le_floor_iff hB]
-  constructor
-  · rintro (⟨a, b⟩ | ⟨a, b, -⟩)
-    · exact ⟨b, .inl a⟩
-    · refine ⟨a, .inr ?_⟩
-      rcases (Nat.Prime.dvd_mul a).1 b with b | b
-      · rcases (Nat.Prime.dvd_mul a).1 b with b | b
-        · exact .inl ((Nat.prime_dvd_prime_iff_eq a Nat.prime_two).1 b)
-        · exact .inr (.inl b)
-      · exact .inr (.inr b)
-  · rintro ⟨a, b | b | b | b⟩
-    · exact .inl ⟨b, a⟩
-    · exact .inr ⟨a, b ▸ (dvd_mul_right _ _).mul_right _, by positivity⟩
-    · exact .inr ⟨a, (b.mul_left _).mul_right _, by positivity⟩
-    · exact .inr ⟨a, b.mul_left _, by positivity⟩
 
 end GlobalTheory.ShFam.Pad.LineTest

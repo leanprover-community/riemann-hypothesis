@@ -54,33 +54,7 @@ theorem logw_contDiffAt (Xa : ArchInM X) (x0 : Frame X.Ψ r) {z : V (nd X)} (hz 
   logSum_contDiffAt (g := fun k y => Xa.w k (cpt X x0 y)) (OntoB.isOpen_OmF X x0)
     (w_diffOn Xa x0) hz (Xa.w_nz _ hz)
 
-theorem smoothWt_contDiffOn (Xa : ArchInM X) (x0 : Frame X.Ψ r) (bb : ℝ) :
-    ContDiffOn ℝ ∞ (smoothWt Xa x0 bb) (OmF X x0) := fun _ hz =>
-  ((IW.phla_cpt_cdAt X x0 hz Xa.Fp).add ((contDiffAt_const.mul (OntoB.logDens_contDiffAt hz)).add
-    ((contDiffAt_const.mul (OntoB.rhF_contDiffAt hz)).add
-      (contDiffAt_const.mul (logw_contDiffAt Xa x0 hz))))).contDiffWithinAt
 
-theorem smoothWt_levi (Xa : ArchInM X) (x0 : Frame X.Ψ r) (bb : ℝ) {z : V (nd X)}
-    (hz : z ∈ OmF X x0) (ξ : Fin (nd X) → ℂ)
-    (hm : bb * leviRh X x0 z ξ ≤ leviO X x0 (phla X Xa.Fp) z ξ - leviDens X x0 z ξ) :
-    0 ≤ (leviV (nd X) (fun w => ((smoothWt Xa x0 bb w : ℝ) : ℂ)) z ξ).re := by
-  have h1 := (IW.phla_cpt_cdAt X x0 hz Xa.Fp).of_le HE.two_le_inf
-  have h2 := (OntoB.logDens_contDiffAt hz).of_le HE.two_le_inf
-  have h3 := (OntoB.rhF_contDiffAt hz).of_le HE.two_le_inf
-  have h4 := (logw_contDiffAt Xa x0 hz).of_le HE.two_le_inf
-  have h5 := logSum_levi_nonneg (g := fun k y => Xa.w k (cpt X x0 y)) (OntoB.isOpen_OmF X x0)
-    (w_diffOn Xa x0) hz (Xa.w_nz _ hz) ξ
-  unfold smoothWt
-  rw [Y.LocalMaximumSecondDerivative.leviV_ofReal_add h1 ((contDiffAt_const.mul h2).add
-      ((contDiffAt_const.mul h3).add (contDiffAt_const.mul h4))),
-    Y.LocalMaximumSecondDerivative.leviV_ofReal_add (contDiffAt_const.mul h2)
-      ((contDiffAt_const.mul h3).add (contDiffAt_const.mul h4)),
-    Y.LocalMaximumSecondDerivative.leviV_ofReal_add (contDiffAt_const.mul h3) (contDiffAt_const.mul h4),
-    Y.LocalMaximumSecondDerivative.leviV_ofReal_const_mul _ h2, Y.LocalMaximumSecondDerivative.leviV_ofReal_const_mul _ h3,
-    Y.LocalMaximumSecondDerivative.leviV_ofReal_const_mul _ h4]
-  simp only [Complex.add_re, Complex.re_ofReal_mul]
-  unfold leviRh leviO leviM leviDens at hm
-  linarith
 
 theorem inAt_iff (Xa : ArchInM X) (Fl : FlatM X Xa) (x0 : Frame X.Ψ r) (bb : ℝ) (m : ℕ)
     (k0 : Fin (nd X)) (hnull : volume {y | y ∈ OmF X x0 ∧ Fl.s k0 (cpt X x0 y) = 0} = 0)
@@ -124,24 +98,5 @@ namespace GlobalTheory.Up
 
 open DivUpPf
 
-theorem divUp_holds {E : Type} [Field E] [NumberField E] [IsCMField E] : DivUp (E := E) := by
-  intro r X Xa Fl x0 ho bb hm ⟨k0, z0, hz0, hz0'⟩ F hF hI
-  have hU := OntoB.isOpen_OmF X x0
-  have hc := OmFConnStatement_holds r X x0 ho
-  have hnull := HE.zeros_null hU (s_diffOn Fl x0 k0)
-    (HE.hgn_of hU hc (s_diffOn Fl x0 k0) hz0 (fun h => hz0' h.self_of_nhds))
-  obtain ⟨S, hS, -⟩ := exhaustG_holds r X x0 ho _ (s_diffOn Fl x0 k0)
-  have hT : nd X ≤ Xa.T := by
-    have h2 := Xa.n_ge
-    have hT := Xa.T_ge
-    nlinarith
-  have hcast : ((Xa.T - nd X : ℕ) : ℝ) + (nd X : ℝ) = (Xa.T : ℝ) := by
-    rw [Nat.cast_sub hT]; ring
-  rw [inAt_iff Xa Fl x0 bb _ k0 hnull, ← hcast] at hI
-  obtain ⟨H, hH, hFH⟩ := SkodaIter.iterated_division (nd X) Xa.n_ge (OmF X x0) hU hc
-    (fun k z => Fl.s k (cpt X x0 z)) k0 (s_diffOn Fl x0) ⟨z0, hz0, hz0'⟩ ⟨S, hS⟩
-    (smoothWt Xa x0 bb) (smoothWt_contDiffOn Xa x0 bb)
-    (fun z hz ξ => smoothWt_levi Xa x0 bb hz ξ (hm z hz ξ)) (Xa.T - nd X) F hF hI
-  exact ⟨H, fun α => ⟨(hH α).1, (inAt_iff Xa Fl x0 bb _ k0 hnull _).2 (hH α).2⟩, hFH⟩
 
 end GlobalTheory.Up

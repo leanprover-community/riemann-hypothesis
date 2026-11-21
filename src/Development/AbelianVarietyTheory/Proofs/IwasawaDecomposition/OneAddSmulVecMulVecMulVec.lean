@@ -23,7 +23,6 @@ theorem cc_cc (x : E) : cc (cc x) = x := IsCMField.complexConj_apply_apply E x
 theorem cc_sum {ι : Type*} (s : Finset ι) (f : ι → E) : cc (∑ i ∈ s, f i) = ∑ i ∈ s, cc (f i) :=
   map_sum _ _ _
 theorem cc_pow (x : E) (n : ℕ) : cc (x ^ n) = cc x ^ n := map_pow _ _ _
-theorem cc_ofInt (x : 𝓞 E) : cc (x : E) = IsCMField.ringOfIntegersComplexConj E x := rfl
 
 section herm
 

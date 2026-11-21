@@ -76,8 +76,6 @@ open Formalism.L2.Pj NumberField ReciprocityTheory.ChartRestriction.G Reciprocit
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)]
 
-theorem chart_hypothesis_of_characters (h : CharacterHypothesisCharts Xo c) : CharacterHypothesisAllCharts Xo c :=
-  chart_hypothesis_of_character Xo c charGerm_holds h
 
 end Chart
 

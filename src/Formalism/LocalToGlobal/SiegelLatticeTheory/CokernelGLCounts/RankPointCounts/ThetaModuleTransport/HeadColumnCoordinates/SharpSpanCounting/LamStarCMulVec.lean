@@ -21,27 +21,13 @@ theorem lamC_add (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (y y' : Fin (r + 1) 
     lamC Z (y + y') = lamC Z y + lamC Z y' := by
   simp [lamC, Matrix.mulVec_add]
 
-theorem lamC_smul (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (c : E) (y : Fin (r + 1) → E) :
-    lamC Z (c • y) = c * lamC Z y := by
-  simp [lamC, Matrix.mulVec_smul]
 
-theorem lamC_mulVec (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (hu : IsUnit Z.det)
-    (w : Fin (r + 1) → E) : lamC Z (Z.mulVec w) = w (Fin.last r) := by
-  rw [lamC, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hu, Matrix.one_mulVec]
 
-theorem lamC_single (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E)
-    (hD0 : (Z.submatrix Fin.castSucc Fin.castSucc).det = 0) (c : E) :
-    lamC Z (Pi.single (Fin.last r) c) = 0 := by
-  rw [lamC, Matrix.mulVec_single]
-  simp [kappa_zero Z hD0]
 
 theorem lamStarC_add (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (y y' : Fin (r + 1) → E) :
     lamStarC cj Z (y + y') = lamStarC cj Z y + lamStarC cj Z y' := by
   simp [lamStarC, mul_add, Finset.sum_add_distrib]
 
-theorem lamStarC_smul (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (c : E) (y : Fin (r + 1) → E) :
-    lamStarC cj Z (c • y) = c * lamStarC cj Z y := by
-  simp [lamStarC, Finset.mul_sum, mul_left_comm]
 
 theorem lamStarC_mulVec (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (hu : IsUnit Z.det)
     (w : Fin (r + 1) → E) :
@@ -57,10 +43,6 @@ theorem lamStarC_mulVec (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (hu : IsUnit 
   simp only [← mul_assoc, ← Finset.sum_mul, h, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
     Finset.mem_univ, if_true]
 
-theorem lamStarC_single (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E)
-    (hD0 : (Z.submatrix Fin.castSucc Fin.castSucc).det = 0) (c : E) :
-    lamStarC cj Z (Pi.single (Fin.last r) c) = 0 := by
-  simp [lamStarC, Pi.single_apply, kappa_zero Z hD0]
 
 end Alg
 

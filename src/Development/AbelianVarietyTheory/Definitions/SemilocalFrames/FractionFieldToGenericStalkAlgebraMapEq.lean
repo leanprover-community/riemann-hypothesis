@@ -30,58 +30,8 @@ structure ModFam (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E
 
 section Inhabitant
 
-theorem exists_modFam {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
-    (hc : Formalism.BasicNotions.CMData F E) {g₁ g₂ : ℕ} (h₁ : g₁.Prime) (h₂ : g₂.Prime) (hne : g₁ ≠ g₂)
-    (A : ∀ p : HeightOneSpectrum (𝓞 F), LocAt F E hc.sig p)
-    (hA : ∀ p, (A p).split.isSome ↔ (resChar p = g₁ ∨ resChar p = g₂)) :
-    ∃ X : ModFam F E hc.sig g₁ g₂, X.A = A := by
-  choose θ t n h using fun p => LocModel.exists_isUnitGen hc (A p)
-  choose M de h1 h2 h3 h4 h5 h6 h7 using fun p => LocModel.exists_model (A p) (h p)
-  exact ⟨⟨hc.deg2, h₁, h₂, hne, A, M, h1, de, h2, h3, h4, h5, fun p => (h6 p).trans (hA p), h7⟩, rfl⟩
 
-theorem nonempty_modFam {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
-    (hc : Formalism.BasicNotions.CMData F E) {g₁ g₂ : ℕ} (h₁ : g₁.Prime) (h₂ : g₂.Prime) (hne : g₁ ≠ g₂)
-    (s₁ : ((Ideal.span {(g₁ : ℤ)}).primesOver (𝓞 E)).ncard = Module.finrank ℚ E)
-    (s₂ : ((Ideal.span {(g₂ : ℤ)}).primesOver (𝓞 E)).ncard = Module.finrank ℚ E) :
-    Nonempty (ModFam F E hc.sig g₁ g₂) := by
-  have hs : hc.sig ≠ AlgHom.id F E := by
-    intro h
-    have hs : Function.Surjective (algebraMap F E) := fun a => (hc.fixed a).1 (DFunLike.congr_fun h a)
-    have h1 : Module.finrank F E = 1 :=
-      (LinearEquiv.ofBijective (Algebra.linearMap F E)
-        ⟨(algebraMap F E).injective, hs⟩).finrank_eq.symm.trans (Module.finrank_self F)
-    have := hc.deg2
-    omega
-  have h : ∀ p : HeightOneSpectrum (𝓞 F), ∃ A : LocAt F E hc.sig p,
-      (A.split.isSome ↔ (resChar p = g₁ ∨ resChar p = g₂)) := by
-    intro p
-    obtain ⟨L, hL⟩ := GlobalTheory.LocalData.exists_locAt F E hc.sig hc.deg2 p
-    by_cases hp : resChar p = g₁ ∨ resChar p = g₂
-    · obtain ⟨S⟩ := GlobalTheory.LocSplit.nonempty_splitAt F E hc.sig hc.deg2 hs p L (by
-        rcases hp with e | e <;> rw [e] <;> assumption)
-      exact ⟨{ L with split := some S }, by simp [hp]⟩
-    · exact ⟨L, by simp [hL, hp]⟩
-  choose A hA using h
-  obtain ⟨X, -⟩ := exists_modFam hc h₁ h₂ hne A hA
-  exact ⟨X⟩
 
-theorem exists_field_modFam : ∃ (F E : Type) (_ : Field F) (_ : NumberField F) (_ : Field E) (_ : NumberField E)
-    (_ : StarRing E) (_ : Algebra F E) (hc : Formalism.BasicNotions.CMData F E) (g₁ g₂ : ℕ),
-    Nonempty (ModFam F E hc.sig g₁ g₂) := by
-  obtain ⟨A⟩ := Formalism.MainNotions.Inhab.arith_nonempty 0 (4 * (2 * 0 + 15) * 9 + 1)
-  let H := Formalism.MainNotions.Inhab.hostOf A 0 0 0
-  have hq : H.q.Prime := H.hyp.1
-  have hd : H.d.Prime := H.hyp.2.1
-  have hM : 1 < H.QS * H.q * H.d :=
-    lt_of_lt_of_le hd.one_lt (Nat.le_mul_of_pos_left _ (Nat.mul_pos H.QS_pos hq.pos))
-  obtain ⟨g₁, -, h₁, m₁⟩ := Formalism.MainNotions.Inhab.exists_one_mod _ 0 (by omega : H.QS * H.q * H.d ≠ 0)
-  obtain ⟨g₂, l₂, h₂, m₂⟩ := Formalism.MainNotions.Inhab.exists_one_mod _ g₁ (by omega : H.QS * H.q * H.d ≠ 0)
-  have hs : ∀ g : ℕ, g.Prime → g ≡ 1 [MOD H.QS * H.q * H.d] →
-      ((Ideal.span {(g : ℤ)}).primesOver (𝓞 H.E)).ncard = Module.finrank ℚ H.E := fun g hg m => by
-    rw [← GlobalTheory.HostSplit.ncard_placesOver H.E hg]
-    exact (GlobalTheory.HostSplit.split_of_one_mod _ H g hg (Eq.trans m (Nat.mod_eq_of_lt hM))).1
-  exact ⟨H.F, H.E, _, _, _, _, H.cmStar, _, GlobalTheory.Mem.host_cmData _ H, g₁, g₂,
-    @nonempty_modFam _ _ _ _ _ _ H.cmStar _ _ _ _ h₁ h₂ l₂.ne (hs _ h₁ m₁) (hs _ h₂ m₂)⟩
 
 end Inhabitant
 
@@ -116,32 +66,8 @@ theorem lastOne_iff {r : ℕ} (w : Pt E (r + 1)) : LastOne w ↔ ∃ l t, w.bloc
   rw [h] at this
   simpa using this
 
-theorem KtopLoc_last_one (M : Model F E) (τ : E) {r : ℕ} {w w' : Pt E (r + 1)} {h h' : Pt E r} {t t' : Eˣ}
-    (hw : w.blocks = h.blocks ++ [(t, 1)]) (hw' : w'.blocks = h'.blocks ++ [(t', 1)]) :
-    KtopLoc M τ w w' = if t = t' then M.CuspSpanExtension ((t : E) - τ) h h' else 0 := by
-  have key : ∀ {w : Pt E (r + 1)} {h : Pt E r} {t : Eˣ} (_ : w.blocks = h.blocks ++ [(t, 1)]) (H : LastOne w),
-      H.choose = (h, t) := by
-    intro w h t hw H
-    have e := hw.symm.trans H.choose_spec
-    have e1 := List.append_inj_left' e rfl
-    have e2 := List.append_inj_right' e rfl
-    refine Prod.ext ?_ (by simpa using e2.symm)
-    generalize H.choose.1 = k at e1
-    cases h; cases k; simpa using e1.symm
-  have H : LastOne w := ⟨(h, t), hw⟩
-  have H' : LastOne w' := ⟨(h', t'), hw'⟩
-  unfold KtopLoc
-  rw [dif_pos H, dif_pos H', key hw H, key hw' H']
 
-theorem KtopLoc_mixed (M : Model F E) (τ : E) {r : ℕ} {w w' : Pt E (r + 1)} (h : ¬ (LastOne w ↔ LastOne w')) :
-    KtopLoc M τ w w' = 0 := by
-  unfold KtopLoc
-  by_cases H : LastOne w <;> by_cases H' : LastOne w' <;> simp_all
 
-theorem KtopLoc_not_last_one (M : Model F E) (τ : E) {r : ℕ} {w w' : Pt E (r + 1)} (h : ¬ LastOne w)
-    (h' : ¬ LastOne w') : KtopLoc M τ w w' = dLoc M τ w * M.Kk (r + 1) w w' * conj (dLoc M τ w') := by
-  unfold KtopLoc
-  rw [dif_neg h, if_neg h']
 end Local
 
 namespace ModFam
@@ -232,9 +158,6 @@ theorem tmod_mul_xmod (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) {t :
 theorem isUnit_tmod (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) (t : Eˣ) : IsUnit (X.tmod ν s p t) :=
   IsUnit.of_mul_eq_one _ (X.tmod_mul_xmod ν s p t.ne_zero)
 
-theorem tmod_add (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) (t t' : E) :
-    X.tmod ν s p (t + t') = X.tmod ν s p t + X.tmod ν s p t' := by
-  simp only [tmod_eq, map_add, mul_add]
 
 theorem tmod_sub (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) (t t' : E) :
     X.tmod ν s p (t - t') = X.tmod ν s p t - X.tmod ν s p t' := by
@@ -243,16 +166,7 @@ theorem tmod_sub (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) (t t' : E
 @[simp] theorem tmod_zero (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) : X.tmod ν s p 0 = 0 := by
   simp [tmod_eq]
 
-theorem xmod_sub (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) (x x' : E) :
-    X.xmod ν s p (x - x') = X.xmod ν s p x - X.xmod ν s p x' := by
-  rw [xmod_eq, X.xmod_eq ν s p x, X.xmod_eq ν s p x', map_sub, mul_sub]
 
-theorem tmod_injective (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) : Function.Injective (X.tmod ν s p) := by
-  haveI : Nontrivial (X.A p).Ep :=
-    Module.nontrivial_of_finrank_pos (R := (X.A p).Fp) (by rw [(X.A p).rank]; norm_num)
-  intro t t' h
-  rw [tmod_eq, tmod_eq] at h
-  exact (X.A p).ιE.injective ((IsUnit.of_mul_eq_one _ (X.tfac_mul ν s p)).mul_left_cancel h)
 
 def tmodU (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) (t : Eˣ) : (X.A p).Epˣ :=
   if h : IsUnit (X.tmod ν s p t) then h.unit else 1
@@ -262,15 +176,7 @@ def tmodU (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) (t : Eˣ) : (X.A
   unfold tmodU
   rw [dif_pos (X.isUnit_tmod ν s p t), IsUnit.unit_spec]
 
-theorem coe_tmodU_inv (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) (t : Eˣ) :
-    (((X.tmodU ν s p t)⁻¹ : (X.A p).Epˣ) : (X.A p).Ep) = X.xmod ν s p (t : E)⁻¹ :=
-  Units.inv_eq_of_mul_eq_one_right (by rw [coe_tmodU]; exact X.tmod_mul_xmod ν s p t.ne_zero)
 
-theorem tmodU_injective (ν : ℤ) (s : ℕ) (p : HeightOneSpectrum (𝓞 F)) : Function.Injective (X.tmodU ν s p) := by
-  intro t t' h
-  apply Units.ext
-  apply X.tmod_injective ν s p
-  rw [← coe_tmodU, ← coe_tmodU, h]
 
 def nu (r a s : ℕ) : ℤ := 2 * (r : ℤ) + 1 - 2 * a - s
 
@@ -283,42 +189,11 @@ lemma blocksMod_size (r : ℕ) (p : HeightOneSpectrum (𝓞 F)) (l : List (Eˣ �
     (X.blocksMod r p l).map (fun b => (b.2 : ℕ)) = l.map (fun b => (b.2 : ℕ)) := by
   apply List.ext_getElem <;> simp [blocksMod]
 
-theorem blocksMod_concat (r : ℕ) (p : HeightOneSpectrum (𝓞 F)) (l : List (Eˣ × ℕ+)) (b : Eˣ × ℕ+) :
-    X.blocksMod r p (l ++ [b]) = X.blocksMod r p l ++
-      [(X.tmodU (nu r (l.map fun c => (c.2 : ℕ)).sum b.2) b.2 p b.1, b.2)] := by
-  unfold blocksMod
-  rw [List.mapIdx_concat]
-  congr 1
-  · apply List.ext_getElem (by simp)
-    intro i h1 h2
-    have hi : i ≤ l.length := by simp at h1; omega
-    have : off (l ++ [b]) i = off l i := by unfold off; rw [List.take_append_of_le_length hi]
-    simp [this]
-  · simp [off]
 
 def ptMod (r : ℕ) (p : HeightOneSpectrum (𝓞 F)) {n : ℕ} (w : Pt E n) : Pt (X.A p).Ep n :=
   ⟨X.blocksMod r p w.blocks, by rw [X.blocksMod_size]; exact w.size⟩
 
-theorem ptMod_snoc (r : ℕ) (p : HeightOneSpectrum (𝓞 F)) {m : ℕ} (h : Pt E m) (t : Eˣ) (s : ℕ+) :
-    X.ptMod r p (h.snoc t s) = (X.ptMod r p h).snoc (X.tmodU (nu r m s) s p t) s := by
-  simp only [ptMod, Pt.snoc, blocksMod_concat, h.size]
 
-theorem lastOne_ptMod (r : ℕ) (p : HeightOneSpectrum (𝓞 F)) {n : ℕ} (w : Pt E (n + 1)) :
-    LastOne (X.ptMod r p w) ↔ LastOne w := by
-  rw [lastOne_iff, lastOne_iff]
-  constructor
-  · rintro ⟨l, t, h⟩
-    rcases List.eq_nil_or_concat w.blocks with e | ⟨l', b, e⟩
-    · have := w.size
-      simp [e] at this
-    · rw [List.concat_eq_append] at e
-      change X.blocksMod r p w.blocks = _ at h
-      rw [e, blocksMod_concat] at h
-      have h2 := List.append_inj_right' h rfl
-      have h3 : b.2 = 1 := by simpa using (congrArg (List.map Prod.snd) h2)
-      exact ⟨l', b.1, by rw [e, ← h3]⟩
-  · rintro ⟨l, t, h⟩
-    exact ⟨_, _, (congrArg (X.blocksMod r p) h).trans (X.blocksMod_concat r p l (t, 1))⟩
 
 def La (ν : ℤ) (s : ℕ) : Set E := {t | ∀ p, X.tmod ν s p t ∈ (X.M p).R}
 
@@ -330,10 +205,6 @@ def LaSub (ν : ℤ) (s : ℕ) : AddSubgroup E :=
 
 def La' (ν : ℤ) (s : ℕ) : Set E := {x | ∀ p, X.xmod ν s p x ∈ (X.M p).R}
 
-theorem inv_sub_inv_mem_La' (ν : ℤ) (s : ℕ) (t t' : Eˣ) : (t : E)⁻¹ - (t' : E)⁻¹ ∈ X.La' ν s ↔
-    ∀ p, (((X.tmodU ν s p t)⁻¹ : (X.A p).Epˣ) : (X.A p).Ep) - (((X.tmodU ν s p t')⁻¹ : (X.A p).Epˣ) : (X.A p).Ep)
-      ∈ (X.M p).R := by
-  simp only [La', Set.mem_setOf_eq, coe_tmodU_inv, xmod_sub]
 
 def Kglob (r i : ℕ) (w w' : Pt E i) : ℂ := ∏ᶠ p, (X.M p).Kk i (X.ptMod r p w) (X.ptMod r p w')
 
@@ -350,46 +221,14 @@ theorem nonempty_place : Nonempty (HeightOneSpectrum (𝓞 F)) := by
   obtain ⟨P, hP⟩ := Ideal.exists_maximal (𝓞 F)
   exact ⟨⟨P, hP.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hP (RingOfIntegers.not_isField _)⟩⟩
 
-theorem Ktop_mixed (r : ℕ) (T T' : F) {w w' : Pt E (r + 1)} (h : ¬ (LastOne w ↔ LastOne w')) :
-    X.Ktop r T T' w w' = 0 := by
-  obtain ⟨p⟩ := nonempty_place (F := F)
-  exact if_pos ⟨p, KtopLoc_mixed _ _ (by rwa [lastOne_ptMod, lastOne_ptMod])⟩
 
-theorem KtopLoc_ptMod_last_one (r : ℕ) (p : HeightOneSpectrum (𝓞 F)) (τ : (X.A p).Ep) {w w' : Pt E (r + 1)}
-    {h h' : Pt E r} {t t' : Eˣ} (hw : w.blocks = h.blocks ++ [(t, 1)]) (hw' : w'.blocks = h'.blocks ++ [(t', 1)]) :
-    KtopLoc (X.M p) τ (X.ptMod r p w) (X.ptMod r p w') =
-      if t = t' then (X.M p).CuspSpanExtension (X.tmod (nu r r 1) 1 p t - τ) (X.ptMod r p h) (X.ptMod r p h') else 0 := by
-  have key : ∀ {w : Pt E (r + 1)} {h : Pt E r} {t : Eˣ}, w.blocks = h.blocks ++ [(t, 1)] →
-      (X.ptMod r p w).blocks = (X.ptMod r p h).blocks ++ [(X.tmodU (nu r r 1) 1 p t, 1)] := by
-    intro w h t hw
-    change X.blocksMod r p w.blocks = _
-    rw [hw, blocksMod_concat, h.size]
-    rfl
-  rw [KtopLoc_last_one _ _ (key hw) (key hw'), coe_tmodU]
-  simp only [(X.tmodU_injective _ _ p).eq_iff]
 
-theorem Ktop_of_ne (r : ℕ) (T T' : F) {w w' : Pt E (r + 1)} {h h' : Pt E r} {t t' : Eˣ}
-    (hw : w.blocks = h.blocks ++ [(t, 1)]) (hw' : w'.blocks = h'.blocks ++ [(t', 1)]) (hne : t ≠ t') :
-    X.Ktop r T T' w w' = 0 := by
-  obtain ⟨p⟩ := nonempty_place (F := F)
-  exact if_pos ⟨p, by rw [X.KtopLoc_ptMod_last_one r p _ hw hw', if_neg hne]⟩
 
-theorem Ktop_eq_finprod (r : ℕ) (T T' : F) (w w' : Pt E (r + 1))
-    (h : (Function.mulSupport fun p => KtopLoc (X.M p) (tau0 (X.M p) ((X.A p).ιF T) ((X.A p).ιF T'))
-      (X.ptMod r p w) (X.ptMod r p w')).Finite) : X.Ktop r T T' w w' =
-    ∏ᶠ p, KtopLoc (X.M p) (tau0 (X.M p) ((X.A p).ιF T) ((X.A p).ιF T')) (X.ptMod r p w) (X.ptMod r p w') := by
-  unfold Ktop
-  split_ifs with H
-  · obtain ⟨p, hp⟩ := H
-    exact (finprod_eq_zero _ p hp h).symm
-  · rfl
 
 def Nt (ν : ℤ) (s : ℕ) (t : E) : ℝ := if t = 0 then 0 else ∏ᶠ p, ((X.M p).modK (X.tmod ν s p t))⁻¹
 
 @[simp] theorem Nt_zero (ν : ℤ) (s : ℕ) : X.Nt ν s 0 = 0 := if_pos rfl
 
-theorem Nt_of_ne (ν : ℤ) (s : ℕ) {t : E} (ht : t ≠ 0) :
-    X.Nt ν s t = ∏ᶠ p, ((X.M p).modK (X.tmod ν s p t))⁻¹ := if_neg ht
 
 def Ndet (r : ℕ) {m : ℕ} (h : Pt E m) : ℝ := ∏ᶠ p, ((X.M p).detMod (X.ptMod r p h))⁻¹
 

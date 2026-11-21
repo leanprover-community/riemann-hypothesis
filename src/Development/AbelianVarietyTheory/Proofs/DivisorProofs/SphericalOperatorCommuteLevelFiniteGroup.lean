@@ -103,32 +103,5 @@ theorem sphericalOperator_commute_levelFiniteGroup (hB : IsBaseFrame V β Λ N) 
   refine Finset.sum_congr rfl fun γ hγ => ?_
   rw [key F hF, mul_assoc h γ, (hc γ (hRs γ hγ)).eq, mul_assoc h]
 
-theorem heckeKeeps : ∀ D : Formalism.BasicNotions.D7, GlobalTheory.HeckeOrthSum.HeckeKeeps D := by
-  intro D θ _ pb Pg hPg pl _ red ψ _ om _ Sb hSb j _ _ hj M β hβ P d R hR T hT
-  obtain ⟨Λ, a, hB⟩ := hβ
-  have hO : OffS D Sb P := by
-    obtain ⟨_, _, _, _, h, -⟩ := hR
-    exact h
-  have hN : ((((D.host.g 0 * D.host.g 1) ^ a : ℕ)) : 𝓞 D.host.E) ∉ P.asIdeal := fun h =>
-    not_mem_of_offS hSb hO (P.isPrime.mem_of_pow_mem a (by rwa [Nat.cast_pow] at h))
-  have hPP : ∀ PP, PP ∈ (levelDatumAtBasePrime (D.sp.W j) Pg ψ).Pg ∨ PP ∈ (levelDatumAtBasePrime (D.sp.W j) Pg ψ).Q → PP ≠ P ∧ ¬ IsConjPl PP P := by
-    rintro PP (h | h)
-    · exact sep_of_offS hSb hO hPg h
-    · exact absurd h (Finset.notMem_empty _)
-  have hT1 := (GlobalTheory.MultMem.mem_mult_iff ..).1 hT.1
-  refine ⟨(GlobalTheory.MultMem.mem_mult_iff ..).2 (GlobalTheory.SphericalOps.isMultMap_heckeOn hT1 (fun k hk => ?_)
-    fun v => hasType_heckeLin hB hN hPP hR (hT1.lev v)), ?_⟩
-  · obtain ⟨_, _, _, _, -, -, -, -, -, -, -, -, -, -, hc⟩ := hR
-    exact (hc.1 k hk).1
-  have hT2 : postOn M (eGoodOp (D.sp.W j) hj β ψ pl red om) T = T := sub_eq_zero.1 hT.2
-  refine sub_eq_zero.2 (MultilinearMap.ext fun v => ?_)
-  have h3 : eGoodOp (D.sp.W j) hj β ψ pl red om (T v) = T v := congrArg (fun U : MMap M => U v) hT2
-  show eGoodOp (D.sp.W j) hj β ψ pl red om (heckeLin _ R (T v)) = heckeLin _ R (T v)
-  conv_rhs => rw [← h3]
-  unfold eGoodOp
-  simp only [LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul]
-  refine Finset.sum_congr rfl fun x _ => ?_
-  congr 1
-  exact sphericalOperator_commute_levelFiniteGroup hB hN hPP hR (hT1.lev v) x
 
 end GlobalTheory.HeckeKeepsGood

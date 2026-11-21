@@ -24,10 +24,6 @@ theorem curveRamified : CurveRamified := CurveRamified_of_shape ramifiedShape ad
 theorem eigenSplit : EigenSplit := eigen_split_holds
 theorem shapeCong : ShapeCong := shape_congruence_holds
 theorem shapeOrth : ShapeOrth := shape_orthogonal_holds
-theorem intAtD : IntAtD := IntAtD_of shapeOrth
 
-theorem kernelShape : KernelShape := KernelShape_of shapeOrth shapeCong
-theorem kernelThmB : KernelThmB := KernelThmB_of kernelShape
-theorem kernelThmBGauss : KernelThmBGauss := KernelThmBGauss_of kernelShape
 
 end Formalism.L2.Th1.G

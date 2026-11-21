@@ -103,9 +103,6 @@ def galB (σ : Gal(PadicAlgCl p/K)) : BCris hε →+* BCris hε :=
 def galBAction : MulSemiringAction Gal(PadicAlgCl p/K) (BCris hε) :=
   awayMulSemiringAction (isUnit_gal_smul_periodT hε)
 
-theorem galBAction_smul (σ : Gal(PadicAlgCl p/K)) (x : BCris hε) :
-    (galBAction hε).smul σ x = galB hε σ x :=
-  rfl
 
 theorem galB_one : galB hε (1 : Gal(PadicAlgCl p/K)) = RingHom.id (BCris hε) :=
   awaySMulHom_one _

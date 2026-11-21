@@ -61,32 +61,7 @@ theorem rdV_eq_fderiv (X g : Matrix (Fin n) (Fin n) ℂ) (f : Matrix (Fin n) (Fi
     exact hf.hasFDerivAt.restrictScalars ℝ
   exact (h2.comp_hasDerivAt (0 : ℝ) h1).deriv
 
-theorem ldV_eq_fderiv {k r : ℕ} (X g : B.Mat k r) (f : B.Mat k r → E)
-    (hf : DifferentiableAt ℂ f g) : B.LdV X f g = fderiv ℂ f g (-(X * g)) := by
-  unfold B.LdV
-  let L : B.Mat k r →L[ℝ] B.Mat k r := (LinearMap.mulRight ℝ g).toContinuousLinearMap
-  have h1 : HasDerivAt (fun t : ℝ => NormedSpace.exp ((t : ℂ) • (-X)) * g) ((-X) * g) 0 :=
-    L.hasFDerivAt.comp_hasDerivAt (0 : ℝ) (hasDerivAt_exp_real (-X))
-  have h2 : HasFDerivAt f ((fderiv ℂ f g).restrictScalars ℝ) (NormedSpace.exp (((0 : ℝ) : ℂ) • (-X)) * g) := by
-    rw [Complex.ofReal_zero, zero_smul, NormedSpace.exp_zero]
-    rw [Matrix.one_mul]
-    exact hf.hasFDerivAt.restrictScalars ℝ
-  have h3 := (h2.comp_hasDerivAt (0 : ℝ) h1).deriv
-  simp only [smul_neg, Matrix.neg_mul] at h3
-  exact h3
 
-theorem eabH_eq_fderiv (H g : Matrix (Fin n) (Fin n) ℂ) (a b : Fin n) (f : Matrix (Fin n) (Fin n) ℂ → E)
-    (hf : DifferentiableAt ℂ f g) : EabH H a b f g = fderiv ℂ f g (g * Matrix.single a b 1) := by
-  unfold EabH
-  rw [rdV_eq_fderiv _ _ _ hf, rdV_eq_fderiv _ _ _ hf, ← map_smul, ← map_add, ← Matrix.mul_smul, ← Matrix.mul_add]
-  congr 2
-  unfold hpart1 hpart2
-  rw [smul_smul]
-  have : Complex.I * (1 / (2 * Complex.I)) = 1 / 2 := by
-    field_simp
-  rw [this, ← smul_add]
-  rw [sub_add_add_cancel, ← two_smul ℂ, smul_smul]
-  norm_num
 
 end deriv
 

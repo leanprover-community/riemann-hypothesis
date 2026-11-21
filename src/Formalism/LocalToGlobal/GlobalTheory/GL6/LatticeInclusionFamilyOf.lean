@@ -19,21 +19,7 @@ theorem emb_tpow_smul (i n : ℕ) (x : ((D.fm u).lat i).V) :
   rw [LinearMap.map_smulₛₗ, map_pow, map_natCast]
   rfl
 
-theorem lattice_inclusion_iff : WeightLatticeInclusion D u ↔ BwIncl D u := by
-  constructor
-  · intro h w hw i hi hs v hv x hx
-    obtain ⟨y, hy, he⟩ := h w hw i hi hs v hv x hx
-    have hxy : ((D.mem u).A.T : D.what₂.LL) ^ (2 * Wt D u ((D.fm u).tauOf w v) + D.R.t) • x = y := by
-      apply (D.fm u).emb_inj i
-      rw [emb_tpow_smul]
-      exact he.symm
-    rw [hxy]
-    exact hy
-  · intro h w hw i hi hs v hv x hx
-    exact ⟨_, h w hw i hi hs v hv x hx, emb_tpow_smul D u _ _ x⟩
 
-theorem lattice_inclusion_family_of (h : ∀ (D : D7) (u : D.what₂.Word), FormsCompatible D u → HidaSetting D u → BwIncl D u) : WeightLatticeInclusionFamily :=
-  fun D u h1 h2 => (lattice_inclusion_iff D u).2 (h D u h1 h2)
 
 theorem eval_subP {ι : Type} [Fintype ι] {n : ℕ} (N Z : ι → Matrix (Fin n) (Fin n) ℂ)
     (P : MvPolynomial (ι × Fin n × Fin n) ℂ) :

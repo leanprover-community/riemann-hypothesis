@@ -45,8 +45,6 @@ theorem rep_mul (hσ : IsURepOn (UJset ε) σ) (a b : UJ ε) (x : H) :
     σ (umat (a * b)) x = σ (umat a) (σ (umat b) x) := by
   rw [umat_mul, hσ.1.2 _ (umat_mem a) _ (umat_mem b)]; rfl
 
-theorem rep_norm (hσ : IsURepOn (UJset ε) σ) (a : UJ ε) (x : H) : ‖σ (umat a) x‖ = ‖x‖ :=
-  hσ.2.1 _ (umat_mem a) x
 
 theorem rep_inner (hσ : IsURepOn (UJset ε) σ) (a : UJ ε) (x y : H) :
     ⟪σ (umat a) x, σ (umat a) y⟫_ℂ = ⟪x, y⟫_ℂ := by
@@ -65,9 +63,6 @@ theorem rep_inner_left (hσ : IsURepOn (UJset ε) σ) (a : UJ ε) (x y : H) :
 theorem rep_continuous (hσ : IsURepOn (UJset ε) σ) (x : H) : Continuous fun h : UJ ε => σ (umat h) x :=
   (hσ.2.2 x).comp_continuous continuous_umat umat_mem
 
-theorem coef_continuous (hσ : IsURepOn (UJset ε) σ) (x y : H) :
-    Continuous fun h : UJ ε => ⟪y, σ (umat h) x⟫_ℂ :=
-  continuous_const.inner (rep_continuous hσ x)
 
 end Rep
 
@@ -80,37 +75,6 @@ open GlobalTheory.SepReal.UnitaryMatrixFamily
 variable {n : ℕ} {ε' : Fin n → Bool} {H' K : Type} [NormedAddCommGroup H'] [InnerProductSpace ℂ H'] [CompleteSpace H']
   [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
 
-theorem weak_exists (σ : Mat n → (H' →L[ℂ] H')) (ρ : Mat n → (K →L[ℂ] K)) (d : ℝ) (w : H')
-    (hσ : IsURepOn (UJset ε') σ) (hρ : IsURepOn (UJset ε') ρ)
-    (hi : Integrable (fun h => ⟪w, σ (umat h) w⟫_ℂ) (muG ε')) :
-    ∃ Q : K →L[ℂ] K, ∀ x y, ⟪y, Q x⟫_ℂ =
-      (d : ℂ) * ∫ h, star ⟪w, σ (umat h) w⟫_ℂ * ⟪y, ρ (umat h) x⟫_ℂ ∂muG ε' := by
-  set m := fun h : UJ ε' => ⟪w, σ (umat h) w⟫_ℂ with hm
-  have hint : ∀ x : K, Integrable (fun h => star (m h) • ρ (umat h) x) (muG ε') := by
-    intro x
-    refine Integrable.mono' (hi.norm.mul_const ‖x‖)
-      ((continuous_star.comp (coef_continuous hσ w w)).smul (rep_continuous hρ x)).aestronglyMeasurable
-      (Filter.Eventually.of_forall fun h => ?_)
-    rw [norm_smul, norm_star, rep_norm hρ]
-  let L : K →ₗ[ℂ] K :=
-    { toFun := fun x => (d : ℂ) • ∫ h, star (m h) • ρ (umat h) x ∂muG ε'
-      map_add' := fun x y => by
-        simp only [map_add, smul_add]
-        rw [integral_add (hint x) (hint y), smul_add]
-      map_smul' := fun c x => by
-        simp only [map_smul, RingHom.id_apply]
-        rw [show (fun h => star (m h) • c • ρ (umat h) x) = fun h => c • (star (m h) • ρ (umat h) x) from
-          funext fun h => smul_comm _ _ _, integral_smul, smul_comm] }
-  refine ⟨L.mkContinuous (‖(d : ℂ)‖ * ∫ h, ‖m h‖ ∂muG ε') fun x => ?_, fun x y => ?_⟩
-  · show ‖(d : ℂ) • ∫ h, star (m h) • ρ (umat h) x ∂muG ε'‖ ≤ _
-    rw [norm_smul, mul_assoc]
-    gcongr
-    refine (norm_integral_le_of_norm_le (hi.norm.mul_const ‖x‖)
-      (Filter.Eventually.of_forall fun h => ?_)).trans_eq (integral_mul_const _ _)
-    rw [norm_smul, norm_star, rep_norm hρ]
-  · show ⟪y, (d : ℂ) • ∫ h, star (m h) • ρ (umat h) x ∂muG ε'⟫_ℂ = _
-    rw [inner_smul_right, ← integral_inner (hint x)]
-    simp only [inner_smul_right, hm]
 
 theorem fixes (σ : Mat n → (H' →L[ℂ] H')) (ρ : Mat n → (K →L[ℂ] K)) (d : ℝ) (w : H') (Q : K →L[ℂ] K)
     (hfd : IsFdeg (muG ε') σ d) (hw : ‖w‖ = 1)
@@ -218,81 +182,6 @@ open GlobalTheory.SepReal.UnitaryMatrixFamily
 variable {n : ℕ} {ε' : Fin n → Bool} {H' K : Type} [NormedAddCommGroup H'] [InnerProductSpace ℂ H'] [CompleteSpace H']
   [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
 
-theorem schur_conv (σ : Mat n → (H' →L[ℂ] H')) (d : ℝ) (w : H') (hσ : IsURepOn (UJset ε') σ)
-    (hfd : IsFdeg (muG ε') σ d) (g k : UJ ε') :
-    ∫ h, ⟪w, σ (umat h) w⟫_ℂ * star ⟪w, σ (umat (g⁻¹ * (h * k))) w⟫_ℂ ∂muG ε' =
-      ⟪w, σ (umat g) w⟫_ℂ * star ⟪w, σ (umat k) w⟫_ℂ / d := by
-  have e : ∀ h : UJ ε', ⟪w, σ (umat (g⁻¹ * (h * k))) w⟫_ℂ = ⟪σ (umat g) w, σ (umat h) (σ (umat k) w)⟫_ℂ := by
-    intro h
-    rw [rep_inner_left hσ, ← rep_mul hσ h k, ← rep_mul hσ]
-  simp_rw [e]
-  have h2 := (hfd.2 w w (σ (umat k) w) (σ (umat g) w)).2
-  simp only [coefOn] at h2
-  rw [h2, ← inner_conj_symm (σ (umat k) w) w]
-  simp only [RCLike.star_def]
-  ring
 
-theorem coef_of_Q (σ : Mat n → (H' →L[ℂ] H')) (ρ : Mat n → (K →L[ℂ] K)) (d : ℝ) (w : H') (Q : K →L[ℂ] K)
-    (hσ : IsURepOn (UJset ε') σ) (hfd : IsFdeg (muG ε') σ d) (hρ : IsURepOn (UJset ε') ρ)
-    (hi : Integrable (fun h => ⟪w, σ (umat h) w⟫_ℂ) (muG ε'))
-    (hQ : ∀ x y, ⟪y, Q x⟫_ℂ = (d : ℂ) * ∫ h, star ⟪w, σ (umat h) w⟫_ℂ * ⟪y, ρ (umat h) x⟫_ℂ ∂muG ε')
-    (x : K) (g : UJ ε') : ⟪Q x, ρ (umat g) (Q x)⟫_ℂ = ⟪w, σ (umat g) w⟫_ℂ * ⟪x, Q x⟫_ℂ := by
-  set m := fun h : UJ ε' => ⟪w, σ (umat h) w⟫_ℂ with hm
-  set c := fun k : UJ ε' => ⟪x, ρ (umat k) x⟫_ℂ with hc
-  have hmc : Continuous m := coef_continuous hσ w w
-  have hcc : Continuous c := coef_continuous hρ x x
-  have hleft : ∀ y, ⟪Q x, y⟫_ℂ = (d : ℂ) * ∫ h, m h * ⟪ρ (umat h) x, y⟫_ℂ ∂muG ε' := by
-    intro y
-    rw [← inner_conj_symm, hQ, map_mul, ← integral_conj]
-    simp only [Complex.conj_ofReal, map_mul, hm, RCLike.star_def, RCLike.conj_conj, inner_conj_symm]
-  have hmid : ∀ h, ⟪ρ (umat h) x, ρ (umat g) (Q x)⟫_ℂ =
-      (d : ℂ) * ∫ k, star (m (g⁻¹ * (h * k))) * c k ∂muG ε' := by
-    intro h
-    have e1 := rep_inner_left hρ g⁻¹ (ρ (umat h) x) (Q x)
-    rw [inv_inv] at e1
-    rw [← e1, ← rep_mul hρ, hQ]
-    congr 1
-    refine (integral_mul_left_eq_self _ (g⁻¹ * h)).symm.trans
-      (integral_congr_ae (Filter.Eventually.of_forall fun k => ?_))
-    simp only [hm, hc]
-    rw [rep_mul hρ (g⁻¹ * h) k, rep_inner hρ, mul_assoc]
-  set G := fun h k : UJ ε' => m h * star (m (g⁻¹ * (h * k))) * c k with hGdef
-  have hP : Integrable (fun p : UJ ε' × UJ ε' => m p.1 * m (g⁻¹ * (p.1 * p.2))) ((muG ε').prod (muG ε')) :=
-    (measurePreserving_prod_mul (muG ε') (muG ε')).integrable_comp_of_integrable
-      (hi.mul_prod (hi.comp_mul_left g⁻¹))
-  have hG : Integrable (Function.uncurry G) ((muG ε').prod (muG ε')) := by
-    refine Integrable.mono' (hP.norm.mul_const (‖x‖ * ‖x‖)) ?_ (Filter.Eventually.of_forall fun p => ?_)
-    · have : Continuous (Function.uncurry G) :=
-        ((hmc.comp continuous_fst).mul ((continuous_star.comp hmc).comp
-          (continuous_const.mul (continuous_fst.mul continuous_snd)))).mul (hcc.comp continuous_snd)
-      exact this.aestronglyMeasurable
-    · simp only [Function.uncurry, hGdef, norm_mul, norm_star]
-      gcongr
-      refine (norm_inner_le_norm _ _).trans ?_
-      rw [rep_norm hρ]
-  have hswap := integral_integral_swap hG
-  rw [hleft]
-  simp_rw [hmid]
-  have e2 : ∀ h, m h * ((d : ℂ) * ∫ k, star (m (g⁻¹ * (h * k))) * c k ∂muG ε') = (d : ℂ) * ∫ k, G h k ∂muG ε' := by
-    intro h
-    rw [← integral_const_mul, ← integral_const_mul, ← integral_const_mul]
-    refine integral_congr_ae (Filter.Eventually.of_forall fun k => ?_)
-    simp only [hGdef]; ring
-  simp_rw [e2]
-  rw [integral_const_mul, hswap]
-  have e3 : ∀ k, ∫ h, G h k ∂muG ε' = m g * star (m k) / d * c k := by
-    intro k
-    simp only [hGdef]
-    rw [integral_mul_const]
-    congr 1
-    exact schur_conv σ d w hσ hfd g k
-  simp_rw [e3]
-  rw [hQ x x]
-  have e4 : ∀ k, m g * star (m k) / d * c k = (m g / d) * (star (m k) * c k) := fun k => by ring
-  simp_rw [e4]
-  rw [integral_const_mul]
-  have hd : (d : ℂ) ≠ 0 := by exact_mod_cast hfd.1.ne'
-  simp only [hm, hc]
-  field_simp
 
 end GlobalTheory.SepReal.CoefProjProof

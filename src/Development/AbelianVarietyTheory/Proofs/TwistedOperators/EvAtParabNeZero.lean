@@ -68,96 +68,13 @@ variable {σ : Representation ℂ (GL (Fin r) k) V} {χW χV : kˣ →* ℂˣ}
 theorem evAt_apply (g : GL (Fin (r + t)) k) (f : LiftSp t σ χW χV) :
     evAt t σ χW χV g f = TensorProduct.rid ℂ V (f.1.1 g) := rfl
 
-theorem evAt_lift (g x : GL (Fin (r + t)) k) (f : LiftSp t σ χW χV) :
-    evAt t σ χW χV g (liftRep t σ χW χV x f) = evAt t σ χW χV (g * x) f := rfl
 
-theorem eq_zero_of_evAt (f : LiftSp t σ χW χV) (h : ∀ g, evAt t σ χW χV g f = 0) : f = 0 := by
-  apply Subtype.ext
-  apply Subtype.ext
-  funext g
-  have hg := h g
-  rw [evAt_apply] at hg
-  exact (LinearEquiv.map_eq_zero_iff _).mp hg
 
-private theorem rid_extTensor_twist_detRep_eq_smul (g : GL (Fin r) k × GL (Fin t) k) (x : V ⊗[ℂ] ℂ) :
-    TensorProduct.rid ℂ V (extTensor (twist σ (detChar (Fin r) (χW * χV⁻¹))) (detRep (Fin t) χW) g x) =
-      ((detChar (Fin r) (χW * χV⁻¹) g.1 * detChar (Fin t) χW g.2 : ℂˣ) : ℂ) •
-        σ g.1 (TensorProduct.rid ℂ V x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul v c =>
-    simp only [extTensor_tmul, twist_apply, detRep, ofChar_apply, TensorProduct.rid_tmul, map_smul,
-      Units.val_mul, mul_smul]
-    simp only [smul_smul]
-    congr 1
-    ring
-  | add x y hx hy => simp only [map_add, hx, hy, smul_add]
 
-theorem evAt_parab (p : parab k (part r t)) (g : GL (Fin (r + t)) k) (f : LiftSp t σ χW χV) :
-    evAt t σ χW χV (p * g) f =
-      ((deltaHalf k (Two (Fin r) (Fin t)) (leviProj k (part r t) p) *
-        detChar (Fin r) (χW * χV⁻¹) (leviProj k (part r t) p false) *
-        detChar (Fin t) χW (leviProj k (part r t) p true) : ℂˣ) : ℂ) •
-        σ (leviProj k (part r t) p false) (evAt t σ χW χV g f) := by
-  rw [evAt_apply, evAt_apply, parInd_law, map_smul]
-  erw [rid_extTensor_twist_detRep_eq_smul]
-  rw [← mul_smul, mul_assoc, Units.val_mul (deltaHalf k _ _)]
-  rfl
 
-theorem evAt_parab_ne_zero (p : parab k (part r t)) (g : GL (Fin (r + t)) k) (f : LiftSp t σ χW χV)
-    (h : evAt t σ χW χV (p * g) f ≠ 0) : evAt t σ χW χV g f ≠ 0 := by
-  intro hg
-  apply h
-  rw [evAt_parab, hg, map_zero, smul_zero]
 
-private theorem valuation_det_incl_eq_one {n : ℕ} (a : GL (Fin n) 𝒪[k]) :
-    valuation k ((Matrix.GeneralLinearGroup.det (incl k n a) : kˣ) : k) = 1 := by
-  rw [show incl k n a = Matrix.GeneralLinearGroup.map (algebraMap 𝒪[k] k) a from rfl,
-    Matrix.GeneralLinearGroup.map_det]
-  simp only [Units.coe_map, MonoidHom.coe_coe]
-  exact (Valuation.integer.integers _).one_of_isUnit (Units.isUnit _)
 
-theorem detChar_incl {n : ℕ} {χ : kˣ →* ℂˣ} (h : IsUnram χ) (a : GL (Fin n) 𝒪[k]) :
-    detChar (Fin n) χ (incl k n a) = 1 := by
-  rw [detChar_apply]
-  exact h _ (valuation_det_incl_eq_one a)
 
-theorem evAt_parab_int (hu : IsUnram (χW * χV⁻¹)) (p : GL (Fin (r + t)) k) (a : GL (Fin r) 𝒪[k])
-    (d : GL (Fin t) 𝒪[k])
-    (ha : ∀ i j, p.val (Fin.castAdd t i) (Fin.castAdd t j) = (incl k r a).val i j)
-    (hd : ∀ i j, p.val (Fin.natAdd r i) (Fin.natAdd r j) = (incl k t d).val i j)
-    (hc : ∀ i j, p.val (Fin.natAdd r i) (Fin.castAdd t j) = 0)
-    (g : GL (Fin (r + t)) k) (f : LiftSp t σ χW χV) :
-    evAt t σ χW χV (p * g) f =
-      (detChar (Fin t) χW (incl k t d) : ℂ) • σ (incl k r a) (evAt t σ χW χV g f) := by
-  have hp : p ∈ parab k (part r t) := by
-    rw [mem_parab_two]
-    intro j i
-    exact hc j i
-  have h1 := evAt_parab (σ := σ) (χW := χW) (χV := χV) ⟨p, hp⟩ g f
-  have hL0 : leviProj k (part r t) ⟨p, hp⟩ false = incl k r a := by
-    apply Matrix.GeneralLinearGroup.ext
-    intro i j
-    rw [leviProj_apply]
-    exact ha i j
-  have hL1 : leviProj k (part r t) ⟨p, hp⟩ true = incl k t d := by
-    apply Matrix.GeneralLinearGroup.ext
-    intro i j
-    rw [leviProj_apply]
-    exact hd i j
-  have hδ : deltaHalf k (Two (Fin r) (Fin t)) (leviProj k (part r t) ⟨p, hp⟩) = 1 := by
-    rw [deltaHalf_apply]
-    apply Finset.prod_eq_one
-    intro x _
-    apply isUnram_absPow
-    cases x
-    · rw [hL0]
-      exact valuation_det_incl_eq_one a
-    · rw [hL1]
-      exact valuation_det_incl_eq_one d
-  rw [show p * g = ((⟨p, hp⟩ : parab k (part r t)) : GL (Fin (r + t)) k) * g from rfl, h1, hδ, hL0, hL1,
-    detChar_incl hu a]
-  simp only [one_mul]
 
 def diagO (a : GL (Fin r) 𝒪[k]) (d : GL (Fin t) 𝒪[k]) : GL (Fin (r + t)) 𝒪[k] :=
   emb₂ 𝒪[k] (stdSum (rfl : r + t = r + t)) (a, d)
@@ -216,31 +133,12 @@ theorem red_surjective (n : ℕ) : Function.Surjective (red k n) := by
   rw [red_val]
   exact Function.surjInv_eq (IsLocalRing.residue_surjective (R := 𝒪[k])) _
 
-theorem mem_fixed_KOne {n : ℕ} {π : Representation ℂ (GL (Fin n) k) V} {v : V} :
-    v ∈ fixed π (KOne k (Fin n)) ↔ ∀ a : GL (Fin n) 𝒪[k], red k n a = 1 → π (incl k n a) v = v := by
-  rw [GlobalTheory.Parabolic.mem_fixed]
-  constructor
-  · intro hv a ha
-    exact hv _ ⟨a, ha, rfl⟩
-  · rintro h _ ⟨a, ha, rfl⟩
-    exact h a ha
 
-theorem mem_fixed_KO {n : ℕ} {π : Representation ℂ (GL (Fin n) k) V} {v : V} :
-    v ∈ fixed π (KO k (Fin n)) ↔ ∀ a : GL (Fin n) 𝒪[k], π (incl k n a) v = v := by
-  rw [GlobalTheory.Parabolic.mem_fixed]
-  constructor
-  · intro hv a
-    exact hv _ ⟨a, rfl⟩
-  · rintro h _ ⟨a, rfl⟩
-    exact h a
 
 def Nice (r t : ℕ) (w : Equiv.Perm (Fin (r + t))) (S : Finset (Fin r)) : Prop :=
   (∀ i, i ∉ S → w (Fin.castAdd t i) = Fin.castAdd t i) ∧
   (∀ i ∈ S, r ≤ (w (Fin.castAdd t i) : ℕ) ∧ r ≤ (w.symm (Fin.castAdd t i) : ℕ)) ∧ (S = ∅ → w = 1)
 
-theorem nice_one : Nice r t 1 ∅ := by
-  refine ⟨fun i _ => rfl, fun i hi => ?_, fun _ => rfl⟩
-  simp at hi
 
 end Local
 

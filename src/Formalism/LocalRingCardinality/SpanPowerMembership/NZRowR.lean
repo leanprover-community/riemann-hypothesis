@@ -58,46 +58,8 @@ theorem projectionSide_mem_iff (μ) (x : En a) : x ∈ (PS).V0 μ ↔ eP a n1 x 
   · intro h
     exact ⟨x, h⟩
 
-theorem projSide_sec (μ) : (∀ y, (PS).iota μ (secB b a y) = y) ∧ (∀ y, secB b a y ∈ (PS).V0 μ) ∧
-    (∀ y, ∀ u ∈ (PS).Usp μ, inner ℂ u (secB b a y) = 0) ∧
-    ∀ y z, inner ℂ (secB b a y) (secB b a z) = inner ℂ y z := by
-  refine ⟨fun y => ?_, fun y => (projectionSide_mem_iff D c χ0 h0 hm b a n1 hn h1 μ _).mpr (eP_secB b a n1 hn y),
-    fun y u hu => ?_, inner_secB b a (hn.trans h1)⟩
-  · rw [projSide_iota]; exact prB_secB b a _ y
-  · have h2 : (PS).iota μ u = 0 := hu.2
-    rw [projSide_iota] at h2
-    exact inner_secB_of_ker b a _ h2 y
 
-theorem projSide_Usp_ne (μ) (hlt : n < n1) : (PS).Usp μ ≠ ⊥ := by
-  intro hb
-  have hi : n < a := lt_of_lt_of_le hlt h1
-  have hmem : eb a ⟨n, hi⟩ ∈ (PS).Usp μ := by
-    refine ⟨(projectionSide_mem_iff D c χ0 h0 hm b a n1 hn h1 μ _).mpr ?_, ?_⟩
-    · ext i
-      rw [eP_apply]
-      by_cases h : (i : ℕ) < n1
-      · rw [if_pos h]
-      · rw [if_neg h]
-        have : i ≠ ⟨n, hi⟩ := fun e => h (by rw [e]; exact hlt)
-        simp [this]
-    · show (PS).iota μ (eb a ⟨n, hi⟩) = 0
-      rw [projSide_iota]
-      show ∑ k : Fin n, (eb a ⟨n, hi⟩) (Fin.castLE _ k) • b k = 0
-      refine Finset.sum_eq_zero fun k _ => ?_
-      have : (Fin.castLE (hn.trans h1) k : Fin a) ≠ ⟨n, hi⟩ := fun e => by
-        have := congrArg Fin.val e
-        simp at this
-        omega
-      simp [this]
-  rw [hb] at hmem
-  have hz : eb a ⟨n, hi⟩ = 0 := (Submodule.mem_bot ℂ).mp hmem
-  exact (eb a).toBasis.ne_zero ⟨n, hi⟩ (by simpa using hz)
 
-theorem projSide_eOp_ne (μ) (hlt : n1 < a) : (PS).eOp μ ≠ LinearMap.id := by
-  intro h
-  have h' : eP a n1 = LinearMap.id := h
-  have h2 := congrArg (fun f : En a →ₗ[ℂ] En a => f (eb a ⟨n1, hlt⟩) ⟨n1, hlt⟩) h'
-  simp [eP_apply] at h2
 
 variable (hO : OFull D)
 
@@ -138,18 +100,8 @@ theorem projSide_rrDef : (PS).RRDef := by
   exact img_lemma b a D.what₂.embLL D.what₂.OtoLL hO (hn.trans h1) _
     (fun z => (projectionSide_mem_iff D c χ0 h0 hm b a n1 hn h1 _ _).mpr (eP_secB b a n1 hn z)) y
 
-theorem projSide_rrFull : (PS).RRFull := (stdH_good D.what₂.LL n).2
 
 def projSide_amb : AmbForm D PS := ambOf D _ (fun _ => a) (fun _ => eb a) (fun _ => rfl)
 
-theorem projectionSide_latticeBound (ty : Fin n → D.what₂.FT) (hl : ∀ μ j π, D.what₂.lamP μ j π = 1) : (PS).RowLatticeBoundForBasis b ty 1 := by
-  refine ⟨fun μ => ?_, one_pos, fun _ => 1, rfl, fun _ => one_pos, Formalism.BasicNotions.DV.rhoUnit_one D, fun μ σ => ?_⟩
-  · obtain ⟨s1, s2, s3, -⟩ := projSide_sec D c χ0 h0 hm b a n1 hn h1 μ
-    exact iotaQ_bij' (PS) (μ := μ) (secB b a) s1 s2 s3
-  · obtain ⟨s1, s2, s3, s4⟩ := projSide_sec D c χ0 h0 hm b a n1 hn h1 μ
-    have hadj := iotaQ_adj' (PS) (μ := μ) (secB b a) s1 s2 s3 s4
-    have hp : ((1 * 1 * ∏ j ∈ Finset.Icc 1 D.R.m, D.what₂.lamP μ j (ty σ) : ℝ) : ℂ) = 1 := by simp [hl]
-    rw [hadj, hp, one_smul]
-    rfl
 
 end Formalism.BasicNotions.Examples₂.NZ

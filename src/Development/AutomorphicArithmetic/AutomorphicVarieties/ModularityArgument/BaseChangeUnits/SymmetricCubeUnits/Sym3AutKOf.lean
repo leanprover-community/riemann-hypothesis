@@ -25,17 +25,8 @@ def UpAll : Prop :=
     Module.finrank F E = 2 → ∀ (n : ℕ), 1 ≤ n → ∀ r : G F Ω →* GL (Fin n) (Qbar l), Continuous r → IsAutR ι r →
       IsIrr (r.comp (galEmb F E Ω)) → IsAutC ι (r.comp (galEmb F E Ω))
 
-theorem UpAll.autQ (h : UpAll) {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {ι : Qbar l ≃+* ℂ} {n : ℕ}
-    (hn : 1 ≤ n) {r : G ℚ Ω →* GL (Fin n) (Qbar l)} (ha : IsAutR ι r) : IsAutQ ι r := by
-  intro hr K _ _ _ i _ _ hK hirr
-  haveI : IsAlgClosure K Ω := ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) K⟩
-  exact h ℚ K Ω l ι hK n hn r hr ha hirr
 
-theorem adAutK_of (h : UpAll) (ha : Lit.AdAutQ) : AdAutK :=
-  fun Ω _ _ _ l _ ι ρ h1 h2 h3 => h.autQ (by norm_num) (ha Ω l ι ρ h1 h2 h3)
 
-theorem sym3AutK_of (h : UpAll) (ha : Lit.SymmetricCubeAutomorphyOverRationals) : Sym3AutK :=
-  fun Ω _ _ _ l _ ι ρ h1 h2 h3 h4 => h.autQ (by norm_num) (ha Ω l ι ρ h1 h2 h3 h4)
 
 structure HypothesesZ : Prop where
   af : Af.Hypotheses₂

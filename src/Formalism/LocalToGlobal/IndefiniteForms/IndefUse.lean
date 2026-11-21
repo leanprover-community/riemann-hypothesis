@@ -435,12 +435,7 @@ variable {Bs : DefBase K} {Df0 Df1 : DefSide Bs} {Dc : DefCols Df1} {Sp : SPer D
 
 include P
 
-theorem base_level_log_eigenvalue_bound : P.base.toIndefData.L6 N := fun j p v => by
-  rw [P.extra.level.2.2]; exact P.cols.l6 j p v
 
-theorem fun1 (hde : 0 ≤ N.de) (hde3 : N.de ≤ 1 / 3) :
-    P.cols.muMaxRR ≤ N.hh - meanLog P.cols.κ + 14 * N.la := by
-  rw [← P.extra.level.2.1]; exact (P.extra.passage hde hde3 _ P.extra.fun0).1
 
 end IndefCore
 
@@ -448,89 +443,9 @@ namespace ColData
 
 variable {Bs : DefBase K} {Df : DefSide Bs} {Dc : DefCols Df} {Sp : SPer Dc} {S : IndefData Df} (C : ColData Dc Sp S)
 
-theorem fnorm_eq_zero {n : ℕ} (Y : Matrix (Fin n) (Fin n) ℂ) (hY : IsUnit Y.det) (y : Fin n → ℂ) (h : fnorm Y y = 0) : y = 0 := by
-  have h1 : ∑ i, ‖(Y⁻¹.mulVec y) i‖ ^ 2 = 0 := by
-    have h' : Real.sqrt (∑ i, ‖(Y⁻¹.mulVec y) i‖ ^ 2) = 0 := h
-    rwa [Real.sqrt_eq_zero (Finset.sum_nonneg fun i _ => by positivity)] at h'
-  have h2 : Y⁻¹.mulVec y = 0 := by
-    funext i
-    have := (Finset.sum_eq_zero_iff_of_nonneg (fun i _ => by positivity)).mp h1 i (Finset.mem_univ i)
-    simpa using this
-  calc y = (Y * Y⁻¹).mulVec y := by rw [Matrix.mul_nonsing_inv Y hY, Matrix.one_mulVec]
-    _ = Y.mulVec (Y⁻¹.mulVec y) := (Matrix.mulVec_mulVec y Y Y⁻¹).symm
-    _ = 0 := by rw [h2, Matrix.mulVec_zero]
 
-theorem period_images_surjective (h : C.L1e) (hX : IsUnit (S.XE Bs.v0).det) (hD : 0 < S.D) (z : Sp.HH) (hz : z ∈ Sp.Rw) : ∃ y, C.sE y = z := by
-  obtain ⟨hs, hm, hr, -⟩ := h
-  have hinj : Function.Injective C.sE := by
-    intro y1 y2 h12
-    have h0 : C.sE (y1 - y2) = 0 := by rw [map_sub, h12, sub_self]
-    have := hs (y1 - y2)
-    rw [h0, norm_zero] at this
-    exact sub_eq_zero.mp (fnorm_eq_zero _ hX _ this.symm)
-  have hfin : FiniteDimensional ℂ Sp.Rw := Module.finite_of_finrank_pos (by rw [hr]; exact hD)
-  let g : (Fin S.D → ℂ) →ₗ[ℂ] Sp.HH :=
-    { toFun := fun y => C.sE (star y)
-      map_add' := fun a b => by simp only [star_add, map_add]
-      map_smul' := fun c a => by
-        first
-        | simp only [star_smul, map_smulₛₗ, starRingEnd_apply, star_star, RingHom.id_apply]
-        | (simp only [RingHom.id_apply]
-           rw [star_smul, map_smulₛₗ, starRingEnd_apply, star_star]) }
-  have hinjg : Function.Injective g := fun a b hab => star_injective (hinj hab)
-  have hle : LinearMap.range g ≤ Sp.Rw := by
-    rintro _ ⟨y, rfl⟩
-    exact hm _
-  have hrank : finrank ℂ (LinearMap.range g) = finrank ℂ Sp.Rw := by
-    rw [LinearMap.finrank_range_of_inj hinjg, hr]
-    simp
-  have heq : LinearMap.range g = Sp.Rw := by
-    by_contra hne
-    exact (Submodule.finrank_lt_finrank_of_lt (lt_of_le_of_ne hle hne)).ne hrank
-  rw [← heq] at hz
-  obtain ⟨y, hy⟩ := LinearMap.mem_range.mp hz
-  exact ⟨star y, hy⟩
 
 end ColData
 
-theorem IndefCore.divCore [IsTotallyComplex K] (hM : Formalism.DivisorInequality.BoundsMu) (hS : SpecDet) (hR0 : GramDeterminantQuotientMetric)
-    (hG : LatticeGlue) (hRam : RamBasic) (hH : HeightBoundConstant) {Bs : DefBase K} {Df0 Df1 : DefSide Bs}
-    {Dc : DefCols Df1} {Sp : SPer Dc} {N : IndefNum Bs} [Nonempty Bs.Ix] (wf0 : Df0.WF) (wf1 : Df1.WF)
-    (P : IndefCore Df0 Df1 Dc Sp N) (hde : 0 ≤ N.de) (hde3 : N.de ≤ 1 / 3)
-    (eb : ∀ t, HeightOneSpectrum (𝓞 K) → Fin (Df0.dQ t) → Fin (Df0.dQ t) → K)
-    (heb : ∀ t w, IsLocBasis (Df0.abelian₂ t) w (eb t w))
-    (Sy : Finset (HeightOneSpectrum (𝓞 K))) (hSy : P.base.Tw ⊆ Sy)
-    (hG0 : ∀ y, y ∉ Sy → vw y (Df0.Gm eb (P.base.μ y) y) = 0)
-    (LG E3 : ℝ) (E2 : Bs.J → ℝ) (gy : HeightOneSpectrum (𝓞 K) → ℝ) (ηy : HeightOneSpectrum (𝓞 K) → Bs.J → ℝ)
-    (hi : ∀ y ∈ Sy, (vw y (Df0.Gm eb (P.base.μ y) y) : ℝ) ≤ (P.base.D : ℝ) * gy y)
-    (hLG : ∑ y ∈ Sy, lw y * gy y ≤ LG)
-    (hiv : ∀ y ∈ P.base.Tw, ∀ j, (jw (Df0.HT j (P.base.μ y)) y (Df0.Tl j (P.base.μ y)) : ℝ) ≤
-      ((ramw y : ℝ) * N.J0 (P.base.μ y) y j) * (P.base.D : ℝ) + ηy y j)
-    (hE2 : ∀ j, ∑ y ∈ P.base.Tw, lw y * ηy y j / (P.base.D : ℝ) ≤ E2 j)
-    (hE3 : ∑ y ∈ Sy, lw y * (2 / ellw y ^ 2) ≤ E3)
-    (u : Dc.Mem) (hXc : ∀ v, IsUnit (Dc.Xc u v).det) (hne : P.cols.col.B u ≠ 0)
-    (X0 : InfinitePlace K → Matrix (Fin (Df1.nV Bs.μ0)) (Fin (Df1.nV Bs.μ0)) ℂ)
-    (hX0 : ∀ v, IsUnit (X0 v).det ∧ ((X0 v)⁻¹).conjTranspose * (X0 v)⁻¹ = (Df1.HV Bs.μ0).map v.embedding)
-    (pU : InfinitePlace K → ℝ)
-    (hpU : ∀ v, Formalism.HN.opNormAt (Pi.basisFun K (Fin (Dc.a u))) (Dc.Xc u)
-      (Pi.basisFun K (Fin (Df1.nV Bs.μ0))).dualBasis (Formalism.HN.dualFrame X0) v (Dc.Pt u Bs.μ0) ≤ pU v)
-    (X : ℝ)
-    (hX : X = (∑ j, N.l3 j) + 2 * (∑ j, ∑ y ∈ P.base.Tw, lw y * ((ramw y : ℝ) * N.F0 y j)) + LG +
-      (∑ j, (N.E1 j + E2 j)) + E3) :
-    P.cols.muCC + Formalism.HN.htMap (Pi.basisFun K (Fin (Dc.a u))) (Dc.Xc u) (Pi.basisFun K (Fin P.cols.D)).dualBasis
-        (Formalism.HN.dualFrame P.cols.XE) (P.cols.col.B u) ≤
-      X + 3 * N.de * (X + N.hh + 28 * N.la) + 28 * N.la +
-        ((1 / (Formalism.HN.nPl K : ℝ)) * ∑ v, Real.log (pU v ^ 2) - ∑ j, N.l6 j) := by
-  have h0 : P.base.muCC ≤ _ :=
-    P.base.boundsMu hM hS hR0 hG hRam wf0 P.extra.untw eb heb Sy hSy hG0 LG E3 E2 gy ηy hi hLG hiv hE2 hE3
-  have hp := (P.extra.passage hde hde3 _ P.extra.fun0).2
-  have hh := P.cols.height hH wf1 u hXc hne X0 hX0 pU hpU
-  have hκ : meanLog P.cols.κ = meanLog P.base.κ := by rw [P.extra.level.2.1]
-  rw [hκ] at hh
-  have h1 : P.base.muCC - meanLog P.base.κ ≤ X := by rw [hX]; linarith [h0]
-  have h2 : 3 * N.de * (P.base.muCC + (N.hh - meanLog P.base.κ) + 28 * N.la) ≤
-      3 * N.de * (X + N.hh + 28 * N.la) :=
-    mul_le_mul_of_nonneg_left (by linarith [h1]) (by linarith [hde])
-  linarith [hp, hh, h1, h2]
 
 end Formalism.L2.Indef

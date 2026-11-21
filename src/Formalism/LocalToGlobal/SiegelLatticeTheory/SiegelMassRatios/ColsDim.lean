@@ -150,9 +150,6 @@ theorem mem_Equi {k : Type} [Field k] {W : Type} [AddCommGroup W] [Module k W]
 
 theorem stabTriv_mono {K K0 : Subgroup Gf} (h : K ≤ K0) (hs : StabTriv ιf K0) : StabTriv ιf K := fun x γ hx => hs x γ (h hx)
 
-theorem equi_subtype {k : Type} [Field k] {W : Type} [AddCommGroup W] [Module k W]
-    (Γ' : Subgroup Gf) (ρ : Representation k Γ' W) (χ : K →* kˣ) :
-    Equi k Γ'.subtype K ρ χ = Formalism.L2.SG.ClassAct.AMFChi k Γ' K ρ χ := rfl
 
 theorem exists_dec (s : Classes ιf K → Gf) (hs : ∀ c, DoubleCoset.mk ιf.range K (s c) = c)
     (g : Gf) : ∃ p : Γ × K, g = ιf p.1 * s (DoubleCoset.mk ιf.range K g) * (p.2 : Gf) := by
@@ -414,12 +411,6 @@ theorem columns_dimension : ColsDim := by
   refine ⟨LinearEquiv.finiteDimensional e.symm, ?_⟩
   rw [e.finrank_eq, h2, Subspace.dual_finrank_eq]
 
-theorem sharp_dimension : SharpDim := by
-  intro Γ Gi Gf _ _ _ k _ V _ _ ιi ιf K K0 ψ π hK hst hfin hV
-  exact equi_dim ιf K (stabTriv_mono ιf hK hst) (π.comp ιi) ψ⁻¹
 
-theorem columns_dimension_unitary : ColsDimU := by
-  intro F E _ _ _ _ n _ _ σ J K K0 ψ V _ _ π hK hst hfin hV
-  exact columns_dimension _ _ _ ℂ V _ _ K K0 ψ π hK hst hfin hV
 
 end Formalism.L2.SG.ColsDim

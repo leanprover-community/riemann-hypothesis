@@ -67,8 +67,6 @@ def IsGr {Γ L : Type} [Group Γ] [Field L] {d : ℕ} (ρ₀ ρ : Γ →* GL (Fi
   ∃ c : Fin d → ℕ, ∀ g, (ρ₀ g : Matrix (Fin d) (Fin d) L).BlockTriangular c ∧
     ∀ i j, (ρ g : Matrix (Fin d) (Fin d) L) i j = if c i = c j then (ρ₀ g : Matrix (Fin d) (Fin d) L) i j else 0
 
-theorem isGr_refl {Γ L : Type} [Group Γ] [Field L] {d : ℕ} (ρ : Γ →* GL (Fin d) L) : IsGr ρ ρ :=
-  ⟨fun _ => 0, fun _ => ⟨fun _ _ h => absurd h (lt_irrefl _), fun _ _ => by simp⟩⟩
 
 section Cover
 

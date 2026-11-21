@@ -21,9 +21,6 @@ theorem wtC_of (hB : BorChartF Xo c) (hA : AllTest Xo c) (σ : c.F →+* ℂ) : 
   letI : Field (CAt σ) := inferInstanceAs (Field ℂ)
   exact wtField_of_borChart hB a n f hf (CAt σ) t y y' (hA _ y) (hA _ y') hb
 
-theorem testRd_rows {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (σ : c.F →+* ℂ) (hC : FrChartF Xo c)
-    (hB : BorChartF Xo c) (hA : AllTest Xo c) (hU : IsUnf (U σ)) (hX : BCEx Xo c σ) : TestRd Xo c U σ :=
-  testRd_of (U := U) (σ := σ) (hW := evalWD_fr hC) (hU := hU) (hB := hX) (hC := wtC_of hB hA σ)
 
 end Test
 
@@ -32,9 +29,6 @@ section Inv
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ}
 
-theorem rdInvG_of_triv (U : Unf Xo c σ r) (hU : IsUnf U) (hχ : ∀ k la γ, (U.X k).χ la γ = 1) : RdInvG U := by
-  intro a n hdn f hf k γ hγ x hx
-  rw [rdU_lact (U := U) (hU := hU) (hdn := hdn) (hf := hf) (k := k) γ hγ x hx, hχ, one_mul]
 
 end Inv
 
@@ -73,11 +67,6 @@ theorem adelCont_of {V : HSp D} {X : Comp → Data E r} {dict : GA D V → Σ k,
     exact (heq g hg).symm
   exact (hcont.continuousAt hN).congr hev
 
-theorem adelAut_of_loc {V : HSp D} {X : Comp → Data E r} {dict : GA D V → Σ k, Frame (X k).Ψ r}
-    {mu : GA D V → ℂ} {Kf : Subgroup (GA D V)} {th : ∀ c, (X c).Ψ → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)}
-    {hr : V.rank = r} (hχ : ∀ k la γ, (X k).χ la γ = 1) (hd : DictIsUnif V dict Kf th hr) (hm : MuUnit V dict mu)
-    (hL : DictLoc V dict) (hmc : Continuous mu) : AdelAut V dict mu :=
-  adelAut_of hχ hd hm (adelCont_of hχ hL hmc)
 
 end Cont
 

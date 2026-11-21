@@ -115,17 +115,6 @@ theorem exists_std (y : CxPts (CanonLB.affStr k D) σ) :
 theorem holo_X (R : AnRead (CanonLB.affStr k D) σ D) (a : Fin D) : R.HoloOn univ (X a) :=
   holoOn_ev_of_subset _ fun _ _ => mem_ptsIn_top
 
-theorem not_holo_conj (R : AnRead (CanonLB.affStr k D) σ D) (a : Fin D) :
-    ¬ R.HoloOn univ fun z => starRingEnd ℂ (X a z) := fun h => by
-  obtain ⟨c, hy, hc⟩ := exists_std (origin (k := k) (σ := σ) (D := D))
-  have ht := c.e.open_target.mem_nhds (c.e.map_source hy)
-  have h1 := (h.chart isOpen_univ c).differentiableAt (x := c.e origin) (by simpa using ht)
-  have h2 : DifferentiableAt ℂ (fun v : V D => starRingEnd ℂ (v a)) (c.e origin) :=
-    h1.congr_of_eventuallyEq (eventually_of_mem ht fun v hv => by
-      simp only [Function.comp_apply, ← hc _ (c.e.map_target hv), c.e.right_inv hv])
-  have h3 := ReciprocityTheory.L2DbarEstimates.wdb_of_differentiableAt (j := a) h2
-  rw [ReciprocityTheory.L2DbarEstimates.wdb_conj (by fun_prop), ReciprocityTheory.L2DbarEstimates.inh_wd_coord] at h3
-  simp at h3
 
 def sq (t : ℝ) (z : CxPts (CanonLB.affStr k D) σ) : ℝ := t * ∑ a, Complex.normSq (X a z)
 
@@ -136,38 +125,7 @@ theorem smooth_sq (R : AnRead (CanonLB.affStr k D) σ D) (t : ℝ) :
       simp only [Complex.normSq_eq_norm_sq]
       exact (contDiffOn_real (isOpen_over _ isOpen_univ) (holo_X R a i)).norm_sq ℂ)
 
-theorem levi_sq (c : AlgChart (CanonLB.affStr k D) σ D) (t : ℝ) {y} (hy : y ∈ c.e.source)
-    (ξ : Fin D → ℂ) :
-    (ReciprocityTheory.L2DbarEstimates.leviV D (fun v => (sq t (c.e.symm v) : ℂ)) (c.e y) ξ).re =
-      t * ∑ a, Complex.normSq (∑ j, ReciprocityTheory.L2DbarEstimates.wd D j (X a ∘ c.e.symm) (c.e y) * ξ j) := by
-  have ho := isOpen_over c.e (isOpen_ptsIn (p := CanonLB.affStr k D) (σ := σ) ⊤)
-  have hg (a) : ContDiffAt ℂ 2 (X a ∘ c.e.symm) (c.e y) :=
-    ((ReciprocityTheory.L2DbarEstimates.contDiffOn_of_differentiableOn D _ _ ho (c.holo ⊤ _)).contDiffAt
-      (ho.mem_nhds (mem_over _ hy mem_ptsIn_top))).of_le (by norm_cast)
-  have hu (a) := ReciprocityTheory.L2DbarEstimates.contDiffAt_normSq_comp (hg a)
-  have e := ReciprocityTheory.L2DbarEstimates.Y.leviV_const_mul (ContDiffAt.sum (s := Finset.univ) fun a _ => hu a) t 0 ξ
-  rw [ReciprocityTheory.L2DbarEstimates.leviV_ofReal_sum hu] at e
-  simp only [ReciprocityTheory.L2DbarEstimates.leviV_normSq_comp (hg _), add_zero] at e
-  refine (congrArg Complex.re e).trans ?_
-  rw [← Complex.ofReal_sum, ← Complex.ofReal_mul, Complex.ofReal_re]
 
-theorem semiPos_sq (R : AnRead (CanonLB.affStr k D) σ D) : (Weight.ofFun (sq 1)).SemiPos R :=
-  fun _ c _ hy ξ => (mul_nonneg zero_le_one (Finset.sum_nonneg fun _ _ =>
-    Complex.normSq_nonneg _)).trans_eq (levi_sq (R.chart c) 1 hy.1 ξ).symm
 
-theorem not_semiPos_sq (a : Fin D) :
-    ¬ (Weight.ofFun (sq (-1))).SemiPos (AnRead.all (CanonLB.affStr k D) σ D) := fun h => by
-  obtain ⟨c, hy, hc⟩ := exists_std (origin (k := k) (σ := σ) (D := D))
-  have ht := c.e.open_target.mem_nhds (c.e.map_source hy)
-  have h1 := (h PUnit.unit c _ ⟨hy, mem_ptsIn_top⟩ fun _ => 1).trans_eq (levi_sq c (-1) hy _)
-  have e (b j : Fin D) : ReciprocityTheory.L2DbarEstimates.wd D j (X b ∘ c.e.symm) (c.e origin) =
-      if j = b then 1 else 0 := by
-    rw [← ReciprocityTheory.L2DbarEstimates.inh_wd_coord D j b (c.e origin)]
-    exact ReciprocityTheory.L2DbarEstimates.wd_congr (eventually_of_mem ht fun v hv => by
-      simp only [Function.comp_apply, ← hc _ (c.e.map_target hv), c.e.right_inv hv])
-  simp only [e, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true, map_one, Finset.sum_const,
-    Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at h1
-  have : (0 : ℝ) < D := Nat.cast_pos.2 a.pos
-  linarith
 
 end GlobalTheory.AnReadModel

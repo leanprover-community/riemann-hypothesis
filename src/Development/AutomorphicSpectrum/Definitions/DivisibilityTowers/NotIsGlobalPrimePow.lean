@@ -24,27 +24,8 @@ theorem exists_isGlobal (hP : PartI) (hD : 1 ≤ D.p + D.q) (Xo : ∀ l : Level 
   obtain ⟨Y, hd, hdom⟩ := h₆ l c hg hA
   exact ⟨Y, Yl, hg, h₁, hA, hd, hdom⟩
 
-theorem isGlobal_inhabited (hG : Given) :
-    ∃ (H : Host HostModel.E21) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l)
-      (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)), 1 ≤ D.p ∧ 1 ≤ D.q ∧ IsGlobal Xo l c Y := by
-  obtain ⟨⟨hP, hN, -⟩, -⟩ := hG
-  obtain ⟨l, hA, hg⟩ := GlobalTheory.GlobalModelGuards.exists_good_level HostModel.host
-  obtain ⟨c⟩ := GlobalTheory.ModuliProbe.coeff_nonempty l
-  let Xo : ∀ l : Level HostModel.host, Moduli (HostModel.hypDatum HostModel.host) l :=
-    fun l => (hN _ _ _ l (by simp)).some
-  obtain ⟨Y, hY⟩ := exists_isGlobal hP (by simp) Xo l c hg hA
-  exact ⟨_, _, Xo, l, c, Y, by simp, by simp, hY⟩
 
-theorem not_isGlobal_primePow (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l)
-    (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (p k : ℕ) (hp : p.Prime) (hM : l.M = p ^ k) :
-    ¬ IsGlobal Xo l c Y := fun ⟨_, hg, _⟩ => GlobalTheory.GlobalModelGuards.not_goodAt_pow l p k hp hM (hg p hp)
 
-theorem signature_pos {l : Level H} {Xo : Moduli D l} {c : Coeff l} {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)}
-    {T : RootTower (CMType H) (D.p + D.q)} [DecidableEq (CMType H)] (o : GoodOrigin Y T) : 1 ≤ D.p ∧ 1 ≤ D.q := by
-  have h₁ := o.j_eq
-  have h₂ := T.j_pos
-  have h₃ := T.j_lt
-  omega
 
 theorem ref_facts {l : Level H} {Xo : Moduli D l} {c : Coeff l} {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)}
     {T : RootTower (CMType H) (D.p + D.q)} [DecidableEq (CMType H)] (o : GoodOrigin Y T) (B : ℕ) (a : T.Comp) :

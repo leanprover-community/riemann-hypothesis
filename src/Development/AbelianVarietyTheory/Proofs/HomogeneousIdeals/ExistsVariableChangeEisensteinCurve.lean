@@ -22,8 +22,6 @@ theorem gaussianCurve_Δ : (gaussianCurve R).Δ = 2 ^ 6 := by
     WeierstrassCurve.b₆, WeierstrassCurve.b₈]
   norm_num
 
-theorem isElliptic_gaussianCurve (h2 : IsUnit (2 : R)) : (gaussianCurve R).IsElliptic :=
-  ⟨gaussianCurve_Δ (R := R) ▸ h2.pow 6⟩
 
 section Gaussian
 

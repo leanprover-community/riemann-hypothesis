@@ -42,21 +42,6 @@ theorem ellFam_nontrivial : (fun _ ↦ Complex.I) ∈ ellFam.V ∧
   · funext i
     simp [ellFam]
 
-theorem ellFam_free (l : ℤ × ℤ) (z : Fin 1 → ℂ) (hz : z ∈ ellFam.V) (h : ellFam.τ l z = 0) : l = 0 := by
-  have hz' : 0 < (z 0).im := hz
-  have h0 : ((l.1 : ℂ) * z 0 + l.2) = 0 := by
-    have := congrFun h 0
-    simpa [ellFam] using this
-  have him : (l.1 : ℝ) * (z 0).im = 0 := by
-    have := congrArg Complex.im h0
-    simpa using this
-  have h1 : l.1 = 0 := by
-    have : (l.1 : ℝ) = 0 := (mul_eq_zero.1 him).resolve_right hz'.ne'
-    exact_mod_cast this
-  have h2 : l.2 = 0 := by
-    rw [h1] at h0
-    simpa using h0
-  exact Prod.ext h1 h2
 
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
 
@@ -325,7 +310,6 @@ theorem Fam.allCharts_rich (F : Fam I g Λ) : F.allCharts.Rich := by
 def Fam.transl (F : Fam I g Λ) (l : Λ) : F.allCharts.triv F.totChart ⟶ F.allCharts.triv F.totChart :=
   Charts.ptHom (l := l) (F.allCharts.triv F.totChart) (fun _ h ↦ h)
 
-theorem Fam.transl_deg (F : Fam I g Λ) (l : Λ) : (F.transl l).deg = l := rfl
 
 def Charts.dualAt {F : Fam I g Λ} (K : Charts F) (k : K.K) (p : Tot I g) (hp : p ∈ K.W k) : K.Obj where
   k := k

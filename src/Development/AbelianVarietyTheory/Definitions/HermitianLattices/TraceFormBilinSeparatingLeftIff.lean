@@ -45,9 +45,6 @@ theorem herm_mulVec {s : ℕ} (G : Matrix (Fin r) (Fin r) E) (γ : Matrix (Fin r
 def IsConjAdj (B : LinearMap.BilinForm ℚ (Fin r → E)) : Prop :=
   ∀ (a : E) (x y : Fin r → E), B (a • x) y = B x (cc a • y)
 
-theorem EFf_neg_eq_trace (ξ : E) (G : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) :
-    EFf (-ξ) G x y = Algebra.trace ℚ E (ξ * herm G x y) := by
-  rw [EFf, neg_neg]
 
 theorem EFf_smul_eq_trace (ξ0 : E) (G : Matrix (Fin r) (Fin r) E) (a : E) (x y : Fin r → E) :
     EFf ξ0 G (a • x) y = Algebra.trace ℚ E (a * (-ξ0 * herm G x y)) := by
@@ -173,31 +170,17 @@ theorem skewGram_traceFormBilin {ξ0 : E} (h0 : ξ0 ≠ 0) (G : Matrix (Fin r) (
     skewGram ξ0 (traceFormBilin ξ0 G) = G :=
   traceFormBilin_injective h0 (traceFormBilin_skewGram h0 (traceFormBilin_isConjAdj ξ0 G))
 
-theorem eq_skewGram {ξ0 : E} (h0 : ξ0 ≠ 0) {B : LinearMap.BilinForm ℚ (Fin r → E)}
-    {G : Matrix (Fin r) (Fin r) E} (h : ∀ x y, B x y = EFf ξ0 G x y) : G = skewGram ξ0 B := by
-  have : B = traceFormBilin ξ0 G := LinearMap.ext₂ h
-  rw [this, skewGram_traceFormBilin h0]
 
 theorem skewGram_herm {ξ0 : E} (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0)
     {B : LinearMap.BilinForm ℚ (Fin r → E)} (hB : IsConjAdj B) (halt : B.IsAlt) (a b : Fin r) :
     cc (skewGram ξ0 B a b) = skewGram ξ0 B b a :=
   (traceFormBilin_isAlt_iff h0 hξ _).mp (by rwa [traceFormBilin_skewGram h0 hB]) a b
 
-theorem skewGram_herm_iff {ξ0 : E} (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0)
-    {B : LinearMap.BilinForm ℚ (Fin r → E)} (hB : IsConjAdj B) :
-    (∀ a b, cc (skewGram ξ0 B a b) = skewGram ξ0 B b a) ↔ B.IsAlt := by
-  rw [← traceFormBilin_isAlt_iff h0 hξ, traceFormBilin_skewGram h0 hB]
 
 theorem skewGram_det_ne_zero_iff {ξ0 : E} (h0 : ξ0 ≠ 0) {B : LinearMap.BilinForm ℚ (Fin r → E)}
     (hB : IsConjAdj B) : (skewGram ξ0 B).det ≠ 0 ↔ B.Nondegenerate := by
   rw [← traceFormBilin_nondegenerate_iff h0, traceFormBilin_skewGram h0 hB]
 
-theorem existsUnique_herm_EFf {ξ0 : E} (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0)
-    {B : LinearMap.BilinForm ℚ (Fin r → E)} (hB : IsConjAdj B) (halt : B.IsAlt) :
-    ∃! G : Matrix (Fin r) (Fin r) E,
-      (∀ a b, cc (G a b) = G b a) ∧ ∀ x y, B x y = EFf ξ0 G x y :=
-  ⟨skewGram ξ0 B, ⟨skewGram_herm h0 hξ hB halt, fun x y => (EFf_skewGram h0 hB x y).symm⟩,
-    fun _ hG => eq_skewGram h0 hG.2⟩
 
 def hermEquivSkew {ξ0 : E} (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0) :
     {G : Matrix (Fin r) (Fin r) E // ∀ a b, cc (G a b) = G b a} ≃
@@ -207,13 +190,6 @@ def hermEquivSkew {ξ0 : E} (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0) :
   left_inv G := Subtype.ext (skewGram_traceFormBilin h0 G.1)
   right_inv B := Subtype.ext (traceFormBilin_skewGram h0 B.2.1)
 
-theorem preserves_iff_herm {ξ0 : E} (h0 : ξ0 ≠ 0) {B : LinearMap.BilinForm ℚ (Fin r → E)}
-    {G : Matrix (Fin r) (Fin r) E} (hG : ∀ x y, B x y = EFf ξ0 G x y) (γ : GL (Fin r) E) :
-    (∀ x y, B ((γ : Matrix (Fin r) (Fin r) E) *ᵥ x) ((γ : Matrix (Fin r) (Fin r) E) *ᵥ y) = B x y) ↔
-      ∀ x y, herm G ((γ : Matrix (Fin r) (Fin r) E) *ᵥ x) ((γ : Matrix (Fin r) (Fin r) E) *ᵥ y) =
-        herm G x y := by
-  simp only [hG]
-  exact EFf_mulVec_iff h0 G G γ
 
 omit [IsCMField E] in
 
@@ -314,13 +290,6 @@ theorem EF_perf_iff (h : IsLatticeEmb φ) {ξ0 : E} {β : LinearMap.BilinForm �
     rw [he, hG, hx]
     rfl
 
-theorem gram_eq_of_mulVec {s : ℕ} {φ' : M' →ₗ[𝓞 E] (Fin s → E)} (h : IsLatticeEmb φ)
-    (h' : IsLatticeEmb φ') {ξ0 : E} (h0 : ξ0 ≠ 0) {β : LinearMap.BilinForm ℤ M}
-    {β' : LinearMap.BilinForm ℤ M'} (hβ' : IsIntConjAdj E β') {g : M → M'}
-    (hg : ∀ x y, β' (g x) (g y) = β x y) {γ : Matrix (Fin s) (Fin r) E}
-    (hγ : ∀ x, γ *ᵥ φ x = φ' (g x)) : h.gram ξ0 β = γᵀ * h'.gram ξ0 β' * γ.map cc := by
-  refine (h.eq_gram h0 fun x y => ?_).symm
-  rw [← hg, ← h'.EFf_gram h0 hβ', ← hγ, ← hγ, EFf, EFf, herm_mulVec]
 
 theorem isUStab_iff (h : IsLatticeEmb φ) {ξ0 : E} (h0 : ξ0 ≠ 0) {β : LinearMap.BilinForm ℤ M}
     {G : Matrix (Fin r) (Fin r) E} (hG : ∀ x y, EFf ξ0 G (φ x) (φ y) = β x y) (γ : GL (Fin r) E) :
@@ -397,9 +366,6 @@ theorem latticeEF_isIntConjAdj : IsIntConjAdj E (latticeEF ξ0 G Λ hint) := fun
       ← algebraMap_smul E a, ← algebraMap_smul E (IsCMField.ringOfIntegersComplexConj E a),
       EFf_smul_left, ← coe_ringOfIntegersComplexConj])
 
-theorem latticeEF_self (hξ : cc ξ0 = -ξ0) (hG : ∀ a b, cc (G a b) = G b a) (x : Λ) :
-    latticeEF ξ0 G Λ hint x x = 0 :=
-  Int.cast_injective (α := ℚ) (by rw [latticeEF_apply, EFf_self hξ hG, Int.cast_zero])
 
 theorem gram_latticeEF (hΛ : IsLattice Λ) (h0 : ξ0 ≠ 0) :
     (isLatticeEmb_subtype hΛ).gram ξ0 (latticeEF ξ0 G Λ hint) = G :=
@@ -418,20 +384,6 @@ theorem latticeEF_bijective_iff (hΛ : IsLattice Λ) (h0 : ξ0 ≠ 0) :
 
 end LatticeEF
 
-theorem exists_lattice_EFf [Module.Finite (𝓞 E) M] [Module.IsTorsionFree (𝓞 E) M]
-    (hr : Module.finrank (𝓞 E) M = r) {ξ0 : E} (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0)
-    {β : LinearMap.BilinForm ℤ M} (halt : ∀ x, β x x = 0) (hβ : IsIntConjAdj E β)
-    (hu : Function.Bijective β) :
-    ∃ (φ : M →ₗ[𝓞 E] (Fin r → E)) (G : Matrix (Fin r) (Fin r) E),
-      Function.Injective φ ∧ IsLattice (LinearMap.range φ) ∧ (∀ a b, cc (G a b) = G b a) ∧
-      G.det ≠ 0 ∧ (∀ x y, EFf ξ0 G (φ x) (φ y) = β x y) ∧
-      (∀ x ∈ LinearMap.range φ, ∀ y ∈ LinearMap.range φ, ∃ k : ℤ, EFf ξ0 G x y = k) ∧
-      ∀ f : LinearMap.range φ →+ ℤ, ∃ x ∈ LinearMap.range φ, ∀ y : LinearMap.range φ,
-        (f y : ℚ) = EFf ξ0 G x y := by
-  obtain ⟨φ, h⟩ := exists_isLatticeEmb (K := E) hr
-  exact ⟨φ, h.gram ξ0 β, h.1, h.2, h.gram_herm h0 hξ hβ halt, (h.gram_det_ne_zero_iff h0 hβ).mpr hu.1,
-    h.EFf_gram h0 hβ, IsLatticeEmb.EF_int_of_eq (h.EFf_gram h0 hβ),
-    (h.EF_perf_iff (h.EFf_gram h0 hβ)).mpr hu.2⟩
 
 end Integral
 
@@ -462,7 +414,6 @@ theorem datumEmb_isLatticeEmb (D : Datum H) : IsLatticeEmb (datumEmb D) :=
 abbrev datumLat (D : Datum H) : Submodule (𝓞 E) (Fin (D.p + D.q) → E) :=
   LinearMap.range (datumEmb D)
 
-theorem datumLat_isLattice (D : Datum H) : IsLattice (datumLat D) := (datumEmb_isLatticeEmb D).2
 
 def datumEquivLat (D : Datum H) : D.La ≃ₗ[𝓞 E] datumLat D :=
   LinearEquiv.ofInjective _ (datumEmb_isLatticeEmb D).1
@@ -486,56 +437,18 @@ theorem datum_gram_spec (D : Datum H) {φ : D.La →ₗ[𝓞 E] (Fin r → E)} (
     IsLatticeEmb.EF_int_of_eq (h.EFf_gram h0 hβ),
     (h.EF_perf_iff (h.EFf_gram h0 hβ)).mpr D.unimod.2⟩
 
-theorem datum_exists_lattice_EFf (D : Datum H) {ξ0 : E} (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0) :
-    ∃ (Λ : Submodule (𝓞 E) (Fin (D.p + D.q) → E)) (e : D.La ≃ₗ[𝓞 E] Λ)
-      (G : Matrix (Fin (D.p + D.q)) (Fin (D.p + D.q)) E),
-      IsLattice Λ ∧ (∀ a b, cc (G a b) = G b a) ∧ G.det ≠ 0 ∧
-      (∀ x y, EFf ξ0 G (e x) (e y) = D.EF x y) ∧
-      (∀ x ∈ Λ, ∀ y ∈ Λ, ∃ k : ℤ, EFf ξ0 G x y = k) ∧
-      ∀ f : Λ →+ ℤ, ∃ x ∈ Λ, ∀ y : Λ, (f y : ℚ) = EFf ξ0 G x y :=
-  ⟨datumLat D, datumEquivLat D, datumGram D ξ0, datumLat_isLattice D,
-    datum_gram_spec D (datumEmb_isLatticeEmb D) h0 hξ⟩
 
-theorem datum_rank_eq (D : Datum H) {φ : D.La →ₗ[𝓞 E] (Fin r → E)} (h : IsLatticeEmb φ) :
-    r = D.p + D.q := by rw [← h.finrank_eq, D.rank]
 
 section
 variable (D : Datum H) {ξ0 : E}
 
-theorem datumGram_herm (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0) (a b : Fin (D.p + D.q)) :
-    cc (datumGram D ξ0 a b) = datumGram D ξ0 b a :=
-  (datum_gram_spec D (datumEmb_isLatticeEmb D) h0 hξ).1 a b
 
-theorem datumGram_det_ne_zero (h0 : ξ0 ≠ 0) : (datumGram D ξ0).det ≠ 0 :=
-  ((datumEmb_isLatticeEmb D).gram_det_ne_zero_iff h0 (datum_isIntConjAdj D)).mpr D.unimod.1
 
-theorem EFf_datumGram (h0 : ξ0 ≠ 0) (x y : D.La) :
-    EFf ξ0 (datumGram D ξ0) (datumEmb D x) (datumEmb D y) = D.EF x y :=
-  (datumEmb_isLatticeEmb D).EFf_gram h0 (datum_isIntConjAdj D) x y
 
-theorem eq_datumGram (h0 : ξ0 ≠ 0) {G : Matrix (Fin (D.p + D.q)) (Fin (D.p + D.q)) E}
-    (hG : ∀ x y, EFf ξ0 G (datumEmb D x) (datumEmb D y) = D.EF x y) : G = datumGram D ξ0 :=
-  (datumEmb_isLatticeEmb D).eq_gram h0 hG
 
-theorem datum_EF_int (h0 : ξ0 ≠ 0) :
-    ∀ x ∈ datumLat D, ∀ y ∈ datumLat D, ∃ k : ℤ, EFf ξ0 (datumGram D ξ0) x y = k :=
-  IsLatticeEmb.EF_int_of_eq (EFf_datumGram D h0)
 
-theorem datum_EF_perf (h0 : ξ0 ≠ 0) : ∀ f : datumLat D →+ ℤ, ∃ x ∈ datumLat D,
-    ∀ y : datumLat D, (f y : ℚ) = EFf ξ0 (datumGram D ξ0) x y :=
-  ((datumEmb_isLatticeEmb D).EF_perf_iff (EFf_datumGram D h0)).mpr D.unimod.2
 
-theorem traceFormDual_datumLat (h0 : ξ0 ≠ 0) :
-    traceFormDual ξ0 (datumGram D ξ0) (datumLat D) = datumLat D :=
-  (perfect_iff_traceFormDual_eq h0 (datumGram_det_ne_zero D h0) (datumLat_isLattice D)).mp
-    ⟨datum_EF_int D h0, datum_EF_perf D h0⟩
 
-theorem datum_isUStab_iff (h0 : ξ0 ≠ 0) (γ : GL (Fin (D.p + D.q)) E) :
-    IsUStab (datumGram D ξ0) (datumLat D) γ ↔
-      ∃ g : D.La ≃ₗ[𝓞 E] D.La,
-        (∀ x, (γ : Matrix (Fin (D.p + D.q)) (Fin (D.p + D.q)) E) *ᵥ datumEmb D x = datumEmb D (g x)) ∧
-        ∀ x y, D.EF (g x) (g y) = D.EF x y :=
-  (datumEmb_isLatticeEmb D).isUStab_iff h0 (EFf_datumGram D h0) γ
 
 end
 
@@ -599,10 +512,6 @@ def hypForm (E : Type) [Field E] [NumberField E] [IsCMField E] :
 
 theorem hypForm_self (u : 𝓞 E × ConjDual E) : hypForm E u u = 0 := by simp
 
-theorem hypForm_isIntConjAdj : IsIntConjAdj E (hypForm E) := fun a u v => by
-  have : IsCMField.ringOfIntegersComplexConj E (IsCMField.ringOfIntegersComplexConj E a) = a :=
-    RingOfIntegers.ext (IsCMField.complexConj_apply_apply E (a : E))
-  simp [this]
 
 theorem hypForm_bijective : Function.Bijective (hypForm E) := by
   constructor
@@ -621,22 +530,7 @@ theorem hypForm_bijective : Function.Bijective (hypForm E) := by
     simp only [Module.Dual.eval_apply] at h1
     simp [h1, h2, add_comm]
 
-theorem finrank_hyp : Module.finrank (𝓞 E) (𝓞 E × ConjDual E) = 2 := by
-  obtain ⟨φ, h⟩ := exists_isLatticeEmb (K := E) (M := 𝓞 E × ConjDual E) rfl
-  have h1 := h.finrank_int_eq
-  have : Module.Free ℤ (ConjDual E) := Module.Free.of_equiv ConjDual.val.symm
-  rw [Module.finrank_prod, ConjDual.val.finrank_eq, Module.finrank_linearMap_self,
-    RingOfIntegers.rank, ← two_mul] at h1
-  exact (Nat.eq_of_mul_eq_mul_right Module.finrank_pos h1).symm
 
-theorem exists_perfect_lattice_rank_two {ξ0 : E} (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0) :
-    ∃ (Λ : Submodule (𝓞 E) (Fin 2 → E)) (G : Matrix (Fin 2) (Fin 2) E),
-      IsLattice Λ ∧ (∀ a b, cc (G a b) = G b a) ∧ G.det ≠ 0 ∧
-      (∀ x ∈ Λ, ∀ y ∈ Λ, ∃ k : ℤ, EFf ξ0 G x y = k) ∧
-      ∀ f : Λ →+ ℤ, ∃ x ∈ Λ, ∀ y : Λ, (f y : ℚ) = EFf ξ0 G x y := by
-  obtain ⟨φ, G, -, h1, h2, h3, -, h4, h5⟩ := exists_lattice_EFf finrank_hyp h0 hξ
-    hypForm_self hypForm_isIntConjAdj hypForm_bijective
-  exact ⟨_, G, h1, h2, h3, h4, h5⟩
 
 end SkewModel
 

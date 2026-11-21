@@ -30,22 +30,7 @@ structure TiedDataSK (ex : Extra D L hT Gi Gl K Y cX) extends toTiedDataS : Link
 
 def LinkedFamilyKernelCondition (ex : Extra D L hT Gi Gl K Y cX) : Prop := Nonempty (TiedDataSK ex)
 
-theorem TiedDataSK.kernel_frame_at_infinity {ex : Extra D L hT Gi Gl K Y cX} (T : TiedDataSK ex) (u : D.what₂.Word) (i : ℕ) (hi : i ≤ D.R.m)
-    (y : (D.mem u).C.Y i) (τ : D.what₂.Tau) :
-    (T.ker.O u D.what₂.mu0).frm i (Herm.yCast D u i y) τ =
-      Forms.atInf (Forms.embT D) (T.crd u i hi).1 τ * (Forms.eYS (T.cols.forms u) i hi y).1 τ := by
-  rw [T.ker_frm]
-  congr 2
-  simp only [Forms.twYS, Equiv.trans_apply]
-  rw [T.tw.chM.eY u i hi, Equiv.symm_apply_apply]
 
-theorem TiedDataSK.ker_de {ex : Extra D L hT Gi Gl K Y cX} (T : TiedDataSK ex) (u : D.what₂.Word) (μ : D.what₂.Tup) (i : ℕ)
-    (hi : i ≤ D.R.m) (y : (D.chTw u μ).Y i) (τ : D.what₂.Tau) :
-    (D.chTw u μ).de i y τ = Forms.embT D τ (T.crd u i hi).1.det * ((Forms.twYS T.tw.ch T.cols.forms u μ i hi y).1 τ).det := by
-  rw [(T.ker.O u μ).frm_de i hi y τ, T.ker_frm u μ i hi y τ, Matrix.det_mul]
-  congr 1
-  simp only [Forms.atInf]
-  exact (RingHom.map_det _ _).symm
 
 end
 

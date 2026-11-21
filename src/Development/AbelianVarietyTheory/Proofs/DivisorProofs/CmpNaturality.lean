@@ -44,10 +44,6 @@ def IsLineQuot (π : Y ⟶ B) (E : B.Modules) {Q : Y.Modules} (p : (Scheme.Modul
     IsVB Q' 1 → Epi p' → ∃! g' : T ⟶ Y, ∃ (w : g' ≫ π = g) (e : (Scheme.Modules.pullback g').obj Q ⟶ Q'),
       (Scheme.Modules.pullback g').map p ≫ e = (cmp g' π w).hom.app E ≫ p'
 
-theorem isLineQuot_id {E : B.Modules} (hE : IsVB E 1) : IsLineQuot (𝟙 B) E (𝟙 _) :=
-  ⟨hE.pullback _, inferInstance, fun _ g _ p' _ _ =>
-    ⟨g, ⟨Category.comp_id g, (cmp g (𝟙 B) (Category.comp_id g)).hom.app E ≫ p', by simp⟩,
-      fun _ ⟨w, _⟩ => (Category.comp_id _).symm.trans w⟩⟩
 
 variable {R : Type} [CommRing R] {N : ℕ} {L Q : T.Modules}
 

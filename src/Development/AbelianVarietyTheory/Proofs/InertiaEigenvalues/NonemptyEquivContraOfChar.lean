@@ -403,30 +403,8 @@ theorem detLevi_pts (η : kˣ →* ℂˣ) (g : Levi k fun _ : Fin 2 => Fin 1) :
   rw [detLevi_apply, Fin.prod_univ_two, modExp_fin _ (fun _ => by simp), modExp_fin _ (fun _ => by simp)]
   norm_num
 
-theorem exists_equiv_segment_two (hχ : IsSmoothChar χ) :
-    ∃ hd : ∑ a, ((Segment.ofChar χ hχ 2 two_pos).term a).1 = 2,
-      Nonempty ((parInd pts (ofChar (detLevi pts (χ * absPow k (1 / 2))))).Equiv
-        (prodIrr (Segment.ofChar χ hχ 2 two_pos).term hd)) := by
-  have h := exists_equiv_prodIrr (θ := fun a => χ * absPow k (a : ℕ)) (fun _ => hχ.mul (isSmoothChar_absPow _))
-    (x := (Segment.ofChar χ hχ 2 two_pos).term) (fun _ => IrrGL.tw_ofChar _ _ hχ (isSmoothChar_absPow _))
-    (Θ := detLevi pts (χ * absPow k (1 / 2))) fun g => by
-      rw [detLevi_pts, Fin.prod_univ_two, mul_assoc χ, mul_assoc χ, ← absPow_add, ← absPow_add]
-      norm_num
-  exact h
 
-theorem isZSeg_detRep_two (hχ : IsSmoothChar χ) :
-    IsZSeg (Segment.ofChar χ hχ 2 two_pos) (detRep (Fin 2) (χ * absPow k (1 / 2))) := by
-  obtain ⟨hd, ⟨ψ⟩⟩ := exists_equiv_segment_two hχ
-  obtain ⟨V, _, _, π, f, ⟨φ⟩, hf, h0, h, -⟩ := exists_line (hχ.mul (isSmoothChar_absPow (1 / 2)))
-  exact ⟨hd, (isSocle_of_le (isIrreducible_ofChar _) f hf h0 h).of_equiv (.refl _) (φ.trans ψ)⟩
 
-theorem exists_isLSeg_two (hχ : IsSmoothChar χ) :
-    ∃ (V : Type) (_ : AddCommGroup V) (_ : Module ℂ V) (π : Representation ℂ (GL (Fin 2) k) V),
-      IsLSeg (Segment.ofChar χ hχ 2 two_pos) π ∧ ∀ ψ : GL (Fin 2) k →* ℂˣ, IsEmpty (π.Equiv (ofChar ψ)) := by
-  obtain ⟨hd, ⟨ψ⟩⟩ := exists_equiv_segment_two hχ
-  obtain ⟨V, _, _, π, f, ⟨φ⟩, -, h0, h, h1⟩ := exists_line (hχ.mul (isSmoothChar_absPow (1 / 2)))
-  exact ⟨_, _, _, quot f.range, ⟨hd, (isCosocle_quot h0 h).of_equiv (.refl _) (φ.trans ψ)⟩,
-    fun _ => ⟨fun e => h1.false e.toLinearEquiv⟩⟩
 
 theorem isCosocle_detRep_two {η : kˣ →* ℂˣ} (hη : IsSmoothChar η) :
     IsCosocle (detRep (Fin 2) η) (parInd pts (ofChar (detLevi pts η⁻¹)⁻¹)) := by
@@ -463,12 +441,5 @@ theorem isL_detRep_two (hχ : IsSmoothChar χ) :
   · obtain ⟨rfl, rfl⟩ : i = 0 ∧ j = 1 := by omega
     exact (single_precedes χ hχ).2
 
-theorem segment_two_spec (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) :
-    IsZSeg (Segment.ofChar χ hχ 2 two_pos) (detRep (Fin 2) (χ * absPow k (1 / 2))) ∧
-    (∃ (V : Type) (_ : AddCommGroup V) (_ : Module ℂ V) (π : Representation ℂ (GL (Fin 2) k) V),
-      IsLSeg (Segment.ofChar χ hχ 2 two_pos) π ∧ ∀ ψ : GL (Fin 2) k →* ℂˣ, IsEmpty (π.Equiv (ofChar ψ))) ∧
-    IsL ({Segment.single _ (IrrGL.isCusp_ofChar χ hχ)} + {Segment.single _ ((IrrGL.isCusp_ofChar χ hχ).nu 1)})
-      (detRep (Fin 2) (χ * absPow k (1 / 2))) :=
-  ⟨isZSeg_detRep_two hχ, exists_isLSeg_two hχ, isL_detRep_two hχ⟩
 
 end GlobalTheory.LocGL

@@ -140,44 +140,12 @@ lemma step (k r' : ℕ) (hk : 1 ≤ k)
         rw [hv _ hy.1, ENNReal.ofReal_mul (Real.rpow_nonneg (sqLen_nonneg _) _), mul_pow]
     _ = 1 := GlobalTheory.HCXi.Poisson.poisson_integral k (1 + r') μK (e0 k r') hk hμ h1 h2 g hg
 
-theorem lintegral_vHalf_sq : ∀ (k r : ℕ) (μK : Measure (Mt k r)), 1 ≤ k → IsKMeas k r μK → ∀ g ∈ GV k r,
-    (∫⁻ κ : Mt k r, ENNReal.ofReal (vHalf k r (g * Matrix.of κ)) ^ 2 ∂μK) = 1 := by
-  intro k r μK hk
-  induction r with
-  | zero => exact base k μK hk
-  | succ r ih =>
-    have key : ∀ s : ℕ, s = 1 + r → ∀ μ : Measure (Mt k s), IsKMeas k s μ → ∀ g ∈ GV k s,
-        (∫⁻ κ : Mt k s, ENNReal.ofReal (vHalf k s (g * Matrix.of κ)) ^ 2 ∂μ) = 1 := by
-      rintro s rfl
-      exact step k r hk ih
-    exact key _ (Nat.add_comm _ _) μK
 
 end GlobalTheory.HCXi.LeOne
 
 namespace GlobalTheory.HCXi
 
-theorem two_mul_le_one_add_sq_ennreal (a : ℝ≥0∞) : 2 * a ≤ 1 + a ^ 2 := by
-  induction a using ENNReal.recTopCoe with
-  | top => simp
-  | coe x =>
-    have h : 2 * x ≤ 1 + x ^ 2 := by
-      rw [← NNReal.coe_le_coe]
-      push_cast
-      nlinarith [sq_nonneg ((x : ℝ) - 1)]
-    exact_mod_cast h
 
-theorem lintegral_le_one_of_lintegral_sq_eq_one {X : Type*} [MeasurableSpace X] (μ : Measure X)
-    (hμ : μ Set.univ = 1) (f : X → ℝ≥0∞) (hf : ∫⁻ x, f x ^ 2 ∂μ = 1) : ∫⁻ x, f x ∂μ ≤ 1 := by
-  have h : 2 * ∫⁻ x, f x ∂μ ≤ 2 * 1 := by
-    calc 2 * ∫⁻ x, f x ∂μ = ∫⁻ x, 2 * f x ∂μ := (lintegral_const_mul' 2 f (by simp)).symm
-      _ ≤ ∫⁻ x, (1 + f x ^ 2) ∂μ := lintegral_mono fun x => two_mul_le_one_add_sq_ennreal (f x)
-      _ = ∫⁻ _, 1 ∂μ + ∫⁻ x, f x ^ 2 ∂μ := lintegral_add_left measurable_const _
-      _ = 2 * 1 := by rw [hf, lintegral_const, hμ]; norm_num
-  exact (ENNReal.mul_le_mul_iff_right (by simp) (by simp)).1 h
 
-theorem XiE_le_one : ∀ (k r : ℕ) (μK : Measure (Mt k r)), 1 ≤ k → IsKMeas k r μK →
-    ∀ g ∈ GV k r, XiE k r μK g ≤ 1 := by
-  intro k r μK hk hμ g hg
-  exact lintegral_le_one_of_lintegral_sq_eq_one μK hμ.2 _ (LeOne.lintegral_vHalf_sq k r μK hk hμ g hg)
 
 end GlobalTheory.HCXi

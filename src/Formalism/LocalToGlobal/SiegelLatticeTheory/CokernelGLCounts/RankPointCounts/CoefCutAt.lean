@@ -55,14 +55,6 @@ def CutLeaves (D : Formalism.BasicNotions.D7) : Prop :=
       PCount.FrGlobP ⟨δ, M, hA⟩ u u' F0 what₂ ∧ PCount.IntGenP ⟨δ, M, hA⟩ ∧ PCount.TauOneReduction ⟨δ, M, hA⟩ u u' F0 what₂ ∧
       PCount.PartnerIsomorphismCount ⟨δ, M, hA⟩ ∧ FCount.FibSum M δ u u' F0 what₂ ∧ FCount.DensTh M δ L u u'
 
-theorem rowsDatumP_of_leaves {D : Formalism.BasicNotions.D7} (h : CutLeaves D) : RowsDatumP D :=
-  rowsDatumP_of fun hsig δ M hA L u u' hc hP F0 what₂ hrows =>
-    have hl := h hsig δ M hA L u u' hc hP F0 what₂ hrows
-    cutAt_of_leaves hA hc hP hrows hl.1 hl.2.1 hl.2.2.1 hl.2.2.2.1 hl.2.2.2.2.1 hl.2.2.2.2.2.1 hl.2.2.2.2.2.2.1
-      hl.2.2.2.2.2.2.2.1 hl.2.2.2.2.2.2.2.2.1 hl.2.2.2.2.2.2.2.2.2.1 hl.2.2.2.2.2.2.2.2.2.2.1 hl.2.2.2.2.2.2.2.2.2.2.2
 
-theorem rowsInputP_of_leaves {D : Formalism.BasicNotions.D7} (hN : Formalism.L2.SG.SupportG.NormProd D) (h : CutLeaves D) :
-    RowsInputP D :=
-  rowsInputP_of_normProd hN (rowsDatumP_of_leaves h)
 
 end Formalism.L2.SG.Pf.Coef

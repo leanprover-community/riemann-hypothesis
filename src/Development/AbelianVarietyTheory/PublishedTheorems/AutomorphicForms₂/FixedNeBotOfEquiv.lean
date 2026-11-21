@@ -63,9 +63,5 @@ theorem IsRec.recLaws {rc : IrrGL (w.adicCompletion E) → WD h} (H : IsRec h rc
     rw [H.sat (cls (toIrrRep π)) α ⟨IrrRep.irr _, fixed_ne_bot_of_equiv φ hα.2.1,
       (IsSubquotient.of_surjective φ.toIntertwiningMap φ.toLinearEquiv.surjective).trans hα.2.2⟩, WD.frobEig_diag]
 
-theorem _root_.GlobalTheory.Published.LocalLanglandsGL.exists_recLaws (H : GlobalTheory.Published.LocalLanglandsGL) (h : IsPlaceOver A w) :
-    ∃ rc : ∀ n, Irr (w.adicCompletion E) n → WD h, RecLaws rc :=
-  let ⟨_, hrc, _⟩ := H.1 E Ω A w h
-  ⟨_, hrc.recLaws⟩
 
 end GlobalTheory.LocLanglands

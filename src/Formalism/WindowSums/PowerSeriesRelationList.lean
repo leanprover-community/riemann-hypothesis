@@ -9,7 +9,6 @@ import Formalism.WindowSums.StatementRelay
 
 namespace Formalism.WindowSums
 
-theorem arc_C2Lower : PowMemIdealOfLe := pow_mem_ideal_of_le
 theorem arc_ZpowVal : ZpowVal := valuation_zpow_sub_one
 theorem arc_ValProd : ValProd := valProd_of valuation_zpow_sub_one
 theorem arc_KillerVal : KillerVal := killerVal_of valuation_zpow_sub_one

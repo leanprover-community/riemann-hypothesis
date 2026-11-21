@@ -481,12 +481,6 @@ theorem mulB_smul (ho : IsOpen (UU Dc)) {a : Fn k r ℂ} (ha : SmoothFam k r L (
   funext Φ c g
   simp only [mulF, Pi.smul_apply, mul_smul]
 
-theorem mulB_zero (ho : IsOpen (UU Dc)) : mulB E L ho (fun _ _ => 0) = 0 := by
-  show (sfData E L ho).hat (mulF (fun _ _ => 0)) = 0
-  rw [← HatData.hat_zero (H := sfData E L ho)]
-  congr 1
-  funext Φ c g
-  simp [mulF]
 
 theorem mulB_grp_comm (ho : IsOpen (UU Dc)) {α : (Fin r → ℂ) → ℂ} (hα : SmoothFam k r L (UU Dc) (fun c _ => α c))
     {T : (Mx k r → E) → Mx k r → E} (hP : Qx3.Pres L (UU Dc) T) (hLL : ∀ c ∈ OmX r, Qx2.LL k r L (Dc c) T) :
@@ -795,9 +789,6 @@ theorem int_algebraMap (s : ℂ) : IntQ ρ VL (algebraMap ℂ _ s) (algebraMap �
   rw [Algebra.algebraMap_eq_smul_one, Algebra.algebraMap_eq_smul_one]
   exact IntQ.smul int_one s
 
-theorem int_intCast (n : ℤ) : IntQ ρ VL (n : Module.End ℂ V₀) (n : Module.End ℂ V₁) := by
-  rw [← map_intCast (algebraMap ℂ (Module.End ℂ V₀)) n, ← map_intCast (algebraMap ℂ (Module.End ℂ V₁)) n]
-  exact int_algebraMap _
 
 theorem IntQ.sum {ι : Type*} (s : Finset ι) {T : ι → Module.End ℂ V₀} {T' : ι → Module.End ℂ V₁}
     (h : ∀ j ∈ s, IntQ ρ VL (T j) (T' j)) : IntQ ρ VL (∑ j ∈ s, T j) (∑ j ∈ s, T' j) := by
@@ -1659,10 +1650,6 @@ theorem cell_fvec (z : Fin (2 * r + k + 1) → ℂ) (l : Fin r) : fvec k r z l.c
   rw [dif_pos (by simp)]
   rfl
 
-theorem cell_posL_inj {i : Fin (r + 1)} {j j' : Fin (mdim k r i)} (h : posL k r i j = posL k r i j') : j = j' := by
-  have h' := congrArg Fin.val h
-  simp only [posL] at h'
-  exact Fin.ext (by omega)
 
 theorem cell_posL_e (l : Fin r) (j : Fin (mdim k r l.castSucc)) :
     posL k r l.castSucc j = eI k r l ↔ j = e0 k l := by
@@ -2535,7 +2522,6 @@ theorem qx_chainStepBoth : Formalism.FourierDecayAlt.Q.ChainStepRaw ∧ Formalis
   chain_descent_from_rules border_first_expansion border_last_expansion border_full_expansion generator_gl_level
     generator_action_preserved quantum_minor_left_hermitian right_action_rule left_action_rule torus_action_rule weyl_level_element_properties
 
-theorem chain_descent_relation_raw : Formalism.FourierDecayAlt.Q.ChainStepRaw := qx_chainStepBoth.1
 
 theorem chain_descent_relation : Formalism.FourierDecayAlt.Q.ChainStep := qx_chainStepBoth.2
 

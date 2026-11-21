@@ -139,32 +139,8 @@ section Flag
 
 variable {d d₁ : ℕ} {W : Spc F E d} {H' : Plane E d d₁} {pl : ∀ j : ℕ, Plane E (d₁ - 2 * j) (d₁ - 2 * (j + 1))} {i : ℕ}
 
-theorem mem_unipPar {u : UA σ W.J} : u ∈ unipPar σ W H' pl i ↔
-    mat u * incM F (flagX H' pl (i + 1)) = incM F (flagX H' pl (i + 1)) ∧ ∀ z, ∃ a : Fin (i + 1) → AE F E,
-      mat u *ᵥ (incM F (chainEmb H' pl i) *ᵥ z) = incM F (chainEmb H' pl i) *ᵥ z + incM F (flagX H' pl (i + 1)) *ᵥ a :=
-  Iff.rfl
 
-theorem unipPar_le_unipFlag : unipPar σ W H' pl i ≤ unipFlag σ W H' pl i := fun _ hu =>
-  Subgroup.subset_closure ⟨⟨1, Matrix.blockTriangular_one, fun k => Matrix.one_apply_eq k, by
-    rw [Matrix.mul_one]; exact hu.1⟩, hu.2⟩
 
-theorem act_of_mem_unipFlag {u : UA σ W.J} (hu : u ∈ unipFlag σ W H' pl i) : ∃ A : GL (Fin (i + 1)) (AE F E),
-    mat u * incM F (flagX H' pl (i + 1)) = incM F (flagX H' pl (i + 1)) * A.1 ∧ ∀ z, ∃ a,
-      mat u *ᵥ (incM F (chainEmb H' pl i) *ᵥ z) =
-        incM F (chainEmb H' pl i) *ᵥ ((1 : GL (Fin (d₁ - 2 * i)) (AE F E)).1 *ᵥ z) + incM F (flagX H' pl (i + 1)) *ᵥ a := by
-  induction hu using Subgroup.closure_induction with
-  | mem u h =>
-    obtain ⟨⟨A, hA, h1, h2⟩, h3⟩ := h
-    have hd : IsUnit A.det := by rw [Matrix.det_of_upperTriangular hA]; simp [h1]
-    exact ⟨((Matrix.isUnit_iff_isUnit_det A).2 hd).unit, h2, by simpa using h3⟩
-  | one => exact ⟨1, by simp [mat_one], fun z => ⟨0, by simp [mat_one]⟩⟩
-  | mul u v _ _ hu hv =>
-    obtain ⟨A, h⟩ := hu
-    obtain ⟨A', h'⟩ := hv
-    exact ⟨A * A', by simpa only [mul_one] using act_mul h h'⟩
-  | inv u _ hu =>
-    obtain ⟨A, h⟩ := hu
-    exact ⟨A⁻¹, by simpa only [inv_one] using act_inv h.1 h.2⟩
 
 theorem act_of_isLeviFlag {Y : Spc F E (d₁ - 2 * i)} {h₁ : UA σ Y.J} {m : UA σ W.J} (hm : IsLeviFlag H' pl i h₁ m) :
     mat m * incM F (flagX H' pl (i + 1)) = incM F (flagX H' pl (i + 1)) * (1 : GL (Fin (i + 1)) (AE F E)).1 ∧ ∀ z, ∃ a,
@@ -173,10 +149,6 @@ theorem act_of_isLeviFlag {Y : Spc F E (d₁ - 2 * i)} {h₁ : UA σ Y.J} {m : U
   ⟨by rw [Units.val_one, Matrix.mul_one]; exact hm.1, fun z => ⟨0, by
     rw [Matrix.mulVec_mulVec, hm.2.2, Matrix.mulVec_zero, add_zero, Matrix.mulVec_mulVec]; rfl⟩⟩
 
-theorem conj_mem_unipPar {p n : UA σ W.J} (hp : p ∈ unipFlag σ W H' pl i) (hn : n ∈ unipPar σ W H' pl i) :
-    p * n * p⁻¹ ∈ unipPar σ W H' pl i :=
-  let ⟨A, h⟩ := act_of_mem_unipFlag hp
-  conj_mem_unipCols ⟨A, 1, h⟩ hn
 
 theorem levi_normalises {Y : Spc F E (d₁ - 2 * i)} {h₁ : UA σ Y.J} {m : UA σ W.J} (hm : IsLeviFlag H' pl i h₁ m)
     (n : UA σ W.J) : n ∈ unipPar σ W H' pl i ↔ m * n * m⁻¹ ∈ unipPar σ W H' pl i := by
@@ -184,13 +156,6 @@ theorem levi_normalises {Y : Spc F E (d₁ - 2 * i)} {h₁ : UA σ Y.J} {m : UA 
     ⟨1, h₁.1, act_of_isLeviFlag hm⟩
   exact ⟨conj_mem_unipCols h, fun hn => by simpa [mul_assoc, unipPar] using conj_mem_unipCols (inv_mem h) hn⟩
 
-theorem comm_mem_unipPar {Y : Spc F E (d₁ - 2 * i)} {h₁ : UA σ Y.J} {m u : UA σ W.J} (hm : IsLeviFlag H' pl i h₁ m)
-    (hu : u ∈ unipFlag σ W H' pl i) : u * m * u⁻¹ * m⁻¹ ∈ unipPar σ W H' pl i := by
-  obtain ⟨A, h⟩ := act_of_mem_unipFlag hu
-  have k := act_of_isLeviFlag hm
-  have := act_mul (act_mul (act_mul h k) (act_inv h.1 h.2)) (act_inv k.1 k.2)
-  rw [mul_one, mul_inv_cancel, inv_one, mul_one, one_mul, inv_one, mul_one, mul_inv_cancel] at this
-  exact mem_unipCols_iff.2 this
 
 end Flag
 

@@ -25,14 +25,6 @@ theorem isStdChar_unique {D : D7} {ψ ψ' : AddChar (AF D.host.F) ℂ} {s : ℤ}
 theorem isInfFam_unique {D : D7} {θ θ' : Formalism.IndefR.Datum.InfFam D} (h : IsInfFam θ) (h' : IsInfFam θ') : θ = θ' :=
   Formalism.IndefR.Eqv.infFamUnique_holds D θ θ' h h'
 
-theorem exists_emb_of_range_le {K L : Type} [Field K] [Field L] (f : K →+* ℂ) (g : L →+* ℂ) (h : Set.range f ⊆ Set.range g) :
-    ∃ ι : K →+* L, ∀ x, g (ι x) = f x := by
-  let incl : K →+* g.fieldRange := f.codRestrict g.fieldRange fun x => by
-    obtain ⟨y, hy⟩ := h ⟨x, rfl⟩
-    exact ⟨y, hy⟩
-  refine ⟨(RingHom.rangeRestrictFieldEquiv g).symm.toRingHom.comp incl, fun x => ?_⟩
-  have := congrArg Subtype.val ((RingHom.rangeRestrictFieldEquiv g).apply_symm_apply (incl x))
-  simpa [incl] using this
 
 open Formalism.IndefR.Mult in
 

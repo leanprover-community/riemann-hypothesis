@@ -31,34 +31,7 @@ theorem geo_sum (S : Finset ℤ) (n0 : ℤ) (hS : ∀ n ∈ S, n0 ≤ n) :
   exact (Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_range_sup_succ _)
     fun _ _ _ => by positivity).trans (geom_quarter _)
 
-theorem geo_rel (T : Finset ℤ) {x0 B : ℝ} (hx0 : 0 < x0) (hB : 0 ≤ B) (f : ℤ → ℝ)
-    (hf : ∀ n ∈ T, |f n| ≤ B * ((4 : ℝ) ^ n)⁻¹) (hz : ∀ n ∈ T, f n ≠ 0 → x0 < (4 : ℝ) ^ n) :
-    |∑ n ∈ T, f n| ≤ 4 / 3 * B / x0 := by
-  rw [← Finset.sum_filter_of_ne hz]
-  refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
-  have hb : ∀ n ∈ T.filter (fun n => x0 < (4 : ℝ) ^ n), |f n| ≤ B * ((4 : ℝ) ^ n)⁻¹ :=
-    fun n hn => hf n (Finset.mem_filter.1 hn).1
-  refine (Finset.sum_le_sum hb).trans ?_
-  rw [← Finset.mul_sum]
-  rcases (T.filter (fun n => x0 < (4 : ℝ) ^ n)).eq_empty_or_nonempty with he | hne
-  · rw [he, Finset.sum_empty, mul_zero]
-    exact div_nonneg (mul_nonneg (by norm_num) hB) hx0.le
-  · have hmin := (Finset.mem_filter.1 (Finset.min'_mem _ hne)).2
-    have h1 := geo_sum (T.filter (fun n => x0 < (4 : ℝ) ^ n)) (Finset.min' _ hne)
-      fun n hn => Finset.min'_le _ n hn
-    have h2 : ((4 : ℝ) ^ Finset.min' _ hne)⁻¹ ≤ x0⁻¹ := inv_anti₀ hx0 hmin.le
-    calc B * ∑ n ∈ T.filter (fun n => x0 < (4 : ℝ) ^ n), ((4 : ℝ) ^ n)⁻¹ ≤ B * (4 / 3 * x0⁻¹) :=
-          mul_le_mul_of_nonneg_left (h1.trans (mul_le_mul_of_nonneg_left h2 (by norm_num))) hB
-      _ = 4 / 3 * B / x0 := by ring
 
-theorem zpow_window {x0 y0 : ℝ} (hx : 0 < x0) (hy : 0 < y0) :
-    ∃ a b : ℤ, ∀ n : ℤ, x0 < (4 : ℝ) ^ n → (4 : ℝ) ^ n < y0 → n ∈ Finset.Icc a b := by
-  obtain ⟨a, ha, -⟩ := exists_mem_Ioc_zpow hx (by norm_num : (1 : ℝ) < 4)
-  obtain ⟨b, -, hb⟩ := exists_mem_Ioc_zpow hy (by norm_num : (1 : ℝ) < 4)
-  refine ⟨a, b, fun n h1 h2 => Finset.mem_Icc.2 ⟨?_, ?_⟩⟩
-  · exact ((zpow_lt_zpow_iff_right₀ (by norm_num : (1 : ℝ) < 4)).1 (ha.trans h1)).le
-  · have := (zpow_lt_zpow_iff_right₀ (by norm_num : (1 : ℝ) < 4)).1 (h2.trans_le hb)
-    omega
 
 theorem fin_alg {δ A R μh lh ld c Cm E D1 D2 : ℝ} (hδ : 0 ≤ δ) (hA : 0 ≤ A) (hc : 0 < c)
     (hlh : 0 < lh) (hld : 0 < ld) (hCm : 0 ≤ Cm) (hE : 0 ≤ E) (hR : μh * A ≤ R) (hμ : c * ld ≤ μh)

@@ -165,9 +165,6 @@ def degSub (v : UnitOrd (Robba K) F.phi) (Φ : M →ₛₗ[F.phi] M) (N : Submod
   letI := finite_of_saturated N
   deg v (restrict Φ N h)
 
-theorem degSub_eq (v : UnitOrd (Robba K) F.phi) (Φ : M →ₛₗ[F.phi] M) (N : Submodule (Robba K) M)
-    (h : IsStable Φ N) [Module.IsTorsionFree (Robba K) (M ⧸ N)] [Module.Free (Robba K) N]
-    [Module.Finite (Robba K) N] : degSub v Φ N h = deg v (restrict Φ N h) := rfl
 
 variable (F) in
 
@@ -176,22 +173,6 @@ def IsSemistable (Φ : M →ₛₗ[F.phi] M) : Prop :=
     [Module.IsTorsionFree (Robba K) (M ⧸ N)],
     deg F.unitOrd Φ * (finrank (Robba K) N : ℤ) ≤ degSub F.unitOrd Φ N h * finrank (Robba K) M
 
-theorem IsPure.isSemistable {Φ : M →ₛₗ[F.phi] M} {s : ℚ} (h : IsPure F Φ s) :
-    IsSemistable F Φ := by
-  refine ⟨h.isPhiModule, fun N hN _ => ?_⟩
-  have := free_of_saturated N
-  have := finite_of_saturated N
-  rw [degSub_eq]
-  have h1 := h.le_deg hN
-  have h2 := h.deg_eq
-  have hM : (0 : ℚ) ≤ finrank (Robba K) M := by positivity
-  have key : (deg F.unitOrd Φ : ℚ) * finrank (Robba K) N ≤
-      (deg F.unitOrd (restrict Φ N hN) : ℚ) * finrank (Robba K) M := by
-    rw [h2]
-    calc s * finrank (Robba K) M * finrank (Robba K) N
-        = (s * finrank (Robba K) N) * finrank (Robba K) M := by ring
-      _ ≤ _ := mul_le_mul_of_nonneg_right h1 hM
-  exact_mod_cast key
 
 end PhiModule
 

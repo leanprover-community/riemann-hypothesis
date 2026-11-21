@@ -272,8 +272,6 @@ theorem badWSt_of (hG : GlobalTheory.Published.GreenCuspidal) (hM : ModelSt) : B
   obtain ⟨hr100, hA, -, hg⟩ := hx2 x hx h2 ι
   exact point p i _ _ hGr hp hMore.2.2 (hx1 x hx h1 ι p hp hMore r hr hown i) hr100 hA hg (hx3 x hx h3 ι)
 
-theorem badWSt_of_regular (hR : GlobalTheory.Published.GreenRegularCharacters) (hM : ModelSt) : BadWSt :=
-  badWSt_of (GlobalTheory.GreenBridge.green_of_regular hR) hM
 
 end GlobalTheory.BadWOn
 

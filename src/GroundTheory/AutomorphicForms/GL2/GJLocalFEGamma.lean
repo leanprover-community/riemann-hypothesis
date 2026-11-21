@@ -39,11 +39,6 @@ theorem IsGammaFactor.smul_measure {μ : Measure (GL (Fin n) F)} {ψ : AddChar F
   · rw [zetaIntegral, zetaIntegral, integral_smul_nnreal_measure, NNReal.smul_def,
       Complex.real_smul]
 
-theorem IsGammaFactor.of_isHaarMeasure {μ ν : Measure (GL (Fin n) F)} [μ.IsHaarMeasure]
-    [ν.IsHaarMeasure] {ψ : AddChar F Circle} {γ : RatFunc ℂ} (h : IsGammaFactor F π μ ψ γ) :
-    IsGammaFactor F π ν ψ γ := by
-  rw [Measure.isMulLeftInvariant_eq_smul ν μ]
-  exact h.smul_measure _
 
 theorem IsGammaFactor.unique [π.IsIrreducible] (hπ : IsAdmissible π) {μ : Measure (GL (Fin n) F)}
     [μ.IsHaarMeasure] {ψ : AddChar F Circle} {γ γ' : RatFunc ℂ} (h : IsGammaFactor F π μ ψ γ)
@@ -74,62 +69,9 @@ def gammaFactor (ψ : AddChar F Circle) : RatFunc ℂ := by
   exact if h : ∃ γ : RatFunc ℂ, IsGammaFactor F π (Measure.haar : Measure (GL (Fin n) F)) ψ γ
     then h.choose else 0
 
-theorem isGammaFactor_gammaFactor [π.IsIrreducible] (hπ : IsAdmissible π)
-    {μ : Measure (GL (Fin n) F)} [μ.IsHaarMeasure] {ψ : AddChar F Circle} {γ : RatFunc ℂ}
-    (hγ : IsGammaFactor F π μ ψ γ) : IsGammaFactor F π μ ψ (gammaFactor F π ψ) := by
-  classical
-  have hH : IsGammaFactor F π (Measure.haar : Measure (GL (Fin n) F)) ψ γ :=
-    hγ.of_isHaarMeasure
-  have hex : ∃ γ : RatFunc ℂ, IsGammaFactor F π (Measure.haar : Measure (GL (Fin n) F)) ψ γ :=
-    ⟨γ, hH⟩
-  have hg : gammaFactor F π ψ = γ := by
-    rw [gammaFactor, dif_pos hex]
-    exact IsGammaFactor.unique hπ hex.choose_spec hH
-  rw [hg]
-  exact hγ
 
-theorem functionalEquation_of_inducedFE [π.IsIrreducible] (hπ : IsAdmissible π)
-    (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] {ψ : AddChar F Circle} (hψ : Continuous ψ)
-    (hψ1 : ψ ≠ 1)
-    (hI : ∀ (β : Fin n → ℕ) (W : Type u) [AddCommGroup W] [Module ℂ W]
-      (σ : Representation ℂ (levi F n β) W), IsAdmissible σ → σ.IsIrreducible → IsCuspidal σ →
-        ∃ γ, InducedFE F σ μ ψ γ) :
-    ∀ Φ : Matrix (Fin n) (Fin n) F → ℂ, IsSchwartzBruhat Φ → ∀ v : V,
-      ∀ ℓ ∈ smoothVectors (Representation.dual π),
-        (∃ s₁ : ℝ, ∀ s : ℂ, s₁ < s.re → Integrable (fun g : GL (Fin n) F =>
-          Φ (g : Matrix (Fin n) (Fin n) F) * matrixCoeff π v ℓ g *
-            detPow g (s + ((n : ℂ) - 1) / 2)) μ) ∧
-        (∃ s₁ : ℝ, ∀ s : ℂ, s.re < s₁ → Integrable (fun g : GL (Fin n) F =>
-          localMatrixFourier ψ Φ (g : Matrix (Fin n) (Fin n) F) * matrixCoeff π v ℓ g⁻¹ *
-            detPow g ((1 - s) + ((n : ℂ) - 1) / 2)) μ) ∧
-        RatFE F (gammaFactor F π ψ) (zetaIntegral μ Φ (matrixCoeff π v ℓ))
-          (fun s => zetaIntegral μ (localMatrixFourier ψ Φ) (fun g => matrixCoeff π v ℓ g⁻¹)
-            (1 - s)) := by
-  obtain ⟨γ, hγ⟩ := exists_coeffFE_of_inducedFE hπ μ hψ hψ1 hI
-  have hG : IsGammaFactor F π μ ψ γ := fun Φ hΦ v ℓ hℓ => (hγ Φ hΦ v ℓ hℓ).2.2
-  have heq : gammaFactor F π ψ = γ := IsGammaFactor.unique hπ (isGammaFactor_gammaFactor hπ hG) hG
-  intro Φ hΦ v ℓ hℓ
-  rw [heq]
-  exact hγ Φ hΦ v ℓ hℓ
 
-theorem isGammaFactor_gammaFactor_of_inducedFE [π.IsIrreducible] (hπ : IsAdmissible π)
-    (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] {ψ : AddChar F Circle} (hψ : Continuous ψ)
-    (hψ1 : ψ ≠ 1)
-    (hI : ∀ (β : Fin n → ℕ) (W : Type u) [AddCommGroup W] [Module ℂ W]
-      (σ : Representation ℂ (levi F n β) W), IsAdmissible σ → σ.IsIrreducible → IsCuspidal σ →
-        ∃ γ, InducedFE F σ μ ψ γ) :
-    IsGammaFactor F π μ ψ (gammaFactor F π ψ) := fun Φ hΦ v ℓ hℓ =>
-  (functionalEquation_of_inducedFE hπ μ hψ hψ1 hI Φ hΦ v ℓ hℓ).2.2
 
-theorem existsUnique_isGammaFactor_of_inducedFE [π.IsIrreducible] (hπ : IsAdmissible π)
-    (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] {ψ : AddChar F Circle} (hψ : Continuous ψ)
-    (hψ1 : ψ ≠ 1)
-    (hI : ∀ (β : Fin n → ℕ) (W : Type u) [AddCommGroup W] [Module ℂ W]
-      (σ : Representation ℂ (levi F n β) W), IsAdmissible σ → σ.IsIrreducible → IsCuspidal σ →
-        ∃ γ, InducedFE F σ μ ψ γ) :
-    ∃! γ : RatFunc ℂ, IsGammaFactor F π μ ψ γ :=
-  ⟨gammaFactor F π ψ, isGammaFactor_gammaFactor_of_inducedFE hπ μ hψ hψ1 hI, fun _ h =>
-    IsGammaFactor.unique hπ h (isGammaFactor_gammaFactor_of_inducedFE hπ μ hψ hψ1 hI)⟩
 
 variable (F) in
 
@@ -290,88 +232,9 @@ variable [π.IsIrreducible] (hπ : IsAdmissible π) {μ : Measure (GL (Fin n) F)
   (hγ : IsGammaFactor F π μ ψ γ)
 include hπ hψ hψ1 hγ
 
-theorem exists_mem_zetaSet_contragredient {R : RatFunc ℂ} (hR : R ∈ zetaSet π μ) :
-    ∃ R' ∈ zetaSet (contragredient π) μ, γ * R = dualSubst F R' := by
-  have := Whittaker.isIrreducible_contragredient hπ
-  have hπ' := isAdmissible_contragredient hπ
-  obtain ⟨Φ, v, ℓ, hΦ, hℓ, s₀, hZ⟩ := hR
-  obtain ⟨R₁, s₁, hA, hB⟩ := hγ Φ hΦ v ℓ hℓ
-  have hR₁ : R₁ = R := eq_of_eval_qs_eq_right (F := F) (s₁ := max s₀ s₁) fun s hs => by
-    rw [max_lt_iff] at hs
-    rw [← hA s hs.2, hZ s hs.1]
-  subst hR₁
-  have hΦh := hΦ.localMatrixFourier hψ hψ1
-  obtain ⟨s₂, hrat⟩ := exists_ratFunc_zetaIntegral (π := contragredient π) hπ' μ
-  obtain ⟨R', hR'⟩ := hrat _ hΦh ⟨ℓ, hℓ⟩ (evalSmooth π v) (evalSmooth_mem (hπ.1 v))
-  refine ⟨R', ⟨_, ⟨ℓ, hℓ⟩, evalSmooth π v, hΦh, evalSmooth_mem (hπ.1 v), s₂, hR'⟩, ?_⟩
-  obtain ⟨t, ht⟩ := exists_denom_ne_zero_right (F := F) R'
-  refine eq_of_eval_qs_eq_left (F := F) (s₁ := min (-s₁) (min (1 - s₂) (1 - t))) fun s hs => ?_
-  simp only [lt_min_iff] at hs
-  have h1 : s₂ < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  have h2 : t < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  rw [← hB s hs.1, eval_dualSubst R' (qs_ne_zero s) (by rw [← qs_one_sub]; exact ht _ h2),
-    ← qs_one_sub, ← hR' _ h1]
-  rfl
 
-theorem exists_mem_zetaSet_of_contragredient {R' : RatFunc ℂ}
-    (hR' : R' ∈ zetaSet (contragredient π) μ) :
-    ∃ R ∈ zetaSet π μ, dualSubst F R' = γ * R := by
-  obtain ⟨Φ', x, Λ, hΦ', hΛ, s₀, hZ'⟩ := hR'
-  obtain ⟨v, hv⟩ := (toDoubleContragredient_bijective hπ).2 ⟨Λ, hΛ⟩
-  have hΛv : Λ = evalSmooth π v := (congrArg Subtype.val hv).symm
-  subst hΛv
-  obtain ⟨Φ, hΦ, rfl⟩ := exists_localMatrixFourier_eq hψ hψ1 hΦ'
-  obtain ⟨s₂, hrat⟩ := exists_ratFunc_zetaIntegral hπ μ
-  obtain ⟨R, hR⟩ := hrat Φ hΦ v x.1 x.2
-  refine ⟨R, ⟨Φ, v, x.1, hΦ, x.2, s₂, hR⟩, ?_⟩
-  obtain ⟨R₁, s₁, hA, hB⟩ := hγ Φ hΦ v x.1 x.2
-  have hR₁ : R₁ = R := eq_of_eval_qs_eq_right (F := F) (s₁ := max s₂ s₁) fun s hs => by
-    rw [max_lt_iff] at hs
-    rw [← hA s hs.2, hR s hs.1]
-  subst hR₁
-  obtain ⟨t, ht⟩ := exists_denom_ne_zero_right (F := F) R'
-  refine eq_of_eval_qs_eq_left (F := F) (s₁ := min (-s₁) (min (1 - s₀) (1 - t))) fun s hs => ?_
-  simp only [lt_min_iff] at hs
-  have h1 : s₀ < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  have h2 : t < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  rw [eval_dualSubst R' (qs_ne_zero s) (by rw [← qs_one_sub]; exact ht _ h2), ← qs_one_sub,
-    ← hZ' _ h1, ← hB s hs.1]
-  rfl
 
-theorem exists_mem_zetaIdeal_contragredient {R : RatFunc ℂ} (hR : R ∈ zetaIdeal π μ) :
-    ∃ R' ∈ zetaIdeal (contragredient π) μ, γ * R = dualSubst F R' := by
-  induction hR using Submodule.span_induction with
-  | mem R hR =>
-    obtain ⟨R', hR', h⟩ := exists_mem_zetaSet_contragredient hπ hψ hψ1 hγ hR
-    exact ⟨R', Submodule.subset_span hR', h⟩
-  | zero => exact ⟨0, zero_mem _, by simp⟩
-  | add R₁ R₂ _ _ h₁ h₂ =>
-    obtain ⟨R'₁, hm₁, e₁⟩ := h₁
-    obtain ⟨R'₂, hm₂, e₂⟩ := h₂
-    exact ⟨R'₁ + R'₂, add_mem hm₁ hm₂, by rw [mul_add, e₁, e₂, map_add]⟩
-  | smul c R _ h =>
-    obtain ⟨R', hm, e⟩ := h
-    refine ⟨c • R', Submodule.smul_mem _ c hm, ?_⟩
-    rw [Algebra.smul_def, Algebra.smul_def, map_mul, AlgHom.commutes, ← e]
-    ring
 
-theorem exists_mem_zetaIdeal_of_contragredient {R' : RatFunc ℂ}
-    (hR' : R' ∈ zetaIdeal (contragredient π) μ) :
-    ∃ R ∈ zetaIdeal π μ, dualSubst F R' = γ * R := by
-  induction hR' using Submodule.span_induction with
-  | mem R' hR' =>
-    obtain ⟨R, hR, h⟩ := exists_mem_zetaSet_of_contragredient hπ hψ hψ1 hγ hR'
-    exact ⟨R, Submodule.subset_span hR, h⟩
-  | zero => exact ⟨0, zero_mem _, by simp⟩
-  | add R₁ R₂ _ _ h₁ h₂ =>
-    obtain ⟨S₁, hm₁, e₁⟩ := h₁
-    obtain ⟨S₂, hm₂, e₂⟩ := h₂
-    exact ⟨S₁ + S₂, add_mem hm₁ hm₂, by rw [map_add, e₁, e₂, mul_add]⟩
-  | smul c R' _ h =>
-    obtain ⟨S, hm, e⟩ := h
-    refine ⟨c • S, Submodule.smul_mem _ c hm, ?_⟩
-    rw [Algebra.smul_def, Algebra.smul_def, map_mul, AlgHom.commutes, e]
-    ring
 
 end Contragredient
 
@@ -382,103 +245,6 @@ def epsilonFactor (ψ : AddChar F Circle) : RatFunc ℂ :=
     dualSubst F (algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial (contragredient π))) /
       algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial π)
 
-theorem exists_epsilonFactor_eq_of_inducedFE [NeZero n] [π.IsIrreducible] (hπ : IsAdmissible π)
-    (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] {ψ : AddChar F Circle} (hψ : Continuous ψ)
-    (hψ1 : ψ ≠ 1)
-    (hI : ∀ (β : Fin n → ℕ) (W : Type u) [AddCommGroup W] [Module ℂ W]
-      (σ : Representation ℂ (levi F n β) W), IsAdmissible σ → σ.IsIrreducible → IsCuspidal σ →
-        ∃ γ, InducedFE F σ μ ψ γ) :
-    ∃ c : ℂ, c ≠ 0 ∧ ∃ k : ℤ, epsilonFactor F π ψ = RatFunc.C c * RatFunc.X ^ k ∧
-      ∀ s : ℂ, (LPolynomial π).eval (qs F s) ≠ 0 →
-        (LPolynomial (contragredient π)).eval (qs F (1 - s)) ≠ 0 →
-          (gammaFactor F π ψ).eval (RingHom.id ℂ) (qs F s) * LFunction π s /
-            LFunction (contragredient π) (1 - s) = c * qs F s ^ k := by
-  have hγ := isGammaFactor_gammaFactor_of_inducedFE hπ μ hψ hψ1 hI
-  have := Whittaker.isIrreducible_contragredient hπ
-  have hπ' := isAdmissible_contragredient hπ
-  obtain ⟨hP0, hP⟩ := LPolynomial_spec hπ μ
-  obtain ⟨hP'0, hP'⟩ := LPolynomial_spec hπ' μ
-  have hPpoly : LPolynomial π ≠ 0 := fun h => by
-    rw [h, eval_zero] at hP0
-    exact zero_ne_one hP0
-  have hP'poly : LPolynomial (contragredient π) ≠ 0 := fun h => by
-    rw [h, eval_zero] at hP'0
-    exact zero_ne_one hP'0
-  have hPne : algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial π) ≠ 0 := RatFunc.algebraMap_ne_zero hPpoly
-  have hθne : dualSubst F (algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial (contragredient π))) ≠ 0 := by
-    rw [dualSubst_algebraMap]
-    exact aeval_dualVar_ne_zero hP'poly
-
-  obtain ⟨R', hR'mem, hR'⟩ := exists_mem_zetaIdeal_contragredient hπ hψ hψ1 hγ
-    ((hP _).2 ⟨1, one_mem _, rfl⟩)
-  obtain ⟨L₁, hL₁, rfl⟩ := (hP' R').1 hR'mem
-  have hε1 : epsilonFactor F π ψ = dualSubst F L₁ := by
-    rw [map_div₀] at hR'
-    rw [epsilonFactor]
-    field_simp
-    field_simp at hR'
-    rw [hR']
-
-  obtain ⟨R, hRmem, hR⟩ := exists_mem_zetaIdeal_of_contragredient hπ hψ hψ1 hγ
-    ((hP' _).2 ⟨1, one_mem _, rfl⟩)
-  obtain ⟨L₂, hL₂, rfl⟩ := (hP R).1 hRmem
-  have hγne : gammaFactor F π ψ ≠ 0 := by
-    intro h0
-    rw [h0, zero_mul, map_div₀, map_one] at hR
-    exact one_div_ne_zero hθne hR
-  have hε2 : (epsilonFactor F π ψ)⁻¹ = L₂ := by
-    rw [map_div₀, map_one] at hR
-    rw [epsilonFactor]
-    field_simp
-    field_simp at hR
-    rw [hR]
-    ring
-  have hεne : epsilonFactor F π ψ ≠ 0 := by
-    rw [epsilonFactor]
-    exact div_ne_zero (mul_ne_zero hγne hθne) hPne
-  obtain ⟨r, i, a, hr, hεeq⟩ := exists_eq_C_mul_X_pow_of_mem
-    (hε1 ▸ dualSubst_mem_laurentSubalgebra hL₁) (hε2 ▸ hL₂) hεne
-  have hX : (RatFunc.X : RatFunc ℂ) ≠ 0 := RatFunc.X_ne_zero
-  refine ⟨r, hr, (i : ℤ) - a, ?_, fun s hPs hP's => ?_⟩
-  · rw [hεeq, map_mul, RatFunc.algebraMap_C, map_pow, map_pow, RatFunc.algebraMap_X,
-      zpow_sub₀ hX, zpow_natCast, zpow_natCast, mul_div_assoc]
-  · have hx : qs F s ≠ 0 := qs_ne_zero s
-    have hθ : dualSubst F (algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial (contragredient π))) =
-        algebraMap ℂ[X] (RatFunc ℂ) (dualPoly F (LPolynomial (contragredient π))) /
-          algebraMap ℂ[X] (RatFunc ℂ) (X ^ (LPolynomial (contragredient π)).natDegree) := by
-      rw [dualSubst_algebraMap, aeval_dualVar]
-    have hQ'ne : algebraMap ℂ[X] (RatFunc ℂ) (dualPoly F (LPolynomial (contragredient π))) ≠ 0 := by
-      intro h
-      apply hθne
-      rw [hθ, h, zero_div]
-    have hXa : algebraMap ℂ[X] (RatFunc ℂ) (X ^ a) ≠ 0 := by
-      rw [map_pow, RatFunc.algebraMap_X]
-      exact pow_ne_zero _ hX
-    have hXd : algebraMap ℂ[X] (RatFunc ℂ) (X ^ (LPolynomial (contragredient π)).natDegree) ≠ 0 := by
-      rw [map_pow, RatFunc.algebraMap_X]
-      exact pow_ne_zero _ hX
-    have hγeq : gammaFactor F π ψ = algebraMap ℂ[X] (RatFunc ℂ)
-        (C r * X ^ i * LPolynomial π * X ^ (LPolynomial (contragredient π)).natDegree) /
-        algebraMap ℂ[X] (RatFunc ℂ) (X ^ a * dualPoly F (LPolynomial (contragredient π))) := by
-      have h1 : gammaFactor F π ψ = epsilonFactor F π ψ * algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial π) /
-          dualSubst F (algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial (contragredient π))) := by
-        rw [epsilonFactor]
-        field_simp
-      rw [h1, hεeq, hθ]
-      simp only [map_mul]
-      field_simp
-    have hQ'x : (dualPoly F (LPolynomial (contragredient π))).eval (qs F s) =
-        qs F s ^ (LPolynomial (contragredient π)).natDegree *
-          (LPolynomial (contragredient π)).eval (qs F (1 - s)) := by
-      rw [qs_one_sub]
-      exact eval_dualPoly _ hx
-    have hden : (X ^ a * dualPoly F (LPolynomial (contragredient π))).eval (qs F s) ≠ 0 := by
-      rw [eval_mul, eval_pow, eval_X, hQ'x]
-      exact mul_ne_zero (pow_ne_zero _ hx) (mul_ne_zero (pow_ne_zero _ hx) hP's)
-    rw [hγeq, eval_div_algebraMap _ _ hden]
-    simp only [LFunction, eval_mul, eval_pow, eval_X, eval_C, hQ'x]
-    rw [zpow_sub₀ hx, zpow_natCast, zpow_natCast]
-    field_simp
 
 end GodementJacquet
 

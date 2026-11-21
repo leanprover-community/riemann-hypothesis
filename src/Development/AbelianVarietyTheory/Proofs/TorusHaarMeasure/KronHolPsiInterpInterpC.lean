@@ -34,8 +34,5 @@ theorem interp : InterpStatement (E := E) :=
 theorem interpC : InterpCStatement (E := E) :=
   GlobalTheory.InterpC.main GlobalTheory.PoincareClosed.unfold_poincare_onto.2.2.2.1 kronHolPsi
 
-theorem kronHolPsi_interp_interpC :
-    (KronHolPsiStatement (E := E)) ∧ (InterpStatement (E := E)) ∧ (InterpCStatement (E := E)) :=
-  ⟨kronHolPsi, interp, interpC⟩
 
 end GlobalTheory.InterpolationClosed

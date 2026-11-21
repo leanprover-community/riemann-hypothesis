@@ -36,10 +36,7 @@ def sysLog : AnSys 1 Unit where
   reg _ := projectiveLine_isRegFamily
   c2 _ := projectiveLine_isRegFamilyC2
 
-theorem sysLog_degNum (w : Fin 1 → Unit) : sysLog.degNum w = 1 := projectiveLine_fubiniStudy_mass_one
 
-theorem sysLog_degPoly : sysLog.degPoly = MvPolynomial.X () := by
-  simp [AnSys.degPoly, formPoly, sysLog_degNum]
 
 def flagTh (p : Unit × Fin 2) : LocPot (OnePoint ℂ) := if p.2 = 0 then fsPot else LocPot.ofFun fun _ => 0
 
@@ -129,20 +126,6 @@ theorem holo_frame {V : Set (OnePoint ℂ)} (hV : V ⊆ Set.range ((↑) : ℂ �
   · exact holoOn_mono holomorphicOn_finiteCoord hV
   · exact holoOn_const _ 1
 
-theorem immersion_frame : IsFlagImmersionAt p1 frame ((0 : ℂ) : OnePoint ℂ) := by
-  intro k hk v hv
-  fin_cases k
-  · have h := hv () (i := 1) (j := 0) (by decide)
-    have e : frame () ((0 : ℂ) : OnePoint ℂ) = 1 := by
-      ext a b; fin_cases a <;> fin_cases b <;> simp [frame]
-    rw [e, inv_one, one_mul, Matrix.of_apply] at h
-    have e2 : (fun z : Fin 1 → ℂ => frame () ((p1.chart ((fun i => i) ⟨0, by decide⟩ : Fin p1.n)).symm z) 1 0) =
-        ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin 1 => ℂ) 0 := rfl
-    rw [e2, ContinuousLinearMap.fderiv] at h
-    funext i
-    fin_cases i
-    exact h
-  · exact absurd rfl hk
 
 theorem flagTh_zero : flagTh ((), 0) = fsPot := if_pos rfl
 theorem flagTh_one : flagTh ((), 1) = LocPot.ofFun fun _ => 0 := if_neg (by decide)
@@ -166,63 +149,15 @@ theorem chart_flag (z : ℂ) :
       rw [flagTh_one, gramLog, gramLog, det_head_zero, det_head_two, det_gram_frame]
       simp [sigForm, LocPot.ofFun]
 
-theorem sysFlag_uniformised : IsUniformised sysFlag.A sysFlag.open' 2 sysFlag.potH := by
-  refine ⟨fun x hx => ?_, ((0 : ℂ) : OnePoint ℂ), fun h => ?_, _, _, chart_flag 0, immersion_frame⟩
-  · have hx' : x ≠ OnePoint.infty := fun h => hx ((mem_boundary_projectiveLine x).2 h)
-    obtain ⟨z, rfl⟩ := OnePoint.ne_infty_iff_exists.1 hx'
-    exact ⟨_, _, chart_flag z⟩
-  · exact OnePoint.coe_ne_infty 0 ((mem_boundary_projectiveLine _).1 h)
 
-theorem sysFlag_degNum_zero : sysFlag.degNum (fun _ => ((), 0)) = 1 := by
-  show mInt p1 (fun _ => flagTh ((), 0)) _ = 1
-  rw [flagTh_zero]; exact projectiveLine_fubiniStudy_mass_one
 
 def disc : Set (OnePoint ℂ) := ((↑) : ℂ → OnePoint ℂ) '' Metric.ball 0 1
 
 def discPot (p : Unit × Fin 2) : LocPot (OnePoint ℂ) :=
   LocPot.ofFun fun y => if p.2 = 0 then -(1 / 2) * Real.log (1 - ‖crd0 y‖ ^ 2) else 0
 
-theorem chart_disc {x : OnePoint ℂ} (hx : x ∈ disc) : IsPeriodChart p1 1 discPot x disc frame := by
-  refine ⟨OnePoint.isOpen_image_coe.2 Metric.isOpen_ball, hx, holo_frame (Set.image_subset_range _ _),
-    fun τ y hy => ⟨?_, ?_⟩, ?_⟩
-  · rw [det_frame]; exact isUnit_one
-  · obtain ⟨z, hz, rfl⟩ := hy
-    have hz' : ‖z‖ < 1 := by simpa using hz
-    have hp : 0 < 1 - ‖z‖ ^ 2 := by nlinarith [norm_nonneg z]
-    show (-gramHead (sigForm 2 1) 1 (frame () (z : OnePoint ℂ))).PosDef
-    have e : -gramHead (sigForm 2 1) 1 (frame () (z : OnePoint ℂ)) =
-        Matrix.diagonal fun _ => ((1 - ‖z‖ ^ 2 : ℝ) : ℂ) := by
-      ext a b
-      obtain rfl : a = default := Subsingleton.elim _ _
-      obtain rfl : b = default := Subsingleton.elim _ _
-      show -gramOf (sigForm 2 1) (frame () (z : OnePoint ℂ)) 0 0 = _
-      rw [gram_frame_zero]
-      simp [sigForm, neg_add_eq_sub]
-    rw [e, Matrix.posDef_diagonal_iff]
-    intro _
-    exact_mod_cast hp
-  · rintro ⟨⟨⟩, i⟩
-    refine ⟨fun _ => 0, holoOn_const _ 0, fun y _ => ?_⟩
-    fin_cases i
-    · show -(1 / 2) * Real.log (1 - ‖crd0 y‖ ^ 2) =
-        gramLog (sigForm 2 1) 2 (frame () y) - gramLog (sigForm 2 1) 1 (frame () y) + 0
-      rw [gramLog, gramLog, det_head_two, det_head_one, gram_frame_zero, det_gram_frame, Complex.norm_real,
-        Real.norm_eq_abs, Real.log_abs, ← Real.log_neg_eq_log (1 - _)]
-      simp [sigForm, neg_add_eq_sub]
-    · show (0 : ℝ) = gramLog (sigForm 2 1) 2 (frame () y) - gramLog (sigForm 2 1) 1 (frame () y) +
-        gramLog (sigForm 2 1) 1 (frame () y) + 0
-      rw [gramLog, det_head_two, det_gram_frame]
-      simp [sigForm]
 
-theorem disc_uniformised : IsUniformised p1 disc 1 discPot := by
-  have h0 : ((0 : ℂ) : OnePoint ℂ) ∈ disc := ⟨0, by simp, rfl⟩
-  exact ⟨fun x hx => ⟨_, _, chart_disc hx⟩, _, h0, _, _, chart_disc h0, immersion_frame⟩
 
-theorem not_immersion_const : ¬ IsFlagImmersionAt p1 (fun (_ : Unit) _ => (1 : Matrix (Fin 2) (Fin 2) ℂ))
-    ((0 : ℂ) : OnePoint ℂ) := by
-  intro h
-  have := h (0 : Fin 2) ⟨0, rfl⟩ 1 fun τ a b _ => by simp [Matrix.mul_apply]
-  exact one_ne_zero (congrFun this 0)
 
 theorem affine_chart_param_cover_projective_line : IsParamCover p1 (fun _ => Set.univ) (fun n => if n = 0 then Set.univ else ∅)
     (fun _ => projectiveLineChartAtZero.symm) := by
@@ -249,7 +184,5 @@ theorem affine_chart_param_cover_projective_line : IsParamCover p1 (fun _ => Set
       fin_cases i
       exact this
 
-theorem samePot_refl (U : Set (OnePoint ℂ)) (P : LocPot (OnePoint ℂ)) : SamePot p1 U P P :=
-  fun _ _ => ⟨Set.univ, isOpen_univ, trivial, fun _ => 0, holoOn_const _ 0, fun _ _ => by simp⟩
 
 end GlobalTheory.CompanionTheory.Ar.PB.LineModel

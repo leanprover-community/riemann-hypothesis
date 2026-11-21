@@ -82,12 +82,6 @@ theorem IsFiniteQC.of_forall_exists_affine [F.IsQuasicoherent]
     (fun g ↦ Γ(X, X.basicOpen g.1)) _ _ (fun g ↦ hU.isLocalization_basicOpen g.1) _ _
     (fun g ↦ resBasicOpen F g.1) (fun g ↦ isLocalizedModule_resBasicOpen F hU g.1) fun g ↦ g.2
 
-theorem isFiniteQC_iff_affineCover [F.IsQuasicoherent] {ι : Type*} (𝒰 : ι → X.Opens)
-    (hcov : IsOpenCover 𝒰) (haff : ∀ i, IsAffineOpen (𝒰 i)) :
-    IsFiniteQC F ↔ ∀ i, Module.Finite Γ(X, 𝒰 i) Γ(F, 𝒰 i) :=
-  ⟨fun _ i ↦ finite_sections F (haff i), fun h ↦ .of_forall_exists_affine fun x ↦
-    have ⟨i, hi⟩ := hcov.exists_mem x
-    ⟨𝒰 i, haff i, hi, h i⟩⟩
 
 theorem isFiniteQC_iff_finite_top [IsAffine X] [F.IsQuasicoherent] :
     IsFiniteQC F ↔ Module.Finite Γ(X, ⊤) Γ(F, ⊤) :=
@@ -105,8 +99,6 @@ theorem IsFiniteQC.of_iso (e : F ≅ G) [IsFiniteQC F] : IsFiniteQC G :=
     (SheafOfModules.isQuasicoherent X.ringCatSheaf).prop_of_iso e IsFiniteQC.isQuasicoherent
   .of_epi e.hom
 
-theorem isFiniteQC_iff_of_iso (e : F ≅ G) : IsFiniteQC F ↔ IsFiniteQC G :=
-  ⟨fun _ ↦ .of_iso e, fun _ ↦ .of_iso e.symm⟩
 
 variable (F) in
 
@@ -427,9 +419,6 @@ theorem IsFiniteQC.isFinitePresentation [IsLocallyNoetherian X] [IsFiniteQC F] :
     SheafOfModules.QuasicoherentData.IsFinitePresentation.mk.{u, u, u, u} (q := q) hP
   exact SheafOfModules.IsFinitePresentation.mk.{u, u, u} (Exists.intro q hq)
 
-theorem isFiniteQC_iff_isFinitePresentation [IsLocallyNoetherian X] :
-    IsFiniteQC F ↔ F.IsFinitePresentation :=
-  ⟨fun _ ↦ IsFiniteQC.isFinitePresentation, fun _ ↦ .of_isFinitePresentation⟩
 
 end FiniteType
 
@@ -486,16 +475,6 @@ theorem isClosed_support [IsFiniteQC F] : IsClosed (support F) := by
   · exact hy.1 ((support_inter_eq_zeroLocus F hU).le ⟨hyF, hy.2⟩).1
   · exact hx ((support_inter_eq_zeroLocus F hU).ge ⟨h, hxU⟩).1
 
-theorem mem_support_of_specializes [F.IsQuasicoherent] {x y : X} (h : x ⤳ y)
-    (hx : x ∈ support F) : y ∈ support F := by
-  obtain ⟨U, hU, hy⟩ := exists_affine_mem y
-  have hxU : x ∈ U := h.mem_open U.2 hy
-  refine (mem_support_iff_primeIdealOf hU ⟨y, hy⟩).2 (Module.mem_support_mono ?_
-    ((mem_support_iff_primeIdealOf hU ⟨x, hxU⟩).1 hx))
-  intro f hf
-  by_contra hf'
-  exact (mem_primeCompl_primeIdealOf_iff hU ⟨x, hxU⟩ f).2 (h.mem_open (X.basicOpen f).2
-    ((mem_primeCompl_primeIdealOf_iff hU ⟨y, hy⟩ f).1 hf')) hf
 
 theorem support_subset_of_mono (φ : F ⟶ G) [Mono φ] : support F ⊆ support G :=
   fun x (_ : Nontrivial _) ↦ (stalkLinear_injective φ x).nontrivial
@@ -523,10 +502,6 @@ theorem support_eq_union_of_shortExact {S : ShortComplex X.Modules} (hS : S.Shor
   (support_subset_union_of_exact hS.exact).antisymm
     (Set.union_subset (support_subset_of_mono S.f) (support_subset_of_epi S.g))
 
-theorem support_biprod : support (F ⊞ G) = support F ∪ support G :=
-  support_eq_union_of_shortExact (S := ShortComplex.mk (biprod.inl : F ⟶ F ⊞ G) biprod.snd
-    biprod.inl_snd) (ShortComplex.Splitting.shortExact
-      { r := biprod.fst, s := biprod.inr, f_r := by simp, s_g := by simp, id := by simp })
 
 theorem support_eq_empty_iff : support F = ∅ ↔ IsZero F := by
   constructor
@@ -548,35 +523,7 @@ def restrictStalkAddEquiv {Y : Scheme.{u}} (g : Y ⟶ X) [IsOpenImmersion g] (y 
     ((F.restrict g).presheaf.stalk y :) ≃+ (F.presheaf.stalk (g y) :) :=
   ((Scheme.Modules.restrictStalkNatIso g y).app F).addCommGroupIsoToAddEquiv
 
-theorem restrictStalkAddEquiv_germ {Y : Scheme.{u}} (g : Y ⟶ X) [IsOpenImmersion g] (y : Y)
-    {W : Y.Opens} (hy : y ∈ W) (s : Γ(F.restrict g, W)) :
-    restrictStalkAddEquiv F g y ((F.restrict g).presheaf.germ W y hy s) =
-      F.presheaf.germ (g ''ᵁ W) (g y) ⟨y, hy, rfl⟩ ((F.restrictAppIso g W).hom s) :=
-  congr($(Scheme.Modules.germ_restrictStalkNatIso_hom_app g y F hy) s)
 
-theorem restrictStalkAddEquiv_smul {Y : Scheme.{u}} (g : Y ⟶ X) [IsOpenImmersion g] (y : Y)
-    (r : X.presheaf.stalk (g y)) (t : ((F.restrict g).presheaf.stalk y :)) :
-    restrictStalkAddEquiv F g y (g.stalkMap y r • t) = r • restrictStalkAddEquiv F g y t := by
-  obtain ⟨U, hU, a, rfl⟩ := X.presheaf.exists_germ_eq r
-  obtain ⟨W, hW, s, rfl⟩ := (F.restrict g).presheaf.exists_germ_eq t
-  have hy : y ∈ W ⊓ g ⁻¹ᵁ U := ⟨hW, hU⟩
-  have hle : g ''ᵁ (W ⊓ g ⁻¹ᵁ U) ≤ U := (g.image_mono inf_le_right).trans (g.image_preimage_le U)
-  have key : Y.presheaf.map (homOfLE (inf_le_right : W ⊓ g ⁻¹ᵁ U ≤ _)).op (g.app U a) =
-      (g.appIso _).hom (X.presheaf.map (homOfLE hle).op a) := by
-    have : X.presheaf.map (homOfLE hle).op ≫ (g.appIso _).hom =
-        g.app U ≫ Y.presheaf.map (homOfLE (inf_le_right : W ⊓ g ⁻¹ᵁ U ≤ _)).op := by
-      rw [Scheme.Hom.appIso_hom', Scheme.Hom.map_appLE]
-      rfl
-    exact congr($this a).symm
-  rw [Scheme.Hom.germ_stalkMap_apply,
-    ← Y.presheaf.germ_res_apply (homOfLE (inf_le_right : W ⊓ g ⁻¹ᵁ U ≤ _)) y hy,
-    ← (F.restrict g).presheaf.germ_res_apply (homOfLE (inf_le_left : W ⊓ g ⁻¹ᵁ U ≤ _)) y hy,
-    ← germ_smul, restrictStalkAddEquiv_germ, restrictStalkAddEquiv_germ,
-    ← X.presheaf.germ_res_apply (homOfLE hle) (g y) ⟨y, hy, rfl⟩, key]
-  refine Eq.trans ?_ (germ_smul F (U := g ''ᵁ (W ⊓ g ⁻¹ᵁ U)) (g y) ⟨y, hy, rfl⟩ _ _)
-  congr 1
-  refine (F.smul_restrictAppIso_hom_apply g _ _ _).trans ?_
-  rw [Iso.hom_inv_id_apply]
 
 theorem support_restrict {Y : Scheme.{u}} (g : Y ⟶ X) [IsOpenImmersion g] :
     support (F.restrict g) = g ⁻¹' support F :=
@@ -731,8 +678,6 @@ theorem suppDim_le_of_mono (φ : F ⟶ G) [Mono φ] : suppDim F ≤ suppDim G :=
 theorem suppDim_le_of_epi (φ : F ⟶ G) [Epi φ] : suppDim G ≤ suppDim F :=
   suppDim_le_of_support_subset (support_subset_of_epi φ)
 
-theorem suppDim_eq_of_iso (e : F ≅ G) : suppDim F = suppDim G := by
-  rw [suppDim, suppDim, support_eq_of_iso e]
 
 theorem suppDim_eq_max_of_shortExact {S : ShortComplex X.Modules} (hS : S.ShortExact)
     [IsFiniteQC S.X₁] [IsFiniteQC S.X₃] : suppDim S.X₂ = max (suppDim S.X₁) (suppDim S.X₃) := by
@@ -770,25 +715,7 @@ def assPoints : Set X :=
 theorem mem_assPoints_iff {x : X} : x ∈ assPoints F ↔
     IsAssociatedPrime (maximalIdeal (X.presheaf.stalk x)) (F.presheaf.stalk x :) := Iff.rfl
 
-theorem mem_assPoints_iff_exists_pow {x : X} :
-    x ∈ assPoints F ↔ ∃ t : (F.presheaf.stalk x :),
-      ∀ r : X.presheaf.stalk x, (∃ n : ℕ, r ^ n • t = 0) ↔ ¬ IsUnit r := by
-  rw [mem_assPoints_iff, IsAssociatedPrime, Submodule.isAssociatedPrime_def,
-    and_iff_right (maximalIdeal.isMaximal _).isPrime]
-  refine exists_congr fun t ↦ ?_
-  simp only [Ideal.ext_iff, Ideal.mem_radical_iff, Submodule.mem_colon_singleton, Submodule.mem_bot]
-  exact forall_congr' fun _ ↦ Iff.comm
 
-theorem assPoints_restrict {Y : Scheme.{u}} (g : Y ⟶ X) [IsOpenImmersion g] :
-    assPoints (F.restrict g) = g ⁻¹' assPoints F := by
-  ext y
-  rw [Set.mem_preimage, mem_assPoints_iff_exists_pow, mem_assPoints_iff_exists_pow]
-  refine (restrictStalkAddEquiv F g y).toEquiv.exists_congr fun t ↦ ?_
-  rw [(ConcreteCategory.bijective_of_isIso (g.stalkMap y)).2.forall]
-  refine forall_congr' fun r ↦ iff_congr (exists_congr fun n ↦ ?_)
-    (not_congr (isUnit_map_iff (g.stalkMap y).hom r))
-  rw [← map_pow, ← (restrictStalkAddEquiv F g y).map_eq_zero_iff, restrictStalkAddEquiv_smul]
-  rfl
 
 theorem mem_assPoints_iff_exists [IsLocallyNoetherian X] {x : X} :
     x ∈ assPoints F ↔ ∃ t : (F.presheaf.stalk x :),
@@ -806,16 +733,8 @@ theorem assPoints_subset_support : assPoints F ⊆ support F := fun _ hx ↦ by
   have := notMem_support_iff.1 h
   exact not_isAssociatedPrime_of_subsingleton hx
 
-theorem assPoints_subset_of_mono (φ : F ⟶ G) [Mono φ] : assPoints F ⊆ assPoints G :=
-  fun x hx ↦ associatedPrimes.subset_of_injective (stalkLinear_injective φ x) hx
 
-theorem assPoints_eq_of_iso (e : F ≅ G) : assPoints F = assPoints G :=
-  (assPoints_subset_of_mono e.hom).antisymm (assPoints_subset_of_mono e.inv)
 
-theorem assPoints_subset_union_of_exact {S : ShortComplex X.Modules} (hS : S.Exact) [Mono S.f] :
-    assPoints S.X₂ ⊆ assPoints S.X₁ ∪ assPoints S.X₃ := fun x hx ↦
-  associatedPrimes.subset_union_of_exact (stalkLinear_injective S.f x)
-    ((exact_iff_stalkLinear S).1 hS x) hx
 
 variable [IsLocallyNoetherian X]
 
@@ -905,30 +824,7 @@ theorem closure_assPoints [IsFiniteQC F] : closure (assPoints F) = support F := 
   obtain ⟨y, hy, hyx⟩ := exists_mem_assPoints_specializes hx
   exact hyx.mem_closed isClosed_closure (subset_closure hy)
 
-theorem assPoints_eq_empty_iff [F.IsQuasicoherent] : assPoints F = ∅ ↔ IsZero F := by
-  rw [← support_eq_empty_iff]
-  refine ⟨fun h ↦ Set.eq_empty_iff_forall_notMem.2 fun x hx ↦ ?_,
-    fun h ↦ Set.subset_eq_empty (assPoints_subset_support F) h⟩
-  obtain ⟨y, hy, -⟩ := exists_mem_assPoints_specializes hx
-  exact Set.eq_empty_iff_forall_notMem.1 h y hy
 
-theorem section_eq_zero_of_germ_assPoints [F.IsQuasicoherent] (s : Γ(F, U))
-    (h : ∀ x ∈ assPoints F, ∀ hx : x ∈ U, F.presheaf.germ U x hx s = 0) : s = 0 := by
-  refine section_eq_zero_of_germ s fun x hx ↦ ?_
-  obtain ⟨V, hV, hxV, hVU⟩ := exists_affine_mem_le x hx
-  rw [← F.presheaf.germ_res_apply (homOfLE hVU) x hxV]
-  suffices F.presheaf.map (homOfLE hVU).op s = 0 by rw [this, map_zero]
-  by_contra hs
-  have : IsNoetherianRing Γ(X, V) := IsLocallyNoetherian.component_noetherian ⟨V, hV⟩
-  obtain ⟨P, hP, hle⟩ := exists_le_isAssociatedPrime_of_isNoetherianRing Γ(X, V) _ hs
-  have := hP.isPrime
-  have := isLocalizedModule_germLinear_pointOfPrime F hV P
-  let y := pointOfPrime hV ⟨P, hP.isPrime⟩
-  have hy : germLinear F y (F.presheaf.map (homOfLE hVU).op s) = 0 := by
-    rw [germLinear_apply, F.presheaf.germ_res_apply]
-    exact h y ((pointOfPrime_mem_assPoints_iff hV _).2 hP) _
-  obtain ⟨r, hr⟩ := (IsLocalizedModule.eq_zero_iff P.primeCompl (germLinear F y)).1 hy
-  exact r.2 (hle (Submodule.mem_colon_singleton.2 hr))
 
 theorem isSMulRegular_sections_iff [F.IsQuasicoherent] (hU : IsAffineOpen U) (f : Γ(X, U)) :
     IsSMulRegular Γ(F, U) f ↔ assPoints F ∩ U ⊆ X.basicOpen f := by
@@ -1006,14 +902,10 @@ section Fibre
 instance residueFieldAlgebra (x : X) : Algebra (X.presheaf.stalk x) (X.residueField x) :=
   inferInstanceAs (Algebra (X.presheaf.stalk x) (ResidueField (X.presheaf.stalk x)))
 
-theorem algebraMap_residueField (x : X) :
-    algebraMap (X.presheaf.stalk x) (X.residueField x) = (X.residue x).hom := rfl
 
 instance residueFieldAlgebraSections (x : U) : Algebra Γ(X, U) (X.residueField (x : X)) :=
   (X.evaluation U x x.2).hom.toAlgebra
 
-theorem algebraMap_sections_residueField (x : U) :
-    algebraMap Γ(X, U) (X.residueField (x : X)) = (X.evaluation U x x.2).hom := rfl
 
 instance isScalarTower_residueField (x : U) :
     IsScalarTower Γ(X, U) (X.presheaf.stalk (x : X)) (X.residueField (x : X)) :=
@@ -1047,11 +939,6 @@ theorem fibreEquivQuotient_fibreMk (x : X) (t : (F.presheaf.stalk x :)) :
     fibreEquivQuotient F x (fibreMk F x t) = Submodule.Quotient.mk t :=
   quotTensorEquivQuotSMul_mk_one_tmul _ t
 
-theorem fibreMk_eq_zero_iff (x : X) (t : (F.presheaf.stalk x :)) :
-    fibreMk F x t = 0 ↔ t ∈ (maximalIdeal (X.presheaf.stalk x) • ⊤ :
-      Submodule (X.presheaf.stalk x) (F.presheaf.stalk x :)) := by
-  rw [← (fibreEquivQuotient F x).map_eq_zero_iff, fibreEquivQuotient_fibreMk,
-    Submodule.Quotient.mk_eq_zero]
 
 variable (F) in
 
@@ -1061,13 +948,7 @@ def fibreEval (x : U) : Γ(F, U) →ₗ[Γ(X, U)] fibre F x :=
 theorem fibreEval_apply (x : U) (s : Γ(F, U)) :
     fibreEval F x s = fibreMk F x (F.presheaf.germ U x x.2 s) := rfl
 
-theorem fibreEval_smul (x : U) (f : Γ(X, U)) (s : Γ(F, U)) :
-    fibreEval F x (f • s) = X.evaluation U x x.2 f • fibreEval F x s := by
-  rw [map_smul, ← algebraMap_smul (X.residueField (x : X))]; rfl
 
-theorem fibreEval_res (h : V ≤ U) (x : V) (s : Γ(F, U)) :
-    fibreEval F x (F.presheaf.map (homOfLE h).op s) = fibreEval F (⟨x, h x.2⟩ : U) s := by
-  rw [fibreEval_apply, fibreEval_apply, F.presheaf.germ_res_apply]
 
 variable (F) in
 
@@ -1115,28 +996,16 @@ theorem fibreEquiv_apply (e : F ≅ G) (x : X) (t : fibre F x) :
 theorem fibreMap_surjective (φ : F ⟶ G) [Epi φ] (x : X) : Function.Surjective (fibreMap φ x) :=
   LinearMap.lTensor_surjective _ (stalkLinear_surjective φ x)
 
-theorem fibreMap_exact {S : ShortComplex X.Modules} (hS : S.Exact) [Epi S.g] (x : X) :
-    Function.Exact (fibreMap S.f x) (fibreMap S.g x) :=
-  lTensor_exact _ ((exact_iff_stalkLinear S).1 hS x) (stalkLinear_surjective S.g x)
 
 instance finite_fibre [IsFiniteQC F] (x : X) : Module.Finite (X.residueField x) (fibre F x) :=
   inferInstance
 
-theorem nontrivial_fibre_iff [IsFiniteQC F] {x : X} : Nontrivial (fibre F x) ↔ x ∈ support F := by
-  rw [← not_iff_not, not_nontrivial_iff_subsingleton, notMem_support_iff]
-  exact IsLocalRing.subsingleton_tensorProduct
 
 theorem map_fibreMk_eq_top_iff [IsFiniteQC F] (x : X)
     (N : Submodule (X.presheaf.stalk x) (F.presheaf.stalk x :)) :
     N.map (fibreMk F x) = ⊤ ↔ N = ⊤ :=
   IsLocalRing.map_tensorProduct_mk_eq_top
 
-theorem span_fibreMk_eq_top_iff [IsFiniteQC F] (x : X) (s : Set (F.presheaf.stalk x :)) :
-    Submodule.span (X.residueField x) (fibreMk F x '' s) = ⊤ ↔
-      Submodule.span (X.presheaf.stalk x) s = ⊤ := by
-  rw [← map_fibreMk_eq_top_iff, Submodule.map_span,
-    ← Submodule.restrictScalars_span _ (X.residueField x) (X.residue_surjective x),
-    Submodule.restrictScalars_eq_top_iff]
 
 theorem fibreMap_surjective_iff (φ : F ⟶ G) [IsFiniteQC G] (x : X) :
     Function.Surjective (fibreMap φ x) ↔ Function.Surjective (stalkLinear φ x) := by
@@ -1147,9 +1016,6 @@ theorem fibreMap_surjective_iff (φ : F ⟶ G) [IsFiniteQC G] (x : X) :
   obtain ⟨t, rfl⟩ := fibreMk_surjective F x w
   exact ⟨_, ⟨t, rfl⟩, rfl⟩
 
-theorem epi_iff_fibreMap_surjective (φ : F ⟶ G) [IsFiniteQC G] :
-    Epi φ ↔ ∀ x : X, Function.Surjective (fibreMap φ x) := by
-  simp only [epi_iff_stalkLinear_surjective, fibreMap_surjective_iff]
 
 def structureModuleFibreEquiv (x : X) :
     fibre (structureModule X) x ≃ₗ[X.residueField x] X.residueField x :=
@@ -1274,14 +1140,6 @@ theorem IsFlatOver.of_forall_exists_affine [F.IsQuasicoherent]
     have ⟨_, hU, hx, hf⟩ := h x
     (flat_sections_iff_stalk F ρ hU).1 hf x hx
 
-theorem isFlatOver_iff_affineCover [F.IsQuasicoherent] {ι : Type*} (𝒰 : ι → X.Opens)
-    (hcov : IsOpenCover 𝒰) (haff : ∀ i, IsAffineOpen (𝒰 i)) :
-    IsFlatOver F ρ ↔ ∀ i,
-      letI := baseModule F (𝒰 i) ρ
-      Module.Flat R Γ(F, 𝒰 i) :=
-  ⟨fun h i ↦ h _ (haff i), fun h ↦ .of_forall_exists_affine fun x ↦
-    have ⟨i, hi⟩ := hcov.exists_mem x
-    ⟨𝒰 i, haff i, hi, h i⟩⟩
 
 variable (ρ) in
 
@@ -1356,24 +1214,9 @@ theorem IsFlatOver.restrict (h : IsFlatOver F ρ) {Y : Scheme.{u}} (g : Y ⟶ X)
   exact .of_linearEquiv (LinearEquiv.ofBijective l
     (ConcreteCategory.bijective_of_isIso (F.restrictAppIso g W).inv)).symm
 
-theorem isFlatOver_of_field {k : Type*} [Field k] (ρ : k →+* Γ(X, ⊤)) : IsFlatOver F ρ :=
-  fun U _ ↦ letI := baseModule F U ρ; inferInstance
 
-theorem isFlatOver_structureModule_iff :
-    IsFlatOver (structureModule X) ρ ↔ ∀ U : X.Opens, IsAffineOpen U → (baseHom U ρ).Flat :=
-  Iff.rfl
 
-theorem isFlatOver_structureModule_iff_flat {R : CommRingCat.{u}} (f : X ⟶ Spec R) :
-    IsFlatOver (structureModule X) (structureRingHom f) ↔ Flat f := by
-  rw [isFlatOver_structureModule_iff, HasRingHomProperty.iff_of_iSup_eq_top (P := @Flat)
-    (fun U : X.affineOpens ↦ U) (iSup_affineOpens_eq_top X)]
-  have key (U : X.Opens) : (baseHom U (structureRingHom f)).Flat ↔
-      (f.appLE ⊤ U le_top).hom.Flat :=
-    RingHom.Flat.respectsIso.cancel_left_isIso (Scheme.ΓSpecIso R).inv (f.appLE ⊤ U le_top)
-  exact ⟨fun h U ↦ (key U).1 (h U U.2), fun h U hU ↦ (key U).2 (h ⟨U, hU⟩)⟩
 
-theorem baseHom_structureRingHom {R : CommRingCat.{u}} (f : X ⟶ Spec R) (U : X.Opens) :
-    baseHom U (structureRingHom f) = ((Scheme.ΓSpecIso R).inv ≫ f.appLE ⊤ U le_top).hom := rfl
 
 theorem isFlatOver_Spec_iff {R : CommRingCat.{u}} (M : (Spec R).Modules) [M.IsQuasicoherent] :
     IsFlatOver M (Scheme.ΓSpecIso R).inv.hom ↔ Module.Flat R Γ(M, ⊤) :=

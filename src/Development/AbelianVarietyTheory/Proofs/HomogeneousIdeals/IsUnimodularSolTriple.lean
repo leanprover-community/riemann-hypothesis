@@ -12,9 +12,6 @@ def curve (u : A) (V : WeierstrassCurve A) : WeierstrassCurve A :=
 
 def triple (u : A) (P : Fin 3 → A) : Fin 3 → A := ![u ^ 2 * P 0, u ^ 3 * P 1, P 2]
 
-theorem curve_eq_smul (u : Aˣ) (V : WeierstrassCurve A) :
-    curve (u : A) V = (⟨u⁻¹, 0, 0, 0⟩ : WeierstrassCurve.VariableChange A) • V := by
-  ext <;> simp [curve, WeierstrassCurve.variableChange_def]
 
 theorem map_curve (g : A →+* B) (u : A) (V : WeierstrassCurve A) :
     (curve u V).map g = curve (g u) (V.map g) := by
@@ -24,15 +21,10 @@ theorem curve_map_eq (g : A →+* B) {u : A} {V : WeierstrassCurve A} (h : curve
     curve (g u) (V.map g) = V.map g := by
   rw [← map_curve, h]
 
-theorem comp_triple (g : A →+* B) (u : A) (P : Fin 3 → A) :
-    g ∘ triple u P = triple (g u) (g ∘ P) := by
-  ext i; fin_cases i <;> simp [triple]
 
 theorem triple_triple (u v : A) (P : Fin 3 → A) : triple u (triple v P) = triple (u * v) P := by
   ext i; fin_cases i <;> simp [triple] <;> ring
 
-theorem triple_one (P : Fin 3 → A) : triple 1 P = P := by
-  ext i; fin_cases i <;> simp [triple]
 
 theorem equation_triple (u : A) {V : WeierstrassCurve A} {P : Fin 3 → A}
     (h : V.toProjective.Equation P) : (curve u V).toProjective.Equation (triple u P) := by

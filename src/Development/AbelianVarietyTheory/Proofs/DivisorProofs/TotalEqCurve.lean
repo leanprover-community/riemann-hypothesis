@@ -221,16 +221,6 @@ def bcMat {S : ShortComplex X.Modules} {r s : ℕ} (h : Met p σ S.X₂ (r + s))
     (h₁ : IsVB S.X₁ r) (h₃ : IsVB S.X₃ s) (c : AlgChart p σ D) (y : CxPts p σ) : Matrix (Fin D) (Fin D) ℂ :=
   formMat (h.bcForm (Met.exists_adapted hS h₁ h₃ y).choose c y)
 
-theorem mix_bcMat {S : ShortComplex X.Modules} {r s : ℕ} (h : Met p σ S.X₂ (r + s)) (hS : S.ShortExact)
-    (h₁ : IsVB S.X₁ r) (h₃ : IsVB S.X₃ s) (c : AlgChart p σ 1) (y : CxPts p σ) (A : Matrix (Fin 1) (Fin 1) ℂ) :
-    mix 0 A (bcMat h hS h₁ h₃ c y) = h.bcDens hS h₁ h₃ c y := by
-  rw [mix, Matrix.adjugate_fin_one, Matrix.one_mul]
-  unfold Met.bcDens bcMat formMat
-  rw [Matrix.trace_fin_one]
-  simp only [Matrix.of_apply, diagVal, kappa]
-  rw [div_div_eq_mul_div, Complex.div_I]
-  simp [Complex.mul_re, Complex.mul_im]
-  field_simp
 
 section Flag
 

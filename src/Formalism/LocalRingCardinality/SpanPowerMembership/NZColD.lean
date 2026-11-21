@@ -25,12 +25,7 @@ def locS (w : HeightOneSpectrum (𝓞 K)) (B : Submodule (𝓞 K) V) : Submodule
     rintro r a ⟨s, hs, h1⟩
     exact ⟨s, hs, by rw [smul_comm]; exact B.smul_mem r h1⟩
 
-theorem mem_locS (w : HeightOneSpectrum (𝓞 K)) (B : Submodule (𝓞 K) V) (x : V) : x ∈ locS w B ↔ InLoc w B x := Iff.rfl
 
-theorem locS_sat (w : HeightOneSpectrum (𝓞 K)) (B : Submodule (𝓞 K) V) (s : 𝓞 K) (hs : s ∉ w.asIdeal) (x : V)
-    (h : s • x ∈ locS w B) : x ∈ locS w B := by
-  obtain ⟨t, ht, h1⟩ := h
-  exact ⟨t * s, fun h => (w.isPrime.mem_or_mem h).elim ht hs, by rwa [mul_smul]⟩
 
 theorem exists_pow_val (v : HeightOneSpectrum (𝓞 K)) (b : 𝓞 K) (hb : b ≠ 0) :
     ∃ m : ℕ, ∀ a ∈ v.asIdeal ^ m, v.valuation K (algebraMap (𝓞 K) K a / algebraMap (𝓞 K) K b) ≤ 1 := by
@@ -47,10 +42,6 @@ theorem finite_over (t : 𝓞 K) (ht : t ≠ 0) : {v : HeightOneSpectrum (𝓞 K
 
 variable [Module K V] [IsScalarTower (𝓞 K) K V]
 
-theorem smul_eq_div (a b : 𝓞 K) (hb : b ≠ 0) (x : V) :
-    a • x = (algebraMap (𝓞 K) K a / algebraMap (𝓞 K) K b) • (b • x) := by
-  have hbK : algebraMap (𝓞 K) K b ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr hb
-  rw [← algebraMap_smul K b, smul_smul, div_mul_cancel₀ _ hbK, algebraMap_smul]
 
 end Gen
 
@@ -125,21 +116,6 @@ theorem inv_mem_intW (w : D.what₂.places.Pl) (s : 𝓞 D.what₂.LL) (hs : s �
     exact zero_ne_one hv
   exact ⟨(D.val_nonneg_iff w _).2 (by rw [map_inv₀, hv, inv_one]), hs0⟩
 
-theorem cond_sat (u : D.what₂.Word) (w : D.what₂.places.Pl) (s : 𝓞 D.what₂.LL) (hs : s ∉ (D.plEq w).asIdeal)
-    (x : (D.div.Nu u).V) (h : s • x ∈ cond N u w) : x ∈ cond N u w := by
-  obtain ⟨hinv, hs0⟩ := inv_mem_intW w s hs
-  have hx : x = (algebraMap (𝓞 D.what₂.LL) D.what₂.LL s)⁻¹ • (s • x) := by
-    rw [← algebraMap_smul D.what₂.LL s, smul_smul, inv_mul_cancel₀ hs0, one_smul]
-  unfold cond at h ⊢
-  split_ifs at h ⊢ with h1 h2
-  · show D.nuIn u x ∈ LT.Nlam D u w
-    rw [hx, map_smul]
-    exact (LT.Nlam D u w).smul_mem (⟨_, hinv⟩ : intW D.what₂.places w) h
-  · show c.cmpN u w h2.1 x ∈ N.NPf u w h2.1
-    obtain ⟨o, ho⟩ := (c.embW_val u w h2.1 _).1 ((D.val_nonneg_iff w _).1 hinv)
-    rw [hx, c.cmpN_smul, ← ho, algebraMap_smul]
-    exact Submodule.smul_mem _ o h
-  · exact locS_sat _ _ s hs x h
 
 theorem resChar_mem (w : D.what₂.places.Pl) : ((D.what₂.places.resChar w : ℕ) : 𝓞 D.what₂.LL) ∈ (D.plEq w).asIdeal := by
   rw [← (D.plEq w).valuation_lt_one_iff_mem (K := D.what₂.LL), D.val_resChar' w, ← WithZero.exp_zero, WithZero.exp_lt_exp]

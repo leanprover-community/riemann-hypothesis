@@ -151,24 +151,6 @@ theorem infinite_ratN (hσ : ∀ x, σ (σ x) = x) {J : Matrix (Fin n) (Fin n) E
   haveI : CharZero (AE F E) := charZero_of_injective_algebraMap (algebraMap F (AE F E)).injective
   exact_mod_cast h2
 
-theorem not_intConv_one (hcm : IsCMExt F E σ) {J : Matrix (Fin n) (Fin n) E} {l : E} (hl : l ≠ 0)
-    (hJ : ∀ i j, σ ((l⁻¹ • J) j i) = -(l⁻¹ • J) i j) (h₂ : J₂ = dblGram finSumFinEquiv J) {T : GL (Fin (n + n)) E}
-    (h : IsWittBasis σ J l T) (hn : 1 ≤ n) {νN : Measure (unipN σ J₂)} (hν : IsNormN σ νN) (w g : UA σ J₂) :
-    ¬ IntConv νN w (fun _ => 1) g := by
-  obtain ⟨h0, 𝓓, h1, h2⟩ := hν
-  haveI := infinite_ratN (GlobalTheory.SiegelSet.sigma_sigma hcm) hl hJ h₂ h hn
-  obtain ⟨hTG, -, hSC, hT2⟩ := GlobalTheory.UnipMass.topUA σ J₂
-  haveI : BorelSpace (UA σ J₂) := ⟨rfl⟩
-  haveI : Countable (ratN σ J₂) := GlobalTheory.UnipMass.countable_ratU' σ J₂ (unipN σ J₂)
-  haveI : MeasurableConstSMul (ratN σ J₂) (unipN σ J₂) :=
-    ⟨fun γ => (continuous_const.mul continuous_id : Continuous fun x : unipN σ J₂ => (γ : unipN σ J₂) * x).measurable⟩
-  haveI : SMulInvariantMeasure (ratN σ J₂) (unipN σ J₂) νN := ⟨fun γ A _ => measure_preimage_mul νN (γ : unipN σ J₂) A⟩
-  intro hc
-  have h3 := h1.measure_eq_tsum Set.univ
-  simp only [Set.smul_set_univ, Set.univ_inter, h2, ENNReal.tsum_const_eq_top_of_ne_zero one_ne_zero] at h3
-  rcases integrable_const_iff.1 hc with h4 | h4
-  · exact one_ne_zero h4
-  · exact measure_ne_top νN _ h3
 
 omit [NumberField E] in
 
@@ -194,15 +176,6 @@ theorem secSpace_bot_ne_bot {JV : Matrix (Fin m) (Fin m) E} {κ : Type} [Fintype
   · have := congrFun e 1
     rwa [Prod.mk_one_one, map_one] at this
 
-theorem exists_case : ∃ (F E : Type) (_ : Field F) (_ : NumberField F) (_ : Field E) (_ : NumberField E) (_ : Algebra F E)
-    (σ : E →ₐ[F] E) (J₂ : Matrix (Fin (2 + 2)) (Fin (2 + 2)) E) (T : GL (Fin (2 + 2)) E) (w : UA σ J₂)
-    (νN : Measure (unipN σ J₂)), ComplMet σ 1 1 False ∧ IsWeylElt σ T w ∧ IsNormN σ νN ∧
-    w ∉ siegelOf finSumFinEquiv (UG (cA σ) (incM F J₂)).subtype ∧
-    (∃ f, IntConv νN w f 1 ∧ intM νN w f 1 = 1) ∧ ¬ IntConv νN w (fun _ => 1) 1 := by
-  obtain ⟨F, E, _, _, _, _, _, σ, h⟩ := exists_complMet
-  obtain ⟨hcm, -, ψ, -, l, JV, J, J₂, hl, -, -, hJ, h₂, T, hT, χ, -, -, K, -, -, ⟨w, hw⟩, ⟨ν, hν⟩, -⟩ := h 1 1
-  exact ⟨F, E, _, _, _, _, _, σ, J₂, T, w, ν, h 1 1, hw, hν, hw.not_mem_siegelOf hT (by norm_num), exists_intM_eq_one hν w 1,
-    not_intConv_one hcm hl hJ h₂ hT (by norm_num) hν w 1⟩
 
 end GlobalTheory.SWInt.Model
 

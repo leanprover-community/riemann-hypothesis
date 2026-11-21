@@ -272,14 +272,6 @@ def LowerBoundOnShimura : Prop :=
 
 end Assembly
 
-theorem threeLe_of_params {L : SizeData₂ D} (P : ParameterChoice' D L) (w : Dat D Lev) (i : ℕ) (hi : 1 ≤ i)
-    (hN : w.N = D.R.r) (hj : w.j = (D.R.sigW i).1) : 3 * (w.N - w.j) + 1 ≤ w.N := by
-  have h := P.three_q_le i hi
-  have hm := D.R.two_le_m
-  rw [hN, hj]
-  unfold Ranks.sigW Ranks.r at *
-  simp only at *
-  omega
 
 end Geo
 

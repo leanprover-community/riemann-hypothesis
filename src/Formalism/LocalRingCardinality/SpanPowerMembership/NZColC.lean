@@ -28,7 +28,6 @@ theorem stdHLat_good : (stdHLat K ι).Good := by
   rw [show (stdHLat K ι).X _ = 1 from rfl, Matrix.det_one]
   exact isUnit_one
 
-theorem stdHLat_std : (stdHLat K ι).L = Submodule.span (𝓞 K) (Set.range (stdHLat K ι).b) := rfl
 
 variable {K ι} (σ : K →+* ℂ)
 
@@ -47,7 +46,6 @@ def slK : (ι → K) →ₛₗ[σ] FK ι where
   map_add' x y := by funext _ _; simp
   map_smul' c x := by funext _ _; simp
 
-theorem slK_apply (x : ι → K) (c : ι) (y : Unit) : slK σ x c y = σ (x c) := rfl
 
 theorem slK_basis : LinearIndependent ℂ (fun i => slK σ ((stdHLat K ι).b i)) ∧
     Submodule.span ℂ (Set.range (fun i => slK σ ((stdHLat K ι).b i))) = ⊤ := by
@@ -77,10 +75,6 @@ theorem maj_std (x : ι → K) :
   rw [Complex.conj_mul', ← Complex.ofReal_pow, Complex.ofReal_re, InfinitePlace.norm_embedding_eq,
     InfinitePlace.apply]
 
-theorem normAt_std (v : InfinitePlace K) (x : ι → K) :
-    Formalism.HermitianLatticesTheory.normAt (stdHLat K ι).b (stdHLat K ι).X v x = Real.sqrt (∑ c, ‖v.embedding (x c)‖ ^ 2) := by
-  show Real.sqrt (∑ i : ι, ‖Formalism.HermitianLatticesTheory.fcoord (Pi.basisFun K ι) (fun _ => (1 : Matrix ι ι ℂ)) v x i‖ ^ 2) = _
-  simp only [fcoord_std]
 
 end Std
 

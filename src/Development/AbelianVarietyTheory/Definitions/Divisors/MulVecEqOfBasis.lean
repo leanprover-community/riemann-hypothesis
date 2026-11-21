@@ -110,25 +110,8 @@ theorem exists_tie {G : Grid p CF} {W : G.Weil} (hW : W.Over p.R.toRealDat) {n :
     N0, zA, zA', zT, zTd, gT, ch, Bw⟩, rfl, a, ha, hM,
     fun t _ x i => mulVec_eq_of_basis a t (hS t) _ (fun i k => hv _ _ _) x i, hq⟩
 
-theorem pos_of_tie (d : FunIn p CF) (h : Comparison₂ p CF d) : 0 < d.n := by
-  obtain ⟨a, -⟩ := h
-  obtain ⟨i⟩ := GlobalTheory.TestLat.SlopeModel.nonempty_idx (LaP d.G)
-  exact (a.e.symm (⟨fun _ => default, Quotient.mk'' 1⟩, i)).pos
 
-theorem matrix_unique {G : Grid p CF} {W : G.Weil} {n : ℕ} (a : SlopeTestRemainingChoices p G W n) (t : Tup p)
-    (V V' : Matrix (Fin n) (Fin ((Df p).nV t)) D.what₂.LL)
-    (h : ∀ x i, D.what₂.embLL (V.mulVec x i) = vK a.ch t (eV0 p t x) i)
-    (h' : ∀ x i, D.what₂.embLL (V'.mulVec x i) = vK a.ch t (eV0 p t x) i) : V = V' := by
-  ext i k
-  simpa using D.what₂.embLL.injective ((h (Pi.single k 1) i).trans (h' (Pi.single k 1) i).symm)
 
-theorem ofGrid_tie {G : Grid p CF} {W : G.Weil} {hW n V} (h : Comparison₂ p CF (.ofGrid G W hW n V)) :
-    (∀ w : PlL D, ((D.host.pde : ℕ) : 𝓞 D.what₂.LL) ∈ w.asIdeal) ∧
-      ∃ (S : Finset ℕ) (del : ℕ → ℝ), 1 ≤ del 2 ∧ Formalism.PairingDivisionLocalBalance.wt (K := D.what₂.LL) S del = 0 := by
-  obtain ⟨a, h⟩ := h
-  obtain ⟨S, del, -, h2, -, h4⟩ := h.sq.int
-  have hN : 1 ≤ bigN D := by have := D.R.m_add_three_le_k; unfold bigN; omega
-  exact ⟨fun w => (h.sq.choice w).1 rfl, S, del, h2.one_le_two hN (Nat.cast_nonneg _), h4.symm⟩
 
 end GlobalTheory.BigTop.Fun.TieModel
 

@@ -112,15 +112,6 @@ theorem exists_matrix {s : ℕ} (h : IsLatticeEmb φ) (g : M →ₗ[𝓞 K] (Fin
   ⟨LinearMap.toMatrix' (h.isBaseChange.lift g), fun x => by
     rw [← Matrix.toLin'_apply, Matrix.toLin'_toMatrix', IsBaseChange.lift_eq]⟩
 
-theorem existsUnique_GL {φ' : M' →ₗ[𝓞 K] (Fin r → K)} (h : IsLatticeEmb φ) (h' : IsLatticeEmb φ')
-    (g : M ≃ₗ[𝓞 K] M') :
-    ∃! γ : GL (Fin r) K, ∀ x, (γ : Matrix (Fin r) (Fin r) K) *ᵥ φ x = φ' (g x) := by
-  obtain ⟨A, hA⟩ := h.exists_matrix (φ' ∘ₗ g.toLinearMap)
-  obtain ⟨A', hA'⟩ := h'.exists_matrix (φ ∘ₗ g.symm.toLinearMap)
-  refine ⟨⟨A, A', h'.matrix_ext fun x => ?_, h.matrix_ext fun x => ?_⟩, hA, fun γ hγ => ?_⟩
-  · rw [← mulVec_mulVec, hA', one_mulVec]; simp [hA]
-  · rw [← mulVec_mulVec, hA, one_mulVec]; simp [hA']
-  · exact Units.ext (h.matrix_ext fun x => by rw [hγ]; exact (hA x).symm)
 
 theorem comp_GL (h : IsLatticeEmb φ) (γ : GL (Fin r) K) :
     IsLatticeEmb (((γ : Matrix (Fin r) (Fin r) K).mulVecLin.restrictScalars (𝓞 K)) ∘ₗ φ) := by

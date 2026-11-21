@@ -138,39 +138,5 @@ theorem frame_mem {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace 
     rw [this]
     exact Submodule.subset_span (s := Set.range F.fl.e) ⟨i, rfl⟩
 
-theorem card_BQ_le : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (S : HSpace E) (r : ℕ) (Λ : Submodule (𝓞 E) S.V) (g : ℕ) (T T' : E) (F : LFlag S r T) (F' : LFlag S r T'), g ≠ 0 → Submodule.IsLattice E Λ → IsLift Λ F → IsLift Λ F' → (∀ b, frame F b ∈ Λ) → (∀ b, frame F' b ∈ Λ) → IsGeneric Λ g F F' → (Nat.card (BQ Λ F F') : ℝ) ≤ NE (E := E) g ^ (r + 1) := by
-  intro E _ _ _ S r Λ g T T' F F' hg _ hL hL' hF hF' hG
-  obtain ⟨ξ, -, hξ⟩ := hG
-  have hcard : Nat.card (𝓞 E ⧸ Ideal.span {(g : 𝓞 E)}) = g ^ finrank ℚ E := by
-    rw [← RingOfIntegers.rank, ← Ideal.absNorm_span_natCast, Ideal.absNorm_apply,
-      Submodule.cardQuot_apply]
-  haveI : Finite (𝓞 E ⧸ Ideal.span {(g : 𝓞 E)}) :=
-    Nat.finite_of_card_ne_zero (by rw [hcard]; positivity)
-  have hU1 : XLam Λ F ⊔ Submodule.span (𝓞 E) {F.zt} ≤ UU Λ F F' :=
-    le_sup_left.trans le_sup_left
-  have hU2 : XLam Λ F' ⊔ Submodule.span (𝓞 E) {F'.zt} ≤ UU Λ F F' :=
-    sup_le (le_sup_right.trans le_sup_left) le_sup_right
-  have hsm : ∀ (o : 𝓞 E) (x : S.V), (o : E) • x = o • x := fun o x => algebraMap_smul E o x
-  have main := card_quot_le (RingOfIntegers.not_isField E) (g : 𝓞 E) (BLat Λ F F') (UU Λ F F')
-    (Mplus Λ g F F' ξ) (fun b => ((g : E)⁻¹) • (frame F' b - frameAct (frame F) ξ b))
-    (by
-      intro b
-      have hg' : (g : E) ≠ 0 := Nat.cast_ne_zero.2 hg
-      have e : ((g : 𝓞 E) : E) = (g : E) := by simp
-      rw [← hsm, e, smul_smul, mul_inv_cancel₀ hg', one_smul]
-      refine Submodule.sub_mem _ (hU2 (frame_mem Λ F' hL' hF' b)) (Submodule.sum_mem _ fun a _ => ?_)
-      rw [hsm]
-      exact Submodule.smul_mem _ _ (hU1 (frame_mem Λ F hL hF a)))
-    (fun b => Submodule.subset_span (Or.inr ⟨b, rfl⟩))
-    (by
-      refine Submodule.span_le.2 ?_
-      rintro x ((hx | hx) | hx)
-      · exact Submodule.mem_sup_left (hU1 (Submodule.mem_sup_left hx))
-      · exact Submodule.mem_sup_left (hU1 (Submodule.mem_sup_right (Submodule.subset_span hx)))
-      · exact Submodule.mem_sup_right (Submodule.subset_span hx))
-    hξ
-  rw [hcard] at main
-  unfold NE
-  exact_mod_cast main
 
 end GlobalTheory.GenericOrder

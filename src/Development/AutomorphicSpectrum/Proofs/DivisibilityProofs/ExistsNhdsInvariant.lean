@@ -480,47 +480,10 @@ theorem const_eq (hM : IsMatched B G X om om' R Rf) (one : OneConst B G X om om'
     exact mul_ne_zero (one.2.2 c hc) hI e1.symm
   exact mul_right_cancel₀ hI' (e2.symm.trans e3)
 
-theorem matched_move (hM : IsMatched B G X om om' R Rf) {v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl F} (τ : E →ₐ[F] Fv F v) (hv : X.Good v) :
-    IsMatched (mv B v τ) G X om om' R Rf := by
-  obtain ⟨⟨hb, hg, hc, hw, hw'⟩, hr, hf⟩ := hM
-  have hV := hg.hV
-  have hV' := hg.hV'
-  have hW := hg.hW
-  have q := hr.quot
-  have q' := hr.quot'
-  exact ⟨⟨⟨hb.cm, hb.galois, hb.unram, hb.std, hb.inert, hb.psiP⟩,
-    ⟨hg.lt, hg.even, hg.kappa, hg.eBig, hg.aBig,
-      ⟨hV.herm, hV.sig, hV.lat, hV.dual, hV.cartan, hV.bas⟩,
-      ⟨hV'.herm, hV'.sig, hV'.lat, hV'.dual, hV'.cartan, hV'.bas⟩,
-      ⟨hW.skew, hW.sig, hW.lat, hW.dual, hW.cartan, hW.bas⟩, hg.hM, hg.hM'⟩,
-    ⟨hc.heckeα, hc.heckeβ, hc.resα, hc.resβ, hc.expα, hc.expβ, hc.disj, hc.sub, hc.ram, hc.unrα, hc.unrβ, hv⟩, hw, hw'⟩,
-    ⟨⟨q.onto, q.lie, q.cpt⟩, ⟨q'.onto, q'.lie, q'.cpt⟩, hr.lie, hr.cpt, hr.nontriv, hr.irred⟩,
-    ⟨hf.onto, hf.onto', hf.inv, hf.inv', hf.equiv, hf.nontriv, hf.irred, hf.sph, hf.zeta⟩⟩
 
-theorem const_step (hT : ThetaIntegralsAgree) (hM : IsMatched B G X om om' R Rf) {v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl F}
-    (τ : E →ₐ[F] Fv F v) (hv : X.Good v) (hne : v ≠ B.v₁) {c : ℂ} (hc : IsConst B G X om om' R Rf c) :
-    IsConst (mv B v τ) G X om om' R Rf c := by
-  have hM₂ := matched_move hM τ hv
-  obtain ⟨one, -⟩ := (hT.1 F E σ B a a' G X om om' hM.triple).2 R Rf hM
-  obtain ⟨one₂, co₂⟩ := (hT.1 F E σ (mv B v τ) a a' G X om om' hM₂.triple).2 R Rf hM₂
-  obtain ⟨c₂, hc₂, -⟩ := one₂.2.1
-  have := const_eq hM one τ hne hv.1 ((co₂.1 v hv).2.2.1 τ) hc hc₂
-  rwa [this]
 
 end Main
 
-theorem const_good_place : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E) (a a' : ℕ) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo σ a a') (X : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars F E) (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ Γ.V Γ.W) (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ Γ.V' Γ.W) (R : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.RealMaps F a a') (Rf : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.FinMaps F a a'), GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsMatched B Γ X om om' R Rf → ∀ v (τ : E →ₐ[F] Fv F v), X.Good v → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsMatched { B with v₁ := v, τ₁ := τ } Γ X om om' R Rf ∧ ∀ c, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsConst B Γ X om om' R Rf c → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsConst { B with v₁ := v, τ₁ := τ } Γ X om om' R Rf c := by
-  intro hT F E _ _ _ _ _ σ B a a' Γ X om om' R Rf hM v τ hv
-  refine ⟨matched_move hM τ hv, fun c hc => ?_⟩
-  haveI : IsGalois ℚ E := hM.triple.base.galois
-  classical
-  obtain ⟨v₂, hS, hsp, ⟨τ₂⟩⟩ := GlobalTheory.T.exists_split_place_outside F E (insert v (insert B.v₁ X.T))
-  have hv₂v : v₂ ≠ v := fun h => hS (h ▸ Finset.mem_insert_self _ _)
-  have hv₂₁ : v₂ ≠ B.v₁ := fun h => hS (h ▸ Finset.mem_insert_of_mem (Finset.mem_insert_self _ _))
-  have hg₂ : X.Good v₂ := ⟨fun h => hS (Finset.mem_insert_of_mem (Finset.mem_insert_of_mem h)), hsp⟩
-  have hM₂ := matched_move hM τ₂ hg₂
-  have hc₂ := const_step hT hM τ₂ hg₂ hv₂₁ hc
-  exact const_step hT hM₂ τ hv hv₂v.symm hc₂
 
 end GlobalTheory.CompanionTheory.Ar.RT.Move
 

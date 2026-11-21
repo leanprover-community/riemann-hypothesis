@@ -949,136 +949,24 @@ def sampleSystem (a : ℝ) (ha₀ : 0 ≤ a) (ha₁ : a ≤ 1) :
 def zeroSystem : VolumeSystem (Fin 3) 2 1 Unit (Fin 3 × Fin 2 → ℝ) Unit :=
   sampleSystem 0 le_rfl zero_le_one
 
-theorem zeroSystem_P (B : ℕ) : zeroSystem.P B = 0 := by
-  show samplePoly 0 = 0
-  simp [samplePoly]
 
 def oneSystem : VolumeSystem (Fin 3) 2 1 Unit (Fin 3 × Fin 2 → ℝ) Unit :=
   sampleSystem 1 zero_le_one le_rfl
 
-theorem oneSystem_P_ne_zero (B : ℕ) : oneSystem.P B ≠ 0 ∧ oneSystem.hFl ≠ 0 := by
-  have hb : ∀ τ, gap2 (basePoint (Fin 3) 2) τ = 1 := by
-    intro τ
-    simp [gap2, basePoint]
-  constructor
-  · intro h
-    have h' := congrArg (eval (basePoint (Fin 3) 2)) h
-    change eval (basePoint (Fin 3) 2) (samplePoly 1) = eval (basePoint (Fin 3) 2) 0 at h'
-    rw [eval_samplePoly, hb, hb, hb] at h'
-    norm_num at h'
-  · intro h
-    have h' := congrArg (eval (basePoint (Fin 3) 2)) h
-    change eval (basePoint (Fin 3) 2) ((1 : ℝ) • (antisymDelta (Fin 3) 2 * ellPoly)) =
-      eval (basePoint (Fin 3) 2) 0 at h'
-    rw [smul_eval, map_mul, eval_antisymDelta_three, eval_ellPoly, hb, hb, hb] at h'
-    norm_num at h'
 
 def lamK : Fin 3 × Fin 2 → ℝ := fun p => if p.1 ≠ 0 ∧ p.2 = 0 then 1 / 4 else 0
 
-theorem gap_sample_weight_eq (τ : Fin 3) : gap2 lamK τ = if τ = 0 then 0 else 1 / 4 := by
-  fin_cases τ <;> simp [gap2, lamK]
 
-theorem lamK_mem : lamK ∈ Kset 1 (0 : Fin 3) (1 / 8) ∧ IsRatVec lamK := by
-  refine ⟨⟨?_, ?_, ?_, ?_⟩, ?_⟩
-  · refine (pi_norm_le_iff_of_nonneg (by norm_num)).2 fun p => ?_
-    rw [Real.norm_eq_abs]
-    simp only [lamK]
-    split_ifs <;> norm_num
-  · rw [ncGap_two, gap_sample_weight_eq]
-    simp
-  · intro τ hτ
-    rw [ncGap_two, gap_sample_weight_eq, if_neg hτ]
-    norm_num
-  · intro τ i hi hij
-    omega
-  · intro p
-    simp only [lamK]
-    split_ifs
-    · exact ⟨1 / 4, by push_cast; ring⟩
-    · exact ⟨0, by simp⟩
 
-theorem lamK_mem_quarter : lamK ∈ Kset 1 (0 : Fin 3) (1 / (4 * ((2 : ℕ) : ℝ))) := by
-  have h : (1 / (4 * ((2 : ℕ) : ℝ)) : ℝ) = 1 / 8 := by norm_num
-  rw [h]
-  exact lamK_mem.1
 
-theorem sample_satisfies_W_setting (a : ℝ) (ha₀ : 0 ≤ a) (ha₁ : a ≤ 1) :
-    (sampleSystem a ha₀ ha₁).TheoremWSetting (1 / 8) 0 lamK 1000 := by
-  refine ⟨⟨1 / 8, by push_cast; ring⟩, by norm_num, by norm_num, lamK_mem.2, lamK_mem.1, ?_⟩
-  show 20 * (Fintype.card (Fin 3) : ℝ) * (1 + 2 * ‖(0 : Fin 3 × Fin 2 → ℝ)‖) /
-      (1 / 8 * min (min (1 / 2) 1) 1) ≤ ((1000 : ℕ) : ℝ)
-  norm_num
 
-theorem sample_gap_hypotheses (a : ℝ) (ha₀ : 0 ≤ a) (ha₁ : a ≤ 1) :
-    let V := sampleSystem a ha₀ ha₁
-    (0 : ℝ) < 1 / 8 ∧ lamK ∈ Kset 1 (0 : Fin 3) (1 / 8) ∧ (10 : ℝ) ≤ ((1000 : ℕ) : ℝ) ∧
-      2 + 8 * (Fintype.card (Fin 3) : ℝ) / (1 / 8) ≤ ((1000 : ℕ) : ℝ) ∧
-      2 * tauB (Fin 3) 1000 + V.C7 * sB (Fin 3) 1000 ≤ 1 / 2 ∧ V.C7 * tauB (Fin 3) 1000 ≤ 1 ∧
-      V.C7 * sB (Fin 3) 1000 ≤ 1 / 8 / 2 := by
-  intro V
-  have hC : V.C7 = 0 := by
-    show 2 * ‖(0 : Fin 3 × Fin 2 → ℝ)‖ = 0
-    simp
-  refine ⟨by norm_num, lamK_mem.1, by norm_num, by norm_num, ?_, ?_, ?_⟩ <;>
-    simp [hC, tauB, kappa] <;> norm_num
 
 def lamG : Fin 3 × Fin 2 → ℝ := fun p => if p.2 = 0 then 1 / 4 else 0
 
-theorem sample_height_hypotheses (a : ℝ) (ha₀ : 0 ≤ a) (ha₁ : a ≤ 1) :
-    let V := sampleSystem a ha₀ ha₁
-    IsRatVec lamG ∧ ‖lamG‖ ≤ 1 ∧ (0 : ℝ) < 1 / 4 ∧ (1 / 4 : ℝ) ≤ V.ta0 1 ∧ IsRatNum ((1 / 4 : ℝ) ^ 2) ∧
-      (∀ τ, (1 / 4 : ℝ) ≤ ncGap 1 lamG τ) ∧
-      (∀ τ i, i + 1 < 2 → i + 1 ≠ 1 → (1 : ℝ) ≤ gapAtIndex lamG τ i) ∧ V.arithNef 2 lamG ((1 / 4) ^ 2) := by
-  intro V
-  have hg : ∀ τ, gap2 lamG τ = 1 / 4 := by
-    intro τ
-    simp [gap2, lamG]
-  refine ⟨?_, ?_, by norm_num, ?_, ⟨1 / 16, by push_cast; norm_num⟩, ?_, ?_, ?_⟩
-  · intro p
-    simp only [lamG]
-    split_ifs
-    · exact ⟨1 / 4, by push_cast; ring⟩
-    · exact ⟨0, by simp⟩
-  · refine (pi_norm_le_iff_of_nonneg (by norm_num)).2 fun p => ?_
-    rw [Real.norm_eq_abs]
-    simp only [lamG]
-    split_ifs <;> norm_num
-  · show (1 / 4 : ℝ) ≤ 1 / 2
-    norm_num
-  · intro τ
-    rw [ncGap_two, hg]
-  · intro τ i hi hij
-    omega
-  · show IsDominantWeight lamG
-    rw [isDominant_two]
-    intro τ
-    rw [hg]
-    norm_num
 
-theorem UDelInv_le_sample : UDelInv (Fin 3) 2 1 ≤ antisymSpace (Fin 3) 2 1 := by
-  rintro _ ⟨l, hl, rfl⟩
-  refine ⟨?_, fun σ hσ => absurd hσ (no_simple_swap σ)⟩
-  rw [LinearMap.mulLeft_apply, mem_homogeneousSubmodule, dim_three]
-  have hΔ : (antisymDelta (Fin 3) 2).IsHomogeneous 3 := by
-    rw [antisymDelta_three]
-    exact ((sub_X_homogeneous _ _).mul (sub_X_homogeneous _ _)).mul (sub_X_homogeneous _ _)
-  exact hΔ.mul ((mem_homogeneousSubmodule _ _).1 hl.1)
 
-theorem exists_complement_sample : ∃ V', IsComplInV (Fin 3) 2 1 V' := by
-  obtain ⟨W, hW⟩ := Submodule.exists_isCompl (UDelInv (Fin 3) 2 1)
-  refine ⟨W ⊓ antisymSpace (Fin 3) 2 1, inf_le_right, hW.disjoint.symm.mono_left inf_le_left, ?_⟩
-  rw [sup_comm, ← sup_inf_assoc_of_le W UDelInv_le_sample, hW.sup_eq_top, top_inf_eq]
 
-theorem sample_thmBError (a : ℝ) (ha₀ : 0 ≤ a) (ha₁ : a ≤ 1) (B : ℕ) :
-    (sampleSystem a ha₀ ha₁).IsThmBError B 0 0 (samplePoly a - a • (antisymDelta (Fin 3) 2 * ellPoly)) := by
-  intro lam
-  show _ = eval lam (samplePoly a) - 1 * (eval lam (a • (antisymDelta (Fin 3) 2 * ellPoly)) + _)
-  simp [invForm]
 
-theorem sample_degrees : (Finsupp.single ((0 : Fin 3), (0 : Fin 2)) 4).degree = antisymDegree (Fin 3) 2 + 1 ∧
-    (X ((0 : Fin 3), (0 : Fin 2)) ^ 3 : MvPolynomial (Fin 3 × Fin 2) ℝ).IsHomogeneous (antisymDegree (Fin 3) 2) := by
-  rw [dim_three]
-  exact ⟨by simp, (isHomogeneous_X ℝ _).pow 3⟩
 
 end Inhabitants
 

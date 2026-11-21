@@ -4,6 +4,5 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard
 
 namespace PI.UnitaryGroupMassFormula.UnimodLocStd
 
-theorem keyRep : KeyRep := keyRep_of_ram (keyStartRam_of_unit unitVecRam)
 
 end PI.UnitaryGroupMassFormula.UnimodLocStd

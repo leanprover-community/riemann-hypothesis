@@ -54,11 +54,6 @@ def NormedMetric.integers : NormedMetric K (𝓞 K) where
 
 def NormedBundle.integers : NormedBundle K := ⟨𝓞 K, NormedMetric.integers K⟩
 
-theorem NormedMetric.integers_norm_one (σ : K →+* ℂ) :
-    (NormedMetric.integers K).norm σ ((1 : ComplexAt σ) ⊗ₜ[𝓞 K] (1 : 𝓞 K)) = 1 := by
-  change ‖integersCoord K σ ((1 : ComplexAt σ) ⊗ₜ[𝓞 K] (1 : 𝓞 K))‖ = 1
-  rw [integersCoord_tmul]
-  simp
 
 example : NormedBundle ℚ := NormedBundle.integers ℚ
 
@@ -83,7 +78,6 @@ instance (L : X.X.Modules) : Module (ringOn X.X ⊤) (X.H0 L) :=
 
 instance (L : X.X.Modules) : Module A (X.H0 L) := Module.compHom _ X.baseHom
 
-theorem smul_globalSections_def (L : X.X.Modules) (a : A) (s : X.H0 L) : a • s = X.baseHom a • s := rfl
 
 end ProjScheme
 
@@ -160,8 +154,6 @@ def evalGlobalSection {ρ : A →+* ℂ} (x : X.complexPoints ρ) : X.H0 L →+ 
     refine (congrArg (fibreMk L _ 1) (map_add _ _ _)).trans ?_
     exact TensorProduct.tmul_add _ _ _
 
-theorem evalGlobalSection_apply {ρ : A →+* ℂ} (x : X.complexPoints ρ) (s : X.H0 L) :
-    X.evalGlobalSection L x s = X.sectionValue x (show X.point x ∈ (⊤ : X.X.Opens) from trivial) s := rfl
 
 theorem evalGlobalSection_smul {ρ : A →+* ℂ} (x : X.complexPoints ρ) (a : A) (s : X.H0 L) :
     X.evalGlobalSection L x (a • s) = ρ a • X.evalGlobalSection L x s := by

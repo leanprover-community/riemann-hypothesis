@@ -47,47 +47,7 @@ def AlgebraPart (D : D7) : Prop :=
     (∀ x ∈ MM, ∃ u ∈ MM, ∃ z ∈ MM, u ∈ LinearMap.range e ∧
       z ∈ LinearMap.range (LinearMap.id - e) ∧ c • x = u + z))
 
-theorem not_finite_integralClosure : ¬ Module.Finite ℤ (integralClosure ℤ ℂ) := by
-  intro hf
-  haveI : IsNoetherianRing (integralClosure ℤ ℂ) := isNoetherian_of_tower ℤ inferInstance
-  have h2 : (2 : integralClosure ℤ ℂ) ≠ 0 := two_ne_zero
-  have hu : ¬ IsUnit (2 : integralClosure ℤ ℂ) := by
-    intro hu
-    obtain ⟨b, hb⟩ := hu.exists_right_inv
-    have hb' : (2 : ℂ) * (b : ℂ) = 1 := congrArg (Subtype.val) hb
-    have hbq : (b : ℂ) = algebraMap ℚ ℂ (1 / 2) := by
-      simp only [one_div, map_inv₀, map_ofNat]; field_simp; linear_combination hb'
-    have hi : IsIntegral ℤ (algebraMap ℚ ℂ (1 / 2)) := hbq ▸ b.2
-    rw [isIntegral_algebraMap_iff (algebraMap ℚ ℂ).injective] at hi
-    obtain ⟨z, hz⟩ := IsIntegrallyClosed.isIntegral_iff.1 hi
-    have hz' : (2 * z : ℚ) = 1 := by simp at hz; rw [hz]; norm_num
-    have : (2 * z : ℤ) = 1 := by exact_mod_cast hz'
-    omega
-  obtain ⟨p, hp, -⟩ := WfDvdMonoid.exists_irreducible_factor hu h2
-  obtain ⟨s, hs⟩ := IsAlgClosed.exists_eq_mul_self (p : ℂ)
-  replace hs := hs.symm
-  have hsi : IsIntegral ℤ s := by
-    apply IsIntegral.of_pow (n := 2) (by norm_num)
-    rw [pow_two, hs]; exact p.2
-  have hp' : p = (⟨s, hsi⟩ : integralClosure ℤ ℂ) * ⟨s, hsi⟩ := Subtype.ext hs.symm
-  have : IsUnit (⟨s, hsi⟩ : integralClosure ℤ ℂ) := by
-    rcases hp.isUnit_or_isUnit hp' with h | h <;> exact h
-  exact hp.not_isUnit (hp' ▸ this.mul this)
 
-theorem lattice_eq_bot {V : Type} [AddCommGroup V] [Module ℂ V] (MM : AddSubgroup V)
-    (hs : ∀ a : ℂ, IsIntegral ℤ a → ∀ x ∈ MM, a • x ∈ MM) (hfg : Module.Finite ℤ MM) : MM = ⊥ := by
-  by_contra hne
-  obtain ⟨⟨x, hx⟩, hx0⟩ := (AddSubgroup.ne_bot_iff_exists_ne_zero).1 hne
-  have hx0' : x ≠ 0 := fun h => hx0 (Subtype.ext h)
-  let f : integralClosure ℤ ℂ →+ MM :=
-    { toFun := fun a => ⟨(a : ℂ) • x, hs a a.2 x hx⟩
-      map_zero' := Subtype.ext (by simp)
-      map_add' := fun a b => Subtype.ext (by simp [add_smul]) }
-  have hinj : Function.Injective f.toIntLinearMap := by
-    intro a b hab
-    have : (a : ℂ) • x = (b : ℂ) • x := congrArg Subtype.val hab
-    exact Subtype.ext (smul_left_injective ℂ hx0' this)
-  exact not_finite_integralClosure (Module.Finite.of_injective _ hinj)
 
 def ParOnto (D : D7) : Prop :=
   ∀ (i : D.nd.Loc) (P : D.naut.AV i) (Sig : List (Part D.naut.CG)),

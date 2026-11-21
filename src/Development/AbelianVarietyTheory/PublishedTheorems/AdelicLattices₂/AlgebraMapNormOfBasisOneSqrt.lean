@@ -325,14 +325,6 @@ end CM
 
 namespace HasseNorm
 
-theorem local_of_global {K L : Type*} [Field K] [Field L] [Algebra K L] [FiniteDimensional K L]
-    (A : Type*) [CommRing A] [Algebra K A] {a : K} (h : ∃ x : L, Algebra.norm K x = a) :
-    ∃ z : A ⊗[K] L, Algebra.norm A z = algebraMap K A a := by
-  obtain ⟨x, rfl⟩ := h
-  refine ⟨1 ⊗ₜ x, ?_⟩
-  rw [Algebra.norm_apply, Algebra.norm_apply, ← LinearMap.det_baseChange]
-  congr 1
-  exact (Algebra.baseChange_lmul x).symm
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 

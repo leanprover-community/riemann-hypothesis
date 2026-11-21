@@ -49,13 +49,6 @@ theorem toLaurent_injective : Function.Injective F.toLaurent :=
   fun _ _ h => PowerSeries.map_injective (intO ↥F.K).subtype Subtype.val_injective
     (HahnSeries.ofPowerSeries_injective (Γ := ℤ) h)
 
-theorem norm_coeff_toLaurent (g : PowerSeries F.O) (n : ℤ) : ‖(F.toLaurent g).coeff n‖ ≤ 1 := by
-  change ‖((PowerSeries.map (intO ↥F.K).subtype g : PowerSeries ↥F.K) : LaurentSeries ↥F.K).coeff n‖ ≤ 1
-  rw [PowerSeries.coeff_coe]
-  split_ifs
-  · simp
-  · rw [PowerSeries.coeff_map]
-    exact (PowerSeries.coeff _ g).2
 
 theorem isAdicComplete {ϖ : F.O} (h : Irreducible ϖ) : IsAdicComplete (Ideal.span {ϖ}) F.O := by
   haveI : CompleteSpace ↥F.K := F.closed.completeSpace_coe
@@ -72,19 +65,6 @@ theorem isAdicComplete {ϖ : F.O} (h : Irreducible ϖ) : IsAdicComplete (Ideal.s
 
 end DVF
 
-theorem exists_dvf {l : Level H} (c : Coeff l) {p : ℕ} {W : ValuationSubring ℂ} (hp : p.Prime) (hW : (p : ℂ) ∈ W.nonunits) :
-    ∃ (F : DVF p) (b : c.V W →+* F.O), Function.Injective b := by
-  haveI := c.fin
-  haveI : NumberField c.F := {}
-  have hn := SharedLaws.mem_nonunits_V c hp.ne_zero hW
-  haveI := (isDiscreteValuationRing_and_finite_residueField_of_numberField (c.V W) hp.ne_zero hn).1
-  haveI : Countable c.F := Countable.of_equiv _ (Module.finBasis ℚ c.F).equivFun.toEquiv.symm
-  obtain ⟨C, f, K, hf, -, hK, hd, -⟩ := Cht.CompletedClosure.fieldSt p (c.V W) hp
-    ((ValuationSubring.coe_mem_nonunits_iff (A := c.V W) (a := (p : c.V W))).1 (by simpa using hn))
-  let g : c.V W →+* ↥K := ((intO ↥C.S).subtype.comp f).codRestrict K fun a =>
-    hK ▸ Subfield.le_topologicalClosure _ (Subfield.subset_closure ⟨a, rfl⟩)
-  exact ⟨⟨C, K, hK ▸ Subfield.isClosed_topologicalClosure _, hd⟩, g.codRestrict (intO ↥K) fun a => (f a).2,
-    fun a a' h => hf (Subtype.ext (congrArg (fun z : ↥(intO ↥K) => ((z : ↥K) : ↥C.S)) h))⟩
 
 section Cusp
 
@@ -121,11 +101,6 @@ theorem dir_nonempty : t.Dir.Nonempty :=
 
 theorem isFat_dir : IsFat t.Dir := isFat_adm _ H l.M'
 
-theorem nontrivial_forms : Nontrivial t.Forms := by
-  haveI := t.a.nontriv
-  obtain ⟨γ, hγ⟩ := t.dir_nonempty
-  obtain ⟨y, hy⟩ := exists_ne (0 : t.a.D₀.X)
-  exact ⟨γ, 0, fun h => by simpa [h] using hγ.1 y hy⟩
 
 end Cusp
 
@@ -204,11 +179,6 @@ theorem exists_cusp {Xo : Moduli Dw l} {Y : Model Xo c (c.V W).subtype} (hY : Y.
     (fun τ => b.comp (IntModelExists.embV c W τ)) io hio hρ (IntModelExists.exists_values c W)
   exact ⟨⟨b, a, e, io, (ArcCompare.isLetters_iff Wt io e).2 ⟨hio, _, fun τ => RingHom.ext (hρ τ), he⟩⟩, rfl, HEq.rfl⟩
 
-theorem exists_cusp_hyp {Xo : Moduli (HostModel.hypDatum H) l} {Y : Model Xo c (c.V W).subtype} (hY : Y.N4) (hp : p.Prime)
-    (hW : (p : ℂ) ∈ W.nonunits) : ∃ F : DVF p, Nonempty (Cusp (HostModel.hypDatum H) l (c.V W).subtype F.O) := by
-  obtain ⟨F, b, hb⟩ := exists_dvf c hp hW
-  obtain ⟨io, hio⟩ := exists_io hb
-  exact ⟨F, ⟨(exists_cusp hY hb (toricIn b io hio)).choose⟩⟩
 
 end Cusp
 
@@ -352,12 +322,6 @@ theorem CuspRec.exists_equiv : ∃ ε : (CuspRec.of t).cusp.Forms ≃ₗ[ℤ] t.
   obtain ⟨ε, h₁, h₂⟩ := (CuspRec.of t).ex.choose_spec
   exact ⟨ε.trans (Module.finBasis ℤ t.Forms).equivFun.symm, h₁, h₂⟩
 
-theorem CuspRec.exists_fjNorm_eq : ∃ ε : t.Chr ≃ₗ[ℤ] (CuspRec.of t).cusp.Chr,
-    ∀ (e : ∀ σ : E →+* ℂ, Fin (Dw.mult σ) → ℤ) (M : Z.X.Modules) (T : GrTriv Z e M) (f : Γ(M, Z.genO)) (χ : t.Chr),
-      fjNorm (CuspRec.of t).cusp T f (ε χ) = fjNorm t T f χ := by
-  obtain ⟨ε, h₁, h₂⟩ := CuspRec.exists_equiv t
-  exact ⟨ε.dualMap, fun e M T f χ => coefNorm_equiv ε h₁
-    (fun γ r => exists_congr fun x => exists_congr fun v => and_congr_left' (h₂ γ x v)) χ⟩
 
 end Arcs
 
@@ -399,47 +363,16 @@ namespace FJ
 
 variable {ct : At S κ p} {l : PsiT D → ℕ → ℤ} {f : ct.Sec (ct.Lb l)}
 
-theorem fjN_le_iff (B : ℝ) : (∀ s χ, (fjTrue ct).fjN l f s χ ≤ B) ↔
-    ∀ (F : DVF p) (t : CuspOn ct.YY F) (χ : t.Chr), fjNorm t (lbTriv ct l) f χ ≤ B := by
-  refine ⟨fun h F t χ => ?_, fun h s χ => h _ _ χ⟩
-  obtain ⟨ε, hε⟩ := CuspRec.exists_fjNorm_eq t
-  exact hε _ _ _ f χ ▸ h (CuspRec.of t) (ε χ)
 
-theorem fjNorm_eq {F : DVF p} {t : CuspOn ct.YY F} {c : t.Chr → ↥F.K} (h : IsFJ t (lbTriv ct l) f c) (χ : t.Chr) :
-    fjNorm t (lbTriv ct l) f χ = ‖c χ‖ :=
-  h.coefNorm_eq t.isFat_dir t.dir_nonempty (fun _ => exists_isSeries t _ f ct.hp.ne_zero (charts_YY ct) ct.isYY.2.1.1) χ
 
 theorem IsFJ.unique {F : DVF p} {t : CuspOn ct.YY F} {c c' : t.Chr → ↥F.K} (h : IsFJ t (lbTriv ct l) f c)
     (h' : IsFJ t (lbTriv ct l) f c') : c = c' :=
   IsExpansion.unique h h' t.isFat_dir t.dir_nonempty fun _ => exists_isSeries t _ f ct.hp.ne_zero (charts_YY ct) ct.isYY.2.1.1
 
-theorem coefSet_nonempty_of_nonneg {F : DVF p} (t : CuspOn ct.YY F) {χ : t.Chr} (h : Nonneg t.Dir χ) :
-    (coefSet t.Dir (IsSeries t (lbTriv ct l) f) χ).Nonempty :=
-  coefSet_nonempty t.isFat_dir t.dir_nonempty (fun _ => exists_isSeries t _ f ct.hp.ne_zero (charts_YY ct) ct.isYY.2.1.1) h
 
-theorem fjN_eq_zero (s : (fjTrue ct).FJd) (χ : (fjTrue ct).Chr s) (γ : s.cusp.Forms)
-    (hγ : ∀ y, y ≠ 0 → 0 < (γ : LinearMap.BilinForm ℤ s.cusp.a.D₀.X) y y) (h : (show s.cusp.Chr from χ) γ < 0) :
-    (fjTrue ct).fjN l f s χ = 0 :=
-  coefNorm_eq_zero fun h' => h.not_ge ((nonneg_admissible_iff_positiveDefinite _).1 h' γ hγ)
 
-theorem fjN_le_one (h : ∀ (F : DVF p) (t : CuspOn ct.YY F) γ r, IsSeries t (lbTriv ct l) f γ r →
-    r ∈ F.toLaurent.range) (s : (fjTrue ct).FJd) (χ : (fjTrue ct).Chr s) : (fjTrue ct).fjN l f s χ ≤ 1 :=
-  coefNorm_le zero_le_one fun γ _ r hr n => by
-    obtain ⟨g, rfl⟩ := h _ _ γ r hr
-    exact s.F.norm_coeff_toLaurent g n
 
-theorem nonempty_fjd {F : DVF p} {b : ct.YY.i.c.V ct.W →+* F.O} (hb : Function.Injective b)
-    (a : ArcIn S.Dw ct.YY.i.l (ct.YY.i.c.V ct.W).subtype F.O b) : Nonempty (fjTrue ct).FJd :=
-  ⟨CuspRec.of (exists_cusp (charts_YY ct) hb a).choose⟩
 
-theorem nonempty_fjd_hyp (h : S.Dw = HostModel.hypDatum A.H) : Nonempty (fjTrue ct).FJd := by
-  obtain ⟨F, b, hb⟩ := exists_dvf ct.YY.i.c ct.hp ct.hW
-  obtain ⟨io, hio⟩ := exists_io hb
-  have : Nonempty (ArcIn S.Dw ct.YY.i.l (ct.YY.i.c.V ct.W).subtype F.O b) := by
-    generalize ct.YY.i = i at *
-    rw [h]
-    exact ⟨toricIn b io hio⟩
-  exact nonempty_fjd hb this.some
 
 end FJ
 

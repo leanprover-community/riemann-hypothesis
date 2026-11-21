@@ -19,23 +19,7 @@ lemma gauss_fun_eq (t : ℝ) :
   push_cast
   ring
 
-lemma gauss_continuous (t : ℝ) :
-    Continuous (fun v : V => (Real.exp (-Real.pi * t * ‖v‖ ^ 2) : ℂ)) := by
-  exact Complex.continuous_ofReal.comp
-    (Real.continuous_exp.comp (continuous_const.mul (continuous_norm.pow 2)))
 
-lemma gauss_decay (t : ℝ) (ht : 0 < t) (b : ℝ) :
-    (fun v : V => (Real.exp (-Real.pi * t * ‖v‖ ^ 2) : ℂ)) =O[cocompact V]
-      (fun v => ‖v‖ ^ (-b)) := by
-  have ha : -Real.pi * t < 0 := by nlinarith [Real.pi_pos]
-  have h1 := ((rexp_neg_quadratic_isLittleO_rpow_atTop ha 0 (-b)).comp_tendsto
-    (tendsto_norm_cocompact_atTop (E := V))).isBigO
-  refine Asymptotics.IsBigO.of_norm_left ?_
-  refine h1.congr_left fun v => ?_
-  simp only [Function.comp]
-  first
-    | rw [zero_mul, add_zero, Complex.norm_real, Real.norm_eq_abs, Real.abs_exp]
-    | simp [Real.abs_exp]
 
 lemma gauss_fourier (t : ℝ) (ht : 0 < t) (w : V) :
     (𝓕 (fun v : V => (Real.exp (-Real.pi * t * ‖v‖ ^ 2) : ℂ)) : V → ℂ) w =
@@ -57,7 +41,6 @@ lemma gauss_fourier (t : ℝ) (ht : 0 < t) (w : V) :
   push_cast
   field_simp
 
-theorem gaussian_fourier_transform : GaussFourier V := fun t ht => ⟨gauss_continuous V t, gauss_decay V t ht, gauss_fourier V t ht⟩
 
 theorem schwartz_decay_gaussian : SchwartzDecay V := by
   intro f b
@@ -65,6 +48,5 @@ theorem schwartz_decay_gaussian : SchwartzDecay V := by
   have h := (FourierTransform.fourier f : 𝓢(V, ℂ)).isBigO_cocompact_rpow (-b)
   rwa [SchwartzMap.fourier_coe] at h
 
-theorem gaussian_fourier_and_decay : GaussFourier V ∧ SchwartzDecay V := ⟨gaussian_fourier_transform V, schwartz_decay_gaussian V⟩
 
 end Formalism.H

@@ -260,63 +260,12 @@ theorem rcd_rows (H : Host R) (A : Arith H) (G : LocalGap H) (N : Num R x eps De
 @[irreducible] def P (n : ℕ) : ℝ := 2 ^ n
 
 theorem charpoly_eq_of_isIso (n : ℕ) : P n = 2 ^ n := by unfold P; rfl
-theorem natCast_two_pow (n : ℕ) : ((2 ^ n : ℕ) : ℝ) = P n := by rw [charpoly_eq_of_isIso]; push_cast; rfl
 theorem twoPow_pos (n : ℕ) : 0 < P n := by rw [charpoly_eq_of_isIso]; positivity
 theorem twoPow_mul_twoPow (a b : ℕ) : P a * P b = P (a + b) := by simp only [charpoly_eq_of_isIso, pow_add]
-theorem twoPow_pow (a n : ℕ) : P a ^ n = P (a * n) := by simp only [charpoly_eq_of_isIso, pow_mul]
 theorem P_le {a b : ℕ} (h : a ≤ b) : P a ≤ P b := by
   rw [charpoly_eq_of_isIso, charpoly_eq_of_isIso]; exact pow_le_pow_right₀ (by norm_num) h
-theorem twoPow_rpow (N : ℕ) (c : ℝ) : P N ^ c = (2 : ℝ) ^ ((N : ℝ) * c) := by
-  rw [charpoly_eq_of_isIso, ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]
-theorem twoPow_rpow_of_mul_eq {N n : ℕ} {c : ℝ} (h : (N : ℝ) * c = n) : P N ^ c = P n := by
-  rw [twoPow_rpow, h, Real.rpow_natCast, charpoly_eq_of_isIso]
-theorem twoPow_rpow_le {N n : ℕ} {c : ℝ} (h : (N : ℝ) * c ≤ n) : P N ^ c ≤ P n := by
-  rw [twoPow_rpow, charpoly_eq_of_isIso n, ← Real.rpow_natCast]; exact Real.rpow_le_rpow_of_exponent_le (by norm_num) h
-theorem twoPow_le_rpow {N n : ℕ} {c : ℝ} (h : (n : ℝ) ≤ (N : ℝ) * c) : P n ≤ P N ^ c := by
-  rw [twoPow_rpow, charpoly_eq_of_isIso n, ← Real.rpow_natCast]; exact Real.rpow_le_rpow_of_exponent_le (by norm_num) h
-theorem twoPow_le_exp {n : ℕ} {y : ℝ} (h : (n : ℝ) ≤ y) : P n ≤ Real.exp y := by
-  have h2 : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
-  calc P n = 2 ^ n := charpoly_eq_of_isIso n
-    _ ≤ Real.exp 1 ^ n := pow_le_pow_left₀ (by norm_num) h2 n
-    _ = Real.exp n := by rw [← Real.exp_nat_mul, mul_one]
-    _ ≤ Real.exp y := Real.exp_le_exp.2 h
-theorem log_le_of_le_P {n : ℕ} {y : ℝ} (hy : 0 < y) (h : y ≤ P n) : Real.log y ≤ n := by
-  rw [Real.log_le_iff_le_exp hy]; exact h.trans (twoPow_le_exp le_rfl)
-theorem one_le_P (n : ℕ) : 1 ≤ P n := by rw [charpoly_eq_of_isIso]; exact one_le_pow₀ (by norm_num)
 
-theorem L_small : P 2800 ^ ((1 : ℝ) / 200) = 16384 := by
-  rw [twoPow_rpow_of_mul_eq (n := 14) (by norm_num), charpoly_eq_of_isIso]; norm_num
 
-theorem num_small : Num R0 (P 2800) (1 / 200) 1 9 where
-  Del_pos := le_rfl
-  hh := by decide
-  x_ge := one_le_P _
-  third := by
-    rw [L_small]
-    refine (twoPow_rpow_le (n := 5) (by norm_num)).trans ?_
-    rw [charpoly_eq_of_isIso]; norm_num
-  a_le := by
-    have h4 : (4 : ℝ) = P 2 := by rw [charpoly_eq_of_isIso]; norm_num
-    rw [bx, L_small, twoPow_rpow_of_mul_eq (n := 15400) (by norm_num), h4, twoPow_mul_twoPow]
-    exact twoPow_le_exp (by norm_num)
-  kx := by
-    have h4 : 2 * (R0.k : ℝ) = P 4 := by rw [charpoly_eq_of_isIso]; show 2 * ((8 : ℕ) : ℝ) = _; norm_num
-    rw [L_small, h4, twoPow_mul_twoPow]
-    exact twoPow_le_exp (by norm_num)
-  eta_le := by
-    rw [L_small]
-    refine le_trans ?_ (twoPow_le_exp (n := 6) (by norm_num))
-    rw [charpoly_eq_of_isIso]; show 2 * ((2 : ℕ) : ℝ) * _ ≤ _; norm_num
-  kDel := by
-    rw [L_small]
-    refine le_trans ?_ (twoPow_le_exp (n := 6) (by norm_num))
-    rw [charpoly_eq_of_isIso]; show 4 * ((8 : ℕ) : ℝ) * _ ≤ _; norm_num
-  eta_log := by
-    have h1 : 2 * (R0.m : ℝ) * ((9 : ℕ) : ℝ) = 36 := by show 2 * ((2 : ℕ) : ℝ) * _ = _; norm_num
-    rw [h1]
-    refine (log_le_of_le_P (n := 6) (by norm_num) (by rw [charpoly_eq_of_isIso]; norm_num)).trans ?_
-    refine le_trans ?_ (twoPow_le_rpow (n := 3) (by norm_num))
-    rw [charpoly_eq_of_isIso]; norm_num
 
 def H1 : Host R0 :=
   { H0 with
@@ -356,30 +305,6 @@ theorem gam_gt {CG y : ℝ} (R : Ranks) (hC : 0 < CG) (hy : 0 < y) : 1 < Real.ex
     exact_mod_cast this
   exact Real.one_lt_exp_iff.2 (by positivity)
 
-theorem small_model (D0 : D7) (CG : ℝ) (hC : 0 < CG) : ∃ D : D7, (∃ τ, Top D τ) ∧ (∃ τ, ¬ Top D τ) ∧
-    OneScale D (P 2800) (1 / 200) 36 ∧ Nodes D (P 2800) (1 / 200) ∧ Labels D (P 2800) (1 / 200) CG := by
-  have hG := gam_gt R0 hC (Real.rpow_pos_of_pos (twoPow_pos 2800) (1 / 200))
-  let D := rcd H1 A1 (LocalGap.localGapOfRecord D0 H1) num_small _ hG
-  obtain ⟨r1, r2⟩ := rcd_rows H1 A1 (LocalGap.localGapOfRecord D0 H1) num_small _ hG
-  obtain ⟨o, n, -⟩ := place_rows D num_small rfl r1 r2
-  have h1 : 2 * (D.R.m : ℝ) * ((9 : ℕ) : ℝ) = 36 := by show 2 * ((2 : ℕ) : ℝ) * _ = _; norm_num
-  rw [h1] at o
-  refine ⟨D, exists_top D ⟨0, Finset.mem_singleton_self _⟩, exists_not_top D, o, n,
-    ⟨⟨0, Finset.mem_singleton_self _⟩, ⟨3, exampleRanks_jetIndex_bound, le_refl 50⟩, ?_, hC, fun u => Real.log_exp _⟩⟩
-  have h100 : 1 ≤ P 2800 ^ ((1 : ℝ) / 200 / 100) := Real.one_le_rpow (one_le_P _) (by norm_num)
-  refine SplitLab.of_one (H := H1) ?_ ?_ ?_
-  rotate_left
-  · rw [exampleRanks_o]; exact_mod_cast h100
-  · show ((2 ^ (2 + 2) : ℕ) : ℝ) ≤ 4 * ((4 : ℕ) : ℝ) * _
-    push_cast; linarith
-  show _ ≤ 6
-  apply Nat.le_of_lt_succ
-  rw [Nat.floor_lt (Real.rpow_pos_of_pos (twoPow_pos _) _).le]
-  by_contra hc
-  have h7 : (7 : ℝ) ≤ P 2800 ^ ((1 : ℝ) / 200 / 5) := by push_cast at hc; linarith [not_lt.1 hc]
-  have h8 := pow_le_pow_left₀ (by norm_num) h7 5
-  rw [← Real.rpow_natCast (P 2800 ^ _), ← Real.rpow_mul (twoPow_pos _).le, twoPow_rpow_of_mul_eq (n := 14) (by norm_num), charpoly_eq_of_isIso] at h8
-  norm_num at h8
 
 def Rk (α e κ : ℕ) (h1 : 1 ≤ α) (h2 : α ≤ e + 1) (h3 : e + 1 ≤ κ) (h4 : α + 2 ≤ κ) : Ranks :=
   have a1 : 2 ^ 1 ≤ 2 ^ α := Nat.pow_le_pow_right (by norm_num) h1
@@ -400,102 +325,10 @@ def Rk (α e κ : ℕ) (h1 : 1 ≤ α) (h2 : α ≤ e + 1) (h3 : e + 1 ≤ κ) (
     f_le_k := a3
     m_sq_le_N := by nlinarith }
 
-theorem big_nums (R : Ranks) (Del h : ℕ) (hm : (R.m : ℝ) = P 119925) (hf : (R.f : ℝ) = P 489601) (hk : (R.k : ℝ) = P 1092000)
-    (ht : R.t = 4 * R.k + 1) (hD : (Del : ℝ) = P 32000000) (hh : (h : ℝ) = P 24000000) :
-    Num R (P 240000) (1 / 200) Del h ∧
-    (∀ lrd, Real.log 2 ≤ lrd → lrd ≤ P 600 → RankNums (P 240000) (1 / 200) 20 R.m R.f R.k lrd Del) ∧
-    P 240000 ^ ((1 : ℝ) / 200 / 100) * (R.r : ℝ) ^ 19 * (R.f : ℝ) ^ 5 * P 240000 ^ ((1 : ℝ) / 200) ≤ 2 * h := by
-  have L : P 240000 ^ ((1 : ℝ) / 200) = P 1200 := twoPow_rpow_of_mul_eq (by norm_num)
-  have L2 : P 240000 ^ ((1 : ℝ) / 200 / 2) = P 600 := twoPow_rpow_of_mul_eq (by norm_num)
-  have L3 : P 240000 ^ ((1 : ℝ) / 200 / 3) = P 400 := twoPow_rpow_of_mul_eq (by norm_num)
-  have L4 : P 240000 ^ ((1 : ℝ) / 200 / 4) = P 300 := twoPow_rpow_of_mul_eq (by norm_num)
-  have locP_mono₂ : P 240000 ^ ((1 : ℝ) / 200 / 100) = P 12 := twoPow_rpow_of_mul_eq (by norm_num)
-  have q1 : (2 : ℝ) = P 1 := by rw [charpoly_eq_of_isIso]; norm_num
-  have q2 : (4 : ℝ) = P 2 := by rw [charpoly_eq_of_isIso]; norm_num
-  have hh2 : P 1200 / 2 = P 1199 := by
-    rw [div_eq_iff (by norm_num), q1, twoPow_mul_twoPow]
-  have big : ∀ n, 27 ≤ n → (100000000 : ℝ) ≤ P n := fun n hn => le_trans (by rw [charpoly_eq_of_isIso]; norm_num) (P_le hn)
-  have ex : ∀ a n : ℕ, 27 ≤ n → a ≤ 100000000 → P a ≤ Real.exp (P n) := fun a n hn ha =>
-    twoPow_le_exp (le_trans (by exact_mod_cast ha) (big n hn))
-  have lg : ∀ a n : ℕ, 27 ≤ n → a ≤ 100000000 → Real.log (P a) ≤ P n := fun a n hn ha =>
-    (log_le_of_le_P (twoPow_pos a) le_rfl).trans (le_trans (by exact_mod_cast ha) (big n hn))
-  refine ⟨⟨?_, ?_, one_le_P _, ?_, ?_, ?_, ?_, ?_, ?_⟩, fun lrd l1 l2 => ⟨?_, ?_, ?_, ?_, ?_, l1, ?_, ?_, ?_⟩, ?_⟩
-  · have := one_le_P 32000000
-    rw [← hD] at this; exact_mod_cast this
-  · have h1 : 4 * (R.k : ℝ) ≤ h := by rw [hk, hh, q2, twoPow_mul_twoPow]; exact P_le (by norm_num)
-    have h2 : 4 * R.k ≤ h := by exact_mod_cast h1
-    have := R.m_add_three_le_k
-    omega
-  · rw [L, L3, hh2]; exact P_le (by norm_num)
-  · rw [bx, L, twoPow_rpow_of_mul_eq (n := 1320000) (by norm_num), q2, twoPow_mul_twoPow]; exact ex _ _ (by norm_num) (by norm_num)
-  · rw [L, hh2, hk, q1, twoPow_mul_twoPow, twoPow_mul_twoPow]; exact ex _ _ (by norm_num) (by norm_num)
-  · rw [L, hh2, hm, hh, q1, twoPow_mul_twoPow, twoPow_mul_twoPow]; exact ex _ _ (by norm_num) (by norm_num)
-  · rw [L, hh2, hk, hD, q2, twoPow_mul_twoPow, twoPow_mul_twoPow]; exact ex _ _ (by norm_num) (by norm_num)
-  · rw [L4, hm, hh, q1, twoPow_mul_twoPow, twoPow_mul_twoPow]; exact lg _ _ (by norm_num) (by norm_num)
-  · rw [hm]; exact twoPow_rpow_le (by norm_num)
-  · rw [hm, hf, twoPow_pow]; exact P_le (by norm_num)
-  · rw [hk, hf]; exact P_le (by norm_num)
-  · rw [L2, L, hm, hf, hk, twoPow_pow, twoPow_mul_twoPow, twoPow_mul_twoPow, twoPow_mul_twoPow]; exact P_le (by norm_num)
-  · rw [hk]; exact twoPow_le_rpow (by norm_num)
-  · rw [L2]; exact l2
-  · rw [L, hk, hf, hD, twoPow_mul_twoPow, twoPow_mul_twoPow]; exact twoPow_rpow_le (by norm_num)
-  · rw [L2, hD]; exact lg _ _ (by norm_num) (by norm_num)
-  · have hr : (R.r : ℝ) ≤ P 1092001 := by
-      have h1 : R.r ≤ 2 * R.k := by have := R.m_add_three_le_k; unfold Ranks.r; omega
-      have h2 : (R.r : ℝ) ≤ 2 * R.k := by exact_mod_cast h1
-      rwa [hk, q1, twoPow_mul_twoPow] at h2
-    have hr19 : (R.r : ℝ) ^ 19 ≤ P 1092001 ^ 19 := pow_le_pow_left₀ (by positivity) hr 19
-    rw [locP_mono₂, L, hf, hh]
-    have := twoPow_pos 12; have := twoPow_pos 489601; have := twoPow_pos 1200
-    calc _ ≤ P 12 * P 1092001 ^ 19 * P 489601 ^ 5 * P 1200 := by gcongr
-      _ ≤ _ := by rw [twoPow_pow, twoPow_pow, twoPow_mul_twoPow, twoPow_mul_twoPow, twoPow_mul_twoPow, q1, twoPow_mul_twoPow]; exact P_le (by norm_num)
 
-theorem big_ranks : ∃ (R : Ranks) (Del h : ℕ), (R.m : ℝ) = P 119925 ∧ (R.f : ℝ) = P 489601 ∧ (R.k : ℝ) = P 1092000 ∧
-    R.t = 4 * R.k + 1 ∧ (Del : ℝ) = P 32000000 ∧ (h : ℝ) = P 24000000 := by
-  have key : ∀ (α e κ a b : ℕ) (h1 : 1 ≤ α) (h2 : α ≤ e + 1) (h3 : e + 1 ≤ κ) (h4 : α + 2 ≤ κ),
-      ∃ (R : Ranks) (Del h : ℕ), (R.m : ℝ) = P α ∧ (R.f : ℝ) = P (e + 1) ∧ (R.k : ℝ) = P κ ∧
-        R.t = 4 * R.k + 1 ∧ (Del : ℝ) = P a ∧ (h : ℝ) = P b := fun α e κ a b h1 h2 h3 h4 =>
-    ⟨Rk α e κ h1 h2 h3 h4, 2 ^ a, 2 ^ b, natCast_two_pow _, by rw [← natCast_two_pow, pow_succ']; rfl, natCast_two_pow _, rfl, natCast_two_pow _, natCast_two_pow _⟩
-  exact key 119925 489600 1092000 32000000 24000000 (by norm_num) (by norm_num) (by norm_num) (by norm_num)
 
-theorem big_model (D0 : D7) (R : Ranks) (Del h : ℕ) (hm : (R.m : ℝ) = P 119925) (hf : (R.f : ℝ) = P 489601)
-    (hk : (R.k : ℝ) = P 1092000) (ht : R.t = 4 * R.k + 1) (hD : (Del : ℝ) = P 32000000) (hh : (h : ℝ) = P 24000000)
-    (H : Host R) (A : Arith H) (Cg CT : ℝ) (r1 : 2 ≤ H.rdE) (r2 : Real.log H.rdE ≤ P 600)
-    (hg : ∀ i, ((R.k : ℝ) * bx (P 240000) (1 / 200)) ^ 8 ≤ (H.g i : ℝ) ∧ (H.g i : ℝ) ≤ bx (P 240000) (1 / 200) ^ Cg)
-    (hT : bx (P 240000) (1 / 200) ^ ((1 / 2 : ℝ) * (R.m : ℝ)) ≤ (A.T : ℝ) ∧
-      (A.T : ℝ) ≤ bx (P 240000) (1 / 200) ^ (CT * (R.m : ℝ))) :
-    ∃ D : D7, D.R = R ∧ HEq D.host H ∧ Glob D (P 240000) (1 / 200) 20 Cg CT ∧ Nodes D (P 240000) (1 / 200) ∧
-      OneScale D (P 240000) (1 / 200) (2 * (R.m : ℝ) * h) := by
-  obtain ⟨N, n2, n3⟩ := big_nums R Del h hm hf hk ht hD hh
-  let D := rcd H A (LocalGap.localGapOfRecord D0 H) N 2 one_lt_two
-  obtain ⟨s1, s2⟩ := rcd_rows H A (LocalGap.localGapOfRecord D0 H) N 2 one_lt_two
-  obtain ⟨o, n, g, c, f⟩ := place_rows D N rfl s1 s2
-  refine ⟨D, rfl, HEq.rfl, ⟨?_, r1, hg, fun _ => hT, fun τ j hj => ?_, c, f⟩, n, o⟩
-  · have := n2 _ (Real.log_le_log (by norm_num) r1) r2
-    have e : ((D.s.Del : ℚ) : ℝ) = (Del : ℝ) := by
-      show (((Del : ℕ) : ℚ) : ℝ) = _
-      push_cast; rfl
-    rw [e]; exact this
-  · rw [g τ j hj]; exact n3
 
-theorem Glob_one_lt {D : D7} {x eps CD Cg CT : ℝ} (G : Glob D x eps CD Cg CT) : 1 < x := by
-  have h := G.nums.k_hi
-  have hk : (5 : ℝ) ≤ D.R.k := by
-    have := D.R.m_add_three_le_k; have := D.R.two_le_m
-    exact_mod_cast (by omega : 5 ≤ D.R.k)
-  rw [show (5 : ℝ) = ((5 : ℕ) : ℝ) by norm_num, Real.rpow_natCast] at h
-  by_contra hc
-  have : x ^ 5 ≤ 1 ^ 5 := (Odd.strictMono_pow (by decide : Odd 5)).monotone (not_lt.1 hc)
-  linarith
 
-theorem OneScale_eta {D : D7} {x eps eta : ℝ} (O : OneScale D x eps eta) : ((D.R.t : ℝ) + 3) / 2 ≤ eta + 1 := by
-  obtain ⟨τ, hτ⟩ := exists_not_top D
-  have := D.R.two_le_m
-  obtain ⟨h1, h2⟩ := O.off τ hτ ⟨0, by omega⟩
-  have h3 : ((D.R.t : ℝ) + 3) / 2 ≤ (((D.hc τ).e ⟨0, by omega⟩ : ℚ) : ℝ) - (((D.hc τ).b ⟨0, by omega⟩ : ℚ) : ℝ) := by
-    have h4 := (Rat.cast_le (K := ℝ)).2 ((D.hc τ).gap_be ⟨0, by omega⟩)
-    push_cast at h4; exact h4
-  linarith
 
 end GlobalTheory.Diag.PG.Model
 
@@ -674,64 +507,8 @@ theorem exists_datum (eps CD CG : ℝ) (h0 : 0 < eps) (h1 : eps < 1 / 52) (hCD :
   exact ⟨relabelRec D Lw hw, 2 * (R.m : ℝ) * h, Nat.log 2 R.m, hJe, hcard, glob_relabelRec.2 gl,
     nodes_relabelRec.2 n, oneScaleDatum_relabelRec.2 ⟨o, hJ, ev, th, di⟩, lab⟩
 
-theorem thresh_conseq {D : D7} {x eps eta : ℝ} (he : 0 < eta) (T : Thresholds D x eps eta) (hD : 0 ≤ (D.s.Del : ℝ)) :
-    (D.R.k : ℝ) * x ^ ((11 : ℝ) / 2) ≤ Real.exp (x ^ (eps / 3)) ∧ 2 * x ^ ((11 : ℝ) / 2) ≤ aC x eps ∧
-      2 * bpC x eps ≤ bx x eps ∧ 4 * bpC x eps ≤ aC x eps ∧ 2 * aC x eps ≤ bx x eps ^ 2 ∧
-      (D.R.N D.R.m : ℝ) + 4 * (4 * (D.R.k : ℝ) * (D.s.Del : ℝ)) + 1 ≤ bpC x eps / x ∧ 0 < eps := by
-  obtain ⟨hx, -, -, h3, h4, -, h6⟩ := T
-  have hk := D.R.m_add_three_le_k
-  have hm := D.R.two_le_m
-  have k5 : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 5 ≤ D.R.k)
-  have N5 : (5 : ℝ) ≤ D.R.N D.R.m := by exact_mod_cast (by unfold Ranks.N; omega : 5 ≤ D.R.N D.R.m)
-  have f1 : (1 : ℝ) ≤ D.R.f := by
-    have : 0 < D.R.f := by unfold Ranks.f Ranks.n; positivity
-    exact_mod_cast this
-  have hY : 1 ≤ x ^ ((11 : ℝ) / 2) := Real.one_le_rpow hx.le (by norm_num)
-  have hb : 0 < bx x eps := Real.exp_pos _
-  have hX : 0 < Real.exp (x ^ (eps / 3)) := Real.exp_pos _
-  have hpos : 0 < eps := by
-    by_contra hc
-    have c1 : x ^ (eps / 3) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hx.le (by linarith [not_lt.1 hc])
-    have c2 := (Real.exp_le_exp.2 c1).trans Real.exp_one_lt_d9.le
-    have kN : 25 ≤ (D.R.k : ℝ) * D.R.N D.R.m := by nlinarith
-    nlinarith
-  unfold bpC aC
-  generalize x ^ ((11 : ℝ) / 2) = Y at *
-  have kN : 25 ≤ (D.R.k : ℝ) * D.R.N D.R.m := by nlinarith
-  have a1 : 25 * Y ≤ Real.exp (x ^ (eps / 3)) := by nlinarith
-  have a2 : (25 : ℝ) ≤ 4 * (D.R.k : ℝ) * (D.s.Del : ℝ) + eta + D.R.f * (D.R.N D.R.m : ℝ) ^ 2 := by
-    have : 0 ≤ 4 * (D.R.k : ℝ) * (D.s.Del : ℝ) := by positivity
-    nlinarith
-  have a3 : 25 * Y ≤ bx x eps := by
-    have : Y ≤ Y ^ 3 := le_self_pow₀ hY (by norm_num)
-    refine le_trans ?_ h4
-    calc 25 * Y ≤ 25 ^ 2 * Y ^ 3 := by nlinarith
-      _ ≤ _ := by gcongr
-  have hS : 0 ≤ 4 * (D.R.k : ℝ) * (D.s.Del : ℝ) := by positivity
-  generalize 4 * (D.R.k : ℝ) * (D.s.Del : ℝ) = S at *
-  generalize bx x eps = b at *
-  generalize Real.exp (x ^ (eps / 3)) = X at *
-  refine ⟨?_, by nlinarith, ?_, ?_, by nlinarith, ?_, hpos⟩
-  · refine le_trans ?_ h3
-    rw [mul_assoc]; gcongr; nlinarith
-  · rw [← mul_div_assoc, div_le_iff₀ hX]; nlinarith
-  · rw [← mul_div_assoc, div_le_iff₀ hX]
-    have : 0 < Y * b := by positivity
-    nlinarith
-  · rw [le_div_iff₀ (by linarith), le_div_iff₀ hX]; nlinarith
 
-theorem coset_exp_unique {R : Ranks} {H H' : Host R} {J J' : ℕ} (h : TopsCoset H J) (h' : TopsCoset H' J') : J = J' := by
-  have a : 2 ^ J < 2 ^ (J' + 1) := by rw [pow_succ']; exact h.hi.trans_lt h'.lo
-  have b : 2 ^ J' < 2 ^ (J + 1) := by rw [pow_succ']; exact h'.hi.trans_lt h.lo
-  have := (Nat.pow_lt_pow_iff_right (by norm_num : 1 < 2)).1 a
-  have := (Nat.pow_lt_pow_iff_right (by norm_num : 1 < 2)).1 b
-  omega
 
-theorem coset_one_le {R : Ranks} {H : Host R} {J : ℕ} (h : TopsCoset H J) : 1 ≤ J := by
-  have := h.lo; have := R.two_le_m
-  rcases J with _ | J
-  · simp at *; omega
-  · omega
 
 end GlobalTheory.Diag.PG.DatumModel
 

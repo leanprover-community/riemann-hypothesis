@@ -160,55 +160,12 @@ def record (X₀ : DivX D) (F : ShimFam D G Lev)
     iMj := iM
     iMj_mem := hiM }
 
-theorem models_of_eq (F : ShimFam D G Lev) (w : Dat D Lev) (h : w.Indef)
-    (A : VarietyWithModels D F.jC) (e : A = ofDatum F w h) (p : ℕ) [Fact p.Prime] :
-    (∀ la, A.Mp p la = (F.U w).pad.Mp p la) ∧
-    (∀ la, HEq (A.model p la) (md (F.U w).pad p la)) ∧
-    (∀ la, HEq (A.CurveM p la) ((F.U w).pad.CurveM p la)) ∧
-    (∀ la, HEq (A.degM p la) ((F.U w).pad.degM p la)) ∧
-    (∀ la, HEq (A.htMdl p la) ((F.U w).pad.htMdl p la)) ∧
-    ∀ (c : A.shv.CurveHT p) (c' : (F.U w).pad.CurveHT p), HEq c c' →
-      (A.htCurve p c).1 = c'.1 ∧ HEq (A.htCurve p c).2 c'.2 := by
-  subst e
-  refine ⟨fun _ => rfl, fun _ => HEq.rfl, fun _ => HEq.rfl, fun _ => HEq.rfl, fun _ => HEq.rfl, ?_⟩
-  intro c c' hc
-  obtain rfl : c = c' := eq_of_heq hc
-  exact ⟨rfl, HEq.rfl⟩
 
-theorem record_tied (X₀ : DivX D) (F : ShimFam D G Lev)
-    (iM : ∀ j (c : (F.Uw j).Comp), (X₀.MjH j).V →ₗ[D.what₂.LL] G.Fn ((F.Uw j).alg.Yv c))
-    (hiM : ∀ j c x, iM j c x ∈ G.H0 ((F.Uw j).alg.Yv c) ((F.Uw j).alg.Lw c
-      (fun τ i => DV.kapW D j τ (Fin.cast (datW_N D F.κg j) i))))
-    (dH : ∀ j, (F.Uw j).Comp → D.what₂.Tau → ℝ) :
-    TiedX (jC := F.jC) (ng := F.ng) (record X₀ F iM hiM dH) F.levPr F.levPr_prime F.κg
-      (fun _ _ => Equiv.refl _) F.U (fun _ _ _ => Equiv.refl _) where
-  shv :=
-    { lev := rfl
-      shv := fun w h => congrArg VarietyWithModels.shv (atSpace_datum F w h) }
-  pl :=
-    { wt := fun _ _ _ => rfl
-      jc := fun _ _ _ => rfl
-      mp := fun w h p _ => (models_of_eq F w h _ (atSpace_datum F w h) p).1
-      md := fun w h p _ => (models_of_eq F w h _ (atSpace_datum F w h) p).2.1
-      curveM := fun w h p _ => (models_of_eq F w h _ (atSpace_datum F w h) p).2.2.1
-      degM := fun w h p _ => (models_of_eq F w h _ (atSpace_datum F w h) p).2.2.2.1
-      htMdl := fun w h p _ => (models_of_eq F w h _ (atSpace_datum F w h) p).2.2.2.2.1
-      htCurve := fun w h p _ => (models_of_eq F w h _ (atSpace_datum F w h) p).2.2.2.2.2 }
-  geo :=
-    { yv := fun _ _ _ _ => rfl
-      ybd := fun _ _ _ _ => HEq.rfl
-      lw := fun _ _ _ _ _ => HEq.rfl }
-  lev_κg := F.levPr_κg
 
 end GlobalTheory.VarietyModelRecord
 
 namespace GlobalTheory
 
-theorem exists_divX_tied : ∀ (D : D7) (X₀ : DivX D) (G : DV.Geo D.what₂.LL) (Lev : Type) (F : ShimFam D G Lev) (iM : ∀ j (c : (F.Uw j).Comp), (X₀.MjH j).V →ₗ[D.what₂.LL] G.Fn ((F.Uw j).alg.Yv c)), (∀ j c x, iM j c x ∈ G.H0 ((F.Uw j).alg.Yv c) ((F.Uw j).alg.Lw c (fun τ i => DV.kapW D j τ (Fin.cast (datW_N D F.κg j) i)))) → ∃ (X : DivX D) (hG : X.geo = G) (hL : X.Lev = Lev), X.MjH = X₀.MjH ∧ X.kapR = X₀.kapR ∧ X.logLam = X₀.logLam ∧ X.Qp = X₀.Qp ∧ ∃ (jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)) (ng : NgPkg) (U : ∀ w : Dat D X.Lev, ShimU D X.geo jC ng w) (lp : X.Lev → Finset ℕ) (hl : ∀ κ, ∀ p ∈ lp κ, p.Prime) (κg : X.Lev) (ePl : ∀ (p : ℕ) [Fact p.Prime], X.PlP p ≃ PlL D p) (eC : ∀ j, 1 ≤ j → j ≤ D.R.m → X.Comp j ≃ (U (datW D κg j)).Comp), HEq U F.U ∧ HEq κg F.κg ∧ TiedX X lp hl κg ePl U eC := by
-  intro D X₀ G Lev F iM hiM
-  exact ⟨VarietyModelRecord.record X₀ F iM hiM (fun _ _ _ => 0), rfl, rfl, rfl, rfl, rfl, rfl,
-    F.jC, F.ng, F.U, F.levPr, F.levPr_prime, F.κg, fun _ _ => Equiv.refl _,
-    fun _ _ _ => Equiv.refl _, HEq.rfl, HEq.rfl, VarietyModelRecord.record_tied X₀ F iM hiM _⟩
 
 end GlobalTheory
 

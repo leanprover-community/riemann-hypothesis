@@ -122,9 +122,6 @@ theorem indFEt_of_finite_etale (A O : Type) [CommRing A] [CommRing O] [Algebra A
     IndFEt A O :=
   MorphismProperty.le_ind _ _ ⟨RingHom.etale_algebraMap.2 inferInstance, RingHom.finite_algebraMap.2 inferInstance⟩
 
-theorem indEt_of_forall_finset (A O : Type) [CommRing A] [CommRing O] [Algebra A O]
-    (h : ∀ s : Finset O, ∃ T : Subalgebra A O, Algebra.Etale A T ∧ (s : Set O) ⊆ T) : IndEt A O :=
-  GlobalTheory.IndEtaleUnion.isIndEtale_of_forall_finset A O h
 
 def bc {E : Spc} {S : Scheme.{0}} (p : E ⟶ sch.obj S) : Over S ⥤ Spc where
   obj U := pullback p (sch.map U.hom)
@@ -204,11 +201,6 @@ def idCone (E : Spc) : Cone (Functor.fromPUnit.{0} E) where
   pt := E
   π := { app := fun _ => 𝟙 E, naturality := fun _ _ _ => by simp }
 
-theorem contCone_idCone (F : Shv R) (E : Spc) : ContCone R F (idCone E) := by
-  intro n
-  refine ⟨fun x => ⟨⟨⟨⟩⟩, x, pull_id R E F n x⟩, fun i y hy => ⟨i, 𝟙 i, ?_⟩⟩
-  rw [CategoryTheory.Functor.map_id]
-  exact hy
 
 end GlobalTheory.EtC
 

@@ -105,8 +105,6 @@ def iwahoriCass : CassData (GL (Fin n) k) where
   fact_low _ hx := fact_low' k n hx
   fact_up _ hx := fact_up' k n hx
 
-theorem iwahoriGL : PositivityTheory.SphericalProduct.IwahoriGL := fun k _ _ _ _ n =>
-  ⟨iwahoriCass k n, rfl, rfl, rfl, rfl⟩
 
 end GlobalTheory.CompanionTheory.IwahoriDatumGL
 

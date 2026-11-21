@@ -202,15 +202,6 @@ theorem InPP.gap_ge {lam μ : Fin (2 * r + k + 1) → ℝ} {bv c h q : ℝ} (hμ
   have h4 := le_abs_self (μ b - lam b)
   linarith
 
-theorem InPP.isHCParam {lam μ : Fin (2 * r + k + 1) → ℝ} {bv c h q : ℝ} (hμ : InPP lam q μ) (S : IsShape k r lam bv)
-    (H : IsRange k r lam c h q) : IsHCParam μ := by
-  refine ⟨fun a b hab => ?_, fun a => ?_⟩
-  · have h1 := hμ.gap_ge S H hab
-    have h2 : lam b < lam a := S.1.1 hab
-    linarith
-  · obtain ⟨m, hm⟩ := hμ.1 a
-    obtain ⟨m', hm'⟩ := S.1.2 a
-    exact ⟨m + m', by push_cast at *; linarith⟩
 
 namespace Ex
 
@@ -226,8 +217,6 @@ def detRep (k r : ℕ) (μ : Fin (2 * r + k + 1) → ℝ) : HRep k r where
   H := ℂ
   σ := fun g => (g.det ^ ⌊μ 0⌋₊) • ContinuousLinearMap.id ℂ ℂ
 
-theorem detRep_apply (μ : Fin (2 * r + k + 1) → ℝ) (g : Mat k r) (v : ℂ) :
-    (detRep k r μ).σ g v = g.det ^ ⌊μ 0⌋₊ * v := rfl
 
 theorem contDiff_entry (i j : Fin (2 * r + k + 1)) : ContDiff ℝ ∞ (fun g : Mat k r => g i j) :=
   (contDiff_apply ℝ ℂ j).comp (contDiff_apply ℝ (Fin (2 * r + k + 1) → ℂ) i)
@@ -236,24 +225,7 @@ theorem contDiff_det : ContDiff ℝ ∞ (fun g : Mat k r => g.det) := by
   simp only [Matrix.det_apply']
   exact ContDiff.sum fun s _ => ContDiff.mul contDiff_const (contDiff_prod fun i _ => contDiff_entry (s i) i)
 
-theorem detRep_smooth (μ : Fin (2 * r + k + 1) → ℝ) (v : ℂ) :
-    v ∈ smoothVecs (k := k) (r := r) (detRep k r μ).σ := by
-  intro g₀ _
-  refine ⟨Set.univ, fun g => g.det ^ ⌊μ 0⌋₊ * v, isOpen_univ, trivial, ?_, fun g _ _ => rfl⟩
-  have h : ContDiff ℝ ∞ (fun g : Mat k r => g.det ^ ⌊μ 0⌋₊ * v) := (contDiff_det.pow _).mul contDiff_const
-  exact h.contDiffOn
 
-theorem detRep_dsigW (μ : Fin (2 * r + k + 1) → ℝ) (w : List (Mat k r)) :
-    ∃ c : ℂ, ∀ v : ℂ, dsigW (k := k) (r := r) (H := ℂ) (detRep k r μ).σ w v = c * v := by
-  induction w with
-  | nil => exact ⟨1, fun v => by simp [dsigW]⟩
-  | cons X w ih =>
-    obtain ⟨c, hc⟩ := ih
-    refine ⟨deriv (fun t : ℝ => (NormedSpace.exp ((t : ℂ) • X)).det ^ ⌊μ 0⌋₊) 0 * c, fun v => ?_⟩
-    have h1 : dsigW (k := k) (r := r) (H := ℂ) (detRep k r μ).σ (X :: w) v =
-        deriv (fun t : ℝ => (NormedSpace.exp ((t : ℂ) • X)).det ^ ⌊μ 0⌋₊ *
-          dsigW (k := k) (r := r) (H := ℂ) (detRep k r μ).σ w v) 0 := rfl
-    rw [h1, hc, deriv_mul_const_field, mul_assoc]
 
 theorem subsingleton_idx_top : Subsingleton (Idx k r (2 * r + k + 1)) :=
   ⟨fun I J => Subtype.ext (by
@@ -265,111 +237,16 @@ attribute [local instance] subsingleton_idx_top
 theorem idx_univ (I : Idx k r (2 * r + k + 1)) : I.1 = Finset.univ :=
   (Finset.card_eq_iff_eq_univ I.1).1 (by simpa using I.2)
 
-theorem minor_top (M : Mat k r) (I : Idx k r (2 * r + k + 1)) : minorIJ M I I = M.det := by
-  have hb : Function.Bijective (I.1.orderEmbOfFin I.2) :=
-    (Finite.injective_iff_bijective).1 (I.1.orderEmbOfFin I.2).injective
-  exact Matrix.det_submatrix_equiv_self (Equiv.ofBijective _ hb) M
 
-theorem isTensDec_det (P : Mat k r) (hP : IsUnit P.det) (μ : Fin (2 * r + k + 1) → ℝ) (hμ : 0 ≤ μ 0) :
-    IsTensDec (detRep k r) false P (2 * r + k + 1) μ (fun _ y _ => y) (fun I x => x I) where
-  ι_smooth := fun _ y _ _ => detRep_smooth μ y
-  p_smooth := fun I x _ => detRep_smooth _ (x I)
-  ι_lin := fun _ _ _ _ _ _ => rfl
-  p_lin := fun _ _ _ _ _ _ => rfl
-  ι_equiv := by
-    intro I g _ y _
-    funext J
-    have hJ : J = I := Subsingleton.elim _ _
-    subst hJ
-    have hu : (Finset.univ : Finset (Idx k r (2 * r + k + 1))) = {J} := by
-      ext K; simp [Subsingleton.elim K J]
-    have hw : (μ + wtI false J) 0 = μ 0 + 1 := by simp [wtI, idx_univ J]
-    have hd : (stdMat false P g).det = g.det := by
-      simp only [stdMat, Bool.false_eq_true, if_false]
-      exact Matrix.det_conj ((Matrix.isUnit_iff_isUnit_det P).2 hP) g
-    simp only [HRep.tens, hu, Finset.sum_singleton, minor_top, hd]
-    have key : ∀ y : ℂ, g.det ^ ⌊(μ + wtI false J) 0⌋₊ * y = g.det * (g.det ^ ⌊μ 0⌋₊ * y) := fun y => by
-      rw [hw, Nat.floor_add_one hμ]; ring
-    exact key y
-  sum_ι_p := by
-    intro x _
-    funext J
-    have hu : (Finset.univ : Finset (Idx k r (2 * r + k + 1))) = {J} := by
-      ext K; simp [Subsingleton.elim K J]
-    simp [hu]
-  p_ι_self := fun _ _ _ => rfl
-  p_ι_ne := fun I J h => absurd (Subsingleton.elim I J) h
-  ι_cont := by
-    intro I J w _
-    obtain ⟨c, hc⟩ := detRep_dsigW μ w
-    refine ⟨‖c‖, [[]], by simp, fun v _ => ?_⟩
-    have := hc v
-    simp only [List.map, List.sum_cons, List.sum_nil, add_zero, dsigW]
-    erw [this]
-    exact (norm_mul c v).le
-  p_cont := by
-    intro I w _
-    obtain ⟨c, hc⟩ := detRep_dsigW (μ + wtI false I) w
-    refine ⟨‖c‖, [[]], by simp, fun x _ => ?_⟩
-    have hu : (Finset.univ : Finset (Idx k r (2 * r + k + 1))) = {I} := by
-      ext K; simp [Subsingleton.elim K I]
-    have := hc (x I)
-    simp only [List.map, List.sum_cons, List.sum_nil, add_zero, dsigW, hu, Finset.sum_singleton]
-    erw [this]
-    exact (norm_mul c (x I)).le
 
-theorem isHHNorm_det (μ : Fin (2 * r + k + 1) → ℝ) :
-    IsHHNorm (detRep k r) false (2 * r + k + 1) μ (fun _ y _ => y) epsI := by
-  refine ⟨fun I => ?_, fun I x _ y _ => ?_, fun I J h => absurd (Subsingleton.elim I J) h⟩
-  · unfold epsI
-    refine Finset.prod_induction _ (fun t : ℝ => t = 1 ∨ t = -1) ?_ (Or.inl rfl) ?_
-    · rintro a b (rfl | rfl) (rfl | rfl) <;> simp
-    · intro a _; split_ifs <;> simp
-  · have hu : (Finset.univ : Finset (Idx k r (2 * r + k + 1))) = {I} := by
-      ext K; simp [Subsingleton.elim K I]
-    simp only [HRep.hh, hu, Finset.sum_singleton]
-    rfl
 
-theorem idx_top_nonempty : Nonempty (Idx k r (2 * r + k + 1)) := ⟨⟨Finset.univ, by simp⟩⟩
 
 theorem subsingleton_idx_zero : Subsingleton (Idx k r 0) :=
   ⟨fun I J => Subtype.ext ((Finset.card_eq_zero.mp I.2).trans (Finset.card_eq_zero.mp J.2).symm)⟩
 
 attribute [local instance] subsingleton_idx_zero
 
-theorem isTensDec_zero (A : HRep k r) (dual : Bool) (P : Mat k r) (μ : Fin (2 * r + k + 1) → ℝ) :
-    IsTensDec (fun _ => A) dual P 0 μ (fun _ y _ => y) (fun I x => x I) := by
-  have hu : ∀ J : Idx k r 0, (Finset.univ : Finset (Idx k r 0)) = {J} := fun J => by
-    ext K; simp [Subsingleton.elim K J]
-  exact
-  { ι_smooth := fun I y hy J => hy
-    p_smooth := fun I x hx => hx I
-    ι_lin := fun I a y _ y' _ => rfl
-    p_lin := fun I a x x' _ _ => rfl
-    ι_equiv := fun I g _ y _ => by
-      funext J
-      simp [HRep.tens, minorIJ, hu J]
-    sum_ι_p := fun x _ => by
-      funext J
-      simp [hu J]
-    p_ι_self := fun I y _ => rfl
-    p_ι_ne := fun I J h => (h (Subsingleton.elim _ _)).elim
-    ι_cont := fun I J w hw => ⟨1, [w], by simpa using hw, fun v _ => by simp⟩
-    p_cont := fun I w hw => ⟨1, [w], by simpa using hw, fun v _ => by simp [hu I]⟩ }
 
-theorem shape_range : IsShape 1 0 ![-(1001/2), -(1999/2)] 500 ∧ IsRange 1 0 ![-(1001/2), -(1999/2)] 1 499 3 := by
-  refine ⟨⟨⟨?_, ?_⟩, ?_, ?_⟩, one_pos, ?_, ?_, ?_⟩
-  · intro a b h; fin_cases a <;> fin_cases b <;> simp_all <;> norm_num
-  · intro a; fin_cases a
-    · exact ⟨-501, by simp; norm_num⟩
-    · exact ⟨-1000, by simp; norm_num⟩
-  · intro i h; omega
-  · intro i _; fin_cases i <;> simp <;> norm_num
-  · intro a b h; fin_cases a <;> fin_cases b <;> simp_all [sgnCN] <;> norm_num [abs_of_pos, abs_of_neg]
-  · have : Real.sqrt 2 ≤ 3/2 := by
-      rw [Real.sqrt_le_iff]; norm_num
-    simp; nlinarith
-  · intro i j _ h; omega
 
 example : (List.finRange 5).map (sgnCN 2 1) = [true, true, false, true, false] := by decide
 

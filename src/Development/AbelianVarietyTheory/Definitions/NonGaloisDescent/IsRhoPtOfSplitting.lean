@@ -30,9 +30,6 @@ def chiE (χ : Formalism.MainNotions.N.GE D.nd →* (D.nd.O i)ˣ) : Br.G D.nbr i
 theorem locE_apply {k : ℕ} (M : Formalism.MainNotions.N.GE D.nd →* Matrix (Fin k) (Fin k) (D.nd.O i)) (g : Br.G D.nbr i w hw)
     (a b : Fin k) : locE D i w hw L' h M g a b = inc D i w hw L' h (Br.loc D.nbr i w hw M g a b) := rfl
 
-theorem chiE_apply (χ : Formalism.MainNotions.N.GE D.nd →* (D.nd.O i)ˣ) (g : Br.G D.nbr i w hw) :
-    ((chiE D i w hw L' h χ g : (↥L'.1)ˣ) : ↥L'.1) =
-      inc D i w hw L' h ((Br.locChi D.nbr i w hw χ g : (Br.LL D.nbr i w hw)ˣ) : Br.LL D.nbr i w hw) := rfl
 
 include h in
 
@@ -94,9 +91,6 @@ def TameCyc (C : NChoice D) : Prop :=
 def AttachedIn (a : D.nd.Loc) (π : D.nd.X a) (j : D.ntw.Tw) (s : D.ntw.Sig j) : Prop :=
   ∃ h : D.ntw.twOf a = j, GlobalTheory.IndefiniteRowSideFullHecke.LatticeConditions.Attached D a π (cast (congrArg D.ntw.Sig h.symm) s)
 
-theorem attachedIn_self (a : D.nd.Loc) (π : D.nd.X a) (s : D.ntw.Sig (D.ntw.twOf a)) :
-    AttachedIn D a π _ s ↔ GlobalTheory.IndefiniteRowSideFullHecke.LatticeConditions.Attached D a π s :=
-  ⟨fun ⟨_, h⟩ => h, fun h => ⟨rfl, h⟩⟩
 
 theorem AttachedIn.jS_side {D : D7} {a : D.nd.Loc} {π : D.nd.X a} {j : D.ntw.Tw} {s : D.ntw.Sig j}
     (h : AttachedIn D a π j s) : D.ntw.jS j s = D.nd.j a ∧ D.ntw.side j s = D.ntw.twSide a := by

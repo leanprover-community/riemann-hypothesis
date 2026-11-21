@@ -110,8 +110,6 @@ theorem psiVal_eq {D : DegPre R} {χ : D.X} {x : (FractionRing R)ˣ} (hx : IsPsi
 
 def periodForm (D : DegPre R) (a b : D.X) : Γ := psiVal v D (a + b) - psiVal v D a - psiVal v D b
 
-theorem periodForm_symm (D : DegPre R) (a b : D.X) : periodForm v D a b = periodForm v D b a := by
-  simp only [periodForm, add_comm a b]; abel
 
 end General
 
@@ -182,9 +180,6 @@ def ord_vp {p : ℕ} (hp : IsOverPrime R p) : LatticeVal R ℚ where
   map_mul x y := by rw [(ord_vw R).map_mul]; push_cast; ring
   map_unit u := by rw [(ord_vw R).map_unit]; simp
 
-theorem ord_vp_p {p : ℕ} (hp : IsOverPrime R p) :
-    (ord_vp hp).toFun (toUnitK (p : R) hp.ne_zero) = 1 :=
-  div_self (Int.cast_ne_zero.2 (ramIdx_pos hp).ne')
 
 def psiOrd_vw (D : DegPre R) (χ : D.X) : ℤ := psiVal (ord_vw R) D χ
 
@@ -239,11 +234,6 @@ def normVal_vp (hφ : IsCentred φ) {p : ℕ} (_hp : IsOverPrime R p) : LatticeV
     change Real.log ‖φ (algebraMap R (FractionRing R) u)‖ / _ = 0
     rw [hφ.norm_unit, Real.log_one, zero_div]
 
-theorem normVal_vp_p (hφ : IsCentred φ) {p : ℕ} (hp : IsOverPrime R p) :
-    (normVal_vp hφ hp).toFun (toUnitK (p : R) hp.ne_zero) = 1 := by
-  have e : φ (algebraMap R (FractionRing R) (p : R)) = (p : F) := by simp
-  change Real.log ‖φ (algebraMap R (FractionRing R) (p : R))‖ / _ = 1
-  rw [e]; exact div_self (hφ.log_norm_p_neg hp).2.ne
 
 def psiOrdAt_vp (hφ : IsCentred φ) {p : ℕ} (hp : IsOverPrime R p) (D : DegPre R) (χ : D.X) : ℝ :=
   psiVal (normVal_vp hφ hp) D χ
@@ -259,14 +249,6 @@ theorem isOverPrime_padicInt (p : ℕ) [hp : Fact p.Prime] : IsOverPrime ℤ_[p]
   ne_zero := Nat.cast_ne_zero.2 hp.out.ne_zero
   mem := by rw [PadicInt.maximalIdeal_eq_span_p]; exact Ideal.mem_span_singleton_self _
 
-theorem isCentred_padic (p : ℕ) [Fact p.Prime] :
-    IsCentred (R := ℤ_[p]) (FractionRing.algEquiv ℤ_[p] ℚ_[p]).toRingEquiv.toRingHom where
-  le_one r := by
-    change ‖FractionRing.algEquiv ℤ_[p] ℚ_[p] (algebraMap _ _ r)‖ ≤ 1
-    rw [AlgEquiv.commutes]; exact r.2
-  lt_one r hr := by
-    change ‖FractionRing.algEquiv ℤ_[p] ℚ_[p] (algebraMap _ _ r)‖ < 1
-    rw [AlgEquiv.commutes]; exact PadicInt.mem_nonunits.1 hr
 
 example (p : ℕ) [Fact p.Prime] : ramIdx (isOverPrime_padicInt p) = 1 :=
   ord_vw_uniformiser _ PadicInt.maximalIdeal_eq_span_p

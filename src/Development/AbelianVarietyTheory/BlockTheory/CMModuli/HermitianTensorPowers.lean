@@ -80,23 +80,5 @@ lemma shift_comm {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} (h : Hm.IsHermitian
   refine congrArg (fun t => Complex.exp t * θ (z + v + w)) ?_
   linear_combination (-(k : ℂ) * Real.pi) * h1
 
-lemma shift_factor {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} (h : Hm.IsHermitian) (k : ℕ) (c : ℂ)
-    (v l : Fin g → ℂ) (a : ℤ) (ha : k * (herm Hm v l).im = a) (θ : (Fin g → ℂ) → ℂ)
-    (hθ : ∀ z, θ (z + l) = factor Hm c l z ^ k * θ z) (z : Fin g → ℂ) :
-    shift Hm k v θ (z + l) = factor Hm c l z ^ k * shift Hm k v θ z := by
-  have h1 : herm Hm v l - herm Hm l v = 2 * ((herm Hm v l).im : ℂ) * Complex.I := by
-    rw [herm_swap h v l, Complex.sub_conj]; push_cast; ring
-  have ha' : (k : ℂ) * ((herm Hm v l).im : ℂ) = a := by exact_mod_cast ha
-  have h2 : Complex.exp (a * (2 * Real.pi * Complex.I)) = 1 := Complex.exp_int_mul_two_pi_mul_I a
-  simp only [shift, factor, add_right_comm z l v, hθ, herm_add_left, mul_pow, ← Complex.exp_nat_mul]
-  have h3 : Complex.exp (-(k * Real.pi * (herm Hm z v + herm Hm l v))) *
-      Complex.exp (k * (Real.pi * (herm Hm z l + herm Hm v l) + Real.pi / 2 * herm Hm l l)) =
-      Complex.exp (k * (Real.pi * herm Hm z l + Real.pi / 2 * herm Hm l l)) *
-      Complex.exp (-(k * Real.pi * herm Hm z v)) := by
-    rw [← mul_one (Complex.exp _ * Complex.exp (-(k * Real.pi * herm Hm z v))), ← h2]
-    simp only [← Complex.exp_add]
-    congr 1
-    linear_combination ((k : ℂ) * Real.pi) * h1 + (2 * Real.pi * Complex.I) * ha'
-  linear_combination (c ^ k * θ (z + v)) * h3
 
 end GlobalTheory.IndefiniteRowSideFullHecke.HermitianTensorPowers

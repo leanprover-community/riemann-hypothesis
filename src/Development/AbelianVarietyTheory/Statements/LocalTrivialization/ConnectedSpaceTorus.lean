@@ -231,22 +231,6 @@ example (k : Type) [Field k] : Smooth (splitTorus (Spec (CommRingCat.of k)) ℤ)
     Nonempty (BiTriv (trivCub (splitTorus (Spec (CommRingCat.of k)) ℤ)) (𝟙 _)) :=
   ⟨inferInstance, inferInstance, inferInstance, ⟨BiTriv.triv _⟩⟩
 
-theorem lift_torus (A : Type) [CommRing A] [IsLocalRing A] (J : Ideal A) (hJ : IsNilpotent J) (X : Type)
-    [AddCommGroup X] [Module.Free ℤ X] (ψ : X) :
-    ConnectedSpace (splitTorus (Spec (CommRingCat.of (A ⧸ J))) X).left ∧
-    IsGrpPullback (splitTorus _ X) (splitTorus _ X) (red J) (bcMap (red J) X) ∧
-    (∃ w, IsCPMap (twCP _ (-(ψ + ψ))) (twCP _ (-(ψ + ψ))) (red J) (bcMap (red J) X) (bcMap_hom _ X) w) ∧
-    TorusCompat (red J) (bcMap (red J) X) (𝟙 _) (𝟙 _) ∧
-    Nonempty (BiTriv (twCP (Spec (CommRingCat.of (A ⧸ J))) (-(ψ + ψ))).c (𝟙 _)) ∧
-    Nonempty (BiTriv (twCP (Spec (CommRingCat.of A)) (-(ψ + ψ))).c (𝟙 _)) ∧
-    (∃ σ₀ : CubTriv (twCP (Spec (CommRingCat.of (A ⧸ J))) (-(ψ + ψ))).c (𝟙 _), σ₀.Even) ∧
-    ∃ σ : CubTriv (twCP (Spec (CommRingCat.of A)) (-(ψ + ψ))).c (𝟙 _), σ.Even := by
-  have := SplitTorus.connectedSpace_of_isLocalRing A
-  have : ConnectedSpace (Spec (CommRingCat.of (A ⧸ J))) := SplitTorus.connectedSpace_quotient J fun x hx => by
-    obtain ⟨n, hn⟩ := hJ
-    exact ⟨n, Ideal.mem_bot.1 (hn ▸ Ideal.pow_mem_pow hx n :)⟩
-  exact ⟨connectedSpace_torus _ _, SplitTorus.isGrpPullback_bcMap _ _, ⟨_, isCPMap_bcMap _ _⟩, torusCompat_bcMap _,
-    ⟨BiTriv.triv _⟩, ⟨BiTriv.triv _⟩, ⟨_, twTriv_even _ ψ⟩, ⟨_, twTriv_even _ ψ⟩⟩
 
 example : IsLocalRing (ZMod 4) ∧ IsNilpotent (Ideal.span {(2 : ZMod 4)}) ∧ Ideal.span {(2 : ZMod 4)} ≠ ⊤ ∧
     Ideal.span {(2 : ZMod 4)} ≠ ⊥ := by

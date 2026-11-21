@@ -94,17 +94,7 @@ def thetaNorm {n : ℕ} (q : ℕ) (α : 𝓞 E) (d : ℕ) (P : MvPolynomial (I2.
     (y : Fin n → Fin r → E) : ℝ :=
   Real.pi ^ (-(d : ℝ) / 2) * ‖T.thetaVal q (actL α) P fun k => -T.φ (embR D (y k))‖
 
-theorem exists_col_mem (τ : D.Ψ) (i : Fin (T.X.dim τ.1)) : ∃ a : Fin r, (a : ℕ) = D.p0 + i := by
-  have h1 := T.dim_mem τ
-  have h2 := i.isLt
-  exact ⟨⟨D.p0 + i, by omega⟩, rfl⟩
 
-theorem exists_col_conj (τ : D.Ψ) (i : Fin (T.X.dim (ComplexEmbedding.conjugate τ.1))) :
-    ∃ a : Fin r, (a : ℕ) + i + 1 = D.p0 := by
-  have h1 := T.dim_conj τ
-  have h2 := i.isLt
-  have h3 := D.p0_le
-  exact ⟨⟨D.p0 - 1 - i, by omega⟩, by simp only; omega⟩
 
 end TorusAt
 

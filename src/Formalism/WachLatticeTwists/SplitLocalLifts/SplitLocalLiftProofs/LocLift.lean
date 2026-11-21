@@ -86,18 +86,6 @@ theorem rowLift : StatRowLift := by
   intro hfin
   exact Formalism.RepresentationBoundsCohomology.rowColength O Fs _ ℓ e' h1
 
-theorem rowIm : StatRowIm := by
-  intro O Dw T₁ T₂ _ _ _ _ _ _ ρ₁ ρ₂ π hπ C₁ Hf₁ Fs hFun hC
-  refine ⟨?_, ?_⟩
-  · rintro x ⟨y, hy, rfl⟩
-    obtain ⟨a, ha, rfl⟩ := hC y hy
-    refine ⟨(a : Dw → T₁), a.2, ha, ?_⟩
-    have hm : (fun g => π ((a : Dw → T₁) g)) ∈ coZ1s ρ₂ := (cocycles1MapOfEquivariant ρ₁ ρ₂ π hπ a).2
-    unfold clsOf
-    rw [dif_pos hm]
-    rfl
-  · rintro x ⟨y, hy, rfl⟩
-    exact hFun y hy
 
 theorem locLift : StatLocLift := by
   refine ⟨?_, ?_⟩ <;> intros <;> exact Iff.rfl

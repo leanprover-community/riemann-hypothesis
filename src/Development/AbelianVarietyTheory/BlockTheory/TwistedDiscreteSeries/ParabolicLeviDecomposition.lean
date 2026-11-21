@@ -55,21 +55,6 @@ theorem exists_mul {q : GL (Fin r) k} (hq : q ∈ P.Q) : ∃ m ∈ P.M, ∃ n �
     _ = P.g * (leviEmb k P.e (leviProj k P.e ⟨P.coord q, hq⟩) * u) * P.g⁻¹ := congrArg (P.g * · * P.g⁻¹) e
     _ = _ := by group
 
-theorem sub_one_mem_lieN {u : GL (Fin r) k} (hu : u ∈ P.N) : u.1 - 1 ∈ P.lieN := by
-  intro i j h
-  obtain ⟨h1, h2⟩ := mem_unipRad.1 (show P.coord u ∈ unipRad k P.e from hu)
-  have e : (P.g⁻¹ : GL (Fin r) k).1 * (u.1 - 1) * P.g.1 = (P.coord u).1 - 1 := by
-    rw [coord_apply, mul_sub, sub_mul, mul_one, Units.inv_mul, Units.val_mul, Units.val_mul]
-  rw [e, Matrix.sub_apply, sub_eq_zero]
-  obtain ⟨⟨a, i⟩, rfl⟩ := P.e.surjective i
-  obtain ⟨⟨b, j⟩, rfl⟩ := P.e.surjective j
-  simp only [blk_apply] at h
-  rcases h.lt_or_eq with h | rfl
-  · rw [mem_parab_iff.1 h1 a b i j h, Matrix.one_apply_ne]
-    intro e'
-    exact h.ne' (congrArg Sigma.fst (P.e.injective e'))
-  · rw [h2]
-    simp [Matrix.one_apply]
 
 theorem conj_mem_lieN {q : GL (Fin r) k} (hq : q ∈ P.Q) {X : Matrix (Fin r) (Fin r) k} (hX : X ∈ P.lieN) :
     q.1 * X * (q⁻¹ : GL (Fin r) k).1 ∈ P.lieN := by
@@ -92,8 +77,6 @@ def adN (q : P.M) : P.lieN →ₗ[k] P.lieN :=
   (LinearMap.mulLeftRight k (q.1.1, (q.1⁻¹ : GL (Fin r) k).1)).restrict fun _ hX =>
     P.conj_mem_lieN (P.M_le_Q q.2) hX
 
-theorem coe_adN (q : P.M) (X : P.lieN) :
-    (P.adN q X : Matrix (Fin r) (Fin r) k) = q.1.1 * X * (q.1⁻¹ : GL (Fin r) k).1 := rfl
 
 def detOneSubAd (q : P.M) : k := LinearMap.det (1 - P.adN q)
 
@@ -135,14 +118,6 @@ example {v : HeightOneSpectrum (𝓞 F)} {ϖ : (Fv F v)ˣ} (h : IsUnif ϖ) :
 def IsLeviPart (K : Subgroup (GS F r S)) (μ : GS F r S → MS P) : Prop :=
   ∀ x, ∃ n ∈ NS P, ∃ k ∈ K, x = μ x * n * k
 
-theorem exists_isLeviPart {K : Subgroup (GS F r S)} (h : ∀ x, ∃ q ∈ QS P, ∃ k ∈ K, x = q * k) :
-    ∃ μ, IsLeviPart P K μ := by
-  have : ∀ x, ∃ m : MS P, ∃ n ∈ NS P, ∃ k ∈ K, x = m * n * k := fun x => by
-    obtain ⟨q, hq, k, hk, rfl⟩ := h x
-    choose m hm n hn e using fun v => (P v).exists_mul (hq v trivial)
-    exact ⟨⟨m, fun v _ => hm v⟩, n, fun v _ => hn v, k, hk, congrArg (· * k) (funext e)⟩
-  choose μ hμ using this
-  exact ⟨μ, hμ⟩
 
 section Meas
 
@@ -150,8 +125,6 @@ variable {H : Type} [Group H] [MeasurableSpace H] {T M : Subgroup H}
 
 def measIn (h : T ≤ M) (dt : Measure T) : Measure (T.subgroupOf M) := dt.map (Subgroup.subgroupOfEquivOfLe h).symm
 
-theorem measurable_subgroupOfEquivOfLe_symm (h : T ≤ M) : Measurable (Subgroup.subgroupOfEquivOfLe h).symm :=
-  (measurable_subtype_coe.subtype_mk (h := fun t => h t.2)).subtype_mk
 
 end Meas
 

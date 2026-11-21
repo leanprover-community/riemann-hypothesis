@@ -300,60 +300,6 @@ theorem elim {N m : ℕ} {K : Fin N → Subgroup kˣ} (hK : KHyp k N m K) {g : M
     · rw [e, e']
       simp only [Matrix.mul_assoc]
 
-theorem jpred_ldu : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], ∀ (N m : ℕ) (K : Fin N → Subgroup kˣ), PositivityTheory.Lbc.KHyp k N m K → ∀ g : GL (Fin N) k, PositivityTheory.Lbc.JPred k N m K g → ∃ a b c : GL (Fin N) k, a ∈ PositivityTheory.Lbc.Nlo k N ∧ PositivityTheory.Lbc.JPred k N m K a ∧ b ∈ PositivityTheory.Lbc.Tor k N ∧ PositivityTheory.Lbc.JPred k N m K b ∧ c ∈ PositivityTheory.Lbc.Nup k N ∧ PositivityTheory.Lbc.JPred k N m K c ∧ g = a * b * c := by
-  intro k _ _ _ _ N m K hK g hg
-  obtain ⟨L, H, U, hL, hU, hH, e⟩ := elim hK (g := (g : Matrix (Fin N) (Fin N) k))
-    ⟨hg.1, hg.2, fun i j _ h => by omega⟩ N le_rfl
-  have dL : L.det = 1 := by
-    rw [Matrix.det_of_lowerTriangular L (fun i j h => hL.1 i j h)]
-    simp [hL.2.1]
-  have dU : U.det = 1 := by
-    rw [Matrix.det_of_upperTriangular (M := U) (fun i j h => hU.1 i j h)]
-    simp [hU.2.1]
-  have dH : IsUnit H.det := by
-    have h1 : IsUnit (g : Matrix (Fin N) (Fin N) k).det :=
-      (Matrix.isUnit_iff_isUnit_det _).1 g.isUnit
-    rwa [e, Matrix.det_mul, Matrix.det_mul, dL, dU, one_mul, mul_one] at h1
-  obtain ⟨a, ha⟩ := (Matrix.isUnit_iff_isUnit_det L).2 (by rw [dL]; exact isUnit_one)
-  obtain ⟨b, hb⟩ := (Matrix.isUnit_iff_isUnit_det H).2 dH
-  obtain ⟨c, hc⟩ := (Matrix.isUnit_iff_isUnit_det U).2 (by rw [dU]; exact isUnit_one)
-  refine ⟨a, b, c, mem_Nlo_of a ?_ ?_, ⟨?_, ?_⟩, ?_, ⟨?_, ?_⟩, mem_Nup_of c ?_ ?_, ⟨?_, ?_⟩, ?_⟩
-  · intro i j h
-    rw [ha]
-    exact hL.1 i j h
-  · intro i
-    rw [ha]
-    exact hL.2.1 i
-  · intro i
-    refine ⟨1, one_mem _, ?_⟩
-    rw [ha, hL.2.1, Units.val_one]
-  · intro i j h
-    rw [ha]
-    exact hL.2.2 i j h
-  · refine GlobalTheory.CompanionTheory.LbElem.ConjMonomial.mem_tor_of_offDiag b fun i j h => ?_
-    rw [hb]
-    exact hH.2.2 i j h (Or.inl i.2)
-  · intro i
-    rw [hb]
-    exact hH.1 i
-  · intro i j h
-    rw [hb]
-    exact hH.2.1 i j h
-  · intro i j h
-    rw [hc]
-    exact hU.1 i j h
-  · intro i
-    rw [hc]
-    exact hU.2.1 i
-  · intro i
-    refine ⟨1, one_mem _, ?_⟩
-    rw [hc, hU.2.1, Units.val_one]
-  · intro i j h
-    rw [hc]
-    exact hU.2.2 i j h
-  · apply Units.ext
-    rw [Units.val_mul, Units.val_mul, ha, hb, hc]
-    exact e
 
 end GlobalTheory.CompanionTheory.LbElem.IwahoriLDU
 

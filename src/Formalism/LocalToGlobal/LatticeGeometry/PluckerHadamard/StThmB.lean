@@ -105,8 +105,6 @@ def ThmBI3R (E : ExtThmB U) : Prop :=
     (YU U h lev hlev).semipos ((YU U h lev hlev).Mbar B lam s) ∧
       (YU U h lev hlev).nefFib ((YU U h lev hlev).Mbar B lam s)
 
-theorem thmBI3R_of (E : ExtThmB U) (h3 : ThmBI3 U h lev hlev E) : ThmBI3R U h lev hlev E :=
-  fun _ => ⟨1, one_pos, fun B lam s hB hr _ hs _ hd hg => h3 B lam s hB hr hs hd hg⟩
 
 def ThmBI5 (P : ExtPtHt U) : Prop :=
   ∀ c0 : ℝ, 0 < c0 → ∃ t0 : ℝ, 0 < t0 ∧ ∃ C4 : ℝ, ∀ B : ℝ, 2 ≤ B → ∀ lam : Wts w, RatW lam →

@@ -235,10 +235,5 @@ theorem jets_shape : JetsShape := by
   · exact jetOne' K R l linv ph hFr.1 hl hFr.2.2 hN h2
   · exact (third_jet_integral K R l linv ph hFr hF1).2 i h3
 
-theorem sum_two_units_product : SumTwoUnitsProd := by
-  intro A B _ _ hA hB x
-  obtain ⟨u1, v1, h1⟩ := hA x.1
-  obtain ⟨u2, v2, h2⟩ := hB x.2
-  exact ⟨MulEquiv.prodUnits.symm (u1, u2), MulEquiv.prodUnits.symm (v1, v2), Prod.ext h1 h2⟩
 
 end Formalism.L2.Th1.C

@@ -379,11 +379,6 @@ theorem a3field_of_a2indep_of_a3one (hI : LemmaA2indep) (h1 : LemmaA3one) : Lemm
 
 end ExponentSetCounting
 
-theorem lemmaA3one_of : LemmaA2indep → PathIdxFinite → PolBRank → LemmaA3top → FactSplit → CountCont →
-    StdCountGT → LemmaA3one :=
-  fun hI hfin hR hT hF hC _ => ExponentSetCounting.a3one_of_factSplit_of_countCont hI hfin hR hT hF hC
 
-theorem lemmaA3field_of : LemmaA2indep → LemmaA3one → LemmaA3field :=
-  ExponentSetCounting.a3field_of_a2indep_of_a3one
 
 end Formalism.InvariantFactorPaths.GelfandTsetlinBases

@@ -108,41 +108,5 @@ theorem scale_eq (ε : Fin n → Bool) {P P₂ : Matrix (Fin n) (Fin n) ℂ} (hP
 
 end Scale
 
-theorem fdegHpkHC_of (hHC : PI.HCFdeg) : Formalism.FourierDecayAlt.P.CutBP.Jmu.FdegHpkHC := by
-  intro k r ε μG hG
-  obtain ⟨cH, hcH, hH⟩ := hHC (2 * r + k + 1) ε
-  have : SigmaFinite μG := hG.1
-  have key : ∀ P, IsCayleyU k r ε P → ∃ c : ℝ≥0∞, c ≠ 0 ∧ c ≠ ∞ ∧
-      μG = (c • muG ε).map (PI.UnitaryGroupMassFormula.BesselL2FixAtZero.conjPrime₂ ε P) := by
-    intro P hP
-    have hconc : μG {x | Matrix.of x ∉ PI.UpqRep.UH (Pᴴ * Jm ε * P)} = 0 := by
-      rw [hP.1.2]; exact hG.2.2.1
-    have hinv : ∀ s ∈ PI.UpqRep.UH (Pᴴ * Jm ε * P), μG.map (fun x => Matrix.of.symm (s * Matrix.of x)) = μG := by
-      rw [hP.1.2]; intro s hs; exact hG.2.2.2 s hs
-    exact PI.UnitaryGroupMassFormula.BesselL2FixAtZero.haar_transport ε P hP.1.1 μG hG.2.1 hconc hinv
-  by_cases hex : ∃ P, IsCayleyU k r ε P
-  swap
-  · refine ⟨1, one_pos, ?_⟩
-    intro lam H _ _ _ σ w _ hds _
-    obtain ⟨P, hP, -⟩ := hds
-    exact absurd ⟨P, hP⟩ hex
-  obtain ⟨P₀, hP₀⟩ := hex
-  obtain ⟨c₀, hc0, hctop, hμ0⟩ := key P₀ hP₀
-  refine ⟨cH / c₀.toReal, div_pos hcH (ENNReal.toReal_pos hc0 hctop), ?_⟩
-  intro lam H _ _ _ σ w hl hds hw
-  obtain ⟨P, hP, hDS⟩ := hds
-  obtain ⟨c, -, hct, hμ⟩ := key P hP
-  have hcc : c = c₀ := scale_eq ε hP.1.1 hP₀.1.1 (by rw [hP.1.2, hP₀.1.2]) c c₀ hct (hμ.symm.trans hμ0)
-  have hF := hH lam H (fun g => σ (P⁻¹ * g * P)) hl hDS
-  have hread := fdegOf_eq (muG ε) (fun g => σ (P⁻¹ * g * P)) _ w hF hw
-  have hE := PI.UnitaryGroupMassFormula.BesselL2FixAtZero.conjP_measurableEmbedding ε P hP.1.1
-  unfold PI.BesselPeriodGGP.fdegH
-  rw [hμ, hE.integral_map, integral_smul_measure]
-  have hfun : (fun g : UJ ε => ‖⟪w, σ (Matrix.of (PI.UnitaryGroupMassFormula.BesselL2FixAtZero.conjPrime₂ ε P g)) w⟫_ℂ‖ ^ 2) =
-      fun g => ‖coefOn (ε := ε) (fun g => σ (P⁻¹ * g * P)) w w g‖ ^ 2 := rfl
-  rw [hfun, hcc, smul_eq_mul, div_mul_eq_div_div_swap]
-  unfold fdegOf at hread
-  rw [hread]
-  ring
 
 end PI.UnitaryGroupMassFormula.FdegHpk

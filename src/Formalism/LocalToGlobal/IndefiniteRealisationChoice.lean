@@ -165,10 +165,6 @@ theorem cut_of_stable {eps : ℝ} {Fm : FamP eps}
   obtain ⟨x0, h⟩ := h
   exact ⟨x0, fun x hx i μ _ => Formalism.L2.G.ServJoint.cutUp_of_stable _ μ fun a y hy => h x hx i μ a y hy⟩
 
-theorem cut_of_otie {eps : ℝ} {Fm : FamP eps} (h : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, Formalism.L2.G.ServJoint.OTie (Fm.D x i)) :
-    ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, ∀ μ, Formalism.BasicNotions.DV.Used (Fm.D x i) μ → Formalism.L2.G.ServJoint.CutUp (Fm.D x i) μ := by
-  obtain ⟨x0, h⟩ := h
-  exact ⟨x0, fun x hx i μ hμ => Formalism.L2.G.ServJoint.cutUpOfOTie _ (h x hx i) μ hμ⟩
 
 open Formalism.L2.DIV in
 theorem RemainingDivisionBounds.toRows {eps : ℝ} {Fm : FamP eps} {Rt : Σ' x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, DivisionRowsKernel (Fm.ex x hx i)}

@@ -350,52 +350,5 @@ theorem exists_of_principal (σ : E →ₐ[F] E) (hσ : IsCMExt F E σ) [IsPrinc
 
 end General
 
-theorem exists_nontrivial_heckeChar : ∃ (F E : Type) (_ : Field F) (_ : NumberField F) (_ : Field E) (_ : NumberField E) (_ : Algebra F E) (σ : E →ₐ[F] E), IsCMExt F E σ ∧ ∃ χ : (AE F E)ˣ →* Circle, IsHeckeChar F E χ ∧ (∀ a : (AF F)ˣ, χ (idF F E a) = 1) ∧ χ ≠ 1 ∧ ∃ P : HeightOneSpectrum (𝓞 E), chiAt σ χ P ≠ 0 ∧ chiAt σ χ P ≠ 1 := by
-  let K := CyclotomicField 3 ℚ
-  haveI : IsCMField K := IsCyclotomicExtension.Rat.isCMField K (S := {3}) ⟨3, rfl, by norm_num⟩
-  haveI := IsCyclotomicExtension.Rat.three_pid K
-  have hζ := IsCyclotomicExtension.zeta_spec 3 ℚ K
-  let σ : K →ₐ[maximalRealSubfield K] K := IsCMField.complexConj K
-  have hσ : IsCMExt (maximalRealSubfield K) K σ :=
-    ⟨inferInstance, inferInstance, Algebra.IsQuadraticExtension.finrank_eq_two _ _,
-      fun τ x => IsCMField.complexEmbedding_complexConj K τ x⟩
-  refine ⟨maximalRealSubfield K, K, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance, σ, hσ,
-    exists_of_principal σ hσ (k := 6) (fun u => ?_) (3 + hζ.toInteger) ?_⟩
-  · have hu := IsCyclotomicExtension.Rat.Three.Units.mem hζ u
-    generalize hη : (IsUnit.unit _ : (𝓞 K)ˣ) = η at hu
-    have h3 : η ^ 3 = 1 := by
-      apply Units.ext
-      rw [← hη, Units.val_pow_eq_pow_val, IsUnit.unit_spec]
-      exact hζ.toInteger_isPrimitiveRoot.pow_eq_one
-    have h6 : η ^ 6 = 1 := by rw [show 6 = 3 * 2 from rfl, pow_mul, h3, one_pow]
-    have ev : Even 6 := by decide
-    simp only [List.mem_cons, List.not_mem_nil, or_false] at hu
-    rcases hu with rfl | rfl | rfl | rfl | rfl | rfl <;>
-      simp only [ev.neg_pow, one_pow, h6, pow_right_comm _ 2 6]
-  · obtain ⟨ζ, hz⟩ : ∃ ζ, ζ = IsCyclotomicExtension.zeta 3 ℚ K := ⟨_, rfl⟩
-    change σ (3 + IsCyclotomicExtension.zeta 3 ℚ K) ^ _ ≠ (3 + IsCyclotomicExtension.zeta 3 ℚ K) ^ _
-    rw [← hz] at hζ ⊢
-    have h1 : ζ ^ 2 = -1 - ζ := by
-      have := hζ.geom_sum_eq_zero (by norm_num)
-      simp only [Finset.sum_range_succ, Finset.sum_range_zero] at this
-      linear_combination this
-    have a2 : (3 + ζ) ^ 2 = 8 + 5 * ζ := by linear_combination h1
-    have a4 : (8 + 5 * ζ) ^ 2 = 39 + 55 * ζ := by linear_combination 25 * h1
-    have a8 : (39 + 55 * ζ) ^ 2 = -1504 + 1265 * ζ := by linear_combination 3025 * h1
-    have a12 : (3 + ζ) ^ (2 * 6) = -128231 - 102960 * ζ := by
-      rw [show 2 * 6 = 2 * 2 * 3 from rfl, pow_mul, pow_mul, a2, a4, pow_succ, a8]
-      linear_combination 69575 * h1
-    intro h
-    rw [← map_pow, a12, map_sub, map_mul, map_neg, map_ofNat, map_ofNat] at h
-    have h2 : σ ζ = ζ := by linear_combination (-1 / 102960 : K) * h
-    obtain ⟨τ⟩ : Nonempty (K →+* ℂ) := inferInstance
-    have h3 := hσ.2.2.2 τ ζ
-    rw [h2] at h3
-    have h4 := congrArg τ h1
-    rw [map_pow, map_sub, map_neg, map_one] at h4
-    obtain ⟨r, hr⟩ := Complex.conj_eq_iff_real.1 h3.symm
-    rw [hr] at h4
-    have h5 : r ^ 2 = -1 - r := by exact_mod_cast h4
-    nlinarith [sq_nonneg (2 * r + 1)]
 
 end GlobalTheory.HeckeInhabitant

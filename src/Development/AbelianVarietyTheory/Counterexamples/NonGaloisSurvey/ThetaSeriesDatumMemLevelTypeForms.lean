@@ -40,28 +40,7 @@ theorem clause_two (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : Bool) {Sg : Set (Y.D
   rw [AO_apply]
   exact Submodule.smul_mem _ _ ⟨y, theta_le_integral_forms Y E i j b h hy, rfl⟩
 
-theorem span_A_eq (i : X.Tw) (j : ℕ) (b : Bool) (T : Submodule (X.O i) (Y.Fm i j b)) :
-    Submodule.span (FractionRing (X.O i)) ((T.map (AO Y i j b) : Submodule (X.O i) (Y.Fm i j b)) : Set (Y.Fm i j b)) =
-      Submodule.span (FractionRing (X.O i)) ((T.map (eO Y i j b) : Submodule (X.O i) (Y.Fm i j b)) : Set (Y.Fm i j b)) := by
-  haveI := charZero_K (X := X) i
-  have hc : ((D.what₂.restRowsFiniteGroupCard : ℕ) : FractionRing (X.O i)) ≠ 0 := Nat.cast_ne_zero.2 D.what₂.restRowsFiniteGroupCard_pos.ne'
-  apply le_antisymm <;> refine Submodule.span_le.2 ?_
-  · rintro _ ⟨y, hy, rfl⟩
-    rw [AO_apply]
-    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨y, hy, rfl⟩)
-  · rintro _ ⟨y, hy, rfl⟩
-    have : eO Y i j b y = ((D.what₂.restRowsFiniteGroupCard : ℕ) : FractionRing (X.O i))⁻¹ • AO Y i j b y := by
-      rw [AO_apply, smul_smul, inv_mul_cancel₀ hc, one_smul]; rfl
-    rw [this]
-    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨y, hy, rfl⟩)
 
-theorem fullRk_iff (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : Bool) :
-    FullRk Y E i j b (SgJ Y E i j b) ↔
-      V0 Y i j b ≤ Submodule.span (FractionRing (X.O i)) (eTh Y i j b (SgJ Y E i j b) : Set (Y.Fm i j b)) := by
-  unfold FullRk eTh
-  rw [← span_A_eq]
-  refine ⟨fun h => h.2.2.ge, fun h => ⟨subset_rfl, clause_two Y E i j b subset_rfl,
-    le_antisymm (Submodule.span_le.2 (clause_two Y E i j b subset_rfl)) h⟩⟩
 
 def reSeries (Dt : ∀ (_ : X.Tw) (_ : ℕ) (_ : Bool), Type) (t : ∀ i j b, Dt i j b → Y.Fm i j b) :
     NExp D.R D.host D.what₂ D.LL0 N X :=

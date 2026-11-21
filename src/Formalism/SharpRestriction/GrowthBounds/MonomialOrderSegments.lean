@@ -24,8 +24,5 @@ theorem stmtE (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.PlaneGramD
 theorem stmtEF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Formalism.MainNotions.PlaneGramData.FamilyClosedForm Fm :=
   ⟨26, 2, 24, 60, by norm_num, by norm_num, by norm_num, by norm_num, 0, fun _ hCH _ _ _ => stmt _ hCH⟩
 
-theorem stmtEDF (Fm : Formalism.MainNotions.DFamP) : Formalism.MainNotions.PlaneGramData.DerivativeStatementClosedDesign Fm :=
-  ⟨26, 2, 24, 60, by norm_num, by norm_num, by norm_num, by norm_num,
-    fun _ _ _ => ⟨0, fun _ hCH _ _ _ => stmt _ hCH⟩⟩
 
 end Formalism.MainNotions.PlaneGram

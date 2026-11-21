@@ -171,19 +171,7 @@ theorem bkB_core (D : D7) (l : ℕ) [Fact l.Prime] (K : FinExt l) (hD : DualD ((
   exact hD LL O hO L1 hL1 A A' LA LA' m hm _ le_sup_right (hfD_le hTo) s hs
     fun d hd H' => H d (h2 d hd H')
 
-theorem bkA_of_all (hAll : ∀ (D : D7) (l : ℕ) [Fact l.Prime] (K : FinExt l), All ((D.loc l).PD K)) :
-    ∀ D : D7, LocalSituation.adm5 D → LocalSituation.adm6 D → LocalSituation.adm7 D → LocalSituation.adm8 D → ∀ (l : ℕ) [Fact l.Prime]
-      (K : FinExt l), LocalSituation.bkADim ((D.loc l).PD K) → bkACore ((D.loc l).PD K) := by
-  intro D _ _ _ h8 l _ K hdim
-  obtain ⟨-, -, -, -, -, -, -, hEu, hL⟩ := hAll D l K
-  exact bkA_core D h8 l K hL (fun LL _ _ _ O _ _ hO A A' P hP => (hEu LL O hO A A' P hP).2.le) hdim
 
-theorem bkB_of_all (hAll : ∀ (D : D7) (l : ℕ) [Fact l.Prime] (K : FinExt l), All ((D.loc l).PD K)) :
-    ∀ (D : D7) (l : ℕ) [Fact l.Prime] (K : FinExt l), bkACore ((D.loc l).PD K) →
-      bkBCore ((D.loc l).PD K) := by
-  intro D l _ K hA
-  obtain ⟨-, -, -, hD, hC, -⟩ := hAll D l K
-  exact bkB_core D l K hD hC hA
 
 theorem local_bounds_give (hT : Formalism.GaloisCohomology.LocalTateDualityK) (hE : Formalism.GaloisCohomology.LocalEulerCharK)
     (hA : ∀ D : D7, LocalSituation.adm5 D → LocalSituation.adm6 D → LocalSituation.adm7 D → LocalSituation.adm8 D → ∀ (l : ℕ) [Fact l.Prime]
@@ -201,8 +189,5 @@ theorem local_bounds_give (hT : Formalism.GaloisCohomology.LocalTateDualityK) (h
   have hc := GlobalTheory.T.blochKato_cokernel_of_duality_euler hT hE D l K ha hb
   exact ⟨ha, hd.1, hd.2, hb, hc⟩
 
-theorem local_bound_of_all_inputs : Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK →
-    (∀ (D : D7) (l : ℕ) [Fact l.Prime] (K : FinExt l), All ((D.loc l).PD K)) → ∀ D : D7, LocalSituation.Conclusion5 D :=
-  fun hT hE hAll => local_bounds_give hT hE (bkA_of_all hAll) (bkB_of_all hAll)
 
 end PositivityTheory.LocalTateOrthogonality.Bk

@@ -104,11 +104,6 @@ theorem mem_Zl_of_mem_Z {η : ℕ} {w : P.Pol} (hw : w ∈ Δ.Z η) : w ∈ Δ.Z
 theorem cls_mem_Z {η : ℕ} {y : Vec K a ι} (hy : y ∈ Δ.Y η) : P.cls y ∈ Δ.Z η :=
   ⟨⟨y, hy.1, rfl⟩, Δ.cls_mem_invariants hy.2⟩
 
-theorem vPol_mem_Z {η : ℕ} {w : P.Pol} (hw : w ∈ Δ.Z η) : P.vPol w ∈ Δ.Z η := by
-  obtain ⟨⟨y, hy, rfl⟩, h⟩ := Δ.mem_Z.1 hw
-  refine ⟨⟨_, (P.EM η).smul_mem (uIn (A O K) ^ e) hy, rfl⟩, fun g => ?_⟩
-  rw [PhiMod.vPol_cls, actPol_cls, act_X_pow_smul, ← PhiMod.vPol_cls, ← actPol_cls, h g,
-    PhiMod.vPol_cls]
 
 def actO : Representation O (TameGal K l e a) (Vec K a ι) where
   toFun g := (Δ.act g).restrictScalars O
@@ -216,12 +211,7 @@ theorem onPol_act (g : TameGal K l e a) (w : P.Pol) :
   obtain ⟨y, rfl⟩ := P.Man.mkQ_surjective w
   rw [actPol_cls, BK.Hom.onPol_cls, BK.Hom.onPol_cls, actPol_cls, F.app_act]
 
-theorem onPol_mem_Z {η : ℕ} {w : P.Pol} (hw : w ∈ Δ₁.Z η) : F.onPol w ∈ Δ₂.Z η := by
-  obtain ⟨⟨y, hy, rfl⟩, h⟩ := Δ₁.mem_Z.1 hw
-  exact Δ₂.mem_Z.2 ⟨⟨_, F.app_mem_EM hy, rfl⟩, fun g => by rw [← F.onPol_act, h g]⟩
 
-theorem onPol_mem_Zl {η : ℕ} {w : P.Pol} (hw : w ∈ Δ₁.Zl η) : F.onPol w ∈ Δ₂.Zl η :=
-  ⟨F.onPol_mem_PolEta hw.1, fun g => by rw [← F.onPol_act, hw.2 g]⟩
 
 end Hom
 
@@ -319,26 +309,6 @@ theorem plus_lower {n : ℕ} (h : ∀ v ∈ P.M, E K l e ^ n • v ∈ P.L) (hn 
       exact sub_mem ((P.plus hy).L.smul_mem (EIn l e (A O K) ^ n)
         ((P.plus hy).phi_mem_L ((P.plus hy).bas_mem_M _))) (Hom.app_mem_ext _ le_rfl hn)) le_rfl
 
-theorem isExactTriple_plus [NormedAlgebra ℚ_[l] K] [NeZero e] :
-    IsExactTriple (P.plusInl hy) (P.plusProj hy) where
-  inj v _ h := by
-    rw [plusInl_app] at h
-    exact funext fun τ => funext fun i => congrFun (congrFun h τ) (.inl i)
-  exact v hv := by
-    rw [← join_eta v, plusProj_app]
-    constructor
-    · intro h
-      refine ⟨fun τ i => v τ (.inl i), mem_tot.2 fun τ i => mem_tot.1 hv τ (.inl i), ?_⟩
-      refine (P.plusInl_app hy _).trans (congrArg _ ?_)
-      exact funext fun τ => (congrFun (congrFun h τ) ()).symm
-    · rintro ⟨w, -, hw⟩
-      have := (P.plusInl_app hy w).symm.trans hw
-      exact funext fun τ => funext fun _ => (congrFun (congrFun this τ) (.inr ())).symm
-  finiteLength := by
-    have : Subsingleton (P.plusProj hy).coker := Submodule.Quotient.subsingleton_iff.2 <|
-      eq_top_iff.2 fun v _ => ⟨join 0 fun τ => v.1 τ (), (P.join_mem_Mext hy).2
-        ⟨zero_mem _, fun τ => mem_tot.1 v.2 τ ()⟩, P.plusProj_app hy _ _⟩
-    exact .of_subsingleton
 
 end PhiMod
 

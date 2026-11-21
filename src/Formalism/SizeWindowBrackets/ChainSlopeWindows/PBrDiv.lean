@@ -13,168 +13,21 @@ namespace Formalism.LFunctionChainParameters.LBrDiv
 
 open Formalism Formalism.D5 Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.LErr Formalism.LFunctionChainParameters.LChain2
 
-theorem periodicity_of_text : PerOfText := by
-  intro U0 W Top m f D Pl Emb _ hne logOmτ logOm hT
-  refine ⟨fun hM => ?_, fun ρ => hT ρ⟩
-  obtain ⟨ρ⟩ := hne
-  exact (hM ρ).symm.trans (hT ρ)
 
-theorem divisibility_iff_free : DivIffFree := by
-  intro U0 W Top _ m f D C
-  exact Iff.rfl
 
-theorem divisibility_of_free : DivOfFree := by
-  intro U0 W Top _ m f D C logOm h hp
-  have e : logOm = D.logOm := hp
-  subst e
-  exact h
 
-theorem divisibility_principal_shift : DivMainShift := by
-  intro Top _ m aT logT Om Om'
-  rw [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib]
-  exact Finset.sum_congr rfl fun t _ => by ring
 
-theorem divisibility_free_shift : DivFreeShift := by
-  intro U0 W Top _ m f D C logOm logOm'
-  have key : ∀ u0 (u : W u0),
-      (∑ t, ((m : ℝ) * (ph (D.aT t) - D.aT t * logOm) - D.aT t * Real.log (D.T u0 u)))
-        = (∑ t, ((m : ℝ) * (ph (D.aT t) - D.aT t * logOm') - D.aT t * Real.log (D.T u0 u)))
-          + (m : ℝ) * D.sumA * (logOm' - logOm) := by
-    intro u0 u
-    have := divisibility_principal_shift Top (m : ℝ) D.aT (Real.log (D.T u0 u)) logOm' logOm
-    rw [this]
-    unfold Data.sumA
-    ring
-  constructor
-  · intro h u0 u
-    have := h u0 u
-    rw [key u0 u] at this
-    linarith
-  · intro h u0 u
-    have := h u0 u
-    rw [key u0 u]
-    linarith
 
-theorem divisibility_of_free_le : DivOfFreeLe := by
-  intro U0 W Top _ m f D C logOm ha h hp
-  have h2 := (divisibility_free_shift U0 W Top m f D C logOm D.logOm).mp h
-  intro u0 u
-  have h3 := h2 u0 u
-  have hs : 0 ≤ D.sumA := Finset.sum_nonneg fun t _ => ha t
-  have hle : D.logOm - logOm ≤ 0 := by
-    have : D.logOm ≤ logOm := hp
-    linarith
-  have hm : 0 ≤ (m : ℝ) * D.sumA := mul_nonneg (Nat.cast_nonneg m) hs
-  have : (m : ℝ) * D.sumA * (D.logOm - logOm) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hm hle
-  linarith
 
-theorem omega_size_of_periodicity : OmSizeOfPer := by
-  intro U0 W Top m f D logOm A B hp hg hA hB hL
-  have hp' : logOm = D.gam + Real.log (Real.pi / D.v) - D.LpL := hp
-  rw [hp']
-  have h1 := abs_le.mp hg
-  have h2 := abs_le.mp hA
-  have h3 := abs_le.mp hB
-  exact abs_le.mpr ⟨by linarith [h1.1, h2.1, h3.2], by linarith [h1.2, h2.2, h3.1]⟩
 
-theorem periodicity_iff_v : PerIffV := by
-  intro U0 W Top m f D logOm hv
-  unfold Per
-  rw [Real.log_div Real.pi_pos.ne' hv.ne']
-  constructor
-  · intro h
-    have h1 : Real.log D.v = Real.log Real.pi + (D.gam - D.LpL - logOm) := by linarith
-    calc D.v = Real.exp (Real.log D.v) := (Real.exp_log hv).symm
-      _ = Real.pi * Real.exp (D.gam - D.LpL - logOm) := by
-        rw [h1, Real.exp_add, Real.exp_log Real.pi_pos]
-  · intro h
-    have h1 : Real.log D.v = Real.log Real.pi + (D.gam - D.LpL - logOm) := by
-      rw [h, Real.log_mul Real.pi_pos.ne' (Real.exp_pos _).ne', Real.log_exp]
-    linarith
 
-theorem periodicity_solvable : PerSolvable := by
-  intro gam LpL logOm
-  refine ⟨Real.pi * Real.exp (gam - LpL - logOm), mul_pos Real.pi_pos (Real.exp_pos _), ?_⟩
-  rw [Real.log_div Real.pi_pos.ne' (mul_pos Real.pi_pos (Real.exp_pos _)).ne',
-    Real.log_mul Real.pi_pos.ne' (Real.exp_pos _).ne', Real.log_exp]
-  ring
 
-theorem free_count_of_count : CountFreeOfCount := by
-  intro U0 W Top _ m f D C logOm hv hw hp
-  have e : ∀ u0 j ρ, Real.log (D.w u0 j ρ * D.v / Real.pi)
-      = Real.log (D.w u0 j ρ) + (D.gam - D.LpL - logOm) := by
-    intro u0 j ρ
-    have hp' : logOm = D.gam + Real.log (Real.pi / D.v) - D.LpL := hp
-    rw [Real.log_div Real.pi_pos.ne' hv.ne'] at hp'
-    rw [Real.log_div (mul_pos (hw u0 j ρ) hv).ne' Real.pi_pos.ne',
-      Real.log_mul (hw u0 j ρ).ne' hv.ne']
-    linarith
-  unfold CountFree
-  simp only [e]
 
-theorem v_elimination : VElim := by
-  intro U0 W Top _ m f D C hw
-  constructor
-  · rintro ⟨v, hv, hD, hC⟩
-    refine ⟨(withV D v).logOm, fun u0 u => hD u0 u, ?_, fun u0 u => ⟨(hC u0 u).2.1, (hC u0 u).2.2⟩⟩
-    have h := (free_count_of_count U0 W Top m f (withV D v) C (withV D v).logOm hv hw rfl).mpr
-      (fun u0 u => (hC u0 u).1)
-    exact h
-  · rintro ⟨logOm, h1, h2, h3⟩
-    obtain ⟨v, hv, hp⟩ := periodicity_solvable D.gam D.LpL logOm
-    refine ⟨v, hv, divisibility_of_free U0 W Top m f (withV D v) C logOm h1 hp, ?_⟩
-    intro u0 u
-    exact ⟨(free_count_of_count U0 W Top m f (withV D v) C logOm hv hw hp).mp h2 u0 u,
-      (h3 u0 u).1, (h3 u0 u).2⟩
 
 lemma ph_eq (y : ℝ) : Formalism.LatticeIndexTer.ph y = ph y := rfl
 
-theorem divisibility_of_conclusion : DivOfConcl := by
-  intro U0 W Top _ m f D C logOm C0 Pl e aP FoP haP hFo hC ha hLa hB hx h u0 u
-  have h1 := h u0 u
-  unfold ThmConcl at h1
-  rw [Finset.sum_map, Finset.card_map, Finset.card_univ] at h1
-  simp only [haP, ph_eq] at h1
-  rw [hFo u0]
-  have hX : 0 ≤ (Fintype.card Top : ℝ) * D.a * D.La :=
-    mul_nonneg (mul_nonneg (Nat.cast_nonneg _) ha) hLa
-  have hY : 0 ≤ (m : ℝ) * (D.B0 + D.Nc) * D.x ^ (C.eDiv * D.ε) :=
-    mul_nonneg (mul_nonneg (Nat.cast_nonneg _) hB) (Real.rpow_nonneg hx _)
-  have h2 := mul_le_mul_of_nonneg_right hC (add_nonneg hX hY)
-  have e1 : C.cDiv * D.nT * D.a * D.La + C.cDiv * (m : ℝ) * (D.B0 + D.Nc) * D.x ^ (C.eDiv * D.ε)
-      = C.cDiv * ((Fintype.card Top : ℝ) * D.a * D.La + (m : ℝ) * (D.B0 + D.Nc) * D.x ^ (C.eDiv * D.ε)) := by
-    unfold Data.nT
-    ring
-  linarith
 
-theorem divisibility_of_theorem : DivOfThm := by
-  intro T U0 W Top _ m f D C P logOm Pl _ e _ aP St haP hFo hC hP hS
-  obtain ⟨p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,
-    p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33⟩ := hP
-  have hb : 0 < D.b := by rw [p4]; exact Real.exp_pos _
-  have hx0 : 0 ≤ D.x := by linarith
-  have ha : 0 ≤ D.a := by rw [p5]; exact mul_nonneg hx0 hb.le
-  have hLa : 0 ≤ D.La := le_trans (abs_nonneg _) p22
-  have hB0 : 0 ≤ D.B0 := by
-    rw [p10]
-    exact mul_nonneg (mul_nonneg (mul_nonneg (by linarith) (by linarith)) hb.le) (Real.rpow_nonneg hx0 _)
-  refine divisibility_of_conclusion U0 W Top m f D C logOm P.C0 Pl e aP (fun u0 => D.Fo u0 / 2) haP
-    (fun u0 => by ring) hC.ge ha hLa (by linarith) hx0 ?_
-  intro u0 u
-  obtain ⟨s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17⟩ := hS u0 u
-  have hF : D.Fo u0 / 2 = (St u0 u).FoP := by rw [hFo u0 u]; ring
-  rw [hF]
-  exact T (Fin m) Pl (Finset.univ.map e) (D.muCC u0) (St u0 u).mu0 (St u0 u).FoP (D.h u0 u) (St u0 u).hP
-    (St u0 u).mlam (Real.log (D.T u0 u)) (St u0 u).hK aP (St u0 u).phν (St u0 u).nν (St u0 u).fa
-    D.x D.ε D.L D.b D.a P.rd D.La D.B0 D.Nc (D.x ^ (C.eDiv * D.ε)) (m : ℝ) P.f D.k P.N P.S P.tt P.η P.w'' D.b'
-    P.dC P.lam0 P.C0 (St u0 u).Lpass (St u0 u).Eb (St u0 u).e6 (St u0 u).eP logOm (St u0 u).eK (St u0 u).pq
-    (St u0 u).w (St u0 u).eE (St u0 u).δ
-    s1 s2 s3 s4 s5 s6 s7 s8 p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12 (by simp) p13 p14 p15 p16 p17 p18 p19 p20 p21
-    s9 s10 p22 p23 p24 p25 p26 p27 p28 p29 p30 p31 p32 p33 s11 s12 s13 s14 s15 s16 s17
 
-theorem exponent_of_divisibility : XeOfEDiv := by
-  intro x ε eDiv hx hε he
-  exact Real.rpow_le_rpow_of_exponent_le hx (by nlinarith)
 
 theorem construct_parameter_definitions : MkParDefs := by
   intro H _ _ _ W _ m G cHH D ell N TT T2 a w Fm
@@ -236,82 +89,8 @@ theorem height_comparison_of_constant : HeightVariationOfCorrectedHeightBound :=
     add_nonneg (mul_nonneg (mul_nonneg (Nat.cast_nonneg _) ha) hLa) (mul_nonneg (Nat.cast_nonneg _) hB)
   exact h1.trans (mul_le_mul_of_nonneg_right hC hX)
 
-theorem height_bound_of_function : HHOfFun := by
-  intro U0 W _ Top m f D C muMaxRR hF hD u0
-  obtain ⟨h1, h2, h3⟩ := hF u0
-  have h4 := hD u0
-  exact ⟨by linarith, h2, h3⟩
 
-theorem function_of_parts : FunOfParts := by
-  intro U0 W _ Top m f D C muMaxRR c p1 p2 hx hb h1 h2 hp hH u0
-  rw [hH u0]
-  refine ⟨?_, mul_pos (Real.rpow_pos_of_pos hx _) hb, le_rfl⟩
-  have := mul_le_mul_of_nonneg_right hp hb.le
-  have a1 := h1 u0
-  have a2 := h2 u0
-  nlinarith
 
-theorem scale_free : ScaleFree := by
-  intro U0 W _ Top _ m f D C c logOm hd hne
-  have hs : ∀ u0, (shiftRows D c).s u0 = D.s u0 + c u0 := by
-    intro u0
-    have := hne u0
-    have hpos : 0 < ∑ u, D.d u0 u := Finset.sum_pos (fun u _ => hd u0 u) Finset.univ_nonempty
-    show wmean (D.d u0) (fun u => D.muN u0 u - (D.h u0 u - c u0))
-      = wmean (D.d u0) (fun u => D.muN u0 u - D.h u0 u) + c u0
-    unfold wmean
-    rw [eq_comm, div_add' _ _ _ hpos.ne']
-    congr 1
-    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
-    exact Finset.sum_congr rfl fun u _ => by ring
-  have e1 : ∀ u0 (u : W u0), (D.muCC u0 + c u0) + (D.h u0 u - c u0) - D.Fo u0
-      = D.muCC u0 + D.h u0 u - D.Fo u0 := fun u0 u => by ring
-  refine ⟨?_, ?_, ?_, ?_, hs⟩
-  · constructor
-    · intro h u0 u
-      have := h u0 u
-      rw [← e1 u0 u]
-      exact this
-    · intro h u0 u
-      have := h u0 u
-      rw [← e1 u0 u] at this
-      exact this
-  · constructor
-    · intro h u0 u
-      have := h u0 u
-      rw [← e1 u0 u]
-      exact this
-    · intro h u0 u
-      have := h u0 u
-      rw [← e1 u0 u] at this
-      exact this
-  · have e2 : ∀ u0 (u u' : W u0),
-        ((D.h u0 u - c u0) + ∑ t, D.aT t * Real.log (D.T u0 u))
-          - ((D.h u0 u' - c u0) + ∑ t, D.aT t * Real.log (D.T u0 u'))
-        = (D.h u0 u + ∑ t, D.aT t * Real.log (D.T u0 u))
-          - (D.h u0 u' + ∑ t, D.aT t * Real.log (D.T u0 u')) := fun u0 u u' => by ring
-    constructor
-    · intro h u0 u u'
-      have := h u0 u u'
-      rw [← e2 u0 u u']
-      exact this
-    · intro h u0 u u'
-      have := h u0 u u'
-      rw [← e2 u0 u u'] at this
-      exact this
-  · have e3 : ∀ u0, (shiftRows D c).s u0 - (D.muMinCC u0 + c u0) = D.s u0 - D.muMinCC u0 := by
-      intro u0
-      rw [hs u0]
-      ring
-    constructor
-    · intro h u0
-      have := h u0
-      rw [← e3 u0]
-      exact this
-    · intro h u0
-      have := h u0
-      rw [← e3 u0] at this
-      exact this
 
 lemma ne_bot_of_span {K V ι : Type} [Field K] [NumberField K] [AddCommGroup V]
     [Module K V] [Module (𝓞 K) V] [Nonempty ι]
@@ -446,18 +225,11 @@ theorem exponent_of_places : EeJOfPlaces := by
   congr 1
   exact (sum_over_places F.K F.S (F.Ej u j)).2
 
-theorem construct_divisibility_of_free : MkDivOfFree := by
-  intro H _ _ _ W _ m G C D ell N TT T2 a w Fm logOm h hp
-  exact divisibility_of_free H W TT m _ (mkData G C.cHH D ell N TT T2 a w Fm) C logOm h hp
 
 theorem divisibility_free_at : DivFreeIsDivAt := by
   intro U0 W Top _ m f D C logOm
   exact Iff.rfl
 
-theorem construct_periodicity_of_modulus : PerMkOfHost := by
-  intro e q d _ _ G logOm hv
-  unfold PerHost PerMk
-  rw [hv]
 
 theorem construct_divisibility_of_conclusion : MkDivOfConcl := by
   intro H _ _ _ W _ m G C D ell N TT T2 a w Fm logOm C0 Dd XE R ψ hD hXE hX' hR hψ hC hx hk hLa h u0 u
@@ -619,27 +391,5 @@ def satSt : StepNums (Fin 1) (Fin 1) where
   eE := fun _ _ => 2
   δ := fun _ _ => 3
 
-theorem joint_sat :
-    ParHyp satD satP 1 (satD.x ^ (satC.eDiv * satD.ε)) (Fintype.card (Fin 1) : ℝ) ∧
-    StepHyp satD satP 1 (satD.x ^ (satC.eDiv * satD.ε))
-      (Finset.univ.map (Function.Embedding.refl (Fin 1))) (fun _ => 0) () () satSt ∧
-    Per satD 1 ∧ 0 < satD.v ∧ satC.cDiv = 50 * satP.C0 + 10 ∧ satD.Fo () = 2 * satSt.FoP := by
-  have e2 : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-  · simp only [ParHyp, satD, satP, satC]
-    norm_num
-    repeat' apply And.intro
-    all_goals linarith
-  · simp only [StepHyp, satD, satP, satC, satSt, Formalism.LatticeIndexTer.ph]
-    norm_num
-    repeat' apply And.intro
-    all_goals linarith
-  · simp only [Per, satD]
-    rw [Real.log_div Real.pi_pos.ne' (mul_pos Real.pi_pos (Real.exp_pos _)).ne',
-      Real.log_mul Real.pi_pos.ne' (Real.exp_pos _).ne', Real.log_exp]
-    ring
-  · exact mul_pos Real.pi_pos (Real.exp_pos _)
-  · simp only [satC, satP]; norm_num
-  · simp only [satD, satSt]; norm_num
 
 end Formalism.LFunctionChainParameters.LBrDiv

@@ -126,17 +126,8 @@ variable {V₀ W W₀ : HSp D} {ρ σ : ℕ} {dW : HypDec W W₀ σ} {p : Pieces
 theorem CondK.cond (H : CondK dW p x y ψ LW P h) : Cond dW p x y ψ P h := by
   simpa only [mul_one] using H 1 inK_one
 
-theorem condK_mul (hκ : InK W LW P κ) : CondK dW p x y ψ LW P (h * κ) ↔ CondK dW p x y ψ LW P h :=
-  ⟨fun H k hk => by simpa only [mul_assoc, mul_inv_cancel_left] using H _ (inK_mul (inK_inv hκ) hk),
-    fun H k hk => by simpa only [mul_assoc] using H _ (inK_mul hκ hk)⟩
 
-theorem cosetAt_mul {R : Subgroup (GA D W)} {v : GlobalTheory.FinPl.Pl D} (hκ : InK W LW (· = v) κ) :
-    CosetAt W R LW v (h * κ) ↔ CosetAt W R LW v h :=
-  ⟨fun ⟨r, a, b, k, hk, e⟩ => ⟨r, a, b, _, inK_mul hk (inK_inv hκ), by rw [← mul_assoc, ← e, mul_inv_cancel_right]⟩,
-    fun ⟨r, a, b, k, hk, e⟩ => ⟨r, a, b, _, inK_mul hk hκ, by rw [e, mul_assoc]⟩⟩
 
-theorem cosetAt_of_inK {R : Subgroup (GA D W)} {v : GlobalTheory.FinPl.Pl D} (hκ : InK W LW (· = v) κ) : CosetAt W R LW v κ :=
-  ⟨1, one_mem _, one_mem _, κ, hκ, (one_mul κ).symm⟩
 
 end Stab
 

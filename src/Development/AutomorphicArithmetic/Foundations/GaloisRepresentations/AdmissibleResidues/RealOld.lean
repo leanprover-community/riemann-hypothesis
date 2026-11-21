@@ -14,10 +14,6 @@ section Local
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
 
-theorem RatioW.of_pol {x y : WD h} (hp : ∀ g : ↥(Weil h), x.charPol g = y.charPol g) (hy : RatioW y) : RatioW x := by
-  intro φ hφ α hα β hβ
-  rw [WD.eig, hp] at hα hβ
-  exact hy φ hφ α hα β hβ
 
 theorem RatioW.noRatio {x : WD h} (hx : RatioW x) {g : ↥(Weil h)} (hg : deg g = 1) : NoRatio x g := by
   intro α hα hβ
@@ -90,14 +86,6 @@ theorem RatioW.descend (P : PlaceIso A w A' w' φ j i) {x : WD h} {x' : WD h'} (
   rw [← hq]
   exact k (c g) (by rw [hdeg, hg]) α hα β hβ
 
-theorem RatioW.ascend (P : PlaceIso A w A' w' φ j i) {x : WD h} {x' : WD h'} (hx : WDRel φ x x') (k : RatioW x) :
-    RatioW x' := by
-  obtain ⟨c, hc, hdeg, hq, -⟩ := GlobalTheory.T.place_over_transport_ring_iso E Ω A w h E' Ω' A' w' h' φ j i P
-  intro g hg α hα β hβ
-  obtain ⟨g, rfl⟩ := c.surjective g
-  rw [WD.eig, ← pol_of_rel hx ((hc g (c g)).2 rfl)] at hα hβ
-  rw [hq]
-  exact k g (by rw [← hdeg, hg]) α hα β hβ
 
 theorem exists_rel (P : PlaceIso A w A' w' φ j i) (y' : WD h') : ∃ y : WD h, WDRel φ y y' := by
   obtain ⟨S, hS, -⟩ := GlobalTheory.T.place_over_transport_ring_iso_symm E Ω A w h E' Ω' A' w' h' φ j i P
@@ -130,26 +118,12 @@ theorem IsGalRU.sat (H : IsGalRU π ι r wt HT) {w : HeightOneSpectrum (𝓞 F)}
   rw [← (H.away w hl A h rc hrc σ hσ).eq_unr (unr_algNorm hrc σ S hS)]
   exact isWDOf_wdOf (h := h) hl ι (Units.continuous_val.comp H.cont)
 
-theorem IsGalRU.ratio_sat (H : IsGalRU π ι r wt HT) {w : HeightOneSpectrum (𝓞 F)} (hl : ((l : ℕ) : 𝓞 F) ∉ w.asIdeal)
-    {A : ValuationSubring Ω} {h : IsPlaceOver A w} {rc : IrrGL (w.adicCompletion F) → WD h} (hrc : IsRec h rc)
-    {σ : SmIrr (GL (Fin a) (w.adicCompletion F))} (hσ : π.IsLocComp w σ) {S : Multiset ℂˣ}
-    (hS : GlobalTheory.LFun.HasSatGL w σ.ρ S) : RatioW (wdOf h hl ι r) :=
-  H.ratio w hl A h rc hrc σ hσ (WD.unr_mono0 _ (unr_algNorm hrc σ S hS))
 end Real
 
-theorem galRN (h : GaloisRepReal) : GaloisRepRealN := fun F Ω _ _ _ _ _ _ l _ ι a ha π χ h1 h2 =>
-  let ⟨r, wt, HT, H⟩ := h F Ω l ι a ha π χ h1 h2
-  ⟨r, wt, HT, .of_old H⟩
-theorem galRN' (h : GaloisRepRealN) : GaloisRepRealN := h
 
-theorem gr2N (h : UpperTheory.V.Z.Bc.GaloisRepRankTwoReal) : GaloisRepRankTwo := fun F Ω _ _ _ _ _ _ l _ ι a _ ha π χ h1 h2 =>
-  let ⟨r, wt, HT, H⟩ := h F Ω l ι a ha π χ h1 h2
-  ⟨r, wt, HT, .of_old H⟩
-theorem gr2N' (h : GaloisRepRankTwo) : GaloisRepRankTwo := h
 
 theorem exRN (h : ExR) : ExRN := fun F Ω _ _ _ _ _ _ l _ ι n _ hn π χ h1 h2 =>
   let ⟨r, wt, HT, H, a, b⟩ := h F Ω l ι n hn π χ h1 h2
   ⟨r, wt, HT, .of_old H, a, fun r' x y => .of_old (b r' x y)⟩
-theorem exRN' (h : ExRN) : ExRN := h
 
 end UpperTheory.GalN.V

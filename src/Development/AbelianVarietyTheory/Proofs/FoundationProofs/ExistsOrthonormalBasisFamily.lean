@@ -129,28 +129,9 @@ variable {N N' : ℕ} {s : D.host.E} (hs : s * D.host.conj s = 1) (cc : Ideal (�
 
 theorem sc_apply (z : VC D N N') (τ i j) : sc N N' s hs z τ i j = embT D τ s * z τ i j := rfl
 
-theorem sc_symm_apply (z : VC D N N') (τ i j) :
-    (sc N N' s hs).symm z τ i j = starRingEnd ℂ (embT D τ s) * z τ i j := rfl
 
-theorem sc_hf (T : Tor D) (x y : VC D N N') : Hf D T (sc N N' s hs x) (sc N N' s hs y) = Hf D T x y := by
-  unfold Hf
-  congr 1
-  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [sc_apply, sc_apply, map_mul]
-  linear_combination x τ i j * starRingEnd ℂ (y τ i j) * emb_unit τ hs
 
-theorem sc_emb (w : ℂ) (A : Matrix (Fin N') (Fin N) D.host.E) :
-    sc N N' s hs (w • embV D (tor0 D cc δ) A) = w • embV D (tor0 D cc δ) (s • A) := by
-  funext τ i j
-  simp only [sc_apply, embV, tor0, Pi.smul_apply, Matrix.smul_apply, smul_eq_mul, map_mul]
-  ring
 
-theorem sc_symm_emb (w : ℂ) (A : Matrix (Fin N') (Fin N) D.host.E) :
-    (sc N N' s hs).symm (w • embV D (tor0 D cc δ) A) = w • embV D (tor0 D cc δ) (D.host.conj s • A) := by
-  funext τ i j
-  simp only [sc_symm_apply, embV, tor0, Pi.smul_apply, Matrix.smul_apply, smul_eq_mul, map_mul,
-    GlobalTheory.OnCoord.embT_conj]
-  ring
 
 theorem closure_iff {V : Type} [AddCommGroup V] (φ : V ≃+ V) {S S' : Set V}
     (h1 : ∀ x ∈ S, φ x ∈ AddSubgroup.closure S') (h2 : ∀ y ∈ S', φ.symm y ∈ AddSubgroup.closure S) (x : V) :
@@ -161,53 +142,8 @@ theorem closure_iff {V : Type} [AddCommGroup V] (φ : V ≃+ V) {S S' : Set V}
     (AddSubgroup.closure_le _).2 h2
   exact ⟨fun h => by simpa using b h, fun h => a h⟩
 
-theorem sc_LaB {r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (x : VC D N N') :
-    sc N N' s hs x ∈ LaB D (tor0 D cc δ) (fun j => s • b j) ↔ x ∈ LaB D (tor0 D cc δ) b := by
-  refine closure_iff _ ?_ ?_ x
-  · rintro _ ⟨w, hw, j, rfl⟩
-    exact AddSubgroup.subset_closure ⟨w, hw, j, sc_emb hs cc δ w _⟩
-  · rintro _ ⟨w, hw, j, rfl⟩
-    refine AddSubgroup.subset_closure ⟨w, hw, j, ?_⟩
-    rw [sc_symm_emb, smul_smul, mul_comm, hs, one_smul]
 
-theorem yy_smul {L L₁ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
-    {L' L₁' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)} {t u : D.host.E}
-    (h : ∀ x ∈ L₁, t • x ∈ L) (h' : ∀ x ∈ L', u • x ∈ L₁') {A : Matrix (Fin N') (Fin N) D.host.E}
-    (hA : A ∈ YYl D L L') : (u * t) • A ∈ YYl D L₁ L₁' := by
-  have hh : ∀ A ∈ homL D L L', (u * t) • A ∈ homL D L₁ L₁' := by
-    intro A hA
-    induction hA using Submodule.span_induction with
-    | mem A hA =>
-      refine Submodule.subset_span fun x hx => ?_
-      have := h' _ (hA _ (h x hx))
-      rwa [Matrix.mulVec_smul, smul_smul, ← Matrix.smul_mulVec] at this
-    | zero => simp
-    | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
-    | smul a x _ hx => rw [smul_comm]; exact Submodule.smul_mem _ a hx
-  induction hA using Submodule.span_induction with
-  | mem A hA =>
-    obtain ⟨a, ha, A, hA, rfl⟩ := hA
-    exact Submodule.subset_span ⟨a, ha, _, hh A hA, smul_comm _ _ _⟩
-  | zero => simp
-  | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
-  | smul a x _ hx => rw [smul_comm]; exact Submodule.smul_mem _ a hx
 
-theorem sc_La {L L₁ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
-    {L' L₁' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)} {d d' : D.host.E}
-    (hd : d * D.host.conj d = 1) (hd' : d' * D.host.conj d' = 1) (hsd : s = d' * D.host.conj d)
-    (h : ∀ x, x ∈ L ↔ d • x ∈ L₁) (h' : ∀ x, x ∈ L' ↔ d' • x ∈ L₁') (x : VC D N N') :
-    sc N N' s hs x ∈ La D (tor0 D cc δ) L₁ L₁' ↔ x ∈ La D (tor0 D cc δ) L L' := by
-  refine closure_iff _ ?_ ?_ x
-  · rintro _ ⟨w, hw, A, hA, rfl⟩
-    refine AddSubgroup.subset_closure ⟨w, hw, _, ?_, sc_emb hs cc δ w _⟩
-    rw [hsd]
-    refine yy_smul (fun x hx => (h _).2 ?_) (fun x hx => (h' x).1 hx) hA
-    rwa [smul_smul, hd, one_smul]
-  · rintro _ ⟨w, hw, A, hA, rfl⟩
-    refine AddSubgroup.subset_closure ⟨w, hw, _, ?_, sc_symm_emb hs cc δ w _⟩
-    rw [hsd, map_mul, VacMove.conj_conj]
-    refine yy_smul (fun x hx => (h x).1 hx) (fun x hx => (h' _).2 ?_) hA
-    rwa [smul_smul, hd', one_smul]
 
 include hs in
 theorem onB_smul {r : ℕ} {b : Fin r → Matrix (Fin N') (Fin N) D.host.E} (hb : OnB D b) :
@@ -234,34 +170,7 @@ theorem onB_smul {r : ℕ} {b : Fin r → Matrix (Fin N') (Fin N) D.host.E} (hb 
     have := key (D.host.conj s • y) (hb.2 ▸ Submodule.mem_top)
     rwa [smul_smul, hs, one_smul] at this
 
-theorem pullB_sc {r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (g : ℂ → ℂ) :
-    pullB D (tor0 D cc δ) (fun j => s • b j) g =
-      fun z => pullB D (tor0 D cc δ) b g ((sc N N' s hs).symm z) := by
-  funext z
-  unfold pullB
-  refine Finset.prod_congr rfl fun j _ => ?_
-  congr 1
-  unfold coordB
-  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => ?_
-  simp only [sc_symm_apply, tor0, Matrix.smul_apply, smul_eq_mul, map_mul]
-  ring
 
-theorem pull_sc {d d' : D.host.E} (hsd : s = d' * D.host.conj d) (G : VC D N N' → ℂ) (z : VC D N N') :
-    pull D (tor0 D cc δ) (d • (1 : Matrix (Fin N) (Fin N) D.host.E)) (d' • (1 : Matrix (Fin N') (Fin N') D.host.E)) G z =
-      G ((sc N N' s hs).symm z) := by
-  unfold pull
-  congr 1
-  funext τ
-  have e : ∀ (n : ℕ) (t : D.host.E), (t • (1 : Matrix (Fin n) (Fin n) D.host.E)).map ((tor0 D cc δ).emb τ) =
-      embT D τ t • (1 : Matrix (Fin n) (Fin n) ℂ) := by
-    intro n t
-    ext i j
-    by_cases h : i = j <;> simp [tor0, h]
-  rw [e, e]
-  funext i j
-  rw [sc_symm_apply, hsd, map_mul, map_mul, GlobalTheory.OnCoord.embT_conj]
-  simp
-  ring
 
 theorem det_smul (hG : admG1 D) (s : D.host.E) {r : ℕ} {b : Fin r → Matrix (Fin N') (Fin N) D.host.E} (hb : OnB D b) :
     D.host.φ₀ (((Matrix.of fun i j => hYY D (s • b j) (b i)).det : D.host.K) : D.host.E) =
@@ -495,48 +404,6 @@ theorem Iop_smul (T : Tor D) {N N' : ℕ} (A₁ A₂ : AddSubgroup (VC D N N')) 
   rw [mul_finsum]
   congr 1; funext q; ring
 
-theorem vac_sc (hG : admG1 D) (hU : IntertwinerUnitary D) (hM : GaussSumTripleConstant D) (hL : LemmaCGaussConstant D) {cc : Ideal (𝓞 D.host.K)} {δ t0 : ℂ}
-    (hC : Crv D cc δ) (ht : GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D cc δ) t0) {N N' : ℕ} {e0 : VC D N N' → ℂ} (h0 : e0 ≠ 0)
-    (hE : ThetaVectorUpToUnits D (tor0 D cc δ) t0 (stdL D N) (stdL D N') e0) (hK0 : KLat D (tor0 D cc δ) (La0 D (tor0 D cc δ) N N'))
-    {s : D.host.E} (hs : s * D.host.conj s = 1) {A : AddSubgroup (VC D N N')} (hA : KLat D (tor0 D cc δ) A)
-    (hsA : ∀ x, sc N N' s hs x ∈ A ↔ x ∈ La0 D (tor0 D cc δ) N N') :
-    ∃ c ζ : ℂ, IsOfFinOrder ζ ∧ c ^ 2 = ζ * ∏ τ, embT D τ s ^ (N * N') ∧ ∀ z,
-      e0 ((sc N N' s hs).symm z) = c * Iop D (tor0 D cc δ) (La0 D (tor0 D cc δ) N N') A e0 z := by
-  obtain ⟨b, κ, hb, -, he⟩ := hE
-  have hb' := onB_smul hs hb
-  obtain ⟨hd, hth⟩ := theta_signed_translation D hG cc δ hC t0 ht
-  have hP : pullB D (tor0 D cc δ) b (GL3Theta.th0 (lamOf D cc δ) t0) ∈ ThSp D (tor0 D cc δ) (LaB D (tor0 D cc δ) b) := by
-    obtain ⟨-, -, hpar, hmem, -⟩ := GlobalTheory.OnCoord.coords_of_orthonormal_basis D hG cc δ N N' _ b hb
-    exact GlobalTheory.ProdTheta.pullB_mem_ThSp D _ N N' _ b _ hpar hmem hd hth
-  have hKb : KLat D (tor0 D cc δ) (LaB D (tor0 D cc δ) b) := Or.inl ⟨_, b, hb, rfl⟩
-  have hKb' : KLat D (tor0 D cc δ) (LaB D (tor0 D cc δ) fun j => s • b j) := Or.inl ⟨_, _, hb', rfl⟩
-  obtain ⟨c, ζ, m, hm, hζ, hc, hpull⟩ := hL cc δ hC t0 ht N N' _ b _ hb hb'
-  rw [det_smul hG s hb] at hc
-  obtain ⟨μ, hμ, hI⟩ := hM cc δ hC N N' _ _ _ hKb hKb' hA _ hP
-  obtain ⟨μ', hμ', hI'⟩ := hM cc δ hC N N' _ _ _ hKb hK0 hA _ hP
-  change e0 = fun z => κ * Iop D (tor0 D cc δ) (LaB D (tor0 D cc δ) b) (La0 D (tor0 D cc δ) N N')
-    (pullB D (tor0 D cc δ) b (GL3Theta.th0 (lamOf D cc δ) t0)) z at he
-  have hH := (hU cc δ hC N N' _ _ hKb hK0 _ hP).2.1
-  have hH0 : Iop D (tor0 D cc δ) (LaB D (tor0 D cc δ) b) (La0 D (tor0 D cc δ) N N')
-      (pullB D (tor0 D cc δ) b (GL3Theta.th0 (lamOf D cc δ) t0)) ≠ 0 := by
-    intro h
-    apply h0
-    rw [he, h]
-    funext z
-    simp
-  have f1 : IsOfFinOrder μ := isOfFinOrder_iff_pow_eq_one.2 ⟨8, by norm_num, hμ⟩
-  have f2 : IsOfFinOrder μ' := isOfFinOrder_iff_pow_eq_one.2 ⟨8, by norm_num, hμ'⟩
-  have f3 : IsOfFinOrder ζ := isOfFinOrder_iff_pow_eq_one.2 ⟨m, hm, hζ⟩
-  refine ⟨c * μ * μ' ^ 7, ζ * (μ * μ' ^ 7) ^ 2, f3.mul (f1.mul f2.pow).pow, by linear_combination (μ * μ' ^ 7) ^ 2 * hc,
-    fun z => ?_⟩
-  have h1 := iop_transport (tor0 D cc δ) (sc N N' s hs) (sc_hf hs _) (sc_LaB hs cc δ b) hsA hP hH hH0
-    ((sc N N' s hs).symm z)
-  rw [← pullB_sc, AddEquiv.apply_symm_apply, hpull, Iop_smul, hI] at h1
-  rw [he, Iop_smul, hI']
-  beta_reduce at h1 ⊢
-  rw [← h1]
-  linear_combination (-(c * μ * κ * Iop D (tor0 D cc δ) (LaB D (tor0 D cc δ) b) A
-    (pullB D (tor0 D cc δ) b (GL3Theta.th0 (lamOf D cc δ) t0)) z)) * hμ'
 
 theorem exists_prime_mem {R : Type} [CommRing R] {P : Ideal R} (hP : P.IsPrime) :
     ∀ n : ℕ, n ≠ 0 → (n : R) ∈ P → ∃ q : ℕ, q.Prime ∧ (q : R) ∈ P := by
@@ -551,115 +418,11 @@ theorem exists_prime_mem {R : Type} [CommRing R] {P : Ideal R} (hP : P.IsPrime) 
     · exact ⟨p, hp, h⟩
     · exact ih (right_ne_zero_of_mul h0) h
 
-theorem inert_int {d : D.host.E} (hd : d * D.host.conj d = 1) {c : AE D} (hc : c ∈ OhE D)
-    (hz : ∀ q : ℕ, q.Prime → ¬ InertQ D q → ZeroAt D q c) : c * inc D d ∈ OhE D := by
-  let J : Ideal (𝓞 D.host.E) :=
-    { carrier := {a | inc D (a : D.host.E) * (c * inc D d) ∈ OhE D}
-      add_mem' := fun {a b} ha hb => by
-        simpa [add_mul] using add_mem ha hb
-      zero_mem' := by simp
-      smul_mem' := fun a b hb => by
-        simpa [mul_assoc] using mul_mem (VacMove.inc_int D a) hb }
-  have hJ : ∀ a : 𝓞 D.host.E, a ∈ J ↔ inc D (a : D.host.E) * (c * inc D d) ∈ OhE D := fun a => Iff.rfl
-  by_contra hne
-  obtain ⟨P, hP, hle⟩ := Ideal.exists_le_maximal J (fun h => hne (by
-    simpa using (hJ 1).1 (h ▸ Submodule.mem_top)))
-  have hP0 : P ≠ ⊥ := Ring.ne_bot_of_isMaximal_of_not_isField hP (RingOfIntegers.not_isField _)
-  obtain ⟨q, hq, hqP⟩ := exists_prime_mem hP.isPrime _ (Ideal.absNorm_eq_zero_iff.not.2 hP0) (Ideal.absNorm_mem P)
-  by_cases hi : InertQ D q
-  · have hPP := hi P hP.isPrime hP0 hqP
-    have key : ∀ t n : 𝓞 D.host.E, d * (t : D.host.E) = n → t ∈ P := by
-      intro t n h
-      refine hle ((hJ t).2 ?_)
-      rw [mul_left_comm, ← map_mul, mul_comm _ d, h]
-      exact mul_mem hc (VacMove.inc_int D n)
-    let v : IsDedekindDomain.HeightOneSpectrum (𝓞 D.host.E) := ⟨P, hP.isPrime, hP0⟩
-    rcases le_total (v.valuation D.host.E d) 1 with h | h
-    · obtain ⟨n, t, e⟩ := v.exists_primeCompl_mul_eq_of_integer d h
-      exact t.2 (key t n e)
-    · have h' : v.valuation D.host.E (D.host.conj d) ≤ 1 := by
-        have := congrArg (v.valuation D.host.E) hd
-        rw [map_mul, map_one] at this
-        calc _ = 1 * v.valuation D.host.E (D.host.conj d) := (one_mul _).symm
-          _ ≤ _ := mul_le_mul_left h _
-          _ = 1 := this
-      obtain ⟨n, t, e⟩ := v.exists_primeCompl_mul_eq_of_integer _ h'
-      have e' := congrArg D.host.conj e
-      rw [map_mul, VacMove.conj_conj] at e'
-      have := key (D.host.conj • (t : 𝓞 D.host.E)) (D.host.conj • n) e'
-      rw [← hPP, Ideal.smul_mem_pointwise_smul_iff] at this
-      exact t.2 this
-  · obtain ⟨m, -, hmq, s, hs, h⟩ := VacMove.zeroAt_mul D hq (hz q hq hi) (inc D d) 0
-    have hm : (m : 𝓞 D.host.E) ∈ P := hle ((hJ _).2 (by simpa [h] using hs))
-    obtain ⟨a, b, hab⟩ : IsCoprime (m : 𝓞 D.host.E) (q : 𝓞 D.host.E) := Nat.Coprime.cast hmq
-    exact hP.ne_top ((Ideal.eq_top_iff_one _).2 (hab ▸ add_mem (P.mul_mem_left a hm) (P.mul_mem_left b hqP)))
 
 def part {R : Type} [CommRing R] {e a b : R} (he : e * e = e) (hab : a * b = 1) : Rˣ :=
   ⟨(1 - e) + e * a, (1 - e) + e * b, by linear_combination (1 - a - b + a * b) * he + e * hab,
     by linear_combination (1 - a - b + a * b) * he + e * hab⟩
 
-theorem split_char {y : D.host.E} (hy : y ≠ 0) (u : (AE D)ˣ) (hu : (u : AE D) = inc D (y / D.host.conj y)) :
-    ∃ z x : (AE D)ˣ, SplitComp D u z ∧ x = z * sgU D x ∧ ∀ (n : ℕ) (χ : HeckeU D n),
-      ((χ.f x : ℂˣ) : ℂ) ^ 2 * ∏ τ, embT D τ (y / D.host.conj y) ^ (χ.n τ) = 1 := by
-  obtain ⟨ε, hε, h1, h2, h3⟩ := VacMove.exists_half_idem D
-  have h1' : sgA D ε * sgA D ε = sgA D ε := by rw [← map_mul, h1]
-  obtain ⟨e, he⟩ : ∃ e, e = ε + sgA D ε := ⟨_, rfl⟩
-  rw [← he] at h3
-  have hee : e * e = e := by rw [he]; linear_combination h1 + h1' + 2 * h2
-  have hee' : (1 - e) * (1 - e) = 1 - e := by linear_combination hee
-  have hse : sgA D e = e := by rw [he, map_add, VacMove.sgA_sgA, add_comm]
-  have heO : e ∈ OhE D := he ▸ add_mem hε (VacMove.sgA_mem D hε)
-  have hy' : D.host.conj y ≠ 0 := by simpa using hy
-  set d := y / D.host.conj y with hdd
-  have hd : d * D.host.conj d = 1 := by
-    rw [hdd, map_div₀, VacMove.conj_conj]; field_simp
-  have hd' : D.host.conj d * D.host.conj (D.host.conj d) = 1 := by rw [← map_mul, hd, map_one]
-  have hdA : inc D d * inc D (D.host.conj d) = 1 := by rw [← map_mul, hd, map_one]
-  have hyA : inc D y * inc D y⁻¹ = 1 := by rw [← map_mul, mul_inv_cancel₀ hy, map_one]
-  have hdy : inc D d * inc D (D.host.conj y) = inc D y := by rw [← map_mul, hdd, div_mul_cancel₀ _ hy']
-  refine ⟨part hee hdA, part hee hyA, fun q hq => ⟨fun hi => ?_, fun hi => ?_⟩, ?_, fun n χ => ?_⟩
-  · convert VacMove.zeroAt_mul D hq ((h3 q hq).1 hi) (inc D d - 1) using 1
-    simp only [part]; ring
-  · convert VacMove.zeroAt_mul D hq ((h3 q hq).2 hi) (1 - inc D d) using 1
-    simp only [part, hu]; ring
-  · ext
-    change (1 - e) + e * inc D y = ((1 - e) + e * inc D d) * sgA D ((1 - e) + e * inc D y)
-    rw [map_add, map_mul, map_sub, map_one, hse, PtsMem.sgA_inc]
-    linear_combination (-(1 - inc D d - inc D (D.host.conj y) + inc D d * inc D (D.host.conj y))) * hee - e * hdy
-  · have hk : χ.f (part hee' hdA) = 1 := by
-      have hz : ∀ q : ℕ, q.Prime → ¬ InertQ D q → ZeroAt D q (1 - e) := fun q hq => (h3 q hq).2
-      have h1e : 1 - e ∈ OhE D := sub_mem (one_mem _) heO
-      refine χ.unr _ ⟨add_mem (sub_mem (one_mem _) h1e) (inert_int hd h1e hz),
-        add_mem (sub_mem (one_mem _) h1e) (inert_int hd' h1e hz)⟩ fun q hq hi => ?_
-      convert VacMove.zeroAt_mul D hq (hz q hq hi) (inc D d - 1) using 1
-      simp only [part]; ring
-    have hw : part hee' hyA = part hee' hdA * sgU D (part hee' hyA) := by
-      ext
-      change (1 - (1 - e)) + (1 - e) * inc D y =
-        ((1 - (1 - e)) + (1 - e) * inc D d) * sgA D ((1 - (1 - e)) + (1 - e) * inc D y)
-      simp only [map_add, map_mul, map_sub, map_one, hse, PtsMem.sgA_inc]
-      linear_combination (-(1 - inc D d - inc D (D.host.conj y) + inc D d * inc D (D.host.conj y))) * hee' -
-        (1 - e) * hdy
-    have hw2 : χ.f (part hee' hyA) ^ 2 = 1 := by
-      have a := χ.norm (part hee' hyA)
-      have b := congrArg χ.f hw
-      rw [map_mul, hk, one_mul] at b
-      rw [map_mul, ← b] at a
-      rw [pow_two, a]
-    have hxw : Units.map (inc D).toMonoidHom (Units.mk0 y hy) = part hee hyA * part hee' hyA := by
-      ext
-      change inc D y = ((1 - e) + e * inc D y) * ((1 - (1 - e)) + (1 - e) * inc D y)
-      linear_combination (1 - inc D y) ^ 2 * hee
-    have ha := congrArg (· ^ 2) (χ.aut (Units.mk0 y hy))
-    simp only [hxw, map_mul, mul_pow, one_pow, Units.val_mul, Units.val_mk0] at ha
-    rw [← Units.val_pow_eq_pow_val (χ.f (part hee' hyA)), hw2, Units.val_one, mul_one, ← Finset.prod_pow] at ha
-    rw [← ha]
-    congr 1
-    refine Finset.prod_congr rfl fun τ _ => ?_
-    rw [← zpow_natCast, ← zpow_mul, mul_comm, zpow_mul, zpow_natCast]
-    congr 1
-    have h0 : embT D τ y ≠ 0 := by simpa using hy
-    rw [hdd, map_div₀, GlobalTheory.OnCoord.embT_conj, div_pow, ← Complex.mul_conj', pow_two, mul_div_mul_left _ _ h0]
 
 theorem deriv_prod_one {ι : Type} (s : Finset ι) (f : ι → ℂ → ℂ) (a : ι → ℂ)
     (h : ∀ i, HasDerivAt (f i) (a i) 0) (h1 : ∀ i, f i 0 = 1) :
@@ -768,19 +531,7 @@ theorem exp_eq_zero (hG : admG1 D) (m : D.what₂.Tau → ℤ)
     refine Finset.sum_congr rfl fun τ _ => by ring) τ
   exact_mod_cast this
 
-theorem scalar_unitary (N : ℕ) {d : D.host.E} (hd : d * D.host.conj d = 1) :
-    (d • (1 : Matrix (Fin N) (Fin N) D.host.E)) *
-      ((d • (1 : Matrix (Fin N) (Fin N) D.host.E)).map D.host.conj).transpose = 1 := by
-  ext i j
-  by_cases h : i = j
-  · subst h
-    simp [hd]
-  · simp [h, Ne.symm h]
 
-theorem div_conj_unit {y : D.host.E} (hy : y ≠ 0) :
-    y / D.host.conj y * D.host.conj (y / D.host.conj y) = 1 := by
-  have hy' : D.host.conj y ≠ 0 := by simpa using hy
-  rw [map_div₀, VacMove.conj_conj]; field_simp
 
 theorem det_scalar {N : ℕ} {g : GL (Fin N) (AE D)} {y : D.host.E}
     (h : IsRat D g ((y / D.host.conj y) • (1 : Matrix (Fin N) (Fin N) D.host.E))) :
@@ -789,100 +540,6 @@ theorem det_scalar {N : ℕ} {g : GL (Fin N) (AE D)} {y : D.host.E}
   rw [Matrix.GeneralLinearGroup.val_det_apply, h, ← RingHom.mapMatrix_apply, ← RingHom.map_det, map_pow, ← div_pow]
   simp
 
-theorem oddEq_of (D : D7) (hP : admissible_poisson D) (hG : admG1 D) (hU : IntertwinerUnitary D) (hM : GaussSumTripleConstant D) (hL : LemmaCGaussConstant D)
-    (h4 : odd4 D) (cc : Ideal (𝓞 D.host.K)) (δ t0 : ℂ) (N N' : ℕ) (e0 : VC D N N' → ℂ) (hC : Crv D cc δ)
-    (ht : GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D cc δ) t0) (hN : Even (N * N')) (hv : oddE0 D cc δ t0 N N' e0) :
-    oddEq D cc δ N N' e0 := by
-  intro W γA γA' γ γ' a a' hγ hγ' ha' ha F hF
-  obtain ⟨b, b', hb⟩ := hP cc δ hC N N' hN e0 hv.1 W
-  obtain ⟨Lt, l1, l2, -, l3, -⟩ := exists_lattice_of_adelic_point D N
-  obtain ⟨Lt', l1', l2', -, l3', -⟩ := exists_lattice_of_adelic_point D N'
-  have hK0 : KLat D (tor0 D cc δ) (La0 D (tor0 D cc δ) N N') :=
-    Or.inr ⟨_, _, l2 ▸ (l1 1).2, l2' ▸ (l1' 1).2, rfl⟩
-  have hT : e0 ∈ TT D (tor0 D cc δ) N N' := ⟨hv.1.1, 1, one_pos, fun x hx => by
-    rw [one_smul, (GlobalTheory.ThetaLine.theta_line D hG cc δ hC N N' _ hK0).2.1 x hx]
-    exact funext (hv.1.2 x hx)⟩
-  have key : ∀ y y' : D.host.E, y ≠ 0 → y' ≠ 0 → IsOfFinOrder
-      ((∏ τ, embT D τ (y / D.host.conj y) ^ (2 * N * (a τ - b τ))) *
-        ∏ τ, embT D τ (y' / D.host.conj y') ^ (2 * N' * (a' τ - b' τ))) := by
-    intro y y' hy hy'
-    have hd := div_conj_unit hy
-    have hd' := div_conj_unit hy'
-    obtain ⟨g, hg⟩ := PtsMem.exists_isRat D _ (scalar_unitary N hd)
-    obtain ⟨g', hg'⟩ := PtsMem.exists_isRat D _ (scalar_unitary N' hd')
-    obtain ⟨z, x, hz, hx, hχ⟩ := split_char (pow_ne_zero N hy) _ (det_scalar hg)
-    obtain ⟨z', x', hz', hx', hχ'⟩ := split_char (pow_ne_zero N' hy') _ (det_scalar hg')
-    replace hχ := hχ _ W.chV'
-    replace hχ' := hχ' _ W.chV
-    simp only [map_pow (D.host.conj), ← div_pow] at hχ hχ'
-    generalize y / D.host.conj y = d at *
-    generalize y' / D.host.conj y' = d' at *
-    have hs : d' * D.host.conj d * D.host.conj (d' * D.host.conj d) = 1 := by
-      rw [map_mul, VacMove.conj_conj]
-      linear_combination (d * D.host.conj d) * hd' + hd
-    have hl : ∀ x, x ∈ stdL D N ↔ d • x ∈ Lt g := fun x => by
-      simpa [l2, Matrix.smul_mulVec] using l3 g 1 _ hg x
-    have hl' : ∀ x, x ∈ stdL D N' ↔ d' • x ∈ Lt' g' := fun x => by
-      simpa [l2', Matrix.smul_mulVec] using l3' g' 1 _ hg' x
-    obtain ⟨c, ζ, hζ, hc, hvac⟩ := vac_sc hG hU hM hL hC ht W.nz hv.2.2.2.1 hK0 hs
-      (Or.inr ⟨_, _, (l1 g).2, (l1' g').2, rfl⟩) (sc_La hs cc δ hd hd' rfl hl hl')
-    have hOm := hb g g' _ _ hg hg' e0 hT
-    simp only [pull_sc hs cc δ rfl, hvac, ← mul_assoc] at hOm
-    obtain ⟨sg, hsg, hsq⟩ := (h4 cc δ hC N N' hN e0 hv.1 W.nz W g g' _ _ _ (l1 g).1 (l1' g').1 hOm).1
-      z z' x x' hz hz' hx hx'
-    have hd0 : ∀ τ, embT D τ d ≠ 0 := fun τ => left_ne_zero_of_mul_eq_one (emb_unit τ hd)
-    have hd0' : ∀ τ, embT D τ d' ≠ 0 := fun τ => left_ne_zero_of_mul_eq_one (emb_unit τ hd')
-    have hcd : ∀ τ, embT D τ (D.host.conj d) = (embT D τ d)⁻¹ := fun τ => by
-      rw [GlobalTheory.OnCoord.embT_conj]; exact eq_inv_of_mul_eq_one_right (emb_unit τ hd)
-    have hζ0 : ζ ≠ 0 := hζ.isUnit.ne_zero
-    have hsgf : IsOfFinOrder sg := isOfFinOrder_iff_pow_eq_one.2 ⟨2, two_pos, by rcases hsg with rfl | rfl <;> simp⟩
-    have hζi : IsOfFinOrder ζ⁻¹ := by
-      obtain ⟨k, hk, h⟩ := isOfFinOrder_iff_pow_eq_one.1 hζ
-      exact isOfFinOrder_iff_pow_eq_one.2 ⟨k, hk, by rw [inv_pow, h, inv_one]⟩
-    refine Eq.mpr (congrArg IsOfFinOrder (?_ : _ = sg * ζ⁻¹)) (hsgf.mul hζi)
-    rw [eq_mul_inv_iff_mul_eq₀ hζ0]
-    have e1 := eq_inv_of_mul_eq_one_left hχ
-    have e2 := eq_inv_of_mul_eq_one_left hχ'
-    simp only [Units.val_mul, Units.val_zpow_eq_zpow_val, Units.val_pow_eq_pow_val] at hsq
-    rw [e1, e2, mul_pow, hc] at hsq
-    have hne : (∏ τ, embT D τ (d' ^ N') ^ W.chV.n τ)⁻¹ ^ W.ep * (∏ τ, embT D τ (d ^ N) ^ W.chV'.n τ)⁻¹ ^ W.ep' ≠ 0 := by
-      rw [← e1, ← e2]
-      exact mul_ne_zero (zpow_ne_zero _ (pow_ne_zero _ (Units.ne_zero _))) (zpow_ne_zero _ (pow_ne_zero _ (Units.ne_zero _)))
-    apply mul_right_cancel₀ hne
-    rw [← hsq, mul_right_comm, mul_left_comm _ ζ, mul_comm _ ζ]
-    refine congrArg (fun t : ℂ => ζ * t) ?_
-    simp only [← Finset.prod_inv_distrib, ← Finset.prod_zpow, ← Finset.prod_pow, ← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun τ _ => ?_
-    simp only [Matrix.det_smul, Matrix.det_one, mul_one, Fintype.card_fin, map_pow, map_mul, hcd, mul_pow]
-    simp only [← zpow_natCast, ← zpow_neg_one, ← zpow_mul]
-    have hA : ∀ (u v : ℂ), u ≠ 0 → v ≠ 0 → ∀ i1 i2 i3 i4 j1 j2 j3 j4 : ℤ, i1 + i2 = i3 + i4 → j1 + j2 = j3 + j4 →
-        u ^ i1 * v ^ j1 * (v ^ j2 * u ^ i2) = u ^ i3 * v ^ j3 * (v ^ j4 * u ^ i4) := by
-      intro u v hu hv i1 i2 i3 i4 j1 j2 j3 j4 hi hj
-      calc _ = u ^ (i1 + i2) * v ^ (j1 + j2) := by rw [zpow_add₀ hu, zpow_add₀ hv]; ring
-        _ = _ := by rw [hi, hj, zpow_add₀ hu, zpow_add₀ hv]; ring
-    apply hA _ _ (hd0 τ) (hd0' τ)
-    · push_cast
-      linear_combination (N : ℤ) * ha τ
-    · push_cast
-      linear_combination (N' : ℤ) * ha' τ
-  have k1 := exp_eq_zero hG (fun τ => 2 * N * (a τ - b τ)) fun y hy => by simpa using key y 1 hy one_ne_zero
-  have k2 := exp_eq_zero hG (fun τ => 2 * N' * (a' τ - b' τ)) fun y hy => by simpa using key 1 y one_ne_zero hy
-  rw [hb γA γA' γ γ' hγ hγ' F hF]
-  funext z
-  congr 1
-  refine Finset.prod_congr rfl fun τ _ => ?_
-  congr 1
-  · rcases Nat.eq_zero_or_pos N with rfl | h
-    · simp
-    · have : a τ = b τ := by simpa [h.ne', sub_eq_zero] using k1 τ
-      rw [this]
-  · rcases Nat.eq_zero_or_pos N' with rfl | h
-    · simp
-    · have : a' τ = b' τ := by simpa [h.ne', sub_eq_zero] using k2 τ
-      rw [this]
 
-theorem stmt_oddEq (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ t0 : ℂ) (N N' : ℕ) (e0 : VC D N N' → ℂ) :
-    StatementOddExactness D cc δ t0 N N' e0 :=
-  fun hC ht hN hv hP hG hU hM hL _ h4 => oddEq_of D hP hG hU hM hL h4 cc δ t0 N N' e0 hC ht hN hv
 
 end GlobalTheory.RatEquiv

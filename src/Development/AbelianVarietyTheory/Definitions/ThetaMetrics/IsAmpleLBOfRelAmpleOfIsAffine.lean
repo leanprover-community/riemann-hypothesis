@@ -107,12 +107,6 @@ theorem IsGenerated.pow_add {m n : ℕ} (hm : IsGenerated (lbPow L m)) (hn : IsG
   obtain ⟨j, hj⟩ := Opens.mem_iSup.1 (ht.ge (Set.mem_univ y))
   exact Opens.mem_iSup.2 ⟨(i, j), (nonzeroLocus_secMul (s i) (t j)).ge ⟨hi, hj⟩⟩
 
-theorem isGenerated_of_isQuasiAffine [X.IsQuasiAffine] (hL : L.IsLB) : IsGenerated L := by
-  refine isGenerated_iff_forall.2 fun x => ?_
-  obtain ⟨k, hk⟩ := exists_chart hL x
-  obtain ⟨_, ⟨r, -, rfl⟩, hx, hle⟩ := Opens.isBasis_iff_nbhd.1 (Scheme.IsQuasiAffine.isBasis_basicOpen X) hk
-  obtain ⟨u, hu⟩ := exists_sec_nonzeroLocus_eq_basicOpen hL r k hle
-  exact ⟨u, hu.ge hx⟩
 
 end Generated
 
@@ -166,9 +160,6 @@ theorem isAmpleLB_of_cover (hL : L.IsLB) {n : ℕ} (hn : 1 ≤ n) {ι : Type*} [
     obtain ⟨i, hi⟩ := Opens.mem_iSup.1 (hs.ge (Set.mem_univ x))
     exact ⟨n, hn, s i, hi, ha i⟩
 
-theorem isAmpleLB_iff_cover : IsAmpleLB L ↔ L.IsLB ∧ ∃ n, 1 ≤ n ∧ ∃ (N : ℕ) (s : Fin (N + 1) → (lbPow L n).Sec),
-    (⨆ i, nonzeroLocus (s i) = ⊤) ∧ ∀ i, IsAffineOpen (nonzeroLocus (s i)) :=
-  ⟨fun h => ⟨h.isLB, h.exists_cover⟩, fun ⟨hL, _, hn, _, s, hs, ha⟩ => isAmpleLB_of_cover hL hn s hs ha⟩
 
 theorem IsAmpleLB.exists_isGenerated_pow (h : IsAmpleLB L) : ∃ n, 1 ≤ n ∧ IsGenerated (lbPow L n) := by
   obtain ⟨n, hn, N, s, hs, -⟩ := h.exists_cover
@@ -255,9 +246,6 @@ theorem isAmpleLB_of_relAmple_of_isAffine {S : Scheme.{0}} [IsAffine S] (A : Ove
   have h₂ := h₁.pull_of_isAffineHom j
   exact h₂.of_lbIso hL (LBIso.chartPull a (chartPullPull _ j) (lbIso_refl h₁.isLB))
 
-theorem polAV_isAmpleLB {S : Scheme.{0}} (P : PolAV S) (U : S.Opens) (hU : IsAffineOpen U) :
-    IsAmpleLB (P.L.pull (P.A.hom ⁻¹ᵁ U).ι) :=
-  isAmpleLB_of_relAmple P.A P.isLB P.ample U hU
 
 end Ample
 

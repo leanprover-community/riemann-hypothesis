@@ -169,12 +169,6 @@ theorem tr_tr_symm (x : A' ⊗[ℚ] V) : tr e V (tr e.symm V x) = x := by
   | tmul b x => simp
   | add x y hx hy => simp [hx, hy]
 
-theorem cj_surjective : Function.Surjective (cj e V) := by
-  intro g'
-  refine ⟨cj e.symm V g', LinearEquiv.ext fun x => ?_⟩
-  obtain ⟨y, rfl⟩ := (tr e V).surjective x
-  obtain ⟨z, rfl⟩ := (tr e.symm V).surjective y
-  rw [cj_tr, cj_tr, tr_tr_symm, tr_tr_symm]
 
 def trAlg (K : Type) [CommRing K] [Algebra ℚ K] : A ⊗[ℚ] K ≃ₐ[ℚ] A' ⊗[ℚ] K :=
   Algebra.TensorProduct.congr e AlgEquiv.refl
@@ -360,14 +354,6 @@ theorem unitary_iff (h : W →ₗ[ℚ] W →ₗ[ℚ] E)
   rw [cj_tr, cj_tr, tr_bilinMap, tr_bilinMap]
   exact (tr e E).injective.eq_iff
 
-theorem similitude_iff (h : W →ₗ[ℚ] W →ₗ[ℚ] E) (ξ : E)
-    (g : IndefiniteRowSideFullHecke.IdeleNormTraceForm.Adelic W ≃ₗ[IndefiniteRowSideFullHecke.IdeleNormTraceForm.Af] IndefiniteRowSideFullHecke.IdeleNormTraceForm.Adelic W) :
-    cj e W g ∈ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.simGroup h ξ ↔
-      g ∈ IndefiniteRowSideFullHecke.IdeleNormTraceForm.similitudeAd E (IndefiniteRowSideFullHecke.IdeleNormTraceForm.traceForm E ξ h) := by
-  refine and_congr (linear_iff e g) ?_
-  change (∃ ν, IndefiniteRowSideFullHecke.AdelicScalarMultiplier.HasMultiplier _ (cj e W g) ν) ↔ ∃ ν, IndefiniteRowSideFullHecke.IdeleNormTraceForm.HasMultiplier _ g ν
-  rw [(ue e).surjective.exists]
-  exact exists_congr fun ν => multiplier_iff e _ g ν
 
 include he
 
@@ -392,11 +378,6 @@ theorem congr_iff (L L' : Set W)
 
 variable [Module (𝓞 E) W] [IsScalarTower (𝓞 E) E W]
 
-theorem simLevel_iff (h : W →ₗ[ℚ] W →ₗ[ℚ] E) (ξ : E) (Λ : Submodule (𝓞 E) W) (I : Ideal (𝓞 E))
-    (g : IndefiniteRowSideFullHecke.IdeleNormTraceForm.Adelic W ≃ₗ[IndefiniteRowSideFullHecke.IdeleNormTraceForm.Af] IndefiniteRowSideFullHecke.IdeleNormTraceForm.Adelic W) :
-    cj e W g ∈ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.simLevel h ξ Λ I ↔
-      g ∈ IndefiniteRowSideFullHecke.IdeleNormTraceForm.simLevel E (IndefiniteRowSideFullHecke.IdeleNormTraceForm.traceForm E ξ h) Λ I :=
-  and_congr (similitude_iff e h ξ g) (congr_iff e he _ _ g)
 
 theorem induces_iff (Λ : Submodule (𝓞 E) W) (I : Ideal (𝓞 E))
     (g : IndefiniteRowSideFullHecke.IdeleNormTraceForm.Adelic W ≃ₗ[IndefiniteRowSideFullHecke.IdeleNormTraceForm.Af] IndefiniteRowSideFullHecke.IdeleNormTraceForm.Adelic W)
@@ -405,31 +386,6 @@ theorem induces_iff (Λ : Submodule (𝓞 E) W) (I : Ideal (𝓞 E))
   refine forall₂_congr fun x y => imp_congr_right fun _ => ?_
   rw [← hat_iff e he, map_sub, ← cj_tr, tr_tmul, tr_tmul, map_one]
 
-theorem levelClauses_iff (h : W →ₗ[ℚ] W →ₗ[ℚ] E) (ξ : E) (Λ : Submodule (𝓞 E) W) (M : ℕ)
-    (I : Ideal (𝓞 E)) :
-    IndefiniteRowSideFullHecke.IdeleNormTraceForm.LevelClauses E ξ h Λ M I ↔
-      ((∀ ν : IndefiniteRowSideFullHecke.AdelicScalarMultiplier.Afˣ, (∃ g ∈ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.simLevel h ξ Λ I,
-        IndefiniteRowSideFullHecke.AdelicScalarMultiplier.HasMultiplier (IndefiniteRowSideFullHecke.AdelicScalarMultiplier.traceForm h ξ) g ν) ↔ ν ∈ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.zHatUnits) ∧
-      IndefiniteRowSideFullHecke.AdelicScalarMultiplier.simLevel h ξ Λ I ⊓ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.unitaryGroup h =
-        IndefiniteRowSideFullHecke.AdelicScalarMultiplier.unitaryPrincipal h ξ Λ M ∧
-      IndefiniteRowSideFullHecke.AdelicScalarMultiplier.simPrincipal h ξ Λ M ≤ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.simLevel h ξ Λ I ∧
-      ∀ φ, ∃ g ∈ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.unitaryStab h Λ, IndefiniteRowSideFullHecke.AdelicScalarMultiplier.Induces Λ I g φ) := by
-  refine and_congr ?_ (and_congr ?_ (and_congr ?_ (forall_congr' fun φ => ?_)))
-  · rw [Set.ext_iff, (ue e).surjective.forall]
-    refine forall_congr' fun ν => iff_congr ?_ (units_iff e he ν).symm
-    rw [(cj_surjective e).exists]
-    exact exists_congr fun g =>
-      (and_congr (simLevel_iff e he h ξ Λ I g) (multiplier_iff e _ g ν)).symm
-  · rw [SetLike.ext_iff, SetLike.ext_iff, (cj_surjective e).forall]
-    exact forall_congr' fun g => (iff_congr
-      (and_congr (simLevel_iff e he h ξ Λ I g) (unitary_iff e h g))
-      (and_congr (simLevel_iff e he h ξ Λ _ g) (unitary_iff e h g))).symm
-  · rw [SetLike.le_def, SetLike.le_def, (cj_surjective e).forall]
-    exact forall_congr' fun g =>
-      (imp_congr (simLevel_iff e he h ξ Λ _ g) (simLevel_iff e he h ξ Λ I g)).symm
-  · rw [(cj_surjective e).exists]
-    exact exists_congr fun g => (and_congr
-      (and_congr (unitary_iff e h g) (stab_iff e he _ g)) (induces_iff e he Λ I g φ)).symm
 
 end Groups
 
@@ -437,10 +393,6 @@ end Adelic
 
 section Hypotheses
 
-theorem quad_iff (d : ℕ) (K : Type) [Field K] [NumberField K] (δ : K) :
-    IndefiniteRowSideFullHecke.IdeleNormTraceForm.IsPrimeImagQuad d K δ ↔ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.IsQuadField K d δ := by
-  unfold IndefiniteRowSideFullHecke.IdeleNormTraceForm.IsPrimeImagQuad IndefiniteRowSideFullHecke.AdelicScalarMultiplier.IsQuadField
-  tauto
 
 theorem sq_cases {d : ℕ} {z : ℂ} (hz : z ^ 2 = -(d : ℂ)) :
     z = Complex.I * (Real.sqrt d : ℂ) ∨ z = -(Complex.I * (Real.sqrt d : ℂ)) := by
@@ -526,20 +478,6 @@ theorem conj_algebraMap (hK : IndefiniteRowSideFullHecke.AdelicScalarMultiplier.
     (f := (IsCMField.complexConj E : E →+* E).comp (algebraMap K E))
     (g := (algebraMap K E).comp (c : K →+* K)) h1) x
 
-theorem conjIdeal_iff (hK : IndefiniteRowSideFullHecke.AdelicScalarMultiplier.IsQuadField K d δ) {c : K ≃ₐ[ℚ] K} (hc : c δ = -δ)
-    (𝔐 𝔐' : Ideal (𝓞 K)) :
-    (∀ x : 𝓞 K, x ∈ 𝔐' ↔ ∃ y ∈ 𝔐, algebraMap (𝓞 K) E x =
-      IsCMField.complexConj E (algebraMap (𝓞 K) E y)) ↔ 𝔐' = IndefiniteRowSideFullHecke.IdeleNormTraceForm.conjIdeal c 𝔐 := by
-  have hs : Function.Surjective (RingOfIntegers.mapRingHom (c : K →+* K)) := fun x =>
-    ⟨RingOfIntegers.mapRingHom (c.symm : K →+* K) x, RingOfIntegers.ext (c.apply_symm_apply _)⟩
-  rw [SetLike.ext_iff]
-  refine forall_congr' fun x => iff_congr Iff.rfl ?_
-  unfold IndefiniteRowSideFullHecke.IdeleNormTraceForm.conjIdeal
-  rw [Ideal.mem_map_iff_of_surjective _ hs]
-  refine exists_congr fun y => and_congr_right fun _ => ?_
-  rw [IsScalarTower.algebraMap_apply (𝓞 K) K E, IsScalarTower.algebraMap_apply (𝓞 K) K E,
-    conj_algebraMap hK hc, (algebraMap K E).injective.eq_iff]
-  exact ⟨fun h => RingOfIntegers.ext h.symm, fun h => h ▸ rfl⟩
 
 omit [Algebra K E] in
 theorem unramified_iff :
@@ -549,7 +487,6 @@ theorem unramified_iff :
       Algebra.IsUnramifiedAt (𝓞 (maximalRealSubfield E)) P :=
   ⟨fun H P hP h => H ⟨P, hP, h⟩, fun H P => H P.asIdeal P.ne_bot⟩
 
-theorem rank_iff (p q : ℕ) : (1 ≤ p + q ∧ ((q < p ∧ 1 ≤ q) ∨ q = 0)) ↔ q < p := by omega
 
 variable {W : Type} [AddCommGroup W] [Module ℚ W] [Module E W] [IsScalarTower ℚ E W]
   [Module (𝓞 E) W] [IsScalarTower (𝓞 E) E W]
@@ -587,37 +524,7 @@ theorem selfDual_iff {h : W →ₗ[ℚ] W →ₗ[ℚ] E} (hh : IndefiniteRowSide
 
 end Hypotheses
 
-theorem ideleNorm_iff : IndefiniteRowSideFullHecke.IdeleNormTraceForm.IdeleNormScale ↔ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.IdeleNormStatement := by
-  obtain ⟨e, he⟩ := exists_adele_equiv
-  exact ⟨fun H K _ _ d δ hK => (ideleClauses_iff e he).1 (H d K δ ((quad_iff d K δ).2 hK)),
-    fun H d K _ _ δ hK => (ideleClauses_iff e he).2 (H K d δ ((quad_iff d K δ).1 hK))⟩
 
-theorem levelGroup_iff : IndefiniteRowSideFullHecke.IdeleNormTraceForm.LevelGroup ↔ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.LevelGroupStatement := by
-  obtain ⟨e, he⟩ := exists_adele_equiv
-  constructor
-  · intro H K _ _ d δ E _ _ _ _ W _ _ _ _ _ _ h p q ξ Λ M 𝔐 𝔐' hK hG hU hh hpq hs hξ hsg hΛ h3 hodd
-      hconj hprod hcop
-    obtain ⟨c, hc⟩ := exists_conj hK
-    obtain ⟨σ, hσ⟩ := exists_embedding hK
-    obtain rfl := (conjIdeal_iff hK hc 𝔐 𝔐').1 hconj
-    exact (levelClauses_iff e he h ξ Λ M _).1
-      (H d K δ c σ E W h p q ξ Λ M 𝔐 ((quad_iff d K δ).2 hK) hc (unramified_iff.2 hU)
-        ((hermitian_iff h).2 hh) ((signature_iff h p q).2 hs) ((rank_iff p q).2 hpq).1
-        ((rank_iff p q).2 hpq).2 hξ ((sign_iff hK hσ ξ).2 hsg) ((selfDual_iff hh hξ Λ).2 hΛ)
-        h3 hodd hprod.symm hcop)
-  · intro H d K _ _ δ c σ E _ _ _ _ hG W _ _ _ _ _ _ h p q ξ Λ M 𝔐 hK hc hU hh hs h1 hpq hξ hsg hΛ
-      h3 hodd hprod hcop
-    have hK := (quad_iff d K δ).1 hK
-    obtain ⟨δ', hK', hσ⟩ : ∃ δ' : K, IndefiniteRowSideFullHecke.AdelicScalarMultiplier.IsQuadField K d δ' ∧
-        σ δ' = Complex.I * (Real.sqrt d : ℂ) :=
-      (embedding_cases hK σ).elim (fun h => ⟨δ, hK, h⟩) fun h => ⟨-δ, quad_neg hK, h⟩
-    exact (levelClauses_iff e he h ξ Λ M _).2
-      (H K d δ' E W h p q ξ Λ M 𝔐 (IndefiniteRowSideFullHecke.IdeleNormTraceForm.conjIdeal c 𝔐) hK' hG (unramified_iff.1 hU)
-        ((hermitian_iff h).1 hh) ((rank_iff p q).1 ⟨h1, hpq⟩) ((signature_iff h p q).1 hs) hξ
-        ((sign_iff hK' hσ ξ).1 hsg) ((selfDual_iff hh hξ Λ).1 hΛ) h3 hodd
-        ((conjIdeal_iff hK hc 𝔐 _).2 rfl) hprod.symm hcop)
 
-theorem normAndLevel_iff : IndefiniteRowSideFullHecke.IdeleNormTraceForm.NormAndLevel ↔ IndefiniteRowSideFullHecke.AdelicScalarMultiplier.Statement :=
-  and_congr ideleNorm_iff levelGroup_iff
 
 end GlobalTheory.NormLevelCompare

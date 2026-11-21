@@ -137,24 +137,6 @@ theorem isIrreducible_restrictedTensorRep (hπ : ∀ v, IsAdmissible (π v))
   obtain ⟨c, rfl⟩ := hu
   exact ⟨c, rfl⟩
 
-theorem isAdmissible_restrictedTensorRep (hπ : ∀ v, IsAdmissible (π v))
-    (hirr : ∀ v, (π v).IsIrreducible)
-    (hξ : ∀ᶠ v in cofinite, ξ v ∈ fixedVectors (π v) (GLnLocal.integralGL (v.adicCompletion K) n))
-    (hξ0 : ∀ᶠ v in cofinite, ξ v ≠ 0) :
-    IsAdmissible (adelicTensorRep π ξ hξ) := by
-  refine isAdmissible_comp (RestrictedTensor.isAdmissible_restrictedTensorRep hπ hξ ?_)
-    (finiteRestrictedEquiv K n)
-  filter_upwards [hξ, hξ0] with v h1 h2 u hu
-  have : FiniteDimensional ℂ (fixedVectors (π v) (GLnLocal.integralGL (v.adicCompletion K) n)) :=
-    (hπ v).2 _ (GLnLocal.isCompact_integralGL _ n) (GLnLocal.isOpen_integralGL _ n)
-  have hle := finrank_fixedVectors_integralGL_le_one n (hπ v).1 (hirr v)
-  have hspan : Submodule.span ℂ {ξ v} =
-      fixedVectors (π v) (GLnLocal.integralGL (v.adicCompletion K) n) :=
-    Submodule.eq_of_le_of_finrank_le ((Submodule.span_singleton_le_iff_mem _ _).2 h1)
-      (hle.trans (by rw [finrank_span_singleton h2]))
-  rw [← hspan, Submodule.mem_span_singleton] at hu
-  obtain ⟨c, rfl⟩ := hu
-  exact ⟨c, rfl⟩
 
 end Local
 
@@ -207,11 +189,6 @@ namespace TensorDecomposition
 
 variable {ρ : Representation ℂ (FiniteAdelicGL K n) V}
 
-theorem eventually_unramified (D : TensorDecomposition K n ρ) :
-    ∀ᶠ v in cofinite, fixedVectors (D.π v) (GLnLocal.integralGL (v.adicCompletion K) n) ≠ ⊥ := by
-  filter_upwards [D.mem_fixedVectors, D.ne_zero] with v h1 h2 h
-  rw [h, Submodule.mem_bot] at h1
-  exact h2 h1
 
 theorem nonempty_equiv (D D' : TensorDecomposition K n ρ) (v : HeightOneSpectrum (𝓞 K)) :
     Nonempty ((D.π v).Equiv (D'.π v)) := by

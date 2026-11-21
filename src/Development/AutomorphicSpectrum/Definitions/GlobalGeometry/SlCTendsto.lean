@@ -19,10 +19,6 @@ def jp : ℕ := D.R.m - ((i : ℕ) + 1)
 
 def pp : ℕ := (D.R.sigW ((i : ℕ) + 1)).1
 
-theorem pp_add_jp : pp D i + jp D i = D.R.r := by
-  have := i.2
-  have := D.R.m_add_three_le_k
-  simp only [pp, jp, Ranks.sigW, Ranks.r]; omega
 
 def anc : ℕ := D.R.k - 2
 
@@ -127,9 +123,6 @@ structure MbarIn (up : RW D) where
 def slC {up : RW D} (B : MbarIn S i up) (Z : Cmp S i) : ℝ :=
   limUnder (𝓝[>] (0 : ℚ)) fun s => B.top Z s / (((Dn D : ℝ) + 1) * B.dg Z s)
 
-theorem slC_tendsto {up : RW D} (B : MbarIn S i up) (Z : Cmp S i) :
-    Tendsto (fun s => B.top Z s / (((Dn D : ℝ) + 1) * B.dg Z s)) (𝓝[>] 0) (𝓝 (slC S i B Z)) :=
-  tendsto_nhds_limUnder (B.conv Z)
 
 def rndDown {K : Type} [Field K] (la : HeightOneSpectrum (𝓞 K)) (q : ℕ) (m : ℝ) : ℝ :=
   (⌊(multiplicity la.asIdeal (Ideal.span {((q : ℕ) : 𝓞 K)}) : ℝ) * m⌋ : ℝ) /

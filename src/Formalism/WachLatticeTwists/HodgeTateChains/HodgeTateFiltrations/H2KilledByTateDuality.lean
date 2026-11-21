@@ -7,37 +7,7 @@ namespace Formalism.RepresentationBoundsCohomology.TorsionBoundCyclotomic
 
 open Polynomial
 
-theorem tbcB : StatTBcB := by
-  intro ℓ _ s m t e gK U A _ _ Hf y he h
-  have hle : cTB ℓ s m e gK U ≤ cB ℓ s m t gK U :=
-    Finset.le_sup (f := fun e => cTB ℓ s m e gK U) (Finset.mem_range.2 he)
-  obtain ⟨j, hj⟩ := Nat.exists_eq_add_of_le hle
-  rw [hj, add_comm, pow_add, mul_smul]
-  exact Hf.smul_mem _ h
 
-theorem h2_killed_by_tate_duality : H2KilledByTateDuality := by
-  intro ℓ _ u s hs h2 hu e H2 M0 P _ _ _ _ _ _ pair hinj hM0 x
-  obtain ⟨hne, hval⟩ := Formalism.WindowSums.valuation_zpow_sub_one ℓ u s hs h2 hu ((e : ℤ) + 1) (by omega)
-  have hv : padicValInt ℓ ((e : ℤ) + 1) = padicValNat ℓ (e + 1) := by
-    unfold padicValInt
-    congr 1
-  rw [hv] at hval
-  obtain ⟨c, hc⟩ : ∃ c : ℤ_[ℓ]ˣ, (((u ^ ((e : ℤ) + 1) : ℤ_[ℓ]ˣ) : ℤ_[ℓ]) - 1)
-      = (c : ℤ_[ℓ]) * (ℓ : ℤ_[ℓ]) ^ (s + padicValNat ℓ (e + 1)) := by
-    have h := PadicInt.unitCoeff_spec hne
-    rw [hval] at h
-    exact ⟨_, h⟩
-  have hk : ∀ y : M0, ((ℓ : ℤ_[ℓ]) ^ (s + padicValNat ℓ (e + 1))) • y = 0 := by
-    intro y
-    have h1 : (((u ^ ((e : ℤ) + 1) : ℤ_[ℓ]ˣ) : ℤ_[ℓ]) - 1) • y = 0 := by
-      rw [sub_smul, one_smul, hM0, sub_self]
-    rw [hc, mul_smul] at h1
-    have h3 := congrArg (fun v => ((c⁻¹ : ℤ_[ℓ]ˣ) : ℤ_[ℓ]) • v) h1
-    simpa [smul_smul] using h3
-  apply hinj
-  rw [map_smul, map_zero]
-  ext y
-  rw [LinearMap.smul_apply, ← map_smul, hk, map_zero, LinearMap.zero_apply]
 
 theorem freeAlg : StatFreeAlg := by
   intro ℓ _ w U i V _ _ g hkill x
@@ -50,14 +20,6 @@ theorem freeAlg : StatFreeAlg := by
     refine ⟨aeval g R' x, ?_⟩
     rw [aeval_split g _ R' hR' x, add_sub_cancel_left]
 
-lemma freeMono {ℓ : ℕ} [Fact ℓ.Prime] {H0 H1 : Type} [AddCommGroup H0] [Module ℤ_[ℓ] H0]
-    [AddCommGroup H1] [Module ℤ_[ℓ] H1] (cup : H0 →ₗ[ℤ_[ℓ]] H1) (al al' : ℕ) (h : al ≤ al')
-    (hF : FreeIn ℓ cup al) : FreeIn ℓ cup al' := by
-  intro y
-  obtain ⟨z, t, hz⟩ := hF y
-  obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le h
-  refine ⟨((ℓ : ℤ_[ℓ]) ^ j) • z, t, ?_⟩
-  rw [map_smul, add_comm, pow_add, mul_smul, ← smul_sub, smul_comm, hz, smul_zero]
 
 theorem freePiece : StatFreePiece := by
   intro ℓ _ w m hm h2 hw U i A P H0A cup ⟨hS, ⟨hI1, hI2⟩, hT4, ⟨_, hT3⟩, htf, hHT⟩ hlog y
@@ -101,33 +63,6 @@ theorem freePiece : StatFreePiece := by
   rw [h5, add_sub_cancel_left, pow_one, smul_comm, smul_comm (ℓ : ℤ_[ℓ]), ← map_smul, h4, map_zero, smul_zero,
     smul_zero]
 
-theorem freeExt : StatFreeExt := by
-  intro ℓ _ H0' H0 H0'' H1' H1 H1'' _ _ _ _ _ _ _ _ _ _ _ _ i0 p0 dl i1 p1 cup' cup cup'' c' c'' al' al''
-    hex0 hex1 hc1 hc2 hT5 hk' hk'' hF' hF'' y
-  obtain ⟨z'', t, hz''⟩ := hF'' (p1 y)
-  have h1 : ((ℓ : ℤ_[ℓ]) ^ c'') • (((ℓ : ℤ_[ℓ]) ^ al'') • p1 y - cup'' z'') = 0 := hk'' _ ⟨t, hz''⟩
-  have h2 : dl (((ℓ : ℤ_[ℓ]) ^ c') • z'') = 0 := by rw [map_smul]; exact hk' _ (hT5 z'')
-  obtain ⟨z1, hz1⟩ := (hex0 _).1 h2
-  have h3 : p1 (((ℓ : ℤ_[ℓ]) ^ (c' + c'' + al'')) • y - cup (((ℓ : ℤ_[ℓ]) ^ c'') • z1)) = 0 := by
-    rw [map_sub, ← hc2, map_smul p0, hz1, map_smul, map_smul, map_smul]
-    have h4 : ((ℓ : ℤ_[ℓ]) ^ (c' + c'' + al'')) • p1 y - ((ℓ : ℤ_[ℓ]) ^ c'') • (((ℓ : ℤ_[ℓ]) ^ c') • cup'' z'')
-        = ((ℓ : ℤ_[ℓ]) ^ c') • (((ℓ : ℤ_[ℓ]) ^ c'') • (((ℓ : ℤ_[ℓ]) ^ al'') • p1 y - cup'' z'')) := by
-      simp only [smul_sub, smul_smul, ← pow_add]
-      have e1 : c' + c'' + al'' = c' + (c'' + al'') := by ring
-      have e2 : c'' + c' = c' + c'' := by ring
-      rw [e1, e2]
-    rw [h4, h1, smul_zero]
-  obtain ⟨y', hy'⟩ := (hex1 _).1 h3
-  obtain ⟨z', t', hz'⟩ := hF' y'
-  refine ⟨((ℓ : ℤ_[ℓ]) ^ (al' + c'')) • z1 + i0 z', t', ?_⟩
-  have h5 := congrArg i1 hz'
-  rw [map_smul, map_sub, map_smul, hy', ← hc1, map_zero] at h5
-  have h6 : ((ℓ : ℤ_[ℓ]) ^ (al' + al'' + c' + c'')) • y - cup (((ℓ : ℤ_[ℓ]) ^ (al' + c'')) • z1 + i0 z')
-      = ((ℓ : ℤ_[ℓ]) ^ al') • (((ℓ : ℤ_[ℓ]) ^ (c' + c'' + al'')) • y - cup (((ℓ : ℤ_[ℓ]) ^ c'') • z1)) - cup (i0 z') := by
-    rw [map_add, smul_sub, smul_smul, ← pow_add, map_smul, map_smul, smul_smul, ← pow_add]
-    have e1 : al' + al'' + c' + c'' = al' + (c' + c'' + al'') := by ring
-    rw [e1]; abel
-  rw [h6]; exact h5
 
 theorem halving : StatHalving := by
   intro α γ P hmono hone hext
@@ -167,18 +102,5 @@ theorem halving : StatHalving := by
   intro i j hij
   exact main _ i j rfl hij
 
-theorem freeGm : StatFreeGm := by
-  intro ℓ _ w m hm h2 hw U a D hD hP hlog hLL i j hij
-  refine halving (fun x => rI ℓ m U (a + x) + m + 2) (fun x => 2 + max 1 (rI ℓ m U (a + x)))
-    (fun i j al => FreeIn ℓ (D.cup i j) al) (fun i j al al' h hF => freeMono _ al al' h hF)
-    (fun i => freePiece ℓ w m hm h2 hw U (a + i) _ (D.piece i) _ (D.cup i (i + 1)) (hP i) (hlog i))
-    (fun i k j al' al'' hik hkj hF'' hF' => ?_) i j hij
-  obtain ⟨e0, e1, c1, c2, t5⟩ := hD i k j hik hkj
-  have h := freeExt ℓ (D.H0 k j) (D.H0 i j) (D.H0 i k) (D.H1 k j) (D.H1 i j) (D.H1 i k)
-    (D.i0 i k j) (D.p0 i k j) (D.dl i k j) (D.i1 i k j) (D.p1 i k j) (D.cup k j) (D.cup i j) (D.cup i k)
-    _ _ al' al'' e0 e1 c1 c2 t5 (hLL k j hkj) (hLL i k hik) hF' hF''
-  have hs := Finset.sum_Ico_consecutive (fun x => 2 + max 1 (rI ℓ m U (a + x))) hik.le hkj.le
-  refine freeMono _ _ _ (le_of_eq ?_) h
-  rw [← hs]; ring
 
 end Formalism.RepresentationBoundsCohomology.TorsionBoundCyclotomic

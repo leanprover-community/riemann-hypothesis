@@ -94,49 +94,10 @@ theorem lenAt_Qm_eq_zero_of_rho {j : ℕ} (hρ : WeightFamilies.rho D j = 0) (CR
   have := Qm_subsingleton_of_rho (B := B) hρ CR T c ka
   exact lenAt_eq_zero_of_subsingleton la _
 
-theorem rLa_of_ge {j : ℕ} {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} {G : GlobalFamilyData X ka wL wF}
-    {la : HeightOneSpectrum (𝓞 B.KO)} (hj : D.R.m ≤ j) (Q : LocalPointData G la) (CRm : ℝ) (T : ℕ) (c : ℝ) :
-    rLa Q CRm T c = (Nat.choose (T - 1) (WeightFamilies.dimY D j) : ℝ) * (Q.Ila.toNat : ℝ) +
-      (Formalism.MainNotions.Gaps.SizeBoundsAlt.gaussC (B.Mlat j ka) G.zc la : ℝ) := by
-  unfold rLa
-  rw [lenAt_Qm_eq_zero_of_rho (rho_eq_zero_of_ge hj), if_neg (not_lt.2 hj)]
-  simp
 
-theorem rq_eq_zero_of_ge {j : ℕ} {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyData X ka wL wF) (hj : D.R.m ≤ j)
-    {large₂ : SizeData₂ D} {S : Scal B} {CRm : ℝ} {T : ℕ} {c Gc Prw Ch Ah Cf Af : ℝ}
-    (hT : G.Tied large₂ S CRm T c Gc Prw Ch Ah Cf Af) : G.rq = 0 := by
-  rw [hT.2.2.2.2.2.2.2.2.2.1]
-  exact rhoP_eq_zero_of_rho (rho_eq_zero_of_ge hj) CRm T c ka
 
-theorem Net_nonneg {j : ℕ} {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} {G : GlobalFamilyData X ka wL wF}
-    {la : HeightOneSpectrum (𝓞 B.KO)} (Q : LocalPointData G la)
-    (h : ∀ y : X.Pt la, ((2 * G.iet * X.phiC la y : ℝ) : EReal) ≤ X.vAt la y (X.inc _ G.et)) : 0 ≤ Q.Net := by
-  unfold LocalPointData.Net
-  refine finsum_nonneg fun ζ => mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) ?_
-  refine EReal.toReal_nonneg (le_trans ?_ (h (Q.y ζ)))
-  have h0 : (0 : ℝ) ≤ 2 * G.iet * X.phiC la (Q.y ζ) :=
-    mul_nonneg (mul_nonneg (by norm_num) (Nat.cast_nonneg _)) (Formalism.MainNotions.Gaps.T0.phiC_nonneg X la (Q.y ζ))
-  exact_mod_cast h0
 
-theorem rLa_nonneg {j : ℕ} {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} {G : GlobalFamilyData X ka wL wF}
-    {la : HeightOneSpectrum (𝓞 B.KO)} (Q : LocalPointData G la) (CRm : ℝ) (T : ℕ) (c : ℝ)
-    (h : j < D.R.m → ∀ y : X.Pt la, ((2 * G.iet * X.phiC la y : ℝ) : EReal) ≤ X.vAt la y (X.inc _ G.et)) :
-    0 ≤ rLa Q CRm T c := by
-  unfold rLa
-  have h1 : (0 : ℝ) ≤ (if j < D.R.m then (T : ℝ) * (max 0 c / (2 * (G.iet : ℝ))) * Q.Net else 0) := by
-    split_ifs with hj
-    · exact mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (div_nonneg (le_max_left _ _)
-        (mul_nonneg (by norm_num) (Nat.cast_nonneg _)))) (Net_nonneg Q (h hj))
-    · exact le_rfl
-  have h2 : (0 : ℝ) ≤ (Q.Ila.toNat : ℝ) := Nat.cast_nonneg _
-  exact add_nonneg (add_nonneg (mul_nonneg (Nat.cast_nonneg _) (add_nonneg h2 h1)) (Nat.cast_nonneg _))
-    (Nat.cast_nonneg _)
 
-theorem rLa_nonneg_of_tied {j : ℕ} {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} {G : GlobalFamilyData X ka wL wF}
-    {large₂ : SizeData₂ D} {S : Scal B} {CRm' : ℝ} {T' : ℕ} {c' Gc Prw Ch Ah Cf Af : ℝ}
-    (hT : G.Tied large₂ S CRm' T' c' Gc Prw Ch Ah Cf Af)
-    {la : HeightOneSpectrum (𝓞 B.KO)} (Q : LocalPointData G la) (CRm : ℝ) (T : ℕ) (c : ℝ) : 0 ≤ rLa Q CRm T c :=
-  rLa_nonneg Q CRm T c fun hj y => (hT.2.2.2.2.2.2.2.2.2.2.2.2.2 hj).2.2.2.1 la y
 
 def lenQ {j : ℕ} {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyData X ka wL wF) (CRm : ℝ) (T : ℕ) (c : ℝ)
     (la : HeightOneSpectrum (𝓞 B.KO)) : ℝ :=

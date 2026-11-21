@@ -114,9 +114,6 @@ theorem valL_smul (hφ : φ ∈ S.Fi emb σ lam) (b : S.β) (g : S.G b) (d : S.D
   rw [mul_smul, S.mv_smul, tr_mul] at h
   exact h
 
-theorem valL_rep (hφ : φ ∈ S.Fi emb σ lam) (c : S.Cl) : valL S emb σ c.1 (S.rep c) φ = φ c := by
-  have := valL_eq hφ c 1
-  rwa [one_smul, DiaStab.tr_one] at this
 
 theorem valL_mem (hφ : φ ∈ S.Fi emb σ lam) (b : S.β) (d : S.D b) : valL S emb σ b d φ ∈ ValC (Gr emb σ n) lam :=
   DiaStab.tr_mem S emb σ lam b _ (hφ _).1
@@ -153,10 +150,6 @@ theorem finN_apply (g : GA D V) (i j : Fin n) : (finN V hn g : Matrix (Fin n) (F
   subst hn
   rfl
 
-theorem infN_apply (g : GA D V) (τ : ι) (i j : Fin n) : (infN θ V hn t g τ : Matrix (Fin n) (Fin n) ℂ) i j =
-    infMat D.sp.cm.sig V.gram (θ (t τ)) g (Fin.cast hn.symm i) (Fin.cast hn.symm j) := by
-  subst hn
-  rfl
 
 variable {V}
 

@@ -287,12 +287,6 @@ theorem jacOp_centre (ψ : AddChar (AF D.host.F) ℂ) (L A : HSp D) (c : D.host.
   funext w
   simp only [jacOp, tPt_zero, heis_zero, Pi.smul_apply, smul_eq_mul]
 
-theorem IsNegLine.lineNorm_neg {L : HSp D} (h : IsNegLine L) (τ : D.host.E →+* ℂ) : (τ (lineNorm L)).re < 0 := by
-  have h1 := h.sigOK τ
-  rw [h.neg τ] at h1
-  have h2 := Formalism.UG.P.stdform_sig_neg _ h1 (fun _ => 1) (fun e => one_ne_zero (congrFun e ⟨0, by rw [h.rank_one]; omega⟩))
-  rw [lineNorm_eq, Finset.sum_comm]
-  simpa [Formalism.UG.P.stdformQ, Formalism.UG.hform] using h2
 
 namespace FJDat
 
@@ -314,22 +308,6 @@ theorem isIsoSub : IsIsoSub B d.eM := by
 include d in
 theorem even_codim : Even (B.rank - A.rank) := ⟨d.ρ, by have := d.codim; omega⟩
 
-theorem hA_aCo (n : GA D B) (i : Fin A.rank) :
-    hA A (d.aCo n) (vecA A (A.frame i)) = hA B (actV B n d.fTop) (vecA B (ι (A.frame i))) := by
-  have h := congrFun (Matrix.mulVec_mulVec (fun i => hA B (actV B n d.fTop) (vecA B (ι (A.frame i)))) (gramA A)
-    (gramInvA A)) i
-  rw [WeilTieCompare.gram_mul_inv, Matrix.one_mulVec] at h
-  rw [← h]
-  have hv : ∀ k, cA D (vecA A (A.frame i) k) = if i = k then 1 else 0 := fun k => by
-    unfold vecA
-    rw [DualPairCheck.cA_incA, Module.Basis.repr_self, Finsupp.single_apply]
-    split_ifs
-    · rw [star_one, map_one]
-    · rw [star_zero, map_zero]
-  change ∑ k, ∑ j, cA D (vecA A (A.frame i) k) * incA D (A.gram k j) * d.aCo n j = ∑ j, incA D (A.gram i j) * d.aCo n j
-  simp only [hv, ite_mul, one_mul, zero_mul]
-  rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun j _ => by rw [Finset.sum_ite_eq, if_pos (Finset.mem_univ _)]
 
 theorem theta_eq (ψ : AddChar (AF D.host.F) ℂ) (Om : GA D A → WA L A → ℂ) (n : GA D B) (g : GA D A) :
     d.theta ψ Om n g = ψ (cenCo L d.c (d.tCo n)) * Om g (tPt L A d.c (d.aCo n)) := by
@@ -397,66 +375,8 @@ theorem chr_one (ψ : AddChar (AF D.host.F) ℂ) : d.chr ψ 1 = 1 := by
 
 end FJDat
 
-theorem probPair_change {A B V W : HSp D} (κ : WA A B ≃+ WA V W) (h1 : Continuous κ) (h2 : Continuous κ.symm)
-    (h3 : ∀ x, κ x ∈ ratL V W ↔ x ∈ ratL A B) (m : Measure (WA V W) × Set (WA V W)) (hm : IsProbPair V W m.1 m.2) :
-    ∃ m' : Measure (WA A B) × Set (WA A B), IsProbPair A B m'.1 m'.2 ∧
-      ∀ φ : WA V W → ℂ, ∫ w in m'.2, φ (κ w) ∂m'.1 = ∫ w in m.2, φ w ∂m.1 := by
-  have : BorelSpace (WA A B) := ⟨rfl⟩
-  have : BorelSpace (WA V W) := ⟨rfl⟩
-  have := (GlobalTheory.AdelicMatrixLattice.lattice D A B).1
-  have := (GlobalTheory.AdelicMatrixLattice.lattice D V W).1
-  obtain ⟨μ, 𝓕⟩ := m
-  obtain ⟨hμ, hF, hv⟩ := hm
-  let e : WA A B ≃ᵐ WA V W :=
-    { toEquiv := κ.toEquiv, measurable_toFun := h1.measurable, measurable_invFun := h2.measurable }
-  have hmp : MeasurePreserving e (μ.map κ.symm) μ := MeasurePreserving.symm e.symm ⟨e.symm.measurable, rfl⟩
-  refine ⟨(μ.map κ.symm, e ⁻¹' 𝓕), ⟨AddEquiv.isAddHaarMeasure_map μ κ.symm h2 (by simpa using h1), ?_, ?_⟩,
-    fun φ => hmp.setIntegral_preimage_emb e.measurableEmbedding φ 𝓕⟩
-  · let f : ratL V W → ratL A B := fun y => ⟨κ.symm y, (h3 _).1 (by simpa using y.2)⟩
-    have hf : Function.Bijective f :=
-      ⟨fun a b hab => Subtype.ext (κ.symm.injective (congrArg Subtype.val hab)),
-        fun x => ⟨⟨κ x, (h3 _).2 x.2⟩, Subtype.ext (κ.symm_apply_apply _)⟩⟩
-    refine IsAddFundamentalDomain.preimage_of_equiv (G := ratL V W) (H := ratL A B) hF hmp.quasiMeasurePreserving hf ?_
-    intro y x
-    change κ (κ.symm y + x) = y + κ x
-    rw [map_add, κ.apply_symm_apply]
-  · exact (hmp.measure_preimage_emb e.measurableEmbedding 𝓕).trans hv
 
-theorem isPureAt_iff {A B V W : HSp D} {κ : WA A B ≃+ WA V W} {σ} (hκ : IsChange κ σ) (ψ : AddChar (AF D.host.F) ℂ)
-    (ε : AE D) (f : WA V W → ℂ) : IsPureAt ψ V W ε f ↔ IndefiniteRowSideFullHecke.SplittingKernelQuotients.PureAt ψ ε (f ∘ κ) := by
-  have hs := hκ.2.2.2.2.1
-  have key : ∀ (m : Measure (WA V W) × Set (WA V W)) (m' : Measure (WA A B) × Set (WA A B)),
-      (∀ u, coefH ψ V W m f (κ u) = IndefiniteRowSideFullHecke.SplittingKernelQuotients.coef ψ m' (f ∘ κ) u) →
-      ((∀ x y : WA V W, ε • x = x → ε • y = 0 →
-        coefH ψ V W m f (x + y) * coefH ψ V W m f 0 = coefH ψ V W m f x * coefH ψ V W m f y) ↔
-      ∀ x y : WA A B, ε • x = x → ε • y = 0 → IndefiniteRowSideFullHecke.SplittingKernelQuotients.coef ψ m' (f ∘ κ) (x + y) * IndefiniteRowSideFullHecke.SplittingKernelQuotients.coef ψ m' (f ∘ κ) 0 =
-        IndefiniteRowSideFullHecke.SplittingKernelQuotients.coef ψ m' (f ∘ κ) x * IndefiniteRowSideFullHecke.SplittingKernelQuotients.coef ψ m' (f ∘ κ) y) := by
-    intro m m' h
-    rw [κ.surjective.forall]
-    refine forall_congr' fun x => ?_
-    rw [κ.surjective.forall]
-    refine forall_congr' fun y => ?_
-    rw [← hs, ← hs, κ.injective.eq_iff, κ.map_eq_zero_iff, ← h, ← h, ← h, ← h, map_add, map_zero]
-  have hw : ∀ u w, Heisenberg₂ ψ V W (κ u) f (κ w) * star (f (κ w)) = IndefiniteRowSideFullHecke.HeisenbergWeilMatrices.rho ψ u (f ∘ κ) w * star ((f ∘ κ) w) :=
-    fun u w => congrArg (· * star (f (κ w))) (congrFun (WeilTieCompare.heis_change hκ ψ u f) w)
-  refine and_congr (iff_of_true (WeilTieCompare.exists_probPair V W) (WeilTieCompare.exists_probPair A B))
-    ⟨fun h m' hm' => ?_, fun h m hm => ?_⟩
-  · obtain ⟨m, hm, hi⟩ := probPair_change κ.symm hκ.2.1 hκ.1
-      (fun x => (hκ.2.2.2.1 (κ.symm x)).symm.trans (by rw [κ.apply_symm_apply])) m' hm'
-    refine (key m m' fun u => ?_).1 (h m hm)
-    refine Eq.trans ?_ (hi fun w => IndefiniteRowSideFullHecke.HeisenbergWeilMatrices.rho ψ u (f ∘ κ) w * star ((f ∘ κ) w))
-    simp only [← hw, κ.apply_symm_apply]
-    rfl
-  · obtain ⟨m', hm', hi⟩ := probPair_change κ hκ.1 hκ.2.1 hκ.2.2.2.1 m hm
-    refine (key m m' fun u => ?_).2 (h m' hm')
-    refine (hi fun w => Heisenberg₂ ψ V W (κ u) f w * star (f w)).symm.trans ?_
-    simp only [hw]
-    rfl
 
-theorem isFact_iff {A B V W : HSp D} {κ : WA A B ≃+ WA V W} {σ} (hκ : IsChange κ σ) (ψ : AddChar (AF D.host.F) ℂ)
-    (f : WA V W → ℂ) : IsFact ψ V W f ↔ IndefiniteRowSideFullHecke.SplittingKernelQuotients.IsPure ψ (f ∘ κ) ∧ IsVacAE ψ V W f :=
-  ⟨fun h => ⟨⟨fun v => (isPureAt_iff hκ ψ _ f).1 (h.fin v), fun v => (isPureAt_iff hκ ψ _ f).1 (h.inf v)⟩, h.vac⟩,
-    fun h => ⟨fun v => (isPureAt_iff hκ ψ _ f).2 (h.1.1 v), fun v => (isPureAt_iff hκ ψ _ f).2 (h.1.2 v), h.2⟩⟩
 
 theorem coefH_smul (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (m) (c : ℂ) (f : WA V W → ℂ) (u : WA V W) :
     coefH ψ V W m (c • f) u = c * star c * coefH ψ V W m f u := by
@@ -488,25 +408,9 @@ theorem resEta_line (T : ThetaTied D X) {L : HSp D} (h : L.rank = 1) : ResEta D 
 theorem resEta_pow (T : ThetaTied D X) (n : ℕ) : ResEta D (T.eChr (X.etaT ^ n)) n :=
   ⟨T.etaT_res.1, fun η hη a => by rw [map_pow, MonoidHom.pow_apply, T.etaT_res.2 η hη a, pow_one]⟩
 
-theorem omZ_eq (Wl : WeilTied D X T) {L A : HSp D} (hL : L.rank = 1) (hA : 1 < A.rank) (χ : X.Chr)
-    (hχ : ResEta D (T.eChr χ) A.rank) (Φ : X.Sch L A) (g : GA D A) :
-    omZ Wl L A Φ g = Wl.evS L A (Wl.om L A X.etaT⁻¹ χ (1, g) Φ) := by
-  have h0 : ResEta D (T.eChr (χ⁻¹ * X.etaT ^ A.rank)) 0 := by
-    rw [map_mul, map_inv]
-    exact resEta_parity (resEta_mul (resEta_inv hχ) (resEta_pow T _)) (by omega)
-  have hx : IsDetRoot L 1 1 := by simp [IsDetRoot]
-  have := Wl.om_tw.twW_up L A X.etaT⁻¹ χ _ (hL ▸ hA) (resEta_line T hL) hχ h0 1 g 1 hx
-  rw [mul_inv_cancel_left, map_one, inv_one, Circle.coe_one, one_smul] at this
-  rw [omZ, this]
 
 variable {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
 
-theorem isBesPos_of_besselTied (Bt : BesselTied D X T Wl) (ho : Odd (B.rank - A.rank)) (hr : A.rank ≤ B.rank)
-    (hs : A.SigOK) (hι : HSpace.IsIsomEmb A B ι) (p : X.Pos A B ι) (hp : ∃ u, HEq p (X.posSym u)) :
-    IsBesPos Wl (Bt.dat A B ι ho p) p := by
-  intro μ 𝓕 hv ν 𝓝 hN s hs' σ φ F hφ
-  rw [Bt.bper A B ι ho hr hs hι p hp σ μ 𝓕 hv ν 𝓝 hN.1 hN.2.1 hN.2.2 s hs' φ F hφ, Bt.besC_one, one_mul]
-  rfl
 
 theorem trCusp_one (F : X.cusp B) : trCusp X B 1 F = F := Subtype.ext (by simp [trCusp])
 
@@ -544,59 +448,10 @@ theorem one_lt_rank_Xs (X : ThetaX D) (t : ℕ) {j : ℕ} (hj : j ≤ D.R.m) : 1
   have := D.R.m_add_three_le_k
   omega
 
-theorem PerTied.mem_fact_iff (P : PerTied Wl) (hr : A.rank < B.rank) :
-    (∀ Φ, Φ ∈ X.fact A B ↔ IndefiniteRowSideFullHecke.SplittingKernelQuotients.IsPure Wl.ψ (Wl.evS A B Φ ∘ kap A B) ∧ IsVacAE Wl.ψ A B (Wl.evS A B Φ)) ∧
-    ∀ Φ, Φ ∈ X.fact B A ↔ IndefiniteRowSideFullHecke.SplittingKernelQuotients.IsPure Wl.ψ (Wl.evS B A Φ ∘ kapT A B) ∧ IsVacAE Wl.ψ B A (Wl.evS B A Φ) :=
-  ⟨fun Φ => by rw [P.fact A B hr.ne]; exact isFact_iff (WeilTieCompare.isChange_kap hr.le) _ _,
-    fun Φ => by rw [P.fact B A hr.ne']; exact isFact_iff (WeilTieCompare.isChange_kapT hr) _ _⟩
 
-theorem FJTied.fj_all (J : FJTied Wl) (t j : ℕ) (hj : j < D.R.m) (ho : Odd j)
-    (p : X.Pos (X.Xs t j) (X.Ys t j) (X.iXYs t j)) :
-    ∃ (d : FJDat J.line (X.Xs t j) (X.Ys t j) (X.iXYs t j)) (p₀ : X.Pos (X.Xs t j) (X.Ys t j) (X.iXYs t j)),
-      IsFJPos Wl (J.eFJ t j hj ho) d p₀ ∧ IsTranslSum X p p₀ :=
-  (J.fj_only t j hj ho p).elim fun d hd => ⟨d, p, hd, isTranslSum_refl p⟩
 
-theorem PerTied.fj_all (P : PerTied Wl) (t j : ℕ) (hj : j < D.R.m) (ho : Odd j)
-    (p : X.Pos (X.Xs t j) (X.Ys t j) (X.iXYs t j)) :
-    ∃ (d : FJDat P.line (X.Xs t j) (X.Ys t j) (X.iXYs t j)) (p₀ : X.Pos (X.Xs t j) (X.Ys t j) (X.iXYs t j)),
-      IsFJPos Wl (P.eFJ t j hj ho) d p₀ ∧ IsTranslSum X p p₀ :=
-  P.toFJTied.fj_all t j hj ho p
 
-theorem IsFJPos.isLinearMap {L : HSp D} {k : X.FJd A B ι ≃ₗ[ℂ] X.Sch L A} {d : FJDat L A B ι} {p : X.Pos A B ι}
-    (h : IsFJPos Wl k d p) {μ 𝓕 ν 𝓝} (hv : IsVolPair D A μ 𝓕) (hN : IsUnitN B d.eM ν 𝓝) {s : GA D A → GA D B}
-    (hs : ∀ g, EmbRel B A ι (s g) g) {φ : X.AF A} (hφ : IsAniso A ∨ φ ∈ X.cusp A) (F : X.cusp B)
-    (hc : ∀ Φ, d.Conv Wl.ψ (omZ Wl L A Φ) μ 𝓕 ν 𝓝 s (T.ev A φ) (T.ev B (F : X.AF B))) :
-    IsLinearMap ℂ fun σ => X.Bper A B ι p σ φ F := by
-  refine ⟨fun σ σ' => ?_, fun c σ => ?_⟩
-  · simp only [h μ 𝓕 hv ν 𝓝 hN s hs _ φ F hφ, FJDat.per]
-    rw [← mul_add, ← integral_add (hc _).2 (hc _).2]
-    congr 2
-    funext g
-    rw [← integral_add ((hc _).1 g) ((hc _).1 g)]
-    congr 1
-    funext n
-    simp only [FJDat.perFun, FJDat.theta_eq, omZ, map_add, Pi.add_apply]
-    ring
-  · simp only [h μ 𝓕 hv ν 𝓝 hN s hs _ φ F hφ, FJDat.per, smul_eq_mul]
-    rw [mul_left_comm, ← integral_const_mul c]
-    congr 2
-    funext g
-    rw [← integral_const_mul c]
-    congr 1
-    funext n
-    simp only [FJDat.perFun, FJDat.theta_eq, omZ, map_smul, Pi.smul_apply, smul_eq_mul]
-    ring
 
-theorem FJTied.isLinearMap (J : FJTied Wl) (hI : FJInt D)
-    (hN : ∀ (B : HSp D) (ρ : ℕ) (e : Matrix (Fin B.rank) (Fin ρ) D.host.E), IsIsoSub B e → ∃ ν 𝓝, IsUnitN B e ν 𝓝)
-    (t j : ℕ) (hj : j < D.R.m) (ho : Odd j) {μ 𝓕} (hv : IsVolPair D (X.Xs t j) μ 𝓕)
-    (p : X.Pos (X.Xs t j) (X.Ys t j) (X.iXYs t j)) (φ F) : IsLinearMap ℂ fun σ => X.Bj t j p σ φ F := by
-  obtain ⟨d, hd⟩ := J.fj_only t j hj ho p
-  obtain ⟨ν, 𝓝, hν⟩ := hN _ _ _ d.isIsoSub
-  have hs := fun g => (GlobalTheory.AutFunCompare.embRel_iff _ _ _ d.isom _ g).2 rfl
-  have ha := isAniso_Xs T t hj.le
-  exact hd.isLinearMap hv hν hs (Or.inl ha) F fun Φ =>
-    hI X T Wl _ _ _ _ d (one_lt_rank_Xs X t hj.le) ha μ 𝓕 hv.1.1 hv.2 ν 𝓝 hν _ hs Φ _ _ (T.ev_aut _ _) (T.ev_aut _ _)
 
 theorem codim_XYs (X : ThetaX D) (t : ℕ) {j : ℕ} (hj : j < D.R.m) :
     (X.Ys t j).rank - (X.Xs t j).rank = D.R.m - 1 - j := by
@@ -611,22 +466,13 @@ theorem odd_codim_XYs (X : ThetaX D) (t : ℕ) {j : ℕ} (hj : j < D.R.m) (he : 
   rw [Nat.even_iff] at he
   omega
 
-theorem coefH_eq_thCoef (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (m : Measure (WA V W) × Set (WA V W)) (f : WA V W → ℂ)
-    (u : WA V W) : coefH ψ V W m f u = GlobalTheory.Mem.Th.thCoef ψ V W m.1 m.2 f u := rfl
 
 theorem isBesPos_iff_besGlob (d : BesDat A B ι) (p : X.Pos A B ι) :
     IsBesPos Wl d p ↔ GlobalTheory.Mem.Th.BesGlob T Wl.ψ d p :=
   ⟨fun h σ μ 𝓕 hv s hs φ F hφ ν 𝓝 h1 h2 h3 => h μ 𝓕 hv ν 𝓝 ⟨h1, h2, h3⟩ s hs σ φ F hφ,
     fun h μ 𝓕 hv ν 𝓝 hN s hs σ φ F hφ => h σ μ 𝓕 hv s hs φ F hφ ν 𝓝 hN.1 hN.2.1 hN.2.2⟩
 
-theorem isPureAt_of_all {ψ : AddChar (AF D.host.F) ℂ} {V W : HSp D} {ε : AE D} {f : WA V W → ℂ}
-    (h : GlobalTheory.Mem.Th.IsPureAt ψ V W ε f) : IsPureAt ψ V W ε f :=
-  ⟨WeilTieCompare.exists_probPair V W, fun m hm x y hx hy =>
-    (h.2 m ⟨hm.1, hm.2.1⟩).2 x y (fun i j => congrFun (congrFun hx i) j) (fun i j => congrFun (congrFun hy i) j)⟩
 
-theorem isFact_of_isPureFun {ψ : AddChar (AF D.host.F) ℂ} {V W : HSp D} {f : WA V W → ℂ}
-    (h : GlobalTheory.Mem.Th.IsPureFun ψ V W f) (hv : IsVacAE ψ V W f) : IsFact ψ V W f :=
-  ⟨fun v => isPureAt_of_all (h.1 v), fun v => isPureAt_of_all (h.2 v), hv⟩
 
 section Realises
 

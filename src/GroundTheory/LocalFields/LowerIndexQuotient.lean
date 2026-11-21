@@ -43,11 +43,6 @@ section
 
 variable (M : IntermediateField K L)
 
-theorem integerAlgEquiv_restrictScalars_algebraMap (τ : L ≃ₐ[M] L) (y : 𝒪[M]) :
-    integerAlgEquiv K L (τ.restrictScalars K) (algebraMap 𝒪[M] 𝒪[L] y) = algebraMap 𝒪[M] 𝒪[L] y := by
-  apply Subtype.ext
-  rw [coe_integerAlgEquiv_apply, coe_algebraMap_integer, AlgEquiv.restrictScalars_apply]
-  exact τ.commutes _
 
 variable [IsGalois K L]
 
@@ -97,18 +92,6 @@ theorem exists_lowerIndex_mul_eq_min (σ : L ≃ₐ[K] L) :
     have := hmax (τ₀ * τ) (Finset.mem_univ _)
     rwa [hm, ← mul_assoc] at this
 
-theorem exists_ramificationIndex_mul_lowerIndex_eq_sum_min [Normal K M] (σ : L ≃ₐ[K] L) :
-    ∃ σ₀ : L ≃ₐ[K] L, AlgEquiv.restrictNormalHom M σ₀ = AlgEquiv.restrictNormalHom M σ ∧
-      (∀ τ : L ≃ₐ[M] L, lowerIndex K L (σ * τ.restrictScalars K) ≤ lowerIndex K L σ₀) ∧
-      (ramificationIndex M L : ℕ∞) * lowerIndex K M (AlgEquiv.restrictNormalHom M σ) =
-        ∑ τ : L ≃ₐ[M] L, min (lowerIndex M L τ) (lowerIndex K L σ₀) := by
-  obtain ⟨τ₀, hmax, hmin⟩ := exists_lowerIndex_mul_eq_min M σ
-  have hres : AlgEquiv.restrictNormalHom M (σ * τ₀.restrictScalars K) =
-      AlgEquiv.restrictNormalHom M σ := by
-    rw [map_mul, restrictNormalHom_restrictScalars, mul_one]
-  refine ⟨σ * τ₀.restrictScalars K, hres, hmax, ?_⟩
-  rw [← hres, ramificationIndex_mul_lowerIndex_restrictNormalHom]
-  exact Finset.sum_congr rfl fun τ _ ↦ hmin τ
 
 end
 

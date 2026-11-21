@@ -260,8 +260,6 @@ def finMap (j : E ≃+* L) : FiniteAdeleRing (𝓞 E) E →+* FiniteAdeleRing (�
     (fun v : HeightOneSpectrum (𝓞 L) => v.adicCompletion L) (plMap j.symm) (plMap_injective j.symm).tendsto_cofinite
     (fun v => (compEquiv j.symm v).symm.toRingHom) (Filter.Eventually.of_forall fun v => mapsTo_integers j v)
 
-theorem finMap_apply (j : E ≃+* L) (a : FiniteAdeleRing (𝓞 E) E) (v : HeightOneSpectrum (𝓞 L)) :
-    finMap j a v = (compEquiv j.symm v).symm (a (plMap j.symm v)) := rfl
 
 theorem continuous_finMap (j : E ≃+* L) : Continuous (finMap j) :=
   RestrictedProduct.mapAlong_continuous (fun w : HeightOneSpectrum (𝓞 E) => w.adicCompletion E)
@@ -388,28 +386,8 @@ theorem transport_val (j : E ≃+* L) (χ : HChar L) (w : HeightOneSpectrum (�
   have h' := transport_val_symm j χ (plMap j w) h
   rwa [plMap_symm_plMap] at h'
 
-theorem transport_valTw (j : E ≃+* L) (χ : HChar L) (s : ℝ) (w : HeightOneSpectrum (𝓞 E)) (h : χ.UnrAt (plMap j w)) :
-    (transport j χ).valTw s w = χ.valTw s (plMap j w) := by
-  unfold HChar.valTw
-  rw [transport_val j χ w h, absNorm_plMap]
 
-theorem transport_isUnitary (j : E ≃+* L) (χ : HChar L) (h : χ.IsUnitary) : (transport j χ).IsUnitary := by
-  intro a
-  exact h (idMap j a)
 
-theorem transport_valuesIn (j : E ≃+* L) (χ : HChar L) (s : ℝ) {C : Type} [Field C] (e : C →+* ℂ) :
-    (transport j χ).ValuesIn s e ↔ χ.ValuesIn s e := by
-  constructor
-  · intro h v hv
-    have hv' : (transport j χ).UnrAt (plMap j.symm v) := (transport_unrAt_symm j χ v).2 hv
-    obtain ⟨y, hy⟩ := h _ hv'
-    refine ⟨y, hy.trans ?_⟩
-    have h2 := transport_valTw j χ s (plMap j.symm v) (by rwa [plMap_plMap_symm])
-    rwa [plMap_plMap_symm] at h2
-  · intro h w hw
-    have hw' : χ.UnrAt (plMap j w) := (transport_unrAt_iff j χ w).1 hw
-    obtain ⟨y, hy⟩ := h _ hw'
-    exact ⟨y, hy.trans (transport_valTw j χ s w hw').symm⟩
 
 theorem transport_symm_unrAt_iff (j : E ≃+* L) (χ : HChar E) (w : HeightOneSpectrum (𝓞 E)) :
     (transport j (transport j.symm χ)).UnrAt w ↔ χ.UnrAt w := by
@@ -438,58 +416,8 @@ def transportEquiv (hS : SMOne E) (hU : UnrAE E) (hS' : SMOne L) (hU' : UnrAE L)
   right_inv χ := transport_transport_symm hS hU j χ
   map_mul' := map_mul _
 
-theorem infDiag_coe (k : Eˣ) :
-    ((infDiag k : Ideles E) : AdeleRing (𝓞 E) E) = (algebraMap E (InfiniteAdeleRing E) (k : E), 1) := by
-  classical
-  unfold infDiag
-  rw [MonoidHom.finsetProd_apply, Units.coe_prod]
-  apply Prod.ext
-  · funext u
-    have h := map_prod ((Pi.evalRingHom (fun w : InfinitePlace E => w.Completion) u).comp
-      (RingHom.fst (InfiniteAdeleRing E) (FiniteAdeleRing (𝓞 E) E)) : AdeleRing (𝓞 E) E →+* u.Completion)
-      (fun i => ((((infIdele E i).comp (atInf i)) k : Ideles E) : AdeleRing (𝓞 E) E)) Finset.univ
-    refine h.trans ?_
-    rw [Finset.prod_eq_single u]
-    · show Pi.mulSingle u _ u = _
-      rw [Pi.mulSingle_eq_same]
-      rfl
-    · intro w _ hw
-      show Pi.mulSingle w _ u = 1
-      exact Pi.mulSingle_eq_of_ne (Ne.symm hw) _
-    · intro h
-      exact absurd (Finset.mem_univ u) h
-  · have h := map_prod ((RingHom.snd (InfiniteAdeleRing E) (FiniteAdeleRing (𝓞 E) E)) :
-      AdeleRing (𝓞 E) E →+* FiniteAdeleRing (𝓞 E) E)
-      (fun i => ((((infIdele E i).comp (atInf i)) k : Ideles E) : AdeleRing (𝓞 E) E)) Finset.univ
-    refine h.trans ?_
-    exact Finset.prod_eq_one fun w _ => rfl
 
-theorem idMap_infDiag (j : E ≃+* L) (k : Eˣ) : idMap j (infDiag k) = infDiag (Units.map j.toMonoidHom k) := by
-  apply Units.ext
-  show adMap j ((infDiag k : Ideles E) : AdeleRing (𝓞 E) E) = _
-  rw [infDiag_coe, infDiag_coe]
-  refine Prod.ext ?_ ?_
-  · funext u
-    exact infEquiv_algebraMap j u (k : E)
-  · exact map_one (finMap j)
 
-theorem transport_inf (j : E ≃+* L) (χ : HChar L) (k : Eˣ) :
-    (transport j χ).inf k = χ.inf (Units.map j.toMonoidHom k) := by
-  exact congrArg χ.1 (idMap_infDiag j k)
 
-theorem transport_hasInf (j : E ≃+* L) (χ : HChar L) {I : Type} [Fintype I] (φ : I → E →+* ℂ) (n : I → ℤ) :
-    (transport j χ).HasInf φ n ↔ χ.HasInf (fun i => (φ i).comp j.symm.toRingHom) n := by
-  constructor
-  · intro h k'
-    have h2 := h (Units.map j.symm.toMonoidHom k')
-    rw [transport_inf] at h2
-    have e : Units.map j.toMonoidHom (Units.map j.symm.toMonoidHom k') = k' := by
-      ext
-      simp
-    rw [e] at h2
-    simpa using h2
-  · intro h k
-    rw [transport_inf, h]
-    simp
 
 end Formalism.L2.Host.CT

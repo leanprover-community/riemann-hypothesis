@@ -11,10 +11,6 @@ open Formalism.MainNotions.G Formalism.BasicNotions Formalism.FrobeniusOrbits
 
 def consts1 : Consts := ⟨1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1⟩
 
-theorem consts_nonempty : ∃ K : Consts, K.Nonneg := by
-  refine ⟨consts1, ?_⟩
-  simp only [Consts.Nonneg, consts1]
-  norm_num
 
 section InstSec
 
@@ -76,11 +72,7 @@ def instOf : Inst D L where
   kapI := fun _ _ _ _ _ => 1
   ep := fun _ => 0
 
-theorem inst_nonempty : Nonempty (Inst D L) := ⟨instOf D L⟩
 
-theorem inst_defs_nonempty (K : Consts) (Ce : ℝ) : ∃ X : Inst D L, EpDef X Ce ∧ KapIDef X K := by
-  obtain ⟨X, -, -, hE, hK⟩ := exists_inst_defs (instOf D L) K Ce
-  exact ⟨X, hE, hK⟩
 
 end InstSec
 
@@ -99,47 +91,14 @@ def latOf (D : D7) (h : GatHasPlaces D) : LatInst D where
   Ch := fun _ _ _ => chainOf _
   Vram := fun _ _ _ => ⊤
 
-theorem latInst_nonempty_iff (D : D7) : Nonempty (LatInst D) ↔ GatHasPlaces D := by
-  constructor
-  · rintro ⟨Y⟩ u w hg
-    exact lt_of_le_of_lt (Nat.zero_le _) (Y.vOf u w hg 0).isLt
-  · intro h
-    exact ⟨latOf D h⟩
 
-theorem latInst_nonempty_of_ties {D : D7} (hT : GatTies D) : Nonempty (LatInst D) :=
-  (latInst_nonempty_iff D).2 (gatHasPlaces_of_ties hT)
 
 def twLocOf {D : D7} (Y : LatInst D) : Formalism.MainNotions.WeilJacquetShalikaLaw.TwLoc D Y where
   LC := fun _ u w hg => ⟨Y.Lv u w hg, Y.Ch u w hg⟩
   LC_muAt := fun _ _ _ => rfl
 
-theorem twLoc_nonempty {D : D7} (Y : LatInst D) : Nonempty (Formalism.MainNotions.WeilJacquetShalikaLaw.TwLoc D Y) := ⟨twLocOf Y⟩
 
-theorem exists_admissible_setting (D : D7) (p : ℕ) (hp : p.Prime) (h5 : 5 ≤ p) :
-    ∃ G : GAtP p, 1 ≤ G.P.nV ∧ Nonempty G.comp ∧ Formalism.MainNotions.SelectionLemmas.admitted D G := by
-  have : Fact p.Prime := ⟨hp⟩
-  have hS := Formalism.BasicNotions.Examples₂.LevelValuationRings.hidaSettingOfEven p 2 h5 le_rfl even_two
-  refine ⟨gat1 hS, le_rfl, ⟨()⟩, fun _ => level1_trivStab hS, fun _ => level1_finClasses hS, ?_⟩
-  intro u v F
-  have huv : u = v := by
-    obtain ⟨u, hu⟩ := u
-    obtain ⟨v, hv⟩ := v
-    change u < 1 at hu
-    change v < 1 at hv
-    ext
-    simp only
-    omega
-  rw [huv]
 
-theorem exists_hypotheses_nonempty (D : D7) (p : ℕ) (hp : p.Prime) (h5 : 5 ≤ p) (m S Dd : ℕ) (hm : 1 ≤ m) :
-    ∃ (G : GAtP p) (VV : Finset (Fin G.P.nV)) (t Sv : Fin G.P.nV → ℕ) (cStar : ℕ) (κ : Fin G.P.nV → ℝ),
-      Formalism.MainNotions.SelectionLemmas.admitted D G ∧ VV.Nonempty ∧ 1 ≤ m ∧ (∀ v ∈ VV, Sv v ≤ S) ∧
-      ∀ v ∈ VV, LPprime (W := G.P.W v) (Qq := G.P.Qq v) (O := G.O) (Kf := G.Kf) p (G.P.n' v) (G.P.ι v) (G.P.σ v) G.P.w
-        G.P.r (G.P.lam0 v) (t v) Dd (κ v) cStar := by
-  obtain ⟨G, hG, -, hA⟩ := exists_admissible_setting D p hp h5
-  refine ⟨G, Finset.univ, fun _ => 0, fun _ => 0, 4 * (Dd + 1), fun _ => 1, hA,
-    ⟨⟨0, hG⟩, Finset.mem_univ _⟩, hm, fun _ _ => Nat.zero_le _, fun v _ => ?_⟩
-  exact lpprime_one p _ _ _ _ _ _ _ _ _ le_rfl
 
 end Formalism.MainNotions.G.Inhab
 

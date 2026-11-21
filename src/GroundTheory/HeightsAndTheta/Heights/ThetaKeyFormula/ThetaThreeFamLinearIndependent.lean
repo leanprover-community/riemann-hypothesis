@@ -141,59 +141,14 @@ def thetaThree (ν : ℕ) (w : ℂ) : ℂ :=
 
 lemma im_three_I_pos : 0 < (3 * I).im := by simp
 
-lemma thetaThree_differentiable (ν : ℕ) : Differentiable ℂ (thetaThree ν) := by
-  intro w
-  have h1 : DifferentiableAt ℂ (fun w : ℂ => jacobiTheta₂ w (3 * I)) (3 * w + ν * I) :=
-    differentiableAt_jacobiTheta₂_fst _ im_three_I_pos
-  have h2 : DifferentiableAt ℂ (fun w : ℂ => 3 * w + ν * I) w := by fun_prop
-  have h3 : DifferentiableAt ℂ ((fun w : ℂ => jacobiTheta₂ w (3 * I)) ∘ (fun w : ℂ => 3 * w + ν * I)) w :=
-    DifferentiableAt.comp w h1 h2
-  exact (by fun_prop : DifferentiableAt ℂ
-    (fun w : ℂ => cexp (π * I * ν ^ 2 * I / 3 + 2 * π * I * ν * w)) w).mul h3
 
-lemma thetaThree_add_one (ν : ℕ) (w : ℂ) : thetaThree ν (w + 1) = thetaThree ν w := by
-  unfold thetaThree
-  rw [show 3 * (w + 1) + ν * I = (3 * w + ν * I) + ((3 : ℤ) : ℂ) by push_cast; ring,
-    jacobiTheta₂_add_int]
-  congr 1
-  rw [Complex.exp_eq_exp_iff_exists_int]
-  exact ⟨ν, by push_cast; ring⟩
 
-lemma thetaThree_add_int_mul_I (ν : ℕ) (k : ℤ) (w : ℂ) :
-    thetaThree ν (w + k * I) =
-      cexp (-(3 * π * I * k ^ 2 * I) - 6 * π * I * k * w) * thetaThree ν w := by
-  unfold thetaThree
-  rw [show 3 * (w + k * I) + ν * I = (3 * w + ν * I) + k * (3 * I) by ring, jacobiTheta₂_add_int_mul]
-  simp only [← mul_assoc, ← Complex.exp_add]
-  congr 2; ring
 
-lemma thetaThree_add_int (ν : ℕ) (m : ℤ) (w : ℂ) : thetaThree ν (w + m) = thetaThree ν w := by
-  induction m using Int.induction_on generalizing w with
-  | zero => simp
-  | succ j ih => push_cast at ih ⊢; rw [← add_assoc, thetaThree_add_one, ih]
-  | pred j ih =>
-    push_cast at ih ⊢
-    rw [← thetaThree_add_one ν (w + (-(j : ℂ) - 1)),
-      show w + (-(j : ℂ) - 1) + 1 = w + -(j : ℂ) by ring, ih]
 
 def zeta3 : ℂ := cexp (2 * π * I / 3)
 
-lemma zeta_three_cube : zeta3 ^ 3 = 1 := by
-  unfold zeta3
-  rw [← Complex.exp_nat_mul, show ((3 : ℕ) : ℂ) * (2 * π * I / 3) = 2 * π * I by push_cast; ring,
-    Complex.exp_two_pi_mul_I]
 
-lemma one_add_zeta_three_add_sq : 1 + zeta3 + zeta3 ^ 2 = 0 := by
-  have h := (Complex.isPrimitiveRoot_exp 3 (by norm_num)).geom_sum_eq_zero (by norm_num)
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, pow_zero, pow_one, zero_add] at h
-  have e : cexp (2 * π * I / ((3 : ℕ) : ℂ)) = zeta3 := by unfold zeta3; push_cast; rfl
-  rw [e] at h; exact h
 
-lemma thetaThree_add_third (ν : ℕ) (w : ℂ) : thetaThree ν (w + 1 / 3) = zeta3 ^ ν * thetaThree ν w := by
-  unfold thetaThree zeta3
-  rw [show 3 * (w + 1 / 3) + ν * I = (3 * w + ν * I) + 1 by ring, jacobiTheta₂_add_left,
-    ← Complex.exp_nat_mul, ← mul_assoc, ← Complex.exp_add]
-  congr 2; ring
 
 lemma jacobiTheta₂_zero_three_I_ne : jacobiTheta₂ 0 (3 * I) ≠ 0 := by
   intro h
@@ -215,76 +170,15 @@ lemma jacobiTheta₂_zero_three_I_ne : jacobiTheta₂ 0 (3 * I) ≠ 0 := by
     rw [div_mul_eq_mul_div, div_lt_one h1]; linarith
   linarith
 
-lemma thetaThree_ne_zero (ν : ℕ) : ∃ w, thetaThree ν w ≠ 0 := by
-  refine ⟨-(ν * I) / 3, ?_⟩
-  unfold thetaThree
-  rw [show 3 * (-(ν * I) / 3) + ν * I = 0 by ring]
-  exact mul_ne_zero (Complex.exp_ne_zero _) jacobiTheta₂_zero_three_I_ne
 
 def thetaThreeSec (ν : ℕ) : (Fin 1 → ℂ) → ℂ := fun z => thetaThree ν (z 0)
 
-theorem thetaThreeSec_mem (ν : ℕ) : thetaThreeSec ν ∈ thetaSec tauI (HalfChar.zero 1) 3 := by
-  refine ⟨?_, fun v z => ?_, fun u z => ?_⟩
-  · intro z
-    exact (thetaThree_differentiable ν (z 0)).comp z ((differentiable_apply 0) z)
-  · have : perFactor (HalfChar.zero 1) 3 v = 1 := by
-      simp [perFactor, HalfChar.a, HalfChar.zero, dotProduct]
-    rw [this, one_mul]
-    simp only [thetaThreeSec, Pi.add_apply, intVec_one]
-    induction (v 0) using Int.induction_on with
-    | zero => simp
-    | succ k ih => push_cast at ih ⊢; rw [← add_assoc, thetaThree_add_one, ih]
-    | pred k ih =>
-      push_cast at ih ⊢
-      rw [← thetaThree_add_one ν (z 0 + (-(k : ℂ) - 1)),
-        show z 0 + (-(k : ℂ) - 1) + 1 = z 0 + -(k : ℂ) by ring, ih]
-  · simp only [thetaThreeSec, Pi.add_apply, autFactor, tauI]
-    have hτ : ((I • (1 : Matrix (Fin 1) (Fin 1) ℂ)) *ᵥ intVec u) 0 = (u 0 : ℂ) * I := by
-      simp [Matrix.mulVec, dotProduct, intVec, mul_comm]
-    rw [hτ, thetaThree_add_int_mul_I]
-    congr 2
-    simp [dotProduct, Matrix.mulVec, intVec, HalfChar.b, HalfChar.zero]
-    ring_nf
 
 def thetaThreeFam : Fin (2 + 1) → (Fin 1 → ℂ) → ℂ := fun ν => thetaThreeSec ν
 
 lemma fn_eq_line (f : (Fin 1 → ℂ) → ℂ) (z : Fin 1 → ℂ) : f z = f (fun _ => z 0) := by
   congr 1; funext i; fin_cases i; rfl
 
-theorem thetaThreeFam_linearIndependent : LinearIndependent ℂ thetaThreeFam := by
-  rw [Fintype.linearIndependent_iff]
-  intro c hc
-  have hE : ∀ w : ℂ, c 0 * thetaThree 0 w + c 1 * thetaThree 1 w + c 2 * thetaThree 2 w = 0 := by
-    intro w
-    have := congrFun hc (fun _ => w)
-    simpa [Fin.sum_univ_three, thetaThreeFam, thetaThreeSec] using this
-  have key : ∀ w : ℂ, c 0 * thetaThree 0 w = 0 ∧ c 1 * thetaThree 1 w = 0 ∧
-      c 2 * thetaThree 2 w = 0 := by
-    intro w
-    have e0 := hE w
-    have e1 := hE (w + 1 / 3)
-    have e2 := hE (w + 1 / 3 + 1 / 3)
-    simp only [thetaThree_add_third] at e1 e2
-    have hs := one_add_zeta_three_add_sq
-    have hc3 := zeta_three_cube
-    refine ⟨?_, ?_, ?_⟩
-    · linear_combination (1 / 3 : ℂ) * (e0 + e1 + e2) -
-        (1 / 3 : ℂ) * (c 1 * thetaThree 1 w + c 2 * thetaThree 2 w) * hs -
-        (1 / 3 : ℂ) * c 2 * thetaThree 2 w * zeta3 * hc3
-    · linear_combination (1 / 3 : ℂ) * (e0 + zeta3 ^ 2 * e1 + zeta3 * e2) -
-        (1 / 3 : ℂ) * (c 0 * thetaThree 0 w + c 2 * thetaThree 2 w) * hs -
-        (1 / 3 : ℂ) * (2 * c 1 * thetaThree 1 w + c 2 * thetaThree 2 w * (zeta3 + zeta3 ^ 2)) * hc3
-    · linear_combination (1 / 3 : ℂ) * (e0 + zeta3 * e1 + zeta3 ^ 2 * e2) -
-        (1 / 3 : ℂ) * (c 0 * thetaThree 0 w + c 1 * thetaThree 1 w) * hs -
-        (1 / 3 : ℂ) * (c 1 * thetaThree 1 w * zeta3 + c 2 * thetaThree 2 w * (zeta3 ^ 3 + 2)) * hc3
-  intro i
-  fin_cases i
-  · obtain ⟨w, hw⟩ := thetaThree_ne_zero 0
-    exact (mul_eq_zero.mp (key w).1).resolve_right hw
-  · obtain ⟨w, hw⟩ := thetaThree_ne_zero 1
-    exact (mul_eq_zero.mp (key w).2.1).resolve_right hw
-  · obtain ⟨w, hw⟩ := thetaThree_ne_zero 2
-    exact (mul_eq_zero.mp (key w).2.2).resolve_right hw
 
 abbrev thetaThreeSpace : Submodule ℂ ((Fin 1 → ℂ) → ℂ) := thetaSec tauI (HalfChar.zero 1) 3
 
@@ -342,58 +236,7 @@ theorem coeffMap_injective : Function.Injective coeffMap := by
   rw [fn_eq_line f z]
   exact congrFun hzero (z 0)
 
-theorem thetaThreeFam_span : Submodule.span ℂ (Set.range thetaThreeFam) = thetaThreeSpace := by
-  have : Module.Finite ℂ thetaThreeSpace := Module.Finite.of_injective coeffMap coeffMap_injective
-  have hle : Module.finrank ℂ thetaThreeSpace ≤ 3 := by
-    simpa using LinearMap.finrank_le_finrank_of_injective coeffMap_injective
-  let y : Fin (2 + 1) → thetaThreeSpace := fun ν => ⟨thetaThreeFam ν, thetaThreeSec_mem ν⟩
-  have hy : LinearIndependent ℂ y :=
-    LinearIndependent.of_comp thetaThreeSpace.subtype thetaThreeFam_linearIndependent
-  have hcard : Fintype.card (Fin (2 + 1)) = Module.finrank ℂ thetaThreeSpace :=
-    le_antisymm hy.fintype_card_le_finrank (by simpa using hle)
-  have hspan := hy.span_eq_top_of_card_eq_finrank' hcard
-  have hr : Set.range thetaThreeFam = thetaThreeSpace.subtype '' Set.range y := by
-    rw [← Set.range_comp]; rfl
-  rw [hr, Submodule.span_image, hspan, Submodule.map_subtype_top]
 
-theorem thetaThree_zero_finite :
-    ∃ W : Finset ℂ, ∀ w, thetaThree 0 w = 0 → ∃ w' ∈ W, ∃ m k : ℤ, w = w' + k * I + m := by
-  set S : Set ℂ := {w | w ∈ Metric.closedBall (0 : ℂ) 2 ∧ thetaThree 0 w = 0} with hS
-  have hSfin : S.Finite := by
-    by_contra hinf
-    obtain ⟨x, -, hx⟩ := Set.Infinite.exists_accPt_of_subset_isCompact hinf
-      (isCompact_closedBall (0 : ℂ) 2) (fun w hw => hw.1)
-    rw [accPt_iff_frequently_nhdsNE] at hx
-    have han : AnalyticOnNhd ℂ (thetaThree 0) Set.univ :=
-      fun z _ => (thetaThree_differentiable 0).analyticAt z
-    have := han.eqOn_zero_of_preconnected_of_frequently_eq_zero isPreconnected_univ
-      (Set.mem_univ x) (hx.mono fun w hw => hw.2)
-    obtain ⟨w, hw⟩ := thetaThree_ne_zero 0
-    exact hw (this (Set.mem_univ w))
-  refine ⟨hSfin.toFinset, fun w hw => ?_⟩
-  set m := ⌊w.re⌋ with hm
-  set k := ⌊w.im⌋ with hk
-  set w' : ℂ := w - k * I - m with hw'
-  have hshift : thetaThree 0 w = cexp (-(3 * π * I * k ^ 2 * I) - 6 * π * I * k * (w' + m)) *
-      thetaThree 0 w' := by
-    have e : w = (w' + m) + k * I := by rw [hw']; ring
-    rw [e, thetaThree_add_int_mul_I, thetaThree_add_int]
-  have hz' : thetaThree 0 w' = 0 := by
-    rw [hshift] at hw
-    exact (mul_eq_zero.mp hw).resolve_left (Complex.exp_ne_zero _)
-  have hre : w'.re = Int.fract w.re := by rw [← Int.self_sub_floor]; simp [hw', hm]
-  have him : w'.im = Int.fract w.im := by rw [← Int.self_sub_floor]; simp [hw', hk]
-  have hball : w' ∈ Metric.closedBall (0 : ℂ) 2 := by
-    rw [Metric.mem_closedBall, dist_zero_right]
-    calc ‖w'‖ ≤ |w'.re| + |w'.im| := Complex.norm_le_abs_re_add_abs_im w'
-      _ ≤ 1 + 1 := by
-        rw [hre, him]
-        gcongr
-        · rw [abs_of_nonneg (Int.fract_nonneg _)]; exact (Int.fract_lt_one _).le
-        · rw [abs_of_nonneg (Int.fract_nonneg _)]; exact (Int.fract_lt_one _).le
-      _ = 2 := by norm_num
-  refine ⟨w', hSfin.mem_toFinset.mpr ⟨hball, hz'⟩, m, k, ?_⟩
-  rw [hw']; ring
 
 end
 

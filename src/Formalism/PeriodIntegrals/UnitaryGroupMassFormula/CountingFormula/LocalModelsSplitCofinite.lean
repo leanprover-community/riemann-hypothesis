@@ -45,12 +45,6 @@ def DensProdBound : Prop :=
 def ResCard : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (p : PlF D), Nat.card 𝓀[(D.s.atP p).Fp] = p.asIdeal.absNorm
 
-theorem tuple_short (D : Formalism.BasicNotions.D7) : 2 * (D.R.rS + 1) + 1 ≤ D.R.r := by
-  have h1 := D.R.two_le_m
-  have h2 := D.R.m_add_three_le_k
-  obtain ⟨a, ha⟩ := D.R.m_even
-  unfold Formalism.BasicNotions.Ranks.rS Formalism.BasicNotions.Ranks.r
-  omega
 
 def ModeLCofinite : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),

@@ -43,25 +43,8 @@ theorem herm_Hpk_of_inWb_eq_sum_wI (k r j : ℕ) (y : Fin j → Fin (2 * r + k +
   rw [herm_sum_smul_right']
   simp [hzy]
 
-theorem Vv_zero {k r j : ℕ} (y : Fin j → Fin (2 * r + k + 1) → ℂ) (N : Matrix (Fin j) (Fin j) ℂ)
-    (c : ℕ) (hc : j ≤ c) : Vv y N c = 0 := by
-  unfold Vv
-  rw [dif_neg (by omega)]
 
-theorem Vv_iso (k r j : ℕ) (y : Fin j → Fin (2 * r + k + 1) → ℂ) (N : Matrix (Fin j) (Fin j) ℂ)
-    (hyy : ∀ a a', herm (Hpk k r) (y a) (y a') = 0) (b c : ℕ) (hb : b < j) (hc : c < j) :
-    herm (Hpk k r) (Vv y N b) (Vv y N c) = 0 := by
-  unfold Vv
-  rw [dif_pos hb, dif_pos hc]
-  exact herm_comb k r j y hyy _ _
 
-theorem hermitian_orthogonal_projection_vector (k r j : ℕ) (y : Fin j → Fin (2 * r + k + 1) → ℂ) (N : Matrix (Fin j) (Fin j) ℂ)
-    (z' : Fin (2 * r + k + 1) → ℂ) (hzy : ∀ a, herm (Hpk k r) z' (y a) = 0) (c : ℕ) :
-    herm (Hpk k r) z' (Vv y N c) = 0 := by
-  unfold Vv
-  split_ifs with h
-  · exact herm_Hpk_of_inWb_eq_sum_wI k r j y z' hzy _
-  · simp [herm]
 
 theorem y_esI_zero (k r j : ℕ) (y : Fin j → Fin (2 * r + k + 1) → ℂ)
     (hy2 : ∀ (a : Fin j) (b : Fin r), j ≤ b.val → y a (esI k r b) = 0)
@@ -77,30 +60,6 @@ theorem y_esI_zero (k r j : ℕ) (y : Fin j → Fin (2 * r + k + 1) → ℂ)
   rw [he] at h
   exact h
 
-theorem projection_vector_coordinate (k r j : ℕ) (hj : j ≤ r) (y : Fin j → Fin (2 * r + k + 1) → ℂ)
-    (N : Matrix (Fin j) (Fin j) ℂ)
-    (hy2 : ∀ (a : Fin j) (b : Fin r), j ≤ b.val → y a (esI k r b) = 0)
-    (hNM : N * (Matrix.of fun a b : Fin j => y a (sR k r j hj b)) = 1)
-    (b : ℕ) (hb : b < j) (q : Fin (2 * r + k + 1)) (hq : r + k < q.val) :
-    Vv y N b q = if (sg k r q).val = b then 1 else 0 := by
-  have hq2 := q.isLt
-  unfold Vv
-  rw [dif_pos hb]
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-  by_cases hs : (sg k r q).val < j
-  · have hsr : sR k r j hj ⟨(sg k r q).val, hs⟩ = q := by
-      apply Fin.ext
-      show 2 * r + k - (sg k r q).val = q.val
-      simp only [sg_val]
-      omega
-    have h := congrFun (congrFun hNM ⟨b, hb⟩) ⟨(sg k r q).val, hs⟩
-    rw [Matrix.mul_apply] at h
-    simp only [Matrix.of_apply, hsr, Matrix.one_apply, Fin.ext_iff] at h
-    rw [h]
-    split_ifs <;> first | rfl | (exfalso; omega)
-  · have h0 : ∀ a, y a q = 0 := fun a => y_esI_zero k r j y hy2 a q hq hs
-    simp only [h0, mul_zero, Finset.sum_const_zero]
-    rw [if_neg (by omega)]
 
 theorem nf_sum (k r j : ℕ) (hj : j ≤ r) (y : Fin j → Fin (2 * r + k + 1) → ℂ)
     (N : Matrix (Fin j) (Fin j) ℂ)
@@ -223,30 +182,5 @@ theorem z_fix (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (z' : Fin 
     exact this
   · simp [if_neg hp]
 
-theorem normFormOne : IsotropicNormalFormPartial := by
-  intro k r z' j hj y hz hy2 hdet hzy hyy
-  have hu : IsUnit (Matrix.of fun a b : Fin j => y a (sR k r j hj b)).det := isUnit_iff_ne_zero.mpr hdet
-  have hMN : (Matrix.of fun a b : Fin j => y a (sR k r j hj b)) *
-      (Matrix.of fun a b : Fin j => y a (sR k r j hj b))⁻¹ = 1 := Matrix.mul_nonsing_inv _ hu
-  have hNM : (Matrix.of fun a b : Fin j => y a (sR k r j hj b))⁻¹ *
-      (Matrix.of fun a b : Fin j => y a (sR k r j hj b)) = 1 := Matrix.nonsing_inv_mul _ hu
-  refine ⟨1 + Pm k r j (Vv y (Matrix.of fun a b : Fin j => y a (sR k r j hj b))⁻¹), ?_,
-    fun a q => if r + k < q.val then y a q else 0, fun a => ⟨?_, ?_, ?_⟩⟩
-  · simp only [N0set, UH, Set.mem_setOf_eq]
-    refine ⟨?_, ?_, ?_, ?_, ?_⟩
-    · exact unitary_P k r j _ (fun c hc => Vv_zero y _ c hc)
-        (fun b hb q hq => projection_vector_coordinate k r j hj y _ hy2 hNM b hb q hq)
-        (fun b c hb hc => Vv_iso k r j y _ hyy b c hb hc)
-    · exact fun a => cols_X k r j _ a
-    · exact z_fix k r j _ z' hz (fun c => hermitian_orthogonal_projection_vector k r j y _ z' hzy c)
-    · intro p q hq1 hq2 hp
-      rw [Matrix.add_apply, P_rowWS_colW k r j _ p q hp hq2, add_zero, Matrix.one_apply]
-    · intro p q hq hp
-      rw [Matrix.add_apply, P_rowS k r j _ p q hp, add_zero, Matrix.one_apply]
-  · exact nf k r j hj y _ hy2 hMN a
-  · intro p hp
-    exact if_neg (show ¬ (r + k < p.val) by omega)
-  · intro p hp
-    exact if_pos hp
 
 end NFOne

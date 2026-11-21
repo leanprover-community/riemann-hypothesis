@@ -84,54 +84,12 @@ theorem data_exist (H : GlobalTheory.Published.WeilRepresentationUnitaryPair) (A
   obtain ⟨ν, 𝓖, hν⟩ := GlobalTheory.MixModel.exists_isCovolOne D B.rank A.rank
   exact ⟨Measure.haar, ψ, χ, ω, f, ν, 𝓖, inferInstance, hω, hf, h0, hν⟩
 
-theorem ranges_inhabited (D : D7) :
-    (∃ A B : HSp D, 1 ≤ A.rank ∧ Formalism.MainNotions.SchurIrreducible.wittIdx B = 0 ∧ 2 * A.rank < B.rank) ∧
-    (∃ A B : HSp D, 1 ≤ A.rank ∧ Formalism.MainNotions.SchurIrreducible.wittIdx B = 0 ∧ 1 ≤ B.rank ∧ B.rank ≤ A.rank) ∧
-    (∃ A B : HSp D, 1 ≤ A.rank ∧ 0 < Formalism.MainNotions.SchurIrreducible.wittIdx B ∧ A.rank + Formalism.MainNotions.SchurIrreducible.wittIdx B < B.rank ∧
-      2 * A.rank < B.rank) :=
-  ⟨⟨pos D 1, pos D 3, le_rfl, wittIdx_pos 3, show 2 * 1 < 3 by decide⟩, ⟨pos D 1, pos D 1, le_rfl, wittIdx_pos 1, le_rfl, le_rfl⟩,
-    ⟨pos D 1, dblSp (pos D 2), le_rfl, by rw [wittIdx_dblSp]; exact show 0 < 2 by decide,
-      by rw [wittIdx_dblSp]; exact show 1 + 2 < 2 + 2 by decide, show 2 * 1 < 2 + 2 by decide⟩⟩
 
-theorem plane_excluded (D : D7) : ¬ (Formalism.MainNotions.SchurIrreducible.wittIdx (dblSp (pos D 1)) = 0 ∨
-    (pos D 1).rank + Formalism.MainNotions.SchurIrreducible.wittIdx (dblSp (pos D 1)) < (dblSp (pos D 1)).rank) := by
-  rw [wittIdx_dblSp]; exact show ¬ (1 = 0 ∨ 1 + 1 < 1 + 1) by decide
 
-theorem swSection_eq (A B : HSp D) (ν 𝓖 ω f) : swSection A B ν 𝓖 ω f = GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero.swSec A B ω ν 𝓖 f := rfl
 
-theorem integrableOn_valZero {A B : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {f : WO (dblSp A) B → ℂ} {ν 𝓖}
-    (hν : IsCovolOne (ratL B A) ν 𝓖) (hf : IsThetaFunO ψ (dblSp A) B f) : IntegrableOn (fun y => f (lagr A B y)) 𝓖 ν :=
-  GlobalTheory.ThetaMean.integrableOn_lagr hν hf
 
-theorem exists_evalSeminorm {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (x : κ → AdeleRing (𝓞 F) F)
-    (c : NNReal) : ∃ ν : Seminorm ℂ (WeilM.schA F κ), IsContSeminorm ν ∧ ∀ φ, ν φ = c * ‖φ.1 x‖ := by
-  refine ⟨c • (normSeminorm ℂ ℂ).comp ((LinearMap.proj x).comp (WeilM.schA F κ).subtype), fun g => ?_, fun φ => rfl⟩
-  have h := (continuous_eval_const (F := BoundedContinuousFunction (κ → mixedEmbedding.mixedSpace F) ℂ)
-    (fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (x i).1)).comp
-    (SchwartzMap.toBoundedContinuousFunctionCLM ℂ (κ → mixedEmbedding.mixedSpace F) ℂ).continuous
-  exact continuous_const.mul (h.mul continuous_const).norm
 
-theorem first_clause_rank_zero (A B : HSp D) (hB : B.rank = 0) (m : Measure (GA D B)) [m.IsHaarMeasure] (d : ℕ)
-    (ε : Module.Basis (Fin d) D.host.F D.host.E) :
-    ∃ ν : Seminorm ℂ (WeilM.schA D.host.F (Fin B.rank × Fin A.rank × Fin d)), IsContSeminorm ν ∧
-      ∀ φ : WeilM.schA D.host.F (Fin B.rank × Fin A.rank × Fin d),
-        absThetaInt B m (φ.1 ∘ coord ε) ≤ ENNReal.ofReal (ν φ) := by
-  have : IsEmpty (Fin B.rank) := by rw [hB]; infer_instance
-  obtain ⟨ν, h1, h2⟩ := exists_evalSeminorm (F := D.host.F) (κ := Fin B.rank × Fin A.rank × Fin d) 0
-    (autMeasure B m Set.univ).toNNReal
-  refine ⟨ν, h1, fun φ => le_of_eq ?_⟩
-  have h3 : descend (GQ B) (absTheta B (φ.1 ∘ coord ε)) = fun _ => ‖φ.1 0‖ₑ := funext fun q => by
-    have hs : Subsingleton (Matrix (Fin B.rank) (Fin A.rank) D.host.E) := ⟨fun x y => Matrix.ext fun i => isEmptyElim i⟩
-    rw [AutomorphicL2Unitary.descend, absTheta, tsum_eq_single 0 fun b hb => (hb (Subsingleton.elim _ _)).elim]
-    exact congrArg (fun z => ‖φ.1 z‖ₑ) (funext fun p => isEmptyElim p.1)
-  rw [absThetaInt, h3, lintegral_const, h2, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_coe_nnreal,
-    ENNReal.coe_toNNReal (measure_ne_top _ _), ofReal_norm, mul_comm]
 
-theorem absThetaInt_lt_top (H : GlobalTheory.Published.WeilSiegelFormulaUnitary) (A B : HSp D) (m : Measure (GA D B)) [m.IsHaarMeasure]
-    (hA : 1 ≤ A.rank) (h : 2 * A.rank < B.rank) {d : ℕ} (ε : Module.Basis (Fin d) D.host.F D.host.E)
-    (φ : WeilM.schA D.host.F (Fin B.rank × Fin A.rank × Fin d)) : absThetaInt B m (φ.1 ∘ coord ε) < ⊤ :=
-  let ⟨_, _, e⟩ := (H D A B m inferInstance hA (.inr (range_of_two_mul_lt h))).1 d ε
-  (e φ).trans_lt ENNReal.ofReal_lt_top
 
 theorem formula (H : GlobalTheory.Published.WeilSiegelFormulaUnitary) {A B : HSp D} (m : Measure (GA D B)) [m.IsHaarMeasure]
     (hA : 1 ≤ A.rank) (h : 2 * A.rank < B.rank) {ψ χ ω f} (hω : IsWeilDatumO ψ (dblSp A) B 1 χ ω)

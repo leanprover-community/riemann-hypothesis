@@ -251,8 +251,6 @@ def isoOfBijective {M M' : NumD O} (J : NumD.Hom (RingHom.id O) M M') (hJ : Func
   c_eq := J.c_eq
   ψ_eq := J.ψ_eq
 
-theorem isoOfBijective_rel {M M' : NumD O} (J : NumD.Hom (RingHom.id O) M M') (hJ : Function.Bijective J.φ)
-    (g : M.Gt) (g' : M'.Gt) : (J.isoOfBijective hJ).Rel g g' ↔ J.Rel g g' := Iff.rfl
 
 end GlobalTheory.Ex.NumD.Hom
 

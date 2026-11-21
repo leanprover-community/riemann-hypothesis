@@ -333,19 +333,6 @@ theorem eqn_div_of_hom (hψ : φ.inv = Z.genRes.map ψ) (c : Chart E r) (c' : Ch
   congr 2
   exact (res_pullbackSections _ _ _ _ _).trans (pullbackSections_res _ _ _ _ _).symm
 
-theorem isEff_cls_div (hψ : φ.inv = Z.genRes.map ψ) : IsEff (φ.div hE hE').cls := by
-  let s : (φ.div hE hE').M.Sec :=
-    ⟨fun p : Chart E r × Chart E' r => (p.1.isFrame.basis (inf_le_left : p.1.U ⊓ p.2.U ≤ _)).det
-      fun i => ψ.app _ (resM E' inf_le_right (p.2.e i)), fun p q =>
-      Z.resG_injective inf_le_right le_rfl <| by
-        change resG _ _ (resG _ _ _) = resG _ _ (_ * resG _ _ _)
-        rw [map_mul, resG_resG, resG_resG]
-        exact (eqn_div_of_hom hE hE' hψ p.1 p.2 (inf_le_inf_left _ inf_le_left) le_rfl).symm.trans
-          (((φ.div hE hE').eqn_rel p q _ _ _).trans (congrArg _
-            (eqn_div_of_hom hE hE' hψ q.1 q.2 (inf_le_inf_left _ inf_le_right) le_rfl)))⟩
-  have h : (φ.div hE hE').Extends 1 s := VertDiv.extends_one (LB.sec_ext fun p =>
-    (eqn_div_of_hom hE hE' hψ p.1 p.2 le_rfl le_rfl).symm.trans (resG_self _ _))
-  exact ⟨_, h.cls_eq_ofEff.symm⟩
 
 theorem cls_div_of_smul {φ : Z.GenIso E E} {g : O} (hg : g ≠ 0)
     (hφ : φ.inv = Z.genRes.map (smulHom E (Z.const g))) :

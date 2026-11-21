@@ -82,14 +82,6 @@ theorem blockDimensionIdentities : BlockDimensionIdentities := by
   · ring
   · rw [hrZ, hmZ]; ring
 
-theorem prodFactorialShift : ProdFactorialShift := by
-  intro k r hkr
-  induction r, hkr using Nat.le_induction with
-  | base => simp
-  | succ r hkr ih =>
-    rw [Finset.prod_Ico_succ_top (by omega : k + 1 ≤ r + 1), Finset.prod_range_succ, ← ih]
-    simp only [Nat.add_sub_cancel]
-    ring
 
 lemma castAdd_lt_castAdd_iff' {a m : ℕ} (i j : Fin a) :
     Fin.castAdd m i < Fin.castAdd m j ↔ i < j := by
@@ -112,14 +104,6 @@ lemma natAdd_lt_natAdd_iff' {a m : ℕ} (i j : Fin m) :
   simp only [Fin.lt_iff_val_lt_val, Fin.coe_natAdd]
   omega
 
-theorem vandermondeAppendNeg : VandermondeAppendNeg := by
-  intro R _ a m v b
-  simp only [Finset.prod_filter]
-  rw [Fin.prod_univ_add]
-  simp only [Fin.prod_univ_add, Fin.append_left, Fin.append_right, castAdd_lt_castAdd_iff',
-    castAdd_lt_natAdd', not_natAdd_lt_castAdd', natAdd_lt_natAdd_iff', if_true, if_false,
-    Finset.prod_const_one, mul_one, one_mul, sub_neg_eq_add, neg_sub_neg, neg_add_eq_sub, Finset.prod_mul_distrib]
-  ring
 
 theorem eulerProductBounds : EulerProductBounds := by
   intro q hq n

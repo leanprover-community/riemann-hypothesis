@@ -59,36 +59,8 @@ theorem det_sub {l : ℕ} (hl : l ≤ r + 1) {L : Matrix (Fin (r + 1)) (Fin (r +
   · intro i j hij
     exact h.1 _ _ hij
 
-theorem Dl_lo (Z P Q : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (hP : LoUni P) (hQ : LoUni Q) (l : ℕ) :
-    Formalism.L2.SG.RealObj.Dl (P * Z * Qᵀ) l = Formalism.L2.SG.RealObj.Dl Z l := by
-  unfold Formalism.L2.SG.RealObj.Dl
-  split_ifs with h
-  · rw [sub_mul_right h Q _ _ hQ.1, sub_mul_left h P _ _ hP.1, det_mul, det_mul, det_transpose,
-      det_sub h hP, det_sub h hQ, one_mul, mul_one]
-  · rfl
 
-theorem Gv_lo (T T' : ℝ) (Z P Q : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (hP : LoUni P) (hQ : LoUni Q) :
-    Formalism.L2.SG.RealObj.Gv T T' (P * Z * Qᵀ) = Formalism.L2.SG.RealObj.Gv T T' Z := by
-  unfold Formalism.L2.SG.RealObj.Gv
-  rw [Dl_lo Z P Q hP hQ, Dl_lo Z P Q hP hQ]
 
-theorem exists_loUni (f : Fin (r + 1) → Fin n → ℂ) (A : Matrix (Fin n) (Fin n) ℂ)
-    (h : ∀ a, (A - 1) *ᵥ f a ∈ Submodule.span ℂ (f '' {b | b < a})) :
-    ∃ L : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ, LoUni L ∧ ∀ a, A *ᵥ f a = ∑ c, L a c • f c := by
-  have h' := fun a => (Finsupp.mem_span_image_iff_linearCombination ℂ).1 (h a)
-  choose w hw hw' using h'
-  have hz : ∀ a b, ¬ b < a → w a b = 0 := by
-    intro a b hb
-    by_contra hne
-    exact hb ((Finsupp.mem_supported ℂ (w a)).1 (hw a) (Finsupp.mem_support_iff.2 hne))
-  refine ⟨1 + Matrix.of fun a b => w a b, ⟨fun a b hab => ?_, fun a => ?_⟩, fun a => ?_⟩
-  · rw [Matrix.add_apply, Matrix.of_apply, hz a b (not_lt_of_gt hab), Matrix.one_apply_ne (ne_of_lt hab), add_zero]
-  · rw [Matrix.add_apply, Matrix.of_apply, hz a a (lt_irrefl a), Matrix.one_apply_eq, add_zero]
-  · have e1 : A *ᵥ f a = f a + (A - 1) *ᵥ f a := by
-      rw [Matrix.sub_mulVec, Matrix.one_mulVec]; abel
-    rw [e1, ← hw' a, Finsupp.linearCombination_apply, Finsupp.sum_fintype _ _ (by simp)]
-    simp only [Matrix.add_apply, Matrix.of_apply, add_smul, Finset.sum_add_distrib, Matrix.one_apply, ite_smul,
-      one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
 
 theorem fam_last (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) : fam e z (Fin.last r) = z :=
   Fin.snoc_last (α := fun _ => Fin n → ℂ) z e
@@ -154,22 +126,5 @@ namespace GlobalTheory
 
 open GlobalTheory.GxConj
 
-theorem gx_double_coset : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (γ g g' : X.B.I.Ginf), g ∈ X.SinfU u → g' ∈ X.SinfU u' → ∀ v : InfinitePlace X.B.I.F, GX X u u' 1 (g * γ * g'⁻¹) v = GX X u u' 1 γ v := by
-  intro D X u u' γ g g' hg hg' v
-  have hgi := Formalism.L2.SG.RealObj.InfCut.sinfU_inv X u hg
-  have hgi' := Formalism.L2.SG.RealObj.InfCut.sinfU_inv X u' hg'
-  have fs : ∀ (w : D.what₂.Word), frm X w 1 v =
-      fam (fun a => rv X.B.I v (X.eR a)) (rv X.B.I v (X.zR w)) := by
-    intro w
-    funext a
-    simp [frm, famSc]
-  obtain ⟨L, hL, hL'⟩ := exists_loUni _ _ (fam_span _ _ _ (hgi v))
-  obtain ⟨M, hM, hM'⟩ := exists_loUni _ _ (fam_span _ _ _ (hgi' v))
-  have hU : (uMat (g⁻¹ v))ᴴ * Formalism.REAL.Jm (X.B.I.ε v) * uMat (g⁻¹ v) = Formalism.REAL.Jm (X.B.I.ε v) := (g⁻¹ v).2
-  have e : uMat ((g * γ * g'⁻¹) v) = uMat (g v) * uMat (γ v) * uMat (g'⁻¹ v) := rfl
-  unfold GX ZX
-  rw [fs u, fs u', e,
-    zhat_conj _ _ _ _ _ _ _ (hJ_adj _ _ _ hU (Formalism.L2.SG.RealObj.InfCut.uMat_inv_mul' (g v))) L M hL' hM',
-    Gv_lo _ _ _ _ _ hL.conj hM]
 
 end GlobalTheory

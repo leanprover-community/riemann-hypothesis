@@ -32,85 +32,27 @@ variable (hv : ℝ) (vol : @HSpace H.E _ _ H.cmStar → ℝ) (hvol : ∀ W, 0 < 
   (tw : (@placesOf H.E _ _ H.cmStar).Pl → Bool)
   (htw : ∀ w, tw ((@placesOf H.E _ _ H.cmStar).conj w) = tw w)
 
-theorem trivialDatum_multiplicity_subsingleton : ∀ μ j, Subsingleton ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.Mult μ j) :=
-  fun _ _ => inferInstanceAs (Subsingleton Z0)
 
-theorem trivialDatum_ambient_subsingleton : ∀ μ, Subsingleton ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.Amb μ) :=
-  fun _ => inferInstanceAs (Subsingleton Z0)
 
-theorem trivialDatum_metricLattice_subsingleton : ∀ μ j, Subsingleton ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.MtL μ j) :=
-  fun _ _ => inferInstanceAs (Subsingleton PUnit)
 
-theorem trivialDatum_multiplicity_space_subsingleton : ∀ j, Subsingleton ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.Mj j) :=
-  fun _ => inferInstanceAs (Subsingleton Z0)
 
-theorem trivialDatum_error_space_subsingleton : Subsingleton (twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.EE0 :=
-  inferInstanceAs (Subsingleton Z0)
 
-theorem trivialDatum_radical_subsingleton : Subsingleton (twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).div.RR.V :=
-  inferInstanceAs (Subsingleton (zeroHLat H.E).V)
 
-theorem trivialDatum_nu_subsingleton : ∀ u, Subsingleton ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).div.Nu u).V :=
-  fun _ => inferInstanceAs (Subsingleton (zeroHLat H.E).V)
 
-theorem trivialDatum_lattice_subsingleton : ∀ u j, Subsingleton (((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).fm u).lat j).V :=
-  fun _ _ => inferInstanceAs (Subsingleton (fmZeroHLat H.E).V)
 
-theorem trivialDatum_twisted_points_isEmpty : ∀ u μ i, IsEmpty (((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).chTw u μ).Y i) :=
-  fun _ _ _ => ⟨fun y => Empty.elim y⟩
 
-theorem trivialDatum_metricVector_subsingleton : ∀ i j b k Q ψ, Subsingleton ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).nexp.MtV i j b k Q ψ) :=
-  fun i => Empty.elim i
 
-theorem trivialDatum_forms_subsingleton : ∀ i j b, Subsingleton ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).nexp.Fm i j b) :=
-  fun i => Empty.elim i
 
-theorem trivialDatum_mem_base_lattice : ∀ x : (twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.LL, x ∈ (twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).LL0 :=
-  fun _ => trivial
 
-theorem trivialDatum_gammaDiscriminant_eq : ∀ u μ, ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).chTw u μ).DGam = ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).mem (twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).u₀).C.DGam :=
-  fun _ _ => rfl
 
-theorem trivialDatum_class_zero_equiv : ∀ u μ, Nonempty (((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).mem u).C.cls 0 ≃ ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).chTw u μ).cls 0) :=
-  fun _ _ => ⟨Equiv.refl _⟩
 
-theorem trivialDatum_twisted_classes_isEmpty (hE : ∀ i, IsEmpty (K.cls (i + 1))) : ∀ u μ j, IsEmpty (((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).chTw u μ).cls (j + 1)) :=
-  fun _ _ j => hE j
 
-theorem trivialDatum_isEmpty_local : IsEmpty (twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).nd.Loc := ⟨fun a => Empty.elim a⟩
 
-theorem shape_zero_trivialDatum (hE : ∀ i, IsEmpty (K.cls (i + 1))) (hDG : K.DGam = minkM (2 * R.f * R.N R.m)) : Shape0 (twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw) where
-  mult := trivialDatum_multiplicity_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  amb := trivialDatum_ambient_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  mtL := trivialDatum_metricLattice_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  mj := trivialDatum_multiplicity_space_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  ee0 := trivialDatum_error_space_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  rr := trivialDatum_radical_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  nu := trivialDatum_nu_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  lat := trivialDatum_lattice_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  yTw := trivialDatum_twisted_points_isEmpty H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  clsTw := trivialDatum_twisted_classes_isEmpty H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw hE
-  mtV := trivialDatum_metricVector_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  fmN := trivialDatum_forms_subsingleton H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  ll0 := trivialDatum_mem_base_lattice H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  Ij0 := fun _ _ _ => rfl
-  jw0 := fun _ _ _ => rfl
-  drows := rfl
-  dgam := trivialDatum_gammaDiscriminant_eq H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  mink := hDG
-  loc := trivialDatum_isEmpty_local H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  cls0 := trivialDatum_class_zero_equiv H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
 
-theorem trivialDatum_finrank_zero (u) : Module.finrank ℂ ((twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).mem u).A.Mu0 = 0 := by
-  show Module.finrank ℂ (⊥ : Submodule ℂ (K.cls 0 → Empty → ℂ)) = 0
-  exact finrank_bot ℂ _
 
-theorem trivialDatum_embedding_bijective : Function.Bijective (twistRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).embE := Function.bijective_id
 
 def dstFor (R : Ranks) (du : ℕ) (Ts Gam : ℝ) : ℝ := (du : ℝ) * dstarOfRanks R Ts Gam
 
-theorem dstFor_pos (R : Ranks) {du : ℕ} (hdu : 0 < du) {Ts Gam : ℝ} (hTs : 0 < Ts) (hG : 1 < Gam) :
-    0 < dstFor R du Ts Gam := mul_pos (by exact_mod_cast hdu) (dstar2_pos R hTs hG)
 
 omit hT in
 theorem tstar_dstFor (R : Ranks) {du : ℕ} (hdu : 0 < du) {Ts Gam : ℝ} (hTs : 0 < Ts) (hG : 1 < Gam) :

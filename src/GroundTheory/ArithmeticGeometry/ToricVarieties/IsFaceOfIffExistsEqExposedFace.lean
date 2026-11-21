@@ -366,20 +366,5 @@ def faceOrderIso {σ : PointedCone 𝕜 V} (hσ : σ.FG) :
 
 end FiniteDimensional
 
-theorem bot_isFaceOf_iff {σ : PointedCone 𝕜 V} :
-    (⊥ : PointedCone 𝕜 V).IsFaceOf σ ↔ (σ : ConvexCone 𝕜 V).Salient := by
-  constructor
-  · intro h x hx hx0 hnx
-    have : x ∈ (⊥ : PointedCone 𝕜 V) :=
-      h.mem_of_add_mem_left hx hnx (by simp)
-    exact hx0 ((Submodule.mem_bot _).1 this)
-  · intro hs
-    refine ⟨bot_le, fun {x y a} hx hy ha h => ?_⟩
-    rw [Submodule.mem_bot] at h ⊢
-    have hy' : y = -(a • x) := eq_neg_of_add_eq_zero_right h
-    have hax : a • x ∈ σ := smul_mem _ ha.le hx
-    by_contra hx0
-    have hax0 : a • x ≠ 0 := smul_ne_zero ha.ne' hx0
-    exact hs _ hax hax0 (hy' ▸ hy)
 
 end GroundTheory.Arith.Toric

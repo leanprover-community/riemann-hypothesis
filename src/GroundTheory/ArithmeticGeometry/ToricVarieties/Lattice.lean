@@ -10,31 +10,6 @@ section Comb
 variable {𝕜 : Type*} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
 variable {E : Type*} [AddCommGroup E] [Module 𝕜 E]
 
-theorem mem_hull_image_finset_iff {ι : Type*} [DecidableEq ι] (T : Finset ι) (v : ι → E)
-    {x : E} : x ∈ hull 𝕜 (v '' T) ↔ ∃ c : ι → 𝕜, (∀ i, 0 ≤ c i) ∧ ∑ i ∈ T, c i • v i = x := by
-  induction T using Finset.induction_on generalizing x with
-  | empty =>
-    simp only [Finset.coe_empty, Set.image_empty, Submodule.span_empty, Submodule.mem_bot,
-      Finset.sum_empty]
-    constructor
-    · rintro rfl; exact ⟨0, fun _ => le_rfl, rfl⟩
-    · rintro ⟨_, _, rfl⟩; rfl
-  | insert a T ha ih =>
-    rw [Finset.coe_insert, Set.image_insert_eq, mem_hull_insert]
-    constructor
-    · rintro ⟨c, hc, y, hy, rfl⟩
-      obtain ⟨d, hd, rfl⟩ := ih.1 hy
-      refine ⟨Function.update d a c, fun i => ?_, ?_⟩
-      · by_cases h : i = a
-        · subst h; simpa using hc
-        · simpa [h] using hd i
-      · rw [Finset.sum_insert ha, Function.update_self]
-        congr 1
-        exact Finset.sum_congr rfl fun i hi => by
-          rw [Function.update_of_ne (ne_of_mem_of_not_mem hi ha)]
-    · rintro ⟨c, hc, rfl⟩
-      rw [Finset.sum_insert ha]
-      exact ⟨c a, hc a, _, ih.2 ⟨c, hc, rfl⟩, rfl⟩
 
 theorem hull_basis_neg_eq_top {ι : Type*} (b : Basis ι 𝕜 E) :
     hull 𝕜 (Set.range b ∪ Set.range (fun i => -b i)) = ⊤ := by
@@ -240,68 +215,7 @@ theorem mem_dualMonoid {σ : PointedCone ℝ (ℝ ⊗[ℤ] N)} {m : Dual ℤ N} 
 
 variable [Module.Free ℤ N] [Module.Finite ℤ N]
 
-theorem latticePoints_fg {τ : PointedCone ℝ (Dual ℝ (ℝ ⊗[ℤ] N))}
-    (hτ : IsRationalPolyhedral (toRealDual N) τ) : (latticePoints (toRealDual N) τ).FG := by
-  classical
-  obtain ⟨T, rfl⟩ := hτ
-  let e := Module.Free.chooseBasis ℤ N
-  let B : Module.Free.ChooseBasisIndex ℤ N → ℤ := fun j => ∑ t ∈ T, |t (e j)|
-  let K : Set (Dual ℤ N) := {m | m ∈ latticePoints (toRealDual N) (hull ℝ (toRealDual N '' T)) ∧
-    ∀ j, m (e j) ∈ Set.Icc (-B j) (B j)}
-  have hKfin : K.Finite := by
-    have hbig : ((fun m : Dual ℤ N => fun j => m (e j)) ⁻¹'
-        Set.univ.pi (fun j => Set.Icc (-B j) (B j))).Finite :=
-      (Set.Finite.pi (fun j => Set.finite_Icc _ _)).preimage
-        (fun m _ m' _ h => e.ext fun j => congrFun h j)
-    exact hbig.subset fun m hm => Set.mem_preimage.2 (Set.mem_univ_pi.2 fun j => hm.2 j)
-  refine ⟨(hKfin.union T.finite_toSet).toFinset, ?_⟩
-  rw [Set.Finite.coe_toFinset]
-  apply le_antisymm
-  · rw [AddSubmonoid.closure_le]
-    rintro m (hm | hm)
-    · exact hm.1
-    · exact subset_hull ⟨m, hm, rfl⟩
-  · intro m hm
-    obtain ⟨c, hc, hcm⟩ := (mem_hull_image_finset_iff T (toRealDual N)).1 hm
-    replace hcm : ∑ t ∈ T, c t • toRealDual N t = toRealDual N m := hcm
-    set m' := m - ∑ t ∈ T, (⌊c t⌋₊) • t with hm'
-    have him' : toRealDual N m' = ∑ t ∈ T, (c t - ⌊c t⌋₊) • toRealDual N t := by
-      rw [hm', map_sub, map_sum, ← hcm, ← Finset.sum_sub_distrib]
-      refine Finset.sum_congr rfl fun t _ => ?_
-      rw [map_nsmul, ← Nat.cast_smul_eq_nsmul ℝ]
-      exact (sub_smul _ _ _).symm
-    have hm'K : m' ∈ K := by
-      refine ⟨?_, fun j => ?_⟩
-      · rw [mem_latticePoints, him']
-        exact (mem_hull_image_finset_iff T (toRealDual N)).2
-          ⟨fun t => c t - ⌊c t⌋₊, fun t => sub_nonneg.2 (Nat.floor_le (hc t)), rfl⟩
-      · have hval : (m' (e j) : ℝ) = ∑ t ∈ T, (c t - ⌊c t⌋₊) * (t (e j) : ℝ) := by
-          rw [← toRealDual_apply_toRealSpan, him']
-          change Dual.eval ℝ (ℝ ⊗[ℤ] N) (toRealSpan N (e j))
-            (∑ t ∈ T, (c t - ⌊c t⌋₊) • toRealDual N t) = _
-          rw [map_sum]
-          simp
-        have hbound : |(m' (e j) : ℝ)| ≤ (B j : ℝ) := by
-          rw [hval]
-          simp only [B]
-          push_cast
-          refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun t _ => ?_)
-          rw [abs_mul]
-          have h0 : 0 ≤ c t - ⌊c t⌋₊ := sub_nonneg.2 (Nat.floor_le (hc t))
-          have h1 : c t - ⌊c t⌋₊ ≤ 1 := by linarith [Nat.lt_floor_add_one (c t)]
-          rw [abs_of_nonneg h0]
-          exact mul_le_of_le_one_left (abs_nonneg _) h1
-        have h2 : |m' (e j)| ≤ B j := by exact_mod_cast hbound
-        exact Set.mem_Icc.2 (abs_le.1 h2)
-    have hmeq : m = m' + ∑ t ∈ T, (⌊c t⌋₊) • t := by rw [hm', sub_add_cancel]
-    rw [hmeq]
-    exact add_mem (AddSubmonoid.subset_closure (Or.inl hm'K))
-      (AddSubmonoid.sum_mem _ fun t ht => AddSubmonoid.nsmul_mem _
-        (AddSubmonoid.subset_closure (show t ∈ K ∪ (T : Set (Dual ℤ N)) from Or.inr ht)) _)
 
-theorem dualMonoid_fg {σ : PointedCone ℝ (ℝ ⊗[ℤ] N)}
-    (hσ : IsRationalPolyhedral (toRealSpan N) σ) : (dualMonoid σ).FG :=
-  latticePoints_fg hσ.dual
 
 end Gordan
 

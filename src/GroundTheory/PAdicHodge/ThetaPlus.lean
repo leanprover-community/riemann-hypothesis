@@ -114,9 +114,6 @@ theorem isDiscreteValuationRing_of_isAdicComplete {π : B} [IsAdicComplete (span
   obtain ⟨n, u, rfl⟩ := exists_eq_pow_mul_unit_of_isAdicComplete hmax hx
   exact ⟨n, u, rfl⟩
 
-theorem maximalIdeal_eq_span_of_isMaximal [IsLocalRing B] {π : B} (hmax : (span {π}).IsMaximal) :
-    maximalIdeal B = span {π} :=
-  (IsLocalRing.eq_maximalIdeal hmax).symm
 
 end Abstract
 
@@ -376,13 +373,6 @@ def residueFieldBDeRhamPlusEquiv {ξ : 𝕎R♭} (hξ : RingHom.ker (fontaineThe
   (Ideal.quotEquivOfEq (maximalIdeal_bDeRhamPlus hξ hF hK)).trans
     (RingHom.quotientKerEquivOfSurjective (surjective_thetaBDeRhamPlus R p hF))
 
-theorem residueFieldBDeRhamPlusEquiv_residue {ξ : 𝕎R♭}
-    (hξ : RingHom.ker (fontaineTheta R p) = span {ξ})
-    (hF : Function.Surjective (frobenius (ModP R p) p)) (hK : IsField (Localization.Away (p : R)))
-    (x : BDeRhamPlus R p) :
-    haveI := isLocalRing_bDeRhamPlus hξ hF hK
-    residueFieldBDeRhamPlusEquiv hξ hF hK (residue (BDeRhamPlus R p) x) = thetaBDeRhamPlus R p x :=
-  rfl
 
 end DVR
 
@@ -502,9 +492,6 @@ def residueFieldBDeRhamPlusEquiv : ResidueField 𝔹 ≃+* K :=
   (Ideal.quotEquivOfEq (maximalIdeal_bDeRhamPlus (K := K) (p := p))).trans
     (RingHom.quotientKerEquivOfSurjective (surjective_thetaBDeRhamPlusField (K := K) p))
 
-theorem residueFieldBDeRhamPlusEquiv_residue (x : 𝔹) :
-    residueFieldBDeRhamPlusEquiv (residue 𝔹 x) = thetaBDeRhamPlusField p x :=
-  rfl
 
 end IsPerfectoidField
 

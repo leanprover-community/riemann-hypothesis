@@ -87,32 +87,7 @@ def IsExpr (x : WD h) (l : List (BTerm h ψ)) : Prop :=
 
 def val (l : List (BTerm h ψ)) : ℂ := (l.map fun t => (tateEps t.ψ' t.χ / tateEps t.ψ' 1) ^ t.n).prod
 
-theorem exists_locExt_finrank_eq (h : IsPlaceOver A v) (d : ℕ) (hd : 0 < d) :
-    ∃ E : LocExt h, Module.finrank K E.L = d := by
-  let H : Subgroup (Weil h) := (Subgroup.zpowers (Multiplicative.ofAdd (d : ℤ))).comap (degHom h)
-  have hs : Function.Surjective (degHom h) := fun n => by
-    obtain ⟨σ, hσ⟩ := deg_surjective (h := h) n.toAdd
-    exact ⟨σ, by simp [hσ]⟩
-  have hi : H.index = d := by
-    rw [Subgroup.index_comap_of_surjective _ hs]
-    exact (Int.index_zmultiples (d : ℤ)).trans (Int.natAbs_natCast d)
-  have ho : IsOpen {σ : Ine (F := K) A | ineIncl h σ ∈ H} := by
-    convert isOpen_univ
-    ext σ
-    simp [H]
-  obtain ⟨L, hf, hL, hH⟩ := GlobalTheory.LocalExtField.exists_localExt_of_finiteIndex K Ω A v h H ⟨by omega⟩ ho
-  haveI : NumberField L := NumberField.of_module_finite K L
-  haveI : IsAlgClosure L Ω := ⟨IsAlgClosure.isAlgClosed K, Algebra.IsAlgebraic.tower_top (K := K) L⟩
-  obtain ⟨v', h'⟩ := EpsUnique.exists_place h L
-  exact ⟨{ L := L, v' := v', h' := h', loc := hL },
-    (EpsUnique.index_eq_finrank K L Ω A v h hL H hH).symm.trans hi⟩
 
-theorem BTerm.exists_of_data (hc : Continuous ψ) (h1 : ψ ≠ 1) (E : LocExt h)
-    (χ : (E.v'.adicCompletion E.L)ˣ →* ℂˣ) (hχ : IsSmoothChar χ) (n : ℤ) :
-    ∃ t : BTerm h ψ, t.E = E ∧ HEq t.χ χ ∧ t.n = n ∧ t.ψ' ≠ 1 := by
-  obtain ⟨ψ', c, n1, tr⟩ := EpsUnique.exists_addChar E.L E.h' E.loc hc h1
-  obtain ⟨a, ha⟩ := GlobalTheory.localArtinExists_holds E.L Ω A E.v' E.h'
-  exact ⟨⟨E, ψ', c, tr, a, ha, χ, hχ, n⟩, rfl, HEq.rfl, rfl, n1⟩
 
 example {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (a : WDRep h V) (σ : Weil h) :
     trW (WD.mk a) σ = LinearMap.trace ℂ V (a.ρ σ) := by

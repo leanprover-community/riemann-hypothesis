@@ -88,14 +88,6 @@ theorem LevUnder.lev_zero {D : Datum H} {a : J → 𝓞 E} {bas : (Fin (2 * g) �
   have h0 : lev 0 * lev 0 = lev 0 * 1 := by rw [← hadd, add_zero, _root_.mul_one]
   exact _root_.mul_left_cancel h0
 
-theorem LevUnder.lev_bas_pow {D : Datum H} {a : J → 𝓞 E} {bas : (Fin (2 * g) → ℤ) ≃ₗ[ℤ] D.La} {t : TObj g k J b s}
-    {τ : SAB H S} {lev : D.La → (𝟙_ (Over S) ⟶ τ.G)} (h : LevUnder D a bas t τ lev) (i : Fin (2 * g)) :
-    lev (bas (Pi.single i 1)) ^ k = 1 := by
-  obtain ⟨φ, hφ, -, -, -, hpt⟩ := h
-  haveI := hφ
-  have e : lev (bas (Pi.single i 1)) ≫ φ.hom = t.pt i := Over.OverMorphism.ext (hpt i)
-  apply (cancel_mono φ.hom).1
-  rw [MonObj.pow_comp, e, t.torsion i, MonObj.one_comp]
 
 end GlobalTheory.ZM
 end

@@ -327,18 +327,6 @@ theorem db_cexp {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f : 
     rw [hx' f]
   · simp [d, db, h]
 
-theorem d_comp_real {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (k : ℝ → ℝ) (hk : ContDiff ℝ ∞ k) (ph : M → ℝ) (hph : CkR n z 1 ph) (j : Fin n) (x : M) :
-    d n z j (fun y => (k (ph y) : ℂ)) x = ((deriv k (ph x) : ℝ) : ℂ) * d n z j (fun y => (ph y : ℂ)) x := by
-  by_cases h : ∃ e : OpenPartialHomeomorph M (V n), IsChart n z e ∧ x ∈ e.source
-  · obtain ⟨he, ht, hsx⟩ := isChart_choose_and_symm_apply n z x h
-    rw [d_eq_wd_comp_chosen_chart_symm n z j _ x h, d_eq_wd_comp_chosen_chart_symm n z j _ x h]
-    have hP : DifferentiableAt ℝ (ph ∘ (Classical.choose h).symm) (z x) := by
-      have h1 := ((Complex.reCLM.contDiff.comp_contDiffOn (hph _ he)).differentiableOn
-        (by simp)).differentiableAt ((Classical.choose h).open_target.mem_nhds ht)
-      exact h1.congr_of_eventuallyEq (Filter.Eventually.of_forall fun w => by simp)
-    refine (wd_wdb_ofReal_comp_real_chain n j k (hk.differentiable (by simp)) _ _ hP).1.trans ?_
-    simp [hsx, Function.comp_def]
-  · simp [d, db, h]
 
 theorem db_comp_real {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (k : ℝ → ℝ) (hk : ContDiff ℝ ∞ k) (ph : M → ℝ) (hph : CkR n z 1 ph) (j : Fin n) (x : M) :
     db n z j (fun y => (k (ph y) : ℂ)) x = ((deriv k (ph x) : ℝ) : ℂ) * db n z j (fun y => (ph y : ℂ)) x := by

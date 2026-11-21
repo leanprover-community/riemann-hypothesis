@@ -192,9 +192,6 @@ theorem SplitPt.idele_val (p : SplitPt D k) (a : kˣ) : (p.idele a : AE D) = 1 -
   rw [map_sub, p.sec_one]
   ring
 
-theorem SplitPt.pr_idele (p : SplitPt D k) (a : kˣ) : p.pr (p.idele a) = a := by
-  change p.pr (1 + p.sec (a - 1)) = _
-  rw [map_add, map_one, p.pr_sec, add_sub_cancel]
 
 def IsGlueConst (p : ι → SplitPt D k) (q : Unif k) (I : List ι) (N : ℕ) {r : ℕ} (μ : Fin r → ((AE D)ˣ →* Circle)) (c : ℂ) : Prop :=
   ∃ (a : ℤ) (m : Fin r → ℤ), c = (I.map fun i => ((resCard k : ℂ) ^ N - 1) * ((√(resCard k : ℝ) : ℝ) : ℂ) ^ a *
@@ -227,10 +224,6 @@ variable (k) in
 
 def sgnRes (s : ℤˣ) : 𝓀[k]ˣ := Units.map (Int.castRingHom 𝓀[k]).toMonoidHom s
 
-theorem sgnRes_eq (s : ℤˣ) : sgnRes k s = 1 ∨ sgnRes k s = -1 := by
-  rcases Int.units_eq_one_or s with rfl | rfl
-  · exact Or.inl (map_one _)
-  · exact Or.inr (Units.ext (by simp [sgnRes]))
 
 def ValueDoubleExact (D : D7) : Prop :=
   ∃ s : ℤˣ, ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : Type)
@@ -276,18 +269,7 @@ def ValueLastExact (D : D7) : Prop :=
           ∀ φ, a.Ram φ → ∀ F, IsContAut T F →
             t.Q φ Φ₁ Φ₂ F = c * t.Q (a.sAll q (fun i => resChar (χ i) (hχ i) q) (fun _ => 1) I φ) Φ₁' Φ₂ F
 
-theorem ValueDoubleExact.valueDouble (h : ValueDoubleExact D) : ValueDouble D := by
-  obtain ⟨s, h⟩ := h
-  intro k _ _ _ _ ι p q ψ χ hχ hp
-  refine ⟨fun _ => sgnRes k s, fun _ => sgnRes_eq s, ?_⟩
-  intro n n' n'' _ _ _ _ _ _ σ B J B' s₁ s₂ l vL Λ P a b a' hS I hI hI'
-  obtain ⟨c, c', -, -, -, -, h'⟩ := h k ι p q ψ χ hχ hp n n' n'' σ B J B' s₁ s₂ l vL Λ P a b a' hS I hI hI'
-  exact ⟨c, c', h'⟩
 
-theorem ValueLastExact.valueLast (h : ValueLastExact D) : ValueLast D := by
-  intro k _ _ _ _ ι p q χ hχ n n' _ _ _ _ ψ T B t o ho a b L₁ L₂ L₃ h1 h2 h3 h4 h5 I hI hI'
-  obtain ⟨c, -, -, h'⟩ := h k ι p q χ hχ n n' ψ T B t o ho a b L₁ L₂ L₃ h1 h2 h3 h4 h5 I hI hI'
-  exact ⟨c, h'⟩
 
 def UnitLaw {ψ : AddChar (AF D.host.F) ℂ} {V V₀ W W₀ : HSp D} {ρ σ : ℕ} (s : Step ψ V V₀ W W₀ ρ σ) (dV : HypDec V V₀ ρ)
     (dW : HypDec W W₀ σ) (x : Mx D W.rank ρ) (y : Mx D V₀.rank σ) (LV : Lat V) (LV₀ : Lat V₀) (LW : Lat W) (LW₀ : Lat W₀)

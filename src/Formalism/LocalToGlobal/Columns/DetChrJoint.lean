@@ -203,10 +203,6 @@ theorem core (h1 : HilbertNinetyDeterminant) (h3 : DetAtP) (h2 : CharFactor) {Ch
     change ((if P.1 ∈ Pr.vGs then (chiP Ch P.1 i)⁻¹ else resChar (mu : Chr X.F X.E X.K) P.1) : (𝓞 X.E ⧸ P.1.asIdeal)ˣ →* X.Kˣ)⁻¹ = _
     split_ifs <;> simp [hmu]
 
-theorem muDetOfLoc_of_leaves (h1 : HilbertNinetyDeterminant) (h3 : DetAtP) (h2 : CharFactor) : MuDetOfLoc := by
-  intro X Pr R Ch sel S cst Dc hc u hX hPr hsel hLoc hPt i hi n hn p
-  have hnm : n ≤ R.m := by rcases hn with rfl | rfl <;> omega
-  exact core h1 h3 h2 hX hPr hsel hLoc hi p (hPt n hnm p)
 
 end Core
 

@@ -44,50 +44,10 @@ theorem range_stable (hc : ∀ κ : K, σ κ * e = e * σ κ) :
   have := congrArg (fun L : Module.End ℂ U => L x) (hc κ)
   simpa [Module.End.mul_apply] using this.symm
 
-theorem isKMap_comp_rangeRestrict (hc : ∀ κ : K, σ κ * e = e * σ κ) {f : LinearMap.range e →ₗ[ℂ] V}
-    (hf : IsKMap K (sub σ (LinearMap.range e) (range_stable hc)) ρ f) : IsKMap K σ ρ (f ∘ₗ e.rangeRestrict) := by
-  intro κ
-  ext x
-  have := congrArg (fun L => L (e.rangeRestrict x)) (hf κ)
-  simp only [LinearMap.comp_apply] at this ⊢
-  rw [← this]
-  congr 1
-  apply Subtype.ext
-  have := congrArg (fun L : Module.End ℂ U => L x) (hc κ)
-  simpa [sub, Module.End.mul_apply] using this.symm
 
-theorem isKMap_comp_subtype (hc : ∀ κ : K, σ κ * e = e * σ κ) {F : U →ₗ[ℂ] V} (hF : IsKMap K σ ρ F) :
-    IsKMap K (sub σ (LinearMap.range e) (range_stable hc)) ρ (F ∘ₗ (LinearMap.range e).subtype) := by
-  intro κ
-  ext ⟨y, hy⟩
-  have := congrArg (fun L => L y) (hF κ)
-  simpa [sub] using this
 
-theorem eq_zero_of_comp_rangeRestrict (he : e * e = e) {f : LinearMap.range e →ₗ[ℂ] V}
-    (h0 : f ∘ₗ e.rangeRestrict = 0) : f = 0 := by
-  ext ⟨_, x, rfl⟩
-  have := congrArg (fun L => L x) h0
-  simp only [LinearMap.comp_apply, LinearMap.zero_apply] at this
-  exact this
 
-theorem comp_subtype_ne_zero {F : U →ₗ[ℂ] V} (hF : F ≠ 0) (hfix : F ∘ₗ e = F) :
-    F ∘ₗ (LinearMap.range e).subtype ≠ 0 := by
-  intro h0
-  apply hF
-  rw [← hfix]
-  ext x
-  have := congrArg (fun L => L ⟨e x, x, rfl⟩) h0
-  simpa using this
 
-theorem comp_rangeRestrict_comp {f : LinearMap.range e →ₗ[ℂ] V} {T : Module.End ℂ U} {c : ℂ}
-    (heT : e * T = c • e) : (f ∘ₗ e.rangeRestrict) ∘ₗ T = c • (f ∘ₗ e.rangeRestrict) := by
-  ext x
-  have h2 := congrArg (fun L : Module.End ℂ U => L x) heT
-  simp only [Module.End.mul_apply, LinearMap.smul_apply] at h2
-  simp only [LinearMap.comp_apply, LinearMap.smul_apply]
-  rw [← map_smul]
-  congr 1
-  exact Subtype.ext (by simpa using h2)
 
 end Generic
 
@@ -97,20 +57,5 @@ namespace GlobalTheory.KTypeDatum
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem isKTypeDatum_range {π₀ : IrrGL k} {t N : ℕ} {J : Subgroup (KO k (Fin N))} {W : Type} [AddCommGroup W]
-    [Module ℂ W] {τ : Representation ℂ J W} {q : ℕ} {T : ℕ → Module.End ℂ (indSpace J τ)}
-    (h : IsHeckeTypeDatum π₀ t J τ q T) (e : Module.End ℂ (indSpace J τ)) (he : e * e = e)
-    (heT : ∀ i, i + 1 < t → e * T i = (q : ℂ) • e)
-    (hc : ∀ κ : KO k (Fin N), ind J τ κ * e = e * ind J τ κ)
-    (hfix : ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (F : indSpace J τ →ₗ[ℂ] V),
-      (∀ i, i + 1 < t → F ∘ₗ T i = (q : ℂ) • F) → F ∘ₗ e = F) :
-    IsKTypeDatum π₀ t J τ (LinearMap.range e) (range_stable hc) := by
-  obtain ⟨-, hfd, h1, h3, -, -, -, -, h4, hN, F5, hF5, hK5, hT5⟩ := h
-  refine ⟨h1, ?_, h3, ?_, ?_⟩
-  · haveI := hfd; infer_instance
-  · intro r y hd hs hin hn f hf
-    exact eq_zero_of_comp_rangeRestrict he (h4 r y hd hs hin hn _ (isKMap_comp_rangeRestrict hc hf)
-      fun i hi => comp_rangeRestrict_comp (heT i hi))
-  · exact ⟨hN, _, comp_subtype_ne_zero hF5 (hfix _ F5 hT5), isKMap_comp_subtype hc hK5⟩
 
 end GlobalTheory.KTypeDatum

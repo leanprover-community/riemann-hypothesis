@@ -265,10 +265,6 @@ theorem sig_frame {n : ℕ} (J : Matrix (Fin n) (Fin n) ℂ) (p q : ℕ) (h : Fo
   ext i j
   simp [Matrix.mul_apply]
 
-theorem cpt_ex (V : HSp D) (hV : V.SigOK) (τ : D.what₂.Tau) :
-    ∃ A : Matrix (Fin (V.sig (tauE D τ)).1 ⊕ Fin (V.sig (tauE D τ)).2) (Fin V.rank) ℂ,
-      Aᴴ * Formalism.UG.Jpq (V.sig (tauE D τ)).1 (V.sig (tauE D τ)).2 * A = gramAt D V τ := by
-  exact sig_frame _ _ _ (hV (tauE D τ))
 
 open Classical in
 

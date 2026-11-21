@@ -27,15 +27,6 @@ def IntG : Prop :=
         F' ∈ EZ (Tn u') F0 Λ Z → ∀ p (g : Loc.SplitG (M p).L), (M p).split = some g →
           ∀ a b, ZZP (M := M) δ u u' p Z a b ∈ (M p).R
 
-theorem intOnEZ_of (hL : IntL) (hG : IntG) : IntOnEZ := by
-  intro D δ M hA u u' hT F0 what₂ hR Λ hΛ Z F' hF' p a b
-  rcases hs : (M p).split with _ | g
-  · have h1 := hL D δ M hA u u' hT F0 what₂ hR Λ hΛ Z F' hF' p hs a b
-    simp only [ZZP, Loc.HermSp.ZZplusOf, Loc.Model.R, hs]
-    exact h1
-  · exact hG D δ M hA u u' hT F0 what₂ hR Λ hΛ Z F' hF' p g hs a b
 
-theorem notIntAll_of_LG (hL : IntL) (hG : IntG) : PI.CntLocalParts.NotIntAll :=
-  notIntAll_of (intOnEZ_of hL hG)
 
 end PI.CntNotIntW

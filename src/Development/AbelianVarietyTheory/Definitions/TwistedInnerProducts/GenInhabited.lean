@@ -156,18 +156,6 @@ theorem conjRead : ConjRead := by
     congr 1
     exact congrArg (fun z => starRingEnd ℂ (W.om (.chi i 0) (negGA _ g, h) z 0)) (cj_id_cj_id _).symm
 
-theorem partFixed (h1 : DepFixed) (h2 : DatumDep) : PartFixed := by
-  intro D hq T L μ0 hL sc G W M hM ρ Φ u i h k hk g
-  rw [part_succ W M ρ Φ u i h, liftA_apply, liftA_apply]
-  refine integral_congr_ae (.of_forall fun x => ?_)
-  have := h1 D hq T L μ0 hL sc G W M hM i h (.chi i 0) (Or.inl rfl) _ (h2 D hq T L μ0 hL sc G W M hM ρ Φ ⟨i, h⟩) 1 (one_mem _) k hk
-  have e : W.kerA (.right i 0) (W.datum ρ Φ ⟨i, h⟩) x (g * k) = W.kerA (.right i 0) (W.datum ρ Φ ⟨i, h⟩) x g := by
-    show W.om (.chi i 0) (negGA _ (g * k), x) _ 0 = W.om (.chi i 0) (negGA _ g, x) _ 0
-    have e2 : ((negGA _ (g * k), x) : GA D (G.pS (.chi i 0)) × GA D (G.pT (.chi i 0))) = (negGA _ g, x) * (negGA _ k, 1) := by
-      rw [map_mul, Prod.mk_mul_mk, mul_one]
-    rw [e2, map_mul, Module.End.mul_apply]
-    exact congrArg (fun z => W.om (.chi i 0) (negGA _ g, x) z 0) this
-  simp only [e]
 
 theorem exists_gen {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {ρ : ℕ} (B : BesLev D ρ) {W W₀ : HSp D}
     (dW : HypDec W W₀ ρ) (n : ℕ) (g : Fin n → GA D B.V₀) :
@@ -189,39 +177,11 @@ theorem exists_gen {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) 
   show adj u.1 ⬝ ((rat (gramQ W dW.e) : Mx D ρ ρ) ⬝ u.1) = rat (gramQ W dW.e)
   rw [hg, rat_zero, Matrix.zero_mul, Matrix.mul_zero]
 
-theorem gen_inhabited (D : D7) : ∃ (ψ : AddChar (AF D.host.F) ℂ) (V V₀ W : HSp D) (a : Gen ψ V V₀ W 1 (Fin 2)),
-    a.Is ∧ V₀.rank = 2 ∧ W.rank = 3 ∧ a.m = Measure.count ∧ ∀ y, ∀ x ∈ flagN a.d, ‖a.Th y x‖ = 1 := by
-  obtain ⟨⟨ψ, hψ⟩, -⟩ := Inhab.exists_chain D
-  obtain ⟨a, h1, -, h2, -, h3⟩ := exists_gen hψ (Inhab.besPlane (GlobalTheory.RegSW.Model.hypFour D) one_ne_zero) (hypDecThree D) 2 fun _ => 1
-  exact ⟨ψ, _, _, _, a, h1, rfl, rfl, h2, h3⟩
 
-theorem lhs_count {ψ : AddChar (AF D.host.F) ℂ} {V V₀ W : HSp D} {ρ n : ℕ} (a : Gen ψ V V₀ W ρ (Fin n)) (h : a.m = Measure.count) (G Φ) :
-    a.lhs G Φ = ∑ y, ∫ x in a.vN.𝓝, a.Th y x.1 * liftS a.om a.vW.μ a.vW.𝓕 G Φ (x.1 * a.d.emb0 (a.g y)) ∂a.vN.ν := by
-  rw [Gen.lhs, h, integral_count]
 
-theorem strip_stable (W : HSp D) (R : Subgroup (GA D W)) (C : Set (GA D W)) {h r b : GA D W} (hh : h ∈ strip W R C) (hr : r ∈ R)
-    (hb : b ∈ GfC W) : r * h * b ∈ strip W R C := by
-  obtain ⟨r', hr', c, hc, b', hb', rfl⟩ := hh
-  exact ⟨r * r', mul_mem hr hr', c, hc, b' * b, mul_mem hb' hb, by group⟩
 
-theorem top_of_rungs (h0 : Rung0) (hB : RungB) (hJ : RungJ) :
-    OnTower fun {_} _ _ _ {G} W M v F Ψ u _ => per0 G M (Ψ 0) u ≠ 0 → ∀ k h, NZB W M v F Ψ u k h := by
-  intro D hq T L μ0 hL sc G W M hM v F ΓL hE hG Ψ hΨ u hu hp k
-  induction k with
-  | zero => exact fun h => hB D hq T L μ0 hL sc G W M hM v F ΓL hE hG Ψ hΨ u hu 0 h (h0 D hq T L μ0 hL sc G W M hM v F ΓL hE hG Ψ hΨ u hu hp h)
-  | succ k ih =>
-    exact fun h => hB D hq T L μ0 hL sc G W M hM v F ΓL hE hG Ψ hΨ u hu _ h
-      (hJ D hq T L μ0 hL sc G W M hM v F ΓL hE hG Ψ hΨ u hu k h (by omega) (ih (by omega)))
 
-theorem not_nzb {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (M : GlobalTheory.FunObj.Vol G) (v : CoreVol G)
-    (F : Frames G) (u k h) : ¬ NZB W M v F (fun _ => 0) u k h := by
-  rintro ⟨ρ, Φ, hne⟩
-  exact hne (by simp [BesL.per, GlobalTheory.MixPer.besPer, GlobalTheory.MixPer.besFun])
 
-theorem not_nzj {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (M : GlobalTheory.FunObj.Vol G) (v : CoreVol G)
-    (F : Frames G) (u ΓL k h) : ¬ NZJ W M v F (fun _ => 0) u ΓL k h := by
-  rintro ⟨_, _, -, ρ, Φ, Φ₀, -, hne⟩
-  exact hne (by simp [JacL.per, fjSrc, fjSrcFun])
 
 end GlobalTheory.Asc.FamilyModel
 

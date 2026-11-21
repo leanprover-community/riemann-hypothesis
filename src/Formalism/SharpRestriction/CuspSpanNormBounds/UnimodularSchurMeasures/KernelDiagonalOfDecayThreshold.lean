@@ -50,32 +50,7 @@ def ConvDecay (X : CData) (q₀ : ℕ) (h' : ℝ) : Prop :=
     rrk_Psi (X.I.muA X.μf) X.φ z ≤
       ENNReal.ofReal (M * ∏ v, Real.exp (-(Formalism.HermitianLatticeCounting.S7.decExp h' q₀ (cartanDistance (X.I.ε v) (z.1 v)))))
 
-theorem rrk_Psi_supp (X : CData) (he : ∀ x, X.e x ≠ 0 → x ∈ X.I.Kset) (z : X.I.GA)
-    (hz : rrk_Psi (X.I.muA X.μf) X.φ z ≠ 0) : z.2 ∈ X.I.Kset := by
-  by_contra hc
-  apply hz
-  unfold rrk_Psi
-  have h0 : ∀ g : X.I.GA, ‖X.φ g‖ₑ * ‖X.φ (g⁻¹ * z)‖ₑ = 0 := by
-    intro g
-    by_contra hne
-    have h1 : X.φ g ≠ 0 := fun e => hne (by simp [e])
-    have h2 : X.φ (g⁻¹ * z) ≠ 0 := fun e => hne (by simp [e])
-    have e1 : X.e g.2 ≠ 0 := fun e => h1 (by unfold CData.φ phe; rw [e, mul_zero])
-    have e2 : X.e (g⁻¹ * z).2 ≠ 0 := fun e => h2 (by unfold CData.φ phe; rw [e, mul_zero])
-    have k1 := he _ e1
-    have k2 := he _ e2
-    apply hc
-    have hmul : z.2 = g.2 * (g⁻¹ * z).2 := by
-      show z.2 = g.2 * (g.2⁻¹ * z.2)
-      group
-    rw [hmul]
-    exact (Formalism.UG.stabGL X.I.Lf).mul_mem k1 k2
-  simp [h0]
 
-theorem ConvDec_of_decay (X : CData) {n₀ : ℕ} {A : ℝ} (hX : X.HypB n₀ A) {q₀ : ℕ} {h' : ℝ} (h : ConvDecay X q₀ h') :
-    ConvDec X q₀ h' := by
-  obtain ⟨M, hM, hb⟩ := h
-  exact ⟨M, hM, fun z => ⟨hb z, rrk_Psi_supp X hX.1.2.2.2.2.2.2.1.2.2.2.2.1 z⟩⟩
 
 open Classical in
 
@@ -138,32 +113,8 @@ theorem abs_kernel_L2_of_count_and_decay (X : CData) (hd : RegData X) (hφ : Phi
     exact Formalism.HermitianLatticeCounting.Final.NearFarVolumeBounds.allSumRate (InfinitePlace X.I.F) X.I.GFset S (X.dist x) Ac B h' q₀ hpos hAc hB hthr
       (fun γ _ v => cartan_distance_nonneg _ _) hcS
 
-theorem kernel_diagonal_of_lattice_count (D : Formalism.BasicNotions.D7) (hloc : LocalProjectorRealPlace D) (X : CData) {n₀ : ℕ} {A : ℝ} (hX : X.HypB n₀ A)
-    (h1 : X.GapAboveThreeHalvesPower) (hu : UnimodA X) {h' B : ℝ} (hB : 0 < B) (hthr : 16 * B * Real.sqrt (2 * (X.qq : ℝ)) ≤ h')
-    (hc : ConvDec X X.qq h') (hn : AllCount X B) : X.KernelDiag :=
-  kernel_diagonal_of_local_projector_of_abs_kernel_L2 D hloc X hX h1 hu
-    (abs_kernel_L2_of_count_and_decay X (RegData_of_HypB X hX) (PhiIdem_of D hloc X hX h1) (X.qq_spec hX).1 hB hthr hc hn)
 
-theorem rrk_thr (X : CData) {n₀ : ℕ} {A : ℝ} (hX : X.HypB n₀ A) (h2 : X.GapAboveSquareRootThreshold 363) :
-    16 * (2 * (X.I.n : ℝ) ^ 2) * Real.sqrt (2 * (X.qq : ℝ)) ≤ X.h / 8 := by
-  obtain ⟨v⟩ : Nonempty (InfinitePlace X.I.F) := inferInstance
-  have h := h2 v
-  rw [(X.qq_spec hX).1 v] at h
-  rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2)]
-  have hs : Real.sqrt 2 ≤ 363 / 256 := by
-    rw [Real.sqrt_le_left (by norm_num)]
-    norm_num
-  have hq : 0 ≤ Real.sqrt (X.qq : ℝ) := Real.sqrt_nonneg _
-  have hn : 0 ≤ (X.I.n : ℝ) ^ 2 := by positivity
-  have hp : 0 ≤ (X.I.n : ℝ) ^ 2 * Real.sqrt (X.qq : ℝ) := mul_nonneg hn hq
-  nlinarith [mul_le_mul_of_nonneg_right hs hp]
 
-theorem kernel_diagonal_of_decay_threshold (D : Formalism.BasicNotions.D7) (hloc : LocalProjectorRealPlace D) (X : CData) {n₀ : ℕ} {A : ℝ} (hX : X.HypB n₀ A)
-    (hn1 : 1 ≤ X.I.n) (h1 : X.GapAboveThreeHalvesPower) (h2 : X.GapAboveSquareRootThreshold 363) (hu : UnimodA X) (hc : ConvDecay X X.qq (X.h / 8))
-    (hn : AllCount X (2 * (X.I.n : ℝ) ^ 2)) : X.KernelDiag :=
-  kernel_diagonal_of_lattice_count D hloc X hX h1 hu
-    (by have : (1 : ℝ) ≤ (X.I.n : ℝ) := by exact_mod_cast hn1
-        positivity) (rrk_thr X hX h2) (ConvDec_of_decay X hX hc) hn
 
 end Formalism.MainNotions.LeviCoordinates
 

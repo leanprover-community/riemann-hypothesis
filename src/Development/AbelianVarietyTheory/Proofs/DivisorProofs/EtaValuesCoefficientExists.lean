@@ -122,14 +122,6 @@ theorem isConjLift_base {F : Face D A} (hC : R.Char F) :
   exact (congrArg (fun w : MMap (R.MW i (sg0 D A)) => w fun ρ => v ρ) (hC.thP.thG i A.μ0 x)).trans
     (congrArg (R.eWf i (sg0 D A)) (h3 x v))
 
-theorem isConjDatum_base : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κw : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), R.Char F → ∀ (fw : FWTie T R κw v₀) (i : Fin D.R.m), ∀ gramR c0R c0L, Comparison₂ R gramR c0R c0L → EtaVals R → ∃ (c₁ : VsV D i D.what₂.LL →ₛₗ[sg0 D A] (R.cV i).W) (j : A.fam.amb.FL i A.μ0 →ₛₗ[sg0 D A] (R.HV i A.μ0).H), IsConjDatum R i (sg0 D A) (c0L i) (R.mu0 ((i : ℕ) + 1)) R.eta (R.cV i) c₁ (R.HV i A.μ0) j (R.thG i A.μ0) ∧ ∀ x, j x = R.jV i A.μ0 x := by
-  intro D G _ _ Pl0 T0 A T _ R F κw v₀ hC fw i gramR c0R c0L hT hV
-  have hg := (overK_iff_good T R F κw v₀ hC fw i (sg0 D A)).1 fun x _ => (RingHom.congr_fun (realisation_embedding_eq_baseEmbedding R) _).symm
-  have h1 := fw.chiR i (sg0 D A) hg
-  have h2 := h1.2.2.2.2 (congrArg (·.comp (algebraMap T.Q.c.F D.what₂.LL)) (realisation_embedding_eq_baseEmbedding R).symm)
-  exact ⟨along (realisation_embedding_eq_baseEmbedding R) (c0L i), along (realisation_embedding_eq_baseEmbedding R) (R.jV i A.μ0),
-    ⟨Eq.subst (motive := ChiAt R i (sg0 D A)) h2 h1, isEtaConj_base R hC.lev hV, isConjForms_base R i hC hT,
-      isConjLift_base R i hC⟩, fun _ => rfl⟩
 
 end GlobalTheory.GalLift.BaseDatum
 

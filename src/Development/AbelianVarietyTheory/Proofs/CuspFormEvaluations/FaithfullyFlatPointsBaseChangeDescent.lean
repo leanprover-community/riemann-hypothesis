@@ -25,9 +25,6 @@ theorem faithfullyFlat_of_geometric_points (S B : Type) [CommRing S] [CommRing B
   change χ (φ x) = 0 ↔ _
   rw [hx, map_eq_zero, Ideal.algebraMap_residueField_eq_zero]
 
-theorem flat_comp_localizationAway (S B : Type) [CommRing S] [CommRing B] (φ : S →+* B) (e : B)
-    (hφ : φ.Flat) : ((algebraMap B (Localization.Away e)).comp φ).Flat :=
-  hφ.comp (RingHom.flat_algebraMap_iff.2 (IsLocalization.flat _ (Submonoid.powers e)))
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
 attribute [local instance] Over.cartesianMonoidalCategory in

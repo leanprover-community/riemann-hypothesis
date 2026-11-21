@@ -53,36 +53,6 @@ theorem VLim.mul_right {V : VF C} {N : Type} {m : ℕ → ℕ → N → C} {m' :
     have := (hk0 k hk).mul hyr
     simpa using this
 
-theorem ptAvg_of (hAct : OActTySt) (hLim : LimTySt) (hInd : IndSt) : PTAvgFBSt := by
-  intro C _ _ V O _ _ dd Y d _ I _ p g a x hx hx0
-  set X := Y.raw p with hX
-  let M : Set (ℕ → I g ⊕ JJ I g → C) := {m | ∀ y ∈ X.TySet V g, m * y ∈ X.TySet V g}
-  have hAdd := addCvFB_of germIAll_holds C V O dd Y d I p
-  have h1 : (1 : ℕ → I g ⊕ JJ I g → C) ∈ M := fun y hy => by rwa [one_mul]
-  have hadd : ∀ m m', m ∈ M → m' ∈ M → m + m' ∈ M := fun m m' hm hm' y hy => by
-    rw [add_mul]; exact X.add_mem V g hAdd p.u_int _ _ (hm y hy) (hm' y hy)
-  have hneg : ∀ m, m ∈ M → -m ∈ M := fun m hm y hy => by
-    rw [neg_mul]; exact X.neg_mem V g Y.l_odd _ (hm y hy)
-  have hmul : ∀ m m', m ∈ M → m' ∈ M → m * m' ∈ M := fun m m' hm hm' y hy => by
-    rw [mul_assoc]; exact hm _ (hm' y hy)
-  have hteich : ∀ c : C, V.Ge 0 c → (fun s (_ : I g ⊕ JJ I g) => c ^ (V.l ^ s)) ∈ M := fun c hc y hy =>
-    X.teich_mem V g c hc y hy
-  have hact : ∀ α : O, (fun (_ : ℕ) n => p.em g (X.tyC g n) α) ∈ M := fun α y hy =>
-    hAct C V O dd Y d I p g α y hy
-  have hlim : ∀ (m : ℕ → ℕ → I g ⊕ JJ I g → C) (m' : ℕ → I g ⊕ JJ I g → C), (∀ k, m k ∈ M) → VLim V m m' → m' ∈ M :=
-    fun m m' hm hmm' y hy => hLim C V O dd Y d I p g (fun k => m k * y) (m' * y) (fun k => hm k y hy) (hmm'.mul_right y)
-  have hI := hInd C V O dd Y d I p g (I g ⊕ JJ I g) (X.tyC g) M h1 hadd hneg hmul hteich hact hlim a
-  refine ⟨_, hI x hx, ?_, ?_⟩
-  · funext n
-    simp only [Pi.mul_apply, Nat.cast_zero, add_zero]
-    by_cases hn : X.tyC g n = a
-    · rw [if_pos hn, one_mul]
-    · rw [if_neg hn, zero_mul, hx0 n hn]
-  · intro i n hn
-    simp only [Pi.mul_apply]
-    rw [if_neg hn, zero_mul]
 
-theorem ptFB_of_act (hEx : PTExFBSt) (hAct : OActTySt) (hLim : LimTySt) (hInd : IndSt) (hStab : HStabFBSt) : PTFBSt :=
-  ptFB_of hEx (ptAvg_of hAct hLim hInd) germIAll_holds hStab
 
 end Formalism.L2.FormalSeriesBounds

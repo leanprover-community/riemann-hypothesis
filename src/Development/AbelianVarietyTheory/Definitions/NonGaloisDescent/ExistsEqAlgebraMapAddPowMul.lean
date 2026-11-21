@@ -366,11 +366,6 @@ theorem app_mem_EM {η : ℕ} {y : Vec K a ι} (hy : y ∈ P.EM η) : F.app y �
   rw [mem_divE, ← map_smul]
   exact F.app_mem_M hy
 
-theorem onPol_mem_PolEta {η : ℕ} {w : P.Pol} (hw : w ∈ P.PolEta η) : F.onPol w ∈ Q.PolEta η := by
-  obtain ⟨y, hy, rfl⟩ := hw
-  refine ⟨F.app y, ?_, rfl⟩
-  rw [SetLike.mem_coe, mem_divE, ← map_smul]
-  exact F.app_mem_Mext (A_le_Rpi l e) hy
 
 omit [NormedAlgebra ℚ_[l] K] [NeZero e]
 

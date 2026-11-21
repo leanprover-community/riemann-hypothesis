@@ -274,8 +274,6 @@ theorem model_iff (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (hr 
     rw [h] at this
     exact lt_asymm this (hsgn τ ((h4 τ).1 hτ))
 
-theorem orthogonal_frame_iff (X : Data E r) (x₀ : (E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) : IsOrthogonalFrame X x₀ ↔ IsOrthoFrame X x₀ :=
-  Iff.rfl
 
 def fixMod {R : Type} [CommRing R] (k : Matrix (Fin n) (Fin n) R) (M : ℕ) (P : AddSubgroup (Fin n → R)) :
     AddSubgroup (Fin n → R) where
@@ -582,12 +580,6 @@ theorem dictLat_iff (hQ : IsRatPoints F fr hT infHom finHom GQ) (U : Unf Xo c σ
     obtain ⟨h1, h2⟩ := (latMark_iff fr L0 AA finHom l hr ι _ _ _).2 h1
     exact ⟨γ, hγ, h1, h2, h3⟩
 
-theorem adPinWith_true (U : Unf Xo c σ r) (dict : G → Σ k, Frame (U.X k).Ψ r)
-    (x₀ : (E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) (ι₀ : Dw.La →ₗ[𝓞 E] (Fin r → E)) :
-    AdPinWith F fr hT L0 AA xi0 infHom finHom GQ U dict x₀ ι₀ (fun _ _ => True) ↔
-      AdPin F fr hT L0 AA xi0 infHom finHom GQ U dict x₀ ι₀ := by
-  unfold AdPinWith AdPin
-  simp only [implies_true, and_true]
 
 theorem AdPinWith.adPin {U : Unf Xo c σ r} {dict : G → Σ k, Frame (U.X k).Ψ r}
     {x₀ : (E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ} {ι₀ : Dw.La →ₗ[𝓞 E] (Fin r → E)} {Q : ∀ k, (Dw.La → (U.X k).Λ) → Prop}
@@ -654,49 +646,9 @@ theorem first_of_second
     (joint_iff fr hT L0 AA xi0 infHom finHom GQ GfC cj hfg hsp hA hherm hnd hxi hsgn hU hGf hQ U hr dict Kf).1 h
   exact ⟨x₀, ι₀, h1, h2.adPin⟩
 
-theorem joint_iff_of_onto (honto : ∀ k, ∃ g, (dict g).1 = k) :
-    GlobalTheory.IndefiniteRowSideFullHecke.AdelicLatticeBase.AdPin F hr fr (flipForm hT) L0 (AA : Submodule (𝓞 E) E) xi0 U infHom finHom dict Kf ↔
-      ∃ x₀ ι₀, SidePins fr hT L0 xi0 finHom GfC U hr Kf x₀ ∧
-        AdPinWith F fr hT L0 AA xi0 infHom finHom GQ U dict x₀ ι₀ fun k mk => IsMarkStab l (U.X k) mk := by
-  rw [joint_iff fr hT L0 AA xi0 infHom finHom GQ GfC cj hfg hsp hA hherm hnd hxi hsgn hU hGf hQ U hr dict Kf]
-  refine exists₂_congr fun x₀ ι₀ => and_congr Iff.rfl ⟨?_, ?_⟩
-  · rintro ⟨hr', g, e, Fm, ik, φ, th, h1, h2⟩
-    exact ⟨hr', g, e, Fm, ik, φ, th, h1, fun k => (h2 k).1⟩
-  · rintro ⟨hr', g, e, Fm, ik, φ, th, h1, h2⟩
-    refine ⟨hr', g, e, Fm, ik, φ, th, h1, fun k => ⟨h2 k, ?_⟩⟩
-    obtain ⟨h, rfl⟩ := honto k
-    obtain ⟨γ, _, e1, e2, _⟩ := h1.2.2.2.2 h
-    rw [← coord_embW fr] at e2
-    exact ⟨γ * h, (latMark_iff fr L0 AA finHom l hr _ _ _ _).1 ⟨e1, e2⟩⟩
 
 end Joint
 
-theorem isMarkStab_iff {g : ℕ} {ty : Fin g → (E →+* ℂ)} {σ' : KA l →+* ℂ} (Fm : FamilyUnif Xo σ' ty) (i : Fin Fm.n)
-    (X : Data E r) (φ : (Fm.Di i).La ≃ₗ[𝓞 E] X.Λ) :
-    IsMarkStab l X (fun a => φ (Fm.t i a)) ↔ ∀ γ : GL (Fin r) E, γ ∈ X.Γ ↔ IsUStab X.Gm X.Λ γ ∧
-      ∀ a ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) • (⊤ : Submodule (𝓞 E) (Fm.Di i).La), ∃ b : (Fm.Di i).La,
-        γ.1 *ᵥ (φ a : Fin r → E) = (φ a : Fin r → E) + (l.M : ℕ) • (φ b : Fin r → E) := by
-  refine forall_congr' fun γ => iff_congr Iff.rfl (and_congr_right fun hγ => ⟨fun h a ha => ?_, fun h a ha => ?_⟩)
-  · have key : (φ a : Fin r → E) ∈ fixMod γ.1 l.M X.Λ.toAddSubgroup := by
-      refine Submodule.smul_induction_on (p := fun a => (φ a : Fin r → E) ∈ fixMod γ.1 l.M X.Λ.toAddSubgroup) ha
-        (fun b hb x _ => ?_) fun x y hx hy => ?_
-      · obtain ⟨a', v, rfl⟩ := Fm.t_surj i x
-        obtain ⟨m, hm⟩ : l.M ∣ l.M' := Nat.dvd_lcm_left _ _
-        rw [smul_add, ← map_smul, map_add, Submodule.coe_add]
-        refine add_mem (h _ (Submodule.smul_mem_smul hb Submodule.mem_top)) ?_
-        rw [hm, smul_comm, mul_smul, map_nsmul, Submodule.coe_smul_of_tower]
-        exact ⟨_, X.Λ.sub_mem ((hγ.2 _).1 (φ (m • b • v)).2) (φ (m • b • v)).2,
-          by rw [smul_sub, ← Matrix.mulVec_smul]⟩
-      · rw [map_add, Submodule.coe_add]
-        exact add_mem hx hy
-    obtain ⟨y, hy, e⟩ := key
-    exact ⟨φ.symm ⟨y, hy⟩, by rw [φ.apply_symm_apply, ← e]; abel⟩
-  · have ht : Fm.t i a ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) • (⊤ : Submodule (𝓞 E) (Fm.Di i).La) := by
-      have := Submodule.mem_map_of_mem (f := Fm.t i) ha
-      rw [half, Submodule.map_smul''] at this
-      exact Submodule.smul_mono le_rfl le_top this
-    obtain ⟨b, e⟩ := h _ ht
-    exact ⟨_, (φ b).2, by rw [e]; abel⟩
 
 def withGroup (X : Data E r) (Γ : Subgroup (GL (Fin r) E)) (hle : Γ ≤ X.Γ)
     (hidx : ∃ S : Finset (GL (Fin r) E), ∀ γ, IsUStab X.Gm X.Λ γ → ∃ s ∈ S, s⁻¹ * γ ∈ Γ) (m : ℕ) (hm : 0 < m)
@@ -714,19 +666,6 @@ def withGroup (X : Data E r) (Γ : Subgroup (GL (Fin r) E)) (hle : Γ ≤ X.Γ)
     m_pos := hm
     transv := htr }
 
-theorem pins_withGroup (U : Unf Xo c σ r) (Γ : U.Comp → Subgroup (GL (Fin r) E)) (hle : ∀ k, Γ k ≤ (U.X k).Γ)
-    (hidx : ∀ k, ∃ S : Finset (GL (Fin r) E), ∀ γ, IsUStab (U.X k).Gm (U.X k).Λ γ → ∃ s ∈ S, s⁻¹ * γ ∈ Γ k)
-    (m : U.Comp → ℕ) (hm : ∀ k, 0 < m k)
-    (htr : ∀ k, ∀ ξ ∈ (U.X k).Λ, herm (U.X k).Gm ξ ξ = 0 → ∀ s : E, cc s = s → IsIntegral ℤ s →
-      ∃ γ ∈ Γ k, (γ : Matrix (Fin r) (Fin r) E) = transvMat (U.X k).Gm ξ ((m k : E) * s * (U.X k).κ0))
-    (hr : n = r) (dict : G → Σ k, Frame (U.X k).Ψ r) (Kf : Subgroup G) (x₀ : (E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ)
-    (ι₀ : Dw.La →ₗ[𝓞 E] (Fin r → E)) :
-    let U' : Unf Xo c σ r := ⟨U.Comp, fun k => withGroup (U.X k) (Γ k) (hle k) (hidx k) (m k) (hm k) (htr k), U.un⟩
-    ((SidePins fr hT L0 xi0 finHom GfC U' hr Kf x₀ ∧ AdPin F fr hT L0 AA xi0 infHom finHom GQ U' dict x₀ ι₀) ↔
-      SidePins fr hT L0 xi0 finHom GfC U hr Kf x₀ ∧ AdPin F fr hT L0 AA xi0 infHom finHom GQ U dict x₀ ι₀) ∧
-    ∀ k (mk : Dw.La → (U.X k).Λ), IsMarkStab l (U.X k) mk → (IsMarkStab l (U'.X k) mk ↔ Γ k = (U.X k).Γ) := by
-  refine ⟨Iff.rfl, fun k mk h => ⟨fun h' => Subgroup.ext fun γ => (h' γ).trans (h γ).symm, fun e γ => ?_⟩⟩
-  exact (by rw [e] : γ ∈ Γ k ↔ γ ∈ (U.X k).Γ).trans (h γ)
 
 section Adelic
 
@@ -744,124 +683,12 @@ def ratU (h : W → W → E) : Subgroup (AdelicU F cj fr h) :=
       (Algebra.TensorProduct.includeRight : E →ₐ[F] Fin𝔸 F ⊗[F] E).toRingHom))).comap
     ((infU fr cj h).prod (finU fr cj h))
 
-theorem isRatUnitary_iff (γ : GL (Fin n) E) : IsRatUnitary fr (flipForm hT) γ ↔
-    γ.1ᵀ * (gramOf fr hT)ᵀ * γ.1.map cc = (gramOf fr hT)ᵀ := by
-  have e : ∀ x y : Fin n → E, flipForm hT (fr.equivFun.symm x) (fr.equivFun.symm y) =
-      x ⬝ᵥ (gramOf fr hT)ᵀ *ᵥ (cc ∘ y) := fun x y => by
-    have h : ∀ (x : Fin n → E) a, fr.repr (fr.equivFun.symm x) a = x a := fun x a =>
-      congrFun (fr.equivFun.apply_symm_apply x) a
-    rw [flipForm, hT_expand fr]
-    simp only [h, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc, Function.comp, Matrix.transpose_apply]
-  have e2 : ∀ x y : Fin n → E, (γ.1 *ᵥ x) ⬝ᵥ (gramOf fr hT)ᵀ *ᵥ (cc ∘ (γ.1 *ᵥ y)) =
-      x ⬝ᵥ (γ.1ᵀ * (gramOf fr hT)ᵀ * γ.1.map cc) *ᵥ (cc ∘ y) := fun x y => by
-    have : cc ∘ (γ.1 *ᵥ y) = γ.1.map cc *ᵥ (cc ∘ y) := funext fun i => RingHom.map_mulVec (conjHom E) γ.1 y i
-    rw [this, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec x, Matrix.vecMul_transpose]
-  unfold IsRatUnitary
-  simp only [e, e2]
-  refine ⟨fun hh => ?_, fun hh x y => by rw [hh]⟩
-  ext a b
-  have e3 : cc ∘ (Pi.single b 1 : Fin n → E) = Pi.single b 1 := by
-    funext i
-    by_cases hi : i = b <;> simp [hi, cc]
-  have := hh (Pi.single a 1) (Pi.single b 1)
-  simpa [e3] using this
 
-theorem ratTo_mem (hcj : ∀ x, cj x = cc x) (A : Type) [CommRing A] [Algebra F A]
-    (γ : GL (Fin n) E) : (IsRatUnitary fr (flipForm hT) γ → ratTo F A γ ∈ unitaryOver F cj fr (flipForm hT) A) ∧
-      (Nontrivial A → ratTo F A γ ∈ unitaryOver F cj fr (flipForm hT) A → IsRatUnitary fr (flipForm hT) γ) := by
-  rw [mem_unitaryOver_iff, isRatUnitary_iff]
-  set f := (Algebra.TensorProduct.includeRight : E →ₐ[F] A ⊗[F] E).toRingHom with hf
-  have hB : (Matrix.of fun a b => (1 : A) ⊗ₜ[F] flipForm hT (fr a) (fr b)) = ((gramOf fr hT)ᵀ).map f := rfl
-  have h1 : (ratTo F A γ).1ᵀ = (γ.1ᵀ).map f := rfl
-  have h2 : (ratTo F A γ).1.map (GlobalTheory.AdLat.sg A cj) = (γ.1.map cc).map f := by
-    ext a b
-    show GlobalTheory.AdLat.sg A cj ((1 : A) ⊗ₜ[F] γ.1 a b) = (1 : A) ⊗ₜ[F] cc (γ.1 a b)
-    rw [← hcj]
-    rfl
-  rw [hB, h1, h2, ← Matrix.map_mul, ← Matrix.map_mul]
-  exact ⟨fun h => by rw [h], fun _ h => Matrix.map_injective f.injective h⟩
 
-theorem isRatPoints_ratU (hcj : ∀ x, cj x = cc x) :
-    IsRatPoints F fr hT (infU fr cj _) (finU fr cj _) (ratU fr cj (flipForm hT)) := by
-  have hnt : Nontrivial (Inf𝔸 F) := (GlobalTheory.InfAdeleCM.ext (Classical.arbitrary (F →+* ℂ))).domain_nontrivial
-  constructor
-  · rintro γ ⟨γ₀, h⟩
-    have h1 : ratTo F (Inf𝔸 F) γ₀ = infU fr cj _ γ := congrArg Prod.fst h
-    have h2 : ratTo F (Fin𝔸 F) γ₀ = finU fr cj _ γ := congrArg Prod.snd h
-    exact ⟨γ₀, (ratTo_mem fr hT cj hcj (Inf𝔸 F) γ₀).2 hnt (h1 ▸ γ.1.2), h2.symm, h1.symm⟩
-  · intro γ₀ h
-    exact ⟨(⟨_, (ratTo_mem fr hT cj hcj (Inf𝔸 F) γ₀).1 h⟩, ⟨_, (ratTo_mem fr hT cj hcj (Fin𝔸 F) γ₀).1 h⟩),
-      ⟨γ₀, rfl⟩, rfl, rfl⟩
 
 end Adelic
 
-theorem typings_compare [IsTotallyReal F] (cj : E ≃ₐ[F] E) (hcj : ∀ x, cj x = cc x)
-    (hF : ∀ x : E, cc x = x → x ∈ Set.range (algebraMap F E))
-    (hfg : L0.FG) (hsp : Submodule.span E (L0 : Set W) = ⊤) (hA : AA ≠ 0)
-    (hherm : ∀ x y, cc (hT x y) = hT y x) (hnd : (gramOf fr hT).det ≠ 0) (hxi : cc xi0 = -xi0)
-    (hsgn : ∀ τ : E →+* ℂ, τ (H.rt : E) = H.rt0 → 0 < (τ xi0).im) (U : Unf Xo c σ r) (hr : n = r)
-    (dict : AdelicU F cj fr (flipForm hT) → Σ k, Frame (U.X k).Ψ r) (Kf : Subgroup (AdelicU F cj fr (flipForm hT))) :
-    let h := flipForm hT
-    let 𝔄 : Submodule (𝓞 E) E := AA
-    let inf := infU fr cj h
-    let fin := finU fr cj h
 
-    (∀ v, finVec F (coord fr v) = toFin F fr v) ∧
-    (∀ g, latGHat F fr L0 AA fin g = latAd F fr L0 𝔄 (fin g)) ∧
-    (∀ g, latG F fr L0 AA fin g = (GlobalTheory.IndefiniteRowSideFullHecke.AdelicLatticeBase.latG F fr L0 𝔄 (fin g)).map (coord fr).toLinearMap) ∧
-
-    (∀ ι : Dw.La →ₗ[𝓞 E] W, (LatEmb F fr L0 AA fin ((coord fr).toLinearMap ∘ₗ ι) ∧
-      LatIsom fr hT xi0 Dw.EF ((coord fr).toLinearMap ∘ₗ ι)) ↔ IsLatEmb h L0 𝔄 xi0 Dw ι) ∧
-    (∀ X : Data E r, (ModelW fr hT xi0 hr X ∧ TypeClause H Dw.q X) ↔ IsModelOf H hr fr h xi0 Dw.q X) ∧
-    (∀ (X : Data E r) x₀, IsOrthogonalFrame X x₀ ↔ IsOrthoFrame X x₀) ∧
-    (∀ ι : Dw.La →ₗ[𝓞 E] W, LinearMap.range ι = latBase L0 𝔄 →
-      (KfHalf F fr L0 fin inf.ker Kf l.M (l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E)) ↔ IsLevelStab F fr L0 𝔄 l ι inf fin Kf)) ∧
-
-    (∀ (ι : Dw.La →ₗ[𝓞 E] W) (g : ℕ) (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ))
-      (Fm : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => relab c σ (e j).1))
-      (ik : U.Comp → Fin Fm.n) (φ : ∀ k, (Fm.Di (ik k)).La ≃ₗ[𝓞 E] (U.X k).Λ)
-      (th : (E →+* ℂ) → (Inf𝔸 F ⊗[F] E →+* ℂ)) (x₀ : (E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ),
-      DictLat F fr L0 AA inf fin (ratU fr cj h) U hr dict ((coord fr).toLinearMap ∘ₗ ι) e Fm ik φ
-          (fun _ τ => th τ.1) x₀ ↔
-        IsFamilyOf U e Fm ik φ ∧
-          IsDictOf F hr fr h L0 𝔄 l ι U.X (fun k a => φ k (Fm.t (ik k) a)) th x₀ inf fin dict) ∧
-
-    (AdPinU F cj hr fr h L0 𝔄 xi0 U dict Kf ↔ ∃ x₀ ι₀, SidePins fr hT L0 xi0 fin inf.ker U hr Kf x₀ ∧
-      AdPinWith F fr hT L0 AA xi0 inf fin (ratU fr cj h) U dict x₀ ι₀ fun k mk => IsMarkStab l (U.X k) mk ∧
-        ∃ gk, LatMark F hr fr L0 𝔄 l (embW fr hr ι₀) (U.X k) mk (fin gk)) ∧
-    (AdPinU F cj hr fr h L0 𝔄 xi0 U dict Kf → ∃ x₀ ι₀, SidePins fr hT L0 xi0 fin inf.ker U hr Kf x₀ ∧
-      AdPin F fr hT L0 AA xi0 inf fin (ratU fr cj h) U dict x₀ ι₀) ∧
-    ((∀ k, ∃ g, (dict g).1 = k) →
-      (AdPinU F cj hr fr h L0 𝔄 xi0 U dict Kf ↔ ∃ x₀ ι₀, SidePins fr hT L0 xi0 fin inf.ker U hr Kf x₀ ∧
-        AdPinWith F fr hT L0 AA xi0 inf fin (ratU fr cj h) U dict x₀ ι₀ fun k mk => IsMarkStab l (U.X k) mk)) := by
-  intro h 𝔄 inf fin
-  have hU : ∀ g, fin g ∈ unitaryOver F cj fr (flipForm hT) (Fin𝔸 F) := fun g => g.2.2
-  have hGf : ∀ k, k ∈ inf.ker ↔ inf k = 1 := fun _ => MonoidHom.mem_ker
-  have hQ := isRatPoints_ratU fr hT cj hcj
-  have hP : AdPinU F cj hr fr h L0 𝔄 xi0 U dict Kf ↔
-      GlobalTheory.IndefiniteRowSideFullHecke.AdelicLatticeBase.AdPin F hr fr h L0 𝔄 xi0 U inf fin dict Kf := ⟨fun h => h.2.2, fun h => ⟨hcj, hF, h⟩⟩
-  rw [hP]
-  exact ⟨finVec_coord fr, latGHat_eq fr L0 AA fin, latG_eq fr L0 AA fin,
-    latEmb_iff fr hT L0 AA xi0 fin Dw hfg hsp hherm hxi, fun X => model_iff fr hT xi0 H hr Dw.q X hsgn, orthogonal_frame_iff,
-    fun ι hι => level_iff fr hT L0 AA inf fin _ l hfg hsp hA hnd cj hU hGf ι hι Kf,
-    fun ι _ e Fm ik φ th x₀ => dictLat_iff fr hT L0 AA inf fin _ hQ U hr dict ι e Fm ik φ th x₀,
-    joint_iff fr hT L0 AA xi0 inf fin _ _ cj hfg hsp hA hherm hnd hxi hsgn hU hGf hQ U hr dict Kf,
-    first_of_second fr hT L0 AA xi0 inf fin _ _ cj hfg hsp hA hherm hnd hxi hsgn hU hGf hQ U hr dict Kf,
-    joint_iff_of_onto fr hT L0 AA xi0 inf fin _ _ cj hfg hsp hA hherm hnd hxi hsgn hU hGf hQ U hr dict Kf⟩
-
-theorem xi_hyp (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (h0 : 0 < H.rt0.im) (N : ℕ) (hN : 0 < N)
-    (hbar : cc (H.rt : E) = -(H.rt : E)) :
-    cc (-1 / ((N : E) * H.rt)) = -(-1 / ((N : E) * H.rt)) ∧
-      ∀ τ : E →+* ℂ, τ (H.rt : E) = H.rt0 → 0 < (τ (-1 / ((N : E) * H.rt))).im := by
-  constructor
-  · unfold cc at hbar ⊢
-    rw [map_div₀, map_mul, hbar, map_neg, map_one, map_natCast, mul_neg, div_neg]
-  · intro τ hτ
-    rw [map_div₀, map_mul, hτ, map_neg, map_one, map_natCast, neg_div, one_div, Complex.neg_im, Complex.inv_im, neg_div,
-      neg_neg]
-    have hN' : (0 : ℝ) < N := by exact_mod_cast hN
-    have h1 : 0 < ((N : ℂ) * H.rt0).im := by simpa using mul_pos hN' h0
-    exact div_pos h1 (Complex.normSq_pos.2 fun h => by rw [h] at h1; simp at h1)
 
 end Compare
 

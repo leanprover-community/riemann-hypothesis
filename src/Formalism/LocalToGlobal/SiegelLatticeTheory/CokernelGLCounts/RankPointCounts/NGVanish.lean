@@ -86,7 +86,5 @@ theorem formNGC_of_rel (h : FormRelC) : FormNGC := by
   exact ⟨a, b, fun C' Cl h1 h2 D large₂ X Y u u' hc ν hν t ht hv =>
     hh C' Cl h1 h2 D large₂ X Y u u' hc ν hν t (Set.mem_union_left _ ht) hv⟩
 
-theorem stepTermVanish_of_rel (h : FormRelC) : StepTermVanish :=
-  stepTermVanish_of_form (formNGC_of_rel h)
 
 end Formalism.L2.SG.NGVanish

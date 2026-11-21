@@ -337,12 +337,6 @@ theorem arithDegree_line (h : HermitianMetric K E) (hE : Module.finrank (𝓞 K)
   rw [hv, Real.log_pow]
   push_cast; ring
 
-theorem degree_line_indep (h : HermitianMetric K E) (hE : Module.finrank (𝓞 K) E = 1) {s t : E}
-    (hs : s ≠ 0) (ht : t ≠ 0) :
-    Real.log (Nat.card (E ⧸ Submodule.span (𝓞 K) {s})) - ∑ σ : K →+* ℂ, Real.log ‖fibreVec h σ s‖ =
-      Real.log (Nat.card (E ⧸ Submodule.span (𝓞 K) {t})) -
-        ∑ σ : K →+* ℂ, Real.log ‖fibreVec h σ t‖ := by
-  rw [← arithDegree_line h hE hs, ← arithDegree_line h hE ht]
 
 theorem arithDegree_integers : arithDegree (HermitianMetric.integers K) = 0 := by
   rw [arithDegree_line _ (Module.finrank_self (𝓞 K)) one_ne_zero]

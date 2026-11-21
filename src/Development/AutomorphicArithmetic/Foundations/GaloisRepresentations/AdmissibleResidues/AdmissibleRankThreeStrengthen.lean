@@ -39,24 +39,11 @@ theorem csdN [IsCMField F] [IsAlgClosure F Ω] (P : Hypotheses₂) (hn : 1 ≤ n
     rw [e, quadChar_locInf]
   · rw [map_pow, compNorm_quadChar, one_pow]
     exact (GlobalTheory.ContraPair.dualIsConjBy_one π).2 hd
-theorem csdN' [IsCMField F] [IsAlgClosure F Ω] (_ : Hypotheses₂) (_ : 1 ≤ n) {ι : Qbar l ≃+* ℂ} {r : G F Ω →* GL (Fin n) (Qbar l)}
-    (h : IsAutCsdN ι r) : IsAutCsdN ι r := h
 end
 
 section
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
 
-theorem autQN (P : Hypotheses₂) (hn : 1 ≤ n) {ι : Qbar l ≃+* ℂ} {r : G ℚ Ω →* GL (Fin n) (Qbar l)} {wt : ℤ}
-    (hd : ∃ θ, IsCycWt l wt θ ∧ DualTw r θ) (h : IsAutQ ι r) : IsAutQN ι r := by
-  intro hc K _ _ _ i _ _ h2 hi
-  obtain rfl : i = DivisionRing.toRatAlgebra := Subsingleton.elim _ _
-  haveI : IsAlgClosure K Ω := ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) K⟩
-  obtain ⟨π, hreg, ha⟩ := h hc K h2 hi
-  obtain ⟨θ, hθ, hd⟩ := hd
-  obtain ⟨χ, μ, hpol, -, -⟩ := UpperTheory.V.Z.Bc.polK P K h2 n hn l Ω ι r wt θ π hθ hd ha
-  exact ⟨⟨π, hreg, ha⟩, L.wold P K Ω l ι n hn _ π (hc.comp (Af.continuous_restrictScalarsHom ℚ K Ω)) hreg ⟨χ, hpol⟩ ha⟩
-theorem autQN' (_ : Hypotheses₂) (_ : 1 ≤ n) {ι : Qbar l ≃+* ℂ} {r : G ℚ Ω →* GL (Fin n) (Qbar l)} {wt : ℤ}
-    (_ : ∃ θ, IsCycWt l wt θ ∧ DualTw r θ) (h : IsAutQN ι r) : IsAutQN ι r := h
 
 variable {K : Type} [Field K] [NumberField K] [Algebra K Ω] [IsScalarTower ℚ K Ω]
 

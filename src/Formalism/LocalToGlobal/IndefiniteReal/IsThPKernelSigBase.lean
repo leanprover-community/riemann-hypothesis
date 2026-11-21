@@ -44,20 +44,8 @@ variable (D) in
 
 def baseLab : ArchLab D := ⟨Equiv.refl _, true⟩
 
-theorem isLabOf_base : IsLabOf D.what₂.embLL (baseLab D) := by
-  intro τ
-  rw [labE_base]
-  rfl
 
-theorem ArchLab.emb_flip (A : ArchLab D) (τ : D.what₂.Tau) :
-    A.flip.emb τ = (starRingEnd ℂ).comp (A.emb τ) := by
-  rcases A with ⟨p, s⟩
-  cases s <;> ext x <;> simp [ArchLab.emb, ArchLab.flip]
 
-theorem isLabOf_conj {σ : D.what₂.LL →+* ℂ} {A : ArchLab D} (h : IsLabOf σ A) :
-    IsLabOf ((starRingEnd ℂ).comp σ) A.flip := by
-  intro τ
-  rw [labE_conj, h τ, ArchLab.emb_flip]
 
 variable (D) in
 
@@ -73,28 +61,17 @@ open Classical in
 def labOf (σ : D.what₂.LL →+* ℂ) : ArchLab D :=
   if h : ∃ A : ArchLab D, IsLabOf σ A then h.choose else baseLab D
 
-theorem labOf_spec {σ : D.what₂.LL →+* ℂ} (h : ∃ A : ArchLab D, IsLabOf σ A) : IsLabOf σ (labOf σ) := by
-  unfold labOf
-  rw [dif_pos h]
-  exact h.choose_spec
 
-theorem labOf_base (hU : LabUnique D) : labOf (D := D) D.what₂.embLL = baseLab D :=
-  hU _ _ _ (labOf_spec ⟨_, isLabOf_base⟩) isLabOf_base
 
 def rl (A : ArchLab D) {X : Type*} (S : D.what₂.Tau → X) : D.what₂.Tau → X := fun ρ => S (A.perm.symm ρ)
 
-theorem rl_base {X : Type*} (S : D.what₂.Tau → X) : rl (baseLab D) S = S := rfl
 
-theorem rl_flip (A : ArchLab D) {X : Type*} (S : D.what₂.Tau → X) : rl A.flip S = rl A S := rfl
 
 theorem rl_pos (A : ArchLab D) {X : Type*} (S : D.what₂.Tau → X) : rl A.pos S = rl A S := rfl
 
 def cv (σ : D.what₂.LL →+* ℂ) {X : Type*} (f : X → D.what₂.LL) : X → ℂ := fun x => σ (f x)
 
-theorem cv_base {X : Type*} (f : X → D.what₂.LL) : cv D.what₂.embLL f = fun x => D.what₂.embLL (f x) := rfl
 
-theorem cv_conj (σ : D.what₂.LL →+* ℂ) {X : Type*} (f : X → D.what₂.LL) :
-    cv ((starRingEnd ℂ).comp σ) f = fun x => starRingEnd ℂ (cv σ f x) := rfl
 
 def levSig (σ : D.what₂.LL →+* ℂ) {n : ℕ} (L : Formalism.L2.DIV.LevDat D.host.E D.what₂.LL n) :
     Formalism.L2.DIV.LevDat D.host.E ℂ n where
@@ -115,9 +92,6 @@ def IsConjChar (σ : D.what₂.LL →+* ℂ) (χL : (AE D)ˣ →* D.what₂.LLˣ
   IsHeckeChar D χσ ∧ ∀ x : (AE D)ˣ, infPart D (x : AE D) = 1 →
     ((χσ x : Circle) : ℂ) * D.what₂.embLL (χL x : D.what₂.LL) = ((χ x : Circle) : ℂ) * σ (χL x : D.what₂.LL)
 
-theorem isConjChar_base {χL : (AE D)ˣ →* D.what₂.LLˣ} {χ : (AE D)ˣ →* Circle} (h : IsHeckeChar D χ) :
-    IsConjChar D.what₂.embLL χL χ χ :=
-  ⟨h, fun _ _ => rfl⟩
 
 def IsThPKernelSig (ψ : AddChar (AF D.host.F) ℂ) (σ : D.what₂.LL →+* ℂ)
     (μL : ℕ → (AE D)ˣ →* D.what₂.LLˣ) (ηL : (AE D)ˣ →* D.what₂.LLˣ) (μ : ℕ → (AE D)ˣ →* Circle)
@@ -142,19 +116,11 @@ def IsChainKernelSig (ψ : AddChar (AF D.host.F) ℂ) (σ : D.what₂.LL →+* �
     (∀ k, IsConjChar σ (μL k) (μ k) (μσ k)) ∧ IsConjChar σ ηL η ησ ∧
       Lift.IsChainKernel ψ μσ ησ m Y th
 
-theorem isThPKernelSig_base (ψ : AddChar (AF D.host.F) ℂ)
-    (μL : ℕ → (AE D)ˣ →* D.what₂.LLˣ) (ηL : (AE D)ˣ →* D.what₂.LLˣ) (μ : ℕ → (AE D)ˣ →* Circle)
-    (η : (AE D)ˣ →* Circle) (hμ : ∀ k, IsHeckeChar D (μ k)) (hη : IsHeckeChar D η) (j : ℕ) (Vj Wj : HSp D)
-    (th : GA D Wj → GA D Vj → (Datum.WO Vj Wj → ℂ) → ℂ) (h : Lift.IsThPKernel ψ μ η j Vj Wj th) :
-    IsThPKernelSig ψ D.what₂.embLL μL ηL μ η j Vj Wj th :=
-  ⟨μ, η, fun k => isConjChar_base (hμ k), isConjChar_base hη, h⟩
 
 def deltaSig (A : ArchLab D) {m n : ℕ} (p q : D.what₂.Tau → ℕ) (ap am : D.what₂.Tau → ℕ → ℕ) :
     MvPolynomial (Datum.FVar D m n) ℂ :=
   Datum.delta p q (rl A ap) (rl A am)
 
-theorem deltaSig_base {m n : ℕ} (p q : D.what₂.Tau → ℕ) (ap am : D.what₂.Tau → ℕ → ℕ) :
-    deltaSig (m := m) (n := n) (baseLab D) p q ap am = Datum.delta p q ap am := rfl
 
 def IsThetaPSig (ψ : AddChar (AF D.host.F) ℂ) (σ : D.what₂.LL →+* ℂ)
     (μL : ℕ → (AE D)ˣ →* D.what₂.LLˣ) (ηL : (AE D)ˣ →* D.what₂.LLˣ) (μ : ℕ → (AE D)ˣ →* Circle)

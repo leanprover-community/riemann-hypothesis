@@ -24,9 +24,6 @@ def ExpBall : Prop :=
     (haveI := FiniteDimensional.complete ℂ Wp; PI.CapelliEig.IsKFinCoefT (k := P.k) (r := P.r) R0.σ f) →
     CutBP.BigCellDerivativeExpansion p f b (C / 2 + 6) a₁
 
-theorem expBall_of_hyps (H : BranchingSupport.Hyps) : ExpBall :=
-  fun C hC P Wp Wq _ _ _ _ _ _ p lam b bv ga h q0 a₁ R0 f ν₀ =>
-    Ball.wave_ball_estimate_dual H C hC P Wp Wq p lam b bv ga h q0 a₁ R0 f ν₀
 
 theorem thmBpAt_mono {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]

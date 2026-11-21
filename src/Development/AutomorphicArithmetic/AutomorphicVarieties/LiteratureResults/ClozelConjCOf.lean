@@ -26,22 +26,6 @@ def FinExC : Prop :=
 def FinExR : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (a : ℕ) (π : TR.CuspSub F a), ∃ τ, π.IsFinComp τ
 
-theorem clozelConjC_of (hF : FinExC) (h : ConjC) : Published.ClozelConjC := by
-  intro E _ _ _ a ha π hπ σ
-  obtain ⟨τ, hτ⟩ := hF E a π
-  obtain ⟨π', h1, h2⟩ := h E a ha π hπ τ hτ σ
-  obtain ⟨τ', hτ'⟩ := hF E a π'
-  refine ⟨π', τ, τ', hτ, hτ', h1 τ' hτ', fun φ m hm => h2 _ m ?_⟩
-  convert hm using 1
-  exact RingHom.ext fun x => σ.symm_apply_apply _
 
-theorem clozelConjR_of (hF : FinExR) (h : ConjR) : Published.ClozelConjR := by
-  intro F _ _ _ a ha π hπ σ
-  obtain ⟨τ, hτ⟩ := hF F a π
-  obtain ⟨π', h1, h2⟩ := h F a ha π hπ τ hτ σ
-  obtain ⟨τ', hτ'⟩ := hF F a π'
-  refine ⟨π', τ, τ', hτ, hτ', h1 τ' hτ', fun φ m hm => h2 _ m ?_⟩
-  convert hm using 2
-  exact RingHom.ext fun x => σ.symm_apply_apply _
 
 end UpperTheory.V.Lit

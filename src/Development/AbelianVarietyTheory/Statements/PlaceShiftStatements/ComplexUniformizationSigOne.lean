@@ -28,11 +28,5 @@ def ComplexUniformizationSigOne : Prop :=
             Nat.card {π : GlobalTheory.LKCx.QIsog L o // ∃ k ∈ L.KN N, IsGamma L o π.1 k} =
               Nat.card (GlobalTheory.LKCx.Form.Stab v (Quot.out q) (L.KN N) (GlobalTheory.LKCx.KpOne G) a)
 
-theorem complex_unif_of_sig_one (h : ComplexUniformizationSigOne) : GlobalTheory.LKCx.CxUnif := by
-  intro p _ D G L hD R _ b σ ρ hm ht N hN hNp M v hv
-  refine h p D G L hD.1 (Or.inr ⟨hD.2.2, ?_⟩) R b σ ρ hm ht N hN hNp M v hv
-  have h1 := hD.2.1
-  have h2 := D.n_pos
-  omega
 
 end GlobalTheory.ComplexUniformization

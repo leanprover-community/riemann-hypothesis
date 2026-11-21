@@ -20,8 +20,6 @@ def clAct {D : Type u} [Category.{v} D] (H : D ⥤ ModuleCat.{w} R) (ρ : ∀ X,
   map_zero' := LinearMap.ext fun f => funext fun s => by simp
   map_add' a b := LinearMap.ext fun f => funext fun s => by simp
 
-theorem clAct_apply {D : Type u} [Category.{v} D] (H : D ⥤ ModuleCat.{w} R) (ρ : ∀ X, A →+* Module.End R (H.obj X))
-    (p : ℕ) (a : A) (f : Cn H p) (s : ComposableArrows D p) : clAct H ρ p a f s = ρ _ a (f s) := rfl
 
 theorem clAct_d {D : Type u} [Category.{v} D] (H : D ⥤ ModuleCat.{w} R) (ρ : ∀ X, A →+* Module.End R (H.obj X))
     (hρ : ∀ {X Y : D} (h : X ⟶ Y) a x, (H.map h).hom (ρ X a x) = ρ Y a ((H.map h).hom x)) (p : ℕ) (a : A) (f : Cn H p) :

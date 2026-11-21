@@ -48,8 +48,6 @@ theorem mv (n : ℕ) : MVStatement n := by
   rw [← e1, ← e2]
   exact h
 
-theorem mvBlowup (n : ℕ) : MVBlowupStatement n :=
-  fun hn => C.mvDiv n hn
 
 theorem mvInt (n : ℕ) : MVIntStatement n := by
   intro hn s

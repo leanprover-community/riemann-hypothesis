@@ -22,10 +22,6 @@ theorem perCol_lin (D : D7) (u : D.what₂.Word) (μ : D.what₂.Tup) (φ : D.wh
     rw [D.perCol_tie u μ h]
     rfl
 
-theorem cutUpOfOTie : CutUpOfOTie := by
-  intro D hO μ hU x hx hV
-  obtain ⟨ι, hι, hιO⟩ := hO.int
-  exact (cut_tensorUp_row (RowSide.sharp D) hO.ded ι hι hιO hO.aint μ (hO.form μ hU) x).2 ⟨hx, hV⟩
 
 theorem perToVal2 : PerToVal2 := by
   intro D B hB u t hcut z s N h φ hφ F hF

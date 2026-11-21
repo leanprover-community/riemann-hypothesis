@@ -490,32 +490,6 @@ end Formalism.MainNotions.G.Joints.Lit
 
 namespace Formalism.MainNotions.G.Joints.Lit
 
-theorem pNonUnit {D : D7} (c : LatCmp D) (u : D.what₂.Word) (w : D.what₂.places.Pl)
-    (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
-    ¬ IsUnit ((D.what₂.places.resChar w : ℕ) : (D.gat u w hg).O) := by
-  rintro ⟨t, ht⟩
-  have hp0 : ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) ≠ 0 :=
-    Nat.cast_ne_zero.mpr (D.what₂.places.resChar_prime w).ne_zero
-  have hmem : c.embW u w hg ((D.what₂.places.resChar w : ℕ) : D.what₂.LL)⁻¹ ∈
-      Set.range (algebraMap (D.gat u w hg).O (D.gat u w hg).Kf) := by
-    refine ⟨((t⁻¹ : (D.gat u w hg).Oˣ) : (D.gat u w hg).O), ?_⟩
-    rw [map_inv₀, map_natCast]
-    apply eq_inv_of_mul_eq_one_left
-    rw [← map_natCast (algebraMap (D.gat u w hg).O (D.gat u w hg).Kf), ← ht, ← map_mul, Units.inv_mul,
-      map_one]
-  have h0 := (c.embW_int u w hg _).mpr hmem
-  have h2 : D.what₂.places.val w (((D.what₂.places.resChar w : ℕ) : D.what₂.LL) *
-      ((D.what₂.places.resChar w : ℕ) : D.what₂.LL)⁻¹) = 0 := by
-    rw [mul_inv_cancel₀ hp0, AddValuation.map_one]
-  rw [AddValuation.map_mul, D.what₂.places.val_resChar w] at h2
-  have h3 : ((((D.what₂.places.ramIdx w : ℕ) : ℤ)) : WithTop ℤ) ≤ 0 := by
-    calc ((((D.what₂.places.ramIdx w : ℕ) : ℤ)) : WithTop ℤ)
-        ≤ ((((D.what₂.places.ramIdx w : ℕ) : ℤ)) : WithTop ℤ) +
-          D.what₂.places.val w ((D.what₂.places.resChar w : ℕ) : D.what₂.LL)⁻¹ := le_add_of_nonneg_right h0
-      _ = 0 := h2
-  have h4 := D.what₂.places.ramIdx_pos w
-  have h5 : ((D.what₂.places.ramIdx w : ℕ) : ℤ) ≤ 0 := by exact_mod_cast h3
-  omega
 
 end Formalism.MainNotions.G.Joints.Lit
 
@@ -565,9 +539,5 @@ theorem mertens_bound (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.Co
           exact_mod_cast hcard
       _ = 2 * Real.log y := by ring
 
-theorem mertens_bound_family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Formalism.MainNotions.CornerGLContinuity.FamilyMertensBound Fm :=
-  by
-    intro x i
-    exact mertens_bound _
 
 end Formalism.MainNotions.G.Joints.Lit

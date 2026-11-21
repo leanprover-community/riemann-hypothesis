@@ -190,17 +190,6 @@ def ookCst (SB : Finset (HeightOneSpectrum (𝓞 X.E))) (mq : ℕ → SB → X.K
 
 variable {Ch}
 
-theorem ookCst_ok (hPr : Pr.Ok) (hCh : Ch.Ok) {SB : Finset (HeightOneSpectrum (𝓞 X.E))} (hSB : ∀ P ∈ SB, P ∈ Pr.vGs)
-    (h4 : ∀ P ∈ SB, qOf P % 4 = 1) {mq : ℕ → SB → X.K} {A : ℕ} (hA : 1 ≤ A) : (ookCst Ch SB mq A).Ok where
-  psi_add := (ciCst_ok hPr hCh hSB h4 (mq := mq)).psi_add
-  psi_int := (ciCst_ok hPr hCh hSB h4 (mq := mq)).psi_int
-  psi_ne := (ciCst_ok hPr hCh hSB h4 (mq := mq)).psi_ne
-  D_pos _ := le_refl 1
-  sq_sq := (ciCst_ok hPr hCh hSB h4 (mq := mq)).sq_sq
-  M_pos := le_refl 1
-  M_le_A := hA
-  M_le_B := le_refl 1
-  B_pos := le_refl 1
 
 theorem ookXiUnit (hCh : Ch.Ok) {σ₀ : X.K →+* ℂ} {xi0 : X.E} (hW : Ch.WeilTied σ₀ xi0) (w : HeightOneSpectrum (𝓞 X.E))
     (hw : w ∈ Pr.vGs) : IntAt w xi0 ∧ redP w xi0 ≠ 0 := by
@@ -225,87 +214,8 @@ def ookCstR (G : ChGlob X R.m) : LocCst X (rowSG Pr sel (mu0 X.F X.E X.K S)) :=
 
 variable {Ch}
 
-theorem referenceConstants_psi_depth_one (hPr : Pr.Ok) (G : ChGlob X R.m) (P : rowSG Pr sel (mu0 X.F X.E X.K S)) (a : X.E) (ha : IntAt P.1 a) :
-    (ookCstR Ch sel S G).psi P (a / (qOf P.1 : X.E)) = psi0P Ch P.1 (redP P.1 a) := by
-  show ciPsi Ch P _ = _
-  have hq0 : (qOf P.1 : X.E) ≠ 0 := by exact_mod_cast (ciQOf_prime hPr (ciMemG sel S P)).ne_zero
-  unfold ciPsi
-  rw [mul_div_cancel₀ _ hq0, if_pos ha]
 
-theorem ookCstR_base (hX : X.Ok) (hPr : Pr.Ok) (hCh : Ch.Ok) (h4 : ∀ w ∈ Pr.vGs, qOf w % 4 = 1) (G : ChGlob X R.m) {m2 : ℕ}
-    (hm : R.m = m2 + 2) : OcbBase Ch sel (mu0 X.F X.E X.K S) (ookCstR Ch sel S G) m2 where
-  hX := hX
-  hPr := hPr
-  hCh := hCh
-  hm := hm
-  cst_ok := ookCst_ok hPr hCh (fun P hP => ciMemG sel S ⟨P, hP⟩) (fun P hP => h4 P (ciMemG sel S ⟨P, hP⟩)) (by have := R.two_le_m; omega)
-  sharp := rfl
-  psi0 P a _ ha := referenceConstants_psi_depth_one sel S hPr G P a ha
-  depthG _ _ := rfl
 
-theorem oneIdx_ok (hX : X.Ok) (hPr : Pr.Ok) (hCh : Ch.Ok) (h4 : ∀ w ∈ Pr.vGs, qOf w % 4 = 1) (G : ChGlob X R.m)
-    {e : Fin R.m → X.Tau → ℚ} {eta : Formalism.L2.Host.HChar X.E} (hT : Ch.Tied G.σ₀ e G.mu0 eta) (hW : Ch.WeilTied G.σ₀ G.xi0)
-    (hval : ∀ (j : Fin R.m) (w : HeightOneSpectrum (𝓞 X.E)), w ∈ Pr.vGs →
-      ∃ y : X.K, G.σ₀ y = ((((G.mu0 j).locK w (ciQU w)) : ℂˣ) : ℂ)⁻¹)
-    {m2 : ℕ} (hm : R.m = m2 + 2)
-    (hO : OneCosetSym Ch sel (mu0 X.F X.E X.K S) (ookCstR Ch sel S G) (colLevSym Ch) m2)
-    (hN : NonVanSym Ch sel (mu0 X.F X.E X.K S) (ookCstR Ch sel S G) m2) :
-    (oneIdx (colLevSym Ch) (QE sel ((mu0 X.F X.E X.K S : Tup X.F X.E X.K S) : Chr X.F X.E X.K)) m2).Ok Ch sel (mu0 X.F X.E X.K S)
-      (ookCstR Ch sel S G) G m2 := by
-  have hG : ∀ P : rowSG Pr sel (mu0 X.F X.E X.K S), P.1 ∈ Pr.vGs := ciMemG sel S
-  have hSB : ∀ P ∈ rowSG Pr sel (mu0 X.F X.E X.K S), P ∈ Pr.vGs := fun P hP => ciMemG sel S ⟨P, hP⟩
-  have hψ : ∀ (P : rowSG Pr sel (mu0 X.F X.E X.K S)) (a : X.E), IntAt P.1 a →
-      (ookCstR Ch sel S G).psi P (a / (qOf P.1 : X.E)) = psi0P Ch P.1 (redP P.1 a) :=
-    fun P a ha => referenceConstants_psi_depth_one sel S hPr G P a ha
-  have hs : (ookCstR Ch sel S G).sharp = true := rfl
-  have hA : R.m ≤ (ookCstR Ch sel S G).A := le_refl _
-  have hB : (ookCstR Ch sel S G).B = 1 := rfl
-  obtain ⟨hc', hc, -, -, -, -⟩ := ookLast (R := R) hm
-  obtain ⟨hn, hinj, hsurj⟩ := oneIdx_clauses hO hN
-  exact
-    { hm := hm
-      cst_ok := ookCst_ok hPr hCh hSB (fun P hP => h4 P (hSB P hP)) (by have := R.two_le_m; omega)
-      xiUnitAtPrime := fun P => ookXiUnit hCh hW P.1 (hG P)
-      weil := ciCst_weil Ch hX hPr hSB (ciMuq G ((mu0 X.F X.E X.K S : Tup X.F X.E X.K S) : Chr X.F X.E X.K)) hW (fun P hP => (ookXiUnit hCh hW P (hSB P hP)).1)
-      muqQ := fun _ _ P hP => absurd (hG P) hP
-      muqG := fun i h P hP qu hqu => ciMuq_tie G _ hval i h P hP qu hqu
-      mu0G := fun j => (hT.mu0 j).atg
-      psi0 := fun P a _ ha => hψ P a ha
-      deep := fun A' B' hA' hB' i hi _ _ P =>
-        ookE1at_indep Ch sel _ hX hPr _ hs hm hi P (hG P) (hψ P) G.σ₀ hA (le_refl 1) (le_trans hA hA') (le_trans (le_refl 1) hB')
-      zero_uniq := ⟨⟨(), Nat.zero_le _⟩, fun _ => Subtype.ext rfl⟩
-      zero_h := fun _ _ => rfl
-      zero_G := fun _ => colLevSym_zero Ch
-      zero_Q := fun _ => rfl
-      last_uniq := ⟨⟨(), le_refl _⟩, fun _ => Subtype.ext rfl⟩
-      last_h := fun _ _ => rfl
-      nonvan := hn
-      inj := fun i hi b b' _ => hinj i hi b b'
-      surj := hsurj
-      stabG := fun _ _ _ _ => Subgroup.one_mem _
-      depthG := fun _ _ => rfl
-      depthQ := fun P hP => absurd (hG P) hP
-      depthQ' := fun P hP => absurd (hG P) hP
-      boundQ := fun _ _ P hP => absurd (hG P) hP
-      psiSupp := fun _ P x₀ y' h i => by
-        rw [if_pos (hG P), pow_one]
-        exact (psiAt_sym Ch sel _ _ hc' hc hs P (hG P) x₀ y' h i).1
-      psiInv := fun _ P x₀ y' z hz =>
-        ookPsiInv Ch sel _ hX hPr _ hs hm P (hG P) x₀ y' z fun i => by
-          have h1 := hz i
-          rwa [if_pos (hG P), pow_zero, inv_one, one_mul] at h1
-      xiSupp := fun i hi _ _ P x h s l => ookXiSupp Ch sel _ _ hs hm hi P (hG P) x h s l
-      xiInv := fun i hi _ _ P x z hz => ookXiInv Ch sel _ hX hPr _ hs hm hi P (hG P) (hψ P) G.σ₀ hA hB x z hz
-      psiSuppX := fun _ P x₀ y' h s l => ookPsiSuppX Ch sel _ _ hs hm P (hG P) x₀ y' h s l
-      psiInvX := fun _ P x₀ z y' hz => ookPsiInvX Ch sel _ hX hPr _ hs hm P (hG P) hB x₀ z y' hz
-      int := fun j _ P => by
-        show Loc.prX (Loc.Cbe (Jat (Pr := Pr) true j P.1) 1) ≤ _
-        rw [ookJat j (hG P)]
-        exact ookPrX_le
-      grpQ := fun _ _ P => absurd P.2 (ciNotQ sel S P.1)
-      chrQ := fun _ _ P => absurd P.2 (ciNotQ sel S P.1)
-      grpG := fun j b w hbar => hO.grpG j b.2 w hbar
-      chrG := fun j b w hbar g r hr hrg hred => hO.chrG j b.2 w hbar g r hr hrg hred }
 
 end Ok
 

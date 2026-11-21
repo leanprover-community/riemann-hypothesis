@@ -32,7 +32,6 @@ theorem awayFin_mul_self (S : Finset (HeightOneSpectrum (𝓞 F))) : awayFin S *
 theorem awayIdem_mul_self (S : Finset (HeightOneSpectrum (𝓞 F))) : awayIdem S * awayIdem S = awayIdem S :=
   Prod.ext (zero_mul _) (awayFin_mul_self S)
 
-theorem awayIdem_fst (S : Finset (HeightOneSpectrum (𝓞 F))) : (awayIdem S).1 = 0 := rfl
 
 end Idem
 

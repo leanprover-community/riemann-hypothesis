@@ -18,12 +18,6 @@ def rG (s : Scale) : ℕ := KG s + 1
 
 def Av5 (s : Scale) : ℝ := max 26 (4 * hExp s + 9)
 
-theorem Av5_eq (s : Scale) : Av5 s = Scale.A := by
-  unfold Av5 hExp jG Scale.A
-  have h1 := s.eps_lt
-  rw [max_eq_left]
-  push_cast
-  linarith
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -313,19 +307,7 @@ theorem bT_ge_half (P : ParameterChoice' D L) (τ : D.what₂.Tau) (t : D.host.T
 
 end ParameterChoice'
 
-theorem f_le_m_sq_n (R : Ranks) : R.f ≤ R.m ^ 2 * R.n := by
-  unfold Ranks.f
-  have h := R.two_le_m
-  have : 4 ≤ R.m ^ 2 := by nlinarith
-  nlinarith
 
-theorem f_le_r_sq (R : Ranks) : R.f ≤ R.r ^ 2 := by
-  have h1 := R.f_le_k
-  have h2 := R.two_le_m
-  have h3 : R.k ≤ R.r := by unfold Ranks.r; omega
-  have h4 : R.r ≤ R.r ^ 2 := Nat.le_self_pow (by norm_num) _
-  have h5 : R.f = 2 * R.ord := rfl
-  omega
 
 end Formalism.BasicNotions
 

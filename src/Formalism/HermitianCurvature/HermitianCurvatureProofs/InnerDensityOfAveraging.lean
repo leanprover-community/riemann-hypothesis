@@ -8,21 +8,7 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
 
-theorem inner_density_of_averaging : Formalism.FourierDecayAlt.DensityAveraging.DensStepJOfAvg := by
-  rintro ⟨C0, hI⟩ hAvg
-  refine ⟨C0, ?_⟩
-  intro CV hCV k r Wp Wq _ _ _ _ _ _ D A ε mm F' γ H hrel hG hc hMore
-  obtain ⟨S, hS⟩ := hI CV hCV k r Wp Wq D A ε mm F' γ H hrel hG hc
-  obtain ⟨C', x₁, hb⟩ := hS hMore
-  exact S.tie (hAvg S.β S.β_ne S.V S.p S.s S.w S.a C' x₁ S.w_inj hb S.k₀)
 
-theorem top_density_of_averaging : Formalism.FourierDecayAlt.DensityAveraging.DensStepTopOfAvg := by
-  rintro ⟨C0, hI⟩ hAvg
-  refine ⟨C0, ?_⟩
-  intro CV hCV k r Wp Wq _ _ _ _ _ _ D A ε mm F' γ H hrel hG hc hMore
-  obtain ⟨S, hS⟩ := hI CV hCV k r Wp Wq D A ε mm F' γ H hrel hG hc
-  obtain ⟨C', x₁, hb⟩ := hS hMore
-  exact S.tie (hAvg S.β S.β_ne S.V S.p S.s S.w S.a C' x₁ S.w_inj hb S.k₀)
 
 def averagingDatumInhabited {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]

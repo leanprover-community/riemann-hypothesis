@@ -10,9 +10,6 @@ namespace Formalism.MainNotions.N.Ln34.UniversalLiftFrames
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module Formalism.MainNotions.N.Ln34 Formalism.MainNotions.ElementDenominator Formalism.MainNotions.ElementDenominator.CongruenceModules PowerSeries
 
-theorem valuation_ring_instances (D : D7) {l : ℕ} [Fact l.Prime] (LL : FinExt l) :
-    IsDomain ↥(OL LL) ∧ IsDiscreteValuationRing ↥(OL LL) ∧ IsFractionRing ↥(OL LL) ↥LL.1 := by
-  exact ⟨inferInstance, GenPf.isDVR (D.loc l) LL, GenPf.isFractionRing LL⟩
 
 set_option maxHeartbeats 1000000 in
 open Formalism.MainNotions.N.Ln34.ModelFPf in

@@ -104,12 +104,6 @@ def HNFiltration.toSlopeFiltration {Φ : M →ₛₗ[F.phi] M}
     exact hp
   slope_lt := S.slope_lt
 
-theorem nonempty_slopeFiltration_of {Φ : M →ₛₗ[F.phi] M}
-    (hss : ∀ (M' : Type u) [AddCommGroup M'] [Module (Robba K) M'] [Module.Free (Robba K) M']
-      [Module.Finite (Robba K) M'] (Φ' : M' →ₛₗ[F.phi] M'), IsSemistable F Φ' →
-      0 < finrank (Robba K) M' → IsPure F Φ' ((deg F.unitOrd Φ' : ℚ) / finrank (Robba K) M'))
-    (hHN : Nonempty (HNFiltration F Φ)) : Nonempty (SlopeFiltration F Φ) :=
-  hHN.map (HNFiltration.toSlopeFiltration hss)
 
 end PhiModule
 

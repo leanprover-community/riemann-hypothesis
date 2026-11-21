@@ -269,18 +269,6 @@ theorem exists_isAt_of_coheight_eq_one [LocallyOfFiniteType p] [IsLocallyNoether
   haveI := IsNormalScheme.isDiscreteValuationRing_stalk h
   exists_isAt p z
 
-theorem exists_isAt_affineLine :
-    ∃ (z : Sp (Polynomial k)) (E : DivOver (spMap (algebraMap k (Polynomial k)))),
-    E.IsAt z := by
-  let z : Sp (Polynomial k) := ⟨Ideal.span {Polynomial.X},
-    (Ideal.span_singleton_prime Polynomial.X_ne_zero).mpr Polynomial.prime_X⟩
-  have hz : Order.coheight z = 1 := by
-    rw [← idealHeight_eq_coheight]
-    exact Ideal.height_span_singleton_eq_one_of_mem_nonZeroDivisors (R := Polynomial k)
-      (mem_nonZeroDivisors_of_ne_zero Polynomial.X_ne_zero) Polynomial.prime_X.not_unit
-  haveI : LocallyOfFiniteType (spMap (algebraMap k (Polynomial k))) :=
-    HasRingHomProperty.Spec_iff.2 (RingHom.finiteType_algebraMap.2 inferInstance)
-  exact ⟨z, exists_isAt_of_coheight_eq_one hz⟩
 
 end DivOver
 
@@ -523,10 +511,6 @@ theorem isEffQDiv_qWeil [CompactSpace X] {D : CartierDiv X} (hD : D.Eff) (m : �
       exact Int.natCast_nonneg _
     · rw [hg.mult_eq, Scheme.ord_eq_zero_of_coheight_neq_one hz]
 
-theorem not_kltAt_of_one_le [LocallyOfFiniteType p] [GlobalTheory.IsNormalScheme X] {Δ : X → ℚ} {x z : X}
-    (hz : z ⤳ x) (h1 : Order.coheight z = 1) (h : 1 ≤ Δ z) : ¬ KltAt p n Δ x := fun hk =>
-  have ⟨_, hE⟩ := DivOver.exists_isAt_of_coheight_eq_one (p := p) h1
-  (hk.lt_one hz hE).not_ge h
 
 example (d : ℕ) (x : (ProjVar.proj ℂ d).X) :
     KltAt (ProjVar.proj ℂ d).str (ProjVar.proj ℂ d).dim 0 x :=

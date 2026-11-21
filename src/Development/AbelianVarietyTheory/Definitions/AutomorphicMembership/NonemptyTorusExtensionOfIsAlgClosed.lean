@@ -206,11 +206,6 @@ theorem pull_actHom {O : Type} [CommRing O] (h : IsGrpPullback G' G f φ) (a : O
     (e : ∀ c, (a'.act c).left ≫ φ = φ ≫ (a.act c).left) (c : O) (l : Cochar G) :
     pull h (actHom a c l) = actHom a' c (pull h l) := ext (pullTorus_comp h h _ _ (e c) l.1)
 
-theorem pull_of_iso {H : Over S} [GrpObj H] [IsCommMonObj H] (e : H ≅ G) [IsMonHom e.hom] (l : Cochar G) :
-    pull (isGrpPullback_of_iso e) l = map e.inv l :=
-  ((eq_pull_iff _ _ _).2 (by
-    rw [bcMap_id, Category.id_comp, ← Over.comp_left, map_val, Category.assoc, e.inv_hom_id,
-      Category.comp_id])).symm
 
 theorem pull_injective [QuasiCompact f] [IsSchemeTheoreticallyDominant f] [IsSeparated G.hom]
     (h : IsGrpPullback G' G f φ) : Function.Injective (pull h) := fun l m e => by
@@ -332,12 +327,6 @@ instance (t : SAB H S) : Module (𝓞 E) (CharOf t) := Char.module t.act (H.bar 
 @[simp] theorem smul_apply (a : 𝓞 E) (χ : CharOf t) (l : CocharOf t) :
     (a • χ) l = χ (H.bar a • l) := rfl
 
-theorem comap_act (a : 𝓞 E) (χ : CharOf t) :
-    (haveI := t.act.hom a; Char.comap (t.act.act a) χ : CharOf t) = H.bar a • χ := by
-  letI := H.starRing
-  refine ext fun l => ?_
-  rw [smul_apply, show H.bar (H.bar a) = a from star_star a]
-  rfl
 
 def pull (m : SABMap t' t f) : CharOf t' →ₗ[𝓞 E] CharOf t where
   toFun χ := Char.pull m.cart χ
@@ -366,9 +355,6 @@ def torusCochar (S : Scheme.{0}) (l : X →+ ℤ) : Gm S ⟶ splitTorus S X :=
 
 instance (l : X →+ ℤ) : IsMonHom (torusCochar S l) := SplitTorus.isMonHom_torusMap _
 
-theorem torusCochar_appTop_chi (l : X →+ ℤ) (x : X) :
-    (torusCochar S l).left.appTop.hom (Rosenlicht.chi X x) = Rosenlicht.chi (ULift.{0} ℤ) (ULift.up (l x)) :=
-  SplitTorus.torusMap_appTop_chi _ x
 
 theorem torusCochar_comp (l : Y →+ ℤ) (u : X →+ Y) :
     torusCochar S (l.comp u) = torusCochar S l ≫ torusMap S u :=
@@ -385,23 +371,9 @@ def ofTorus (i : splitTorus S X ⟶ G) [IsMonHom i] : (X →+ ℤ) →+ Cochar G
 @[simp] theorem ofTorus_val (i : splitTorus S X ⟶ G) [IsMonHom i] (l : X →+ ℤ) :
     (ofTorus i l).1 = torusCochar S l ≫ i := rfl
 
-theorem pull_ofTorus (h : IsGrpPullback G' G f φ) (i : splitTorus S X ⟶ G) [IsMonHom i] (l : X →+ ℤ) :
-    Cochar.pull h (ofTorus i l) = ofTorus (pullTorus h i) l :=
-  Cochar.ext (pullTorus_torusMap_comp h i _)
 
-theorem pull_ofTorus_of_left (h : IsGrpPullback G' G f φ) (i : splitTorus S X ⟶ G) [IsMonHom i]
-    (i' : splitTorus S' X ⟶ G') [IsMonHom i'] (e : i'.left ≫ φ = bcMap f X ≫ i.left) (l : X →+ ℤ) :
-    Cochar.pull h (ofTorus i l) = ofTorus i' l := by
-  obtain rfl := (eq_pullTorus_iff h i i').2 e
-  exact pull_ofTorus h i l
 
-theorem map_ofTorus {H : Over S} [GrpObj H] [IsCommMonObj H] (u : G ⟶ H) [IsMonHom u]
-    (i : splitTorus S X ⟶ G) [IsMonHom i] (l : X →+ ℤ) :
-    Cochar.map u (ofTorus i l) = ofTorus (i ≫ u) l := Cochar.ext (Category.assoc _ _ _)
 
-theorem ofTorus_torusMap_comp (i : splitTorus S X ⟶ G) [IsMonHom i] (u : X →+ Y) (l : Y →+ ℤ) :
-    ofTorus (torusMap S u ≫ i) l = ofTorus i (l.comp u) :=
-  Cochar.ext (by rw [ofTorus_val, ofTorus_val, torusCochar_comp, Category.assoc])
 
 theorem ofTorus_injective [Nonempty S] (i : splitTorus S X ⟶ G) [IsMonHom i] [Mono i] :
     Function.Injective (ofTorus i) := fun l m e => by
@@ -429,10 +401,6 @@ theorem ofTorus_bijective_of_isKernel [ConnectedSpace S] (i : splitTorus S X ⟶
       MonObj.mul_comp]
   exact mem_range_ofTorus i l u hu
 
-theorem subsingleton_cochar_of_isProper {A : Type} [CommRing A] [IsLocalRing A] [IsNoetherianRing A]
-    (B : Over (Sp A)) [GrpObj B] [IsProper B.hom] : Subsingleton (Cochar B) :=
-  ⟨fun l m => Cochar.ext ((splitTorus_hom_proper_trivial_local A _ B l.1 l.2).trans
-    (splitTorus_hom_proper_trivial_local A _ B m.1 m.2).symm)⟩
 
 theorem ofTorus_bijective_of_isProper {A : Type} [CommRing A] [IsLocalRing A] [IsNoetherianRing A]
     {G : Over (Sp A)} [GrpObj G] [IsCommMonObj G] (i : splitTorus (Sp A) X ⟶ G) [IsMonHom i]
@@ -450,11 +418,6 @@ theorem ofTorus_pullTorus_bijective {A : Type} [CommRing A] [IsLocalRing A] [IsN
   have : IsProper ((Over.pullback p).obj B).hom := inferInstanceAs (IsProper (pullback.snd _ _))
   exact ofTorus_bijective_of_isProper _ q' hk'
 
-theorem pull_bijective_of_ofTorus (h : IsGrpPullback G' G f φ) (i : splitTorus S X ⟶ G) [IsMonHom i]
-    (hi : Function.Bijective (ofTorus i)) (hi' : Function.Bijective (ofTorus (pullTorus h i))) :
-    Function.Bijective (Cochar.pull h) := by
-  refine (Function.Bijective.of_comp_iff _ hi).1 ?_
-  rwa [show Cochar.pull h ∘ ofTorus i = ofTorus (pullTorus h i) from funext (pull_ofTorus h i)]
 
 section Ext
 
@@ -466,36 +429,11 @@ theorem ofTorus_bijective_of_torusExtension (T : TorusExtension G) :
   have := T.i_hom; have := T.q_hom; have := T.isAbelian.proper
   exact ofTorus_bijective_of_isProper T.i T.q T.isKernel
 
-theorem Cochar.pull_bijective_of_torusExtension (hT : Nonempty (TorusExtension G))
-    {A : Type} [CommRing A] [IsLocalRing A] [IsNoetherianRing A]
-    {G₀ : Over (Sp A)} [GrpObj G₀] [IsCommMonObj G₀] {p : Sp A ⟶ Sp K} {ψ : G₀.left ⟶ G.left}
-    (h : IsGrpPullback G₀ G p ψ) : Function.Bijective (Cochar.pull h) := by
-  obtain ⟨T⟩ := hT
-  letI := T.addCommGroup; letI := T.grpB
-  have := T.i_hom; have := T.q_hom; have := T.isAbelian.proper
-  exact pull_bijective_of_ofTorus h T.i (ofTorus_bijective_of_torusExtension T)
-    (ofTorus_pullTorus_bijective h T.i T.q T.isKernel)
 
-theorem Char.pull_bijective_of_torusExtension (hT : Nonempty (TorusExtension G))
-    {A : Type} [CommRing A] [IsLocalRing A] [IsNoetherianRing A]
-    {G₀ : Over (Sp A)} [GrpObj G₀] [IsCommMonObj G₀] {p : Sp A ⟶ Sp K} {ψ : G₀.left ⟶ G.left}
-    (h : IsGrpPullback G₀ G p ψ) : Function.Bijective (Char.pull h) :=
-  Char.pull_bijective (Cochar.pull_bijective_of_torusExtension hT h)
 
 end Ext
 
-theorem nonempty_torusExtension_of_isAlgClosed {Ω : Type} [Field Ω] [IsAlgClosed Ω] {G : Over (Sp Ω)}
-    [GrpObj G] (h : IsSemiAbelian G) : Nonempty (TorusExtension G) := by
-  obtain ⟨T⟩ := h.fibres Ω (𝟙 _)
-  have : IsMonHom (Iso.refl G).hom := inferInstanceAs (IsMonHom (𝟙 G))
-  obtain ⟨e, he, -⟩ := grpPullback_iso (isGrpPullback_pullback G (𝟙 _)) (isGrpPullback_of_iso (Iso.refl G))
-  exact ⟨torusExtOfIso e T⟩
 
-theorem CharOf.pull_bijective_of_isAlgClosed {E : Type} [Field E] [NumberField E] [IsCMField E]
-    {H : Host E} {Ω A : Type} [Field Ω] [IsAlgClosed Ω] [CommRing A] [IsLocalRing A] [IsNoetherianRing A]
-    {t : SAB H (Sp Ω)} {t' : SAB H (Sp A)} {p : Sp A ⟶ Sp Ω} (m : SABMap t' t p) :
-    Function.Bijective (CharOf.pull m) :=
-  Char.pull_bijective_of_torusExtension (nonempty_torusExtension_of_isAlgClosed t.semi) m.cart
 
 theorem eval_bijective (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] :
     Function.Bijective (AddMonoidHom.eval : X →+ (X →+ ℤ) →+ ℤ) := by
@@ -523,11 +461,6 @@ theorem eq_charEquivOfTorus_iff (i : splitTorus S X ⟶ G) [IsMonHom i]
   obtain ⟨l, rfl⟩ := hi.2 l
   rw [e, charEquivOfTorus_apply]
 
-theorem pull_charEquivOfTorus (h : IsGrpPullback G' G f φ) (i : splitTorus S X ⟶ G) [IsMonHom i]
-    (hi : Function.Bijective (ofTorus i)) (hi' : Function.Bijective (ofTorus (pullTorus h i))) (x : X) :
-    Char.pull h (charEquivOfTorus _ hi' x) = charEquivOfTorus i hi x :=
-  (eq_charEquivOfTorus_iff i hi x _).2 fun l => by
-    rw [Char.pull_apply, pull_ofTorus, charEquivOfTorus_apply]
 
 def charEquivSplitTorus (S : Scheme.{0}) [ConnectedSpace S] (X : Type) [AddCommGroup X]
     [Module.Free ℤ X] [Module.Finite ℤ X] : X ≃+ Char (splitTorus S X) :=
@@ -549,14 +482,6 @@ section Coord
 variable {D : Out.DegPre R} {e : ℕ} {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G]
   {G₀ : Over (Sp A)} [GrpObj G₀] {φ : G₀.left ⟶ G.left}
 
-theorem ofTorus_bijective_of_gtCoord [IsLocalRing R] [IsNoetherianRing R] (hI : I ≠ ⊤)
-    (g : Out.GtCoord I D e G) : haveI := g.i_hom; Function.Bijective (ofTorus g.i) := by
-  have hJ : I ^ (e + 1) ≠ ⊤ := fun h => hI (top_le_iff.1 (h ▸ Ideal.pow_le_self (Nat.succ_ne_zero e)))
-  have : Nontrivial (R ⧸ I ^ (e + 1)) := Ideal.Quotient.nontrivial_iff.2 hJ
-  have : IsLocalRing (R ⧸ I ^ (e + 1)) := .of_surjective' _ Ideal.Quotient.mk_surjective
-  have := g.i_hom; have := g.q_hom; have := D.P.isAb.proper
-  have : IsProper (Out.thickObj R I e D.P.A).hom := inferInstanceAs (IsProper (pullback.snd _ _))
-  exact ofTorus_bijective_of_isProper g.i g.q g.isKernel
 
 omit [IsDomain R] in
 
@@ -701,16 +626,6 @@ def charEquivOfKer (P : PELUnif I t) (hρ : ∀ x ∈ I, ρ x = 0) (m : SABMap t
     charEquivOfKer P hρ m x (cochar P hρ m l) = l x :=
   charEquivOfTorus_apply _ (cochar_bijective P hρ m) x l
 
-theorem pull_charEquivOfKer {A' : Type} [CommRing A'] [IsLocalRing A'] [IsNoetherianRing A']
-    {σ : A →+* A'} {ρ' : R →+* A'} {t₁ : SAB H (Sp A')} (P : PELUnif I t) (hρ : ∀ x ∈ I, ρ x = 0)
-    (hρ' : ∀ x ∈ I, ρ' x = 0) (m : SABMap t₀ t (spMap ρ)) (m' : SABMap t₁ t (spMap ρ'))
-    (n : SABMap t₁ t₀ (spMap σ)) (eρ : ρ' = σ.comp ρ) (eφ : m'.φ = n.φ ≫ m.φ) (x : P.D.toPre.X) :
-    CharOf.pull n (charEquivOfKer P hρ' m' x) = charEquivOfKer P hρ m x :=
-  (eq_charEquivOfTorus_iff _ (cochar_bijective P hρ m) _ _).2 fun l => by
-    have e : CocharOf.pull n (cochar P hρ m l) = cochar P hρ' m' l :=
-      Cochar.ext ((pullTorus_torusMap_comp n.cart _ _).trans
-        (congrArg (_ ≫ ·) (pullTorus_gtTorus _ _ _ m.cart m'.cart n.cart eρ eφ)))
-    exact (congrArg (charEquivOfKer P hρ' m' x) e).trans (charEquivOfKer_apply P hρ' m' x l)
 
 end PELUnif
 
@@ -744,8 +659,6 @@ def IsSpec (h₁ : IsGrpPullback G₁ G f₁ φ₁) (h₀ : IsGrpPullback G₀ G
     (l₀ : Cochar G₀) : Prop :=
   ∃ l : Cochar G, Cochar.pull h₁ l = l₁ ∧ Cochar.pull h₀ l = l₀
 
-theorem isSpec_pull (h₁ : IsGrpPullback G₁ G f₁ φ₁) (h₀ : IsGrpPullback G₀ G f₀ φ₀) (l : Cochar G) :
-    IsSpec h₁ h₀ (Cochar.pull h₁ l) (Cochar.pull h₀ l) := ⟨l, rfl, rfl⟩
 
 theorem IsSpec.add {h₁ : IsGrpPullback G₁ G f₁ φ₁} {h₀ : IsGrpPullback G₀ G f₀ φ₀} {l₁ m₁ : Cochar G₁}
     {l₀ m₀ : Cochar G₀} (a : IsSpec h₁ h₀ l₁ l₀) (b : IsSpec h₁ h₀ m₁ m₀) :
@@ -775,65 +688,16 @@ variable (h₁ : IsGrpPullback G₁ G f₁ φ₁) (h₀ : IsGrpPullback G₀ G f
 @[simp] theorem sp_pull (l : Cochar G) : sp h₁ h₀ hb (Cochar.pull h₁ l) = Cochar.pull h₀ l :=
   congrArg (Cochar.pull h₀) ((AddEquiv.ofBijective _ hb).symm_apply_apply l)
 
-theorem isSpec_iff (l₁ : Cochar G₁) (l₀ : Cochar G₀) : IsSpec h₁ h₀ l₁ l₀ ↔ sp h₁ h₀ hb l₁ = l₀ := by
-  obtain ⟨l, rfl⟩ := hb.2 l₁
-  rw [sp_pull]
-  exact ⟨fun a => (isSpec_pull h₁ h₀ l).unique hb.1 a, fun e => e ▸ isSpec_pull h₁ h₀ l⟩
 
 @[simp] theorem res_apply (χ : Char G₀) (l : Cochar G₁) : res h₁ h₀ hb χ l = χ (sp h₁ h₀ hb l) := rfl
 
 theorem pull_res (χ : Char G₀) : Char.pull h₁ (res h₁ h₀ hb χ) = Char.pull h₀ χ :=
   AddMonoidHom.ext fun l => congrArg χ (sp_pull h₁ h₀ hb l)
 
-theorem eq_res_iff (χ : Char G₀) (χ₁ : Char G₁) :
-    χ₁ = res h₁ h₀ hb χ ↔ Char.pull h₁ χ₁ = Char.pull h₀ χ :=
-  ⟨fun e => e ▸ pull_res h₁ h₀ hb χ,
-    fun e => (Char.pull_bijective hb).1 (e.trans (pull_res h₁ h₀ hb χ).symm)⟩
 
-theorem sp_pull_comm {V' S₁' S₀' : Scheme.{0}} {G' : Over V'} [GrpObj G'] [IsCommMonObj G']
-    {G₁' : Over S₁'} [GrpObj G₁'] [IsCommMonObj G₁'] {G₀' : Over S₀'} [GrpObj G₀'] [IsCommMonObj G₀']
-    {f₁' : S₁' ⟶ V'} {f₀' : S₀' ⟶ V'} {φ₁' : G₁'.left ⟶ G'.left} {φ₀' : G₀'.left ⟶ G'.left}
-    (h₁' : IsGrpPullback G₁' G' f₁' φ₁') (h₀' : IsGrpPullback G₀' G' f₀' φ₀')
-    (hb' : Function.Bijective (Cochar.pull h₁')) {v : V' ⟶ V} {s₁ : S₁' ⟶ S₁} {s₀ : S₀' ⟶ S₀}
-    {ψ : G'.left ⟶ G.left} {ψ₁ : G₁'.left ⟶ G₁.left} {ψ₀ : G₀'.left ⟶ G₀.left}
-    (k : IsGrpPullback G' G v ψ) (k₁ : IsGrpPullback G₁' G₁ s₁ ψ₁) (k₀ : IsGrpPullback G₀' G₀ s₀ ψ₀)
-    (e₁ : f₁' ≫ v = s₁ ≫ f₁) (e₀ : f₀' ≫ v = s₀ ≫ f₀) (c₁ : φ₁' ≫ ψ = ψ₁ ≫ φ₁) (c₀ : φ₀' ≫ ψ = ψ₀ ≫ φ₀)
-    (l : Cochar G₁) :
-    sp h₁' h₀' hb' (Cochar.pull k₁ l) = Cochar.pull k₀ (sp h₁ h₀ hb l) := by
-  obtain ⟨l, rfl⟩ := hb.2 l
-  rw [sp_pull, Cochar.pull_pull k₁ h₁ (h₁'.comp k) e₁ c₁, Cochar.pull_pull k₀ h₀ (h₀'.comp k) e₀ c₀,
-    Cochar.pull_comp h₁' k, Cochar.pull_comp h₀' k, sp_pull]
 
-theorem pull_res_comm {V' S₁' S₀' : Scheme.{0}} {G' : Over V'} [GrpObj G'] [IsCommMonObj G']
-    {G₁' : Over S₁'} [GrpObj G₁'] [IsCommMonObj G₁'] {G₀' : Over S₀'} [GrpObj G₀'] [IsCommMonObj G₀']
-    {f₁' : S₁' ⟶ V'} {f₀' : S₀' ⟶ V'} {φ₁' : G₁'.left ⟶ G'.left} {φ₀' : G₀'.left ⟶ G'.left}
-    (h₁' : IsGrpPullback G₁' G' f₁' φ₁') (h₀' : IsGrpPullback G₀' G' f₀' φ₀')
-    (hb' : Function.Bijective (Cochar.pull h₁')) {v : V' ⟶ V} {s₁ : S₁' ⟶ S₁} {s₀ : S₀' ⟶ S₀}
-    {ψ : G'.left ⟶ G.left} {ψ₁ : G₁'.left ⟶ G₁.left} {ψ₀ : G₀'.left ⟶ G₀.left}
-    (k : IsGrpPullback G' G v ψ) (k₁ : IsGrpPullback G₁' G₁ s₁ ψ₁) (k₀ : IsGrpPullback G₀' G₀ s₀ ψ₀)
-    (e₁ : f₁' ≫ v = s₁ ≫ f₁) (e₀ : f₀' ≫ v = s₀ ≫ f₀) (c₁ : φ₁' ≫ ψ = ψ₁ ≫ φ₁) (c₀ : φ₀' ≫ ψ = ψ₀ ≫ φ₀)
-    (χ : Char G₀') :
-    Char.pull k₁ (res h₁' h₀' hb' χ) = res h₁ h₀ hb (Char.pull k₀ χ) :=
-  AddMonoidHom.ext fun l =>
-    congrArg χ (sp_pull_comm h₁ h₀ hb h₁' h₀' hb' k k₁ k₀ e₁ e₀ c₁ c₀ l)
 
-theorem pull_bijective_of_torus {Y : Type} [AddCommGroup Y] (j : splitTorus V Y ⟶ G) [IsMonHom j]
-    (hj : Function.Surjective (ofTorus (pullTorus h₁ j))) (hi : Function.Injective (Cochar.pull h₁)) :
-    Function.Bijective (Cochar.pull h₁) :=
-  ⟨hi, fun l => by
-    obtain ⟨m, rfl⟩ := hj l
-    exact ⟨ofTorus j m, pull_ofTorus h₁ j m⟩⟩
 
-theorem res_charEquivOfTorus {X Y : Type} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
-    [AddCommGroup Y] [Module.Free ℤ Y] [Module.Finite ℤ Y] (j : splitTorus V Y ⟶ G) [IsMonHom j]
-    (hj : Function.Bijective (ofTorus (pullTorus h₁ j))) (i : splitTorus S₀ X ⟶ G₀) [IsMonHom i]
-    (hi : Function.Bijective (ofTorus i)) (r : X →+ Y) (e : pullTorus h₀ j = torusMap S₀ r ≫ i) (x : X) :
-    res h₁ h₀ hb (charEquivOfTorus i hi x) = charEquivOfTorus _ hj (r x) :=
-  (eq_charEquivOfTorus_iff _ hj _ _).2 fun l => by
-    have k : ofTorus (pullTorus h₀ j) l = ofTorus i (l.comp r) :=
-      Cochar.ext (by rw [ofTorus_val, ofTorus_val, e, torusCochar_comp, Category.assoc])
-    rw [res_apply, ← pull_ofTorus, sp_pull, pull_ofTorus, k, charEquivOfTorus_apply]
-    rfl
 
 end Spec
 
@@ -852,9 +716,6 @@ def CocharOf.sp (m₁ : SABMap t₁ t f₁) (m₀ : SABMap t₀ t f₀) (hb : Fu
     exact (sp_pull m₁.cart m₀.cart hb _).trans (((CocharOf.pull m₀).map_smul a l).trans
       (congrArg (fun z : CocharOf t₀ => a • z) (sp_pull m₁.cart m₀.cart hb l).symm))
 
-theorem CocharOf.sp_apply (m₁ : SABMap t₁ t f₁) (m₀ : SABMap t₀ t f₀)
-    (hb : Function.Bijective (CocharOf.pull m₁)) (l : CocharOf t₁) :
-    CocharOf.sp m₁ m₀ hb l = TorusPart.sp m₁.cart m₀.cart hb l := rfl
 
 def CharOf.res (m₁ : SABMap t₁ t f₁) (m₀ : SABMap t₀ t f₀) (hb : Function.Bijective (CocharOf.pull m₁)) :
     CharOf t₀ →ₗ[𝓞 E] CharOf t₁ where
@@ -873,58 +734,10 @@ theorem CharOf.pull_res (m₁ : SABMap t₁ t f₁) (m₀ : SABMap t₀ t f₀)
 
 end SpecTriple
 
-theorem charEquivSplitTorus_id [ConnectedSpace S] (n : ℤ) :
-    charEquivSplitTorus S (ULift.{0} ℤ) (ULift.up n) ⟨𝟙 (Gm S), inferInstance⟩ = n := by
-  have e : (⟨𝟙 (Gm S), inferInstance⟩ : Cochar (Gm S)) =
-      ofTorus (𝟙 _) (AddEquiv.ulift : ULift.{0} ℤ ≃+ ℤ).toAddMonoidHom :=
-    Cochar.ext ((Category.comp_id _).trans SplitTorus.torusMap_id).symm
-  exact (congrArg _ e).trans (charEquivOfTorus_apply _ _ _ _)
 
 example [ConnectedSpace S] : Nontrivial (Char (Gm S)) :=
   (charEquivSplitTorus S (ULift.{0} ℤ)).injective.nontrivial
 
-theorem res_splitTorus {V S₁ S₀ : Scheme.{0}} [ConnectedSpace V] [ConnectedSpace S₁] [ConnectedSpace S₀]
-    (f₁ : S₁ ⟶ V) (f₀ : S₀ ⟶ V) (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] :
-    ∃ hb : Function.Bijective (Cochar.pull (SplitTorus.isGrpPullback_bcMap f₁ X)), ∀ x : X,
-      res _ (SplitTorus.isGrpPullback_bcMap f₀ X) hb (charEquivSplitTorus S₀ X x) =
-        charEquivSplitTorus S₁ X x := by
-  have k : ∀ {T : Scheme.{0}} (f : T ⟶ V) (l : X →+ ℤ),
-      Cochar.pull (SplitTorus.isGrpPullback_bcMap f X) (ofTorus (𝟙 _) l) = ofTorus (𝟙 _) l :=
-    fun f l => pull_ofTorus_of_left _ _ _ (by simp) l
-  have hb : Function.Bijective (Cochar.pull (SplitTorus.isGrpPullback_bcMap f₁ X)) := by
-    refine (Function.Bijective.of_comp_iff _ ofTorus_id_bijective).1 ?_
-    rw [show Cochar.pull (SplitTorus.isGrpPullback_bcMap f₁ X) ∘ ofTorus (𝟙 _) = ofTorus (𝟙 _) from
-      funext (k f₁)]
-    exact ofTorus_id_bijective
-  refine ⟨hb, fun x => (eq_charEquivOfTorus_iff _ ofTorus_id_bijective _ _).2 fun l => ?_⟩
-  rw [res_apply, ← k f₁, sp_pull, k]
-  exact charEquivOfTorus_apply _ _ _ _
 
-theorem exists_rank_drop : ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E) (H : Host E)
-    (t : SAB H (Sp (PowerSeries ℂ))) (t₁ : SAB H (Sp (FractionRing (PowerSeries ℂ)))) (t₀ : SAB H (Sp ℂ))
-    (m₁ : SABMap t₁ t (spMap (algebraMap _ _))) (_ : SABMap t₀ t (spMap PowerSeries.constantCoeff)),
-    Nontrivial (CharOf t₀) ∧ Nontrivial (CocharOf t₀) ∧ Subsingleton (CocharOf t₁) ∧
-      Subsingleton (CharOf t₁) ∧ Function.Bijective (CocharOf.pull m₁) := by
-  obtain ⟨⟨E, _, _, _, H, t, P, -, hn⟩, -⟩ := Inhab.exists_unif_nontrivial_torus
-  obtain ⟨_, _, _, _, _, m₁, -⟩ := sabPull Out.proved_CubePullSt (Out.jK (PowerSeries ℂ)) t
-  obtain ⟨_, _, _, _, _, m₀, -⟩ :=
-    sabPull Out.proved_CubePullSt (spMap (PowerSeries.constantCoeff (R := ℂ))) t
-  have hρ : ∀ x ∈ Ideal.span {(PowerSeries.X : PowerSeries ℂ)}, PowerSeries.constantCoeff x = 0 :=
-    fun x hx => PowerSeries.X_dvd_iff.1 (Ideal.mem_span_singleton.1 hx)
-  have h₀ := (PELUnif.charEquivOfKer P hρ m₀).injective.nontrivial
-  have hp : IsProper ((Over.pullback (Out.jK (PowerSeries ℂ))).obj t.G).hom := by
-    have := P.A.isAb.proper
-    have := isIso_inv_left P.U.gen.symm
-    rw [← Over.w P.U.gen.symm.inv]
-    infer_instance
-  have h₁ := subsingleton_cochar_of_isProper ((Over.pullback (Out.jK (PowerSeries ℂ))).obj t.G)
-  have triv : ∀ {T : Scheme.{0}} (u : SAB H T), Subsingleton (CocharOf u) → Subsingleton (CharOf u) :=
-    fun u _ => ⟨fun χ χ' => CharOf.ext fun l => by rw [Subsingleton.elim l 0, map_zero, map_zero]⟩
-  refine ⟨E, _, _, _, H, t, _, _, m₁, m₀, h₀, ?_, h₁, triv _ h₁, ?_, fun l => ⟨0, h₁.elim _ _⟩⟩
-  · by_contra c
-    exact not_subsingleton_iff_nontrivial.2 h₀ (triv _ (not_nontrivial_iff_subsingleton.1 c))
-  · obtain ⟨_, _⟩ := ExtUnique.spec_fractionRing (PowerSeries ℂ) (FractionRing (PowerSeries ℂ))
-    have := t.semi.separated
-    exact Cochar.pull_injective m₁.cart
 
 end GlobalTheory.TorusPart

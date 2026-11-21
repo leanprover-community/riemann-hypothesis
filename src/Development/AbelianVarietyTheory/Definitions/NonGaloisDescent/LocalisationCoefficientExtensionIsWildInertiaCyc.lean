@@ -88,39 +88,8 @@ theorem localisationCoefficientExtension_isWildInertiaCyclotomic_iff (a : LocExt
   rw [gen_heq a.l_eq (N₀.s0 i₀) _ _ (a.cyc g), s0_eq a]
   simp only [a.ine, a.wild, a.l_eq]
 
-theorem contains_ext (a : LocExt N₀ N₁ A₀ A₁ i₀ i₁) (S : Set ℂ) (h : Contains N₀ A₀ i₀ S) : Contains N₁ A₁ i₁ S := by
-  intro z hz
-  obtain ⟨x, rfl⟩ := h z hz
-  obtain ⟨p, q, -, rfl⟩ := IsFractionRing.div_surjective (A := N₀.O i₀) x
-  refine ⟨algebraMap _ _ (a.φ p) / algebraMap _ _ (a.φ q), ?_⟩
-  have hp := a.φ_iota p
-  have hq := a.φ_iota q
-  simp only [iotaO, RingHom.comp_apply, RingEquiv.toRingHom_eq_coe, RingHom.coe_coe] at hp hq
-  simp only [map_div₀, hp, hq]
 
-theorem takenAfter_of_takenWild (N : NData R H what₂) (i : N.Loc) (rep : N.X i → (GE N →* GL (Fin R.nV) (N.O i)))
-    (ρ : N.X i → (GE N →* GL (Fin R.r) (N.O i))) (h : TakenWild N i rep ρ) : GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices.TakenAfter N i rep ρ := by
-  obtain ⟨A, a1, a2, a3, a4, a5, a6, a7, TA, repA, ρA, χA, hE, hS, hC⟩ := h
-  refine ⟨A, a1, a2, a3, a4, a5, a6, a7, TA, repA, ρA, χA, hE, hS, fun π hπ => ?_⟩
-  obtain ⟨g0, L, eB, e1, X0, hg, hc, hr⟩ := hC π hπ
-  exact ⟨g0, L, eB, e1, X0, hg.1, hc, hr⟩
 
-theorem takenWild_of_chosen (N : NData R H what₂) (A : NAut N) (i : N.Loc) (S : Set ℂ) (hC : Chosen N A i S)
-    (hS : Contains N A i S) : ∃ r ρ, GoodR N i r ∧ TakenWild N i r ρ := by
-  obtain ⟨rep, ρ, hG, hSet, hch⟩ := hC
-  refine ⟨rep, ρ, hG, N.O i, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
-    inferInstance, N.T i, rep, ρ, N.chi i, GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices.isEnlargement_self N i rep ρ, hSet, fun π hπ => ?_⟩
-  obtain ⟨g0, L, eB, e1, X0, hg, hc, hr⟩ := hch π hπ
-  refine ⟨g0, L, eB, e1, X0, hg, hc, fun x => ?_⟩
-  obtain ⟨α, hα, hP⟩ := hr x
-  choose β hβ using fun c => hS (α c) (hα c)
-  refine ⟨β, ?_⟩
-  apply Polynomial.map_injective ((A.iotaQC i).toRingHom.comp (A.iotaQ i)) (RingHom.injective _)
-  rw [Polynomial.map_map, Polynomial.map_prod]
-  refine Eq.trans ?_ (hP.trans ?_)
-  · congr 1
-  · refine Finset.prod_congr rfl fun c _ => ?_
-    simp [← hβ c]
 
 end Record
 
@@ -143,9 +112,6 @@ def trivWt (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) : NG.Alg
       · exact Or.inl (Subrepresentation.toSubmodule_injective h)
       · exact Or.inr (Subrepresentation.toSubmodule_injective h)
 
-theorem isInvForm_triv : IsInvForm (trivWt L n) (innerₛₗ ℂ : ℂ →ₗ⋆[ℂ] ℂ →ₗ[ℂ] ℂ) := by
-  refine ⟨fun (x y : ℂ) => (inner_conj_symm x y).symm, fun (x : ℂ) hx => ?_, fun γ (x y : ℂ) => rfl⟩
-  exact (re_inner_self_pos (𝕜 := ℂ) (x := x)).2 hx
 
 theorem exists_isClassReps (J : Subgroup (GAf L n)) (T : Finset (GAf L n))
     (hT : ∀ g : GAf L n, ∃ t ∈ T, ∃ (γ : GQ L n) (κ : GAf L n), κ ∈ J ∧ g = (γ : GAf L n) * t * κ) :
@@ -164,45 +130,7 @@ theorem exists_isClassReps (J : Subgroup (GAf L n)) (T : Finset (GAf L n))
     obtain ⟨t, -, rfl⟩ := Finset.mem_image.1 hy
     rw [← (key _ _).1 h, hout]
 
-theorem card_class (J : Subgroup (GAf L n)) (t κ : GAf L n) (δ : GQ L n) (hκ : κ ∈ J) :
-    Nat.card {γ : GQ L n // ((δ : GAf L n) * t * κ)⁻¹ * (γ : GAf L n) * ((δ : GAf L n) * t * κ) ∈ J} =
-      Nat.card {γ : GQ L n // t⁻¹ * (γ : GAf L n) * t ∈ J} := by
-  refine Nat.card_congr ((MulAut.conj δ⁻¹).toEquiv.subtypeEquiv fun γ => ?_)
-  have e : ((δ : GAf L n) * t * κ)⁻¹ * (γ : GAf L n) * ((δ : GAf L n) * t * κ) =
-      κ⁻¹ * (t⁻¹ * (((MulAut.conj δ⁻¹).toEquiv γ : GQ L n) : GAf L n) * t) * κ := by
-    simp [mul_assoc]
-  rw [e, J.mul_mem_cancel_right hκ, J.mul_mem_cancel_left (J.inv_mem hκ)]
 
-theorem classSum_indep (a : NG.AlgWt L n) (β : a.W →ₗ⋆[ℂ] a.W →ₗ[ℂ] ℂ) (hβ : IsInvForm a β) (J : Subgroup (GAf L n))
-    (χ : J →* ℂˣ) (hχ : ∀ κ, starRingEnd ℂ (χ κ : ℂ) * (χ κ : ℂ) = 1) (T T' : Finset (GAf L n))
-    (hT : IsClassReps J T) (hT' : IsClassReps J T') (f f' : GAf L n → a.W) (hf : f ∈ NG.TypeSp a.ρ J χ)
-    (hf' : f' ∈ NG.TypeSp a.ρ J χ) : classSum a β J T f f' = classSum a β J T' f f' := by
-  have val : ∀ u ∈ NG.TypeSp a.ρ J χ, ∀ (δ : GQ L n) (t : GAf L n) (κ : J),
-      u ((δ : GAf L n) * t * κ) = (χ κ : ℂ) • a.ρ δ (u t) := by
-    intro u hu δ t κ
-    have := congrFun (hu.2 κ) ((δ : GAf L n) * t)
-    rw [← hu.1.1 δ t]
-    exact this
-  have symm : ∀ {g t : GAf L n}, (∃ (γ : GQ L n) (κ : GAf L n), κ ∈ J ∧ g = (γ : GAf L n) * t * κ) →
-      ∃ (γ : GQ L n) (κ : GAf L n), κ ∈ J ∧ t = (γ : GAf L n) * g * κ := by
-    rintro g t ⟨γ, κ, h, rfl⟩
-    exact ⟨γ⁻¹, κ⁻¹, J.inv_mem h, by simp [mul_assoc]⟩
-  have self : ∀ t : GAf L n, ∃ (γ : GQ L n) (κ : GAf L n), κ ∈ J ∧ t = (γ : GAf L n) * t * κ :=
-    fun t => ⟨1, 1, J.one_mem, by simp⟩
-  unfold classSum
-  refine Finset.sum_bij' (fun t _ => (hT' t).exists.choose) (fun t _ => (hT t).exists.choose)
-    (fun t _ => (hT' t).exists.choose_spec.1) (fun t _ => (hT t).exists.choose_spec.1) ?_ ?_ ?_
-  · intro t ht
-    exact (hT _).unique (hT _).exists.choose_spec ⟨ht, symm (hT' t).exists.choose_spec.2⟩
-  · intro t ht
-    exact (hT' _).unique (hT' _).exists.choose_spec ⟨ht, symm (hT t).exists.choose_spec.2⟩
-  · intro t _
-    obtain ⟨δ, κ, hκ, e⟩ := (hT' t).exists.choose_spec.2
-    generalize (hT' t).exists.choose = s at e
-    subst e
-    rw [card_class J s κ δ hκ, val f hf δ s ⟨κ, hκ⟩, val f' hf' δ s ⟨κ, hκ⟩]
-    simp only [map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, RingHom.id_apply, hβ.2.2]
-    rw [← mul_assoc (χ ⟨κ, hκ⟩ : ℂ), mul_comm (χ ⟨κ, hκ⟩ : ℂ), hχ, one_mul]
 
 end Plain
 end GlobalTheory.CoefDuty.Model

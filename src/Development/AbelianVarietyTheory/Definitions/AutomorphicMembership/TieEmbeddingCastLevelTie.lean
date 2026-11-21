@@ -78,7 +78,6 @@ end Ties
 
 section Bridge
 
-theorem frobOrder_eq (D : D7) (p : ℕ) : frobOrder D p = nFr D p := rfl
 
 theorem pack_eq (D : D7) (u : D.what₂.Word)
     (Lc : ColLevel D.R D.host.F D.host.E D.sp D.host.g (D.mem u).C (D.mem u).A (D.clsLat u)) (w : D.what₂.places.Pl)
@@ -108,28 +107,9 @@ variable (D : D7) (sc : Scale) (Ce : ℝ)
   (hd : ∀ u w h, ((packC D Lc I ψ u w h).gat (rSc sc D.R.k (D.what₂.places.resChar w))
     (epSc D.R sc Ce (D.what₂.places.resChar w))).d = Module.finrank ℂ (D.mem u).A.Mu0)
 
-theorem packAll_eq : packAll D Lc I ψ = packC D Lc I ψ := by
-  funext u w h
-  exact pack_eq D u (Lc u) w h.2.1 (nFr_spec D h).1 (nFr_spec D h).2 (I u w h) (ψ u w h)
 
-theorem record_eq (hd' : ∀ u w h, ((packAll D Lc I ψ u w h).gat (rSc sc D.R.k (D.what₂.places.resChar w))
-    (epSc D.R sc Ce (D.what₂.places.resChar w))).d = Module.finrank ℂ (D.mem u).A.Mu0) :
-    record D sc Ce Lc I ψ hd' = recC D sc Ce Lc I ψ hd := by
-  have key : ∀ X X' (_ : X = X') h h', recG D sc Ce Lc X h = recG D sc Ce Lc X' h' := by
-    intro X X' e h h'
-    subst e
-    rfl
-  exact key _ _ (packAll_eq D Lc I ψ) hd' hd
 
-theorem recordAllTies_level (H0 : Formalism.L2.Herm.Herm0 (recC D sc Ce Lc I ψ hd)) (hL : ∀ u, H0.lev0 u = Lc u)
-    (T : ∀ u : D.what₂.Word, Forms0 (recC D sc Ce Lc I ψ hd) u)
-    (B : GL (Fin D.R.k) D.host.E) (hBs : Cmp.StdB (recC D sc Ce Lc I ψ hd) B) (hB) (CH) (hH) (u : D.what₂.Word) :
-    (groupCompatibilityOfRecursion D sc Ce Lc I ψ hd H0 hL T B hBs hB CH hH).herm.lev0 u = Lc u := hL u
 
-theorem recordAllTies_forms (H0 : Formalism.L2.Herm.Herm0 (recC D sc Ce Lc I ψ hd)) (hL : ∀ u, H0.lev0 u = Lc u)
-    (T : ∀ u : D.what₂.Word, Forms0 (recC D sc Ce Lc I ψ hd) u)
-    (B : GL (Fin D.R.k) D.host.E) (hBs : Cmp.StdB (recC D sc Ce Lc I ψ hd) B) (hB) (CH) (hH) :
-    (groupCompatibilityOfRecursion D sc Ce Lc I ψ hd H0 hL T B hBs hB CH hH).forms = T := rfl
 
 example : Joints.StdSubAt (recC D sc Ce Lc I ψ hd) :=
   standardSub_of_ringTie _ (ringTie_record D sc Ce Lc I ψ hd)
@@ -145,17 +125,8 @@ abbrev IsConcrete := @Formalism.L2.G.IsRecC
 
 alias IsConcrete.intro := Formalism.L2.G.IsRecC.intro
 
-theorem IsConcrete.nonempty_allTies {D : D7} {Gt : GatTies D} {c : LatCmp D} (h : IsConcrete D Gt c) :
-    Nonempty (GroupCompatibilityAll D Gt c) :=
-  gTiedAll_of_isRecC h
 
-theorem AllTies.standardSub {D : D7} {Gt : GatTies D} {c : LatCmp D} (G : AllTies D Gt c) : Joints.StdSubAt D :=
-  standardSub_of_ringTie D G.ring
 
-theorem IsConcrete.ringTie {D : D7} {Gt : GatTies D} {c : LatCmp D} (h : IsConcrete D Gt c) (u : D.what₂.Word)
-    (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (v : Fin (D.gat u w hg).P.nV) :
-    RingTie D u w hg v :=
-  h.nonempty_allTies.elim fun G => G.ring u w hg v
 
 example {D : D7} {u : D.what₂.Word} {w : D.what₂.places.Pl} {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)}
     {v : Fin (D.gat u w hg).P.nV} (h : RingTie D u w hg v) :

@@ -30,12 +30,5 @@ theorem nu_eq_zero_of_empty {D : Formalism.BasicNotions.D7} {T : D.host.E} (T' :
   unfold Formalism.L2.SG.CntLocal.nu
   rw [Finset.sum_eq_zero (fun Λ hΛ => by rw [cntE_eq_zero_of_empty T' F0 Λ Z (h Λ hΛ)]; simp), zero_div]
 
-theorem notIntAll_of (h : IntOnEZ) : PI.CntLocalParts.NotIntAll := by
-  intro D δ M hA _L u u' hT F0 what₂ hR Z hZ
-  obtain ⟨p, a, b, hn⟩ := hZ
-  refine nu_eq_zero_of_empty (Tn u') F0 what₂ Z fun Λ hΛ => ?_
-  rw [Set.eq_empty_iff_forall_notMem]
-  intro F' hF'
-  exact hn (h D δ M hA u u' hT F0 what₂ hR Λ hΛ Z F' hF' p a b)
 
 end PI.CntNotIntW

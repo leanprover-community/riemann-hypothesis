@@ -93,11 +93,6 @@ def famC [IsTotallyComplex K] (m : ℕ) (C : ColObj K I) (P : PlDat K I) (R : Ro
   η1 := R.η1
   e0 := R.e0
 
-theorem famC_closed [IsTotallyComplex K] (C : ColObj K I) (P : PlDat K I) (R : RowArg C) :
-    (famC P.N.R.m C P R).gain = Arith.famGain P.N P.Cs P.Lv ∧ (famC P.N.R.m C P R).Fj = Arith.famF P.N ∧
-    (∀ u, (famC P.N.R.m C P R).Ej u = Arith.famE P.N P.Cs P.Lv P.sd (P.code u)) ∧
-    (∀ m u, (famC m C P R).N' u = C.Npr u) ∧ (∀ m u, (famC m C P R).ItM u = C.ItM u) :=
-  ⟨rfl, rfl, fun _ => rfl, fun _ _ => rfl, fun _ _ => rfl⟩
 
 def ColFacts (C : ColObj K I) : Prop := ∃ J : ColIface K I, J.toColObj = C
 

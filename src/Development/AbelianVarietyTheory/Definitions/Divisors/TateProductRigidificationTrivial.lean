@@ -56,9 +56,6 @@ structure Factor (D D' : DegPre R) where
 
 attribute [instance] Factor.ring Factor.star Factor.mod
 
-theorem Factor.isFactor {D D' : DegPre R} (F : Factor D D') : IsFactor D D' :=
-  ⟨F.O, _, _, _, F.o, F.e, F.f, F.inc, F.pr, F.xi, F.xp, F.w, F.idem, F.inc_hom, F.pr_hom, F.inc_pr, F.pr_inc, F.xp_xi,
-    F.xi_xp, F.c_xi, ⟨F.inj, F.onto⟩, F.w_gen, F.tau⟩
 
 def SamePol (D D' : DegPre R) : Prop :=
   ∃ (Q : GlobalTheory.PolDeg.Data R) (e : D.X ≃+ Q.X) (e' : D'.X ≃+ Q.X),
@@ -300,17 +297,9 @@ def fac : Factor tatePre tate2 where
     ring
 end Wit
 
-theorem Wit.fac_e : Wit.fac.e ≠ 0 ∧ Wit.fac.e ≠ 1 :=
-  ⟨fun h => one_ne_zero (congrArg Prod.fst (h : ((1, 0) : ℤ × ℤ) = 0)), fun h => zero_ne_one (congrArg Prod.snd (h : ((1, 0) : ℤ × ℤ) = 1))⟩
 
 theorem SamePol.refl {R : Type} [CommRing R] [IsDomain R] (D : DegPre R) (h : D.TauBimult) : SamePol D D :=
   ⟨_, _, _, GlobalTheory.PolDeg.Wit.refines_ofDeg D h, GlobalTheory.PolDeg.Wit.refines_ofDeg D h⟩
 
-theorem Emb.theta_triv {R : Type} [CommRing R] [IsLocalRing R] {S : Scheme.{0}} {π : S ⟶ Sp R} {G : Over S} [GrpObj G]
-    (E : Emb π G) : E.Theta (Inh.trivLB G.left) := by
-  refine ⟨⟨fun _ => 1, fun i j => ?_⟩, ⊤, ⟨(η[E.Y]).left (closedPoint (ResidueField R)), trivial⟩,
-    fun g y _ _ _ => ⟨PUnit.unit, ?_⟩⟩
-  · exact (map_one _).trans ((_root_.one_mul _).trans (map_one _)).symm
-  · rw [Scheme.basicOpen_one]; trivial
 
 end GlobalTheory.Mum

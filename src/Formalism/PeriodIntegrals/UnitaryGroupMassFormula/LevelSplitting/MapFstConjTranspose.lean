@@ -22,9 +22,7 @@ def p1 : (R1 × R2) ⊗[F] E →+* R1 ⊗[F] E :=
 def p2 : (R1 × R2) ⊗[F] E →+* R2 ⊗[F] E :=
   (Algebra.TensorProduct.map (AlgHom.snd F R1 R2) (AlgHom.id F E)).toRingHom
 
-theorem fst_tmul (r : R1 × R2) (e : E) : p1 (F := F) (E := E) R1 R2 (r ⊗ₜ e) = r.1 ⊗ₜ e := rfl
 
-theorem snd_tmul (r : R1 × R2) (e : E) : p2 (F := F) (E := E) R1 R2 (r ⊗ₜ e) = r.2 ⊗ₜ e := rfl
 
 variable {R1 R2} in
 
@@ -165,8 +163,6 @@ def psiE : (Fin M → (R1 × R2) ⊗[F] E) ≃+ (Fin M → R1 ⊗[F] E) × (Fin 
   map_add' x y := by
     refine Prod.ext (funext fun i => ?_) (funext fun i => ?_) <;> simp
 
-theorem psiE_symm_eq :
-    ⇑(psiE (F := F) (E := E) (M := M) R1 R2).symm = fun y i => qq R1 R2 (y.1 i) (y.2 i) := rfl
 
 theorem psi_lin (g : HA R2 σ J) (x : Fin M → (R1 × R2) ⊗[F] E) :
     psiE R1 R2 (lin (R1 × R2) σ J (lift R1 R2 σ J g) x) =

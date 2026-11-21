@@ -117,9 +117,6 @@ theorem spanK_spanIn_le [NumberField F] {R : ℕ → Type} [∀ j, CommRing (R j
     {M : Submodule (𝓞 K) (Fin n → K)} (hM : ∀ y : cutR C j w, y.1 ∈ s → z.symm (1 ⊗ₜ y) ∈ M) :
     spanK z (spanIn C j w s : Set (cutR C j w)) ≤ M := spanK_comap_span_le _ z hs hM
 
-theorem spanK_fg_cusp {B : WeightFamilies.Prov D} {P6 : ModuliIntegralCharts.Prov D} {j : ℕ} {X : WeightAlgebra.PJ D B P6 j} {w : WeightFamilies.Wt D j} [Algebra B.KO K]
-    (z : (Fin n → K) ≃ₗ[K] K ⊗[B.KO] B.Cusp j w) (h : ShortSpanFG X w) : (spanK z (X.shortTh w : Set _)).FG :=
-  spanK_fg_of_fg z h
 
 end Coord
 
@@ -241,15 +238,6 @@ def TiedAt (hinj : Function.Injective D.what₂.OtoLL) (EX : ErrX D) (O : OnObj 
 variable {hinj : Function.Injective D.what₂.OtoLL} {EX : ErrX D} {O : OnObj S P oc} {inc : P →* G} {U : Subgroup G}
   {ψ : U →* D.what₂.LLˣ}
 
-theorem leafData_of_onTie
-    (H : AtPair S fun v => ∀ i, TiedAt A hinj EX O inc U ψ (fun _ _ _ X _ ka _ _ _ => ShortSpanFG X ka) v i) :
-    LeafData O := by
-  have key : ∀ v i, TiedAt A hinj EX O inc U ψ (fun _ _ _ X _ ka _ _ _ => ShortSpanFG X ka) v i →
-      (O.Th0 v i).FG ∧ O.Th0 v i ≤ (eig (O.ρ i) O.U O.ψ).restrictScalars (𝓞 D.what₂.LL) ∧
-        sc ((Nat.card O.U : ℕ) : D.what₂.LL) (cut (eig (O.ρ i) O.U O.ψ) (O.ThK v i)) ≤ O.Th0 v i := by
-    rintro v i ⟨T, _, R, κ, v₀, h, fw, p, ι, wL, wF, nT, z, act, ℓ, ph, y, t, hT, hxi, hn, hl, hdet, hfg⟩
-    exact clauses_of_onTie t hT hxi hn hl hdet (t.ThK_eq ▸ spanK_fg_cusp z hfg)
-  exact fun w hw => ⟨fun i => key w i ((H w hw).1 i), fun i => key _ i ((H w hw).2 i)⟩
 
 theorem leafData_of_onTie_of_leafSpan (hS : LeafSpan O)
     (H : AtPair S fun v => ∀ i, TiedAt A hinj EX O inc U ψ (fun _ _ _ _ _ _ _ _ _ => True) v i) : LeafData O := by
@@ -261,16 +249,6 @@ theorem leafData_of_onTie_of_leafSpan (hS : LeafSpan O)
   exact fun w hw => ⟨fun i => key w i ((H w hw).1 i) ((hS w hw).1 i).2.1,
     fun i => key _ i ((H w hw).2 i) ((hS w hw).2 i).2.1⟩
 
-theorem leafData_of_onTie_of_integral
-    (H : AtPair S fun v => ∀ i, TiedAt A hinj EX O inc U ψ (fun B _ j X p ka wL wF nT => 0 < p ∧
-      Formalism.MainNotions.Gaps.EtaleWeightGaps.LatAt B j ka ∧ WeightAlgebra.H2 X (scalOfP B hinj EX p ka wL wF nT) ka wL wF) v i) : LeafData O := by
-  have key : ∀ v i, TiedAt A hinj EX O inc U ψ (fun B _ j X p ka wL wF nT => 0 < p ∧
-      Formalism.MainNotions.Gaps.EtaleWeightGaps.LatAt B j ka ∧ WeightAlgebra.H2 X (scalOfP B hinj EX p ka wL wF nT) ka wL wF) v i →
-      TiedAt A hinj EX O inc U ψ (fun _ _ _ X _ ka _ _ _ => ShortSpanFG X ka) v i := by
-    rintro v i ⟨T, _, R, κ, v₀, h, fw, p, ι, wL, wF, nT, z, act, ℓ, ph, y, t, hT, hxi, hn, hl, hdet, hp, hL, hH⟩
-    exact ⟨T, _, R, κ, v₀, h, fw, p, ι, wL, wF, nT, z, act, ℓ, ph, y, t, hT, hxi, hn, hl, hdet,
-      shortTh_fg _ hinj EX hp _ _ _ _ hL hH⟩
-  exact leafData_of_onTie fun w hw => ⟨fun i => key w i ((H w hw).1 i), fun i => key _ i ((H w hw).2 i)⟩
 
 end Main
 
@@ -334,24 +312,9 @@ def PinnedAt (Tp : ParamsT D L Pm) (hK : DV.KapDef D) (hinj : Function.Injective
 variable {Tp : ParamsT D L Pm} {hK : DV.KapDef D} {hinj : Function.Injective D.what₂.OtoLL} {EX : ErrX D} {O : OnObj S P oc}
   {inc : P →* G} {U : Subgroup G} {ψ : U →* D.what₂.LLˣ}
 
-theorem PinnedAt.tiedAt {Q v i} (H : PinnedAt A Tp hK hinj EX O inc U ψ Q v i) : TiedAt A hinj EX O inc U ψ Q v i := by
-  obtain ⟨T, _, R, κ, v₀, h, fw, p, ι, wL, wF, nT, z, act, ℓ, ph, y, t, hT, hκ, hR, hℓ, hH, hU, hQ⟩ := H
-  exact ⟨T, _, R, κ, v₀, h, fw, p, ι, wL, wF, nT, z, act, ℓ, ph, y, t, hT, twistTrivial_of_runPin hT hR,
-    hκ ▸ kaWt_n _ _ _ _, hκ ▸ kaR_lastPos Tp hK (inR_succ ι), detOneOn_of_pins hT hℓ hH hU, hQ⟩
 
-theorem leafData_of_pins
-    (H : AtPair S fun v => ∀ i, PinnedAt A Tp hK hinj EX O inc U ψ (fun _ _ _ X _ ka _ _ _ => ShortSpanFG X ka) v i) :
-    LeafData O :=
-  leafData_of_onTie fun w hw => ⟨fun i => ((H w hw).1 i).tiedAt, fun i => ((H w hw).2 i).tiedAt⟩
 
-theorem leafData_of_pins_of_leafSpan (hS : LeafSpan O)
-    (H : AtPair S fun v => ∀ i, PinnedAt A Tp hK hinj EX O inc U ψ (fun _ _ _ _ _ _ _ _ _ => True) v i) : LeafData O :=
-  leafData_of_onTie_of_leafSpan hS fun w hw => ⟨fun i => ((H w hw).1 i).tiedAt, fun i => ((H w hw).2 i).tiedAt⟩
 
-theorem leafData_of_pins_of_integral
-    (H : AtPair S fun v => ∀ i, PinnedAt A Tp hK hinj EX O inc U ψ (fun B _ j X p ka wL wF nT => 0 < p ∧
-      Formalism.MainNotions.Gaps.EtaleWeightGaps.LatAt B j ka ∧ WeightAlgebra.H2 X (scalOfP B hinj EX p ka wL wF nT) ka wL wF) v i) : LeafData O :=
-  leafData_of_onTie_of_integral fun w hw => ⟨fun i => ((H w hw).1 i).tiedAt, fun i => ((H w hw).2 i).tiedAt⟩
 
 end Pins
 

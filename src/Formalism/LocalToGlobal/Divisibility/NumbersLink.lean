@@ -702,47 +702,7 @@ open NumberField IsDedekindDomain Formalism.DivisionValues Formalism.EigenvalueL
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
 
-theorem FoOf_num {Bs : DefBase K} {Df0 : DefSide Bs} {Df1 : DefSide Bs} {Dc : DefCols Df1} {Sp : SPer Dc} {Nn : IndefNum Bs}
-    (P : IndefCore Df0 Df1 Dc Sp Nn) (Nd : NumDatum) (eJ : Bs.J ≃ Fin Nd.R.m)
-    (hF : ∀ y j, Nn.F0 y j = Nd.Fj ((eJ j).1 + 1) y) :
-    FoOf P = ∑ j, ∑ y ∈ P.base.Tw, lw y * ((ramw y : ℝ) * Nd.Fj ((eJ j).1 + 1) y) := by
-  first
-  | (unfold FoOf; simp only [hF])
-  | (simp only [FoOf, hF])
-  | (unfold FoOf; simp [hF])
 
-theorem division_height_bound_numeric [IsTotallyComplex K] (A : FamIn K G Pl0 T m) {s : ℕ} (hOk : A.fam.Ok s) (hsep : A.fam.TypesSep)
-    (P0 : Subgroup G) (ψ0 : P0 →* Kˣ) (P1 : Subgroup G) (ψ1 : P1 →* Kˣ)
-    (Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)) (Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs))
-    (Zsc : DefSub A.fam.amb → IndefScale A.fam.base) (C CH : ℝ)
-    (Pk : IndefPkg A.fam.amb (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) C CH)
-    (Nd : NumDatum) (eJ : A.fam.base.J ≃ Fin Nd.R.m) (δ : Code Nd) (Tl : ℕ) (Nc lam0 C0 ce Ch Sw C1 : ℝ)
-    (H : Nd.NumFacts δ Nc lam0 C0 ce Ch Sw C1) (u : (Dc Pk.Zs).Mem)
-    (Nu : Submodule (𝓞 K) (Fin ((Dc Pk.Zs).a u) → K)) (sg : HeightOneSpectrum (𝓞 K) → ℝ)
-    (I : DivInputs Pk.core (RecNums.ofNum Nd eJ δ Tl Nc lam0 C0 ce Ch Sw C1 H) u Nu sg) :
-    DivClauses Pk.core (RecNums.ofNum Nd eJ δ Tl Nc lam0 C0 ce Ch Sw C1 H) u Nu sg ∧
-      (∃ cu : InfinitePlace K → ℝ, (∀ v, 0 < cu v ∧
-          Formalism.HN.opNormAt (Pi.basisFun K (Fin ((Dc Pk.Zs).a u))) ((Dc Pk.Zs).Xc u) (Pi.basisFun K (Fin Pk.core.cols.D)).dualBasis
-            (Formalism.HN.dualFrame Pk.core.cols.XE) v (Pk.core.cols.col.B u) ^ 2 ≤ cu v) ∧
-        (1 / (Formalism.HN.nPl K : ℝ)) * ∑ v, Real.log (cu v) = Nd.hU Ch δ Tl - meanLog Pk.core.cols.κ) ∧
-      Pk.core.cols.muCC - meanLog Pk.core.cols.κ + Nd.hU Ch δ Tl - 2 * FoOf Pk.core ≤
-        Nd.mainT Tl + ((50 * C0 + 10) * ((Nd.TT.card : ℝ) * Nd.sc.a * Nd.La) +
-          60 * ce * ((Nd.R.m : ℝ) * (Nd.sc.x ^ Nd.sc.eps * (Nd.B0 + Nc)))) ∧
-      ((∀ y j, (Zsc Pk.Zs).F0 y j = Nd.Fj ((eJ j).1 + 1) y) →
-        Pk.core.cols.muCC - meanLog Pk.core.cols.κ + Nd.hU Ch δ Tl -
-            2 * (∑ j, ∑ y ∈ Pk.core.base.Tw, lw y * ((ramw y : ℝ) * Nd.Fj ((eJ j).1 + 1) y)) ≤
-          Nd.mainT Tl + ((50 * C0 + 10) * ((Nd.TT.card : ℝ) * Nd.sc.a * Nd.La) +
-            60 * ce * ((Nd.R.m : ℝ) * (Nd.sc.x ^ Nd.sc.eps * (Nd.B0 + Nc))))) := by
-  have hL := division_height_bound_clauses A hOk hsep P0 ψ0 P1 ψ1 Dc Sp Zsc C CH Pk (RecNums.ofNum Nd eJ δ Tl Nc lam0 C0 ce Ch Sw C1 H) u Nu sg I
-  have hu := RecNums.ofNum_hu Nd eJ δ Tl Nc lam0 C0 ce Ch Sw C1 H
-  have hr := RecNums.ofNum_rhs Nd eJ δ Tl Nc lam0 C0 ce Ch Sw C1 H
-  have h2 := hL.2.1
-  have h3 := hL.2.2.1
-  rw [hu] at h2
-  rw [hu, hr] at h3
-  refine ⟨hL, h2, h3, fun hF => ?_⟩
-  rw [← FoOf_num Pk.core Nd eJ hF]
-  exact h3
 
 end Concrete
 
@@ -812,7 +772,6 @@ def numBig : NumDatum where
 
 def wd0 : Code numBig := fun _ => false
 
-theorem big_R : numBig.R = R0 := rfl
 theorem big_logOm : numBig.logOm = numEx.logOm := rfl
 theorem big_TT : numBig.TT = {0} := rfl
 
@@ -1071,12 +1030,6 @@ theorem big_uW_ge (z : RPl numBig.R) (i : Fin numBig.R.k) : -7 / 2 ≤ numBig.uW
       rw [big_hc_off z hz]
       exact hu i
 
-theorem big_N (j : ℕ) (hj : j ≤ 2) : (numBig.R.N j : ℚ) ≤ 40 := by
-  have : numBig.R.N j ≤ 40 := by
-    show numBig.R.k + j * (numBig.R.t + 1) ≤ 40
-    rw [big_k, large_parameter_sqrt_bound]
-    omega
-  exact_mod_cast this
 
 theorem big_nu_first (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ 2) (z : RPl numBig.R) (i : ℕ) (hi : i < 8) :
     0 ≤ numBig.nu wd0 j z i := by

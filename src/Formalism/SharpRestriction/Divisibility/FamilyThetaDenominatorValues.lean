@@ -23,10 +23,6 @@ def QOk (i : D.ntw.Tw) (Q : Finset (HeightOneSpectrum (𝓞 D.host.E))) : Prop :
 def SOk (i : D.ntw.Tw) (lam : D.ntw.abelian₂ i) (s : ℤ) : Prop :=
   Formalism.MainNotions.BlochKatoReduction.Gen.SOk D.ntw i lam s
 
-theorem paramsT_s_eq {L : SizeData₂ D} {P : ParameterChoice' D L} (PT : ParamsT D L P) : PT.s = Formalism.MainNotions.BlochKatoReduction.Gen.sFun D.R := by
-  cases PT
-  simp only [Formalism.MainNotions.BlochKatoReduction.Gen.sFun]
-  split_ifs <;> simp only [Nat.odd_iff, Nat.even_iff] at * <;> omega
 
 def kMap (i : D.ntw.Tw) (k : ℕ) : FractionRing (D.ntw.O i) →+* FractionRing (D.ntw.Ok i k) :=
   Formalism.MainNotions.BlochKatoReduction.Gen.kMap D.ntw i k
@@ -83,13 +79,6 @@ theorem IntAfter.mono {i : D.ntw.Tw} {a b : ℕ} (h : a ≤ b) {x : FractionRing
   refine ⟨((D.ntw.l i : ℕ) : D.ntw.O i) ^ (b - a) * y, ?_⟩
   rw [map_mul, map_pow, hy, map_natCast, ← mul_assoc, ← pow_add, Nat.sub_add_cancel h]
 
-theorem thetaDenominator_of_values (X : Loc D) (C : ℝ) (h : ThetaDenominatorValues D X C) : ThetaDenominatorExists D := by
-  classical
-  obtain ⟨n, -, -, -, h4⟩ := h
-  refine ⟨fun i => Finset.univ.sup (fun lam : D.ntw.abelian₂ i => X.cE i lam + n i lam), ?_⟩
-  intro i hi Q hQ lam s hs δ
-  exact IntAfter.mono (Finset.le_sup (f := fun lam : D.ntw.abelian₂ i => X.cE i lam + n i lam) (Finset.mem_univ lam))
-    (h4 i hi Q hQ lam s hs δ)
 
 def familyThetaDenominatorValues {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ∀ x (_ : Fm.x1 < x) (i : Fm.Ix x), Loc (Fm.D x i)) (C : ℝ) : Prop :=
   ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ThetaDenominatorValues (Fm.D x i) (XF x hx i) C
@@ -185,21 +174,6 @@ variable {D} in
 
 def ValRuled (X : Formalism.MainNotions.ExistsIdealDenominator.Geo D) : Prop := Nonempty (ValRule X)
 
-theorem ordRule_idx {σ : Type} [DecidableEq σ] (o : List σ) (h : o.Nodup) :
-    OrdRule (fun u : σ => u) (fun u => o.idxOf u) o := by
-  unfold OrdRule
-  induction o with
-  | nil => exact List.Pairwise.nil
-  | cons a t ih =>
-    rw [List.nodup_cons] at h
-    rw [List.pairwise_cons]
-    refine ⟨fun u' hu' _ => ?_, ?_⟩
-    · have hua : ¬ (a = u') := fun e => h.1 (e ▸ hu')
-      simp [List.idxOf_cons, hua]
-    · refine (ih h.2).imp_of_mem fun {u u'} hu hu' hr hne => ?_
-      have hua : ¬ (a = u) := fun e => h.1 (e ▸ hu)
-      have hua' : ¬ (a = u') := fun e => h.1 (e ▸ hu')
-      simpa [List.idxOf_cons, hua, hua'] using hr hne
 
 variable {D} in
 
@@ -472,75 +446,6 @@ def DomON (L : SizeData₂ D) (nW : ℕ) (CP : ℝ) : Prop := ∀ j ∈ SizeData
 def SizeConditionTwenty (L : SizeData₂ D) : Prop :=
   10 ^ 4 * zBase L * ((D.R.r + D.R.t : ℕ) : ℝ) ≤ L.sc.b
 
-theorem sizeCondition_of_dominance (L : SizeData₂ D) {P : ParameterChoice' D L} (PT : ParamsT D L P) {CP : ℝ} (hD : DomON D L PT.nWn CP) : SizeConditionTwenty D L := by
-  unfold SizeConditionTwenty
-  have hZdef : zBase L = (D.R.f : ℝ) * (D.R.r : ℝ) * L.sc.L := rfl
-  have hCbN : (0 : ℝ) ≤ PT.CbN := by linarith [PT.CbN_ge]
-  have hb0 : 0 ≤ L.sc.b := by
-    refine le_trans ?_ PT.b_ge
-    positivity
-  have hnV : ((D.R.r + D.R.t : ℕ) : ℝ) = PT.nP + PT.TO * PT.nWn := by
-    rw [PT.split]
-    push_cast
-    ring
-  rcases le_or_gt (zBase L) 0 with hZ0 | hZ0
-  · have h1 : 10 ^ 4 * zBase L * ((D.R.r + D.R.t : ℕ) : ℝ) ≤ 0 :=
-      mul_nonpos_of_nonpos_of_nonneg (by linarith) (Nat.cast_nonneg _)
-    linarith
-  · have hr : 1 ≤ D.R.r := by
-      rcases Nat.eq_zero_or_pos D.R.r with h | h
-      · rw [hZdef, h] at hZ0
-        simp at hZ0
-      · exact h
-    have hf : 1 ≤ D.R.f := by
-      rcases Nat.eq_zero_or_pos D.R.f with h | h
-      · rw [hZdef, h] at hZ0
-        simp at hZ0
-      · exact h
-    have hTOn : 2501 ≤ PT.TO := by
-      have h1 : 2501 ≤ D.R.r + 2 * (2 * 5 ^ 4 * D.R.r) * (PT.Dp + 1) := by nlinarith
-      exact h1.trans PT.order_ge_rank_bound
-    have hTO : (2501 : ℝ) ≤ PT.TO := by exact_mod_cast hTOn
-    have hnWn : 2 ≤ PT.nWn := by
-      have h1 : 2 ≤ D.R.f * D.R.r * (D.R.r + 1) :=
-        calc 2 = 1 * 1 * (1 + 1) := rfl
-          _ ≤ D.R.f * D.R.r * (D.R.r + 1) := Nat.mul_le_mul (Nat.mul_le_mul hf hr) (Nat.add_le_add_right hr 1)
-      exact h1.trans PT.nW_lo.1
-    have hnW : (2 : ℝ) ≤ PT.nWn := by exact_mod_cast hnWn
-    have hPP2 : (2 : ℝ) ≤ PT.PP := hnW.trans PT.nW_le
-    have hnP : (PT.nP : ℝ) ≤ PT.nWn := by exact_mod_cast PT.nW_lo.2.2
-    have hnV_le : ((D.R.r + D.R.t : ℕ) : ℝ) ≤ 2 * PT.TO * PT.PP := by
-      rw [hnV]
-      nlinarith [PT.nW_le]
-    have hsq : L.sc.b = L.sc.b ^ (1 / 2 : ℝ) * L.sc.b ^ (1 / 2 : ℝ) := by
-      rw [← Real.sqrt_eq_rpow, Real.mul_self_sqrt hb0]
-    have hZPP : 2 * 10 ^ 4 * zBase L ≤ PT.PP ^ 3 * (PT.TO : ℝ) ^ 2 := by
-      have hT2 : (2501 : ℝ) ^ 2 ≤ (PT.TO : ℝ) ^ 2 := by nlinarith
-      have hP3 : PT.PP ≤ PT.PP ^ 3 := by
-        have h4 : (4 : ℝ) ≤ PT.PP ^ 2 := by nlinarith
-        calc PT.PP = PT.PP * 1 := (mul_one _).symm
-          _ ≤ PT.PP * PT.PP ^ 2 := mul_le_mul_of_nonneg_left (by linarith) (by linarith)
-          _ = PT.PP ^ 3 := by ring
-      have hP3' : (2 : ℝ) ≤ PT.PP ^ 3 := hPP2.trans hP3
-      rcases le_or_gt (zBase L) 1 with h1 | h1
-      · have hm := mul_le_mul hP3' hT2 (by norm_num) (by linarith)
-        linarith
-      · have hrp : zBase L ≤ zBase L ^ PT.eP := by
-          calc zBase L = zBase L ^ (1 : ℝ) := (Real.rpow_one _).symm
-            _ ≤ zBase L ^ PT.eP := Real.rpow_le_rpow_of_exponent_le h1.le (by linarith [PT.eP_ge])
-        have hpos : 0 ≤ zBase L ^ PT.eP := Real.rpow_nonneg hZ0.le _
-        have hPPZ : zBase L ≤ PT.PP := by
-          rw [PT.PP_eq]
-          nlinarith [PT.one_le_CP]
-        have hm := mul_le_mul (hPPZ.trans hP3) hT2 (by norm_num) (by linarith)
-        linarith
-    calc 10 ^ 4 * zBase L * ((D.R.r + D.R.t : ℕ) : ℝ) ≤ 10 ^ 4 * zBase L * (2 * PT.TO * PT.PP) := by
-          gcongr
-      _ = (2 * 10 ^ 4 * zBase L) * (PT.TO * PT.PP) := by ring
-      _ ≤ L.sc.b ^ (1 / 2 : ℝ) * L.sc.b ^ (1 / 2 : ℝ) :=
-          mul_le_mul (hZPP.trans PT.precision_cube_order_sq_le_sqrt) PT.TO_PP' (mul_nonneg (Nat.cast_nonneg _) (by linarith))
-            (Real.rpow_nonneg hb0 _)
-      _ = L.sc.b := hsq.symm
 
 def OntoIndices (L : SizeData₂ D) (P : ParameterChoice' D L) (PT : ParamsT D L P) (CH : NChoice D) (I : Formalism.MainNotions.TwIn D) (T : ThetaDenominatorData D) (C : ℝ) :
     Prop :=

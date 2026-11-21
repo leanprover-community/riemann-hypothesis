@@ -47,7 +47,5 @@ theorem radialModuleForm_of_xiExists (hXi : B.XiExists) : JC.RadialModuleForm :=
   radial_module_form_of_parts (radialBetaPos_of_xiExists hXi) radial_module_action bessel_function_finite_class
     bessel_module module_regularity
 
-theorem radialModuleForm_of_bessel (h : GlobalTheory.HCXi.BesselXiIntegrable) : JC.RadialModuleForm :=
-  radialModuleForm_of_xiExists (GlobalTheory.HCXi.xiExists_of_besselXiIntegrable h)
 
 end GlobalTheory.RadialModule

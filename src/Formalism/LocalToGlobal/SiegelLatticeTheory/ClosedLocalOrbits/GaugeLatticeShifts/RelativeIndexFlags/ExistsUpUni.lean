@@ -19,29 +19,11 @@ def RepM (f : Fin (r + 1) → S.V) (φ : S.V ≃ₗ[E] S.V) (A : Matrix (Fin (r 
 
 variable {f : Fin (r + 1) → S.V}
 
-theorem apply_comb {φ : S.V ≃ₗ[E] S.V} {A : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (h : RepM f φ A)
-    (B : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (b : Fin (r + 1)) :
-    φ (∑ c, B c b • f c) = ∑ d, (A * B) d b • f d := by
-  have h' : ∀ c, φ (f c) = ∑ d, A d c • f d := h
-  simp only [map_sum, map_smul, h', Finset.smul_sum, smul_smul, Matrix.mul_apply, Finset.sum_smul]
-  rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun d _ => Finset.sum_congr rfl fun c _ => by rw [mul_comm]
 
-theorem repM_mul {φ ψ : S.V ≃ₗ[E] S.V} {A B : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
-    (hA : RepM f φ A) (hB : RepM f ψ B) : RepM f (φ * ψ) (A * B) := fun b => by
-  show φ (ψ (f b)) = _
-  rw [hB b]
-  exact apply_comb hA B b
 
 theorem sum_one (a : Fin (r + 1)) : ∑ d, (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) E) d a • f d = f a := by
   simp [Matrix.one_apply]
 
-theorem repM_inv {n : S.V ≃ₗ[E] S.V} {N : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (h : RepM f n N)
-    (hN : IsUnit N.det) : RepM f n⁻¹ N⁻¹ := fun b => by
-  have key : n (∑ c, N⁻¹ c b • f c) = f b := by
-    rw [apply_comb h, Matrix.mul_nonsing_inv N hN, sum_one]
-  rw [← key]
-  exact n.symm_apply_apply _
 
 theorem exists_upUni {Λ : Submodule (𝓞 E) S.V} {T : E} {F : LFlag S r T} {n : S.V ≃ₗ[E] S.V}
     (hn : n ∈ NLam Λ F) :

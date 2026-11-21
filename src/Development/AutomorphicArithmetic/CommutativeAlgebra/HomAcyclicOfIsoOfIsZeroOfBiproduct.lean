@@ -32,8 +32,6 @@ variable {B : Scheme.{0}} {q : ℕ}
 private noncomputable def hm {P P' : B.Etale ⥤ Shv (ZMod q)} (φ : P ⟶ P') (J : Shv (ZMod q)) : HP P' J ⟶ HP P J :=
   Functor.whiskerRight (NatTrans.op φ) _
 
-private theorem hm_apply {P P' : B.Etale ⥤ Shv (ZMod q)} (φ : P ⟶ P') (J : Shv (ZMod q)) (U : B.Etaleᵒᵖ)
-    (x : P'.obj U.unop ⟶ J) : ((hm φ J).app U).hom x = φ.app U.unop ≫ x := rfl
 
 private theorem hm_id (P : B.Etale ⥤ Shv (ZMod q)) (J : Shv (ZMod q)) : hm (𝟙 P) J = 𝟙 _ := by
   unfold hm

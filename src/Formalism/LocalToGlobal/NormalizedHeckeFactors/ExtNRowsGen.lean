@@ -29,22 +29,7 @@ theorem finrank_span_image_le {n : ℕ} (σ : K →+* ℂ) (j : (Fin n → K) �
   have := finrank_range_le_card (R := ℂ) (fun k => j (b k : Fin n → K))
   simpa [Set.finrank] using this
 
-theorem sum_finrank_indep {ι : Type} [Fintype ι] (B : ι → Submodule ℂ W) (hi : iSupIndep B) :
-    ∑ i, finrank ℂ (B i) = finrank ℂ (⨆ i, B i : Submodule ℂ W) := by
-  classical
-  have hinj : Function.Injective (DirectSum.coeLinearMap B) := hi.dfinsupp_lsum_injective
-  rw [← Module.finrank_directSum, ← LinearMap.finrank_range_of_inj hinj, DirectSum.range_coeLinearMap]
 
-theorem internal_of_top_le {ι : Type} [Fintype ι] [DecidableEq ι] (B : ι → Submodule ℂ W) (ht : (⨆ i, B i) = ⊤)
-    (hle : ∑ i, finrank ℂ (B i) ≤ finrank ℂ W) : DirectSum.IsInternal B := by
-  have hr : LinearMap.range (DirectSum.coeLinearMap B) = ⊤ := by rw [DirectSum.range_coeLinearMap, ht]
-  have hs : Function.Surjective (DirectSum.coeLinearMap B) := LinearMap.range_eq_top.1 hr
-  have h1 : finrank ℂ W ≤ finrank ℂ (DirectSum ι fun i => B i) := by
-    have := LinearMap.finrank_range_le (DirectSum.coeLinearMap B)
-    rwa [hr, finrank_top] at this
-  have h2 : finrank ℂ (DirectSum ι fun i => B i) = finrank ℂ W :=
-    le_antisymm (by rw [Module.finrank_directSum]; exact hle) h1
-  exact ⟨(LinearMap.injective_iff_surjective_of_finrank_eq_finrank h2).2 hs, hs⟩
 
 end Generic
 

@@ -437,16 +437,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Form
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem eigen_bessel_from_commuting_operators : Formalism.FourierDecayAlt.Q.EigenBesselFromCommutes := by
-  intro hBC hLin k r Wp Wq _ _ _ _ _ _ D A m F Y PY hm hA hF hE
-  have hCV : B.InCC A m (CV k r Y F) := by
-    obtain ⟨c, hc⟩ := hF
-    exact ⟨_, CCle_congr (f := PY • F) (fun g hg => (hE g hg).symm) (hLin k r _ A m F F c c PY hc hc).2⟩
-  obtain ⟨Jt, h1, h2, h3, h4, h5, h6⟩ := hBC k r Wp Wq D A m F Y hm hA hF hCV
-  refine ⟨Jt, h1, h2, h3, h4, h5, ?_⟩
-  filter_upwards [h5, h6, B7.ae_mem_good_set_restrict D] with q a5 a6 hq
-  rw [a6, a5]
-  exact JF_congr D hE (B7.gq_mem D hq)
 
 end Formalism.FourierDecayAlt.P
 
@@ -1917,31 +1907,7 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
   [NormedAddCommGroup Wq] [NormedSpace ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
   {i : Fin (r + 1)} {Dc : (Fin r → ℂ) → Set (Mx k r)}
 
-theorem isDet_Tm' {A : Type} [Ring A] [Algebra ℂ A] {p c ci : A} (h : WeylRel p c ci) :
-    W.IsDet (fun Y : ℂ => Tm Y p c ci) (fun _ => 1) := by
-  intro Y
-  refine ⟨?_, ?_⟩
-  · rw [map_one, one_smul]
-    exact Formalism.YangianSpanCharacter.P.transposeSymplecticShift ℂ A p c ci Y h
-  · rw [map_one, one_smul]
-    obtain ⟨h1, h2, h3⟩ := h
-    have hc : algebraMap ℂ A Y * c = c * algebraMap ℂ A Y := Algebra.commutes _ _
-    ext a b
-    fin_cases a <;> fin_cases b
-    · simp [YangianSpanCharacter.T.Tm, Formalism.YangianSpanCharacter.T.J, Matrix.mul_apply, Fin.sum_univ_two, add_mul, mul_add, h3, hc]
-      abel
-    · simp [YangianSpanCharacter.T.Tm, Formalism.YangianSpanCharacter.T.J, Matrix.mul_apply, Fin.sum_univ_two, h1]
-    · simp [YangianSpanCharacter.T.Tm, Formalism.YangianSpanCharacter.T.J, Matrix.mul_apply, Fin.sum_univ_two, h2]
-    · simp [YangianSpanCharacter.T.Tm, Formalism.YangianSpanCharacter.T.J, Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem weyl_ci' {A : Type} [Ring A] {p c ci : A} (h : WeylRel p c ci) : p * ci = ci * p - ci := by
-  obtain ⟨h1, h2, h3⟩ := h
-  have e : ci * (p * c) * ci = ci * (c * p + c) * ci := by rw [h3]
-  have l : ci * (p * c) * ci = ci * p := by rw [mul_assoc, mul_assoc, h1, mul_one]
-  have r : ci * (c * p + c) * ci = p * ci + ci := by
-    rw [mul_add, ← mul_assoc, h2, one_mul, add_mul, one_mul]
-  rw [l, r] at e
-  rw [e]; abel
 
 def opE (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) (j : Fin 6) :
     Module.End ℂ (FamV k r z z' π π' i Dc) := (good_op C hFO l j).toEnd C
@@ -1955,11 +1921,6 @@ theorem opE_mul (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) (j j' : Fi
       opL l j (opL l j' fun c' => (Ψ : Fn k r (Wq →L[ℂ] Wp)) c' x.2) x.1 :=
   (good_op C hFO l j).toEnd_mul_apply C (good_op C hFO l j') Ψ hx
 
-theorem opE_apply (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) (j : Fin 6)
-    (Ψ : FamV k r z z' π π' i Dc) {x : XX k r} (hx : x ∈ levelPointsWithGroupElement i Dc) :
-    (opE C hFO l j Ψ : Fn k r (Wq →L[ℂ] Wp)) x.1 x.2 =
-      opL l j (fun c' => (Ψ : Fn k r (Wq →L[ℂ] Wp)) c' x.2) x.1 :=
-  (good_op C hFO l j).toEnd_apply C Ψ hx
 
 theorem opE_comm (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) (j j' : Fin 6)
     (h : holoIdx j ↔ ¬ holoIdx j') :
@@ -1971,68 +1932,8 @@ theorem opE_comm (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) (j j' : F
   rw [opE_mul C hFO l j j' Ψ hx, opE_mul C hFO l j' j Ψ hx]
   exact (sf_Sm Ψ.2.1.1 hx).comm l j j' h
 
-theorem opE_weyl (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) :
-    WeylRel (opE (π := π) (π' := π') C hFO l 0) (opE C hFO l 1) (opE C hFO l 2) := by
-  refine ⟨?_, ?_, ?_⟩
-  · apply LinearMap.ext
-    intro Ψ
-    apply FamV_ext
-    intro x hx
-    rw [opE_mul C hFO l _ _ Ψ hx]
-    show x.1 l • ((x.1 l)⁻¹ • (Ψ : Fn k r (Wq →L[ℂ] Wp)) x.1 x.2) = _
-    rw [smul_smul, mul_inv_cancel₀ (hx.1.1 l), one_smul]
-    rfl
-  · apply LinearMap.ext
-    intro Ψ
-    apply FamV_ext
-    intro x hx
-    rw [opE_mul C hFO l _ _ Ψ hx]
-    show (x.1 l)⁻¹ • (x.1 l • (Ψ : Fn k r (Wq →L[ℂ] Wp)) x.1 x.2) = _
-    rw [smul_smul, inv_mul_cancel₀ (hx.1.1 l), one_smul]
-    rfl
-  · apply LinearMap.ext
-    intro Ψ
-    apply FamV_ext
-    intro x hx
-    rw [LinearMap.add_apply, Submodule.coe_add, Pi.add_apply, Pi.add_apply, opE_mul C hFO l _ _ Ψ hx,
-      opE_mul C hFO l _ _ Ψ hx, opE_apply C hFO l _ Ψ hx]
-    exact (sf_Sm Ψ.2.1.1 hx).p_c l
 
-theorem opE_weylb (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) :
-    WeylRel (opE (π := π) (π' := π') C hFO l 3) (opE C hFO l 4) (opE C hFO l 5) := by
-  have hne : ∀ x ∈ levelPointsWithGroupElement i Dc, star (x.1 l) ≠ 0 := fun x hx => star_ne_zero.2 (hx.1.1 l)
-  refine ⟨?_, ?_, ?_⟩
-  · apply LinearMap.ext
-    intro Ψ
-    apply FamV_ext
-    intro x hx
-    rw [opE_mul C hFO l _ _ Ψ hx]
-    show star (x.1 l) • ((star (x.1 l))⁻¹ • (Ψ : Fn k r (Wq →L[ℂ] Wp)) x.1 x.2) = _
-    rw [smul_smul, mul_inv_cancel₀ (hne x hx), one_smul]
-    rfl
-  · apply LinearMap.ext
-    intro Ψ
-    apply FamV_ext
-    intro x hx
-    rw [opE_mul C hFO l _ _ Ψ hx]
-    show (star (x.1 l))⁻¹ • (star (x.1 l) • (Ψ : Fn k r (Wq →L[ℂ] Wp)) x.1 x.2) = _
-    rw [smul_smul, inv_mul_cancel₀ (hne x hx), one_smul]
-    rfl
-  · apply LinearMap.ext
-    intro Ψ
-    apply FamV_ext
-    intro x hx
-    rw [LinearMap.add_apply, Submodule.coe_add, Pi.add_apply, Pi.add_apply, opE_mul C hFO l _ _ Ψ hx,
-      opE_mul C hFO l _ _ Ψ hx, opE_apply C hFO l _ Ψ hx]
-    exact (sf_Sm Ψ.2.1.1 hx).pb_cb l
 
-theorem opE_weyls (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) :
-    WeylRel (-opE (π := π) (π' := π') C hFO l 3) (-opE C hFO l 5) (-opE C hFO l 4) := by
-  have h := opE_weylb (π := π) (π' := π') C hFO l
-  have h4 := weyl_ci' h
-  obtain ⟨h1, h2, -⟩ := h
-  refine ⟨by rw [neg_mul_neg, h2], by rw [neg_mul_neg, h1], ?_⟩
-  rw [neg_mul_neg, neg_mul_neg, h4, sub_eq_add_neg]
 
 theorem tl_comb (hT : TLinLoc) {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {D : Set (Mx k r)}
     (hD : IsOpen D) (Y : ℂ) (a b : Fin 2) (s s₂ : ℂ) {f f₂ : Mx k r → E} (hf : SmoothLev k r i D f)
@@ -2045,89 +1946,7 @@ theorem tl_comb (hT : TLinLoc) {E : Type} [NormedAddCommGroup E] [NormedSpace �
   rw [h2, h3] at h1
   exact h1
 
-theorem qE_comm (C : FamCtx k r z z' i Dc) (hFO : FamOps) (hP : TPreservesFF) (hT : TLinLoc) (l : Fin r)
-    (j : Fin 6) (Y : ℂ) (a b : Fin 2) :
-    opE (π := π) (π' := π') C hFO l j * qE C hP hT Y a b = qE C hP hT Y a b * opE C hFO l j := by
-  apply LinearMap.ext
-  intro Ψ
-  apply FamV_ext
-  intro x hx
-  unfold opE qE
-  rw [(good_op C hFO l j).toEnd_mul_apply C (good_alt_bis C hP hT Y a b) Ψ hx,
-    (good_alt_bis C hP hT Y a b).toEnd_mul_apply C (good_op C hFO l j) Ψ hx]
-  set Φ : Fn k r (Wq →L[ℂ] Wp) := (Ψ : Fn k r (Wq →L[ℂ] Wp)) with hΦ
-  have hsm := Ψ.2.1.1
-  have hO : IsOpen (Dc x.1) := (C.dom _ hx.1.1).1
-  have hg : x.2 ∈ Glev k r i ∩ Dc x.1 := ⟨hx.2, hx.1.2⟩
-  have hs0 : SmoothLev k r i (Dc x.1) (Φ x.1) := sf_slice hsm hx.1.1
-  have hscal : ∀ s : ℂ, s • tL k r z z' i Y a b (Φ x.1) x.2 =
-      tL k r z z' i Y a b (fun g' => s • Φ x.1 g') x.2 := fun s => (tl_smul hT hO Y a b s hs0 hg).symm
-  have hcd := cd_tL (E := Wq →L[ℂ] Wp) (i := i) C.isOpen z z' Y a b
-  have hder : ∀ s s₂ : ℂ,
-      s • ((1 / 2 : ℂ) • (dv (Pi.single l 1) (fun c => tL k r z z' i Y a b (Φ c)) x.1 x.2 +
-        s₂ • dv (Pi.single l Complex.I) (fun c => tL k r z z' i Y a b (Φ c)) x.1 x.2)) =
-      tL k r z z' i Y a b (fun g' => s • ((1 / 2 : ℂ) • (dv (Pi.single l 1) Φ x.1 g' +
-        s₂ • dv (Pi.single l Complex.I) Φ x.1 g'))) x.2 := by
-    intro s s₂
-    rw [hcd.comm _ Φ hsm x hx.1 hx.2, hcd.comm _ Φ hsm x hx.1 hx.2, smul_smul]
-    have := tl_comb (z := z) (z' := z') hT hO Y a b (s * (1 / 2)) s₂ (sf_slice (sf_dv (Pi.single l 1) hsm) hx.1.1)
-      (sf_slice (sf_dv (Pi.single l Complex.I) hsm) hx.1.1) hg
-    rw [← this]
-    simp only [smul_smul]
-    rfl
-  fin_cases j
-  · show pOp l (fun c' => tL k r z z' i Y a b (Φ c') x.2) x.1 =
-      tL k r z z' i Y a b (fun g' => pOp l (fun c' => Φ c' g') x.1) x.2
-    have h := hder (x.1 l) (-Complex.I)
-    simp only [pOp, if_pos hx.1.1, wirt]
-    simp only [dv, neg_smul, ← sub_eq_add_neg] at h
-    exact h
-  · exact hscal _
-  · exact hscal _
-  · show pbOp l (fun c' => tL k r z z' i Y a b (Φ c') x.2) x.1 =
-      tL k r z z' i Y a b (fun g' => pbOp l (fun c' => Φ c' g') x.1) x.2
-    have h := hder (star (x.1 l)) Complex.I
-    simp only [pbOp, if_pos hx.1.1, wirtBar]
-    simp only [dv] at h
-    exact h
-  · exact hscal _
-  · exact hscal _
 
-theorem qE_det (C : FamCtx k r z z' i Dc) (hP : TPreservesFF) (hT : TLinLoc) (q : ℂ → ℂ)
-    (hdet : ∀ D, IsDom k r z z' i D → ∀ J ∈ FFl k r z z' π π' i D, ∀ g ∈ Glev k r i ∩ D, ∀ (Y : ℂ) (c d : Fin 2),
-      (tL k r z z' i (Y + 1) 0 c (tL k r z z' i Y 1 d J) g -
-          tL k r z z' i (Y + 1) 1 c (tL k r z z' i Y 0 d J) g = (q Y * epsJ c d) • J g) ∧
-      (tL k r z z' i Y c 0 (tL k r z z' i (Y + 1) d 1 J) g -
-          tL k r z z' i Y c 1 (tL k r z z' i (Y + 1) d 0 J) g = (q Y * epsJ c d) • J g)) :
-    W.IsDet (fun Y => Matrix.of (qE (π := π) (π' := π') C hP hT Y)) q := by
-  intro Y
-  constructor
-  · ext c d : 1
-    rw [TJM_apply, smulJ_apply]
-    apply LinearMap.ext
-    intro Ψ
-    apply FamV_ext
-    intro x hx
-    simp only [Matrix.of_apply]
-    rw [LinearMap.sub_apply, Submodule.coe_sub, Pi.sub_apply, Pi.sub_apply, Module.algebraMap_end_apply,
-      Submodule.coe_smul, Pi.smul_apply, Pi.smul_apply]
-    unfold qE
-    rw [(good_alt_bis C hP hT _ _ _).toEnd_mul_apply C (good_alt_bis C hP hT _ _ _) Ψ hx,
-      (good_alt_bis C hP hT _ _ _).toEnd_mul_apply C (good_alt_bis C hP hT _ _ _) Ψ hx]
-    exact (hdet _ (C.dom _ hx.1.1) _ (Ψ.2.1.2 _ hx.1.1) x.2 ⟨hx.2, hx.1.2⟩ Y c d).1
-  · ext c d : 1
-    rw [MJT_apply, smulJ_apply]
-    apply LinearMap.ext
-    intro Ψ
-    apply FamV_ext
-    intro x hx
-    simp only [Matrix.of_apply]
-    rw [LinearMap.sub_apply, Submodule.coe_sub, Pi.sub_apply, Pi.sub_apply, Module.algebraMap_end_apply,
-      Submodule.coe_smul, Pi.smul_apply, Pi.smul_apply]
-    unfold qE
-    rw [(good_alt_bis C hP hT _ _ _).toEnd_mul_apply C (good_alt_bis C hP hT _ _ _) Ψ hx,
-      (good_alt_bis C hP hT _ _ _).toEnd_mul_apply C (good_alt_bis C hP hT _ _ _) Ψ hx]
-    exact (hdet _ (C.dom _ hx.1.1) _ (Ψ.2.1.2 _ hx.1.1) x.2 ⟨hx.2, hx.1.2⟩ Y c d).2
 
 end FamRing
 
@@ -2166,11 +1985,6 @@ theorem Tm_comm {A : Type} [Ring A] [Algebra ℂ A] {x p c ci : A} (hp : x * p =
   have hY : x * algebraMap ℂ A Y = algebraMap ℂ A Y * x := (Algebra.commutes _ _).symm
   fin_cases a <;> fin_cases b <;> simp [YangianSpanCharacter.T.Tm, mul_add, add_mul, hp, hc, hci, hY]
 
-theorem mul_entry_comm {A : Type} [Ring A] {x : A} {M N : Matrix (Fin 2) (Fin 2) A}
-    (hM : ∀ a b, x * M a b = M a b * x) (hN : ∀ a b, x * N a b = N a b * x) (a b : Fin 2) :
-    x * (M * N) a b = (M * N) a b * x := by
-  simp only [Matrix.mul_apply, Fin.sum_univ_two, mul_add, add_mul]
-  rw [← mul_assoc, hM, mul_assoc, hN, ← mul_assoc, ← mul_assoc x, hM, mul_assoc (M a 1), hN, ← mul_assoc]
 
 variable {i : Fin (r + 1)} {Dc : (Fin r → ℂ) → Set (Mx k r)}
 
@@ -2189,87 +2003,10 @@ def ME (C : FamCtx k r z z' i Dc) (hFO : FamOps) (hP : TPreservesFF) (hT : TLinL
     Matrix (Fin 2) (Fin 2) (Module.End ℂ (FamV k r z z' π π' i Dc)) :=
   TsE C hFO l Y * (QmE C hP hT Y * TrE C hFO l Y)
 
-theorem ME_det (C : FamCtx k r z z' i Dc) (hFO : FamOps) (hP : TPreservesFF) (hT : TLinLoc) (l : Fin r) (q : ℂ → ℂ)
-    (hq : W.IsDet (QmE (π := π) (π' := π') C hP hT) q) : W.IsDet (ME (π := π) (π' := π') C hFO hP hT l) q := by
-  have hQO : ∀ (j : Fin 6) (Y : ℂ) (a b : Fin 2),
-      QmE (π := π) (π' := π') C hP hT Y a b * opE C hFO l j = opE C hFO l j * QmE C hP hT Y a b :=
-    fun j Y a b => (qE_comm C hFO hP hT l j Y a b).symm
-  have h1 : W.EntriesCommute (QmE (π := π) (π' := π') C hP hT) (TrE C hFO l) := by
-    intro Y Y' a b c d
-    exact Tm_comm (hQO 0 Y a b) (hQO 1 Y a b) (hQO 2 Y a b) Y' c d
-  have d1 := P.W.isDet_mul _ _ q (fun _ => 1) hq (isDet_Tm' (opE_weyl (π := π) (π' := π') C hFO l)) h1
-  have hh : ∀ j j' : Fin 6, ¬ holoIdx j → holoIdx j' →
-      opE (π := π) (π' := π') C hFO l j' * opE C hFO l j = opE C hFO l j * opE C hFO l j' :=
-    fun j j' h h' => opE_comm C hFO l j' j ⟨fun _ => h, fun _ => h'⟩
-  have n3 : ¬ holoIdx 3 := by unfold holoIdx; decide
-  have n4 : ¬ holoIdx 4 := by unfold holoIdx; decide
-  have n5 : ¬ holoIdx 5 := by unfold holoIdx; decide
-  have y0 : holoIdx 0 := by unfold holoIdx; decide
-  have y1 : holoIdx 1 := by unfold holoIdx; decide
-  have y2 : holoIdx 2 := by unfold holoIdx; decide
-  have hsT : ∀ (Y Y' : ℂ) (a b c d : Fin 2), TrE (π := π) (π' := π') C hFO l Y' c d * TsE C hFO l Y a b =
-      TsE C hFO l Y a b * TrE C hFO l Y' c d := by
-    intro Y Y' a b c d
-    refine Tm_comm ?_ ?_ ?_ Y a b
-    · rw [mul_neg, neg_mul]
-      congr 1
-      exact (Tm_comm (hh 3 0 n3 y0).symm (hh 3 1 n3 y1).symm (hh 3 2 n3 y2).symm Y' c d).symm
-    · rw [mul_neg, neg_mul]
-      congr 1
-      exact (Tm_comm (hh 5 0 n5 y0).symm (hh 5 1 n5 y1).symm (hh 5 2 n5 y2).symm Y' c d).symm
-    · rw [mul_neg, neg_mul]
-      congr 1
-      exact (Tm_comm (hh 4 0 n4 y0).symm (hh 4 1 n4 y1).symm (hh 4 2 n4 y2).symm Y' c d).symm
-  have hsQ : ∀ (Y Y' : ℂ) (a b c d : Fin 2), QmE (π := π) (π' := π') C hP hT Y' c d * TsE C hFO l Y a b =
-      TsE C hFO l Y a b * QmE C hP hT Y' c d := by
-    intro Y Y' a b c d
-    refine Tm_comm ?_ ?_ ?_ Y a b
-    · rw [mul_neg, neg_mul, hQO]
-    · rw [mul_neg, neg_mul, hQO]
-    · rw [mul_neg, neg_mul, hQO]
-  have h2 : W.EntriesCommute (TsE (π := π) (π' := π') C hFO l) (fun Y => QmE C hP hT Y * TrE C hFO l Y) := by
-    intro Y Y' a b c d
-    exact mul_entry_comm (fun c d => (hsQ Y Y' a b c d).symm) (fun c d => (hsT Y Y' a b c d).symm) c d
-  have d2 := P.W.isDet_mul _ _ (fun _ => 1) _ (isDet_Tm' (opE_weyls (π := π) (π' := π') C hFO l)) d1 h2
-  have e : (fun Y => (1 : ℂ) * (q Y * 1)) = q := by funext Y; ring
-  rw [e] at d2
-  exact d2
 
-theorem rep_oMul {M N : OM (Fn k r (Wq →L[ℂ] Wp))}
-    {m n : Matrix (Fin 2) (Fin 2) (Module.End ℂ (FamV k r z z' π π' i Dc))}
-    (hM : ∀ a b, Rep k r z z' π π' i Dc (M a b) (m a b)) (hN : ∀ a b, Rep k r z z' π π' i Dc (N a b) (n a b))
-    (a b : Fin 2) : Rep k r z z' π π' i Dc (oMul M N a b) ((m * n) a b) := by
-  have e : (m * n) a b = m a 0 * n 0 b + m a 1 * n 1 b := by rw [Matrix.mul_apply, Fin.sum_univ_two]
-  rw [e]
-  refine Rep.congr (((hM a 0).comp (hN 0 b)).add ((hM a 1).comp (hN 1 b))) fun Φ => ?_
-  simp [oMul, Fin.sum_univ_two]
 
-theorem rep_TL (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) (Y : ℂ) (a b : Fin 2) :
-    Rep k r z z' π π' i Dc (TL k l Y a b) (TrE C hFO l Y a b) := by
-  fin_cases a <;> fin_cases b
-  · exact Rep.congr ((Rep.scal Y).add ((good_op C hFO l 0).rep C)) fun Φ => rfl
-  · exact Rep.congr ((good_op C hFO l 1).rep C).neg fun Φ => rfl
-  · exact (good_op C hFO l 2).rep C
-  · exact Rep.zero
 
-theorem rep_TLs (C : FamCtx k r z z' i Dc) (hFO : FamOps) (l : Fin r) (Y : ℂ) (a b : Fin 2) :
-    Rep k r z z' π π' i Dc (TLs k l Y a b) (TsE C hFO l Y a b) := by
-  fin_cases a <;> fin_cases b
-  · refine Rep.congr ((Rep.scal Y).add ((good_op C hFO l 3).rep C).neg) fun Φ => ?_
-    funext c g
-    show Y • Φ c g - pbOp l (fun c' => Φ c' g) c = Y • Φ c g + -(pbOp l (fun c' => Φ c' g) c)
-    rw [sub_eq_add_neg]
-  · refine Rep.congr ((good_op C hFO l 5).rep C).neg.neg fun Φ => ?_
-    funext c g
-    show cbiOp l (fun c' => Φ c' g) c = - -(cbiOp l (fun c' => Φ c' g) c)
-    rw [neg_neg]
-  · exact Rep.congr ((good_op C hFO l 4).rep C).neg fun Φ => rfl
-  · exact Rep.zero
 
-theorem rep_ME (C : FamCtx k r z z' i Dc) (hFO : FamOps) (hP : TPreservesFF) (hT : TLinLoc) (l : Fin r) (Y : ℂ)
-    (a b : Fin 2) :
-    Rep k r z z' π π' i Dc (oMul (TLs k l Y) (oMul (QL k r z z' i Y) (TL k l Y)) a b) (ME C hFO hP hT l Y a b) :=
-  rep_oMul (rep_TLs C hFO l Y) (rep_oMul (fun a b => (good_alt_bis C hP hT Y a b).rep C) (rep_TL C hFO l Y)) a b
 
 end Step
 
@@ -2336,92 +2073,7 @@ def DetOn (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (π : Mx k r → (Wp 
       (tL k r z z' i Y c 0 (tL k r z z' i (Y + 1) d 1 J) g -
           tL k r z z' i Y c 1 (tL k r z z' i (Y + 1) d 0 J) g = (q Y * epsJ c d) • J g)
 
-theorem det_cell (hCS : ChainStep) (hRM : ResMem) (hFO : FamOps) (hP : TPreservesFF) (hT : TLinLoc)
-    (hz : inWb k r z) (hz' : inWb k r z') (l : Fin r) (q : ℂ → ℂ) (hdet : DetOn k r z z' π π' l.succ q)
-    {D : Set (Mx k r)} (hD : IsDom k r z z' l.castSucc D) {J : Mx k r → (Wq →L[ℂ] Wp)}
-    (hJ : J ∈ FFl k r z z' π π' l.castSucc D) {c₀ : ℂ} (hc₀ : c₀ ≠ 0) {g₁ : Mx k r} (hg₁ : g₁ ∈ Glev k r l.succ)
-    (hx : w1 k r l c₀ * g₁ ∈ D) (Y : ℂ) (c d : Fin 2) :
-    (tL k r z z' l.castSucc (Y + 1) 0 c (tL k r z z' l.castSucc Y 1 d J) (w1 k r l c₀ * g₁) -
-      tL k r z z' l.castSucc (Y + 1) 1 c (tL k r z z' l.castSucc Y 0 d J) (w1 k r l c₀ * g₁) =
-        (q Y * epsJ c d) • J (w1 k r l c₀ * g₁)) ∧
-    (tL k r z z' l.castSucc Y c 0 (tL k r z z' l.castSucc (Y + 1) d 1 J) (w1 k r l c₀ * g₁) -
-      tL k r z z' l.castSucc Y c 1 (tL k r z z' l.castSucc (Y + 1) d 0 J) (w1 k r l c₀ * g₁) =
-        (q Y * epsJ c d) • J (w1 k r l c₀ * g₁)) := by
-  have C := ctx_of hRM hz hz' l hD
-  have fam : ∀ F ∈ FFl k r z z' π π' l.castSucc D, FamFF k r z z' π π' l.succ (DcOf l D) (res1 k r l F) :=
-    fun F hF => (hRM Wp Wq k r z z' π π' l D hz hz' hD F hF).2
-  have tF : ∀ (Y : ℂ) (a b : Fin 2), ∀ F ∈ FFl k r z z' π π' l.castSucc D,
-      tL k r z z' l.castSucc Y a b F ∈ FFl k r z z' π π' l.castSucc D :=
-    fun Y a b F hF => hP Wp Wq k r z z' π π' l.castSucc D Y a b hz hz' hD F hF
-  have key : ∀ (Y : ℂ) (a b : Fin 2) (F : Mx k r → (Wq →L[ℂ] Wp)) (hF : F ∈ FFl k r z z' π π' l.castSucc D),
-      cutF C (res1 k r l (tL k r z z' l.castSucc Y a b F)) (fam _ (tF Y a b F hF)) =
-        ME C hFO hP hT l Y a b (cutF C (res1 k r l F) (fam F hF)) := by
-    intro Y a b F hF
-    apply FamV_ext
-    intro x hx
-    rw [cutF_apply C _ _ hx, hCS Wp Wq k r z z' π π' l D Y a b hz hz' hD F hF x.1 hx.1.1 x.2 hx.2 hx.1.2]
-    exact (rep_ME C hFO hP hT l Y a b _ (fam F hF) _ (fun y hy => (cutF_apply C _ (fam F hF) hy).symm)).2 x hx
-  have hM := ME_det C hFO hP hT l q (qE_det C hP hT q hdet)
-  set x₀ : XX k r := (fun _ => c₀, g₁) with hx₀
-  have hx₀m : x₀ ∈ levelPointsWithGroupElement l.succ (DcOf l D) := ⟨⟨fun _ => hc₀, hx⟩, hg₁⟩
-  set ρ : ℂ := ((‖c₀‖ ^ (Mdim k r l - 1) : ℝ) : ℂ) with hρ
-  have hρ0 : ρ ≠ 0 := by
-    rw [hρ]
-    exact_mod_cast pow_ne_zero _ (norm_ne_zero_iff.2 hc₀)
-  have hval : ∀ (F : Mx k r → (Wq →L[ℂ] Wp)) (hF : F ∈ FFl k r z z' π π' l.castSucc D),
-      (cutF C (res1 k r l F) (fam F hF) : Fn k r (Wq →L[ℂ] Wp)) x₀.1 x₀.2 = ρ • F (w1 k r l c₀ * g₁) :=
-    fun F hF => cutF_apply C _ (fam F hF) hx₀m
-  have two : ∀ (Y Y' : ℂ) (a b a' b' : Fin 2),
-      (((ME C hFO hP hT l Y a b * ME C hFO hP hT l Y' a' b' :
-        Module.End ℂ (FamV k r z z' π π' l.succ (DcOf l D)))) (cutF C (res1 k r l J) (fam J hJ)) :
-        Fn k r (Wq →L[ℂ] Wp)) x₀.1 x₀.2 =
-      ρ • tL k r z z' l.castSucc Y a b (tL k r z z' l.castSucc Y' a' b' J) (w1 k r l c₀ * g₁) := by
-    intro Y Y' a b a' b'
-    rw [Module.End.mul_apply, ← key Y' a' b' J hJ, ← key Y a b _ (tF Y' a' b' J hJ),
-      hval _ (tF Y a b _ (tF Y' a' b' J hJ))]
-  constructor
-  · have e := congrFun (congrFun (hM Y).1 c) d
-    rw [TJM_apply, smulJ_apply] at e
-    have e' := congrFun (congrFun (congrArg (fun (Ψ : FamV k r z z' π π' l.succ (DcOf l D)) =>
-      (Ψ : Fn k r (Wq →L[ℂ] Wp))) (LinearMap.congr_fun e (cutF C (res1 k r l J) (fam J hJ)))) x₀.1) x₀.2
-    rw [LinearMap.sub_apply, Submodule.coe_sub, Pi.sub_apply, Pi.sub_apply, two, two, Module.algebraMap_end_apply,
-      Submodule.coe_smul, Pi.smul_apply, Pi.smul_apply, hval J hJ, ← smul_sub, smul_comm] at e'
-    exact smul_right_injective _ hρ0 e'
-  · have e := congrFun (congrFun (hM Y).2 c) d
-    rw [MJT_apply, smulJ_apply] at e
-    have e' := congrFun (congrFun (congrArg (fun (Ψ : FamV k r z z' π π' l.succ (DcOf l D)) =>
-      (Ψ : Fn k r (Wq →L[ℂ] Wp))) (LinearMap.congr_fun e (cutF C (res1 k r l J) (fam J hJ)))) x₀.1) x₀.2
-    rw [LinearMap.sub_apply, Submodule.coe_sub, Pi.sub_apply, Pi.sub_apply, two, two, Module.algebraMap_end_apply,
-      Submodule.coe_smul, Pi.smul_apply, Pi.smul_apply, hval J hJ, ← smul_sub, smul_comm] at e'
-    exact smul_right_injective _ hρ0 e'
 
-theorem det_down (hCS : ChainStep) (hRM : ResMem) (hFO : FamOps) (hP : TPreservesFF) (hT : TLinLoc)
-    (hCD : CellDecomp) (hCl : CellDense) (hz : inWb k r z) (hz' : inWb k r z') (l : Fin r) (q : ℂ → ℂ)
-    (hdet : DetOn k r z z' π π' l.succ q) : DetOn k r z z' π π' l.castSucc q := by
-  intro D hD J hJ g hg Y c d
-  have tF : ∀ (Y : ℂ) (a b : Fin 2), ∀ F ∈ FFl k r z z' π π' l.castSucc D,
-      tL k r z z' l.castSucc Y a b F ∈ FFl k r z z' π π' l.castSucc D :=
-    fun Y a b F hF => hP Wp Wq k r z z' π π' l.castSucc D Y a b hz hz' hD F hF
-  have comb : ∀ A ∈ FFl k r z z' π π' l.castSucc D, ∀ B ∈ FFl k r z z' π π' l.castSucc D,
-      (A + (-1 : ℂ) • B + (-(q Y * epsJ c d)) • J) ∈ FFl k r z z' π π' l.castSucc D :=
-    fun A hA B hB => FFl_add (FFl_add hA (FFl_smul hB _)) (FFl_smul hJ _)
-  constructor
-  · have h := vanish hCD hCl l hD (comb _ (tF (Y + 1) 0 c _ (tF Y 1 d J hJ)) _ (tF (Y + 1) 1 c _ (tF Y 0 d J hJ)))
-      (fun c₀ hc₀ g₁ hg₁ hx => by
-        have := (det_cell hCS hRM hFO hP hT hz hz' l q hdet hD hJ hc₀ hg₁ hx Y c d).1
-        simp only [Pi.add_apply, Pi.smul_apply, Pi.neg_apply, neg_smul, one_smul]
-        rw [← sub_eq_add_neg, ← sub_eq_add_neg, this, sub_self]) g hg
-    simp only [Pi.add_apply, Pi.smul_apply, Pi.neg_apply, neg_smul, one_smul] at h
-    rw [← sub_eq_add_neg, ← sub_eq_add_neg] at h
-    exact sub_eq_zero.mp h
-  · have h := vanish hCD hCl l hD (comb _ (tF Y c 0 _ (tF (Y + 1) d 1 J hJ)) _ (tF Y c 1 _ (tF (Y + 1) d 0 J hJ)))
-      (fun c₀ hc₀ g₁ hg₁ hx => by
-        have := (det_cell hCS hRM hFO hP hT hz hz' l q hdet hD hJ hc₀ hg₁ hx Y c d).2
-        simp only [Pi.add_apply, Pi.smul_apply, Pi.neg_apply, neg_smul, one_smul]
-        rw [← sub_eq_add_neg, ← sub_eq_add_neg, this, sub_self]) g hg
-    simp only [Pi.add_apply, Pi.smul_apply, Pi.neg_apply, neg_smul, one_smul] at h
-    rw [← sub_eq_add_neg, ← sub_eq_add_neg] at h
-    exact sub_eq_zero.mp h
 
 end Final
 
@@ -2433,16 +2085,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Form
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem determinant_level_from_capelli_identity : Formalism.FourierDecayAlt.Q.DetLevelFromCore := by
-  intro hCore hCS hRM hFO _ hP hT _ hCD hCl i Wp Wq _ _ _ _ _ _ P z z' π π' D hPl hD J hJ g hg Y c d
-  have hz := hPl.2.1
-  have hz' := hPl.2.2.1
-  have hall : ∀ j : Fin (P.r + 1), DetOn P.k P.r z z' π π' j (M.qC P) := by
-    intro j
-    induction j using Fin.reverseInduction with
-    | last => exact fun D hD J hJ g hg Y c d => hCore Wp Wq P z z' π π' D hPl hD J hJ g hg Y c d
-    | cast l ih => exact det_down hCS hRM hFO hP hT hCD hCl hz hz' l _ ih
-  exact hall (i P) D hD J hJ g hg Y c d
 
 end Formalism.FourierDecayAlt.P
 
@@ -3070,37 +2712,7 @@ theorem xC_sep (h : P.OK) {σ σ₀ : Ty P} (hne : σ ≠ σ₀) : ∃ Y, xC P �
   exact hne ((types_complete P h).2 σ σ₀
     (prod_match _ _ _ (rho_anti h σ) (rho_anti h σ₀) hcon))
 
-theorem xC_lift (h : P.OK) (ρ : Ty P) : ∃ σ : Ty (P1 P), ∀ Y, xC (P1 P) σ Y = xC P ρ Y := by
-  have hI := types_interlace P h ρ
-  obtain ⟨n₁, hn₁⟩ := h.int_u' 1 (one_mem_Icc h)
-  obtain ⟨σ, hσ⟩ := (types_complete (P1 P) (first_projection_preserves_ok h)).1 (rho P ρ)
-    (fun i hi => ⟨(hI i hi).2.1, (hI i hi).2.1, (hI i hi).2.2.2, (hI i hi).2.2.2⟩)
-    (fun i hi => by
-      obtain ⟨n, hn⟩ := rho_int h ρ i hi
-      refine ⟨n - n₁, ?_⟩
-      show rho P ρ i - P.u' 1 - 1 / 2 = _
-      push_cast; linarith)
-  refine ⟨σ, fun Y => ?_⟩
-  unfold xC
-  exact Finset.prod_congr rfl fun i hi => by rw [hσ i hi]
 
-theorem xC_match (h : P.OK) (σ : Ty (P1 P)) (τ : Ty (P2 P)) (he : ∀ Y, xC (P1 P) σ Y = xC (P2 P) τ Y) :
-    ∃ ρ : Ty P, ∀ Y, xC P ρ Y = xC (P1 P) σ Y := by
-  have hm : ∀ j ∈ Finset.Icc 1 (P.k - 1), rho (P1 P) σ j = rho (P2 P) τ j :=
-    prod_match _ _ _ (rho_anti (first_projection_preserves_ok h) σ) (rho_anti (second_projection_preserves_ok h) τ) he
-  have h1 := types_interlace (P1 P) (first_projection_preserves_ok h) σ
-  have h2 := types_interlace (P2 P) (second_projection_preserves_ok h) τ
-  obtain ⟨n₁, hn₁⟩ := h.int_u' 1 (one_mem_Icc h)
-  obtain ⟨ρ, hρ⟩ := (types_complete P h).1 (rho (P1 P) σ)
-    (fun i hi => ⟨by rw [hm i hi]; exact (h2 i hi).1, (h1 i hi).1, by rw [hm i hi]; exact (h2 i hi).2.2.1,
-      (h1 i hi).2.2.1⟩)
-    (fun i hi => by
-      obtain ⟨n, hn⟩ := rho_int (first_projection_preserves_ok h) σ i hi
-      have hn' : rho (P1 P) σ i - P.u' 1 - 1 / 2 = n := hn
-      exact ⟨n + n₁, by push_cast; linarith⟩)
-  refine ⟨ρ, fun Y => ?_⟩
-  unfold xC
-  exact Finset.prod_congr rfl fun i hi => by rw [hρ i hi]
 
 end Params
 
@@ -3111,137 +2723,13 @@ open Formalism.FourierDecayAlt.M
 def piL {W ι : Type*} [AddCommGroup W] [Module ℂ W] (L : ι → W → W) (c : ι → ℂ) (l : List ι) (x : W) : W :=
   l.foldr (fun τ acc => L τ acc - c τ • acc) x
 
-theorem piL_lin {W ι : Type*} [AddCommGroup W] [Module ℂ W] (L : ι → W → W) (hL : ∀ τ, IsLin (L τ)) (c : ι → ℂ)
-    (l : List ι) : IsLin (piL L c l) := by
-  induction l with
-  | nil => exact IsLin.id
-  | cons τ l ih =>
-    have h1 : IsLin (fun x => L τ x + (-c τ) • x) := (hL τ).add (IsLin.id.smul _)
-    have := h1.comp ih
-    intro a b s
-    have e := this a b s
-    simp only [neg_smul, ← sub_eq_add_neg] at e
-    exact e
 
-theorem piL_eig {W ι : Type*} [AddCommGroup W] [Module ℂ W] (L : ι → W → W) (hL : ∀ τ, IsLin (L τ)) (c ν : ι → ℂ)
-    {x : W} (hx : ∀ τ, L τ x = ν τ • x) (l : List ι) :
-    piL L c l x = (l.map fun τ => ν τ - c τ).prod • x := by
-  induction l with
-  | nil => simp [piL]
-  | cons τ l ih =>
-    show L τ (piL L c l x) - c τ • piL L c l x = _
-    rw [ih, (hL τ).map_smul, hx, List.map_cons, List.prod_cons, smul_smul, smul_smul, ← sub_smul]
-    congr 1
-    ring
 
-theorem kill_lemma {W ι : Type*} [AddCommGroup W] [Module ℂ W] [Fintype ι] (S : ι → Submodule ℂ W)
-    (hS : ⨆ τ, S τ = ⊤) (L : ι → W → W) (hL : ∀ τ, IsLin (L τ)) (lam : ι → ι → ℂ)
-    (hlam : ∀ τ τ', ∀ w ∈ S τ', L τ w = lam τ τ' • w) (μ : ι → ℂ) {u : W} (hu : ∀ τ, L τ u = μ τ • u)
-    (hne : ∀ τ, μ τ ≠ lam τ τ) : u = 0 := by
-  set c : ι → ℂ := fun τ => lam τ τ with hc
-  set l := (Finset.univ : Finset ι).toList with hl
-  have hlin := piL_lin L hL c l
-  have hzero : ∀ w, piL L c l w = 0 := by
-    intro w
-    have hw : w ∈ ⨆ τ, S τ := by rw [hS]; trivial
-    induction hw using Submodule.iSup_induction' with
-    | mem τ' w hw =>
-      rw [piL_eig L hL c (fun τ => lam τ τ') (fun τ => hlam τ τ' w hw) l]
-      have : (l.map fun τ => lam τ τ' - c τ).prod = 0 := by
-        apply List.prod_eq_zero
-        rw [List.mem_map]
-        exact ⟨τ', by simp [hl], by simp [hc]⟩
-      rw [this, zero_smul]
-    | zero => exact hlin.map_zero
-    | add a b _ _ ha hb => rw [hlin.map_add, ha, hb, add_zero]
-  have h1 := piL_eig L hL c μ hu l
-  rw [hzero] at h1
-  have hp : (l.map fun τ => μ τ - c τ).prod ≠ 0 := by
-    apply List.prod_ne_zero
-    rw [List.mem_map]
-    rintro ⟨τ, -, h0⟩
-    exact hne τ (sub_eq_zero.1 h0)
-  exact (smul_eq_zero.1 h1.symm).resolve_left hp
 
 theorem frame_sub {k r m : ℕ} {vs vs' : List (Fin (2 * r + k + 1) → ℂ)} {Bs : Fin m → Fin (2 * r + k + 1) → ℂ}
     (h : IsFrameOf k r vs Bs) (hsub : ∀ v ∈ vs', v ∈ vs) : IsFrameOf k r vs' Bs :=
   ⟨h.1, h.2.1, fun a v hv => h.2.2 a v (hsub v hv)⟩
 
-theorem spectral_at (hC : CapelliIdentityEntry) (hRT : RightTypeAction) (hBr : Branching)
-    {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
-    [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (z z' : Fin (2 * P.r + P.k + 1) → ℂ)
-    (π : Mx P.k P.r → (Wp →L[ℂ] Wp)) (π' : Mx P.k P.r → (Wq →L[ℂ] Wq)) (D : Set (Mx P.k P.r))
-    (hPl : IsPlace P z z' π π') (hD : IsDom P.k P.r z z' (Fin.last P.r) D) (hGG : ∀ g ∈ D, GGl P.k P.r z z' g ≠ 0)
-    {g : Mx P.k P.r} (hg : g ∈ Glev P.k P.r (Fin.last P.r) ∩ D) :
-    ∃ S : M.Ty (P1 P) → Submodule ℂ Wq, (⨆ σ, S σ = ⊤) ∧
-      (∀ J' ∈ FFl P.k P.r z z' π π' (Fin.last P.r) D, ∀ σ, ∀ v ∈ S σ, ∀ Y : ℂ,
-        tL P.k P.r z z' (Fin.last P.r) Y 1 1 J' g v = ((GGl P.k P.r z z' g : ℂ) * M.xC (P1 P) σ Y) • J' g v) ∧
-      (∀ J' ∈ FFl P.k P.r z z' π π' (Fin.last P.r) D, ∀ σ,
-        (¬ ∃ ρ : M.Ty P, ∀ Y, M.xC P ρ Y = M.xC (P1 P) σ Y) → ∀ v ∈ S σ, J' g v = 0) := by
-  obtain ⟨hOK, hz, hz', hTz, hTz', hπ, hπ'⟩ := id hPl
-  obtain ⟨-, hrep, hcont, -, -, -⟩ := id hπ
-  obtain ⟨-, hrep', hcont', -, -, -⟩ := id hπ'
-  have hTpos : 0 < Tz P.k P.r z := by rw [hTz]; exact hOK.T_pos
-  have hTpos' : 0 < Tz P.k P.r z' := by rw [hTz']; exact hOK.T'_pos
-  obtain ⟨e', e'', Bs, ⟨he1, he2, he3⟩, ⟨hf1, hf2, hf3⟩, hB1, hB2, hB3⟩ :=
-    geom_at hOK.k_pos hz hz' hTpos hTpos' hg.1 (hGG g hg.2)
-  obtain ⟨S, hInt, -, hcap⟩ := hBr Wq (P1 P) (first_projection_preserves_ok hOK) rfl z' e' π' hz' hTpos' hπ' he1 he2 he3
-  obtain ⟨S₂, hInt₂, -, hcap₂⟩ := hBr Wp (P2 P) (second_projection_preserves_ok hOK) rfl z e'' π hz hTpos hπ hf1 hf2 hf3
-  have hcapY : ∀ (σ : M.Ty (P1 P)) (Y : ℂ), ∀ v ∈ S σ,
-      capRep P.k P.r π' Bs (Y + ((P.k : ℂ) - 2) / 2) v = M.xC (P1 P) σ Y • v := by
-    intro σ Y v hv
-    have := hcap Bs hB1 σ (Y + ((P.k : ℂ) - 2) / 2) v hv
-    rw [show Y + ((P.k : ℂ) - 2) / 2 - (((P1 P).k : ℂ) - 2) / 2 = Y from add_sub_cancel_right _ _] at this
-    exact this
-  have hcapY₂ : ∀ (τ : M.Ty (P2 P)) (Y : ℂ), ∀ v ∈ S₂ τ,
-      capRep P.k P.r π (fun a => g *ᵥ Bs a) (Y + ((P.k : ℂ) - 2) / 2) v = M.xC (P2 P) τ Y • v := by
-    intro τ Y v hv
-    have := hcap₂ (fun a => g *ᵥ Bs a) hB3 τ (Y + ((P.k : ℂ) - 2) / 2) v hv
-    rw [show Y + ((P.k : ℂ) - 2) / 2 - (((P2 P).k : ℂ) - 2) / 2 = Y from add_sub_cancel_right _ _] at this
-    exact this
-  refine ⟨S, hInt.submodule_iSup_eq_top, ?_, ?_⟩
-  · intro J' hJ' σ v hv Y
-    rw [hC _ P.k P.r z z' D J' hz hz' hD.1 hJ'.1 g hg (hGG g hg.2) Bs hB2 Y]
-    show (GGl P.k P.r z z' g : ℂ) • (capR P.k P.r Bs (Y + ((P.k : ℂ) - 2) / 2) J' g v) = _
-    rw [hRT Wp Wq P.k P.r (P.k - 1) z z' π π' D hz hz' hD hrep' hcont' J' hJ' g hg Bs
-      (frame_sub hB1 (by simp)) _ v, hcapY σ Y v hv, map_smul, smul_smul]
-  · intro J' hJ' σ hno v hv
-    have hginv : g⁻¹ * g = 1 := Matrix.nonsing_inv_mul _ (WeylGroupFacts.isUnit_of_uh hg.1.1)
-    have hint : ∀ h' ∈ UWset P.k P.r z', h' *ᵥ (g⁻¹ *ᵥ z) = g⁻¹ *ᵥ z → ∀ v, J' g (π' h' v) =
-        π (g * h' * g⁻¹) (J' g v) := by
-      intro h' hh' hy v
-      have hconj : g * h' * g⁻¹ ∈ UWset P.k P.r z := by
-        have hgi : g⁻¹ ∈ UH (Hpk P.k P.r) := WeylGroupFacts.uh_inv hg.1.1
-        refine ⟨WeylGroupFacts.uh_mul (WeylGroupFacts.uh_mul hg.1.1 hh'.1) hgi, fun c => ?_, ?_⟩
-        · have hc := hg.1.2 c (by simp)
-          have i1 : g⁻¹ *ᵥ bvec (eI P.k P.r c) = bvec (eI P.k P.r c) := by
-            conv_lhs => rw [← hc.1]
-            rw [Matrix.mulVec_mulVec, hginv, Matrix.one_mulVec]
-          have i2 : g⁻¹ *ᵥ bvec (esI P.k P.r c) = bvec (esI P.k P.r c) := by
-            conv_lhs => rw [← hc.2]
-            rw [Matrix.mulVec_mulVec, hginv, Matrix.one_mulVec]
-          constructor
-          · rw [← Matrix.mulVec_mulVec, i1, ← Matrix.mulVec_mulVec, (hh'.2.1 c).1, hc.1]
-          · rw [← Matrix.mulVec_mulVec, i2, ← Matrix.mulVec_mulVec, (hh'.2.1 c).2, hc.2]
-        · rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hy, inv_mulVec_uh hg.1.1]
-      have a1 := hJ'.2.2.2 g hg 1 (uw_one z) h' hh'
-      have a2 := hJ'.2.2.2 g hg (g * h' * g⁻¹) hconj 1 (uw_one z')
-      rw [one_mul, hrep.1] at a1
-      rw [mul_one, Matrix.mul_assoc, hginv, Matrix.mul_one, hrep'.1] at a2
-      have a3 := a1.symm.trans a2
-      exact congrFun (congrArg DFunLike.coe a3) v
-    have hY : ∀ τ : M.Ty (P2 P), ∃ Y, M.xC (P1 P) σ Y ≠ M.xC (P2 P) τ Y := by
-      intro τ
-      by_contra hcon
-      push_neg at hcon
-      exact hno (xC_match hOK σ τ hcon)
-    choose Yτ hYτ using hY
-    refine kill_lemma S₂ hInt₂.submodule_iSup_eq_top
-      (fun τ => capRep P.k P.r π (fun a => g *ᵥ Bs a) (Yτ τ + ((P.k : ℂ) - 2) / 2))
-      (fun τ => capRep_lin hB3 (z := z) (by simp) hrep hcont _)
-      (fun τ τ' => M.xC (P2 P) τ' (Yτ τ)) (fun τ τ' w hw => hcapY₂ τ' (Yτ τ) w hw)
-      (fun τ => M.xC (P1 P) σ (Yτ τ)) (fun τ => ?_) hYτ
-    rw [← capRep_intertwine hB2 hrep' hcont' hg.1.1 (J' g) hint, hcapY σ _ v hv, map_smul]
 
 end Spectral
 
@@ -3386,59 +2874,5 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Form
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem t22_entry_from_descent_identities : Formalism.FourierDecayAlt.Q.RadialDecompositionOfParts := by
-  intro _ _ hC hRT hBr hP Wp Wq _ _ _ _ _ _ P z z' π π' D hPl hD hGG J hJ
-  classical
-  obtain ⟨hOK, hz, hz', -, -, -, -⟩ := id hPl
-  have hsp := fun (g : Mx P.k P.r) (hg : g ∈ Glev P.k P.r (Fin.last P.r) ∩ D) =>
-    spectral_at hC hRT hBr P z z' π π' D hPl hD hGG hg
-  choose S hS1 hS2 hS3 using hsp
-  have hpr := fun σ₀ => proj_exists hP P hOK z z' hz hz' π π' D hD hGG S hS2 hJ σ₀
-  choose K hK hKv using hpr
-  have hl := fun ρ => xC_lift hOK ρ
-  choose ι hι using hl
-  have hιeq : ∀ (ρ : M.Ty P) (σ' : M.Ty (P1 P)), (∀ Y, M.xC P ρ Y = M.xC (P1 P) σ' Y) → σ' = ι ρ := by
-    intro ρ σ' h
-    by_contra hne
-    obtain ⟨Y, hY⟩ := xC_sep (first_projection_preserves_ok hOK) hne
-    exact hY (by rw [hι, h])
-  have hιinj : ∀ ρ ρ', ι ρ = ι ρ' → ρ = ρ' := by
-    intro ρ ρ' h
-    by_contra hne
-    obtain ⟨Y, hY⟩ := xC_sep hOK hne
-    exact hY (by rw [← hι, ← hι, h])
-  refine ⟨fun ρ => K (ι ρ), fun ρ => hK _, ?_, ?_⟩
-  · intro g hg
-    ext v
-    have hv : v ∈ ⨆ σ, S g hg σ := by rw [hS1]; trivial
-    induction hv using Submodule.iSup_induction' with
-    | mem σ' v hv =>
-      rw [ContinuousLinearMap.sum_apply]
-      simp only [hKv _ g hg σ' v hv]
-      by_cases hex : ∃ ρ : M.Ty P, ∀ Y, M.xC P ρ Y = M.xC (P1 P) σ' Y
-      · obtain ⟨ρ₀, hρ₀⟩ := hex
-        have e := hιeq ρ₀ σ' hρ₀
-        rw [Finset.sum_eq_single ρ₀, if_pos e, one_smul]
-        · intro ρ _ hne
-          rw [if_neg, zero_smul]
-          intro h
-          exact hne (hιinj _ _ (h.symm.trans e))
-        · intro h; exact absurd (Finset.mem_univ _) h
-      · rw [hS3 g hg J hJ σ' hex v hv]
-        simp
-    | zero => simp
-    | add a b _ _ ha hb => rw [map_add, map_add, ha, hb]
-  · intro ρ Y g hg
-    ext v
-    have hv : v ∈ ⨆ σ, S g hg σ := by rw [hS1]; trivial
-    induction hv using Submodule.iSup_induction' with
-    | mem σ' v hv =>
-      rw [hS2 g hg _ (hK _) σ' v hv Y]
-      show _ = ((GGl P.k P.r z z' g : ℂ) * M.xC P ρ Y) • K (ι ρ) g v
-      by_cases h : σ' = ι ρ
-      · rw [h, hι]
-      · rw [hKv _ g hg σ' v hv, if_neg h, zero_smul, smul_zero, smul_zero]
-    | zero => simp
-    | add a b _ _ ha hb => rw [map_add, map_add, ha, hb]
 
 end Formalism.FourierDecayAlt.P

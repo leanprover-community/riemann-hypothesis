@@ -467,14 +467,7 @@ theorem IsEePM.sum {n : ℕ} {ι : Type*} (s : Finset ι) (M : ι → C.FM n) (h
     rw [Finset.sum_insert ha]
     exact IsEePM.add (h a (Finset.mem_insert_self a s)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
-theorem fmul_sub_mid {n : ℕ} (X M N Z : C.FM n) :
-    C.fmul X (C.fmul M Z) - C.fmul X (C.fmul N Z) = C.fmul X (C.fmul (M - N) Z) := by
-  funext s t x
-  simp only [Ctx.fmul, Matrix.sub_apply, Pi.sub_apply, ContinuousLinearMap.sub_comp, ContinuousLinearMap.comp_sub,
-    Finset.sum_sub_distrib]
 
-theorem fblk_sub {n : ℕ} (K K' : Fin 2 → Fin 2 → C.FM n) :
-    C.fblk K - C.fblk K' = C.fblk (fun i j => K i j - K' i j) := rfl
 
 theorem ee_nil_eq (Y : ℂ) :
     C.ee SS [] Y = ∑ l : Fin B.k0, C.fmul (C.fdiag (fun _ ρ => (Y + (B.rhoP ρ l : ℂ))⁻¹))
@@ -520,39 +513,6 @@ theorem ee_mem : ∀ (w : List (Bool × ℝ)) (Y : ℂ), IsEePM C SS true w.leng
 
 theorem IsEePM.of_eq {n : ℕ} {M N : C.FM n} (h : IsEePM C SS b n M) (e : M = N) : IsEePM C SS b n N := e ▸ h
 
-theorem ee_diff_mem : ∀ (w : List (Bool × ℝ)) (Y Y' : ℂ), IsEePM C SS false w.length (C.ee SS w Y - C.ee SS w Y')
-  | [], Y, Y' => IsEePM.sub (ee_nil_mem Y) (ee_nil_mem Y')
-  | (true, ya) :: w, Y, Y' => by
-      rw [Ctx.ee, Ctx.ee, fblk_sub]
-      refine IsEePM.blk _ fun i j => ?_
-      fin_cases i <;> fin_cases j
-      · refine IsEePM.of_eq (IsEePM.add (IsEePM.sub (ee_diff_mem w Y Y')
-          (IsEePM.smul (Y - ya)⁻¹ (ee_diff_mem w Y ya))) (IsEePM.smul (Y' - ya)⁻¹ (ee_diff_mem w Y' ya))) ?_
-        show _ = (C.ee SS w Y - ((Y - ya)⁻¹ • (C.ee SS w Y - C.ee SS w ya)) + C.fscal _) -
-          (C.ee SS w Y' - ((Y' - ya)⁻¹ • (C.ee SS w Y' - C.ee SS w ya)) + C.fscal _)
-        abel
-      · exact IsEePM.sub (IsEePM.scal _) (IsEePM.scal _)
-      · exact IsEePM.sub IsEePM.zero IsEePM.zero
-      · exact IsEePM.of_eq (IsEePM.mul (IsEePM.cst _) (IsEePM.mul (ee_diff_mem w Y Y') (IsEePM.cst _)))
-          (fmul_sub_mid _ _ _ _).symm
-  | (false, yb) :: w, Y, Y' => by
-      rw [Ctx.ee, Ctx.ee, fblk_sub]
-      refine IsEePM.blk _ fun i j => ?_
-      fin_cases i <;> fin_cases j
-      · exact ee_diff_mem w Y Y'
-      · exact IsEePM.sub IsEePM.zero IsEePM.zero
-      · exact IsEePM.sub (IsEePM.smul _ (IsEePM.mul (IsEePM.cst _) (IsEePM.cst _)))
-          (IsEePM.smul _ (IsEePM.mul (IsEePM.cst _) (IsEePM.cst _)))
-      · refine IsEePM.of_eq (IsEePM.add (IsEePM.sub
-          (IsEePM.mul (IsEePM.cst (fun s ρ => (C.xw w yb s ρ)⁻¹)) (IsEePM.mul (ee_diff_mem w Y Y') (IsEePM.cst (C.xw w yb))))
-          (IsEePM.smul (Y - yb)⁻¹ (ee_diff_mem w Y yb))) (IsEePM.smul (Y' - yb)⁻¹ (ee_diff_mem w Y' yb))) ?_
-        rw [← fmul_sub_mid]
-        show C.fmul (C.xMinv w yb) (C.fmul (C.ee SS w Y) (C.xM w yb)) -
-            C.fmul (C.xMinv w yb) (C.fmul (C.ee SS w Y') (C.xM w yb)) - _ + _ = (C.fmul (C.xMinv w yb) (C.fmul (C.ee SS w Y) (C.xM w yb)) -
-            ((Y - yb)⁻¹ • (C.ee SS w Y - C.ee SS w yb)) + C.fscal _) -
-          (C.fmul (C.xMinv w yb) (C.fmul (C.ee SS w Y') (C.xM w yb)) -
-            ((Y' - yb)⁻¹ • (C.ee SS w Y' - C.ee SS w yb)) + C.fscal _)
-        abel
 
 end Shape
 

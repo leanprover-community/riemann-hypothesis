@@ -191,11 +191,6 @@ theorem exists_isScale (Rl : RealDat3 D A3 Ks) (cG : G0 Rl.Pg D.R.r ≃* G0g D.n
     (c0L j) (hft.mapL j) _ w₀ hw
   exact ⟨c, hc0, gramR, c0R, c0L, hft, u, hu, hc⟩
 
-theorem exists_isScale_of_char (Rl : RealDat3 D A3 Ks) (cG : G0 Rl.Pg D.R.r ≃* G0g D.nd)
-    (v₀ : ∀ (j : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (Rl.MW j σ).Vec) {ρ : Setup D.ntw} (hρ : ρ.Good) (hpin : RealPin Rl cG ρ)
-    {F : Face3 D A3} (hC : Rl.Char3 F) (hio : FWT.IoExt Rl.toRealDat) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool)
-    (hv : FWT.IsChosenExtremalVector Rl.toRealDat j (sg0 D A3.A) (v₀ j _)) : ∃ c : ℂ, c ≠ 0 ∧ IsScale Rl v₀ (ρ.B i j b) c :=
-  exists_isScale Rl cG v₀ hρ hpin hC.lev hC.fam.tie hC.models.cV hC.thP hio i j b hv
 
 end GlobalTheory.SeriesTie
 

@@ -13,7 +13,6 @@ variable (R K : Type) [CommRing R] [Field K] [Algebra R K]
 
 def ccL (σ : Type) : MvPolynomial σ K →ₗ[K] K := lcoeff K 0
 
-theorem ccL_apply {σ : Type} (F : MvPolynomial σ K) : ccL K σ F = constantCoeff F := rfl
 
 def ccInt (σ : Type) : Submodule R (MvPolynomial σ K) :=
   (LinearMap.range (Algebra.linearMap R K)).comap ((ccL K σ).restrictScalars R)
@@ -42,28 +41,8 @@ theorem nablaLTw_le_ccInt (m : ℕ) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) K) :
   rw [cc_rowAct] at h1
   simp [h1]
 
-theorem H0_zero_le_ccInt_of_isLattice (m : ℕ) (Λ : Submodule R (Fin (m + 1) → K)) (hΛ : IsLattice R Λ) :
-    H0 R m 0 Λ ≤ ccInt R K _ := by
-  obtain ⟨g, hg, rfl⟩ := hΛ
-  exact (LatticeSystems.H0_le_twisted_nabla m 0 (fun _ _ _ => le_rfl) g hg).trans (nablaLTw_le_ccInt R K m g)
 
-theorem tensorLat_le_ccInt {S : Type} [Fintype S] {k n : ℕ} (M : S → Submodule R (MvPolynomial (Fin k × Fin n) K))
-    (h : ∀ s, M s ≤ ccInt R K _) : tensorLat R K M ≤ ccInt R K _ := by
-  unfold tensorLat
-  rw [Submodule.span_le]
-  rintro _ ⟨F, hF, rfl⟩
-  choose a ha using fun s => (mem_ccInt R K _).1 (h s (hF s))
-  refine (mem_ccInt R K _).2 ⟨∏ s, a s, ?_⟩
-  rw [map_prod, map_prod]
-  refine Finset.prod_congr rfl fun s _ => ?_
-  rw [ha s, blockEmb, constantCoeff_rename]
 
-theorem Hten_le_ccInt {n' m : ℕ} (Λ : Fin n' → Submodule R (Fin (m + 1) → K)) (hΛ : ∀ s, IsLattice R (Λ s)) :
-    Hten R (fun _ _ => 0 : Fin n' → Fin (m + 1) → ℤ) Λ ≤ ccInt R K _ := by
-  unfold Hten
-  refine tensorLat_le_ccInt R K _ fun s => ?_
-  rw [lamAt_zero]
-  exact H0_zero_le_ccInt_of_isLattice R K m _ (hΛ s)
 
 theorem const_of_dualWeyl (r n : ℕ) (F : MvPolynomial (Fin r × Fin n) K) (hF : F ∈ dualWeyl K r n 0) :
     F = C (constantCoeff F) := by
@@ -97,14 +76,6 @@ theorem Vsp_le {n' m : ℕ} : Vsp K (fun _ _ => 0 : Fin n' → Fin (m + 1) → �
   simp only [this]
   rw [smul_eq_C_mul, mul_one, map_prod]
 
-theorem dimV_le_one {n' m : ℕ} : dimV K (fun _ _ => 0 : Fin n' → Fin (m + 1) → ℤ) ≤ 1 := by
-  unfold dimV
-  calc Module.finrank K (Vsp K (fun _ _ => 0 : Fin n' → Fin (m + 1) → ℤ))
-      ≤ Module.finrank K (Submodule.span K {(1 : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) K)}) :=
-        Submodule.finrank_mono (Vsp_le K)
-    _ ≤ 1 := by
-        have := finrank_span_le_card (R := K) ({1} : Set (MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) K))
-        simpa using this
 
 theorem one_mem_Vsp {n' m : ℕ} : (1 : MvPolynomial _ K) ∈ Vsp K (fun _ _ => 0 : Fin n' → Fin (m + 1) → ℤ) := by
   unfold Vsp
@@ -114,9 +85,6 @@ theorem one_mem_Vsp {n' m : ℕ} : (1 : MvPolynomial _ K) ∈ Vsp K (fun _ _ => 
   rw [h0]
   exact one_mem_dualWeyl K _ _
 
-theorem Ar_zero {n' m : ℕ} (r : ℕ) : Ar r (fun _ _ => 0 : Fin n' → Fin (m + 1) → ℤ) = 0 := by
-  unfold Ar
-  simp [lamAt_zero]
 
 end CC
 

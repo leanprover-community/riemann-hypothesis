@@ -417,19 +417,6 @@ def IsPrimFrame [Fintype A] (Λ : Submodule 𝒪[k] (D → k)) (X : Matrix A D k
   X.rank = Fintype.card A ∧ X ∈ matLat A Λ ∧
     Submodule.span 𝒪[k] (Set.range X.row) = (Submodule.span k (Set.range X.row)).restrictScalars 𝒪[k] ⊓ Λ
 
-theorem isPrimitiveFrame_standardBasis [Fintype A] [DecidableEq D] {A' : Type*} [Fintype A'] (σ : A ⊕ A' ≃ D) :
-    IsPrimFrame (stdLat k D) (X0 k σ) := by
-  have hm : X0 k σ ∈ matLat A (stdLat k D) := mem_matLat_stdLat.2 fun i j => by
-    simp only [X0, of_apply]; split_ifs <;> simp
-  refine ⟨(rank_eq_card_iff_exists_frameMatrixFirstColumnBlock σ _).2 ⟨1, by simp⟩, hm, le_antisymm ?_ ?_⟩
-  · exact Submodule.span_le.2 (by rintro _ ⟨i, rfl⟩; exact ⟨Submodule.subset_span ⟨i, rfl⟩, hm i⟩)
-  · rintro x ⟨hx, hx'⟩
-    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun k).1 hx
-    refine Submodule.sum_mem _ fun i _ => ?_
-    have h1 : c i ∈ 𝒪[k] := by
-      classical
-      simpa [X0, Finset.sum_apply, Matrix.row] using mem_stdLat.1 hx' (σ (Sum.inl i))
-    exact Submodule.smul_mem _ (⟨_, h1⟩ : 𝒪[k]) (Submodule.subset_span ⟨i, rfl⟩)
 
 variable [DecidableEq D]
 
@@ -439,21 +426,7 @@ def glLat (Λ : Submodule 𝒪[k] (D → k)) : Subgroup (GL D k) where
   mul_mem' {g h} hg hh x := by rw [Units.val_mul, ← vecMul_vecMul, hh, hg]
   inv_mem' {h} hh x := by rw [← hh, vecMul_vecMul, Units.inv_mul, vecMul_one]
 
-theorem mem_glLat {Λ : Submodule 𝒪[k] (D → k)} {h : GL D k} : h ∈ glLat Λ ↔ ∀ x, x ᵥ* h.val ∈ Λ ↔ x ∈ Λ := Iff.rfl
 
-theorem mem_glLat_iff_image {Λ : Submodule 𝒪[k] (D → k)} {h : GL D k} :
-    h ∈ glLat Λ ↔ (fun x => x ᵥ* h.val) '' Λ = Λ := by
-  constructor
-  · intro hh
-    ext y
-    exact ⟨by rintro ⟨x, hx, rfl⟩; exact (hh x).2 hx, fun hy => ⟨y ᵥ* (h⁻¹).val, ((glLat Λ).inv_mem hh y).2 hy, by
-      simp only [vecMul_vecMul, Units.inv_mul, vecMul_one]⟩⟩
-  · intro hh x
-    refine ⟨fun hx => ?_, fun hx => hh.le ⟨x, hx, rfl⟩⟩
-    obtain ⟨y, hy, hxy⟩ := hh.ge hx
-    have := congrArg (· ᵥ* (h⁻¹).val) hxy
-    simp only [vecMul_vecMul, Units.mul_inv, vecMul_one] at this
-    exact this ▸ hy
 
 def glLatCong (c : kˣ) (Λ : Submodule 𝒪[k] (D → k)) : Subgroup (GL D k) where
   carrier := {h | h ∈ glLat Λ ∧ ∀ x ∈ Λ, x ᵥ* (h.val - 1) ∈ c • Λ}
@@ -650,31 +623,8 @@ theorem invFourierSum_inv_apply (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (P 
       (ψ (pairCols P T ((ϖ ^ e)⁻¹ • liftRes S)) : ℂ) else 0 := by
   simp only [invFourierSum_apply, AddChar.inv_apply, neg_neg]
 
-theorem invFourierSum_inv_eq_neg (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (P : Finset D) (Ψ : Matrix A D k → ℂ)
-    (T : Matrix A D k) : invFourierSum ψ⁻¹ ϖ e P Ψ T =
-      invFourierSum ψ ϖ e P Ψ (setCols P T (Matrix.of fun i j => -T i j)) := by
-  have h1 : ∀ S, setCols P (setCols P T (Matrix.of fun i j => -T i j)) S = setCols P T S := fun S => by
-    ext i j; by_cases h : j ∈ P <;> simp [setCols, h]
-  have h2 : ∀ S, -pairCols P (setCols P T (Matrix.of fun i j => -T i j)) S = pairCols P T S := fun S => by
-    simp [pairCols, setCols]
-  have h3 : (∀ i, ∀ j ∈ P, setCols P T (Matrix.of fun i j => -T i j) i j ∈ 𝒪[k]) ↔ ∀ i, ∀ j ∈ P, T i j ∈ 𝒪[k] :=
-    forall_congr' fun i => forall₂_congr fun j h => by simp [setCols, h]
-  classical
-  rw [invFourierSum_inv_apply, invFourierSum_apply]
-  simp only [h1, h2]
-  exact if_congr h3.symm rfl rfl
 
-theorem fourierSum_empty (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (Φ : Matrix A D k → ℂ) :
-    fourierSum ψ ϖ e ∅ Φ = Φ := by
-  funext Y
-  have h : ∀ T, setCols ∅ Y T = Y := fun T => by ext i j; simp [setCols]
-  simp [fourierSum_apply, h, pairCols]
 
-theorem invFourierSum_empty (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (Φ : Matrix A D k → ℂ) :
-    invFourierSum ψ ϖ e ∅ Φ = Φ := by
-  funext Y
-  have h : ∀ T, setCols ∅ Y T = Y := fun T => by ext i j; simp [setCols]
-  simp [invFourierSum_apply, h, pairCols]
 
 end Fourier
 
@@ -805,28 +755,8 @@ def squareFlip (μ : Measure (GL A' k)) (σ : A ⊕ A' ≃ D) (ψ : AddChar k Ci
     (P : Finset D) (ΦB : Matrix A' D k → ℂ) : Matrix A D k → ℂ :=
   invFourierSum ψ⁻¹ ϖ e Pᶜ (phiA μ σ ν ϖ e (blockLat ϖ e P) (fourierSum ψ ϖ e P ΦB))
 
-theorem shell_zero_example (ϖ : kˣ) (ν : kˣ →* ℂˣ) (z : ℂ) (φ : Matrix A A k → ℂ)
-    (hφ : ∀ g ∈ KO k A, φ g.val * (ν (gdet g) : ℂ) = 1) : shell (haarVol (KO k A)) ϖ ν z φ 0 = 1 := by
-  rw [shell, shellSet_zero, setIntegral_congr_fun isOpen_KO.measurableSet (g := fun _ => (1 : ℂ))]
-  · simp [Measure.real, haarVol_self isOpen_KO le_rfl]
-  · intro g hg
-    simp only [hφ g hg, apow_of_valuation_eq_one (valuation_gdet_of_mem_KO hg), one_mul]
 
-theorem smallF_of_isEmpty [IsEmpty A'] (ν : kˣ →* ℂˣ) (Ψ : Matrix A' D k → ℂ) (Y : Matrix A' D k) :
-    smallF (haarVol (KO k A')) ν Ψ Y = Ψ 0 := by
-  have h1 : (KO k A' : Set (GL A' k)) = Set.univ :=
-    Set.eq_univ_of_forall fun g => Subsingleton.elim 1 g ▸ one_mem _
-  have h2 := haarVol_self (k := k) (n := A') isOpen_KO le_rfl
-  rw [h1] at h2
-  have h3 : ∀ g : GL A' k, gdet g = 1 := fun g => Subsingleton.elim 1 g ▸ map_one _
-  have h4 : ∀ g : GL A' k, g.val * Y = 0 := fun g => by ext i; exact isEmptyElim i
-  simp [smallF, h3, h4, Measure.real, h2]
 
-theorem schwartzDatum_standardBasis_of_isEmpty [IsEmpty A'] (σ : A ⊕ A' ≃ D) (ν : kˣ →* ℂˣ) (ϖ : kˣ) (e : ℕ) (Ψ : Matrix A' D k → ℂ) :
-    phiA (haarVol (KO k A')) σ ν ϖ e (blockLat ϖ e Finset.univ) Ψ (X0 k σ) = Ψ 0 := by
-  have := splitTheta_fFun_frameFirstBlock_mul (haarVol (KO k A')) σ ν Ψ 1
-  rw [phiA, latA_blockLat, Finset.compl_univ, blockLat_empty, if_pos (isPrimitiveFrame_standardBasis σ)]
-  simpa [smallF_of_isEmpty] using this
 
 end Maps
 
@@ -855,13 +785,7 @@ theorem mem_blockLat_two (ϖ : kˣ) (e : ℕ) (x : D₁ ⊕ D₂ → k) :
       ∀ j, valuation k (x (.inr j)) ≤ valuation k (((ϖ ^ e)⁻¹ : kˣ) : k) := by
   simp [blockLat, mem_diagLat, blockUnits, Assignment.block]
 
-theorem mem_blockLat_one (ϖ : kˣ) (e : ℕ) (x : D₁ ⊕ D₂ → k) :
-    x ∈ blockLat ϖ e (Assignment.one.block D₁ D₂) ↔
-      (∀ j, valuation k (x (.inl j)) ≤ valuation k (((ϖ ^ e)⁻¹ : kˣ) : k)) ∧ ∀ j, valuation k (x (.inr j)) ≤ 1 := by
-  simp [blockLat, mem_diagLat, blockUnits, Assignment.block]
 
-theorem compl_block_two : (Assignment.two.block D₁ D₂)ᶜ = Assignment.one.block D₁ D₂ := by
-  ext (j | j) <;> simp [Assignment.block]
 
 theorem compl_block_one : (Assignment.one.block D₁ D₂)ᶜ = Assignment.two.block D₁ D₂ := by
   ext (j | j) <;> simp [Assignment.block]
@@ -955,13 +879,7 @@ def nu (i j : ℕ) : kˣ →* ℂˣ := G.mu (j + 1) / G.chi (G.m - i)
 
 theorem alpha_div_beta (i j : ℕ) : G.alpha i j / G.beta i j = G.nu i j := mul_div_mul_right_eq_div _ _ _
 
-theorem kappa_inner (i j : ℕ) :
-    G.kappa (.ex i j) (i, j) / G.kappa (.theta i j) (i, j) = (G.nu i j)⁻¹ := by
-  simp [kappa, blockChar, nu]
 
-theorem kappa_outer (i j : ℕ) :
-    G.kappa (.theta (i + 1) j) (i + 1, j + 1) / G.kappa (.ex i (j + 1)) (i + 1, j + 1) = G.nu i j := by
-  simp [kappa, blockChar, nu]
 
 abbrev Args : Type _ := ∀ e : Edge, Matrix (Fin (G.rank e.tgt)) (Fin (G.rank e.src)) k
 
@@ -1115,46 +1033,7 @@ theorem Assignment.read_mem_KO (s : Assignment) {n : Type*} [Fintype n] [Decidab
   · exact invT_mem_KO hg
   · exact hg
 
-theorem Grid.IsGood.condLE_kappa {G : Grid k} {ϖ : kˣ} {ψ : AddChar k Circle} {e : ℕ} (h : G.IsGood ϖ ψ e)
-    {b : Edge} (hb : b.InGrid G.m) (X : ℕ × ℕ) : CondLE ϖ e (G.kappa b X) := by
-  intro x hx
-  have h1 : G.eta x = 1 := h.eta x hx.1
-  cases b with
-  | theta i j =>
-    have := (h.square 0 (by have := hb.2; omega) j hb.2).condα x hx
-    simpa [Grid.kappa, Grid.blockChar, Grid.alpha, h1] using this
-  | ex i j =>
-    have := (h.square i hb.1 0 (by have := hb.1; omega)).condβ x hx
-    simpa [Grid.kappa, Grid.blockChar, Grid.beta, h1] using this
 
-theorem Grid.IsGood.exists_isAdmissible {G : Grid k} {ϖ : kˣ} {ψ : AddChar k Circle} {e : ℕ} (h : G.IsGood ϖ ψ e)
-    (hϖ : IsUnif ϖ) (s : Assignment) {γ : List Edge} (hγ : IsPath γ) (hm : ∀ b ∈ γ, b.InGrid G.m) :
-    ∃ S : G.PiLocalization₂, S.path = γ ∧ S.IsAdmissible s ϖ e ∧ S.tensor 0 = 1 := by
-  refine ⟨⟨γ, fun X => detCong (ϖ ^ e) _, G.lines₂ γ fun b =>
-      Set.indicator (SetLike.coe (matLat (Fin (G.rank b.tgt)) (stdLat k (Fin (G.rank b.src))))) 1⟩, rfl,
-    ⟨hγ, fun X _ => ⟨isOpen_detCong _ _, inf_le_left⟩,
-      G.isTensor_pureTensor ϖ e γ _ fun b _ => hasDepth_indicator hϖ e _, fun X _ u hu => ?_⟩, ?_⟩
-  · have hg : ∀ Y, (Pi.mulSingle X u : G.VertexGroup) Y ∈ detCong (ϖ ^ e) _ := fun Y => by
-      by_cases hY : Y = X
-      · subst hY; simpa using hu
-      · simp [hY, one_mem]
-    generalize (Pi.mulSingle X u : G.VertexGroup) = g at hg
-    funext x
-    have h1 : (γ.map (G.edgeFactor s g)).prod = 1 := List.prod_eq_one fun c hc => by
-      obtain ⟨b, hb, rfl⟩ := List.mem_map.1 hc
-      simp only [Grid.edgeFactor, h.condLE_kappa (hm b hb) _ _ (hg _).2,
-        apow_of_valuation_eq_one (valuation_gdet_of_mem_KO (s.read_mem_KO (hg _).1))]
-      simp
-    simp only [Grid.pathAct, h1, one_mul, Grid.lines₂]
-    refine congrArg List.prod (List.map_congr_left fun b _ => ?_)
-    have h2 := mul_mul_mem_matLat_iff (inv_mem (s.read_mem_KO (hg b.tgt).1)) (s.read_mem_KO (hg b.src).1) (x b)
-    simp only [Grid.moveArgs]
-    by_cases hx : x b ∈ matLat _ (stdLat k _)
-    · rw [Set.indicator_of_mem hx, Set.indicator_of_mem (h2.2 hx)]; rfl
-    · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem (fun H => hx (h2.1 H))]
-  · refine List.prod_eq_one fun c hc => ?_
-    obtain ⟨b, _, rfl⟩ := List.mem_map.1 hc
-    exact Set.indicator_of_mem (zero_mem (matLat _ (stdLat k _))) _
 
 theorem isOpen_map_invT {n : Type*} [Fintype n] [DecidableEq n] {J : Subgroup (GL n k)}
     (ho : IsOpen (J : Set (GL n k))) (hK : J ≤ KO k n) :

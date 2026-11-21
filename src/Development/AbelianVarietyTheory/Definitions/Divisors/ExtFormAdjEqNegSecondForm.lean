@@ -671,8 +671,6 @@ end Tangent
 def wedge {V : Type*} (α β : V → V → ℂ) (ξ₁ η₁ ξ₂ η₂ : V) : ℂ :=
   α ξ₁ η₁ * β ξ₂ η₂ + α ξ₂ η₂ * β ξ₁ η₁ - α ξ₁ η₂ * β ξ₂ η₁ - α ξ₂ η₁ * β ξ₁ η₂
 
-theorem wedge_comm {V : Type*} (α β : V → V → ℂ) : wedge α β = wedge β α := by
-  ext; simp only [wedge]; ring
 
 def ddcForm (α : E → E → E → ℂ) (z ξ₁ η₁ ξ₂ η₂ : E) : ℂ :=
   kappa * (ddbar (fun x => α x ξ₂ η₂) z ξ₁ η₁ + ddbar (fun x => α x ξ₁ η₁) z ξ₂ η₂

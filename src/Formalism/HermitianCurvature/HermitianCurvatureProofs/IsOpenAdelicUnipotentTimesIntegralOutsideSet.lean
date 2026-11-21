@@ -1151,8 +1151,6 @@ end Formalism.FourierDecayAlt.P.Qx4
 namespace Formalism.FourierDecayAlt.P
 
 theorem resSurj_statement : Formalism.FourierDecayAlt.Q.ResSurj := Qx4.resSurj
-theorem cell_decomposition : Formalism.FourierDecayAlt.Q.CellDecomp := Qx4.cellDecomp
-theorem cells_dense : Formalism.FourierDecayAlt.Q.CellDense := Qx4.cellDense
 theorem flag_frame_transfer : Formalism.FourierDecayAlt.Q.FFTransfer := Qx4.fFTransfer
 
 end Formalism.FourierDecayAlt.P

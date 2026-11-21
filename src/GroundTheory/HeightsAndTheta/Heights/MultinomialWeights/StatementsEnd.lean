@@ -368,9 +368,6 @@ theorem RestPWellDefined.hypotheses_inhabited :
     sampleF ≠ 0 ∧ RestTerms.IsPowerSumDecomposition d1.f d1.N sampleF sampleQ :=
   ⟨ShFormula.hypotheses_inhabited.1, ShFormula.hypotheses_inhabited.2.2.2⟩
 
-theorem sample_isHomDecomp : IsHomDecomp d1 sampleF sampleQ :=
-  ⟨ShFormula.hypotheses_inhabited.2.1, ShFormula.hypotheses_inhabited.2.2.1,
-    ShFormula.hypotheses_inhabited.2.2.2⟩
 
 theorem ShTotIndependent.hypotheses_inhabited : 0 < d1.f := Nat.one_pos
 

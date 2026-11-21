@@ -118,12 +118,6 @@ def repW (w : D.what₂.places.Pl) : D.what₂.places.Pl :=
 theorem repW_spec (w : D.what₂.places.Pl) : repW D w = w ∨ repW D w = D.what₂.places.conj w :=
   @Classical.epsilon_spec _ (fun v => v = w ∨ v = D.what₂.places.conj w) ⟨w, Or.inl rfl⟩
 
-theorem repW_conj (w : D.what₂.places.Pl) : repW D (D.what₂.places.conj w) = repW D w := by
-  unfold repW
-  congr 1
-  funext v
-  rw [D.what₂.places.conj_conj]
-  exact propext or_comm
 
 theorem resChar_conj' (w : D.what₂.places.Pl) :
     D.what₂.places.resChar (D.what₂.places.conj w) = D.what₂.places.resChar w := by

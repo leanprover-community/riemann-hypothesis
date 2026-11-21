@@ -42,20 +42,10 @@ import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PAntisymPerturba
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFrameGraphGeneric
 set_option maxSynthPendingDepth 1
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_point_exists_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelPoint.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelPoint.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.BlockGenOfModel.proof GroundTheory.Heights₂.Heights.AutoClose.block_generation_transfer_holds GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelOfBlockGen.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_mul_sections_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelMulSecs.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelMulSecs.proof GroundTheory.Heights₂.Heights.AutoClose.tensor_product_realises_holds GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.BaseRealises.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.special_model_point_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.SpecialModelPoint.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.SpecialModelPoint.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.BlockGenOfModel.proof GroundTheory.Heights₂.Heights.AutoClose.block_generation_transfer_holds GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelOfBlockGen.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_change_generated_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelChangeGen.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelChangeGen.proof GroundTheory.Heights₂.Heights.AutoClose.model_twist_generated_holds
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_twist_mul_sections_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelTwistMulSecs.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelTwistMulSecs.proof GroundTheory.Heights₂.Heights.AutoClose.tensor_product_realises_holds
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FrameGraphGeneric : GroundTheory.Heights₂.Heights.FrameGraphGeneric.Statement :=
   @GroundTheory.Heights₂.Heights.FrameGraphGeneric.proof GroundTheory.Heights₂.Heights.AutoClose.FrameJacobianGeneric GroundTheory.Heights₂.Heights.FrameImplicitGraph.proof

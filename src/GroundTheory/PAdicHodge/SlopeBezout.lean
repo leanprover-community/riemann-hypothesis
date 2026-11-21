@@ -115,9 +115,6 @@ theorem free_of_finite_of_isTorsionFree [Module.Finite R M] [IsTorsionFree R M] 
   obtain ⟨n, f, hf⟩ := exists_injective_linearMap_pi (R := R) (M := M)
   exact free_of_injective_linearMap_pi n M f hf
 
-theorem free_of_finite_of_noZeroSMulDivisors [Module.Finite R M] [NoZeroSMulDivisors R M] :
-    Module.Free R M :=
-  free_of_finite_of_isTorsionFree
 
 theorem free_iff_isTorsionFree [Module.Finite R M] : Module.Free R M ↔ IsTorsionFree R M :=
   ⟨fun _ => inferInstance, fun _ => free_of_finite_of_isTorsionFree⟩
@@ -203,7 +200,6 @@ def saturation (N : Submodule R M) : Submodule R M where
 
 variable {N N₁ N₂ : Submodule R M}
 
-theorem mem_saturation {x : M} : x ∈ saturation N ↔ ∃ r : R, r ≠ 0 ∧ r • x ∈ N := Iff.rfl
 
 variable (N) in
 

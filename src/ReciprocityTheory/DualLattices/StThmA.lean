@@ -56,17 +56,5 @@ def ThmALevelStatement (B : BX R₀) : Prop :=
       (zh : (R' : Type u)) ^ N = 1 + e₀ * c * ξ →
       π.1 (e₀ * c) = π.1 (B.ev ht v) - π.1 (B.ev hs w)
 
-theorem thmA_level (B : BX R₀) (hB3 : TangentPairingStatement B) : ThmALevelStatement B := by
-  intro R' R π ξ hξ Dp N hsurj hker hsq hann hN sh th v w hs ht zh z c e₀ hsh hth hhs hht hpair
-    hzh hzN
-  have h3 := hB3 R' R π ξ Dp N hsurj hker hsq hann hN sh th
-    (TensorProduct.map LinearMap.id (ξmul π ξ hξ) v) (TensorProduct.map LinearMap.id (ξmul π ξ hξ) w)
-    hs ht zh z hsh hth hhs hht hpair hzh
-  rw [B.evK_ξmul, B.evK_ξmul, hzN] at h3
-  have h4 : ((e₀ : (R' : Type u)) * c - (B.ev ht v - B.ev hs w)) * ξ = 0 := by
-    linear_combination h3
-  have h5 := hann _ h4
-  rw [← hker, RingHom.mem_ker, map_sub, map_sub] at h5
-  exact sub_eq_zero.mp h5
 
 end ReciprocityTheory.PGsh

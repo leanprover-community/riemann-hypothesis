@@ -131,20 +131,9 @@ def KudlaFamilyStatement (CB Ca C C1 : ℝ) : Prop := AdmF Fm CB Ca → OrbitVal
 
 end Family
 
-theorem lemma_B_three_iff (D : Formalism.BasicNotions.D7) (CB : ℝ) : (adm1 D CB ∧ adm2 D CB ∧ adm10 D CB) ↔ LemmaBThreeClauses CB := Iff.rfl
 
-theorem radial_statement_indep_datum (D D' : Formalism.BasicNotions.D7) (C Cv C1 C2 : ℝ) : aux₃ D C Cv C1 C2 ↔ aux₃ D' C Cv C1 C2 := Iff.rfl
 
-theorem Adm_indep (D D' : Formalism.BasicNotions.D7) (CB Ca : ℝ) : admitted D CB Ca ↔ admitted D' CB Ca := Iff.rfl
 
-theorem rules_family_of_uniform (H : UniformExportStatement) (CB Ca : ℝ) : ∃ C₀ : ℝ, ∀ C ≥ C₀, ∀ C1 : ℝ, ∀ {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps),
-    KudlaFamilyStatement Fm CB Ca C C1 := by
-  obtain ⟨C₀, Cv, H⟩ := H CB Ca
-  refine ⟨C₀, fun C hC C1 eps Fm hA => ?_⟩
-  obtain ⟨C2, H⟩ := H C1
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10⟩ := hA
-  exact ⟨Cv, C2, fun x i => H C hC (Fm.D x i)
-    ⟨a1 x i, a2 x i, a3 x i, a4 x i, a5 x i, a6 x i, a7 x i, a8 x i, a9 x i, a10 x i⟩⟩
 
 theorem big_mono {C C' : ℝ} (h : C ≤ C') {L : Lev} {N : ℕ} {A : ℝ} {mm : ℕ} (hB : Big C' L N A mm) :
     Big C L N A mm := by
@@ -159,13 +148,5 @@ theorem big_mono {C C' : ℝ} (h : C ≤ C') {L : Lev} {N : ℕ} {A : ℝ} {mm :
     exact mul_le_mul_of_nonneg_right h hp
   exact ⟨hle.trans hB.1, hle.trans hB.2⟩
 
-theorem theorem_c_mono_constant (D : Formalism.BasicNotions.D7) {C C' : ℝ} (Cv C1 C2 : ℝ) (hc : C ≤ C') (H : aux₃ D C Cv C1 C2) :
-    aux₃ D C' Cv C1 C2 := by
-  intro Lt u u' I hr hy hy' R hR
-  obtain ⟨h, SS, p1, p2, p3, p4, p5, p6, p7, p8⟩ := H Lt u u' I hr hy hy' R hR
-  refine ⟨h, SS, fun hh A mm hO hB => p1 hh A mm hO (big_mono hc hB), p2, p3, p4, ?_, p6, p7, p8⟩
-  intro hh A mm hO w hw
-  obtain ⟨f1, f2⟩ := p5 hh A mm hO w hw
-  exact ⟨fun hB => f1 (big_mono hc hB), f2⟩
 
 end Formalism.MainNotions.RadialRules

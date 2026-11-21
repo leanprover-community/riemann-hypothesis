@@ -252,8 +252,6 @@ theorem crd_unique (f : Fr σ J C D Z J₀) {u u' : GAd σ J} {b b' : Matrix (Fi
     exact matHom_injective _ σ J (Units.ext (rext (sum_ad f) (h.onC.trans h'.onC.symm) (h.onZ.trans h'.onZ.symm)
       (h.onD.trans h'.onD.symm)))
 
-theorem bse_eq (h : IsCMExt F E σ) : (GlobalTheory.Doubling.absE F E (GlobalTheory.Eis.Conv.halfE F E) : ℝ) = (bse F)⁻¹ := by
-  rw [GlobalTheory.Eis.Conv.absE_halfE F E σ h]; simp
 
 theorem fr_three (h : IsCMExt F E σ) : Fr σ !![0, 0, 1; 0, 1, 0; 1, 0, 0] (!![1; 0; 0] : Matrix (Fin 3) (Fin 1) E) !![0; 0; 1]
     (!![0; 1; 0] : Matrix (Fin 3) (Fin 1) E) 1 := by

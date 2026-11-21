@@ -791,16 +791,7 @@ theorem reduction_det_congr {m : ℕ} (A B : Matrix (Fin m) (Fin m) E) (hA : ∀
   ext i j
   exact h i j
 
-theorem intAt_sumB {ι : Type} (s : Finset ι) (f : ι → E) (hf : ∀ i, IntAt P (f i)) : IntAt P (∑ i ∈ s, f i) :=
-  (intSubB P).sum_mem fun i _ => hf i
 
-theorem reduction_sum_eq_sum_reduction {ι : Type} (s : Finset ι) (f : ι → E) (hf : ∀ i, IntAt P (f i)) :
-    redP P (∑ i ∈ s, f i) = ∑ i ∈ s, redP P (f i) := by
-  have h := map_sum (redHomB P) (fun i => (⟨f i, hf i⟩ : intSubB P)) s
-  have e : ((∑ i ∈ s, (⟨f i, hf i⟩ : intSubB P) : intSubB P) : E) = ∑ i ∈ s, f i := by
-    rw [AddSubmonoidClass.coe_finsetSum]
-  rw [← e]
-  exact h
 
 variable {P}
 
@@ -946,56 +937,9 @@ theorem det_congrB {q : ℕ} {M M' : ℕ → ℕ → E} (h : MCong P q M M') (hI
     LocE.unitV ξ (Matrix.det (Matrix.of fun s s' : Fin m => M' (f s) (g s'))) = LocE.unitV ξ (Matrix.det (Matrix.of fun s s' : Fin m => M (f s) (g s'))) :=
   unitV_congrB ξ (reduction_det_congr P _ _ (fun _ _ => (h.int _ _).2 (hI _ _)) (fun _ _ => hI _ _) fun _ _ => h.red _ _)
 
-theorem lamGv_congrB {q : ℕ} {M M' : ℕ → ℕ → E} (h : MCong P q M M') (hI : ∀ p p', IntAt P (M p p')) (r t j : ℕ) :
-    LocE.lamGv ψ₀ χ r t j M' = LocE.lamGv ψ₀ χ r t j M := by
-  have hI' : ∀ p p', IntAt P (M' p p') := fun p p' => (h.int p p').2 (hI p p')
-  unfold LocE.lamGv
-  have e1 : redP P (∑ i ∈ Finset.range (r - 1), M' i (i + 1)) = redP P (∑ i ∈ Finset.range (r - 1), M i (i + 1)) := by
-    rw [reduction_sum_eq_sum_reduction P _ _ fun i => hI' _ _, reduction_sum_eq_sum_reduction P _ _ fun i => hI _ _]
-    exact Finset.sum_congr rfl fun i _ => h.red _ _
-  rw [e1]
-  congr 1
-  exact Finset.prod_congr rfl fun i _ => det_congrB h hI (χ i) t (fun s => r + i * t + s.1) (fun s => r + i * t + s.1)
 
-theorem lamGvS_congrB {q : ℕ} {M M' : ℕ → ℕ → E} (h : MCong P q M M') (hI : ∀ p p', IntAt P (M p p')) (k₀ r t j : ℕ) :
-    LocE.lamGvS ψ₀ χ k₀ r t j M' = LocE.lamGvS ψ₀ χ k₀ r t j M := by
-  have hI' : ∀ p p', IntAt P (M' p p') := fun p p' => (h.int p p').2 (hI p p')
-  unfold LocE.lamGvS
-  have e1 : redP P (∑ i ∈ Finset.range (k₀ - 1), M' i (i + 1) + ∑ i ∈ Finset.range (r - k₀ - 1), M' (k₀ + i) (k₀ + i + 1)) =
-      redP P (∑ i ∈ Finset.range (k₀ - 1), M i (i + 1) + ∑ i ∈ Finset.range (r - k₀ - 1), M (k₀ + i) (k₀ + i + 1)) := by
-    rw [reduction_add (intAt_sumB P _ _ fun i => hI' _ _) (intAt_sumB P _ _ fun i => hI' _ _),
-      reduction_add (intAt_sumB P _ _ fun i => hI _ _) (intAt_sumB P _ _ fun i => hI _ _),
-      reduction_sum_eq_sum_reduction P _ _ fun i => hI' _ _, reduction_sum_eq_sum_reduction P _ _ fun i => hI' _ _, reduction_sum_eq_sum_reduction P _ _ fun i => hI _ _, reduction_sum_eq_sum_reduction P _ _ fun i => hI _ _]
-    congr 1
-    · exact Finset.sum_congr rfl fun i _ => h.red _ _
-    · exact Finset.sum_congr rfl fun i _ => h.red _ _
-  rw [e1]
-  congr 1
-  exact Finset.prod_congr rfl fun i _ => det_congrB h hI (χ i) t (fun s => r + i * t + s.1) (fun s => r + i * t + s.1)
 
-theorem phiG_invB {q : ℕ} (hq0 : q ≠ 0) (hq : (q : 𝓞 E) ∈ P.asIdeal) (sharp : Bool) (k₀ r t j c' n' n : ℕ) (hc' : c' = 0) (ha : n' + c' ≤ r + (j - 1) * t)
-    (x z : HomE E (n' + c') (n + 0)) (hz : ∀ s l, IntAt P ((q : E)⁻¹ * z (Pi.single s 1) l)) :
-    LocE.PhiG q ψ₀ χ sharp k₀ r t j c' n' 0 n (x + z) = LocE.PhiG q ψ₀ χ sharp k₀ r t j c' n' 0 n x := by
-  subst hc'
-  have h := entB_mcongB hq0 hq k₀ n' n (fun i => i + 1) (fun i => i + 1) x z hz
-  unfold LocE.PhiG
-  dsimp only
-  refine ite_congrB ?_ fun hc => ?_
-  · simp only [h.int, h.div, h.red]
-  · have hI := entB_allIntB q k₀ n' n _ ha _ _ x hc.1
-    rw [lamGv_congrB ψ₀ χ h hI, det_congrB h hI (χ (j - 1)) _ (fun s => s.1) (fun s => s.1)]
 
-theorem phiGS_invB {q : ℕ} (hq0 : q ≠ 0) (hq : (q : 𝓞 E) ∈ P.asIdeal) (k₀ rS r t j c' n' n : ℕ) (hc' : c' = 0) (ha : n' + c' ≤ r + (j - 1) * t)
-    (x z : HomE E (n' + c') (n + 0)) (hz : ∀ s l, IntAt P ((q : E)⁻¹ * z (Pi.single s 1) l)) :
-    LocE.PhiGS q ψ₀ χ k₀ rS r t j c' n' 0 n (x + z) = LocE.PhiGS q ψ₀ χ k₀ rS r t j c' n' 0 n x := by
-  subst hc'
-  have h := entB_mcongB hq0 hq k₀ n' n (fun i => i + 1) (fun i => i + 1) x z hz
-  unfold LocE.PhiGS
-  dsimp only
-  refine ite_congrB ?_ fun hc => ?_
-  · simp only [h.int, h.div, h.red]
-  · have hI := entB_allIntB q k₀ n' n _ ha _ _ x hc.1
-    rw [lamGvS_congrB ψ₀ χ h hI, det_congrB h hI (χ (j - 1)) _ (fun s => s.1) (fun s => s.1)]
 
 theorem phiQ_invB {q : ℕ} (hq0 : q ≠ 0) (hq : (q : 𝓞 E) ∈ P.asIdeal) (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (k₀ r c' n' n : ℕ) (hc' : c' = 0)
     (x z : HomE E (n' + c') (n + 0)) (hz : ∀ s l, IntAt P ((q : E)⁻¹ * z (Pi.single s 1) l)) :
@@ -1029,22 +973,9 @@ theorem cOf_topB {m2 : ℕ} (hm : R.m = m2 + 2) : cOf R (m2 + 1) = 0 := by
   unfold cOf
   omega
 
-theorem cols_topB {m2 : ℕ} (hm : R.m = m2 + 2) : R.N (m2 + 1) + cOf R (m2 + 1) ≤ R.r + (R.m - 1) * R.t := by
-  have h1 : (m2 + 1) * (R.t + 1) = (m2 + 1) * R.t + (m2 + 1) := by ring
-  have h2 : R.m - 1 = m2 + 1 := by omega
-  rw [cOf_topB hm, h2]
-  unfold Ranks.N Ranks.r
-  omega
 
 theorem qOf_memB (w : HeightOneSpectrum (𝓞 X.E)) : ((qOf w : ℕ) : 𝓞 X.E) ∈ w.asIdeal := Ideal.absNorm_mem _
 
-theorem phiTop_inv {m2 : ℕ} (hm : R.m = m2 + 2) : TopInvAt Ch sel mu cst m2 := by
-  intro w y z hz
-  unfold PhiTop
-  split_ifs with h1 h2
-  · exact phiGS_invB _ _ (qOf_pos w.1).ne' (qOf_memB w.1) _ _ _ _ _ _ _ _ (cOf_topB hm) (cols_topB hm) y z hz
-  · exact phiG_invB _ _ (qOf_pos w.1).ne' (qOf_memB w.1) _ _ _ _ _ _ _ _ (cOf_topB hm) (cols_topB hm) y z hz
-  · exact phiQ_invB (qOf_pos w.1).ne' (qOf_memB w.1) _ _ _ _ _ _ (cOf_topB hm) y z hz
 
 end TopLoc
 

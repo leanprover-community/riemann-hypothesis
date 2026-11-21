@@ -59,17 +59,6 @@ def IntegralFrames : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H)
     (Xo : Moduli Dw l) (c : Coeff l), IntegralFramesAt Xo c
 
-theorem isEigenBasisAt_frPt {Xo : Moduli Dw l} {c : Coeff l} {S : Type} [CommRing S] [Algebra c.F S]
-    (y : FrPt Xo c S) (τ : E →+* ℂ) : IsEigenBasisAt Xo c y.x τ (y.u τ) :=
-  ⟨y.tan τ, y.eig τ, y.basis τ⟩
 
-theorem exists_basis_of_integral {Xo : Moduli Dw l} {c : Coeff l} {T : CDVR} {io : c.F →+* T.Fr}
-    (y : letI := io.toAlgebra; FrPt Xo c T.Fr) (h : Integral T io y) :
-    letI := io.toAlgebra
-    ∃ (G : SAB H (Sp T.V)) (t' : SAB H (Sp T.Fr)) (m₁ : SABMap t' Xo.univ.t y.x)
-      (m₂ : SABMap t' G (spMap (algebraMap T.V T.Fr))), ∀ τ, ∃ ub, IsEigenLatticeBasis Dw c T io G τ ub ∧
-        ∀ i, IsGenericFibre m₁ m₂ (ub i) (y.u τ i) := by
-  obtain ⟨G, t', m₁, m₂, ⟨ub, h1, h2, h3, h4⟩, -⟩ := h
-  exact ⟨G, t', m₁, m₂, fun τ => ⟨ub τ, ⟨h1 τ, h2 τ, h3 τ⟩, h4 τ⟩⟩
 
 end GlobalTheory.IndefiniteRowSideFullHecke.EigenLatticeFrames

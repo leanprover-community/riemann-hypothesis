@@ -99,19 +99,6 @@ theorem upChar_of_upFLaw_RR [IsDedekindDomain OE] [CharZero OE] [Module.Free ℤ
   exact upChar_of_upFLaw Y p hr Hc P.vm V.RR P.tie P.int P.pos P.lt (fun x hx => P.mm x hx) T FT actT hL
     iota hlocI (fun i => by rw [hcomp]; exact hF i) emR hem hPl hEig
 
-theorem upChar_of_upF_RR [IsDedekindDomain OE] [CharZero OE] [Module.Free ℤ OE] [Module.Finite ℤ OE]
-    (hUp : UpFSt V.l) (hPlace : Pl.PlaceCriterionOfIdempotent)
-    (Y : FBChart C V OE dd) (p : PairData Y d I) (hr : (Y.raw p).RankHyp) (Hc : ∀ g, (Y.raw p).CartHyp V g)
-    (T : Type) [CommRing T] [IsDomain T] [IsLocalRing T] [IsNoetherianRing T] [CharZero T]
-    [IsAdicComplete (maximalIdeal T) T]
-    (G : Over (Sp T)) [GrpObj G] [IsCommMonObj G] (aG : OE → (G ⟶ G)) (FT : Fin dd → PS T 2 dd)
-    (actT : OE → Fin dd → PS T 1 dd) (hG : GeoJ T G OE aG dd FT actT)
-    (i0 : T →+* C) (hint : ∀ t, V.Ge 0 (i0 t)) (hloc : ∀ t, V.v (i0 t) = 0 → IsUnit t)
-    (hF : ∀ i, Y.B.G.F i = MvPowerSeries.map i0 (FT i))
-    (hact : ∀ a i, Y.B.A.act a i = MvPowerSeries.map i0 (actT a i))
-    (hdisc : ¬ ((V.l : ℤ) ∣ Algebra.discr ℤ (Module.Free.chooseBasis ℤ OE))) : UPCharSt Y p Hc :=
-  upChar_of_upFLaw_RR hPlace Y p hr Hc T FT actT
-    (upFLaw_of_geoJ hUp Y.l_odd T (not_isUnit_l i0 hint) G aG FT actT hG hdisc) i0 hint hloc hF hact hdisc
 
 end RR
 
@@ -145,10 +132,6 @@ def CharacterHypothesisUnramified : Prop :=
     ∀ (Orb : Type) (d : ℕ) [NeZero d] (lab : Lab E Orb d) (ha : LabArith V io ie lab) (hg : LabGeo C3 ie Y lab),
     lab.RankOK Dw → ∀ o (Hc : ∀ g, (Y.raw (pairOfLab ha hg o)).CartHyp V g), RawChart.CHSt Hc
 
-theorem chart_hypothesis_unramified_of_upper (h : UpperCharacterUnramified Xo c) : CharacterHypothesisUnramified Xo c :=
-  fun hstar T io y C3 C _ _ V ie hie hd k Y hY Orb d _ lab ha hg hr o Hc =>
-    chSt_of_upChar Y (pairOfLab ha hg o) (rankHyp_ofLab ha hg hr o) Hc
-      (h hstar T io y C3 C V ie hie hd k Y hY Orb d lab ha hg hr o Hc)
 
 theorem vV_pos (T : CDVR) {t : T.V} (ht : ¬ IsUnit t) (h0 : t ≠ 0) : 0 < vV T.V (algebraMap T.V T.Fr t) := by
   unfold vV
@@ -243,13 +226,7 @@ theorem upChar_at_chart {T : CDVR} {io : c.F →+* T.Fr} {y : IntFr Xo c T io} {
     UPCharSt Y (pairOfLab ha hg o) Hc :=
   upChar_at_chartL hPlace (upFLaw_at_chart hUp Y.l_odd hGeoJ hie hd) hie hd hY ha hg hr o Hc
 
-theorem upper_character_unramified_of_forms (hUp : ∀ (p : ℕ) [Fact p.Prime], UpFSt p) (hPlace : Pl.PlaceCriterionOfIdempotent) (hGeo : GeoJA3St Xo c) :
-    UpperCharacterUnramified Xo c :=
-  fun hstar T io y C3 _ _ _ V _ hie hd _ _ hY _ _ _ _ ha hg hr o Hc =>
-    upChar_at_chart (hUp V.l) hPlace (hGeo hstar T io y C3) hie hd hY ha hg hr o Hc
 
-theorem chart_hypothesis_unramified_of_forms (hUp : ∀ (p : ℕ) [Fact p.Prime], UpFSt p) (hPlace : Pl.PlaceCriterionOfIdempotent) (hGeo : GeoJA3St Xo c) : CharacterHypothesisUnramified Xo c :=
-  chart_hypothesis_unramified_of_upper Xo c (upper_character_unramified_of_forms Xo c hUp hPlace hGeo)
 
 end Chart
 

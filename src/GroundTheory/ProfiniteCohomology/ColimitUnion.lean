@@ -62,10 +62,6 @@ noncomputable abbrev subrepCohomologyCocone (n : ℕ) : Cocone (subrepCohomology
   (HomologicalComplex.homologyFunctor (ModuleCat k) (ComplexShape.up ℕ) n).mapCocone
     (subrepCochainsCocone A W hW hstable)
 
-theorem subrepCohomology_map (n : ℕ) {i j : ι} (h : i ⟶ j) :
-    (subrepCohomology A W hW hstable n).map h =
-      cohomologyMap (subrepInclusion A W hW hstable (leOfHom h)) n :=
-  rfl
 
 theorem subrepCohomologyCocone_ι_app (n : ℕ) (i : ι) :
     (subrepCohomologyCocone A W hW hstable n).ι.app i =

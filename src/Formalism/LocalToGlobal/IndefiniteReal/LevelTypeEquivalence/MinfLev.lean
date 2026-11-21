@@ -15,8 +15,6 @@ theorem minfDensity_ne_top (N : ℕ) : Formalism.L2.Theta.minfDensity N ≠ ⊤ 
   unfold Formalism.L2.Theta.minfDensity
   exact ENNReal.inv_ne_top.mpr (pow_ne_zero _ two_ne_zero)
 
-theorem minfExUnique_of (h : Formalism.IndefR.Leaf.MinfExistsUnique) : MinfExUnique :=
-  fun p q => h p q _ (minfDensity_ne_zero (p + q)) (minfDensity_ne_top (p + q))
 
 end Formalism.IndefR.Eqv
 

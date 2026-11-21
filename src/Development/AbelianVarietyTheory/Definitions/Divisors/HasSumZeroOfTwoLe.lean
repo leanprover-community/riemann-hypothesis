@@ -157,75 +157,12 @@ theorem term_differentiable (φ : I → E →+* ℂ) (k : ℕ) (κ : I → ℕ) 
   refine Differentiable.const_cpow (by fun_prop) (Or.inl ?_)
   simpa using ha
 
-theorem isLatSum_single [IsTotallyComplex E] {φ : I → E →+* ℂ} (h : IsCMType φ) (s : ℕ) (κ : I → ℕ) {a : E} (ha : a ≠ 0) :
-    IsLatSum φ (2 * s) κ {a} fun σ => term φ (2 * s) κ σ a := by
-  refine ⟨term_differentiable φ _ κ ha, fun σ _ => ?_⟩
-  have := hasSum_single (f := fun q : modUnits ({a} : Set E) => term φ (2 * s) κ σ q.1.out)
-    (⟨Quotient.mk _ a, a, rfl, ha, rfl⟩ : modUnits ({a} : Set E)) (by
-      rintro ⟨_, x, rfl, _, rfl⟩ hb
-      exact absurd rfl hb)
-  rwa [term_out h] at this
 
 def mulQ (a : E) : Quotient (unitRel (E := E)) → Quotient (unitRel (E := E)) :=
   Quotient.map (a * ·) (by rintro x y ⟨u, rfl⟩; exact ⟨u, by ring⟩)
 
-theorem hasSum_smul [IsTotallyComplex E] {φ : I → E →+* ℂ} (h : IsCMType φ) {s : ℕ} {κ : I → ℕ} {L L' : Set E} (a : Eˣ)
-    (hL : ∀ x, (a : E) * x ∈ L' ↔ x ∈ L) {σ S : ℂ} (hS : HasSum (fun q : modUnits L => term φ (2 * s) κ σ q.1.out) S) :
-    HasSum (fun q : modUnits L' => term φ (2 * s) κ σ q.1.out) (term φ (2 * s) κ σ a * S) := by
-  let f : modUnits L → modUnits L' := fun q => ⟨mulQ a q.1, by
-    obtain ⟨x, hx, h0, hq⟩ := q.2
-    exact ⟨a * x, (hL x).2 hx, mul_ne_zero a.ne_zero h0, by rw [← hq]; rfl⟩⟩
-  have hf : Function.Bijective f := by
-    constructor
-    · rintro ⟨_, x, hx, h0, rfl⟩ ⟨_, x', hx', h0', rfl⟩ hq
-      obtain ⟨u, hu⟩ : (unitRel (E := E)).r (a * x) (a * x') := Quotient.exact (congrArg Subtype.val hq)
-      refine Subtype.ext (Quotient.sound ⟨u, mul_left_cancel₀ a.ne_zero ?_⟩)
-      rw [hu]; ring
-    · rintro ⟨_, x, hx, h0, rfl⟩
-      refine ⟨⟨Quotient.mk _ ((↑a⁻¹ : E) * x), _, (hL _).1 (by simpa using hx), mul_ne_zero a⁻¹.ne_zero h0, rfl⟩, ?_⟩
-      refine Subtype.ext ?_
-      show Quotient.mk _ ((a : E) * ((↑a⁻¹ : E) * x)) = Quotient.mk _ x
-      simp
-  rw [← (Equiv.ofBijective f hf).hasSum_iff]
-  refine (hS.mul_left (term φ (2 * s) κ σ a)).congr_fun ?_
-  rintro ⟨_, x, hx, h0, rfl⟩
-  show term φ (2 * s) κ σ (Quotient.mk (unitRel (E := E)) ((a : E) * x)).out = _
-  rw [term_out h, term_out h, term_mul]
 
-theorem isLatSum_smul [IsTotallyComplex E] {φ : I → E →+* ℂ} (h : IsCMType φ) {s : ℕ} {κ : I → ℕ} {L L' : Set E} (a : Eˣ)
-    (hL : ∀ x, (a : E) * x ∈ L' ↔ x ∈ L) {S : ℂ → ℂ} (hS : IsLatSum φ (2 * s) κ L S) :
-    IsLatSum φ (2 * s) κ L' fun σ => term φ (2 * s) κ σ a * S σ :=
-  ⟨(term_differentiable φ _ κ a.ne_zero).mul hS.1, fun σ hσ => hasSum_smul h a hL (hS.2 σ hσ)⟩
 
-theorem toric_term_class [IsTotallyComplex E] {φ : I → E →+* ℂ} (h : IsCMType φ) {s : ℕ} {κ : I → ℕ} {c : Ideal (OF E)}
-    {χ : HChar E} (hχ : ∀ u ∈ hatOUnits c, finPart χ u = 1) (hi : HasInf χ φ fun i => (κ i : ℤ) + s)
-    {y y' : (Af E)ˣ} (hy : (QuotientGroup.mk y : PicO c) = QuotientGroup.mk y') {S S' : ℂ → ℂ}
-    (hS : IsLatSum φ (2 * s) κ (lattice c y) S) (hS' : IsLatSum φ (2 * s) κ (lattice c y') S') :
-    ((finPart χ y : ℂ) * ((modF y ^ s : ℝ) : ℂ))⁻¹ * S 0 = ((finPart χ y' : ℂ) * ((modF y' ^ s : ℝ) : ℂ))⁻¹ * S' 0 := by
-  obtain ⟨_, ⟨a, rfl⟩, u, hu, hau⟩ := Subgroup.mem_sup.1 (QuotientGroup.eq.1 hy)
-  have hy' : y' = Units.map (algebraMap E (Af E)).toMonoidHom a * y * u := by
-    rw [eq_inv_mul_iff_mul_eq] at hau
-    rw [← hau, mul_assoc, mul_left_comm]
-  rw [hy', lattice_mul_unit _ hu] at hS'
-  have h1 := hS'.unique (isLatSum_smul h a (mul_mem_lattice_princ c y a) hS)
-  have h2 := term_mul_inf hi a
-  have h3 : ((finPart χ (Units.map (algebraMap E (Af E)).toMonoidHom a) : ℂˣ) : ℂ) * ((χ.inf a : ℂˣ) : ℂ) = 1 := by
-    rw [← Units.val_mul, finPart_mul_inf, Units.val_one]
-  have h4 : ∏ i, (φ i a * starRingEnd ℂ (φ i a)) ^ s = ((|((Algebra.norm ℚ (a : E) : ℚ) : ℝ)| ^ s : ℝ) : ℂ) := by
-    rw [← prod_normSq h, Finset.prod_pow]
-    simp [Complex.mul_conj']
-  have h5 : (|((Algebra.norm ℚ (a : E) : ℚ) : ℝ)|) ≠ 0 := by simp [Algebra.norm_eq_zero_iff]
-  rw [h4] at h2
-  rw [h1, hy', map_mul, map_mul, hχ u hu, mul_one, modF_mul, modF_mul, modF_unit hu, mul_one, modF_princ]
-  generalize (|((Algebra.norm ℚ (a : E) : ℚ) : ℝ)|) = n at *
-  have h6 : (n : ℂ) ≠ 0 := by exact_mod_cast h5
-  have h7 : ((modF y : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (modF_pos y).ne'
-  have h8 : ((χ.inf a : ℂˣ) : ℂ) ≠ 0 := Units.ne_zero _
-  beta_reduce
-  rw [Units.val_mul, eq_inv_of_mul_eq_one_left h3, eq_inv_of_mul_eq_one_left h2]
-  push_cast
-  rw [mul_pow, inv_pow]
-  field_simp
 
 theorem summable_int {φ : E →+* ℂ} (h : IsCMType fun _ : Unit => φ) (h2 : Module.finrank ℚ E = 2) {r : ℝ} (hr : r < -2) :
     Summable fun b : 𝓞 E => ‖φ b‖ ^ r := by
@@ -274,38 +211,6 @@ theorem summable_term {φ : E →+* ℂ} (h : IsCMType fun _ : Unit => φ) (h2 :
   rw [norm_term_unit φ k κ σ (out_mem_lattice q).2, hb]
   rfl
 
-theorem isLatSum_int [IsTotallyComplex E] {φ : E →+* ℂ} (h : IsCMType fun _ : Unit => φ) (h2 : Module.finrank ℚ E = 2)
-    (z : (𝓞 E)ˣ) {s κ : ℕ} (hz : φ (z : 𝓞 E) ^ (2 * (s + κ)) ≠ 1) :
-    IsLatSum (fun _ : Unit => φ) (2 * s) (fun _ => κ) (lattice (⊤ : Ideal (OF E)) 1) 0 := by
-  refine ⟨differentiable_const _, fun σ hσ => ?_⟩
-  have hs := (summable_term h h2 (2 * s) κ hσ).hasSum
-  let a : Eˣ := Units.map (algebraMap (𝓞 E) E).toMonoidHom z
-  have hL : ∀ x, (a : E) * x ∈ lattice (⊤ : Ideal (OF E)) 1 ↔ x ∈ lattice (⊤ : Ideal (OF E)) 1 := fun x => by
-    rw [lattice_top_one, lattice_top_one]
-    constructor
-    · rintro ⟨b, hb⟩
-      refine ⟨(↑z⁻¹ : 𝓞 E) * b, ?_⟩
-      rw [map_mul, ← hb, ← mul_assoc]
-      show x = (↑a⁻¹ : E) * a * x
-      simp
-    · rintro ⟨b, rfl⟩
-      exact ⟨z * b, by rw [map_mul]; rfl⟩
-  have h3 := hs.unique (hasSum_smul h a hL hs)
-  have h4 : term (fun _ : Unit => φ) (2 * s) (fun _ => κ) σ a ≠ 1 := by
-    have ha : φ a ^ (2 * (s + κ)) ≠ 1 := hz
-    have hn : ‖φ a‖ = 1 := by
-      have h5 := prod_normSq h (a : E)
-      have h6 : |((Algebra.norm ℚ (a : E) : ℚ) : ℝ)| = 1 := by exact_mod_cast NumberField.Units.norm E z
-      rw [h6, Fintype.prod_unique] at h5
-      exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 h5
-    have hc : starRingEnd ℂ (φ a) = (φ a)⁻¹ := by rw [Complex.inv_eq_conj hn]
-    unfold term
-    rw [Fintype.prod_unique, hn, hc, ← pow_add, show 2 * s + κ + κ = 2 * (s + κ) by ring, inv_pow]
-    simpa using ha
-  have h5 : (∑' q : modUnits (lattice (⊤ : Ideal (OF E)) 1), term (fun _ : Unit => φ) (2 * s) (fun _ => κ) σ q.1.out) = 0 := by
-    by_contra h0
-    exact h4 ((mul_left_eq_self₀.1 h3.symm).resolve_right h0)
-  rwa [h5] at hs
 
 theorem mem_hatO_top {y : Af E} : y ∈ hatO (⊤ : Ideal (OF E)) ↔ ∀ v, Valued.v (y v) ≤ 1 :=
   ⟨hatO_integral, fun h => GlobalTheory.IntDense.mem_of_isClosed E (C := (hatO (⊤ : Ideal (OF E)) : Set (Af E))) (Subring.isClosed_topologicalClosure _)
@@ -351,21 +256,7 @@ theorem exists_princ [IsPrincipalIdealRing (𝓞 E)] (y : (Af E)ˣ) :
   rw [show y⁻¹ * b = (b⁻¹ * y)⁻¹ by rw [mul_inv, inv_inv, mul_comm]] at this
   exact this
 
-theorem subsingleton_picO [IsPrincipalIdealRing (𝓞 E)] : Subsingleton (PicO (⊤ : Ideal (OF E))) := by
-  refine QuotientGroup.subsingleton_iff.2 (eq_top_iff.2 fun y _ => ?_)
-  obtain ⟨a, u, hu, rfl⟩ := exists_princ y
-  rw [mul_one]
-  exact Subgroup.mul_mem_sup ⟨a, rfl⟩ hu
 
-theorem isToricSum_int [IsTotallyComplex E] [IsPrincipalIdealRing (𝓞 E)] {φ : E →+* ℂ} (h : IsCMType fun _ : Unit => φ)
-    (h2 : Module.finrank ℚ E = 2) (z : (𝓞 E)ˣ) {s κ : ℕ} (hz : φ (z : 𝓞 E) ^ (2 * (s + κ)) ≠ 1) (χ : HChar E) :
-    IsToricSum (fun _ : Unit => φ) s (fun _ => κ) ⊤ χ 0 := by
-  haveI := subsingleton_picO (E := E)
-  refine ⟨inferInstance, fun _ => 0, fun q => ?_, by simp⟩
-  obtain ⟨a, u, hu, hq⟩ := exists_princ q.out
-  rw [hq, lattice_mul_unit _ hu]
-  have := isLatSum_smul h a (mul_mem_lattice_princ ⊤ 1 a) (isLatSum_int h h2 z hz)
-  simpa [Pi.zero_def] using this
 
 abbrev Eis : Type := CyclotomicField 3 ℚ
 
@@ -373,49 +264,9 @@ instance : IsCyclotomicExtension {3} ℚ Eis := CyclotomicField.isCyclotomicExte
 
 instance : IsCMField Eis := IsCyclotomicExtension.Rat.isCMField Eis (S := {3}) ⟨3, rfl, by norm_num⟩
 
-theorem isToricSum_eis : ∃ φ : Eis →+* ℂ, IsCMType (fun _ : Unit => φ) ∧
-    ∀ χ : HChar Eis, IsToricSum (fun _ : Unit => φ) 1 (fun _ => 1) ⊤ χ 0 := by
-  have h2 : Module.finrank ℚ Eis = 2 := by
-    rw [IsCyclotomicExtension.finrank (n := 3) Eis (Polynomial.cyclotomic.irreducible_rat (by norm_num))]; rfl
-  have hc : Fintype.card (InfinitePlace Eis) = 1 := by
-    have := IsTotallyComplex.finrank Eis
-    have h3 := InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces Eis
-    rw [IsTotallyComplex.nrRealPlaces_eq_zero] at h3
-    omega
-  obtain ⟨w, hw⟩ := Fintype.card_eq_one_iff.1 hc
-  have hφ : IsCMType fun _ : Unit => w.embedding := fun σ =>
-    ⟨(), (InfinitePlace.mk_eq_iff.1 (w.mk_embedding.trans (hw _).symm)).imp Eq.symm Eq.symm, fun _ _ => rfl⟩
-  have hz := IsCyclotomicExtension.zeta_spec 3 ℚ Eis
-  haveI := IsCyclotomicExtension.Rat.three_pid Eis
-  refine ⟨_, hφ, isToricSum_int hφ h2 (hz.toInteger_isPrimitiveRoot.isUnit (by norm_num)).unit ?_⟩
-  have h4 : IsPrimitiveRoot (w.embedding (IsCyclotomicExtension.zeta 3 ℚ Eis)) 3 := hz.map_of_injective w.embedding.injective
-  intro h5
-  exact absurd ((h4.pow_eq_one_iff_dvd _).1 h5) (by decide)
 
-theorem hasSum_zero_of_two_le {φ : I → E →+* ℂ} {s : ℕ} (hs : 2 ≤ s) {κ : I → ℕ} {L : Set E} {S : ℂ → ℂ}
-    (h : IsLatSum φ (2 * s) κ L S) : HasSum (fun q : modUnits L => term φ (2 * s) κ 0 q.1.out) (S 0) := by
-  refine h.2 0 ?_
-  have : (2 : ℝ) ≤ s := by exact_mod_cast hs
-  push_cast
-  simp only [Complex.zero_re]
-  linarith
 
-theorem hasInfRatio_conj (χ : HChar E) (φ : I → E →+* ℂ) (m : I → ℤ) :
-    HasInfRatio χ (fun i => ComplexEmbedding.conjugate (φ i)) m ↔ HasInfRatio χ φ fun i => -m i := by
-  rw [hasInfRatio_iff, hasInfRatio_iff]
-  refine forall_congr' fun k => ?_
-  have : ∀ i, (ComplexEmbedding.conjugate (φ i) (k : E) / starRingEnd ℂ (ComplexEmbedding.conjugate (φ i) (k : E))) ^ m i =
-      (φ i (k : E) / starRingEnd ℂ (φ i (k : E))) ^ (-m i) := fun i => by
-    rw [ComplexEmbedding.conjugate_coe_eq, Complex.conj_conj, zpow_neg, ← inv_zpow, inv_div]
-  simp only [this]
 
-theorem not_isLatSum_empty (φ : Empty → E →+* ℂ) (k : ℕ) (κ : Empty → ℕ) {L : Set E} (hL : (modUnits L).Infinite) (S : ℂ → ℂ) :
-    ¬ IsLatSum φ k κ L S := fun h => by
-  have h1 := (h.2 2 (by simp only [Complex.re_ofNat]; have : (0 : ℝ) ≤ k := Nat.cast_nonneg k; linarith)).summable
-  simp only [term, Finset.univ_eq_empty, Finset.prod_empty] at h1
-  haveI := hL.to_subtype
-  have h2 := h1.tendsto_cofinite_zero
-  exact one_ne_zero (tendsto_const_nhds_iff.1 h2)
 
 section RatL
 open GlobalTheory.CMVal.ValEx Rat.HeightOneSpectrum
@@ -436,17 +287,6 @@ theorem hasProd_one {s : ℂ} (hs : 1 < s.re) : HasProd (eulerFactor (1 : HChar 
   have h' : (1 : HChar ℚ).val p = 1 := rfl
   simp only [eulerFactor, if_pos h, h', absNorm_rat, Function.comp_apply, Units.val_one, one_mul]
 
-theorem not_isHeckeL_one (Λ : ℂ → ℂ) : ¬ IsHeckeL (1 : HChar ℚ) Λ := by
-  rintro ⟨h1, h2⟩
-  have hf : Differentiable ℂ fun s => (s - 1) * Λ s := by fun_prop
-  have hg : Differentiable ℂ (DirichletCharacter.LFunctionTrivChar₁ 1) := DirichletCharacter.differentiable_LFunctionTrivChar₁ 1
-  have := entire_eq_of_halfPlane hf hg 1 fun s hs => by
-    have hs1 : s ≠ 1 := by rintro rfl; simp at hs
-    rw [(h2 s hs).unique (hasProd_one hs)]
-    simp [DirichletCharacter.LFunctionTrivChar₁, Function.update_of_ne hs1, DirichletCharacter.LFunctionTrivChar,
-      DirichletCharacter.LFunction_modOne_eq]
-  have h3 := congrFun this 1
-  simp [DirichletCharacter.LFunctionTrivChar₁] at h3
 
 theorem mem_rat (p : HeightOneSpectrum (𝓞 ℚ)) (n : ℕ) : (n : 𝓞 ℚ) ∈ p.asIdeal ↔ (primesEquiv p : ℕ) ∣ n := by
   change _ ↔ natGenerator p ∣ n

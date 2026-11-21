@@ -4,15 +4,6 @@ namespace PI.GTNum
 
 open Finset
 
-theorem sum_range_le_tele (n : ℕ) (a t : ℕ → ℤ) (h : ∀ i < n, a i ≤ t i - t (i + 1)) :
-    ∑ i ∈ range n, a i ≤ t 0 - t n := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [sum_range_succ]
-    have h1 := ih (fun i hi => h i (by omega))
-    have h2 := h n (by omega)
-    linarith
 
 theorem card_erase_Icc_min (a b c x : ℤ) (hab : a ≤ b) (hc : 0 ≤ c)
     (hx : x ∈ Icc a (min b (a + c))) :

@@ -138,22 +138,6 @@ theorem plat (p : ℕ) (hp : p.Prime) (hpd : ¬ p ∣ D.host.d) : FS.PLat (G0.cK
   nat := hK_nat D
   crit := ⟨_, ⟨AR.om D, rfl⟩, fun t ht h1 h2 => crit D p hp hpd t ht h1 h2⟩
 
-theorem not_dvd_of_split (p : ℕ) (hp : p.Prime) (hs : SplitK D p) : ¬ p ∣ D.host.d := by
-  intro hd
-  have hdp : D.host.d.Prime := D.host.hyp.2.1
-  have e : p = D.host.d := (Nat.prime_dvd_prime_iff_eq hp hdp).1 hd
-  have h16 := D.host.hyp.2.2.2.1
-  rcases hs with h | h
-  · omega
-  · rw [e] at h
-    have : NeZero D.host.d := ⟨hdp.ne_zero⟩
-    have h0 : jacobiSym (-(D.host.d : ℤ)) D.host.d = 0 := by
-      rw [jacobiSym.eq_zero_iff_not_coprime]
-      have e2 : (-(D.host.d : ℤ)).gcd (D.host.d : ℤ) = D.host.d := by simp
-      rw [e2]
-      exact hdp.one_lt.ne'
-    rw [h0] at h
-    exact zero_ne_one h
 
 theorem isoP (p : ℕ) (hp : p.Prime) (hpd : ¬ p ∣ D.host.d) : ∃ γ : IsoK D, γ.AtP p := by
   obtain ⟨g, hg, s, hcop, h1, h2⟩ := (plat D p hp hpd).iso (ι := D.what₂.Tau) (G0.card_eq D)
@@ -186,12 +170,8 @@ def LinkSplitPrimeIsometry : Prop :=
       ∀ B : Base D cc δ, ∀ χ, IsChi D χ → EigenvectorPacketProperties B C χ) →
     aux₃ D C
 
-theorem isometry_linkage_at_split_prime : LinkIsoP := fun D p hp hs => GP.isoP D p hp (GP.not_dvd_of_split D p hp hs)
 
-theorem base_linkage_exists : LinkBaseEx := fun D => base_linkage_at_prime D (isometry_linkage_at_split_prime D)
 
-theorem eigen_linkage_all_primes : LinkSplitPrimeIsometry :=
-  fun D C hA hper hΔ h => eigen_linkage_at_prime D C hA hper hΔ (isometry_linkage_at_split_prime D) h
 
 end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 

@@ -25,7 +25,6 @@ theorem isFlat_flW {n' m : ℕ} (d : Fin n' → ℕ) : IsFlat (m := m) (vecE n')
         rw [← Fin.rev_rev i, h0, Fin.rev_zero]
       simp [hi, hr]
 
-theorem LLT_eq (n' : ℕ) : LLT n' = flatLetters (vecE n') := rfl
 
 section Scale
 

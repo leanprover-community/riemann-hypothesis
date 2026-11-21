@@ -100,15 +100,6 @@ theorem TateModule.exists_eq_nsmul_of_apply_one_eq_zero (t : TateModule ℓ A)
     rw [AddSubgroup.coe_nsmul, Pi.smul_apply]
     exact (TateModule.nsmul_succ t j).symm
 
-theorem TateModule.basis_apply_one_ne_zero {ι : Type*} (b : Module.Basis ι ℤ_[ℓ] (TateModule ℓ A))
-    (i : ι) : ((b i : TateModule ℓ A) : ℕ → A) 1 ≠ 0 := by
-  classical
-  intro h0
-  obtain ⟨s, hs⟩ := TateModule.exists_eq_nsmul_of_apply_one_eq_zero (b i) h0
-  have h := congrArg (fun u => b.repr u i) hs
-  simp only [Module.Basis.repr_self, Finsupp.single_eq_same, map_nsmul, Finsupp.smul_apply,
-    nsmul_eq_mul] at h
-  exact (mem_nonunits_iff.mp PadicInt.p_nonunit) (isUnit_iff_exists_inv.mpr ⟨_, h.symm⟩)
 
 end Determinant
 

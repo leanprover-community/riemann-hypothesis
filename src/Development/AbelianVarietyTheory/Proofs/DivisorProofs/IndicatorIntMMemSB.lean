@@ -15,7 +15,6 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 def IsSmU (χ : kˣ →* ℂˣ) : Prop := IsOpen (χ.ker : Set kˣ) ∧ ∀ x, ‖(χ x : ℂ)‖ = 1
 
-theorem isSmU_one : IsSmU (1 : kˣ →* ℂˣ) := ⟨by simp, by simp⟩
 
 variable (k) in
 

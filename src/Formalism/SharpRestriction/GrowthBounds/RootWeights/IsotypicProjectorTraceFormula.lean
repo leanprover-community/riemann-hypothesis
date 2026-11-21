@@ -99,7 +99,5 @@ theorem isotypic_projector_trace_formula (D : Formalism.BasicNotions.D7) (h2 : a
   rw [LinearMap.smul_apply, hΘ] at this
   exact this
 
-theorem isotypicProjectorTheoremField_of_sharp_bound (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h : InvariantDenominatorEllPBound) : IsotypicProjectorTheoremField D :=
-  lattice_theorem_of_trace_formula D h2 h (isotypic_projector_trace_formula D h2)
 
 end Formalism.MainNotions.G.GLWeightTheory

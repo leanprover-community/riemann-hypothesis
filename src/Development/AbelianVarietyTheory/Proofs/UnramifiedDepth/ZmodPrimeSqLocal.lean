@@ -269,10 +269,5 @@ def wModel : WData (tower p) (mkL (ZMod p)) where
     rw [map_zero, zero_pow hp.out.ne_zero] at this
     exact this
 
-theorem wModel_p_ne_zero : (p : ((wModel p).W : Type)) ≠ 0 := by
-  intro h
-  have h1 : (p : ZMod (p ^ 2)) * 1 = 0 := by rw [mul_one]; exact h
-  rw [ann_p, map_one] at h1
-  exact one_ne_zero h1
 
 end GlobalTheory.WModel

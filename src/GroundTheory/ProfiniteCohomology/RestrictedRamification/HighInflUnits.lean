@@ -41,9 +41,6 @@ def primaryComponentMap (ℓ : ℕ) (f : X →+ Y) :
     obtain ⟨k, hk⟩ := x.2
     exact ⟨k, (map_nsmul f _ _).symm.trans ((congrArg f hk).trans (map_zero f))⟩
 
-theorem coe_primaryComponentMap_apply (x : AddCommGroup.primaryComponent X ℓ) :
-    (primaryComponentMap ℓ f x : Y) = f x :=
-  rfl
 
 theorem IsIsoModCoprime.bijective_primaryComponentMap (h : IsIsoModCoprime ℓ f) (hℓ : ℓ.Prime)
     (hX : IsAddTorsion X) : Function.Bijective (primaryComponentMap ℓ f) := by
@@ -161,10 +158,6 @@ noncomputable def gsUnitsInflPrimaryEquiv {r : ℕ} (hr : 1 ≤ r) :
   AddEquiv.ofBijective (primaryComponentMap ℓ (gsUnitsInfl K S r))
     ((isIsoModCoprime_gsUnitsInfl K S hℓ hS hr).bijective_primaryComponentMap hℓ (isTorsion_cohomology _ hr))
 
-theorem coe_gsUnitsInflPrimaryEquiv_apply {r : ℕ} (hr : 1 ≤ r)
-    (x : AddCommGroup.primaryComponent (cohomology (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) r) ℓ) :
-    (gsUnitsInflPrimaryEquiv K S hℓ hS hr x : cohomology (unitsLimitRep K) r) = gsUnitsInfl K S r x :=
-  rfl
 
 end
 

@@ -18,13 +18,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type}
 
 def flD (C : ColObj K I) (u : I) : HeightOneSpectrum (𝓞 K) → ℤ := fun w => ⌊sgD C u w⌋
 
-theorem flD_support_finite (C : ColObj K I) (u : I) : (Function.support (flD C u)).Finite := by
-  classical
-  refine (C.supp.finite_toSet).subset fun w hw => ?_
-  by_contra h
-  apply hw
-  rw [Finset.mem_coe] at h
-  simp [flD, sgD, h]
 
 end Lemmas
 

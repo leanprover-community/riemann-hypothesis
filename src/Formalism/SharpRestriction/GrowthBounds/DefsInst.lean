@@ -115,10 +115,5 @@ theorem KapIDef.mem {D : D7} {L : SizeData₂ D} {X : Inst D L} {K : Consts} (h 
     (TT : Finset (Fin n')) (a b : Fin n' → ℤ) : X.kapI p n' TT a b ∈ kapISet L K p n' TT a b := by
   rw [h]; exact sInf_mem_kapISet L K p n' TT a b
 
-theorem exists_inst_defs {D : D7} {L : SizeData₂ D} (X : Inst D L) (K : Consts) (Ce : ℝ) :
-    ∃ X' : Inst D L, X'.bs = X.bs ∧ X'.off = X.off ∧ EpDef X' Ce ∧ KapIDef X' K :=
-  ⟨{ X with kapI := fun p n' TT a b => sInf (kapISet L K p n' TT a b),
-            ep := fun p => ⌈Ce * (D.R.f : ℝ) * (D.R.k : ℝ) ^ 2 * Real.logb p L.sc.a⌉₊ },
-    rfl, rfl, fun _ => rfl, fun _ _ _ _ _ => rfl⟩
 
 end Formalism.MainNotions.G

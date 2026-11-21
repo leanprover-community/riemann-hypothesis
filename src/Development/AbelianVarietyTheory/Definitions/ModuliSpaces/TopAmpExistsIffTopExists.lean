@@ -36,11 +36,7 @@ open RankZero
 
 end Zero
 
-theorem topAmpExists_iff_topAmpSt : TopAmpExists ↔ GlobalTheory.LN.TopAmpSt := Iff.rfl
 
-theorem topAmpExists_iff_topExists : TopAmpExists ↔ TopExists :=
-  ⟨fun h E _ _ _ H D hD Xo n hn => let ⟨J, k, T, hJ, a⟩ := h E H D hD Xo n hn; ⟨J, hJ, T, k, a⟩,
-    fun h E _ _ _ H D hD Xo n hn => let ⟨J, hJ, T, k, a⟩ := h E H D hD Xo n hn; ⟨J, k, T, hJ, a⟩⟩
 
 end GlobalTheory.Models.FamInh
 

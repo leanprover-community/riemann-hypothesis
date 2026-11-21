@@ -106,14 +106,6 @@ theorem residue_wittResidueToRing (x : WittVector p (ResidueField A)) :
     WittVector.mk_fontaineTheta, Ainf.ofWitt, WittVector.map_coeff, Tilt.coeff_ofPerfect]
   exact modPToResidue_residueSection p A _
 
-theorem wittResidueToRing_injective : Function.Injective (wittResidueToRing p A) := by
-  rw [injective_iff_map_eq_zero]
-  intro x hx
-  by_contra h
-  obtain ⟨m, b, rfl⟩ := WittVector.exists_eq_pow_p_mul' x h
-  rw [map_mul, map_pow, map_natCast] at hx
-  exact mul_ne_zero (pow_ne_zero _ (Nat.cast_ne_zero.2 (Fact.out : p.Prime).ne_zero))
-    ((Units.isUnit b).map (wittResidueToRing p A)).ne_zero hx
 
 theorem exists_sum_wittResidueToRing {π : A} (hπ : Irreducible π) (n : ℕ) (a : A) :
     ∃ (c : ℕ → WittVector p (ResidueField A)) (b : A),

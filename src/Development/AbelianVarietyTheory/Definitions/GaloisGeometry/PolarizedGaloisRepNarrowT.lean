@@ -121,14 +121,6 @@ theorem everywhereGood_rank_one (π : CuspSub E 1) : EverywhereGood π := by
   rw [Multiset.mem_singleton.1 hy]
   rfl
 
-theorem EverywhereGood.rc_algNorm_eq {π : CuspSub E a} (hπ : EverywhereGood π) {w : HeightOneSpectrum (𝓞 E)}
-    {A : ValuationSubring Ω} {h : IsPlaceOver A w} {rc rc' : IrrGL (w.adicCompletion E) → WD h}
-    (hrc : UpperTheory.Zero.LLC.IsRecT h rc) (hrc' : UpperTheory.Zero.LLC.IsRecT h rc')
-    (e : ∀ x, UpperTheory.Zero.LLC.Good x → rc x = rc' x) {σ : SmIrr (GL (Fin a) (w.adicCompletion E))} (hσ : π.IsLocComp w σ) :
-    rc (algNorm σ) = rc' (algNorm σ) := by
-  obtain ⟨_, _, L⟩ := hrc
-  obtain ⟨_, _, L'⟩ := hrc'
-  rw [algNorm, L.nu, L'.nu, e _ (hπ w σ hσ)]
 
 example {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} (h : IsPlaceOver A w) : ¬ (deg (1 : Weil h) ≠ 0) := by
   simpa using GlobalTheory.WeilDeligne.deg_one (h := h)

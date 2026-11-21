@@ -75,16 +75,6 @@ theorem lamDet_hc (n : ℕ) (m : ℤ) : Formalism.QuantumDeterminants.IsHCParam 
     simp only [lamDet, Formalism.QuantumDeterminants.rhoStd]; linarith
   · simp only [lamDet, Formalism.QuantumDeterminants.rhoStd]; push_cast; ring
 
-theorem fdeg_lamDet (n : ℕ) (m : ℤ) : Formalism.QuantumDeterminants.fdegHC (lamDet n m) = 1 := by
-  unfold Formalism.QuantumDeterminants.fdegHC
-  rw [div_eq_one_iff_eq]
-  · refine Finset.prod_congr rfl fun a _ => Finset.prod_congr rfl fun b hb => ?_
-    have : ((a : ℕ) : ℝ) < (b : ℕ) := by exact_mod_cast (Finset.mem_filter.1 hb).2
-    simp only [lamDet, Formalism.QuantumDeterminants.rhoStd]
-    rw [abs_of_pos (by linarith)]; ring
-  · refine Finset.prod_ne_zero_iff.2 fun a _ => Finset.prod_ne_zero_iff.2 fun b hb => ?_
-    have : ((a : ℕ) : ℝ) < (b : ℕ) := by exact_mod_cast (Finset.mem_filter.1 hb).2
-    linarith
 
 theorem lowK_lamDet (n : ℕ) (s : Bool) (m : ℤ) :
     Formalism.QuantumDeterminants.lowK (fun _ : Fin n => s) (lamDet n m) = fun _ => (m : ℝ) := by
@@ -150,12 +140,6 @@ theorem isDS_detPow (n : ℕ) (s : Bool) (m : ℤ) : IsDS (fun _ : Fin n => s) (
     rw [Complex.exp_pi_mul_I] at h3
     norm_num at h3
 
-theorem isFdeg_detPow (n : ℕ) (s : Bool) (m : ℤ) :
-    IsFdeg (Formalism.REAL.muG (fun _ : Fin n => s)) (detPow n m) (cst n s * Formalism.QuantumDeterminants.fdegHC (lamDet n m)) := by
-  rw [fdeg_lamDet, mul_one]
-  refine isFdeg_of_scalar _ (1 : ℂ) (fun x => ⟨x, by simp⟩) fun g hg => ⟨g.det ^ m, ?_, ?_⟩
-  · rw [norm_zpow, norm_det hg, _root_.one_zpow]
-  · rw [detPow_apply, smul_eq_mul]
 
 theorem rank_one (ε : Fin 1 → Bool) : ∃ c : ℝ, 0 < c ∧
     ∀ (lam : Fin 1 → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
@@ -218,80 +202,11 @@ theorem ratio (hHC : HarishChandra) {n : ℕ} {ε : Fin n → Bool} {lam lam' : 
   rw [isFdeg_unique hd (hc lam hl H σ h), isFdeg_unique hd' (hc lam' hl' H' σ' h')]
   ring
 
-theorem ratio_chambers (hHC : HarishChandra) {n : ℕ} {ε : Fin n → Bool} {π π' : Equiv.Perm (Fin n)}
-    {lam lam' : Fin n → ℝ}
-    (hl : Formalism.QuantumDeterminants.IsHCParam lam) (hl' : Formalism.QuantumDeterminants.IsHCParam lam')
-    {H H' : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedAddCommGroup H'] [InnerProductSpace ℂ H']
-    {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {σ' : Matrix (Fin n) (Fin n) ℂ → (H' →L[ℂ] H')}
-    (h : IsDS (ε ∘ π) lam (fun g => σ (g.submatrix π.symm π.symm)))
-    (h' : IsDS (ε ∘ π') lam' (fun g => σ' (g.submatrix π'.symm π'.symm))) {d d' : ℝ}
-    (hd : IsFdeg (Formalism.REAL.muG ε) σ d) (hd' : IsFdeg (Formalism.REAL.muG ε) σ' d') :
-    d * Formalism.QuantumDeterminants.fdegHC lam' = d' * Formalism.QuantumDeterminants.fdegHC lam := by
-  obtain ⟨c, -, hc⟩ := hHC n ε
-  have := h.2.1
-  have := h'.2.1
-  rw [isFdeg_unique hd (hc π lam hl H σ h), isFdeg_unique hd' (hc π' lam' hl' H' σ' h')]
-  ring
 
-theorem isDS_detPow_perm (n : ℕ) (s : Bool) (m : ℤ) (π : Equiv.Perm (Fin n)) :
-    IsDS ((fun _ : Fin n => s) ∘ π) (lamDet n m) (fun g => detPow n m (g.submatrix π.symm π.symm)) := by
-  have e : (fun g : Matrix (Fin n) (Fin n) ℂ => detPow n m (g.submatrix π.symm π.symm)) = detPow n m := by
-    funext g
-    simp only [detPow, Matrix.det_submatrix_equiv_self]
-  rw [e]
-  exact isDS_detPow n s m
 
-theorem const_eq_cst {n : ℕ} {s : Bool} {c : ℝ}
-    (hc : ∀ (π : Equiv.Perm (Fin n)) (lam : Fin n → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
-      ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-        (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)),
-        IsDS ((fun _ : Fin n => s) ∘ π) lam (fun g => σ (g.submatrix π.symm π.symm)) →
-        IsFdeg (Formalism.REAL.muG (fun _ : Fin n => s)) σ (c * Formalism.QuantumDeterminants.fdegHC lam)) : c = cst n s := by
-  have h := isFdeg_unique (hc 1 _ (lamDet_hc n 0) ℂ _ (isDS_detPow_perm n s 0 1)) (isFdeg_detPow n s 0)
-  simpa [fdeg_lamDet] using h
 
-theorem rank_one_perm (ε : Fin 1 → Bool) : ∃ c : ℝ, 0 < c ∧
-    ∀ (π : Equiv.Perm (Fin 1)) (lam : Fin 1 → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
-      ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-        (σ : Matrix (Fin 1) (Fin 1) ℂ → (H →L[ℂ] H)),
-        IsDS (ε ∘ π) lam (fun g => σ (g.submatrix π.symm π.symm)) →
-        IsFdeg (Formalism.REAL.muG ε) σ (c * Formalism.QuantumDeterminants.fdegHC lam) := by
-  obtain ⟨c, hc, h1⟩ := rank_one ε
-  refine ⟨c, hc, fun π lam hl H _ _ σ hσ => h1 lam hl H σ ?_⟩
-  obtain rfl : π = 1 := Subsingleton.elim _ _
-  simpa [Equiv.Perm.one_def] using hσ
 
-theorem diag_submatrix {n : ℕ} (π : Equiv.Perm (Fin n)) (d : Fin n → ℂ) (a : Fin n) :
-    (Matrix.diagonal d).submatrix π.symm π.symm (π a) (π a) = d a := by simp
 
-theorem unitary_one_one_chambers (k : ℝ) (hk : 1 ≤ k) :
-    Formalism.QuantumDeterminants.lowK (![true, false] ∘ (1 : Equiv.Perm (Fin 2))) ![k - 1 / 2, 1 / 2] = ![k, 0] ∧
-    Formalism.QuantumDeterminants.lowK (![true, false] ∘ (Equiv.swap (0 : Fin 2) 1)) ![k - 1 / 2, 1 / 2] = ![k, 0] ∧
-    Formalism.QuantumDeterminants.fdegHC ![k - 1 / 2, 1 / 2] = k - 1 := by
-  refine ⟨?_, ?_, ?_⟩
-  · funext a
-    fin_cases a <;>
-      simp only [Formalism.QuantumDeterminants.lowK, Pi.add_apply, Pi.sub_apply, Formalism.REAL.rhoN, Formalism.REAL.rhoC, Finset.card_filter,
-        Fin.sum_univ_two] <;> simp <;> norm_num
-  · funext a
-    fin_cases a <;>
-      simp only [Formalism.QuantumDeterminants.lowK, Pi.add_apply, Pi.sub_apply, Formalism.REAL.rhoN, Formalism.REAL.rhoC, Finset.card_filter,
-        Fin.sum_univ_two] <;> simp <;> norm_num
-  · simp [Formalism.QuantumDeterminants.fdegHC, Finset.prod_filter, Fin.prod_univ_two]
-    rw [abs_of_nonneg (by linarith)]; ring
 
-theorem lowK_add_two_rhoC {n : ℕ} (ε : Fin n → Bool) (lam : Fin n → ℝ) (a : Fin n) :
-    (Formalism.QuantumDeterminants.lowK ε lam + (2 : ℝ) • Formalism.REAL.rhoC ε) a =
-      lam a + (((Finset.univ.filter fun b => a < b).card : ℝ) - (Finset.univ.filter fun b => b < a).card) / 2 := by
-  have h1 := Finset.card_filter_add_card_filter_not (s := Finset.univ.filter fun b : Fin n => a < b)
-    (fun b => ε b = ε a)
-  have h2 := Finset.card_filter_add_card_filter_not (s := Finset.univ.filter fun b : Fin n => b < a)
-    (fun b => ε b = ε a)
-  rw [Finset.filter_filter, Finset.filter_filter] at h1 h2
-  rw [← h1, ← h2]
-  simp only [Formalism.QuantumDeterminants.lowK, Formalism.REAL.rhoN, Formalism.REAL.rhoC, Pi.add_apply, Pi.sub_apply, Pi.smul_apply,
-    smul_eq_mul, ne_eq]
-  push_cast
-  ring
 
 end GlobalTheory.FormalDegree.Model

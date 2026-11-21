@@ -16,15 +16,6 @@ def SelfDualMass : Prop :=
     ∀ W : HSpace D.host.E, PosDefAtRealPlaces W →
       Formalism.HermitianLatticesTheory.mass W.hT W.L0 = Formalism.MainNotions.StandardLattice.massI D W.rank
 
-theorem SelfDualMass.all_lattices (h : SelfDualMass) (D : D7) :
-    letI := D.host.cmStar
-    ∀ W : HSpace D.host.E, PosDefAtRealPlaces W →
-      ∀ L : Submodule (𝓞 D.host.E) W.V, Submodule.IsLattice D.host.E L →
-        Formalism.HermitianLatticesTheory.IsUnimodular W.hT L →
-        Formalism.HermitianLatticesTheory.mass W.hT L = Formalism.MainNotions.StandardLattice.massI D W.rank := by
-  letI := D.host.cmStar
-  intro W hW L hL hu
-  exact h D { W with L0 := L, standardTuple_isLattice := hL, baseLattice_isUnimodular := hu } hW
 
 section Std
 
@@ -104,24 +95,8 @@ def stdSpace : HSpace E where
     · intro hx y hy
       exact IsIntegral.sum _ fun i _ => ((hy i).map (starRingEnd E).toIntAlgHom).mul (hx i)
 
-theorem stdSpace_posDef (hc : ∀ (τ : E →+* ℂ) (a : E), τ (star a) = starRingEnd ℂ (τ a)) :
-    PosDefAtRealPlaces (stdSpace E M) := by
-  intro τ x hx
-  change 0 < (τ (∑ i, star (x i) * x i)).re
-  obtain ⟨j, hj⟩ : ∃ j, x j ≠ 0 := Function.ne_iff.1 hx
-  simp only [map_sum, map_mul, hc, Complex.re_sum, ← Complex.normSq_eq_conj_mul_self,
-    Complex.ofReal_re]
-  exact Finset.sum_pos' (fun i _ => Complex.normSq_nonneg _)
-    ⟨j, Finset.mem_univ _, Complex.normSq_pos.2 ((map_ne_zero τ).2 hj)⟩
 
 end Std
 
-theorem stdSpace_case (D : D7) (M : ℕ) :
-    letI := D.host.cmStar
-    PosDefAtRealPlaces (stdSpace D.host.E M) ∧
-      Formalism.HermitianLatticesTheory.mass (stdSpace D.host.E M).hT (stdSpace D.host.E M).L0 =
-        Formalism.MainNotions.StandardLattice.massI D (stdSpace D.host.E M).rank := by
-  letI := D.host.cmStar
-  exact ⟨stdSpace_posDef _ M D.sp.cm.cmUnram.2.1, rfl⟩
 
 end GlobalTheory.IndefiniteRowSideFullHecke.SelfDualLatticeMass

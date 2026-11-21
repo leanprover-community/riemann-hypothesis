@@ -56,18 +56,7 @@ variable (K C p) in
 def galoisTiltEquiv : (Ω ≃ₐ[K] Ω) ≃ₜ* (Ω♭ ≃ₐ[K♭] Ω♭) :=
   (untiltGalHomeomorph K C p).symm
 
-theorem untiltGalEquiv_galoisTiltEquiv (σ : Ω ≃ₐ[K] Ω) :
-    untiltGalEquiv K C p (galoisTiltEquiv K C p σ) = σ :=
-  (untiltGalEquiv K C p).apply_symm_apply σ
 
-theorem galoisTiltEquiv_fixes_iff (L : IntermediateField K C) [FiniteDimensional K L]
-    (σ : Ω ≃ₐ[K] Ω) :
-    (∀ y : Ω♭, (y : C♭) ∈ tiltIntermediateField p L → galoisTiltEquiv K C p σ y = y) ↔
-      (∀ x : Ω, (x : C) ∈ L → σ x = x) := by
-  obtain ⟨hfin, hL⟩ := untiltField_tiltIntermediateField (p := p) L
-  have key := untiltGalEquiv_fixes_iff (galoisTiltEquiv K C p σ) (tiltIntermediateField p L)
-  rw [untiltGalEquiv_galoisTiltEquiv, hL] at key
-  exact key.symm
 
 end InC
 
@@ -78,14 +67,6 @@ variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p]
 
 local notation "K♭" => Tilt K NormedField.valuation (normInteger K) normInteger_integers p
 
-theorem isAlgClosed_iff_isAlgClosed_tilt : IsAlgClosed K ↔ IsAlgClosed K♭ := by
-  rcases IsPerfectoidField.charZero_or_charP (K := K) p with h0 | hp
-  · have := IsPerfectoidField.completeSpace (K := K) p
-    have : IsPerfectoidField (CompletedAlgClosure K) p :=
-      isPerfectoidField_of_isAlgClosed_of_normedAlgebra K (CompletedAlgClosure K) p
-    exact isAlgClosed_iff_isAlgClosed_tilt_of_isAlgClosed (CompletedAlgClosure K)
-  · exact ⟨fun _ => IsAlgClosed.of_ringEquiv K K♭ (tiltRingEquivOfCharP K p).symm,
-      fun _ => IsAlgClosed.of_ringEquiv K♭ K (tiltRingEquivOfCharP K p)⟩
 
 variable (K p) in
 
@@ -105,11 +86,6 @@ def absoluteGaloisGroupTiltEquivOfCharP [CharP K p] :
     Field.absoluteGaloisGroup K ≃ₜ* Field.absoluteGaloisGroup K♭ :=
   absoluteGaloisGroupCongr K K♭ (tiltRingEquivOfCharP K p).symm
 
-theorem nonempty_absoluteGaloisGroup_tilt :
-    Nonempty (Field.absoluteGaloisGroup K ≃ₜ* Field.absoluteGaloisGroup K♭) := by
-  rcases IsPerfectoidField.charZero_or_charP (K := K) p with h0 | hp
-  · exact ⟨absoluteGaloisGroupTiltEquiv K p⟩
-  · exact ⟨absoluteGaloisGroupTiltEquivOfCharP K p⟩
 
 end Absolute
 

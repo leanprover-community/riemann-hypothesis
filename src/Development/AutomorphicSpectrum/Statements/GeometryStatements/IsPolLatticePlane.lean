@@ -93,11 +93,7 @@ theorem isHTConst_sub_one [hp : Fact p.Prime] {ζ : O} (hζ : IsPrimitiveRoot (a
   · exact hζ.sub_one_ne_zero hp.out.one_lt
   · exact (val_sub_one_pow hζ).le
 
-theorem isHTConst_two [CharZero C] : IsHTConst v 2 (2 : O) :=
-  ⟨by rw [map_ofNat]; exact two_ne_zero, by rw [map_ofNat]; simp⟩
 
-theorem not_isHTConst_one (h : v (p : C) < 1) : ¬ IsHTConst v p (1 : O) := fun h1 =>
-  absurd (by simpa using h1.2) (not_le.2 h)
 
 end PointTest
 

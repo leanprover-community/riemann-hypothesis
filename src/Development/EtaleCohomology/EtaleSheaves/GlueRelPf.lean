@@ -17,13 +17,5 @@ def EdgeInj : Prop := Hyps → ∀ (q : ℕ) [NeZero q] (n i : ℤ) {Y X : Schem
   ∀ (V : Scheme.{0}) (v : V ⟶ X), Etale v → Surjective v → ∀ m : ℤ, m + 1 = n → ∀ y : Ht q (cech f) m i,
     obs q (cechAug (pullback.snd f v)) i m (pull (ZMod q) (bcMap f v) (tw q i) m y) = 0 → obs q (cechAug f) i m y = 0
 
-theorem GlueRel_of (hC : ConeExact) (hE : EdgeInj) : GlueRel := by
-  intro h q _ n i Y X f hb m hm y hy
-  obtain ⟨V, v, hv, hs, z, hz⟩ := hy
-  have h1 : obs q (cechAug (pullback.snd f v)) i m (pull (ZMod q) (bcMap f v) (tw q i) m y) = 0 := by
-    rw [← hz]
-    exact (hC (ZMod q) ((chains (ZMod q)).map (cechAug (pullback.snd f v))) (tw q i) m).apply_apply_eq_zero z
-  have h2 := hE h q n i f hb V v hv hs m hm y h1
-  exact (hC (ZMod q) ((chains (ZMod q)).map (cechAug f)) (tw q i) m y).1 h2
 
 end LateralTheory.E.GlueRelPf

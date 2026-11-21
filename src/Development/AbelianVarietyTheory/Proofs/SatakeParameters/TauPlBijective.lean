@@ -65,41 +65,8 @@ theorem tauPl_bijective (D : D7) : Function.Bijective (tauPl D) := by
 
 def plEquiv (D : D7) : (Bool × HH D) ≃ D.what₂.Tau := Equiv.ofBijective _ (tauPl_bijective D)
 
-theorem plEquiv_apply (D : D7) (z : Bool × HH D) : plEquiv D z = tauPl D z := rfl
 
-theorem inertK_iff (D : D7) (l : ℕ) (hl : l.Prime) (h5 : 5 ≤ l) : GL3Theta.InertK D l ↔ (IsResidueClassZero D l ∨ IsSg D l) := by
-  have hq : jacobiSym (-(D.host.d : ℤ)) D.host.q = 1 := by
-    have := D.host.hyp
-    unfold Formalism.FrobeniusOrbits.HostHyp at this
-    tauto
-  have hd := D.host.hyp.2.1
-  unfold GL3Theta.InertK IsResidueClassZero IsSg Host.cls primeClass
-  have h2 : l ≠ 2 := by omega
-  by_cases hs : l ∈ D.host.small
-  · rw [if_pos hs, D.host.QS_split l hl h2 (Nat.dvd_of_mem_primeFactors hs)]; simp
-  rw [if_neg hs]
-  by_cases h1 : l = D.host.q
-  · rw [if_pos h1, h1, hq]; simp
-  rw [if_neg h1]
-  by_cases h3 : l = D.host.d
-  · rw [if_pos h3, h3]
-    have : jacobiSym (-(D.host.d : ℤ)) D.host.d = 0 := by
-      haveI : NeZero D.host.d := ⟨hd.ne_zero⟩
-      rw [jacobiSym.eq_zero_iff_not_coprime, Int.neg_gcd, Int.gcd_self]
-      simpa using hd.ne_one
-    rw [this]; simp
-  rw [if_neg h3]
-  have cop : Int.gcd (-(D.host.d : ℤ)) (l : ℤ) = 1 := by
-    rw [Int.neg_gcd, Int.gcd_natCast_natCast]
-    exact (Nat.coprime_primes hd hl).mpr (Ne.symm h3)
-  rcases jacobiSym.eq_one_or_neg_one cop with h | h
-  · rw [if_pos h, h]; simp
-  · rw [if_neg (by rw [h]; decide)]
-    split_ifs <;> simp [h]
 
-theorem case_iff (D : D7) (l : ℕ) (hl : l.Prime) : IndefiniteRowSideFullHecke.ShapeDegreeParity.CaseA D l ↔ IndefiniteRowSideFullHecke.TeichmullerFactorisation.InertNotConj D l := by
-  unfold IndefiniteRowSideFullHecke.ShapeDegreeParity.CaseA IndefiniteRowSideFullHecke.TeichmullerFactorisation.InertNotConj
-  exact and_congr_right fun h5 => and_congr_left' (inertK_iff D l hl h5)
 
 theorem even_nP (D : D7) (l : ℕ) (h : IndefiniteRowSideFullHecke.TeichmullerFactorisation.InertNotConj D l) : Even (nP D l) := by
   unfold nP

@@ -360,7 +360,5 @@ theorem hostCMType_of (hGal : HostGalois) (hSpec : HostGalSpec) : HostCMType := 
       rw [if_neg hs, hsb, map_neg, hφ']
       exact ⟨fun h' => absurd h'.symm hcne, fun h' => absurd h' (by decide)⟩
 
-theorem real_subfield_and_cm_type (hGal : HostGalois) (hSpec : HostGalSpec) : TwoPowerCyclotomicLayerRealSubfieldCharacterization ∧ HostCMType := by
-  exact ⟨real_subfield_of_galois_spec hSpec, hostCMType_of hGal hSpec⟩
 
 end Formalism.FrobeniusOrbits

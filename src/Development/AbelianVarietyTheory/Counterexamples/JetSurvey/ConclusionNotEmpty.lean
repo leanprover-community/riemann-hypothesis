@@ -21,22 +21,7 @@ section General
 
 variable {R : Type} [CommRing R] [IsDomain R]
 
-theorem conclusion_not_empty {D' D : DegPre R} {n : ℕ} (pD : IsPowDeg D' D n) (f g : D.P.A ⟶ D.P.A)
-    (f' g' : D'.P.A ⟶ D'.P.A) (hf : IsMonHom f) (hg : IsMonHom g)
-    (ef : ∀ i, f' ≫ pD.pw.pr i = pD.pw.pr i ≫ f) (eg : ∀ i, g' ≫ pD.pw.pr i = pD.pw.pr i ≫ g)
-    (hr : RosatiAdj D.P.A D.P.L f g) :
-    ∃ u : LB.Gen (LB.LinComb D'.P.L (rosatiφ D'.P.A f' g') rosatiε), u.IsGen ∧
-      LB.Gen.Corr D'.P.L _ _ _ _ (LB.pullGen D'.P.L _ _ u (zero2 D'.P.A)) (LB.oneGen D'.P.L) := by
-  have := GlobalTheory.BoxTauLin.isMonHom_of_coord pD.pw f f' ef
-  have := GlobalTheory.BoxTauLin.isMonHom_of_coord pD.pw g g' eg
-  exact exists_ros GlobalTheory.globalFns_holds D'.P.isAb D'.P.isLB _ _
-    (both_hold.1 R D' D n pD f g f' g' hf hg ef eg hr)
 
-theorem c_compatible {D' D : DegPre R} {n : ℕ} (pD : IsPowDeg D' D n) (f : D.P.A ⟶ D.P.A) (f' : D'.P.A ⟶ D'.P.A)
-    (a : D.X → D.X) (ef : ∀ i, f' ≫ pD.pw.pr i = pD.pw.pr i ≫ f) (ca : ∀ y, D.c (a y) = D.c y ≫ f) (x : D'.X) :
-    D'.c (pD.xe.symm fun i => a (pD.xe x i)) = D'.c x ≫ f' :=
-  pow_ext pD.pw fun i => by
-    rw [pD.c_pr, AddEquiv.apply_symm_apply, ca, Category.assoc, ef, ← Category.assoc, pD.c_pr]
 
 theorem tauBal_id_iff (D : DegPre R) (hr : RosatiAdj D.P.A D.P.L (𝟙 _) (𝟙 _)) (a a' : D.X → D.X) :
     D.TauBal (𝟙 _) (𝟙 _) a a' ↔ ∀ y y' z J, Good D.P.L z J →
@@ -119,52 +104,7 @@ theorem premises_met (m : ℤ) (n : ℕ) :
   exact ⟨D'.toPre, p, fun _ => by simp, rosati_tate, fun _ => (Category.comp_id _).symm,
     (tauBal_tate_iff _ _).2 fun y y' => by ring⟩
 
-theorem sum_of_tauBal_pow {D' : DegPre InhTate.R} {n : ℕ} (pD : IsPowDeg D' tatePre n) (a a' : ℤ → ℤ)
-    (h : D'.TauBal (𝟙 _) (𝟙 _) (fun y => pD.xe.symm fun i => a (pD.xe y i))
-      (fun y => pD.xe.symm fun i => a' (pD.xe y i))) (y y' : Fin n → ℤ) :
-    ∑ i, a (y i) * y' i = ∑ i, y i * a' (y' i) := by
-  have e1 : ∀ i, 𝟙 _ ≫ pD.pw.pr i = pD.pw.pr i ≫ 𝟙 _ := fun _ => by simp
-  have hr := both_hold.1 _ D' tatePre n pD _ _ _ _ inferInstance inferInstance e1 e1 rosati_tate
-  obtain ⟨z⟩ := nonempty_TK
-  obtain ⟨J', hJ', -⟩ := exists_good D'.P.L D'.P.isLB z (K := PEmpty) PEmpty.elim PEmpty.elim
-    (fun a => a.elim) (fun a => a.elim)
-  have H := (tauBal_id_iff D' hr _ _).1 h (pD.xe.symm y) (pD.xe.symm y') z J' hJ'
-  have hJ := good_tate z (fun _ => PUnit.unit)
-  have t₁ := GlobalTheory.TauBalBox.tau_box pD hJ hJ' (pD.xe.symm fun i => a (pD.xe (pD.xe.symm y) i)) (pD.xe.symm y')
-  have t₂ := GlobalTheory.TauBalBox.tau_box pD hJ hJ' (pD.xe.symm y) (pD.xe.symm fun i => a' (pD.xe (pD.xe.symm y') i))
-  have cc : ∀ p q : D'.X, DVR.cP D' (TK InhTate.R) p = DVR.cP D' (TK InhTate.R) q := fun p q =>
-    pow_ext pD.pw fun i => toUnit_unique _ _
-  rw [cc (pD.xe.symm fun i => a (pD.xe (pD.xe.symm y) i)) (pD.xe.symm y), H] at t₁
-  rw [cc (pD.xe.symm fun i => a' (pD.xe (pD.xe.symm y') i)) (pD.xe.symm y')] at t₂
-  have E := t₁.symm.trans t₂
-  erw [AddEquiv.apply_symm_apply, AddEquiv.apply_symm_apply, AddEquiv.apply_symm_apply,
-    AddEquiv.apply_symm_apply] at E
-  have s : ∀ p q : Fin n → ℤ, ∏ i, val (tatePre.tau (p i) (q i)) (𝟙 _) z (fun _ => PUnit.unit) =
-      gm (𝟙 _) z ⊤ (pi0 ^ (2 * ∑ i, p i * q i)) := fun p q => by
-    refine (Finset.prod_congr rfl fun i _ => val_tau_tate (p i) (q i) z _).trans ?_
-    rw [← map_prod, Finset.mul_sum]
-    refine congrArg _ ?_
-    simp only [_root_.mul_assoc]
-    exact (map_prod ((zpowersHom _ pi0).comp (MonoidHom.id (Multiplicative ℤ)))
-      (fun i => Multiplicative.ofAdd (2 * (p i * q i))) Finset.univ).symm
-  have := gm_pi_zpow_injective z ((s (fun i => a (y i)) y').symm.trans (E.trans (s y (fun i => a' (y' i)))))
-  linarith
 
-theorem conclusion_can_fail {D' : DegPre InhTate.R} {n : ℕ} (pD : IsPowDeg D' tatePre (n + 1)) :
-    ¬ D'.TauBal (𝟙 _) (𝟙 _) (fun y => pD.xe.symm fun i => (fun _ : ℤ => (0 : ℤ)) (pD.xe y i))
-      (fun y => pD.xe.symm fun i => (fun t : ℤ => t) (pD.xe y i)) := fun h => by
-  have := sum_of_tauBal_pow pD (fun _ => 0) (fun t => t) h (fun _ => 1) (fun _ => 1)
-  simp at this
-  omega
 
-theorem rosati_iff {R : Type} [CommRing R] [IsDomain R] {D' D : DegPre R} {n : ℕ} (pD : IsPowDeg D' D (n + 1))
-    (f g : D.P.A ⟶ D.P.A) (f' g' : D'.P.A ⟶ D'.P.A) (hf : IsMonHom f) (hg : IsMonHom g)
-    (ef : ∀ i, f' ≫ pD.pw.pr i = pD.pw.pr i ≫ f) (eg : ∀ i, g' ≫ pD.pw.pr i = pD.pw.pr i ≫ g) :
-    RosatiAdj D'.P.A D'.P.L f' g' ↔ RosatiAdj D.P.A D.P.L f g := by
-  refine ⟨fun h => ?_, both_hold.1 R D' D _ pD f g f' g' hf hg ef eg⟩
-  have := GlobalTheory.BoxTauLin.isMonHom_of_coord pD.pw f f' ef
-  have := GlobalTheory.BoxTauLin.isMonHom_of_coord pD.pw g g' eg
-  obtain ⟨u, hu, -⟩ := exists_ros GlobalTheory.globalFns_holds D'.P.isAb D'.P.isLB _ _ h
-  exact (GlobalTheory.PowBalanceProbe.hom_and_adjoint pD 0 ef eg u hu).2.2
 
 end GlobalTheory.BoxPowerProbe

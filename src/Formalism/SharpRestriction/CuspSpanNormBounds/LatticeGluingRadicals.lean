@@ -1259,25 +1259,7 @@ open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem m_hadamard (n : ℕ) (A : Matrix (Fin n) (Fin n) ℂ) :
-    ‖A.det‖ ≤ ∏ j : Fin n, Real.sqrt (∑ i : Fin n, ‖A i j‖ ^ 2) := by
-  have h := Formalism.HadamardInequality.P.hadamard_inequality_holds n A.transpose
-  rw [Matrix.det_transpose] at h
-  simp only [Matrix.transpose_apply] at h
-  have h2 : Real.sqrt (‖A.det‖ ^ 2) ≤ Real.sqrt (∏ j : Fin n, ∑ i : Fin n, ‖A i j‖ ^ 2) :=
-    Real.sqrt_le_sqrt h
-  rw [Real.sqrt_sq (norm_nonneg _)] at h2
-  refine h2.trans (le_of_eq ?_)
-  have : ∀ s : Finset (Fin n), Real.sqrt (∏ j ∈ s, ∑ i : Fin n, ‖A i j‖ ^ 2) =
-      ∏ j ∈ s, Real.sqrt (∑ i : Fin n, ‖A i j‖ ^ 2) := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simp
-    | insert a s ha ih =>
-      rw [Finset.prod_insert ha, Finset.prod_insert ha, Real.sqrt_mul (by positivity), ih]
-  exact this _
 
-theorem gluing_hadamard_inequality : VanishingOnXAndXPlusGlobal.adm2 := m_hadamard
 
 theorem lemma_one_det_index_le_gram (D : D7) (Λ : VanishingOnXAndXPlusGluing.LatS D) (g : ℕ) {T T' : ℕ} (F : VanishingOnXAndXPlusGluing.FlS D T) (F' : VanishingOnXAndXPlusGluing.FlS D T')
     (h : VanishingOnXAndXPlusGluing.Lem1 D Λ g F F') :
@@ -6753,10 +6735,7 @@ theorem lattice_theorem_B_of_steps (D : D7) (h : TheoremBFirstTwoSteps D) : Vani
 theorem lattice_theorem_B (D : D7) : VanishingOnXAndXPlusGluing.Conclusion4 D :=
   lattice_theorem_B_of_steps D (theorem_B_first_two_steps D (gluing_unimodular_first D) (radicals_eq_theta D))
 
-theorem hadamard_section : Formalism.MainNotions.S.UnitaryVolumeMass.stBRhad := gluing_hadamard_inequality
-theorem lattice_lemma_two_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.stLem2 D := lattice_lemma_two D
 theorem lemma_one_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.stLem1 D := lattice_lemma_one D
-theorem radical_second_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.HyperplaneRankAllWords D := radical_second_claim D
 theorem theorem_B_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.stThmB D := lattice_theorem_B D
 
 section Fam

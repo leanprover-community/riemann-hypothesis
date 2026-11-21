@@ -127,15 +127,6 @@ theorem seriesEval_sub_sum_mem {z : B} (hz : z ∈ I) (f : ℚ⟦X⟧) (n : ℕ)
     seriesEval I z hz f - ∑ i ∈ Finset.range n, algebraMap ℚ B (coeff i f) * z ^ i ∈ I ^ n :=
   Ideal.Quotient.eq.1 (mk_seriesEval hz f n)
 
-theorem tendsto_seriesEval {z : B} (hz : z ∈ I) (f : ℚ⟦X⟧) :
-    @Filter.Tendsto ℕ B (fun n => ∑ i ∈ Finset.range n, algebraMap ℚ B (coeff i f) * z ^ i)
-      Filter.atTop (@nhds B I.adicTopology (seriesEval I z hz f)) := by
-  let _ := I.adicTopology
-  rw [(Ideal.hasBasis_nhds_adic I (seriesEval I z hz f)).tendsto_right_iff]
-  intro n _
-  filter_upwards [Filter.eventually_ge_atTop n] with N hN
-  refine ⟨_, Ideal.pow_le_pow_right hN (neg_mem (seriesEval_sub_sum_mem hz f N)), ?_⟩
-  simp
 
 @[simp]
 theorem seriesEval_X {z : B} (hz : z ∈ I) : seriesEval I z hz X = z := by

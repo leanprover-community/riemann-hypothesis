@@ -57,10 +57,6 @@ def unitsDivFun (y : Additive (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) : divFun (gs
       rw [map_mul]
       exact ordEmb_decompHomS S (ιs.fin v.1) v.2 σ _⟩
 
-theorem coe_unitsDivFun (y : Additive (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) :
-    (unitsDivFun K S ιs y : {v : HeightOneSpectrum (𝓞 K.1) // v ∉ S} → galUnramifiedOutside K.1 ℚ̄ S → ℤ) =
-      fun v x => ordEmb S (ιs.fin v.1) v.2 (Additive.ofMul (galUnitsHom K.1 _ x y.toMul)) :=
-  rfl
 
 def unitsDivHom : Additive (maxUnramifiedOutside K.1 ℚ̄ S)ˣ →+ divFun (gsDecomp K S ιs) ℤ where
   toFun := unitsDivFun K S ιs

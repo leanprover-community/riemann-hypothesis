@@ -612,6 +612,5 @@ theorem hostDecompConj : HostDecompConj := by
     · rw [h1, Units.val_neg, Units.val_one, map_neg, map_one] at hval
       exact absurd hval (by decide)
 
-theorem hostDecompBoth : HostDecomp ∧ HostDecompConj := ⟨hostDecomp, hostDecompConj⟩
 
 end Formalism.FrobeniusOrbits

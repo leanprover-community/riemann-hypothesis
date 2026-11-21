@@ -140,20 +140,11 @@ theorem algebraMap_iterate_phiPlus_eq {x : BCris hε} {m : ℕ} {y : BCrisPlus F
   (iterate_phiB_algebraMap hε n y).symm.trans ((congrArg (phiB hε)^[n] hy).trans
     (iterate_pow_mul_eq_of_map_eq (phiB hε) (map_natCast _ p) (phiB_periodTCris hε) x m n))
 
-theorem iterate_phiPlus_periodT (n : ℕ) :
-    (phiPlus F p)^[n] (algebraMap (ACris F p) (BCrisPlus F p) (periodT hε)) =
-      (p : BCrisPlus F p) ^ n * algebraMap (ACris F p) (BCrisPlus F p) (periodT hε) :=
-  iterate_map_eq_pow_mul (phiPlus F p) (map_natCast _ p)
-    ((phiPlus_algebraMap _).trans ((congrArg _ (phi_periodT_eq_mul hε)).trans
-      (by simp only [map_mul, map_natCast]))) n
 
 theorem exists_algebraMap_eq_periodTCris_pow_mul (x : BCris hε) :
     ∃ (m : ℕ) (y : BCrisPlus F p), algebraMap (BCrisPlus F p) (BCris hε) y = periodTCris hε ^ m * x :=
   Localization.Away.exists_algebraMap_eq_pow_mul _ x
 
-theorem iterate_phiPlus_pow (n k : ℕ) (z : BCrisPlus F p) :
-    (phiPlus F p)^[n] (z ^ k) = ((phiPlus F p)^[n] z) ^ k :=
-  iterate_map_pow _ _ _ _
 
 variable [CharZero F]
   (hζ : PreTilt.untilt ((_root_.frobeniusEquiv (PreTilt (normInteger F) p) p).symm ε) ≠ 1)

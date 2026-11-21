@@ -183,12 +183,6 @@ theorem Mon_add_phi_sub (y : Vec K a ι) {m : Vec K a ι} (hm : m ∈ D.Man) :
     D.Mon (y + (D.phi m - m)) = D.Mon y := by
   rw [map_add, PhiMod.Mon_phi_sub, D.cls_eq_zero_iff.2 (D.EN_mem_Man hm), neg_zero, add_zero]
 
-theorem Mon_mem_Zl_of_zeta_mem {y : Vec K a ι} (hy : y ∈ D.Yl)
-    (hz : D.zeta y ∈ D.ext (Rpi O K l e)) : D.Mon y ∈ D.Zl := by
-  refine ⟨⟨_, sub_mem (D.EN_mem_divE ?_) ?_, rfl⟩, D.desc.Mon_mem_invariants hy.2⟩
-  · exact D.Mext_mono (invL_A_le_Rpi l e) hy.1
-  · rw [mem_divE, Module.End.mul_apply, mulV_apply, smul_comm]
-    exact D.smul_mem_Man (E_mem l e _) (D.smul_mem_Mext (A_le_Rpi l e) hz)
 
 theorem _root_.GlobalTheory.BK.BKHom.onPol_Lc {D : BKDat O K l e a ι η H} {D' : BKDat O K l e a κ η' H'}
     (F : BKHom D D') (w : D.Pol) : F.onPol (D.Lc w) = D'.Lc (F.onPol w) := by
@@ -272,7 +266,6 @@ theorem map_avg {V : Type} [AddCommGroup V] [Module K V] (f : Vec K a ι →ₗ[
   simp only [avg, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum, h, Finset.sum_const,
     Finset.card_univ, ← Nat.card_eq_fintype_card, ← Nat.cast_smul_eq_nsmul K, inv_smul_smul₀ h0]
 
-theorem avg_of_mem_inv {v : Vec K a ι} (hv : v ∈ Δ.inv) : Δ.avg v = v := Δ.map_avg LinearMap.id hv
 
 theorem avg_mem (W : Submodule O (Vec K a ι)) {v : Vec K a ι} (h : ∀ g, Δ.act g v ∈ W) :
     Δ.avg v ∈ W := by
@@ -418,22 +411,6 @@ def Descent.plusProj {P : PhiMod O K l e a ι} (Δ : Descent P) {y : Vec K a ι}
     refine Eq.trans ?_ (rankOneDesc_act 0 1 g _ τ).symm
     simp [ringAct_apply]
 
-theorem isOfType_rankOneDat [CompleteSpace K] {j : ℤ} (h₁ : -(η : ℤ) ≤ j) (h₂ : j ≤ H) :
-    (rankOneDat O K l e a η H j h₁ h₂ 1).IsOfType {0} {j} where
-  chars_subset := by
-    rintro τ c ⟨d, hd, h⟩
-    obtain ⟨ζ, hζ⟩ := TameDescentExponentData.prim (K := K) (l := l) (e := e) (a := a)
-    have h1 := congrFun (h (powL l τ (rootsOfUnity.mkOfPowEq ζ hζ.pow_eq_one))) ()
-    have h2 := (congrArg constantCoeff (rankOneDesc_act j 1 _ _ τ)).symm.trans h1
-    have h3 : (TameGal.inertia (powL l τ (rootsOfUnity.mkOfPowEq ζ hζ.pow_eq_one)) :
-        TameGal K l e a).root τ = ζ := by
-      rw [TameGal.root, SemidirectProduct.left_inl, ← powL_add, neg_add_cancel, powL_zero]
-      rfl
-    have h4 : d τ () ≠ 0 := fun h0 => hd (funext fun _ => h0)
-    rw [h3, ← coeff_zero_eq_constantCoeff_apply] at h2
-    have h5 : ζ ^ c.val = 1 := by simpa [h4, eq_comm] using h2
-    exact (ZMod.val_eq_zero c).1 (Nat.eq_zero_of_dvd_of_lt ((hζ.pow_eq_one_iff_dvd _).1 h5) c.val_lt)
-  jumps_subset := (jumps_rankOne j).le
 
 section Omega
 
@@ -459,11 +436,6 @@ omit [IsUltrametricDist K] in
 theorem algebraMap_omegaOne (g : TameGal K l e 1) : algebraMap O K (omegaOne O g) = g.root 0 :=
   (exists_algebraMap_eq_root g).choose_spec
 
-theorem mem_chars_rankOneDesc (j : ℤ) (c : ZMod e) :
-    c ∈ (rankOneDesc (K := K) (l := l) j (omegaOne O ^ c.val)).chars 0 := by
-  refine ⟨fun _ _ => 1, fun h => one_ne_zero (congrFun h ()), fun ζ => funext fun i => ?_⟩
-  refine (congrArg constantCoeff (rankOneDesc_act j _ _ _ 0)).trans ?_
-  simp [algebraMap_omegaOne]
 
 end Omega
 

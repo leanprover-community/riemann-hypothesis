@@ -89,9 +89,6 @@ noncomputable def evalCharQZ (σ : G) : (Additive G →+ AddCircle (1 : ℚ)) �
   map_zero' := by simp
   map_add' χ ψ := by simp
 
-theorem evalCharQZ_apply (σ : G) (χ : Additive G →+ AddCircle (1 : ℚ)) :
-    evalCharQZ σ χ = QZ.toAddCircle.symm (χ (Additive.ofMul σ)) :=
-  rfl
 
 theorem evalCharQZ_injective {σ : G} (hσ : ∀ g : G, g ∈ Subgroup.zpowers σ) :
     Function.Injective (evalCharQZ σ) := by
@@ -177,8 +174,6 @@ noncomputable def h2UnitsIsoInt [IsUnramified K L] :
     groupCohomology (galUnitsZ K L) 2 ≅ groupCohomology (Rep.trivial ℤ Gal(L/K) ℤ) 2 :=
   asIso (h2Valuation K L)
 
-theorem h2UnitsIsoInt_hom [IsUnramified K L] : (h2UnitsIsoInt K L).hom = h2Valuation K L :=
-  rfl
 
 theorem h2Valuation_injective [IsUnramified K L] : Function.Injective (h2Valuation K L).hom :=
   (ModuleCat.mono_iff_injective _).1 inferInstance
@@ -226,17 +221,6 @@ theorem mem_range_unramifiedInv_iff (x : QZ) :
       GroundTheory.GroupCoh.cyclicChar_apply_gen, card_algEquiv_of_unramified K L he]
     rfl
 
-theorem range_unramifiedInv :
-    (unramifiedInv K L).range = AddSubgroup.zmultiples (QZ.mk (1 / Module.finrank K L)) := by
-  have hn : 0 < Module.finrank K L := Module.finrank_pos
-  ext x
-  rw [mem_range_unramifiedInv_iff, AddSubgroup.mem_zmultiples_iff]
-  constructor
-  · intro hx
-    obtain ⟨m, rfl⟩ := QZ.exists_eq_nsmul_mk_one_div hn hx
-    exact ⟨m, natCast_zsmul _ _⟩
-  · rintro ⟨k, rfl⟩
-    rw [smul_comm, QZ.nsmul_mk_one_div, smul_zero]
 
 end Invariant
 

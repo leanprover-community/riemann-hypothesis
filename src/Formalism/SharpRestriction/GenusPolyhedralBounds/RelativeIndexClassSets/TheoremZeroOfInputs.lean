@@ -25,48 +25,11 @@ def AtMInputs (G : GlobalFamilyData X ka wL wF) (S : Scal B) (T : ℕ) (Gc PH Pr
   ∃ Qf : ∀ la, LocalPointData G la,
     AtMBasis G ∧ AtMCurve Qf ∧ AtMTie Qf S ∧ AtMLift Qf S Gc Prw T ∧ Heights Qf Gc PH Prw Pet
 
-theorem combBound_of_depthAtM {G : GlobalFamilyData X ka wL wF} {S : Scal B} {c : ℝ} {nus : HeightOneSpectrum (𝓞 B.KO) → ℝ}
-    (hj : D.R.m ≤ j) (hd : DepthAtM X S wL nus) : CombBound G S c nus :=
-  fun la y => ⟨fun h => absurd h (not_lt.2 hj), fun _ => hd la y⟩
 
-theorem rqAtM_eq_zero {large₂ : SizeData₂ D} {G : GlobalFamilyData X ka wL wF} {S : Scal B} {CRm : ℝ} {T : ℕ} {c Ch Ah : ℝ}
-    (hj : D.R.m ≤ j) (tQ : G.TiedQ large₂ S CRm T c Ch Ah) : G.rq = 0 := by
-  rw [tQ.1]
-  exact rhoP_eq_zero_of_rho (rho_eq_zero_of_ge hj) _ _ _ ka
 
-theorem shareRho_of_shareRhoT {large₂ : SizeData₂ D} {G : GlobalFamilyData X ka wL wF} {S : Scal B} {CRm : ℝ} {T : ℕ} {c Ch Ah : ℝ} {d : ℕ}
-    (hj : D.R.m ≤ j) (tQ : G.TiedQ large₂ S CRm T c Ch Ah) (h : ShareRhoT (D := D) (j := j) T G.rz G.rq d) :
-    ShareRho (D := D) (j := j) T G.rz d := by
-  unfold ShareRhoT at h
-  unfold ShareRho
-  rw [rqAtM_eq_zero hj tQ, Nat.cast_zero, zero_add] at h
-  exact h
 
 end Inputs
 
-theorem conclAtM_of_atMInputs (large₂ : SizeData₂ D) (X : Prov D B P) (K : KAdm) (H : KHyp) (Ch Ah Cq Aq C2 A2 CR CT : ℝ)
-    (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (S : Scal B) (ka wL wF : WeightFamilies.Wt D j) (T nP nW : ℕ) (h0 : ℝ)
-    (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ)
-    (hH : HypC large₂ (X j h1 h2) H C2 A2 CR 0 CT S ka wL wF T nP nW h0 nus)
-    (lA : LatAt B j ka) (sA : SupBoundByL2AtWeight large₂ B j ka K.CG K.AG) (mA : LAMwAt large₂ B j ka K.CL K.AL)
-    (qA : j < D.R.m → QAt large₂ B j ka K.CRm H.CK Ch Ah Cq Aq T (cc D large₂ C2 A2 CR wL))
-    (G : GlobalFamilyData (X j h1 h2) ka wL wF) (Gc PH Prw Pet Pd : ℝ)
-    (tW : G.TiedW S Gc Prw) (tTh : G.TiedTh S Gc) (tZ : G.TiedZ S T Gc)
-    (tQ : G.TiedQ large₂ S K.CRm T (cc D large₂ C2 A2 CR wL) Ch Ah) (tEt : G.TiedEt large₂ K.Cf K.Af)
-    (dH : DeepHerm (X j h1 h2) ka) (dS : DeepSubMul (X j h1 h2)) (dL : DeepLogD (X j h1 h2) ka Pd)
-    (pG : PageGd4 (X j h1 h2) ka large₂ K.CG K.AG Pd)
-    (sRd : ShareRd (D := D) (j := j) T G.del ((X j h1 h2).rk ka (B.Mlat j ka)))
-    (sRho : ShareRhoT (D := D) (j := j) T G.rz G.rq ((X j h1 h2).rk ka (B.Mlat j ka)))
-    (sRhoP : ShareRhoP (D := D) (j := j) T G.rq ((X j h1 h2).rk ka (B.Mlat j ka)))
-    (hP : PolyDom4 (j := j) D B large₂ K H C2 A2 CR Ch Ah Cq Aq Gc PH Prw Pet Pd ka)
-    (iZ : ∀ la, InContainZ G la S T) (iM : ∀ la, InContainM G la K.CRm T (cc D large₂ C2 A2 CR wL))
-    (hA : D.R.m ≤ j → AtMInputs G S T Gc PH Prw Pet) :
-    ConclAtM large₂ (X j h1 h2) S ka wL wF T nus := by
-  intro hj hd
-  obtain ⟨Qf, iB, iC, iT, iL, hHt⟩ := hA hj
-  exact theorem_zero_of_named_inputs large₂ X K H Ch Ah Cq Aq C2 A2 CR CT j h1 h2 S ka wL wF T nP nW h0 nus hH lA sA mA qA G Gc PH Prw Pet Pd
-    Qf tW tTh tZ tQ tEt dH dS dL (pageGd4_iff.mp pG) sRd (shareRho_of_shareRhoT hj tQ sRho) sRhoP
-    (polyDom4_iff.mp hP) iB iC iT iL iZ iM (combBound_of_depthAtM hj hd) hHt
 
 def Conclusion1OfComb5 : Prop :=
   ∀ (large₂ : SizeData₂ D) (X : Prov D B P) (K : KAdm) (H : KHyp) (Ch Ah Cq Aq C2 A2 CR CT : ℝ),
@@ -94,12 +57,5 @@ def Conclusion1OfComb5 : Prop :=
     Concl (X j h1 h2) S ka wL wF T nus
       ((X j h1 h2).rk ka (B.Mlat j ka) * D.R.f * D.R.m * large₂.sc.b * large₂.de2)
 
-theorem theorem_zero_of_inputs : Conclusion1OfComb5 (D := D) (B := B) (P := P) := by
-  intro large₂ X K H Ch Ah Cq Aq C2 A2 CR CT j h1 h2 S ka wL wF T nP nW h0 nus hH lA sA mA qA tC pA pS G Gc PH Prw Pet Pd
-    tW tTh tZ tQ tEt dH dS dL pG sRd sRho sRhoP hP iZ iM hQf hDm hA
-  exact theorem_zero_of_refined_inputs large₂ X K H Ch Ah Cq Aq C2 A2 CR CT j h1 h2 S ka wL wF T nP nW h0 nus hH lA sA mA qA tC pA pS G Gc PH Prw
-    Pet Pd tW tTh tZ tQ tEt dH dS dL pG sRd sRho sRhoP hP iZ iM hQf hDm
-    (conclAtM_of_atMInputs large₂ X K H Ch Ah Cq Aq C2 A2 CR CT j h1 h2 S ka wL wF T nP nW h0 nus hH lA sA mA qA G Gc PH Prw
-      Pet Pd tW tTh tZ tQ tEt dH dS dL pG sRd sRho sRhoP hP iZ iM hA)
 
 end Formalism.MainNotions.Gaps.EtaleWeightGaps

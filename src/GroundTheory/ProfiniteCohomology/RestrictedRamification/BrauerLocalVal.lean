@@ -66,8 +66,6 @@ theorem levelRes_apply (σ : galUnramifiedOutside K.1 ℚ̄ S) (x : N.1) :
     ((levelRes S N hN σ x : N.1) : ℚ̄) = ((σ ⟨x, hN x x.2⟩ : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) :=
   congrArg Subtype.val (decompHom_apply (Kv := K.1) (levelIncl S N hN) σ x)
 
-theorem continuous_levelRes : Continuous (levelRes S N hN) :=
-  continuous_decompHom _
 
 theorem levelRes_surjective : Function.Surjective (levelRes S N hN) := by
   intro γ
@@ -102,10 +100,6 @@ def unitOfMem {N : FiniteSubfield} (y : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ)
     y.ne_zero (Subtype.ext (congrArg Subtype.val h : ((y : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) =
       ((0 : N.1) : ℚ̄)))
 
-theorem coe_unitOfMem {N : FiniteSubfield} (y : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ)
-    (hy : ((y : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) ∈ N.1) :
-    (((unitOfMem S y hy : N.1ˣ) : N.1) : ℚ̄) = ((y : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) :=
-  rfl
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 4000000 in

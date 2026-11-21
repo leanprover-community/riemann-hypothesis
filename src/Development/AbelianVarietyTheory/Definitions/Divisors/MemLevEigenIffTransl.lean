@@ -277,13 +277,7 @@ variable (hl : IsTypeLevel l) (fr : TypeFrame Dw l)
 theorem isRightAct_pullType (hpq : 1 ≤ Dw.p + Dw.q) : IsRightAct (pullType Xo c hl fr) :=
   (isRightAct_pull hpq hl.coprime).comp (typeEmb hl fr)
 
-theorem typeOp_mul (hpq : 1 ≤ Dw.p + Dw.q) (e e' : MonoidAlgebra c.F (LevelGroup D.host)) :
-    typeOp Xo c hl fr (e * e') = typeOp Xo c hl fr e * typeOp Xo c hl fr e' :=
-  (isRightAct_pullType hl fr hpq).algOp_mul e e'
 
-theorem isIdempotentElem_typeOp (hpq : 1 ≤ Dw.p + Dw.q) {e : MonoidAlgebra c.F (LevelGroup D.host)}
-    (he : IsIdempotentElem e) : IsIdempotentElem (typeOp Xo c hl fr e) := by
-  rw [IsIdempotentElem, ← typeOp_mul hl fr hpq, he.eq]
 
 variable (Xo c) in
 
@@ -310,15 +304,8 @@ def rankGood : ℕ := Formalism.HN.rkK (latGood hl fr U G ψ om j)
 
 def rankBad : ℕ := Formalism.HN.rkK (latBad hl fr U G ψ om j)
 
-theorem latN_le : latN fr U G ψ ≤ latW U G := latCap_le _ _
 
-theorem mem_latGood_iff (hpq : 1 ≤ Dw.p + Dw.q) (he : IsIdempotentElem (goodIdemTw om j)) {F : cuspW Xo c U G} :
-    F ∈ latGood hl fr U G ψ om j ↔ F ∈ latN fr U G ψ ∧ goodOp Xo c hl fr om j F = F :=
-  mem_cutLat_iff (isIdempotentElem_typeOp hl fr hpq he)
 
-theorem mem_latBad_iff (hpq : 1 ≤ Dw.p + Dw.q) (he : IsIdempotentElem (goodIdemTw om j)) {F : cuspW Xo c U G} :
-    F ∈ latBad hl fr U G ψ om j ↔ F ∈ latN fr U G ψ ∧ goodOp Xo c hl fr om j F = 0 :=
-  (mem_cutLat_iff (isIdempotentElem_typeOp hl fr hpq he).one_sub).trans (and_congr_right fun _ => sub_eq_self)
 
 example (hpq : 1 ≤ Dw.p + Dw.q) : latCut hl fr U G ψ 1 = latN fr U G ψ := by
   rw [latCut, typeOp, (isRightAct_pullType hl fr hpq).algOp_eq, map_one, cutLat_one]

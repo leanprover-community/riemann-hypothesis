@@ -144,11 +144,6 @@ def cntIp (φ φ' : Form k n ℂ) : ℂ := ∑ᶠ P, φ P * (starRingEnd ℂ) (�
 def IsAdj (A B : Module.End ℂ (Form k n ℂ)) : Prop :=
   ∀ φ φ' : Form k n ℂ, (Function.support φ).Finite → (Function.support φ').Finite → cntIp (A φ) φ' = cntIp φ (B φ')
 
-theorem dia_sub_mem_Mram (c : 𝓀[k]ˣ) : dia c φ - φ ∈ Mram k n M := by
-  letI := Fintype.ofFinite 𝓀[k]ˣ
-  refine (mem_Mram _).2 fun P => ?_
-  simp only [Pi.sub_apply, dia_apply, Finset.sum_sub_distrib, smul_smul, sub_eq_zero]
-  exact Equiv.sum_comp (Equiv.mulLeft c) fun d => φ (d • P)
 
 theorem dia_smul_eq_iff {c : 𝓀[k]ˣ} {P : Pair k n} : c • P = P ↔ c = 1 := by
   refine ⟨fun h => ?_, fun h => by simp [h]⟩
@@ -637,14 +632,6 @@ theorem scalar_smul_eq [Fintype n] [DecidableEq n] (g : GL n k) (s : 𝒪[k]ˣ) 
   change a = _ * (residue 𝒪[k] s * a)
   rw [← mul_assoc, ← map_mul, Units.inv_mul, map_one, one_mul]
 
-theorem Mram_ne_bot [Fintype n] [Nonempty n] {c : 𝓀[k]ˣ} (hc : c ≠ 1) : Mram k n ℂ ≠ ⊥ := by
-  classical
-  obtain ⟨P⟩ : Nonempty (Pair k n) := inferInstance
-  intro h
-  have h1 := dia_sub_mem_Mram (k := k) (n := n) (Pi.single P (1 : ℂ)) c
-  rw [h, Submodule.mem_bot] at h1
-  have h2 := congrFun h1 P
-  simp [dia_smul_eq_iff, hc] at h2
 
 example (P : Pair k n) (q : Unif k) (x : n → k) : inX k n 0 x ∈ P.glued q 0 1 ↔ x ∈ P.lat := by
   rw [Pair.glued, mem_gluedLat, Pair.mem_lat_iff]

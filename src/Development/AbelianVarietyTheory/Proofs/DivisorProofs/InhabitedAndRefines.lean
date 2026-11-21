@@ -10,22 +10,13 @@ variable {R : Type} [CommRing R] [IsDomain R]
 
 def ofDeg (D : DegPre R) (hB : D.TauBimult) : Data R := Wit.ofDeg D hB
 
-theorem ofDeg_X (D : DegPre R) (hB : D.TauBimult) : (ofDeg D hB).X = D.X := rfl
 
-theorem ofDeg_c (D : DegPre R) (hB : D.TauBimult) (a : D.X) : (ofDeg D hB).c a = D.c a := rfl
 
-theorem exists_nontrivial (k : Type) [Field k] : ∃ Q : Data (PowerSeries k), Nontrivial Q.X :=
-  ⟨ofDeg (GlobalTheory.ToricData.arcDataInt k).toPre (GlobalTheory.ToricData.arcDataInt k).tau_bimult, inferInstanceAs (Nontrivial ℤ)⟩
 
 theorem refines_ofDeg (D : DegPre R) (hB : D.TauBimult) :
     Refines (ofDeg D hB) (RingHom.id R) D (AddEquiv.refl _) :=
   Wit.refines_ofDeg D hB
 
-theorem inhabited_and_refines :
-    (∀ (k : Type) [Field k], ∃ Q : Data (PowerSeries k), Nontrivial Q.X) ∧
-    ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (hB : D.TauBimult),
-      Refines (ofDeg D hB) (RingHom.id R) D (AddEquiv.refl _) :=
-  ⟨fun k _ => exists_nontrivial k, fun _ _ _ D hB => refines_ofDeg D hB⟩
 
 open GlobalTheory.ToricData ReciprocityTheory.ChartRestriction.G.Out.InhTate in
 

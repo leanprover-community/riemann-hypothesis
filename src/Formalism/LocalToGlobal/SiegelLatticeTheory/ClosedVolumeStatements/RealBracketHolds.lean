@@ -21,7 +21,5 @@ theorem RealBracket_holds (hC : Formalism.L2.SG.Pf.NcReal.JX.CovolRef) : Formali
   Formalism.L2.SG.Pf.NcReal.JX.realBracket_of_jac JacGauge_holds hC AprimeInf_holds
     (fun n ε => Formalism.MainNotions.S.Gauge.gauge_density_exists n ε)
 
-theorem SplitOm_holds : Formalism.L2.SG.Pf.NcSplit.SplitOm :=
-  Formalism.L2.SG.Pf.NcX.SplitPf.splitOm_of_intWitt Formalism.L2.SG.Pf.NcX.IntWittPf.integral_witt_almost_everywhere
 
 end Formalism.L2.SG.Closed

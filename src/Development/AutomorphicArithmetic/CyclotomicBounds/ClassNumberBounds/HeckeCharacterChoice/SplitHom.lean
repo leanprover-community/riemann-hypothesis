@@ -13,9 +13,5 @@ def homsOver (E : Type*) [Field E] [Algebra K E] (ψ : 𝓞 K →+* ZMod p) :
 def conjHom (φ : 𝓞 E →+* ZMod p) (σ : E ≃ₐ[K] E) : 𝓞 E →+* ZMod p :=
   φ.comp (RingOfIntegers.mapRingHom (σ : E →+* E))
 
-private theorem ker_isPrime {R : Type*} [CommRing R] (hp : p.Prime) (f : R →+* ZMod p) :
-    (RingHom.ker f).IsPrime := by
-  have := Fact.mk hp
-  exact RingHom.ker_isPrime f
 
 end KStar.Choice

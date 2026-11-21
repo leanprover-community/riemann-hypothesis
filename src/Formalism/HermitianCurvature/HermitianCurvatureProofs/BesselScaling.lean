@@ -99,12 +99,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
-theorem doubleB_of_components_true : Formalism.FourierDecayAlt.B2.LemmaBDoubleFromParts := by
-  intro hC hJ hD hI hX k r Wp Wq _ _ _ _ _ _ D A hA hF
-  have hAB : AB k r ≤ A := by
-    have := Formalism.FourierDecayAlt.P.BesselScaling.AB_pos k r
-    linarith
-  exact hC hX k r Wp Wq D A hAB hF (hJ k r Wp Wq D) (hD k r Wp Wq D) (hI hX k r Wp Wq D A hA)
 
 theorem lemma_b_from_xi_of_parts : Formalism.FourierDecayAlt.B2.LemmaBFromXiFromParts := by
   intro hC hJ hD hI hB hX

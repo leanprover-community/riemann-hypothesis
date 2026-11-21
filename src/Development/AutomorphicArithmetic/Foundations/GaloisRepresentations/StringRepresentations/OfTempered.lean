@@ -78,17 +78,7 @@ theorem wt_eq {l' : ℕ} [Fact l'.Prime] (ha : 1 ≤ a) {π : CuspSub E a} {χ �
 
 end
 
-theorem weakP (h : GlobalTheory.Published.GaloisRepOfPolarizedPair) : PairU :=
-  fun E Ω _ _ _ _ _ _ l _ ι a ha π χ hr hp => by
-    obtain ⟨r, wt, HT, H⟩ := h E Ω l ι a ha π χ hr hp
-    exact ⟨r, wt, HT, .of_old H⟩
-theorem weakP' (h : PairU) : PairU := h
 
-theorem weakG (h : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) : CuspU :=
-  fun E Ω _ _ _ _ _ _ l _ ι a ha π χ hr hp => by
-    obtain ⟨r, wt, HT, H⟩ := h E Ω l ι a ha π χ hr hp
-    exact ⟨r, wt, HT, .of_old H⟩
-theorem weakG' (h : CuspU) : CuspU := h
 
 theorem merge (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hL : GlobalTheory.Published.LocalLanglandsGL)
     (hG : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) (hC : GlobalTheory.GalOfCusp.LocalGlobalAboveL) : CarU := by
@@ -112,16 +102,7 @@ theorem merge (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hL : Globa
     rw [← e]
     exact w.asIdeal.sub_mem h3 h2
   · exact key 2 h2
-theorem merge' (_ : GlobalTheory.Published.AutomorphicFormsFiniteGL) (_ : GlobalTheory.Published.LocalLanglandsGL) (_ : CuspU) (h : CarU) : CarU := h
 
-theorem mergeP (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hL : GlobalTheory.Published.LocalLanglandsGL)
-    (hG : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) (hC : GlobalTheory.Published.LocalGlobalAboveL)
-    (hR : GlobalTheory.Published.RegularAlgebraicPurity) : CarU := merge hF hL hG (hC.regAlg hR)
-theorem mergeP' (_ : GlobalTheory.Published.AutomorphicFormsFiniteGL) (_ : GlobalTheory.Published.LocalLanglandsGL) (_ : CuspU) (h : CarU)
-    (_ : GlobalTheory.Published.RegularAlgebraicPurity) : CarU := h
 
-theorem mergePst (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hL : GlobalTheory.Published.LocalLanglandsGL)
-    (hG : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) (hC : GlobalTheory.Published.LocalGlobalAboveLPst)
-    (hR : GlobalTheory.Published.RegularAlgebraicPurity) : CarU := mergeP hF hL hG hC.localGlobalAboveL hR
 
 end UpperTheory.GalN

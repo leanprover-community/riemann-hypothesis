@@ -52,18 +52,6 @@ section Letters
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (Dw : Datum H)
 
-theorem letters_nodup : (letters Dw).Nodup := by
-  unfold letters
-  rw [List.nodup_flatMap]
-  refine ⟨fun a _ => (List.nodup_finRange _).map (fun i j h => ?_), ?_⟩
-  · simpa using h
-  · refine (List.nodup_finRange _).pairwise_of_forall_ne fun a _ b _ hab => ?_
-    intro x hxa hxb
-    simp only [List.mem_map, List.mem_finRange, true_and] at hxa hxb
-    obtain ⟨i, rfl⟩ := hxa
-    obtain ⟨j, hj⟩ := hxb
-    have := congrArg Sigma.fst hj
-    exact hab ((Fintype.equivFin (E →+* ℂ)).symm.injective this.symm)
 
 theorem mem_letters (x : Letter Dw) : x ∈ letters Dw := by
   obtain ⟨τ, i⟩ := x
@@ -153,27 +141,5 @@ theorem fullG_basis (m : TanM (y.y ≫ GlobalTheory.Toroidal.genι Z) Z.t.G) :
 
 end Flag
 
-theorem letters_basis : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H} {l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} {Xo : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Moduli Dw l} {c : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff l} {O : Type} [CommRing O] {β : O →+* c.F} (Z : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Model Xo c β) {Ω : Type} [Field Ω] (y : GlobalTheory.ShFam.Pad.FlagPt Z Ω) (w : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp (DualNumber Ω) ⟶ Z.t.G.left), Formalism.L2.Pj.IsTanAtG Z.t (y.y ≫ GlobalTheory.Toroidal.genι Z) w → ∃! a : Fin (GlobalTheory.ShFam.Pad.letters Dw).length → Ω, Formalism.L2.Pj.IsCombAtG Z.t (y.y ≫ GlobalTheory.Toroidal.genι Z) (fun k => y.u ((GlobalTheory.ShFam.Pad.letters Dw).get k).1 ((GlobalTheory.ShFam.Pad.letters Dw).get k).2) a w := by
-  intro E _ _ _ H Dw l Xo c O _ β Z Ω _ y w hw
-  classical
-  letI : Algebra c.F Ω := y.fK.toAlgebra
-  set L := GlobalTheory.ShFam.Pad.letters Dw with hL
-  let e : Fin L.length ≃ Letter Dw := (letters_nodup Dw).getEquivOfForallMemList _ (mem_letters Dw)
-  have he : ∀ k, e k = L.get k := fun k => rfl
-  have hc : ∀ a : Fin L.length → Ω, Formalism.L2.Pj.IsCombAtG Z.t (y.y ≫ GlobalTheory.Toroidal.genι Z)
-      (fun k => y.u (L.get k).1 (L.get k).2) a w ↔ tvG hw = ∑ k, a k • fullG y (e k) := fun a =>
-    combG_iff (fun k => y.u (L.get k).1 (L.get k).2) (fun k => y.tan _ _) a hw
-  obtain ⟨b, hb, hbu⟩ := fullG_basis y rfl (tvG hw)
-  refine ⟨fun k => b (e k), (hc _).2 ?_, fun a ha => ?_⟩
-  · rw [hb]
-    exact (Equiv.sum_comp e (fun x => b x • fullG y x)).symm
-  · have h1 := (hc a).1 ha
-    have h2 : tvG hw = ∑ x, a (e.symm x) • fullG y x := by
-      rw [h1, ← Equiv.sum_comp e]
-      simp
-    have := hbu _ h2
-    funext k
-    have := congrFun this (e k)
-    simpa using this
 
 end GlobalTheory.EigLetters

@@ -199,29 +199,7 @@ theorem transport_iso_of_diamond_elements (Tf : FormsTied D u) (hE : DiamondElem
     exact inner_product_translate_eq Tf i hi c _ γ hγ _ _ ⟨kk.1, hkU⟩
       (by rw [heq, Subgroup.coe_mul, Subgroup.coe_mul, ← hγe]) hg hh
 
-theorem admissible_of_diamonds_and_round_trips
-    (hD : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf → DiamondElementsExist Tf)
-    (hR : ∀ (D : D7) (u : D.what₂.Word), FormsCompatible D u → Formalism.MainNotions.product_first_zeroth_parts.RoundUp D u ∧ Formalism.MainNotions.product_first_zeroth_parts.RoundDn D u) :
-    LinkAdmT := by
-  intro D u hF
-  obtain ⟨Tf, hc⟩ := hF
-  exact ⟨(hR D u ⟨Tf, hc⟩).1, (hR D u ⟨Tf, hc⟩).2, transport_iso_of_diamond_elements Tf (hD D u Tf hc), diamond_mul_of_diamond_elements Tf (hD D u Tf hc)⟩
 
-theorem frobenius_no_kernel_of_frobenius_similitude
-    (hD : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf → DiamondElementsExist Tf)
-    (h : ∀ (D : D7) (u : D.what₂.Word), FormsCompatible D u → Formalism.MainNotions.product_first_zeroth_parts.HidaSetting D u →
-      (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-        Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v φ = Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v (Formalism.MainNotions.product_first_zeroth_parts.Gs D u i v φ)) ∧
-      (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-        Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i) ∧
-      (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, ∀ ψ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-        (D.fm u).ipC i (Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v φ) (Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v ψ) =
-          ((D.mem u).A.T : ℂ) ^ D.R.N i * (D.fm u).ipC i φ ψ)) :
-    FrobeniusNoKernelFamily := by
-  intro D u hF hS
-  obtain ⟨Tf, hc⟩ := hF
-  obtain ⟨h7a, h7c, h7d⟩ := h D u ⟨Tf, hc⟩ hS
-  exact frobenius_identities_no_kernel_of_clauses D u h7a h7c h7d (diamond_mul_of_diamond_elements Tf (hD D u Tf hc))
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 

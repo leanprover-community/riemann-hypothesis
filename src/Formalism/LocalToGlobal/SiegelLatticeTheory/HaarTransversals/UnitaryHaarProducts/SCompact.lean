@@ -96,9 +96,6 @@ theorem hJ_sub_right' (x y y' : Fin n → ℂ) : hJ ε x (y - y') = hJ ε x y - 
   unfold hJ
   simp [Matrix.mulVec_sub]
 
-theorem hJ_zero_right' (x : Fin n → ℂ) : hJ ε x 0 = 0 := by
-  unfold hJ
-  simp
 
 theorem hJ_conj' (x y : Fin n → ℂ) : hJ ε x y = starRingEnd ℂ (hJ ε y x) := by
   unfold hJ Formalism.REAL.Jm

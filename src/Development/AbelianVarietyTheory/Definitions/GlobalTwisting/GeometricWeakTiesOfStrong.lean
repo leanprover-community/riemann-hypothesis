@@ -50,8 +50,6 @@ structure Open0 (p : Prm hL) : Prop where
   kap : RL.At p RL.KappaCondition
   df : RL.At p RL.DifferentialCondition
 
-theorem geometricWeakTies_of_strong {CF : ℝ} (h : RL.GeometricBoundCondition Q Lk CF) : GeometricWeakCompatibility Q Lk :=
-  Row.imp h fun _ _ _ t _ Fm hc x hx i => let ⟨a, b, c, d, _, e, _⟩ := t Fm hc x hx i; ⟨a, b, c, d, e⟩
 
 end GlobalTheory.Fc.S0
 

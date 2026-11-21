@@ -167,11 +167,5 @@ theorem movedData₁ : MovedData P₁ 2 lam₀ 1 2 40 where
     simp only [P₁]
     norm_num
 
-theorem nq_moved_example :
-    0 < (M.qC P₁ ((-10 : ℝ) : ℂ)).re ∧
-      Pst P₁.k P₁.r lam₀ 1 (-10) * Pst P₁.k P₁.r lam₀ 1 (-10 + 1) ≤
-        40 ^ (8 * P₁.r + 20) / (P₁.T * P₁.T') * (M.qC P₁ ((-10 : ℝ) : ℂ)).re :=
-  nq_onCut_pair P₁ P₁_OK 2 (by norm_num) (by show 2 ≤ 2; norm_num) (by show 2 ≤ 2; norm_num) lam₀ 1 2 40
-    movedData₁.toPair (-10) (Or.inl ⟨by simp [P₁]; norm_num, by simp [P₁]; norm_num⟩)
 
 end CompanionTheory.WaveGrid

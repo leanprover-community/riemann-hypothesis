@@ -33,10 +33,6 @@ lemma inPhi_nsmul {x : E0 × H} (hx : InPhi x) (i : ℕ) : InPhi (i • x) := by
   | zero => rw [zero_smul]; exact (inPhi_iff _).2 rfl
   | succ n ih => rw [succ_nsmul]; exact inPhi_add ih hx
 
-lemma filter_notPhi_eq (t : H) :
-    (univ.filter (fun g : E0 × H => ¬ InPhi g)) = univ.filter (fun g : E0 × H => ¬ InPhi (g + topPl t)) := by
-  ext g
-  simp [inPhi_iff, topPl]
 
 private theorem partner_fst_lemma (t : H) (g : E0 × H) : (partner t g).1.1 = 1 + g.1.1 := by
   simp [partner, cconj, topPl]
@@ -150,23 +146,6 @@ open PB
 section
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
 
-theorem partner_bijection : PartnerBij (H := H) := by
-  intro t
-  refine ⟨?_, ?_, ?_⟩
-  · intro g hg
-    show InPhi (partner t g)
-    rw [inPhi_iff, partner_fst_lemma, (not_inPhi_iff g).1 hg]
-    decide
-  · intro x _ y _ hxy
-    simp only [partner] at hxy
-    exact add_left_cancel (add_right_cancel hxy)
-  · intro ρ hρ
-    refine ⟨ρ - topPl t - cconj, ?_, ?_⟩
-    · show ¬ InPhi (ρ - topPl t - cconj)
-      rw [not_inPhi_iff, sub_fst_lemma_2, (inPhi_iff ρ).1 hρ]
-      decide
-    · simp only [partner]
-      abel
 
 theorem colour_sum : ColourSum (H := H) := by
   intro ψ

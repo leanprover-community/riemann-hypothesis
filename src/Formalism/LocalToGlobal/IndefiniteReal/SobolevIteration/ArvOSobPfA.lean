@@ -38,17 +38,7 @@ theorem mul_mem_UH₂ (G : Matrix (Fin n) (Fin n) ℂ) :
   calc bᴴ * aᴴ * G * (a * b) = bᴴ * (aᴴ * G * a) * b := by simp only [Matrix.mul_assoc]
     _ = G := by rw [ha', hb']
 
-theorem smoothLin_holds : SmoothLin := by
-  intro n H _ _ G π hπ
-  exact ⟨OrbStPf.smoothVec_zero, fun c u v hu hv =>
-    OrbStPf.smoothVec_add (OrbStPf.smoothVec_smul c hu) hv⟩
 
-theorem foldLin_holds : FoldLin := by
-  intro n H _ _ G π hπ l hl c u v hu hv
-  have h := OrbStPf.word_lin (one_mem_UH G) (mul_mem_UH₂ G) hπ.2.1 (fun Y hY t => expS_mem_UH hY t) hπ.1 l hl
-    (zero_mem_lieG G) hv hu c
-  unfold dL
-  rw [add_comm (c • u), h, add_comm]
 
 theorem smooth_oneProd {G : Matrix (Fin n) (Fin n) ℂ} {π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}
     (hπ : IsGRep G π) {w : H} (hw : SmoothVec (lieG G) π w) :

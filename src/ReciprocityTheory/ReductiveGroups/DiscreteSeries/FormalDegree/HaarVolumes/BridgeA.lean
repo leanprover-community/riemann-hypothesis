@@ -75,8 +75,6 @@ def iso (N : ℕ) : Formalism.BasicNotions.UpqT N 0 ≃* UNgrp N where
 lemma toM_iso (N : ℕ) (g : Formalism.BasicNotions.UpqT N 0) :
     toM (iso N g) = reindex (eN N) (eN N) (Formalism.BasicNotions.UpqT.mat g) := psi_val N _
 
-lemma mat_iso_symm (N : ℕ) (k : UNgrp N) :
-    Formalism.BasicNotions.UpqT.mat ((iso N).symm k) = reindex (eN N).symm (eN N).symm (toM k) := psi_symm_val N _
 
 lemma continuous_mat (N : ℕ) : Continuous (fun g : Formalism.BasicNotions.UpqT N 0 => Formalism.BasicNotions.UpqT.mat g) :=
   Units.continuous_val.comp continuous_subtype_val

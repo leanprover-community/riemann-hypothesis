@@ -47,15 +47,5 @@ theorem injective_of_isFockIP (hι : IsFockIP ι) : Function.Injective ι := by
     Finset.prod_ne_zero_iff.mpr fun j _ => Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
   simpa [hne] using h.symm
 
-theorem fock_adjoint_orthogonal_injective :
-    ∀ (σ : Type) [DecidableEq σ] (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-      (ι : MvPolynomial σ ℂ →ₗ[ℂ] H), IsFockIP ι →
-      (∀ (i : σ) (P Q : MvPolynomial σ ℂ),
-        inner ℂ (ι (X i * P)) (ι Q) = inner ℂ (ι P) (ι (pderiv i Q))) ∧
-      (∀ (d e : ℕ) (P Q : MvPolynomial σ ℂ), d ≠ e → P ∈ homog σ d → Q ∈ homog σ e →
-        inner ℂ (ι P) (ι Q) = 0) ∧ Function.Injective ι :=
-  fun _ _ _ _ _ _ hι => ⟨GlobalTheory.FockDeg.inner_X_mul hι,
-    fun _ _ _ _ hde hP hQ => inner_eq_zero_of_isHomogeneous hι hde hP hQ,
-    injective_of_isFockIP hι⟩
 
 end GlobalTheory.FockAdj

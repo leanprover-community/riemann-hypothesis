@@ -107,14 +107,7 @@ theorem mem_S (z : Formalism.LFunctionChainParameters.slopeLatticeData.FinPl K) 
 theorem plEquiv_mem_S (w : HeightOneSpectrum (𝓞 K)) : plEquiv K w ∈ C.S ↔ w ∈ C.supp := by
   rw [mem_S, Equiv.symm_apply_apply]
 
-theorem sgExp_of_mem (u : I) {w : HeightOneSpectrum (𝓞 K)} (h : w ∈ C.supp) :
-    C.sgExp u (plEquiv K w) = C.sgExpW u w := by
-  unfold sgExp
-  rw [Finsupp.indicator_of_mem ((C.plEquiv_mem_S w).2 h), Equiv.symm_apply_apply]
 
-theorem sgExp_of_not_mem (u : I) {w : HeightOneSpectrum (𝓞 K)} (h : w ∉ C.supp) : C.sgExp u (plEquiv K w) = 0 := by
-  unfold sgExp
-  exact Finsupp.indicator_of_notMem (fun h' => h ((C.plEquiv_mem_S w).1 h')) _
 
 theorem tauExp_of_mem {w : HeightOneSpectrum (𝓞 K)} (h : w ∈ C.supp) : C.tauExp (plEquiv K w) = C.tauExpW w := by
   unfold tauExp
@@ -124,14 +117,6 @@ theorem tauExp_of_not_mem {w : HeightOneSpectrum (𝓞 K)} (h : w ∉ C.supp) : 
   unfold tauExp
   exact Finsupp.indicator_of_notMem (fun h' => h ((C.plEquiv_mem_S w).1 h')) _
 
-theorem sgExpW_div_le (u : I) (w : HeightOneSpectrum (𝓞 K)) :
-    (C.sgExpW u w : ℝ) / (eW w : ℝ) ≤ C.sg u w ∧ C.sg u w < ((C.sgExpW u w : ℝ) + 1) / (eW w : ℝ) := by
-  have he : (0 : ℝ) < (eW w : ℝ) := by exact_mod_cast eW_pos w
-  constructor
-  · rw [div_le_iff₀ he, mul_comm]
-    exact Int.floor_le _
-  · rw [lt_div_iff₀ he, mul_comm]
-    exact Int.lt_floor_add_one _
 
 end ColObj
 
@@ -212,19 +197,7 @@ section Places
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem plEquiv_spec (w : HeightOneSpectrum (𝓞 K)) :
-    Formalism.LFunctionChainParameters.LChain2.prBelow (plEquiv K w) = prW w ∧ Formalism.LFunctionChainParameters.LChain2.ramE (plEquiv K w) = (eW w : ℝ) ∧
-      Formalism.LFunctionChainParameters.slopeLatticeData.ell (plEquiv K w) = lW w :=
-  ⟨rfl, rfl, rfl⟩
 
-theorem lenUW_eq_lenAt_div {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-    (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (𝓞 K) V) :
-    ((lenUW w A B : ℚ) : ℝ) =
-      ((Formalism.LFunctionChainParameters.slopeLatticeData.lenAt (plEquiv K w) A B).toNat : ℝ) / Formalism.LFunctionChainParameters.LChain2.ramE (plEquiv K w) := by
-  unfold lenUW
-  rw [lenW_eq_lenAt]
-  push_cast
-  rfl
 
 end Places
 
@@ -247,64 +220,13 @@ namespace ColIface
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type} (C : ColIface K I)
 
-theorem Nu_span (u : I) : Submodule.span K (C.Nu u : Set (C.M u).V) = ⊤ := by
-  obtain ⟨c, hc, h⟩ := C.Nu_comm u
-  rw [eq_top_iff, ← (C.M_good u).2.2, Submodule.span_le]
-  intro x hx
-  have h1 : c • x ∈ Submodule.span K (C.Nu u : Set (C.M u).V) := Submodule.subset_span (h x hx)
-  have hc' : algebraMap (𝓞 K) K c ≠ 0 := by
-    intro h0
-    exact hc (FaithfulSMul.algebraMap_injective (𝓞 K) K (by rw [h0, map_zero]))
-  have h2 : x = (algebraMap (𝓞 K) K c)⁻¹ • (c • x) := by
-    rw [← algebraMap_smul K c x, smul_smul, inv_mul_cancel₀ hc', one_smul]
-  rw [h2]
-  exact Submodule.smul_mem _ _ h1
 
-theorem Nu_rank (u : I) : Formalism.HN.rkK (C.Nu u) = Formalism.HN.rkK (C.M u).L := by
-  unfold Formalism.HN.rkK
-  rw [C.Nu_span u, (C.M_good u).2.2]
 
-theorem NuH_good (u : I) : (C.NuH u).Good := ⟨(C.M_good u).1, C.Nu_fg u, C.Nu_span u⟩
 
-theorem Nu_le_atT (u : I) (w : HeightOneSpectrum (𝓞 K)) (h : prW w = C.T u) : atW w (C.Nu u) ≤ atW w (C.M u).L := by
-  rw [C.Nu_atT u w h]
-  exact C.Nlam_le u w h
 
-theorem lenMN_atT_le (u : I) (w : HeightOneSpectrum (𝓞 K)) (h : prW w = C.T u) :
-    ((C.lenMN u w : ℚ) : ℝ) ≤ (C.dM u : ℝ) * C.lamT u := by
-  have h1 : C.lenMN u w = lenUW w (C.M u).L (C.Nlam u w) := by
-    unfold ColObj.lenMN lenUW lenW
-    rw [C.Nu_atT u w h]
-  rw [h1]
-  exact C.Nlam_len u w h
 
-theorem lenMN_bar (u : I) (w : HeightOneSpectrum (𝓞 K)) (h : prW w = C.T u) (hb : ¬ C.overPi u w) : C.lenMN u w = 0 := by
-  unfold ColObj.lenMN lenUW
-  rw [lenW_eq_zero w (le_of_eq ((C.Nu_atT u w h).trans (C.Nlam_bar u w h hb)).symm)]
-  simp
 
-theorem lenMN_off (u : I) (w : HeightOneSpectrum (𝓞 K)) (h : w ∉ C.supp) : C.lenMN u w = 0 := by
-  unfold ColObj.lenMN lenUW
-  rw [lenW_eq_zero w (le_of_eq (C.Nu_off u w h).symm)]
-  simp
 
-theorem du_le_dM (u : I) : C.du u ≤ C.dM u := by
-  have h1 := C.rank_ram u
-  have hT : (4 : ℝ) ≤ (C.T u : ℝ) := by
-    have h2 := C.T_big u
-    have h3 := C.f_pos
-    exact_mod_cast (show 4 ≤ C.T u by omega)
-  have h4 : (0 : ℝ) ≤ 1 - 1 / ((C.T u : ℝ) - 1) := by
-    rw [sub_nonneg, div_le_one (by linarith)]
-    linarith
-  have h5 : 1 - 1 / ((C.T u : ℝ) - 1) ≤ 1 := by
-    have : (0 : ℝ) ≤ 1 / ((C.T u : ℝ) - 1) := div_nonneg zero_le_one (by linarith)
-    linarith
-  have h6 : (1 - 1 / ((C.T u : ℝ) - 1)) ^ C.f ≤ 1 := pow_le_one₀ h4 h5
-  have h7 : (Fintype.card (C.M u).ι : ℝ) ≤ (Fintype.card (C.Mf u).ι : ℝ) := by
-    rw [h1]
-    exact mul_le_of_le_one_right (Nat.cast_nonneg _) h6
-  exact_mod_cast h7
 
 end ColIface
 
@@ -314,31 +236,7 @@ open Formalism.L2.GlobalTheoryTheory
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type}
 
-theorem ColObj.sgExp_eq_famSig (C : ColObj K I) (u : I) (N : NumDatum) (Cs : Arith.Cst) (Lv : Arith.Lev N) (sd : K)
-    (δ : Code N) (h1 : C.supp = Arith.supp N Lv K) (h2 : C.sg u = Arith.sg N Cs Lv sd δ) :
-    C.sgExp u = Arith.famSig N Cs Lv sd δ := by
-  have hS : C.S = Arith.famS N Lv K := by
-    unfold ColObj.S Arith.famS
-    rw [Finset.map_eq_image, h1]
-    rfl
-  unfold ColObj.sgExp Arith.famSig
-  rw [hS]
-  unfold ColObj.sgExpW Arith.sgExp
-  rw [h2]
-  rfl
 
-theorem ColObj.tauExp_eq_famTau (C : ColObj K I) (N : NumDatum) (Cs : Arith.Cst) (Lv : Arith.Lev N)
-    (h1 : C.supp = Arith.supp N Lv K) (h2 : C.tau = fun w => Arith.tau N Cs (Arith.pOf w)) :
-    C.tauExp = Arith.famTau N Cs Lv := by
-  have hS : C.S = Arith.famS N Lv K := by
-    unfold ColObj.S Arith.famS
-    rw [Finset.map_eq_image, h1]
-    rfl
-  unfold ColObj.tauExp Arith.famTau
-  rw [hS]
-  unfold ColObj.tauExpW Arith.tauExp
-  rw [h2]
-  rfl
 
 end Sig
 
@@ -613,25 +511,6 @@ section SgFin
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type}
 
-theorem ColObj.sgFin_eq_sgExp (C : ColObj K I) (u : I) (h : ∀ w, w ∉ C.supp → C.sgExpW u w = 0) :
-    sgFin (C.sg u) = C.sgExp u := by
-  have hz : ∀ z : Formalism.LFunctionChainParameters.slopeLatticeData.FinPl K, sgFloor (C.sg u) (ofFinPl z) = C.sgExp u z := by
-    intro z
-    by_cases hm : z ∈ C.S
-    · unfold ColObj.sgExp
-      rw [Finsupp.indicator_of_mem hm]
-      rfl
-    · unfold ColObj.sgExp
-      rw [Finsupp.indicator_of_notMem hm]
-      exact h _ fun h' => hm ((C.mem_S z).2 h')
-  have hfin : (Function.support fun w : Formalism.LFunctionChainParameters.slopeLatticeData.FinPl K => sgFloor (C.sg u) (ofFinPl w)).Finite := by
-    refine (C.sgExp u).support.finite_toSet.subset fun z hzs => ?_
-    rw [Finset.mem_coe, Finsupp.mem_support_iff, ← hz z]
-    exact hzs
-  unfold sgFin
-  rw [dif_pos hfin]
-  ext z
-  exact hz z
 
 end SgFin
 
@@ -649,7 +528,6 @@ def ScNum.CY (_ : ScNum) : ℝ := 9
 
 @[simp] theorem ScNum.CY_eq (n : ScNum) : n.CY = 9 := rfl
 
-theorem ScNum.CY_nonneg (n : ScNum) : 0 ≤ n.CY := by rw [ScNum.CY_eq]; norm_num
 
 def ScNum.GSizeCY {X : Fields} (Pr : Primes X) (n : ScNum) : Prop := ∀ i, Real.log (Pr.g i) ≤ n.CY * n.sc.L
 
@@ -680,146 +558,19 @@ theorem ScNum.idx_step {X : Fields} {Pr : Primes X} (R : Ranks) (n : ScNum) (h :
 
 def logAvC (X : Fields) (n : ScNum) : ℝ := Real.log (n.sc.a * vC X)
 
-theorem vC_pos (X : Fields) : 0 < vC X := by
-  unfold vC
-  have h : (0 : ℝ) < |(NumberField.discr X.E : ℝ)| := abs_pos.2 (by exact_mod_cast NumberField.discr_ne_zero X.E)
-  positivity
 
-theorem logAvC_eq (X : Fields) (n : ScNum) : logAvC X n = Real.log n.sc.x + n.sc.L + Real.log (vC X) := by
-  have hx := n.sc.one_lt_alt
-  unfold logAvC Scale.a Scale.b
-  rw [Real.log_mul (mul_pos (by linarith) (Real.exp_pos _)).ne' (vC_pos X).ne', Real.log_mul (by linarith) (Real.exp_pos _).ne',
-    Real.log_exp]
 
-theorem L_lt_logAvC (X : Fields) (n : ScNum) (hv : 1 ≤ vC X) : n.sc.L < logAvC X n := by
-  rw [logAvC_eq]
-  have := Real.log_pos n.sc.one_lt_alt
-  have := Real.log_nonneg hv
-  linarith
 
-theorem L_le_logAvC (X : Fields) (n : ScNum) (hv : 1 ≤ vC X) : n.sc.L ≤ logAvC X n := (L_lt_logAvC X n hv).le
 
 theorem one_lt_scL (s : Scale) : 1 < s.L := Real.one_lt_rpow s.one_lt_alt s.eps_pos
 
-theorem one_lt_logAvC (X : Fields) (n : ScNum) (hv : 1 ≤ vC X) : 1 < logAvC X n := (one_lt_scL n.sc).trans (L_lt_logAvC X n hv)
 
-theorem logAvC_le_two (X : Fields) (n : ScNum) (h : Real.log n.sc.x + Real.log (vC X) ≤ n.sc.L) : logAvC X n ≤ 2 * n.sc.L := by
-  rw [logAvC_eq]
-  linarith
 
-theorem log_av_logAvC (X : Fields) (n : ScNum) : Real.log (n.sc.a * vC X) ≤ logAvC X n := le_rfl
 
-theorem ifz_bprime_ge (s : Scale) (c : ℝ) (h8 : 8 ≤ s.L) (hc : 8 * c ≤ s.L) : c * s.L ≤ s.b' := by
-  have hx0 : 0 < s.x := by linarith [s.one_lt_alt]
-  set y := s.x ^ (s.eps / 3) with hy
-  have hy1 : 1 < y := Real.one_lt_rpow s.one_lt_alt (by linarith [s.eps_pos])
-  have hLy : s.L = y ^ 3 := by
-    rw [hy, ← Real.rpow_natCast, ← Real.rpow_mul hx0.le]
-    unfold Scale.L
-    congr 1
-    push_cast
-    ring
-  have hb' : s.b' = s.x * Real.exp (s.L - y) := by
-    unfold Scale.b' Scale.a Scale.b Scale.X'
-    rw [Real.exp_sub, ← hy]
-    ring
-  have hy2 : 2 ≤ y := by
-    by_contra h
-    push Not at h
-    have : y ^ 3 < 8 := by nlinarith [sq_nonneg y]
-    linarith
-  have hyL : y ≤ s.L / 2 := by rw [hLy]; nlinarith [sq_nonneg y]
-  have he : s.L ^ 2 / 8 ≤ Real.exp (s.L - y) := by
-    have h1 := Real.quadratic_le_exp_of_nonneg (x := s.L / 2) (by linarith)
-    have h2 : Real.exp (s.L / 2) ≤ Real.exp (s.L - y) := Real.exp_le_exp.2 (by linarith)
-    nlinarith
-  have hxe : Real.exp (s.L - y) ≤ s.b' := by
-    rw [hb']
-    have := Real.exp_pos (s.L - y)
-    nlinarith [s.one_lt_alt]
-  nlinarith
 
-theorem ifz_log_x_le (s : Scale) : s.eps * Real.log s.x ≤ s.L := by
-  have hx0 : 0 < s.x := by linarith [s.one_lt_alt]
-  have h := Real.log_le_sub_one_of_pos (Real.rpow_pos_of_pos hx0 s.eps)
-  rw [Real.log_rpow hx0] at h
-  unfold Scale.L
-  linarith
 
-theorem ifz_b'_le_a (s : Scale) : s.b' ≤ s.a := by
-  have ha : 0 < s.a := by unfold Scale.a Scale.b; have := s.one_lt_alt; positivity
-  unfold Scale.b'
-  have : 1 ≤ s.X' := by unfold Scale.X'; exact Real.one_le_exp (by have := s.one_lt_alt; positivity)
-  exact div_le_self ha.le this
 
-theorem ifz_logAvC_le (X : Fields) (n : ScNum) (hv : 1 ≤ vC X) :
-    logAvC X n ≤ (1 / n.sc.eps + 1 + Real.log (vC X)) * n.sc.L := by
-  rw [logAvC_eq]
-  have he := n.sc.eps_pos
-  have h1 : Real.log n.sc.x ≤ n.sc.L / n.sc.eps := by rw [le_div_iff₀ he]; linarith [ifz_log_x_le n.sc]
-  have h2 := (one_lt_scL n.sc).le
-  have h3 := Real.log_nonneg hv
-  have h4 : n.sc.L / n.sc.eps = 1 / n.sc.eps * n.sc.L := by ring
-  nlinarith
 
-theorem numbersC_logAvC_large (X : Fields) (hv : 1 ≤ vC X) (R : Ranks) (C₀ : ℝ) (hC : 0 ≤ C₀) (eps : ℝ) :
-    ∃ Λ : ℝ, ∀ n : ScNum, n.sc.eps = eps → Λ ≤ n.sc.L → n.C0 = C₀ → ∀ (Pr : Primes X) (u : Pr.Word),
-      logTC Pr u ≤ C₀ * R.m * logAvC X n → loggC Pr ≤ C₀ * logAvC X n → 0 ≤ n.eta → 0 ≤ n.Sc → n.Sc + n.eta ≤ n.sc.b' / 2 →
-      NumbersC Pr R u n.C0 n.sc.a n.sc.b' (logAvC X n) n.eta n.Sc := by
-  obtain ⟨D, hD⟩ : ∃ D : ℝ, D = 1 / eps + 1 + Real.log (vC X) := ⟨_, rfl⟩
-  obtain ⟨N, hN⟩ : ∃ N : ℝ, N = (R.N R.m : ℝ) := ⟨_, rfl⟩
-  obtain ⟨K, hK⟩ : ∃ K : ℝ, K = N * (1 + C₀ * R.m) := ⟨_, rfl⟩
-  obtain ⟨A2, hA2⟩ : ∃ A : ℝ, A = 2 * (R.m : ℝ) * R.t := ⟨_, rfl⟩
-  obtain ⟨A3, hA3⟩ : ∃ A : ℝ, A = (1 + 2 * C₀) * (R.m : ℝ) ^ 3 * N := ⟨_, rfl⟩
-  refine ⟨max 8 (8 * (|K * D| + A2 + A3 + 1)), fun n he hΛ hC0 Pr u hT hg heta hS hSe => ?_⟩
-  rw [hC0]
-  have hN1 : (1 : ℝ) ≤ N := by
-    have : 1 ≤ R.N R.m := by unfold Ranks.N; have := R.m_add_three_le_k; omega
-    rw [hN]; exact_mod_cast this
-  have hm0 : (0 : ℝ) ≤ R.m := Nat.cast_nonneg _
-  have ht0 : (0 : ℝ) ≤ R.t := Nat.cast_nonneg _
-  have hA20 : 0 ≤ A2 := by rw [hA2]; positivity
-  have hN0 : 0 ≤ N := by linarith
-  have hA30 : 0 ≤ A3 := by rw [hA3]; positivity
-  have hK0 : 0 ≤ K := by rw [hK]; positivity
-  have hab := abs_nonneg (K * D)
-  have h8 : 8 ≤ n.sc.L := le_trans (le_max_left _ _) hΛ
-  have h8c : 8 * (|K * D| + A2 + A3 + 1) ≤ n.sc.L := le_trans (le_max_right _ _) hΛ
-  have hb := ifz_bprime_ge n.sc _ h8 h8c
-  have hL1 : 1 ≤ n.sc.L := by linarith
-  have hcL : |K * D| + A2 + A3 + 1 ≤ (|K * D| + A2 + A3 + 1) * n.sc.L := le_mul_of_one_le_right (by linarith) hL1
-  have hLL := ifz_logAvC_le X n hv
-  rw [he, ← hD] at hLL
-  have hLL1 := one_lt_logAvC X n hv
-  have hKLL : K * logAvC X n ≤ n.sc.b' := by
-    have h1 : K * logAvC X n ≤ K * (D * n.sc.L) := mul_le_mul_of_nonneg_left hLL hK0
-    have h2 : K * (D * n.sc.L) ≤ |K * D| * n.sc.L := by
-      rw [← mul_assoc]; exact mul_le_mul_of_nonneg_right (le_abs_self _) (by linarith)
-    have h3 : |K * D| * n.sc.L ≤ (|K * D| + A2 + A3 + 1) * n.sc.L := mul_le_mul_of_nonneg_right (by linarith) (by linarith)
-    linarith
-  have hmt : A2 ≤ n.sc.b' := by linarith
-  have hpow : A3 ≤ n.sc.b' := by linarith
-  have hb1 : 1 ≤ n.sc.b' := by linarith
-  have hTn : 0 ≤ logTC Pr u := Real.log_natCast_nonneg _
-  have hLL0 : 0 ≤ logAvC X n := by linarith
-  have hCm : 0 ≤ C₀ * R.m * logAvC X n := by positivity
-  refine numbersC_of Pr R u hLL1.le hv (log_av_logAvC X n) hb1 (ifz_b'_le_a n.sc) hT hg heta hS ?_ ?_ ?_ ?_
-  · have : (R.m : ℝ) * R.t ≤ n.sc.b' / 2 := by rw [hA2] at hmt; linarith
-    linarith
-  · have h1 : N * (logAvC X n + logTC Pr u) ≤ K * logAvC X n := by
-      have : N * (logAvC X n + logTC Pr u) ≤ N * (logAvC X n + C₀ * R.m * logAvC X n) :=
-        mul_le_mul_of_nonneg_left (by linarith) (by linarith)
-      rw [hK]; linarith [show N * (logAvC X n + C₀ * R.m * logAvC X n) = N * (1 + C₀ * R.m) * logAvC X n by ring]
-    rw [← hN]
-    have e : N ^ 2 * (logAvC X n + logTC Pr u) = N * (N * (logAvC X n + logTC Pr u)) := by ring
-    rw [e]
-    exact mul_le_mul_of_nonneg_left (h1.trans hKLL) (by linarith)
-  · have h0 : C₀ * R.m * logAvC X n ≤ N * (C₀ * R.m * logAvC X n) := le_mul_of_one_le_left hCm hN1
-    have h1 : N * logAvC X n + logTC Pr u ≤ K * logAvC X n := by
-      rw [hK]; linarith [show N * (1 + C₀ * R.m) * logAvC X n = N * logAvC X n + N * (C₀ * R.m * logAvC X n) by ring]
-    rw [← hN]
-    linarith
-  · rw [hA3, hN] at hpow; exact hpow
 
 section Conc
 
@@ -904,70 +655,13 @@ theorem lamRowC_strictAnti (P : HCParam R) : StrictAnti (lamRowC (RowPar.of P)) 
       have a5 : (P.b ⟨i - (R.k - 1), by omega⟩ : ℝ) < (P.b ⟨i - (R.k - 1) + 1, by omega⟩ : ℝ) := by exact_mod_cast a4
       linarith
 
-theorem iface_fdegHC_pos {n : ℕ} {lam : Fin n → ℝ} (h : StrictAnti lam) : 0 < Formalism.QuantumDeterminants.fdegHC lam := by
-  unfold Formalism.QuantumDeterminants.fdegHC
-  apply div_pos
-  · exact Finset.prod_pos fun a _ => Finset.prod_pos fun b hb =>
-      abs_pos.2 (sub_ne_zero.2 (h (Finset.mem_filter.1 hb).2).ne')
-  · refine Finset.prod_pos fun a _ => Finset.prod_pos fun b hb => ?_
-    have h1 : a.1 < b.1 := (Finset.mem_filter.1 hb).2
-    have h2 : (a.1 : ℝ) < b.1 := by exact_mod_cast h1
-    linarith
 
-theorem iface_fdegHC_cast {n n' : ℕ} (h : n = n') (f : Fin n' → ℝ) :
-    Formalism.QuantumDeterminants.fdegHC (fun i : Fin n => f (Fin.cast h i)) = Formalism.QuantumDeterminants.fdegHC f := by
-  subst h; rfl
 
 def dsigC (τ : X.Tau) : ℝ := Formalism.QuantumDeterminants.fdegHC (lamRowC (W.row τ))
 
-theorem dsigC_pos (hW : W.Ok) (τ : X.Tau) : 0 < dsigC W τ := by
-  obtain ⟨P, hP⟩ := hW.row_ok τ
-  unfold dsigC
-  rw [← hP]
-  exact iface_fdegHC_pos (lamRowC_strictAnti P)
 
-theorem dsigC_eq_lamSH {P : HCParam R} {τ : X.Tau} (hP : RowPar.of P = W.row τ) :
-    dsigC W τ = Formalism.QuantumDeterminants.fdegHC (Formalism.MainNotions.S.lamSH R P) := by
-  unfold dsigC
-  rw [← hP, lamRowC_of]
-  exact (iface_fdegHC_cast (Formalism.MainNotions.S.dimS_eq R) (Formalism.MainNotions.S.lamS R P)).symm
 
-theorem iface_fdegHC_eq_dimVN {n : ℕ} (lam : Fin n → ℝ) (h : StrictAnti lam) :
-    Formalism.QuantumDeterminants.fdegHC lam = Formalism.LogVandermondeBounds.StandardLattice.dimVN (fun i => if hi : i < n then lam ⟨i, hi⟩ else 0) n := by
-  rw [Formalism.QuantumDeterminants.fdegDimV n lam h]
-  unfold Formalism.LogVandermondeBounds.StandardLattice.dimVN Formalism.LogVandermondeBounds.StandardLattice.vandN
-  congr 1
-  set x : ℕ → ℝ := fun i => if hi : i < n then lam ⟨i, hi⟩ else 0 with hxdef
-  have hx : ∀ a : Fin n, x a.1 = lam a := fun a => by simp [hxdef, a.isLt]
-  have e1 : ∀ a : Fin n, ∏ b ∈ Finset.univ.filter (fun b : Fin n => a < b), (lam a - lam b) =
-      ∏ j ∈ Finset.Ico (a.1 + 1) n, (x a.1 - x j) := by
-    intro a
-    calc ∏ b ∈ Finset.univ.filter (fun b : Fin n => a < b), (lam a - lam b)
-        = ∏ b : Fin n, (if a < b then lam a - lam b else 1) := Finset.prod_filter _ _
-      _ = ∏ b : Fin n, (fun j : ℕ => if a.1 < j then x a.1 - x j else 1) b.1 := by
-          refine Finset.prod_congr rfl fun b _ => ?_
-          show _ = (if a.1 < b.1 then x a.1 - x b.1 else 1)
-          rw [hx a, hx b]
-          simp only [Fin.lt_def]
-      _ = ∏ j ∈ Finset.range n, (if a.1 < j then x a.1 - x j else 1) :=
-          Fin.prod_univ_eq_prod_range (fun j : ℕ => if a.1 < j then x a.1 - x j else 1) n
-      _ = ∏ j ∈ (Finset.range n).filter (fun j => a.1 < j), (x a.1 - x j) := (Finset.prod_filter _ _).symm
-      _ = ∏ j ∈ Finset.Ico (a.1 + 1) n, (x a.1 - x j) := by
-          congr 1
-          ext j
-          simp only [Finset.mem_filter, Finset.mem_range, Finset.mem_Ico]
-          omega
-  calc ∏ a : Fin n, ∏ b ∈ Finset.univ.filter (fun b : Fin n => a < b), (lam a - lam b)
-      = ∏ a : Fin n, (fun i : ℕ => ∏ j ∈ Finset.Ico (i + 1) n, (x i - x j)) a.1 :=
-        Finset.prod_congr rfl fun a _ => e1 a
-    _ = ∏ i ∈ Finset.range n, ∏ j ∈ Finset.Ico (i + 1) n, (x i - x j) :=
-        Fin.prod_univ_eq_prod_range (fun i : ℕ => ∏ j ∈ Finset.Ico (i + 1) n, (x i - x j)) n
 
-theorem dsigC_eq_dimVN (hW : W.Ok) (τ : X.Tau) :
-    dsigC W τ = Formalism.LogVandermondeBounds.StandardLattice.dimVN (fun i => if h : i < R.r then lamRowC (W.row τ) ⟨i, h⟩ else 0) R.r := by
-  obtain ⟨P, hP⟩ := hW.row_ok τ
-  have hs : StrictAnti (lamRowC (W.row τ)) := by rw [← hP]; exact lamRowC_strictAnti P
-  exact iface_fdegHC_eq_dimVN _ hs
 
 theorem lamSH_isHCParam {R : Ranks} (P : HCParam R) : Formalism.QuantumDeterminants.IsHCParam (Formalism.MainNotions.S.lamSH R P) := by
   refine ⟨fun a b hab => ?_, fun a => ?_⟩
@@ -989,18 +683,6 @@ theorem lamSH_isHCParam {R : Ranks} (P : HCParam R) : Formalism.QuantumDetermina
       rw [hz]; push_cast; ring
     · exact ⟨-(R.rS : ℤ) - k', by push_cast; ring⟩
 
-theorem dsigC_isFdeg (hHC : HCFormalDegreeCD) {P : HCParam R} {τ : X.Tau} (hP : RowPar.of P = W.row τ) (C : Formalism.BasicNotions.CDHaar)
-    {p q : ℕ} (e : Fin p ⊕ Fin q ≃ Fin (2 * R.rS + R.k + 1))
-    (h1 : ∀ i, Formalism.MainNotions.S.epsSH R (e (Sum.inl i)) = true) (h2 : ∀ j, Formalism.MainNotions.S.epsSH R (e (Sum.inr j)) = false)
-    (μ : MeasureTheory.Measure (Formalism.REAL.UJ (Formalism.MainNotions.S.epsSH R)))
-    (hμ : ∀ A : Set (Formalism.REAL.UJ (Formalism.MainNotions.S.epsSH R)), MeasurableSet A →
-      μ A = C.cd p q {g | ∃ a ∈ A, Formalism.MainNotions.S.umat a = Matrix.reindex e e (Formalism.BasicNotions.UpqT.mat g)})
-    (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    (σ : Matrix (Fin (2 * R.rS + R.k + 1)) (Fin (2 * R.rS + R.k + 1)) ℂ → (H →L[ℂ] H)) (w : H)
-    (hσ : Formalism.MainNotions.S.IsDS (Formalism.MainNotions.S.epsSH R) (Formalism.MainNotions.S.lamSH R P) σ) (hw : w ≠ 0) :
-    Formalism.MainNotions.S.fdegOf μ σ w = dsigC W τ := by
-  rw [dsigC_eq_lamSH W hP]
-  exact hHC C _ p q (Formalism.MainNotions.S.epsSH R) e h1 h2 μ hμ _ (lamSH_isHCParam P) H σ w hσ hw
 
 structure ColArg where
 
@@ -1046,22 +728,6 @@ def ColArg.ofTau (num : ScNum) (supp : Finset (HeightOneSpectrum (𝓞 X.K))) (s
   sel := sel
   Sq := Sq
 
-theorem ColArg.ofTau_tau (num : ScNum) (supp : Finset (HeightOneSpectrum (𝓞 X.K))) (sg : Pr.Word → HeightOneSpectrum (𝓞 X.K) → ℝ)
-    (tau : ℕ → ℝ) (yM : ∀ u, HeightOneSpectrum (𝓞 X.K) → Submodule (𝓞 X.K) (MfV W Ch u))
-    (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (Sq : Set ℕ) (hnat : ∀ p, ∃ n : ℕ, tau p = n)
-    {w : HeightOneSpectrum (𝓞 X.K)} (hw : w ∈ supp) :
-    (ColArg.ofTau W Ch num supp sg tau yM sel Sq).tau w = tau (prW w) := by
-  classical
-  unfold ColArg.tau ColArg.ofTau
-  obtain ⟨n, hn⟩ := hnat (prW w)
-  by_cases h0 : tau (prW w) = 0
-  · rw [h0]
-    split_ifs
-    · simp [h0]
-    · rfl
-  · have hm : prW w ∈ (supp.image prW).filter fun p => tau p ≠ 0 :=
-      Finset.mem_filter.2 ⟨Finset.mem_image_of_mem _ hw, h0⟩
-    simp only [hm, if_true, hn, Nat.floor_natCast]
 
 variable (W Ch) in
 
@@ -1091,12 +757,6 @@ def colObj : ColObj X.K Pr.Word where
   xVar := xVarC R
   Mtil := MtildeH W Ch hX A.sel (mu0 X.F X.E X.K A.Sq) (rPsymF Ch)
 
-theorem colObj_Npr_eq (u : Pr.Word) (gain F Eu : ℕ → HeightOneSpectrum (𝓞 X.K) → ℝ) (h1 : A.sg u = sgSumOf R.m gain F Eu)
-    (h2 : ∀ w, w ∉ A.supp → (colObj W Ch hX A).sgExpW u w = 0) :
-    (colObj W Ch hX A).Npr u = NuPrimeC (A.Sv u) gain F Eu := by
-  unfold NuPrimeC ColObj.Npr
-  rw [← h1, ← (colObj W Ch hX A).sgFin_eq_sgExp u h2]
-  rfl
 
 theorem Serv.NP_le {u : Pr.Word} (Sv : Serv W Ch u) (w : HeightOneSpectrum (𝓞 X.K)) :
     ∀ φ ∈ Sv.NP w, ∃ ψ ∈ MramL W Ch u, (((prW w : ℕ) : 𝓞 X.K) ^ Sv.tau w) • ψ = φ := by
@@ -1179,23 +839,6 @@ def ColArg.minimal (num : ScNum) (sel : HeightOneSpectrum (𝓞 X.F) → HeightO
   sel := sel
   Sq := Sq
 
-theorem ColArg.minimal_ok (hW : W.Ok) (num : ScNum) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (Sq : Set ℕ) :
-    ColArgOk W Ch (ColArg.minimal W Ch num sel Sq) where
-  np_lat u w hw := absurd hw (Finset.notMem_empty _)
-  supp_served w h := absurd h (Finset.notMem_empty _)
-  served_alt u := Finset.notMem_empty _
-  supp_alt u w h := by
-    classical
-    show w ∈ Finset.univ.biUnion fun u => (finite_prW (K := X.K) (Pr.T u)).toFinset
-    exact Finset.mem_biUnion.2 ⟨u, Finset.mem_univ u, (Set.Finite.mem_toFinset _).2 h⟩
-  supp_sat w hw w' h := by
-    classical
-    change w ∈ Finset.univ.biUnion (fun u => (finite_prW (K := X.K) (Pr.T u)).toFinset) at hw
-    show w' ∈ Finset.univ.biUnion fun u => (finite_prW (K := X.K) (Pr.T u)).toFinset
-    obtain ⟨u, -, hu⟩ := Finset.mem_biUnion.1 hw
-    have hu' : prW w = Pr.T u := (Set.Finite.mem_toFinset (finite_prW (K := X.K) (Pr.T u))).1 hu
-    exact Finset.mem_biUnion.2 ⟨u, Finset.mem_univ u, (Set.Finite.mem_toFinset _).2 (h.trans hu')⟩
-  dsig_pos τ := dsigC_pos W hW τ
 
 variable (W Ch) in
 
@@ -1387,8 +1030,6 @@ theorem rowFacts : RowFacts W Ch sel mu hX where
   mtildeH_good P := MtildeH_good W Ch hX sel mu P
   mtH_good P j := MtH_good W Ch hX sel mu P j
 
-theorem colCSD_rat (u : Pr.Word) (j : ℕ) : (ColCSD W Ch u j (colOk W Ch hX u j)).Rat :=
-  (colGSD W Ch u j).toCSDOf_rat _ (colRat W Ch hX u j) _
 
 end RowSide
 

@@ -15,10 +15,6 @@ theorem nonneg_of_isIntegral {y : F} (hy : IsIntegral ℤ y) : 0 ≤ v y := by
   have h2 := (Valuation.integer.integers w).mem_of_integral h1
   exact h2
 
-theorem nonneg_of_isIntegral_pow_mul {p : F} (hp : v p = 0) {y : F} {N : ℕ}
-    (hy : IsIntegral ℤ (p ^ N * y)) : 0 ≤ v y := by
-  have h := nonneg_of_isIntegral v hy
-  rwa [AddValuation.map_mul, AddValuation.map_pow, hp, smul_zero, zero_add] at h
 
 theorem withTop_add_pos {x y : WithTop ℤ} (hx : 0 ≤ x) (hy : 0 < y) : 0 < x + y := by
   induction x using WithTop.recTopCoe with
@@ -53,9 +49,6 @@ theorem val_prime_eq_zero {l p : ℕ} (hl : l.Prime) (hp : p.Prime) (hne : p ≠
   rw [hF, AddValuation.map_one] at h3
   exact lt_irrefl _ h3
 
-theorem val_prime_pow_eq_zero {l p : ℕ} (hl : l.Prime) (hp : p.Prime) (hne : p ≠ l) (hvl : 0 < v (l : F))
-    (f : ℕ) : v ((p ^ f : ℕ) : F) = 0 := by
-  rw [Nat.cast_pow, AddValuation.map_pow, val_prime_eq_zero v hl hp hne hvl, smul_zero]
 
 end Val
 
@@ -112,19 +105,6 @@ def intAwaySubring (hq : IsIntegral ℤ q) : Subring R where
   zero_mem' := IntAway.of_isIntegral isIntegral_zero
   neg_mem' := fun ha => IntAway.neg ha
 
-theorem intAway_coeff_prod (hq : IsIntegral ℤ q) (s : Multiset R) (hs : ∀ μ ∈ s, IntAway q μ) (n : ℕ) :
-    IntAway q ((s.map fun μ => X - C μ).prod.coeff n) := by
-  let S := intAwaySubring hq
-  have hmem : (s.map fun μ => X - C μ).prod ∈ Polynomial.liftsRing S.subtype := by
-    refine Subring.multiset_prod_mem _ _ (fun P hP => ?_)
-    obtain ⟨μ, hμ, rfl⟩ := Multiset.mem_map.mp hP
-    refine Subring.sub_mem _ ?_ ?_
-    · rw [← Polynomial.lifts_iff_liftsRing]; exact Polynomial.X_mem_lifts _
-    · rw [← Polynomial.lifts_iff_liftsRing]; exact Polynomial.C_mem_lifts S.subtype ⟨μ, hs μ hμ⟩
-  rw [← Polynomial.lifts_iff_liftsRing, Polynomial.lifts_iff_coeff_lifts] at hmem
-  obtain ⟨c, hc⟩ := hmem n
-  rw [← hc]
-  exact c.2
 
 end Away
 

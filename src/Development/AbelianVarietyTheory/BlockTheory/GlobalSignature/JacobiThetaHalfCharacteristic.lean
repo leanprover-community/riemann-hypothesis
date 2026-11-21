@@ -35,8 +35,6 @@ theorem thetaChar_eq_tsum (a b : Fin 2) (z τ : ℂ) :
   congr 1
   ring
 
-theorem thetaChar_zero_zero (z τ : ℂ) : thetaChar 0 0 z τ = jacobiTheta₂ z τ := by
-  simp [thetaChar]
 
 theorem jacobiTheta₂_half (a b : Fin 2) (τ : ℂ) :
     jacobiTheta₂ ((((a : ℕ) : ℂ) * τ + ((b : ℕ) : ℂ)) / 2) τ =

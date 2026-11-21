@@ -11,65 +11,9 @@ namespace Formalism.LFunctionChainParameters.ProjectiveLineModels
 open Formalism.LFunctionChainParameters.HilbertSchmidtNormSquare (hsSq)
 open Formalism.LFunctionChainParameters.MatrixLatticeEstimates
 
-theorem b_ramified_grouped_holds : BRamGrouped := by
-  constructor
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ ιf _ _ Bf Vr
-      s u U HH δ Dstar sg η0 η1 e0 de bb x c
-    rintro ⟨a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23⟩
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ ιf Bf Vr
-      s u U HH δ Dstar sg η0 η1 e0 de bb x c
-      a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ ιf _ _ Bf Vr
-      s u U HH δ Dstar sg η0 η1 e0 de bb x c
-      a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ ιf Bf Vr
-      s u U HH δ Dstar sg η0 η1 e0 de bb x c
-      ⟨a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23⟩
 
-theorem b_power_grouped_holds : BPowGrouped := by
-  constructor
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ ιf _ _ Bf Vr
-      s u U HH δ Dstar η0 η1 e0 de bb x c
-    rintro ⟨a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21⟩
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ ιf Bf Vr
-      s u U HH δ Dstar η0 η1 e0 de bb x c
-      a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ ιf _ _ Bf Vr
-      s u U HH δ Dstar η0 η1 e0 de bb x c
-      a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ ιf Bf Vr
-      s u U HH δ Dstar η0 η1 e0 de bb x c
-      ⟨a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21⟩
 
-theorem c_grouped_form_holds : CGrouped := by
-  constructor
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ ιf _ _ Bf Vr
-      muMaxM muM dr BE Sg0 A A' Vh HH δ Dstar sg η0 η1 e0 de bb x c
-    rintro ⟨a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29⟩
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ ιf Bf Vr
-      muMaxM muM dr BE Sg0 A A' Vh HH δ Dstar sg η0 η1 e0 de bb x c
-      a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26 a27 a28 a29
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ ιf _ _ Bf Vr
-      muMaxM muM dr BE Sg0 A A' Vh HH δ Dstar sg η0 η1 e0 de bb x c
-      a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26 a27 a28 a29
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ ιf Bf Vr
-      muMaxM muM dr BE Sg0 A A' Vh HH δ Dstar sg η0 η1 e0 de bb x c
-      ⟨a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29⟩
 
-theorem d_grouped_form_holds : DGrouped := by
-  constructor
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ ιf _ _ Bf Vr
-      σ τ M N0 β dr Sg0 A A' Vh HH δ Dstar sg η0 η1 e0 de bb x c
-    rintro ⟨a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32, a33, a34, a35⟩
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ ιf Bf Vr
-      σ τ M N0 β dr Sg0 A A' Vh HH δ Dstar sg η0 η1 e0 de bb x c
-      a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26 a27 a28 a29 a30 a31 a32 a33 a34 a35
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ ιf _ _ Bf Vr
-      σ τ M N0 β dr Sg0 A A' Vh HH δ Dstar sg η0 η1 e0 de bb x c
-      a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26 a27 a28 a29 a30 a31 a32 a33 a34 a35
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ ιf Bf Vr
-      σ τ M N0 β dr Sg0 A A' Vh HH δ Dstar sg η0 η1 e0 de bb x c
-      ⟨a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32, a33, a34, a35⟩
 
 theorem power_hyp_to_ramified : HypPowToRam := by
   intro K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ ιf _ _ Bf Vr
@@ -82,18 +26,6 @@ theorem power_hyp_to_ramified : HypPowToRam := by
   · rw [hinv, div_inv_eq_mul]; exact a7
   · rw [hinv, div_inv_eq_mul, mul_comm]; exact a19
 
-theorem flatness_iff_holds : FlatIff := by
-  constructor
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ s u HH e η δ
-      a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ s u HH e η δ
-      ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a17, a18, a19, a20⟩ ⟨a12, a13, a14, a15, a16⟩
-      a21 a22 a23 a24 a25 a26
-  · intro H K W κ κ₁ I _ _ _ _ _ _ _ _ _ _ _ _ _ _ V ι _ _ _ _ _ _ b' X' cc b X N B h v Y Y' Ball γ s u HH e η δ
-      ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a17, a18, a19, a20⟩ ⟨a12, a13, a14, a15, a16⟩
-      a21 a22 a23 a24 a25 a26
-    exact H K W κ κ₁ I V ι b' X' cc b X N B h v Y Y' Ball γ s u HH e η δ
-      a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26
 
 theorem standard_lattice_fg (K n : Type) [Field K] [NumberField K] [Fintype n] : (stdLat K n).FG :=
   Submodule.fg_span (Set.finite_range _)

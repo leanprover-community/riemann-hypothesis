@@ -62,10 +62,6 @@ theorem not_dvd_primeProdErase (p : Nat.Primes) : ¬ ((p : ℕ) : ℤ) ∣ prime
   have : (p : ℕ) = q := (Nat.prime_dvd_prime_iff_eq p.2 q.2).1 (Int.natCast_dvd_natCast.1 hpq)
   exact (Finset.mem_erase.1 hq).1 (Subtype.ext this).symm
 
-theorem not_dvd_prime_of_ne {p q : Nat.Primes} (h : q ≠ p) : ¬ ((p : ℕ) : ℤ) ∣ ((q : ℕ) : ℤ) := by
-  intro hd
-  have : (p : ℕ) = q := (Nat.prime_dvd_prime_iff_eq p.2 q.2).1 (Int.natCast_dvd_natCast.1 hd)
-  exact h (Subtype.ext this).symm
 
 variable (x o₀) in
 

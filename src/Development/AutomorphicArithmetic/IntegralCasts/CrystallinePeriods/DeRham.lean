@@ -211,8 +211,6 @@ theorem maximalIdeal_eq : IsLocalRing.maximalIdeal (BdRPlus p R) = RingHom.ker (
   rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, isUnit_iff_theta_ne_zero, not_not,
     RingHom.mem_ker]
 
-theorem fil_eq_maximalIdeal_pow (n : ℕ) :
-    fil p R n = IsLocalRing.maximalIdeal (BdRPlus p R) ^ n := by rw [fil, maximalIdeal_eq]
 
 instance isAdicComplete_maximalIdeal :
     IsAdicComplete (IsLocalRing.maximalIdeal (BdRPlus p R)) (BdRPlus p R) := by
@@ -237,8 +235,6 @@ theorem algebraMap_injective : Function.Injective (algebraMap (AinfInv p R) (BdR
   refine AinfInv.eq_zero_of_forall_mem_kerTheta_pow ϖ fun n => ?_
   rw [← Ideal.Quotient.eq_zero_iff_mem, ← eval_algebraMap, hx, map_zero]
 
-theorem algebraMap_ainf_injective : Function.Injective (algebraMap (Ainf p R) (BdRPlus p R)) :=
-  algebraMap_injective.comp AinfInv.algebraMap_injective
 
 theorem ker_theta_eq_span_teich_sub_one {ε : tateModule p R} (hε : IsPrimitive ε) :
     RingHom.ker (theta p R) = span {algebraMap (Ainf p R) (BdRPlus p R) (Ainf.teich p ε.1 - 1)} := by

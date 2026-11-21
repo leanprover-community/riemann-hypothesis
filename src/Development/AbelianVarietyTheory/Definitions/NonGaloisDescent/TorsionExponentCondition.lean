@@ -13,23 +13,6 @@ variable {D : D7}
 theorem one_le_Lg (L : SizeData₂ D) : 1 ≤ TwistedPlaces.large₂ L :=
   Real.one_le_rpow L.sc.one_lt_alt.le L.sc.eps_pos.le
 
-theorem log_le_Lg (L : SizeData₂ D) (l k : ℕ) (hl : 2 ≤ l) (hk : (k : ℝ) ≤ 8 * L.sc.b) :
-    (Nat.log l k : ℝ) ≤ 5 * TwistedPlaces.large₂ L := by
-  have h1 := one_le_Lg L
-  rcases Nat.eq_zero_or_pos k with rfl | hk0
-  · simp; linarith
-  have h2 : 2 ^ Nat.log l k ≤ k :=
-    (Nat.pow_le_pow_left hl _).trans (Nat.pow_log_le_self l hk0.ne')
-  have h3 : (2 : ℝ) ^ Nat.log l k ≤ 8 * L.sc.b := le_trans (by exact_mod_cast h2) hk
-  have h4 := Real.log_le_log (by positivity) h3
-  have hb : Real.log (8 * L.sc.b) = 3 * Real.log 2 + TwistedPlaces.large₂ L := by
-    rw [Scale.b, Real.log_mul (by norm_num) (Real.exp_pos _).ne', Real.log_exp,
-      show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]
-    norm_num
-  rw [Real.log_pow, hb] at h4
-  have h5 := Real.log_two_gt_d9
-  have h6 : (0 : ℝ) ≤ Nat.log l k := by positivity
-  nlinarith
 
 theorem one_le_b (L : SizeData₂ D) : 1 ≤ L.sc.b :=
   Real.one_le_exp (le_trans zero_le_one (one_le_Lg L))
@@ -43,51 +26,7 @@ theorem sizes (D : D7) : (1 : ℝ) ≤ D.R.t ∧ (1 : ℝ) ≤ D.R.n ∧ (1 : �
 
 variable {L : SizeData₂ D} {HW : HWOf D.loc} {R : KillingConditions.RowK} {X : KillingConditions.HubData D}
 
-theorem condCB (h : Canon L HW R X) : CondCB L X 80 := by
-  intro i _ _ _
-  rw [h.cB]
-  have hb := one_le_b L
-  have hf : ((⌊2 * L.sc.b⌋₊ : ℕ) : ℝ) ≤ 2 * L.sc.b := Nat.floor_le (by linarith)
-  have hlog := log_le_Lg L (D.nd.l i) (2 * ⌊2 * L.sc.b⌋₊) (D.nd.lPrime i).out.two_le (by push_cast; linarith)
-  obtain ⟨ht, hn, hv⟩ := sizes D
-  have hL := one_le_Lg L
-  unfold cBof GlobalTheory.HubLoc.cBnum
-  push_cast
-  generalize (Nat.log (D.nd.l i) (2 * ⌊2 * L.sc.b⌋₊) : ℝ) = a at *
-  generalize (D.R.t : ℝ) = t at *
-  generalize TwistedPlaces.large₂ L = y at *
-  have hN : 1 ≤ (D.R.n : ℝ) * D.R.nV := one_le_mul_of_one_le_of_one_le hn hv
-  have e : (80 : ℝ) * t * D.R.n * D.R.nV * y = 80 * (t * (D.R.n * D.R.nV) * y) := by ring
-  have e2 : (4 : ℝ) * D.R.n * D.R.nV = 4 * (D.R.n * D.R.nV) := by ring
-  rw [e, e2]
-  generalize (D.R.n : ℝ) * D.R.nV = N at *
-  have p1 : t * N * (4 + 2 * a) ≤ t * N * (14 * y) := by gcongr; linarith
-  have p2 : 1 ≤ t * N := one_le_mul_of_one_le_of_one_le ht hN
-  have p3 : y ≤ t * N * y := by nlinarith
-  have p4 : t ≤ t * N := by nlinarith
-  have p5 : t * N ≤ t * N * y := by nlinarith
-  nlinarith
 
-theorem torsion_exponent_condition (h : Canon L HW R X) : KillingConditions.ConstantColumnBound L X 80 := by
-  intro i _ _ _ _ u _
-  rw [h.c0]
-  have hb := one_le_b L
-  have hf : ((⌊2 * L.sc.b⌋₊ : ℕ) : ℝ) ≤ 2 * L.sc.b := Nat.floor_le (by linarith)
-  have hlog := log_le_Lg L (D.nd.l i) (2 * hOf L) (D.nd.lPrime i).out.two_le (by unfold hOf; push_cast; linarith)
-  obtain ⟨-, hn, hv⟩ := sizes D
-  have hL := one_le_Lg L
-  unfold c0of
-  push_cast
-  generalize (Nat.log (D.nd.l i) (2 * hOf L) : ℝ) = a at *
-  generalize TwistedPlaces.large₂ L = y at *
-  have hN : 1 ≤ (D.R.n : ℝ) * D.R.nV := one_le_mul_of_one_le_of_one_le hn hv
-  have e : (80 : ℝ) * D.R.n * D.R.nV * y = 80 * ((D.R.n * D.R.nV) * y) := by ring
-  have e2 : (4 : ℝ) * D.R.n * D.R.nV = 4 * (D.R.n * D.R.nV) := by ring
-  rw [e, e2]
-  generalize (D.R.n : ℝ) * D.R.nV = N at *
-  have p1 : N * (4 + 2 * a) ≤ N * (14 * y) := by gcongr; linarith
-  have p3 : y ≤ N * y := by nlinarith
-  nlinarith
 
 theorem eta_le (h : Canon L HW R X) : (X.eta : ℝ) ≤ 2 * L.etaSz ∧ L.etaSz ≤ (X.eta : ℝ) + 1 := by
   rw [h.eta]
@@ -121,12 +60,6 @@ theorem decl (h : Canon L HW R X) (hJ : AdmissibleParameterJ.ConclusionJa D) (i 
   rw [h.dc i (not_inert hs), dcOf, dif_pos hc, ← he]
   exact hc.2.choose_spec
 
-theorem col_empty (h : Canon L HW R X) (i : D.nd.Loc)
-    (hn : ¬ GlobalTheory.IndefiniteRowSideFullHecke.SplitPlaceTypes.SplitRowPrime D.host (D.nd.l i)) : (X.dc i).col = ∅ := by
-  by_cases hi : TwistedPlaces.InertK D (D.nd.l i)
-  · exact h.data.col i hi
-  · rw [h.dc i hi, dcOf, dif_neg (fun c => hn c.1)]
-    rfl
 
 theorem cLL_le (L : SizeData₂ D) (i : D.nd.Loc) (u : HeightOneSpectrum (𝓞 D.host.E)) (U : Finset ℤ) (U' : Set ℤ)
     (hU : U' ⊆ U) (hN : U.card ≤ 4 * D.R.n * D.R.nV) (hb : ∀ a ∈ U, -(hOf L : ℤ) ≤ a ∧ a ≤ hOf L) :
@@ -202,14 +135,6 @@ theorem exists_canon (L : SizeData₂ D) (HW : HWOf D.loc) (R : KillingCondition
   obtain ⟨r, ρ, h⟩ := GlobalTheory.PtCore.PtFam.exists_pair hC hr
   exact ⟨_, canon_ourX L HW R r ρ (fun _ _ => 0) exc I h, rfl, rfl⟩
 
-theorem wild_charpoly (h1 : DepthZeroG D) (h2 : LgcG D) (i : D.nd.Loc)
-    (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) (hr : GoodR D.nd i r) (w) (hw : w ∈ D.nd.S i)
-    (hg : ∃ k, w ∈ placesOver D.host.E (D.host.g k)) (x : D.nd.X i) (σ : GE D.nd)
-    (hσ : σ ∈ wildSet D.nd (D.nd.plOm.1 w)) (hI : σ ∈ Ine (F := D.host.E) (D.nd.plOm.1 w)) :
-    D.naut.inePol (D.naut.wdOf i (mapRep (iotaOQ D.nd D.naut i) (r x)) w) σ = (Polynomial.X - 1) ^ D.R.nV := by
-  obtain ⟨P, -, hP⟩ := h2 i r hr w hw hg x
-  rw [hP, D.naut.inePol_tw _ _ σ hI]
-  exact h1 i w hw hg P σ hσ
 
 end GlobalTheory.HubX.Check
 

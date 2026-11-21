@@ -382,11 +382,6 @@ theorem eq_map_inv_of_isParamVec (hE : IsCMExt F E σ) (hJ : IsHermND σ J) (hL 
     (hx' : IsParamVec σ J L h' ρ x B') : B' = B.map (·⁻¹) :=
   hx'.unique_of_isSplit (isSplit_of_ne hne h h') (isParamVec_conj hE hJ hL hne h h' hx)
 
-theorem eq_map_inv_of_hasParam (hE : IsCMExt F E σ) (hJ : IsHermND σ J) (hL : IsSelfDualAt σ J L v) (hne : w ≠ w')
-    {h : w.under (𝓞 F) = v} {h' : w'.under (𝓞 F) = v} (hρ : HasParam σ J L h ρ B)
-    (hρ' : HasParam σ J L h' ρ B') : B' = B.map (·⁻¹) := by
-  obtain ⟨x, hx⟩ := hρ.exists_vec
-  exact eq_map_inv_of_isParamVec hE hJ hL hne hx (hρ'.isParamVec hx.mem_fixed hx.ne_zero)
 
 theorem bcParam_map_inv (n : ℕ) (α : Fin (n / 2) → ℂˣ) : (bcParam n α).map (·⁻¹) = bcParam n α := by
   simp only [bcParam, Multiset.map_add, Multiset.map_map, Function.comp_def, inv_inv, Multiset.map_replicate, inv_one]
@@ -398,19 +393,7 @@ theorem map_inv_of_isParamVec (hw : IsInertAt F E v w) {h : w.under (𝓞 F) = v
   · exact absurd hv (not_isSplit_of_isInertAt hw)
   · exact bcParam_map_inv n α
 
-theorem map_inv_of_hasParam (hw : IsInertAt F E v w) {h : w.under (𝓞 F) = v} (hρ : HasParam σ J L h ρ B) :
-    B.map (·⁻¹) = B := hρ.exists_vec.elim fun _ hx => map_inv_of_isParamVec hw hx
 
-theorem param_conj_place (hE : IsCMExt F E σ) (hJ : IsHermND σ J) (hL : IsSelfDualAt σ J L v)
-    (h : w.under (𝓞 F) = v) (ρ : Representation ℂ (GLoc σ J v) V) (B : Multiset ℂˣ) :
-    (∀ (w' : HeightOneSpectrum (𝓞 E)) (h' : w'.under (𝓞 F) = v), w ≠ w' →
-      (∀ x, IsParamVec σ J L h ρ x B → IsParamVec σ J L h' ρ x (B.map (·⁻¹))) ∧
-      (HasParam σ J L h ρ B → HasParam σ J L h' ρ (B.map (·⁻¹)))) ∧
-    (IsInertAt F E v w → (∀ x, IsParamVec σ J L h ρ x B → B.map (·⁻¹) = B) ∧
-      (HasParam σ J L h ρ B → B.map (·⁻¹) = B)) ∧
-    ∀ α : Fin (n / 2) → ℂˣ, (bcParam n α).map (·⁻¹) = bcParam n α :=
-  ⟨fun _ h' hne => ⟨fun _ => isParamVec_conj hE hJ hL hne h h', hasParam_conj hE hJ hL hne h h'⟩,
-    fun hw => ⟨fun _ => map_inv_of_isParamVec hw, map_inv_of_hasParam hw⟩, bcParam_map_inv n⟩
 
 theorem exists_isSplitChart_of_basis (hE : IsCMExt F E σ) (hJ : IsHermND σ J) (hL : IsSelfDualAt σ J L v)
     (h : w.under (𝓞 F) = v) {τ : E →ₐ[F] Fv F v} (hτ : splitPrime τ = w) {β : GL (Fin n) (Fv F v)}

@@ -27,9 +27,6 @@ instance : Nonempty FiniteSubfield := ⟨⟨⊥, inferInstance⟩⟩
 abbrev algebraOfLE {F E : FiniteSubfield} (h : F ≤ E) : Algebra F.1 E.1 :=
   (IntermediateField.inclusion (show F.1 ≤ E.1 from h)).toRingHom.toAlgebra
 
-theorem algebraOfLE_algebraMap {F E : FiniteSubfield} (h : F ≤ E) (x : F.1) :
-    ((@algebraMap F.1 E.1 _ _ (algebraOfLE h) x : E.1) : ℚ̄) = x :=
-  rfl
 
 def ideleClassMap {F E : FiniteSubfield} (h : F ≤ E) :
     IdeleClassGroup F.1 →* IdeleClassGroup E.1 :=
@@ -107,9 +104,6 @@ theorem exists_of₂ (z w : IdeleClassLimit) : ∃ (F : FiniteSubfield) (c d : I
     (f := fun _ _ h ↦ FiniteSubfield.ideleClassMap h) z w
   exact ⟨F, c, d, rfl, rfl⟩
 
-theorem of_eq_of_iff {F E M : FiniteSubfield} (hF : F ≤ M) (hE : E ≤ M) (x : IdeleClassGroup F.1)
-    (y : IdeleClassGroup E.1) : of F x = of E y ↔ FiniteSubfield.ideleClassMap hF x = FiniteSubfield.ideleClassMap hE y := by
-  rw [← of_ideleClassMap hF x, ← of_ideleClassMap hE y, (of_injective M).eq_iff]
 
 section lift
 

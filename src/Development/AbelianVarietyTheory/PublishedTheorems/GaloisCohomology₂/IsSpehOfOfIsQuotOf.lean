@@ -28,36 +28,9 @@ def Clauses : Prop :=
       π.IsUnitary → IsNormalised π → IsSpehOf V π d → ∀ w σ σ', π.IsLocComp w σ → IsLocCompGL V w σ' →
         GlobalTheory.LocGL.IsSpeh (GlobalTheory.LocGL.IrrGL.of σ.ρ σ.smooth σ.irred) d σ'.ρ
 
-theorem byClass_iff : GlobalTheory.Published.ResidualSpectrumByClass ↔
-    ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ), 1 ≤ N → Clauses E N := Iff.rfl
 
-theorem clauses_of
-    (h1 : ∀ V : Submodule ℂ (Sm E N), GlobalTheory.UnitaryBC.IsDiscrete V →
-      ∃ (a d : ℕ) (π : CuspSub E a), π.IsUnitary ∧ IsNormalised π ∧ IsSpehOf V π d)
-    (h2 : ∀ (a d : ℕ) (π : CuspSub E a), d * a = N → IsNormalised π →
-      ∃! V : Submodule ℂ (Sm E N), GlobalTheory.UnitaryBC.IsDiscrete V ∧ IsSpehOf V π d)
-    (h5 : ∀ V : Submodule ℂ (Sm E N), GlobalTheory.UnitaryBC.IsDiscrete V → ∀ (a d : ℕ) (π : CuspSub E a),
-      IsNormalised π → IsSpehOf V π d → ∀ w, (∃ σ σ', π.IsLocComp w σ ∧ IsLocCompGL V w σ') ∧
-        ∀ σ σ', π.IsLocComp w σ → IsLocCompGL V w σ' →
-          GlobalTheory.LocGL.IsSpeh (GlobalTheory.LocGL.IrrGL.of σ.ρ σ.smooth σ.irred) d σ'.ρ) : Clauses E N := by
-  classical
-  refine ⟨⟨fun a π d => if h : d * a = N ∧ IsNormalised π then (h2 a d π h.1 h.2).exists.choose else ⊥,
-    fun a d π h _ hn => ?_, fun V hV => ?_⟩, fun V V' hV hV' a d π _ hn e e' => ?_,
-    fun V hV a d π _ hn e w => (h5 V hV a d π hn e w).2⟩
-  · simp only [dif_pos (And.intro h hn)]
-    exact (h2 a d π h hn).exists.choose_spec
-  · obtain ⟨a, d, π, hu, hn, e⟩ := h1 V hV
-    refine le_iSup_of_le a (le_iSup_of_le d (le_iSup_of_le π (le_iSup_of_le ⟨e.mul_eq, hu, hn⟩ ?_)))
-    simp only [dif_pos (And.intro e.mul_eq hn)]
-    exact ((h2 a d π e.mul_eq hn).unique ⟨hV, e⟩ (h2 a d π e.mul_eq hn).exists.choose_spec).le
-  · obtain rfl := (h2 a d π e.mul_eq hn).unique ⟨hV, e⟩ ⟨hV', e'⟩
-    exact ⟨.refl _ _, fun _ _ _ h => h⟩
 
-theorem of_residual (H : GlobalTheory.Published.DiscreteSpectrumResidual) : GlobalTheory.Published.ResidualSpectrumByClass :=
-  fun E _ _ _ N hN => let ⟨h1, h2, _, _, h5⟩ := H E N hN; clauses_of h1 h2 h5
 
-theorem clauses_one : Clauses E 1 :=
-  let ⟨h1, h2, _, _, h5⟩ := ResidualModel.residual_one E; clauses_of h1 h2 h5
 
 section Algebra
 

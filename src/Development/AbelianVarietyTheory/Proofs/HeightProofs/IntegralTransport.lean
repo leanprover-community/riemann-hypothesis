@@ -167,18 +167,6 @@ theorem finPart_cA (x : AE D) : finPart D (cA D x) = sigR (Af D.host.F) D.sp.cm.
   | tmul a e => rfl
   | add x y hx hy => simp only [map_add, hx, hy]
 
-theorem aut_mem_GinfC (s : ConjIsom V) {k : GA D V} (hk : k ∈ GinfC V) : s.aut k ∈ GinfC V := by
-  have hk' : Formalism.UG.bc (finPart D) (matHom V k) = 1 := hk
-  have h2 : Formalism.UG.bc (finPart D) (cG D _ (matHom V k)) = 1 := by
-    apply Units.ext
-    have h3 : (mt V k).map (finPart D) = 1 := congrArg Units.val hk'
-    have h4 : ((mt V k).map (cA D)).map (finPart D) =
-        ((mt V k).map (finPart D)).map (sigR (Af D.host.F) D.sp.cm.sig) := by
-      funext i j; exact finPart_cA _
-    change ((mt V k).map (cA D)).map (finPart D) = 1
-    rw [h4, h3, Matrix.map_one _ (map_zero _) (map_one _)]
-  change Formalism.UG.bc (finPart D) (matHom V (s.aut k)) = 1
-  rw [matHom_aut, map_mul, map_mul, h2, map_inv, mul_one, mul_inv_cancel]
 
 variable {X : ThetaX D} {T : ThetaTied D X} {Wl : WeilTied D X T}
 

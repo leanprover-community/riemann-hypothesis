@@ -171,19 +171,7 @@ theorem mapPair_mk (f : G' →* G) (φ : M →* M') (hφ : ∀ (g : G') (m : M),
     mapPair f φ hφ (mk G M c) = mk G' M' (mapCocycles₂ f φ hφ c) :=
   rfl
 
-theorem mapPair_id : mapPair (MonoidHom.id G) (MonoidHom.id M) (fun _ _ => rfl) =
-    MonoidHom.id (H2mul G M) := by
-  ext x
-  rfl
 
-theorem mapPair_comp {G'' : Type*} {M'' : Type*} [Group G''] [CommGroup M'']
-    [MulDistribMulAction G'' M''] (f : G' →* G) (φ : M →* M')
-    (hφ : ∀ (g : G') (m : M), φ (f g • m) = g • φ m) (f' : G'' →* G') (φ' : M' →* M'')
-    (hφ' : ∀ (g : G'') (m : M'), φ' (f' g • m) = g • φ' m) :
-    mapPair (f.comp f') (φ'.comp φ) (fun g m => by simp [hφ, hφ']) =
-      (mapPair f' φ' hφ').comp (mapPair f φ hφ) := by
-  ext x
-  rfl
 
 variable {N : Type v'} [CommGroup N] [MulDistribMulAction G N]
 

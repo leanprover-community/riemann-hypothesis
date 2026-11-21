@@ -95,57 +95,11 @@ theorem isLetters_letterEquiv : IsLetters Dw (letterEquiv (n := n) Dw hΨ hm) :=
     change conjEmb τ' = conjEmb (tauE D ((tauPsi hΨ).symm ⟨τ', h⟩))
     rw [← tauPsi_apply hΨ, Equiv.apply_symm_apply]
 
-theorem mem_HHa_of_mem_rowHighest {a : (D.host.E →+* ℂ) × ℕ → ℕ}
-    (hx : ∀ t : {τ : D.host.E →+* ℂ // InPsi H τ}, Antitone fun i : Fin Dw.p => a (t.1, i))
-    (hy : ∀ t : {τ : D.host.E →+* ℂ // InPsi H τ}, Antitone fun i : Fin Dw.q => a (ComplexEmbedding.conjugate t.1, i))
-    {P : PolF D m n} (h : MvPolynomial.rename (fockVarEquiv Dw hΨ hm) P ∈ GlobalTheory.Harm.rowHighest ℂ (stepsX Dw a) (stepsY Dw a)) :
-    MvPolynomial.rename (letterEquiv Dw hΨ hm).symm P ∈
-      HHa Dw.mult n ℂ ComplexEmbedding.conjugate (InPsi H) (fun τ i => a (τ, i)) := by
-  have key := GlobalTheory.Harm.mem_HHa_iff_rename (Ψ := InPsi H) (dim := Dw.mult) (n := n) (K := ℂ)
-    (ComplexEmbedding.involutive_conjugate D.host.E) (GlobalTheory.Harm.not_mem_hostType_iff H)
-    (fun _ => GlobalTheory.Harm.mult_of_mem Dw) (fun _ => GlobalTheory.Harm.mult_conjEmb_of_mem Dw) (fun τ i => a (τ, i))
-  refine (key _).2 ?_
-  have e : MvPolynomial.rename (GlobalTheory.Harm.thetaLetterEquiv Dw n) (MvPolynomial.rename (letterEquiv Dw hΨ hm).symm P) =
-      MvPolynomial.rename (fockVarEquiv Dw hΨ hm) P := by
-    rw [MvPolynomial.rename_rename, show ((GlobalTheory.Harm.thetaLetterEquiv Dw n) ∘ (letterEquiv Dw hΨ hm).symm) =
-      (fockVarEquiv Dw hΨ hm : FVar D m n → _) from funext fun v => by simp [letterEquiv]]
-  unfold GlobalTheory.Harm.thetaLetterEquiv at e
-  rw [e]
-  have hx' : ∀ t, GlobalTheory.Harm.partOf (stepsX Dw a t) = fun i : Fin Dw.p => a (t.1, i) := fun t =>
-    GlobalTheory.Harm.partOf_diffOf (hx t)
-  have hy' : ∀ t, GlobalTheory.Harm.partOf (stepsY Dw a t) = fun i : Fin Dw.q => a (ComplexEmbedding.conjugate t.1, i) := fun t =>
-    GlobalTheory.Harm.partOf_diffOf (hy t)
-  have := GlobalTheory.Harm.mem_rowHighest_iff_rowAdd.1 h
-  simp only [hx', hy'] at this
-  exact this
 
 end GlobalTheory.FockLetters
 
 noncomputable section
 namespace GlobalTheory.FockLetters
 
-theorem exists_letters_harm_mem_HHa : ∀ (D : D7) (H : Geo.Tor.Host D.host.E) (Dw : Datum H) (m n : ℕ) (w : Weight D n)
-    (a : (D.host.E →+* ℂ) × ℕ → ℕ), w.Good → WtIs Dw w a → m = Dw.p + Dw.q →
-    (∀ τ : D.host.E →+* ℂ, InPsi H τ ↔ ∃ ρ, τ = tauE D ρ) → ∃ lt : LtN Dw n ≃ FVar D m n, IsLetters Dw lt ∧
-      ∀ P ∈ harm m w 1, MvPolynomial.rename lt.symm P ∈
-        HHa Dw.mult n ℂ ComplexEmbedding.conjugate (InPsi H) (fun τ i => a (τ, i)) := by
-  intro D H Dw m n w a hw hwt hm hΨ
-  have hn := le_of_good Dw hΨ hw hwt
-  obtain ⟨hx, hy⟩ := antitone_of_good Dw hΨ hw hwt
-  refine ⟨letterEquiv Dw hΨ hm, isLetters_letterEquiv Dw hΨ hm, fun P hP =>
-    mem_HHa_of_mem_rowHighest Dw hΨ hm hx hy ?_⟩
-  obtain ⟨c, hc⟩ := GlobalTheory.T.fock_delta_base_polynomial D H Dw m n hΨ hm w a hwt hn
-  induction hP using Submodule.span_induction with
-  | mem x hx' =>
-    obtain ⟨u, rfl⟩ := hx'
-    obtain ⟨s, g, e⟩ := GlobalTheory.T.fock_action_base_polynomial D H Dw m n hΨ hm w a hwt u (w.delta m)
-    rw [e, hc, MvPolynomial.C_mul', MvPolynomial.C_mul', map_smul]
-    exact Submodule.smul_mem _ _ (Submodule.smul_mem _ _
-      (GlobalTheory.Harm.colAct_mem_rowHighest g (GlobalTheory.Harm.basePoly_mem_rowHighest hn _ _)))
-  | zero => rw [map_zero]; exact zero_mem _
-  | add x y _ _ h1 h2 => rw [map_add]; exact add_mem h1 h2
-  | smul r x _ h1 =>
-    rw [MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.rename_C, ← MvPolynomial.smul_eq_C_mul]
-    exact Submodule.smul_mem _ r h1
 
 end GlobalTheory.FockLetters

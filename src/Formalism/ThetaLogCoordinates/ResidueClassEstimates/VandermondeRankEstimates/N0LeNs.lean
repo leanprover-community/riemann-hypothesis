@@ -544,15 +544,6 @@ lemma frame_step (hW : D.Wf) (hP : D.IsPATH mu) (i u : ℕ) (hi : i < D.Ns) (hn 
   rw [tailNeg_eq, tailNeg_eq]
   exact hI.rev.tailPos_le u
 
-lemma vec_step (hP : D.IsPATH mu) (i : ℕ) (hi : i + 1 ≤ D.n0) (hv : D.vec (i + 1) = true) :
-    HStrip D.k (ent mu i) (ent mu (i + 1)) ∧
-      wsize D.k (ent mu (i + 1)) - wsize D.k (ent mu i) = D.B (i + 1) := by
-  obtain ⟨-, -, h3, -, h5, -, -⟩ := hP
-  have e : i + 1 - 1 = i := by omega
-  have ha := h3 (i + 1) (by omega) (hi.trans (n0_le_Ns D)) hv
-  have hb := h5 (i + 1) (by omega) hi hv
-  rw [e] at ha hb
-  exact ⟨ha, hb⟩
 
 lemma cov_step (hP : D.IsPATH mu) (i : ℕ) (hi : i + 1 ≤ D.n0) (hv : D.vec (i + 1) = false) :
     HStrip D.k (ent mu (i + 1)) (ent mu i) ∧

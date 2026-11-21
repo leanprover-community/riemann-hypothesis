@@ -54,11 +54,6 @@ structure All (𝒜 : FamClass) : Prop where
   rr : H_rr 𝒜
   la : H_la 𝒜
 
-theorem row_all {Bd : BdT} {Q : V4.Slot} {Lk : LkT Bd}
-    (hn4 : ClassCountBoundAtConstructedPoints Q Lk) (goodFT : GoodFourierTransformAtConstructedPoints Q Lk) (hRanks : RankConditionAtConstructedPoints Q Lk) (jOn : JInvariantConditionAtConstructedPoints Q Lk) (bu : BundleBoundAtConstructedPoints Q Lk) (rr : RiemannRochAtConstructedPoints Q Lk) (la : LambdaConditionAtConstructedPoints Q Lk) :
-    Row Q Lk fun 𝒜 _ => All 𝒜 :=
-  Row.imp (Row.and hn4 (Row.and goodFT (Row.and hRanks (Row.and jOn (Row.and bu (Row.and rr (la)))))))
-    fun _ _ _ ⟨a0, a1, a2, a3, a4, a5, a6⟩ => ⟨a0, a1, a2, a3, a4, a5, a6⟩
 
 end GlobalTheory.Fc.R0
 

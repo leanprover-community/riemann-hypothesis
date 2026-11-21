@@ -18,13 +18,6 @@ theorem ord_neg (P : HeightOneSpectrum (𝓞 E)) (x : E) : ord P (-x) = ord P x 
     linarith
   rw [show -x = (-1 : E) * x by ring, ord_mul P (by norm_num) hx, h1, zero_add]
 
-theorem ord_nonneg_of_isIntegral (P : HeightOneSpectrum (𝓞 E)) {y : E} (hy : IsIntegral ℤ y) :
-    0 ≤ ord P y := by
-  unfold ord
-  have : y = algebraMap (𝓞 E) E (IsIntegralClosure.mk' (𝓞 E) y hy) :=
-    (IsIntegralClosure.algebraMap_mk' (𝓞 E) y hy).symm
-  rw [this, ← FractionalIdeal.coeIdeal_span_singleton]
-  exact FractionalIdeal.count_coe_nonneg _ _ _
 
 theorem ord_algebraMap_eq_zero (P : HeightOneSpectrum (𝓞 E)) {r : 𝓞 E} (hr : r ∉ P.asIdeal) :
     ord P (algebraMap (𝓞 E) E r) = 0 := by
@@ -122,129 +115,11 @@ theorem ord_natCast (P : HeightOneSpectrum (𝓞 E)) {ℓ : ℕ} (hℓ : ℓ.Pri
   rw [ord_mul P (pow_ne_zero _ hl0) (Nat.cast_ne_zero.2 hm0), ord_pow P hl0,
     ord_natCast_coprime P hℓ hP hmd, add_zero]
 
-theorem ord_intCast (P : HeightOneSpectrum (𝓞 E)) {ℓ : ℕ} (hℓ : ℓ.Prime)
-    (hP : (ℓ : 𝓞 E) ∈ P.asIdeal) {z : ℤ} (hz : z ≠ 0) :
-    ord P (z : E) = padicValInt ℓ z * ord P (ℓ : E) := by
-  have h := ord_natCast P hℓ hP (Int.natAbs_ne_zero.2 hz)
-  have hv : padicValInt ℓ z = padicValNat ℓ z.natAbs := rfl
-  rw [hv, ← h]
-  rcases Int.natAbs_eq z with e | e
-  · conv_lhs => rw [e]
-    simp
-  · conv_lhs => rw [e]
-    rw [Int.cast_neg, ord_neg]
-    simp
 
-theorem ord_ratCast (P : HeightOneSpectrum (𝓞 E)) {ℓ : ℕ} (hℓ : ℓ.Prime)
-    (hP : (ℓ : 𝓞 E) ∈ P.asIdeal) {q : ℚ} (hq : q ≠ 0) :
-    ord P (q : E) = padicValRat ℓ q * ord P (ℓ : E) := by
-  rw [Rat.cast_def, ord_div P (Int.cast_ne_zero.2 (Rat.num_ne_zero.2 hq))
-    (Nat.cast_ne_zero.2 q.den_pos.ne'), ord_intCast P hℓ hP (Rat.num_ne_zero.2 hq),
-    ord_natCast P hℓ hP q.den_pos.ne']
-  simp only [padicValRat]
-  ring
 
-theorem ord_finite (x : E) : {P : HeightOneSpectrum (𝓞 E) | ord P x ≠ 0}.Finite := by
-  rcases eq_or_ne x 0 with rfl | hx
-  · simp [ord_zero]
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 E) x
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  have ha0 : a ≠ 0 := by rintro rfl; simp at hx
-  have hab : a * b ≠ 0 := mul_ne_zero ha0 hb0
-  refine (Ideal.finite_factors (I := Ideal.span {a * b}) (by simpa using hab)).subset fun P hP => ?_
-  simp only [Set.mem_setOf_eq] at hP ⊢
-  rw [Ideal.dvd_span_singleton]
-  by_contra hn
-  apply hP
-  have haP : a ∉ P.asIdeal := fun h => hn (P.asIdeal.mul_mem_right _ h)
-  have hbP : b ∉ P.asIdeal := fun h => hn (P.asIdeal.mul_mem_left _ h)
-  have inj := IsFractionRing.injective (𝓞 E) E
-  rw [ord_div P ((map_ne_zero_iff _ inj).2 ha0) ((map_ne_zero_iff _ inj).2 hb0),
-    ord_algebraMap_eq_zero P haP, ord_algebraMap_eq_zero P hbP, sub_zero]
 
-theorem ord_prod_primePow (P : HeightOneSpectrum (𝓞 E)) (T : Finset ℕ) (hT : ∀ ℓ ∈ T, ℓ.Prime)
-    (k : ℕ → ℤ) {ℓ₀ : ℕ} (h0 : ℓ₀.Prime) (hm : (ℓ₀ : 𝓞 E) ∈ P.asIdeal) :
-    ord P (((∏ ℓ ∈ T, (ℓ : ℚ) ^ k ℓ : ℚ) : E)) = if ℓ₀ ∈ T then k ℓ₀ * ord P (ℓ₀ : E) else 0 := by
-  push_cast
-  rw [ord_prod P _ _ (fun ℓ hℓ => zpow_ne_zero _ (Nat.cast_ne_zero.2 (hT ℓ hℓ).ne_zero))]
-  rw [Finset.sum_congr rfl (g := fun ℓ => if ℓ₀ = ℓ then k ℓ * ord P (ℓ : E) else 0) ?_]
-  · rw [Finset.sum_ite_eq]
-  intro ℓ hℓ
-  rw [ord_zpow P (Nat.cast_ne_zero.2 (hT ℓ hℓ).ne_zero)]
-  split_ifs with h
-  · subst h; rfl
-  · rw [ord_natCast_coprime P h0 hm (by rwa [Nat.prime_dvd_prime_iff_eq h0 (hT ℓ hℓ)]), mul_zero]
 
-theorem ord_primeMap_symm (τ : E ≃+* E) (hτ : ∀ x, τ (τ x) = x) (P : HeightOneSpectrum (𝓞 E))
-    (a : E) : ord P (τ a) = ord (primeMap τ P) a := by
-  have := ord_primeMap τ (primeMap τ P) a
-  rwa [primeMap_primeMap τ hτ] at this
 
-theorem ord_eq_local (τ : E ≃+* E) (hτ : ∀ x, τ (τ x) = x) (P : HeightOneSpectrum (𝓞 E))
-    {ℓ : ℕ} (hℓ : ℓ.Prime) (hP : (ℓ : 𝓞 E) ∈ P.asIdeal) {l : E} (hl : l ≠ 0) {c : ℚ} {a : E}
-    (hc : c ≠ 0) (ha : a ≠ 0) {d : ℕ} (hd : ¬ ℓ ∣ d)
-    (h1 : IsIntegral ℤ ((d : E) * (l * ((c : E) * a * τ a)⁻¹)))
-    (h2 : IsIntegral ℤ ((d : E) * ((c : E) * a * τ a) * l⁻¹)) :
-    ord P l = ord P (c : E) + ord P a + ord (primeMap τ P) a := by
-  have hd0 : (d : E) ≠ 0 := Nat.cast_ne_zero.2 (by rintro rfl; exact hd (dvd_zero _))
-  have hc0 : (c : E) ≠ 0 := Rat.cast_ne_zero.2 hc
-  have hta : τ a ≠ 0 := (map_ne_zero τ).2 ha
-  have hy : (c : E) * a * τ a ≠ 0 := mul_ne_zero (mul_ne_zero hc0 ha) hta
-  have o1 := ord_nonneg_of_isIntegral P h1
-  have o2 := ord_nonneg_of_isIntegral P h2
-  rw [ord_mul P hd0 (mul_ne_zero hl (inv_ne_zero hy)), ord_mul P hl (inv_ne_zero hy), ord_inv] at o1
-  rw [ord_mul P (mul_ne_zero hd0 hy) (inv_ne_zero hl), ord_mul P hd0 hy, ord_inv] at o2
-  have hdz : ord P (d : E) = 0 := ord_natCast_coprime P hℓ hP hd
-  have hyv : ord P ((c : E) * a * τ a) = ord P (c : E) + ord P a + ord (primeMap τ P) a := by
-    rw [ord_mul P (mul_ne_zero hc0 ha) hta, ord_mul P hc0 ha, ord_primeMap_symm τ hτ]
-  linarith
 
-theorem localDivisor : ∀ (E : Type) [Field E] [NumberField E] (τ : E ≃+* E), (∀ x, τ (τ x) = x) →
-    ∀ (S : Finset ℕ) (l : E), l ≠ 0 → τ l = l →
-    (∀ ℓ : ℕ, ℓ.Prime → ℓ ∉ S → ∃ (c : ℚ) (a : E), c ≠ 0 ∧ a ≠ 0 ∧ ∃ d : ℕ, ¬ ℓ ∣ d ∧
-      IsIntegral ℤ ((d : E) * (l * ((c : E) * a * τ a)⁻¹)) ∧
-      IsIntegral ℤ ((d : E) * ((c : E) * a * τ a) * l⁻¹)) →
-    ∃ (c : ℚ) (f : HeightOneSpectrum (𝓞 E) → ℤ), c ≠ 0 ∧ (Function.support f).Finite ∧
-      ∀ P : HeightOneSpectrum (𝓞 E), (∀ ℓ ∈ S, ℓ.Prime → ((ℓ : 𝓞 E) ∉ P.asIdeal)) →
-        ord P l = ord P (c : E) + f P + f (primeMap τ P) := by
-  intro E _ _ τ hτ S l hl _ H
-  choose! cc aa hc0 ha0 dd hdd hI1 hI2 using H
-  let rc : HeightOneSpectrum (𝓞 E) → ℕ := fun P => Classical.choose (exists_prime_mem P)
-  have rc_prime : ∀ P, (rc P).Prime := fun P => (Classical.choose_spec (exists_prime_mem P)).1
-  have rc_mem : ∀ P, ((rc P : ℕ) : 𝓞 E) ∈ P.asIdeal :=
-    fun P => (Classical.choose_spec (exists_prime_mem P)).2
-  have rc_map : ∀ P, rc (primeMap τ P) = rc P := fun P =>
-    prime_eq_of_mem (primeMap τ P) (rc_prime _) (rc_prime P) (rc_mem _)
-      (by rw [mem_primeMap, map_natCast]; exact rc_mem P)
-  let T : Finset ℕ := (ord_finite l).toFinset.image rc
-  have hT : ∀ ℓ ∈ T, ℓ.Prime := by
-    intro ℓ hℓ
-    obtain ⟨P, -, rfl⟩ := Finset.mem_image.1 hℓ
-    exact rc_prime P
-  let k : ℕ → ℤ := fun ℓ => padicValRat ℓ (cc ℓ)
-  let f : HeightOneSpectrum (𝓞 E) → ℤ := fun P => if rc P ∈ T then ord P (aa (rc P)) else 0
-  refine ⟨∏ ℓ ∈ T, (ℓ : ℚ) ^ k ℓ, f, ?_, ?_, ?_⟩
-  · exact Finset.prod_ne_zero_iff.2 fun ℓ hℓ => zpow_ne_zero _ (Nat.cast_ne_zero.2 (hT ℓ hℓ).ne_zero)
-  · refine (Set.Finite.biUnion T.finite_toSet fun ℓ _ => ord_finite (aa ℓ)).subset ?_
-    intro P hP
-    simp only [Function.mem_support, f] at hP
-    split_ifs at hP with h
-    · simp only [Set.mem_iUnion, Set.mem_setOf_eq, Finset.mem_coe]
-      exact ⟨rc P, h, hP⟩
-    · exact absurd rfl hP
-  · intro P hPS
-    have hS : rc P ∉ S := fun h => hPS _ h (rc_prime P) (rc_mem P)
-    rw [ord_prod_primePow P T hT k (rc_prime P) (rc_mem P)]
-    have hfτ : f (primeMap τ P) = if rc P ∈ T then ord (primeMap τ P) (aa (rc P)) else 0 := by
-      simp only [f, rc_map]
-    rw [hfτ]
-    simp only [f]
-    split_ifs with h
-    · rw [ord_eq_local τ hτ P (rc_prime P) (rc_mem P) hl (hc0 _ (rc_prime P) hS) (ha0 _ (rc_prime P) hS)
-        (hdd _ (rc_prime P) hS) (hI1 _ (rc_prime P) hS) (hI2 _ (rc_prime P) hS),
-        ord_ratCast P (rc_prime P) (rc_mem P) (hc0 _ (rc_prime P) hS)]
-    · simp only [add_zero]
-      by_contra hne
-      exact h (Finset.mem_image.2 ⟨P, (ord_finite l).mem_toFinset.2 hne, rfl⟩)
 
 end GlobalTheory.LocalDivisor

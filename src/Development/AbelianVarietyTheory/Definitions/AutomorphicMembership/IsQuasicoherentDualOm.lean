@@ -112,7 +112,6 @@ def embV (σ : E →+* ℂ) : 𝓞 E →+* c.V W := (embK c σ).codRestrict (c.V
 
 theorem coe_embV (σ : E →+* ℂ) (a : 𝓞 E) : (((embV c W σ a : c.V W) : c.F) : ℂ) = σ a := rfl
 
-theorem subtype_comp_embV (σ : E →+* ℂ) : (c.V W).subtype.comp (embV c W σ) = embK c σ := RingHom.ext fun _ => rfl
 
 theorem embV_injective : Function.Injective (embV c W) := fun σ σ' h =>
   IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) (RingHom.ext fun a =>
@@ -191,13 +190,6 @@ theorem mem_imHT (t : Dw.La) : h.1 t ∈ (imHT h).sec ⊤ := by
   rw [resM_self] at this
   exact zsmul_mem this _
 
-theorem imHT_le {U : Z.X.Opens} (hU : IsAffineOpen U) :
-    (imHT h).sec U = Submodule.span _ (Set.range fun t => resM _ le_top (h.1 t)) := by
-  refine le_antisymm (fun s hs => ?_) (Submodule.span_le.2 ?_)
-  · obtain ⟨a, rfl⟩ := (mem_spanSub_iff _ hU).1 hs
-    exact sum_mem fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, rfl⟩)
-  · rintro _ ⟨t, rfl⟩
-    exact (imHT h).res_mem le_top (mem_imHT h t)
 
 def omP : Sub Z.om := preSub (red Z n) (imHT h)
 
@@ -300,7 +292,6 @@ theorem eps_mem (σ : D.host.E →+* ℂ) : eps ct Z σ ∈ ann (embV Z.i.c ct.W
 
 def dif (σ : D.host.E →+* ℂ) : Z.i.c.V ct.W := EigenSplit.splitMap (embV Z.i.c ct.W) (eps ct Z σ) σ
 
-theorem dif_ne_zero (σ : D.host.E →+* ℂ) : dif ct Z σ ≠ 0 := (exists_eps ct Z σ).choose_spec.2
 
 open Classical in
 
@@ -347,8 +338,6 @@ def htIdl : ct.Idl Z :=
     rw [Scheme.IdealSheafData.support_top] at hx
     exact hx.elim⟩
 
-theorem htIdl_val (H : ∀ x ∈ (htIdeal ct h).support, x ∉ Z.opn) : (htIdl ct h).1 = htIdeal ct h :=
-  congrArg Subtype.val (dif_pos H : htIdl ct h = _)
 
 variable (Z)
 
@@ -404,13 +393,7 @@ open Classical in
 def fstMap (m : ℕ) : modN (wSheaf ct h σ) m ⟶ modN (tSheaf ct Z σ) m :=
   if H : ∃ f, IsFst ct h σ (m := m) f then H.choose else 0
 
-theorem isSnd_sndMap {m : ℕ} (H : ∃ g, IsSnd ct h σ (m := m) g) : IsSnd ct h σ (sndMap ct h σ m) := by
-  rw [sndMap, dif_pos H]
-  exact H.choose_spec
 
-theorem isFst_fstMap {m : ℕ} (H : ∃ f, IsFst ct h σ (m := m) f) : IsFst ct h σ (fstMap ct h σ m) := by
-  rw [fstMap, dif_pos H]
-  exact H.choose_spec
 
 def ses : ct.SES Z where
   F₁ := Z.ofMod (wSheaf ct h σ)

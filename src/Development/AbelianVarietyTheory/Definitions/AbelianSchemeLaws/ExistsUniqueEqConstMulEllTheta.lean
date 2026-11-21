@@ -69,42 +69,21 @@ def ellPolAV : Out.PolAV (Spec (CommRingCat.of R)) where
   ample := relAmple_originLB W
   ktriv := kTriv_originLB W
 
-theorem ellPolAV_A : (ellPolAV W).A = schemeOver W := rfl
 
-theorem ellPolAV_hom : (ellPolAV W).A.hom = toSpec W := rfl
 
-theorem ellPolAV_grp : (ellPolAV W).grp = grpObj W := rfl
 
 @[simp] theorem ellPolAV_g : (ellPolAV W).g = 1 := rfl
 
-theorem ellPolAV_L : (ellPolAV W).L = originLB W := rfl
 
 theorem eSec_ellPolAV : eSec (ellPolAV W).A = zero W := one_left W
 
-theorem isAddLawHom_ellPolAV : IsAddLawHom W μ[(ellPolAV W).A] := isAddLawHom_mul W
 
-theorem ptHom_ellPolAV_inv {A : Type} [CommRing A] (ρ : R →+* A) (P : Fin 3 → A)
-    (hP : IsUnimodularSol (W.map ρ) P) :
-    ∃ hN : IsUnimodularSol (W.map ρ) ((W.map ρ).toProjective.neg P),
-      ptHom W ρ P hP ≫ (GrpObj.inv : (ellPolAV W).A ⟶ (ellPolAV W).A).left = ptHom W ρ _ hN :=
-  ⟨hP.neg, (congrArg (_ ≫ ·) (inv_left W)).trans (ptHom_negHom W ρ P hP)⟩
 
 def ellTheta : (ellPolAV W).L.Sec := originSec W
 
-theorem ellTheta_eq : ellTheta W = originSec W := rfl
 
-theorem nonzeroLocus_ellTheta : Out.nonzeroLocus (ellTheta W) = coordOpen W 2 :=
-  nonzeroLocus_originSec W
 
-theorem secPull_ellTheta_eq_zero_iff {T : Scheme.{0}} (t : T ⟶ (ellPolAV W).A.left) :
-    (∀ j, (Cartier.secPull (ellTheta W) t).f j = 0) ↔
-      t = t ≫ (ellPolAV W).A.hom ≫ eSec (ellPolAV W).A := by
-  rw [eSec_ellPolAV]
-  exact secPull_originSec_eq_zero_iff W t
 
-theorem existsUnique_eq_const_mul_ellTheta (s : (ellPolAV W).L.Sec) :
-    ∃! c : R, ∀ i, s.f i = constFn (ellPolAV W).A.hom ((ellPolAV W).L.U i) c * (ellTheta W).f i :=
-  existsUnique_eq_const_mul_originSec W s
 
 theorem exists_isLieBasis_ellPolAV : ∃ v : epsR R ⟶ (ellPolAV W).A,
     (∃ h : IsUnimodularSol (W.map (algebraMap R (DualNumber R))) ![DualNumber.eps, -1, 0],

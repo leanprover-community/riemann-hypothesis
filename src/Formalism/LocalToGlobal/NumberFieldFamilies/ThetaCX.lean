@@ -364,37 +364,6 @@ def thetaChrOf : ThetaChrTied D C nch Tp (thetaOf D G P hE Om (chrInOf Tp B Gc) 
     rw [chrTup_succ, B.toH_ofH]
   etaT := B.toH_ofH _ C.isEta.unitary _ (eta_inf C)
 
-theorem sameChrOf (hS : SpSig D) (hW : WittLow D) :
-    SameChr (thetaCompatibilityOf G P hE Om (chrInOf Tp B Gc) f hS hW) (thetaChrOf Tp B Gc G P hE Om f) where
-  idem := fun Q => ⟨B.Φ.symm (pairA D.host.E 0 (singleV D.host.E Q 1)), (B.idem Q _).2 (B.Φ.apply_symm_apply _)⟩
-  fin := fun c Q e he k x hx => by
-    classical
-    have e1 : B.up x = localIdele D.host.E Q (atFin Q k) := by
-      apply Units.ext
-      show B.Φ (x : AE D) = _
-      rw [hx, locE, RingEquiv.map_add, RingEquiv.map_mul, RingEquiv.map_sub, RingEquiv.map_one, B.inc, (B.idem Q e).1 he]
-      refine Prod.ext ?_ ?_
-      · show (1 : InfiniteAdeleRing D.host.E) + 0 * _ = 1
-        rw [zero_mul, add_zero]
-      · refine RestrictedProduct.ext _ _ fun v => ?_
-        show (1 : v.adicCompletion D.host.E) + (Pi.single Q (1 : Q.adicCompletion D.host.E) : ∀ w : HeightOneSpectrum (𝓞 D.host.E),
-            w.adicCompletion D.host.E) v * (algebraMap D.host.E (v.adicCompletion D.host.E) k - 1) =
-          (Pi.mulSingle Q (algebraMap D.host.E (Q.adicCompletion D.host.E) k) : ∀ w : HeightOneSpectrum (𝓞 D.host.E),
-            w.adicCompletion D.host.E) v
-        by_cases h : v = Q
-        · subst h
-          rw [Pi.single_eq_same, Pi.mulSingle_eq_same, one_mul, add_sub_cancel]
-        · rw [Pi.single_eq_of_ne h, Pi.mulSingle_eq_of_ne h, zero_mul, add_zero]
-    refine (B.toH_up c x).symm.trans ?_
-    rw [e1]
-    rfl
-  inf := fun θ hθ c τ k x hx => by
-    rw [plOf_eq hθ τ]
-    obtain rfl := fam_eq hθ
-    have e1 := B.up_inf τ (atInf (plE τ) k) x hx.1 hx.2.1 (hx.2.2.trans ((cmpAt_incA τ k).trans (embAt_alg τ k).symm))
-    refine (B.toH_up c x).symm.trans ?_
-    rw [e1]
-    rfl
 
 end Frame
 

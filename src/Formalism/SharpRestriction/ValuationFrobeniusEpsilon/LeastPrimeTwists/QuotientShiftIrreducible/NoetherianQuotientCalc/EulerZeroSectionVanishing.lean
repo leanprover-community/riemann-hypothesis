@@ -40,11 +40,5 @@ def GIso.annOfZero (F : GMod B R k) (s : R) (d : Deg k) (h : ∀ x : F.M, s • 
     intro x _
     exact h x)).shift d
 
-theorem chi_cons_of_zero (ts : List (Deg k × R)) (F : GMod B R k) (d : Deg k) (s : R)
-    (h : ∀ x : F.M, s • x = 0) (m : Deg k) :
-    chi ((d, s) :: ts) F m = chi ts F m - chi ts F (m - d) := by
-  simp only [chi]
-  rw [chi_congr ts _ _ (GIso.quotOfZero F s h) m, chi_congr ts _ _ (GIso.annOfZero F s d h) m,
-    chi_shift]
 
 end Formalism.MainNotions.V.Pf.V2.Calc

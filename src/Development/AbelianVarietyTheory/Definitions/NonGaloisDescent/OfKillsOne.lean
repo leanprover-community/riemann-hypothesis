@@ -186,32 +186,8 @@ theorem typed_iff {up : ZMod n → Fin R.e → Bool} {b : ZMod n → Fin R.e →
   ⟨fun H => ⟨⟨H.good.1, H.jumps, H.size, H.le_h, H.low⟩, H.good.2⟩,
     fun H => ⟨⟨H.1.onto, H.2⟩, H.1.jumps, H.1.size, H.1.le_h, H.1.low⟩⟩
 
-theorem cHyp_iff [NeZero n] {b : ZMod n → ℕ} {Sn η m h : ℕ} :
-    CHyp F b Sn η m h ↔ CSet F b Sn η m h ∧ (∀ i, ∃ a : ℕ, F.Kills i ((l : O⟦X⟧) ^ a)) ∧
-      ∀ i, F.Kills i (R.E ^ aC l (h + η)) :=
-  ⟨fun H => ⟨⟨H.isA, H.l_ge, Nat.pos_of_ne_zero (NeZero.ne n), H.even, (typed_iff.1 H.typed).1,
-      H.big, H.half⟩, H.typed.good.2, H.kills⟩,
-    fun H => ⟨H.1.isA, H.1.l_ge, H.1.even, typed_iff.2 ⟨H.1.typed, H.2.1⟩, H.1.big, H.1.half,
-      H.2.2⟩⟩
 
-theorem bHyp_iff [NeZero n] {up : ZMod n → Bool} {sz : ZMod n → ℕ} {b w Sn η m h : ℕ}
-    {A ρ : ZMod n → ℕ} :
-    BHyp F up sz b w Sn η m h A ρ ↔ BSet F up sz b w Sn η m h ∧ CutBounds F sz w Sn η h A ρ :=
-  ⟨fun H => ⟨⟨H.isA, H.l_ge, Nat.pos_of_ne_zero (NeZero.ne n), (typed_iff.1 H.typed).1, H.w_pos,
-      H.small, H.thick_or, H.some_thin, H.h_def⟩,
-      H.killX, H.killL, H.killCut, H.A_le, H.a_le, H.A_next, H.A_cut⟩,
-    fun ⟨H, h1, h2, h3, h4, h5, h6, h7⟩ => ⟨H.isA, H.l_ge, typed_iff.2 ⟨H.typed, fun i => ⟨_, h2 i⟩⟩,
-      H.w_pos, H.small, H.thick_or, H.some_thin, H.h_def, h1, h2, h3, h4, h5, h6, h7⟩⟩
 
-theorem TypedOnto.jumps_width {up : ZMod n → Fin R.e → Bool} {b : ZMod n → Fin R.e → ℕ}
-    {Sn η m h : ℕ} (H : TypedOnto F up b Sn η m h) (i : ZMod n) (τ : Fin R.e) :
-    S₁.JumpsIn i τ (Set.Icc (-((if up i τ then η else b i τ + Sn : ℕ) : ℤ))
-      ((if up i τ then b i τ + Sn else η : ℕ) : ℤ)) := by
-  intro a ha
-  have h1 := H.jumps i τ a ha
-  have h2 := H.size i τ
-  unfold win winU winD at h1
-  cases hu : up i τ <;> simp [hu] at h1 ⊢ <;> omega
 
 theorem BSet.lt_iff {up : ZMod n → Bool} {sz : ZMod n → ℕ} {b w Sn η m h : ℕ}
     (H : BSet F up sz b w Sn η m h) (i : ZMod n) : sz i < b ↔ sz i ≤ w := by

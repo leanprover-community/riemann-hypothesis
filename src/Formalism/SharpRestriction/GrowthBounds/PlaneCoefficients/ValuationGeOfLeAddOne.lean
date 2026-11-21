@@ -17,8 +17,6 @@ variable {σ R : Type*} [CommRing R]
 theorem X_mul_mono (v : σ) (mo : σ →₀ ℕ) (c : R) : X v * monomial mo c = monomial (mo + Finsupp.single v 1) c := by
   rw [X, monomial_mul, one_mul, add_comm]
 
-theorem eul_mono (w : σ) (L : σ →₀ ℕ) (c : R) : X w * pderiv w (monomial L c) = monomial L (c * (L w : R)) := by
-  rw [X_mul_pderiv_monomial, smul_monomial, nsmul_eq_mul, mul_comm]
 
 theorem pderiv_add_single (w : σ) (L : σ →₀ ℕ) (c : R) :
     pderiv w (monomial (L + Finsupp.single w 1) c) = monomial L (c * ((L w : R) + 1)) := by

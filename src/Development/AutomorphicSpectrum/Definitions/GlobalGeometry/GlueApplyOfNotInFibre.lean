@@ -40,11 +40,6 @@ def PModel.twoThree : PModel ℤ (fun j => algebraMap ℤ ℚ ((![2, 3] : Fin 2 
       (Ideal.subset_span ⟨1, rfl⟩) (Ideal.subset_span ⟨0, rfl⟩)
     simpa using h)
 
-theorem PModel.isEmpty_zero (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) :
-    IsEmpty (PModel o (0 : κ → Ω)) :=
-  ⟨fun M => by
-    obtain ⟨c, hc⟩ := M.tie.cover (CptModel.self M.ξ)
-    exact hc.1 rfl⟩
 
 variable {X X' X'' : Scheme.{0}} {Ω Ω' Ω'' : Type} [Field Ω] [Field Ω'] [Field Ω'']
   {E F : Type} [AddCommGroup E] [Module Ω E] [AddCommGroup F] [Module Ω' F]
@@ -154,9 +149,6 @@ theorem IsCtrOf.unique_spec {R : Type} [CommRing R] {φ : R →+* Ω} (hφ : Fun
     ((hp.unitAt_iff ⟨_, CptModel.genMap_toStalk φ p a⟩).symm.trans
       (hq.unitAt_iff ⟨_, CptModel.genMap_toStalk φ q a⟩))).trans (IsCtrOf.unitAt_spec hφ q a)
 
-theorem Lat.mem_pullLoc_of_ctr {L : Lat ξ E} {i : Ω →+* Ω'} (j : E →+ F) {p : Cpt ξ} {p' : Cpt ξ'}
-    (h : IsCtrOf i p p') {e : E} (he : e ∈ L p) : j e ∈ L.pullLoc ξ' i j p' :=
-  Submodule.subset_span ⟨p, h, e, he, rfl⟩
 
 theorem Lat.pullLoc_eq_span_of_ctr {L : Lat ξ E} {i : Ω →+* Ω'} (j : E →+ F) {p₀ : Cpt ξ} {p' : Cpt ξ'}
     (h : IsCtrOf i p₀ p') (hu : ∀ p : Cpt ξ, IsCtrOf i p p' → ∀ e ∈ L p, e ∈ L p₀) :
@@ -167,21 +159,8 @@ theorem Lat.pullLoc_eq_span_of_ctr {L : Lat ξ E} {i : Ω →+* Ω'} (j : E →+
   · rintro ⟨e, he, rfl⟩
     exact ⟨p₀, h, e, he, rfl⟩
 
-theorem Lat.pullLoc_congr_ctr {L L' : Lat ξ E} {i : Ω →+* Ω'} (j : E →+ F) {p' : Cpt ξ'}
-    (h : ∀ p : Cpt ξ, IsCtrOf i p p' → L p = L' p) : L.pullLoc ξ' i j p' = L'.pullLoc ξ' i j p' := by
-  refine congrArg _ (Set.ext fun e' => exists_congr fun p => and_congr_right fun hp => ?_)
-  rw [h p hp]
 
-theorem Lat.pullLoc_eq_bot_of_no_ctr (L : Lat ξ E) {i : Ω →+* Ω'} (j : E →+ F) {p' : Cpt ξ'}
-    (h : ∀ p : Cpt ξ, ¬ IsCtrOf i p p') : L.pullLoc ξ' i j p' = ⊥ :=
-  Submodule.span_eq_bot.2 fun _ ⟨p, hp, _⟩ => (h p hp).elim
 
-theorem Lat.pullLoc_id_spec {R : Type} [CommRing R] {φ : R →+* Ω} (hφ : Function.Injective φ)
-    (L : Lat (CptModel.pt φ) E) : L.pullLoc (CptModel.pt φ) (RingHom.id Ω) (AddMonoidHom.id E) = L := by
-  funext p
-  rw [Lat.pullLoc_eq_span_of_ctr _ (IsCtrOf.refl p) fun q hq e he => by
-    rwa [← IsCtrOf.unique_spec hφ hq (IsCtrOf.refl p)]]
-  simp
 
 theorem IsoAt.refl (p : Cpt ξ) : IsoAt ξ (𝟙 X) (RingHom.id Ω) p := by
   refine ⟨⟨p, rfl, fun q hq => Subtype.ext hq⟩, fun q hq => ?_, by simp [Dominates]⟩
@@ -293,22 +272,8 @@ theorem Lat.not_inFibre_of_coprime (p : Cpt ξ) {q q' : ℕ} (h : q.Coprime q') 
   · exact h1 (key _ (isUnit_of_mul_isUnit_right h'))
   · exact h2 (key _ (isUnit_of_mul_isUnit_right h'))
 
-theorem Lat.glue_apply_of_inFibre {S : Finset ℕ} (hS : ∀ q ∈ S, q.Prime) (L₀ : Lat ξ E) (Lq : ℕ → Lat ξ E)
-    {q : ℕ} (hq : q ∈ S) {p : Cpt ξ} (hp : InFibre ξ q p) : Lat.glue S L₀ Lq p = Lq q p := by
-  have h : ∃ q ∈ S, InFibre ξ q p := ⟨q, hq, hp⟩
-  unfold Lat.glue
-  rw [dif_pos h]
-  by_cases e : h.choose = q
-  · rw [e]
-  · exact (Lat.not_inFibre_of_coprime p ((Nat.coprime_primes (hS _ h.choose_spec.1) (hS _ hq)).2 e)
-      h.choose_spec.2 hp).elim
 
-theorem Lat.glue_apply_of_not_inFibre {S : Finset ℕ} (L₀ : Lat ξ E) (Lq : ℕ → Lat ξ E) {p : Cpt ξ}
-    (hp : ∀ q ∈ S, ¬ InFibre ξ q p) : Lat.glue S L₀ Lq p = L₀ p :=
-  dif_neg fun ⟨q, hq, h⟩ => hp q hq h
 
-theorem Lat.mem_predualIn_iff {L : Lat ξ (Module.Dual Ω E)} {V : Submodule Ω E} {p : Cpt ξ} {v : E} :
-    v ∈ L.predualIn V p ↔ v ∈ V ∧ ∀ w ∈ L p, w v ∈ regAt ξ p := Iff.rfl
 
 end API
 

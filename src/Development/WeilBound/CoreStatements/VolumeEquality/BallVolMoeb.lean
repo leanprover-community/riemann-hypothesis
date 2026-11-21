@@ -18,8 +18,6 @@ variable {Ψ : Type} [Fintype Ψ] {j j' n : ℕ}
 theorem sgI_sq : sgI j j' * sgI j j' = 1 := by
   simp [sgI, fromBlocks_multiply]
 
-theorem sgI_ct : (sgI j j')ᴴ = sgI j j' := by
-  simp [sgI, fromBlocks_conjTranspose]
 
 def sinv (u : Matrix (Sg j j') (Sg j j') ℂ) : Matrix (Sg j j') (Sg j j') ℂ := sgI j j' * uᴴ * sgI j j'
 

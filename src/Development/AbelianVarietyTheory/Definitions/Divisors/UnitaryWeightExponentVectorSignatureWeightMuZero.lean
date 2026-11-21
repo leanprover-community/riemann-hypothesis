@@ -256,14 +256,6 @@ theorem ChartFr.exists_frBor {k : F.J} {z : Sp S ⟶ Z} {hz : ⊤ ≤ z ⁻¹ᵁ
   exact ⟨_, frBor_of_frVec (F.inM hz rfl) h.over hP.1.symm
     (fun ix => match ix with | none => u0 | some p => (hu p.1 p.2).unit) b hb (fun _ _ => rfl) hv fun _ => hu0⟩
 
-theorem TopEigen.mem_step_top_iff (hT : F.TopEigen) {V K : Type} [CommRing V] [IsLocalRing V] [CommRing K]
-    [Algebra c.F K] (φ : V →+* K) (hφ : Function.Injective φ) (z : Sp V ⟶ Z) {x : Sp V ⟶ Y.X} (hx : z ≫ π = x)
-    {y : Sp K ⟶ Xo.XF c} (hy : y ≫ pullback.snd _ _ = spMap (algebraMap c.F K)) (e : spMap φ ≫ x = y ≫ Y.j)
-    (σ : E →+* ℂ) (v : TanM x Y.t.G) :
-    v ∈ F.step z hx σ (Dw.mult σ) ↔ tanPull φ e v ∈ eigLie c (y ≫ Y.j) σ := by
-  have hxK : (spMap φ ≫ z) ≫ π = y ≫ Y.j := by rw [Category.assoc, hx, e]
-  obtain ⟨k, hz⟩ := exists_chart_of_isLocalRing F.cover z
-  rw [F.mem_step_iff_of_injective φ hφ z hx rfl hxK e, F.step_eq k _ (le_preimage_comp _ hz), hT K y hy]
 
 theorem TopEigen.diag_unit (hT : F.TopEigen) {V K : Type} [CommRing V] [IsLocalRing V] [CommRing K]
     [Algebra c.F K] (φ : V →+* K) (hφ : Function.Injective φ) (z : Sp V ⟶ Z) {k : F.J} (hz : ⊤ ≤ z ⁻¹ᵁ F.U k)

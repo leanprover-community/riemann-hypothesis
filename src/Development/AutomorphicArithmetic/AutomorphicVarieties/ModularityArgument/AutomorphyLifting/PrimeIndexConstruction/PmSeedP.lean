@@ -15,12 +15,3 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Recip
 
 attribute [-instance] UpperTheory.V.Pr.IsCD.toIsDomain UpperTheory.V.Pr.IsCD.toIsDiscreteValuationRing
 
-private theorem gsp_map {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') {ν : R} {g : M4 R} (h : IsGSp ν g) :
-    IsGSp (f ν) (g.map f) := by
-  have a : adj (g.map f) = (adj g).map f := by
-    ext i j
-    simp only [adj_apply, Matrix.map_apply, map_zsmul]
-  unfold IsGSp at h ⊢
-  rw [a, ← Matrix.map_mul, h]
-  ext i j
-  simp [Matrix.one_apply, apply_ite f]

@@ -113,19 +113,8 @@ def zeroT (D : DegPre R) (a : D.P.A ⟶ D.P.A) (n j : ℤ) (β : D.X) : SecT D a
 theorem sval_zeroT (D : DegPre R) (a : D.P.A ⟶ D.P.A) (n j : ℤ) (β : D.X) {Z : Scheme.{0}} (x : Z ⟶ D.P.A.left) (z : Z) (J)
     (hJ : Good D.P.L z J) : sval (zeroT D a n j β) x z J = 0 := DVR.gs_zero x z _ (hJ.mem _ x)
 
-theorem zero_small_tfe (I : Ideal R) (D : DegPre R) (a : D.P.A ⟶ D.P.A) (h h' : D.X →+ D.X) (n j : ℤ) :
-    Small I (w := id) (zeroT D a n j) ∧ TFE h h' (zeroT D a n j) :=
-  ⟨fun e => Set.finite_empty.subset fun i hi => hi fun _ _ z J hJ => sval_zeroT D a n j i _ z J hJ,
-    fun _ _ _ _ _ _ z J hJ => by rw [sval_zeroT _ _ _ _ _ _ z J hJ, sval_zeroT _ _ _ _ _ _ z J hJ, zero_mul]⟩
 
-theorem Small.hasAdicSum_iff {I : Ideal R} {D : DegPre R} {a : D.P.A ⟶ D.P.A} {n j : ℤ} {Ix : Type} {w : Ix → D.X}
-    {s : ∀ i, SecT D a n j (w i)} (hs : Small I s) (F : ∀ δ, SecT D a n j δ) : HasAdicSum I s F ↔ IsSum I s F :=
-  and_iff_right hs
 
-theorem Small.expandsIn_iff (U : UnifPre I D A G) {e : ℕ} {b : thickObj R I e G ⟶ thickObj R I e G}
-    {a : D.toPre.P.A ⟶ D.toPre.P.A} {n j : ℤ} (τ : SecE U b n j) {Ix : Type} {w : Ix → D.toPre.X}
-    {s : ∀ i, SecT D.toPre a n j (w i)} (hs : Small I s) : ExpandsIn U τ s ↔ TExp U τ s :=
-  and_iff_right (hs e)
 
 theorem HasAdicSum.small {I : Ideal R} {D : DegPre R} {a : D.P.A ⟶ D.P.A} {n j : ℤ} {Ix : Type} {w : Ix → D.X}
     {s : ∀ i, SecT D a n j (w i)} {F : ∀ δ, SecT D a n j δ} (H : HasAdicSum I s F) : Small I (w := id) F := by
@@ -160,14 +149,7 @@ theorem Small.hasAdicSum_self {I : Ideal R} {D : DegPre R} {a : D.P.A ⟶ D.P.A}
     obtain ⟨hb', rfl⟩ : b ∈ S ∧ b = δ := by simpa using hb
     exact absurd hb' h
 
-theorem HasAdicSum.not_const {I : Ideal R} {D : DegPre R} {a : D.P.A ⟶ D.P.A} {n j : ℤ} {β : D.X} {s : SecT D a n j β} {e : ℕ}
-    (hs : ¬ Van I s e) (F : ∀ δ, SecT D a n j δ) : ¬ HasAdicSum I (w := fun _ : ℕ => β) (fun _ => s) F :=
-  fun H => Set.infinite_univ ((H.1 e).subset fun _ _ => hs)
 
-theorem ExpandsIn.not_const (U : UnifPre I D A G) {e : ℕ} {b : thickObj R I e G ⟶ thickObj R I e G}
-    {a : D.toPre.P.A ⟶ D.toPre.P.A} {n j : ℤ} (τ : SecE U b n j) {β : D.toPre.X} {s : SecT D.toPre a n j β}
-    (hs : ¬ Van I s e) : ¬ ExpandsIn U τ (w := fun _ : ℕ => β) (fun _ => s) :=
-  fun H => Set.infinite_univ (H.1.subset fun _ _ => hs)
 
 theorem Van.iff_chart (I : Ideal R) {D : DegPre R} {K : Type} [Fintype K] {φ : K → (D.P.A.left ⟶ D.P.A.left)} {ε : K → ℤ}
     (s : LB.Sec (LB.LinComb D.P.L φ ε)) (e : ℕ) :
@@ -349,14 +331,6 @@ theorem exists_of_unif {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuation
   obtain ⟨τ, hτ⟩ := exists_secE U.toUnifPre b ϑ
   exact ⟨τ, (ExpandsIn.iff_expandsAt U.toUnifPre e 1 b a ϑ g τ hτ s hs).2 (x e)⟩
 
-theorem exists_toric_rank_one : ∃ (A : PolAV (Sp (FractionRing (PowerSeries ℚ)))) (G : Over (Sp (PowerSeries ℚ))) (_ : GrpObj G)
-    (_ : IsCommMonObj G) (D : DegData (PowerSeries ℚ) (maximalIdeal (PowerSeries ℚ))) (U : Unif (maximalIdeal _) D A G),
-    Module.finrank ℤ D.toPre.X = 1 ∧ ∃ f : ∀ β, SecT D.toPre (𝟙 _) (1 : ℕ) 0 β, HasAdicSum (maximalIdeal _) (w := id) f f ∧
-      TFE (AddMonoidHom.id _) (AddMonoidHom.id _) f ∧ ¬ Van (maximalIdeal _) (f 0) 0 ∧
-      ∀ e : ℕ, ∃ τ : SecE U.toUnifPre (𝟙 (thickObj _ (maximalIdeal _) e G)) (1 : ℕ) 0, ExpandsIn U.toUnifPre τ (w := id) f := by
-  obtain ⟨A, G, _, _, D, U, -, -, hr, -⟩ := GlobalTheory.TateUnif.exists_unif_rank_one
-  obtain ⟨f, h₁, h₂, h₃, h₄⟩ := exists_of_unif U (𝟙 _) (AddMonoidHom.id _) (AddMonoidHom.id _)
-  exact ⟨A, G, _, _, D, U, hr, f, h₁, h₂, h₃, fun e => h₄ e _⟩
 
 end Witness
 

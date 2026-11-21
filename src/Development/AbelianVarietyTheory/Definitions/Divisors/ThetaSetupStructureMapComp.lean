@@ -160,13 +160,6 @@ theorem norm_val_le (c : CTrait X₁ p z₁) (a : X₁.M.Z.presheaf.stalk z₁) 
   have h : Valued.v (c.valInt a : PadicAlgCl p) ≤ 1 := (c.valInt a).2
   exact_mod_cast h
 
-theorem norm_val_lt_iff (c : CTrait X₁ p z₁) (a : X₁.M.Z.presheaf.stalk z₁) :
-    ‖c.val a‖ < 1 ↔ a ∈ maximalIdeal (X₁.M.Z.presheaf.stalk z₁) := by
-  have h1 : IsUnit (c.valInt a) ↔ IsUnit a :=
-    (RatModel.isUnit_valLoc_iff c.y c.cen _).trans (MulEquiv.isUnit_map (X₁.M.stalkEquiv z₁))
-  rw [val_eq_valInt, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, ← h1, ← mem_nonunits_iff,
-    ← IsLocalRing.mem_maximalIdeal, Valuation.mem_maximalIdeal_iff]
-  exact_mod_cast Iff.rfl
 
 theorem norm_uniformiser_pos (c : CTrait X₁ p z₁) : 0 < ‖c.ι (algebraMap c.T.V (FractionRing c.T.V) c.T.ϖ)‖ :=
   norm_pos_iff.2 ((map_ne_zero c.ι).2 fun h =>

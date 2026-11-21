@@ -35,7 +35,6 @@ variable {A}
 
 theorem mem_closedForms {k : ℕ} {α : A.Fld} : α ∈ A.closedForms k ↔ A.IsForm α ∧ A.IsDeg k α ∧ A.dExt α = 0 := Iff.rfl
 
-theorem mem_exactForms {k : ℕ} {α : A.Fld} : α ∈ A.exactForms k ↔ A.IsDeg k α ∧ ∃ η, A.IsForm η ∧ α = A.dExt η := Iff.rfl
 
 theorem mem_exactForms_succ {k : ℕ} {α : A.Fld} :
     α ∈ A.exactForms (k + 1) ↔ ∃ η, A.IsForm η ∧ A.IsDeg k η ∧ α = A.dExt η := by
@@ -52,9 +51,6 @@ theorem exactForms_zero : A.exactForms 0 = ⊥ := by
   rw [Submodule.mem_bot, ← h.degFld_eq, e]
   exact (degFld_dExt hη 0).2
 
-theorem exactForms_le_closedForms (k : ℕ) : A.exactForms k ≤ A.closedForms k := by
-  rintro _ ⟨h, η, hη, rfl⟩
-  exact ⟨hη.dExt, h, dExt_dExt hη⟩
 
 variable (A) in
 
@@ -143,11 +139,6 @@ def cup (k l : ℕ) : A.HSm k →ₗ[ℂ] A.HSm l →ₗ[ℂ] A.HSm (k + l) :=
 theorem cup_mk {k l : ℕ} (α : A.closedForms k) (β : A.closedForms l) :
     cup A k l (mk A k α) (mk A l β) = mk A (k + l) (mulClosed A k l α β) := rfl
 
-theorem cup_mem_fil {p q k l : ℕ} {c : A.HSm k} {c' : A.HSm l} (hc : c ∈ fil A p k) (hc' : c' ∈ fil A q l) :
-    cup A k l c c' ∈ fil A (p + q) (k + l) := by
-  obtain ⟨α, hα, rfl⟩ := hc
-  obtain ⟨β, hβ, rfl⟩ := hc'
-  exact ⟨mulClosed A k l α β, hα.mul hβ, rfl⟩
 
 variable (A) in
 
@@ -172,9 +163,6 @@ theorem cup_one {k : ℕ} (c : A.HSm k) : cup A k 0 c (one A) = c := by
     congr 1
     exact Subtype.ext (mul_one _)
 
-theorem mulClosed_comm {k l : ℕ} (α : A.closedForms k) (β : A.closedForms l) :
-    (mulClosed A k l α β : A.Fld) = (-1 : ℂ) ^ (k * l) • (mulClosed A l k β α : A.Fld) :=
-  α.2.2.1.mul_comm β.2.2.1
 
 variable {A'}
 
@@ -215,10 +203,6 @@ theorem pull_cup {f : M' → M} (hf : A.IsHolo A' f) {k l : ℕ} (c : A.HSm k) (
       rw [cup_mk, pull_mk, pull_mk, pull_mk, cup_mk]
       exact congrArg _ (Subtype.ext (map_mul (A.pullbackAlg A' f) (α : A.Fld) (β : A.Fld)))
 
-theorem pull_mem_fil {f : M' → M} (hf : A.IsHolo A' f) {p k : ℕ} {c : A.HSm k} (hc : c ∈ fil A p k) :
-    pull hf k c ∈ fil A' p k := by
-  obtain ⟨α, hα, rfl⟩ := hc
-  exact ⟨pullClosed hf k α, hα.pullback f, rfl⟩
 
 end HSm
 
@@ -278,17 +262,6 @@ theorem HSm.finrank_std₀ : Module.finrank ℂ ((std 0).HSm 0) = 1 :=
 
 def zFld : (std 1).Fld := fun x => algebraMap ℂ (Alt 1) (x.crd 0)
 
-theorem isForm_zFld : (std 1).IsForm zFld := by
-  have hs (x x' : (std 1).Pt) (h : x.pt = x'.pt) : x = x' := Subtype.ext (Prod.ext rfl h)
-  refine ⟨fun i S => ?_, fun x x' h => ?_⟩
-  · have e : (fun v => (bas 1).repr ((std 1).loc zFld i v) S) = fun v => v 0 * (bas 1).repr 1 S := funext fun v => by
-      rw [loc, dif_pos (show v ∈ ((std 1).e i).target from Set.mem_univ v)]
-      unfold zFld
-      rw [Algebra.algebraMap_eq_smul_one, map_smul, Finsupp.smul_apply, smul_eq_mul]
-      rfl
-    rw [e]
-    exact (((EuclideanSpace.proj (0 : Fin 1) : V 1 →L[ℂ] ℂ).restrictScalars ℝ).contDiff.mul contDiff_const).contDiffOn
-  · rw [← hs x x' h, zFld, AlgHom.commutes]
 
 theorem dExt_zFld (x : (std 1).Pt) : (std 1).dExt zFld x = dz 0 := by
   have hl : (std 1).loc zFld x.1.1 = fun v => (EuclideanSpace.proj (0 : Fin 1) : V 1 →L[ℂ] ℂ) v • bas 1 ∅ := funext fun v => by
@@ -325,10 +298,6 @@ def algAtlas (p : X ⟶ Sp k) (D : ℕ) [SmoothOfRelativeDimension D p] (σ : k 
   cover y := AlgChart.exists_mem_source y
   holo c c' := c.holo_trans c'
 
-theorem isHolo_algAtlas {p : X ⟶ Sp k} {D : ℕ} [SmoothOfRelativeDimension D p] {σ : k →+* ℂ} {p' : Y ⟶ Sp k'} {D' : ℕ}
-    [SmoothOfRelativeDimension D' p'] {σ' : k' →+* ℂ} {f : Y ⟶ X} {m : CxPts p' σ' → CxPts p σ}
-    (hm : ∀ z, (m z).1 = z.1 ≫ f) : (algAtlas p D σ).IsHolo (algAtlas p' D' σ') m :=
-  ⟨CxPts.continuous_of_comp hm, fun j i => AlgChart.holo_map hm j i⟩
 
 end GlobalTheory.CxForm
 

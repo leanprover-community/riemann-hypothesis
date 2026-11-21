@@ -78,24 +78,7 @@ def maxUnramifiedFrobeniusHom : K₀ →ₐ[ℚ_[p]] K₀ where
 def maxUnramifiedFrobenius : K₀ ≃ₐ[ℚ_[p]] K₀ :=
   AlgEquiv.ofBijective (maxUnramifiedFrobeniusHom K) (maxUnramifiedFrobeniusHom K).bijective
 
-theorem phiPlus_algebraMap_maxUnramified (k : K₀) :
-    phiPlus ℂ_[p] p (algebraMap K₀ (BCrisPlus ℂ_[p] p) k) =
-      algebraMap K₀ (BCrisPlus ℂ_[p] p) (maxUnramifiedFrobenius K k) :=
-  phiPlus_algebraMap_maxUnramifiedFrobeniusFun K k
 
-theorem phiB_algebraMap_maxUnramified {ε : PreTilt (normInteger ℂ_[p]) p}
-    (hε : PreTilt.untilt ε = 1) (k : K₀) :
-    phiB hε (algebraMap K₀ (BCris hε) k) = algebraMap K₀ (BCris hε) (maxUnramifiedFrobenius K k) :=
-  calc phiB hε (algebraMap K₀ (BCris hε) k)
-      = phiB hε (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (algebraMap K₀ (BCrisPlus ℂ_[p] p) k)) :=
-        congrArg _ (IsScalarTower.algebraMap_apply K₀ (BCrisPlus ℂ_[p] p) (BCris hε) k)
-    _ = algebraMap (BCrisPlus ℂ_[p] p) (BCris hε)
-          (phiPlus ℂ_[p] p (algebraMap K₀ (BCrisPlus ℂ_[p] p) k)) :=
-        phiB_algebraMap hε _
-    _ = algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (algebraMap K₀ (BCrisPlus ℂ_[p] p) (maxUnramifiedFrobenius K k)) :=
-        congrArg _ (phiPlus_algebraMap_maxUnramified K k)
-    _ = algebraMap K₀ (BCris hε) (maxUnramifiedFrobenius K k) :=
-        (IsScalarTower.algebraMap_apply K₀ (BCrisPlus ℂ_[p] p) (BCris hε) (maxUnramifiedFrobenius K k)).symm
 
 end Frob
 
@@ -171,24 +154,9 @@ variable (K) in
 def maxUnramifiedValuation : AddValuation K₀ (WithTop ℤ) :=
   AddValuation.of maxUnramifiedValFun maxUnramifiedValFun_zero maxUnramifiedValFun_one maxUnramifiedValFun_add_le maxUnramifiedValFun_mul
 
-theorem maxUnramifiedValuation_apply (x : K₀) : maxUnramifiedValuation K x = maxUnramifiedValFun x := rfl
 
-theorem maxUnramifiedValuation_eq_coe_iff {x : K₀} (hx : x ≠ 0) {D : ℤ} :
-    maxUnramifiedValuation K x = D ↔ ‖(x : PadicAlgCl p)‖ = ‖(p : PadicAlgCl p)‖ ^ D := by
-  refine ⟨fun h => ?_, maxUnramifiedValFun_eq hx⟩
-  obtain ⟨E, hE⟩ := exists_norm_eq_zpow_maxUnramified hx
-  rw [maxUnramifiedValuation_apply, maxUnramifiedValFun_eq hx hE, WithTop.coe_eq_coe] at h
-  rw [hE, h]
 
-theorem maxUnramifiedValuation_ne_top {x : K₀} (hx : x ≠ 0) : maxUnramifiedValuation K x ≠ ⊤ := by
-  obtain ⟨E, hE⟩ := exists_norm_eq_zpow_maxUnramified hx
-  rw [maxUnramifiedValuation_apply, maxUnramifiedValFun_eq hx hE]
-  exact WithTop.coe_ne_top
 
-theorem maxUnramifiedValuation_natCast_p : maxUnramifiedValuation K (p : K₀) = 1 := by
-  have hp0 : (p : K₀) ≠ 0 := Nat.cast_ne_zero.2 hp.out.ne_zero
-  rw [show (1 : WithTop ℤ) = ((1 : ℤ) : WithTop ℤ) from rfl, maxUnramifiedValuation_eq_coe_iff hp0, zpow_one]
-  simp
 
 end Valuation
 
@@ -196,22 +164,7 @@ section FrobValuation
 
 variable [FiniteDimensional ℚ_[p] K]
 
-theorem norm_maxUnramifiedFrobenius (x : K₀) : ‖((maxUnramifiedFrobenius K x : K₀) : PadicAlgCl p)‖ = ‖(x : PadicAlgCl p)‖ := by
-  have hm : minpoly ℚ_[p] ((maxUnramifiedFrobenius K x : K₀) : PadicAlgCl p) = minpoly ℚ_[p] (x : PadicAlgCl p) := by
-    rw [← IntermediateField.minpoly_eq, ← IntermediateField.minpoly_eq, minpoly.algEquiv_eq]
-  have h1 := norm_pow_natDegree_minpoly ((maxUnramifiedFrobenius K x : K₀) : PadicAlgCl p)
-  have h2 := norm_pow_natDegree_minpoly (x : PadicAlgCl p)
-  rw [hm] at h1
-  have hd : (minpoly ℚ_[p] (x : PadicAlgCl p)).natDegree ≠ 0 :=
-    (minpoly.natDegree_pos (Algebra.IsIntegral.isIntegral (x : PadicAlgCl p))).ne'
-  exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) hd).1 (h1.trans h2.symm)
 
-theorem maxUnramifiedValuation_frobenius (x : K₀) : maxUnramifiedValuation K (maxUnramifiedFrobenius K x) = maxUnramifiedValuation K x := by
-  by_cases hx : x = 0
-  · rw [hx, map_zero]
-  obtain ⟨D, hD⟩ := exists_norm_eq_zpow_maxUnramified hx
-  have hσx : maxUnramifiedFrobenius K x ≠ 0 := (map_ne_zero_iff _ (maxUnramifiedFrobenius K).injective).2 hx
-  rw [(maxUnramifiedValuation_eq_coe_iff hx).2 hD, maxUnramifiedValuation_eq_coe_iff hσx, norm_maxUnramifiedFrobenius, hD]
 
 end FrobValuation
 

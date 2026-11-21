@@ -42,31 +42,6 @@ theorem submatrix_triple_mul_of_triangular {n l : ℕ} (hl : l ≤ n) (A Z B : M
   · intro m hm
     rw [hB _ _ (Fin.lt_def.2 (by simp only [Fin.val_castLE]; omega)), mul_zero]
 
-theorem lead_ZEquiv {E : Type} [Field E] [NumberField E] {n : ℕ} {Z Z₂ : Matrix (Fin n) (Fin n) E}
-    (h : ZEquiv Z Z₂) (l : ℕ) : leadMinorE Z₂ l = leadMinorE Z l := by
-  obtain ⟨A, B, hA0, hA1, hB0, hB1, rfl⟩ := h
-  unfold leadMinorE
-  split_ifs with hl
-  · rw [submatrix_triple_mul_of_triangular hl _ _ _ (fun a b hab => by simp [hA0 a b hab]) (fun a b hab => by simp [hB0 a b hab]),
-      Matrix.det_mul, Matrix.det_mul]
-    have h1 : ((A.map (fun x : 𝓞 E => (x : E))).submatrix (Fin.castLE hl) (Fin.castLE hl)).det = 1 := by
-      rw [Matrix.det_of_isLowerTriangular]
-      · simp [hA1]
-      · intro i j hij
-        have hij' : i < j := hij
-        have h0 : A (Fin.castLE hl i) (Fin.castLE hl j) = 0 :=
-          hA0 _ _ (Fin.lt_def.2 (by simp only [Fin.val_castLE]; exact Fin.lt_def.1 hij'))
-        simp [h0]
-    have h2 : ((B.map (fun x : 𝓞 E => (x : E))).submatrix (Fin.castLE hl) (Fin.castLE hl)).det = 1 := by
-      rw [Matrix.det_of_isUpperTriangular]
-      · simp [hB1]
-      · intro i j hij
-        have hij' : j < i := hij
-        have h0 : B (Fin.castLE hl i) (Fin.castLE hl j) = 0 :=
-          hB0 _ _ (Fin.lt_def.2 (by simp only [Fin.val_castLE]; exact Fin.lt_def.1 hij'))
-        simp [h0]
-    rw [h1, h2, one_mul, mul_one]
-  · rfl
 
 end Minors
 
@@ -74,19 +49,8 @@ section Class
 
 variable (D : D7) (u u' : D.what₂.Word)
 
-theorem absDl_ZEquiv {Z Z₂ : GramM D} (h : ZEquiv Z Z₂) (l : ℕ) (τ : D.what₂.Tau) :
-    Cnt.absDl D Z₂ l τ = Cnt.absDl D Z l τ := by
-  unfold Cnt.absDl
-  rw [lead_ZEquiv h]
 
-theorem Gz_ZEquiv {Z Z₂ : GramM D} (h : ZEquiv Z Z₂) (T T' : ℝ) (τ : D.what₂.Tau) :
-    Cnt.Gz D T T' Z₂ τ = Cnt.Gz D T T' Z τ := by
-  unfold Cnt.Gz
-  rw [absDl_ZEquiv D h, absDl_ZEquiv D h]
 
-theorem gram_product_equiv_invariant {Z Z₂ : GramM D} (h : ZEquiv Z Z₂) : localGramProduct D u u' Z₂ = localGramProduct D u u' Z := by
-  unfold localGramProduct
-  simp only [Gz_ZEquiv D h]
 
 end Class
 

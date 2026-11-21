@@ -146,11 +146,6 @@ theorem potentiallySemistable_cyclotomicSum (K : FinExt l) (a : n → ℤ) : Adm
   rw [ks_alg, actSt_C, actQ_tU, ← map_mul, ← mul_assoc, ← map_mul, ← Units.val_mul, ← zpow_add, add_neg_cancel]
   simp
 
-theorem splits_cycSum (K : FinExt l) (a : Fin 2 → ℤ) (r : ℕ) : Splits r (cycSum P K a) := by
-  refine ⟨{0}, 1, by simp, by decide, fun i j => ?_, fun g i j hi hj => ?_⟩
-  · rw [Units.val_one, Matrix.one_apply]; split_ifs <;> simp
-  · have : i ≠ j := by rintro rfl; exact hi hj
-    rw [inv_one, one_mul, mul_one, cycSum_val, Matrix.diagonal_apply_ne _ this]
 
 theorem not_splits_one {K : FinExt l} (r : ℕ) (ρ : ↥(GK K) →* GL (Fin 1) ↥(MaximalUnramifiedExtension l)) : ¬ Splits r ρ := by
   rintro ⟨s, p, ⟨x, hx⟩, hs, -⟩
@@ -279,32 +274,6 @@ theorem exists_ext {r : ℕ} (hr : 0 < r) : ∃ K : FinExt l, ∀ c : ↥(Maxima
   refine ⟨⟨F.map (MaximalUnramifiedExtension l).val, (F.equivMap (MaximalUnramifiedExtension l).val).toLinearEquiv.finiteDimensional⟩, fun c hc => ?_⟩
   exact ⟨c, (hF c).2 ((hσ r c).trans hc), rfl⟩
 
-theorem kummer_period (g : GQ l) :
-    !![ks P (algebraMap ℚ_[l] ↥(MaximalUnramifiedExtension l) (P.χQ g : ℚ_[l])), ks P (algebraMap ℚ_[l] ↥(MaximalUnramifiedExtension l) (kummer P g : ℚ_[l])); 0, 1] *
-      (!![Polynomial.C ((tU P ^ (-1 : ℤ) : P.R.Bˣ) : P.R.B),
-        -(Polynomial.C ((tU P ^ (-1 : ℤ) : P.R.Bˣ) : P.R.B) * Polynomial.X); 0, 1] : Matrix (Fin 2) (Fin 2) (Bst P)).map
-        (actSt P g) =
-      !![Polynomial.C ((tU P ^ (-1 : ℤ) : P.R.Bˣ) : P.R.B),
-        -(Polynomial.C ((tU P ^ (-1 : ℤ) : P.R.Bˣ) : P.R.B) * Polynomial.X); 0, 1] := by
-  have h1 : algebraMap ℚ_[l] P.R.B (P.χQ g : ℚ_[l]) * P.actQ g ((tU P ^ (-1 : ℤ) : P.R.Bˣ) : P.R.B) =
-      ((tU P ^ (-1 : ℤ) : P.R.Bˣ) : P.R.B) := by
-    rw [actQ_tU, ← mul_assoc, ← map_mul, ← Units.val_mul]; simp
-  have h2 : ((tU P ^ (-1 : ℤ) : P.R.Bˣ) : P.R.B) * P.tB = 1 := by
-    rw [zpow_neg_one]; exact (tU P).inv_mul
-  set s := ((tU P ^ (-1 : ℤ) : P.R.Bˣ) : P.R.B)
-  have h1' := congrArg (Polynomial.C : P.R.B →+* Bst P) h1
-  have h2' := congrArg (Polynomial.C : P.R.B →+* Bst P) h2
-  rw [map_mul] at h1' h2'
-  rw [map_one] at h2'
-  ext1 i j
-  fin_cases i <;> fin_cases j
-  · simpa [Matrix.mul_apply, ks_alg] using h1'
-  · simp only [Matrix.mul_apply, ks_alg, Fin.sum_univ_two, Matrix.map_apply]
-    simp [Algebra.smul_def]
-    linear_combination (-(Polynomial.X + Polynomial.C (algebraMap ℚ_[l] P.R.B (kummer P g)) * Polynomial.C P.tB)) * h1'
-      - Polynomial.C (algebraMap ℚ_[l] P.R.B (kummer P g)) * h2'
-  · simp [Matrix.mul_apply]
-  · simp [Matrix.mul_apply]
 
 theorem plus_ainf {AI : LocAinf l P} (T : LocTied l P AI) (a : Ainf l) : Plus T (AI.ιA a) :=
   ⟨0, algebraMap (Formalism.Per.Ainf l) (Formalism.Per.Acris l) a, by rw [pow_zero, one_mul, T.ιA]; rfl⟩

@@ -50,7 +50,6 @@ def eqn (Δ : Y.Dv) (y : Y.pts σ) : Y.Fnˣ := (Δ.exists_isEqn (base y)).choose
 theorem mem_eqnSet (Δ : Y.Dv) (y : Y.pts σ) : y ∈ eqnSet σ Δ (eqn Δ y) :=
   (Δ.exists_isEqn (base y)).choose_spec
 
-theorem mem_eqnSet_one : y ∈ eqnSet σ Δ 1 ↔ base y ∉ Y.supp Δ := not_not.symm
 
 def fval (g : Y.Fnˣ) (f : Y.FnC σ) (y : Y.pts σ) : ℂ := val y (f * Y.cx σ g)
 
@@ -357,12 +356,7 @@ theorem pn_eq (hg : y ∈ eqnSet σ Δ g) : pn Y σ Δ m f y = ‖fval g f y‖ 
 theorem pn_eq_exp (hy : y ∈ m.posSet) (hg : y ∈ eqnSet σ Δ g) :
     pn Y σ Δ m f y = ‖fval g f y‖ ^ 2 * Real.exp (-m.wt g y) := by rw [pn_eq hg, h_eq_exp hy hg]
 
-theorem pn_of_notMem_supp (hy : y ∈ m.posSet) (h : base y ∉ Y.supp Δ) :
-    pn Y σ Δ m f y = ‖val y f‖ ^ 2 * Real.exp (-m.wt 1 y) := by
-  rw [pn_eq_exp hy (mem_eqnSet_one.2 h), fval_one]
 
-theorem pnK_of_notMem_supp (hy : y ∈ m.posSet) (h : base y ∉ Y.supp Δ) :
-    pnK Y σ Δ m f y = ‖val y f‖ ^ 2 * Real.exp (-m.wt 1 y) := pn_of_notMem_supp hy h
 
 theorem pn_nonneg : 0 ≤ pn Y σ Δ m f y := mul_nonneg (sq_nonneg _) (m.nonneg _ _)
 
@@ -378,9 +372,6 @@ theorem pn_mul {a : Y.FnC σ} (ha : RegC y a) (hf : SecReg Δ f y) :
   rw [pn, pn, fval, mul_assoc, val_mul ha ((secReg_iff (mem_eqnSet Δ y)).1 hf), norm_mul, fval]
   ring
 
-theorem pn_smul (c : ℂ) (hf : SecReg Δ f y) :
-    pn Y σ Δ m (c • f) y = ‖c‖ ^ 2 * pn Y σ Δ m f y := by
-  rw [Algebra.smul_def, pn_mul (hasVal_algebraMap c).regC hf, (hasVal_algebraMap c).val_eq]
 
 theorem pn_mAdd (hf : SecReg Δ f y) (hf' : SecReg Δ' f' y) :
     pn Y σ _ (mAdd Y σ Δ Δ' m m') (f * f') y = pn Y σ Δ m f y * pn Y σ Δ' m' f' y := by
@@ -398,14 +389,6 @@ theorem pn_fsMet {κ : Type} [Fintype κ] {e : κ → Y.FnC σ} (he : ∀ k, Sec
     pn Y σ Δ (fsMet Y σ Δ e) f y = ‖fval g f y‖ ^ 2 / ∑ k, ‖fval g (e k) y‖ ^ 2 := by
   rw [pn_eq hg, fsMet_h he, div_eq_mul_inv]
 
-theorem pn_fsMet_le {κ : Type} [Fintype κ] {e : κ → Y.FnC σ} (he : ∀ k, SecReg Δ (e k) y)
-    (c : κ → ℂ) : pn Y σ Δ (fsMet Y σ Δ e) (∑ k, c k • e k) y ≤ ∑ k, ‖c k‖ ^ 2 := by
-  have h := mem_eqnSet Δ y
-  rw [pn_fsMet he h, fval, (hasVal_sum_smul h he c).val_eq]
-  refine div_le_of_le_mul₀ (by positivity) (by positivity)
-    (le_trans ?_ (Finset.sum_mul_sq_le_sq_mul_sq _ _ _))
-  simp only [← norm_mul]
-  exact pow_le_pow_left₀ (norm_nonneg _) (norm_sum_le _ _) 2
 
 theorem sum_pn_fsMet {κ : Type} [Fintype κ] {e : κ → Y.FnC σ} (hy : y ∈ (fsMet Y σ Δ e).posSet) :
     ∑ k, pn Y σ Δ (fsMet Y σ Δ e) (e k) y = 1 := by
@@ -419,13 +402,6 @@ theorem pn_ofWeight {L : LB Y.X} {r : L.ι → Y.Fnˣ} (hp : Presents Δ L r) (�
       ‖fval (r i) f y‖ ^ 2 * Real.exp (-φ.φ i y) := by
   rw [pn_eq (ptsIn_subset_eqnSet hp i hi), ofWeight_h hp φ hi]
 
-theorem pn_ofWeight_rat {L : LB Y.X} {r : L.ι → Y.Fnˣ} (hp : Presents Δ L r) (φ : Weight Y.str σ L)
-    (s : L.Sec) (y : Y.pts σ) : pn Y σ Δ (ofWeight Y σ Δ L r hp φ) (Y.cx σ (hp.rat s)) y =
-      φ.nsq (secVal Y.str σ s) y := by
-  have hi := mem_pick φ.isLB y
-  rw [pn_ofWeight hp φ hi, fval, ← map_mul, hp.rat_mul s _ (gen_mem (mem_ptsIn_iff.1 hi)),
-    val_cx_fnOf (mem_ptsIn_iff.1 hi)]
-  rfl
 
 variable (Y σ Δ) in
 
@@ -511,11 +487,6 @@ theorem Met.SmoothOn.continuousOn_pn {S : Set (Y.pts σ)} (hS : IsOpen S) (h : m
 def omegaCoeff (c : AlgChart Y.str σ Y.dim) : Y.Fnˣ :=
   frameRat (CanonLB.all Y.str Y.dim).bundle (baseChart _ _) (gen_mem_baseOpen _ _) ⟨c.U, _, c.isFrame⟩
 
-theorem omega0_eq (c : AlgChart Y.str σ Y.dim) (h : genericPoint Y.X ∈ c.U) :
-    Y.omega0 = (omegaCoeff c : Y.Fn) • formOf c.U h (dOn Y.str c.x) :=
-  (formOf_eq_ratio_smul h (gen_mem_baseOpen _ _) c.isFrame (isFrame_baseFrame _ _)).trans
-    (congrArg (· • _) (val_frameRat (L := (CanonLB.all Y.str Y.dim).bundle) _ (gen_mem_baseOpen _ _)
-      ⟨c.U, _, c.isFrame⟩ h).symm)
 
 theorem mem_eqnSet_omegaCoeff (c : AlgChart Y.str σ Y.dim) (hy : y ∈ c.e.source) :
     y ∈ eqnSet σ Y.KY (omegaCoeff c) :=
@@ -651,15 +622,6 @@ variable (Y σ Δ) in
 
 def agreeOn (G G' : Y.FnC σ) (S : Set (Y.pts σ)) : Prop := ∀ y ∈ S, SecZero (Y.KY + Δ) (G - G') y
 
-theorem agreeOn_iff {G G' : Y.FnC σ} {S : Set (Y.pts σ)} (h : regOn Y σ Δ G S)
-    (h' : regOn Y σ Δ G' S) : agreeOn Y σ Δ G G' S ↔
-      ∀ y ∈ S, fval (eqn (Y.KY + Δ) y) G y = fval (eqn (Y.KY + Δ) y) G' y := by
-  refine forall₂_congr fun y hy => ?_
-  have hg := mem_eqnSet (Y.KY + Δ) y
-  have e := ((secReg_iff hg).1 (h y hy)).hasVal.sub ((secReg_iff hg).1 (h' y hy)).hasVal
-  rw [← sub_mul] at e
-  rw [secZero_iff hg, and_iff_right ⟨_, hg, e.regC⟩, fval, e.val_eq, sub_eq_zero]
-  rfl
 
 variable (Y σ Δ) in
 
@@ -683,9 +645,6 @@ theorem resNorm_eq (hc : y ∈ c.e.source) (hg : y ∈ eqnSet σ Δ g) (hg' : y 
   simp only [norm_mul, norm_pow]
   congr 1 <;> ring
 
-theorem resNorm_nonneg (G : Y.FnC σ) : 0 ≤ resNorm Y σ Δ m Δ' m' s G y :=
-  div_nonneg (mul_nonneg (sq_nonneg _) (m.nonneg _ _))
-    (mul_nonneg (sq_nonneg _) (pow_nonneg (m'.nonneg _ _) _))
 
 end GlobalTheory.ProjVar.Var
 
@@ -740,14 +699,5 @@ example (Δ : (proj F 0).Dv) (m : (proj F 0).Met σ Δ) (hm : m.posSet = univ)
     (continuous_of_discreteTopology.locallyIntegrable).locallyIntegrableOn _,
     fun _ _ _ _ _ _ => by simp [leviV]⟩
 
-theorem jac_coord {Y : Var F} (c : AlgChart Y.str σ Y.dim) {y : Y.pts σ} (hy : y ∈ c.e.source)
-    (h : genericPoint Y.X ∈ c.U) : Var.jac c 1 (fun i => Y.cx σ (fnOf c.U h (c.x i))) y = 1 := by
-  rw [Var.jac, ← c.transDet_self hy, transDet]
-  refine congrArg _ (EventuallyEq.fderiv_eq (eventually_of_mem
-    (c.e.open_target.mem_nhds (c.e.map_source hy)) fun v hv => ?_))
-  ext i
-  have hv' := c.e.map_target hv
-  exact ((fval_one _ _).trans (val_cx_fnOf (mem_ptsIn_iff.1 (c.source_subset hv')) h _)).trans
-    (c.apply_eq _ hv' i).symm
 
 end GlobalTheory.ProjVar

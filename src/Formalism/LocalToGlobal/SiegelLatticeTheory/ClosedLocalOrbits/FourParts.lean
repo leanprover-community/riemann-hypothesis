@@ -203,21 +203,6 @@ def TermInSRel (u u' : D.what₂.Word) : Prop :=
 
 variable {D}
 
-theorem fourParts_of_termFun {u u' : D.what₂.Word} (hF : TermFun D u u') : FourParts D u u' := by
-  intro F0 what₂ hrows
-  have hG : ∀ t : Term D u u' F0 what₂, termInS t → t.G = 0 := fun t h =>
-    G_eq_zero_of_termInS (hF F0 t.lam (hrows.1 t.lam t.mem)).1 h
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · ext t
-    simp only [idSet, degSet, ngSet, genSet, relSet, Set.mem_union, Set.mem_ofPred_eq]
-    by_cases h1 : termInS t <;> by_cases h2 : t.G = 0 <;> by_cases h3 : t.generic <;> tauto
-  · exact Set.disjoint_left.2 fun t h1 h2 => h2.2.2 h1.2
-  · exact Set.disjoint_left.2 fun t h1 h2 => h2.2.1 (hG t h1.2)
-  · exact Set.disjoint_left.2 fun t h1 h2 => h2.2.1 (hG t h1.2)
-  · exact Set.disjoint_left.2 fun t h1 h2 => h2.2.1 h1.2.1
-  · exact Set.disjoint_left.2 fun t h1 h2 => h2.2.1 h1.2.1
-  · exact Set.disjoint_left.2 fun t h1 h2 => h1.2.2 h2.2.2
-  · exact fun t h => hG t h.2
 
 end D7
 

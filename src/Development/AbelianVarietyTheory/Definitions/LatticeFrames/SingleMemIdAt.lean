@@ -191,20 +191,6 @@ theorem isLat_std {v : Pl D} (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) (S :
     Submodule.mem_one]
   exact ⟨fun h => let ⟨b, hb⟩ := h trivial; hb ▸ b.2, fun h _ => ⟨⟨_, h⟩, rfl⟩⟩
 
-theorem integrand_dual {V V₀ W : HSp D} {ρ : ℕ} (d : HypDec V V₀ ρ) (ψ : AddChar (AF D.host.F) ℂ) (f : WO V W → ℂ)
-    (x a a' : Mx D W.rank ρ) (w₀ : WO V₀ W) :
-    heisO ψ V W (d.extY W a') (heisO ψ V W (d.extX W x) (heisO ψ V W (d.ext0 W w₀) (heisO ψ V W (d.extY W a) f))) 0 =
-      ψ (symplOH V W (d.extX W x) (d.extY W a) + symplOH V W (d.extX W x) (d.extY W a)) *
-        heisO ψ V W (d.extY W (a' + a)) (heisO ψ V W (d.extX W x) (heisO ψ V W (d.ext0 W w₀) f)) 0 := by
-  rw [d.integrandS_eq, d.integrandS_eq, heisO, map_add (d.extY W), ← mul_assoc, ← mul_assoc, ← AddChar.map_add_eq_mul,
-    ← AddChar.map_add_eq_mul]
-  have h0 : symplOH V W (d.ext0 W w₀) (d.extY W a) = 0 := by
-    rw [symplOH_skew, d.wittDecomp_sympl_extDual_extAnisotropic, neg_zero]
-  simp only [GlobalTheory.OrientedHeis.symplOH_add_left, d.symplOH_extY_extY, h0, zero_add, add_zero]
-  rw [symplOH_skew V W (d.extX W x) (d.extY W a)]
-  congr 2
-  · ring
-  · abel
 
 end GlobalTheory.FinPl.Model
 

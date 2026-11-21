@@ -125,16 +125,6 @@ end data
 
 noncomputable def nqΛ (P : M.Par) (b : ℝ) : ℝ := Real.sqrt (b ^ (8 * P.r + 20) / (P.T * P.T'))
 
-theorem nq_PStar (P : M.Par) (hOK : P.OK) (l : ℕ) (hl1 : 1 ≤ l) (hlk : l ≤ P.k) (hk : 2 ≤ P.k)
-    (lam : Fin (2 * P.r + P.k + 1) → ℝ) (c g b : ℝ) (hL : PairData P l (lamN lam) c g b) (Y : Finset ℝ)
-    (hY : ∀ y ∈ Y, I.OnCut P.u P.u' l y) : NQ P (PStar lam c) Y (nqΛ P b) := by
-  intro y hy
-  have h := (nq_onCut_pair P hOK l hl1 hlk hk (lamN lam) c g b hL y (hY y hy)).2
-  rw [Pst_lamN, Pst_lamN] at h
-  have hb : 0 ≤ b := by linarith [hL.b_ge_three]
-  have hTT : 0 < P.T * P.T' := mul_pos hOK.T_pos hOK.T'_pos
-  rw [nqΛ, Real.sq_sqrt (by positivity)]
-  exact h
 
 theorem nqΛ_le (P : M.Par) (b CT : ℝ) (hb : 1 ≤ b) (hCT : 0 ≤ CT)
     (hTT : b ^ (-(CT * ((2 * P.r + 2 : ℕ) : ℝ))) ≤ P.T * P.T') :
@@ -165,11 +155,6 @@ theorem nqΛ_le (P : M.Par) (b CT : ℝ) (hb : 1 ≤ b) (hCT : 0 ≤ CT)
       _ = (b ^ ((5 + CT) * m)) ^ 2 := by rw [Real.rpow_add hb0, sq]
   exact (Real.sqrt_le_left (Real.rpow_nonneg hb0.le _)).mpr hX
 
-theorem nq_text_moved (P : M.Par) (hOK : P.OK) (l : ℕ) (hl1 : 1 ≤ l) (hlk : l ≤ P.k) (hk : 2 ≤ P.k)
-    (lam : Fin (2 * P.r + P.k + 1) → ℝ) (c g b : ℝ) (h : HypLam P.k P.r lam c g b)
-    (hu : HypType P.k P.r lam P.u b) (hmv : ∀ i, i ≠ l → P.u' i = P.u i) (hl : |P.u' l| ≤ b) (Y : Finset ℝ)
-    (hY : ∀ y ∈ Y, I.OnCut P.u P.u' l y) : NQ P (PStar lam c) Y (nqΛ P b) :=
-  nq_PStar P hOK l hl1 hlk hk lam c g b (movedData_of_hyp h hu hl1 hlk hmv hl).toPair Y hY
 
 noncomputable def P₂ : M.Par where
   k := 2

@@ -77,63 +77,6 @@ def OmegaCompatible (D : D7) (δ : ℂ) : Prop :=
       ∀ s : D.what₂.LL →+* ℂ, D.gx.Om τ s =
         (Real.pi * ‖conjOf e s d‖ ^ 2 / TaylorLogMetric.area (TaylorLogMetric.lamConj M (conjOf e s) (TaylorLogMetric.lamOf D D.host.ccK δ)))⁻¹
 
-theorem omLink_of_tied {D : D7} {δ : ℂ} (h : OmegaCompatible D δ) : OmLink D (TaylorLogMetric.tor0 D D.host.ccK δ) := by
-  obtain ⟨M, hM, e, -, hData, hτ⟩ := h
-  refine ⟨M, hM, hData, fun τ => ?_⟩
-  obtain ⟨d, hd, hOm⟩ := hτ τ
-  set Λ := TaylorLogMetric.lamOf D D.host.ccK δ with hΛ
-  have hX : ∀ ρ : M →ₐ[ℚ] ℂ, 0 < Real.pi * ‖ρ d‖ ^ 2 / TaylorLogMetric.area (TaylorLogMetric.lamConj M ρ Λ) := by
-    intro ρ
-    have h1 := D.gx.Om_pos τ ((conjEquiv e).symm ρ)
-    rw [hOm] at h1
-    have h2 : conjOf e ((conjEquiv e).symm ρ) = ρ := (conjEquiv e).apply_symm_apply ρ
-    rw [h2] at h1
-    exact inv_pos.mp h1
-  have hcardM : Fintype.card (M →ₐ[ℚ] ℂ) = Module.finrank ℚ M := AlgHom.card ℚ M ℂ
-  have hcardLL : Fintype.card (D.what₂.LL →+* ℂ) = Fintype.card (M →ₐ[ℚ] ℂ) :=
-    Fintype.card_congr (conjEquiv e)
-  have hpos : 0 < Fintype.card (M →ₐ[ℚ] ℂ) := by rw [hcardM]; exact Module.finrank_pos
-  obtain ⟨ρ0⟩ : Nonempty (M →ₐ[ℚ] ℂ) := Fintype.card_pos_iff.mp hpos
-  have hd0 : d ≠ 0 := by
-    intro h0
-    have h1 := hX ρ0
-    rw [h0, map_zero, norm_zero] at h1
-    simp at h1
-  have hL : D.gx.logOmMean τ = -(∑ ρ : M →ₐ[ℚ] ℂ, TaylorLogMetric.logMet M Λ ρ d) / (Module.finrank ℚ M : ℝ) := by
-    unfold Formalism.BasicNotions.GlobalExtra.logOmMean
-    rw [hcardLL, hcardM]
-    congr 1
-    rw [← Finset.sum_neg_distrib, ← (conjEquiv e).sum_comp]
-    refine Finset.sum_congr rfl fun s _ => ?_
-    rw [hOm, Real.log_inv]
-    rfl
-  have hR : TaylorLogMetric.meanLogOm D Λ M τ = -(∑ ρ : M →ₐ[ℚ] ℂ, TaylorLogMetric.logMet M Λ ρ d) / (Module.finrank ℚ M : ℝ) := by
-    simp only [TaylorLogMetric.meanLogOm]
-    have hspec := Classical.epsilon_spec (p := fun s : M => s ≠ 0 ∧ s ∈ TaylorLogMetric.ellT D M τ)
-      ⟨d, hd0, by rw [hd]; exact Submodule.mem_span_singleton_self d⟩
-    set s₀ := Classical.epsilon (fun s : M => s ≠ 0 ∧ s ∈ TaylorLogMetric.ellT D M τ) with hs₀
-    obtain ⟨hs0, hsmem⟩ := hspec
-    rw [hd] at hsmem
-    obtain ⟨x, hx⟩ := Submodule.mem_span_singleton.mp hsmem
-    have hx0 : x ≠ 0 := by
-      rintro rfl
-      exact hs0 (by rw [← hx, zero_smul])
-    rw [hd, ← hx, index_span_smul d hd0 x]
-    have hsplit : ∀ ρ : M →ₐ[ℚ] ℂ, TaylorLogMetric.logMet M Λ ρ (x • d) =
-        Real.log (‖ρ (x : M)‖ ^ 2) + TaylorLogMetric.logMet M Λ ρ d := by
-      intro ρ
-      have hxM : (x : M) ≠ 0 := fun h => hx0 (RingOfIntegers.coe_injective (by simpa using h))
-      have hρx : ρ (x : M) ≠ 0 := (map_ne_zero ρ).mpr hxM
-      simp only [TaylorLogMetric.logMet]
-      rw [Algebra.smul_def, map_mul, norm_mul, mul_pow]
-      have e1 : Real.pi * (‖ρ (algebraMap (𝓞 M) M x)‖ ^ 2 * ‖ρ d‖ ^ 2) / TaylorLogMetric.area (TaylorLogMetric.lamConj M ρ Λ) =
-          ‖ρ (x : M)‖ ^ 2 * (Real.pi * ‖ρ d‖ ^ 2 / TaylorLogMetric.area (TaylorLogMetric.lamConj M ρ Λ)) := by
-        ring
-      rw [e1, Real.log_mul (pow_ne_zero 2 (norm_ne_zero_iff.mpr hρx)) (hX ρ).ne']
-    simp_rw [hsplit, Finset.sum_add_distrib, sum_log_emb x hx0]
-    ring
-  rw [hL]
-  exact hR.symm
 
 end Formalism.L2.GlobalTheoryTheory
 

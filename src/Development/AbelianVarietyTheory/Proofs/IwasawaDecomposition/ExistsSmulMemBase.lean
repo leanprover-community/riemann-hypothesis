@@ -616,13 +616,3 @@ end GlobalTheory.ShFam.DatOf
 
 open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.L2.Pj GlobalTheory.Toroidal GlobalTheory.Cartier GlobalTheory.ShFam
 
-theorem GlobalTheory.ShFam.exists_isDatOf : ∀ (D : D7) (A : Amb D) (w : Formalism.L2.Geo.Dat D (Lv A)),
-    ∃ Dw : Datum A.H, IsDatOf w.S Dw ∧ Dw.p = w.j ∧ Dw.p + Dw.q = w.N := by
-  intro D A w
-  have hle : w.j ≤ w.N := w.j_le
-  obtain ⟨Dw, h, hp, hq⟩ := DatOf.exists_datum D A w.S w.j (w.N - w.j) w.sigOK
-    (fun τ hτ => by
-      obtain ⟨t, rfl⟩ := DatOf.exists_tauEmb D hτ
-      exact w.hsig t)
-    (by show w.N = _; omega)
-  exact ⟨Dw, h, hp, by omega⟩

@@ -61,9 +61,6 @@ def IsFiniteTypeOverZ (X : Scheme.{0}) : Prop :=
 def invOpen (X : Scheme.{0}) (m : ℕ) : X.Opens :=
   toSpecZ X ⁻¹ᵁ (PrimeSpectrum.basicOpen (m : ℤ) : (Spec (.of ℤ)).Opens)
 
-theorem invOpen_one (X : Scheme.{0}) : invOpen X 1 = ⊤ := by
-  simp only [invOpen, Nat.cast_one, PrimeSpectrum.basicOpen_one]
-  rfl
 
 theorem invOpen_mul (X : Scheme.{0}) (a b : ℕ) :
     invOpen X (a * b) = invOpen X a ⊓ invOpen X b := by

@@ -321,27 +321,6 @@ def rankRecord : D7 :=
     gat_d := fun _ _ _ => (gAtPExample_d _).trans (finrank_bot ℂ _).symm
     Y_sigval := spaces_signature_eq R _ _ _ _ _ _ _ }
 
-theorem rankRecord_host : (⟨(rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).R, (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).host⟩ : Σ R : Ranks, Host R) = ⟨R, H⟩ := rfl
-theorem rankRecord_ranks : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).R = R := rfl
-theorem rankRecord_word (u : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).what₂.Word) : u = (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).u₀ := rfl
-theorem rankRecord_embedding (τ : Tau2 R) : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).eTau τ = τ := rfl
-theorem rankRecord_hc_eq : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).hc = hc := rfl
-theorem rankRecord_hcW_eq (u) : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).hcW u = hc := rfl
-theorem rankRecord_eta (j w) : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).what₂.etaJ j w = 0 := rfl
-theorem rankRecord_mem_A_T (u) : ((rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).mem u).A.T = T := rfl
-theorem rankRecord_lowerLevel (u) : ((rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).mem u).A.Tstar = Ts := rankMember_lowerLevel_eq hc T Ts hTs Gam hG
-theorem rankRecord_gamma (u) : ((rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).mem u).A.GamP = Gam := rfl
-theorem rankRecord_delta : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).s.Del = Del := rfl
-theorem rankRecord_letter (u l) : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).s.letter u l = false := rfl
-theorem rankRecord_cdScale : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).s.cdScale = cdS := rfl
-theorem rankRecord_cd : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).cd = G.cd := rfl
-theorem rankRecord_dsig : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).dsig = dsg := rfl
-theorem rankRecord_etaF : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).div.etaF = etaF := rfl
-theorem rankRecord_dimensionBound : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).what₂.Dstar = dstarOfRanks R Ts Gam := rfl
-theorem rankRecord_rowDimension_zero : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).what₂.Drows = 0 := rfl
-theorem rankRecord_divisor_zero : (rankRecord H hc Del hDel hgap hlet cdS hcdS dsg hdsg etaF T Ts hTs Gam hG hw1 hw2 hg ht hlev hpde pz hK hpz hcong G).div.R = 0 := by
-  show ∑ u : Unit, (zeroHLat H.E).rank = 0
-  simp [zeroHLat_rank]
 
 end Record
 

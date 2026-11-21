@@ -15,11 +15,6 @@ theorem Pj_rank {p : ℕ} {G : GAtP p} (Fl : Fills G) (j : ℕ) : (Fl.Pj j).m + 
 theorem GIdx.ne_two {R : Ranks} {H : Host R} {T p : ℕ} (h : GIdx H T p) : p ≠ 2 := by
   have := h.2.1; omega
 
-theorem GIdx.ne_d {R : Ranks} {H : Host R} {T p : ℕ} (h : GIdx H T p) : p ≠ H.d := by
-  intro hd
-  have hc : H.cls p = .inertClass := h.2.2.1
-  unfold Host.cls primeClass at hc
-  split_ifs at hc
 
 def Pend.xForm {p : ℕ} [Fact p.Prime] {X : Sys p} (Y : Pend X) (j : ℕ) (La : X.Lt j) (La' : X.Lt (j + 1))
     (φ : Y.Frm j La La') (e : X.EA j ⊕ X.EA j) (z : X.ZA j) : Y.Kc :=

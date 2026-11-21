@@ -64,49 +64,6 @@ theorem exists_algHom (B : Type) [CommRing B] [Nontrivial B] [Algebra ℚ B] [Al
   exact ⟨j.comp (Ideal.Quotient.mkₐ ℚ m), fun b =>
     (Algebra.IsAlgebraic.isAlgebraic (R := ℚ) (Ideal.Quotient.mkₐ ℚ m b)).algHom j⟩
 
-theorem exists_algPt [CharZero Ω] (y : (Σ k, ι k) → Ω) (hy : IsRelevant (mCoordIdeal y)) {u : MRing ι}
-    (hu : u ∉ mCoordIdeal y) (p : ℕ) [Fact p.Prime] : ∃ z ∈ algPts p (mCoordIdeal y), aeval z u ≠ 0 := by
-  classical
-  choose i hi using hy
-  let F := FractionRing (MvPolynomial K Ω)
-  let φ : MRing ι →+* F := (algebraMap (MvPolynomial K Ω) F).comp (mConeMap y).toRingHom
-  have hφ : ∀ f, φ f = 0 ↔ f ∈ mCoordIdeal y := fun f =>
-    map_eq_zero_iff _ (IsFractionRing.injective (MvPolynomial K Ω) F)
-  haveI : CharZero F := charZero_of_injective_algebraMap (IsFractionRing.injective (MvPolynomial K Ω) F)
-  let v : MRing ι := u * ∏ k, X ⟨k, i k⟩
-  have hv : φ v ≠ 0 := by
-    rw [map_mul, map_prod]
-    exact mul_ne_zero (fun h => hu ((hφ _).1 h)) (Finset.prod_ne_zero_iff.2 fun k _ h => hi k ((hφ _).1 h))
-  let s : Finset F := insert (φ v)⁻¹ (Finset.univ.image fun q => φ (X q))
-  let B := Algebra.adjoin ℚ (s : Set F)
-  haveI : Algebra.FiniteType ℚ B := (Subalgebra.fg_iff_finiteType _).1 (Subalgebra.fg_adjoin_finset s)
-  have hX : ∀ q, φ (X q) ∈ B := fun q => Algebra.subset_adjoin (by simp [s])
-  have hvi : (φ v)⁻¹ ∈ B := Algebra.subset_adjoin (by simp [s])
-  obtain ⟨ψ, hψ⟩ := exists_algHom B p
-  let χ : MRing ι →ₐ[ℤ] B := aeval fun q => ⟨φ (X q), hX q⟩
-  have hχ : ∀ f, (χ f : F) = φ f := fun f => by
-    have : (B.val.toRingHom.comp χ.toRingHom) = φ := by
-      refine MvPolynomial.ringHom_ext (fun r => ?_) (fun q => ?_)
-      · simp
-      · simp [χ]
-    exact DFunLike.congr_fun this f
-  let z : (Σ k, ι k) → PadicAlgCl p := fun q => ψ ⟨φ (X q), hX q⟩
-  have hz : ∀ f, aeval z f = ψ (χ f) := fun f => by
-    have : (aeval z : MRing ι →ₐ[ℤ] PadicAlgCl p).toRingHom = ψ.toRingHom.comp χ.toRingHom := by
-      refine MvPolynomial.ringHom_ext (fun r => ?_) (fun q => ?_)
-      · simp
-      · simp [χ, z]
-    exact DFunLike.congr_fun this f
-  have hzv : aeval z v ≠ 0 := by
-    rw [hz]
-    have : χ v * ⟨_, hvi⟩ = 1 := Subtype.ext (by simpa [hχ] using mul_inv_cancel₀ hv)
-    exact left_ne_zero_of_mul_eq_one (by rw [← map_mul, this, map_one])
-  rw [map_mul, map_prod] at hzv
-  refine ⟨z, ⟨⟨fun k => ⟨i k, ?_⟩, fun f hf => ?_⟩, fun q => ?_⟩, left_ne_zero_of_mul hzv⟩
-  · simpa using Finset.prod_ne_zero_iff.1 (right_ne_zero_of_mul hzv) k (Finset.mem_univ _)
-  · refine (aeval_inst _ _ z f).trans ((hz f).trans ?_)
-    rw [show χ f = 0 from Subtype.ext (by rw [hχ]; exact (hφ f).2 hf), map_zero]
-  · exact hψ _
 
 end Pts
 
@@ -115,10 +72,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
   {RM : Top.RootModel (CMType H) (D.p + D.q)}
   {Sys : PB.AnSys (Top.dimFl (CMType H) (D.p + D.q)) (Option (RootIx D))} {Fx : FixedData Y Sys}
 
-theorem exists_algPt_off (Or : RootOrigin Y S RM Fx) {u : MRing RM.ι} (hu : IsFormOff (mCoordIdeal RM.y) u)
-    (p : ℕ) [Fact p.Prime] : ∃ z ∈ algPts p (mCoordIdeal RM.y), aeval z u ≠ 0 :=
-  haveI : CharZero RM.Ω := charZero_of_injective_ringHom Or.𝔐.cst.injective
-  exists_algPt RM.y RM.arith.2.1.2.2 hu.2 p
 
 set_option synthInstance.maxHeartbeats 200000 in
 
@@ -137,25 +90,5 @@ theorem norm_const {Or : RootOrigin Y S RM Fx} (Fr : GenFrame Or) {p : ℕ} [hp 
   simp only [h3, pow_zero, Finset.prod_const_one] at hn
   simpa using (isNormOfVal_coe hp.out.one_le he _ zero_le_one _).1 hn
 
-theorem root_sign (Or : RootOrigin Y S RM Fx) (ρ : RootIx D) (q : Cpt Or.𝔐.ξ) (ch : ∀ k, RM.ι k)
-    (hq : InChart Or.𝔐.ξ (fun c' : (k : RM.K) → RM.ι k => ∏ k, RM.y ⟨k, c' k⟩) ch q) {s : RM.Ω}
-    (hs : ((Or.𝔐.V (HodgeCpt.rootIdx D ρ).1).gr (Or.Fl.b (HodgeCpt.rootIdx D ρ).1)
-      (HodgeCpt.rootIdx D ρ).2).IsGenAt q s) :
-    ∃ r ∈ regAt Or.𝔐.ξ q,
-      (s⁻¹ ^ HodgeCpt.rootSgn D ρ) * r = (Or.e ρ)⁻¹ / ∏ k, RM.y ⟨k, ch k⟩ ^ RM.xdeg ρ k := by
-  obtain ⟨he, h⟩ := Or.lines ρ
-  have h1 := h q (Set.mem_univ _) ch hq
-  have h2 : s ^ HodgeCpt.rootSgn D ρ ∈ Or.Fl.rootLat ρ q :=
-    Submodule.subset_span ⟨fun _ => s, fun _ => hs, by simp⟩
-  rw [h1, Submodule.mem_span_singleton] at h2
-  obtain ⟨r, hr⟩ := h2
-  have hy : (∏ k, RM.y ⟨k, ch k⟩ ^ RM.xdeg ρ k) ≠ 0 :=
-    Finset.prod_ne_zero_iff.2 fun k hk => zpow_ne_zero _ (Finset.prod_ne_zero_iff.1 hq.1 k hk)
-  have hr' : (r : RM.Ω) * ((∏ k, RM.y ⟨k, ch k⟩ ^ RM.xdeg ρ k) * Or.e ρ) = s ^ HodgeCpt.rootSgn D ρ := hr
-  have hs0 : s ^ HodgeCpt.rootSgn D ρ ≠ 0 := zpow_ne_zero _ hs.1
-  refine ⟨r, r.2, ?_⟩
-  rw [inv_zpow, ← hr']
-  have hr0 : (r : RM.Ω) ≠ 0 := fun h0 => hs0 (by rw [← hr', h0, zero_mul])
-  field_simp
 
 end GlobalTheory.CompanionTheory.Ar.Small.ReadFinTest

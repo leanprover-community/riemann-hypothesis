@@ -232,12 +232,6 @@ theorem pairBK_smul {K ι : Type} [Field K] [Fintype ι] (lam : ι → DomWeight
     (x y : VV K lam) : pairBK lam ((a : K) • x) ((b : K) • y) = pairBK lam x y := by
   rw [e, map_smul, map_smul, LinearMap.smul_apply, smul_smul, Units.inv_mul, one_smul]
 
-theorem card_stab_inv (d : DecoSet X.E n ST SG) :
-    Nat.card (MulAction.stabilizer (formGSD C' Λ.inv).G d) = Nat.card (MulAction.stabilizer (formGSD C Λ).G d) := by
-  let e : FormG Λ.inv ≃ FormG Λ := Equiv.refl (FormG Λ)
-  refine Nat.card_congr (Equiv.subtypeEquiv e fun a => ?_)
-  rw [MulAction.mem_stabilizer_iff, MulAction.mem_stabilizer_iff, formGSD_smul, formGSD_smul]
-  rfl
 
 def clInv : (formGSD C' Λ.inv).Cl ≃ (formGSD C Λ).Cl := Equiv.refl (formGSD C Λ).Cl
 
@@ -256,11 +250,6 @@ def dualVal (SG : Finset (HeightOneSpectrum (𝓞 X.E))) : CoefPk X (R.N R.m - 1
 
 @[reducible] def dualGSD : GSD X.K := formGSD (dualVal W (rowSG Pr sel mu)) (rowTy Ch sel mu P)
 
-theorem dualOk (hX : X.Ok) : (dualGSD W Ch sel mu P).Ok :=
-  formGSD_ok _ _ hX
-    { nab_smul := fun a d => roundPk_nab X _ _ (d.1.N_act a.1.1 a.2)
-      del_smul := fun a d => roundPk_del X _ _ (d.1.N_act a.1.1 a.2)
-      inv := roundPk_inv X _ _ hX.emb_star }
 
 def rowPair : BiPair (dualGSD W Ch sel mu P) (mtildeGSD W Ch sel mu P) where
   tr := MonoidHom.id (FormG (rowTy Ch sel mu P))
@@ -275,14 +264,6 @@ def classSum (h : (mtildeGSD W Ch sel mu P).Ok) :
     (dualGSD W Ch sel mu P).EqFun →ₗ[X.K] (mtildeGSD W Ch sel mu P).EqFun →ₗ[X.K] X.K :=
   (rowPair W Ch sel mu P).formOf h (mtildeGSD W Ch sel mu P).outSec
 
-theorem dual_gramV : (dualGSD W Ch sel mu P).gramV = gramB X.K W.sgTrue := by
-  ext i j
-  have e : gramKd X.emb (1 : Matrix (Fin (R.N R.m - 1)) (Fin (R.N R.m - 1)) X.E) = fun _ => 1 := by
-    funext τ
-    rw [gramKd, Matrix.map_one _ (map_zero _) (map_one _), inv_one, Matrix.transpose_one]
-  show pairK W.sgTrue (gramKd X.emb 1) (bVV _ _ i) (bVV _ _ j) = _
-  rw [e]
-  exact pairK_one_basis W.sgTrue i j
 
 theorem row_gramV : (mtildeGSD W Ch sel mu P).gramV = gramB X.K W.sgTrue := by
   ext i j

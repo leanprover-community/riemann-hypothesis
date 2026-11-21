@@ -21,8 +21,6 @@ private theorem dot_add_r (u v w : Fin n → ℝ) : dot u (v + w) = dot u v + do
 private theorem dot_comm' (u v : Fin n → ℝ) : dot u v = dot v u := by
   simp only [dot, mul_comm]
 
-private theorem dot_neg_r (u v : Fin n → ℝ) : dot u (-v) = - dot u v := by
-  simp only [dot, Pi.neg_apply, mul_neg, Finset.sum_neg_distrib]
 
 private theorem dot_sum_r {k : ℕ} (u : Fin n → ℝ) (f : Fin k → Fin n → ℝ) :
     dot u (∑ i, f i) = ∑ i, dot u (f i) := by
@@ -32,62 +30,16 @@ private theorem dot_sum_r {k : ℕ} (u : Fin n → ℝ) (f : Fin k → Fin n →
 private theorem dot_root_r (u : Fin n → ℝ) (a b : Fin n) : dot u (root a b) = u a - u b := by
   simp [dot, root, mul_sub, Finset.sum_sub_distrib, Pi.single_apply]
 
-private theorem root_swap (a b : Fin n) : root b a = - root a b := by
-  unfold root
-  rw [neg_sub]
 
-private theorem nsq_nonneg'' (u : Fin n → ℝ) : 0 ≤ nsq u := by
-  unfold nsq dot
-  exact Finset.sum_nonneg fun a _ => mul_self_nonneg _
 
 private theorem nsq_add'' (u v : Fin n → ℝ) : nsq (u + v) = nsq u + 2 * dot u v + nsq v := by
   unfold nsq
   rw [dot_add_l, dot_add_r, dot_add_r, dot_comm' v u]
   ring
 
-private theorem dot_le_sqrt (u v : Fin n → ℝ) : dot u v ≤ √(nsq u) * √(nsq v) := by
-  have := Real.sum_mul_le_sqrt_mul_sqrt Finset.univ u v
-  simpa [nsq, dot, sq] using this
 
-private theorem sqrt_nsq_add_le (u v : Fin n → ℝ) : √(nsq (u + v)) ≤ √(nsq u) + √(nsq v) := by
-  have ha := nsq_nonneg'' u
-  have hb := nsq_nonneg'' v
-  have hs : 0 ≤ √(nsq u) + √(nsq v) := by positivity
-  rw [← Real.sqrt_sq hs]
-  apply Real.sqrt_le_sqrt
-  rw [nsq_add'', add_sq, Real.sq_sqrt ha, Real.sq_sqrt hb]
-  nlinarith [dot_le_sqrt u v]
 
-private theorem sqrt_nsq_sum_le {ι : Type*} (s : Finset ι) (f : ι → Fin n → ℝ) :
-    √(nsq (∑ i ∈ s, f i)) ≤ ∑ i ∈ s, √(nsq (f i)) := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · simp [nsq, dot]
-  · intro a s ha ih
-    rw [Finset.sum_insert ha, Finset.sum_insert ha]
-    exact (sqrt_nsq_add_le _ _).trans (by linarith)
 
-private theorem pq_facts {a b : Fin n} (hε : ε a ≠ ε b) :
-    1 ≤ (pOf ε : ℝ) ∧ 1 ≤ (qOf ε : ℝ) ∧ (pOf ε : ℝ) + (qOf ε : ℝ) = n := by
-  have key : ∀ x y t : Bool, x ≠ y → x ≠ t → y = t := by decide
-  have hex : ∀ t : Bool, ∃ c, ε c = t := by
-    intro t
-    by_cases h : ε a = t
-    · exact ⟨a, h⟩
-    · exact ⟨b, key _ _ _ hε h⟩
-  obtain ⟨c1, hc1⟩ := hex true
-  obtain ⟨c2, hc2⟩ := hex false
-  have hp : 0 < pOf ε := Finset.card_pos.2 ⟨c1, by simp [hc1]⟩
-  have hq : 0 < qOf ε := Finset.card_pos.2 ⟨c2, by simp [hc2]⟩
-  have hpq : pOf ε + qOf ε = n := by
-    unfold pOf qOf
-    have := Finset.card_filter_add_card_filter_not
-      (s := (Finset.univ : Finset (Fin n))) (fun a => ε a = true)
-    simpa using this
-  refine ⟨?_, ?_, ?_⟩
-  · exact_mod_cast hp
-  · exact_mod_cast hq
-  · exact_mod_cast hpq
 
 theorem gap_gt {a b : Fin n} (hε : ε a ≠ ε b) {h : ℝ}
     (hbig : 2 * (n : ℝ) < h) :

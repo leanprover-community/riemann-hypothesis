@@ -91,20 +91,7 @@ theorem NefProductNonneg.interNum_nonneg (h : NefProductNonneg) (hp : IsProjOver
   rw [← hi D N fun i => (hN i).isLB]
   exact h _ X' D hp' (hd.trans hD) _ fun i => hn _ (hN i)
 
-theorem NefProductNonneg.interNumOn_nonneg (h : NefProductNonneg) (hp : IsProjOver (strHom k X))
-    {Z : Scheme.{0}} (i : Z ⟶ X) [IsClosedImmersion i] (hD : topologicalKrullDim Z = D)
-    {N : Fin D → LB X} (hN : ∀ j, IsNef k (N j)) : 0 ≤ interNumOn k i N := by
-  letI := algebraΓAlong k i
-  have hi := appTop_algebraMap_along k i
-  rw [interNumOn_eq_interNum_pull hi fun j => (hN j).isLB]
-  refine h.interNum_nonneg ?_ hD fun j => (hN j).pull_of_isClosedImmersion i hi
-  obtain ⟨n, e, he, hs⟩ := hp
-  exact ⟨n, i ≫ e, inferInstance, by rw [Category.assoc, hs, comp_strHom hi]⟩
 
-theorem NefProductNonneg.interNumRed_nonneg (h : NefProductNonneg) (hp : IsProjOver (strHom k X))
-    {Z : Closeds X} (hD : topologicalKrullDim (Z : Set X) = D)
-    {N : Fin D → LB X} (hN : ∀ j, IsNef k (N j)) : 0 ≤ interNumRed k Z N :=
-  h.interNumOn_nonneg hp (redι Z) ((topologicalKrullDim_red Z).trans hD) hN
 
 theorem NefRiemannRoch.isBigO (h : NefRiemannRoch) (hp : IsProjOver (strHom k X))
     (hD : topologicalKrullDim X = D) {L : LB X} (hL : IsNef k L) :

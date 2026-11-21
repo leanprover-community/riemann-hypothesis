@@ -73,9 +73,6 @@ def HolExtend : Prop :=
 theorem mem_mult {M : DSModel W S} {J : Set (GA D W)} {χ : GA D W → ℂ} {T : MMap M} (h : IsMultMap θ M J χ T) :
     T ∈ Mult θ M J χ := Submodule.subset_span h
 
-theorem isHolPar_parW (κ : ∀ τ : D.what₂.Tau, Fin (W.sig (tauE D τ)).1 ⊕ Fin (W.sig (tauE D τ)).2 → ℤ)
-    (h : ∀ τ, Formalism.L2.NTheta.HolOK _ _ (κ τ)) : IsHolPar (parW W κ) :=
-  fun τ => ⟨_, _, κ τ, h τ, rfl⟩
 
 theorem single_mem_pMinus (M : DSModel W S) (τ : D.what₂.Tau) {a b : Fin W.rank} (ha : M.ε τ a = false)
     (hb : M.ε τ b = true) : (M.fr τ)⁻¹ * Matrix.single a b (1 : ℂ) * M.fr τ ∈ pMinus M τ := by
@@ -88,8 +85,6 @@ theorem single_mem_pMinus (M : DSModel W S) (τ : D.what₂.Tau) {a b : Fin W.ra
   rintro ⟨rfl, rfl⟩
   exact hcd ⟨ha, hb⟩
 
-theorem isLevel_top : IsLevel W (GfC W) (fun _ => 1) :=
-  ⟨le_rfl, ⟨⊤, by simp, fun _ _ h => h⟩, fun _ _ _ _ => by simp, fun _ _ => by simp⟩
 
 end GlobalTheory.IndefiniteRowSideFullHecke.HolomorphicParabolicSmoothFunctions
 

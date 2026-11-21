@@ -31,12 +31,6 @@ theorem lg_gens (K : Ctx) : large₂ K fun B f T => ∀ z ∈ gens B.toPre f.chi
 
 end JetEx
 
-theorem exists_bound_jetsIn : ∃ Z : ∀ P : Pre, HChar P.host.E → Set (HChar P.host.E) → Finset ℂ,
-    (∀ P χ Ξ, ∀ z ∈ Z P χ Ξ, IsAlgebraic ℚ z) ∧
-    ∀ (B : Base) (X : PreX B.toPre) (I : ColIn B X), StagesInhab.HasLetters B.toPre → I.Ok →
-      (∀ z ∈ Z B.toPre I.C.chiPsi (Set.range I.xi), z ∈ B.embLL.fieldRange) →
-      ∃ I' : ColIn B X, I'.Ok ∧ I'.JetsIn ∧ I'.C = I.C ∧ I'.S = I.S ∧ Set.range I'.xi = Set.range I.xi :=
-  ⟨JetEx.gens, JetEx.gens_algebraic, fun _ _ _ hL h hK => JetEx.exists_jetsIn hL h hK⟩
 
 end GlobalTheory.Mem.Col2
 

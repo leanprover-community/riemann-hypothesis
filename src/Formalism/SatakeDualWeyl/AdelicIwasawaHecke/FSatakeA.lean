@@ -103,9 +103,6 @@ theorem fSatake_ord_one : ordL (1 : L) = 0 := by
   apply ordL_eq_of_valuation_eq one_ne_zero
   simp
 
-theorem fSatake_ord_inv {x : L} (hx : x ≠ 0) : ordL x⁻¹ = -ordL x := by
-  apply ordL_eq_of_valuation_eq (inv_ne_zero hx)
-  rw [map_inv₀, fSatake_v_eq hx, ← WithZero.coe_inv, ← ofAdd_neg, neg_neg]
 
 theorem fSatake_ord_of_v {x y : L} (h : Valued.v x = Valued.v y) : ordL x = ordL y := by
   unfold ordL
@@ -129,8 +126,5 @@ theorem fSatake_ord_nonneg {x : L} (hx : x ≠ 0) (hO : x ∈ intL L) : 0 ≤ or
     Multiplicative.ofAdd_le] at h1
   linarith
 
-theorem fSatake_v_one {x : L} (hx : x ≠ 0) (h : ordL x = 0) : Valued.v x = 1 := by
-  rw [fSatake_v_eq hx, h]
-  rfl
 
 end Formalism.UG.P

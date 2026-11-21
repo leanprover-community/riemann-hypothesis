@@ -418,6 +418,5 @@ theorem hostGalSpec : HostGalSpec := by
     rw [hPart_lift h hστ, hcl_eq_iff, ← trace_eq_iff_units h.1, hστ, ← apply_theta h.1 τ]
     exact Iff.rfl
 
-theorem hostGaloisCore : HostFixed ∧ HostGalois ∧ HostGalSpec := ⟨hostFixed, hostGalois, hostGalSpec⟩
 
 end Formalism.FrobeniusOrbits

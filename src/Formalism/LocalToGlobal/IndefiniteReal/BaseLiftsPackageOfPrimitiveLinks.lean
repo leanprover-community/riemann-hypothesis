@@ -156,17 +156,6 @@ private theorem smul_tw_map_adjoint_apply_of_unit_modulus {s : Bool} {E F : Type
   rw [phase_cancel hc]
   exact tw_map_adjoint_apply_of_eigen f l e he
 
-theorem tw_smul_cancel {s : Bool} {E F : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [FiniteDimensional ℂ E]
-    [NormedAddCommGroup F] [InnerProductSpace ℂ F] [FiniteDimensional ℂ F] {c : ℂ} (hc : starRingEnd ℂ c * c = 1) (f : E →ₗ[ℂ] F)
-    (w : Tw s F) : Tw.map s (c • f) (LinearMap.adjoint (Tw.map s (c • f)) w) = Tw.map s f (LinearMap.adjoint (Tw.map s f) w) := by
-  have hmap : Tw.map s (c • f) = cj s c • Tw.map s f := by
-    ext x
-    show c • f (Tw.out x) = cj s (cj s c) • f (Tw.out x)
-    rw [cj_cj]
-  have hc' : starRingEnd ℂ (cj s c) * cj s c = 1 := by
-    rw [← cj_conj, ← map_mul, hc, map_one]
-  rw [hmap]
-  exact phase_cancel hc' _ w
 
 set_option maxHeartbeats 1000000 in
 theorem thmAop_of (hph : R.phase) (h : R.PThmA) (b : Bool) : (R.toCx3 F).ThmAop b := by

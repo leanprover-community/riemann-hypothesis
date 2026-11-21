@@ -32,30 +32,7 @@ theorem norm_form (u v : ℤ) (T M : ℕ) (hT : (T : ℤ) = (1 + M * u) ^ 2 + H.
   · rw [Ideal.mem_span_singleton]
     exact ⟨(u : 𝓞 H.E) + (v : 𝓞 H.E) * bO H, by ring⟩
 
-theorem norm_form' (u v : ℤ) (T M : ℕ) (hT : (T : ℤ) = (1 + M * u) ^ 2 + H.d * (M * v) ^ 2) :
-    ∃ π ρ : 𝓞 H.E, (π : H.E) ∈ H.K ∧ (ρ : H.E) ∈ H.K ∧ (π : H.E) - 1 = (M : H.E) * ρ ∧
-      (π : H.E) * H.conj (π : H.E) = (T : H.E) := by
-  have hbc : ((bO H : 𝓞 H.E) : H.E) = H.sqd := rfl
-  have hb : H.sqd ∈ H.K := IntermediateField.mem_adjoin_simple_self ℚ _
-  have hr : ((((u : 𝓞 H.E) + (v : 𝓞 H.E) * bO H : 𝓞 H.E)) : H.E) = (u : H.E) + (v : H.E) * H.sqd := by
-    rw [← hbc]; push_cast; rfl
-  have hco : (((1 + (M : 𝓞 H.E) * ((u : 𝓞 H.E) + (v : 𝓞 H.E) * bO H) : 𝓞 H.E)) : H.E) =
-      1 + (M : H.E) * ((u : H.E) + (v : H.E) * H.sqd) := by
-    rw [← hbc]; push_cast; rfl
-  have hrK : (u : H.E) + (v : H.E) * H.sqd ∈ H.K := add_mem (intCast_mem _ _) (mul_mem (intCast_mem _ _) hb)
-  refine ⟨1 + (M : 𝓞 H.E) * ((u : 𝓞 H.E) + (v : 𝓞 H.E) * bO H), (u : 𝓞 H.E) + (v : 𝓞 H.E) * bO H, ?_, ?_, ?_, ?_⟩
-  · rw [hco]; exact add_mem (one_mem _) (mul_mem (natCast_mem _ _) hrK)
-  · rw [hr]; exact hrK
-  · rw [hco, hr]; ring
-  · rw [hco]
-    have hT' : (T : H.E) = (1 + M * u) ^ 2 + H.d * (M * v) ^ 2 := by exact_mod_cast congrArg (Int.cast : ℤ → H.E) hT
-    simp only [map_add, map_mul, map_one, map_natCast, map_intCast, conj_bE]
-    rw [hT']
-    linear_combination (-(M : H.E) ^ 2 * (v : H.E) ^ 2) * bE_sq H
 
-theorem cls_split_of {p : ℕ} (h2 : p ∉ H.small) (hq : p ≠ H.q) (hd : p ≠ H.d)
-    (hj : jacobiSym (-(H.d : ℤ)) p = 1) : H.cls p = .splitK :=
-  (primeClass_eq_splitK_iff _).2 ⟨h2, hq, hd, hj⟩
 
 theorem primesOver_ncard (E : Type) [Field E] [NumberField E] (p : ℕ) (hp : p.Prime) :
     (Ideal.primesOver (Ideal.span {(p : ℤ)}) (𝓞 E)).ncard = (placesOver E p).ncard := by
@@ -88,19 +65,6 @@ theorem primesOver_ncard (E : Type) [Field E] [NumberField E] (p : ℕ) (hp : p.
 
 end General
 
-theorem one_mod_facts {φ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ) {g : ℕ} (h1 : 1 < g) (hg : g ≡ 1 [MOD H.condN]) :
-    ¬ g ∣ H.condN ∧ g ∉ H.small ∧ g ≠ 2 ∧ g ≠ H.q ∧ g ≠ H.d ∧ jacobiSym (-(H.q : ℤ)) g = 1 ∧
-      jacobiSym (-(H.d : ℤ)) g = 1 := by
-  have h4 : g ≡ 1 [MOD 4] := hg.of_dvd ((by norm_num : 4 ∣ 16).trans H.sixteen_dvd_condN)
-  have h4' : g % 4 = 1 := h4
-  have hN : ¬ g ∣ H.condN := fun h => by
-    have : g % g = 1 % g := hg.of_dvd h
-    rw [Nat.mod_self, Nat.mod_eq_of_lt h1] at this
-    omega
-  exact ⟨hN, Formalism.HC.HostRaw.notMem_small_of_not_dvd hN, Formalism.HC.HostRaw.ne_two_of_not_dvd hN,
-    Formalism.HC.HostRaw.ne_q_of_not_dvd hN, Formalism.HC.HostRaw.ne_d_of_not_dvd hN,
-    jacobi_neg_of_one_mod (Nat.odd_iff.2 (by have := H.q_mod_four; omega)) h4' (hg.of_dvd H.q_dvd_condN),
-    jacobi_neg_of_one_mod (Nat.odd_iff.2 (by have := H.d_mod_four; omega)) h4' (hg.of_dvd H.d_dvd_condN)⟩
 
 theorem form_mod {T M d : ℕ} {u v : ℤ} (hT : (T : ℤ) = (1 + M * u) ^ 2 + d * (M * v) ^ 2) : T ≡ 1 [MOD M] := by
   rw [← Int.natCast_modEq_iff]
@@ -172,7 +136,6 @@ theorem coprime_QS_of_mod {p : ℕ} (h : p ≡ 1 [MOD B.QS * B.q * B.d]) : Nat.C
   have h1 : p ≡ 1 [MOD B.QS] := h.of_dvd ⟨B.q * B.d, by ring⟩
   rw [Nat.Coprime, h1.gcd_eq, Nat.gcd_one_left]
 
-theorem x_pow_nonneg (hx : 0 ≤ x) : 0 ≤ x ^ (eps / 5) := Real.rpow_nonneg hx _
 
 end Base
 
@@ -245,21 +208,9 @@ def host2 (u0 : R.A) (ex : Finset ℕ) : Host R where
   second_set_no_relation := B.second_set_no_relation
   CT2 := CT
 
-theorem twoPrimeField_levelPrimes (u0 : R.A) (ex : Finset ℕ) : (host2 B u0 ex).levelPrimes =
-    {B.g0, B.g1, B.pde, B.pde'} ∪ ex.filter (fun p => Nat.Coprime p B.QS) := rfl
 
-theorem twoPrimeField_level_subset (u0 : R.A) (ex : Finset ℕ) :
-    (host2 B u0 ex).levelPrimes ⊆ {B.g0, B.g1, B.pde, B.pde'} ∪ ex :=
-  Finset.union_subset_union_right (Finset.filter_subset _ _)
 
-theorem twoPrimeField_mem_level_of_coprime (u0 : R.A) (ex : Finset ℕ) {T : ℕ} (h : T ∈ ex) (hc : Nat.Coprime T B.QS) :
-    T ∈ (host2 B u0 ex).levelPrimes :=
-  Finset.mem_union_right _ (Finset.mem_filter.2 ⟨h, hc⟩)
 
-theorem twoPrimeField_mem_level_of_split (u0 : R.A) (ex : Finset ℕ) {T : ℕ} (h : T ∈ ex) (hp : T.Prime)
-    (hc : (host2 B u0 ex).cls T = .splitK) : T ∈ (host2 B u0 ex).levelPrimes := by
-  refine twoPrimeField_mem_level_of_coprime B u0 ex h ((Nat.Prime.coprime_iff_not_dvd hp).2 fun hd => ?_)
-  exact ((primeClass_eq_splitK_iff _).1 hc).1 (Nat.mem_primeFactors.2 ⟨hp, hd, B.QS_pos.ne'⟩)
 
 end Formalism.MainNotions.Inhab
 

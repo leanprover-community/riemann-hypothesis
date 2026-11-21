@@ -36,15 +36,6 @@ theorem minkowskiExp_eq_zero {n p : ℕ} (h : n + 1 < p) : minkowskiExp n p = 0 
   calc n < p - 1 := by omega
     _ ≤ p ^ i * (p - 1) := Nat.le_mul_of_pos_left _ h1
 
-theorem minkowskiExp_eq_sum {n p K : ℕ} (hp : 2 ≤ p) (hK : n + 1 ≤ K) :
-    minkowskiExp n p = ∑ i ∈ Finset.range K, n / (p ^ i * (p - 1)) := by
-  unfold minkowskiExp
-  refine Finset.sum_subset (Finset.range_subset_range.2 hK) fun i _ hi => Nat.div_eq_of_lt ?_
-  have hi' : n + 1 ≤ i := by simpa using hi
-  have h1 : i < 2 ^ i := Nat.lt_two_pow_self
-  have h2 : 2 ^ i ≤ p ^ i := Nat.pow_le_pow_left hp _
-  calc n < p ^ i := by omega
-    _ ≤ p ^ i * (p - 1) := Nat.le_mul_of_pos_right _ (by omega)
 
 theorem padicValNat_minkM (n p : ℕ) (hp : p.Prime) :
     padicValNat p (minkM n) = ∑ i ∈ Finset.range (n + 1), n / (p ^ i * (p - 1)) := by
@@ -60,9 +51,6 @@ theorem padicValNat_minkM (n p : ℕ) (hp : p.Prime) :
       exact hm (Finset.mem_filter.2 ⟨Finset.mem_range.2 (by omega), hp⟩)
     exact (minkowskiExp_eq_zero hlt).symm
 
-theorem padicValNat_minkM' (n p K : ℕ) (hp : p.Prime) (hK : n + 1 ≤ K) :
-    padicValNat p (minkM n) = ∑ i ∈ Finset.range K, n / (p ^ i * (p - 1)) :=
-  (padicValNat_minkM n p hp).trans (minkowskiExp_eq_sum hp.two_le hK)
 
 theorem prime_le_of_dvd_minkM {n p : ℕ} (hp : p.Prime) (h : p ∣ minkM n) : p ≤ n + 1 := by
   obtain ⟨q, hq, hpq⟩ := (Prime.dvd_finsetProd_iff hp.prime _).1 h
@@ -71,11 +59,6 @@ theorem prime_le_of_dvd_minkM {n p : ℕ} (hp : p.Prime) (h : p ∣ minkM n) : p
   have := Finset.mem_range.1 hq'.1
   omega
 
-theorem minkM_dvd_minkM {n n' : ℕ} (h : n ≤ n') : minkM n ∣ minkM n' := by
-  refine (Nat.factorization_prime_le_iff_dvd (minkM_pos n).ne' (minkM_pos n').ne').1 fun p hp => ?_
-  rw [Nat.factorization_def _ hp, Nat.factorization_def _ hp, padicValNat_minkM' n p (n' + 1) hp (by omega),
-    padicValNat_minkM n' p hp]
-  exact Finset.sum_le_sum fun i _ => Nat.div_le_div_right h
 
 theorem minkM_dvd_factorial (n : ℕ) : minkM n ∣ (2 * n).factorial := Formalism.HermitianLatticeCounting.P.minkowski_number_dvd_factorial n
 

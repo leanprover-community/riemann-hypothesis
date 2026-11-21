@@ -51,8 +51,6 @@ private theorem le_conj [hN : H.Normal] (γ : SL(2, ℤ)) : H ≤ conjGL H (γ :
 private theorem Good.slashSL [H.Normal] (hF : Good H k F) (γ : SL(2, ℤ)) : Good H k (F ∣[k] γ) :=
   hF.slash _ (le_conj γ)
 
-private theorem Good.mono {K : Subgroup SL(2, ℤ)} (hF : Good K k F) (h : H ≤ K) : Good H k F :=
-  ⟨hF.hol, hF.bd, fun γ hγ => hF.inv γ (h hγ)⟩
 
 private theorem B_slash [H.FiniteIndex] {α : GL (Fin 2) ℝ} (hα : 0 < α.det.val) (h1 : (conjGL H α).FiniteIndex)
     (h2 : (conjGL H α⁻¹).FiniteIndex) (hF : Good H k F) (hG : Good H k G) (hF' : Good H k (F ∣[k] α))

@@ -147,11 +147,6 @@ theorem readSecU_of {g : ℕ} (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult �
       ← hw a n hd]
     exact congrArg toC (hW a n hd f hf t _ _ ht)
 
-theorem chiTriv_unfOf {g : ℕ} (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ))
-    (F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => relab c σ (e j).1))
-    (M : ModelsOf F r) (un : ∀ k, (M.X k).dom → FrPt Xo c (CAt σ)) (hM : ModelBase M) :
-    ∀ a n, Dom a n → ∀ k, ∀ γ ∈ ((unfOf e F M un).X k).Γ,
-      ((unfOf e F M un).X k).χ (laU (unfOf e F M un) a n k) γ = 1 := fun _ _ _ k γ _ => hM.chi k _ γ
 
 instance (σ : c.F →+* ℂ) : IsReduced (CAt σ) := inferInstanceAs (IsReduced ℂ)
 
@@ -286,13 +281,7 @@ theorem muOf_one (V : HSp D) : muOf V 1 = fun _ => 1 := by
   unfold muOf
   split_ifs <;> simp
 
-theorem chiWD_one (V : HSp D) : ChiWD V 1 := by
-  intro g x x' _ _
-  simp only [MonoidHom.one_apply]
 
-theorem chiRat_one (V : HSp D) : ChiRat V 1 := by
-  intro γ _ x _
-  exact MonoidHom.one_apply x
 
 theorem muUnit_muOf_one {V : HSp D} {X : Comp → Data D.host.E r} {dict : GA D V → Σ k, Frame (X k).Ψ r}
     (h5 : ∀ g τ i, ‖dmin (X (dict g).1).Gm (dict g).2 τ i‖ = 1) : MuUnit V dict (muOf V 1) := by
@@ -627,48 +616,6 @@ theorem BaseRows.wtField {Q : Par D} (B : BaseRows Q) (j : ℕ) (hj : InR D j) :
 
 theorem BaseRows.intDiagUnit {Q : Par D} (B : BaseRows Q) (j : ℕ) (hj : InR D j) : IntDiagUnit (Q.Xo j) Q.c := (exist3_of (B.frChart j hj) (B.borChart j hj) (B.intLatU j hj)).2.2
 
-theorem lawsCore_coreOfP {Q : Par D} (B : BaseRows Q) (pk : ∀ j σ, PkgT Q j σ)
-    (hS : ∀ j, InR D j → ∀ σ, GoodEmb Q.c σ → PkgOK2 Q j σ (pk j σ)) (hQ : Q.Pins) :
-    LawsCore (coreOfP Q pk B.half.choose) := by
-  have h0 : GoodEmb Q.c Q.c.F.val.toRingHom := goodEmb_val Q.c
-  have hT : ∀ j, InR D j → ∀ σ, GoodEmb Q.c σ → TestRd (Q.Xo j) Q.c ((coreOfP Q pk B.half.choose).U j) σ :=
-    fun j hj σ hσ => testRd_of (Q.Xo j) Q.c ((coreOfP Q pk B.half.choose).U j) σ (B.evalWD j hj)
-      (hS j hj σ hσ).unf (B.bcEx j hj σ hσ) (B.wtC j hj σ hσ)
-  have hsup : ∀ j, InR D j → SupDef (Q.Xo j) Q.c ((coreOfP Q pk B.half.choose).U j) :=
-    fun j hj => supDef_of _ _ _ (rdDomInj_of _ _ _ fun σ hσ => hT j hj σ hσ)
-  have hL2 : ∀ j (hj : InR D j) σ (hσ : GoodEmb Q.c σ), CuspL2 ((coreOfP Q pk B.half.choose).U j) σ (D.sp.W j)
-      ((coreOfP Q pk B.half.choose).dict j σ) ((coreOfP Q pk B.half.choose).mu j σ) := by
-    intro j hj σ hσ
-    obtain ⟨th, hr, -, hd⟩ := (hS j hj σ hσ).dictU
-    exact cusp_L2_of_measurable hσ (dict_dom_of hd) (hS j hj σ hσ).muUnit (adelMeas_of_aut (Q.Xo j) Q.c (hS j hj σ hσ).adelAut)
-  exact
-    { pins := hQ
-      half := B.half.choose_spec
-      evalWD := B.evalWD
-      unf := fun j hj σ hσ => (hS j hj σ hσ).unf
-      unTest := fun j hj σ hσ => (hS j hj σ hσ).unTest
-      chiTriv := fun j hj σ hσ _ _ _ k γ _ => (hS j hj σ hσ).chi1 k _ γ
-      dictU := fun j hj σ hσ => (hS j hj σ hσ).dictU
-      spaceW := fun _ _ _ _ => rfl
-      levelK := fun j hj _ _ => isLevelK_kfW (B.levGrp j hj)
-      xiAbs := fun j hj σ hσ => (hS j hj σ hσ).xiAbs
-      muUnit := fun j hj σ hσ => (hS j hj σ hσ).muUnit
-      muCont := fun j hj σ hσ => (hS j hj σ hσ).muCont
-      finVol := fun j _ _ _ => finVol_alt B.volTie j
-      cuspFD := fun j hj => cuspFD_of _ _ _ _ h0 (rdIndep_of _ _ _ _ (hT j hj _ h0)) (hS j hj _ h0).holFD
-      supDef := hsup
-      cuspidalL2Subspace := hL2
-      l2Def := fun j hj σ hσ => by
-        obtain ⟨th, hr, -, hd⟩ := (hS j hj σ hσ).dictU
-        exact l2Def_of_cusp hσ (hsup j hj)
-          (aeDom_of (hS j hj σ hσ).adelAut (finVol_alt B.volTie j) (volPair_of_tie B.volTie _ (D.sp.W_sig j))
-            (hS j hj σ hσ).muUnit hd) (hL2 j hj σ hσ)
-      unitIndep := fun j hj => unitIndep_of (B.wtField j hj) (B.intDiagUnit j hj)
-      ptNe := fun j hj => intFrNe_of (B.algPtLa j hj) (B.intFrExt j hj)
-      cuspMul := fun j _ => cusp_mul_of_M5 B.m5 _
-      latZ := fun j hj => (hS j hj _ h0).latZ rfl
-      cuNe := fun j hj => (hS j hj _ h0).cuNe rfl
-      expo := fun j hj => (hS j hj _ h0).expo rfl }
 
 structure LawsRemainingRows (hN : N1c) (Q : Par D) (hpq : ∀ j, 1 ≤ (Q.Dw j).p + (Q.Dw j).q) : Prop extends BaseRows Q where
   pkg : ∀ j (hj : InR D j) σ (hσ : GoodEmb Q.c σ), PkgRows hN Q hpq (infPlaceEx_holds D) j hj (iota j hj) σ hσ 1
@@ -688,14 +635,9 @@ def pkgOf2 (L : LawsRemainingRows hN Q hpq) (j : ℕ) (σ : Q.c.F →+* ℂ) : P
 
 def coreOf2 (L : LawsRemainingRows hN Q hpq) : Core D := coreOfP Q (pkgOf2 L) L.half.choose
 
-theorem lawsCore_coreOf2 (L : LawsRemainingRows hN Q hpq) (hQ : Q.Pins) : LawsCore (coreOf2 L) := lawsCore_coreOfP L.toBaseRows (pkgOf2 L) (fun j hj σ hσ => (pkgEx2 L j σ).choose_spec hj hσ) hQ
 
 end Collected
 
-theorem coreExists2 (D : D7) (hF : OFull D) (hz : OZeta D) (hN1ab : N1ab) (hN1c : N1c)
-    (hRest : LawsRemainingRows hN1c (parameterOfRecord D hF hz (datHolds D) hN1ab) (parameter_record_pq_pos D hF hz (datHolds D) hN1ab)) :
-    ∃ T : Core D, LawsCore T :=
-  ⟨coreOf2 hRest, lawsCore_coreOf2 hRest (parameter_record_conditions D hF hz (datHolds D) hN1ab)⟩
 
 section J
 
@@ -776,33 +718,8 @@ def coreJOf (L : LawsJRest hN Q hpq chiW) : CoreJ D where
   x₀ j σ := (pkgOfJ L j σ).2
   iota := iotaOf L
 
-theorem lawsJ_coreJOf (L : LawsJRest hN Q hpq chiW) (hQ : Q.Pins) : LawsJ (coreJOf L) := by
-  have hS : ∀ j (hj : InR D j) σ, GoodEmb Q.c σ →
-      PkgOKJ Q j σ (chiW j σ) (L.iota j hj).choose (pkgOfJ L j σ).1 (pkgOfJ L j σ).2 :=
-    fun j hj σ hσ => (pkgExJ L j σ).choose_spec hj hσ
-  have hC := lawsCore_coreOfP L.toBaseRows (fun j σ => (pkgOfJ L j σ).1)
-    (fun j hj σ hσ => (hS j hj σ hσ).ok) hQ
-  have hι : ∀ j (hj : InR D j), iotaOf L j = (L.iota j hj).choose := fun j hj => dif_pos hj
-  exact
-    { toLawsM := hC.toLawsM
-      cUnit := fun _ _ _ _ _ => norm_one
-      muVal := fun j hj σ hσ => (hS j hj σ hσ).muVal
-      muConj := fun j hj σ hσ => L.muConj j hj σ hσ
-      intAll := L.intAll
-      modelW := fun j hj σ hσ => (hS j hj σ hσ).modelW
-      familyUniformisationBasePointOrthogonal := fun j hj σ hσ => (hS j hj σ hσ).familyUniformisationBasePointOrthogonal
-      kfHalf := fun j hj _ _ => L.kfHalf j hj
-      adPin := fun j hj σ hσ => by
-        show AdPin _ j σ _ (iotaOf L j)
-        rw [hι j hj]
-        exact (hS j hj σ hσ).adPin }
 
 end J
 
-theorem coreJExists (D : D7) (hF : OFull D) (hz : OZeta D) (hN1ab : N1ab) (hN1c : N1c)
-    (chiW : ℕ → ((parameterOfRecord D hF hz (datHolds D) hN1ab).c.F →+* ℂ) → (AE D)ˣ →* Circle)
-    (hRest : LawsJRest hN1c (parameterOfRecord D hF hz (datHolds D) hN1ab) (parameter_record_pq_pos D hF hz (datHolds D) hN1ab) chiW) :
-    ∃ T : CoreJ D, LawsJ T :=
-  ⟨coreJOf hRest, lawsJ_coreJOf hRest (parameter_record_conditions D hF hz (datHolds D) hN1ab)⟩
 
 end Formalism.L2.Pj

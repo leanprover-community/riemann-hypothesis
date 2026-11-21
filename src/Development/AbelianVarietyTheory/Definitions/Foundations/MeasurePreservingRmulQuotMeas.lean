@@ -220,11 +220,6 @@ theorem integrable_descend [IsFiniteMeasureOnCompacts dh] {φ : H → ℂ} (hi :
   rw [hi.descend_mk]
   exact hM x hx
 
-theorem quotMeas_of_finite [IsFiniteMeasure dt] : quotMeas T dt dh = (dt univ)⁻¹ • dh.map (mk T) := by
-  have h0 : dt univ ≠ 0 := (isOpen_univ.measure_pos dt univ_nonempty).ne'
-  rw [(isQuotMeasure_quotMeas dt dh hT).eq_map (b := fun _ => (dt univ)⁻¹) measurable_const
-    fun x => by rw [lintegral_const, ENNReal.inv_mul_cancel h0 (measure_ne_top _ _)], withDensity_const,
-    Measure.map_smul]
 
 theorem hasQuotInt_of_finite [IsFiniteMeasure dt] {φ : H → ℂ} (hi : LeftInv T φ) (hφ : Integrable φ dh) :
     HasQuotInt T dt dh φ ((∫ g, φ g ∂dh) / dt.real univ) := by

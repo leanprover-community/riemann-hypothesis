@@ -6,6 +6,5 @@ noncomputable section
 
 namespace Formalism.HermitianLattices.BoxCountUnconditional
 
-theorem boxCountAll_statement : BoxCountAll := Formalism.HermitianLattices.Ext.PrimitiveCharacterCasts.boxCountHyp_outright
 
 end Formalism.HermitianLattices.BoxCountUnconditional

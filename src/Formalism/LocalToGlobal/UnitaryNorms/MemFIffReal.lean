@@ -38,11 +38,6 @@ theorem mem_K (x : H.E) : x ∈ H.K ↔ T.j x ∈ KQ H.d := H.mem_K_iff T.j x
 theorem conj (x : H.E) : T.ι (T.j (H.conj x)) = starRingEnd ℂ (T.ι (T.j x)) :=
   H.conjE_apply (T.ι.comp T.j.toRingHom) x
 
-theorem mem_F_iff_real (x : H.E) : x ∈ H.F ↔ starRingEnd ℂ (T.ι (T.j x)) = T.ι (T.j x) := by
-  rw [← T.conj, H.conjE_mem_hostF_iff]
-  constructor
-  · intro h; exact congrArg (fun y => T.ι (T.j y)) h
-  · intro h; exact T.j.toRingHom.injective (T.ι.injective h)
 
 theorem sqrtMinusD : T.ι (T.j H.sqrtMinusD) = Complex.I * (Real.sqrt H.d : ℂ) := by
   rw [T.phi0]; exact H.φ₀_mem
@@ -91,14 +86,7 @@ theorem emb_eq (g : R.GG) (x : H.E) : H.emb g x = T.ι (T.sQ g (T.iso x)) := by
   rw [Frame.sQ, carry_iso, T.phi0]
   rfl
 
-theorem emb_eq_of_acts {g : R.GG} {s : H.EQ →ₐ[ℚ] Qb} (hs : H.ActsAs s g) (x : H.E) :
-    H.emb g x = T.ι (s (T.iso x)) := by
-  have h1 : s (T.iso x) = T.j (H.gal.symm g x) := hs T.j x
-  rw [h1, T.phi0]
-  rfl
 
-theorem sQ_sqrt_d (g : R.GG) (x : H.EQ) (hx : (x : Qb) ∈ sqrts (-(H.d : ℤ))) :
-    T.sQ g x = (((g.1.2 : ℤˣ) : ℤ) : Qb) * x := (T.sQ_acts g).sqrt_d x hx
 
 theorem «exists» (H : Formalism.BasicNotions.Host R) : Nonempty (Frame H) := by
   let j : H.E →ₐ[ℚ] Qb := IsAlgClosed.lift
@@ -136,11 +124,6 @@ theorem embE (x : D.host.E) : T.jLL (D.embE x) = T.fr.j x := by
 
 def LLQ : Fld := T.jLL.toRatAlgHom.fieldRange
 
-theorem EQ_le_LLQ : D.host.EQ ≤ T.LLQ := by
-  intro y hy
-  have hy' : y ∈ T.fr.j.fieldRange := by rw [T.fr.range]; exact hy
-  obtain ⟨x, rfl⟩ := hy'
-  exact ⟨D.embE x, T.embE x⟩
 
 theorem «exists» (D : D7) : Nonempty (HostTied D) := by
   let jLL : D.what₂.LL →ₐ[ℚ] Qb := IsAlgClosed.lift

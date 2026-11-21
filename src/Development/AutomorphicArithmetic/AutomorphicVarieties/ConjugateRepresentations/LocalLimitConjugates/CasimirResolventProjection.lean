@@ -52,7 +52,6 @@ structure IsOp (N : Submodule ℂ (Sm E a)) (T : Module.End ℂ (Sm E a)) : Prop
   lie : ∀ X, ∀ φ ∈ N, lie E a X (T φ) = T (lie E a X φ)
   rt : ∀ g, ∀ φ ∈ N, rt E a g (T φ) = T (rt E a g φ)
 
-theorem isOp_one (N : Submodule ℂ (Sm E a)) : IsOp N 1 := ⟨fun _ h => h, fun _ _ _ => rfl, fun _ _ _ => rfl⟩
 
 def LocLim (f : ℕ → Sm E a) (φ : Sm E a) : Prop :=
   ∀ C : Set (GA E a), IsCompact C → TendstoUniformlyOn (fun k => (f k).1) φ.1 atTop C

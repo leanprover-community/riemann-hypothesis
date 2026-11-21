@@ -81,28 +81,9 @@ lemma coindConst_apply (B : Rep.{u} k S) (y : B.ρ.invariants) (g : G) :
 
 variable [Fintype G] [Fintype S]
 
-lemma homologyMap_tateShapiroMap_tateZeroClass (B : Rep.{u} k S) (y : B.ρ.invariants) :
-    (HomologicalComplex.homologyMap (tateShapiroMap S B) 0).hom (tateZeroClass B y) =
-      tateZeroClass (coind S.subtype B) (coindConst S B y) :=
-  homologyMap_tateZeroClass _ y _ (funext fun v => Subtype.ext (funext fun g =>
-    shapiroCochains_hom_f_zero_const S B y y.2 v g))
 
-lemma tateCoindIso_inv (B : Rep.{u} k S) (n : ℤ) :
-    (tateCoindIso S B n).inv = HomologicalComplex.homologyMap (tateShapiroMap S B) n := by
-  refine (cancel_mono (tateCoindIso S B n).hom).1 ?_
-  exact (Iso.inv_hom_id _).trans (homologyMap_tateShapiroMap_comp_tateCoindIso_hom S B n).symm
 
-theorem tateCoindIso_hom_tateZeroClass (B : Rep.{u} k S) (y : B.ρ.invariants) :
-    (tateCoindIso S B 0).hom.hom (tateZeroClass (coind S.subtype B) (coindConst S B y)) =
-      tateZeroClass B y := by
-  rw [← homologyMap_tateShapiroMap_tateZeroClass, ← tateCoindIso_inv]
-  exact Iso.inv_hom_id_apply (tateCoindIso S B 0) _
 
-theorem tateCoindIso_inv_tateZeroClass (B : Rep.{u} k S) (y : B.ρ.invariants) :
-    (tateCoindIso S B 0).inv.hom (tateZeroClass B y) =
-      tateZeroClass (coind S.subtype B) (coindConst S B y) := by
-  rw [tateCoindIso_inv]
-  exact homologyMap_tateShapiroMap_tateZeroClass S B y
 
 end Shapiro
 
@@ -110,17 +91,6 @@ section ResCores
 
 variable {k G : Type u} [CommRing k] [Group G] [Fintype G] (S : Subgroup G) [Fintype S]
 
-theorem tateRes_tateZeroClass (A : Rep.{u} k G) (x : A.ρ.invariants) :
-    ((tateRes S 0).app A).hom (tateZeroClass A x) =
-      tateZeroClass (res S.subtype A) (invariantsRes S.subtype x) := by
-  rw [tateRes_app, ModuleCat.hom_comp, LinearMap.comp_apply]
-  erw [tateCohomologyFunctor_map_tateZeroClass]
-  have h : ((Rep.invariantsFunctor k G).map
-      ((Rep.resCoindAdjunction.{u, u} k S.subtype).unit.app A)).hom x =
-      coindConst S (res S.subtype A) (invariantsRes S.subtype x) :=
-    Subtype.ext (Subtype.ext (funext fun g => x.2 g))
-  rw [h]
-  exact tateCoindIso_hom_tateZeroClass S (res S.subtype A) (invariantsRes S.subtype x)
 
 omit [Fintype S] in
 
@@ -140,15 +110,6 @@ lemma counit_indCoindIso_inv_coindConst [DecidableRel (QuotientGroup.rightRel S)
     rw [Quotient.liftOn_mk, indResAdjunction_counit_app_hom_mk]
     rfl
 
-theorem tateCores_tateZeroClass (A : Rep.{u} k G) (y : (res S.subtype A).ρ.invariants) :
-    ((tateCores S 0).app A).hom (tateZeroClass (res S.subtype A) y) =
-      tateZeroClass A (transferInv S y) := by
-  classical
-  rw [tateCores_app, tateIndIso_inv_eq, ModuleCat.hom_comp, LinearMap.comp_apply,
-    ModuleCat.hom_comp, LinearMap.comp_apply, tateCoindIso_inv_tateZeroClass,
-    tateCohomologyFunctor_map_tateZeroClass, tateCohomologyFunctor_map_tateZeroClass]
-  congr 1
-  exact Subtype.ext (counit_indCoindIso_inv_coindConst S A y)
 
 end ResCores
 

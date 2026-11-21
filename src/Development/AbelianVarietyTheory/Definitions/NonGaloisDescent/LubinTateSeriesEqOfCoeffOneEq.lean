@@ -116,19 +116,6 @@ theorem hasSum_C [CompleteSpace R] {ζ : R} {n : ℕ} (h : ζ ^ 2 ^ n = 1) (c : 
 
 end
 
-theorem hasSum_Om {ζ : Om 2} {n : ℕ} (h : ζ ^ 2 ^ n = 1) (c : ℤ_[2]) :
-    HasSum (fun k => algebraMap ℚ_[2] (Om 2) ((Ring.choose c k : ℤ_[2]) : ℚ_[2]) * (ζ - 1) ^ k)
-      (ζ ^ (PadicInt.toZModPow n c).val) := by
-  let f : Om 2 →+* ℂ_[2] := algebraMap (Om 2) ℂ_[2]
-  have hf : Isometry f := AddMonoidHomClass.isometry_of_norm f (PadicComplex.norm_extends 2)
-  have h' : (f ζ) ^ 2 ^ n = 1 := by rw [← map_pow, h, map_one]
-  have hs := hasSum_C h' c
-  refine (hf.isEmbedding.isInducing.hasSum_iff _ _).1 ?_
-  rw [map_pow]
-  convert hs using 1
-  funext k
-  simp only [Function.comp, map_mul, map_pow, map_sub, map_one]
-  rfl
 
 theorem exists_roots : ∃ ζ : ℕ → Om 2, ζ 0 = 1 ∧ ζ 1 = -1 ∧ ∀ n, ζ (n + 1) ^ 2 = ζ n := by
   choose s hs using fun x : Om 2 => IsAlgClosed.exists_pow_nat_eq x (n := 2) two_pos
@@ -144,30 +131,6 @@ def cycZ : ↥(GK Kb) →* ℤ_[2]ˣ :=
 
 def cycK : ↥(GK Kb) →* (↥Kb.1)ˣ := (Units.map (algebraMap ℤ_[2] ↥Kb.1).toMonoidHom).comp cycZ
 
-theorem ltData : ∃ z, LTData Kb cycK 2 z := by
-  obtain ⟨ζ, h0, h1, hs⟩ := exists_roots
-  have hp : ∀ n, ζ n ^ 2 ^ n = 1 := fun n => by
-    induction n with
-    | zero => simp [h0]
-    | succ n ih => rw [pow_succ', pow_mul, hs, ih]
-  refine ⟨fun n => ζ n - 1, irr, by simp [h0], by simp only [h1]; norm_num, fun n => ?_, fun g => ?_⟩
-  · rw [resCard_Kb]
-    change (2 : Om 2) * (ζ (n + 1) - 1) + (ζ (n + 1) - 1) ^ 2 = ζ n - 1
-    rw [← hs n]
-    ring
-  · refine ⟨algebraMap ℤ_[2] ↥(OL Kb) (cycZ g : ℤ_[2]), rfl, _, endo _, fun n => ?_⟩
-    have h := hasSum_Om (hp n) (cycZ g : ℤ_[2])
-    have hg := cyclotomicCharacter.spec 2 (MulSemiringAction.toRingAut (GQ 2) (Om 2) (g : GQ 2)) (ζ n) (hp n)
-    have hg' : (g : GQ 2) (ζ n) = ζ n ^ (PadicInt.toZModPow n (cycZ g : ℤ_[2])).val := hg
-    rw [map_sub, map_one, hg']
-    have h2 := h.sub (hasSum_ite_eq (0 : ℕ) (1 : Om 2))
-    refine (congrArg (fun u : ℕ → Om 2 => HasSum u _) (funext fun k => ?_)).mpr h2
-    by_cases hk : k = 0
-    · subst hk
-      rw [PowerSeries.coeff_zero_eq_constantCoeff_apply, GlobalTheory.Cyc.cyc_const]
-      simp
-    · rw [coeff_cyc k hk, if_neg hk, sub_zero]
-      rfl
 
 section General
 variable {l : ℕ} [Fact l.Prime]
@@ -239,57 +202,11 @@ theorem IsLTEndo_unique {K : FinExt l} {π a : ↥(OL K)} (hπ : Irreducible π)
     (h : IsLTEndo K π a φ) (h' : IsLTEndo K π a ψ) : φ = ψ :=
   lubinTateSeries_eq_of_coeff_one_eq hπ (two_le_resCard K) h.1 h'.1 (h.2.1.trans h'.2.1.symm) h.2.2 h'.2.2
 
-theorem IsLTEndo_one (K : FinExt l) (π : ↥(OL K)) : IsLTEndo K π 1 PowerSeries.X := by
-  refine ⟨by simp, by simp, ?_⟩
-  have hs : PowerSeries.HasSubst (ltSeries K π) := PowerSeries.HasSubst.of_constantCoeff_zero' (by
-    have := two_le_resCard K
-    rw [ltSeries, map_add, map_mul, map_pow, PowerSeries.constantCoeff_X, mul_zero, zero_pow (by omega), add_zero])
-  rw [PowerSeries.subst_X hs, ltSeries]
 
-theorem fixed_of_chi_eq_one {K : FinExt l} {χ : ↥(GK K) →* (↥K.1)ˣ} {π : ↥(OL K)} {z : ℕ → Om l}
-    (h : LTData K χ π z) (g : ↥(GK K)) (hg : χ g = 1) (n : ℕ) : (g : GQ l) (z n) = z n := by
-  obtain ⟨a, ha, φ, hφ, hs⟩ := h.2.2.2.2 g
-  have ha1 : a = 1 := Subtype.ext (by rw [ha, hg]; rfl)
-  subst ha1
-  obtain rfl := IsLTEndo_unique h.1 hφ (IsLTEndo_one K π)
-  refine (hs n).unique ?_
-  have := hasSum_single (f := fun k => (((PowerSeries.coeff k (PowerSeries.X : PowerSeries ↥(OL K)) : ↥(OL K)) : ↥K.1) : Om l) * z n ^ k) 1
-    (fun k hk => by rw [PowerSeries.coeff_X, if_neg hk]; simp)
-  simpa using this
 
 end General
 
-theorem not_ltData_one (z : ℕ → Om 2) : ¬ LTData Kb 1 2 z := by
-  intro h
-  have hfix : ∀ g : GQ 2, g (z 2) = z 2 := fun g =>
-    fixed_of_chi_eq_one h ⟨g, by simp [GK, Kb]⟩ rfl 2
-  have e0 : (2 : Om 2) * z 1 + z 1 ^ resCard Kb = z 0 := h.2.2.2.1 0
-  have e1 : (2 : Om 2) * z 2 + z 2 ^ resCard Kb = z 1 := h.2.2.2.1 1
-  rw [resCard_Kb] at e0 e1
-  rw [h.2.1] at e0
-  have hz1 : z 1 = -2 := by
-    have : z 1 * (z 1 + 2) = 0 := by linear_combination e0
-    exact eq_neg_of_add_eq_zero_left ((mul_eq_zero.1 this).resolve_left h.2.2.1)
-  have hmem : z 2 ∈ (⊥ : IntermediateField ℚ_[2] (Om 2)) := (InfiniteGalois.mem_bot_iff_fixed (z 2)).2 hfix
-  obtain ⟨y, hy⟩ := IntermediateField.mem_bot.1 hmem
-  have hy2 : (y + 1) ^ 2 = -1 := (algebraMap ℚ_[2] (Om 2)).injective (by
-    rw [map_pow, map_add, map_one, map_neg, map_one, hy]; linear_combination e1 + hz1)
-  have hn : ‖y + 1‖ ≤ 1 := by
-    have := congrArg norm hy2
-    rw [norm_pow, norm_neg, norm_one] at this
-    nlinarith [norm_nonneg (y + 1)]
-  obtain ⟨w, hw⟩ : ∃ w : ℤ_[2], (w : ℚ_[2]) = y + 1 := ⟨⟨y + 1, hn⟩, rfl⟩
-  have h3 : w ^ 2 = -1 := Subtype.ext (by push_cast; rw [hw, hy2])
-  have h4 := congrArg (PadicInt.toZModPow (p := 2) 2) h3
-  rw [map_pow, map_neg, map_one] at h4
-  revert h4
-  generalize PadicInt.toZModPow (p := 2) 2 w = t
-  revert t
-  decide
 
-theorem cycK_ne_one : cycK ≠ 1 := fun h => by
-  obtain ⟨z, hz⟩ := ltData
-  exact not_ltData_one z (h ▸ hz)
 
 theorem lineRep_apply {l : ℕ} [Fact l.Prime] {K LL : FinExt l} (χ : ↥(GK K) →* (↥LL.1)ˣ) (g : ↥(GK K))
     (v : Fin 1 → ↥LL.1) : lineRep χ g v = (χ g : ↥LL.1) • v := rfl

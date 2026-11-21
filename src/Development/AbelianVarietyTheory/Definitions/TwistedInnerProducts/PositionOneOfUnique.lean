@@ -37,17 +37,7 @@ def xLastQ (dV : HypDec V V₀ (ρ + 1)) (dW : HypDec W W₀ ρ) (z' : Fin W₀.
     Matrix (Fin W.rank) (Fin V.rank) D.host.E :=
   (Matrix.of fun y (i : Fin (ρ + 1)) => besselAuxiliaryVectors dW z' i y) * dV.qX
 
-theorem rat_xZeroQ (dV : HypDec V V₀ ρ) (dW : HypDec W W₀ ρ) : rat (xZeroQ dV dW) = dV.extX W (xZero dW) := rat_mul _ _
 
-theorem rat_xLastQ (dV : HypDec V V₀ (ρ + 1)) (dW : HypDec W W₀ ρ) (z' : Fin W₀.rank → D.host.E) :
-    rat (xLastQ dV dW z') = dV.extX W (xLast dW z') := by
-  rw [xLastQ, rat_mul, HypDec.extX_apply]
-  refine congrArg₂ _ (funext fun y => funext fun i => ?_) rfl
-  change incA D (besselAuxiliaryVectors dW z' i y) = Fin.snoc (α := fun _ => AE D) (dW.jX y) ((dW.j0 *ᵥ ratV z') y) i
-  refine Fin.lastCases ?_ (fun i => ?_) i
-  · rw [Fin.snoc_last, besselAuxiliaryVectors, Fin.val_last, if_neg (lt_irrefl _), if_pos rfl]
-    exact congrFun (ratV_mulVec _ _) y
-  · rw [Fin.snoc_castSucc, besselAuxiliaryVectors, Fin.val_castSucc, if_pos i.2, colN_fin]; rfl
 
 theorem mul_qX_colN {m : ℕ} (d : HypDec V V₀ ρ) (M : Matrix (Fin m) (Fin ρ) D.host.E) (i : ℕ) :
     (M * d.qX) *ᵥ colN d.e i = colN M i := by
@@ -217,17 +207,7 @@ def locGLs {ι : Type} [Fintype ι] [DecidableEq ι] (β : ∀ v : S, LatFrame (
   MonoidHom.noncommPiCoprod (fun v : S => locGL V (τ v) (β v)) fun _ _ h x y =>
     commute_locGL_locGL V _ _ (fun e => h (Subtype.ext e)) _ _ x y
 
-theorem locGLs_mulSingle [DecidableEq S] {ι : Type} [Fintype ι] [DecidableEq ι]
-    (β : ∀ v : S, LatFrame (Fv D.host.F v) ι (Fin V.rank)) (v : S) (g : GL ι (Fv D.host.F v)) :
-    locGLs V τ β (Pi.mulSingle v g) = locGL V (τ v) (β v) g :=
-  MonoidHom.noncommPiCoprod_mulSingle (fun v : S => locGL V (τ v) (β v)) v g
 
-theorem locGLs_mem_GfC {ι : Type} [Fintype ι] [DecidableEq ι] (β : ∀ v : S, LatFrame (Fv D.host.F v) ι (Fin V.rank))
-    (g : ∀ v : S, GL ι (Fv D.host.F v)) : locGLs V τ β g ∈ GfC V := by
-  have h : (locGLs V τ β).range ≤ GfC V :=
-    (MonoidHom.noncommPiCoprod_range (fun v : S => locGL V (τ v) (β v))).trans_le
-      (iSup_le fun v _ ⟨x, e⟩ => e ▸ locGL_mem_GfC V (τ v) (β v) x)
-  exact h ⟨g, rfl⟩
 
 variable {n : Type} [Fintype n] [DecidableEq n] {c : ℕ} (β : ∀ v : S, LatFrame (Fv D.host.F v) (n ⊕ Fin c) (Fin V.rank))
   (ν : ∀ v : S, Measure (Fv D.host.F v))
@@ -237,15 +217,8 @@ def posAt (p q : S → ℕ) (l : (GA D V → ℂ) → ℂ) : (GA D V → ℂ) �
 
 def pos1 (l : (GA D V → ℂ) → ℂ) : (GA D V → ℂ) → ℂ := posAt V τ β ν (fun _ => c / 2 + 1) (fun _ => 1) l
 
-theorem posAt_self (p : S → ℕ) (l : (GA D V → ℂ) → ℂ) : posAt V τ β ν p p l = l := exList_self _ _ _ _ _
 
-theorem positionOne_of_unique [Unique S] (l : (GA D V → ℂ) → ℂ) :
-    pos1 V τ β ν l = downIter (ν default) (locReg V (τ default) (β default)) 1 (c / 2) l := by
-  rw [pos1, posAt, Finset.univ_unique, Finset.toList_singleton]
-  exact exTo_of_ge _ _ (Nat.le_add_left 1 _) l
 
-theorem posAt_of_isEmpty [IsEmpty S] (p q : S → ℕ) (l : (GA D V → ℂ) → ℂ) : posAt V τ β ν p q l = l := by
-  rw [posAt, Finset.univ_eq_empty, Finset.toList_empty]; rfl
 
 variable {V} {U : Submodule ℂ (GA D V → ℂ)} (hU : IsFinStable V U)
 
@@ -260,27 +233,7 @@ theorem posAt_congr (p q : S → ℕ) {l l' : (GA D V → ℂ) → ℂ} (h : ∀
     posAt V τ β ν p q l F = posAt V τ β ν p q l' F := by
   rw [posAt_coe τ β ν hU p q l ⟨F, hF⟩, posAt_coe τ β ν hU p q l' ⟨F, hF⟩, funext fun F : U => h F F.2]
 
-theorem posAt_rTrans (p q : S → ℕ) (l : (GA D V → ℂ) → ℂ) {x : GA D V}
-    (hx : ∀ v : S, GlobalTheory.AdelicU.proj D.sp.cm.sig V.gram v x = 1) (F : GA D V → ℂ) :
-    posAt V τ β ν p q l (rTrans x F) = posAt V τ β ν p q (fun F => l (rTrans x F)) F :=
-  (exList_law ν _ (fun v => locReg V (τ v) (β v)) (T := rTrans x) (fun v g F => funext fun y => by
-    change F (y * x * _) = F (y * _ * x)
-    rw [mul_assoc, mul_assoc, (commute_locGL V (τ v) (β v) g (hx v)).eq]) (fun _ => (one_mul _).symm) p q _ F).trans
-    (one_mul _)
 
-theorem posAt_isNEquiv [∀ v, (ν v).IsAddHaarMeasure] (hU' : U ≤ levelFun V) {ψv : ∀ v : S, AddChar (Fv D.host.F v) Circle}
-    (hψ : ∀ v, Continuous (ψv v)) (hψ1 : ∀ v, ψv v ≠ 1) {p q : S → ℕ} (hp : ∀ v, 1 ≤ p v ∧ p v ≤ c)
-    (hq : ∀ v, 1 ≤ q v ∧ q v ≤ c) {l : (GA D V → ℂ) → ℂ} (l₀ : U →ₗ[ℂ] ℂ) (h₀ : ∀ F : U, l F = l₀ F)
-    (hl : ∀ v, IsNEquiv (ψv v) (p v) (locRepOn V (τ v) (β v) U hU) l₀) :
-    ∃ l₁ : U →ₗ[ℂ] ℂ, (∀ F : U, posAt V τ β ν p q l F = l₁ F) ∧
-      ∀ v, IsNEquiv (ψv v) (q v) (locRepOn V (τ v) (β v) U hU) l₁ := by
-  classical
-  obtain ⟨l₁, e, h⟩ := exList_isNEquiv ν hψ hψ1 (fun v => isSmoothRep_locRepOn V (τ v) (β v) hU hU')
-    (fun u v huv g h F => Subtype.ext (funext fun y => by
-      change F.1 (y * _ * _) = F.1 (y * _ * _)
-      rw [mul_assoc, mul_assoc, (commute_locGL_locGL V _ _ (fun e => huv (Subtype.ext e)) _ _ g h).eq])) hp hq l₀ hl
-    (Finset.nodup_toList Finset.univ)
-  exact ⟨l₁, fun F => by rw [posAt_coe τ β ν hU, funext h₀, e], fun v => by simpa using h v⟩
 
 section Bes
 
@@ -292,9 +245,6 @@ def besPos (q : S → ℕ) (φ : GA D A → ℂ) : (GA D V → ℂ) → ℂ :=
 
 def besPos1 (φ : GA D A → ℂ) : (GA D V → ℂ) → ℂ := besPos τ β ν ψ d o ζ μ 𝓕 νN 𝓝 (fun _ => 1) φ
 
-theorem besPos1_eq (hc : c = 2 * ρ + 1) (φ : GA D A → ℂ) :
-    besPos1 τ β ν ψ d o ζ μ 𝓕 νN 𝓝 φ = pos1 V τ β ν (besPer ψ 1 d o ζ μ 𝓕 νN 𝓝 φ) := by
-  rw [pos1, show c / 2 = ρ by omega]; rfl
 
 end Bes
 
@@ -367,29 +317,8 @@ end Periods
 
 section Examples
 
-theorem locChar_ne_one {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF F) ℂ} (hψ : ∀ x, ‖ψ x‖ = 1)
-    {v : HeightOneSpectrum (𝓞 F)} (h : ∃ y, psiV F ψ v y ≠ 1) {a : Fv F v} (ha : a ≠ 0) : locChar ψ hψ a ≠ 1 := fun e => by
-  obtain ⟨y, hy⟩ := h
-  have h1 := coe_locChar ψ hψ a (y / a)
-  rw [e, mul_div_cancel₀ _ ha] at h1
-  exact hy h1.symm
 
-theorem weilChar_spec {ψ : AddChar (AF D.host.F) ℂ} (h : IsStdChar D ψ (-1)) (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) :
-    Continuous (weilChar ψ h.1.2.1 τ) ∧ weilChar ψ h.1.2.1 τ ≠ 1 :=
-  ⟨continuous_locChar h.1.1 _ _, locChar_ne_one _ (GlobalTheory.StdCharLocal.psiV_ne_one D ψ h v) ((map_ne_zero τ).2 cmHost_imaginaryGenerator_ne_zero)⟩
 
-theorem weilChar_piW (ψ : AddChar (AF D.host.F) ℂ) (hψ : ∀ x, ‖ψ x‖ = 1) (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) (x : AE D) :
-    (weilChar ψ hψ τ (piW τ x) : ℂ) = psiE ψ (idem τ * (incA D D.host.xi0 * x)) := by
-  have h1 : piW τ (idem τ) = 1 := by
-    change splitProj τ (compFin _ _ v (idem τ)) = 1
-    rw [GlobalTheory.EmbChart.compFin_idem, GlobalTheory.AdelicU.splitProj_splitIdem]
-  have h2 : piW τ (cA D (idem τ)) = 0 := by
-    change splitProj τ (compFin _ _ v (cA D (idem τ))) = 0
-    rw [GlobalTheory.EmbChart.cA_idem, GlobalTheory.EmbChart.compFin_tensAt, map_sub, map_one, GlobalTheory.AdelicU.splitProj_splitIdem, sub_self]
-  have h3 : idem τ ∈ locIdeal D v := tensAt_mem _
-  rw [psiE, trace_of_mem τ (Ideal.mul_mem_right _ _ h3), map_mul (cA D), map_mul (piW τ),
-    map_mul (piW τ) (cA D _), h1, h2, zero_mul, add_zero, one_mul, map_mul, piW_incA]
-  rfl
 
 def hypDecZero (S : HSp D) : HypDec S S 0 where
   e := 0

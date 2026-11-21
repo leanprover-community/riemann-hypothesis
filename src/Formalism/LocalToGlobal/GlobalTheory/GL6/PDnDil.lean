@@ -346,12 +346,7 @@ theorem dilation_local_v_of_kernel_and_local_w (Tf : FormsTied D u) (hK : LocalT
   exact ⟨ddk_latP Tf i hi v c _ _ (hK i hi v c).2 (hK i hi v _).1 (hK i hi v _).1 (hK i hi v _).2 (hK i hi v _).2 g a γ γ'
     hl hfun hl' hfun', h i hi v c g a k hk hg γ η κ hsup hrel hl hfun γ' η' κ' hsup' hrel' hl' hfun'⟩
 
-theorem dilation_local_of_kernel_and_local_w (Tf : FormsTied D u) (hK : LocalToGlobal₂ Tf) (h : DnDilLocW Tf) : DnDilLoc Tf :=
-  dnDilLoc_of_V Tf (dilation_local_v_of_kernel_and_local_w Tf hK h)
 
-theorem frobeniusNoKernelFamily_of_hecke_kerAtP (h1 : HeckeRelationsFamily)
-    (hL : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf → LocalToGlobal₂ Tf ∧ DnDilLocW Tf) : FrobeniusNoKernelFamily :=
-  frobenius_no_kernel_of_hecke_relations h1 (fun D u Tf hc => dilation_local_of_kernel_and_local_w Tf (hL D u Tf hc).1 (hL D u Tf hc).2)
 
 end DdlTied
 

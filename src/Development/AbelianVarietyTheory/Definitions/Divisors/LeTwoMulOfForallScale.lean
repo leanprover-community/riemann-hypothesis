@@ -274,8 +274,6 @@ structure IsSesq (F : V → V → M) : Prop where
 
   smul_right : ∀ (c : ℂ) x y, F x (c • y) = conj c • F x y
 
-theorem isSesq_form (H : Matrix n n ℂ) : IsSesq (form H) :=
-  ⟨form_add_left H, form_smul_left H, form_add_right H, form_smul_right H⟩
 
 theorem IsSesq.polarisation {F : V → V → M} (hF : IsSesq F) (x y : V) :
     F x y = (1 / 4 : ℂ) • ((F (x + y) (x + y) + (-1 : ℂ) • F (x - y) (x - y)) +

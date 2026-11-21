@@ -18,15 +18,7 @@ section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E} {r : ℕ}
 
-theorem c3eqv_loc_mono {P : Ideal (𝓞 E)} [P.IsPrime] {L L' : Submodule (𝓞 E) S.V} (h : L ≤ L') :
-    Formalism.HermitianLatticesTheory.localization₂ P L ≤ Formalism.HermitianLatticesTheory.localization₂ P L' := by
-  intro x hx
-  obtain ⟨s, hs, hx⟩ := hx
-  exact ⟨s, hs, h hx⟩
 
-theorem c3eqv_le_loc {P : Ideal (𝓞 E)} [hP : P.IsPrime] (L : Submodule (𝓞 E) S.V) : L ≤ Formalism.HermitianLatticesTheory.localization₂ P L := by
-  intro x hx
-  exact ⟨1, P.primeCompl.one_mem, by rwa [one_smul]⟩
 
 variable {Λ : Submodule (𝓞 E) S.V} {g : ℕ} {T T' : E} {F : LFlag S r T} {F' : LFlag S r T'}
 

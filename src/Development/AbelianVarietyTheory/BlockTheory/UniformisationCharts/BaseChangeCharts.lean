@@ -151,11 +151,6 @@ theorem IsTheImage.torsion {U : Unif I D A G} {k : ℕ} {p : QkPt D.toPre F k}
   let ⟨_, _, h⟩ := h
   h.1
 
-theorem isTheImage_of_forall {U : Unif I D A G} {k : ℕ} (hk : 1 ≤ k) {p : QkPt D.toPre F k}
-    {x : TFK (R := R) F ⟶ A.A}
-    (h : ∀ w : Ident U.toUnifPre, QkToAk D.toPre F A k (ExpandsF F U.toUnifPre w k) p x) :
-    IsTheImage F U k p x :=
-  ⟨hk, Classical.arbitrary _, h _⟩
 
 end Expansion
 

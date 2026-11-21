@@ -117,12 +117,5 @@ end GlobalTheory.SymExtend
 
 namespace GlobalTheory
 
-theorem exists_cp_of_generic_polarisation : Laws → ∀ (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V], CDVR V → ∀ (A : PolAV (Spec (CommRingCat.of (FractionRing V)))) (G : Over (Spec (CommRingCat.of V))) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (gen : (Over.pullback (jK V)).obj G ≅ A.A), IsMonHom gen.hom → ∀ (LG : RigLB G) (c : CubicalStr G LG) (w : LB.Iso (A.L.pull gen.hom.left) (LG.L.pull (pullback.fst G.hom (jK V)))), w.IsGen → ∃ P : CP G, P.L = LG ∧ HEq P.c c := by
-  intro hL V _ _ _ hV A G _ _ hG gen hgen LG c w hw
-  have := hV.1
-  have := hG.smooth
-  have := hG.geomConnected
-  obtain ⟨s, hs, hr⟩ := SymExtend.exists_sym hL.globalFns V A G gen LG.L LG.isLB w hw
-  exact ⟨CP.ofSurjective (SymExtend.surjective_cube_of_generic hL.globalFns G A.isAb gen) LG c s hs hr, rfl, HEq.rfl⟩
 
 end GlobalTheory

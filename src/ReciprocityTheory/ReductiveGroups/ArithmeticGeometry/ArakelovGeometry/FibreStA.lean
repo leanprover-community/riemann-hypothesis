@@ -68,16 +68,7 @@ theorem aeval_eq_pow_mul_deh {ι S : Type*} [Fintype ι] [Field S] (v : ι → S
 theorem deh_X {ι S : Type*} [Field S] (v : ι → S) (i₀ i : ι) : deh v i₀ (X i) = v i / v i₀ := by
   simp [deh]
 
-theorem deh_rename {ι J S : Type*} [Field S] (v : ι → S) (e : J → ι) (j₀ : J)
-    (m : MvPolynomial J ℤ) : deh v (e j₀) (rename e m) = deh (v ∘ e) j₀ m := by
-  simp only [deh, coe_eval₂Hom, eval₂_rename]
-  rfl
 
-theorem deh_comp_rename {ι J S : Type*} [Field S] (v : ι → S) (e : J → ι) (j₀ : J) :
-    (deh v (e j₀)).comp (rename e).toRingHom = deh (v ∘ e) j₀ := by
-  ext m
-  · simp [deh]
-  · exact deh_rename v e j₀ (X m)
 
 theorem deh_eq_zero_of_deh_eq_zero {ι : Type*} [Fintype ι] {Ω : Type*} [Field Ω]
     (x : ι → Ω) (z : ι → ℂ) (i₀ : ι) (hx : x i₀ ≠ 0) (hz : z i₀ ≠ 0)
@@ -91,21 +82,6 @@ theorem deh_eq_zero_of_deh_eq_zero {ι : Type*} [Fintype ι] {Ω : Type*} [Field
   rw [eval_map, eval₂_homog z i₀ hz G le_rfl] at h2
   exact (mul_eq_zero.mp h2).resolve_left (pow_ne_zero _ hz)
 
-theorem mem_pts_of_deh {ι : Type} [Fintype ι] {Ω : Type*} [Field Ω] (x : ι → Ω) (z : ι → ℂ)
-    (i₀ : ι) (hx : x i₀ ≠ 0) (hz : z i₀ ≠ 0)
-    (h : ∀ G : MvPolynomial ι ℤ, deh x i₀ G = 0 → deh z i₀ G = 0) :
-    z ∈ pts (coordIdeal ℤ x) := by
-  refine ⟨fun h0 => hz (by rw [h0]; rfl), fun f hf => ?_⟩
-  rw [coordIdeal, RingHom.mem_ker] at hf
-  conv_lhs => rw [← sum_homogeneousComponent f]
-  rw [map_sum, map_sum]
-  refine Finset.sum_eq_zero fun d _ => ?_
-  have hd := homogeneousComponent_isHomogeneous d f
-  have hx0 : aeval x (homogeneousComponent d f) = 0 := by
-    rw [← coeff_coneMap, hf, Polynomial.coeff_zero]
-  rw [aeval_eq_pow_mul_deh x i₀ hx hd] at hx0
-  have hz0 := h _ ((mul_eq_zero.mp hx0).resolve_left (pow_ne_zero _ hx))
-  rw [eval_map, ← algebraMap_int_eq, ← aeval_def, aeval_eq_pow_mul_deh z i₀ hz hd, hz0, mul_zero]
 
 end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.Fib
 

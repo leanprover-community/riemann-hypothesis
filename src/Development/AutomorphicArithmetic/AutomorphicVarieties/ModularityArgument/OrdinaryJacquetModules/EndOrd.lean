@@ -16,45 +16,10 @@ section SlopeTestRemainingChoices
 
 variable {Γ Γ' k : Type} [Group Γ] [Group Γ'] [Field k] {n : ℕ}
 
-private theorem inv_comp {φ : Γ' →* Γ} (hφ : Function.Surjective φ) (r : Γ →* GL (Fin n) k) (M : Submodule k (Fin n → k)) :
-    IsInv (r.comp φ) M ↔ IsInv r M :=
-  ⟨fun h g => by obtain ⟨g, rfl⟩ := hφ g; exact h g, fun h g => h (φ g)⟩
 
-private theorem ss_comp {φ : Γ' →* Γ} (hφ : Function.Surjective φ) {r : Γ →* GL (Fin n) k} (h : IsSSRep r) :
-    IsSSRep (r.comp φ) := fun M hM => by
-  obtain ⟨M', h1, h2⟩ := h M ((inv_comp hφ r M).1 hM)
-  exact ⟨M', (inv_comp hφ r M').2 h1, h2⟩
 
-private theorem ss_of_irr {r : Γ →* GL (Fin n) k} (h : Af.IsIrr r) : IsSSRep r := fun M hM => by
-  rcases h.2.2 M le_top hM with rfl | rfl
-  · exact ⟨⊤, h.2.1, isCompl_bot_top⟩
-  · refine ⟨⊥, fun g v hv => ?_, isCompl_top_bot⟩
-    rw [(Submodule.mem_bot k).1 hv]
-    simp
 
-private theorem irr_iso {r r' : Γ →* GL (Fin n) k} (e : Af.RepIso r r') (h : Af.IsIrr r) : Af.IsIrr r' := by
-  obtain ⟨P, hP⟩ := e
-  refine ⟨h.1, fun _ _ _ => Submodule.mem_top, fun M _ hM => ?_⟩
-  let E : (Fin n → k) ≃ₗ[k] (Fin n → k) := (Matrix.GeneralLinearGroup.toLin P).toLinearEquiv
-  have hE : ∀ v, E v = (P : Matrix (Fin n) (Fin n) k).mulVec v := fun v => rfl
-  have hi : IsInv r (M.comap (E : (Fin n → k) →ₗ[k] (Fin n → k))) := fun g v hv => by
-    have := hM g _ hv
-    change (r' g : Matrix (Fin n) (Fin n) k).mulVec ((P : Matrix (Fin n) (Fin n) k).mulVec v) ∈ M at this
-    change (P : Matrix (Fin n) (Fin n) k).mulVec _ ∈ M
-    rwa [Matrix.mulVec_mulVec, ← Units.val_mul, hP, inv_mul_cancel_right, Units.val_mul, ← Matrix.mulVec_mulVec] at this
-  have hm : M = (M.comap (E : (Fin n → k) →ₗ[k] (Fin n → k))).map (E : (Fin n → k) →ₗ[k] (Fin n → k)) :=
-    (Submodule.map_comap_eq_of_surjective E.surjective M).symm
-  rcases h.2.2 _ le_top hi with h0 | h0
-  · left; rw [hm, h0, Submodule.map_bot]
-  · right; rw [hm, h0, Submodule.map_top, LinearEquiv.range]
 
-private theorem iso_of_det {r r' : Γ →* GL (Fin n) k} (h : IsSSRep r) (h' : IsSSRep r')
-    (e : W.GDet.ofRep (W.mat r) = W.GDet.ofRep (W.mat r')) : Af.RepIso r' r := by
-  obtain ⟨P, hP⟩ := AlgebraTools.Det.bnRep (W.mat r) (W.mat r') h h' fun g => by
-    rw [← (AlgebraTools.Det.repApi (W.mat r)).2.1 g, ← (AlgebraTools.Det.repApi (W.mat r')).2.1 g, e]
-  refine ⟨P, fun g => ?_⟩
-  rw [eq_mul_inv_iff_mul_eq]
-  exact Units.ext (hP g).symm
 
 private theorem factor {O A T K : Type} [CommRing O] [CommRing A] [CommRing T] [CommRing K] [Algebra O A] [Algebra O T]
     [Algebra O K] (f : A →ₐ[O] T) (hf : Function.Surjective f) (x : A →ₐ[O] K) (hx : RingHom.ker f ≤ RingHom.ker x) :

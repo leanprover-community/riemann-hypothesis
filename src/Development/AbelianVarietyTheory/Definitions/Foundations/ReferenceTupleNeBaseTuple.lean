@@ -244,41 +244,6 @@ def thetaCharacterCompatibility (Tp : TupTied D C nch) (X : ThetaX D)
   chrOf μ j := congrArg Subtype.val (tupNat_succ Tp μ j)
   etaT := rfl
 
-theorem charFrame_nonempty (D : D7) (hη : EtaTExists D.host)
-    (hμ : ∀ P W j, Mu0Exists (H := D.host) P W (eExp D j) j.1)
-    (hδ : DeltaExists (H := D.host) D.host.pde) (hδ' : DeltaExists (H := D.host) D.host.pde') : Nonempty (CharFrame D) := by
-  have hP : ∀ k, ∃ p : HeightOneSpectrum (𝓞 D.host.K), ((D.host.g k : ℕ) : 𝓞 D.host.K) ∈ p.asIdeal := by
-    intro k
-    have hg := D.host.g_prime k
-    have hnu : ¬ IsUnit ((D.host.g k : ℕ) : 𝓞 D.host.K) := by
-      intro hu
-      have h1 : IsUnit (algebraMap ℤ (𝓞 D.host.K) (D.host.g k : ℤ)) := by simpa using hu
-      have h2 := (isUnit_map_iff (algebraMap ℤ (𝓞 D.host.K)) _).1 h1
-      rw [Int.isUnit_iff_natAbs_eq, Int.natAbs_natCast] at h2
-      exact hg.ne_one h2
-    obtain ⟨M, hM, hle⟩ := Ideal.exists_le_maximal (Ideal.span {((D.host.g k : ℕ) : 𝓞 D.host.K)})
-      (by rwa [Ne, Ideal.span_singleton_eq_top])
-    have hmem := hle (Ideal.mem_span_singleton_self _)
-    refine ⟨⟨M, hM.isPrime, ?_⟩, hmem⟩
-    rintro rfl
-    exact hg.ne_zero (by exact_mod_cast (Ideal.mem_bot.1 hmem))
-  have hW : ∀ k, ∃ f : (ZMod (D.host.g k))ˣ →* ℂˣ, Function.Injective f := by
-    intro k
-    haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-    obtain ⟨e⟩ : Nonempty ((ZMod (D.host.g k))ˣ ≃* rootsOfUnity (Nat.card (ZMod (D.host.g k))ˣ) ℂ) := by
-      haveI : NeZero (Nat.card (ZMod (D.host.g k))ˣ) := ⟨Nat.card_pos.ne'⟩
-      exact ⟨mulEquivOfCyclicCardEq (by
-        first
-        | exact (Complex.card_rootsOfUnity _).symm
-        | exact (HasEnoughRootsOfUnity.natCard_rootsOfUnity ℂ _).symm)⟩
-    exact ⟨(rootsOfUnity _ ℂ).subtype.comp e.toMonoidHom, Subtype.val_injective.comp e.injective⟩
-  choose pb hpb using hP
-  choose om hom using hW
-  choose mu hmu using hμ ⟨pb, hpb⟩ ⟨om, hom⟩
-  obtain ⟨η, hη⟩ := hη
-  obtain ⟨δ, hδ⟩ := hδ
-  obtain ⟨δ', hδ'⟩ := hδ'
-  exact ⟨⟨⟨pb, hpb⟩, ⟨om, hom⟩, mu, η, η * η, δ, δ', hmu, hη, hη.sq_chiPsi, hδ, hδ'⟩⟩
 
 def finPart {L : Type} [Field L] [NumberField L] (k : Lˣ) : Ideles L := diagUnits L k * (infDiag k)⁻¹
 
@@ -298,20 +263,7 @@ theorem infDiag_fst {L : Type} [Field L] [NumberField L] (k : Lˣ) (w : Infinite
     rw [Pi.mulSingle_eq_of_ne hw.symm]
   · simp
 
-theorem isFinIdele_finPart {L : Type} [Field L] [NumberField L] (k : Lˣ) : IsFinIdele (finPart k) := by
-  intro w
-  rw [finPart, ← map_inv, Units.val_mul]
-  show algebraMap L w.Completion (k : L) * ((infDiag k⁻¹ : Ideles L) : AdeleRing (𝓞 L) L).1 w = 1
-  rw [infDiag_fst, ← map_mul, Units.mul_inv, map_one]
 
-theorem val_finPart {L I : Type} [Field L] [NumberField L] [Fintype I] {φ : I → L →+* ℂ} {χ : HChar L} {n : I → ℤ}
-    (h : χ.HasInf φ (fun i => 2 * n i)) (k : Lˣ) :
-    ((χ.1 (finPart k) : ℂˣ) : ℂ) = ∏ i, (φ i k / starRingEnd ℂ (φ i k)) ^ (-n i) := by
-  rw [finPart, map_mul, map_inv, χ.2.2, one_mul, Units.val_inv_eq_inv_val]
-  have := h k
-  rw [show χ.1 (infDiag k) = χ.inf k from rfl, this, ← Finset.prod_inv_distrib]
-  refine Finset.prod_congr rfl fun i _ => ?_
-  rw [zpow_mul, zpow_neg, ← unit_sq _ (by simp)]; rfl
 
 theorem eDt_finPart (T : DtTied D C) (k : D.host.Eˣ) : T.eDt (finPart k) = T.eDt (diagUnits D.host.E k) := by
   have : T.eDt (infDiag k) = 1 := by
@@ -320,23 +272,7 @@ theorem eDt_finPart (T : DtTied D C) (k : D.host.Eˣ) : T.eDt (finPart k) = T.eD
     exact Finset.prod_eq_one fun w _ => T.inf w _
   rw [finPart, map_mul, map_inv, this, inv_one, mul_one]
 
-theorem chiD_rat (T : DtTied D C) (k : D.host.Eˣ) :
-    ((D.chiD (T.eDt (diagUnits D.host.E k)) : ℂˣ) : ℂ) =
-      ∏ g : D.R.Psi, (embPsi D.host g k / starRingEnd ℂ (embPsi D.host g k))⁻¹ := by
-  rw [← eDt_finPart, T.chiD_eq _ (isFinIdele_finPart k), val_finPart (n := fun _ => 1) C.isChi.inf]
-  simp
 
-theorem muTil_rat (T : DtTied D C) (j : Fin D.R.m) (e : D.R.Psi → ℤ) (he : ∀ g, eExp D j g = e g) (k : D.host.Eˣ) :
-    ((D.muTil (j.1 + 1) (T.eDt (diagUnits D.host.E k)) : ℂˣ) : ℂ) =
-      ∏ g : D.R.Psi, (embPsi D.host g k / starRingEnd ℂ (embPsi D.host g k)) ^ e g := by
-  obtain ⟨n, hn, h⟩ := (C.isMu0 j).inf
-  have : n = fun g => 2 * -e g := funext fun g => by
-    have := hn g
-    simp only [he] at this
-    exact_mod_cast this
-  subst this
-  rw [← eDt_finPart, T.muTil_eq j _ (isFinIdele_finPart k), val_finPart h]
-  simp
 
 theorem exists_place_over {L : Type} [Field L] [NumberField L] {p : ℕ} (hg : p.Prime) :
     ∃ v : HeightOneSpectrum (𝓞 L), ((p : ℕ) : 𝓞 L) ∈ v.asIdeal := by
@@ -353,19 +289,6 @@ theorem exists_place_over {L : Type} [Field L] [NumberField L] {p : ℕ} (hg : p
   rintro rfl
   exact hg.ne_zero (by exact_mod_cast (Ideal.mem_bot.1 hmem))
 
-theorem reference_tuple_ne_base_tuple (Tp : TupTied D C nch) : D.what₂.mu0 ≠ D.what₂.muStar := by
-  intro h
-  have h1 : C.del = 1 := by rw [← Tp.xi_star, ← h, Tp.trueColumnChoices_heckeChar_reference_eq_one]
-  obtain ⟨v, hv⟩ := exists_place_over (L := D.host.E) D.host.pde_prime
-  have := (C.isDel.ine v hv 1).1 fun x _ => by rw [h1, pow_one]; rfl
-  omega
 
-theorem muTw_of_untwisted (Tp : TupTied D C nch) (w : D.what₂.places.Pl) (h : D.what₂.muAt w = D.what₂.mu0) :
-    D.what₂.muTw w = if D.what₂.places.resChar w = D.host.pde then D.what₂.muStar' else D.what₂.muStar := by
-  apply Tp.xi_inj
-  rw [Tp.xi_tw, Tp.psi_un w h, mul_one, CharFrame.delAt]
-  split_ifs
-  · exact Tp.xi_star'.symm
-  · exact Tp.xi_star.symm
 
 end GlobalTheory.Mem.Chr.TieModel

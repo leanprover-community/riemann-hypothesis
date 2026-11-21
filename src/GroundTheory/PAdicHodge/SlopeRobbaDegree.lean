@@ -82,7 +82,6 @@ def intBounded (K : Type*) [NontriviallyNormedField K] [IsUltrametricDist K] [Co
   zero_mem' := ⟨(bounded K).zero_mem, by simp [norm1]⟩
   neg_mem' {f} hf := ⟨(bounded K).neg_mem hf.1, by simpa [norm1] using hf.2⟩
 
-theorem mem_intBounded {f : Robba K} : f ∈ intBounded K ↔ f ∈ bounded K ∧ norm1 f ≤ 1 := Iff.rfl
 
 theorem unit_mem_bounded (u : (Robba K)ˣ) : (u : Robba K) ∈ bounded K :=
   mem_bounded_of_mul_eq_one u.mul_inv

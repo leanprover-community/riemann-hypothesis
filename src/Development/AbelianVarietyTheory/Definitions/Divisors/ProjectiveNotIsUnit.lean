@@ -84,12 +84,6 @@ theorem Charts.ρ_mul_ρ (C : Charts I Y β n) (i j : Fin (n + 1)) :
   rw [C.ρ_self, map_one] at h
   exact h.symm
 
-theorem Charts.le_of_isUnit (C : Charts I Y β n) {i j : Fin (n + 1)} (h : IsUnit (C.ρ 0 i j)) :
-    C.D 0 i ≤ C.D 0 j := by
-
-  have h1 := (Y 0).left.basicOpen_of_isUnit h
-  rw [C.basic] at h1
-  exact inf_eq_left.mp h1
 
 section Projective
 
@@ -192,13 +186,6 @@ theorem Charts.projective_not_isUnit (R : Type) [CommRing R] (I : Ideal R) (hI :
   rw [AlgEquiv.symm_apply_apply, MvPolynomial.eval_X] at hu'
   exact not_isUnit_zero hu'
 
-theorem Charts.projective_D_ne (R : Type) [CommRing R] (I : Ideal R) (hI : I ≠ ⊤) :
-    (Charts.projective R I 1).D 0 0 ≠ (Charts.projective R I 1).D 0 1 := by
-
-  intro h
-  apply Charts.projective_not_isUnit R I hI 0
-  show IsUnit (ratio (R ⧸ I ^ (0 + 1)) 1 0 1)
-  exact ⟨ratioUnit (chart (R ⧸ I ^ (0 + 1)) 1 0) 0 1 le_rfl h.le, val_ratioUnit⟩
 
 end Projective
 

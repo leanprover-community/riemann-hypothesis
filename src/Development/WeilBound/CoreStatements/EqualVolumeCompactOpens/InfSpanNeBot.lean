@@ -63,27 +63,5 @@ theorem inf_span_ne_bot {R : Type} [CommRing R] [IsDomain R] {I J : Ideal R} {m 
   rw [h0] at h2
   exact mul_ne_zero hm ha h2
 
-theorem eqVolUnf_of (h0 : EqVolTr) (h1 : UnfLat) (h2 : UnfSign) (h3 : UnfLevelIn) (h4 : UnfBlock) (h5 : ScalarOfBlock)
-    (h6 : OrbitsOfIncl)
-    (h7 : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (l : Level H),
-      Neat (IsCMField.complexConj E) l.Mb) : EqVolUnf := by
-  intro E _ _ _ H Dw l Xo c σ r U hσ hU hr hp hq k k'
-  have := H.unram
-  have hp0 : ∀ k, (U.X k).p0 = Dw.q := fun k => (hU.2.1 k).1
-  have hrk : r = Dw.p + Dw.q := hU.1
-  have hpos : ∀ k, 0 < (U.X k).p0 := fun k => by rw [hp0]; exact hq
-  have hlt : ∀ k, (U.X k).p0 < r := fun k => by rw [hp0]; omega
-  have hO : ∀ k, SameOrbits (U.X k) (U.X k).Γ (levOf l (U.X k)) := fun k =>
-    h6 E r _ _ (fun γ hγ => h5 E r _ _ γ (hpos k) (hlt k) (h4 E H Dw l Xo c σ r U hσ hU k γ hγ))
-      (h3 E H Dw l Xo c σ r U hσ hU k)
-  have hΨ : (U.X k).Ψ = (U.X k').Ψ := Finset.ext fun τ => ((hU.2.1 k).2 τ).trans ((hU.2.1 k').2 τ).symm
-  have hne : levIdeal l ≠ ⊥ :=
-    inf_span_ne_bot l.prod (Nat.cast_ne_zero.2 (by have := l.three_le; omega)) (Nat.cast_ne_zero.2 l.A_pos.ne')
-  exact h0 E r (U.X k) (U.X k') _ _ (levIdeal l) _ _ hΨ ((hp0 k).trans (hp0 k').symm) hr (hpos k) (hlt k)
-    ⟨(U.X k).Λ_fg, (U.X k).Λ_span⟩ ⟨(U.X k').Λ_fg, (U.X k').Λ_span⟩ (U.X k).ξ0_im (U.X k').ξ0_im
-    (fun τ hτ => mul_pos_of_neg_of_neg (h2 E H Dw l Xo c σ r U hσ hU (by omega) k τ hτ)
-      (h2 E H Dw l Xo c σ r U hσ hU (by omega) k' τ (hΨ ▸ hτ)))
-    (h1 E H Dw l Xo c σ r U hσ hU k) (h1 E H Dw l Xo c σ r U hσ hU k') hne
-    (neat_mono inf_le_left (h7 E H l)) (hO k) (hO k')
 
 end PositivityTheory.EqVol

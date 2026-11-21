@@ -33,12 +33,6 @@ theorem exists_place_over (F : Type) [Field F] [NumberField F] {p : ℕ} (hp : p
   have hmem : (p : 𝓞 F) ∈ M := hle (Ideal.mem_span_singleton_self _)
   exact ⟨⟨M, hM.isPrime, fun h => hp0 (by simpa [h] using hmem)⟩, hmem⟩
 
-theorem orbits_pos {D : D7} {H : LevelData D} {u : D.what₂.Word} {w : D.what₂.places.Pl}
-    {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} (h : LocalIs D H u w hg) : 0 < (D.gat u w hg).P.nV := by
-  obtain ⟨W, Qq, O, Kf, _, _, _, _, _, _, _, _, _, _, n', ι, σ, j, w0, hS, nV, r, m, lam0, dom, hk, I, ψ, e, hH, heq⟩ := h
-  rw [heq]
-  obtain ⟨v, hv⟩ := exists_place_over D.host.F hg.1
-  exact (I.pl.symm ⟨v, hv⟩).pos
 
 theorem rank_eq {D : D7} {H : LevelData D} {u : D.what₂.Word} {w : D.what₂.places.Pl}
     {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} (h : LocalIs D H u w hg) :
@@ -47,20 +41,7 @@ theorem rank_eq {D : D7} {H : LevelData D} {u : D.what₂.Word} {w : D.what₂.p
   rw [heq]
   exact hk
 
-theorem finClasses_and_trivStab {D : D7} {H : LevelData D} {u : D.what₂.Word} {w : D.what₂.places.Pl}
-    {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} (h : LocalIs D H u w hg) :
-    (D.gat u w hg).FinClasses ∧ (Cmp.TrivStabU (H u) → (D.gat u w hg).TrivStab) := by
-  obtain ⟨W, Qq, O, Kf, _, _, _, _, _, _, _, _, _, _, n', ι, σ, j, w0, hS, nV, r, m, lam0, dom, hk, I, ψ, e, hH, heq⟩ := h
-  rw [heq]
-  exact ⟨Cmp.finClasses hS r lam0 dom hk I ψ e (isUnit_det_gram0 D.sp) hH,
-    fun hT => Cmp.trivStab hS r lam0 dom hk I ψ e (isUnit_det_gram0 D.sp) hH hT⟩
 
-theorem orbit_length {D : D7} {Gt : GatTies D} {c : LatCmp D} (h : IsConcrete D Gt c) (u : D.what₂.Word)
-    (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (v : Fin (D.gat u w hg).P.nV) :
-    (D.gat u w hg).P.n' v = frobOrder D (D.what₂.places.resChar w) := by
-  obtain ⟨D0, sc, Lc, I, ψ, hd, H0, hL, T, B, hBs, hB, iK, lam, hK, hPos, CH, heq⟩ := h
-  cases heq
-  rfl
 
 set_option maxHeartbeats 4000000 in
 
@@ -71,34 +52,9 @@ theorem coefficient_ring {D : D7} {Gt : GatTies D} {c : LatCmp D} (h : IsConcret
   cases heq
   rfl
 
-theorem exists_embedding_of_ringTie {D : D7} {u : D.what₂.Word} {w : D.what₂.places.Pl}
-    {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {v : Fin (D.gat u w hg).P.nV} (h : RingTie D u w hg v) :
-    ∃ e : D.what₂.LL →+* (D.gat u w hg).Kf, ∀ x, (0 : WithTop ℤ) ≤ D.what₂.places.val w x ↔
-      e x ∈ Set.range (algebraMap (D.gat u w hg).O (D.gat u w hg).Kf) := by
-  obtain ⟨eW, eQ, eO, eK, -, hOK, -, -, -⟩ := h
-  refine ⟨eK.toRingHom.comp (embRec D w _), fun x => (embRec_int D w ((D.gat u w hg).P.n' v) x).trans ⟨?_, ?_⟩⟩
-  · rintro ⟨y, hy⟩
-    exact ⟨eO y, by rw [← hOK, hy]; rfl⟩
-  · rintro ⟨y, hy⟩
-    refine ⟨eO.symm y, eK.injective ?_⟩
-    rw [hOK, RingEquiv.apply_symm_apply, hy]
-    rfl
 
-theorem localIs_record_free (D : D7) (sc : Scale) (Ce : ℝ)
-    (Lc : ∀ u, ColLevel D.R D.host.F D.host.E D.sp D.host.g (D.mem u).C (D.mem u).A (D.clsLat u))
-    (I) (ψ) (hd) (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
-    LocalIs (record D sc Ce Lc I ψ hd) Lc u w hg :=
-  localIs_of_hyperspecial D sc Ce Lc (packAll D Lc I ψ) hd Lc (fun _ => rfl)
-    (fun u w h => isHyperbolicAt_rec_of_placeIdentification D u w h (I u w h)) u w hg
 
-theorem exists_hermTies (D : D7) (sc : Scale) (Ce : ℝ)
-    (Lc : ∀ u, ColLevel D.R D.host.F D.host.E D.sp D.host.g (D.mem u).C (D.mem u).A (D.clsLat u))
-    (I) (ψ) (hd) : ∃ H0 : Formalism.L2.Herm.Herm0 (record D sc Ce Lc I ψ hd), ∀ u, H0.lev0 u = Lc u :=
-  ⟨⟨Lc, levTieG D sc Ce Lc (packAll D Lc I ψ) hd⟩, fun _ => rfl⟩
 
-theorem forms_and_basis {D : D7} {Gt : GatTies D} {c : LatCmp D} (h : IsConcrete D Gt c) :
-    (∀ u, Nonempty (Forms0 D u)) ∧ ∃ B, Cmp.StdB D B :=
-  h.nonempty_allTies.elim fun G => ⟨fun u => ⟨G.forms u⟩, G.cmp.B, G.cmp.B_std⟩
 
 theorem exponent_eq {D : D7} {Gt : GatTies D} {c : LatCmp D} (h : IsConcrete D Gt c) :
     ∃ sc : Scale, ∀ u w hg, (D.gat u w hg).e = epSc D.R sc 1 (D.what₂.places.resChar w) ∧
@@ -185,38 +141,8 @@ theorem exists_isConcrete (hJ : ∀ u, Joint0 H0.lev0 u (T u))
 
 end Reduction
 
-theorem isConcrete_record_iff (D : D7) (sc : Scale) (Ce : ℝ)
-    (Lc : ∀ u, ColLevel D.R D.host.F D.host.E D.sp D.host.g (D.mem u).C (D.mem u).A (D.clsLat u))
-    (I) (ψ) (hd) (hd') :
-    (∃ c, IsConcrete (record D sc Ce Lc I ψ hd') (recordTies D sc Ce Lc I ψ hd') c) ↔
-      ∃ c, IsConcrete (recC D sc Ce Lc I ψ hd) (gatTiesC D sc Ce Lc I ψ hd) c := by
-  have key : ∀ X X' (_ : X = X') h h', (∃ c, IsConcrete (recG D sc Ce Lc X h) (gatTiesG D sc Ce Lc X h) c) ↔
-      ∃ c, IsConcrete (recG D sc Ce Lc X' h') (gatTiesG D sc Ce Lc X' h') c := by
-    intro X X' e h h'
-    subst e
-    rfl
-  exact key _ _ (packAll_eq D Lc I ψ) hd' hd
 
-theorem baseLattice_standard {D : D7} {Gt : GatTies D} {c : LatCmp D} (G : AllTies D Gt c) :
-    ∃ B : GL (Fin D.R.k) D.host.E, Cmp.StdB D B ∧
-      ∀ u (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))
-        (w' : HeightOneSpectrum (𝓞 D.host.F)) (h : ((D.what₂.places.resChar w : ℕ) : 𝓞 D.host.F) ∈ w'.asIdeal)
-        (t : Fin D.R.k → w'.adicCompletion D.host.F),
-        (∃ x ∈ Formalism.L2.Herm.locL w' (G.herm.lev0 u).Lb, ∀ a, ((G.herm.g u w hg).spl w' h (x a)).1 = t a) ↔
-          ∀ a, (((bc (((RingHom.fst _ _).comp ((G.herm.g u w hg).spl w' h).toRingHom).comp
-            (inclE (F := D.host.F) (w'.adicCompletion D.host.F))) B)⁻¹ : GL (Fin D.R.k) (w'.adicCompletion D.host.F)) :
-              Matrix (Fin D.R.k) (Fin D.R.k) (w'.adicCompletion D.host.F)).mulVec t a ∈
-                w'.adicCompletionIntegers D.host.F := by
-  refine ⟨G.cmp.B, G.cmp.B_std, fun u w hg w' h t => ?_⟩
-  rw [← G.cmp.fr_B u w hg w' h]
-  exact (G.herm.g u w hg).fr_lat w' h t
 
-theorem isConcrete_iff (D : D7) (Gt : GatTies D) (c : LatCmp D) : IsConcrete D Gt c ↔ IsRecC D Gt c := by
-  constructor
-  · rintro ⟨D0, sc, Lc, I, ψ, hd, H0, hL, T, B, hBs, hB, iK, lam, hK, hPos, CH, heq⟩
-    exact ⟨D0, sc, Lc, I, ψ, hd, H0, hL, T, B, hBs, hB, iK, lam, hK, hPos, CH, heq⟩
-  · rintro ⟨D0, sc, Lc, I, ψ, hd, H0, hL, T, B, hBs, hB, iK, lam, hK, hPos, CH, heq⟩
-    exact ⟨D0, sc, Lc, I, ψ, hd, H0, hL, T, B, hBs, hB, iK, lam, hK, hPos, CH, heq⟩
 
 set_option maxHeartbeats 32000000 in
 

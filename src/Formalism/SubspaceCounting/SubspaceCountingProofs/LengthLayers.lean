@@ -384,7 +384,5 @@ theorem main : LengthLayers := by
 
 end LengthLayersP
 
-theorem lengthBoundOfLayers : LengthLayers := by
-  exact LengthLayersP.main
 
 end Formalism.G0

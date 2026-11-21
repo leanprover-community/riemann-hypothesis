@@ -1369,21 +1369,6 @@ theorem regAct_good : (regCSD K G).ActGood (regAct K G) where
     intro t f hf c
     exact hf ((c : G) * t)
 
-theorem isAbsIrrChar_one : IsAbsIrrChar (fun _ : G => (1 : K)) := by
-  refine ⟨1, 1, ?_, ?_⟩
-  · have hs : IsSimpleOrder (Submodule (AlgebraicClosure K) (Fin 1 → AlgebraicClosure K)) := by
-      have : IsSimpleModule (AlgebraicClosure K) (Fin 1 → AlgebraicClosure K) :=
-        isSimpleModule_iff_finrank_eq_one.mpr (by simp)
-      exact this.1
-    have : Nontrivial (Subrepresentation (1 : Representation (AlgebraicClosure K) G
-        (Fin 1 → AlgebraicClosure K))) :=
-      ⟨⊥, ⊤, fun h => bot_ne_top (congrArg Subrepresentation.toSubmodule h)⟩
-    refine ⟨fun σ => ?_⟩
-    rcases hs.eq_bot_or_eq_top σ.toSubmodule with h | h
-    · exact Or.inl (Subrepresentation.toSubmodule_injective h)
-    · exact Or.inr (Subrepresentation.toSubmodule_injective h)
-  · intro t
-    simp [Representation.character]
 
 theorem idemOf_one_coeff (t : G) :
     (idemOf ({fun _ : G => (1 : K)} : Finset (G → K))).coeff t = 1 / (Fintype.card G : K) := by
@@ -1437,14 +1422,6 @@ private theorem v0dim_pos_lemma (K : Type) [Field K] [NumberField K] [StarRing K
   have h7 := congrArg Subtype.val h0
   exact smul_ne_zero h hx1 h7
 
-theorem reg_V0dim_pos (ψ : (⊥ : Subgroup G) →* Kˣ) :
-    0 < (regCSD K G).BaseDimension (regAct K G) ({fun _ : G => (1 : K)} : Finset (G → K)) ⊥ ψ := by
-  apply v0dim_pos_lemma
-  unfold goodAt
-  rw [lvlIdem_bot, mul_one]
-  simp only [idemOf_one_coeff, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  rw [one_div, mul_inv_cancel₀ (Nat.cast_ne_zero.mpr Fintype.card_ne_zero)]
-  exact one_ne_zero
 
 theorem mem_dual_one (y : K) :
     y ∈ Formalism.HermitianLatticesTheory.dual (stdPair K) (1 : Submodule (𝓞 K) K) ↔ y ∈ (1 : Submodule (𝓞 K) K) := by
@@ -1573,19 +1550,5 @@ theorem rat_isConjAt (v0 : InfinitePlace ℚ) : IsConjAt v0 := by
   intro a
   rw [star_trivial, eq_ratCast v0.embedding a, map_ratCast]
 
-theorem hyps_sat (P : Subgroup (Equiv.Perm (Fin 3))) :
-    ∃ v0 : InfinitePlace ℚ, IsConjAt v0 ∧
-      (regCSD ℚ (Equiv.Perm (Fin 3))).Good 1 ∧
-      ((regCSD ℚ (Equiv.Perm (Fin 3))).H.map v0.embedding).PosDef ∧
-      (regCSD ℚ (Equiv.Perm (Fin 3))).ActGood (regAct ℚ (Equiv.Perm (Fin 3))) ∧
-      (∀ χ ∈ ({fun _ => (1 : ℚ)} : Finset (Equiv.Perm (Fin 3) → ℚ)), IsAbsIrrChar χ) ∧
-      0 < (regCSD ℚ (Equiv.Perm (Fin 3))).BaseDimension (regAct ℚ (Equiv.Perm (Fin 3)))
-        ({fun _ => (1 : ℚ)} : Finset (Equiv.Perm (Fin 3) → ℚ)) P 1 := by
-  have v0 : InfinitePlace ℚ := by
-    first
-    | exact Rat.infinitePlace
-    | exact Classical.choice inferInstance
-  exact ⟨v0, rat_isConjAt v0, reg_good ℚ _, reg_H_posDef ℚ _ v0 (rat_isConjAt v0), regAct_good ℚ _,
-    fun χ hχ => (Finset.mem_singleton.mp hχ) ▸ isAbsIrrChar_one ℚ _, reg_V0dim_pos_lvl ℚ _ P⟩
 
 end Formalism.L2.DIV.Test

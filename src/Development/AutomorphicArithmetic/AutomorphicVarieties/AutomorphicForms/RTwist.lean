@@ -486,8 +486,6 @@ theorem HasInfChar.twist {τ : InfinitePlace E} {m : Multiset ℂ} (h : π.HasIn
   funext z
   simp only [Function.comp_apply]; ring
 
-theorem Iso.isRegAlg (h : Iso π π') (hπ : π.IsRegAlg) : π'.IsRegAlg := fun v =>
-  (hπ v).imp fun _ hm => ⟨h.hasInfChar hm.1, hm.2⟩
 
 theorem IsRegAlg.twist (h : π.IsRegAlg) {χ : HChar E} (hχ : ∀ v, ∃ n : ℤ, expo χ v = n) : (π.twist χ).IsRegAlg := fun v => by
   obtain ⟨m, h1, h2, h3⟩ := h v

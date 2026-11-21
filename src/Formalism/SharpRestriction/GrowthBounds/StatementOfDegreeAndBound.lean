@@ -502,10 +502,6 @@ def HodgeTateFromSandwich (D : Formalism.BasicNotions.D7) : Prop := admitted D �
 
 def Stmt (D : Formalism.BasicNotions.D7) : Prop := admitted D → AdmB D → Conclusion1 D ∧ Conclusion2 D
 
-theorem statement_of_degree_and_bound (D : Formalism.BasicNotions.D7) (h1 : IntegralityFromMetric D) (h2 : HodgeTateFromSandwich D) : Stmt D := by
-  intro hA hB
-  have p1 := h1 hA
-  exact ⟨p1, h2 hA p1.2.1 hB⟩
 
 def SecondPartClosed (D : Formalism.BasicNotions.D7) : Prop := HodgeTateFromSandwich D
 

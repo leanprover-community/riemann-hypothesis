@@ -120,33 +120,5 @@ theorem mem_stdLat (E : Type) [Field E] (M : ℕ) (y : Fin M → E) :
     rw [this]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
 
-theorem isSelfDualLat_std {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) (M : ℕ) :
-    IsSelfDualLat σ (1 : Matrix (Fin M) (Fin M) E) (stdLat E M) := by
-  have hh : ∀ x y : Fin M → E, hE σ 1 x y = ∑ i, σ (x i) * y i := by
-    intro x y
-    simp [hE, Formalism.UG.hform, Matrix.one_apply]
-  refine ⟨Submodule.fg_span (Set.finite_range _), ?_, fun y => ?_⟩
-  · rw [eq_top_iff]
-    intro y _
-    rw [← Finset.univ_sum_single y]
-    refine Submodule.sum_mem _ fun i _ => ?_
-    have : (Pi.single i (y i) : Fin M → E) = y i • (Pi.single i 1 : Fin M → E) := by
-      rw [← Pi.single_smul, smul_eq_mul, mul_one]
-    rw [this]
-    exact Submodule.smul_mem _ _ (Submodule.subset_span (Submodule.subset_span ⟨i, rfl⟩))
-  · constructor
-    · intro hy x hx
-      rw [hh]
-      rw [mem_stdLat] at hx hy
-      exact IsIntegral.sum _ fun i _ =>
-        ((hx i).map (σ : E →+* E).toIntAlgHom).mul (hy i)
-    · intro H
-      rw [mem_stdLat]
-      intro i
-      have := H (Pi.single i 1) (Submodule.subset_span ⟨i, rfl⟩)
-      rw [hh, Finset.sum_eq_single i] at this
-      · simpa using this
-      · intro j _ hj; simp [Pi.single_eq_of_ne hj]
-      · simp
 
 end GlobalTheory.IndefiniteRowSideFullHecke.SelfDualLatticeStabilizers

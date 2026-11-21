@@ -20,9 +20,6 @@ def IsFlagBundle {B Y : Scheme.{0}} (π : Y ⟶ B) {ι : Type} (E : ι → B.Mod
       e.hom ≫ (fl' a).ι i = (Scheme.Modules.pullback g').map ((fl a).ι i) ≫
         (Scheme.Modules.pullbackComp g' π).hom.app (E a) ≫ (Scheme.Modules.pullbackCongr w).hom.app (E a)
 
-theorem isFlagBundle_empty (B : Scheme.{0}) (E : Empty → B.Modules) (n : Empty → ℕ)
-    (fl : ∀ a, Vert.Flag ((Scheme.Modules.pullback (𝟙 B)).obj (E a)) (n a)) : IsFlagBundle (𝟙 B) E n fl :=
-  fun _ g _ => ⟨g, ⟨Category.comp_id g, fun a => a.elim⟩, fun _ ⟨w, _⟩ => (Category.comp_id _).symm.trans w⟩
 
 theorem isFlagBundle_rank_one (B : Scheme.{0}) {ι : Type} (E : ι → B.Modules)
     (fl : ∀ a, Vert.Flag ((Scheme.Modules.pullback (𝟙 B)).obj (E a)) 1) : IsFlagBundle (𝟙 B) E (fun _ => 1) fl := by
@@ -42,9 +39,6 @@ theorem isFlagBundle_rank_one (B : Scheme.{0}) {ι : Type} (E : ι → B.Modules
       isVB_zero_iff.1 (((fl a).isVB _).pullback g)
     exact ⟨z.iso (isVB_zero_iff.1 ((fl' a).isVB _)), z.eq_of_src _ _⟩
 
-theorem exists_isFlagBundle_rank_one (B : Scheme.{0}) {ι : Type} (E : ι → B.Modules) (hE : ∀ a, IsVB (E a) 1) :
-    ∃ fl, IsFlagBundle (𝟙 B) E (fun _ => 1) fl :=
-  ⟨fun a => .ofRankOne ((hE a).pullback _), isFlagBundle_rank_one B E _⟩
 
 def Homog (G : ℕ → ℤ → ℤ → MvPolynomial (Fin 3) ℝ) : Prop := ∀ D a b, (G D a b).IsHomogeneous D
 
@@ -124,8 +118,6 @@ theorem bcFl_eq : bcFl Y =
   field_simp
   ring
 
-theorem bcFl_of_eq_two_mul (h : Y.N = 2 * Y.j) : bcFl Y = 0 := by
-  rw [bcFl, show (Y.N : ℝ) - Y.j = Y.j by rw [h]; push_cast; ring, sub_self, zero_mul]
 
 example (h : Y.N = 3) (h' : Y.j = 1) : bcFl Y = testI Y / 2 := by
   rw [bcFl, show (Y.N : ℝ) = 3 by rw [h]; norm_num, show (Y.j : ℝ) = 1 by rw [h']; norm_num]
@@ -135,11 +127,6 @@ def HhTest (hh : Fn Y) : Prop := hh (testF Y) = bcFl Y - testI Y
 
 def DRAt (r : ℝ) : Prop := Tendsto (sieg Y ∅) atTop (𝓝 (Y.vol * bcFl Y - 2 * r * Y.vol * testI Y))
 
-theorem HhTest.vol_mul {hh : Fn Y} (h : HhTest Y hh) (r s : ℝ) :
-    Y.vol * bcFl Y - 2 * r * Y.vol * testI Y + s * (2 * Y.vol * testI Y) =
-      Y.vol * (hh (testF Y) - 2 * testI Y * (r - 1 / 2 - s)) := by
-  rw [h]
-  ring
 
 end One
 

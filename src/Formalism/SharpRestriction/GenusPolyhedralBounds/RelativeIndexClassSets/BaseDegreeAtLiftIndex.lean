@@ -245,19 +245,6 @@ theorem isF : IsF' X.ka X.wL X.wF X.T X.nP := by
   rw [hT]
   ring
 
-theorem run_isSecondWeight : IsG2 X.wL X.wF X.w2 := by
-  refine ⟨?_, fun τ i => ?_, fun τ i => (finM_elim i).elim⟩
-  · show ((Dm D + 4) * X.nW - X.nP) + X.nP = (Dm D + 4) * X.nW
-    have h1 := X.nP_le_nW
-    have h2 : X.nW ≤ (Dm D + 4) * X.nW := by nlinarith
-    generalize (Dm D + 4) * X.nW = M at *
-    omega
-  · simp only [RunN.w2, RunN.wF, RunN.wL, apW_aP]
-    have h1 : (Dm D + 2) * X.nW + 2 * D.R.r ≤ 2 * X.Q0 := X.hQ0
-    have h2 := X.two_le_DQ
-    zify [h1, h2]
-    simp only [Dm]
-    ring
 
 theorem gapP (τ : D.what₂.Tau) (i : Fin (D.R.sigW D.R.m).1) (h : i.1 + 1 < (D.R.sigW D.R.m).1) :
     ((Tp D D.R.m X.T * (Tp D D.R.m X.T + 2 * D.R.r) : ℕ) : ℤ) ≤ gapZ (X.ka.aP τ) i + 2 := by
@@ -278,8 +265,6 @@ theorem ka_last (τ : D.what₂.Tau) (i : Fin (D.R.sigW D.R.m).1) (h : i.1 + 1 =
   have e : (D.R.sigW D.R.m).1 - 1 - i.1 = 0 := by omega
   rw [apW_aP, e, zero_mul, add_zero]
 
-theorem lastM (c : ℝ) (τ : D.what₂.Tau) (i : Fin (D.R.sigW D.R.m).2) (_h : i.1 + 1 = (D.R.sigW D.R.m).2) :
-    c ≤ (X.ka.aM τ i : ℝ) := (finM_elim i).elim
 
 theorem ncAt_ka (τ : D.what₂.Tau) : ncAt X.ka τ = (X.kl : ℤ) + D.R.t + 1 := by
   have h0 : 0 < (D.R.sigW D.R.m).1 := by
@@ -302,21 +287,14 @@ theorem Tq_cast : (X.Tq : ℝ) = (X.T : ℝ) + Dm D + 2 := by
   push_cast
   ring
 
-theorem Q_cast : (X.Q : ℝ) = (X.Tq : ℝ) + 2 * D.R.r := by
-  unfold Q
-  push_cast
-  ring
 
 theorem kl_cast : (X.kl : ℝ) = ((Dm D : ℝ) + 2) * X.nW + 2 * D.R.r + (X.Tq : ℝ) * X.Q0 := by
   unfold kl
   push_cast
   ring
 
-theorem ka_n : X.ka.n = D.R.nV := rfl
 
-theorem wL_n : X.wL.n = X.nW := rfl
 
-theorem wF_n : X.wF.n = X.nP := rfl
 
 theorem gk_cast : ((X.Tq * X.Q - 2 : ℕ) : ℝ) = (X.Tq : ℝ) * X.Q - 2 := by
   rw [Nat.cast_sub X.two_le_TqQ]

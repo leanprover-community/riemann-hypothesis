@@ -6,6 +6,5 @@ import Formalism.WachLatticeTwists.TorsionLengthCounts.LengthHomCoker
 
 namespace Formalism.RepresentationBoundsCohomology
 
-theorem theorem_n_five_split : LengthBoundViaSplitting := theorem_five_split_of_bounds rowColength submoduleLengthBound_statement jumpsColumn jumpsRow
 
 end Formalism.RepresentationBoundsCohomology

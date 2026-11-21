@@ -532,8 +532,6 @@ theorem jetsPh_of' (HH : JetsHigh) (H1 : JetsOne) (H2 : JetsTwo) (D : D7) (hc : 
     (hb : beConj D) : jetsPh D :=
   jetsPh_of HH H1 H2 D hc hn hb (okpDiff_holds D)
 
-theorem addition_identity_of_sigma_formula_unit (H31 : UnitTraceSumSecondBound) (HC : CubeIdentityFromAdditionFormula) (D : D7) (hQ : PAdicSigmaAdditionFormula D) (ha : addInt D) : cube2 D :=
-  addition_identity_of_sigma_formula H31 HC D hQ (ePhiOne_holds D) ha
 
 def LemmaThreeOneThird : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (g : G1 p), g.Ok → IntegralMv (g.add (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]) →
@@ -597,8 +595,5 @@ theorem cube_second_identity_of_determinant (H31 : LemmaThreeOneThird) (HC : Cub
   have hok : g.Ok := hA.2.2.2.2
   exact HC q g hok (ePhiOne_holds D q cc δ g hA) (hQ q cc δ g hA) (H31 q g hok (ha q cc δ g hA).1)
 
-theorem cube_of' (HE : CubeOfTwoIdentities) (H31 : UnitTraceSumSecondBound) (HC2 : CubeIdentityFromAdditionFormula) (H31' : LemmaThreeOneThird) (HC3 : Cube3OfDet) (D : D7)
-    (hQ : PAdicSigmaAdditionFormula D) (hQd : PAdicFrobeniusStickelberger D) (ha : addInt D) : cube D :=
-  cube_of HE D (addition_identity_of_sigma_formula_unit H31 HC2 D hQ ha) (cube_second_identity_of_determinant H31' HC3 D hQd ha)
 
 end Formalism.MainNotions.Ext.CutA

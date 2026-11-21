@@ -30,8 +30,6 @@ instance algebraPadicBDeRham : Algebra ℚ_[p] 𝔹dR :=
 theorem algebraMap_padic_bDeRham (q : ℚ_[p]) :
     algebraMap ℚ_[p] 𝔹dR q = algebraMap 𝔹 𝔹dR (algebraMap ℚ_[p] 𝔹 q) := rfl
 
-theorem algebraMap_algCl_bDeRham (x : PadicAlgCl p) :
-    algebraMap (PadicAlgCl p) 𝔹dR x = algebraMap 𝔹 𝔹dR (algClToBdR p x) := rfl
 
 instance isScalarTower_padic_bDeRhamPlus_bDeRham : IsScalarTower ℚ_[p] 𝔹 𝔹dR :=
   IsScalarTower.of_algebraMap_eq fun _ => rfl
@@ -191,9 +189,6 @@ theorem bDeRhamPlus_fixed (b : 𝔹) (hb : ∀ σ : Gal(PadicAlgCl p/K), σ • 
     rw [gal_smul_algebraMap_bDeRham, hb σ]
   exact ⟨k, IsPerfectoidField.algebraMap_bDeRham_injective hk⟩
 
-theorem invariantRing_bDeRham :
-    invariantRing Gal(PadicAlgCl p/K) ℚ_[p] 𝔹dR = (IsScalarTower.toAlgHom ℚ_[p] K 𝔹dR).range :=
-  invariantRing_eq_range (bDeRham_fixed K)
 
 end Invariants
 
@@ -216,8 +211,6 @@ variable [FiniteDimensional ℚ_[p] K] [FiniteDimensional ℚ_[p] V]
 theorem finiteDimensional_DdR : FiniteDimensional K (DdR K ρ) :=
   (isRegular_bDeRham K).finiteDimensional_DBK ρ (bDeRham_fixed K)
 
-theorem finrank_DdR_le : finrank K (DdR K ρ) ≤ finrank ℚ_[p] V :=
-  (isRegular_bDeRham K).finrank_DBK_le ρ (bDeRham_fixed K)
 
 omit [FiniteDimensional ℚ_[p] V] in
 

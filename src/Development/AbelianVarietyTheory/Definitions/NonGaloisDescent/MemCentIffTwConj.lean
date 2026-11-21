@@ -93,16 +93,6 @@ theorem adj_eq {δ g : Matrix (Fin n) (Fin n) R} (hδ : IsUnit δ) (hg : IsUnit 
     Matrix.nonsing_inv_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det δ).mp hδ), adj]
   simp only [Matrix.mul_assoc]
 
-theorem mem_cent_iff_twConj {δ g : Matrix (Fin n) (Fin n) R} (hg : IsUnit g) :
-    g ∈ cent δ ↔ twConj g δ = δ := by
-  have hd := (Matrix.isUnit_iff_isUnit_det g).mp hg
-  simp only [cent, Set.mem_setOf_eq, hg, true_and, twConj, Matrix.mul_assoc]
-  constructor
-  · intro h
-    rw [← h, Matrix.nonsing_inv_mul_cancel_left _ _ hd]
-  · intro h
-    conv_lhs => rw [← h]
-    rw [Matrix.mul_nonsing_inv_cancel_left _ _ hd]
 
 theorem Phi_two : Phi 2 ℂ = !![0, 1; -1, 0] := by
   ext i j; fin_cases i <;> fin_cases j <;> simp [Phi]
@@ -116,17 +106,6 @@ theorem nrm_diag : nrm (!![2, 0; 0, 1] : Matrix (Fin 2) (Fin 2) ℂ) = Matrix.di
   ext i j; fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.conjTranspose_apply, Matrix.vecMul, dotProduct, map_ofNat]
 
-theorem reg_diag : Reg (!![2, 0; 0, 1] : Matrix (Fin 2) (Fin 2) ℂ) := by
-  refine ⟨?_, ?_⟩
-  · rw [Matrix.isUnit_iff_isUnit_det]; simp [Matrix.det_fin_two]
-  · rw [nrm_diag, Matrix.charpoly_diagonal, Polynomial.separable_prod_X_sub_C_iff]
-    intro i j h
-    fin_cases i <;> fin_cases j <;> simp_all <;> norm_num at h
 
-theorem not_reg_one : ¬ Reg (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
-  rintro ⟨-, h⟩
-  rw [nrm, theta_one, Matrix.mul_one, ← Matrix.diagonal_one, Matrix.charpoly_diagonal,
-    Polynomial.separable_prod_X_sub_C_iff] at h
-  exact absurd (@h 0 1 rfl) (by decide)
 
 end GlobalTheory.Tw.Model

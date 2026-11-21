@@ -33,8 +33,6 @@ theorem qInv_smul (a : A) {y : D} (hy : W.QInv y) : W.QInv (a • y) := by
 theorem qInv_smulO (c : O) {y : D} (hy : W.QInv y) : W.QInv (c • y) := by
   rw [smulO_eq (A := A)]; exact W.qInv_smul _ hy
 
-theorem xN_mem {z : D} (hz : W.XN z) : z ∈ W.N := by
-  obtain ⟨n, hn, rfl⟩ := hz; exact W.N.smul_mem _ hn
 
 theorem xN_zero : W.XN 0 := ⟨0, W.N.zero_mem, (smul_zero _).symm⟩
 
@@ -97,11 +95,7 @@ theorem isTwoCochain_diffOne {y z : D} (h : W.C1 y z) : W.C2 (W.d1 y z) := by
     exact W.φ_N n hn
   · rw [d1, hγ, W.φ_smul, hv, mul_smul, smul_sub, smul_sub]
 
-theorem isOneCocycle_diffZero {x : D} (hx : x ∈ W.N) : W.Cocycle (W.φ x - x) (W.γ x - x) :=
-  ⟨W.isOneCochain_diffZero hx, W.diffOne_diffZero x⟩
 
-theorem cocycle_of_isCob1 {y z : D} (h : W.IsCob1 y z) : W.Cocycle y z := by
-  obtain ⟨x, hx, rfl, rfl⟩ := h; exact W.isOneCocycle_diffZero hx
 
 theorem cocycle_zero : W.Cocycle 0 0 := ⟨W.cont_pow_X_pow_eq_zero_of_lt, W.diffOne_zero⟩
 
@@ -176,46 +170,19 @@ theorem mem_Z1_iff_cocycle (y z : D) : (y, z) ∈ W.Z1 ↔ W.d1 y z = 0 := by
 
 theorem mem_cocycles' (pr : D × D) : pr ∈ W.Z1 ↔ W.d1 pr.1 pr.2 = 0 := W.mem_Z1_iff_cocycle pr.1 pr.2
 
-theorem diffZero_mem_coboundaries (x : D) : (W.φ x - x, W.γ x - x) ∈ W.B1 :=
-  ⟨x, by simp [LinearMap.prod_apply]⟩
 
 theorem coboundaries_le_cocycles : W.B1 ≤ W.Z1 := by
   rintro _ ⟨x, rfl⟩
   rw [W.mem_cocycles']
   simpa [LinearMap.prod_apply] using W.diffOne_diffZero x
 
-theorem mem_cocycles_of_isOneCocycle {y z : D} (h : W.Cocycle y z) : (y, z) ∈ W.Z1 :=
-  (W.mem_Z1_iff_cocycle y z).2 h.2
 
-theorem finiteCocycles_le_cocycles : W.Zf ≤ W.Z1 :=
-  sup_le (Submodule.span_le.2 fun _ h => h.1) W.coboundaries_le_cocycles
 
-theorem cocycle_mem_Zf {y z : D} (h : W.Cocycle y z) : (y, z) ∈ W.Zf := by
-  refine Submodule.mem_sup_left (Submodule.subset_span ⟨W.mem_cocycles_of_isOneCocycle h, 0, 0,
-    W.B1.zero_mem, ?_⟩)
-  simp only [pow_zero, one_smul, add_zero]
-  exact ⟨⟨M, h.1.1⟩, h.1.2⟩
 
-theorem mem_coboundaries_of_isOneCoboundary {y z : D} (h : W.IsCob1 y z) : (y, z) ∈ W.B1 := by
-  obtain ⟨x, _, rfl, rfl⟩ := h; exact W.diffZero_mem_coboundaries x
 
 end WachMod
 
-theorem differentialsComplex_holds : Complex := by
-  intro O A _ _ _ B M D _ _ _ _ W
-  exact ⟨fun _ hx => W.isOneCochain_diffZero hx, W.diffOne_diffZero, fun _ _ h => W.isTwoCochain_diffOne h,
-    fun _ _ h => W.cocycle_of_isCob1 h⟩
 
-theorem cochainsSubmodules_holds : Submods := by
-  intro O A _ _ _ B M D _ _ _ _ W
-  exact ⟨⟨W.qInvSub, fun _ => Iff.rfl⟩, ⟨W.xNSub, fun _ => Iff.rfl⟩,
-    ⟨W.twoCochains, fun _ => Iff.rfl⟩, ⟨W.cocycleSub, fun _ _ => Iff.rfl⟩,
-    ⟨W.isCob1Sub, fun _ _ => Iff.rfl⟩, ⟨W.isCob2Sub, fun _ => Iff.rfl⟩,
-    fun _ hn => W.qInv_of_mem hn, fun _ h => W.xN_mem h⟩
 
-theorem cocyclesFinite_holds : CocZf := by
-  intro O A _ _ _ B M D _ _ _ _ W
-  exact ⟨fun _ _ h => W.cocycle_mem_Zf h, W.coboundaries_le_cocycles, W.finiteCocycles_le_cocycles,
-    fun _ _ h => W.mem_coboundaries_of_isOneCoboundary h⟩
 
 end Formalism.CoboundaryTransfers

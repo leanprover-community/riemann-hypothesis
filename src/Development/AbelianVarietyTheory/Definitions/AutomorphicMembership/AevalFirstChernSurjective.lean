@@ -50,7 +50,6 @@ theorem cls_eq_iff {L M : FinLB X} : L.cls = M.cls ↔ LBIso L.lb M.lb := CechPi
 
 def dual (L : FinLB X) : FinLB X := ⟨L.n, L.U, fun i j => (L.g i j)⁻¹, isLB_dual L.isLB⟩
 
-theorem lb_dual (L : FinLB X) : L.dual.lb = CechPic.dual L.lb := rfl
 
 variable (X) in
 
@@ -104,15 +103,6 @@ theorem existsUnique_lift [CompactSpace X] {A : Type} [CommRing A] [Algebra ℚ 
     change _ = φ (σ (smallPicEquiv X ((smallPicEquiv X).symm (g i))))
     rw [AddEquiv.apply_symm_apply, ← hψ, c1_eq, hσ]
 
-theorem aeval_firstChern_surjective [CompactSpace X] :
-    Function.Surjective (MvPolynomial.aeval (R := ℚ) (c1 (X := X))) := fun x => by
-  have hx : x ∈ _ := (span_prod_symOf (G := SmallPic X)).ge Submodule.mem_top
-  refine (Submodule.span_le (p := (MvPolynomial.aeval (R := ℚ) (c1 (X := X))).range.toSubmodule)).2 ?_ hx
-  rintro _ ⟨s, rfl⟩
-  refine Subalgebra.multiset_prod_mem _ fun y hy => ?_
-  obtain ⟨c, -, rfl⟩ := Multiset.mem_map.1 hy
-  obtain ⟨L, hL⟩ := cls_surjective (smallPicEquiv X c)
-  exact ⟨MvPolynomial.X L, by simp [c1_eq, hL, firstChernPic]⟩
 
 end FinLB
 
@@ -276,11 +266,6 @@ theorem IsIsom.isSum (H : IsIsom P P') : IsSum P (zero Z) P' := fun i _ k => by
   refine this.trans (congrArg₂ (· * ·) (resG_resG _ _ _).symm ?_)
   exact (mul_one _).symm.trans (congrArg _ (map_one _).symm)
 
-theorem isSum_ofCharts {n : ℕ} (f : Fin n → P.M.ι) (hf : ⨆ i, P.M.U (f i) = ⊤) :
-    IsSum P (zero Z) (P.ofCharts f hf) := fun i _ k =>
-  ⟨res (le_inf inf_le_right (inf_le_left.trans inf_le_left)) (P.M.g (f k) i), by
-    rw [val_res, resG_resG]
-    exact (P.eqn_rel (f k) i _ _ _).trans (congrArg _ ((mul_one _).symm.trans (congrArg _ (map_one _).symm)))⟩
 
 end VPair
 
@@ -568,12 +553,6 @@ theorem isSum_iff : IsSum P P' P'' ↔ P''.cls = P.cls + P'.cls := by
   refine this.trans (congrArg₂ (· * ·) ((resG_resG _ _ _).trans (resG_resG _ _ _).symm) ?_)
   exact (map_mul _ _ _).trans (congrArg₂ (· * ·) (resG_eqn _ _ _ _) (resG_eqn _ _ _ _))
 
-theorem exists_finLB (D : Z.VDivZ) : ∃ (M : FinLB Z.X) (t : Γ(toMod M.lb, Z.gen)) (h : ∀ i, IsUnit (coord t i)),
-    cls ⟨M.lb, M.isLB, t, h⟩ = D := by
-  obtain ⟨P, rfl⟩ := cls_surjective D
-  obtain ⟨n, f, hf⟩ := FinLB.exists_charts P.isLB
-  exact ⟨FinLB.ofCharts P.M P.isLB f hf, _, (P.ofCharts f hf).isUnit,
-    (isSum_iff.1 (P.isSum_ofCharts f hf)).trans (by simp)⟩
 
 end VPair
 
@@ -649,13 +628,6 @@ theorem vDeg_apply (d : ℕ) (D : Z.VDivZ) (x : PicSym Z.X) : Z.vDeg d D x =
   rw [vDeg, AddMonoidHom.finset_sum_apply, LinearMap.sum_apply]
   rfl
 
-theorem vDeg_of_mem {d : ℕ} (D : Z.VDivZ) {x : PicSym Z.X} (hx : x ∈ symDeg (SmallPic Z.X) d) :
-    Z.vDeg d D x = ∑ C, (Z.comp C).vDeg (Z.vRes C D) (picSymPull (Z.compι C) x) := by
-  rw [vDeg_apply, Finset.sum_filter]
-  refine Finset.sum_congr rfl fun C _ => ?_
-  split_ifs with h
-  · rfl
-  · exact (Model.vDeg_eq_zero _ (Ne.symm h) (picSymPull_mem_symDeg _ hx)).symm
 
 theorem vDeg_eq_zero {d n : ℕ} (D : Z.VDivZ) (hn : n ≠ d) {x : PicSym Z.X} (hx : x ∈ symDeg (SmallPic Z.X) n) :
     Z.vDeg d D x = 0 := by
@@ -663,9 +635,6 @@ theorem vDeg_eq_zero {d n : ℕ} (D : Z.VDivZ) (hn : n ≠ d) {x : PicSym Z.X} (
   exact Finset.sum_eq_zero fun C hC => Model.vDeg_eq_zero _ ((Finset.mem_filter.1 hC).2 ▸ hn)
     (picSymPull_mem_symDeg _ hx)
 
-theorem vDeg_of_relDim {d : ℕ} (h : ∀ C, (Z.comp C).relDim = d) (D : Z.VDivZ) (x : PicSym Z.X) :
-    Z.vDeg d D x = ∑ C, (Z.comp C).vDeg (Z.vRes C D) (picSymPull (Z.compι C) x) := by
-  rw [vDeg_apply, Finset.filter_true_of_mem fun C _ => h C]
 
 end NModel
 

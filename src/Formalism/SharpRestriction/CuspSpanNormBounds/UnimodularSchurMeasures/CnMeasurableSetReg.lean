@@ -9,28 +9,8 @@ open MeasureTheory NumberField Matrix Finset
 open scoped InnerProductSpace ComplexOrder ENNReal
 open Formalism.MainNotions.S Formalism.MainNotions.PlaceDegreeData Formalism.MainNotions.BridgeLemma
 
-theorem cn_measurableSet_Reg (a : ℕ) : MeasurableSet (cn_Reg a) := by
-  have h : cn_Reg a = (⋂ x : Fin a, ⋂ y : Fin a, ⋂ _ : x < y, {t : Fin a → ℝ | t x < t y}) ∩
-      ⋂ x : Fin a, ({t : Fin a → ℝ | 0 < t x} ∩ {t | t x < 1 / 2}) := by
-    ext t
-    simp only [cn_Reg, StrictMono, Set.mem_ofPred_eq, Set.mem_inter_iff, Set.mem_iInter]
-  rw [h]
-  refine MeasurableSet.inter ?_ ?_
-  · exact MeasurableSet.iInter fun x => MeasurableSet.iInter fun y => MeasurableSet.iInter fun _ =>
-      measurableSet_lt (measurable_pi_apply x) (measurable_pi_apply y)
-  · exact MeasurableSet.iInter fun x => (measurableSet_lt measurable_const (measurable_pi_apply x)).inter
-      (measurableSet_lt (measurable_pi_apply x) measurable_const)
 
-theorem cn_measurable_la {a : ℕ} (r : cn_Root a) : Measurable fun t : Fin a → ℝ => cn_la t r := by
-  rcases r with (p | p) | (x | x)
-  · exact (measurable_pi_apply p.1.1).div (measurable_pi_apply p.1.2)
-  · exact (measurable_pi_apply p.1.1).mul (measurable_pi_apply p.1.2)
-  · exact (measurable_pi_apply x).pow_const 2
-  · exact measurable_pi_apply x
 
-theorem cn_measurable_cnt {a : ℕ} (j : Fin a → ℕ) (n0 f : ℕ) (de : ℝ) : Measurable (cn_cnt j n0 f de) := by
-  unfold cn_cnt
-  exact Finset.measurable_prod _ fun r _ => ((measurable_const.div (cn_measurable_la r)).const_add 1).pow_const _
 
 def cn_wt {a : ℕ} (j : Fin a → ℕ) (f : ℕ) (t : Fin a → ℝ) : ℝ := ∏ x, (2 * (f : ℝ) * j x / t x)
 

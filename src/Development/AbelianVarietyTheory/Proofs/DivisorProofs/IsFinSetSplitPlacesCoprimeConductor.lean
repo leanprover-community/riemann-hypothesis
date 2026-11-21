@@ -12,21 +12,10 @@ section General
 
 variable {E : Type} [Field E] [NumberField E]
 
-theorem isCMType_places : IsCMType (fun w : InfinitePlace E => w.embedding) := by
-  intro σ
-  refine ⟨InfinitePlace.mk σ, ?_, ?_⟩
-  · rcases InfinitePlace.embedding_mk_eq σ with h | h
-    · exact Or.inl h.symm
-    · right; simp only [h]; ext x; simp
-  · rintro w (h | h)
-    · rw [h, InfinitePlace.mk_embedding]
-    · rw [h, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding]
 
 theorem expIn_eq_zero {𝔣 : Ideal (OF E)} {v : HeightOneSpectrum (OF E)} : expIn 𝔣 v = 0 ↔ ¬ v.asIdeal ∣ 𝔣 :=
   multiplicity_eq_zero
 
-theorem expIn_pow (v : HeightOneSpectrum (OF E)) (n : ℕ) : expIn (v.asIdeal ^ n) v = n :=
-  multiplicity_pow_self v.ne_bot (fun h => v.isPrime.ne_top (Ideal.isUnit_iff.1 h)) n
 
 theorem exists_over (v : HeightOneSpectrum (OF E)) : ∃ P : HeightOneSpectrum (𝓞 E), Over P v := by
   have := v.isPrime
@@ -163,47 +152,8 @@ theorem exists_place : ∃ v : HeightOneSpectrum (OF K), ((43 : ℕ) : OF K) ∈
   have : ((43 : ℕ) : ℤ) ∈ P.under ℤ := hl.over ▸ Ideal.mem_span_singleton_self _
   simpa [Ideal.mem_comap] using this
 
-theorem isBaseCond_pow (v : HeightOneSpectrum (OF K)) (h : ((43 : ℕ) : OF K) ∈ v.asIdeal) (n : ℕ) :
-    IsBaseCond (v.asIdeal ^ n) ↔ n = 1 ∨ n = 2 := by
-  constructor
-  · rintro ⟨-, h1, h2⟩
-    have hn : n ≠ 0 := by rintro rfl; exact h1 (by simp)
-    have := (h2 v (dvd_pow_self _ hn)).2.1
-    rw [expIn_pow] at this
-    omega
-  · intro hn
-    have hn0 : n ≠ 0 := by omega
-    refine ⟨pow_ne_zero _ v.ne_bot, fun e => v.isPrime.ne_top ?_, fun w hw => ?_⟩
-    · exact top_le_iff.1 (e ▸ Ideal.pow_le_self hn0)
-    · have hwv : w = v := by
-        have := Ideal.dvd_iff_le.1 (w.prime.dvd_of_dvd_pow hw)
-        exact HeightOneSpectrum.ext (v.isMaximal.eq_of_le w.isPrime.ne_top this).symm
-      subst hwv
-      refine ⟨splits_of_mem w h, by rw [expIn_pow]; omega, 43, by norm_num, by norm_num, h, not_dvd_discr, absNorm_of_mem⟩
 
-theorem inhabited_K : UnramFin K ∧ IsCMType (fun w : InfinitePlace K => w.embedding) ∧
-    ∃ v : HeightOneSpectrum (OF K), Splits v ∧ IsBaseCond v.asIdeal ∧ IsBaseCond (v.asIdeal ^ 2) ∧
-      ¬ IsBaseCond (v.asIdeal ^ 3) ∧ IsFinSetSplitPlacesCoprimeConductor v.asIdeal ∅ ∧ ¬ IsFinSetSplitPlacesCoprimeConductor v.asIdeal {v} ∧ IsFinSetSplitPlacesCoprimeConductor ⊤ {v} := by
-  obtain ⟨v, hv⟩ := exists_place
-  refine ⟨unramFin_K, isCMType_places, v, splits_of_mem v hv, ?_, (isBaseCond_pow v hv 2).2 (Or.inr rfl), ?_, by simp [IsFinSetSplitPlacesCoprimeConductor],
-    fun h => (h v (by simp)).2 dvd_rfl, fun q hq => ?_⟩
-  · simpa using (isBaseCond_pow v hv 1).2 (Or.inl rfl)
-  · rw [isBaseCond_pow v hv]; omega
-  · rw [Finset.mem_singleton.1 hq]
-    exact ⟨splits_of_mem v hv, fun h => v.isPrime.ne_top (by rwa [Ideal.dvd_iff_le, top_le_iff] at h)⟩
 
-theorem exists_isValChar_K (s : ℕ) (κ : InfinitePlace K → ℕ) :
-    ∃ v : HeightOneSpectrum (OF K), IsBaseCond (v.asIdeal ^ 2) ∧ ∃ χ : HChar K,
-      IsValChar (fun w : InfinitePlace K => w.embedding) s κ (v.asIdeal ^ 2) ∅ χ ∧ ∃ P, ¬ χ.UnrAt P := by
-  obtain ⟨v, hv⟩ := exists_place
-  have hb := (isBaseCond_pow v hv 2).2 (Or.inr rfl)
-  obtain ⟨χ, hχ⟩ := ValEx.exists_isValChar K _ isCMType_places s κ v hb
-  obtain ⟨P, hP⟩ := exists_over v
-  refine ⟨v, hb, χ, hχ, P, fun hu => ?_⟩
-  have h := (hχ.2.2.2 v P hP).2 (Finset.notMem_empty v)
-  rw [expIn_pow] at h
-  have h0 := (h 0).1 (((expAt_zero_iff χ P).2 hu 0).2 le_rfl)
-  omega
 
 end Cyclotomic
 

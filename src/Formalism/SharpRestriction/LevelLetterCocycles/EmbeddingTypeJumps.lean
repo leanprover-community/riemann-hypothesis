@@ -175,40 +175,6 @@ def DownAt (ep : Bool) {i : D.nd.Loc} {w : HeightOneSpectrum (𝓞 D.host.E)}
   ∃ τ₀ : Br.Kw D.nbr i w hw →ₐ[ℚ_[D.nd.l i]] Br.LL D.nbr i w hw,
     EmbTypeUe (!ep) τ₀ ∧ ∀ x, τ x = C.inc (τ₀ x)
 
-theorem not_upAt_and_downAt (ep : Bool) {i : D.nd.Loc} {w : HeightOneSpectrum (𝓞 D.host.E)}
-    {hw : w ∈ placesOver D.host.E (D.nd.l i)} (C : Formalism.MainNotions.TruncatedSeriesCountingIdentities.CoefExt D i w hw)
-    (τ : Br.Kw D.nbr i w hw →ₐ[ℚ_[D.nd.l i]] ↥C.LL.1) : ¬ (UpAt ep C τ ∧ DownAt ep C τ) := by
-  rintro ⟨⟨τ₀, h0, e0⟩, ⟨τ₁, h1, e1⟩⟩
-  have hτ : τ₀ = τ₁ := by
-    ext x
-    exact congrArg _ ((C.inc).injective ((e0 x).symm.trans (e1 x)))
-  subst hτ
-  have hd : (0 : ℝ) < Real.sqrt (D.host.d : ℝ) := by
-    have := D.host.qd_big.2
-    exact Real.sqrt_pos.2 (by exact_mod_cast (by omega : 0 < D.host.d))
-  have key : ∀ (ψ₁ ψ₂ : D.host.E →+* ℂ),
-      ψ₁ ∈ D.host.cmType →
-      ψ₂ ∈ D.host.cmType →
-      (∃ y : D.what₂.LL, D.what₂.embLL y = ψ₁ (D.host.sqd) ∧
-        D.what₂.embLL y = starRingEnd ℂ (ψ₂ (D.host.sqd))) → False := by
-    intro ψ₁ ψ₂ m1 m2 ⟨y, hy1, hy2⟩
-    have h := hy1.symm.trans hy2
-    simp only [Formalism.HC.HostRaw.cmType, Set.mem_ofPred_eq] at m1 m2
-    rw [m1, m2] at h
-    have him := congrArg Complex.im h
-    simp at him
-    linarith
-  cases ep with
-  | true =>
-    obtain ⟨hr, φ, hφ, hφr⟩ := h0
-    obtain ⟨-, φ', hφ', hφ'r⟩ := h1
-    obtain ⟨y, hy⟩ := hr (D.host.sqd)
-    exact key φ φ' hφ hφ' ⟨y, hφr _ _ hy, hφ'r _ _ hy⟩
-  | false =>
-    obtain ⟨hr, φ, hφ, hφr⟩ := h0
-    obtain ⟨-, φ', hφ', hφ'r⟩ := h1
-    obtain ⟨y, hy⟩ := hr (D.host.sqd)
-    exact key φ' φ hφ' hφ ⟨y, hφ'r _ _ hy, hφr _ _ hy⟩
 
 def HodgeJumpWindowsAtDistinguishedPrimes (ep : Bool) (large₂ : SizeData₂ D) : Prop :=
   ∀ i : D.nd.Loc, AtQD i →

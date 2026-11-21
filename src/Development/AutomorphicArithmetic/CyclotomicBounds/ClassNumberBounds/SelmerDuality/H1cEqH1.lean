@@ -55,20 +55,11 @@ def H1 [Fintype n] (Φ : Matrix m n R) : Submodule R (n → R) :=
 abbrev H2 [Fintype n] (Φ : Matrix m n R) : Type _ :=
   (m → R) ⧸ LinearMap.range Φ.mulVecLin
 
-theorem coefMap_self [Fintype n] (Φ : Matrix m n R) : coefMap Φ R = Φ.mulVecLin := by
-  refine LinearMap.ext fun v => funext fun i => ?_
-  rw [coefMap_apply]
-  simp [Matrix.mulVec, dotProduct]
 
-theorem h1c_eq_h1 [Fintype n] (Φ : Matrix m n R) : H1c Φ R = H1 Φ := by
-  rw [H1c, H1, coefMap_self]
 
 def IsMinimal (Φ : Matrix m n R) : Prop :=
   ∀ i j, Φ i j ∈ Ideal.jacobson (⊥ : Ideal R)
 
-theorem isMinimal_iff [IsLocalRing R] (Φ : Matrix m n R) :
-    IsMinimal Φ ↔ ∀ i j, Φ i j ∈ IsLocalRing.maximalIdeal R := by
-  rw [IsMinimal, IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top]
 
 example : IsMinimal (0 : Matrix m n R) := fun _ _ => Ideal.zero_mem _
 

@@ -108,10 +108,6 @@ def BranchingTransposeMap : Prop :=
   ∀ (n N : ℕ) (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight n), Interlace h lam sg →
     ∃ br : MvPolynomial (Fin N × Fin N) ℂ →ₗ[ℂ] MvPolynomial (Fin n × Fin n) ℂ, IsBr h lam sg br
 
-theorem branchingTranspose_of_branching (H : Conclusion6) : BranchingTransposeMap := by
-  intro n N h lam sg hI
-  obtain ⟨-, -, -, -, io, br, -, hbr, -⟩ := H n N h lam sg hI
-  exact ⟨br, hbr⟩
 
 def StandardMonomialSpanAlt : Prop := Formalism.GradedWeylDivisibility.StandardMonomialSpan
 
@@ -615,12 +611,6 @@ def Prov.RK (Y : Prov D X) : HLat D.what₂.LL := Y.sK.RR
 
 def Prov.P0 (Y : Prov D X) : Pair D.what₂.LL (G0g D.nd) := ⟨D.nexp.U, Y.psi0⟩
 
-theorem card_tie (D : D7) : D.what₂.restRowsFiniteGroupCard = Fintype.card (G0g D.nd) := by
-  have : ∀ k, NeZero (D.host.g k) := fun k => ⟨(D.host.g_prime k).ne_zero⟩
-  rw [D.nd.restN_card_levelGroup_eq, ← Nat.card_eq_fintype_card, Nat.card_pi, Fintype.prod_sigma]
-  refine Finset.prod_congr rfl fun k _ => ?_
-  change _ = ∏ _y : D.nd.PlG k, Nat.card (GL (Fin D.R.r) (ZMod (D.host.g k)))
-  rw [Finset.prod_const, Finset.card_univ, D.nd.card_PlG k]
 
 def Conclusion0 (D : D7) : Prop :=
   ∀ Y : ℝ, (∀ i, (D.host.g i : ℝ) ≤ 2 * Y) → lam0 D ≤ 2 * (D.R.f : ℝ) * (D.R.r : ℝ) ^ 2 * Real.log (2 * Y)
@@ -650,11 +640,6 @@ def ErrorFirstTermSize (D : D7) : Prop :=
       D.ntypes.onAmb μ (Formalism.MainNotions.ArithmeticCylinders.atPlace D k v (D.ntypes.eSer k f)) F ≠ 0 →
         f = Formalism.MainNotions.ArithmeticCylinders.dualLab D k (D.ntypes.labPar k σ' v))
 
-theorem secondSentence_iff (D : D7) : Formalism.MainNotions.ArithmeticCylinders.adm3 D ↔
-    (∀ (τ : ℂ ≃+* ℂ) (k : Fin 2) (f : Polynomial (ZMod (D.host.g k))), Formalism.MainNotions.ArithmeticCylinders.IsLabel D k f →
-      (D.ntypes.eSer k f).coeff.mapRange τ (map_zero τ) =
-        (D.ntypes.eSer k (Formalism.MainNotions.ArithmeticCylinders.labAct D τ k f)).coeff) ∧ ErrorFirstTermSize D := by
-  exact Iff.rfl
 
 def SerSupp (D : D7) {V : Type} [AddCommGroup V] [Module ℂ V]
     (on : MonoidAlgebra ℂ (G0g D.nd) → Module.End ℂ V) (par : D.ntypes.Par → Submodule ℂ V)
@@ -1262,9 +1247,6 @@ theorem rowMultiplicity_of (Y : Prov D X) (C : ℝ) (hTt : adm3_alt Y) (hT : Row
     rw [hlab π π' hπ]
   · exact (h lab' hl (lab π) (hg (lab π))).2
 
-theorem exactRowOccurrence_of_multiplicity (D : D7) (C : ℝ) (h : RowMultiplicityBound D C) : ExactRowOccurrence D := by
-  obtain ⟨n, -, h0, -⟩ := h
-  exact h0
 
 def LevelTie (Y : Prov D X) (RP : HLat D.what₂.LL) (j : RP.V →ₗ[D.what₂.LL] Y.RK.V)
     (P : Pair D.what₂.LL (G0g D.nd)) : Prop :=
@@ -1459,25 +1441,6 @@ theorem normSq_det_first_block_pos (h0 : RowsExistSmall X) : 0 < D.what₂.D0 :=
   unfold RowsExistSmall at h0
   omega
 
-theorem Drows_pos (Y : Prov D X) (C : ℝ) (hTt : adm3_alt Y) (hR : RowTensorMultiplicity Y) (h3 : PointsLemma Y C)
-    (hδ : C * frg D ≤ 1 / 3) (h0 : RowsExistSmall X) : RowsExistSharp D := by
-  obtain ⟨labT, hl, hg⟩ := hTt
-  obtain ⟨lab, mult, hm, hs, -, -⟩ := hR
-  have hD0 := normSq_det_first_block_pos h0
-  have hnb := nbar_pos D
-  have hn : 0 < nS Y.T Y.Ps (lab (D.what₂.ft0 ⟨0, hD0⟩)) := by
-    by_contra hz
-    have hz' : nS Y.T Y.Ps (lab (D.what₂.ft0 ⟨0, hD0⟩)) = 0 := by omega
-    have h := (h3 labT hl (lab (D.what₂.ft0 ⟨0, hD0⟩)) (hg _)).2
-    rw [hz', Nat.cast_zero, zero_sub, abs_neg, abs_of_pos hnb] at h
-    have : C * frg D * nbar D ≤ 1 / 3 * nbar D := mul_le_mul_of_nonneg_right hδ hnb.le
-    linarith
-  have hr : 0 < D.what₂.nRows (D.what₂.ft0 ⟨0, hD0⟩) := by
-    rw [hs]
-    exact Nat.mul_pos hn (hm _)
-  unfold Rows.Data.nRows at hr
-  obtain ⟨⟨σ, -⟩⟩ := Fintype.card_pos_iff.1 hr
-  exact lt_of_le_of_lt (Nat.zero_le _) σ.2
 
 theorem nonemptyS (Y : Prov D X) (h0 : RowsExistSmall X) (h51 : GoodTypeGLattice Y) : Nonempty Y.T.S := by
   by_contra hS
@@ -1688,15 +1651,7 @@ theorem stmt_of (Y : Prov D X) (C : ℝ) (sB : SecondFromFirstStatement Y C) : S
   obtain ⟨h1, he, h3, hV, hV0, hR0, hR⟩ := stmtA Y C hA
   exact ⟨hC, hp0, stmtD D hD, hV, hV0, hR0, hR, hp5, stmtK Y C ⟨hA, h0s, hL⟩, h1, he, h3⟩
 
-theorem stmt_rows (Y : Prov D X) (C : ℝ) (h : LemmasOneThreeInputs Y C) :
-    Conclusion1 Y ∧ ExponentBlockSplitting Y ∧ ErrorFirstTermSize D ∧ PointsLemma Y C ∧ ThetaUpInV0 D ∧ ThetaUpInV0Small X ∧ ExactRowOccurrence D ∧ RowMultiplicityBound D C := by
-  obtain ⟨hD, hA⟩ := h
-  obtain ⟨h1, he, h3, hV, hV0, hR0, hR⟩ := stmtA Y C hA
-  exact ⟨h1, he, stmtD D hD, h3, hV, hV0, hR0, hR⟩
 
-theorem stmt_sk (Y : Prov D X) (C : ℝ) (h : admitted Y C) : ChainConstantPassage D X C := by
-  obtain ⟨-, ⟨-, hA⟩, -, h0s, -, hL⟩ := h
-  exact stmtK Y C ⟨hA, h0s, hL⟩
 
 end Whole
 
@@ -1735,78 +1690,20 @@ def Adm5F (Fm : FamP ε) (YF : ProvF Fm) : Prop :=
 def FamilyProportionality (Fm : FamP ε) (YF : ProvF Fm) : Prop :=
   Adm5F Fm YF → (∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), adm3_alt (YF x hx i)) → Conclusion3Family Fm YF → Conclusion4a → SlopeLossFamily Fm
 
-private theorem pointsLemma_mono {D : D7} {X : BaseLevelRowSide D} (Y : Prov D X) {C C' : ℝ} (h : PointsLemma Y C)
-    (hC : C ≤ C') : PointsLemma Y C' := by
-  intro lab hl s hs
-  obtain ⟨h0, h1⟩ := h lab hl s hs
-  refine ⟨h0, le_trans h1 ?_⟩
-  have hnn : 0 ≤ frg D * nbar D := by
-    unfold frg nbar
-    positivity
-  calc C * frg D * nbar D = C * (frg D * nbar D) := by ring
-    _ ≤ C' * (frg D * nbar D) := mul_le_mul_of_nonneg_right hC hnn
-    _ = C' * frg D * nbar D := by ring
 
-theorem familyLemmaFive_of_pointwise (Fm : FamP ε) (YF : ProvF Fm)
-    (H : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (C : ℝ), GGFromIrreducibility (YF x hx i) C) : FamilyProportionality Fm YF := by
-  intro hA hT h3 h4
-  obtain ⟨⟨x0, hx0⟩, h2⟩ := hA
-  obtain ⟨C3, x3, hx3⟩ := h3
-  refine ⟨max C3 1, lt_of_lt_of_le one_pos (le_max_right C3 1), ?_⟩
-  obtain ⟨x2, hx2⟩ := h2 (max C3 1)
-  refine ⟨max x0 (max x3 x2), fun x hx hx1 i => ?_⟩
-  simp only [max_le_iff] at hx
-  obtain ⟨ha, hb, hc⟩ := hx
-  obtain ⟨a0, a1⟩ := hx0 x ha hx1 i
-  exact ⟨hx2 x hc hx1 i, H x hx1 i (max C3 1) a0 a1 (hT x hx1 i)
-    (pointsLemma_mono _ (hx3 x hb hx1 i) (le_max_left C3 1)) h4⟩
 
 def LemmaFiveLargeConstants (Fm : FamP ε) : Prop := ∃ C0 : ℝ, ∀ C, C0 ≤ C → familyLemmaFiveWith Fm C
 
-theorem familyLemmaFive_of_large (Fm : FamP ε) (h : LemmaFiveLargeConstants Fm) : SlopeLossFamily Fm := by
-  obtain ⟨C0, hC0⟩ := h
-  exact ⟨max C0 0, hC0 _ (le_max_left _ _)⟩
 
-theorem stmt5Thr_of (Fm : FamP ε) (YF : ProvF Fm)
-    (H : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (C : ℝ), GGFromIrreducibility (YF x hx i) C) :
-    Adm5F Fm YF → (∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), adm3_alt (YF x hx i)) → Conclusion3Family Fm YF → Conclusion4a → LemmaFiveLargeConstants Fm := by
-  intro hA hT h3 h4
-  obtain ⟨⟨x0, hx0⟩, h2⟩ := hA
-  obtain ⟨C3, x3, hx3⟩ := h3
-  refine ⟨max C3 1, fun C hC => ⟨lt_of_lt_of_le one_pos (le_trans (le_max_right C3 1) hC), ?_⟩⟩
-  obtain ⟨x2, hx2⟩ := h2 C
-  refine ⟨max x0 (max x3 x2), fun x hx hx1 i => ?_⟩
-  simp only [max_le_iff] at hx
-  obtain ⟨ha, hb, hc⟩ := hx
-  obtain ⟨a0, a1⟩ := hx0 x ha hx1 i
-  exact ⟨hx2 x hc hx1 i, H x hx1 i C a0 a1 (hT x hx1 i)
-    (pointsLemma_mono _ (hx3 x hb hx1 i) (le_trans (le_max_left C3 1) hC)) h4⟩
 
 def familyChainConstantWith (Fm : FamP ε) (C : ℝ) : Prop :=
   ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x), ChainConstantPassage (Fm.D x i) (Fm.ex x hx i).p0 C
 
 def familyChainConstantPassage (Fm : FamP ε) : Prop := ∃ C : ℝ, familyChainConstantWith Fm C
 
-theorem chainConstantPassage_mono (Fm : FamP ε) {C C' : ℝ} (h : familyChainConstantWith Fm C) (hC : C ≤ C') : familyChainConstantWith Fm C' := by
-  obtain ⟨x0, hx0⟩ := h
-  refine ⟨x0, fun x hx hx1 i => ?_⟩
-  have h1 := hx0 x hx hx1 i
-  unfold ChainConstantPassage at h1 ⊢
-  have hl : 0 ≤ lam0 (Fm.D x i) := by
-    unfold lam0
-    rcases Nat.eq_zero_or_pos (Fm.D x i).what₂.restRowsFiniteGroupCard with h0 | h0
-    · rw [h0]
-      simp
-    · exact Real.log_nonneg (Nat.one_le_cast.mpr h0)
-  have hml : 0 ≤ ((Fm.D x i).R.m : ℝ) * lam0 (Fm.D x i) := mul_nonneg (Nat.cast_nonneg _) hl
-  nlinarith [mul_le_mul_of_nonneg_right hC hml]
 
 def FamilyLemmaFiveUniform (Fm : FamP ε) : Prop := ∃ C : ℝ, familyLemmaFiveWith Fm C ∧ familyChainConstantWith Fm C
 
-theorem lemmaFiveUniform_of (Fm : FamP ε) (h : LemmaFiveLargeConstants Fm) (hk : familyChainConstantPassage Fm) : FamilyLemmaFiveUniform Fm := by
-  obtain ⟨C0, hC0⟩ := h
-  obtain ⟨Ck, hCk⟩ := hk
-  exact ⟨max C0 Ck, hC0 _ (le_max_left _ _), chainConstantPassage_mono Fm hCk (le_max_right _ _)⟩
 
 def familyThetaUpInV0 (Fm : FamP ε) : Prop := ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, ThetaUpInV0 (Fm.D x i)
 
@@ -1829,24 +1726,7 @@ def Adm1F (Fm : FamP ε) (YF : ProvF Fm) : Prop := familySecondSentenceInputs Fm
 def familySmallScalarCond (Fm : FamP ε) : Prop :=
   ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x), ChainConstantSmallLevelCond (Fm.ex x hx i).p0
 
-theorem levelBound_of_ratio (D : D7) (h : 12 * frg D ≤ 1 / 3) : LevelRatioBound D := by
-  unfold LevelRatioBound
-  unfold frg at h
-  set m : ℕ := min (D.host.g 0) (D.host.g 1) with hmdef
-  have hm : (0 : ℝ) < (m : ℝ) := Nat.cast_pos.mpr (lt_min (D.host.g_prime 0).pos (D.host.g_prime 1).pos)
-  have hfr : (0 : ℝ) ≤ (D.R.f : ℝ) * D.R.r := by positivity
-  have e : (D.R.f : ℝ) * D.R.r = (D.R.f : ℝ) * D.R.r / m * m := (div_mul_cancel₀ _ hm.ne').symm
-  have h3 : 36 * ((D.R.f : ℝ) * D.R.r / m) ≤ 1 := by linarith
-  have h2 : ((4 * D.R.f * D.R.r : ℕ) : ℝ) ≤ (m : ℝ) := by
-    push_cast
-    nlinarith [mul_le_mul_of_nonneg_right h3 hm.le]
-  exact Nat.cast_le.mp h2
 
-theorem familyMultiplicityBound_of (Fm : FamP ε) (YF : ProvF Fm) (h1 : Adm1aF Fm YF) (h2 : FamilyRatioTendsZero Fm) : familyMultiplicityBoundConst Fm YF 8 := by
-  obtain ⟨x0, hx0⟩ := h2 12
-  refine ⟨x0, fun x hx hx1 i => ?_⟩
-  obtain ⟨-, -, -, -, -, -, -, hL⟩ := h1 x hx1 i
-  exact latticeChain_succ_of_partial _ 8 le_rfl hL (levelBound_of_ratio _ (hx0 x hx hx1 i))
 
 def AdmFA (Fm : FamP ε) (YF : ProvF Fm) : Prop := Adm1aF Fm YF ∧ FamilyRatioTendsZero Fm
 
@@ -1857,35 +1737,11 @@ def FamilyPartAImplication (Fm : FamP ε) (YF : ProvF Fm) : Prop := AdmFA Fm YF 
 
 def FamilyPartA (Fm : FamP ε) (_CH : ℝ) : Prop := ∀ YF : ProvF Fm, FamilyPartAImplication Fm YF
 
-theorem stmtFA_exact (Fm : FamP ε) (YF : ProvF Fm) (h1 : Adm1aF Fm YF) :
-    Conclusion1Family Fm YF ∧ familyThetaUpInV0 Fm ∧ familyThetaUpInV0Small Fm ∧ familyExactRowOccurrence Fm := by
-  refine ⟨fun x hx i => ?_, fun x hx i => ?_, fun x hx i => ?_, fun x hx i => ?_⟩
-  · obtain ⟨hA, hB, hth, hE, -⟩ := h1 x hx i
-    exact ⟨baseChange_preserves_unitary_of _ hA hB hth, idempotent_acts_trivially_of _ hE⟩
-  · obtain ⟨hA, hB, hth, hE, hT, -⟩ := h1 x hx i
-    exact (thetaUpInV0_iff_sharp _).2 (thetaUpInV0_of _ _ _ _ (idempotentCentral_holds _) (baseChange_preserves_unitary_of _ hA hB hth) (idempotent_acts_trivially_of _ hE) hT.levelS)
-  · obtain ⟨hA, hB, hth, hE, hT, -⟩ := h1 x hx i
-    exact thetaUpInV0_of _ _ _ _ (idempotentCentral_holds _) (baseChange_preserves_unitary_of _ hA hB hth) (idempotent_acts_trivially_of _ hE) hT.level0
-  · obtain ⟨-, -, -, -, -, hTt, hR, hL⟩ := h1 x hx i
-    exact exactRowOccurrence_of _ hTt hR (exactMultiplicityOne_of _ hL)
 
-theorem stmtAtA (Fm : FamP ε) (YF : ProvF Fm) : FamilyPartAImplication Fm YF := by
-  rintro ⟨h1, h2⟩
-  obtain ⟨e1, e2, e3, e4⟩ := stmtFA_exact Fm YF h1
-  obtain ⟨x0, hx0⟩ := familyMultiplicityBound_of Fm YF h1 h2
-  refine ⟨e1, e2, e3, e4, ⟨8, x0, fun x hx hx1 i => ?_⟩, ⟨8, familyMultiplicityBound_of Fm YF h1 h2⟩⟩
-  obtain ⟨-, -, -, -, -, hTt, hR, -⟩ := h1 x hx1 i
-  exact rowMultiplicity_of _ 8 hTt hR (hx0 x hx hx1 i)
 
-theorem stmtFA (Fm : FamP ε) (CH : ℝ) : FamilyPartA Fm CH := by
-  intro YF
-  exact stmtAtA Fm YF
 
 def FamilyPartDImplication (Fm : FamP ε) (_CH : ℝ) : Prop := familySecondSentenceInputs Fm → familySecondSentenceLemmaOne Fm
 
-theorem stmtFD (Fm : FamP ε) (CH : ℝ) : FamilyPartDImplication Fm CH := by
-  intro h x hx i
-  exact secondSentenceLemmaOne_of _ (h x hx i)
 
 def AdmFB (Fm : FamP ε) (YF : ProvF Fm) : Prop := Adm6 ∧ Adm1aF Fm YF ∧ Adm5F Fm YF
 
@@ -1895,19 +1751,7 @@ def FamilyPartBImplication (Fm : FamP ε) (YF : ProvF Fm) : Prop := AdmFB Fm YF 
 
 def FamilyPartB (Fm : FamP ε) (_CH : ℝ) : Prop := ∀ YF : ProvF Fm, FamilyPartBImplication Fm YF
 
-theorem stmtAtB_of (Fm : FamP ε) (YF : ProvF Fm) (pC : ConclusionC) (p0 : ∀ x (i : Fm.Ix x), Conclusion0 (Fm.D x i))
-    (H : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (C : ℝ), GGFromIrreducibility (YF x hx i) C) : FamilyPartBImplication Fm YF := by
-  rintro ⟨-, h1, ⟨h50, h52⟩⟩
-  have h4 : Conclusion4a := by
-    obtain ⟨-, -, -, -, -, -, ⟨C4, h4, -⟩, -⟩ := pC
-    exact h4
-  exact ⟨pC, p0, stmt5Thr_of Fm YF H ⟨h50, h52⟩ (fun x hx i => (h1 x hx i).2.2.2.2.2.1)
-    ⟨8, familyMultiplicityBound_of Fm YF h1 h52⟩ h4⟩
 
-theorem stmtAtB_ofC (Fm : FamP ε) (YF : ProvF Fm) (sC : PropositionCStatement) (p0 : ∀ x (i : Fm.Ix x), Conclusion0 (Fm.D x i))
-    (H : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (C : ℝ), GGFromIrreducibility (YF x hx i) C) : FamilyPartBImplication Fm YF := by
-  rintro ⟨h6, h1, h5⟩
-  exact stmtAtB_of Fm YF (sC h6) p0 H ⟨h6, h1, h5⟩
 
 def AdmFK (Fm : FamP ε) (YF : ProvF Fm) : Prop := Adm1aF Fm YF ∧ Adm5F Fm YF ∧ familySmallScalarCond Fm
 
@@ -1915,24 +1759,7 @@ def FamilyPartKImplication (Fm : FamP ε) (YF : ProvF Fm) : Prop := AdmFK Fm YF 
 
 def PacketAlongFamilyInClass (Fm : FamP ε) (_CH : ℝ) : Prop := ∀ YF : ProvF Fm, FamilyPartKImplication Fm YF
 
-theorem stmtAtK (Fm : FamP ε) (YF : ProvF Fm) : FamilyPartKImplication Fm YF := by
-  rintro ⟨h1, ⟨⟨x0, hx0⟩, h2⟩, ⟨xL, hxL⟩⟩
-  obtain ⟨x2, hx2⟩ := h2 12
-  obtain ⟨x3, hx3⟩ := familyMultiplicityBound_of Fm YF h1 h2
-  refine ⟨8, max x0 (max x2 (max x3 xL)), fun x hx hx1 i => ?_⟩
-  simp only [max_le_iff] at hx
-  obtain ⟨ha, hb, hc, hd⟩ := hx
-  obtain ⟨hA, hB, hth, hE, hT, hTt, hR, -⟩ := h1 x hx1 i
-  have hδ := hx2 x hb hx1 i
-  have hf : 0 ≤ frg (Fm.D x i) := by
-    unfold frg
-    positivity
-  exact chainConstantPassage_of _ 8 (idempotentCentral_holds _) (baseChange_preserves_unitary_of _ hA hB hth) (idempotent_acts_trivially_of _ hE) hT (hxL x hd hx1 i)
-    (Drows_pos _ 8 hTt hR (hx3 x hc hx1 i) (by linarith) (hx0 x ha hx1 i).1) (by norm_num)
 
-theorem stmtFK (Fm : FamP ε) (CH : ℝ) : PacketAlongFamilyInClass Fm CH := by
-  intro YF
-  exact stmtAtK Fm YF
 
 def FamilyFreeObjectInputs (Fm : FamP ε) (YF : ProvF Fm) : Prop := Adm6 ∧ Adm1F Fm YF ∧ Adm5F Fm YF
 
@@ -1967,25 +1794,9 @@ def ErrorExponentStatement (Fm : FamP ε) (YF : ProvF Fm) : Prop := AdmF Fm YF �
 
 def KudlaFamilyStatement (Fm : FamP ε) (_CH : ℝ) : Prop := ∀ YF : ProvF Fm, ErrorExponentStatement Fm YF
 
-theorem stmtAt_of (Fm : FamP ε) (YF : ProvF Fm) (sB : FamilyPartBImplication Fm YF) : ErrorExponentStatement Fm YF := by
-  rintro ⟨h6, ⟨hD, h1⟩, ⟨h50, h52⟩, hL⟩
-  obtain ⟨pC, p0, pT⟩ := sB ⟨h6, h1, ⟨h50, h52⟩⟩
-  obtain ⟨e1, e2, e3, e4, e5, e6⟩ := stmtAtA Fm YF ⟨h1, h52⟩
-  exact ⟨pC, p0, stmtFD Fm 0 hD, e2, e3, e4, e5, pT, stmtAtK Fm YF ⟨h1, ⟨h50, h52⟩, hL⟩, e1, e6⟩
 
-theorem stmtF_of (Fm : FamP ε) (CH : ℝ) (s : FamilyPartB Fm CH) : KudlaFamilyStatement Fm CH := by
-  intro YF
-  exact stmtAt_of Fm YF (s YF)
 
-theorem stmtF_rows (Fm : FamP ε) (YF : ProvF Fm) (h : FamilyFreeObjectInputs Fm YF) :
-    familySecondSentenceLemmaOne Fm ∧ familyThetaUpInV0 Fm ∧ familyThetaUpInV0Small Fm ∧ familyExactRowOccurrence Fm ∧ familyRowMultiplicity Fm ∧ Conclusion1Family Fm YF ∧ Conclusion3Family Fm YF := by
-  obtain ⟨-, ⟨hD, h1⟩, -, h52⟩ := h
-  obtain ⟨e1, e2, e3, e4, e5, e6⟩ := stmtAtA Fm YF ⟨h1, h52⟩
-  exact ⟨stmtFD Fm 0 hD, e2, e3, e4, e5, e1, e6⟩
 
-theorem stmtF_sk (Fm : FamP ε) (YF : ProvF Fm) (h : AdmF Fm YF) : familySecondSentenceLemmaOne Fm ∧ familyChainConstantPassage Fm := by
-  obtain ⟨-, ⟨hD, h1⟩, h5, hL⟩ := h
-  exact ⟨stmtFD Fm 0 hD, stmtAtK Fm YF ⟨h1, h5, hL⟩⟩
 
 end Family
 

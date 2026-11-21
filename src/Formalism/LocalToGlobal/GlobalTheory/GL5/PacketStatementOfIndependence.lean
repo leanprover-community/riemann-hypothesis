@@ -11,21 +11,13 @@ theorem genus_class_mass : PI.UJClassMass2.UJClassMass := _root_.unitary_class_m
 
 theorem classMass_of_D7 (D : D7) : ClassMass D := class_mass_of_genus_classes genus_class_mass D
 
-theorem definite_class_decomposition (D : D7) : DefClassDecomp D := defClassDecomp_of_UJ genus_class_mass D
 
-theorem definite_volume_mass (D : D7) (hT : VolTie D) (hG : GenusMassStd D) : DefiniteVolumeEqMass D :=
-  volume_mass_of_genus_classes D hT hG genus_class_mass
 
-theorem definite_volume_mass_of_tie (D : D7) (hG : GenusMassStd D) : Formalism.MainNotions.RT.GenusMassUnderVolume D :=
-  Formalism.MainNotions.RT.genus_mass_of_class_decomposition D hG (definite_class_decomposition D)
 
 theorem volume_mass_of_genus_rank (D : D7) (n : ℕ) (hT : VolTie D) (hG : GenusMassAt D n) : volumeAtLevelZero D n :=
   volume_mass_of_class_data D n hT hG (class_number_finite_rank D n) (classMassAt_of D (classMass_of_D7 D) n)
 
-theorem volume_mass_all_ranks (D : D7) (hT : VolTie D) (hG : GenusMassStd D) (n : ℕ) : volumeAtLevelZero D n :=
-  volume_mass_of_genus_rank D n hT (genusMassAt_of D hG n)
 
-theorem link_theorem_two : Link2 := Link2_of_UJ genus_class_mass
 
 end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 

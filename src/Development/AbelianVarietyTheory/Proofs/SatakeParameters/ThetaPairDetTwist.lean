@@ -22,30 +22,8 @@ variable {α β : Type} [Fintype α]
 
 theorem val_inl (j : Fin r) : ((stdSum (rfl : r + t = r + t) (Sum.inl j) : Fin (r + t)) : ℕ) = j := by simp
 
-theorem mul_eMat (X : Matrix α (Fin (r + t)) k) (i : α) (j : Fin r) :
-    (X * eMat k r t) i j = X i (stdSum (rfl : r + t = r + t) (Sum.inl j)) := by
-  rw [Matrix.mul_apply, Finset.sum_eq_single (stdSum (rfl : r + t = r + t) (Sum.inl j))]
-  · simp [eMat]
-  · intro l _ hl
-    have : (l : ℕ) ≠ j := fun h => hl (Fin.ext (by simp [h]))
-    simp [eMat, this]
-  · simp
 
-theorem eMat_mul_inl (Y : Matrix (Fin r) β k) (i : Fin r) (j : β) :
-    (eMat k r t * Y) (stdSum (rfl : r + t = r + t) (Sum.inl i)) j = Y i j := by
-  rw [Matrix.mul_apply, Finset.sum_eq_single i]
-  · simp [eMat]
-  · intro l _ hl
-    have : (i : ℕ) ≠ l := fun h => hl (Fin.ext h.symm)
-    simp [eMat, this]
-  · simp
 
-theorem eMat_mul_inr (Y : Matrix (Fin r) β k) (i : Fin t) (j : β) :
-    (eMat k r t * Y) (stdSum (rfl : r + t = r + t) (Sum.inr i)) j = 0 := by
-  rw [Matrix.mul_apply]
-  refine Finset.sum_eq_zero fun l _ => ?_
-  have : r + (i : ℕ) ≠ l := by omega
-  simp [eMat, this]
 
 open MeasureTheory ValuativeRel in
 open scoped TensorProduct Topology in

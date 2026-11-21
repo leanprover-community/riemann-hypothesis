@@ -38,10 +38,6 @@ omit [NumberField E] in
 theorem comp_incl (x : E) : compFin F E v (inclR (F := F) (AF F) x) = inclR (F := F) (Fv F v) x :=
   congrArg (· ⊗ₜ[F] x) (map_one (evFin F v))
 
-theorem toCompl_cV {h : w.under (𝓞 F) = v} {c : w.adicCompletion E →+* w.adicCompletion E} (hc : IsConjAt σ h c) (y : Ev E v) :
-    toCompl h (cV σ v y) = c (toCompl h y) := by
-  rw [hc]
-  congr 1
 
 theorem psi_good {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) (hu : PsiUnr ψ v) {ψv : AddChar (Fv F v) ℂ} (e : ∀ x, ψv x = psiLoc ψ v x) :
     Continuous ψv ∧ ψv ≠ 1 := by
@@ -107,24 +103,6 @@ theorem loc_algebraMap {χ : Chr F E} {χv : (Ev E v)ˣ →* Circle} (H : IsLocC
         rw [show u.2 t = 0 from hu, zero_mul]
       · rw [finSingle_ne e, sub_self, mul_zero]
 
-theorem resEtaPow_loc (h2 : Module.finrank F E = 2) {χ : Chr F E} {m : ℕ}
-    (hχ : ResEtaPow (Units.map (algebraMap F (AF F)).toMonoidHom).range χ m) {χv : (Ev E v)ˣ →* Circle} (H : IsLocChar χ v χv) :
-    ResEtaPow (R := Fv F v) ⊥ χv m := fun a => by
-  classical
-  have : Algebra.IsQuadraticExtension F E := { finrank_eq_two' := h2 }
-  have key : ∀ a : (AF F)ˣ, GlobalTheory.IdeleNormChar.normSign E a = 1 ↔
-      a ∈ (Units.map (algebraMap F (AF F)).toMonoidHom).range ⊔
-        (Units.map (Algebra.norm (AF F) : AF F ⊗[F] E →* AF F)).range := fun a => by
-    rw [GlobalTheory.IdeleNormChar.normSign_eq_one_iff, Subgroup.mem_sup]
-    constructor
-    · rintro ⟨t, ht⟩
-      exact ⟨_, ⟨t, rfl⟩, _, ht, mul_div_cancel _ _⟩
-    · rintro ⟨_, ⟨t, rfl⟩, z, hz, rfl⟩
-      exact ⟨t, (mul_div_cancel_left _ z).symm ▸ hz⟩
-  rw [loc_algebraMap H, hχ]
-  refine if_congr ?_ rfl rfl
-  rw [← key, normSign_localIdele, GlobalTheory.QuadSymbol.eta_eq_one_iff, bot_sup_eq]
-  rfl
 
 theorem loc_eq_one (hw : IsInertAt F E v w) {χ : Chr F E} (hu : UnrAt χ w)
     (h1 : ∀ a, χ (Units.map (algebraMap (AF F) (AE F E) : AF F →* AE F E) a) = 1) {χv : (Ev E v)ˣ →* Circle}
@@ -147,39 +125,6 @@ theorem loc_eq_one (hw : IsInertAt F E v w) {χ : Chr F E} (hu : UnrAt χ w)
     exact Circle.ext (congrArg Units.val e3)
   rwa [map_div, e1, div_one] at e4
 
-theorem hasAnti_loc {B : Base F E} (hσ : IsCMExt F E σ) (hw : IsInertAt F E v w) {X : Spc F E n} {r s : ℕ}
-    (hX : X.IsHerm σ B r s) : HasAnti (cV σ v) (locM X.J v) := by
-  have h := (under_eq_iff hw w).2 rfl
-  obtain ⟨c, hc, -⟩ := existsUnique_isConjAt σ hw h
-  have hd : X.Jᵀ.det ≠ 0 := by rw [Matrix.det_transpose]; exact (Vac.herm_det hX).ne_zero
-  have hs : IsSelfDualAt σ X.Jᵀ X.L v := (SelfDual.forall_isSelfDualAt_iff hd hX.lat).2 (fun y => by
-    rw [hX.dual]
-    refine forall₂_congr fun x _ => ?_
-    have : hE σ X.Jᵀ x y = form σ X.J y x := by
-      simp only [hE, Formalism.UG.hform, form, dotProduct, Matrix.mulVec, Finset.mul_sum, Matrix.transpose_apply]
-      rw [Finset.sum_comm]
-      exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by simp only [RingHom.coe_coe]; ring
-    rw [this]
-    exact ⟨fun hi => ⟨⟨_, hi⟩, rfl⟩, by rintro ⟨o, ho⟩; rw [← ho]; exact o.isIntegral_coe⟩) v
-  obtain ⟨a, -, ha⟩ := exists_frame_antiJ hσ ⟨fun i j => hX.herm j i, hd⟩ hX.lat.fg hX.lat.span_eq_top hw hc hs
-  let e := complEquiv hw h
-  have inj : ∀ M N : Matrix (Fin n) (Fin n) (Ev E v), M.map (toCompl h) = N.map (toCompl h) → M = N := fun M N H =>
-    Matrix.ext fun i j => (toCompl_bijective hw h).1 (congrFun (congrFun H i) j)
-  have back : ∀ M : Matrix (Fin n) (Fin n) (w.adicCompletion E), (M.map e.symm).map (toCompl h) = M := fun M =>
-    Matrix.ext fun i j => e.apply_symm_apply _
-  have one : (1 : Matrix (Fin n) (Fin n) (Ev E v)).map (toCompl h) = 1 := Matrix.map_one _ (map_zero _) (map_one _)
-  refine ⟨a.1.map e.symm, (a⁻¹).1.map e.symm, inj _ _ ?_, inj _ _ ?_, inj _ _ ?_⟩
-  · rw [Matrix.map_mul, back, back, one, Units.mul_inv]
-  · rw [Matrix.map_mul, back, back, one, Units.inv_mul]
-  · have e1 : ((a.1.map e.symm).map (cV σ v)).map (toCompl h) = a.1.map c :=
-      Matrix.ext fun i j => (toCompl_cV hc _).trans (congrArg c (e.apply_symm_apply _))
-    have e2 : (locM X.J v).map (toCompl h) = X.J.map (algebraMap E _) := JR_map h
-    have e3 : (anti (Ev E v) n).map (toCompl h) = (Formalism.UG.antiJ (w.adicCompletion E) n)ᵀ := by
-      ext i j
-      simp [anti, Formalism.UG.antiJ, add_comm i.val, apply_ite (toCompl h)]
-    rw [Matrix.map_mul, Matrix.map_mul, e1, e2, Matrix.transpose_map, back, e3, ← ha, Matrix.transpose_mul, Matrix.transpose_mul,
-      Matrix.mul_assoc]
-    rfl
 
 theorem det_loc {J : Matrix (Fin n) (Fin n) E} (h : IsUnit J.det) : IsUnit (locM (F := F) J v).det :=
   (RingHom.map_det (inclR (F := F) (Fv F v)) J) ▸ h.map _

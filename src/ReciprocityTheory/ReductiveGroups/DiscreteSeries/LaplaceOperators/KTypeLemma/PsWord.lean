@@ -167,13 +167,6 @@ lemma hasFDerivAt_G (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) (k : KG
   exact ((diffAt (contDiffOn_Fw μ D) isOpen_Om hx).hasFDerivAt.comp x
     (hasFDerivAt_psi k x)).smul_const _
 
-lemma continuousOn_G (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) :
-    ContinuousOn (fun p : 𝕄 × KG ε => G T μ D p.1 p.2) (Ps1.Uset ε ×ˢ Set.univ) := by
-  have hop : Continuous fun k : KG ε => T.op k := continuous_subtype_val.comp T.cont
-  have hC : Continuous fun k : KG ε => T.op k * projW T * T.op k⁻¹ :=
-    (hop.mul continuous_const).mul (hop.comp continuous_inv)
-  exact ((contDiffOn_Fw μ D).continuousOn.comp continuous_psi.continuousOn
-    (fun ⦃p⦄ hp => hp.1 p.2)).smul (hC.comp continuous_snd).continuousOn
 
 lemma continuousOn_G' (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) :
     ContinuousOn (fun p : 𝕄 × KG ε => G' T μ D p.1 p.2) (Ps1.Uset ε ×ˢ Set.univ) := by

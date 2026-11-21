@@ -53,24 +53,9 @@ def ChFam.tied {E : Extra D L hT Gi Gl K Dx cX} (F : ChFam E) (e0 : ∀ u, E.tw.
   ker := fun μ hU u w hg hq => F.ka μ hU u w hg hq
   twisted_e0_at_mu0_eq_eMu0 := e0
 
-theorem ChFam.tied_Lv {E : Extra D L hT Gi Gl K Dx cX} (F : ChFam E) (e0) (μ : D.what₂.Tup) (u : D.what₂.Word) (w : D.what₂.places.Pl)
-    (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
-    ((Pk.reW Gl (F.tied e0).LC).Yt μ).Lv u w hg = F.Lv μ u w hg := rfl
 
-theorem ChFam.tied_Ch {E : Extra D L hT Gi Gl K Dx cX} (F : ChFam E) (e0) (μ : D.what₂.Tup) (u : D.what₂.Word) (w : D.what₂.places.Pl)
-    (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
-    ((Pk.reW Gl (F.tied e0).LC).Yt μ).Ch u w hg = F.ch μ u w hg := rfl
 
-theorem ChFam.tied_cls {E : Extra D L hT Gi Gl K Dx cX} (F : ChFam E) (e0) (μ : D.what₂.Tup) (hU : DV.Used D μ) (u : D.what₂.Word)
-    (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (hq : D.what₂.places.resChar w ∉ Dx.Qp μ) :
-    ((F.tied e0).ker μ hU u w hg hq).cls = clsAt (F.X μ hU u w hg hq) (F.H μ hU u w hg hq) := rfl
 
-theorem ChFam.tied_cmp {E : Extra D L hT Gi Gl K Dx cX} (F : ChFam E) (e0) (μ : D.what₂.Tup) (hU : DV.Used D μ) (u : D.what₂.Word)
-    (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (hq : D.what₂.places.resChar w ∉ Dx.Qp μ)
-    (j : ℕ) (hj : j + 1 ≤ D.R.m) (x : ((E.tw.fm u μ).lat (j + 1)).V) :
-    ((F.tied e0).ker μ hU u w hg hq).cmp (j + 1) x =
-      ((F.I μ hU u w hg hq).at' j hj).st.cmpJ (E.cmp.embW u w hg) (((F.I μ hU u w hg hq).at' j hj).eps.symm x) :=
-  kaAt_cmp (F.X μ hU u w hg hq) (F.H μ hU u w hg hq) hT j hj x
 
 end Formalism.MainNotions.G.KAat
 

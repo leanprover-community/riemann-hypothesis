@@ -44,18 +44,3 @@ private theorem norm_det_one (k r : ℕ) (g : Formalism.FourierDecayAlt.B.Mat k 
   have h6 := norm_nonneg g.det
   nlinarith
 
-theorem UpperTheory.Reformulated.B.LiftingTheory.volCrude :
-    Formalism.FourierDecayAlt.B2.VolCrude := by
-  intro k r μ h
-  have hd : ∀ a ∈ (Formalism.FourierDecayAlt.B.GV k r : Set (Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → ℂ)),
-      ‖(Matrix.of a).det‖ = 1 := fun a ha => norm_det_one k r a ha
-  obtain ⟨C, hC⟩ := UpperTheory.map_mul_volume_of_subgroup (2 * r + k + 1) (Formalism.FourierDecayAlt.B.GV k r) μ h.conc hd
-    (fun a ha => UpperTheory.map_left_mul_volume_eq _ a (hd a ha)) (fun a ha => h.left a ha) h.finite_compact
-  refine ⟨C, fun R hR => ?_⟩
-  have e : R ^ (2 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2) = R ^ (2 * (2 * r + k + 1) ^ 2) := by
-    rw [← Real.rpow_natCast R]
-    congr 1
-    push_cast
-    ring
-  rw [e]
-  exact hC R hR

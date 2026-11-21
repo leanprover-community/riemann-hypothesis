@@ -79,10 +79,6 @@ section NonDeg
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-theorem VVTc_nonempty (hPr : Pr.Ok) {u : Pr.Word} {w : HeightOneSpectrum (𝓞 X.K)} (hw : seenC Pr u w) (ht : W.tops.Nonempty) :
-    (VVTc W u w).Nonempty := by
-  obtain ⟨τ, hτ⟩ := ht
-  exact ⟨⟨pullW τ w, (seenC_iff hPr u w).1 hw τ⟩, (mem_VVTc W u w _).2 ⟨τ, by rw [topsP_of_seenC W hPr u w hw]; exact hτ, rfl⟩⟩
 
 end NonDeg
 

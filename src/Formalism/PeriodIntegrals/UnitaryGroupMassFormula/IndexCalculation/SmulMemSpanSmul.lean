@@ -30,9 +30,6 @@ theorem span_smul_le (c : R) (M N : Submodule R V) (h : ∀ x ∈ M, c • x ∈
   rw [mul_smul]
   exact N.smul_mem a (h x hx)
 
-theorem smul_mem_span_smul (c : R) (M : Submodule R V) {x : V} (hx : x ∈ M) :
-    c • x ∈ Ideal.span {c} • M := by
-  exact Submodule.smul_mem_smul (Ideal.mem_span_singleton_self c) hx
 
 theorem lenS_ker_img (S : Submonoid R) {V' : Type*} [AddCommGroup V'] [Module R V']
     (φ : V →ₗ[R] V') (k : Submodule R V) (hk : ∀ x, x ∈ k ↔ φ x = 0) (D X : Submodule R V)
@@ -176,80 +173,9 @@ theorem fact (w : HeightOneSpectrum (𝓞 K)) {c : 𝓞 K} (hc : c ≠ 0) :
   rw [hJ, mul_comm s y]
   exact Ideal.mul_mem_mul hy hsJ
 
-private lemma lenS_unit_lemma_2 {R : Type*} [CommRing R] {W : Type*} [AddCommGroup W] [Module R W]
-    (S : Submonoid R) (X Y : Submodule R W) (s : R) (hs : s ∈ S) (h : ∀ x ∈ X, s • x ∈ Y) :
-    lenS S X Y = 0 := by
-  unfold lenS
-  rw [Module.length_eq_zero_iff]
-  have hall : ∀ a : LocalizedModule S (↥X ⧸ Y.comap X.subtype), a = 0 := by
-    intro a
-    induction a using LocalizedModule.induction_on with
-    | h m t =>
-      induction m using Submodule.Quotient.induction_on with
-      | H x =>
-        rw [← LocalizedModule.zero_mk (1 : S), LocalizedModule.mk_eq]
-        refine ⟨⟨s, hs⟩, ?_⟩
-        simp only [one_smul, smul_zero]
-        rw [Submonoid.smul_def, ← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero]
-        simp only [Submodule.mem_comap, Submodule.subtype_apply, Submodule.coe_smul]
-        exact h _ x.2
-  exact ⟨fun a b => by rw [hall a, hall b]⟩
 
-private lemma lenS_split_lemma {R : Type*} [CommRing R] {W : Type*} [AddCommGroup W] [Module R W]
-    (S : Submonoid R) (M N D : Submodule R W) (hDM : D ≤ M) (hDN : D ≤ N) :
-    lenS S M D = lenS S M N + lenS S (M ⊓ N) D := by
-  have hk : ∀ x, x ∈ N ↔ N.mkQ x = 0 := fun x => by
-    rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
-  have h1 := lenS_ker_img S N.mkQ N hk D M hDM
-  have h2 := lenS_ker_img S N.mkQ N hk (M ⊓ N) M inf_le_left
-  have hbot : ∀ E : Submodule R W, E ≤ N → E.map N.mkQ = ⊥ := fun E hE => by
-    refine eq_bot_iff.2 fun y hy => ?_
-    obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.1 hy
-    rw [Submodule.mem_bot, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
-    exact hE hx
-  have hz : lenS S (M ⊓ N) (M ⊓ N ⊓ N) = 0 :=
-    lenS_unit_lemma_2 S _ _ 1 (Submonoid.one_mem S) (fun x hx => by
-      rw [one_smul]
-      exact Submodule.mem_inf.2 ⟨hx, (Submodule.mem_inf.1 hx).2⟩)
-  rw [inf_eq_left.2 hDN, hbot D hDN] at h1
-  rw [hbot _ inf_le_right, hz, zero_add] at h2
-  have e : N.comap M.subtype = (M ⊓ N).comap M.subtype := by
-    ext x
-    simp [Submodule.mem_inf, x.2]
-  have hc : lenS S M N = lenS S M (M ⊓ N) := by
-    unfold lenS
-    rw [e]
-  rw [h1, hc, h2, add_comm]
 
-theorem len_c (w : HeightOneSpectrum (𝓞 K)) (M : Submodule (𝓞 K) V) (hM : M.FG) {c : 𝓞 K}
-    (hc : c ≠ 0) :
-    ∃ k : ℕ, Formalism.BasicNotions.vAdd w (algebraMap (𝓞 K) K c) = k ∧
-      lenS w.asIdeal.primeCompl M (Ideal.span {c} • M) = ((k * Formalism.HN.rkK M : ℕ) : ℕ∞) := by
-  obtain ⟨k, hk, hck, s, hs, hsy⟩ := fact w hc
-  refine ⟨k, hk, ?_⟩
-  have hle1 : Ideal.span {c} • M ≤ (w.asIdeal ^ k) • M :=
-    Submodule.smul_mono_left ((Ideal.span_singleton_le_iff_mem _).2 hck)
-  have hle2 : (w.asIdeal ^ k) • M ≤ M := Submodule.smul_le_right
-  rw [lenS_split_lemma _ M ((w.asIdeal ^ k) • M) _ (hle1.trans hle2) hle1, len_pow w M hM k]
-  rw [lenS_unit_lemma_2 w.asIdeal.primeCompl _ _ s hs, add_zero]
-  intro x hx
-  have hx2 : x ∈ (w.asIdeal ^ k) • M := (Submodule.mem_inf.1 hx).2
-  refine Submodule.smul_induction_on (p := fun x => s • x ∈ Ideal.span {c} • M) hx2
-    (fun y hy z hz => ?_) (fun a b ha hb => ?_)
-  · rw [← mul_smul]
-    exact Submodule.smul_mem_smul (hsy y hy) hz
-  · simp only [smul_add]
-    exact Submodule.add_mem _ ha hb
 
-theorem lenS_ne_top (w : HeightOneSpectrum (𝓞 K)) (X Y : Submodule (𝓞 K) V) (hX : X.FG)
-    {c : 𝓞 K} (hc : c ≠ 0) (h : ∀ x ∈ X, c • x ∈ Y) : lenS w.asIdeal.primeCompl X Y ≠ ⊤ := by
-  obtain ⟨k, -, hk⟩ := len_c w X hX hc
-  have hD : Ideal.span {c} • X ≤ Y := span_smul_le c X Y h
-  have e := lenS_split_lemma w.asIdeal.primeCompl X Y _ Submodule.smul_le_right hD
-  rw [hk] at e
-  intro htop
-  rw [htop, top_add] at e
-  exact ENat.coe_ne_top _ e
 
 omit [Module K V] [IsScalarTower (𝓞 K) K V] in
 

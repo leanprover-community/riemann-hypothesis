@@ -5,49 +5,7 @@ open Finset ArithmeticFunction
 
 namespace Formalism.HermitianLattices.ZeroFreeRegionGL2
 
-theorem is_norm_one_iff : IsNormOneIff := by
-  intro d N p
-  have r1 : (1 : QuadraticAlgebra ℤ (-(((d + 1) / 4 : ℕ) : ℤ)) 1).re = 1 := rfl
-  have i1 : (1 : QuadraticAlgebra ℤ (-(((d + 1) / 4 : ℕ) : ℤ)) 1).im = 0 := rfl
-  constructor
-  · rintro ⟨u, v, ⟨a, ha⟩, ⟨b, hb⟩, h⟩
-    refine ⟨⟨u, v⟩, ⟨⟨a, b⟩, ?_⟩, ?_⟩
-    · ext
-      · simpa [r1] using ha
-      · simpa [i1] using hb
-    · rw [QuadraticAlgebra.norm_def, h]; ring
-  · rintro ⟨π, ⟨w, hw⟩, h⟩
-    have h1 := congrArg QuadraticAlgebra.re hw
-    have h2 := congrArg QuadraticAlgebra.im hw
-    refine ⟨π.re, π.im, ⟨w.re, by simpa [r1] using h1⟩, ⟨w.im, by simpa [i1] using h2⟩, ?_⟩
-    rw [← h, QuadraticAlgebra.norm_def]; ring
 
-theorem weighted_sum_identity : WGIdentity := by
-  intro q _ χ a w M ha hw hM
-  unfold Gchi
-  have hsub : Icc 1 ⌊a / w⌋₊ ⊆ Icc 1 M := Icc_subset_Icc le_rfl hM
-  rw [← Finset.sum_subset hsub (f := fun n => ((Λ n : ℝ) : ℂ) * χ (n : ZMod q) * ((max (a / n - w) 0 : ℝ) : ℂ))]
-  · rw [mul_add, Finset.mul_sum]
-    congr 1
-    · apply Finset.sum_congr rfl
-      intro n hn
-      rw [mem_Icc] at hn
-      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn.1
-      have hle : (n : ℝ) ≤ a / w := (Nat.le_floor_iff (by positivity)).1 hn.2
-      have h1 : w ≤ a / n := by rw [le_div_iff₀ hn0]; rw [le_div_iff₀ hw] at hle; linarith
-      rw [max_eq_left (by linarith)]
-      have : w * (a / w / n - 1) = a / n - w := by field_simp
-      rw [← this]; push_cast; ring
-    · have : (w : ℂ) ≠ 0 := by exact_mod_cast hw.ne'
-      push_cast; field_simp
-  · intro n hn hn'
-    rw [mem_Icc] at hn hn'
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn.1
-    have : a / w < n := by
-      by_contra hc
-      exact hn' ⟨hn.1, Nat.le_floor (not_lt.1 hc)⟩
-    have h1 : a / n ≤ w := by rw [div_le_iff₀ hn0]; rw [div_lt_iff₀ hw] at this; linarith
-    rw [max_eq_right (by linarith)]; simp
 
 theorem finite_splitting_of_group : GFiniteSplit := by
   intro q _ χ x z hx hxz
@@ -109,20 +67,6 @@ theorem markov_discard_bound : MarkovDiscard := by
       _ = _ := by simp
   nlinarith
 
-theorem norm_one_congruence : NormOneCongr := by
-  intro d N p h
-  have key : ((p : ℤ) ≡ 1 [ZMOD (N : ℤ)]) := by
-    obtain ⟨u, v, ⟨a, ha⟩, ⟨b, hb⟩, h⟩ := h
-    have hu : u = 1 + N * a := by linarith
-    rw [h, hu, hb]
-    apply Int.modEq_iff_dvd.2
-    refine ⟨-(2 * a + N * a ^ 2 + b + N * a * b + (((d + 1) / 4 : ℕ) : ℤ) * N * b ^ 2), ?_⟩
-    ring
-  refine ⟨key, fun χ => ?_⟩
-  have : ((p : ℕ) : ZMod N) = 1 := by
-    have := (ZMod.intCast_eq_intCast_iff (p : ℤ) 1 N).2 key
-    simpa using this
-  rw [this, map_one]
 
 theorem class_splits : ClassSplit := by
   intro y q₁ d hq hd hM
@@ -182,106 +126,9 @@ theorem primorial_upper_bound : PrimorialBound := by
     _ ≤ Real.exp y * Real.exp (2 * y) := mul_le_mul hq h2 (by positivity) (by positivity)
     _ = Real.exp (3 * y) := by rw [← Real.exp_add]; ring_nf
 
-theorem weighted_sum_lipschitz : WGLipschitz := by
-  intro q _ χ a w w' ha hw hww
-  have hw' : 0 < w' := lt_of_lt_of_le hw hww
-  have hW : WGIdentity := weighted_sum_identity
-  have hfl : ⌊a / w'⌋₊ ≤ ⌊a / w⌋₊ := Nat.floor_le_floor (div_le_div_of_nonneg_left ha.le hw hww)
-  rw [hW q χ a w' ⌊a / w⌋₊ ha hw' hfl, hW q χ a w ⌊a / w⌋₊ ha hw le_rfl]
-  rw [add_sub_add_right_eq_sub, ← Finset.sum_sub_distrib]
-  have hpsi : Chebyshev.psi (a / w) = ∑ n ∈ Icc 1 ⌊a / w⌋₊, Λ n := by
-    unfold Chebyshev.psi; rfl
-  rw [hpsi, Finset.sum_mul]
-  refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun n _ => ?_)
-  rw [← mul_sub, norm_mul, norm_mul, ← Complex.ofReal_sub, Complex.norm_real, Complex.norm_real,
-    Real.norm_of_nonneg vonMangoldt_nonneg]
-  have h1 : ‖χ (n : ZMod q)‖ ≤ 1 := DirichletCharacter.norm_le_one χ _
-  have h2 : ‖max (a / n - w') 0 - max (a / n - w) 0‖ ≤ w' - w := by
-    have := abs_max_sub_max_le_abs (a / n - w') (a / n - w) 0
-    rw [Real.norm_eq_abs]
-    refine this.trans ?_
-    rw [show a / n - w' - (a / n - w) = -(w' - w) by ring, abs_neg, abs_of_nonneg (by linarith)]
-  calc Λ n * ‖χ (n : ZMod q)‖ * ‖max (a / n - w') 0 - max (a / n - w) 0‖
-      ≤ Λ n * 1 * (w' - w) := by
-        apply mul_le_mul (mul_le_mul_of_nonneg_left h1 vonMangoldt_nonneg) h2 (norm_nonneg _)
-        simp
-    _ = Λ n * (w' - w) := by ring
 
-theorem type_sign_formula : TypeSign := by
-  intro q₁ d _ _ h1 h2 hdvd
-  have o1 : Odd q₁ := Nat.odd_iff.2 (by omega)
-  have o2 : Odd d := Nat.odd_iff.2 (by omega)
-  have h : jacobiSym (-(d : ℤ)) q₁ = 1 := by
-    have : (-(d : ℤ)) % (q₁ : ℤ) = 1 % (q₁ : ℤ) := by
-      apply Int.modEq_iff_dvd.2
-      have : ((q₁ : ℕ) : ℤ) ∣ ((d + 1 : ℕ) : ℤ) := by exact_mod_cast hdvd
-      convert this using 1
-      push_cast; ring
-    rw [jacobiSym.mod_left' this, jacobiSym.one_left]
-  refine ⟨h, ?_⟩
-  rw [jacobiSym.neg _ o1, ZMod.χ₄_nat_three_mod_four (by omega)] at h
-  rw [jacobiSym.neg _ o2, ZMod.χ₄_nat_three_mod_four (by omega),
-    jacobiSym.quadratic_reciprocity_three_mod_four (by omega) (by omega)]
-  linarith
 
-theorem weighted_von_mangoldt_sum_identity (a w : ℝ) (M : ℕ) (ha : 0 < a) (hw : 0 < w) (hM : ⌊a / w⌋₊ ≤ M) :
-    w * (∑ n ∈ Icc 1 ⌊a / w⌋₊, Λ n * (a / w / n - 1)) = ∑ n ∈ Icc 1 M, Λ n * max (a / n - w) 0 := by
-  have hsub : Icc 1 ⌊a / w⌋₊ ⊆ Icc 1 M := Icc_subset_Icc le_rfl hM
-  rw [← Finset.sum_subset hsub (f := fun n => Λ n * max (a / n - w) 0), Finset.mul_sum]
-  · apply Finset.sum_congr rfl
-    intro n hn
-    rw [mem_Icc] at hn
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn.1
-    have hle : (n : ℝ) ≤ a / w := (Nat.le_floor_iff (by positivity)).1 hn.2
-    have h1 : w ≤ a / n := by rw [le_div_iff₀ hn0]; rw [le_div_iff₀ hw] at hle; linarith
-    rw [max_eq_left (by linarith)]
-    have : w * (a / w / n - 1) = a / n - w := by field_simp
-    rw [← this]; ring
-  · intro n hn hn'
-    rw [mem_Icc] at hn hn'
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn.1
-    have : a / w < n := by
-      by_contra hc
-      exact hn' ⟨hn.1, Nat.le_floor (not_lt.1 hc)⟩
-    have h1 : a / n ≤ w := by rw [div_le_iff₀ hn0]; rw [div_lt_iff₀ hw] at this; linarith
-    rw [max_eq_right (by linarith)]; simp
 
-theorem weight_one_sum_lipschitz : WeightedSumLipschitzTrivial := by
-  intro a w w' ha hw hww
-  have hw' : 0 < w' := lt_of_lt_of_le hw hww
-  have hfl : ⌊a / w'⌋₊ ≤ ⌊a / w⌋₊ := Nat.floor_le_floor (div_le_div_of_nonneg_left ha.le hw hww)
-  unfold G1
-  have e1 := weighted_von_mangoldt_sum_identity a w' ⌊a / w⌋₊ ha hw' hfl
-  have e2 := weighted_von_mangoldt_sum_identity a w ⌊a / w⌋₊ ha hw le_rfl
-  have hpsi : Chebyshev.psi (a / w) = ∑ n ∈ Icc 1 ⌊a / w⌋₊, Λ n := by
-    unfold Chebyshev.psi; rfl
-  have hS : |(∑ n ∈ Icc 1 ⌊a / w⌋₊, Λ n * max (a / n - w') 0) - ∑ n ∈ Icc 1 ⌊a / w⌋₊, Λ n * max (a / n - w) 0|
-      ≤ Chebyshev.psi (a / w) * (w' - w) := by
-    rw [← Finset.sum_sub_distrib, hpsi, Finset.sum_mul]
-    refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun n _ => ?_)
-    rw [← mul_sub, abs_mul, abs_of_nonneg vonMangoldt_nonneg]
-    apply mul_le_mul_of_nonneg_left _ vonMangoldt_nonneg
-    refine (abs_max_sub_max_le_abs (a / n - w') (a / n - w) 0).trans ?_
-    rw [show a / n - w' - (a / n - w) = -(w' - w) by ring, abs_neg, abs_of_nonneg (by linarith)]
-  have hlog : |a * (Real.log (a / w) - Real.log (a / w'))| ≤ a / w * (w' - w) := by
-    rw [Real.log_div ha.ne' hw.ne', Real.log_div ha.ne' hw'.ne']
-    have h0 : 0 ≤ Real.log w' - Real.log w := sub_nonneg.2 (Real.log_le_log hw hww)
-    have h1 : Real.log w' - Real.log w ≤ (w' - w) / w := by
-      rw [← Real.log_div hw'.ne' hw.ne']
-      have := Real.log_le_sub_one_of_pos (div_pos hw' hw)
-      have e : w' / w - 1 = (w' - w) / w := by field_simp
-      linarith
-    rw [show Real.log a - Real.log w - (Real.log a - Real.log w') = Real.log w' - Real.log w by ring,
-      abs_of_nonneg (mul_nonneg ha.le h0)]
-    calc a * (Real.log w' - Real.log w) ≤ a * ((w' - w) / w) := mul_le_mul_of_nonneg_left h1 ha.le
-      _ = a / w * (w' - w) := by ring
-  have hmain : w' * ((∑ n ∈ Icc 1 ⌊a / w'⌋₊, Λ n * (a / w' / n - 1)) - a / w' * (Real.log (a / w') - 1 - Real.eulerMascheroniConstant))
-      - w * ((∑ n ∈ Icc 1 ⌊a / w⌋₊, Λ n * (a / w / n - 1)) - a / w * (Real.log (a / w) - 1 - Real.eulerMascheroniConstant))
-      = ((∑ n ∈ Icc 1 ⌊a / w⌋₊, Λ n * max (a / n - w') 0) - ∑ n ∈ Icc 1 ⌊a / w⌋₊, Λ n * max (a / n - w) 0)
-        + a * (Real.log (a / w) - Real.log (a / w')) := by
-    rw [← e1, ← e2]; field_simp; ring
-  rw [hmain, add_mul]
-  exact (abs_add_le _ _).trans (add_le_add hS hlog)
 
 theorem class_admissible : ClassAdmissible := by
   intro y z q₁ hy hq h8 hz
@@ -336,18 +183,6 @@ theorem class_admissible : ClassAdmissible := by
     refine ⟨d16.trans h16, ?_⟩
     exact (Nat.modEq_zero_iff_dvd).1 ((Nat.ModEq.add_right 1 dM).trans ((Nat.modEq_zero_iff_dvd).2 hM'))
 
-theorem character_sum_of_hypothesis : CharacterSumLipschitzOfChebyshev := by
-  intro hpsi
-  refine ⟨fun q _ χ a w w' ha hw hww => ?_, fun a w w' ha hw hww => ?_⟩
-  · refine (weighted_sum_lipschitz q χ a w w' ha hw hww).trans ?_
-    have h1 := hpsi (a / w) (by positivity)
-    have h2 : 0 ≤ a / w := by positivity
-    apply mul_le_mul_of_nonneg_right _ (by linarith)
-    rw [mul_div_assoc]; linarith
-  · refine (weight_one_sum_lipschitz a w w' ha hw hww).trans ?_
-    have h1 := hpsi (a / w) (by positivity)
-    apply mul_le_mul_of_nonneg_right _ (by linarith)
-    rw [mul_div_assoc]; linarith
 
 theorem twist_evaluation_formula : TwEval := by
   intro t θ q _ n
@@ -378,109 +213,8 @@ theorem twist_evaluation_formula : TwEval := by
     · have : θ (n : ZMod t) = 0 := MulChar.map_nonunit _ (fun h => h1 ((ZMod.isUnit_iff_coprime n _).1 h))
       simp [this]
 
-theorem splits_iff_jacobi_symbol : SplitsIffJacobi := by
-  intro d p hp hd
-  have h4 : 4 * ((d + 1) / 4) = d + 1 := by omega
-  refine ⟨fun hp2 => ?_, ?_⟩
-  · have := Fact.mk hp
-    have h4' : (4 : ZMod p) * (((d + 1) / 4 : ℕ) : ZMod p) = (d : ZMod p) + 1 := by
-      exact_mod_cast congrArg (Nat.cast : ℕ → ZMod p) h4
-    have two : (2 : ZMod p) ≠ 0 := by
-      intro h
-      have : ((2 : ℕ) : ZMod p) = 0 := by exact_mod_cast h
-      rw [ZMod.natCast_eq_zero_iff] at this
-      exact hp2 ((Nat.prime_dvd_prime_iff_eq hp Nat.prime_two).1 this)
-    have four : (4 : ZMod p) ≠ 0 := by
-      have : (4 : ZMod p) = 2 * 2 := by norm_num
-      rw [this]; exact mul_ne_zero two two
-    rw [← jacobiSym.legendreSym.to_jacobiSym]
-    have cast : (((-(d : ℤ)) : ℤ) : ZMod p) = -(d : ZMod p) := by push_cast; rfl
-    unfold SplitsIn
-    constructor
-    · rintro ⟨r, s, hrs, hr, hs⟩
-      have sqr : (2 * r - 1) * (2 * r - 1) = -(d : ZMod p) := by linear_combination 4 * hr - h4'
-      have sqs : (2 * s - 1) * (2 * s - 1) = -(d : ZMod p) := by linear_combination 4 * hs - h4'
-      have hne : (((-(d : ℤ)) : ℤ) : ZMod p) ≠ 0 := by
-        rw [cast]; intro h0
-        rw [h0] at sqr sqs
-        have a := mul_self_eq_zero.1 sqr
-        have b := mul_self_eq_zero.1 sqs
-        apply hrs
-        have : 2 * (r - s) = 0 := by linear_combination a - b
-        rcases mul_eq_zero.1 this with h | h
-        · exact absurd h two
-        · exact sub_eq_zero.1 h
-      rw [legendreSym.eq_one_iff p hne, cast]
-      exact ⟨2 * r - 1, sqr.symm⟩
-    · intro h
-      have hne : (((-(d : ℤ)) : ℤ) : ZMod p) ≠ 0 := by
-        intro h0
-        rw [(legendreSym.eq_zero_iff p _).2 h0] at h; exact absurd h (by norm_num)
-      obtain ⟨t, ht⟩ := (legendreSym.eq_one_iff p hne).1 h
-      rw [cast] at ht hne
-      have ht0 : t ≠ 0 := by
-        rintro rfl
-        exact hne (by simpa using ht)
-      have hr2 : 2 * ((1 + t) / 2) = 1 + t := by field_simp
-      have hs2 : 2 * ((1 - t) / 2) = 1 - t := by field_simp
-      refine ⟨(1 + t) / 2, (1 - t) / 2, ?_, ?_, ?_⟩
-      · intro he
-        have e : 1 + t = 1 - t := by rw [← hr2, ← hs2, he]
-        have : 2 * t = 0 := by linear_combination e
-        rcases mul_eq_zero.1 this with h | h
-        · exact two h
-        · exact ht0 h
-      · apply (mul_eq_zero.1 (?_ : (4 : ZMod p) * _ = 0)).resolve_left four
-        linear_combination (2 * ((1 + t) / 2) + t - 1) * hr2 + h4' - ht
-      · apply (mul_eq_zero.1 (?_ : (4 : ZMod p) * _ = 0)).resolve_left four
-        linear_combination (2 * ((1 - t) / 2) - t - 1) * hs2 + h4' - ht
-  · unfold SplitsIn
-    constructor
-    · rintro ⟨r, -, -, hr, -⟩
-      by_contra h
-      have hodd : ((d + 1) / 4) % 2 = 1 := by omega
-      have : (((d + 1) / 4 : ℕ) : ZMod 2) = 1 := by
-        rw [← ZMod.natCast_mod, hodd]; rfl
-      rw [this] at hr
-      revert hr; revert r; decide
-    · intro h
-      have : (((d + 1) / 4 : ℕ) : ZMod 2) = 0 := (ZMod.natCast_eq_zero_iff _ _).2 (by omega)
-      exact ⟨0, 1, by decide, by simp [this], by simp [this]⟩
 
-theorem exponential_sum_split : ExpSplit := by
-  intro c v lam hc hv hl
-  have hs := Real.sqrt_nonneg v
-  have hsq : Real.sqrt v * Real.sqrt v = v := Real.mul_self_sqrt hv
-  rcases le_total (Real.sqrt v) lam with h | h
-  · have : Real.exp (-c * v / (lam + Real.sqrt v)) ≤ Real.exp (-c * v / (2 * lam)) := by
-      apply Real.exp_le_exp.mpr
-      rw [div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith [mul_nonneg hc.le hv, mul_nonneg (mul_nonneg hc.le hv) (sub_nonneg.mpr h)]
-    linarith [Real.exp_pos (-c * Real.sqrt v / 2)]
-  · have : Real.exp (-c * v / (lam + Real.sqrt v)) ≤ Real.exp (-c * Real.sqrt v / 2) := by
-      apply Real.exp_le_exp.mpr
-      rw [div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith [mul_nonneg hc.le hs, mul_nonneg (mul_nonneg hc.le hs) (sub_nonneg.mpr h)]
-    linarith [Real.exp_pos (-c * v / (2 * lam))]
 
-theorem no_exceptional_zero_of_box_count : NoExcOfBox := by
-  intro c₁ Q q _ χ hQ hc hbox hreal
-  refine ⟨by simp, by simp, ?_⟩
-  intro s hs hz
-  exfalso
-  have him := hreal s hs hz
-  have h1 : 1 - c₁ / Real.log ((q : ℝ) * (|s.im| + 2)) ≤ s.re := hs
-  rw [him] at h1
-  have h2 : (q : ℝ) * (|(0:ℝ)| + 2) = 2 * q := by simp; ring
-  rw [h2] at h1
-  exact hbox s (by linarith) (by rw [him]; simpa using hQ) hz.2
 
-theorem type_sign_of_split : TypeSignOfSplit := by
-  intro q₁ d h1 h2 h
-  have o1 : Odd q₁ := Nat.odd_iff.2 (by omega)
-  have o2 : Odd d := Nat.odd_iff.2 (by omega)
-  rw [jacobiSym.neg _ o1, ZMod.χ₄_nat_three_mod_four h1] at h
-  rw [jacobiSym.neg _ o2, ZMod.χ₄_nat_three_mod_four h2, jacobiSym.quadratic_reciprocity_three_mod_four h1 h2]
-  linarith
 
 end Formalism.HermitianLattices.ZeroFreeRegionGL2

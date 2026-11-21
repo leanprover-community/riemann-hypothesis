@@ -23,10 +23,6 @@ theorem mem_principalFiltration {k : ℕ} {u : Additive (unitFiltrationUnits K 1
   push_cast at this
   exact this
 
-theorem principalFiltration_antitone : Antitone (principalFiltration K) := by
-  intro j k hjk u hu
-  rw [mem_principalFiltration] at hu ⊢
-  exact valBall_antitone (by omega) hu
 
 theorem principalFiltration_zero : principalFiltration K 0 = ⊤ := by
   ext u
@@ -293,8 +289,6 @@ section ModuleProps
 
 variable (p : ℕ) [hp : Fact p.Prime] [CharP 𝓀[K] p]
 
-theorem padicInt_smul_def (a : ℤ_[p]) (u : Additive (unitFiltrationUnits K 1)) :
-    a • u = padicIntSMul p a u := rfl
 
 theorem smul_sub_intCast_smul_mem {a : ℤ_[p]} {k : ℕ} {c : ℤ} (hc : (p : ℤ_[p]) ^ k ∣ a - c)
     (u : Additive (unitFiltrationUnits K 1)) : a • u - c • u ∈ principalFiltration K k :=

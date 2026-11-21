@@ -11,17 +11,9 @@ namespace Formalism.L2.DIV
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 : Type}
 
-theorem FamIn.comap_fam_R {T T' : Type} {m : ℕ} (A : FamIn K G Pl0 T' m) (f : T → T') (t0 : T) (t : T) :
-    (A.comap f t0).fam.R t = A.fam.R (f t) := rfl
 
-theorem FamIn.comap_fam_L {T T' : Type} {m : ℕ} (A : FamIn K G Pl0 T' m) (f : T → T') (t0 : T) (j : Fin m) (t : T) :
-    (A.comap f t0).fam.L j t = A.fam.L j (f t) := rfl
 
-theorem FamIn3.comap_rowI {I0 Ty T T' : Type} {m : ℕ} (A3 : FamIn3 K G Pl0 I0 Ty T' m) (f : T → T') (t0 : T) (t : T) :
-    (A3.comap f t0).rowI t = A3.rowI (f t) := rfl
 
-theorem FamIn3.comap_liftI {I0 Ty T T' : Type} {m : ℕ} (A3 : FamIn3 K G Pl0 I0 Ty T' m) (f : T → T') (t0 : T) (j : Fin m)
-    (t : T) : (A3.comap f t0).liftI j t = A3.liftI j (f t) := rfl
 
 end Formalism.L2.DIV
 
@@ -214,9 +206,6 @@ structure RealDat3.ReducedWeakCharacterisation {A3 : FamIn3 D.what₂.LL G Pl0 I
   fullP : R.full_P
   allPl : R.AllPlaces
 
-theorem RealDat3.reduced_weak_of_weak_characterisation {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {R : RealDat3 D A3 Ks} {F : Face3 D A3}
-    (h : R.WeakCharacterisation F) : R.ReducedWeakCharacterisation F :=
-  ⟨h.base, h.inert, h.fullY, h.fullX, h.fullP, h.allPl⟩
 
 structure RealDat.ExLift {A : FamIn D.what₂.LL G Pl0 T' D.R.m} (R : RealDat D A Ks) (f : T → T') : Prop where
   ItY : ∀ k, k + 1 < D.R.m → (∃ y, ∀ t : T, IsItW R.θ (R.MY k) (R.MY (k + 1)) (R.ωY (f t) k) (R.ptY (f t) k) y) → ∃ y, R.PItY k y
@@ -224,16 +213,7 @@ structure RealDat.ExLift {A : FamIn D.what₂.LL G Pl0 T' D.R.m} (R : RealDat D 
   ioP : ∀ i, (∃ y, ∀ t : T, IsIoW R.θ (R.MW i (sg0 D A)) (R.cV i) (R.ωP i (f t)) (R.ptP i (f t)) (RealDat.Delta (D := D) i) y) →
     ∃ y, R.PIoP i y
 
-theorem RealDat.exLift_of_ex {A : FamIn D.what₂.LL G Pl0 T' D.R.m} {R : RealDat D A Ks} (f : T → T') (h1 : R.ex_ItY) (h2 : R.ex_ItX)
-    (h3 : R.ex_ioP) : R.ExLift f :=
-  ⟨fun k hk _ => h1 k hk, fun _ => h2, fun i _ => h3 i⟩
 
-theorem RealDat.exLift_of_surj {A : FamIn D.what₂.LL G Pl0 T' D.R.m} {R : RealDat D A Ks} {f : T → T'} (hs : Function.Surjective f) :
-    R.ExLift f := by
-  refine ⟨fun k hk ⟨y, hy⟩ => ⟨y, fun t => ?_⟩, fun ⟨y, hy⟩ => ⟨y, fun t => ?_⟩, fun i ⟨y, hy⟩ => ⟨y, fun t => ?_⟩⟩
-  · obtain ⟨s, rfl⟩ := hs t; exact hy s
-  · obtain ⟨s, rfl⟩ := hs t; exact hy s
-  · obtain ⟨s, rfl⟩ := hs t; exact hy s
 
 set_option maxHeartbeats 2000000 in
 
@@ -284,15 +264,7 @@ variable {X : Col.Fields} {Pr : Col.Primes X} {R : Ranks} (W : Col.Wts X Pr.Word
 def tupFIncl {TU TU' : Finset (Tup X.F X.E X.K S)} (hs : TU ⊆ TU') (τ : TupF TU) : TupF TU' :=
   ⟨τ.1, τ.2.imp id fun h => hs h⟩
 
-theorem tupFIncl_injective {TU TU' : Finset (Tup X.F X.E X.K S)} (hs : TU ⊆ TU') : Function.Injective (tupFIncl hs) := by
-  intro a b h
-  obtain ⟨a, ha⟩ := a
-  obtain ⟨b, hb⟩ := b
-  have h1 : a = b := congrArg Subtype.val h
-  subst h1
-  rfl
 
-theorem tupFIncl_mu0F {TU TU' : Finset (Tup X.F X.E X.K S)} (hs : TU ⊆ TU') : tupFIncl hs (mu0F TU) = mu0F TU' := rfl
 
 end ColComap
 

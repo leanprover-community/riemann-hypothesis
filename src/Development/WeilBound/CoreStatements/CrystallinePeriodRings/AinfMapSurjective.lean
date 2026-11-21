@@ -41,14 +41,7 @@ theorem galT_ext {g : GQ l} {x z : OCb l}
   have : y₁ = y₂ := Subtype.ext (h₁.trans h₂.symm)
   exact e₁.trans (this ▸ e₂.symm)
 
-theorem galT_one (x : OCb l) : galT (1 : GQ l) x = x :=
-  galT_ext fun _ y hy => ⟨y, by rw [map_one]; rfl, hy⟩
 
-theorem galT_mul (g h : GQ l) (x : OCb l) : galT (g * h) x = galT g (galT h x) :=
-  galT_ext fun n y hy => by
-    obtain ⟨y₁, h₁, e₁⟩ := galT_coeff h x n y hy
-    obtain ⟨y₂, h₂, e₂⟩ := galT_coeff g (galT h x) n y₁ e₁
-    exact ⟨y₂, by rw [h₂, h₁, map_mul]; rfl, e₂⟩
 
 theorem ζO_zero : ζO l 0 = 1 :=
   Subtype.ext rfl
@@ -161,9 +154,6 @@ theorem oD_coe (z : ℤ_[l]) : oD l (algebraMap ℚ_[l] (Om l) (z : ℚ_[l])) = 
   rw [← ιCD_qB, qB_coe, Per6.zB, RingHom.comp_apply, ιCD_aB]
   rfl
 
-theorem oD_lift (x : Om l) : ∃ y : Per6.BdRp l,
-    oD l x = algebraMap (Per6.BdRp l) (Per6.BdR l) y ∧ Per6.θD l y = (x : ℂ_[l]) :=
-  ⟨algClToBdR l x, rfl, thetaAlgHom_algClToBdR l x⟩
 
 theorem isCrisDR_iff (f : Per6.Bcris l →+* Per6.BdR l) : Per6.IsCrisDR l f ↔ f = ιCD l := by
   constructor
@@ -206,11 +196,5 @@ theorem isLog_iff (ε : OCb l) (y : Per6.BdRp l) : Per6.IsLog l ε y ↔
     rw [hm]
     exact fontaineT_sub_sum_mem hε n
 
-theorem isLog_tBdR : Per6.IsLog l (εO l) (tBdR l) := by
-  rw [isLog_iff]
-  have h : ∀ e, e = epsilon l → ∃ h : PreTilt.untilt e = 1, tBdR l = fontaineT e h := by
-    rintro _ rfl
-    exact ⟨untilt_epsilon, rfl⟩
-  exact h _ tiltMap_εO
 
 end PositivityTheory.LocInh

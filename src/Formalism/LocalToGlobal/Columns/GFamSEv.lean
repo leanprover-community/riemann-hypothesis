@@ -21,9 +21,6 @@ def cls (F : GFamS K) (p : F.Pt) : F.Cl := ⟨p.1, (F.mem p.1).cls p.2⟩
 
 def repPt (F : GFamS K) (c : F.Cl) : F.Pt := ⟨c.1, F.rep c⟩
 
-theorem cls_repPt (F : GFamS K) (c : F.Cl) : F.cls (F.repPt c) = c := by
-  obtain ⟨b, c⟩ := c
-  exact congrArg (Sigma.mk b) ((F.sec b).spec c)
 
 structure Ev (F : GFamS K) (σ : K →+* ℂ) where
 
@@ -53,7 +50,6 @@ variable {F : GFamS K} {σ : K →+* ℂ} (E : F.Ev σ)
 
 theorem mem_Y (b : F.β) : (E.mem b).Y = E.Y := rfl
 theorem mem_ev (b : F.β) : (E.mem b).ev = E.ev := rfl
-theorem mem_ip (b : F.β) : (E.mem b).ip = E.ip := rfl
 theorem mem_tr (b : F.β) : (E.mem b).tr = E.tr b := rfl
 
 @[reducible] def ofMem {b₀ : F.β} (E₀ : (F.mem b₀).Ev σ) (tr : ∀ b, F.G b →* ((E₀.Y → ℂ) ≃ₗ[ℂ] (E₀.Y → ℂ)))
@@ -117,8 +113,6 @@ def opOn (δ : F.Pt → F.Pt) : (F.Cl → E.Y → ℂ) →ₗ[ℂ] (F.Cl → E.Y
   map_add' Φ Ψ := by funext c; exact map_add (E.trPt _) _ _
   map_smul' a Φ := by funext c; exact map_smul (E.trPt _) _ _
 
-theorem opOn_apply (δ : F.Pt → F.Pt) (Φ : F.Cl → E.Y → ℂ) (c : F.Cl) :
-    E.opOn δ Φ c = E.trPt (δ (F.repPt c)) (Φ (F.cls (δ (F.repPt c)))) := rfl
 
 theorem opOn_emb (δ : F.Pt → F.Pt) (φ : F.Forms) (c : F.Cl) :
     E.opOn δ (E.emb φ) c =
@@ -152,19 +146,9 @@ theorem opOn_comp (hf : F.Free) (δ δ' : F.Pt → F.Pt)
 
 def opOnC (δ : ∀ b, F.D b → F.D b) : (F.Cl → E.Y → ℂ) →ₗ[ℂ] (F.Cl → E.Y → ℂ) := E.opOn fun p => ⟨p.1, δ p.1 p.2⟩
 
-theorem opOnC_apply (δ : ∀ b, F.D b → F.D b) (Φ : F.Cl → E.Y → ℂ) (c : F.Cl) :
-    E.opOnC δ Φ c = E.trPt ⟨c.1, δ c.1 (F.rep c)⟩ (Φ ⟨c.1, (F.mem c.1).cls (δ c.1 (F.rep c))⟩) := rfl
 
-theorem opOnC_emb (δ : ∀ b, F.D b → F.D b) (φ : F.Forms) (c : F.Cl) :
-    E.opOnC δ (E.emb φ) c = E.ev (((φ c.1 : (F.mem c.1).EqFun) : F.D c.1 → F.V) (δ c.1 (F.rep c))) :=
-  E.atPt_emb φ ⟨c.1, δ c.1 (F.rep c)⟩
 
-theorem opOnC_id (hf : F.Free) : E.opOnC (fun _ d => d) = LinearMap.id := E.opOn_id hf
 
-theorem opOnC_comp (hf : F.Free) (δ δ' : ∀ b, F.D b → F.D b)
-    (hδ' : ∀ (b : F.β) (g : F.G b) (d : F.D b), δ' b (g • d) = g • δ' b d) :
-    E.opOnC δ ∘ₗ E.opOnC δ' = E.opOnC fun b d => δ' b (δ b d) :=
-  E.opOn_comp hf _ _ fun b g d => ⟨g, by rw [hδ'], rfl⟩
 
 def lin : (F.ιV → ℂ) →ₗ[ℂ] (E.Y → ℂ) := Fintype.linearCombination ℂ fun i => E.ev (F.bV i)
 
@@ -195,8 +179,6 @@ def sharp (ℓ : F.V →ₛₗ[σ] ℂ) : E.Y → ℂ :=
 
 theorem lin_mem (b : F.β) : (E.mem b).lin = E.lin := rfl
 theorem gram_mem (b : F.β) : (E.mem b).gram = E.gram := rfl
-theorem ipB_mem (b : F.β) : (E.mem b).ipB = E.ipB := rfl
-theorem co_mem (b : F.β) : (E.mem b).co = E.co := rfl
 theorem extend_mem (b : F.β) {M : Type} [AddCommGroup M] [Module ℂ M] (ℓ : F.V →ₛₗ[σ] M) :
     (E.mem b).extend ℓ = E.extend ℓ := rfl
 theorem sharp_mem (b : F.β) (ℓ : F.V →ₛₗ[σ] ℂ) : (E.mem b).sharp ℓ = E.sharp ℓ := rfl
@@ -300,17 +282,7 @@ def perCl (h : F.Ok) {ι : Type} [Fintype ι] (ℓ : F.Cl → ι → (F.V →ₛ
       refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun b _ => ?_
       ring)
 
-theorem perCl_apply (h : F.Ok) {ι : Type} [Fintype ι] (ℓ : F.Cl → ι → (F.V →ₛₗ[σ] ℂ)) (Φ : F.Cl → E.Y → ℂ) (z : ι → ℂ) :
-    E.perCl h ℓ Φ z = (letI := h.fintypeCl
-      ∑ c : F.Cl, ((Nat.card (MulAction.stabilizer (F.G c.1) (F.rep c)) : ℕ) : ℂ)⁻¹ *
-        ∑ a, z a * E.extend (ℓ c a) (Φ c)) := rfl
 
-theorem perCl_emb (h : F.Ok) {ι : Type} [Fintype ι] (ℓ : F.Cl → ι → (F.V →ₛₗ[σ] ℂ)) (φ : F.Forms) (z : ι → ℂ) :
-    E.perCl h ℓ (E.emb φ) z = (letI := h.fintypeCl
-      ∑ c : F.Cl, ((Nat.card (MulAction.stabilizer (F.G c.1) (F.rep c)) : ℕ) : ℂ)⁻¹ *
-        ∑ a, z a * ℓ c a (F.valAt φ c)) := by
-  unfold perCl
-  simp only [LinearMap.mk₂_apply, emb_valAt, extend_ev]
 
 theorem norm_eq (h : F.Ok) (R : F.Rat) (hσ : ∀ x : K, σ (star x) = starRingEnd ℂ (σ x)) (φ : F.Forms) :
     (majAt (F.hB h) (stdFrame (F.hGram h)) (InfinitePlace.mk σ) φ φ).re =

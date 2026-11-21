@@ -13,8 +13,6 @@ variable {G K R : Type} [Group G] [Field K] [CommRing R] [Algebra K R]
 def IsRightAct (st : G → R →ₐ[K] R) : Prop :=
   (∀ x, st 1 x = x) ∧ ∀ h h' x, st (h * h') x = st h' (st h x)
 
-theorem isRightAct_inv (ρ : G →* (R →ₐ[K] R)) : IsRightAct (fun h => ρ h⁻¹) :=
-  ⟨fun x => by simp, fun h h' x => by simp only [mul_inv_rev, map_mul]; rfl⟩
 
 theorem IsRightAct.comp {st : G → R →ₐ[K] R} (h : IsRightAct st) {G' : Type} [Group G'] (f : G' →* G) :
     IsRightAct (fun g => st (f g)) :=
@@ -23,8 +21,6 @@ theorem IsRightAct.comp {st : G → R →ₐ[K] R} (h : IsRightAct st) {G' : Typ
 def funPull (K : Type) [Field K] {Z : Type} [MulAction G Z] (h : G) : (Z → K) →ₐ[K] (Z → K) :=
   Pi.algHom _ _ fun z => Pi.evalAlgHom K (fun _ : Z => K) (h • z)
 
-theorem isRightAct_funPull {Z : Type} [MulAction G Z] : IsRightAct (funPull K (Z := Z) (G := G)) :=
-  ⟨fun x => funext fun z => congrArg x (one_smul G z), fun h h' x => funext fun z => congrArg x (mul_smul h h' z)⟩
 
 variable (st : G → R →ₐ[K] R)
 
@@ -38,7 +34,6 @@ theorem IsRightAct.equiv_apply {st : G → R →ₐ[K] R} (hs : IsRightAct st) (
 
 def groupMat (u : R) : Matrix G G R := Matrix.of fun h g => st (h * g) u
 
-theorem groupMat_apply (u : R) (h g : G) : groupMat st u h g = st (h * g) u := rfl
 
 def eigen (χ : G →* Kˣ) : Submodule K R where
   carrier := {F | ∀ h, st h F = ((χ h : Kˣ) : K) • F}
@@ -46,7 +41,6 @@ def eigen (χ : G →* Kˣ) : Submodule K R where
   add_mem' := fun {a b} ha hb h => by rw [map_add, ha h, hb h, smul_add]
   smul_mem' := fun c a ha h => by rw [map_smul, ha h, smul_comm]
 
-theorem mem_eigen {χ : G →* Kˣ} {F : R} : F ∈ eigen st χ ↔ ∀ h, st h F = ((χ h : Kˣ) : K) • F := Iff.rfl
 
 def IsRightAct.leftRep {st : G → R →ₐ[K] R} (hs : IsRightAct st) : Representation K G R where
   toFun g := (st g⁻¹).toLinearMap
@@ -56,10 +50,6 @@ def IsRightAct.leftRep {st : G → R →ₐ[K] R} (hs : IsRightAct st) : Represe
 theorem IsRightAct.leftRep_apply {st : G → R →ₐ[K] R} (hs : IsRightAct st) (g : G) (x : R) :
     hs.leftRep g x = st g⁻¹ x := rfl
 
-theorem IsRightAct.mem_eigen_iff {st : G → R →ₐ[K] R} (hs : IsRightAct st) {χ : G →* Kˣ} {F : R} :
-    F ∈ eigen st χ ↔ ∀ g, hs.leftRep g F = ((χ⁻¹ g : Kˣ) : K) • F :=
-  ⟨fun h g => by rw [hs.leftRep_apply, h g⁻¹, map_inv]; rfl,
-    fun h g => by have := h g⁻¹; rwa [hs.leftRep_apply, inv_inv, MonoidHom.inv_apply, map_inv, inv_inv] at this⟩
 
 def IsRightAct.subRep {st : G → R →ₐ[K] R} (hs : IsRightAct st) (C : Submodule K R)
     (hC : ∀ h, ∀ x ∈ C, st h x ∈ C) : Representation K G C :=
@@ -74,11 +64,6 @@ def algOp (e : MonoidAlgebra K G) : Module.End K R :=
 theorem algOp_single (g : G) (a : K) (x : R) : algOp st (MonoidAlgebra.single g a) x = a • st g⁻¹ x := by
   simp [algOp]
 
-theorem algOp_apply [Fintype G] (e : MonoidAlgebra K G) (x : R) :
-    algOp st e x = ∑ g, e.coeff g • st g⁻¹ x := by
-  rw [algOp, Finsupp.linearCombination_apply,
-    Finsupp.sum_fintype _ (fun i a => a • (st i⁻¹).toLinearMap) (fun _ => zero_smul _ _), LinearMap.sum_apply]
-  rfl
 
 theorem IsRightAct.algOp_eq {st : G → R →ₐ[K] R} (hs : IsRightAct st) (e : MonoidAlgebra K G) :
     algOp st e = hs.leftRep.asAlgebraHom e := by
@@ -87,14 +72,7 @@ theorem IsRightAct.algOp_eq {st : G → R →ₐ[K] R} (hs : IsRightAct st) (e :
   | add a b ha hb => rw [map_add, ← ha, ← hb]; simp [algOp]
   | single g a => ext x; rw [algOp_single, Representation.asAlgebraHom_single]; rfl
 
-theorem IsRightAct.algOp_mul {st : G → R →ₐ[K] R} (hs : IsRightAct st) (e e' : MonoidAlgebra K G) :
-    algOp st (e * e') = algOp st e * algOp st e' := by
-  rw [hs.algOp_eq, hs.algOp_eq, hs.algOp_eq, map_mul]
 
-theorem algOp_mem {C : Submodule K R} (hC : ∀ h, ∀ x ∈ C, st h x ∈ C) (e : MonoidAlgebra K G) {x : R} (hx : x ∈ C) :
-    algOp st e x ∈ C := by
-  rw [algOp, Finsupp.linearCombination_apply, Finsupp.sum, LinearMap.sum_apply]
-  exact C.sum_mem fun g _ => C.smul_mem _ (hC _ x hx)
 
 variable [Fintype G]
 
@@ -144,9 +122,7 @@ variable {G K R O : Type} [Group G] [Field K] [CommRing R] [Algebra K R] [CommRi
 def latCap (L : Submodule O C) (W : Submodule K R) : Submodule O C :=
   L ⊓ (W.comap C.subtype).restrictScalars O
 
-theorem mem_latCap {L : Submodule O C} {W : Submodule K R} {F : C} : F ∈ latCap L W ↔ F ∈ L ∧ (F : R) ∈ W := Iff.rfl
 
-theorem latCap_le (L : Submodule O C) (W : Submodule K R) : latCap L W ≤ L := inf_le_left
 
 def spanQ (N : Submodule O C) : Submodule K R := (Submodule.span K (N : Set C)).map C.subtype
 
@@ -170,9 +146,6 @@ theorem mem_cutLat_iff {N : Submodule O C} {T : Module.End K R} (hT : IsIdempote
 theorem cutLat_one (N : Submodule O C) : cutLat N 1 = N :=
   Submodule.ext fun _ => (mem_cutLat_iff IsIdempotentElem.one).trans (and_iff_left rfl)
 
-theorem cutLat_zero (N : Submodule O C) : cutLat N 0 = ⊥ :=
-  Submodule.ext fun F => (mem_cutLat_iff IsIdempotentElem.zero).trans
-    ⟨fun h => Subtype.ext h.2.symm, fun h => by obtain rfl : F = 0 := h; exact ⟨N.zero_mem, rfl⟩⟩
 
 end Lat
 
@@ -326,7 +299,6 @@ def crtAut : QAut N I ≃* ∀ i, QAut N (Js i) :=
       LinearEquiv.apply_symm_apply]
     rfl⟩
 
-theorem crtAut_apply (γ : QAut N I) (i : ι) : crtAut hle hc hI γ i = autRed (hle i) γ := rfl
 
 end CRT
 

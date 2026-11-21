@@ -340,12 +340,6 @@ theorem sum_irrChars_mul_apply [DecidableEq G] (g : G) :
   simp only [Pi.smul_apply, smul_eq_mul] at h
   rw [← h, Nat.card_eq_fintype_card]
 
-theorem sum_irrChars_sq : ∑ ψ ∈ irrChars G, ψ 1 ^ 2 = (Nat.card G : ℂ) := by
-  classical
-  have h := sum_irrChars_mul_apply (G := G) 1
-  rw [if_pos rfl] at h
-  rw [← h]
-  exact Finset.sum_congr rfl fun ψ _ ↦ sq _
 
 end Regular
 

@@ -105,11 +105,6 @@ def lettersEquiv (o : LamObj c nΨ n') : LamLetters o ≃ IndefiniteRowSideFullH
 
 variable {o : LamObj c nΨ n'}
 
-theorem lettersEquiv_fields (L : LamLetters o) :
-    (lettersEquiv o L).m = L.m ∧ HEq (lettersEquiv o L).e L.e ∧
-      (∀ k, (lettersEquiv o L).src k = srcEquiv o (L.src k)) ∧ (lettersEquiv o L).U = L.U ∧
-      (lettersEquiv o L).ℓ = L.ℓ :=
-  ⟨rfl, HEq.rfl, fun _ => rfl, rfl, rfl⟩
 
 theorem isLetter_iff (L : LamLetters o) (k : Fin o.xB.P.g) (w : epsR o.K₁ ⟶ o.xB.P.A) :
     L.IsLetter k w ↔ (lettersEquiv o L).IsLetter k w := by

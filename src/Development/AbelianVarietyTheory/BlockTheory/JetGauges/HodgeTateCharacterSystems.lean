@@ -160,18 +160,6 @@ def tangentPt {R : Type u} [CommRing R] [Algebra O R] (v : Cotangent G →ₗ[O]
     ext r : 2
     exact (tangentAlg v).commutes r)
 
-lemma readFn_tangentPt {R : Type u} [CommRing R] [Algebra O R] (v : Cotangent G →ₗ[O] R)
-    (s : Γ(G.left, ⊤)) :
-    readFn ((tangentPt v).left.appTop.hom s) =
-      tangentAlg v (G.left.presheaf.germ ⊤ (origin G) trivial s) := by
-  show (Scheme.ΓSpecIso (CommRingCat.of (DualNumber R))).hom.hom
-    ((Spec.map (CommRingCat.ofHom (tangentAlg v).toRingHom) ≫ fromLoc G).appTop.hom s) = _
-  rw [Scheme.Hom.comp_appTop, CommRingCat.comp_apply, fromLoc, Scheme.fromSpecStalk_appTop]
-  simp only [CommRingCat.comp_apply, homOfLE_refl, op_id, CategoryTheory.Functor.map_id, CommRingCat.id_apply]
-  rw [← CommRingCat.comp_apply (Scheme.Hom.appTop _), Scheme.ΓSpecIso_naturality]
-  show (tangentAlg v) ((Scheme.ΓSpecIso (G.left.presheaf.stalk (origin G))).hom
-    ((Scheme.ΓSpecIso (G.left.presheaf.stalk (origin G))).inv (G.left.presheaf.germ ⊤ (origin G) trivial s))) = _
-  rw [Iso.inv_hom_id_apply]
 
 end Tangent
 

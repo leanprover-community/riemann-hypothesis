@@ -20,8 +20,6 @@ def resAlg (σ : k →+* k') (B : CommAlgCat.{0} k') : CommAlgCat.{0} k :=
   letI : Algebra k B := Algebra.compHom B σ
   CommAlgCat.of k B
 
-theorem algebraMap_resAlg (σ : k →+* k') (B : CommAlgCat.{0} k') :
-    algebraMap k (resAlg σ B) = (algebraMap k' B).comp σ := rfl
 
 def resHom (σ : k →+* k') {B B' : CommAlgCat.{0} k'} (f : B ⟶ B') : resAlg σ B ⟶ resAlg σ B' :=
   letI : Algebra k B := Algebra.compHom B σ
@@ -174,20 +172,11 @@ theorem HdR.pull_comp {s' : X' ⟶ Sp k} {s'' : X'' ⟶ Sp k} {f : X' ⟶ X} {g 
     HdR.pull (f := g ≫ f) (by rw [Category.assoc, hf, hg]) n c = HdR.pull hg n (HdR.pull hf n c) :=
   HdR.pullSemi_comp (over_id hf) (over_id hg) _ n c
 
-theorem HdR.pullSemi_mem_fil {φ : X' ⟶ X} (h : φ ≫ s = s' ≫ spMap σ) {p n : ℕ} {c : HdR s n}
-    (hc : c ∈ HdR.fil s p n) : HdR.pullSemi h n c ∈ HdR.fil s' p n :=
-  Hyp.pull_mem_fil (pullCoef h) hc
 
-theorem HdR.pull_mem_fil {s' : X' ⟶ Sp k} {f : X' ⟶ X} (hf : f ≫ s = s') {p n : ℕ} {c : HdR s n}
-    (hc : c ∈ HdR.fil s p n) : HdR.pull hf n c ∈ HdR.fil s' p n :=
-  HdR.pullSemi_mem_fil (over_id hf) hc
 
 def HdRF.pullSemi {φ : X' ⟶ X} (h : φ ≫ s = s' ≫ spMap σ) (p n : ℕ) : HdRF s p n →ₛₗ[σ] HdRF s' p n :=
   HypF.pull (pullCoef h) p n
 
-theorem HdRF.toHdR_pullSemi {φ : X' ⟶ X} (h : φ ≫ s = s' ≫ spMap σ) {p n : ℕ} (c : HdRF s p n) :
-    HdRF.toHdR s' p n (HdRF.pullSemi h p n c) = HdR.pullSemi h n (HdRF.toHdR s p n c) :=
-  HypF.toHyp_pull (pullCoef h) c
 
 end Pull
 
@@ -201,9 +190,6 @@ def affCoef : CoefMap (RingHom.id k) (OPt s) (OAff s) :=
 
 def HdR.toAff (n : ℕ) : HdR s n →ₗ[k] Hyp (OAff s) n := Hyp.pull (affCoef s) n
 
-theorem HdR.toAff_mem_fil {p n : ℕ} {c : HdR s n} (hc : c ∈ HdR.fil s p n) :
-    HdR.toAff s n c ∈ Hyp.fil (OAff s) p n :=
-  Hyp.pull_mem_fil (affCoef s) hc
 
 end Aff
 

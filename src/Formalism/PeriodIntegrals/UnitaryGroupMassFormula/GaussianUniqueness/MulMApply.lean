@@ -94,15 +94,6 @@ theorem tv_ne_zero {c : Fin r → ℂ} (hc : ∀ a, c a ≠ 0) (i : Fin (2 * r +
   · exact one_ne_zero
   · exact inv_ne_zero (star_ne_zero.mpr (hc _))
 
-theorem bigCell_inv {c : Fin r → ℂ} (hc : ∀ a, c a ≠ 0) :
-    (bigCell k r c 1)⁻¹ = M k r (fun y => (tv k r c (sg k r y))⁻¹) ∧
-    (bigCell k r c 1)⁻¹ * bigCell k r c 1 = 1 := by
-  have h1 : bigCell k r c 1 * M k r (fun y => (tv k r c (sg k r y))⁻¹) = 1 := by
-    rw [bigCell_eq, M_mul, ← diagonal_one]; congr 1; funext y
-    exact mul_inv_cancel₀ (tv_ne_zero hc _)
-  have h2 := Matrix.inv_eq_right_inv h1
-  refine ⟨h2, ?_⟩
-  rw [h2]; exact mul_eq_one_comm.mp h1
 
 theorem inv_of_UH {g : Mat k r} (hg : g ∈ UH (Hpk k r)) :
     g⁻¹ = Hpk k r * gᴴ * Hpk k r ∧ g⁻¹ * g = 1 ∧ g * g⁻¹ = 1 := by
@@ -132,12 +123,6 @@ theorem Supp.conjT {A : Mat k r} {R : ℕ → ℕ → Prop} (h : Supp A R) : Sup
   intro x y hxy
   exact h y x (fun h0 => hxy (by rw [conjTranspose_apply, h0, star_zero]))
 
-theorem supp_M (f : Fin (2 * r + k + 1) → ℂ) : Supp (M k r f) (fun a b => a + b = 2 * r) := by
-  intro x y h
-  simp only [M] at h
-  split_ifs at h with hx
-  · subst hx; have := lv_sg (k := k) (r := r) y; have := lv_le (k := k) (r := r) y; omega
-  · exact absurd rfl h
 
 def NU (A : Mat k r) : Prop := ∀ x y, lv k r y ≤ lv k r x → A x y = (1 : Mat k r) x y
 
@@ -163,79 +148,7 @@ theorem NU.inv {g : Mat k r} (hg : g ∈ UH (Hpk k r)) (hN : NU g) : NU g⁻¹ :
   · have : sg k r y ≠ sg k r x := fun e => hxy' (sg_inj e).symm
     rw [Matrix.one_apply_ne this, Matrix.one_apply_ne hxy', star_zero, mul_zero, zero_mul]
 
-theorem NU_supp {A : Mat k r} (h : NU A) : Supp A (fun a b => a ≤ b) := by
-  intro x y hxy
-  by_contra hc
-  apply hxy
-  rw [h x y (by omega), Matrix.one_apply_ne]
-  rintro rfl; omega
 
-theorem NU_eq_one {A : Mat k r} (h : NU A) (hs : Supp A (fun a b => b ≤ a)) : A = 1 := by
-  ext x y
-  by_cases hxy : lv k r y ≤ lv k r x
-  · exact h x y hxy
-  · have hne : x ≠ y := by rintro rfl; exact hxy le_rfl
-    rw [Matrix.one_apply_ne hne]
-    by_contra h0
-    exact hxy (hs x y h0)
 
-theorem NU_of_Nset {n : Mat k r} (hn : n ∈ Nset k r) : NU n := by
-  obtain ⟨hU, hA, hB⟩ := hn
-  have hU' : nᴴ * (M k r (sn k r) * n) = M k r (sn k r) := by
-    rw [← Matrix.mul_assoc, ← Hpk_eq]; exact hU
-  have colA : ∀ (a z : Fin (2 * r + k + 1)), a.val < r → a.val ≤ z.val →
-      n z a = if z = a then 1 else 0 := by
-    intro a z ha hz
-    have h := hA ⟨a.val, ha⟩ z hz
-    have e : eI k r ⟨a.val, ha⟩ = a := Fin.ext rfl
-    rwa [e] at h
-  have key : ∀ (b : ℕ) (bb : Fin (2 * r + k + 1)), bb.val = b → b < r →
-      ∀ y : Fin (2 * r + k + 1), r + k < y.val → lv k r y ≤ 2 * r - b →
-      n (sg k r bb) y = (1 : Mat k r) (sg k r bb) y := by
-    intro b
-    induction b using Nat.strong_induction_on with
-    | _ b ih =>
-    intro bb hbb hb y hy hly
-    have e := congrFun (congrFun hU' bb) y
-    rw [Matrix.mul_apply, Finset.sum_eq_single bb] at e
-    · rw [conjTranspose_apply, colA bb bb (by omega) le_rfl, if_pos rfl, star_one, one_mul,
-        M_mul_apply] at e
-      have hs : sn k r (sg k r bb) = 1 := by
-        have := bb.isLt
-        simp only [sn, sg_val]; split_ifs <;> first | rfl | (exfalso; omega)
-      rw [hs, one_mul] at e
-      rw [e]
-      by_cases hyb : y = sg k r bb
-      · subst hyb
-        simp [M, sg_sg, hs]
-      · have h1 : bb ≠ sg k r y := fun h => hyb (by rw [h, sg_sg])
-        have h2 : sg k r bb ≠ y := fun h => hyb h.symm
-        rw [Matrix.one_apply_ne h2]
-        simp only [M, if_neg h1]
-    · intro z _ hz
-      rw [conjTranspose_apply, M_mul_apply]
-      by_cases hzb : b ≤ z.val
-      · rw [colA bb z (by omega) (by omega), if_neg hz, star_zero, zero_mul]
-      · have hz' : z.val < b := by omega
-        have := ih z.val hz' z rfl (by omega) y hy (by omega)
-        rw [this, Matrix.one_apply_ne, mul_zero, mul_zero]
-        intro hzy
-        have h1 := lv_sg (k := k) (r := r) z
-        rw [hzy] at h1
-        have h2 : lv k r z = z.val := by unfold lv; rw [if_pos (by omega)]
-        omega
-    · intro h; exact absurd (Finset.mem_univ _) h
-  intro x y hxy
-  have hx := x.isLt; have hy := y.isLt
-  by_cases h1 : y.val < r
-  · have hyx : y.val ≤ x.val := by unfold lv at hxy; split_ifs at hxy <;> omega
-    rw [colA y x h1 hyx, Matrix.one_apply]
-  · by_cases h2 : y.val ≤ r + k
-    · have hrx : r ≤ x.val := by unfold lv at hxy; split_ifs at hxy <;> omega
-      rw [hB x y (by omega) h2 hrx, Matrix.one_apply]
-    · have hx2 : r + k < x.val := by unfold lv at hxy; split_ifs at hxy <;> omega
-      have := key (sg k r x).val (sg k r x) rfl (by rw [sg_val]; split_ifs <;> omega) y (by omega)
-        (by rw [sg_val]; unfold lv at hxy ⊢; split_ifs at hxy ⊢ <;> omega)
-      rwa [sg_sg] at this
 
 end PI.SwBig.GU

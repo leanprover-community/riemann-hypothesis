@@ -279,17 +279,6 @@ theorem res_pi {ϖ : o} (hϖ : Irreducible ϖ) : IsLocalRing.residue o ϖ = 0 :=
 
 end DVR
 
-theorem centreBlocks : CentreBlocks := by
-  intro F _ r ϖ j₁₁ j₁₃ j₃₃ X S S' hϖ hX
-  have h1 : X * X⁻¹ = 1 := Matrix.mul_nonsing_inv X hX
-  have h2 : X⁻¹ * X = 1 := Matrix.nonsing_inv_mul X hX
-  have e1 : (j₁₁ - ϖ • (S * X)) * X⁻¹ = j₁₁ * X⁻¹ - ϖ • S := by
-    rw [sub_mul, smul_mul_assoc, mul_assoc, h1, mul_one]
-  have e3 : j₁₁ * X⁻¹ * (X * S') = j₁₁ * S' := by rw [mul_assoc, ← mul_assoc X⁻¹, h2, one_mul]
-  have e2 : (j₁₁ * X⁻¹ - ϖ • S) * (j₃₃ + ϖ • (X * S')) - j₁₁ * X⁻¹ * j₃₃
-      = ϖ • (j₁₁ * S' - S * j₃₃ - S * (ϖ • X) * S') := by
-    simp only [sub_mul, mul_add, mul_smul_comm, smul_mul_assoc, e3, smul_sub, mul_assoc]; abel
-  rw [e1, e2, smul_smul, inv_mul_cancel₀ hϖ, one_smul, sub_mul]; abel
 
 theorem centreForcing : CentreForcing := by
   intro o _ _ _ k0 _ _ _ ϖ hϖ r ξ₁ ξ₂ j₁₃ X y₁ y₂ y₃ S S' hξ₁ hξ₂ hX hy₁ hy₂ e₁ e₂ e₃
@@ -434,9 +423,6 @@ theorem block13_mul (x y : Matrix (Idx r k) (Idx r k) A) :
   ext a b
   simp [b11, b12, b13, b13, b23, b33, Matrix.mul_apply, Fintype.sum_sum_type, add_assoc]
 
-theorem block13_one : b13 (1 : Matrix (Idx r k) (Idx r k) A) = 0 := by
-  ext a b
-  simp [b13, Matrix.one_apply]
 
 theorem block13_map {B : Type} (f : A → B) (x : Matrix (Idx r k) (Idx r k) A) :
     b13 (x.map f) = (b13 x).map f := rfl
@@ -517,9 +503,6 @@ theorem lcancel {n m : Type} [Fintype n] [DecidableEq n] {f : Matrix n n A} (hf 
     {Y Z : Matrix n m A} (h : f * Y = f * Z) : Y = Z := by
   rw [← Matrix.nonsing_inv_mul_cancel_left f Y hf, h, Matrix.nonsing_inv_mul_cancel_left f Z hf]
 
-theorem rcancel {n m : Type} [Fintype n] [DecidableEq n] {f : Matrix n n A} (hf : IsUnit f.det)
-    {Y Z : Matrix m n A} (h : Y * f = Z * f) : Y = Z := by
-  rw [← Matrix.mul_nonsing_inv_cancel_right f Y hf, h, Matrix.mul_nonsing_inv_cancel_right f Z hf]
 
 theorem uni_unit {n : ℕ} {u : Matrix (Fin n) (Fin n) A} (hu : IsUpUni u) : IsUnit u.det := by
   rw [isUpUni_det A hu]; exact isUnit_one
@@ -638,63 +621,7 @@ section Stab
 
 variable {F : Type} [Field F] {r k : ℕ}
 
-theorem halfStab {g n n' : Matrix (Idx r k) (Idx r k) F}
-    (hc : ∀ (l : ℕ) (hl : l ≤ r), cm (b31 g) l hl ≠ 0) (hn : IsN n) (hn' : IsN n')
-    (e : g * n' = n * g) : b33 n = 1 ∧ b11 n' = 1 ∧ b23 n = 0 ∧ b12 n' = 0 := by
-  obtain ⟨h11, h33, h22, h21, h31, h32⟩ := hn
-  obtain ⟨g11, g33, g22, g21, g31, g32⟩ := hn'
-  have hu : ∀ (l : ℕ) (hl : l ≤ r), IsUnit (cm (b31 g) l hl) := fun l hl => (hc l hl).isUnit
-  have hd : IsUnit (b31 g).det := det_of_cm _ (hu r le_rfl)
-  have e31 := congrArg b31 e
-  rw [block31_mul, block31_mul, g21, g31, h31, h32] at e31
-  simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add] at e31
-  obtain ⟨u2, u1⟩ := uniqCm (b31 g) (b33 n) (b11 n') h33 g11 e31.symm hu
-  refine ⟨u2, u1, ?_, ?_⟩
-  · have e21 := congrArg b21 e
-    rw [block21_mul, block21_mul, g21, g31, h21, h22, u1] at e21
-    simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul] at e21
-    refine rcancel hd ?_
-    rw [Matrix.zero_mul]
-    exact (left_eq_add.1 e21)
-  · have e32 := congrArg b32 e
-    rw [block32_mul, block32_mul, g22, g32, h31, h32, u2] at e32
-    simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul] at e32
-    refine lcancel hd ?_
-    rw [Matrix.mul_zero]
-    exact (add_eq_right.1 e32)
 
-theorem stabiliserTrivial : StabiliserTrivial := by
-  intro F _ r k g n n' hg hc hc' hn hn' e
-  have g1 : g * g⁻¹ = 1 := Matrix.mul_nonsing_inv g hg
-  have g2 : g⁻¹ * g = 1 := Matrix.nonsing_inv_mul g hg
-  have e' : g⁻¹ * n = n' * g⁻¹ := by
-    calc g⁻¹ * n = g⁻¹ * (n * g) * g⁻¹ := by simp only [mul_assoc, g1, mul_one]
-      _ = g⁻¹ * (g * n') * g⁻¹ := by rw [e]
-      _ = n' * g⁻¹ := by simp only [← mul_assoc, g2, one_mul]
-  obtain ⟨a33, a11', a23, a12'⟩ := halfStab hc hn hn' e
-  obtain ⟨a33', a11, a23', a12⟩ := halfStab hc' hn' hn e'
-  have hd : IsUnit (b31 g).det := det_of_cm _ (hc r le_rfl).isUnit
-  obtain ⟨h11, h33, h22, h21, h31, h32⟩ := hn
-  obtain ⟨g11, g33, g22, g21, g31, g32⟩ := hn'
-  have a13 : b13 n = 0 := by
-    have e11 := congrArg b11 e
-    rw [block11_mul, block11_mul, g21, g31, a11', a11, a12] at e11
-    simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul] at e11
-    refine rcancel hd ?_
-    rw [Matrix.zero_mul]
-    exact (left_eq_add.1 e11)
-  have a13' : b13 n' = 0 := by
-    have e33 := congrArg b33 e
-    rw [block33_mul, block33_mul, h31, h32, a33', a33, a23'] at e33
-    simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul] at e33
-    refine lcancel hd ?_
-    rw [Matrix.mul_zero]
-    exact (add_eq_right.1 e33)
-  constructor
-  · apply ext9 <;> simp only [one_block11, block12_one, block13_one, one_block21, block22_one, block23_one, one_block31, block32_one,
-      block33_one] <;> assumption
-  · apply ext9 <;> simp only [one_block11, block12_one, block13_one, one_block21, block22_one, block23_one, one_block31, block32_one,
-      block33_one] <;> assumption
 
 end Stab
 
@@ -899,11 +826,6 @@ theorem forcing : Forcing := by
 
 end Formalism.FourierDecayAlt.P.S3x8
 
-theorem Formalism.FourierDecayAlt.P.block_forcing : Formalism.FourierDecayAlt.S3.Forcing := Formalism.FourierDecayAlt.P.S3x8.forcing
 
-theorem Formalism.FourierDecayAlt.P.centre_block_structure : Formalism.FourierDecayAlt.S3.CentreBlocks := Formalism.FourierDecayAlt.P.S3x8.centreBlocks
 
-theorem Formalism.FourierDecayAlt.P.centreForcing_true : Formalism.FourierDecayAlt.S3.CentreForcing := Formalism.FourierDecayAlt.P.S3x8.centreForcing
 
-theorem Formalism.FourierDecayAlt.P.stabiliserTrivial_true : Formalism.FourierDecayAlt.S3.StabiliserTrivial :=
-  Formalism.FourierDecayAlt.P.S3x8.stabiliserTrivial

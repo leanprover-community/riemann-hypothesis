@@ -90,47 +90,7 @@ theorem mulNFin (hM : MulNSt) {N : ℕ} (hN : 1 ≤ N) :
         (H y).isoPullback_inv_snd ▸ (P.cancel_left_of_respectsIso (H y).isoPullback.inv (m y)).2 (h y)
   exact ⟨key @IsFinite.{0} a, key @Flat.{0} b, key @Surjective.{0} s⟩
 
-theorem symLiftN (hG : GlobalFnsSt) {N : ℕ} (hN : Odd N) {T : Over Xo.X} (t : T ⟶ Xo.univ.t.G) (ht : t ^ (N ^ 2) = 1) :
-    ∃ U : ThetaGrp Xo.univ.t.G Xo.univ.t.PP.L ((N : ℤ) ^ 2) T, SymLift Xo.univ.t.G Xo.univ.t.PP.L ((N : ℤ) ^ 2) (N ^ 2) t U :=
-  exists_symLift_odd Xo.univ.t.cub hG (univ_isAb Xo) Xo.univ.t.sym t (k := N ^ 2) (by push_cast; rfl) hN.pow hN.pow ht ht
 
-theorem normMulN (N : ℕ) : ∃ α₀ : LB.Gen (LB.LinComb Xo.univ.t.PP.L (K := Fin 2)
-    ![𝟙 Xo.univ.t.G.left, (mulA Xo.univ.t.G N).left] ![(N : ℤ) ^ 2, -1]), α₀.IsGen ∧
-      IsNormMul Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig N α₀ := by
-  have : IsMonHom (mulA Xo.univ.t.G N) := isMonHom_of_mul _ fun _ x y => by
-    simp only [mulA, MonObj.comp_pow, Category.comp_id, mul_pow]
-  obtain ⟨α, hα, v⟩ := exists_norm (L := Xo.univ.t.PP) (mulA Xo.univ.t.G N) (a := N ^ 2) (b := 1) (a' := (N : ℤ) ^ 2) (b' := 1)
-    (by push_cast; rfl) rfl ((genOf_pow Xo.univ.t.cub Xo.univ.t.sym (𝟙 _) N).congr fun _ _ h => by rw [pow_one]; rfl)
-  exact ⟨α, hα, corr_of_val Xo.univ.t.PP.isLB fun y I hI => ((val_pull hI _ _ _).trans (v y I hI)).trans
-    (((val_mul hI _ _ _).trans (congrArg₂ (· * ·) (map_zpow _ _ _) (val_inv _ _))).trans (by rw [zpow_sub, zpow_one]; rfl)).symm⟩
 
-theorem etaKill (a : D.La) (r : 𝓞 E) (hr : r ∈ l.Mb) : Xo.univ.eta a ≫ Xo.univ.t.act.act r = 1 := by
-  have := Xo.smooth
-  have : Smooth Xo.s := SmoothOfRelativeDimension.smooth D.dim _
-  have : IsReduced Xo.X := isReduced_of_smooth Xo.s
-  have := Xo.univ.proper
-  have : IsReduced (𝟙_ (Over Xo.X)).left := ‹IsReduced Xo.X›
-  obtain ⟨u, hu, v, hv, huv⟩ := Submodule.mem_sup.1 (show (1 : 𝓞 E) ∈ l.Mb ⊔ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) from
-    l.coprime ▸ Submodule.mem_top)
-  have ea : Xo.univ.eta a = Xo.univ.eta (v • a) := by
-    conv_lhs => rw [← one_smul (𝓞 E) a, ← huv, add_smul, Xo.univ.eta_add,
-      Xo.univ.eta_ker _ (Submodule.smul_mem_smul hu Submodule.mem_top), _root_.one_mul]
-  obtain ⟨q, hq⟩ : ∃ q : 𝓞 E, r * v = q * l.M := by
-    obtain ⟨q, hq⟩ := Ideal.mem_span_singleton'.1 (l.prod ▸ Ideal.mul_mem_mul hr hv)
-    exact ⟨q, hq.symm⟩
-  refine Over.OverMorphism.ext (ext_of_fromSpecResidueField_eq _ _ Xo.univ.t.G.hom Set.univ dense_univ (fun x _ => ?_)
-    ((Over.w _).trans (Over.w _).symm))
-  let k := AlgebraicClosure (Xo.X.residueField x)
-  let i : Sp k ⟶ Spec (Xo.X.residueField x) := Spec.map (CommRingCat.ofHom (algebraMap (Xo.X.residueField x) k))
-  have : Flat i := (HasRingHomProperty.Spec_iff (P := @Flat)).2 (RingHom.flat_algebraMap_iff.2 inferInstance)
-  have : Surjective i := ⟨fun z => ⟨⟨⊥, Ideal.isPrime_bot⟩, Subsingleton.elim (α := PrimeSpectrum _) _ _⟩⟩
-  have : Epi i := Flat.epi_of_flat_of_surjective _
-  obtain ⟨-, I, -, -, hη⟩ := Xo.univ.geom k (i ≫ Xo.X.fromSpecResidueField x)
-    (Spec.preimage ((i ≫ Xo.X.fromSpecResidueField x) ≫ Xo.s)).hom (Spec.map_preimage _).symm
-  have e : (toUnit (Over.mk (i ≫ Xo.X.fromSpecResidueField x)) ≫ Xo.univ.eta a) ≫ Xo.univ.t.act.act r = 1 := by
-    rw [ea, hη _ (Submodule.smul_mem_smul hv Submodule.mem_top), ← I.lin, smul_smul, hq]
-    exact (I.ker _ (by have := l.three_le; omega) _).2 ⟨q • a, by rw [mul_comm, mul_smul, Nat.cast_smul_eq_nsmul]⟩
-  rw [← cancel_epi i, ← Category.assoc, ← Category.assoc]
-  exact (congrArg (fun q => q.left) ((Category.assoc _ _ _).symm.trans (e.trans (MonObj.comp_one (toUnit _)).symm)))
 
 end ReciprocityTheory.ChartRestriction.G.Geo.Tor

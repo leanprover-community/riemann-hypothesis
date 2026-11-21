@@ -108,15 +108,8 @@ theorem cls_mem_of_kc (v : V) (l l' : List (Mat p q)) {Y : Mat p q} (hY : IsKC Y
   rw [e]
   exact Submodule.add_mem _ h₁ h₂
 
-theorem pLin_add (x y : Mat p q) : pLin (x + y) = pLin x + pLin y := by
-  simp only [pLin, Matrix.add_apply, map_add, add_mul, Finset.sum_add_distrib]
 
-theorem pLin_smul (c : ℂ) (x : Mat p q) : pLin (c • x) = c • pLin x := by
-  simp only [pLin, Finset.smul_sum, Matrix.smul_apply, smul_eq_mul, map_mul, MvPolynomial.smul_eq_C_mul, mul_assoc]
 
-theorem pLin_kc {Y : Mat p q} (hY : IsKC Y) : pLin Y = 0 := by
-  refine Finset.sum_eq_zero fun ab _ => ?_
-  rw [hY _ _ ab.2, map_zero, zero_mul]
 
 def unitP (ab : PIx p q) : Mat p q := Eab ab.1.1 ab.1.2
 

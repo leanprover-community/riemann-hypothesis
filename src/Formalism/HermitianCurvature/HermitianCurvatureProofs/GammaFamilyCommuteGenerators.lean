@@ -530,10 +530,6 @@ theorem commutes_of_ent (P : Par) (i : Fin P.r) (QQ : ℂ → M2 (A P)) (h : ∀
   intro Y a b x hx
   exact ((mem_Cen.mp (h Y a b)) x hx).symm
 
-theorem Ts_ent (P : Par) (i j : Fin P.r) (h : i ≠ j) (Y : ℂ) : Ent (Cen P i) (Ts (siteA P j) Y) := by
-  have key : ∀ y ∈ hol (siteA P j), y ∈ Cen P i := fun y hy =>
-    mem_Cen.2 fun g hg => sitesCommuteA P i j h g hg y (Or.inl hy)
-  exact Ent.Ts (key _ (by simp [hol])) (key _ (by simp [hol])) (key _ (by simp [hol])) Y
 
 theorem mem_sitesFrom (P : Par) (n : ℕ) (σ : Site (A P)) (h : σ ∈ sitesFrom P n) :
     ∃ j : Fin P.r, n ≤ j ∧ σ = siteA P j := by
@@ -544,114 +540,21 @@ theorem mem_sitesFrom (P : Par) (n : ℕ) (σ : Site (A P)) (h : σ ∈ sitesFro
   refine ⟨⟨n + k, by omega⟩, by simp, ?_⟩
   simp [List.getElem_drop, List.getElem_ofFn]
 
-theorem QQlev_ent (P : Par) (l : ℕ) (i : Fin P.r) (Y : ℂ) : Ent (Cen P i) (QQlev P l (i + 1) Y) := by
-  have hT : ∀ Z : ℂ, Ent (Cen P i) (((sitesFrom P (i + 1)).map fun σ => Ts σ Z).prod) := by
-    intro Z
-    refine Ent.prod fun M hM => ?_
-    obtain ⟨σ, hσ, rfl⟩ := List.mem_map.1 hM
-    obtain ⟨j, hj, rfl⟩ := mem_sitesFrom P _ σ hσ
-    refine Ts_ent P i j ?_ Z
-    intro e
-    rw [e] at hj
-    omega
-  refine Ent.mul (Ent.mul ?_ (start_ent P l i Y)) (hT Y)
-  intro a b
-  rw [Matrix.conjTranspose_apply]
-  exact star_mem_Cen (hT (star Y) b a)
 
-theorem sites_step (P : Par) (i : Fin P.r) : sitesFrom P i = sitesFrom P (i + 1) ++ [siteA P i] := by
-  unfold sitesFrom
-  rw [List.drop_eq_getElem_cons (by simp), List.reverse_cons]
-  simp [List.getElem_ofFn]
 
-theorem chainM : ChainM := by
-  intro P l
-  refine ⟨fun Y => ?_, fun i Y => ?_⟩
-  · have h : sitesFrom P P.r = [] := by
-      unfold sitesFrom
-      rw [List.drop_eq_nil_of_le (by simp)]; rfl
-    simp [QQlev, h]
-  · simp only [QQlev, sites_step P i, List.map_append, List.prod_append, List.map_cons, List.map_nil,
-      List.prod_cons, List.prod_nil, mul_one, Matrix.conjTranspose_mul, Matrix.mul_assoc]
 
-theorem lowerCommutes : LowerCommutes :=
-  fun P l i => commutes_of_ent P i _ (QQlev_ent P l i)
 
-theorem lowerStart_of (h : StartIsStart) : LowerStart := by
-  intro P hP l
-  have key : ∀ d i : ℕ, i + d = P.r → IsStart (QQlev P l i) (qC P) := by
-    intro d
-    induction d with
-    | zero =>
-      intro i hi
-      have e : QQlev P l i = (startM P l).QQ := by
-        funext Y
-        rw [show i = P.r by omega]
-        exact (chainM P l).1 Y
-      rw [e]
-      exact h P hP l
-    | succ d ih =>
-      intro i hi
-      have hlt : i < P.r := by omega
-      have e : QQlev P l i = fun Y => (Ts (siteA P ⟨i, hlt⟩) (star Y))ᴴ * QQlev P l (i + 1) Y *
-          Ts (siteA P ⟨i, hlt⟩) Y := by
-        funext Y
-        exact (chainM P l).2 ⟨i, hlt⟩ Y
-      rw [e]
-      exact isStart_step _ _ _ (isSiteA P _) (lowerCommutes P l ⟨i, hlt⟩) (ih (i + 1) (by omega))
-  intro i hi
-  exact key (P.r - i) i (by omega)
 
 end Formalism.FourierDecayAlt.P.Mx8
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem start_module_assemble : Formalism.FourierDecayAlt.M.StartIsStartAssemble := by
-  intro hH hR hD P hP l
-  exact Mx8.isStart_smul (QQr P) (qC P) (sgn P l) (Mx8.sgn_sq P l) (Mx8.sgn_star P l)
-    ⟨fun Y hY => by rw [hH P hP Y, hY], hR P hP, hD P hP, Mx8.qC_real P⟩
 
-theorem start_assemble : Formalism.FourierDecayAlt.M.StartAssemble := by
-  exact fun hS hT hSc hSh hRho => Mx8.startOK_of hS hT hSc hSh hRho
 
-theorem sites_admissible_model : Formalism.FourierDecayAlt.M.SitesOKM := by
-  intro P l
-  refine ⟨fun σ hσ => ?_, ?_⟩
-  · obtain ⟨j, -, rfl⟩ := Mx8.mem_sitesFrom P 0 σ hσ
-    exact ⟨Mx8.isSiteA P j, Mx8.commutes_of_ent P j _ (Mx8.start_ent P l j)⟩
-  · unfold sitesFrom
-    rw [List.drop_zero, List.pairwise_reverse, List.pairwise_ofFn]
-    intro i j hij
-    exact Mx8.sitesCommuteA P j i (ne_of_gt hij)
 
-theorem site_joint : Formalism.FourierDecayAlt.M.SiteJoint := by
-  intro P L hL l Y
-  obtain ⟨hp, hpb, hc, hci, hcb, hcbi, -⟩ := hL
-  obtain ⟨hs, -⟩ := star_generators P
-  obtain ⟨h1, h2, h3⟩ := hs l
-  refine ⟨?_, fun hY => ?_⟩
-  · simp only [LevelData.Tl, Ts, Tm, siteA, hp, hc, hci]
-  · simp only [LevelData.Tvl, Ts, Tm, siteA, hpb, hcb, hcbi]
-    refine Matrix.ext fun a b => ?_
-    fin_cases a <;> fin_cases b
-    · show algebraMap ℂ (A P) Y - pbA P l = star (algebraMap ℂ (A P) Y + pA P l)
-      rw [star_add, h3, ← algebraMap_star_comm, hY, sub_eq_add_neg]
-    · show -cbA P l = star (-cA P l)
-      rw [star_neg, h1]
-    · exact h2.symm
-    · exact (star_zero (A P)).symm
 
-theorem model_chain : Formalism.FourierDecayAlt.M.ChainM := by
-  exact Mx8.chainM
 
-theorem lower_commutes : Formalism.FourierDecayAlt.M.LowerCommutes := by
-  exact Mx8.lowerCommutes
 
-theorem mx_lowerStart_of (h : Formalism.FourierDecayAlt.M.StartIsStart) : Formalism.FourierDecayAlt.M.LowerStart := by
-  exact Mx8.lowerStart_of h
 
-theorem mx_lowerStart_of_parts (hH : Formalism.FourierDecayAlt.M.QQHerm) (hR : Formalism.FourierDecayAlt.M.QQRTT) (hD : Formalism.FourierDecayAlt.M.QQDet) :
-    Formalism.FourierDecayAlt.M.LowerStart := by
-  exact Mx8.lowerStart_of (start_module_assemble hH hR hD)
 
 end Formalism.FourierDecayAlt.P

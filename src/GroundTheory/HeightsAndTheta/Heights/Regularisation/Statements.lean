@@ -302,9 +302,6 @@ theorem isPsh_mono {D : ℕ} {U V : Set (Fin D → ℂ)} {u : (Fin D → ℂ) �
     (hVU : V ⊆ U) : IsPsh V u :=
   ⟨h.1.mono hVU, fun z w hz => h.2 z w fun ζ hζ => hVU (hz ζ hζ)⟩
 
-theorem isPsh_normSq_ball (D : ℕ) :
-    IsPsh (ball (0 : Fin D → ℂ) 2) (fun z => ∑ j, ‖z j‖ ^ 2) :=
-  isPsh_mono (ReciprocityTheory.AnForm.A.isPshInhabit_thm D).1 (Set.subset_univ _)
 
 theorem mollifier_exists_bound {D : ℕ} (ρ : Mollifier D) : ∃ b : ℝ, ∀ w, ρ.toFun w ≤ b := by
   have hc : Continuous ρ.toFun := ρ.contDiff.continuous
@@ -315,21 +312,7 @@ theorem mollifier_exists_bound {D : ℕ} (ρ : Mollifier D) : ∃ b : ℝ, ∀ w
   obtain ⟨C, hC⟩ := hc.bounded_above_of_compact_support hs
   exact ⟨C, fun w => (le_abs_self _).trans (by simpa [Real.norm_eq_abs] using hC w)⟩
 
-theorem polyMaxOscillation_hyp (D : ℕ) :
-    IsOpen (ball (0 : Fin D → ℂ) 2) ∧ IsPsh (ball (0 : Fin D → ℂ) 2) (fun z => ∑ j, ‖z j‖ ^ 2) ∧
-      closedBall (0 : Fin D → ℂ) 1 ⊆ ball 0 2 ∧ (0 : ℝ) < 1 / 4 ∧ (1 : ℝ) ≤ 1 ∧
-      (1 : ℝ) * (1 / 4) < 1 :=
-  ⟨isOpen_ball, isPsh_normSq_ball D, closedBall_subset_ball (by norm_num), by norm_num, le_rfl,
-    by norm_num⟩
 
-theorem mollifiedLowerBound_hyp (D : ℕ) : ∃ (ρ : Mollifier D) (b : ℝ),
-    IsOpen (ball (0 : Fin D → ℂ) 2) ∧ IsPsh (ball (0 : Fin D → ℂ) 2) (fun z => ∑ j, ‖z j‖ ^ 2) ∧
-      (0 : ℝ) < 1 / 2 ∧ closedBall (0 : Fin D → ℂ) (2 * (1 / 2)) ⊆ ball 0 2 ∧
-      ∀ w, ρ.toFun w ≤ b := by
-  obtain ⟨ρ⟩ := ReciprocityTheory.AnForm.A.mollifierInhabit_thm D
-  obtain ⟨b, hb⟩ := mollifier_exists_bound ρ
-  exact ⟨ρ, b, isOpen_ball, isPsh_normSq_ball D, by norm_num,
-    closedBall_subset_ball (by norm_num), hb⟩
 
 def pointChart : OpenPartialHomeomorph Unit (Fin 0 → ℂ) :=
   (Homeomorph.homeomorphOfUnique Unit (Fin 0 → ℂ)).toOpenPartialHomeomorph
@@ -399,28 +382,8 @@ def pointBounded : BoundedPshData pointAtlas where
   bdd := ⟨0, fun _ => by simp⟩
   u_psh _ := by simpa [pointCharts] using isPsh_const _ (0 : ℝ)
 
-theorem levi_fin_zero (φ : (Fin 0 → ℂ) → ℝ) (z w : Fin 0 → ℂ) : levi φ z w = 0 := by
-  rw [Subsingleton.elim w 0]
-  simp only [levi, smul_zero, map_zero, _root_.zero_apply]
-  norm_num
 
-theorem pointCutoff : pointCharts.IsCutoffFamily (fun _ _ => 0) 1 where
-  smooth _ _ := contDiffOn_const
-  bounds _ _ _ := ⟨by norm_num, le_rfl⟩
-  eq_zero _ _ _ := rfl
-  eq_neg_one _ := ⟨Set.univ, isClosed_univ, subset_rfl, fun x hx => absurd (Set.mem_univ x) hx.2⟩
-  levi_ge _ _ _ _ w := by rw [levi_fin_zero]; simp [Subsingleton.elim w 0]
 
-theorem glueRegularised_hyp : ∃ ρ : Mollifier 0,
-    pointReg.IsCutoffFamily (fun _ _ => 0) 1 ∧ (0 : ℝ) < 1 ∧ (0 : ℝ) < 1 ∧
-    (∀ j, ∀ x ∈ closure (pointReg.mid j), closedBall (pointReg.chart j x) 1 ⊆ (pointReg.chart j).target) ∧
-    (∀ j k, ∀ x ∈ pointReg.mid j ∩ pointReg.mid k,
-      |pointReg.phReg ρ 0 1 j x - pointReg.phReg ρ 0 1 k x| ≤ 1) := by
-  obtain ⟨ρ⟩ := ReciprocityTheory.AnForm.A.mollifierInhabit_thm 0
-  refine ⟨ρ, pointCutoff, by norm_num, by norm_num, fun _ _ _ y _ => ?_, fun j k _ _ => ?_⟩
-  · simp [pointReg, pointCharts, pointChart]
-  · obtain rfl : j = k := Subsingleton.elim (α := Fin 1) j k
-    simp
 
 theorem im_div_two_pi_I (z : ℂ) : (z / (2 * Real.pi * Complex.I)).im = -z.re / (2 * Real.pi) := by
   have hπ : (Real.pi : ℝ) ≠ 0 := Real.pi_ne_zero
@@ -492,23 +455,7 @@ def periodTwo : PeriodPolydisc 1 1 2 where
     ext p q
     fin_cases p <;> fin_cases q <;> simp [diagonal_apply, add_div, div_self two_pi_I_ne_zero] <;> ring
 
-theorem periodTwo_kernel_hyp :
-    periodTwo.IsTau0Ext (fun _ => diagonal ![Complex.I, Complex.I]) ∧ (![0, 1] : Fin 2 → ℝ) ≠ 0 ∧
-      ∀ i, (periodTwo.B i).map (Int.cast : ℤ → ℝ) *ᵥ ![0, 1] = 0 := by
-  refine ⟨⟨fun p q => analyticOnNhd_const, fun w _ => ?_⟩, ?_, fun i => ?_⟩
-  · ext p q
-    fin_cases p <;> fin_cases q <;>
-      simp [PeriodPolydisc.tau0, periodTwo, diagonal_apply, div_self two_pi_I_ne_zero]
-  · intro h
-    have := congrFun h 1
-    simp at this
-  · ext k
-    fin_cases k <;> simp [periodTwo, diagonal_map, mulVec, dotProduct, Fin.sum_univ_two]
 
-theorem identity_frame_hyp (n g : ℕ) :
-    (∀ p q, AnalyticOnNhd ℂ (fun _ : Fin n → ℂ => (1 : Matrix (Fin g) (Fin g) ℂ) p q) (ball 0 1)) ∧
-      ∀ _z ∈ ball (0 : Fin n → ℂ) 1, (1 : Matrix (Fin g) (Fin g) ℂ).rank = g :=
-  ⟨fun _ _ => analyticOnNhd_const, fun _ _ => by simp [Matrix.rank_one]⟩
 
 end Inhabitants
 

@@ -91,7 +91,6 @@ section BC
 variable {S : ShortComplex X.Modules} {r s : ℕ} {h : Met p σ S.X₂ (r + s)} (hS : S.ShortExact)
   (h₁ : IsVB S.X₁ r) (h₃ : IsVB S.X₃ s)
 
-theorem bcMeas_eq_part : h.bcMeas hS h₁ h₃ = part fun c y => h.bcDens hS h₁ h₃ c y := rfl
 
 theorem isDens_bcDens (H : h.IsCInf) : IsDens fun c y => h.bcDens hS h₁ h₃ c y := by
   refine ⟨fun c c' y hy hy' => Met.bcDens_trans hS h₁ h₃ c c' H hy hy', fun c v hv => ?_⟩

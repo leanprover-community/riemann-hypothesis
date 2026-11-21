@@ -90,10 +90,6 @@ def omRep (μ : kˣ →* ℂˣ) : Representation ℂ (GL n' k × GL n k) (SB (Ma
   map_one' := LinearMap.ext fun Φ => Subtype.ext (om_one μ Φ.1)
   map_mul' g h := LinearMap.ext fun Φ => Subtype.ext (om_mul μ g.1 h.1 g.2 h.2 Φ.1)
 
-theorem omRep_smooth {μ : kˣ →* ℂˣ} (hμ : IsOpen (μ.ker : Set kˣ)) : IsSmoothRep (omRep (n := n) (n' := n') μ) :=
-  fun Φ => by
-    convert isOpen_stabilizer_om hμ Φ.2 using 3
-    exact Subtype.ext_iff
 
 variable [MeasurableSpace k] [BorelSpace k]
 
@@ -113,96 +109,8 @@ variable {ν : Measure k} {μX : Measure (GL n k)} {μG : Measure (GL (n ⊕ Fin
   {J : Subgroup (GL (n ⊕ Fin c) k)} {bas : GL (n ⊕ Fin c) k} {ψ : AddChar k Circle} {μ : kˣ →* ℂˣ}
   {lam : J →* ℂˣ} {κ : ℝ}
 
-theorem Core.collapsesWith {Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)}
-    (H : Core ν μX μG J bas ψ μ lam Φ.1 κ) : CollapsesWith ν μX μG J bas ψ μ lam Φ κ := by
-  intro P' P A _ _ _ _ _ _ π' π σ _ _ _ b hb θ hθ φ F hF z
-  refine H P' P A π σ θ b (fun γ φ Ψ Ψ' e => ?_) hb φ F hF _ (fun h Ψ e => ?_) _ rfl z
-  · have := hθ 1 γ φ Ψ
-    rw [map_one, Module.End.one_apply] at this
-    rw [← this]
-    exact congrArg _ (Subtype.ext e)
-  · rw [show Ψ = flatS ψ ν μ Φ h from Subtype.ext e]; rfl
 
-theorem isQuotInt_zero_iff {Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)}
-    (H : CollapsesWith ν μX μG J bas ψ μ lam Φ κ) (z : ℂ) : IsQuotInt ν μX μG 1 (fun _ => 0) z ↔ z = 0 := by
-  have := H ℂ ℂ ℂ 1 1 1 (fun _ => by simp) (fun _ => by simp) (fun _ => by simp) 0
-    ⟨fun φ g _ v => by simp, fun g φ v => by simp⟩ 0 (fun g h φ Ψ => by simp) 0 0 (fun κ => by simp) z
-  rw [show integrand ψ ν μ Φ (1 : Representation ℂ _ ℂ) (0 : ℂ →ₗ[ℂ] ℂ →ₗ[ℂ] ℂ) (0 : ℂ →ₗ[ℂ] _ →ₗ[ℂ] ℂ) 0 0 =
-    fun _ => 0 from funext fun h => by simp [integrand]] at this
-  simpa using this
 
-theorem core_of_collapsesWith (hc : 1 ≤ c) [ν.IsAddHaarMeasure] (hμ : IsOpen (μ.ker : Set kˣ))
-    (hJ : IsOpen (J : Set (GL (n ⊕ Fin c) k))) {Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)}
-    (hΦ : HasTargetType μ J lam Φ.1) (H : CollapsesWith ν μX μG J bas ψ μ lam Φ κ) :
-    Core ν μX μG J bas ψ μ lam Φ.1 κ := by
-  intro V' V A _ _ _ _ _ _ π σ θ b hθ hb φ v hv f hf Ξ hΞ z
-  obtain rfl : Ξ = xiOneS ψ ν μ Φ J bas := Subtype.ext hΞ
-  obtain rfl : f = integrand ψ ν μ Φ σ b θ φ v := funext fun h => hf h _ rfl
-  by_cases h0 : Φ = 0
-  · have e : ∀ h, flatS ψ ν μ Φ h = 0 := fun h => Subtype.ext (funext fun x => by
-      simp [flatS, flat, opE, om, h0])
-    have e' : xiOneS ψ ν μ Φ J bas = 0 := Subtype.ext (funext fun x => by
-      simp [xiOneS, xi, flat, opE, om, h0])
-    rw [e', show integrand ψ ν μ Φ σ b θ φ v = fun _ => 0 from funext fun h => by simp [integrand, e]]
-    simpa using isQuotInt_zero_iff H z
-  have := t2Space k
-  have hvs : v ∈ PRep.smoothPart σ := by
-    refine SmGL.mem_smoothPart_of_nhds (Filter.mem_of_superset ((hJ.inter ((isOpen_stabilizer_om hμ Φ.2).preimage
-      (Continuous.prodMk_right (1 : GL (n' ⊕ Fin (c + 1)) k)))).mem_nhds ⟨one_mem J, om_one μ _⟩) ?_)
-    rintro g ⟨hg, hg'⟩
-    have h1 : (((lam ⟨g, hg⟩)⁻¹ : ℂˣ) : ℂ) • Φ.1 = (1 : ℂ) • Φ.1 := by rw [← hΦ ⟨g, hg⟩, one_smul]; exact hg'
-    have h2 := smul_left_injective ℂ (fun h => h0 (Subtype.ext h)) h1
-    have h3 : lam ⟨g, hg⟩ = 1 := inv_eq_one.1 (Units.ext h2)
-    show σ g v = v
-    simpa [h3] using hv ⟨g, hg⟩
-  let ρ' : Representation ℂ (GL n' k) (SB (Matrix n n' k)) := (omRep μ).comp (MonoidHom.inl _ _)
-  let πS : Representation ℂ (GL n k) (SB (Matrix n n' k)) := (omRep μ).comp (MonoidHom.inr _ _)
-  have hρ' : IsSmoothRep ρ' := fun Ψ => (omRep_smooth hμ Ψ).preimage (Continuous.prodMk_left 1)
-  have hπS : IsSmoothRep πS := fun Ψ => (omRep_smooth hμ Ψ).preimage (Continuous.prodMk_right 1)
-  have hcomm : ∀ g h Ψ, πS h (ρ' g Ψ) = ρ' g (πS h Ψ) := fun g h Ψ => Subtype.ext (by
-    change om μ 1 h (om μ g 1 Ψ.1) = om μ g 1 (om μ 1 h Ψ.1)
-    rw [← om_mul, ← om_mul]; simp)
-  let K₀ : Subgroup (GL n' k) :=
-    { carrier := {g | om μ (embX (c + 1) g) 1 Φ.1 = Φ.1}
-      one_mem' := by simp [om_one]
-      mul_mem' := fun {x y} hx hy => by
-        have := om_mul μ (embX (c + 1) x) (embX (c + 1) y) 1 1 Φ.1
-        rw [hy, hx, mul_one, ← map_mul] at this
-        exact this
-      inv_mem' := fun {x} hx => by
-        have := om_mul μ (embX (c + 1) x⁻¹) (embX (c + 1) x) 1 1 Φ.1
-        rw [hx, mul_one, ← map_mul, inv_mul_cancel, map_one, om_one] at this
-        exact this.symm }
-  have hK₀ : IsOpen (K₀ : Set (GL n' k)) :=
-    (isOpen_stabilizer_om hμ Φ.2).preimage ((Continuous.prodMk_left 1).comp QuotStep.continuous_embX)
-  have hKo : IsOpen ((KO k n' ⊓ K₀ : Subgroup _) : Set (GL n' k)) := SplitFlip.isOpen_KO.inter hK₀
-  have hKc : IsCompact ((KO k n' ⊓ K₀ : Subgroup _) : Set (GL n' k)) :=
-    SplitFlip.isCompact_KO.inter_right (K₀.isClosed_of_isOpen hK₀)
-  obtain ⟨P', _, _, π', θ', e, hπ', he1, he2⟩ := exists_equivariant ρ' hρ' πS hcomm _ hKo hKc
-  have hfl : ∀ h, θ' e (flatS ψ ν μ Φ h) = flatS ψ ν μ Φ h := fun h => he2 _ fun g hg => Subtype.ext (by
-    have h1 := (opE_om_embX k n n' c 1 le_rfl hc ψ ν μ (om μ 1 h Φ.1)).2 g
-    have h2 : om μ (embX (c + 1) g) 1 (om μ 1 h Φ.1) = om μ 1 h (om μ (embX (c + 1) g) 1 Φ.1) := by
-      rw [← om_mul, ← om_mul]; simp
-    rw [nabs_eq_one_of_valuation_eq_one (valuation_det_of_mem_KO hg.1), Real.one_rpow, Complex.ofReal_one, one_smul,
-      h2, show om μ _ 1 Φ.1 = Φ.1 from hg.2] at h1
-    exact h1.symm)
-  have hxi : θ' e (xiOneS ψ ν μ Φ J bas) = xiOneS ψ ν μ Φ J bas := by
-    rw [show xiOneS ψ ν μ Φ J bas = (((volNat ν bas (Cgrp J 1))⁻¹ : ℝ) : ℂ) • flatS ψ ν μ Φ 1 from rfl, map_smul, hfl]
-  have key := H P' _ _ π' πS (PRep.smoothRep σ) hπ' hπS
-    (SmGL.isSmooth_smoothRep _) ((b ∘ₗ θ φ).compl₂ (PRep.smoothPart σ).subtype)
-    ⟨fun Ψ g hg a => hb.1 (θ φ Ψ) g hg a, fun g Ψ a => by
-      have := hb.2 g (θ φ Ψ) a
-      rw [← hθ g φ Ψ (πS g Ψ) rfl] at this
-      exact this⟩
-    θ' (fun g h T Ψ => by
-      refine Eq.trans (congrArg (θ' (π' g T)) (Subtype.ext ?_)) (he1 g h T Ψ)
-      change om μ g h Ψ.1 = om μ g 1 (om μ 1 h Ψ.1)
-      rw [← om_mul]; simp)
-    e ⟨v, hvs⟩ (fun j => Subtype.ext (hv j)) z
-  rw [hxi, show integrand ψ ν μ Φ _ _ θ' e _ = integrand ψ ν μ Φ σ b θ φ v from funext fun h => by
-    change b (θ φ (θ' e _)) (σ h v) = b (θ φ _) (σ h v)
-    rw [hfl]] at key
-  exact key
 
 omit [BorelSpace k] in
 theorem flat_eq_smul (μ : kˣ →* ℂˣ) (Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ) (h : GL (n ⊕ Fin c) k) :
@@ -355,21 +263,7 @@ theorem Adapted.exists_map_volN {t : GL (n ⊕ Fin c) k} (ht : Adapted t) (ν ν
     ext u
     exact hS u u.2
 
-theorem isHaarMeasure_cj (t : GL (n ⊕ Fin c) k) (μG : Measure (GL (n ⊕ Fin c) k)) [μG.IsHaarMeasure] :
-    (μG.map (cjG t).symm).IsHaarMeasure := by
-  haveI := secondCountable k
-  haveI := t2Space k
-  exact (cjG t).symm.isHaarMeasure_map μG
 
-theorem map_cjJ (t : GL (n ⊕ Fin c) k) (μG : Measure (GL (n ⊕ Fin c) k)) (J : Subgroup (GL (n ⊕ Fin c) k)) :
-    μG.map (cjG t).symm (cjJ t J) = μG J := by
-  haveI := secondCountable k
-  haveI := t2Space k
-  refine ((cjG t).symm.toHomeomorph.toMeasurableEquiv.map_apply _).trans ?_
-  congr 1
-  ext g
-  change cjG t ((cjG t).symm g) ∈ J ↔ _
-  simp
 
 theorem Adapted.isQuotInt_iff {t : GL (n ⊕ Fin c) k} (ht : Adapted t) {ν ν₀ : Measure k} {r : ℝ≥0} (hr : r ≠ 0)
     (H : ∀ F : GL (n ⊕ Fin c) k → ℂ,
@@ -542,58 +436,10 @@ end Normalise
 
 section Main
 
-theorem core_iff_collapsesWith {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] {n n' : Type} [Fintype n] [DecidableEq n]
-    [Fintype n'] [DecidableEq n'] {c : ℕ} (hc : 1 ≤ c) (ν : Measure k) [ν.IsAddHaarMeasure] (μX : Measure (GL n k))
-    (μG : Measure (GL (n ⊕ Fin c) k)) {J : Subgroup (GL (n ⊕ Fin c) k)} (hJ : IsOpen (J : Set (GL (n ⊕ Fin c) k)))
-    (bas : GL (n ⊕ Fin c) k) (ψ : AddChar k Circle) {μ : kˣ →* ℂˣ} (hμ : IsOpen (μ.ker : Set kˣ)) (lam : J →* ℂˣ)
-    (Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)) (hΦ : HasTargetType μ J lam Φ.1) (κ : ℝ) :
-    Core ν μX μG J bas ψ μ lam Φ.1 κ ↔ CollapsesWith ν μX μG J bas ψ μ lam Φ κ :=
-  ⟨Core.collapsesWith, core_of_collapsesWith hc hμ hJ hΦ⟩
 
-theorem collapse_of_weak (H : CollapseWeak) : SymChain.Collapse := by
-  intro k _ _ _ _ _ _ ψ ν hψ hν n n' _ _ _ _ c hc μ P Φ hΦ hJ h1 h2 bas m hm μG hG
-  have := hν.1
-  obtain ⟨κ, hκ, H'⟩ := H k n c hc ν m μG hν.1 hm hG P.J hJ.1 hJ.2 bas n' ψ hψ.continuous hψ.ne_one 1
-    (untwist μ P.lam) ⟨Φ, hΦ⟩ (hasTargetType_untwist h1) (oneCoset_untwist h2)
-  exact ⟨κ, hκ, core_of_untwist (core_of_collapsesWith (Φ := ⟨Φ, hΦ⟩) hc (by simp) hJ.1 (hasTargetType_untwist h1) H')⟩
 
-theorem isCO_cjJ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    {n : Type} [Fintype n] [DecidableEq n] {c : ℕ} (t : GL (n ⊕ Fin c) k) {J : Subgroup (GL (n ⊕ Fin c) k)}
-    (ho : IsOpen (J : Set (GL (n ⊕ Fin c) k))) (hc : IsCompact (J : Set (GL (n ⊕ Fin c) k))) :
-    IndefiniteRowSideFullHecke.FramePositiveSum.IsCO (cjJ t J) := isOpen_isCompact_conj t⁻¹ ho hc
 
-theorem weak_of_collapse (H : SymChain.Collapse) : CollapseWeak := by
-  intro k _ _ _ _ _ _ n _ _ c hc ν μX μG hν hX hG J ho hcp bas n' _ _ ψ hψ hψ1 μ lam Φ h1 h2
-  obtain ⟨β, hβ⟩ := exists_hasConductor_of_continuous ψ hψ hψ1
-  obtain ⟨ν₀, hν₀⟩ := exists_isUnitVol k
-  have := hν₀.1
-  obtain ⟨t, r, Φ₀, hΦ₀, -, hr, a1, a2, -, a3⟩ := exists_reduction β ν ν₀ ψ μ J lam bas Φ.2 h1 h2
-  obtain ⟨κ, hκ, H'⟩ := H k _ ν₀ (hasConductor_mulShift hβ) hν₀ n n' c hc μ ⟨cjJ t J, cjLam t lam⟩ Φ₀ hΦ₀
-    (isCO_cjJ t ho hcp) a1 a2 (t⁻¹ * bas) (r⁻¹ • μX) (Measure.IsHaarMeasure.nnreal_smul _ (inv_ne_zero hr)) _
-    (isHaarMeasure_cj t μG)
-  exact ⟨κ, hκ, (a3 μX μG κ H').collapsesWith⟩
 
-theorem collapse_of_exact (H : SymChain.CollapseExact) : IndefiniteRowSideFullHecke.FlatOmegaSeries.Collapse := by
-  intro k _ _ _ _ _ _ n _ _ c hc ν μX μG hν hX hG J ho hcp bas
-  have hv := (ENNReal.toReal_pos_iff.1 (volN_stabLat ν bas))
-  set m : Measure (GL n k) := volN ν n c 1 ((stabLat bas).subgroupOf (N k n c 1)) • μX with hmdef
-  have hm : m.IsHaarMeasure := Measure.IsHaarMeasure.smul _ hv.1.ne' hv.2.ne
-  have hres : IndefiniteRowSideFullHecke.FramePositiveSum.rescale ν bas m = μX := by
-    rw [IndefiniteRowSideFullHecke.FramePositiveSum.rescale, hmdef, smul_smul, ENNReal.inv_mul_cancel hv.1.ne' hv.2.ne, one_smul]
-  obtain ⟨ν₀, hν₀⟩ := exists_isUnitVol k
-  have := hν₀.1
-  obtain ⟨ψ₁, hψ₁⟩ := exists_hasConductor_one k
-  obtain ⟨p1, p2, -⟩ := H k ψ₁ ν₀ hψ₁ hν₀ n n c hc 1 ⟨J, 1⟩ 0 (zero_mem _) ⟨ho, hcp⟩
-    (fun h => funext fun x => by simp [om])
-    (fun β ⟨h, _, hh⟩ => absurd (funext fun x => by simp [flat, opE, om]) hh) bas m hm μG hG
-  refine ⟨_, div_pos p1 p2, fun n' _ _ ψ hψ hψ1 μ lam Φ h1 h2 => ?_⟩
-  obtain ⟨β, hβ⟩ := exists_hasConductor_of_continuous ψ hψ hψ1
-  obtain ⟨t, r, Φ₀, hΦ₀, ht, hr, a1, a2, a4, a3⟩ := exists_reduction β ν ν₀ ψ μ J lam bas Φ.2 h1 h2
-  obtain ⟨-, -, H'⟩ := H k _ ν₀ (hasConductor_mulShift hβ) hν₀ n n' c hc μ ⟨cjJ t J, cjLam t lam⟩ Φ₀ hΦ₀
-    (isCO_cjJ t ho hcp) a1 a2 (t⁻¹ * bas) m hm _ (isHaarMeasure_cj t μG)
-  rw [a4, hres, map_cjJ, ht.prX_cjJ] at H'
-  exact (a3 μX μG _ H').collapsesWith
 
 def CollapseUniform : Prop :=
   ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -608,19 +454,7 @@ def CollapseUniform : Prop :=
       ∀ (μ : kˣ →* ℂˣ) (lam : J →* ℂˣ) (Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)),
         HasTargetType μ J lam Φ.1 → OneCoset ψ ν μ Φ.1 J → Core ν μX μG J bas ψ μ lam Φ.1 κ
 
-theorem uniform_iff : CollapseUniform ↔ IndefiniteRowSideFullHecke.FlatOmegaSeries.Collapse := by
-  refine ⟨fun H => ?_, fun H => ?_⟩ <;>
-    intro k _ _ _ _ _ _ n _ _ c hc ν μX μG hν hX hG J ho hcp bas <;>
-    obtain ⟨κ, hκ, H'⟩ := H k n c hc ν μX μG hν hX hG J ho hcp bas <;>
-    refine ⟨κ, hκ, fun n' _ _ ψ hψ hψ1 μ lam Φ h1 h2 => ?_⟩
-  · exact (H' n' ψ hψ hψ1 μ lam Φ h1 h2).collapsesWith
-  · exact core_of_untwist (core_of_collapsesWith hc (by simp) ho (hasTargetType_untwist h1)
-      (H' n' ψ hψ hψ1 1 _ Φ (hasTargetType_untwist h1) (oneCoset_untwist h2)))
 
-theorem collapse_compare :
-    (SymChain.Collapse ↔ CollapseWeak) ∧ (CollapseUniform ↔ IndefiniteRowSideFullHecke.FlatOmegaSeries.Collapse) ∧
-      (IndefiniteRowSideFullHecke.FlatOmegaSeries.Collapse → SymChain.Collapse) ∧ (SymChain.CollapseExact → IndefiniteRowSideFullHecke.FlatOmegaSeries.Collapse) :=
-  ⟨⟨weak_of_collapse, collapse_of_weak⟩, uniform_iff, fun H => collapse_of_weak H.weak, collapse_of_exact⟩
 
 end Main
 

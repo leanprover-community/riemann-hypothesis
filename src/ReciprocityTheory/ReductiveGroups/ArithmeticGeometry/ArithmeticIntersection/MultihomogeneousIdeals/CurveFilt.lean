@@ -52,62 +52,7 @@ theorem sup_span_inf_eq' {I : Ideal (MRingOver F ι)}
       · rw [Submodule.restrictScalars_mem, LinearMap.mulLeft_apply]
         exact Ideal.mem_sup_right (Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self g))
 
-theorem inf_map_mul_colon (I : Ideal (MRingOver F ι)) (g : MRingOver F ι)
-    (A B : Submodule F (MRingOver F ι)) (hB : B.map (LinearMap.mulLeft F g) ≤ A) :
-    (A ⊓ I.restrictScalars F) ⊓ B.map (LinearMap.mulLeft F g) =
-      (B ⊓ (I.colon {g}).restrictScalars F).map (LinearMap.mulLeft F g) := by
-  apply le_antisymm
-  · intro y hy
-    obtain ⟨hy1, hy2⟩ := Submodule.mem_inf.mp hy
-    obtain ⟨b, hb, rfl⟩ := Submodule.mem_map.mp hy2
-    have hyI := (Submodule.mem_inf.mp hy1).2
-    refine Submodule.mem_map.mpr ⟨b, Submodule.mem_inf.mpr ⟨hb, ?_⟩, rfl⟩
-    rw [Submodule.restrictScalars_mem, LinearMap.mulLeft_apply] at hyI
-    rw [Submodule.restrictScalars_mem, Submodule.mem_colon_singleton, smul_eq_mul, mul_comm]
-    exact hyI
-  · intro y hy
-    obtain ⟨b, hbc', rfl⟩ := Submodule.mem_map.mp hy
-    obtain ⟨hb, hbc⟩ := Submodule.mem_inf.mp hbc'
-    refine Submodule.mem_inf.mpr ⟨Submodule.mem_inf.mpr ⟨hB (Submodule.mem_map_of_mem hb), ?_⟩,
-      Submodule.mem_map_of_mem hb⟩
-    rw [Submodule.restrictScalars_mem, Submodule.mem_colon_singleton, smul_eq_mul] at hbc
-    rw [Submodule.restrictScalars_mem, LinearMap.mulLeft_apply, mul_comm]
-    exact hbc
 
-theorem finrank_colon_step {I : Ideal (MRingOver F ι)}
-    (hI : I.IsHomogeneous (weightedHomogeneousSubmodule F (mw (ι := ι)))) {g : MRingOver F ι}
-    {δ : K → ℕ} (hg : g ∈ weightedHomogeneousSubmodule F (mw (ι := ι)) δ) (hg0 : g ≠ 0) {d : K → ℕ}
-    (hd : δ ≤ d) :
-    Module.finrank F ↥(weightedHomogeneousSubmodule F (mw (ι := ι)) d ⊓
-        (I ⊔ Ideal.span {g}).restrictScalars F) +
-      Module.finrank F ↥(weightedHomogeneousSubmodule F (mw (ι := ι)) (d - δ) ⊓
-        (I.colon {g}).restrictScalars F) =
-      Module.finrank F ↥(weightedHomogeneousSubmodule F (mw (ι := ι)) d ⊓ I.restrictScalars F) +
-      Module.finrank F ↥(weightedHomogeneousSubmodule F (mw (ι := ι)) (d - δ)) := by
-  have hB : (weightedHomogeneousSubmodule F (mw (ι := ι)) (d - δ)).map (LinearMap.mulLeft F g) ≤
-      weightedHomogeneousSubmodule F (mw (ι := ι)) d := by
-    rintro y ⟨z, hz, rfl⟩
-    rw [LinearMap.mulLeft_apply]
-    have := SetLike.GradedMul.mul_mem hg hz
-    rwa [add_tsub_cancel_of_le hd] at this
-  have hinj : Function.Injective (LinearMap.mulLeft F g) := by
-    intro a b hab
-    simp only [LinearMap.mulLeft_apply] at hab
-    exact mul_left_cancel₀ hg0 hab
-  have hmap : ∀ S : Submodule F (MRingOver F ι),
-      Module.finrank F ↥(S.map (LinearMap.mulLeft F g)) = Module.finrank F ↥S := fun S =>
-    (Submodule.equivMapOfInjective _ hinj S).finrank_eq.symm
-  haveI hfd : ∀ e, FiniteDimensional F ↥(weightedHomogeneousSubmodule F (mw (ι := ι)) e) :=
-    fun e => inferInstance
-  haveI : FiniteDimensional F ↥(weightedHomogeneousSubmodule F (mw (ι := ι)) d ⊓ I.restrictScalars F) :=
-    Submodule.finiteDimensional_of_le inf_le_left
-  haveI : FiniteDimensional F
-      ↥((weightedHomogeneousSubmodule F (mw (ι := ι)) (d - δ)).map (LinearMap.mulLeft F g)) :=
-    Submodule.finiteDimensional_of_le hB
-  rw [sup_span_inf_eq' hI hg hd,
-    ← hmap (weightedHomogeneousSubmodule F (mw (ι := ι)) (d - δ) ⊓ (I.colon {g}).restrictScalars F),
-    ← inf_map_mul_colon I g _ _ hB, ← hmap (weightedHomogeneousSubmodule F (mw (ι := ι)) (d - δ))]
-  exact Submodule.finrank_sup_add_finrank_inf_eq _ _
 
 theorem colon_isHomogeneous {I : Ideal (MRingOver F ι)}
     (hI : I.IsHomogeneous (weightedHomogeneousSubmodule F (mw (ι := ι)))) {g : MRingOver F ι}
@@ -293,72 +238,9 @@ def colonMul (I : Ideal R) (g : R) : (R ⧸ I.colon {g}) →ₗ[R] (R ⧸ I) :=
     rw [mul_comm]
     exact hx
 
-theorem colonMul_injective (I : Ideal R) (g : R) : Function.Injective (colonMul I g) := by
-  rw [← LinearMap.ker_eq_bot, eq_bot_iff]
-  intro x hx
-  obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-  rw [LinearMap.mem_ker, colonMul, Submodule.mapQ_apply, LinearMap.mulLeft_apply,
-    Submodule.Quotient.mk_eq_zero] at hx
-  rw [Submodule.mem_bot, Submodule.Quotient.mk_eq_zero, Submodule.mem_colon_singleton, smul_eq_mul,
-    mul_comm]
-  exact hx
 
-theorem colonMul_exact (I : Ideal R) (g : R) :
-    Function.Exact (colonMul I g) (Submodule.factor (le_sup_left : I ≤ I ⊔ Ideal.span {g})) := by
-  intro y
-  obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-  constructor
-  · intro h
-    change (Submodule.Quotient.mk r : R ⧸ (I ⊔ Ideal.span {g})) = 0 at h
-    rw [Submodule.Quotient.mk_eq_zero, Submodule.mem_sup] at h
-    obtain ⟨a, ha, b, hb, rfl⟩ := h
-    obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.mp hb
-    refine ⟨Submodule.Quotient.mk c, ?_⟩
-    rw [colonMul, Submodule.mapQ_apply, LinearMap.mulLeft_apply, Submodule.Quotient.eq]
-    have hc : g * c - (a + c * g) = -a := by ring
-    rw [hc]
-    exact I.neg_mem ha
-  · rintro ⟨x, hx⟩
-    obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-    rw [colonMul, Submodule.mapQ_apply, LinearMap.mulLeft_apply] at hx
-    rw [← hx]
-    change (Submodule.Quotient.mk (g * x) : R ⧸ (I ⊔ Ideal.span {g})) = 0
-    rw [Submodule.Quotient.mk_eq_zero]
-    exact Ideal.mem_sup_right (Ideal.mem_span_singleton'.mpr ⟨x, mul_comm x g⟩)
 
-theorem locLen_colon (I : Ideal R) (g : R) (p : PrimeSpectrum R) :
-    locLen (R ⧸ I) p = locLen (R ⧸ I.colon {g}) p + locLen (R ⧸ (I ⊔ Ideal.span {g})) p := by
-  unfold locLen
-  refine Module.length_eq_add_of_exact
-    (LocalizedModule.map p.asIdeal.primeCompl (colonMul I g))
-    (LocalizedModule.map p.asIdeal.primeCompl
-      (Submodule.factor (le_sup_left : I ≤ I ⊔ Ideal.span {g}))) ?_ ?_ ?_
-  · apply LocalizedModule.map_injective
-    exact colonMul_injective I g
-  · apply LocalizedModule.map_surjective
-    intro y
-    obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-    exact ⟨Submodule.Quotient.mk r, rfl⟩
-  · apply LocalizedModule.map_exact
-    exact colonMul_exact I g
 
-theorem locLen_quot_prime_eq_zero {P : Ideal R} (p : PrimeSpectrum R) {s : R} (hsP : s ∈ P)
-    (hs : s ∉ p.asIdeal) : locLen (R ⧸ P) p = 0 := by
-  unfold locLen
-  rw [Module.length_eq_zero_iff]
-  have hz : ∀ z : LocalizedModule p.asIdeal.primeCompl (R ⧸ P), z = 0 := by
-    intro z
-    refine LocalizedModule.induction_on (fun m t => ?_) z
-    rw [← LocalizedModule.zero_mk t, LocalizedModule.mk_eq]
-    refine ⟨⟨s, hs⟩, ?_⟩
-    obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective _ m
-    have hm : (s : R) • (Submodule.Quotient.mk r : R ⧸ P) = 0 := by
-      rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero, smul_eq_mul]
-      exact P.mul_mem_right r hsP
-    rw [smul_zero, smul_zero, Submonoid.smul_def, Submonoid.smul_def, smul_comm]
-    change (t : R) • (s : R) • (Submodule.Quotient.mk r : R ⧸ P) = 0
-    rw [hm, smul_zero]
-  exact ⟨fun a b => by rw [hz a, hz b]⟩
 
 theorem locLen_quot_self (P : Ideal R) [hP : P.IsPrime] : locLen (R ⧸ P) ⟨P, hP⟩ = 1 := by
   unfold locLen

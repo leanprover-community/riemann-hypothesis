@@ -198,7 +198,6 @@ def resplit (Q : DefQuat F) : DefQuat F :=
       ext i j
       simp [Matrix.algebraMap_matrix_apply, apply_ite (D.ea v), h] }
 
-theorem cmp_resplit (Q : DefQuat F) : D.Cmp (D.resplit Q) := fun _ _ => rfl
 
 theorem Cmp.toInf {D : LDat F ι} {Q : DefQuat F} (h : D.Cmp Q) (γ : Q.Dˣ) : Q.toInf γ = D.gl (Q.toFin γ) :=
   funext fun v => Units.ext (h v γ)

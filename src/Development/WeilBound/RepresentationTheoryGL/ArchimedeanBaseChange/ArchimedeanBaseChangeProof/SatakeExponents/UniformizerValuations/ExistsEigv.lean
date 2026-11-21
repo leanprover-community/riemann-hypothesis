@@ -116,14 +116,6 @@ theorem u_comm (h : DiagAlg) (x : UGen E n) : Commute R.u (R.op x) ∧ Commute R
   rw [(h _ _ R.blk (x.p F) 0 0).2.2.2]
   exact R.comm _
 
-theorem exists_eigv (h : DiagAlg) (i₀ : F.ι) (hi : ∀ w ∈ B, ∃ y, y ≠ 0 ∧ locOp (F.σ i₀ w) (K' w) (g w) y = y) :
-    ∃ v : EuclideanSpace ℂ (Fin R.d), v ≠ 0 ∧ R.u v = v ∧
-      ∀ x : UGen E n, R.op x v = x.p F i₀ • v ∧ star (R.op x) v = starRingEnd ℂ (x.p F i₀) • v := by
-  obtain ⟨v, h1, h2, h3⟩ := R.eig i₀ hi
-  refine ⟨v, h1, h2, fun x => ⟨h3 _, ?_⟩⟩
-  unfold op
-  rw [(h _ _ R.blk (x.p F) 0 0).2.2.2, h3]
-  rfl
 
 end UMod
 

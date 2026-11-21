@@ -47,19 +47,6 @@ example {X : Scheme.{0}} (s : X ⟶ Sp R) {B M : Type} [CommRing B] [Algebra R B
     (spMap (TrivSqZeroExt.inlHom B M) ≫ P) ≫ s = spMap ((TrivSqZeroExt.inlHom B M).comp (algebraMap R B)) := by
   rw [Category.assoc, h, GlobalTheory.Cris.spMap_comp]
 
-theorem lifts_const {X : Scheme.{0}} (s : X ⟶ Sp R) {B : Type} (M : Type) [CommRing B] [Algebra R B] [AddCommGroup M]
-    [Module B M] [Module Bᵐᵒᵖ M] [IsCentralScalar B M] (P : Sp B ⟶ X) (h : P ≫ s = spMap (algebraMap R B)) :
-    Lifts s P (spMap (TrivSqZeroExt.inlHom B M) ≫ P) := by
-  refine ⟨?_, ?_⟩
-  · rw [Category.assoc, h]
-    simp only [spMap, ← Spec.map_comp]
-    rfl
-  · rw [← Category.assoc]
-    simp only [spMap, ← Spec.map_comp]
-    have : (CommRingCat.ofHom (TrivSqZeroExt.inlHom B M) ≫
-        CommRingCat.ofHom (TrivSqZeroExt.fstHom B B M).toRingHom : CommRingCat.of B ⟶ CommRingCat.of B) = 𝟙 _ := by
-      ext b; rfl
-    rw [this, Spec.map_id, Category.id_comp]
 
 example {B M : Type} [CommRing B] [AddCommGroup M] [Module B M] [Module Bᵐᵒᵖ M] [IsCentralScalar B M] :
     IsSum (RingHom.id (TrivSqZeroExt B M)) id id := ⟨fun _ => rfl, fun _ => rfl⟩

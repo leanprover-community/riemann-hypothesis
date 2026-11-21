@@ -77,87 +77,11 @@ theorem LFunction_heckeCharacter (hχ : χ.IsPrimitive) {s : ℂ} (hs : 1 < s.re
   rw [DirichletCharacter.LFunction_eq_LSeries χ hs, HeckeCharacter.LFunction]
   exact LSeries_congr (fun hn ↦ LCoeff_eq χ hχ hn) s
 
-theorem hasProd_eulerFactor (hχ : χ.IsPrimitive) {s : ℂ} (hs : 1 < s.re) :
-    HasProd (fun v : HeightOneSpectrum (𝓞 ℚ) ↦ (1 - χ (prime v) * (prime v : ℂ) ^ (-s))⁻¹)
-      (DirichletCharacter.LFunction χ s) := by
-  rw [← LFunction_heckeCharacter χ hχ hs]
-  convert (heckeCharacter χ).LFunction_hasProd_all hs using 3 with v
-  rw [coeff_asIdeal χ hχ v, absNorm_asIdeal]
 
-theorem eqOn_continuedLFunction (hχ : χ.IsPrimitive) {U : Set ℂ} (hU : IsOpen U)
-    (hpc : IsPreconnected U) (h2 : (2 : ℂ) ∈ U)
-    (hH : DifferentiableOn ℂ (heckeCharacter χ).continuedLFunction U)
-    (hD : DifferentiableOn ℂ (DirichletCharacter.LFunction χ) U) :
-    Set.EqOn (heckeCharacter χ).continuedLFunction (DirichletCharacter.LFunction χ) U := by
-  refine (hH.analyticOnNhd hU).eqOn_of_preconnected_of_eventuallyEq (hD.analyticOnNhd hU) hpc h2 ?_
-  have hopen : {s : ℂ | 1 < s.re} ∈ 𝓝 (2 : ℂ) :=
-    (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num)
-  filter_upwards [hopen] with s hs
-  rw [HeckeCharacter.continuedLFunction_eq _ hs, LFunction_heckeCharacter χ hχ hs]
 
 theorem isPreconnected_compl_of_countable {S : Set ℂ} (hS : S.Countable) : IsPreconnected Sᶜ :=
   (hS.isPathConnected_compl_of_one_lt_rank (by rw [Complex.rank_real_complex]; norm_num)).isConnected.isPreconnected
 
-theorem continuedLFunction_heckeCharacter (hχ : χ.IsPrimitive) {s : ℂ} (hs : s ≠ 1 ∨ χ ≠ 1) :
-    (heckeCharacter χ).continuedLFunction s = DirichletCharacter.LFunction χ s := by
-  by_cases hτ : ∃ τ : ℝ, ∀ x : IdeleGroup ℚ,
-      ((heckeCharacter χ).toIdele x : ℂ) = ((ideleModule ℚ x : ℝ) : ℂ) ^ ((τ : ℂ) * Complex.I)
-  · obtain ⟨τ, hτ⟩ := hτ
-    set s0 : ℂ := 1 - (τ : ℂ) * Complex.I with hs0
-    have hU : IsOpen ({1, s0} : Set ℂ)ᶜ := (Set.toFinite _).isClosed.isOpen_compl
-    have h2 : (2 : ℂ) ∈ ({1, s0} : Set ℂ)ᶜ := by
-      simp only [Set.mem_compl_iff, Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
-      refine ⟨by norm_num, fun h ↦ ?_⟩
-      have := congrArg Complex.re h
-      simp [hs0] at this
-    have heq := eqOn_continuedLFunction χ hχ hU
-      (isPreconnected_compl_of_countable (Set.toFinite _).countable) h2
-      ((HeckeCharacter.differentiableOn_continuedLFunction_of_forall hτ).mono fun z hz ↦ by
-        simp only [Set.mem_compl_iff, Set.mem_insert_iff, Set.mem_singleton_iff, not_or] at hz ⊢
-        exact hz.2)
-      (fun z hz ↦ (DirichletCharacter.differentiableAt_LFunction χ z (Or.inl (by
-        simp only [Set.mem_compl_iff, Set.mem_insert_iff, Set.mem_singleton_iff, not_or] at hz
-        exact hz.1))).differentiableWithinAt)
-    have hnhds : ({1, s0} : Set ℂ)ᶜ ∈ 𝓝[≠] s0 := by
-      by_cases h1 : s0 = 1
-      · rw [h1, Set.pair_eq_singleton]
-        exact self_mem_nhdsWithin
-      · have hA : ({1} : Set ℂ)ᶜ ∈ 𝓝[≠] s0 :=
-          nhdsWithin_le_nhds (isOpen_compl_singleton.mem_nhds (show s0 ∈ ({1} : Set ℂ)ᶜ from h1))
-        filter_upwards [hA, self_mem_nhdsWithin] with z hz1 hz2
-        simp only [Set.mem_compl_iff, Set.mem_insert_iff, Set.mem_singleton_iff, not_or] at hz1 hz2 ⊢
-        exact ⟨hz1, hz2⟩
-    have key : s0 = 1 ∧ χ = 1 := by
-      by_contra hne
-      have hd : s0 ≠ 1 ∨ χ ≠ 1 := by tauto
-      have hDs0 : ContinuousAt (DirichletCharacter.LFunction χ) s0 :=
-        (DirichletCharacter.differentiableAt_LFunction χ s0 hd).continuousAt
-      have h0 : Tendsto (fun z ↦ (z - s0) * DirichletCharacter.LFunction χ z) (𝓝[≠] s0) (𝓝 0) := by
-        have hc : ContinuousAt (fun z ↦ (z - s0) * DirichletCharacter.LFunction χ z) s0 :=
-          (continuousAt_id.sub continuousAt_const).mul hDs0
-        have := hc.tendsto.mono_left (nhdsWithin_le_nhds (s := ({s0} : Set ℂ)ᶜ))
-        simpa using this
-      have hR := HeckeCharacter.tendsto_sub_mul_continuedLFunction_of_forall hτ
-      have hev : (fun z ↦ (z - s0) * (heckeCharacter χ).continuedLFunction z) =ᶠ[𝓝[≠] s0]
-          (fun z ↦ (z - s0) * DirichletCharacter.LFunction χ z) := by
-        filter_upwards [hnhds] with z hz
-        rw [heq hz]
-      exact HeckeCharacter.residue_continuedLFunction_ne_zero (tendsto_nhds_unique (hR.congr' hev) h0)
-    obtain ⟨hs01, hχ1⟩ := key
-    have hs1 : s ≠ 1 := hs.resolve_right (not_not.2 hχ1)
-    refine heq ?_
-    simp only [Set.mem_compl_iff, Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
-    exact ⟨hs1, hs01 ▸ hs1⟩
-  · have hH := (HeckeCharacter.differentiable_continuedLFunction _ hτ).differentiableOn (s := Set.univ)
-    by_cases hχ1 : χ = 1
-    · have hs1 : s ≠ 1 := hs.resolve_right (not_not.2 hχ1)
-      refine eqOn_continuedLFunction χ hχ isOpen_compl_singleton
-        (isPreconnected_compl_of_countable (Set.countable_singleton 1)) (by norm_num)
-        (hH.mono (Set.subset_univ _))
-        (fun z hz ↦ (DirichletCharacter.differentiableAt_LFunction χ z (Or.inl hz)).differentiableWithinAt)
-        hs1
-    · exact eqOn_continuedLFunction χ hχ isOpen_univ isPreconnected_univ (Set.mem_univ _) hH
-        (DirichletCharacter.differentiable_LFunction hχ1).differentiableOn (Set.mem_univ s)
 
 end DirichletHecke
 

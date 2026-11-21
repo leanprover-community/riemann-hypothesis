@@ -89,12 +89,6 @@ theorem classLevelCochains_comp :
   refine (congrArg Additive.ofMul (IdeleClassLimit.of_ideleClassMap (Fact.out : F ≤ E) _)).trans ?_
   rw [hfun]
 
-theorem classLevelTransition_comp_classLevelInfl (n : ℕ) :
-    classLevelTransition K F E n ≫ classLevelInfl K E n = classLevelInfl K F n := by
-  rw [classLevelTransition, classLevelInfl, classLevelInfl]
-  unfold cohomologyMapAlong
-  refine (HomologicalComplex.homologyMap_comp _ _ n).symm.trans ?_
-  rw [classLevelCochains_comp]
 
 end Transition
 

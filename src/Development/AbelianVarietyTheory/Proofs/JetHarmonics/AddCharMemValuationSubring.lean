@@ -84,8 +84,6 @@ def chrEquiv {e : A → B → Kˣ} (he : IsPerfectPairing e) : B ≃ AddChar A K
   Equiv.ofBijective (chr he) ((chr_injective he).bijective_of_nat_card_le (by
     rw [card_addChar_of_perfect he, card_eq_of_perfect he, Nat.card_eq_fintype_card]))
 
-theorem chrEquiv_apply {e : A → B → Kˣ} (he : IsPerfectPairing e) (t : B) :
-    chrEquiv he t = chr he t := rfl
 
 omit [Fintype B] in
 theorem card_ne_zero_of_perfect {e : A → B → Kˣ} (he : IsPerfectPairing e) :
@@ -235,8 +233,6 @@ theorem denominators_iff {e : A → B → Kˣ} (he : IsPerfectPairing e) (O : Su
       (Fintype.card A : K) = 0) ↔ ((Fintype.card B : ℕ) : K) * IndefiniteRowSideFullHecke.PerfectPairings.fourierCoeff e φ t ∈ O := by
   rw [or_iff_left (card_ne_zero_of_perfect he), fourierCoeff_eq he, card_eq_of_perfect he]
 
-theorem or_card_eq_zero_iff (O : Subring K) (n c : K) : (n * c ∈ O ∨ n = 0) ↔ n * c ∈ O :=
-  or_iff_left_of_imp fun h => by rw [h, zero_mul]; exact O.zero_mem
 
 theorem values_iff {e : A → B → Kˣ} (he : IsPerfectPairing e) (O : Subring K) :
     (∀ (χ : AddChar A K) a, χ a ∈ O) ↔ ∀ a t, ((e a t : Kˣ) : K) ∈ O := by

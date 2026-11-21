@@ -145,20 +145,7 @@ def CosetCond (n N' : ℕ) {R : Type} [CommRing R] (v : Lab g (N' ^ 2) → R) : 
 def CritCond (n N' : ℕ) (V : Type) {K : Type} [CommRing V] [Field K] [Algebra V K] (w : Lab g (N' ^ 2) → K) : Prop :=
   ∃ (c : Kˣ) (v : Lab g (N' ^ 2) → V), (∀ a, algebraMap V K (v a) = c * w a) ∧ (∃ a, IsUnit (v a)) ∧ CosetUnit n N' v
 
-theorem CosetUnit.cosetCond {n N' : ℕ} {R : Type} [CommRing R] {v : Lab g (N' ^ 2) → R} (h : CosetUnit n N' v) :
-    CosetCond n N' v := fun c => by
-  obtain ⟨a, ha, hu⟩ := h c
-  exact Ideal.eq_top_of_isUnit_mem _ (Ideal.subset_span ⟨a, ha, rfl⟩) hu
 
-theorem CosetCond.cosetUnit {n N' : ℕ} {R : Type} [CommRing R] [IsLocalRing R] {v : Lab g (N' ^ 2) → R}
-    (h : CosetCond n N' v) : CosetUnit n N' v := fun c => by
-  by_contra hc
-  have : Ideal.span (v '' {a | SameCoset n N' a c}) ≤ IsLocalRing.maximalIdeal R := by
-    rw [Ideal.span_le]
-    rintro _ ⟨a, ha, rfl⟩
-    exact fun hu => hc ⟨a, ha, hu⟩
-  rw [h c] at this
-  exact (IsLocalRing.maximalIdeal.isMaximal R).ne_top (top_le_iff.1 this)
 
 end Coset
 

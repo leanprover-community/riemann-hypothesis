@@ -681,8 +681,6 @@ def lineX (k : Type) [Field k] : Fin (1 + 1) → RatFunc k := ![1, RatFunc.X]
 def lineFam (k : Type) [Field k] : SubFamily k (RatFunc k) (lineX k) :=
   SubFamily.ofBundle (bundleA k (lineX k))
 
-theorem lineFam_ne (k : Type) [Field k] : (1 : RatFunc k) ∈ (lineFam k).lat 0 ∧ (1 : RatFunc k) ≠ 0 :=
-  ⟨(mem_lineLat (lineX k) 1 0 1).2 ⟨1, one_mem _, by simp [lineX]⟩, one_ne_zero⟩
 
 end Inhabitants2
 

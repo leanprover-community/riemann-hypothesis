@@ -198,15 +198,5 @@ theorem ratForm_self_pos (hreal : ∀ w : InfinitePlace K, w.IsReal) {θ : K}
     exact Finset.sum_pos (fun w _ => realEmb_mul_hermTrace_pos hθ (hreal w) hx) Finset.univ_nonempty
   exact_mod_cast this
 
-theorem ratForm_self_nonneg (hreal : ∀ w : InfinitePlace K, w.IsReal) {θ : K}
-    (hθ : ∀ (w : InfinitePlace K) (hw : w.IsReal) (v : ι × κ → ℝ), v ≠ 0 →
-      0 < ∑ a, ∑ c, v a * v c * embedding_of_isReal hw (θ * traceGram H b a c))
-    (x : ι → K ⊗[K] E) : 0 ≤ ratForm H θ x x := by
-  by_cases hx : x = 0
-  · subst hx
-    have : hermTrace K H K (0 : ι → K ⊗[K] E) 0 = 0 := by
-      rw [← hermTraceBilin_apply, map_zero]
-    simp [ratForm, this]
-  · exact (ratForm_self_pos b hreal hθ hx).le
 
 end GroundTheory.Automorphic

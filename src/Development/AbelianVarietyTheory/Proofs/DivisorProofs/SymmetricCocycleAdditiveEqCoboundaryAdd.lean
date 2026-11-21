@@ -43,11 +43,6 @@ theorem subst_powerSeriesEvalTwoGroups {τ τ' : Type} [Finite τ] {u v : Fin d 
   funext s
   cases s <;> rfl
 
-theorem powerSeriesEvalTwoGroups_X {τ : Type} {u v : Fin d → MvPowerSeries τ R} (hu : ∀ i, constantCoeff (u i) = 0)
-    (hv : ∀ i, constantCoeff (v i) = 0) (s : Fin d ⊕ Fin d) :
-    at2 (X s) u v = Sum.elim u v s := by
-  unfold at2
-  rw [subst_X (hs2 hu hv)]
 
 theorem op_addLaw {τ : Type} {u v : Fin d → MvPowerSeries τ R} (hu : ∀ i, constantCoeff (u i) = 0)
     (hv : ∀ i, constantCoeff (v i) = 0) : op (addLaw R d) u v = u + v := by

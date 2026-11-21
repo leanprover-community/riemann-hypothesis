@@ -24,9 +24,6 @@ theorem extBil_tmul (b : M →ₗ[O] M' →ₗ[O] M'') (r r' : R) (x : M) (y : M
 def extForm (b : M →ₗ[O] M' →ₗ[O] O) (u : R ⊗[O] M) (w : R ⊗[O] M') : R :=
   TensorProduct.rid O R (extBil R b u w)
 
-theorem extForm_tmul (b : M →ₗ[O] M' →ₗ[O] O) (r r' : R) (x : M) (y : M') :
-    extForm R b (r ⊗ₜ[O] x) (r' ⊗ₜ[O] y) = b x y • (r * r') := by
-  simp [extForm, extBil_tmul]
 
 end Bilinear
 

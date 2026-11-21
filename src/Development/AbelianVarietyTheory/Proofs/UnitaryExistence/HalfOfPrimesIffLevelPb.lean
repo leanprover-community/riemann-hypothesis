@@ -33,7 +33,6 @@ def levelEquivHalf (D : D7) :
   left_inv l := Subtype.ext (levelAt_Mb D l.1 l.2)
   right_inv _ := rfl
 
-theorem datAt_eq (D : D7) : HalfLevelCoefficients.datAt D = datumAtLift D _ (datHolds D) := rfl
 
 theorem parAt_levelAt (D : D7) (hF : OFull D) (hz : OZeta D) (hN : N1ab) (Mb : Ideal (𝓞 D.host.E))
     (h : HalfLevelCoefficients.IsHalf D Mb) :

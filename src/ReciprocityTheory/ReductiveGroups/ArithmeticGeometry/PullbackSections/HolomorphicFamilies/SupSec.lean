@@ -63,12 +63,5 @@ lemma symmetricMeasure_l2Norm_eq_resolutionL2 (X : PT E) (s : (Fin 1 → Vsp X.d
   simp only [MeasureTheory.measureReal_def]
   erw [hmp.measure_preimage_equiv]
 
-theorem supSec : SupSecSt := by
-  unfold SupSecSt
-  intro E' _ _ _ X s hs v
-  have h := gSup Ext.all.1 (Idx X.dim) (toGT X) 1 le_rfl _ (sec_mem X hs) (v 0)
-  have hla : (toGT X).la1 = X.la1 := rfl
-  rw [thetaSectionPointwiseNormSq_eq, symmetricMeasure_l2Norm_eq_resolutionL2]
-  simpa [hla] using h
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections.PfSupSec

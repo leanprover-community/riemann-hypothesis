@@ -58,13 +58,6 @@ theorem exists_place (τ : E →+* ℂ_[ℓ]) :
     rw [h, Ideal.mem_bot] at this
     exact (Fact.out : ℓ.Prime).ne_zero (by exact_mod_cast this)
 
-theorem exists_place_emb (E : Type) [Field E] [NumberField E] (ℓ : ℕ) [Fact ℓ.Prime] :
-    ∃ (w : HeightOneSpectrum (𝓞 E)) (τ : E →+* ℂ_[ℓ]), ∀ a : 𝓞 E, a ∈ w.asIdeal ↔ ‖τ (a : E)‖ < 1 := by
-  have : Nonempty (E →+* ℂ_[ℓ]) := Fintype.card_pos_iff.1 (by
-    rw [NumberField.Embeddings.card]; exact Module.finrank_pos)
-  obtain ⟨τ⟩ := this
-  obtain ⟨w, hw⟩ := exists_place τ
-  exact ⟨w, τ, hw⟩
 
 theorem pointShiftSt_of_placeShiftSt (h : PlaceShiftSt) : PointShiftSt := by
   intro E _ _ _ H hH ℓ _ τ

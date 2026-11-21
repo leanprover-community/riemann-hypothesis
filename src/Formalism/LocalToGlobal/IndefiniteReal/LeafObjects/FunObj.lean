@@ -135,18 +135,6 @@ structure FunLeaves (C : ℝ) : Prop where
   cs : LeafCS (funObjOf R F J) (F.fc (R.toCx F).zs).Z.b
   wt : LeafWt (funObjOf R F J) C (F.fc (R.toCx F).zs).Z.b
 
-theorem fun_of_leaves (C₀ CH C : ℝ) (wf : (DfB R F).WF) (hD : 0 < (Sb R F).D) (hH0 : (Sb R F).H0)
-    (hl1a : (Sb R F).BaseTypeSubspacesMapOntoBothSides) (hl1c : (Sb R F).RowLatticeBoundForBasis) (hXE : ∀ v, IsUnit ((Sb R F).XE v).det)
-    (hRR : Submodule.IsLattice D.what₂.LL (Sb R F).RR)
-    (hRRw : ∀ w : Pl D.what₂.LL, Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (Sb R F).RR =
-      Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (matLat ((Sb R F).ι ((Sb R F).μ w)) ((DfB R F).abelian₂ ((Sb R F).μ w))))
-    (hC : 1 ≤ C) (hx : 1 ≤ (F.fc (R.toCx F).zs).Z.x) (hL1 : 1 ≤ Real.log (F.fc (R.toCx F).zs).Z.b)
-    (hLx : Real.log (F.fc (R.toCx F).zs).Z.b + Real.log (F.fc (R.toCx F).zs).Z.x ≤
-      3 * Real.log (F.fc (R.toCx F).zs).Z.b)
-    (hL : FunLeaves R F J C) (hPol : LeafPol (funObjOf R F J) C (F.fc (R.toCx F).zs).Z.x CH (F.fc (R.toCx F).zs).Z.b) :
-    R.LFun F C₀ CH :=
-  functional_lower_bound_of_conditions_numeric wf (Sb R F) (F.fc (R.toCx F).zs).Z C₀ CH (funObjOf R F J) C hD hH0 hl1a hl1c hXE hRR hRRw hC hx hL1
-    hLx hL.mm hL.c hL.ker hL.fp hL.ip hL.oneSquare hL.n0 hL.int hL.arch hL.thb hL.h1 hL.h7 hL.b5 hL.b7 hL.cs hL.wt hPol
 
 end Joint
 

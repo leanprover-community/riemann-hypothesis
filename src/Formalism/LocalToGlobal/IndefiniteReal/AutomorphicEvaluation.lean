@@ -50,15 +50,6 @@ def ResInj (M : DSModel V S) (C : Submodule ℂ (MMap M)) {TK : Type} [AddCommGr
 def ResInjVec (M : DSModel V S) (C : Submodule ℂ (MMap M)) : Prop :=
   ∀ T ∈ C, ∀ v : M.Vec, (∀ τ, (v τ : M.H τ) ≠ 0) → T v = 0 → T = 0
 
-theorem resInj_of_vec (M : DSModel V S) (C : Submodule ℂ (MMap M)) {TK : Type} [AddCommGroup TK] [Module ℂ TK]
-    (emb : TK →ₗ[ℂ] ⨂[ℂ] τ, M.sm τ) (h : ResInjVec M C)
-    (hv : ∃ v : M.Vec, (∀ τ, (v τ : M.H τ) ≠ 0) ∧ ∃ x, emb x = PiTensorProduct.tprod ℂ v) : ResInj M C emb := by
-  intro T hT h0
-  obtain ⟨v, hv0, x, hx⟩ := hv
-  refine h T hT v hv0 ?_
-  have h1 := LinearMap.congr_fun h0 x
-  rw [LinearMap.comp_apply, hx, PiTensorProduct.lift.tprod, LinearMap.zero_apply] at h1
-  exact h1
 
 open Formalism.L2.SG.RowDict in
 

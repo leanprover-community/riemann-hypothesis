@@ -456,8 +456,6 @@ theorem exampleChain_compatible (hc : X.Tau → HCParam R) : (toyExample hc).Tie
 
 def exampleExt (hc : X.Tau → HCParam R) (i : ℕ) : ((toyExample hc).F i).Forms := fun _ => ⟨fun _ => extV X.K (trueWt hc i), fun _ _ => rfl⟩
 
-theorem exampleExt_emb_ne_zero (hc : X.Tau → HCParam R) (i : ℕ) : (toyExample hc).emb σ i (exampleExt hc i) ≠ 0 := fun h =>
-  evV_extV_ne_zero X.emb 1 (trueWt hc i) σ (stdFrC _) (congrFun h ⟨(), Quotient.mk _ ()⟩)
 
 theorem exampleChain_K_apply (hc : X.Tau → HCParam R) (i : ℕ) (hi : i < R.m) (a : ℂ) :
     ((toyExample hc).chain σ hc).K i (a • (toyExample hc).emb σ i (exampleExt hc i)) = (a / 2) • (toyExample hc).emb σ (i + 1) (exampleExt hc (i + 1)) := by
@@ -496,9 +494,6 @@ theorem exampleChain_col_apply (hc : X.Tau → HCParam R) :
       exact this
   exact h R.m le_rfl
 
-theorem exampleChain_col_ne_zero (hc : X.Tau → HCParam R) : ((toyExample hc).chain σ hc).col ((toyExample hc).emb σ 0 (exampleExt hc 0)) ≠ 0 := by
-  rw [exampleChain_col_apply]
-  exact smul_ne_zero (pow_ne_zero _ (by norm_num)) (exampleExt_emb_ne_zero σ hc R.m)
 
 def exampleCpl (X : Fields) {n : ℕ} (lam : X.Tau → DomWeight n) : Cpl (exampleGSD X lam) where
   Yb := ℤˣ
@@ -526,11 +521,8 @@ def Unfolds (hc : X.Tau → HCParam R) (U : A.UnfFam σ) : Prop :=
   ∀ i, i < R.m → ∀ c c' x (y : Fr X σ (R.N (i + 1))), U i c c' ((A.chain σ hc).sharp i (A.ev σ i x)) y =
     (A.rho i c * A.rho' i c')⁻¹ * ((∏ τ, deFr y τ ^ sD hc i τ) * A.ev σ (i + 1) (A.ker i c c' x) y)
 
-theorem unfolds_chain (hc : X.Tau → HCParam R) : A.Unfolds σ hc (A.chain σ hc).unf := fun i _ c c' x y => A.unf_sharp_ev σ hc i c c' x y
 
-theorem chainWith_self (hc : X.Tau → HCParam R) : A.chainWith σ hc (A.chain σ hc).unf = A.chain σ hc := rfl
 
-theorem chainWith_unf (hc : X.Tau → HCParam R) (U : A.UnfFam σ) : (A.chainWith σ hc U).unf = U := rfl
 
 variable {A σ} in
 
@@ -542,16 +534,6 @@ theorem Unfolds.Kmap_ev {hc : X.Tau → HCParam R} {U : A.UnfFam σ} (h : A.Unfo
     funext fun y => (h i hi c c' x y).trans (A.unf_sharp_ev σ hc i c c' x y).symm
   exact congrArg (fun f => (A.rho i c * A.rho' i c') • (A.chain σ hc).divDe i f) e
 
-theorem unfolds_iff_Kmap (hc : X.Tau → HCParam R) (U : A.UnfFam σ) : A.Unfolds σ hc U ↔
-    ∀ i, i < R.m → ∀ c c' x, (A.chainWith σ hc U).Kmap i c c' (A.ev σ i x) = A.ev σ (i + 1) (A.ker i c c' x) := by
-  refine ⟨fun h i hi c c' x => h.Kmap_ev i hi c c' x, fun h i hi c c' x y => ?_⟩
-  have h1 : A.rho i c ≠ 0 := fun h => by simpa [h] using A.rho_norm i hi c
-  have h2 : A.rho' i c' ≠ 0 := fun h => by simpa [h] using A.rho'_norm i hi c'
-  have h3 := prod_de_ne_zero σ y (sD hc i)
-  have e : (A.rho i c * A.rho' i c') * ((∏ τ, deFr y τ ^ sD hc i τ)⁻¹ * U i c c' ((A.chain σ hc).sharp i (A.ev σ i x)) y) =
-    A.ev σ (i + 1) (A.ker i c c' x) y := congrFun (h i hi c c' x) y
-  rw [← e]
-  field_simp
 
 variable {A σ} in
 
@@ -715,35 +697,14 @@ theorem chainTh_unf (hc : X.Tau → HCParam R) (cD : X.Tau → ℂ) (Th : A.ThFa
       ∑ q ∈ (derPol cD Q y'.1).support, MvPolynomial.coeff q (derPol cD Q y'.1) * Formalism.L2.Ker.derivAt0 (Th i c c') q :=
   (A.chainJet_unf σ hc _ i c c' Q y').trans (eval_jetMap cD _ Q y'.1)
 
-theorem jetTie_of_tables (hc : X.Tau → HCParam R) (cD : X.Tau → ℂ) (Th : A.ThFam)
-    (h : ∀ i, i < R.m → ∀ c c', ∃ T : (Formalism.L2.Ker.DVar X.Tau (R.N i) (R.N (i + 1)) →₀ ℕ) → X.K, ∀ x,
-      (A.eV (i + 1) (A.ker i c c' x)).1 = Formalism.L2.Ker.jetMap T (nuEnd hc i) (A.eV i x).1 ∧
-      ∀ μ ∈ (Formalism.L2.Ker.subD X.K X.Tau (R.N i) (R.N (i + 1))
-          ((A.eV i x).1 * ∏ τ, Formalism.L2.Ker.frDet X.K (R.N i) τ ^ nuEnd hc i τ)).support,
-        σ (T (μ.comapDomain Sum.inr Sum.inr_injective.injOn)) =
-          A.rho i c * A.rho' i c' * Formalism.L2.Ker.jetC cD (Th i c c') (μ.comapDomain Sum.inr Sum.inr_injective.injOn)) :
-    A.JetTie σ hc (A.jetTh cD Th) := by
-  intro i hi c c' x
-  obtain ⟨T, hT⟩ := h i hi c c'
-  rw [(hT x).1]
-  exact map_jetMap σ T _ _ _ _ (hT x).2
 
 section Laws
 
 variable {A} {hc : X.Tau → HCParam R} (h : A.Tied hc) {cD : X.Tau → ℂ} {Th : A.ThFam} (hJ : A.JetTie σ hc (A.jetTh cD Th))
 include h hJ
 
-theorem Tied.chainTh_Kmap_ev (i : ℕ) (hi : i < R.m) (c : (A.F i).Cl) (c' : (A.F (i + 1)).Cl) (x : (A.F i).V) :
-    (A.chainTh σ hc cD Th).Kmap i c c' (A.ev σ i x) = A.ev σ (i + 1) (A.ker i c c' x) :=
-  ((h.unfolds_iff σ _).mpr hJ).Kmap_ev i hi c c' x
 
-theorem Tied.chainTh_K_emb (i : ℕ) (hi : i < R.m) (φ : (A.F i).Forms) :
-    (A.chainTh σ hc cD Th).K i (A.emb σ i φ) = A.emb σ (i + 1) (A.kk.step A.ok i φ) :=
-  ((h.unfolds_iff σ _).mpr hJ).K_emb i hi φ
 
-theorem Tied.chainTh_col_emb (φ : (A.F 0).Forms) :
-    (A.chainTh σ hc cD Th).col (A.emb σ 0 φ) = A.emb σ R.m (A.kk.colTo A.ok R.m φ) :=
-  ((h.unfolds_iff σ _).mpr hJ).col_emb φ
 
 end Laws
 
@@ -768,14 +729,5 @@ end ChSrc
 @[reducible] def fieldsOn (D : D7) (X : Fields) (emb : D.what₂.Tau → (X.E →+* X.K)) : Fields :=
   { X with Tau := D.what₂.Tau, ftTau := inferInstance, deTau := Classical.decEq _, emb := emb }
 
-theorem ChSrc.liftTie_chainTh (D : D7) (T : Formalism.MainNotions.TaylorLogMetric.Tor D) (e : Formalism.MainNotions.TaylorLogMetric.FamE D) (X : Fields) (emb : D.what₂.Tau → (X.E →+* X.K))
-    (A : ChSrc (fieldsOn D X emb) D.R) (σ : X.K →+* ℂ) (u : D.what₂.Word) (cD : D.what₂.Tau → ℂ) (Th : A.ThFam)
-    (O : Formalism.MainNotions.GL3Theta.LiftObj D (A.chainTh σ (D.hcW u) cD Th)) (i : ℕ)
-    (hf : ∀ y, O.frm i y = y.1) (hf' : ∀ y, O.frm (i + 1) y = y.1) (hd : O.dgen = cD) (hT : ∀ c c', O.Th i c c' = Th i c c')
-    (hK : ∀ c c', Formalism.MainNotions.GL3Theta.IsKer D T e O.S (O.lat i c).1 (O.lat (i + 1) c').1 (O.Th i c c')) :
-    Formalism.MainNotions.GL3Theta.liftTie D T e O i := by
-  refine ⟨hK, fun c c' Q y' => ?_⟩
-  simp only [hf, hf', hd, hT]
-  exact (A.chainJet_unf σ (D.hcW u) _ i c c' Q y').trans (eval_jetMap_jetC D cD _ Q y'.1)
 
 end GlobalTheory.GO

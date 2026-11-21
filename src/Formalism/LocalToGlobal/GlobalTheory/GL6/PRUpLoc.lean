@@ -272,15 +272,6 @@ theorem rnd_roundDnN (Tf : FormsTied D u) (hU : UpNat Tf) (hD : DnNat Tf) (hL : 
   rw [htr, htr', hgφ, hgφ c]
   exact rnd_natCore Tf i hi v hgA _ _ _ η' η γ' γ κ' κ hsup' hsup hrel' hrel hk
 
-theorem rnd_linkAdmT_ofN
-    (h : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf →
-      UpNat Tf ∧ DnNat Tf ∧ RUpLocM Tf ∧ RDnLocM Tf ∧ SplitAtT Tf.atT) :
-    LinkAdmT := by
-  apply admissible_of_split_and_round_trips
-  · intro D u Tf hc; exact (h D u Tf hc).2.2.2.2
-  · rintro D u ⟨Tf, hc⟩
-    obtain ⟨h1, h2, h3, h4, _⟩ := h D u Tf hc
-    exact ⟨rnd_roundUpN Tf h1 h2 h3, rnd_roundDnN Tf h1 h2 h4⟩
 
 theorem natTr_adFun (Tf : FormsTied D u) (i : ℕ) (hi : i ≤ D.R.m)
     {g : UPts (sigD D) (gramN D i hi) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) → Fr D i hi → ℂ} (hg : g ∈ AdFun (Tf.cls i hi).lev (embT D))

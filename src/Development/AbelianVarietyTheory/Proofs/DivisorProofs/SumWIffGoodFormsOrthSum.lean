@@ -277,8 +277,6 @@ theorem eGoodOp_eq (om : ∀ i : Fin 2, (ZMod (D.host.g i))ˣ →* ℂˣ) (ψ : 
 
 end Match
 
-theorem isBadSet_iff (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F))) : GoodReductionModelReading.IsBadSet D Sb ↔ Sb = GoodIdempotentBadPlaces.badPl D := by
-  simp only [GoodReductionModelReading.IsBadSet, Finset.ext_iff, GoodIdempotentBadPlaces.mem_badPl]
 
 theorem exists_haar (V : HSp D) : ∃ μ : Measure (GA D V), μ.IsHaarMeasure := by
   have := (GlobalTheory.MemberAdelicTop.locallyCompact_secondCountable_t2 D V).1
@@ -319,16 +317,5 @@ theorem conclusion_iff (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.ho
   exact ⟨fun H μ 𝓕 hμ h𝓕 c hc c' hc' hne T hT T' hT' => H c hc c' hc' hne T hT T' hT' μ 𝓕 hμ h𝓕,
     fun H c hc c' hc' hne T hT T' hT' μ 𝓕 hμ h𝓕 => H μ 𝓕 hμ h𝓕 c hc c' hc' hne T hT T' hT'⟩
 
-theorem sumW_iff_goodFormsOrthSum (D : D7) : GoodReductionModelReading.SumW D ↔ GoodIdempotentBadPlaces.GoodFormsOrthSum D := by
-  constructor
-  · intro H θ hθ pb h om hom ψ hψ βm hβm Mm j h1 h2 β hβ M
-    obtain ⟨pl, hpl, ⟨red⟩⟩ := exists_placeMatch h
-    have hm := D.sp.W_rank D.R.m (h1.trans h2) le_rfl
-    have hj := D.sp.W_rank j h1 h2
-    exact (conclusion_iff θ h pl red om ψ hm Mm βm j hj M β).1
-      (H θ hθ pb _ ⟨h, rfl⟩ pl hpl red ψ hψ om hom _ ((isBadSet_iff _).2 rfl) hm Mm βm hβm j h1 h2 hj M β hβ)
-  · rintro H θ hθ pb Pg ⟨h, rfl⟩ pl - red ψ hψ om hom Sb hSb hm Mm βm hβm j h1 h2 hj M β hβ
-    obtain rfl := (isBadSet_iff Sb).1 hSb
-    exact (conclusion_iff θ h pl red om ψ hm Mm βm j hj M β).2 (H θ hθ pb h om hom ψ hψ βm hβm Mm j h1 h2 β hβ M)
 
 end GlobalTheory.SumWCompare

@@ -79,16 +79,6 @@ def basisChange (b b' : Basis ι R M) : GL ι R :=
   left_inv := basisChange_basisMulGL b
   right_inv := basisMulGL_basisChange b
 
-theorem basisMulGL_repr (b : Basis ι R M) (g : GL ι R) (x : M) (i : ι) :
-    (basisMulGL b g).repr x i = ∑ j, ((g⁻¹ : GL ι R) : Matrix ι ι R) i j * b.repr x j := by
-  have h : basisMulGL (basisMulGL b g) g⁻¹ = b := by rw [← basisMulGL_mul]; simp
-  have h' : (basisMulGL b g).toMatrix b = ((g⁻¹ : GL ι R) : Matrix ι ι R) := by
-    conv_lhs => rw [← h]
-    rw [h, ← toMatrix_basisMulGL (basisMulGL b g) g⁻¹, h]
-  rw [← h']
-  conv_lhs => rw [← b.sum_repr x]
-  simp only [map_sum, map_smul, Finsupp.finset_sum_apply, Finsupp.smul_apply, smul_eq_mul,
-    Basis.toMatrix_apply, mul_comm]
 
 @[reducible] def basisMulAction : MulAction (GL ι R)ᵐᵒᵖ (Basis ι R M) where
   smul g b := basisMulGL b g.unop
@@ -134,12 +124,6 @@ def upperTriangularGL.diagChar (i : ι) : upperTriangularGL ι R →* Rˣ :=
 @[simp] theorem upperTriangularGL.coe_diagChar (i : ι) (g : upperTriangularGL ι R) :
     (upperTriangularGL.diagChar i g : R) = (g.1 : Matrix ι ι R) i i := rfl
 
-theorem map_mem_upperTriangularGL {S : Type*} [CommRing S] (f : R →+* S) {g : GL ι R}
-    (hg : g ∈ upperTriangularGL ι R) :
-    Matrix.GeneralLinearGroup.map f g ∈ upperTriangularGL ι S := by
-  rw [mem_upperTriangularGL] at hg ⊢
-  intro i j hij
-  simp [Matrix.GeneralLinearGroup.map_apply, hg i j hij]
 
 variable {M : Type*} [AddCommGroup M] [Module R M] {n : ℕ}
 
@@ -249,7 +233,6 @@ def IsAdapted (F : FullFlag R M n) (b : Basis (Fin n) R M) : Prop := b.flag = F.
 theorem isAdapted_iff {F : FullFlag R M n} {b : Basis (Fin n) R M} :
     F.IsAdapted b ↔ ofBasis b = F := ⟨fun h => FullFlag.ext h, fun h => h ▸ rfl⟩
 
-theorem isAdapted_ofBasis (b : Basis (Fin n) R M) : (ofBasis b).IsAdapted b := rfl
 
 theorem ofBasis_eq_ofBasis_iff (b b' : Basis (Fin n) R M) :
     ofBasis b' = ofBasis b ↔ ∃ g ∈ upperTriangularGL (Fin n) R, basisMulGL b g = b' := by
@@ -258,9 +241,6 @@ theorem ofBasis_eq_ofBasis_iff (b b' : Basis (Fin n) R M) :
   rintro ⟨g, hg, rfl⟩
   simpa using hg
 
-theorem IsAdapted.basisMulGL_iff {F : FullFlag R M n} {b : Basis (Fin n) R M} (hb : F.IsAdapted b)
-    (g : GL (Fin n) R) : F.IsAdapted (basisMulGL b g) ↔ g ∈ upperTriangularGL (Fin n) R := by
-  rw [← flag_basisMulGL_eq_iff b, IsAdapted, ← hb]
 
 theorem exists_retraction (F : FullFlag R M n) (k : Fin (n + 1)) :
     ∃ r : M →ₗ[R] M, (∀ x, r x ∈ F.sub k) ∧ ∀ x ∈ F.sub k, r x = x := by
@@ -355,12 +335,6 @@ def baseChange (F : FullFlag R M n) (S : Type*) [CommRing S] [Algebra R S] :
 @[simp] theorem baseChange_sub (F : FullFlag R M n) (S : Type*) [CommRing S] [Algebra R S]
     (k : Fin (n + 1)) : (F.baseChange S).sub k = (F.sub k).baseChange S := rfl
 
-theorem ofBasis_baseChange (b : Basis (Fin n) R M) (S : Type*) [CommRing S] [Algebra R S] :
-    ofBasis (b.baseChange S) = (ofBasis b).baseChange S := by
-  ext1
-  funext k
-  simp only [ofBasis_sub, baseChange_sub, Basis.flag, Submodule.baseChange_span, Set.image_image]
-  simp
 
 def map {M' : Type*} [AddCommGroup M'] [Module R M'] (F : FullFlag R M n) (e : M ≃ₗ[R] M') :
     FullFlag R M' n where
@@ -381,12 +355,6 @@ def map {M' : Type*} [AddCommGroup M'] [Module R M'] (F : FullFlag R M n) (e : M
 @[simp] theorem map_sub {M' : Type*} [AddCommGroup M'] [Module R M'] (F : FullFlag R M n)
     (e : M ≃ₗ[R] M') (k : Fin (n + 1)) : (F.map e).sub k = (F.sub k).map e.toLinearMap := rfl
 
-theorem ofBasis_map {M' : Type*} [AddCommGroup M'] [Module R M'] (b : Basis (Fin n) R M)
-    (e : M ≃ₗ[R] M') : ofBasis (b.map e) = (ofBasis b).map e := by
-  ext1
-  funext k
-  simp only [ofBasis_sub, map_sub, Basis.flag, Submodule.map_span, Set.image_image]
-  rfl
 
 theorem exists_isAdapted_of_free (F : FullFlag R M n) (h : ∀ i, Module.Free R (F.Step i)) :
     ∃ b : Basis (Fin n) R M, F.IsAdapted b := by
@@ -441,40 +409,7 @@ theorem exists_isAdapted_of_isLocalRing [IsLocalRing R] (F : FullFlag R M n) :
     ∃ b : Basis (Fin n) R M, F.IsAdapted b :=
   F.exists_isAdapted_of_free fun _ => Module.free_of_flat_of_isLocalRing
 
-theorem free_baseChange_of_algHom {L S T : Type*} [AddCommGroup L] [Module R L] [CommRing S]
-    [CommRing T] [Algebra R S] [Algebra R T] (φ : S →ₐ[R] T) [Module.Free S (S ⊗[R] L)] :
-    Module.Free T (T ⊗[R] L) := by
-  let := φ.toRingHom.toAlgebra
-  have : IsScalarTower R S T := .of_algebraMap_eq fun r => (φ.commutes r).symm
-  exact Module.Free.of_equiv (AlgebraTensorModule.cancelBaseChange R S T T L)
 
-theorem exists_isAdapted_localization (F : FullFlag R M n) (p : Ideal R) [hp : p.IsPrime] :
-    ∃ f ∉ p, ∀ (S : Type*) [CommRing S] [Algebra R S], IsUnit (algebraMap R S f) →
-      ∃ b : Basis (Fin n) S (S ⊗[R] M), (F.baseChange S).IsAdapted b := by
-  have key : ∀ i, ∃ f ∉ p, Module.Free (Localization.Away f)
-      (Localization.Away f ⊗[R] F.Step i) := by
-    intro i
-    obtain ⟨s, hs, hfree⟩ := Module.Invertible.exists_finset_free_localization R (F.Step i)
-    obtain ⟨f, hf, hfp⟩ : ∃ f ∈ s, f ∉ p := by
-      by_contra hcon
-      push Not at hcon
-      exact hp.ne_top (top_le_iff.mp (hs ▸ Ideal.span_le.mpr hcon))
-    have := hfree f hf
-    exact ⟨f, hfp, Module.Free.of_equiv (IsLocalizedModule.isBaseChange (.powers f)
-      (Localization.Away f) (LocalizedModule.mkLinearMap (.powers f) (F.Step i))).equiv.symm⟩
-  choose f hf hfree using key
-  refine ⟨∏ i, f i, ?_, fun S _ _ hS => ?_⟩
-  · exact fun h => by
-      obtain ⟨i, -, hi⟩ := Ideal.IsPrime.prod_mem_iff.mp h
-      exact hf i hi
-  · refine exists_isAdapted_of_free _ fun i => ?_
-    have hi : IsUnit (algebraMap R S (f i)) :=
-      isUnit_of_dvd_unit (map_dvd _ (Finset.dvd_prod_of_mem f (Finset.mem_univ i))) hS
-    have := hfree i
-    have := free_baseChange_of_algHom (L := F.Step i)
-      (IsLocalization.Away.liftAlgHom (S := Localization.Away (f i)) (f i)
-        (f := Algebra.ofId R S) hi)
-    exact Module.Free.of_equiv (F.nonempty_baseChange_step_equiv S i).some.symm
 
 end FullFlag
 

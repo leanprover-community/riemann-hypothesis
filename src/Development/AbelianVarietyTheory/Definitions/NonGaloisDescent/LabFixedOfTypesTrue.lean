@@ -40,13 +40,6 @@ theorem tame_of_pin {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {cf 
   rw [← h.gen k]
   exact a.nt.A.grp.tg_tame k v
 
-theorem opin_iff {hL : GlobalTheory.Published.LocalLanglandsGL} {w : ColW B f T} {Z : w.Lt} {Wt : Set B.places.Pl} {p0 : BaseLevelRowSide (w.D Z)}
-    (t : RowsT K w Z Wt p0) {nch : NChoice (w.D Z)} {n : NchT w Z Wt nch} (c : NCore hL t n) :
-    OPin c.a ↔ (SumRepresentations.hypO (w.D Z) ∧ TakenAll (w.D Z)) ∧ (∀ i, ClassSum (c.a.all.gal.mt.loc i)) ∧
-      ∀ k, c.a.nt.A.grp.ζ k = @GlobalTheory.GLq.LabelDatum.gen _ ⟨c.a.nt.D.host.g_prime k⟩
-        (@GlobalTheory.Mem.TypePl.labDat (c.a.nt.D.host.g k) ⟨c.a.nt.D.host.g_prime k⟩) :=
-  ⟨fun h => ⟨⟨h.large.1, h.large.2.2⟩, h.inner, h.gen⟩,
-    fun h => ⟨⟨h.1.1, c.a.split, h.1.2⟩, h.2.1, lab_of_rows t c, h.2.2⟩⟩
 
 example (hL : GlobalTheory.Published.LocalLanglandsGL) : NCondition := NX hL (OExt hL)
 end GlobalTheory.CoefDuty.OPinModel

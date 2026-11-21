@@ -206,65 +206,8 @@ theorem fr_le (L : SizeData₂ D) {C : ℝ} (hC : 2 * L.Ct ≤ C) : (D.R.f : ℝ
     _ = L.sc.x ^ (2 * L.Ct) := by rw [← Real.rpow_add hx]; congr 1; ring
     _ ≤ L.sc.x ^ C := Real.rpow_le_rpow_of_exponent_le L.sc.one_lt_alt.le hC
 
-theorem parA_of_sizes (L : SizeData₂ D) {C CA : ℝ} (h : DimensionConstantBounds.Sizes L C) (hL : |L.logDerivativeAtOne| ≤ L.sc.x ^ L.sc.eps)
-    (h1 : C ≤ CA) (h2 : 2 * L.Ct ≤ CA) : WeightAlgebra.ParA L CA := by
-  have hL0 : 0 < L.sc.L := Real.rpow_pos_of_pos (by linarith [L.sc.one_lt_alt]) _
-  obtain ⟨b1, b2, a4, a5, a7, a8, b3⟩ := h
-  exact ((sizes_iff L CA).2 ⟨⟨b1, b2, a4, a5, a7.trans (mul_le_mul_of_nonneg_right h1 hL0.le), a8, b3⟩,
-    fr_le L h2, hL⟩).1
 
-theorem sizes_bounds_of_sizesAt (L : SizeData₂ D) (h : SizesAt L) :
-    L.sc.x ^ 2 ≤ (D.R.f : ℝ) * (D.R.r : ℝ) ∧
-      logdE D / (2 * (D.R.f : ℝ)) + |L.logDerivativeAtOne| ≤ 2 * L.sc.L ∧ |L.logDerivativeAtOne| ≤ L.sc.x ^ L.sc.eps := by
-  obtain ⟨hN, -, -, -, hT, hC, hQ, -⟩ := h
-  have hx := L.sc.one_lt_alt
-  have he := L.sc.eps_pos
-  have hL : 0 < L.sc.L := Real.rpow_pos_of_pos (by linarith) _
-  have hn : (1 : ℝ) ≤ D.R.n := by
-    exact_mod_cast D.R.ord_pos
-  have hr : (6 : ℝ) ≤ D.R.r := by exact_mod_cast six_le_r D
-  have hf : (D.R.f : ℝ) = 2 * D.R.n := by unfold Ranks.f; push_cast; ring
-  have hL' : |L.logDerivativeAtOne| ≤ L.sc.x ^ L.sc.eps := hQ.2.2.2.2.2.1
-  refine ⟨?_, ?_, hL'⟩
-  · have h1 : L.sc.x ^ (2 : ℝ) ≤ D.R.n :=
-      (Real.rpow_le_rpow_of_exponent_le hx.le (by unfold szTh; linarith)).trans hN.1
-    rw [Real.rpow_two] at h1
-    rw [hf]; nlinarith
-  · rw [← DimensionConstantBounds.lrd_eq]
-    have hq : (1 : ℝ) ≤ D.host.q := by exact_mod_cast D.host.hyp.1.pos
-    have hd : (1 : ℝ) ≤ D.host.d := by exact_mod_cast D.host.hyp.2.1.pos
-    have hqd : (1 : ℝ) ≤ (D.host.q : ℝ) * D.host.d := by nlinarith
-    have hs : Real.sqrt ((D.host.q : ℝ) * D.host.d) ≤ (D.host.q : ℝ) * D.host.d := by
-      rw [Real.sqrt_le_left (by linarith)]; nlinarith
-    have h1 : D.host.rdE ≤ szCond L := by
-      unfold szCond
-      have := hQ.2.2.2.2.2.2.2
-      nlinarith [mul_le_mul_of_nonneg_left hs (by positivity : (0 : ℝ) ≤ (D.host.QS : ℝ) / 2),
-        (by positivity : (0 : ℝ) ≤ (D.host.QS : ℝ) * ((D.host.q : ℝ) * D.host.d))]
-    have h0 : 1 ≤ D.host.rdE := hQ.2.2.2.2.2.2.1
-    have hc1 : 1 ≤ szCond L := h0.trans h1
-    have h2 : szCond L ≤ szCond L ^ 36 * (D.R.t : ℝ) ^ 150 :=
-      calc szCond L = szCond L ^ 1 * 1 := by ring
-        _ ≤ szCond L ^ 36 * (D.R.t : ℝ) ^ 150 :=
-          mul_le_mul (pow_le_pow_right₀ hc1 (by norm_num)) (one_le_pow₀ hT.1) zero_le_one (by positivity)
-    have hb : 1 ≤ L.sc.b := Real.one_le_exp hL.le
-    have h3 : Real.sqrt L.sc.b ≤ L.sc.b := by
-      rw [Real.sqrt_le_left (by linarith)]; nlinarith
-    have h4 : D.host.rdE ≤ Real.exp L.sc.L := h1.trans (h2.trans (le_trans hC h3))
-    have h5 : DimensionConstantBounds.lrd D ≤ L.sc.L := by
-      unfold DimensionConstantBounds.lrd
-      exact (Real.log_le_iff_le_exp (by linarith)).2 h4
-    have h6 : |L.logDerivativeAtOne| ≤ L.sc.L := hL'
-    linarith
 
-theorem sizes_iff_of_sizesAt (L : SizeData₂ D) (h : SizesAt L) {C : ℝ} (hC : 2 * L.Ct ≤ C) :
-    (WeightAlgebra.ParA L C ∧ (2 * (D.R.f : ℝ) * (D.R.m : ℝ)) ^ 4 ≤ D.host.rdE ^ 3) ↔ DimensionConstantBounds.Sizes L C := by
-  obtain ⟨r1, r2, r3⟩ := sizes_bounds_of_sizesAt L h
-  constructor
-  · rintro ⟨a, b⟩
-    exact ((sizes_iff L C).1 ⟨a, r1, r2, b⟩).1
-  · intro a
-    exact ⟨((sizes_iff L C).2 ⟨a, fr_le L hC, r3⟩).1, a.2.2.2.2.2.2⟩
 
 theorem compare {L : SizeData₂ D} {P : ParameterChoice' D L} (T : ParamsT D L P) (X : WeightFamilies.Prov D) :
     (WeightAlgebra.qq D = DimensionConstantBounds.q D ∧ WeightAlgebra.g0 D = DimensionConstantBounds.g0 D ∧

@@ -59,8 +59,6 @@ theorem isSmooth_iterN (ψ : AddChar k Circle) : ∀ (j : ℕ) {n : ℕ} {τ : M
   | 0, _, _, h => h
   | j + 1, _, _, h => isSmooth_iterN ψ j (isSmooth_phiN ψ h)
 
-theorem isSmooth_dN (ψ : AddChar k Circle) (j : ℕ) {n : ℕ} {τ : MRep k (n + j)} (h : IsSmooth τ.ρ) :
-    IsSmooth (dN ψ j τ).ρ := isSmooth_psiN (isSmooth_iterN ψ j h)
 
 theorem ses_iterN (ψ : AddChar k Circle) (hc : Continuous ψ) : ∀ (j : ℕ) {n : ℕ} {A B C : MRep k (n + j)},
     IsSmooth A.ρ → IsSmooth B.ρ → IsSmooth C.ρ → Ses A.ρ B.ρ C.ρ →

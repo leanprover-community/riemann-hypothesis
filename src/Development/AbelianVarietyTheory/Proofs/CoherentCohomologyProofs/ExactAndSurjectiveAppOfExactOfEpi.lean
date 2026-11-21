@@ -27,9 +27,7 @@ theorem coe_appLinear (φ : M ⟶ N) (U : X.Opens) : ⇑(appLinear φ U) = φ.ap
 theorem appLinear_comp (φ : M ⟶ N) (ψ : N ⟶ P) (U : X.Opens) :
     appLinear (φ ≫ ψ) U = appLinear ψ U ∘ₗ appLinear φ U := rfl
 
-theorem appLinear_id (M : X.Modules) (U : X.Opens) : appLinear (𝟙 M) U = LinearMap.id := rfl
 
-theorem appLinear_zero (M N : X.Modules) (U : X.Opens) : appLinear (0 : M ⟶ N) U = 0 := rfl
 
 theorem appLinear_add (φ ψ : M ⟶ N) (U : X.Opens) :
     appLinear (φ + ψ) U = appLinear φ U + appLinear ψ U := rfl
@@ -273,10 +271,6 @@ instance isQuasicoherent_image (φ : M ⟶ N) [M.IsQuasicoherent] [N.IsQuasicohe
     (image φ).IsQuasicoherent :=
   isQuasicoherent_of_iso (Abelian.imageIsoImage φ)
 
-theorem isQuasicoherent_of_epi_of_mono {I : X.Modules} (e : M ⟶ I) (m : I ⟶ N) [Epi e] [Mono m]
-    [M.IsQuasicoherent] [N.IsQuasicoherent] : I.IsQuasicoherent :=
-  haveI := strongEpi_of_epi e
-  isQuasicoherent_of_iso (image.isoStrongEpiMono e m rfl).symm
 
 instance isQuasicoherent_cycles (S : ShortComplex X.Modules) [S.X₂.IsQuasicoherent]
     [S.X₃.IsQuasicoherent] : S.cycles.IsQuasicoherent :=

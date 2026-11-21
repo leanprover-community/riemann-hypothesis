@@ -14,8 +14,6 @@ def embVal (hv : v.Integers O) {Λ : Type} [CommRing Λ] (α : Λ) :
     (Λ →+* O) → v.valuationSubring :=
   fun σ => ⟨algebraMap O C (σ α), (Valuation.mem_valuationSubring_iff _ _).2 (hv.map_le_one _)⟩
 
-theorem coe_embVal (hv : v.Integers O) {Λ : Type} [CommRing Λ] (α : Λ) (σ : Λ →+* O) :
-    (embVal v hv α σ : C) = algebraMap O C (σ α) := rfl
 
 def modelLattice {S : Type} {h N : ℕ} (Φ : (Fin h → C) ≃ₗ[C] (S → Fin N → C))
     (L : Submodule O (Fin h → O)) : Submodule v.valuationSubring (S → Fin N → C) :=

@@ -218,17 +218,6 @@ theorem exists_phi {Y : Type*} [AddCommGroup Y] [Module ℂ Y] (T : Y →ₗ[ℂ
   rw [LinearMap.comp_apply, hpr]
   rfl
 
-theorem phi_intertwine {Y : Type*} [AddCommGroup Y] [Module ℂ Y] (A : Fin n → Fin n → Module.End ℂ Y)
-    (T : Y →ₗ[ℂ] (Matrix (Fin n) (Fin n) ℂ → ℂ)) (G : Submodule ℂ Y) (hsm : ∀ f ∈ G, IsSmoothL2 ε (T f))
-    (hGA : ∀ a b, ∀ f ∈ G, A a b f ∈ G)
-    (hder : ∀ a b, ∀ f ∈ G, ∀ g ∈ UJset ε, Formalism.REAL.Eab ε a b (T f) g = T (A a b f) g)
-    (φ : Y →ₗ[ℂ] smD ε (rreg ε)) (hφ : ∀ f ∈ G, ((φ f : smD ε (rreg ε)) : L2 ε) = toL2 ε (T f)) :
-    ∀ a b, ∀ f ∈ G, φ (A a b f) = smE ε (rreg ε) a b (φ f) := by
-  intro a b f hf
-  apply Subtype.ext
-  have h1 : φ f = ⟨toL2 ε (T f), toL2_mem_smD_of_isSmoothL2 (hsm f hf)⟩ := Subtype.ext (hφ f hf)
-  rw [hφ _ (hGA a b f hf), h1, rightDerivative_toL2 (hsm f hf)]
-  exact (toL2_congr_on_unitary_bis (hder a b f hf)).symm
 
 end Fun
 

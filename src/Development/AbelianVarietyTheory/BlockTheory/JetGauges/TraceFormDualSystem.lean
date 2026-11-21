@@ -204,79 +204,9 @@ noncomputable def Exponent.ofFamily {ι : Type} [Fintype ι] (x : ι → Y)
     rw [Complex.normSq_eq_zero, map_eq_zero] at hi
     exact Subtype.ext hi
 
-theorem pairing_ofFamily (β : balancedForms E Y) {ι : Type} [Fintype ι] (x : ι → Y)
-    (hx : ∀ y : Module.Dual (𝓞 E) Y, (∀ i, y (x i) = 0) → y = 0) :
-    pairing (Exponent.ofFamily x hx) β = ∑ i, quad β (x i) := by
-  simp only [quad]
-  rw [pairing_of_sum _ β x x (fun _ _ => rfl), Finset.sum_div]
 
-theorem pairingValues_nonempty (β : balancedForms E Y) : (pairingValues β).Nonempty := by
-  obtain ⟨D⟩ := nonempty_dualSystem E Y
-  refine ⟨_, Exponent.ofFamily D.e fun y hy => ?_, rfl⟩
-  rw [D.dual_expand y]
-  simp [hy]
 
-theorem isPhiC_zero : IsPhiC (0 : balancedForms E Y) 0 := by
-  have hz : ∀ l : Exponent E Y, pairing l (0 : balancedForms E Y) = 0 := by
-    intro l
-    obtain ⟨D⟩ := nonempty_dualSystem E Y
-    rw [pairing_eq_dualSystem D]
-    show (∑ j, ∑ k, (0 : balancedForms E Y).1 (l.form (D.y j) (D.y k) • D.e j) (D.e k)) / 2 = 0
-    simp
-  obtain ⟨_, l, -⟩ := pairingValues_nonempty (0 : balancedForms E Y)
-  refine ⟨⟨l, hz l⟩, ?_⟩
-  rintro _ ⟨l', rfl⟩
-  exact (hz l').ge
 
-theorem exists_sum_of_add_bar_eq_one (w : 𝓞 E) (hw : w + bar E w = 1) (l : Exponent E Y) :
-    ∃ (n : ℕ) (u v : Fin n × Fin n → Y),
-      (∀ y y', l.form y y' =
-        ∑ p, (y (u p) * bar E (y' (v p)) + y (v p) * bar E (y' (u p)))) ∧
-      ∀ β : balancedForms E Y,
-        pairing l β = ∑ p, (quad β (u p + v p) - quad β (u p) - quad β (v p)) := by
-  obtain ⟨D⟩ := nonempty_dualSystem E Y
-  have hmul : ∀ b c : 𝓞 E, bar E (b * c) = bar E b * bar E c := fun b c =>
-    map_mul (IsCMField.ringOfIntegersComplexConj E) b c
-  have hsum : ∀ (s : Finset (Fin D.n × Fin D.n)) (f : Fin D.n × Fin D.n → 𝓞 E),
-      bar E (∑ p ∈ s, f p) = ∑ p ∈ s, bar E (f p) := fun s f =>
-    map_sum (IsCMField.ringOfIntegersComplexConj E) f s
-  have key : ∀ u v : Fin D.n × Fin D.n → Y,
-      (∀ y y', l.form y y' = ∑ p, (y (u p) * bar E (y' (v p)) + y (v p) * bar E (y' (u p)))) →
-      ∀ β : balancedForms E Y,
-        pairing l β = ∑ p, (quad β (u p + v p) - quad β (u p) - quad β (v p)) := by
-    intro u v hu β
-    have hS : ∀ y y', l.form y y' = ∑ s, y (Sum.elim u v s) * bar E (y' (Sum.elim v u s)) := by
-      intro y y'
-      simp only [hu, Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr, Finset.sum_add_distrib]
-    rw [pairing_of_sum l β (Sum.elim u v) (Sum.elim v u) hS, Fintype.sum_sum_type]
-    simp only [Sum.elim_inl, Sum.elim_inr, quad, map_add, AddMonoidHom.add_apply]
-    rw [← Finset.sum_add_distrib, Finset.sum_div]
-    refine Finset.sum_congr rfl fun p _ => ?_
-    ring
-  have hdec : ∀ y y', l.form y y' =
-      ∑ p : Fin D.n × Fin D.n, (y (w • (l.form (D.y p.1) (D.y p.2) • D.e p.1)) * bar E (y' (D.e p.2)) +
-        y (D.e p.2) * bar E (y' (w • (l.form (D.y p.1) (D.y p.2) • D.e p.1)))) := by
-    intro y y'
-    have h1 : l.form y y' =
-        ∑ p : Fin D.n × Fin D.n, y (l.form (D.y p.1) (D.y p.2) • D.e p.1) * bar E (y' (D.e p.2)) :=
-      D.form_eq l y y'
-    have h2 : l.form y y' =
-        ∑ p : Fin D.n × Fin D.n, y (D.e p.2) * bar E (y' (l.form (D.y p.1) (D.y p.2) • D.e p.1)) := by
-      rw [l.hermitian y' y, D.form_eq l y' y, hsum]
-      refine Finset.sum_congr rfl fun p _ => ?_
-      rw [hmul, bar_bar, mul_comm]
-    calc l.form y y' = w * l.form y y' + bar E w * l.form y y' := by
-          rw [← add_mul, hw, one_mul]
-      _ = w * (∑ p : Fin D.n × Fin D.n, y (l.form (D.y p.1) (D.y p.2) • D.e p.1) * bar E (y' (D.e p.2))) +
-          bar E w * (∑ p : Fin D.n × Fin D.n, y (D.e p.2) * bar E (y' (l.form (D.y p.1) (D.y p.2) • D.e p.1))) := by
-          rw [← h1, ← h2]
-      _ = _ := by
-          rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
-          refine Finset.sum_congr rfl fun p _ => ?_
-          simp only [map_smul, smul_eq_mul, hmul]
-          ring
-  exact ⟨D.n, fun p => w • (l.form (D.y p.1) (D.y p.2) • D.e p.1), fun p => D.e p.2, hdec,
-    key _ _ hdec⟩
 
 end Forms
 
@@ -298,22 +228,7 @@ noncomputable def traceForm : balancedForms E (𝓞 E) :=
       congr 1
       ring⟩
 
-theorem traceForm_one_one : (traceForm E).1 1 1 = Module.finrank ℚ E := by
-  simp [traceForm, NumberField.Embeddings.card]
 
-theorem traceForm_posSemidef : IsPosSemidef (traceForm E) := by
-  intro x
-  simp only [traceForm, AddMonoidHom.mk'_apply]
-  exact Finset.sum_nonneg fun τ _ => by
-    rw [Complex.mul_conj, Complex.ofReal_re]
-    exact Complex.normSq_nonneg _
 
-theorem half_finrank_mem_pairingValues :
-    ((Module.finrank ℚ E : ℝ) / 2) ∈ pairingValues (traceForm E) := by
-  refine ⟨Exponent.ofFamily (fun _ : Unit => (1 : 𝓞 E)) fun y hy => ?_, ?_⟩
-  · exact LinearMap.ext_ring (by simpa using hy ())
-  · show pairing _ _ = _
-    rw [pairing_ofFamily]
-    simp [quad, traceForm_one_one]
 
 end GlobalTheory.IndefiniteRowSideFullHecke.TraceFormDualSystem

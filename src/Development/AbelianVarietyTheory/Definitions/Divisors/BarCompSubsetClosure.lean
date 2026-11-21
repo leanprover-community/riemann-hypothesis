@@ -447,8 +447,6 @@ theorem Extends.space_le (h : Extends X Z U la) : space X Z U la ≤ vanBd X Z l
 def Extends.toVanBd (h : Extends X Z U la) : Cusp Z U la →ₗ[c.F] vanBd X Z la :=
   Submodule.inclusion h.space_le ∘ₗ h.equiv.toLinearMap
 
-theorem Extends.toVanBd_injective (h : Extends X Z U la) : Function.Injective h.toVanBd :=
-  (Submodule.inclusion_injective h.space_le).comp h.equiv.injective
 
 end Component
 

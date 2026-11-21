@@ -115,25 +115,7 @@ theorem nonempty_iff (B : Base) (C : Cols B) : Nonempty (GJStage B C) ↔ Nonemp
     (jetOn B.host ∅ (fun _ h => h.elim)) (gxOne B) (fun i => i.2.elim) (fun i => i.elim)
   exact ⟨G⟩
 
-theorem exists_all_lifts (B : Base) (C : Cols B) (cd : CDHaar) (u : B.Word)
-    (hu : ∀ j, j ≤ B.R.m → Nonempty ((C.mem u).C.cls j)) :
-    ∃ G : GJStage B C, G.cd = cd ∧ Nonempty G.jet.Sit ∧
-      (∀ j, 1 ≤ j → j ≤ B.R.m → ∃ i, G.jet.jOf i = j) ∧ ∀ u w h, (G.gat u w h).FinClasses := by
-  obtain ⟨G, -, hcd, hj, -, hfin⟩ := exists_of_jet B C (fun _ => 1) (fun _ => one_pos) cd
-    (jetOn B.host {j | 1 ≤ j ∧ j ≤ B.R.m} (fun _ h => h)) (gxOne B)
-    (fun i => ⟨u, hu _ (le_trans (Nat.sub_le _ _) i.2.2), hu _ i.2.2⟩) (fun i => i.elim)
-  have hm := B.R.two_le_m
-  refine ⟨G, hcd, ?_, ?_, hfin⟩
-  · rw [hj]; exact ⟨⟨1, le_rfl, by omega⟩⟩
-  · rw [hj]; exact fun j h1 h2 => ⟨⟨j, h1, h2⟩, rfl⟩
 
-theorem sit_spec {B : Base} {C : Cols B} (G : GJStage B C) (i : G.jet.Sit) :
-    Nonempty ((C.mem (G.jetU i)).C.cls (G.jet.jOf i - 1)) ∧ Nonempty ((C.mem (G.jetU i)).C.cls (G.jet.jOf i)) ∧
-      5 ≤ B.places.resChar (G.jetW i) ∧
-      (B.host.cls (B.places.resChar (G.jetW i)) = .signal ∨ B.host.cls (B.places.resChar (G.jetW i)) = .inertClass) := by
-  refine ⟨⟨G.jetL i⟩, ⟨G.jetL' i⟩, ?_, ?_⟩
-  · rw [G.jetW_l]; exact (G.jet.loc i).five_le_l
-  · rw [G.jetW_l]; exact G.jet.l_inert i
 
 end GlobalTheory.Mem.GJModel
 

@@ -10,7 +10,5 @@ theorem thetaFixOf_of_mult (hM : GlobalTheory.Published.CuspidalMultiplicityOne)
   thetaFixOf_of (PositivityTheory.JMult1.gelfandKazhdanDual_of_rigidity PositivityTheory.AdelicQuotientData.jacquetShalikaRigidity
     PositivityTheory.S2.CuspBdd.cuspFormsBoundedGL) CuspFormAutomorphicBounds.automorphicFormsFiniteGL hM
 
-theorem thetaFixOf_of_lit (h : PositivityTheory.Lit1.CuspidalMultiplicityOneLit) : PositivityTheory.Rg.BcB.Desc.ThetaFixOf :=
-  thetaFixOf_of_mult (PositivityTheory.Lit1.cuspidalMultiplicityOne_of_lit h)
 
 end DiscreteGroups.T1.G

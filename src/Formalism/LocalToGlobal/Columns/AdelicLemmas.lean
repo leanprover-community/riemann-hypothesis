@@ -500,10 +500,6 @@ theorem decoRaw_one : decoRaw ST SG (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.
       exact redA_pullV_one hx i
     · rfl
 
-theorem decoOf_one : decoOf ST SG (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) = DecoSet.base E n ST SG := by
-  unfold decoOf
-  rw [decoRaw_one]
-  exact dif_pos Deco.base_ok
 
 end Base
 

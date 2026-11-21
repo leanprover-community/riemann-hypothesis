@@ -75,13 +75,6 @@ theorem trivLB_isLB (X : Scheme.{0}) : (trivLB X).IsLB :=
   ⟨by simp [trivLB], fun _ => map_one _, fun _ _ _ =>
     (congrArg₂ (· * ·) (map_one _) (map_one _)).trans ((_root_.mul_one _).trans (map_one _).symm)⟩
 
-theorem pull_g_one {X Y : Scheme.{0}} (L : LB X) (h : ∀ i j, L.g i j = 1) (f : Y ⟶ X) (i j) :
-    (L.pull f).g i j = 1 := by
-  dsimp only [LB.pull, LB.LinComb]
-  erw [Finset.prod_eq_one]
-  · rfl
-  intro k _
-  rw [h, map_one]; erw [map_one]; exact _root_.one_zpow _
 
 theorem lbIso_of_g_one {X : Scheme.{0}} (L M : LB X) (hL : ∀ i j, L.g i j = 1) (hM : ∀ i j, M.g i j = 1) :
     LBIso L M := by
@@ -90,10 +83,6 @@ theorem lbIso_of_g_one {X : Scheme.{0}} (L M : LB X) (hL : ∀ i j, L.g i j = 1)
     simp only [LB.div, hL, hM, map_one, inv_one, _root_.mul_one]; rfl
   rw [this, map_one, map_one, _root_.mul_one]
 
-theorem nonempty_homFixRep_trivial (A : Over S) [GrpObj A] :
-    Nonempty (HomFixRep A (𝟙_ (Over S)) (trivLB _) (trivLB _)) :=
-  ⟨HomFixRep.toTrivial A _ _ (lbIso_of_g_one _ _ (pull_g_one _ (fun _ _ => rfl) _)
-    (pull_g_one _ (pull_g_one _ (fun _ _ => rfl) _) _))⟩
 
 def HomFixRep.fromTrivial (B : Over S) [GrpObj B] (L : LB (𝟙_ (Over S)).left) (M : LB B.left)
     (h : LBIso (L.pull (𝟙 _)) ((M.pull (𝟙 _)).pull (η[B]).left)) : HomFixRep (𝟙_ (Over S)) B L M where

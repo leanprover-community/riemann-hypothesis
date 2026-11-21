@@ -37,24 +37,10 @@ def ExpDat.all : ExpDat Y where
   Dat0 i j b := {a | DatOk Y i j b a}
   theta_base_equivariant _ _ _ _ ha := ha.1
 
-theorem ExpDat.all_max : (ExpDat.all Y).Max :=
-  fun _ _ _ _ _ ha => ha
 
-theorem ExpDat.all_data_admT4 : admT4 Y (ExpDat.all Y) := by
-  intro i _ j _ b k Q ψ hψ Sg hSg
-  unfold ThPsi
-  rw [Submodule.span_le]
-  intro x hx
-  simp only [Set.mem_iUnion] at hx
-  obtain ⟨a, ha, hxa⟩ := hx
-  exact (hSg ha).2.2.2 k Q ψ hψ hxa
 
 variable {Y}
 
-theorem ExpDat.all_data_isotypicPartsInternalDirectSum {E : ExpDat Y} (h : IsotypicPartsInternalDirectSum Y E) : IsotypicPartsInternalDirectSum Y (ExpDat.all Y) := by
-  intro i hi j hj b
-  obtain ⟨h1, h2, h3, h4, -, -⟩ := h i hi j hj b
-  exact ⟨h1, h2, h3, h4, fun a ha => ha.2.1, fun k Q ψ hψ hu a ha => ha.2.2.1 k Q ψ hψ hu⟩
 
 theorem ExpDat.Max.eq_all {E : ExpDat Y} (hM : E.Max) (hI : IsotypicPartsInternalDirectSum Y E) (hT : admT4 Y E) (i : X.Tw) (hi : X.NonzeroIndexPlace i)
     (j : ℕ) (hj : j ∈ Finset.Icc 1 D.R.m) (b : Bool) : E.Dat0 i j b = {a | DatOk Y i j b a} := by
@@ -71,13 +57,6 @@ theorem ExpDat.Max.eq_all {E : ExpDat Y} (hM : E.Max) (hI : IsotypicPartsInterna
   · intro ha
     exact hM i j hj b a ha
 
-theorem ExpDat.thSub_all (Sg0 : ∀ (i : X.Tw) (j : ℕ) (b : Bool), Set (Y.Dat i j b))
-    (h : ∀ i, ∀ j ∈ Finset.Icc 1 D.R.m, ∀ b, ∀ a ∈ Sg0 i j b, DatOk Y i j b a) : ThSub Y (ExpDat.all Y) Sg0 := by
-  intro i j hj b
-  unfold ThJ Th SgJ
-  apply Submodule.span_mono
-  rintro _ ⟨a, ha, rfl⟩
-  exact ⟨a, h i j hj b a ha, rfl⟩
 
 end Formalism.MainNotions.IntegralHeckeForms
 
@@ -145,46 +124,7 @@ def AvRec (D : D7) : Finset (PlE D.host) := (avSet_finite D).toFinset
 theorem mem_avRec {D : D7} (v : PlE D.host) : v ∈ AvRec D ↔ ∃ p ∈ avPrimes D, v ∈ placesOver D.host.E p := by
   simp only [AvRec, AvSet, Set.Finite.mem_toFinset, Set.mem_iUnion, exists_prop]
 
-theorem prime_of_mem_avPrimes {D : D7} {q : ℕ} (hq : q ∈ avPrimes D) : q.Prime := by
-  unfold avPrimes at hq
-  rw [Finset.mem_filter] at hq
-  obtain ⟨hq, hq0⟩ := hq
-  rcases Finset.mem_union.mp hq with hq | hq
-  · simp only [Finset.mem_insert, Finset.mem_image, Finset.mem_univ, true_and] at hq
-    rcases hq with rfl | rfl | rfl | rfl | rfl | rfl | rfl | ⟨u, rfl⟩
-    · norm_num
-    · norm_num
-    · exact D.host.g_prime 0
-    · exact D.host.g_prime 1
-    · exact D.host.pde_prime
-    · exact D.host.pde'_prime
-    · have hS : {p : ℕ | p.Prime ∧ p % (rPrAv D * LevelStarExponents.condE D) = 1 ∧
-          ¬ p ∣ Ideal.absNorm D.host.ccK}.Nonempty := by
-        by_contra hS
-        rw [Set.not_nonempty_iff_eq_empty] at hS
-        exact hq0 (by unfold q0Av; rw [hS, Nat.sInf_empty])
-      exact (Nat.sInf_mem hS).1
-    · exact (D.mem u).A.T_prime
-  · exact Nat.prime_of_mem_primeFactors hq
 
-theorem not_mem_avRec_of_over {D : D7} {v : PlE D.host} {p : ℕ} (hp : p.Prime) (hpav : p ∉ avPrimes D)
-    (hv : v ∈ placesOver D.host.E p) : v ∉ AvRec D := by
-  intro hv'
-  obtain ⟨q, hq, hvq⟩ := (mem_avRec v).mp hv'
-  by_cases hqp : q = p
-  · exact hpav (hqp ▸ hq)
-  have hcop : Nat.Coprime q p := (Nat.coprime_primes (prime_of_mem_avPrimes hq) hp).mpr hqp
-  have h1 : ((Nat.gcd q p : ℤ) : 𝓞 D.host.E) =
-      (q : 𝓞 D.host.E) * (Nat.gcdA q p : 𝓞 D.host.E) + (p : 𝓞 D.host.E) * (Nat.gcdB q p : 𝓞 D.host.E) := by
-    rw [Nat.gcd_eq_gcd_ab]
-    push_cast
-    ring
-  rw [Nat.Coprime.gcd_eq_one hcop, Nat.cast_one, Int.cast_one] at h1
-  have hq' : ((q : ℕ) : 𝓞 D.host.E) ∈ v.asIdeal := hvq
-  have hp' : ((p : ℕ) : 𝓞 D.host.E) ∈ v.asIdeal := hv
-  apply v.isPrime.ne_top
-  rw [Ideal.eq_top_iff_one, h1]
-  exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ hq') (Ideal.mul_mem_right _ _ hp')
 
 open Classical in
 
@@ -223,7 +163,6 @@ def TwGoodE {eps : ℝ} (Fm : FamP eps) (E : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix 
 
 def twEOf {D : D7} (T : ThData D) : IntegralHeckeForms.XD D := ⟨T.xd0, T.thetaBase_invariant_action⟩
 
-theorem twist_data_zero_eq {D : D7} (T : ThData D) : (twEOf T).Dat0 = T.xd0 := rfl
 
 def twE {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) : IntegralHeckeForms.XD (Fm.D x i) := twEOf (Fm.ex x hx i).xd
 

@@ -162,9 +162,6 @@ theorem HasParam.exists_vec (hρ : HasParam σ J L h ρ B) : ∃ x, IsParamVec �
   · exact hρ.exists_vec.imp fun x hx => Or.inl ⟨hv, e, he, hx⟩
   · exact hρ.exists_vec.imp fun x hx => Or.inr ⟨hv, c, ϖ, e, α, hU, he, hx, hB⟩
 
-theorem HasParam.isSpherical (hρ : HasParam σ J L h ρ B) : GlobalTheory.LGrp.IsSpherical ρ (stabLoc σ J L v) := by
-  obtain ⟨x, hx⟩ := hρ.exists_vec
-  exact (Submodule.ne_bot_iff _).2 ⟨x, hx.mem_fixed, hx.ne_zero⟩
 
 theorem IsParamVec.isSatVecGL (hx : IsParamVec σ J L h ρ x B) (hv : IsSplit (E := E) v)
     {e : GLoc σ J v ≃* GL (Fin n) (w.adicCompletion E)} (he : IsSplitChart σ J L h e) :
@@ -195,10 +192,6 @@ theorem HasParam.hasParam_paramOf (hρ : HasParam σ J L h ρ B) : HasParam σ J
   rw [paramOf, dif_pos ⟨B, hρ⟩]
   exact Exists.choose_spec (⟨B, hρ⟩ : ∃ B, HasParam σ J L h ρ B)
 
-theorem HasParam.paramOf_eq_of_isSplit (hv : IsSplit (E := E) v) (hρ : HasParam σ J L h ρ B) :
-    paramOf σ J L h ρ = B := by
-  obtain ⟨x, hx⟩ := hρ.exists_vec
-  exact (hρ.hasParam_paramOf.isParamVec hx.mem_fixed hx.ne_zero).unique_of_isSplit hv hx
 
 theorem hasParam_psFunGL (hv : IsSplit (E := E) v) {e : GLoc σ J v ≃* GL (Fin n) (w.adicCompletion E)}
     (he : IsSplitChart σ J L h e) (α : Fin n → ℂˣ) :

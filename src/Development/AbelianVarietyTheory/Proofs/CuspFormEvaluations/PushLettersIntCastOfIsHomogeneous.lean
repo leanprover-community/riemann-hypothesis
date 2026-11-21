@@ -165,8 +165,6 @@ theorem symO_mono (h : Λ ≤ Λ') : symO p q τ Λ ≤ symO p q τ Λ' :=
   (symO_le_iff τ).2 ⟨fun t a _ hv => xForm_mem_symO τ t a (h hv),
     fun t b _ hv => yForm_mem_symO τ t b (h hv)⟩
 
-theorem Ha_mono (h : Λ ≤ Λ') : Ha τ c c' Λ ≤ Ha τ c c' Λ' :=
-  fun _ hP => ⟨hP.1, symO_mono τ h hP.2⟩
 
 theorem det_mem_subalgebra {R A ι : Type*} [CommRing R] [CommRing A] [Algebra R A] [Fintype ι]
     [DecidableEq ι] (B : Subalgebra R A) {M : Matrix ι ι A} (h : ∀ i j, M i j ∈ B) : M.det ∈ B := by
@@ -241,11 +239,6 @@ theorem eq_pushLetters (A : Matrix (Fin n) (Fin n) E)
   · rw [← xForm_single, ← h₁, hx, pushLetters_xForm]
   · rw [← yForm_single, ← h₂, hy, pushLetters_yForm]
 
-theorem pushLetters_mul (A B : Matrix (Fin n) (Fin n) E) :
-    pushLetters p q τ (A * B) = (pushLetters p q τ A).comp (pushLetters p q τ B) :=
-  (eq_pushLetters τ _ _
-    (fun t a v => by rw [AlgHom.comp_apply, pushLetters_xForm, pushLetters_xForm, mulVec_mulVec])
-    fun t b v => by rw [AlgHom.comp_apply, pushLetters_yForm, pushLetters_yForm, mulVec_mulVec]).symm
 
 theorem map_pushLetters_symO (A : Matrix (Fin n) (Fin n) E) (Λ : Submodule (𝓞 E) (Fin n → E)) :
     (symO p q τ Λ).map ((pushLetters p q τ A).restrictScalars (𝓞 K)) =

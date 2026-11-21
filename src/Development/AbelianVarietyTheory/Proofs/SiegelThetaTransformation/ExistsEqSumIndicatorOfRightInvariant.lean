@@ -114,24 +114,6 @@ theorem exists_gl_of_span_eq {O Q n : Type*} [CommRing O] [IsLocalRing O] [AddCo
   obtain ⟨g, hg⟩ := exists_gl_of_span_eq_top _ _ (hspan a hab) (hspan b rfl)
   exact ⟨g, fun j => by simpa using congrArg Subtype.val (hg j)⟩
 
-theorem exists_gl_comp_eq_of_surjective {O Q n : Type*} [CommRing O] [IsLocalRing O]
-    [AddCommGroup Q] [Module O Q] [Fintype n] [DecidableEq n] (a b : (n → O) →ₗ[O] Q)
-    (ha : Function.Surjective a) (hb : Function.Surjective b) :
-    ∃ g : GL n O, a = b ∘ₗ Matrix.toLin' (g : Matrix n n O) := by
-  have hspan : ∀ c : (n → O) →ₗ[O] Q, Function.Surjective c →
-      Submodule.span O (Set.range fun i => c (Pi.basisFun O n i)) = ⊤ := by
-    intro c hc
-    have : (Set.range fun i => c (Pi.basisFun O n i)) = c '' Set.range (Pi.basisFun O n) := by
-      rw [← Set.range_comp]; rfl
-    rw [this, ← Submodule.map_span, (Pi.basisFun O n).span_eq, Submodule.map_top,
-      LinearMap.range_eq_top.2 hc]
-  obtain ⟨g, hg⟩ := exists_gl_of_span_eq_top _ _ (hspan a ha) (hspan b hb)
-  refine ⟨g, (Pi.basisFun O n).ext fun j => ?_⟩
-  rw [hg j, LinearMap.comp_apply]
-  simp_rw [← map_smul, ← map_sum]
-  congr 1
-  ext i
-  simp [Pi.single_apply, Finset.sum_apply]
 
 open Classical in
 
@@ -285,29 +267,7 @@ theorem exists_eq_sum_ite_integral {O m n R : Type*} [CommRing O] [IsDomain O]
   refine Finset.sum_congr rfl fun l _ => ?_
   simp only [hiff]
 
-theorem forall_mem_range_iff {O K m n : Type*} [CommRing O] [CommRing K] [Algebra O K]
-    (x : Matrix m n K) :
-    (∀ i j, x i j ∈ (algebraMap O K).range) ↔
-      ∃ y : Matrix m n O, y.map (algebraMap O K) = x := by
-  constructor
-  · intro h
-    choose y hy using h
-    exact ⟨Matrix.of y, Matrix.ext hy⟩
-  · rintro ⟨y, rfl⟩ i j
-    exact ⟨y i j, rfl⟩
 
-theorem forall_mul_map_mem_range_iff {O K m n : Type*} [CommRing O] [CommRing K] [Algebra O K]
-    [Fintype n] [DecidableEq n] (x : Matrix m n K) (k : GL n O) :
-    (∀ i j, (x * (k : Matrix n n O).map (algebraMap O K)) i j ∈ (algebraMap O K).range) ↔
-      ∀ i j, x i j ∈ (algebraMap O K).range := by
-  rw [forall_mem_range_iff, forall_mem_range_iff]
-  constructor
-  · rintro ⟨y, hy⟩
-    refine ⟨y * ((k⁻¹ : GL n O) : Matrix n n O), ?_⟩
-    rw [Matrix.map_mul, hy, Matrix.mul_assoc, ← Matrix.map_mul, Units.mul_inv,
-      Matrix.map_one _ (map_zero _) (map_one _), Matrix.mul_one]
-  · rintro ⟨y, rfl⟩
-    exact ⟨y * (k : Matrix n n O), Matrix.map_mul⟩
 
 end LatticeIndicator
 
@@ -319,151 +279,10 @@ variable {O K m n R : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing 
   [Finite (IsLocalRing.ResidueField O)] [Field K] [Algebra O K] [IsFractionRing O K]
   [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] [CommRing R]
 
-theorem exists_eq_sum_indicator_of_right_invariant {a b : O} (ha : a ≠ 0) (hb : b ≠ 0)
-    (φ : Matrix m n K → R)
-    (hinv : ∀ (x : Matrix m n K) (k : GL n O),
-      φ (x * (k : Matrix n n O).map (algebraMap O K)) = φ x)
-    (hsupp : ∀ x : Matrix m n K, φ x ≠ 0 →
-      ∀ i j, (algebraMap O K a • x) i j ∈ (algebraMap O K).range)
-    (hper : ∀ x y : Matrix m n K, (∀ i j, y i j ∈ (algebraMap O K).range) →
-      φ (x + algebraMap O K b • y) = φ x) :
-    ∃ (r : ℕ) (h : Fin r → GL m K) (c : Fin r → R), ∀ x : Matrix m n K,
-      φ x = ∑ l, c l * Set.indicator {y : Matrix m n K | ∀ i j, y i j ∈ (algebraMap O K).range}
-        1 ((((h l)⁻¹ : GL m K) : Matrix m m K) * x) := by
-  classical
-  set f := algebraMap O K with hf
-  have hinj : Function.Injective f := IsFractionRing.injective O K
-  have ha' : f a ≠ 0 := (map_ne_zero_iff f hinj).2 ha
-  obtain ⟨r, h, c, hdet, hψ⟩ := exists_eq_sum_ite_integral (mul_ne_zero ha hb)
-    (fun z : Matrix m n O => φ ((f a)⁻¹ • z.map f))
-    (fun z k => by rw [Matrix.map_mul, ← Matrix.smul_mul, hinv])
-    (fun z y => by
-      have : (f a)⁻¹ • (z + (a * b) • y).map f = (f a)⁻¹ • z.map f + f b • y.map f := by
-        ext i j
-        simp only [Matrix.smul_apply, Matrix.map_apply, Matrix.add_apply, smul_eq_mul, map_add,
-          map_mul]
-        field_simp
-      rw [this, hper _ (y.map f) fun i j => ⟨y i j, rfl⟩])
-  have hdet' : ∀ l, ((f a)⁻¹ • (h l).map f).det ≠ 0 := by
-    intro l
-    rw [Matrix.det_smul]
-    refine mul_ne_zero (pow_ne_zero _ (inv_ne_zero ha')) ?_
-    have := RingHom.map_det f (h l)
-    rw [RingHom.mapMatrix_apply] at this
-    rw [← this]
-    exact (map_ne_zero_iff f hinj).2 (hdet l)
-  let H : Fin r → GL m K := fun l => Matrix.GeneralLinearGroup.mkOfDetNeZero _ (hdet' l)
-  have hH : ∀ l, (H l : Matrix m m K) = (f a)⁻¹ • (h l).map f := fun l => rfl
-  have hmem : ∀ l (x : Matrix m n K),
-      ((((H l)⁻¹ : GL m K) : Matrix m m K) * x ∈
-        {y : Matrix m n K | ∀ i j, y i j ∈ f.range}) ↔
-      ∃ y : Matrix m n O, f a • x = (h l * y).map f := by
-    intro l x
-    rw [Set.mem_setOf_eq, hf, forall_mem_range_iff, ← hf]
-    refine exists_congr fun y => ?_
-    rw [Matrix.map_mul]
-    have h1 : (h l).map f = f a • (H l : Matrix m m K) := by
-      rw [hH, smul_smul, mul_inv_cancel₀ ha', one_smul]
-    rw [h1, Matrix.smul_mul, (smul_right_injective _ ha').eq_iff]
-    constructor
-    · intro hy
-      rw [hy, ← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul]
-    · intro hy
-      rw [hy, ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
-  refine ⟨r, H, c, fun x => ?_⟩
-  by_cases hx : ∃ z : Matrix m n O, z.map f = f a • x
-  · obtain ⟨z, hz⟩ := hx
-    have h1 := hψ z
-    simp only [hz, smul_smul, inv_mul_cancel₀ ha', one_smul] at h1
-    rw [h1]
-    refine Finset.sum_congr rfl fun l _ => ?_
-    rw [Set.indicator_apply]
-    have h2 : ∀ y : Matrix m n O, f a • x = (h l * y).map f ↔ z = h l * y := fun y => by
-      rw [← hz]
-      exact (Matrix.map_injective hinj).eq_iff
-    simp only [hmem, h2, Pi.one_apply]
-  · have h0 : φ x = 0 := by
-      by_contra h0
-      exact hx ((forall_mem_range_iff _).1 (hsupp x h0))
-    rw [h0]
-    refine (Finset.sum_eq_zero fun l _ => ?_).symm
-    rw [Set.indicator_of_notMem, mul_zero]
-    rw [hmem]
-    rintro ⟨y, hy⟩
-    exact hx ⟨_, hy.symm⟩
 
-theorem exists_eq_sum_indicator_of_left_invariant {a b : O} (ha : a ≠ 0) (hb : b ≠ 0)
-    (φ : Matrix m n K → R)
-    (hinv : ∀ (x : Matrix m n K) (k : GL m O),
-      φ ((k : Matrix m m O).map (algebraMap O K) * x) = φ x)
-    (hsupp : ∀ x : Matrix m n K, φ x ≠ 0 →
-      ∀ i j, (algebraMap O K a • x) i j ∈ (algebraMap O K).range)
-    (hper : ∀ x y : Matrix m n K, (∀ i j, y i j ∈ (algebraMap O K).range) →
-      φ (x + algebraMap O K b • y) = φ x) :
-    ∃ (r : ℕ) (g : Fin r → GL n K) (c : Fin r → R), ∀ x : Matrix m n K,
-      φ x = ∑ l, c l * Set.indicator {y : Matrix m n K | ∀ i j, y i j ∈ (algebraMap O K).range}
-        1 (x * (g l : Matrix n n K)) := by
-  obtain ⟨r, h, c, hφ⟩ := exists_eq_sum_indicator_of_right_invariant ha hb
-    (fun x : Matrix n m K => φ xᵀ)
-    (fun x k => by
-      rw [Matrix.transpose_mul, ← Matrix.transpose_map]
-      exact hinv _ ⟨k.valᵀ, k.invᵀ,
-        by rw [← Matrix.transpose_mul, k.inv_val, Matrix.transpose_one],
-        by rw [← Matrix.transpose_mul, k.val_inv, Matrix.transpose_one]⟩)
-    (fun x hx i j => hsupp _ hx j i)
-    (fun x y hy => hper xᵀ yᵀ fun i j => hy j i)
-  refine ⟨r, fun l => ⟨(h l).invᵀ, (h l).valᵀ,
-    by rw [← Matrix.transpose_mul, (h l).val_inv, Matrix.transpose_one],
-    by rw [← Matrix.transpose_mul, (h l).inv_val, Matrix.transpose_one]⟩, c, fun x => ?_⟩
-  refine (hφ xᵀ).trans (Finset.sum_congr rfl fun l _ => ?_)
-  congr 1
-  have h1 : (((h l)⁻¹ : GL n K) : Matrix n n K) * xᵀ = (x * (h l).invᵀ)ᵀ := by
-    rw [Matrix.transpose_mul, Matrix.transpose_transpose]; rfl
-  rw [h1]
-  by_cases hx : ∀ i j, (x * (h l).invᵀ) i j ∈ (algebraMap O K).range
-  · rw [Set.indicator_of_mem (by exact fun i j => hx j i), Set.indicator_of_mem (by exact hx)]
-    rfl
-  · rw [Set.indicator_of_notMem (by exact fun h' => hx fun i j => h' j i),
-      Set.indicator_of_notMem (by exact hx)]
 
-theorem mem_span_indicator_of_right_invariant {a b : O} (ha : a ≠ 0) (hb : b ≠ 0)
-    (φ : Matrix m n K → R)
-    (hinv : ∀ (x : Matrix m n K) (k : GL n O),
-      φ (x * (k : Matrix n n O).map (algebraMap O K)) = φ x)
-    (hsupp : ∀ x : Matrix m n K, φ x ≠ 0 →
-      ∀ i j, (algebraMap O K a • x) i j ∈ (algebraMap O K).range)
-    (hper : ∀ x y : Matrix m n K, (∀ i j, y i j ∈ (algebraMap O K).range) →
-      φ (x + algebraMap O K b • y) = φ x) :
-    φ ∈ Submodule.span R (Set.range fun (h : GL m K) (x : Matrix m n K) =>
-      Set.indicator {y : Matrix m n K | ∀ i j, y i j ∈ (algebraMap O K).range}
-        (1 : Matrix m n K → R) (((h⁻¹ : GL m K) : Matrix m m K) * x)) := by
-  obtain ⟨r, h, c, hφ⟩ := exists_eq_sum_indicator_of_right_invariant ha hb φ hinv hsupp hper
-  have : φ = ∑ l, c l • fun x : Matrix m n K =>
-      Set.indicator {y : Matrix m n K | ∀ i j, y i j ∈ (algebraMap O K).range}
-        (1 : Matrix m n K → R) ((((h l)⁻¹ : GL m K) : Matrix m m K) * x) := by
-    ext x
-    rw [hφ x, Finset.sum_apply]
-    rfl
-  rw [this]
-  exact Submodule.sum_mem _ fun l _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨h l, rfl⟩)
 
 end Main
 
-theorem invariant_testFun_eq_sum_indicator {O K : Type*} [CommRing O] [IsDomain O]
-    [IsDiscreteValuationRing O] [Finite (IsLocalRing.ResidueField O)] [Field K] [Algebra O K]
-    [IsFractionRing O K] {ϖ : O} (hϖ : Irreducible ϖ) {M n : ℕ} (N : ℕ)
-    (φ : Matrix (Fin M) (Fin n) K → ℂ)
-    (hinv : ∀ (x : Matrix (Fin M) (Fin n) K) (k : GL (Fin n) O),
-      φ (x * (k : Matrix (Fin n) (Fin n) O).map (algebraMap O K)) = φ x)
-    (hsupp : ∀ x : Matrix (Fin M) (Fin n) K, φ x ≠ 0 →
-      ∀ i j, (algebraMap O K ϖ ^ N • x) i j ∈ (algebraMap O K).range)
-    (hper : ∀ x y : Matrix (Fin M) (Fin n) K, (∀ i j, y i j ∈ (algebraMap O K).range) →
-      φ (x + algebraMap O K ϖ ^ N • y) = φ x) :
-    ∃ (r : ℕ) (h : Fin r → GL (Fin M) K) (c : Fin r → ℂ), ∀ x : Matrix (Fin M) (Fin n) K,
-      φ x = ∑ l, c l * Set.indicator
-        {y : Matrix (Fin M) (Fin n) K | ∀ i j, y i j ∈ (algebraMap O K).range}
-        1 ((((h l)⁻¹ : GL (Fin M) K) : Matrix (Fin M) (Fin M) K) * x) :=
-  exists_eq_sum_indicator_of_right_invariant (pow_ne_zero N hϖ.ne_zero) (pow_ne_zero N hϖ.ne_zero)
-    φ hinv (by simpa only [map_pow] using hsupp) (by simpa only [map_pow] using hper)
 
 end GlobalTheory

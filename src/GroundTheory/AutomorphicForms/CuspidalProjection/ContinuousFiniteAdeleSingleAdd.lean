@@ -44,8 +44,6 @@ def adeleSingle : v.adicCompletion K →+ 𝔸[K] :=
   (AddMonoidHom.inr (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K)).comp
     (GroundTheory.Global.finiteAdeleSingleAdd v)
 
-theorem continuous_adeleSingle : Continuous (adeleSingle (K := K) v) :=
-  continuous_const.prodMk (continuous_finiteAdeleSingleAdd v)
 
 def evAt : 𝔸[K] →+* v.adicCompletion K :=
   (RestrictedProduct.evalRingHom (fun u : HeightOneSpectrum (𝓞 K) => u.adicCompletion K) v).comp
@@ -53,8 +51,6 @@ def evAt : 𝔸[K] →+* v.adicCompletion K :=
 
 theorem evAt_apply (x : 𝔸[K]) : evAt v x = x.2 v := rfl
 
-theorem evAt_adeleSingle (x : v.adicCompletion K) : evAt v (adeleSingle v x) = x :=
-  GroundTheory.Global.finiteAdeleSingleAdd_apply_self v x
 
 def compAt : AdelicGLn.AdelicGL K n →* GL (Fin n) (v.adicCompletion K) :=
   (RestrictedProduct.evalMonoidHom (fun w : HeightOneSpectrum (𝓞 K) => GL (Fin n) (w.adicCompletion K)) v).comp
@@ -90,19 +86,7 @@ theorem unipAt_add (y y' : UPos n r → v.adicCompletion K) :
   funext p
   simp [map_add]
 
-theorem continuous_unipAt : Continuous (unipAt (K := K) n r v) :=
-  (continuous_unipOne (K := K) (n := n) r).comp (continuous_pi fun p => (continuous_adeleSingle v).comp
-    (continuous_apply p))
 
-theorem compAt_unipAt (y : UPos n r → v.adicCompletion K) :
-    compAt v ((unipAt n r v y : normOneGL K n) : AdelicGLn.AdelicGL K n) = unipGL y := by
-  refine Units.ext (Matrix.ext fun a b => ?_)
-  show (compAt v ((unipAt n r v y : normOneGL K n) : AdelicGLn.AdelicGL K n) :
-    GL (Fin n) (v.adicCompletion K)) a b = (unipGL y : GL (Fin n) (v.adicCompletion K)) a b
-  rw [compAt_apply, ← evAt_apply]
-  simp only [unipAt, coe_unipOne, coe_unipGL, unipMatrix, Matrix.add_apply, blockEntry_apply,
-    Matrix.one_apply, map_add]
-  split_ifs <;> simp [evAt_adeleSingle]
 
 def unipCoord (g : normOneGL K n) : UPos n r → v.adicCompletion K := fun p =>
   (compAt v (g : AdelicGLn.AdelicGL K n) : GL (Fin n) (v.adicCompletion K)) p.1.1 p.1.2
@@ -114,20 +98,7 @@ theorem continuous_unipCoord : Continuous (unipCoord (K := K) (n := n) (r := r) 
     Units.continuous_val.matrix_elem p.1.1 p.1.2
   exact h.comp ((continuous_compAt v).comp continuous_subtype_val)
 
-theorem unipCoord_unipAt (y : UPos n r → v.adicCompletion K) :
-    unipCoord v (unipAt n r v y) = y := by
-  funext p
-  simp only [unipCoord, compAt_unipAt, coe_unipGL, unipMatrix, Matrix.add_apply, blockEntry_apply,
-    dif_pos p.2]
-  have hne : p.1.1 ≠ p.1.2 := fun e => by have := p.2; rw [e] at this; omega
-  rw [Matrix.one_apply_ne hne, zero_add]
 
-theorem isProperHom_unipAt : IsProperHom (unipAt (K := K) n r v) where
-  continuous := continuous_unipAt v
-  map_add := unipAt_add v
-  isCompact_preimage _ hC :=
-    (hC.image (continuous_unipCoord v)).of_isClosed_subset
-      (hC.isClosed.preimage (continuous_unipAt v)) fun y hy => ⟨_, hy, unipCoord_unipAt v y⟩
 
 end CuspidalProjection
 

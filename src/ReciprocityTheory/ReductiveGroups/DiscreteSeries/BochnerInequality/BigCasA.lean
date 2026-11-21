@@ -14,47 +14,9 @@ section AlgGen
 
 variable {X : Type*} [AddCommGroup X] [Module ℂ X] {ε : Fin n → Bool}
 
-theorem sum_compact_swap {R : Type*} [AddCommMonoid R] (f : Fin n → Fin n → R) :
-    ∑ a, ∑ b ∈ univ.filter (fun b => ε b = ε a), f a b =
-      ∑ a, ∑ b ∈ univ.filter (fun b => ε b = ε a), f b a := by
-  simp only [Finset.sum_filter]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  simp only [eq_comm]
 
-theorem isGlRep_add {A B : Fin n → Fin n → Module.End ℂ X} (hA : IsGlRep A) (hB : IsGlRep B)
-    (hAB : ∀ a b c d, A a b * B c d = B c d * A a b) : IsGlRep (A + B) := by
-  intro a b c d
-  simp only [Pi.add_apply]
-  have h1 := hA a b c d
-  have h2 := hB a b c d
-  have h3 := hAB a b c d
-  have h4 := hAB c d a b
-  have : (A a b + B a b) * (A c d + B c d) - (A c d + B c d) * (A a b + B a b) =
-      (A a b * A c d - A c d * A a b) + (B a b * B c d - B c d * B a b) := by
-    simp only [add_mul, mul_add]
-    rw [h3, h4]
-    abel
-  rw [this, h1, h2]
-  split_ifs <;> (try simp only [sub_zero, zero_sub, add_zero]) <;> abel
 
-theorem casimirK_add (A B : Fin n → Fin n → Module.End ℂ X)
-    (hAB : ∀ a b c d, A a b * B c d = B c d * A a b) :
-    casimirK ε (A + B) = casimirK ε A + casimirK ε B +
-      2 • ∑ a, ∑ b ∈ univ.filter (fun b => ε b = ε a), B a b * A b a := by
-  unfold casimirK
-  simp only [Pi.add_apply, add_mul, mul_add, Finset.sum_add_distrib]
-  have : ∑ a, ∑ b ∈ univ.filter (fun b => ε b = ε a), A a b * B b a =
-      ∑ a, ∑ b ∈ univ.filter (fun b => ε b = ε a), B a b * A b a := by
-    rw [sum_compact_swap]
-    exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => hAB b a a b
-  rw [this, two_nsmul]
-  abel
 
-theorem commute_casimirK {A : Fin n → Fin n → Module.End ℂ X} {Z : Module.End ℂ X}
-    (h : ∀ c d, Commute Z (A c d)) : Commute Z (casimirK ε A) := by
-  unfold casimirK
-  exact Commute.sum_right _ _ _ fun a _ => Commute.sum_right _ _ _ fun b _ => (h a b).mul_right (h b a)
 
 end AlgGen
 
@@ -88,40 +50,9 @@ theorem mem_ncV_iff {k : ℕ} {F : Big n k M} : F ∈ ncV ε V k ↔
   refine forall_congr' fun κ => ?_
   split_ifs with h <;> simp [h] <;> rfl
 
-theorem mAct_comm_factorAd (k : ℕ) (i : Fin k) (a b c d : Fin n) :
-    mAct E k a b * factorAd k i c d = factorAd k i c d * mAct E k a b := by
-  ext F : 1
-  refine big_ext fun κ => ?_
-  simp only [Module.End.mul_apply, mAct_apply, factorAd_apply, map_sub]
-  split_ifs <;> simp
 
-theorem factorAd_comm_factorAd {k : ℕ} {i j : Fin k} (hij : i ≠ j) (a b c d : Fin n) :
-    factorAd (M := M) k i a b * factorAd k j c d = factorAd k j c d * factorAd k i a b := by
-  ext F : 1
-  refine big_ext fun κ => ?_
-  simp only [Module.End.mul_apply, factorAd_apply, Function.update_of_ne hij.symm,
-    Function.update_of_ne hij, Function.update_comm hij]
-  split_ifs <;> abel
 
-theorem mAct_isGlRep (hE : IsGlRep E) (k : ℕ) : IsGlRep (mAct E k) := by
-  intro a b c d
-  ext F : 1
-  refine big_ext fun κ => ?_
-  have := LinearMap.congr_fun (hE a b c d) (F κ)
-  simp only [LinearMap.sub_apply, Module.End.mul_apply] at this ⊢
-  split_ifs at this ⊢ <;> simpa [mAct_apply, PiLp.sub_apply] using this
 
-theorem isGlRep_factorAd (k : ℕ) (i : Fin k) : IsGlRep (n := n) (fun a b => factorAd (M := M) k i a b) := by
-  intro a b c d
-  ext F : 1
-  refine big_ext fun κ => ?_
-  rcases hx : κ i with ⟨x, y⟩
-  have hz : ∀ p : Prop, ∀ _ : Decidable p, ∀ f : Module.End ℂ (Big n k M),
-      ((if p then f else 0) F) κ = if p then f F κ else 0 := by
-    intro p _ f; split_ifs <;> rfl
-  simp only [LinearMap.sub_apply, Module.End.mul_apply, PiLp.sub_apply, hz, factorAd_apply,
-    Function.update_self, Function.update_idem, hx]
-  split_ifs <;> (try subst_vars) <;> (try contradiction) <;> abel
 
 def positionPerm {k : ℕ} (i : Fin k) (τ : Equiv.Perm (Fin n × Fin n)) :
     Equiv.Perm (Fin k → Fin n × Fin n) where
@@ -171,9 +102,6 @@ theorem factorAd_adjoint (k : ℕ) (i : Fin k) (a b : Fin n) (F G : Big n k M) :
         rw [Ne, Equiv.swap_apply_eq_iff, Equiv.swap_apply_left]; exact h
       simp [h, this]
 
-theorem mAct_adj (hU : IsInfUnitary ε E) (k : ℕ) {a b : Fin n} (hab : ε a = ε b) (F G : Big n k M) :
-    inner ℂ (mAct E k a b F) G = inner ℂ F (mAct E k b a G) := by
-  simp only [PiLp.inner_apply, mAct_apply, hU a b, adjSign, hab, if_true, one_mul]
 
 theorem factorAd_mem_ncV {k : ℕ} (i : Fin k) {a b : Fin n} (hab : ε a = ε b) {F : Big n k M}
     (hF : F ∈ ncV ε V k) : factorAd k i a b F ∈ ncV ε V k := by

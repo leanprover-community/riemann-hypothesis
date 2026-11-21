@@ -96,10 +96,6 @@ theorem relIndex_ne_zero_of_isOpen {G : Type*} [Group G] [TopologicalSpace G] [I
   have : Finite (K ⧸ U.subgroupOf K) := Subgroup.quotient_finite_of_isOpen _ (hU.preimage continuous_subtype_val)
   exact fun h => Subgroup.index_ne_zero_of_finite (Subgroup.relIndex_eq_zero_of_le_right hH h)
 
-theorem invVol_pos {C : Subgroup (GL (n ⊕ Fin c) k)} (ho : IsOpen (C : Set (GL (n ⊕ Fin c) k)))
-    (hc : IsCompact (C : Set (GL (n ⊕ Fin c) k))) : 0 < invVol C :=
-  div_pos (Nat.cast_pos.2 (Nat.pos_of_ne_zero (relIndex_ne_zero_of_isOpen ho isCompact_KO inf_le_right)))
-    (Nat.cast_pos.2 (Nat.pos_of_ne_zero (relIndex_ne_zero_of_isOpen isOpen_KO hc inf_le_right)))
 
 theorem invVol_KO : invVol (KO k (n ⊕ Fin c)) = 1 := by
   simp [invVol, Subgroup.relIndex_eq_one.2 inf_le_right]
@@ -296,32 +292,8 @@ def unfSupport : Set (Cosets hs J) := {β | (unfTerm ψ ν keep ρ T β).datum �
 def unf (hfin : (unfSupport ψ ν keep ρ T).Finite) : Multiset (UnfTerm G) :=
   hfin.toFinset.val.map (unfTerm ψ ν keep ρ T)
 
-theorem sum_unf (hfin : (unfSupport ψ ν keep ρ T).Finite) (f : UnfTerm G → ℂ) :
-    ((unf ψ ν keep ρ T hfin).map f).sum = ∑ᶠ β ∈ unfSupport ψ ν keep ρ T, f (unfTerm ψ ν keep ρ T β) := by
-  rw [finsum_mem_eq_finite_toFinset_sum _ hfin, unf, Multiset.map_map]; rfl
 
-theorem unfSupport_eq : unfSupport ψ ν keep ρ T = unfSupport ψ ν true ρ T := by
-  cases keep
-  · ext β
-    have h : (unfTerm ψ ν false ρ T β).datum = (((charFactor G (ρ.elt β))⁻¹ : ℂˣ) : ℂ) • (unfTerm ψ ν true ρ T β).datum := by
-      funext x y
-      simp [unfTerm, flatTensor, flatIntegrand, moved, mul_assoc, integral_const_mul]
-    simp only [unfSupport, Set.mem_setOf_eq, h, ne_eq, smul_eq_zero, Units.ne_zero, false_or]
-  · rfl
 
-theorem unfTerm_coef_pos (hJ : ∀ j, 0 < j → j < G.m → IsOpen (J (G.m, j) : Set (GL (Fin (G.rank (G.m, j))) k)) ∧
-    J (G.m, j) ≤ KO k _) (β : Cosets hs J) : 0 < (unfTerm ψ ν keep ρ T β).coef := by
-  refine Finset.prod_pos (R := ℚ) fun i _ => ?_
-  obtain ⟨ho, hK⟩ := hJ (i + 1) (by omega) (by omega)
-  have c1 : Continuous (toFrame hs (j := i + 1) (by omega)) :=
-    Continuous.units_map _ (continuous_id.matrix_reindex _ _)
-  have c2 : Continuous (toFrame hs (j := i + 1) (by omega)).symm :=
-    Continuous.units_map _ (continuous_id.matrix_reindex _ _)
-  refine invVol_pos ?_ ?_
-  · rw [conjLevel, Subgroup.map_equiv_eq_comap_symm', Subgroup.map_equiv_eq_comap_symm']
-    exact (ho.preimage ((continuous_const.mul continuous_id).mul continuous_const)).preimage c2
-  · exact ((isCompact_KO.of_isClosed_subset (Subgroup.isClosed_of_isOpen _ ho) hK).image
-      ((continuous_const.mul continuous_id).mul continuous_const)).image c1
 
 variable (hs J) in
 

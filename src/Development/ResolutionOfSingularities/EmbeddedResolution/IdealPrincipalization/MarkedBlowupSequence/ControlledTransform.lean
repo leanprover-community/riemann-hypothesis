@@ -118,8 +118,6 @@ theorem BlowupSequenceData.toMarkedBlowupSequenceData_toBlowupSequenceData :
 theorem BlowupSequenceData.toMarkedBlowupSequenceData_length :
     (d.toMarkedBlowupSequenceData p I m E h).length = d.length := rfl
 
-theorem BlowupSequenceData.toMarkedBlowupSequenceData_schemeAt (i : ℕ) :
-    (d.toMarkedBlowupSequenceData p I m E h).obj i = d.obj i := rfl
 
 @[simp]
 theorem BlowupSequenceData.toMarkedBlowupSequenceData_center (i : ℕ) :

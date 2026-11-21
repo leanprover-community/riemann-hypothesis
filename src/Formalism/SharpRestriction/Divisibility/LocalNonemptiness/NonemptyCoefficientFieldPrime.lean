@@ -15,9 +15,6 @@ def cfPadic (p : ℕ) [Fact p.Prime] : CF p where
       simp
     rw [h1, PadicComplex.norm_extends, h2, PadicAlgCl.norm_extends, Padic.norm_p]
 
-theorem nonempty_coefficient_field_prime (p : ℕ) (hp : p.Prime) : Nonempty (CF p) :=
-  haveI : Fact p.Prime := ⟨hp⟩
-  ⟨cfPadic p⟩
 
 section Resc
 

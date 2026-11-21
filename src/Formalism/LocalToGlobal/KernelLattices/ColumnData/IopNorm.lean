@@ -676,9 +676,6 @@ theorem IopIso_of_parts (hA : HfIntRec) (hB : SelfDualRec) :
     · intro v _ hv
       exact hB D cc hcc δ hδ h0 N N' L₁ L₁' h₁ v hv
 
-theorem LinkThIndep_of_parts (hA : HfIntRec) (hB : SelfDualRec) : LinkThIndep := by
-  exact Formalism.L2.Ker.Cd.IntegralLatticeDensity.LinkThIndep_of (IopIso_of_parts hA hB)
-    Formalism.L2.Ker.Cd.IntegralLatticeDensity.character_unit_on_determinant
 
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity
 

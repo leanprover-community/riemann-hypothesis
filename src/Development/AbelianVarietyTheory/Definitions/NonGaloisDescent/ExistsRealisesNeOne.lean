@@ -64,7 +64,6 @@ open Classical in
 def hk (χ : G L Ω →* ℂˣ) : HeckeCharacter L :=
   if hx : ∃ X : HeckeCharacter L, Matches χ X ∧ ∃ N : ℕ, 0 < N ∧ X ^ N = 1 then hx.choose else 1
 
-theorem matches_one : Matches (1 : G L Ω →* ℂˣ) (1 : HeckeCharacter L) := fun _ _ _ _ _ _ => Units.ext rfl
 
 end Hecke
 
@@ -325,21 +324,7 @@ section Self
 
 variable {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 L)}
 
-theorem gInd_self (χ : G L Ω →* ℂˣ) (σ : G L Ω) : gInd L χ σ = χ σ := by
-  have ht : (resG L L Ω).range = ⊤ := eq_top_iff.2 fun τ _ => ⟨τ, rfl⟩
-  have : Subsingleton (G L Ω ⧸ (resG L L Ω).range) := ht ▸ QuotientGroup.subsingleton_quotient_top
-  let _ : Unique (G L Ω ⧸ (resG L L Ω).range) := uniqueOfSubsingleton (QuotientGroup.mk 1)
-  rw [gInd, finsum_unique]
-  generalize (Quotient.out (default : G L Ω ⧸ (resG L L Ω).range) : G L Ω) = g
-  exact (extendByZero_restrict L χ (g⁻¹ * σ * g)).trans (by simp [mul_comm])
 
-theorem trW_char (h : IsPlaceOver A w) (ξ : Weil h →* ℂˣ) (hξ : GlobalTheory.WeilDeligne.IsSmooth ξ) (σ : Weil h) :
-    trW (WD.lpOfChar h ξ hξ) σ = ξ σ := by
-  rw [WD.lpOfChar, trW_mk]
-  have : (WDRep.ofChars h (ι := Fin 1) (fun _ => ξ) fun _ => hξ).ρ σ = ((ξ σ : ℂˣ) : ℂ) • 1 := by
-    refine LinearMap.ext fun v => funext fun i => ?_
-    simp
-  rw [this]; simp
 
 theorem under_self (u : HeightOneSpectrum (𝓞 L)) : u.under (𝓞 L) = u := by
   ext x
@@ -354,15 +339,6 @@ theorem smooth_localChar (h : IsPlaceOver A w) (χ : G L Ω →* ℂˣ) (op : Is
     exact ((hk_spec χ op).1 A w h a ha σ).trans (DFunLike.congr_fun e σ)
   exact this ▸ hη
 
-theorem fcorr_self (h : IsPlaceOver A w) : FCorr L w (LocExt.self h) 1 (RingEquiv.refl _) where
-  cont := continuous_id
-  psi := fun _ => rfl
-  fix := fun σ => ⟨fun _ => ⟨_, rfl⟩, fun _ => ⟨(σ : G L Ω), rfl⟩⟩
-  art := fun χ X hX a ha (σ : Weil h) τ x e hx => by
-    have e1 : τ = (σ : G L Ω) := resG_injective L (by rw [inv_one, one_mul, mul_one] at e; exact e)
-    have e2 : x = a σ := Units.ext (congrArg Units.val hx)
-    rw [e1, e2]
-    exact hX A w h a ha σ
 
 def selfTerm (h : IsPlaceOver A w) (χ : G L Ω →* ℂˣ) (op : IsOpen (χ.ker : Set (G L Ω))) (n : ℤ)
     (u : HeightOneSpectrum (𝓞 L)) (e : u = w) : BTerm h (localAdelicChar L w) where
@@ -379,22 +355,6 @@ def selfTerm (h : IsPlaceOver A w) (χ : G L Ω →* ℂˣ) (op : IsOpen (χ.ker
   hχ := smooth_localChar (e ▸ h) χ op
   n := n
 
-theorem realises_self (h : IsPlaceOver A w) (χ : G L Ω →* ℂˣ) (op : IsOpen (χ.ker : Set (G L Ω))) (n : ℤ) :
-    Realises (GTerm.self χ op n) (fun u => selfTerm h χ op n u.1 ((under_self u.1).symm.trans u.2)) (fun _ => 1)
-      (fun _ => RingEquiv.refl _) := by
-  have hs : Subsingleton ((GTerm.self χ op n).Over w) := ⟨fun u u' => Subtype.ext
-    (((under_self u.1).symm.trans u.2).trans ((under_self u'.1).symm.trans u'.2).symm)⟩
-  let _ : Unique ((GTerm.self χ op n).Over w) := { default := ⟨w, under_self w⟩, uniq := fun _ => hs.elim _ _ }
-  refine ⟨fun ⟨u, hu⟩ => ?_, fun _ => rfl, fun _ => rfl, fun _ _ => rfl, fun σ => ?_, fun σ => ?_⟩
-  · obtain rfl : u = w := (under_self u).symm.trans hu
-    exact fcorr_self h
-  · rw [finsum_unique]
-    refine (gInd_self χ σ).trans (Eq.symm ?_)
-    refine (trW_indOf_self _ _ σ).trans ((trW_char h _ _ σ).trans ?_)
-    exact congrArg Units.val ((hk_spec χ op).1 A w h _ (GlobalTheory.localArtinExists_holds L Ω A w h).choose_spec σ)
-  · rw [finsum_unique]
-    refine (gInd_self (1 : G L Ω →* ℂˣ) (σ : G L Ω)).trans (Eq.symm ?_)
-    exact (trW_indOf_self (1 : Weil h →* ℂˣ) (isSmooth_one h) σ).trans (trW_char h 1 (isSmooth_one h) σ)
 
 end Self
 
@@ -426,60 +386,9 @@ theorem GRel.gtw {gl : List (GTerm k Ω)} (H : GRel gl) (ξ : G k Ω →* ℂˣ)
       linear_combination ih
   rw [key, H σ, mul_zero]
 
-theorem gRel_self_iff (χ : G k Ω →* ℂˣ) (op : IsOpen (χ.ker : Set (G k Ω))) : GRel [GTerm.self χ op 1] ↔ χ = 1 := by
-  refine ⟨fun H => MonoidHom.ext fun σ => Units.ext ?_, ?_⟩
-  · have := H σ
-    simp only [GTerm.self, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, gInd_self] at this
-    simpa [sub_eq_zero] using this
-  · rintro rfl σ
-    simp [GTerm.self]
 
-theorem fcorr_locExt {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 k)} {h : IsPlaceOver A w} (E : LocExt h) :
-    FCorr E.L E.v' E 1 (RingEquiv.refl _) where
-  cont := continuous_id
-  psi := fun _ => rfl
-  fix := fun σ => by rw [inv_one, one_mul, mul_one]; rfl
-  art := fun χ X hX a ha σ τ x e hx => by
-    have e1 : τ = (σ : G E.L Ω) := resG_injective k (by rw [inv_one, one_mul, mul_one] at e; exact e)
-    have e2 : x = a σ := Units.ext (congrArg Units.val hx)
-    rw [e1, e2]
-    exact hX A E.v' E.h' a ha σ
 
-theorem exists_gterm_proper {A : ValuationSubring Ω} {v : HeightOneSpectrum (𝓞 k)} (h : IsPlaceOver A v) (d : ℕ)
-    (hd : 0 < d) (n : ℤ) : ∃ t : GTerm k Ω, Module.finrank k t.L = d ∧ t.χ ≠ 1 ∧ t.n = n := by
-  obtain ⟨E, hE⟩ := exists_locExt_finrank_eq h d hd
-  obtain ⟨F, hF⟩ := exists_locExt_finrank_eq E.h' 2 two_pos
-  let M : IntermediateField E.L Ω := (IsScalarTower.toAlgHom E.L F.L Ω).fieldRange
-  have hM : Module.finrank E.L M = 2 :=
-    (AlgEquiv.ofInjectiveField (IsScalarTower.toAlgHom E.L F.L Ω)).toLinearEquiv.finrank_eq.symm.trans hF
-  have : FiniteDimensional E.L M := Module.finite_of_finrank_pos (by omega)
-  have : IsAlgClosed Ω := IsAlgClosure.isAlgClosed E.L
-  have : IsGalois E.L Ω := {}
-  have hi : M.fixingSubgroup.index = 2 := (IntermediateField.finrank_eq_fixingSubgroup_index Ω M).symm.trans hM
-  have ho : IsOpen (M.fixingSubgroup : Set (G E.L Ω)) := M.fixingSubgroup_isOpen
-  generalize M.fixingSubgroup = H at hi ho
-  classical
-  let χ : G E.L Ω →* ℂˣ := MonoidHom.mk' (fun σ => if σ ∈ H then 1 else -1) fun σ τ => by
-    have := Subgroup.mul_mem_iff_of_index_two hi (a := σ) (b := τ)
-    by_cases h1 : σ ∈ H <;> by_cases h2 : τ ∈ H <;> simp_all
-  have hker : H ≤ χ.ker := fun σ hσ => by simp [χ, MonoidHom.mem_ker, hσ]
-  refine ⟨{ L := E.L, χ := χ, op := Subgroup.isOpen_mono hker ho, n := n }, hE, fun h1 => ?_, rfl⟩
-  obtain ⟨σ, hσ⟩ : ∃ σ, σ ∉ H := by
-    by_contra! H'
-    rw [(Subgroup.eq_top_iff' _).2 H', Subgroup.index_top] at hi
-    omega
-  have h2 : χ σ = 1 := DFunLike.congr_fun h1 σ
-  simp [χ, hσ] at h2
 
-theorem exists_realises_ne_one {A : ValuationSubring Ω} {v : HeightOneSpectrum (𝓞 k)} (h : IsPlaceOver A v) (n : ℤ) :
-    ∃ (t : GTerm k Ω) (w : HeightOneSpectrum (𝓞 t.L)) (B : ValuationSubring Ω) (h' : IsPlaceOver B w), t.χ ≠ 1 ∧
-      ∃ b g i, Realises (h := h') (GTerm.self t.χ t.op n) b g i := by
-  obtain ⟨t, -, ht, -⟩ := exists_gterm_proper h 1 one_pos n
-  obtain ⟨w⟩ : Nonempty (HeightOneSpectrum (𝓞 t.L)) := by
-    obtain ⟨m, hm⟩ := Ideal.exists_maximal (𝓞 t.L)
-    exact ⟨⟨m, hm.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hm (RingOfIntegers.not_isField _)⟩⟩
-  obtain ⟨B, h'⟩ := exists_isPlaceOver Ω w
-  exact ⟨t, w, B, h', ht, _, _, _, realises_self h' t.χ t.op n⟩
 
 end Rel
 

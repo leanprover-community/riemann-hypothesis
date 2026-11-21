@@ -21,11 +21,6 @@ theorem inv_smul_ne {n : ℕ} (k : ℂ) (hk : k ≠ 0) (A : Matrix (Fin n) (Fin 
       exact h (isUnit_of_mul_isUnit_right hu)
     rw [Matrix.nonsing_inv_apply_not_isUnit _ h, Matrix.nonsing_inv_apply_not_isUnit _ h', smul_zero]
 
-theorem quotMetC_smul {n d : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.PosDef) (P : Matrix (Fin d) (Fin n) ℂ)
-    (c : ℝ) (hc : 0 < c) : quotMetC P ((c : ℂ) • A) = (c : ℂ) • quotMetC P A := by
-  have hc' : (c : ℂ) ≠ 0 := by exact_mod_cast hc.ne'
-  unfold quotMetC
-  rw [inv_smul_ne _ hc', Matrix.mul_smul, Matrix.smul_mul, inv_smul_ne _ (inv_ne_zero hc'), inv_inv]
 
 theorem unitary_inv {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : IsUnit A.det)
     (R : Matrix (Fin n) (Fin n) ℂ) (hR : Rᴴ * A * R = A) (hRu : IsUnit R.det) :
@@ -723,14 +718,8 @@ theorem side_lv (b : Bool) :
     lv (faceOf I.A I.P0 I.ψ0 I.P1 I.ψ1 I.Dc I.Sp I.Zsc I.X.zs) b = I.A.side (I.lvP b) (I.lvψ b) I.X.zs := by
   cases b <;> rfl
 
-theorem side_g : lv (faceOf I.A ⊥ 1 I.P1 I.ψ1 I.Dc I.Sp I.Zsc I.X.zs) false = I.A.side ⊥ 1 I.X.zs := rfl
 
-theorem toR_cr (b : Bool) (t : I.A.fam.base.Tup) :
-    HEq (I.cr.toR I.X.zs b t) ((I.A.fam.R t).toF (I.A.fam.lvl (I.lvP b) (I.lvψ b)) (I.X.zs.Z t)) := by
-  cases b <;> exact HEq.rfl
 
-theorem toR_cg (t : I.A.fam.base.Tup) :
-    I.cg.toR I.X.zs false t = (I.A.fam.R t).toF (I.A.fam.lvl ⊥ 1) (I.X.zs.Z t) := rfl
 
 theorem Jm_eq (b : Bool) : I.Jm b = I.Jt b I.A.fam.base.μ0 := rfl
 

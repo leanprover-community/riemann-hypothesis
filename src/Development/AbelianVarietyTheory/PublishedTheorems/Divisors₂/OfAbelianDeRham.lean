@@ -66,32 +66,7 @@ theorem allPrim (H : AbelianDeRhamFree) {A : Over (Sp R)} [GrpObj A] {g : ℕ} (
 theorem free_iff : AbelianDeRhamFree ↔ AbelianDeRham.Free :=
   ⟨fun H R _ A _ g hA hg ↦ ⟨allPrim H hA hg, H R A g hA hg⟩, fun H R _ A _ g hA hg ↦ (H R A g hA hg).2⟩
 
-theorem of_abelianDeRham (H : AbelianDeRham) : AbelianDeRhamStructure :=
-  ⟨free_iff.2 H.1, H.2.1, H.2.2.1⟩
 
-theorem elliptic (H : AbelianDeRhamStructure) (k : Type) [Field k] (W : WeierstrassCurve k) [W.IsElliptic] :
-    (∀ p : PrimeSpectrum k, Module.rankAtStalk (primDR (GlobalTheory.WeierstrassCurve.ellPolAV W).A) p = 2) ∧
-    (∀ p : PrimeSpectrum k, Module.rankAtStalk (PrimitiveSubmodule (GlobalTheory.WeierstrassCurve.ellPolAV W).A) p = 1) ∧
-    Module.finrank k (SecondDeRham ((GlobalTheory.WeierstrassCurve.ellPolAV W).A.hom ≫ 𝟙 _)) = 1 := by
-  let P := GlobalTheory.WeierstrassCurve.ellPolAV W
-  have hg : SmoothOfRelativeDimension 1 P.A.hom := P.smoothDim
-  refine ⟨((free_iff.1 H.1).prim P.isAb hg).2.2, (H.2.1 k P.A 1 P.isAb hg).2.2.2.2, ?_⟩
-  obtain ⟨f, p, r, e, -⟩ := H.1 k P.A 1 P.isAb hg
-  have h2 : Module.finrank k (FirstDeRham (P.A.hom ≫ 𝟙 _)) = 2 := by
-    have := r ⊥
-    rwa [Module.rankAtStalk_eq_finrank_of_free] at this
-  rw [← e.finrank_eq, exteriorPower.finrank_eq, h2]
-  rfl
 
-theorem unit_baseChange (R' : Type) [CommRing R'] [Algebra R R']
-    (φ : (𝟙_ (Over (Sp R'))).left ⟶ (𝟙_ (Over (Sp R))).left)
-    (h : IsGrpPullback (𝟙_ (Over (Sp R'))) (𝟙_ (Over (Sp R))) (spMap (algebraMap R R')) φ) :
-    (AbelianDeRham.bcMor h).IsBC ∧ PrimitiveSubmodule (𝟙_ (Over (Sp R'))) =
-      Submodule.span R' ((AbelianDeRham.bcMor h).pull '' (PrimitiveSubmodule (𝟙_ (Over (Sp R))))) := by
-  have : Subsingleton (primDR (𝟙_ (Over (Sp R)))) :=
-    ⟨fun a b ↦ (primDR_unit a).trans (primDR_unit b).symm⟩
-  have : Subsingleton (primDR (𝟙_ (Over (Sp R')))) :=
-    ⟨fun a b ↦ (primDR_unit a).trans (primDR_unit b).symm⟩
-  exact ⟨⟨fun a b _ ↦ Subsingleton.elim a b, fun c ↦ ⟨0, Subsingleton.elim _ _⟩⟩, Subsingleton.elim _ _⟩
 
 end GlobalTheory.Published.AbelianDeRhamStructure.Test

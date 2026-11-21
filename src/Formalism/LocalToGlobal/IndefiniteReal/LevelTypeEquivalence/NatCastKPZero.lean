@@ -178,14 +178,6 @@ def yOf (hF : Formalism.L2.DIV.IsFrame β Λ) (g : GL (Fin V.rank) (Lev.EAf D)) 
       rw [e] at h
       exact h⟩
 
-theorem frGL_yOf (hF : Formalism.L2.DIV.IsFrame β Λ) (g : GL (Fin V.rank) (Lev.EAf D)) (hg : Stabs Λ g) (hgi : Stabs Λ g⁻¹) :
-    Formalism.L2.DIV.frGL β (yOf hF g hg hgi) = g := by
-  apply Units.ext
-  show β.val * ((yMat hF g hg).map (Formalism.L2.Herm.intAf D.host.F D.host.E).subtype) * (β⁻¹).val = g.val
-  rw [yMat_map]
-  simp only [Matrix.mul_assoc]
-  rw [← Matrix.mul_assoc β.val (β⁻¹).val, Units.mul_inv, Matrix.one_mul]
-  simp
 
 theorem conj_entry (hF : Formalism.L2.DIV.IsFrame β Λ) (g : GL (Fin V.rank) (Lev.EAf D)) (M : ℕ) (j : Fin V.rank)
     (z : Fin V.rank → Lev.EAf D) (hgz : (g.val - 1) *ᵥ (fun i => β.val i j) = (M : Lev.EAf D) • z) (i : Fin V.rank) :
@@ -216,37 +208,8 @@ theorem ent_eq (hF : Formalism.L2.DIV.IsFrame β Λ) (g : GL (Fin V.rank) (Lev.E
   · rfl
   · rfl
 
-theorem natCast_kP_eq_zero_of_mem (PP : Formalism.L2.DIV.Pl D.host.E) (M : ℕ) (hP : ((M : 𝓞 D.host.E)) ∈ PP.asIdeal) :
-    (M : Formalism.L2.DIV.kP PP) = 0 := by
-  rw [← map_natCast (Ideal.Quotient.mk PP.asIdeal) M]
-  exact Ideal.Quotient.eq_zero_iff_mem.mpr hP
 
-theorem map_res_one (PP : Formalism.L2.DIV.Pl D.host.E) (M : ℕ) (hP : ((M : 𝓞 D.host.E)) ∈ PP.asIdeal)
-    (S : Matrix (Fin V.rank) (Fin V.rank) (Formalism.L2.Herm.intAf D.host.F D.host.E)) :
-    (RingHom.mapMatrix (Formalism.L2.DIV.resS D.host.F PP)) (1 + M • S) = 1 := by
-  rw [map_add, map_one, map_nsmul, ← Nat.cast_smul_eq_nsmul (Formalism.L2.DIV.kP PP), natCast_kP_eq_zero_of_mem PP M hP, zero_smul,
-    add_zero]
 
-theorem redFn_yOf (hF : Formalism.L2.DIV.IsFrame β Λ) (g : GL (Fin V.rank) (Lev.EAf D)) (hg : Stabs Λ g) (hgi : Stabs Λ g⁻¹)
-    (M : ℕ) (hM : ∀ j, ∃ z ∈ (lamAf (F := D.host.F) Λ : Set (Fin V.rank → Lev.EAf D)),
-      (g.val - 1) *ᵥ (fun i => β.val i j) = (M : Lev.EAf D) • z) (PP : Formalism.L2.DIV.Pl D.host.E)
-    (hP : ((M : 𝓞 D.host.E)) ∈ PP.asIdeal) : Formalism.L2.DIV.redFn β PP g = 1 := by
-  choose z hz hgz using hM
-  have hs : ∀ i j, ((β⁻¹).val *ᵥ z j) i ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := fun i j => (frame_mem hF (z j)).mp (hz j) i
-  let S : Matrix (Fin V.rank) (Fin V.rank) (Formalism.L2.Herm.intAf D.host.F D.host.E) := Matrix.of fun i j => ⟨_, hs i j⟩
-  have hY : (yOf hF g hg hgi).val = 1 + M • S := by
-    refine Matrix.ext fun i j => ?_
-    rw [Matrix.add_apply, Matrix.smul_apply, nsmul_eq_mul]
-    exact ent_eq hF g hg hgi M j (z j) (hgz j) i (hs i j)
-  have e1 : Formalism.L2.DIV.redFn β PP g = Formalism.UG.bc (Formalism.L2.DIV.resS D.host.F PP) (yOf hF g hg hgi) := by
-    conv_lhs => rw [← frGL_yOf hF g hg hgi]
-    exact Formalism.L2.DIV.redFn_frGL β PP _
-  rw [e1]
-  apply Units.ext
-  have e2 : ((Formalism.UG.bc (Formalism.L2.DIV.resS D.host.F PP) (yOf hF g hg hgi) : GL (Fin V.rank) (Formalism.L2.DIV.kP PP)) :
-      Matrix (Fin V.rank) (Fin V.rank) (Formalism.L2.DIV.kP PP)) =
-      (RingHom.mapMatrix (Formalism.L2.DIV.resS D.host.F PP)) (yOf hF g hg hgi).val := rfl
-  rw [e2, hY, map_res_one PP M hP S, Units.val_one]
 
 end Main
 

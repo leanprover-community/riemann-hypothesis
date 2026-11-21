@@ -274,20 +274,6 @@ def Statement : Prop :=
 section Basic₂
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem isChain_chainGen (α α' : kˣ) (m : ℕ) : IsChain α α' m (chainGen α α' m) := by
-  refine ⟨fun i _ _ => ?_, fun j i _ _ => ?_⟩
-  · congr 1
-    unfold chainGen
-    rw [mul_div_mul_left_eq_div, div_eq_mul_inv, ← _root_.zpow_sub]
-    have : ((m / 2 : ℕ) : ℤ) - (i : ℤ) - (((m / 2 : ℕ) : ℤ) - ((i + 1 : ℕ) : ℤ)) = 1 := by push_cast; ring
-    rw [this, _root_.zpow_one]
-  · congr 1
-    unfold chainGen
-    rw [← mul_assoc, ← mul_assoc]
-    congr 2
-    rw [← _root_.zpow_neg_one, ← _root_.zpow_add]
-    congr 1
-    push_cast; ring
 
 example (α α' : kˣ) : chainGen α α' 4 2 1 * α' / α = 1 := by
   ext

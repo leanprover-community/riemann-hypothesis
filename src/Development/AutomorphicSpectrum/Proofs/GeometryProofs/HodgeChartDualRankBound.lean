@@ -94,10 +94,6 @@ theorem mem_lat {V : Submodule Ω Li} {e : Li} :
   ⟨fun h => ⟨h.1, fun u hu => by simpa [mem_range_iff] using h.2 u hu⟩,
     fun h => ⟨h.1, fun u hu => by simpa [mem_range_iff] using h.2 u hu⟩⟩
 
-theorem mem_lat' {V : Submodule Ω Li} {e : Li} :
-    e ∈ HTL.latOn D V 1 (algebraMap R Ω).range ↔ e ∈ V ∧ ∀ u ∈ D.om', u e ∈ R :=
-  ⟨fun h => ⟨h.1, fun u hu => by simpa [mem_range_iff] using h.2 u hu⟩,
-    fun h => ⟨h.1, fun u hu => by simpa [mem_range_iff] using h.2 u hu⟩⟩
 
 variable (hc : ∀ x, c (c x) = x)
   (hact : ∀ (a : 𝓞 E) (w : Module.Dual Ω Li), D.ρΩ a w = w ∘ₗ ρ (RingOfIntegers.mapRingEquiv c a))

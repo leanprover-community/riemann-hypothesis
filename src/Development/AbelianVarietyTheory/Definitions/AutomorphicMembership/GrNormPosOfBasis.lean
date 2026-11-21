@@ -41,11 +41,6 @@ def torusChar {O : Type} [CommRing O] (x : Sp O ⟶ X) (q : ℕ) (a : 𝓞 E) : 
   nat B B' _ _ _ _ _ _ φ g g' _ h :=
     (GlobalTheory.Diag.left_eq_iff φ.toRingHom (by rw [← Category.assoc, sp_comp]; congr 2; exact φ.comp_algebraMap.symm) g' g).1 h a
 
-theorem torusChar_epsVec {O : Type} [CommRing O] (x : Sp O ⟶ X) (q : ℕ) (a : 𝓞 E) (I : Ideal O) (c : 𝓞 E →+ O ⧸ I) :
-    (((torusChar H x q a).χ (DualNumber (O ⧸ I)) (GlobalTheory.Diag.epsVec _ c) : (DualNumber (O ⧸ I))ˣ) :
-      DualNumber (O ⧸ I)).snd = c a := by
-  refine (congrArg TrivSqZeroExt.snd (GlobalTheory.Diag.charVal_epsVec c a)).trans ?_
-  simp
 
 end Lat
 

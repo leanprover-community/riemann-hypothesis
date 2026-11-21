@@ -641,28 +641,6 @@ theorem main_unit (G : Unit × B.κ → H E B.a B.b → ℂ) (hG : ∀ i, OfLev 
 
 end Main
 
-theorem fmPowOf : PositivityTheory.Rg.BcB.F.FA.FmPowOf := by
-  intro hAlg hAt hCM hAct hId E _ _ _ κ _ S P B e hS hP U₁ U₂ L A F m hU₁ hU₂ hok hs ht hinv hF hT w₀
-  have hne : ∃ i, (convF B.ν (fm S P B e L))^[m] F i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
-    exact hT (funext hc)
-  obtain ⟨⟨p, x⟩, hx⟩ := hne
-  let sl : (A × B.κ → H E B.a B.b → ℂ) → (Unit × B.κ → H E B.a B.b → ℂ) := fun F' i => F' (p, i.2)
-  have hsl : ∀ k (F' : A × B.κ → H E B.a B.b → ℂ),
-      sl ((convF B.ν (fm S P B e L))^[k] F') = (convF B.ν (fm S P B e L))^[k] (sl F') := by
-    intro k F'
-    induction k with
-    | zero => rfl
-    | succ k ih =>
-      rw [Function.iterate_succ_apply', Function.iterate_succ_apply', ← ih]
-      rfl
-  have hne' : (convF B.ν (fm S P B e L))^[m] (sl F) ≠ 0 := by
-    rw [← hsl]
-    intro h0
-    exact hx (congrFun h0 ((), x))
-  obtain ⟨y, hy⟩ := main_unit hAlg hAt hCM hAct hId hS hP hU₁ hU₂ hok hs ht hinv (sl F) (fun i => hF _) m hne' w₀
-  exact ⟨p, y, hy⟩
 
 end GlobalTheory.CompanionTheory.FmPowP
 

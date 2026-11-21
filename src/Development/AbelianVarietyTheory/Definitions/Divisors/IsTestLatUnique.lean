@@ -39,32 +39,7 @@ theorem map_rhoVr {θ : InfFam D} (hθ : IsInfFam θ) (V : HSp D) (lam : D.what�
   show rhoK _ _ (mapVV _ _ (rhoK lam (invTrK (embGL (labLL D) γE)) _)) = _
   rw [mapVV_rhoK, e, ← Module.End.mul_apply, ← map_mul (rhoK lam), ← map_mul invTrK, ← map_mul (realGL θ V), e2]
 
-theorem scal_left {θ : InfFam D} (hθ : IsInfFam θ) (ξ : Module.Dual ℂ (VV ℂ (LaP G))) (Ψ : GLf G → WtSp G)
-    (hΨ : ∀ γ g, Ψ (ratIn G γ * g) = rhoW G γ (Ψ g)) (γ : GQ (Xp G)) (γE : UR D.sp.cm (Xp G).gram)
-    (h : Bridge.IsRatMat (Xp G) γ γE.1) (x : GA D (Xp G)) : scal θ ξ Ψ (γ.1 * x) = scal θ ξ Ψ x := by
-  have e : Ψ (Formalism.IndefR.Lev.finE (Xp G) (γ.1 * x)) = rhoVr (labLL D) (LaP G) γE.1 (Ψ (Formalism.IndefR.Lev.finE (Xp G) x)) := by
-    rw [map_mul (Formalism.IndefR.Lev.finE (Xp G)), finE_rat γ γE h, hΨ]
-    rfl
-  unfold scal
-  rw [e, map_rhoVr hθ (Xp G) (LaP G) γ γE.1 h]
 
-theorem pair_rhoW (γ : UR D.sp.cm (Xp G).gram) (x y : WtSp G) :
-    pairK (LaP G) (gramKd (emb D) (Xp G).gram) (rhoW G γ x) (rhoW G γ y) = pairK (LaP G) (gramKd (emb D) (Xp G).gram) x y := by
-  refine pairInv D.what₂.LL _ _ (LaP G) _ (invTrK (embGL (emb D) γ.1)) (fun τ => ?_) x y
-  have h0 : cT (D.sp.cm.sig : D.host.E →+* D.host.E) γ.1.1 * (Xp G).gram * γ.1.1 = (Xp G).gram := γ.2
-  have hg : (γ.1.1.map (emb D τ))ᴴ * (Xp G).gram.map (emb D τ) * γ.1.1.map (emb D τ) = (Xp G).gram.map (emb D τ) := by
-    have h1 := congrArg (fun M => M.map (emb D τ)) h0
-    simp only [Matrix.map_mul] at h1
-    have h2 : (γ.1.1.map (emb D τ))ᴴ = (cT (D.sp.cm.sig : D.host.E →+* D.host.E) γ.1.1).map (emb D τ) := by
-      ext i j
-      exact star_emb τ _
-    rw [h2, h1]
-  have h := congrArg (fun M => (M⁻¹)ᵀ) hg
-  simp only [Matrix.mul_inv_rev, Matrix.transpose_mul] at h
-  rw [invTrK_coe, gramKd, Matrix.coe_units_inv, embGL_coe]
-  have h3 : ∀ A : Matrix (Fin (Xp G).rank) (Fin (Xp G).rank) D.what₂.LL, A⁻¹ᵀᴴ = Aᴴ⁻¹ᵀ := fun A => by
-    rw [← Matrix.conjTranspose_nonsing_inv]; rfl
-  rw [h3, h]
 
 section Gen
 
@@ -100,8 +75,6 @@ theorem psi_ne_zero (rp : ClassReps G) (hN : rp.Neat) {n : ℕ} (e : Fin n ≃ T
   rw [psi, rp.gridClassReps_delta_apply_rep hN, if_pos rfl]
   exact (bVV D.what₂.LL (LaP G)).ne_zero _
 
-theorem isTestLat_unique {rp : ClassReps G} {n : ℕ} {e : Fin n ≃ TestIx G × VVIdx (LaP G)} {X X' M M'}
-    (h : IsTestLat G rp n e X M) (h' : IsTestLat G rp n e X' M') : M = M' := h.2.trans h'.2.symm
 
 theorem exists_testLat (h : (L.ΛY 0).FG) (rp : ClassReps G) : ∃ n e X M, 0 < n ∧ IsTestLat G rp n e X M := by
   obtain ⟨n, ⟨e⟩⟩ := exists_coords G h

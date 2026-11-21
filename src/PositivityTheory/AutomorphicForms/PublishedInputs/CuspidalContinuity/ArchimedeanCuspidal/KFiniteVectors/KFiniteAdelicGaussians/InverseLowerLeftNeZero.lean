@@ -24,74 +24,20 @@ theorem W_shift {V : Submodule ℂ (G3K K → ℂ)} (hV : WhAK V) {W : G3K K →
       _ = uni a b z * (D * (X * g)) := mul_assoc _ _ _
   rw [e, hV.psi W hW]
 
-theorem setIntegral_vS {V : Submodule ℂ (G3K K → ℂ)} (hV : WhAK V) (hC : ContW K) (hM : MajV K)
-    {W : G3K K → ℂ} (hW : W ∈ V) {ι : Type} [Fintype ι] {h : (ι → 𝔸[K]) → G3K K} (hh : Continuous h)
-    {χ : (ι → 𝔸[K]) → ℂ} (hχ : Continuous χ) (hχ1 : ∀ y, ‖χ y‖ = 1) (g : G3K K) :
-    ∫ y in vecDomain K ι, vS W (h y * g) * χ y ∂vecMeasure K ι =
-      ∑' q : NQ K, ∫ y in vecDomain K ι, W (diaK (e2 K q.out * sw K) * (h y * g)) * χ y ∂vecMeasure K ι := by
-  have hK : IsCompact ((fun y => h y * g) '' closure (vecDomain K ι)) :=
-    (FourierWhittaker.isCompact_closure_vecDomain (K := K) (ι := ι)).image (hh.mul continuous_const)
-  obtain ⟨b, hb, hle⟩ := hM V hV W hW _ hK
-  have e : ∀ y, vS W (h y * g) * χ y = ∑' q : NQ K, W (diaK (e2 K q.out * sw K) * (h y * g)) * χ y :=
-    fun y => by rw [vS, tsum_mul_right]
-  simp_rw [e]
-  exact setIntegral_tsum_of_le _ (fun q => ((hC V hV W hW).comp (continuous_const.mul
-    (hh.mul continuous_const))).mul hχ) b hb fun q y hy => by
-      rw [norm_mul, hχ1, mul_one]; exact hle q _ ⟨y, subset_closure hy, rfl⟩
 
-theorem setIntegral_uS {V : Submodule ℂ (G3K K → ℂ)} (hV : WhAK V) (hC : ContW K) (hM : MajU K)
-    {W : G3K K → ℂ} (hW : W ∈ V) {ι : Type} [Fintype ι] {h : (ι → 𝔸[K]) → G3K K} (hh : Continuous h)
-    {χ : (ι → 𝔸[K]) → ℂ} (hχ : Continuous χ) (hχ1 : ∀ y, ‖χ y‖ = 1) (g : G3K K) :
-    ∫ y in vecDomain K ι, uS W (h y * g) * χ y ∂vecMeasure K ι =
-      ∑' q : NQ K, ∫ y in vecDomain K ι, W (diaK (e1 K q.out) * (h y * g)) * χ y ∂vecMeasure K ι := by
-  have hK : IsCompact ((fun y => h y * g) '' closure (vecDomain K ι)) :=
-    (FourierWhittaker.isCompact_closure_vecDomain (K := K) (ι := ι)).image (hh.mul continuous_const)
-  obtain ⟨b, hb, hle⟩ := hM V hV W hW _ hK
-  have e : ∀ y, uS W (h y * g) * χ y = ∑' q : NQ K, W (diaK (e1 K q.out) * (h y * g)) * χ y :=
-    fun y => by rw [uS, tsum_mul_right]
-  simp_rw [e]
-  exact setIntegral_tsum_of_le _ (fun q => ((hC V hV W hW).comp (continuous_const.mul
-    (hh.mul continuous_const))).mul hχ) b hb fun q y hy => by
-      rw [norm_mul, hχ1, mul_one]; exact hle q _ ⟨y, subset_closure hy, rfl⟩
 
-theorem val_nx (v : Multiplicative K) :
-    ((nx K v : GL (Fin 2) K) : Matrix (Fin 2) (Fin 2) K) = !![1, v.toAdd; 0, 1] := rfl
 
-theorem rel_entries {a b : GL (Fin 2) K} (h : b * a⁻¹ ∈ (nU K)) :
-    ∃ u : K, ∀ j, b.val 0 j = a.val 0 j + u * a.val 1 j ∧ b.val 1 j = a.val 1 j := by
-  rw [nU, MonoidHom.mem_range] at h
-  obtain ⟨v, hv⟩ := h
-  have hb : b = nx K v * a := by rw [hv, inv_mul_cancel_right]
-  refine ⟨v.toAdd, fun j => ?_⟩
-  rw [hb, Units.val_mul, val_nx]
-  fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem mk_eq_of_entries {a b : GL (Fin 2) K} (u : K)
-    (h : ∀ j, b.val 0 j = a.val 0 j + u * a.val 1 j ∧ b.val 1 j = a.val 1 j) :
-    (Quotient.mk _ a : NQ K) = Quotient.mk _ b := by
-  refine Quotient.sound (QuotientGroup.rightRel_apply.2 ?_)
-  rw [nU, MonoidHom.mem_range]
-  refine ⟨Multiplicative.ofAdd u, ?_⟩
-  rw [eq_mul_inv_iff_mul_eq]
-  apply Units.ext
-  rw [Units.val_mul, val_nx]
-  ext i j
-  fin_cases i <;> simp [Matrix.mul_apply, Fin.sum_univ_two, (h j).1, (h j).2]
 
 theorem out_rel (γ : GL (Fin 2) K) : γ * ((Quotient.mk _ γ : NQ K).out)⁻¹ ∈ (nU K) :=
   QuotientGroup.rightRel_apply.1 (Quotient.exact (Quotient.out_eq (Quotient.mk _ γ : NQ K)))
 
-theorem out_eq_mk (q : NQ K) : q = Quotient.mk _ q.out := (Quotient.out_eq q).symm
 
 theorem inv_rel_q (γ : GL (Fin 2) K) (i j : Fin 2) :
     (γ⁻¹).val i 0 * γ.val 0 j + (γ⁻¹).val i 1 * γ.val 1 j = if i = j then 1 else 0 := by
   have := congrArg (fun X : Matrix (Fin 2) (Fin 2) K => X i j) (Units.inv_mul γ)
   simpa [Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply] using this
 
-theorem mul_inv_rel_q (γ : GL (Fin 2) K) (i j : Fin 2) :
-    γ.val i 0 * (γ⁻¹).val 0 j + γ.val i 1 * (γ⁻¹).val 1 j = if i = j then 1 else 0 := by
-  have := congrArg (fun X : Matrix (Fin 2) (Fin 2) K => X i j) (Units.mul_inv γ)
-  simpa [Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply] using this
 
 theorem inverse_lower_left_ne_zero (γ : GL (Fin 2) K) (h10 : γ.val 1 0 ≠ 0) : (γ⁻¹).val 1 0 ≠ 0 := by
   intro hN
@@ -117,67 +63,8 @@ theorem inv_upper (γ : GL (Fin 2) K) (h10 : γ.val 1 0 = 0) :
   simp only [Fin.isValue, one_ne_zero, if_false, if_true, mul_eq_zero] at r10 r00
   exact ⟨r10.resolve_right (diag_ne_zero γ h10).1, r00⟩
 
-theorem ctY_term {V : Submodule ℂ (G3K K → ℂ)} (hV : WhAK V) (hC : ContW K) {W : G3K K → ℂ} (hW : W ∈ V)
-    (g : G3K K) (γ : GL (Fin 2) K) :
-    ∫ y in vecDomain K (Fin 2), W (diaK (e2 K γ * sw K) * (uni 0 (y 0) (y 1) * g)) ∂vecMeasure K (Fin 2)
-      = 0 := by
-  have hc : Continuous fun y : Fin 2 → 𝔸[K] => W (diaK (e2 K γ * sw K) * (uni 0 (y 0) (y 1) * g)) :=
-    (hC V hV W hW).comp (continuous_const.mul ((continuous_uni continuous_const (continuous_apply 0)
-      (continuous_apply 1)).mul continuous_const))
-  by_cases h10 : γ.val 1 0 = 0
-  · obtain ⟨h00, h11⟩ := diag_ne_zero γ h10
-    refine setIntegral_eq_zero_of_shift hc 0 (r := γ.val 0 0 / γ.val 1 1) (div_ne_zero h00 h11)
-      fun y s => ?_
-    have e0 : (y + Pi.single 0 s : Fin 2 → 𝔸[K]) 0 = y 0 + s := by simp
-    have e1 : (y + Pi.single 0 s : Fin 2 → 𝔸[K]) 1 = y 1 := by simp
-    rw [e0, e1, hY_a, W_shift hV hW (GL2_swap_embed_commute_middle γ h10 s 0), zero_add]
-  · refine setIntegral_eq_zero_of_shift hc 1 (inverse_lower_left_ne_zero γ h10) fun y s => ?_
-    have e0 : (y + Pi.single 1 s : Fin 2 → 𝔸[K]) 0 = y 0 := by simp
-    have e1 : (y + Pi.single 1 s : Fin 2 → 𝔸[K]) 1 = y 1 + s := by simp
-    rw [e0, e1, hY_b, W_shift hV hW (GL2_swap_embed_commute_corner γ s), add_zero]
 
-theorem ctY'_term {V : Submodule ℂ (G3K K → ℂ)} (hV : WhAK V) (hC : ContW K) {W : G3K K → ℂ} (hW : W ∈ V)
-    (g : G3K K) (γ : GL (Fin 2) K) :
-    ∫ y in vecDomain K (Fin 2), W (diaK (e2 K γ * sw K) * (lowM (y 0) * uni 0 0 (y 1) * g))
-      ∂vecMeasure K (Fin 2) = 0 := by
-  have hc : Continuous fun y : Fin 2 → 𝔸[K] =>
-      W (diaK (e2 K γ * sw K) * (lowM (y 0) * uni 0 0 (y 1) * g)) :=
-    (hC V hV W hW).comp (continuous_const.mul (((continuous_lowM (continuous_apply 0)).mul
-      (continuous_uni continuous_const continuous_const (continuous_apply 1))).mul continuous_const))
-  by_cases hN0 : (γ⁻¹).val 0 0 = 0
-  · have hN1 : (γ⁻¹).val 1 0 ≠ 0 := by
-      intro h
-      have r := mul_inv_rel_q γ 0 0
-      rw [hN0, h, mul_zero, mul_zero, add_zero] at r
-      simp at r
-    refine setIntegral_eq_zero_of_shift hc 1 hN1 fun y s => ?_
-    have e0 : (y + Pi.single 1 s : Fin 2 → 𝔸[K]) 0 = y 0 := by simp
-    have e1 : (y + Pi.single 1 s : Fin 2 → 𝔸[K]) 1 = y 1 + s := by simp
-    rw [e0, e1, heisenberg_lower_commute_corner, W_shift hV hW (GL2_swap_embed_commute_corner γ s), add_zero]
-  · refine setIntegral_eq_zero_of_shift hc 0 hN0 fun y s => ?_
-    have e0 : (y + Pi.single 0 s : Fin 2 → 𝔸[K]) 0 = y 0 + s := by simp
-    have e1 : (y + Pi.single 0 s : Fin 2 → 𝔸[K]) 1 = y 1 := by simp
-    rw [e0, e1, hH_c, W_shift hV hW (dV_c γ s), add_zero]
 
-theorem ctV_of' (h1 : MajV K) (h2 : ContW K) : CtV K := by
-  intro V hV W hW g
-  constructor
-  · have e := setIntegral_vS hV h2 h1 hW (h := fun y : Fin 2 → 𝔸[K] => uni 0 (y 0) (y 1))
-      (continuous_uni continuous_const (continuous_apply 0) (continuous_apply 1))
-      (χ := fun _ => 1) continuous_const (fun _ => norm_one) g
-    simp only [mul_one] at e
-    show ∫ y in vecDomain K (Fin 2), vS W (uni 0 (y 0) (y 1) * g) ∂vecMeasure K (Fin 2) = 0
-    rw [e]
-    simp only [ctY_term hV h2 hW g, tsum_zero]
-  · have e := setIntegral_vS hV h2 h1 hW
-      (h := fun y : Fin 2 → 𝔸[K] => lowM (y 0) * uni 0 0 (y 1))
-      ((continuous_lowM (continuous_apply 0)).mul
-        (continuous_uni continuous_const continuous_const (continuous_apply 1)))
-      (χ := fun _ => 1) continuous_const (fun _ => norm_one) g
-    simp only [mul_one] at e
-    show ∫ y in vecDomain K (Fin 2), vS W (lowM (y 0) * uni 0 0 (y 1) * g) ∂vecMeasure K (Fin 2) = 0
-    rw [e]
-    simp only [ctY'_term hV h2 hW g, tsum_zero]
 
 def chiH (ξ : Fin 2 → K) (y : Fin 3 → 𝔸[K]) : ℂ :=
   (adelicChar K (-(𝔞 (ξ 0) * y 0 + 𝔞 (ξ 1) * y 1)) : ℂ)
@@ -345,87 +232,12 @@ def gV : GL (Fin 2) K :=
   Matrix.GeneralLinearGroup.mkOfDetNeZero !![(ξ 0)⁻¹, 0; 0, (ξ 0 * ξ 1)⁻¹] (by
     simp [Matrix.det_fin_two_of, hξ0, hξ1])
 
-theorem val_gU : (gU hξ0 hξ1).val = !![0, ξ 0 * ξ 1; ξ 1, 0] := rfl
 
-theorem val_gV : (gV hξ0 hξ1).val = !![(ξ 0)⁻¹, 0; 0, (ξ 0 * ξ 1)⁻¹] := rfl
 
-theorem survU_eq (q : NQ K)
-    (h : q.out.val 1 1 = 0 ∧ q.out.val 1 0 = ξ 1 ∧ q.out.val 0 1 = ξ 0 * ξ 1) :
-    q = Quotient.mk _ (gU hξ0 hξ1) := by
-  obtain ⟨h11, h10, h01⟩ := h
-  rw [out_eq_mk q]
-  refine (mk_eq_of_entries (a := gU hξ0 hξ1) (b := q.out) (q.out.val 0 0 / ξ 1) fun j => ?_).symm
-  rw [val_gU]
-  fin_cases j
-  · simp [h10, div_mul_cancel₀ _ hξ1]
-  · simp [h11, h01]
 
-theorem survU_out :
-    (Quotient.mk _ (gU hξ0 hξ1) : NQ K).out.val 1 1 = 0 ∧
-      (Quotient.mk _ (gU hξ0 hξ1) : NQ K).out.val 1 0 = ξ 1 ∧
-      (Quotient.mk _ (gU hξ0 hξ1) : NQ K).out.val 0 1 = ξ 0 * ξ 1 := by
-  obtain ⟨u, hu⟩ := rel_entries (out_rel (gU hξ0 hξ1))
-  have a0 := hu 0
-  have a1 := hu 1
-  rw [val_gU] at a0 a1
-  simp only [Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one,
-    Matrix.head_cons, Matrix.empty_val', Matrix.cons_val_fin_one, Fin.isValue] at a0 a1
-  have h11 := a1.2.symm
-  refine ⟨h11, a0.2.symm, ?_⟩
-  have := a1.1
-  rw [h11, mul_zero, add_zero] at this
-  exact this.symm
 
-theorem gV_out :
-    (Quotient.mk _ (gV hξ0 hξ1) : NQ K).out.val 1 0 = 0 ∧
-      (Quotient.mk _ (gV hξ0 hξ1) : NQ K).out.val 0 0 = (ξ 0)⁻¹ ∧
-      (Quotient.mk _ (gV hξ0 hξ1) : NQ K).out.val 1 1 = (ξ 0 * ξ 1)⁻¹ := by
-  obtain ⟨u, hu⟩ := rel_entries (out_rel (gV hξ0 hξ1))
-  have a0 := hu 0
-  have a1 := hu 1
-  rw [val_gV] at a0 a1
-  simp only [Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one,
-    Matrix.head_cons, Matrix.empty_val', Matrix.cons_val_fin_one, Fin.isValue] at a0 a1
-  have h10 := a0.2.symm
-  refine ⟨h10, ?_, a1.2.symm⟩
-  have := a0.1
-  rw [h10, mul_zero, add_zero] at this
-  exact this.symm
 
-theorem survV_out :
-    (Quotient.mk _ (gV hξ0 hξ1) : NQ K).out.val 1 0 = 0 ∧
-      ((Quotient.mk _ (gV hξ0 hξ1) : NQ K).out⁻¹).val 0 0 = ξ 0 ∧
-      (Quotient.mk _ (gV hξ0 hξ1) : NQ K).out.val 0 0 /
-        (Quotient.mk _ (gV hξ0 hξ1) : NQ K).out.val 1 1 = ξ 1 := by
-  obtain ⟨h10, h00, h11⟩ := gV_out hξ0 hξ1
-  refine ⟨h10, ?_, ?_⟩
-  · have e := (inv_upper _ h10).2
-    rw [h00] at e
-    exact (mul_inv_eq_one₀ hξ0).1 e
-  · rw [h00, h11]
-    field_simp
 
-theorem survV_eq (q : NQ K)
-    (h : q.out.val 1 0 = 0 ∧ (q.out⁻¹).val 0 0 = ξ 0 ∧ q.out.val 0 0 / q.out.val 1 1 = ξ 1) :
-    q = Quotient.mk _ (gV hξ0 hξ1) := by
-  obtain ⟨h10, hN, hd⟩ := h
-  have e1 : ξ 0 * q.out.val 0 0 = 1 := by rw [← hN]; exact (inv_upper _ h10).2
-  have h11ne := (diag_ne_zero q.out h10).2
-  have e2 : q.out.val 0 0 = ξ 1 * q.out.val 1 1 := (div_eq_iff h11ne).1 hd
-  have hM11 : q.out.val 1 1 * (ξ 0 * ξ 1) = 1 := by linear_combination e1 - ξ 0 * e2
-  have hM00 : q.out.val 0 0 = (ξ 0)⁻¹ := eq_inv_of_mul_eq_one_right e1
-  have hM11' : q.out.val 1 1 = (ξ 0 * ξ 1)⁻¹ := eq_inv_of_mul_eq_one_left hM11
-  rw [out_eq_mk q]
-  refine (mk_eq_of_entries (a := gV hξ0 hξ1) (b := q.out) (q.out.val 0 1 * (ξ 0 * ξ 1))
-    fun j => ?_).symm
-  rw [val_gV]
-  have hj : j = 0 ∨ j = 1 := by fin_cases j <;> simp
-  rcases hj with rfl | rfl
-  · simp [h10, hM00]
-  · simp only [Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.head_cons, Matrix.empty_val', Matrix.cons_val_fin_one, Fin.isValue]
-    refine ⟨?_, hM11'⟩
-    rw [zero_add, mul_assoc, mul_inv_cancel₀ (mul_ne_zero hξ0 hξ1), mul_one]
 
 end reps
 
@@ -467,23 +279,6 @@ theorem final_eq {V : Submodule ℂ (G3K K → ℂ)} (hV : WhAK V) {W : G3K K �
     simp only [mul_assoc]
   rw [key, hV.psi W hW, hV.cen W hW, ← map_add, psi_rat, one_mul]
 
-theorem hGen_of' (h1 : MajU K) (h1' : MajV K) (h2 : ContW K) : HGen K := by
-  intro V hV W hW ξ hξ0 hξ1 g
-  have eU := setIntegral_uS hV h2 h1 hW continuous_hH (continuous_chiH ξ) (fun y => norm_psi _) g
-  have eV := setIntegral_vS hV h2 h1' hW continuous_hH (continuous_chiH ξ) (fun y => norm_psi _) g
-  beta_reduce at eU eV
-  show ∫ y in vecDomain K (Fin 3), uS W (lowM (y 0) * uni 0 (y 1) (y 2) * g) * chiH ξ y
-      ∂vecMeasure K (Fin 3) =
-    ∫ y in vecDomain K (Fin 3), vS W (lowM (y 0) * uni 0 (y 1) (y 2) * g) * chiH ξ y
-      ∂vecMeasure K (Fin 3)
-  rw [eU, eV]
-  simp only [intU hV h2 hW hξ1 g, intV hV h2 hW g]
-  rw [tsum_eq_single (Quotient.mk _ (gU hξ0 hξ1)) fun q hq =>
-      if_neg fun h => hq (survU_eq hξ0 hξ1 q h),
-    tsum_eq_single (Quotient.mk _ (gV hξ0 hξ1)) fun q hq =>
-      if_neg fun h => hq (survV_eq hξ0 hξ1 q h),
-    if_pos (survU_out hξ0 hξ1), if_pos (survV_out hξ0 hξ1)]
-  exact final_eq hV hW hξ0 hξ1 _ _ (survU_out hξ0 hξ1) (gV_out hξ0 hξ1) g
 
 end Ad3.K.GA.CtvP
 
@@ -491,8 +286,6 @@ namespace Ad3.K.GA
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem ctV_of (h1 : MajV K) (h2 : ContW K) : CtV K := CtvP.ctV_of' h1 h2
 
-theorem hGen_of (h1 : MajU K) (h1' : MajV K) (h2 : ContW K) : HGen K := CtvP.hGen_of' h1 h1' h2
 
 end Ad3.K.GA

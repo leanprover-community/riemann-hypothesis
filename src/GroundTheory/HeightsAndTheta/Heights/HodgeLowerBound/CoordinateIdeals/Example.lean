@@ -248,6 +248,5 @@ def zeroSystem : IntersectionSystem := fun _ _ _ _ _ _ _ => 0
 def lineDataZero : ComponentData zeroSystem Unit Unit (PBlk 2) Ω (fun _ => Fin 2 → Ω) :=
   lineData zeroSystem fun _ _ => le_rfl
 
-theorem lineData_n (II : IntersectionSystem) (hII) : (lineData II hII).n = 1 := rfl
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree.Line

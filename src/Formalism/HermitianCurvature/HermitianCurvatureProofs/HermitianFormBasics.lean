@@ -50,42 +50,8 @@ lemma rhoOf_mul (H : Matrix n n ℂ) (V : Matrix n ι ℂ) (Φ : Matrix ι ι �
     Matrix.mul_sub, Matrix.mul_one]
   abel
 
-lemma rhoOf_perp (H : Matrix n n ℂ) (V : Matrix n ι ℂ) (Φ : Matrix ι ι ℂ) (x : n → ℂ)
-    (hx : (Vᴴ * H) *ᵥ x = 0) : rhoOf H V Φ *ᵥ x = x := by
-  simp only [rhoOf]
-  rw [Matrix.add_mulVec, Matrix.one_mulVec, ← Matrix.mulVec_mulVec, prj_perp H V x hx, Matrix.mulVec_zero,
-    add_zero]
 
-lemma eq_rhoOf (H : Matrix n n ℂ) (V : Matrix n ι ℂ) (Φ : Matrix ι ι ℂ) (hΓ : IsUnit (Vᴴ * H * V).det)
-    (g : Matrix n n ℂ) (hg : g * V = V * Φ) (hgU : ∀ x, (Vᴴ * H) *ᵥ x = 0 → g *ᵥ x = x) :
-    g = rhoOf H V Φ := by
-  apply Matrix.toLin'.injective
-  refine LinearMap.ext fun x => ?_
-  simp only [Matrix.toLin'_apply]
-  have hd := decomp H V hΓ x
-  have h1 : g *ᵥ (x - V *ᵥ (prj H V *ᵥ x)) = x - V *ᵥ (prj H V *ᵥ x) := hgU _ hd
-  have h2 : rhoOf H V Φ *ᵥ (x - V *ᵥ (prj H V *ᵥ x)) = x - V *ᵥ (prj H V *ᵥ x) :=
-    rhoOf_perp H V Φ _ hd
-  have h3 : ∀ w : ι → ℂ, g *ᵥ (V *ᵥ w) = rhoOf H V Φ *ᵥ (V *ᵥ w) := fun w => by
-    rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hg, rhoOf_mul H V Φ hΓ]
-  have hx : x = (x - V *ᵥ (prj H V *ᵥ x)) + V *ᵥ (prj H V *ᵥ x) := (sub_add_cancel x _).symm
-  rw [hx, Matrix.mulVec_add, Matrix.mulVec_add, h1, h2, h3]
 
-lemma rhoOf_sub_one_pow (H : Matrix n n ℂ) (V : Matrix n ι ℂ) (Φ : Matrix ι ι ℂ)
-    (hΓ : IsUnit (Vᴴ * H * V).det) (m : ℕ) :
-    (rhoOf H V Φ - 1) ^ (m + 1) = V * (Φ - 1) ^ (m + 1) * prj H V := by
-  have hW : rhoOf H V Φ - 1 = V * (Φ - 1) * prj H V := by
-    simp only [rhoOf, add_sub_cancel_left]
-  have hP := prj_mul H V hΓ
-  induction m with
-  | zero => rw [zero_add, pow_one, pow_one, hW]
-  | succ k ih =>
-    rw [pow_succ (rhoOf H V Φ - 1) (k + 1), ih, hW]
-    calc V * (Φ - 1) ^ (k + 1) * prj H V * (V * (Φ - 1) * prj H V)
-        = V * (Φ - 1) ^ (k + 1) * (prj H V * V) * (Φ - 1) * prj H V := by
-          simp only [Matrix.mul_assoc]
-      _ = V * (Φ - 1) ^ (k + 1 + 1) * prj H V := by
-          rw [hP, Matrix.mul_one, pow_succ (Φ - 1) (k + 1), Matrix.mul_assoc V ((Φ - 1) ^ (k + 1)) (Φ - 1)]
 
 end proj
 

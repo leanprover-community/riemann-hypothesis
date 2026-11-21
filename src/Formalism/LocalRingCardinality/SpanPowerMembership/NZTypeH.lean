@@ -84,7 +84,6 @@ theorem goodT_tupL : GoodT (ndG H Lb what₂ h) (tupL Lb) := fun k =>
     show Formalism.CyclotomicNorms.IsGood R.r (H.g k) (tupL Lb k) (fun (v : Fin R.f) (j : Fin R.m) => ((1 : (ZMod (H.g k))ˣ))⁻¹)
     rw [e]; exact tupL_good Lb _ k⟩
 
-theorem goodRow_ndG (σ : what₂.FT) : (ndG H Lb what₂ h).goodRow σ := goodT_tupL H Lb what₂ h
 
 section Field
 
@@ -191,8 +190,6 @@ def ntypesL (ht : THyp H) (htm : TameHyp H) : NTypes (nautL H what₂ h (labL Lb
 
 theorem labelNewtypes_idempotent_eq (ht htm) : (ntypesL H Lb what₂ h ht htm).e0 = e0L H Lb what₂ h ℂ := e0_eq _
 
-theorem labelNewtypes_idempotent_ne_zero (ht htm) : (ntypesL H Lb what₂ h ht htm).e0 ≠ 0 := by
-  rw [labelNewtypes_idempotent_eq]; exact labelIdempotent_ne_zero H Lb what₂ h ℂ ht
 
 theorem ntypesL_E0Tie (ht htm) (hA : ∀ μ, what₂.eOp μ = 1) (hM : ∀ μ j, what₂.eMt μ j = 1) :
     (ntypesL H Lb what₂ h ht htm).IdempotentMatchesAction := by

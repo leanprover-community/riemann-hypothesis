@@ -300,15 +300,6 @@ theorem capDeg_vp_eq_zero (p : ℕ) {d n : ℕ} (D : Z.VDivQ) (hn : n ≠ d) {x 
   | tmul a D => simp [capDeg_vp, vDeg_eq_zero D hn hx]
   | add a b ha hb => rw [map_add, LinearMap.add_apply, ha, hb, add_zero]
 
-theorem vDeg_prod {d : ℕ} {D : Z.VDivZ} {I : ∀ C, (Z.comp C).effVert} (h : ∀ C, Z.vRes C D = Model.ofEff (I C))
-    (L : Fin d → FinLB Z.X) : Z.vDeg d D (∏ i, (L i).c1) =
-      ∑ C ∈ Finset.univ.filter fun C : Z.Comp => (Z.comp C).relDim = d,
-        (interLen O (divMod (I C).1) fun i => ((L i).pull (Z.compι C)).lb : ℚ) := by
-  rw [vDeg_apply]
-  refine Finset.sum_congr rfl fun C hC => ?_
-  simp only [h, map_prod, FinLB.pullback_firstChern]
-  exact (Model.vDeg_ofEff_prod _ fun i => ((L i).pull (Z.compι C)).isLB).trans
-    (if_pos ((Fintype.card_fin _).trans (Finset.mem_filter.1 hC).2.symm))
 
 section Theory
 
@@ -316,12 +307,6 @@ variable (Z) (p : ℕ) [Fact p.Prime] [CharZero O] [CharP (ResidueField O) p]
 
 def divP : Z.VDivZ := Z.div p (natCast_ne_zero O p)
 
-theorem toQ_div (g : O) (hg : g ≠ 0) : toQ (Z.div g hg) =
-    (((IsDiscreteValuationRing.addVal O g).toNat : ℚ) / ramIdx O p) • toQ (Z.divP p) := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
-  rw [divP, div_eq_addVal_smul hϖ, div_eq_addVal_smul hϖ (natCast_ne_zero O p), map_nsmul, map_nsmul,
-    ← Nat.cast_smul_eq_nsmul ℚ, ← Nat.cast_smul_eq_nsmul ℚ, smul_smul, ← ramIdx,
-    div_mul_cancel₀ _ (Nat.cast_ne_zero.2 (ramIdx_ne_zero O p))]
 
 set_option linter.overlappingInstances false in
 
@@ -349,8 +334,6 @@ theorem firstChern_eq_sub_divisor (L L' : FinLB Z.X) (u : Z.GenIso L.lb L'.lb) :
 theorem vdiv_dual (L L' : FinLB Z.X) (u : Z.GenIso L.lb L'.lb) : Z.vdiv L.dual L'.dual u.dual = -Z.vdiv L L' u :=
   (congrArg toQ (u.div_dual L.isLB L'.isLB)).trans (map_neg _ _)
 
-theorem vdiv_symm (L L' : FinLB Z.X) (u : Z.GenIso L.lb L'.lb) : Z.vdiv L' L u.symm = -Z.vdiv L L' u :=
-  (congrArg toQ (u.div_symm L.isLB L'.isLB)).trans (map_neg _ _)
 
 theorem vdiv_smul (L : FinLB Z.X) (g : O) (hg : g ≠ 0) : Z.vdiv L L (.smul L.isLB g hg) = toQ (Z.div g hg) :=
   congrArg toQ (GenIso.div_smul L.isLB g hg)
@@ -539,22 +522,11 @@ variable (hp : p.Prime) (hW : (p : ℂ) ∈ W.nonunits) (Z : Mdl Y i₀) (d : �
   haveI := charP_residueField_of_mem_nonunits Z.i.c hp hW
   (nmodel Z).toITh p d
 
-theorem dim_ithOf : (ithOf hp hW Z d).dim = d + 1 := rfl
 
-theorem LB_ithOf : (ithOf hp hW Z d).LB = FinLB Z.X := rfl
 
-theorem firstChern_lineBundleTheory (L : FinLB Z.X) : (ithOf hp hW Z d).c1 L = L.c1 := rfl
 
 theorem firstChern_dual_eq_neg (L : FinLB Z.X) : (ithOf hp hW Z d).c1 L.dual = -(ithOf hp hW Z d).c1 L := L.firstChern_dual
 
-theorem capDeg_ithOf (D : (ithOf hp hW Z d).VDiv) (Q : (ithOf hp hW Z d).Ch) :
-    haveI := Fact.mk hp
-    haveI := isDiscreteValuationRing_V Z.i.c hp hW
-    haveI := charP_residueField_of_mem_nonunits Z.i.c hp hW
-    (ithOf hp hW Z d).capDeg D Q = ∑ C ∈ Finset.univ.filter fun C : (nmodel Z).Comp => ((nmodel Z).comp C).relDim = d,
-      (((nmodel Z).comp C).toITh p).capDeg (NModel.vResQ C D) (picSymPull ((nmodel Z).compι C) Q) :=
-  haveI := isDiscreteValuationRing_V Z.i.c hp hW
-  NModel.capDeg_vp_eq_sum p d D Q
 
 variable {Z}
 

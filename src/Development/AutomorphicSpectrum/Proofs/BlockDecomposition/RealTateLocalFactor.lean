@@ -174,25 +174,6 @@ theorem gaussOdd : ∃ g : SchwartzMap ℝ ℂ, ∀ s : ℂ, 0 < s.re →
   simp only [z1, mul_assoc]
   rw [integral_const_mul]
 
-theorem tateR_of_int (hI : TateInt) : TateR := by
-  intro f e s h0 h1
-  have h1' : 0 < (1 - s).re := by simpa using h1
-  cases e
-  · obtain ⟨g, hg⟩ := gaussEven
-    have key := tate_zeta_symmetric hI f g false s h0 h1
-    rw [(hg s h0).1, (hg _ h1').2] at key
-    have hne := Gammaℝ_ne_zero_of_re_pos h0
-    simp only [gT, Bool.false_eq_true, if_false, add_zero, one_mul]
-    field_simp
-    linear_combination key
-  · obtain ⟨g, hg⟩ := gaussOdd
-    have key := tate_zeta_symmetric hI f g true s h0 h1
-    rw [(hg s h0).1, (hg _ h1').2] at key
-    have hne : Gammaℝ (s + 1) ≠ 0 := Gammaℝ_ne_zero_of_re_pos (by simp; linarith)
-    simp only [gT, if_true]
-    field_simp
-    linear_combination key
 
-theorem tateR : TateR := tateR_of_int GlobalTheory.T.archimedean_tate_integral
 
 end GlobalTheory.CompanionTheory.TateR

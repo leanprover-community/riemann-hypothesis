@@ -33,23 +33,10 @@ theorem export_link_of_family {eps : ℝ} (Fm : FamP eps) (h : Formalism.MainNot
   unfold TwistedPlaces.aux₃ at hp
   exact hp hsha hS j hj
 
-theorem export_link_iff_family {eps : ℝ} (Fm : FamP eps) : LinkN Fm ↔ Formalism.MainNotions.TwistedPlaces.OrbitValuationBound Fm := by
-  refine ⟨fun h => ?_, export_link_of_family Fm⟩
-  obtain ⟨C, x0, hx⟩ := h
-  refine ⟨C, x0, fun x hx0 i => ?_⟩
-  have hp := hx x hx0 i
-  unfold TwistedPlaces.aux₃
-  exact fun hsha hS j hj => hp hsha j hj hS
 
 theorem linkN_of {eps : ℝ} (Fm : FamP eps) (hA : Formalism.MainNotions.TwistedPlaces.AdmF Fm) (hS : Formalism.MainNotions.TwistedPlaces.KudlaFamilyStatement Fm) :
     LinkN Fm := export_link_of_family Fm (hS hA)
 
-theorem linkN_of_stmtU {eps : ℝ} (Fm : FamP eps) (hA : Formalism.MainNotions.TwistedPlaces.AdmF Fm) (hS : Formalism.MainNotions.TwistedPlaces.UniformExportStatement eps) :
-    LinkN Fm := by
-  obtain ⟨Ca, hCa⟩ := hA
-  obtain ⟨C, hC⟩ := hS Ca
-  obtain ⟨x0, hx0⟩ := hC Fm hCa
-  exact export_link_of_family Fm ⟨C, x0, hx0⟩
 
 theorem ev_rpow (K A κ α β : ℝ) (hκ : 0 < κ) (hα : 0 < α) (hβ : β < α) :
     ∀ᶠ x : ℝ in atTop, K * x ^ A * Real.exp (-(κ * x ^ α)) ≤ Real.exp (-(x ^ β)) := by
@@ -384,55 +371,8 @@ theorem parO {eps : ℝ} (Fm : FamP eps) : Formalism.MainNotions.ArithmeticCylin
     _ ≤ δ * Real.exp (8 * x ^ eps) := h2
     _ ≤ δ * ((Fm.D x i).host.g k : ℝ) := mul_le_mul_of_nonneg_left hb8 hδ.le
 
-theorem drows_le_dall (D : D7) : D.what₂.Drows ≤ D.what₂.Dall := by
-  rw [← D.s_HH]
-  have hli : LinearIndependent ℂ (fun a => D.sEE (D.what₂.onb a)) :=
-    D.what₂.onb.orthonormal.linearIndependent.map_of_surjective_injective (starRingEnd ℂ)
-      D.sEE.toLinearMap.toAddMonoidHom (starRingEnd ℂ).surjective
-      (fun m hm => D.sEE.injective (by simpa using hm)) (fun r m => by simp)
-  simpa using hli.fintype_card_le_finrank
 
-theorem delpNonneg_of_pos (D : D7) (h : 0 < D.what₂.Dall) : Rows.DelpNonneg D.what₂ := by
-  have h1 := D.what₂.D_eq
-  have h2 : (D.what₂.Drows : ℝ) ≤ D.what₂.Dall := by exact_mod_cast drows_le_dall D
-  have h3 : (0 : ℝ) < D.what₂.Dall := by exact_mod_cast h
-  unfold Rows.DelpNonneg
-  by_contra hneg
-  push Not at hneg
-  nlinarith
 
-theorem all_rows_count_pos (D : D7) (A : Formalism.MainNotions.ArithmeticCylinders.AllRows D) (n₀ : ℕ) (Alev C₃ c₃ cb CL : ℝ) (hc : 0 < c₃)
-    (h : Formalism.MainNotions.ArithmeticCylinders.Adm2 D A n₀ Alev C₃ c₃ cb CL) : 0 < D.what₂.Dall := by
-  obtain ⟨h1, -, hT1, -, -, ⟨b, hh, hSet, hGap, hs1, hs2, hs3, hpos⟩, -⟩ := h
-  have hcyl : Formalism.MainNotions.ArithmeticCylinders.cyl D 0 (Set.univ) = Set.univ := by
-    ext t; simp [Formalism.MainNotions.ArithmeticCylinders.cyl]
-  obtain ⟨hS, hC⟩ := hSet 0 Set.univ
-  rw [hcyl, A.eT_univ] at hS
-  rw [hcyl, A.eT_univ, A.ReT_univ] at hC
-  have hcount := h1 A.B.I b A.B.lam A.B.g (D.host.g (1 - 0)) A.B.e A.B.H A.B.σ A.B.w A.B.Hs A.B.σs A.B.tens
-    A.B.μf A.B.fund A.B.R A.B.Re hh hS hC hGap hs1 hs2 hs3
-  have hn : (2 : ℝ) ≤ A.B.I.n := by
-    rw [A.n_eq]
-    have : 2 ≤ D.R.r := by
-      have := D.R.m_add_three_le_k
-      have := D.R.two_le_m
-      unfold Ranks.r; omega
-    exact_mod_cast this
-  have hf : (0 : ℝ) < A.B.I.f := by
-    rw [A.f_eq]
-    have : 0 < D.R.f := by have h : 0 < D.R.n := D.R.ord_pos; unfold Ranks.f; omega
-    exact_mod_cast this
-  have hlog : 0 < Real.log A.B.I.n := Real.log_pos (by linarith)
-  have hlt : Real.exp (-c₃ * (A.B.I.n : ℝ) * (A.B.I.f : ℝ) * Real.log (A.B.I.n : ℝ)) < 1 := by
-    have : 0 < c₃ * (A.B.I.n : ℝ) * (A.B.I.f : ℝ) * Real.log (A.B.I.n : ℝ) := by positivity
-    rw [← Real.exp_zero]
-    exact Real.exp_lt_exp.2 (by linarith)
-  rw [hT1]
-  unfold Formalism.MainNotions.S.RowsAut.D
-  by_contra h0
-  have h00 : A.B.I.Dcount A.B.σs A.B.μf A.B.fund A.B.R A.B.Re = 0 := by omega
-  rw [h00, Nat.cast_zero, zero_sub, abs_neg, abs_of_pos hpos] at hcount
-  nlinarith
 
 def DelpNonnegF {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, Rows.DelpNonneg (Fm.D x i).what₂
@@ -440,51 +380,21 @@ def DelpNonnegF {eps : ℝ} (Fm : FamP eps) : Prop :=
 def DallPosF {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, 0 < (Fm.D x i).what₂.Dall
 
-theorem delpNonnegF_of {eps : ℝ} (Fm : FamP eps) (h : DallPosF Fm) : DelpNonnegF Fm := by
-  obtain ⟨x0, hx⟩ := h
-  exact ⟨x0, fun x hx0 i => delpNonneg_of_pos _ (hx x hx0 i)⟩
 
-theorem linkIRR_iff {eps : ℝ} (Fm : FamP eps) : LinkIRR Fm ↔ DelpNonnegF Fm ∧ Formalism.MainNotions.ArithmeticCylinders.FamilyExpDeficitBound' Fm := by
-  constructor
-  · rintro ⟨x0, hx⟩
-    exact ⟨⟨x0, fun x hx0 i => (hx x hx0 i).1⟩, ⟨x0, fun x hx0 i => (hx x hx0 i).2⟩⟩
-  · rintro ⟨⟨x1, h1⟩, ⟨x2, h2⟩⟩
-    exact ⟨max x1 x2, fun x hx i =>
-      ⟨h1 x (le_of_max_le_left hx) i, h2 x (le_of_max_le_right hx) i⟩⟩
 
-theorem second_bound_of_first_family {eps : ℝ} (Fm : FamP eps) (h2 : Formalism.MainNotions.ArithmeticCylinders.Conclusion2Family Fm) : Formalism.MainNotions.ArithmeticCylinders.FamilyExpDeficitBound' Fm := by
-  obtain ⟨C, c, hc, o, ho, x0, h⟩ := h2
-  obtain ⟨x1, h1⟩ := parX Fm C c o hc ho
-  refine ⟨max x0 x1, fun x hx i => ?_⟩
-  exact (h x (le_trans (le_max_left _ _) hx) i).trans (h1 x (le_trans (le_max_right _ _) hx) i)
 
-theorem irreducibility_link_of_bound {eps : ℝ} (Fm : FamP eps) (h2 : Formalism.MainNotions.ArithmeticCylinders.Conclusion2Family Fm) (hD : DallPosF Fm) :
-    LinkIRR Fm := (linkIRR_iff Fm).mpr ⟨delpNonnegF_of Fm hD, second_bound_of_first_family Fm h2⟩
 
-theorem linkIRR_of {eps : ℝ} (Fm : FamP eps) (A : ∀ x (i : Fm.Ix x), Formalism.MainNotions.ArithmeticCylinders.AllRows (Fm.D x i))
-    (hS : Formalism.MainNotions.ArithmeticCylinders.KudlaFamilyStatement Fm A) (n₀ : ℕ) (Alev C₃ c₃ cb CL x₂ : ℝ) (hc : 0 < c₃)
-    (hA : ∀ x ≥ x₂, ∀ i : Fm.Ix x, Formalism.MainNotions.ArithmeticCylinders.Adm2 (Fm.D x i) (A x i) n₀ Alev C₃ c₃ cb CL) :
-    LinkIRR Fm := by
-  have hP := hS.2 n₀ Alev C₃ c₃ cb CL x₂ hc hA (parO Fm)
-  have hD : DallPosF Fm :=
-    ⟨x₂, fun x hx i => all_rows_count_pos _ (A x i) n₀ Alev C₃ c₃ cb CL hc (hA x hx i)⟩
-  exact (linkIRR_iff Fm).mpr ⟨delpNonnegF_of Fm hD, hP.2 (parX Fm)⟩
 
 def IrrHyp {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ (A : ∀ x (i : Fm.Ix x), Formalism.MainNotions.ArithmeticCylinders.AllRows (Fm.D x i)) (n₀ : ℕ) (Alev C₃ c₃ cb CL x₂ : ℝ),
     Formalism.MainNotions.ArithmeticCylinders.KudlaFamilyStatement Fm A ∧ 0 < c₃ ∧
       ∀ x ≥ x₂, ∀ i : Fm.Ix x, Formalism.MainNotions.ArithmeticCylinders.Adm2 (Fm.D x i) (A x i) n₀ Alev C₃ c₃ cb CL
 
-theorem linkIRR_of_hyp {eps : ℝ} (Fm : FamP eps) (h : IrrHyp Fm) : LinkIRR Fm := by
-  obtain ⟨A, n₀, Alev, C₃, c₃, cb, CL, x₂, hS, hc, hA⟩ := h
-  exact linkIRR_of Fm A hS n₀ Alev C₃ c₃ cb CL x₂ hc hA
 
 def LocsCoverF {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, Formalism.MainNotions.N.LocsCoverTw (Fm.D x i)
 
-theorem linkEta_iff {eps : ℝ} (Fm : FamP eps) : LinkEta Fm ↔ LocsCoverF Fm := Iff.rfl
 
-theorem linkEta_of {eps : ℝ} (Fm : FamP eps) (h : LocsCoverF Fm) : LinkEta Fm := (linkEta_iff Fm).mpr h
 
 def ThetaScalarNonzero (D : D7) (μ : D.what₂.Tup) (j : ℕ) : Prop :=
   ∀ σ : D.what₂.FT, ∃ lam : ℂ, lam ≠ 0 ∧ ∀ f ∈ D.what₂.isot j σ,
@@ -526,115 +436,20 @@ theorem finrank_Mj (D : D7) (X : DivX D) (hR : DV.MjRank D X) (j : ℕ) (hj : j 
     exact Module.finrank_eq_card_basis (X.MjH j).b
   rw [h1, ← h2, hR j hj'.1 hj'.2]
 
-theorem finrank_Zj (D : D7) (X : DivX D) (hR : DV.MjRank D X) (μ : D.what₂.Tup) (j : ℕ)
-    (hj : j ∈ SizeData₂.lifts D) (hI : DirectSum.IsInternal (D.what₂.isot j)) (h : ThetaScalarNonzero D μ j) :
-    Module.finrank ℂ (D.what₂.Zj μ j) = D.what₂.D0 := by
-  have hinj := thetaT_injective D μ j hI h
-  unfold Rows.Data.Zj
-  rw [LinearMap.finrank_range_of_inj hinj]
-  exact finrank_Mj D X hR j hj
 
 def LamPos (D : D7) (μ : D.what₂.Tup) (j : ℕ) : Prop :=
   ∀ σ : D.what₂.FT,
     (∀ f ∈ D.what₂.isot j σ, D.what₂.thetaP μ j (D.what₂.thetaT μ j f) = ((D.what₂.lamP μ j σ : ℝ) : ℂ) • f) ∧
     (D.what₂.isot j σ ≠ ⊥ → 0 < D.what₂.lamP μ j σ)
 
-theorem theta_scalar_of_positivity (D : D7) (μ : D.what₂.Tup) (j : ℕ) (h : LamPos D μ j) : ThetaScalarNonzero D μ j := by
-  intro σ
-  obtain ⟨h1, h2⟩ := h σ
-  by_cases hb : D.what₂.isot j σ = ⊥
-  · refine ⟨1, one_ne_zero, fun f hf => ?_⟩
-    rw [hb, Submodule.mem_bot] at hf
-    subst hf
-    simp
-  · exact ⟨((D.what₂.lamP μ j σ : ℝ) : ℂ), Complex.ofReal_ne_zero.mpr (h2 hb).ne', h1⟩
 
-theorem theta_scalar_of_eigenvalue (D : D7) (h : Formalism.MainNotions.CanonicalTranslateJets.ArchimedeanSignatureMatching D) (μ : D.what₂.Tup) (j : ℕ) (hj : j ∈ SizeData₂.lifts D) :
-    ThetaScalarNonzero D μ j := by
-  have hj' : 1 ≤ j ∧ j ≤ D.R.m := by
-    unfold SizeData₂.lifts at hj
-    simpa using hj
-  have hin : CanonicalTranslateJets.InR D j := by
-    first
-      | exact hj
-      | exact hj'
-      | (unfold CanonicalTranslateJets.InR; first | exact hj | exact hj' | simpa using hj' | omega)
-  exact theta_scalar_of_positivity D μ j (h μ j hin)
 
-theorem theta_scalar_of_proposition (D : D7) (h : Formalism.MainNotions.SumRepresentations.Conclusion42 D) (i : D.nd.Loc) :
-    ThetaScalarNonzero D (D.nd.mu i) (D.nd.j i) := by
-  have h1 := h i
-  unfold SumRepresentations.At.Conclusion42 at h1
-  intro σ
-  by_cases hb : D.what₂.isot (D.nd.j i) σ = ⊥
-  · refine ⟨1, one_ne_zero, fun f hf => ?_⟩
-    rw [hb, Submodule.mem_bot] at hf
-    subst hf
-    simp
-  · obtain ⟨lam, hlam, hf⟩ := ((h1 σ hb).1).1
-    exact ⟨(lam : ℂ), Complex.ofReal_ne_zero.mpr hlam.ne', hf⟩
 
-theorem rank_invariant_at_localisation {D : D7} (L : SizeData₂ D) (X : DivX D) (h42 : Formalism.MainNotions.SumRepresentations.Conclusion42 D)
-    (hI : Rows.IsotInternal D.what₂) (hR : DV.MjRank D X) (i : D.nd.Loc) :
-    L.zeroSpaceRankAtPlace (D.nd.j i) (D.nd.w i) = D.what₂.D0 := by
-  have h42i := theta_scalar_of_proposition D h42 i
-  have hjr := D.nd.j_range i
-  have hj : D.nd.j i ∈ SizeData₂.lifts D := by
-    unfold SizeData₂.lifts
-    simpa using hjr
-  have hmu : D.nd.mu i = D.what₂.muTw (D.nd.w i) := by
-    first
-      | exact D.nd.mu_eq i
-      | exact D.nd.mu_tw i
-      | exact D.nd.mu_w i
-      | exact D.nd.mu_def i
-      | exact D.nd.muTw_eq i
-      | exact D.nd.hmu i
-      | exact D.nd.mu_spec i
-      | exact (D.nd.mu_eq i).symm
-      | rfl
-  rw [hmu] at h42i
-  unfold SizeData₂.zeroSpaceRankAtPlace
-  exact finrank_Zj D X hR _ _ hj (hI _ hjr.1 hjr.2) h42i
 
 def LocNe (D : D7) : Prop := ∀ j ∈ SizeData₂.lifts D, ∃ i : D.nd.Loc, D.nd.j i = j
 
-theorem rank_invariant_of_constancy {D : D7} (L : SizeData₂ D) (X : DivX D) (h42 : Formalism.MainNotions.SumRepresentations.Conclusion42 D)
-    (hI : Rows.IsotInternal D.what₂) (hR : DV.MjRank D X) (hne : LocNe D) (h3 : Formalism.MainNotions.TwistedPlaces.adm3 L) :
-    ∀ j ∈ SizeData₂.lifts D, L.dZ0 j = D.what₂.D0 := by
-  intro j hj
-  obtain ⟨i, rfl⟩ := hne j hj
-  unfold TwistedPlaces.adm3 at h3
-  have htw : D.what₂.muAt (D.nd.w i) ≠ D.what₂.mu0 := by
-    first
-      | exact D.nd.w_tw i
-      | exact D.nd.tw i
-      | exact D.nd.mu_ne i
-      | exact D.nd.twisted i
-      | exact D.nd.w_twisted i
-      | exact D.nd.muAt_ne i
-  rw [← h3 _ hj _ htw]
-  exact rank_invariant_at_localisation L X h42 hI hR i
 
-theorem rank_equal_at_every_place {D : D7} (L : SizeData₂ D) (X : DivX D) (h42 : Formalism.MainNotions.SumRepresentations.Conclusion42 D)
-    (hI : Rows.IsotInternal D.what₂) (hR : DV.MjRank D X)
-    (hZ : ∀ j ∈ SizeData₂.lifts D, L.dZ0 j = D.what₂.D0) (i : D.nd.Loc) :
-    L.zeroSpaceRankAtPlace (D.nd.j i) (D.nd.w i) = L.dZ0 (D.nd.j i) := by
-  have hjr := D.nd.j_range i
-  have hj : D.nd.j i ∈ SizeData₂.lifts D := by
-    unfold SizeData₂.lifts
-    simpa using hjr
-  rw [rank_invariant_at_localisation L X h42 hI hR i, hZ _ hj]
 
-theorem rank_invariant_of_nonzero_scalar {D : D7} (L : SizeData₂ D) (X : DivX D) (hI : Rows.IsotInternal D.what₂)
-    (hR : DV.MjRank D X) (h0 : ∀ j ∈ SizeData₂.lifts D, ThetaScalarNonzero D D.what₂.mu0 j) :
-    ∀ j ∈ SizeData₂.lifts D, L.dZ0 j = D.what₂.D0 := by
-  intro j hj
-  have hj' : 1 ≤ j ∧ j ≤ D.R.m := by
-    unfold SizeData₂.lifts at hj
-    simpa using hj
-  unfold SizeData₂.dZ0
-  exact finrank_Zj D X hR D.what₂.mu0 j hj (hI j hj'.1 hj'.2) (h0 j hj)
 
 def IsotF {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, Rows.IsotInternal (Fm.D x i).what₂
@@ -651,67 +466,14 @@ def ThetaScalarReferenceFamily {eps : ℝ} (Fm : FamP eps) : Prop :=
 def EigenvalueAdmittedFamily {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, Formalism.MainNotions.CanonicalTranslateJets.ArchimedeanSignatureMatching (Fm.D x i)
 
-theorem eigenvalue_family_of_admitted {eps : ℝ} (Fm : FamP eps) (GF : Formalism.MainNotions.CanonicalTranslateJets.LocF Fm) (h : Formalism.MainNotions.CanonicalTranslateJets.AdmF Fm GF) :
-    EigenvalueAdmittedFamily Fm := by
-  refine ⟨Fm.x1 + 1, fun x hx i => ?_⟩
-  have hA := h x (by linarith) i
-  unfold CanonicalTranslateJets.admitted at hA
-  exact hA.2.2.2.1
 
-theorem theta_scalar_family_of_eigenvalue {eps : ℝ} (Fm : FamP eps) (h : EigenvalueAdmittedFamily Fm) : ThetaScalarReferenceFamily Fm := by
-  obtain ⟨x0, hx⟩ := h
-  exact ⟨x0, fun x hx0 i j hj => theta_scalar_of_eigenvalue _ (hx x hx0 i) _ j hj⟩
 
-theorem rank_invariant_family_of_scalar {eps : ℝ} (Fm : FamP eps) (h0 : ThetaScalarReferenceFamily Fm) (hI : IsotF Fm) (hR : MjRankF Fm) :
-    SmallLevelRankEq Fm := by
-  obtain ⟨x1, h1⟩ := h0
-  obtain ⟨x2, h2⟩ := hI
-  obtain ⟨x3, h3⟩ := hR
-  refine ⟨max x1 (max x2 x3), fun x hx i => ?_⟩
-  have hx23 := le_of_max_le_right hx
-  exact rank_invariant_of_nonzero_scalar (Fm.L x i) (Fm.X x i) (h2 x (le_of_max_le_left hx23) i)
-    (h3 x (le_of_max_le_right hx23) i) (h1 x (le_of_max_le_left hx) i)
 
-theorem rank_invariant_of_eigenvalue {eps : ℝ} (Fm : FamP eps) (h : EigenvalueAdmittedFamily Fm) (hI : IsotF Fm) (hR : MjRankF Fm) :
-    SmallLevelRankEq Fm := rank_invariant_family_of_scalar Fm (theta_scalar_family_of_eigenvalue Fm h) hI hR
 
 def Adm3F {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, Formalism.MainNotions.TwistedPlaces.adm3 (Fm.L x i)
 
-theorem rank_input_of_finiteness {eps : ℝ} (Fm : FamP eps) (hA : Formalism.MainNotions.TwistedPlaces.AdmF Fm) (hF : LinkShaFin Fm) : Adm3F Fm := by
-  obtain ⟨C, x0, hx⟩ := hA
-  obtain ⟨x1, hF1⟩ := hF
-  refine ⟨max (max x0 x1) (Fm.x1 + 1), fun x hx' i => ?_⟩
-  have hxa := le_of_max_le_left hx'
-  obtain ⟨tb, htb⟩ := hx x (le_of_max_le_left hxa) (by have := le_of_max_le_right hx'; linarith) i
-    (hF1 x (le_of_max_le_right hxa) i)
-  unfold TwistedPlaces.AdmT at htb
-  exact htb.2.2.1
 
-theorem rank_invariant_family_of {eps : ℝ} (Fm : FamP eps) (h32 : Formalism.MainNotions.SumRepresentations.ConclusionF1 Fm) (hI : IsotF Fm) (hR : MjRankF Fm)
-    (hne : LocNeF Fm) (h3 : Adm3F Fm) : SmallLevelRankEq Fm := by
-  obtain ⟨x1, h1⟩ := h32
-  obtain ⟨x2, h2⟩ := hI
-  obtain ⟨x3, h3'⟩ := hR
-  obtain ⟨x4, h4⟩ := hne
-  obtain ⟨x5, h5⟩ := h3
-  refine ⟨max (max x1 x2) (max x3 (max x4 x5)), fun x hx i => ?_⟩
-  have ha := le_of_max_le_left hx
-  have hb := le_of_max_le_right hx
-  have hc := le_of_max_le_right hb
-  have hp := h1 x (le_of_max_le_left ha) i
-  have h42 : SumRepresentations.Conclusion42 (Fm.D x i) := by
-    first
-      | exact hp.1
-      | exact hp.2
-      | exact hp.2.1
-      | exact hp.2.2
-      | exact hp.2.2.1
-      | exact hp.1.2
-      | (unfold SumRepresentations.Conclusion1 at hp; first | exact hp.1 | exact hp.2 | exact hp.2.1 | exact hp.2.2 | exact hp.2.2.1 | exact hp.2.2.2)
-      | (unfold SumRepresentations.Conclusion1 at hp; exact hp)
-  exact rank_invariant_of_constancy (Fm.L x i) (Fm.X x i) h42 (h2 x (le_of_max_le_right ha) i)
-    (h3' x (le_of_max_le_left hb) i) (h4 x (le_of_max_le_left hc) i) (h5 x (le_of_max_le_right hc) i)
 
 end Formalism.MainNotions.N
 

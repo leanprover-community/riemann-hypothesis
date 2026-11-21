@@ -32,10 +32,6 @@ theorem transl_sub (h : H) (f g : X → ℂ) : transl h (f - g) = transl h f - t
 
 theorem transl_smul (h : H) (c : ℂ) (f : X → ℂ) : transl h (c • f) = c • transl h f := rfl
 
-theorem transl_sum {ι : Type*} (h : H) (s : Finset ι) (f : ι → X → ℂ) :
-    transl h (∑ i ∈ s, f i) = ∑ i ∈ s, transl h (f i) := by
-  funext x
-  simp [transl, Finset.sum_apply]
 
 theorem transl_indicator (h : H) (A : Set X) : transl h (A.indicator 1) = (h • A).indicator 1 := by
   funext x

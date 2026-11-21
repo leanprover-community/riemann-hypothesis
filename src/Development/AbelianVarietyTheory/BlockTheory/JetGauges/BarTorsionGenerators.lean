@@ -34,13 +34,6 @@ theorem gens_subset_thGen (Xo : Moduli Dw l) (c : Coeff l) (nab : NabV Xo c) (α
   rintro f ⟨x, P, -, hP, hf⟩
   exact ⟨x, P, hP, hf⟩
 
-theorem gens_eq_thGen (Xo : Moduli Dw l) (c : Coeff l) (nab : NabV Xo c) {α : 𝓞 E}
-    (hα : l.Mb = Ideal.span {H.bar α}) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) :
-    gens Xo c nab α a n = thGen Xo c nab a n := by
-  refine Set.Subset.antisymm (gens_subset_thGen Xo c nab α a n) ?_
-  rintro f ⟨x, P, hP, hf⟩
-  refine ⟨x, P, fun b => Submodule.smul_mem_smul ?_ Submodule.mem_top, hP, hf⟩
-  rw [hα]; exact Ideal.subset_span rfl
 
 theorem NoCommonZero.rd {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {s : Set (Rul Xo c)}
     (h : NoCommonZero Xo c σ s) {r : ℕ} (U : Unf Xo c σ r) (k : U.Comp) (x) (hx : x ∈ (U.X k).dom) :

@@ -94,20 +94,6 @@ theorem mem_of_inv_mem {S : Subalgebra ℤ F} {x : F} (hx : x ≠ 0) (hi : IsInt
   rw [this]
   exact neg_mem (Subalgebra.sum_mem _ fun i _ => mul_mem (S.algebraMap_mem _) (pow_mem h _))
 
-theorem overInt_pt : OverInt (pt F) (RingHom.id F) := by
-  refine ⟨fun k => ⟨none, by rw [pt_none]; exact one_ne_zero⟩, fun c hc a => ?_⟩
-  have hg : ∀ p, pt F p / pt F ⟨(), c ()⟩ ∈ chartRingZ (pt F) c := fun p =>
-    Algebra.subset_adjoin ⟨p, rfl⟩
-  have h1 : pt F ⟨(), c ()⟩ ∈ chartRingZ (pt F) c := by
-    refine mem_of_inv_mem F (hc ()) (intPt F (c ())).isIntegral_coe ?_
-    have := hg ⟨(), none⟩
-    rwa [pt_none, one_div] at this
-  have h2 : ∀ p, pt F p ∈ chartRingZ (pt F) c := fun p => by
-    have := mul_mem (hg p) h1
-    rwa [div_mul_cancel₀ _ (hc ())] at this
-  rw [← (RingOfIntegers.basis F).sum_repr a]
-  simp only [RingHom.id_apply, map_sum, map_zsmul, RingOfIntegers.coe_eq_algebraMap]
-  exact Subalgebra.sum_mem _ fun i _ => zsmul_mem (h2 ⟨(), some i⟩) _
 
 theorem X_none_notMem (W : Ideal (MRing (Idx F))) (hW : W.IsPrime) (hP : mCoordIdeal (pt F) ≤ W)
     (hr : IsRelevant W) : (X ⟨(), none⟩ : MRing (Idx F)) ∉ W := by
@@ -193,23 +179,6 @@ def flatFs : FlatHerm (pt F) (RingHom.id F) (fs F) where
     rw [h2, Real.sqrt_mul (sum_pos F σ).le, Real.sqrt_sq (norm_nonneg _)]
     field_simp
 
-theorem ptOver_pt (σ : F →+* ℂ) : PtOver (pt F) (RingHom.id F) σ (fun p => σ (pt F p)) := by
-  have e : ∀ g : MRing (Idx F), evC (fun p => σ (pt F p)) g = σ (aeval (pt F) g) := fun g => by
-    induction g using MvPolynomial.induction_on with
-    | C a => simp [evC]
-    | add p q hp hq => simp only [evC, map_add] at *; rw [hp, hq]
-    | mul_X p i hp => simp only [evC, map_mul, map_X, eval_X, aeval_X] at *; rw [hp]
-  refine ⟨⟨fun k => ⟨none, by cases k; simp [pt_none]⟩, fun f hf => ?_⟩, fun a d g h _ _ H => by
-    rw [e, e, H, map_mul]; rfl⟩
-  have hf' : mConeMap (pt F) f = 0 := hf
-  have e2 : ∀ g : MRing (Idx F), eval (fun _ : Unit => (1 : F)) (mConeMap (pt F) g) = aeval (pt F) g := fun g => by
-    induction g using MvPolynomial.induction_on with
-    | C a => simp
-    | add p q hp hq => simp only [map_add, hp, hq]
-    | mul_X p i hp => rw [map_mul, map_mul, hp, map_mul]; simp [mConeMap]
-  have := e f
-  rw [← e2, hf'] at this
-  simpa using this
 
 theorem ht_pos : 0 < (flatFs F).ht := by
   have h : ∀ σ : F →+* ℂ, Real.log ((flatFs F).κ σ) < 0 := fun σ => by
@@ -228,8 +197,6 @@ theorem ht_pos : 0 < (flatFs F).ht := by
   exact div_neg_of_neg_of_pos (Finset.sum_neg (fun σ _ => h σ) Finset.univ_nonempty)
     (Nat.cast_pos.mpr Module.finrank_pos)
 
-theorem isPlaceWeight_const (c : ℝ) : IsPlaceWeight (pt F) (RingHom.id F) (fun _ => c) (fun _ => c) :=
-  ⟨fun _ _ _ => rfl, contDiffOn_const, fun _ _ _ => Filter.Eventually.of_forall fun _ => rfl⟩
 
 example (c : ℝ) : meanEmb (fun _ : F →+* ℂ => c) = c := by
   have : (Module.finrank ℚ F : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr Module.finrank_pos.ne'

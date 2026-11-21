@@ -9,17 +9,13 @@ namespace GlobalTheory.FlagMeas.Model
 
 open Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas
 
-theorem sphV_zero : sphV 0 = 1 := by simp [sphV]
 
-theorem volU_one : volU 1 = 2 * Real.pi := by simp [volU, sphV]
 
 theorem volU_two : volU 2 = 8 * Real.pi ^ 3 := by
   have : Finset.Icc 1 2 = {1, 2} := by decide
   simp [volU, sphV, this]; ring
 
-theorem dimN_two : dimN 2 ![1] = 1 := by decide
 
-theorem dimN_test : 9 ^ 2 = (9 - 2 * 3) ^ 2 + 2 * (1 ^ 2 + 2 ^ 2) + 2 * dimN 9 ![1, 2] := by decide
 
 open Pointwise in
 
@@ -85,12 +81,6 @@ def nU (t : ℝ) : Formalism.REAL.UJ e2 :=
 theorem nU_add (s t : ℝ) : nU s * nU t = nU (s + t) :=
   Subtype.ext (Units.ext (nM_add s t))
 
-theorem hs_nU (t : ℝ) : Real.sqrt (Formalism.REAL.hs (uMat (nU t) - 1)) = |t| := by
-  have : Formalism.REAL.hs (uMat (nU t) - 1) = t ^ 2 := by
-    change Formalism.REAL.hs (nM t - 1) = t ^ 2
-    simp [Formalism.REAL.hs, nM, Fin.sum_univ_two, Matrix.one_apply, div_pow]
-    ring
-  rw [this, Real.sqrt_sq_eq_abs]
 
 theorem continuous_nM : Continuous nM := by
   refine continuous_pi fun i => continuous_pi fun j => ?_
@@ -101,117 +91,7 @@ theorem continuous_nU : Continuous nU := by
   refine Units.continuous_iff.2 ⟨continuous_nM, ?_⟩
   exact continuous_nM.comp continuous_neg
 
-theorem flagVariety_unitary_one_one : flagN e2 W2 = Set.range nU := by
-  ext g
-  constructor
-  · rintro ⟨h1, -⟩
-    have h := h1 0 ![1, 1] (Submodule.subset_span rfl)
-    change _ ∈ (⊥ : Submodule ℂ (Fin 2 → ℂ)) at h
-    rw [Submodule.mem_bot, sub_eq_zero] at h
-    have hu : (uMat g)ᴴ * Formalism.REAL.Jm e2 * uMat g = Formalism.REAL.Jm e2 := g.2
-    have a0 := congrFun h 0
-    have a1 := congrFun h 1
-    have b00 := congrFun (congrFun hu 0) 0
-    have b01 := congrFun (congrFun hu 0) 1
-    simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two] at a0 a1
-    simp [Formalism.REAL.Jm, e2, Matrix.mul_apply, Fin.sum_univ_two, Matrix.diagonal] at b00 b01
-    set a := uMat g 0 0 with ha
-    set b := uMat g 0 1 with hb
-    set c := uMat g 1 0 with hc
-    set d := uMat g 1 1 with hd
-    have hb' : b = 1 - a := by linear_combination a0
-    have hd' : d = 1 - c := by linear_combination a1
-    have hac : (starRingEnd ℂ) a - (starRingEnd ℂ) c = 1 := by
-      rw [hb', hd'] at b01
-      linear_combination b00 + b01
-    have hac' : a = 1 + c := by
-      have := congrArg (starRingEnd ℂ) hac
-      simp at this
-      linear_combination this
-    have hre : c.re = 0 := by
-      have h3 : c + (starRingEnd ℂ) c = 0 := by
-        have h4 : (starRingEnd ℂ) a = 1 + (starRingEnd ℂ) c := by linear_combination hac
-        rw [h4, hac'] at b00
-        linear_combination b00
-      have := congrArg Complex.re h3
-      simp at this
-      linarith
-    have hcI : c = ((2 * c.im : ℝ) : ℂ) * Complex.I / 2 := by
-      apply Complex.ext <;> simp [hre]
-    refine ⟨2 * c.im, Subtype.ext (Units.ext ?_)⟩
-    change nM (2 * c.im) = uMat g
-    ext i j
-    fin_cases i <;> fin_cases j
-    · change 1 + _ = a
-      rw [← hcI, hac']
-    · change -_ = b
-      rw [← hcI, hb', hac']; ring
-    · change _ = c
-      exact hcI.symm
-    · change 1 - _ = d
-      rw [← hcI, hd']
-  · rintro ⟨t, rfl⟩
-    have key : ∀ a : ℂ, uMat (nU t) *ᵥ (a • ![1, 1]) - a • ![1, 1] = 0 := by
-      intro a
-      change nM t *ᵥ (a • ![1, 1]) - a • ![1, 1] = 0
-      ext i
-      fin_cases i <;> simp [nM, Matrix.mulVec, dotProduct, Fin.sum_univ_two] <;> ring
-    refine ⟨fun i y hy => ?_, fun y hy => ?_⟩
-    · fin_cases i
-      change y ∈ Submodule.span ℂ {![1, 1]} at hy
-      obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.1 hy
-      rw [key]; exact Submodule.zero_mem _
-    · have h := hy ![1, 1] (Submodule.subset_span rfl)
-      simp [Formalism.REAL.Jm, e2, dotProduct, Matrix.mulVec, Fin.sum_univ_two, Matrix.diagonal] at h
-      have : y = y 0 • ![1, 1] := by
-        ext i
-        fin_cases i
-        · simp
-        · simp; linear_combination -h
-      rw [this, key]; exact Submodule.zero_mem _
 
-theorem isGaugeSub_flagN : IsGaugeSub (flagN e2 W2) (dimN 2 ![1]) (Measure.map nU volume) := by
-  have hm : Measurable nU := continuous_nU.measurable
-  rw [dimN_two, flagVariety_unitary_one_one]
-  refine ⟨?_, ?_, ?_⟩
-  · have hinj : Function.Injective nU := by
-      intro s t h
-      have := congrArg (fun g => (uMat g 1 0).im) h
-      change (nM s 1 0).im = (nM t 1 0).im at this
-      simpa [nM] using this
-    have : MeasurableSet (Set.range nU) := hm.measurableEmbedding hinj |>.measurableSet_range
-    rw [Measure.map_apply hm this.compl]
-    simp
-  · rintro _ ⟨s, rfl⟩
-    rw [Measure.map_map (measurable_const_mul _) hm]
-    have : ((fun g => nU s * g) ∘ nU) = nU ∘ fun t => s + t := by
-      funext t; exact nU_add s t
-    rw [this, ← Measure.map_map hm (measurable_const_add s), map_add_left_eq_self]
-  · have hb : volume (Metric.ball (0 : EuclideanSpace ℝ (Fin 1)) 1) = 2 := by
-      rw [EuclideanSpace.volume_ball]
-      have : Real.Gamma (1 / 2 + 1) = √Real.pi / 2 := by
-        rw [Real.Gamma_add_one (by norm_num), Real.Gamma_one_half_eq]; ring
-      have hp : √Real.pi ≠ 0 := by positivity
-      simp only [Fintype.card_fin, Nat.cast_one, this, pow_one, ENNReal.ofReal_one, one_mul]
-      rw [show √Real.pi / (√Real.pi / 2) = 2 by field_simp]
-      simp
-    rw [hb]
-    refine tendsto_const_nhds.congr' ?_
-    filter_upwards [self_mem_nhdsWithin] with r hr
-    have hr' : 0 < r := hr
-    have hcl : MeasurableSet {g : Formalism.REAL.UJ e2 | Real.sqrt (Formalism.REAL.hs (uMat g - 1)) ≤ r} := by
-      refine (isClosed_le ?_ continuous_const).measurableSet
-      have : Continuous fun g : Formalism.REAL.UJ e2 => uMat g :=
-        Units.continuous_val.comp continuous_subtype_val
-      unfold Formalism.REAL.hs
-      fun_prop
-    rw [Measure.map_apply hm hcl]
-    have : nU ⁻¹' {g : Formalism.REAL.UJ e2 | Real.sqrt (Formalism.REAL.hs (uMat g - 1)) ≤ r} = Set.Icc (-r) r := by
-      ext t
-      simp only [Set.mem_preimage, Set.mem_ofPred_eq, hs_nU, Set.mem_Icc, abs_le]
-    rw [this, Real.volume_Icc, pow_one, ← ENNReal.ofReal_div_of_pos hr']
-    rw [show (r - -r) / r = 2 by field_simp; ring]
-    simp
 
 def mU : Formalism.REAL.UJ e2 :=
   ⟨⟨!![5 / 4, 3 / 4; 3 / 4, 5 / 4], !![5 / 4, -3 / 4; -3 / 4, 5 / 4],

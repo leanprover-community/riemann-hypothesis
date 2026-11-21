@@ -90,43 +90,5 @@ theorem isCoordPt_map (h₂ : Laws2) {B : Scheme.{0}} (P : PolAV B) {R K : Type}
   convert Q using 2 with a
   exact congrArg (fun q => q.hom (w a)) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom j))
 
-theorem isCoordPt_reduce : ∀ (h₁ : Out.Laws) (h₂ : Out.Laws2) {B : Scheme.{0}} [IsLocallyNoetherian B] (P : Out.PolAV B)
-    {C κ : Type} [Field C] [IsAlgClosed C] [Field κ] [IsAlgClosed κ] (S : ValuationSubring C) (res : S →+* κ)
-    {s : Sp S ⟶ B} {x : Sp C ⟶ B} {y : Sp κ ⟶ B} (hx : spMap S.subtype ≫ s = x) (hy : spMap res ≫ s = y)
-    {m : ℕ}, 3 ≤ m → IsUnit (m : S) → ∀ {J : Type} (p : J → (Over.mk s ⟶ P.A)), (∀ i, p i ^ m ^ 2 = 1) →
-    (∀ z : Over.mk y ⟶ P.A, z ^ m ^ 2 = 1 →
-      ∃ i, (Over.homMk (spMap res) hy : Over.mk y ⟶ Over.mk s) ≫ p i = z) →
-    ∀ (z : Over.mk s ⟶ P.A) (v : J → S),
-    IsCoordPt P m (fun i => (Over.homMk (spMap S.subtype) hx : Over.mk x ⟶ Over.mk s) ≫ p i)
-      ((Over.homMk (spMap S.subtype) hx : Over.mk x ⟶ Over.mk s) ≫ z) (fun i => fnOf (v i : C)) →
-    (∃ i, res (v i) ≠ 0) →
-    IsCoordPt P m (fun i => (Over.homMk (spMap res) hy : Over.mk y ⟶ Over.mk s) ≫ p i)
-      ((Over.homMk (spMap res) hy : Over.mk y ⟶ Over.mk s) ≫ z) fun i => fnOf (res (v i)) := by
-  intro h₁ h₂ B _ P C κ _ _ _ _ S res s x y hx hy m hm hu J p hp ho z v H hv
-  have hk : Odd m := H.1
-  obtain ⟨w, hw⟩ := exists_isCoordPt_local h₁ h₂ P s hk hu p hp z
-  have hC := isCoordPt_map h₂ P S.subtype hx hp hw
-  have hK := isCoordPt_map h₂ P res hy hp hw
-  have hmC : (m : C) ≠ 0 := by
-    have := hu.map S.subtype
-    rw [map_natCast] at this
-    exact this.ne_zero
-  have hmκ : (m : κ) ≠ 0 := by
-    have := hu.map res
-    rw [map_natCast] at this
-    exact this.ne_zero
-  have pw : ∀ {K : Type} [CommRing K] (j : S →+* K) {x' : Sp K ⟶ B} (hx' : spMap j ≫ s = x') (i : J),
-      ((Over.homMk (spMap j) hx' : Over.mk x' ⟶ Over.mk s) ≫ p i) ^ m ^ 2 = 1 := by
-    intro K _ j x' hx' i
-    rw [← MonObj.comp_pow, hp i, MonObj.comp_one]
-  obtain ⟨-, U₂, -, -⟩ := CoordSep.coord_exists_unique_separate h₁ C B P x m hk hmC J _ (pw S.subtype hx)
-  obtain ⟨c, hc⟩ := (U₂ _ (fun i => (w i : C)) (fun i => (v i : C)) hC).1 H
-  obtain ⟨-, -, -, U₄⟩ := CoordSep.coord_exists_unique_separate h₁ κ B P y m hk hmκ J _ (pw res hy)
-  obtain ⟨i, hi⟩ := Function.ne_iff.1 (U₄ hm ho _ _ (fun i => res (w i)) hK hK).2
-  obtain ⟨d, hd, hd'⟩ := Specialise.exists_res_eq_mul S res (c := c) (fun i => congrFun hc i) hv ⟨i, hi⟩
-  refine RelabelCoords.isCoordPt_unit_mul ((IsUnit.mk0 d hd).map (Scheme.ΓSpecIso (CommRingCat.of κ)).inv.hom).unit
-    (fun i => ?_) hK
-  rw [IsUnit.unit_spec, hd' i]
-  exact map_mul _ _ _
 
 end GlobalTheory.CoordReduce

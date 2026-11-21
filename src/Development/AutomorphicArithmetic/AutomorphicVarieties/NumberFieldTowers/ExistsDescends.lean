@@ -58,12 +58,6 @@ theorem isTower_iff (R : ℕ) : IsTower l L₀ R ↔ HasMuQ l L₀ ∧ 1 ≤ R �
   ⟨fun h => ⟨h.mu, h.pos, (genIff L₀ _ l l ⊤ R isClosed_univ).1 h.gen⟩, fun h =>
     ⟨((muQ L₀ (AlgebraicClosure L₀) l).2.2.2.1 h.1).1, h.1, h.2.1, (genIff L₀ _ l l ⊤ R isClosed_univ).2 h.2.2⟩⟩
 
-theorem isTower_of_xRk (k : Type) [Field k] [NumberField k] [Algebra k L₀] [Algebra k Ω] [IsScalarTower k L₀ Ω]
-    [IsAlgClosure k Ω] (hμ : HasMuQ l L₀) {R : ℕ} (hR : 1 ≤ R) {U : Subgroup (G k Ω)}
-    (hU : cycU l U = cycU l (galOf k L₀ Ω)) (h : Two.XRk l 1 (cycU l U) R) : IsTower l L₀ R :=
-  (isTower_iff l L₀ R).2 ⟨hμ, hR, by
-    rw [← rankBase.1 k L₀ Ω l l U hU]
-    exact (rankXRk k Ω l l U R).2 (h.of_one l)⟩
 
 end Step0
 

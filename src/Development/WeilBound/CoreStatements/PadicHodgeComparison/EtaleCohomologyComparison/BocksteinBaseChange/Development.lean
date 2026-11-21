@@ -57,25 +57,6 @@ theorem smooth_of (h1 : PeriodRingFacts) (h2 : BcrisRegularPeriodRing) (h3 : Com
     obtain ⟨P, -⟩ := h3 l K _ _ D (h1 l K) (h6 hI l K).1 hL e β κ
     exact ⟨P.cmp (h6 hI l K).1 (h4 l K _ _ P (h1 l K) (h6 hI l K).1)⟩
 
-theorem bcr_le_bst (l : ℕ) [Fact l.Prime] : Bcr l ≤ Bst l :=
-  Subring.closure_mono (Set.union_subset_union_right _ (by
-    intro x hx
-    rcases hx with h | h
-    · exact Or.inl h
-    · exact Or.inr (Or.inl h)))
 
-theorem narrow_of (h1 : PeriodRingFacts) (h2 : BcrisRegularPeriodRing) (h2' : BstRegularPeriodRing) (h3 : ComparisonPairing) (h4 : ComparisonInjectiveStrict) (h5 : ComparisonAdmissible) (h6 : EtaleSideSmoothAndSemistable)
-    (hI : ZIn) (hS : SeamS) (hA : SeamAll) : CstNarrow ∧ DeRhamComparisonSemistable := by
-  have hd : DeRhamComparisonSemistable := by
-    intro l _ K _
-    obtain ⟨D, ⟨hL, ⟨e⟩, ⟨β⟩, ⟨κ⟩⟩, -⟩ := hA l K
-    obtain ⟨P, -⟩ := h3 l K _ _ D (h1 l K) (h6 hI l K).2 hL e β κ
-    exact ⟨P.cmp (h6 hI l K).2 (h4 l K _ _ P (h1 l K) (h6 hI l K).2)⟩
-  refine ⟨⟨?_, (smooth_of h1 h2 h3 h4 h5 h6 hI hS).1, hd.dr⟩, hd⟩
-  intro l _ K _ M hM n a b
-  obtain ⟨D, ⟨hL, ⟨e⟩, ⟨β⟩, ⟨κ⟩⟩, hsp⟩ := hA l K
-  obtain ⟨P, hP⟩ := h3 l K _ _ D (h1 l K) (h6 hI l K).2 hL e β κ
-  exact h5 l K _ _ P _ (h2' l K) M hM n (h4 l K _ _ P (h1 l K) (h6 hI l K).2 M hM n).1
-    (hP _ _ (bcr_le_bst l (t_inv_mem l)) (h2' l K).q_mem hsp M hM hM n) a b
 
 end CrystallineSemistableComparison

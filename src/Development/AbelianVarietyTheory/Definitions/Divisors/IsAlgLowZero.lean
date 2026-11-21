@@ -38,9 +38,6 @@ def coIp {J : Type} [Fintype J] (e : J → P) (H : M →ₗ⋆[ℂ] M →ₗ[ℂ
 def coIpStd {J : Type} [Fintype J] (e : J → P) (H : M →ₗ⋆[ℂ] M →ₗ[ℂ] ℂ) {q : ℕ} (f g : P [⋀^Fin q]→ₗ[R] M) : ℂ :=
   ((q.factorial : ℂ))⁻¹ * coIp e H f g
 
-theorem coIpStd_zero {J : Type} [Fintype J] (e : J → P) (H : M →ₗ⋆[ℂ] M →ₗ[ℂ] ℂ) (f g : P [⋀^Fin 0]→ₗ[R] M) :
-    coIpStd e H f g = coIp e H f g := by
-  simp [coIpStd]
 
 def InfEq {Z : Type} (ad : Z → P → P) (θ : Z → Module.End ℂ M) {q : ℕ} (f : P [⋀^Fin q]→ₗ[R] M) : Prop :=
   ∀ z X, θ z (f X) = ∑ i, f (Function.update X i (ad z (X i)))
@@ -60,9 +57,6 @@ structure IsPos (H : M →ₗ⋆[ℂ] M →ₗ[ℂ] ℂ) (N : Submodule ℂ M) :
 
 end Abs
 
-theorem gd_eq_gdR {P M : Type} [AddCommGroup P] [Module ℝ P] [AddCommGroup M] [Module ℂ M] [Module ℝ M]
-    [IsScalarTower ℝ ℂ M] (L : P →ₗ[ℝ] Module.End ℂ M) {q : ℕ} (f : P [⋀^Fin q]→ₗ[ℝ] M) :
-    GlobalTheory.BorelCoh.gd L f = gdR L f := rfl
 
 section Unitary
 
@@ -144,9 +138,6 @@ def codOp {ε : T → Fin n → Bool} (E : T → Fin n → Fin n → Module.End 
     (ξ : T → Fin n → Fin n → Matrix (Fin d) (Fin d) ℂ) (x : NC ε) : Module.End ℂ (Fin d → M) :=
   trOp (famB M ξ) x - trOp (famA d E) x
 
-theorem codOp_eq {ε : T → Fin n → Bool} (E : T → Fin n → Fin n → Module.End ℂ M)
-    (ξ : T → Fin n → Fin n → Matrix (Fin d) (Fin d) ℂ) :
-    codOp (ε := ε) E ξ = fun x => trOp (famB M ξ) x - trOp (famA d E) x := rfl
 
 theorem trOp_apply {ε : T → Fin n → Bool} (E : T → Fin n → Fin n → Module.End ℂ M) (x : NC ε) :
     trOp E x = E x.1.1 x.1.2.2 x.1.2.1 := rfl
@@ -194,19 +185,6 @@ def tupIp (d : ℕ) (M : Type) [NormedAddCommGroup M] [InnerProductSpace ℂ M] 
 
 end Form
 
-theorem isAlgLow_zero {T : Type} [Fintype T] [DecidableEq T] (n : ℕ) :
-    IsAlgLow (T := T) (n := n) (d := 1) (fun _ _ _ => 0) (fun _ _ => 0) := by
-  refine ⟨⟨fun τ a b c d => by simp, fun _ _ _ _ _ _ _ => by simp⟩, fun _ _ _ => by simp, fun _ => 1, ?_, by simp, by simp, ?_⟩
-  · intro h
-    simpa using congrFun h 0
-  · intro S hS _
-    refine eq_top_iff.2 fun w _ => ?_
-    have : w = w 0 • fun _ => (1 : ℂ) := by
-      funext i
-      fin_cases i
-      simp
-    rw [this]
-    exact S.smul_mem _ hS
 
 section Basic₂
 

@@ -67,18 +67,6 @@ def qFrob {f : ℕ} (hq : Fintype.card k = p ^ f) {X : Scheme.{0}} (q : X ⟶ Sp
     simp only [CommRingCat.hom_comp, CommRingCat.hom_ofHom, RingHom.comp_apply, frbq_apply, ← map_pow, ← hq,
       FiniteField.pow_card]
 
-theorem qFrob_eq_schMap {f : ℕ} (hq : Fintype.card k = p ^ f) {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of k))
-    (u : X ⟶ X) (hu : u ≫ q = q)
-    (hF : ∀ (B₀ : CommRingCat.{0}) (y : Spec B₀ ⟶ X), y ≫ u = Spec.map (CommRingCat.ofHom (frbq p f (p_zero p q y))) ≫ y) :
-    qFrob hq q = B.schMap u hu := by
-  have e : (qFrob hq q).u = (B.schMap u hu).u := by
-    ext B₀ y
-    exact (hF B₀ y).symm
-  cases h : qFrob hq q
-  cases h' : B.schMap u hu
-  rw [h, h'] at e
-  cases e
-  rfl
 
 variable (p)
 

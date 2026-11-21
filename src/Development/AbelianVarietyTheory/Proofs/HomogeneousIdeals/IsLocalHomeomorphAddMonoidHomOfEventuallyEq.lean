@@ -389,7 +389,6 @@ noncomputable def localExp : OpenPartialHomeomorph V A :=
 theorem localExp_apply (v : V) :
     h.localExp v = φ.symm (h.isLocalCommGroupLaw.logChart.symm v) := rfl
 
-theorem localExp_symm_apply (a : A) : h.localExp.symm a = h.log (φ a) := rfl
 
 theorem zero_mem_localExp_source : (0 : V) ∈ h.localExp.source :=
   ⟨h.isLocalCommGroupLaw.zero_mem_logChart_target, by simpa using h.zero_mem_target⟩
@@ -458,11 +457,6 @@ theorem hasFDerivAt_chart_exp :
     HasFDerivAt (fun v => φ (h.exp v)) (ContinuousLinearMap.id ℂ V) 0 :=
   h.isLocalCommGroupLaw.hasFDerivAt_logChart_symm.congr_of_eventuallyEq h.chart_exp_eventuallyEq
 
-theorem eq_exp_of_log {e : V →+ A} (he : ∀ᶠ a in 𝓝 (0 : A), e (h.log (φ a)) = a) :
-    e = h.exp := by
-  refine addMonoidHom_eq_of_eventuallyEq ?_
-  filter_upwards [Tendsto.eventually h.map_exp_nhds_zero.le he, h.log_exp] with v h1 h2
-  rwa [h2] at h1
 
 noncomputable def periodLattice : Submodule ℤ V := AddSubgroup.toIntSubmodule h.exp.ker
 

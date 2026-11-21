@@ -200,7 +200,5 @@ theorem densLocBound_at {D : Formalism.BasicNotions.D7} (h5 : DensAllAt D) : Den
       _ = Real.exp (-(3 * y)) := by rw [← Real.exp_add]; ring_nf
       _ ≤ densP L δ ϖ (Tn u) (Tn u') Z p := hlo h3
 
-theorem densLocBound_of (h5 : Cnt.DensAll) (D : Formalism.BasicNotions.D7) : DensLocBound D :=
-  densLocBound_at (densAllAt_of h5 D)
 
 end Formalism.L2.SG.Pf.DensLoc

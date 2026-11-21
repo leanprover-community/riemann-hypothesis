@@ -1301,9 +1301,6 @@ open Formalism.EigenvalueLevelCeiling (lix cut sc IsLatIn plc)
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df} {P' : Type} [Group P'] [Finite P'] {c : OnConst}
 
-theorem r_eq_rOf (O : OnObj S P' c) (v : HeightOneSpectrum (𝓞 K)) (j : Bs.J) : O.r v j = rOf O (used O v) v j := by
-  unfold OnObj.r rOf used
-  by_cases h : plc v = O.pde <;> simp [h]
 
 theorem RemOK.mono {n : ℕ} {v : HeightOneSpectrum (𝓞 K)} {M Th : Submodule (𝓞 K) (Fin n → K)} {E' E : ℕ} {ρ : ℝ}
     (hE : E' ≤ E) (h : RemOK v M Th E' ρ) : RemOK v M Th E ρ := by
@@ -1313,67 +1310,7 @@ theorem RemOK.mono {n : ℕ} {v : HeightOneSpectrum (𝓞 K)} {M Th : Submodule 
   have h2 : (0 : ℝ) ≤ (finrank K W : ℝ) := Nat.cast_nonneg _
   nlinarith [mul_le_mul_of_nonneg_right h1 h2]
 
-theorem run_ok (O : OnObj S P' c) {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} [Algebra B.KO K]
-    (t : TheoremZeroData O B P) (k : Bool) (j : Bs.J) (h : (t.run k j).Concl) :
-    ∃ r : HeightOneSpectrum (𝓞 B.KO) → ℝ, (∀ la, 0 ≤ r la) ∧ Summable (fun la => r la * Formalism.BasicNotions.lw B.KO la) ∧
-      (∑' la, r la * Formalism.BasicNotions.lw B.KO la) ≤ (t.run k j).β ∧
-      (∀ v, Submodule.span K (t.ThR k v j : Set (Fin (O.nZ j) → K)) = ⊤) ∧
-      ∀ v : HeightOneSpectrum (𝓞 K), RemOK v (O.Ms j) (t.ThR k v j) (t.ER k v j)
-        ((v.asIdeal.ramificationIdx (𝓞 B.KO) : ℝ) * r (v.under (𝓞 B.KO))) := by
-  obtain ⟨r, h0, h1, h2, h3⟩ := l2 (t.run k j) (fun la => l1 la) (fun la => l1b la) (fun la => l1c la) (t.isLattice_lattice k j) h
-  have hMs : O.Ms j = up (t.ι k j) (t.run k j).M0 := t.Ms_eq k j
-  have htop : Submodule.span K (Set.range (t.ι k j)) = ⊤ := by
-    rw [eq_top_iff, ← t.Ms_top j, hMs]
-    have hsub : up (t.ι k j) (t.run k j).M0 ≤ (Submodule.span K (Set.range (t.ι k j))).restrictScalars (𝓞 K) := by
-      refine Submodule.span_le.mpr ?_
-      rintro _ ⟨z, _, rfl⟩
-      exact Submodule.subset_span ⟨z, rfl⟩
-    exact Submodule.span_le.mpr hsub
-  have hle : ∀ v, up (t.ι k j) ((t.run k j).M0 ⊓ (t.run k j).Th0) ≤ t.ThR k v j := fun v =>
-    (up_mono _ inf_le_right).trans (t.Th_le k v j)
-  refine ⟨r, h0, h1, h2, fun v => ?_, fun v => ?_⟩
-  · rw [eq_top_iff, ← up_top (t.ι k j) htop (h3 (v.under (𝓞 B.KO))).1]
-    exact Submodule.span_mono (hle v)
-  · rw [hMs]
-    have hge : ((t.run k j).T : ℝ) * (t.run k j).nus (v.under (𝓞 B.KO)) ≤
-        ((max (t.e0 k (v.under (𝓞 B.KO)) j) 0 : ℤ) : ℝ) :=
-      (t.exponent_bound_ter k _ j).trans (by exact_mod_cast le_max_left _ _)
-    have hE' : ((((v.asIdeal.ramificationIdx (𝓞 B.KO) : ℤ) * max (t.e0 k (v.under (𝓞 B.KO)) j) 0).toNat : ℕ) : ℤ) =
-        (v.asIdeal.ramificationIdx (𝓞 B.KO) : ℤ) * max (t.e0 k (v.under (𝓞 B.KO)) j) 0 :=
-      Int.toNat_of_nonneg (mul_nonneg (Int.natCast_nonneg _) (le_max_right _ _))
-    have hle' : ((v.asIdeal.ramificationIdx (𝓞 B.KO) : ℤ) * max (t.e0 k (v.under (𝓞 B.KO)) j) 0).toNat ≤ t.ER k v j := by
-      have h5 : (v.asIdeal.ramificationIdx (𝓞 B.KO) : ℤ) * max (t.e0 k (v.under (𝓞 B.KO)) j) 0 ≤ (t.ER k v j : ℤ) := by
-        rcases max_choice (t.e0 k (v.under (𝓞 B.KO)) j) 0 with hm | hm
-        · rw [hm]; exact t.E_le k v j
-        · rw [hm, mul_zero]; exact Int.natCast_nonneg _
-      omega
-    exact RemOK.mono hle' (l5 (t.ι k j) (t.indep k j) htop _ _ (t.isLattice_lattice k j).fg (t.isLattice_lattice k j).span_eq_top
-      (h3 (v.under (𝓞 B.KO))).1 inf_le_left v _ _ _ hE'
-      ((h3 (v.under (𝓞 B.KO))).2 _ hge) _ (hle v))
 
-theorem leafStatement_of_conclusions (O : OnObj S P' c) {D : D7} (B : WeightFamilies.Prov D) (P : ModuliIntegralCharts.Prov D) [Algebra B.KO K]
-    (t : TheoremZeroData O B P) (h : ∀ k j, (t.run k j).Concl) : LatticeIndexBoundAtPairs O := by
-  have hbud : ∀ k j, ∀ S' : Finset (HeightOneSpectrum (𝓞 K)),
-      ∑ v ∈ S', Formalism.DivisionValues.lw v * rOf O k v j ≤ (O.nZ j : ℝ) * (O.f * O.m * O.b * O.de2) := by
-    intro k j S'
-    obtain ⟨r, h0, h1, h2, -, h4⟩ := run_ok O t k j (h k j)
-    refine le_trans ?_ ((l4 r h0 h1 S').trans (h2.trans (t.budget k j)))
-    refine Finset.sum_le_sum fun v _ => ?_
-    refine mul_le_mul_of_nonneg_left ?_ (lw_nonneg' v)
-    exact t.r_le k v j _ (mul_nonneg (Nat.cast_nonneg _) (h0 _)) (h4 v)
-  have hloc : ∀ v, (∀ j, (O.Th1 v j).FG ∧ O.Th1 v j ≤ O.Th v j) → ∀ j, IsLatIn ⊤ (O.Th1 v j) ∧ O.Th1 v j ≤ O.Th v j ∧
-      O.a v j ≠ 0 ∧ vw v (O.a v j) = (O.E v j : ℤ) ∧ ∀ W : Submodule K (Fin (O.nZ j) → K),
-      (lix v (cut W (O.Ms j)) (cut W (O.Th1 v j)) : ℝ) ≤ (O.E v j : ℝ) * (finrank K W : ℝ) + O.r v j := by
-    intro v hv j
-    obtain ⟨r, h0, -, -, h3, h4⟩ := run_ok O t (used O v) j (h _ j)
-    refine ⟨⟨(hv j).1, ?_⟩, (hv j).2, (t.a_ok v j).1, (t.a_ok v j).2, ?_⟩
-    · rw [t.Th1_eq v j]; exact h3 v
-    · refine t.r_ok v j ((v.asIdeal.ramificationIdx (𝓞 B.KO) : ℝ) * r (v.under (𝓞 B.KO)))
-        (mul_nonneg (Nat.cast_nonneg _) (h0 _)) ?_
-      rw [t.Th1_eq v j, t.E_used v j]
-      exact h4 v
-  refine ⟨fun w hw => ⟨hloc w (t.Th1_ok w hw).1, hloc _ (t.Th1_ok w hw).2⟩, t.weight_parameter_mem_unit_interval.1, t.weight_parameter_mem_unit_interval.2,
-    fun v j => ⟨t.r_nonneg false v j, t.r_nonneg true v j⟩, fun j S' => ⟨hbud false j S', hbud true j S'⟩⟩
 
 end Formalism.MainNotions.Gaps.LocalGlobalPassage
 
@@ -1412,21 +1349,6 @@ theorem rem_le {v : HeightOneSpectrum (𝓞 K)} {M Th : Submodule (𝓞 K) (Fin 
   simp only
   linarith
 
-theorem rem_ok {v : HeightOneSpectrum (𝓞 K)} {M Th : Submodule (𝓞 K) (Fin n → K)} {E : ℕ} {ρ : ℝ}
-    (h : RemOK v M Th E ρ) : RemOK v M Th E (rem v M Th E) := by
-  intro W
-  have hb : BddAbove (Set.range fun W : Submodule K (Fin n → K) =>
-      (lix v (cut W M) (cut W Th) : ℝ) - (E : ℝ) * (finrank K W : ℝ)) := by
-    refine ⟨ρ, ?_⟩
-    rintro _ ⟨W, rfl⟩
-    have := h W
-    simp only
-    linarith
-  have h1 := le_csSup hb ⟨W, rfl⟩
-  have h2 : sSup (Set.range fun W : Submodule K (Fin n → K) =>
-      (lix v (cut W M) (cut W Th) : ℝ) - (E : ℝ) * (finrank K W : ℝ)) ≤ rem v M Th E := le_max_right _ _
-  simp only at h1
-  linarith
 
 end Rem
 
@@ -1437,9 +1359,6 @@ variable {K0 K : Type} [Field K0] [NumberField K0] [Field K] [NumberField K] [Al
 def EOf (e0 : HeightOneSpectrum (𝓞 K0) → ℤ) (v : HeightOneSpectrum (𝓞 K)) : ℕ :=
   ((v.asIdeal.ramificationIdx (𝓞 K0) : ℤ) * e0 (v.under (𝓞 K0))).toNat
 
-theorem EOf_eq {e0 : HeightOneSpectrum (𝓞 K0) → ℤ} (h : ∀ la, 0 ≤ e0 la) (v : HeightOneSpectrum (𝓞 K)) :
-    (EOf e0 v : ℤ) = (v.asIdeal.ramificationIdx (𝓞 K0) : ℤ) * e0 (v.under (𝓞 K0)) :=
-  Int.toNat_of_nonneg (mul_nonneg (Int.natCast_nonneg _) (h _))
 
 end Exp
 

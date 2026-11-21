@@ -13,18 +13,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.Mum.EndModel
 open ReciprocityTheory.ChartRestriction.G.Out.InhTate
 
-theorem endData_tate (m : ℤ) :
-    EndData tatePre (𝟙 _) (𝟙 _) (AddMonoidHom.mulLeft m) (AddMonoidHom.mulLeft m) := by
-  refine ⟨inferInstance, inferInstance, GlobalTheory.BoxPowerProbe.rosati_tate, fun _ => (Category.comp_id _).symm,
-    fun _ => (Category.comp_id _).symm, ?_⟩
-  exact (GlobalTheory.BoxPowerProbe.tauBal_tate_iff _ _).2 fun y y' => by
-    show m * y * y' = y * (m * y'); ring
 
-theorem not_endData_tate :
-    ¬ EndData tatePre (𝟙 _) (𝟙 _) 0 (AddMonoidHom.id _) := fun h => by
-  have := (GlobalTheory.BoxPowerProbe.tauBal_tate_iff _ _).1 h.2.2.2.2.2 1 1
-  change (0 : ℤ) * 1 = 1 * 1 at this
-  simp at this
 
 theorem endData_of_oAct {R : Type} [CommRing R] [IsDomain R] (O : Type) [Ring O] [StarRing O] (D : DegPre R)
     [Module O D.X] (io : D.OAct O) (a : O) :
@@ -55,13 +44,6 @@ theorem thickMap_map {G H : Over (Sp R)} (b : G ⟶ H) (e : ℕ) :
     simp
     erw [pullback.lift_snd_assoc]
 
-theorem linEnd_of_oLinear (U : UnifPre I D A G) (O : Type) [Ring O] [StarRing O] [Module O D.toPre.X]
-    (ιD : D.OAct O) (ιA : A.OAct O) (ιG : RingAct G O) (hl : U.OLinear O ιD ιA ιG) (a : O) :
-    LinEnd U (ιD.onB.act a) (DistribSMul.toAddMonoidHom D.toPre.X (star a)) (ιG.act a) := by
-  have := ιG.hom a
-  refine ⟨this, fun e => inferInstance, fun e => thickMap_map _ e, fun e => hl.q_lin e a, fun e => ?_⟩
-  obtain ⟨t, ht, hi⟩ := hl.i_lin e a
-  exact ⟨t, ht, hi⟩
 
 theorem extLam_lam (L : LB G.left) (hL : L.IsLB) :
     ExtLam G (L.pull (pullback.fst G.hom (jK R))) (abelian₂ G L) := by

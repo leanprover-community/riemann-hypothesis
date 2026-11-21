@@ -401,10 +401,6 @@ theorem capAdInv : Formalism.FourierDecayAlt.P.JFxB.CapAdInv := by
 
 end Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 
-theorem Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion.jf_capAdInv_alt : Formalism.FourierDecayAlt.P.JFxB.CapAdInv := Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion.capAdInv
 
-theorem Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion.jf_cVRight_alt : Formalism.FourierDecayAlt.JF.CVRight := Formalism.FourierDecayAlt.P.jf_cVRight_of Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion.capAdInv
 
-theorem Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion.jf_cVRho_alt : Formalism.FourierDecayAlt.JF.CVRho := Formalism.FourierDecayAlt.P.jf_cVRho_of Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion.capAdInv
 
-theorem Formalism.FourierDecayAlt.P.big_cell_orbit_of_domain : Formalism.FourierDecayAlt.JF.GqOmOfDom := fun _ => Formalism.FourierDecayAlt.P.big_cell_orbit_set

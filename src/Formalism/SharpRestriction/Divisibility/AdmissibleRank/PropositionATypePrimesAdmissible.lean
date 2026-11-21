@@ -18,36 +18,19 @@ section P18rec
 
 variable (D : D7) (L : SizeData₂ D) {nch : NChoice D} (X : LiftErrorLocal.Loc D nch)
 
-theorem integrality_admissible_of_inputs (h : ThetaNormsAndLinks.Conclusion1 D X) : LiftErrorLocal.adm1 D X := h
 
-theorem height_admissible_of_inputs (h : ThetaNormsAndLinks.Conclusion2 D X) : LiftErrorLocal.adm2 D X := h
 
-theorem jet_admissible_of_prismatic (h : ModuliIntegralCharts.LinkConditions D X.P6) : LiftErrorLocal.adm3 D X := h
 
-theorem jet_admissible_of_jet_lattice (h : BoundaryLocalData.Conclusion5 D X.P6) : LiftErrorLocal.adm3 D X := h
 
-theorem jet_function_admissible_of (CRd : ℝ) (h : ThetaNormsAndLinks.CoveringRadiusFunction D X CRd) : LiftErrorLocal.adm3b D X CRd := h
 
-theorem theorem_zero_admissible_of (H : WeightAlgebra.KHyp) (C2 A2 CR CT : ℝ) (h : WeightAlgebra.Conclusion1 L X.W H C2 A2 CR CT) :
-    LiftErrorLocal.ArchimedeanSignatureMatching D L X H C2 A2 CR CT := h
 
-theorem galois_generic_admissible_of (h : ThetaNormsAndLinks.Conclusion5 D nch) : LiftErrorLocal.adm5 D nch := h
 
-theorem share_admissible_of_inputs (h : ThetaNormsAndLinks.Conclusion6 D nch) : LiftErrorLocal.adm6 D nch := h
 
-theorem lattice_ranks_admissible_of (h : ThetaNormsAndLinks.ShareLatticeRanks D nch) : LiftErrorLocal.TorsionSectionsReflex D nch := h
 
-theorem link_admissible_of_inputs (h : ThetaNormsAndLinks.LinkConditions D X) : LiftErrorLocal.adm10 D X := h
 
-theorem run_admissible_of_inputs (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ) (h : ThetaNormsAndLinks.RunConditions D L X H C2 A2 CR CT CRd) :
-    LiftErrorLocal.adm11 D L X H C2 A2 CR CT CRd := h
 
-theorem lemma_one_two_A_hypotheses_of (h1 : ThetaNormsAndLinks.Conclusion1 D X) (h2 : ThetaNormsAndLinks.Conclusion2 D X) : LiftErrorLocal.AdmLA D X := ⟨h1, h2⟩
 
-theorem lemma_B_hypotheses_of (CRd : ℝ) (h1 : ThetaNormsAndLinks.Conclusion1 D X) (h2 : ThetaNormsAndLinks.Conclusion2 D X) (h66 : ModuliIntegralCharts.LinkConditions D X.P6)
-    (h3b : ThetaNormsAndLinks.CoveringRadiusFunction D X CRd) : LiftErrorLocal.AdmLB D X CRd := ⟨h1, h2, h66, h3b⟩
 
-theorem proposition_C_hypotheses_of (h1 : ThetaNormsAndLinks.Conclusion1 D X) (h2 : ThetaNormsAndLinks.Conclusion2 D X) (a9 : LiftErrorLocal.adm9 D X) : LiftErrorLocal.AdmC D X := ⟨h1, h2, a9⟩
 
 theorem division_admissible_of_inputs (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ)
     (h8 : ThetaNormsAndLinks.Conclusion₂ D L X H C2 A2 CR CT CRd) (h66 : ModuliIntegralCharts.LinkConditions D X.P6) (h08 : WeightAlgebra.Conclusion1 L X.W H C2 A2 CR CT)
@@ -56,13 +39,7 @@ theorem division_admissible_of_inputs (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd 
   obtain ⟨p1, p2, p3b, p5, p6, p6b, -, p10, p11, -⟩ := h8
   exact ⟨p1, p2, h66, p3b, h08, p5, p6, p6b, a7, a8, a9, p10, p11, a12⟩
 
-theorem proposition_A_hypotheses_of (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ)
-    (h8 : ThetaNormsAndLinks.Conclusion₂ D L X H C2 A2 CR CT CRd) (h08 : WeightAlgebra.Conclusion1 L X.W H C2 A2 CR CT)
-    (a7 : LiftErrorLocal.adm7 D X) (a8 : LiftErrorLocal.adm8 D X) (a12 : LiftErrorLocal.adm12 D) : LiftErrorLocal.AdmA D L X H C2 A2 CR CT CRd := by
-  obtain ⟨-, -, p3b, p5, p6, p6b, -, p10, p11, -⟩ := h8
-  exact ⟨p3b, h08, p5, p6, p6b, a7, a8, p10, p11, a12⟩
 
-theorem local_cover_admissible_of (h : D.nd.LocsCover) : LiftErrorLocal.adm12 D := Formalism.MainNotions.N.locsCoverTw_of D h
 
 end P18rec
 
@@ -70,16 +47,10 @@ section PDV08rec
 
 variable (D : D7) (L : SizeData₂ D) {nch : NChoice D} (X : LiftErrorLocal.Loc D nch) (Z : ThetaNormsAndLinks.Loc8 X)
 
-theorem projector_integral_admissible_of (h : PDVN.ConjugationNormInvariance D) : ThetaNormsAndLinks.admA D := h
 
-theorem sup_lattice_is_lattice_admissible (h : WeightFamilies.adm1 X.B) : ThetaNormsAndLinks.MLatticeCond D X := h
 
-theorem transference_admissible_of (h : WeightFamilies.TransferenceTheoremCond) : ThetaNormsAndLinks.TransferenceTheoremCond := h
 
-theorem twist_export_clause_of_twist_field (hW : ∀ i0 w, LiftErrorLocal.Over D i0 w → D.ntw.NonzeroIndexPlace (nch.twI w)) (h : IntegralHeckeForms.adm7 D X.I.E) :
-    ThetaNormsAndLinks.admT4 D X := ⟨hW, h⟩
 
-theorem trace_input_of_multiplicity_theorem (h4 : IsotypicCorollary.Stmt D) (C : NChoice D) : ThetaNormsAndLinks.EqualGoodMultiplicities D C := IsotypicCorollary.goodPartRank_of_corollary D h4 C
 
 def ThetaNormLinkHypotheses (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ) : Prop :=
   ThetaNormsAndLinks.admissible_unitary_of_inputs D X Z ∧ ThetaNormsAndLinks.SandwichExists D X ∧ ThetaNormsAndLinks.CharacterRankDiscriminant D X CRd ∧ ThetaNormsAndLinks.MirabolicIndexCond D ∧
@@ -89,17 +60,6 @@ def ThetaNormLinkHypotheses (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ) : P
     (ThetaNormsAndLinks.RunColumnChoices D X ∧ ThetaNormsAndLinks.ScalarSizeConditions D L X H C2 A2 CR CT CRd ∧ ThetaNormsAndLinks.FurtherSizeConditions D L X H C2 A2 CR ∧ ThetaNormsAndLinks.GlobalScalarBounds D L X H ∧
       ThetaNormsAndLinks.RegularityOffTypePrimes D L X H)
 
-theorem inputs_remaining_of_clauses (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ) (P : ParameterChoice' D L) (hC6 : 6 ≤ CRd)
-    (TN : Formalism.L2.NExpTied D) (h4 : IsotypicCorollary.Stmt D)
-    (aI : ThetaNormsAndLinks.admissible_unitary_of_inputs D X Z) (aQ : ThetaNormsAndLinks.SandwichExists D X) (aGG : ThetaNormsAndLinks.MirabolicIndexCond D) (aR : ThetaNormsAndLinks.admR D nch) (aBad : ThetaNormsAndLinks.BadRowShareBound D L nch)
-    (aGst : ThetaNormsAndLinks.SupLatticeGroupStable D) (aSp : ThetaNormsAndLinks.SupSpansPsiPart D) (aSg : ThetaNormsAndLinks.AdditiveCharacterIntegrality D X) (aSr : ThetaNormsAndLinks.ScalingIntegrality D X) (aSo : ThetaNormsAndLinks.CrudeIntegrality D X)
-    (aSe : ThetaNormsAndLinks.ThetaLevelPrimeIntegrality D X) (aT4 : ThetaNormsAndLinks.admT4 D X) (aNN : ThetaNormsAndLinks.NormDecompositionCond D X Z) (aK : ThetaNormsAndLinks.ThetaKGroupStable D X Z) (aD : ThetaNormsAndLinks.ThetaKEquivariantData D X Z)
-    (aW : ThetaNormsAndLinks.WeightGeneratorsInLattice D X) (aRc : ThetaNormsAndLinks.RunColumnChoices D X) (aRn : ThetaNormsAndLinks.ScalarSizeConditions D L X H C2 A2 CR CT CRd) (aR4 : ThetaNormsAndLinks.FurtherSizeConditions D L X H C2 A2 CR)
-    (aRs : ThetaNormsAndLinks.GlobalScalarBounds D L X H) (aRd : ThetaNormsAndLinks.RegularityOffTypePrimes D L X H) :
-    ThetaNormLinkHypotheses D L X Z H C2 A2 CR CT CRd :=
-  ⟨aI, aQ, RankInputBounds.rank_input_holds D L P X CRd hC6, aGG,
-    ⟨aR, GeometricGenericity.geometric_generic_of_layer_two D L P TN, aBad, IsotypicCorollary.goodPartRank_of_corollary D h4 nch, aGst⟩, aSp, ⟨aSg, aSr, aSo, aSe⟩,
-    ⟨aT4, aNN, aK, aD, aW⟩, ⟨aRc, aRn, aR4, aRs, aRd⟩⟩
 
 theorem inputs_admissible_of (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ) (hM : WeightFamilies.adm1 X.B)
     (hB : WeightFamilies.TransferenceTheoremCond) (lv : ThetaNormLinkHypotheses D L X Z H C2 A2 CR CT CRd) : ThetaNormsAndLinks.admitted D L X Z H C2 A2 CR CT CRd := by
@@ -108,24 +68,6 @@ theorem inputs_admissible_of (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ) (h
 
 end PDV08rec
 
-theorem chainG_rec (D : D7) (L : SizeData₂ D) (EX : ErrX D) {nch : NChoice D} (X : LiftErrorLocal.Loc D nch) (Z : ThetaNormsAndLinks.Loc8 X)
-    (Y : BoundaryLocalData.Prov D X.P6) (K : WeightAlgebra.KAdm) (H : WeightAlgebra.KHyp)
-    (Ch Ah Cq Aq C2h A2 CR Bx CT A ka CRd C1 C2 C3 CA CD : ℝ) (hCRd : 2 ≤ CRd)
-    (s08b : WeightFamilies.Stmt L X.B K.CG K.AG K.CL K.AL K.CRm H.CK Ch Ah Cq Aq)
-    (s08 : WeightAlgebra.Stmt L X.W K H Ch Ah Cq Aq C2h A2 CR Bx CT A)
-    (s66b : BoundaryLocalData.Stmt D X.P6 Y ka)
-    (sIn : ThetaNormsAndLinks.Stmt D L X Z H C2h A2 CR CT CRd)
-    (s18 : LiftErrorLocal.Stmt D L EX X H C2h A2 CR CT CRd C1 C2 C3 CA CD)
-    (a1 : WeightAlgebra.adm1 X.B) (a2 : WeightAlgebra.adm2 L X.W H.CA H.C1 H.A1 K.CG K.AG) (a3 : WeightAlgebra.adm3 L X.W H.CA K.Cf K.Af)
-    (a4 : WeightAlgebra.ArchimedeanSignatureMatching L X.W H.CA H.C1 H.A1 K.CW K.AW) (b3 : WeightFamilies.adm3 X.B) (bB : WeightFamilies.TransferenceTheoremCond) (bC : WeightFamilies.ChowlaSelbergPeriod L)
-    (a66 : BoundaryLocalData.admitted D X.P6 Y)
-    (lv : ThetaNormLinkHypotheses D L X Z H C2h A2 CR CT CRd)
-    (a7 : LiftErrorLocal.adm7 D X) (a8 : LiftErrorLocal.adm8 D X) (a9 : LiftErrorLocal.adm9 D X) (a12 : LiftErrorLocal.adm12 D) :
-    WeightAlgebra.Conclusion1 L X.W H C2h A2 CR CT ∧ ThetaNormsAndLinks.Conclusion₂ D L X H C2h A2 CR CT CRd ∧ LiftErrorLocal.Conclusion₂ D L EX X CRd C1 C2 C3 CA CD := by
-  have p08 := (quadratic_statement_of_parts L X.W K H Ch Ah Cq Aq C2h A2 CR Bx CT A s08b s08 a1 a2 a3 a4 b3 bB bC).1
-  have p66 : ModuliIntegralCharts.LinkConditions D X.P6 := (s66b a66).2.2.2.2.1
-  have pIn := sIn hCRd (inputs_admissible_of D L X Z H C2h A2 CR CT CRd a1 bB lv)
-  exact ⟨p08, pIn, s18 (division_admissible_of_inputs D L X H C2h A2 CR CT CRd pIn p66 p08 a7 a8 a9 a12)⟩
 
 section P18parts
 
@@ -290,32 +232,7 @@ theorem chainGF (Ob : WeightFamilies.ObjClass) (O8 : WeightAlgebra.ObjClass) (O1
   have pIn := sIn (inputs_admissible_family_of Fm XF ZF H C2h A2 CR CRd lv.b1 lv.bB lv.lv)
   exact ⟨p08, pIn, s18 XF lv.o18 (division_admissible_family_of Fm XF H C2h A2 CR CRd pIn p66 p08 lv.unit_twist_local_clauses_family)⟩
 
-theorem degree_bound_family_of_inputs (C1 C2 C3 CD : ℝ)
-    (sC : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), LiftErrorLocal.PropositionCStatement (Fm.D x i) (Fm.L x i) (Fm.ex x hx i).errX (XF x hx i)
-      C1 C2 C3)
-    (sD : ∀ x (i : Fm.Ix x), LiftErrorLocal.KappaDegreeStatement (Fm.D x i) (Fm.L x i) CD)
-    (lv : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      ThetaNormsAndLinks.admissible_unitary_of_inputs (Fm.D x i) (XF x hx i) (ZF x hx i) ∧ ThetaNormsAndLinks.SandwichExists (Fm.D x i) (XF x hx i) ∧
-        LiftErrorLocal.adm9 (Fm.D x i) (XF x hx i)) :
-    ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      LiftErrorLocal.PropositionCLatticeBound (Fm.D x i) (Fm.L x i) (Fm.ex x hx i).errX C1 C2 ∧
-        LiftErrorLocal.JetConsequence (Fm.D x i) (Fm.L x i) (Fm.ex x hx i).errX C1 C2 C3 ∧ LiftErrorLocal.ThetaAdjointPositiveScalar (Fm.D x i) (Fm.L x i) CD := by
-  obtain ⟨x0, lv⟩ := lv
-  refine ⟨x0, fun x hx h0 i => ?_⟩
-  obtain ⟨aI, aQ, a9⟩ := lv x hx h0 i
-  have h := sC x hx i (proposition_C_hypotheses_of _ _ (ThetaNormsAndLinks.stmt1 _ _ _ aI) (ThetaNormsAndLinks.stmt2 _ _ aQ) a9)
-  exact ⟨h.1, h.2, sD x i⟩
 
-theorem degree_bound_family_of_inputs' (C1 C2 C3 : ℝ)
-    (sC : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), LiftErrorLocal.PropositionCStatement (Fm.D x i) (Fm.L x i) (Fm.ex x hx i).errX (XF x hx i) C1 C2 C3)
-    (lv : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      ThetaNormsAndLinks.admissible_unitary_of_inputs (Fm.D x i) (XF x hx i) (ZF x hx i) ∧ ThetaNormsAndLinks.SandwichExists (Fm.D x i) (XF x hx i) ∧
-        LiftErrorLocal.adm9 (Fm.D x i) (XF x hx i)) :
-    ∃ CD x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      LiftErrorLocal.PropositionCLatticeBound (Fm.D x i) (Fm.L x i) (Fm.ex x hx i).errX C1 C2 ∧
-        LiftErrorLocal.JetConsequence (Fm.D x i) (Fm.L x i) (Fm.ex x hx i).errX C1 C2 C3 ∧ LiftErrorLocal.ThetaAdjointPositiveScalar (Fm.D x i) (Fm.L x i) CD := by
-  obtain ⟨CD, hD⟩ := CutKapD.kappa_degree_bound_holds
-  exact ⟨CD, degree_bound_family_of_inputs Fm XF ZF C1 C2 C3 CD sC (fun x i => hD (Fm.D x i) (Fm.L x i)) lv⟩
 
 end ChainF
 
@@ -365,17 +282,9 @@ section ON
 
 variable {D : D7} {CH : NChoice D} {Xd : DivX D}
 
-theorem PDVN_AdmRun_of (X : LiftErrorLocal.Loc D CH) (L : SizeData₂ D) (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ)
-    (h08 : WeightAlgebra.Conclusion1 L X.W H C2 A2 CR CT) (hLB : LiftErrorLocal.LemmaBWeightBound D X CRd) (hWB : ThetaNormsAndLinks.WeightGeneratorsInLattice D X)
-    (h11 : ThetaNormsAndLinks.RunConditions D L X H C2 A2 CR CT CRd) : PDVN.AdmRun X L H C2 A2 CR CT CRd := fun _ => ⟨h08, hLB, hWB, h11⟩
 
-theorem proposition_A_type_primes_admissible (L : SizeData₂ D) (O : PDVN.ONObj D CH Xd) (CA : ℝ) (h : LiftErrorLocal.ConjugationNormInvariance D L O.X CA) : PDVN.admA L O CA := h
 
-theorem off_type_lattices_admissible_of (O : PDVN.ONObj D CH Xd) (h : ThetaNormsAndLinks.AtEveryPlace D O.X) (h' : ThetaNormsAndLinks.LinkLatticesEveryPlace D O.X') : PDVN.OffTypePrimeConditions O :=
-  ThetaNormsAndLinks.offTypePrime_of D O h.1 h.2.1 h.2.2.1 h.2.2.2 h'
 
-theorem orbit_content_admissible_of (O : PDVN.ONObj D CH Xd) (C6 : ℝ) (h : CartierLocalBounds.Conclusion5 D Xd O.X.P6 O.c6 C6)
-    (h' : CartierLocalBounds.Conclusion5 D Xd O.X'.P6 O.c6' C6) : PDVN.OrbitContentCond O C6 := ⟨h, h'⟩
 
 def ONIn (L : SizeData₂ D) (O : PDVN.ONObj D CH Xd) (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd C6 CA : ℝ) : Prop :=
   (WeightAlgebra.Conclusion1 L O.X.W H C2 A2 CR CT ∧ LiftErrorLocal.LemmaBWeightBound D O.X CRd ∧ ThetaNormsAndLinks.RunConditions D L O.X H C2 A2 CR CT CRd) ∧
@@ -387,28 +296,7 @@ def ONIn (L : SizeData₂ D) (O : PDVN.ONObj D CH Xd) (H : WeightAlgebra.KHyp) (
 def ONLv (L : SizeData₂ D) (O : PDVN.ONObj D CH Xd) (C6 Cd Cs : ℝ) : Prop :=
   L.FDef ∧ PDVN.unitBoundAtTwistedPlaces O ∧ PDVN.DepthFromContent L O C6 Cd ∧ PDVN.TypePrimeSizeConds L O Cs ∧ PDVN.TwistedPlacesCover D
 
-theorem PDVN_AdmON_of (L : SizeData₂ D) (O : PDVN.ONObj D CH Xd) (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd C6 Cd Cs CA : ℝ)
-    (h : ONIn L O H C2 A2 CR CT CRd C6 CA) (lv : ONLv L O C6 Cd Cs) :
-    PDVN.AdmON L O H C2 A2 CR CT CRd C6 Cd Cs CA := by
-  obtain ⟨⟨a1, a2, a3⟩, ⟨b1, b2, bW, b3⟩, ⟨pA, g10⟩, ⟨gA, gL'⟩, ⟨c1, c2⟩⟩ := h
-  obtain ⟨l2, l4, l6, l7, l8⟩ := lv
-  exact ⟨l2, PDVN_AdmRun_of O.X L H C2 A2 CR CT CRd a1 a2 g10.2 a3, PDVN_AdmRun_of O.X' L H C2 A2 CR CT CRd b1 b2 bW b3,
-    proposition_A_type_primes_admissible L O CA pA, l4, off_type_lattices_admissible_of O gA gL', orbit_content_admissible_of O C6 c1 c2, l6, l7, l8, fun _ w _ _ => gA.2.1 w⟩
 
-theorem ONIn_of (L : SizeData₂ D) (O : PDVN.ONObj D CH Xd) (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd C6 CA : ℝ)
-    (p08 : WeightAlgebra.Conclusion1 L O.X.W H C2 A2 CR CT) (p08' : WeightAlgebra.Conclusion1 L O.X'.W H C2 A2 CR CT) (pA : LiftErrorLocal.ConjugationNormInvariance D L O.X CA)
-    (pIn : ThetaNormsAndLinks.Conclusion₂ D L O.X H C2 A2 CR CT CRd)
-    (r1 : ThetaNormsAndLinks.Conclusion1 D O.X') (r2 : ThetaNormsAndLinks.Conclusion2 D O.X') (r3b : ThetaNormsAndLinks.CoveringRadiusFunction D O.X' CRd) (rWB : ThetaNormsAndLinks.WeightGeneratorsInLattice D O.X')
-    (r11 : ThetaNormsAndLinks.RunConditions D L O.X' H C2 A2 CR CT CRd) (rLK : ThetaNormsAndLinks.LinkLatticesEveryPlace D O.X')
-    (p66 : ModuliIntegralCharts.LinkConditions D O.X.P6) (p66' : ModuliIntegralCharts.LinkConditions D O.X'.P6)
-    (sLB : LiftErrorLocal.LemmaBStatementAlt D O.X CRd) (sLB' : LiftErrorLocal.LemmaBStatementAlt D O.X' CRd)
-    (s02 : CartierLocalBounds.Stmt D Xd O.X.P6 O.c6 C6) (s02' : CartierLocalBounds.Stmt D Xd O.X'.P6 O.c6' C6)
-    (a02 : CartierLocalBounds.admitted D Xd O.X.P6 O.c6) (a02' : CartierLocalBounds.admitted D Xd O.X'.P6 O.c6') :
-    ONIn L O H C2 A2 CR CT CRd C6 CA := by
-  obtain ⟨q1, q2, q3b, -, -, -, -, q10, q11, qA⟩ := pIn
-  exact ⟨⟨p08, sLB (lemma_B_hypotheses_of D O.X CRd q1 q2 p66 q3b), q11⟩,
-    ⟨p08', sLB' (lemma_B_hypotheses_of D O.X' CRd r1 r2 p66' r3b), rWB, r11⟩, ⟨pA, q10⟩, ⟨qA, rLK⟩,
-    ⟨(s02 a02).2.2.2.2, (s02' a02').2.2.2.2⟩⟩
 
 end ON
 
@@ -416,23 +304,7 @@ section ONF
 
 variable {eps : ℝ} (Fm : FamP eps) (OF : PDVN.ONObjF Fm)
 
-theorem PDVN_AdmONF_of (H : WeightAlgebra.KHyp) (C2 A2 CR CRd C6 Cd Cs CA : ℝ)
-    (h : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      ONIn (Fm.L x i) (OF x hx i) H C2 A2 CR (Fm.Ct + 1) CRd C6 CA ∧ ONLv (Fm.L x i) (OF x hx i) C6 Cd Cs) :
-    PDVN.AdmONF Fm OF H C2 A2 CR CRd C6 Cd Cs CA := by
-  obtain ⟨x0, h⟩ := h
-  exact ⟨x0, fun x hx h0 i => PDVN_AdmON_of _ _ H C2 A2 CR _ CRd C6 Cd Cs CA (h x hx h0 i).1 (h x hx h0 i).2⟩
 
-theorem ONTwJF_of (H : WeightAlgebra.KHyp) (C2 A2 CR CRd C6 Cd Cs CA C CHc : ℝ)
-    (sON : PDVN.FamilyOntoIndicesOfAdmissible H C2 A2 CR CRd C6 Cd Cs CA C Fm OF CHc)
-    (h : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      ONIn (Fm.L x i) (OF x hx i) H C2 A2 CR (Fm.Ct + 1) CRd C6 CA ∧ ONLv (Fm.L x i) (OF x hx i) C6 Cd Cs)
-    (hg : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      PDVN.DomON (Fm.D x i) (Fm.L x i) (Fm.parT x hx i).nWn (Fm.parT x hx i).CP ∧ TwConjAt (Fm.D x i) (Fm.ex x hx i).nch ∧ PDVN.TraceLatticeInclusion (Fm.D x i) (OF x hx i).X.I.E (OF x hx i).T ∧
-        TwGoodAt (Fm.D x i) (Fm.ex x hx i).nch (OF x hx i).X.I) :
-    ∃ x0 : ℝ, ∀ x (_ : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      PDVN.ONTw (Fm.D x i) (Fm.L x i) C ∧ PDVN.ONTwJ (Fm.D x i) (Fm.L x i) C :=
-  (sON (PDVN_AdmONF_of Fm OF H C2 A2 CR CRd C6 Cd Cs CA h)).concl hg
 
 end ONF
 
@@ -440,39 +312,9 @@ section ONchain
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-theorem thr_and {P Q : ∀ x, Fm.x1 < x → Fm.Ix x → Prop}
-    (hP : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, P x hx i)
-    (hQ : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, Q x hx i) :
-    ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, P x hx i ∧ Q x hx i := by
-  obtain ⟨a, hP⟩ := hP
-  obtain ⟨b, hQ⟩ := hQ
-  exact ⟨max a b, fun x hx h0 i => ⟨hP x hx (le_trans (le_max_left _ _) h0) i, hQ x hx (le_trans (le_max_right _ _) h0) i⟩⟩
 
 variable (OF : PDVN.ONObjF Fm)
 
-theorem ONInF_of (H : WeightAlgebra.KHyp) (C2h A2 CR CRd C6 C1 C2 C3 CA CD : ℝ)
-    (p08 : WeightAlgebra.ConclusionF1 Fm (fun x hx i => (OF x hx i).X.B)
-      (fun x hx i => (OF x hx i).X.P6)
-      (fun x hx i => (OF x hx i).X.W) H C2h A2 CR)
-    (p08' : WeightAlgebra.ConclusionF1 Fm (fun x hx i => (OF x hx i).X'.B)
-      (fun x hx i => (OF x hx i).X'.P6)
-      (fun x hx i => (OF x hx i).X'.W) H C2h A2 CR)
-    (pIn : ThetaNormsAndLinks.ConclusionOnFamily Fm (fun x hx i => (OF x hx i).X) H C2h A2 CR CRd)
-    (pIn' : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      LiftErrorLocal.LemmaBWeightBound (Fm.D x i) (OF x hx i).X' CRd ∧ ThetaNormsAndLinks.WeightGeneratorsInLattice (Fm.D x i) (OF x hx i).X' ∧
-        ThetaNormsAndLinks.RunConditions (Fm.D x i) (Fm.L x i) (OF x hx i).X' H C2h A2 CR (Fm.Ct + 1) CRd ∧ ThetaNormsAndLinks.LinkLatticesEveryPlace (Fm.D x i) (OF x hx i).X')
-    (p18 : LiftErrorLocal.OrbitValuationBound Fm (fun x hx i => (OF x hx i).X) CRd C1 C2 C3 CA CD)
-    (p02 : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      CartierLocalBounds.Conclusion5 (Fm.D x i) (Fm.X x i) (OF x hx i).X.P6 (OF x hx i).c6 C6 ∧
-        CartierLocalBounds.Conclusion5 (Fm.D x i) (Fm.X x i) (OF x hx i).X'.P6 (OF x hx i).c6' C6) :
-    ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      ONIn (Fm.L x i) (OF x hx i) H C2h A2 CR (Fm.Ct + 1) CRd C6 CA := by
-  have q08 := theorem_zero_admissible_family_of Fm (fun x hx i => (OF x hx i).X) H C2h A2 CR p08
-  have q08' := theorem_zero_admissible_family_of Fm (fun x hx i => (OF x hx i).X') H C2h A2 CR p08'
-  obtain ⟨x0, h⟩ := thr_and Fm q08 (thr_and Fm q08' (thr_and Fm pIn (thr_and Fm pIn' (thr_and Fm p18 p02))))
-  refine ⟨x0, fun x hx h0 i => ?_⟩
-  obtain ⟨a, a', ⟨-, -, -, -, -, -, -, q10, q11, qA⟩, ⟨rLB, rWB, r11, rLK⟩, b, c⟩ := h x hx h0 i
-  exact ⟨⟨a, b.2.2.2.1, q11⟩, ⟨a', rLB, rWB, r11⟩, ⟨b.2.2.2.2.2.2.1, q10⟩, ⟨qA, rLK⟩, c⟩
 
 end ONchain
 
@@ -480,47 +322,6 @@ section ONstmts
 
 variable {eps : ℝ} (Fm : FamP eps) (OF : PDVN.ONObjF Fm)
 
-theorem ONInF_of_stmts
-    (ZF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ThetaNormsAndLinks.Loc8 (OF x hx i).X)
-    (ZF' : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ThetaNormsAndLinks.Loc8 (OF x hx i).X')
-    (YF : BoundaryLocalData.ProvF Fm (fun x hx i => (OF x hx i).X.P6)) (YF' : BoundaryLocalData.ProvF Fm (fun x hx i => (OF x hx i).X'.P6))
-    (Ob : WeightFamilies.ObjClass) (O8 : WeightAlgebra.ObjClass) (O18 : LiftErrorLocal.ObjClass) (K : WeightAlgebra.KAdm) (H : WeightAlgebra.KHyp)
-    (Ch Ah Cq Aq C2h A2 CR ka ka' CRd C1 C2 C3 CA CD CH C6 : ℝ)
-    (s08b : WeightFamilies.PacketAlongFamilyInClass Ob K.CG K.AG K.CL K.AL K.CRm H.CK Ch Ah Cq Aq Fm CH)
-    (s08 : WeightAlgebra.PeriodFamilyStatement O8 K H Ch Ah Cq Aq C2h A2 CR Fm CH)
-    (s66b : BoundaryLocalData.FamilyKeyFormulaOfAdmissible Fm (fun x hx i => (OF x hx i).X.P6) YF ka)
-    (s66b' : BoundaryLocalData.FamilyKeyFormulaOfAdmissible Fm (fun x hx i => (OF x hx i).X'.P6) YF' ka')
-    (sIn : ThetaNormsAndLinks.AdmF Fm (fun x hx i => (OF x hx i).X) ZF H C2h A2 CR CRd → ThetaNormsAndLinks.ConclusionOnFamily Fm (fun x hx i => (OF x hx i).X) H C2h A2 CR CRd)
-    (sIn' : ThetaNormsAndLinks.AdmF Fm (fun x hx i => (OF x hx i).X') ZF' H C2h A2 CR CRd → ThetaNormsAndLinks.ConclusionOnFamily Fm (fun x hx i => (OF x hx i).X') H C2h A2 CR CRd)
-    (s18 : LiftErrorLocal.KudlaFamilyStatement O18 H C2h A2 CR CRd C1 C2 C3 CA CD Fm CH)
-    (lv : LvG Fm (fun x hx i => (OF x hx i).X) ZF YF Ob O8 O18 K H C2h A2 CR CRd)
-    (lv' : LvG Fm (fun x hx i => (OF x hx i).X') ZF' YF' Ob O8 O18 K H C2h A2 CR CRd)
-    (s02 : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      CartierLocalBounds.Stmt (Fm.D x i) (Fm.X x i) (OF x hx i).X.P6 (OF x hx i).c6 C6 ∧ CartierLocalBounds.Stmt (Fm.D x i) (Fm.X x i) (OF x hx i).X'.P6 (OF x hx i).c6' C6)
-    (a02 : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      CartierLocalBounds.admitted (Fm.D x i) (Fm.X x i) (OF x hx i).X.P6 (OF x hx i).c6 ∧ CartierLocalBounds.admitted (Fm.D x i) (Fm.X x i) (OF x hx i).X'.P6 (OF x hx i).c6') :
-    ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      ONIn (Fm.L x i) (OF x hx i) H C2h A2 CR (Fm.Ct + 1) CRd C6 CA := by
-  obtain ⟨p08, pIn, p18⟩ := chainGF Fm (fun x hx i => (OF x hx i).X) ZF YF Ob O8 O18 K H Ch Ah Cq Aq C2h A2 CR ka CRd C1 C2 C3 CA CD CH
-    s08b s08 s66b sIn s18 lv
-  obtain ⟨p08', pIn', p18'⟩ := chainGF Fm (fun x hx i => (OF x hx i).X') ZF' YF' Ob O8 O18 K H Ch Ah Cq Aq C2h A2 CR ka' CRd C1 C2 C3 CA
-    CD CH s08b s08 s66b' sIn' s18 lv'
-  have q' : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      LiftErrorLocal.LemmaBWeightBound (Fm.D x i) (OF x hx i).X' CRd ∧ ThetaNormsAndLinks.WeightGeneratorsInLattice (Fm.D x i) (OF x hx i).X' ∧
-        ThetaNormsAndLinks.RunConditions (Fm.D x i) (Fm.L x i) (OF x hx i).X' H C2h A2 CR (Fm.Ct + 1) CRd ∧ ThetaNormsAndLinks.LinkLatticesEveryPlace (Fm.D x i) (OF x hx i).X' := by
-    obtain ⟨x0, h⟩ := thr_and Fm p18' (thr_and Fm pIn' lv'.lv)
-    refine ⟨x0, fun x hx h0 i => ?_⟩
-    obtain ⟨a, b, c⟩ := h x hx h0 i
-    obtain ⟨-, -, -, aLB, -⟩ := a
-    obtain ⟨-, -, -, -, -, -, -, -, b11, -, -, -, bLK⟩ := b
-    obtain ⟨-, -, -, -, -, -, -, ⟨-, -, -, -, cWB⟩, -⟩ := c
-    exact ⟨aLB, cWB, b11, bLK⟩
-  have q02 : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x,
-      CartierLocalBounds.Conclusion5 (Fm.D x i) (Fm.X x i) (OF x hx i).X.P6 (OF x hx i).c6 C6 ∧
-        CartierLocalBounds.Conclusion5 (Fm.D x i) (Fm.X x i) (OF x hx i).X'.P6 (OF x hx i).c6' C6 := by
-    obtain ⟨x0, h⟩ := thr_and Fm s02 a02
-    exact ⟨x0, fun x hx h0 i => ⟨((h x hx h0 i).1.1 (h x hx h0 i).2.1).2.2.2.2, ((h x hx h0 i).1.2 (h x hx h0 i).2.2).2.2.2.2⟩⟩
-  exact ONInF_of Fm OF H C2h A2 CR CRd C6 C1 C2 C3 CA CD p08 p08' pIn q' p18 q02
 
 end ONstmts
 

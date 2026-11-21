@@ -9,19 +9,6 @@ noncomputable section
 
 namespace Formalism.HermitianLatticeCounting.P
 
-theorem assembly_of_second_bound : AssemblyB := by
-  intro T _ μ E _ _ P χ W h1 h2 h0
-  have e1 : (∫ x, (inner ℂ (W x) (P (fun y => (χ y : ℂ) • W y) x) : ℂ) ∂μ) = 0 := by
-    apply integral_eq_zero_of_ae
-    filter_upwards [h0] with x hx
-    simp only [hx, Pi.zero_apply, inner_zero_right]
-  have e2 : (∫ x, (inner ℂ (W x) ((χ x : ℂ) • W x) : ℂ) ∂μ) = ((∫ x, χ x * ‖W x‖ ^ 2 ∂μ : ℝ) : ℂ) := by
-    rw [← integral_complex_ofReal]
-    congr 1; ext x
-    rw [inner_smul_right, inner_self_eq_norm_sq_to_K]; push_cast; rfl
-  rw [e1, e2] at h1
-  have := Complex.ofReal_eq_zero.mp h1.symm
-  linarith
 
 theorem conjugate_dual_representation : ConjDual := by
   intro E _ _ _ G _ ρ hu g v

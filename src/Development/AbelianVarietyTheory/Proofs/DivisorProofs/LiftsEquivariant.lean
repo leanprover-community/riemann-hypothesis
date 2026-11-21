@@ -132,19 +132,6 @@ theorem proj_rows (hC : R.Char F) (y : R.HE.H) : ∑ g, D.what₂.embLL ((idemOf
   rw [map_sum]
   exact Finset.sum_congr rfl fun g _ => by rw [map_smul, hC.models.gE]; rfl
 
-theorem proj_lifts {s : ℕ} (hC : R.Char F) (hOk : A.fam.Ok s) (i : Fin D.R.m) (t : T) (y : (R.HV i t).H) :
-    ∑ g, D.what₂.embLL ((idemOf A.X).coeff g) • R.gW i (sg0 D A) g (R.thG i t y) = R.thG i t y := by
-  have h1 : R.thF i t y ∈ LinearMap.range (R.HW i (sg0 D A)).e :=
-    (hC.models.HW i (sg0 D A)).2.1.ge (hC.thP.thF_mem i t y)
-  obtain ⟨z, hz⟩ := h1
-  have hs : ∀ a, sg0 D A a = D.what₂.embLL a := fun a => by rw [sg0, sgAt_mk _ R.hv0]
-  have h2 : R.thG i t y = ∑ g, D.what₂.embLL ((idemOf A.X).coeff g) • R.gW i (sg0 D A) g z := by
-    refine (hC.models.HW i _).1 ?_
-    rw [hC.thP.thG, ← hz, map_sum]
-    refine (postOn_gaL (R.MW i (sg0 D A)) (R.βW i) (R.datWp i R.triv) R.eG _ _).trans ?_
-    exact Finset.sum_congr rfl fun g _ => by rw [map_smul, hC.models.gW, RealDat.eC, hs]; rfl
-  rw [h2]
-  exact idem_idem _ hOk.irr _ z
 
 theorem r_eq (hC : R.Char F) : A.r = D.R.r := hC.fam.tie.choose_spec.choose_spec.choose_spec.ranks.2.1
 
@@ -164,27 +151,7 @@ theorem rows_le {s : ℕ} (hC : R.Char F) (hOk : A.fam.Ok s) (hT : HeckeOps R) (
       (χ := (levEnv _ R.βX (R.datXt t)).χ) (R.B.R t).pres (R.HX t) (hC.models.HX t) (hC.models.jX t) (hOk.what₂ t).act hOk.irr R.gE (hG.1 t)
       fun y => proj_rows hC _)
 
-theorem lifts_le {s : ℕ} (hC : R.Char F) (hOk : A.fam.Ok s) (hT : HeckeOps R) (hL : HeckeUpLifts R)
-    (hG : LiftsEquivariant R) (i : Fin D.R.m) (t : T) :
-    (LinearMap.range (LinearMap.adjoint (R.thG i t))).comap (R.jV i t) ≤ (A.fam.L i t).ZHg A.X := by
-  have hrk : (Wc D i).rank = A.r := by
-    rw [D.sp.W_rank _ (Nat.le_add_left _ _) i.2, r_eq hC]
-  have hn : (A.fam.L i t).n = (Wc D i).rank + (A.fam.L i t).bl.length * (A.fam.L i t).t := by
-    rw [hrk]
-    show A.r + A.t = A.r + 1 * A.t
-    rw [one_mul]
-  exact le_inf
-    (side_le (R.B.L i t) (R.HV i t) (hC.models.HV i t) (hC.models.jV i t) (hOk.lifts i t).comm (hOk.lifts i t).split
-      (q := A.q) (hOk.lifts i t).q_pos (R.B.rankL i) hn (hC.fam.degL i t) (hT.2 i t) (R.thG i t) _ (hL i t))
-    (model_good (W := (R.cV i).W) (ι := Bridge.ratF (Vc D i)) (ρ := (R.cV i).coef.ρ)
-      (J := (levEnv _ (R.βV i) (R.datVt i t)).J) (χ := (levEnv _ (R.βV i) (R.datVt i t)).χ) (R.B.L i t).pres (R.HV i t) (hC.models.HV i t) (hC.models.jV i t) (hOk.lifts i t).act hOk.irr
-      (R.gW i (sg0 D A)) (hG.2 i t) fun y => proj_lifts hC hOk i t y)
 
-theorem lBlock {s : ℕ} (hC : R.Char F) (hOk : A.fam.Ok s) (hT : HeckeOps R) (hR : HeckeUpRows R) (hL : HeckeUpLifts R)
-    (hG : LiftsEquivariant R) : R.LBlock F :=
-  ⟨fun t x hx => rows_le hC hOk hT hR hG t ((mem_range_adjoint_tw (twAt D.what₂.embLL A.v0) (R.Th t) (R.jX t x)).1 hx),
-    fun i t x hx => lifts_le hC hOk hT hL hG i t
-      ((mem_range_adjoint_tw (twAt D.what₂.embLL A.v0) (R.thG i t) (R.jV i t x)).1 hx)⟩
 
 end Record
 

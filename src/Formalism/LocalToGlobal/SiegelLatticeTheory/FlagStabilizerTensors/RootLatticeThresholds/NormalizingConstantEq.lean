@@ -237,30 +237,6 @@ theorem summable_op_fib {u u' : D.what₂.Word} (hA : (Y.tO u u').AbsConv) :
     (hA.1.mul_left (Module.finrank ℂ (CM (Y.cs u')) : ℝ))
   exact (norm_tr_le _ _ _).trans (opNorm_le_hs _)
 
-theorem kTie (u u' : D.what₂.Word) : KTie hF u u' := by
-  intro hd hd' hE hA
-  obtain ⟨K, hsum, hK⟩ := hE
-  have hKm := kmat_eq hF hd hd' K hK
-  have h1 : HasSum (fun s : TT Y u u' => aT hF u u' s) (tr (hF.shBij u) (hF.shBij u') K) :=
-    hsum.map (trAdd (hF.shBij u) (hF.shBij u')) (continuous_trAdd _ _)
-  let e := Equiv.sigmaFiberEquiv (fun s : TT Y u u' => s.toTerm)
-  refine ⟨?_, ?_⟩
-  · change HasSum (fun t => aR hF u u' t) (Kmat (sOf hF) u u')
-    rw [hKm]
-    have h2 := (e.hasSum_iff (f := fun s : TT Y u u' => aT hF u u' s)).2 h1
-    refine h2.sigma fun t => ?_
-    letI : Fintype {x : TT Y u u' // x.toTerm = t} := hF.fibFT t
-    unfold aR
-    exact hasSum_fintype _
-  · change Summable fun t => ‖aR hF u u' t‖
-    have hs := (e.summable_iff (f := fun s : TT Y u u' => ‖aT hF u u' s‖)).2 (summable_op_fib hF hA)
-    have hs2 := (summable_sigma_of_nonneg (fun _ => norm_nonneg _)).1 hs
-    refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun t => ?_) hs2.2
-    letI : Fintype {x : TT Y u u' // x.toTerm = t} := hF.fibFT t
-    rw [tsum_fintype]
-    unfold aR
-    refine (norm_sum_le _ _).trans (le_of_eq ?_)
-    rfl
 
 theorem normTie (u u' : D.what₂.Word) : NormTie hF u u' := by
   intro hd hd' hE hA hId hK2

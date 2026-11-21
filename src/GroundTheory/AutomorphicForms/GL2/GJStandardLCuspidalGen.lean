@@ -763,32 +763,6 @@ theorem matrixCoeff_factorization_of_pureTensor (P : CuspidalAutomorphicRepresen
 
 end Sph
 
-theorem matrixCoeff_factorization_cuspidal (P : CuspidalAutomorphicRepresentation K n)
-    (D : AdelicDecomposition P.toModule) (μ : Measure (Reduction.normOneGL K n)) [μ.IsHaarMeasure] :
-    ∃ (φ : cuspForms K n) (ξ : ∀ v, D.finite.W v) (ℓ : ∀ v, Module.Dual ℂ (D.finite.W v))
-      (fi : InfiniteAdelicGL K n → ℂ) (S₀ : Finset (HeightOneSpectrum (𝓞 K))),
-      φ ∈ P.carrier ∧ φ ≠ 0 ∧ (∀ v, ξ v ∈ smoothVectors (D.finite.π v)) ∧
-      (∀ v, ℓ v ∈ smoothVectors (Representation.dual (D.finite.π v))) ∧
-      (∀ v ∉ S₀, ξ v ∈ fixedVectors (D.finite.π v) (integralGL (v.adicCompletion K) n) ∧ ℓ v (ξ v) = 1) ∧
-      (∀ v ∉ S₀, ℓ v ∈ fixedVectors (Representation.dual (D.finite.π v)) (integralGL (v.adicCompletion K) n)) ∧
-      (∀ g, GJGlobal.matrixCoeff μ (φ : AdelicGL K n → ℂ) φ g = fi (GJStandardL.archComp K n g) *
-        ∏ᶠ v : HeightOneSpectrum (𝓞 K), Parabolic.matrixCoeff (F := v.adicCompletion K) (D.finite.π v) (ξ v) (ℓ v)
-          (GJStandardL.localComp n v g)) ∧
-      ∃ g, GJGlobal.matrixCoeff μ (φ : AdelicGL K n → ℂ) φ g ≠ 0 := by
-  obtain ⟨a, x, hx, ha, hx0⟩ := exists_pureTensor P D
-  obtain ⟨ℓ, fi, hℓs, hℓ1, hℓK, hf, hF1⟩ := matrixCoeff_factorization_of_pureTensor P D μ a x hx ha hx0
-  have hS : ∀ᶠ v in cofinite, x v ∈ fixedVectors (D.finite.π v) (integralGL (v.adicCompletion K) n) := by
-    filter_upwards [hx, D.finite.mem_fixedVectors] with v h1 h2
-    rw [h1]
-    exact h2
-  have hfin := Filter.eventually_cofinite.1 hS
-  have hnot : ∀ v ∉ hfin.toFinset, x v ∈ fixedVectors (D.finite.π v) (integralGL (v.adicCompletion K) n) := by
-    intro v hv
-    by_contra h
-    exact hv (hfin.mem_toFinset.2 h)
-  exact ⟨Phi0 P D a x hx, x, ℓ, fi, hfin.toFinset, (phi D a x hx).2,
-    fun h => phi_ne D a x hx ha hx0 (Subtype.ext h), fun v => (D.finite.isAdmissible v).1 (x v), hℓs,
-    fun v hv => ⟨hnot v hv, hℓ1 v⟩, fun v hv => hℓK v (hnot v hv), hf, ⟨1, hF1⟩⟩
 
 end Final
 

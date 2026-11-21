@@ -28,30 +28,7 @@ theorem premises_met {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Hos
   have := GlobalTheory.Models.isProper_tensorTriple (H := H) _ hA
   exact inferInstanceAs (IsProper (pullback.snd _ _))
 
-theorem not_surjective_splitTorus (S : Scheme.{0}) [Nonempty S] (X : Type) [AddCommGroup X] [Nontrivial X] :
-    ¬ Function.Surjective (splitTorus S X).hom.appTop.hom := by
-  intro h
-  refine GlobalTheory.Diag.id_ne_one S (X := X) (GlobalTheory.Diag.hom_ext fun x => ?_)
-  have h1 : ∀ t : splitTorus S X ⟶ splitTorus S X,
-      (Rosenlicht.coord t).hom (AddMonoidAlgebra.single x 1) = t.left.appTop.hom (Rosenlicht.chi X x) :=
-    fun t => by rw [← Category.comp_id t, Rosenlicht.coord_comp, Category.comp_id]; rfl
-  obtain ⟨c, hc⟩ := h (Rosenlicht.chi X x)
-  have h2 : ∀ t : splitTorus S X ⟶ splitTorus S X,
-      t.left.appTop.hom (Rosenlicht.chi X x) = (splitTorus S X).hom.appTop.hom c := fun t => by
-    rw [← hc, ← RingHom.comp_apply, ← CommRingCat.hom_comp, ← Scheme.Hom.comp_appTop, Over.w]
-  rw [h1, h1, h2, h2]
 
-theorem properness_needed {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) (V : Type) [CommRing V]
-    [IsDomain V] : ∃ t : SAB H (Sp V), ¬ Function.Bijective (powObj t.G 1).hom.appTop.hom := by
-  refine ⟨GlobalTheory.Models.Inhab.trivTriple H (splitTorus (Sp V) (𝓞 E)) (GlobalTheory.Diag.isSemiAbelian _ _)
-    (GlobalTheory.Diag.diagAct _ _ _), fun h => ?_⟩
-  exact not_surjective_splitTorus (Sp V) (𝓞 E)
-    (GlobalFunctionsDvrPowers.bijective_of_iso (ρ_ (splitTorus (Sp V) (𝓞 E))).symm h).2
 
-theorem not_without_properness : ¬ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (V : Type)
-    [CommRing V] [IsDomain V] [IsDiscreteValuationRing V], IsAdicComplete (IsLocalRing.maximalIdeal V) V →
-    ∀ t : SAB H (Sp V), ∀ n : ℕ, Function.Bijective (powObj t.G n).hom.appTop.hom := fun h => by
-  obtain ⟨t, ht⟩ := properness_needed GlobalTheory.HostModel.host ℤ_[3]
-  exact ht (h _ _ ℤ_[3] inferInstance t 1)
 
 end GlobalTheory.GlobFnsDvrChecks

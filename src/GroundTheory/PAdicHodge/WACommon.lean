@@ -95,23 +95,7 @@ theorem coeff_frob (x : WittVector p K♭) (n : ℕ) :
     rw [h1]; simp [TeichLift.finSum]
   rw [e]; exact h2
 
-theorem zcoeff_frob (x : WittVector p K♭) (k : ℤ) :
-    (teichLift K p).zcoeff ((frob K p).φ x) k = (teichLift K p).zcoeff x k ^ p := by
-  unfold TeichLift.zcoeff
-  split_ifs
-  · exact coeff_frob x _
-  · exact (zero_pow hp.out.ne_zero).symm
 
-theorem coeffB_frob_toB (b : (teichLift K p).B) (k : ℤ) :
-    (teichLift K p).coeffB ((frob K p).toB b) k = (teichLift K p).coeffB b k ^ p := by
-  obtain ⟨N, x, hx⟩ := IsLocalization.Away.surj (teichLift K p).π b
-  have h' : (frob K p).toB b * algebraMap _ (teichLift K p).B (teichLift K p).π ^ N =
-      algebraMap _ (teichLift K p).B ((frob K p).φ x) := by
-    have := congrArg (frob K p).toB hx
-    rwa [map_mul, map_pow, TeichLift.TeichFrob.toB_algebraMap, TeichLift.TeichFrob.toB_algebraMap,
-      (frob K p).φ_π, frob_u, mul_one] at this
-  rw [(teichLift K p).coeffB_eq h', (teichLift K p).coeffB_eq hx]
-  exact zcoeff_frob x _
 
 end Frob
 
@@ -144,7 +128,6 @@ def galIso (σ : Gal(PadicAlgCl p/K)) : (teichLift ℂ_[p] p).TeichIso where
 
 theorem galIso_ψ (σ : Gal(PadicAlgCl p/K)) (x : WC p) : (galIso σ).ψ x = σ • x := rfl
 
-theorem galIso_g (σ : Gal(PadicAlgCl p/K)) (c : Cb p) : (galIso σ).g c = σ • c := rfl
 
 theorem TeichIso_eq {T : TeichLift p (Cb p) (WC p)} {G₁ G₂ : T.TeichIso}
     (hψ : ∀ x, G₁.ψ x = G₂.ψ x) (hg : ∀ c, G₁.g c = G₂.g c) : G₁ = G₂ := by
@@ -206,8 +189,6 @@ variable (p) in
 
 def wittFpbarToWC : W̄ →+* WC p := (incl ℂ_[p] p).comp wittToAInf
 
-theorem wittFpbarToWC_injective : Function.Injective (wittFpbarToWC p) :=
-  incl_injective.comp wittToAInf_injective
 
 theorem wittFpbarToWC_mem_int (w : W̄) : wittFpbarToWC p w ∈ (𝓣).int := ⟨_, rfl⟩
 
@@ -215,22 +196,7 @@ theorem wittFpbarToWC_coeff (w : W̄) (n : ℕ) :
     (wittFpbarToWC p w).coeff n = algebraMap 𝒪♭ (Cb p) (fpbarToPreTilt (w.coeff n)) := by
   rw [wittFpbarToWC, RingHom.comp_apply, incl_coeff, wittToAInf, WittVector.map_coeff]
 
-theorem red_wittFpbarToWC_ne_zero {w : W̄} (hw : w.coeff 0 ≠ 0) :
-    (𝓣).red (wittFpbarToWC p w) ≠ 0 := by
-  rw [teichLift_red, wittFpbarToWC_coeff]
-  intro h
-  apply hw
-  apply fpbarToPreTilt_injective
-  rw [map_zero]
-  apply algebraMap_preTilt_injective
-  rw [map_zero]
-  exact h
 
-theorem red_wittFpbarToWC_unit_ne_zero (u : W̄ˣ) : (𝓣).red (wittFpbarToWC p u) ≠ 0 := by
-  refine red_wittFpbarToWC_ne_zero fun h => ?_
-  have := congrArg (fun w : W̄ => w.coeff 0) (u.mul_inv)
-  simp only [WittVector.mul_coeff_zero, h, zero_mul, WittVector.one_coeff_zero] at this
-  exact zero_ne_one this
 
 theorem wittFpbarToWC_frobenius (w : W̄) :
     wittFpbarToWC p (WittVector.frobenius w) = (frob ℂ_[p] p).φ (wittFpbarToWC p w) := by
@@ -278,24 +244,7 @@ theorem wittFpbarToB_algebraMap (w : W̄) :
 theorem wittFpbarToB_p : wittFpbarToB p (algebraMap W̄ (WFrac p) p) = (𝓣).πB := by
   rw [wittFpbarToB_algebraMap, map_natCast]; rfl
 
-theorem wittFpbarToB_injective : Function.Injective (wittFpbarToB p) := by
-  have := (𝓣).nontrivial_B
-  exact (wittFpbarToB p).injective
 
-theorem exists_wittFpbarToB_eq (x : WFrac p) (hx : x ≠ 0) :
-    ∃ (n : ℤ) (u : W̄ˣ), wittFpbarToB p x = (((𝓣).piB ^ n : ((𝓣).B)ˣ) : (𝓣).B) *
-      algebraMap (WC p) (𝓣).B (wittFpbarToWC p u) := by
-  obtain ⟨n, u, rfl⟩ := exists_eq_zpow_mul x hx
-  refine ⟨n, u, ?_⟩
-  have hP : IsUnit (algebraMap W̄ (WFrac p) p) :=
-    ((map_ne_zero_iff _ (IsFractionRing.injective W̄ (WFrac p))).2
-      (WittVector.irreducible p).ne_zero).isUnit
-  have e1 : (algebraMap W̄ (WFrac p) p) ^ n = ((hP.unit ^ n : (WFrac p)ˣ) : WFrac p) := by
-    rw [Units.val_zpow_eq_zpow_val, IsUnit.unit_spec]
-  have e2 : Units.map (wittFpbarToB p : WFrac p →* (𝓣).B) hP.unit = (𝓣).piB := by
-    ext
-    rw [Units.coe_map, IsUnit.unit_spec, MonoidHom.coe_coe, wittFpbarToB_p, TeichLift.piB_val]
-  rw [map_mul, e1, wittFpbarToB_algebraMap, ← e2, ← map_zpow, Units.coe_map, MonoidHom.coe_coe]
 
 end Unramified
 
@@ -363,19 +312,8 @@ theorem wittFpbarToTilde_eq_tildeOf (x : WFrac p) :
     wittFpbarToTilde p x = (𝓣).tildeOf (wittFpbarToB p x) (convAll_wittFpbarToB x) :=
   (𝓣).edagToTilde_apply _
 
-theorem wittFpbarToTilde_injective : Function.Injective (wittFpbarToTilde p) :=
-  (𝓣).edagToTilde_injective.comp fun _ _ h => wittFpbarToB_injective (congrArg Subtype.val h)
 
-theorem isUnit_wittFpbarToTilde {x : WFrac p} (hx : x ≠ 0) : IsUnit (wittFpbarToTilde p x) :=
-  (IsUnit.mk0 x hx).map _
 
-theorem tildeOrd_wittFpbarToTilde (n : ℤ) (u : W̄ˣ)
-    (h : IsUnit (wittFpbarToTilde p ((algebraMap W̄ (WFrac p) p) ^ n * algebraMap W̄ (WFrac p) u))) :
-    (𝓣).tildeOrd h.unit = n := by
-  rw [(𝓣).tildeOrd_eq (b := wittFpbarToEdag p _) (by rw [IsUnit.unit_spec]; rfl)]
-  show (𝓣).ordB (wittFpbarToB p _) = n
-  rw [wittFpbarToB_zpow_mul]
-  exact (𝓣).ordB_piB_zpow_mul n (red_wittFpbarToWC_unit_ne_zero u)
 
 theorem isUnit_frobenius_fractionField (y : nonZeroDivisors W̄) :
     IsUnit ((algebraMap W̄ (WFrac p)).comp WittVector.frobenius (y : W̄)) := by
@@ -513,8 +451,6 @@ theorem tildeFrob_eq_self_iff (x : (𝓣).RobbaTilde) :
   rw [map_mul, map_zpow₀, map_natCast, padicToWFrac_padicInt, ← map_natCast (algebraMap W̄ (WFrac p)),
     wittFpbarToB_zpow_mul, val_piB_zpow, map_one, mul_one]
 
-theorem padicToTilde_injective : Function.Injective (padicToTilde p) :=
-  wittFpbarToTilde_injective.comp (padicToWFrac p).injective
 
 end Fixed
 

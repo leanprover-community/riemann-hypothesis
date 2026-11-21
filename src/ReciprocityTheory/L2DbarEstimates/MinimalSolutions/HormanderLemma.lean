@@ -52,26 +52,5 @@ theorem split (E H₁ H₂ : Type*) [AddCommGroup E] [Module ℂ E]
   have h1 := hfw.sub h2
   simpa using h1
 
-theorem hormanderLemma (E H₁ H₂ : Type*) [AddCommGroup E] [Module ℂ E]
-    [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] [CompleteSpace H₁]
-    [NormedAddCommGroup H₂] [InnerProductSpace ℂ H₂] [CompleteSpace H₂] :
-    HormanderLemmaStatement E H₁ H₂ := by
-  intro ι t K hK hrange v A hA hv hbound
-  let G : Submodule ℂ (H₂ × H₁) := weakAdjGraph ι t ⊓ K.comap (LinearMap.fst ℂ H₂ H₁)
-  have hG : ∀ p : G, WeakAdj ι t (p : H₂ × H₁).1 (p : H₂ × H₁).2 ∧ (p : H₂ × H₁).1 ∈ K :=
-    fun p => ⟨(Submodule.mem_inf.mp p.2).1, (Submodule.mem_inf.mp p.2).2⟩
-  obtain ⟨u, -, hu, huv⟩ := rieszOnRange G H₁ ((LinearMap.snd ℂ H₂ H₁).comp G.subtype)
-    ((innerₛₗ ℂ v).comp ((LinearMap.fst ℂ H₂ H₁).comp G.subtype)) A hA (by
-      intro p
-      obtain ⟨h1, h2⟩ := hG p
-      simpa using hbound _ h2 _ h1)
-  refine ⟨u, hu, fun f w hfw => ?_⟩
-  obtain ⟨f₁, f₂, rfl, hf₁, hf₂, hw1, -⟩ := split E H₁ H₂ ι t K hK hrange f w hfw
-  have hmem : ((f₁, w) : H₂ × H₁) ∈ G := Submodule.mem_inf.mpr ⟨hw1, hf₁⟩
-  have h3 := huv ⟨(f₁, w), hmem⟩
-  simp only [LinearMap.coe_comp, Function.comp_apply, Submodule.coe_subtype,
-    LinearMap.snd_apply, LinearMap.fst_apply] at h3
-  rw [inner_add_right, Submodule.inner_right_of_mem_orthogonal hv hf₂, add_zero]
-  exact h3
 
 end ReciprocityTheory.L2DbarEstimates

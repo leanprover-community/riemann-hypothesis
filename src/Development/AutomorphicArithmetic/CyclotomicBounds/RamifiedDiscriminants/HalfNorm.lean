@@ -12,10 +12,6 @@ namespace Formalism.BasicNotions.Host
 
 variable {R : Ranks} (H : Host R)
 
-theorem not_dvd_discr_of_not_small {p : ℕ} (hp : p.Prime) (h2 : p ∉ H.small) (hq : p ≠ H.q) (hd : p ≠ H.d) :
-    ¬ (p : ℤ) ∣ discr H.E := fun h => by
-  rcases (H.toHostRaw.dvd_condN_iff_small hp).1 ((H.dvd_discr_iff_dvd_condN hp).1 h) with h | h | h
-  exacts [h2 h, hq h, hd h]
 
 theorem mem_ramI_iff {p : ℕ} (hp : p.Prime) : p ∈ H.toHostRaw.ramI ↔ p ∣ H.QS * H.q := by
   have h0 : (discr H.E).natAbs ≠ 0 := Int.natAbs_ne_zero.2 (discr_ne_zero _)
@@ -36,10 +32,6 @@ private theorem liesOver_of_mem {E : Type} [Field E] [NumberField E] {p : ℕ} (
     (Ideal.IsPrime.ne_top inferInstance) (by
       rw [Ideal.span_singleton_le_iff_mem, Ideal.mem_comap, map_natCast]; exact h)⟩
 
-private theorem mem_of_liesOver {E : Type} [Field E] [NumberField E] {p : ℕ} (P : Ideal (𝓞 E))
-    (h : P.LiesOver (span {(p : ℤ)})) : (p : 𝓞 E) ∈ P := by
-  have : (p : ℤ) ∈ P.under ℤ := by rw [← h.over]; exact Ideal.mem_span_singleton_self _
-  simpa [Ideal.mem_comap] using this
 
 private theorem dvd_absNorm_of {E : Type} [Field E] [NumberField E] {p : ℕ} (hp : p.Prime) (P J : Ideal (𝓞 E)) [hP : P.IsPrime]
     (h : (p : 𝓞 E) ∈ P) (hJ : P ∣ J) : p ∣ absNorm J := by
@@ -90,10 +82,5 @@ theorem four_ord_le_condN : 4 * R.toFrame.ord ≤ H.QS * H.q * H.d := by
   split_ifs
   exacts [dvd_rfl, one_dvd _]
 
-theorem condN_le_four_sq : ((H.QS : ℝ) * H.q * H.d) ≤ 4 * (R.n : ℝ) ^ 2 * H.q * H.d := by
-  have h : (H.QS : ℝ) ≤ (R.n : ℝ) ^ 2 := by exact_mod_cast H.QS_le
-  have h0 : (0 : ℝ) ≤ (R.n : ℝ) ^ 2 := by positivity
-  gcongr
-  linarith
 
 end Formalism.BasicNotions.Host

@@ -116,72 +116,10 @@ theorem TQ.Desc.exists_even {Q : TQ G X} {P : CP G} (D : Q.Desc P) : ∃ σ : Cu
     rw [key T x⁻¹ z J J' hJ hJ', key T x z J J' hJ hJ', hs]
     exact mul_inv_eq_mul_mul_mul_inv _ _ _
 
-theorem exists_point_neg_one : ∃ t : 𝟙_ (Over (Spec (CommRingCat.of ℚ))) ⟶ splitTorus (Spec (CommRingCat.of ℚ)) ℤ,
-    t⁻¹ = t ∧ chV t 1 ≠ 1 := by
-  let e := splitTorusPointsEquiv (Spec (CommRingCat.of ℚ)) ℤ (𝟙_ (Over (Spec (CommRingCat.of ℚ))))
-  refine ⟨e.symm (zpowersHom _ (-1)), ?_, ?_⟩
-  · apply e.injective
-    rw [map_inv, MulEquiv.apply_symm_apply]
-    ext
-    simp
-  · intro h1
-    have h2 := congrArg Units.val h1
-    simp [chV, e] at h2
-    have h3 := congrArg (Scheme.ΓSpecIso (CommRingCat.of ℚ)).hom.hom h2
-    rw [map_neg, map_one] at h3
-    norm_num at h3
 
-private theorem stalk_neg_one_ne_one_of_over_rat {Z : Scheme.{0}} (z : Z) (f : Z ⟶ Spec (CommRingCat.of ℚ)) :
-    (-1 : Z.presheaf.stalk z) ≠ 1 := by
-  intro h
-  let φ : ℚ →+* Z.presheaf.stalk z := (Z.presheaf.germ ⊤ z trivial).hom.comp
-    (f.appTop.hom.comp (Scheme.ΓSpecIso (CommRingCat.of ℚ)).inv.hom)
-  have h2 : φ 2 = φ 0 := by
-    rw [map_ofNat, map_zero]
-    linear_combination -h
-  exact absurd (φ.injective h2) (by norm_num)
 
-theorem not_exists_even_twistSym_one :
-    ¬ ∃ σ : CubTriv ((CP.triv (splitTorus (Spec (CommRingCat.of ℚ)) ℤ)).twistSym 1).c (𝟙 _), σ.Even := by
-  rintro ⟨σ, hσ⟩
-  let e := splitTorusPointsEquiv (Spec (CommRingCat.of ℚ)) ℤ (𝟙_ (Over (Spec (CommRingCat.of ℚ))))
-  let t := e.symm (zpowersHom _ (-1))
-  have ht : t⁻¹ = t := by
-    apply e.injective
-    rw [map_inv, MulEquiv.apply_symm_apply]
-    ext
-    simp [t]
-  have hc : (chV t 1).val = -1 := by simp [chV, t, e]
-  obtain ⟨z⟩ : Nonempty (𝟙_ (Over (Spec (CommRingCat.of ℚ)))).left := ⟨IsLocalRing.closedPoint ℚ⟩
-  obtain ⟨J, hJ⟩ := exists_good_pt (((CP.triv (splitTorus (Spec (CommRingCat.of ℚ)) ℤ)).twistSym 1).L.isLB) z
-  have h1 := hσ _ t z J hJ
-  rw [ht] at h1
-  have hb : val ((CP.triv (splitTorus (Spec (CommRingCat.of ℚ)) ℤ)).twistSym 1).sym (t ≫ 𝟙 _).left z J = 1 :=
-    mul_right_cancel (h1.symm.trans (_root_.one_mul _).symm)
-  have hb2 := val_scaleGen (charUnit (Spec (CommRingCat.of ℚ)) ℤ 1)
-    (CP.triv (splitTorus (Spec (CommRingCat.of ℚ)) ℤ)).sym (t ≫ 𝟙 _).left hJ
-  erw [val_sym_triv, _root_.mul_one] at hb2
-  have hb3 : gm (t ≫ 𝟙 _).left z ⊤ (charUnit (Spec (CommRingCat.of ℚ)) ℤ 1) = 1 := hb2.symm.trans hb
-  rw [Category.comp_id, gm_charUnit] at hb3
-  have hv := congrArg Units.val hb3
-  rw [gm_val (𝟙 (𝟙_ (Over (Spec (CommRingCat.of ℚ)))).left) z ⊤ (by simp), Units.val_one, hc] at hv
-  simp only [map_neg, map_one] at hv
-  exact stalk_neg_one_ne_one_of_over_rat z (𝟙_ (Over (Spec (CommRingCat.of ℚ)))).hom hv
 
-theorem isEmpty_desc_twistSym_one : IsEmpty ((TQ.torus (Spec (CommRingCat.of ℚ)) ℤ).Desc
-    ((CP.triv (splitTorus (Spec (CommRingCat.of ℚ)) ℤ)).twistSym 1)) := by
-  constructor
-  intro D
-  exact not_exists_even_twistSym_one (TQ.Desc.exists_even D)
 
-theorem CubWeil.sq_eq_one_of_weilIs_inv (hG : GlobalFnsSt) (hA : IsAbelianScheme G) {L : RigLB G} {c : CubicalStr G L}
-    {N : ℕ} {T : Over S} {x y : T ⟶ G} {ζ : Γ(T.left, ⊤)ˣ} (h : CubWeil c N x y ζ) (h' : WeilIs G L.L N x y ζ⁻¹) :
-    ζ ^ 2 = 1 := by
-  have h2 : CubWeil c N x y ζ⁻¹ := (cubWeil_iff_weilIs hG hA h.1 h.2.1 ζ⁻¹).2 h'
-  have e : ζ = ζ⁻¹ := h.unique h2
-  calc ζ ^ 2 = ζ * ζ := sq ζ
-    _ = ζ * ζ⁻¹ := congrArg (ζ * ·) e
-    _ = 1 := mul_inv_cancel ζ
 
 theorem TQ.Desc.nonempty_biTriv {Q : TQ G X} {P : CP G} (D : Q.Desc P) : Nonempty (BiTriv P.c Q.i) := by
   have hi := Q.i_hom
@@ -372,9 +310,6 @@ private theorem exists_tq_i_eq_of_isAbelianScheme {R : Type} [CommRing R] [IsDom
   rw [etr, hv]
   exact _root_.mul_left_comm _ _ _
 
-theorem nonempty_tq_of_gtCoord {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegPre R} {e : ℕ}
-    {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G] (g : GtCoord I D e G)
-    (hB : IsAbelianScheme (thickObj R I e D.P.A)) : ∃ Q : TQ (thickObj R I e G) D.X, Q.i = g.i := exists_tq_i_eq_of_isAbelianScheme g hB
 
 end GlobalTheory.UU
 end

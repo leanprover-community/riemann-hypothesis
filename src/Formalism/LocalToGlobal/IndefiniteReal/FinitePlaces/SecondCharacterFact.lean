@@ -32,9 +32,6 @@ theorem exists_finset_norm_one (x : F) (hx : x ≠ 0) :
   simp only [map_one, NNReal.coe_one] at h
   exact h
 
-theorem norm_eq_one_of_mul {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hx1 : x ≤ 1) (hy1 : y ≤ 1) (h : x * y = 1) :
-    x = 1 ∧ y = 1 := by
-  constructor <;> nlinarith
 
 theorem exists_good_int (Δ : F) (hΔ : Δ ≠ 0) : ∃ N0 : ℕ, N0 ≠ 0 ∧ ∀ v : HeightOneSpectrum (𝓞 F),
     ‖(N0 : v.adicCompletion F)‖ = 1 →
@@ -267,62 +264,11 @@ end Main
 
 variable {D : D7}
 
-theorem second_character_fact_holds (D : D7) : InjectiveDecompositionAction.SecondCharacterFact D := by
-  intro lam hlam hrat hsplit
-  obtain ⟨δ, hδ, hδ0⟩ := exists_delta_D D
-  obtain ⟨Δ, hΔ⟩ := exists_Delta D δ hδ
-  have hΔ0 : Δ ≠ 0 := by
-    intro h; rw [h, map_zero] at hΔ; exact hδ0 (mul_self_eq_zero.mp hΔ.symm)
-  suffices hpos : ∀ x, 0 < ((lam x : Circle) : ℂ).re by
-    intro x
-    exact circle_eq_one_of_re_pos (lam x) fun n => by rw [← map_pow]; exact hpos _
-
-  have hcc : Continuous (fun z : Circle => (z : ℂ)) := continuous_subtype_val
-  have hG : Continuous fun p : Con D Δ => lam (mkU δ hδ Δ hΔ (a := p.1.1) (b := p.1.2) p.2) :=
-    hlam.comp (continuous_mkU δ hδ Δ hΔ)
-  have hO : IsOpen {p : Con D Δ | 0 < ((lam (mkU δ hδ Δ hΔ (a := p.1.1) (b := p.1.2) p.2) : Circle) : ℂ).re} :=
-    isOpen_lt continuous_const (Complex.continuous_re.comp (hcc.comp hG))
-  obtain ⟨W, hWo, hWeq⟩ := isOpen_induced_iff.1 hO
-  have hW : ∀ (a b : AF D.host.F) (h : a * a - DA Δ * (b * b) = 1), (a, b) ∈ W →
-      0 < ((lam (mkU δ hδ Δ hΔ h) : Circle) : ℂ).re := by
-    intro a b h hab
-    have : (⟨(a, b), h⟩ : Con D Δ) ∈ Subtype.val ⁻¹' W := hab
-    rw [hWeq] at this
-    exact this
-  have h10c : (1 : AF D.host.F) * 1 - DA Δ * (0 * 0) = 1 := by ring
-  have hm1 : mkU δ hδ Δ hΔ h10c = 1 := by
-    apply Subtype.ext; apply Units.ext; exact pt_one δ
-  have h10 : ((1, 0) : AF D.host.F × AF D.host.F) ∈ W := by
-    have : (⟨(1, 0), h10c⟩ : Con D Δ) ∈ {p : Con D Δ |
-        0 < ((lam (mkU δ hδ Δ hΔ (a := p.1.1) (b := p.1.2) p.2) : Circle) : ℂ).re} := by
-      show 0 < ((lam (mkU δ hδ Δ hΔ h10c) : Circle) : ℂ).re
-      rw [hm1, map_one, Circle.coe_one, Complex.one_re]; exact one_pos
-    rw [← hWeq] at this
-    exact this
-
-  obtain ⟨ε, hε, N1, hN1, hbasic⟩ := basic W (hWo.mem_nhds h10)
-  obtain ⟨N0, hN0, hN0g⟩ := exists_good_int Δ hΔ0
-  have hN : N1 * N0 ≠ 0 := mul_ne_zero hN1 hN0
-  obtain ⟨S, hS⟩ := exists_finset_norm_one ((N1 * N0 : ℕ) : D.host.F) (Nat.cast_ne_zero.2 hN)
-  have hS' : ∀ v : HeightOneSpectrum (𝓞 D.host.F), v ∉ S →
-      ‖(N1 : v.adicCompletion D.host.F)‖ = 1 ∧ ‖(N0 : v.adicCompletion D.host.F)‖ = 1 := by
-    intro v hv
-    have := hS v hv
-    rw [map_natCast, Nat.cast_mul, norm_mul] at this
-    exact norm_eq_one_of_mul (norm_nonneg _) (norm_nonneg _) (norm_nat_le_one v _) (norm_nat_le_one v _) this
-  have hNle : ∀ v : HeightOneSpectrum (𝓞 D.host.F),
-      ‖((N1 * N0 : ℕ) : v.adicCompletion D.host.F)‖ ≤ ‖(N1 : v.adicCompletion D.host.F)‖ := by
-    intro v
-    rw [Nat.cast_mul, norm_mul]
-    exact mul_le_of_le_one_right (norm_nonneg _) (norm_nat_le_one v _)
-  exact pos_of_alt δ hδ hδ0 Δ hΔ lam hrat hsplit W hW ε hε N1 (N1 * N0) hN hbasic hNle S
-    (fun v hv => (hS' v hv).1) (fun v hv => hN0g v (hS' v hv).2) hΔ0
 
 end Formalism.IndefR.Fin.U1
 
 namespace Formalism.IndefR.Fin
 
-theorem second_character_fact_holds (D : Formalism.BasicNotions.D7) : Formalism.IndefR.InjectiveDecompositionAction.SecondCharacterFact D := U1.second_character_fact_holds D
 
 end Formalism.IndefR.Fin
 

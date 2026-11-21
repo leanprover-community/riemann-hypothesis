@@ -106,16 +106,6 @@ end GlobalTheory.LamVal
 
 namespace GlobalTheory.LamVal
 
-theorem levLam_mem : ∀ (D : D7) (X : RealSide D) (E : IntegralHeckeForms.XD D) (Y : SerSide X E) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool),
-    (∀ PP ∈ (Y.Z.ρ.B i j b).G.Pg, ∀ (u : (kP PP)ˣ) (x : (AE D)ˣ), GlobalTheory.ConjTwist.IsLocUnit PP u x →
-      (((Y.Z.ρ.B i j b).mu0 x : Circle) : ℂ) ∈ (Y.Z.ρ.eOk i b 0).range) →
-    ∀ (k : (Y.Z.ρ.B i j b).levJ (Y.Z.ρ.tw i b 0 ∅ 1)),
-      (((Y.Z.ρ.B i j b).levLam (Y.Z.ρ.tw i b 0 ∅ 1) k : ℂˣ) : ℂ) ∈ (Y.Z.ρ.eOk i b 0).range := by
-  intro D X E Y i j b hμ k
-  rw [GlobalTheory.MtLatConj.levelCharacter_apply_eq_levelFunction_swap]
-  simp only [levFn, Base.levS, Units.val_mul, Units.coe_prod]
-  exact mul_mem (mul_mem (typeCharacterExtension_mem_range_coefficientRing Y i j b _) (prod_mem fun PP hPP => prod_mem fun _ _ => mu_mem Y i j b hμ hPP _))
-    (prod_mem fun PP _ => loc_mem Y i j b PP _)
 
 variable {D : D7} {X : RealSide D} {E : IntegralHeckeForms.XD D}
 

@@ -166,8 +166,6 @@ def latticeVariety (φ : Fin (N + 1) → Fin m → K) (hφ : IsDualBasis L φ) :
     ((latticeForm_eq_zero_iff _).mp (by simpa [latticeMap] using RingHom.mem_ker.mp h))⟩
   horizontal a ha := by simpa [latticeMap] using RingHom.mem_ker.mp ha
 
-theorem latticeVariety_ideal (φ : Fin (N + 1) → Fin m → K) (hφ : IsDualBasis L φ) :
-    (latticeVariety φ hφ).ideal = latticeIdeal φ := rfl
 
 variable {r : ℕ}
 
@@ -191,15 +189,6 @@ theorem latticeCoord_eq (φ : Fin (N + 1) → Fin (r + 1) → K) (v : Coord fun 
     latticeCoord φ v = dehom K r (latticeForm (φ v.2)) :=
   (dehom_latticeForm _).symm
 
-theorem aeval_latticeCoord (φ : Fin (N + 1) → Fin (r + 1) → K) (g : MvPolynomial (Coord fun _ : Unit ↦ N) ℤ) :
-    aeval (latticeCoord φ) g = dehom K r (latticeMap φ g) := by
-  have h : (aeval (latticeCoord φ)).toRingHom = (dehom K r).comp (latticeMap φ) := by
-    apply MvPolynomial.ringHom_ext
-    · intro a
-      simp [latticeMap]
-    · intro v
-      simp [latticeMap, latticeCoord_eq]
-  exact RingHom.congr_fun h g
 
 theorem mCoordIdeal_latticeCoord (φ : Fin (N + 1) → Fin (r + 1) → K) :
     Geo.mCoordIdeal (ι := blockIdx fun _ : Unit ↦ N) (latticeCoord φ) = latticeIdeal φ := by

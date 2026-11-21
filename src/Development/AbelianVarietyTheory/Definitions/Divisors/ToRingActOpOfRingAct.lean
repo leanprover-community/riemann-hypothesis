@@ -54,8 +54,6 @@ def IsRAct.toRingAct {A : Over S} [GrpObj A] [IsCommMonObj A] {act : Oᵐᵒᵖ 
 @[simp] theorem IsRAct.toRingAct_act {A : Over S} [GrpObj A] [IsCommMonObj A] {act : Oᵐᵒᵖ → (A ⟶ A)}
     (h : IsRAct A act) (a : O) : h.toRingAct.act a = act (MulOpposite.op a) := rfl
 
-theorem IsRAct.toRingAct_op_of_ringAct {A : Over S} [GrpObj A] [IsCommMonObj A] (ρ : Out.RingAct A O) (a : O) :
-    (IsRAct.op_of_ringAct ρ).toRingAct.act a = ρ.act a := rfl
 
 def IsRAct.toOAct {O : Type} [CommRing O] {A : Over S} [GrpObj A] {act : O → (A ⟶ A)} (h : IsRAct A act) :
     OAct O A :=
@@ -64,9 +62,6 @@ def IsRAct.toOAct {O : Type} [CommRing O] {A : Over S} [GrpObj A] {act : O → (
 @[simp] theorem IsRAct.toOAct_act {O : Type} [CommRing O] {A : Over S} [GrpObj A] {act : O → (A ⟶ A)}
     (h : IsRAct A act) : h.toOAct.act = act := rfl
 
-theorem IsRAct.act_mul_comm {O : Type} [CommRing O] {A : Over S} [GrpObj A] {act : O → (A ⟶ A)}
-    (h : IsRAct A act) (a b : O) : act (a * b) = act b ≫ act a := by
-  rw [mul_comm]; exact h.2.2.1 b a
 
 theorem IsRAct.comp_comm {O : Type} [CommRing O] {A : Over S} [GrpObj A] {act : O → (A ⟶ A)}
     (h : IsRAct A act) (a b : O) : act a ≫ act b = act b ≫ act a := by

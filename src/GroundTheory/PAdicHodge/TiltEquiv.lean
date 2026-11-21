@@ -90,16 +90,6 @@ theorem finrank_tiltIntermediateField (L : IntermediateField K C) [FiniteDimensi
     tiltIntermediateField_untiltField M
   rw [h, finrank_untiltField]
 
-theorem existsUnique_tiltIntermediateField_eq (M : IntermediateField K♭ C♭)
-    [FiniteDimensional K♭ M] :
-    ∃! L : IntermediateField K C, ∃ _ : FiniteDimensional K L, tiltIntermediateField p L = M := by
-  refine ⟨untiltField K C p M, ⟨inferInstance, tiltIntermediateField_untiltField M⟩, ?_⟩
-  rintro L ⟨hL, hLM⟩
-  obtain ⟨M', hM', rfl⟩ := exists_eq_untiltField (p := p) L
-  have h : tiltIntermediateField p (untiltField K C p M') = M' :=
-    tiltIntermediateField_untiltField M'
-  rw [h] at hLM
-  rw [hLM]
 
 end InC
 

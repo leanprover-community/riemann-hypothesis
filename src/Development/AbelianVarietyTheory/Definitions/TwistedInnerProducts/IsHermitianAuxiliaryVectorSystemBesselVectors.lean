@@ -458,14 +458,6 @@ theorem isSys_fj : IsHermitianAuxiliaryVectorSystem (2 * ρ) V V₀ d.i₀ (four
 
 variable {β}
 
-theorem emb_localGL {γ : LatFrame (Fv D.host.F v) n (Fin V₀.rank)} (hc : c = 2 * ρ)
-    (h : IsAdapted V V₀ τ d.i₀ (fourierJacobiVectors d) γ β) (g : GL n (Fv D.host.F v)) :
-    d.emb0 (locGL V₀ τ γ g) = locGL V τ β (embX c g) := by
-  subst hc
-  refine (isSys_fj d).eq_locGL_embX h g ?_
-  change _ = 1 + d.j0 ⬝ (mt V₀ (locGL V₀ τ γ g) - 1) ⬝ d.p0
-  rw [d.unitaryMatrix_wittCoreEmbedding, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, ← d.sum_eq_one]
-  abel
 
 variable {ζ} in
 
@@ -936,12 +928,6 @@ theorem isFJFrameS_srcDec_iff {ζ' : Fin L'.rank → D.host.E} (hz : hQ L ζ ζ 
   · simp only [if_neg h.not_gt, if_neg h.ne', if_neg (show ¬ i < ρ by omega), map_neg, map_inv₀]
     field_simp
 
-theorem isFJFrameS_iff_of_norm {ζ' : Fin L'.rank → D.host.E}
-    (hz : hQ L ζ ζ = D.host.xi0 * star D.host.xi0 * hQ L' ζ' ζ') (ψv : AddChar (Fv D.host.F v) Circle) :
-    IsFJFrameS ψ d ζ' ψv τ β γ ↔ IsFJFrameT ψ d ζ ψv τ β γ := by
-  refine and_congr_right fun hc => and_congr_right fun ⟨t, ht⟩ => forall₂_congr fun g hg => Eq.congr_left ?_
-  rw [fjCharS_locGL ψ _ ζ' hc ht hg.1, fjCharT_locGL ψ d ζ hc ht hg.1, hz, mul_assoc, inv_mul_cancel_left₀ cmHost_imaginaryGenerator_ne_zero,
-    GlobalTheory.DualPairCheck.star_purely_imaginary_eq_neg, neg_mul]
 
 end FJ
 

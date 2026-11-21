@@ -49,45 +49,15 @@ theorem expChar_hasTemperateGrowth (a : E) : (expChar a : E → ℂ).HasTemperat
 
 theorem norm_expChar (a ξ : E) : ‖expChar a ξ‖ = 1 := Complex.norm_exp_I_mul_ofReal _
 
-theorem expChar_eq_fourierChar (a ξ : E) : expChar a ξ = (𝐞 (inner ℝ ξ a) : ℂ) := by
-  rw [expChar, Real.fourierChar_apply, mul_comm]
 
 variable (F) in
 
 def translate (h : E) : 𝓢'(E, F) →L[ℂ] 𝓢'(E, F) :=
   PointwiseConvergenceCLM.precomp F (SchwartzMap.compSubConstCLM ℂ (-h))
 
-theorem translate_apply_apply (h : E) (u : 𝓢'(E, F)) (φ : 𝓢(E, ℂ)) :
-    translate F h u φ = u (SchwartzMap.compSubConstCLM ℂ (-h) φ) := rfl
 
-theorem fourier_expChar_smul_fourierInv (h : E) (φ : 𝓢(E, ℂ)) :
-    𝓕 (SchwartzMap.smulLeftCLM ℂ (expChar (-h)) (𝓕⁻ φ)) = SchwartzMap.compSubConstCLM ℂ (-h) φ := by
-  apply SchwartzMap.ext; intro x
-  rw [SchwartzMap.compSubConstCLM_apply, sub_neg_eq_add, SchwartzMap.fourier_coe, Real.fourier_eq]
-  have key : ∀ ξ : E, 𝐞 (-inner ℝ ξ x) • SchwartzMap.smulLeftCLM ℂ (expChar (-h)) (𝓕⁻ φ) ξ =
-      𝐞 (-inner ℝ ξ (x + h)) • (𝓕⁻ φ : 𝓢(E, ℂ)) ξ := by
-    intro ξ
-    rw [SchwartzMap.smulLeftCLM_apply_apply (expChar_hasTemperateGrowth _), expChar_eq_fourierChar,
-      Circle.smul_def, Circle.smul_def, smul_eq_mul, smul_eq_mul, smul_eq_mul, ← mul_assoc,
-      ← Circle.coe_mul, ← AddChar.map_add_eq_mul, inner_add_right, inner_neg_right]
-    congr 3; ring
-  simp_rw [key]
-  rw [← Real.fourier_eq, ← SchwartzMap.fourier_coe, FourierTransform.fourier_fourierInv_eq]
 
-theorem translate_eq_fourierMultiplierCLM (h : E) (u : 𝓢'(E, F)) :
-    translate F h u = fourierMultiplierCLM F (expChar (-h)) u := by
-  ext φ
-  rw [translate_apply_apply, fourierMultiplierCLM_apply_apply, fourier_expChar_smul_fourierInv]
 
-theorem translate_toTemperedDistribution (h : E) (f : Lp F 2 (volume : Measure E)) (φ : 𝓢(E, ℂ)) :
-    translate F h (f : 𝓢'(E, F)) φ = ∫ x, φ x • f (x - h) := by
-  rw [translate_apply_apply, Lp.toTemperedDistribution_apply]
-  have := (measurePreserving_add_right (volume : Measure E) h).integral_comp
-    (measurableEmbedding_addRight h) (fun x ↦ φ x • f (x - h))
-  simp only [SchwartzMap.compSubConstCLM_apply, sub_neg_eq_add] at this ⊢
-  rw [← this]
-  congr 1; ext x
-  rw [add_sub_cancel_right]
 
 end Translation
 
@@ -263,19 +233,6 @@ variable {s : ℝ}
 def diffQuot (v : E) (t : ℝ) : SobolevSpace E F s →L[ℂ] SobolevSpace E F s :=
   multiplier (dqSymbol_hasTemperateGrowth v t) (bound_of_le (norm_dqSymbol_le' v t))
 
-theorem toDistribution_diffQuot (v : E) (t : ℝ) (u : SobolevSpace E F s) :
-    toDistribution (diffQuot v t u) =
-      ((t⁻¹ : ℝ) : ℂ) • (translate F (-(t • v)) (toDistribution u) - toDistribution u) := by
-  rw [diffQuot, toDistribution_multiplier, translate_eq_fourierMultiplierCLM, neg_neg]
-  have hsub : (dqSymbol v t : E → ℂ) = ((t⁻¹ : ℝ) : ℂ) • (expChar (t • v) - fun _ ↦ (1 : ℂ)) := by
-    funext ξ; simp [dqSymbol]
-  rw [hsub, fourierMultiplierCLM_smul ((expChar_hasTemperateGrowth _).sub
-    (Function.HasTemperateGrowth.const 1)), smul_apply]
-  congr 1
-  rw [fourierMultiplierCLM_apply, fourierMultiplierCLM_apply,
-    smulLeftCLM_sub (expChar_hasTemperateGrowth _) (Function.HasTemperateGrowth.const 1),
-    sub_apply, smulLeftCLM_const, one_smul, ← fourierInvCLM_apply (R := ℂ), map_sub,
-    fourierInvCLM_apply, fourierInvCLM_apply, FourierTransform.fourierInv_fourier_eq]
 
 theorem norm_diffQuot_le (v : E) (t : ℝ) (u : SobolevSpace E F (s + 1)) :
     ‖diffQuot v t (inclusion (le_add_of_nonneg_right zero_le_one) u)‖ ≤ 2 * Real.pi * ‖v‖ * ‖u‖ := by

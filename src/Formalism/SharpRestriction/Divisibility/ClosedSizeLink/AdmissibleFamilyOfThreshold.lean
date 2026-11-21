@@ -27,9 +27,6 @@ theorem Ev.imp {P Q : ∀ x, Fm.x1 < x → Fm.Ix x → Prop} (hP : Ev Fm P) (h :
   unfold Ev
   exact ⟨a, fun x hx h1 i => h x h1 i (ha x hx h1 i)⟩
 
-theorem Ev.admissible_family_of_threshold {P : ∀ x, Fm.x1 < x → Fm.Ix x → Prop} (h : ∀ x hx i, P x hx i) : Ev Fm P := by
-  unfold Ev
-  exact ⟨0, fun x _ hx i => h x hx i⟩
 
 theorem Ev.of_all {P : ∀ x, Fm.Ix x → Prop} (h : ∀ x i, P x i) : Ev Fm fun x _ i => P x i := by
   unfold Ev
@@ -64,10 +61,6 @@ theorem Ev.scale (c : ℝ) : Ev Fm fun x _ i => c ≤ (Fm.L x i).sc.x := by
 
 end Ev
 
-theorem closed_CH_ge (𝒞 : FamClass) (c : ℝ) : Closed 𝒞 fun _ CH => c ≤ CH := by
-  unfold Closed
-  exact ⟨1, one_pos, fun eps _ _ => ⟨⟨0, fun _ => 0, fun _ => c, fun _ => 0⟩,
-    fun Fm CH _ hL => hL.2.2.1 CH (by simp [FamP.cMid])⟩⟩
 
 theorem closed_Csz_ge (𝒞 : FamClass) (c : ℝ) : Closed 𝒞 fun Fm _ => c ≤ Fm.Csz := by
   unfold Closed

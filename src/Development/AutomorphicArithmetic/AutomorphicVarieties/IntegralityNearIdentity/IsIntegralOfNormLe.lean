@@ -7,10 +7,6 @@ import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.NormLtO
 
 namespace UpperTheory.V.Lib.Small
 
-theorem mem_of_coeff {O σ ι : Type} [CommRing O] (I : Ideal (MvPowerSeries σ O)) (e : ι → σ) (s : Finset ι)
-    (hs : ∀ i ∈ s, MvPowerSeries.X (e i) ∈ I) (f : MvPowerSeries σ O)
-    (hf : ∀ n : σ →₀ ℕ, (∀ i ∈ s, n (e i) = 0) → MvPowerSeries.coeff n f = 0) : f ∈ I :=
-  _root_.UpperTheory.Reformulated.B.S1.mem_of_coeff I e s hs f hf
 
 theorem eigen_mem {k M ι : Type} [Field k] [AddCommGroup M] [Module k M] (T : Module.End k M) (μ : ι → k)
     (hμ : Function.Injective μ) (Y : Submodule k M) (hY : ∀ y ∈ Y, T y ∈ Y) (s : Finset ι) (x : ι → M)
@@ -29,9 +25,5 @@ theorem norm_lt_one {l : ℕ} [Fact l.Prime] {R : Type} [CommRing R] [IsLocalRin
     (y : R →ₐ[ℤ_[l]] PadicAlgCl l) (a : R) (ha : a ∈ IsLocalRing.maximalIdeal R) : ‖y a‖ < 1 :=
   _root_.UpperTheory.Reformulated.B.NormLtOne.norm_lt_one y a ha
 
-theorem norm_lt_one' {l : ℕ} [Fact l.Prime] {O R : Type} [CommRing O] [Algebra ℤ_[l] O]
-    [Algebra O (PadicAlgCl l)] [IsScalarTower ℤ_[l] O (PadicAlgCl l)] [CommRing R] [IsLocalRing R] [Algebra O R]
-    (y : R →ₐ[O] PadicAlgCl l) (a : R) (ha : a ∈ IsLocalRing.maximalIdeal R) : ‖y a‖ < 1 :=
-  _root_.UpperTheory.Reformulated.B.NormLtOne.norm_lt_one y a ha
 
 end UpperTheory.V.Lib.Small

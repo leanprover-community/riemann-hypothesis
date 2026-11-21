@@ -220,10 +220,6 @@ theorem prWv_self {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < 
   push_cast
   rw [neg_div, div_self hT0, neg_smul, one_smul, add_neg_cancel]
 
-theorem unitH_one {x : Fin (2 * r + k + 1) → ℂ} (h : herm (Hpk k r) x x = 1) : SSn.unitH k r x = x := by
-  unfold SSn.unitH
-  rw [h]
-  simp
 
 theorem unitH_pos {c : ℝ} (hc : 0 < c) {x : Fin (2 * r + k + 1) → ℂ} (h : herm (Hpk k r) x x = 1) :
     SSn.unitH k r (((c : ℝ) : ℂ) • x) = x := by

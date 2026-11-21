@@ -68,16 +68,8 @@ def Pend.toRecord (P : Pend (own D u)) : Formalism.MainNotions.product_first_zer
 def Pend.equivRecord (D : D7) (u : D.what₂.Word) : Formalism.MainNotions.product_first_zeroth_parts.Pend D u ≃ Pend (own D u) :=
   ⟨Pend.ofRecord, Pend.toRecord, fun _ => rfl, fun _ => rfl⟩
 
-theorem branchingLaw_ofRecord_iff (P : Formalism.MainNotions.product_first_zeroth_parts.Pend D u) : ArchimedeanSignatureMatching (Pend.ofRecord P) ↔ Formalism.MainNotions.product_first_zeroth_parts.ArchimedeanSignatureMatching P := Iff.rfl
 
-theorem branchingCoordinates_iff (P : Pend (own D u)) : Formalism.MainNotions.product_first_zeroth_parts.ArchimedeanSignatureMatching P.toRecord ↔ ArchimedeanSignatureMatching P := Iff.rfl
 
-theorem exists_branchingCoordinates_iff : (∃ P : Pend (own D u), ArchimedeanSignatureMatching P) ↔ ∃ P : Formalism.MainNotions.product_first_zeroth_parts.Pend D u, Formalism.MainNotions.product_first_zeroth_parts.ArchimedeanSignatureMatching P := by
-  constructor
-  · rintro ⟨P, hP⟩
-    exact ⟨P.toRecord, (branchingCoordinates_iff P).2 hP⟩
-  · rintro ⟨P, hP⟩
-    exact ⟨Pend.ofRecord P, (branchingLaw_ofRecord_iff P).2 hP⟩
 
 theorem Pend.interlaceTr (P : Pend X) (τ : D.what₂.Tau) :
     Formalism.MainNotions.PrimeDegreeVariant.Interlace (Nm_succ D.R) (lamTr X τ) (sgTr X τ) := by
@@ -93,10 +85,6 @@ theorem delSq_lamTr (X : Ch D u) (R : Type) [CommRing R] (τ : D.what₂.Tau) :
   unfold lamTr delSq
   rw [Formalism.MainNotions.product_first_zeroth_parts.natW_wSh]
 
-theorem delSq_sgTr (X : Ch D u) (R : Type) [CommRing R] (τ : D.what₂.Tau) :
-    delSq R _ (sgTr X τ) = delSq R _ (X.fm.sg τ) := by
-  unfold sgTr delSq
-  rw [Formalism.MainNotions.product_first_zeroth_parts.natW_wSh]
 
 theorem normFock_wSh {n : ℕ} (l : DomWeight n) (c : ℤ) : normFock (wSh l c) = normFock l := by
   funext f g
@@ -186,29 +174,7 @@ theorem ArchimedeanSignatureMatching.bddAbove {P : Pend X} (h : ArchimedeanSigna
   rintro _ ⟨f, ⟨hf, h0⟩, rfl⟩
   exact h.quot_le τ hf h0
 
-private lemma normFock_self_re_nonneg' {n : ℕ} (l : DomWeight n) (f : MvPolynomial (Fin n × Fin n) ℂ) :
-    0 ≤ (normFock l f f).re := by
-  rcases eq_or_ne f 0 with rfl | hf
-  · simp [normFock, Formalism.REAL.fockF]
-  · exact (normFock_self_pos l hf).le
 
-theorem ArchimedeanSignatureMatching.br_le {P : Pend X} (h : ArchimedeanSignatureMatching P) (τ : D.what₂.Tau)
-    {f : MvPolynomial (Fin (D.R.N D.R.m) × Fin (D.R.N D.R.m)) ℂ} (hf : f ∈ delSq ℂ _ (X.fm.lam D.R.m τ)) :
-    (normFock (X.fm.sg τ) (P.br τ f) (P.br τ f)).re ≤ X.fm.beOn τ ^ 2 * (normFock (X.fm.lam D.R.m τ) f f).re := by
-  rcases eq_or_ne f 0 with rfl | h0
-  · simp [normFock, Formalism.REAL.fockF]
-  have hb := normFock_self_pos (X.fm.lam D.R.m τ) h0
-  have ha := normFock_self_re_nonneg' (X.fm.sg τ) (P.br τ f)
-  have hle : Real.sqrt ((normFock (X.fm.sg τ) (P.br τ f) (P.br τ f)).re /
-      (normFock (X.fm.lam D.R.m τ) f f).re) ≤ X.fm.beOn τ := by
-    rw [P.beOn_eq τ]
-    unfold opNorm
-    exact le_csSup (h.bddAbove τ) ⟨f, ⟨hf, h0⟩, rfl⟩
-  have hsq : (normFock (X.fm.sg τ) (P.br τ f) (P.br τ f)).re / (normFock (X.fm.lam D.R.m τ) f f).re ≤
-      X.fm.beOn τ ^ 2 := by
-    rw [← Real.sq_sqrt (div_nonneg ha hb.le)]
-    exact pow_le_pow_left₀ (Real.sqrt_nonneg _) hle 2
-  rwa [div_le_iff₀ hb] at hsq
 
 theorem ArchimedeanSignatureMatching.beOn_pos {P : Pend X} (h : ArchimedeanSignatureMatching P) (τ : D.what₂.Tau) : 0 < X.fm.beOn τ := by
   obtain ⟨-, -, ⟨f, hf, hne⟩, -⟩ := h τ
@@ -222,18 +188,6 @@ theorem ArchimedeanSignatureMatching.beOn_pos {P : Pend X} (h : ArchimedeanSigna
   unfold opNorm
   exact lt_of_lt_of_le (Real.sqrt_pos.mpr (div_pos ha hb)) (le_csSup (h.bddAbove τ) ⟨f, ⟨hf', h0⟩, rfl⟩)
 
-theorem ArchimedeanSignatureMatching.beOn_le {P : Pend X} (h : ArchimedeanSignatureMatching P) (τ : D.what₂.Tau) :
-    X.fm.beOn τ ≤ Formalism.MainNotions.PrimeDegreeVariant.brBd (Nm_succ D.R) (lamTr X τ) (sgTr X τ) := by
-  obtain ⟨-, -, ⟨f, hf, hne⟩, -⟩ := h τ
-  have hf' : f ∈ delSq ℂ _ (X.fm.lam D.R.m τ) := by rw [← delSq_lamTr X ℂ τ]; exact hf
-  have h0 : f ≠ 0 := by
-    rintro rfl
-    exact hne (map_zero _)
-  rw [P.beOn_eq τ]
-  unfold opNorm
-  refine csSup_le ⟨_, ⟨f, ⟨hf', h0⟩, rfl⟩⟩ ?_
-  rintro _ ⟨g, ⟨hg, hg0⟩, rfl⟩
-  exact h.quot_le τ hg hg0
 
 example (P : Pend X) (w) (c) (φ) (hφ : φ ∈ X.fm.Fi D.R.m) (f) (hf : P.coM w c (φ (X.fm.til c)) = ten f) :
     P.coP w (Pt X φ) c = ten fun τ => P.br τ (f τ) := by

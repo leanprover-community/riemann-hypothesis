@@ -51,8 +51,6 @@ def ReadFinSt : Prop :=
         ∃ (la : HeightOneSpectrum (𝓞 c.F)) (x : (pjSys Xo c).Pt la) (t : Ix D → ℝ),
           (p : 𝓞 c.F) ∈ la.asIdeal ∧ (∀ j, 0 < t j) ∧ ReadsSecFin Fr z x t ∧ ReadsRootsFin Or z t (latExp E S p)
 
-theorem latExp_of_notMem (E : Type) [Field E] [NumberField E] {S : Finset ℕ} {p : ℕ} (h : p ∉ S) :
-    latExp E S p = 0 := if_neg h
 
 theorem htExp_pos {p : ℕ} (hp : p.Prime) : 0 < htExp p := by
   unfold htExp
@@ -91,37 +89,7 @@ theorem isNormOfVal_coe {p e : ℕ} (hp : 1 ≤ p) (he : 0 < e) (m : ℝ) {r : �
     · have h1 : s ≤ m / e := by rw [le_div_iff₀ he', mul_comm]; exact EReal.coe_le_coe_iff.1 h
       exact mul_le_mul_of_nonneg_right (Real.rpow_le_rpow_of_exponent_le hp' (by linarith)) hr
 
-theorem isNormOfVal_top {p : ℕ} (hp : 2 ≤ p) (e : ℕ) {r x : ℝ} (hr : 0 ≤ r) (hx : 0 ≤ x) :
-    IsNormOfVal p e ⊤ r x ↔ x = 0 := by
-  have hp' : (1 : ℝ) < p := by exact_mod_cast hp
-  constructor
-  · intro h
-    refine le_antisymm ?_ hx
-    have h1 : Filter.Tendsto (fun s : ℝ => (p : ℝ) ^ (-s) * r) Filter.atTop (nhds (0 * r)) :=
-      ((tendsto_rpow_atBot_of_base_gt_one _ hp').comp Filter.tendsto_neg_atTop_atBot).mul_const r
-    rw [zero_mul] at h1
-    exact ge_of_tendsto' h1 fun s => (h s).2 le_top
-  · rintro rfl s
-    exact ⟨fun h => absurd (top_le_iff.1 h) (EReal.coe_ne_top _), fun _ => by positivity⟩
 
-theorem readsRootsFin_zero {p : ℕ} [Fact p.Prime] {z : (Σ k, RM.ι k) → PadicAlgCl p} (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0)
-    {t : Ix D → ℝ} (ht : ∀ j, 0 < t j) :
-    ReadsRootsFin Or z t 0 ↔ ∀ ρ : RootIx D, ∃ w : PadicAlgCl p, HasVal RM.y (RM.xdeg ρ) (Or.e ρ)⁻¹ z w ∧
-      ‖w‖ = t (rootFrameIx D ρ) ^ HodgeCpt.rootSgn D ρ * supMet (RM.xdeg ρ) z := by
-  refine forall_congr' fun ρ => exists_congr fun w => and_congr_right fun _ => ?_
-  have hs : 0 < supMet (RM.xdeg ρ) z := Finset.prod_pos fun k _ => zpow_pos (norm_pos_iff.2 fun h => by
-    obtain ⟨i, hi⟩ := hz k
-    exact hi (congrFun h i)) _
-  have htt : 0 < t (rootFrameIx D ρ) ^ HodgeCpt.rootSgn D ρ := zpow_pos (ht _) _
-  rw [zero_mul, abs_nonpos_iff, sub_eq_zero]
-  constructor
-  · rintro ⟨hw, h⟩
-    have := Real.log_injOn_pos hs (div_pos (norm_pos_iff.2 hw) htt) h
-    rw [this]
-    field_simp
-  · intro h
-    refine ⟨norm_pos_iff.1 (h ▸ mul_pos htt hs), ?_⟩
-    rw [h, mul_div_cancel_left₀ _ htt.ne']
 
 theorem pjSys_val_one {la : HeightOneSpectrum (𝓞 c.F)} (x : (pjSys Xo c).Pt la) : (pjSys Xo c).val x 1 = 0 := by
   obtain ⟨q, T, io, e, ho, y, hy, eta, heta, rfl⟩ := x

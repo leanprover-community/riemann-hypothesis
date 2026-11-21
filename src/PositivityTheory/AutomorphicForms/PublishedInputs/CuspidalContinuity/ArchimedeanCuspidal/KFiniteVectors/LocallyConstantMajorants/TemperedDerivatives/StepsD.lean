@@ -11,12 +11,6 @@ def eQ (z : ℂ) (a : Fin 2) : M23 × (Fin 2 → ℂ) := (0, fun a' => if a' = a
 def crq (a : Fin 2) (p : M23 × (Fin 2 → ℂ)) : ℂ := p.2 a
 def crqc (a : Fin 2) (p : M23 × (Fin 2 → ℂ)) : ℂ := (starRingEnd ℂ) (p.2 a)
 
-theorem crqc_temperate (a : Fin 2) : (crqc a).HasTemperateGrowth := by
-  have : crqc a = fun p => (Complex.conjCLE.toContinuousLinearMap.comp ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin 2 => ℂ) a).comp
-      (ContinuousLinearMap.snd ℝ M23 (Fin 2 → ℂ)))) p := by
-    ext p; simp [crqc]
-  rw [this]
-  exact ContinuousLinearMap.hasTemperateGrowth _
 
 def mH (r : Fin 2) (i : Fin 3) : Module.End ℂ Sw := (SchwartzMap.smulLeftCLM ℂ (crd r i)).toLinearMap
 def mA (r : Fin 2) (i : Fin 3) : Module.End ℂ Sw := (SchwartzMap.smulLeftCLM ℂ (crdc r i)).toLinearMap

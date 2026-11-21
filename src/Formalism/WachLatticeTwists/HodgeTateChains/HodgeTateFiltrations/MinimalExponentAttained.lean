@@ -138,18 +138,6 @@ theorem betaCount : StatBetaCount := by
   push_cast
   ring
 
-theorem iBound : StatIBound := by
-  intro ℓ hℓ s e
-  obtain ⟨d, rfl⟩ : ∃ d, ℓ = d + 2 := ⟨ℓ - 2, by have := hℓ.two_le; omega⟩
-  have h := ceilE_le_self d e
-  unfold beta
-  split_ifs with h0
-  · subst h0
-    have : ceilE (d + 2) 0 = 0 := by omega
-    rw [this]; push_cast; omega
-  · have : (ceilE (d + 2) e : ℤ) ≤ e := by exact_mod_cast h
-    have h3 : (0 : ℤ) ≤ padicValNat (d + 2) (e - 1).factorial := by positivity
-    linarith
 
 lemma cPrime_eq (ℓ : ℕ) (hℓ : ℓ.Prime) (s e : ℕ) :
     cPrime ℓ s e = e * (s + 1) + padicValNat ℓ e.factorial := by

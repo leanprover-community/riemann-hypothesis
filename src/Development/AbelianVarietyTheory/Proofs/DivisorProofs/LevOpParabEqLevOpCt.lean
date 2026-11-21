@@ -25,10 +25,6 @@ end GlobalTheory.LeviFubini
 namespace GlobalTheory.LeviFubini
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-theorem absHalf_eq_deltaHalf {a b : ℕ} (w : Pl E) (m : GLw a w × GLw b w) :
-    absHalf w (m.1.val.det ^ b / m.2.val.det ^ a) =
-      (GlobalTheory.SmGL.deltaHalf (w.adicCompletion E) (GlobalTheory.SmGL.Two (Fin a) (Fin b))
-        (GlobalTheory.SmGL.leviTwo (w.adicCompletion E) (Fin a) (Fin b) m) : ℂ) := GlobalTheory.T.modulus_half_levi_abs_det E a b w m
 
 theorem hint_eq_level {H : Type} [Group H] (K L : Subgroup H) (u : H → ℂ) (hLK : L ≤ K) (hLu : L ≤ rStab u)
     (hfin : L.relIndex K ≠ 0) : hint K u = ((L.relIndex K : ℕ) : ℂ)⁻¹ * ∑ᶠ q : H ⧸ L, u q.out :=
@@ -38,10 +34,6 @@ theorem deltaHalf_eq_one {a b : ℕ} (w : Pl E) (m : GLw a w × GLw b w) (h1 : m
     GlobalTheory.SmGL.deltaHalf (w.adicCompletion E) (GlobalTheory.SmGL.Two (Fin a) (Fin b))
                  (GlobalTheory.SmGL.leviTwo (w.adicCompletion E) (Fin a) (Fin b) m) = 1 := GlobalTheory.T.modulus_levi_maximal_compact_one E a b w m h1 h2
 
-theorem int_points {a b n : ℕ} (h : a + b = n) (w : Pl E) :
-    ((GlobalTheory.LFun.KGL w n).subgroupOf (parB h w)).comap (uN h w) = intMat a b w ∧
-      ((GlobalTheory.LFun.KGL w a).prod (GlobalTheory.LFun.KGL w b)).map (sM h w) ≤ (GlobalTheory.LFun.KGL w n).subgroupOf (parB h w) :=
-  GlobalTheory.T.maximal_compact_parabolic_unipotent_eq E a b n h w
 
 end GlobalTheory.LeviFubini
 

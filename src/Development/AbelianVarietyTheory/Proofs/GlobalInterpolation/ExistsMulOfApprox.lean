@@ -136,25 +136,6 @@ theorem evalFr_substAdj (hab : a ≤ b) (ap : ι → Matrix (Fin a) (Fin b) K) (
 
 end Expand
 
-theorem substitution : Substitution := by
-  intro K _ ι _ a b hab lam lam' s s' n hw ap F
-  have h1 : ((jetOp lam lam' (ptTable ap) n F : VV K lam') : Pol K ι b) =
-      substAdj hab.le ap (sharp n (F : Pol K ι a)) := by
-    rw [coe_jetOp, jetMap_ptTable hab.le]
-    rw [jetMap_ptTable hab.le]
-    exact GlobalTheory.SubstMem.substAdj_sharp_mem K ι a b hab lam lam' s s' n hw ap _ F.2
-  refine ⟨h1, fun y => ?_, fun y => ?_⟩
-  · unfold fnOf sharp evalFr
-    rw [map_mul, map_prod, mul_assoc, ← Finset.prod_mul_distrib]
-    congr 1
-    refine Finset.prod_congr rfl fun τ _ => ?_
-    rw [map_pow, map_frDet, ← zpow_add₀ (y τ).det_ne_zero, ← hw.2.2 τ, zpow_natCast]
-    congr 2
-    ext α t
-    simp
-  · rw [h1, fnOf, evalFr_substAdj, div_eq_mul_inv, ← Finset.prod_inv_distrib]
-    congr 1
-    exact Finset.prod_congr rfl fun τ _ => by rw [detShift_eq hw, zpow_neg]
 
 section Integral
 
@@ -396,25 +377,8 @@ theorem closureIntegral : ClosureIntegral := by
       rw [hfac]
       exact mul_ne_zero hκ (mul_ne_zero hD0 hW0)
 
-theorem pointIntegral : PointIntegral := by
-  intro K _ _ w ι _ a b hab lam lam' s s' n hw M MW B BW hM hMW ap hap F hF
-  have hσ : ∀ x : K, w.valuation K (RingHom.id K x) ≤ 1 ↔ w.valuation K x ≤ 1 := fun _ => Iff.rfl
-  have hadm : admitted (w.valuation K) (RingHom.id K) M MW ap := by
-    intro τ y hy
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨x, hx, rfl⟩ := hy
-      exact (GlobalTheory.ExtLatMatrix.extLat_matrix_integral K w K _ (w.valuation K) (RingHom.id K) hσ).1 a (M τ) _ (hap τ x hx)
-    | zero => rw [Matrix.mulVec_zero]; exact zero_mem _
-    | add x y _ _ hx hy => rw [Matrix.mulVec_add]; exact add_mem hx hy
-    | smul c x _ hx => rw [Matrix.mulVec_smul]; exact Submodule.smul_mem _ _ hx
-  have h := closureIntegral K w K _ (w.valuation K) (RingHom.id K) hσ ι a b hab lam lam' s s' n hw M MW B BW hM hMW
-    1 (ptTable ap) (fun _ _ => ⟨1, fun _ => 1, fun _ => ap, fun _ => by simp, fun _ => hadm, fun m _ => by simp⟩) F hF
-  rwa [one_mul] at h
 
 end Closure
 
-theorem jetPointStatement : JetPointStatement :=
-  ⟨substitution, GlobalTheory.DetIndexPf.detIndex, pointIntegral, closureIntegral⟩
 
 end GlobalTheory.JetPoint

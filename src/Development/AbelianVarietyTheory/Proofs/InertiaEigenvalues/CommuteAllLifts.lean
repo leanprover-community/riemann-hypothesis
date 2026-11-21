@@ -173,7 +173,5 @@ theorem hkComm_of_pin (hL : Rl.toRealDat.toLevCh.Is A3.A.μ0) (hF : Rl.toRealDat
 
 end Tied
 
-theorem commute_all_lifts (D : D7) (hC : HkComm D) (hO : OffRange D) : Formalism.MainNotions.LatticeVariant.adm13 D := fun i hi j b k k' P P' hk hk' =>
-  ((GlobalTheory.SupLaw.Model.heckeLaws_of D hC hO) i hi).1 j b k P k' P' hk hk'
 
 end GlobalTheory.SupLaw

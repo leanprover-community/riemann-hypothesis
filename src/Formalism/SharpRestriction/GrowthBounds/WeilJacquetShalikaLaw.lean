@@ -261,18 +261,8 @@ section Relations
 variable {X : Inst D L} {Y : LatInst D} {K : Consts} {c : LatCmp D} {Dx : DivX D} {T : TwForms D}
   {lev : LevelData D} {Xe : ErrX D} {ce : ErrC} {sp : ℝ}
 
-theorem difference_bound_iff_forall_place : Formalism.MainNotions.AuxBlock8.UnitBoundDifferenceTerm D L X Y K ↔
-    ∀ hT : GatTies D, LatTied hT X Y → ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl)
-      (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)), UAt X Y K (lowFE L u w) u w hg := by
-  exact Iff.rfl
 
-theorem unit_bound_iff_forall_place : Formalism.MainNotions.AuxBlock8.unitBoundAtTwistedPlaces D L X Y K ↔
-    ∀ hT : GatTies D, LatTied hT X Y → ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl)
-      (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)), UAt X Y K (Formalism.MainNotions.AuxBlock8.lowU D u w) u w hg := by
-  exact Iff.rfl
 
-theorem lattice_valuation_of_growth (h : Formalism.MainNotions.AuxBlock8.admG1 D L X Y K) : BaseChangeDefiniteGood D L X Y K := by
-  exact fun hT hL u w hg => (h hT hL u w hg).2.2
 
 theorem zero_gain_of_no_served_orbit (h : ColumnValuationAwayFromTypePrimes D L K Dx T lev Xe ce sp) : ZeroGainValuation D L K Dx T lev Xe ce sp := by
   exact fun hF hE u w h1 h2 _ μ hμ hq x hx => h hF hE u w h1 h2 μ hμ hq x hx
@@ -289,8 +279,6 @@ theorem residue_char_ne_level {u : D.what₂.Word} {w : D.what₂.places.Pl}
   intro h
   exact hg.2.2.2.2.2 ⟨1, by rw [h, mul_one]⟩
 
-theorem NP_tw (W : TwLoc D Y) (μ : D.what₂.Tup) (u : D.what₂.Word) (w : D.what₂.places.Pl)
-    (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) : NP X (W.Yt μ) K u w hg = NP X Y K u w hg := rfl
 
 theorem LatTied_congr {Y1 Y2 : LatInst D} (hT : GatTies D) (h1 : Y1.vOf = Y2.vOf) (h2 : Y1.Fl = Y2.Fl) :
     LatTied hT X Y1 ↔ LatTied hT X Y2 := by
@@ -304,21 +292,7 @@ theorem LatTied_tw (W : TwLoc D Y) (μ : D.what₂.Tup) (hT : GatTies D) :
     LatTied hT X (W.Yt μ) ↔ LatTied hT X Y := by
   exact LatTied_congr hT rfl rfl
 
-theorem vKge_muAt (W : TwLoc D Y) (u : D.what₂.Word) (w : D.what₂.places.Pl)
-    (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (F : (D.gat u w hg).Fn) (g : ℝ) :
-    (W.Yt (D.what₂.muAt w)).vKge u w hg F g ↔ Y.vKge u w hg F g := by
-  have key : ∀ s : (Σ Lv : Levels (Y.Fl u w hg), Chain Lv), s = ⟨Y.Lv u w hg, Y.Ch u w hg⟩ →
-      (vGeLat (D.gat u w hg) (s.1.Int D.R.m) (s.2.chainK D.R.m F) g ↔ Y.vKge u w hg F g) := by
-    rintro s rfl
-    exact Iff.rfl
-  exact key _ (W.LC_muAt u w hg)
 
-theorem lattice_valuation_of_tuples (W : TwLoc D Y) (hE : ErrDefs D L Xe lev K ce) (h : TupleLatticeValuation D L X Y K Dx W lev Xe ce 0) :
-    BaseChangeDefiniteGood D L X Y K := by
-  intro hT hL u w hg F hF
-  have h1 := h hE (D.what₂.muAt w) (used_muAt D w) hT ((LatTied_tw W _ hT).2 hL) u w hg (Dx.Qp_muAt w) F hF
-  rw [vKge_muAt, lowS_eq_lowFE hE.edef, zero_mul, add_zero] at h1
-  exact h1
 
 theorem VGe_mono {w : D.what₂.places.Pl} {V : Type} [AddCommGroup V] [Module D.what₂.LL V] [Module (𝓞 D.what₂.LL) V]
     {Λ : Submodule (𝓞 D.what₂.LL) V} {y : V} {s s' : ℝ} (hs : s' ≤ s) (h : VGe D w Λ y s) : VGe D w Λ y s' := by
@@ -441,45 +415,7 @@ theorem nuIn_mem_Sram (D : D7) (u : D.what₂.Word) (w : D.what₂.places.Pl) (�
   rw [D.nuIn_range] at this
   exact this
 
-theorem inv_mem_intW_of (D : D7) (w : D.what₂.places.Pl) (s : 𝓞 D.what₂.LL) (hs : s ∉ (D.plEq w).asIdeal) :
-    ((s : D.what₂.LL))⁻¹ ∈ intW D.what₂.places w := by
-  have hs0 : (s : D.what₂.LL) ≠ 0 := by
-    intro h
-    apply hs
-    have : s = 0 := by exact_mod_cast h
-    rw [this]; exact Ideal.zero_mem _
-  show (0 : WithTop ℤ) ≤ D.what₂.places.val w ((s : D.what₂.LL))⁻¹
-  rw [D.val_eq w _ (inv_ne_zero hs0)]
-  have h1 : (D.plEq w).valuation D.what₂.LL (s : D.what₂.LL) = 1 := by
-    have := (D.plEq w).valuation_of_algebraMap (K := D.what₂.LL) s
-    rw [show (s : D.what₂.LL) = algebraMap (𝓞 D.what₂.LL) D.what₂.LL s from rfl, this]
-    exact (HeightOneSpectrum.intValuation_eq_one_iff).2 hs
-  unfold vAdd
-  rw [map_inv₀, h1]
-  simp
 
-theorem nuIn_mem_Sram_of_locLe (D : D7) (L : SizeData₂ D) (u : D.what₂.Word) (w : D.what₂.places.Pl) (φ : (D.div.Nu u).V)
-    (hφ : φ ∈ L.NuLat u) (h : LocLe (D.plEq w) 0 (L.NuLat u) (MramL D u)) : D.nuIn u φ ∈ LT.Sram D u w := by
-  obtain ⟨s, hs, hm⟩ := h φ hφ
-  rw [pow_zero, Ideal.one_eq_top, Submodule.top_smul] at hm
-  have hs0 : (s : D.what₂.LL) ≠ 0 := by
-    intro h0
-    apply hs
-    have : s = 0 := by exact_mod_cast h0
-    rw [this]; exact Ideal.zero_mem _
-  have h1 : D.nuIn u (s • φ) ∈ ((D.fm u).lat 0).L := hm
-  refine ⟨?_, ?_⟩
-  · have h2 : D.nuIn u φ =
-        (⟨((s : D.what₂.LL))⁻¹, inv_mem_intW_of D w s hs⟩ : intW D.what₂.places w) • D.nuIn u (s • φ) := by
-      rw [Subring.smul_def]
-      show D.nuIn u φ = ((s : D.what₂.LL))⁻¹ • D.nuIn u (s • φ)
-      rw [show s • φ = (s : D.what₂.LL) • φ from (algebraMap_smul D.what₂.LL s φ).symm, map_smul, smul_smul,
-        inv_mul_cancel₀ hs0, one_smul]
-    rw [h2]
-    exact Submodule.smul_mem _ _ (Submodule.subset_span h1)
-  · have : D.nuIn u φ ∈ LinearMap.range (D.nuIn u) := ⟨φ, rfl⟩
-    rw [D.nuIn_range] at this
-    exact this
 
 theorem stable_lattice_of_no_served_orbit {K : Consts} {Dx : DivX D} {T : TwForms D} {lev : LevelData D} {Xe : ErrX D} {ce : ErrC}
     (hP : PairInt D Dx T) (hE : ErrDefs D L Xe lev K ce) (hF : L.FDef)
@@ -499,39 +435,6 @@ theorem stable_lattice_of_no_served_orbit {K : Consts} {Dx : DivX D} {T : TwForm
   rw [lowS_eq_lowFE hE.edef, one_mul, add_sub_cancel_right] at hy2
   exact hy2
 
-theorem off_level_bound {X : Inst D L} {Y : LatInst D} {K : Consts} {c : LatCmp D} {Dx : DivX D} {T : TwForms D}
-    {lev : LevelData D} {Xe : ErrX D} {ce : ErrC}
-    (hP : PairInt D Dx T) (hE : ErrDefs D L Xe lev K ce) (ht : Ties9 D L X Y c) (hS : c.NuServedDef X Y K)
-    (hN : ∀ u (w : D.what₂.places.Pl), D.what₂.places.resChar w ≠ (D.mem u).A.T →
-      LocLe (D.plEq w) 0 (L.NuLat u) (MramL D u))
-    (hGI : ∀ u (w : D.what₂.places.Pl), D.what₂.places.resChar w ≠ (D.mem u).A.T →
-      VV X K (aL L) (bL L) (D.what₂.places.resChar w) ≠ ∅ → GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))
-    (hgain : ∀ (w : D.what₂.places.Pl), ∀ j ∈ SizeData₂.lifts D, L.gainD j w ≤ gainS X K (D.what₂.places.resChar w) j)
-    (h : Conclusion1 D L X Y K c Dx T lev Xe ce 1) :
-    ∀ u (w : D.what₂.places.Pl), D.what₂.places.resChar w ≠ (D.mem u).A.T →
-      D.what₂.places.resChar w ∉ ({D.host.g 0, D.host.g 1} : Finset ℕ) → ∀ φ : (D.div.Nu u).V, φ ∈ L.NuLat u →
-      ∀ F ∈ (D.what₂.Mtilde (D.what₂.muAt w)).carrier, F ∈ D.what₂.V0 (D.what₂.muAt w) →
-        ∃ y : D.what₂.LL, D.what₂.embLL y = D.what₂.perCol u (D.what₂.muAt w) (D.jN u φ) F ∧
-          (y = 0 ∨ ur D w (L.sg u w) ≤ (vAdd (D.plEq w) y : ℝ)) := by
-  intro u w hTne hgne φ hφ Fv hFv hV0
-  have hIn : InNP X Y K c u w (D.nuIn u φ) := by
-    by_cases hVV : VV X K (aL L) (bL L) (D.what₂.places.resChar w) = ∅
-    · exact Or.inr ⟨hVV, nuIn_mem_Sram_of_locLe D L u w φ hφ (hN u w hTne)⟩
-    · have hg := hGI u w hTne hVV
-      refine Or.inl ⟨hg, (hS u w hg hVV φ).1 ⟨1, fun h1 => (D.plEq w).isPrime.ne_top
-        ((Ideal.eq_top_iff_one _).2 h1), by rw [one_smul]; exact hφ⟩⟩
-  have hc := h ht hE u w hTne hgne (D.what₂.muAt w) (used_muAt D w) (Dx.Qp_muAt w) _ hIn
-  obtain ⟨y, hy1, hy2⟩ := period_ge hP hE.dgam u w hTne φ _ (D.what₂.muAt w) (used_muAt D w)
-    (Dx.Qp_muAt w) hc Fv hFv hV0
-  refine ⟨y, hy1, hy2.imp id fun h2 => le_trans ?_ h2⟩
-  unfold DV.ur
-  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-  unfold SizeData₂.sg totS
-  rw [one_mul, add_sub_cancel_right]
-  refine Finset.sum_le_sum fun j hj => ?_
-  have h3 := hgain w j hj
-  rw [show ES L Xe K ce u j w = L.E u j w from (hE.edef u j hj w).symm]
-  linarith
 
 theorem pair_gain_nonneg {X : Inst D L} {K : Consts} (a b : HH D → ℤ) (p j : ℕ) : 0 ≤ gainP X K a b p j := by
   unfold gainP
@@ -572,34 +475,11 @@ theorem gainD_le_gainS {X : Inst D L} {K : Consts} (hF : ∀ w, ParametersFill X
     rw [hgz]; exact served_gain_nonneg _ _
   · rw [hg, gainS, if_pos ⟨hin, hE⟩, if_neg (fun h => hd (hcs _ (D.what₂.places.resChar_prime w) h))]
 
-theorem gIdx_of_served {X : Inst D L} {K : Consts}
-    (hC : ∀ (u : D.what₂.Word) (p : ℕ), Cand D L K p → p ≠ (D.mem u).A.T → GIdx D.host (D.mem u).A.T p)
-    (u : D.what₂.Word) (w : D.what₂.places.Pl) (hw : D.what₂.places.resChar w ≠ (D.mem u).A.T)
-    (hVV : VV X K (aL L) (bL L) (D.what₂.places.resChar w) ≠ ∅) :
-    GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) := by
-  apply hC u _ _ hw
-  unfold VV at hVV
-  split_ifs at hVV with h1
-  · exact h1.1
-  · exact absurd rfl hVV
 
 theorem local_compatibility_family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) :
     Ties9 (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (Fm.Gy x i) (Fm.ex x hx i).cmp := by
   exact ⟨⟨Fm.gatT x i, Fm.latTied x hx i⟩, (Fm.ex x hx i).lat.vram, (Fm.ex x hx i).fdef⟩
 
-theorem stable_lattice_family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) (C : ℝ)
-    (hP : PairInt (Fm.D x i) (Fm.X x i) (Fm.ex x hx i).tw)
-    (h : Serv (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (Fm.Gy x i) Fm.GK (Fm.ex x hx i).cmp (Fm.X x i) (Fm.ex x hx i).tw
-      (Fm.ex x hx i).lev (Fm.ex x hx i).errX Fm.cX.err C) :
-    ∀ u (w : (Fm.D x i).what₂.places.Pl), (Fm.D x i).what₂.places.resChar w ≠ ((Fm.D x i).mem u).A.T →
-      (Fm.D x i).what₂.places.resChar w ∉ ({(Fm.D x i).host.g 0, (Fm.D x i).host.g 1} : Finset ℕ) →
-      ∀ (φ : ((Fm.D x i).div.Nu u).V), φ ∈ MramL (Fm.D x i) u →
-      ∀ F ∈ ((Fm.D x i).what₂.Mtilde ((Fm.D x i).what₂.muAt w)).carrier, F ∈ (Fm.D x i).what₂.V0 ((Fm.D x i).what₂.muAt w) →
-        ∃ y : (Fm.D x i).what₂.LL,
-          (Fm.D x i).what₂.embLL y = (Fm.D x i).what₂.perCol u ((Fm.D x i).what₂.muAt w) ((Fm.D x i).jN u φ) F ∧
-          (y = 0 ∨ ur (Fm.D x i) w (∑ j ∈ SizeData₂.lifts (Fm.D x i), ((Fm.L x i).F j w - (Fm.L x i).E u j w)) ≤
-            (vAdd ((Fm.D x i).plEq w) y : ℝ)) := by
-  exact stable_lattice_of_no_served_orbit hP (Fm.ex x hx i).err (Fm.ex x hx i).fdef h.2.2
 
 theorem isCs_drop {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) (p : ℕ) (hp : p.Prime)
     (h : IsCs (Fm.D x i) p) : p ∈ (Fm.L x i).drop := by
@@ -609,22 +489,6 @@ theorem isCs_drop {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (x : ℝ) (h
   rw [← hu, hc] at hs
   cases hs
 
-theorem off_level_bound_family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x)
-    (hC : ∀ (u : (Fm.D x i).what₂.Word) (p : ℕ), Cand (Fm.D x i) (Fm.L x i) Fm.GK p → p ≠ ((Fm.D x i).mem u).A.T →
-      GIdx (Fm.D x i).host ((Fm.D x i).mem u).A.T p)
-    (hP : PairInt (Fm.D x i) (Fm.X x i) (Fm.ex x hx i).tw)
-    (h : Conclusion1 (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (Fm.Gy x i) Fm.GK (Fm.ex x hx i).cmp (Fm.X x i) (Fm.ex x hx i).tw
-      (Fm.ex x hx i).lev (Fm.ex x hx i).errX Fm.cX.err 1) :
-    ∀ u (w : (Fm.D x i).what₂.places.Pl), (Fm.D x i).what₂.places.resChar w ≠ ((Fm.D x i).mem u).A.T →
-      (Fm.D x i).what₂.places.resChar w ∉ ({(Fm.D x i).host.g 0, (Fm.D x i).host.g 1} : Finset ℕ) →
-      ∀ φ : ((Fm.D x i).div.Nu u).V, φ ∈ (Fm.L x i).NuLat u →
-      ∀ F ∈ ((Fm.D x i).what₂.Mtilde ((Fm.D x i).what₂.muAt w)).carrier, F ∈ (Fm.D x i).what₂.V0 ((Fm.D x i).what₂.muAt w) →
-        ∃ y : (Fm.D x i).what₂.LL,
-          (Fm.D x i).what₂.embLL y = (Fm.D x i).what₂.perCol u ((Fm.D x i).what₂.muAt w) ((Fm.D x i).jN u φ) F ∧
-          (y = 0 ∨ ur (Fm.D x i) w ((Fm.L x i).sg u w) ≤ (vAdd ((Fm.D x i).plEq w) y : ℝ)) := by
-  exact off_level_bound hP (Fm.ex x hx i).err (local_compatibility_family Fm x hx i) (Fm.ex x hx i).lat.served
-    (Fm.nuDef x hx i).1 (fun u w hw hVV => gIdx_of_served hC u w hw hVV)
-    (fun w j hj => gainD_le_gainS (Fm.fills x hx i) (fun p hp hc => isCs_drop Fm x hx i p hp hc) w j hj) h
 
 end Formalism.MainNotions.WeilJacquetShalikaLaw
 

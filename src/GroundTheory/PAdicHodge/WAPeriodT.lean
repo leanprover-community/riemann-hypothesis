@@ -255,8 +255,6 @@ theorem logOnePlus_congr {w w' : 𝔹} (h : w = w') (hw : w ∈ 𝔪) (hw' : w' 
     logOnePlus 𝔪 w hw = logOnePlus 𝔪 w' hw' := by
   subst h; rfl
 
-theorem toBDeRhamPlus_muA (ε : 𝒪♭) : toBDeRhamPlus (normInteger ℂ_[p]) p (muA p ε) = muBdR p ε :=
-  rfl
 
 theorem one_add_pow_sub_one_mem {w : 𝔹} (hw : w ∈ 𝔪) (k : ℕ) : (1 + w) ^ k - 1 ∈ 𝔪 := by
   obtain ⟨c, hc⟩ := sub_dvd_pow_sub_pow (1 + w) 1 k
@@ -307,17 +305,6 @@ variable {ε : PreTilt (normInteger ℂ_[p]) p} (hε : PreTilt.untilt ε = 1)
   (hζ : PreTilt.untilt ((_root_.frobeniusEquiv (PreTilt (normInteger ℂ_[p]) p) p).symm ε) ≠ 1)
 include hε hζ
 
-theorem tendsto_tTildeExt (ρ : Set.Ioo (0 : ℝ) 1) :
-    Tendsto (fun N => awayToExt p ρ (∑ i ∈ Finset.range N, logCoeff p (i + 1) * muA p ε ^ (i + 1)))
-      atTop (𝓝 (tTildeExt p ε ρ)) := by
-  have h := (tendsto_const_nhds (x := awayToExt p ρ (muA p ε))).mul
-    (tendsto_logTail (muBound_pos ε ρ) (muBound_lt_one hε hζ ρ) (extNorm_muA_le_bound ε ρ) 1)
-  refine h.congr fun N => ?_
-  rw [← map_mul, logPSum, Finset.mul_sum]
-  congr 1
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [pow_succ]
-  ring
 
 theorem tTildeExt_eq_sum (ρ : Set.Ioo (0 : ℝ) 1) (m : ℕ) :
     tTildeExt p ε ρ = awayToExt p ρ (∑ i ∈ Finset.range m, logCoeff p (i + 1) * muA p ε ^ (i + 1)) +
@@ -384,8 +371,6 @@ theorem tTilde_ne_zero : tTilde p ε ≠ 0 := by
   exact fun h => tTildeExt_ne_zero hε hζ (rhoMid p)
     ((𝓣).ofRad_injective _ (by rw [h, map_zero]))
 
-theorem tTilde_mem_tildeDom : tTilde p ε ∈ tildeDom p :=
-  ⟨rhoMid p, inv_p_lt_rhoMid, _, ofRad_tTildeExt hε hζ (rhoMid p)⟩
 
 theorem iotaTildeFun_tTilde : iotaTildeFun p (tTilde p ε) = fontaineT ε hε := by
   rw [← ofRad_tTildeExt hε hζ (rhoMid p), iotaTildeFun_ofRad inv_p_lt_rhoMid, iota_tTildeExt hε hζ]
@@ -419,49 +404,10 @@ theorem extFrob_tTildeExt (ρ : Set.Ioo (0 : ℝ) 1) :
   rw [← TeichLift.TeichFrob.tildeFrob_ofRad, ofRad_tTildeExt hε hζ, tildeFrob_tTilde hε hζ, map_mul,
     map_natCast, ofRad_tTildeExt hε hζ]
 
-theorem natCast_mul_tildeFrobSymm_tTilde :
-    (p : (𝓣).RobbaTilde) * (frob ℂ_[p] p).tildeFrobSymm (tTilde p ε) = tTilde p ε := by
-  have h := congrArg (frob ℂ_[p] p).tildeFrobSymm (tildeFrob_tTilde hε hζ)
-  rw [TeichLift.TeichFrob.tildeFrobSymm_tildeFrob, map_mul, map_natCast] at h
-  exact h.symm
 
-theorem pow_mul_phiNeg_tTilde (n : ℕ) :
-    (p : (𝓣).RobbaTilde) ^ n * phiNeg p n (tTilde p ε) = tTilde p ε := by
-  induction n with
-  | zero => simp [phiNeg_apply]
-  | succ n ih =>
-    have h1 := congrArg (frob ℂ_[p] p).tildeFrobSymm ih
-    rw [map_mul, map_pow, map_natCast] at h1
-    rw [phiNeg_succ, pow_succ, mul_comm ((p : (𝓣).RobbaTilde) ^ n) p, mul_assoc, h1,
-      natCast_mul_tildeFrobSymm_tTilde hε hζ]
 
-theorem phiNeg_tTilde_mem (n : ℕ) : phiNeg p n (tTilde p ε) ∈ tildeDom p := by
-  induction n with
-  | zero => simpa [phiNeg_apply] using tTilde_mem_tildeDom hε hζ
-  | succ n ih => rw [phiNeg_succ]; exact tildeFrobSymm_mem_tildeDom ih
 
-theorem pow_mul_iotaN_tTilde (n : ℕ) : (p : 𝔹) ^ n * iotaN p n (tTilde p ε) = fontaineT ε hε := by
-  have hm := phiNeg_tTilde_mem hε hζ n
-  have hpn : ((p : (𝓣).RobbaTilde) ^ n) ∈ tildeDom p :=
-    pow_mem (natCast_mem _ p) n
-  have h := iotaTildeFun_mul hpn hm
-  rw [pow_mul_phiNeg_tTilde hε hζ n, iotaTildeFun_tTilde hε hζ] at h
-  have e : iotaTildeFun p ((p : (𝓣).RobbaTilde) ^ n) = (p : 𝔹) ^ n := by
-    have := map_pow (iotaTilde p) (p : tildeDom p) n
-    rw [map_natCast, iotaTilde_apply] at this
-    simpa using this
-  rw [iotaN, ← e, ← h]
 
-theorem thetaN_tTilde (n : ℕ) : thetaN p n (tTilde p ε) = 0 := by
-  have h := congrArg (IsPerfectoidField.thetaBDeRhamPlusField p) (pow_mul_iotaN_tTilde hε hζ n)
-  rw [map_mul, map_pow, map_natCast] at h
-  have h0 : IsPerfectoidField.thetaBDeRhamPlusField p (fontaineT ε hε) = 0 := by
-    have := fontaineT_mem hε
-    rw [IsPerfectoidField.maximalIdeal_bDeRhamPlus, RingHom.mem_ker] at this
-    exact this
-  rw [h0] at h
-  have hp0 : (p : ℂ_[p]) ^ n ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.2 hp.out.ne_zero)
-  exact (mul_eq_zero.1 h).resolve_left hp0
 
 theorem galIso_tildeMap_tTilde {K : IntermediateField ℚ_[p] (PadicAlgCl p)} (σ : Gal(PadicAlgCl p/K)) :
     (galIso σ).tildeMap (tTilde p ε) = padicToTilde p ((cycloChar K σ : ℤ_[p]) : ℚ_[p]) * tTilde p ε := by

@@ -223,8 +223,6 @@ def coef (χ : D.G →* ℂˣ) (n : ℕ) : ℂ := ∑ c : D.G, (χ c : ℂ) * D.
 
 def Pr (_D : RayData K M) : Type := {v : HeightOneSpectrum (𝓞 K) // IsCoprime v.asIdeal (Ideal.span {(M : 𝓞 K)})}
 
-theorem cls_mul_of_two_le (hM : 2 ≤ M) {I J : Ideal (𝓞 K)} (hI : IsCoprime I (Ideal.span {(M : 𝓞 K)}))
-    (hJ : IsCoprime J (Ideal.span {(M : 𝓞 K)})) : D.cls (I * J) = D.cls I * D.cls J := D.cls_mul I J hI hJ (RayCl.ne_bot_of_cop hM hI) (RayCl.ne_bot_of_cop hM hJ)
 
 theorem cls_one : D.cls 1 = 1 := by
   have h := D.cls_mul 1 1 isCoprime_one_left isCoprime_one_left one_ne_zero one_ne_zero
@@ -274,10 +272,6 @@ def equivRayGroup : RayGroup K M ≃* D.G :=
       exact (Con.eq _).2 (D.ker_clsHom.le (show Con.ker D.clsHom I J from h)),
      Con.lift_surjective_of_surjective _ D.clsHom_surjective⟩
 
-theorem equivRayGroup_rcl {I : Ideal (𝓞 K)} (hI : IsCoprime I (Ideal.span {(M : 𝓞 K)})) (hI' : I ≠ ⊥) :
-    D.equivRayGroup (RayCl.rcl M I) = D.cls I := by
-  rw [RayCl.rcl_of (show I ∈ RayCl.primeTo K M from ⟨hI, hI'⟩)]
-  rfl
 
 theorem finite_cnt (c : D.G) (n : ℕ) :
     Finite {I : Ideal (𝓞 K) // IsCoprime I (Ideal.span {(M : 𝓞 K)}) ∧ Ideal.absNorm I = n ∧ D.cls I = c} := by
@@ -286,13 +280,6 @@ theorem finite_cnt (c : D.G) (n : ℕ) :
     (Ideal.finite_setOfPred_absNorm_eq n).subset fun I hI => hI.2.1
   exact hs.to_subtype
 
-theorem cnt_of_ne_zero (c : D.G) {n : ℕ} (hn : n ≠ 0) : D.cnt c n =
-    (Nat.card {I : Ideal (𝓞 K) // IsCoprime I (Ideal.span {(M : 𝓞 K)}) ∧ I ≠ ⊥ ∧ Ideal.absNorm I = n ∧ D.cls I = c} : ℕ) := by
-  rw [cnt]
-  congr 1
-  exact Nat.card_congr (Equiv.subtypeEquivRight fun I =>
-    ⟨fun h => ⟨h.1, fun h0 => hn (by rw [← h.2.1, h0, Ideal.absNorm_bot]), h.2.1, h.2.2⟩,
-      fun h => ⟨h.1, h.2.2.1, h.2.2.2⟩⟩)
 
 theorem cnt_zero (hM : 2 ≤ M) (c : D.G) : D.cnt c 0 = 0 := by
   have : IsEmpty {I : Ideal (𝓞 K) // IsCoprime I (Ideal.span {(M : 𝓞 K)}) ∧ Ideal.absNorm I = 0 ∧

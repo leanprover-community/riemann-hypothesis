@@ -65,7 +65,6 @@ theorem slopeMaxClass_of_map (D : D7) (h : ClassMap D) : SlopeMaxClass D := by
   rw [hR]
   linarith
 
-theorem Link6F_of_map (h : ∀ D, ClassMap D) : Link6F := Link6F_of_class fun D => slopeMaxClass_of_map D (h D)
 
 end Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
@@ -150,9 +149,7 @@ theorem class_map_of_archimedean (D : D7) (h : ClassMapT D) : ClassMap D := by
   rw [e]
   linarith
 
-theorem third_link_of_archimedean (h : ∀ D, ClassMapT D) : Link6F := Link6F_of_map fun D => class_map_of_archimedean D (h D)
 
-theorem packetFamily_of_classMapT (h : ∀ D, ClassMapT D) : KudlaFamilyOfMinkowskiTransference := packet_of_third_proposition (third_link_of_archimedean h)
 
 end Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 

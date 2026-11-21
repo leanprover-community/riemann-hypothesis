@@ -56,9 +56,6 @@ lemma counit_convD (δ : A →ₗ[R] R) (f : A) :
     Coalgebra.rTensor_counit_comul]
   simp
 
-lemma convD_groupLike (δ : A →ₗ[R] R) {χ : A} (h : IsGroupLikeElem R χ) :
-    convD δ χ = δ χ • χ := by
-  simp [convD, h.comul_eq_tmul_self]
 
 lemma IsPtDer.map_one {δ : A →ₗ[R] R} (hδ : IsPtDer δ) : δ 1 = 0 := by
   have h := hδ 1 1

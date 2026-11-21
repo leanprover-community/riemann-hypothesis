@@ -122,13 +122,6 @@ def triv : AlgRep E a where
     have : IsSimpleModule ℂ (Fin 1 → ℂ) := isSimpleModule_iff_finrank_eq_one.2 (by simp)
     exact eq_bot_or_eq_top W
 
-theorem dmat_triv (X : Lie E a) : (triv E a).dmat X = 0 := by
-  ext i j
-  have h := extGL_eventuallyEq (f := fun y => (triv E a).mat y i j) (F := fun _ => (1 : Matrix (Fin 1) (Fin 1) ℂ) i j)
-    (fun _ => rfl) (x := oneL E a) isUnit_one
-  change fderiv ℝ _ _ X = 0
-  rw [h.fderiv_eq]
-  simp
 
 omit [NumberField E] in
 
@@ -164,14 +157,6 @@ def std (τ : E →+* ℂ) (ha : 0 < a) : AlgRep E a where
     ext i
     simp [Matrix.mulVec, dotProduct, hj']
 
-theorem dmat_std (τ : E →+* ℂ) (ha : 0 < a) (X : Lie E a) : (std τ ha).dmat X = (Matrix.of X).map (coord τ) := by
-  ext i j
-  have h := extGL_eventuallyEq (f := fun y => (std τ ha).mat y i j) (F := fun x => coordL τ (x i j))
-    (fun _ => rfl) (x := oneL E a) isUnit_one
-  change fderiv ℝ _ _ X = _
-  rw [h.fderiv_eq]
-  exact congrArg (fun L : Lie E a →L[ℝ] ℂ => L X) (((coordL τ).comp ((ContinuousLinearMap.proj j).comp
-    (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin a => Fin a → Cinf E) i))).fderiv)
 
 end AlgRep
 
@@ -279,52 +264,12 @@ def tensorLie (π : CuspSub E a) (Ξ : AlgRep E a) : Lie E a →ₗ[ℝ] Module.
 theorem tensorLie_tmul (π : CuspSub E a) (Ξ : AlgRep E a) (X : Lie E a) (φ : π.V) (v : Fin Ξ.d → ℂ) :
     tensorLie π Ξ X (φ ⊗ₜ v) = π.op (.lie X) φ ⊗ₜ v + φ ⊗ₜ (Ξ.dmat X *ᵥ v) := rfl
 
-theorem tensorK_mul_tensorLie (π : CuspSub E a) (Ξ : AlgRep E a) (k : Kinf E a) (X : Herm E a) :
-    tensorK π Ξ k * tensorLie π Ξ (toL X.1) = tensorLie π Ξ (toL (adHerm k X).1) * tensorK π Ξ k := by
-  refine TensorProduct.ext' fun φ v => ?_
-  have h1 : π.op (.cpt k) (π.op (.lie (toL X.1)) φ) = π.op (.lie (toL (adHerm k X).1)) (π.op (.cpt k) φ) :=
-    Subtype.ext (LinearMap.congr_fun (GlobalTheory.CapAdInv.rt_lie (Unitary.toUnits k) X.1) φ.1)
-  have h2 : Ξ.mat (Unitary.toUnits k) * Ξ.dmat (toL X.1) = Ξ.dmat (toL (adHerm k X).1) * Ξ.mat (Unitary.toUnits k) :=
-    Ξ.mat_mul_dmat (Unitary.toUnits k) X.1
-  simp only [Module.End.mul_apply, tensorK, tensorLie_tmul, map_add, TensorProduct.map_tmul, Matrix.toLin'_apply,
-    Matrix.mulVec_mulVec, h1, h2]
 
 def IsCohFor (π : CuspSub E a) (Ξ : AlgRep E a) : Prop := HasCohomology (tensorK π Ξ) (tensorLie π Ξ)
 
 def IsCohomological (π : CuspSub E a) : Prop := ∃ Ξ : AlgRep E a, IsCohFor π Ξ
 
-theorem isCohFor_triv (ha : a ≤ 1) : IsCohFor (CuspSub.triv E ha) (AlgRep.triv E a) := by
-  let φ : (CuspSub.triv E ha).V := ⟨oneFn E a, Submodule.mem_span_singleton_self _⟩
-  refine hasCohomology_of_invariant (m := φ ⊗ₜ fun _ => 1) (fun h => oneFn_ne_zero (E := E) (a := a) ?_) (fun k => ?_)
-    fun X => ?_
-  · have key : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] (v : V), v ⊗ₜ[ℂ] (fun _ : Fin 1 => (1 : ℂ)) = 0 → v = 0 :=
-      fun v h => by
-        have h1 := congrArg (fun x => TensorProduct.rid ℂ _ (LinearMap.lTensor _ (LinearMap.proj (0 : Fin 1)) x)) h
-        simp only [LinearMap.lTensor_tmul, LinearMap.proj_apply, TensorProduct.rid_tmul, one_smul, map_zero] at h1
-        exact h1
-    exact congrArg Subtype.val (key φ h)
-  · rw [tensorK, TensorProduct.map_tmul]
-    congr 1
-    exact Matrix.one_mulVec (fun _ : Fin 1 => (1 : ℂ))
-  · have e : (CuspSub.triv E ha).op (.lie X) φ = 0 := Subtype.ext (lie_oneFn X)
-    rw [tensorLie_tmul, e, AlgRep.dmat_triv]
-    simp
 
-theorem not_isCohFor_triv_std (τ : E →+* ℂ) : ¬ IsCohFor (CuspSub.triv E le_rfl) (AlgRep.std τ one_pos) := by
-  refine not_hasCohomology_of_central one_ne_zero fun m => ?_
-  induction m using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => rw [map_add, hx, hy, smul_add]
-  | tmul φ v =>
-    have e : (CuspSub.triv E le_rfl).op (.lie (oneL E 1)) φ = 0 := by
-      obtain ⟨c, e⟩ := Submodule.mem_span_singleton.1 φ.2
-      refine Subtype.ext ?_
-      change lie E 1 _ φ.1 = 0
-      rw [← e, map_smul, lie_oneFn, smul_zero]
-    have e2 : (AlgRep.std τ one_pos).dmat (oneL E 1) = 1 :=
-      (AlgRep.dmat_std τ one_pos _).trans (Matrix.map_one _ (map_zero _) (map_one _))
-    rw [tensorLie_tmul, e, e2]
-    simp
 
 end GlobalTheory.GKCoh
 
@@ -346,11 +291,6 @@ theorem IsTemperedGL.of_equiv {π : Representation ℂ (GL (Fin N) k) V} {σ : R
 theorem isTemperedGL_of_isUnitaryLSeg {δ : IrrGL k} (h : IsUnitaryLSeg δ) : IsTemperedGL δ.rep :=
   ⟨1, fun _ => δ, by simp, fun _ => h, nonempty_equiv_prodIrr_one δ _⟩
 
-theorem IsTemperedGL.isComplementaryProduct {π : Representation ℂ (GL (Fin N) k) V} (H : IsTemperedGL π) :
-    IsComplementaryProduct π := by
-  obtain ⟨h, δ, hd, h1, h2⟩ := H
-  exact ⟨List.ofFn δ, [], fun x hx => by obtain ⟨i, rfl⟩ := List.mem_ofFn.1 hx; exact h1 i, by simp, h, δ, hd,
-    by simp [factors], h2⟩
 
 theorem isTemperedGL_detRep_one {χ : kˣ →* ℂˣ} (hs : IsSmoothChar χ) :
     IsTemperedGL (detRep (Fin 1) χ) ↔ IsUnitarisable (detRep (Fin 1) χ) := by

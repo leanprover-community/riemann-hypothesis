@@ -71,9 +71,6 @@ def resFilt (μ : kˣ →* ℂˣ) {s : Set ℕ} {κ m n : ℕ} (hmn : m ≤ n) (
   map_smul' _ _ := rfl
   isIntertwining' _ := rfl
 
-theorem resFilt_apply (μ : kˣ →* ℂˣ) {s : Set ℕ} {κ m n : ℕ} (hmn : m ≤ n) (hs : ∀ r, r ∈ s ↔ κ ≤ r ∧ r < m)
-    (Φ : (filt a b μ (Set.Iio n) κ).toSubmodule) (x : RankIn k a b s) :
-    (resFilt μ hmn hs Φ).1 x = Φ.1.1 ⟨x.1, ((hs _).1 x.2).2.trans_le hmn⟩ := rfl
 
 theorem resFilt_surjective (μ : kˣ →* ℂˣ) {s : Set ℕ} {κ m n : ℕ} (hmn : m ≤ n)
     (hs : ∀ r, r ∈ s ↔ κ ≤ r ∧ r < m) : Function.Surjective (resFilt (a := a) (b := b) μ hmn hs) := by
@@ -95,33 +92,5 @@ theorem ker_resFilt (μ : kˣ →* ℂˣ) {s : Set ℕ} {κ m n : ℕ} (hmn : m 
 
 end
 
-theorem rankFiltration (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] (a t : ℕ) (μ : kˣ →* ℂˣ) : RankFiltration a t μ := by
-  refine ⟨eq_top_iff.2 fun _ _ _ hx => absurd hx (Nat.not_lt_zero _),
-    Subrepresentation.toSubmodule_injective <|
-      eq_bot_iff.2 fun _ hΦ => Subtype.ext (funext fun x => hΦ x x.2), fun κ hκ => ⟨?_, ?_, ?_⟩⟩
-  · exact fun Φ hΦ x hx => hΦ x (Nat.lt_succ_of_lt hx)
-  · have hs : ∀ r, r ∈ Set.Ico κ a ↔ κ ≤ r ∧ r < a := fun _ => Iff.rfl
-    have hinj : Function.Injective (resFilt (a := Fin a) (b := Fin (a + t)) μ le_rfl hs) := by
-      refine (injective_iff_map_eq_zero _).2 fun Φ hΦ => ?_
-      exact Subtype.ext (Subtype.ext (funext fun x => (ker_resFilt μ le_rfl hs Φ).1 hΦ x x.2))
-    let e := Representation.Equiv.mk
-      (LinearEquiv.ofBijective (resFilt (a := Fin a) (b := Fin (a + t)) μ le_rfl hs).toLinearMap
-        ⟨hinj, resFilt_surjective μ le_rfl hs⟩) (resFilt μ le_rfl hs).isIntertwining'
-    refine ⟨e.symm, fun Φ x => ?_⟩
-    split_ifs with h
-    · have h1 : e (e.symm Φ) = Φ := e.toLinearEquiv.apply_symm_apply Φ
-      exact congrFun (congrArg Subtype.val h1) ⟨x.1, h, x.2⟩
-    · exact (e.symm Φ).2 x (not_le.1 h)
-  · have hs : ∀ r, r ∈ ({κ} : Set ℕ) ↔ κ ≤ r ∧ r < κ + 1 := fun r => by
-      rw [Set.mem_singleton_iff]; omega
-    let ρ := resFilt (a := Fin a) (b := Fin (a + t)) μ (Nat.succ_le_of_lt hκ) hs
-    have hker : Submodule.comap (filt (Fin a) (Fin (a + t)) μ (Set.Iio a) κ).toSubmodule.subtype
-        (filt (Fin a) (Fin (a + t)) μ (Set.Iio a) (κ + 1)).toSubmodule = LinearMap.ker ρ.toLinearMap :=
-      Submodule.ext fun Φ => (ker_resFilt μ _ hs Φ).symm
-    refine ⟨Representation.Equiv.mk ((Submodule.quotEquivOfEq _ _ hker).trans
-      (LinearMap.quotKerEquivOfSurjective ρ.toLinearMap (resFilt_surjective μ _ hs))) fun g => ?_,
-      fun Φ x => rfl⟩
-    exact Submodule.linearMap_qext _ rfl
 
 end GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences

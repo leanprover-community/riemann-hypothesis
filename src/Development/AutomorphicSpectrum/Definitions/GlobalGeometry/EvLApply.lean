@@ -69,19 +69,12 @@ def laZ {σ : c.F →+* ℂ} {r : ℕ} (U : Unf Xo c σ r) (a : WZ E) (k : U.Com
   fun τ j => if (U.X k).p0 ≤ (j : ℕ) then a (Function.invFun (relab c σ) τ.1, (j : ℕ) - (U.X k).p0)
     else -a (Function.invFun (relab c σ) (conjEmb τ.1), (U.X k).p0 - 1 - (j : ℕ))
 
-theorem laZ_nat {σ : c.F →+* ℂ} {r : ℕ} (U : Unf Xo c σ r) (a : (E →+* ℂ) × ℕ → ℕ) :
-    laZ U (fun x => (a x : ℤ)) = laU U a 0 := by
-  funext k τ j
-  simp [laZ, laU]
 
 variable {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r)
 
 def cuspZ (a : WZ E) : Submodule c.F (Rul Xo c) :=
   secZ Xo c a ⊓ ⨅ (σ : c.F →+* ℂ) (_ : GoodEmb c σ), (holSub (U σ).X (laZ (U σ) a)).comap (rdU (U σ))
 
-theorem cuspZ_nat (a : (E →+* ℂ) × ℕ → ℕ) : cuspZ Xo c U (fun x => (a x : ℤ)) = cusp Xo c U a 0 := by
-  unfold cuspZ cusp
-  simp only [secZ_nat, laZ_nat]
 
 variable {Xo c}
 

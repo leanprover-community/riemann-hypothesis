@@ -26,11 +26,6 @@ theorem lAbs_mul (x y : GA E n) : logAbs (x * y).val.det = logAbs x.val.det + lo
   rw [Units.val_mul, Matrix.det_mul]
   exact (D1.logAbsBasic E).2.1 _ _ (Matrix.isUnits_det_units x) (Matrix.isUnits_det_units y)
 
-theorem lAbs_rat (γ : GL (Fin n) E) : logAbs (ratGL E n γ).val.det = 0 := by
-  have h : (ratGL E n γ).val.det = algebraMap E (Ad E) γ.val.det := by
-    rw [RingHom.map_det]; rfl
-  rw [h]
-  exact (D1.logAbsBasic E).2.2 _ (Matrix.isUnits_det_units γ).ne_zero
 
 theorem lAbs_one : logAbs (1 : GA E n).val.det = 0 := by
   have h := lAbs_mul (E := E) (n := n) 1 1
@@ -59,41 +54,9 @@ theorem lAbs_maxCompact {k : GA E n} (hk : k ∈ maxCompact (K := E) (n := n)) :
   rw [Real.norm_eq_abs, lAbs_pow, abs_mul, Nat.abs_cast] at h
   exact h
 
-theorem lAbs_posIdele (ρ : ℝ) (hρ : 0 < ρ) :
-    logAbs ((posIdele (K := E) ρ hρ : (Ad E)ˣ) : Ad E) = Module.finrank ℚ E * Real.log ρ := by
-  rw [GlobalTheory.CuspBoundSiegel.posIdele_congr hρ (Real.exp_pos (Real.log ρ)) (Real.exp_log hρ).symm,
-    PositivityTheory.Rg.BcB.E1.posIdele_val, PositivityTheory.Rg.BcB.E1.logAbs_pA]
 
-theorem lAbs_prod (s : Finset (Fin n)) (u : Fin n → (Ad E)ˣ) :
-    logAbs (∏ i ∈ s, (u i : Ad E)) = ∑ i ∈ s, logAbs (u i : Ad E) := by
-  refine Finset.induction_on s ?_ ?_
-  · rw [Finset.prod_empty, Finset.sum_empty]
-    have h := (D1.logAbsBasic E).2.2 (1 : E) one_ne_zero
-    rwa [map_one] at h
-  · intro a s ha ih
-    have hu : IsUnit (∏ i ∈ s, (u i : Ad E)) := by rw [← Units.coe_prod]; exact Units.isUnit _
-    rw [Finset.prod_insert ha, Finset.sum_insert ha, (D1.logAbsBasic E).2.1 _ _ (u a).isUnit hu, ih]
 
-theorem lAbs_diag (r : Fin n → ℝ) (hr : ∀ i, 0 < r i) :
-    logAbs (diagUnits n (fun i => posIdele (K := E) (r i) (hr i))).val.det =
-      Module.finrank ℚ E * ∑ i, Real.log (r i) := by
-  rw [coe_diagUnits, Matrix.det_diagonal]
-  refine (lAbs_prod Finset.univ fun i => (posIdele (K := E) (r i) (hr i) : (Ad E)ˣ)).trans ?_
-  rw [Finset.mul_sum]
-  exact Finset.sum_congr rfl fun i _ => lAbs_posIdele (r i) (hr i)
 
-theorem sum_sr (ℓ : Fin n → ℝ) (hn : 0 < n) :
-    ∑ r ∈ Finset.range n, PositivityTheory.Rg.Rs.An.sr ℓ r = ℓ ⟨0, hn⟩ - ℓ ⟨n - 1, by omega⟩ := by
-  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  rw [Finset.sum_range_succ']
-  have h0 : PositivityTheory.Rg.Rs.An.sr ℓ 0 = 0 := by simp [PositivityTheory.Rg.Rs.An.sr]
-  rw [h0, add_zero]
-  have h1 : ∀ k ∈ Finset.range m, PositivityTheory.Rg.Rs.An.sr ℓ (k + 1) = ext0 ℓ k - ext0 ℓ (k + 1) := fun k hk => by
-    rw [Finset.mem_range] at hk
-    rw [sr_eq ℓ (by omega) (by omega), Nat.add_sub_cancel]
-  rw [Finset.sum_congr rfl h1, Finset.sum_range_sub']
-  rw [ext0, ext0, dif_pos (by omega), dif_pos (by omega)]
-  rfl
 
 theorem coord_bound (ℓ : Fin n → ℝ) (hn : 0 < n) (t₀ S : ℝ) (ht : ∀ r, -t₀ ≤ PositivityTheory.Rg.Rs.An.sr ℓ r)
     (hS : |∑ i, ℓ i| ≤ S) (i : Fin n) :

@@ -31,14 +31,7 @@ def DetProductFormula : Prop :=
   ∀ F' : FlagU D u', IsTermF D Λ (lf D F0) F' → IsGeneric Λ (gS D) (lf D F0) F' →
     NG Λ (lf D F0) F' = ∏ τ, Cnt.Gz D (Tu D u) (Tu D u') (ZhatL (lf D F0) F') τ
 
-theorem id_of_detUU (h : DetProductFormula) : LatticeIdentityGeneric := by
-  intro D large₂ u u' C' Cl Cg cb Cu cT CT C0 A hH F0 he hz0 Λ hΛr F' hT' hgen
-  unfold G0 localGramProduct
-  rw [h D large₂ u u' C' Cl Cg cb Cu cT CT C0 A hH F0 he hz0 Λ hΛr F' hT' hgen, NE_pow, div_eq_mul_inv, inv_pow]
 
-theorem gram_flag_family_of_det_product (h : DetProductFormula) {eps : ℝ} (Fm : FamP eps) (Cg cb Cu cT CT C0 A : ℝ) :
-    FamilyGenericTermDetProductBound Fm Cg cb Cu cT CT C0 A :=
-  gram_flag_family_of_identity (id_of_detUU h) Fm Cg cb Cu cT CT C0 A
 
 end Formalism.MainNotions.GramProductBounds
 

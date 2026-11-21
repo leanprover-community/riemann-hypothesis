@@ -50,8 +50,6 @@ theorem elim (a : TwJoin hL D nch xd first R F cG geo S YS cf) :
   exact ⟨ch, rfl, ig, hf.vals, fun i j b h1 h2 => Set.eq_univ_of_forall (all i j (Finset.mem_Icc.2 ⟨h1, h2⟩) b), sup, ⟨H, rd⟩, ⟨Z⟩, U,
     g.rank⟩
 
-theorem isEmpty_of_not_all (h : ¬ XdAll xd) : IsEmpty (TwJoin hL D nch xd first R F cG geo S YS cf) :=
-  ⟨fun a => h (elim a).2.2.2.2.1⟩
 
 theorem isEmpty_of_ne (h : R.C ≠ cf) : IsEmpty (TwJoin hL D nch xd first R F cG geo S YS cf) :=
   ⟨fun a => h (elim a).2.1⟩
@@ -261,21 +259,9 @@ theorem hk_of_built {D : D7} (b : NBuilt hL D) :
   obtain ⟨D0, cf, jE, A, cg, au, rep, row, low, Pq, S, hl, eig, θ, Bs, M, C, tp, ch, mt, big, L, Sp, Au, ss, rfl⟩ := b
   exact ⟨fun i j s k P x h1 h2 h => Bs.hk_emb i j s k P x h1 h2 h.2.2.2 h.2.2.1 h.2.1, Bs.hEig_zero⟩
 
-theorem nonempty_of_more {hH hV hs} (e : NE hL K B f T w Z Wt p0 t nch n xd c) (hF : FieldOk (realOf t hH hV hs))
-    (h3 : GlobalTheory.Triple.IsTriple (w.D Z)) (hr : 100 ≤ B.R.r) (hg : ∀ k, 2 * B.R.r ≤ B.host.g k)
-    (H : NExpRealH t.r.z.R t.r.z.cG _ c.row.nexp) (hR : GlobalTheory.ExportPin.Reads t.r.z.R t.r.z.cG _ c.row.nexp H.hL)
-    (hd : ∀ i b P, P ∉ (w.D Z).ntw.S0 i → ∀ σ : Formalism.ConjugateSelfDual.G (w.D Z).host.E (w.D Z).nd.Om,
-      Formalism.ConjugateSelfDual.IsFrob (F := (w.D Z).host.E) ((w.D Z).nd.plOm.1 P) (Formalism.ConjugateSelfDual.normV P) σ →
-      H.cHk i b 1 P = algebraMap ((w.D Z).ntw.O i) (FractionRing ((w.D Z).ntw.O i)) (algebraMap ((w.D Z).ntw.O0 i) ((w.D Z).ntw.O i)
-        ((if b then (w.D Z).ntw.delta i σ else ((w.D Z).ntw.delta i σ)⁻¹ : ((w.D Z).ntw.O0 i)ˣ) : (w.D Z).ntw.O0 i))) :
-    Nonempty (TwOf hL K B f T w Z Wt p0 t nch n xd c) := by
-  obtain ⟨g, h1, h2, ⟨cg⟩⟩ := gal_of e h3 hr hg
-  obtain ⟨k1, k2⟩ := hk_of_built c.a.nt.toNBuilt
-  exact ⟨twOf (serOf e H hR hd k1 k2) rfl HEq.rfl g h1 h2 hF cg fun hT v hv => base_of_untw _ hT v hv⟩
 
 def ofExt (a : TwExt hL K B f T w Z Wt p0 t nch n xd c) : TwOf hL K B f T w Z Wt p0 t nch n xd c := ofAt a
 
-theorem twOf_xdAll (a : TwOf hL K B f T w Z Wt p0 t nch n xd c) : XdAll xd := (elim a).2.2.2.2.1
 
 end Rows
 

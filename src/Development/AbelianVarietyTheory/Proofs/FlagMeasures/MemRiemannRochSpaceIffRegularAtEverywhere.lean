@@ -119,8 +119,6 @@ theorem lat_span (s : Set V) :
 def dat (d : D.InnerDatum) : S.Datum :=
   (m.lat c d.L, m.lat c d.L', {p | (c.e.symm p.1, c.e.symm p.2) ∈ d.Γ})
 
-theorem mem_dat (d : D.InnerDatum) (v w : V) : (c.e v, c.e w) ∈ (m.dat c d).2.2 ↔ (v, w) ∈ d.Γ := by
-  simp [dat]
 
 theorem grp_e (g : V ≃ₗ[E] V) (v : V) : c.grp g (c.e v) = c.e (g v) := CoordUnip.grp_apply c g v
 
@@ -226,9 +224,6 @@ theorem mem_N (A : Frame F V r) (f : Fin (r + 1) → S.V) (hf : ∀ a, f a = c.e
 theorem mem_St (g : V ≃ₗ[E] V) : g ∈ D.St ↔ c.grp g ∈ S.St :=
   and_congr (m.mem_N c _ _ (m.fS c) g) (m.mem_N c _ _ (m.fS' c) g)
 
-theorem mem_StInt (g : V ≃ₗ[E] V) : g ∈ D.StInt ↔ c.grp g ∈ S.K0 := by
-  simp only [Data.StInt, Frames.K0, Subgroup.mem_inf, m.mem_St c, m.mem_stab c, lat_span,
-    ← Set.range_comp, Function.comp_def, ← m.fS c, ← m.fS' c]
 
 theorem mem_ME (v : V) : v ∈ D.ME ↔ c.e v ∈ S.ME := by
   have : S.ME = D.ME.map (c.e : V →ₗ[E] S.V) := by

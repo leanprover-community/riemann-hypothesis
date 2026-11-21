@@ -57,11 +57,6 @@ theorem insL_supp (v : Fin d.m → Fin d.n → ℂ) : Supp w (insL R w v) := by
   · ext i j
     simp only [insL, Matrix.smul_apply, Matrix.map_apply, insW_fin, Matrix.zero_apply]
 
-theorem loc_insL (v : Fin d.m → Fin d.n → ℂ) : R.loc w (insL R w v) = v := by
-  unfold RD.loc
-  rw [cw_insL, ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
-  ext i j
-  simp
 
 theorem insL_add (v v' : Fin d.m → Fin d.n → ℂ) : insL R w (v + v') = insL R w v + insL R w v' := by
   have e : (R.fr w).1 * (Matrix.of (v + v')).map star =

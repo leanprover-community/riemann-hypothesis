@@ -38,7 +38,6 @@ def tilPtY (d : DecoSet X.E (R.N R.m - 1) ∅ SG') : PtY W cst (L₀.withTop m2 
     rw [if_neg (by omega)]
     rfl⟩
 
-theorem tilPtY_deco (d : DecoSet X.E (R.N R.m - 1) ∅ SG') : (tilPtY W cst L₀ u m2 Λt Θt hSG hm d).deco = tilR hSG u d := rfl
 
 def tilY (c : (ptGSD W ΛM).Cl) : (chFY W sel mu cst (L₀.withTop m2 Λt Θt) u m2 R.m).Cl :=
   clsY (topIdx L₀ m2 Λt Θt hm) (tilPtY W cst L₀ u m2 Λt Θt hSG hm ((ptGSD W ΛM).outSec.rep c))
@@ -82,9 +81,6 @@ def extYg (hPr : Pr.Ok) (hpi : ∀ w : SG', Pr.piT u ∉ w.1.asIdeal) (hL : LevE
       frame_move (frameOfY_spec u P.1 _) (frameOfY_spec u P.1 _) (localization_tilR_fixed hPr hpi hs P.1)⟩,
       fun P _ => hQ d s hs P _⟩)
 
-theorem extYg_fst (hPr : Pr.Ok) (hpi : ∀ w : SG', Pr.piT u ∉ w.1.asIdeal) (hL : LevExtL (Λt R.m) hSG ΛM) (hQ : TopLevQ W u Θt hSG ΛM)
-    (d : DecoSet X.E (R.N R.m - 1) ∅ SG') (s : (ptGSD W ΛM).G) (hs : s • d = d) :
-    (extYg (W := W) (cst := cst) (L₀ := L₀) (m2 := m2) (hm := hm) hPr hpi hL hQ d s hs).1 = (extR R hSG (s.1, s.2.1)).1 := rfl
 
 theorem extYg_smul (hPr : Pr.Ok) (hpi : ∀ w : SG', Pr.piT u ∉ w.1.asIdeal) (hL : LevExtL (Λt R.m) hSG ΛM) (hQ : TopLevQ W u Θt hSG ΛM)
     (d : DecoSet X.E (R.N R.m - 1) ∅ SG') (s : (ptGSD W ΛM).G) (hs : s • d = d) :
@@ -206,44 +202,6 @@ def stabMapY (hPr : Pr.Ok) (hpi : ∀ w : SG', Pr.piT u ∉ w.1.asIdeal) (hL : L
       FamStab (chFY W sel mu cst (L₀.withTop m2 Λt Θt) u m2 R.m) (tilY W cst L₀ u m2 Λt Θt hSG ΛM hm c) :=
   stabilizerMapMaximalIndex (W := W) (cst := cst) (L₀ := L₀) (m2 := m2) (hm := hm) hPr hpi hL hQ c
 
-theorem stabMapY_injective (hPr : Pr.Ok) (hpi : ∀ w : SG', Pr.piT u ∉ w.1.asIdeal) (hL : LevExtL (Λt R.m) hSG ΛM) (hQ : TopLevQ W u Θt hSG ΛM)
-    (c : (ptGSD W ΛM).Cl) : Function.Injective (stabMapY (W := W) (cst := cst) (L₀ := L₀) (m2 := m2) (hm := hm) hPr hpi hL hQ c) := by
-  intro a b hab
-  have h1 := congrArg Subtype.val hab
-  have h2 : extYg (W := W) (cst := cst) (L₀ := L₀) (m2 := m2) (hm := hm) hPr hpi hL hQ ((ptGSD W ΛM).outSec.rep c) a.1
-        (MulAction.mem_stabilizer_iff.1 a.2) =
-      extYg (W := W) (cst := cst) (L₀ := L₀) (m2 := m2) (hm := hm) hPr hpi hL hQ ((ptGSD W ΛM).outSec.rep c) b.1
-        (MulAction.mem_stabilizer_iff.1 b.2) :=
-    mul_left_cancel (mul_right_cancel h1)
-  have h3 : extUH (N_m_succ R) a.1.1 = extUH (N_m_succ R) b.1.1 := congrArg (fun g => g.1) h2
-  have h4 : a.1.1 = b.1.1 := rec_extUH_injective (N_m_succ R) h3
-  have ha : Deco.act a.1.1.1 a.1.2.1 ((ptGSD W ΛM).outSec.rep c).1 = ((ptGSD W ΛM).outSec.rep c).1 := by
-    have h0 := congrArg Subtype.val (MulAction.mem_stabilizer_iff.1 a.2)
-    exact h0
-  have hb : Deco.act b.1.1.1 b.1.2.1 ((ptGSD W ΛM).outSec.rep c).1 = ((ptGSD W ΛM).outSec.rep c).1 := by
-    have h0 := congrArg Subtype.val (MulAction.mem_stabilizer_iff.1 b.2)
-    exact h0
-  have hbe : ∀ w : SG', a.1.2.1 w = b.1.2.1 w := by
-    intro w
-    apply Units.ext
-    apply Matrix.ext_of_mulVec_single
-    intro i
-    obtain ⟨y, -, hy⟩ := ((ptGSD W ΛM).outSec.rep c).2.be_surj w (Pi.single i 1)
-    have ea : (a.1.2.1 w).1.mulVec (((ptGSD W ΛM).outSec.rep c).1.be w (a.1.1.1.symm (a.1.1.1 y))) =
-        ((ptGSD W ΛM).outSec.rep c).1.be w (a.1.1.1 y) :=
-      congrFun (congrFun (congrArg Deco.be ha) w) _
-    have eb : (b.1.2.1 w).1.mulVec (((ptGSD W ΛM).outSec.rep c).1.be w (b.1.1.1.symm (b.1.1.1 y))) =
-        ((ptGSD W ΛM).outSec.rep c).1.be w (b.1.1.1 y) :=
-      congrFun (congrFun (congrArg Deco.be hb) w) _
-    rw [LinearEquiv.symm_apply_apply] at ea eb
-    rw [h4] at ea
-    rw [← hy, ea, eb]
-  apply Subtype.ext
-  apply Prod.ext
-  · exact h4
-  · apply Subtype.ext
-    funext w
-    exact hbe w
 
 end Top
 

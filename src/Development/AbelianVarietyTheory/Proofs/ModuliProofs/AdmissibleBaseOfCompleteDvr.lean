@@ -142,41 +142,6 @@ theorem summable_of_data [CompleteSpace C] {m : ℕ} (hm : Odd m) (p : N.QT (m ^
     fun j hj r => summable_evT_of_qMap I hm p r (summable_evT hq hm.pos.ne' hj _ _)⟩
 end Integral
 
-theorem thetaSeries_iff : ThetaSeriesSt ↔ TXSt ∧ EVSt := by
-  constructor
-  · intro h
-    refine ⟨?_, ?_⟩
-    · rintro V _ _ _ I hV rfl D A G _ _ - U C _ _ _ _ _ _ hC N ν m hm Ix p q x hx hq
-      obtain ⟨v, hv, H⟩ := (h V hV D A G U C hC N ν m hm Ix p x hx).1
-      have e : ∀ i, N.tx m (q i) = v i := fun i => ((hv i).hasSum (hq i)).2
-      simpa only [e] using H
-    · rintro V _ _ _ I hV rfl D A G _ _ - U C _ _ _ _ _ _ hC N ν m hm Ix p q x hx hq j hj p₀ q₀ z hz hq₀
-      obtain ⟨v, hv, H⟩ := (h V hV D A G U C hC N ν m hm Ix p x hx).2 j (by omega) p₀ z hz
-      have e : ∀ i, N.ev m (q i) q₀.1.2 = v i := fun i => by
-        obtain ⟨q', g, h₁, h₂, h₃⟩ := hv i
-        rw [qPt_unique ν (hq i) h₁, ν.pt_unique hq₀.2 h₂]
-        exact h₃.tsum_eq
-      simpa only [e] using H
-  · rintro ⟨hT, hE⟩ V _ _ _ hV D A G _ _ U C _ _ _ _ _ hC N ν m hm Ix p x hx
-    letI : NontriviallyNormedField C := ⟨exists_one_lt_norm hV hC⟩
-    haveI : CharZero C := charZero_of hV
-    haveI := hV.1
-    haveI := hV.2.2
-    have hG : IsSemiAbelian G := isSemiAbelian_of_unifPre_dvr V D A G U.toUnifPre
-    choose q hq using fun i => exists_val D.psi_even D.tau_bimult ν (p i)
-    refine ⟨⟨fun i => N.tx m (q i), fun i => ⟨q i, hq i, (summable_of_data hV D hC ν hm _).1.hasSum⟩,
-      hT V _ hV rfl D A G hG U C hC N ν m hm Ix p q x hx hq⟩, fun j hj r z hz => ?_⟩
-    obtain ⟨s, hs⟩ := exists_val D.psi_even D.tau_bimult ν r
-    obtain ⟨r₄, hr₄⟩ := exists_pt D.psi_even D.tau_bimult ν (up (rfl : j * 4 = j * 4) s)
-    have e₁ : r₄.y = 4 • r.y := by
-      rw [← hr₄.1, ← hs.1, ← map_nsmul]; rfl
-    have e₂ : r₄.g = r.g :=
-      ((GtValues.points_correspond V _ D.psi_even D.tau_bimult C N ν).2.1 s.1.2).unique hr₄.2 hs.2
-    have hz₄ := ((LevelCompat.qkToAkU_level firstFiveLaws V _ (admissible_base_of_complete_dvr hV) D A G hG U C j 4 (j * 4) hj (by norm_num) rfl
-      r r₄ z).1 e₁ e₂).1 hz
-    have Q := hE V _ hV rfl D A G hG U C hC N ν m hm Ix p q x hx hq (j * 4) (by omega) r₄ _ z hz₄ hr₄
-    exact ⟨fun i => N.ev m (q i) s.1.2,
-      fun i => ⟨q i, s.1.2, hq i, hs.2, ((summable_of_data hV D hC ν hm _).2 j hj.ne' s).hasSum⟩, Q⟩
 
 section Conclusions
 variable {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] (hV : GlobalTheory.LN.CDvr V) {D D' : DegPre V} (he : D.PsiEven)
@@ -364,12 +329,6 @@ theorem recognition_iff : RecognitionSt ↔ URecDvrSt := by
     rw [hw₀, qEq_qMap I' (hB' _).1] at b₄
     exact ⟨p, p', a', (hP _ _ _).2 b₁, (hP' _ _ _).2 b₂, b₃, b₄⟩
 
-theorem typings_compare :
-    (ThetaSeriesSt ↔ TXSt ∧ EVSt) ∧ (RecognitionSt ↔ URecDvrSt) ∧ (URecSt → URecDvrSt) ∧
-      (SeriesAndRecognition ↔ TXSt ∧ EVSt ∧ URecDvrSt) ∧ (TXSt ∧ EVSt ∧ URecSt → SeriesAndRecognition) :=
-  ⟨thetaSeries_iff, recognition_iff, uRecDvr_of_uRec,
-    (and_congr thetaSeries_iff recognition_iff).trans and_assoc,
-    fun h => ⟨thetaSeries_iff.2 ⟨h.1, h.2.1⟩, recognition_iff.2 (uRecDvr_of_uRec h.2.2)⟩⟩
 
 end GlobalTheory.SeriesCompare
 end

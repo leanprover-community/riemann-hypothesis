@@ -48,9 +48,6 @@ theorem finPr_finLift {D : D7} {m n : ℕ} (z : Matrix (Fin m) (Fin n) D.host.E)
   ext i j
   rfl
 
-theorem map_mul_three_alt {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {a b c d : ℕ} (A : Matrix (Fin a) (Fin b) R)
-    (B : Matrix (Fin b) (Fin c) R) (C : Matrix (Fin c) (Fin d) R) : (A * B * C).map f = A.map f * B.map f * C.map f := by
-  rw [Matrix.map_mul, Matrix.map_mul]
 
 theorem tmul_natCast_mul {D : D7} (N : ℕ) (e : D.host.E) :
     (1 : Af D.host.F) ⊗ₜ[D.host.F] ((N : D.host.E) * e) =

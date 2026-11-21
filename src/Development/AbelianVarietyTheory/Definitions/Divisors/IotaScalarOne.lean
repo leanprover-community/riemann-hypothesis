@@ -73,13 +73,6 @@ structure FreeForm {ε : PreTilt O p} {h : ℕ} (D : Datum ε h Λ) (N : ℕ)
   F_eq : F = Ψ * F.map ψ
   Ψ_mul : Ψ * Ψ' = (inA (xi ε) : RL p O Λ) • (1 : Matrix (Fin N) (Fin N) (RL p O Λ))
 
-theorem iotaScalar_one {C : Type} [Field C] (N : ℕ) :
-    IotaScalar (1 : Matrix (Fin N) (Fin N) C) 0 0 1 := by
-  intro x y _ h2
-  have : y = x := funext fun i => by simpa using h2 i (Nat.zero_le _)
-  simp [this]
 
-theorem lead_pow {R C : Type} [CommRing R] [Field C] (f : R →+* C) (ξ : R) (n : ℕ) :
-    Lead f ξ (ξ ^ n) n 1 := ⟨1, 1, by simp, by simp, by simp⟩
 
 end GlobalTheory.DetInv

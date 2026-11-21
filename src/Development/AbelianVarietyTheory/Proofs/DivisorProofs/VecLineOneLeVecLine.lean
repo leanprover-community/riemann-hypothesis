@@ -57,11 +57,7 @@ theorem mem_vecLine {z : Fin n → AF F ⊗[F] E} {p : GAd σ J} :
 theorem mem_vecLineOne {z : Fin n → AF F ⊗[F] E} {p : GAd σ J} :
     p ∈ vecLineOne σ J z ↔ ∃ l : (AF F ⊗[F] E)ˣ, absE F E l = 1 ∧ (matHom _ σ J p).1 *ᵥ z = l.1 • z := Iff.rfl
 
-theorem vecFix_le_vecLineOne (z : Fin n → AF F ⊗[F] E) : vecFix σ J z ≤ vecLineOne σ J z :=
-  fun _ ⟨l, hl, e⟩ => ⟨l, bot_le (a := (absE F E).ker) hl, e⟩
 
-theorem vecLineOne_le_vecLine (z : Fin n → AF F ⊗[F] E) : vecLineOne σ J z ≤ vecLine σ J z :=
-  fun _ ⟨l, _, e⟩ => ⟨l, trivial, e⟩
 
 omit [NumberField E] in
 
@@ -93,10 +89,6 @@ theorem conj_mem_vecStab_iff {z w : Fin n → AF F ⊗[F] E} {H : Subgroup (AF F
   · intro h1
     rw [Matrix.mulVec_smul, h1, smul_comm, ← e, Matrix.mulVec_smul, inv_mulVec_cancel]
 
-theorem isClosed_vecFix (z : Fin n → AF F ⊗[F] E) : IsClosed (vecFix σ J z : Set (GAd σ J)) := by
-  obtain ⟨_, _⟩ := GlobalTheory.StdPar.ring_facts (F := F) (E := E)
-  have : (vecFix σ J z : Set (GAd σ J)) = {p | (matHom _ σ J p).1 *ᵥ z = z} := Set.ext fun _ => mem_vecFix
-  exact this ▸ isClosed_eq (GlobalTheory.StdPar.continuous_mat.matrix_mulVec continuous_const) continuous_const
 
 def IsStart {r : ℕ} (S : Finset (Fin r)) (j : Fin r) : Prop := j.val = 0 ∨ ∃ k ∈ S, k.val + 1 = j.val
 
@@ -118,15 +110,7 @@ abbrev Lines {r : ℕ} (X : Matrix (Fin n) (Fin (r + 1)) E) : Type := ratPts σ 
 def term {r : ℕ} (X : Matrix (Fin n) (Fin (r + 1)) E) (h : GAd σ J → ℝ) (e : ℂ) (q : Lines σ J X) (g : GAd σ J) : ℂ :=
   (h ((q.out : ratPts σ J).1⁻¹ * g) : ℂ) ^ e
 
-theorem mem_lineStab_iff {r : ℕ} {X : Matrix (Fin n) (Fin (r + 1)) E} {γ : ratPts σ J} :
-    γ ∈ lineStab σ J (col0 X) ↔ γ.1 ∈ vecLine σ J (adVec F (Xᵀ 0)) :=
-  (exists_congr fun _ => col0_eq_iff).trans mem_vecLine.symm
 
-theorem smul_mk_eq_iff {r : ℕ} {X : Matrix (Fin n) (Fin (r + 1)) E} {γ δ : ratPts σ J} {w : Fin n → AF F ⊗[F] E}
-    {c : (AF F ⊗[F] E)ˣ} (e : (matHom _ σ J γ.1).1 *ᵥ adVec F (Xᵀ 0) = c.1 • w) :
-    δ • (γ : Lines σ J X) = γ ↔ δ.1 ∈ vecLine σ J w := by
-  rw [eq_comm, MulAction.Quotient.smul_coe, QuotientGroup.eq, mem_lineStab_iff, smul_eq_mul, ← mul_assoc]
-  exact conj_mem_vecStab_iff e
 
 section HidaSetting
 

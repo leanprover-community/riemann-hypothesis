@@ -198,8 +198,6 @@ structure LocF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) where
 def LocF.eVT {eps : ℝ} {Fm : Formalism.MainNotions.FamP eps} (Y : LocF Fm) : ∀ x (i : Fm.Ix x), ArithmeticCylinders.VecAt (Fm.D x i) :=
   fun x i => if h : Fm.x1 < x then (Y.lo x h i).eV else 0
 
-theorem LocF.eVT_eq {eps : ℝ} {Fm : Formalism.MainNotions.FamP eps} (Y : LocF Fm) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) :
-    Y.eVT x i = (Y.lo x hx i).eV := dif_pos hx
 
 section Fam
 

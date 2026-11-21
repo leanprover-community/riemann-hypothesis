@@ -78,8 +78,6 @@ theorem delta_nonzero_link : LinkDeltaNe := by
   rw [← (show δ ^ 12 = discr (lamOf D cc 1) from hδ), e]
   norm_num
 
-theorem base_link_of_nonzero_delta : LinkBaseRec :=
-  fun D cc hcc δ hδ => base_linkage_exists D cc hcc δ (delta_nonzero_link D cc hcc δ hδ)
 
 theorem rational_integrality_link : LinkQInt := by
   intro D cc hcc δ hδ B N N' L L' hA x hx
@@ -106,23 +104,9 @@ theorem rational_integrality_link : LinkQInt := by
   rw [ha]
   field_simp
 
-theorem equation_base_link : LinkEqBase := by
-  intro D cc hcc δ hδ B χ hχ N N' L L' hA
-  have hS := SO.stdOK B hcc hδ
-  have hL := B.latAll hcc hδ (delta_nonzero_link D cc hcc δ hδ)
-  exact ⟨B.eq_change_right hS hL χ hχ hA, B.eq_change_left hS hL χ hχ hA, B.eNat_zero hS hL χ hχ hA.1 hA.2.1⟩
 
-theorem partition_link : LinkPart := by
-  intro D hA cc hcc δ hδ
-  obtain ⟨B⟩ := base_link_of_nonzero_delta D cc hcc δ hδ
-  refine ⟨character_linkage_holds D hA, fun χ hχ => ⟨B.eNat χ, vector_bound_link D cc hcc δ hδ B χ hχ, ?_⟩⟩
-  exact theta_bound_link D cc hcc δ hδ B χ hχ
 
-theorem provision_link_holds : LinkThetaFamily :=
-  fun D C hA hper h => eigen_linkage_all_primes D C hA hper (discrNe D) h
 
-theorem provision_link_of_periods : LinkThetaFamily' :=
-  fun hP D C hA h1 h2 h3 h4 h => provision_link_holds D C hA (hP D h1 h2 h3 h4) h
 
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity
 

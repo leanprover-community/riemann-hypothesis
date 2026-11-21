@@ -139,10 +139,5 @@ theorem clause2 {K : ℕ} (steps : List (Option ℕ)) (what₂ : ℕ → Fin K �
 
 end TailSumsP
 
-theorem tail_sums : TailSums := by
-  intro K steps what₂ hp
-  refine ⟨TailSumsP.clause1 steps what₂ hp, ?_⟩
-  intro i j u X hij hj hX
-  exact TailSumsP.clause2 steps what₂ hp i u X hX j hij hj
 
 end Formalism.G0

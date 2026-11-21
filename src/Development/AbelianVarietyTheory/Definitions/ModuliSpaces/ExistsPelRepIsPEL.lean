@@ -199,44 +199,7 @@ theorem hom_ext {h : ℕ} {ζ : o} (F : SFam h k ζ) {s' : S ⟶ Sp o} (c : Sieg
 
 example : Nonempty (SFam 0 0 (1 : ℤ)) := ⟨zeroFamLevelZero isUnit_one⟩
 
-theorem zp_hom_ext (p : ℕ) {R : Type} [CommRing R] (f f' : ZP p 0 →+* R) : f = f' := by
-  ext ⟨x, hx⟩
-  induction hx using Subring.closure_induction with
-  | mem x hx =>
-    rcases hx with rfl | ⟨n, hn, rfl⟩
-    · have : (⟨zeta 0, Subring.subset_closure (Or.inl rfl)⟩ : ZP p 0) = 1 := Subtype.ext (by simp [zeta])
-      erw [this, map_one, map_one]
-    · by_cases h0 : n = 0
-      · have : (⟨(n : ℂ)⁻¹, Subring.subset_closure (Or.inr ⟨n, hn, rfl⟩)⟩ : ZP p 0) = 0 := Subtype.ext (by simp [h0])
-        erw [this, map_zero, map_zero]
-      · have : (n : ZP p 0) * (⟨(n : ℂ)⁻¹, Subring.subset_closure (Or.inr ⟨n, hn, rfl⟩)⟩ : ZP p 0) = 1 :=
-          Subtype.ext (by simp [h0])
-        have h1 := congrArg f this
-        have h2 := congrArg f' this
-        rw [map_mul, map_natCast, map_one] at h1 h2
-        exact (IsUnit.of_mul_eq_one _ h1).mul_left_cancel (h1.trans h2.symm)
-  | zero => exact (map_zero f).trans (map_zero f').symm
-  | one => exact (map_one f).trans (map_one f').symm
-  | add x y hx hy a b => exact (map_add f ⟨x, hx⟩ ⟨y, hy⟩).trans ((congrArg₂ (· + ·) a b).trans (map_add f' _ _).symm)
-  | neg x hx a => exact (map_neg f ⟨x, hx⟩).trans ((congrArg (- ·) a).trans (map_neg f' _).symm)
-  | mul x y hx hy a b => exact (map_mul f ⟨x, hx⟩ ⟨y, hy⟩).trans ((congrArg₂ (· * ·) a b).trans (map_mul f' _ _).symm)
 
-theorem exists_sRep (p : ℕ) : ∃ Ag : SiegelFamily 0 p 0, SRep Ag ∧ Nonempty Ag.X := by
-  have hζ : IsUnit (zetaZP p 0) := by
-    have : zetaZP p 0 = 1 := Subtype.ext (by simp [zeta, zetaZP])
-    rw [this]; exact isUnit_one
-  refine ⟨_, (zeroFamLevelZero hζ).sRep (zeroFamLevelZero hζ).smooth (inferInstanceAs (QuasiCompact (𝟙 _)))
-    (zeroFamLevelZero hζ).princ ?_ ?_, (inferInstance : Nonempty (Sp (ZP p 0)))⟩
-  · intro C O _ _ _ _ _ _ _ _ hO _ β c _ _
-    haveI : IsDomain O := hO.1.isDomain _
-    haveI := isIso_of_points c.A c.ab fun K _ _ x y => tors_eq_one hζ c K x y (pow_zero y)
-    exact ⟨spMap β, Category.comp_id _, siegPB_zero c _ _ _⟩
-  · intro K _ x _ _ _
-    have u : ∀ y y' : Sp (DualNumber K) ⟶ Sp (ZP p 0), y = y' := fun y y' => by
-      rw [← Spec.map_preimage y, ← Spec.map_preimage y']
-      congr 1
-      exact CommRingCat.hom_ext (zp_hom_ext p _ _)
-    exact u _ _
 
 def zeroFamLevel {ζ : o} (hζ : IsUnit ζ) (hku : IsUnit (k : o)) (hk : 2 ≤ k) : SFam 0 k ζ :=
   zeroFam k ζ fun _ _ c _ => isIso_of_count GlobalTheory.UU.TorsionCount.card_torsion_points_unconditional hζ hku hk c
@@ -268,20 +231,7 @@ theorem exists_section [IsDomain o] {ζ : o} (F : SFam 0 k ζ) : ∃ f : Sp o �
     (PrimeSpectrum.le_iff_specializes _ _).1 (show (⊥ : Ideal o) ≤ _ from bot_le)
   exact hsp.mem_closed isClosed_closure (subset_closure rfl)
 
-theorem exists_pelRep_isPEL {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) {J : Type} (a : J → 𝓞 E)
-    (ρ : ℂ) (hk : k ≠ 0) : ∃ (t : TObj 0 k J (baseC k hk) (𝟙 (Sp ℂ))) (τ : SAB H (Sp ℂ)) (lev : _),
-      PELRep (Test.zeroDatum H) a (zeroBas H) ρ t ∧ IsPEL (Test.zeroDatum H) a (zeroBas H) ρ t τ ∧
-        LevUnder (Test.zeroDatum H) a (zeroBas H) t τ lev :=
-  ⟨_, Models.Inhab.zeroTriple H _, fun _ => 1, pelRep_zero _ a _ ρ _, isPEL_zero H a _ ρ hk _,
-    Iso.refl _, inferInstanceAs (IsMonHom (𝟙 (𝟙_ (Over (Sp ℂ))))),
-    lbIso_of_g _ _ (fun _ _ => rfl) (linComb_triv_g _ _), fun _ => toUnit_unique _ _,
-    fun _ _ => (_root_.mul_one _).symm, fun i => i.elim0⟩
 
-theorem nonempty_of_pelRep {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) {J : Type} (a : J → 𝓞 E)
-    (ρ : ℂ) (hk : k ≠ 0) {s : S ⟶ Sp ℂ} (t : TObj 0 k J (baseC k hk) s)
-    (h : PELRep (Test.zeroDatum H) a (zeroBas H) ρ t) : Nonempty S := by
-  obtain ⟨f, -⟩ := h.rep (PowerSeries ℂ) PowerSeries.C _ _ PowerSeries.C_injective (isPEL_zero H a _ ρ hk _)
-  exact ⟨f (IsLocalRing.closedPoint (PowerSeries ℂ))⟩
 
 end GlobalTheory.ZM.SFamModel
 end

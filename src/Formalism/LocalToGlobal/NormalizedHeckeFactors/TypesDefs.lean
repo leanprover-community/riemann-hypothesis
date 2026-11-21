@@ -131,31 +131,6 @@ theorem pow_eq_one_of_charP {k : Type} [Field k] (l : ℕ) [Fact l.Prime] [CharP
     rw [sub_pow_char_pow, one_pow, ← pow_mul, mul_comm, h, sub_self]
   exact sub_eq_zero.mp (pow_eq_zero_iff (pow_ne_zero _ (Fact.out : l.Prime).ne_zero) |>.mp h2)
 
-theorem redThrough_primeToPart {M : Type} [Monoid M] (t : M →* Ω) (u : M) (hu : 0 < orderOf u) :
-    redThrough B κ (t (Formalism.CyclotomicNorms.primeToPart l u)) = redThrough B κ (t u) := by
-  have hB : t u ∈ B := mem_of_pow_eq_one B hu (by rw [← map_pow, pow_orderOf_eq_one, map_one])
-  set y := redThrough B κ (t u) with hy
-  set m := orderOf u
-  set a := m.factorization l
-  set m' := m / l ^ a
-  have hm : l ^ a * m' = m := Nat.ordProj_mul_ordCompl_eq_self m l
-  have hy1 : y ^ m = 1 := by
-    rw [hy, ← redThrough_pow B κ hB, ← map_pow, pow_orderOf_eq_one, map_one, redThrough_one]
-  haveI : CharP (Formalism.CyclotomicNorms.Fbar l) l := inferInstance
-  have hy2 : y ^ m' = 1 := pow_eq_one_of_charP l y a m' (by rw [hm]; exact hy1)
-  have hm'0 : m' ≠ 0 := by
-    intro h0
-    rw [h0, mul_zero] at hm
-    exact hu.ne' hm.symm
-  haveI : NeZero m' := ⟨hm'0⟩
-  have hcop : Nat.Coprime (l ^ a) m' :=
-    Nat.Coprime.pow_left _ (Nat.coprime_ordCompl (Fact.out : l.Prime) hu.ne')
-  have hc : ((l ^ a * ((l ^ a : ℕ) : ZMod m')⁻¹.val : ℕ) : ZMod m') = ((1 : ℕ) : ZMod m') := by
-    rw [Nat.cast_mul, ZMod.natCast_zmod_val, Nat.cast_one]
-    exact ZMod.coe_mul_inv_eq_one _ hcop
-  rw [ZMod.natCast_eq_natCast_iff'] at hc
-  unfold Formalism.CyclotomicNorms.primeToPart
-  rw [map_pow, redThrough_pow B κ hB, ← hy, pow_eq_pow_mod _ hy2, hc, ← pow_eq_pow_mod _ hy2, pow_one]
 
 end Red
 

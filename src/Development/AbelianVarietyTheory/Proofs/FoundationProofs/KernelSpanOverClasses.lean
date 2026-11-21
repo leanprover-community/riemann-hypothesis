@@ -45,30 +45,7 @@ theorem fg_of_graph {R P X : Type} [CommRing R] [IsNoetherianRing R] [AddCommGro
 
 variable {K : Type} [Field K] [NumberField K] {n n' : ℕ}
 
-theorem isLatIn_comap (w : (Fin n → K) ≃ₗ[K] (Fin n' → K)) {e : (Fin n → K) →ₗ[K] (Fin n → K)}
-    {e' : (Fin n' → K) →ₗ[K] (Fin n' → K)} (he : ∀ x, w (e x) = e' (w x)) {V : Submodule K (Fin n' → K)}
-    {B : Submodule (𝓞 K) (Fin n' → K)} (h : Formalism.EigenvalueLevelCeiling.IsLatIn V (B.map (e'.restrictScalars (𝓞 K)))) :
-    Formalism.EigenvalueLevelCeiling.IsLatIn (V.comap w.toLinearMap)
-      ((B.comap (w.toLinearMap.restrictScalars (𝓞 K))).map (e.restrictScalars (𝓞 K))) := by
-  have key : (B.comap (w.toLinearMap.restrictScalars (𝓞 K))).map (e.restrictScalars (𝓞 K)) =
-      (B.map (e'.restrictScalars (𝓞 K))).map (w.symm.toLinearMap.restrictScalars (𝓞 K)) := by
-    ext x
-    constructor
-    · rintro ⟨y, hy, rfl⟩
-      exact ⟨_, ⟨w y, hy, rfl⟩, w.symm_apply_eq.2 (he y).symm⟩
-    · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
-      refine ⟨w.symm y, by simpa using hy, w.injective ?_⟩
-      simp [he]
-  rw [key]
-  refine ⟨h.1.map _, ?_⟩
-  rw [Submodule.map_coe, LinearMap.coe_restrictScalars, Submodule.span_image, h.2, Submodule.map_equiv_eq_comap_symm]
-  rfl
 
-theorem span_map_congr (e : (Fin n → K) →ₗ[K] (Fin n' → K)) {A B : Submodule (𝓞 K) (Fin n → K)}
-    (h : Submodule.span K (A : Set (Fin n → K)) = Submodule.span K (B : Set (Fin n → K))) :
-    Submodule.span K (A.map (e.restrictScalars (𝓞 K)) : Set (Fin n' → K)) =
-      Submodule.span K (B.map (e.restrictScalars (𝓞 K)) : Set (Fin n' → K)) := by
-  rw [Submodule.map_coe, Submodule.map_coe, LinearMap.coe_restrictScalars, Submodule.span_image, Submodule.span_image, h]
 
 theorem localization_comap_le (v : HeightOneSpectrum (𝓞 K)) (f : (Fin n → K) →ₗ[K] (Fin n' → K))
     {A B : Submodule (𝓞 K) (Fin n' → K)} (h : localization₂ v.asIdeal A ≤ localization₂ v.asIdeal B) :

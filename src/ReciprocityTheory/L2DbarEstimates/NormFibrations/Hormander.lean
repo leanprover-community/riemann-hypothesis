@@ -34,16 +34,6 @@ theorem tw (n : ℕ) (M : Type u) [TopologicalSpace M] [T2Space M]
     [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] : TWStatement n M :=
   I.tw n M (hormander n M) (F.holoClosedNeed n M (regMAll n M))
 
-theorem ot0 (n : ℕ) (M : Type u) [TopologicalSpace M] [T2Space M]
-    [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] : JacobianInterpolationStatement n M := by
-  have hB := I.basic n M
-  have hTL : I.TwistLeviStatement n M :=
-    I.twistLevi n M (I.logLevi n M (I.evLevi n M) (chain n M)) (chain n M) hB
-  have hA : I.ApplyStatement n M := I.applyTw n M (tw n M) hTL (I.dual n M hTL hB) hB
-  have hF : I.FixedStatement n M :=
-    I.fixed n M hA hB (I.vanish n C.mv C.mvDiv) (F.holoClosedNeed n M (regMAll n M))
-      (F.evalNeed n M C.mv) (fun H _ _ _ => cvx H)
-  exact I.ot0 n M hF (I.shellBound n M (I.polar n) (I.cov n)) (I.localData n M) I.cutoff
 
 theorem ma (n : ℕ) : MAStatement n :=
   I.ma n (I.maCof n)

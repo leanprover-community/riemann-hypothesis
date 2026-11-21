@@ -76,10 +76,6 @@ theorem tupMap_injective (S : Set ℕ) : Function.Injective (tupMap (F := F) (E 
 
 def tupMapEmb (S : Set ℕ) : Tup F E K S ↪ Tup F E L S := ⟨tupMap ι S, tupMap_injective ι S⟩
 
-theorem tupleMap_trivialTuple (S : Set ℕ) : tupMap ι S (mu0 F E K S) = mu0 F E L S := by
-  first
-  | (unfold mu0; exact map_one _)
-  | simp [mu0]
 
 theorem Qprime_chrMap (ξ : Chr F E K) : Qprime (chrMap ι ξ) = Qprime ξ := by
   first
@@ -151,11 +147,7 @@ theorem LevFam.coefMap_inv {SG : Finset (HeightOneSpectrum (𝓞 E))} (Λ : LevF
   funext w
   exact Lev.coefMap_inv ι (Λ w)
 
-theorem LevFam.coefMap_reidx {SG SG' : Finset (HeightOneSpectrum (𝓞 E))} (h : SG = SG') (Λ : LevFam E K n SG') :
-    (Λ.reidx h).coefMap ι = (Λ.coefMap ι).reidx h := rfl
 
-theorem LevFam.inv_reidx {SG SG' : Finset (HeightOneSpectrum (𝓞 E))} (h : SG = SG') (Λ : LevFam E K n SG') :
-    (Λ.reidx h).inv = Λ.inv.reidx h := rfl
 
 theorem LevFam.glue_coefMap_reidx {SG Q₁ Q₂ : Finset (HeightOneSpectrum (𝓞 E))} (hQ : Q₁ = Q₂) (A : LevFam E K n SG)
     (A' : LevFam E L n SG) (B : LevFam E K n Q₂) (B' : LevFam E L n Q₁) (hA : A' = A.coefMap ι)

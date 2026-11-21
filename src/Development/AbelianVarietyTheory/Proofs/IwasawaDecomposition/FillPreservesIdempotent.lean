@@ -63,22 +63,10 @@ theorem LocWIndep.at {A : NAut N} (h : LocWIndep A) : LocWIndepAt A := fun i i' 
 def RedIndep : Prop := ∀ (w : what₂.places.Pl) (i i' : N.Loc) (h : N.w i = w) (h' : N.w i' = w) (x : N.O i) (x' : N.O i'),
   iotaO N A i x = iotaO N A i' x' → redAt A i h x = redAt A i' h' x'
 
-theorem redIndep_of_map (κ : ∀ w, ℂ → Fb (what₂.places.resChar w) (what₂.places.resChar_prime w))
-    (hκ : ∀ i x, fbCast (N.w_l i) (what₂.places.resChar_prime (N.w i)) (N.lPrime i).out (κ (N.w i) (iotaO N A i x)) =
-      A.kFbar i (IsLocalRing.residue (N.O i) x)) : RedIndep A := by
-  have key : ∀ w i (h : N.w i = w) x, redAt A i h x = κ w (iotaO N A i x) := by
-    rintro _ i rfl x
-    exact (RingEquiv.symm_apply_eq _).2 (hκ i x).symm
-  intro w i i' h h' x x' e
-  rw [key, key, e]
 
 theorem iotaO_injective (i : N.Loc) : Function.Injective (iotaO N A i) :=
   ((A.iotaQC i).toRingHom.comp (A.iotaQ i)).injective.comp (IsFractionRing.injective _ _)
 
-theorem redIndep_of_injective (h : Function.Injective N.w) : RedIndep A := by
-  rintro _ i i' rfl h' x x' e
-  obtain rfl := h h'
-  rw [iotaO_injective A _ e]
 
 theorem continuous_red (i : N.Loc) {k : Type} [Field k] [TopologicalSpace k] [DiscreteTopology k]
     (κ : IsLocalRing.ResidueField (N.O i) →+* k) {n : ℕ} {ρ : G H.E N.Om → Matrix (Fin n) (Fin n) (N.O i)}
@@ -100,29 +88,6 @@ theorem continuous_redAt (i : N.Loc) {w : what₂.places.Pl} (h : N.w i = w)
 
 variable {A}
 
-theorem charpoly_red_eq (hC : GlobalTheory.Published.ChebotarevDegreeOne) (hW : LocWIndepAt A) (hR : RedIndep A)
-    {w : what₂.places.Pl} {σ : what₂.FT} {i i' : N.Loc} (h : N.w i = w) (h' : N.w i' = w)
-    {Sig Sig' : List (Formalism.BasicNotions.Part A.CG)} {ρ : G H.E N.Om →* GL (Fin R.r) (N.O i)}
-    {ρ' : G H.E N.Om →* GL (Fin R.r) (N.O i')} (h1 : HasParamW N A i σ Sig) (h2 : IsRepOfSig N A i Sig ρ)
-    (h1' : HasParamW N A i' σ Sig') (h2' : IsRepOfSig N A i' Sig' ρ') (g : G H.E N.Om) :
-    (ρ g : Matrix (Fin R.r) (Fin R.r) (N.O i)).charpoly.map (redAt A i h) =
-      (ρ' g : Matrix (Fin R.r) (Fin R.r) (N.O i')).charpoly.map (redAt A i' h') := by
-  letI : TopologicalSpace (Fb (what₂.places.resChar w) (what₂.places.resChar_prime w)) := ⊥
-  haveI : DiscreteTopology (Fb (what₂.places.resChar w) (what₂.places.resChar_prime w)) := ⟨rfl⟩
-  letI : TopologicalSpace (Fb (what₂.places.resChar w) (what₂.places.resChar_prime w))[X] := ⊥
-  haveI : DiscreteTopology (Fb (what₂.places.resChar w) (what₂.places.resChar_prime w))[X] := ⟨rfl⟩
-  have hc : Continuous (Matrix.charpoly : Matrix (Fin R.r) (Fin R.r)
-      (Fb (what₂.places.resChar w) (what₂.places.resChar_prime w)) → _) := continuous_of_discreteTopology
-  rw [← Matrix.charpoly_map, ← Matrix.charpoly_map]
-  refine congrFun (eq_of_split hC (hc.comp (continuous_redAt A i h h2.1))
-    (hc.comp (continuous_redAt A i' h' h2'.1)) ?_) g
-  filter_upwards [h2.2.2, h2'.2.2] with v e e' hv B s hB hs
-  have e3 := e B s hB hs
-  rw [h1.2.2 v hv, hW i i' (h.trans h'.symm) σ v hv, ← h1'.2.2 v hv, ← e' B s hB hs] at e3
-  simp only [Function.comp_apply, Matrix.charpoly_map]
-  ext n
-  rw [coeff_map, coeff_map]
-  exact hR w i i' h h' _ _ (by simpa only [coeff_map] using congrArg (coeff · n) e3)
 
 section Residual
 
@@ -153,13 +118,6 @@ theorem rbarOf_open (σ : what₂.FT) (w : what₂.places.Pl) : IsOpen ((rbarOf 
   · exact h.choose_spec.2.1
   · simp
 
-theorem rbarOf_ss (σ : what₂.FT) (w : what₂.places.Pl) : IsSSRep (rbarOf A B₀ κ σ w) := by
-  unfold rbarOf
-  split_ifs with h
-  · exact h.choose_spec.1
-  · intro W _
-    obtain ⟨W', h'⟩ := W.exists_isCompl
-    exact ⟨W', fun g v hv => by simpa using hv, h'⟩
 
 variable {A B₀ κ}
 
@@ -169,43 +127,8 @@ theorem IsRbar.chosen {σ : what₂.FT} {w : what₂.places.Pl} {r} (h : IsRbar 
   rw [rbarOf, dif_pos h']
   exact h'.choose_spec
 
-theorem redTie_iff : RedTie A B₀ κ ↔ ∀ i (x : N.O i), ∃ h : iotaO N A i x ∈ B₀ (N.w i),
-    fbCast (N.w_l i) (what₂.places.resChar_prime (N.w i)) (N.lPrime i).out (κ (N.w i) ⟨_, h⟩) =
-      A.kFbar i (IsLocalRing.residue (N.O i) x) :=
-  forall₂_congr fun _ _ => exists_congr fun _ => eq_comm.trans ((RingEquiv.symm_apply_eq _).trans eq_comm)
 
-theorem RedTie.redIndep (h : RedTie A B₀ κ) : RedIndep A := by
-  rintro _ i i' rfl h' x x' e
-  have key : ∀ w i (hi : N.w i = w) (x : N.O i), ∃ h : iotaO N A i x ∈ B₀ w, κ w ⟨_, h⟩ = redAt A i hi x := by
-    rintro _ i rfl x
-    exact h i x
-  obtain ⟨a, b⟩ := key _ i rfl x
-  obtain ⟨a', b'⟩ := key _ i' h' x'
-  rw [← b, ← b']
-  exact congrArg _ (Subtype.ext e)
 
-theorem RedTie.liesOverAt (h : RedTie A B₀ κ) (i : N.Loc) : LiesOverAt B₀ (N.w i) := by
-  have e : ∀ x y, algebraMap (N.O i) (FractionRing (N.O i)) y = N.embK i x → iotaO N A i y = what₂.embLL x :=
-    fun x y hy => by rw [← A.iota_LL i x, ← hy]; rfl
-  intro x
-  rw [N.embK_w]
-  refine ⟨fun ⟨y, hy⟩ => e x y hy ▸ (h i y).1, fun hx => ?_⟩
-  rcases ValuationRing.isInteger_or_isInteger (N.O i) (N.embK i x) with hy | ⟨y, hy⟩
-  · exact hy
-  by_cases h0 : x = 0
-  · exact ⟨0, by simp [h0]⟩
-  obtain ⟨a, b⟩ := h i y
-  have e1 : (⟨_, hx⟩ : B₀ (N.w i)) * ⟨_, a⟩ = 1 := Subtype.ext <| by
-    change what₂.embLL x * iotaO N A i y = 1
-    rw [e x⁻¹ y (by rw [hy, map_inv₀]), ← map_mul, mul_inv_cancel₀ h0, map_one]
-  have hu : IsUnit y := by
-    by_contra hn
-    have h1 := congrArg (κ (N.w i)) e1
-    rw [map_mul, b, map_one, redAt, RingHom.comp_apply, RingHom.comp_apply,
-      (IsLocalRing.residue_eq_zero_iff y).2 hn, map_zero, map_zero, mul_zero] at h1
-    exact zero_ne_one h1
-  obtain ⟨u, rfl⟩ := hu
-  exact ⟨(u⁻¹ : (N.O i)ˣ), by rw [map_units_inv, hy, inv_inv]⟩
 
 theorem exists_isRbar_of_lattice {σ : what₂.FT} {w : what₂.places.Pl} {i : N.Loc} {Sig : List (Formalism.BasicNotions.Part A.CG)}
     (h1 : HasParamW N A i σ Sig) {O : Type} [CommRing O] (φ : O →+* B₀ w) (ρ : G H.E N.Om →* GL (Fin R.r) O)
@@ -264,18 +187,6 @@ theorem IsRbar.charpoly_eq (hC : GlobalTheory.Published.ChebotarevDegreeOne) (hW
   rw [a.2.2 v hv, hW i i' σ v hv, ← a'.2.2 v hv, ← p1'] at p1
   rw [p2, p2', Polynomial.map_injective _ Subtype.val_injective p1]
 
-theorem rbarOf_charpoly (hC : GlobalTheory.Published.ChebotarevDegreeOne) (hW : LocWIndep A) {σ : what₂.FT} {w : what₂.places.Pl}
-    {i : N.Loc} {Sig : List (Formalism.BasicNotions.Part A.CG)} (h1 : HasParamW N A i σ Sig) {O : Type} [CommRing O]
-    (φ : O →+* B₀ w) (ρ : G H.E N.Om →* GL (Fin R.r) O)
-    (ho : IsOpen ((mapRep ((κ w).comp φ) ρ).ker : Set (G H.E N.Om)))
-    (h2 : ∀ᶠ v in cofinite, IsSplitPl H v → ∀ (B : ValuationSubring N.Om) (s : G H.E N.Om),
-      IsPlaceOver (F := H.E) B v → IsFrob (F := H.E) B (normV v) s →
-      (ρ s : Matrix (Fin R.r) (Fin R.r) O).charpoly.map ((B₀ w).subtype.comp φ) =
-        galPol A (A.lpTw (isoLoc N A Sig v) ((1 - (R.r : ℝ)) / 2))) (g : G H.E N.Om) :
-    (rbarOf A B₀ κ σ w g : Matrix (Fin R.r) (Fin R.r) _).charpoly =
-      (ρ g : Matrix (Fin R.r) (Fin R.r) O).charpoly.map ((κ w).comp φ) := by
-  obtain ⟨r, hr, hc⟩ := exists_isRbar_of_lattice h1 φ ρ ho h2
-  rw [hr.chosen.charpoly_eq hC hW hr, hc]
 
 theorem rbarTie (hC : GlobalTheory.Published.ChebotarevDegreeOne) (hW : LocWIndep A) (hR : RedTie A B₀ κ) {X : NTypes A}
     (hX : X.rbar = rbarOf A B₀ κ) : RbarTie N A X := by
@@ -582,7 +493,6 @@ namespace Spec
 
 def ofLoc (i : N.Loc) : Spec A (what₂.Mt (N.mu i) (N.j i)) := ⟨A.AV i, A.typeV i, A.locV i, A.satV i, A.infWt i⟩
 
-theorem iSup_ofLoc (i : N.Loc) : ⨆ P, (ofLoc A i).tp P = ⊤ := A.typeV_top i
 
 variable {A} {M : Type} [AddCommGroup M] [Module ℂ M] (S S' : Spec A M)
 
@@ -594,8 +504,6 @@ def IsBC (n : ℕ) (P : S.I) (Pa : List (Formalism.BasicNotions.Part A.CG)) : Pr
   (∀ w, ¬ IsSplitPl H w → A.unr (isoLoc N A Pa w) ∧ A.frobEig (isoLoc N A Pa w) = ubc n (S.sat P w)) ∧
   ∀ τ, isoInf N A Pa τ = S.inf τ
 
-theorem isBC_ofLoc (i : N.Loc) (P : A.AV i) (Pa : List (Formalism.BasicNotions.Part A.CG)) :
-    (ofLoc A i).IsBC R.nV P Pa ↔ IsBCV N A i P Pa := Iff.rfl
 
 def part (n : ℕ) (T : List (Formalism.BasicNotions.Part A.CG) → List (Formalism.BasicNotions.Part A.CG)) (L : ∀ w, A.LP w) : Submodule ℂ M :=
   ⨆ P ∈ {P | ∃ Sig, (∀ w, isoLoc N A Sig w = L w) ∧ S.IsBC n P (T Sig)}, S.tp P
@@ -671,7 +579,6 @@ theorem mtParTie (h : SpecTie S c) (X : NTypes A) : MtParTie N A (fill S T c B�
   rw [(h i).2.2]
   rfl
 
-theorem fill_preserves_idempotent (X : NTypes A) : (fill S T c B₀ κ X).e0 = X.e0 ∧ ((fill S T c B₀ κ X).IdempotentMatchesAction ↔ X.IdempotentMatchesAction) := ⟨rfl, Iff.rfl⟩
 
 theorem ties_of_record (hC : GlobalTheory.Published.ChebotarevDegreeOne) (hJ : IsobaricRigid N A) (hG : GlobalTheory.GalOfCusp.Reading A)
     (hW : LocWIndep A) (hR : RedTie A B₀ κ) (hS : SpecTie S c) (X : NTypes A) :

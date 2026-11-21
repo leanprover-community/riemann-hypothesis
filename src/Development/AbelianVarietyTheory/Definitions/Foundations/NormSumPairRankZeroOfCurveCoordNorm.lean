@@ -87,20 +87,8 @@ theorem mem_intG {D : D7} {N : ℕ} (k : GA D N) : k ∈ intG D N ↔ IntG D (k 
     · exact (hx i j).2
     · rw [Subgroup.coe_inv, inv_inv]; exact (hx i j).1
 
-theorem cls_eq_classSet (D : D7) (N : ℕ) (J : Subgroup (GA D N)) : Cls D N J = Formalism.UG.ClassSet (ratG D N) J := rfl
 
-theorem gam_eq_card_stabAt (D : D7) {N : ℕ} (J : Subgroup (GA D N)) (g : GA D N) :
-    gam D J g = Nat.card (Formalism.UG.stabAt (ratG D N) J g) :=
-  Nat.card_congr
-    { toFun := fun γ => ⟨⟨γ.1, γ.2.1⟩, γ.2.2⟩
-      invFun := fun γ => ⟨γ.1.1, γ.1.2, γ.2⟩
-      left_inv := fun _ => rfl
-      right_inv := fun _ => rfl }
 
-theorem gam_ne_zero_iff (D : D7) {N : ℕ} (J : Subgroup (GA D N)) (g : GA D N) :
-    gam D J g ≠ 0 ↔ Finite (Formalism.UG.stabAt (ratG D N) J g) := by
-  rw [gam_eq_card_stabAt, Nat.card_ne_zero]
-  exact ⟨fun h => h.2, fun h => ⟨⟨⟨1, by simp [Formalism.UG.stabAt]⟩⟩, h⟩⟩
 
 abbrev Tup (D : D7) (a d : ℕ) (n : D.what₂.Tau → ℕ) : Type :=
   ∀ τ, Fin (n τ) → {s : Fin a → Fin d // StrictMono s}
@@ -198,12 +186,6 @@ structure Inp (D : D7) : Prop where
   eqv : ∀ (cc : Ideal (𝓞 D.host.K)) (δ t0 : ℂ) (N N' : ℕ) (e0 : VC D N N' → ℂ), Crv D cc δ →
     GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D cc δ) t0 → Even (N * N') → oddE0 D cc δ t0 N N' e0 → oddEq D cc δ N N' e0
 
-theorem Inp.of_conditions (hA : AdmD D) (hP : aux₃ D) (hM : GL3Theta.modelEx D)
-    (hE : ∀ cc δ t0 N N' e0, StatementOddExactness D cc δ t0 N N' e0) : Inp D := by
-  obtain ⟨⟨-, hg1, hperm, huni, hmu, hC, hPo⟩, htr, htwo, hjets, -, hsplit⟩ := hA
-  obtain ⟨⟨hcurve, -, -, -, -, -, -, hgal, hgalEx, ht0, huse1, halg, hconj, hnrm, -, -, -, hbar⟩, -, h3, h4, hrep, -⟩ := hP
-  exact ⟨hg1, hperm, huni, hmu, hcurve, hgal, hgalEx, ht0, huse1, halg, hconj, hnrm, hbar, h3, h4, hrep, hM, htr, htwo,
-    hjets, hsplit, fun cc δ t0 N N' e0 h1 h2 he hv => hE cc δ t0 N N' e0 h1 h2 he hv hPo hg1 huni hmu hC h3 h4⟩
 
 theorem Pair.even_mul (P : Pair D cc δ t0 Q) : Even (P.a * P.d) := P.d_even.mul_left P.a
 
@@ -223,11 +205,6 @@ theorem Pair.sq_nonneg (P : Pair D cc δ t0 Q) (h : GA D P.d) : 0 ≤ P.sq h :=
 theorem Pair.norm_nonneg (P : Pair D cc δ t0 Q) : 0 ≤ P.norm :=
   finsum_nonneg fun _ => mul_nonneg (by positivity) (P.sq_nonneg _)
 
-theorem Pair.term_mul_intG (P : Pair D cc δ t0 Q) (hF : P.F ∈ TT D (tor0 D cc δ) P.a P.d) (x : GA D P.a) {k : GA D P.a}
-    (hk : k ∈ intG D P.a) (h : GA D P.d) (T : Tup D P.a P.d P.n) : P.term (x * k) h T = P.term x h T := by
-  have := P.W.mul x k h 1 P.F hF
-  rw [mul_one, P.fix k hk] at this
-  rw [Pair.term, Pair.term, this]
 
 theorem wd_zero (D : D7) (T : Tor D) {a d : ℕ} (G : VC D a d → ℂ) : Wd D T 0 G = G := by
   funext z
@@ -269,9 +246,6 @@ def Pair.ofVacuum (crv : Crv D cc δ) (pt0 : GL3Theta.IsTwoTorsionPointUnkilled 
   idx_le := by simp
   eig := heig
 
-theorem Pair.ofVacuum_F_ne_zero (crv : Crv D cc δ) (pt0 : GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D cc δ) t0) {a d : ℕ} (had : a ≤ d)
-    (hd : Even d) {e0 : VC D a d → ℂ} (vac : oddE0 D cc δ t0 a d e0) (W : WeilO D cc δ a d e0) (n : D.what₂.Tau → ℕ)
-    (wt) (hfix) (heig) : (Pair.ofVacuum crv pt0 had hd vac W n wt hfix heig).F ≠ 0 := W.nz
 
 theorem exists_crv_top (D : D7) : ∃ δ : ℂ, Crv D ⊤ δ := by
   obtain ⟨δ, hδ⟩ := IsAlgClosed.exists_pow_nat_eq (discr (lamOf D ⊤ 1)) (n := 12) (by norm_num)

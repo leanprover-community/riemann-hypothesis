@@ -113,8 +113,6 @@ theorem awayToExt_apply (ρ : Set.Ioo (0 : ℝ) 1) (a : 𝔸) :
 theorem awayToExt_eq_ofAll (ρ : Set.Ioo (0 : ℝ) 1) (a : 𝔸) :
     awayToExt p ρ a = (𝓣).ofAll (toB ℂ_[p] p a) (convAll_toB a) ρ := rfl
 
-theorem awayToExt_injective (ρ : Set.Ioo (0 : ℝ) 1) : Function.Injective (awayToExt p ρ) :=
-  fun _ _ h => toB_injective (congrArg Subtype.val ((𝓣).coe_injective_Econ h))
 
 theorem res_awayToExt {ρ0 ρ1 : Set.Ioo (0 : ℝ) 1} (h : (ρ1 : ℝ) ≤ ρ0) (a : 𝔸) :
     (𝓣).res h (awayToExt p ρ0 a) = awayToExt p ρ1 a := by
@@ -505,9 +503,6 @@ theorem thetaAway_algebraMap (y : AInf ℂ_[p] p) :
   simp only [thetaAway, RingHom.comp_apply, fontaineThetaInvertP_algebraMap]
   exact (awayEquiv (K := ℂ_[p]) p).commutes (θ y)
 
-theorem thetaBDeRhamPlusField_toBDeRhamPlus (a : 𝔸) :
-    thetaBDeRhamPlusField p (toBDeRhamPlus (normInteger ℂ_[p]) p a) = thetaAway p a := by
-  simp only [thetaBDeRhamPlusField, thetaAway, RingHom.comp_apply, thetaBDeRhamPlus_toBDeRhamPlus]
 
 theorem ker_thetaAway : RingHom.ker (thetaAway p) = 𝔍 := by
   ext a
@@ -526,88 +521,14 @@ def cXi : (𝓣).UntiltField (isPrimOne_xi (p := p)) ≃+* ℂ_[p] :=
     (Ideal.quotEquivOfEq (ker_thetaXi.trans ker_thetaAway.symm))).trans
     (RingHom.quotientKerEquivOfSurjective (thetaAway_surjective (p := p)))
 
-theorem cXi_thetaXi (a : 𝔸) : cXi p (thetaXi p a) = thetaAway p a := by
-  have h1 : (RingHom.quotientKerEquivOfSurjective (thetaXi_surjective (p := p))).symm (thetaXi p a) =
-      Ideal.Quotient.mk _ a := by
-    rw [RingEquiv.symm_apply_eq]; rfl
-  simp only [cXi, RingEquiv.trans_apply, h1]
-  rfl
 
-theorem cXi_toUntiltField (y : AInf ℂ_[p] p) :
-    cXi p ((𝓣).toUntiltField isPrimOne_xi ((𝓣).toUntilt (xi p) ⟨incl ℂ_[p] p y, incl_mem_int y⟩)) =
-      ((θ y : normInteger ℂ_[p]) : ℂ_[p]) := by
-  rw [← thetaXi_algebraMap, cXi_thetaXi, thetaAway_algebraMap]
 
-theorem cXi_ptPi : cXi p ((𝓣).ptPi isPrimOne_xi) = (p : ℂ_[p]) := by
-  rw [← thetaXi_algebraMap_p, cXi_thetaXi, map_natCast, map_natCast]
 
-theorem norm_cXi_toUntilt_le_one (Y : (𝓣).int) :
-    ‖cXi p ((𝓣).toUntiltField isPrimOne_xi ((𝓣).toUntilt (xi p) Y))‖ ≤ 1 := by
-  obtain ⟨y, hy⟩ := Y.2
-  have hY : Y = ⟨incl ℂ_[p] p y, incl_mem_int y⟩ := Subtype.ext hy.symm
-  rw [hY, cXi_toUntiltField]
-  exact mem_normInteger.1 (θ y).2
 
-theorem norm_cXi_toUntilt_of_isUnit {u : (𝓣).Untilt (xi p)} (hu : IsUnit u) :
-    ‖cXi p ((𝓣).toUntiltField isPrimOne_xi u)‖ = 1 := by
-  obtain ⟨v, huv⟩ := hu.exists_right_inv
-  obtain ⟨U, rfl⟩ := Ideal.Quotient.mk_surjective u
-  obtain ⟨V, rfl⟩ := Ideal.Quotient.mk_surjective v
-  have h := congrArg (fun w => ‖cXi p ((𝓣).toUntiltField isPrimOne_xi w)‖) huv
-  simp only [map_mul, map_one, norm_mul, norm_one] at h
-  have h1 := norm_cXi_toUntilt_le_one (p := p) U
-  have h2 := norm_cXi_toUntilt_le_one (p := p) V
-  nlinarith [norm_nonneg (cXi p ((𝓣).toUntiltField isPrimOne_xi (Ideal.Quotient.mk _ U))),
-    norm_nonneg (cXi p ((𝓣).toUntiltField isPrimOne_xi (Ideal.Quotient.mk _ V)))]
 
-theorem norm_cXi_toUntilt_teich {z : Cb p} (hz : ‖z‖ ≤ 1) :
-    ‖cXi p ((𝓣).toUntiltField isPrimOne_xi ((𝓣).toUntilt (xi p) ((𝓣).teichInt hz)))‖ = ‖z‖ := by
-  obtain ⟨z', rfl⟩ := norm_le_one_iff_exists_algebraMap.1 hz
-  have e : (𝓣).teichInt hz = ⟨incl ℂ_[p] p (teichmuller p z'), incl_mem_int _⟩ :=
-    Subtype.ext (by
-      show (𝓣).teich (algebraMap (Ob p) (Cb p) z') = incl ℂ_[p] p (teichmuller p z')
-      rw [incl_teichmuller]; exact teich_eq _)
-  rw [e, cXi_toUntiltField, fontaineTheta_teichmuller, norm_algebraMap_preTilt, preTilt_norm_def]
 
-theorem norm_cXi_toUntilt (Y : (𝓣).int) :
-    ‖cXi p ((𝓣).toUntiltField isPrimOne_xi ((𝓣).toUntilt (xi p) Y))‖ =
-      (𝓣).untiltNorm isPrimOne_xi ((𝓣).toUntilt (xi p) Y) := by
-  by_cases hq : (𝓣).toUntilt (xi p) Y = 0
-  · rw [hq, map_zero, map_zero, norm_zero, ((𝓣).untiltNorm_eq_zero_iff isPrimOne_xi).2 rfl]
-  obtain ⟨z, hz0, hz, u, hu, hqu⟩ := (𝓣).exists_teich_mul_unit isPrimOne_xi hq
-  rw [(𝓣).untiltNorm_eq isPrimOne_xi hz0 hz hu hqu, hqu, map_mul, map_mul, norm_mul,
-    norm_cXi_toUntilt_teich, norm_cXi_toUntilt_of_isUnit hu, mul_one]
 
-theorem norm_cXi (w : (𝓣).UntiltField (isPrimOne_xi (p := p))) : ‖cXi p w‖ = ‖w‖ := by
-  obtain ⟨a, rfl⟩ := thetaXi_surjective w
-  obtain ⟨N, y, hy⟩ := IsLocalization.Away.surj (p : AInf ℂ_[p] p) a
-  have h1 := congrArg (fun b => ‖cXi p (thetaXi p b)‖) hy
-  have h2 := congrArg (fun b => ‖thetaXi p b‖) hy
-  simp only [map_mul, map_pow, norm_mul, norm_pow, thetaXi_algebraMap_p, cXi_ptPi] at h1 h2
-  rw [thetaXi_algebraMap, norm_cXi_toUntilt] at h1
-  rw [thetaXi_algebraMap, norm_toUntiltField] at h2
-  have hπ : ‖(𝓣).ptPi (isPrimOne_xi (p := p))‖ = ‖(p : ℂ_[p])‖ := by
-    rw [norm_ptPi, norm_natCast_p]; exact ptRad_xi
-  rw [hπ] at h2
-  have hp0 : ‖(p : ℂ_[p])‖ ^ N ≠ 0 := pow_ne_zero _ (by rw [norm_natCast_p]; exact inv_p_pos.ne')
-  exact mul_right_cancel₀ hp0 (h1.trans h2.symm)
 
-theorem theta_iota (hρ : (p : ℝ)⁻¹ < ρ) (x : (𝓣).RobbaExt ρ) :
-    thetaBDeRhamPlusField p (iota p hρ x) = cXi p ((𝓣).ptEval isPrimOne_xi (ptRad_xi_le hρ) x) := by
-  obtain ⟨a, ha⟩ := Ideal.Quotient.mk_surjective (evalB ℂ_[p] p 1 (iota p hρ x))
-  have h1 := (evalB_iota_eq_mk_iff hρ).1 ha.symm
-  rw [pow_one, Ideal.mem_span_singleton'] at h1
-  obtain ⟨y, hy⟩ := h1
-  have h2 : (𝓣).ptEval isPrimOne_xi (ptRad_xi_le hρ) x = thetaXi p a := by
-    rw [← ptEval_awayToExt (ptRad_xi_le hρ), ← sub_eq_zero, ← map_sub, ← hy, map_mul,
-      (𝓣).ptEval_ξExt isPrimOne_xi, mul_zero]
-  have h3 : thetaBDeRhamPlus (normInteger ℂ_[p]) p
-      (iota p hρ x - toBDeRhamPlus (normInteger ℂ_[p]) p a) = 0 :=
-    thetaBDeRhamPlus_eq_zero_of_evalB_one_eq_zero (by rw [map_sub, ← ha, evalB_toBDeRhamPlus, sub_self])
-  have h4 : thetaBDeRhamPlusField p (iota p hρ x - toBDeRhamPlus (normInteger ℂ_[p]) p a) = 0 := by
-    simp only [thetaBDeRhamPlusField, RingHom.comp_apply, h3, map_zero]
-  rw [map_sub, sub_eq_zero, thetaBDeRhamPlusField_toBDeRhamPlus] at h4
-  rw [h4, h2, cXi_thetaXi]
 
 variable (p) in
 
@@ -702,14 +623,6 @@ theorem exists_evalB_pow_mul_iota_eq (hρ : (p : ℝ)⁻¹ < ρ) {w : (𝓣).Rob
   rw [e, evalB_iota_eq_mk_iff]
   exact hy
 
-theorem pow_mul_evalB_iota_mem_latticeQ (hρ : (p : ℝ)⁻¹ < ρ) {w : (𝓣).RobbaExt ρ}
-    (hw : (𝓣).extNorm ρ (inversePRadius p hρ) w ≤ 1) (m : ℕ) :
-    (p : 𝔸 ⧸ 𝔍 ^ (m + 1)) ^ m * evalB ℂ_[p] p (m + 1) (iota p hρ w) ∈
-      ACris.latticeQ ℂ_[p] p (m + 1) := by
-  obtain ⟨y, hy⟩ := exists_evalB_pow_mul_iota_eq hρ hw m
-  rw [map_mul, map_pow, map_natCast] at hy
-  rw [hy]
-  exact ⟨y, rfl⟩
 
 variable (p) in
 
@@ -818,8 +731,6 @@ def tildeDom : Subring (𝓣).RobbaTilde where
     obtain ⟨ρ, hρ, x', rfl⟩ := hx
     exact ⟨ρ, hρ, -x', map_neg _ _⟩
 
-theorem ofRad_mem_tildeDom (hρ : (p : ℝ)⁻¹ < ρ) (y : (𝓣).RobbaExt ρ) :
-    (𝓣).ofRad ρ y ∈ tildeDom p := ⟨ρ, hρ, y, rfl⟩
 
 theorem iota_eq_of_ofRad_eq {ρ1 ρ2 : Set.Ioo (0 : ℝ) 1} (h1 : (p : ℝ)⁻¹ < ρ1) (h2 : (p : ℝ)⁻¹ < ρ2)
     {y1 : (𝓣).RobbaExt ρ1} {y2 : (𝓣).RobbaExt ρ2} (h : (𝓣).ofRad ρ1 y1 = (𝓣).ofRad ρ2 y2) :
@@ -869,20 +780,8 @@ def iotaTilde : tildeDom p →+* 𝔹 where
   map_zero' := iotaTildeFun_zero
   map_add' x y := iotaTildeFun_add x.2 y.2
 
-theorem iotaTilde_apply (x : tildeDom p) : iotaTilde p x = iotaTildeFun p x := rfl
 
-theorem iotaTilde_ofRad (hρ : (p : ℝ)⁻¹ < ρ) (y : (𝓣).RobbaExt ρ) :
-    iotaTilde p ⟨(𝓣).ofRad ρ y, ofRad_mem_tildeDom hρ y⟩ = iota p hρ y :=
-  iotaTildeFun_ofRad hρ y
 
-theorem iotaTilde_injective : Function.Injective (iotaTilde p) := by
-  rw [injective_iff_map_eq_zero]
-  rintro ⟨x, ρ, hρ, y, rfl⟩ hx
-  rw [iotaTilde_ofRad hρ] at hx
-  have hy : y = 0 := iota_injective hρ (hx.trans (map_zero _).symm)
-  apply Subtype.ext
-  show (𝓣).ofRad ρ y = 0
-  rw [hy, map_zero]
 
 theorem rootRadius_coe (τ : Set.Ioo (0 : ℝ) 1) :
     ((frob ℂ_[p] p).rootRadius τ : ℝ) = (τ : ℝ) ^ ((p : ℝ)⁻¹) := by
@@ -893,74 +792,17 @@ theorem le_rootRadius (τ : Set.Ioo (0 : ℝ) 1) : (τ : ℝ) ≤ (frob ℂ_[p] 
   rw [rootRadius_coe]
   exact Real.self_le_rpow_of_le_one τ.2.1.le τ.2.2.le inv_p_lt_one.le
 
-theorem tildeFrobSymm_mem_tildeDom {x : (𝓣).RobbaTilde} (hx : x ∈ tildeDom p) :
-    (frob ℂ_[p] p).tildeFrobSymm x ∈ tildeDom p := by
-  obtain ⟨ρ, hρ, y, rfl⟩ := hx
-  rw [TeichLift.TeichFrob.tildeFrobSymm_ofRad]
-  exact ⟨_, hρ.trans_le (le_rootRadius ρ), _, rfl⟩
 
-theorem iterate_tildeFrobSymm_ofRad (N : ℕ) : ∀ (τ : Set.Ioo (0 : ℝ) 1) (y : (𝓣).RobbaExt τ),
-    ∃ (τ' : Set.Ioo (0 : ℝ) 1) (y' : (𝓣).RobbaExt τ'),
-      (frob ℂ_[p] p).tildeFrobSymm^[N] ((𝓣).ofRad τ y) = (𝓣).ofRad τ' y' ∧
-        (τ' : ℝ) = (τ : ℝ) ^ ((p : ℝ)⁻¹ ^ N) := by
-  induction N with
-  | zero => intro τ y; exact ⟨τ, y, rfl, by rw [pow_zero, Real.rpow_one]⟩
-  | succ N ih =>
-    intro τ y
-    obtain ⟨τ', y', h1, h2⟩ := ih _ ((frob ℂ_[p] p).extFrobSymm τ y)
-    refine ⟨τ', y', ?_, ?_⟩
-    · rw [Function.iterate_succ_apply, TeichLift.TeichFrob.tildeFrobSymm_ofRad, h1]
-    · rw [h2, rootRadius_coe, ← Real.rpow_mul τ.2.1.le, pow_succ, mul_comm]
 
-theorem exists_rpow_gt (τ : Set.Ioo (0 : ℝ) 1) : ∃ N : ℕ, (p : ℝ)⁻¹ < (τ : ℝ) ^ ((p : ℝ)⁻¹ ^ N) := by
-  have hp1 : (1 : ℝ) < p := Nat.one_lt_cast.2 hp.out.one_lt
-  have hL : 0 < -Real.log τ := neg_pos.2 (Real.log_neg τ.2.1 τ.2.2)
-  have hlp : 0 < Real.log p := Real.log_pos hp1
-  obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one (div_pos hlp hL) (inv_p_lt_one (p := p))
-  refine ⟨N, ?_⟩
-  have e : (p : ℝ)⁻¹ = Real.exp (-Real.log p) := by
-    rw [Real.exp_neg, Real.exp_log (by positivity)]
-  rw [lt_div_iff₀ hL] at hN
-  rw [Real.rpow_def_of_pos τ.2.1]
-  calc (p : ℝ)⁻¹ = Real.exp (-Real.log p) := e
-    _ < Real.exp (Real.log τ * (p : ℝ)⁻¹ ^ N) := Real.exp_lt_exp.2 (by nlinarith)
 
-theorem exists_iterate_tildeFrobSymm_mem (x : (𝓣).RobbaTilde) :
-    ∃ N : ℕ, ∀ n : ℕ, N ≤ n → (frob ℂ_[p] p).tildeFrobSymm^[n] x ∈ tildeDom p := by
-  obtain ⟨τ, y, rfl⟩ := (𝓣).exists_ofRad x
-  obtain ⟨N, hN⟩ := exists_rpow_gt (p := p) τ
-  refine ⟨N, fun n hn => ?_⟩
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
-  rw [add_comm, Function.iterate_add_apply]
-  obtain ⟨τ', y', h1, h2⟩ := iterate_tildeFrobSymm_ofRad N τ y
-  rw [h1]
-  have hmem : (𝓣).ofRad τ' y' ∈ tildeDom p := ⟨τ', by rw [h2]; exact hN, y', rfl⟩
-  clear h1 h2 hn
-  induction k with
-  | zero => exact hmem
-  | succ k ih => rw [Function.iterate_succ_apply']; exact tildeFrobSymm_mem_tildeDom ih
 
 variable (p) in
 
 def phiNeg (n : ℕ) : (𝓣).RobbaTilde →+* (𝓣).RobbaTilde := (frob ℂ_[p] p).tildeFrobSymm ^ n
 
-theorem phiNeg_apply (n : ℕ) (x : (𝓣).RobbaTilde) :
-    phiNeg p n x = (frob ℂ_[p] p).tildeFrobSymm^[n] x := by
-  rw [phiNeg, RingHom.coe_pow]
 
-theorem phiNeg_succ (n : ℕ) (x : (𝓣).RobbaTilde) :
-    phiNeg p (n + 1) x = (frob ℂ_[p] p).tildeFrobSymm (phiNeg p n x) := by
-  rw [phiNeg_apply, phiNeg_apply, Function.iterate_succ_apply']
 
-theorem phiNeg_succ_tildeFrob (n : ℕ) (x : (𝓣).RobbaTilde) :
-    phiNeg p (n + 1) ((frob ℂ_[p] p).tildeFrob x) = phiNeg p n x := by
-  rw [phiNeg_apply, phiNeg_apply, Function.iterate_succ_apply,
-    TeichLift.TeichFrob.tildeFrobSymm_tildeFrob]
 
-theorem exists_phiNeg_mem (x : (𝓣).RobbaTilde) :
-    ∃ N : ℕ, ∀ n : ℕ, N ≤ n → phiNeg p n x ∈ tildeDom p := by
-  obtain ⟨N, hN⟩ := exists_iterate_tildeFrobSymm_mem (p := p) x
-  exact ⟨N, fun n hn => by rw [phiNeg_apply]; exact hN n hn⟩
 
 variable (p) in
 
@@ -970,78 +812,23 @@ variable (p) in
 
 def thetaN (n : ℕ) (x : (𝓣).RobbaTilde) : ℂ_[p] := thetaBDeRhamPlusField p (iotaN p n x)
 
-theorem iotaN_eq (n : ℕ) {x : (𝓣).RobbaTilde} (hx : phiNeg p n x ∈ tildeDom p) :
-    iotaN p n x = iotaTilde p ⟨phiNeg p n x, hx⟩ := rfl
 
-theorem iotaN_of_eq_ofRad {n : ℕ} {x : (𝓣).RobbaTilde} (hρ : (p : ℝ)⁻¹ < ρ) {y : (𝓣).RobbaExt ρ}
-    (h : phiNeg p n x = (𝓣).ofRad ρ y) : iotaN p n x = iota p hρ y := by
-  rw [iotaN, h, iotaTildeFun_ofRad hρ]
 
-theorem thetaN_of_eq_ofRad {n : ℕ} {x : (𝓣).RobbaTilde} (hρ : (p : ℝ)⁻¹ < ρ) {y : (𝓣).RobbaExt ρ}
-    (h : phiNeg p n x = (𝓣).ofRad ρ y) :
-    thetaN p n x = cXi p ((𝓣).ptEval isPrimOne_xi (ptRad_xi_le hρ) y) := by
-  rw [thetaN, iotaN_of_eq_ofRad hρ h, theta_iota]
 
-theorem iotaN_add {n : ℕ} {x y : (𝓣).RobbaTilde} (hx : phiNeg p n x ∈ tildeDom p)
-    (hy : phiNeg p n y ∈ tildeDom p) : iotaN p n (x + y) = iotaN p n x + iotaN p n y := by
-  rw [iotaN, iotaN, iotaN, map_add, iotaTildeFun_add hx hy]
 
-theorem iotaN_mul {n : ℕ} {x y : (𝓣).RobbaTilde} (hx : phiNeg p n x ∈ tildeDom p)
-    (hy : phiNeg p n y ∈ tildeDom p) : iotaN p n (x * y) = iotaN p n x * iotaN p n y := by
-  rw [iotaN, iotaN, iotaN, map_mul, iotaTildeFun_mul hx hy]
 
-theorem thetaN_add {n : ℕ} {x y : (𝓣).RobbaTilde} (hx : phiNeg p n x ∈ tildeDom p)
-    (hy : phiNeg p n y ∈ tildeDom p) : thetaN p n (x + y) = thetaN p n x + thetaN p n y := by
-  rw [thetaN, iotaN_add hx hy, map_add]; rfl
 
-theorem thetaN_mul {n : ℕ} {x y : (𝓣).RobbaTilde} (hx : phiNeg p n x ∈ tildeDom p)
-    (hy : phiNeg p n y ∈ tildeDom p) : thetaN p n (x * y) = thetaN p n x * thetaN p n y := by
-  rw [thetaN, iotaN_mul hx hy, map_mul]; rfl
 
-theorem iotaN_add_one_tildeFrob (n : ℕ) (x : (𝓣).RobbaTilde) :
-    iotaN p (n + 1) ((frob ℂ_[p] p).tildeFrob x) = iotaN p n x := by
-  rw [iotaN, iotaN, phiNeg_succ_tildeFrob]
 
-theorem thetaN_add_one_tildeFrob (n : ℕ) (x : (𝓣).RobbaTilde) :
-    thetaN p (n + 1) ((frob ℂ_[p] p).tildeFrob x) = thetaN p n x := by
-  rw [thetaN, thetaN, iotaN_add_one_tildeFrob]
 
 section GaloisN
 
 variable {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
 
-theorem galIso_tildeMap_tildeFrobSymm (σ : Gal(PadicAlgCl p/K)) (x : (𝓣).RobbaTilde) :
-    (galIso σ).tildeMap ((frob ℂ_[p] p).tildeFrobSymm x) =
-      (frob ℂ_[p] p).tildeFrobSymm ((galIso σ).tildeMap x) := by
-  have hinj : Function.Injective (frob ℂ_[p] p).tildeFrob :=
-    Function.LeftInverse.injective (frob ℂ_[p] p).tildeFrobSymm_tildeFrob
-  apply hinj
-  rw [← galIso_tildeMap_tildeFrob, TeichLift.TeichFrob.tildeFrob_tildeFrobSymm,
-    TeichLift.TeichFrob.tildeFrob_tildeFrobSymm]
 
-theorem galIso_tildeMap_phiNeg (σ : Gal(PadicAlgCl p/K)) (n : ℕ) (x : (𝓣).RobbaTilde) :
-    (galIso σ).tildeMap (phiNeg p n x) = phiNeg p n ((galIso σ).tildeMap x) := by
-  induction n with
-  | zero => rw [phiNeg_apply, phiNeg_apply]; rfl
-  | succ k ih => rw [phiNeg_succ, phiNeg_succ, galIso_tildeMap_tildeFrobSymm, ih]
 
-theorem tildeMap_mem_tildeDom (σ : Gal(PadicAlgCl p/K)) {x : (𝓣).RobbaTilde}
-    (hx : x ∈ tildeDom p) : (galIso σ).tildeMap x ∈ tildeDom p := by
-  obtain ⟨ρ, hρ, y, rfl⟩ := hx
-  rw [TeichLift.TeichIso.tildeMap_ofRad]
-  exact ⟨ρ, hρ, _, rfl⟩
 
-theorem iotaTildeFun_tildeMap (σ : Gal(PadicAlgCl p/K)) {x : (𝓣).RobbaTilde}
-    (hx : x ∈ tildeDom p) : iotaTildeFun p ((galIso σ).tildeMap x) = σ • iotaTildeFun p x := by
-  obtain ⟨ρ, hρ, y, rfl⟩ := hx
-  rw [TeichLift.TeichIso.tildeMap_ofRad, iotaTildeFun_ofRad hρ, iotaTildeFun_ofRad hρ,
-    iota_extMap hρ]
 
-theorem iotaN_tildeMap (σ : Gal(PadicAlgCl p/K)) {n : ℕ} {x : (𝓣).RobbaTilde}
-    (hx : phiNeg p n x ∈ tildeDom p) :
-    iotaN p n ((galIso σ).tildeMap x) = σ • iotaN p n x := by
-  rw [iotaN, ← galIso_tildeMap_phiNeg, iotaTildeFun_tildeMap σ hx]
-  rfl
 
 end GaloisN
 

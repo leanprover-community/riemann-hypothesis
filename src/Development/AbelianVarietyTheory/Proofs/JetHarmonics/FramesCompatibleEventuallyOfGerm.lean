@@ -223,26 +223,5 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
-theorem frames_compatible_eventually_of_germ : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), letI := H.starRing; ∀ (T : CDVR) (io : c.F →+* T.Fr) (y : IntFr Xo c T io) (C : IntegralChartA3 Xo c T io y) (P : PELUnif (maximalIdeal T.V) C.I.G) (n : ℕ) (D' : DegData T.V (maximalIdeal T.V)) (A' : PolAV (Spec (CommRingCat.of T.Fr))) (G' : Over (Sp T.V)) [GrpObj G'] [IsCommMonObj G'] (pD : IsPowDeg D'.toPre P.D.toPre n) (pA : IsPowPolAV A' P.A n) (pG : IsPowGrp G' C.I.G.G n) (U' : Unif (maximalIdeal T.V) D' A' G') (PU : UnifPowOf pD pA pG U' P.U) (F : Type) [Field F] [CharZero F] [Algebra T.Fr F] [Algebra T.V F] [IsScalarTower T.V T.Fr F] (q : ℕ) (σ' : U'.toUnifPre.SecGF F q) (h : PS F n (chD C.ch)), 1 ≤ n → 1 ≤ q → h ≠ 0 → IsGermN P C.xT C.actT C.eT C.wPT pG PU F q σ' h → ∃ m₀ : ℕ, ∀ m, m₀ ≤ m → LB.Gen.Corr C.I.G.PP.L _ _ _ _ (LB.pullGen C.I.G.PP.L (cφG C.I.G ![jptG C.I.G (𝟙 (Sp T.V)) (chD C.ch) C.xT (m + 1) (0 : Fin 2), jptG C.I.G (𝟙 (Sp T.V)) (chD C.ch) C.xT (m + 1) (1 : Fin 2)]) (cε 2) (C.eT (m + 1)) (homAt (𝟙 (Sp T.V)) (jetTrunc : Jet T.V (Fin 2 × Fin (chD C.ch)) (m + 1) →ₐ[T.V] Jet T.V (Fin 2 × Fin (chD C.ch)) m)).left) (C.eT m) := by
-  intro E _ _ _ H Dw l Xo c
-  letI := H.starRing
-  intro T io y C P n D' A' G' _ _ pD pA pG U' PU F _ _ _ _ _ q σ' h hn hq hh hg
-  obtain ⟨k, hk⟩ := GlobalTheory.mvPowerSeries_coeff_eq_zero_of_mul_coeff_eq_zero F (Fin n × Fin (chD C.ch)) h hh
-  obtain ⟨B, eF, eA, -⟩ := integralChart_formalBiext E H Dw l Xo c T io y C
-  refine ⟨k + 2, fun m hm => ?_⟩
-  obtain ⟨U, hU, h1, hs, hb⟩ := FrRatio.frRatioG C.chartT C.frameT m
-  have hrel := GlobalTheory.GermRatio.main E H T.V (maximalIdeal T.V) C.I.G P (chD C.ch) n C.xT C.FT C.actT C.tgT _ C.chartT
-    C.wPT C.primT D' A' G' pD pA pG U' PU F q σ' h C.eT C.frameT.gen hg m U hU
-  have hinj : Function.Injective (algebraMap T.V F) := by
-    rw [IsScalarTower.algebraMap_eq T.V T.Fr F]
-    exact (algebraMap T.Fr F).injective.comp (IsFractionRing.injective T.V T.Fr)
-  rw [← eF] at h1
-  rw [← eA] at hb hrel
-  have hone : U = 1 := FrameEventually.unit_eq_one hinj B H.bar H.w0 (ReciprocityTheory.ChartRestriction.G.PullbackSections.CVA.cmHostUnit_add_conj_eq_one H) hn hq h k
-    hk m hm U h1 hs hb hrel
-  subst hone
-  refine corr_of_val C.I.G.PP.isLB fun z J hJ => ?_
-  refine (val_corr hJ hU (𝟙 _)).trans ((GermB.val_scale _ _ _ _ _ _ z J hJ).trans ?_)
-  rw [unitΓ, map_one, map_one, _root_.one_mul]
 
 end GlobalTheory

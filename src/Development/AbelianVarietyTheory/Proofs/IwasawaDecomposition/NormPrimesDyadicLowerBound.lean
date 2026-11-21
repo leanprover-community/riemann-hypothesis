@@ -84,53 +84,5 @@ lemma core (C₀ Cr cr c t B Y : ℝ) (hC₀ : 0 < C₀) (hCr : 0 < Cr) (hcr : 0
       _ ≤ c * Real.exp (b * (-6)) * Real.exp L := by gcongr
       _ = c * Real.exp (b * (-6)) * Y := by rw [← hYe]
 
-theorem many_norm_primes : GlobalTheory.Mem.An.QuadraticHeckeZeroEstimates → ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ x₀ : ℝ, ∀ x : ℝ, x₀ ≤ x → ∀ n q d : ℕ, 1 ≤ n → Rowq x eps n q d → ∀ Y : ℝ, 0 < Y → 8 * x ^ eps ≤ Real.log Y → Y ^ ((9 : ℝ) / 10) ≤ ((normPrimes d (4 * n * q * d) Y (2 * Y)).card : ℝ) := by
-  intro hTZ eps he _
-  obtain ⟨C₀, Cr, cr, c, hC₀, hCr, hcr, hc, H⟩ := GlobalTheory.T.norm_primes_short_interval_lower hTZ
-  have hT : Tendsto (fun x : ℝ => x ^ (eps / 5)) atTop atTop := tendsto_rpow_atTop (by positivity)
-  have E : ∀ᶠ t : ℝ in atTop, 10000 ≤ t ∧ C₀ ≤ t ∧ Cr * Real.exp (-cr * t) ≤ 1 / 200 ∧
-      40 * Real.exp (-(1 / 20) * t) ≤ c := by
-    filter_upwards [eventually_ge_atTop 10000, eventually_ge_atTop C₀,
-      ev_exp Cr cr (1 / 200) hcr (by norm_num), ev_exp 40 (1 / 20) c (by norm_num) hc] with t a b c d
-    exact ⟨a, b, c, d⟩
-  have hlog : ∀ᶠ x : ℝ in atTop, 1 ≤ Real.log x := Real.tendsto_log_atTop.eventually_ge_atTop 1
-  obtain ⟨x₀, hx₀⟩ := eventually_atTop.1
-    ((hT.eventually E).and ((ev_log_sq eps he).and (hlog.and (eventually_gt_atTop (0 : ℝ)))))
-  refine ⟨x₀, fun x hx n q d hn hR Y hY hYx => ?_⟩
-  obtain ⟨⟨t1, t2, t3, t4⟩, hl, hl1, hx0⟩ := hx₀ x hx
-  obtain ⟨hq, -, -, -, hd, hd16, hdl, -, -, -, hN⟩ := hR
-  have hxe : x ^ eps = (x ^ (eps / 5)) ^ 5 := by
-    rw [← Real.rpow_natCast, ← Real.rpow_mul hx0.le]; congr 1; push_cast; ring
-  unfold GlobalTheoryTheory.X2 at hdl
-  set t := x ^ (eps / 5) with ht
-  have hd100 : 100 ≤ d := by
-    have a1 : t ≤ t * Real.log x ^ 2 :=
-      le_mul_of_one_le_right (by linarith) (one_le_pow₀ hl1)
-    have a2 := Real.add_one_le_exp (t * Real.log x ^ 2)
-    have a3 : (100 : ℝ) ≤ √(Real.exp (t * Real.log x ^ 2)) :=
-      Real.le_sqrt_of_sq_le (by linarith)
-    have : (100 : ℝ) ≤ d := by linarith
-    exact_mod_cast this
-  have hq1 : 1 ≤ q := hq.one_lt.le
-  have hM : 4 * d ≤ 4 * n * q * d := by
-    have : 1 ≤ n * q := Nat.mul_pos hn hq1
-    nlinarith
-  set M : ℕ := 4 * n * q * d with hMdef
-  have hMc : (M : ℝ) = 4 * n * q * d := by rw [hMdef]; push_cast; ring
-  rw [← hMc] at hN
-  have hMr : 4 * (d : ℝ) ≤ M := by exact_mod_cast hM
-  have hdr : (100 : ℝ) ≤ d := by exact_mod_cast hd100
-  have hB1 : (1 : ℝ) < 4 * (d : ℝ) * (M : ℝ) ^ 2 := by nlinarith
-  have hBt : Real.log (4 * (d : ℝ) * (M : ℝ) ^ 2) ≤ 8 * t ^ 2 := by
-    have b1 : 4 * (d : ℝ) * (M : ℝ) ^ 2 ≤ (M : ℝ) ^ 3 := by nlinarith [sq_nonneg (M : ℝ)]
-    have b2 := Real.log_le_log (by linarith) b1
-    rw [Real.log_pow] at b2
-    push_cast at b2
-    nlinarith
-  obtain ⟨k1, k2, k3, k4⟩ := core C₀ Cr cr c t _ Y hC₀ hCr hcr hc t1 t2 t3 t4 hB1 hBt hY
-    (by rw [← hxe]; exact hYx)
-  have := H d M hd (by omega) hd100 (by omega) Y 1 k1 le_rfl k2 k3
-  rw [show Y * (1 + 1) = 2 * Y by ring] at this
-  exact k4.trans this
 
 end GlobalTheory.Mem.An.ManyNormPrimes

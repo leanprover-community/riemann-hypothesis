@@ -16,11 +16,6 @@ theorem map_liftO {m n : Type} (N : Matrix m n F) (h : ∀ i j, N i j ∈ O) :
     (liftO O N h).map O.subtype = N := by
   ext i j; rfl
 
-theorem det_liftO {n : Type} [Fintype n] [DecidableEq n] (N : Matrix n n F)
-    (h : ∀ i j, N i j ∈ O) : ((liftO O N h).det : F) = N.det := by
-  have := RingHom.map_det O.subtype (liftO O N h)
-  rw [RingHom.mapMatrix_apply, map_liftO] at this
-  exact this
 
 abbrev pI (hϖ : ϖ ∈ O) : Ideal O := Ideal.span {(⟨ϖ, hϖ⟩ : O)}
 
@@ -67,13 +62,6 @@ theorem isInt_inv {n : Type} [Fintype n] [DecidableEq n] (N : Matrix n n F)
   rw [Matrix.inv_def, Ring.inverse_eq_inv', Matrix.smul_apply, hadj, smul_eq_mul]
   exact O.mul_mem hdi ((liftO O N hN).adjugate i j).2
 
-theorem isInt_inv_of_unit (hϖ : ϖ ∈ O) (hL : Formalism.DoubleCosetMeasures.IsLocalAt O ϖ) {n : Type} [Fintype n]
-    [DecidableEq n] (N : Matrix n n F) (hN : ∀ i j, N i j ∈ O)
-    (hu : IsUnit (Ideal.Quotient.mk (pI O ϖ hϖ) (liftO O N hN).det)) :
-    N.det ≠ 0 ∧ ∀ i j, N⁻¹ i j ∈ O := by
-  obtain ⟨h0, h1⟩ := unitO hϖ hL _ hu
-  rw [det_liftO] at h0 h1
-  exact ⟨h0, isInt_inv O N hN h1⟩
 
 variable (O) in
 
@@ -97,20 +85,7 @@ theorem II_int {p q : ℕ} (hϖ : ϖ ∈ O) {y : Matrix (Fin p) (Fin q) F}
   obtain ⟨o, ho, e⟩ := hy i j
   rw [e]; exact O.mul_mem hϖ ho
 
-theorem II_mul_right {p q r : ℕ} {y : Matrix (Fin p) (Fin q) F} (hy : y ∈ Formalism.DoubleCosetMeasures.IIset O ϖ)
-    {g : Matrix (Fin q) (Fin r) F} (hg : ∀ i j, g i j ∈ O) : y * g ∈ Formalism.DoubleCosetMeasures.IIset O ϖ := by
-  intro i j
-  choose o ho he using hy
-  refine ⟨∑ k, o i k * g k j, O.sum_mem fun k _ => O.mul_mem (ho i k) (hg k j), ?_⟩
-  simp only [Matrix.mul_apply, he, Finset.mul_sum, mul_assoc]
 
-theorem II_mul_left {p q r : ℕ} {y : Matrix (Fin q) (Fin r) F} (hy : y ∈ Formalism.DoubleCosetMeasures.IIset O ϖ)
-    {g : Matrix (Fin p) (Fin q) F} (hg : ∀ i j, g i j ∈ O) : g * y ∈ Formalism.DoubleCosetMeasures.IIset O ϖ := by
-  intro i j
-  choose o ho he using hy
-  refine ⟨∑ k, g i k * o k j, O.sum_mem fun k _ => O.mul_mem (hg i k) (ho k j), ?_⟩
-  simp only [Matrix.mul_apply, he, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun k _ => by ring
 
 theorem II_add {p q : ℕ} {y z : Matrix (Fin p) (Fin q) F} (hy : y ∈ Formalism.DoubleCosetMeasures.IIset O ϖ)
     (hz : z ∈ Formalism.DoubleCosetMeasures.IIset O ϖ) : y + z ∈ Formalism.DoubleCosetMeasures.IIset O ϖ := by
@@ -119,54 +94,7 @@ theorem II_add {p q : ℕ} {y z : Matrix (Fin p) (Fin q) F} (hy : y ∈ Formalis
   obtain ⟨o', ho', e'⟩ := hz i j
   exact ⟨o + o', O.add_mem ho ho', by rw [Matrix.add_apply, e, e', mul_add]⟩
 
-theorem II_neg {p q : ℕ} {y : Matrix (Fin p) (Fin q) F} (hy : y ∈ Formalism.DoubleCosetMeasures.IIset O ϖ) :
-    -y ∈ Formalism.DoubleCosetMeasures.IIset O ϖ := by
-  intro i j
-  obtain ⟨o, ho, e⟩ := hy i j
-  exact ⟨-o, O.neg_mem ho, by rw [Matrix.neg_apply, e, mul_neg]⟩
 
-theorem congOf (hϖ : ϖ ∈ O) (hϖ0 : ϖ ≠ 0) (hL : Formalism.DoubleCosetMeasures.IsLocalAt O ϖ) {a : ℕ}
-    (u : Matrix (Fin a) (Fin a) F) (hu : ∀ i j, u i j ∈ O)
-    (h1 : ∀ i j, (ϖ⁻¹ • (u - 1)) i j ∈ O) :
-    ∃ U ∈ Formalism.DoubleCosetMeasures.congSub O ϖ a, (U : Matrix (Fin a) (Fin a) F) = u := by
-  have hm : (Ideal.Quotient.mk (pI O ϖ hϖ)).mapMatrix (liftO O u hu) = 1 := by
-    ext i j
-    rw [← map_one (Ideal.Quotient.mk (pI O ϖ hϖ)).mapMatrix, RingHom.mapMatrix_apply,
-      RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.map_apply, Ideal.Quotient.eq, mem_pI]
-    refine ⟨(ϖ⁻¹ • (u - 1)) i j, h1 i j, ?_⟩
-    have e1 : (((1 : Matrix (Fin a) (Fin a) O) i j : O) : F) = (1 : Matrix (Fin a) (Fin a) F) i j := by
-      by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
-    rw [AddSubgroupClass.coe_sub, e1, Matrix.smul_apply, Matrix.sub_apply, smul_eq_mul, ← mul_assoc,
-      mul_inv_cancel₀ hϖ0, one_mul]
-    rfl
-  have hu1 : IsUnit (Ideal.Quotient.mk (pI O ϖ hϖ) (liftO O u hu).det) := by
-    rw [RingHom.map_det, hm, det_one]; exact isUnit_one
-  obtain ⟨hd, hinv⟩ := isInt_inv_of_unit hϖ hL u hu hu1
-  exact ⟨Matrix.nonsingInvUnit u (isUnit_iff_ne_zero.mpr hd), ⟨⟨hu, hinv⟩, h1⟩, rfl⟩
 
-theorem shiftJ (hϖ : ϖ ∈ O) (hϖ0 : ϖ ≠ 0) (hL : Formalism.DoubleCosetMeasures.IsLocalAt O ϖ) {a : ℕ}
-    {J' : Subgroup (GL (Fin a) F)} (hK : Formalism.DoubleCosetMeasures.congSub O ϖ a ≤ J')
-    (hJ : J' ≤ Formalism.DoubleCosetMeasures.GLint O a) (g : J') (y : Matrix (Fin a) (Fin a) F)
-    (hy : y ∈ Formalism.DoubleCosetMeasures.IIset O ϖ) :
-    ∃ U : J', (U : GL (Fin a) F) ∈ Formalism.DoubleCosetMeasures.congSub O ϖ a ∧
-      (((g * U : J') : GL (Fin a) F) : Matrix (Fin a) (Fin a) F) =
-        ((g : GL (Fin a) F) : Matrix (Fin a) (Fin a) F) + y := by
-  set gi : Matrix (Fin a) (Fin a) F := (((g : GL (Fin a) F)⁻¹ : GL (Fin a) F) : Matrix (Fin a) (Fin a) F)
-  have hgi : ∀ i j, gi i j ∈ O := (hJ (J'.inv_mem g.2)).1
-  have hyI : ∀ i j, (ϖ⁻¹ • y) i j ∈ O := fun i j => by
-    obtain ⟨o, ho, e⟩ := hy i j
-    rw [Matrix.smul_apply, e, smul_eq_mul, ← mul_assoc, inv_mul_cancel₀ hϖ0, one_mul]; exact ho
-  have hu : ∀ i j, (1 + gi * y) i j ∈ O := fun i j => by
-    rw [Matrix.add_apply]
-    refine O.add_mem ?_ (int_mul hgi (II_int hϖ hy) i j)
-    by_cases hij : i = j <;> simp [Matrix.one_apply, hij, O.one_mem, O.zero_mem]
-  have h1 : ∀ i j, (ϖ⁻¹ • ((1 + gi * y) - 1)) i j ∈ O := by
-    rw [add_sub_cancel_left, ← Matrix.mul_smul]
-    exact int_mul hgi hyI
-  obtain ⟨U, hU, hUe⟩ := congOf hϖ hϖ0 hL _ hu h1
-  refine ⟨⟨U, hK hU⟩, hU, ?_⟩
-  rw [Subgroup.coe_mul, Units.val_mul, hUe, Matrix.mul_add, Matrix.mul_one, ← Matrix.mul_assoc]
-  rw [show ((g : GL (Fin a) F) : Matrix (Fin a) (Fin a) F) * gi = 1 by
-    rw [← Units.val_mul, mul_inv_cancel, Units.val_one], Matrix.one_mul]
 
 end PI.DatumBlockEigen.Unit

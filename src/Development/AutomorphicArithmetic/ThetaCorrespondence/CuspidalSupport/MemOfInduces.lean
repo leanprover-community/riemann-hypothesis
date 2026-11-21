@@ -77,17 +77,7 @@ theorem csdSs_of (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hGK : G
   refine ⟨r, hr.cont, hr.ss, hr.away, fun P AI hT w A h O _ _ _ Bw hj => ⟨hT.elim fun T => hr.isPstAt hB T h Bw hj, fun σ hσ rc hrc => ?_⟩⟩
   exact ssCmp_of_rel (h1 E Ω l ι a ha π hc hreg r wt HT hr P AI hT w (mem_of_induces h Bw hj) A h O Bw hj σ hσ rc hrc)
 
-theorem dualR_of (hC : UpperTheory.CBC.LitCBC2) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hGK : GlobalTheory.Published.GelfandKazhdanDual)
-    (hP : GlobalTheory.Published.GaloisRepOfPolarizedPair) (hB : GlobalTheory.Published.DeRhamPotSemistable) (hL : GlobalTheory.Published.LocalLanglandsGL)
-    (hJ : GlobalTheory.Published.JacquetShalikaRigidity) : DualR :=
-  have hG := (bridge' hGK).2 hP
-  have hW := PositivityTheory.Pf1.CLGD.K.kKW hC
-  ⟨lg_of (LocalGlobalAboveLAlt.local_global_compatibility_holds hW hG hB hL hJ) (LocalGlobalAboveLAlt.temperedness_transfer_holds hW hG hB hL hJ),
-    csdSs_of hF hGK hG hB (LocalGlobalAboveLAlt.local_global_compatibility_holds hW hG hB hL hJ)⟩
 
-theorem csdSs_of_lit (hC : UpperTheory.CBC.LitCBC2) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hGK : GlobalTheory.Published.GelfandKazhdanDual)
-    (hP : GlobalTheory.Published.GaloisRepOfPolarizedPair) (hB : GlobalTheory.Published.DeRhamPotSemistable) (hL : GlobalTheory.Published.LocalLanglandsGL)
-    (hJ : GlobalTheory.Published.JacquetShalikaRigidity) : UpperTheory.V.Lev.CsdSs := (dualR_of hC hF hGK hP hB hL hJ).2
 
 end UpperTheory.Lit.Car
 

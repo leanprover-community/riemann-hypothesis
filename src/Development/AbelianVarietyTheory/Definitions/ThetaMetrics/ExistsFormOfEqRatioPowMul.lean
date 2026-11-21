@@ -78,25 +78,6 @@ theorem eq_zero_of_mul_ratio_pow {i j : Fin (N + 1)} (hij : j ≠ i) (k : ℕ) {
   subst hF0
   exact formOn_zero
 
-theorem sec_neg_eq_zero (k : ℕ) (s : (On R (N + 1) (-((k + 1 : ℕ) : ℤ))).Sec)
-    (i : PUnit → Fin (N + 2)) : s.f i = 0 := by
-  obtain ⟨j, hj⟩ := exists_ne (i PUnit.unit)
-  have hUi := On_U R (N + 1) (-((k + 1 : ℕ) : ℤ)) i
-  have hUj := On_U R (N + 1) (-((k + 1 : ℕ) : ℤ)) (fun _ => j)
-  have hc := s.compat i (fun _ => j)
-  rw [On_g, zpow_neg, zpow_natCast] at hc
-  have h0 := eq_zero_of_mul_ratio_pow hj k (inf_le_left.trans hUi.le) (inf_le_right.trans hUj.le)
-    (by rw [hUi, hUj]) (resG _ hUi.ge (s.f i)) (resG _ hUj.ge (s.f fun _ => j)) (by
-      have e1 : resG _ (inf_le_left.trans hUi.le : _ ⊓ (On R (N + 1) (-((k + 1 : ℕ) : ℤ))).U (fun _ => j) ≤ _)
-          (resG _ hUi.ge (s.f i)) = resG _ inf_le_left (s.f i) := rfl
-      have e2 : resG _ (inf_le_right.trans hUj.le : (On R (N + 1) (-((k + 1 : ℕ) : ℤ))).U i ⊓ _ ≤ _)
-          (resG _ hUj.ge (s.f fun _ => j)) = resG _ inf_le_right (s.f fun _ => j) := rfl
-      rw [e1, e2]
-      erw [hc]
-      rw [← val_ratioUnit (hj := inf_le_right.trans hUj.le), ← Units.val_pow_eq_pow_val, mul_right_comm,
-        Units.inv_mul, one_mul])
-  have e : s.f i = resG _ hUi.le (resG _ hUi.ge (s.f i)) := rfl
-  rw [e, h0, map_zero]
 
 theorem exists_form_of_eq_ratio_pow_mul {i j : Fin (N + 1)} (hij : j ≠ i) (n : ℕ) {U : (PSpace R N).Opens}
     (hi : U ≤ chart R N i) (hj : U ≤ chart R N j) (hU : U = chart R N i ⊓ chart R N j)
@@ -190,11 +171,6 @@ theorem not_isGen_O1 [Nontrivial R] (t : (O1 R (N + 1)).Gen) : ¬ t.IsGen := by
     (chartAlgEquiv R (N + 1) 0).symm.toEquiv.nontrivial
   exact Units.ne_zero _ h0
 
-theorem exists_isGen_O1_zero : ∃ t : (O1 R 0).Gen, t.IsGen := by
-  refine ⟨⟨fun _ => 1⟩, fun (i j : Fin 1) => ?_⟩
-  obtain rfl : i = j := Subsingleton.elim _ _
-  rw [O1_g_eq_ratioUnit_chart_inf, ratioUnit_self, map_one]
-  exact (one_mul _).symm
 
 theorem isIso_str_zero : IsIso (PSpace.str R 0) := by
   haveI : IsIso (chartι R 0 0) := by
@@ -208,22 +184,7 @@ theorem isIso_str_zero : IsIso (PSpace.str R 0) := by
       (isEmptyRingEquiv R {j : Fin (0 + 1) // j ≠ 0}).toCommRingCatIso.inv))
   exact IsIso.of_isIso_comp_left (chartι R 0 0) _
 
-theorem nilpotent_form (h : (C 2 * X 0 : MvPolynomial (Fin 2) (ZMod 4)).IsHomogeneous 1) :
-    formSec 1 _ h ≠ formSec 1 0 (isHomogeneous_zero _ _ 1) ∧ nonzeroLocus (formSec 1 _ h) = ⊥ := by
-  refine ⟨fun e => ?_, ?_⟩
-  · have := congrArg (coeff (Finsupp.single 0 1)) ((formSec_inj _ _).1 e)
-    rw [coeff_C_mul, coeff_X, if_pos rfl, coeff_zero] at this
-    exact absurd this (by decide)
-  · rw [nonzeroLocus_formSec]
-    refine le_bot_iff.1 fun x hx => hx (x.isPrime.mem_of_pow_mem 2 ?_)
-    have : (C 2 * X 0 : MvPolynomial (Fin 2) (ZMod 4)) ^ 2 = 0 := by
-      rw [mul_pow, ← map_pow, show (2 : ZMod 4) ^ 2 = 0 by decide, map_zero, zero_mul]
-    rw [this]; exact zero_mem _
 
-theorem formSec_X_f (k : Fin (N + 1)) (j : PUnit → Fin (N + 1)) :
-    (formSec 1 (X k) (isHomogeneous_X R k)).f j =
-      resG _ (On_U R N 1 j).le ((coord R N k).f (j PUnit.unit)) :=
-  formOn_X (hi := (On_U R N 1 j).le)
 
 theorem isEmpty_of_subsingleton [Subsingleton R] : IsEmpty (PSpace R N) :=
   ⟨fun x => x.isPrime.ne_top (Subsingleton.elim _ _)⟩

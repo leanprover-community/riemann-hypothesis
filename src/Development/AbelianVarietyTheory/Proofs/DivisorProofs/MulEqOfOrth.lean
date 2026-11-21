@@ -80,26 +80,6 @@ theorem eq_or_eq_conj {e e' : AE D} (he : IsSplitIdem D e) (he' : IsSplitIdem D 
     have h2 : cA D e * cA D e' = 0 := by rw [← map_mul, h1, map_zero]
     exact eq_of_orth h h1 h2 he.1 he.2.1 (GlobalTheory.PlaceModelSum.isSplitIdem_cA he').1 he'.2.1
 
-theorem splitDet_iff {T : HSp D} (k : GA D T) (x : (AE D)ˣ) : RealPointEmbeddings.IsSplitDet k x ↔ VacuumCharacterDeterminant.IsSplitDet T k x := by
-  refine and_congr_right fun _ => ⟨fun ⟨h1, h2⟩ v ε hε => ?_, fun h => ⟨fun e he => ?_, fun ε hε => ?_⟩⟩
-  · by_cases hs : ∃ e, IsSplitIdem D e ∧ e + cA D e = algebraMap (AF D.host.F) (AE D) ε
-    · obtain ⟨e, he, h3⟩ := hs
-      rcases h1 e he with h4 | h4
-      · exact Or.inl ⟨e, he, h3, h4⟩
-      · refine Or.inl ⟨cA D e, GlobalTheory.PlaceModelSum.isSplitIdem_cA he, ?_, ?_⟩
-        · rw [GlobalTheory.LatVac.cA_cA, add_comm, h3]
-        · rw [GlobalTheory.LatVac.cA_cA]; exact h4
-    · exact Or.inr ⟨hs, h2 ε ⟨⟨v, hε⟩, hs⟩⟩
-  · obtain ⟨v, ε, hε, h3⟩ := he.2.2
-    rcases h v ε hε with ⟨e', he', h4, h5⟩ | ⟨h4, -⟩
-    · rcases eq_or_eq_conj he he' (h3.trans h4.symm) with rfl | rfl
-      · exact Or.inl h5
-      · rw [GlobalTheory.LatVac.cA_cA]; exact Or.inr h5
-    · exact absurd ⟨e, he, h3⟩ h4
-  · obtain ⟨⟨v, hv⟩, hn⟩ := hε
-    rcases h v ε hv with ⟨e', he', h4, -⟩ | ⟨-, h4⟩
-    · exact absurd ⟨e', he', h4⟩ hn
-    · exact h4
 
 def cut {R : Type} [CommRing R] (η : R) (h : η * η = η) (x : Rˣ) : Rˣ where
   val := 1 + η * ((x : R) - 1)

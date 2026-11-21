@@ -34,10 +34,6 @@ theorem isRecT_of_isRec (hT : GlobalTheory.Published.DepthZeroTypeInertia) {rc :
         intro E' _ _ _ _ _ _ g _ w' h'
         exact hT E E' Ω g A w h w' h' rc ⟨a, ha, ε, hε, H⟩ }
 
-theorem recTExists_of (hL : GlobalTheory.Published.LocalLanglandsGL) (hT : GlobalTheory.Published.DepthZeroTypeInertia) : RecTExists := by
-  intro E Ω _ _ _ _ _ A w h
-  obtain ⟨rc, hrc, -⟩ := hL.1 E Ω A w h
-  exact ⟨rc, isRecT_of_isRec hT hrc⟩
 
 section Classes
 

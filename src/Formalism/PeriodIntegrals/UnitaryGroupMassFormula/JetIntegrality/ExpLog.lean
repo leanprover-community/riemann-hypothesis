@@ -44,9 +44,6 @@ theorem intMv_add {F G : MvPowerSeries σ ℂ_[p]} (hF : IntegralMv F) (hG : Int
 theorem intMv_neg {F : MvPowerSeries σ ℂ_[p]} (hF : IntegralMv F) : IntegralMv (-F) :=
   _root_.UpperTheory.Reformulated.B.IntegralPolynomialFourth.intMv_neg hF
 
-theorem intMv_sub {F G : MvPowerSeries σ ℂ_[p]} (hF : IntegralMv F) (hG : IntegralMv G) :
-    IntegralMv (F - G) := by
-  rw [sub_eq_add_neg]; exact intMv_add hF (intMv_neg hG)
 
 theorem intMv_mul {F G : MvPowerSeries σ ℂ_[p]} (hF : IntegralMv F) (hG : IntegralMv G) :
     IntegralMv (F * G) :=
@@ -134,8 +131,5 @@ theorem L0 {f c : MvPowerSeries σ ℂ_[p]} (i : σ) (hf : constantCoeff f = 0)
   rw [this]
   exact intMv_mul (intMv_mul hc (intMv_pderiv i hE)) hG
 
-theorem integral_of_simeq_alt {F G c : MvPowerSeries σ ℂ_[p]} (i : σ) (h : Simeq F G) (hc : IntegralMv c) :
-    IntegralMv (c * pderiv ℂ_[p] i (F - G)) :=
-  L0 i h.1 h.2 hc
 
 end PI.JetsPhW.W

@@ -46,11 +46,7 @@ theorem K_sub {P : Y} (hP : P ∈ Sf) : D.K P ⊆ (A.chart (A.pick P)).source �
 theorem K_compact {P : Y} (hP : P ∈ Sf) : IsCompact (D.K P) :=
   A.isCompact_chartImage (isCompact_closedBall _ _) fun _ hu => (D.sub P hP hu).1
 
-theorem T_sub_K (P : Y) : D.T P ⊆ D.K P := image_mono diff_subset
 
-theorem T_compact {P : Y} (hP : P ∈ Sf) : IsCompact (D.T P) :=
-  A.isCompact_chartImage ((isCompact_closedBall _ _).diff isOpen_ball)
-    fun _ hu => (D.sub P hP hu.1).1
 
 theorem χ_smooth {P : Y} (hP : P ∈ Sf) : A.SmoothFn (D.χ P) :=
   A.chiC_smooth (D.smooth P) (D.supp P) (isCompact_closedBall _ _) fun _ hu => (D.sub P hP hu).1
@@ -58,9 +54,6 @@ theorem χ_smooth {P : Y} (hP : P ∈ Sf) : A.SmoothFn (D.χ P) :=
 theorem χ_supp (P : Y) (y : Y) (hy : D.χ P y ≠ 0) : y ∈ D.K P := by
   by_contra h; exact hy (A.chiC_eq_zero (D.supp P) h)
 
-theorem not_mem_K {P Q : Y} (hP : P ∈ Sf) (hQ : Q ∈ Sf) (hPQ : P ≠ Q) {y : Y}
-    (hy : y ∈ D.K P) : y ∉ D.K Q := fun h =>
-  Set.disjoint_left.1 (D.disj P hP Q hQ hPQ) (D.K_sub hP hy).2 (D.K_sub hQ h).2
 
 theorem eventually_χ_zero {P : Y} (hP : P ∈ Sf) (j : ι) {y : Y} (hj : y ∈ (A.chart j).source)
     (hy : y ∉ D.K P) : ∀ᶠ v in 𝓝 (A.chart j y), D.χ P ((A.chart j).symm v) = 0 := by

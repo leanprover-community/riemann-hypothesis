@@ -184,10 +184,6 @@ theorem moment_bound_schur (hJ : CompanionTheory.Lime.BM.UniqGap) (hBP : Compani
       (parameter_gap_family Fm Cg cb Cu cT CT C0 Cn))
     Formalism.L2.SG.Pf.k_finite_smooth_bessel
 
-theorem momF'_gap (hJ : CompanionTheory.Lime.BM.UniqGap) (hBP : CompanionTheory.Lime.BM.BesselSplitLargeGap)
-    {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (Cg cb Cu cT CT C0 : ℝ) :
-    Formalism.MainNotions.S.Pv.Mom.MomF' Fm Cg cb Cu cT CT C0 :=
-  moment_bound_schur hJ hBP CompanionTheory.D.gk.Rec.smooth_vectors_irreducible Fm Cg cb Cu cT CT C0
 
 end BM
 

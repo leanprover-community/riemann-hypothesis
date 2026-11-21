@@ -9,9 +9,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 
 namespace Formalism.L2.SG.Pf.Cnt
 
-theorem densAll_of_leaves (hF : DualityBasisChange.FrameBasisL) (hη : EtaLocD) : DensAll :=
-  densAll_of' local_self_dual_holds (DualityBasisChange.gaPlusDiag_of hF jordan_decomposition_holds)
-    (DualityBasisChange.notIntDens_of_steps local_self_dual_holds hF DualityBasisChange.locGlobIntE) (densProdVal_of hη)
 
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
 theorem formulaC_holds_of (hF : DualityBasisChange.FrameBasisL) (hη : EtaLocD) (hI : CntIsoInv) : Formalism.L2.SG.PoincareAmplitudeLowerBounds.FormulaC :=

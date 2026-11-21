@@ -464,7 +464,6 @@ def CoverAtSplitPlaces : Prop := ∀ p : ℕ, p.Prime → ∀ w : HeightOneSpect
     ∃ y ∈ IsLocalRing.maximalIdeal (X.O0 i),
       algebraMap (X.O0 i) (FractionRing (X.O0 i)) y = X.emb0 i (x : ↥LL0)
 
-theorem levelLetterCocycles_of_fact (h : X.TwCover) : X.CoverAtSplitPlaces := fun p hp w hw _ => h p hp w hw
 
 def ThetaFull : Prop :=
   ∀ i j b, Module.finrank (X.O i) (X.Theta i j b) = Module.finrank (X.O i) (X.B i j b)

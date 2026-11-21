@@ -75,8 +75,6 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3ExceptionalContra
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_BlowUpHorizontalCorresp.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpHorizontalCorresp.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpHorizontalCorresp.proof.{u} GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpHorizontalSat.full GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_BlowUpHorizontalMult GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpHorizontalLift.full GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpHorizontalStrict.full
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_GenericProjClosureDim : GroundTheory.Heights₂.Heights.NumbersDVR.GenericProjClosureDim.Statement :=
-  @GroundTheory.Heights₂.Heights.NumbersDVR.GenericProjClosureDim.proof GroundTheory.Heights₂.Heights.NumbersDVR.DvrConeDimTrdeg.proof GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_PairBundleTrdeg
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3ResidualContractionComponent.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.ResidualContractionComponent.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.ResidualContractionComponent.proof.{u} GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3BlowUpPieces
@@ -87,14 +85,8 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_LocalCoeffRing.{u} 
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_HomLocRingDimLe.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.HomLocRingDimLe.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.HomLocRingDimLe.proof.{u} GroundTheory.Heights₂.Heights.NumbersDVR.HomLocRingMem.proof GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_HomLocRingIsLocal
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomSectionsLoc : GroundTheory.Heights₂.Heights.Model.SpreadHomSectionsLoc.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadHomSectionsLoc.proof GroundTheory.Heights₂.Heights.Model.ZLocDenominators.proof GroundTheory.Heights₂.Heights.Model.PullbackBasis.proof GroundTheory.Heights₂.Heights.AutoClose.Model_PullInjLoc
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadLocal : GroundTheory.Heights₂.Heights.Model.SpreadLocal.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadLocal.proof GroundTheory.Heights₂.Heights.Model.FreeSheafBasis.proof GroundTheory.Heights₂.Heights.AutoClose.Model_BasisIsoFree
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomSections : GroundTheory.Heights₂.Heights.Model.SpreadHomSections.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadHomSections.proof GroundTheory.Heights₂.Heights.Model.RatDenominators.proof GroundTheory.Heights₂.Heights.Model.PullbackBasis.proof GroundTheory.Heights₂.Heights.AutoClose.Model_GenericPullInj
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.TubeDeepAreaCount : GroundTheory.Heights₂.Heights.TubeDeepAreaCount.Statement :=
   @GroundTheory.Heights₂.Heights.TubeDeepAreaCount.proof GroundTheory.Heights₂.Heights.AutoClose.IsolatedPointsCount

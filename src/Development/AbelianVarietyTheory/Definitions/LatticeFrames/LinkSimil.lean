@@ -20,34 +20,7 @@ variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
 
 theorem jointCont (D : D7) : JointCont D := fun _ _ _ _ _ _ h _ hf => GlobalTheory.ThetaJointCont.continuous_om_oriented h hf
 
-theorem quasiFam_of_weil {S L : HSp D} {χS χL} {om : Om S L} (hom : IsWeilDatumO ψ S L χS χL om) {f : WO S L → ℂ}
-    (hf : IsThetaFunO ψ S L f) {φ : GA D S → ℂ} (hφ : IsContAut S φ) :
-    IsQuasiFam ψ S L fun h w => star (φ h) * om (h, 1) f w := by
-  refine ⟨fun h γ w => ?_, ?_, fun γ hγ h w => ?_⟩
-  · rw [(hom.om_pres _ f hf).quasi]; ring
-  · exact (hφ.2.comp continuous_fst).star.mul ((jointCont D ψ S L χS χL om hom f hf).comp
-      (f := fun p : GA D S × WO S L => ((p.1, (1 : GA D L)), p.2))
-      ((continuous_fst.prodMk continuous_const).prodMk continuous_snd))
-  · have h1 := GlobalTheory.MixPer.Check.om_rat hom hγ (one_mem _) (hom.om_pres (h, 1) f hf)
-      (fun u => GlobalTheory.ThetaClosed.isThetaFunO_heisO_all hom.std (hom.om_pres (h, 1) f hf) u) (w ⬝ mt S γ)
-    rw [actO_eq, mt_one, Matrix.one_mul, Matrix.mul_assoc, mt_mul_inv, Matrix.mul_one, ← Module.End.mul_apply, ← map_mul,
-      Prod.mk_mul_mk, mul_one] at h1
-    rw [hφ.1 γ hγ, h1]
 
-theorem exists_quasiFam (D : D7) (m : ℕ) (hW : ∀ ψ, IsStdChar D ψ (-1) →
-    ∃ χS χL om, IsWeilDatumO ψ (posSp D m) (posSp D 1) χS χL om) :
-    ∃ (ψ : AddChar (AF D.host.F) ℂ) (Y : GA D (posSp D m) → WO (posSp D m) (posSp D 1) → ℂ),
-      IsStdChar D ψ (-1) ∧ IsQuasiFam ψ _ _ Y ∧ Y 1 ≠ 0 := by
-  obtain ⟨ψ, θ, μ, 𝓕, U, f, hψ, -, hm, hU, hf, h0, -⟩ := GlobalTheory.Size.exists_theta_posSp D m 1
-  obtain ⟨χS, χL, om, hom⟩ := hW ψ hψ
-  have hf' : IsThetaFunO ψ _ _ f := GlobalTheory.Size.isTheta_iff_level.2 ⟨U, hU, hf⟩
-  refine ⟨ψ, _, hψ, quasiFam_of_weil hom hf' (φ := fun _ => 1) ⟨fun _ _ _ => rfl, continuous_const⟩, fun h => h0 ?_⟩
-  have e : f = 0 := by
-    funext w
-    have := congrFun h w
-    rw [show ((1 : GA D (posSp D m)), (1 : GA D (posSp D 1))) = 1 from rfl, map_one] at this
-    simpa using this
-  rw [e]; simp [GlobalTheory.Ker.ipO]
 
 theorem trace_inverseGram_conj_smul_eq {R : Type} [CommRing R] {m n : ℕ} (c : R) (a : Matrix (Fin m) (Fin m) R) (b : Matrix (Fin m) (Fin n) R)
     (g : Matrix (Fin n) (Fin n) R) (y : Matrix (Fin n) (Fin m) R) :
@@ -80,21 +53,8 @@ theorem hO_ofAdj (L L' S : HSp D) (τ : Matrix (Fin L.rank) (Fin L'.rank) D.host
   rw [h1, mul_assoc, mul_assoc]
   exact congrArg (fun t => incA D (-D.host.xi0⁻¹) * (cA D (incA D (-D.host.xi0⁻¹)) * t)) h2
 
-theorem normSq_xi_ne_zero : D.host.xi0 * star D.host.xi0 ≠ 0 :=
-  mul_ne_zero (GlobalTheory.DualPairCompare.embedding_xi_zero_ne_zero D) (star_ne_zero.2 (GlobalTheory.DualPairCompare.embedding_xi_zero_ne_zero D))
 
-theorem sympl_link (L L' S : HSp D) (τ : Matrix (Fin L.rank) (Fin L'.rank) D.host.E)
-    (hτ : τᴴ ⬝ (L.gram ⬝ τ) = (D.host.xi0 * star D.host.xi0) • L'.gram) (x y : WO S L') :
-    symplOH L S (ofAdj L S ((rat τ : Mx D L.rank L'.rank) ⬝ x)) (ofAdj L S ((rat τ : Mx D L.rank L'.rank) ⬝ y)) =
-      -symplOH S L' x y := by
-  rw [symplOH_eq, hO_ofAdj L L' S τ _ hτ, div_self normSq_xi_ne_zero, map_one, one_mul, ← symplOH_eq, symplOH_skew]
 
-theorem sympl_last (L L' S : HSp D) (τ : Matrix (Fin L.rank) (Fin L'.rank) D.host.E)
-    (hτ : τᴴ ⬝ (L.gram ⬝ τ) = (-(D.host.xi0 * star D.host.xi0)) • L'.gram) (x y : WO S L') :
-    symplOH L S (ofAdj L S ((rat τ : Mx D L.rank L'.rank) ⬝ x)) (ofAdj L S ((rat τ : Mx D L.rank L'.rank) ⬝ y)) =
-      symplOH S L' x y := by
-  rw [symplOH_eq, hO_ofAdj L L' S τ _ hτ, neg_div, div_self normSq_xi_ne_zero, map_neg, map_one, neg_one_mul, map_neg,
-    ← symplOH_eq, symplOH_skew, neg_neg]
 
 theorem mt_inv_ofAdj (L W : HSp D) (n : GA D W) (z : Mx D L.rank W.rank) :
     mt W n⁻¹ ⬝ ofAdj L W z = ofAdj L W (z ⬝ mt W n) := by
@@ -120,11 +80,6 @@ theorem link_point {ρ σ : ℕ} {B : BesLev D σ} {L' W W₀ : HSp D} {ζ' : Fi
   rw [ptT, incAdj_eq, mt_inv_ofAdj, projection_mul_ofAdjoint, Link.κ, ptS, d.extX_apply, ← tau_zEll l]
   simp only [Matrix.mul_assoc]
 
-theorem link_centre {ρ σ : ℕ} {B : BesLev D σ} {L' W W₀ : HSp D} {ζ' : Fin L'.rank → D.host.E} (l : Link B L' ζ')
-    (hτ : l.τᴴ ⬝ (B.L.gram ⬝ l.τ) = (D.host.xi0 * star D.host.xi0) • L'.gram)
-    (d : HypDec W W₀ ρ) (n : GA D W) : cenT d B.L (yZero B.L ρ B.ζ) n = -cenS d L' (zEll L' ρ ζ') n := by
-  rw [cenT, incAdj_eq, mt_inv_ofAdj, cenS, d.extX_apply, ← tau_zEll l, ← sympl_link B.L L' W l.τ hτ]
-  simp only [Matrix.mul_assoc]
 
 theorem link_simil {σ : ℕ} {B : BesLev D σ} {L' : HSp D} {ζ' : Fin L'.rank → D.host.E} (h : IsLineVec L' ζ')
     (l : Link B L' ζ') : l.τᴴ ⬝ (B.L.gram ⬝ l.τ) = (D.host.xi0 * star D.host.xi0) • L'.gram := by

@@ -41,13 +41,10 @@ theorem finPres_of : FinPres := finPres
 
 theorem haarComm_of : HaarComm := haarComm
 
-theorem haarConj_of : HaarConj := haarConj
 
 theorem quotIndep_of : QuotIndep := quotIndep
 
-theorem quotConj_of : QuotConj := quotConj haarComm_of quotIndep_of
 
-theorem quotScale_of : QuotScale := quotScale quotIndep_of
 
 theorem normEx_of : NormEx := normEx
 
@@ -61,7 +58,6 @@ theorem quotRight_of : QuotRight := quotRight quotIndep_of
 
 theorem quotFubini_of : QuotFubini := quotFubini quotMass_of
 
-theorem convTest_of : ConvTest := convTest
 
 theorem absComm_of : AbsComm := absComm quotFubini_of quotRight_of finPres_of
 

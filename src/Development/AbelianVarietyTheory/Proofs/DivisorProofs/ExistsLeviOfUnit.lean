@@ -60,21 +60,6 @@ theorem exists_levi_of_unit (hcm : IsCMExt F E σ) {n n₁ : ℕ} (Y : Spc F E n
     rw [← mulVec_mulVec, hcol]
     exact levi_mulVec_of_orth _ _ _ _ (by rw [sf_inc, (horth _).1, map_zero]) (by rw [sf_inc, (horth _).2, map_zero])
 
-theorem skew_chain (hcm : IsCMExt F E σ) (B : Base F E) {d d₁ p : ℕ} {W : Spc F E d}
-    (hW : ∀ i j, σ (W.J j i) = -W.J i j) {H' : Plane E d d₁} {i₀ i₁ : ℕ} {sp : ∀ j : ℕ, Spc F E (d₁ - 2 * j)}
-    {pl : ∀ j : ℕ, Plane E (d₁ - 2 * j) (d₁ - 2 * (j + 1))} (hH : H'.IsAdapted σ B W (sp 0) i₀ i₁)
-    (hiso : ∀ i < p, IsIsoPlane σ B (pl i) (sp i) (sp (i + 1))) :
-    ∀ j ≤ p, ∀ k l, σ ((sp j).J l k) = -(sp j).J k l := by
-  intro j
-  induction j with
-  | zero =>
-    intro _ k l
-    rw [← hH.gram]
-    exact LeviFirst.gram_skew hcm _ _ hW k l
-  | succ j ih =>
-    intro hj k l
-    rw [← (hiso j (by omega)).2.2.2.2.2.1]
-    exact LeviFirst.gram_skew hcm _ _ (ih (by omega)) k l
 
 end GlobalTheory.ThK.DescB.CentreTwoExists
 

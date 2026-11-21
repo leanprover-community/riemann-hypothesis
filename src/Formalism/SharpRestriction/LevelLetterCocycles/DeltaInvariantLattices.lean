@@ -685,23 +685,6 @@ structure Pend (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.lo
 def Stmt (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : CmpOf D.loc D.locA HW F) : Prop :=
   admitted D HW F → aux₃ D HW F C ∧ ConclusionE D HW F
 
-theorem wach_theorem_iff_properties (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : CmpOf D.loc D.locA HW F) : thm1 D HW F C ↔ P1 D HW F ∧ P2 D HW F ∧ P3 D HW F C ∧ P4 D HW F C ∧
-    P5 D HW F ∧ P6 D HW F ∧ P7 D HW F ∧ P8 D HW F ∧ P9 D HW F ∧ product_first_zeroth_parts D HW F := by
-  unfold thm1 wachTheoremLocal WachMainTheorem P1 P2 P3 P4 P5 P6 P7 P8 P9 product_first_zeroth_parts p1L p2L p3L p4L p5L p6L p7L p8L p9L p10L
-  constructor
-  · intro h
-    exact ⟨fun l _ K s LL hg => (h l K s LL hg).1,
-      fun l _ K s LL hg => (h l K s LL hg).2.1,
-      fun l _ K s LL hg => (h l K s LL hg).2.2.1,
-      fun l _ K s LL hg => (h l K s LL hg).2.2.2.1,
-      fun l _ K s LL hg => (h l K s LL hg).2.2.2.2.1,
-      fun l _ K s LL hg => (h l K s LL hg).2.2.2.2.2.1,
-      fun l _ K s LL hg => (h l K s LL hg).2.2.2.2.2.2.1,
-      fun l _ K s LL hg => (h l K s LL hg).2.2.2.2.2.2.2.1,
-      fun l _ K s LL hg => (h l K s LL hg).2.2.2.2.2.2.2.2.1,
-      fun l _ K s LL hg => (h l K s LL hg).2.2.2.2.2.2.2.2.2⟩
-  · rintro ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10⟩ l _ K s LL hg
-    exact ⟨h1 l K s LL hg, h2 l K s LL hg, h3 l K s LL hg, h4 l K s LL hg, h5 l K s LL hg, h6 l K s LL hg, h7 l K s LL hg, h8 l K s LL hg, h9 l K s LL hg, h10 l K s LL hg⟩
 
 theorem herr_prop_two_iff (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : prop2 D HW F ↔ Pr2a D HW F ∧ Pr2b D HW F ∧ Pr2c D HW F ∧ Pr2d D HW F := by
   unfold prop2 prop2L Prop2W Pr2a Pr2b Pr2c Pr2d p2aL p2bL p2cL p2dL

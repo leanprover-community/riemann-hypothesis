@@ -87,9 +87,6 @@ theorem wo_fin_iff (w : WO S T) : w.map (infPart D) = 0 ↔ eFin D • w = w := 
     ext i j
     exact (infPart_eq_zero_iff_smul (w i j)).mpr (congrFun (congrFun h i) j)
 
-theorem eFin_smul_sub (w : WO S T) : w - eInf D • w = eFin D • w := by
-
-  rw [eq_sub_of_add_eq' (eInf_add_eFin (D := D)), sub_smul, one_smul]
 
 end Formalism.IndefR.Eqv
 

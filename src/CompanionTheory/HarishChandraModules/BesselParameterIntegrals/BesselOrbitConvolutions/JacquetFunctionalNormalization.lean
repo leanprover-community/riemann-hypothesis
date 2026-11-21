@@ -17,11 +17,6 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Formalism.
 theorem inputs_holds : Inputs :=
   ⟨Formalism.L2.SG.BesselDiscreteSeries.decLow, Coef.decay_infinite_range, CompanionTheory.D.gk.admitted.k_finite_smooth, trivial⟩
 
-theorem rankOne_holds : RankOne := by
-  intro k r ε lam h H _ _ _ σ w0 Wp _ _ _ _ z u π μW μN μG νq hS
-  obtain ⟨hl, hσ, hg, hok, -, hz, hT, -, hπ, hW, hN, -⟩ := hS
-  obtain ⟨L, hL⟩ := CompanionTheory.FamilyDerivativeExpansion.M1.be_rank_one hok.1 hl hσ hg hok.2.1 hz hT hπ hW hN
-  exact ⟨L, fun w hw v hv => (hL w hw v hv).2⟩
 
 section One
 

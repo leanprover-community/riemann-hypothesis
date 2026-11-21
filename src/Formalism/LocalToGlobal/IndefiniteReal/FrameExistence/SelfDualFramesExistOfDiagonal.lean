@@ -117,15 +117,6 @@ def SDFramesExist : Prop :=
     (βV : ∀ i, GL (Fin (Vc D i).rank) (EAf D)) (βW : ∀ i, GL (Fin (Wc D i).rank) (EAf D)),
     Seed.Frm.SDFrames ΛY ΛX ΛV ΛW βY βX βV βW
 
-theorem sdFramesExist_of_std (hY : ∀ j, FrmC.StdLat (D.sp.Y j)) (hX : FrmC.StdLat D.sp.X')
-    (hV : ∀ j, FrmC.StdLat (D.sp.V j)) (hW : ∀ j, FrmC.StdLat (D.sp.W j)) : SDFramesExist D :=
-  ⟨fun j => coordL (Yc D j), coordL D.sp.X', fun i => coordL (Vc D i), fun i => coordL (Wc D i),
-    fun _ => 1, 1, fun _ => 1, fun _ => 1,
-    fun j _ => isSDFrame_std _ (hY _) _, isSDFrame_std _ hX _, fun i => isSDFrame_std _ (hV _) _,
-    fun i => isSDFrame_std _ (hW _) _⟩
 
-theorem self_dual_frames_exist_of_diagonal (h : FrmC.IsG2 D) : SDFramesExist D := by
-  obtain ⟨pz, lam, hF⟩ := FrmC.diagonal_entries_exist D h
-  exact sdFramesExist_of_std hF.standard_lattice_Y hF.standard_lattice_X hF.standard_lattice_V hF.standard_lattice_W
 
 end Formalism.IndefR.Seed.FrmP

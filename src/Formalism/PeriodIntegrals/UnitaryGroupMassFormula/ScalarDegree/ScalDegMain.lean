@@ -73,8 +73,5 @@ theorem part_one {T : Type} [Fintype T] {N N' : ℕ} (s s' : T → ℂ) (Q : MvP
   rw [hg, hp]
   ring
 
-theorem scalDeg_main : PI.ScalDeg.ScalDeg := by
-  intro T _ N N' s s' Q dg hQ y'
-  exact ⟨part_one s s' Q dg hQ y', part_two s s' Q y'⟩
 
 end PI.UnitaryGroupMassFormula.ScalDeg

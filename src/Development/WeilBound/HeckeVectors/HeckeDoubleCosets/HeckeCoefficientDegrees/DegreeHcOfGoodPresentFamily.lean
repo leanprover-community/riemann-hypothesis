@@ -100,25 +100,7 @@ variable {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
   [FiniteDimensional ℂ Wq] [CompleteSpace Wp] [CompleteSpace Wq]
 
-theorem degree_hc_of_good_present_family (p : KB.Pl P Wp Wq) (F : JFam P.k P.r Wp Wq)
-    (lam0 : Fin (2 * P.r + P.k + 1) → ℤ) (q0 : ℕ) (hF : F.Good p.T.base lam0 q0)
-    (hP0 : Present F lam0) : DegHC p F lam0 q0 := by
-  have h0 := (hF lam0 (by simp [LatticeNorms.N1]) hP0.1).1
-  obtain ⟨C, hC, hd⟩ := fdegHpk_gap P.k P.r h0.2.2.2.1.1 F.ε p.T.base.μG
-    h0.2.2.2.2.2.2.2.2.2.2.2.1
-  refine ⟨C, hC, fun μ hμ hp => ?_⟩
-  have hG := (hF μ hμ hp.1).1
-  obtain ⟨P0, -, hw1, -⟩ := hG.2.2.2.2.1
-  have hw0 : (F.A μ).w0 ≠ 0 := fun h => by rw [h, norm_zero] at hw1; exact zero_ne_one hw1
-  exact hd _ F.h (F.A μ).H (F.A μ).σ (F.A μ).w0 hG.1 hG.2.1 hG.2.2.1 hG.2.2.2.1.2.1 hw0
 
-theorem degree_bound_of_hc (p : KB.Pl P Wp Wq) (F : JFam P.k P.r Wp Wq)
-    (lam0 : Fin (2 * P.r + P.k + 1) → ℤ)
-    (tau : (Fin (2 * P.r + P.k + 1) → ℤ) → Finset (Fin (2 * P.r + P.k + 1)) → ℂ) (c0 q0 : ℕ)
-    (H : ℝ) (hc0 : P.r + 1 ≤ c0) (hF : F.Good p.T.base lam0 q0) (hP0 : Present F lam0) :
-    PieriDegreeConditions p (pieriDataOfFamily p F lam0 tau c0 q0 H) :=
-  degree_bound_of_holomorphic_continuation p F lam0 tau c0 q0 H hc0 (normDegree_bound p F lam0 q0 hF)
-    CompanionTheory.LimBd.SchurHpk.threeDimData_schurH (degree_hc_of_good_present_family p F lam0 q0 hF hP0) hF hP0
 
 end CompanionTheory.D.Upq.Coef
 

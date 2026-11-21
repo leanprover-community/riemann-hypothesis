@@ -141,32 +141,9 @@ theorem extAt_surjective [IsTotallyComplex E] (τ : E →+* ℂ) : Function.Surj
     obtain ⟨x, hx⟩ := hs (conj y)
     exact ⟨x, by simp [hx]⟩
 
-theorem one_hasAngularType_zero (τ : E →+* ℂ) : HasAngularType (1 : HeckeCharacter E) τ 0 := by
-  intro z
-  simp [HeckeCharacter.infiniteComponent_apply, HeckeCharacter.toIdele_apply]
 
-theorem not_one_hasAngularType_one [IsTotallyComplex E] (τ : E →+* ℂ) :
-    ¬ HasAngularType (1 : HeckeCharacter E) τ 1 := by
-  intro h
-  obtain ⟨x, hx⟩ := extAt_surjective τ Complex.I
-  have hx0 : x ≠ 0 := by
-    rintro rfl
-    rw [map_zero] at hx
-    exact Complex.I_ne_zero hx.symm
-  have := h (Units.mk0 x hx0)
-  simp only [Units.val_mk0, hx, Complex.norm_I, zpow_one] at this
-  simp [HeckeCharacter.infiniteComponent_apply, HeckeCharacter.toIdele_apply] at this
-  have := congrArg Complex.re this
-  simp at this
 
-theorem one_isUnramifiedAt (w : HeightOneSpectrum (𝓞 E)) :
-    IsUnramifiedAt (1 : HeckeCharacter E) w := by
-  intro a _
-  rfl
 
-theorem one_isTrivialOnBase : IsTrivialOnBase F (1 : HeckeCharacter E) := by
-  intro x
-  rfl
 
 theorem IsQuadraticCharacterOf.sq_eq_one {η : HeckeCharacter F} (h : IsQuadraticCharacterOf E η)
     (h2 : Module.finrank F E = 2) (x : IdeleClassGroup F) : η x ^ 2 = 1 := by
@@ -184,25 +161,7 @@ variable (E) in
 def embeddingImage : Finset (E →+* ℂ) :=
   open Classical in Finset.univ.image fun w : InfinitePlace E ↦ w.embedding
 
-theorem mem_embeddingImage_iff (σ : E →+* ℂ) :
-    σ ∈ embeddingImage E ↔ (InfinitePlace.mk σ).embedding = σ := by
-  classical
-  simp only [embeddingImage, Finset.mem_image, Finset.mem_univ, true_and]
-  constructor
-  · rintro ⟨w, rfl⟩
-    rw [mk_embedding]
-  · intro h
-    exact ⟨InfinitePlace.mk σ, h⟩
 
-theorem isCMType_embeddingImage [IsTotallyComplex E] : IsCMType (embeddingImage E) := by
-  intro σ
-  rw [mem_embeddingImage_iff, mem_embeddingImage_iff, mk_conjugate_eq]
-  have hσ : ComplexEmbedding.conjugate σ ≠ σ := IsTotallyComplex.complexEmbedding_not_isReal σ
-  rcases embedding_mk_eq σ with h | h
-  · rw [h]
-    exact ⟨fun _ h' ↦ hσ h'.symm, fun _ ↦ rfl⟩
-  · rw [h]
-    exact ⟨fun h' ↦ absurd h' hσ, fun h' ↦ absurd rfl h'⟩
 
 end Ties
 

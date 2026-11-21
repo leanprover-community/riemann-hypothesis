@@ -43,7 +43,6 @@ def HCFdegR : Prop :=
       (σ : Matrix (Fin N) (Fin N) ℂ → (H →L[ℂ] H)) (w : H), IsDS ε lam σ → w ≠ 0 →
       fdegOf ((s N ε : ENNReal) • Formalism.REAL.muG ε) σ w = Formalism.QuantumDeterminants.fdegHC lam
 
-theorem hcFormalDegree_of_R (h : HCFdegR) (D : D7) : Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.HCFormalDegree D := fun hT => h D.cd D.s.cdScale ((cdScaleTie_iff D).mp hT)
 
 def DiscreteSeriesDegreeBoundsAllScales : Prop :=
   ∀ (cd : CDHaar) (s : (n : ℕ) → (Fin n → Bool) → NNReal), cdScaleTieR cd s → DiscreteSeriesDegreeBoundsAtScale s
@@ -132,7 +131,6 @@ theorem theorem_three_at_scale_of_degree (s : (n : ℕ) → (Fin n → Bool) →
     _ ≤ 4 * StandardLattice.dTau ε lam * (3 * p * q * StandardLattice.lamAbs lam) ^ (StandardLattice.nPlus ε * StandardLattice.nMinus ε) := by
         nlinarith
 
-theorem explicit_bound_all_scales_of_formal_degree (hHC : HCFdegR) (hW : DiscreteSeriesWeylDimension.WeylForK) (hL : DiscreteSeriesWeylDimension.LowKMultOne) : DiscreteSeriesDegreeBoundsAllScales := fun cd s hs => theorem_three_at_scale_of_degree s (hHC cd s hs) hW hL
 
 theorem theorem_three_under_scale_of_general (h : DiscreteSeriesDegreeBoundsAllScales) (D : D7) : DiscreteSeriesDegreeBoundsOfScaleAgreement D := fun hT => (theorem_three_explicit_iff_scale D).mpr (h D.cd D.s.cdScale ((cdScaleTie_iff D).mp hT))
 
@@ -157,32 +155,8 @@ theorem dsigExT_of (D : D7) (hE : DiscreteSeriesWeylDimension.DiscreteSeriesExis
 
 variable {eps : ℝ}
 
-theorem fam0_theoremThreeSigmaExplicit_of_weyl (Fm : FamP eps) (h3 : ∀ D, DiscreteSeriesDegreeBoundsOfScaleAgreement D) (hDs : ∀ D, DsigExT D) (hW : DiscreteSeriesWeylDimension.WeylForK)
-    (hL : DiscreteSeriesWeylDimension.LowKMultOne) : flipTwoThree.fam0 Fm StandardLattice.SigmaDegreeTwoSidedBoundOfGap := by
-  refine ⟨0, fun x _ _ i => ?_⟩
-  have ht := Fm.ties x i
-  exact StandardLattice.theorem_three_sigma_holds _ (h3 _ ht.cdScale_tie) (DiscreteSeriesWeylDimension.lowest_K_type_count_of_weyl _ hW hL) (hDs _ ht.dsig_tie)
 
-theorem linkGLOBAL7_tied3 (Fm : FamP eps) (Cabs CH C0 C5 : ℝ) (hCabs : 0 ≤ Cabs) (hCH : 0 < CH) (hC0 : 3 ≤ C0)
-    (h2b : flipTwoThree.fam0 Fm StandardLattice.MassRatio₂) (h2v : flipTwoThree.fam0 Fm StandardLattice.BaseVolumeEqualsMass)
-    (h3 : ∀ D, DiscreteSeriesDegreeBoundsOfScaleAgreement D) (hDs : ∀ D, DsigExT D) (hWK : DiscreteSeriesWeylDimension.WeylForK) (hLK : DiscreteSeriesWeylDimension.LowKMultOne)
-    (hZa : flipTwoThree.FamilySlopeLowerOpenPart Fm) (hZb : flipTwoThree.FamilySlopeMaxOpenPart Fm C5)
-    (tCV : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (i : Fm.Ix x) u, Nonempty (flipTwoThree.ColVal (Fm.D x i) u))
-    (hW : FamU Fm fun D u => Nonempty (product_first_zeroth_parts.FreeT D u)) (hμ : FamU Fm product_first_zeroth_parts.SlopeLine)
-    (hI : FamU Fm Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.HeckeIntegralLevelZero) (hR : FamU Fm Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.HeckeRamifiedLevelZero) (hB : FamU Fm Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.SecondBranchInclusionLength) :
-    TuSize Fm → LinkGLOBAL7 Fm Cabs CH C0 Cabs 0 :=
-  linkGLOBAL7_min Fm Cabs CH C0 C5 hCabs hCH hC0 h2b h2v (fam0_theoremThreeSigmaExplicit_of_weyl Fm h3 hDs hWK hLK) hZa hZb tCV hW hμ hI hR hB
 
-theorem linkGLOBAL7_tied3src (Fm : FamP eps) (Cabs CH C0 C5 : ℝ) (hCabs : 0 ≤ Cabs) (hCH : 0 < CH) (hC0 : 3 ≤ C0)
-    (h2b : flipTwoThree.fam0 Fm StandardLattice.MassRatio₂) (h2v : flipTwoThree.fam0 Fm StandardLattice.BaseVolumeEqualsMass)
-    (hHC : HCFdegR) (hE : DiscreteSeriesWeylDimension.DiscreteSeriesExists) (hWK : DiscreteSeriesWeylDimension.WeylForK) (hLK : DiscreteSeriesWeylDimension.LowKMultOne)
-    (hZa : flipTwoThree.FamilySlopeLowerOpenPart Fm) (hZb : flipTwoThree.FamilySlopeMaxOpenPart Fm C5)
-    (tCV : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (i : Fm.Ix x) u, Nonempty (flipTwoThree.ColVal (Fm.D x i) u))
-    (hW : FamU Fm fun D u => Nonempty (product_first_zeroth_parts.FreeT D u)) (hμ : FamU Fm product_first_zeroth_parts.SlopeLine)
-    (hI : FamU Fm Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.HeckeIntegralLevelZero) (hR : FamU Fm Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.HeckeRamifiedLevelZero) (hB : FamU Fm Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.SecondBranchInclusionLength) :
-    TuSize Fm → LinkGLOBAL7 Fm Cabs CH C0 Cabs 0 :=
-  linkGLOBAL7_tied3 Fm Cabs CH C0 C5 hCabs hCH hC0 h2b h2v (fun D => theorem_three_under_scale_of_general (explicit_bound_all_scales_of_formal_degree hHC hWK hLK) D)
-    (fun D => dsigExT_of D hE) hWK hLK hZa hZb tCV hW hμ hI hR hB
 
 end Formalism.MainNotions.RT
 

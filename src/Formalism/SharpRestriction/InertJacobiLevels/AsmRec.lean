@@ -25,12 +25,6 @@ def Core.rh (X : Core) : Σ R : Ranks, Host R := ⟨X.1, X.2.1⟩
 
 def Core.wjv (X : Core) : ℕ → Bool → ℕ → ℝ := Inhab.wjv X.1 X.2.2
 
-theorem wj_core (D : D7) (j : ℕ) (c : Bool) (t : G.HH D) : wj D j (tauOf D (c, t)) = (coreOf D).wjv j c t.val := by
-  show wj D j (tauOf D (c, t)) =
-    if h : j - 1 < D.R.m then
-      (((D.hc (D.eTau.symm (plPsi D.R.toFrame c (D.R.ofNat t.val)))).e ⟨j - 1, h⟩ : ℚ) : ℝ) else 0
-  rw [Formalism.HC.Frame.ofNat_val]
-  rfl
 
 def OkT {R : Ranks} {x eps Cp CT : ℝ} (B : Base R x eps Cp CT) (Ts : ℝ) (T : ℕ) : Prop :=
   T.Prime ∧ Ts ≤ (T : ℝ) ∧ (T : ℝ) ≤ (1 + 1 / ((R.f : ℝ) * R.k)) * Ts ∧ TNorm (host2 B 0 ∅) T ∧ T ≠ B.pde ∧ T ≠ B.pde'

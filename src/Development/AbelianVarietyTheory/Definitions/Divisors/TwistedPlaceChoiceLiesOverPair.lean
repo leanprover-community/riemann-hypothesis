@@ -218,24 +218,6 @@ structure GridFit (p : PtAt ex Csz) {CF : ℝ} (G : Grid p CF) : Prop where
 theorem GridFit.fieldLL {p : PtAt ex Csz} {CF : ℝ} {G : Grid p CF} (h : GridFit p G) : FieldHas G D.what₂.embLL :=
   h.field.map D.LL0.val.toRingHom
 
-theorem GridFit.of_twistAt {p : PtAt ex Csz} {CF : ℝ} {G : Grid p CF} {xd v0 rep} (h : GlobalTheory.EX.TwistAt L ex.nch xd v0 rep)
-    (h1 : ValLL0 D p.R.C) (h2 : FieldHas G (embLL0 D)) (h3 : Formalism.L2.Host.PsiChoiceCompatible D p.R.C ex.nch p.Tp)
-    (h4 : GlobalTheory.LamTie.IsLamTieFull D.ntw (lamOf G)) : GridFit p G := by
-  classical
-  obtain ⟨⟨N0, hN⟩, hall⟩ := h.2.1
-  have hg := (hall N0 hN).1
-  refine ⟨h1, h2, ⟨hg.1.1, fun w w' a b c _ => hg.1.2 w w' a b c⟩, fun w hw => ?_, ⟨N0, fun w hw a ha => ?_⟩, h3, h4⟩
-  · obtain ⟨c, -, -, -, S, -, hS⟩ := hg.2.1 w hw
-    have e := (hS 1 isCoprime_one_left).1
-    exact ⟨fun P hP => (e.1 P hP).1, (Finset.disjoint_union_right.1 e.2.1).1, c⟩
-  · obtain ⟨-, -, -, -, S, -, hS⟩ := hg.2.1 w hw
-    have e : ∃ b : ℤ, IsCoprime b (D.ntw.l (ex.nch.twI w) : ℤ) ∧
-        BlochKatoReduction.Gen.psiAt (ex.nch.sd w) (ex.nch.psi' w) ^ b = ex.nch.psi' w ^ a := by
-      cases ex.nch.sd w
-      · exact ⟨-a, ha.neg_left, by simp [BlochKatoReduction.Gen.psiAt]⟩
-      · exact ⟨a, ha, by simp [BlochKatoReduction.Gen.psiAt]⟩
-    obtain ⟨b, hb, e⟩ := e
-    exact e ▸ (hS b hb).2.2.2.2.1
 
 end Fit
 

@@ -104,50 +104,7 @@ theorem exists_classical (H : TorusAlgebraic) (g : ℕ) (hg : 1 ≤ g) (α β : 
   exact ⟨⟨P, hg, rig, hr, th, exists_mem_nonzeroLocus P th ⟨i, hne⟩, v, hb⟩, u, _, rfl, hs, hp, hΛ, hR, hth,
     fun i => (hv i).2⟩
 
-theorem rule_values (H : TorusAlgebraic) (N : ℕ → ℕ) (κ : KeyIn ℂ → ℂˣ)
-    (hH : ∀ (P : Out.PolAV (Sp ℂ)) (hg rig hr th hth v hv th' hth' v' hv') (a : ℂ)
-      (M : Matrix (Fin P.g) (Fin P.g) ℂ), (∀ i, LB.Sec.f th' i = constFn P.A.hom _ a * LB.Sec.f th i) →
-      (∀ i, IsLieComb (M i) v (v' i)) →
-      a ^ (8 * N P.g) * (κ ⟨P, hg, rig, hr, th', hth', v', hv'⟩ : ℂ) =
-        M.det ^ (4 * N P.g) * κ ⟨P, hg, rig, hr, th, hth, v, hv⟩)
-    (hK : ∀ (x : KeyIn ℂ) (u : HolUnif x.P.A x.P.L x.P.g) (τ : Matrix (Fin x.P.g) (Fin x.P.g) ℂ) (a b : Fin x.P.g → ℂ),
-      τ.IsSymm → (τ.map Complex.im).PosDef → (∀ i, a i = 0 ∨ a i = 1 / 2) → (∀ i, b i = 0 ∨ b i = 1 / 2) →
-      (∀ z, z ∈ u.Λ ↔ ∃ m n : Fin x.P.g → ℤ, z = (fun i => (m i : ℂ)) + τ.mulVec (fun i => (n i : ℂ))) →
-      u.IsRig x.rig → u.IsFn x.th (thetaChar τ a b) →
-      (∀ i, u.IsDiff (Pi.single i (2 * Real.pi * Complex.I)⁻¹) (x.v i)) → κ x = 1)
-    (g : ℕ) (hg : 1 ≤ g) (t : ℂ) (ht : t ≠ 0) : ∃ x : KeyIn ℂ, x.P.g = g ∧ (κ x : ℂ) = t ^ (g * (4 * N g)) := by
-  obtain ⟨x, u, τ, rfl, h₁, h₂, h₃, h₄, h₅, h₆⟩ := exists_classical H g hg 0 0 (Or.inl rfl) (Or.inl rfl)
-  have e := hK x u τ _ _ h₁ h₂ (fun _ => Or.inl rfl) (fun _ => Or.inl rfl) h₃ h₄ h₅ h₆
-  have := x.P.isAb.comm
-  obtain ⟨e₁, -, -, -, e₅⟩ := LieComb.lieComb_algebra ℂ x.P.A x.P.g x.v x.basis.1
-  let M : Matrix (Fin x.P.g) (Fin x.P.g) ℂ := t • 1
-  have hM : M.det = t ^ x.P.g := by simp [M]
-  choose v' hv' using fun i => (e₁ (M i)).exists
-  have hb : IsLieBasis v' := (e₅ M v' x.basis hv').2 (by rw [hM]; exact (pow_ne_zero _ ht).isUnit)
-  have f := hH x.P x.g_pos x.rig x.rig_gen x.th x.th_ne x.v x.basis x.th x.th_ne v' hb 1 M
-    (fun i => by rw [constFn, map_one, map_one, _root_.one_mul]) hv'
-  refine ⟨⟨x.P, x.g_pos, x.rig, x.rig_gen, x.th, x.th_ne, v', hb⟩, rfl, ?_⟩
-  change _ = _ * (κ x : ℂ) at f
-  rw [e, hM, _root_.one_pow, _root_.one_mul, Units.val_one, _root_.mul_one, ← pow_mul] at f
-  exact f
 
-theorem exists_archNorm_sq_mul_eq_two_pi_pow (H : TorusAlgebraic) (hU : ThetaUnifAV) (h : KeyFormulaPow) (g : ℕ) (hg : 1 ≤ g) :
-    ∃ (x : KeyIn ℂ) (nth nη : ℝ), x.P.g = g ∧ IsArchNorm x nth nη ∧ nth ^ 2 * nη = (2 * Real.pi) ^ g := by
-  obtain ⟨N, hN, κ, -, -, -, hK, hA⟩ := h
-  obtain ⟨x, u, τ, rfl, h₁, h₂, h₃, h₄, h₅, h₆⟩ := exists_classical H g hg (1 / 2) (1 / 2) (Or.inr rfl) (Or.inr rfl)
-  have e := hK x u τ _ _ h₁ h₂ (fun _ => Or.inr rfl) (fun _ => Or.inr rfl) h₃ h₄ h₅ h₆
-  obtain ⟨nth, nη, hn⟩ := exists_isArchNorm hU x
-  refine ⟨x, nth, nη, rfl, hn, ?_⟩
-  obtain ⟨u, Hm, W, χ, θ, Fd, a₁, a₂, a₃, a₄, a₅, a₆, a₇⟩ := hn
-  have f := hA x u Hm W χ θ Fd _ _ a₁ a₂ a₃ a₄ a₅ a₆ a₇
-  have p : 0 ≤ nη := a₇ ▸ by positivity
-  have hn := hN x.P.g
-  have := Real.pi_pos
-  refine (pow_left_inj₀ (by positivity) (by positivity) (show 2 * N x.P.g ≠ 0 by omega)).1 ?_
-  rw [e, Units.val_one, norm_one, _root_.one_mul] at f
-  rw [mul_pow, ← pow_mul, ← pow_mul, show 2 * (2 * N x.P.g) = 4 * N x.P.g by ring, f]
-  congr 1
-  ring
 
 open NumberField IsDedekindDomain in
 

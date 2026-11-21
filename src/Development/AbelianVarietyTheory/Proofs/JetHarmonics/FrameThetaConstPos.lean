@@ -24,8 +24,6 @@ theorem isInv_iff (X : Data E r) (u : Frame X.Ψ r → ℝ) : IsInv X u ↔ IsIn
 theorem levi_eq (X : Data E r) (x0 : Frame X.Ψ r) (u : Frame X.Ψ r → ℝ) (z : V (nd X))
     (ξ : Fin (nd X) → ℂ) : levi X x0 u z ξ = leviM X u x0 z ξ := rfl
 
-theorem levi_rh (X : Data E r) (x0 : Frame X.Ψ r) (z : V (nd X)) (ξ : Fin (nd X) → ℂ) :
-    levi X x0 (rh X) z ξ = leviRh X x0 z ξ := rfl
 
 theorem levi_phK (X : Data E r) (x0 : Frame X.Ψ r) {z : V (nd X)} (hz : z ∈ OmF X x0)
     (ξ : Fin (nd X) → ℂ) : levi X x0 (phK X) z ξ = leviDens X x0 z ξ := by
@@ -289,9 +287,6 @@ theorem thp_cusp (I : ThetaIn X) : I.thp ∈ X.SS I.Fp :=
 
 def CuspTwo (I : ThetaIn X) : Prop := I.th2 ∈ X.SS ((nd X + 4) • I.L - I.Fp)
 
-theorem cuspTwo_of_gaps (I : ThetaIn X) (hg : GapsGe X ((nd X + 4) • I.L - I.Fp) 0)
-    (hp : PairingGe X ((nd X + 4) • I.L - I.Fp) 1) : CuspTwo I :=
-  cusp_of_gaps I.two_le_D (indef I).1 (indef I).2 hg hp I.secondTheta_bounded
 
 theorem w_nz (I : ThetaIn X) (x : Frame X.Ψ r) (hx : x ∈ X.dom) : ∃ k, I.w k x ≠ 0 := by
   by_contra h
@@ -713,11 +708,6 @@ theorem agree_ofArch (A : ArchInM X) (RR dp qp η : ℝ) (h : Explicit A RR dp q
 theorem cuspTwo_ofArch (A : ArchInM X) (RR dp qp η : ℝ) (h : Explicit A RR dp qp η) :
     CuspTwo (ofArch A RR dp qp η h) := A.secondTheta_vanishes.1
 
-theorem Agree.cuspTwo {I : ThetaIn X} {A : ArchInM X} (h : Agree I A) : CuspTwo I := by
-  obtain ⟨h1, -, h3, -, -, -, -, -, -, -, -, -, -, -, h15, -, -⟩ := h
-  unfold CuspTwo
-  rw [← h1, ← h3, ← h15]
-  exact A.secondTheta_vanishes.1
 
 theorem Agree.unique {I : ThetaIn X} {A A' : ArchInM X} (h : Agree I A) (h' : Agree I A') :
     A = A' := by
@@ -821,82 +811,10 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.pair_add {la la' : _root_.Recipro
     nlinarith
   exact_mod_cast this
 
-theorem premises (A : ArchInM X) (h : Side A) :
-    (∃ b m : ℝ, 4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 < b ∧ b < m ∧
-      ∀ x0, IsOrth X x0 → ∀ z ∈ OmF X x0, ∀ ξ : Fin (nd X) → ℂ,
-        m * leviRh X x0 z ξ ≤ leviO X x0 (phla X A.Fp) z ξ - leviDens X x0 z ξ -
-          (nd X : ℝ) * leviO X x0 (phla X A.L) z ξ) ∧
-    (∃ b m : ℝ, 4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 < b ∧ b < m ∧
-      ∀ x0, IsOrth X x0 → ∀ z ∈ OmF X x0, ∀ ξ : Fin (nd X) → ℂ,
-        m * leviRh X x0 z ξ ≤ leviO X x0 (phla X A.Fp) z ξ - leviDens X x0 z ξ -
-          (nd X : ℝ) * leviO X x0 (phla X A.L) z ξ + (1 + A.c1 / A.a1) * leviO X x0 A.ps0 z ξ) ∧
-    (∃ b m : ℝ, 4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 < b ∧
-      b ^ 2 * ((X.Ψ.card * min X.p0 (r - X.p0) : ℕ) : ℝ) + b < m ∧
-      ∀ x0, IsOrth X x0 → ∀ z ∈ OmF X x0, ∀ ξ : Fin (nd X) → ℂ,
-        m * leviRh X x0 z ξ ≤ leviO X x0 (phla X A.Fp) z ξ - leviDens X x0 z ξ) ∧
-    (∀ x0, IsOrth X x0 → ∀ z ∈ OmF X x0, ∀ ξ : Fin (nd X) → ℂ, 0 ≤ leviO X x0 (phla X A.L) z ξ) ∧
-    (∃ C : ℝ, ∀ x ∈ X.dom, A.ps0 x ≤ C) ∧
-    (∀ P, X.IsBddSec A.Fp P → P ∈ X.SS A.Fp) ∧
-    ∀ (k : ℕ) P, X.IsBddSec (A.Fp + k • A.L) P → P ∈ X.SS (A.Fp + k • A.L) := by
-  obtain ⟨h1, h2, h3, h4, h5, h6, ⟨η, h7, h8⟩, h9⟩ := h
-  obtain ⟨g1, g2, g3, g4⟩ := arch_gaps A h1 h2
-  have hT := T_pos A.n_ge A.T_ge
-  have hb : 4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 < bb X := by
-    have a : (0 : ℝ) < X.Ψ.card := by exact_mod_cast card_pos A.n_ge
-    have b : (0 : ℝ) < r := by exact_mod_cast h1.trans h2
-    have : 0 < (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 := by positivity
-    unfold bb
-    linarith
-  have hL : ∀ x0, IsOrth X x0 → ∀ z ∈ OmF X x0, ∀ ξ : Fin (nd X) → ℂ,
-      0 ≤ leviO X x0 (phla X A.L) z ξ := fun x0 ho z hz ξ => by
-    by_cases hξ : ξ = 0
-    · subst hξ; simp [leviO, leviM, leviV]
-    · exact (A.posL x0 (IW.orth_mem_dom X x0 ho) z hz ξ hξ).le
-  have hA : ∀ x0, IsOrth X x0 → ∀ z ∈ OmF X x0, ∀ ξ : Fin (nd X) → ℂ,
-      19 / 5 * (A.T : ℝ) * leviRh X x0 z ξ ≤ leviO X x0 (phla X A.Fp) z ξ - leviDens X x0 z ξ -
-        (nd X : ℝ) * leviO X x0 (phla X A.L) z ξ := fun x0 ho z hz ξ => by
-    have := h8 x0 ho z hz ξ
-    have := mul_nonneg h7.le (hL x0 ho z hz ξ)
-    linarith
-  refine ⟨⟨bb X, _, hb, by linarith, hA⟩, ⟨bb X, _, hb, h5, fun x0 ho z hz ξ => ?_⟩,
-    ⟨bb X, _, hb, h6, h9⟩, hL, (arch_extra A).2.2.2.1,
-    fun P => cusp_of_gaps A.n_ge h1 h2 g3 g4,
-    fun k P => cusp_of_gaps A.n_ge h1 h2 (gaps_add g3 (gapsGe_mono g1 zero_le_one) k) (pair_add g4 g2 k)⟩
-  have a := hA x0 ho z hz ξ
-  have b := A.base_psi_levi_lower_bound x0 (IW.orth_mem_dom X x0 ho) z hz ξ
-  have c : leviM X (phla X A.de) x0 z ξ = 2 * leviRh X x0 z ξ := levi_twoDelta h3 ho hz ξ
-  have ht : 0 ≤ 1 + A.c1 / A.a1 := by have := A.frame_theta_const_pos; have := A.frame_theta_weight_pos; positivity
-  have d := mul_le_mul_of_nonneg_left b ht
-  have e := mul_le_mul_of_nonneg_right A.rr_le (leviRh_nonneg X ho hz ξ)
-  rw [c] at d
-  unfold leviO at *
-  nlinarith
 
-theorem be_eq_monoM {I : ThetaIn X} {A : ArchInM X} (h : Agree I A) :
-    I.be = monoM X ![A.et, A.th1] ![2, A.i * A.g0] := by
-  obtain ⟨-, -, -, -, h5, h6, -, -, -, -, -, -, h13, h14, -⟩ := h
-  funext x
-  simp [monoM, ThetaIn.be, ThetaIn.n1, h5, h6, h13, h14]
 
 end Records
 
-theorem typings_equiv (X : Data E r) :
-    (∀ u, IsInv X u ↔ IsInvFn X u) ∧
-    (∀ x0 u z ξ, levi X x0 u z ξ = leviM X u x0 z ξ) ∧
-    (∀ ps a, 0 ≤ a → (CuspDecay X ps a ↔ cfwM X ps a)) ∧
-    (∃ e : {I : ThetaIn X // CuspTwo I} ≃
-        {q : ArchInM X × ℝ × ℝ × ℝ × ℝ // Explicit q.1 q.2.1 q.2.2.1 q.2.2.2.1 q.2.2.2.2},
-      ∀ I, Agree I.1 (e I).1.1 ∧ (e I).1.2 = (I.1.RR, I.1.dp, I.1.qp, I.1.η)) ∧
-    (∀ I : ThetaIn X, (∃ A : ArchInM X, Agree I A) ↔ CuspTwo I) ∧
-    (∀ A : ArchInM X, (∃ I : ThetaIn X, Agree I A) ↔ Side A) ∧
-    ∀ (I : ThetaIn X) (A : ArchInM X), Agree I A → I.be = monoM X ![A.et, A.th1] ![2, A.i * A.g0] :=
-  ⟨isInv_iff X, levi_eq X, fun ps _ ha => cuspDecay_iff X ps ha,
-    ⟨thetaEquiv X, fun I => ⟨agree_toArch I.1 I.2, rfl⟩⟩,
-    fun I => ⟨fun ⟨_, h⟩ => h.cuspTwo, fun h => ⟨_, agree_toArch I h⟩⟩,
-    fun A => ⟨fun ⟨I, h⟩ => (side_iff A).2 ⟨I.RR, I.dp, I.qp, I.η,
-        h.unique (agree_toArch I h.cuspTwo) ▸ explicit_toArch I h.cuspTwo⟩,
-      fun h => have ⟨RR, dp, qp, η, k⟩ := (side_iff A).1 h; ⟨_, agree_ofArch A RR dp qp η k⟩⟩,
-    fun _ _ => be_eq_monoM⟩
 
 end
 

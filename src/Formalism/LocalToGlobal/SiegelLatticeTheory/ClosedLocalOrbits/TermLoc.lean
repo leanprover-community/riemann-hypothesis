@@ -383,30 +383,6 @@ variable (D) in
 
 def LocDatExists : Prop := Nonempty (LocDat D)
 
-theorem recGenIff_of (Z : LocDat D) (Y : TermTie D) (u u' : D.what₂.Word) (hY : RecBBGlob D Y u u')
-    (hR : RecBBTie D Z Y u u')
-    (hMI : ∀ γ : D.s.Term u u', MplusIndep (Y.abelian₂ γ) (Y.fl γ) (gS D) (Y.fl' γ)) (γ : D.s.Term u u') :
-    D.s.generic γ ↔ ∀ p : PlF D, ¬ LocNG.BBne (H := locH Z p) (locY D Z Y γ p) := by
-  simp only [← hR γ, hY γ, Y.gen_iff γ]
-  constructor
-  · rintro hg p ⟨P, -, hP⟩
-    exact not_BBneP_of_generic hg P hP
-  · intro h
-    have hfix := Y.fixed γ
-    refine generic_of_not_BBneP (hMI γ) hfix.2.2.1 hfix.2.2.2 (Y.adm γ) ?_
-    intro P hP
-    exact h (below D P) ⟨P, rfl, hP⟩
 
-theorem recBBTie_of (Z : LocDat D) (hT : BBTie D Z) (Y : TermTie D) (u u' : D.what₂.Word) (hY : RecBBGlob D Y u u')
-    (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (hfl : ∀ γ : D.s.Term u u', Y.fl γ = lf D F0)
-    (hrow : ∀ γ : D.s.Term u u', IsRowLat D F0 (Y.abelian₂ γ))
-    (hok : ∀ γ : D.s.Term u u', FrameOK D (Y.abelian₂ γ) (Y.fl' γ))
-    (hMI : ∀ γ : D.s.Term u u', MplusIndep (Y.abelian₂ γ) (lf D F0) (gS D) (Y.fl' γ)) : RecBBTie D Z Y u u' := by
-  intro γ p
-  rw [hY γ p]
-  unfold locY
-  have hadm := Y.adm γ
-  rw [hfl γ] at hadm ⊢
-  exact hT u u' F0 (Y.abelian₂ γ) (Y.fl' γ) (hrow γ) ⟨Y.lift' γ, hadm, hok γ⟩ (hMI γ) p
 
 end Formalism.L2.SG.TermLoc

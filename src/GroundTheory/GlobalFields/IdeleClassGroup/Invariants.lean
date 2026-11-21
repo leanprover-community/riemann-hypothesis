@@ -196,11 +196,6 @@ def tateZeroEquiv {F E : FiniteSubfield} (h : F ≤ E) :
       rw [norm_fixedEquiv h]
       exact (fixedEquiv F).symm_apply_apply _)
 
-theorem tateZeroEquiv_mk {F E : FiniteSubfield} (h : F ≤ E) (c : IdeleClassGroup F.1) :
-    tateZeroEquiv h (fixedEquiv F c : tateZero IdeleClassLimit F.1.fixingSubgroup
-      E.1.fixingSubgroup) = (c : IdeleClassGroup F.1 ⧸ (FiniteSubfield.ideleClassNorm h).range) := by
-  rw [tateZeroEquiv, QuotientGroup.congr_mk]
-  exact congrArg _ ((fixedEquiv F).symm_apply_apply c)
 
 end IdeleClassLimit
 

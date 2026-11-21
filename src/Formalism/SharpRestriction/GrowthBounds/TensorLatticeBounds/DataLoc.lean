@@ -76,11 +76,6 @@ theorem lat1 (h : HidaSetting p n' W Qq O Kf ι σ j w) (L : Submodule W (Fin 1 
   rw [this]
   exact Submodule.span_singleton_smul_eq u.isUnit _
 
-theorem line_isLattice (h : HidaSetting p n' W Qq O Kf ι σ j w) (n : ℤ) : IsLattice W (line W (Qq := Qq) p n) := by
-  refine ⟨Matrix.of fun _ _ => (p : Qq) ^ n, ?_, ?_⟩
-  · rw [Matrix.det_fin_one]
-    exact (zpow_ne_zero _ (p_ne h)).isUnit
-  · rw [colSpan_one]; rfl
 
 theorem le_of_mem (h : HidaSetting p n' W Qq O Kf ι σ j w) {a b : ℤ}
     (hm : (fun _ : Fin 1 => (p : Qq) ^ a) ∈ line W (Qq := Qq) p b) : b ≤ a := by
@@ -106,11 +101,6 @@ theorem le_of_mem (h : HidaSetting p n' W Qq O Kf ι σ j w) {a b : ℤ}
   have h3 : IsUnit ((p : W) ^ (k + 1)) := IsUnit.of_mul_eq_one c (by rw [mul_comm]; exact h2)
   exact h.p_unif.not_isUnit ((isUnit_pow_iff (Nat.succ_ne_zero k)).1 h3)
 
-theorem line_inj (h : HidaSetting p n' W Qq O Kf ι σ j w) {a b : ℤ}
-    (hab : line W (Qq := Qq) p a = line W p b) : a = b := by
-  apply le_antisymm
-  · exact le_of_mem h (by rw [hab]; exact Submodule.mem_span_singleton_self _)
-  · exact le_of_mem h (by rw [← hab]; exact Submodule.mem_span_singleton_self _)
 
 theorem map_line (h : HidaSetting p n' W Qq O Kf ι σ j w) (a n : ℤ) :
     (line W (Qq := Qq) p n).map
@@ -159,34 +149,7 @@ theorem smul1 (h : HidaSetting p n' W Qq O Kf ι σ j w) (γ : Multiplicative �
   rw [homoth_val, hL]
   exact map_line h _ _
 
-theorem level1_trivStab (h : HidaSetting p n' W Qq O Kf ι σ j w) : (level1 h).TrivStab := by
-  intro γ' L hL hγ
-  obtain ⟨γ, rfl⟩ : ∃ γ : Multiplicative ℤ, γ = γ' := ⟨γ', rfl⟩
-  obtain ⟨n, hn⟩ := lat1 h (L (0 : Fin 1)) (hL (0 : Fin 1))
-  have h1 := smul1 h γ L n hn
-  have h1' : line W (Qq := Qq) p n = line W p (Multiplicative.toAdd γ + n) := by
-    rw [← h1, ← hn]; exact (congrFun hγ (0 : Fin 1)).symm
-  have h2 : n = Multiplicative.toAdd γ + n := line_inj h h1'
-  have h3 : Multiplicative.toAdd γ = 0 := by omega
-  exact (Multiplicative.toAdd.injective h3 : γ = 1)
 
-theorem level1_finClasses (h : HidaSetting p n' W Qq O Kf ι σ j w) : (level1 h).FinClasses := by
-  classical
-  let L0 : (places1 h).Tup := fun _ => line W p 0
-  refine ⟨{L0}, ?_, ?_⟩
-  · intro L hL v
-    rw [Finset.mem_singleton] at hL
-    rw [hL]
-    exact line_isLattice h 0
-  · intro L hL
-    obtain ⟨n, hn⟩ := lat1 h (L (0 : Fin 1)) (hL (0 : Fin 1))
-    refine ⟨L0, Finset.mem_singleton_self _, Multiplicative.ofAdd n, ?_⟩
-    funext v
-    have hv : v = (0 : Fin 1) := Subsingleton.elim (α := Fin 1) v 0
-    subst hv
-    have h1 := smul1 h (Multiplicative.ofAdd n) L0 0 rfl
-    refine hn.trans (Eq.trans ?_ h1.symm)
-    simp
 
 def gat1 (h : HidaSetting p n' W Qq O Kf ι σ j w) : GAtP p where
   O := O
@@ -196,12 +159,7 @@ def gat1 (h : HidaSetting p n' W Qq O Kf ι σ j w) : GAtP p where
   lev := fun _ => level1 h
   e := 0
 
-theorem gat_of_setting (h : HidaSetting p n' W Qq O Kf ι σ j w) :
-    ∃ G : GAtP p, 1 ≤ G.P.nV ∧ Nonempty G.comp ∧ G.TrivStab ∧ G.FinClasses :=
-  ⟨gat1 h, le_rfl, ⟨()⟩, fun _ => level1_trivStab h, fun _ => level1_finClasses h⟩
 
-theorem places_of_setting (h : HidaSetting p n' W Qq O Kf ι σ j w) : ∃ P : Places p O Kf, 1 ≤ P.nV :=
-  ⟨places1 h, le_rfl⟩
 
 end Loc
 
@@ -218,19 +176,8 @@ def levTriv {p : ℕ} {O Kf : Type} [CommRing O] [IsDomain O] [IsDiscreteValuati
   act := fun _ => 1
   χ := 1
 
-theorem level_nonempty {p : ℕ} {O Kf : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf]
-    [Algebra O Kf] (P : Places p O Kf) : Nonempty (Level P) := ⟨levTriv P⟩
 
-theorem gat_nonempty (p : ℕ) (hp : p.Prime) (h5 : 5 ≤ p) :
-    ∃ G : GAtP p, 1 ≤ G.P.nV ∧ Nonempty G.comp ∧ G.TrivStab ∧ G.FinClasses :=
-  haveI : Fact p.Prime := ⟨hp⟩
-  gat_of_setting (Formalism.BasicNotions.Examples₂.LevelValuationRings.hidaSettingOfEven p 2 h5 le_rfl even_two)
 
-theorem lpprime_one {W Qq O Kf : Type} [CommRing W] [Field Qq] [Algebra W Qq] [CommRing O] [Field Kf] [Algebra O Kf]
-    (p n' : ℕ) (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (w : O) {m : ℕ} (r : ℕ) (lam0 : Fin n' → Fin (m + 1) → ℤ)
-    (t D cStar : ℕ) (hc : 4 * (D + 1) ≤ cStar) : LPprime (W := W) p n' ι σ w r lam0 t D 1 cStar :=
-  ⟨hc, fun _ _ => ⟨0, fun i => i.elim0, fun i => i.elim0, fun i => i.elim0, fun i => i.elim0,
-    fun i => i.elim0, 0, by simp, ⟨0, 0, fun _ i => i.elim0⟩⟩⟩
 
 section Chain
 
@@ -277,8 +224,6 @@ def fillsOf (TT : ∀ v : Fin G.P.nV, Finset (Fin (G.P.n' v))) (t mm : ℕ) : Fi
   w_mono := fun _ _ _ _ => le_rfl
   domJ := fun j v s => liftWt_anti t G.P.m (G.P.lam0 v s) (G.P.dom v s) _ (le_max_right _ _) j
 
-theorem fills_nonempty (TT : ∀ v : Fin G.P.nV, Finset (Fin (G.P.n' v))) (t mm : ℕ) :
-    ∃ Fl : Fills G, Fl.TT = TT ∧ Fl.t = t ∧ Fl.mm = mm := ⟨fillsOf G TT t mm, rfl, rfl, rfl⟩
 
 variable {G}
 
@@ -291,7 +236,6 @@ theorem levels_nonempty (Fl : Fills G) : Nonempty (Levels Fl) := ⟨levelsOf Fl�
 def chainOf {Fl : Fills G} (Lv : Levels Fl) : Chain Lv where
   Kz := fun _ => 0
 
-theorem chain_nonempty {Fl : Fills G} (Lv : Levels Fl) : Nonempty (Chain Lv) := ⟨chainOf Lv⟩
 
 end Chain
 

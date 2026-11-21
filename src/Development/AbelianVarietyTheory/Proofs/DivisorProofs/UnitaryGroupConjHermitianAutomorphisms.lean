@@ -21,7 +21,6 @@ variable {D : D7}
 
 def cjG (D : D7) (k : ℕ) : GL (Fin k) (AE D) →* GL (Fin k) (AE D) := Matrix.GeneralLinearGroup.map (cA D)
 
-theorem cjG_val {k : ℕ} (g : GL (Fin k) (AE D)) : (cjG D k g).1 = cj g.1 := rfl
 
 theorem cjG_cjG {k : ℕ} (g : GL (Fin k) (AE D)) : cjG D k (cjG D k g) = g := Units.ext (cj_cj g.1)
 
@@ -50,7 +49,6 @@ def conjEquiv (V : HSp D) : UD D (-V.gram) ≃ₜ* GA D V where
 
 theorem isConjV_conjEquiv (V : HSp D) : IsConjV V (conjEquiv V) := fun _ => rfl
 
-theorem conjEquiv_symm_val (V : HSp D) (g : GA D V) : ((conjEquiv V).symm g).1 = cjG D V.rank (matHom V g) := rfl
 
 theorem mem_ratU_iff (V : HSp D) (h : UD D (-V.gram)) : h ∈ ratU D.sp.cm.sig (-V.gram) ↔ conjEquiv V h ∈ GQ V := by
   constructor

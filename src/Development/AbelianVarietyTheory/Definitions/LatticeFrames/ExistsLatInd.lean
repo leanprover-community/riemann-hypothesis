@@ -106,17 +106,6 @@ theorem e_ne_zero (hψ : IsStdChar D ψ (-1)) (L : LocPl ψ S T M M') (hΦ : L.�
   rw [h] at this
   exact hΦ (hi (by rw [this, map_zero]; simp [comb]))
 
-theorem prodDat_one (L : LocPl ψ S T M M') (x : Matrix L.Y L.Y' L.k) :
-    prodDat (fun _ : Fin 1 => L) ((ofSplit L.q).up L.FS L.FT x) = L.Φ.1 x := by
-  have h1 : IsHalf L.q.e ((ofSplit L.q).up L.FS L.FT x) := fun i j => by
-    change L.q.e * L.q.sec _ = L.q.sec _
-    exact GlobalTheory.FinPl.LatIndHalf.e_mul_sec _ _
-  have h2 : (ofSplit L.q).down L.FS L.FT ((ofSplit L.q).up L.FS L.FT x) = x := by
-    unfold Place.down
-    have : Matrix.map ((ofSplit L.q).up L.FS L.FT x) (ofSplit L.q).π = L.FT.β * x * L.FS.γ := by
-      ext i j; exact L.q.pr_sec _
-    rw [this, Matrix.mul_assoc L.FT.β, ← Matrix.mul_assoc L.FT.γ, L.FT.γβ, Matrix.one_mul, Matrix.mul_assoc, L.FS.γβ, Matrix.mul_one]
-  simp [prodDat, h1, h2]
 
 theorem prodDat_zero (L : Fin 0 → LocPl ψ S T M M') (Λ : AddSubgroup (WO S T)) : prodDat L = halfInd 0 Λ := by
   funext x
@@ -131,30 +120,6 @@ theorem e_mul_e (L L' : LocPl ψ S T M M') (h : L.q.v ≠ L'.q.v) : L.q.e * L'.q
   have h3 : GlobalTheory.FinPl.compAt D L.q.v (L.q.e * L'.q.e) = 0 := (Submodule.mem_iInf _).1 (Submodule.mem_inf.1 h2).2 ⟨_, h⟩
   rw [GlobalTheory.FinPl.Model.eq_single h1, h3, map_zero]
 
-theorem prodDat_sum {n : ℕ} (L : Fin n → LocPl ψ S T M M') (inj : Function.Injective fun i => (L i).q.v)
-    (x : ∀ i, Matrix (L i).Y (L i).Y' (L i).k) :
-    prodDat L (∑ i, (ofSplit (L i).q).up (L i).FS (L i).FT (x i)) = ∏ i, (L i).Φ.1 (x i) := by
-  have hz : ∀ i j, i ≠ j → ∀ a, (L i).q.e * (L j).q.sec a = 0 := fun i j h a => by
-    rw [← GlobalTheory.FinPl.LatIndHalf.e_mul_sec (L j).q a, ← mul_assoc, e_mul_e _ _ (fun h' => h (inj h')), zero_mul]
-  have hp : ∀ i j, i ≠ j → ∀ a, (L i).q.pr ((L j).q.sec a) = 0 := fun i j h a => by
-    rw [← (L i).q.pr_sec ((L i).q.pr _), (L i).q.sec_pr, hz i j h, map_zero]
-  have h1 : IsHalf (∑ i, (L i).q.e) (∑ i, (ofSplit (L i).q).up (L i).FS (L i).FT (x i)) := fun r s => by
-    rw [Matrix.sum_apply, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    change _ * (L j).q.sec _ = (L j).q.sec _
-    rw [Finset.sum_mul, Finset.sum_eq_single j (fun i _ h => hz i j h _) (fun h => (h (Finset.mem_univ _)).elim), GlobalTheory.FinPl.LatIndHalf.e_mul_sec]
-  have h2 : ∀ i, (ofSplit (L i).q).down (L i).FS (L i).FT (∑ i, (ofSplit (L i).q).up (L i).FS (L i).FT (x i)) = x i := fun i => by
-    unfold Place.down
-    have : Matrix.map (∑ i, (ofSplit (L i).q).up (L i).FS (L i).FT (x i)) (ofSplit (L i).q).π = (L i).FT.β * x i * (L i).FS.γ := by
-      ext r s
-      rw [Matrix.map_apply, Matrix.sum_apply, map_sum]
-      exact (Finset.sum_eq_single i (fun j _ h => hp i j (Ne.symm h) _) (fun h => (h (Finset.mem_univ _)).elim)).trans
-        ((L i).q.pr_sec _)
-    rw [this, Matrix.mul_assoc (L i).FT.β, ← Matrix.mul_assoc (L i).FT.γ, (L i).FT.γβ, Matrix.one_mul, Matrix.mul_assoc,
-      (L i).FS.γβ, Matrix.mul_one]
-  unfold prodDat
-  rw [if_pos h1]
-  exact Finset.prod_congr rfl fun i _ => by rw [h2]
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 

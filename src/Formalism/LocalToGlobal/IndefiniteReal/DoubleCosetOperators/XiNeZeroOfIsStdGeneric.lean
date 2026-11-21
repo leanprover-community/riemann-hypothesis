@@ -47,21 +47,8 @@ theorem psiXi_apply {K : Type} [Field K] (ξ : ∀ x, ZMod (p x)) (θ : ∀ x, M
     (u : Uup p r) : psiXi p r ξ θ u = ∏ x, θ x (Multiplicative.ofAdd (ξ x *
       supSum r (((u : GProd p r) x : GL (Fin r) (ZMod (p x))) : Matrix (Fin r) (Fin r) (ZMod (p x))))) := rfl
 
-theorem supSum_mul_Uup (u v : Uup p r) (x : ι) :
-    supSum r ((((u * v : Uup p r) : GProd p r) x : GL (Fin r) (ZMod (p x))) : Matrix (Fin r) (Fin r) (ZMod (p x))) =
-      supSum r (((u : GProd p r) x : GL (Fin r) (ZMod (p x))) : Matrix (Fin r) (Fin r) (ZMod (p x))) +
-      supSum r (((v : GProd p r) x : GL (Fin r) (ZMod (p x))) : Matrix (Fin r) (Fin r) (ZMod (p x))) := by
-  simpa using supSum_mul (u.2 x) (v.2 x)
 
-theorem psiXi_mul {K : Type} [Field K] (ξ : ∀ x, ZMod (p x)) (θ : ∀ x, Multiplicative (ZMod (p x)) →* Kˣ)
-    (u v : Uup p r) : psiXi p r ξ θ (u * v) = psiXi p r ξ θ u * psiXi p r ξ θ v := map_mul _ u v
 
-theorem psiXi_isStdGeneric {K : Type} [Field K] (hp : ∀ x, (p x).Prime) (ξ : ∀ x, ZMod (p x))
-    (θ : ∀ x, Multiplicative (ZMod (p x)) →* Kˣ) (hξ : 2 ≤ r → ∀ x, ξ x ≠ 0) (hθ : 2 ≤ r → ∀ x, θ x ≠ 1) :
-    IsStdGeneric p r (psiXi p r ξ θ) := by
-  refine ⟨thXi p ξ θ, fun hr x => ?_, fun u => rfl⟩
-  haveI := Fact.mk (hp x)
-  exact comp_mulC_ne_one (θ x) (hθ hr x) (hξ hr x)
 
 theorem psiXi_tvAt [DecidableEq ι] {K : Type} [Field K] (ξ : ∀ x, ZMod (p x))
     (θ : ∀ x, Multiplicative (ZMod (p x)) →* Kˣ) (hr : 2 ≤ r) (x : ι) :
@@ -78,20 +65,6 @@ theorem psiXi_tvAt [DecidableEq ι] {K : Type} [Field K] (ξ : ∀ x, ZMod (p x)
   · intro h
     exact absurd (Finset.mem_univ x) h
 
-theorem psiXi_ne_one [DecidableEq ι] {K : Type} [Field K] (ξ : ∀ x, ZMod (p x))
-    (θ : ∀ x, Multiplicative (ZMod (p x)) →* Kˣ) (hr : 2 ≤ r) (x : ι) (hp : (p x).Prime) (hξ : ξ x ≠ 0)
-    (hθ : θ x ≠ 1) : psiXi p r ξ θ ≠ 1 := by
-  intro h
-  have h1 := psiXi_tvAt ξ θ hr x
-  rw [h, MonoidHom.one_apply] at h1
-  apply hθ
-  haveI : Fact (p x).Prime := ⟨hp⟩
-  haveI : NeZero (p x) := ⟨hp.ne_zero⟩
-  refine MonoidHom.ext fun z => ?_
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, Multiplicative.toAdd z = n • ξ x :=
-    ⟨(Multiplicative.toAdd z * (ξ x)⁻¹).val, by
-      rw [nsmul_eq_mul, ZMod.natCast_zmod_val, mul_assoc, inv_mul_cancel₀ hξ, mul_one]⟩
-  rw [MonoidHom.one_apply, ← ofAdd_toAdd z, hn, ofAdd_nsmul, map_pow, ← h1, one_pow]
 
 theorem xi_ne_zero_of_isStdGeneric [DecidableEq ι] {K : Type} [Field K] {S : Subgroup (GProd p r)}
     (hS : S = Uup p r) (ψ : S →* Kˣ) (hg : IsStdGeneric p r ψ) (ξ : ∀ x, ZMod (p x))
@@ -121,17 +94,6 @@ theorem mem_U {N : NData R H what₂} {u : G0g N} : u ∈ U N ↔
       ∀ a : Fin R.r, ((u kv : GL (Fin R.r) (ZMod (H.g kv.1))) : Matrix (Fin R.r) (Fin R.r) (ZMod (H.g kv.1))) a a = 1 :=
   Iff.rfl
 
-theorem U_ne_bot (N : NData R H what₂) (hr : 2 ≤ R.r) (k : Fin 2) (v : N.PlG k) : U N ≠ ⊥ := by
-  classical
-  intro h
-  have : Fact (H.g k).Prime := ⟨H.g_prime k⟩
-  have hm : tvAt (p := fun kv : (Σ k : Fin 2, N.PlG k) => H.g kv.1) hr ⟨k, v⟩ ∈ U N := tvAt_mem hr _
-  rw [h, Subgroup.mem_bot] at hm
-  have e := congrArg (fun g : G0g N =>
-    supSum R.r ((g ⟨k, v⟩ : GL (Fin R.r) (ZMod (H.g k))) : Matrix (Fin R.r) (Fin R.r) (ZMod (H.g k)))) hm
-  simp only [tvAt_apply, if_true] at e
-  rw [supSum_tv] at e
-  simp [supSum_one] at e
 
 def psiUOf (N : NData R H what₂) {K : Type} [Field K] (ξ : ∀ kv : (Σ k : Fin 2, N.PlG k), ZMod (H.g kv.1))
     (θ : ∀ k : Fin 2, Multiplicative (ZMod (H.g k)) →* Kˣ) : U N →* Kˣ :=
@@ -143,18 +105,7 @@ theorem psiUOf_apply (N : NData R H what₂) {K : Type} [Field K] (ξ : ∀ kv :
       supSum R.r (((u : G0g N) kv : GL (Fin R.r) (ZMod (H.g kv.1))) : Matrix (Fin R.r) (Fin R.r) (ZMod (H.g kv.1))))) :=
   rfl
 
-theorem psiUOf_isStdGeneric (N : NData R H what₂) {K : Type} [Field K]
-    (ξ : ∀ kv : (Σ k : Fin 2, N.PlG k), ZMod (H.g kv.1)) (θ : ∀ k : Fin 2, Multiplicative (ZMod (H.g k)) →* Kˣ)
-    (hξ : 2 ≤ R.r → ∀ kv, ξ kv ≠ 0) (hθ : 2 ≤ R.r → ∀ k, θ k ≠ 1) :
-    IsStdGeneric (fun kv : (Σ k : Fin 2, N.PlG k) => H.g kv.1) R.r (psiUOf N ξ θ) :=
-  psiXi_isStdGeneric (fun kv : (Σ k : Fin 2, N.PlG k) => H.g_prime kv.1) ξ _ hξ
-    (fun hr (kv : Σ k : Fin 2, N.PlG k) => hθ hr kv.1)
 
-theorem psiUOf_ne_one (N : NData R H what₂) {K : Type} [Field K]
-    (ξ : ∀ kv : (Σ k : Fin 2, N.PlG k), ZMod (H.g kv.1)) (θ : ∀ k : Fin 2, Multiplicative (ZMod (H.g k)) →* Kˣ)
-    (hr : 2 ≤ R.r) (k : Fin 2) (v : N.PlG k) (hξ : ξ ⟨k, v⟩ ≠ 0) (hθ : θ k ≠ 1) : psiUOf N ξ θ ≠ 1 := by
-  classical
-  exact psiXi_ne_one ξ (fun kv => θ kv.1) hr ⟨k, v⟩ (H.g_prime k) hξ hθ
 
 def thSide {K : Type} [Field K] (g : Fin 2 → ℕ) (θ : ∀ k : Fin 2, Multiplicative (ZMod (g k)) →* Kˣ) (b : Bool) :
     ∀ k : Fin 2, Multiplicative (ZMod (g k)) →* Kˣ :=
@@ -214,9 +165,6 @@ def psiUPl (N : NData R H what₂) {K : Type} [Field K]
     (ψ : ∀ kv : (Σ k : Fin 2, N.PlG k), Multiplicative (ZMod (H.g kv.1)) →* Kˣ) : U N →* Kˣ :=
   psiStd (fun kv : (Σ k : Fin 2, N.PlG k) => H.g kv.1) R.r ψ
 
-theorem psiUOf_eq_psiUPl (N : NData R H what₂) {K : Type} [Field K] (ξ : ∀ kv : (Σ k : Fin 2, N.PlG k), ZMod (H.g kv.1))
-    (θ : ∀ k : Fin 2, Multiplicative (ZMod (H.g k)) →* Kˣ) :
-    psiUOf N ξ θ = psiUPl N (thXi (fun kv : (Σ k : Fin 2, N.PlG k) => H.g kv.1) ξ (fun kv => θ kv.1)) := rfl
 
 def psiUPlSide (N : NData R H what₂) {K : Type} [Field K]
     (ψ : ∀ kv : (Σ k : Fin 2, N.PlG k), Multiplicative (ZMod (H.g kv.1)) →* Kˣ) (b : Bool) : U N →* Kˣ :=

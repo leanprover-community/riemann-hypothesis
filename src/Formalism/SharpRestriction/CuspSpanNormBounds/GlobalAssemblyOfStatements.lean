@@ -72,13 +72,6 @@ def ThetaChernBoundOfLastLine (D : D7) : Prop := adm2 → Conclusion1 D → Conc
 
 def GGFromIrreducibility (D : D7) : Prop := adm1 D → adm3 D → Conclusion0 D → Conclusion2 D → Conclusion5 D
 
-theorem local_statement_of_parts (D : D7) (h0 : HarishChandraFormulaStatement D) (h1 : IntegralityFromMetric D) (h2 : HodgeTateFromSandwich D) (h3 : TowerRallisLemma D) (h4 : ThetaChernBoundOfLastLine D)
-    (h5 : GGFromIrreducibility D) : Stmt D := by
-  rintro ⟨a1, a2, a3⟩
-  have p0 := h0
-  have p1 := h1 a1 p0
-  have p3 := h3 p0
-  exact ⟨p0, p1, h2, p3, h4 a2 p1 h2 p3, h5 a1 a3 p0 h2⟩
 
 section Fam
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
@@ -121,13 +114,6 @@ def LiftNormFamilyStatement : Prop := admF2 → ConclusionF1 Fm → ConclusionF2
 
 def DegreeBoundFamilyStatement : Prop := admF1 Fm → admF3 Fm → FamilyLowestKTypeFormula Fm → ConclusionF2 Fm → ConclusionF5 Fm
 
-theorem family_statement_of_components (h0 : FamilyFormulaStatement Fm) (h1 : PeriodFamilyStatement Fm) (h2 : DeterminantValueFamily Fm) (h3 : FlatLineDegreeFamilyStatement Fm) (h4 : LiftNormFamilyStatement Fm)
-    (h5 : DegreeBoundFamilyStatement Fm) : KudlaFamilyStatement Fm := by
-  rintro ⟨a1, a2, a3⟩
-  have p0 := h0
-  have p1 := h1 a1 p0
-  have p3 := h3 p0
-  exact ⟨p0, p1, h2, p3, h4 a2 p1 h2 p3, h5 a1 a3 p0 h2⟩
 
 end Fam
 

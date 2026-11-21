@@ -269,7 +269,6 @@ theorem IsPolFanOn.isPolyFanOn (h : IsPolFanOn bar φ X) : IsPolyFanOn bar φ X 
     refine ⟨e, m, _, c, (hγ.pull_equiv e).isCell, he, hc, LinearMap.ext₂ fun a b => ?_⟩
     simp [LinearMap.sum_apply]
 
-theorem isPolyFanOn_minVal_int : IsPolyFanOn id (InvFun.minVal ℤ) ℤ := isPolFanOn_minVal_int.isPolyFanOn
 
 theorem isPolyFan_minVal_one : IsPolyFan id 1 (InvFun.minVal ℤ) := fun X _ _ _ _ hX => (isPolFan_minVal_one X hX).isPolyFanOn
 

@@ -15,24 +15,7 @@ attribute [local instance] Matrix.frobeniusNormedAddCommGroup Matrix.frobeniusNo
 
 variable {k r : ℕ}
 
-theorem RL_unrealify (Y : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool)) :
-    RL (k := k) (r := r) (Formalism.MainNotions.S.unrealify Y) = Y := by
-  ext ⟨i, j, b⟩
-  cases b <;> simp [RL, Formalism.MainNotions.S.realifyFun, Formalism.MainNotions.S.unrealify]
 
-theorem norm_RL (X : Mat k r) : ‖RL X‖ = ‖X‖ := by
-  rw [EuclideanSpace.norm_eq, Matrix.frobenius_norm_def, Real.sqrt_eq_rpow]
-  congr 1
-  rw [Fintype.sum_prod_type]; refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Fintype.sum_prod_type]; refine Finset.sum_congr rfl fun j _ => ?_
-  rw [Fintype.sum_bool]
-  simp only [RL, Formalism.MainNotions.S.realifyFun, LinearMap.coe_mk, AddHom.coe_mk, Real.norm_eq_abs, sq_abs, if_true, Bool.false_eq_true,
-    if_false]
-  rw [Real.rpow_two, Complex.sq_norm, Complex.normSq_apply]
-  simp [WithLp.equiv]
-  unfold Formalism.MainNotions.S.realifyFun
-  simp only [if_true, Bool.false_eq_true, if_false]
-  ring
 
 def LongWeylElementSquare : Prop := ∀ k r : ℕ, w0B k r * w0B k r = 1
 

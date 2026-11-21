@@ -302,8 +302,6 @@ theorem nFCoreNS_of_cut (hL : NFLeibV) (hT : NFTieHatS) (hH : NFHatProdKBS) (hN 
         · exact mul_nonneg (pow_nonneg hG0 _) (by positivity)
     _ = Cs * K * G ^ (2 * p₀ - N) * ((1 + G ^ (2 * N)) * W) := by ring
 
-theorem nFCoreNS_of_open (hL : NFLeibV) (hT : NFTieHatS) (hH : NFHatProdKBS) : NFCoreNS :=
-  nFCoreNS_of_cut hL hT hH trace_norm_bound_constant_one operator_multiplication_admissible
 
 end
 

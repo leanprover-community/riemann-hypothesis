@@ -41,76 +41,9 @@ theorem sum_r_mul_ne (vlt : ∀ i, v i < up) (wlt : ∀ i, w i < up) (ne : v ≠
     ∑ x : Fin (n + 1), r x * v x ≠ ∑ x : Fin (n + 1), r x * w x :=
   by apply _root_.UpperTheory.Reformulated.B.Qn10.sum_r_mul_ne <;> assumption
 
-theorem degreeOf_zero_nagata {a : A} (ha : a ≠ 0) : ((nagataEquiv f) (monomial v a)).degreeOf 0 =
-    ∑ i : Fin (n + 1), (r i) * v i := by
-  rw [← natDegree_finSuccEquiv, monomial_eq, Finsupp.prod_pow v fun a ↦ X a]
-  simp only [Fin.prod_univ_succ, Fin.sum_univ_succ, map_mul, map_prod, map_pow,
-    AlgEquiv.ofAlgHom_apply, MvPolynomial.aeval_C, MvPolynomial.aeval_X, if_pos, Fin.succ_ne_zero,
-    ite_false, one_smul, map_add, finSuccEquiv_X_zero, finSuccEquiv_X_succ, algebraMap_eq]
-  have h (i : Fin n) :
-      (Polynomial.C (X (R := A) i) + Polynomial.X ^ r i.succ) ^ v i.succ ≠ 0 :=
-    pow_ne_zero (v i.succ) (leadingCoeff_ne_zero.mp <| by simp [add_comm, leadingCoeff_X_pow_add_C])
-  rw [natDegree_mul (by simp [ha]) (mul_ne_zero (by simp) (Finset.prod_ne_zero_iff.mpr
-    (fun i _ ↦ h i))), natDegree_mul (by simp) (Finset.prod_ne_zero_iff.mpr (fun i _ ↦ h i)),
-    natDegree_prod _ _ (fun i _ ↦ h i), natDegree_finSuccEquiv, degreeOf_C]
-  simpa only [natDegree_pow, zero_add, natDegree_X, mul_one, Fin.val_zero, pow_zero, one_mul,
-    add_right_inj] using Finset.sum_congr rfl (fun i _ ↦ by
-    rw [add_comm (Polynomial.C _), natDegree_X_pow_add_C, mul_comm])
 
-theorem degreeOf_nagata_ne_of_ne (hv : v ∈ f.support) (hw : w ∈ f.support) (ne : v ≠ w) :
-    (nagataEquiv f <| monomial v <| coeff v f).degreeOf 0 ≠
-    (nagataEquiv f <| monomial w <| coeff w f).degreeOf 0 := by
-  rw [degreeOf_zero_nagata _ _ <| mem_support_iff.mp hv,
-    degreeOf_zero_nagata _ _ <| mem_support_iff.mp hw]
-  refine sum_r_mul_ne f v w (fun i ↦ ?_) (fun i ↦ ?_) ne <;>
-  exact lt_of_le_of_lt ((monomial_le_degreeOf i ‹_›).trans (degreeOf_le_totalDegree f i))
-    (by lia)
 
-theorem leadingCoeff_finSuccEquiv_nagata :
-    (finSuccEquiv A n ((nagataEquiv f) ((monomial v) (coeff v f)))).leadingCoeff =
-    algebraMap A _ (coeff v f) := by
-  rw [monomial_eq, Finsupp.prod_fintype]
-  · simp only [map_mul, map_prod, leadingCoeff_mul, leadingCoeff_prod]
-    rw [AlgEquiv.ofAlgHom_apply, algHom_C, algebraMap_eq, finSuccEquiv_apply,
-      eval₂Hom_C, coe_comp]
-    simp only [AlgEquiv.ofAlgHom_apply, Function.comp_apply, leadingCoeff_C, map_pow,
-      leadingCoeff_pow, algebraMap_eq]
-    have : ∀ j, ((finSuccEquiv A n) ((nagata f) 1 (X j))).leadingCoeff = 1 := fun j ↦ by
-      by_cases h : j = 0
-      · simp [h, finSuccEquiv_apply]
-      · simp only [aeval_eq_bind₁, bind₁_X_right, if_neg h, one_smul, map_add, map_pow]
-        obtain ⟨i, rfl⟩ := Fin.exists_succ_eq.mpr h
-        simp [finSuccEquiv_X_succ, finSuccEquiv_X_zero, add_comm]
-    simp only [this, one_pow, Finset.prod_const_one, mul_one]
-  exact fun i ↦ pow_zero _
 
-theorem exists_leadingCoeff_nagata (fne : f ≠ 0) :
-    ∃ c : A, c ≠ 0 ∧ (finSuccEquiv A n (nagataEquiv f f)).leadingCoeff = MvPolynomial.C c := by
-  obtain ⟨v, vin, vs⟩ := Finset.exists_max_image f.support
-    (fun v ↦ (nagataEquiv f ((monomial v) (coeff v f))).degreeOf 0) (support_nonempty.mpr fne)
-  refine ⟨coeff v f, mem_support_iff.mp vin, ?_⟩
-  set h := fun w ↦ (MvPolynomial.monomial w) (coeff w f)
-  simp only [← natDegree_finSuccEquiv] at vs
-  replace vs : ∀ x ∈ f.support \ {v}, (finSuccEquiv A n ((nagataEquiv f) (h x))).degree <
-      (finSuccEquiv A n ((nagataEquiv f) (h v))).degree := by
-    intro x hx
-    obtain ⟨h1, h2⟩ := Finset.mem_sdiff.mp hx
-    apply degree_lt_degree <| lt_of_le_of_ne (vs x h1) ?_
-    simpa only [natDegree_finSuccEquiv]
-      using degreeOf_nagata_ne_of_ne f _ _ h1 vin <| ne_of_not_mem_cons h2
-  have coeff : (finSuccEquiv A n ((nagataEquiv f) (h v + ∑ x ∈ f.support \ {v}, h x))).leadingCoeff =
-      (finSuccEquiv A n ((nagataEquiv f) (h v))).leadingCoeff := by
-    simp only [map_add, map_sum]
-    rw [add_comm]
-    apply leadingCoeff_add_of_degree_lt <| (lt_of_le_of_lt <| degree_sum_le _ _) ?_
-    have h2 : h v ≠ 0 := by simpa [h] using mem_support_iff.mp vin
-    replace h2 : (finSuccEquiv A n ((nagataEquiv f) (h v))) ≠ 0 := fun eq ↦ h2 <|
-      by simpa only [map_eq_zero_iff _ (AlgEquiv.injective _)] using eq
-    exact (Finset.sup_lt_iff <| Ne.bot_lt (fun x ↦ h2 <| degree_eq_bot.mp x)).mpr vs
-  nth_rw 2 [← f.support_sum_monomial_coeff]
-  rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem vin h]
-  rw [leadingCoeff_finSuccEquiv_nagata] at coeff
-  simpa only [algebraMap_eq] using coeff
 
 end Nagata
 
@@ -166,24 +99,6 @@ theorem CombAfterPower.of_mem {t : D} (ht : t ∈ s) : CombAfterPower c z s t :=
   rw [pow_zero, one_smul, Finset.sum_eq_single t (fun b _ hb ↦ by simp [hb]) (fun h ↦ absurd ht h)]
   simp
 
-theorem combAfterPower_pow [DecidableEq D] (w : D) (N : ℕ) (b : ℕ → MvPolynomial (Fin m) A)
-    (hrel : c • w ^ N = ∑ i ∈ Finset.range N, aeval z (b i) * w ^ i) (j : ℕ) :
-    CombAfterPower c z ((Finset.range N).image (fun i ↦ w ^ i)) (w ^ j) := by
-  induction j using Nat.strong_induction_on with
-  | _ j ih =>
-  by_cases hj : j < N
-  · exact CombAfterPower.of_mem (Finset.mem_image_of_mem _ (Finset.mem_range.2 hj))
-  · replace hj := not_lt.mp hj
-    apply CombAfterPower.of_smul
-    have e : c • w ^ j = ∑ i ∈ Finset.range N, aeval z (b i) * w ^ (i + (j - N)) := by
-      have : w ^ j = w ^ (j - N) * w ^ N := by rw [← pow_add, Nat.sub_add_cancel hj]
-      rw [this, ← mul_smul_comm, hrel, Finset.mul_sum]
-      refine Finset.sum_congr rfl fun i _ ↦ ?_
-      rw [pow_add]
-      ring
-    rw [e]
-    exact CombAfterPower.sum _ _ fun i hi ↦ CombAfterPower.mul_left _
-      (ih _ (by have := Finset.mem_range.1 hi; omega))
 
 end Combination
 

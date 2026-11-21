@@ -85,36 +85,6 @@ def StepV (I : AllFam) (D : ℕ) : Prop :=
     ∀ (A : Matrix (Ix d.κ) (Ix d.κ) ℚ) (e : Fin (D + 1) → Ix d.κ), IsInvMat A →
       IsProjFrame (matAct A d.x) e → projDeg (matAct A d.x) e = 2 ^ D
 
-theorem exists_projDeg_defect (I : AllFam) (D : ℕ) (hA : StepA I D) (hT : StepT D)
-    (hB : StepB I D) (hN : StepN D) (hM : StepM D) (hC : StepC I D) (d : GDatum D) :
-    ∃ (A : Matrix (Ix d.κ) (Ix d.κ) ℚ) (e : Fin (D + 1) → Ix d.κ), IsInvMat A ∧
-      IsProjFrame (matAct A d.x) e ∧
-      (fun n => defect I D d.x d.m d.μ n -
-        (projDeg (matAct A d.x) e : ℝ) * hsDefect D (chiP D) (hhOf I D) n) =o[atTop] pw D := by
-  obtain ⟨A, e, hAinv, hPF⟩ := hN d.Ω d.κ d.x d.m d.μ d.good
-  obtain ⟨m', μ', hTr, hG'⟩ := hT d.Ω d.κ d.x d.m d.μ A e d.good hAinv hPF
-  obtain ⟨m₀, hPull, hG₀⟩ := hM d.Ω d.κ (matAct A d.x) m' μ' e hG' hPF
-  refine ⟨A, e, hAinv, hPF, ?_⟩
-  have h1 := hC d.Ω d.κ (matAct A d.x) m₀ μ' e hG₀ hPF hPull
-  have h2 := hA d.Ω d.κ (matAct A d.x) m₀ m' μ' e hPF hG₀ hG'
-  have h3 := hB d.Ω d.κ d.x d.m m' d.μ μ' A e d.good hAinv hPF hTr hG'
-  refine ((h1.add h2).sub h3).congr_left (fun n => ?_)
-  ring
 
-theorem hs_of_steps (I : AllFam) (D : ℕ) (hA : StepA I D) (hT : StepT D) (hB : StepB I D)
-    (hN : StepN D) (hM : StepM D) (hC : StepC I D) (hV : StepV I D) (d : GDatum D) :
-    defect I D d.x d.m d.μ =o[atTop] pw D := by
-  obtain ⟨d₂, hchi, htop, hdeg⟩ := hV
-  have hH : hsDefect D (chiP D) (hhOf I D) =o[atTop] fun n : ℕ => (n : ℝ) ^ (D + 1) := by
-    apply hilbertSamuelDefect_projectiveSpace_isLittleO
-    obtain ⟨A, e, hAi, hPF, hlo⟩ := exists_projDeg_defect I D hA hT hB hN hM hC d₂
-    rw [hdeg A e hAi hPF] at hlo
-    have hc : chi d₂.x d₂.m d₂.μ = fun m => chiP D (2 * m) := funext hchi
-    simp only [defect, hc, htop] at hlo
-    push_cast at hlo
-    exact hlo
-  obtain ⟨A, e, -, -, hlo⟩ := exists_projDeg_defect I D hA hT hB hN hM hC d
-  refine (hlo.add (hH.const_mul_left (projDeg (matAct A d.x) e : ℝ))).congr_left (fun n => ?_)
-  ring
 
 end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry

@@ -58,10 +58,6 @@ def HRep.EEd (A : HRep k r) (P : Mat k r) (x : Idx k r 1 → A.H) : Idx k r 1 �
 def HRep.EEo (A : HRep k r) (P : Mat k r) (x : Idx k r 1 → A.H) : Idx k r 1 → A.H :=
   fun b => -∑ c ∈ univ.erase b, A.E P (el b) (el c) (x c)
 
-theorem HRep.EE_eq_add (A : HRep k r) (P : Mat k r) (x : Idx k r 1 → A.H) : A.EE P x = A.EEd P x + A.EEo P x := by
-  funext b
-  simp only [HRep.EE, HRep.EEd, HRep.EEo, Pi.add_apply]
-  rw [← Finset.add_sum_erase _ _ (mem_univ b), neg_add]
 
 def xS (μ : Fin (2 * r + k + 1) → ℝ) (s : Idx k r 1) : ℝ := -μ (el s) + (1 - ((2 * r + k + 1 : ℕ) : ℝ)) / 2
 
@@ -85,10 +81,6 @@ def prNode (x : Idx k r 1 → (R μ).H) : Idx k r 1 → (R μ).H :=
 
 variable {R μ ι p}
 
-theorem prCloud_add_prNode {P : Mat k r} (hT : IsTensDec R true P 1 μ ι p) {x : Idx k r 1 → (R μ).H}
-    (hx : (R μ).SmT x) : prCloud R μ ι p x + prNode R μ ι p x = x := by
-  rw [prCloud, prNode, Finset.sum_filter_add_sum_filter_not]
-  exact hT.sum_ι_p x hx
 
 end Proj
 
@@ -104,15 +96,7 @@ def QQ (r : ℕ) (bv : ℝ) : ℝ := 4 + 9 * (2 * r + 2 : ℝ) * (6 * bv) ^ (2 *
 def HRep.expect (A : HRep k r) {W : Type} [NormedAddCommGroup W] (ν : Measure (Mt k r)) (B : A.H → W)
     (φ : Mat k r → ℝ) (w : A.H) : ℝ≥0∞ := A.mass ν B φ w / ‖w‖ₑ ^ 2
 
-theorem HRep.expect_le_iff (A : HRep k r) {W : Type} [NormedAddCommGroup W] (ν : Measure (Mt k r)) (B : A.H → W)
-    (φ : Mat k r → ℝ) {w : A.H} (hw : w ≠ 0) (C : ℝ≥0∞) :
-    A.expect ν B φ w ≤ C ↔ A.mass ν B φ w ≤ C * ‖w‖ₑ ^ 2 :=
-  ENNReal.div_le_iff (pow_ne_zero _ (by simpa using hw)) (ENNReal.pow_ne_top enorm_ne_top)
 
-theorem Flag.Iso.expect_one {F : Flag k r} {A : HRep k r} {B : A.H → F.W} (hB : F.Iso A B) {w : A.H}
-    (hs : w ∈ smoothVecs (k := k) (r := r) A.σ) (hw : w ≠ 0) : A.expect F.ν B (fun _ => 1) w = 1 := by
-  rw [HRep.expect, hB.2 w hs]
-  exact ENNReal.div_self (pow_ne_zero _ (by simpa using hw)) (ENNReal.pow_ne_top enorm_ne_top)
 
 def MomFirst (A : HRep k r) (F : Flag k r) (B : A.H → F.W) (H : ℝ) (q : ℕ) (w : A.H) : Prop :=
   A.mass F.ν B (fun g => lA k r F.z g 0 ^ (2 * q)) w ≤ ENNReal.ofReal (H ^ (2 * q)) * ‖w‖ₑ ^ 2
@@ -135,8 +119,6 @@ def MomProd (A : HRep k r) (F : Flag k r) (B : A.H → F.W) (H : ℝ) {l : ℕ} 
 theorem InPP.mono {n : ℕ} {lam μ : Fin n → ℝ} {s t : ℝ} (h : InPP lam s μ) (hst : s ≤ t) : InPP lam t μ :=
   ⟨h.1, h.2.trans hst⟩
 
-theorem inPP_self {n : ℕ} (lam : Fin n → ℝ) {t : ℝ} (ht : 0 ≤ t) : InPP lam t lam :=
-  ⟨fun _ => ⟨0, by simp⟩, by simpa [dist1] using ht⟩
 
 theorem InPP.abs_le {n : ℕ} {lam μ : Fin n → ℝ} {t : ℝ} (h : InPP lam t μ) (a : Fin n) : |μ a - lam a| ≤ t :=
   (single_le_sum (f := fun a => |μ a - lam a|) (fun _ _ => abs_nonneg _) (mem_univ a)).trans h.2
@@ -146,53 +128,14 @@ theorem InPP.gap {n : ℕ} {lam μ : Fin n → ℝ} {t : ℝ} (h : InPP lam t μ
   have h1 := abs_add_abs_le_dist1 μ lam hab
   linarith [h.2, neg_abs_le (μ a - lam a), le_abs_self (μ b - lam b)]
 
-theorem InPP.add_wtI {lam μ : Fin (2 * r + k + 1) → ℝ} {t : ℝ} (h : InPP lam t μ) (dual : Bool) {l : ℕ}
-    (I : Idx k r l) : InPP lam (t + l) (μ + wtI dual I) := by
-  refine ⟨fun a => ?_, ?_⟩
-  · obtain ⟨m, hm⟩ := h.1 a
-    refine ⟨m + (if a ∈ I.1 then (if dual then -1 else 1) else 0), ?_⟩
-    simp only [Pi.add_apply, wtI]
-    split_ifs <;> push_cast <;> linarith
-  · have h1 : ∑ a, |wtI dual I a| = l := by
-      have : ∀ a, |wtI dual I a| = if a ∈ I.1 then (1 : ℝ) else 0 := fun a => by
-        unfold wtI; split_ifs <;> simp
-      simp [this, I.2]
-    have h2 : dist1 (μ + wtI dual I) lam ≤ dist1 μ lam + ∑ a, |wtI dual I a| := by
-      unfold dist1
-      rw [← sum_add_distrib]
-      refine sum_le_sum fun a _ => ?_
-      rw [Pi.add_apply, add_sub_right_comm]
-      exact abs_add_le _ _
-    linarith [h.2]
 
-theorem abs_add_le_bStar {n : ℕ} (μ : Fin n → ℝ) (a : Fin n) : |μ a| + n ≤ bStar μ := by
-  have := norm_le_pi_norm μ a
-  rw [Real.norm_eq_abs] at this
-  unfold bStar; linarith
 
 section Conseq
 
 variable {c Ch Cg C₀ bv h q : ℝ} {P : Mat k r} {lam μ : Fin (2 * r + k + 1) → ℝ}
   {R : (Fin (2 * r + k + 1) → ℝ) → HRep k r}
 
-theorem node_gap (hs : IsShape k r lam bv) (hg : GapAtLeast (sgnCN k r) lam h) {i j : Fin (2 * r + k + 1)}
-    (hi : k - 1 ≤ i.val) (hij : i < j) : h ≤ lam i - lam j := by
-  have hij' : i.val < j.val := hij
-  let i' : Fin (2 * r + k + 1) := ⟨i.val + 1, by omega⟩
-  have h1 : lam i' < lam i := hs.1.1 (show i < i' from Nat.lt_succ_self i.val)
-  have h2 : lam j ≤ lam i' := by
-    rcases (show i' ≤ j from hij').eq_or_lt with e | e
-    · rw [e]
-    · exact (hs.1.1 e).le
-  have h3 := hg i i' (sgnCN_succ_ne hi rfl)
-  rw [abs_of_pos (by linarith)] at h3
-  linarith
 
-theorem gap_le_bv (hk : 1 ≤ k) (hs : IsShape k r lam bv) (hg : GapAtLeast (sgnCN k r) lam h) : h ≤ bv := by
-  have h1 := node_gap hs hg (i := ⟨k - 1, by omega⟩) (j := ⟨k, by omega⟩) le_rfl (show k - 1 < k by omega)
-  have h2 := hs.2.2 ⟨k - 1, by omega⟩ le_rfl
-  have h3 := hs.2.2 ⟨k, by omega⟩ (show k - 1 ≤ k by omega)
-  linarith
 
 theorem IsRange.radius_le (hr : IsRange k r lam c h q) (hq : 0 ≤ q) : 100 * q ≤ h := by
   obtain ⟨hc, -, h0, -⟩ := hr
@@ -228,55 +171,20 @@ theorem mono {q' : ℝ} (H : Standing k r c Ch Cg C₀ P lam bv h q' R) (h0 : 0 
   obtain ⟨a1, a2, a3, a4, a5, -, a7, a8, a9, a10⟩ := H
   exact ⟨a1, a2, a3, a4, a5, h0, a7.mono hq, a8, a9, fun μ hμ => a10 μ (hμ.mono (by linarith))⟩
 
-theorem inPP_self (H : Standing k r c Ch Cg C₀ P lam bv h q R) : InPP lam q lam := GlobalTheory.Mom.inPP_self lam H.2.2.2.2.2.1
 
 theorem radius_le_gap (H : Standing k r c Ch Cg C₀ P lam bv h q R) {i j : Fin (2 * r + k + 1)} (hij : i < j) :
     100 * q ≤ lam i - lam j :=
   H.setup.2.2.1.le_gap H.setup.2.1 hij
 
-theorem radius_le_bv (H : Standing k r c Ch Cg C₀ P lam bv h q R) : 100 * q ≤ h ∧ h ≤ bv :=
-  ⟨H.setup.2.2.1.radius_le H.2.2.2.2.2.1, gap_le_bv H.1 H.setup.2.1 H.setup.2.2.1.2.1⟩
 
-theorem cube_le_bv (H : Standing k r c Ch Cg C₀ P lam bv h q R) : 10 ^ 4 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 3 ≤ bv := by
-  have h0 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega)
-  refine le_trans ?_ H.2.2.2.2.2.2.2.2.1
-  exact mul_le_mul H.2.2.2.2.1 (pow_le_pow_right₀ h0 (by norm_num)) (by positivity)
-    (le_trans (by norm_num) H.2.2.2.2.1)
 
 theorem gap_ge (H : Standing k r c Ch Cg C₀ P lam bv h q R) (hμ : InPP lam q μ) {i j : Fin (2 * r + k + 1)}
     (hij : i < j) : 0.98 * (lam i - lam j) ≤ μ i - μ j := by
   linarith [hμ.gap hij.ne, H.radius_le_gap hij, H.2.2.2.2.2.1]
 
-theorem four_le_gap (H : Standing k r c Ch Cg C₀ P lam bv h q R) (hμ : InPP lam (q + r + 2) μ)
-    {i j : Fin (2 * r + k + 1)} (hij : i < j) : 4 ≤ μ i - μ j := by
-  have hr : (0 : ℝ) ≤ r := Nat.cast_nonneg r
-  have h1 : (2 * r + 2 : ℝ) ^ 3 ≤ Cg * (2 * r + 2 : ℝ) ^ 3 := le_mul_of_one_le_left (by positivity) H.2.2.2.1
-  have h2 : 8 * (r : ℝ) + 8 ≤ (2 * r + 2 : ℝ) ^ 3 := by nlinarith [mul_nonneg hr hr, mul_nonneg hr (mul_nonneg hr hr)]
-  linarith [hμ.gap hij.ne, H.radius_le_gap hij, H.2.2.2.2.2.2.2.1 i j hij]
 
-theorem isHCParam (H : Standing k r c Ch Cg C₀ P lam bv h q R) (hμ : InPP lam (q + r + 2) μ) : IsHCParam μ := by
-  refine ⟨fun a b hab => by linarith [H.four_le_gap hμ hab], fun a => ?_⟩
-  obtain ⟨m, hm⟩ := hμ.1 a
-  obtain ⟨m', hm'⟩ := H.setup.2.1.1.2 a
-  exact ⟨m + m', by rw [Int.cast_add]; linarith⟩
 
-theorem isDSAt_add (H : Standing k r c Ch Cg C₀ P lam bv h q R) (hμ : InPP lam q μ) (dual : Bool) {l : ℕ}
-    (hl : l ≤ r + 1) (I : Idx k r l) :
-    IsHCParam (μ + wtI dual I) ∧ (R (μ + wtI dual I)).IsDSAt P (μ + wtI dual I) := by
-  have hl' : (l : ℝ) ≤ r + 1 := by exact_mod_cast hl
-  have := (hμ.add_wtI dual I).mono (show q + l ≤ q + r + 2 by linarith)
-  exact ⟨H.isHCParam this, H.2.2.2.2.2.2.2.2.2 _ this⟩
 
-theorem gapAtLeast (H : Standing k r c Ch Cg C₀ P lam bv h q R) (hμ : InPP lam q μ) :
-    GapAtLeast (sgnCN k r) μ (0.98 * h) := by
-  intro a b hab
-  have h1 := H.setup.2.2.1.2.1 a b hab
-  rcases lt_trichotomy a b with e | e | e
-  · rw [abs_of_pos (sub_pos.2 (H.setup.2.1.1.1 e))] at h1
-    linarith [H.gap_ge hμ e, le_abs_self (μ a - μ b)]
-  · exact absurd (e ▸ rfl) hab
-  · rw [abs_sub_comm, abs_of_pos (sub_pos.2 (H.setup.2.1.1.1 e))] at h1
-    linarith [H.gap_ge hμ e, neg_abs_le (μ a - μ b)]
 
 theorem entries (H : Standing k r c Ch Cg C₀ P lam bv h q R) (hμ : InPP lam q μ) (i : Fin (2 * r + k + 1)) :
     (i.val < k - 1 → -q ≤ μ i ∧ μ i ≤ bv / 8 + q) ∧ (k - 1 ≤ i.val → -(2 * bv) - q ≤ μ i ∧ μ i ≤ -bv + q) := by
@@ -285,19 +193,6 @@ theorem entries (H : Standing k r c Ch Cg C₀ P lam bv h q R) (hμ : InPP lam q
   · intro hi; have := H.setup.2.1.2.1 i hi; constructor <;> linarith
   · intro hi; have := H.setup.2.1.2.2 i hi; constructor <;> linarith
 
-theorem bStar_le (H : Standing k r c Ch Cg C₀ P lam bv h q R) (hμ : InPP lam q μ) : bStar μ ≤ 2.02 * bv := by
-  have h0 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega)
-  have h1 := H.cube_le_bv
-  have h2 : ((2 * r + k + 1 : ℕ) : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ 3 := le_self_pow₀ h0 (by norm_num)
-  have h3 := H.radius_le_bv
-  have h4 := H.2.2.2.2.2.1
-  have h5 : ‖μ‖ ≤ 2 * bv + q := by
-    refine (pi_norm_le_iff_of_nonneg (by linarith)).2 fun i => ?_
-    rw [Real.norm_eq_abs, abs_le]
-    rcases lt_or_ge i.val (k - 1) with hi | hi
-    · have := (H.entries hμ i).1 hi; constructor <;> linarith
-    · have := (H.entries hμ i).2 hi; constructor <;> linarith
-  unfold bStar; linarith
 
 end Standing
 

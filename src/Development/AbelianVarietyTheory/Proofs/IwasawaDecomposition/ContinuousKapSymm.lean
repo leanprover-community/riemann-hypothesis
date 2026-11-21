@@ -177,8 +177,6 @@ def kapF (g : GA D V) : GA D V' :=
 
 theorem mat_kapF (g : GA D V) : (matHom V' (I.kapF g)).1 = I.conjM (matHom V g).1 := rfl
 
-theorem kapF_one : I.kapF 1 = 1 :=
-  GlobalTheory.AutFunCounterexample.GA_ext V' (by simp only [mat_kapF, map_one, Units.val_one])
 
 theorem kapF_mul (a b : GA D V) : I.kapF (a * b) = I.kapF a * I.kapF b :=
   GlobalTheory.AutFunCounterexample.GA_ext V' (by

@@ -87,12 +87,6 @@ theorem lt_inv {l : Matrix (Fin m) (Fin m) ℂ} (hl : l ∈ LTset m) :
   have := ut_conjTranspose hu.2.2
   rwa [conjTranspose_nonsing_inv, conjTranspose_conjTranspose] at this
 
-theorem ut_lt_eq_one {x : Matrix (Fin m) (Fin m) ℂ} (hu : x ∈ UTset m) (hl : x ∈ LTset m) : x = 1 := by
-  ext i j
-  rcases lt_trichotomy i j with h | h | h
-  · rw [hl.1 i j h, Matrix.one_apply_ne (ne_of_lt h)]
-  · subst h; rw [hu.2, Matrix.one_apply_eq]
-  · rw [hu.1 i j h, Matrix.one_apply_ne (ne_of_gt h)]
 
 theorem monomialMatrix_conjTranspose (w : Equiv.Perm (Fin m)) (d : Fin m → ℂ) :
     (monoP w d)ᴴ = monoP w.symm (fun a => star (d (w.symm a))) := by
@@ -110,42 +104,6 @@ theorem isMonomial_conjTranspose {P : Matrix (Fin m) (Fin m) ℂ} (hP : IsMonomi
   exact ⟨w.symm, fun a => star (d (w.symm a)), fun a => by simpa using hd (w.symm a),
     monomialMatrix_conjTranspose w d⟩
 
-theorem split_unique {P : Matrix (Fin m) (Fin m) ℂ} (hP : IsUnit P.det)
-    {a₁ a₂ v₁ v₂ : Matrix (Fin m) (Fin m) ℂ}
-    (ha₁ : P * a₁ * P⁻¹ ∈ LTset m) (ha₂ : P * a₂ * P⁻¹ ∈ LTset m)
-    (hv₁ : P * v₁ * P⁻¹ ∈ UTset m) (hv₂ : P * v₂ * P⁻¹ ∈ UTset m)
-    (h : a₁ * v₁ = a₂ * v₂) : a₁ = a₂ := by
-  set A₁ := P * a₁ * P⁻¹
-  set A₂ := P * a₂ * P⁻¹
-  set V₁ := P * v₁ * P⁻¹
-  set V₂ := P * v₂ * P⁻¹
-  have hPP : P⁻¹ * P = 1 := nonsing_inv_mul P hP
-  have hPP' : P * P⁻¹ = 1 := mul_nonsing_inv P hP
-  have hAV : A₁ * V₁ = A₂ * V₂ := by
-    have e1 : A₁ * V₁ = P * (a₁ * v₁) * P⁻¹ := by
-      simp only [A₁, V₁, Matrix.mul_assoc]
-      rw [← Matrix.mul_assoc P⁻¹ P, hPP, Matrix.one_mul]
-    have e2 : A₂ * V₂ = P * (a₂ * v₂) * P⁻¹ := by
-      simp only [A₂, V₂, Matrix.mul_assoc]
-      rw [← Matrix.mul_assoc P⁻¹ P, hPP, Matrix.one_mul]
-    rw [e1, e2, h]
-  have iA := lt_inv ha₂
-  have iV := ut_inv hv₁
-  have hx : A₂⁻¹ * A₁ = V₂ * V₁⁻¹ := by
-    calc A₂⁻¹ * A₁ = A₂⁻¹ * (A₁ * V₁) * V₁⁻¹ := by
-          rw [Matrix.mul_assoc A₂⁻¹, Matrix.mul_assoc A₁, iV.1, Matrix.mul_one]
-      _ = A₂⁻¹ * (A₂ * V₂) * V₁⁻¹ := by rw [hAV]
-      _ = V₂ * V₁⁻¹ := by rw [← Matrix.mul_assoc A₂⁻¹, iA.2.1, Matrix.one_mul]
-  have h1 : A₂⁻¹ * A₁ = 1 := ut_lt_eq_one (hx ▸ ut_mul hv₂ iV.2.2) (lt_mul iA.2.2 ha₁)
-  have hA : A₁ = A₂ := by
-    calc A₁ = A₂ * (A₂⁻¹ * A₁) := by rw [← Matrix.mul_assoc, iA.1, Matrix.one_mul]
-      _ = A₂ := by rw [h1, Matrix.mul_one]
-  have back : ∀ x : Matrix (Fin m) (Fin m) ℂ, x = P⁻¹ * (P * x * P⁻¹) * P := by
-    intro x
-    simp only [Matrix.mul_assoc]
-    rw [hPP, Matrix.mul_one, ← Matrix.mul_assoc, hPP, Matrix.one_mul]
-  rw [back a₁, back a₂]
-  exact congrArg (fun y => P⁻¹ * y * P) hA
 
 theorem split_exists (hLS : LowSplit) {P : Matrix (Fin m) (Fin m) ℂ} (hP : IsMonomial P) (hPd : IsUnit P.det)
     {u : Matrix (Fin m) (Fin m) ℂ} (hu : u ∈ UTset m) :

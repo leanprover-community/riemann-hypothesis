@@ -156,7 +156,6 @@ def chE : AddChar (MM D) ℂ ≃ Chr D where
   right_inv ψ := by ext g; simp [aOf_apply, cOf_apply]
 
 theorem aOf_cOf (φ : AddChar (MM D) ℂ) : aOf D (cOf D φ) = φ := (chE D).left_inv φ
-theorem cOf_aOf (ψ : Chr D) : cOf D (aOf D ψ) = ψ := (chE D).right_inv ψ
 theorem cOf_zero : cOf D 0 = 1 := by
   refine MonoidHom.ext fun g => Units.ext ?_
   rw [cOf_apply, AddChar.zero_apply]
@@ -171,12 +170,6 @@ theorem cOf_eq_one_iff (φ : AddChar (MM D) ℂ) : cOf D φ = 1 ↔ φ = 0 := by
     rw [← aOf_cOf D φ, h, aOf_one]
   · intro h
     rw [h, cOf_zero]
-theorem aOf_eq_zero_iff (ψ : Chr D) : aOf D ψ = 0 ↔ ψ = 1 := by
-  constructor
-  · intro h
-    rw [← cOf_aOf D ψ, h, cOf_zero]
-  · intro h
-    rw [h, aOf_one]
 
 theorem exists_prime_over (p : ℕ) (hp : p.Prime) :
     ∃ P : Ideal (𝓞 D.host.E), P.IsPrime ∧ P.LiesOver (Ideal.span {(p : ℤ)}) := by
@@ -205,13 +198,6 @@ theorem frob_spec (p : ℕ) (hp : p.Prime) :
   haveI := hL
   exact Formalism.MainNotions.GlobalTheoryTheory.ConductorLiftingHypotheses.frob_mem D p P
 
-theorem mem_inertiaAt_iff (p : ℕ) (hp : p.Prime) (P : Ideal (𝓞 D.host.E)) (hP : P.IsPrime)
-    (hL : P.LiesOver (Ideal.span {(p : ℤ)})) (g : D.R.GG) :
-    g ∈ inerP D P ↔ tE D g ∈ (AD D).inertia p := by
-  haveI : Fact p.Prime := ⟨hp⟩
-  haveI := hP
-  haveI := hL
-  exact Formalism.MainNotions.GlobalTheoryTheory.ConductorLiftingHypotheses.mem_inerP D p P g
 
 theorem dvd_discr_iff_ram (p : ℕ) (hp : p.Prime) :
     ((p : ℤ) ∣ discr D.host.E) ↔ 1 < (Ideal.span {(p : ℤ)}).ramificationIdxIn (𝓞 D.host.E) :=
@@ -973,9 +959,7 @@ open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory Formalism.M
 
 theorem ramification_two_and_conjugation_at_q_and_d (D : D7) (s : Scale) : Conclusion1 D s := Br.proposition_eleven_one_at_scale D s
 
-theorem transportEstimate_of_admissible (D : D7) (s : Scale) (_ : admitted D) : Conclusion1 D s := ramification_two_and_conjugation_at_q_and_d D s
 
-theorem prim_eq_one_iff (D : D7) (ψ : Chr D) : (prim D ψ).2 = 1 ↔ ψ = 1 := Br.prim_one_iff D ψ
 
 theorem stmt_holds (D : D7) (s : Scale) : Stmt D s := fun _ => ⟨ramification_two_and_conjugation_at_q_and_d D s, points_property_of_d7⟩
 
@@ -1018,16 +1002,6 @@ theorem admissibleModule_iff_lattice_quotients (D : D7) : admitted D ↔ adm8 :=
   ⟨fun h => h.2.2.2.1, fun h => ⟨chebyshev_bounds_one_fifth D, second_admissible_holds D, subgroup_admissible_holds D, h, content_divisibility_clause,
     primitive_reading_holds D, zero_window_bound_holds D⟩⟩
 
-theorem admissible_family_iff_components (Fm : DFamP) (ε0 : ℝ) :
-    AdmFe Fm ε0 ↔ FamilyLemmaTwoOne Fm ε0 ∧ FamilyPropTwoSix Fm ε0 ∧ FamilyCharacterSumBounds Fm ε0 ∧ FamilyTopBoundAbsolute Fm ε0 ∧ adm8 := by
-  have all : ∀ P : D7 → Prop, (∀ D, P D) → AllLarge Fm ε0 (fun D _ => P D) :=
-    fun P hP _ _ _ _ => ⟨2, by norm_num, fun _ _ _ => hP _⟩
-  constructor
-  · rintro ⟨-, -, -, h4, h5, h6, h7, h8, -⟩
-    exact ⟨h4, h5, h6, h7, h8⟩
-  · rintro ⟨h4, h5, h6, h7, h8⟩
-    exact ⟨all _ chebyshev_bounds_one_fifth, all _ second_admissible_holds, all _ subgroup_admissible_holds, h4, h5, h6, h7, h8, content_divisibility_clause,
-      all _ primitive_reading_holds, all _ zero_window_bound_holds⟩
 
 end Formalism.MainNotions.ZetaZeroFreeRegion
 

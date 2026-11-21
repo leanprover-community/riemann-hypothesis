@@ -243,36 +243,6 @@ theorem MUc_h {H : HodgeData D} {M : XModel D} {w : ((Σ k, ι k) → ℂ) → �
   rw [smoothRepConj_h _ hz, TopNPoly.hermOfFun_h_smul hc hzc hz0 (by positivity), hpr]
   ring
 
-theorem exists_not_conj (X : ComponentSetting D O Lt) {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal D.y))
-    (hne : X.M.proj z ≠ X.M.proj (conjVec z))
-    (hv : ∀ p ∈ D.S, ∀ z ∈ mcPts (mCoordIdeal D.y), 0 < D.vertFactor p z) :
-    ∃ (S' : BoundedRegularisationSetting X.M D.Xo X.H.aMu (cuspCorr X.H X.Cd)) (hS' : S'.IsTied),
-      ¬ MUConjInvariant { X with S' := S', S'_tied := hS' } := by
-  by_contra hall
-  push Not at hall
-  have hev : ∀ (S' : BoundedRegularisationSetting X.M D.Xo X.H.aMu (cuspCorr X.H X.Cd)), S'.IsTied →
-      ∀ᶠ t in 𝓝[>] (0 : ℝ), (MUc X.H S' (4 * D.f + 2) 1 1 t).h (conjVec z) = (MUc X.H S' (4 * D.f + 2) 1 1 t).h z := by
-    intro S' hS'
-    obtain ⟨t₀, ht₀, h⟩ := hall S' hS' (4 * D.f + 2) 1 1 le_rfl le_rfl le_rfl
-    filter_upwards [Ioc_mem_nhdsGT ht₀] with t ht
-    exact h t ht.1 ht.2 z
-  have key := fun j : {j // X.M.proj z ∈ X.S'.B.mid j} => exists_two X.S' X.S'_tied hne j.1 j.2
-  choose S₁ S₂ h₁ h₂ r₁ r₂ hw using key
-  have e₁ := eventually_all.2 fun j => hev (S₁ j) (h₁ j)
-  have e₂ := eventually_all.2 fun j => hev (S₂ j) (h₂ j)
-  obtain ⟨t, ⟨a₁, a₂⟩, ht⟩ := ((e₁.and e₂).and self_mem_nhdsWithin).exists
-  have ht : 0 < t := ht
-  obtain ⟨j, hj⟩ := Finite.exists_max fun j : {j // X.M.proj z ∈ X.S'.B.mid j} =>
-    X.S'.B.phReg X.S'.ρ t j (X.M.proj z)
-  obtain ⟨c, hc, hcz⟩ := MUc_h (H := X.H) (M := X.M) (w := cuspCorr X.H X.Cd) hz hv X.S'.ref (4 * D.f + 2)
-  obtain ⟨c', -, hcz'⟩ := MUc_h (H := X.H) (M := X.M) (w := cuspCorr X.H X.Cd) (conj_mem hz) hv X.S'.ref (4 * D.f + 2)
-  have b₁ := a₁ j
-  have b₂ := a₂ j
-  rw [hcz _ _ (r₁ j), hcz' _ _ (r₁ j)] at b₁
-  rw [hcz _ _ (r₂ j), hcz' _ _ (r₂ j), ← (hw j t ht).1, b₁] at b₂
-  have := Real.exp_injective (mul_left_cancel₀ hc.ne' b₂)
-  have hlt := (hw j t ht).2 fun k hk => hj ⟨k, hk⟩
-  linarith
 
 omit [DecidableEq Ψ] in
 
@@ -461,22 +431,7 @@ theorem valAt_ne_zero {y : (Σ k, ι k) → Ω} {p : ℕ} (hp : p ≠ 0) {b : K 
 variable {II : IntersectionSystem} {Ψ : Type} [Fintype Ψ] [Algebra ℚ Ω]
   {E : Ψ → Type} [∀ τ, AddCommGroup (E τ)] [∀ τ, Module Ω (E τ)]
 
-theorem vertFactor_pos (D : ComponentData II Ψ K ι Ω E) :
-    ∀ p ∈ D.S, ∀ z ∈ mcPts (mCoordIdeal D.y), 0 < D.vertFactor p z := by
-  intro p hp z hz
-  unfold ComponentData.vertFactor
-  split_ifs with hc
-  · refine mul_pos (norm_pos_iff.2 (valAt_ne_zero (D.S_prime p hp).ne_zero (D.vertical p hp) hz _ hc.choose_spec
-      D.arith.2.1.2.1)) (norm_pos_iff.2 (Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (hc.choose_spec k)))
-  · exact one_pos
 
-theorem exists_not_conj' [Nonempty Ψ] {D : ComponentData II Ψ K ι Ω E} {O Lt : Type} [CommRing O] [AddCommGroup Lt]
-    [Module O Lt] (X : ComponentSetting D O Lt) :
-    ∃ (S' : BoundedRegularisationSetting X.M D.Xo X.H.aMu (cuspCorr X.H X.Cd)) (hS' : S'.IsTied),
-      ¬ MUConjInvariant { X with S' := S', S'_tied := hS' } := by
-  classical
-  obtain ⟨z, hz, hne⟩ := exists_nonreal X.M (mcPts_nonempty D.y D.arith.2.1.2.2)
-  exact exists_not_conj X hz hne (vertFactor_pos D)
 
 end Points
 
@@ -509,9 +464,6 @@ theorem cmType_nonempty {E : Type} [Field E] [NumberField E] [IsCMField E] (H : 
     rw [this]
     apply Complex.ext <;> simp [hre]
 
-theorem line_not_conj : ∃ S' hS', ¬ MUConjInvariant
-    { Line.projLineComponentSetting Line.zeroSystem Line.zero_hII with S' := S', S'_tied := hS' } :=
-  exists_not_conj' _
 
 end Final
 

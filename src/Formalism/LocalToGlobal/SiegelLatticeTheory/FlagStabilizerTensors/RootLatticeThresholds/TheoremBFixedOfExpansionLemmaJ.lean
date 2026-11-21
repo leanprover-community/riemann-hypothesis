@@ -85,12 +85,6 @@ def LocalAmplitudeBounds {D : D7} (large₂ : SizeData₂ D) {X : HidaSetting D}
       (∀ τ, Formalism.QuantumDeterminants.IsSection D.R.k D.R.rS (WX C u u' τ).z (WX C u u' τ).z' (sec τ)) →
       ∏ τ, MMv D u u' (AX hB u u' τ) (sec τ) ≤ ENNReal.ofReal (large₂.sc.b ^ (Cn * (D.R.m : ℝ) ^ 2 * D.R.f) * Ire)
 
-theorem remainingFactsSecond_of_local {D : D7} {large₂ : SizeData₂ D} {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}
-    {ν : X.B.I.Ginf → Measure X.B.I.Ginf} {C1 Cn Ire : ℝ} (h : LocalAmplitudeBounds large₂ Y u u' ν C1 Cn Ire) :
-    AmplitudeMeasureBounds large₂ Y u u' ν C1 Cn Ire := by
-  obtain ⟨hIre, θ, C, hB, h0, hw, hl, ⟨νl, hQ, hN⟩, hM⟩ := h
-  have hJ := jFactPK_of_core Y u u' ν C hB large₂ C1 (ooCorePK_of Y u u' ν C hB large₂ C1 νl hQ hN)
-  exact ⟨hIre, θ, C, hB, h0, hw, hl, localAmplitudesPositive_of_kernel Y u u' ν C hB large₂ C1 hJ, thetaWinP_of_K Y u u' ν C hB large₂ C1 hJ, hM⟩
 
 def LocalAmplitudeBoundsUniform : Prop :=
   ∀ Cg cb Cw cT CT C0 : ℝ, ∃ C1 Cn : ℝ, ∃ C'₀ Cl₀ : ℝ, ∀ C' Cl : ℝ, C'₀ ≤ C' → Cl₀ ≤ Cl →
@@ -105,11 +99,5 @@ def LocalAmplitudeBoundsUniform : Prop :=
         MassDataAdmissible X Y u u' (bkU X hb Y u u' X0 ψ sd C Th vR Q i0 i0' νq) Irat Ire →
       ∀ ν, Pinned X u u' ν → LocalAmplitudeBounds large₂ Y u u' ν C1 Cn Ire
 
-theorem theoremB_fixed_of_expansion_lemmaJ (hE : Formalism.MainNotions.RotatedPoints.WeightedExpansionRotated) (hA : AmpUnif) (hR : LocalAmplitudeBoundsUniform) :
-    StepThmBPinnedC := by
-  refine theoremB_fixed_of_expansion_measure hE hA fun Cg cb Cw cT CT C0 => ?_
-  obtain ⟨C1, Cn, a, b, h2⟩ := hR Cg cb Cw cT CT C0
-  exact ⟨C1, Cn, a, b, fun C' Cl h1 h3 D large₂ X Y u u' hc hb X0 ψ hT sd C Th F0 what₂ vR Q i0 i0' νq Irat Ire hO ν hp =>
-    remainingFactsSecond_of_local (h2 C' Cl h1 h3 D large₂ X Y u u' hc hb X0 ψ hT sd C Th F0 what₂ vR Q i0 i0' νq Irat Ire hO ν hp)⟩
 
 end Formalism.L2.SG.Pf.OOCore3

@@ -288,21 +288,7 @@ theorem isUnit_of_mem_bounded {f : Robba K} (hf : f ∈ bounded K) (h0 : f ≠ 0
   rw [hfU]
   exact (isUnit_single m ham).mul (isUnit_one_add (hr0.trans_le hρ₀r) hρ₀1 hu)
 
-theorem isField_bounded : IsField (bounded K) where
-  exists_pair_ne := ⟨0, 1, fun h => zero_ne_one (congrArg Subtype.val h)⟩
-  mul_comm := mul_comm
-  mul_inv_cancel {x} hx := by
-    have hx' : (x : Robba K) ≠ 0 := fun h => hx (Subtype.ext h)
-    obtain ⟨hf, u, hu⟩ := isUnit_iff_isUnit_bounded.1 (isUnit_of_mem_bounded x.2 hx')
-    refine ⟨↑u⁻¹, ?_⟩
-    have : (⟨(x : Robba K), hf⟩ : bounded K) = x := rfl
-    rw [← this, ← hu]
-    exact u.mul_inv
 
-theorem isUnit_iff_mem_bounded {f : Robba K} : IsUnit f ↔ f ∈ bounded K ∧ f ≠ 0 := by
-  refine ⟨fun h => ?_, fun h => isUnit_of_mem_bounded h.1 h.2⟩
-  obtain ⟨g, rfl⟩ := isUnit_iff.1 h
-  exact ⟨(g : bounded K).2, h.ne_zero⟩
 
 end Robba
 

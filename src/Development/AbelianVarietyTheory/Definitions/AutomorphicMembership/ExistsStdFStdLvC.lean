@@ -34,43 +34,12 @@ attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Ho
 
 namespace GlobalTheory.Mem.Col2.StdModel
 
-theorem car_of_cols {D : D7} (C : ColsTiedSym D) : CarH C.herm.base C.forms ∧ CarT C.herm.base C.forms C.herm.atT :=
-  ⟨⟨C.eV, fun u v a => by rw [C.res u]; exact (C.herm.atT u).res_F v a, C.car0, C.carC, C.carM, C.sp, C.fr0⟩,
-    ⟨C.piU, C.res, C.carP, C.lattice₂, C.pr, C.prk, C.prC, C.z0, C.ga⟩⟩
 
 variable {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (Z : Later B (I.cols l))
 
-theorem existsUnique_stdDt : ∃! dt, I.StdDt l Z dt := by
-  refine ⟨FullDt.u1Dt B.host I.SQ, fun x a ha => FullDt.normOneFiniteAdeleDetClass_of_isDetLift B.host I.SQ x a ha, fun dt h => ?_⟩
-  ext x
-  obtain ⟨a, ha⟩ := FullDt.exists_lift B.host x
-  exact (h x a ha).trans (FullDt.normOneFiniteAdeleDetClass_of_isDetLift B.host I.SQ x a ha).symm
 
-theorem stdDt_surjective {dt} (h : I.StdDt l Z dt) : Function.Surjective dt := fun t => by
-  obtain ⟨a, rfl⟩ := QuotientGroup.mk_surjective (s := KDq B.host I.SQ) t
-  obtain ⟨x, hx⟩ := FullDt.exists_of_idele B.host a
-  exact ⟨x, h x a hx⟩
 
-theorem existsUnique_qpIs : ∃! Qp, I.QpIs Qp := by
-  have hf : ∀ a, {p : ℕ | p.Prime ∧ ∃ P ∈ I.Q a, (p : 𝓞 B.fields.E) ∈ P.asIdeal}.Finite := fun a => by
-    refine ((I.Q a).finite_toSet.biUnion (t := fun P => {p : ℕ | p.Prime ∧ (p : 𝓞 B.fields.E) ∈ P.asIdeal}) fun P _ => ?_).subset ?_
-    · refine Set.Subsingleton.finite fun p hp q hq => ?_
-      by_contra hne
-      obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 ((Nat.coprime_primes hp.1 hq.1).2 hne)
-      have e : (a : 𝓞 B.fields.E) * p + b * q = 1 := by exact_mod_cast congrArg (Int.cast : ℤ → 𝓞 B.fields.E) hab
-      exact P.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 (e ▸ add_mem (P.asIdeal.mul_mem_left _ hp.2) (P.asIdeal.mul_mem_left _ hq.2)))
-    · rintro p ⟨hp, P, hP, h⟩
-      exact Set.mem_biUnion hP ⟨hp, h⟩
-  refine ⟨fun a => (hf a).toFinset, fun a p => by simp, fun Qp h => ?_⟩
-  funext a
-  ext p
-  rw [h a p]
-  simp
 
-theorem exists_stdO (hI : I.Ok) (hP : Pins B X) : ∃ Qp O, I.QpIs Qp ∧ I.StdO l Z Qp O := by
-  obtain ⟨Qp, hQ, -⟩ := existsUnique_qpIs I
-  obtain ⟨O, hO, -⟩ := lift_objects I hI hP l Z Qp
-  exact ⟨Qp, O, hQ, hO⟩
 
 section Ker
 
@@ -81,20 +50,7 @@ theorem stdKer_iff (t : KerEntTied ex) : I.StdKer l Z t ↔ I.StdKerTie l Z t :=
   ⟨fun ⟨a, b, c, d, e, f, g, h, i, j, k, m, n, o, p⟩ => ⟨a, b, c, d, e, f, g, h, i, j, k, m, n, o, p⟩,
     fun ⟨a, b, c, d, e, f, g, h, i, j, k, m, n, o, p⟩ => ⟨a, b, c, d, e, f, g, h, i, j, k, m, n, o, p⟩⟩
 
-theorem exists_stdKer (hI : I.Ok) (hP : Pins B X) (O : ∀ u a, GL3Theta.LiftObj (I.rec7 l Z) ((I.rec7 l Z).chTw u a))
-    (E : KerEnt (I.rec7 l Z) Y ex.tw) (hQ : I.QpIs Y.Qp) (hO : I.StdO l Z Y.Qp O) (hU : ∀ u a i, i < B.R.m → UnfIsAll (O u a) i)
-    (hE : EntOk E O) (hS : ∀ u w h, ThAtServed (ex.ker u w h) E) : ∃ t : KerEntTied ex, I.StdKer l Z t ∧ t.O = O := by
-  obtain ⟨t, h1, h2, -⟩ := kerEntTied_true I hI hP l Z L hT Gi Gl K Y cX ex O E hQ hO hU hE hS
-  exact ⟨t, (stdKer_iff I l Z t).2 h1, h2⟩
 
-theorem qpIs_of_stdKer (t : KerEntTied ex) (h : I.StdKer l Z t) : I.QpIs Y.Qp := by
-  obtain ⟨cc, _, _, δ, _, Bs, χ, _, idl, _, _, cD, X', seam, _, Pr, _, _, Ch, sel, S, word, _, tup, hQ, _⟩ := t
-  obtain ⟨h1, -, -, -, h5, h6, -, h8, -⟩ := h
-  dsimp only at h1 h5 h6 h8
-  subst h1 h6
-  cases h5
-  cases h8
-  exact hQ
 
 end Ker
 
@@ -104,14 +60,7 @@ variable (l0 : I.Law0 l) {inQ : (I.rec7 l Z).what₂.Tup → HeightOneSpectrum (
   {T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ} {H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)} {J : Formalism.L2.Herm.TwChJointS T H}
   {F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)}
 
-theorem top_of_topK (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F) (h : I.TopK l Z l0 W) (u a ha h1 β) :
-    I.TopBase l Z u a (W.ch u a ha B.R.m h1 le_rfl β).lev.U
-      fun c => ((W.ch u a ha B.R.m h1 le_rfl (T.chOf u a B.R.m c)).y ⟨c, rfl⟩).1 := by
-  refine ReadsTop.topBase I l Z (h u a ha h1) β fun c => ?_
-  have e : T.chOf u a B.R.m c = β := @Subsingleton.elim _ (@Unique.instSubsingleton _ (T.Ch_m u a).some) _ _
-  rw [e]
 
-theorem topK_of_stdW (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F) (h : I.StdW l Z l0 W) : I.TopK l Z l0 W := h.topk
 
 end Tw
 
@@ -143,13 +92,6 @@ theorem exists_topPt (hI : I.Ok) (hP : Pins B X) (u : B.Word) (a : I.ι) : ∃ k
   rw [e']
   exact h3 P r j hr
 
-theorem ipMt_smul (hI : I.Ok) (hP : Pins B X) (Z : Later B (I.cols l)) (u : B.Word) (a : I.ι) (s t : ℂ) (G G' : (I.per l u a).Mt) :
-    I.ipMt l u a (s • G) (t • G') = starRingEnd ℂ s * t * I.ipMt l u a G G' := by
-  obtain ⟨j, -, -, hm, hp, -⟩ := PerConj.period_conj I hI hP l Z u a
-  have h := (IpMt.ipMt_tie I hI hP l Z u a j hm hp).1
-  rw [h, h]
-  simp [LinearMap.map_smulₛₗ]
-  ring
 
 set_option maxHeartbeats 1600000 in
 
@@ -430,14 +372,6 @@ theorem exists_stdF_stdLvC : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.O
         eWz := heW u }
   · exact ⟨fun i _ h2 => hLv u i (le_of_succ_m h2), (hJ u).1⟩
 
-theorem levJ_Uloc_eq (u : B.Word) {Ch Ch' : ℕ → Type} {chOf : ∀ i, ((I.rec7 l Z).mem u).C.cls i → Ch i}
-    {chOf' : ∀ i, ((I.rec7 l Z).mem u).C.cls i → Ch' i} (F : FormsTiedSym (I.rec7 l Z) u Ch chOf) (F' : FormsTiedSym (I.rec7 l Z) u Ch' chOf')
-    (h : I.StdLvC l Z u F) (h' : I.StdLvC l Z u F') (hg : F.gl = F'.gl) (hL : F.levJ.Lb = F'.levJ.Lb) (j : Fin 2) (v)
-    (hv : ((I.rec7 l Z).host.g j : 𝓞 (I.rec7 l Z).host.F) ∈ v.asIdeal) : F.levJ.Uloc v = F'.levJ.Uloc v := by
-  ext x
-  by_cases hx : x ∈ levelVL (sigD (I.rec7 l Z)) (gramN (I.rec7 l Z) ((I.rec7 l Z).R.m - 1) (Nat.sub_le _ _)) v F.levJ.Lb
-  · rw [F.glevJ.mem j v hv x hx, F'.glevJ.mem j v hv x (hL ▸ hx), h.2, h'.2, hg]
-  · exact ⟨fun e => absurd (F.levJ.Uloc_lev v e) hx, fun e => absurd (hL ▸ F'.levJ.Uloc_lev v e) hx⟩
 
 end Frames
 

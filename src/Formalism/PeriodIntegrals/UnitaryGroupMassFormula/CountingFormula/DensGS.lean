@@ -26,21 +26,6 @@ def SplitCount : Prop :=
               ((2 * Module.finrank E V * Fintype.card ι : ℤ) - (Fintype.card ι : ℤ) ^ 2) =
             (Formalism.L2.SG.DensExact.countSplit 𝓀[F] (Module.finrank E V) (Fintype.card ι) Ph Gm : ℝ)
 
-theorem locDensSplit_of (h : SplitCount) : LocDensSplit := by
-  intro F E _ _ _ _ _ _ _ M hF hc0 he V _ _ H Λ hΛ ϖ hϖ ι _ _ G₀ hG1 hG2 hG3 hle
-  obtain ⟨Ph, Gm, hPh, hrk, heq⟩ := h F E M hF hc0 he V H Λ hΛ ϖ hϖ ι G₀ hG1 hG2 hG3 hle
-  haveI := hF
-  haveI : Fintype 𝓀[F] := Fintype.ofFinite _
-  have hd := bilinearDensityFormula 𝓀[F] (Module.finrank E V) (Fintype.card ι) Ph Gm hPh
-  rw [hrk, Nat.sub_self, ← Nat.card_eq_fintype_card (α := 𝓀[F])] at hd
-  rw [← hd, ← heq]
-  have hq : (Nat.card 𝓀[F] : ℝ) ≠ 0 := by
-    exact_mod_cast (Nat.card_pos (α := 𝓀[F])).ne'
-  have hz : ((2 * Module.finrank E V * Fintype.card ι : ℤ) - (Fintype.card ι : ℤ) ^ 2) =
-      ((2 * Module.finrank E V * Fintype.card ι : ℕ) : ℤ) - ((Fintype.card ι ^ 2 : ℕ) : ℤ) := by
-    first | (push_cast; ring) | push_cast
-  rw [hz, zpow_sub₀ hq, zpow_natCast, zpow_natCast, mul_div_assoc,
-    div_self (div_ne_zero (pow_ne_zero _ hq) (pow_ne_zero _ hq)), mul_one]
 
 def OSplit : Prop :=
   ∀ (F E : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing E] [Algebra F E]
@@ -85,17 +70,6 @@ def CountBij : Prop :=
             (Formalism.L2.SG.DensExact.countSplit 𝓀[F] (Module.finrank E V) (Fintype.card ι)
               (Ph.map (IsLocalRing.residue 𝒪[F])) Gm : ℝ)
 
-theorem splitCount_of (hO : OSplit) (hC : CoordData) (hB : CountBij) : SplitCount := by
-  intro F E _ _ _ _ _ _ _ M hF hc0 ⟨e, he⟩ V _ _ H Λ hΛ ϖ hϖ ι _ _ G₀ hG1 hG2 hG3 _
-  obtain ⟨π, Ph, hπ⟩ := hC F E M hF hc0 e he V H Λ hΛ
-  obtain ⟨Gm, hGm, heq⟩ := hB F E M hF hc0 e he (hO F E M.L hF e) V H Λ π Ph hπ ϖ hϖ ι G₀ hG1 hG2 hG3
-  obtain ⟨-, -, hu, -⟩ := hπ
-  refine ⟨Ph.map (IsLocalRing.residue 𝒪[F]), Gm, ?_, hGm, heq⟩
-  have hdet : (Ph.map (IsLocalRing.residue 𝒪[F])).det = IsLocalRing.residue 𝒪[F] Ph.det :=
-    (RingHom.map_det _ _).symm
-  rw [hdet]
-  exact hu.map _
 
-theorem locDensSplit_of' (hO : OSplit) (hC : CoordData) (hB : CountBij) : LocDensSplit := locDensSplit_of (splitCount_of hO hC hB)
 
 end PI.UnitaryGroupMassFormula.CntFormula

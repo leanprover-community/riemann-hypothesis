@@ -15,8 +15,6 @@ abbrev pullGrp (f : S' ⟶ S) (G : Over S) : Over S' := (Over.pullback f).obj G
 
 abbrev pullFst (f : S' ⟶ S) (G : Over S) : (pullGrp f G).left ⟶ G.left := pullback.fst G.hom f
 
-theorem pullGrp_comm (f : S' ⟶ S) (G : Over S) [GrpObj G] [IsCommMonObj G] : IsCommMonObj (pullGrp f G) :=
-  inferInstance
 
 def pullAct {O : Type} [CommRing O] (f : S' ⟶ S) {G : Over S} [GrpObj G] (A : OAct O G) :
     OAct O (pullGrp f G) where

@@ -133,37 +133,6 @@ theorem beOp_smul_right (μW μN : Measure (Formalism.QuantumDeterminants.Mt k r
   simp only [beOp, beInt_smul_right]
   exact integral_smul (star a) _
 
-theorem trans_of_steps (hP : PeriodCont) (hS : SmoothIrred) {ε : Fin (2 * r + k + 1) → Bool}
-    {lam : Fin (2 * r + k + 1) → ℝ} [CompleteSpace H] {σ : Mat k r → (H →L[ℂ] H)}
-    {z : Fin (2 * r + k + 1) → ℂ} {c : Fin r → ℂ} {u : Fin k → ℝ} [FiniteDimensional ℂ Vp]
-    {π : Mat k r → (Vp →L[ℂ] Vp)} {μW μN : Measure (Formalism.QuantumDeterminants.Mt k r)}
-    (hlam : Formalism.QuantumDeterminants.IsHCParam lam) (hσ : IsDSHpk k r ε lam σ) (hz : Formalism.QuantumDeterminants.inWb k r z)
-    (hT : 0 < Formalism.QuantumDeterminants.Tz k r z) (hπ : IsHCTypeW k r z u π) (hW : IsHaarOn (Formalism.QuantumDeterminants.UWset k r z) μW)
-    (hN : IsHaarOn (Formalism.QuantumDeterminants.Nset k r) μN) {w : H} (hw : w ∈ smoothVecs (k := k) (r := r) σ) (hw0 : w ≠ 0)
-    (htr : ∀ x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r), σ x w ∈ smoothVecs (k := k) (r := r) σ)
-    {v v' : H} (hv : v ∈ smoothVecs (k := k) (r := r) σ) (hv' : v' ∈ smoothVecs (k := k) (r := r) σ)
-    (hne : beOp μW μN σ π (psiGen k r z c) v v' ≠ 0) :
-    ∃ x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r), ∃ x₀ ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r),
-      beOp μW μN σ π (psiGen k r z c) (σ x w) (σ x₀ w) ≠ 0 := by
-  obtain ⟨hI, hCl, hCr⟩ := hP k r ε lam H σ z c u Vp π μW μN hlam hσ hz hT hπ hW hN
-  by_contra hcon
-  push_neg at hcon
-  have step1 : ∀ x₀ ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r), ∀ y ∈ smoothVecs (k := k) (r := r) σ,
-      beOp μW μN σ π (psiGen k r z c) y (σ x₀ w) = 0 := by
-    intro x₀ hx₀
-    exact hS k r ε lam H σ hlam hσ w hw hw0 (Vp →L[ℂ] Vp)
-      (fun y => beOp μW μN σ π (psiGen k r z c) y (σ x₀ w))
-      (fun y hy y' hy' => beOp_add_left μW μN σ π _ (hI y hy _ (htr x₀ hx₀)) (hI y' hy' _ (htr x₀ hx₀)))
-      (Or.inl fun a y _ => beOp_smul_left μW μN σ π _ a y _)
-      (hCl (σ x₀ w) (htr x₀ hx₀))
-      (fun x hx => hcon x hx x₀ hx₀)
-  have step2 := hS k r ε lam H σ hlam hσ w hw hw0 (Vp →L[ℂ] Vp)
-    (fun y' => beOp μW μN σ π (psiGen k r z c) v y')
-    (fun y hy y' hy' => beOp_add_right μW μN σ π _ (hI v hv y hy) (hI v hv y' hy'))
-    (Or.inr fun a y _ => beOp_smul_right μW μN σ π _ a v y)
-    (hCr v hv)
-    (fun x₀ hx₀ => step1 x₀ hx₀ v hv)
-  exact hne (step2 v' hv')
 
 end Chain
 

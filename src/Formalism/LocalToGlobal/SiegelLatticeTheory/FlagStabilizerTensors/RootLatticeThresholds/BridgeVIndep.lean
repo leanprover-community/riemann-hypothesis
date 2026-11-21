@@ -51,13 +51,5 @@ def VIndepAt (sc : ℝ) (i0 i0' : ∀ _ : InfinitePlace X.B.I.F, Fin D.R.k) (νq
           Formalism.L2.SG.TermOp.OO (νq (gamW X u u' w)) Set.univ (X.Wu u) (X.Wu u') (gamW X u u' w)).comp
           (X.piU u' h₂'))
 
-theorem vIndepAt_of {X} {u u'} (P : Parts X u u') (sc : ℝ) (i0 i0' : ∀ _ : InfinitePlace X.B.I.F, Fin D.R.k)
-    (νq : X.B.I.Ginf → Measure X.B.I.Ginf) (hJT : P.JointTensor sc i0 i0' νq) : VIndepAt X u u' sc i0 i0' νq := by
-  intro w hw hG h₁ h₁' h₂ h₂' hd₁ hd₂
-  obtain ⟨p, hp⟩ := exists_pt (D := D) w
-  apply ContinuousLinearMap.coe_injective
-  refine LinearMap.ext_on_range (X.tensU_span u') fun x => ?_
-  simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply]
-  rw [hJT p w hp hw hG h₁ h₁' hd₁ x, hJT p w hp hw hG h₂ h₂' hd₂ x]
 
 end Formalism.L2.SG.Pf.Carrier

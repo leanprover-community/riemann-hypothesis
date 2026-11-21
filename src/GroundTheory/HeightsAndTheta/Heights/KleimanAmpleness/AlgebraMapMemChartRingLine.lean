@@ -347,32 +347,9 @@ theorem isVeryAmpleBy_twistSys_one : IsVeryAmpleBy (twistSys S x 1) x where
 
 theorem isVeryAmple_twistSys_one : IsVeryAmple (twistSys S x 1) := ⟨N, x, isVeryAmpleBy_twistSys_one⟩
 
-theorem pullSys_self : pullSys (S := S) x x = twistSys S x 1 :=
-  SubSystem.ext_sub fun I => span_range_eq_twistMod_one I
 
-theorem isDomination_self : IsDomination S x x where
-  invertible I := by
-    rw [pullSys_self]
-    exact (twistBundle S x 1).invertible I
 
-theorem domRing_self_le {i : Fin (N + 1)} (hi : x i ≠ 0) :
-    domRing S x x i ⊆ chartRing S x (singleChart hi) := by
-  intro a ha
-  rw [domRing, pullSys_self] at ha
-  obtain ⟨n, hn⟩ := Set.mem_iInter.mp ha (singleChart hi)
-  rw [one_mul] at hn
-  obtain ⟨b, hb⟩ := Submodule.mem_span_singleton.mp
-    (pow_twistSys_one_le n (singleChart hi) (Finset.mem_singleton_self i) hn)
-  rw [chartRing_smul_def] at hb
-  have hab : a = b := (mul_right_cancel₀ (pow_ne_zero n hi) hb).symm
-  rw [hab]; exact b.2
 
-theorem restrictData_id (Q : SubSystem S x Ω) :
-    RestrictData (K' := Ω) Q (y := x) (fun _ h => h) Q id where
-  mem _ _ hq := hq
-  add _ _ _ _ _ := rfl
-  smul _ _ _ _ _ _ _ _ _ := rfl
-  span I := by rw [Set.image_id]; exact Submodule.span_eq _
 
 end Inhabitants2
 
@@ -403,44 +380,13 @@ def lineStepData : StepData k (genericPt k 1) where
   si_ne := (map_ne_zero_iff _ (IsFractionRing.injective (Poly k 1) (FractionRing (Poly k 1)))).mpr
     (X_ne_zero 0)
 
-theorem algebraMap_mem_chartRing_line (p : Polynomial k) :
-    algebraMap (Polynomial k) (RatFunc k) p ∈ chartRing k (lineX k) (lineChart0 k) := by
-  have hX : (RatFunc.X : RatFunc k) ∈ chartRing k (lineX k) (lineChart0 k) := by
-    have := (ratio (S := k) (lineX_ne_zero k 0) 1).2
-    unfold lineChart0
-    simpa [ratio, lineX] using this
-  let φ := IsScalarTower.toAlgHom k (Polynomial k) (RatFunc k)
-  have hp : p ∈ Algebra.adjoin k {(Polynomial.X : Polynomial k)} := by
-    rw [Polynomial.adjoin_X]; trivial
-  have hφ : φ p ∈ (Algebra.adjoin k {(Polynomial.X : Polynomial k)}).map φ := ⟨p, hp, rfl⟩
-  rw [AlgHom.map_adjoin, Set.image_singleton] at hφ
-  refine Algebra.adjoin_le ?_ hφ
-  rw [Set.singleton_subset_iff]
-  change algebraMap (Polynomial k) (RatFunc k) Polynomial.X ∈ _
-  rw [RatFunc.algebraMap_X]
-  exact hX
 
-theorem isBirationalPt_lineX : IsBirationalPt k (lineX k) := by
-  intro s
-  have hd : algebraMap (Polynomial k) (RatFunc k) s.denom ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective _ _)).mpr s.denom_ne_zero
-  refine ⟨lineChart0 k, algebraMap (Polynomial k) (RatFunc k) s.num,
-    algebraMap (Polynomial k) (RatFunc k) s.denom, algebraMap_mem_chartRing_line k _,
-    algebraMap_mem_chartRing_line k _, hd, ?_⟩
-  exact ((div_eq_iff hd).mp (RatFunc.num_div_denom s)).symm
 
 def ptX : Fin (0 + 1) → k := fun _ => 1
 
-theorem ptX_ne_zero (i : Fin (0 + 1)) : ptX k i ≠ 0 := one_ne_zero
 
-theorem mem_chartRing_ptX (I : Chart (ptX k)) (a : k) : a ∈ chartRing k (ptX k) I :=
-  ⟨C a, 1, 0, one_mem _, isHomogeneous_C _ _, isHomogeneous_one _ _, by simp⟩
 
-theorem isNormalPt_ptX : IsNormalPt k (ptX k) := fun _ _ b _ => mem_chartRing_ptX k _ b
 
-theorem isBirationalPt_ptX : IsBirationalPt k (ptX k) := fun s =>
-  ⟨singleChart (ptX_ne_zero k 0), s, 1, mem_chartRing_ptX k _ s, mem_chartRing_ptX k _ 1, one_ne_zero,
-    mul_one s⟩
 
 end LineData
 

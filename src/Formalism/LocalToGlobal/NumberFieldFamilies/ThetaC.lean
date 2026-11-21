@@ -251,16 +251,6 @@ def weilCompatibilityOf (hS : SpSig D) (hW : WittLow D) (hψ : IsStdChar D ψ (-
   om_swap := fun V W χ χ' a b d => Om.swap V W χ χ' a ⟨b, d⟩
   th := fun V W χ χ' _ b d hV μ 𝓕 hp Φ F h => thC_apply G Om f.petF ⟨b, d⟩ hV hp Φ F h
 
-theorem weilTiedEqOf (hS : SpSig D) (hW : WittLow D) (hψ : IsStdChar D ψ (-1)) :
-    WeilCompatibleEquivariance (weilCompatibilityOf G P hE Om c f hS hW hψ) where
-  evS_range := fun _ _ _ => Subtype.range_coe
-  om_heis := fun V W χ χ' _ b d => (Om.weil V W χ χ' ⟨b, d⟩).Heisenberg₂
-  om_aut := fun V W χ χ' _ b d => (Om.weil V W χ χ' ⟨b, d⟩).aut
-  om_cont := fun V W χ χ' _ b d => (Om.weil V W χ χ' ⟨b, d⟩).cont
-  om_unit := fun V W χ χ' _ b d => (Om.weil V W χ χ' ⟨b, d⟩).unit
-  om_split := fun V W χ χ' _ b d => (Om.weil V W χ χ' ⟨b, d⟩).split
-  om_tw := ⟨fun V W χ χ' ν h => Om.twW_up V W χ χ' ν h.le, fun V W χ χ' ν h => Om.twV_up V W χ χ' ν h.le⟩
-  th := fun V W χ χ' _ b d hV μ 𝓕 hp Φ F h => thC_apply G Om f.petF ⟨b, d⟩ hV hp Φ F h
 
 theorem besselUnipotentSubgroup_zero_subsingleton {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V} (d : BesDat A B ι) (f0 : Matrix (Fin B.rank) (Fin d.ρ) D.host.E) :
     Subsingleton (besselUnipotentSubgroup d f0 0) := by
@@ -348,10 +338,6 @@ def allCompatibilitiesOf (hS : SpSig D) (hW : WittLow D) (hψ : IsStdChar D ψ (
   real := hR
   prov := hP
 
-theorem allTied_thetaOf (hS : SpSig D) (hW : WittLow D) (hψ : IsStdChar D ψ (-1)) (h0 : TypZero D) (hA : TypAdd D)
-    (hJ : FockCxEx D) (hD : PolAdd ψ) (hR : RealTied D) (A : ProvA) (hP : ProvisionCompatibility D A) :
-    Nonempty (AllTied D (thetaOf D G P hE Om c f) A) :=
-  ⟨allCompatibilitiesOf G P hE Om c f hS hW hψ h0 hA hJ hD hR A hP⟩
 
 end Ties
 

@@ -185,16 +185,6 @@ def stabEquiv (Λ : Submodule (𝓞 E) (n → E)) (hΛ : Submodule.IsLattice E �
       Formalism.ThetaLiftIndependence.autL h (globLat (g : GL n (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) Λ) :=
   (Equiv.ofBijective _ (stabMat_bij σ h Λ hΛ g)).symm.trans (Equiv.ofBijective _ (autMat_bij σ hσ h _))
 
-theorem stabEquiv_apply (Λ : Submodule (𝓞 E) (n → E)) (hΛ : Submodule.IsLattice E Λ)
-    (g : UPts σ (Formalism.UG.gram h) (FiniteAdeleRing (𝓞 F) F))
-    (x : stabAt (GamA σ (Formalism.UG.gram h)) (KA σ (Formalism.UG.gram h) Λ) g) (γ : GL n E)
-    (hx : ((x.1.1 : UPts σ (Formalism.UG.gram h) (FiniteAdeleRing (𝓞 F) F)) :
-      GL n (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) = bcA γ) :
-    (stabEquiv σ hσ h Λ hΛ g x).1 = glEquiv γ := by
-  obtain ⟨a, rfl⟩ := (Equiv.ofBijective _ (stabMat_bij σ h Λ hΛ g)).surjective x
-  have ha : a.1 = γ := Formalism.UG.P.UG_inclusion_injective F E n (FiniteAdeleRing (𝓞 F) F) inferInstance hx
-  subst ha
-  simp [stabEquiv]
 
 include hσ in
 theorem card_stabAt (Λ : Submodule (𝓞 E) (n → E)) (hΛ : Submodule.IsLattice E Λ)

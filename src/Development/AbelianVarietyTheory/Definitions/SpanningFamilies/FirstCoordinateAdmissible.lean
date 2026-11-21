@@ -417,9 +417,6 @@ theorem ccT_J : ccT (Matrix.J (Fin N) E) = -Matrix.J (Fin N) E := by
     ext (i | i) (j | j) <;> by_cases h : i = j <;> simp [Matrix.J, cc, h]
   rw [ccT, this, Matrix.J_transpose]
 
-theorem J_mem_UU : Matrix.J (Fin N) E ∈ UU E N := by
-  change ccT _ * _ * _ = _
-  rw [ccT_J, neg_mul, Matrix.J_squared]; simp
 
 theorem one_mem_UU : (1 : M2 E N) ∈ UU E N := by
   change ccT _ * _ * _ = _

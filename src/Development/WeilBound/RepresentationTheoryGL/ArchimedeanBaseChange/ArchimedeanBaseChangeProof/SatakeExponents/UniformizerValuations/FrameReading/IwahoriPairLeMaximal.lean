@@ -213,14 +213,6 @@ theorem g₂_oc (hSl : Slots) {Sec : Set (Pl E)} (hS : IsSection Sec) (d : LocDa
   rw [g₂_coe] at hg
   exact (Subgroup.mem_prod.1 (gSet_sub hSl hS d hd a ha hg)).2
 
-theorem gSet_oc (hSl : Slots) {Sec : Set (Pl E)} (hS : IsSection Sec) (d : LocData E n) (hd : d.Ok) (a : ℕ)
-    (ha : a ≤ n) : IsOpen (gSet Sec d a) ∧ IsCompact (gSet Sec d a) := by
-  have ho := gSet_open hSl hS d hd a ha
-  refine ⟨ho, ?_⟩
-  have hc : IsCompact (((Kf E a).prod (Kf E (n - a)) : Subgroup (Hf E a (n - a))) : Set (Hf E a (n - a))) := by
-    rw [Subgroup.coe_prod]
-    exact (GlobalTheory.T.finite_kernel_compact_open E a).2.prod (GlobalTheory.T.finite_kernel_compact_open E (n - a)).2
-  exact hc.of_isClosed_subset (Subgroup.isClosed_of_isOpen (levSub Sec d a) ho) (gSet_sub hSl hS d hd a ha)
 
 end PositivityTheory.Rg.BcB.F.Rd.LevOC
 

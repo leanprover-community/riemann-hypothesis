@@ -5,14 +5,6 @@ noncomputable section
 namespace GlobalTheory.LatticeBoundTests
 open NumberField
 
-theorem integral_of_sum (Y : Type) [AddCommGroup Y] (S : Submodule ℝ (Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ))
-    (l : S →ₗ[ℝ] ℝ) (m : ℕ) (x x' : Fin m → Y)
-    (h : ∀ β : S, l β = ∑ i, (β : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ) (x i) (x' i)) (β : S)
-    (hβ : ∀ a c, ∃ z : ℤ, (β : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ) a c = z) : ∃ z : ℤ, l β = z := by
-  choose f hf using hβ
-  refine ⟨∑ i, f (x i) (x' i), ?_⟩
-  rw [h]; push_cast
-  exact Finset.sum_congr rfl fun i _ => hf _ _
 
 section Trace
 variable (E : Type) [Field E] [NumberField E] [IsCMField E]
@@ -33,16 +25,6 @@ theorem trBil_symm (x y : 𝓞 E) : trBil E x y = trBil E y x := by
   rw [trBil_apply, trBil_apply]
   exact Finset.sum_congr rfl fun σ _ => by simp [mul_comm]
 
-theorem trBil_balanced (c c' : 𝓞 E) (hc : (c' : E) = IsCMField.complexConj E c) (x y : 𝓞 E) :
-    trBil E (c • x) y = trBil E x (c' • y) := by
-  rw [trBil_apply, trBil_apply]
-  refine Finset.sum_congr rfl fun σ _ => ?_
-  have h : σ (c' : E) = starRingEnd ℂ (σ (c : E)) := by
-    rw [hc]; exact IsCMField.complexEmbedding_complexConj E σ _
-  rw [smul_eq_mul, smul_eq_mul]
-  push_cast
-  rw [map_mul, map_mul, h, map_mul, Complex.conj_conj]
-  congr 1; ring
 
 omit [IsCMField E] in
 theorem trBil_posDef :
@@ -111,25 +93,5 @@ theorem exists_half : ∃ w : 𝓞 K₃, (w : K₃) + IsCMField.complexConj K₃
   rw [e, map_neg, hc]
   linear_combination -hs
 
-theorem premises_inhabited :
-    ∃ (E : Type) (_ : Field E) (_ : NumberField E) (cj : E → E) (w : 𝓞 E) (Y : Type)
-      (_ : AddCommGroup Y) (_ : Module (𝓞 E) Y) (_ : Module.Free ℤ Y) (_ : Module.Finite ℤ Y)
-      (β : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ),
-      (∀ (φ : E →+* ℂ) (z : E), φ (cj z) = star (φ z)) ∧ (∃ z, cj z ≠ z) ∧
-      (∀ c : 𝓞 E, ∃ c' : 𝓞 E, (c' : E) = cj c) ∧ (w : E) + cj w = 1 ∧
-      0 < Module.finrank ℤ Y ∧ (∀ x y, β x y = β y x) ∧
-      (∀ c c' : 𝓞 E, (c' : E) = cj c → ∀ x y, β (c • x) y = β x (c' • y)) ∧
-      ∃ (ι : Type) (_ : Fintype ι) (b : Module.Basis ι ℤ Y),
-        (Matrix.of fun i j => β (b i) (b j)).PosDef := by
-  obtain ⟨w, hw⟩ := exists_half
-  refine ⟨K₃, inferInstance, inferInstance, fun z => IsCMField.complexConj K₃ z, w, 𝓞 K₃,
-    inferInstance, inferInstance, inferInstance, inferInstance, trBil K₃,
-    fun φ z => IsCMField.complexEmbedding_complexConj K₃ φ z, ?_,
-    fun c => ⟨IsCMField.ringOfIntegersComplexConj K₃ c,
-      IsCMField.coe_ringOfIntegersComplexConj K₃ c⟩, hw, Module.finrank_pos, trBil_symm K₃,
-    trBil_balanced K₃, _, inferInstance, RingOfIntegers.basis K₃, trBil_posDef K₃⟩
-  by_contra h
-  push_neg at h
-  exact IsCMField.complexConj_ne_one K₃ (AlgEquiv.ext h)
 
 end GlobalTheory.LatticeBoundTests

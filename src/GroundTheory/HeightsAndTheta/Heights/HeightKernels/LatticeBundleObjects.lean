@@ -299,26 +299,6 @@ def quotBundle {n m k : ℕ} (a : Fin n → FractionalIdeal (𝓞 K)⁰ K) (d : 
   matrixBundle (quotLattice a b c hli hmk) (schurMetric d b c) (schurMetric_posDef hd hli)
     (schurMetric_conj hc b c)
 
-theorem latticeBundle_example :
-    let a : Fin 2 → FractionalIdeal (𝓞 ℚ)⁰ ℚ := fun _ => 1
-    let d : (ℚ →+* ℂ) → Fin 2 → ℝ := fun _ _ => 1
-    ∃ hd : ∀ σ x, 0 < d σ x, ∃ hc : ∀ σ x, d (conjugate σ) x = d σ x,
-    ∃ v : (latticeBundle a d hd hc).carrier,
-      ((latticeBundle a d hd hc).metric.form ratEmbedding).inner
-        ((1 : ComplexAt ratEmbedding) ⊗ₜ[𝓞 ℚ] v) ((1 : ComplexAt ratEmbedding) ⊗ₜ[𝓞 ℚ] v) = 1 := by
-  intro a d
-  have hv : (Pi.single 0 1 : Fin 2 → ℚ) ∈ idealLattice a := by
-    rw [idealLattice, Submodule.mem_pi]
-    intro i _
-    rw [FractionalIdeal.mem_coe, FractionalIdeal.mem_one_iff]
-    by_cases h : i = 0
-    · subst h; exact ⟨1, by simp⟩
-    · exact ⟨0, by simp [h]⟩
-  refine ⟨fun _ _ => one_pos, fun _ _ => rfl, ⟨_, hv⟩, ?_⟩
-  · refine (matrixMetric_inner_one_tmul (idealLattice a) (diagMetric d)
-      (diagMetric_posDef fun _ _ => one_pos) (diagMetric_conj fun _ _ => rfl) ratEmbedding
-      ⟨_, hv⟩ ⟨_, hv⟩).trans ?_
-    simp [embVec, diagMetric, dotProduct, Fin.sum_univ_two, d]
 
 example : HermitianBundle.{0} ℚ :=
   quotBundle (fun _ : Fin 2 => (1 : FractionalIdeal (𝓞 ℚ)⁰ ℚ)) (fun _ _ => 1) (fun _ _ => one_pos)

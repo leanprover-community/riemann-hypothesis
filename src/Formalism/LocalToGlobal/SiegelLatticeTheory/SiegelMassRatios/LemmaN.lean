@@ -53,31 +53,6 @@ def LemmaNcGlob : Prop :=
     (∀ PP : Ideal (𝓞 E), PP.IsPrime → (g₂ : 𝓞 E) ∈ PP → Formalism.L2.Col.UnipMod PP L β) →
     β = 1
 
-theorem orderOf_dvd_of_isProP {p : ℕ} {Q : Type} [Group Q] [TopologicalSpace Q]
-    (hQ : IsProP p Q) {y : Q} (hy : IsOfFinOrder y) : ∃ k : ℕ, orderOf y ∣ p ^ k := by
-  obtain ⟨htg, ht2, hc, htd, hidx⟩ := hQ
-  classical
-  let S : Finset Q := ((Finset.range (orderOf y)).image (fun k => y ^ k)).filter (· ≠ 1)
-  have hUo : IsOpen ((S : Set Q)ᶜ) := (S.finite_toSet.isClosed).isOpen_compl
-  have h1U : (1 : Q) ∈ ((S : Set Q)ᶜ) := by simp [S]
-  obtain ⟨H, hH⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hUo h1U
-  obtain ⟨k, hk⟩ := hidx H
-  refine ⟨k, ?_⟩
-  let Hs : Subgroup Q := (H.toOpenSubgroup : Subgroup Q)
-  have : Hs.Normal := H.isNormal'
-  have hdvd : orderOf (QuotientGroup.mk' Hs y) ∣ p ^ k := by
-    rw [← hk, Subgroup.index]
-    exact orderOf_dvd_natCard _
-  refine dvd_trans (orderOf_dvd_of_pow_eq_one ?_) hdvd
-  have hm : QuotientGroup.mk' Hs y ^ orderOf (QuotientGroup.mk' Hs y) = 1 := pow_orderOf_eq_one _
-  rw [← map_pow, QuotientGroup.mk'_apply, QuotientGroup.eq_one_iff] at hm
-  set m := orderOf (QuotientGroup.mk' Hs y)
-  rw [← pow_mod_orderOf] at hm ⊢
-  by_contra hne
-  have hmem : y ^ (m % orderOf y) ∈ (S : Set Q) := by
-    simp only [S, Finset.coe_filter, Finset.mem_image, Finset.mem_range, Set.mem_ofPred_eq]
-    exact ⟨⟨m % orderOf y, Nat.mod_lt _ hy.orderOf_pos, rfl⟩, hne⟩
-  exact hH hm hmem
 
 theorem eq_one_of_dvd_two_primes {G : Type} [Group G] {β : G} {g₁ g₂ a b : ℕ}
     (hg₁ : g₁.Prime) (hg₂ : g₂.Prime) (hne : g₁ ≠ g₂)
@@ -86,17 +61,6 @@ theorem eq_one_of_dvd_two_primes {G : Type} [Group G] {β : G} {g₁ g₂ a b : 
   have h1 : orderOf β = 1 := Nat.eq_one_of_dvd_coprimes hcop ha hb
   exact orderOf_eq_one_iff.mp h1
 
-theorem lemmaNc : LemmaNc := by
-  intro Γ _ β hfin g₁ g₂ hg₁ hg₂ hne _ _ Q₁ _ _ hQ₁ Q₂ _ _ hQ₂ f₁ f₂ i₁ i₂
-  have hf₁ : IsOfFinOrder (f₁ β) := by
-    rw [← orderOf_pos_iff, orderOf_injective f₁ i₁ β]; exact hfin.orderOf_pos
-  have hf₂ : IsOfFinOrder (f₂ β) := by
-    rw [← orderOf_pos_iff, orderOf_injective f₂ i₂ β]; exact hfin.orderOf_pos
-  obtain ⟨a, ha⟩ := orderOf_dvd_of_isProP hQ₁ hf₁
-  obtain ⟨b, hb⟩ := orderOf_dvd_of_isProP hQ₂ hf₂
-  rw [orderOf_injective f₁ i₁ β] at ha
-  rw [orderOf_injective f₂ i₂ β] at hb
-  exact eq_one_of_dvd_two_primes hg₁ hg₂ hne ha hb
 
 theorem exists_prime_over (E : Type) [Field E] [NumberField E] {g : ℕ} (hg : g.Prime) :
     ∃ PP : Ideal (𝓞 E), PP.IsPrime ∧ (g : 𝓞 E) ∈ PP := by
@@ -125,12 +89,6 @@ theorem lemmaNcGlob_of_exists (E V : Type) [Field E] [NumberField E] [AddCommGro
   exact eq_one_of_dvd_two_primes hg₁ hg₂ hne (orderOf_dvd_of_pow_eq_one ha)
     (orderOf_dvd_of_pow_eq_one hb)
 
-theorem lemmaNcGlob : LemmaNcGlob := by
-  intro E V _ _ _ _ _ _ _ L hL β hfin g₁ g₂ hg₁ hg₂ hne _ _ h₁ h₂
-  obtain ⟨P₁, hP₁, hg₁P⟩ := exists_prime_over E hg₁
-  obtain ⟨P₂, hP₂, hg₂P⟩ := exists_prime_over E hg₂
-  exact lemmaNcGlob_of_exists E V L hL β hfin hg₁ hg₂ hne hP₁.ne_top hP₂.ne_top hg₁P hg₂P
-    (h₁ P₁ hP₁ hg₁P) (h₂ P₂ hP₂ hg₂P)
 
 theorem natCast_mem_maximalIdeal {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E))
     {p : ℕ} (hp : (p : 𝓞 E) ∈ P.asIdeal) :
@@ -155,34 +113,5 @@ theorem natCast_mem_maximalIdeal {E : Type} [Field E] [NumberField E] (P : Heigh
   rw [this] at hlt
   exact lt_irrefl _ hlt
 
-theorem lemmaNb_of_lemmaNa (ha : LemmaNa) : LemmaNb := by
-  intro E _ _ p hp h3 hun P hpP N β hfin hnil
-  obtain ⟨r, hr⟩ := hnil
-  rcases Nat.eq_zero_or_pos N with hN | hN
-  · subst hN
-    refine ⟨0, ?_⟩
-    have : β = 1 := Subsingleton.elim _ _
-    simp [this]
-  have : Nonempty (Fin N) := ⟨⟨0, hN⟩⟩
-  have : Fact p.Prime := ⟨hp⟩
-  have hpK : ((p : ℕ) : IsLocalRing.ResidueField (OP E P)) = 0 := by
-    rw [← map_natCast (IsLocalRing.residue (OP E P))]
-    exact Ideal.Quotient.eq_zero_iff_mem.mpr (natCast_mem_maximalIdeal P hpP)
-  have : CharP (IsLocalRing.ResidueField (OP E P)) p := (CharP.charP_iff_prime_eq_zero hp).mpr hpK
-  set u := red (β : Matrix (Fin N) (Fin N) (OP E P)) with hu
-  have hpow : u ^ p ^ r = 1 := by
-    have h1 : (u - 1) ^ p ^ r = u ^ p ^ r - 1 := by
-      rw [sub_pow_char_pow_of_commute _ _ (Commute.one_right u), one_pow]
-    have h2 : (u - 1) ^ p ^ r = 0 := by
-      have hle : r ≤ p ^ r := (Nat.lt_pow_self hp.one_lt).le
-      rw [← Nat.add_sub_cancel' hle, pow_add, hr, zero_mul]
-    rw [h2] at h1
-    exact (sub_eq_zero.mp h1.symm)
-  have hred : red ((β ^ p ^ r : GL (Fin N) (OP E P)) : Matrix (Fin N) (Fin N) (OP E P)) = 1 := by
-    rw [← hpow, hu, Units.val_pow_eq_pow_val]
-    exact map_pow ((IsLocalRing.residue (OP E P)).mapMatrix) _ _
-  have h1 := ha E p hp h3 hun P hpP N (β ^ p ^ r) hfin.pow hred
-  obtain ⟨t, -, ht⟩ := (Nat.dvd_prime_pow hp).mp (orderOf_dvd_of_pow_eq_one h1)
-  exact ⟨t, ht⟩
 
 end Formalism.L2.SG.LemmaN

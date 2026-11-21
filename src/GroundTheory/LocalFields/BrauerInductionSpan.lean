@@ -78,8 +78,6 @@ variable {E}
 theorem indLin_mem_spanZ {K : Subgroup G} (hK : E K) (l : K →* ℂˣ) : indLin K l ∈ spanZ E :=
   Submodule.subset_span ⟨K, hK, l, rfl⟩
 
-theorem spanZ_le_spanA (ζ : ℂ) : spanZ E ≤ spanA E ζ := fun g hg ↦
-  Submodule.subset_span ⟨1, Subalgebra.one_mem _, g, hg, (one_smul ℂ g).symm⟩
 
 theorem smul_mem_spanA {ζ : ℂ} {a : ℂ} (ha : a ∈ Algebra.adjoin ℤ ({ζ} : Set ℂ)) {g : G → ℂ}
     (hg : g ∈ spanZ E) : a • g ∈ spanA E ζ :=

@@ -189,8 +189,6 @@ variable {k} in
 theorem twistedSecondLeg_overComplex (α : Matrix (Fin k) (Fin k) G₀.O) : C.c2Tw α ≫ zs X k = zs X' k := by
   rw [c2Tw, Category.assoc, matEnd_zs, secondLeg_overComplex]
 
-theorem twistedSecondLeg_one : C.c2Tw (1 : Matrix (Fin k) (Fin k) G₀.O) = C.c2 k := by
-  rw [c2Tw, GlobalTheory.KS.Model.matEnd_one, Over.id_left, Category.comp_id]
 
 def op [IsFinite (C.c1 k)] [Etale (C.c1 k)] (a b : ℕ) : hodgeH (zs X k) a b →ₗ[ℂ] hodgeH (zs X k) a b :=
   corrOp (C.c1 k) (C.c2 k) (C.firstLeg_overComplex k) (C.secondLeg_overComplex k) a b
@@ -228,10 +226,6 @@ theorem mulBy_secondLeg_projection (X : GenModel gb N) (c : ℕ) (i : Fin k) :
 def IsForget {k' : ℕ} {X' : GenModel gb (N * k')} (C : Corr X X') : Prop :=
   ∃ (hN : 0 < N) (hk : 0 < k') (m : GObjMap (X'.univ.forgetMul hN hk) X.univ C.q1), C.φ1 = m.φ
 
-theorem IsForget.isHeckeLift {k' : ℕ} {X' : GenModel gb (N * k')} {C : Corr X X'} (h : C.IsForget) :
-    IsHeckeLift X X' (k' • LinearMap.id) (k' ^ 2) C.q1 C.φ1 := by
-  obtain ⟨hN, hk, m, e⟩ := h
-  exact ⟨C.firstProjection_structure, _, 𝟙 _, m, isGHecke_forgetMul hN hk X'.univ, e.trans (Category.id_comp _).symm⟩
 
 end Corr
 
@@ -312,10 +306,6 @@ def latMonoid : Submonoid G.GAf where
   one_mem' := fun v hv => by rw [map_one]; exact hv
   mul_mem' := fun {a b} ha hb v hv => by rw [map_mul, Module.End.mul_apply]; exact ha _ (hb v hv)
 
-theorem mem_latMonoid_of_mem_KN {N : ℕ} {h : G.GAf} (hh : h ∈ L.KN N) : h ∈ latMonoid L := fun v hv => by
-  obtain ⟨w, hw, e⟩ := hh.1 v hv
-  rw [e]
-  exact add_mem hv (nsmul_mem hw N)
 
 theorem smul_mem_laHat {a : AfP p} (ha : IsIntAf a) {v : AfP p ⊗[ℚ] VQ D} (hv : v ∈ LaHat D) : a • v ∈ LaHat D := by
   induction hv using AddSubgroup.closure_induction with
@@ -378,8 +368,6 @@ theorem actG_scalarAf (a : (AfP p)ˣ) (v : AfP p ⊗[ℚ] VQ D) : L.actG (scalar
   show actOn L.rep (AfP p) (algebraMap (AfP p) (AfP p ⊗[ℚ] G.C) a) v = _
   rw [AlgHom.commutes, Module.algebraMap_end_apply]
 
-theorem scalarAf_mem_latMonoid {a : (AfP p)ˣ} (ha : IsIntAf (a : AfP p)) : scalarAf G a ∈ latMonoid L := fun v hv => by
-  rw [actG_scalarAf]; exact smul_mem_laHat ha hv
 
 theorem scalarAf_comm (a : (AfP p)ˣ) (u : G.GAf) : scalarAf G a * u = u * scalarAf G a :=
   Subtype.ext (Prod.ext (Units.ext (Algebra.commutes (a : AfP p) _)) (mul_comm _ _))
@@ -422,28 +410,7 @@ theorem isGIsogWit_mul {S : Scheme.{0}} {s : S ⟶ Sp R} {N M : ℕ} (e : N = M)
   rw [hx]
   exact mul_eq_right
 
-theorem isGIsogWit_refl {S : Scheme.{0}} {s : S ⟶ Sp R} {N : ℕ} (o : GObj gb N s) :
-    IsGIsogWit L 1 o o (𝟙 o.A) (𝟙 o.A) 1 1 := by
-  have h := isGIsogWit_mul L rfl o (h := 1) (m := 1) (c := 1) (Nat.coprime_one_left p) (Nat.coprime_one_left p)
-    (fun v => by simp)
-  rw [pow_one] at h
-  exact h
 
-theorem isGIsogWit_forgetMul {S : Scheme.{0}} {s : S ⟶ Sp R} {N k' : ℕ} (hN : 0 < N) (hk : 0 < k')
-    (o : GObj gb (N * k') s) : IsGIsogWit L 1 o (o.forgetMul hN hk) (𝟙 o.A) (𝟙 o.A) 1 1 := by
-  obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, -⟩ := isGIsogWit_refl L o
-  refine ⟨h1, h2, h3, h4, h5, h6, h7, h8, fun k _ _ t β ht => ?_⟩
-  obtain ⟨I, hI⟩ := o.geom k t β ht
-  refine ⟨I, I, hI, fun y => ?_, fun n hn hnp x y => ?_⟩
-  · show toUnit _ ≫ o.eta (k' • y) = I.ev N y
-    rw [o.eta_nsmul, MonObj.comp_pow, hI, I.tower N k' hN hk]
-  · show I.ev n x ≫ 𝟙 o.A = I.ev n y ↔ _
-    rw [ForgetHecke.acts_one_iff L n hn hnp x y, Category.comp_id]
-    refine Iff.trans ?_ (I.ker n hn (x - y))
-    have hx : I.ev n x = I.ev n (x - y) * I.ev n y :=
-      (congrArg (I.ev n) (sub_add_cancel x y).symm).trans (I.add n (x - y) y)
-    rw [hx]
-    exact mul_eq_right
 
 end Wit
 
@@ -462,18 +429,12 @@ theorem relIndex_KN_ne_zero {N N' : ℕ} (hN : 0 < N) (hN' : 0 < N') : (L.KN N')
   haveI := Subgroup.quotient_finite_of_isOpen _ ho
   exact Nat.card_pos.ne'
 
-theorem hkIndex_ne_zero {N N' : ℕ} (hN : 0 < N) (hN' : 0 < N') (h : G.GAf) : hkIndex L N N' h ≠ 0 := fun h0 =>
-  relIndex_KN_ne_zero L hN hN' (Subgroup.relIndex_eq_zero_of_le_right (heckeLevel_le _ _) h0)
 
 def IsAdelicHecke (h : G.GAf) {k' : ℕ} {X : GenModel gb N} {X' : GenModel gb (N * k')} (C : Corr X X') : Prop :=
   (N * k').Coprime p ∧ L.KN (N * k') ≤ heckeLevel (L.KN N) h⁻¹ ∧ C.IsForget ∧
     ∃ (o'' : GObj gb N X'.s) (ψ : X'.univ.A ⟶ o''.A) (ψ' : o''.A ⟶ X'.univ.A) (d : ℕ) (φ : GObjMap o'' X.univ C.q2),
       IsGHeckeWit L h X' X C.q2 o'' ψ ψ' 1 d φ ∧ C.φ2 = ψ.left ≫ φ.φ
 
-theorem IsAdelicHecke.hkIndex_ne_zero {h : G.GAf} {k' : ℕ} {X : GenModel gb N} {X' : GenModel gb (N * k')}
-    {C : Corr X X'} (H : IsAdelicHecke L h C) : hkIndex L N (N * k') h ≠ 0 := by
-  obtain ⟨hN, hk, -⟩ := H.2.2.1
-  exact GlobalTheory.W2.hkIndex_ne_zero L hN (Nat.mul_pos hN hk) h
 
 theorem IsAdelicHecke.conj_mem {h : G.GAf} {k' : ℕ} {X : GenModel gb N} {X' : GenModel gb (N * k')}
     {C : Corr X X'} (H : IsAdelicHecke L h C) {u : G.GAf} (hu : u ∈ L.KN (N * k')) : h * u * h⁻¹ ∈ L.KN N :=
@@ -485,29 +446,11 @@ theorem KN_mul_le (N k' : ℕ) : L.KN (N * k') ≤ L.KN N := by
     exact ⟨k' • w, nsmul_mem hw k', by rw [e, mul_smul]⟩
   exact fun g hg => ⟨key _ hg.1, key _ hg.2⟩
 
-theorem exists_isAdelicHecke_one {k' : ℕ} (hp : (N * k').Coprime p) (X : GenModel gb N) (X' : GenModel gb (N * k')) :
-    ∃ C : Corr X X', IsAdelicHecke L 1 C ∧ C.q1 = C.q2 := by
-  have h0 : N * k' ≠ 0 := fun h0 => (Fact.out : p.Prime).ne_one (by simpa [h0] using hp)
-  have hN : 0 < N := Nat.pos_of_ne_zero (left_ne_zero_of_mul h0)
-  have hk : 0 < k' := Nat.pos_of_ne_zero (right_ne_zero_of_mul h0)
-  obtain ⟨q, ⟨hq, ⟨m⟩⟩, -⟩ := X.rep X'.X X'.s (X'.univ.forgetMul hN hk)
-  refine ⟨⟨q, q, hq, hq, m.φ, m.φ, m.cart.1.w, m.cart.1.w⟩, ⟨hp, ?_, ⟨hN, hk, m, rfl⟩, _, 𝟙 X'.univ.A, 𝟙 X'.univ.A, 1, m,
-    ⟨hq, isGIsogWit_forgetMul L hN hk X'.univ⟩, (Category.id_comp _).symm⟩, rfl⟩
-  rw [heckeLevel_inv_of_comm _ fun u => by simp]
-  exact KN_mul_le L N k'
 
 def IsHeckeOpZ (X : GenModel gb N) (k : ℕ) (h : G.GAf) (a b : ℕ) (T : Module.End ℂ (hodgeH (zs X k) a b)) : Prop :=
   ∃ (k' : ℕ) (X' : GenModel gb (N * k')) (C : Corr X X') (_ : IsFinite (C.c1 k)) (_ : Etale (C.c1 k)),
     IsAdelicHecke L h C ∧ T = ((hkIndex L N (N * k') h : ℂ))⁻¹ • C.op k a b
 
-theorem normalised_model_eq_hAct {N N' : ℕ} (hN : 0 < N) (hN' : 0 < N') {h : G.GAf}
-    (hle : L.KN N' ≤ heckeLevel (L.KN N) h⁻¹) {W : Type} [AddCommGroup W] [Module ℂ W] (φ : G.GAf ⧸ L.KN N → W)
-    (x : G.GAf) :
-    ((hkIndex L N N' h : ℂ))⁻¹ • cosetTrace (hle.trans (heckeLevel_le _ _))
-        (φ ∘ cosetTr (L.KN N') (L.KN N) h⁻¹ fun _ hu => conj_mem_of_mem_heckeLevel (hle hu)) (x : G.GAf ⧸ L.KN N) =
-      Formalism.UG.hAct (L.KN N) (Formalism.UG.dosetInd ℂ (L.KN N) h⁻¹) (fun y => φ y) x := by
-  rw [cosetTrace_cosetTr_eq_hAct hle (relIndex_KN_ne_zero L hN hN'), ← Nat.cast_smul_eq_nsmul ℂ, smul_smul]
-  exact (congrArg (· • _) (inv_mul_cancel₀ (Nat.cast_ne_zero.2 (hkIndex_ne_zero L hN hN' h)))).trans (one_smul _ _)
 
 def mulPull {G₀ : GDatum} {gb : GBase G₀ ℂ} (X : GenModel gb N) (k c a b : ℕ) : Module.End ℂ (hodgeH (zs X k) a b) :=
   hodgePull ((Corr.mulBy X c).secondLeg_overComplex k) a b
@@ -551,9 +494,6 @@ theorem isHeckeOpZ_one (hN : N.Coprime p) (X : GenModel gb N) (k a b : ℕ) : Is
   rw [← mulPull_one X k a b]
   exact isHeckeOpZ_of_mul L hN X k (Nat.coprime_one_left p) (fun u => by simp) (fun v => by simp) a b
 
-theorem isHeckeOpZ_natScalar (hN : N.Coprime p) (X : GenModel gb N) (k : ℕ) {c : ℕ} (hc0 : c ≠ 0) (hc : c.Coprime p)
-    (a b : ℕ) : IsHeckeOpZ L X k (scalarAf G (natUnit p c hc0)) a b (mulPull X k c a b) :=
-  isHeckeOpZ_of_mul L hN X k hc (scalarAf_comm _) (actG_natScalar L c hc0) a b
 
 def IsHeckeOpFun (X : GenModel gb N) (k : ℕ) (f : G.GAf → ℂ) (a b : ℕ) (T : Module.End ℂ (hodgeH (zs X k) a b)) :
     Prop :=
@@ -568,8 +508,6 @@ theorem IsHeckeOpZ.isHeckeOpFun {X : GenModel gb N} {k : ℕ} {h : G.GAf} {a b :
     IsHeckeOpFun L X k (Formalism.UG.dosetInd ℂ (L.KN N) h⁻¹) a b T :=
   ⟨Unit, {()}, fun _ => h, fun _ => 1, fun _ => T, fun _ _ => H, by simp, by simp⟩
 
-theorem isHeckeOpFun_zero (X : GenModel gb N) (k a b : ℕ) : IsHeckeOpFun L X k 0 a b 0 :=
-  ⟨Unit, ∅, fun _ => 1, fun _ => 0, fun _ => 0, by simp, by simp, by simp⟩
 
 theorem IsHeckeOpFun.smul {X : GenModel gb N} {k : ℕ} {f : G.GAf → ℂ} {a b : ℕ}
     {T : Module.End ℂ (hodgeH (zs X k) a b)} (H : IsHeckeOpFun L X k f a b T) (z : ℂ) :
@@ -609,19 +547,7 @@ def CoversBad (D : Datum p) (N : ℕ) (S : Finset ℕ) : Prop :=
 def awayGrp (G : HTGroup p) (S : Finset ℕ) : Subgroup G.GAf :=
   ⨅ (v : AwayP p) (_ : ∃ q ∈ S, q.Prime ∧ (q : ℤ) ∈ v.1.asIdeal), (ubcMap (AfP.eval v)).ker
 
-theorem mem_awayGrp {S : Finset ℕ} {g : G.GAf} :
-    g ∈ awayGrp G S ↔ ∀ v : AwayP p, (∃ q ∈ S, q.Prime ∧ (q : ℤ) ∈ v.1.asIdeal) → ubcMap (AfP.eval v) g = 1 := by
-  simp only [awayGrp, Subgroup.mem_iInf, MonoidHom.mem_ker]
 
-theorem scalarAf_mem_awayGrp {S : Finset ℕ} {a : (AfP p)ˣ}
-    (ha : ∀ v : AwayP p, (∃ q ∈ S, q.Prime ∧ (q : ℤ) ∈ v.1.asIdeal) → AfP.eval v (a : AfP p) = 1) :
-    scalarAf G a ∈ awayGrp G S := by
-  refine mem_awayGrp.2 fun v hv => Subtype.ext (Prod.ext (Units.ext ?_) (Units.ext ?_))
-  · show Algebra.TensorProduct.map (AfP.eval v) (AlgHom.id ℚ G.C) ((a : AfP p) ⊗ₜ[ℚ] (1 : G.C)) = 1
-    rw [Algebra.TensorProduct.map_tmul, ha v hv, map_one]
-    rfl
-  · show AfP.eval v ((a : AfP p) * a) = 1
-    rw [map_mul, ha v hv, _root_.mul_one]
 
 def locUnit (v : AwayP p) (x : (v.1.adicCompletion ℚ)ˣ) : (AfP p)ˣ :=
   letI := Classical.decEq (AwayP p)
@@ -633,44 +559,11 @@ def locUnit (v : AwayP p) (x : (v.1.adicCompletion ℚ)ˣ) : (AfP p)ˣ :=
     inv_val := (RestrictedProduct.mulSingle_mul _ _ _ _).symm.trans
       (by rw [Units.inv_mul]; exact RestrictedProduct.mulSingle_one _ _) }
 
-theorem eval_locUnit_same (v : AwayP p) (x : (v.1.adicCompletion ℚ)ˣ) :
-    AfP.eval v (locUnit v x : AfP p) = x := by
-  letI := Classical.decEq (AwayP p)
-  exact RestrictedProduct.mulSingle_eq_same (fun w : AwayP p => w.1.adicCompletionIntegers ℚ) v _
 
-theorem eval_locUnit_of_ne {v w : AwayP p} (hw : w ≠ v) (x : (v.1.adicCompletion ℚ)ˣ) :
-    AfP.eval w (locUnit v x : AfP p) = 1 := by
-  letI := Classical.decEq (AwayP p)
-  exact RestrictedProduct.mulSingle_eq_of_ne (fun w : AwayP p => w.1.adicCompletionIntegers ℚ) _ hw
 
 variable (L : Link D G)
 
-theorem isIntAf_of_scalarAf_mem {a : (AfP p)ˣ} (ha : scalarAf G a ∈ latMonoid L) : IsIntAf (a : AfP p) := by
-  classical
-  haveI := D.freeLa
-  haveI := D.finLa
-  let b := Module.finBasis ℤ D.La
-  have hr : 0 < Module.finrank ℤ D.La := by
-    rw [D.rankLa]
-    exact Nat.mul_pos (Nat.mul_pos D.m_pos D.n_pos) Module.finrank_pos
-  have h := GlobalTheory.LKGeo.KNLevel.repr_isIntAf b _ (ha _ (GlobalTheory.LKGeo.KNLevel.bA_mem b ⟨0, hr⟩)) ⟨0, hr⟩
-  rwa [actG_scalarAf, map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_eq_same, smul_eq_mul,
-    _root_.mul_one] at h
 
-theorem scalarAf_locUnit_spec {S : Finset ℕ} {v : AwayP p} (hv : ∀ q ∈ S, q.Prime → (q : ℤ) ∉ v.1.asIdeal)
-    {x : (v.1.adicCompletion ℚ)ˣ} (hx : (x : v.1.adicCompletion ℚ) ∈ v.1.adicCompletionIntegers ℚ)
-    (hx' : ((x⁻¹ : (v.1.adicCompletion ℚ)ˣ) : v.1.adicCompletion ℚ) ∉ v.1.adicCompletionIntegers ℚ) (N : ℕ) :
-    scalarAf G (locUnit v x) ∈ awayGrp G S ∧ scalarAf G (locUnit v x) ∈ latMonoid L ∧
-      scalarAf G (locUnit v x) ∉ L.KN N := by
-  refine ⟨scalarAf_mem_awayGrp fun w ⟨q, hq, hqp, hw⟩ => eval_locUnit_of_ne (fun (e : w = v) => hv q hq hqp (by rw [← e]; exact hw)) x,
-    scalarAf_mem_latMonoid L fun w => ?_, fun hK => hx' ?_⟩
-  · by_cases e : w = v
-    · subst e; rwa [eval_locUnit_same]
-    · rw [eval_locUnit_of_ne e]; exact one_mem _
-  · have e : (scalarAf G (locUnit v x))⁻¹ = scalarAf G (locUnit v x⁻¹) :=
-      Subtype.ext (Prod.ext (Units.ext rfl) (Units.ext rfl))
-    have h := isIntAf_of_scalarAf_mem L (e ▸ mem_latMonoid_of_mem_KN L ((L.KN N).inv_mem hK)) v
-    rwa [eval_locUnit_same] at h
 
 def awaySupp (N : ℕ) (S : Finset ℕ) : Set G.GAf :=
   {g | ∃ h ∈ awayGrp G S, h ∈ latMonoid L ∧ g ∈ DoubleCoset.doubleCoset h⁻¹ (L.KN N : Set G.GAf) (L.KN N)}
@@ -685,20 +578,11 @@ def heckeAway (N : ℕ) (S : Finset ℕ) : Submodule ℂ (G.GAf → ℂ) :=
         · exact hf g h
       smul_mem' := fun c f hf g hg => hf g fun h => hg (by simp [h]) }
 
-theorem mem_heckeAway {N : ℕ} {S : Finset ℕ} {f : G.GAf → ℂ} :
-    f ∈ heckeAway L N S ↔ f ∈ Formalism.UG.Hecke ℂ (L.KN N) ∧ ∀ g, f g ≠ 0 → g ∈ awaySupp L N S := Iff.rfl
 
 theorem dosetInd_mem_heckeAway {N : ℕ} {S : Finset ℕ} {h : G.GAf} (hS : h ∈ awayGrp G S) (hΔ : h ∈ latMonoid L) :
     Formalism.UG.dosetInd ℂ (L.KN N) h⁻¹ ∈ heckeAway L N S :=
   ⟨Formalism.UG.Final.DosetIndMem _ _ _ _, fun _ hg => ⟨h, hS, hΔ, Set.mem_of_indicator_ne_zero hg⟩⟩
 
-theorem inv_mem_latMonoid_of_mem_awaySupp {N : ℕ} {S : Finset ℕ} {g : G.GAf} (hg : g ∈ awaySupp L N S) :
-    g⁻¹ ∈ latMonoid L := by
-  obtain ⟨h, -, hΔ, hg⟩ := hg
-  obtain ⟨a, ha, b, hb, rfl⟩ := DoubleCoset.mem_doubleCoset.1 hg
-  rw [mul_inv_rev, mul_inv_rev, inv_inv]
-  exact mul_mem (mem_latMonoid_of_mem_KN L ((L.KN N).inv_mem hb))
-    (mul_mem hΔ (mem_latMonoid_of_mem_KN L ((L.KN N).inv_mem ha)))
 
 end Away
 

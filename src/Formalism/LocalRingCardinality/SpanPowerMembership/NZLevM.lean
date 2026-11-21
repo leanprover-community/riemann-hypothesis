@@ -37,11 +37,6 @@ def gatNZ (S : Served H p) (T : Set ↥(R.Psi)) (r : ℕ) (lam : ↥(R.Psi) → 
     lev := fun _ => levB (placesOf S T r lam) (p_ne_Kn S)
     e := e }
 
-theorem gatNZ_eq (S : Served H p) (T : Set ↥(R.Psi)) (r : ℕ) (lam : ↥(R.Psi) → DomWeight (R.N 0))
-    (comp : Type) [Fintype comp] [DecidableEq comp] (e : ℕ) :
-    haveI : Fact p.Prime := ⟨S.prime⟩
-    haveI := charZero_Kn S
-    (gatNZ S T r lam comp e).M = (gatC (placesOf S T r lam) (p_ne_Kn S) comp).M := rfl
 
 theorem gatNZ_d (S : Served H p) (T : Set ↥(R.Psi)) (r : ℕ) (lam : ↥(R.Psi) → DomWeight (R.N 0))
     (comp : Type) [Fintype comp] [DecidableEq comp] (e : ℕ) : (gatNZ S T r lam comp e).d = Fintype.card comp := by
@@ -92,9 +87,6 @@ def gatTiesNZ : GatTies (withGatNZ D h1 rOf eOf bs) where
     @position_succ_eq_mul_frobenius _ D.host _ (served_of h) (bs u (D.what₂.places.resChar w)) _ D.eTau v s P hP hL σ hσ
   gat_lam := fun _ _ _ _ _ _ => rfl
 
-theorem withGatNZ_d (u w h) : ((withGatNZ D h1 rOf eOf bs).gat u w h).d = Fintype.card ((D.mem u).C.cls 0) := by
-  classical
-  exact gatNZ_d _ _ _ _ _ _
 
 open Classical in
 

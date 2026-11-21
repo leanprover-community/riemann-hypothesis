@@ -202,14 +202,6 @@ theorem span_ratForms (j : ℕ) (L : Subfield (FractionRing (D.ntw.O i))) :
       exact e ▸ h
   exact key x
 
-theorem ratForms_top (j : ℕ) : ratForms S j b (⊤ : Subfield (FractionRing (D.ntw.O i))) = ⊤ := by
-  refine eq_top_iff.2 fun x _ => ?_
-  have key : ∀ x : NX.KB S i b ⊗[S.Ks] NX.FmK S j, x ∈ ratForms S j b (⊤ : Subfield (FractionRing (D.ntw.O i))) := fun x => by
-    induction x using TensorProduct.induction_on with
-    | zero => exact zero_mem _
-    | add x y hx hy => exact add_mem hx hy
-    | tmul a f => exact tmul_mem_ratForms (Subfield.mem_top _) f
-  exact key x
 
 variable (iC b) (j : Fin D.R.m)
 

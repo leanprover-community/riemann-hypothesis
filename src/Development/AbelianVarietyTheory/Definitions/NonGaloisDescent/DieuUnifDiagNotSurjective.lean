@@ -25,9 +25,6 @@ namespace VarpiDivModule
 
 variable {p O S}
 
-theorem onLie_eq (H : VarpiDivModule p O S) (a : O) :
-    H.ι.onLie a = algebraMap O S a • LinearMap.id :=
-  LinearMap.ext fun x => H.lie_smul a x
 
 theorem ι_algebraMap [Algebra ℤ_[p] O] (H : VarpiDivModule p O S) (a : ℤ_[p]) :
     H.ι (algebraMap ℤ_[p] O a) = algebraMap ℤ_[p] (End H.G) a :=
@@ -66,10 +63,6 @@ def HasOHeight [Algebra ℤ_[p] O] (H : VarpiDivModule p O S) (n : ℕ) : Prop :
 def IsOneDimOfHeight [Algebra ℤ_[p] O] (H : VarpiDivModule p O S) (n : ℕ) : Prop :=
   H.HasDim 1 ∧ H.HasOHeight n
 
-theorem hasOHeight_iff [Algebra ℤ_[p] O] [Module.Free ℤ_[p] O] [Module.Finite ℤ_[p] O]
-    (H : VarpiDivModule p O S) (n : ℕ) :
-    H.HasOHeight n ↔ H.G.height = n * Module.finrank ℤ_[p] O :=
-  ⟨fun h => h.2.2, fun h => ⟨inferInstance, inferInstance, h⟩⟩
 
 theorem padicAction_onLie [Algebra ℤ_[p] S] (G : PDivGroup p S) (a : ℤ_[p]) (x : G.Lie) :
     (PDivGroup.padicAction G).onLie a x = algebraMap ℤ_[p] S a • x := by
@@ -193,10 +186,6 @@ theorem sigmaConj_mul (σ : R ≃+* R) (g h : GL (Fin n) R) (β : Matrix (Fin n)
     sigmaConj σ (g * h) β = sigmaConj σ g (sigmaConj σ h β) := by
   simp only [sigmaConj, _root_.mul_inv_rev, map_mul, Units.val_mul, Matrix.mul_assoc]
 
-theorem sigmaConj_mem (σ : R ≃+* R) (g : GL (Fin n) R) {ϖ : R} {β : Matrix (Fin n) (Fin n) R}
-    (hβ : β ∈ BsetInt n ϖ) : sigmaConj σ g β ∈ BsetInt n ϖ := by
-  obtain ⟨k₁, k₂, rfl⟩ := hβ
-  exact ⟨g * k₁, k₂ * sigmaGL σ g⁻¹, by simp only [sigmaConj, Units.val_mul, Matrix.mul_assoc]⟩
 
 variable (n) in
 
@@ -326,24 +315,7 @@ theorem finrank_dieu [Nontrivial R] (σ : R ≃+* R) {ϖ : R} (hϖ : σ ϖ = ϖ)
     Module.finrank R (dieu σ hϖ β).M = n :=
   Module.finrank_fin_fun R
 
-theorem dieu_unifDiag_F_zero (σ : R ≃+* R) {ϖ : R} (hϖ : σ ϖ = ϖ) :
-    (dieu σ hϖ ⟨unifDiag ϖ, unifDiag_mem ϖ⟩).F (Pi.single (0 : Fin n) (1 : R)) = ϖ • Pi.single (0 : Fin n) (1 : R) := by
-  funext k
-  change _ = ϖ * (Pi.single (0 : Fin n) (1 : R) : Fin n → R) k
-  rw [dieu_F]
-  simp only [mulVec, dotProduct, unifDiag_apply]
-  by_cases hk : k = 0
-  · subst hk; simp [Pi.single_apply]
-  · simp [Pi.single_apply, hk]
 
-theorem dieu_unifDiag_F_ne (σ : R ≃+* R) {ϖ : R} (hϖ : σ ϖ = ϖ) {i : Fin n} (hi : i ≠ 0) :
-    (dieu σ hϖ ⟨unifDiag ϖ, unifDiag_mem ϖ⟩).F (Pi.single i (1 : R)) = Pi.single i (1 : R) := by
-  funext k
-  rw [dieu_F]
-  simp only [mulVec, dotProduct, unifDiag_apply]
-  by_cases hk : k = i
-  · subst hk; simp [Pi.single_apply, hi]
-  · simp [Pi.single_apply, hk]
 
 theorem dieu_unifDiag_not_surjective (σ : R ≃+* R) {ϖ : R} (hϖ : σ ϖ = ϖ) (hu : ¬ IsUnit ϖ) :
     ¬ Function.Surjective (dieu σ hϖ ⟨unifDiag (n := n) ϖ, unifDiag_mem ϖ⟩).F := by
@@ -425,10 +397,6 @@ def dieuIsoOfConj (hϖ : σ ϖ = ϖ) (hreg : ϖ ∈ nonZeroDivisors R) (β β' :
       have : ϖ * y i = 0 := congrFun hy i
       exact (mem_nonZeroDivisors_iff.1 hreg |>.1) _ this⟩
 
-theorem nonempty_iso_of_rel (hϖ : σ ϖ = ϖ) (hreg : ϖ ∈ nonZeroDivisors R) {β β' : BsetInt n ϖ}
-    (h : (sigmaSetoid n σ ϖ) β β') : Nonempty (RelDieudonne.Iso (dieu σ hϖ β) (dieu σ hϖ β')) :=
-  let ⟨g, hg⟩ := h
-  ⟨dieuIsoOfConj hϖ hreg β β' g hg⟩
 
 end Conj
 

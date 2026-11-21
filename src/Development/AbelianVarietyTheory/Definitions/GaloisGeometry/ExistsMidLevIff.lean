@@ -289,7 +289,6 @@ abbrev Base : Type := ∀ β : St.Ch, basePts (St.K β).lev
 
 def move (k : St.Base) : StepCharts C i hi := { St with K := fun β => moveChart (St.K β) (k β) }
 
-theorem move_y (k : St.Base) (c : C.cls i) : (St.move k).y c = St.y c * basePtU (k (St.chOf c)) := rfl
 
 end StepCharts
 
@@ -649,8 +648,6 @@ def moveCharts (k : ChainBase St) : ChainCharts D u μ := fun i hi => (St i hi).
 def AdData.unmove {k : ChainBase St} (B : AdData t u μ (moveCharts St k)) : AdData t u μ St :=
   ⟨B.crd, B.iA, B.q, B.pt, B.yb, B.ib, B.fb, B.y0⟩
 
-theorem AdPins.unmove_iff {k : ChainBase St} (B : AdData t u μ (moveCharts St k)) : AdPins B.unmove dtU ↔ AdPins B dtU :=
-  ⟨fun h => { h with }, fun h => { h with }⟩
 
 def AdDatum.unmove {k : ChainBase St} (Xi : AdDatum (moveCharts St k)) : AdDatum St := fun i hi β β' x x' =>
   Xi i hi β β' (x * basePtU (k i _ β)) (x' * basePtU (k (i + 1) hi β'))
@@ -710,10 +707,6 @@ def AdLawB (k : ChainBase St) : Prop := ∃ XiAd muT, AdLawAtB A dtU a k XiAd mu
 
 variable {A dtU a}
 
-theorem adLawAtB_one_iff {XiAd : AdDatum St} {muT : ℕ → (AfE D.host.F D.host.E)ˣ → ℂ} :
-    AdLawAtB A dtU a (fun _ _ _ => 1) XiAd muT ↔ AdLawAt A dtU a XiAd muT :=
-  ⟨fun h => { h with mu_cls := fun i hi j hj c => by simpa using h.mu_cls i hi j hj c },
-    fun h => { h with mu_cls := fun i hi j hj c => by simpa using h.mu_cls i hi j hj c }⟩
 
 theorem latK_basePt {i : ℕ} {hi : i ≤ D.R.m} {β : (St i hi).Ch} (k : basePts ((St i hi).K β).lev)
     (x : GL (Fin (D.R.N i)) (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F)) :

@@ -157,31 +157,8 @@ theorem exists_laws (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l
       (hU σ hσ).2.2.2.1 a n hD (fun τ _ h0 => ha τ _ (by omega)) hn (fun k γ _ => (hU σ hσ).2.1 k _ γ)
     exact key ⟨hP.1, hP.2⟩
 
-theorem exists_laws_of_signature (h1 : ∃ D₁ : Datum H, D₁.p = 1 ∧ D₁.q = 0) (p q : ℕ) (hpq : 1 ≤ p + q) :
-    ∃ (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ (Dw.p + Dw.q)),
-      Dw.p = p ∧ Dw.q = q ∧ Nonempty (Comp Xo c) ∧ Laws U (Real.sqrt H.d) := by
-  obtain ⟨D, hp, hq, -⟩ := GlobalTheory.CompRat.exists_splitLat_of_signature E H p q h1
-  have h : 1 ≤ D.p + D.q := by omega
-  obtain ⟨l, hA, hg, -⟩ := GlobalTheory.exists_level_goodAt_all_primes_and_idx _ H 1 one_pos
-  obtain ⟨Xo⟩ := GlobalTheory.Moduli.moduli_scheme_exists _ _ D l h
-  obtain ⟨c₀⟩ : Nonempty (Coeff l) := inferInstance
-  obtain ⟨-, c, -, hc⟩ := GlobalTheory.GeomIrr.compNe_and_exists_fnAlgClosed _ _ D l Xo c₀ h
-  obtain ⟨hZ, -⟩ := GlobalTheory.GeomIrr.compNe_and_exists_fnAlgClosed _ _ D l Xo c h
-  obtain ⟨U, hU⟩ := exists_laws D l Xo c h hA hg (hc c le_rfl) h1
-  exact ⟨D, l, Xo, c, U, hp, hq, hZ, hU⟩
 
-theorem exists_laws_cyclotomic (p q : ℕ) (hpq : 1 ≤ p + q) :
-    ∃ (Dw : Datum GlobalTheory.CM.CyclotomicTwentyEight.host) (l : Level GlobalTheory.CM.CyclotomicTwentyEight.host) (Xo : Moduli Dw l) (c : Coeff l)
-      (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ (Dw.p + Dw.q)) (x : ℝ),
-      Dw.p = p ∧ Dw.q = q ∧ Nonempty (Comp Xo c) ∧ Laws U x := by
-  obtain ⟨D, l, Xo, c, U, h⟩ := exists_laws_of_signature GlobalTheory.CM.CyclotomicTwentyEight.exists_datum p q hpq
-  exact ⟨D, l, Xo, c, U, _, h⟩
 
-theorem archEx_of_definite {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ}
-    {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} {x : ℝ} (h : Laws U x) (hq : Dw.q = 0) : ArchEx U x := fun Z τ => by
-  have hp : 1 ≤ Dw.p := by have := h.pos; omega
-  obtain ⟨s⟩ := GlobalTheory.FlatLine.Definite.nonempty_flatSec U x hq hp h.good h.unf h.geo Z τ
-  exact ⟨.ofConst s⟩
 
 section Steps
 
@@ -195,10 +172,6 @@ theorem htValAt_nonempty (la : HeightOneSpectrum (𝓞 c.F)) {T : CDVR} {io : c.
   obtain ⟨p, hp, ha, k, y, h⟩ := (GlobalTheory.CompHt.exists_isHTFrameCp_and_nonempty E H Dw l Xo c).1 T io y₀ hy
   exact ⟨_, p, hp, ha, k, y, h, rfl⟩
 
-theorem htValOn_nonempty (h : Laws U x) (Z : Comp Xo c) (la : HeightOneSpectrum (𝓞 c.F)) : (htValOn Z la).Nonempty := by
-  obtain ⟨_, ⟨q, T, io, e, ho, y, hy, η, hη, rfl⟩, rfl⟩ := (hasPts h Z).2 la
-  obtain ⟨w, hw⟩ := htValAt_nonempty la y hy.1
-  exact ⟨w, T, io, e, y, ho, hy, hw⟩
 
 theorem finConst_of (h₁ : HTConst U x) (h₂ : HTShift Xo c) : FinConst U x := fun Z τ s la => by
   obtain ⟨ρ, hρ⟩ := h₁ Z τ s la
@@ -215,32 +188,9 @@ theorem finConst_of (h₁ : HTConst U x) (h₂ : HTShift Xo c) : FinConst U x :=
     rw [← EReal.coe_add, EReal.coe_eq_coe_iff] at h3
     rw [EReal.coe_eq_coe_iff, h3]; ring
 
-theorem flatDegree_of (h : Laws U x) {om : ℝ} (h₁ : ArchEx U x) (h₂ : FinConst U x) (h₃ : FrameDeg U x om) :
-    FlatDegree U x om := fun Z τ => by
-  constructor
-  · obtain ⟨s⟩ := h₁ Z τ
-    choose ρ hρ using h₂ Z τ s
-    let t : ConstSec U x Z (flatWt Dw τ) 0 :=
-      { s with
-        rho_vw := ρ
-        val_fin := fun w => image_eq_singleton_iff.2 ⟨(hasPts h Z).2 w, fun v hv => by simpa using hρ w v hv⟩
-        finite_rho := (h₃ Z τ s ρ hρ).1 }
-    exact ⟨t.relat _ (by simpa using finite_flDefect_vw τ)⟩
-  · intro s
-    have h4 := (h₃ Z τ (.ofConst s.toFrame) s.toFrame.rho_vw fun la w hw => by
-      exact (s.toFrame.val_eq hw).trans (by simp)).2
-    rw [s.deg_eq_toFrame, neg_neg, flatDegVal, ← h4]
-    rfl
 
 end Steps
 
-theorem exists_laws_record (D : Formalism.BasicNotions.D7) (p q : ℕ) (hpq : 1 ≤ p + q) :
-    GlobalTheory.IndefiniteRowSideFullHecke.EigenvectorLieDegree.IsHostField (hostOfRecord D) ∧
-    ∃ (Dw : Datum (hostOfRecord D)) (l : Level (hostOfRecord D)) (Xo : Moduli Dw l) (c : Coeff l)
-      (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ (Dw.p + Dw.q)),
-      Dw.p = p ∧ Dw.q = q ∧ Nonempty (Comp Xo c) ∧ Laws U (Real.sqrt (hostOfRecord D).d) :=
-  ⟨GlobalTheory.FlatRow.isHostField D _ rfl,
-    exists_laws_of_signature (GlobalTheory.RankOneDatum.exists_datum_of_rt D _ rfl rfl) p q hpq⟩
 
 end GlobalTheory.FlatCore.Model
 

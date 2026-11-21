@@ -52,20 +52,6 @@ theorem evS_tens (ψ : ∀ i, G i → K) (x : ∀ i, MonoidAlgebra K (G i)) :
 
 variable {L : I → Type} [∀ i, Fintype (L i)] (E : ∀ i, L i → MonoidAlgebra K (G i)) (S : (∀ i, L i) → Prop)
 
-theorem evS_eSum (ψ : ∀ i, G i → K) (b : ∀ i, L i) (hb : S b)
-    (hδ : ∀ i l, evS (ψ i) (E i l) = if l = b i then 1 else 0) :
-    evS (fun g : ∀ i, G i => ∏ i, ψ i (g i)) (eSum E S) = 1 := by
-  unfold eSum
-  rw [evS_sum, Finset.sum_eq_single b]
-  · rw [if_pos hb, evS_tens]
-    exact Finset.prod_eq_one fun i _ => by rw [hδ, if_pos rfl]
-  · intro a _ hab
-    split_ifs
-    · rw [evS_tens]
-      obtain ⟨i, hi⟩ := Function.ne_iff.mp hab
-      exact Finset.prod_eq_zero (Finset.mem_univ i) (by rw [hδ, if_neg hi])
-    · exact evS_zero _
-  · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem lift_scalar {Γ V : Type} [Group Γ] [Finite Γ] [AddCommGroup V] [Module K V] (Ψ : Γ →* K)
     (F : Γ →* Module.End K V) (hF : ∀ g, F g = Ψ g • 1) (x : MonoidAlgebra K Γ) :

@@ -60,6 +60,5 @@ def dlogK : ℝ :=
   (deriv (DirichletCharacter.LFunction ((quadraticChar (ZMod H.d)).ringHomComp (Int.castRingHom ℂ))) 1 /
     DirichletCharacter.LFunction ((quadraticChar (ZMod H.d)).ringHomComp (Int.castRingHom ℂ)) 1).re
 
-theorem isHalfPt_iff (D : D7) (Λ : AddSubgroup ℂ) (t : ℂ) : IsHalfPt D.host.d Λ t ↔ GL3Theta.IsTwoTorsionPointUnkilled D Λ t := Iff.rfl
 
 end GlobalTheory.Mem.Per

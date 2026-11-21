@@ -96,13 +96,6 @@ theorem rowShift_minor_lin (hΦ : ∀ x, Φ (X x) = ∑ q, MvPolynomial.C (w x.1
       rw [e2]
   · simp
 
-theorem rowShift_monomial_eq_self (hΦ : ∀ x, Φ (X x) = ∑ q, MvPolynomial.C (w x.1 q) * X (lt x q))
-    (hlt : ∀ ρ c q, keyL (lt (ρ, c) q) = (σ0, c.val, colf ρ q)) (σ : T) (i i' : Fin (r σ)) (hi : i' < i) (t : C)
-    (e : ℕ → ℕ) : rowShift r n C σ i i' t (Φ (monP C N N' e)) = Φ (monP C N N' e) := by
-  unfold monP
-  rw [map_prod, map_prod]
-  refine Finset.prod_congr rfl fun k _ => ?_
-  rw [map_pow, map_pow, rowShift_minor_lin Φ σ0 w lt colf hΦ hlt σ i i' hi t k]
 
 end Atom
 

@@ -63,15 +63,6 @@ theorem rootIdx_bijective (D : Datum H) : Function.Bijective (HodgeCpt.rootIdx D
       congr 1
       exact Fin.ext (by show D.p + D.q - 1 - (D.p + D.q - 1 - k) = k; omega)
 
-theorem rootIdx_first_omega (D : Datum H) (τ : CMType H) (hq : 0 < D.q) :
-    HodgeCpt.rootIdx D (τ, ⟨D.p, by omega⟩) = ⟨.inr τ, ⟨D.q - 1, by show _ < D.q; omega⟩⟩ ∧
-      HodgeCpt.rootSgn D (τ, ⟨D.p, by omega⟩) = -1 := by
-  constructor
-  · unfold HodgeCpt.rootIdx
-    rw [dif_neg (by simp)]
-    congr 1
-    exact Fin.ext (by show D.p + D.q - 1 - D.p = D.q - 1; omega)
-  · simp [HodgeCpt.rootSgn]
 
 variable {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
   {Y : Model Xo c β} {S : Finset ℕ} {Ω : Type} [Field Ω] {K : Type} [Fintype K] {J : K → Type}
@@ -86,9 +77,6 @@ theorem finrank_Vgen (s) : Module.finrank Ω (𝔐.Vgen s) = labelRk D s := by
   obtain ⟨U, hU, b, hb, hfr⟩ := V_isVB 𝔐 s ⟨genPt 𝔐.ξ, specializes_rfl⟩ trivial
   rw [← hb, finrank_span_eq_card (hfr _ trivial hU).1, Fintype.card_fin]
 
-theorem V_eq_dR (s) (q : Cpt 𝔐.ξ) (h : ∀ p ∈ S, ¬ InFibre 𝔐.ξ p q) : 𝔐.V s q = 𝔐.dR s q := by
-  unfold HodgeCpt.V Lat.patch
-  rw [if_neg (by rintro ⟨p, hp, hq⟩; exact h p hp hq)]
 
 theorem flagStep_top {F : Type} [AddCommGroup F] [Module Ω F] {r : ℕ} (b : Fin r → F) :
     flagStep Ω b r = Submodule.span Ω (Set.range b) := by
@@ -112,9 +100,6 @@ theorem flag_span (Fl : 𝔐.Flag) (s) : Submodule.span Ω (Set.range (Fl.b s)) 
   have h4 := (span_span_regAt _ _).symm.trans (h3.trans (span_span_regAt _ _))
   rw [← flagStep_top, ← hb', flagStep_top, ← hb, h4]
 
-theorem flag_deg_pos (Fl : 𝔐.Flag) : 0 < Fl.deg := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, h, _⟩ := Fl.generic
-  exact h
 
 theorem rootLat_gen {𝔐 : HodgeCpt Y S y} (Fl : 𝔐.Flag) (r) (q : Cpt 𝔐.ξ) (t : Ω)
     (ht : ((𝔐.V (HodgeCpt.rootIdx D r).1).gr (Fl.b (HodgeCpt.rootIdx D r).1) (HodgeCpt.rootIdx D r).2).IsGenAt q t) :

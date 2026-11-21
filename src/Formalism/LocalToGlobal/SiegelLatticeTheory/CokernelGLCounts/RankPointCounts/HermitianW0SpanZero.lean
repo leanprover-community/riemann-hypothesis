@@ -36,9 +36,6 @@ theorem hermitian_W0_span_zero (t : Term V M r) {w m : V} (hw : w ∈ H.W0 t.f t
     Submodule.span_le.2 (by rintro _ ⟨i, rfl⟩; exact MMfam_mem_sup H t i)
   exact hw m (hle hm)
 
-theorem hermitian_span_W0_zero (t : Term V M r) {w m : V} (hw : w ∈ H.W0 t.f t.f')
-    (hm : m ∈ Submodule.span E (Set.range (H.MMfam t))) : H.h m w = 0 := by
-  rw [H.h_herm, hermitian_W0_span_zero H t hw hm, map_zero]
 
 def psiSharp (t₁ t₂ : Term V M r) (ψ : ↥(H.W0 t₁.f t₁.f') ≃ₗ[E] ↥(H.W0 t₂.f t₂.f'))
     (hψ : ∀ x y, H.h (ψ x) (ψ y) = H.h x y) (N₁ N₂ : Submodule M.L.O V)
@@ -112,12 +109,6 @@ def psiTilde (t₁ t₂ : Term V M r) (ψ : ↥(H.W0 t₁.f t₁.f') ≃ₗ[E] �
       rw [hN (ψ.symm ⟨y.1, y.2.1⟩), ψ.apply_symm_apply]
       exact hy)
 
-theorem psiTilde_mk (t₁ t₂ : Term V M r) (ψ : ↥(H.W0 t₁.f t₁.f') ≃ₗ[E] ↥(H.W0 t₂.f t₂.f'))
-    (hψ : ∀ x y, H.h (ψ x) (ψ y) = H.h x y) (N₁ N₂ : Submodule M.L.O V)
-    (hN₁ : N₁ ≤ (H.W0 t₁.f t₁.f').restrictScalars M.L.O) (hN₂ : N₂ ≤ (H.W0 t₂.f t₂.f').restrictScalars M.L.O)
-    (hN : ∀ x : ↥(H.W0 t₁.f t₁.f'), (x : V) ∈ N₁ ↔ (ψ x : V) ∈ N₂) (x : ↥(ThSharp H t₁ N₁)) :
-    psiTilde H t₁ t₂ ψ hψ N₁ N₂ hN₁ hN₂ hN (dwMk H t₁ N₁ x) =
-      dwMk H t₂ N₂ (psiSharp H t₁ t₂ ψ hψ N₁ N₂ hN₁ hN₂ hN x) := rfl
 
 end Psi
 

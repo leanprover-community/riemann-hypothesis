@@ -173,9 +173,6 @@ theorem Change.sum_mul {S : ThetaSys o Ω} (c : Change S) (l i : S.J) :
     ∑ j, c.M l j * c.M' j i = if l = i then 1 else 0 :=
   Matrix.mul_apply.symm.trans ((congrFun (congrFun c.mul_inv l) i).trans Matrix.one_apply)
 
-theorem Change.sum_mul' {S : ThetaSys o Ω} (c : Change S) (l i : c.J) :
-    ∑ j, c.M' l j * c.M j i = if l = i then 1 else 0 :=
-  Matrix.mul_apply.symm.trans ((congrFun (congrFun c.inv_mul l) i).trans Matrix.one_apply)
 
 theorem zeta_ne_zero (S : ThetaSys o Ω) (e : ℕ) : algebraMap o Ω (S.ζ ^ e) ≠ 0 :=
   (((S.prim.isUnit (level_ne_zero S)).pow e).map _).ne_zero

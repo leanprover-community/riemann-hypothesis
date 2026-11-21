@@ -142,10 +142,6 @@ theorem det_one' {R : Type} [CommRing R] (y : GL (Fin 1) R) :
     ((Matrix.GeneralLinearGroup.det y : Rˣ) : R) = (y : Matrix (Fin 1) (Fin 1) R) 0 0 := by
   simp [Matrix.det_fin_one]
 
-theorem det_two' {R : Type} [CommRing R] (y : GL (Fin 2) R) (h : (y : Matrix (Fin 2) (Fin 2) R) 1 0 = 0) :
-    ((Matrix.GeneralLinearGroup.det y : Rˣ) : R) =
-      (y : Matrix (Fin 2) (Fin 2) R) 0 0 * (y : Matrix (Fin 2) (Fin 2) R) 1 1 := by
-  simp [Matrix.det_fin_two, h]
 
 theorem det_surj_one {R : Type} [CommRing R] (u : Rˣ) :
     ∃ y : GL (Fin 1) R, Matrix.GeneralLinearGroup.det y = u :=
@@ -166,60 +162,7 @@ theorem det_blk (x y : Gn g 1) : Matrix.GeneralLinearGroup.det (blk 1 1 2 x y) =
     rw [toG, dif_pos hu]
   rw [this]; ext; rw [← hd]; simp
 
-theorem isParVec_tame (χ χ' : (ZMod g)ˣ →* ℂˣ) (v : ℂ) (hv : v ≠ 0) :
-    IsParVec (detRep 2 (tame χ)) 1 1 χ' v ↔ χ' = χ := by
-  constructor
-  · rintro ⟨-, -, h⟩
-    ext u
-    obtain ⟨y, rfl⟩ := det_surj_one u
-    have := h y
-    rw [tame_lift, det_blk, map_one, one_mul, smul_eq_mul] at this
-    exact (mul_right_cancel₀ hv this).symm
-  · rintro rfl
-    refine ⟨tame_mem_fixK1 _ _, fun u h1 h2 h3 => ?_, fun y => ?_⟩
-    · have e1 := congrFun (congrFun h2 0) 0
-      have e2 := congrFun (congrFun h3 0) 0
-      have e3 := h1 1 0 (by simp) (by simp)
-      have : Matrix.GeneralLinearGroup.det u = 1 := by
-        ext; rw [det_two' u e3]
-        simp [tl, br, Formalism.MainNotions.ArithmeticCylinders.entN] at e1 e2
-        simp [e1, e2]
-      rw [tame_lift, this]; simp
-    · rw [tame_lift, det_blk, map_one, one_mul, smul_eq_mul]
 
-theorem mapsToInd_det (μ ν₁ ν₂ : ℚ_[g]ˣ →* ℂˣ) :
-    MapsToInd (detRep 2 μ) 1 1 (detRep 1 1) ν₁ ν₂ ↔ ν₁ = μ ∧ ν₂ = μ := by
-  constructor
-  · rintro ⟨Λ, h0, h⟩
-    have hΛ : Λ 1 ≠ 0 := fun e => h0 (by ext; simpa using e)
-    have key : ∀ a d : ℚ_[g]ˣ, μ a * μ d = ν₁ a * ν₂ d := by
-      intro a d
-      let p : GL (Fin 2) ℚ_[g] := Matrix.GeneralLinearGroup.mkOfDetNeZero !![(a : ℚ_[g]), 0; 0, d] (by
-        simp [Matrix.det_fin_two])
-      have hp : Matrix.GeneralLinearGroup.det p = a * d := by ext; simp [p, Matrix.det_fin_two]
-      have hs : ∀ u : ℚ_[g]ˣ, Matrix.GeneralLinearGroup.det (Matrix.GeneralLinearGroup.scalar (Fin 1) u) = u :=
-        fun u => by ext; simp
-      have := h p (Matrix.GeneralLinearGroup.scalar (Fin 1) a) (Matrix.GeneralLinearGroup.scalar (Fin 1) d)
-        (fun i j hj hi => by fin_cases i <;> fin_cases j <;> simp_all [p])
-        (fun i j => by fin_cases i; fin_cases j; simp [p, Formalism.MainNotions.ArithmeticCylinders.entN])
-        (fun i j => by fin_cases i; fin_cases j; simp [p, Formalism.MainNotions.ArithmeticCylinders.entN]) 1
-      simp only [detRep, chRep_apply, MonoidHom.comp_apply, hp, hs, MonoidHom.one_apply, Units.val_one, one_mul,
-        mul_one, smul_eq_mul] at this
-      have e : Λ (μ (a * d) : ℂ) = (μ (a * d) : ℂ) * Λ 1 := by
-        simpa using Λ.map_smul (μ (a * d) : ℂ) 1
-      rw [e] at this
-      rw [← map_mul]; exact Units.ext (mul_right_cancel₀ hΛ this)
-    constructor
-    · ext a; have := key a 1; simp at this; rw [this]
-    · ext a; have := key 1 a; simp at this; rw [this]
-  · rintro ⟨rfl, h⟩
-    subst h
-    refine ⟨LinearMap.id, fun e => by simpa using LinearMap.congr_fun e 1, fun p x y h1 h2 h3 v => ?_⟩
-    have hp : Matrix.GeneralLinearGroup.det p = Matrix.GeneralLinearGroup.det x * Matrix.GeneralLinearGroup.det y := by
-      ext
-      rw [det_two' p (h1 1 0 (by simp) (by simp)), Units.val_mul, det_one', det_one', h2, h3]
-      simp [Formalism.MainNotions.ArithmeticCylinders.entN]
-    simp [detRep, hp]
 
 theorem exists_gen (L : LabelDatum g) : ∃ u : (ZMod g)ˣ, algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g) u = L.gen 1 ∧
     orderOf u = g - 1 := by
@@ -361,11 +304,6 @@ theorem hasLab_tame (L : LabelDatum g) {χ : (ZMod g)ˣ →* ℂˣ} {c : ZMod g}
   · rintro rfl
     exact ⟨1, tame_mem_fixK1 _ _, by rw [key, ip_dch]; simp⟩
 
-theorem isCharLab_unique (L : LabelDatum g) {χ : (ZMod g)ˣ →* ℂˣ} {c c' : ZMod g} (h : IsCharLab L χ c)
-    (h' : IsCharLab L χ c') : c = c' := by
-  obtain ⟨u, hu, -⟩ := exists_gen L
-  exact (algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g)).injective
-    (L.teich_inj _ _ (by simpa using h.1) (by simpa using h'.1) ((h.2 u hu).symm.trans (h'.2 u hu)))
 
 theorem isCharLab_exists (L : LabelDatum g) (χ : (ZMod g)ˣ →* ℂˣ) : ∃ c, IsCharLab L χ c := by
   obtain ⟨u, hu, ho⟩ := exists_gen L
@@ -388,20 +326,7 @@ theorem hasLab_monic (L : LabelDatum g) (π : Representation ℂ (GL (Fin n) ℚ
   obtain ⟨v, -, hv⟩ := h
   simp [GLq.Model.eSerC_zero L n f hf, actK] at hv
 
-theorem mapsToInd_of_too_large (μ μ' ν₁ ν₂ : ℚ_[g]ˣ →* ℂˣ) : MapsToInd (detRep 1 μ) 1 1 (detRep 1 μ') ν₁ ν₂ := by
-  refine ⟨LinearMap.id, fun e => by simpa using LinearMap.congr_fun e 1, fun p x y _ _ h3 v => ?_⟩
-  have h := h3 0 0
-  have := y.det_ne_zero
-  simp [Formalism.MainNotions.ArithmeticCylinders.entN] at h
-  simp [Matrix.det_fin_one, h] at this
 
-theorem actTop_tame (χ : (ZMod g)ˣ →* ℂˣ) (x : Gn g 1) (v : ℂ) :
-    actTop (detRep 2 (tame χ)) 1 1 (MonoidAlgebra.single x 1) v = dch χ x * v := by
-  simp [actTop, LinearMap.sum_apply, tame_lift, det_blk, Finsupp.single_apply, dch]
 
-theorem hasLab_inhabited (χ : (ZMod g)ˣ →* ℂˣ) :
-    ∃ f, HasLab (GLq.Model.datum g) (detRep 1 (tame χ)) f := by
-  obtain ⟨c, hc⟩ := isCharLab_exists (GLq.Model.datum g) χ
-  exact ⟨_, (hasLab_tame _ hc χ).2 rfl⟩
 
 end GlobalTheory.GLp.Model

@@ -130,33 +130,8 @@ theorem rkK_latCo (h : HasGram N) (L : Submodule (𝓞 K) V) : rkK (latCo N L) =
 
 variable [StarRing K]
 
-theorem zl_latCo {b : Basis (Fin (cDim N)) K V} (h1 : toCo N = b.equivFun) (L : Submodule (𝓞 K) V) :
-    zl (realize (Pi.basisFun K (Fin (cDim N))) (frameCo N)) (latCo N L) = zl (realize b (frameCo N)) L := by
-  ext y
-  have e : ∀ x, realize (Pi.basisFun K (Fin (cDim N))) (frameCo N) (toCo N x) = realize b (frameCo N) x := fun x => by
-    rw [h1]; rfl
-  constructor
-  · rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩; exact ⟨x, hx, (e x).symm⟩
-  · rintro ⟨x, hx, rfl⟩; exact ⟨_, ⟨x, hx, rfl⟩, e x⟩
 
-theorem muDef_latCo (h : HasGram N) {L : Submodule (𝓞 K) V} (hL : L.FG) :
-    muDef (Pi.basisFun K (Fin (cDim N))) (frameCo N) (latCo N L) = slope_sq N L := by
-  obtain ⟨b, hb, h1, -⟩ := exists_basis_co h
-  rw [slope_sq_eq hb hL, muDef, muDef, Formalism.HN.slope, Formalism.HN.slope, zl_latCo h1]
 
-theorem muMaxDef_latCo (h : HasGram N) {L : Submodule (𝓞 K) V} (hL : L.FG) (h0 : L ≠ ⊥) :
-    muMaxDef (Pi.basisFun K (Fin (cDim N))) (frameCo N) (latCo N L) = slopeMax_sq N L := by
-  obtain ⟨b, hb, h1, -⟩ := exists_basis_co h
-  rw [(slopeMax_slopeMin_eq hb hL h0).1, muMaxDef, muMaxDef, muMax, muMax]
-  congr 4
-  ext t
-  constructor
-  · rintro ⟨M, hM, hM0, rfl⟩
-    obtain ⟨M, rfl⟩ := (latCo_bijective h).2 M
-    exact ⟨M, (latCo_le_iff h).1 hM, mt (latCo_eq_bot_iff h).2 hM0, by rw [Formalism.HN.slope, Formalism.HN.slope, zl_latCo h1]⟩
-  · rintro ⟨M, hM, hM0, rfl⟩
-    exact ⟨latCo N M, (latCo_le_iff h).2 hM, mt (latCo_eq_bot_iff h).1 hM0,
-      by rw [Formalism.HN.slope, Formalism.HN.slope, zl_latCo h1]⟩
 
 end Coord
 
@@ -205,14 +180,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
 
 def compMean (g : Comp Xo c → ℝ) : ℝ := (∑ᶠ Z, g Z) / (Nat.card (Comp Xo c) : ℝ)
 
-theorem compMean_eq {g : Comp Xo c → ℝ} (h : ∀ Z Z', g Z = g Z') (Z : Comp Xo c) : compMean g = g Z := by
-  haveI := CompFin.finite_comp Xo c
-  haveI := Fintype.ofFinite (Comp Xo c)
-  haveI : Nonempty (Comp Xo c) := ⟨Z⟩
-  have hc : (Fintype.card (Comp Xo c) : ℝ) ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
-  simp only [compMean, fun Z' => h Z' Z, finsum_eq_sum_of_fintype, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
-    Nat.card_eq_fintype_card]
-  field_simp
 
 section Short
 
@@ -226,13 +193,7 @@ def cStarInf (G : WTZ E) : ℝ := sInf (cStarSet U x V dict G)
 
 variable {U x V dict} {G : WTZ E}
 
-theorem nonneg_of_mem_cStarSet {t : ℝ} (h : t ∈ cStarSet U x V dict G) : 0 ≤ t := by
-  obtain ⟨n, w, abelian₂, hw, rfl⟩ := h
-  rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [cStar]
-  · exact Real.log_nonneg (one_le_mul_of_one_le_of_one_le (Real.one_le_sqrt.2 (by exact_mod_cast hn)) hw.one_le)
 
-theorem cStarInf_nonneg : 0 ≤ cStarInf U x V dict G := Real.sInf_nonneg fun _ => nonneg_of_mem_cStarSet
 
 end Short
 

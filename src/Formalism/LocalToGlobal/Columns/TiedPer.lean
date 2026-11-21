@@ -240,8 +240,6 @@ def perDua : GSD.Dua (ptGSD W ΛM) (rowGSD W ΛM) where
 
 variable (σ₀ : X.K →+* ℂ) (hσ : ∀ x : X.K, σ₀ (star x) = starRingEnd ℂ (σ₀ x)) (hM : (rowGSD W ΛM).Ok)
 
-theorem per_jMCL_eq (z : Fin ((rowGSD W ΛM).hDim hM) → ℂ) :
-    jMCL W ΛM σ₀ hσ hM z = (perDua W ΛM).jOf (ptEv W ΛM σ₀ hσ) ((rowGSD W ΛM).hB hM) z := rfl
 
 theorem per_jMC_mem_Fi (hX : X.Ok) (z : Fin ((rowGSD W ΛM).hDim hM) → ℂ) :
     jMCL W ΛM σ₀ hσ hM z ∈ (ptEv W ΛM σ₀ hσ).Fi :=

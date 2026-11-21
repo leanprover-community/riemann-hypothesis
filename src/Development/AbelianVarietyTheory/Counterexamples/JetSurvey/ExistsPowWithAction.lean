@@ -31,16 +31,6 @@ theorem isMonHom_of_coord (pD : IsPowDeg D' D n) (f : D.P.A ⟶ D.P.A) [IsMonHom
 
 end Unique
 
-theorem powOActSt_iff : PowOActSt ↔
-    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (V : Type) [CommRing V] [IsDomain V]
-      [IsDiscreteValuationRing V] (t : SAB H (Sp V)) (P : PELUnif (maximalIdeal V) t)
-      (n : ℕ) (D' : DegData V (maximalIdeal V)) (pD : IsPowDeg D'.toPre P.D.toPre n),
-      ∃ (M : Module (𝓞 E) D'.toPre.X) (oD' : @DegPre.OAct V _ _ (𝓞 E) _ H.starRing D'.toPre M),
-        (∀ (a : 𝓞 E) (x : D'.toPre.X) (i : Fin n),
-          pD.xe (M.toDistribMulAction.toMulAction.toSMul.smul a x) i =
-            P.mod.toDistribMulAction.toMulAction.toSMul.smul a (pD.xe x i)) ∧
-        ∀ (a : 𝓞 E) (i : Fin n), (letI := H.starRing; oD'.onB.act a) ≫ pD.pw.pr i =
-          pD.pw.pr i ≫ (letI := H.starRing; P.oD.onB.act a) := Iff.rfl
 
 theorem premises_met (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Δ : Datum H)
     (h : 1 ≤ Δ.p + Δ.q) (n : ℕ) :

@@ -193,26 +193,9 @@ abbrev CDV (W : Type) [CommRing W] [IsDomain W] [IsLocalRing W] : Prop := Global
 abbrev SplitAt {W : Type} [CommRing W] [IsLocalRing W] (t : SAB H (Sp W)) : Prop :=
   GlobalTheory.LN.SplitOver t.G (IsLocalRing.maximalIdeal W)
 
-theorem splitAt_iff {W : Type} [CommRing W] [IsLocalRing W] (t : SAB H (Sp W)) : SplitAt t ↔
-    ∃ S : SplitExt (Sp (IsLocalRing.ResidueField W)),
-      S.IsGt ((Over.pullback (spMap (IsLocalRing.residue W))).obj t.G) := Iff.rfl
 
 def IsPol {K : Type} [Field K] (t : SAB H (Sp K)) : Prop := IsProper t.G.hom ∧ RelAmple t.G t.PP.L ∧ KTriv t.G t.PP.L
 
-theorem isPol_iff_polAt {K : Type} [Field K] (t : SAB H (Sp K)) : IsPol t ↔ GlobalTheory.LN.PolAt t (𝟙 _) := by
-  have h := isGrpPullback_pullback t.G (𝟙 (Sp K))
-  have hL := t.PP.isLB
-  constructor
-  · rintro ⟨h₁, h₂, h₃⟩
-    exact ⟨inferInstance, amplePt _ K _ _ _ _ h _ _ hL (pull_isLB hL _) (lbIso_refl (pull_isLB hL _)) h₂ h₃⟩
-  · rintro ⟨h₁, h₂, h₃⟩
-    haveI : IsMonHom (Iso.refl t.G).hom := inferInstanceAs (IsMonHom (𝟙 t.G))
-    obtain ⟨e, he, hφ⟩ := grpPullback_iso (isGrpPullback_of_iso (Iso.refl t.G)) h
-    have h' := isGrpPullback_of_iso e
-    refine ⟨MorphismProperty.of_isPullback (P := @IsProper) h'.1 h₁,
-      amplePt _ K _ _ _ _ h' _ _ (pull_isLB hL _) hL ?_ h₂ h₃⟩
-    exact (lbIso_refl (pull_isLB hL _)).chartPull (chartPullSec _ _ e.hom.left hφ)
-      (Geo.Tor.chartPullPull _ _ _ rfl)
 
 theorem NumOf.pt_unique {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {F : Type} [Field F] [Algebra (FractionRing R) F]
     {N : NumD F} (ν : NumOf D F N) {g : GtPtF D F} {v v' : N.Gt} (h : ν.Pt g v) (h' : ν.Pt g v') : v = v' :=
@@ -269,7 +252,6 @@ theorem isCoordPt_one_iff {S : Scheme.{0}} (P : PolAV S) (k : ℕ) {T : Over S} 
         linear_combination (-(c * d)) * h
       exact key _ _ _ _ e
 
-theorem compat_self (H : Host E) (n : ℕ) : Compat H n (zeta n) H.rt0 := fun _ h => h
 
 theorem charZero_of_isPrimitiveRoot {K : Type} [Field K] {ζ : ℕ → Kˣ} (h : ∀ n, 0 < n → IsPrimitiveRoot (ζ n) n) :
     CharZero K :=
@@ -389,14 +371,6 @@ theorem pt_toric (t : Multiplicative X →* Fˣ) :
   ⟨toUnit_unique _ _, fun χ => (vF_const (pt_isConst q F t χ) _ _ _ (by
     ext; simp [pullTop]; rfl)).symm⟩
 
-theorem toric_integral (S : ValuationSubring F) (hS : ∀ r : K, algebraMap (FractionRing K) F (algebraMap K _ r) ∈ S) :
-    (toricNumOf q he hb F).Integral S := by
-  intro x
-  refine ⟨spMap (((algebraMap (FractionRing K) F).comp (algebraMap K _)).codRestrict S.toSubring hS), ?_, le_rfl⟩
-  have h : x.left = (TF (R := K) F).hom := (Category.comp_id _).symm.trans (Over.w x)
-  rw [h]
-  change Spec.map _ ≫ Spec.map _ = Spec.map _ ≫ Spec.map _
-  rw [← Spec.map_comp, ← Spec.map_comp]; rfl
 
 example (y : X) : ((toricNum q he hb F).ψ y : F) = algebraMap (FractionRing K) F (q y) := rfl
 end Toric
@@ -435,12 +409,6 @@ def hypArc : ArcF (hypDatum H) K F where
   hq _ _ := ⟨rfl, pt_toric _ _ _ F _⟩
   closed := ‹_›
 
-theorem hypArc_wp (n : ℕ) (a b : HypLattice H) :
-    (hypArc H K ρ hρ ζ hp hc).N.wp ((hypArc H K ρ hρ ζ hp hc).q n a) ((hypArc H K ρ hρ ζ hp hc).q n b) =
-      ζ n ^ hypForm H a b := by
-  rw [hypForm_apply, zpow_sub]
-  change ζ n ^ toDual H a.2 b.1 * (∏ _i ∈ Finset.range n, 1) / (ζ n ^ toDual H b.2 a.1 * ∏ _i ∈ Finset.range n, 1) = _
-  simp [div_eq_mul_inv]
 
 def hypBe (k : ℕ) (hk : 0 < k) : (hypArc H K ρ hρ ζ hp hc).N.Form k where
   be := (2 * k : ℤ) • trForm H
@@ -448,8 +416,6 @@ def hypBe (k : ℕ) (hk : 0 < k) : (hypArc H K ρ hρ ζ hp hc).N.Form k where
   pos (y : 𝓞 E) hy := mul_pos (mul_pos two_pos (Int.natCast_pos.2 hk)) (trForm_pos H hy)
   dvd (y z : 𝓞 E) := ⟨trForm H y z, rfl⟩
 
-theorem hypBe_bal (k : ℕ) (hk : 0 < k) : (hypArc H K ρ hρ ζ hp hc).Bal (hypBe H K ρ hρ ζ hp hc k hk) :=
-  fun a (y z : 𝓞 E) => congrArg ((2 * k : ℤ) * ·) (trForm_adj H a y z)
 end ThetaShiftProofs
 
 theorem lbIso_of_g_one {X : Scheme.{0}} {L M : LB X} (hL : ∀ i j, L.g i j = 1) (hM : ∀ i j, M.g i j = 1) : LBIso L M := by
@@ -498,27 +464,8 @@ theorem zetaU_pow (n m : ℕ) (hn : 0 < n) (hm : 0 < m) : zetaU (n * m) ^ m = ze
   push_cast
   field_simp
 
-theorem not_vanishC_X (H : Host E) (m : ℕ) : ¬ VanishC (Test.zeroDatum H) m (MvPolynomial.X 0) := by
-  intro h
-  have hm := h.1
-  have hu := isUnit_natCast_sp (K := ℂ) (Nat.cast_ne_zero.2 hm.pos.ne')
-  have := h.2.2 (zeroFull H H.rt0 H.sqrt_neg_disc_sq zetaU zetaU_prim zetaU_pow) rfl rfl (fun _ => 1) (by
-    have e : (fun _ : (Test.zeroDatum H).La => fnOf (1 : ℂ)) = fun _ => 1 := funext fun _ => map_one _
-    unfold Full.Theta
-    rw [e]
-    exact GlobalTheory.ThetaPtDet.isThetaPt_zero _ m hm hu _)
-  simp at this
 
-theorem vanishC_zero (D : Datum H) {m : ℕ} (hm : Odd m) : VanishC D m 0 :=
-  ⟨hm, ⟨0, MvPolynomial.isHomogeneous_zero _ _ _⟩, fun _ _ _ _ _ => MvPolynomial.eval₂_zero _ _⟩
 
-theorem exists_arcF : ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E) (H : Host E) (D : Datum H)
-    (_ : Algebra (FractionRing ℤ) ℂ) (A : ArcF D ℤ ℂ) (β : A.N.Form 1), D.p = 1 ∧ D.q = 1 ∧ Nontrivial A.N.X ∧ A.Bal β ∧
-      A.ρ = H.rt0 := by
-  letI : Algebra (FractionRing ℤ) ℂ :=
-    (IsFractionRing.lift (A := ℤ) (K := FractionRing ℤ) (g := Int.castRingHom ℂ) Int.cast_injective).toAlgebra
-  exact ⟨_, _, _, _, GlobalTheory.HostModel.host, _, _, hypArc _ ℤ _ (Host.sqrt_neg_disc_sq _) zetaU zetaU_prim zetaU_pow,
-    hypBe _ _ _ _ _ _ _ 1 one_pos, rfl, rfl, inferInstanceAs (Nontrivial (𝓞 _)), hypBe_bal _ _ _ _ _ _ _ _ _, rfl⟩
 
 section RankZero
 open GlobalTheory.HostModel
@@ -559,32 +506,6 @@ def zeroArc : ArcF (Test.zeroDatum H) K ℂ :=
     hq := fun _ _ => ⟨rfl, pt_toric _ _ _ ℂ _⟩
     closed := inferInstance }
 
-theorem realises_zero {k : ℕ} (β : (zeroArc H K).N.Form k) (u : ℂˣ) (r : ℕ → ℂˣ) (hr : Roots u r) :
-    Realises (zeroFull H H.rt0 H.sqrt_neg_disc_sq zetaU zetaU_prim zetaU_pow) (zeroArc H K) β u r := by
-  haveI : Unique ((zeroArc H K).N.twist β u).X := inferInstanceAs (Unique PUnit)
-  haveI : Finite ((zeroArc H K).N.twist β u).X := inferInstance
-  have hs : ∀ (g : ((zeroArc H K).N.twist β u).Gt) χ, g.s χ = 1 := fun g χ => by
-    rw [Subsingleton.elim χ 0, NumD.Gt.s_zero]
-  have hψ : ∀ χ, ((zeroArc H K).N.twist β u).ψ χ = 1 := fun χ => by rw [Subsingleton.elim χ 0, NumD.ψ_zero]
-  have hθ : ((zeroArc H K).N.twist β u).θ = fun _ _ _ => 1 := rfl
-  have hσ : ((zeroArc H K).N.twist β u).σ = fun _ => 1 := rfl
-  have ht : ((zeroArc H K).N.twist β u).th = fun _ => 1 := rfl
-  have e : (fun _ : (Test.zeroDatum H).La => fnOf (1 : ℂ)) = fun _ => 1 := funext fun _ => map_one _
-  refine ⟨hr, rfl, fun _ _ => rfl, fun m hm p _ => ⟨fun _ => .of_finite, ?_, fun j _ b q _ => ⟨fun _ => .of_finite, ?_⟩⟩⟩
-  · have hu := isUnit_natCast_sp (K := ℂ) (Nat.cast_ne_zero.2 hm.pos.ne')
-    have : ∀ a, ((zeroArc H K).N.twist β u).tx m (p a) = 1 := fun a => by
-      simp [NumD.tx, NumD.txT, NumD.vt, NumD.wQ, NumB.wS, mulq, dbl, cubN, hs, hψ, hθ, hσ, ht]
-    unfold Full.Theta
-    simp only [this]
-    rw [e]
-    exact GlobalTheory.ThetaPtDet.isThetaPt_zero _ m hm hu _
-  · have : ∀ a, ((zeroArc H K).N.twist β u).ev m (p a) q.1.2 = 1 := fun a => by
-      simp [NumD.ev, NumD.evT, NumD.vt, NumD.wQ, NumB.wS, mulq, dbl, cubN, hs, hψ, hθ, hσ, ht]
-    unfold Full.Coord
-    simp only [this]
-    rw [e]
-    exact (isCoordPt_one_iff _ _ _ _).2 ⟨hm, isUnit_natCast_sp (Nat.cast_ne_zero.2 hm.pos.ne'),
-      GlobalTheory.ThetaDeform.zero_isThetaPtOver _ _ _ _⟩
 end RankZero
 
 end ValInh

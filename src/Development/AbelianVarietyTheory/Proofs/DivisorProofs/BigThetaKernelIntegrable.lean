@@ -20,10 +20,6 @@ theorem natCast_not_mem {Rg : Type*} [CommRing Rg] {P : Ideal Rg} (hP : P ≠ �
     (hp : (p : Rg) ∈ P) : (n : Rg) ∉ P :=
   _root_.GlobalTheory.CoprimeNatNotMem.natCast_not_mem_of_coprime hP hpn hp
 
-theorem coprime_two_q_d {p q d : ℕ} (hp : p.Prime) (hq : q.Prime) (hd : d.Prime) (h2 : p ≠ 2) (h3 : p ≠ q) (h4 : p ≠ d) :
-    Nat.Coprime p (2 * q * d) :=
-  Nat.Coprime.mul_right (Nat.Coprime.mul_right ((Nat.coprime_primes hp Nat.prime_two).2 h2) ((Nat.coprime_primes hp hq).2 h3))
-    ((Nat.coprime_primes hp hd).2 h4)
 
 theorem standing {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
     {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {F : Face D A} {large₂ : SizeData₂ D}

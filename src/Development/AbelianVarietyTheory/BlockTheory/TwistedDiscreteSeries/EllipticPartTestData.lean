@@ -167,11 +167,6 @@ variable {r : ℕ}
 def glChar (μ : Fin r → ℤ) (a : Fin r → ℂ) : ℂ :=
   (Matrix.of fun i j => a i ^ (μ j + (j.rev : ℕ))).det / (Matrix.of fun i j : Fin r => a i ^ (j.rev : ℕ)).det
 
-theorem glChar_perm (μ : Fin r → ℤ) (a : Fin r → ℂ) (s : Equiv.Perm (Fin r)) : glChar μ (a ∘ s) = glChar μ a := by
-  have h1 := Matrix.det_permute s (Matrix.of fun i j => a i ^ (μ j + (j.rev : ℕ)))
-  have h2 := Matrix.det_permute s (Matrix.of fun i j : Fin r => a i ^ (j.rev : ℕ))
-  have hs : ((Equiv.Perm.sign s : ℤ) : ℂ) ≠ 0 := by exact_mod_cast (Equiv.Perm.sign s).ne_zero
-  exact (congrArg₂ (· / ·) h1 h2).trans (mul_div_mul_left _ _ hs)
 
 def hiWt (lam : Fin r → ℤ) : Fin r → ℤ := fun j => lam j - ((((r - 1) / 2 : ℕ) : ℤ) - (j : ℕ))
 

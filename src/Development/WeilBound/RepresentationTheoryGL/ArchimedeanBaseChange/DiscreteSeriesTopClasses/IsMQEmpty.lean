@@ -17,11 +17,6 @@ def IsMQ {ι R : Type} [Fintype ι] [CommRing R] [Algebra ℂ R] (D : ι → Der
     (∀ k, (2 * k < Fintype.card ι ∨ Fintype.card ι < k) → P k = 0) ∧
     ∀ i k, (2 * k + 1 < Fintype.card ι ∨ Fintype.card ι ≤ k) → Q i k = 0
 
-theorem isMQ_empty (R : Type) [CommRing R] [Algebra ℂ R] :
-    IsMQ (ι := Empty) (R := R) Empty.elim Empty.elim (fun k => if k = 0 then 1 else 0) Empty.elim := by
-  refine ⟨fun k => by simp, fun k hk => ?_, fun i => i.elim⟩
-  simp at hk
-  simp [hk.ne']
 
 def MQAlg : Prop :=
   ∀ (ι R : Type) [Fintype ι] [DecidableEq ι] [CommRing R] [Algebra ℂ R] (D : ι → Derivation ℂ R R) (s : ι → R)

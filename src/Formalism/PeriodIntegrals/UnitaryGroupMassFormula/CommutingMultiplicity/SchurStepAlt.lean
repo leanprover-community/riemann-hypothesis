@@ -6,7 +6,5 @@ namespace PI.UnitaryGroupMassFormula.CommMult
 
 open Matrix
 
-theorem schurStep : SchurStep :=
-  _root_.UpperTheory.Reformulated.B.SchurIrreducible.schurStep
 
 end PI.UnitaryGroupMassFormula.CommMult

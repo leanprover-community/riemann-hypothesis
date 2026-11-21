@@ -33,10 +33,6 @@ instance : Inhabited (MeasurablePartition X) where
 
 variable (p : MeasurablePartition X)
 
-theorem eq_empty_of_le {i : ℕ} (hi : p.n ≤ i) : p.E i = ∅ := by
-  refine eq_empty_of_forall_notMem fun x hx => ?_
-  obtain ⟨j, hj, hxj⟩ := p.exists_mem x
-  exact Set.disjoint_left.1 (p.disjoint (show j ≠ i by omega)) hxj hx
 
 theorem biUnion_eq : ⋃ i ∈ Finset.range p.n, p.E i = univ := by
   refine eq_univ_of_forall fun x => ?_

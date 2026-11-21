@@ -184,11 +184,6 @@ def DivEx (𝒮 : Slots) : Prop := StepW Pinned fun K B f T w => ∀ (Z : w.Lt) 
 
 def ThEx (𝒮 : Slots) : Prop := StepW Pinned fun K _ _ _ w => ∀ (Z : w.Lt) (l : Lv4 𝒮 K w Z), ∃ th : ThetaX (w.D Z), Nonempty (ThT l.n th)
 
-theorem stepW_built {𝒮 : Slots} (h2 : StepW Start (Has2 𝒮)) (h3 : StepW (pinAnd (Has2 𝒮)) (Has3 𝒮))
-    (h4 : StepW (pinAnd (Has3 𝒮)) (Has4 𝒮)) (h5 : StepW (pinAnd (Has4 𝒮)) (HasC (BuiltC 𝒮))) :
-    StepW Start (HasC (BuiltC 𝒮)) :=
-  have p : StepW Start Pinned := StepW.of_all fun _ _ _ _ _ _ _ h => h.1
-  (p.and ((p.and ((p.and h2).trans h3)).trans h4)).trans h5
 
 theorem supp_of_untw (w : ColW B f T) (h : T = TwDat.untw B T.pl) : Supp K B f T w := Or.inl h
 

@@ -59,9 +59,6 @@ theorem InZl.mem_adjoin {l n : ℕ} {F : Ω} (h : InZl ε l n F) : F ∈ Interme
   have h2 := mul_mem (inv_mem (natCast_mem (IntermediateField.adjoin ℚ {zt ε l n}) D)) h1
   rwa [inv_mul_cancel_left₀ hD0] at h2
 
-theorem IsNTr.iff_isNT {l n m : ℕ} [NeZero l] {F F' : Ω} (hm : 1 ≤ m) (hmn : m ≤ n) (hF : InZl ε l n F) :
-    IsNTr ε l n m F F' ↔ IsNT ε l n m F F' :=
-  ⟨fun h => h.2.2.2, fun h => ⟨hm, hmn, hF.mem_adjoin, h⟩⟩
 
 theorem IsNTr.apply_eq_of_mem_adjoin {z F : Ω} (hF : F ∈ IntermediateField.adjoin ℚ {z}) {s t : Ω ≃ₐ[ℚ] Ω} (h : s z = t z) :
     s F = t F := by
@@ -101,8 +98,6 @@ structure IsPlaceIn (ε : Ω →+* ℂ) (A : ValuationSubring Ω) (T : GlobalThe
   alg : ∀ x, IsAlgZp p (j x)
   root : ∀ n, j (zt ε p n) = T.ζ n
 
-theorem IsCusp.isPlaceIn {A : ValuationSubring Ω} {T : GlobalTheory.K5.Tower p Ωl} {j : Ω →+* Ωl} (h : IsCusp ε A T j) :
-    IsPlaceIn ε A T j := ⟨h.int, h.alg, h.root⟩
 
 theorem IsPlaceIn.unique {A A' : ValuationSubring Ω} {T T' : GlobalTheory.K5.Tower p Ωl} {j : Ω →+* Ωl} (h : IsPlaceIn ε A T j)
     (h' : IsPlaceIn ε A' T' j) : A = A' :=
@@ -138,21 +133,12 @@ section
 variable {X : GlobalTheory.KZ.Tower Ω ε} {A : ValuationSubring Ω} {T : GlobalTheory.K5.Tower p Ωl} {j : Ω →+* Ωl} {n : ℕ} {ψ : O0 p →+* Ωl}
   {io : KT X (p ^ n) →+* Ωl}
 
-theorem IsIo.isExpIn (h : IsIo X A T j n ψ io) (hj : IsPlaceIn ε A T j) (hψ : IsReb T n ψ) : IsExpIn X A T j n ψ io :=
-  ⟨hj, hψ, h.ev⟩
 
 theorem IsExpIn.isIo (h : IsExpIn X A T j n ψ io) (hg : GalTr X T j n io) : IsIo X A T j n ψ io :=
   ⟨h.ev, fun g s hq hs y y' hy => hg g s 0 (by rw [pow_zero, one_mul, hq]) hs y y' (by rw [pow_zero, map_one, X.sl_one, hy])⟩
 
 theorem IsExpIn.par (h : IsExpIn X A T j n ψ io) : ψ (qO p) = T.qq n := h.rebase₂.par
 
-theorem GalTr.coeff_sl_gal (X : GlobalTheory.KZ.Tower Ω ε) (s : Ω ≃ₐ[ℚ] Ω) (b : ℕ) (y : X.K) (r : ℚ) :
-    (X.exp (X.sl (ofSL (ModularGroup.T ^ b)) (X.gal s y))).coeff r = eOm ε (r * b) * s ((X.exp y).coeff r) := by
-  have he : ∀ i k, ent (ofSL (ModularGroup.T ^ b)) i k = ((!![1, (b : ℤ); 0, 1] i k : ℤ) : ℚ) := fun i k => by
-    rw [← ModularGroup.coe_T_zpow, zpow_natCast]; rfl
-  have h := X.exp_upper (ofSL (ModularGroup.T ^ b)) (by rw [he]; simp) (X.gal s y) r
-  rw [he, he, he, X.gal_exp] at h
-  simpa using h
 
 end
 

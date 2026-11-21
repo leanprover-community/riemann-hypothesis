@@ -78,8 +78,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
   (Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)) (Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs))
   (Zsc : DefSub A.fam.amb → IndefScale A.fam.base)
 
-theorem isCoord_base (Zs : DefSub A.fam.amb) : IsCoord (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false Zs P0 ψ0 :=
-  fun t => ⟨(A.fam.R t).toF_injective _ _, rfl⟩
 
 end Concrete
 

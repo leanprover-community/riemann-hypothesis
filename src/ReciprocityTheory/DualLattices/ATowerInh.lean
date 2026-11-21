@@ -166,8 +166,6 @@ def toyTower (p : ℕ) [Fact p.Prime] : ATower (ZMod p) p where
   ζ n := u1X p
   ζ_spec n := rfl
 
-lemma toyTower_c_ne_zero (p : ℕ) [Fact p.Prime] : (toyTower p).c ≠ 0 := (show (1 : (ZMod p)⟦X⟧) ≠ 0 from one_ne_zero)
 
-theorem toyTower_isDomain (p : ℕ) [Fact p.Prime] : IsDomain ((toyTower p).O : Type) := (inferInstance : IsDomain (ZMod p)⟦X⟧)
 
 end ReciprocityTheory.PGsh

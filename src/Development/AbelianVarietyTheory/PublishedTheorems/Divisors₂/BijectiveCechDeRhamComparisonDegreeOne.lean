@@ -89,21 +89,6 @@ theorem Data.lineModFour_ideal : Data.lineModFour.I ≠ ⊥ ∧ Data.lineModFour
   rw [Ne, Ne, Ideal.span_singleton_eq_bot, Ideal.span_singleton_eq_top]
   decide
 
-theorem Data.lineModFour_nontrivial : Nontrivial (HH1 Data.lineModFour.s) := by
-  change Nontrivial (HH1 (lineStr (ZMod 4)))
-  refine ⟨⟨lineEquiv _ (Submodule.Quotient.mk ((Polynomial.X : Polynomial (ZMod 4)) •
-    KaehlerDifferential.D (ZMod 4) (Polynomial (ZMod 4)) Polynomial.X)), 0, ?_⟩⟩
-  rw [Ne, LinearEquiv.map_eq_zero_iff, Submodule.Quotient.mk_eq_zero]
-  rintro ⟨p, hp⟩
-  have f3 := congrArg (KaehlerDifferential.polynomialEquiv (ZMod 4)) hp
-  simp only [Derivation.coeFn_coe, map_smul, KaehlerDifferential.polynomialEquiv_D, Polynomial.derivative_X,
-    smul_eq_mul, mul_one] at f3
-  have := congrArg (Polynomial.coeff · 1) f3
-  simp only [Polynomial.coeff_derivative, Polynomial.coeff_X_one] at this
-  revert this
-  generalize p.coeff (1 + 1) = a
-  revert a
-  decide
 
 def affDiag (X : Scheme.{0}) : AffOp X ⥤ (Pair (𝟙 X))ᵒᵖ :=
   (Monotone.functor (f := fun U : X.affineOpens ↦ (⟨(U, U), le_rfl⟩ : Pair (𝟙 X))) fun _ _ h ↦

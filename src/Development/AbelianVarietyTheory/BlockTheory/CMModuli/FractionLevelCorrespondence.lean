@@ -111,15 +111,7 @@ variable {O' : Type} [CommRing O'] [IsDomain O'] {b : O →+* O'}
 lemma two_mul_half (x : ArcInput D c β O' b) (y : x.P.X) : 2 * (x.be y y / 2) = x.be y y :=
   Int.mul_ediv_cancel' ((Dvd.intro _ rfl).trans (x.be_dvd y y))
 
-lemma levelM_mul_div (x : ArcInput D c β O' b) (y z : x.P.X) :
-    (l.M : ℤ) * (x.be y z / (l.M : ℤ)) = x.be y z :=
-  Int.mul_ediv_cancel' (((Int.natCast_dvd_natCast.2 (Nat.dvd_lcm_left l.M l.A)).mul_left 2).trans
-    (x.be_dvd y z))
 
-lemma levelA_mul_div (x : ArcInput D c β O' b) (y z : x.P.X) :
-    (l.A : ℤ) * (x.be y z / (l.A : ℤ)) = x.be y z :=
-  Int.mul_ediv_cancel' (((Int.natCast_dvd_natCast.2 (Nat.dvd_lcm_right l.M l.A)).mul_left 2).trans
-    (x.be_dvd y z))
 
 section Twist
 

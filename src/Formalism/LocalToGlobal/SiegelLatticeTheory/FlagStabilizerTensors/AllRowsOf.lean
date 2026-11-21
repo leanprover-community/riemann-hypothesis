@@ -520,21 +520,8 @@ variable {X} {ψ₀ : ∀ k : Fin 2, AddChar (ZMod (D.host.g k)) ℂ} {hJ : EJId
 theorem thirdTie_allRows : LabelCountGoodInjective (allRowsOf X ψ₀ hJ hU hO hI hL) :=
   (Classical.choose_spec (Classical.choose_spec hL)).2
 
-theorem admissibleLevel_allRows (hψ : ∀ k, ψ₀ k ≠ 1) (hL6 : ConclusionL D) (hg : ∀ k, 2 * D.R.r ≤ D.host.g k) :
-    PlaceLawIdempotents (allRowsOf X ψ₀ hJ hU hO hI hL) 6 :=
-  place_law_of_statement _ hL6 hg fun k _ => ⟨ψ₀ k, hψ k, Or.inr rfl⟩
 
-theorem thirdTieNumbers_allRows : LabelCountSpace (allRowsOf X ψ₀ hJ hU hO hI hL).toAt :=
-  labelCountSpace_toAt_of_labelCountGoodInjective _ thirdTie_allRows
 
-theorem admissibleCount_allRows (hψ : ∀ k, ψ₀ k ≠ 1) {n₀ : ℕ} {Alev C₃ c₃ cb : ℝ}
-    (h1 : Formalism.MainNotions.S.CountE.CountIdempotentsClass Formalism.MainNotions.S.CountE.PCount D n₀ Alev C₃ c₃ cb) (hL6 : ConclusionL D)
-    (hg : ∀ k, 2 * D.R.r ≤ D.host.g k) (hC : TieCountAt (allRowsOf X ψ₀ hJ hU hO hI hL).toAt n₀ Alev C₃ cb)
-    (hP : Formalism.MainNotions.N.CylinderCountFamily.PCountTie D (allRowsOf X ψ₀ hJ hU hO hI hL).toAt) (hA : TieAdmG D) :
-    Formalism.MainNotions.N.CylinderCountFamily.CylinderCountUniformAt D (allRowsOf X ψ₀ hJ hU hO hI hL).toAt n₀ Alev C₃ c₃ cb 6 :=
-  ⟨Formalism.MainNotions.N.CylinderCountFamily.countCylAt_of D _ h1 hC hP,
-    admissibleLevel_allRows (X := X) (hJ := hJ) (hU := hU) (hO := hO) (hI := hI) (hL := hL) hψ hL6 hg,
-    thirdTieNumbers_allRows (X := X) (hJ := hJ) (hU := hU) (hO := hO) (hI := hI) (hL := hL), hC, hA⟩
 
 end Ctor
 
@@ -726,14 +713,6 @@ theorem tieCountAt_allRowsOf {n₀ : ℕ} {Alev C₃ cb : ℝ} (hB : CountBase X
     fun v => X.ds v, fun v => X.low v, X.B.tens_spec, inferInstance, X.B.fund_spec, X.B.R_spec,
     reT_spec X hI _⟩, hgap, hC, hf, hb, hpos⟩
 
-theorem admissibleCount_allRows_alt (hψ : ∀ k, ψ₀ k ≠ 1) {n₀ : ℕ} {Alev C₃ c₃ cb : ℝ}
-    (h1 : Formalism.MainNotions.S.CountE.CountIdempotentsClass Formalism.MainNotions.S.CountE.PCount D n₀ Alev C₃ c₃ cb) (hL6 : ConclusionL D)
-    (hg : ∀ k, 2 * D.R.r ≤ D.host.g k) (hB : CountBase X n₀ Alev C₃ cb)
-    (hA : ∀ (k : Fin 2) (S : Set (Tup D k)), EtAlg X (cyl D k S)) (hUn : ∀ (k : Fin 2) (S : Set (Tup D k)), EtUnip X k S)
-    (hP : Formalism.MainNotions.N.CylinderCountFamily.PCountTie D (allRowsOf X ψ₀ hJ hU hO hI hL).toAt) (hAd : TieAdmG D) :
-    Formalism.MainNotions.N.CylinderCountFamily.CylinderCountUniformAt D (allRowsOf X ψ₀ hJ hU hO hI hL).toAt n₀ Alev C₃ c₃ cb 6 :=
-  admissibleCount_allRows (X := X) (hJ := hJ) (hU := hU) (hO := hO) (hI := hI) (hL := hL) hψ h1 hL6 hg
-    (tieCountAt_allRowsOf hB hA hUn) hP hAd
 
 end CountPf
 
@@ -741,14 +720,6 @@ section FinalK
 
 variable {D : D7} (X : HidaSetting D)
 
-theorem admissibleCount_allRows_unipotent (ψ₀ : ∀ k : Fin 2, AddChar (ZMod (D.host.g k)) ℂ) (hK : RedKerOne X) (hO : EtOne X ψ₀)
-    (hL : RowsLab X) (hψ : ∀ k, ψ₀ k ≠ 1) {n₀ : ℕ} {Alev C₃ c₃ cb : ℝ}
-    (h1 : Formalism.MainNotions.S.CountE.CountIdempotentsClass Formalism.MainNotions.S.CountE.PCount D n₀ Alev C₃ c₃ cb) (hL6 : ConclusionL D)
-    (hg : ∀ k, 2 * D.R.r ≤ D.host.g k) (hB : CountBase X n₀ Alev C₃ cb)
-    (hA : ∀ (k : Fin 2) (S : Set (Tup D k)), EtAlg X (cyl D k S)) (hUn : ∀ (k : Fin 2) (S : Set (Tup D k)), EtUnip X k S)
-    (hP : Formalism.MainNotions.N.CylinderCountFamily.PCountTie D (allRowsOfK X ψ₀ hK hO hL).toAt) (hAd : TieAdmG D) :
-    Formalism.MainNotions.N.CylinderCountFamily.CylinderCountUniformAt D (allRowsOfK X ψ₀ hK hO hL).toAt n₀ Alev C₃ c₃ cb 6 :=
-  admissibleCount_allRows_alt hψ h1 hL6 hg hB hA hUn hP hAd
 
 end FinalK
 
@@ -1101,15 +1072,6 @@ def allRowsOfP (ψ₀ : ∀ k : Fin 2, AddChar (ZMod (D.host.g k)) ℂ) (h0 : Re
     (hO : EtOne X ψ₀) (hL : RowsLab X) : AllRows D :=
   allRowsOfK X ψ₀ (redKerOne_of X h0 h1) hO hL
 
-theorem admissibleCount_allRows_partner (ψ₀ : ∀ k : Fin 2, AddChar (ZMod (D.host.g k)) ℂ) (h0 : RedKerP X 0) (h1 : RedKerP X 1)
-    (hO : EtOne X ψ₀) (hL : RowsLab X) (hψ : ∀ k, ψ₀ k ≠ 1) {n₀ : ℕ} {Alev C₃ c₃ cb : ℝ}
-    (hC1 : Formalism.MainNotions.S.CountE.CountIdempotentsClass Formalism.MainNotions.S.CountE.PCount D n₀ Alev C₃ c₃ cb) (hL6 : ConclusionL D)
-    (hg : ∀ k, 2 * D.R.r ≤ D.host.g k) (hB : CountBase X n₀ Alev C₃ cb)
-    (hA : ∀ (k : Fin 2) (S : Set (Tup D k)), EtAlg X (cyl D k S))
-    (hP : Formalism.MainNotions.N.CylinderCountFamily.PCountTie D (allRowsOfP X ψ₀ h0 h1 hO hL).toAt) (hAd : TieAdmG D) :
-    Formalism.MainNotions.N.CylinderCountFamily.CylinderCountUniformAt D (allRowsOfP X ψ₀ h0 h1 hO hL).toAt n₀ Alev C₃ c₃ cb 6 :=
-  admissibleCount_allRows_unipotent X ψ₀ _ hO hL hψ hC1 hL6 hg hB hA
-    (fun k S => etUnip_of X k (by fin_cases k; exacts [h1, h0]) S) hP hAd
 
 end FinalP
 

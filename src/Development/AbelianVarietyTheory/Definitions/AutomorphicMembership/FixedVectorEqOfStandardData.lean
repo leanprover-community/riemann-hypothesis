@@ -50,11 +50,6 @@ theorem ReadsTop.mem_chi {u : B.Word} {a : I.ι} {Ch : Type} {chOf : (I.stp u a 
   rw [e3, map_inv, inv_eq_one]
   exact Units.ext hχ
 
-theorem ReadsTop.topBase {u : B.Word} {a : I.ι} {Ch : Type} {chOf : (I.stp u a B.R.m).Cl → Ch}
-    {Lb : Ch → Submodule (𝓞 B.host.E) (Fin (B.R.N B.R.m) → B.host.E)} {U : Ch → Subgroup (GA B (B.R.N B.R.m))} {chi : ∀ β, U β →* ℂˣ}
-    {y : (I.stp u a B.R.m).Cl → GA B (B.R.N B.R.m)} {st : ∀ c, (I.stp u a B.R.m).Stab c → GL (Fin (B.R.N B.R.m)) B.host.E}
-    (h : I.ReadsTop l Z u a chOf Lb U chi y st) (β : Ch) (hβ : ∀ c, U (chOf c) = U β) : I.TopBase l Z u a (U β) y :=
-  fun c d g' g hc hd hg => hβ c ▸ (h.mem_chi I l Z c d g' g hc hd hg).1
 
 def ReadsKTop (u : B.Word) (a : I.ι) {bad : Set (HeightOneSpectrum (𝓞 B.host.F))} {Ch : Type} (chOf : (I.stp u a B.R.m).Cl → Ch)
     (K : ∀ β : Ch, LevelChart (I.rec7 l Z) (B.T u) bad B.R.m le_rfl (fun c : {c // chOf c = β} => (I.chain l u a).stab B.R.m c.1)

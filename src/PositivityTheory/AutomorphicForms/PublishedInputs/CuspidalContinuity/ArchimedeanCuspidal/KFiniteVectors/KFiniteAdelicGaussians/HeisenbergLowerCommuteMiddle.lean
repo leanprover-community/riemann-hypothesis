@@ -102,27 +102,6 @@ theorem setIntegral_eq_of_shift {ι : Type*} [Fintype ι] [DecidableEq ι] {F : 
     setIntegral_const, measureReal_def, FourierWhittaker.vecMeasure_vecDomain, ENNReal.toReal_one,
     one_smul]
 
-theorem setIntegral_tsum_of_le {ι : Type*} [Fintype ι] {α : Type*} [Countable α]
-    (F : α → (ι → 𝔸[K]) → ℂ) (hc : ∀ q, Continuous (F q)) (b : α → ℝ) (hb : Summable b)
-    (hle : ∀ q, ∀ y ∈ vecDomain K ι, ‖F q y‖ ≤ b q) :
-    ∫ y in vecDomain K ι, ∑' q, F q y ∂vecMeasure K ι =
-      ∑' q, ∫ y in vecDomain K ι, F q y ∂vecMeasure K ι := by
-  have : IsFiniteMeasure ((vecMeasure K ι).restrict (vecDomain K ι)) := ⟨by
-    rw [Measure.restrict_apply_univ, FourierWhittaker.vecMeasure_vecDomain]; exact ENNReal.one_lt_top⟩
-  have hint : ∀ q, Integrable (F q) ((vecMeasure K ι).restrict (vecDomain K ι)) := fun q =>
-    Integrable.mono' (integrable_const (b q)) (hc q).aestronglyMeasurable
-      ((ae_restrict_iff' FourierWhittaker.measurableSet_vecDomain).2 (ae_of_all _ (hle q)))
-  have hnorm : ∀ q, ∫ y in vecDomain K ι, ‖F q y‖ ∂vecMeasure K ι ≤ b q := by
-    intro q
-    calc ∫ y in vecDomain K ι, ‖F q y‖ ∂vecMeasure K ι
-        ≤ ∫ _ in vecDomain K ι, b q ∂vecMeasure K ι :=
-          setIntegral_mono_on (hint q).norm (integrable_const _)
-            FourierWhittaker.measurableSet_vecDomain (hle q)
-      _ = b q := by
-          rw [setIntegral_const, measureReal_def, FourierWhittaker.vecMeasure_vecDomain,
-            ENNReal.toReal_one, one_smul]
-  exact (integral_tsum_of_summable_integral_norm hint
-    (Summable.of_nonneg_of_le (fun q => integral_nonneg fun _ => norm_nonneg _) hnorm hb)).symm
 
 instance countable_field : Countable K := (Module.finBasis ℚ K).equivFun.injective.countable
 
@@ -213,17 +192,7 @@ theorem hH_c (c x t s : 𝔸[K]) :
   ext i j
   fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three] <;> ring
 
-theorem hY_a (a b s : 𝔸[K]) : uni 0 (a + s) b = uni 0 s 0 * uni 0 a b := by
-  apply Units.ext
-  simp only [Units.val_mul, val_uni]
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three] <;> ring
 
-theorem hY_b (a b s : 𝔸[K]) : uni 0 a (b + s) = uni 0 0 s * uni 0 a b := by
-  apply Units.ext
-  simp only [Units.val_mul, val_uni]
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three] <;> ring
 
 theorem GL2_embed_commute_corner (γ : GL (Fin 2) K) (s : 𝔸[K]) :
     diaK (e1 K γ) * uni 0 0 s = uni 0 (𝔞 (γ.val 0 1) * s) (𝔞 (γ.val 1 1) * s) * diaK (e1 K γ) := by

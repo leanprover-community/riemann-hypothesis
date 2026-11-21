@@ -191,8 +191,6 @@ def cid (u : (AEf I)ˣ) : Submodule (𝓞 I.E) I.E where
     rw [Algebra.smul_def, map_mul, mul_left_comm]
     exact mul_mem (inclE_mem (RingHom.mem_range_self _ r)) he
 
-theorem mem_cid {u : (AEf I)ˣ} {e : I.E} : e ∈ cid I u ↔ ((u⁻¹ : (AEf I)ˣ) : AEf I) * iE I e ∈ IntAf I.F I.E :=
-  Iff.rfl
 
 theorem idl_eq (u : (AEf I)ˣ) : idl I u = cid I u :=
   Submodule.span_eq (cid I u)
@@ -207,36 +205,6 @@ theorem exists_nat_two (u : (AEf I)ˣ) : ∃ N : ℕ, 1 ≤ N ∧ (N : AEf I) * 
   · rw [Nat.cast_mul, mul_assoc]
     exact mul_mem (natCast_mem _ _) hub
 
-theorem mem_uO (u : (AEf I)ˣ) : ∃ N : ℕ, 1 ≤ N ∧ (N : I.E) ∈ cid I u ∧ ∀ x : AEf I,
-    ((u⁻¹ : (AEf I)ˣ) : AEf I) * x ∈ IntAf I.F I.E →
-    ∃ b ∈ cid I u, ∃ z ∈ IntAf I.F I.E, x = iE I b + iE I N * z := by
-  obtain ⟨N, hN, hu, hui⟩ := exists_nat_two I u
-  refine ⟨N, hN, ?_, fun x hx => ?_⟩
-  · show ((u⁻¹ : (AEf I)ˣ) : AEf I) * iE I N ∈ IntAf I.F I.E
-    rw [map_natCast, mul_comm]
-    exact hui
-  · have hNx : (N : AEf I) * x ∈ IntAf I.F I.E := by
-      have e : (N : AEf I) * x = ((N : AEf I) * u) * (((u⁻¹ : (AEf I)ˣ) : AEf I) * x) := by
-        rw [mul_assoc, ← mul_assoc (u : AEf I), Units.mul_inv, one_mul]
-      rw [e]
-      exact mul_mem hu hx
-    obtain ⟨a, -, z, hz, he⟩ := IntAf_approx (N * N) (Nat.mul_pos hN hN) _ hNx
-    have hNE : (N : I.E) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-    have hNA : IsUnit (N : AEf I) := AfT.isUnit_natCast I N hN
-    have h1 : (N : AEf I) * iE I (a / N) = iE I a := by
-      have : (N : I.E) * (a / N) = a := by field_simp
-      rw [← map_natCast (iE I) N, ← map_mul, this]
-    have hx' : x = iE I (a / N) + (N : AEf I) * z := by
-      apply hNA.mul_left_cancel
-      rw [he, mul_add, h1, Nat.cast_mul]
-      ring
-    refine ⟨a / N, ?_, z, hz, by rw [map_natCast]; exact hx'⟩
-    show ((u⁻¹ : (AEf I)ˣ) : AEf I) * iE I (a / N) ∈ IntAf I.F I.E
-    have e : ((u⁻¹ : (AEf I)ˣ) : AEf I) * iE I (a / N) =
-        ((u⁻¹ : (AEf I)ˣ) : AEf I) * x - ((N : AEf I) * ((u⁻¹ : (AEf I)ˣ) : AEf I)) * z := by
-      rw [hx']; ring
-    rw [e]
-    exact sub_mem hx (mul_mem hui hz)
 
 theorem isFractional_cid (u : (AEf I)ˣ) : IsFractional (𝓞 I.E)⁰ (cid I u) := by
   obtain ⟨N, hN, hu, -⟩ := exists_nat_two I u
@@ -254,30 +222,9 @@ theorem isFractional_cid (u : (AEf I)ˣ) : IsFractional (𝓞 I.E)⁰ (cid I u) 
 
 def FI (u : (AEf I)ˣ) : FractionalIdeal (𝓞 I.E)⁰ I.E := ⟨cid I u, isFractional_cid I u⟩
 
-theorem coe_FI (u : (AEf I)ˣ) : (FI I u : Submodule (𝓞 I.E) I.E) = cid I u := rfl
 
-theorem FI_ne_zero (u : (AEf I)ˣ) : FI I u ≠ 0 := by
-  obtain ⟨N, hN, hNm, -⟩ := mem_uO I u
-  intro h
-  have hm : (N : I.E) ∈ (FI I u : Submodule (𝓞 I.E) I.E) := hNm
-  rw [h, FractionalIdeal.coe_zero, Submodule.mem_bot] at hm
-  exact (Nat.cast_ne_zero.mpr (by omega) : (N : I.E) ≠ 0) hm
 
-theorem nrmF_eq (u : (AEf I)ˣ) : nrmF I u = ((FractionalIdeal.absNorm (FI I u) : ℚ) : ℝ)⁻¹ := by
-  have h := idl_eq I u
-  have hf : IsFractional (𝓞 I.E)⁰ (idl I u) := h ▸ isFractional_cid I u
-  have e : (⟨idl I u, hf⟩ : FractionalIdeal (𝓞 I.E)⁰ I.E) = FI I u := Subtype.ext h
-  unfold nrmF
-  rw [dif_pos hf, e]
 
-theorem nrmF_pos (u : (AEf I)ˣ) : 0 < nrmF I u := by
-  rw [nrmF_eq]
-  have h0 : FractionalIdeal.absNorm (FI I u) ≠ 0 := by
-    rw [Ne, FractionalIdeal.absNorm_eq_zero_iff]
-    exact FI_ne_zero I u
-  have h1 : (0 : ℚ) < FractionalIdeal.absNorm (FI I u) :=
-    lt_of_le_of_ne (FractionalIdeal.absNorm_nonneg _) (Ne.symm h0)
-  positivity
 
 theorem mem_of_sum (𝔡 : FractionalIdeal (𝓞 I.E)⁰ I.E) (d : I.E) (hd : d ∈ (𝔡 : Submodule (𝓞 I.E) I.E))
     (hd0 : d ≠ 0) {k : ℕ} (c : Fin k → I.E) (hc : ∀ i, c i ∈ (𝔡 : Submodule (𝓞 I.E) I.E))
@@ -344,65 +291,7 @@ theorem mem_of_sum (𝔡 : FractionalIdeal (𝓞 I.E)⁰ I.E) (d : I.E) (hd : d 
   rw [this, hsub]
   exact add_mem (Submodule.smul_mem _ _ hd) hsum
 
-theorem FI_mul (u v : (AEf I)ˣ) : FI I (u * v) = FI I u * FI I v := by
-  rw [← FractionalIdeal.coeToSubmodule_inj, FractionalIdeal.coe_mul, coe_FI, coe_FI, coe_FI]
-  apply le_antisymm
-  · intro x hx
-    rw [mem_cid] at hx
-    obtain ⟨Nu, hNu, hNum, hu⟩ := mem_uO I u
-    obtain ⟨Nv, hNv, hNvm, hv⟩ := mem_uO I v
-    have hy : ((v⁻¹ : (AEf I)ˣ) : AEf I) * (((u⁻¹ : (AEf I)ˣ) : AEf I) * iE I x) ∈ IntAf I.F I.E := by
-      rw [← mul_assoc, ← Units.val_mul, ← mul_inv_rev]; exact hx
-    obtain ⟨b, hb, z, hz, hbz⟩ := hv _ hy
-    have h1 : ((u⁻¹ : (AEf I)ˣ) : AEf I) * (u : AEf I) ∈ IntAf I.F I.E := by
-      rw [Units.inv_mul]; exact one_mem _
-    have h2 : ((u⁻¹ : (AEf I)ˣ) : AEf I) * ((u : AEf I) * z) ∈ IntAf I.F I.E := by
-      rw [← mul_assoc, Units.inv_mul, one_mul]; exact hz
-    obtain ⟨b1, hb1, z1, hz1, e1⟩ := hu _ h1
-    obtain ⟨b2, hb2, z2, hz2, e2⟩ := hu _ h2
-    have hxe : iE I x = (u : AEf I) * (((u⁻¹ : (AEf I)ˣ) : AEf I) * iE I x) := by
-      rw [← mul_assoc, Units.mul_inv, one_mul]
-    have key : iE I x = ∑ i, iE I (![b1 * b, (Nu : I.E) * b, b2 * (Nv : I.E), (Nu : I.E) * Nv] i) *
-        ![1, z1, 1, z2] i := by
-      simp only [Fin.sum_univ_four, Matrix.cons_val]
-      rw [hxe, hbz]
-      have e3 : (u : AEf I) * (iE I b + iE I (Nv : I.E) * z) = iE I b * (u : AEf I) + iE I (Nv : I.E) * ((u : AEf I) * z) := by
-        ring
-      rw [e3, e2, e1]
-      simp only [map_mul]
-      ring
-    have hd0 : ((Nu : I.E) * Nv) ≠ 0 := mul_ne_zero (Nat.cast_ne_zero.mpr (by omega)) (Nat.cast_ne_zero.mpr (by omega))
-    have hP : ∀ {p q : I.E}, p ∈ cid I u → q ∈ cid I v → p * q ∈ ((FI I u * FI I v : FractionalIdeal (𝓞 I.E)⁰ I.E) : Submodule (𝓞 I.E) I.E) := by
-      intro p q hp hq
-      rw [FractionalIdeal.coe_mul]
-      exact Submodule.mul_mem_mul hp hq
-    have hcs : ∀ i, ![b1 * b, (Nu : I.E) * b, b2 * (Nv : I.E), (Nu : I.E) * Nv] i ∈
-        ((FI I u * FI I v : FractionalIdeal (𝓞 I.E)⁰ I.E) : Submodule (𝓞 I.E) I.E) := by
-      intro i
-      match i with
-      | 0 => exact hP hb1 hb
-      | 1 => exact hP hNum hb
-      | 2 => exact hP hb2 hNvm
-      | 3 => exact hP hNum hNvm
-    have hss : ∀ i, ![1, z1, 1, z2] i ∈ IntAf I.F I.E := by
-      intro i
-      match i with
-      | 0 => exact one_mem _
-      | 1 => exact hz1
-      | 2 => exact one_mem _
-      | 3 => exact hz2
-    have hmem := mem_of_sum I (FI I u * FI I v) ((Nu : I.E) * Nv) (hP hNum hNvm) hd0 _ hcs _ hss x key
-    rwa [FractionalIdeal.coe_mul] at hmem
-  · refine Submodule.mul_le.2 fun m hm n hn => ?_
-    rw [mem_cid] at *
-    have e : (((u * v)⁻¹ : (AEf I)ˣ) : AEf I) * iE I (m * n) =
-        (((u⁻¹ : (AEf I)ˣ) : AEf I) * iE I m) * (((v⁻¹ : (AEf I)ˣ) : AEf I) * iE I n) := by
-      rw [mul_inv_rev, Units.val_mul, map_mul]; ring
-    rw [e]
-    exact mul_mem hm hn
 
-theorem nrmF_mul (u v : (AEf I)ˣ) : nrmF I (u * v) = nrmF I u * nrmF I v := by
-  rw [nrmF_eq, nrmF_eq, nrmF_eq, FI_mul, map_mul, Rat.cast_mul, mul_inv]
 
 end Unit
 

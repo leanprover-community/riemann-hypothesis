@@ -4641,27 +4641,7 @@ def blockThresholdFirst (E₃ : ℝ) : ℝ := if h : 0 ≤ E₃ then (block_fami
 
 def blockThresholdSecond (E₃ : ℝ) : ℝ := if h : 0 ≤ E₃ then (block_family_of_open E₃ h).choose_spec.choose else 0
 
-theorem block_theorem_family_at_thresholds {E₃ : ℝ} (hE₃ : 0 ≤ E₃) {CA CA' : ℝ} (hCA : blockThresholdFirst E₃ ≤ CA) (hCA' : blockThresholdSecond E₃ ≤ CA')
-    {E₀ Eg E₁ E₂ : ℝ} (h0 : E₀ ≤ CA) (hg : Eg ≤ CA) (h1 : 0 < E₁) (h1' : E₁ ≤ CA) (h2 : 0 < E₂) (h2' : E₂ ≤ CA)
-    (CB Co Cd Cv K1 K2 Cs cD C₁ Cg₁ Cg₂ : ℝ) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (Gm : BlockEstimateTheorem.GM)
-    (hO : ∀ x (i : Fm.Ix x), OpenAll (Fm.D x i) Gm) :
-    BlockEstimateTheorem.KudlaFamilyStatement Fm Gm 5 CB Co Cd Cv K1 K2 Cs cD C₁ Cg₁ Cg₂ E₀ Eg E₁ E₂ E₃ CA CA' := by
-  unfold blockThresholdFirst at hCA
-  unfold blockThresholdSecond at hCA'
-  rw [dif_pos hE₃] at hCA hCA'
-  exact (block_family_of_open E₃ hE₃).choose_spec.choose_spec CA hCA CA' hCA' E₀ Eg E₁ E₂ h0 hg h1 h1' h2 h2'
-    CB Co Cd Cv K1 K2 Cs cD C₁ Cg₁ Cg₂ Fm Gm hO
 
-theorem block_statement_uniform_of_open (hO : ∀ (D : D7) (Gm : BlockEstimateTheorem.GM), OpenAll D Gm) : BlockEstimateTheorem.UniformExportStatement := by
-  intro Kst CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ E₀ Eg E₁ E₂ E₃ hK h1 h2 h3
-  obtain ⟨Ca, Cb, h⟩ := block_statement_of_open Kst hK E₃ h3.le
-  refine ⟨max Ca (max E₀ (max Eg (max E₁ E₂))), Cb, fun C hC C' hC' D Gm => ?_⟩
-  have b1 : Ca ≤ C := le_trans (le_max_left _ _) hC
-  have b2 : max E₀ (max Eg (max E₁ E₂)) ≤ C := le_trans (le_max_right _ _) hC
-  have b3 : max Eg (max E₁ E₂) ≤ C := le_trans (le_max_right _ _) b2
-  have b4 : max E₁ E₂ ≤ C := le_trans (le_max_right _ _) b3
-  exact h C b1 C' hC' E₀ Eg E₁ E₂ (le_trans (le_max_left _ _) b2) (le_trans (le_max_left _ _) b3) h1
-    (le_trans (le_max_left _ _) b4) h2 (le_trans (le_max_right _ _) b4) CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ D Gm (hO D Gm)
 
 end Formalism.MainNotions.BlockEstimateWords
 

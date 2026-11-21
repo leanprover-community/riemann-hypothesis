@@ -83,24 +83,6 @@ theorem exists_nat_val_lt_one (v : HeightOneSpectrum (𝓞 F)) :
     rw [e, HeightOneSpectrum.valuedAdicCompletion_eq_valuation', HeightOneSpectrum.valuation_lt_one_iff_mem]
     exact Ideal.absNorm_mem _
 
-theorem eq_zero_of_mem_factorial (x : FiniteAdeleRing (𝓞 F) F)
-    (h : ∀ n : ℕ, ∃ y ∈ Formalism.IndefR.PHeisFC.Ohat F, x = n.factorial • y) : x = 0 := by
-  refine RestrictedProduct.ext _ _ fun v => ?_
-  by_contra hne
-  have hne' : x v ≠ 0 := fun h0 => hne (by exact h0)
-  have hx0 : Valued.v (x v) ≠ 0 := (Valuation.ne_zero_iff _).mpr hne'
-  obtain ⟨N, hN1, hN⟩ := exists_nat_val_lt_one v
-  obtain ⟨k, hk⟩ := exists_pow_lt hx0 hN
-  obtain ⟨y, hy, rfl⟩ := h (N * k)
-  have hyv : Valued.v (y v) ≤ 1 := (HeightOneSpectrum.mem_adicCompletionIntegers _ _ v).mp (hy v)
-  have e : ((N * k).factorial • y) v = (((N * k).factorial : ℕ) : v.adicCompletion F) * y v := by
-    rw [nsmul_eq_mul]; rfl
-  have : Valued.v (((N * k).factorial • y) v) ≤ Valued.v ((N : ℕ) : v.adicCompletion F) ^ k := by
-    rw [e, map_mul]
-    calc _ ≤ Valued.v (((N * k).factorial : ℕ) : v.adicCompletion F) * 1 := mul_le_mul' le_rfl hyv
-      _ = _ := mul_one _
-      _ ≤ _ := val_factorial_le v N hN1 k
-  exact absurd (lt_of_le_of_lt this hk) (lt_irrefl _)
 
 end Val
 

@@ -143,13 +143,10 @@ def toVSys (N₁ : ℕ) (hl : Φ.abelian₂) (hf : Φ.Four N₁) : VSys bar q W 
   lam := hl
   four := hf
 
-theorem pre_toVSys (N₁ : ℕ) (hl : Φ.abelian₂) (hf : Φ.Four N₁) : (Φ.toVSys N₁ hl hf).pre = Φ := rfl
 
 end VPre
 
-theorem VSys.pre_lam {N₁ : ℕ} (Φ : VSys bar q W N₁ A) : Φ.pre.abelian₂ := Φ.lam
 
-theorem VSys.pre_four {N₁ : ℕ} (Φ : VSys bar q W N₁ A) : Φ.pre.Four N₁ := Φ.four
 end
 
 namespace Sep

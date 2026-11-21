@@ -169,25 +169,8 @@ def RoomOffGridS : Prop :=
         ys.Pairwise (fun y y' => 4 < |y - y'|) ∧ KB.CutWord (D.parOf S v) (S.l + 1) (KB.plusW ys w) ∧
         KB.CutWord (D.parOf S v) (S.l + 1) (KB.minusW ys w)
 
-theorem roomOffGridS : RoomOffGridS := by
-  intro E _ _ _ Wp Wq _ _ _ _ S hG hC v w m B hw hlen
-  have hN : 20 ≤ S.Ntop := by
-    unfold C.HidaSetting.Ntop C.Kst
-    omega
-  have hN' : (20 : ℝ) ≤ S.Ntop := by exact_mod_cast hN
-  have hlen' : (w.length : ℝ) + m + B.card ≤ 2 * S.Ntop := by exact_mod_cast hlen
-  have hgap := (hG v).1
-  have h2 : (400 : ℝ) ≤ (S.Ntop : ℝ) ^ 2 := by nlinarith
-  have h3 : (400 : ℝ) * S.Ntop ≤ (S.Ntop : ℝ) ^ 3 := by
-    calc (400 : ℝ) * S.Ntop ≤ (S.Ntop : ℝ) ^ 2 * S.Ntop := mul_le_mul_of_nonneg_right h2 (by positivity)
-      _ = (S.Ntop : ℝ) ^ 3 := by ring
-  have key : 10 * ((w.length : ℝ) + m + B.card + 1) ≤ S.cutHi v - S.cutLo v := by
-    clear hw hC
-    linarith
-  exact roomOffGrid (D.parOf S v) (S.l + 1) (S.cutLo v) (S.cutHi v) (fun Y h1 h2 => hC v Y ⟨h1, h2⟩) w m B hw key
 
 end Formalism.FourierDecayAlt.P.PBD
 
 theorem Formalism.FourierDecayAlt.P.room_off_grid : Formalism.FourierDecayAlt.P.PBD.RoomOffGrid := Formalism.FourierDecayAlt.P.PBD.roomOffGrid
 
-theorem Formalism.FourierDecayAlt.P.room_off_grid_symmetric : Formalism.FourierDecayAlt.P.PBD.RoomOffGridS := Formalism.FourierDecayAlt.P.PBD.roomOffGridS

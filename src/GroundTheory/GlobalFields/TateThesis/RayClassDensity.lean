@@ -38,9 +38,6 @@ def circleChar (φ : AddChar (Additive G) ℂ) : G →* Circle where
     change φ (Additive.ofMul (g * h)) = φ (Additive.ofMul g) * φ (Additive.ofMul h)
     rw [ofMul_mul, AddChar.map_add_eq_mul])
 
-theorem coe_circleChar (φ : AddChar (Additive G) ℂ) (g : G) :
-    (circleChar φ g : ℂ) = φ (Additive.ofMul g) :=
-  rfl
 
 end FiniteCharacters
 
@@ -61,10 +58,6 @@ def ofHom (q : IdeleGroup K →* G) (hq : IsOpen (q.ker : Set (IdeleGroup K)))
       continuous_of_discreteTopology
     exact hc.comp (QuotientGroup.continuous_mk (N := q.ker))
 
-theorem ofHom_toIdele (q : IdeleGroup K →* G) (hq : IsOpen (q.ker : Set (IdeleGroup K)))
-    (hK : (IdeleGroup.diagonal K).range ≤ q.ker) (ψ : G →* Circle) (x : IdeleGroup K) :
-    (ofHom q hq hK ψ).toIdele x = ψ (q x) :=
-  rfl
 
 end HeckeCharacter
 
@@ -331,25 +324,6 @@ theorem hasDirichletDensity_setOf_map_eq (hqs : Function.Surjective q) (c : G) :
 
 end Density
 
-theorem hasDirichletDensity_setOf_mk_eq {H : Subgroup (IdeleGroup K)}
-    (hH : IsOpen (H : Set (IdeleGroup K))) (hK : (IdeleGroup.diagonal K).range ≤ H) [H.FiniteIndex]
-    (c : IdeleGroup K ⧸ H) :
-    {v : HeightOneSpectrum (𝓞 K) | ∀ π : (v.adicCompletion K)ˣ,
-      Valued.v (π : v.adicCompletion K) = WithZero.exp (-1 : ℤ) →
-        ((finiteEmbedding v π : IdeleGroup K) : IdeleGroup K ⧸ H) = c}.HasDirichletDensity
-      (1 / Nat.card (IdeleGroup K ⧸ H)) := by
-  have : Finite (IdeleGroup K ⧸ H) := Subgroup.finite_quotient_of_finiteIndex
-  let _ : CommGroup (IdeleGroup K ⧸ H) := QuotientGroup.Quotient.commGroup H
-  let q : IdeleGroup K →* IdeleGroup K ⧸ H :=
-    { toFun := fun x ↦ (x : IdeleGroup K ⧸ H)
-      map_one' := rfl
-      map_mul' := fun _ _ ↦ rfl }
-  have hker : q.ker = H := by
-    ext x
-    exact QuotientGroup.eq_one_iff x
-  have hH' : IsOpen (q.ker : Set (IdeleGroup K)) := by rw [hker]; exact hH
-  have hK' : (IdeleGroup.diagonal K).range ≤ q.ker := by rw [hker]; exact hK
-  exact hasDirichletDensity_setOf_map_eq q hH' hK' QuotientGroup.mk_surjective c
 
 end
 

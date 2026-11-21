@@ -349,11 +349,6 @@ theorem galois_hypotheses_of_isTriple {D : D7} {T : WDTie D.nd D.naut} {C₀ : C
       ∀ i, D.ntw.NonzeroIndexPlace i → True ∧ ∀ s : D.ntw.Sig i, SelfDual i s ∧ NoJump (bk0 D) i s :=
   galois_hypotheses_of_attached D (bk0 D) hF (fun _ _ => ⟨_, ⟨D.locT _⟩⟩) h2 (tripleAtt_of_isTriple S hF hG h)
 
-theorem adm1_of_isTriple (hC : GlobalTheory.Published.ChebotarevDegreeOne) (hB : GlobalTheory.Published.DeRhamPotSemistable) (D : D7)
-    (T : WDTie D.nd D.naut) (C₀ : CharFrame D) (S : CharSide D C₀) (hG : GalAll D T) (h2 : BlochKatoReduction.adm2 D) (h : IsTriple D) :
-    BlochKatoReduction.Gen.adm1 (BlochKatoReduction.bk0 D) :=
-  (galois_hypotheses_of_isTriple S (GlobalTheory.SplitFrobDense.frobDense D (GlobalTheory.Published.chebotarevDegreeOne_iff_cheb.1 hC))
-    (hG.hodge hB) h2 h).1
 
 end GlobalTheory.TripleLocal
 

@@ -977,8 +977,6 @@ theorem m_levelVL_Lb (pzc : 𝓞 E) (hpz : (P.pz : E) * (pzc : E) = (P.T : E))
   unfold levelVL Par.Lb
   rw [iw_latS_eq (F := F) k P.pz pzc P.T hpz v hTv]
 
-theorem m_iwPre_eq (v : HeightOneSpectrum (𝓞 F)) (s : SplitCore P.σ v) :
-    P.iwPre v s.φ = congU P.σ P.J v s (Subgroup.closure (upperUni k _)) := rfl
 
 theorem m_orient (hpz : (P.pz : E) * P.σ (P.pz : E) = (P.T : E)) (v : HeightOneSpectrum (𝓞 F))
     (s : SplitCore P.σ v) (hval : Valued.v ((P.T : ℕ) : v.adicCompletion F) = WithZero.exp (-1 : ℤ)) :
@@ -1163,18 +1161,8 @@ theorem IdxHyp.relIndex_ne_zero (h : IdxHyp P f) (S : P.Splits) :
     simp only [Finset.mem_union, Set.Finite.mem_toFinset, Set.mem_ofPred_eq, not_or] at hv
     exact h.Uloc_hyp S v hv.2 hv.1.1 hv.1.2
 
-theorem IdxHyp.relIndex_GA (h : IdxHyp P f) (S : P.Splits) :
-    (((P.U S).subgroupOf P.GA).relIndex ((levelAfL P.σ P.J (Formalism.MainNotions.StandardLattice.stdLat E k)).subgroupOf P.GA) : ℝ) =
-      Formalism.MainNotions.StandardLattice.idxColLoc (P.gp 0) k ^ f * Formalism.MainNotions.StandardLattice.idxColLoc (P.gp 1) k ^ f * ((P.T : ℝ) ^ k - 1) ^ f := by
-  rw [Subgroup.relIndex_subgroupOf (show levelAfL P.σ P.J (Formalism.MainNotions.StandardLattice.stdLat E k) ≤ P.GA from inf_le_left)]
-  exact h.relIndex S
 
-theorem IdxHyp.relIndex_GA_ne_zero (h : IdxHyp P f) (S : P.Splits) :
-    ((P.U S).subgroupOf P.GA).relIndex ((levelAfL P.σ P.J (Formalism.MainNotions.StandardLattice.stdLat E k)).subgroupOf P.GA) ≠ 0 := by
-  rw [Subgroup.relIndex_subgroupOf (show levelAfL P.σ P.J (Formalism.MainNotions.StandardLattice.stdLat E k) ≤ P.GA from inf_le_left)]
-  exact h.relIndex_ne_zero S
 
-theorem IdxHyp.idxOK (h : IdxHyp P f) : IdxOK P f := fun S => ⟨h.U_le S, h.relIndex S⟩
 
 end Asm
 

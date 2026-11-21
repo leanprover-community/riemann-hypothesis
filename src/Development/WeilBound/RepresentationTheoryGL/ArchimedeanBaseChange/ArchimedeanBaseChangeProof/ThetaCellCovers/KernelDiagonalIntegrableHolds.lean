@@ -22,7 +22,6 @@ theorem cutRed : CutRed := cutRed_of degRat cellCover_holds cutBox redBasic redC
 theorem cntPair : CntPair := cntPair_of ratProper_holds thetaBasic_holds
 theorem wtCount : WtCount := wtCount_of ratProper_holds cellSum cellCover_holds redBasic redCell GlobalTheory.CompanionTheory.LatticeSum.latSum
 theorem cutCount : CutCount := cutCount_of redBasic cutRed wtCount
-theorem wtDiag : WtDiag := wtDiag_of ratProper_holds cntBasic wtCount
 theorem vecsEx : VecsEx := GlobalTheory.CompanionTheory.DualVectorFamily.vecsEx_of ratProper_holds kerBasic kerLin cntBasic cntPair vecEx vecNorm vecInner ptEq
 theorem lBound : LBound := GlobalTheory.CompanionTheory.LBoundProof.lBound_of mahler_holds cutCount
 theorem sFun_holds : SFun := sFun_of vecsEx lBound
@@ -30,7 +29,6 @@ theorem sBound_holds : F.SBound := sBound_of (sb_of sFun_holds)
 theorem bridge_holds : F.Bridge := bridge_of (GlobalTheory.CompanionTheory.PairDom.prodDom ratProper_holds)
 theorem opEx_holds : F.OpEx := opEx_of ratProper_holds opExA opAdj opMul
 theorem kernel_operator_exists_holds : E.SmoothSeminormGrowth := kernel_operator_exists_of opEx_holds
-theorem kernel_diagonal_integrable_holds : E.KernelDiagonalIntegrable := kernel_diagonal_integrable_of ratProper_holds kerBasic kerLin opEx_holds wtDiag
 theorem growthJ_of_ell (h : D4.EllFormula2J) : GrowthJ := growthJ_of h sBound_holds bridge_holds domEx_holds
 
 open MeasureTheory GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL in

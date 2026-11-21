@@ -80,12 +80,6 @@ theorem hypsMet (D : D7) (n m : ℕ) : HypsMet D.host.F D.host.E D.sp.cm.sig n m
   obtain ⟨A, V, rfl, rfl, h⟩ := GlobalTheory.AnisoStdModel.ranks D n m
   exact hypsMet_of D A V h
 
-theorem ranges_met (D : D7) (n : ℕ) (hn : 1 ≤ n) :
-    (∃ m, 1 ≤ m ∧ 2 * n < m ∧ HypsMet D.host.F D.host.E D.sp.cm.sig n m) ∧
-    (∃ m, 1 ≤ m ∧ (n < m ∧ m ≤ 2 * n) ∧ HypsMet D.host.F D.host.E D.sp.cm.sig n m) ∧
-    ∃ m, 1 ≤ m ∧ m ≤ n ∧ HypsMet D.host.F D.host.E D.sp.cm.sig n m :=
-  ⟨⟨2 * n + 1, by omega, by omega, hypsMet D _ _⟩, ⟨2 * n, by omega, by omega, hypsMet D _ _⟩,
-    ⟨n, hn, le_rfl, hypsMet D _ _⟩⟩
 
 theorem exists_field : ∃ (F E : Type) (_ : Field F) (_ : NumberField F) (_ : Field E) (_ : NumberField E) (_ : Algebra F E)
     (σ : E →ₐ[F] E), ∀ n m, HypsMet F E σ n m := by

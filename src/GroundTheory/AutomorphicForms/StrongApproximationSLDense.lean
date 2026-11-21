@@ -64,9 +64,6 @@ theorem mem_finiteSL {g : FiniteAdelicGL K n} :
 def rationalFiniteSL : Subgroup (FiniteAdelicGL K n) :=
   (Matrix.GeneralLinearGroup.det : GL (Fin n) K →* Kˣ).ker.map (finiteDiagonal K n)
 
-theorem rationalFiniteSL_le_finiteSL : rationalFiniteSL K n ≤ finiteSL K n := by
-  rintro _ ⟨γ, hγ, rfl⟩
-  rw [mem_finiteSL, det_finiteDiagonal, MonoidHom.mem_ker.1 hγ, map_one]
 
 theorem continuous_transvectionGL {R : Type*} [CommRing R] [TopologicalSpace R]
     [IsTopologicalRing R] (i j : Fin n) (h : i ≠ j) :
@@ -312,15 +309,6 @@ theorem finiteSL_le_topologicalClosure :
   closure_minimal (elementarySubgroup_le_topologicalClosure K n)
     (Subgroup.isClosed_topologicalClosure _) (mem_closure_elementarySubgroup ((mem_finiteSL K n).1 hg))
 
-theorem dense_rationalFiniteSL :
-    Dense (((rationalFiniteSL K n).subgroupOf (finiteSL K n) : Subgroup (finiteSL K n)) :
-      Set (finiteSL K n)) := by
-  rw [Topology.IsInducing.subtypeVal.dense_iff]
-  intro x
-  have hx := finiteSL_le_topologicalClosure K n x.2
-  rw [← SetLike.mem_coe, Subgroup.topologicalClosure_coe] at hx
-  refine closure_mono (fun g hg => ?_) hx
-  exact ⟨⟨g, rationalFiniteSL_le_finiteSL K n hg⟩, Subgroup.mem_subgroupOf.2 hg, rfl⟩
 
 theorem exists_finiteDiagonal_mem_nhds {g : FiniteAdelicGL K n}
     (hg : Matrix.GeneralLinearGroup.det g = 1) {U : Set (FiniteAdelicGL K n)} (hU : U ∈ 𝓝 g) :

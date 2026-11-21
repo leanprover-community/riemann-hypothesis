@@ -74,7 +74,6 @@ abbrev objF {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x)
 
 def TrueF {eps : ℝ} (Fm : FamP eps) : Prop := ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), IsTrue (Fm.D x i) (objF Fm x hx i)
 
-theorem TrueF.selBF {eps : ℝ} {Fm : FamP eps} (h : TrueF Fm) : SelBF Fm := ⟨0, fun x _ hx i => (h x hx i).selB⟩
 
 end GlobalTheory.Core.Cls
 

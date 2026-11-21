@@ -160,26 +160,6 @@ theorem finite_small {g : ℕ} (hg : 0 < g) : {y | y ∈ latZ X d g ∧ ‖y‖ 
   · have := hτ ⟨_, (X.conj_mem_iff σ).2 hσ⟩
     simpa [ComplexEmbedding.conjugate_coe_eq] using this
 
-theorem discrete_latZ {g : ℕ} (hg : 0 < g) : DiscreteTopology (latZ X d g) := by
-  rw [discreteTopology_iff_isOpen_singleton_zero]
-  set T := {y : hermSub X.Ψ d | y ∈ latZ X d g ∧ ‖y‖ < 1} \ {0}
-  have hT : IsClosed T := ((finite_small X hg).subset Set.sdiff_subset).isClosed
-  have h0 : (0 : hermSub X.Ψ d) ∈ Tᶜ := by simp [T]
-  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hT.isOpen_compl 0 h0
-  rw [Metric.isOpen_iff]
-  intro q hq
-  rw [Set.mem_singleton_iff] at hq
-  subst hq
-  refine ⟨min ε 1, lt_min hε one_pos, fun q hq => ?_⟩
-  rw [Metric.mem_ball, dist_zero_right] at hq
-  rw [Set.mem_singleton_iff]
-  apply Subtype.ext
-  have hq' : ‖(q : hermSub X.Ψ d)‖ < min ε 1 := hq
-  by_contra hne
-  have hmem : (q : hermSub X.Ψ d) ∈ T := ⟨⟨q.2, lt_of_lt_of_le hq' (min_le_right _ _)⟩, hne⟩
-  have : (q : hermSub X.Ψ d) ∈ Metric.ball (0 : hermSub X.Ψ d) ε := by
-    rw [Metric.mem_ball, dist_zero_right]; exact lt_of_lt_of_le hq' (min_le_left _ _)
-  exact hball this hmem
 
 open FourierCoefficientLattice in
 theorem span_latZ {g : ℕ} (hg : 0 < g) :
@@ -211,37 +191,6 @@ theorem span_latZ {g : ℕ} (hg : 0 < g) :
   rw [sum_hermSingle b]
   exact Submodule.sum_mem _ fun i _ => Submodule.sum_mem _ fun k _ => key _ _ _
 
-theorem exists_isLZBasis {g : ℕ} (hg : 0 < g) : ∃ ω, IsLZBasis (d := d) X g ω := by
-  have := discrete_latZ (d := d) X hg
-  have : IsZLattice ℝ (latZ X d g) := ⟨span_latZ X hg⟩
-  have hrank : Module.finrank ℤ (latZ X d g) = d * d * Fintype.card X.Ψ := by
-    rw [ZLattice.rank ℝ (latZ X d g), finrank_hermSub]
-  set bZ := Module.finBasisOfFinrankEq ℤ (latZ X d g) hrank
-  set eR := bZ.ofZLatticeBasis ℝ (latZ X d g)
-  have heR : ∀ j, eR j = (bZ j : hermSub X.Ψ d) := fun j => bZ.ofZLatticeBasis_apply ℝ _ j
-  have hli : LinearIndependent ℝ (fun j => (eR j).1) :=
-    eR.linearIndependent.map' (hermSub X.Ψ d).subtype (Submodule.ker_subtype _)
-  have hc : ∀ (m : ℤ) (v : X.Ψ → Fin d → Fin d → ℂ), (m : ℂ) • v = (m : ℝ) • v := fun m v => by
-    rw [← Complex.ofReal_intCast, Complex.coe_smul]
-  refine ⟨fun j => (eR j).1, fun j => ?_, fun b hb => ?_, hli⟩
-  · rw [← mem_latZ, heR]; exact (bZ j).2
-  · set b' : latZ X d g := ⟨⟨b, isHerm_of_mem_LZ X hb⟩, hb⟩
-    set n := bZ.repr b'
-    have h1 := congrArg (fun v : latZ X d g => v.1.1) (bZ.sum_repr b')
-    simp only [Submodule.coe_sum, Submodule.coe_smul_of_tower] at h1
-    have hb' : b = ∑ j, (n j : ℂ) • (eR j).1 := by
-      refine h1.symm.trans (Finset.sum_congr rfl fun j _ => ?_)
-      rw [heR, Int.cast_smul_eq_zsmul]
-    refine ⟨n, hb', fun n' hn' => ?_⟩
-    have e : ∑ j, (n' j : ℝ) • (eR j).1 = ∑ j, (n j : ℝ) • (eR j).1 := by
-      have := hn'.symm.trans hb'
-      simpa only [hc] using this
-    have hz := Fintype.linearIndependent_iff.1 hli (fun j => (n' j : ℝ) - n j) (by
-      simp only [sub_smul, Finset.sum_sub_distrib]
-      rw [e, sub_self])
-    funext j
-    have := sub_eq_zero.1 (hz j)
-    exact_mod_cast this
 
 theorem IsLZBasis.exists_basis {g : ℕ}
     {ω : Fin (d * d * Fintype.card X.Ψ) → X.Ψ → Fin d → Fin d → ℂ} (hω : IsLZBasis X g ω) :
@@ -303,9 +252,6 @@ theorem exists_form_eq (φ : hermSub X.Ψ d →ₗ[ℝ] ℝ) : ∃ χ, IsHerm χ
     (Subspace.dual_finrank_eq (K := ℝ) (V := hermSub X.Ψ d)).symm).1 (form_injective X) φ
   exact ⟨χ.1, χ.2, h⟩
 
-theorem isFreqZ_iff {g : ℕ} (χ : X.Ψ → Fin d → Fin d → ℂ) :
-    IsFreqZ X g χ ↔ ∀ l ∈ latZ X d g, ∃ k : ℤ, form X χ l = k :=
-  ⟨fun h l hl => h l.1 hl, fun h b hb => h ⟨b, isHerm_of_mem_LZ X hb⟩ hb⟩
 
 end
 

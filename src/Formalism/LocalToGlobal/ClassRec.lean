@@ -45,7 +45,6 @@ theorem LayerTwoFamilyClass.c2sk {eps : ℝ} {Fm : FamP eps} (h : LayerTwoFamily
 
 theorem LayerTwoFamilyClass.c2s {eps : ℝ} {Fm : FamP eps} (h : LayerTwoFamilyClass Fm) : LinkedFamiliesLevelClass Fm := h.c2sk.c2s
 
-theorem LayerTwoFamilyClass.c2sa {eps : ℝ} {Fm : FamP eps} (h : LayerTwoFamilyClass Fm) : LinkedFamiliesAligned Fm := h.2
 
 theorem gTiedF_of_C2Rec {eps : ℝ} (Fm : FamP eps) (h : LayerTwoFamilyClass Fm) : G.GroupCompatibilityFamily Fm := gTiedF_of_C2S Fm h.c2s
 

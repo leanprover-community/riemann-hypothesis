@@ -99,9 +99,6 @@ theorem part_apply_op (φ : part π K R) {n : ℕ} {z : Fin n → G} {hz : IsHec
     (hT : R z hz T) (v : fix π K) : (φ : fix π K →ₗ[E] M) (op π hz v) = T ((φ : fix π K →ₗ[E] M) v) :=
   mem_part_iff_apply.1 φ.2 z hz T hT v
 
-theorem mem_part_ofFun {t : ∀ {n : ℕ} (z : Fin n → G), IsHeckeFam K z → Module.End E M} {φ : fix π K →ₗ[E] M} :
-    φ ∈ part π K (HeckeRel.ofFun t) ↔ ∀ ⦃n : ℕ⦄ (z : Fin n → G) (hz : IsHeckeFam K z), φ ∘ₗ op π hz = t z hz ∘ₗ φ :=
-  ⟨fun h _ z hz => h z hz _ rfl, fun h _ z hz _ hT => hT ▸ h z hz⟩
 
 def Intertw (R : HeckeRel E K M) (R' : HeckeRel E K M') (f : M →ₗ[E] M') : Prop :=
   ∀ ⦃n : ℕ⦄ (z : Fin n → G) (hz : IsHeckeFam K z) (T' : Module.End E M'), R' z hz T' →

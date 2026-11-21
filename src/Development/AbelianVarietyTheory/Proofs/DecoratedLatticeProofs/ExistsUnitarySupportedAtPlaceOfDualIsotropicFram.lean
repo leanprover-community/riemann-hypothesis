@@ -49,10 +49,6 @@ theorem gXY {k : ℕ} (X : Mx D ρ k) : adj d.jX ⬝ (gA S ⬝ (d.jY ⬝ X)) = X
   rw [mul_tail₃ d.gram_XY, Matrix.one_mul]
 theorem g0X {k : ℕ} (X : Mx D ρ k) : adj d.j0 ⬝ (gA S ⬝ (d.jX ⬝ X)) = 0 := by
   rw [mul_tail₃ d.gram_0X, Matrix.zero_mul]
-theorem g0Y {k : ℕ} (X : Mx D ρ k) : adj d.j0 ⬝ (gA S ⬝ (d.jY ⬝ X)) = 0 := by
-  rw [mul_tail₃ d.gram_0Y, Matrix.zero_mul]
-theorem adjoint_jX_gram_j_zero_eq_zero {k : ℕ} (X : Mx D S₀.rank k) : adj d.jX ⬝ (gA S ⬝ (d.j0 ⬝ X)) = 0 := by
-  rw [mul_tail₃ d.wittDecomp_gram_X_anisotropic, Matrix.zero_mul]
 theorem g00 {k : ℕ} (X : Mx D S₀.rank k) : adj d.j0 ⬝ (gA S ⬝ (d.j0 ⬝ X)) = gA S₀ ⬝ X :=
   mul_tail₃ d.gram_00 X
 

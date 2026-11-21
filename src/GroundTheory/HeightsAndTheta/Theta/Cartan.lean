@@ -21,9 +21,6 @@ theorem mul_indefJ_mul_conjTranspose {g : 𝔐} (hg : gᴴ * J * g = J) : g * J 
         simp only [Matrix.mul_assoc, indefJ_mul_self, Matrix.mul_one]
     _ = J := by rw [h2, Matrix.one_mul]
 
-theorem conjTranspose_preservesIndefJ {g : 𝔐} (hg : gᴴ * J * g = J) : gᴴᴴ * J * gᴴ = J := by
-  rw [conjTranspose_conjTranspose]
-  exact mul_indefJ_mul_conjTranspose hg
 
 theorem sqrt_preservesIndefJ {P : 𝔐} (hP : P.PosDef) (hPJ : Pᴴ * J * P = J) :
     (CFC.sqrt P)ᴴ * J * CFC.sqrt P = J := by
@@ -119,9 +116,6 @@ def cartanPos (p q : ℕ) : Set (Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ)
 def cartanMul (ks : maxCompact G × cartanPos p q) : G :=
   (ks.1 : G) * upqOfMatrix ks.2.1 ks.2.2.2
 
-theorem coe_cartanMul (ks : maxCompact G × cartanPos p q) :
-    ((cartanMul ks : GL (Fin p ⊕ Fin q) ℂ) : 𝔐) =
-      (((ks.1 : G) : GL (Fin p ⊕ Fin q) ℂ) : 𝔐) * ks.2.1 := rfl
 
 noncomputable def cartanSplit (g : G) : maxCompact G × cartanPos p q :=
   (⟨upqOfMatrix (polarUnitary (g : GL (Fin p ⊕ Fin q) ℂ)) (polarUnitary_preservesIndefJ g),
@@ -151,9 +145,6 @@ noncomputable def cartanHomeomorph : maxCompact G × cartanPos p q ≃ₜ G wher
     refine Continuous.prodMk ?_ (hP.subtype_mk _)
     exact (continuous_upqOfMatrix hU _).subtype_mk _
 
-theorem cartanHomeomorph_apply (ks : maxCompact G × cartanPos p q) :
-    ((cartanHomeomorph ks : GL (Fin p ⊕ Fin q) ℂ) : 𝔐) =
-      (((ks.1 : G) : GL (Fin p ⊕ Fin q) ℂ) : 𝔐) * ks.2.1 := rfl
 
 theorem cartan_decomposition (g : G) :
     ∃! ks : maxCompact G × cartanPos p q,
@@ -181,75 +172,8 @@ theorem isCompact_maxCompact_indefiniteUnitary :
 instance : CompactSpace (maxCompact G) :=
   isCompact_iff_compactSpace.1 isCompact_maxCompact_indefiniteUnitary
 
-theorem eq_one_of_posDef_of_bounded {n : Type*} [Fintype n] [DecidableEq n]
-    {P : Matrix n n ℂ} (hP : P.PosDef) {C : ℝ} (h1 : ∀ k : ℕ, ‖P ^ k‖ ≤ C)
-    (h2 : ∀ k : ℕ, ‖P⁻¹ ^ k‖ ≤ C) : P = 1 := by
-  rcases isEmpty_or_nonempty n with hn | hn
-  · ext i; exact isEmptyElim i
-  have hH := hP.isHermitian
-  have hu : IsUnit P := hP.isUnit
-  have hle : ∀ A : Matrix n n ℂ, (∀ k : ℕ, ‖A ^ k‖ ≤ C) → ∀ z ∈ spectrum ℂ A, ‖z‖ ≤ 1 := by
-    intro A hA z hz
-    by_contra hlt
-    push Not at hlt
-    obtain ⟨k, hk⟩ := pow_unbounded_of_one_lt (C * ‖(1 : Matrix n n ℂ)‖) hlt
-    have h := spectrum.norm_le_norm_mul_of_mem (spectrum.pow_mem_pow A k hz)
-    rw [norm_pow] at h
-    have h1n : 0 ≤ ‖(1 : Matrix n n ℂ)‖ := norm_nonneg _
-    nlinarith [hA k]
-  have key : ∀ i, hH.eigenvalues i = 1 := by
-    intro i
-    set t := hH.eigenvalues i
-    have ht : 0 < t := hP.eigenvalues_pos i
-    have hmem : (t : ℂ) ∈ spectrum ℂ P := by
-      rw [hH.spectrum_eq_image_range]
-      exact ⟨t, ⟨i, rfl⟩, rfl⟩
-    have hmem' : (t : ℂ)⁻¹ ∈ spectrum ℂ P⁻¹ := by
-      have := (spectrum.inv₀_mem_iff (r := (t : ℂ)⁻¹) (a := hu.unit)).1
-        (by rw [inv_inv, IsUnit.unit_spec]; exact hmem)
-      rwa [Matrix.coe_units_inv, IsUnit.unit_spec] at this
-    have a1 := hle P h1 _ hmem
-    have a2 := hle P⁻¹ h2 _ hmem'
-    rw [Complex.norm_real, Real.norm_of_nonneg ht.le] at a1
-    rw [norm_inv, Complex.norm_real, Real.norm_of_nonneg ht.le, inv_le_one₀ ht] at a2
-    linarith
-  rw [hH.spectral_theorem]
-  have : (RCLike.ofReal ∘ hH.eigenvalues : n → ℂ) = 1 := by
-    funext i
-    simp [key i]
-  rw [this, Pi.one_def, diagonal_one, map_one]
 
-theorem eq_maxCompact_of_isCompact {L : Subgroup G} (hL : IsCompact (L : Set G))
-    (hK : maxCompact G ≤ L) : L = maxCompact G := by
-  refine le_antisymm (fun g hg => ?_) hK
-  set ks := cartanHomeomorph.symm g
-  have hg' : g = cartanMul ks := (cartanHomeomorph.apply_symm_apply g).symm
-  set s : G := upqOfMatrix ks.2.1 ks.2.2.2
-  have hgs : g = (ks.1 : G) * s := hg'
-  have hsmat : ((s : GL (Fin p ⊕ Fin q) ℂ) : 𝔐) = ks.2.1 := rfl
-  have hsL : s ∈ L := by
-    have : s = (ks.1 : G)⁻¹ * g := by rw [hgs, inv_mul_cancel_left]
-    rw [this]
-    exact L.mul_mem (L.inv_mem (hK ks.1.2)) hg
 
-  obtain ⟨C, hC⟩ := (hL.image continuous_coe_indefiniteUnitary).isBounded.exists_norm_le
-  have hbd : ∀ x ∈ L, ‖((x : GL (Fin p ⊕ Fin q) ℂ) : 𝔐)‖ ≤ C := fun x hx => hC _ ⟨x, hx, rfl⟩
-  have hs1 : ks.2.1 = 1 := by
-    refine eq_one_of_posDef_of_bounded ks.2.2.1 (C := C) (fun k => ?_) (fun k => ?_)
-    · have := hbd (s ^ k) (L.pow_mem hsL k)
-      rwa [SubgroupClass.coe_pow, Units.val_pow_eq_pow_val, hsmat] at this
-    · have := hbd (s⁻¹ ^ k) (L.pow_mem (L.inv_mem hsL) k)
-      have hinv : (((s⁻¹ : G) : GL (Fin p ⊕ Fin q) ℂ) : 𝔐) = ks.2.1⁻¹ := by
-        rw [Subgroup.coe_inv, Matrix.coe_units_inv, hsmat]
-      rwa [SubgroupClass.coe_pow, Units.val_pow_eq_pow_val, hinv] at this
-  have : s = 1 := Subtype.ext (Units.ext hs1)
-  rw [hgs, this, mul_one]
-  exact ks.1.2
-
-theorem isMaximalCompact_maxCompact :
-    IsCompact ((maxCompact G : Subgroup G) : Set G) ∧
-      ∀ L : Subgroup G, IsCompact (L : Set G) → maxCompact G ≤ L → L = maxCompact G :=
-  ⟨isCompact_maxCompact_indefiniteUnitary, fun _ hL hK => eq_maxCompact_of_isCompact hL hK⟩
 
 end MaxCompact
 

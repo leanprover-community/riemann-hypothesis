@@ -63,53 +63,5 @@ theorem entry_bound (T : GoodSet K G) (s : T.S) (P0 P : Pair K G) (g' g : G) (σ
 
 end Bound
 
-theorem group_data_exists : GrpData := by
-  intro K _ _ G _ _ T P0 P hM1
-  refine ⟨eS_mul_eS T, fun s z => eS_central T s z, eps_idem P, fun s => intEl_of_intR _ (intR_card_eS T s),
-    fun s => ?_⟩
-  obtain ⟨g, g', Γ, hΓ, hdet, b', hb'1, hb'2⟩ := perS T P0 P hM1 s
-  refine ⟨fun k => epsS P * MonoidAlgebra.of K G (g k), fun j => epsS P0 * MonoidAlgebra.of K G (g' j), Γ, hdet,
-    ?_, fun i => intEl_of_intR _ (intR_mul (intR_epsS P) (intR_of _)),
-    fun j => intEl_of_intR _ (intR_mul (intR_epsS P0) (intR_of _)), ?_,
-    fun i => (absorb_eps T s P P0 _).symm, fun j => (absorb_eps T s P0 P _).symm, b', hb'1, hb'2⟩
-  ·
-    intro σ
-    set ΓK := Γ.map (algebraMap (𝓞 K) K) with hΓK
-    have hdetK : algebraMap (𝓞 K) K Γ.det = ΓK.det := RingHom.map_det _ _
-    have hentry : ∀ j k, (InfinitePlace.mk σ).1 (ΓK j k) ≤ ((Fintype.card G : ℕ) : ℝ) ^ 3 := by
-      intro j k
-      show ‖σ (ΓK j k)‖ ≤ _
-      rw [hΓK, Matrix.map_apply, hΓ j k]
-      exact entry_bound T s P0 P (g' j) (g k) σ
-    have hdl := Matrix.det_le hentry
-    rw [Fintype.card_fin] at hdl
-    rw [hdetK]
-    refine (show ‖σ ΓK.det‖ ≤ _ from hdl).trans ?_
-    have hnG : nS T P s ≤ Fintype.card G :=
-      (Submodule.finrank_le _).trans (finrank_le_card (T.tau s) (T.irr s))
-    have hN : ((nS T P s).factorial * (Fintype.card G ^ 3) ^ (nS T P s) : ℕ) ≤
-        Fintype.card G ^ (4 * nS T P s) := by
-      calc (nS T P s).factorial * (Fintype.card G ^ 3) ^ (nS T P s)
-          ≤ (nS T P s) ^ (nS T P s) * (Fintype.card G ^ 3) ^ (nS T P s) :=
-            Nat.mul_le_mul_right _ (Nat.factorial_le_pow _)
-        _ ≤ (Fintype.card G) ^ (nS T P s) * (Fintype.card G ^ 3) ^ (nS T P s) :=
-            Nat.mul_le_mul_right _ (Nat.pow_le_pow_left hnG _)
-        _ = Fintype.card G ^ (4 * nS T P s) := by ring
-    rw [nsmul_eq_mul]
-    exact_mod_cast hN
-  ·
-    intro i j
-    have hmul : epsS P0 * MonoidAlgebra.of K G (g' j) * (epsS P * MonoidAlgebra.of K G (g i)) * eps P0 =
-        epsS P0 * (MonoidAlgebra.of K G (g' j) * (epsS P * MonoidAlgebra.of K G (g i))) * eps P0 := by
-      simp only [mul_assoc]
-    have hτ : (T.tau s).asAlgebraHom
-        (epsS P0 * MonoidAlgebra.of K G (g' j) * (epsS P * MonoidAlgebra.of K G (g i)) * eps P0) =
-        (T.tau s).asAlgebraHom (algebraMap (𝓞 K) K (Γ j i) • eps P0) := by
-      rw [hmul, sandwich (T.tau s) P0 (hM1 s), map_smul, ← mul_assoc, ← hΓ j i]
-    calc epsS P0 * MonoidAlgebra.of K G (g' j) * (epsS P * MonoidAlgebra.of K G (g i)) * (eps P0 * eS T s)
-        = (epsS P0 * MonoidAlgebra.of K G (g' j) * (epsS P * MonoidAlgebra.of K G (g i)) * eps P0) * eS T s := by
-          simp only [mul_assoc]
-      _ = (algebraMap (𝓞 K) K (Γ j i) • eps P0) * eS T s := mul_eS_eq T s _ _ hτ
-      _ = algebraMap (𝓞 K) K (Γ j i) • (eps P0 * eS T s) := smul_mul_assoc _ _ _
 
 end PI.Dv.TIW

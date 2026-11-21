@@ -43,7 +43,6 @@ def clNorm : ClassGroup (𝓞 K') →* ClassGroup (𝓞 K) :=
     obtain ⟨J, rfl⟩ := ClassGroup.mk0_surjective b
     rw [← map_mul, norm_function_mk, norm_function_mk, norm_function_mk, map_mul, map_mul]
 
-theorem class_norm_mk (I : (Ideal (𝓞 K'))⁰) : clNorm K (ClassGroup.mk0 I) = ClassGroup.mk0 (idNorm K I) := norm_function_mk K I
 
 end Norm
 
@@ -121,14 +120,6 @@ def descHom {M : Type} [Monoid M] (π : G k Ω →* M) (h : ∀ g ∈ galOf k L 
       rw [← (galQuot k L Ω).2.1, MonoidHom.mem_ker, map_mul, map_inv, map_mul, h1, h2, h3, inv_mul_cancel]
     rw [← map_mul, ← mul_one (π (a * b)), ← h _ this, ← map_mul, mul_inv_cancel_left]
 
-theorem descHom_res {M : Type} [Monoid M] (π : G k Ω →* M) (h : ∀ g ∈ galOf k L Ω, π g = 1) (g : G k Ω) :
-    descHom L π h (resG L g) = π g := by
-  have h1 := ((galQuot k L Ω).1 (resG L g)).choose_spec
-  show π ((galQuot k L Ω).1 (resG L g)).choose = π g
-  generalize ((galQuot k L Ω).1 (resG L g)).choose = a at h1 ⊢
-  have : a⁻¹ * g ∈ galOf k L Ω := by
-    rw [← (galQuot k L Ω).2.1, MonoidHom.mem_ker, map_mul, map_inv, h1, inv_mul_cancel]
-  rw [← mul_one (π a), ← h _ this, ← map_mul, mul_inv_cancel_left]
 
 variable (k Ω) (l : ℕ) [Fact l.Prime] (N : ℕ)
 
@@ -139,8 +130,6 @@ def yGal (e : ℤ) : Representation ℤ_[l] (L ≃ₐ[k] L) (YL k Ω L l N e) :=
     obtain ⟨x, rfl⟩ := Representation.Coinvariants.mk_surjective _ y
     exact Representation.Coinvariants.mk_self_apply _ (⟨g, hg⟩ : galOf k L Ω) x
 
-theorem yGal_res (e : ℤ) (g : G k Ω) : yGal k Ω L l N e (resG L g) = yRep l N (galOf k L Ω) (galOf k L Ω) e g :=
-  descHom_res L _ _ g
 
 abbrev YLSign (e : ℤ) (c : L ≃ₐ[k] L) (s : ℤ_[l]) : Type :=
   YL k Ω L l N e ⧸ LinearMap.range (yGal k Ω L l N e c - s • (1 : Module.End ℤ_[l] (YL k Ω L l N e)))
@@ -151,8 +140,6 @@ def TwLimit (e : ℤ) (z : MonoidAlgebra ℤ_[l] (L ≃ₐ[k] L)) : Prop :=
     ∑ i, MonoidAlgebra.single (resG L (s i)) ((b i : ℤ_[l]) * ((cycZ k Ω l (s i) ^ (-e) : ℤ_[l]ˣ) : ℤ_[l])) =
       z + (l : ℤ_[l]) ^ r • w
 
-theorem twLimit_zero (e : ℤ) : TwLimit k Ω L l e 0 := fun _ n₀ =>
-  ⟨n₀, le_rfl, Empty, inferInstance, Empty.elim, Empty.elim, 0, ⟨Empty.elim, fun i => i.elim, fun _ => by simp⟩, by simp⟩
 
 end Desc
 

@@ -232,8 +232,6 @@ def lieEquiv : M ⊗[O] Lie a ≃ₗ[O] Lie b :=
 @[simp] theorem hom_lieEquiv_tmul (m : M) (v : Lie a) :
     (h.lieEquiv (m ⊗ₜ v)).hom = v.hom ≫ h.tmul m := rfl
 
-theorem toPts_lieEquiv (z : M ⊗[O] Lie a) :
-    Lie.toPts b (h.lieEquiv z) = h.equiv (epsR R) ((Lie.toPts a).lTensor M z) := h.toPts_lieMap z
 
 theorem lieEquiv_smul (r : R) (z : M ⊗[O] Lie a) :
     h.lieEquiv ((DistribSMul.toLinearMap O (Lie a) r).lTensor M z) = r • h.lieEquiv z := by
@@ -242,14 +240,6 @@ theorem lieEquiv_smul (r : R) (z : M ⊗[O] Lie a) :
   | tmul m v => ext; simp
   | add z w hz hw => simp only [map_add, smul_add, hz, hw]
 
-theorem map_lieEquiv (h' : IsTensor H' b' G' a' M') (φ : M →ₗ[O] M') {f : G ⟶ G'}
-    (hf : IsLinearHom a a' f) (z : M ⊗[O] Lie a) :
-    Lie.map b b' (h.map h' φ hf) (h.lieEquiv z) =
-      h'.lieEquiv (TensorProduct.map φ (Lie.mapLinear hf) z) := by
-  induction z with
-  | zero => simp
-  | tmul m v => ext; simp
-  | add z w hz hw => simp only [map_add, hz, hw]
 
 theorem mapLeft_lieEquiv (h' : IsTensor H' b' G a M') (φ : M →ₗ[O] M') (z : M ⊗[O] Lie a) :
     Lie.map b b' (h.mapLeft h' φ) (h.lieEquiv z) = h'.lieEquiv (φ.rTensor _ z) := by
@@ -554,27 +544,6 @@ theorem detCond [IsCMField E] {X : Host E} (D : Datum X) (t : Sp k ⟶ S) (ρ : 
   rw [hp, hq, ← hr]
   exact ⟨fun e ↦ h.lieMult t τ ((hG _).1 e), fun e ↦ h.lieMult t τ ((hG _).2 e)⟩
 
-theorem detCond_line {G₁ H₁ : Over (Sp k)} [GrpObj G₁] [GrpObj H₁] [IsCommMonObj G₁]
-    [IsCommMonObj H₁] {a₁ : OAct (𝓞 K) G₁} {b₁ : OAct (𝓞 K) H₁} (h : IsTensor H₁ b₁ G₁ a₁ M)
-    [IsCMField E] {X : Host E} (D : Datum X) (r : 𝓞 K) (hr : algebraMap (𝓞 K) (𝓞 E) r = X.rt)
-    (hK : Algebra.adjoin ℚ {(r : K)} = ⊤) {τ₀ : 𝓞 K →+* k} {v : epsR k ⟶ G₁} (hv : IsLieBasis ![v])
-    (hτ : ∀ x, (v ≫ a₁.act x).left = spMap (epsScaleR (τ₀ x)) ≫ v.left)
-    (hp : D.p = Module.finrank (𝓞 E) M) (hq : D.q = 0) :
-    DetCond D (h.algAct (𝓞 E)) (𝟙 _) (τ₀ r) := by
-  have H := Lie.lieMult_of_isLieBasis a₁ hv (τ₀ := τ₀) fun i ↦ by
-    rw [Subsingleton.elim i 0]; exact hτ
-  refine h.detCond D _ _ r hr (p₀ := 1) (q₀ := 0) (fun σ ↦ ⟨fun e ↦ ?_, fun e ↦ H.2 σ ?_⟩)
-    (by rw [hp, _root_.one_mul]) (by rw [hq, zero_mul])
-  · let l (σ : 𝓞 K →+* k) : K →ₐ[ℚ] k :=
-      (IsFractionRing.lift (ringOfIntegers_injective k K σ)).toRatAlgHom
-    have hl : ∀ σ (x : 𝓞 K), l σ x = σ x := fun σ x ↦
-      IsFractionRing.lift_algebraMap (ringOfIntegers_injective k K σ) x
-    have : l σ = l τ₀ := AlgHom.ext_of_adjoin_eq_top hK fun x hx ↦ by
-      rw [Set.mem_singleton_iff.mp hx, hl, hl, e]
-    obtain rfl : σ = τ₀ := RingHom.ext fun x ↦ by rw [← hl, this, hl]
-    exact H.1
-  · rintro rfl
-    exact e rfl
 
 end Module
 

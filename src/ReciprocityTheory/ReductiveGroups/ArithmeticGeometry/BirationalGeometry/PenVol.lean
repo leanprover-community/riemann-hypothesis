@@ -36,13 +36,6 @@ def arVolP (P : ℕ → Ω → Prop) (La : ℕ → AddSubgroup Ω) (a D : ℕ) :
   limsup (fun k : ℕ => smallSectionCount P La (a * k) /
     (((a * k : ℕ) : ℝ) ^ (D + 1) / ((D + 1).factorial : ℝ))) atTop
 
-theorem ptNorm_mem_ratVals (m : ConeMetric ℂ ι) (σ : o →+* ℂ) (x : ι → Ω) {τ : ℕ}
-    {f : MvPolynomial ι o} (hf : f ∈ homogeneousSubmodule ι o τ) {z : ι → ℂ}
-    (hz : z ∈ conePts σ (coordIdeal o x)) :
-    ptNorm m σ τ f z ∈ ratVals m σ x τ (aeval x f) := by
-  refine ⟨0, f, 1, z, by simpa using hf, ?_, by simp, hz, by simp, ?_⟩
-  · exact (MvPolynomial.mem_homogeneousSubmodule 0 1).2 (MvPolynomial.isHomogeneous_one ι o)
-  · simp [ptNorm]
 
 end Vol
 

@@ -27,52 +27,6 @@ theorem majAt_self (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
   simp only [Complex.mul_re, Complex.star_def, Complex.conj_re, Complex.conj_im]
   ring
 
-theorem single_facts (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ) (hX : ∀ v, IsUnit (X v).det)
-    (e : V) (he : e ≠ 0) :
-    (∀ v, 0 < Formalism.HermitianLatticesTheory.normAt b X v e) ∧
-      muDef b X (Submodule.span (𝓞 K) {e}) = -(2 / (nPl K : ℝ)) * ∑ v, Real.log (Formalism.HermitianLatticesTheory.normAt b X v e) := by
-  set Le : Submodule (𝓞 K) V := Submodule.span (𝓞 K) {e} with hLe
-  have hfg : Le.FG := Submodule.fg_span (Set.finite_singleton e)
-  have hne : Le ≠ ⊥ := by
-    intro h
-    have : e ∈ Le := Submodule.subset_span rfl
-    rw [h] at this
-    exact he ((Submodule.mem_bot _).1 this)
-  have hrk : rkK Le = 1 := by
-    unfold rkK
-    rw [hLe, Submodule.span_span_of_tower]
-    exact finrank_span_singleton he
-  have hli : LinearIndependent K (fun _ : Fin 1 => e) := LinearIndependent.of_subsingleton 0 he
-  have hrange : Set.range (fun _ : Fin 1 => e) = {e} := Set.range_const
-  have hht := (htGram K V ι b X hX 1 (fun _ => e) hli).1
-  rw [hrange] at hht
-  have hdet : ∀ v, (gramPl b X v (fun _ : Fin 1 => e)).det.re = Formalism.HermitianLatticesTheory.normAt b X v e ^ 2 := by
-    intro v
-    rw [Matrix.det_fin_one, ← majAt_self]
-    rfl
-  rw [Finset.prod_congr rfl fun v _ => hdet v] at hht
-  have hpos := (plLat K V ι b X hX Le hfg).2.2
-  have hne0 : ∀ v, Formalism.HermitianLatticesTheory.normAt b X v e ^ 2 ≠ 0 := by
-    have h1 : (∏ v, Formalism.HermitianLatticesTheory.normAt b X v e ^ 2) ≠ 0 := by rw [← hht]; exact hpos.ne'
-    intro v
-    exact Finset.prod_ne_zero_iff.1 h1 v (Finset.mem_univ v)
-  have hN : ∀ v, 0 < Formalism.HermitianLatticesTheory.normAt b X v e := by
-    intro v
-    have h0 : 0 ≤ Formalism.HermitianLatticesTheory.normAt b X v e := Real.sqrt_nonneg _
-    rcases h0.lt_or_eq with h | h
-    · exact h
-    · exact absurd (by rw [← h]; norm_num) (hne0 v)
-  refine ⟨hN, ?_⟩
-  have hmu := (sizeMu K V ι b X hX Le hfg hne).2.1
-  rw [hmu]
-  unfold size
-  rw [Real.log_rpow hpos, hrk, hht, Real.log_prod (fun v _ => hne0 v)]
-  simp only [Real.log_pow, ← Finset.mul_sum]
-  have hf : (nPl K : ℝ) ≠ 0 := by
-    unfold nPl
-    exact_mod_cast Fintype.card_ne_zero
-  push_cast
-  field_simp
 
 end Single
 

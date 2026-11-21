@@ -20,11 +20,7 @@ instance ptYInst (Λ : LevFam X.E X.K n SG) (Θ : LevQFam X.E X.K n Q) : MulActi
 theorem stepY_gam (b : β) (g : FrmG (Λ b) (Θ b)) (x : Sp X.E n) :
     ((stepY ST y β Λ Θ pref).gam b g : Matrix (Fin n) (Fin n) X.E) *ᵥ x = g.1.1 x := toGLm_mulVec g.1.1 x
 
-theorem stepY_deco (b : β) (g : (stepY ST y β Λ Θ pref).G b) (p : (stepY ST y β Λ Θ pref).D b) :
-    (g • p).1.1.deco = ((g.1, g.2.1.1) : UF X.E n × GLG X.E n SG) • p.1.1.deco := rfl
 
-theorem stepY_fr (b : β) (g : (stepY ST y β Λ Θ pref).G b) (p : (stepY ST y β Λ Θ pref).D b) (P : Q) :
-    (g • p).1.1.fr P = g.1.1 * p.1.1.fr P * ((g.2.2.1 P)⁻¹).1 := rfl
 
 theorem stepY_eq_one (b : β) (g : (stepY ST y β Λ Θ pref).G b) (p : (stepY ST y β Λ Θ pref).D b) (h : g • p = p)
     (h1 : g.1 = 1) : g = 1 := by
@@ -356,16 +352,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
   (Tp : TopLev X Pr R (QE sel (mu : Chr X.F X.E X.K)))
 
-theorem stepAt_ok (hX : X.Ok) (hTp : Tp.Ok) (u : Pr.Word) (j : ℕ)
-    (hL : j < R.m → ∀ b P, (L.levQ j b P).H.FiniteIndex ∧ ∀ g, ∃ m : ℕ, 0 < m ∧ (L.levQ j b P).lam g ^ m = 1)
-    (hy : ∀ N, Submodule.IsLattice X.E N → ((ysAt R sel mu cst j).ys N).Finite) : (stepAt sel mu cst L Tp u j).Ok := by
-  refine stepY_ok _ _ _ _ _ hX ?_ ?_ hy
-  · rintro ⟨_ | b, hb⟩ P
-    · exact hTp.idx j P
-    · exact (hL (hb.1 rfl) b P).1
-  · rintro ⟨_ | b, hb⟩ P
-    · exact hTp.root j P
-    · exact (hL (hb.1 rfl) b P).2
 
 theorem ne_of_T_notMem (hPr : Pr.Ok) (u : Pr.Word) (P : Pr.vT u) {w : HeightOneSpectrum (𝓞 X.E)}
     (h : (Pr.T u : 𝓞 X.E) ∉ w.asIdeal) : w ≠ P.1 ∧ w ≠ conjPrime₂ P.1 :=
@@ -394,42 +380,13 @@ theorem tdatAt_tied (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word)
   tdatY_tied _ _ _ _ _ _ (moveHyp_of_ok hPr u) (T_unif hX hPr u) (fun P w => ne_of_T_notMem hPr u P (hQ w.1 w.2))
     (ysAt_off sel mu cst hPr u hQ j)
 
-theorem stepY_dvd_chain {ST SG Q : Finset (HeightOneSpectrum (𝓞 X.E))} (hX : X.Ok) (i : ℕ) (hi : i ≤ R.m) (y : Ys X (R.N i))
-    (β : Type) [Fintype β] [DecidableEq β] (Λ : β → LevFam X.E X.K (R.N i) SG) (Θ : β → LevQFam X.E X.K (R.N i) Q)
-    (pref : DecoF X.E (R.N i) ST SG Q → Prop) (h0 : i = 0 → (stepY ST y β Λ Θ pref).Free) (c : (stepY ST y β Λ Θ pref).Cl) :
-    Nat.card ((stepY ST y β Λ Θ pref).Stab c) ∣ DGam X.E R := by
-  rcases Nat.eq_zero_or_pos i with h | h
-  · have : Subsingleton ((stepY ST y β Λ Θ pref).Stab c) :=
-      ⟨fun a b => Subtype.ext ((h0 h c.1 a.1 _ a.2).trans (h0 h c.1 b.1 _ b.2).symm)⟩
-    rw [Nat.card_unique]
-    exact one_dvd _
-  · exact stepY_dvd y β Λ Θ pref hX R (N_mem_gamRanks R h hi) c.1 _
 
-theorem chainAt_ok (hX : X.Ok) (u : Pr.Word) (rho rho' cD Th) (hS : ∀ i, (stepAt sel mu cst L Tp u i).Ok)
-    (h0 : (stepAt sel mu cst L Tp u 0).Free) (h1 : ∀ i, i < R.m → ∀ b p, ‖rho i b p‖ = 1)
-    (h2 : ∀ i, i < R.m → ∀ b p, ‖rho' i b p‖ = 1) : (chainAt sel mu cst L Tp u rho rho' cD Th).Ok where
-  step := hS
-  rho_norm i hi _ := h1 i hi _ _
-  rho'_norm i hi _ := h2 i hi _ _
-  DG_pos := DGam_pos (posStar_of_ok hX) R
-  dvd_DG i hi c := stepY_dvd_chain hX i hi _ _ _ _ _ (by rintro rfl; exact h0) c
 
 theorem exists_vG (hX : X.Ok) (hPr : Pr.Ok) : ∃ w : Pr.vGs, w.1 ∈ Pr.vG 0 := by
   classical
   obtain ⟨w, hw⟩ := Finset.card_pos.mp (show 0 < (Pr.vG 0).card by rw [hPr.vG_card 0]; exact hX.f_pos)
   exact ⟨⟨w, Finset.mem_union_left _ hw⟩, hw⟩
 
-theorem stepAt_free (Ch : Chars X Pr R.m) (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1)
-    (hL : ∀ b, L.levG 0 b = colLev Ch 0) (u : Pr.Word) : (stepAt sel mu cst L Tp u 0).Free := by
-  obtain ⟨w, hw⟩ := exists_vG hX hPr
-  have hN : R.N 0 = R.k := by simp [Ranks.N]
-  have hm : 0 < R.m := lt_of_lt_of_le (by norm_num) R.two_le_m
-  refine stepY_free _ _ _ _ _ hX hPr 0 w hw (by rw [hN]; exact hbig) ?_
-  rintro ⟨_ | b, hb⟩ k hk
-  · exact absurd (hb.2 hm) (by simp)
-  · have hk' : k ∈ (L.levG 0 b w).H := hk
-    rw [hL, colLev_of_lt Ch hm] at hk'
-    exact isNilpotent_of_mem_HX_zero hN.le hk'
 
 end AtOk
 
@@ -653,12 +610,6 @@ theorem mem_Fi {n : ℕ} (S : GStep E K n) (hf : S.Free) (emb : ι → E →+* K
     (φ : S.Cl → Fr emb σ n → ℂ) (h : ∀ c, φ c ∈ ValC (Gr emb σ n) lam) : φ ∈ S.Fi emb σ lam := fun c =>
   ⟨h c, fun g => by rw [hf c.1 g.1 _ g.2, tr_one]⟩
 
-theorem Fi_ne_bot {n : ℕ} (S : GStep E K n) (hf : S.Free) (c : S.Cl) (emb : ι → E →+* K) (σ : K →+* ℂ) (lam : ι → DomWeight n) :
-    S.Fi emb σ lam ≠ ⊥ := by
-  intro h
-  have h1 := mem_Fi S hf emb σ lam (fun _ => evV emb 1 lam σ (extV K lam)) fun _ => evV_mem_ValC emb 1 lam σ _
-  rw [h, Submodule.mem_bot] at h1
-  exact evV_extV_ne_zero emb 1 lam σ (fr0 emb σ n) (congrFun h1 c)
 
 variable {R : Ranks} {I : ChainIn E K ι R} (J : AtIn I) (emb : ι → E →+* K) (σ : K →+* ℂ)
 
@@ -692,14 +643,6 @@ def top : TopLev X Pr R ∅ where
   levQ j := LevQFam.top _ _ _ _
   pref u j p := j = R.m → ∃ d, p.deco = DecoSet.tilH (N_succ R j) (Pr.piT u) d
 
-theorem top_ok : (top X Pr R).Ok where
-  idx _ P := absurd P.2 (Finset.notMem_empty _)
-  root _ P := absurd P.2 (Finset.notMem_empty _)
-  levG_top h hh := ⟨1, (map_one _).trans (congrArg Subtype.val (lev_eq_one X Pr ⟨h, hh⟩)).symm⟩
-  levQ_last P := absurd P.2 (Finset.notMem_empty _)
-  levQ_ini P := absurd P.2 (Finset.notMem_empty _)
-  pref_off _ _ h _ e := absurd e h
-  pref_top _ _ h := h rfl
 
 variable (Jt : ∀ i, (Formalism.L2.Ker.DVar X.Tau (R.N i) (R.N (i + 1)) →₀ ℕ) → ℂ)
 
@@ -742,13 +685,6 @@ theorem free (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) : ((c
   have h : k = 1 := hk
   simp [h]
 
-theorem chainIn_ok (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) : (chainIn X Pr R u Jt).Ok where
-  step i := stepY_ok _ _ _ _ _ hX (fun _ => (top_ok X Pr R).idx i) (fun _ => (top_ok X Pr R).root i)
-    fun _ _ => Set.finite_singleton _
-  rho_norm _ _ _ := norm_one
-  rho'_norm _ _ _ := norm_one
-  DG_pos := DGam_pos (posStar_of_ok hX) R
-  dvd_DG i hi c := stepY_dvd_chain hX i hi _ _ _ _ _ (by rintro rfl; exact free u Jt hX hPr hbig) c
 
 theorem cl_nonempty (i : ℕ) : Nonempty ((chainIn X Pr R u Jt).S i).Cl := by
   have : NeZero (R.N i) := ⟨(R.N_pos i).ne'⟩
@@ -836,18 +772,6 @@ def fmIn {E K ι : Type} [Field E] [NumberField E] [Field K] [Fintype ι] {R : R
   thFree _ _ _ _ := 1
   thFree_nonneg _ _ _ _ := zero_le_one
 
-theorem all_ok (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (hf : X.f = R.f) (u : Pr.Word)
-    (sg : X.Tau → DomWeight (R.N R.m - 1)) (hc : X.Tau → HCParam R) (Pl : Rows.Places X.K) :
-    ∃ (σ : X.K →+* ℂ) (I : ChainIn X.E X.K X.Tau R) (J : AtIn I) (Q : PerIn I), FOk X.emb σ ∧ I.Ok ∧ J.Ok ∧ Q.Ok ∧ Q.Over J ∧
-      J.Laws X.emb σ hc ∧ Nonempty (FmIn J Pl) ∧ (∀ i, Nonempty (I.S i).Cl) ∧ (I.S 0).Fi X.emb σ (lamT hc 0) ≠ ⊥ ∧
-      I.DG = DGam X.E R := by
-  obtain ⟨σ, hσ⟩ := hX.conjK
-  obtain ⟨psi, hJ⟩ := atIn_ok u (fun _ _ => 1) hX hPr hbig hf
-  have hI := chainIn_ok u (fun _ _ => 1) hX hPr hbig
-  obtain ⟨c⟩ := cl_nonempty (R := R) u (fun _ _ => 1) 0
-  refine ⟨σ, _, _, perIn X Pr R u _ sg, ⟨hX.conjE, hX.emb_star, hσ⟩, hI, hJ, perIn_ok u _ hX hPr sg, perIn_over u _ hPr sg psi,
-    Law.atLaws _ _ _ hI hJ hc, ⟨fmIn _ Pl (Fintype.equivOfCardEq ?_)⟩, cl_nonempty u _, Law.Fi_ne_bot _ hJ.free0 c _ _ _, rfl⟩
-  exact (Fintype.card_coe _).trans (hPr.vT_card u)
 
 end Princ
 

@@ -29,42 +29,6 @@ variable {O O' : Type} [CommRing O] [CommRing O'] [Algebra O O'] {W W' : Type} [
   [AddCommGroup W'] [Module O W] [Module O W'] [Module O' W'] [IsScalarTower O O' W'] {ι : Type}
   [Fintype ι]
 
-theorem length_subquot (E : W' ≃ₗ[O] (ι → W)) (S' N' : Submodule O' W') (S N : Submodule O W)
-    (hS : ∀ x, x ∈ S' ↔ ∀ i, E x i ∈ S) (hN : ∀ x, x ∈ N' ↔ ∀ i, E x i ∈ N) :
-    Module.length O (↥S' ⧸ N'.comap S'.subtype) =
-      Fintype.card ι * Module.length O (↥S ⧸ N.comap S.subtype) := by
-  classical
-
-  let ψ : ι → (↥S' →ₗ[O] ↥S) := fun i => LinearMap.codRestrict S
-    ((LinearMap.proj i ∘ₗ E.toLinearMap) ∘ₗ (S'.subtype.restrictScalars O)) (fun x => (hS x).1 x.2 i)
-  let Φ : ↥S' →ₗ[O] (ι → ↥S ⧸ N.comap S.subtype) :=
-    LinearMap.pi fun i => (N.comap S.subtype).mkQ ∘ₗ ψ i
-  have hψ : ∀ (x : ↥S') i, ((ψ i x : ↥S) : W) = E x i := fun _ _ => rfl
-  have hΦ : ∀ x : ↥S', Φ x = 0 ↔ x ∈ N'.comap S'.subtype := by
-    intro x
-    rw [Submodule.mem_comap, Submodule.coe_subtype, hN, funext_iff]
-    simp only [Φ, LinearMap.pi_apply, LinearMap.comp_apply, Submodule.mkQ_apply, Pi.zero_apply,
-      Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, Submodule.coe_subtype, hψ]
-  have hsurj : Function.Surjective Φ := by
-    intro y
-    choose s hs using fun i => Submodule.Quotient.mk_surjective _ (y i)
-    have hw : E.symm (fun i => (s i : W)) ∈ S' := (hS _).2 (by simp)
-    refine ⟨⟨_, hw⟩, ?_⟩
-    funext i
-    rw [← hs i]
-    simp only [Φ, LinearMap.pi_apply, LinearMap.comp_apply, Submodule.mkQ_apply]
-    congr 1
-    apply Subtype.ext
-    rw [hψ]
-    simp
-  have hker : LinearMap.ker Φ = (N'.comap S'.subtype).restrictScalars O := by
-    ext x
-    rw [LinearMap.mem_ker, Submodule.restrictScalars_mem]
-    exact hΦ x
-  let e : (↥S' ⧸ N'.comap S'.subtype) ≃ₗ[O] (ι → ↥S ⧸ N.comap S.subtype) :=
-    (Submodule.Quotient.restrictScalarsEquiv O (N'.comap S'.subtype)).symm ≪≫ₗ
-      Submodule.quotEquivOfEq _ _ hker.symm ≪≫ₗ Φ.quotKerEquivOfSurjective hsurj
-  rw [e.length_eq, Module.length_pi, ENat.card_eq_coe_fintype_card]
 
 end Length
 
@@ -259,16 +223,6 @@ theorem mem_FildR_iff (hE : ∀ g x i, E (ρ' g x) i = ρ g (E x i)) (τ : K →
   rw [hA, hB, hC]
   simp only [forall_and]
 
-theorem jumpsInV_ext (hE : ∀ g x i, E (ρ' g x) i = ρ g (E x i)) (τ : K →ₐ[Qp] LL)
-    (τ' : K →ₐ[Qp] LL') (hτ : ∀ c, τ' c = algebraMap LL LL' (τ c)) (S : Set ℤ)
-    (h : JumpsInV PD ρ τ S) : JumpsInV PD ρ' τ' S := by
-  unfold JumpsInV IsJumpV at *
-  intro a ha
-  apply h a
-  intro heq
-  apply ha
-  ext x
-  rw [mem_FildR_iff PD hE τ τ' hτ, mem_FildR_iff PD hE τ τ' hτ, heq]
 
 end Period
 
@@ -361,18 +315,6 @@ theorem mem_finiteCocycles_iff_bcrisTensor_coboundary (hE : ∀ g x i, E (ρ' g 
     rw [tensCoord_tmul, map_sub, Pi.sub_apply, tensCoord_actVB PD hE, LinearEquiv.apply_symm_apply,
       hx i g]
 
-theorem mem_Z1fT_iff (hE : ∀ g x i, E (ρ' g x) i = ρ g (E x i)) (hc : Continuous E)
-    (hs : Continuous E.symm) (hL : ∀ x, x ∈ L'.T ↔ ∀ i, E x i ∈ L.T) (c : G → V') :
-    c ∈ latticeFiniteCocycles PD L' ↔ ∀ i, funCoord O G E c i ∈ latticeFiniteCocycles PD L := by
-  simp only [latticeFiniteCocycles, latticeCocycles, Submodule.mem_inf, Submodule.restrictScalars_mem, Submodule.mem_pi,
-    Set.mem_univ, true_implies]
-  rw [mem_continuous_cocycles_iff_coords (O := O) hE hc hs, mem_finiteCocycles_iff_bcrisTensor_coboundary (O := O) PD hE hc hs]
-  simp only [hL, funCoord_apply]
-  constructor
-  · rintro ⟨⟨h1, h2⟩, h3⟩ i
-    exact ⟨⟨h1 i, fun g => h2 g i⟩, h3 i⟩
-  · intro H
-    exact ⟨⟨fun i => (H i).1.1, fun g i => (H i).1.2 g⟩, fun i => (H i).2⟩
 
 omit [TopologicalSpace G] [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V]
   [TopologicalSpace V'] [ContinuousAdd V'] [ContinuousConstSMul LL' V'] [Fintype ι]
@@ -421,36 +363,6 @@ variable {V₁ : Type} [AddCommGroup V₁] [Module LL V₁] [Module Qp V₁] [Is
     {E₂ : V₂' ≃ₗ[LL] (ι → V₂)} {L₂ : Lattice (O := O) ρ₂} {L₂' : Lattice (O := O') ρ₂'}
     (F : LatHom L₁ L₂) (F' : LatHom L₁' L₂')
 
-theorem mem_ImF_iff (hE₁ : ∀ g x i, E₁ (ρ₁' g x) i = ρ₁ g (E₁ x i)) (hc₁ : Continuous E₁)
-    (hs₁ : Continuous E₁.symm) (hL₁ : ∀ x, x ∈ L₁'.T ↔ ∀ i, E₁ x i ∈ L₁.T)
-    (hE₂ : ∀ g x i, E₂ (ρ₂' g x) i = ρ₂ g (E₂ x i))
-    (hL₂ : ∀ x, x ∈ L₂'.T ↔ ∀ i, E₂ x i ∈ L₂.T)
-    (hF : ∀ x i, E₂ (F'.f x) i = F.f (E₁ x i)) (c : G → V₂') :
-    c ∈ F'.ImF PD ↔ ∀ i, funCoord O G E₂ c i ∈ F.ImF PD := by
-  have post_coord : ∀ (x : G → V₁') i,
-      funCoord O G E₂ (F'.post x) i = F.post (funCoord O G E₁ x i) := by
-    intro x i
-    funext g
-    simp [LatHom.post, hF]
-  unfold LatHom.ImF
-  constructor
-  · intro hc i
-    obtain ⟨y, hy, z, hz, rfl⟩ := Submodule.mem_sup.1 hc
-    obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.1 hy
-    refine Submodule.mem_sup.2 ⟨F.post (funCoord O G E₁ x i),
-      Submodule.mem_map_of_mem ((mem_Z1fT_iff PD hE₁ hc₁ hs₁ hL₁ x).1 hx i),
-      funCoord O G E₂ z i, (mem_B1T_iff hE₂ hL₂ z).1 hz i, ?_⟩
-    rw [map_add, Pi.add_apply, post_coord]
-  · intro H
-    choose y hy z hz hyz using fun i => Submodule.mem_sup.1 (H i)
-    choose x hx hxy using fun i => Submodule.mem_map.1 (hy i)
-    refine Submodule.mem_sup.2 ⟨F'.post ((funCoord O G E₁).symm x),
-      Submodule.mem_map_of_mem ((mem_Z1fT_iff PD hE₁ hc₁ hs₁ hL₁ _).2 (by simpa using hx)),
-      (funCoord O G E₂).symm z, (mem_B1T_iff hE₂ hL₂ _).2 (by simpa using hz), ?_⟩
-    apply (funCoord O G E₂).injective
-    funext i
-    rw [map_add, Pi.add_apply, post_coord, LinearEquiv.apply_symm_apply,
-      LinearEquiv.apply_symm_apply, hxy i, hyz i]
 
 omit [TopologicalSpace G] [Fintype ι] [DecidableEq ι] [ContinuousAdd V₁] [ContinuousConstSMul LL V₁]
   [ContinuousAdd V₁'] [ContinuousConstSMul LL' V₁'] [ContinuousAdd V₂] [ContinuousConstSMul LL V₂]
@@ -468,19 +380,6 @@ theorem onto_ext (hL₁ : ∀ x, x ∈ L₁'.T ↔ ∀ i, E₁ x i ∈ L₁.T)
   funext i
   rw [hF, LinearEquiv.apply_symm_apply, hfx]
 
-theorem col_ext [Algebra O O'] [IsLocalRing O] [IsLocalRing O'] [IsLocalHom (algebraMap O O')]
-    [IsScalarTower O O' V₂']
-    (hE₁ : ∀ g x i, E₁ (ρ₁' g x) i = ρ₁ g (E₁ x i)) (hc₁ : Continuous E₁)
-    (hs₁ : Continuous E₁.symm) (hL₁ : ∀ x, x ∈ L₁'.T ↔ ∀ i, E₁ x i ∈ L₁.T)
-    (hE₂ : ∀ g x i, E₂ (ρ₂' g x) i = ρ₂ g (E₂ x i)) (hc₂ : Continuous E₂)
-    (hs₂ : Continuous E₂.symm) (hL₂ : ∀ x, x ∈ L₂'.T ↔ ∀ i, E₂ x i ∈ L₂.T)
-    (hF : ∀ x i, E₂ (F'.f x) i = F.f (E₁ x i)) :
-    F'.col PD * Module.length (IsLocalRing.ResidueField O) (IsLocalRing.ResidueField O') =
-      Fintype.card ι * F.col PD := by
-  unfold LatHom.col
-  rw [← IsLocalRing.length_restrictScalars O O',
-    length_subquot (funCoord O G E₂) _ _ _ _ (mem_Z1fT_iff PD hE₂ hc₂ hs₂ hL₂)
-      (mem_ImF_iff PD F F' hE₁ hc₁ hs₁ hL₁ hE₂ hL₂ hF)]
 
 end Two
 
@@ -533,34 +432,6 @@ theorem lenOl_ext [Algebra O O'] [IsLocalRing O] [IsLocalRing O'] [IsLocalHom (a
 
 end Lat
 
-theorem descend_bound {m k f : ℕ∞} {m' k' d : ℕ} (hd : 0 < d) (hf : f ≠ ⊤)
-    (hm : (m' : ℕ∞) * f = d * m) (hk : (k' : ℕ∞) * f = d * k) {β : ℝ} (h : (m' : ℝ) ≤ β * k') :
-    ∃ a c : ℕ, m = a ∧ k = c ∧ (a : ℝ) ≤ β * c := by
-  lift f to ℕ using hf
-  have hmt : m ≠ ⊤ := by
-    rintro rfl
-    have h1 : ((m' * f : ℕ) : ℕ∞) = ⊤ := by
-      push_cast
-      simpa [ENat.mul_top, hd.ne'] using hm
-    exact ENat.natCast_ne_top _ h1
-  have hkt : k ≠ ⊤ := by
-    rintro rfl
-    have h1 : ((k' * f : ℕ) : ℕ∞) = ⊤ := by
-      push_cast
-      simpa [ENat.mul_top, hd.ne'] using hk
-    exact ENat.natCast_ne_top _ h1
-  lift m to ℕ using hmt
-  lift k to ℕ using hkt
-  refine ⟨m, k, rfl, rfl, ?_⟩
-  have hm' : (d : ℝ) * m = m' * f := by exact_mod_cast hm.symm
-  have hk' : (d : ℝ) * k = k' * f := by exact_mod_cast hk.symm
-  have hdpos : (0 : ℝ) < d := by exact_mod_cast hd
-
-  have hle : (d : ℝ) * m ≤ d * (β * k) := by
-    rw [hm', show (d : ℝ) * (β * k) = β * (d * k) by ring, hk']
-    calc (m' : ℝ) * f ≤ (β * k') * f := mul_le_mul_of_nonneg_right h (Nat.cast_nonneg f)
-      _ = β * (k' * f) := by ring
-  exact le_of_mul_le_mul_left hle hdpos
 
 theorem finrank_ext {O O' : Type} [CommRing O] [CommRing O'] [Nontrivial O'] [Algebra O O']
     {W W' : Type} [AddCommGroup W] [AddCommGroup W'] [Module O W] [Module O W'] [Module O' W']

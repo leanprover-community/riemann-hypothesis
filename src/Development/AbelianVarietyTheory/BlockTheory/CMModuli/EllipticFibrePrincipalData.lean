@@ -81,13 +81,6 @@ structure IsHomFam {R : Type} [CommRing R] {ω : R} (C : Ell H R ω) (t : SAB H 
   side : ∀ a, C.act.act (wSide H lin) ≫ φ a = φ a ≫ t.act.act H.w0
   lam : ∀ a b : L, LamEq t.PP.L (φ a) (φ b) C.P.L (C.act.act (kForm D ε lin a b)) (𝟙 C.P.A)
 
-theorem isHomFam_tmul {R : Type} [CommRing R] {ω : R} {C : Ell H R ω} {D : Datum H} {ε : ℤˣ} {T : PAT H (Sp R)}
-    (h : IsTen C D (kForm D ε true) T) : IsHomFam C T.t (⊤ : Submodule (𝓞 E) D.La) ε true (fun a => h.ten.tmul a.1) where
-  hom a := h.ten.isMonHom_tmul _
-  add a b := h.ten.tmul_add _ _
-  smul s a := h.lin s a
-  side a := (h.ten.isLinearHom_tmul a.1).comm (wK H)
-  lam a b := h.lam _ _
 
 structure IsExp {S : Scheme.{0}} (t : SAB H S) (y : Sp ℂ ⟶ S) (D : Datum H) {g : ℕ} (ty : Fin g → (E →+* ℂ))
     (Pe : D.La →+ (Fin g → ℂ)) (ex : (Fin g → ℂ) → (Over.mk y ⟶ t.G)) : Prop where
@@ -181,23 +174,6 @@ theorem im_mul_form_pos {D : Datum H} {g : ℕ} {ty : Fin g → (E →+* ℂ)} {
   have := mul_self_pos.2 h6
   nlinarith [mul_pos this h5]
 
-theorem isLatData_id {D D₂ : Datum H} (h₁ : D.p = 1 ∧ D.q = 0) (h₂ : D₂.p = 0 ∧ D₂.q = 1) {g : ℕ}
-    {ty : Fin g → (E →+* ℂ)} {Pe : D.La →+ (Fin g → ℂ)} (hty : IsTypeFn H 1 0 ty) (hP : IsPeriod D ty Pe) :
-    IsLatData D D₂ D (p := 1) (q := 0) (fun _ => LinearMap.id) Fin.elim0 (fun _ => 1) Fin.elim0 1 where
-  sig₁ := h₁
-  sig₂ := h₂
-  sig := h₁
-  inj x y h := Prod.ext (funext fun j => by rw [Subsingleton.elim j 0]; simpa using h) (Subsingleton.elim _ _)
-  span z := ⟨1, one_pos, fun _ => z, Fin.elim0, by simp⟩
-  orth _ j := j.elim0
-  pos x hx := by
-    simpa using im_mul_form_pos hP H.sqrt_neg_disc_sq (a := x 0) (by rw [PureType.lat_eq_top hP hty]; trivial)
-      fun h => hx (funext fun j => by rw [Subsingleton.elim j 0]; exact h)
-  neg y hy := (hy (Subsingleton.elim _ _)).elim
-  LocFacts₂ _ x y := by simp
-  formM j := j.elim0
-  boundP _ τ := by simp
-  boundM j := j.elim0
 
 def IsThetaDegOn (x : KeyIn K) (δ : ℝ) : Prop :=
   ∃ (oa : HeightOneSpectrum (𝓞 K) → ℤ) (nth : (K →+* ℂ) → ℝ),

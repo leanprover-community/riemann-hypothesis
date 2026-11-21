@@ -535,17 +535,6 @@ theorem jq_scal {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : 
   rw [hdet] at hu1
   exact xiZ_ne_zero ξ (isUnit_of_mul_isUnit_right hu1)
 
-theorem phiQ_law_lam {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) : 𝓞 E) ∉ P.asIdeal ^ 2) (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ)
-    (k₀ r c' n' c n kj' kj : ℕ) (hk' : k₀ ≤ kj') (hk : k₀ ≤ kj) (hkn' : kj' ≤ n') (hkn : kj ≤ n) (e' : kj' + c' = r) (e : kj + c = r)
-    {f : Sp E (n' + c') ≃ₗ[E] Sp E (n' + c')} (hf : f ∈ LocE.JQ P q kj' n' c') {g : Sp E (n + c) ≃ₗ[E] Sp E (n + c)} (hg : g ∈ LocE.JQ P q kj n c)
-    (y : HomE E (n' + c') (n + c)) :
-    LocE.PhiQ q ξ k₀ r c' n' c n (g.toLinearMap ∘ₗ y ∘ₗ f.toLinearMap) =
-      (LocE.unitV ξ ((LinearEquiv.det g : Eˣ) : E) * LocE.lamQB ξ kj n g.toLinearMap) *
-        (LocE.unitV ξ ((LinearEquiv.det f : Eˣ) : E) * LocE.lamQB ξ kj' n' f.toLinearMap) * LocE.PhiQ q ξ k₀ r c' n' c n y := by
-  have hq0 := ciQ_ne_zero hu
-  rw [phiQ_lawG hq hu ξ k₀ r c' n' c n kj' kj (hk'.trans hkn') (hk.trans hkn) hk' hk e' e (by omega) (by omega) hf hg,
-    jq_scal hq hq0 ξ (hk.trans hkn) hk hkn e (by omega) hg, jq_scal hq hq0 ξ (hk'.trans hkn') hk' hkn' e' (by omega) hf,
-    unitV_eq, unitV_eq, redP_detEquiv P hg.1, redP_detEquiv P hf.1]
 
 end FrameOrd
 
@@ -777,15 +766,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
   (A : Amb X) (u : Pr.Word) (m2 : ℕ)
 
-theorem kerHypOn_of_ok {G : ChGlob X R.m} (hL : L.Ok Ch sel mu cst G m2) (hPr : Pr.Ok) (hS : QSep Pr sel mu) (hU : QUnif sel mu) (hR : PosT sel mu u)
-    (hOk : ChTh.Ok (Ch := Ch) cst (chTh W Ch sel mu cst A u m2))
-    (b : L.β (m2 + 1)) (hY : YbHyp (R := R) sel mu cst L u m2 b) (P : LevFam X.E X.K R.r Pr.vGs)
-    (hK : KerLaws Ch sel mu cst L P m2 b) :
-    KerHypOn W Ch sel mu cst L A u m2 b hY P :=
-  ⟨matEquiv_ofQ W Ch sel mu cst L A u m2 hS (hPr.T_prime u).pos hOk
-      (fun i hi al be p p' x z hz => xiEntry_invA Ch sel mu cst L hPr hL i hi al be p p' x z hz) hK.xi hK.xiQ,
-    cp1EquivOn_ofQ W Ch sel mu cst L A u m2 hS (hPr.T_prime u).pos hPr hOk hL b hY hK.psi (fun al => psi_local_law_at_Q_primes Ch sel mu cst L hL hU al b),
-    cp2EquivOn_of_ok W Ch sel mu cst L A u m2 hL hS hU hR (hPr.T_prime u).pos hPr hOk b hY P hK.top⟩
 
 end Close
 
@@ -811,38 +791,8 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
   (A : Amb X) (u : Pr.Word) (m2 : ℕ)
 
-theorem kerLaws_of_repOne {G : ChGlob X R.m} (hL : L.Ok Ch sel mu cst G m2) (hX : X.Ok) (hPr : Pr.Ok) (hCh : Ch.Ok) (hs : cst.sharp = true)
-    (hA : R.m ≤ cst.A) (hone : ∀ j, j ≤ m2 + 1 → ∀ (b : L.β j) (P : rowSG Pr sel mu), P.1 ∈ Pr.vGs → L.h j b P = 1) (b : L.β (m2 + 1))
-    (hxiQ : ∀ i, i < m2 → ∀ (al : L.β i) (be : L.β (i + 1)), XiLawQ Ch sel mu cst L i al be) :
-    KerLaws Ch sel mu cst L (rPsymF Ch) m2 b := by
-  have hB := clL_base hL hX hPr hCh hs
-  exact
-    { xi := clW_xiLaw hL hX hPr hCh hs hone (fun i hi =>
-        xi_first_law_of_target hs (clT_xiTgtLaw G.σ₀ hB hi (by have := hB.hm; unfold cOf; omega)) (clX_phiLaw_steps hB i hi))
-      xiQ := hxiQ
-      psi := fun al => clW_psiLaw hL hX hPr hCh hs hone (fun P hP => clPf_phiGSLaw (clPsi_phiHyp hX hPr hL.hm P hP) _ _) al b
-      top := clW_topLaw hL hX hPr hCh hs b (fun P hP => hone (m2 + 1) le_rfl b P hP) }
 
-theorem kerHypOn_repOne {G : ChGlob X R.m} (hL : L.Ok Ch sel mu cst G m2) (hX : X.Ok) (hPr : Pr.Ok) (hCh : Ch.Ok) (hsel : IsSel X sel)
-    (hS : ∀ i, Pr.g i ∈ S) (hST : Pr.T u ∈ S) (hs : cst.sharp = true) (hA : R.m ≤ cst.A)
-    (hone : ∀ j, j ≤ m2 + 1 → ∀ (b : L.β j) (P : rowSG Pr sel mu), P.1 ∈ Pr.vGs → L.h j b P = 1)
-    (hOk : ChTh.Ok (Ch := Ch) cst (chTh W Ch sel mu cst A u m2))
-    (b : L.β (m2 + 1)) (hY : YbHyp (R := R) sel mu cst L u m2 b)
-    (hxiQ : ∀ i, i < m2 → ∀ (al : L.β i) (be : L.β (i + 1)), XiLawQ Ch sel mu cst L i al be) :
-    KerHypOn W Ch sel mu cst L A u m2 b hY (rPsymF Ch) :=
-  kerHypOn_of_ok W Ch sel mu cst L A u m2 hL hPr (qSep_of sel mu hPr hsel hS) (qUnif_of sel mu hX hPr hsel)
-    (posT_of_mem sel mu hPr u hsel (hPr.T_prime u) hST) hOk b hY (rPsymF Ch)
-    (kerLaws_of_repOne Ch sel mu cst L m2 hL hX hPr hCh hs hA hone b hxiQ)
 
-theorem kerEquivC_repOne {G : ChGlob X R.m} (hL : L.Ok Ch sel mu cst G m2) (hX : X.Ok) (hPr : Pr.Ok) (hCh : Ch.Ok) (hsel : IsSel X sel)
-    (hS : ∀ i, Pr.g i ∈ S) (hST : Pr.T u ∈ S) (hs : cst.sharp = true) (hA : R.m ≤ cst.A)
-    (hone : ∀ j, j ≤ m2 + 1 → ∀ (b : L.β j) (P : rowSG Pr sel mu), P.1 ∈ Pr.vGs → L.h j b P = 1)
-    (hOk : ChTh.Ok (Ch := Ch) cst (chTh W Ch sel mu cst A u m2))
-    (b : L.β (m2 + 1)) (hY : YbHyp (R := R) sel mu cst L u m2 b)
-    (hxiQ : ∀ i, i < m2 → ∀ (al : L.β i) (be : L.β (i + 1)), XiLawQ Ch sel mu cst L i al be) :
-    KerEquivC W Ch sel mu cst L A u m2 b hY (rPsymF Ch) :=
-  kerEquivC_of W Ch sel mu cst L A u m2 b hY (rPsymF Ch)
-    (kerHypOn_repOne W Ch sel mu cst L A u m2 hL hX hPr hCh hsel hS hST hs hA hone hOk b hY hxiQ)
 
 end RepOne
 

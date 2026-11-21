@@ -20,7 +20,6 @@ variable (F) in
 
 def qI : AF F →+* mixedSpace F := (InfiniteAdeleRing.ringEquiv_mixedSpace F).toRingHom.comp p1
 
-theorem qI_eq (a : AF F) : qI F a = evI F a := rfl
 
 theorem continuous_qI : Continuous (qI F) := by
   have : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by

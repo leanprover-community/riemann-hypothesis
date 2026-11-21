@@ -23,25 +23,6 @@ variable (X : Data E r) (τ : X.Ψ) {n : ℕ} (p : ℕ) (f : Fin n → Fin r →
   (hf : ∀ k l, hermC τ.1 X.Gm (f k) (f l) = if k = l then eps' p k else 0)
 include hf
 
-lemma hC_comb_f (y y' : Fin n → ℂ) :
-    hermC τ.1 X.Gm (∑ j, y' j • f j) (∑ l, y l • f l) = ∑ j, eps' p j * (conj (y j) * y' j) := by
-  have hsumR : ∀ (u : Fin r → ℂ) (w : Fin n → Fin r → ℂ),
-      hermC τ.1 X.Gm u (∑ l, w l) = ∑ l, hermC τ.1 X.Gm u (w l) := by
-    intro u w
-    simp only [hermC, Finset.sum_apply, map_sum, Finset.mul_sum]
-    calc _ = ∑ a, ∑ l, ∑ b, u a * τ.1 (X.Gm a b) * conj (w l b) :=
-          Finset.sum_congr rfl fun a _ => Finset.sum_comm
-      _ = _ := Finset.sum_comm
-  have hsmulR : ∀ (c : ℂ) (u w : Fin r → ℂ),
-      hermC τ.1 X.Gm u (c • w) = conj c * hermC τ.1 X.Gm u w := by
-    intro c u w
-    simp only [hermC, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
-    exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
-  rw [hermC_sum_left]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [hermC_smul_left, hsumR]
-  simp only [hsmulR, hf, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
-  ring
 
 lemma coord_f {v : Fin r → ℂ} (hv : v ∈ Submodule.span ℂ (Set.range f)) :
     v = ∑ j, (eps' p j * hermC τ.1 X.Gm v (f j)) • f j := by

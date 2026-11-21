@@ -47,12 +47,6 @@ def fullPar : Multiset ℚ := sigPar P + runPar P a
 theorem pW_eq : pW a = (R.k : ℚ) + a.1 := by
   simp [pW, Ranks.sigW]
 
-theorem qW_eq : qW a = (R.m : ℚ) - a.1 - 1 := by
-  have h : a.1 + 1 ≤ R.m := a.2
-  simp only [qW, Ranks.sigW]
-  rw [Nat.cast_sub h]
-  push_cast
-  ring
 
 theorem nV_eq (R : Ranks) : (R.nV : ℚ) = (R.k : ℚ) + R.m - 1 + R.t := by
   have h : 1 ≤ R.k + R.m := by have := R.two_le_m; omega
@@ -60,19 +54,6 @@ theorem nV_eq (R : Ranks) : (R.nV : ℚ) = (R.k : ℚ) + R.m - 1 + R.t := by
   push_cast [Nat.cast_sub h]
   ring
 
-theorem lamWt_eq : lamWt P a = (fullPar P a).map (· - 1 / 2) := by
-  simp only [lamWt, fullPar, sigPar, runPar, Multiset.map_add, Multiset.map_map]
-  congr 1
-  · congr 1
-    · refine Multiset.map_congr rfl fun i _ => ?_
-      simp only [aPlus, dTw, rhoN, Function.comp]
-      ring
-    · refine Multiset.map_congr rfl fun h _ => ?_
-      simp only [aPlus, aMinus, dTw, rhoN, Function.comp, pW_eq, qW_eq, nV_eq]
-      split_ifs <;> ring
-  · refine Multiset.map_congr rfl fun c _ => ?_
-    simp only [dTw, rhoN, Function.comp, pW_eq, qW_eq, nV_eq]
-    ring
 
 end Weight
 

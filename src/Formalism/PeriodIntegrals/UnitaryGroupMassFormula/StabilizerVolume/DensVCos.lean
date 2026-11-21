@@ -181,13 +181,6 @@ theorem densLC_of_cosB [IsFiniteMeasureOnCompacts μ] [IsFiniteMeasureOnCompacts
   rw [heq] at hsum
   exact ⟨_, hsum.2.1, hsum.2.2⟩
 
-theorem densLC_of_cos [IsFiniteMeasureOnCompacts μ] [IsFiniteMeasureOnCompacts ν] (U : Set V)
-    (hNA : HasCOSub V) (h : DensCos μ f ι ν U) : DensOn (IsLCcOn U) μ f ι ν := by
-  refine densLC_of_cosB U (fun _ => True) (fun N hN => ?_) (fun x hx => ?_)
-  · obtain ⟨Λ, ho, hc, hs⟩ := hNA N hN
-    exact ⟨Λ, trivial, ho, hc, hs⟩
-  · obtain ⟨N, hN, hd⟩ := h x hx
-    exact ⟨N, hN, fun y hy Λ _ ho hc hs => hd y hy Λ ho hc hs⟩
 
 end Cos
 

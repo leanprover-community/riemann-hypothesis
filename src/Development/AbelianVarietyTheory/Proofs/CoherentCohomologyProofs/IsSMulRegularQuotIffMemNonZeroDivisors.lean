@@ -44,14 +44,6 @@ theorem IsQuasiRegularSeq.isSMulRegular_quot_pow (h : IsQuasiRegularSeq M f) {x 
   rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero] at hm
   exact (Submodule.Quotient.mk_eq_zero _).mpr (h.mem_pow_smul_top_of_smul_mem hx a hm)
 
-theorem IsQuasiRegularSeq.map_mem_pow_smul_top_iff (h : IsQuasiRegularSeq M f) (T : Submonoid R)
-    (hT : ∀ t ∈ T, IsSMulRegular (M ⧸ (Ideal.span (Set.range f) • ⊤ : Submodule R M)) t)
-    {N : Type*} [AddCommGroup N] [Module R N] (g : M →ₗ[R] N) [IsLocalizedModule T g] (a : ℕ)
-    (m : M) : g m ∈ (Ideal.span (Set.range f) ^ a • ⊤ : Submodule R N) ↔
-      m ∈ (Ideal.span (Set.range f) ^ a • ⊤ : Submodule R M) := by
-  refine ⟨fun hm => ?_, fun hm => Submodule.smul_top_le_comap_smul_top _ g hm⟩
-  obtain ⟨s, hs, hsm⟩ := exists_smul_mem_smul_top_of_isLocalizedModule T g _ hm
-  exact h.mem_pow_smul_top_of_smul_mem (hT s hs) a hsm
 
 theorem isSMulRegular_quot_smul_top_iff (J : Ideal R) (x : R) :
     IsSMulRegular (R ⧸ (J • ⊤ : Submodule R R)) x ↔ IsSMulRegular (R ⧸ J) x := by

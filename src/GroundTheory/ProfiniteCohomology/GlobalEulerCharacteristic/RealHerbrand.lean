@@ -134,10 +134,6 @@ variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
 instance finite_res_gsRealFamily : Finite (Rep.res (gsRealFamily S ιr v).toMonoidHom M) :=
   inferInstanceAs (Finite M)
 
-theorem gsReal_card_cohomology_one_eq_two :
-    Nat.card (cohomology (Rep.res (gsRealFamily S ιr v).toMonoidHom M) 1) =
-      Nat.card (cohomology (Rep.res (gsRealFamily S ιr v).toMonoidHom M) 2) :=
-  card_cohomology_one_eq_two_of_isReal v.1 v.2 _
 
 theorem gsReal_eulerChar_eq_card_cohomology_zero :
     eulerChar (Rep.res (gsRealFamily S ιr v).toMonoidHom M) =

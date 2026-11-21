@@ -214,21 +214,6 @@ theorem red_sq : RingHom.ker red ^ 2 = 0 := by
   simp only [RingHom.mem_ker, Ideal.mem_bot]
   decide
 
-theorem exists_isObU_ne_zero {R₁ : Type} [CommRing R₁] [Algebra (ZMod 8) R₁] (α : Aug (RingHom.ker red) red R₁) :
-    ∃ c, c ≠ 0 ∧ IsObU (cstPre (ZMod.ringHom_surjective red) (SingleObj (ZMod 8)ˣ)) α (fun _ _ a ↦ a) c := by
-  obtain ⟨c, hc⟩ := exists_isObU red_sq (ZMod.ringHom_surjective red)
-    (cstPre (ZMod.ringHom_surjective red) (SingleObj (ZMod 8)ˣ)) (fun _ _ _ _ _ _ ↦ rfl) α (u := fun _ _ a ↦ a)
-    (fun _ _ _ a b ↦ mul_comm (G := ZMod 8) _ _)
-  refine ⟨c, ?_, hc⟩
-  rintro rfl
-  obtain ⟨v, h1, h2⟩ := lift_of_isObU_zero red_sq _ α hc
-  let o := SingleObj.star (ZMod 8)ˣ
-  let five : (ZMod 8)ˣ := ⟨5, 5, by decide, by decide⟩
-  have k : ∀ x y : ZMod 16, red x = 5 → red y = 1 → x * x = y → y * y = y → False := by decide
-  have e : five * five = 1 := by decide
-  refine k (v o o five) (v o o (1 : (ZMod 8)ˣ)) (h1 o o five) (h1 o o (1 : (ZMod 8)ˣ)) ?_ ?_
-  · exact (h2 o o o five five).trans (congrArg (v o o) e)
-  · exact (h2 o o o (1 : (ZMod 8)ˣ) (1 : (ZMod 8)ˣ)).trans (congrArg (v o o) (mul_one (1 : (ZMod 8)ˣ)))
 
 end Example
 
@@ -258,17 +243,6 @@ def chG (L : LB X) : Ch L ⥤ AffOp X where
   obj p := Opposite.op p.1.1
   map a := (homOfLE (leOfHom a)).op
 
-theorem isBas_ch {L : LB X} (hL : L.IsLB) : IsBas (opOf (chG L)) := by
-  have k : ∀ (x : X) (U : X.Opens), x ∈ U → ∃ t : Ch L, x ∈ opOf (chG L) t ∧ opOf (chG L) t ≤ U := fun x U hx ↦ by
-    obtain ⟨m, hm⟩ := LB.mem_of_cover hL x
-    obtain ⟨_, ⟨W, hW, rfl⟩, h1, h2⟩ :=
-      X.isBasis_affineOpens.exists_subset_of_mem_open (show x ∈ ((U ⊓ L.U m : X.Opens) : Set X) from ⟨hx, hm⟩)
-        (U ⊓ L.U m).isOpen
-    exact ⟨⟨(⟨W, hW⟩, m), fun y hy ↦ (h2 hy).2⟩, h1, fun y hy ↦ (h2 hy).1⟩
-  refine ⟨k, fun t₁ t₂ x U hx h₁ h₂ ↦ ?_⟩
-  obtain ⟨t, h1, h2⟩ := k x (opOf (chG L) t₁ ⊓ opOf (chG L) t₂ ⊓ U) ⟨⟨h₁, h₂⟩, hx⟩
-  exact ⟨t, ⟨homOfLE (h2.trans (inf_le_left.trans inf_le_left))⟩, ⟨homOfLE (h2.trans (inf_le_left.trans inf_le_right))⟩,
-    h1, h2.trans inf_le_right⟩
 
 theorem isFrame_ch {L : LB X} (hL : L.IsLB) : IsFrame L (opOf (chG L)) (opOf_le (chG L))
     fun T T' a ↦ res (le_inf T'.2 ((opOf_le (chG L) a).trans T.2)) (L.g T'.1.2 T.1.2) := by
@@ -282,24 +256,8 @@ theorem isFrame_ch {L : LB X} (hL : L.IsLB) : IsFrame L (opOf (chG L)) (opOf_le 
 variable {R R₀ : Type} [CommRing R] [CommRing R₀] {I : Ideal R} {π : R →+* R₀} {R₁ : Type} [CommRing R₁] [Algebra R₀ R₁]
 variable {s₀ : X ⟶ Sp R₀}
 
-theorem exists_obAt (hI : I ^ 2 = 0) (hs : Function.Surjective π) (S : Sys I π s₀) (α : Aug I π R₁) {L : LB X}
-    (hL : L.IsLB) : ∃ d, ObAt S α L (chG L) d := by
-  obtain ⟨d, hd⟩ := exists_isObU hI hs ((ofSys S).restrict (chG L)) ((ofSys_isFun S).restrict _) α
-    (u := fun T T' a ↦ res (le_inf T'.2 ((opOf_le (chG L) a).trans T.2)) (L.g T'.1.2 T.1.2))
-    fun T T' T'' a b ↦ congrArg Units.val (isCoc_of_isFrame hL (isFrame_ch hL) a b)
-  exact ⟨d, _, isFrame_ch hL, hd⟩
 
-theorem isObL_triv (hI : I ^ 2 = 0) (hs : Function.Surjective π) (S : Sys I π s₀) (α : Aug I π R₁) :
-    IsObL S α (LB.triv X) 0 := by
-  choose σ hσ using fun T ↦ exists_isSig hI hs α (((ofSys S).restrict (chG (LB.triv X))).p T)
-    (Pre.semi _ T) (Pre.surj _ T) (Pre.ker _ T)
-  refine ⟨Ch (LB.triv X), inferInstance, inferInstance, chG _, isBas_ch (LB.isLB_triv X), fun _ _ _ ↦ 1,
-    ⟨fun _ _ ↦ 1, fun _ _ _ ↦ by simp, fun _ _ _ _ ↦ by simp⟩, ?_⟩
-  rw [map_zero]
-  exact isObU_one _ α σ hσ
 
-theorem nonempty_of_isBas [Nonempty X] {V : C → X.Opens} (h : IsBas V) : Nonempty C :=
-  ⟨(h.1 (Classical.arbitrary X) ⊤ trivial).choose⟩
 
 end Geo
 

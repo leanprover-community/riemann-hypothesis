@@ -686,19 +686,6 @@ theorem integral_eq_formalDegree (hπ : IsAdmissible π) [π.IsIrreducible]
   rw [formalDegree, dif_pos h]
   exact h.choose_spec.2 v φ w ψ
 
-theorem eq_formalDegree (hπ : IsAdmissible π) [π.IsIrreducible]
-    (hπ2 : IsSquareIntegrable Z ν π) (d : ℝ)
-    (hd : ∀ (v : V) (φ : smoothVectors (Representation.dual π)) (w : V)
-      (ψ : smoothVectors (Representation.dual π)),
-      ∫ q : G ⧸ Z, (φ : Module.Dual ℂ V) (π q.out v) * (ψ : Module.Dual ℂ V) (π q.out⁻¹ w) ∂ν =
-        (d : ℂ)⁻¹ * ((φ : Module.Dual ℂ V) w * (ψ : Module.Dual ℂ V) v)) :
-    d = formalDegree ν π := by
-  obtain ⟨v₀, ψ₀, h₀⟩ := exists_dual_apply_eq_one hπ.1
-  have h1 := hd v₀ ψ₀ v₀ ψ₀
-  have h2 := integral_eq_formalDegree hπ hπ2 v₀ ψ₀ v₀ ψ₀
-  rw [h₀, mul_one, mul_one] at h1 h2
-  have h3 : (d : ℂ)⁻¹ = (formalDegree ν π : ℂ)⁻¹ := h1.symm.trans h2
-  exact_mod_cast inv_injective h3
 
 theorem exists_invariant_hermitian (hπ : IsAdmissible π) [π.IsIrreducible]
     (hπ2 : IsSquareIntegrable Z ν π) :

@@ -116,11 +116,6 @@ theorem mu_ne_zero {ε : 𝒪♭} (hζ : PreTilt.untilt ((_root_.frobeniusEquiv 
   apply frobeniusEquiv_symm_mu_ne_zero hζ
   rw [h, map_zero]
 
-theorem eq_xi_of_mul_eq {ε : 𝒪♭} (hζ : PreTilt.untilt ((_root_.frobeniusEquiv 𝒪♭ p).symm ε) ≠ 1) {x : AInf K p}
-    (h : x * (φ).symm (mu ε) = mu ε) : x = xi ε := by
-  have := mul_right_cancel₀ (frobeniusEquiv_symm_mu_ne_zero hζ)
-    (h.trans (mu_eq_xi_mul ε))
-  exact this
 
 theorem norm_sub_one_pow {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1)
     (hζ : PreTilt.untilt ((_root_.frobeniusEquiv 𝒪♭ p).symm ε) ≠ 1) :
@@ -234,18 +229,7 @@ theorem ker_fontaineTheta_eq_span_xi {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1
     RingHom.ker θ = Ideal.span {xi ε} :=
   IsPerfectoidField.ker_fontaineTheta_eq_span (fontaineTheta_xi hε hζ) (isUnit_xi_coeff_one hε hζ)
 
-theorem ker_fontaineTheta_comp_frobeniusEquiv_symm_eq_span {ε : 𝒪♭}
-    (hε : PreTilt.untilt ε = 1)
-    (hζ : PreTilt.untilt ((_root_.frobeniusEquiv 𝒪♭ p).symm ε) ≠ 1) :
-    RingHom.ker ((fontaineTheta (normInteger K) p).comp ((φ).symm : AInf K p ≃+* AInf K p).toRingHom) =
-      Ideal.span {∑ i ∈ Finset.range p, teichmuller p ε ^ i} := by
-  have := ker_fontaineTheta_comp_frobeniusEquiv_symm_pow (ker_fontaineTheta_eq_span_xi hε hζ) 1
-  rwa [pow_one, pow_one, frobeniusEquiv_xi] at this
 
-theorem frobeniusEquiv_mu (ε : 𝒪♭) :
-    φ (mu ε) = mu ε * ∑ i ∈ Finset.range p, teichmuller p ε ^ i := by
-  rw [mu, map_sub, map_one, WittVector.frobeniusEquiv_teichmuller, map_pow, mul_comm,
-    geom_sum_mul]
 
 theorem frobeniusEquiv_symm_ofCompatible (y : ℕ → 𝒪) (hy : ∀ n, y (n + 1) ^ p = y n) :
     (_root_.frobeniusEquiv 𝒪♭ p).symm (IsPerfectoidField.ofCompatible p y hy) =
@@ -254,13 +238,6 @@ theorem frobeniusEquiv_symm_ofCompatible (y : ℕ → 𝒪) (hy : ∀ n, y (n + 
     rw [PreTilt.coeff_frobeniusEquiv_symm, IsPerfectoidField.coeff_ofCompatible,
       IsPerfectoidField.coeff_ofCompatible]
 
-theorem ker_fontaineTheta_eq_span_xi_ofCompatible (y : ℕ → 𝒪) (hy : ∀ n, y (n + 1) ^ p = y n)
-    (h0 : y 0 = 1) (h1 : y 1 ≠ 1) :
-    RingHom.ker θ = Ideal.span {xi (IsPerfectoidField.ofCompatible p y hy)} := by
-  refine ker_fontaineTheta_eq_span_xi ?_ ?_
-  · rw [IsPerfectoidField.untilt_ofCompatible, h0]
-  · rw [frobeniusEquiv_symm_ofCompatible, IsPerfectoidField.untilt_ofCompatible]
-    exact h1
 
 theorem isUnit_teichmuller_of_untilt_eq_one {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1) :
     IsUnit (teichmuller p ε : AInf K p) := by

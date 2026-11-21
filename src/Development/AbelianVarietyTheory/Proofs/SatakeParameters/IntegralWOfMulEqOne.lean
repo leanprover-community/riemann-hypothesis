@@ -58,13 +58,6 @@ theorem Wp_subset_Kur {x : ℂ_[l]} (hx : x ∈ Wp l) : x ∈ Formalism.L2.Th1.C
     exact Subfield.subset_closure ⟨n, h0, (Nat.Prime.coprime_iff_not_dvd Fact.out).mp (Nat.coprime_comm.mp hn), h⟩
   exact hle hy
 
-theorem Wp_subset_Wfrac {x : ℂ_[l]} (hx : x ∈ Wp l) : x ∈ product_zeroth_first_parts.Wfrac l := by
-  refine closure_mono (s := ((Subring.closure {ζ : ℂ_[l] | ∃ n : ℕ, 0 < n ∧ Nat.Coprime n l ∧ ζ ^ n = 1} : Subring ℂ_[l]) : Set ℂ_[l])) ?_ hx
-  intro y hy
-  have hle : Subring.closure {ζ : ℂ_[l] | ∃ n : ℕ, 0 < n ∧ Nat.Coprime n l ∧ ζ ^ n = 1} ≤
-      (Algebra.adjoin ℚ_[l] (product_zeroth_first_parts.rootsPrimeTo l)).toSubring :=
-    Subring.closure_le.2 fun ζ hζ => Algebra.subset_adjoin hζ
-  exact hle hy
 
 theorem exists_pow_norm_le {K : Type*} [NormedField K] {a : K} (ha : ‖a‖ < 1) (x : K) : ∃ k : ℕ, ‖a ^ k * x‖ ≤ 1 := by
   by_cases hr : x = 0
@@ -93,13 +86,6 @@ def kurAlg (l : ℕ) [Fact l.Prime] : Subalgebra ℚ_[l] ℂ_[l] :=
   { (Formalism.L2.Th1.CM.MaximalUnramifiedExtension l).toSubring with
     algebraMap_mem' := algebraMap_mem_Kur }
 
-theorem Wfrac_subset_Kur {x : ℂ_[l]} (hx : x ∈ product_zeroth_first_parts.Wfrac l) : x ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension l := by
-  have h1 : Algebra.adjoin ℚ_[l] (product_zeroth_first_parts.rootsPrimeTo l) ≤ kurAlg l :=
-    Algebra.adjoin_le fun ζ hζ => Wp_subset_Kur (Subring.le_topologicalClosure _ (Subring.subset_closure hζ))
-  have hx' : x ∈ closure (Algebra.adjoin ℚ_[l] (product_zeroth_first_parts.rootsPrimeTo l) : Set ℂ_[l]) := by
-    rw [← Subalgebra.topologicalClosure_coe]; exact hx
-  have hc : IsClosed (Formalism.L2.Th1.CM.MaximalUnramifiedExtension l : Set ℂ_[l]) := Subfield.isClosed_topologicalClosure _
-  exact closure_minimal (fun y hy => h1 hy) hc hx'
 
 theorem norm_l_lt : ‖(l : ℂ_[l])‖ < 1 := by
   have h : ‖(l : ℂ_[l])‖ = ‖(l : ℚ_[l])‖ := by
@@ -108,26 +94,7 @@ theorem norm_l_lt : ‖(l : ℂ_[l])‖ < 1 := by
   rw [h]
   exact Padic.norm_p_lt_one
 
-theorem mem_Wint_iff {x : ℂ_[l]} : x ∈ product_zeroth_first_parts.Wint l ↔ x ∈ Wp l := by
-  constructor
-  · rintro ⟨h1, h2⟩
-    exact mem_Wp_of_kur (Wfrac_subset_Kur h1) h2
-  · intro h
-    exact ⟨Wp_subset_Wfrac h, GlobalTheory.UnitModel.norm_le_one_of_mem_Wp h⟩
 
-theorem mem_Wfrac_iff {x : ℂ_[l]} : x ∈ product_zeroth_first_parts.Wfrac l ↔ InWf x := by
-  constructor
-  · intro h
-    obtain ⟨k, hk⟩ := exists_pow_norm_le (norm_l_lt) x
-    exact ⟨k, mem_Wp_of_kur (mul_mem (pow_mem (natCast_mem _ l) k) (Wfrac_subset_Kur h)) hk⟩
-  · rintro ⟨k, hk⟩
-    have hc : (l : ℂ_[l]) ≠ 0 := by exact_mod_cast (Fact.out : l.Prime).ne_zero
-    have h1 := Wp_subset_Wfrac hk
-    have h2 : x = algebraMap ℚ_[l] ℂ_[l] (((l : ℚ_[l]) ^ k)⁻¹) * ((l : ℂ_[l]) ^ k * x) := by
-      rw [map_inv₀, map_pow, map_natCast]
-      field_simp
-    rw [h2]
-    exact mul_mem (Subalgebra.algebraMap_mem _ _) h1
 
 end Rings
 

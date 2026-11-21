@@ -344,14 +344,6 @@ theorem compare (hBN : BrauerNesbitt) (hC : GlobalTheory.TwSys.Cheb) (D : D7) :
   · rintro hg ⟨⟨h1, h2⟩, ha⟩
     exact ⟨(hc.1 h1).1, (hc.1 h1).2, shape_first_of_second hBN D hg h2 ha⟩
 
-theorem compare_family (hBN : BrauerNesbitt) (hC : GlobalTheory.TwSys.Cheb) {eps : ℝ} (Fm : FamP eps)
-    (h : ∀ x (j : Fm.Ix x), CoeffTie (Fm.D x j) ∧ LiftPointGood (Fm.D x j) ∧ GoodPointLift (Fm.D x j) ∧
-      ResidualAbsIrr (Fm.D x j)) :
-    IndefiniteRowSideFullHecke.ResidualConstituentShape.ConstituentsAndShapeF Fm ↔ IndefiniteRowSideFullHecke.SemisimplificationConstituents.ConstituentsAndShapeF Fm := by
-  refine exists_congr fun x0 => forall_congr' fun x => forall_congr' fun _ => forall_congr' fun j => ?_
-  obtain ⟨h1, h2, h3, h4⟩ := h x j
-  obtain ⟨-, -, -, -, c1, c2⟩ := compare hBN hC (Fm.D x j)
-  exact ⟨fun a => (c1 h2 ⟨h1, a⟩).1, fun b => (c2 h3 ⟨b, h4⟩).2⟩
 
 end GlobalTheory.ConstituentsCompare
 

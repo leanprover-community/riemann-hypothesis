@@ -134,25 +134,6 @@ example {LL G : Type} [Field LL] [Group G] [Fintype G] [DecidableEq G] :
   · simp [mul_inv_eq_one, mul_inv_eq_iff_eq_mul]
   · rw [Finset.sum_eq_single (1 : G)] <;> simp +contextual
 
-theorem carriesCusp_formsLOf (T : Core D) (j : ℕ) (w : WeightFamilies.Wt D j)
-    {LL : Type} [Field LL] [NumberField LL] [Algebra T.Q.c.F LL]
-    {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
-    (Comp : (LL →+* ℂ) → Type) (X : ∀ σ, Comp σ → ReciprocityTheory.ChartRestriction.G.FD.Data E r)
-    (la : ∀ σ c, ReciprocityTheory.ChartRestriction.G.FD.Wt (X σ c).Ψ r)
-    (rd : ∀ σ : LL →+* ℂ, Cusp T j w →ₛₗ[σ.comp (algebraMap T.Q.c.F LL)] FDSec (X σ))
-    (V : (LL →+* ℂ) → _) (dict) (mu) (hL2) (hRd) (h0) (hz) (ha) (hs)
-    {G : Type} [Group G] (ρC : G →* (Cusp T j w →ₗ[T.Q.c.F] Cusp T j w)) (chiC : G →* (T.Q.c.F)ˣ) :
-    CarriesCusp T j w
-      (formsLOf (D := D) Comp X la rd V dict mu hL2 hRd (T.PtM j) (fun lp y f => T.nrmM j lp y (f : T.R j))
-        h0 hz ha hs ρC chiC) incl := by
-  refine ⟨TensorProduct.isBaseChange _ _ LL, rfl, fun lp f h => ?_⟩
-  have e : (LinearEquiv.ofInjective (incl (K := T.Q.c.F) (L := LL) (M := Cusp T j w)) incl_injective).symm
-      ⟨incl f, h⟩ = f := by
-    rw [LinearEquiv.symm_apply_eq]; rfl
-  refine forall_congr' fun y => ?_
-  show T.nrmM j lp y (((LinearEquiv.ofInjective (incl (K := T.Q.c.F) (L := LL) (M := Cusp T j w))
-    incl_injective).symm ⟨incl f, h⟩ : Cusp T j w) : T.R j) ≤ 1 ↔ _
-  rw [e]
 
 theorem nrmOf_nonneg {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K)) (v : EReal) :
     0 ≤ nrmOf la v := by

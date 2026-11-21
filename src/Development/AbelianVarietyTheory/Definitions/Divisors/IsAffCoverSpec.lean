@@ -135,16 +135,6 @@ theorem mem_smCx_B_nat {k : ℕ} {α : smForms A} : α ∈ (smCx A 0).B k ↔ α
 
 variable (A)
 
-theorem isCx_smCx (p : ℕ) : (smCx A p).IsCx := by
-  intro m α hα
-  refine ⟨?_, (A.isDga).d_d α⟩
-  rcases lt_or_ge m 0 with hm | hm
-  · rw [smCx_C_neg hm, Submodule.mem_bot] at hα
-    rw [hα, map_zero]
-    exact zero_mem _
-  · lift m to ℕ using hm
-    rw [mem_smCx_C_nat] at hα
-    exact (mem_smCx_C_nat (k := m + 1)).2 ⟨hα.1.dExt, hα.2.dExt⟩
 
 def zEquiv (k : ℕ) : (smCx A 0).Z k ≃ₗ[ℂ] A.closedForms k where
   toFun α := ⟨α.1.1, (mem_smCx_Z_nat.1 α.2).1⟩
@@ -162,20 +152,8 @@ def hsmEquiv (k : ℕ) : HSm A k ≃ₗ[ℂ] A.HSm k :=
     rw [Submodule.mem_map_equiv]
     exact mem_smCx_B_nat)
 
-theorem hsmEquiv_mk (k : ℕ) (α : (smCx A 0).Z k) :
-    hsmEquiv A k (Submodule.Quotient.mk α) = HolAtlas.HSm.mk A k (zEquiv A k α) := rfl
 
-theorem mem_FSm_iff (p k : ℕ) (c : HSm A k) : c ∈ FSm A p k ↔ hsmEquiv A k c ∈ HolAtlas.HSm.fil A p k := by
-  constructor
-  · rintro ⟨α, hα, rfl⟩
-    exact ⟨zEquiv A k α, (mem_smCx_Z_nat.1 hα).2, rfl⟩
-  · rintro ⟨β, hβ, e⟩
-    refine ⟨(zEquiv A k).symm β, mem_smCx_Z_nat.2 ⟨β.2, hβ⟩, (hsmEquiv A k).injective ?_⟩
-    exact e
 
-theorem map_FSm (p k : ℕ) : (FSm A p k).map (hsmEquiv A k).toLinearMap = HolAtlas.HSm.fil A p k := by
-  ext c
-  rw [Submodule.mem_map_equiv, mem_FSm_iff, LinearEquiv.apply_symm_apply]
 
 end Compare
 
@@ -212,27 +190,6 @@ theorem FormOn.zero (S : Set M) : FormOn A S 0 := by
 
 example (S : Set M) : FormOn A S 1 := FormOn.of_isForm A (HolAtlas.isForm_algebra M n A).1 S
 
-theorem isAffCover_spec (K : Type) [Field K] :
-    letI := ffAlg (𝟙 (Sp K))
-    IsAffCover (𝟙 (Sp K)) (fun _ : Unit => (⊤ : (Sp K).Opens)) (fun _ => ⊤) := by
-  letI := ffAlg (𝟙 (Sp K))
-  have hinf : ∀ I : Finset Unit, I.inf (fun _ : Unit => (⊤ : (Sp K).Opens)) = ⊤ := fun I => by simp
-  refine ⟨rfl, fun I _ => ?_, ?_, fun I => ?_, fun I _ y => ?_⟩
-  · rw [hinf]; exact isAffineOpen_top _
-  · simp
-  · rw [hinf]; trivial
-  · change y ∈ (⊤ : Subalgebra K (Sp K).functionField) ↔ _
-    simp only [Algebra.mem_top, true_iff]
-    have key : ∀ (V : (Sp K).Opens) (hV : V = ⊤) (h : genericPoint (Sp K) ∈ V),
-        Function.Surjective ((Sp K).presheaf.germ V (genericPoint (Sp K)) h).hom := by
-      intro V hV h
-      subst hV
-      haveI : Nonempty (⊤ : (Sp K).Opens) := ⟨⟨genericPoint (Sp K), trivial⟩⟩
-      have hF := functionField_isFractionRing_of_isAffineOpen (Sp K) ⊤ (isAffineOpen_top _)
-      have hK : IsField Γ(Sp K, ⊤) :=
-        (Scheme.ΓSpecIso (CommRingCat.of K)).commRingCatIsoToRingEquiv.toMulEquiv.isField (Field.toIsField K)
-      exact (IsFractionRing.surjective_iff_isField (R := Γ(Sp K, ⊤)) (K := (Sp K).functionField)).2 hK
-    exact key _ (hinf I) _ y
 
 end Inhab
 

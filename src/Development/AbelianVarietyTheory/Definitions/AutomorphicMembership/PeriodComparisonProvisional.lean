@@ -31,9 +31,6 @@ theorem pt_eq_of_heq {r j p r' j' : ℕ} {Λ : ModuliIntegralCharts.Loc D r j p}
     (hΛ : HEq Λ Λ') : Λ.Pt Λ.YY = Λ'.Pt Λ'.YY := by
   subst hr hj; cases hΛ; rfl
 
-theorem loc_heq_of_eq {P P' : ModuliIntegralCharts.Prov D} (hP : P = P') {d : P.Dat} {d' : P'.Dat} (hd : HEq d d') (p : ℕ) :
-    HEq (P.loc d p) (P'.loc d' p) := by
-  subst hP; cases hd; rfl
 
 end Same
 
@@ -79,13 +76,6 @@ theorem LocTie.lat (H : LocTie h k) {j : ℕ} (h1 : 1 ≤ j) (hm : j < D.R.m) {l
   lat_of_heq (rk_dat_eq h F.κg h1 hm) (jj_dat_eq h F.κg h1 hm) (H j h1 hm _) he (fun a b => A.beta a b)
     (h.lattice_condition j h1 hm la z hz η hr A)
 
-theorem LocTie.localTie_of_provisional (K : CutSt C) (R : ResSt C) {I : Type} {dat : I → Dat D (Lv (ambOf T.Q h.pins.1))}
-    {hI : ∀ i, (dat i).Indef} {iW : ℕ → I} (hiW : ∀ j, 1 ≤ j → j < D.R.m → dat (iW j) = datW D F.κg j)
-    (hP : T.G.P = indefiniteDataFamily (shimOf K R k) I dat hI) (hd : ∀ j, 1 ≤ j → j < D.R.m → HEq (T.G.dat j) (iW j)) :
-    LocTie h k := fun j h1 hm p => by
-  refine (loc_heq_of_eq hP (hd j h1 hm) p).trans ?_
-  show HEq ((k.at (dat (iW j))).pad.loc p) _
-  rw [hiW j h1 hm]
 
 example {j : ℕ} (h1 : 1 ≤ j) (hm : j < D.R.m) {p : ℕ} {η : T.G.PY j p}
     {η' : ((k.at (datW D F.κg j)).pad.loc p).Pt ((k.at (datW D F.κg j)).pad.loc p).YY} (he : HEq η η')

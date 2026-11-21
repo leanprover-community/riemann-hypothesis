@@ -41,22 +41,6 @@ theorem natCast_unit {O : Type*} [CommRing O] [IsLocalRing O] {p : ℕ} (hpO : �
     exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ hm) (Ideal.mul_mem_right _ _ hp)
   exact (Ideal.ne_top_iff_one _).mp (IsLocalRing.maximalIdeal.isMaximal O).ne_top hone
 
-theorem pow_div_int {O K : Type*} [CommRing O] [IsLocalRing O] [Field K] [Algebra O K] {p : ℕ} (hp : p.Prime)
-    (hpO : ¬ IsUnit (p : O)) (hK : (p : K) ≠ 0) {M E : ℕ} (hM : M ≠ 0) (hE : M.factorization p ≤ E) :
-    ∃ y : O, (p : K) ^ E / (M : K) = algebraMap O K y := by
-  obtain ⟨u, hu⟩ := natCast_unit hpO (n := M / p ^ M.factorization p)
-    ((Nat.coprime_comm.1 ((Nat.Prime.coprime_iff_not_dvd hp).2 (Nat.not_dvd_ordCompl hp hM))))
-  refine ⟨(p : O) ^ (E - M.factorization p) * ((u⁻¹ : Oˣ) : O), ?_⟩
-  have hMe : (M : K) = (p : K) ^ M.factorization p * algebraMap O K (u : O) := by
-    rw [hu, map_natCast, ← Nat.cast_pow, ← Nat.cast_mul, Nat.ordProj_mul_ordCompl_eq_self]
-  have hu0 : algebraMap O K (u : O) * algebraMap O K ((u⁻¹ : Oˣ) : O) = 1 := by
-    rw [← map_mul, Units.mul_inv, map_one]
-  have hu1 : algebraMap O K (u : O) ≠ 0 := left_ne_zero_of_mul_eq_one hu0
-  rw [hMe, map_mul, map_pow, map_natCast, div_eq_iff (mul_ne_zero (pow_ne_zero _ hK) hu1)]
-  calc (p : K) ^ E = (p : K) ^ (E - M.factorization p) * (p : K) ^ M.factorization p := by
-        rw [← pow_add, Nat.sub_add_cancel hE]
-    _ = _ := by
-        linear_combination (-(p : K) ^ (E - M.factorization p) * (p : K) ^ M.factorization p) * hu0
 
 theorem expFact_eq {ι : Type*} [Fintype ι] {n : ℕ} (μ : ι × Fin n →₀ ℕ) :
     expFact μ = ∏ x : ι, ∏ c : Fin n, (μ (x, c)).factorial := by
@@ -80,25 +64,5 @@ theorem expFact_mul {ι : Type*} [Fintype ι] {n : ℕ} (p : ℕ) (d : ι → �
     rw [← hμ x]
     exact this
 
-theorem zTen_expFact {O K : Type} [CommRing O] [IsLocalRing O] [Field K] [Algebra O K] {p : ℕ} (hp : p.Prime)
-    (hpO : ¬ IsUnit (p : O)) [CharZero K] {n' : ℕ} (m : ℕ) (TT : Finset (Fin n')) (aT bT : Fin n' → ℕ)
-    (μ : (TT × Bool) × Fin (m + 1) →₀ ℕ) (hμ : ∀ x, multideg μ x = hhDegs TT aT bT x) :
-    ∃ y : O, zTen K p m TT aT bT * (expFact μ : K) = algebraMap O K y := by
-  obtain ⟨M, hM0, hM, hv⟩ := expFact_mul p (hhDegs TT aT bT) μ hμ
-  have hE : M.factorization p ≤ kapZ p m TT aT bT := by
-    refine hv.trans (Finset.sum_le_sum fun x _ => Nat.mul_le_mul_right _ (by omega))
-  obtain ⟨y, hy⟩ := pow_div_int (O := O) (K := K) hp hpO (Nat.cast_ne_zero.2 hp.ne_zero) hM0 hE
-  refine ⟨y, ?_⟩
-  rw [← hy]
-  unfold zTen
-  have h1 : (∏ x : TT × Bool, ((hhDegs TT aT bT x).factorial : K)) = (expFact μ : K) * (M : K) := by
-    rw [← Nat.cast_mul, hM, Nat.cast_prod]
-  have h2 : (expFact μ : K) ≠ 0 := by
-    intro h0
-    have : (∏ x : TT × Bool, ((hhDegs TT aT bT x).factorial : K)) = 0 := by rw [h1, h0, zero_mul]
-    exact (Finset.prod_ne_zero_iff.2 fun x _ => Nat.cast_ne_zero.2 (Nat.factorial_ne_zero _)) this
-  have h3 : (M : K) ≠ 0 := Nat.cast_ne_zero.2 hM0
-  rw [h1]
-  field_simp
 
 end Formalism.MainNotions.ColumnSystems.Pf

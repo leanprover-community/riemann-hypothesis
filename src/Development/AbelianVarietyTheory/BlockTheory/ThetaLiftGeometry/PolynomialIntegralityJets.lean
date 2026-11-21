@@ -70,25 +70,7 @@ def CoefAlg_at (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (B : Formalism.L
   FamTie D cc δ χ → ∀ (u : D.what₂.Word) (μ : D.what₂.Tup), KerTie B χ (O u μ) →
     ∀ i, i < D.R.m → ∀ c c' α, TaylorLogMetric.taylor D ((O u μ).Th i c c') α ∈ TaylorLogMetric.Qbar
 
-theorem not_mem_S {D : D7} {Dx : DivX D} {u : D.what₂.Word} {μ : D.what₂.Tup} {O : GL3Theta.LiftObj D (D.chTw u μ)}
-    (h : LevelTie Dx O) (w : D.what₂.places.Pl) : LevFree Dx u μ w ↔ D.what₂.places.resChar w ∉ O.S := by
-  rw [h, LevFree]
-  simp only [Finset.mem_insert, Finset.mem_union]
-  tauto
 
-theorem polyIntegral_applyAt0 {Lt : Type} [Fintype Lt] [DecidableEq Lt] (N0 N1 l : ℕ) [Fact l.Prime]
-    (F : MvPowerSeries (Lt × Fin N0 × Fin N1) ℂ_[l]) (h : JetsIntegral F) (P : MvPolynomial (KM.XZ Lt N0 N1) ℤ) :
-    PolyIntegral (KM.applyAt0 N0 N1 l F P) := by
-  classical
-  intro β
-  unfold KM.applyAt0
-  rw [MvPolynomial.coeff_sum]
-  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun μ _ => ?_
-  rw [MvPolynomial.coeff_monomial]
-  split_ifs
-  · rw [mul_assoc, norm_mul]
-    exact mul_le_one₀ (IsUltrametricDist.norm_intCast_le_one _ _) (norm_nonneg _) (h _)
-  · simp
 
 example (p : ℕ) [hp : Fact p.Prime] :
     ¬ JetsIntegral (MvPowerSeries.monomial (Finsupp.single () 1) ((p : ℂ_[p])⁻¹) : MvPowerSeries Unit ℂ_[p]) := by

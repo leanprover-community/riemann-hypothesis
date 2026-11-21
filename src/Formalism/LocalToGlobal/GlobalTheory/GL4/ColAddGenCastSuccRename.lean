@@ -116,10 +116,6 @@ theorem blockMat_eq_extM {n : ℕ} (g : Matrix (Fin n) (Fin n) ℂ) : blockMat g
     omega
   · simp [Matrix.reindex_apply]
 
-theorem blockMat_transpose {n : ℕ} (g : Matrix (Fin n) (Fin n) ℂ) : (blockMat g).transpose = blockMat g.transpose := by
-  unfold blockMat
-  rw [Matrix.transpose_reindex, Matrix.fromBlocks_transpose]
-  simp
 
 theorem sqAct_of_last_zero (R : Type) [CommRing R] {n : ℕ} (lt : DomWeight (n + 1))
     (h0 : lt.w (Fin.last n) = 0) (H : GL (Fin (n + 1)) R) (f : MvPolynomial (Fin (n + 1) × Fin (n + 1)) R) :

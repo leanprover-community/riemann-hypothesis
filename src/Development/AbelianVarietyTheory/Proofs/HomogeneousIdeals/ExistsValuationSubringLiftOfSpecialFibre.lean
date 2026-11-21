@@ -337,98 +337,9 @@ theorem exists_valuationSubring_lift_of_isOpen {Z : Scheme.{u}} (f : Z ⟶ Spec 
       specMap_apply_eq_bot _ (IsFractionRing.injective O' K')]
     exact hφW
 
-theorem range_specMap_fractionField :
-    Set.range (Spec.map (CommRingCat.ofHom (algebraMap O K))) =
-      {x : Spec (.of O) | x ≠ closedPoint O} := by
-  have hbot := specMap_apply_eq_bot _ (IsFractionRing.injective O K)
-  ext x
-  constructor
-  · rintro ⟨t, rfl⟩ e
-    rw [hbot] at e
-    exact IsDiscreteValuationRing.not_a_field O (congrArg PrimeSpectrum.asIdeal e).symm
-  · intro hx
-    refine ⟨closedPoint K, (hbot _).trans ?_⟩
-    by_contra hne
-    have h0 : x.asIdeal ≠ ⊥ := fun e => hne (PrimeSpectrum.ext e.symm)
-    exact hx (PrimeSpectrum.ext (eq_maximalIdeal (x.isPrime.isMaximal h0)))
 
-theorem isOpenImmersion_specMap_fractionField :
-    IsOpenImmersion (Spec.map (CommRingCat.ofHom (algebraMap O K))) := by
-  obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible O
-  have : IsLocalization.Away π K := by
-    refine IsLocalization.Away.mk π (IsUnit.mk0 _ (by simpa using hπ.ne_zero)) (fun s => ?_)
-      (fun a b hab => ⟨0, by simpa using IsFractionRing.injective O K hab⟩)
-    obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := O) s
-    obtain ⟨n, v, rfl⟩ :=
-      IsDiscreteValuationRing.eq_unit_mul_pow_irreducible (nonZeroDivisors.ne_zero hb) hπ
-    refine ⟨n, a * (v⁻¹ : Oˣ), ?_⟩
-    have h1 : algebraMap O K π ≠ 0 := by simpa using hπ.ne_zero
-    have h2 : algebraMap O K v ≠ 0 := by simp
-    simp only [map_mul, map_pow, map_units_inv]
-    field_simp
-  exact IsOpenImmersion.of_isLocalization π
 
-theorem exists_valuationSubring_lift {Z : Scheme.{u}} (f : Z ⟶ Spec (.of O))
-    [Flat f] [LocallyOfFiniteType f]
-    {U : Set ↥(pullback f (Spec.map (CommRingCat.ofHom (algebraMap O K))))}
-    (hU : IsOpen U) (hd : Dense U)
-    {z : Z} (hz : IsClosed ({z} : Set Z)) (hzO : f z = closedPoint O) :
-    ∃ (K' : Type u) (_ : Field K') (_ : Algebra K K') (_ : Module.Finite K K')
-      (O' : ValuationSubring K') (h : O →+* O') (_ : IsLocalHom h)
-      (y : Spec (.of O') ⟶ Z)
-      (y' : Spec (.of K') ⟶ pullback f (Spec.map (CommRingCat.ofHom (algebraMap O K)))),
-      (∀ a : O, (h a : K') = algebraMap K K' (algebraMap O K a)) ∧
-      y ≫ f = Spec.map (CommRingCat.ofHom h) ∧ y (closedPoint O') = z ∧
-      y' ≫ pullback.fst _ _ = Spec.map (CommRingCat.ofHom (algebraMap O' K')) ≫ y ∧
-      y' ≫ pullback.snd _ _ = Spec.map (CommRingCat.ofHom (algebraMap K K')) ∧
-      ∀ t, y' t ∈ U := by
-  have := isOpenImmersion_specMap_fractionField (O := O) (K := K)
-  have hemb := (pullback.fst f (Spec.map (CommRingCat.ofHom (algebraMap O K)))).isOpenEmbedding
-  obtain ⟨K', _, _, _, O', h, _, y, hh, hy, hyz, hyW⟩ :=
-    exists_valuationSubring_lift_of_isOpen K f (hemb.isOpenMap U hU) (fun x hx => by
-      have : x ∈ Set.range (pullback.fst f (Spec.map (CommRingCat.ofHom (algebraMap O K)))) := by
-        rw [Scheme.Pullback.range_fst, Set.mem_preimage, range_specMap_fractionField]
-        exact hx
-      obtain ⟨x, rfl⟩ := this
-      exact image_closure_subset_closure_image hemb.continuous ⟨x, hd x, rfl⟩) hz hzO
-  have hcomm : (Spec.map (CommRingCat.ofHom (algebraMap O' K')) ≫ y) ≫ f =
-      Spec.map (CommRingCat.ofHom (algebraMap K K')) ≫
-        Spec.map (CommRingCat.ofHom (algebraMap O K)) := by
-    rw [Category.assoc, hy, ← Spec.map_comp, ← Spec.map_comp]
-    congr 1
-    ext a
-    exact hh a
-  refine ⟨K', inferInstance, inferInstance, inferInstance, O', h, inferInstance, y,
-    pullback.lift _ _ hcomm, hh, hy, hyz, pullback.lift_fst _ _ _, pullback.lift_snd _ _ _,
-    fun t => ?_⟩
-  obtain ⟨x, hxU, hx⟩ := hyW t
-  rw [← pullback.lift_fst _ _ hcomm, Scheme.Hom.comp_apply] at hx
-  exact hemb.injective hx ▸ hxU
 
-theorem exists_valuationSubring_lift_of_specialFibre {Z : Scheme.{u}} (f : Z ⟶ Spec (.of O))
-    [Flat f] [LocallyOfFiniteType f]
-    {U : Set ↥(pullback f (Spec.map (CommRingCat.ofHom (algebraMap O K))))}
-    (hU : IsOpen U) (hd : Dense U)
-    {z : ↥(pullback f (Spec.map (CommRingCat.ofHom (residue O))))}
-    (hz : IsClosed ({z} : Set _)) :
-    ∃ (K' : Type u) (_ : Field K') (_ : Algebra K K') (_ : Module.Finite K K')
-      (O' : ValuationSubring K') (h : O →+* O') (_ : IsLocalHom h)
-      (y : Spec (.of O') ⟶ Z)
-      (y' : Spec (.of K') ⟶ pullback f (Spec.map (CommRingCat.ofHom (algebraMap O K)))),
-      (∀ a : O, (h a : K') = algebraMap K K' (algebraMap O K a)) ∧
-      y ≫ f = Spec.map (CommRingCat.ofHom h) ∧
-      y (closedPoint O') = pullback.fst f (Spec.map (CommRingCat.ofHom (residue O))) z ∧
-      y' ≫ pullback.fst _ _ = Spec.map (CommRingCat.ofHom (algebraMap O' K')) ≫ y ∧
-      y' ≫ pullback.snd _ _ = Spec.map (CommRingCat.ofHom (algebraMap K K')) ∧
-      ∀ t, y' t ∈ U := by
-  have : IsClosedImmersion (Spec.map (CommRingCat.ofHom (residue O))) :=
-    IsClosedImmersion.spec_of_surjective _ residue_surjective
-  refine exists_valuationSubring_lift f hU hd ?_ ?_
-  · rw [← Set.image_singleton]
-    exact (pullback.fst f (Spec.map (CommRingCat.ofHom (residue O)))).isClosedEmbedding.isClosedMap
-      _ hz
-  · rw [← Scheme.Hom.comp_apply, pullback.condition, Scheme.Hom.comp_apply]
-    exact PrimeSpectrum.comap_residue O _
 
 end Scheme
 

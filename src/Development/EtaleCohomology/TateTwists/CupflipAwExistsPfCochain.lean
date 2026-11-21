@@ -56,16 +56,6 @@ theorem freeGen_res {R : Type} [CommRing R] (P : PSh) {V U : Scheme.{0}} (g : V 
   erw [Finsupp.lmapDomain_apply, Finsupp.mapDomain_single]
   rfl
 
-theorem cupflip_ev_res_holds : cupflip_ev_res := by
-  intro R _ E I n α p s h V U g x
-  have key := NatTrans.naturality_apply (((chainsXIso R E p).inv ≫ α.v _ _ h).hom) g.op (freeGen R _ U x)
-  simp only [Sec.res, ev]
-  erw [← key]
-  congr 1
-  exact freeGen_res _ g x
 
-theorem cupflip_aw_exists_of_leaves (hm : cupflip_ev_mk) (hl : cupflip_aw_leibniz) :
-    cupflip_aw_exists :=
-  cupflip_aw_exists_of (cupflip_aw_cochain_of hm cupflip_ev_res_holds cupflip_sub_res_holds) hl
 
 end LateralTheory.EtaleFoundations

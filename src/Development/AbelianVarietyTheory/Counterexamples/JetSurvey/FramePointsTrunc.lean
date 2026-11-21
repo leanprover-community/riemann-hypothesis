@@ -17,16 +17,8 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.ExpPiecesCheck
 
-theorem linEig : LinEigSt := LinEig.linEig_holds
 
-theorem expChartOf : ExpChartOfSt := expChartOf_of (expActOf_of linEig)
 
-theorem commonCoc : CommonCocSt := by
-  intro E _ _ _ H Dw l Xo c S _ _ _ y x _ e e' he he' a
-  obtain ⟨β, hg, hr, hc⟩ := he.coc a
-  obtain ⟨β', hg', hr', hc'⟩ := he'.coc a
-  obtain rfl := betaUniq_of_global GlobalTheory.SemiRigid.globalFns E H Dw l Xo a β β' hg hg' hr hr'
-  exact ⟨β, hg, hr, hc, hc'⟩
 
 section
 
@@ -35,6 +27,5 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
 
 end
 
-theorem three_hold : ExpChartOfSt ∧ LinEigSt ∧ CommonCocSt := ⟨expChartOf, linEig, commonCoc⟩
 
 end GlobalTheory.ExpPiecesCheck

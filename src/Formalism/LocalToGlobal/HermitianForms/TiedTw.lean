@@ -57,17 +57,6 @@ def twY (T : Formalism.L2.Herm.TwChTied D inQ) (F : ∀ u, FormsTied D u) (u : D
     (D.chTw u μ).Y i ≃ Fr D i hi :=
   (T.eY u μ i hi).symm.trans ((F u).val i hi).eY
 
-theorem twY_de (T : Formalism.L2.Herm.TwChTied D inQ) (F : ∀ u, FormsTied D u) (u : D.what₂.Word) (μ : D.what₂.Tup) (i : ℕ) (hi : i ≤ D.R.m) :
-    ∃ C : GL (Fin (D.R.N i)) D.host.E,
-      cT (sigD D : D.host.E →+* D.host.E) C.1 * C.1 = gramN D i hi ∧
-      (∀ x : Fin (D.R.N i) → D.host.E, x ∈ selfDualLatticeCoords D i hi ↔ ∀ a, (C.1 *ᵥ x) a ∈ (algebraMap (𝓞 D.host.E) D.host.E).range) ∧
-      ∀ τ z, (D.chTw u μ).de i z τ = embT D τ C.1.det * ((twY T F u μ i hi z).1 τ).det := by
-  obtain ⟨C, h1, h2, h3⟩ := ((F u).val i hi).de
-  refine ⟨C, h1, h2, fun τ z => ?_⟩
-  have := T.de_eq u μ i hi ((T.eY u μ i hi).symm z) τ
-  rw [Equiv.apply_symm_apply] at this
-  rw [this, h3]
-  rfl
 
 set_option maxHeartbeats 4000000 in
 
@@ -108,10 +97,6 @@ structure TwFormsTied (D : D7) (Tw : TwForms D) {inQ : D.what₂.Tup → HeightO
 
   twisted_e0_at_mu0_eq_eMu0 : ∀ u x, Tw.e0 u D.what₂.mu0 x = Tw.eMu0 u 0 (Nat.zero_le _) x
 
-theorem eMu0_emb_apply (Tw : TwForms D) (u : D.what₂.Word) (j : ℕ) (hj : j ≤ D.R.m) (x : ((D.fm u).lat j).V)
-    (c : (D.mem u).C.cls j) (y : (D.mem u).C.Y j) :
-    (Tw.fm u D.what₂.mu0).emb j (Tw.eMu0 u j hj x) (Formalism.L2.Herm.clsCast D u j c) (Formalism.L2.Herm.yCast D u j y) = (D.fm u).emb j x c y :=
-  Formalism.L2.Herm.heq_apply (D.memberColumns_twistedChain_base u) j _ _ (Tw.eMu0_emb u j hj x) c y
 
 end Formalism.L2.Forms
 

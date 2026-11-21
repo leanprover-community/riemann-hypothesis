@@ -1038,64 +1038,6 @@ theorem levelPrime (f : ℕ) (bb : ℝ) (hf : 1 ≤ f) (n0 : ℕ) :
       nlinarith
     linarith
 
-theorem family_model : FamModel := by
-  intro K _ _ _ _ v m f T p₁ t₁ Mw bb sg hb hm hf hTp hp hne hT4 hsmall hTa hsg hsg20 hMw
-  have hT : 4 ≤ T := by omega
-  obtain ⟨ha, hab, hcard⟩ := model_card f T hT
-  have hlt : (T - 2) ^ f < (T - 1) ^ f := Nat.pow_lt_pow_left (by omega) (by omega)
-  have hdu : ∀ u, (modelFam K v m f T p₁ t₁ Mw hb).du u = (((T - 2) ^ f : ℕ) : ℝ) := by
-    intro u
-    show ((Fintype.card (Fin ((T - 2) ^ f)) : ℕ) : ℝ) = _
-    rw [Fintype.card_fin]
-  have hdM : ∀ u, (modelFam K v m f T p₁ t₁ Mw hb).dM u = (((T - 1) ^ f : ℕ) : ℝ) := by
-    intro u
-    show ((Fintype.card (Fin ((T - 2) ^ f) ⊕ Fin ((T - 1) ^ f - (T - 2) ^ f)) : ℕ) : ℝ) = _
-    rw [hcard]
-  have hapos : (0 : ℝ) < (((T - 2) ^ f : ℕ) : ℝ) := by exact_mod_cast ha
-  have hltR : (((T - 2) ^ f : ℕ) : ℝ) < (((T - 1) ^ f : ℕ) : ℝ) := by exact_mod_cast hlt
-  have hmemS : ∀ w : slopeLatticeData.FinPl K, w ∈ plOver K p₁ ∪ plOver K T ↔ prBelow w = p₁ ∨ prBelow w = T := by
-    intro w
-    rw [Finset.mem_union, mem_plOver hp, mem_plOver hTp]
-  have hτR : ∀ w : slopeLatticeData.FinPl K, 0 ≤ (tau0 K p₁ t₁ w : ℝ) / ramE w := by
-    intro w
-    rw [twist_vector_div_ramification]
-    split_ifs
-    · positivity
-    · exact le_rfl
-  have hRd : 0 < ∑ w ∈ plOver K p₁ ∪ plOver K T, 2 * lE w *
-      ((∑ _j : Fin m, ((tau0 K p₁ t₁ w : ℝ) / ramE w + 1 + 1 / 2 - 1 / 4)) - (tau0 K p₁ t₁ w : ℝ) / ramE w) := by
-    have h1 : ∀ w : slopeLatticeData.FinPl K, 2 * lE w ≤ 2 * lE w *
-        ((∑ _j : Fin m, ((tau0 K p₁ t₁ w : ℝ) / ramE w + 1 + 1 / 2 - 1 / 4)) - (tau0 K p₁ t₁ w : ℝ) / ramE w) := by
-      intro w
-      rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-      have h2 : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
-      have h3 := hτR w
-      have h4 : (tau0 K p₁ t₁ w : ℝ) / ramE w + 1 + 1 / 2 - 1 / 4
-          ≤ (m : ℝ) * ((tau0 K p₁ t₁ w : ℝ) / ramE w + 1 + 1 / 2 - 1 / 4) :=
-        le_mul_of_one_le_left (by linarith) h2
-      exact le_mul_of_one_le_right (mul_nonneg two_pos.le (lE_nonneg w)) (by linarith)
-    have h5 : 2 * Real.log (p₁ : ℝ) ≤ ∑ w ∈ plOver K p₁ ∪ plOver K T, 2 * lE w := by
-      rw [← sum_log_norm_over_prime (plOver K p₁ ∪ plOver K T) p₁ hp (fun w hw => (hmemS w).2 (Or.inl hw)), Finset.mul_sum]
-      exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
-        (fun w _ _ => mul_nonneg two_pos.le (lE_nonneg w))
-    have h6 : 0 < Real.log (p₁ : ℝ) := Real.log_pos (by exact_mod_cast hp.one_lt)
-    have h7 := Finset.sum_le_sum (s := plOver K p₁ ∪ plOver K T) (fun w _ => h1 w)
-    linarith
-  refine ⟨modelFam K v m f T p₁ t₁ Mw hb, model_lat K v m f T p₁ t₁ Mw hb sg hT hsg hsg20 hMw,
-    model_place K v m f T p₁ t₁ Mw hb bb hm hf hTp hp hne hT4 hsmall hTa, fun u => ⟨?_, ?_, rfl, le_max_right _ _, hRd⟩,
-    ?_, ?_, ?_⟩
-  · rw [hdu]; exact hapos
-  · rw [hdu, hdM]; exact hltR
-  · show 0 < 1 - ((Fintype.card (Fin ((T - 2) ^ f)) : ℕ) : ℝ)
-      / ((Fintype.card (Fin ((T - 2) ^ f) ⊕ Fin ((T - 1) ^ f - (T - 2) ^ f)) : ℕ) : ℝ)
-    rw [hcard, Fintype.card_fin, sub_pos, div_lt_one (lt_trans hapos hltR)]
-    exact hltR
-  · obtain ⟨w, hw⟩ := exists_place (K := K) hp
-    exact ⟨w, (hmemS w).2 (Or.inl hw), hw⟩
-  · have h1 : ∀ w : slopeLatticeData.FinPl K, prBelow w = p₁ → (tau0 K p₁ t₁ w : ℝ) / ramE w = (t₁ : ℝ) := by
-      intro w hw
-      rw [twist_vector_div_ramification, if_pos ((mem_plOver hp w).2 hw)]
-    exact fun w _ hw => ⟨h1 w hw, fun _ => h1 w hw⟩
 
 section DataL
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
@@ -2583,15 +2525,5 @@ theorem ev_at (ε x : ℝ) (hε0 : 0 < ε) (hε1 : ε ≤ 1) (h48 : 48 ≤ x) (h
     ModelText.wF x ε m TT T2, Fm, ModelText.etaTx x ε, ModelText.thTx x ε, rfl, rfl, le_rfl, le_rfl, le_rfl, g1, hL,
     ev_errW x ε lg m _ Mw TT T2 Fm h48 g3 hM0 hMx, g5, Real.exp_pos _, g6, g7, hLoss⟩
 
-theorem chain_lattice_sizes_model_eventually : Chain2aSizesModelEv := by
-  intro ε h0 h1
-  obtain ⟨x1, hx1⟩ := ModelText.family ε h0 h1
-  have e1 := ModelText.ev_rpow_le_exp 24 ε h0
-  have e2 : ∀ᶠ x : ℝ in Filter.atTop, (4 : ℝ) ≤ Real.log x := Real.tendsto_log_atTop.eventually_ge_atTop 4
-  obtain ⟨x0, hx0⟩ := Filter.eventually_atTop.1
-    ((e1.and e2).and ((Filter.eventually_ge_atTop (48 : ℝ)).and (Filter.eventually_ge_atTop x1)))
-  refine ⟨x0, fun x hx => ?_⟩
-  obtain ⟨⟨f1, f2⟩, f3, f4⟩ := hx0 x hx
-  exact ev_at ε x h0 h1 f3 f2 f1 (hx1 x f4)
 
 end Formalism.LFunctionChainParameters.LChain2

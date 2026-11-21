@@ -151,9 +151,6 @@ theorem frame_iff {t₀ : SAB H (Sp T.Fr)} (n₁ : SABMap t₀ Xo.univ.t x)
 
 variable {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
 
-theorem exists_coeffMap {S : Type} [CommRing S] (z : Sp S ⟶ Xo.XF c) :
-    ∃ io : c.F →+* S, z ≫ pullback.snd _ _ = spMap io :=
-  ⟨(Spec.preimage (z ≫ pullback.snd _ _)).hom, (Spec.map_preimage _).symm⟩
 
 theorem exists_tied (Y : Model Xo c β) {ξ : Sp T.V ⟶ Y.X} {z : Sp T.Fr ⟶ Xo.XF c}
     (hz : z ≫ Y.j = spMap (algebraMap T.V T.Fr) ≫ ξ) (mG : SABMap G Y.t ξ) (t' : SAB H (Sp T.Fr))
@@ -185,41 +182,10 @@ def FibreGenerator : Prop :=
     ∀ (T : CDVR) (ξ : Sp T.V ⟶ Y.X) (xF : Sp T.Fr ⟶ Xo.XF c) (x : Sp T.Fr ⟶ Xo.X), GenericIn Y ξ xF x →
     ∀ (G : SAB H (Sp T.V)) (_ : SABMap G Y.t ξ), ∃ s₀, IsGenAt x s₀
 
-theorem genericFibre_iff : GenericFibre ↔ GenFibreAll := by
-  constructor
-  · intro h E _ _ _ H Dw l Xo c T io O _ β Y yt z hz _ G m
-    obtain ⟨⟨t', ⟨m₂⟩⟩, h₂⟩ := h E H Dw l Xo c O β Y T yt z _ ⟨hz, rfl⟩ G m
-    obtain ⟨m₁, -⟩ := h₂ t' m₂
-    exact ⟨t', m₁, m₂, trivial⟩
-  · rintro h E _ _ _ H Dw l Xo c O _ β Y T ξ z x ⟨hz, rfl⟩ G mG
-    obtain ⟨io, hio⟩ := exists_coeffMap z
-    obtain ⟨t', -, m₂, -⟩ := h E H Dw l Xo c T io O β Y ξ z hz hio G mG
-    exact ⟨⟨t', ⟨m₂⟩⟩, exists_tied Y hz mG⟩
 
-theorem thetaFrameAll_of_thetaFrame (h : ThetaFrame) : ThetaFrameAll := by
-  intro E _ _ _ H Dw l Xo c T io O _ β Y hP yt z hz _ G m
-  exact FrameUniform.frameGiven (h E H Dw l Xo c O β Y hP T yt z _ ⟨hz, rfl⟩ G m)
 
-theorem thetaFrame_iff (hG : GenFibreAll) : ThetaFrame ↔ ThetaFrameAll ∧ FibreGenerator := by
-  refine ⟨fun h => ⟨thetaFrameAll_of_thetaFrame h, ?_⟩, fun ⟨h, h₀⟩ => ?_⟩
-  · rintro E _ _ _ H Dw l Xo c O _ β Y hP T ξ z x ⟨hz, rfl⟩ G mG
-    obtain ⟨io, hio⟩ := exists_coeffMap z
-    obtain ⟨t', m₁, m₂, -⟩ := hG E H Dw l Xo c T io O β Y ξ z hz hio G mG
-    exact ((frame_iff m₁ m₂).1 (h E H Dw l Xo c O β Y hP T ξ z _ ⟨hz, rfl⟩ G mG)).2
-  · rintro E _ _ _ H Dw l Xo c O _ β Y hP T ξ z x ⟨hz, rfl⟩ G mG
-    obtain ⟨io, hio⟩ := exists_coeffMap z
-    obtain ⟨t', m₁, m₂, -⟩ := hG E H Dw l Xo c T io O β Y ξ z hz hio G mG
-    exact (frame_iff m₁ m₂).2 ⟨h E H Dw l Xo c T io O β Y hP ξ z hz hio G mG,
-      h₀ E H Dw l Xo c O β Y hP T ξ z _ ⟨hz, rfl⟩ G mG⟩
 
-theorem claim_iff : Claim ↔ (ThetaFrameAll ∧ GenFibreAll) ∧ FibreGenerator := by
-  refine ⟨fun ⟨h, hG⟩ => ?_, fun ⟨⟨h, hG⟩, h₀⟩ => ⟨(thetaFrame_iff hG).2 ⟨h, h₀⟩, genericFibre_iff.2 hG⟩⟩
-  have hG' := genericFibre_iff.1 hG
-  exact ⟨⟨((thetaFrame_iff hG').1 h).1, hG'⟩, ((thetaFrame_iff hG').1 h).2⟩
 
-theorem fibreGenerator : FibreGenerator :=
-  fun _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ x _ _ _ => Formalism.L2.Pj.gfp_gen GlobalTheory.abelianSchemeLaws_all.2.secTwist x
 
-theorem typings_iff : Claim ↔ ThetaFrameAll ∧ GenFibreAll := claim_iff.trans (and_iff_left fibreGenerator)
 
 end GlobalTheory.ThetaFrameCompare

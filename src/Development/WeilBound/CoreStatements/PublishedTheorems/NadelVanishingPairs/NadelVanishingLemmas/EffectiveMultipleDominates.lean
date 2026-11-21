@@ -19,10 +19,6 @@ theorem mult_zero' (z : X) : (0 : CartierDiv X).mult z = 0 := by
   rw [add_zero] at h₀
   omega
 
-theorem mult_nsmul'' (E : CartierDiv X) (n : ℕ) (z : X) : (n • E).mult z = n * E.mult z := by
-  induction n with
-  | zero => rw [zero_nsmul, mult_zero']; simp
-  | succ n ih => rw [succ_nsmul, CartierDiv.mult_add, ih]; push_cast; ring
 
 theorem mult_sub' (D E : CartierDiv X) (z : X) : (D - E).mult z = D.mult z - E.mult z := by
   have h := CartierDiv.mult_add (D - E) E z

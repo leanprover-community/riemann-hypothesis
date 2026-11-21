@@ -90,15 +90,6 @@ theorem incl_incl {R R' : Subring ℂ} (h : R = R') :
   subst h
   rw [incl_self, Category.comp_id]
 
-theorem isFinite_lift_iff {X X' B B' B₁ B₁' : Scheme.{0}} {π : X' ⟶ X} {s : X ⟶ B} {s' : X' ⟶ B'} {b : B' ⟶ B}
-    (i : B ⟶ B₁) (i' : B' ⟶ B₁') [IsIso i] [IsIso i'] {b₁ : B₁' ⟶ B₁} (hb : b ≫ i = i' ≫ b₁) (h : π ≫ s = s' ≫ b)
-    (h₁ : π ≫ s ≫ i = (s' ≫ i') ≫ b₁) : IsFinite (pullback.lift π _ h₁) ↔ IsFinite (pullback.lift π s' h) := by
-  have e : pullback.lift π _ h₁ =
-      pullback.lift π s' h ≫ pullback.map s b (s ≫ i) b₁ (𝟙 _) i' i (Category.id_comp _).symm hb := by
-    apply pullback.hom_ext <;> simp
-  refine ⟨fun hf => ?_, fun hf => by rw [e]; infer_instance⟩
-  rw [(IsIso.comp_inv_eq _).2 e |>.symm]
-  infer_instance
 
 def sabCast {S S' : Scheme.{0}} {t : SAB H S} {t' : SAB H S'} {f g : S' ⟶ S} (m : SABMap t' t f) (h : f = g) :
     SABMap t' t g := ⟨m.cm, h ▸ m.cart, m.base.trans h, m.act, m.lin⟩

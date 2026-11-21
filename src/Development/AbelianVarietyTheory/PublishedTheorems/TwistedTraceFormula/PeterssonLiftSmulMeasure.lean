@@ -83,53 +83,9 @@ theorem value_smul (mH : Measure (GA D B)) {c : ℝ≥0} (hc : c ≠ 0) (φ φ' 
 
 variable {ω : GA D A × GA D B →* Module.End ℂ (WO A B → ℂ)} {m : Measure (GA D A)}
 
-theorem petersson_lift_smul_measure (mH : Measure (GA D B)) (c : ℝ≥0) (Φ₁ Φ₂ : WO A B → ℂ) (f₁ f₂ : GA D A → ℂ) :
-    petersson B mH (thetaLift ω (c • m) Φ₁ f₁) (thetaLift ω (c • m) Φ₂ f₂) =
-      (c : ℂ) ^ 2 * petersson B mH (thetaLift ω m Φ₁ f₁) (thetaLift ω m Φ₂ f₂) := by
-  have e : ∀ Φ f, thetaLift ω (c • m) Φ f = (c : ℂ) • thetaLift ω m Φ f := fun Φ f =>
-    funext fun h => petersson_smul_measure m c _ _
-  rw [e, e, petersson_smul_left, ← petersson_conj_symm, petersson_smul_left, map_mul, petersson_conj_symm,
-    Complex.conj_ofReal]
-  ring
 
-theorem petersson_lift_smul (mH : Measure (GA D B)) (c₁ c₂ : ℂ) (Φ₁ Φ₂ : WO A B → ℂ) (f₁ f₂ : GA D A → ℂ) :
-    petersson B mH (thetaLift ω m Φ₁ (c₁ • f₁)) (thetaLift ω m Φ₂ (c₂ • f₂)) =
-      conj c₁ * c₂ * petersson B mH (thetaLift ω m Φ₁ f₁) (thetaLift ω m Φ₂ f₂) := by
-  rw [thetaLift_smul, thetaLift_smul, petersson_smul_left, ← petersson_conj_symm, petersson_smul_left, map_mul,
-    petersson_conj_symm, Complex.conj_conj]
-  ring
 
-theorem dblInt_theta [SigmaFinite m] {ψ : AddChar (AF D.host.F) ℂ} {χB : (AE D)ˣ →* Circle}
-    {ωd : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)} (hc : ThetaClause ψ A B χB ω ωd)
-    {Φ₁ Φ₂ : WO A B → ℂ} (h₁ : IsThetaFunO ψ A B Φ₁) (h₂ : IsThetaFunO ψ A B Φ₂) (f₁ f₂ : GA D A → ℂ) (h : GA D B) :
-    dblInt A χB⁻¹ m (fun g => thetaKO ωd g h (delta A B Φ₁ Φ₂)) f₁ f₂ =
-      thetaLift ω m Φ₁ f₁ h * conj (thetaLift ω m Φ₂ f₂ h) := by
-  rw [dblInt_of_factor (A := fun g => thetaKO ω g h Φ₁) (B := fun g => thetaKO ω g h Φ₂)
-    fun g₁ g₂ => ((hc Φ₁ Φ₂ h₁ h₂).2 g₁ g₂ h).2, thetaLift, thetaLift, petersson_conj_symm]
 
-theorem conclusion_zero (χB : (AE D)ˣ →* Circle) (ωd : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ))
-    (a : GL (Fin A.rank) (AE D)) (ν : Measure (WO A B)) (𝓕 : Set (WO A B)) (mH : Measure (GA D B)) (Φ₁ : WO A B → ℂ)
-    (f₁ f₂ : GA D A → ℂ) :
-    ZetaValueAt A χB⁻¹ m (flat A a (swSec A B ωd ν 𝓕 (delta A B Φ₁ 0)) (sZero A B)) f₁ f₂ (sZero A B)
-      ((((autMeasure B mH).real Set.univ : ℝ) : ℂ)⁻¹ * petersson B mH (thetaLift ω m Φ₁ f₁) (thetaLift ω m 0 f₂)) := by
-  have h0 : delta A B Φ₁ 0 = 0 := funext fun x => by simp [IndefiniteRowSideFullHecke.SphericalZero.delta]
-  have h1 : flat A a (swSec A B ωd ν 𝓕 (delta A B Φ₁ 0)) (sZero A B) = fun _ _ => 0 := by
-    funext s g
-    refine (flatH_apply _ _ _ _).trans ?_
-    simp [h0, swSec, IndefiniteRowSideFullHecke.SphericalZero.evZero]
-  have h2 : thetaLift ω m 0 f₂ = 0 := funext fun h => by simp [thetaLift, petersson, pet, AutomorphicL2Unitary.descend, thetaKO]
-  have h3 : eis A (fun _ => (0 : ℂ)) = fun _ => 0 := funext fun g => by simp [eis, cosetSum, term]
-  have h4 : dblIntegrand A χB⁻¹ (fun _ => (0 : ℂ)) f₁ f₂ = fun _ => 0 := funext fun g => by simp [dblIntegrand]
-  have h5 : dblIntegrandQ A χB⁻¹ (fun _ => (0 : ℂ)) f₁ f₂ = fun _ => 0 := funext fun g => by simp [dblIntegrandQ, h4]
-  rw [h1, h2, show petersson B mH (thetaLift ω m Φ₁ f₁) 0 = 0 by simp [petersson, pet, AutomorphicL2Unitary.descend], mul_zero]
-  refine ⟨⟨fun s _ => ⟨fun _ _ _ => rfl, fun g => ?_⟩, fun s _ => ?_⟩, ?_⟩
-  · simp [EisConv, CosetConv, term, summable_zero]
-  · rw [h3, DblConv, h4, h5]
-    exact ⟨fun _ _ _ => rfl, integrable_zero _ _ _⟩
-  · have : zeta A χB⁻¹ m (fun _ _ => (0 : ℂ)) f₁ f₂ = fun _ => 0 := funext fun s => by
-      rw [zeta, h3, dblInt, h5, integral_zero]
-    rw [this]
-    exact (GlobalTheory.Cont.holValueAt_const 0 _).valueAt
 
 end GlobalTheory.RallisIP.Model
 

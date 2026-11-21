@@ -82,11 +82,6 @@ theorem form_eq {d : ℕ} {g : MvPolynomial (Fin (M + 1)) k} (hg : g.IsHomogeneo
   exact congrArg (fun a : Algebra k Γ(PSpace k M, ⊤) =>
     letI := a; Twist.formSec (coord k M) (mem_polyGrading_natCast.2 hg)) (algebraΓ_eq k M)
 
-theorem imageIdeal_eq_bot : (projSys k M).imageIdeal = ⊥ := by
-  refine le_bot_iff.1 (Ideal.span_le.2 ?_)
-  rintro g ⟨d, hg, h⟩
-  refine (formSec_inj hg (isHomogeneous_zero _ k d)).1 ((form_eq k M hg).symm.trans (h.trans ?_))
-  exact LB.f_injective (funext fun j => (formOn_zero (hi := (On_U k M d j).le)).symm)
 
 theorem del_eq_one : (projSys k M).del = 1 := by
   have h := interNum_const_of_polynomial k (structureModule (PSpace k M)) (O1_isLB k M) (d := M)

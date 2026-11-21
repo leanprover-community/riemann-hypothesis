@@ -31,16 +31,6 @@ theorem monodromyFree_of_noRatio {y : WD h} {g : ↥(Weil h)} (hy : NoRatio y g)
     rw [← top]
     exact iSup_le fun β v hv => key β v hv
 
-theorem eq_of_noRatio {x y : WD h} (k : Aw x y) {g : ↥(Weil h)} (hx : NoRatio x g) : x = y :=
-  k.n0 (monodromyFree_of_noRatio (g := g) (by simpa only [NoRatio, WD.eig, k.pol] using hx))
 
-theorem noRatio_of_window {x : WD h} {g : ↥(Weil h)} (hg : deg g = 1) {c : ℝ}
-    (hx : ∀ α ∈ x.eig g, c < ‖α‖ ∧ ‖α‖ < ((normV w : ℕ) : ℝ) * c) : NoRatio x g := by
-  intro α hα hβ
-  have h1 := (hx α hα).1
-  have h2 := (hx _ hβ).2
-  rw [hg, zpow_one, norm_mul, Complex.norm_natCast] at h2
-  have hq : (0 : ℝ) < ((normV w : ℕ) : ℝ) := by exact_mod_cast zero_lt_one.trans (GlobalTheory.WeilDeligne.one_lt_normV w)
-  exact absurd (lt_of_mul_lt_mul_left h2 hq.le) (not_lt.2 h1.le)
 
 end UpperTheory.GalN.V

@@ -31,9 +31,6 @@ theorem psiF_eq (e f : Fin r → S.V) (U U' : Matrix (Fin r) (Fin r) E) (v : S.V
   simp only [smul_sub, Finset.sum_sub_distrib]
   abel
 
-theorem psiF_one (e f : Fin r → S.V) (v : S.V) : psiF e f 1 1 v = v := by
-  rw [psiF_apply]
-  simp [Matrix.one_apply]
 
 section Pair
 

@@ -66,25 +66,12 @@ section xplus
 
 variable (X : PJ D B P j) (E : PtExt X) (hM : IntAtExt X E)
 
-theorem xplus_Pt (la : HeightOneSpectrum (𝓞 B.KO)) : (xplus X E hM).Pt la = (X.Pt la ⊕ E.Pt' la) := rfl
 
-theorem xplus_vAt_inl (la : HeightOneSpectrum (𝓞 B.KO)) (y : X.Pt la) (F : X.Forms) :
-    (xplus X E hM).vAt la (.inl y) F = X.vAt la y F := rfl
 
-theorem xplus_vAt_inr (la : HeightOneSpectrum (𝓞 B.KO)) (y : E.Pt' la) (F : X.Forms) :
-    (xplus X E hM).vAt la (.inr y) F = E.vAt' la y F := rfl
 
-theorem extended_points_left (la : HeightOneSpectrum (𝓞 B.KO)) (y : X.Pt la) :
-    (xplus X E hM).pt66 la (.inl y) = X.pt66 la y := rfl
 
-theorem extended_points_right (la : HeightOneSpectrum (𝓞 B.KO)) (y : E.Pt' la) :
-    (xplus X E hM).pt66 la (.inr y) = E.extendedPointBaseChange la y := rfl
 
-theorem xplus_depth_inl (s : 𝓞 B.KO) (w : WeightFamilies.Wt D j) (la : HeightOneSpectrum (𝓞 B.KO)) (y : X.Pt la) :
-    (xplus X E hM).depth s w la (.inl y) = X.depth s w la y := rfl
 
-theorem xplus_phiC_inl (la : HeightOneSpectrum (𝓞 B.KO)) (y : X.Pt la) :
-    (xplus X E hM).phiC la (.inl y) = X.phiC la y := rfl
 
 end xplus
 

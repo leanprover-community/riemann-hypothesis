@@ -18,7 +18,6 @@ variable {D : ℕ} {X : Type*} [TopologicalSpace X]
 
 theorem locPot_add_φ (P Q : LocPot X) (x y : X) : (P + Q).φ x y = P.φ x y + Q.φ x y := rfl
 
-theorem locPot_add_U (P Q : LocPot X) (x : X) : (P + Q).U x = P.U x ∩ Q.U x := rfl
 
 def FormNonneg (A : FinHolAtlas D X) (V : Set X) (P : LocPot X) : Prop :=
   ∀ x k, ∀ y ∈ (A.chart k).target ∩ (A.chart k).symm ⁻¹' (V ∩ P.U x), ∀ w : Fin D → ℂ,
@@ -191,43 +190,14 @@ def projectiveLineConstantSystem : System projLineChartData where
   c2 _ _ _ _ := ⟨tendstoUniformlyOn_self _ _ _, tendstoUniformlyOn_self _ _ _,
     tendstoUniformlyOn_self _ _ _⟩
 
-theorem projectiveLine_constantSystem_uT (t : ℝ) : projectiveLineConstantSystem.uT t = fun _ => 0 :=
-  funext fun _ => sub_self (0 : ℝ)
 
 theorem thetaOmega_p1Data_φ (x : OnePoint ℂ) : (thetaOmega projLineChartData).φ x = fsPot.φ x :=
   funext fun z => by
     show (0 : ℝ) + fsPot.φ x z = fsPot.φ x z
     simp
 
-theorem thetaOmega_p1Data_pot : IsPotential p1 (thetaOmega projLineChartData) :=
-  ReciprocityTheory.AnForm.M.isPotentialAdd p1 _ _
-    (ReciprocityTheory.AnForm.M.isPotential_ofFun p1 0 fun _ => contDiffOn_const) projLine_isSmoothPotential
 
-theorem projectiveLine_current_smoothPotForm (t : ℝ) :
-    IsSmoothPotForm p1 projLineChartData.Yo projLineChartData.r projectiveLineKaehler 0 (thetaOmega projLineChartData) (projectiveLineConstantSystem.uT t) := by
-  rw [projectiveLine_constantSystem_uT]
-  refine ⟨⟨thetaOmega_p1Data_pot, ?_, ?_, fun _ => contDiffOn_const, fun _ _ => le_rfl,
-    fun _ _ => by simp, ?_, Or.inl fun _ => contDiffOn_const⟩, fun _ => contDiffOn_const⟩
-  · intro x k y _ w
-    rw [thetaOmega_p1Data_φ]
-    exact le_rfl
-  · intro x k y hy w
-    rw [thetaOmega_p1Data_φ]
-    have := projLine_isPlurisubharmonic x k y ⟨hy.1, hy.2.1.2⟩ w
-    show -1 * levi (fsPot.φ x ∘ (p1.chart k).symm) y w ≤
-      1 * levi (fsPot.φ x ∘ (p1.chart k).symm) y w
-    linarith
-  · intro x k y hy w
-    have h : (potForm (thetaOmega projLineChartData) fun _ => (0 : ℝ)).φ x = fsPot.φ x := by
-      funext z
-      show (thetaOmega projLineChartData).φ x z + 0 = fsPot.φ x z
-      rw [thetaOmega_p1Data_φ, add_zero]
-    rw [h]
-    exact projLine_isPlurisubharmonic x k y ⟨hy.1, hy.2.2.1.2⟩ w
 
-theorem projectiveLine_boundedNonnegForm : IsBoundedNonnegForm p1 fsPot fsPot 1 :=
-  ⟨projLine_isSmoothPotential, fun x k y hy w => projLine_isPlurisubharmonic x k y ⟨hy.1, hy.2.2⟩ w,
-    fun _ _ _ _ _ => le_rfl⟩
 
 def projectiveLineFamily : Family p1 where
   m := 1

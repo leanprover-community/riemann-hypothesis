@@ -170,7 +170,5 @@ def ClassParam : Prop :=
     Algebra.Unramified (𝓞 F) (𝓞 E) →
     ∀ c : E ≃ₐ[F] E, c ≠ 1 → ∀ r : ℕ, Odd r → ∀ (P : E[X]) (hP : IsPPol c r P), AllFields hP
 
-theorem classParam_of_CM (h : ClassParamCM) : ClassParam :=
-  fun F E _ _ _ _ _ h1 h2 h3 _ c hc r _ P hP => h F E h1 h2 h3 c hc r P hP
 
 end GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialInclusion

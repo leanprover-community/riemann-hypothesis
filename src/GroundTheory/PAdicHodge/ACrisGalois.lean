@@ -183,11 +183,6 @@ theorem gal_smul_algebraMap_zero (σ : Gal(PadicAlgCl p/K)) (x : AInf ℂ_[p] p)
       algebraMap (AInf ℂ_[p] p) (ACrisZero ℂ_[p] p) (σ • x) :=
   Subtype.ext (galAway_algebraMap σ x)
 
-theorem gal_smul_dpow (σ : Gal(PadicAlgCl p/K)) {x : AInf ℂ_[p] p} (hx : x ∈ RingHom.ker θ)
-    (n : ℕ) :
-    σ • (⟨dpow n x, dpow_mem hx n⟩ : ACrisZero ℂ_[p] p) =
-      ⟨dpow n (σ • x), dpow_mem (gal_smul_mem_ker σ hx) n⟩ :=
-  Subtype.ext (galAway_dpow σ n x)
 
 theorem galZero_one : galZero (1 : Gal(PadicAlgCl p/K)) = RingHom.id (ACrisZero ℂ_[p] p) :=
   RingHom.ext fun y => one_smul Gal(PadicAlgCl p/K) y

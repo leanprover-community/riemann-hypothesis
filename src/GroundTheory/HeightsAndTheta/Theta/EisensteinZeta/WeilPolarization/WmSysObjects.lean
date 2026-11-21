@@ -23,8 +23,6 @@ def sympGroup (ω : LinearMap.BilinForm R W) : Subgroup (W ≃ₗ[R] W) where
     conv_rhs => rw [← a.apply_symm_apply w, ← a.apply_symm_apply w']
     rw [ha]
 
-theorem mem_sympGroup {ω : LinearMap.BilinForm R W} {g : W ≃ₗ[R] W} :
-    g ∈ sympGroup ω ↔ ∀ w w', ω (g w) (g w') = ω w w' := Iff.rfl
 
 @[ext]
 structure Heis (ω : LinearMap.BilinForm R W) where

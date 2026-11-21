@@ -423,33 +423,8 @@ theorem indexAtLevelQuoted_iff_outerClauses (h : ∀ τ ∈ topsOf D.host D.eTau
     IndexAtLevelKnown D u ↔ OuterClauses D u := by
   rw [outerClauses_iff, indexAtLevelQuoted_iff, funext (boundQuoted_eq_boundMax D u h)]
 
-theorem price_of_outerClauses (h : OuterClauses D u) : IndexWith D u (boundPrice_vp D u) :=
-  ((outerClauses_iff D u).1 h).mono (boundMax_le_boundPrice D u)
 
-theorem indexAtLevel_iff_outerClauses_and (hS : product_first_zeroth_parts.HidaSetting D u) :
-    IndexAtLevel D u ↔ OuterClauses D u ∧ TopsStable D u ∧
-      ∀ w, product_first_zeroth_parts.OverT D u w → ∀ l : ℕ, product_first_zeroth_parts.len D u w (product_first_zeroth_parts.Sram D u w) (product_first_zeroth_parts.Nlam D u w) = l →
-        (l : ℝ) ≤ (D.what₂.places.ramIdx w : ℝ) * boundFine_vp D u w := by
-  constructor
-  · intro h
-    obtain ⟨h1, h2⟩ := (indexAtLevel_iff D u).1 h
-    refine ⟨outerClauses_of_indexAtLevel D u hS h, h1, fun w hw l hl => ?_⟩
-    obtain ⟨-, l', hl', h3⟩ := h2 w hw
-    have : l = l' := by exact_mod_cast (hl.symm.trans hl' : (l : ℕ∞) = l')
-    exact this ▸ h3
-  · rintro ⟨h1, h2, h3⟩
-    refine (indexAtLevel_iff D u).2 ⟨h2, fun w hw => ?_⟩
-    obtain ⟨h4, l, hl, -⟩ := h1 w hw
-    exact ⟨h4, l, hl, h3 w hw l hl⟩
 
-theorem outerClauses_of_fam {eps : ℝ} (Fm : FamP eps) (h : IndexAtLevelFam Fm) :
-    ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (i : Fm.Ix x) (u : (Fm.D x i).what₂.Word), (Fm.L x i).TuGe →
-      product_first_zeroth_parts.HidaSetting (Fm.D x i) u → OuterClauses (Fm.D x i) u := by
-  obtain ⟨x0, h⟩ := h
-  refine ⟨max x0 (Fm.x1 + 1), fun x hx i u hT hS => outerClauses_of_indexAtLevel _ u hS
-    (h x ((le_max_left _ _).trans hx) ?_ i hT u)⟩
-  have := (le_max_right _ _).trans hx
-  linarith
 
 theorem compare :
     (∀ C, product_first_zeroth_parts.Conclusion5 D u C ↔ IndexWith D u (boundMax_vp D u) ∧ MiddleClause D u C) ∧

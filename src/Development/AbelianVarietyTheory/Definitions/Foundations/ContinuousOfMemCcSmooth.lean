@@ -291,54 +291,6 @@ theorem IsPseudoCoeff.orb_of_isCharFn [LocallyCompactSpace H] [T2Space H] [μ.Is
   rw [hΘ.unique hι h1 hs]
   exact h2 s hs hT dt
 
-theorem isPseudoCoeff_char [IsTopologicalGroup H] [CompactSpace H] [T2Space H] [SecondCountableTopology H]
-    [μ.IsHaarMeasure] (hι : Continuous (matCoord ι)) {χ : H →* Circle} (hχ : (fun g => conj (χ g : ℂ)) ∈ CcMat ι) :
-    IsPseudoCoeff ι μ (charRep χ) fun g => conj (χ g : ℂ) / μ.real univ := by
-  have h0 : (μ.real univ : ℂ) ≠ 0 := by
-    exact_mod_cast ENNReal.toReal_ne_zero.2 ⟨(isOpen_univ.measure_pos μ univ_nonempty).ne', measure_ne_top _ _⟩
-  have hc := continuous_of_mem_ccSmooth hι hχ
-  have hc' : Continuous fun g => (χ g : ℂ) := (Complex.continuous_conj.comp hc).congr fun g => by simp
-  have hχc : Continuous χ := continuous_induced_rng.2 hc'
-  have hf : Continuous fun g => conj (χ g : ℂ) / μ.real univ := hc.div_const _
-  have hs : ∀ φ : H → ℂ, HasCompactSupport φ := fun φ => (isClosed_tsupport φ).isCompact
-  have hn : ∀ z : Circle, conj (z : ℂ) * z = 1 := fun z => by
-    rw [← Circle.coe_inv_eq_conj, ← Circle.coe_mul, inv_mul_cancel, Circle.coe_one]
-  refine ⟨?_, ?_, fun U _ _ _ π hπ hirr _ hne => ?_, fun s _ hT => absurd (isClosed_cent s).isCompact hT,
-    fun g => χ g, ⟨hc'.locallyIntegrable, fun s _ => hc'.continuousAt, fun f hf' =>
-      repTrace_charRep hχc (continuous_of_mem_ccSmooth hι hf') hf'.1⟩, fun s _ hT dt _ _ => ?_⟩
-  · simp only [div_eq_inv_mul]
-    exact (CcMat ι).smul_mem (μ.real univ : ℂ)⁻¹ hχ
-  · convert repTrace_charRep (μ := μ) hχc hf (hs _) using 1
-    simp [div_mul_eq_mul_div, hn, h0]
-  · suffices repOp π μ (fun g => conj (χ g : ℂ) / μ.real univ) = 0 by
-      rw [this]; exact ⟨isTraceClass_zero, trace_zero⟩
-    by_contra hP
-    obtain ⟨v, hv⟩ := DFunLike.ne_iff.1 hP
-    set w := repOp π μ (fun g => conj (χ g : ℂ) / μ.real univ) v with hw
-    have hw0 : w ≠ 0 := hv
-    have he : ∀ g, π g w = (χ g : ℂ) • w := fun g => by
-      rw [hw, hπ.repOp_apply hf (hs _), ← (π g).integral_comp_comm (hπ.isRepOp hf (hs _) v).1, ← integral_smul,
-        ← integral_mul_left_eq_self (fun x => (χ g : ℂ) • (conj (χ x : ℂ) / μ.real univ) • π x v) g]
-      refine integral_congr_ae (.of_forall fun x => ?_)
-      simp only [map_smul, map_mul, smul_smul, Circle.coe_mul, ContinuousLinearMap.mul_apply]
-      rw [← mul_div_assoc, ← mul_assoc, mul_comm (χ g : ℂ), hn, one_mul]
-    have htop := (hirr.2 _ (isIrredSubrep_span_singleton hw0 fun g => ⟨_, he g⟩).1).resolve_left (by simpa using hw0)
-    have hall : ∀ g x, π g x = (χ g : ℂ) • x := fun g x => by
-      obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.1 (htop ▸ Submodule.mem_top : x ∈ ℂ ∙ w)
-      rw [map_smul, he, smul_comm]
-    have hu : ‖((‖w‖⁻¹ : ℝ) : ℂ) • w‖ = 1 := by simp [norm_smul, hw0]
-    have hsp : (ℂ ∙ ((‖w‖⁻¹ : ℝ) : ℂ) • w) = ⊤ := by
-      rw [Submodule.span_singleton_smul_eq (by simpa using hw0), htop]
-    refine hne ⟨((LinearIsometryEquiv.toSpanUnitSingleton _ hu).trans (LinearIsometryEquiv.ofTop U _ hsp)).symm,
-      fun g x => ?_⟩
-    rw [hall, map_smul]
-    rfl
-  · haveI : CompactSpace (cent s) := isCompact_iff_compactSpace.1 hT
-    convert hasOrbInt_of_finite (dh := μ) (dt := dt) (f := fun g => conj (χ g : ℂ) / μ.real univ)
-      ((hf.comp (f := fun x => x⁻¹ * s * x) (by fun_prop)).integrable_of_hasCompactSupport (hs _)) using 2
-    have : ∀ x, χ (x⁻¹ * s * x) = χ s := fun x => by rw [map_mul, map_mul, map_inv, mul_right_comm]; simp
-    simp only [this, integral_const, Complex.real_smul]
-    field_simp
 
 def circleMat : Circle →* Matrix (Fin 1) (Fin 1) ℂ := (Matrix.scalar (Fin 1)).toMonoidHom.comp Circle.coeHom
 

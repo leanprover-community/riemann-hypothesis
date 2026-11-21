@@ -275,10 +275,6 @@ def adel0 (j : R.J) : Q.Rules j →ₛₗ[Q.sg0] (GA F (Q.V j) → ℂ) := Q.ade
 
 def XiAbsModels : Prop := ∀ j σ, GoodEmb Q.c σ → ∀ k (τ : E →+* ℂ), ‖τ ((Q.U j σ).X k).ξ0‖ = Q.xiAbs
 
-theorem xiAbsModels_of_pins (h : Q.Pins) : Q.XiAbsModels := by
-  intro j σ hσ k τ
-  obtain ⟨_, gk, x0, th, _, h2, _⟩ := ((h.2 j).2 σ hσ).1
-  rw [(h2 k).2.1, map_neg, norm_neg, norm_embedding_hostFormConstant_eq]
 
 end CorePar
 

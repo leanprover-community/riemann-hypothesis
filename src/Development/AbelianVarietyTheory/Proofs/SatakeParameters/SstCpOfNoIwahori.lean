@@ -33,10 +33,6 @@ def IwaLimit : Prop :=
     ∀ w₀ : HeightOneSpectrum (𝓞 E), ((l : ℕ) : 𝓞 E) ∈ w₀.asIdeal →
     ∃ r : G E Ω →* GL (Fin a) (Qbar l), SplitAtt π ι r ∧ ∀ w, IsSplitAt w → Apart w w₀ → SstCp π ι r w
 
-theorem sstCp_of_noIwahori {π : CuspSub E a} {ι : Qbar l ≃+* ℂ} {r : G E Ω →* GL (Fin a) (Qbar l)} {w : HeightOneSpectrum (𝓞 E)}
-    (h0 : ∀ σ, π.IsLocComp w σ → PRep.fixed σ.ρ (SmGL.iwahori (w.adicCompletion E) (Fin a)) = ⊥) : SstCp π ι r w := by
-  intro P AI _ A h O _ _ _ Bw hj σ hσ hI
-  exact absurd (h0 σ hσ) hI
 
 end GlobalTheory.IwaPkg
 

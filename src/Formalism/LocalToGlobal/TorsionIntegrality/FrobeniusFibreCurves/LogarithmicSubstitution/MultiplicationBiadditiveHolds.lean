@@ -13,9 +13,6 @@ section Grp
 
 variable {A : Type} [AddCommGroup A]
 
-theorem add_rule (g : ℤ → A) (h : ∀ n m, g (n + m) = g n + g m) (n : ℤ) : g n = n • g 1 := by
-  have e := map_zsmul (AddMonoidHom.mk' g h) n 1
-  simpa using e
 
 theorem quad_rule (g : ℤ → A) (h0 : g 0 = 0)
     (h : ∀ n m, g (n + m) + g (n - m) = g n + g n + g m + g m) (n : ℤ) :
@@ -162,9 +159,6 @@ theorem mulN_sub {F : MvPowerSeries (Fin 2) K} {l i : PowerSeries K} (h : LawLog
 
 end Law
 
-theorem formal_multiplication_exists : MulExists := by
-  intro K _ _ _ F l h n
-  exact isMul_exists h n
 
 theorem multiplication_square_holds : MulSq := by
   intro K _ _ _ F l i f h hi hq n N hN0 hN
@@ -190,80 +184,15 @@ theorem multiplication_square_holds : MulSq := by
       (n ^ 2) • cl (PowerSeries.subst (mulN h 1) f : PowerSeries K) := key
   rw [key', mulN_one, subst_X_self]
 
-theorem multiplication_additive_holds : AddMul := by
-  intro K _ _ _ F l f h hq n N hN0 hN
-  rw [mulN_eq h n N hN0 hN, simeq_iff_cl, cl_int]
-  have key := add_rule (fun k : ℤ => cl (PowerSeries.subst (mulN h k) f : PowerSeries K))
-    (by
-      intro a b
-      have q := cube_simeq_subst2 hq _ _ (mulN_spec h a).1 (mulN_spec h b).1 (mulN_spec h a).2.1
-        (mulN_spec h b).2.1
-      rw [cube_cob_subst F h.1 f _ _ (mulN_spec h a).1 (mulN_spec h b).1, mulN_add,
-        simeq_iff_cl, cl_zero, cl_sub, cl_sub, sub_sub, sub_eq_zero] at q
-      exact q) n
-  have key' : cl (PowerSeries.subst (mulN h n) f : PowerSeries K) =
-      n • cl (PowerSeries.subst (mulN h 1) f : PowerSeries K) := key
-  rw [key', mulN_one, subst_X_self]
 
 section Two
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K] [CharZero K] {ι : Type}
 
-theorem subst_first_coboundary (F be : MvPowerSeries (Fin 2) K) (hF : MvPowerSeries.constantCoeff F = 0)
-    (U V W : MvPowerSeries ι K) (hU : MvPowerSeries.constantCoeff U = 0)
-    (hV : MvPowerSeries.constantCoeff V = 0) (hW : MvPowerSeries.constantCoeff W = 0) :
-    MvPowerSeries.subst ![U, V, W] (d1 F be) =
-      MvPowerSeries.subst ![MvPowerSeries.subst ![U, V] F, W] be -
-        MvPowerSeries.subst ![U, W] be - MvPowerSeries.subst ![V, W] be := by
-  have hb := hs3 hU hV hW
-  have c3 : MvPowerSeries.constantCoeff (in3 F) = 0 := constantCoeff_subst_two_variables F hF _ _ (by simp) (by simp)
-  unfold d1
-  rw [← MvPowerSeries.coe_substAlgHom hb, map_sub, map_sub, MvPowerSeries.coe_substAlgHom hb,
-    subst2_subst be c3 (by simp) hb, subst2_subst be (by simp) (by simp) hb,
-    subst2_subst be (by simp) (by simp) hb]
-  unfold in3
-  rw [subst2_subst F (by simp) (by simp) hb, MvPowerSeries.subst_X hb, MvPowerSeries.subst_X hb,
-    MvPowerSeries.subst_X hb]
-  rfl
 
-theorem simeq_subst3 {q : MvPowerSeries (Fin 3) K} (hq : Simeq q 0) (U V W : MvPowerSeries ι K)
-    (hU : MvPowerSeries.constantCoeff U = 0) (hV : MvPowerSeries.constantCoeff V = 0)
-    (hW : MvPowerSeries.constantCoeff W = 0) (iU : Integral U) (iV : Integral V)
-    (iW : Integral W) : Simeq (MvPowerSeries.subst ![U, V, W] q) 0 := by
-  have e := (equivalence_rules K (Fin 3)).2.2.2.2 ι q 0 ![U, V, W]
-    (fun j => by fin_cases j <;> simpa) (fun j => by fin_cases j <;> simpa) hq
-  rwa [subst_zero' (hs3 hU hV hW)] at e
 
-theorem formal_multiplication_add {F : MvPowerSeries (Fin 2) K} {l : PowerSeries K} (h : LawLog F l) (n m : ℤ)
-    (x : ι) :
-    MvPowerSeries.subst ![at1 x (mulN h n), at1 x (mulN h m)] F = at1 x (mulN h (n + m)) := by
-  rw [← mulN_add h n m]
-  exact (subst2_subst F (mulN_spec h n).1 (mulN_spec h m).1
-    (PowerSeries.HasSubst.X x).const).symm
 
 end Two
 
-theorem multiplication_biadditive_holds : BiaddMul := by
-  intro K _ _ _ F be l h hq n N hN0 hN
-  rw [mulN_eq h n N hN0 hN, simeq_iff_cl, cl_int]
-  have c1 : MvPowerSeries.constantCoeff (MvPowerSeries.X 1 : MvPowerSeries (Fin 2) K) = 0 := by simp
-  have key := add_rule (fun k : ℤ => cl (MvPowerSeries.subst
-      ![at1 0 (mulN h k), (MvPowerSeries.X 1 : MvPowerSeries (Fin 2) K)] be))
-    (by
-      intro a b
-      have ca := constantCoeff_series_at_variable (0 : Fin 2) _ (mulN_spec h a).1
-      have cb := constantCoeff_series_at_variable (0 : Fin 2) _ (mulN_spec h b).1
-      have q := simeq_subst3 hq _ _ _ ca cb c1 (integral_series_at_variable 0 _ (mulN_spec h a).2.1)
-        (integral_series_at_variable 0 _ (mulN_spec h b).2.1) (law_integral_X 1)
-      rw [subst_first_coboundary F be h.1 _ _ _ ca cb c1, formal_multiplication_add,
-        simeq_iff_cl, cl_zero, cl_sub, cl_sub, sub_sub, sub_eq_zero] at q
-      exact q) n
-  have key' : cl (MvPowerSeries.subst
-      ![at1 0 (mulN h n), (MvPowerSeries.X 1 : MvPowerSeries (Fin 2) K)] be) =
-      n • cl (MvPowerSeries.subst
-      ![at1 0 (mulN h 1), (MvPowerSeries.X 1 : MvPowerSeries (Fin 2) K)] be) := key
-  have e1 : at1 (0 : Fin 2) (PowerSeries.X : PowerSeries K) = MvPowerSeries.X 0 :=
-    PowerSeries.subst_X (PowerSeries.HasSubst.X 0)
-  rw [key', mulN_one, e1, Formalism.G.LogP.subst_XX]
 
 end Formalism.L2.Th1.B.Mul

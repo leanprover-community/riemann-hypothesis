@@ -25,10 +25,6 @@ theorem ΓSpecIso_hom_constUnit (R : Type) [CommRing R] [IsDomain R] (F : Type) 
       (constUnit R F ζ : Γ((TFK (R := R) F).left, ⊤)) = (ζ : F) :=
   (Scheme.ΓSpecIso (CommRingCat.of F)).inv_hom_id_apply (ζ : F)
 
-theorem constUnit_bijective (R : Type) [CommRing R] [IsDomain R] (F : Type) [Field F]
-    [Algebra (FractionRing R) F] : Function.Bijective (constUnit R F) :=
-  (Units.mapEquiv
-    (Scheme.ΓSpecIso (CommRingCat.of F)).symm.commRingCatIsoToRingEquiv.toMulEquiv).bijective
 
 def MapCarriesPairing : Prop :=
   ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R), AdmBase R I →

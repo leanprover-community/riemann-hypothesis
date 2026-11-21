@@ -71,9 +71,6 @@ def ProjRows : Prop :=
     ∀ (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] (π : G → (K →L[ℂ] K)) (T : K →L[ℂ] K),
       IsURep π → IsOpInt μ π (phOf σ w d) T → IsRowProj π (coefM σ w) T
 
-theorem projRows_of (hS : SchurConv) (hC : ConvProj) : ProjRows := by
-  intro G _ _ _ _ _ _ μ _ _ _ Hσ _ _ σ d w hU hF hw hL K _ _ π T hπ hT
-  exact hC G μ (phOf σ w d) (coefM σ w) hL (hS G μ Hσ σ d w hU hF hw).1 K π T hπ hT
 
 def HomBij : Prop :=
   ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]

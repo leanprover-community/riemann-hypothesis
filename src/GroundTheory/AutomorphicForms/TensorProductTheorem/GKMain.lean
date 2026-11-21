@@ -264,9 +264,6 @@ namespace Decomposition
 
 variable {Mx}
 
-theorem nonempty_equiv_arch (D D' : Mx.Decomposition) : Nonempty (D.π₁.rep.Equiv D'.π₁.rep) :=
-  nonempty_equiv_fst_of_equiv D.isIrreducible₁ D.isIrreducible₂ D'.isIrreducible₁
-    (D.equiv.symm.trans D'.equiv)
 
 theorem nonempty_equiv_fin (D D' : Mx.Decomposition) : Nonempty (D.π₂.Equiv D'.π₂) :=
   nonempty_equiv_snd_of_equiv D.isIrreducible₁ D.isIrreducible₂ D'.isIrreducible₂

@@ -45,9 +45,6 @@ theorem ordPoint_translate (P R : W.toAffine.Point) {f : W.toAffine.FunctionFiel
     exp_inj] at h
   exact neg_injective h
 
-theorem divisorOf_translate_apply (R : W.toAffine.Point) {f : W.toAffine.FunctionField} (hf : f ≠ 0)
-    (P : W.toAffine.Point) : divisorOf W (translate W R f) P = divisorOf W f (P + R) := by
-  rw [divisorOf_apply, divisorOf_apply, ordPoint_translate W P R hf]
 
 omit [DecidableEq F] [IsAlgClosed F] in
 

@@ -290,21 +290,5 @@ theorem metric : Metric := by
     rw [Fintype.card_eq_nat_card, ← mul_assoc,
       inv_mul_cancel₀ (Nat.cast_ne_zero.2 (Nat.card_pos (α := H)).ne'), one_mul]
 
-theorem unitOfNorm : UnitOfNorm := by
-  intro K _ _ _ _ G _ _ V _ _ _ _ ι _ _ b X ρ hn v g x y
-  refine sesq_ext (F := fun x y => Formalism.HermitianLatticesTheory.majAt b X v (ρ g x) (ρ g y))
-    (G := Formalism.HermitianLatticesTheory.majAt b X v) (σ := v.embedding) (exists_im_ne_zero v)
-    ⟨?_, ?_, ?_, ?_⟩ ⟨?_, ?_, ?_, ?_⟩ ?_ x y
-  · intro x x' y; simp only [map_add]; exact maj_add_left b X v _ _ _
-  · intro x y y'; simp only [map_add]; exact maj_add_right b X v _ _ _
-  · intro a x y; simp only [map_smul]; exact maj_smul_left b X v _ _ _
-  · intro a x y; simp only [map_smul]; exact maj_smul_right b X v _ _ _
-  · exact fun x x' y => maj_add_left b X v _ _ _
-  · exact fun x y y' => maj_add_right b X v _ _ _
-  · exact fun a x y => maj_smul_left b X v _ _ _
-  · exact fun a x y => maj_smul_right b X v _ _ _
-  · intro z
-    show Formalism.HermitianLatticesTheory.majAt b X v (ρ g z) (ρ g z) = Formalism.HermitianLatticesTheory.majAt b X v z z
-    rw [maj_self, maj_self, hn]
 
 end Formalism.IndefR.LatticeTransfer

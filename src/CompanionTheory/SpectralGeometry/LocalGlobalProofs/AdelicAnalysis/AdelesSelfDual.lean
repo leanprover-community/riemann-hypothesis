@@ -277,10 +277,6 @@ theorem perp_perp_lat (hψ : IsStdChar F ψ) {c : F} (hc : c ≠ 0) :
   show algebraMap F (A F) c * (algebraMap F (A F) c⁻¹ * y) = y
   rw [← mul_assoc, hcc, one_mul]
 
-theorem natCast_mul_mem_lat (N : ℕ) {z : A F} (hz : z ∈ Oh F) : (N : A F) * z ∈ lat (N : F) :=
-  ⟨z, hz, by
-    show algebraMap F (A F) (N : F) * z = _
-    rw [map_natCast]⟩
 
 theorem mem_lat_inv {N : ℕ} (hN : 0 < N) {x : A F} (h : (N : A F) * x ∈ Oh F) :
     x ∈ lat ((N : F)⁻¹) :=

@@ -308,12 +308,6 @@ theorem IsMor.pullback1_comp (h : IsMor γ s γ' s' σ φ) (h' : IsMor γ' s' γ
     ((h.coef.comp h'.coef).pullCohomologyOne_eq_of_natTrans h''.coef (h.compTrans h' h'' e e')
       (fun _ _ ↦ rfl) c)
 
-theorem IsMor.pullback2_comp (h : IsMor γ s γ' s' σ φ) (h' : IsMor γ' s' γ'' s'' τ ψ)
-    (h'' : IsMor γ s γ'' s'' ρ χ) (e : ∀ r, τ (σ r) = ρ r) (e' : ψ ≫ φ = χ) (c : H2 γ s) :
-    h'.pull2 (h.pull2 c) = h''.pull2 c :=
-  (h.coef.pullCohomologyTwo_comp h'.coef c).symm.trans
-    ((h.coef.comp h'.coef).pullCohomologyTwo_eq_of_natTrans h''.coef (h.compTrans h' h'' e e')
-      (fun _ _ ↦ rfl) c)
 
 end Pull
 

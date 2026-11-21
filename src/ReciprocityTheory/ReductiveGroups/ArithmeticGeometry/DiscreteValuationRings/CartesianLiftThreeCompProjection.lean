@@ -40,7 +40,6 @@ lemma lf_pull (h : T' ⟶ T) (F : (T ⟶ A) →₀ ℤ) :
   rfl
 
 lemma padd_eq_mul (a b : T ⟶ A) : padd A a b = a * b := rfl
-lemma pzero_eq_one : pzero A T = 1 := rfl
 
 lemma comp_psum {n : ℕ} (h : T' ⟶ T) (x : Fin n → (T ⟶ A)) (I : Finset (Fin n)) :
     h ≫ psum A x I = psum A (fun k => h ≫ x k) I := by
@@ -149,15 +148,6 @@ lemma mapDomain_sub' {α β : Type} (f : α → β) (F G : α →₀ ℤ) :
     Finsupp.mapDomain f (F - G) = Finsupp.mapDomain f F - Finsupp.mapDomain f G := by
   exact map_sub (Finsupp.mapDomain.addMonoidHom f) F G
 
-lemma mapDomain_lamP (h : T' ⟶ T) (u v : T ⟶ A) :
-    Finsupp.mapDomain (fun x => h ≫ x) (lamP u v) = lamP (h ≫ u) (h ≫ v) := by
-  unfold lamP
-  have hs : ∀ (P Q : (T ⟶ A) →₀ ℤ), Finsupp.mapDomain (fun x => h ≫ x) (P - Q) =
-      Finsupp.mapDomain (fun x => h ≫ x) P - Finsupp.mapDomain (fun x => h ≫ x) Q :=
-    fun P Q => map_sub (Finsupp.mapDomain.addMonoidHom _) P Q
-  rw [Finsupp.mapDomain_add, hs, hs, Finsupp.mapDomain_single,
-    Finsupp.mapDomain_single, Finsupp.mapDomain_single, Finsupp.mapDomain_single, MonObj.comp_mul,
-    MonObj.comp_one]
 
 lemma single_two {α : Type} (a : α) : Finsupp.single a (2 : ℤ) = Finsupp.single a 1 + Finsupp.single a 1 := by
   rw [← Finsupp.single_add]

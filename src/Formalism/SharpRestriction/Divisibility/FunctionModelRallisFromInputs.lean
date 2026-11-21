@@ -118,17 +118,6 @@ def Adm1 (X : ThetaX D) (A : TH.ProvA) : Prop := ArthurRepresentationUpDown A �
 
 def IntegralityFromMetric (X : ThetaX D) (A : TH.ProvA) : Prop := Adm1 X A → Conclusion1 D X
 
-theorem integralityFromMetric_of_comb (X : ThetaX D) (A : TH.ProvA) (hC : Comb1 X) : IntegralityFromMetric X A := by
-  intro hA P hP μ hμ
-  obtain ⟨ha, hb, hc, hd⟩ := hA
-  refine And.intro ?_ ?_
-  · intro j hj Φ F hF hcu
-    exact hc P hP μ hμ j hj (fun τ => (ha.1 P.t _ _ _ _ (hC P hP j hj τ).1).2.1) Φ F hF hcu
-  · intro j hj i hi1 hi2 Φ F hF
-    by_contra hne
-    obtain ⟨τ, MM, f, hf, hf0⟩ := hd P hP μ hμ j hj i hi1 hi2 Φ F hF hne
-    obtain ⟨hD, hN, hq, hqp, -⟩ := hC P hP j hj τ
-    exact hf0 (hb.1 P.t _ _ _ _ hD (Or.inl hN) i hi1 (hi2.trans hqp) (hi2.trans_eq hq.symm) MM f hf)
 
 end Part1
 
@@ -138,24 +127,8 @@ variable {D : D7}
 
 def muOf (T : ThetaX D) (μ : D.what₂.Tup) : ℕ → T.Chr := fun s => T.chrOf μ s
 
-theorem car_muOf (T : ThetaX D) (μ : D.what₂.Tup) (s i : ℕ) : car T (muOf T μ) s i = T.carY μ s i := by
-  rfl
 
-theorem isMu_muOf (T : ThetaX D) (μ : D.what₂.Tup) : IsMu T (Formalism.MainNotions.ZetaProductPairs.parD T) (muOf T μ) := by
-  intro j τ
-  show T.infTy (T.chrOf μ (j.1 + 1)) τ = -(D.hcW D.u₀ τ).e j
-  rw [D.hcW_e D.u₀ τ]
-  exact T.chrOf_inf μ j τ
 
-theorem towerHyp_of_weightHyp (T : ThetaX D) (h : Formalism.MainNotions.ZetaProductPairs.WtHyp T) : Hyp3 T (Formalism.MainNotions.ZetaProductPairs.parD T) := by
-  obtain ⟨hI, hC, hG⟩ := h
-  refine And.intro hI (And.intro ?_ (And.intro hC (And.intro ?_ (fun τ => rfl))))
-  · intro τ
-    exact ⟨(D.hcW D.u₀ τ).u_half, (D.hcW D.u₀ τ).v_int, (D.hcW D.u₀ τ).b_int, (D.hcW D.u₀ τ).e_int⟩
-  · intro j hj τ x hx y hy hxy
-    have h2 : ((D.R.rankY D.R.m : ℕ) : ℚ) ^ 3 < |x.1 - y.1| := by
-      exact_mod_cast (hG j hj τ x hx y hy hxy).1
-    exact h2
 
 def TypeCl (T : ThetaX D) (W V : TH.HSp D) (χ χ' : T.Chr) (d' d : D.what₂.Tau → TH.SPar) : Prop :=
   ∀ (Φ : T.Sch W V) (F : T.cusp W), T.conjAF _ (F : T.AF W) ∈ T.typ _ d' → T.th _ _ χ χ' Φ F ∈ T.cusp V →
@@ -164,38 +137,6 @@ def TypeCl (T : ThetaX D) (W V : TH.HSp D) (χ χ' : T.Chr) (d' d : D.what₂.Ta
 def VanCl (T : ThetaX D) (W V : TH.HSp D) (χ χ' : T.Chr) (d' : D.what₂.Tau → TH.SPar) : Prop :=
   ∀ (Φ : T.Sch W V) (F : T.cusp W), T.conjAF _ (F : T.AF W) ∈ T.typ _ d' → T.th _ _ χ χ' Φ F = 0
 
-theorem thetaCuspidalChain_of_aux1 (T : ThetaX D) (h : Conclusion1 D T) : Formalism.MainNotions.ZetaProductPairs.ThetaCuspidalChain T := by
-  intro hW
-  have hH := towerHyp_of_weightHyp T hW
-  have key : ∀ μ : D.what₂.Tup, ThetaDescentTowerConditions T (Formalism.MainNotions.ZetaProductPairs.parD T) (muOf T μ) :=
-    fun μ => h _ hH _ (isMu_muOf T μ)
-  have c1 : ∀ (μ : D.what₂.Tup) (j : ℕ), j < D.R.m → ∀ (W V : TH.HSp D), T.Ys D.R.t (j + 1) = W →
-      T.Ys D.R.t j = V → ∀ (Φ : T.Sch W V) (F : T.cusp W),
-      T.conjAF W (F : T.AF W) ∈ T.typ W ((Formalism.MainNotions.ZetaProductPairs.parD T).Dpar (j + 1)) →
-      T.th W V (T.carY μ (j + 1) (j + 1)) (T.carY μ (j + 1) j) Φ F ∈ T.cusp V →
-      T.conjAF V (T.th W V (T.carY μ (j + 1) (j + 1)) (T.carY μ (j + 1) j) Φ F) ∈
-        T.typ V ((Formalism.MainNotions.ZetaProductPairs.parD T).Dpar j) := by
-    rintro μ j hj W V rfl rfl Φ F hF hc
-    exact (key μ).1 j hj Φ F hF hc
-  have c2 : ∀ (μ : D.what₂.Tup) (j : ℕ), j < D.R.m → ∀ i, 1 ≤ i → i ≤ (sigYD D.R j).2 →
-      ∀ (W : TH.HSp D), T.Ys D.R.t (j + 1) = W → ∀ (Φ : T.Sch W (T.YsLow D.R.t j i)) (F : T.cusp W),
-      T.conjAF W (F : T.AF W) ∈ T.typ W ((Formalism.MainNotions.ZetaProductPairs.parD T).Dpar (j + 1)) →
-      T.th W _ (T.carY μ (j + 1) (j + 1)) (T.carY μ (j + 1) j) Φ F = 0 := by
-    rintro μ j hj i hi1 hi2 W rfl Φ F hF
-    exact (key μ).2 j hj i hi1 hi2 Φ F hF
-  refine And.intro ?_ ?_
-  · intro μ j hj Φ F hF hcu
-    have hty : ∀ (k : ℕ) (x : T.AF (D.sp.Y k)), Formalism.MainNotions.ZetaProductPairs.InChain T μ k x →
-        x ∈ T.cusp (D.sp.Y k) → Formalism.MainNotions.ZetaProductPairs.IsTypeDv T k x := by
-      intro k x hx
-      induction hx with
-      | top x0 h0 => exact fun _ => h0
-      | step j' hj' Φ' F' _ ih =>
-        exact fun hc' => c1 μ j' hj' _ _ (T.Ys_rec (j' + 1) (by omega)) (T.Ys_rec j' hj'.le) Φ' F'
-          (ih F'.2) hc'
-    exact c1 μ j hj _ _ (T.Ys_rec (j + 1) (by omega)) (T.Ys_rec j hj.le) Φ F (hty (j + 1) _ hF F.2) hcu
-  · intro μ j hj i hi1 hi2 Φ F hF
-    exact c2 μ j hj i hi1 hi2 _ (T.Ys_rec (j + 1) (by omega)) Φ F hF
 
 end Instance
 
@@ -300,19 +241,6 @@ def adm2c (U : Loc2 D X) : Prop :=
 
 def NonvanishingFromUnfolding (U : Loc2 D X) : Prop := Conclusion2 D X U → ThetaPositivityCondition D X → adm2b U → adm2c U → kernel_index_full_lattice D X
 
-theorem stmt2c (U : Loc2 D X) : NonvanishingFromUnfolding U := by
-  intro h2 hpos hb hc P hP μ hμ j hj φ' Φ' hf hk hty F hF hper
-  obtain ⟨hU, hS⟩ := h2 P hP μ hμ
-  rcases hper with ⟨hj1, p, s', hne⟩ | ⟨hm, hne⟩
-  · obtain ⟨Φ, hΦf, hΦk, s, hs⟩ := hb P hP μ hμ j hj1 φ' Φ' hf hk hty F hF p s' hne
-    refine ⟨Φ, hΦf, hΦk, fun G hG => Or.inl ⟨hj, U.posDn P.t j P.t_odd P.t_ge hj1 p, s, ?_⟩⟩
-    rw [(hU j hj1 p s Φ φ' F G hG).2]
-    exact hs
-  · obtain ⟨Φ, hΦf, hΦk, s, hs⟩ := hc P hP μ hμ j hm φ' Φ' hf hk hty F hF hne
-    obtain ⟨p⟩ := hpos P j hm
-    refine ⟨Φ, hΦf, hΦk, fun G hG => Or.inl ⟨hj, p, s, ?_⟩⟩
-    rw [hS j hm p s Φ φ' F G hG]
-    exact hs
 
 end Part2
 
@@ -461,31 +389,9 @@ def FunctionModelRallisFromInputs (D : D7) (X : ThetaX D) (R : Loc3 D X) : Prop 
 
 def TowerRallisLemma (D : D7) (X : ThetaX D) (R : Loc3 D X) : Prop := Adm3 D X R → TripleInnerProductCondition D X R → PointsLemma D X R
 
-theorem points_of_functionModelRallis (R : Loc3 D X) (h : FunctionModelRallis D X R) (ht : TripleInnerProductCondition D X R) : PointsLemma D X R := by
-  intro A B t' hR
-  refine ⟨R.cPair A B, R.cPair_pos A B, ?_⟩
-  intro χ χ' hs π S f₁ f₂ φ₁ φ₂ g hV hD hL G₁ hG
-  have hD' := hD
-  obtain ⟨hg₁, hg₂, -⟩ := hD'
-  rw [ht A B χ χ' hs π f₁ f₂ φ₁ φ₂ hg₁ hg₂ G₁ hG, h A B χ χ' t' hR hs π S f₁ f₂ φ₁ φ₂ g hV hD hL]
 
-theorem towerRallis_of_functionModel (R : Loc3 D X) (h : FunctionModelRallisFromInputs D X R) : TowerRallisLemma D X R :=
-  fun hA ht => points_of_functionModelRallis R (h hA) ht
 
-theorem sw_12 (R : Loc3 D X) (ha : adm3a D X R) (hb : adm3b D X R)
-    (A B : TH.HSp D) (χ χ' : X.Chr) (t' : ℕ) (h : Range3 A B t') (hs : R.spl A B χ χ')
-    (hc : Formalism.MainNotions.SchurIrreducible.wittIdx B = 0 ∨ A.rank < t') : SWat (R.rf A B χ χ') t' := by
-  rcases hc with h0 | hlt
-  · exact ha A B χ χ' t' h hs h0
-  · exact hb A B χ χ' t' h hs hlt
 
-theorem range3_cases (A B : TH.HSp D) (t' : ℕ) :
-    Formalism.MainNotions.SchurIrreducible.wittIdx B = 0 ∨ A.rank < t' ∨ (0 < Formalism.MainNotions.SchurIrreducible.wittIdx B ∧ t' ≤ A.rank) := by
-  rcases Nat.eq_zero_or_pos (Formalism.MainNotions.SchurIrreducible.wittIdx B) with h | h
-  · exact Or.inl h
-  · rcases Nat.lt_or_ge A.rank t' with h' | h'
-    · exact Or.inr (Or.inl h')
-    · exact Or.inr (Or.inr ⟨h, h'⟩)
 
 def DefiniteLiftChain (D : Formalism.BasicNotions.D7) (X : Formalism.BasicNotions.ThetaX D) : Prop :=
   ∀ P : Formalism.BasicNotions.TH.TPar D, Hyp3 X P →
@@ -558,72 +464,7 @@ def WittIndexCondition (D : D7) (X : ThetaX D) : Prop :=
 def DefiniteChainFromRallis (D : D7) (X : ThetaX D) (R : Loc3 D X) : Prop :=
   PointsLemma D X R → ThetaCuspidalityCondition D X → WittIndexCondition D X → AuxiliaryCharactersExist D X R → ChainPeriodExistence D X R → ChainLinkExistence D X R → DefiniteLiftChain D X
 
-theorem pet_zero_left (V : TH.HSp D) (G : X.cusp V) : X.pet V 0 G = 0 := by
-  simpa using X.pet_smul_left V 0 0 G
 
-theorem stmt3c (R : Loc3 D X) : DefiniteChainFromRallis D X R := by
-  intro hp3 hcu hw hg hh hi P hP
-  obtain ⟨⟨μ, hμ, hAux⟩, π0, h0⟩ := hg P hP
-  have step : ∀ (j : ℕ) (π : Submodule ℂ (X.AF (X.Xs P.t j))), j < D.R.m → IsChain X P μ j π →
-      ∃ π' : Submodule ℂ (X.AF (X.Xs P.t (j + 1))), IsLink X P (j + 1) π' ∧ SumLifts X P μ j π π' := by
-    intro j π hj hc
-    obtain ⟨p, S, f₁, f₂, φ₁, φ₂, g, -, hf₂, hD, hL, hne, S', hS', hsph⟩ := hh P hP μ hμ hAux j hj π hc
-    have hj1 : j + 1 ≤ D.R.m := hj
-    have hR : Range3 (X.Xs P.t j) (X.Xs P.t (j + 1)) (P.t + 1) := by
-      unfold Range3
-      refine ⟨?_, ?_, by omega, Or.inl (hw P.t (j + 1) hj1)⟩
-      · rw [X.Xs_rank P.t j hj.le]
-        have hk := D.R.m_add_three_le_k
-        exact le_trans (by omega) (Nat.le_add_right D.R.k _)
-      · rw [X.Xs_rank P.t (j + 1) hj1, X.Xs_rank P.t j hj.le]
-        ring
-    obtain ⟨c, hc0, hcid⟩ := hp3 _ _ _ hR
-    have hcusp : X.cusp (X.Xs P.t (j + 1)) = ⊤ :=
-      hcu _ (X.40 P.t (j + 1) hj1).1 (X.40 P.t (j + 1) hj1).2
-    let G₁ : X.cusp (X.Xs P.t (j + 1)) :=
-      ⟨lift3 R _ _ (μ (j + 1)) (μ (j + 1)) f₁ φ₁, by rw [hcusp]; exact Submodule.mem_top⟩
-    have hV : V3 R _ _ (μ (j + 1)) (μ (j + 1)) (P.t + 1) p :=
-      fun hpos _ => absurd (hw P.t (j + 1) hj1) (Nat.pos_iff_ne_zero.mp hpos)
-    have key := hcid (μ (j + 1)) (μ (j + 1)) (hAux j hj).2 p S f₁ f₂ φ₁ φ₂ g hV hD hL G₁ rfl
-    have hlift : lift3 R _ _ (μ (j + 1)) (μ (j + 1)) f₂ φ₂ ≠ 0 := by
-      intro hz
-      rw [hz, pet_zero_left] at key
-      have hc' : (c : ℂ) ≠ 0 := by exact_mod_cast hc0.ne'
-      exact hne ((mul_eq_zero.mp key.symm).resolve_left hc')
-    have hD' := hD
-    obtain ⟨-, hg₂, -⟩ := hD'
-    obtain ⟨hfa, hka⟩ := R.sc_good _ _ _ _ φ₂ hg₂
-    exact hi P hP μ hμ hAux j hj π (IsChain.link hc)
-      ⟨R.sc _ _ _ _ φ₂, cfc R _ _ _ _ f₂, S', hS', hfa, hka, hf₂, hlift, hsph⟩
-  classical
-  let nx : ∀ j, Submodule ℂ (X.AF (X.Xs P.t j)) → Submodule ℂ (X.AF (X.Xs P.t (j + 1))) :=
-    fun j π => if h : j < D.R.m ∧ IsChain X P μ j π then Classical.choose (step j π h.1 h.2) else ⊥
-  let sq : ∀ j, Submodule ℂ (X.AF (X.Xs P.t j)) := fun j =>
-    Nat.rec (motive := fun j => Submodule ℂ (X.AF (X.Xs P.t j))) π0 (fun j π => nx j π) j
-  have hnext : ∀ j (h : j < D.R.m ∧ IsChain X P μ j (sq j)),
-      sq (j + 1) = Classical.choose (step j (sq j) h.1 h.2) := by
-    intro j h
-    show nx j (sq j) = _
-    exact dif_pos h
-  have hsq : ∀ j, j ≤ D.R.m → IsChain X P μ j (sq j) := by
-    intro j
-    induction j with
-    | zero => intro _; exact h0
-    | succ n ih =>
-      intro hn
-      have hc : IsChain X P μ n (sq n) := ih (by omega)
-      have hn' : n < D.R.m ∧ IsChain X P μ n (sq n) := ⟨by omega, hc⟩
-      have hs := Classical.choose_spec (step n (sq n) hn'.1 hn'.2)
-      rw [hnext n hn']
-      exact And.intro hs.1 ⟨sq n, hc, hs.2⟩
-  have hsum : ∀ j, j < D.R.m → SumLifts X P μ j (sq j) (sq (j + 1)) := by
-    intro j hj
-    have hn' : j < D.R.m ∧ IsChain X P μ j (sq j) := ⟨hj, hsq j hj.le⟩
-    rw [hnext j hn']
-    exact (Classical.choose_spec (step j (sq j) hn'.1 hn'.2)).2
-  refine ⟨μ, sq, hμ, fun j hj => ?_, fun j hj => hsum j hj⟩
-  obtain ⟨h1, h2, h3, -⟩ := IsChain.link (hsq j hj)
-  exact ⟨h1, h2, h3⟩
 
 end Part3
 
@@ -640,11 +481,6 @@ def Conclusion2Family (UF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc2 (Fm.D x i
 
 def familyNonvanishing : Prop := ∀ (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x), kernel_index_full_lattice (Fm.D x i) (Fm.ex x hx i).th
 
-theorem familyNonvanishing_of (UF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc2 (Fm.D x i) (Fm.ex x hx i).th) (h : Conclusion2Family Fm UF)
-    (hp : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ThetaPositivityCondition (Fm.D x i) (Fm.ex x hx i).th)
-    (hb : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), adm2b (UF x hx i))
-    (hc : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), adm2c (UF x hx i)) : familyNonvanishing Fm :=
-  fun x hx i => stmt2c (UF x hx i) (h x hx i) (hp x hx i) (hb x hx i) (hc x hx i)
 
 def Conclusion3Family (RF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc3 (Fm.D x i) (Fm.ex x hx i).th) : Prop :=
   ∀ (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x), PointsLemma (Fm.D x i) (Fm.ex x hx i).th (RF x hx i)

@@ -67,11 +67,6 @@ theorem rho_sub (d : Darboux B κ) (w : W) (Φ Ψ : (κ → AF F) → ℂ) : d.r
   simp only [Darboux.rho, schr, Pi.sub_apply]
   ring
 
-theorem eq_of_theta (hψ : IsStd ψ) (d : Darboux B κ) {Φ Ψ} (hΦ : Φ ∈ schA F κ) (hΨ : Ψ ∈ schA F κ)
-    (h : ∀ w, thetaSum F (d.rho ψ w Φ) = thetaSum F (d.rho ψ w Ψ)) : Φ = Ψ := by
-  obtain ⟨-, ⟨l, -, hl⟩, -⟩ := GlobalTheory.T.theta_distribution_nonzero_admissible F κ
-  refine sub_eq_zero.1 (eq_zero_of_theta hψ d (sub_mem hΦ hΨ) fun w => ?_)
-  rw [← hl _ (rho_mem hψ d w (sub_mem hΦ hΨ)), rho_sub, map_sub, hl _ (rho_mem hψ d w hΦ), hl _ (rho_mem hψ d w hΨ), h, sub_self]
 
 theorem thetaSum_smul (c : ℂ) (Φ : (κ → AF F) → ℂ) : thetaSum F (c • Φ) = c * thetaSum F Φ := by
   simp only [thetaSum, Pi.smul_apply, smul_eq_mul, tsum_mul_left]
@@ -184,31 +179,7 @@ theorem RatRel.dbl (hr : RatRel d d₁) (h : IsDblCoord c ξ JA JB d dd) (h₁ :
   · rw [h₁, h2, h4]
     ext (i | i) <;> simp [ratPt]
 
-theorem rho_box (h : IsDblCoord c ξ JA JB d dd) (w u : Matrix α β E) (φ φ' : (κ → AF F) → ℂ) :
-    dd.rho ψ (Matrix.fromCols w u) (boxFun φ φ') = boxFun (d.rho ψ w φ) ((negD d).rho ψ u φ') := by
-  rw [Darboux.rho, h, schr_box]
-  rfl
 
-theorem box_compat (hT : TwEx) (hψ : IsStd ψ) (hr : RatRel d d₁) (h : IsDblCoord c ξ JA JB d dd)
-    (h₁ : IsDblCoord c ξ JA JB d₁ dd₁) {e ed} (he : Tw ψ d d₁ e) (hd : Tw ψ dd dd₁ ed) :
-    ∃ e₂, Tw ψ (negD d) (negD d₁) e₂ ∧ ∀ φ ∈ schA F κ, ∀ φ' ∈ schA F κ, ed (boxFun φ φ') = boxFun (e φ) (e₂ φ') := by
-  obtain ⟨e₀, h₀⟩ := hT F ψ hψ κ _ _ (negD d) (negD d₁)
-  obtain ⟨a, ha, Ha⟩ := he.theta hψ hr
-  obtain ⟨b, hb, Hb⟩ := h₀.theta hψ hr.neg
-  obtain ⟨t, ht, Ht⟩ := hd.theta hψ (hr.dbl h h₁)
-  have h₂ := h₀.smul (div_ne_zero ht (mul_ne_zero ha hb))
-  refine ⟨_, h₂, fun φ hφ φ' hφ' => ?_⟩
-  have hb1 := (GlobalTheory.T.theta_sum_tensor_product F κ κ φ hφ φ' hφ').1
-  refine eq_of_theta hψ dd₁ (hd.maps _ hb1) (GlobalTheory.T.theta_sum_tensor_product F κ κ _ (he.maps φ hφ) _ (h₂.maps φ' hφ')).1 fun w => ?_
-  rw [← Matrix.fromCols_toCols w]
-  generalize w.toCols₁ = u
-  generalize w.toCols₂ = u'
-  have m1 := rho_mem hψ d u hφ
-  have m2 := rho_mem hψ (negD d) u' hφ'
-  rw [← hd.Heisenberg₂ _ _ hb1, Ht _ (rho_mem hψ dd _ hb1), rho_box h, rho_box h₁, (GlobalTheory.T.theta_sum_tensor_product F κ κ _ m1 _ m2).2,
-    ← he.Heisenberg₂ u φ hφ, ← h₂.Heisenberg₂ u' φ' hφ', (GlobalTheory.T.theta_sum_tensor_product F κ κ _ (he.maps _ m1) _ (h₂.maps _ m2)).2, Ha _ m1,
-    LinearMap.smul_apply, thetaSum_smul, Hb _ m2]
-  field_simp
 
 end Dbl
 

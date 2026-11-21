@@ -44,14 +44,12 @@ def sigI (I : AutInst) : IntAf I.F I.E →+* IntAf I.F I.E :=
   ((sigR I.cm.sig (Af I.F)).comp (IntAf I.F I.E).subtype).codRestrict _ fun z =>
     (intAf_approx_inter_unit_conj I 1 le_rfl).2.2.2 z.1 z.2
 
-theorem coe_sigI (z : IntAf I.F I.E) : (sigI I z : I.E ⊗[I.F] Af I.F) = sigR I.cm.sig (Af I.F) z := rfl
 
 theorem sigI_sigI (z : IntAf I.F I.E) : sigI I (sigI I z) = z := Subtype.ext (sig_sig _)
 
 def hI (x y : I.Lf) : IntAf I.F I.E :=
   ⟨hAf I x y, (GlobalTheory.AdelicLattice.adelicLattice_selfDual I y).1 y.2 x x.2⟩
 
-theorem coe_hI (x y : I.Lf) : (hI x y : I.E ⊗[I.F] Af I.F) = hAf I x y := rfl
 
 theorem sigI_hI (x y : I.Lf) : sigI I (hI x y) = hI y x := Subtype.ext (sig_hAf _ _)
 

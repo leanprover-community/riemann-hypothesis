@@ -40,14 +40,7 @@ theorem grad_mul_of_eval_eq_zero (r p : MvPolynomial σ ℂ) (hp : eval w p = 0)
 def linPart [Fintype σ] (c : σ → ℂ) : MvPolynomial σ ℂ :=
   ∑ i, C (c i) * (X i - C (w i))
 
-theorem eval_linPart [Fintype σ] (c : σ → ℂ) : eval w (linPart w c) = 0 := by
-  simp [linPart]
 
-theorem grad_linPart [Fintype σ] (c : σ → ℂ) : grad w (linPart w c) = c := by
-  classical
-  ext i
-  rw [linPart, map_sum, Finset.sum_apply]
-  simp [grad_mul, grad_C, grad_X_sub_C, Pi.single_apply]
 
 theorem linPart_single [Fintype σ] [DecidableEq σ] (j : σ) : linPart w (Pi.single j 1) = X j - C (w j) := by
   rw [linPart, Finset.sum_eq_single j]

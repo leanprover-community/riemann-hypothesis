@@ -14,13 +14,6 @@ open scoped Matrix ComplexOrder
 
 namespace GlobalTheory.Core.CoefGram
 
-theorem map_inv_entry_mem {E K : Type} [Field E] [Field K] {n : ℕ} (f : E →+* K) (K0 : Subfield K) (hf : ∀ x, f x ∈ K0)
-    (J : Matrix (Fin n) (Fin n) E) (a b : Fin n) : (J.map f)⁻¹ a b ∈ K0 := by
-  rw [Matrix.inv_def, Ring.inverse_eq_inv', Matrix.smul_apply, smul_eq_mul]
-  have h1 : (J.map f).det = f J.det := (RingHom.map_det f J).symm
-  have h2 : (J.map f).adjugate = J.adjugate.map f := (RingHom.map_adjugate f J).symm
-  rw [h1, h2, Matrix.map_apply]
-  exact mul_mem (inv_mem (hf _)) (hf _)
 
 theorem map_inv_eq {K L : Type} [Field K] [Field L] {n : ℕ} (f : K →+* L) (A : Matrix (Fin n) (Fin n) K) :
     A⁻¹.map f = (A.map f)⁻¹ := by
@@ -56,19 +49,6 @@ theorem gramP_posDef (D : D7) (σ : D.host.E →+* ℂ) : ((gramP D).map σ).Pos
   have h1 : (D.sp.X'.gram.map σ).PosDef := posDef_of_hasSignature _ hsig
   exact h1.submatrix (finCongr (rankP D)).symm.injective
 
-theorem embE_mem (D : D7) (x : D.host.E) : D.embE x ∈ Formalism.DivisionValues.cmMax D.what₂.LL := by
-  intro σ
-  rw [← D.embE_conj]
-  exact D.host.conjE_apply (σ.comp D.embE) x
 
-theorem pairVr_gramP_rat_posDef : ∀ (D : D7) (u : D.what₂.Word), (∀ i j, (Matrix.of fun i j => pairVr (fun τ : D.what₂.Tau => D.embE.comp (D.host.sigmaOf (D.eTau τ : D.R.GG) : D.host.E →+* D.host.E)) (sgT u) (gramP D) (bVV D.what₂.LL (sgT u) i) (bVV D.what₂.LL (sgT u) j)) i j ∈ Formalism.DivisionValues.cmMax D.what₂.LL) ∧ ∀ v : InfinitePlace D.what₂.LL, ((Matrix.of fun i j => pairVr (fun τ : D.what₂.Tau => D.embE.comp (D.host.sigmaOf (D.eTau τ : D.R.GG) : D.host.E →+* D.host.E)) (sgT u) (gramP D) (bVV D.what₂.LL (sgT u) i) (bVV D.what₂.LL (sgT u) j)).map v.embedding).PosDef := by
-  intro D u
-  refine ⟨fun i j => ?_, fun v => ?_⟩
-  · exact pairRat _ _ _ _ (Formalism.DivisionValues.cmMax D.what₂.LL) _
-      (fun τ a b => map_inv_entry_mem _ _ (fun x => embE_mem D _) _ b a) i j
-  · refine pairPos _ _ _ (sgT u) _ v.embedding fun τ => ?_
-    unfold gramKd
-    rw [Matrix.transpose_map, map_inv_eq, Matrix.map_map, ← RingHom.coe_comp]
-    exact (gramP_posDef D _).inv.transpose
 
 end GlobalTheory.Core.CoefGram

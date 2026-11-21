@@ -54,13 +54,7 @@ theorem c₁_pos (τ : K →+* ℂ) : 0 < x.c₁ τ := archSize_pos (G.herm τ) 
 theorem c₂_pos (τ : K →+* ℂ) : 0 < x.c₂ τ := archSize_pos (G.herm₂ τ) fun h =>
   G.alg₂.bpf.coords_ne_zero x.pt.1 (funext fun k => (map_eq_zero τ).1 (congrFun h k))
 
-theorem ht_eq_pointHeight : x.ht = pointHeight G.w G.A (G.coords x.pt.1) := rfl
 
-theorem ht_eq_ptHeight : x.ht = G.ptHeight x.pt := by
-  have := vecHeight_smul_algebraMap K K _ _ G.w G.A G.geom.alg.spans G.herm K (G.coords x.pt.1) 1
-    (G.geom.alg.bpf.coords_ne_zero _) one_ne_zero
-  rw [one_smul] at this
-  exact this.symm
 
 theorem c₂_conj (τ : K →+* ℂ) : x.c₂ ((starRingEnd ℂ).comp τ) = x.c₂ τ := by
   let w (σ : K →+* ℂ) : CxPts G.str σ := Points.PtsOver.map (G.ideal s).subschemeι rfl (spMap σ) (x.along σ)
@@ -195,11 +189,6 @@ theorem Coord.AtPoints.vecHt_eq {hs : G.IsGood s} {δ : ℕ} {Co : Coord G hs δ
   simp only [Coord.gen, Coord.c₁, (h p).2.1]
   rfl
 
-theorem nrm_normOn_sq_eq (hs : G.IsGood s)
-    (h : Function.Surjective fun x : RatPt G s => x.along (algebraMap K (AlgebraicClosure K))) (j : ℕ) (τ : K →+* ℂ)
-    (g : G.SecOn s j) : (hs.normOn j).nrm τ g ^ 2 = ∑ᶠ x : RatPt G s, x.nrm j τ g ^ 2 := by
-  rw [hs.nrm_normOn_sq, ← finsum_comp_equiv (Equiv.ofBijective _ (RatPt.along_bijective hs h τ))]
-  exact finsum_congr fun x => (Real.sq_sqrt (Weight.nsq_nonneg _ _ _)).symm
 
 section Split
 

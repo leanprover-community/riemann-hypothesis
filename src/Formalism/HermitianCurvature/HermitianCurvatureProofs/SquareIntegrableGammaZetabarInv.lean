@@ -63,10 +63,6 @@ theorem ev_zi (hτ : 1 ≤ τ) (q) : ev (zi : S τ) q = (q.1.2)⁻¹ := by
   rw [zi, ev_inv z ((laws hτ).unit_alt_bis M.vz), eval_zeta]
 theorem ev_zbi (hτ : 1 ≤ τ) (q) : ev (zbi : S τ) q = (conj q.1.2)⁻¹ := by
   rw [zbi, ev_inv zb ((laws hτ).unit_alt_bis M.vzb), ev_zb]
-theorem ev_ggi (hτ : 1 ≤ τ) (q) : ev (ggi : S τ) q = (q.1.2 * conj q.1.2 - τ)⁻¹ := by
-  rw [ggi, ev_inv gg (laws hτ).unit_gg, ev_gg]
-theorem gg_ne' (q : Qp 0 τ) : q.1.2 * conj q.1.2 - τ ≠ 0 := by
-  rw [← ev_gg]; exact gg_ne (r := 0) (TT := τ) q
 
 theorem th_mul (f g : S τ) : th (f * g) = th f * g + f * th g := Formalism.FourierDecayAlt.P.analytic_leibniz 0 τ _ f g
 theorem thb_mul (f g : S τ) : thb (f * g) = thb f * g + f * thb g := Formalism.FourierDecayAlt.P.analytic_leibniz 0 τ _ f g
@@ -88,8 +84,6 @@ theorem thb_zbi (hτ : 1 ≤ τ) : thb (zbi : S τ) = -zbi := by
   have := Formalism.FourierDecayAlt.P.MAx1.eci (laws hτ) M.vzb M.vzb; rwa [if_pos rfl] at this
 theorem th_gg (hτ : 1 ≤ τ) : th (gg : S τ) = z * zb := Formalism.FourierDecayAlt.P.MAx1.euler_GG_z (laws hτ)
 theorem thb_gg (hτ : 1 ≤ τ) : thb (gg : S τ) = z * zb := Formalism.FourierDecayAlt.P.MAx1.euler_gg_zb (laws hτ)
-theorem thb_ggi (hτ : 1 ≤ τ) : thb (ggi : S τ) = -(ggi * ggi * (z * zb)) := by
-  rw [← thb_gg hτ]; exact Formalism.FourierDecayAlt.P.MAx1.ev_inv (laws hτ) M.vzb gg (laws hτ).unit_gg
 theorem th_one (hτ : 1 ≤ τ) : th (1 : S τ) = 0 := Formalism.FourierDecayAlt.P.MAx1.ev_one (laws hτ) M.vz
 theorem thb_one (hτ : 1 ≤ τ) : thb (1 : S τ) = 0 := Formalism.FourierDecayAlt.P.MAx1.ev_one (laws hτ) M.vzb
 
@@ -426,71 +420,7 @@ theorem phi_smooth {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) :
 
 def phiS {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) : S τ := ⟨_, phi_smooth hφ⟩
 
-theorem fd_phi {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) (q : Qp 0 τ) (e : E 0) :
-    fderiv ℝ (ext (phiS (τ := τ) hφ).1) q.1 e =
-      ((LE.ld 1 φ (Gf τ q.1) / Gf τ q.1 : ℝ) : ℂ) * fderiv ℝ (ext (gg : S τ).1) q.1 e := by
-  have hG : HasFDerivAt (Gf τ) (fderiv ℝ (Gf τ) q.1) q.1 := (Gf_smooth.differentiable (by simp [sm]) q.1).hasFDerivAt
-  have hψ : HasDerivAt (fun u => φ (Real.exp u)) (LE.ld 1 φ (Gf τ q.1)) (Real.log (Gf τ q.1)) := by
-    rw [LE.ld, iteratedDeriv_one]
-    exact ((hφ.differentiable (by simp)) _).hasDerivAt
-  have h1 := (hψ.comp _ (Real.hasDerivAt_log (Gf_pos q).ne')).comp_hasFDerivAt q.1 hG
-  have h2 := Complex.ofRealCLM.hasFDerivAt.comp q.1 h1
-  have h3 := Complex.ofRealCLM.hasFDerivAt.comp q.1 hG
-  have e1 : ext (phiS (τ := τ) hφ).1 =ᶠ[nhds q.1]
-      (Complex.ofRealCLM ∘ ((fun u => φ (Real.exp u)) ∘ Real.log) ∘ Gf τ) := by
-    filter_upwards [(Qset_open 0 τ).mem_nhds q.2] with y hy
-    rw [ext_of_mem _ hy]
-    simp [phiS, Real.exp_log (Gf_pos ⟨y, hy⟩)]
-  have e2 : ext (gg : S τ).1 =ᶠ[nhds q.1] (Complex.ofRealCLM ∘ Gf τ) := by
-    filter_upwards [(Qset_open 0 τ).mem_nhds q.2] with y hy
-    rw [ext_of_mem _ hy]
-    have := ev_gg (τ := τ) ⟨y, hy⟩
-    rw [Complex.mul_conj] at this
-    show ev gg ⟨y, hy⟩ = _
-    rw [this]; simp [Gf]
-  rw [e1.fderiv_eq, e2.fderiv_eq, h2.fderiv, h3.fderiv]
-  simp [div_eq_mul_inv]
 
-theorem first_order_cutoff (hτ : 1 ≤ τ) {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) {ε : ℝ} (hε : 0 < ε) (h0 : ∀ x, x ≤ ε → φ x = 0)
-    (hb : ∀ p, ∃ C, ∀ x, 0 < x → |LE.ld p φ x| ≤ C) : T1 0 (phiS (τ := τ) hφ) := by
-  obtain ⟨C0, hC0⟩ := hb 0
-  obtain ⟨C1, hC1⟩ := hb 1
-  have n0 : 0 ≤ C0 := (abs_nonneg _).trans (hC0 1 one_pos)
-  have n1 : 0 ≤ C1 := (abs_nonneg _).trans (hC1 1 one_pos)
-  have key : ∀ q : Qp 0 τ, ‖((LE.ld 1 φ (Gf τ q.1) / Gf τ q.1 : ℝ) : ℂ) * (q.1.2 * conj q.1.2)‖ ≤
-      C1 * (1 + τ / ε) * ‖q.1.2‖ ^ (0 : ℤ) := fun q => by
-    have hp := Gf_pos q
-    rw [zpow_zero, mul_one, Complex.mul_conj, ← Complex.ofReal_mul, Complex.norm_real, Real.norm_eq_abs]
-    have hn : Complex.normSq q.1.2 = Gf τ q.1 + τ := by simp [Gf]
-    by_cases hlt : Gf τ q.1 < ε
-    · have : LE.ld 1 φ (Gf τ q.1) = 0 := by
-        rw [LE.ld, iteratedDeriv_one]
-        have : (fun u => φ (Real.exp u)) =ᶠ[nhds (Real.log (Gf τ q.1))] fun _ => 0 := by
-          filter_upwards [Iio_mem_nhds (Real.log_lt_log hp hlt)] with u hu
-          exact h0 _ (le_of_lt ((Real.lt_log_iff_exp_lt hε).1 hu))
-        rw [this.deriv_eq]; simp
-      rw [this]; simp; positivity
-    · push Not at hlt
-      rw [hn, abs_mul, abs_div, abs_of_pos hp, abs_of_pos (by linarith : 0 < Gf τ q.1 + τ)]
-      have h1 : τ / Gf τ q.1 ≤ τ / ε := div_le_div_of_nonneg_left (by linarith) hε hlt
-      calc |LE.ld 1 φ (Gf τ q.1)| / Gf τ q.1 * (Gf τ q.1 + τ) = |LE.ld 1 φ (Gf τ q.1)| * (1 + τ / Gf τ q.1) := by
-            field_simp
-        _ ≤ C1 * (1 + τ / ε) := mul_le_mul (hC1 _ hp) (by linarith) (by positivity) n1
-  refine ⟨⟨C0, n0, fun q => ?_⟩, ⟨C1 * (1 + τ / ε), by positivity, fun q => ?_⟩,
-    ⟨C1 * (1 + τ / ε), by positivity, fun q => ?_⟩⟩
-  · have := hC0 _ (Gf_pos q)
-    rw [LE.ld, iteratedDeriv_zero, Real.exp_log (Gf_pos q)] at this
-    simpa [phiS, ev] using this
-  · have e := congrArg (fun f => ev f q) (th_gg (τ := τ) hτ)
-    simp only [ev_th, ev_mul, eval_zeta, ev_zb, wirt_alt] at e
-    rw [ev_th, wirt_alt, fd_phi, fd_phi]
-    convert key q using 2
-    rw [← e]; ring
-  · have e := congrArg (fun f => ev f q) (thb_gg (τ := τ) hτ)
-    simp only [ev_thb, ev_mul, eval_zeta, ev_zb, wirt_zb] at e
-    rw [ev_thb, wirt_zb, fd_phi, fd_phi]
-    convert key q using 2
-    rw [← e]; ring
 
 end
 
@@ -541,16 +471,6 @@ end Act
 
 section R0
 variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-theorem Dr0 : L.Dr = 1 := by simp [LevelData.Dr]
-theorem Drb0 : L.Drb = 1 := by simp [LevelData.Drb]
-theorem Dri0 : L.Dri = 1 := by simp [LevelData.Dri]
-theorem Drbi0 : L.Drbi = 1 := by simp [LevelData.Drbi]
-theorem Ahat0 (y) : L.Ahat y = 1 := by simp [LevelData.Ahat, LevelData.Dr, LevelData.Ar, LevelData.Tprod]
-theorem Ahatv0 (y) : L.Ahatv y = 1 := by simp [LevelData.Ahatv, LevelData.Drb, LevelData.Avr, LevelData.Tvprod]
-theorem raising_eq_gamma_lowering (y) : L.R0 y = L.GG * L.l0 y := by
-  simp [LevelData.R0, LevelData.Drb, LevelData.Ar, LevelData.Br, LevelData.Tprod]
-theorem R0v0 (y) : L.R0v y = L.GG * L.m0 y := by
-  simp [LevelData.R0v, LevelData.Dr, LevelData.Avr, LevelData.Bvr, LevelData.Tvprod]
 end R0
 
 abbrev Pb (b : ℕ) : M.Par := ⟨1, 0, 1, 1, fun _ => 0, fun _ => 2 * b⟩
@@ -560,89 +480,16 @@ variable (b : ℕ)
 theorem hT : 1 ≤ (Pb b).TT := by simp [M.Par.TT]
 theorem aC_eq (π) : M.aC (Pb b) π = b := by simp [M.aC]
 
-theorem nab_act (f π) : actA (Pb b) (nabA (Pb b) (DQ (Pb b))) f π = zi * th (f π) + (b : ℂ) • (zb * (ggi * f π)) := by
-  rw [nabA, act_diag, aC_eq]; rfl
-theorem nabs_act (f π) : actA (Pb b) (nabsA (Pb b) (DQ (Pb b))) f π =
-    -(zbi * thb (f π)) + (b : ℂ) • (z * (ggi * f π)) := by
-  rw [nabsA, act_diag, aC_eq]; rfl
-theorem z_act (f π) : actA (Pb b) (zA (Pb b) (DQ (Pb b))) f π = z * f π := act_sc _ _ _ _
-theorem zb_act (f π) : actA (Pb b) (zbA (Pb b) (DQ (Pb b))) f π = zb * f π := act_sc _ _ _ _
-theorem zi_act (f π) : actA (Pb b) (ziA (Pb b) (DQ (Pb b))) f π = zi * f π := act_sc _ _ _ _
-theorem zbi_act (f π) : actA (Pb b) (zbiA (Pb b) (DQ (Pb b))) f π = zbi * f π := act_sc _ _ _ _
-theorem gg_act (f π) : actA (Pb b) (ggA (Pb b) (DQ (Pb b))) f π = gg * f π := act_sc _ _ _ _
-theorem ggi_act (f π) : actA (Pb b) (ggiA (Pb b) (DQ (Pb b))) f π = ggi * f π := act_sc _ _ _ _
 
 variable {b}
 variable {L : LevelData (A (Pb b) (DQ (Pb b))) 0} (hL : IsModelLevel (Pb b) (DQ (Pb b)) L)
 include hL
 
-theorem raising_action (y f π) : actA (Pb b) (L.R0 y) f π = opR (b + (y + 1 / 2)) (f π) := by
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  rw [raising_eq_gamma_lowering, LevelData.l0, hg, hn, hzb, hgi]
-  simp only [act_mul, act_sub, act_neg, act_alg, gg_act, nab_act, zb_act, ggi_act]
-  refine S_ext fun q => ?_
-  have := gg_ne' q
-  simp only [opR, ev_mul, ev_sub, ev_add, ev_neg, ev_smul, ev_gg, ev_ggi (hT b)]
-  field_simp
-  ring
 
-theorem raising_variant_action (y f π) : actA (Pb b) (L.R0v y) f π = opV (b + (y - 1 / 2)) (f π) := by
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  rw [R0v0, LevelData.m0, hg, hns, hz, hgi]
-  simp only [act_mul, act_sub, act_neg, act_alg, gg_act, nabs_act, z_act, ggi_act]
-  refine S_ext fun q => ?_
-  have := gg_ne' q
-  simp only [opV, ev_mul, ev_sub, ev_add, ev_neg, ev_smul, ev_gg, ev_ggi (hT b)]
-  field_simp
-  ring
 
-theorem raising_star_action (y f π) : actA (Pb b) (star (L.R0 y)) f π = opRs (b + (y + 1 / 2)) (f π) := by
-  have : Fact ((DQ (Pb b)).Laws (Pb b).TT) := ⟨laws (hT b)⟩
-  obtain ⟨-, s1, s2, s3, s4, s5⟩ := Formalism.FourierDecayAlt.P.MAx1.starGens (Pb b) (DQ (Pb b))
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  have s6 : star (zbA (Pb b) (DQ (Pb b))) = zA (Pb b) (DQ (Pb b)) := by rw [← s1, star_star]
-  rw [raising_eq_gamma_lowering, LevelData.l0, hg, hn, hzb, hgi]
-  simp only [star_mul, star_sub, star_neg, s3, s4, s5, s6, ← algebraMap_star_comm]
-  simp only [act_mul, act_sub, act_neg, act_alg, gg_act, nabs_act, z_act, ggi_act]
-  refine S_ext fun q => ?_
-  have := gg_ne' q
-  simp only [opRs, ev_mul, ev_sub, ev_add, ev_neg, ev_smul, ev_gg, ev_ggi (hT b), map_add, Complex.conj_natCast,
-    Complex.star_def]
-  field_simp
-  ring
 
-theorem R0vs_act (y f π) : actA (Pb b) (star (L.R0v y)) f π = opVs (b + (y - 1 / 2)) (f π) := by
-  have : Fact ((DQ (Pb b)).Laws (Pb b).TT) := ⟨laws (hT b)⟩
-  obtain ⟨-, s1, s2, s3, s4, s5⟩ := Formalism.FourierDecayAlt.P.MAx1.starGens (Pb b) (DQ (Pb b))
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  have s6 : star (nabsA (Pb b) (DQ (Pb b))) = nabA (Pb b) (DQ (Pb b)) := by rw [← s5, star_star]
-  rw [R0v0, LevelData.m0, hg, hns, hz, hgi]
-  simp only [star_mul, star_sub, star_neg, s1, s3, s4, s6, ← algebraMap_star_comm]
-  simp only [act_mul, act_sub, act_neg, act_alg, gg_act, nab_act, zb_act, ggi_act]
-  refine S_ext fun q => ?_
-  have := gg_ne' q
-  simp only [opVs, ev_mul, ev_sub, ev_add, ev_neg, ev_smul, ev_gg, ev_ggi (hT b), map_add, map_sub, Complex.conj_natCast,
-    Complex.star_def]
-  field_simp
-  ring
 
-theorem hat_cl {a} (ha : a ∈ hatSet (Pb b) L) {K} {f : M.Ty (Pb b) → S (Pb b).TT} (hf : ∀ π, Cl K (f π)) (π) :
-    Cl (K + 1) (actA (Pb b) a f π) := by
-  rcases ha with ((⟨y, rfl⟩ | ⟨y, rfl⟩) | ⟨y, rfl⟩) | ⟨y, rfl⟩
-  · rw [Ahat0, act_one]; exact (hf π).up
-  · rw [raising_action hL]; exact (hf π).opR (hT b) _
-  · rw [Ahatv0, act_one]; exact (hf π).up
-  · rw [raising_variant_action hL]; exact (hf π).opV (hT b) _
 
-theorem word_cl {K} {f : M.Ty (Pb b) → S (Pb b).TT} (hf : ∀ π, Cl K (f π)) (w : List (A (Pb b) (DQ (Pb b))))
-    (hw : ∀ a ∈ w, a ∈ hatSet (Pb b) L) : ∀ π, Cl (K + w.length) (actA (Pb b) w.prod f π) := by
-  induction w with
-  | nil => intro π; rw [List.prod_nil, act_one]; simpa using hf π
-  | cons a w ih =>
-    intro π
-    rw [List.prod_cons, act_mul]
-    exact (hat_cl hL (hw a (List.mem_cons_self ..)) (ih fun x hx => hw x (List.mem_cons_of_mem _ hx)) π).cast
-      (by simp; ring)
 
 omit hL in
 theorem const_cl (a : A (Pb b) (DQ (Pb b))) (ha : ∀ π π', ∃ c : ℂ, a π π' = algebraMap ℂ _ c) {K}
@@ -658,68 +505,8 @@ theorem SS_const (i π π') : ∃ c : ℂ, SS (Pb b) (DQ (Pb b)) i π π' = alge
   · exact ⟨_, rfl⟩
   · exact ⟨0, (map_zero _).symm⟩
 
-theorem bdd_cl {a} (ha : a ∈ Submonoid.closure (bddSet (Pb b) L)) :
-    ∀ {K} {f : M.Ty (Pb b) → S (Pb b).TT} (hf : ∀ π, Cl K (f π)) (π), Cl K (actA (Pb b) a f π) := by
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  induction ha using Submonoid.closure_induction with
-  | one => intro K f hf π; rw [act_one]; exact hf π
-  | mul x y _ _ ihx ihy => intro K f hf π; rw [act_mul]; exact ihx (ihy hf) π
-  | mem x hx =>
-    intro K f hf π
-    rcases hx with (((rfl | rfl | rfl | rfl) | ⟨g, rfl⟩) | ⟨i, -, rfl⟩) | ⟨i, -, rfl⟩
-    · rw [hzi, zi_act]; exact (hf π).mzi.up.cast (by ring)
-    · rw [hzbi, zbi_act]; exact (hf π).mzbi.up.cast (by ring)
-    · rw [LevelData.D, LevelData.Dbi, Dr0, Drbi0, one_mul, mul_one, hz, hzbi, act_mul, z_act, zbi_act]
-      exact (hf π).mzbi.mz.cast (by ring)
-    · rw [LevelData.Db, LevelData.Di, Drb0, Dri0, one_mul, mul_one, hzb, hzi, act_mul, zb_act, zi_act]
-      exact (hf π).mzi.mzb.cast (by ring)
-    · rw [act_kap]; exact (hf π).smul _
-    · simp only []
-      rw [Drb0, Dri0, one_mul, one_mul]; exact const_cl _ (SS_const i) hf π
-    · simp only []
-      rw [Drb0, Dri0, one_mul, one_mul]
-      refine const_cl _ (fun π π' => ?_) hf π
-      obtain ⟨c, hc⟩ := SS_const (b := b) i π' π
-      exact ⟨star c, by rw [Matrix.star_apply, hc, algebraMap_star_comm]⟩
 
-theorem jdecay {K : ℤ} {j : M.Ty (Pb b) → S (Pb b).TT} (hj : ∀ π, Cl K (j π)) (m : ℕ) (hK : K + m ≤ -2) :
-    JDecay (Pb b) L j m := by
-  intro w hw ha π
-  have h1 := (word_cl hL hj w ha π).bd (hT b)
-  have h2 := (integrable_ev (hT b) ((h1.mul (hT b) h1.cj).mono (hT b) (K' := -3) (by omega))).norm
-  refine h2.congr (Filter.Eventually.of_forall fun q => ?_)
-  simp only [ev_mul, ev_cj, norm_mul, Complex.norm_conj, sq]; rfl
 
-theorem jadj {K : ℤ} {j : M.Ty (Pb b) → S (Pb b).TT} (hj : ∀ π, Cl K (j π)) (m : ℕ) (hK : 2 * K + m ≤ -4) :
-    JAdj (Pb b) L j m := by
-  intro φ ε hε hφ h0 hb β hβ X hX v w hl ha
-  have hG : ∀ q, Gq (Pb b) q = Gf (Pb b).TT q.1 := fun q => by simp [Gq, Gf]
-  have hφS : toSm (Pb b) (fun q => (φ (Gq (Pb b) q) : ℂ)) = phiS hφ := by
-    simp only [hG]
-    exact dif_pos (phi_smooth hφ)
-  rw [hφS]
-  have hv := bdd_cl hL hβ (word_cl hL hj v fun a h => ha a (List.mem_append_left _ h))
-  have hw := word_cl hL hj w fun a h => ha a (List.mem_append_right _ h)
-  rw [← act_mul] at hv
-  have hf : ∀ π, T1 (0 + (K + v.length)) (phiS hφ * actA (Pb b) (β * v.prod) j π) := fun π =>
-    (first_order_cutoff (hT b) hφ hε h0 hb).mul (hT b) ((hv π).t1 (hT b))
-  have hz : ∀ π (q : Qp 0 (Pb b).TT), Complex.normSq q.1.2 - (Pb b).TT ≤ ε →
-      ev (phiS hφ * actA (Pb b) (β * v.prod) j π) q = 0 := fun π q hq => by
-    rw [ev_mul]
-    have : ev (phiS hφ) q = 0 := by
-      show ((φ (Gf _ q.1) : ℝ) : ℂ) = 0
-      rw [h0 (Gf _ q.1) hq]; simp
-    rw [this, zero_mul]
-  rw [act_mul _ (star X)]
-  rcases hX with ((⟨y, rfl⟩ | ⟨y, rfl⟩) | ⟨y, rfl⟩) | ⟨y, rfl⟩
-  · rw [Ahat0, star_one, act_one, act_one]
-  · refine Finset.sum_congr rfl fun π _ => ?_
-    rw [raising_action hL, raising_star_action hL]
-    exact (adjR (hT b) hε (hz π) (hf π) (hw π) (by omega) _).1
-  · rw [Ahatv0, star_one, act_one, act_one]
-  · refine Finset.sum_congr rfl fun π _ => ?_
-    rw [raising_variant_action hL, R0vs_act hL]
-    exact (adjR (hT b) hε (hz π) (hf π) (hw π) (by omega) _).2
 
 end
 
@@ -742,47 +529,9 @@ def jf (b n : ℕ) : S τ := gg ^ b * zi ^ n
 
 theorem gg_ggi (hτ : 1 ≤ τ) : (gg : S τ) * ggi = 1 := Ring.mul_inverse_cancel _ (laws hτ).unit_gg
 
-theorem th_ggpow (hτ : 1 ≤ τ) (b : ℕ) : th ((gg : S τ) ^ b) = (b : ℂ) • (z * zb * ggi * gg ^ b) ∧
-    thb ((gg : S τ) ^ b) = (b : ℂ) • (z * zb * ggi * gg ^ b) := by
-  have h := gg_ggi hτ
-  induction b with
-  | zero => simp [th_one hτ, thb_one hτ]
-  | succ b ih =>
-    rw [pow_succ, th_mul, thb_mul, ih.1, ih.2, th_gg hτ, thb_gg hτ]
-    have : (b : ℂ) • (z * zb * ggi * gg ^ b) * gg + gg ^ b * (z * zb) =
-        ((b + 1 : ℕ) : ℂ) • (z * zb * ggi * (gg ^ b * (gg : S τ))) := by
-      push_cast
-      rw [add_smul, one_smul, smul_mul_assoc]
-      congr 1
-      · congr 1; ring
-      · linear_combination (-(z * zb * gg ^ b)) * h
-    exact ⟨this, this⟩
 
-theorem th_zipow (hτ : 1 ≤ τ) (n : ℕ) : th ((zi : S τ) ^ n) = -((n : ℂ) • zi ^ n) ∧ thb ((zi : S τ) ^ n) = 0 := by
-  induction n with
-  | zero => simp [th_one hτ, thb_one hτ]
-  | succ n ih =>
-    rw [pow_succ, th_mul, thb_mul, ih.1, ih.2, th_zi hτ, thb_zi hτ]
-    refine ⟨?_, by simp⟩
-    push_cast
-    rw [add_smul, one_smul, neg_mul, smul_mul_assoc]; ring
 
-theorem th_jf (hτ : 1 ≤ τ) (b n : ℕ) :
-    th (jf b n : S τ) = (b : ℂ) • (z * zb * ggi * jf b n) - (n : ℂ) • jf b n := by
-  rw [jf, th_mul, (th_ggpow hτ b).1, (th_zipow hτ n).1]
-  simp only [Algebra.smul_def]; ring
-theorem thb_jf (hτ : 1 ≤ τ) (b n : ℕ) : thb (jf b n : S τ) = (b : ℂ) • (z * zb * ggi * jf b n) := by
-  rw [jf, thb_mul, (th_ggpow hτ b).2, (th_zipow hτ n).2]
-  simp only [Algebra.smul_def]; ring
 
-theorem cl_jf (b n : ℕ) : Cl (2 * b - n) (jf b n : S τ) := by
-  have h1 : ∀ n : ℕ, Cl (-n) ((zi : S τ) ^ n) := fun n => by
-    induction n with
-    | zero => simpa using Cl.one
-    | succ n ih => rw [pow_succ']; exact ih.mzi.cast (by push_cast; ring)
-  induction b with
-  | zero => simpa [jf] using h1 n
-  | succ b ih => rw [jf, pow_succ', mul_assoc]; exact ih.mgg.cast (by push_cast; ring)
 
 def lamb (b d : ℕ) : Fin ((Pb b).k + 2 * (Pb b).r + 1) → ℝ := fun i => if (i : ℕ) = 0 then -1 / 2 else -1 / 2 - d
 
@@ -792,84 +541,9 @@ theorem cmValueConst_eq (b : ℕ) (Y : ℂ) : C0 (QQr (Pb b) (DQ (Pb b))) (sites
 theorem wC_eq (b : ℕ) (π) (Y : ℂ) : M.wC (Pb b) π Y = -((Y + 1 / 2) * (Y + (1 / 2 + 2 * b))) := by
   simp [M.wC, M.wNum, M.coordinatePolynomial, M.qP]
 
-theorem jeigen (b d : ℕ) : JEigen (Pb b) (fun _ => jf b (d + 1 + 2 * b)) (lamb b d) := by
-  intro Y
-  funext π
-  have hτ := hT b
-  have hx : ∀ Y π, M.xC (Pb b) π Y = 1 := fun Y π => by simp [M.xC]
-  have h21 : weightedSumBis (Pb b) (DQ (Pb b)) Y = 0 := by simp [weightedSumBis]
-  have h12 : S12 (Pb b) (DQ (Pb b)) Y = 0 := by simp [S12]
-  have h4 : S4 (Pb b) (DQ (Pb b)) Y = 0 := by simp [S4]
-  have hp : (∏ s, ((Y : ℂ) + lamb b d s)) = (Y - 1 / 2) * (Y - 1 / 2 - d) := by
-    rw [show (∏ s, ((Y : ℂ) + lamb b d s)) = ∏ s : Fin 2, ((Y : ℂ) + lamb b d s) from rfl, Fin.prod_univ_two]
-    simp [lamb]; ring
-  rw [cmValueConst_eq, t11, h21, h12, h4, mul_zero, mul_zero, zero_mul, add_zero, add_zero, add_zero, hp]
-  simp only [xA, l0A, m0A, act_mul, act_add, act_sub, act_neg, act_alg, act_kap, gg_act, ggi_act, nab_act, nabs_act,
-    z_act, zb_act, hx, wC_eq, one_smul]
-  simp only [map_sub, map_neg, map_add, map_smul, thb_mul, th_jf hτ, thb_jf hτ, theta_bar_zeta, thb_zb, thb_zi hτ, thb_ggi hτ]
-  refine S_ext fun q => ?_
-  have h1 := gg_ne' q
-  have h2 := z_ne hτ q
-  have h3 : conj q.1.2 ≠ 0 := (map_ne_zero _).2 h2
-  have h4 : (((Pb b).TT : ℝ) : ℂ) = 1 := by simp [M.Par.TT]
-  simp only [ev_mul, ev_sub, ev_add, ev_neg, ev_smul, ev_zero, ev_gg, ev_ggi hτ, eval_zeta, ev_zb, ev_zi hτ, ev_zbi hτ, h4] at *
-  generalize ev (jf b (d + 1 + 2 * b)) q = J
-  generalize conj q.1.2 = w at *
-  generalize q.1.2 = x at *
-  push_cast
-  field_simp
-  ring
 
-theorem Pb_OK (b : ℕ) : (Pb b).OK where
-  k_pos := le_rfl
-  T_pos := one_pos
-  T'_pos := one_pos
-  int_u := fun i _ => ⟨0, by simp⟩
-  int_u' := fun i _ => ⟨2 * b, by simp⟩
-  gap := fun i hi => by simp at hi
 
-theorem lam_anti (b d : ℕ) (hd : 0 < d) : StrictAnti (lamb b d) := by
-  intro x y hxy
-  have hy : (y : ℕ) < 2 := y.2
-  have : (x : ℕ) < y := hxy
-  have hx0 : (x : ℕ) = 0 := by omega
-  have hy1 : (y : ℕ) ≠ 0 := by omega
-  have : (0 : ℝ) < d := by exact_mod_cast hd
-  simp only [lamb, hx0, hy1, if_true, if_false]; linarith
 
-theorem hypsNonvacuous : HypsNonvacuous := by
-  intro Ntot Lb B hN hNL hL2
-  obtain ⟨b, hb⟩ := exists_nat_ge (|B| + 6 * Ntot * Lb + 2 * Lb + 5)
-  have : Fact ((DQ (Pb b)).Laws (Pb b).TT) := ⟨laws (hT b)⟩
-  obtain ⟨L, hL⟩ := Formalism.FourierDecayAlt.P.MAx1.levelExists (Pb b) (DQ (Pb b))
-  have hB := le_abs_self B
-  have hB0 := abs_nonneg B
-  have hN0 : (0 : ℝ) ≤ 6 * Ntot * Lb := by positivity
-  have hcl : ∀ π : M.Ty (Pb b), Cl (-((2 * Ntot + 3 : ℕ) : ℤ) - 1)
-      ((fun _ => jf b (2 * Ntot + 3 + 1 + 2 * b) : M.Ty (Pb b) → S (Pb b).TT) π) := fun π =>
-    (cl_jf b _).cast (by push_cast; ring)
-  refine ⟨Pb b, 1, L, fun _ => jf b (2 * Ntot + 3 + 1 + 2 * b), lamb b (2 * Ntot + 3), -(2 * b) + 2, -2,
-    ⟨⟨Pb_OK b, le_rfl, le_rfl, hL, ⟨lam_anti _ _ (by omega), fun i => ⟨fun h => ?_, fun h => ?_⟩⟩,
-      ⟨lam_anti _ _ (by omega), fun i => ⟨fun h => ?_, fun h => ?_⟩⟩, by linarith, fun Y hY => ?_⟩,
-      jdecay hL hcl _ (by push_cast; omega), jadj hL hcl _ (by push_cast; omega), jeigen _ _, hN, hNL, hL2, ?_,
-      by linarith⟩, ?_, by linarith⟩
-  · have : (i : ℕ) = 0 := by simp at h; omega
-    simp [lamb, this]; norm_num
-  · simp at h
-  · have : (i : ℕ) = 0 := by simp at h; omega
-    simp only [lamb, this, if_true]; linarith
-  · simp at h
-  · left; constructor <;> simp only [] <;> linarith [hY.1, hY.2]
-  · show ((2 : ℕ) : ℝ) * Lb ≤ _
-    push_cast; linarith
-  · intro h
-    have h1 : (jf b (2 * Ntot + 3 + 1 + 2 * b) : S (Pb b).TT) = 0 := congrFun h fun _ => 0
-    have h2 : IsUnit (jf b (2 * Ntot + 3 + 1 + 2 * b) : S (Pb b).TT) :=
-      ((show IsUnit (gg : S (Pb b).TT) from (laws (hT b)).unit_gg).pow _).mul
-        ((Ring.isUnit_iff_inverse_mul_cancel _ |>.1 ((laws (hT b)).unit_alt_bis M.vz) |> fun h =>
-          (IsUnit.of_mul_eq_one (z : S (Pb b).TT) h : IsUnit (zi : S (Pb b).TT))).pow _)
-    have := Formalism.FourierDecayAlt.P.analytic_nontrivial 0 (Pb b).TT
-    exact not_isUnit_zero (h1 ▸ h2)
 
 end
 
@@ -1068,7 +742,6 @@ theorem lemma_model_of_parts : Formalism.FourierDecayAlt.MA.LemmaEModelOfParts :
   rw [hJn P l L j lam α β _ c Ntot] at this
   exact this
 
-theorem hypotheses_nonvacuous : Formalism.FourierDecayAlt.MA.HypsNonvacuous := MAx2.R2.hypsNonvacuous
 
 theorem model_words : Formalism.FourierDecayAlt.MA.ModelWordsD := MAx2.R2.modelWordsD
 
@@ -1322,7 +995,6 @@ def prSub : Subalgebra ℂ (DQ P).Pr where
   add_mem' {a b} ha hb := by show a.1 + b.1 ∈ okSub P; exact add_mem ha hb
   algebraMap_mem' z := Subalgebra.algebraMap_mem (okSub P) z
 
-theorem mem_prSub (a : (DQ P).Pr) : a ∈ prSub P ↔ a.1 ∈ okSub P := Iff.rfl
 
 theorem gens_sub : (DQ P).gens P.TT ⊆ prSub P := by
   intro a ha
@@ -1693,10 +1365,6 @@ theorem ev_zi (hτ : 0 ≤ τ) (q) : ev (zi : S τ) q = (q.1.2)⁻¹ := by
   rw [zi, ev_inv z ((laws hτ).unit_alt_bis M.vz), eval_zeta]
 theorem ev_zbi (hτ : 0 ≤ τ) (q) : ev (zbi : S τ) q = (conj q.1.2)⁻¹ := by
   rw [zbi, ev_inv zb ((laws hτ).unit_alt_bis M.vzb), ev_zb]
-theorem ev_ggi (hτ : 0 ≤ τ) (q) : ev (ggi : S τ) q = (q.1.2 * conj q.1.2 - τ)⁻¹ := by
-  rw [ggi, ev_inv gg (laws hτ).unit_gg, ev_gg]
-theorem gg_ne' (q : Qp 0 τ) : q.1.2 * conj q.1.2 - τ ≠ 0 := by
-  rw [← ev_gg]; exact gg_ne (r := 0) (TT := τ) q
 
 def GR (q : Qp 0 τ) : ℝ := Complex.normSq q.1.2 - τ
 
@@ -1929,16 +1597,6 @@ end Act
 
 section R0
 variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-theorem Dr0 : L.Dr = 1 := by simp [LevelData.Dr]
-theorem Drb0 : L.Drb = 1 := by simp [LevelData.Drb]
-theorem Dri0 : L.Dri = 1 := by simp [LevelData.Dri]
-theorem Drbi0 : L.Drbi = 1 := by simp [LevelData.Drbi]
-theorem Ahat0 (y) : L.Ahat y = 1 := by simp [LevelData.Ahat, LevelData.Dr, LevelData.Ar, LevelData.Tprod]
-theorem Ahatv0 (y) : L.Ahatv y = 1 := by simp [LevelData.Ahatv, LevelData.Drb, LevelData.Avr, LevelData.Tvprod]
-theorem raising_eq_gamma_lowering (y) : L.R0 y = L.GG * L.l0 y := by
-  simp [LevelData.R0, LevelData.Drb, LevelData.Ar, LevelData.Br, LevelData.Tprod]
-theorem R0v0 (y) : L.R0v y = L.GG * L.m0 y := by
-  simp [LevelData.R0v, LevelData.Dr, LevelData.Avr, LevelData.Bvr, LevelData.Tvprod]
 end R0
 
 variable {τ : ℝ}
@@ -1954,65 +1612,10 @@ variable {k : ℕ} {T T' : ℝ} {uu uu' : ℕ → ℝ}
 
 local notation "PP" => Pz k T T' uu uu'
 
-theorem nab_act (f π) : actA PP (nabA PP (DQ PP)) f π = zi * th (f π) + (M.aC PP π : ℂ) • (zb * (ggi * f π)) := by
-  rw [nabA, act_diag]; rfl
-theorem nabs_act (f π) : actA PP (nabsA PP (DQ PP)) f π =
-    -(zbi * thb (f π)) + (M.aC PP π : ℂ) • (z * (ggi * f π)) := by
-  rw [nabsA, act_diag]; rfl
-theorem z_act (f π) : actA PP (zA PP (DQ PP)) f π = z * f π := act_sc _ _ _ _
-theorem zb_act (f π) : actA PP (zbA PP (DQ PP)) f π = zb * f π := act_sc _ _ _ _
-theorem gg_act (f π) : actA PP (ggA PP (DQ PP)) f π = gg * f π := act_sc _ _ _ _
-theorem ggi_act (f π) : actA PP (ggiA PP (DQ PP)) f π = ggi * f π := act_sc _ _ _ _
 
-theorem raising_action {L : LevelData (A PP (DQ PP)) 0} (hL : IsModelLevel PP (DQ PP) L) (hτ : 0 ≤ (PP).TT) (y f π) : actA PP (L.R0 y) f π = opR ((M.aC PP π : ℂ) + (y + 1 / 2)) (f π) := by
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  rw [raising_eq_gamma_lowering, LevelData.l0, hg, hn, hzb, hgi]
-  simp only [act_mul, act_sub, act_neg, act_alg, gg_act, nab_act, zb_act, ggi_act]
-  refine S_ext fun q => ?_
-  have := gg_ne' q
-  simp only [opR, ev_mul, ev_sub, ev_add, ev_neg, ev_smul, ev_gg, ev_ggi hτ]
-  field_simp
-  ring
 
-theorem raising_variant_action {L : LevelData (A PP (DQ PP)) 0} (hL : IsModelLevel PP (DQ PP) L) (hτ : 0 ≤ (PP).TT) (y f π) : actA PP (L.R0v y) f π = opV ((M.aC PP π : ℂ) + (y - 1 / 2)) (f π) := by
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  rw [R0v0, LevelData.m0, hg, hns, hz, hgi]
-  simp only [act_mul, act_sub, act_neg, act_alg, gg_act, nabs_act, z_act, ggi_act]
-  refine S_ext fun q => ?_
-  have := gg_ne' q
-  simp only [opV, ev_mul, ev_sub, ev_add, ev_neg, ev_smul, ev_gg, ev_ggi hτ]
-  field_simp
-  ring
 
-theorem raising_star_action {L : LevelData (A PP (DQ PP)) 0} (hL : IsModelLevel PP (DQ PP) L) (hτ : 0 ≤ (PP).TT) (y f π) : actA PP (star (L.R0 y)) f π = opRs ((M.aC PP π : ℂ) + (y + 1 / 2)) (f π) := by
-  have : Fact ((DQ PP).Laws (PP).TT) := ⟨laws hτ⟩
-  obtain ⟨-, s1, s2, s3, s4, s5⟩ := Formalism.FourierDecayAlt.P.MAx1.starGens PP (DQ PP)
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  have s6 : star (zbA PP (DQ PP)) = zA PP (DQ PP) := by rw [← s1, star_star]
-  rw [raising_eq_gamma_lowering, LevelData.l0, hg, hn, hzb, hgi]
-  simp only [star_mul, star_sub, star_neg, s3, s4, s5, s6, ← algebraMap_star_comm]
-  simp only [act_mul, act_sub, act_neg, act_alg, gg_act, nabs_act, z_act, ggi_act]
-  refine S_ext fun q => ?_
-  have := gg_ne' q
-  simp only [opRs, ev_mul, ev_sub, ev_add, ev_neg, ev_smul, ev_gg, ev_ggi hτ, map_add, Complex.conj_ofReal,
-    Complex.star_def]
-  field_simp
-  ring
 
-theorem R0vs_act {L : LevelData (A PP (DQ PP)) 0} (hL : IsModelLevel PP (DQ PP) L) (hτ : 0 ≤ (PP).TT) (y f π) : actA PP (star (L.R0v y)) f π = opVs ((M.aC PP π : ℂ) + (y - 1 / 2)) (f π) := by
-  have : Fact ((DQ PP).Laws (PP).TT) := ⟨laws hτ⟩
-  obtain ⟨-, s1, s2, s3, s4, s5⟩ := Formalism.FourierDecayAlt.P.MAx1.starGens PP (DQ PP)
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  have s6 : star (nabsA PP (DQ PP)) = nabA PP (DQ PP) := by rw [← s5, star_star]
-  rw [R0v0, LevelData.m0, hg, hns, hz, hgi]
-  simp only [star_mul, star_sub, star_neg, s1, s3, s4, s6, ← algebraMap_star_comm]
-  simp only [act_mul, act_sub, act_neg, act_alg, gg_act, nab_act, zb_act, ggi_act]
-  refine S_ext fun q => ?_
-  have := gg_ne' q
-  simp only [opVs, ev_mul, ev_sub, ev_add, ev_neg, ev_smul, ev_gg, ev_ggi hτ, map_add, map_sub, Complex.conj_ofReal,
-    Complex.star_def]
-  field_simp
-  ring
 
 end
 
@@ -2037,26 +1640,9 @@ theorem norm_gg (q : Qp 0 τ) : ‖ev (gg : S τ) q‖ = GR q := by
 
 theorem L2.square_integrable_zetabar_of_zeta {f : S τ} (h : L2 (z * f)) : L2 (zb * f) :=
   L2.of_le' h 1 fun q => by rw [ev_mul, ev_mul, norm_mul, norm_mul, ideleNorm_embedding_neg_one_real, norm_zb, one_mul]
-theorem L2.z_of_zb {f : S τ} (h : L2 (zb * f)) : L2 (z * f) :=
-  L2.of_le' h 1 fun q => by rw [ev_mul, ev_mul, norm_mul, norm_mul, ideleNorm_embedding_neg_one_real, norm_zb, one_mul]
 
-theorem gg_div_le (hτ : 0 ≤ τ) (q : Qp 0 τ) : GR q * ‖q.1.2‖⁻¹ ≤ ‖q.1.2‖ := by
-  have hz : 0 < ‖q.1.2‖ := norm_pos_iff.2 (z_ne hτ q)
-  rw [mul_inv_le_iff₀ hz]
-  have := GR_le hτ q
-  nlinarith
 
-theorem L2.square_integrable_gamma_zeta_inv (hτ : 0 ≤ τ) {f : S τ} (h : L2 (z * f)) : L2 (gg * (zi * f)) :=
-  L2.of_le' h 1 fun q => by
-    rw [ev_mul, ev_mul, ev_mul, norm_mul, norm_mul, norm_mul, ideleNorm_embedding_neg_one_real, norm_gg, ev_zi hτ, norm_inv, one_mul,
-      ← mul_assoc]
-    exact mul_le_mul_of_nonneg_right (gg_div_le hτ q) (norm_nonneg _)
 
-theorem L2.square_integrable_gamma_zetabar_inv (hτ : 0 ≤ τ) {f : S τ} (h : L2 (z * f)) : L2 (gg * (zbi * f)) :=
-  L2.of_le' h 1 fun q => by
-    rw [ev_mul, ev_mul, ev_mul, norm_mul, norm_mul, norm_mul, ideleNorm_embedding_neg_one_real, norm_gg, ev_zbi hτ, norm_inv,
-      Complex.norm_conj, one_mul, ← mul_assoc]
-    exact mul_le_mul_of_nonneg_right (gg_div_le hτ q) (norm_nonneg _)
 
 def Bdd (δ : ℝ) (β : S τ) : Prop := ∃ C, 0 ≤ C ∧ ∀ q, δ < GR q → ‖ev β q‖ ≤ C
 def Good (δ : ℝ) (β : S τ) : Prop := Bdd δ β ∧ Bdd δ (th β) ∧ Bdd δ (thb β)
@@ -2105,30 +1691,6 @@ theorem inv_norm_le (hτ : 0 ≤ τ) {δ : ℝ} (hδ : 0 < δ) (q : Qp 0 τ) (hq
       linarith
   linarith
 
-theorem good_zi (hτ : 0 ≤ τ) {δ : ℝ} (hδ : 0 < δ) : Good δ (zi : S τ) := by
-  have b : Bdd δ (zi : S τ) := ⟨1 + δ⁻¹, by positivity, fun q hq => by
-    rw [ev_zi hτ, norm_inv]; exact inv_norm_le hτ hδ q hq⟩
-  exact ⟨b, by rw [th_zi hτ]; exact b.neg, by rw [thb_zi hτ]; exact bdd_zero δ⟩
-theorem good_zbi (hτ : 0 ≤ τ) {δ : ℝ} (hδ : 0 < δ) : Good δ (zbi : S τ) := by
-  have b : Bdd δ (zbi : S τ) := ⟨1 + δ⁻¹, by positivity, fun q hq => by
-    rw [ev_zbi hτ, norm_inv, Complex.norm_conj]; exact inv_norm_le hτ hδ q hq⟩
-  exact ⟨b, by rw [th_zbi hτ]; exact bdd_zero δ, by rw [thb_zbi hτ]; exact b.neg⟩
-theorem bdd_phase (hτ : 0 ≤ τ) (δ : ℝ) : Bdd δ ((z : S τ) * zbi) ∧ Bdd δ ((zb : S τ) * zi) := by
-  constructor
-  · refine ⟨1, zero_le_one, fun q _ => ?_⟩
-    rw [ev_mul, eval_zeta, ev_zbi hτ, norm_mul, norm_inv, Complex.norm_conj, mul_inv_cancel₀ (norm_ne_zero_iff.2 (z_ne hτ q))]
-  · refine ⟨1, zero_le_one, fun q _ => ?_⟩
-    rw [ev_mul, ev_zb, ev_zi hτ, norm_mul, norm_inv, Complex.norm_conj, mul_inv_cancel₀ (norm_ne_zero_iff.2 (z_ne hτ q))]
-theorem good_zzbi (hτ : 0 ≤ τ) (δ : ℝ) : Good δ ((z : S τ) * zbi) := by
-  have b := (bdd_phase hτ δ).1
-  refine ⟨b, ?_, ?_⟩
-  · rw [th_mul, theta_zeta, th_zbi hτ, mul_zero, add_zero]; exact b
-  · rw [thb_mul, theta_bar_zeta, thb_zbi hτ, zero_mul, zero_add, mul_neg]; exact b.neg
-theorem good_zbzi (hτ : 0 ≤ τ) (δ : ℝ) : Good δ ((zb : S τ) * zi) := by
-  have b := (bdd_phase hτ δ).2
-  refine ⟨b, ?_, ?_⟩
-  · rw [th_mul, th_zb, th_zi hτ, zero_mul, zero_add, mul_neg]; exact b.neg
-  · rw [thb_mul, thb_zb, thb_zi hτ, mul_zero, add_zero]; exact b
 
 theorem Van.mul_bdd {δ} {ψ β : S τ} (hψ : Van δ ψ) (hβ : Bdd δ β) : Van δ (ψ * β) := by
   obtain ⟨C, h⟩ := hψ; obtain ⟨C', hC', h'⟩ := hβ
@@ -2167,81 +1729,11 @@ theorem phi_smooth {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) :
 
 def phiS {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) : S τ := ⟨_, phi_smooth hφ⟩
 
-theorem ev_phiS {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) (q : Qp 0 τ) : ev (phiS (τ := τ) hφ) q = ((φ (GR q) : ℝ) : ℂ) := rfl
 
-theorem fd_phi {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) (q : Qp 0 τ) (e : E 0) :
-    fderiv ℝ (ext (phiS (τ := τ) hφ).1) q.1 e =
-      ((LE.ld 1 φ (Gf τ q.1) / Gf τ q.1 : ℝ) : ℂ) * fderiv ℝ (ext (gg : S τ).1) q.1 e := by
-  have hG : HasFDerivAt (Gf τ) (fderiv ℝ (Gf τ) q.1) q.1 := (Gf_smooth.differentiable (by simp [sm]) q.1).hasFDerivAt
-  have hψ : HasDerivAt (fun u => φ (Real.exp u)) (LE.ld 1 φ (Gf τ q.1)) (Real.log (Gf τ q.1)) := by
-    rw [LE.ld, iteratedDeriv_one]
-    exact ((hφ.differentiable (by simp)) _).hasDerivAt
-  have h1 := (hψ.comp _ (Real.hasDerivAt_log (Gf_pos q).ne')).comp_hasFDerivAt q.1 hG
-  have h2 := Complex.ofRealCLM.hasFDerivAt.comp q.1 h1
-  have h3 := Complex.ofRealCLM.hasFDerivAt.comp q.1 hG
-  have e1 : ext (phiS (τ := τ) hφ).1 =ᶠ[nhds q.1]
-      (Complex.ofRealCLM ∘ ((fun u => φ (Real.exp u)) ∘ Real.log) ∘ Gf τ) := by
-    filter_upwards [(Qset_open 0 τ).mem_nhds q.2] with y hy
-    rw [ext_of_mem _ hy]
-    simp [phiS, Real.exp_log (Gf_pos ⟨y, hy⟩)]
-  have e2 : ext (gg : S τ).1 =ᶠ[nhds q.1] (Complex.ofRealCLM ∘ Gf τ) := by
-    filter_upwards [(Qset_open 0 τ).mem_nhds q.2] with y hy
-    rw [ext_of_mem _ hy]
-    have := ev_gg (τ := τ) ⟨y, hy⟩
-    rw [Complex.mul_conj] at this
-    show ev gg ⟨y, hy⟩ = _
-    rw [this]; simp [Gf]
-  rw [e1.fderiv_eq, e2.fderiv_eq, h2.fderiv, h3.fderiv]
-  simp [div_eq_mul_inv]
 
-theorem ev_th_phi (hτ : 0 ≤ τ) {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) (q : Qp 0 τ) :
-    ev (th (phiS (τ := τ) hφ)) q = ((LE.ld 1 φ (Gf τ q.1) / Gf τ q.1 : ℝ) : ℂ) * (q.1.2 * conj q.1.2) := by
-  have e := congrArg (fun f => ev f q) (th_gg (τ := τ) hτ)
-  simp only [ev_th, ev_mul, eval_zeta, ev_zb, wirt_alt] at e
-  rw [ev_th, wirt_alt, fd_phi, fd_phi, ← e]; ring
 
-theorem ev_thb_phi (hτ : 0 ≤ τ) {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) (q : Qp 0 τ) :
-    ev (thb (phiS (τ := τ) hφ)) q = ((LE.ld 1 φ (Gf τ q.1) / Gf τ q.1 : ℝ) : ℂ) * (q.1.2 * conj q.1.2) := by
-  have e := congrArg (fun f => ev f q) (thb_gg (τ := τ) hτ)
-  simp only [ev_thb, ev_mul, eval_zeta, ev_zb, wirt_zb] at e
-  rw [ev_thb, wirt_zb, fd_phi, fd_phi, ← e]; ring
 
-theorem log_derivative_vanish_near_zero {φ : ℝ → ℝ} {ε x : ℝ} (hε : 0 < ε) (h0 : ∀ x, x ≤ ε → φ x = 0) (hx : 0 < x) (hlt : x < ε) :
-    LE.ld 1 φ x = 0 := by
-  rw [LE.ld, iteratedDeriv_one]
-  have : (fun u => φ (Real.exp u)) =ᶠ[nhds (Real.log x)] fun _ => 0 := by
-    filter_upwards [Iio_mem_nhds (Real.log_lt_log hx hlt)] with u hu
-    exact h0 _ (le_of_lt ((Real.lt_log_iff_exp_lt hε).1 hu))
-  rw [this.deriv_eq]; simp
 
-theorem van_phi (hτ : 0 ≤ τ) {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) {ε : ℝ} (hε : 0 < ε) (h0 : ∀ x, x ≤ ε → φ x = 0)
-    (hb : ∀ p, ∃ C, ∀ x, 0 < x → |LE.ld p φ x| ≤ C) :
-    Van (ε / 2) (phiS (τ := τ) hφ) ∧ Van (ε / 2) (th (phiS (τ := τ) hφ)) ∧ Van (ε / 2) (thb (phiS (τ := τ) hφ)) := by
-  obtain ⟨C0, hC0⟩ := hb 0
-  obtain ⟨C1, hC1⟩ := hb 1
-  have n1 : 0 ≤ C1 := (abs_nonneg _).trans (hC1 1 one_pos)
-  have key : ∀ q : Qp 0 τ, (GR q ≤ ε / 2 → ((LE.ld 1 φ (Gf τ q.1) / Gf τ q.1 : ℝ) : ℂ) * (q.1.2 * conj q.1.2) = 0) ∧
-      ‖((LE.ld 1 φ (Gf τ q.1) / Gf τ q.1 : ℝ) : ℂ) * (q.1.2 * conj q.1.2)‖ ≤ C1 * (1 + τ / ε) := fun q => by
-    have hp := Gf_pos q
-    have hn : Complex.normSq q.1.2 = Gf τ q.1 + τ := by simp [Gf]
-    refine ⟨fun hq => ?_, ?_⟩
-    · rw [log_derivative_vanish_near_zero hε h0 hp (by rw [Gf_eq]; linarith)]; simp
-    rw [Complex.mul_conj, ← Complex.ofReal_mul, Complex.norm_real, Real.norm_eq_abs]
-    by_cases hlt : Gf τ q.1 < ε
-    · rw [log_derivative_vanish_near_zero hε h0 hp hlt]; simp; positivity
-    · push Not at hlt
-      rw [hn, abs_mul, abs_div, abs_of_pos hp, abs_of_pos (by linarith : 0 < Gf τ q.1 + τ)]
-      have h1 : τ / Gf τ q.1 ≤ τ / ε := div_le_div_of_nonneg_left (by linarith) hε hlt
-      calc |LE.ld 1 φ (Gf τ q.1)| / Gf τ q.1 * (Gf τ q.1 + τ) = |LE.ld 1 φ (Gf τ q.1)| * (1 + τ / Gf τ q.1) := by
-            field_simp
-        _ ≤ C1 * (1 + τ / ε) := mul_le_mul (hC1 _ hp) (by linarith) (by positivity) n1
-  refine ⟨⟨C0, fun q => ⟨fun hq => ?_, ?_⟩⟩, ⟨C1 * (1 + τ / ε), fun q => ?_⟩, ⟨C1 * (1 + τ / ε), fun q => ?_⟩⟩
-  · rw [ev_phiS, h0 _ (by linarith)]; simp
-  · have := hC0 _ (GR_pos q)
-    rw [LE.ld, iteratedDeriv_zero, Real.exp_log (GR_pos q)] at this
-    rw [ev_phiS, Complex.norm_real, Real.norm_eq_abs]; exact this
-  · rw [ev_th_phi hτ]; exact key q
-  · rw [ev_thb_phi hτ]; exact key q
 
 end
 
@@ -2351,156 +1843,18 @@ variable {k : ℕ} {T T' : ℝ} {uu uu' : ℕ → ℝ}
 
 local notation "PP" => Pz k T T' uu uu'
 
-theorem square_integrable_words {L : LevelData (A PP (DQ PP)) 0} (hL : IsModelLevel PP (DQ PP) L) (hτ : 0 ≤ (PP).TT)
-    {j : M.Ty PP → SmQ (PP).r (PP).TT} {m : ℕ} (hD : JDecay PP L j m) (w : List (A PP (DQ PP)))
-    (hw : ∀ a ∈ w, a ∈ hatSet PP L) (hl : w.length + 1 ≤ m) (π : M.Ty PP) :
-    L2 (actA PP w.prod j π) ∧ L2 (z * actA PP w.prod j π) ∧ L2 (gg * (zi * th (actA PP w.prod j π))) ∧
-      L2 (gg * (zbi * thb (actA PP w.prod j π))) := by
-  have hJ : ∀ w' : List (A PP (DQ PP)), w'.length ≤ m → (∀ a ∈ w', a ∈ hatSet PP L) → ∀ π,
-      L2 (actA PP w'.prod j π) :=
-    fun w' h1 h2 π => (memLp_two_iff_integrable_sq_norm (ev_aesm _)).2 (hD w' h1 h2 π)
-  have hR : ∀ c : ℂ, L2 (opR c (actA PP w.prod j π)) := fun c => by
-    have := hJ (L.R0 (c - M.aC PP π - 1 / 2) :: w) (by simp; omega)
-      (fun a ha => by
-        rcases List.mem_cons.1 ha with rfl | ha
-        · exact Or.inl (Or.inl (Or.inr ⟨_, rfl⟩))
-        · exact hw a ha) π
-    rw [List.prod_cons, act_mul, raising_action hL hτ] at this
-    rwa [show (M.aC PP π : ℂ) + (c - M.aC PP π - 1 / 2 + 1 / 2) = c by ring] at this
-  have hV : ∀ c : ℂ, L2 (opV c (actA PP w.prod j π)) := fun c => by
-    have := hJ (L.R0v (c - M.aC PP π + 1 / 2) :: w) (by simp; omega)
-      (fun a ha => by
-        rcases List.mem_cons.1 ha with rfl | ha
-        · exact Or.inr ⟨_, rfl⟩
-        · exact hw a ha) π
-    rw [List.prod_cons, act_mul, raising_variant_action hL hτ] at this
-    rwa [show (M.aC PP π : ℂ) + (c - M.aC PP π + 1 / 2 - 1 / 2) = c by ring] at this
-  have e1 : gg * (zi * th (actA PP w.prod j π)) = -(opR 0 (actA PP w.prod j π)) := by
-    simp only [opR, zero_smul, sub_zero, neg_neg]
-  have e3 : gg * (zbi * thb (actA PP w.prod j π)) = opV 0 (actA PP w.prod j π) := by
-    simp only [opV, zero_smul, sub_zero]
-  have e4 : z * actA PP w.prod j π = opV 0 (actA PP w.prod j π) - opV 1 (actA PP w.prod j π) := by
-    simp only [opV, zero_smul, one_smul, sub_zero]; abel
-  refine ⟨hJ w (by omega) hw π, ?_, ?_, ?_⟩
-  · rw [e4]; exact (hV 0).sub (hV 1)
-  · rw [e1]; exact (hR 0).neg
-  · rw [e3]; exact hV 0
 
 def MulMat (δ : ℝ) (a : A PP (DQ PP)) : Prop :=
   ∀ π π', ∃ β : S (PP).TT, Good δ β ∧ ∀ g, Phi PP (a π π') g = β * g
 
-theorem entry_alg (hτ : 0 ≤ (PP).TT) (δ : ℝ) (c : ℂ) :
-    ∃ β : S (PP).TT, Good δ β ∧ ∀ g, Phi PP (algebraMap ℂ (DQ PP).Pr c) g = β * g :=
-  ⟨c • 1, good_const hτ δ c, fun g => by
-    show c • g = c • (1 : S (PP).TT) * g
-    rw [smul_mul_assoc, one_mul]⟩
 
 theorem entry_zero (hτ : 0 ≤ (PP).TT) (δ : ℝ) :
     ∃ β : S (PP).TT, Good δ β ∧ ∀ g, Phi PP (0 : (DQ PP).Pr) g = β * g :=
   ⟨0, good_zero hτ δ, fun g => by rw [map_zero, zero_mul]; rfl⟩
 
-theorem mulmat_diag (hτ : 0 ≤ (PP).TT) (δ : ℝ) (d : M.Ty PP → (DQ PP).Pr)
-    (hd : ∀ π, ∃ β : S (PP).TT, Good δ β ∧ ∀ g, Phi PP (d π) g = β * g) : MulMat δ (Matrix.diagonal d) := by
-  intro π π'
-  by_cases h : π = π'
-  · subst h; rw [Matrix.diagonal_apply_eq]; exact hd π
-  · rw [Matrix.diagonal_apply_ne _ h]; exact entry_zero hτ δ
 
-theorem mulmat_mul (hτ : 0 ≤ (PP).TT) {δ : ℝ} {a b : A PP (DQ PP)} (ha : MulMat δ a) (hb : MulMat δ b) :
-    MulMat δ (a * b) := by
-  intro π π''
-  choose βa hga hpa using ha
-  choose βb hgb hpb using hb
-  refine ⟨∑ π', βa π π' * βb π' π'', Good.sum hτ _ _ fun π' _ => (hga π π').mul hτ (hgb π' π''), fun g => ?_⟩
-  rw [Matrix.mul_apply, map_sum, LinearMap.sum_apply, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun π' _ => ?_
-  rw [map_mul, Module.End.mul_apply, hpb, hpa, mul_assoc]
 
-theorem mulmat_closure {L : LevelData (A PP (DQ PP)) 0} (hL : IsModelLevel PP (DQ PP) L) (hτ : 0 ≤ (PP).TT)
-    {δ : ℝ} (hδ : 0 < δ) {b : A PP (DQ PP)} (hb : b ∈ Submonoid.closure (bddSet PP L)) : MulMat δ b := by
-  obtain ⟨-, -, -, -, -, -, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  induction hb using Submonoid.closure_induction with
-  | one =>
-    rw [← Matrix.diagonal_one]
-    exact mulmat_diag hτ δ _ fun π => ⟨1, by simpa using good_const hτ δ 1, fun g => by rw [one_mul]; rfl⟩
-  | mul x y _ _ ihx ihy => exact mulmat_mul hτ ihx ihy
-  | mem x hx =>
-    rcases hx with (((rfl | rfl | rfl | rfl) | ⟨g, rfl⟩) | ⟨i, -, rfl⟩) | ⟨i, -, rfl⟩
-    · rw [hzi]
-      show MulMat δ (Matrix.scalar _ (DQ PP).ziP)
-      rw [Matrix.scalar_apply]
-      exact mulmat_diag hτ δ _ fun _ => ⟨zi, good_zi hτ hδ, fun g => rfl⟩
-    · rw [hzbi]
-      show MulMat δ (Matrix.scalar _ (DQ PP).zbiP)
-      rw [Matrix.scalar_apply]
-      exact mulmat_diag hτ δ _ fun _ => ⟨zbi, good_zbi hτ hδ, fun g => rfl⟩
-    · rw [LevelData.D, LevelData.Dbi, Dr0, Drbi0, one_mul, mul_one, hz, hzbi]
-      show MulMat δ (Matrix.scalar _ (DQ PP).zP * Matrix.scalar _ (DQ PP).zbiP)
-      rw [← map_mul, Matrix.scalar_apply]
-      exact mulmat_diag hτ δ _ fun _ => ⟨z * zbi, good_zzbi hτ δ, fun g => by
-        show (z : S (PP).TT) * (zbi * g) = z * zbi * g
-        rw [mul_assoc]⟩
-    · rw [LevelData.Db, LevelData.Di, Drb0, Dri0, one_mul, mul_one, hzb, hzi]
-      show MulMat δ (Matrix.scalar _ (DQ PP).zbP * Matrix.scalar _ (DQ PP).ziP)
-      rw [← map_mul, Matrix.scalar_apply]
-      exact mulmat_diag hτ δ _ fun _ => ⟨zb * zi, good_zbzi hτ δ, fun g => by
-        show (zb : S (PP).TT) * (zi * g) = zb * zi * g
-        rw [mul_assoc]⟩
-    · show MulMat δ (Matrix.diagonal fun π => algebraMap ℂ (DQ PP).Pr (g π))
-      exact mulmat_diag hτ δ _ fun π => entry_alg hτ δ (g π)
-    · dsimp only
-      rw [Drb0, Dri0, one_mul, one_mul]
-      intro π π'
-      simp only [SS, Matrix.of_apply]
-      split_ifs
-      · exact entry_alg hτ δ _
-      · exact entry_zero hτ δ
-    · dsimp only
-      rw [Drb0, Dri0, one_mul, one_mul]
-      intro π π'
-      rw [Matrix.star_apply]
-      simp only [SS, Matrix.of_apply]
-      split_ifs
-      · rw [← algebraMap_star_comm]; exact entry_alg hτ δ _
-      · rw [star_zero]; exact entry_zero hτ δ
 
-theorem F_facts (hτ : 0 ≤ (PP).TT) {δ : ℝ} {ψ : S (PP).TT}
-    (hψ : Van δ ψ) (hψ1 : Van δ (th ψ)) (hψ2 : Van δ (thb ψ))
-    {b : A PP (DQ PP)} (hb : MulMat δ b) {U : M.Ty PP → S (PP).TT}
-    (hU : ∀ π, L2 (U π) ∧ L2 (z * U π) ∧ L2 (gg * (zi * th (U π))) ∧ L2 (gg * (zbi * thb (U π)))) (π : M.Ty PP) :
-    (∀ q, GR q ≤ δ → ev (ψ * actA PP b U π) q = 0) ∧ L2 (ψ * actA PP b U π) ∧ L2 (z * (ψ * actA PP b U π)) ∧
-      L2 (gg * (zi * th (ψ * actA PP b U π))) ∧ L2 (gg * (zbi * thb (ψ * actA PP b U π))) := by
-  choose β hβg hβp using hb
-  have hA : actA PP b U π = ∑ π', β π π' * U π' := by
-    rw [actA_eq]; exact Finset.sum_congr rfl fun π' _ => hβp π π' (U π')
-  rw [hA]
-  obtain ⟨Cψ, hψv⟩ := hψ
-  have hψ' : Van δ ψ := ⟨Cψ, hψv⟩
-  refine ⟨fun q hq => by rw [ev_mul, (hψv q).1 hq, zero_mul], ?_, ?_, ?_, ?_⟩
-  · rw [Finset.mul_sum]
-    exact L2.sum _ _ fun π' _ => by rw [← mul_assoc]; exact (hψ'.mul_bdd (hβg π π').1).l2 (hU π').1
-  · simp only [Finset.mul_sum]
-    refine L2.sum _ _ fun π' _ => ?_
-    have : z * (ψ * (β π π' * U π')) = (ψ * β π π') * (z * U π') := by ring
-    rw [this]; exact (hψ'.mul_bdd (hβg π π').1).l2 (hU π').2.1
-  · simp only [Finset.mul_sum, map_sum]
-    refine L2.sum _ _ fun π' _ => ?_
-    have : gg * (zi * th (ψ * (β π π' * U π'))) = (th ψ * β π π') * (gg * (zi * U π')) +
-        (ψ * th (β π π')) * (gg * (zi * U π')) + (ψ * β π π') * (gg * (zi * th (U π'))) := by
-      rw [th_mul, th_mul]; ring
-    rw [this]
-    have hz := L2.square_integrable_gamma_zeta_inv hτ (hU π').2.1
-    exact (((hψ1.mul_bdd (hβg π π').1).l2 hz).add ((hψ'.mul_bdd (hβg π π').2.1).l2 hz)).add
-      ((hψ'.mul_bdd (hβg π π').1).l2 (hU π').2.2.1)
-  · simp only [Finset.mul_sum, map_sum]
-    refine L2.sum _ _ fun π' _ => ?_
-    have : gg * (zbi * thb (ψ * (β π π' * U π'))) = (thb ψ * β π π') * (gg * (zbi * U π')) +
-        (ψ * thb (β π π')) * (gg * (zbi * U π')) + (ψ * β π π') * (gg * (zbi * thb (U π'))) := by
-      rw [thb_mul, thb_mul]; ring
-    rw [this]
-    have hz := L2.square_integrable_gamma_zetabar_inv hτ (hU π').2.1
-    exact (((hψ2.mul_bdd (hβg π π').1).l2 hz).add ((hψ'.mul_bdd (hβg π π').2.2).l2 hz)).add
-      ((hψ'.mul_bdd (hβg π π').1).l2 (hU π').2.2.2)
 
 end
 
@@ -2510,38 +1864,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx2.J0
 
-theorem adjoint_at_zero : Formalism.FourierDecayAlt.MA.JAdjZero := by
-  intro P L j m hr hτ hL hD
-  obtain ⟨k, r, T, T', uu, uu'⟩ := P
-  simp only at hr
-  subst hr
-  intro φ ε hε hφ h0 hb β hβ X hX v w hl ha
-  have hG : ∀ q, Gq (Pz k T T' uu uu') q = GR q := fun q => by simp [Gq, GR]
-  have hφS : toSm (Pz k T T' uu uu') (fun q => (φ (Gq (Pz k T T' uu uu') q) : ℂ)) = phiS hφ := by
-    simp only [hG]
-    exact dif_pos (phi_smooth hφ)
-  rw [hφS]
-  have hδ : (0 : ℝ) < ε / 2 := by positivity
-  obtain ⟨v0, v1, v2⟩ := van_phi hτ hφ hε h0 hb
-  have hbm : MulMat (ε / 2) β := mulmat_closure hL hτ hδ hβ
-  have hv := square_integrable_words hL hτ hD v (fun a h => ha a (List.mem_append_left _ h)) (show v.length + 1 ≤ m by omega)
-  have hw := square_integrable_words hL hτ hD w (fun a h => ha a (List.mem_append_right _ h)) (show w.length + 1 ≤ m by omega)
-  have hF := fun π => F_facts hτ v0 v1 v2 hbm hv π
-  rw [act_mul _ β v.prod, act_mul _ (star X) w.prod]
-  unfold ipA
-  rcases hX with ((⟨y, rfl⟩ | ⟨y, rfl⟩) | ⟨y, rfl⟩) | ⟨y, rfl⟩
-  · rw [Ahat0 L y, star_one, act_one, act_one]
-  · refine Finset.sum_congr rfl fun π _ => ?_
-    rw [raising_action hL hτ, raising_star_action hL hτ]
-    obtain ⟨f0v, f0, f1, f2, f3⟩ := hF π
-    obtain ⟨g0, g1, g2, g3⟩ := hw π
-    exact (adjR hτ hδ f0v f0 f1 f2 f3 g0 g1 g2 g3 _).1
-  · rw [Ahatv0 L y, star_one, act_one, act_one]
-  · refine Finset.sum_congr rfl fun π _ => ?_
-    rw [raising_variant_action hL hτ, R0vs_act hL hτ]
-    obtain ⟨f0v, f0, f1, f2, f3⟩ := hF π
-    obtain ⟨g0, g1, g2, g3⟩ := hw π
-    exact (adjR hτ hδ f0v f0 f1 f2 f3 g0 g1 g2 g3 _).2
 
 end Formalism.FourierDecayAlt.P
 
@@ -2653,13 +1975,6 @@ theorem test_euler (v : M.Var r) {f : SmQ r TT} (hf : f ∈ Test r TT) : eulerQ 
   refine ⟨hf.1.mono' hs, ?_⟩
   exact (closure_minimal hs (isClosed_tsupport _)).trans hf.2
 
-theorem test_cj {f : SmQ r TT} (hf : f ∈ Test r TT) : cj f ∈ Test r TT := by
-  have he : ext ((cj f : SmQ r TT) : Qp r TT → ℂ) = fun x => conj (ext (f : Qp r TT → ℂ) x) := ext_conj _
-  have hs : Function.support (ext ((cj f : SmQ r TT) : Qp r TT → ℂ)) = Function.support (ext (f : Qp r TT → ℂ)) := by
-    rw [he]; ext x; simp
-  refine ⟨?_, ?_⟩
-  · unfold HasCompactSupport tsupport; rw [hs]; exact hf.1
-  · unfold tsupport; rw [hs]; exact hf.2
 
 instance haarE : (volume : Measure (E r)).IsAddHaarMeasure := by
   have h1 : (volume : Measure ℂ).IsAddHaarMeasure := by infer_instance
@@ -2888,11 +2203,6 @@ theorem wq_nonneg (k : ℕ) {x : E r} (hx : x ∈ Qset r TT) : 0 ≤ wq k x TT :
   exact mul_nonneg (Finset.prod_nonneg fun l _ => pow_nonneg (Complex.normSq_nonneg _) _)
     (pow_nonneg (sub_nonneg.2 hx.2.le) _)
 
-theorem wq_cont (k : ℕ) : Continuous fun x : E r => wq k x TT := by
-  unfold wq
-  exact (continuous_finsetProd _ fun l _ =>
-      (Complex.continuous_normSq.comp ((continuous_apply l).comp continuous_fst)).pow _).mul
-    (((Complex.continuous_normSq.comp continuous_snd).sub continuous_const).pow _)
 
 def Bar (v w : M.Var r) : Prop :=
   dirE v = dirE w ∧ ((if (ofLex v).2 = 0 then -Complex.I else Complex.I) =
@@ -3089,52 +2399,8 @@ theorem adjoint_closed : Formalism.FourierDecayAlt.MA.AdjClosed := fun _ _ =>
   ⟨isAdj_one, fun _ _ ha hb => ⟨isAdj_add ha hb, isAdj_mul ha hb⟩, fun z _ ha => isAdj_smul z ha,
     fun _ ha => isAdj_star ha⟩
 
-theorem adjoint_algebra_of_parts : Formalism.FourierDecayAlt.MA.AdjAlgOfParts := by
-  intro hG hC r TT hTT a ha
-  induction ha using Algebra.adjoin_induction with
-  | mem x hx => exact hG r TT hTT x hx
-  | algebraMap z => exact isAdj_alg z
-  | add x y _ _ hx hy => exact ((hC r TT).2.1 x y hx hy).1
-  | mul x y _ _ hx hy => exact ((hC r TT).2.1 x y hx hy).2
 
-theorem adjoint_matrix : Formalism.FourierDecayAlt.MA.AdjMatrix := by
-  intro P a ha f g hf hg
-  unfold ipA actA
-  calc ∑ π, ip0 (∑ π', (a π π').1 (f π')) (g π)
-      = ∑ π, ∑ π', ip0 ((a π π').1 (f π')) (g π) :=
-        Finset.sum_congr rfl fun π _ => inner_sum_left_alt _ _ (fun π' _ => (ha π π').1 _ (hf π')) _
-    _ = ∑ π, ∑ π', ip0 (f π') ((a π π').2.unop (g π)) :=
-        Finset.sum_congr rfl fun π _ => Finset.sum_congr rfl fun π' _ => (ha π π').2.2 _ (hf π') _ (hg π)
-    _ = ∑ π', ∑ π, ip0 (f π') ((a π π').2.unop (g π)) := Finset.sum_comm
-    _ = ∑ π', ip0 (f π') (∑ π, ((star a) π' π).1 (g π)) := by
-        refine Finset.sum_congr rfl fun π' _ => ?_
-        exact (inner_sum_right_alt (hf π') Finset.univ (fun π => ((star a) π' π).1 (g π))).symm
 
-theorem measure_joint : Formalism.FourierDecayAlt.MA.MeasureJoint := by
-  intro k r TT f hf
-  have hQ : MeasurableSet (Qset r TT) := (Qset_open r TT).measurableSet
-  have e1 : ∫⁻ q, ENNReal.ofReal (‖f q‖ ^ 2) ∂muq k r TT =
-      ∫⁻ q : Qp r TT, (fun x => ENNReal.ofReal (‖ext f x‖ ^ 2)) (q : E r) ∂muq k r TT := by
-    congr 1; funext q; simp [ext, q.2]
-  have e2 : ∫⁻ q, ENNReal.ofReal (‖((Real.sqrt (wq k q.1 TT) : ℝ) : ℂ) * f q‖ ^ 2) ∂mu0 r TT =
-      ∫⁻ q : Qp r TT, (fun x => ENNReal.ofReal (‖((Real.sqrt (wq k x TT) : ℝ) : ℂ) * ext f x‖ ^ 2)) (q : E r)
-        ∂mu0 r TT := by
-    congr 1; funext q; simp [ext, q.2]
-  have hm1 : Measurable fun x : E r => dens0 x * ENNReal.ofReal (wq k x TT) :=
-    density_measurable.mul (ENNReal.measurable_ofReal.comp (wq_cont k).measurable)
-  rw [e1, e2, muq, mu0, lintegral_subtype_comap hQ (fun x => ENNReal.ofReal (‖ext f x‖ ^ 2)),
-    lintegral_subtype_comap hQ (fun x => ENNReal.ofReal (‖((Real.sqrt (wq k x TT) : ℝ) : ℂ) * ext f x‖ ^ 2)),
-    restrict_withDensity hQ, restrict_withDensity hQ,
-    lintegral_withDensity_eq_lintegral_mul_non_measurable _ hm1
-      (ae_of_all _ fun x => ENNReal.mul_lt_top (density_lt_top x) ENNReal.ofReal_lt_top),
-    lintegral_withDensity_eq_lintegral_mul_non_measurable _ density_measurable (ae_of_all _ fun x => density_lt_top x)]
-  refine setLIntegral_congr_fun hQ (fun x hx => ?_)
-  have hw := wq_nonneg (TT := TT) k hx
-  simp only [Pi.mul_apply]
-  rw [mul_assoc, ← ENNReal.ofReal_mul hw]
-  congr 2
-  rw [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _),
-    Real.sq_sqrt hw]
 
 theorem adjoint_generators : Formalism.FourierDecayAlt.MA.AdjGens := by
   intro r TT hTT a ha
@@ -3165,7 +2431,5 @@ theorem adjoint_generators : Formalism.FourierDecayAlt.MA.AdjGens := by
         ((cj_inv _ (uc _)).trans (congrArg Ring.inverse (cj_coord bar_zb))) rfl (ev_d0Q_zb hTT) _
         (fun f => rfl) (fun g => rfl)
 
-theorem adjoint_algebra : Formalism.FourierDecayAlt.MA.AdjAlg :=
-  adjoint_algebra_of_parts adjoint_generators adjoint_closed
 
 end Formalism.FourierDecayAlt.P

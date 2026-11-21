@@ -70,9 +70,6 @@ theorem condNorm_one {K : Type} [Field K] [NumberField K] (χ : (K ≃ₐ[K] K) 
     unfold IsModulus at h𝔪
     exact Nat.one_le_iff_ne_zero.mpr fun h0 => h𝔪.1 (Ideal.absNorm_eq_zero_iff.mp h0)
 
-theorem bigQ_rat : bigQ ℚ ℚ = 1 := by
-  unfold bigQ
-  simp [condNorm_one]
 
 example : NormOne 7 1 2 := ⟨-1, 1, by norm_num⟩
 example : NormOne 7 2 7 := ⟨-1, 1, by norm_num⟩
@@ -400,58 +397,6 @@ theorem bigQ_four (F : Type) [Field F] [NumberField F] [IsCyclotomicExtension {4
 example : bigQ ℚ (CyclotomicField 4 ℚ) = 4 :=
   @bigQ_four _ _ _ (CyclotomicField.isCyclotomicExtension 4 ℚ)
 
-theorem nums_example : QNum (Real.exp 1) 5 11 ∧ DNum (Real.exp 1) 5 11 7 := by
-  have hX1 : Formalism.MainNotions.GlobalTheoryTheory.X1 (Real.exp 1) 5 = Real.exp (Real.exp 1) := by
-    unfold Formalism.MainNotions.GlobalTheoryTheory.X1
-    norm_num
-  have hX2 : Formalism.MainNotions.GlobalTheoryTheory.X2 (Real.exp 1) 5 = Real.exp (Real.exp 1) := by
-    unfold Formalism.MainNotions.GlobalTheoryTheory.X2
-    norm_num
-  have he1 := Real.exp_one_gt_d9
-  have he2 := Real.exp_one_lt_d9
-
-  have hlo : (11 : ℝ) ≤ Real.exp (Real.exp 1) := by
-    have h2 : Real.exp (Real.exp 1) = Real.exp 1 * Real.exp 1 * Real.exp (Real.exp 1 - 2) := by
-      rw [← Real.exp_add, ← Real.exp_add]
-      congr 1
-      ring
-    have h3 := Real.add_one_le_exp (Real.exp 1 - 2)
-    have hA : (7.3 : ℝ) < Real.exp 1 * Real.exp 1 := by nlinarith
-    have hB : (1.7 : ℝ) ≤ Real.exp (Real.exp 1 - 2) := by linarith
-    rw [h2]
-    nlinarith
-  have hhi : Real.exp (Real.exp 1) < 49 := by
-    have h2 : Real.exp (Real.exp 1) < Real.exp 3 := Real.exp_lt_exp.mpr (by linarith)
-    have h3 : Real.exp 3 = Real.exp 1 ^ 3 := by
-      rw [← Real.exp_nat_mul]
-      norm_num
-    have h4 := pow_lt_pow_left₀ he2 (Real.exp_pos 1).le (by norm_num : (3 : ℕ) ≠ 0)
-    norm_num at h4
-    linarith
-  unfold QNum DNum
-  rw [hX1, hX2]
-  refine ⟨⟨by norm_num, by norm_num, ?_, ?_⟩, by norm_num, by norm_num, ?_, ?_, ?_, ?_⟩
-  · rw [Real.sqrt_lt' (by norm_num)]
-    norm_num
-    linarith
-  · exact_mod_cast hlo
-  · rw [Real.sqrt_lt' (by norm_num)]
-    norm_num
-    linarith
-  · norm_num
-    linarith
-  · simp only [Formalism.MainNotions.GlobalTheoryTheory.kronSym, Nat.factorization_eq_zero_of_not_dvd (by norm_num : ¬ 2 ∣ 11)]
-    norm_num
-  · intro p hp hle
-    have hp2 : p = 2 := by
-      norm_num at hle
-      have h3 : (p : ℝ) < 3 := by linarith
-      have h4 : p < 3 := by exact_mod_cast h3
-      have := hp.two_le
-      omega
-    subst hp2
-    simp only [Formalism.MainNotions.GlobalTheoryTheory.kronSym, Formalism.MainNotions.GlobalTheoryTheory.kron2, Nat.prime_two.factorization_self]
-    norm_num
 
 theorem one_le_mult {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) {ρ : ℂ} (h : ρ ∈ ntZeros χ) : 1 ≤ mult χ ρ := by
   unfold ntZeros at h

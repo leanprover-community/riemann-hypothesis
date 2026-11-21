@@ -627,8 +627,5 @@ theorem conclusion_iff [Finite T] (Γ : QFGroup R T) {S : Scheme.{0}} (G : Over 
       fun R' _ _ _ Γ' F hF => (tensor_iff _ _).2 (isTensorOrder_of_cover Γ j hj ho hc R' Γ' F hF),
       fun L _ _ M => (omega_iff Γ i M N j hj).2 (h6 L M)⟩
 
-theorem lemmaBT_iff : GlobalTheory.CompanionTheory.Ar.BT.LemmaBT ↔ GlobalTheory.CompanionTheory.IndefiniteRowSideFullHecke.TensorOrderReduction.LemmaBT :=
-  ⟨fun h R _ _ _ _ T _ _ S G _ _ hG x N Γ i hi => (conclusion_iff Γ G x N i hi).1 (h R T Γ S G x N i hi hG),
-    fun h R _ _ _ _ T _ _ Γ S G _ _ x N i hi hG => (conclusion_iff Γ G x N i hi).2 (h R T S G hG x N Γ i hi)⟩
 
 end GlobalTheory.CompanionTheory.Ar.BT.TranslateEq

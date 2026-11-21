@@ -42,13 +42,6 @@ def IsHermPair {G : Type} [Group G] (π : Representation ℂ G V) (σ : Represen
   ∃ C : V →ₗ[ℂ] W →ₗ⋆[ℂ] ℂ, (∀ g v w, C (π g v) (σ g w) = C v w) ∧ (∀ v, (∀ w, C v w = 0) → v = 0) ∧
     ∀ w, (∀ v, C v w = 0) → w = 0
 
-theorem isHermPair_self {G : Type} [Group G] {π : Representation ℂ G V} (h : IsUnitarisable π) : IsHermPair π π := by
-  obtain ⟨B, -, h2, h3⟩ := h
-  refine ⟨B, h3, fun v hv => ?_, fun v hv => ?_⟩ <;>
-  · by_contra h0
-    have := h2 v h0
-    rw [hv v] at this
-    simp at this
 
 def IsAvg {X : Type} [AddCommGroup X] (u : Representation ℂ (Multiplicative X) V) (L : AddSubgroup X) (χ : L → ℂ)
     (E : Module.End ℂ V) : Prop :=
@@ -56,11 +49,6 @@ def IsAvg {X : Type} [AddCommGroup X] (u : Representation ℂ (Multiplicative X)
     (∀ (x : L) v, E (u (Multiplicative.ofAdd (x : X)) v) = χ x • E v) ∧
     ∀ v, v - E v ∈ Submodule.span ℂ {w | ∃ (x : L) (y : V), w = u (Multiplicative.ofAdd (x : X)) y - χ x • y}
 
-theorem isAvg_bot {X : Type} [AddCommGroup X] (u : Representation ℂ (Multiplicative X) V) :
-    IsAvg u ⊥ (fun _ => 1) 1 := by
-  have h : ∀ (x : (⊥ : AddSubgroup X)) v, u (Multiplicative.ofAdd (x : X)) v = v := fun x v => by
-    rw [AddSubgroup.mem_bot.1 x.2]; simp
-  exact ⟨fun x v => by simp [h], fun x v => by simp [h], fun v => by simp⟩
 
 variable [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 

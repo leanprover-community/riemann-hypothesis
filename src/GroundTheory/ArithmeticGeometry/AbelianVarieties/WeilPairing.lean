@@ -222,107 +222,8 @@ theorem sum_range_add_zsmul_shift {M : Type*} [AddCommGroup M] (φ : W.toAffine.
   simp only [h3] at h1
   exact add_right_cancel (h1.symm.trans h2)
 
-theorem weilPairing_self {n : ℕ} (hn : (n : F) ≠ 0) {T : W.toAffine.Point} (hT : n • T = 0) :
-    weilPairing W n T T = 1 := by
-  classical
-  obtain ⟨f, g, h⟩ := exists_isWeilData W hn hT
-  obtain ⟨hf, hg, hdiv, hn0, hpull⟩ := h
-  have hn' : n ≠ 0 := by exact_mod_cast hn0
-  have hT' : (n : ℤ) • T = 0 := by rw [natCast_zsmul]; exact hT
-  obtain ⟨T'', hT''⟩ := exists_zsmul_eq W hn0 T
 
-  set H := ∏ i ∈ Finset.range n, translate W ((i : ℤ) • T) f with hH
-  have hH0 : ∀ i ∈ Finset.range n, translate W ((i : ℤ) • T) f ≠ 0 :=
-    fun i _ => translate_ne_zero W _ hf
-  set χ : W.toAffine.Point → ℤ := fun Q => if (0 : W.toAffine.Point) = Q then 1 else 0 with hχ
-  have hdivH : divisorOf W H = 0 := by
-    ext P
-    rw [hH, divisorOf_prod W _ _ hH0, Finsupp.finsetSum_apply, Finsupp.zero_apply]
-    have key : ∀ i : ℕ, divisorOf W (translate W ((i : ℤ) • T) f) P =
-        n * (χ (P - T + (i : ℤ) • T) - χ (P - T + T + (i : ℤ) • T)) := by
-      intro i
-      have c1 : (T = P + (i : ℤ) • T) ↔ ((0 : W.toAffine.Point) = P - T + (i : ℤ) • T) := by
-        rw [show P - T + (i : ℤ) • T = P + (i : ℤ) • T - T by abel,
-          eq_comm (a := (0 : W.toAffine.Point)), sub_eq_zero, eq_comm]
-      rw [divisorOf_translate_apply W _ hf, hdiv, Finsupp.smul_apply, Finsupp.sub_apply,
-        Finsupp.single_apply, Finsupp.single_apply, smul_eq_mul, sub_add_cancel, hχ]
-      simp only [c1]
-    simp only [key]
-    rw [← Finset.mul_sum, Finset.sum_sub_distrib, sum_range_add_zsmul_shift χ hT (P - T), sub_self,
-      mul_zero]
-  have hHne : H ≠ 0 := Finset.prod_ne_zero_iff.mpr hH0
-  obtain ⟨c, hc⟩ := exists_algebraMap_eq_of_divisorOf_eq_zero W hHne hdivH
 
-  set ψ : ℕ → W.toAffine.FunctionField := fun i => translate W ((i : ℤ) • T'') g with hψ
-  set G := ∏ i ∈ Finset.range n, ψ i with hG
-  have hstep : ∀ i : ℕ, (ψ i) ^ n = mulPullback W n hn0 (translate W ((i : ℤ) • T) f) := by
-    intro i
-    rw [hψ]
-    dsimp only
-    rw [← map_pow, ← hpull]
-    have := DFunLike.congr_fun (translate_comp_mulPullback W hn0 ((i : ℤ) • T'')) f
-    simp only [AlgHom.comp_apply] at this
-    rw [this, smul_comm, hT'']
-  have hGn : G ^ n = ι c := by
-    rw [hG, ← Finset.prod_pow, Finset.prod_congr rfl fun i _ => hstep i, ← map_prod, ← hH, ← hc,
-      mulPullback_algebraMap]
-  obtain ⟨d, hd⟩ := exists_algebraMap_eq_of_pow_eq W hn' hGn
-  have hshift : translate W T'' G = ∏ i ∈ Finset.range n, ψ (i + 1) := by
-    rw [hG, map_prod]
-    refine Finset.prod_congr rfl fun i _ => ?_
-    rw [hψ]
-    dsimp only
-    rw [translate_translate]
-    congr 1
-    push_cast
-    rw [add_zsmul, one_zsmul, add_comm]
-  have hfix : translate W T'' G = G := by rw [← hd, translate_algebraMap]
-  have h1 := Finset.prod_range_succ' ψ n
-  have h2 := Finset.prod_range_succ ψ n
-  rw [← hshift, hfix] at h1
-  rw [← hG] at h2
-  have hGne : G ≠ 0 := Finset.prod_ne_zero_iff.mpr fun i _ => translate_ne_zero W _ hg
-  have hψn : ψ n = ψ 0 := mul_left_cancel₀ hGne (h2.symm.trans h1)
-  have hgT : translate W T g = ι 1 * g := by
-    have : ψ n = translate W T g := by rw [hψ]; dsimp only; rw [hT'']
-    rw [← this, hψn, hψ]
-    dsimp only
-    rw [Nat.cast_zero, zero_smul, translate_zero, map_one, one_mul, AlgHom.id_apply]
-  exact weilPairing_eq_of_translate_eq hT ⟨hf, hg, hdiv, hn0, hpull⟩ hgT
-
-theorem weilPairing_mul_weilPairing_swap {n : ℕ} (hn : (n : F) ≠ 0) {S T : W.toAffine.Point}
-    (hS : n • S = 0) (hT : n • T = 0) : weilPairing W n S T * weilPairing W n T S = 1 := by
-  have hST : n • (S + T) = 0 := by rw [nsmul_add, hS, hT, add_zero]
-  have h := weilPairing_self hn hST
-  rw [weilPairing_add_left hn hS hT hST, weilPairing_add_right hn hS hS hT,
-    weilPairing_add_right hn hT hS hT, weilPairing_self hn hS, weilPairing_self hn hT] at h
-  rw [← h]
-  ring
-
-theorem weilPairing_mul {m n : ℕ} (hmn : ((m * n : ℕ) : F) ≠ 0) {S T : W.toAffine.Point}
-    (hS : (m * n) • S = 0) (hT : n • T = 0) :
-    weilPairing W (m * n) S T = weilPairing W n (m • S) T := by
-  have hm : (m : F) ≠ 0 := fun h => hmn (by rw [Nat.cast_mul, h, zero_mul])
-  have hn : (n : F) ≠ 0 := fun h => hmn (by rw [Nat.cast_mul, h, mul_zero])
-  have hm0 : (m : ℤ) ≠ 0 := by
-    have : m ≠ 0 := by rintro rfl; simp at hm
-    exact_mod_cast this
-  obtain ⟨f, g, h⟩ := exists_isWeilData W hn hT
-  obtain ⟨hf, hg, hdiv, hn0, hpull⟩ := h
-  have hmn0 : ((m * n : ℕ) : ℤ) ≠ 0 := by push_cast; exact mul_ne_zero hm0 hn0
-  have hmS : n • (m • S) = 0 := by rw [smul_smul, mul_comm]; exact hS
-  have hdata : IsWeilData W (m * n) T (f ^ m) (mulPullback W m hm0 g) := by
-    refine ⟨pow_ne_zero m hf, mulPullback_ne_zero W hm0 hg, ?_, hmn0, ?_⟩
-    · rw [divisorOf_pow W hf, hdiv, ← natCast_zsmul, smul_smul]
-      push_cast
-      ring_nf
-    · rw [mulPullback_congr W (by push_cast; ring) hmn0 (mul_ne_zero hm0 hn0), mulPullback_mul W hm0 hn0,
-        AlgHom.comp_apply, map_pow, hpull, ← map_pow, ← pow_mul, mul_comm n m]
-  apply weilPairing_eq_of_translate_eq hS hdata
-  have := DFunLike.congr_fun (translate_comp_mulPullback W hm0 S) g
-  simp only [AlgHom.comp_apply] at this
-  rw [this, natCast_zsmul, translate_eq_weilPairing_mul hmS ⟨hf, hg, hdiv, hn0, hpull⟩, map_mul,
-    mulPullback_algebraMap]
 
 theorem eq_zero_of_forall_weilPairing_eq_one {n : ℕ} (hn : (n : F) ≠ 0) {T : W.toAffine.Point}
     (hT : n • T = 0) (h : ∀ S : W.toAffine.Point, n • S = 0 → weilPairing W n S T = 1) : T = 0 := by
@@ -348,11 +249,6 @@ theorem eq_zero_of_forall_weilPairing_eq_one {n : ℕ} (hn : (n : F) ≠ 0) {T :
   rw [hdk'] at hsum
   simpa using hsum
 
-theorem eq_zero_of_forall_weilPairing_eq_one' {n : ℕ} (hn : (n : F) ≠ 0) {S : W.toAffine.Point}
-    (hS : n • S = 0) (h : ∀ T : W.toAffine.Point, n • T = 0 → weilPairing W n S T = 1) : S = 0 := by
-  refine eq_zero_of_forall_weilPairing_eq_one hn hS fun T hT => ?_
-  have := weilPairing_mul_weilPairing_swap hn hS hT
-  rwa [h T hT, one_mul] at this
 
 noncomputable def weilPairingRoot {n : ℕ} (hn : (n : F) ≠ 0)
     (S T : torsionBy W.toAffine.Point n) : rootsOfUnity n F :=
@@ -396,9 +292,5 @@ noncomputable def weilPairingHom {n : ℕ} (hn : (n : F) ≠ 0) :
       rw [weilPairingRoot_add_left]
       rfl
 
-theorem weilPairingHom_apply {n : ℕ} (hn : (n : F) ≠ 0) (S T : torsionBy W.toAffine.Point n) :
-    (((Additive.toMul (weilPairingHom hn S T) : rootsOfUnity n F) : Fˣ) : F) =
-      weilPairing W n S T :=
-  rfl
 
 end GroundTheory.Arith.Abelian

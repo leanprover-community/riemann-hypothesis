@@ -77,10 +77,6 @@ def restrictedMetric (M : HermitianBundle K) (F : Submodule (𝓞 K) M.carrier) 
 def sub (M : HermitianBundle K) (F : Submodule (𝓞 K) M.carrier) : HermitianBundle K :=
   ⟨F, restrictedMetric M F⟩
 
-theorem restrictedMetric_inner (M : HermitianBundle K) (F : Submodule (𝓞 K) M.carrier)
-    (σ : K →+* ℂ) (x y : Fibre σ F) :
-    ((restrictedMetric M F).form σ).inner x y =
-      (M.metric.form σ).inner (fmap σ F.subtype x) (fmap σ F.subtype y) := rfl
 
 end Sub
 

@@ -151,20 +151,8 @@ theorem dualIsConjBy_line_iff (ξ ψ : HChar L) :
       have : opAdd ξ (thetaOp (.lie X)) = opAdd (ξ * ψ⁻¹) (.lie X) := by simpa [opTriv, thetaOp] using h
       exact ⟨by simp [conjOp, opMul], this ▸ h'.2⟩
 
-theorem polarizedPair_line_iff (ξ : HChar L) (χ : HChar (maximalRealSubfield L)) :
-    PolarizedPair (line ξ) χ ↔ GlobalTheory.GalOfCusp.IsPolarized (line ξ) χ :=
-  ⟨fun h => ⟨h.sign, (dualIsConjBy_line_iff _ _).1 h.dual⟩, fun h => ⟨h.sign, (dualIsConjBy_line_iff _ _).2 h.dual⟩⟩
 
-theorem hyp_triv : (CG.mk (line (1 : HChar L))).IsRegAlg ∧
-    PolarizedPair (line (1 : HChar L)) (GlobalTheory.GalOfCusp.quadChar L ^ 1) := by
-  rw [polarizedPair_line_iff, line, CuspSub.twist_one]
-  exact GlobalTheory.GalOfCusp.isPolarized_triv.symm
 
-theorem not_pol_one (π : CuspSub L 1) : ¬ PolarizedPair π 1 := fun h => by
-  obtain ⟨v⟩ : Nonempty (InfinitePlace (maximalRealSubfield L)) := inferInstance
-  have h1 : (1 : ℂˣ) = (-1) ^ 1 := h.sign v
-  have := congrArg Units.val h1
-  norm_num at this
 
 end GlobalTheory.Published.PolarizedPairModel
 

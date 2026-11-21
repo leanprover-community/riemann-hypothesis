@@ -241,10 +241,6 @@ theorem Push.isPush {S S' : Type} [CommRing S] [Algebra O S] [CommRing S'] [Alge
     {D : Defo p Hb S red} {D' : Defo p Hb S' red'} (P : Push f D D') : IsPush f D D' :=
   ⟨P.t, P.cart, P.comm, P.s_app⟩
 
-theorem isPush_iff_nonempty {S S' : Type} [CommRing S] [Algebra O S] [CommRing S'] [Algebra O S']
-    {red : S →+* ResidueField Or} {red' : S' →+* ResidueField Or} {f : S →+* S'}
-    {D : Defo p Hb S red} {D' : Defo p Hb S' red'} : IsPush f D D' ↔ Nonempty (Push f D D') :=
-  ⟨fun ⟨t, h1, h2, h3⟩ => ⟨⟨t, h1, h2, h3⟩⟩, fun ⟨P⟩ => P.isPush⟩
 
 variable (p Hb) in
 

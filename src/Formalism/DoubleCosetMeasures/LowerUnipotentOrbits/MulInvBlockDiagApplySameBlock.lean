@@ -180,13 +180,6 @@ theorem up_zero {n : ℕ} {y : Matrix (Fin n) (Fin n) K} (hy : IsUpUni y) {i j :
   | exact hy.1 h
   | (unfold IsUpUni at hy; done)
 
-theorem eq_one_of_low_up {n : ℕ} {m : Matrix (Fin n) (Fin n) K} (h1 : IsLowUni m)
-    (h2 : IsUpUni m) : m = 1 := by
-  ext i j
-  rcases lt_trichotomy i j with h | rfl | h
-  · rw [low_zero h1 h, Matrix.one_apply_ne h.ne]
-  · rw [h1.2 i, Matrix.one_apply_eq]
-  · rw [up_zero h2 h, Matrix.one_apply_ne h.ne']
 
 theorem mul_inv_one_low {n : ℕ} {x : Matrix (Fin n) (Fin n) K} (hx : IsLowUni x) :
     x * x⁻¹ = 1 := by
@@ -209,12 +202,6 @@ theorem mul_inv_one_up {n : ℕ} {x : Matrix (Fin n) (Fin n) K} (hx : IsUpUni x)
     simp [hx.2]
   exact Matrix.mul_nonsing_inv x hd
 
-theorem inv_mul_one_up {n : ℕ} {x : Matrix (Fin n) (Fin n) K} (hx : IsUpUni x) :
-    x⁻¹ * x = 1 := by
-  have hd : IsUnit x.det := by
-    rw [Matrix.det_of_isUpperTriangular hx.1]
-    simp [hx.2]
-  exact Matrix.nonsing_inv_mul x hd
 
 theorem simple_add_zero {n : ℕ} {y z : Matrix (Fin n) (Fin n) K} (hy : IsUpUni y)
     (hz : IsUpUni z) (hyz : y * z = 1) (j k : Fin n) (hk : (k : ℕ) = j + 1) :
@@ -508,52 +495,11 @@ theorem section_exists (s : List ℕ) (t : ℕ → Kˣ) {x y : Matrix (Fin s.sum
       _ = x * pt s t * y := by
           rw [pt_mul_ptI, Matrix.one_mul, inv_mul_one_low (bdiag_low s hx), Matrix.mul_one]
 
-theorem section_unique (s : List ℕ) (t : ℕ → Kˣ) {v u h v' u' h' : Matrix (Fin s.sum) (Fin s.sum) K}
-    (hh : IsLowUni h) (hh' : IsLowUni h') (hu : IsUpUni u) (hu' : IsUpUni u')
-    (hvw : v * pt s t = pt s t * h) (hvw' : v' * pt s t = pt s t * h')
-    (heq : v' * pt s t * u' = v * pt s t * u) : v' = v ∧ u' = u := by
-  have e1 : h' * u' = h * u := by
-    have e0 : pt s t * (h' * u') = pt s t * (h * u) := by
-      rw [← Matrix.mul_assoc, ← hvw', ← Matrix.mul_assoc, ← hvw, heq]
-    calc h' * u' = ptI s t * (pt s t * (h' * u')) := by
-          rw [← Matrix.mul_assoc, ptI_mul_pt, Matrix.one_mul]
-      _ = ptI s t * (pt s t * (h * u)) := by rw [e0]
-      _ = h * u := by rw [← Matrix.mul_assoc, ptI_mul_pt, Matrix.one_mul]
-  have e2 : h⁻¹ * h' = u * u'⁻¹ := by
-    calc h⁻¹ * h' = h⁻¹ * h' * (u' * u'⁻¹) := by rw [mul_inv_one_up hu', Matrix.mul_one]
-      _ = h⁻¹ * (h' * u') * u'⁻¹ := by simp only [Matrix.mul_assoc]
-      _ = h⁻¹ * (h * u) * u'⁻¹ := by rw [e1]
-      _ = u * u'⁻¹ := by rw [← Matrix.mul_assoc h⁻¹ h, inv_mul_one_low hh, Matrix.one_mul]
-  have hl : IsLowUni (h⁻¹ * h') := isLowUni_mul K (isLowUni_inv K hh) hh'
-  have hup : IsUpUni (u * u'⁻¹) := isUpUni_mul K hu (isUpUni_inv K hu')
-  have e3 : h⁻¹ * h' = 1 := eq_one_of_low_up hl (e2 ▸ hup)
-  have e4 : u * u'⁻¹ = 1 := e2 ▸ e3
-  have hheq : h' = h := by
-    calc h' = h * (h⁻¹ * h') := by rw [← Matrix.mul_assoc, mul_inv_one_low hh, Matrix.one_mul]
-      _ = h := by rw [e3, Matrix.mul_one]
-  have hueq : u' = u := by
-    calc u' = u * u'⁻¹ * u' := by rw [e4, Matrix.one_mul]
-      _ = u := by rw [Matrix.mul_assoc, inv_mul_one_up hu', Matrix.mul_one]
-  refine ⟨?_, hueq⟩
-  calc v' = v' * pt s t * ptI s t := by rw [Matrix.mul_assoc, pt_mul_ptI, Matrix.mul_one]
-    _ = pt s t * h' * ptI s t := by rw [hvw']
-    _ = v * pt s t * ptI s t := by rw [hheq, hvw]
-    _ = v := by rw [Matrix.mul_assoc, pt_mul_ptI, Matrix.mul_one]
 
-theorem section_main : SectionBij := by
-  unfold SectionBij
-  intro K _ s t x y hx hy
-  obtain ⟨v, u, h, hv, hh, hvw, hu, heq⟩ := section_exists s t hx hy
-  refine ⟨(v, u), ⟨⟨hv, h, hh, hvw⟩, hu, heq⟩, ?_⟩
-  rintro ⟨v', u'⟩ ⟨⟨hv', h', hh', hvw'⟩, hu', heq'⟩
-  obtain ⟨e1, e2⟩ := section_unique s t hh hh' hu hu' hvw hvw' (heq'.trans heq.symm)
-  simp only [Prod.mk.injEq]
-  exact ⟨e1, e2⟩
 
 end Phase
 
 theorem phaseWellDef : Formalism.DoubleCosetMeasures.PhaseWellDef := Phase.phase_main
 
-theorem sectionBij : Formalism.DoubleCosetMeasures.SectionBij := Phase.section_main
 
 end Formalism.DoubleCosetMeasures.P

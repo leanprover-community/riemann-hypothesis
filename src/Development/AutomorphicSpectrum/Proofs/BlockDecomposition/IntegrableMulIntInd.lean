@@ -78,9 +78,6 @@ theorem integrable_intInd : Integrable (intInd : K → ℂ) (haarIntegers K) := 
   refine integrableOn_const ?_
   exact (isCompact_valBall 0).measure_lt_top.ne
 
-theorem integral_intInd : ∫ x, (intInd x : ℂ) ∂haarIntegers K = 1 := by
-  rw [intInd_eq_indicator, integral_indicator (measurableSet_valBall 0)]
-  simp [measureReal_def, coe_valBall_zero, haarIntegers_integers]
 
 theorem integrable_mul_intInd {f : K → ℂ} (hf : Continuous f) (hb : ∀ x, ‖f x‖ ≤ 1) :
     Integrable (fun x => f x * intInd x) (haarIntegers K) :=

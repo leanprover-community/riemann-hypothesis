@@ -271,17 +271,7 @@ def compatiblePairH2 : H2 rho →ₗ[R] H2 rho' :=
 
 end Pair
 
-theorem resH1_eq_compatiblePairH1 {H : Type*} [Group H] [TopologicalSpace H] (phi : H →* G)
-    (hphi : Continuous phi) :
-    resH1 rho phi hphi =
-      pairH1DecompositionMap rho (rho.comp phi) phi hphi LinearMap.id continuous_id (fun _ _ => rfl) :=
-  Submodule.linearMap_qext _ (LinearMap.ext fun _ => rfl)
 
-theorem resH2_eq_compatiblePairH2 {H : Type*} [Group H] [TopologicalSpace H] (phi : H →* G)
-    (hphi : Continuous phi) :
-    resH2 rho phi hphi =
-      compatiblePairH2 rho (rho.comp phi) phi hphi LinearMap.id continuous_id (fun _ _ => rfl) :=
-  Submodule.linearMap_qext _ (LinearMap.ext fun _ => rfl)
 
 section MapPair
 
@@ -290,15 +280,7 @@ variable {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
   (rho' : Representation R G M') (u : M →ₗ[R] M') (hu : Continuous u)
   (hequiv : ∀ g m, u (rho g m) = rho' g (u m))
 
-theorem mapH1_eq_compatiblePairH1 :
-    mapH1 rho rho' u hu hequiv =
-      pairH1DecompositionMap rho rho' (MonoidHom.id G) continuous_id u hu hequiv :=
-  Submodule.linearMap_qext _ (LinearMap.ext fun _ => rfl)
 
-theorem mapH2_eq_compatiblePairH2 :
-    mapH2 rho rho' u hu hequiv =
-      compatiblePairH2 rho rho' (MonoidHom.id G) continuous_id u hu hequiv :=
-  Submodule.linearMap_qext _ (LinearMap.ext fun _ => rfl)
 
 end MapPair
 
@@ -367,55 +349,18 @@ section Tate
 
 def normEnd [Finite G] : Module.End R M := ∑ᶠ g : G, rho g
 
-theorem normEnd_apply [Finite G] [Fintype G] (m : M) : normEnd rho m = ∑ g : G, rho g m := by
-  rw [normEnd, finsum_eq_sum_of_fintype, LinearMap.sum_apply]
 
-theorem norm_mem_invariants [Finite G] (m : M) : normEnd rho m ∈ H0 rho := by
-  classical
-  letI := Fintype.ofFinite G
-  rw [mem_riemannRochSpace_iff_regularAt_everywhere]
-  intro g
-  rw [normEnd_apply, map_sum]
-  exact Fintype.sum_equiv (Equiv.mulLeft g) _ _ fun h => by
-    simp only [Equiv.coe_mulLeft, map_mul, Module.End.mul_apply]
 
 def normSub [Finite G] : Submodule R (H0 rho) := (LinearMap.range (normEnd rho)).comap (H0 rho).subtype
 
 abbrev tateH0 [Finite G] := H0 rho ⧸ normSub rho
 
-theorem normSub_eq_top [Finite G] [Subsingleton G] : normSub rho = ⊤ := by
-  classical
-  letI := Fintype.ofFinite G
-  refine eq_top_iff.2 fun x _ => Submodule.mem_comap.2 (LinearMap.mem_range.2 ⟨x.1, ?_⟩)
-  rw [normEnd_apply, Fintype.sum_subsingleton _ 1, map_one, Module.End.one_apply]
-  rfl
 
 end Tate
 
-theorem contCoboundaries1_le_cocycles1 (h : ContAction rho) : Bd1 rho ≤ Z1 rho := by
-  rintro f ⟨m, rfl⟩
-  refine ⟨(h.comp (continuous_id.prodMk continuous_const)).sub continuous_const, fun g g' => ?_⟩
-  simp only [amitsur_d0_apply, map_mul, Module.End.mul_apply, map_sub]
-  abel
 
-theorem contCoboundaries2_le_cocycles2 [ContinuousMul G] (h : ContAction rho) : Bd2 rho ≤ Z2 rho := by
-  rintro f ⟨c, hc, rfl⟩
-  have hc' : Continuous c := hc
-  refine ⟨((h.comp (continuous_fst.prodMk (hc'.comp continuous_snd))).sub
-    (hc'.comp continuous_mul)).add (hc'.comp continuous_fst), fun g g' k => ?_⟩
-  simp only [d1_apply, map_add, map_sub, map_mul, Module.End.mul_apply, mul_assoc]
-  abel
 
-theorem mem_cocycles1_trivial (f : G → M) :
-    f ∈ Z1 (Representation.trivial R G M) ↔ Continuous f ∧ ∀ g h, f (g * h) = f g + f h := by
-  simp [mem_Z1_iff_cocycle]
 
-theorem Bd1_trivial : Bd1 (Representation.trivial R G M) = ⊥ := by
-  rw [eq_bot_iff]
-  rintro f ⟨m, rfl⟩
-  rw [Submodule.mem_bot]
-  funext g
-  simp
 
 end
 
@@ -806,20 +751,7 @@ def natSha2d : Sha2 (twDual χ rho') phis hphis →ₗ[R] Sha2 (twDual χ rho) p
 
 end NatMaps
 
-theorem equivariant_smul {R Γ M : Type*} [CommRing R] [Group Γ] [AddCommGroup M] [Module R M]
-    (rho : Representation R Γ M) (c : R) :
-    ∀ g m, (c • LinearMap.id : M →ₗ[R] M) (rho g m) = rho g ((c • LinearMap.id : M →ₗ[R] M) m) := by
-  intro g m
-  simp
 
-theorem mapH1_mapH2_id {R Γ M : Type*} [CommRing R] [TopologicalSpace R] [DiscreteTopology R] [Group Γ]
-    [TopologicalSpace Γ] [AddCommGroup M] [Module R M] [TopologicalSpace M] [DiscreteTopology M]
-    (rho : Representation R Γ M) :
-    mapH1OfEquivariant rho rho LinearMap.id (fun _ _ => rfl) = LinearMap.id ∧
-      mapH2OfEquivariant rho rho LinearMap.id (fun _ _ => rfl) = LinearMap.id := by
-  constructor
-  · exact Submodule.linearMap_qext _ (LinearMap.ext fun _ => rfl)
-  · exact Submodule.linearMap_qext _ (LinearMap.ext fun _ => rfl)
 
 section Cyc
 
@@ -1486,9 +1418,6 @@ def IsAlgHecke (χ : Ideles K →* ℂˣ) (n : (K →+* ℂ) → ℤ) : Prop :=
     (∀ σ : K →+* ℂ, (InfinitePlace.mk σ).IsReal → 0 < (embC σ (infComp x (InfinitePlace.mk σ))).re) →
       (χ x : ℂ) = ∏ σ : K →+* ℂ, (embC σ (infComp x (InfinitePlace.mk σ))) ^ n σ
 
-theorem isAlgHecke_one : IsAlgHecke (1 : Ideles K →* ℂˣ) (fun _ => 0) := by
-  refine ⟨continuous_const, fun _ => rfl, fun x _ _ => ?_⟩
-  simp
 
 end Hecke
 

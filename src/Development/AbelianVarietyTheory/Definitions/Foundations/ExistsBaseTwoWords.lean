@@ -139,15 +139,6 @@ theorem exists_gens (E : Type) [Field E] [NumberField E] : ∃ S : Finset ℂ, (
     rw [map_mul, mul_comm])
   star_add x y := Subtype.ext (map_add (starRingEnd ℂ) (x : ℂ) (y : ℂ))
 
-theorem isTotallyComplex_of_I (K : IntermediateField ℚ ℂ) [NumberField K] (h : Complex.I ∈ K) :
-    IsTotallyComplex K := by
-  refine ⟨fun v => ?_⟩
-  rw [← InfinitePlace.not_isReal_iff_isComplex]
-  intro hv
-  have h1 : (⟨Complex.I, h⟩ : K) * ⟨Complex.I, h⟩ = -1 := Subtype.ext Complex.I_mul_I
-  have h2 := congrArg (InfinitePlace.embedding_of_isReal hv) h1
-  rw [map_mul, map_neg, map_one] at h2
-  nlinarith [mul_self_nonneg (InfinitePlace.embedding_of_isReal hv ⟨Complex.I, h⟩)]
 
 def toTop (K : IntermediateField ℚ ℂ) : K →+* (⊤ : IntermediateField ℚ K) :=
   (IntermediateField.topEquiv (F := ℚ) (E := K)).symm

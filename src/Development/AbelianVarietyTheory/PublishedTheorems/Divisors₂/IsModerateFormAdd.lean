@@ -92,32 +92,7 @@ theorem exists_h_levelAll (hc : IsCMExt F E σ) {x y : Matrix (Fin n) (Fin 1) E}
       (matHom _ σ J p).1 * adMat F x = l.1 • adMat F x → ∀ k ∈ levelAll σ J L a, h (p * k) = absE F E l :=
   exists_h hxy (GlobalTheory.Doubling.isCompact_levelAll hc _ _ _)
 
-theorem isModerateForm_add {μ ν : (GAd σ J → ℂ) →ₗ[ℂ] ℂ} (hμ : IsModerateForm σ J μ) (hν : IsModerateForm σ J ν) :
-    IsModerateForm σ J (μ + ν) := fun N => by
-  obtain ⟨S, C, h1, h2⟩ := hμ N
-  obtain ⟨S', C', h1', h2'⟩ := hν N
-  refine ⟨S ++ S', C + C', fun l hl => (List.mem_append.1 hl).elim (h1 l) (h1' l), fun f hf hB hS => ?_⟩
-  exact (norm_add_le _ _).trans (add_le_add (h2 f hf hB fun l hl => hS l (List.mem_append_left _ hl))
-    (h2' f hf hB fun l hl => hS l (List.mem_append_right _ hl)))
 
-theorem eisensteinIsotropicLine_of_isWittFrame (hP : GlobalTheory.Published.EisensteinIsotropicLine) (hc : IsCMExt F E σ) (hu : Algebra.Unramified (𝓞 F) (𝓞 E))
-    (hJ : IsHermND σ J) {r : ℕ} {X Y : Matrix (Fin n) (Fin (r + 1)) E} (hW : IsWittFrame σ J X Y)
-    {L : Submodule (𝓞 E) (Fin n → E)} {a : GL (Fin n) (AF F ⊗[F] E)} (hA : IsAdapted σ J X Y L a) {h : GAd σ J → ℝ}
-    (h1 : ∀ g, ∃ p, ∃ l : (AF F ⊗[F] E)ˣ, (matHom _ σ J p).1 * adMat F (X.submatrix id fun _ : Fin 1 => 0) =
-      l.1 • adMat F (X.submatrix id fun _ : Fin 1 => 0) ∧ ∃ k ∈ levelAll σ J L a, g = p * k)
-    (h2 : ∀ p, ∀ l : (AF F ⊗[F] E)ˣ, (matHom _ σ J p).1 * adMat F (X.submatrix id fun _ : Fin 1 => 0) =
-      l.1 • adMat F (X.submatrix id fun _ : Fin 1 => 0) → ∀ k ∈ levelAll σ J L a, h (p * k) = absE F E l) :
-    ∃ (Eis : ℂ → GAd σ J → ℂ) (c : ℂ → ℂ), MeromorphicOn c Set.univ ∧ (∀ s₀ : ℂ, ∀ᶠ s in 𝓝[≠] s₀, c s ≠ 0) ∧
-      ∀ g s₀, MeromorphicAt (fun s => Eis s g) s₀ := by
-  obtain ⟨Eis, c, -, -, h3, h4, h5⟩ := hP F E σ hc hu n J hJ r X Y hW _ _ rfl rfl L a hA h h1 h2
-  refine ⟨Eis, c, h3, fun s₀ => (h5 s₀).mono fun s hs => left_ne_zero_of_mul_eq_one hs.1, fun g s₀ => ?_⟩
-  obtain ⟨k, U, H, hU, e, -, hd⟩ := h4 s₀
-  have a1 : AnalyticAt ℂ (fun s => H s g) s₀ := (hd _ (isModerateForm_proj σ J g)).analyticAt hU
-  have a2 : MeromorphicAt (fun s => H s g / (s - s₀) ^ k) s₀ :=
-    a1.meromorphicAt.fun_div (by fun_prop)
-  refine a2.congr ?_
-  filter_upwards [mem_nhdsWithin_of_mem_nhds hU, self_mem_nhdsWithin] with s hs hs'
-  rw [e s hs hs' g, mul_div_cancel_left₀ _ (pow_ne_zero _ (sub_ne_zero.2 hs'))]
 
 end GlobalTheory.EisLineModel
 

@@ -262,9 +262,6 @@ include hf
 
 variable (H)
 
-theorem finiteCoh_pushforward_iff_of_isClosedImmersion [IsClosedImmersion f] :
-    FiniteCoh k ((Scheme.Modules.pushforward f).obj H) ↔ FiniteCoh k H :=
-  finiteCoh_pushforward_iff_of_bijective hf (cohPushMap_bijective_of_isClosedImmersion k f hf H ⊤)
 
 theorem chi_pushforward_of_isClosedImmersion [IsClosedImmersion f] :
     chi k ((Scheme.Modules.pushforward f).obj H) = chi k H :=
@@ -547,10 +544,6 @@ theorem chiPic_pushforward_of_isAffineHom [IsAffineHom f] [H.IsQuasicoherent] :
 
 variable {H}
 
-theorem FiniteCohTwists.pushforward_of_isClosedImmersion [IsClosedImmersion f]
-    (h : FiniteCohTwists k H) : FiniteCohTwists k ((Scheme.Modules.pushforward f).obj H) :=
-  fun M hM ↦ ((finiteCoh_pushforward_iff_of_isClosedImmersion hf _).2
-    (h _ (pull_isLB hM f))).of_iso (Twist.projIso M f H)
 
 theorem FiniteCohTwists.pushforward_of_isAffineHom [IsAffineHom f] [H.IsQuasicoherent]
     (h : FiniteCohTwists k H) : FiniteCohTwists k ((Scheme.Modules.pushforward f).obj H) :=

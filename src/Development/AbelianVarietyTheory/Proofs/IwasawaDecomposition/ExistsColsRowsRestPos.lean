@@ -237,10 +237,6 @@ theorem exists_cols_rowsRest (B : Base) (D : ℕ) :
   have := Submodule.nontrivial_iff_ne_bot.mpr hne
   exact (W.eMu u).toEquiv.nontrivial
 
-theorem exists_cols_rowsRest_pos (B : Base) :
-    ∃ (C : Cols B) (W : RowsRest B C), 0 < W.Drows ∧ ∀ u, Nontrivial (W.Mu u) := by
-  obtain ⟨C, W, h, -, h', -⟩ := exists_cols_rowsRest B 1
-  exact ⟨C, W, by omega, h'⟩
 
 end GlobalTheory.Mem
 

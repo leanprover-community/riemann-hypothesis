@@ -127,13 +127,10 @@ def loc (i : ℕ) (hi : i + 1 ≤ D.R.m) : LocIn X0 u w hg (Z.lv Fl ht) i (Z.Fo 
       (fun i hi => (Z.Fo i hi).Ch) (fun i hi β => (Z.S i hi).chart β) i hi β)
     (Z.S i hi).B
 
-theorem loc_B (i : ℕ) (hi : i + 1 ≤ D.R.m) : (Z.loc Fl ht i hi).B = (Z.S i hi).B := rfl
 
-theorem loc_psi (i : ℕ) (hi : i + 1 ≤ D.R.m) : (Z.loc Fl ht i hi).ψ = (Z.S i hi).ψ := rfl
 
 theorem loc_Uloc (i : ℕ) (hi : i + 1 ≤ D.R.m) : (Z.loc Fl ht i hi).Uloc = fun β => ulocOf (Z.Fo i hi) β := rfl
 
-theorem loc_Lb (i : ℕ) (hi : i + 1 ≤ D.R.m) : (Z.loc Fl ht i hi).Lb = fun β => lbOf (Z.Fo i hi) β := rfl
 
 theorem frRat (i : ℕ) (hi : i + 1 ≤ D.R.m) (β : (Z.Fo i hi).Ch) : FrRatJ ((Z.loc Fl ht i hi).t β) (Z.loc Fl ht i hi).B := by
   intro w' h
@@ -155,8 +152,6 @@ def SiteD.inMem (Z : SiteD X0 u w hg (D.fm u)) (Tw : TwForms D) (Fl : Fills (D.g
     CmpJIn Tw u D.what₂.mu0 w hg (Z.lv Fl ht) :=
   ⟨fun j hj => StepAt.ofMem (Z.st Fl ht Gt j hj)⟩
 
-theorem SiteD.inMem_st (Z : SiteD X0 u w hg (D.fm u)) (Tw : TwForms D) (Fl : Fills (D.gat u w hg)) (ht : Fl.t = D.R.t) (Gt : GatTies D)
-    (j : ℕ) (hj : j + 1 ≤ D.R.m) : ((Z.inMem Tw Fl ht Gt).at' j hj).st = Z.st Fl ht Gt j hj := rfl
 
 end GlobalTheory.Port
 end
@@ -340,14 +335,7 @@ def StepD.ofEx {Fo : FormsIn M (i + 1) hi} {e : D.what₂.LL →+* (D.gat u w hg
   ψ := fun β => (hψ β).choose
   fin := fun β => fin_of Fo β _
 
-theorem StepD.ofEx_std {Fo : FormsIn M (i + 1) hi} {e : D.what₂.LL →+* (D.gat u w hg).Kf} (hB : BaseEx X0 u w hg Fo) (hψ : PsiEx Fo e) :
-    cT (sigD D : D.host.E →+* D.host.E) (reGL (rankN D (i + 1) hi) D.host.E (StepD.ofEx hB hψ).B).1 * gramN D (i + 1) hi *
-      (reGL (rankN D (i + 1) hi) D.host.E (StepD.ofEx hB hψ).B).1 = 1 := by
-  exact hB.choose_spec.1
 
-theorem StepD.ofEx_psi {Fo : FormsIn M (i + 1) hi} {e : D.what₂.LL →+* (D.gat u w hg).Kf} (hB : BaseEx X0 u w hg Fo) (hψ : PsiEx Fo e)
-    (β : Fo.Ch) : UnitCharacterChartCompatibility hi (Fo.K β).lev e ((StepD.ofEx hB hψ).ψ β) := by
-  exact (hψ β).choose_spec
 
 end Step
 
@@ -386,9 +374,6 @@ theorem fillOK_of_empty (hE : ∀ j, D.R.m < j → IsEmpty (Lv.comp j)) : FillOK
   intro j hj a
   exact ((hE j hj).false a).elim
 
-theorem fillOK_of_nonempty (hN : ∀ j, D.R.m < j → Nonempty ((D.chTw u μ).cls j)) : FillOK μ Lv := by
-  intro j hj _
-  exact hN j hj
 
 def fillOf (hF : FillOK μ Lv) : ∀ j, D.R.m < j → Lv.comp j → (D.chTw u μ).cls j := fun j hj a => (hF j hj a).some
 
@@ -397,8 +382,6 @@ structure LabHyp (I : CmpJIn Tw u μ w h Lv) : Prop where
   chX : ∀ j hj, ChX (I.at' j hj).st
   fill : FillOK μ Lv
 
-theorem labHyp_of {I : CmpJIn Tw u μ w h Lv} (X : LabIn I) : LabHyp I := by
-  exact ⟨X.onCh, X.chX, fun j hj a => ⟨X.fill j hj a⟩⟩
 
 def labOf {I : CmpJIn Tw u μ w h Lv} (hI : LabHyp I) (fl_t : Fl.t = D.R.t) (fl_m : Fl.mm = D.R.m)
     (c0 : Formalism.L2.G.TwTie0.ClsAt0 D u μ w h Lv) (rat : ∀ j, j < D.R.m → (Tw.fm u μ).KRat j)
@@ -435,11 +418,6 @@ structure AtInM where
 def AtInM.I (Z : AtInM X0 u w h Lv) (Tw : TwForms D) (Gt : GatTies D) : CmpJIn Tw u D.what₂.mu0 w h Lv :=
   ⟨fun j hj => StepAt.ofMem (stepInOf hj (Z.Fo j hj) (Z.Lc j hj) (Gt.gat_pos u w h))⟩
 
-theorem labHyp_atInM (Z : AtInM X0 u w h Lv) (Tw : TwForms D) (Gt : GatTies D) (hZ : ChartLocalForms Z.Fo Z.Lc) (hF : FillOK D.what₂.mu0 Lv) :
-    LabHyp (Z.I Tw Gt) where
-  onCh := fun _ _ => (D.memberColumns_twistedChain_base u).symm
-  chX := fun j hj => chX_stepInOf hj (Z.Fo j hj) (Z.Lc j hj) (Gt.gat_pos u w h) (hZ.sameU j hj) (hZ.frRat j hj) (hZ.hypC j hj)
-  fill := hF
 
 end Built
 
@@ -448,9 +426,6 @@ section Rec
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {K : G.Consts} {Dx : DivX D} {cX : ExtraC}
   {ex : Extra D L hT Gi Gl K Dx cX}
 
-theorem fl_t_eq (ex : Extra D L hT Gi Gl K Dx cX) (u : D.what₂.Word) (w : D.what₂.places.Pl)
-    (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) : (Gl.Fl u w hg).t = D.R.t := by
-  exact (ex.ker u w hg).fl_t
 
 theorem fl_mm_eq (ex : Extra D L hT Gi Gl K Dx cX) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) : (Gl.Fl u w hg).mm = D.R.m := by

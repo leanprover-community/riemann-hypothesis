@@ -141,7 +141,6 @@ theorem locA : LocA := by
     obtain ⟨h1, h2⟩ := locA_point hz hz' D0 hy hG ht hom'
     exact ⟨h1, by rw [Matrix.mul_assoc]; exact h2⟩
 
-theorem gram_schmidt_frames_local : GsFrames := gsFrames_of_loc locB locA
 
 end loca3
 

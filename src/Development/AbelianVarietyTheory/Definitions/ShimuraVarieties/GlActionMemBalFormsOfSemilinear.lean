@@ -28,9 +28,6 @@ theorem mem_symForms_iff_flip {b : Bil Y A} : b ∈ symForms S Y A ↔ b.flip = 
     conv_lhs => rw [← h]
     rfl⟩
 
-theorem mem_symForms_iff_isSymm {b : Bil Y ℤ} :
-    b ∈ symForms ℤ Y ℤ ↔ LinearMap.BilinForm.IsSymm b :=
-  ⟨fun h => ⟨h⟩, fun h => h.eq⟩
 
 variable (Y) in
 
@@ -64,54 +61,11 @@ variable {S A}
 theorem pullback_comp (f : Y →ₗ[ℤ] Y') (g : Y' →ₗ[ℤ] Y'') :
     pullback S A (g ∘ₗ f) = pullback S A f ∘ₗ pullback S A g := rfl
 
-theorem pullback_injective {f : Y →ₗ[ℤ] Y'} (hf : Function.Surjective f) :
-    Function.Injective (pullback S A f) := by
-  intro b c h
-  ext y y'
-  obtain ⟨y, rfl⟩ := hf y
-  obtain ⟨y', rfl⟩ := hf y'
-  exact congr($h y y')
 
 theorem pullback_mem_symForms (f : Y →ₗ[ℤ] Y') {b : Bil Y' A} (hb : b ∈ symForms S Y' A) :
     pullback S A f b ∈ symForms S Y A := fun _ _ => hb _ _
 
-theorem pullback_mem_symForms_iff {f : Y →ₗ[ℤ] Y'} (hf : Function.Surjective f) {b : Bil Y' A} :
-    pullback S A f b ∈ symForms S Y A ↔ b ∈ symForms S Y' A := by
-  refine ⟨fun h y y' => ?_, pullback_mem_symForms f⟩
-  obtain ⟨y, rfl⟩ := hf y
-  obtain ⟨y', rfl⟩ := hf y'
-  exact h y y'
 
-theorem mem_range_pullback_iff {f : Y →ₗ[ℤ] Y'} (hf : Function.Surjective f) {b : Bil Y A}
-    (hb : b ∈ symForms S Y A) :
-    b ∈ LinearMap.range (pullback S A f) ↔ LinearMap.ker f ≤ LinearMap.ker b := by
-  constructor
-  · rintro ⟨c, rfl⟩ y hy
-    rw [LinearMap.mem_ker] at hy ⊢
-    ext y'
-    simp [hy]
-  · intro h
-    obtain ⟨c, hc⟩ : ∃ c : Y' →ₗ[ℤ] Y →ₗ[ℤ] A, c ∘ₗ f = b :=
-      ⟨(LinearMap.ker f).liftQ b h ∘ₗ (f.quotKerEquivOfSurjective hf).symm.toLinearMap, by
-        ext y y'
-        simp⟩
-    have h' : LinearMap.ker f ≤ LinearMap.ker c.flip := by
-      intro y hy
-      rw [LinearMap.mem_ker]
-      ext z
-      obtain ⟨z, rfl⟩ := hf z
-      have h1 : c (f z) y = b z y := congr($hc z y)
-      have h2 : b y = 0 := h hy
-      simp [h1, hb z y, h2]
-    obtain ⟨d, hd⟩ : ∃ d : Y' →ₗ[ℤ] Y' →ₗ[ℤ] A, d ∘ₗ f = c.flip :=
-      ⟨(LinearMap.ker f).liftQ c.flip h' ∘ₗ (f.quotKerEquivOfSurjective hf).symm.toLinearMap, by
-        ext y y'
-        simp⟩
-    refine ⟨d.flip, ?_⟩
-    ext y y'
-    have h1 : d (f y') (f y) = c (f y) y' := congr($hd y' (f y))
-    have h2 : c (f y) y' = b y y' := congr($hc y y')
-    simp [h1, h2]
 
 variable (S A) in
 
@@ -121,9 +75,6 @@ def symPullback (f : Y →ₗ[ℤ] Y') : symForms S Y' A →ₗ[S] symForms S Y 
 @[simp] theorem coe_symPullback (f : Y →ₗ[ℤ] Y') (b : symForms S Y' A) :
     (symPullback S A f b : Bil Y A) = pullback S A f b := rfl
 
-theorem symPullback_injective {f : Y →ₗ[ℤ] Y'} (hf : Function.Surjective f) :
-    Function.Injective (symPullback S A f) := fun _ _ h =>
-  Subtype.ext (pullback_injective (S := S) hf (congrArg Subtype.val h))
 
 variable (S Y A) in
 
@@ -139,8 +90,6 @@ def glAction : (Y ≃ₗ[ℤ] Y) →* (Bil Y A ≃ₗ[S] Bil Y A) where
 @[simp] theorem glAction_apply (g : Y ≃ₗ[ℤ] Y) (b : Bil Y A) (y y' : Y) :
     glAction S Y A g b y y' = b (g.symm y) (g.symm y') := rfl
 
-theorem glAction_eq_pullback (g : Y ≃ₗ[ℤ] Y) (b : Bil Y A) :
-    glAction S Y A g b = pullback S A g.symm.toLinearMap b := rfl
 
 def restrictAction {Γ : Type*} [Group Γ] (ρ : Γ →* (Y ≃ₗ[ℤ] Y)) (L : Submodule S (Bil Y A))
     (hL : ∀ γ, ∀ b ∈ L, glAction S Y A (ρ γ) b ∈ L) : Γ →* (L ≃ₗ[S] L) where
@@ -223,10 +172,6 @@ theorem mk_comm (y y' : Y) : mk y y' = mk y' y := by
   | tmul y y' => exact h y y'
   | add x y hx hy => simp only [map_add, hx, hy]
 
-theorem span_mk : Submodule.span ℤ {x : SymSq Y | ∃ y y', x = mk y y'} = ⊤ := by
-  rw [← Submodule.ker_mkQ (Submodule.span ℤ _), LinearMap.ker_eq_top]
-  ext y y'
-  exact (Submodule.Quotient.mk_eq_zero _).2 (Submodule.subset_span ⟨y, y', rfl⟩)
 
 variable {A : Type*} [AddCommGroup A] [Module S A]
 
@@ -257,9 +202,6 @@ def map {Y' : Type*} [AddCommGroup Y'] (f : Y →ₗ[ℤ] Y') : SymSq Y →ₗ[�
 @[simp] theorem map_mk {Y' : Type*} [AddCommGroup Y'] (f : Y →ₗ[ℤ] Y') (y y' : Y) :
     map f (mk y y') = mk (f y) (f y') := rfl
 
-theorem lift_symPullback {Y' : Type*} [AddCommGroup Y'] (f : Y →ₗ[ℤ] Y') (b : symForms S Y' A) :
-    lift S Y A (symPullback S A f b) = lift S Y' A b ∘ₗ map f := by
-  ext; rfl
 
 noncomputable def basis {ι : Type*} (e : Module.Basis ι ℤ Y) : Module.Basis (Sym2 ι) ℤ (SymSq Y) :=
   .ofRepr <| LinearEquiv.ofLinear
@@ -307,8 +249,6 @@ noncomputable def dualEquiv [Module.Finite ℤ Y] [Module.Free ℤ Y] :
 @[simp] theorem dualEquiv_apply [Module.Finite ℤ Y] [Module.Free ℤ Y] (x : SymSq Y)
     (b : SymLattice Y) : dualEquiv Y x b = lift ℤ Y ℤ b x := rfl
 
-theorem dualEquiv_mk [Module.Finite ℤ Y] [Module.Free ℤ Y] (y y' : Y) (b : SymLattice Y) :
-    dualEquiv Y (mk y y') b = (b : Bil Y ℤ) y y' := rfl
 
 variable (Y) in
 
@@ -401,9 +341,6 @@ theorem IsBalanced.smul_smul {b : Bil Y A} (hb : IsBalanced O b) (w : O) (y y' :
     b (w • y) (w • y') = b y ((w * star w) • y') := by
   rw [hb, _root_.smul_smul, mul_comm]
 
-theorem IsBalanced.smul_smul_of_norm {b : Bil Y A} (hb : IsBalanced O b) {w : O} {n : ℤ}
-    (hn : (n : O) = w * star w) (y y' : Y) : b (w • y) (w • y') = n • b y y' := by
-  rw [hb.smul_smul, ← hn, Int.cast_smul_eq_zsmul, map_zsmul]
 
 theorem IsBalanced.add_of_add_star {b : Bil Y A} (hb : IsBalanced O b) {w : O}
     (hw : w + star w = 1) (y y' : Y) : b y (w • y') + b (w • y) y' = b y y' := by
@@ -420,8 +357,6 @@ def IsBalanced.radical {b : Bil Y A} (hb : IsBalanced O b) : Submodule O Y where
   __ := (LinearMap.ker b).toAddSubmonoid
   smul_mem' a _ hy := hb.smul_mem_ker a hy
 
-theorem IsBalanced.mem_radical {b : Bil Y A} (hb : IsBalanced O b) {y : Y} :
-    y ∈ hb.radical ↔ b y = 0 := Iff.rfl
 
 variable [Module S A]
 
@@ -445,20 +380,9 @@ theorem mem_balForms {b : Bil Y A} :
 variable (S O Y A) in
 theorem balForms_le_symForms : balForms S O Y A ≤ symForms S Y A := fun _ hb => hb.1
 
-theorem add_self_of_add_star {b : Bil Y A} (hb : b ∈ balForms S O Y A) {w : O}
-    (hw : w + star w = 1) (y : Y) : b y (w • y) + b y (w • y) = b y y := by
-  rw [← hb.2.add_of_add_star hw y y, hb.1 (w • y) y]
 
-theorem smul_smul_self_of_norm {b : Bil Y A} (hb : b ∈ balForms S O Y A) {w : O} {n : ℤ}
-    (hn : (n : O) = w * star w) (y : Y) : b (w • y) (w • y) = n • b y y :=
-  hb.2.smul_smul_of_norm hn y y
 
-theorem even_apply_self_of_add_star {b : Bil Y ℤ} (hb : b ∈ balForms ℤ O Y ℤ) {w : O}
-    (hw : w + star w = 1) (y : Y) : Even (b y y) :=
-  ⟨_, (add_self_of_add_star hb hw y).symm⟩
 
-theorem balForms_int {Y : Type*} [AddCommGroup Y] : balForms S ℤ Y A = symForms S Y A :=
-  le_antisymm (balForms_le_symForms S ℤ Y A) fun b hb => ⟨hb, fun a y y' => by simp⟩
 
 def traceForm (t : O →ₗ[ℤ] A) : Bil O A :=
   LinearMap.mk₂ ℤ (fun x y => t (x * star y))
@@ -469,13 +393,6 @@ def traceForm (t : O →ₗ[ℤ] A) : Bil O A :=
 
 @[simp] theorem traceForm_apply (t : O →ₗ[ℤ] A) (x y : O) : traceForm t x y = t (x * star y) := rfl
 
-theorem traceForm_mem_balForms {t : O →ₗ[ℤ] A} (ht : ∀ x, t (star x) = t x) :
-    traceForm t ∈ balForms S O O A :=
-  ⟨fun x y => by rw [traceForm_apply, traceForm_apply, ← ht, star_mul, star_star],
-    fun a x y => by
-      rw [traceForm_apply, traceForm_apply, smul_eq_mul, smul_eq_mul, star_mul, star_star]
-      congr 1
-      ring⟩
 
 theorem mem_symForms_of_zsmul_mem [Module.IsTorsionFree ℤ A] {Y : Type*} [AddCommGroup Y]
     {b : Bil Y A} {n : ℤ} (hn : n ≠ 0) (hb : n • b ∈ symForms S Y A) : b ∈ symForms S Y A :=
@@ -501,9 +418,6 @@ theorem mem_range_balInclusion {b : SymLattice Y} :
     b ∈ LinearMap.range (balInclusion O Y) ↔ IsBalanced O (b : Bil Y ℤ) :=
   ⟨by rintro ⟨c, rfl⟩; exact c.2.2, fun h => ⟨⟨b, b.2, h⟩, rfl⟩⟩
 
-theorem isSaturated_symForms (Y : Type*) [AddCommGroup Y] :
-    IsSaturatedSubmodule (symForms ℤ Y ℤ) :=
-  isSaturatedSubmodule_iff.2 fun _ hn _ hb => mem_symForms_of_zsmul_mem hn hb
 
 variable (O Y) in
 
@@ -553,14 +467,6 @@ theorem pullback_mem_balForms (f : Y →ₗ[O] Y') {b : Bil Y' A} (hb : b ∈ ba
   ⟨pullback_mem_symForms _ hb.1,
     hb.2.pullback_of_semilinear id (fun _ => rfl) _ fun a y => f.map_smul a y⟩
 
-theorem pullback_mem_balForms_iff {f : Y →ₗ[O] Y'} (hf : Function.Surjective f) {b : Bil Y' A} :
-    pullback S A (f.restrictScalars ℤ) b ∈ balForms S O Y A ↔ b ∈ balForms S O Y' A := by
-  refine ⟨fun h => ⟨(pullback_mem_symForms_iff (f := f.restrictScalars ℤ) hf).1 h.1,
-    fun a y y' => ?_⟩, pullback_mem_balForms f⟩
-  obtain ⟨y, rfl⟩ := hf y
-  obtain ⟨y', rfl⟩ := hf y'
-  rw [← f.map_smul, ← f.map_smul]
-  exact h.2 a y y'
 
 variable (S A) in
 
@@ -570,9 +476,6 @@ def balPullback (f : Y →ₗ[O] Y') : balForms S O Y' A →ₗ[S] balForms S O 
 @[simp] theorem balPullback_apply (f : Y →ₗ[O] Y') (b : balForms S O Y' A) (y y' : Y) :
     (balPullback S A f b : Bil Y A) y y' = (b : Bil Y' A) (f y) (f y') := rfl
 
-theorem balPullback_injective {f : Y →ₗ[O] Y'} (hf : Function.Surjective f) :
-    Function.Injective (balPullback S A f) := fun _ _ h =>
-  Subtype.ext (pullback_injective (S := S) (f := f.restrictScalars ℤ) hf (congrArg Subtype.val h))
 
 omit [StarRing O] in
 variable (O Y) in
@@ -593,15 +496,6 @@ theorem glAction_mem_balForms (g : Y ≃ₗ[O] Y) {b : Bil Y A} (hb : b ∈ balF
     glAction S Y A (autToGL O Y g) b ∈ balForms S O Y A :=
   pullback_mem_balForms g.symm.toLinearMap hb
 
-theorem glAction_mem_balForms_of_semilinear (σ : O ≃+* O) (hσ : ∀ a, σ (star a) = star (σ a))
-    (g : Y ≃ₗ[ℤ] Y) (hg : ∀ (a : O) y, g (a • y) = σ a • g y) {b : Bil Y A}
-    (hb : b ∈ balForms S O Y A) : glAction S Y A g b ∈ balForms S O Y A := by
-  refine ⟨glAction_mem_symForms g hb.1, hb.2.pullback_of_semilinear (S := S) σ.symm (fun a => ?_)
-    g.symm.toLinearMap fun a y => ?_⟩
-  · apply σ.injective
-    rw [hσ, σ.apply_symm_apply, σ.apply_symm_apply]
-  · apply g.injective
-    simp [hg]
 
 variable (S O Y A) in
 
@@ -611,9 +505,6 @@ def autAction : (Y ≃ₗ[O] Y) →* (balForms S O Y A ≃ₗ[S] balForms S O Y 
 @[simp] theorem autAction_apply (g : Y ≃ₗ[O] Y) (b : balForms S O Y A) (y y' : Y) :
     (autAction S O Y A g b : Bil Y A) y y' = (b : Bil Y A) (g.symm y) (g.symm y') := rfl
 
-theorem balInclusion_autAction (g : Y ≃ₗ[O] Y) (b : BalLattice O Y) :
-    balInclusion O Y (autAction ℤ O Y ℤ g b) =
-      symAction ℤ Y ℤ (autToGL O Y g) (balInclusion O Y b) := rfl
 
 variable (O Y) in
 
@@ -687,8 +578,6 @@ noncomputable def dualEquiv [Module.Finite ℤ Y] :
 @[simp] theorem dualEquiv_apply [Module.Finite ℤ Y] (x : BalSq O Y) (b : BalLattice O Y) :
     dualEquiv O Y x b = lift ℤ O Y ℤ b x := rfl
 
-theorem dualEquiv_mk [Module.Finite ℤ Y] (y y' : Y) (b : BalLattice O Y) :
-    dualEquiv O Y (mk O y y') b = (b : Bil Y ℤ) y y' := rfl
 
 theorem dualEquiv_mkQ [Module.Finite ℤ Y] [Module.Free ℤ Y] (x : SymSq Y) :
     dualEquiv O Y ((balRel O Y).mkQ x) = (balInclusion O Y).dualMap (SymSq.dualEquiv Y x) := rfl
@@ -738,52 +627,11 @@ theorem level_mul (M N : ℤ) (L : Submodule ℤ (Bil Y ℤ)) :
   · rintro ⟨_, ⟨c, hc, rfl⟩, rfl⟩
     exact ⟨c, hc, mul_smul M N c⟩
 
-theorem level_le_level_of_dvd {M N : ℤ} (h : M ∣ N) (L : Submodule ℤ (Bil Y ℤ)) :
-    level N L ≤ level M L := by
-  obtain ⟨k, rfl⟩ := h
-  rw [level_mul]
-  exact level_mono M (level_le k L)
 
-theorem mem_level_top {M : ℤ} {b : Bil Y ℤ} : b ∈ level M ⊤ ↔ ∀ y y', M ∣ b y y' := by
-  constructor
-  · rintro ⟨c, -, rfl⟩ y y'
-    exact ⟨c y y', rfl⟩
-  · intro h
-    rcases eq_or_ne M 0 with rfl | hM
-    · exact ⟨0, trivial, by ext y y'; exact (zero_dvd_iff.1 (h y y')).symm⟩
-    · refine ⟨LinearMap.mk₂ ℤ (fun y y' => b y y' / M) (fun y z y' => ?_) (fun n y y' => ?_)
-        (fun y y' z => ?_) (fun n y y' => ?_), trivial, ?_⟩
-      · rw [map_add, LinearMap.add_apply, Int.add_ediv_of_dvd_left (h y y')]
-      · rw [map_smul, LinearMap.smul_apply, smul_eq_mul, smul_eq_mul, Int.mul_ediv_assoc _ (h y y')]
-      · rw [map_add, Int.add_ediv_of_dvd_left (h y y')]
-      · rw [map_smul, smul_eq_mul, smul_eq_mul, Int.mul_ediv_assoc _ (h y y')]
-      · ext y y'
-        exact Int.mul_ediv_cancel' (h y y')
 
-theorem mem_level_of_saturated {M : ℤ} {L : Submodule ℤ (Bil Y ℤ)}
-    (hL : IsSaturatedSubmodule L) {b : Bil Y ℤ} :
-    b ∈ level M L ↔ b ∈ L ∧ ∀ y y', M ∣ b y y' := by
-  rw [← mem_level_top]
-  refine ⟨fun h => ⟨level_le M L h, level_mono M le_top h⟩, ?_⟩
-  rintro ⟨hb, c, -, rfl⟩
-  rcases eq_or_ne M 0 with rfl | hM
-  · exact ⟨0, L.zero_mem, by simp⟩
-  · exact smul_mem_level M (hL.mem_of_smul_mem hM hb)
 
-theorem mem_level_symForms {M : ℤ} {b : Bil Y ℤ} :
-    b ∈ level M (symForms ℤ Y ℤ) ↔ b ∈ symForms ℤ Y ℤ ∧ ∀ y y', M ∣ b y y' :=
-  mem_level_of_saturated (isSaturated_symForms Y)
 
-theorem mem_level_balForms {O : Type*} [CommRing O] [StarRing O] [Module O Y] {M : ℤ}
-    {b : Bil Y ℤ} :
-    b ∈ level M (balForms ℤ O Y ℤ) ↔ b ∈ balForms ℤ O Y ℤ ∧ ∀ y y', M ∣ b y y' :=
-  mem_level_of_saturated (isSaturated_balForms O Y)
 
-theorem level_balForms (O : Type*) [CommRing O] [StarRing O] [Module O Y] (M : ℤ) :
-    level M (balForms ℤ O Y ℤ) = level M (symForms ℤ Y ℤ) ⊓ balForms ℤ O Y ℤ := by
-  ext b
-  rw [Submodule.mem_inf, mem_level_balForms, mem_level_symForms]
-  exact ⟨fun h => ⟨⟨h.1.1, h.2⟩, h.1⟩, fun h => ⟨h.2, h.1.2⟩⟩
 
 noncomputable def levelEquiv {M : ℤ} (hM : M ≠ 0) (L : Submodule ℤ (Bil Y ℤ)) :
     L ≃ₗ[ℤ] level M L :=

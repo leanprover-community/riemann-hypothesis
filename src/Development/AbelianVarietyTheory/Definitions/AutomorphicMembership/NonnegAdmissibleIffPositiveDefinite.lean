@@ -138,30 +138,8 @@ theorem IsExpansion.unique [Module.Finite ℤ L] {c c' : Module.Dual ℤ L → K
     exact (hc.coeff_eq hγ hr).symm.trans (hc'.coeff_eq hγ hr)
   · rw [of_not_not fun h0 => hχ (hc.1 χ h0), of_not_not fun h0 => hχ (hc'.1 χ h0)]
 
-theorem coefSet_le {B : ℝ} (h : ∀ γ ∈ P, ∀ r, Val γ r → ∀ n, ‖r.coeff n‖ ≤ B) : ∀ x ∈ coefSet P Val χ, x ≤ B := by
-  rintro _ ⟨γ, r, hγ, hr, rfl⟩
-  exact h γ hγ.1 r hr _
 
-theorem coefNorm_le {B : ℝ} (hB : 0 ≤ B) (h : ∀ γ ∈ P, ∀ r, Val γ r → ∀ n, ‖r.coeff n‖ ≤ B) : coefNorm P Val χ ≤ B :=
-  Real.sSup_le (coefSet_le h) hB
 
-theorem coefNorm_equiv (ε : L ≃ₗ[ℤ] L') {P' : Set L'} {Val' : L' → LaurentSeries K → Prop} (hP : ∀ γ, ε γ ∈ P' ↔ γ ∈ P)
-    (hV : ∀ γ r, Val' (ε γ) r ↔ Val γ r) (χ' : Module.Dual ℤ L') :
-    coefNorm P Val (ε.dualMap χ') = coefNorm P' Val' χ' := by
-  have hN : ∀ ψ : Module.Dual ℤ L', Nonneg P (ε.dualMap ψ) ↔ Nonneg P' ψ := fun ψ =>
-    ⟨fun h γ hγ => by
-      obtain ⟨γ, rfl⟩ := ε.surjective γ
-      exact h γ ((hP γ).1 hγ), fun h γ hγ => h _ ((hP γ).2 hγ)⟩
-  have hI : ∀ γ, Isolates P γ (ε.dualMap χ') ↔ Isolates P' (ε γ) χ' := fun γ =>
-    and_congr (hP γ).symm (and_congr (hN _) ⟨fun h ψ hψ e => ε.dualMap.injective (h _ ((hN ψ).2 hψ) e), fun h ψ hψ e => by
-      obtain ⟨ψ, rfl⟩ := ε.dualMap.surjective ψ
-      rw [h ψ ((hN ψ).1 hψ) e]⟩)
-  refine congrArg sSup (Set.ext fun x => ⟨?_, ?_⟩)
-  · rintro ⟨γ, r, h₁, h₂, rfl⟩
-    exact ⟨ε γ, r, (hI γ).1 h₁, (hV γ r).2 h₂, rfl⟩
-  · rintro ⟨γ, r, h₁, h₂, rfl⟩
-    obtain ⟨γ, rfl⟩ := ε.surjective γ
-    exact ⟨γ, r, (hI γ).2 h₁, (hV γ r).1 h₂, rfl⟩
 
 theorem isFat_pos : IsFat {n : ℤ | 0 < n} := ⟨1, one_pos, fun γ hγ δ => ⟨δ.natAbs + 1, fun N hN => by
   have h : (0 : ℤ) < γ := hγ

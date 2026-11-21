@@ -398,16 +398,6 @@ theorem exists_ambTrue (Z : TC.Later B (I.cols l)) (e : ∀ a : (I.cols l).Tup, 
             jAmb_norm := fun a _ => q4 a }, ⟨fun a => ?_⟩⟩
   exact congrArg (fun f => (⟨MtHL I hX a, f⟩ : Σ H : HLat B.LL, (H.V → Z.W.Amb a))) (funext (hJ a))
 
-theorem exists_later (hB : StagesInhab.HasLetters B.toPre) (Rw : RowsDef I l hX) : ∃ Z : TC.Later B (I.cols l), Z.W = Rw.W := by
-  obtain ⟨Del, letter, hD, hinj, gap, hu⟩ := hB
-  obtain ⟨N⟩ := GlobalTheory.MemN.nonempty_nStage_provisional B _ Rw.W (fun _ _ _ => 1) Rw.std.sha (fun j w _ _ => Rw.std.eta j w)
-    (Or.inl (GlobalTheory.MemN.goodChi _ _))
-  obtain ⟨V, -⟩ := DivInhab.exists_divStage B _ Rw.W
-  obtain ⟨S⟩ := SStageInhab.nonempty_sStage B _ Rw.W Del hD gap letter hinj hu
-    (fun u x _ y _ => TrueColsTest.ipC_herm l u x y) (fun u x hx h => TrueColsTest.ipC_pos l u x hx h)
-    (by rw [Rw.std.drows]; exact Nat.zero_le _)
-  obtain ⟨G⟩ := GJInhab.nonempty_stage B (I.cols l)
-  exact ⟨⟨Rw.W, V, S, N, G⟩, rfl⟩
 
 set_option maxHeartbeats 1000000 in
 include hX in
@@ -422,27 +412,7 @@ theorem nontrivial_reference_forms (h : I.Ok) : Nontrivial (MtCx I I.mu0) := by
   exact nontrivial_symF (X := B.fields) (Pr := B.primes X) B.wts I.Ch I.sel (I.tup I.mu0) B.embLL
     (Module.nontrivial_of_finrank_pos (R := ℂ) (h2.symm ▸ h1))
 
-theorem buDef_iff (Rw : RowsDef I l hX) : Rows.BuDef Rw.W.what₂ ↔ ∀ u φ F, Rw.W.perCol u (I.cols l).mu0 φ F = 0 := by
-  constructor
-  · intro h u φ F
-    have hF : F ∈ Rw.W.what₂.V0 (I.cols l).mu0 := ⟨F, LinearMap.congr_fun (Rw.tru.eOp _) F⟩
-    exact (h u φ F hF).trans (Rw.std.bu _ _ _)
-  · intro h u φ F _
-    exact (h u φ F).trans (Rw.std.bu _ _ _).symm
 
-theorem exists_all : ∃ (B : Base) (X : PreX B.toPre) (I : TC B X) (l : I.Laws) (hX : B.fields.Ok) (Z : TC.Later B (I.cols l))
-    (e : ∀ a : (I.cols l).Tup, MtCx I a ≃ₗ[ℂ] Z.W.Amb a) (A : AmbForm (I.rec7 l Z) (RowSide.sharp (I.rec7 l Z))),
-    I.Ok ∧ TC.Pins B X ∧ I.muStar ≠ I.mu0 ∧ DefTrue I l hX Z.W e ∧ StandIn Z.W ∧ AmbTrue I l hX Z e A ∧
-      Nontrivial (Z.W.Amb (I.cols l).mu0) := by
-  obtain ⟨B, X, I, hL, h, hP, hs⟩ := TrueColsTest.exists_ok_pins
-  have hX := (base_fields_primes_ok B X).1
-  have l := TrueColsTest.laws h
-  obtain ⟨Rw⟩ := nonempty_rowsDef I l hX h
-  obtain ⟨⟨W, V, S, N, G⟩, hZ⟩ := exists_later I l hX hL Rw
-  obtain rfl : W = Rw.W := hZ
-  obtain ⟨A, hA⟩ := exists_ambTrue I l hX ⟨Rw.W, V, S, N, G⟩ Rw.e Rw.tru
-  have : Nontrivial (MtCx I (I.cols l).mu0) := nontrivial_reference_forms I hX h
-  exact ⟨B, X, I, l, hX, ⟨Rw.W, V, S, N, G⟩, Rw.e, A, h, hP, hs, Rw.tru, Rw.std, hA, (Rw.e (I.cols l).mu0).symm.toEquiv.nontrivial⟩
 
 end GlobalTheory.Mem.Df.Model
 

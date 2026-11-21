@@ -15,11 +15,6 @@ variable {D : D7}
 def BeOnFam {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Prop :=
   Formalism.MainNotions.FamU Fm fun D u => Formalism.L2.Ker.BeOnTie D u
 
-private theorem interlace_lamTr_sgTr' {u : D.what₂.Word} (Tf : FormsTied D u) (τ : D.what₂.Tau) :
-    Formalism.MainNotions.PrimeDegreeVariant.Interlace (Nm_succ D.R) (lamTr D u τ) (sgTr D u τ) := by
-  intro i
-  obtain ⟨h1, h2⟩ := sg_interlace Tf.valP τ i
-  exact ⟨by simpa [lamTr, sgTr, wSh] using h1, by simpa [lamTr, sgTr, wSh] using h2⟩
 
 def bZ (u : D.what₂.Word) (z0 : Fin (D.R.N D.R.m) → D.host.E) :
     Matrix (Fin (D.R.N D.R.m)) (Fin (D.R.N D.R.m)) D.host.E :=
@@ -48,11 +43,6 @@ theorem LowerMapTie.pt_eq {u : D.what₂.Word} {Tf : FormsTied D u} (h : LowerMa
     Tf.valP.eW (Pt D u φ) c = fnOf _ (shiftOf (sgT u)) 1 (Formalism.L2.Ker.brTen D u P) :=
   h hB ((D.mem u).P.evz φ) c P hP hv
 
-theorem archimedeanSignatureMatching_of_trivial_branching {u : D.what₂.Word} (Tf : FormsTied D u) (P : Pend D u)
-    (hP : ∀ τ, P.br τ = Formalism.L2.Ker.brOne ℂ (Nm_succ D.R).symm (lamTr D u τ) (sgTr D u τ)) : ArchimedeanSignatureMatching P := by
-  intro τ
-  rw [hP τ]
-  exact Formalism.L2.Ker.brOneIsBr D u τ (interlace_lamTr_sgTr' Tf τ)
 
 theorem mZ_isUnit {u : D.what₂.Word} {z0 : Fin (D.R.N D.R.m) → D.host.E} (hB : IsUnit (bZ u z0).det) (τ : D.what₂.Tau) :
     IsUnit (mZ u z0 τ).det := by

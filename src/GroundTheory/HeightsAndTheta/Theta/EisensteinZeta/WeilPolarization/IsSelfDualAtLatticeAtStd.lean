@@ -117,36 +117,11 @@ abbrev unitForm (F E : Type*) [Field F] [Field E] [Algebra F E] [Algebra.IsQuadr
     (M : ℕ) : HermitianForm F E (Fin M → E) :=
   diagForm (E := E) fun _ : Fin M => (1 : Fˣ)
 
-theorem baseGram_unitForm (R : Type*) [Field R] [Algebra F R] (M : ℕ) :
-    baseGram R (unitForm F E M) = 1 := by
-  rw [baseGram, gram_diagForm, diagonal_map (map_zero _), ← diagonal_one]
-  congr 1
-  funext i
-  simp [Algebra.TensorProduct.one_def]
 
-theorem matForm_one (R : Type*) {A : Type*} [Field R] [CommRing A] [Algebra R A]
-    [Algebra.IsQuadraticExtension R A] {ι : Type*} [Fintype ι] [DecidableEq ι] (x y : ι → A) :
-    matForm R (1 : Matrix ι ι A) x y = ∑ i, conj R A (x i) * y i := by
-  simp [matForm, Matrix.one_apply]
 
-theorem hasSignatureAt_one (w : InfinitePlace F) (M : ℕ) :
-    HasSignatureAt (unitForm F E M) w M 0 := by
-  refine ⟨add_zero M, ?_⟩
-  have : diagonal (signVector (w.Completion ⊗[F] E) M M) = 1 := by
-    rw [← diagonal_one]
-    congr 1
-    funext i
-    simp [signVector, i.isLt]
-  rw [baseGram_unitForm, this]
-  exact IsCongr.refl _ _
 
 variable (v : HeightOneSpectrum (𝓞 F))
 
-theorem conj_mem_locIntegers {z : v.adicCompletion F ⊗[F] E} (hz : z ∈ locIntegers F E v) :
-    conj (v.adicCompletion F) (v.adicCompletion F ⊗[F] E) z ∈ locIntegers F E v := by
-  rw [locIntegers, mem_integralClosure_iff] at hz ⊢
-  exact hz.map (((conj (v.adicCompletion F) (v.adicCompletion F ⊗[F] E)).toAlgHom).restrictScalars
-    (v.adicCompletionIntegers F))
 
 def stdLatticeAt (M : ℕ) :
     Submodule (locIntegers F E v) (Fin M → v.adicCompletion F ⊗[F] E) where
@@ -157,52 +132,10 @@ def stdLatticeAt (M : ℕ) :
     rw [Pi.smul_apply, Subalgebra.smul_def, smul_eq_mul]
     exact mul_mem c.2 (hx i)
 
-theorem mem_stdLatticeAt {M : ℕ} {x : Fin M → v.adicCompletion F ⊗[F] E} :
-    x ∈ stdLatticeAt v M ↔ ∀ i, x i ∈ locIntegers F E v := Iff.rfl
 
-theorem single_mem_stdLatticeAt {M : ℕ} (i : Fin M) :
-    Pi.single i 1 ∈ stdLatticeAt (E := E) v M := by
-  intro j
-  rcases eq_or_ne j i with rfl | hj
-  · rw [Pi.single_eq_same]; exact one_mem _
-  · rw [Pi.single_eq_of_ne hj]; exact zero_mem _
 
-theorem stdLatticeAt_eq_span (M : ℕ) :
-    stdLatticeAt (E := E) v M =
-      Submodule.span _ (Set.range fun i : Fin M => Pi.single i (1 : v.adicCompletion F ⊗[F] E)) := by
-  apply le_antisymm
-  · intro x hx
-    have hx' : x = ∑ i, (⟨x i, hx i⟩ : locIntegers F E v) • Pi.single i 1 := by
-      funext j
-      simp [Finset.sum_apply, Pi.single_apply, Subalgebra.smul_def]
-    rw [hx']
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-  · rw [Submodule.span_le]
-    rintro _ ⟨i, rfl⟩
-    exact single_mem_stdLatticeAt v i
 
-theorem isLocLattice_std (M : ℕ) : IsLocLattice v (stdLatticeAt (E := E) v M) := by
-  refine ⟨?_, ?_⟩
-  · rw [stdLatticeAt_eq_span]
-    exact Submodule.fg_span (Set.finite_range _)
-  · rw [eq_top_iff]
-    intro x _
-    have hx : x = ∑ i, x i • Pi.single i (1 : v.adicCompletion F ⊗[F] E) := by
-      funext j
-      simp [Finset.sum_apply, Pi.single_apply]
-    rw [hx]
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _
-      (Submodule.subset_span (single_mem_stdLatticeAt v i))
 
-theorem isSelfDualAt_one (M : ℕ) : IsSelfDualAt v (unitForm F E M) (stdLatticeAt v M) := by
-  refine ⟨isLocLattice_std v M, fun x => ⟨fun hx y hy => ?_, fun H i => ?_⟩⟩
-  · rw [baseGram_unitForm, matForm_one]
-    exact Subalgebra.sum_mem _ fun i _ => mul_mem (conj_mem_locIntegers v (hx i)) (hy i)
-  · have h1 := H (Pi.single i 1) (single_mem_stdLatticeAt v i)
-    rw [baseGram_unitForm, matForm_one] at h1
-    simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true] at h1
-    simpa only [conj_conj] using conj_mem_locIntegers v h1
 
 def stdLattice (M : ℕ) : Submodule (𝓞 E) (Fin M → E) where
   carrier := {x | ∀ i, IsIntegral ℤ (x i)}
@@ -218,60 +151,9 @@ theorem single_mem_stdLattice {M : ℕ} (i : Fin M) : Pi.single i (1 : E) ∈ st
   · rw [Pi.single_eq_same]; exact isIntegral_one
   · rw [Pi.single_eq_of_ne hj]; exact isIntegral_zero
 
-theorem stdLattice_eq_span (M : ℕ) :
-    stdLattice (E := E) M = Submodule.span (𝓞 E) (Set.range fun i : Fin M => Pi.single i (1 : E)) := by
-  apply le_antisymm
-  · intro x hx
-    have hx' : x = ∑ i, (⟨x i, hx i⟩ : 𝓞 E) • Pi.single i 1 := by
-      funext j
-      simp [Finset.sum_apply, Pi.single_apply, Algebra.smul_def]
-      rfl
-    rw [hx']
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-  · rw [Submodule.span_le]
-    rintro _ ⟨i, rfl⟩
-    exact single_mem_stdLattice i
 
-theorem isGlobalLattice_std (M : ℕ) : IsGlobalLattice (stdLattice (E := E) M) := by
-  refine ⟨?_, ?_⟩
-  · rw [stdLattice_eq_span]
-    exact Submodule.fg_span (Set.finite_range _)
-  · rw [eq_top_iff]
-    intro x _
-    have hx : x = ∑ i, x i • Pi.single i (1 : E) := by
-      funext j
-      simp [Finset.sum_apply, Pi.single_apply]
-    rw [hx]
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _
-      (Submodule.subset_span (single_mem_stdLattice i))
 
-theorem latticeAt_std (M : ℕ) : latticeAt v (stdLattice (E := E) M) = stdLatticeAt v M := by
-  apply le_antisymm
-  · rw [latticeAt, Submodule.span_le]
-    rintro _ ⟨x, hx, rfl⟩ i
-    rw [locIntegers, mem_integralClosure_iff]
-    obtain ⟨p, hp, hpx⟩ := hx i
-    refine ⟨p.map (Int.castRingHom (v.adicCompletionIntegers F)), hp.map _, ?_⟩
-    set g : E →+* v.adicCompletion F ⊗[F] E :=
-      (Algebra.TensorProduct.includeRight : E →ₐ[F] v.adicCompletion F ⊗[F] E).toRingHom
-    have e : (algebraMap (v.adicCompletionIntegers F) (v.adicCompletion F ⊗[F] E)).comp
-        (Int.castRingHom (v.adicCompletionIntegers F)) = g.comp (algebraMap ℤ E) :=
-      RingHom.ext_int _ _
-    rw [Polynomial.eval₂_map, e]
-    show Polynomial.eval₂ (g.comp (algebraMap ℤ E)) (g (x i)) p = 0
-    rw [← Polynomial.hom_eval₂, hpx, map_zero]
-  · rw [stdLatticeAt_eq_span, Submodule.span_le]
-    rintro _ ⟨i, rfl⟩
-    refine Submodule.subset_span ⟨Pi.single i 1, single_mem_stdLattice i, ?_⟩
-    funext j
-    rcases eq_or_ne j i with rfl | hj
-    · simp [Algebra.TensorProduct.one_def]
-    · simp [Pi.single_eq_of_ne hj]
 
-theorem isSelfDualAt_latticeAt_std (M : ℕ) :
-    IsSelfDualAt v (unitForm F E M) (latticeAt v (stdLattice M)) := by
-  rw [latticeAt_std]
-  exact isSelfDualAt_one v M
 
 end Inhabitants
 

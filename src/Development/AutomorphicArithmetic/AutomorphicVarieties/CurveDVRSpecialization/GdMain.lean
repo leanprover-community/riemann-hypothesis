@@ -31,11 +31,6 @@ private theorem ss_conj {Γ k : Type} [Group Γ] [Field k] {n : ℕ} {ρ ρ' : �
       (W'.comap (e : (Fin n → k) →ₗ[k] (Fin n → k))) := this
     rwa [Submodule.comap_map_eq_of_injective e.injective] at h2
 
-private theorem autCsd_iso {F Ω : Type} [Field F] [NumberField F] [IsCMField F] [Field Ω] [Algebra F Ω] {l : ℕ}
-    [Fact l.Prime] {n : ℕ} {ι : Qbar l ≃+* ℂ} {r r' : G F Ω →* GL (Fin n) (Qbar l)} (h : Af.RepIso r r')
-    (H : Af.IsAutCsd ι r) : Af.IsAutCsd ι r' := by
-  obtain ⟨π, h1, h2, h3, h4⟩ := H
-  refine ⟨π, h1, h2, ss_conj h.choose h.choose_spec h3, h4.mono fun w ⟨B, hB, hB'⟩ => ⟨B, hB, hB'.of_iso h⟩⟩
 
 private theorem tw_iso {Γ k : Type} [Group Γ] [Field k] {n : ℕ} {r r' : Γ →* GL (Fin n) k} (χ : Γ →* kˣ)
     (h : Af.RepIso r r') : Af.RepIso (Af.tw r χ) (Af.tw r' χ) := by
@@ -87,40 +82,3 @@ private theorem corner_conj {G R : Type} [Group G] [CommRing R] (r : G →* GG 3
     fin_cases a <;> simp [wt1]
   · fin_cases b <;> simp [wt1]
 
-theorem UpperTheory.V.Pr.automorphy_rank_three_of_endomorphisms :
-    Loc.LocalPublishedTheorems → GdEnd → AutomorphyUnramifiedCoefficients := by
-  intro hL H Ω _ _ _ K _ _ _ _ l _ c N _ e ψ D _ ι
-  obtain ⟨B, hB, -, -, -, hmem, -⟩ := dat_loc D
-  obtain ⟨g₁, hM, hfin, h3, h2⟩ := H Ω K l c N e ψ D ι B hB
-  have hA : FinA D g₁ := finA_of_end hL D g₁ hM B hmem hfin
-  refine ⟨g₁, hM, hA, fun U S ξ r hr hp hI => ?_, fun U S ξ r hp hII h11 W hW => ?_⟩
-  · obtain ⟨A, _, _, t, r', ho, ht⟩ := exists_ordPt_of_point hL D g₁ hM U S hA B hmem ξ r hp
-    have hl : ∀ s ∈ D.η.ker, (UnitaryThreeInertia.push A.val r' s).left = tor _ t * (r s).left * (tor _ t)⁻¹ := fun s hs => by
-      rw [ht, conj_left r _ _ ((hr s).trans hs)]
-    have hI' : TypeI D.η (UnitaryThreeInertia.push A.val r') := matIrr_conj (tor _ t) (fun s hs => by
-      rw [mats, mats, GG.mat, GG.mat, hl s hs, ← Units.val_mul, ← Units.val_mul]
-      congr 1
-      group) hI
-    have hm : HasMult D.η (UnitaryThreeInertia.push A.val r') := ho.red.mult
-    have hiso : Af.RepIso (D.rhoK r hr) (D.rhoK _ hm) :=
-      ⟨tor _ t, fun s => hl _ (D.η_ker.ge (Base.galEmb_mem ℚ K Ω s))⟩
-    have key := h3 A r' ho (matIrr_open_gd D g₁ hM B hB A r' ho hI') (D.rhoK _ hm) fun s => rfl
-    exact autCsd_iso (tw_iso _ hiso.symm') key
-  · obtain ⟨A, _, _, t, r', ho, ht⟩ := exists_ordPt_of_point hL D g₁ hM U S hA B hmem ξ r hp
-    let W' : G ℚ Ω →* GL (Fin 2) (PadicAlgCl l) := (MulAut.conj (dg t)).toMonoidHom.comp W
-    have hW' : ∀ s, W' s = dg t * W s * (dg t)⁻¹ := fun s => rfl
-    have hII' : TypeII D.η (UnitaryThreeInertia.push A.val r') := by
-      rw [ht]
-      refine ⟨fun g hg a b hab => ?_, matIrr_conj (dg t) (fun s _ => ?_) hII.2⟩
-      · rw [(conjBy_tor r t).1, hII.1 g hg a b hab, mul_zero]
-      · rw [corner_conj]
-        simp only [← Matrix.mul_assoc]
-        rw [Units.inv_mul, Matrix.one_mul, Matrix.mul_assoc, Units.inv_mul, Matrix.mul_one]
-    obtain ⟨f, hf⟩ := h2 A r' ho hII' (fun g hg => by
-      apply Subtype.ext
-      show (UnitaryThreeInertia.push A.val r' g).mat 1 1 = 1
-      rw [ht, (conjBy_tor r t).1, h11 g hg]
-      simp [wt]) W' (fun g hg => by
-      rw [ht, corner_conj, hW', Units.val_mul, Units.val_mul, hW.1 g hg]) (by
-      rw [hW', Units.val_mul, Units.val_mul, Matrix.trace_units_conj, hW.2])
-    exact ⟨f, att_iso (tw_iso _ (Af.RepIso.symm' ⟨dg t, hW'⟩)) hf⟩

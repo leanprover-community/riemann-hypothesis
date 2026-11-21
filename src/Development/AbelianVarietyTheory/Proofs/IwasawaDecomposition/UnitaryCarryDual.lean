@@ -35,41 +35,6 @@ theorem sigR_int (σ : E →ₐ[F] E) (x : E ⊗[F] 𝔸)
       exact Subring.subset_closure (Or.inr ⟨y, rfl⟩)
   exact hle hx
 
-theorem form_latS_int (σ : E →ₐ[F] E) {n : ℕ} (L' : Submodule (𝓞 E) (Fin n → E))
-    (z : Fin n → E) (hz : z ∈ dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) L')
-    (u : Fin n → E ⊗[F] 𝔸)
-    (hu : u ∈ latS (F := F) 𝔸 (tensInt (F := F) 𝔸 (intOE E) (intAd F)) L') :
-    (fun i => sigR σ 𝔸 (u i)) ⬝ᵥ (fun a => inclE (F := F) 𝔸 (z a)) ∈
-      tensInt (F := F) 𝔸 (intOE E) (intAd F) := by
-  induction hu using Submodule.span_induction with
-  | mem u hu =>
-    obtain ⟨l, hl, rfl⟩ := hu
-    obtain ⟨r, hr⟩ := hz l hl
-    have e : (fun i => sigR σ 𝔸 (inclE (F := F) 𝔸 (l i))) ⬝ᵥ (fun a => inclE (F := F) 𝔸 (z a)) =
-        inclE (F := F) 𝔸 (hform (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) l z) := by
-      have h1 : hform (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) l z = ∑ i, σ (l i) * z i := by
-        unfold hform
-        refine Finset.sum_congr rfl fun i _ => ?_
-        simp [Matrix.one_apply]
-      rw [h1, map_sum]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      rw [map_mul]
-      rfl
-    simp only [] at e ⊢
-    rw [e, ← hr]
-    exact Subring.subset_closure (Or.inl ⟨⟨_, ⟨r, rfl⟩⟩, rfl⟩)
-  | zero => simp
-  | add a b _ _ ha hb =>
-    have : (fun i => sigR σ 𝔸 ((a + b) i)) = (fun i => sigR σ 𝔸 (a i)) + (fun i => sigR σ 𝔸 (b i)) := by
-      funext i; simp
-    rw [this, add_dotProduct]
-    exact add_mem ha hb
-  | smul c a _ ha =>
-    have : (fun i => sigR σ 𝔸 ((c • a) i)) = sigR σ 𝔸 (c : E ⊗[F] 𝔸) • (fun i => sigR σ 𝔸 (a i)) := by
-      funext i
-      simp [Subring.smul_def]
-    rw [this, smul_dotProduct]
-    exact mul_mem (sigR_int σ _ c.2) ha
 
 end GlobalTheory.Mem.LevDual
 

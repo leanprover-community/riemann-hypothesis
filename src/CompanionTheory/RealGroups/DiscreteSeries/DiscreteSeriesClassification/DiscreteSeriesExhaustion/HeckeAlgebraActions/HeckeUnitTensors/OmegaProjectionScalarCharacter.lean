@@ -23,9 +23,7 @@ theorem toS_ofS (g : ↥(stepSub X (χ s))) : toS X χ s (ofS X χ s g) = g := r
 
 theorem toS_add (g g' : (step X (χ s)).V) : toS X χ s (g + g') = toS X χ s g + toS X χ s g' := rfl
 
-theorem toS_smul (r : ℂ) (g : (step X (χ s)).V) : toS X χ s (r • g) = r • toS X χ s g := rfl
 
-theorem toS_sub (g g' : (step X (χ s)).V) : toS X χ s (g - g') = toS X χ s g - toS X χ s g' := rfl
 
 theorem toS_neg (g : (step X (χ s)).V) : toS X χ s (-g) = -toS X χ s g := rfl
 
@@ -42,8 +40,6 @@ def coeY (G : Fin (m + 1) → (step X (χ s)).V) : Fin (m + 1) → Fin (m + 1) �
 theorem coeY_injective : Function.Injective (coeY (X := X) (χ := χ) (s := s)) := fun G G' h =>
   funext fun c => (Subtype.ext (congrFun h c) : toS X χ s (G c) = toS X χ s (G' c))
 
-theorem coeY_add (G G') : coeY (X := X) (χ := χ) (s := s) (G + G') = coeY G + coeY G' := by
-  funext c; rfl
 
 theorem coeY_smul (r : ℂ) (G) : coeY (X := X) (χ := χ) (s := s) (r • G) = r • coeY G := by
   funext c; rfl

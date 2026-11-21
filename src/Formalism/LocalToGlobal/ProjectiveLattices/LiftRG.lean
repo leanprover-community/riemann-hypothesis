@@ -12,7 +12,6 @@ variable {Λ : Type*} [CommRing Λ] {σ : Type*} [DecidableEq σ] (hd : (σ →�
 
 def iterHd (l : List (σ →₀ ℕ)) (x : Λ) : Λ := l.foldr (fun β y => hd β y) x
 
-theorem iterHd_nil (x : Λ) : iterHd hd [] x = x := rfl
 
 theorem iterHd_cons (β : σ →₀ ℕ) (l : List (σ →₀ ℕ)) (x : Λ) :
     iterHd hd (β :: l) x = hd β (iterHd hd l x) := rfl
@@ -216,65 +215,6 @@ theorem hd_mul_const (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal �
     rw [hb _ h2, mul_zero]
   · rw [ha _ h1, zero_mul]
 
-theorem stabSub_inv (hd0 : ∀ x, hd 0 x = x)
-    (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) (M : Subring Λ) {u : Λ}
-    (hu : IsUnit u) (hs : u ∈ stabSub hd0 hdm M) (hM : (↑hu.unit⁻¹ : Λ) ∈ M) :
-    (↑hu.unit⁻¹ : Λ) ∈ stabSub hd0 hdm M := by
-  set v : Λ := ↑hu.unit⁻¹ with hv
-  let Bs : Subring Λ := Subring.closure ((stabSub hd0 hdm M : Set Λ) ∪ {v})
-  have hsB : ∀ z ∈ stabSub hd0 hdm M, z ∈ Bs := fun z hz => Subring.subset_closure (Or.inl hz)
-  have hvB : v ∈ Bs := Subring.subset_closure (Or.inr rfl)
-  have hdv : ∀ β, hd β v ∈ Bs := by
-    intro β
-    induction hn : Finsupp.degree β using Nat.strong_induction_on generalizing β with
-    | _ n ih =>
-    by_cases hβ : β = 0
-    · rw [hβ, hd0]; exact hvB
-    have h := hdm β u v
-    rw [hv, hu.mul_val_inv, hd_one' hd0 hdm β hβ, ← hv] at h
-    have h0 : ((0 : σ →₀ ℕ), β) ∈ antidiagonal β := mem_antidiagonal.2 (zero_add β)
-    rw [← add_sum_erase _ _ h0, hd0] at h
-    have hS : ∑ q ∈ (antidiagonal β).erase (0, β), hd q.1 u * hd q.2 v ∈ Bs := by
-      refine Bs.sum_mem fun q hq => Bs.mul_mem (hsB _ (stabSub_hd hd0 hdm M q.1 hs)) (ih _ ?_ q.2 rfl)
-      have hq1 := mem_erase.1 hq
-      have h12 : q.1 + q.2 = β := mem_antidiagonal.1 hq1.2
-      have hne : q.1 ≠ 0 := fun h => hq1.1 (Prod.ext h (by rw [← h12, h, zero_add]))
-      have : Finsupp.degree q.1 ≠ 0 := fun h => hne ((Finsupp.degree_eq_zero_iff _).1 h)
-      rw [← hn, ← h12, map_add]; omega
-    have e1 : v * u = 1 := hu.val_inv_mul
-    have : hd β v = -(v * ∑ q ∈ (antidiagonal β).erase (0, β), hd q.1 u * hd q.2 v) := by
-      linear_combination (-v) * h + (-(hd β v)) * e1
-    rw [this]
-    exact Bs.neg_mem (Bs.mul_mem hvB hS)
-  have hBs : ∀ z ∈ Bs, ∀ β, hd β z ∈ Bs := by
-    intro z hz
-    induction hz using Subring.closure_induction with
-    | mem x hx =>
-      rcases hx with hx | hx
-      · exact fun β => hsB _ (stabSub_hd hd0 hdm M β hx)
-      · rw [Set.mem_singleton_iff] at hx
-        rw [hx]
-        exact hdv
-    | zero => exact fun β => by rw [map_zero]; exact Bs.zero_mem
-    | one =>
-      intro β
-      by_cases hβ : β = 0
-      · rw [hβ, hd0]; exact Bs.one_mem
-      · rw [hd_one' hd0 hdm β hβ]; exact Bs.zero_mem
-    | add x y _ _ hx hy => exact fun β => by rw [map_add]; exact Bs.add_mem (hx β) (hy β)
-    | neg x _ hx => exact fun β => by rw [map_neg]; exact Bs.neg_mem (hx β)
-    | mul x y _ _ hx hy =>
-      intro β
-      rw [hdm]
-      exact Bs.sum_mem fun q _ => Bs.mul_mem (hx q.1) (hy q.2)
-  have hBM : Bs ≤ M := (Subring.closure_le).2
-    (Set.union_subset (fun z hz => stabSub_le hd0 hdm M hz) (Set.singleton_subset_iff.2 hM))
-  intro l
-  have : iterHd hd l v ∈ Bs := by
-    induction l with
-    | nil => exact hvB
-    | cons β l ih => rw [iterHd_cons]; exact hBs _ ih β
-  exact hBM this
 
 theorem appSub_inv {L : Type*} [CommRing L] (ι : L →+* Λ) (F : Subring L) (I : Ideal Λ) {d v : L} (hdF : d ∈ F)
     (hvF : v ∈ F) (hz : ι (1 - d * v) ∈ I) (hu : IsUnit (ι d)) : (↑hu.unit⁻¹ : Λ) ∈ appSub ι F I := by

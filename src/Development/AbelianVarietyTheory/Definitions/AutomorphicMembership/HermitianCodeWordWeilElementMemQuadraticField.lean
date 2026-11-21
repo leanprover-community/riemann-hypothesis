@@ -463,8 +463,6 @@ abbrev torAt (s : B.LL →+* ℂ) : TaylorLogMetric.Tor (assemble B C W V S N G)
 
 variable {J}
 
-theorem crv_of_ok (hJ : J.Ok) : StandardLatticesGL3.Crv (assemble B C W V S N G) ⊤ J.δ :=
-  ⟨⟨top_ne_bot, by rw [Ideal.absNorm_top]; exact Nat.coprime_one_left _⟩, hJ.delta⟩
 
 theorem admissible_assembled_evenRanks (i j : ℕ) {ST SG ST' SG' : Finset (HeightOneSpectrum (𝓞 B.fields.E))} :
     letI := B.fields.starE

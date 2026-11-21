@@ -472,9 +472,6 @@ theorem large_order_primes_eq_filter (hx : Fm.x1 < x) (i : Fm.Ix x) : largeOrder
   unfold G.IsResidueClassZero
   rw [pg_cls i i0]
 
-theorem lifts_eq (i : Fm.Ix x) : SizeData₂.lifts (Fm.D x i) = SizeData₂.lifts (Fm.D x i0) := by
-  unfold SizeData₂.lifts
-  rw [Fm.R_eq x i i0]
 
 theorem pg_mem_TTn (i : Fm.Ix x) (t : G.HH (Fm.D x i)) : t.val ∈ Fm.TTn x ↔ t ∈ (Fm.D x i).host.TT := by
   rw [← Fm.TT_eq x i, Finset.mem_image]
@@ -506,9 +503,6 @@ theorem Sig_eq (hx : Fm.x1 < x) (i : Fm.Ix x) (o : Lnk.Wt Fm x i0) (hc : Lnk.Car
     (Fm.kapI_eq x i i0) (Fm.ep_eq x i i0) (fun t t' ht => (pg_aL i o hc t t' ht).1)
     (fun t t' ht => (pg_aL i o hc t t' ht).2) p).2.1
 
-theorem badAt_iff (hx : Fm.x1 < x) (i : Fm.Ix x) (p n : ℕ) : badAt (Fm.Gx x i) p n ↔ badAt (Fm.Gx x i0) p n := by
-  unfold badAt
-  rw [(pg_more hx i i0 p n).2.1]
 
 theorem pg_LaG (hx : Fm.x1 < x) (i : Fm.Ix x) : (Fm.L x i).LaG = G.La Fm.GK (Fm.L x i).sc := by
   obtain ⟨w, -⟩ := Lnk.place_over (Fm.D x i) 2 Nat.prime_two
@@ -2008,20 +2002,6 @@ theorem mem_sAt {p : ℕ} : p ∈ sAt L K ↔ G.Cand D L K p := by
   rw [Finset.mem_filter, Finset.mem_range]
   exact ⟨fun h => h.2, fun h => ⟨Nat.lt_ceil.mpr h.2.1, h⟩⟩
 
-theorem chBad_mono {Cb : ℝ} (h : ChBad_at X Cb) : ChBad_at X (max Cb 0) := by
-  unfold ChBad_at at h ⊢
-  refine le_trans h ?_
-  have hx : 0 < L.sc.x := lt_trans one_pos L.sc.one_lt_alt
-  have hS : 0 ≤ ∑ p ∈ largeOrderResiduePrimes L, Real.log (p : ℝ) / p :=
-    Finset.sum_nonneg fun p _ => div_nonneg (Real.log_natCast_nonneg p) (Nat.cast_nonneg p)
-  have hd : 0 ≤ L.sc.delta1 := Real.rpow_nonneg hx.le _
-  have h2 : 0 ≤ L.sc.x ^ (-2 : ℝ) := Real.rpow_nonneg hx.le _
-  have hn : (0 : ℝ) ≤ D.R.n := Nat.cast_nonneg _
-  have hm : Cb ≤ max Cb 0 := le_max_left _ _
-  have : Cb * (L.sc.x ^ (-2 : ℝ) * L.sc.delta1 * D.R.n * ∑ p ∈ largeOrderResiduePrimes L, Real.log (p : ℝ) / p) ≤
-      max Cb 0 * (L.sc.x ^ (-2 : ℝ) * L.sc.delta1 * D.R.n * ∑ p ∈ largeOrderResiduePrimes L, Real.log (p : ℝ) / p) :=
-    mul_le_mul_of_nonneg_right hm (by positivity)
-  nlinarith [this]
 
 end AtRecord
 
@@ -2033,126 +2013,8 @@ theorem ptH {x : ℝ} (hx : Fm.x1 < x) (h3 : 3 ≤ x) (i : Fm.Ix x) : PtH (Fm.Gx
   ⟨Fm.fills x hx i, Fm.supp_sat x hx i, Fm.drop_iff x hx i, Fm.GK_nonneg, (Fm.ex x hx i).kapI_def, Fm.one_le_Cr,
     Lnk.numN_at (Fm.params x hx i) (Fm.sizes x hx i) (by rw [Fm.L_x x i hx]; exact h3)⟩
 
-theorem loss_points_of_choices (Cb : ℝ) (hTT : ChosenTT Fm) (hBad : ChosenBad Fm Cb) (hG : LinkG Fm) : Lnk.StatementsAtPointsLargeScales Fm := by
-  classical
-  intro Cord hCord
-  obtain ⟨xT, hTT⟩ := hTT
-  obtain ⟨xB, hBad⟩ := hBad
-  obtain ⟨C, xG, δ, hδ, hG⟩ := hG
-  obtain ⟨xA, hAsk⟩ := Lnk.askIsF Fm
-  obtain ⟨e, K, x0, hW⟩ := windows_ev Fm C Cb Cord hCord δ hδ
-  refine ⟨e, K, max (max x0 xT) (max xB (max xG xA)), fun x hxx hwin => ?_⟩
-  have e0 : x ≥ x0 := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hxx
-  have eT : x ≥ xT := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hxx
-  have eB : x ≥ xB := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hxx
-  have eG : x ≥ xG := le_trans (le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) (le_max_right _ _)) hxx
-  have eA : x ≥ xA := le_trans (le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) (le_max_right _ _)) hxx
-  obtain ⟨hx, h3, hW⟩ := hW x e0
-  obtain ⟨i0⟩ := Fm.Ix_win x hwin
-  obtain ⟨hW, hp0⟩ := hW i0
-  set bo : ℝ := (Fm.L x i0).sc.b ^ δ x with hbo
-  have hbo0 : 0 ≤ bo := Real.rpow_nonneg (Real.exp_pos _).le _
-  set P : Par := par Fm x i0 C bo Cb Cord with hP
-  have hGi : ∀ i : Fm.Ix x, LinkG_at (Fm.Gx x i) Fm.GK C bo := fun i => by
-    have := hG x eG i
-    rwa [Lnk.sc_eq Fm hx i i0] at this
-  have hH : ∀ i : Fm.Ix x, PtH (Fm.Gx x i) Fm.GK Fm.Cr := fun i => ptH Fm hx h3 i
-  have hLa : ∀ i : Fm.Ix x, 0 ≤ (Fm.L x i).LaG := fun i => by
-    have h1 := (Fm.sizes x hx i).2.2.2.2.2.2.2.2.1.1
-    exact le_trans (Real.rpow_nonneg (lt_trans one_pos (Fm.L x i).sc.one_lt_alt).le _) h1
-  have hp0i : ∀ i : Fm.Ix x, (Fm.L x i).sc.p0 (Fm.D x i).R.k ≤ (Fm.L x i).sc.X' := fun i => by
-    rw [Lnk.sc_eq Fm hx i i0, Fm.R_eq x i i0]; exact hp0
-  have hside := fun i : Fm.Ix x => side_at (Fm.Gx x i) Fm.GK Fm.Cr C bo (hH i) P (parTie hx i C bo Cb Cord) hbo0 (hLa i) (hp0i i)
-  obtain ⟨-, -, -, -, -, -, -, ea0, eX0, eθ0⟩ := hside i0
-  have hρ0 : 0 ≤ G.rhoB (Fm.D x i0) Fm.GK (Fm.L x i0).sc := hW.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-  have hXp : 0 < (Fm.L x i0).sc.X' := Real.exp_pos _
-  have hJ : (SizeData₂.lifts (Fm.D x i0)).card = (Fm.D x i0).R.m := by
-    unfold SizeData₂.lifts; rw [Nat.card_Icc]; omega
-  have hTc : ∀ i : Fm.Ix x, (Fm.TTn x).card = (Fm.D x i).host.TT.card := fun i => by
-    rw [← Fm.TT_eq x i, Finset.card_image_of_injective _ (Formalism.HC.Frame.A.val_injective _)]
-  refine ⟨i0, P, ℕ, ℕ, ℕ, PsAt (Fm.L x i0), sAt (Fm.L x i0) Fm.GK, largeOrderResiduePrimes (Fm.L x i0), SizeData₂.lifts (Fm.D x i0), Fm.TTn x,
-    badAt (Fm.Gx x i0), SigO, fun i p => G.ioP (Fm.Gx x i) Fm.GK (G.aL (Fm.L x i)) (G.bL (Fm.L x i)) p,
-    fun i => ldAt (Fm.Gx x i) Fm.GK C bo, ⟨Fm.L_x x i0 hx, Fm.L_eps x i0, rfl, hW⟩, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  ·
-    rw [← Finset.card_pos, hTc i0]
-    have h1 := (hTT x eT i0).1
-    have hx0 : 0 < (Fm.L x i0).sc.x := lt_trans one_pos (Fm.L x i0).sc.one_lt_alt
-    have h2 : 0 < (Fm.L x i0).sc.delta1 * (Fm.D x i0).R.n / 2 := by
-      have : 0 < (Fm.L x i0).sc.delta1 := Real.rpow_pos_of_pos hx0 _
-      have h4 : (0 : ℝ) < (Fm.D x i0).R.n := lt_of_lt_of_le one_pos (Lnk.one_le_n _)
-      positivity
-    exact_mod_cast lt_of_lt_of_le h2 h1
-  · intro p hp
-    obtain ⟨h1, h2⟩ := mem_PsAt hp
-    exact ⟨h1, fun h => two_not_inert _ (h ▸ h2)⟩
-  · intro p hp
-    have hc := (mem_sAt Fm.GK).mp hp
-    refine ⟨hc.1, le_trans hc.2.1.le ?_⟩
-    show (Fm.L x i0).sc.X' ≤ (Fm.L x i0).sc.X' * (1 + Fm.Cr * G.rhoB (Fm.D x i0) Fm.GK (Fm.L x i0).sc)
-    have : 0 ≤ Fm.Cr * G.rhoB (Fm.D x i0) Fm.GK (Fm.L x i0).sc :=
-      mul_nonneg (le_trans zero_le_one Fm.one_le_Cr) hρ0
-    nlinarith
-  · intro p _ o
-    exact Lnk.Sig_nonneg (Fm.Gx x i0) Fm.GK Fm.GK_nonneg (Fm.ex x hx i0).kapI_def _ _ p
-  · intro p hp
-    exact mean_SigO hx (hGi i0).2.2.2.2 p ((mem_sAt Fm.GK).mp hp)
-  · intro p hp
-    obtain ⟨h1, h2⟩ := Finset.mem_filter.mp hp
-    rw [eX0]
-    exact ⟨h2.1, (Nat.lt_ceil.mp (Finset.mem_range.mp h1)).le⟩
-  · have h := Lnk.tops_clause (Fm.Gx x i0) (max Cb 0) ((Fm.D x i0).R.m : ℝ) (le_max_right _ _) (Nat.cast_nonneg _)
-      (hTT x eT i0) (chBad_mono _ (hBad x eB i0))
-    rw [hJ, ea0, hTc i0]
-    simp only [bad_card]
-    exact h
-  · intro o i hcar
-    have eP := PsAt_eq (i0 := i0) hx i
-    have eS := sAt_eq (i0 := i0) hx i
-    have eL := lifts_eq (i0 := i0) i
-    have eC := large_order_primes_eq_filter (i0 := i0) hx i
-    have eR := Fm.R_eq x i i0
-    have tie := parTie (i0 := i0) hx i C bo Cb Cord
-    obtain ⟨-, -, -, -, -, -, -, ea, eX, eθ⟩ := hside i
-    have em : (Fm.D x i).R.m = (Fm.D x i0).R.m := congrArg Ranks.m eR
-    refine ⟨?_, ?_, ?_, ?_, ?_, ?_, hTc i, ?_, ?_, ?_⟩
-    · intro p _
-      have h := Lnk.ioP_le (Fm.Gx x i) Fm.GK p ((hGi i).2.1 p)
-        (Lnk.Sig_nonneg (Fm.Gx x i) Fm.GK Fm.GK_nonneg (Fm.ex x hx i).kapI_def _ _ p)
-      rw [Sig_eq hx i o hcar p] at h
-      rw [hJ, hTc i, ea, ← em]
-      exact h
-    · have h := lossHyp_at (Fm.Gx x i) Fm.GK Fm.Cr C bo (hH i) (hGi i) P tie hbo0 (hLa i) (hp0i i)
-      rw [eP, eL] at h
-      have e2 : TTv (Fm.D x i) = Fm.TTn x := Fm.TT_eq x i
-      rwa [e2] at h
-    · have h := firstHyp_at (Fm.Gx x i) Fm.GK Fm.Cr C bo (hH i) (T_not_inert _) P tie
-      rwa [eP] at h
-    · intro p _ h
-      obtain ⟨h1, h2⟩ := second_spec (Fm.Gx x i) Fm.GK p h
-      rw [← eS, eθ, ← Sig_eq hx i o hcar p]
-      exact ⟨(mem_sAt Fm.GK).mpr h1, h2⟩
-    · intro p hp h n hn
-      rw [← eP] at hp
-      have e2 : Fm.TTn x = TTv (Fm.D x i) := (Fm.TT_eq x i).symm
-      rw [e2] at hn
-      have hn' : n ∈ TTv (Fm.D x i) ∧ n ∉ (ldAt (Fm.Gx x i) Fm.GK C bo).TTp p := by
-        simpa only [Finset.mem_sdiff] using hn
-      obtain ⟨hn1, hn2⟩ := hn'
-      obtain ⟨h1, h2⟩ := unserved_bad (Fm.Gx x i) Fm.GK Fm.Cr C bo (hH i) (T_not_inert _) p hp h n (Finset.mem_sdiff.mpr ⟨hn1, hn2⟩)
-      rw [← eC]
-      exact ⟨h1, (badAt_iff hx i p n).mp h2⟩
-    · rw [hJ, em]
-    · rw [← eL]; exact Ga_at (Fm.Gx x i) Fm.GK Fm.Cr C bo (hH i)
-    · rw [← eS]; exact IO_at (Fm.Gx x i) Fm.GK Fm.Cr (hH i)
-    · have h := ASK_at (Fm.Gx x i) Fm.GK Fm.Cr C bo (hH i)
-      have e2 : TTv (Fm.D x i) = Fm.TTn x := Fm.TT_eq x i
-      rw [eP, eL, e2, ← tie.d] at h
-      rw [h]
-      exact hAsk x eA i
 
-theorem stCore : StCore := fun _ Fm Cb h1 h2 h3 hc => Lnk.estimates_of_points_family Fm hc (loss_points_of_choices Fm Cb h1 h2 h3)
 
-theorem stLoss : StLoss := fun _ Fm Cb h1 h2 h3 hc => Lnk.lossF_of_core Fm (stCore _ Fm Cb h1 h2 h3 hc)
 
 end Family
 
@@ -2162,49 +2024,9 @@ open Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters.L
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-theorem reads_nonempty {D : D7} (L : SizeData₂ D) :
-    ∃ (TT : Finset (D.R.A)) (a : D.R.A → ℝ) (w : Fin D.R.m → E0 × D.R.A → ℝ),
-      Lnk.Reads L D.R.toFrame D.R.m TT a w := by
-  classical
-  refine ⟨Finset.univ.filter (fun h => hval D.R.toFrame h ∈ D.host.TT.image Formalism.HC.Frame.A.val),
-    fun h => if hh : ∃ t : D.host.TT, hval D.R.toFrame h = (t : D.R.A).val then (L.aT hh.choose : ℝ) else 0,
-    fun j g => if hh : ∃ τ : D.what₂.Tau, gcode _ ((D.eTau τ : D.R.Psi) : D.R.GG) = mcode D.R.toFrame g
-      then wj D (j.val + 1) hh.choose else 0, rfl, rfl, fun h => by simp, ?_, ?_⟩
-  · intro t h hh
-    have hex : ∃ t : D.host.TT, hval D.R.toFrame h = (t : D.R.A).val := ⟨t, hh⟩
-    have hc : hex.choose = t :=
-      Subtype.ext (Formalism.HC.Frame.A.val_injective _ (hex.choose_spec.symm.trans hh))
-    simp only [dif_pos hex, hc]
-  · intro j g τ hh
-    have hex : ∃ τ : D.what₂.Tau, gcode _ ((D.eTau τ : D.R.Psi) : D.R.GG) = mcode D.R.toFrame g := ⟨τ, hh⟩
-    have hc : hex.choose = τ :=
-      D.eTau.injective (Subtype.ext (Lnk.gcode_injective _ (hex.choose_spec.trans hh.symm)))
-    simp only [dif_pos hex, hc]
 
-theorem slope_loss_lemma_of_losses (eL : ℝ) (h : Lnk.LossF Fm eL) : LocalQuadraticParts.SlopeLossFamily Fm eL := by
-  classical
-  obtain ⟨C, x0, -, h⟩ := h
-  obtain ⟨xA, hAsk⟩ := Lnk.askIsF Fm
-  refine ⟨C, max x0 xA, fun x hx hwin => ?_⟩
-  obtain ⟨i0, av, bv, hadm, hl⟩ := h x (le_trans (le_max_left _ _) hx) hwin
-  refine ⟨i0, av, bv, hadm, fun i u0 hr => ?_⟩
-  obtain ⟨h1, h2⟩ := hl i hr.2
-  obtain ⟨TT, a, w, hrd⟩ := reads_nonempty (Fm.L x i)
-  obtain ⟨M, hM⟩ := (Finset.univ.image (fun z : Fin (Fm.D x i).R.m × (Fm.D x i).R.A × (E0 × (Fm.D x i).R.A) =>
-    a z.2.1 / w z.1 z.2.2)).exists_le
-  have hcut : ∀ j t ρ, t ∈ TT → InPhi ρ → a t / w j ρ ≤ (⌈M⌉₊ : ℕ) := fun j t ρ _ _ =>
-    le_trans (hM _ (Finset.mem_image.mpr ⟨(j, t, ρ), Finset.mem_univ _, rfl⟩)) (Nat.le_ceil M)
-  have h3 := h2 _ _ _ ⌈M⌉₊ TT a w hrd HEq.rfl hcut
-  rw [hAsk x (le_trans (le_max_right _ _) hx) i _ _ _ ⌈M⌉₊ TT a w hrd HEq.rfl hcut] at h3
-  rw [Fm.L_eps x i] at h1 h3
-  exact ⟨h3, h1⟩
 
-theorem slope_loss : SlopeLoss := fun _ Fm Cb eL heL h1 h2 h3 hc =>
-  slope_loss_lemma_of_losses Fm eL (Lnk.lossF_mono Fm heL (stLoss _ Fm Cb h1 h2 h3 hc))
 
-theorem slope_loss_lemma_family (Cb eL : ℝ) (heL : 0 ≤ eL) (h1 : ChosenTT Fm) (h2 : ChosenBad Fm Cb) (h3 : LinkG Fm)
-    (hc : Fm.CoverAll) : LocalQuadraticParts.SlopeLossFamily Fm eL :=
-  slope_loss _ Fm Cb eL heL h1 h2 h3 hc
 
 end Conclusion5₂
 

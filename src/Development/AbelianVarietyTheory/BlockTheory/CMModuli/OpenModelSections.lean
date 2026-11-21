@@ -26,28 +26,6 @@ structure PushInvertible : Prop where
   invertible : ∀ x : X, ∃ V : X.Opens, x ∈ V ∧ ∃ θ, IsPushGen G L V θ
   nonzero : ∀ (V : X.Opens) θ, IsPushGen G L V θ → ∀ x ∈ V, NonzeroOnFibre G L θ x
 
-theorem nonzeroOnFibre_iff {V : X.Opens} (θ : ∀ i, Γ(G.left, G.hom ⁻¹ᵁ V ⊓ L.U i)) (x : X)
-    [IsReduced (Scheme.Hom.fiber G.hom x)] :
-    NonzeroOnFibre G L θ x ↔ ∃ (i : L.ι) (g : G.left), G.hom g = x ∧ g ∈ G.left.basicOpen (θ i) := by
-  refine exists_congr fun i => ?_
-  rw [Ne, ← basicOpen_eq_bot_iff, ← Scheme.preimage_basicOpen]
-  constructor
-  · intro hne
-    obtain ⟨y, hy⟩ : ∃ y, y ∈ Scheme.Hom.fiberι G.hom x ⁻¹ᵁ G.left.basicOpen (θ i) := by
-      by_contra hh
-      push_neg at hh
-      exact hne (le_bot_iff.mp fun y hy => (hh y hy).elim)
-    refine ⟨_, ?_, hy⟩
-    have : Scheme.Hom.fiberι G.hom x y ∈ Set.range (Scheme.Hom.fiberι G.hom x) := ⟨y, rfl⟩
-    rw [Scheme.Hom.range_fiberι] at this
-    exact this
-  · rintro ⟨g, hg, hb⟩ h0
-    have : g ∈ Set.range (Scheme.Hom.fiberι G.hom x) := by
-      rw [Scheme.Hom.range_fiberι]; exact hg
-    obtain ⟨y, rfl⟩ := this
-    have : y ∈ Scheme.Hom.fiberι G.hom x ⁻¹ᵁ G.left.basicOpen (θ i) := hb
-    rw [h0] at this
-    exact this
 
 end Push
 
@@ -95,8 +73,6 @@ def liftSec (σ : Over.mk (baseChangeFst str h) ⟶ univ.t.G) : baseChange str h
 def secMap (σ : Over.mk (baseChangeFst str h) ⟶ univ.t.G) : baseChange str h ⟶ m.t.G.left :=
   m.liftSec σ ≫ m.toModel.φ
 
-theorem secMap_over (σ : Over.mk (baseChangeFst str h) ⟶ univ.t.G) : m.secMap σ ≫ m.t.G.hom = m.incl := by
-  rw [secMap, Category.assoc, m.toModel.cart.1.w, ← Category.assoc, liftSec, IsPullback.lift_snd, Category.id_comp, incl]
 
 def Extends (σ : Over.mk (baseChangeFst str h) ⟶ univ.t.G) (U : m.X.Opens) : Prop :=
   ∃ τ : Over.mk U.ι ⟶ m.t.G, (m.incl ∣_ U) ≫ τ.left = (m.incl ⁻¹ᵁ U).ι ≫ m.secMap σ
@@ -117,9 +93,6 @@ theorem extends_one (U : m.X.Opens) : m.Extends (toUnit _ ≫ MonObj.one) U := b
 
 def PPPushInvertible : Prop := PushInvertible m.t.G m.t.PP.L
 
-theorem incl_mem_abLocus (y : ↥(baseChange str h)) : m.incl y ∈ abLocus m.t.G := by
-  have := (m.ab (m.j y)).mpr ⟨y, rfl⟩
-  simpa [incl] using this
 
 end Model
 

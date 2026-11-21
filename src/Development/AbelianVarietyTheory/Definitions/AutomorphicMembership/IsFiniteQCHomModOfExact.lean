@@ -133,11 +133,6 @@ theorem isFiniteQC_homMod_cokernel [IsLocallyNoetherian X] {r r' : ℕ} (hQ : Is
   isFiniteQC_homMod_of_exact hQ hP φ (cokernel.π φ) (fun _ hT => QCoh.exact_cokernel_π_app φ hT)
     (fun _ hT => QCoh.surjective_cokernel_π_app φ hT) (cokernel.condition φ)
 
-theorem homOfRestrict_injective {U : X.Opens} :
-    Function.Injective (homOfRestrict : (F.restrict U.ι ⟶ G.restrict U.ι) → _) := fun φ ψ e => by
-  ext T s
-  have h : U.ι ''ᵁ T ≤ U := U.ι_image_le T
-  exact (homApp_homOfRestrict_image φ T h s).symm.trans (e ▸ homApp_homOfRestrict_image ψ T h s)
 
 theorem isUnit_natCast_gen (p : ℕ) : IsUnit ((p : ℕ) : Γ((gen X p).toScheme, ⊤)) := by
   have h : IsUnit (resG X (le_top : gen X p ≤ ⊤) ((p : ℕ) : Γ(X, ⊤))) := X.toRingedSpace.isUnit_res_basicOpen _
@@ -160,25 +155,7 @@ theorem homApp_mulNatIso (p : ℕ) {W : X.Opens} (h : W ≤ gen X p) (s : Γ(F, 
   have e (T : (gen X p).toScheme.Opens) (t : Γ(F, (gen X p).ι ''ᵁ T)) : appIm (mulNatIso F p).hom T t = p • t := this T t
   rw [homApp_homOfRestrict, e, map_nsmul, resM_resM, resM_self, Nat.cast_smul_eq_nsmul]
 
-theorem nsmul_id_app (n : ℕ) (U : X.Opens) (s : Γ(F, U)) : (n • 𝟙 F).app U s = n • s := by
-  induction n with
-  | zero => rw [zero_smul, zero_smul]; rfl
-  | succ n ih => rw [succ_nsmul, succ_nsmul, ← ih]; rfl
 
-theorem not_isZero_cokernel_pow {p : ℕ} {C : SCF p} (z : Sp (intO C.S) ⟶ X) (hp : 1 < p) (hF : IsVB F 1) {k : ℕ}
-    (hk : k ≠ 0) : ¬ IsZero (cokernel (p ^ k • 𝟙 F)) := fun h₀ => by
-  have := isLocalRing_intO C.S
-  have := hF.isQuasicoherent
-  have : Epi (p ^ k • 𝟙 F) := Preadditive.epi_of_isZero_cokernel _ h₀
-  obtain ⟨U, e, hU, hx, -, he⟩ := hF.exists_affine (V := ⊤) (x := z (IsLocalRing.closedPoint _)) trivial
-  have h := (top_le_preimage_iff z).2 hx
-  obtain ⟨m, hm⟩ := QCoh.surjective_app_of_epi (p ^ k • 𝟙 F) hU (he.basis le_rfl 0)
-  have e₁ := congrArg (fun t => ‖((evz z h ((he.basis le_rfl).repr t 0) : intO C.S) : C.S)‖) hm
-  simp only [nsmul_id_app, map_nsmul, Finsupp.smul_apply, Module.Basis.repr_self, Finsupp.single_eq_same, map_one,
-    nsmul_eq_mul, map_mul, map_pow, map_natCast, MulMemClass.coe_mul, OneMemClass.coe_one, norm_one, norm_mul, Nat.cast_pow, SubmonoidClass.coe_pow,
-    SubringClass.coe_natCast, norm_pow, C.norm_p] at e₁
-  have h₁ : ((p : ℝ)⁻¹) ^ k < 1 := pow_lt_one₀ (by positivity) (inv_lt_one_of_one_lt₀ (by exact_mod_cast hp)) hk
-  exact ((mul_le_of_le_one_right (by positivity) (evz z h _).2).trans_lt h₁).ne e₁
 
 end Coherent
 
@@ -219,9 +196,6 @@ instance epi_modNRed (F : 𝒜) {n m : ℕ} (h : n ∣ m) : Epi (modNRed F h) :=
 @[simp] theorem redMap_id (F : 𝒜) {n m : ℕ} (h : n ∣ m) : redMap h (𝟙 (modN F m)) = 𝟙 _ := by
   rw [← cancel_epi (modNRed F h), modNRed_redMap, Category.id_comp, Category.comp_id]
 
-theorem redMap_comp {F G H : 𝒜} {n m : ℕ} (h : n ∣ m) (φ : modN F m ⟶ modN G m) (ψ : modN G m ⟶ modN H m) :
-    redMap h (φ ≫ ψ) = redMap h φ ≫ redMap h ψ := by
-  rw [← cancel_epi (modNRed F h), modNRed_redMap, modNRed_redMap_assoc, modNRed_redMap, Category.assoc]
 
 @[simp] theorem redMap_self {F G : 𝒜} {m : ℕ} (h : m ∣ m) (φ : modN F m ⟶ modN G m) : redMap h φ = φ := by
   have e (F : 𝒜) : modNRed F h = 𝟙 _ := by
@@ -290,13 +264,7 @@ def homIso (F₁ F₂ : ct.Sh Z) : homMod F₁.toMod F₂.toMod ≅ (ct.homSh F�
 def isoSec {F₁ F₂ : ct.Sh Z} (φ : ct.GIso F₁ F₂) : ct.Sec (ct.homSh F₁ F₂) :=
   (ct.homIso F₁ F₂).hom.app _ (homOfRestrict φ.iso.hom)
 
-theorem exists_homSh_iso (F₁ F₂ : ct.Sh Z) :
-    ∃ e : homMod F₁.toMod F₂.toMod ≅ (ct.homSh F₁ F₂).toMod,
-      ∀ φ : ct.GIso F₁ F₂, ct.isoSec φ = e.hom.app _ (homOfRestrict φ.iso.hom) :=
-  ⟨ct.homIso F₁ F₂, fun _ => rfl⟩
 
-theorem isoSec_injective (F₁ F₂ : ct.Sh Z) : Function.Injective (ct.isoSec : ct.GIso F₁ F₂ → _) := fun _ _ e =>
-  GIso.ext (Iso.ext (homOfRestrict_injective (QCoh.injective_app_of_mono (ct.homIso F₁ F₂).hom _ e)))
 
 theorem isVB_homSh {F₁ F₂ : ct.Sh Z} {r : ℕ} (h₁ : ct.IsInv F₁) (h₂ : IsVB F₂.toMod r) :
     IsVB (ct.homSh F₁ F₂).toMod r :=
@@ -357,32 +325,6 @@ theorem vrat_mulP (F : ct.Sh Z) (hF : ct.IsInv F) (y : ct.Pt Z) : ct.vrat (ct.mu
   have he' : VB.IsFrame fun _ : Fin 1 => e 0 := by rwa [show (fun _ : Fin 1 => e 0) = e from funext fun i => by fin_cases i; rfl]
   exact ct.vrat_eq_one _ y ((top_le_preimage_iff y.z).2 hx) he' he' (homApp_mulNatIso p _ _)
 
-theorem vrat_trans {F₁ F₂ F₃ : ct.Sh Z} (φ : ct.GIso F₁ F₂) (ψ : ct.GIso F₂ F₃) (y : ct.Pt Z) :
-    ct.vrat (φ.trans ψ) y = ct.vrat φ y + ct.vrat ψ y := by
-  have := isLocalRing_intO y.C.S
-  have one {M : Z.X.Modules} {U : Z.X.Opens} {e : Fin 1 → Γ(M, U)} (he : VB.IsFrame e) :
-      VB.IsFrame fun _ : Fin 1 => e 0 := by
-    rwa [show (fun _ : Fin 1 => e 0) = e from funext fun i => by fin_cases i; rfl]
-  have coef {M : Z.X.Modules} {U : Z.X.Opens} {e : Fin 1 → Γ(M, U)} (he : VB.IsFrame e) (t : Γ(M, U ⊓ Z.genO)) :
-      ∃ a : Γ(Z.X, U ⊓ Z.genO), t = a • resM M inf_le_left (e 0) :=
-    ⟨_, by simpa only [Fin.sum_univ_one, IsFrame.basis_apply] using ((he.basis inf_le_left).sum_repr t).symm⟩
-  obtain ⟨U₁, u, hx₁, hu⟩ := φ.isInv_left (y.z (IsLocalRing.closedPoint _))
-  obtain ⟨U₂, v, -, hx₂, h₂, hv⟩ := IsVB.exists_affine φ.isInv_right hx₁
-  obtain ⟨U, w, -, hx, h₃, hw⟩ := IsVB.exists_affine ψ.isInv_right hx₂
-  have h := (top_le_preimage_iff y.z).2 hx
-  have hu := hu.res (h₃.trans h₂)
-  have hv := hv.res h₃
-  obtain ⟨a, ha⟩ := coef hv (homApp (homOfRestrict φ.iso.hom) inf_le_right (resM _ inf_le_left (resM _ (h₃.trans h₂) (u 0))))
-  obtain ⟨b, hb⟩ := coef hw (homApp (homOfRestrict ψ.iso.hom) inf_le_right (resM _ inf_le_left (resM _ h₃ (v 0))))
-  have e₁ := ct.rpow_neg_vrat φ y h (one hu) (one hv) a ha
-  have e₂ := ct.rpow_neg_vrat ψ y h (one hv) (one hw) b hb
-  have e₃ := ct.rpow_neg_vrat (φ.trans ψ) y h (one hu) (one hw) (a * b) (by
-    rw [GIso.iso_trans, Iso.trans_hom, ← homOfRestrict_comp, ha, map_smul, hb, mul_smul])
-  have hp : (0 : ℝ) < p := Nat.cast_pos.2 ct.hp.pos
-  have e₄ : (p : ℝ) ^ (-ct.vrat (φ.trans ψ) y) = (p : ℝ) ^ (-(ct.vrat φ y + ct.vrat ψ y)) := by
-    rw [neg_add, Real.rpow_add hp, e₁, e₂, e₃, ← norm_mul]
-    exact congrArg norm (map_mul (evq y.z ct.hp.ne_zero h) a b)
-  exact neg_injective ((Real.rpow_right_inj hp (by exact_mod_cast ct.hp.one_lt.ne')).1 e₄)
 
 def oSh (Z : ct.Mdl) : ct.Sh Z := Z.ofMod (structureModule Z.X)
 
@@ -430,9 +372,6 @@ theorem SES.exactMod_ofMaps_iff {F₁ F₂ F₃ : ct.Sh Z} (f : F₁.toMod ⟶ F
       ∃ w : modNMap f (p ^ k) ≫ modNMap g (p ^ k) = 0, (ShortComplex.mk _ _ w).ShortExact :=
   (exists_prop_of_true h).trans (exists_shortExact_congr (redMap_modNMap _ _) (redMap_modNMap _ _))
 
-theorem SES.exactMod_self_iff (s : ct.SES Z) :
-    s.ExactMod s.k₀ ↔ ∃ w : s.f ≫ s.g = 0, (ShortComplex.mk _ _ w).ShortExact :=
-  (exists_prop_of_true le_rfl).trans (exists_shortExact_congr (redMap_self _ _) (redMap_self _ _))
 
 theorem SES.exactMod_of_splitting {F₁ F₂ F₃ : ct.Sh Z} {f : F₁.toMod ⟶ F₂.toMod} {g : F₂.toMod ⟶ F₃.toMod}
     {w : f ≫ g = 0} (σ : (ShortComplex.mk f g w).Splitting) {k k₀ : ℕ} (h : k ≤ k₀) :
@@ -456,25 +395,8 @@ def SES.sum (F G : ct.Sh Z) (k₀ : ℕ) : ct.SES Z :=
   SES.ofMaps (F₁ := F) (F₂ := Z.ofMod (F.toMod ⊞ G.toMod)) (F₃ := G)
     (biprod.inl ≫ (ct.presIso (F.toMod ⊞ G.toMod)).inv) ((ct.presIso (F.toMod ⊞ G.toMod)).hom ≫ biprod.snd) k₀
 
-theorem SES.exactMod_sum (F G : ct.Sh Z) {k k₀ : ℕ} (h : k ≤ k₀) : (SES.sum F G k₀).ExactMod k :=
-  SES.exactMod_of_splitting (w := by simp)
-    { r := (ct.presIso (F.toMod ⊞ G.toMod)).hom ≫ biprod.fst
-      s := biprod.inr ≫ (ct.presIso (F.toMod ⊞ G.toMod)).inv
-      f_r := by simp
-      s_g := by simp
-      id := by
-        have := (ct.presIso (F.toMod ⊞ G.toMod)).hom ≫= (biprod.total =≫ (ct.presIso (F.toMod ⊞ G.toMod)).inv)
-        simpa only [Preadditive.add_comp, Preadditive.comp_add, Category.assoc, Category.id_comp,
-          Iso.hom_inv_id] using this } h
 
-theorem SES.isZero_of_exactMod_zero {F₁ F₂ F₃ : ct.Sh Z} {k : ℕ}
-    (h : (⟨F₁, F₂, F₃, k, 0, 0⟩ : ct.SES Z).ExactMod k) : IsZero (modN F₂.toMod (p ^ k)) := by
-  obtain ⟨w, hw⟩ := (SES.exactMod_self_iff _).1 h
-  exact hw.exact.isZero_X₂ rfl rfl
 
-theorem SES.not_exactMod_zero {F₁ F₂ F₃ : ct.Sh Z} (h : ct.IsInv F₂) (y : ct.Pt Z) {k : ℕ} (hk : k ≠ 0) :
-    ¬ (⟨F₁, F₂, F₃, k, 0, 0⟩ : ct.SES Z).ExactMod k := fun h' =>
-  not_isZero_cokernel_pow y.z ct.hp.one_lt h hk (SES.isZero_of_exactMod_zero h')
 
 end At
 

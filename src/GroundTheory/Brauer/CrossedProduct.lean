@@ -214,9 +214,6 @@ theorem smul_single (c : L) (σ : L ≃ₐ[K] L) (a : L) :
     c • (single σ a : CrossedProduct hf) = single σ (c * a) := by
   ext1; simp
 
-theorem single_eq_smul_u (σ : L ≃ₐ[K] L) (a : L) :
-    (single σ a : CrossedProduct hf) = a • u σ := by
-  rw [u, smul_single, mul_one]
 
 theorem single_injective (σ : L ≃ₐ[K] L) :
     Function.Injective (single σ : L → CrossedProduct hf) := fun _ _ h =>

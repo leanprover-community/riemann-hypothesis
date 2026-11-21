@@ -223,8 +223,6 @@ noncomputable def connecting : TorsN C n →ₗ[ZMod n] ModN A n :=
       map_zero' := connectingFun_zero hh hfh hf
       map_add' := connectingFun_add hh hfh hf }
 
-theorem connecting_apply (c : TorsN C n) : connecting hh hfh hf c = connectingFun f h hh c :=
-  rfl
 
 theorem connecting_spec (c : TorsN C n) (b : B) (a : A) (hb : h b = c) (ha : f a = n • b) :
     connecting hh hfh hf c = Submodule.Quotient.mk a :=
@@ -361,9 +359,6 @@ theorem finite_torsN_of_injective (hf : Function.Injective f) [Finite (TorsN B n
     Finite (TorsN A n) :=
   Finite.of_injective _ (torsNMap_injective hf)
 
-theorem finite_modN_of_surjective (hh : Function.Surjective h) [Finite (ModN B n)] :
-    Finite (ModN C n) :=
-  Finite.of_surjective _ (modNMap_surjective hh)
 
 end Finiteness
 

@@ -30,9 +30,6 @@ theorem compHomeoL_symm_apply (e : X ≃ₜ X) (f : locallyConstantCompactSuppor
     compHomeoL e (compHomeoL e.symm f) = f :=
   Subtype.ext (funext fun x => by simp)
 
-theorem compHomeoL_apply_symm (e : X ≃ₜ X) (f : locallyConstantCompactSupport X ℂ ℂ) :
-    compHomeoL e.symm (compHomeoL e f) = f :=
-  Subtype.ext (funext fun x => by simp)
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -561,11 +558,6 @@ def coeffKer (hρ : IsSmooth ρ) (ℓt : Module.Dual ℂ (smoothVectors (Represe
   smul_mem' c k hk ξ := by
     rw [map_smul, map_smul, hk ξ, smul_zero]
 
-theorem mem_coeffKer (hρ : IsSmooth ρ) {ℓt : Module.Dual ℂ (smoothVectors (Representation.dual ρ))}
-    {k : locallyConstantCompactSupport G ℂ ℂ} :
-    k ∈ coeffKer μ hρ ℓt ↔ ∀ ξ : smoothVectors (Representation.dual ρ),
-      ℓt (coeffL μ hρ (ξ : Module.Dual ℂ V) k) = 0 :=
-  Iff.rfl
 
 theorem ltransL_mem_coeffKer (hρ : IsSmooth ρ)
     {ℓt : Module.Dual ℂ (smoothVectors (Representation.dual ρ))} (a : G)
@@ -579,10 +571,6 @@ theorem ltransL_mem_coeffKer (hρ : IsSmooth ρ)
   rw [e]
   exact hk _
 
-theorem mem_ker_coeffL (hρ : IsSmooth ρ) {ℓ : Module.Dual ℂ V}
-    {f : locallyConstantCompactSupport G ℂ ℂ} :
-    f ∈ LinearMap.ker (coeffL μ hρ ℓ) ↔ coeffL μ hρ ℓ f = 0 :=
-  LinearMap.mem_ker
 
 theorem ker_coeffL_eq (h : IsAdmissible ρ) [ρ.IsIrreducible] {ℓ : Module.Dual ℂ V}
     {L : Submodule ℂ (locallyConstantCompactSupport G ℂ ℂ)}
@@ -773,25 +761,6 @@ theorem exists_ne_zero_doubleContragredient [IsTopologicalGroup G] [LocallyCompa
   rw [← hℓ'Φ, h0]
   rfl
 
-theorem rank_mul_rank_le_one (hσ : ∀ x y, σ (x * y) = σ y * σ x) (hσμ : μ.map σ = μ)
-    (hGK : BiEquivariantSigmaInvariant H χ σ) (h : IsAdmissible ρ) [ρ.IsIrreducible] :
-    Module.rank ℂ (equivariantFunctionals ρ χ) *
-      Module.rank ℂ (equivariantFunctionals (contragredient ρ) (fun g => (χ g)⁻¹)) ≤ 1 := by
-  have := isMulRightInvariant_of_isInvInvariant μ
-  by_cases h₂ : equivariantFunctionals (contragredient ρ) (fun g => (χ g)⁻¹) = ⊥
-  · rw [h₂, rank_bot, mul_zero]
-    exact zero_le_one
-  by_cases h₁ : equivariantFunctionals ρ χ = ⊥
-  · rw [h₁, rank_bot, zero_mul]
-    exact zero_le_one
-  have := isIrreducible_contragredient h
-  have r₁ := rank_equivariantFunctionals_le_one μ hσ hσμ hGK h h₂
-  have r₂ := rank_equivariantFunctionals_le_one μ hσ hσμ (hGK.inv hσ)
-    (isAdmissible_contragredient h) (exists_ne_zero_doubleContragredient h h₁)
-  calc Module.rank ℂ (equivariantFunctionals ρ χ) *
-        Module.rank ℂ (equivariantFunctionals (contragredient ρ) (fun g => (χ g)⁻¹))
-      ≤ 1 * 1 := mul_le_mul' r₁ r₂
-    _ = 1 := one_mul 1
 
 theorem rank_le_one_of_ne_bot (hσ : ∀ x y, σ (x * y) = σ y * σ x) (hσμ : μ.map σ = μ)
     (hGK : BiEquivariantSigmaInvariant H χ σ) (h : IsAdmissible ρ) [ρ.IsIrreducible]

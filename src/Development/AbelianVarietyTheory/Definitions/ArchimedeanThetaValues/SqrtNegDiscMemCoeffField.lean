@@ -34,8 +34,6 @@ theorem zeta_pow_div {a n : ℕ} (hn : 0 < n) (h : a ∣ n) : zeta n ^ (n / a) =
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-theorem zeta_M'_pow_div_A (l : Level H) : zeta l.M' ^ (l.M' / l.A) = zeta l.A :=
-  zeta_pow_div (LevelExist.M'_pos l) (Nat.dvd_lcm_right l.M l.A)
 
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in

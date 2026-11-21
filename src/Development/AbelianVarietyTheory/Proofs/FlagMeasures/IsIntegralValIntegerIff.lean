@@ -19,9 +19,6 @@ noncomputable def idemPairHom {F E : Type} [Field F] [CommRing E] [Algebra F E] 
         + (algebraMap F E a * algebraMap F E c + algebraMap F E b * algebraMap F E d
           - algebraMap F E a * algebraMap F E d - algebraMap F E b * algebraMap F E c) * h0)
 
-theorem idemPairHom_apply {F E : Type} [Field F] [CommRing E] [Algebra F E] (p q : E)
-    (h1 : p + q = 1) (h0 : p * q = 0) (y : F × F) :
-    idemPairHom p q h1 h0 y = y.1 • p + y.2 • q := rfl
 
 theorem LocE_isField_or_split {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
     {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E) :
@@ -82,23 +79,6 @@ theorem LocE_isField_or_split {F : Type} [Field F] [ValuativeRel F] [Topological
   change L.cj (y.1 • p + y.2 • L.cj p) = y.2 • p + y.1 • L.cj p
   rw [map_add, map_smul, map_smul, L.cj_cj, add_comm]
 
-theorem isIntegral_valInteger_iff {F : Type} [Field F] [ValuativeRel F] (a : F) :
-    IsIntegral 𝒪[F] a ↔ a ∈ 𝒪[F] :=
-  ⟨fun h => (Valuation.integer.integers (valuation F)).mem_of_integral h,
-    fun h => isIntegral_algebraMap (R := 𝒪[F]) (A := F) (x := ⟨a, h⟩)⟩
 
-theorem isField_or_split : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → IsField E ∨ ∃ e : E ≃ₐ[F] F × F, (∀ x, e (M.L.cj x) = (e x).swap) ∧ Continuous e ∧ Continuous e.symm ∧ ∀ x, x ∈ M.L.O ↔ ((e x).1 ∈ 𝒪[F] ∧ (e x).2 ∈ 𝒪[F]) := by
-  intro F _ _ _ E _ _ _ _ M hM
-  rcases LocE_isField_or_split M.L with h | ⟨e, he⟩
-  · exact Or.inl h
-  haveI := hM.loc
-  haveI := M.L.top
-  haveI : ContinuousAdd E := IsModuleTopology.toContinuousAdd F E
-  refine Or.inr ⟨e, he, ?_, ?_, fun x => ?_⟩
-  · exact IsModuleTopology.continuous_of_linearMap e.toLinearMap
-  · exact IsModuleTopology.continuous_of_linearMap e.symm.toLinearMap
-  · rw [M.L.O_def, ← isIntegral_algEquiv (e.restrictScalars 𝒪[F]), ← isIntegral_valInteger_iff,
-      ← isIntegral_valInteger_iff, ← IsIntegral.pair_iff]
-    rfl
 
 end GlobalTheory.SgLoc

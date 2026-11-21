@@ -160,101 +160,9 @@ theorem bound_at {Ch Cg dist C : ℝ} {A e : ℕ} {T T' : ℕ} {b : ℝ} {v : D.
   have hbC : 0 ≤ b ^ (C * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) := Real.rpow_nonneg hb0.le _
   exact mul_le_mul_of_nonneg_left hpow hbC
 
-theorem frame_cost {b Ch CA : ℝ} {A e r : ℕ} (hb : 1 ≤ b) (hCh : 0 ≤ Ch) (he : 4 ≤ e)
-    (hA : (A : ℝ) ≤ CA * ((2 * r + 2 : ℕ) : ℝ) ^ 2) :
-    ((b ^ (3 + Ch)) ^ ((2 * r + 2) ^ 2)) ^ A ≤ b ^ ((3 + Ch) * CA * ((2 * r + 2 : ℕ) : ℝ) ^ e) := by
-  have hb0 : 0 < b := by linarith
-  have hm1 : (1 : ℝ) ≤ ((2 * r + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * r + 2)
-  have hCA : 0 ≤ CA := by
-    by_contra hc
-    push_neg at hc
-    have h1 : CA * ((2 * r + 2 : ℕ) : ℝ) ^ 2 < 0 := mul_neg_of_neg_of_pos hc (by positivity)
-    have h2 : (0 : ℝ) ≤ A := Nat.cast_nonneg A
-    linarith
-  have e1 : ((b ^ (3 + Ch)) ^ ((2 * r + 2) ^ 2)) ^ A =
-      b ^ ((3 + Ch) * (((2 * r + 2 : ℕ) : ℝ) ^ 2 * (A : ℝ))) := by
-    rw [← pow_mul, ← Real.rpow_natCast, ← Real.rpow_mul hb0.le]
-    congr 1
-    push_cast
-    ring
-  rw [e1]
-  refine Real.rpow_le_rpow_of_exponent_le hb ?_
-  have h1 : ((2 * r + 2 : ℕ) : ℝ) ^ 2 * (A : ℝ) ≤ ((2 * r + 2 : ℕ) : ℝ) ^ 2 * (CA * ((2 * r + 2 : ℕ) : ℝ) ^ 2) :=
-    mul_le_mul_of_nonneg_left hA (by positivity)
-  have h2 : ((2 * r + 2 : ℕ) : ℝ) ^ 4 ≤ ((2 * r + 2 : ℕ) : ℝ) ^ e := pow_le_pow_right₀ hm1 he
-  have h3 : ((2 * r + 2 : ℕ) : ℝ) ^ 2 * (CA * ((2 * r + 2 : ℕ) : ℝ) ^ 2) = CA * ((2 * r + 2 : ℕ) : ℝ) ^ 4 := by ring
-  have h4 : CA * ((2 * r + 2 : ℕ) : ℝ) ^ 4 ≤ CA * ((2 * r + 2 : ℕ) : ℝ) ^ e := mul_le_mul_of_nonneg_left h2 hCA
-  have h5 : ((2 * r + 2 : ℕ) : ℝ) ^ 2 * (A : ℝ) ≤ CA * ((2 * r + 2 : ℕ) : ℝ) ^ e := by linarith
-  have h6 := mul_le_mul_of_nonneg_left h5 (by linarith : (0 : ℝ) ≤ 3 + Ch)
-  linarith
 
-theorem cost_step {b C Ch CA G : ℝ} {A e r : ℕ} (hb2 : 2 ≤ b) (hCh : 0 ≤ Ch) (he : 4 ≤ e)
-    (hA : (A : ℝ) ≤ CA * ((2 * r + 2 : ℕ) : ℝ) ^ 2) :
-    b ^ (C * ((2 * r + 2 : ℕ) : ℝ) ^ e) * (((b ^ (3 + Ch)) ^ ((2 * r + 2) ^ 2)) ^ A * max 1 (1 / G) ^ A) ≤
-      b ^ ((C + (3 + Ch) * CA) * ((2 * r + 2 : ℕ) : ℝ) ^ e) * max 1 (1 / G) ^ A := by
-  have hb0 : 0 < b := by linarith
-  have hc := frame_cost (b := b) (r := r) (by linarith) hCh he hA
-  have hM : 0 ≤ max 1 (1 / G) ^ A := pow_nonneg (le_trans zero_le_one (le_max_left _ _)) _
-  calc b ^ (C * ((2 * r + 2 : ℕ) : ℝ) ^ e) * (((b ^ (3 + Ch)) ^ ((2 * r + 2) ^ 2)) ^ A * max 1 (1 / G) ^ A)
-      ≤ b ^ (C * ((2 * r + 2 : ℕ) : ℝ) ^ e) *
-        (b ^ ((3 + Ch) * CA * ((2 * r + 2 : ℕ) : ℝ) ^ e) * max 1 (1 / G) ^ A) :=
-        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hc hM) (Real.rpow_nonneg hb0.le _)
-    _ = b ^ ((C + (3 + Ch) * CA) * ((2 * r + 2 : ℕ) : ℝ) ^ e) * max 1 (1 / G) ^ A := by
-        rw [← mul_assoc, ← Real.rpow_add hb0]
-        congr 2
-        ring
 
-theorem bpRealS_of_loc {Ch Cg dist dinf C CA : ℝ} {A e : ℕ} (hCg : 2 ≤ Cg) (he : 4 ≤ e)
-    (hA : (A : ℝ) ≤ CA * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 2) (h : BpLocS D Ch Cg dist dinf A C e) :
-    BpRealS D Ch Cg dist dinf A (C + (3 + Ch) * CA) e := by
-  intro T T' b v L f μsec hok γ hγ
-  have hb := bound_at (C := C) (A := A) (e := e) hCg hok.1 γ hγ (turnPt (ptLoc D v γ)) (GPoint_turnPt _ _ _)
-    (by unfold nLoc; exact ptWeight_turnPt _ _ _ _ _) (h T T' b v L f μsec hok _)
-  refine hb.trans (mul_le_mul' (ENNReal.ofReal_le_ofReal ?_) le_rfl)
-  exact cost_step (frame_bounds hCg hok.1).1 (ch_nonneg hCg hok.1) he hA
 
-theorem onePlaceR_of_expS {Ch Cg dist dist' dinf' C1 C2 p : ℝ} {A e : ℕ}
-    {P : ∀ (T T' : ℕ) (b : ℝ), BData D Ch Cg T T' b dist → Prop}
-    (hCg : 2 ≤ Cg) (hQ : QExpAtS D Ch Cg dist P dist' dinf' A C1 e p) (hB : BpRealS D Ch Cg dist' dinf' A C2 e) :
-    OnePlaceR D Ch Cg dist P A (2 * C1 + C2) e p := by
-  intro T T' b X hP γ hγ v
-  obtain ⟨n, a, L', f', μ', ha, hsum, hok, hJ, hexp⟩ := hQ T T' b X hP γ hγ v
-  have hb := b_pos_of_dataR hCg X v
-  set K : ENNReal := ENNReal.ofReal (b ^ (C2 * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) *
-    max 1 (1 / absV D v (Gglob D T T' γ)) ^ A) with hK
-  set J : ENNReal := jNorm2 (X.L v) (X.f v) (X.μsec v) with hJdef
-  have hterm : ∀ i, (ENNReal.ofReal (nLoc D T T' v γ) * orbSq (L' i) (f' i) (turnPt (ptLoc D v γ))) ^ ((1 : ℝ) / 2) ≤
-      (K * J) ^ ((1 : ℝ) / 2) := by
-    intro i
-    refine ENNReal.rpow_le_rpow ?_ (by norm_num)
-    exact (hB T T' b v (L' i) (f' i) (μ' i) (hok i) γ hγ).trans (mul_le_mul_of_nonneg_left (hJ i) bot_le)
-  have hsum' : ∑ i, ENNReal.ofReal (a i) *
-      (ENNReal.ofReal (nLoc D T T' v γ) * orbSq (L' i) (f' i) (turnPt (ptLoc D v γ))) ^ ((1 : ℝ) / 2) ≤
-      ENNReal.ofReal (∑ i, a i) * (K * J) ^ ((1 : ℝ) / 2) := by
-    rw [ENNReal.ofReal_sum_of_nonneg (fun i _ => ha i), Finset.sum_mul]
-    exact Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_left (hterm i) bot_le
-  have hsq := pow_le_pow_left₀ bot_le hsum' 2
-  rw [mul_pow, sqrt_sq_enn] at hsq
-  have hA : ENNReal.ofReal (∑ i, a i) ^ 2 ≤ ENNReal.ofReal (b ^ (2 * C1 * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e)) := by
-    rw [← ENNReal.ofReal_pow (Finset.sum_nonneg fun i _ => ha i)]
-    refine ENNReal.ofReal_le_ofReal ?_
-    calc (∑ i, a i) ^ 2 ≤ (b ^ (C1 * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e)) ^ 2 :=
-          pow_le_pow_left₀ (Finset.sum_nonneg fun i _ => ha i) hsum 2
-      _ = b ^ (2 * C1 * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) := by
-          rw [← Real.rpow_natCast, ← Real.rpow_mul hb.le]
-          congr 1
-          push_cast
-          ring
-  have hfin : ENNReal.ofReal (b ^ (2 * C1 * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e)) * K =
-      ENNReal.ofReal (b ^ ((2 * C1 + C2) * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) *
-        max 1 (1 / absV D v (Gglob D T T' γ)) ^ A) := by
-    rw [hK, ← ENNReal.ofReal_mul (Real.rpow_nonneg hb.le _), ← mul_assoc, ← Real.rpow_add hb]
-    congr 3
-    ring
-  calc _ ≤ _ := hexp
-    _ ≤ ENNReal.ofReal (∑ i, a i) ^ 2 * (K * J) := hsq
-    _ ≤ ENNReal.ofReal (b ^ (2 * C1 * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e)) * (K * J) := mul_le_mul_of_nonneg_right hA bot_le
-    _ = _ := by rw [← mul_assoc, hfin]
 
 end Loc
 
@@ -265,12 +173,5 @@ def BesselExpansionLocal : Prop :=
           (Cinf * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) A C1 5 (Aw * ((D.R.rS : ℝ) + 1) ^ 2) ∧
         BpLocS D Ch Cg dist' (Cinf * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) A C2 5
 
-theorem uniformTheoremB_of_local (h : BesselExpansionLocal) : WeightedBoundRotatedUniform := by
-  intro Aw Ch hAw
-  obtain ⟨C1, C2, CA, Cinf, Cg₀, h2, H⟩ := h Aw Ch hAw
-  refine ⟨2 * C1 + (C2 + (3 + Ch) * CA) + 6, Cg₀, fun Cg hCg D => ?_⟩
-  obtain ⟨dist', A, hA, hQ, hB⟩ := H Cg hCg D
-  have hCg2 : 2 ≤ Cg := le_trans h2 hCg
-  exact weighted_bound_rotated_of_one_place hCg2 (onePlaceR_of_expS hCg2 hQ (bpRealS_of_loc hCg2 (by norm_num) hA hB))
 
 end Formalism.L2.SG.Pf.BesselExpansion

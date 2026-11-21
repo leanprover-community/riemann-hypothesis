@@ -134,11 +134,6 @@ theorem isSelMatrix_iff (i : X.Tw) (s : X.Sig i) (M : ℕ) {ι : Type} [Fintype 
     have h2 : ∀ b c, Φ b c ∈ maxLam X i M ι := fun b c => (mem_maxLam_iff X i M ι _).2 (h.2 b c)
     ⟨h.1, length_sel_of_computes bkP i s M d Q a Φ h.1 h2, h2⟩⟩
 
-theorem galHyp_iff (i : X.Tw) (s : X.Sig i) :
-    GalHyp bkP i s ↔ TripleHyp bkP i s ∧ True ∧ 100 ≤ D.R.r :=
-  ⟨fun h => ⟨⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1, h.2.2.2.2.2.1, le_trans (by norm_num) h.2.2.2.2.2.2⟩,
-      h.2.2.2.2.1, h.2.2.2.2.2.2⟩,
-    fun h => ⟨h.1.1, h.1.2.1, h.1.2.2.1, h.1.2.2.2.1, h.2.1, h.1.2.2.2.2.1, h.2.2⟩⟩
 
 theorem selmer_iff_selmer_matrix_at_primes : ThmS bkP ↔ SelmerMatrixChosenPrimes bkP := by
   constructor
@@ -149,17 +144,6 @@ theorem selmer_iff_selmer_matrix_at_primes : ThmS bkP ↔ SelmerMatrixChosenPrim
     obtain ⟨a, Φ, hΦ⟩ := h i s hG M hM ∅ ι P d Q hA hQ
     exact ⟨a, Φ, (isSelMatrix_iff bkP i s M d Q a Φ).1 hΦ⟩
 
-theorem selMatrix_iff : SelMatrix bkP ↔
-    ∀ (i : X.Tw) (s : X.Sig i), TripleHyp bkP i s → ∀ (M : ℕ) (ι : Type) [Fintype ι] (P : ι → PlE D.host) d
-      (Q : Finset (PlE D.host)), HidaSetting X i M P Q d →
-      ∃ (a : ℕ) (Φ : Matrix (Fin a) (Fin a) (abelian₂ X i M ι)), Computes bkP i s M d Q Φ ∧ ∀ b c, ¬ IsUnit (Φ b c) := by
-  constructor
-  · intro h i s hG M ι _ P d Q hS
-    obtain ⟨a, Φ, hΦ⟩ := h i s hG M ι P Q d hS
-    exact ⟨a, Φ, (isSelMatrix_iff bkP i s M d Q a Φ).1 hΦ⟩
-  · intro h i s hG M ι _ P Q d hS
-    obtain ⟨a, Φ, hΦ⟩ := h i s hG M ι P d Q hS
-    exact ⟨a, Φ, (isSelMatrix_iff bkP i s M d Q a Φ).2 hΦ⟩
 
 theorem thmS_of_selMatrix (h : SelMatrix bkP) : ThmS bkP :=
   (selmer_iff_selmer_matrix_at_primes bkP).2 (selmerMatrixAuxiliaryPrimes_of_selMatrix bkP h)

@@ -28,7 +28,6 @@ def PinFor (hk : ∀ i j b, ℕ → PlE D.host → Module.End (FractionRing (D.n
           (algebraMap (D.ntw.O i) (FractionRing (D.ntw.O i)) (u i b P)) ^ k •
             hkFR S i j b (hL j) (hs j h1 h2) k P (Y.eF i j b h1 h2 x)
 
-theorem heckePin_iff : HeckePin Rl cG S Y ↔ PinFor Rl cG S Y D.nexp.hkF := Iff.rfl
 
 def Covered : Prop :=
   ∀ (i : D.ntw.Tw) (P : PlE D.host), P ∉ D.ntw.S0 i → Formalism.BasicNotions.IsSplitPl D.host P →
@@ -102,13 +101,6 @@ theorem pinFor_baseChange (hL : Rl.toRealDat.toLevCh.Is A3.A.μ0) (hF : Rl.toRea
   rw [← e, baseChangeOps, dif_pos ⟨h1, h2⟩, LinearEquiv.conj_apply_apply, LinearEquiv.apply_symm_apply,
     LinearEquiv.symm_symm, Units.val_one, map_one, one_pow, one_smul]
 
-theorem exists_pinFor (hL : Rl.toRealDat.toLevCh.Is A3.A.μ0) (hF : Rl.toRealDat.IsFam) (hU : Rl.toRealDat.LUnif)
-    (hW : Rl.toRealDat.models_HW) (hA : Rl.AllPlaces) : ∃ hk, PinFor Rl cG S Y hk := by
-  by_cases h : ∃ (f : ∀ j, ℕ → PlE D.host → Module.End D.what₂.LL (S.WL j))
-    (_ : ∀ j, 1 ≤ j → j ≤ D.R.m → HeckeStabR S j (f j)), Reads Rl cG S Y f
-  · obtain ⟨f, hs, hf⟩ := h
-    exact ⟨_, pinFor_baseChange Rl cG S Y hL hF hU hW (covered_of_allPlaces Rl hL hA) f hs hf⟩
-  · exact ⟨D.nexp.hkF, fun f hs hf => absurd ⟨f, hs, hf⟩ h⟩
 
 set_option synthInstance.maxHeartbeats 400000 in
 

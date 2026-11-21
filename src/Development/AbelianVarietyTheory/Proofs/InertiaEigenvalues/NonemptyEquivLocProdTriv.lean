@@ -106,16 +106,6 @@ theorem isCompAlong_const {n : ℕ} (Gv : Subgroup (UA E n)) {H W : Type} [Group
     change φ.symm (σ (p x) v) • (1 : ℂ) = φ.symm v • (1 : ℂ)
     rw [this]
 
-theorem hasWeightAt_const (τ : E →+* ℂ) :
-    HasWeightAt (Submodule.span ℂ {(fun _ => 1 : UA E 1 → ℂ)}) τ ⟨0, antitone_const⟩ := by
-  let lam : DomWeight 1 := ⟨0, antitone_const⟩
-  have h0 : GlobalTheory.Branching.RankTwo.one' lam ≠ 0 := fun h => one_ne_zero (congrArg Subtype.val h)
-  refine isCompAlong_const _ _ (.mk (LinearEquiv.ofBijective
-    (LinearMap.toSpanSingleton ℂ _ (GlobalTheory.Branching.RankTwo.one' lam))
-    ⟨smul_left_injective ℂ h0, fun f => ⟨_, (GlobalTheory.Branching.RankTwo.eq_smul_one lam f).symm⟩⟩) fun g => ?_)
-  refine LinearMap.ext fun c => ?_
-  refine Eq.trans ?_ (GlobalTheory.Branching.RankTwo.small_act lam g _).symm
-  simp [lam]
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 omit [IsCMField E] in

@@ -53,47 +53,17 @@ theorem conj_mem_Gn (T : Tower p Ω) (n : ℕ) (g : Gal p Ω) {u : Gal p Ω} (hu
   · rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, h1]; exact g.symm_apply_apply _
   · rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, h2]; exact g.symm_apply_apply _
 
-theorem normal_Gn (T : Tower p Ω) (n : ℕ) : (Gn T n).Normal :=
-  ⟨fun u hu g => by simpa using conj_mem_Gn T n g⁻¹ hu⟩
 
 theorem conj_mem_Hinf (T : Tower p Ω) (g : Gal p Ω) {u : Gal p Ω} (hu : u ∈ Hinf T) :
     g⁻¹ * u * g ∈ Hinf T :=
   Subgroup.mem_iInf.2 fun n => conj_mem_Gn T n g (Hinf_le T n hu)
 
-theorem normal_Hinf (T : Tower p Ω) : (Hinf T).Normal :=
-  ⟨fun u hu g => by simpa using conj_mem_Hinf T g⁻¹ hu⟩
 
-theorem gal_mem_FixI (T : Tower p Ω) (g : Gal p Ω) {x : Ω} (hx : x ∈ FixI (Hinf T)) :
-    g x ∈ FixI (Hinf T) := by
-  refine ⟨int_gal g hx.1, fun t ht => ?_⟩
-  have := hx.2 _ (conj_mem_Hinf T g ht)
-  rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply] at this
-  conv_rhs => rw [← this]
-  exact (g.apply_symm_apply _).symm
 
-theorem Gn_le_Gms (T : Tower p Ω) {m s n : ℕ} (hm : m ≤ n) (hs : s ≤ n) : Gn T n ≤ Gms T m s := by
-  intro g hg
-  refine (Basic.mem_gms T m s g).2 ⟨?_, ?_⟩
-  · rw [← TraceTower.zeta_pow' T hm, map_pow, (mem_Gn.1 hg).1]
-  · rw [← TraceTower.qq_pow' T hs, map_pow, (mem_Gn.1 hg).2]
 
-theorem Gn_anti (T : Tower p Ω) {m n : ℕ} (hm : m ≤ n) : Gn T n ≤ Gn T m := Gn_le_Gms T hm hm
 
-theorem Hinf_le_Gms (T : Tower p Ω) (m s : ℕ) : Hinf T ≤ Gms T m s := fun g hg =>
-  (Basic.mem_gms T m s g).2 ⟨(mem_Hinf.1 hg m).1, (mem_Hinf.1 hg s).2⟩
 
-theorem FixI_Gms_le (T : Tower p Ω) (m s : ℕ) : FixI (Gms T m s) ≤ FixI (Hinf T) :=
-  fun _ hx => ⟨hx.1, fun g hg => hx.2 g (Hinf_le_Gms T m s hg)⟩
 
-theorem cong_fix (hΩ : IsClo p Ω) (G : Subgroup (Gal p Ω)) {k : ℕ} {x y : Ω} (hx : x ∈ FixI G)
-    (hy : y ∈ FixI G) (h : Cong p k x y) : ∃ z ∈ FixI G, x - y = (p : Ω) ^ k * z := by
-  obtain ⟨z, hz, e⟩ := h
-  haveI := Basic.charZero_of_isClo hΩ
-  refine ⟨z, ⟨hz, fun g hg => ?_⟩, e⟩
-  have h0 : ((p : Ω) ^ k) ≠ 0 := pow_ne_zero _ (by exact_mod_cast (Fact.out : p.Prime).ne_zero)
-  apply mul_left_cancel₀ h0
-  have := (sub_mem hx hy).2 g hg
-  rwa [e, map_mul, map_pow, map_natCast] at this
 
 variable {T : Tower p Ω} {m s : ℕ} {τ γ : Gal p Ω}
 
@@ -115,16 +85,7 @@ theorem IsGen.tau_pow_qq (h : IsGen T m s τ γ) (b n : ℕ) :
   | succ b ih =>
     rw [pow_succ, AlgEquiv.mul_apply, h.2.1, map_mul, map_pow, h.tau_pow_zeta, ih]; ring
 
-theorem IsGen.gam_pow_zeta (h : IsGen T m s τ γ) (c n : ℕ) :
-    (γ ^ c) (T.ζ n) = T.ζ n ^ ((1 + p ^ m) ^ c) := by
-  induction c with
-  | zero => simp
-  | succ c ih => rw [pow_succ, AlgEquiv.mul_apply, h.2.2.1, map_pow, ih, ← pow_mul, ← pow_succ]
 
-theorem IsGen.gam_pow_qq (h : IsGen T m s τ γ) (c n : ℕ) : (γ ^ c) (T.qq n) = T.qq n := by
-  induction c with
-  | zero => rfl
-  | succ c ih => rw [pow_succ, AlgEquiv.mul_apply, h.2.2.2, ih]
 
 theorem IsGen.rel (h : IsGen T m s τ γ) : (τ ^ (1 + p ^ m) * γ)⁻¹ * (γ * τ) ∈ Hinf T := by
   refine mem_Hinf.2 fun n => ⟨?_, ?_⟩

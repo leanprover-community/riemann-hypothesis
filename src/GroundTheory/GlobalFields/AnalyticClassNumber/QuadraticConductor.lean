@@ -111,10 +111,6 @@ theorem changeLevel_of_eq_apply (n : ℕ) : DirichletCharacter.changeLevel (dvd_
   subst h
   rw [DirichletCharacter.changeLevel_self]
 
-theorem isPrimitive_changeLevel_of_eq (hχ : χ.IsPrimitive) :
-    (DirichletCharacter.changeLevel (dvd_of_eq h) χ).IsPrimitive := by
-  subst h
-  rwa [DirichletCharacter.changeLevel_self]
 
 theorem LFunction_changeLevel_of_eq [NeZero N] [NeZero M] (s : ℂ) :
     DirichletCharacter.LFunction (DirichletCharacter.changeLevel (dvd_of_eq h) χ) s =
@@ -122,16 +118,7 @@ theorem LFunction_changeLevel_of_eq [NeZero N] [NeZero M] (s : ℂ) :
   subst h
   rw [DirichletCharacter.changeLevel_self]
 
-theorem heckeCharacter_changeLevel_of_eq [NeZero N] [NeZero M] :
-    DirichletHecke.heckeCharacter (DirichletCharacter.changeLevel (dvd_of_eq h) χ) =
-      DirichletHecke.heckeCharacter χ := by
-  subst h
-  rw [DirichletCharacter.changeLevel_self]
 
-theorem changeLevel_of_eq_ne_one (hχ : χ ≠ 1) :
-    DirichletCharacter.changeLevel (dvd_of_eq h) χ ≠ 1 := by
-  subst h
-  rwa [DirichletCharacter.changeLevel_self]
 
 end Transport
 
@@ -141,15 +128,8 @@ instance : NeZero (discr K).natAbs :=
 def kroneckerChar : DirichletCharacter ℂ (discr K).natAbs :=
   DirichletCharacter.changeLevel (dvd_of_eq (level_eq K)) (kronecker K)
 
-theorem isPrimitive_kroneckerChar : (kroneckerChar K).IsPrimitive :=
-  isPrimitive_changeLevel_of_eq (level_eq K) _ (isPrimitive_kronecker K)
 
-theorem conductor_kroneckerChar : (kroneckerChar K).conductor = (discr K).natAbs :=
-  isPrimitive_kroneckerChar K
 
-theorem heckeCharacter_kroneckerChar :
-    DirichletHecke.heckeCharacter (kroneckerChar K) = heckeCharacterOfChar (galChar K) := by
-  rw [kroneckerChar, heckeCharacter_changeLevel_of_eq (level_eq K), heckeCharacterOfChar_galChar]
 
 theorem kroneckerChar_apply (n : ℕ) : kroneckerChar K n = kronecker K n :=
   changeLevel_of_eq_apply (level_eq K) _ n
@@ -158,45 +138,14 @@ theorem LFunction_kroneckerChar (s : ℂ) :
     DirichletCharacter.LFunction (kroneckerChar K) s = DirichletCharacter.LFunction (kronecker K) s :=
   LFunction_changeLevel_of_eq (level_eq K) _ s
 
-theorem kroneckerChar_ne_one : kroneckerChar K ≠ 1 :=
-  changeLevel_of_eq_ne_one (level_eq K) _ (kronecker_ne_one K)
 
 theorem kroneckerChar_apply_prime (p : ℕ) [Fact p.Prime] (hp : p ≠ 2) :
     kroneckerChar K p = (legendreSym p (discr K) : ℂ) := by
   rw [kroneckerChar_apply, kronecker_apply_prime K p hp]
 
-theorem classNumber_eq_of_discr_neg' (hd : discr K < 0) :
-    (classNumber K : ℂ) = torsionOrder K * Real.sqrt |(discr K : ℝ)| *
-      DirichletCharacter.LFunction (kroneckerChar K) 1 / (2 * π) := by
-  rw [LFunction_kroneckerChar, classNumber_eq_of_discr_neg K hd]
 
-theorem classNumber_mul_regulator_eq_of_discr_pos' (hd : 0 < discr K) :
-    ((classNumber K * regulator K : ℝ) : ℂ) = Real.sqrt (discr K : ℝ) *
-      DirichletCharacter.LFunction (kroneckerChar K) 1 / 2 := by
-  rw [LFunction_kroneckerChar, classNumber_mul_regulator_eq_of_discr_pos K hd]
 
-theorem LFunction_kroneckerChar_zero (hd : discr K < 0) :
-    DirichletCharacter.LFunction (kroneckerChar K) 0 = 2 * classNumber K / torsionOrder K := by
-  obtain ⟨h1, h2⟩ := places_of_discr_neg K hd
-  have hR : regulator K = 1 := regulator_eq_one_of_card_eq_one (by omega)
-  have hz := continuedDedekindZeta_zero K
-  rw [if_pos (by omega), hR, continuedDedekindZeta_eq_mul K zero_ne_one, riemannZeta_zero] at hz
-  rw [LFunction_kroneckerChar]
-  push_cast at hz
-  linear_combination (-2 : ℂ) * hz
 
-theorem classNumber_eq_sum_of_discr_neg (hd : discr K < 0) :
-    (classNumber K : ℂ) = -(torsionOrder K / (2 * (discr K).natAbs)) *
-      ∑ a : ZMod (discr K).natAbs, kroneckerChar K a * (a.val : ℂ) := by
-  have h0 := LFunction_kroneckerChar_zero K hd
-  rw [LFunction_zero_eq_of_ne_one (kroneckerChar_ne_one K)] at h0
-  have hw : (torsionOrder K : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (torsionOrder_ne_zero K)
-  have hN : ((discr K).natAbs : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (Int.natAbs_ne_zero.2 (discr_ne_zero K))
-  calc (classNumber K : ℂ) = (torsionOrder K / 2) * (2 * classNumber K / torsionOrder K) := by
-        field_simp
-    _ = (torsionOrder K / 2) * (-(1 / ((discr K).natAbs : ℂ)) *
-          ∑ a : ZMod (discr K).natAbs, kroneckerChar K a * (a.val : ℂ)) := by rw [h0]
-    _ = _ := by ring
 
 end Quadratic
 

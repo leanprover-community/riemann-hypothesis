@@ -110,22 +110,6 @@ theorem conj_sqrt {w : ℂ} {r : ℝ} (hw : w ^ 2 = (r : ℂ)) :
       have hw0 : w = 0 := Complex.ext hre him
       rw [hw0]; simp
 
-theorem sqLeCm : SqLeCm := by
-  intro ι m
-  rw [sqQ, adjoin_le_iff]
-  intro x hx τ
-  have hτ : ∀ τ : Qb →+* ℂ, (τ x) ^ 2 = ((m : ℝ) : ℂ) := by
-    intro τ
-    rw [← map_pow, show x ^ 2 = (m : Qb) from hx, map_intCast]; push_cast; rfl
-  by_cases hm : (m : ℝ) < 0
-  · have hc : conjQb ι x = -x := by
-      apply ι.injective
-      rw [conjQb_spec, conj_sqrt (hτ ι), if_pos hm, map_neg]; ring
-    rw [hc, conj_sqrt (hτ τ), if_pos hm, map_neg]; ring
-  · have hc : conjQb ι x = x := by
-      apply ι.injective
-      rw [conjQb_spec, conj_sqrt (hτ ι), if_neg hm]; ring
-    rw [hc, conj_sqrt (hτ τ), if_neg hm]; ring
 
 theorem tauStar : TauStar := by
   intro ι L LL _ h hL s x y hy

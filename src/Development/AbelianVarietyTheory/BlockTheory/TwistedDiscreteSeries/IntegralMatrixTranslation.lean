@@ -92,12 +92,7 @@ def rightTr (r n : ℕ) (u : Matrix (Fin r) (Fin n) F) : GL (Fin n) F ⧸ intGL 
       show phi0 O F R r n _ = phi0 O F R r n _
       rw [← phiZero_right_invariant R hk (u * (g : Matrix (Fin n) (Fin n) F)), Matrix.mul_assoc, ← Units.val_mul, ← e])
 
-theorem leftTr_mk (r n : ℕ) (u : Matrix (Fin r) (Fin n) F) (g : GL (Fin r) F) :
-    leftTr O F R r n u (QuotientGroup.mk g) =
-      phi0 O F R r n (((g⁻¹ : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) * u) := rfl
 
-theorem rightTr_mk (r n : ℕ) (u : Matrix (Fin r) (Fin n) F) (h : GL (Fin n) F) :
-    rightTr O F R r n u (QuotientGroup.mk h) = phi0 O F R r n (u * (h : Matrix (Fin n) (Fin n) F)) := rfl
 
 def opA (p : Fˣ) (r n k : ℕ) (u : Matrix (Fin r) (Fin n) F) : R :=
   ∑ᶠ c ∈ dcCosets O (tDiag p r k), leftTr O F R r n u c
@@ -140,9 +135,6 @@ def LocalTransfer : Prop :=
             C (opA O F R p r n k) *
             ((Nat.card (IsLocalRing.ResidueField O) : (Matrix (Fin r) (Fin n) F → R)[X]) ^ (n - r) * X) ^ k)
 
-theorem redRank_le (O : Type) [CommRing O] [IsLocalRing O] {r n : ℕ} (u₀ : Matrix (Fin r) (Fin n) O) :
-    redRank O u₀ ≤ r := by
-  simpa [redRank] using Matrix.rank_le_height (u₀.map (IsLocalRing.residue O))
 
 example {F : Type} [Field F] (p : Fˣ) (n : ℕ) : tDiag p n 0 = 1 := by
   ext a b

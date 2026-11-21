@@ -215,17 +215,7 @@ def concretePkg {s : ℕ} (hOk : A.fam.Ok s) (hsep : A.fam.TypesSep) (R : RealDa
     IndefPkg A.fam.amb (faceOf A F.P0 F.ψ0 F.P1 F.ψ1 F.Dc F.Sp F.Zsc) C CH :=
   cxPkgF A hOk hsep F.P0 F.ψ0 F.P1 F.ψ1 F.Dc F.Sp F.Zsc (R.toCx F) Y.toCol C CH (RealDat.cxLinks hC hL)
 
-theorem concretePkg_spec {s : ℕ} (hOk : A.fam.Ok s) (hsep : A.fam.TypesSep) (R : RealDat D A Ks) (F : Face D A)
-    (Y : RealDat.RealCol R F) (C CH : ℝ) (hC : R.Char F) (hY : Y.Char) (hL : ConcreteLinks R F Y C CH) :
-    (concretePkg hOk hsep R F Y C CH hC hY hL).Zs = (R.toCx F).zs ∧
-      (concretePkg hOk hsep R F Y C CH hC hY hL).core.base.toIndefData = (R.toCx F).data F.cr false ∧
-      (concretePkg hOk hsep R F Y C CH hC hY hL).core.cols.toIndefData = (R.toCx F).data F.cr true ∧
-      (concretePkg hOk hsep R F Y C CH hC hY hL).core.base.μ = R.mu := ⟨rfl, rfl, rfl, rfl⟩
 
-theorem concreteToPkg {s : ℕ} (hOk : A.fam.Ok s) (hsep : A.fam.TypesSep) (R : RealDat D A Ks) (F : Face D A)
-    (Y : RealDat.RealCol R F) (C CH : ℝ) (hC : R.Char F) (hY : Y.Char) (hL : ConcreteLinks R F Y C CH) :
-    Nonempty (IndefPkg A.fam.amb (faceOf A F.P0 F.ψ0 F.P1 F.ψ1 F.Dc F.Sp F.Zsc) C CH) :=
-  ⟨concretePkg hOk hsep R F Y C CH hC hY hL⟩
 
 end Links
 

@@ -109,14 +109,6 @@ theorem SameVec.unique_left {Y : Model Xo c β} {F : Type} [Field F] {y : Sp F �
   ext1
   rw [← b₁, ← b₂, this]
 
-theorem sameVec_iff_of_mono (Y : Model Xo c β) [Mono Y.j] {F : Type} [Field F] (y : Sp F ⟶ Xo.XF c)
-    (v : epsAt (under y) ⟶ Xo.univ.t.G) (v' : epsAt (y ≫ Y.j) ⟶ Y.t.G) :
-    SameVec Y y v v' ↔
-      ∃ u : Sp (DualNumber F) ⟶ Y.oF.t.G.left, u ≫ Y.m0.toSABMap.φ = v.left ∧ u ≫ Y.m.φ = v'.left := by
-  have hq : IsPullback Y.m.φ Y.oF.t.G.hom Y.t.G.hom Y.j := Y.m.cart.1
-  refine ⟨fun ⟨u, _, a, b⟩ => ⟨u, a, b⟩, fun ⟨u, a, b⟩ => ⟨u, ?_, a, b⟩⟩
-  rw [← cancel_mono Y.j, Category.assoc, ← hq.w, ← Category.assoc, b, Category.assoc]
-  exact Over.w v'
 
 def Represents (Y : Model Xo c β) (U : Set (Xo.XF c)) (τ : E →+* ℂ) {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ Y.X}
     {V : Type} [AddCommGroup V] [Module Ω V] (M : LieModel Y.t.G ξ V) (a : ⋀[Ω]^D.p V) (b : ⋀[Ω]^D.q V)
@@ -184,10 +176,6 @@ theorem CptOver.genPt_mem {Y : Model Xo c β} {U : Set (Xo.XF c)} (Z : CptOver Y
 def CptOver.IsGeom {Y : Model Xo c β} {U : Set (Xo.XF c)} (Z : CptOver Y U) : Prop :=
   ∀ x : Z.Ω, (∃ f : Polynomial c.F, f ≠ 0 ∧ f.eval₂ Z.inc x = 0) → x ∈ Set.range Z.inc
 
-theorem isFlatAn_iff_isConstMul (U : Set (Xo.XF c)) (τ : E →+* ℂ) (φ : FrameFn Xo c) {g : ℕ}
-    {ty : Fin g → (E →+* ℂ)} (FU : FamilyUnif Xo (algebraMap (KA l) ℂ) ty) (i : Fin FU.n)
-    (e : Fin D.p ⊕ Fin D.q → (FU.Di i).La) (ρ : ℂ) :
-    IsFlatAn U τ τ (algebraMap c.F ℂ) (φ ℂ) FU i e ρ ↔ IsConstMul U τ φ FU i e ρ := Iff.rfl
 
 theorem IsFlatAn.const_mul {U : Set (Xo.XF c)} {τ τ' : E →+* ℂ} {σ : c.F →+* ℂ} {Φ : CFn Xo c} {σK : KA l →+* ℂ}
     {g : ℕ} {ty : Fin g → (E →+* ℂ)} {FU : FamilyUnif Xo σK ty} {i : Fin FU.n}
@@ -222,8 +210,6 @@ theorem ExtendsUnitAt.eq_zero_iff {K Ω : Type} [Field K] [Field Ω] {X : Scheme
   rw [H 0 ⟨trivial, Metric.mem_ball_self hε⟩ hW r hr]
   exact ⟨fun h0 => (mul_eq_zero.mp h0).resolve_left hg, fun h0 => by rw [h0, mul_zero]⟩
 
-theorem CptOver.isGeom_of_surjective {Y : Model Xo c β} {U : Set (Xo.XF c)} (Z : CptOver Y U)
-    (h : Function.Surjective Z.inc) : Z.IsGeom := fun x _ => h x
 
 example {Y : Model Xo c β} {U : Set (Xo.XF c)} (Z : CptOver Y U) (τ : E →+* ℂ) {F : Type} [Field F]
     (βF : c.F →+* F) (y : Sp F ⟶ Xo.XF c) (v : Vecs y D.p) (w : Vecs y D.q) (hf : IsFramed U τ βF y v w) :

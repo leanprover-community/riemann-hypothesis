@@ -14,7 +14,6 @@ import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.WeightedPlaceLogS
 
 namespace Formalism.DivisionValues
 
-theorem boundsIVal : BoundsIVal := bounds_fourth_general
 
 theorem latticeGlue : LatticeGlue := lattice_gluing
 

@@ -400,7 +400,5 @@ end
 
 end PfN
 
-theorem difference_absolute_bound : DiffAbs := PfN.diffAbs
-theorem principal_part_stable : PrincipalStable := PfN.principalStable
 
 end Formalism.HermitianLattices.FiltrationBoundaryCriterion

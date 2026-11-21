@@ -47,14 +47,6 @@ theorem exists_wchart (hL : L.IsLB) (ψ : K → (W ⟶ Y)) (w : W) : ∃ j, w �
   choose j hj using fun k => exists_chart hL (ψ k w)
   exact ⟨j, Set.mem_iInter.2 hj⟩
 
-theorem sval_mul_val (s : LB.Sec (LB.LinComb L ψ ε)) {x : LB.Gen (LB.LinComb L ψ' ε')} (hx : x.IsGen)
-    (hε : ∀ k, ε' k = -ε k) (h : ∀ k, r ≫ ψ k = r' ≫ ψ' k) {z : Z} {J} (hJ : Good L z J) {j : K → L.ι}
-    (hj : r z ∈ LB.wchart L ψ j) : sval s r z J * (val x r' z J).val =
-      gs r z (LB.wchart L ψ j) (s.f j) * (gm r' z (LB.wchart L ψ' j) (x.s j)).val := by
-  rw [val_of x r' z J (fun k => J (r ≫ ψ k)) (fun k => by rw [h k]), sec_trans s r z hj (hJ.mem ψ r),
-    gen_trans hx r' z (mem_congr h hj) (mem_congr h (hJ.mem ψ r)), Units.val_mul, _root_.mul_mul_mul_comm,
-    ← Units.val_mul, trF_cancel h hε, Units.val_one, _root_.one_mul]
-  rfl
 
 def toTop (U : W.Opens) : Γ(W, U) →+* Γ(U.toScheme, ⊤) := (U.ι.appLE U ⊤ U.ι_preimage_self.ge).hom
 
@@ -101,21 +93,6 @@ theorem comp_φ (hφ : ∀ k, φ' k = q ≫ φ k) {Z : Scheme.{0}} {r : Z ⟶ V.
 theorem mem_of_comp {Z : Scheme.{0}} {r : Z ⟶ V.toScheme} {g : Z ⟶ G} (e : r ≫ V.ι = g ≫ q) (z : Z) :
     g z ∈ q ⁻¹ᵁ V := (congrArg (fun f => f z ∈ V) e).mp (r z).2
 
-theorem secRel_iff_img (hL : L.IsLB) (hx : x.IsGen) (hε : ∀ k, ε' k = -ε k) (hφ : ∀ k, φ' k = q ≫ φ k)
-    (s : LB.Sec (LB.LinComb L (fun k => V.ι ≫ φ k) ε)) (a : Γ(G, q ⁻¹ᵁ V)) :
-    GeneratorPullback.SecRel L _ _ (fnSec L (toTop _ a)) _ _ s (q ∣_ V) _ _ (LB.pullGen L _ _ x (q ⁻¹ᵁ V).ι) ↔ Img q x V s a := by
-  have f : ∀ {Z : Scheme.{0}} (l : Z ⟶ (q ⁻¹ᵁ V).toScheme) (z : Z) (J), Good L z J →
-      sval (fnSec L (toTop _ a)) l z J = gs (l ≫ (q ⁻¹ᵁ V).ι) z _ a := fun l z J hJ =>
-    (gs_res l z le_top (hJ.mem PEmpty.elim l) _).trans (gs_toTop _ l z a)
-  have p := isPullback_morphismRestrict q V
-  obtain ⟨h₁, h₂⟩ := secRel_iff hL _ _ (fnSec L (toTop _ a)) _ _ s (q ∣_ V) _ _ (LB.pullGen L _ _ x (q ⁻¹ᵁ V).ι)
-  refine ⟨fun H Z r g e z j hj => ?_, fun H => h₂ fun y J hJ => ?_⟩
-  · obtain ⟨J, hJ⟩ := TorusCoord.exists_good' hL z
-    have E := h₁ H Z (p.lift r g e) z J hJ
-    rw [f _ z J hJ, val_pull hJ, p.lift_fst, p.lift_snd] at E
-    exact E.trans (sval_mul_val s hx hε (comp_φ hφ e) hJ hj)
-  · rw [f _ y J hJ, val_pull hJ, Category.id_comp, Category.id_comp]
-    exact H _ _ _ p.w y _ (hJ.mem _ _) |>.trans (sval_mul_val s hx hε (comp_φ hφ p.w) hJ (hJ.mem _ _)).symm
 
 theorem Img.eq_zero [Flat q] [Surjective q] {s : LB.Sec (LB.LinComb L (fun k => V.ι ≫ φ k) ε)} (H : Img q x V s 0)
     (j : K → L.ι) : s.f j = 0 := by
@@ -153,35 +130,6 @@ theorem Img.exists_fn (hφ : ∀ k, φ' k = q ≫ φ k) {s : LB.Sec (LB.LinComb 
     ← p.w, ← gs_toTop, hc]
   exact congrArg (· * _) (gs_res (q ∣_ V) y (V := ⊤) _ trivial _).symm
 
-theorem exists_img_of_fn (hL : L.IsLB) (hx : x.IsGen) (hε : ∀ k, ε' k = -ε k) (hφ : ∀ k, φ' k = q ≫ φ k)
-    {j₀ : K → L.ι} (h : V ≤ LB.wchart L φ j₀) (c : Γ(B, V)) :
-    ∃ s : LB.Sec (LB.LinComb L (fun k => V.ι ≫ φ k) ε),
-      Img q x V s ((q.app V).hom c * (locU hφ x h).val) ∧ (s.f j₀ = 0 → c = 0) := by
-  obtain ⟨f, hf⟩ : ∃ f : ∀ j, Γ(V.toScheme, LB.wchart L (fun k => V.ι ≫ φ k) j), ∀ (Z : Scheme.{0})
-      (r : Z ⟶ V.toScheme) (z : Z) j, r z ∈ LB.wchart L (fun k => V.ι ≫ φ k) j →
-      gs r z _ (f j) = (trF (fun k => V.ι ≫ φ k) ε r z j j₀).val * gs (r ≫ V.ι) z V c :=
-    ⟨fun j => (res (V := LB.wchart L (fun k => V.ι ≫ φ k) j) (le_inf le_rfl fun y _ => mem_wchart_ι h y)
-        ((LB.LinComb L (fun k => V.ι ≫ φ k) ε).g j j₀)).val * (V.ι.appLE V _ (fun y _ => y.2)).hom c,
-      fun Z r z j hj => (gs_mul r z _ hj _ _).trans (congrArg₂ (· * ·) ((gs_unit r z _ hj _).trans
-        (congrArg Units.val ((gm_res r z _ hj _).trans (gm_linComb L _ ε r z j j₀ hj (mem_wchart_ι h _)))))
-        (gs_appLE V.ι V _ _ r z hj c))⟩
-  refine ⟨⟨f, fun j j' => fn_ext fun y hy => ?_⟩, fun Z r g e z j hj => ?_, fun h0 => ext_open fun y => ?_⟩
-  · refine ((gs_res (𝟙 _) y _ hy _).trans (hf _ _ y j hy.1)).trans (Eq.trans ?_ ((gs_mul (𝟙 _) y _ hy _ _).trans
-      (congrArg₂ (· * ·) ((gs_unit (𝟙 _) y _ hy _).trans
-        (congrArg Units.val (gm_linComb L _ ε (𝟙 _) y j j' hy.1 hy.2)))
-        ((gs_res (𝟙 _) y _ hy _).trans (hf _ _ y j' hy.2)))).symm)
-    rw [← trF_trans hL _ ε (𝟙 _) y hy.1 hy.2 (mem_wchart_ι h _), Units.val_mul, _root_.mul_assoc]
-    rfl
-  · have m := mem_of_comp e z
-    refine Eq.trans ?_ (congrArg (· * _) (hf Z r z j hj)).symm
-    rw [gs_mul _ z _ m, gs_pull _ q z V m, gs_unit _ z _ m, gm_locU _ _ _ _ z m,
-      gen_trans hx g z (mem_congr (comp_φ hφ e) hj) (preimage_le hφ h m), Units.val_mul, mul_comm _ (gs (r ≫ _) z V c),
-      _root_.mul_assoc, ← _root_.mul_assoc (Units.val _), ← Units.val_mul, trF_cancel (comp_φ hφ e) hε,
-      Units.val_one, _root_.one_mul, e]
-  · have E := hf _ (𝟙 _) y j₀ (mem_wchart_ι h _)
-    have h0' : f j₀ = 0 := h0
-    rw [h0', gs_zero' _ y _ (mem_wchart_ι h _), Category.id_comp] at E
-    exact ((Units.mul_right_eq_zero _).1 E.symm).trans (gs_zero' V.ι y V y.2).symm
 
 end Image
 
@@ -291,24 +239,6 @@ theorem exists_img [IsMonHom i] [Flat q.left] [Surjective q.left] [QuasiCompact 
 
 end One
 
-theorem isWt_monomial {κ : Type} (b : Module.Basis κ ℤ X) {V : G.left.Opens} (u : κ → Γ(G.left, V)ˣ)
-    (hu : ∀ k, IsWt i V (u k).val (b k)) :
-    ∃ m : Multiplicative X →* Γ(G.left, V)ˣ, ∀ χ, IsWt i V (m (Multiplicative.ofAdd χ)).val χ := by
-  let m : Multiplicative X →* Γ(G.left, V)ˣ :=
-    AddMonoidHom.toMultiplicativeLeft (b.constr ℤ (fun k => Additive.ofMul (u k))).toAddMonoidHom
-  have hm : ∀ k, m (Multiplicative.ofAdd (b k)) = u k := fun k =>
-    congrArg Additive.toMul (b.constr_basis ℤ (fun k => Additive.ofMul (u k)) k)
-  refine ⟨m, fun χ => ?_⟩
-  have hχ : χ ∈ AddSubgroup.closure (Set.range b) := by
-    rw [← Submodule.span_int_eq_addSubgroupClosure, b.span_eq]; trivial
-  refine AddSubgroup.closure_induction (p := fun x _ => IsWt i V (m (Multiplicative.ofAdd x)).val x) ?_ ?_ ?_ ?_ hχ
-  · rintro _ ⟨k, rfl⟩
-    rw [hm]; exact hu k
-  · rw [ofAdd_zero, map_one]; exact isWt_one
-  · intro x y _ _ hx hy
-    rw [ofAdd_add, map_mul]; exact hx.mul hy
-  · intro x _ hx
-    rw [ofAdd_neg, map_inv]; exact hx.inv
 
 section All
 
@@ -317,14 +247,6 @@ variable [IsMonHom q] [IsMonHom i] [IsAffineHom q.left] (hL : L.IsLB) (hε : ∀
   {x : ∀ χ, LB.Gen (LB.LinComb L (φ' χ) ε')} (hx : ∀ χ, (x χ).IsGen) (hw : ∀ χ, WtGen i (x χ) χ)
 include hL hε hφ hx hw
 
-theorem exists_sum_img [Flat q.left] [Surjective q.left] (hk : IsPullback i (toUnit _) q η[B]) {V : B.left.Opens}
-    (hV : IsAffineOpen V) (f : Γ(G.left, q.left ⁻¹ᵁ V)) :
-    ∃ (F : Finset X) (s : ∀ χ, LB.Sec (LB.LinComb L (fun k => V.ι ≫ φ χ k) ε)) (a : X → Γ(G.left, q.left ⁻¹ᵁ V)),
-      (∀ χ, Img q.left (x χ) V (s χ) (a χ)) ∧ f = ∑ χ ∈ F, a χ := by
-  obtain ⟨a, ha, e⟩ := (functions_graded_by_weights S G X i ‹_› (q.left ⁻¹ᵁ V) (hV.preimage q.left)
-    (fun z hz => act_mem hk.w (fst _ _) (snd _ _) z hz)).1 f
-  choose s hs using fun χ => exists_img hL (hφ χ) (hx χ) (hw χ) hk hε (ha χ)
-  exact ⟨a.support, s, a, hs, e⟩
 
 omit hL hε hφ hx hw [IsMonHom i] in
 
@@ -341,63 +263,6 @@ theorem eq_zero_of_sum_isWt (hi : i ≫ q = toUnit _ ≫ η[B]) {V : B.left.Open
     ((Finset.sum_congr rfl fun χ h => if_pos h).trans e) hχ
   rwa [if_pos hχ] at this
 
-theorem flat_surjective_kernel [Module.Free ℤ X] [Module.Finite ℤ X] (hi : i ≫ q = toUnit _ ≫ η[B])
-    (span : ∀ V : B.left.Opens, IsAffineOpen V → ∀ f : Γ(G.left, q.left ⁻¹ᵁ V),
-      ∃ (F : Finset X) (s : ∀ χ, LB.Sec (LB.LinComb L (fun k => V.ι ≫ φ χ k) ε)) (a : X → Γ(G.left, q.left ⁻¹ᵁ V)),
-        (∀ χ ∈ F, Img q.left (x χ) V (s χ) (a χ)) ∧ f = ∑ χ ∈ F, a χ)
-    (indep : ∀ V : B.left.Opens, IsAffineOpen V → ∀ s : LB.Sec (LB.LinComb L (fun k => V.ι ≫ φ 0 k) ε),
-      Img q.left (x 0) V s 0 → ∀ j, s.f j = 0) :
-    Flat q.left ∧ Surjective q.left ∧ IsPullback i (toUnit _) q η[B] := by
-  classical
-  obtain ⟨mono, fl, su, -, fib⟩ := LocTriv.main S X G B i q ‹_› ‹_› fun y => by
-    let b := Module.Free.chooseBasis ℤ X
-    choose j hj using fun χ => exists_wchart hL (φ χ) y
-    obtain ⟨V, hV, hy, le⟩ := exists_isAffineOpen_mem_and_subset (x := y)
-      (U := LB.wchart L (φ 0) (j 0) ⊓ ⨅ k, LB.wchart L (φ (b k)) (j (b k)))
-      ⟨hj 0, (TopologicalSpace.Opens.coe_iInf _).ge (Set.mem_iInter.2 fun k => hj (b k))⟩
-    have le₀ : V ≤ LB.wchart L (φ 0) (j 0) := fun _ h => (le h).1
-    have le₁ : ∀ k, V ≤ LB.wchart L (φ (b k)) (j (b k)) := fun k _ h =>
-      iInf_le (fun k => LB.wchart L (φ (b k)) (j (b k))) k (le h).2
-    refine ⟨V, hy, hV, fun a => ⟨fun ha => ?_, ?_⟩, (injective_iff_map_eq_zero _).2 fun c hc => ?_,
-      fun z hz => act_mem hi (fst _ _) (snd _ _) z hz,
-      isWt_monomial b _ fun k => isWt_locU hi hL (hφ _) (hx _) (hw _) (le₁ k)⟩
-    · obtain ⟨F, s, d, hd, e⟩ := span V hV (a * (locU (hφ 0) (x 0) le₀).val)
-      have w := ha.mul (isWt_locU hi hL (hφ _) (hx _) (hw _) le₀)
-      rw [add_zero] at w
-      generalize hf : a * (locU (hφ 0) (x 0) le₀).val = f at e w
-      have z := eq_zero_of_sum_isWt hi hV (F := insert 0 F)
-        (a := fun χ => (if χ ∈ F then d χ else 0) - if χ = 0 then f else 0) (fun χ _ Z t g h₁ h₂ => by
-          have a₁ : IsWt i _ (if χ ∈ F then d χ else 0) χ := by
-            by_cases h : χ ∈ F
-            · rw [if_pos h]; exact (hd χ h).isWt hi hL (hφ χ) (hx χ) (hw χ)
-            · rw [if_neg h]; exact isWt_zero χ
-          have a₂ : IsWt i _ (if χ = 0 then f else 0) χ := by
-            by_cases h : χ = 0
-            · rw [if_pos h, h]; exact w
-            · rw [if_neg h]; exact isWt_zero χ
-          rw [map_sub, map_sub, a₁ Z t g h₁ h₂, a₂ Z t g h₁ h₂, mul_sub])
-        (by
-          rw [Finset.sum_sub_distrib, Finset.sum_ite_mem, Finset.sum_ite_eq', if_pos (Finset.mem_insert_self _ _),
-            Finset.inter_eq_right.2 (Finset.subset_insert _ _), ← e, sub_self])
-        (Finset.mem_insert_self _ _)
-      rw [if_pos rfl, sub_eq_zero] at z
-      by_cases h : (0 : X) ∈ F
-      · rw [if_pos h] at z
-        obtain ⟨c, hc⟩ := (hd 0 h).exists_fn (hφ 0) le₀
-        exact ⟨c, (Units.mul_left_inj _).1 (hc.symm.trans (z.trans hf.symm))⟩
-      · rw [if_neg h] at z
-        exact ⟨0, (map_zero _).trans ((Units.mul_left_eq_zero _).1 (hf.trans z.symm)).symm⟩
-    · rintro ⟨c, rfl⟩
-      exact isWt_app hi V c
-    · obtain ⟨s, hs, h0⟩ := exists_img_of_fn hL (hx 0) hε (hφ 0) le₀ c
-      rw [hc, zero_mul] at hs
-      exact h0 (indep V hV s hs _)
-  refine ⟨fl, su, ⟨hi⟩, ⟨PullbackCone.IsLimit.mk _ (fun c => ((fib _ 1 c.fst).1 (by
-    rw [MonObj.one_comp, c.condition, Hom.one_def, toUnit_unique c.snd])).choose) (fun c => ?_)
-    (fun c => toUnit_unique _ _) fun c m h _ => ?_⟩⟩
-  · exact (_root_.mul_one _).symm.trans (Exists.choose_spec (p := fun t => c.fst = (t ≫ i) * 1) _).symm
-  · rw [← cancel_mono i, h]
-    exact (Exists.choose_spec (p := fun t => c.fst = (t ≫ i) * 1) _).trans (_root_.mul_one _)
 
 end All
 

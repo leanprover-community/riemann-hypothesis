@@ -132,70 +132,12 @@ def places : Places k (RatFunc k) where
   fin := fun x => (good_all k x.ne_zero).1
   sum := fun x => (good_all k x.ne_zero).2
 
-theorem places_v_X : (places k).v none (Units.mk0 RatFunc.X RatFunc.X_ne_zero) = -1 := by
-  have := ord_none k (X_ne_zero (R := k))
-  simpa [places] using this
 
-theorem ampleCub_triv {S : Scheme.{0}} (G : Over S) [GrpObj G] [IsAffine G.left] :
-    AmpleCub G (Inh.trivLB _) := by
-  refine ⟨Inh.trivLB_isLB _, ⟨⟨fun _ => 1⟩, fun i j => ?_⟩, ⟨⟨fun _ => 1⟩, fun i j => ?_⟩, 1, le_rfl, fun x => ?_⟩
-  · exact (map_one _).trans ((congrArg₂ (· * ·) (Inh.linComb_triv_g _ _ i j) (map_one _)).trans (_root_.one_mul _)).symm
-  · exact (map_one _).trans ((congrArg₂ (· * ·) (Inh.linComb_triv_g _ _ i j) (map_one _)).trans (_root_.one_mul _)).symm
-  · rw [Nat.cast_one, pw_one]
-    refine ⟨oneSec _, ?_, ?_⟩ <;> rw [nonzeroLocus_oneSec]
-    · trivial
-    · exact isAffineOpen_top _
 
-theorem pullPow_triv {X : Scheme.{0}} (F : X ⟶ X) (q : ℤ) : PullPow F (Inh.trivLB X) q :=
-  ⟨⟨fun _ => 1⟩, fun i j => (map_one _).trans ((congrArg₂ (· * ·) (Inh.linComb_triv_g _ _ i j) (map_one _)).trans (_root_.one_mul _)).symm⟩
 
-theorem frobG_one_iff {k : Type} [Field k] (G : Over (Sp k)) [GrpObj G] (q : ℕ) :
-    FrobG G 1 q ↔ ∀ U : G.left.Opens, IsAffineOpen U → ∀ f : Γ(G.left, U), ∃ m, 1 ≤ m ∧ f = f ^ (q ^ m) := by
-  have key : ∀ (m : ℕ) (U : G.left.Opens) (f g : Γ(G.left, U)),
-      (∃ h : U = (show G ⟶ G from (1 : End G) ^ m).left ⁻¹ᵁ U,
-        ((show G ⟶ G from (1 : End G) ^ m).left.appLE U U h.le).hom f = g) ↔ f = g := by
-    intro m U f g
-    generalize hF : (1 : End G) ^ m = F
-    rw [one_pow] at hF
-    subst hF
-    have e : ∀ h, ((show G ⟶ G from (1 : End G)).left.appLE U U h).hom f = f := fun h => by
-      change ((𝟙 G.left : G.left ⟶ G.left).appLE U U h).hom f = f
-      simp [Scheme.Hom.appLE]
-      exact rs_self h f
-    exact ⟨fun ⟨h, h'⟩ => (e _).symm.trans h', fun h => ⟨rfl, (e _).trans h⟩⟩
-  simp only [FrobG, key]
-  exact and_iff_right (inferInstanceAs (IsMonHom (𝟙 G)))
 
-theorem frobG_one_one {k : Type} [Field k] (G : Over (Sp k)) [GrpObj G] : FrobG G 1 1 :=
-  (frobG_one_iff G 1).2 fun _ _ _ => ⟨1, le_rfl, by simp⟩
 
-theorem frobG_unit_finite (k : Type) [Field k] [Fintype k] :
-    FrobG (𝟙_ (Over (Sp k))) 1 (Fintype.card k) := by
-  refine (frobG_one_iff _ _).2 fun U _ f => ⟨1, le_rfl, ?_⟩
-  by_cases hU : U = ⊤
-  · obtain ⟨c, rfl⟩ := (cst_bijective (𝟙 (Spec (CommRingCat.of k))) hU).2 f
-    rw [pow_one]
-    exact (congrArg _ (FiniteField.pow_card c).symm).trans (map_pow _ _ _)
-  · have hb : U = ⊥ := by
-      apply le_bot_iff.1
-      intro x hx
-      refine absurd (top_unique fun y _ => ?_) hU
-      have : y = x := Subsingleton.elim (α := PrimeSpectrum k) _ _
-      exact this ▸ hx
-    subst hb
-    exact Subsingleton.elim _ _
 
-theorem not_frobG_unit_rat {q : ℕ} (hq : 2 ≤ q) : ¬ FrobG (𝟙_ (Over (Sp ℚ))) 1 q := by
-  intro h
-  have hb := cst_bijective (𝟙 (Spec (CommRingCat.of ℚ))) (W := ⊤) rfl
-  haveI : IsAffine (𝟙_ (Over (Sp ℚ))).left := inferInstanceAs (IsAffine (Spec _))
-  obtain ⟨m, hm, e⟩ := (frobG_one_iff _ _).1 h ⊤ (isAffineOpen_top _)
-    (cst (𝟙 (Spec (CommRingCat.of ℚ))) ⊤ 2)
-  have e' : (2 : ℚ) = 2 ^ (q ^ m) := hb.1 (e.trans (map_pow _ _ _).symm)
-  have h1 : 1 < q ^ m := Nat.one_lt_pow (by omega) (by omega)
-  have := pow_lt_pow_right₀ (one_lt_two (α := ℚ)) h1
-  rw [pow_one, ← e'] at this
-  exact lt_irrefl _ this
 
 end GlobalTheory.SS.ProjLinePlaces
 
@@ -275,14 +217,6 @@ theorem frobG_frobOver {k : Type} [Field k] [Fintype k] (G : Over (Sp k)) [GrpOb
       exact rs_self (X := G.left) le_rfl (f ^ Fintype.card k)
     exact key _ (by rw [pow_one]; rfl)
 
-theorem not_frobG_zero {k : Type} [Field k] (G : Over (Sp k)) [GrpObj G] (F : End G) : ¬ FrobG G F 0 := by
-  intro h
-  obtain ⟨x⟩ : Nonempty G.left := ⟨(η[G]).left (⊥ : PrimeSpectrum k)⟩
-  obtain ⟨_, ⟨U, hU, rfl⟩, hx, -⟩ := G.left.isBasis_affineOpens.exists_subset_of_mem_open (Set.mem_univ x) isOpen_univ
-  obtain ⟨m, hm, e, h'⟩ := h.2 U hU 0
-  rw [map_zero, zero_pow (by omega : m ≠ 0), pow_zero] at h'
-  haveI : Nonempty U := ⟨⟨x, hx⟩⟩
-  exact zero_ne_one h'
 
 example {k : Type} [Field k] (G : Over (Sp k)) [GrpObj G] (F : End G) (q : ℕ) : FrobG G F q ↔
   (IsMonHom (show G ⟶ G from F) ∧ ∀ U : G.left.Opens, IsAffineOpen U → ∀ f : Γ(G.left, U), ∃ m : ℕ, 1 ≤ m ∧
@@ -291,14 +225,6 @@ example {k : Type} [Field k] (G : Over (Sp k)) [GrpObj G] (F : End G) (q : ℕ) 
 example {k : Type} [Field k] (G : Over (Sp k)) [GrpObj G] (F : End G) :
   (show G ⟶ G from F ^ 2) = (show G ⟶ G from F) ≫ (show G ⟶ G from F) := pow_two F
 
-theorem places_v_const {k K : Type} [Field k] [Field K] [Algebra k K] (P : Places k K) (i : P.I) (c : kˣ) :
-    P.v i (Units.map (algebraMap k K : k →* K) c) = 0 := by
-  have h1 : P.v i 1 = 0 := by have := P.v_mul i 1 1; rw [_root_.mul_one] at this; omega
-  have h2 := P.v_mul i (Units.map (algebraMap k K : k →* K) c) (Units.map (algebraMap k K : k →* K) c⁻¹)
-  rw [← map_mul, mul_inv_cancel, map_one, h1] at h2
-  have h3 := (P.mem i (Units.map (algebraMap k K : k →* K) c)).1 (P.const i c)
-  have h4 := (P.mem i (Units.map (algebraMap k K : k →* K) c⁻¹)).1 (P.const i (c⁻¹ : kˣ))
-  omega
 
 end GlobalTheory.SS.FrobModel
 end

@@ -38,10 +38,6 @@ theorem locallyCompact_Fv : LocallyCompactSpace (Fv F v) :=
 
 end Top
 
-theorem absMul_holds : AbsMul := fun v => ⟨Ar.absV_mul v, Ar.absV_one v, fun x hx => by
-  have hx' : Valued.v x ≠ 0 := (Valuation.ne_zero_iff _).2 hx
-  simp only [absV, dif_neg hx']
-  exact zpow_pos (lt_of_le_of_ne (Nat.cast_nonneg _) (Ar.absNorm_ne_zero v).symm) _⟩
 
 section
 
@@ -71,49 +67,8 @@ theorem absV_pow (hA : AbsMul) (x : Fv F v) (n : ℕ) : absV v (x ^ n) = absV v 
   | zero => simp [h1]
   | succ n ih => rw [pow_succ, hm, ih, pow_succ]
 
-theorem volZZO_of (hB : BoxScale) (hA : AbsMul) : VolZZO (E := E) v := by
-  intro r m hfin μ hμ hO
-  have hset : ZZOrd (E := E) v r =
-      Set.univ.pi fun p : Fin (r + 1) × Fin (r + 1) =>
-        {c | sc (E := E) v (alp v r p.1 * alp v r p.2) * c ∈ OEv (E := E) v} := by
-    ext z
-    simp [ZZOrd, locZ, Set.mem_pi, Prod.forall]
-  rw [hset, hB v _ hfin μ (fun p => alp v r p.1 * alp v r p.2)
-    (fun p => mul_ne_zero (alp_ne_zero v r p.1) (alp_ne_zero v r p.2)), hO,
-    Fintype.prod_prod_type]
-  simp only [(hA v).1]
 
-theorem volUO_of (hB : BoxScale) (hA : AbsMul) : VolUO (E := E) v := by
-  intro r m hfin μ hμ hO
-  have hset : UO (E := E) v r =
-      Set.univ.pi fun q : UIdx r =>
-        {c | sc (E := E) v ((alp v r q.1.1)⁻¹ * alp v r q.1.2) * c ∈ OEv (E := E) v} := by
-    ext z
-    simp [UO, Set.mem_pi]
-  have e1 := hB v (UIdx r) hfin μ (fun q => (alp v r q.1.1)⁻¹ * alp v r q.1.2)
-    (fun q => mul_ne_zero (inv_ne_zero (alp_ne_zero v r q.1.1)) (alp_ne_zero v r q.1.2))
-  rw [← hset, hO] at e1
-  have : SecondCountableTopology (Fv F v) := secondCountable_Fv F v
-  have : LocallyCompactSpace (Fv F v) := locallyCompact_Fv F v
-  have : FiniteDimensional F E := Module.finite_of_finrank_pos (by omega)
-  unfold localVolumeOrdinary
-  rw [Measure.prod_prod, ENNReal.toReal_mul, e1, ← Finset.card_univ, ← Finset.prod_const,
-    ← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
-  refine Finset.prod_congr rfl fun q _ => ?_
-  rw [(hA v).1, absV_inv v hA _ (alp_ne_zero v r q.1.1)]
-  simp only [mul_inv, inv_pow, inv_inv, div_eq_mul_inv, mul_pow]
-  ring
 
-theorem volPO_of (hB : BoxScale) (hA : AbsMul) : VolPO (E := E) v := by
-  intro r m hfin μ hμ hO l
-  have hset : (fun c : Unit → Fv F v ⊗[F] E => c ()) ⁻¹' PPOrd (E := E) v r l =
-      Set.univ.pi fun _ : Unit => {c | sc (E := E) v (alp v r l ^ 2) * c ∈ OEv (E := E) v} := by
-    ext z
-    simp only [PPOrd, Set.mem_preimage, Set.mem_ofPred_eq, Set.mem_pi, Set.mem_univ, true_implies]
-    exact ⟨fun h _ => h, fun h => h ()⟩
-  rw [hset, hB v Unit hfin μ (fun _ => alp v r l ^ 2) (fun _ => pow_ne_zero _ (alp_ne_zero v r l)), hO]
-  simp only [Finset.univ_unique, Finset.prod_singleton, absV_pow v hA]
-  ring
 
 end
 

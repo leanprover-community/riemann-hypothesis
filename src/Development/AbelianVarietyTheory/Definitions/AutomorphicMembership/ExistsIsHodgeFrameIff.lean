@@ -118,11 +118,6 @@ theorem hodge_gram_riemann (hσ : Formalism.L2.PjFree.GoodEmb κ.c σ) (W : UnfW
     (x.hodge σ).gram (cxPt s.T.Z q) (cxFrame s.T.Z q) τ = (Real.pi : ℂ) • of fun b b' => hermForm Hm (z τ b') (z τ b) :=
   hodge_gram_eq_riemann (fun σ h => (s.unf σ h).1) (xiR_pos D) s.im_neg_xi hσ W hP hH hq τ _
 
-theorem hodge_gram_lieFrame (L : CmList A) (k : s.Comp) {f : (s.fd k).dom} (hf : IsOrth (s.fd k) f.1) (t : D.what₂.Tau)
-    (τ : D.host.E →+* ℂ) : (x.hodge κ.σ₀).gram (s.framePt k f) (s.lieFrame k f) τ =
-      (hodgeC (s.fd k) (s.lab L k) t : ℂ) • 1 := by
-  rw [x.hodge_gram (f := s.lieFrame k f) (isHodgeFrame_cxFrame κ.good_σ₀ hf), EigFrame.co_self, conjTranspose_one,
-    Matrix.mul_one, hodgeC, Data.c, s.xiAbs, mul_left_comm, _root_.mul_assoc]
 
 def IsMuExp (C : ℝ) : Prop :=
   0 ≤ C ∧ ∀ (σ : κ.c.F →+* ℂ) (y : CxPts (genStr s.T.Z) σ), ¬ LiesIn y (genBd s.T.Z) →
@@ -187,9 +182,6 @@ theorem pn_metsOf_add : (cxSt D.what₂.LL).pn _ σ _ (metsOf x Φ k R σ (n + n
     (cxSt D.what₂.LL).pn _ σ _ ((cxSt D.what₂.LL).mAdd _ σ _ _ (metsOf x Φ k R σ n) (metsOf x Φ k R σ n')) :=
   FlagCpt.pn_met_add _ _ _
 
-theorem pn_refMet_add : (cxSt D.what₂.LL).pn _ σ _ (refMet x Φ k σ (n + n')) =
-    (cxSt D.what₂.LL).pn _ σ _ ((cxSt D.what₂.LL).mAdd _ σ _ _ (refMet x Φ k σ n) (refMet x Φ k σ n')) :=
-  FlagCpt.pn_met_add _ _ _
 
 variable {x Φ k σ n} {p : Pts (Φ.C k).Y σ}
 

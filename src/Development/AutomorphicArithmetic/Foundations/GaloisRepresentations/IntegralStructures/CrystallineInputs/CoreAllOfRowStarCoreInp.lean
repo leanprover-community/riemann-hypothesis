@@ -564,8 +564,6 @@ open GlobalTheory.RoadU
 
 namespace GlobalTheory.Row9
 
-theorem _root_.UpperTheory.Gal.Int.Inp.coreAll_of_rowStarCore_inp : UpperTheory.Gal.Int.Inp.Inp → GlobalTheory.RoadW.RowStarCore → CoreAll :=
-  fun hI hR => UpperTheory.Gal.Int.Inp.coreAll_of_core_inp hI (GlobalTheory.RoadW.core_of_rowStarCore hR)
 
 end GlobalTheory.Row9
 

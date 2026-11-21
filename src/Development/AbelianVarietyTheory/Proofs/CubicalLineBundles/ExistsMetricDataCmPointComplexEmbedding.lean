@@ -31,8 +31,6 @@ open GlobalTheory GlobalTheory.CM GlobalTheory.Frames GlobalTheory.LamT
 
 namespace GlobalTheory.LamT.CMMetric
 
-theorem dualMap_eq_dualMapR {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) :
-    Formalism.L2.Pj.dualMap φ = Chart.dualMapR φ := rfl
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l}
 

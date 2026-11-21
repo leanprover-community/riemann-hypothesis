@@ -285,12 +285,6 @@ theorem heckeElem_eq_zero {k : ℕ} (hk : r < k) (φ : Lat O K r → E) (L : Lat
     heckeElem k φ L = 0 := by
   simp [heckeElem, subElem_eq_empty hk]
 
-theorem heckeAll_smul (g : GL (Fin r) K) (n : ℕ) (φ : Lat O K r → E) (L : Lat O K r) :
-    heckeAll n φ (g • L) = heckeAll n (fun M => φ (g • M)) L := by
-  symm
-  refine finsum_mem_eq_of_bijOn (fun M => g • M) ⟨fun M hM => (smul_mem_subIdx_iff g n M L).2 hM,
-    (MulAction.injective g).injOn, fun M hM => ⟨g⁻¹ • M, ?_, smul_inv_smul g M⟩⟩ fun _ _ => rfl
-  rw [← smul_mem_subIdx_iff g, smul_inv_smul]; exact hM
 
 theorem heckeElem_smul (g : GL (Fin r) K) (k : ℕ) (φ : Lat O K r → E) (L : Lat O K r) :
     heckeElem k φ (g • L) = heckeElem k (fun M => φ (g • M)) L := by

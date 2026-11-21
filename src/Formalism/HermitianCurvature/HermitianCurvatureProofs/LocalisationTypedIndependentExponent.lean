@@ -11,33 +11,6 @@ theorem conj_conj (x : 𝓞 E) :
   apply RingOfIntegers.ext
   simp [complexConj_apply_apply]
 
-theorem exists_real_mem_different (g : ℕ) (hc : PrimeToDifferent E g)
-    (P : Ideal (𝓞 (maximalRealSubfield E))) (hP : P.IsPrime)
-    (hgP : (g : 𝓞 (maximalRealSubfield E)) ∈ P) :
-    ∃ a : 𝓞 (maximalRealSubfield E), a ∉ P ∧
-      algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E) a ∈ differentIdeal ℤ (𝓞 E) := by
-  obtain ⟨x, hx, y, hy, hxy⟩ := Ideal.isCoprime_iff_exists.mp hc
-  obtain ⟨w, rfl⟩ := Ideal.mem_span_singleton'.mp hy
-  have hfix : ringOfIntegersComplexConj E (x * ringOfIntegersComplexConj E x) =
-      x * ringOfIntegersComplexConj E x := by
-    rw [map_mul, conj_conj, mul_comm]
-  obtain ⟨a, ha⟩ := (ringOfIntegersComplexConj_eq_self_iff E _).mp hfix
-  have hfix2 : ringOfIntegersComplexConj E (w + ringOfIntegersComplexConj E w -
-      (g : 𝓞 E) * (w * ringOfIntegersComplexConj E w)) =
-      w + ringOfIntegersComplexConj E w - (g : 𝓞 E) * (w * ringOfIntegersComplexConj E w) := by
-    simp only [map_sub, map_add, map_mul, conj_conj, map_natCast]
-    ring
-  obtain ⟨b, hb⟩ := (ringOfIntegersComplexConj_eq_self_iff E _).mp hfix2
-  have hx' : x = 1 - w * (g : 𝓞 E) := by rw [← hxy]; ring
-  have hab : a + (g : 𝓞 (maximalRealSubfield E)) * b = 1 := by
-    apply FaithfulSMul.algebraMap_injective (𝓞 (maximalRealSubfield E)) (𝓞 E)
-    rw [map_add, map_mul, ha, hb, map_natCast, map_one, hx']
-    simp only [map_sub, map_mul, map_one, map_natCast]
-    ring
-  refine ⟨a, fun haP => hP.ne_top ?_, ?_⟩
-  · rw [Ideal.eq_top_iff_one, ← hab]
-    exact P.add_mem haP (P.mul_mem_right _ hgP)
-  · rw [ha]; exact Ideal.mul_mem_right _ _ hx
 
 theorem dd_ne_zero : dd E ≠ 0 := by
   unfold dd
@@ -46,39 +19,6 @@ theorem dd_ne_zero : dd E ≠ 0 := by
 
 theorem dd_le_one : dd E ≤ 1 := FractionalIdeal.coeIdeal_le_one
 
-theorem localisation_typed_independent_exponent (g : ℕ) (k ν ν' : ℤ) (hc : PrimeToDifferent E g)
-    (P : Ideal (𝓞 (maximalRealSubfield E))) (hP : P.IsPrime)
-    (hgP : (g : 𝓞 (maximalRealSubfield E)) ∈ P) (t : E)
-    (ht : t ∈ locAt E P (zsub E (idl E g k ν))) : t ∈ locAt E P (zsub E (idl E g k ν')) := by
-  obtain ⟨a, haP, ha⟩ := exists_real_mem_different E g hc P hP hgP
-  obtain ⟨b, hb, h⟩ := ht
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, ν' ≤ ν + n := ⟨(ν' - ν).toNat, by omega⟩
-  obtain ⟨m, hm⟩ : ∃ m : ℕ, (n : ℤ) + ν = m + ν' := ⟨(ν + n - ν').toNat, by omega⟩
-  refine ⟨a ^ n * b, fun hh => (hP.mem_or_mem hh).elim (fun h' => haP (hP.mem_of_pow_mem _ h')) hb, ?_⟩
-  change _ ∈ idl E g k ν at h
-  show _ ∈ idl E g k ν'
-  have ha' : algebraMap (𝓞 (maximalRealSubfield E)) E a ∈ dd E := by
-    unfold dd
-    rw [FractionalIdeal.mem_coeIdeal]
-    exact ⟨_, ha, rfl⟩
-  have hpow : ∀ j : ℕ, algebraMap (𝓞 (maximalRealSubfield E)) E a ^ j ∈ dd E ^ j := by
-    intro j
-    induction j with
-    | zero => simp
-    | succ j ih => rw [pow_succ, pow_succ]; exact FractionalIdeal.mul_mem_mul ih ha'
-  have h1 : algebraMap (𝓞 (maximalRealSubfield E)) E a ^ n ∈ dd E ^ n :=
-    hpow n
-  have h2 := FractionalIdeal.mul_mem_mul h1 h
-  have h3 : dd E ^ n * idl E g k ν = dd E ^ m * idl E g k ν' := by
-    unfold idl
-    rw [← mul_assoc, ← mul_assoc, ← zpow_natCast, ← zpow_natCast, ← zpow_add₀ (dd_ne_zero E),
-      ← zpow_add₀ (dd_ne_zero E), hm]
-  have h4 : dd E ^ m * idl E g k ν' ≤ idl E g k ν' := by
-    calc dd E ^ m * idl E g k ν' ≤ 1 * idl E g k ν' :=
-          mul_le_mul_left (pow_le_one' (dd_le_one E) m) _
-      _ = _ := one_mul _
-  rw [map_mul, map_pow, mul_assoc]
-  exact h4 (h3 ▸ h2)
 
 section LG
 
@@ -192,18 +132,6 @@ theorem finite_bad {L : Submodule ℤ E} (hL : IsFLattice E L) (t : E) :
     show P ∣ _
     rw [Ideal.dvd_span_singleton]; exact hnP, rfl⟩
 
-theorem mem_of_forall_locAt {L : Submodule ℤ E} (hL : IsFLattice E L) (t : E)
-    (ht : ∀ P : Ideal (𝓞 (maximalRealSubfield E)), P.IsMaximal → t ∈ locAt E P L) : t ∈ L := by
-  by_contra hcon
-  have hI : ann hL t ≠ ⊤ := by
-    intro h
-    have h1 : (1 : 𝓞 (maximalRealSubfield E)) ∈ ann hL t := h ▸ Submodule.mem_top
-    rw [mem_ann] at h1
-    apply hcon
-    simpa using h1
-  obtain ⟨M, hM, hIM⟩ := Ideal.exists_le_maximal _ hI
-  obtain ⟨a, ha, hat⟩ := ht M hM
-  exact ha (hIM hat)
 
 theorem approx {L : Submodule ℤ E} (hL : IsFLattice E L)
     (S : Finset (Ideal (𝓞 (maximalRealSubfield E)))) (τ : Ideal (𝓞 (maximalRealSubfield E)) → E)
@@ -239,13 +167,6 @@ end Formalism.FourierDecayAlt.P.S6x6
 namespace Formalism.FourierDecayAlt.P
 open Formalism.FourierDecayAlt.S6
 
-theorem localisation_typed_condition : Formalism.FourierDecayAlt.S6.LocTyped := by
-  intro E _ _ _ g k ν _ hc P hP hgP
-  ext t
-  exact ⟨S6x6.localisation_typed_independent_exponent E g k ν 0 hc P hP hgP t, S6x6.localisation_typed_independent_exponent E g k 0 ν hc P hP hgP t⟩
 
-theorem local_global_principle : Formalism.FourierDecayAlt.S6.LocalGlobal := by
-  intro E _ _ _ L hL
-  exact ⟨S6x6.finite_bad hL, S6x6.mem_of_forall_locAt hL, S6x6.approx hL⟩
 
 end Formalism.FourierDecayAlt.P

@@ -24,11 +24,6 @@ theorem isUnit_resG_sec (a : L.Sec) (k : L.ι) {W : Y.Opens} (ha : W ≤ nonzero
   have := (Y.toRingedSpace.isUnit_res_basicOpen (a.f k)).map (resG Y h)
   exact (congrArg IsUnit (resG_resG (Y.basicOpen_le (a.f k)) h (a.f k))).mp this
 
-theorem le_nonzeroLocus_of_isUnit (a : L.Sec) (k : L.ι) {W : Y.Opens} (hk : W ≤ L.U k)
-    (h : IsUnit (resG Y hk (a.f k))) : W ≤ nonzeroLocus a := by
-  have := Y.basicOpen_of_isUnit h
-  rw [Scheme.basicOpen_res] at this
-  exact (this.ge.trans inf_le_right).trans (basicOpen_le_nonzeroLocus a k)
 
 theorem ext_charts (a : L.Sec) {W : Y.Opens} (ha : W ≤ nonzeroLocus a) {r r' : Γ(Y, W)}
     (h : ∀ k, resG Y (inf_le_left : W ⊓ L.U k ≤ W) r = resG Y inf_le_left r') : r = r' :=
@@ -215,9 +210,6 @@ def toProjIso : LB.Iso ((O1 R M).pull (toProj f s hs)) L where
   s p := (isUnit_resG_sec (s (p.2 ⟨⟩)) p.1
     (inf_le_right.trans (pullback_O1_toProj_chart f s hs p.2).le) inf_le_left).unit
 
-theorem val_toProjIso (k : L.ι) (i : PUnit → Fin (M + 1)) :
-    (@id (Γ(Y, L.U k ⊓ ((O1 R M).pull (toProj f s hs)).U i)ˣ) ((toProjIso f s hs).s (k, i))).val =
-      resG Y inf_le_left ((s (i ⟨⟩)).f k) := rfl
 
 theorem secMaps_toProjIso (j : Fin (M + 1)) :
     SecMaps (toProjIso f s hs) (secPull (coord R M j) (toProj f s hs)) (s j) := by
@@ -339,10 +331,6 @@ theorem toProj_secPull (g : Z ⟶ Y) :
     ⟨g ⁻¹ᵁ L.U k, hk, k, le_rfl, fun _ => k, (pull_U L g fun _ => k).ge, 1, fun _ =>
       (resG_resG _ _ _).trans (one_mul _).symm⟩
 
-theorem toProj_eq_comp_of_secMaps (g : Z ⟶ Y) {B : LB Z} {t : Fin (M + 1) → B.Sec}
-    (ht : ⨆ i, nonzeroLocus (t i) = ⊤) {w : LB.Iso (L.pull g) B}
-    (hw : ∀ j, SecMaps w (secPull (s j) g) (t j)) : toProj (g ≫ f) t ht = g ≫ toProj f s hs :=
-  (toProj_eq_of_secMaps (iSup_nonzeroLocus_secPull hs g) ht hw).trans (toProj_secPull hs g)
 
 end
 

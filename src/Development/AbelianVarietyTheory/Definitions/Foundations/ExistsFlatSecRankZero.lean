@@ -171,43 +171,14 @@ def different_vp (E : Type) [Field E] [NumberField E] (ℓ : ℕ) : ℚ :=
 
 def flDefect_vp (Dw : Datum H) (ℓ : ℕ) : ℚ := Dw.q * (different_vp E ℓ - if ℓ = H.d then 1 else 0)
 
-theorem flDefect_vp_of_ne {ℓ : ℕ} (h : ℓ ≠ H.d) : flDefect_vp Dw ℓ = Dw.q * different_vp E ℓ := by
-  simp [flDefect_vp, h]
 
-theorem flDefect_vp_d (h : different_vp E H.d = 1 / 2) : flDefect_vp Dw H.d = -(Dw.q * different_vp E H.d) := by
-  simp only [flDefect_vp, h, if_true]; ring
 
-theorem flDefect_vp_eq_zero {ℓ : ℕ} (h : ℓ ≠ H.d) (h' : ¬ ℓ ∣ (discr E).natAbs) : flDefect_vp Dw ℓ = 0 := by
-  simp [flDefect_vp, h, different_vp, padicValNat.eq_zero_of_not_dvd h']
 
 def flDefect_vw (Dw : Datum H) (c : Coeff l) (τ : Psi H) (la : HeightOneSpectrum (𝓞 c.F)) : ℝ :=
   Dw.q * ((ord_vw la (conjDifferent (embF c τ.1)) : ℝ) - (vAdd la (H.d : c.F) : ℝ))
 
 variable {c : Coeff l}
 
-theorem flDefect_vw_eq [IsGalois ℚ E] (τ : Psi H) {ℓ : ℕ} (hℓ : ℓ.Prime) {la : HeightOneSpectrum (𝓞 c.F)}
-    (hm : (ℓ : 𝓞 c.F) ∈ la.asIdeal) :
-    flDefect_vw Dw c τ la = (vAdd la (ℓ : c.F) : ℝ) * (flDefect_vp Dw ℓ : ℝ) := by
-  have hd : (discr E).natAbs ≠ 0 := Int.natAbs_ne_zero.mpr (discr_ne_zero E)
-  have h1 := DefectSumCompare.vla_discAt (embF c τ.1) la
-  have h2 := vla_span (K := c.F) (x := ((discr E).natAbs : ℕ)) (Nat.cast_ne_zero.2 hd) la
-  have h3 := vAdd_natCast hℓ hd hm
-  have h4 : (finrank ℚ E : ℝ) * ord_vw la (conjDifferent (embF c τ.1)) =
-      padicValNat ℓ (discr E).natAbs * (vAdd la (ℓ : c.F) : ℝ) := by
-    have h5 : ((finrank ℚ E * ord_vw la (conjDifferent (embF c τ.1)) : ℕ) : ℤ) =
-        padicValNat ℓ (discr E).natAbs * vAdd la (ℓ : c.F) := by
-      rw [← h1, ← h3]; exact h2
-    have h7 := congrArg (Int.cast : ℤ → ℝ) h5
-    simpa only [Int.cast_mul, Int.cast_natCast, Nat.cast_mul] using h7
-  have h6 : (vAdd la (H.d : c.F) : ℝ) = (if ℓ = H.d then 1 else 0) * (vAdd la (ℓ : c.F) : ℝ) := by
-    split_ifs with h
-    · rw [h, one_mul]
-    · rw [vAdd_natCast hℓ H.d_prime.ne_zero hm, padicValNat.eq_zero_of_not_dvd
-        fun h' => h ((Nat.prime_dvd_prime_iff_eq hℓ H.d_prime).1 h')]
-      simp
-  have hE : (finrank ℚ E : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr finrank_pos.ne'
-  rw [flDefect_vw, h6, eq_div_of_mul_eq hE ((mul_comm _ _).trans h4), flDefect_vp, different_vp]
-  split_ifs <;> push_cast <;> ring
 
 theorem finite_flDefect_vw (τ : Psi H) : (Function.support (flDefect_vw Dw c τ)).Finite :=
   ((finite_ord (embF c τ.1)).union (finite_vAdd (K := c.F) (Nat.cast_ne_zero.2 H.d_prime.ne_zero))).subset

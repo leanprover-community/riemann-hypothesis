@@ -64,48 +64,7 @@ theorem isometric_raise_triv (u : ∀ σ : k →+* ℂ, CxPts p σ → ℝ) (hu 
     (hc : ∀ σ σ', (Weight.ofFun (u σ)).IsConj (Weight.ofFun (u σ'))) :
     (fnB u hu hc).Isometric ((triv p).raise u hu hc) :=
   isometric_of_eqOn fun σ _ y _ => zero_add (u σ y)
-private theorem inv_eq_self_units_sections_spec_int_top (U : (Sp ℤ).Opens) (hU : U = ⊤) (u : Γ(Sp ℤ, U)ˣ) : u⁻¹ = u := by
-  subst hU
-  haveI := ArithBase.isArithVar_int.charZero
-  obtain ⟨n, hn⟩ := ArithBase.surjective_intCast (𝟙 (Sp ℤ)) (u : Γ(Sp ℤ, ⊤))
-  obtain ⟨m, hm⟩ := ArithBase.surjective_intCast (𝟙 (Sp ℤ)) ((u⁻¹ : Γ(Sp ℤ, ⊤)ˣ) : Γ(Sp ℤ, ⊤))
-  simp only [Int.coe_castRingHom] at hn hm
-  have h1 : n * m = 1 := by
-    have e := u.mul_inv
-    rw [← hn, ← hm] at e
-    exact_mod_cast e
-  ext
-  rw [← hn, ← hm]
-  rcases Int.eq_one_or_neg_one_of_mul_eq_one' h1 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;> rfl
 
-theorem eq_of_isometric_trivShift {s t : ℝ} (h : (ArithBase.trivShift s).Isometric (ArithBase.trivShift t)) : s = t := by
-  obtain ⟨w, -, hw⟩ := h
-  obtain ⟨y⟩ : Nonempty (CxPts (𝟙 (Sp ℤ)) (Int.castRingHom ℂ)) := ⟨⟨spMap (Int.castRingHom ℂ), by simp⟩⟩
-  have hy : y ∈ ptsIn (𝟙 (Sp ℤ)) (Int.castRingHom ℂ) ⊤ := mem_ptsIn_top
-  have e : (0 : ℝ) + 2 * t = 0 + 2 * s +
-      Real.log (‖ev (𝟙 (Sp ℤ)) (Int.castRingHom ℂ) (⊤ ⊓ ⊤) (w.s (PUnit.unit, PUnit.unit)).val y‖ ^ 2) :=
-    hw (Int.castRingHom ℂ) PUnit.unit PUnit.unit y hy hy
-  have hne : ev (𝟙 (Sp ℤ)) (Int.castRingHom ℂ) (⊤ ⊓ ⊤) (w.s (PUnit.unit, PUnit.unit)).val y ≠ 0 :=
-    ev_iso_ne_zero w hy hy
-  have hinv := ev_inv (mem_ptsIn_inf.2 ⟨hy, hy⟩ : y ∈ ptsIn (𝟙 (Sp ℤ)) (Int.castRingHom ℂ) (⊤ ⊓ ⊤))
-    (w.s (PUnit.unit, PUnit.unit))
-  have hu := inv_eq_self_units_sections_spec_int_top _ (inf_idem _) (w.s (PUnit.unit, PUnit.unit))
-  have hc := congrArg (fun v : Γ(Sp ℤ, ⊤ ⊓ ⊤)ˣ => ev (𝟙 (Sp ℤ)) (Int.castRingHom ℂ) (⊤ ⊓ ⊤) v.val y) hu
-  have key : ev (𝟙 (Sp ℤ)) (Int.castRingHom ℂ) (⊤ ⊓ ⊤) (w.s (PUnit.unit, PUnit.unit)).val y =
-      (ev (𝟙 (Sp ℤ)) (Int.castRingHom ℂ) (⊤ ⊓ ⊤) (w.s (PUnit.unit, PUnit.unit)).val y)⁻¹ :=
-    hc.symm.trans hinv
-  set x := ev (𝟙 (Sp ℤ)) (Int.castRingHom ℂ) (⊤ ⊓ ⊤) (w.s (PUnit.unit, PUnit.unit)).val y
-  have hxx : x * x = 1 := by
-    have h2 : x * x⁻¹ = 1 := mul_inv_cancel₀ hne
-    rwa [← key] at h2
-  have hn : ‖x‖ * ‖x‖ = 1 := by rw [← norm_mul, hxx, norm_one]
-  have hx : ‖x‖ = 1 := by
-    rcases mul_self_eq_one_iff.mp hn with h | h
-    · exact h
-    · linarith [norm_nonneg x]
-  rw [hx] at e
-  simp at e
-  linarith
 
 end GlobalTheory.HermLB
 

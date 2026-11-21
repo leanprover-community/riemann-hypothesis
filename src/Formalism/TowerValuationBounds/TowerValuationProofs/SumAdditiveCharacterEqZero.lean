@@ -27,10 +27,6 @@ lemma additive_map_prod (hv : ∀ x y, v (x * y) = v x + v y) {ι : Type} (s : F
   | empty => simpa using additive_map_one hv
   | insert a s ha ih => rw [prod_insert ha, sum_insert ha, hv, ih]
 
-lemma additive_map_pow (hv : ∀ x y, v (x * y) = v x + v y) (x : G) (n : ℕ) : v (x ^ n) = n * v x := by
-  induction n with
-  | zero => simpa using additive_map_one hv
-  | succ n ih => rw [pow_succ, hv, ih]; push_cast; ring
 
 end aux
 
@@ -106,41 +102,8 @@ theorem tower_bound : TowerProductFormula := by
   rw [eq_div_iff hne, be q le_rfl, al p le_rfl]
   ring
 
-theorem tower_ratio_bound : TowerProductRatioFormula := by
-  intro K _ L L0 c u c0 u0 p q e Ω Ω' hΩ hΩ' hL h1 h2 h3 h4
-  rw [tower_bound K L c u p q e (fun k a b => (hL k a b).1) h1 h2,
-    tower_bound K L0 c0 u0 p q e (fun k a b => (hL k a b).2) h3 h4]
-  have hq : Ω' / Ω ≠ 0 := div_ne_zero hΩ' hΩ
-  have e1 : (c p q * Ω' / Ω) / (c0 p q * Ω' / Ω) = c p q / c0 p q := by
-    rw [mul_div_assoc (c p q) Ω' Ω, mul_div_assoc (c0 p q) Ω' Ω, mul_div_mul_right _ _ hq]
-  rw [e1]
-  simp only [Finset.prod_div_distrib]
-  simp only [div_eq_mul_inv, mul_inv, inv_inv]
-  ring
 
-theorem lemma_u_units : UnitQuotientValuationBound := by
-  intro G _ v hv S S0 ζ Ga Ga' Gb Gb' qv c hζ ha hb
-  have e1 : v (ζ * ∏ s ∈ S0, Ga s / Gb s) = ∑ s ∈ S0, (v (Ga s) - v (Gb s)) := by
-    rw [hv, hζ, additive_map_prod hv, zero_add]
-    exact sum_congr rfl (fun s _ => additive_map_div hv _ _)
-  have key : ∀ s ∈ S0, |v (Ga s) - v (Gb s)| ≤ (c s : ℝ) * v (qv s) := by
-    intro s hs
-    obtain ⟨a1, a2, a3⟩ := ha s hs
-    obtain ⟨b1, b2, b3⟩ := hb s hs
-    have ea : v (Ga s) + v (Ga' s) = c s * v (qv s) := by rw [← hv, a3, additive_map_pow hv]
-    have eb : v (Gb s) + v (Gb' s) = c s * v (qv s) := by rw [← hv, b3, additive_map_pow hv]
-    rw [abs_le]; constructor <;> linarith
-  have m1 : |v (ζ * ∏ s ∈ S0, Ga s / Gb s)| ≤ ∑ s ∈ S0, (c s : ℝ) * v (qv s) := by
-    rw [e1]
-    exact (abs_sum_le_sum_abs _ _).trans (sum_le_sum key)
-  refine ⟨m1, m1.trans (sum_le_sum ?_)⟩
-  intro s hs
-  have := (abs_nonneg _).trans (key s hs)
-  linarith
 
-theorem norm_ratio_bound : NormProductRatio := by
-  intro K _ Ac Ω2 L L0 lo hi hA hΩ
-  rw [prod_div_distrib, div_div_div_cancel_right₀ hΩ, mul_div_mul_left _ _ hA]
 
 theorem lemma_c_gauss_sum : HermitianSumValuationBound := by
   intro K _ v vc conj hconj ι κ _ X z z' gm c0 δ hc0 hz hint hg

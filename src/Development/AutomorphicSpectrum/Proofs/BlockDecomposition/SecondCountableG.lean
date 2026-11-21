@@ -101,11 +101,6 @@ theorem Epow_clm (hR : RCalc) (T : L →L[ℂ] L) (s : Bool) {f : Mat n → L} (
     rw [GlobalTheory.CompanionTheory.WaveAll.Eu_congr GlobalTheory.CompanionTheory.WaveAll.isOpen_GLs (ih c b) s a c hx]
     exact Eu_clm T s a c (GlobalTheory.CompanionTheory.WaveAll.Epow_smooth hR hf s m c b) hx
 
-theorem zOp_congr (w : List (Bool × ℕ)) {f f' : Mat n → L} (h : Set.EqOn f f' (GLs n)) :
-    Set.EqOn (zOp w f) (zOp w f') (GLs n) := by
-  induction w with
-  | nil => exact h
-  | cons p w ih => exact GlobalTheory.CompanionTheory.WaveAll.gel_congr GlobalTheory.CompanionTheory.WaveAll.isOpen_GLs ih p.1 p.2
 
 end Lem
 

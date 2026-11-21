@@ -41,16 +41,7 @@ theorem dnNat_of_tied (Tf : FormsTied D u) : DnNat Tf := by
   rw [h5 h s _ (upn_isTr_inv Tf i hi γ s), Units.val_inv_eq_inv_val]
   rfl
 
-theorem rnd_roundUp_ofM (Tf : FormsTied D u) (hL : RUpLocM Tf) : Formalism.MainNotions.product_first_zeroth_parts.RoundUp D u :=
-  rnd_roundUpN Tf (upNat_of_tied Tf) (dnNat_of_tied Tf) hL
 
-theorem rnd_roundDn_ofM (Tf : FormsTied D u) (hL : RDnLocM Tf) : Formalism.MainNotions.product_first_zeroth_parts.RoundDn D u :=
-  rnd_roundDnN Tf (upNat_of_tied Tf) (dnNat_of_tied Tf) hL
 
-theorem rnd_linkAdmT_ofM
-    (h : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf → RUpLocM Tf ∧ RDnLocM Tf) :
-    LinkAdmT :=
-  rnd_linkAdmT_ofN fun D u Tf hc =>
-    ⟨upNat_of_tied Tf, dnNat_of_tied Tf, (h D u Tf hc).1, (h D u Tf hc).2, splitAtT_of_tied Tf.atT⟩
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases

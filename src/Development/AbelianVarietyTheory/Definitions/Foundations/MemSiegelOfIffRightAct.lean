@@ -302,8 +302,6 @@ def rightAct (l : ι → A) (M : Matrix ι ι A) : ι → A := l ᵥ* (blkMat e 
 
 def rowEval (l w : ι → A) : A := l ⬝ᵥ (blkMat e (1 : Matrix n n A) (-1) *ᵥ w)
 
-theorem sgn_mul_sgn : blkMat e (1 : Matrix n n A) (-1) * blkMat e (1 : Matrix n n A) (-1) = 1 := by
-  simp [blkMat_mul, blkMat_one]
 
 end Siegel
 

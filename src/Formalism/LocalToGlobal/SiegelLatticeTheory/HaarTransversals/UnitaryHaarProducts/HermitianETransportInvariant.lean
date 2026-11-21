@@ -1215,12 +1215,6 @@ theorem hE_span_left (s w : Fin X.B.I.n → X.B.I.E) (hs : s ∈ Submodule.span 
   rw [map_sum]
   simp only [map_smul, smul_eq_mul, hEl_apply, hw', mul_zero, Finset.sum_const_zero, star_zero]
 
-theorem hE_span_right (x s : Fin X.B.I.n → X.B.I.E) (hs : s ∈ Submodule.span X.B.I.E (Set.range X.eR))
-    (hx : ∀ a, hE X x (X.eR a) = 0) : hE X x s = 0 := by
-  rw [span_repr_E X s hs]
-  show hEl X x (∑ b, hE X (X.fR b) s • X.eR b) = 0
-  rw [map_sum]
-  simp only [map_smul, smul_eq_mul, hEl_apply, hx, mul_zero, Finset.sum_const_zero]
 
 theorem e_mem_span (a : Fin D.R.rS) : X.eR a ∈ Submodule.span X.B.I.E (Set.range X.eR) := Submodule.subset_span ⟨a, rfl⟩
 

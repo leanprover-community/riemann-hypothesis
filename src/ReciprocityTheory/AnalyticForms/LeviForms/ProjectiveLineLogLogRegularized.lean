@@ -195,8 +195,6 @@ theorem isRegFamily_inhabited : IsRegFamilyInhabitStatement := by
   · exact tuo_of_eventually (Eventually.of_forall fun _ _ _ => rfl)
   · exact tuo_of_eventually (Eventually.of_forall fun _ _ _ => rfl)
 
-theorem projectiveLineLogLog_inhabited : ProjectiveLineLogLogInhabited :=
-  ⟨fun y => logNormSec_nonpos y, singWeight, 2, T0, projectiveLine_isRegFamily, projectiveLine_isRegFamilyC2⟩
 
 theorem isRegFamilyInhabit : IsRegFamilyInhabitStatement := isRegFamily_inhabited
 

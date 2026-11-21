@@ -46,23 +46,7 @@ def DensApprox (P : (V → ℝ) → Prop) (μ : Measure V) (f : V → Y) (ι : X
     (U : Set V) : Prop :=
   DensOn P μ f ι ν → DensOn (IsCcOn U) μ f ι ν
 
-theorem densOn_of [T2Space X] [OpensMeasurableSpace X] {P : (V → ℝ) → Prop} {μ : Measure V}
-    {f : V → Y} {ι : X → Y} {χ : Y → X → ℂ} {ν : Measure X} [IsFiniteMeasureOnCompacts ν]
-    (h1 : NSPhase P μ f χ ν) (h2 : InvDens P μ f ι χ ν) : DensOn P μ f ι ν := by
-  intro φ hφ
-  obtain ⟨hc, hS⟩ := h2 φ hφ (h1 φ hφ)
-  refine ⟨fun b => (invT μ f ι χ ν φ b).re, Complex.continuous_re.comp hc, fun S hSc => ?_⟩
-  have e := hS S hSc
-  have hi : IntegrableOn (invT μ f ι χ ν φ) S ν := hc.continuousOn.integrableOn_compact hSc
-  have h3 : ∫ b in S, (invT μ f ι χ ν φ b).re ∂ν = (∫ b in S, invT μ f ι χ ν φ b ∂ν).re :=
-    integral_re hi
-  rw [h3, ← e, integral_complex_ofReal, Complex.ofReal_re]
 
-theorem densAll_of_four [T2Space X] [OpensMeasurableSpace X] {P : (V → ℝ) → Prop}
-    {μ : Measure V} {f : V → Y} {ι : X → Y} {χ : Y → X → ℂ} {ν : Measure X}
-    [IsFiniteMeasureOnCompacts ν] {U : Set V} (h1 : NSPhase P μ f χ ν) (h2 : InvDens P μ f ι χ ν)
-    (h3 : DensApprox P μ f ι ν U) : DensAll μ f ι ν U :=
-  (densAll_iff μ f ι ν U).2 (h3 (densOn_of h1 h2))
 
 end Four
 

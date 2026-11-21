@@ -109,14 +109,5 @@ theorem vdeg (K : FinExt l) {m : ℕ} (hm : 0 < m) :
   rw [e, padicValNat.mul (pow_pos (Fact.out : l.Prime).pos _).ne' h0, padicValNat.prime_pow]
   omega
 
-theorem gK_zero (K : FinExt l) (h2 : finrank ℚ_[l] ↥K.1 = finrank ℚ_[l] ↥(K0 K) * 2) :
-    padicValNat l (finrank ℚ_[l] ↥(Ks K 1)) - padicValNat l (finrank ℚ_[l] ↥K.1) = 0 := by
-  have hp := finrank_maxUnramifiedSubfield_padicFinExt_pos K
-  have hl := (Fact.out : l.Prime).one_lt
-  have h1 : padicValNat l (l - 1) = 0 := padicValNat.eq_zero_of_not_dvd (Nat.not_dvd_of_pos_of_lt (by omega) (by omega))
-  rw [finrank_Ks K one_pos, h2]
-  simp only [Nat.sub_self, pow_zero, one_mul]
-  rw [padicValNat.mul hp.ne' (by omega), padicValNat.mul hp.ne' (by omega), h1]
-  omega
 
 end Formalism.MainNotions.N.PreambleDegrees

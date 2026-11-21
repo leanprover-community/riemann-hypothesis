@@ -81,7 +81,6 @@ def fcOf (R : Ranks) (i : ℕ) : ℕ := if R.m ≤ i + 1 then R.k else R.N i
 
 theorem fcOf_lt {R : Ranks} {i : ℕ} (h : i + 1 < R.m) : fcOf R i = R.N i := if_neg (Nat.not_le.2 h)
 
-theorem fcOf_ge {R : Ranks} {i : ℕ} (h : R.m ≤ i + 1) : fcOf R i = R.k := if_pos h
 
 set_option maxHeartbeats 1000000 in
 

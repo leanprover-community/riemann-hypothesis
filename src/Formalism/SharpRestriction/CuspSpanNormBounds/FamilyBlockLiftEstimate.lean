@@ -87,9 +87,6 @@ def IsInvC (Lt : Lev) (o : ℕ) (Θ : Lt.GF → Lt.GF) : Prop :=
     ∀ n' ∈ Nset (Lt.k0 + 1) Lt.r, ∀ F : Lt.GF, (∀ g ∈ UH (Hpk (Lt.k0 + 1) Lt.r), CkAt Lt o F g) →
       ∀ g ∈ UH (Hpk (Lt.k0 + 1) Lt.r), Θ (Lt.act h n h' n' F) g = Lt.act h n h' n' (Θ F) g
 
-theorem IsInvC.isInv {Lt : Lev} {o : ℕ} {Θ : Lt.GF → Lt.GF} (h : IsInvC Lt o Θ) : Lt.IsInv Θ := by
-  intro h₀ hh₀ n hn h' hh' n' hn' F hF g hg
-  exact h h₀ hh₀ n hn h' hh' n' hn' F (fun g' hg' => CkAt.of_smooth hF o hg') g hg
 
 def BigPosR (Lt : Lev) : Set (Mat Lt.k0 Lt.r) :=
   {g | g ∈ UH (Hpk (Lt.k0 + 1) Lt.r) ∧ (∀ l : Fin (Lt.r + 2), Dmin (Lt.k0 + 1) Lt.r Lt.z Lt.z' g l ≠ 0) ∧

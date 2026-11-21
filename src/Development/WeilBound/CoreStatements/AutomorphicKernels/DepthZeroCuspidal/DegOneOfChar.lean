@@ -15,9 +15,6 @@ namespace PositivityTheory.LocalParametersCuspidal.DZC
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
 
-theorem deg_one_ofChar (x : IrrGL (w.adicCompletion E)) (hx : x.1 = 1) :
-    ∃ (χ : (w.adicCompletion E)ˣ →* ℂˣ) (hχ : IsSmoothChar χ), x = IrrGL.ofChar χ hχ :=
-  GlobalTheory.LocGL.TemperedTests.exists_eq_ofChar x hx
 
 end PositivityTheory.LocalParametersCuspidal.DZC
 

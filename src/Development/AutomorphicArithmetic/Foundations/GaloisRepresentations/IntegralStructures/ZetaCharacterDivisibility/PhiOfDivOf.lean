@@ -158,10 +158,6 @@ def CentU : Prop :=
     ∃ (χ : HChar E) (n : (E →+* ℂ) → ℤ), IsAlgPos χ n ∧ ∀ w : HeightOneSpectrum (𝓞 E), IsSplitAt w → ∀ B : Multiset ℂˣ, SatU U w B →
       χ.UnrAt w ∧ χ.val w = B.prod
 
-theorem phiOfDiv_of (h1 : DetEx) (h2 : DivDet) (h3 : PhiSeed) : PhiOfDiv := by
-  intro E Ω _ _ _ _ _ _ l _ ι a ha d hd U hU r hr dd ρ hc hs hin w hw B hB hg hk
-  obtain ⟨ψ, hψ⟩ := h1 E Ω l ι a ha U hU
-  exact h3 E Ω l ι a dd U ψ hψ r ρ hc hs hin (h2 E Ω l ι a d hd U hU ψ hψ r hr) w hw B hB hg hk
 
 theorem divAll_of (h1 : DetEx) (h2 : DivDet) (h3 : PhiSeed) (h4 : DivOne) (h5 : DivUniq) (h6 : IsoMove) (h7 : FrobeniusCondition)
     (h8 : JumpCondition) (h9 : SubLoc) : DivAll := by

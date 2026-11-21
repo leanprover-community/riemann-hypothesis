@@ -8,13 +8,7 @@ open Formalism.BasicNotions Formalism.FrobeniusOrbits NumberField
 
 def ej (R : Ranks) (p : HCParam R) (j : ℕ) : ℝ := if h : j - 1 < R.m then ((p.e ⟨j - 1, h⟩ : ℚ) : ℝ) else 0
 
-theorem wj_ej (D : D7) (j : ℕ) (τ : D.what₂.Tau) : wj D j τ = ej D.R (D.hc τ) j := rfl
 
-theorem forall_tau (D : D7) {Φ : ↥(D.R.Psi) → HCParam D.R → Prop} (h : ∀ g, Φ g ((coreOf D).2.2 g))
-    (τ : D.what₂.Tau) : Φ (D.eTau τ) (D.hc τ) := by
-  have h1 := h (D.eTau τ)
-  have e : (coreOf D).2.2 (D.eTau τ) = D.hc τ := congrArg D.hc (D.eTau.symm_apply_apply τ)
-  rwa [e] at h1
 
 structure CoreLed (R : Ranks) (H : Host R) (hc : ↥(R.Psi) → HCParam R) (sc : Scale) (a b : ℕ → ℤ)
     (η Cc Ct : ℝ) (j0 : ℕ) (Del : ℝ) : Prop where

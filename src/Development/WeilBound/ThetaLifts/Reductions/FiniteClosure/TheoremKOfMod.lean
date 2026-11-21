@@ -17,9 +17,6 @@ theorem theoremK_head2_of_mod (hM : PositivityTheory.Sph.ModSt) (h11 : GlobalThe
     (lieSecond2 localLift_holds PositivityTheory.RL.derEx) (archLie' localLift_holds) (kReal' localLift_holds)
     (siegel_of_core PositivityTheory.Prw.siegelCore_holds) h11 h12 PositivityTheory.ThKW.weilEx
 
-theorem thetaIntegralsAgree_and_localMatching_of_siegelWeil (hM : PositivityTheory.Sph.ModSt) (_P : GlobalTheory.FunPr.Hypotheses₂) (h11 : GlobalTheory.ThK.Dbl.EisBL)
-    (h12 : GlobalTheory.ThK.Dbl.SiegelWeilStd) : ThetaIntegralsAgree ∧ LocalMatching :=
-  theoremK_head2_of_mod hM h11 h12
 
 theorem theoremK_head2 (h11 : GlobalTheory.ThK.Dbl.EisBL) (h12 : GlobalTheory.ThK.Dbl.SiegelWeilStd) : ThetaIntegralsAgree ∧ LocalMatching :=
   theoremK_head2_of_mod PositivityTheory.Sph.modSt2 h11 h12

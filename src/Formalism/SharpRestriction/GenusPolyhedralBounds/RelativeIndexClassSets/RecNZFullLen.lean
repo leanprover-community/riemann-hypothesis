@@ -6,83 +6,7 @@ namespace Formalism.MainNotions.Gaps.RN
 
 open TensorProduct IsLocalRing IsDiscreteValuationRing
 
-private theorem length_quot_span_singleton_dvr_lemma {O : Type*} [CommRing O] [IsDomain O]
-    [IsDiscreteValuationRing O] (ϖ : O) (hϖ : Irreducible ϖ) (n : ℕ) :
-    Module.length O (O ⧸ Ideal.span {ϖ ^ n}) = n := by
-  induction n with
-  | zero =>
-    rw [pow_zero, Nat.cast_zero, Module.length_eq_zero_iff, Ideal.Quotient.subsingleton_iff,
-      Ideal.span_singleton_one]
-  | succ n ih =>
-    let f : (O ⧸ Ideal.span {ϖ}) →ₗ[O] (O ⧸ Ideal.span {ϖ ^ (n + 1)}) :=
-      (Ideal.span {ϖ}).mapQ (Ideal.span {ϖ ^ (n + 1)}) (LinearMap.mulLeft O (ϖ ^ n)) (by
-        intro x hx
-        obtain ⟨a, rfl⟩ := Ideal.mem_span_singleton'.mp hx
-        refine Submodule.mem_comap.mpr (Ideal.mem_span_singleton'.mpr ⟨a, ?_⟩)
-        rw [LinearMap.mulLeft_apply]
-        ring)
-    let g : (O ⧸ Ideal.span {ϖ ^ (n + 1)}) →ₗ[O] (O ⧸ Ideal.span {ϖ ^ n}) :=
-      (Ideal.span {ϖ ^ (n + 1)}).mapQ (Ideal.span {ϖ ^ n}) LinearMap.id (by
-        intro x hx
-        obtain ⟨a, rfl⟩ := Ideal.mem_span_singleton'.mp hx
-        refine Submodule.mem_comap.mpr (Ideal.mem_span_singleton'.mpr ⟨a * ϖ, ?_⟩)
-        rw [LinearMap.id_apply]
-        ring)
-    have hf : Function.Injective f := by
-      rw [injective_iff_map_eq_zero]
-      intro x hx
-      obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-      change Submodule.Quotient.mk (ϖ ^ n * x) = (0 : O ⧸ Ideal.span {ϖ ^ (n + 1)}) at hx
-      rw [Submodule.Quotient.mk_eq_zero] at hx
-      rw [Submodule.Quotient.mk_eq_zero]
-      obtain ⟨a, ha⟩ := Ideal.mem_span_singleton'.mp hx
-      refine Ideal.mem_span_singleton'.mpr ⟨a, ?_⟩
-      have hne : ϖ ^ n ≠ 0 := pow_ne_zero _ hϖ.ne_zero
-      apply mul_left_cancel₀ hne
-      rw [← ha]
-      ring
-    have hg : Function.Surjective g := by
-      intro y
-      obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-      exact ⟨Submodule.Quotient.mk y, rfl⟩
-    have hex : Function.Exact f g := by
-      intro y
-      obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-      change Submodule.Quotient.mk y = (0 : O ⧸ Ideal.span {ϖ ^ n}) ↔ _
-      rw [Submodule.Quotient.mk_eq_zero]
-      constructor
-      · intro hy
-        obtain ⟨a, rfl⟩ := Ideal.mem_span_singleton'.mp hy
-        refine ⟨Submodule.Quotient.mk a, ?_⟩
-        change Submodule.Quotient.mk (ϖ ^ n * a) = (Submodule.Quotient.mk (a * ϖ ^ n) : O ⧸ Ideal.span {ϖ ^ (n + 1)})
-        rw [mul_comm]
-      · rintro ⟨x, hx⟩
-        obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-        change Submodule.Quotient.mk (ϖ ^ n * x) = (Submodule.Quotient.mk y : O ⧸ Ideal.span {ϖ ^ (n + 1)}) at hx
-        rw [Submodule.Quotient.eq] at hx
-        obtain ⟨b, hb⟩ := Ideal.mem_span_singleton'.mp hx
-        refine Ideal.mem_span_singleton'.mpr ⟨x - b * ϖ, ?_⟩
-        linear_combination -hb
-    have hs : Module.length O (O ⧸ Ideal.span {ϖ}) = 1 := by
-      have hm : IsLocalRing.maximalIdeal O = Ideal.span {ϖ} := by
-        first
-          | exact (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
-          | exact hϖ.maximalIdeal_eq
-      rw [Module.length_eq_one_iff, ← hm]
-      first
-        | exact isSimpleModule_iff_isCoatom.mpr (IsLocalRing.maximalIdeal.isMaximal O).out
-        | exact isSimpleModule_iff_isCoatom.mpr (Ideal.isMaximal_def.mp (IsLocalRing.maximalIdeal.isMaximal O))
-        | infer_instance
-    rw [Module.length_eq_add_of_exact f g hf hg hex, hs, ih]
-    push_cast
-    ring
 
-theorem length_quot_span_singleton_dvr {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (t : O)
-    (ht : t ≠ 0) : Module.length O (O ⧸ Ideal.span {t}) = addVal O t := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
-  obtain ⟨n, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible ht hϖ
-  rw [IsDiscreteValuationRing.addVal_def _ u hϖ n rfl, Ideal.span_singleton_mul_left_unit u.isUnit]
-  exact length_quot_span_singleton_dvr_lemma ϖ hϖ n
 
 open Classical in
 
@@ -160,24 +84,6 @@ theorem length_pi_span_quot (A O : Type*) [CommRing A] [CommRing O] [Algebra A O
     simp only [map_smul, Submodule.mkQ_apply, hs]
   exact LinearEquiv.length_eq (LinearEquiv.ofLinear Φbar Ψ h1 h2)
 
-theorem lenBaseChangeDVR : LenBaseChangeDVR := by
-  intro A O _ _ _ _ _ _ f hloc hinj ϖ hϖ ι _ N
-  letI : Algebra A O := f.toAlgebra
-  haveI : IsLocalHom (algebraMap A O) := hloc
-  haveI : Module.IsTorsionFree A O := Module.IsTorsionFree.of_smul_eq_zero (fun a c h => by
-    rw [Algebra.smul_def, mul_eq_zero] at h
-    exact h.imp_left (fun h0 => hinj (h0.trans (map_zero f).symm)))
-  haveI : Module.Flat A O := inferInstance
-  have h0 : f ϖ ≠ 0 := fun h => hϖ.ne_zero (hinj (h.trans (map_zero f).symm))
-  have h1 := length_pi_span_quot A O ι N
-  have h2 : (IsLocalRing.maximalIdeal A).map (algebraMap A O) = Ideal.span {f ϖ} := by
-    rw [hϖ.maximalIdeal_eq, Ideal.map_span, Set.image_singleton]
-    rfl
-  have h3 : ((addVal O (f ϖ)).toNat : ℕ∞) = addVal O (f ϖ) :=
-    ENat.coe_toNat (fun h => h0 (addVal_eq_top_iff.1 h))
-  rw [IsLocalRing.length_baseChange, h2, length_quot_span_singleton_dvr _ h0] at h1
-  rw [h3, mul_comm]
-  exact h1
 
 end Formalism.MainNotions.Gaps.RN
 

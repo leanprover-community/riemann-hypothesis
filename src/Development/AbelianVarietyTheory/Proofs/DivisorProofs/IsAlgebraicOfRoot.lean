@@ -329,14 +329,6 @@ def HasTuples (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.
         ∀ x, R'.ioP j (PiTensorProduct.tprod ℂ u') (c' x) = R.ioP j (PiTensorProduct.tprod ℂ u) (c x)) ∧
     ∃ t t', IsTupOf R' B ψ t ∧ IsTupOf R' B ψ' t'
 
-theorem hasTuples_self {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F} {F : Face D A}
-    {κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec}
-    {O : ∀ i, OMDat T.toCore R i Unit (fun _ => A.μ0)} {ph : Fin D.R.m → ℂ} {j : Fin D.R.m} {B : Base (Vc D j) (Wc D j)}
-    {ψ ψ' : Twist D Circle} (h1 : GlobalTheory.Hk3.Core R F) (h2 : Finite T0) (h3 : Nonempty (FWTie T R κ v₀)) (h4 : IoExt R) (h5 : QGuard R)
-    (h6 : OMPins T R κ v₀ O j) (h7 : PhaseTie T R κ v₀ O ph j) (h8 : BaseOf R j B) {t t' : T0} (ht : IsTupOf R B ψ t)
-    (ht' : IsTupOf R B ψ' t') : HasTuples T R κ v₀ O ph j B ψ ψ' :=
-  ⟨T0, A, R, F, v₀, O, h1, h2, h3, h4, h5, h6, h7, h8, fun _ h => h, fun _ _ _ _ h => h, fun c u hc hu => ⟨c, u, hc, hu, fun _ => rfl⟩,
-    t, t', ht, ht'⟩
 
 end Tuples
 

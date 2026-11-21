@@ -19,26 +19,8 @@ def scBig (B : ℕ) : Scale where
   J := 1
   one_le_J := le_rfl
 
-theorem scBig_floor (B : ℕ) : ⌊(scBig B).x ^ ((scBig B).ez / 5)⌋₊ = B + 2 := by
-  have h0 : (0 : ℝ) ≤ ((B + 2 : ℕ) : ℝ) := by positivity
-  have ee : (scBig B).ez = (scBig B).eps := div_one _
-  rw [ee]
-  simp only [scBig]
-  rw [← Real.rpow_mul h0]
-  have e : (500 : ℝ) * (1 / 100 / 5) = 1 := by norm_num
-  rw [e, Real.rpow_one, Nat.floor_natCast]
 
-theorem sizeData_sc_not_surjective : ∀ D : D7, ¬ ∀ sc : Scale, ∃ L : SizeData₂ D, L.sc = sc := by
-  intro D h
-  obtain ⟨L, hL⟩ := h (scBig D.host.splitBound)
-  have h1 := L.split_tie
-  rw [hL, scBig_floor] at h1
-  omega
 
-theorem scale_a_nonneg (sc : Scale) : 0 ≤ sc.a := by
-  unfold Scale.a Scale.b
-  have := sc.one_lt_alt
-  positivity
 
 theorem scale_L_pos (sc : Scale) : 0 < sc.L := by
   unfold Scale.L
@@ -170,10 +152,6 @@ def toySizeData (D : D7) (sc : Scale)
   wPart_ge := fun _ _ _ _ => le_rfl
   lenMN := fun _ _ => 0
 
-theorem toySizeData_sc (D : D7) (sc : Scale) (hTT hEta hTu hb hsplit ho hQS j0 hj0 hLw hT2 hmu η Cc hη hthick hthin
-    hcg hcv hcu hbe) :
-    (toySizeData D sc hTT hEta hTu hb hsplit ho hQS j0 hj0 hLw hT2 hmu η Cc hη hthick hthin hcg hcv hcu hbe).sc = sc :=
-  rfl
 
 def sc0 : Scale where
   x := (2 : ℝ) ^ (200 : ℝ)
@@ -336,7 +314,5 @@ def sizeDataAt0 (D : D7) (hR : D.R = R0) (hTT : D.host.TT = ∅)
       rw [abs_le]
       constructor <;> linarith)
 
-theorem sizeDataAt0_sc (D : D7) (hR hTT hEta hT hsb hQS hLw hT2 hmu hDel hv hu0 hu hb he) :
-    (sizeDataAt0 D hR hTT hEta hT hsb hQS hLw hT2 hmu hDel hv hu0 hu hb he).sc = sc0 := rfl
 
 end Formalism.BasicNotions.Examples₂

@@ -49,9 +49,6 @@ def ptIdeal {O A : Type} [CommRing O] [CommRing A] [HopfAlgebra O A]
     (Q : Subgroup (WithConv (A →ₐ[O] O))) : Ideal A :=
   ⨅ q : Q, RingHom.ker q.1.ofConv
 
-theorem isInv_bot {O A : Type} [CommRing O] [CommRing A] [HopfAlgebra O A] (a : A) :
-    IsInv (⊥ : Subgroup (WithConv (A →ₐ[O] O))) a := fun x q hq => by
-  rw [Subgroup.mem_bot.1 hq, mul_one]
 
 def QuotTower.trivial {p : ℕ} {O : Type} [CommRing O] (G : PDivGroup p O) : QuotTower G where
   B m := G.A (m + 1)
@@ -101,10 +98,6 @@ def QuotTower.full {p : ℕ} {O : Type} [CommRing O] (G : PDivGroup p O) : QuotT
   tors_le m := by
     rw [← kerIdeal_comp_of_surjective _ (G.res_surjective m), G.mulP_comp_res]
 
-theorem QuotTower.kerIdeal_full {p : ℕ} {O : Type} [CommRing O] (G : PDivGroup p O) (m : ℕ) :
-    kerIdeal ((QuotTower.full G).j m) = torsionIdeal O (G.A (m + 1)) p := by
-  change kerIdeal (G.mulP m) = _
-  rw [← kerIdeal_comp_of_surjective _ (G.res_surjective m), G.mulP_comp_res]
 
 theorem QuotTower.map_res_kerIdeal {p : ℕ} {O : Type} [CommRing O] {G : PDivGroup p O}
     (T : QuotTower G) (m : ℕ) :
@@ -114,32 +107,8 @@ theorem QuotTower.map_res_kerIdeal {p : ℕ} {O : Type} [CommRing O] {G : PDivGr
     BialgHom.ext fun b => (T.j_r m b).symm
   rw [← kerIdeal_comp, h, kerIdeal_comp_of_surjective (T.j m) (T.r_surjective m)]
 
-theorem QuotTower.kerIdeal_full_mu_ne (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [Nontrivial O] :
-    kerIdeal ((QuotTower.full (PDivGroup.mu p O)).j 0) ≠ augIdeal O ((PDivGroup.mu p O).A 1) := by
-  rw [QuotTower.kerIdeal_full]
-  intro h
-  have h1 : torsionIdeal O ((PDivGroup.mu p O).A 1) p ≤ RingHom.ker (AlgHom.id O _) :=
-    (torsionIdeal_le_ker_iff p _).2 (by
-      simpa using (PDivGroup.mu p O).pts_pow_self 1 (WithConv.toConv (AlgHom.id O _)))
-  have h2 : muT O (p ^ 1) - 1 ∈ augIdeal O ((PDivGroup.mu p O).A 1) := by
-    change counit (R := O) (muT O (p ^ 1) - 1) = 0
-    rw [map_sub, (isGroupLikeElem_muT O _).counit_eq_one, Bialgebra.counit_one, sub_self]
-  have h3 : muT O (p ^ 1) = 1 := sub_eq_zero.1 (h1 (h.ge h2))
-  haveI : Fact (1 < p ^ 1) := ⟨by simpa using (Fact.out : p.Prime).one_lt⟩
-  have h4 : (AddMonoidAlgebra.single (1 : ZMod (p ^ 1)) (1 : O)) = AddMonoidAlgebra.single 0 1 := h3
-  exact one_ne_zero (AddMonoidAlgebra.single_left_injective one_ne_zero h4)
 
-theorem ptIdeal_bot {O A : Type} [CommRing O] [CommRing A] [HopfAlgebra O A] :
-    ptIdeal (⊥ : Subgroup (WithConv (A →ₐ[O] O))) = augIdeal O A := by
-  ext a
-  simp only [ptIdeal, Ideal.mem_iInf, RingHom.mem_ker, Subtype.forall, Subgroup.mem_bot,
-    forall_eq]
-  exact Iff.rfl
 
-theorem isInv_algebraMap {O A : Type} [CommRing O] [CommRing A] [HopfAlgebra O A]
-    (Q : Subgroup (WithConv (A →ₐ[O] O))) (c : O) : IsInv Q (algebraMap O A c) := by
-  intro x q _
-  simp
 
 example {p : ℕ} {O : Type} [CommRing O] (G : PDivGroup p O) (m : ℕ) :
     (QuotTower.full G).B m = G.A m := rfl

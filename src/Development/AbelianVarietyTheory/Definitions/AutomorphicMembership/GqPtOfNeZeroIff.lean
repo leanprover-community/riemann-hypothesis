@@ -207,8 +207,6 @@ theorem exists_rep (hJ : IsUnit J.det) (hP : IsFrame σ J T P) (h : Λ ∈ Frame
 
 variable {t}
 
-theorem Rep.minor_eq (h : t.Rep Λ A) (l : ℕ) (hl : l ≤ r + 1) :
-    t.minor l hl = SgAlg.lead (pairM σ J A P) l hl := (Transp.lead_eq h l hl).symm
 
 theorem Rep.G_eq (h : t.Rep Λ A) (hP : IsFrame σ J T P) : t.G = Gq σ T T' (pairM σ J A P) := by
   rw [Term.G, normOf_eq hP]; exact (Transp.Gq_eq h T T').symm
@@ -230,13 +228,6 @@ theorem Rep.ptOf_eq (h : t.Rep Λ A) (hJ : IsUnit J.det) :
   classical
   exact if_congr (exists_congr (h.at_iff hJ)) rfl rfl
 
-theorem Rep.BBne_iff (h : t.Rep Λ A) (hJ : IsUnit J.det) (hP : IsFrame σ J T P) (hΛ : Λ ∈ FrameLats σ J P)
-    (F : Type) [Field F] [Algebra F E] (p : HeightOneSpectrum (𝓞 F)) :
-    t.BBne F p ↔ DefectAt F (defLat g Λ P A) Λ p := by
-  obtain ⟨s, hs, e1, e2⟩ := Transp.defLat_eq (g := g) hJ hP.1 t.lat_mem.2 hΛ.2 h
-  rw [← e2]
-  conv_rhs => enter [3]; rw [← e1]
-  exact (defectAt_latMap F hs p).symm
 
 theorem Rep.prim_iff (h : t.Rep Λ A) (hJ : IsUnit J.det) (hP : IsFrame σ J T P) (hΛ : Λ ∈ FrameLats σ J P) :
     t.prim ↔ PrimIn (defLat g Λ P A) Λ := by
@@ -254,15 +245,7 @@ theorem Rep.generic_iff (h : t.Rep Λ A) (hJ : IsUnit J.det) (hP : IsFrame σ J 
 
 variable (t)
 
-theorem G_eq_minor (hP : IsFrame σ J T P) :
-    t.G = t.minor (r + 1) le_rfl * σ (t.minor (r + 1) le_rfl) -
-      T * T' * (t.minor r (Nat.le_succ r) * σ (t.minor r (Nat.le_succ r))) := by
-  rw [Term.G, normOf_eq hP]; rfl
 
-theorem algebraMap_GF (F : Type) [Field F] [Algebra F E] (hσ : ∀ x, σ (σ x) = x)
-    (hF : ∀ x, σ x = x → x ∈ (algebraMap F E).range) (hP : IsFrame σ J T P) (hT : σ T = T) (hT' : σ T' = T') :
-    algebraMap F E (t.GF F) = t.G :=
-  Function.invFun_eq (hF _ (map_Gq hσ (by rwa [normOf_eq hP]) hT'))
 
 theorem M_eq (hg : g ≠ 0) {u : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (hu : u ∈ UO E r)
     (h : Cong g t.lat (P * u) t.fr) : t.M = pairLat g (P * u) t.fr :=
@@ -270,25 +253,12 @@ theorem M_eq (hg : g ≠ 0) {u : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (hu : u �
 
 theorem M_le : t.M ≤ t.lat := inf_le_left
 
-theorem prim_iff_BB : t.prim ↔ Subsingleton t.BB := primIn_iff_subsingleton t.M_le
 
-theorem prim_iff_BBne (F : Type) [Field F] [NumberField F] [Algebra F E] : t.prim ↔ ∀ p, ¬ t.BBne F p :=
-  primIn_iff_defectAt F t.M_le
 
 theorem generic_iff : t.generic ↔ t.G ≠ 0 ∧ t.prim := Iff.rfl
 
-theorem generic_iff_BB : t.generic ↔ t.G ≠ 0 ∧ Subsingleton t.BB :=
-  and_congr_right fun _ => primIn_iff_subsingleton t.M_le
 
-theorem generic_iff_BBne (F : Type) [Field F] [NumberField F] [Algebra F E] :
-    t.generic ↔ t.G ≠ 0 ∧ ∀ p, ¬ t.BBne F p :=
-  and_congr_right fun _ => primIn_iff_defectAt F t.M_le
 
-theorem generic.mem_genConf {t : Term σ J T' g P} (h : t.generic) (hg : g ≠ 0) (hP : IsFrame σ J T P) :
-    ∃ u ∈ UO E r, ((t.lat, P * u, t.fr) : Tri E n r) ∈ GenConf σ J T T' g (cT σ u * t.Zhat) := by
-  obtain ⟨u, hu, k⟩ := t.adm.2
-  refine ⟨u, hu, t.lat_mem.1, ⟨isFrame_mul hP hu.1, t.adm.1.1, ?_⟩, t.M_eq hg hu k ▸ h.2⟩
-  simpa [Term.Zhat] using pairM_mul (σ := σ) (J := J) (P := P) (P' := t.fr) 1 u
 
 theorem at_ptOf (h : ∃ w, t.At w) : t.At t.ptOf := by
   rw [Term.ptOf, ptOrNull, if_pos (show ∃ w, LiesAt w t.Zhat from h)]; exact liesAt_ptOfMat h
@@ -297,34 +267,10 @@ theorem At.Gq_eq {t : Term σ J T' g P} {w : Formalism.MainNotions.S.Point E (r 
     Gq σ T T' (Formalism.MainNotions.S.ptMat w) = t.G := by
   rw [Term.G, normOf_eq hP]; exact LiesAt.Gq_eq h T T'
 
-theorem Gq_ptOf_of_not_at (hP : IsFrame σ J T P) {ζ : E} (hζ : ζ ≠ 0) (h : ζ * σ ζ = T * T')
-    (k : ¬ ∃ w, t.At w) : Gq σ T T' (Formalism.MainNotions.S.ptMat t.ptOf) = 0 := by
-  rw [Term.ptOf, ptOrNull, if_neg (show ¬ ∃ w, LiesAt w t.Zhat from k), normOf_eq hP]; exact Gq_nullPt hζ h
 
-theorem Gq_ptOf_ne_zero_iff (hP : IsFrame σ J T P) {ζ : E} (hζ : ζ ≠ 0) (h : ζ * σ ζ = T * T') :
-    Gq σ T T' (Formalism.MainNotions.S.ptMat t.ptOf) ≠ 0 ↔ t.G ≠ 0 ∧ t.At t.ptOf := by
-  refine ⟨fun k => ?_, fun k => by rw [k.2.Gq_eq hP]; exact k.1⟩
-  have a := t.at_ptOf (by_contra fun a => k (t.Gq_ptOf_of_not_at hP hζ h a))
-  exact ⟨a.Gq_eq hP ▸ k, a⟩
 
-theorem isId_iff_FeqF (hJ : IsUnit J.det) (hP : IsFrame σ J T P) : t.isId ↔ t.FeqF := by
-  constructor
-  · rintro ⟨h, e⟩
-    exact (move_equivalence hJ).symm ((mk_eq_mk hJ t.col t.adm h).1 (t.mk_fr.trans e))
-  · intro h
-    have k : Unip P t.fr := (Transp.unip_iff hJ (Move.transp hP h)).2 ⟨1, up_one, by simp⟩
-    obtain rfl := k.norm_eq hP t.adm.1.1
-    exact ⟨tower_admissible_self ⟨hP, t.lat_mem.2⟩,
-      t.mk_fr.symm.trans ((mk_eq_mk hJ t.col t.adm _).2 ((move_equivalence hJ).symm h))⟩
 
-theorem inS_iff_FeqF (hJ : IsUnit J.det) (hP : IsFrame σ J T P) : t.inS ↔ t.FeqF := by
-  refine ⟨fun h => ?_, fun h => (Transp.unip_iff hJ (Move.transp hP h)).2 ⟨1, up_one, by simp⟩⟩
-  obtain ⟨a, ha, e⟩ := Unip.exists_UO h ⟨hP, t.lat_mem.2⟩ t.adm.1.2.1
-  exact ⟨1, ⟨inN_one, latMap_one _⟩, a, ha, by rwa [Matrix.one_mul]⟩
 
-theorem inS_iff_of_carries (hJ : IsUnit J.det) (hP : IsFrame σ J T P) {c' : Col σ J P}
-    {γ : Matrix (Fin n) (Fin n) E} (h : t.Carries c' γ) : t.inS ↔ InS σ J P γ :=
-  (Transp.unip_iff hJ (Move.transp hP h.2.2)).trans ⟨fun k => inS_iff.2 ⟨h.1, k⟩, fun k => (inS_iff.1 k).2⟩
 
 theorem inS.props {t : Term σ J T' g P} (h : t.inS) (hP : IsFrame σ J T P) (hT : σ T = T) :
     t.sameFlag ∧ t.relevant ∧ t.G = 0 ∧ T' = T := by
@@ -347,9 +293,6 @@ theorem inS.prim {t : Term σ J T' g P} (h : t.inS) (hP : IsFrame σ J T P) : t.
   rw [e, frameLat_mul ha, sup_idem] at this
   exact (Submodule.smul_mem_iff _ (Nat.cast_ne_zero.2 hg)).1 (Submodule.subset_span this)
 
-theorem existsUnique_isId (hP : IsFrame σ J T P) (c : Col σ J P) :
-    ∃! t : Term σ J T g P, t.col = c ∧ t.isId :=
-  ⟨mk c P (tower_admissible_self ⟨hP, c.lat_mem.2⟩), ⟨rfl, _, rfl⟩, fun t ⟨e, h, k⟩ => by subst e; exact k⟩
 
 theorem exists_generic (hσ : ∀ x, σ (σ x) = x) (hJ : IsHermU σ J) (hg : g ≠ 0)
     {Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (h : ((Λ, P, A) : Tri E n r) ∈ GenConf σ J T T' g Z)
@@ -373,26 +316,7 @@ section Examples
 
 variable {E : Type} [Field E] [NumberField E]
 
-theorem exists_term_plane (σ : E →+* E) (hσ : ∀ x, σ (σ x) = x) {g : ℕ} (hg : g ≠ 0) :
-    ∃ t : Term (r := 0) σ !![1, 0; 0, -1] (1 + 2 * g) g !![0; 1], t.generic ∧ t.G = (g : E) ^ 2 ∧ ¬ t.inS := by
-  have hG : Gq (r := 0) σ 1 (1 + 2 * g) !![-1 - (g : E)] ≠ 0 := by
-    rw [Inhab.gq_zero]; exact pow_ne_zero _ (Nat.cast_ne_zero.2 hg)
-  obtain ⟨t, -, h1, h2⟩ := Term.exists_generic hσ (Inhab.inhabitants σ hg).1.1 hg (Inhab.mem_genConf_zero σ hg) hG
-  exact ⟨t, h1, h2.trans (Inhab.gq_zero σ g),
-    fun h => h1.1 (h.props (Inhab.mem_genConf_zero σ hg).2.1.1 (map_one σ)).2.2.1⟩
 
-theorem exists_term_split (σ : E →+* E) (hσ : ∀ x, σ (σ x) = x) (τ : E →+* ℂ)
-    (hτ : ∀ x, τ (σ x) = starRingEnd ℂ (τ x)) {g : ℕ} (hg : g ≠ 0) :
-    (∃ t : Term σ (Inhab.splitJ E) (1 + 2 * g) g (Inhab.splitP E), t.generic) ∧
-      ∃ t : Term σ (Inhab.splitJ E) 1 g (Inhab.splitP E), t.isId := by
-  obtain ⟨a, b, ha, hab⟩ := Inhab.exists_different_pair E
-  have h := Inhab.mem_genConf_one σ hσ hg hab
-  obtain ⟨t, -, h1, -⟩ := Term.exists_generic hσ (Inhab.isHermU_splitJ σ) hg h (by
-    rw [Inhab.gq_one σ hσ]
-    exact pow_ne_zero _ (mul_ne_zero (pow_ne_zero _ (Nat.cast_ne_zero.2 hg))
-      (Inhab.norm_add_norm_ne_zero σ τ hτ (by simpa using ha) _)))
-  obtain ⟨t', h2, -⟩ := Term.existsUnique_isId (g := g) h.2.1.1 t.col
-  exact ⟨⟨t, h1⟩, t', h2.2⟩
 
 example : LiesAt (onePt E 1) !![0, 1; -1, 0] :=
   ⟨1, 1, fun _ _ => ⟨fun h => Matrix.one_apply_ne h.ne, fun h => h ▸ Matrix.one_apply_eq _⟩, up_one, by
@@ -440,15 +364,6 @@ theorem pairM_coMat (V : HSpace E) {a b : Type} (x : a → V.V) (y : b → V.V) 
     pairM (starRingEnd E) V.gram (coMat V y) (coMat V x) i j = V.hD (y j) (x i) := by
   rw [HSpace.hD, hT_eq_sum]; rfl
 
-theorem isHermU_gram (V : HSpace E) : IsHermU (starRingEnd E) V.gram := by
-  refine ⟨Matrix.ext fun i j => V.herm.eq _ _, isUnit_iff_ne_zero.2 fun h => ?_⟩
-  obtain ⟨v, hv, e⟩ := Matrix.exists_vecMul_eq_zero_iff.2 h
-  have : V.frame.equivFun.symm (star v) = 0 := V.nondeg.1 _ fun y => by
-    rw [hT_eq_sum]
-    refine Finset.sum_eq_zero fun j _ => mul_eq_zero_of_left ?_ _
-    simp only [← Module.Basis.equivFun_apply, LinearEquiv.apply_symm_apply, Pi.star_apply, star_star]
-    exact congrFun e j
-  exact hv (star_eq_zero.1 ((map_eq_zero_iff _ V.frame.equivFun.symm.injective).1 this))
 
 def spFrame (S : Spaces R F E) (c : E) : Matrix (Fin (S.Y 0).rank) (Fin (R.rS + 1)) E :=
   coMat (S.Y 0) (Fin.snoc (α := fun _ => (S.Y 0).V) S.hypE (c • S.zm))
@@ -496,8 +411,6 @@ abbrev RecTerm (u u' : D.what₂.Word) : Type :=
   Term (starRingEnd D.host.E) (D.sp.Y 0).gram (((D.mem u').A.T : ℕ) : D.host.E) (D.host.g 0 * D.host.g 1)
     (recFrame D u)
 
-theorem recFrame_eq (u : D.what₂.Word) :
-    recFrame D u = coMat (D.sp.Y 0) (Fin.snoc (α := fun _ => (D.sp.Y 0).V) D.sp.hypE (D.zmOf u)) := rfl
 
 theorem isFrame_recFrame (u : D.what₂.Word) :
     IsFrame (starRingEnd D.host.E) (D.sp.Y 0).gram (((D.mem u).A.T : ℕ) : D.host.E) (recFrame D u) := by
@@ -514,26 +427,8 @@ theorem level_ne_zero : D.host.g 0 * D.host.g 1 ≠ 0 :=
 
 variable {D} {u u' : D.what₂.Word}
 
-theorem RecTerm.algebraMap_GF (t : RecTerm D u u') :
-    algebraMap D.host.F D.host.E (t.GF D.host.F) =
-      t.minor (D.R.rS + 1) le_rfl * star (t.minor (D.R.rS + 1) le_rfl) -
-        ((D.mem u).A.T : D.host.E) * ((D.mem u').A.T : D.host.E) *
-          (t.minor D.R.rS (Nat.le_succ _) * star (t.minor D.R.rS (Nat.le_succ _))) :=
-  (Term.algebraMap_GF t D.host.F star_star (fun x => (D.sp.cm.fixed x).1) (isFrame_recFrame D u) (map_natCast _ _)
-    (map_natCast _ _)).trans (t.G_eq_minor (isFrame_recFrame D u))
 
-theorem RecTerm.GF_eq_zero_iff (t : RecTerm D u u') : t.GF D.host.F = 0 ↔ t.G = 0 := by
-  rw [← Term.algebraMap_GF t D.host.F star_star (fun x => (D.sp.cm.fixed x).1) (isFrame_recFrame D u)
-    (map_natCast _ _) (map_natCast _ _), map_eq_zero]
 
-theorem RecTerm.isId_props (t : RecTerm D u u') :
-    (t.isId ↔ t.FeqF) ∧ (t.inS ↔ t.FeqF) ∧ (t.isId → t.relevant ∧ t.GF D.host.F = 0) := by
-  have hJ := (isHermU_gram (D.sp.Y 0)).2
-  have h1 := t.isId_iff_FeqF hJ (isFrame_recFrame D u)
-  have h2 := t.inS_iff_FeqF hJ (isFrame_recFrame D u)
-  refine ⟨h1, h2, fun h => ?_⟩
-  have := (h2.2 (h1.1 h)).props (isFrame_recFrame D u) (map_natCast _ _)
-  exact ⟨this.2.1, t.GF_eq_zero_iff.2 this.2.2.1⟩
 
 theorem exists_norm_eq (u u' : D.what₂.Word) : ∃ ζ : D.host.E, ζ ≠ 0 ∧
     ζ * starRingEnd D.host.E ζ = ((D.mem u).A.T : D.host.E) * ((D.mem u').A.T : D.host.E) := by
@@ -547,17 +442,7 @@ theorem exists_norm_eq (u u' : D.what₂.Word) : ∃ ζ : D.host.E, ζ ≠ 0 ∧
   obtain ⟨b, hb, f⟩ := k u'
   exact ⟨a * b, mul_ne_zero ha hb, by rw [← e, ← f, starRingEnd_apply, star_mul]; ring⟩
 
-theorem RecTerm.Gq_ptOf_ne_zero_iff (t : RecTerm D u u') :
-    Gq (starRingEnd D.host.E) ((D.mem u).A.T : D.host.E) ((D.mem u').A.T : D.host.E)
-      (Formalism.MainNotions.S.ptMat t.ptOf) ≠ 0 ↔ t.G ≠ 0 ∧ t.At t.ptOf := by
-  obtain ⟨ζ, h1, h2⟩ := exists_norm_eq u u'
-  exact Term.Gq_ptOf_ne_zero_iff t (isFrame_recFrame D u) h1 h2
 
-theorem RecTerm.isId_prim (t : RecTerm D u u') (h : t.isId) : t.prim ∧
-    Gq (starRingEnd D.host.E) ((D.mem u).A.T : D.host.E) ((D.mem u').A.T : D.host.E)
-      (Formalism.MainNotions.S.ptMat t.ptOf) = 0 :=
-  ⟨(t.isId_props.2.1.2 (t.isId_props.1.1 h)).prim (isFrame_recFrame D u), by_contra fun k =>
-    (t.Gq_ptOf_ne_zero_iff.1 k).1 (t.GF_eq_zero_iff.1 (t.isId_props.2.2 h).2)⟩
 
 end Record
 

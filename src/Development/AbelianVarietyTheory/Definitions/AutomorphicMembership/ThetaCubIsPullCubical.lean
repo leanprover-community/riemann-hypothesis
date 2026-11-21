@@ -377,13 +377,7 @@ include c hadj hw
 theorem lam_theta (x z : T ⟶ A) : lam (cls _ (theta t P h w L).isLB) x z = bi t P h (cls L.L L.isLB) x z := by
   rw [cls_theta, lam_bi t P h L.isLB ⟨c.t, c.isGen⟩ hadj hw]
 
-theorem cube_theta_iso (x z : T ⟶ A) : LBIso (cubeLB A ![x, z] (theta t P h w L).L) (biLB t P h L.L x z) := by
-  refine (cls_eq_iff (LB.isLB_linComb (theta t P h w L).isLB _ _) (isLB_biLB t P h L.isLB x z)).1 ?_
-  exact ((cls_cube_two (theta t P h w L).isLB _ _ _).trans (lam_theta t P h c hadj hw x z)).trans
-    (cls_biLB t P h L.isLB _ _ _).symm
 
-theorem lam_theta_iso : LBIso (abelian₂ A (theta t P h w L).L) (poi t P h L).L :=
-  cube_theta_iso t P h c hadj hw _ _
 
 theorem theta_isAdj : IsAdj b (theta t P h w L).L := fun d => by
   have hN := (theta t P h w L).isLB

@@ -213,12 +213,6 @@ abbrev Alg (W : S.Tower) := AlgebraLevelSetting.Alg W
 
 end HidaSetting
 
-theorem exists_three_or_seven (V : Type) [CommRing V] [IsLocalRing V] :
-    ∃ n : ℕ, (n = 3 ∨ n = 7) ∧ IsUnit (n : V) := by
-  have h : (7 : V) + (-2) * 3 = 1 := by norm_num
-  rcases IsLocalRing.isUnit_or_isUnit_of_add_one h with h | h
-  · exact ⟨7, Or.inr rfl, by exact_mod_cast h⟩
-  · exact ⟨3, Or.inl rfl, by exact_mod_cast isUnit_of_mul_isUnit_right h⟩
 
 def SymTriv.triv {S S' : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {f : S' ⟶ S}
     {H : Over S'} [GrpObj H] (j : H.left ⟶ G.left) (hj : j ≫ G.hom = H.hom ≫ f) : SymTriv (CP.triv G) j hj where

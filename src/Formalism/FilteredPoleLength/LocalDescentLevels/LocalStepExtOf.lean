@@ -73,6 +73,5 @@ theorem localStepExt_of (hQ : QuotientLengthExt) : LocalStepExt := by
   have h6 := mul_le_mul_of_nonneg_left (hIdx.trans (add_le_add le_rfl h5)) hd
   linarith
 
-theorem localStepExt : LocalStepExt := localStepExt_of quotientLengthExt
 
 end Formalism.LatticeBaseChangeAlt

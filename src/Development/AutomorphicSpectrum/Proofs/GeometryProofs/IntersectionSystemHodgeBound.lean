@@ -32,10 +32,6 @@ theorem sum_blocks {M : Type} [AddCommMonoid M] {j N : ℕ} (hj : j ≤ N) (f : 
   rw [← (blockEquiv hj).sum_comp, Fintype.sum_sum_type]
   simp only [blockEquiv_inl, blockEquiv_inr]
 
-theorem headIdx_injective {j N : ℕ} (hj : j ≤ N) : Function.Injective (headIdx hj) := by
-  intro a a' h
-  rw [← blockEquiv_inl, ← blockEquiv_inl] at h
-  simpa using (blockEquiv hj).injective h
 
 theorem tailIdx_injective {j N : ℕ} (hj : j ≤ N) : Function.Injective (tailIdx hj) := by
   intro a a' h

@@ -80,19 +80,7 @@ theorem IsFactor.sum {lin : ℂ → A.La → A.V →ₗ[ℂ] ℂ} {cst : ℂ →
   refine Eq.trans ?_ ((Equiv.addRight la.y).tsum_eq _)
   exact tsum_congr fun m => h w la v j α th hth m
 
-theorem not_isFShift_zero (α : A.X) (th : (Fin A.gB → ℂ) → ℂ) (la : A.La) (z : A.V) (S : ℂ⸨X⸩) :
-    ¬ IsFShift A 0 α th la z S := fun h => h.1.1 rfl
 
-theorem isFShift_zero_iff (k : ℕ) [NeZero k] (α : A.X) (th : (Fin A.gB → ℂ) → ℂ) (z : A.V) (S : ℂ⸨X⸩) :
-    IsFShift A k α th 0 z S ↔ S = A.FSum k α th z := by
-  have hy : (0 : A.La).y = 0 := rfl
-  have key : ∀ n : ℤ, (∑ᶠ (m : A.X) (_ : A.exponent k α m = n), A.term k α th m z) = (A.FSum k α th z).coeff n :=
-    fun n => by
-      rw [AnArc.coeff_FSum]
-      exact finsum_cond_eq_sum_of_cond_iff _ fun {m} _ => by rw [AnArc.mem_level]
-  simp only [IsFShift, hy, map_zero, LinearMap.zero_apply, add_zero, smul_zero, Int.zero_ediv, dvd_zero, and_true,
-    key, ne_eq, NeZero.ne k, not_false_eq_true, true_and]
-  exact ⟨fun h => HahnSeries.ext (funext h), fun h n => by rw [h]⟩
 
 def AnFin : Prop :=
   (∀ (j : ℕ) (α : A.X), 1 ≤ j → Module.Finite ℂ (A.Theta j α)) ∧ ∃ th ∈ A.Theta 1 0, th ≠ 0
@@ -132,15 +120,6 @@ theorem GenPts.LevelPt.ne_zero {Φ : GenPts A t y} {k : ℕ} {p : Over.mk y ⟶ 
 theorem GenPts.LevelPt.dvd {Φ : GenPts A t y} {k : ℕ} {p : Over.mk y ⟶ t.G} {la : A.La} (h : Φ.LevelPt k p la)
     (α : A.X) : (k : ℤ) ∣ A.be la.y α := h.2.1.2 α
 
-theorem GenPts.levelPt_one (Φ : GenPts A t y) (k : ℕ) [NeZero k] : Φ.LevelPt k 1 0 := by
-  refine ⟨one_pow _, ⟨NeZero.ne k, fun α => ?_⟩, fun α α' th h th' h' z F F' j hF hF' hj => ?_⟩
-  · rw [show (0 : A.La).y = 0 from rfl, map_zero]; exact dvd_zero _
-  · rw [isFShift_zero_iff] at hF hF'
-    rw [_root_.mul_one] at hj ⊢
-    have hj' : ⊤ ≤ (fib (Φ.x z) ≫ pullback.fst t.G.hom y) ⁻¹ᵁ t.PP.L.U j := by
-      rw [fib, pullback.lift_fst]; exact hj
-    rw [Φ.val k α th h z j hj', Φ.val k α' th' h' z j hj', hF, hF']
-    ring
 
 def GenPts.IsTan (Φ : GenPts A t y) (z₀ : A.V) (ν : Sp (DualNumber ℂ⸨X⸩) ⟶ pullback t.G.hom y) : Prop :=
   ν ≫ pullback.snd _ _ = spMap (algebraMap ℂ⸨X⸩ (DualNumber ℂ⸨X⸩)) ∧

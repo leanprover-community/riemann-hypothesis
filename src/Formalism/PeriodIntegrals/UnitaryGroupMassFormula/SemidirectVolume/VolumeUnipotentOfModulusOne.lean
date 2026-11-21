@@ -8,8 +8,5 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ConjIn
 
 namespace PI.VolSemiDirect.W
 
-theorem volume_unipotent_of_modulus_one (hM : Cj.ModOne) (hC : PiCont) (hR : PiRat) : PI.VolSemiDirect.VolumeUnipotentAllCM :=
-  volume_unipotent_of_adelic Lc.locally_compact_adelic_unitary discrete_adelic_unitary closed_subgroup_holds
-    (semiStep_of Lc.locally_compact_adelic_unitary normal_subgroup_holds (projStep_of hC hR)) (Cj.conjStep_of hM)
 
 end PI.VolSemiDirect.W

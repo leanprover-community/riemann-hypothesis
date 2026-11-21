@@ -1532,12 +1532,6 @@ end Formalism.FourierDecayAlt.P.Mx7
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem transfer_determinant : Formalism.FourierDecayAlt.M.QQDet :=
-  Mx7.qQDet_of shift_scalar_relation shift_shift_relation rho_raise level_function_relations level_nabla_relations level_nabla_star_relations
-    star_generators nabla_shift_relation shift_norm_relation shift_mixed_relation m_curvature_proof transfer_normal_alt
 
-theorem lower_left_commute_model : Formalism.FourierDecayAlt.M.T21Commute :=
-  Mx7.lower_left_commute_of_laws shift_scalar_relation shift_shift_relation shift_commute_relation nabla_shift_relation level_nabla_relations level_function_relations
-    rho_raise
 
 end Formalism.FourierDecayAlt.P

@@ -163,167 +163,20 @@ theorem exists_dil (a : Fˣ) (p : LocF.PP Lc n) : ∃ p', LocF.PP.IsDil (a : F) 
         obtain ⟨x, hx⟩ := p.2.ne
         exact ⟨x, mul_ne_zero a.ne_zero hx⟩ }⟩, rfl, fun x => rfl⟩
 
-lemma q_inv_not_mem (Lc : LocF q F) : ((q : Lc.K))⁻¹ ∉ Lc.O := by
-  intro h
-  have h1 : Lc.res 1 = 0 := (Lc.res_ker 1).2 ⟨⟨_, h⟩, by
-    show (1 : Lc.K) = (q : Lc.K) * (q : Lc.K)⁻¹
-    rw [mul_inv_cancel₀ Lc.q_ne]⟩
-  rw [map_one] at h1
-  exact one_ne_zero h1
 
 def dq (Lc : LocF q F) (a : Fin n) : GL (Fin n) Lc.K :=
   diagGL Lc.K n fun b => if b = a then (Units.mk0 (q : Lc.K) Lc.q_ne)⁻¹ else 1
 
-lemma dq_inv_mv (a : Fin n) (x : Fin n → Lc.K) (b : Fin n) :
-    mvO (dq Lc a)⁻¹ x b = if b = a then (q : Lc.K) * x b else x b := by
-  show Matrix.mulVec (Matrix.diagonal fun c =>
-    (((if c = a then (Units.mk0 (q : Lc.K) Lc.q_ne)⁻¹ else 1 : Lc.Kˣ)⁻¹ : Lc.Kˣ) : Lc.K)) x b = _
-  rw [Matrix.mulVec_diagonal]
-  split_ifs with h
-  · simp
-  · simp
 
-private lemma stdPair_f_apply (a : Fin n) {x : Fin n → Lc.K} (h : x ∈ Lc.std n) :
-    (stdPair Lc a).1.f x = Lc.res ⟨x a, (mem_std x).1 h a⟩ := by
-  unfold stdPair
-  exact dif_pos h
 
-theorem inc_std (a : Fin n) : (stdPair Lc a).Inc (actPP (dq Lc a) (stdPair Lc a)) := by
-  have hq : (q : Lc.K) ≠ 0 := Lc.q_ne
-  have hqO : (q : Lc.K) ∈ Lc.O := natCast_mem Lc.O q
-  have he : (Pi.single a 1 : Fin n → Lc.K) ∈ Lc.std n := (mem_std _).2 fun b => by
-    by_cases hb : b = a
-    · subst hb
-      rw [Pi.single_eq_same]
-      exact Lc.O.one_mem
-    · rw [Pi.single_eq_of_ne hb]
-      exact Lc.O.zero_mem
-  have hfe : (stdPair Lc a).1.f (Pi.single a 1) = 1 := by
-    rw [stdPair_f_apply a he]
-    have h1 : (⟨(Pi.single a (1 : Lc.K) : Fin n → Lc.K) a, (mem_std _).1 he a⟩ : Lc.O) = 1 :=
-      Subtype.ext (by simp)
-    rw [h1, map_one]
-  refine ⟨Pi.single a 1, hfe, he, ?_, ?_⟩
-  · ext y
-    have hz : ∀ b, mvO (dq Lc a)⁻¹ y b = if b = a then (q : Lc.K) * y b else y b :=
-      fun b => dq_inv_mv a y b
-    change mvO (dq Lc a)⁻¹ y ∈ Lc.std n ∧ (stdPair Lc a).1.f (mvO (dq Lc a)⁻¹ y) = 0 ↔ y ∈ Lc.std n
-    constructor
-    · rintro ⟨hL, hf⟩
-      rw [stdPair_f_apply a hL] at hf
-      obtain ⟨w, hw⟩ := (Lc.res_ker _).1 hf
-      refine (mem_std y).2 fun b => ?_
-      by_cases hb : b = a
-      · rw [hb]
-        have h0 : mvO (dq Lc a)⁻¹ y a = (q : Lc.K) * w := hw
-        rw [hz, if_pos rfl] at h0
-        rw [mul_left_cancel₀ hq h0]
-        exact w.2
-      · have h2 := (mem_std _).1 hL b
-        rwa [hz, if_neg hb] at h2
-    · intro hy
-      have hy' := (mem_std y).1 hy
-      have hL : mvO (dq Lc a)⁻¹ y ∈ Lc.std n := (mem_std _).2 fun b => by
-        rw [hz]
-        split_ifs
-        · exact Lc.O.mul_mem hqO (hy' b)
-        · exact hy' b
-      refine ⟨hL, ?_⟩
-      rw [stdPair_f_apply a hL]
-      exact (Lc.res_ker _).2 ⟨⟨y a, hy' a⟩, by
-        show mvO (dq Lc a)⁻¹ y a = (q : Lc.K) * y a
-        rw [hz, if_pos rfl]⟩
-  · have hz2 : mvO (dq Lc a)⁻¹ (((q : Lc.K))⁻¹ • (Pi.single a 1 : Fin n → Lc.K)) = Pi.single a 1 := by
-      funext b
-      rw [dq_inv_mv]
-      by_cases hb : b = a
-      · subst hb
-        simp [hq]
-      · simp [hb]
-    show (stdPair Lc a).1.f (mvO (dq Lc a)⁻¹ (((q : Lc.K))⁻¹ • (Pi.single a 1 : Fin n → Lc.K))) = 1
-    rw [hz2]
-    exact hfe
 
-private lemma iter_mvO_dq_inv_apply (a : Fin n) (k : ℕ) (y : Fin n → Lc.K) (b : Fin n) :
-    (⇑(mvO (dq Lc a)⁻¹))^[k] y b = if b = a then (q : Lc.K) ^ k * y b else y b := by
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    rw [Function.iterate_succ_apply', dq_inv_mv, ih]
-    split_ifs <;> ring
 
-private lemma mem_iter_actPP_stdPair_iff (a : Fin n) (k : ℕ) (y : Fin n → Lc.K) :
-    y ∈ ((actPP (dq Lc a))^[k] (stdPair Lc a)).1.L ↔ (⇑(mvO (dq Lc a)⁻¹))^[k] y ∈ Lc.std n := by
-  induction k generalizing y with
-  | zero => exact Iff.rfl
-  | succ k ih =>
-    rw [Function.iterate_succ_apply' (actPP (dq Lc a)), Function.iterate_succ_apply]
-    exact ih _
 
-theorem infinite_PP (Lc : LocF q F) (a : Fin n) : Infinite (LocF.PP Lc n) := by
-  have hq : (q : Lc.K) ≠ 0 := Lc.q_ne
-  have hqO : (q : Lc.K) ∈ Lc.O := natCast_mem Lc.O q
-  have key : ∀ j k, (((q : Lc.K))⁻¹ ^ k • (Pi.single a 1 : Fin n → Lc.K)) ∈
-      ((actPP (dq Lc a))^[j] (stdPair Lc a)).1.L ↔ (q : Lc.K) ^ j * ((q : Lc.K))⁻¹ ^ k ∈ Lc.O := by
-    intro j k
-    rw [mem_iter_actPP_stdPair_iff, mem_std]
-    simp only [iter_mvO_dq_inv_apply]
-    constructor
-    · intro h
-      simpa using h a
-    · intro h b
-      by_cases hb : b = a
-      · subst hb
-        simpa using h
-      · simp [hb]
-  have hA : ∀ k, (((q : Lc.K))⁻¹ ^ k • (Pi.single a 1 : Fin n → Lc.K)) ∈
-      ((actPP (dq Lc a))^[k] (stdPair Lc a)).1.L := fun k => by
-    rw [key, ← mul_pow, mul_inv_cancel₀ hq, one_pow]
-    exact Lc.O.one_mem
-  have hpow : ∀ m, ((q : Lc.K))⁻¹ ^ (m + 1) ∉ Lc.O := fun m hm => q_inv_not_mem Lc (by
-    have h2 : ((q : Lc.K))⁻¹ ^ (m + 1) * (q : Lc.K) ^ m = ((q : Lc.K))⁻¹ := by
-      rw [pow_succ, mul_comm (((q : Lc.K))⁻¹ ^ m), mul_assoc, ← mul_pow, inv_mul_cancel₀ hq,
-        one_pow, mul_one]
-    rw [← h2]
-    exact Lc.O.mul_mem hm (Lc.O.pow_mem hqO m))
-  have hB : ∀ j m, (((q : Lc.K))⁻¹ ^ (j + m + 1) • (Pi.single a 1 : Fin n → Lc.K)) ∉
-      ((actPP (dq Lc a))^[j] (stdPair Lc a)).1.L := fun j m h => by
-    rw [key, show j + m + 1 = j + (m + 1) by omega, pow_add, ← mul_assoc, ← mul_pow,
-      mul_inv_cancel₀ hq, one_pow, one_mul] at h
-    exact hpow m h
-  refine Infinite.of_injective (fun k : ℕ => (actPP (dq Lc a))^[k] (stdPair Lc a)) ?_
-  intro j k hjk
-  have hjk' : (actPP (dq Lc a))^[j] (stdPair Lc a) = (actPP (dq Lc a))^[k] (stdPair Lc a) := hjk
-  by_contra hne
-  rcases lt_or_gt_of_ne hne with hlt | hlt
-  · obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_lt hlt
-    have h3 := hA (j + m + 1)
-    rw [← hjk'] at h3
-    exact hB j m h3
-  · obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_lt hlt
-    have h3 := hA (k + m + 1)
-    rw [hjk'] at h3
-    exact hB k m h3
 
 end Pairs
 
 variable {D : D7} {u : D.what₂.Word}
 
-theorem infinite_group {X : Ch D u} {i : ℕ} (M : PtModel X i) (c : X.C.cls i) (v : X.A.vT) : Infinite M.G := by
-  have : Infinite (LocF.PP (M.Lc v) (D.R.N i)) := infinite_PP (M.Lc v)
-    ⟨0, lt_of_lt_of_le (by have := D.R.m_add_three_le_k; omega : 0 < D.R.k) (Nat.le_add_right _ _)⟩
-  have : Infinite M.Pt := Infinite.of_injective
-    (fun x : LocF.PP (M.Lc v) (D.R.N i) => ((M.rep c).1, Function.update (M.rep c).2 v x)) (by
-      intro x y hxy
-      have h2 := congrArg (fun p : M.Pt => p.2 v) hxy
-      simpa using h2)
-  by_contra hfin
-  rw [not_infinite_iff_finite] at hfin
-  have : Finite M.Pt := Finite.of_surjective (fun cg : X.C.cls i × M.G => cg.2 • M.rep cg.1) (by
-    intro p
-    obtain ⟨c', g, h⟩ := M.rep_surj p
-    exact ⟨(c', g), h⟩)
-  exact not_finite M.Pt
 
 def emptyModel (X : Ch D u) (i : ℕ) [IsEmpty (X.C.cls i)] : PtModel X i :=
   haveI : Fact X.A.T.Prime := ⟨X.A.T_prime⟩
@@ -360,17 +213,5 @@ def emptyModel (X : Ch D u) (i : ℕ) [IsEmpty (X.C.cls i)] : PtModel X i :=
     dn_eq := fun _ c => isEmptyElim c
     dil_eq := fun _ c => isEmptyElim c }
 
-theorem empty_kernels (X : Ch D u) [∀ i, IsEmpty (X.C.cls i)] :
-    ∃ (Lv : LevTie X) (Kt : KerTie Lv), ∀ i h, (Kt i h).TgtEq ∧ (Kt i h).DilLaw ∧ (Kt i h).UKLaw := by
-  refine ⟨fun i _ => emptyModel X i, fun i h =>
-    { k := fun _ _ => 0
-      src := fun _ _ _ _ => rfl
-      Kmap_eq := fun c _ _ => isEmptyElim c }, fun i h => ⟨?_, ?_, ?_⟩⟩
-  · intro g' p p' y
-    exact (p.1 : PEmpty).elim
-  · intro v a p q' p' q'' _ _
-    rfl
-  · intro v p p' y
-    exact (p.1 : PEmpty).elim
 
 end GlobalTheory.LvT.LevModel

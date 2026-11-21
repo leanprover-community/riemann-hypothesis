@@ -159,8 +159,6 @@ theorem lintegral_lie_haar_nilradical (G : Mt k r → ℝ≥0∞) (hG : Measurab
     ∫⁻ n, G n ∂(Formalism.MainNotions.S.haarLie (Nset k r) 1) = ∫⁻ Y : Formalism.MainNotions.S.lieE (Nset k r), G (expL k r (Nset k r) Y) := by
   rw [lie_haar_nilradical_eq_map_exp]; exact lintegral_map hG meas_expL'
 
-theorem meas_expL (S : Set (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)) : Measurable (expL k r S) :=
-  (Formalism.MainNotions.BridgeCSB.continuous_expLie (k := k) (r := r) S).measurable
 
 def ind (c : Fin r → ℂ) (s : ℝ) (n m n' : Mt k r) : ℝ≥0∞ :=
   if Qf k r n c m n' < ENNReal.ofReal (s ^ 2) then 1 else 0

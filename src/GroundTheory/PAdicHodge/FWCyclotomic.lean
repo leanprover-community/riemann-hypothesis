@@ -95,13 +95,5 @@ def cyclGaloisTiltEquiv :
         algebraicClosure K∞♭ (Tilt ℂ_[p] NormedField.valuation (normInteger ℂ_[p]) normInteger_integers p)) :=
   galoisTiltEquiv K∞ ℂ_[p] p
 
-theorem cyclGaloisTiltEquiv_fixes_iff (L : IntermediateField K∞ ℂ_[p]) [FiniteDimensional K∞ L]
-    (σ : algebraicClosure K∞ ℂ_[p] ≃ₐ[K∞] algebraicClosure K∞ ℂ_[p]) :
-    (∀ y : algebraicClosure K∞♭ (Tilt ℂ_[p] NormedField.valuation (normInteger ℂ_[p])
-        normInteger_integers p),
-        (y : Tilt ℂ_[p] NormedField.valuation (normInteger ℂ_[p]) normInteger_integers p) ∈
-          tiltIntermediateField p L → cyclGaloisTiltEquiv p σ y = y) ↔
-      (∀ x : algebraicClosure K∞ ℂ_[p], (x : ℂ_[p]) ∈ L → σ x = x) :=
-  galoisTiltEquiv_fixes_iff L σ
 
 end GroundTheory.PAdicHodge

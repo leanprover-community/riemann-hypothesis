@@ -161,9 +161,7 @@ def EpS (r : ℕ) (S : SegData s) : MvPolynomial (BVar (2 * s + 1) r S.t) (KK O)
   X (scalZ (2 * s + 1) r S.t (Fin.last S.t)) * X (scalS (2 * s + 1) r S.t (Fin.last S.t)) +
     ∑ c, X (Sum.inl (Fin.castSucc (⟨2 * s, by omega⟩ : Fin (2 * s + 1)), c)) * X (xiVar (2 * s + 1) r S.t c)
 
-theorem Ehat_rfl (l : Fin S.t) : (blockData p S aTop aPlus mu b').Ehat O (r := r) l = EhS O r S l := rfl
 
-theorem Eplus_rfl : (blockData p S aTop aPlus mu b').Eplus O (r := r) = EpS O r S := rfl
 
 theorem EhS_eq (l : Fin S.t) :
     EhS O r S l =
@@ -189,33 +187,9 @@ def uTot (r : ℕ) (S : SegData s) (ju : Fin S.t → ℕ) (jp : ℕ) (G : MvPoly
 
 variable {O p S aTop aPlus mu b'}
 
-private theorem jE_apply_sigma_add (S : SegData s) (f : Fin S.t → ℕ) (i : Fin S.t) (x : ℕ) (hx : x = S.sigma + i.val) :
-    jE S f x = f i := by
-  subst hx
-  have hi := i.2
-  unfold SegData.t at hi
-  unfold jE
-  rw [dif_pos (show S.sigma ≤ S.sigma + i.val ∧ S.sigma + i.val < s from ⟨by omega, by omega⟩)]
-  congr 1
-  ext
-  simp
 
-private theorem jE_add' (S : SegData s) (f g : Fin S.t → ℕ) (x : ℕ) :
-    jE S (fun l => f l + g l) x = jE S f x + jE S g x := by
-  unfold jE
-  split_ifs <;> simp
 
-private theorem jE_sub_eq_sub_jE (S : SegData s) (f g : Fin S.t → ℕ) (x : ℕ) :
-    jE S (fun l => f l - g l) x = jE S f x - jE S g x := by
-  unfold jE
-  split_ifs <;> simp
 
-private theorem jE_mono' (S : SegData s) (f g : Fin S.t → ℕ) (h : ∀ l, g l ≤ f l) (x : ℕ) :
-    jE S g x ≤ jE S f x := by
-  unfold jE
-  split_ifs
-  · exact h _
-  · exact le_refl 0
 
 theorem uTot_mem {ju : Fin S.t → ℕ} {jp : ℕ} {G : MvPolynomial (Fin (2 * s + 1) × Fin r) (KK O)} {zU sU : Fin S.t → ℕ}
     {xf : ℕ} {γ : Fin r → ℕ} (hs : ∀ l, sU l ≤ zU l)

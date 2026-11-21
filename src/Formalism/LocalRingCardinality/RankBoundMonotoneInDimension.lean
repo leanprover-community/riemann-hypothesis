@@ -17,7 +17,6 @@ section ranks
 
 variable (R : Ranks)
 
-theorem Ranks.two_le_m' : 2 ≤ R.m := R.two_le_m
 
 theorem Ranks.k_ge : 5 ≤ R.k := by
   have h1 := R.two_le_m
@@ -497,7 +496,6 @@ theorem bridge_iota_holds : bridge_iota := by
   rw [h2, map_pow, h1]
   rfl
 
-theorem iotaHInv_iotaH (e : ℕ) (i : ZMod (2 ^ e)) : iotaHInv e (iotaH e i) = i := Function.leftInverse_invFun (iotaH_bijective e).injective i
 
 theorem iotaH_iotaHInv (e : ℕ) (h : HGrp e) : iotaH e (iotaHInv e h) = h := Function.rightInverse_invFun (iotaH_bijective e).surjective h
 

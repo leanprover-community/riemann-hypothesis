@@ -32,35 +32,6 @@ def sphereMap {N : ℕ}
     (z : UnitSphere N) : UnitSphere N :=
   ⟨e z.1, by simpa using z.2⟩
 
-theorem sphereMeasure_map_unitary {N : ℕ}
-    (e : EuclideanSpace ℂ (Fin (N + 1)) ≃ₗᵢ[ℂ] EuclideanSpace ℂ (Fin (N + 1))) :
-    (sphereMeasure N).map (sphereMap e) = sphereMeasure N := by
-  have hc : Continuous (sphereMap e) :=
-    Continuous.subtype_mk (e.continuous.comp continuous_subtype_val) _
-  let e' : EuclideanSpace ℂ (Fin (N + 1)) ≃ₗᵢ[ℝ] EuclideanSpace ℂ (Fin (N + 1)) :=
-    { e.toLinearEquiv.restrictScalars ℝ with norm_map' := e.norm_map }
-  have hs : (sphereSurface N).map (sphereMap e) = sphereSurface N := by
-    ext s hs
-    rw [Measure.map_apply hc.measurable hs, sphereSurface,
-      Measure.toSphere_apply' _ (hc.measurable hs), Measure.toSphere_apply' _ hs]
-    congr 1
-    rw [← e'.measurePreserving.measure_preimage_emb e'.toHomeomorph.measurableEmbedding
-      (Set.Ioo (0 : ℝ) 1 • ((Subtype.val : UnitSphere N → EuclideanSpace ℂ (Fin (N + 1))) '' s))]
-    congr 1
-    ext x
-    simp only [Set.mem_preimage, Set.mem_smul, Set.mem_image]
-    constructor
-    · rintro ⟨r, hr, y, ⟨z, hz, rfl⟩, rfl⟩
-      exact ⟨r, hr, _, ⟨_, hz, rfl⟩, (e'.map_smul r z.1).symm⟩
-    · rintro ⟨r, hr, y, ⟨z, hz, rfl⟩, hx⟩
-      refine ⟨r, hr, _, ⟨sphereMap e.symm z, ?_, rfl⟩, ?_⟩
-      · have : sphereMap e (sphereMap e.symm z) = z := Subtype.ext (e.apply_symm_apply z.1)
-        simpa [this] using hz
-      · apply e'.injective
-        rw [← hx, e'.map_smul]
-        congr 1
-        exact e.apply_symm_apply z.1
-  rw [sphereMeasure, Measure.map_smul, hs]
 
 def blockSphereMeasure (B N : ℕ) : Measure (Fin B → UnitSphere N) :=
   Measure.pi fun _ => sphereMeasure N
@@ -93,24 +64,7 @@ variable {K : Type} [Field K] [NumberField K]
 def gaussAbsValue {ι : Type} (w : FinitePlace K) (ω : MvPolynomial ι K) : ℝ :=
   ((ω.support.sup fun d => Real.toNNReal (w (coeff d ω)) : ℝ≥0) : ℝ)
 
-theorem finitePlace_eq_absNorm_zpow (w : FinitePlace K) {c : K} (hc : c ≠ 0) :
-    w c = (Ideal.absNorm w.maximalIdeal.asIdeal : ℝ) ^
-      (WithZero.log (w.maximalIdeal.valuation K c)) := by
-  have h0 : w.maximalIdeal.valuation K c ≠ 0 := (Valuation.ne_zero_iff _).2 hc
-  rw [← FinitePlace.norm_embedding_eq, FinitePlace.norm_embedding',
-    WithZeroMulInt.toNNReal_neg_apply _ h0]
-  obtain ⟨k, hk⟩ := WithZero.ne_zero_iff_exists.1 h0
-  simp only [← hk, WithZero.unzero_coe]
-  push_cast
-  rfl
 
-theorem le_gaussAbsValue {ι : Type} (w : FinitePlace K) (ω : MvPolynomial ι K) (d : ι →₀ ℕ) :
-    w (coeff d ω) ≤ gaussAbsValue w ω := by
-  by_cases h : d ∈ ω.support
-  · have := Finset.le_sup (f := fun d => Real.toNNReal (w (coeff d ω))) h
-    exact Real.toNNReal_le_iff_le_coe.1 this
-  · rw [notMem_support_iff.1 h]
-    simp [gaussAbsValue]
 
 theorem exists_gaussAbsValue_eq {ι : Type} (w : FinitePlace K) {ω : MvPolynomial ι K}
     (h : ω ≠ 0) : ∃ d ∈ ω.support, gaussAbsValue w ω = w (coeff d ω) := by
@@ -118,22 +72,7 @@ theorem exists_gaussAbsValue_eq {ι : Type} (w : FinitePlace K) {ω : MvPolynomi
     fun d => Real.toNNReal (w (coeff d ω))
   exact ⟨d, hd, by rw [gaussAbsValue, e, Real.coe_toNNReal _ (apply_nonneg w _)]⟩
 
-theorem gaussAbsValue_pos {ι : Type} (w : FinitePlace K) {ω : MvPolynomial ι K}
-    (h : ω ≠ 0) : 0 < gaussAbsValue w ω := by
-  obtain ⟨d, hd, e⟩ := exists_gaussAbsValue_eq w h
-  rw [e]
-  exact FinitePlace.pos_iff.2 (mem_support_iff.1 hd)
 
-theorem finite_support_log_gaussAbsValue {ι : Type} {ω : MvPolynomial ι K} (h : ω ≠ 0) :
-    (Function.support fun w : FinitePlace K => Real.log (gaussAbsValue w ω)).Finite := by
-  have hf : (⋃ d ∈ ω.support, Function.mulSupport fun w : FinitePlace K => w (coeff d ω)).Finite :=
-    ω.support.finite_toSet.biUnion fun d hd =>
-      FinitePlace.hasFiniteMulSupport (mem_support_iff.1 hd)
-  refine hf.subset fun w hw => ?_
-  obtain ⟨d, hd, e⟩ := exists_gaussAbsValue_eq w h
-  refine Set.mem_biUnion hd fun h1 => hw ?_
-  simp only at h1
-  simp [e, h1]
 
 def heightZero {B N : ℕ} (ω : MvPolynomial (Fin B × Fin (N + 1)) K) : ℝ :=
   ((∑ᶠ w : FinitePlace K, Real.log (gaussAbsValue w ω)) +
@@ -201,16 +140,7 @@ def HeightZeroStatements : Prop :=
   LogAbsIntegrable ∧ GaussAbsValueMul ∧ HeightZeroAdditive ∧ HeightZeroScaleInvariant ∧
     HeightZeroOnFractions ∧ SphericalJensen ∧ HeightZeroLowerBound
 
-theorem heightZeroOnFractions_of_additive (h : HeightZeroAdditive) : HeightZeroOnFractions := by
-  intro K _ _ B N a b a' b' p q p' q' hp hq hp' hq' ha hb ha' hb' e
-  have h1 := h K B N a b' p q' hp hq' ha hb'
-  have h2 := h K B N a' b p' q hp' hq ha' hb
-  rw [e] at h1
-  linarith
 
-theorem eval_hermitianLinearForm {N : ℕ} (u z : EuclideanSpace ℂ (Fin (N + 1))) :
-    eval (fun j => z j) (hermitianLinearForm u) = inner ℂ u z := by
-  simp [hermitianLinearForm, PiLp.inner_apply]
 
 example (B n : ℕ) (b₀ : Fin B) (j₀ : Fin n) :
     IsBlockHomogeneous (X (b₀, j₀) : MvPolynomial (Fin B × Fin n) ℚ) (Pi.single b₀ 1) := by

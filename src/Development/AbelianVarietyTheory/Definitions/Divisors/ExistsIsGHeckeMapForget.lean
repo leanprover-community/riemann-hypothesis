@@ -189,10 +189,6 @@ theorem IsGHeckeMap.dvd (h : IsGHeckeMap g c k N X X' π) : c ∣ k ^ 2 := by
   obtain ⟨-, o', ψ, hH, -⟩ := h
   exact hH.dvd
 
-theorem IsGHecke.exists_isGHeckeMap (X : GenModel gb N) {o₁ : GObj gb N X'.s} {ψ₁ : X'.univ.A ⟶ o₁.A}
-    (h : IsGHecke g c k N X'.univ o₁ ψ₁) : ∃ π : X'.X ⟶ X.X, IsGHeckeMap g c k N X X' π := by
-  obtain ⟨π, ⟨h₁, h₂⟩, -⟩ := X.rep X'.X X'.s o₁
-  exact ⟨π, h₁, o₁, ψ₁, h, h₂⟩
 
 end API
 
@@ -225,41 +221,7 @@ theorem gHeckeSub_smul_id_eq_one {gb : GBase G R} {N k : ℕ} {s : S ⟶ Sp R} (
   rw [LinearMap.smul_apply, LinearMap.id_apply, smul_smul]
   exact o.eta_ker x
 
-theorem isGHecke_forgetMul {gb : GBase G R} {N k : ℕ} (hN : 0 < N) (hk : 0 < k) {s : S ⟶ Sp R}
-    (o : GObj gb (N * k) s) : IsGHecke (k • LinearMap.id) (k ^ 2) k N o (o.forgetMul hN hk) (𝟙 o.A) := by
-  have hsub := gHeckeSub_smul_id_eq_one o
-  have ha : ∀ a : gHeckeSub o (k • LinearMap.id) N, (Hecke.transl a.1).left = 𝟙 o.A.left := fun a => by
-    rw [hsub a.1 a.2, Hecke.transl, MonObj.comp_one, _root_.mul_one]; rfl
-  refine ⟨?_, fun c' => ?_, fun x => ?_, ?_, ?_, dvd_rfl⟩
-  · exact (inferInstance : IsMonHom (𝟙 o.A))
-  · exact (Category.comp_id (o.act.act c')).trans (Category.id_comp (o.act.act c')).symm
-  · exact (Category.comp_id (o.eta (k • x))).symm
-  · refine
-      { finite := ?_
-        one := ha 1
-        mul := fun a c => by rw [ha (a * c), ha a, ha c, Category.comp_id]
-        inv := fun a => by rw [ha a, Category.id_comp]
-        fin := by rw [Over.id_left]; exact inferInstanceAs (IsFinite (𝟙 _))
-        etale := by rw [Over.id_left]; exact inferInstanceAs (Etale (𝟙 _))
-        onto := by rw [Over.id_left]; exact inferInstanceAs (Surjective (𝟙 _))
-        fibre := fun K _ _ y y' h => ⟨1, by
-            show y ≫ (Hecke.transl (1 : gHeckeSub o (k • LinearMap.id) N).1).left = y'
-            rw [ha 1, Category.comp_id]
-            exact (Category.comp_id y).symm.trans (h.trans (Category.comp_id y')),
-          fun a _ => Subtype.ext (hsub a.1 a.2)⟩ }
-    have : Subsingleton (gHeckeSub o (k • LinearMap.id) N) :=
-      ⟨fun a c => Subtype.ext ((hsub a.1 a.2).trans (hsub c.1 c.2).symm)⟩
-    exact Finite.of_subsingleton
-  · have e : Hecke.sq2 (𝟙 o.A) = 𝟙 (G2 o.A).left := by
-      simp only [Hecke.sq2, Category.comp_id, lift_fst_snd]; rfl
-    refine ⟨(GlobalTheory.PrimNorm.lbIso_iff o.isLB _ _ _ _).2 ?_⟩
-    show _ = ∏ _k : PUnit, GlobalTheory.PrimNorm.cls o.P (Hecke.sq2 (𝟙 o.A)) ^ (1 : ℤ)
-    rw [e]
-    simp [Nat.div_self (pow_pos hk 2)]
 
-theorem exists_isGHeckeMap_forget {gb : GBase G R} {N k : ℕ} (hN : 0 < N) (hk : 0 < k) (X : GenModel gb N)
-    (X' : GenModel gb (N * k)) : ∃ π : X'.X ⟶ X.X, IsGHeckeMap (k • LinearMap.id) (k ^ 2) k N X X' π :=
-  (isGHecke_forgetMul hN hk X'.univ).exists_isGHeckeMap X
 
 example {gb : GBase G R} (g : G.La →ₗ[G.O] G.La) (N : ℕ) {s : S ⟶ Sp R} (o : GObj gb (N * 3) s) (o' : GObj gb N s)
     (ψ : o.A ⟶ o'.A) : ¬ IsGHecke g 5 3 N o o' ψ :=

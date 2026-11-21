@@ -45,9 +45,6 @@ def tupEquiv (P : ℕ → Cx.{1} K) (c n : ℕ) :
   left_inv := by rintro ⟨⟨⟨a, a', ha, i, β⟩, m⟩, h⟩; rfl
   right_inv := by rintro ⟨⟨a, i, a', j, ha, h⟩, β⟩; rfl
 
-theorem lof_cast {V : Type 1} [DecidableEq V] (W : V → Type 1) [∀ u, AddCommGroup (W u)] [∀ u, Module K (W u)]
-    {v v' : V} (h : v = v') (x : W v) : DirectSum.lof K V W v x = DirectSum.lof K V W v' (h ▸ x) := by
-  subst h; rfl
 
 theorem reidx {V U : Type 1} [DecidableEq V] [DecidableEq U] (σ : V ≃ U) (W : U → Type 1)
     [∀ u, AddCommGroup (W u)] [∀ u, Module K (W u)] :

@@ -38,7 +38,6 @@ theorem hermForm_reindex (ε : Fin g' ≃ Fin g) (Hm : Matrix (Fin g') (Fin g') 
 noncomputable def rhoM (ε : Fin g' ≃ Fin g) : (Fin g → ℂ) ≃ᵐ (Fin g' → ℂ) :=
   (MeasurableEquiv.piCongrLeft (fun _ => ℂ) ε).symm
 
-theorem rhoM_eq (ε : Fin g' ≃ Fin g) : ⇑(rhoM ε) = ⇑(rho ε) := rfl
 
 theorem rho_mp (ε : Fin g' ≃ Fin g) : MeasurePreserving (rhoM ε) volume volume :=
   (volume_measurePreserving_piCongrLeft (fun _ => ℂ) ε).symm _

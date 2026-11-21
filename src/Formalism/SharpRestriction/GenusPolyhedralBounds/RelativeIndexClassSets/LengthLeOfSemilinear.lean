@@ -44,25 +44,6 @@ theorem ql_scaled_le (r : O) (M Mgg NK : Submodule O V) {n : ℕ} (th : Fin n �
 
 end General
 
-theorem length_quot_quot {O V : Type*} [CommRing O] [AddCommGroup V] [Module O V]
-    (M Mgg : Submodule O V) {n : ℕ} (th : Fin n → V) (h1 : Mgg ≤ M) (h2 : ∀ j, th j ∈ M) :
-    Module.length O ((↥M ⧸ Mgg.comap M.subtype) ⧸ Submodule.span O (Set.range fun j =>
-        (Submodule.Quotient.mk ⟨th j, h2 j⟩ : ↥M ⧸ Mgg.comap M.subtype))) =
-      Module.length O (↥M ⧸ (Mgg ⊔ Submodule.span O (Set.range th)).comap M.subtype) := by
-  set S : Submodule O ↥M := Mgg.comap M.subtype with hS
-  set T : Submodule O ↥M := Submodule.span O (Set.range fun j => (⟨th j, h2 j⟩ : ↥M)) with hT
-  have e1 : Submodule.span O (Set.range fun j => (Submodule.Quotient.mk ⟨th j, h2 j⟩ : ↥M ⧸ S)) =
-      T.map S.mkQ := by
-    rw [hT, Submodule.map_span, ← Set.range_comp]
-    rfl
-  have hth : Submodule.span O (Set.range th) ≤ M := Submodule.span_le.2 (by rintro _ ⟨j, rfl⟩; exact h2 j)
-  have e2 : (Mgg ⊔ Submodule.span O (Set.range th)).comap M.subtype = S ⊔ T := by
-    apply Submodule.map_injective_of_injective M.injective_subtype
-    rw [Submodule.map_comap_subtype, Submodule.map_sup, hS, Submodule.map_comap_subtype, hT,
-      Submodule.map_span, ← Set.range_comp, inf_eq_right.2 (sup_le h1 hth), inf_eq_right.2 h1]
-    rfl
-  rw [e1, e2]
-  exact (Submodule.quotientQuotientEquivQuotientSup S T).length_eq
 
 def LocalStepQ : Prop :=
   ∀ (O K V W : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K]
@@ -263,32 +244,6 @@ def LocalStepClosedQ : Prop :=
             (R : ℝ) * ((T : ℝ) * c' * ∑ z, ((ep z : ℝ) * f z) * v z) + (R : ℝ) * (I : ℝ) +
             ((Module.length O (↥Zm ⧸ Z.comap Zm.subtype)).toNat : ℝ) + (q : ℝ)
 
-theorem localStepClosedQ : LocalStepClosedQ := by
-  intro ι _ ep f ν v νs c' T R I hep hT hc' hv hν O K V W _ _ _ _ _ _ _ _ _ _ _ _ _
-    ϖ hϖ M Θ N₁ Z Zm N' Mgg e n q th AA AA' N₁' ρ hM hΘ h1 h2 h3 h4 h5 h6 h8 h9
-    h10 h11 h12 h13 h14 h15 h16 h17 hcase
-    Rr Aq _ _ _ _ _ _ _ _ xq nq Fq rq hF0 hFn hFd hFi hFl hsum hres hequiv
-    A0 _ _ n1 F1 ι1 _ _ deg δ t σ u hG0 hGn hGd hker hsurj hdeg hlead hind hspan hcard hI V'
-  obtain ⟨eqv⟩ := hequiv
-  set mmz : ι → ℕ := fun z => (max 0 ⌈(ep z : ℝ) * ((T : ℝ) * ν z - (e : ℝ))⌉).toNat with hmmz
-  have hL := levelsLengthSum O ι Rr Aq xq mmz nq Fq rq R hF0 hFn hFd hFi hFl hsum
-  have hA : Module.length O (↥AA' ⧸ AA.comap AA'.subtype) ≤
-      ((R * ∑ z, mmz z * f z : ℕ) : ℕ∞) := by
-    rw [eqv.length_eq, hL]
-    refine le_of_eq ?_
-    simp only [hres]
-    push_cast
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl fun z _ => ?_
-    ring
-  have hN : Module.length O (↥AA ⧸ N₁'.comap AA.subtype) ≤ ((R * I : ℕ) : ℕ∞) := by
-    rw [hspan, leadingTermLength O (↥AA) A0 n1 F1 ι1 deg δ t σ u hG0 hGn hGd hker hsurj hdeg hlead hind,
-      hcard, hI]
-    push_cast
-    exact le_rfl
-  exact localStepLevelsQ ι ep f ν v νs c' T R I hep hT hc' hv hν O K V W ϖ hϖ M Θ N₁ Z Zm N' Mgg e
-    n q th AA AA' N₁' ρ hM hΘ h1 h2 h3 h4 h5 h6 h8 h9 h10 h11 h12 h13 h14 h15 h16 h17
-    hcase hA hN V'
 
 section Semilinear
 
@@ -411,26 +366,6 @@ def LocalStepClosedQDescUp : Prop :=
             (R : ℝ) * ((T : ℝ) * c' * ∑ z, ((ep z : ℝ) * f z) * v z) + (R : ℝ) * (I : ℝ) +
             ((Module.length O' (↥Zm ⧸ Z.comap Zm.subtype)).toNat : ℝ) + (q : ℝ)
 
-theorem localStepClosedQDescUp : LocalStepClosedQDescUp := by
-  intro ι _ ep f ν v νs c' T R I hep hT hc' hv hν O O' K K' V V₁ W
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ j hj ϖ hϖ hϖ'
-    M Θ N₁ Z Zm N' Mgg e n q th AA AA' N₁' ρ hM hΘ h1 h2 h3 h4 h5 h6 h8 h9
-    h10 h11 h12 h13 h14 h15 h16 h17 hcase
-    Rr Aq _ _ _ _ _ _ _ _ xq nq Fq rq hF0 hFn hFd hFi hFl hsum hres hequiv
-    A0 _ _ n1 F1 ι1 _ _ deg δ t σ u hG0 hGn hGd hker hsurj hdeg hlead hind hspan hcard hI V'
-  have : FiniteDimensional K' V₁ := Module.Finite.equiv hj.equiv
-  have h := localStepClosedQ ι ep f ν v νs c' T R I hep hT hc' hv hν O' K' V₁ W (algebraMap O O' ϖ) hϖ'
-    (Submodule.span O' (j '' (M : Set V))) (Submodule.span O' (j '' (Θ : Set V))) N₁ Z Zm N' Mgg e n q
-    th AA AA' N₁' ρ (isLattice_span_image_alt O O' K K' V V₁ j hj M hM)
-    (isLattice_span_image_alt O O' K K' V V₁ j hj Θ hΘ) h1 h2 h3 h4 h5 h6 h8 h9
-    h10 h11 h12 h13 h14 h15 h16 h17 hcase
-    Rr Aq xq nq Fq rq hF0 hFn hFd hFi hFl hsum hres hequiv
-    A0 n1 F1 ι1 deg δ t σ u hG0 hGn hGd hker hsurj hdeg hlead hind hspan hcard hI
-    (Submodule.span K' (j '' (V' : Set V)))
-  have hd := localStepDescent O O' K K' V V₁ j hj ϖ hϖ hϖ' M Θ V' hM hΘ 1
-    ((R : ℝ) * ((T : ℝ) * c' * ∑ z, ((ep z : ℝ) * f z) * v z) + (R : ℝ) * (I : ℝ) +
-      ((Module.length O' (↥Zm ⧸ Z.comap Zm.subtype)).toNat : ℝ) + (q : ℝ)) 0 e (by linarith)
-  linarith
 
 def LocalStepClosedQDesc : Prop :=
   ∀ (ι : Type) [Fintype ι] (ep f : ι → ℕ) (ν v : ι → ℝ) (νs c' : ℝ) (T R I : ℕ),
@@ -494,41 +429,5 @@ def LocalStepClosedQDesc : Prop :=
             (R : ℝ) * ((T : ℝ) * c' * ∑ z, ((ep z : ℝ) * f z) * v z) + (R : ℝ) * (I : ℝ) +
             ((Module.length O' (↥Zm ⧸ Z.comap Zm.subtype)).toNat : ℝ) + (q : ℝ)
 
-theorem localStepClosedQDesc : LocalStepClosedQDesc := by
-  intro ι _ ep f ν v νs c' T R I hep hT hc' hv hν O O' K K' V V₁ W
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ j hj ϖ hϖ hϖ'
-    M Θ Mgg N₁ Z Zm N' e n q th AA AA' N₁' ρ hM hΘ h1 h2 h3 h4 h5 h6
-  let jj : V →ₛₗ[algebraMap O O'] V₁ :=
-    { toFun := j
-      map_add' := j.map_add
-      map_smul' := fun a x => by
-        show j (a • x) = algebraMap O O' a • j x
-        rw [← algebraMap_smul K a x, j.map_smul, ← algebraMap_smul K' (algebraMap O K a) (j x),
-          ← IsScalarTower.algebraMap_apply O K K', IsScalarTower.algebraMap_apply O O' K',
-          algebraMap_smul] }
-  have hlen : ql (Submodule.span O' (j '' (M : Set V)))
-      (Submodule.span O' (j '' (Mgg : Set V)) ⊔ Submodule.span O' (Set.range fun i => j (th i))) ≤
-      ql M (Mgg ⊔ Submodule.span O (Set.range th)) := by
-    refine ql_span_le ϖ hϖ hϖ' jj M _ _ ?_
-    have hle : Mgg ⊔ Submodule.span O (Set.range th) ≤
-        (Submodule.span O' (j '' (Mgg : Set V)) ⊔
-          Submodule.span O' (Set.range fun i => j (th i))).comap jj := by
-      refine sup_le (fun x hx => ?_) (Submodule.span_le.2 ?_)
-      · exact Submodule.mem_sup_left (Submodule.subset_span ⟨x, hx, rfl⟩)
-      · rintro _ ⟨i, rfl⟩
-        exact Submodule.mem_sup_right (Submodule.subset_span ⟨i, rfl⟩)
-    exact fun x hx => hle hx
-  refine localStepClosedQDescUp ι ep f ν v νs c' T R I hep hT hc' hv hν O O' K K' V V₁ W j hj ϖ hϖ hϖ'
-    M Θ N₁ Z Zm N' (Submodule.span O' (j '' (Mgg : Set V))) e n q (fun i => j (th i)) AA AA' N₁' ρ
-    hM hΘ h1 (fun i => Submodule.subset_span ⟨th i, h2 i, rfl⟩)
-    (fun i => Submodule.subset_span ⟨th i, h3 i, rfl⟩)
-    (Submodule.span_mono (Set.image_mono h4)) ?_ (hlen.trans h6)
-  rw [Submodule.span_le]
-  have hle : Submodule.span O' (j '' (Mgg : Set V)) ≤
-      (Submodule.span K' ((N₁ ⊔ Z : Submodule O' V₁) : Set V₁)).restrictScalars O' := by
-    rw [Submodule.span_le]
-    rintro _ ⟨x, hx, rfl⟩
-    exact h5 x hx
-  exact fun x hx => hle hx
 
 end Formalism.MainNotions.Gaps.T0

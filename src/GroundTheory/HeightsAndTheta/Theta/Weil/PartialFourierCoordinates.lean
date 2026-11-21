@@ -196,25 +196,7 @@ theorem FourPieces.adelicPairing₂_adelicCoord_symm [FiniteDimensional K P₂] 
   rw [Finset.mul_sum]
   exact Finset.sum_congr rfl fun i _ ↦ by ring
 
-theorem adelicCoord_prod_symm_sumElim [FiniteDimensional K P₁] [FiniteDimensional K P₂] {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
-    [DecidableEq κ] (b₁ : Basis ι K P₁) (b₂ : Basis κ K P₂) (a : ι → 𝔸[K]) (x : κ → 𝔸[K]) :
-    (adelicCoord (b₁.prod b₂)).symm (Sum.elim a x) =
-      (adelicProdEquiv K P₁ P₂).symm ((adelicCoord b₁).symm a, (adelicCoord b₂).symm x) := by
-  apply (adelicProdEquiv K P₁ P₂).injective
-  rw [LinearEquiv.apply_symm_apply, adelicCoord_symm_apply, adelicCoord_symm_apply,
-    adelicCoord_symm_apply, map_sum, Fintype.sum_sum_type]
-  ext <;> simp [Basis.prod_apply, Prod.fst_sum, Prod.snd_sum]
 
-theorem schwartzBruhatPoints_prodSlice_mem [FiniteDimensional K P₁] [FiniteDimensional K P₂]
-    {φ : AdelicPoints K (P₁ × P₂) → ℂ} (hφ : φ ∈ schwartzBruhatPoints K (P₁ × P₂))
-    (p₁ : AdelicPoints K P₁) :
-    (fun p ↦ φ ((adelicProdEquiv K P₁ P₂).symm (p₁, p))) ∈ schwartzBruhatPoints K P₂ := by
-  rw [mem_schwartzBruhatPoints_iff ((Module.finBasis K P₁).prod (Module.finBasis K P₂))] at hφ
-  rw [mem_schwartzBruhatPoints_iff (Module.finBasis K P₂)]
-  have h := schwartzBruhatPi_sumElim_mem hφ (adelicCoord (Module.finBasis K P₁) p₁)
-  convert h using 1
-  funext x
-  simp only [Function.comp_apply, adelicCoord_prod_symm_sumElim, LinearEquiv.symm_apply_apply]
 
 theorem FourPieces.adelicFourierInversion_P₂ [FiniteDimensional K P₂] [FiniteDimensional K Q₂]
     (hω : ω.Nondegenerate) (F : FourPieces ω P₁ P₂ Q₁ Q₂) {ψ : AddChar 𝔸[K] Circle} {ξ : K}

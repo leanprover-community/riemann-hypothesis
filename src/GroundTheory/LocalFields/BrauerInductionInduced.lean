@@ -101,9 +101,6 @@ theorem charInner_indFun (φ : H →* G) (ψ : H → ℂ) {χ : G → ℂ} (hχ 
   simp only [Function.comp_apply]
   field_simp
 
-theorem charInner_indFun_right (φ : H →* G) (ψ : H → ℂ) {χ : G → ℂ} (hχ : IsClassFun χ) :
-    charInner G χ (indFun φ ψ) = charInner H (χ ∘ φ) ψ := by
-  rw [charInner_comm, charInner_indFun φ ψ hχ, charInner_comm]
 
 omit [Fintype G] [Fintype H] in
 

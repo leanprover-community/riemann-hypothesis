@@ -81,29 +81,7 @@ theorem idemSmall : StatIdemSmall := by
         rw [Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hdet, Matrix.mul_one]
     _ = 0 := by rw [hmul, Matrix.zero_mul]
 
-theorem commonNonzero : StatCommonNonzero := by
-  unfold StatCommonNonzero
-  intro O _ _ _ σ ι _ D hD
-  classical
-  have hprod : (∏ i, D i) ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => hD i
-  by_contra hcon
-  push_neg at hcon
-  apply hprod
-  apply MvPolynomial.funext
-  intro z
-  obtain ⟨i, hi⟩ := hcon z
-  rw [map_prod, map_zero]
-  exact Finset.prod_eq_zero (Finset.mem_univ i) hi
 
-theorem idempotent_image_surjective : RightIdealImageOfSurjective := by
-  unfold RightIdealImageOfSurjective
-  intro O R' _ _ _ n _ _ ρ hρ e₁ A
-  constructor
-  · rintro ⟨B, rfl⟩
-    obtain ⟨b, rfl⟩ := hρ B
-    exact ⟨b, by rw [map_mul]⟩
-  · rintro ⟨a, rfl⟩
-    exact ⟨ρ a, by rw [map_mul]⟩
 
 theorem rootsInt : StatRootsInt := by
   unfold StatRootsInt

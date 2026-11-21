@@ -249,56 +249,5 @@ theorem IsDensityFor.translate {P : Ideal (MvPolynomial (Ix κ) ℤ)} {μ : Meas
   rw [← hL, key, hR]
   exact (gaap_setLIntegral_translate y₀ ρ₀ (fun y => ENNReal.ofReal (g (γ y) * ν y))).symm
 
-theorem exists_finite_param_cover {x : Ix κ → Ω} {m : ConeMetric ℂ (Ix κ)}
-    {μ : Measure (Ix κ → ℂ)} (hg : IsGood D x m μ) :
-    ∃ (N : ℕ) (U C : Fin N → Set (Fin D → ℂ)) (γ : Fin N → (Fin D → ℂ) → Ix κ → ℂ),
-      (∀ a, IsParam (coordIdeal ℤ x) (U a) (γ a)) ∧ (∀ a, IsCompact (C a) ∧ C a ⊆ U a) ∧
-      ∀ z ∈ pts (coordIdeal ℤ x), ∃ a, z ∈ coneOver (C a) (γ a) := by
-  classical
-  set P := coordIdeal ℤ x with hPdef
-  set S := pts P ∩ Metric.sphere (0 : Ix κ → ℂ) 1 with hSdef
-  have hS : IsCompact S := gbap_isCompact_pts_sphere P
-  have hex : ∀ s : S, ∃ (ρ : ℝ) (γ : (Fin D → ℂ) → Ix κ → ℂ) (O : Set (Ix κ → ℂ)), 0 < ρ ∧
-      IsParam P (Metric.ball 0 ρ) γ ∧ IsOpen O ∧ (s : Ix κ → ℂ) ∈ O ∧
-      O ∩ pts P ⊆ coneOver (Metric.closedBall 0 (ρ / 2)) γ := by
-    intro s
-    obtain ⟨ρ, γ, hρ, hγ, h0⟩ := exists_isParam hg s.2.1
-    have hsub : Metric.ball (0 : Fin D → ℂ) (ρ / 2) ⊆ Metric.ball 0 ρ :=
-      Metric.ball_subset_ball (by linarith)
-    obtain ⟨_, _, _, O, q, hO, _, hOeq, _, _⟩ := hγ.translate 0 hsub
-    refine ⟨ρ, γ, O, hρ, hγ, hO, ?_, ?_⟩
-    · have : (s : Ix κ → ℂ) ∈ coneOver (Metric.ball (0 : Fin D → ℂ) (ρ / 2)) fun y => γ (0 + y) :=
-        ⟨0, Metric.mem_ball_self (by linarith), 1, one_ne_zero, by simp [h0]⟩
-      rw [← hOeq] at this
-      exact this.1
-    · rw [hOeq]
-      rintro z ⟨y, hy, c, hc, rfl⟩
-      exact ⟨y, Metric.ball_subset_closedBall hy, c, hc, by simp⟩
-  choose ρ γ O hρ hγ hO hsO hOsub using hex
-  obtain ⟨t, ht⟩ := hS.elim_finite_subcover (fun s : S => O s) (fun s => hO s)
-    (fun s hs => Set.mem_iUnion.2 ⟨⟨s, hs⟩, hsO _⟩)
-  let e := t.equivFin
-  refine ⟨t.card, fun a => Metric.ball 0 (ρ (e.symm a).1),
-    fun a => Metric.closedBall 0 (ρ (e.symm a).1 / 2), fun a => γ (e.symm a).1, fun a => hγ _,
-    fun a => ⟨isCompact_closedBall _ _,
-      Metric.closedBall_subset_ball (by linarith [hρ (e.symm a).1])⟩, ?_⟩
-  intro z hz
-  have hn : ‖z‖ ≠ 0 := norm_ne_zero_iff.2 hz.1
-  set r : ℂ := (‖z‖ : ℂ) with hr
-  have hr0 : r ≠ 0 := by
-    rw [hr]
-    exact_mod_cast hn
-  set s := r⁻¹ • z with hsdef
-  have hsS : s ∈ S := by
-    refine ⟨gbap_smul_mem_pts x hz (inv_ne_zero hr0), ?_⟩
-    rw [mem_sphere_zero_iff_norm, hsdef, norm_smul, norm_inv, hr, Complex.norm_real,
-      Real.norm_eq_abs, abs_norm, inv_mul_cancel₀ hn]
-  obtain ⟨i, hit, hsi⟩ := Set.mem_iUnion₂.1 (ht hsS)
-  have hsc := hOsub i ⟨hsi, hsS.1⟩
-  refine ⟨e ⟨i, hit⟩, ?_⟩
-  simp only [Equiv.symm_apply_apply]
-  obtain ⟨y, hy, c, hc, hce⟩ := hsc
-  refine ⟨y, hy, r * c, mul_ne_zero hr0 hc, ?_⟩
-  rw [mul_smul, ← hce, hsdef, smul_smul, mul_inv_cancel₀ hr0, one_smul]
 
 end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry

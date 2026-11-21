@@ -398,7 +398,6 @@ def RealisationStatementAll : Prop := ∀ CR CA CB CK : ℝ, ∃ C : ℝ, ∀ D 
 def RealisationConstantSixteen : Prop := ∀ CR CA CB CK : ℝ, ∀ D : D7, ∀ HW : HWOf D.loc, ∀ F : FonOf D.loc D.locA HW,
     ∀ Cm : CmpOf D.loc D.locA HW F, Stmt D HW F Cm 16 CR CA CB CK
 
-theorem realisation_all_of_constant_sixteen (h : RealisationConstantSixteen) : RealisationStatementAll := fun CR CA CB CK => ⟨16, h CR CA CB CK⟩
 
 def LiftingBoundSomeConstants : Prop :=
   ∀ CR CA CB CK : ℝ, ∃ k₁ k₂ k₃ k₄ k₅ C : ℝ, ∀ D : D7, ∀ HW : HWOf D.loc, ∀ F : FonOf D.loc D.locA HW, ∀ Cm : CmpOf D.loc D.locA HW F,
@@ -428,15 +427,7 @@ theorem crystalline_lift_of_theorem_c (D : D7) (HW : HWOf D.loc) (F : FonOf D.lo
 theorem lifting_bounds_of_theorem_c (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) {C CA CB CK : ℝ} (h : Formalism.MainNotions.LiftingTheory.aux₃ D HW F C CA CB CK) :
     adm10 D HW F CA CB CK := h.2.2.2.2.2.2.2
 
-theorem crystalline_image_of_prop_two_a (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h : adm3 D HW F) : adm14 D HW F :=
-  fun l _ K s LL hg T hT _ => (h l K s LL hg).1 T hT
 
-theorem stmtAllK_of (h : RealisationStatementAll) : LiftingBoundSomeConstants := fun CR CA CB CK =>
-  (h CR CA CB CK).elim fun C hC => ⟨32, 4, 10, 4, 3 / 2, C, fun D HW F Cm hA => hC D HW F Cm hA⟩
 
-theorem theorem_c_last_of_theorem_c (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) (h : aux₃ D HW F C) : Conclusion2 D HW F C := by
-  intro l _ K LL hg _ d T₁ T₂ F b S η m hS hm
-  obtain ⟨e, he, _, h0⟩ := h l K LL hg d T₁ T₂ F b S η m hS trivial
-  exact ⟨e, he, h0 hm⟩
 
 end Formalism.MainNotions.RamifiedCoefficientChains

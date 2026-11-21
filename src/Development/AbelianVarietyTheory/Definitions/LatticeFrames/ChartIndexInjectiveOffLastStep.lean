@@ -29,14 +29,7 @@ theorem chartIndex_injective_offLastStep (hA : A.Is) {j : ℕ} (hj : j ≤ B.R.m
 theorem subsingleton_top (hA : A.Is) : Subsingleton (Ch B.R.m) :=
   ⟨fun α β => chartIndex_injective_offLastStep hA le_rfl (by omega) (by rw [Idx.eq_top (A.b0 _ α) le_rfl, Idx.eq_top (A.b0 _ β) le_rfl])⟩
 
-theorem finite_charts (hA : A.Is) {j : ℕ} (hj : j ≤ B.R.m) : Finite (Ch j) :=
-  letI := (I.chain l u a).clsFin j
-  haveI : Finite (I.stp u a j).Cl := (inferInstance : Finite ((I.chain l u a).cls j))
-  Finite.of_surjective _ (hA.chOf_onto j hj)
 
-theorem kb_top_ne_one (hI : I.Ok) (hA : A.Is) [NeZero (B.R.N B.R.m - 1)] (P : I.Q a)
-    (hpi : ((X.piT u : 𝓞 B.host.E) : B.host.E) ≠ 1) (β : Ch B.R.m) : A.kb B.R.m β ≠ 1 := fun h =>
-  TopPtModel.not_topPt_one I l Z hI P hpi (h ▸ hA.top β)
 
 theorem bad_finite (hA : A.Is) (hG : (Formalism.L2.Forms.badG (I.rec7 l Z)).Finite) {j : ℕ} (hj : j ≤ B.R.m) : (A.bad j).Finite := by
   refine (hG.union ((I.Q a).finite_toSet.image fun P => P.under (𝓞 B.host.F))).subset fun v hv => ?_
@@ -105,18 +98,7 @@ variable {ψ : AddChar (AF (I.rec7 l Z).host.F) ℂ} {θ : InfFam (I.rec7 l Z)}
     {w w' : ∀ j, Ch j → Ch (j + 1) → ℂ} {Ram Ram' : ∀ j, Set (ColT I l u a j)}
     {rd rd' : ∀ j, Ch j → ColT I l u a j → (I.chain l u a).Y j → GA (I.rec7 l Z) ((I.rec7 l Z).sp.X j) → ℂ} {cK : ℕ → ℂ}
 
-theorem w_unique (h : PinColN A ψ θ x vac c₀ kom dd w Ram rd cK) (h' : PinColT A ψ θ x vac c₀ kom' dd' w' Ram' rd' cK)
-    (j : ℕ) (hj : j < B.R.m) (α : Ch j) (γ : Ch (j + 1)) : w j α γ = w' j α γ := by
-  obtain ⟨-, h1, h2⟩ := h.w_ne j hj α γ
-  have e := (h.cst j hj α γ).symm.trans (h'.cst j hj α γ)
-  have h3 : (volLev (x j).vol (A.U j α) : ℂ) ≠ 0 := by exact_mod_cast h1
-  exact mul_left_cancel₀ h3 (mul_right_cancel₀ h2 (mul_right_cancel₀ (Circle.coe_ne_zero _)
-    (mul_right_cancel₀ (inv_ne_zero (Circle.coe_ne_zero _)) e)))
 
-theorem norm_cK (h : PinColT A ψ θ x vac c₀ kom dd w Ram rd cK) (j : ℕ) (hj : j < B.R.m) (α : Ch j) (γ : Ch (j + 1)) :
-    ‖cK j‖ = |volLev (x j).vol (A.U j α)| * ‖w j α γ‖ * ‖c₀ j‖ := by
-  rw [h.cst j hj α γ]
-  simp [Circle.norm_coe]
 
 end Pin
 

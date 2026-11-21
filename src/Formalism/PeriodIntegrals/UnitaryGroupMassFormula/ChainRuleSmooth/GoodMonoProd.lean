@@ -171,10 +171,6 @@ theorem good_poly (q : MvPolynomial ((Fin (2 * r + k + 1) × Fin (2 * r + k + 1)
   have hdeg : (∑ i ∈ d.support, d i) ≤ D := (MvPolynomial.le_totalDegree hd).trans hq
   exact good_mono (by simpa using hdeg) _ (good_mul _ _ (good_const (q.coeff d)) (good_mono_prod d d.support))
 
-theorem ruleC : C2.RuleC := by
-  intro k r E _ _ A F D P hF hP
-  obtain ⟨q, hq, hPq⟩ := hP
-  exact main A D P (good_congr (fun g => (hPq g).symm) (good_poly q D hq)) F hF
 
 end sup
 

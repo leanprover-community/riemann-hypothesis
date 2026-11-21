@@ -301,24 +301,6 @@ theorem exists_eq_of_natCast_mul_mem {𝔞 : FractionalIdeal (𝓞 K)⁰ K} {n :
   rw [map_div₀, e, map_natCast]
   field_simp
 
-theorem exists_uniformised [IsTotallyComplex K] (h2 : Module.finrank ℚ K = 2)
-    {𝔞 : FractionalIdeal (𝓞 K)⁰ K} (h𝔞 : 𝔞 ≠ 0) :
-    ∃ (L : PeriodPair) (ξ : (ℂ ⧸ idealSub 𝔞) ≃+ (latticeCurve L).toAffine.Point),
-      (∀ z, z ∈ idealSub 𝔞 ↔ z ∈ L.lattice) ∧ IsAnalyticIso ξ ∧
-        ∀ z : ℂ, ξ z = latticePoint L z := by
-  obtain ⟨L, hL⟩ := Published.exists_isIdealLattice h2 (Units.mk0 𝔞 h𝔞)
-  have hΛ : ∀ z, z ∈ idealSub 𝔞 ↔ z ∈ L.lattice := fun z => by
-    change _ ↔ z ∈ (L.lattice : Set ℂ)
-    rw [hL]
-    rfl
-  obtain ⟨ξ, h1, h2⟩ := exists_isAnalyticIso (X := latticeCurve L) (C := 1) (one_smul _ _)
-    one_ne_zero (fun z => by rw [one_mul, hΛ])
-  refine ⟨L, ξ, hΛ, h1, fun z => ?_⟩
-  rw [h2, one_mul]
-  rcases latticePoint L z with _ | ⟨x, y, h⟩
-  · rfl
-  · rw [variableChangePoint_some, Affine.Point.some.injEq]
-    simp [VariableChange.one_def]
 
 theorem transports_of_exists {σ : ℂ ≃ₐ[K] ℂ} {t : (IsDedekindDomain.FiniteAdeleRing (𝓞 K) K)ˣ}
     {X : WeierstrassCurve ℂ} [X.IsElliptic] {𝔞 𝔟 : FractionalIdeal (𝓞 K)⁰ K} (h𝔞 : 𝔞 ≠ 0)

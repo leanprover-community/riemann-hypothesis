@@ -251,12 +251,6 @@ theorem minorProd_isWeightedHomogeneous [Fintype T] (w : T → Fin p ⊕ Fin q �
   · refine IsWeightedHomogeneous.prod _ _ _ fun i _ => IsWeightedHomogeneous.pow ?_ _
     exact det_isWeightedHomogeneous _ _ _ fun a b => rowForm_isWeightedHomogeneous w t _ _
 
-theorem minorProd_isHomogeneous [Fintype T] (c : T → Fin p → ℕ) (c' : T → Fin q → ℕ)
-    (ε : T → Fin p → κ → R) (φ : T → Fin q → κ → R) :
-    (minorProd c c' ε φ).IsHomogeneous (typeDegree c c') := by
-  have := minorProd_isWeightedHomogeneous (fun _ _ => (1 : ℕ)) c c' ε φ
-  simp only [smul_eq_mul, mul_one, sum_partOf] at this
-  exact this
 
 end Degree
 
@@ -527,9 +521,6 @@ theorem basePoly_ne_zero [Nontrivial R] : basePoly R h c c' ≠ 0 := fun e => by
   rw [e, map_zero] at this
   exact zero_ne_one this
 
-theorem totalDegree_basePoly [Nontrivial R] :
-    (basePoly R h c c').totalDegree = typeDegree c c' :=
-  (minorProd_isHomogeneous c c' _ _).totalDegree (basePoly_ne_zero h c c')
 
 end Base
 

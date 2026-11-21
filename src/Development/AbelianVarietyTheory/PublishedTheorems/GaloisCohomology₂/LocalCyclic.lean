@@ -48,18 +48,6 @@ theorem local_cyclic (h : CycAt v u) (f : v.adicCompletion K →+* u.adicComplet
   rw [GroundTheory.Global.finrank_adicCompletion v u, ← GroundTheory.Global.card_decompositionGroup v u, htop,
       Subgroup.card_top, IsGalois.card_aut_eq_finrank]
 
-theorem lbc_deg (h : CycAt v u) {x : IrrGL (v.adicCompletion K)} {X : IrrGL (u.adicCompletion L)}
-    (hl : lbc K L v u x X) : x.1 = X.1 := by
-  obtain ⟨f, hf, hK, H⟩ := hl
-  letI : Algebra (v.adicCompletion K) (u.adicCompletion L) := f.toAlgebra
-  obtain ⟨hG, hd⟩ := local_cyclic h f hf hK
-  have hp := h.2.1.one_lt
-  have : FiniteDimensional (v.adicCompletion K) (u.adicCompletion L) := Module.finite_of_finrank_pos (by omega)
-  have : Nontrivial (u.adicCompletion L ≃ₐ[v.adicCompletion K] u.adicCompletion L) :=
-    Finite.one_lt_card_iff_nontrivial.1 (by rw [IsGalois.card_aut_eq_finrank]; omega)
-  obtain ⟨s, hs⟩ := exists_ne (1 : u.adicCompletion L ≃ₐ[v.adicCompletion K] u.adicCompletion L)
-  obtain ⟨m, π, P, rfl, rfl, -⟩ := H s hs
-  rfl
 
 theorem lbc_ofChar (h : CycAt v u) (χ : (v.adicCompletion K)ˣ →* ℂˣ) (hχ : IsSmoothChar χ) :
     ∃ (N : (u.adicCompletion L)ˣ →* (v.adicCompletion K)ˣ) (hN : IsSmoothChar (χ.comp N)),

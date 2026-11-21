@@ -79,26 +79,6 @@ def SuShape (D : D7) (u : D.what₂.Word) (s : ℂ) : Prop :=
   ∃ (e : ℕ → ℤ) (z : ℂ) (c : ℕ → ℂ), ‖z‖ = 1 ∧ (∀ j, c j ≠ 0) ∧
     s = ((∏ p ∈ suPrimes D u, ((p : ℝ) ^ ((e p : ℝ) / 2)) : ℝ) : ℂ) * z * (∏ j ∈ Finset.Icc 1 D.R.m, c j)⁻¹
 
-theorem suShape_ne_zero {D : D7} (u : D.what₂.Word) (s : ℂ) (h : SuShape D u s) : s ≠ 0 := by
-  obtain ⟨e, z, c, hz, hc, rfl⟩ := h
-  have hpos : ∀ p ∈ suPrimes D u, 0 < p := by
-    intro p hp
-    simp only [suPrimes, Finset.mem_insert, Finset.mem_union] at hp
-    rcases hp with h | h | h | h | h | h
-    · rw [h]; exact (D.mem u).A.T_prime.pos
-    · rw [h]; exact (D.host.g_prime 0).pos
-    · rw [h]; exact (D.host.g_prime 1).pos
-    · exact (Nat.prime_of_mem_primeFactors h).pos
-    · rw [h]; exact lt_of_le_of_lt (Nat.zero_le _) D.host.qd_big.1
-    · exact (Nat.prime_of_mem_primeFactors h).pos
-  refine mul_ne_zero (mul_ne_zero ?_ ?_) ?_
-  · rw [Complex.ofReal_ne_zero, Finset.prod_ne_zero_iff]
-    intro p hp
-    exact (Real.rpow_pos_of_pos (by exact_mod_cast hpos p hp) _).ne'
-  · intro h0
-    rw [h0, norm_zero] at hz
-    exact zero_ne_one hz
-  · exact inv_ne_zero (Finset.prod_ne_zero_iff.mpr fun j _ => hc j)
 
 variable {T : ThetaX D}
 
@@ -461,21 +441,7 @@ def CuspTypeGeneralForm (T : ThetaX D) : Prop :=
     IsTypeDv T (j + 1) (F : T.AF (D.sp.Y (j + 1))) →
     T.th _ _ (T.carY μ (j + 1) (j + 1)) (T.carY μ (j + 1) j) Φ F = 0)
 
-theorem InChain.isTypeDv {T : ThetaX D}
-    (h1 : ∀ μ j, j < D.R.m → ∀ (Φ : T.Sch (D.sp.Y (j + 1)) (D.sp.Y j)) (F : T.cusp (D.sp.Y (j + 1))),
-      IsTypeDv T (j + 1) (F : T.AF (D.sp.Y (j + 1))) →
-      T.th _ _ (T.carY μ (j + 1) (j + 1)) (T.carY μ (j + 1) j) Φ F ∈ T.cusp (D.sp.Y j) →
-      IsTypeDv T j (T.th _ _ (T.carY μ (j + 1) (j + 1)) (T.carY μ (j + 1) j) Φ F))
-    {μ : D.what₂.Tup} {j : ℕ} {G : T.AF (D.sp.Y j)} (hG : InChain T μ j G) :
-    G ∈ T.cusp (D.sp.Y j) → IsTypeDv T j G := by
-  induction hG with
-  | top x hx => exact fun _ => hx
-  | step j hj Φ F _ ih => exact fun hc => h1 μ j hj Φ F (ih F.2) hc
 
-theorem cusp_type_of_general_form (T : ThetaX D) (h : CuspTypeGeneralForm T) : ThetaCuspidalChain T := by
-  intro hW
-  obtain ⟨h1, h2⟩ := h hW
-  exact ⟨fun μ j hj Φ F hF hc => h1 μ j hj Φ F (InChain.isTypeDv h1 hF F.2) hc, h2⟩
 
 def admitted (T : ThetaX D) (A : TH.ProvA) (G : Formalism.MainNotions.product_first_zeroth_parts.Th22 D) : Prop :=
   adm1 ∧ adm2 T ∧ adm3 ∧ adm5 D ∧ adm6 G ∧ adm7 ∧ adm8 A ∧ ThetaCuspidalChain T

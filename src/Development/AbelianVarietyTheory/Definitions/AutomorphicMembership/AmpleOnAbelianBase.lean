@@ -167,13 +167,6 @@ def realExample (Tau : Type) (N g : ℕ) : ArIn Tau N g Unit where
   root a R _ _ := if a 2 then R else 1
   whole a R _ _ := if a 2 then R else 1
 
-theorem realToy_arDeg {Tau : Type} [Fintype Tau] {N g : ℕ} (x : Tau × Fin N) (S : Finset ℕ) (R : ℝ) :
-    (realExample Tau N g).arDeg S R (MvPolynomial.X x ^ (Formalism.DegreeFormula.dimFl Tau N + 1)) =
-      (if 2 ∈ S then R else 1) ^ (Formalism.DegreeFormula.dimFl Tau N + 1) := by
-  rw [arDeg, LinearMap.sum_apply, Fintype.sum_unique]
-  change numL _ _ (MvPolynomial.rename _ _) = _
-  rw [map_pow, MvPolynomial.rename_X, numL_X_pow]
-  simp [realExample, ind, -Multiset.replicate_succ]
 
 theorem arDeg_homog (S : Finset ℕ) (R : ℝ) (P : MvPolynomial (DV.Rt Tau N) ℝ) (d : ℕ)
     (hd : d ≠ Formalism.DegreeFormula.dimFl Tau N + 1) (hP : P.IsHomogeneous d) : I.arDeg S R P = 0 := by
@@ -320,9 +313,7 @@ section Unfold
 variable {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} (L : LocSt D N j ng)
   (G : GlobSt fun p => (L.loc p).Mdl) (M : AdmSt D N j jC) (F : FlatSt s) (I : ArIn D.what₂.Tau N (D.R.f * N) s.Comp)
 
-theorem locSt_padOf : LocSt.ofPkg (padOf s L G M F I) = L := rfl
 
-theorem globSt_padOf : GlobSt.ofPkg (padOf s L G M F I) = G := rfl
 
 def mpEquiv (p : ℕ) [h : Fact p.Prime] (la : PlL D p) : (padOf s L G M F I).Mp p la ≃ M.admitted p la where
   toFun z := z h.out
@@ -330,10 +321,6 @@ def mpEquiv (p : ℕ) [h : Fact p.Prime] (la : PlL D p) : (padOf s L G M F I).Mp
   left_inv _ := rfl
   right_inv _ := rfl
 
-theorem normDet_false (p : ℕ) (hp : p.Prime) (τ : D.what₂.Tau) (y : Pt s) (a : Qb) :
-    normDet s p false τ y a = normDet s p true τ y a * Real.exp (∑ i, phi s p y (τ, i)) := by
-  simp only [normDet, dif_pos hp, phi, Finset.sum_sub_distrib]
-  rw [_root_.mul_assoc, ← Real.exp_add, add_sub_cancel]
 
 end Unfold
 

@@ -30,18 +30,6 @@ theorem p1_pow_mem_span_C_pow_X_pow (hp : p1 = C (l : O) * e + u * X ^ l) (m η 
   rw [e1]
   exact Ideal.mul_mem_left _ _ (Ideal.subset_span (by simp))
 
-theorem p2_sub_mul_X_pow_mem_span_C_natCast (hp : p1 = C (l : O) * e + u * X ^ l) (hp2 : p2 = C (l : O) * α + β * p1 ^ l) :
-    p2 - β * (u ^ l * X ^ (l * l)) ∈ Ideal.span {(C (l : O) : O⟦X⟧)} := by
-  have h1 : p1 - u * X ^ l = C (l : O) * e := by rw [hp]; ring
-  have h2 : p1 ^ l - (u * X ^ l) ^ l ∈ Ideal.span {(C (l : O) : O⟦X⟧)} := by
-    obtain ⟨c, hc⟩ := sub_dvd_pow_sub_pow p1 (u * X ^ l) l
-    rw [hc, h1, mul_assoc]
-    exact Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self _)
-  have e : p2 - β * (u ^ l * X ^ (l * l)) = C (l : O) * α + β * (p1 ^ l - (u * X ^ l) ^ l) := by
-    rw [hp2]; ring
-  rw [e]
-  exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self _))
-    (Ideal.mul_mem_left _ _ h2)
 
 variable {ϖ : O} (hϖ : Irreducible ϖ)
 include hϖ

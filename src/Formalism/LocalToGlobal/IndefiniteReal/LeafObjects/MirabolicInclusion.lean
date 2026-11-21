@@ -166,17 +166,10 @@ def onObjOf (R : RealDat D A Ks) (F : Face D A) (c : OnConst) (I : OnIn R) : OnO
 
 variable (R : RealDat D A Ks) (F : Face D A) (c : OnConst) (I : OnIn R)
 
-theorem tieU_rfl : TieU (onObjOf R F c I) (fun v => uniSub (kP v.1) (D.R.r - 1)) := rfl
 
-theorem tieLevelNum : TieLevelNum (onObjOf R F c I) (D.R.r - 1) D.R.f := by
-  refine ⟨rfl, ?_⟩
-  show (D.R.r : ℝ) = ((D.R.r - 1 : ℕ) : ℝ) + 1
-  rw [← Nat.cast_add_one, r_pos]
 
 theorem proj_range (j : Fin D.R.m) : LinearMap.range ((onObjOf R F c I).e j) = (onObjOf R F c I).V₀ j := rfl
 
-theorem pageTies_rfl : OnPage.SecondRatioDefinition (onObjOf R F c I) ∧
-    OnPage.TieBp (onObjOf R F c I) ∧ OnPage.TieNc (onObjOf R F c I) := ⟨rfl, rfl, rfl⟩
 
 def TieUnit : Prop := (F.fc (R.toCx F).zs).Z.E1u = (onObjOf R F c I).E1u
 
@@ -208,10 +201,5 @@ structure OnLeaves (N : IndefNum A.fam.base) : Prop where
   jSum : LeafJSum (onObjOf R F c I)
   jExp : LeafJExp N (onObjOf R F c I)
 
-theorem onto_of_leaves (C CH : ℝ) (hRk : RankRows (Sb R F)) (hL : OnLeaves R F c I (R.num F C CH)) (hCE : c.CE ≤ C)
-    (hE : TieUnit R F c I) (tErr : TieErr (onObjOf R F c I)) : R.LOnto F C CH :=
-  on_of_leaves (R.num F C CH) (onObjOf R F c I) C hRk hL.mackey hL.sup hL.proj hL.coord hL.span hL.lemmaS hL.t0 hL.data
-    hL.rankJ hL.identity hL.tw2 hL.tw1 hL.shareI hL.indexU hL.badShare hL.unip hL.depthGood hL.depthRam hL.depth2
-    hL.depthLevel hL.page hL.sizes hL.X hL.bad hL.jSum hL.jExp hCE (fun _ => by show C * _ = C * _; rw [hE]) tErr
 
 end Formalism.IndefR.Obj

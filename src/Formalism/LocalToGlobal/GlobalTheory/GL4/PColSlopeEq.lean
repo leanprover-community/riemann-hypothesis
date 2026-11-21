@@ -59,11 +59,6 @@ theorem colSlopeEq_of (h1 : TSpanEqVV) (h2 : ZBasisStd) (D : D7) (h3 : QSlope D)
   rw [hm, mul_add, e3]
   ring
 
-theorem Link5F_of_three (h1 : TSpanEqVV) (h2 : ZBasisStd) (h3 : ∀ D, QSlope D) : Link5F := by
-  unfold Link5F
-  intro eps Fm _ _ _
-  exact Formalism.MainNotions.flipTwoThree.familySlopeLower_of_open Fm
-    ⟨0, fun x _ _ i => Formalism.MainNotions.flipTwoThree.lower_slope_of_column_slope _ (colSlopeEq_of h1 h2 _ (h3 _))⟩
 
 end Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 

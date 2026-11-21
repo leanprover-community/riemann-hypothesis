@@ -433,7 +433,6 @@ def vPlusι : VPlus I ⟶ PSpace R N :=
 instance isClosedImmersion_vPlusι : IsClosedImmersion (vPlusι I) :=
   isClosedImmersion_projMap _ Ideal.Quotient.mk_surjective _
 
-theorem isProjOver_vPlus : IsProjOver (vPlusι I ≫ PSpace.str R N) := ⟨N, vPlusι I, inferInstance, rfl⟩
 
 theorem vPlusι_app_formOn_eq_zero_iff (i : Fin (N + 1)) {n : ℕ} {f : MvPolynomial (Fin (N + 1)) R}
     (hf : f.IsHomogeneous n) :
@@ -539,12 +538,6 @@ theorem mem_range_vPlusι_iff (x : PSpace R N) : x ∈ Set.range (vPlusι I) ↔
 theorem range_vPlusι : Set.range (vPlusι I) = ProjectiveSpectrum.zeroLocus (grading R N) I :=
   Set.ext fun x => mem_range_vPlusι_iff I x
 
-theorem exists_eq_pt_vPlus [Subsingleton (CommRing.Pic A)] (c : R →+* A) (ψ : Sp A ⟶ VPlus I)
-    (hψ : ψ ≫ vPlusι I ≫ PSpace.str R N = spMap c) :
-    ∃ (v : Fin (N + 1) → A) (hv : Ideal.span (Set.range v) = ⊤),
-      (∀ f ∈ I, eval₂ c v f = 0) ∧ ψ ≫ vPlusι I = pt c v hv := by
-  obtain ⟨v, hv, e⟩ := exists_eq_pt c (ψ ≫ vPlusι I) (by rw [Category.assoc, hψ])
-  exact ⟨v, hv, (exists_comp_vPlusι_eq_pt_iff I c v hv).1 ⟨ψ, e⟩, e⟩
 
 theorem isProjOver_comp_of_isClosedImmersion (g : Z ⟶ Y) [IsClosedImmersion g] {f : Y ⟶ Sp R}
     (h : IsProjOver f) : IsProjOver (g ≫ f) := by

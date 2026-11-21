@@ -26,10 +26,6 @@ theorem skip_one_eq_succAbove {t : ℕ} (p : Fin (t + 1)) (i : Fin t) : skip1 p 
   unfold skip1
   split_ifs with h1 h2 <;> first | rfl | (exact absurd h1 h2) | (exact absurd h2 h1) | omega
 
-theorem comp_skip1 {α : Type*} {t : ℕ} (f : Fin (t + 1) → α) (p : Fin (t + 1)) :
-    f ∘ skip1 p = f ∘ p.succAbove := by
-  funext i
-  exact congrArg f (skip_one_eq_succAbove p i)
 
 theorem bS_castSucc {n m : ℕ} (v : Fin m → Fin n) (es : Fin n) : bS v es ∘ Fin.castSucc = v := by
   funext i
@@ -79,20 +75,7 @@ theorem rowE (hLR : ExpLastRow) {A : Type} [Ring A] [Algebra ℂ A] {n k : ℕ} 
     rw [if_neg (fun h => he x h.symm), zero_add]
   rw [← mul_assoc, hs x, h1, Fin.snoc_last, h2]
 
-theorem rw_zero {n k : ℕ} (e es : Fin n) (v : Fin (k + 1) → Fin n) (w : Fin (k + 1)) :
-    (bE e (bS v es) ∘ (w.castSucc.succ).succAbove) 0 = e := by
-  first
-  | simp [bE]
-  | (show bE e (bS v es) ((w.castSucc.succ).succAbove 0) = e; rw [Fin.succ_succAbove_zero]; simp only [bE, Fin.cons_zero])
 
-theorem rw_last {n k : ℕ} (e es : Fin n) (v : Fin (k + 1) → Fin n) (w : Fin (k + 1)) :
-    (bE e (bS v es) ∘ (w.castSucc.succ).succAbove) (Fin.last (k + 1)) = es := by
-  show bE e (bS v es) ((w.castSucc.succ).succAbove (Fin.last (k + 1))) = es
-  have hw := w.isLt
-  have h1 : (w.castSucc.succ).succAbove (Fin.last (k + 1)) = (Fin.last (k + 1)).succ :=
-    Fin.ext (by simp only [val_succAbove, Fin.val_succ, Fin.coe_castSucc, Fin.val_last]; split_ifs <;> omega)
-  rw [h1]
-  simp only [bE, bS, Fin.cons_succ, Fin.snoc_last]
 
 theorem rows_succ {n k : ℕ} (e es : Fin n) (v : Fin (k + 1) → Fin n) (w : Fin (k + 1))
     (h : k + 1 = k + 1 - 1 + 1) :
@@ -116,69 +99,9 @@ theorem rows_succ {n k : ℕ} (e es : Fin n) (v : Fin (k + 1) → Fin n) (w : Fi
     rw [skip_one_eq_succAbove]
     rfl
 
-theorem rows_last {n k : ℕ} (e es : Fin n) (v : Fin (k + 1) → Fin n) (w : Fin (k + 1)) :
-    (bE e (bS v es) ∘ (w.castSucc.succ).succAbove) ∘ (Fin.last (k + 1)).succAbove = bE e (v ∘ w.succAbove) := by
-  funext j
-  have hw := w.isLt
-  refine Fin.cases ?_ (fun j => ?_) j
-  · simp only [Function.comp_apply]
-    have h0 : (Fin.last (k + 1)).succAbove 0 = 0 := Fin.ext (by rw [val_succAbove]; simp)
-    rw [h0, Fin.succ_succAbove_zero]
-    simp only [bE, Fin.cons_zero]
-  · simp only [Function.comp_apply]
-    have hj := j.isLt
-    have h1 : (w.castSucc.succ).succAbove ((Fin.last (k + 1)).succAbove j.succ) = (Fin.castSucc (w.succAbove j)).succ :=
-      Fin.ext (by simp only [val_succAbove, Fin.val_succ, Fin.coe_castSucc, Fin.val_last]; split_ifs <;> omega)
-    rw [h1]
-    simp only [bE, bS, Fin.cons_succ, Fin.snoc_castSucc, Function.comp_apply]
 
 theorem cmul {A : Type*} [Ring A] (s : ℤ) (x y : A) : x * ((s : A) * y) = (s : A) * (x * y) := by
   rw [← mul_assoc, ← mul_assoc, Int.cast_comm]
 
-theorem bfMid_of (hLC : ExpLastCol) (hLR : ExpLastRow) (hX : BFCross) : BFMid := by
-  intro A _ _ n m E e es v hE hB u w
-  cases m with
-  | zero => exact w.elim0
-  | succ k =>
-  have hv : ∀ x, v x ≠ e := hB.2.2.1
-  have hves : ∀ x, v x ≠ es := hB.2.2.2
-  have hL : bE e (bS v es) w.castSucc.succ = v w := by simp [bE, bS]
-  have hT : Tm E u (v w) e = E (v w) e := by simp [Tm, hv w]
-  rw [hL, show bE e (bS v es) 0 = e from rfl, hT, show bE e (bS v es) ∘ Fin.succ = bS v es from rfl]
-  rw [hLC A n (k + 1) E _ (bS v es) (u - 1), Fin.sum_univ_succ, Fin.sum_univ_castSucc]
-  simp only [bS_castSucc, bS_last]
-  rw [hX A n k E e es v hE hB u w]
-  simp only [Fin.succAbove_zero, Fin.succ_last, rw_zero, rw_last, rows_last]
-  rw [rows_succ e es v w (by omega), rowE hLR E hE e (v ∘ w.succAbove) v hv (u - 1)]
-  simp only [comp_skip1]
-  have hTe : Tm E (u - 1 - ((k + 1 : ℕ) : ℂ)) e es = E e es := by simp [Tm, hB.2.1]
-  have hu2 : u - 1 - 1 = u - 2 := by ring
-  have hu3 : u - 1 - ((k + 1 : ℕ) : ℂ) = u - ((k + 1 : ℕ) : ℂ) - 1 := by ring
-  rw [hTe, hu2, hu3]
-  have hcomm : ∀ x, E e (v x) * Tm E (u - ((k + 1 : ℕ) : ℂ) - 1) es es =
-      Tm E (u - ((k + 1 : ℕ) : ℂ) - 1) es es * E e (v x) := fun x =>
-    (tm_comm_E E hE _ es e (v x) hB.2.1.symm (hves x)).symm
-  have he2 : ((-1 : ℤ) ^ (k + 1 + (k + 1))) = 1 := Even.neg_one_pow ⟨k + 1, rfl⟩
-  have p0 : ∀ Q : A, (((-1 : ℤ) ^ ((w : ℕ) + 1) : ℤ) : A) * (E (v w) e * ((((-1 : ℤ) ^ (k + 1) : ℤ) : A) * (Q * E e es)))
-      = (((-1 : ℤ) ^ ((w : ℕ) + 1 + (k + 1)) : ℤ) : A) * (E (v w) e * (Q * E e es)) := by
-    intro Q; rw [cmul, ← mul_assoc, ← Int.cast_mul, ← pow_add]
-  have pm : ∀ S : A, (((-1 : ℤ) ^ ((w : ℕ) + 1) : ℤ) : A) * (E (v w) e * ((((-1 : ℤ) ^ (w : ℕ) : ℤ) : A) * S))
-      = -(E (v w) e * S) := by
-    intro S
-    rw [cmul, ← mul_assoc, ← Int.cast_mul, ← pow_add, Odd.neg_one_pow ⟨w, by ring⟩, Int.cast_neg, Int.cast_one,
-      neg_one_mul]
-  have pl : ∀ f : Fin (k + 1) → A,
-      (((-1 : ℤ) ^ ((w : ℕ) + 1) : ℤ) : A) * (E (v w) e * ∑ x : Fin (k + 1), (((-1 : ℤ) ^ (x : ℕ) : ℤ) : A) * f x)
-      = -∑ x : Fin (k + 1), (((-1 : ℤ) ^ ((w : ℕ) + (x : ℕ)) : ℤ) : A) * (E (v w) e * f x) := by
-    intro f
-    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_neg_distrib]
-    refine Finset.sum_congr rfl (fun x _ => ?_)
-    rw [cmul, ← mul_assoc, ← Int.cast_mul, ← pow_add,
-      show ((-1 : ℤ) ^ ((w : ℕ) + 1 + (x : ℕ))) = -(-1) ^ ((w : ℕ) + (x : ℕ)) by ring, Int.cast_neg, neg_mul]
-  simp only [Fin.val_succ, Fin.val_castSucc, Fin.val_zero, Fin.val_last, add_zero, Nat.succ_eq_add_one, he2,
-    Int.cast_one, one_mul, Finset.sum_mul, mul_assoc, hcomm, mul_add]
-  simp only [p0, pm, pl]
-  simp only [Finset.mul_sum, mul_ite, mul_zero, cmul]
-  abel
 
 end PI.UnitaryGroupMassFormula.QmBorderFull

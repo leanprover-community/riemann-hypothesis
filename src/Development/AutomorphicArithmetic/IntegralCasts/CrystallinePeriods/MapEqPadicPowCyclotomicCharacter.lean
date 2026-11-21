@@ -47,8 +47,6 @@ theorem seq_pow_self (y : Tilt p R) (n : ℕ) : seq n y ^ p ^ n = PreTilt.untilt
 theorem ext_seq {x y : Tilt p R} (h : ∀ n, seq n x = seq n y) : x = y :=
   (seqEquiv p R).symm.injective (Perfection.extMonoid h)
 
-theorem ofSeq_seq (y : Tilt p R) : ofSeq (fun n => seq n y) (seq_succ_pow y) = y :=
-  ext_seq fun n => seq_ofSeq _ _ n
 
 theorem mk_seq (y : Tilt p R) (n : ℕ) :
     Ideal.Quotient.mk (span {(p : R)}) (seq n y) = PreTilt.coeff n y := by
@@ -60,11 +58,6 @@ theorem seq_frobeniusEquiv_symm (y : Tilt p R) (n : ℕ) :
     seq n ((frobeniusEquiv (Tilt p R) p).symm y) = seq (n + 1) y := by
   conv_rhs => rw [← frobeniusEquiv_symm_pow_p (Tilt p R) p y, map_pow, seq_succ_pow]
 
-theorem seq_eq_untilt (y : Tilt p R) (n : ℕ) :
-    seq n y = PreTilt.untilt (((frobeniusEquiv (Tilt p R) p).symm)^[n] y) := by
-  induction n generalizing y with
-  | zero => exact seq_zero y
-  | succ n ih => rw [Function.iterate_succ_apply, ← ih, seq_frobeniusEquiv_symm]
 
 theorem seq_map (f : R →+* S) (y : Tilt p R) (n : ℕ) : seq n (map p f y) = f (seq n y) := by
   have : map p f y = ofSeq (fun n => f (seq n y)) (fun n => by rw [← map_pow, seq_succ_pow]) := by
@@ -153,7 +146,6 @@ instance : CommGroup (tateModule p R) :=
       conv_lhs => rw [← padicPow_one η, ← padicPow_mul, ← padicPow_add]
       simp }
 
-theorem inv_eq_padicPow (η : tateModule p R) : η⁻¹ = padicPow η (-1) := rfl
 
 instance : Module ℤ_[p] (Additive (tateModule p R)) where
   smul a η := Additive.ofMul (padicPow η.toMul a)
@@ -166,8 +158,6 @@ instance : Module ℤ_[p] (Additive (tateModule p R)) where
   add_smul a b η := padicPow_add _ a b
   zero_smul η := padicPow_zero _
 
-theorem smul_ofMul (a : ℤ_[p]) (η : tateModule p R) :
-    a • Additive.ofMul η = Additive.ofMul (padicPow η a) := rfl
 
 theorem exists_padicPow_eq (η : tateModule p R) {a : ℤ_[p]} {m k : ℕ}
     (h : (p : ℤ_[p]) ^ k ∣ a - m) : ∃ η' : tateModule p R, padicPow η a = η ^ m * η' ^ p ^ k := by
@@ -178,10 +168,6 @@ theorem exists_padicPow_eq (η : tateModule p R) {a : ℤ_[p]} {m k : ℕ}
   push_cast
   linear_combination hb
 
-theorem map_padicPow (f : R →+* S) (η : tateModule p R) (η' : tateModule p S)
-    (h : Tilt.map p f η.1 = η'.1) (a : ℤ_[p]) :
-    Tilt.map p f (padicPow η a).1 = (padicPow η' a).1 :=
-  Tilt.ext_seq fun n => by rw [seq_map, seq_padicPow, seq_padicPow, map_pow, ← seq_map, h]
 
 end tateModule
 

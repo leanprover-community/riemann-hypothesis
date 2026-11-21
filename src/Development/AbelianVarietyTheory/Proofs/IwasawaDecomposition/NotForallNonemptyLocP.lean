@@ -155,56 +155,8 @@ theorem exists_thetaMap (L : LocW D X) (V W : HS D) (χ₁ χ₂ : X.Chr) (v : P
       exact ⟨f, h1, fun _ => h0, fun k => absurd k h⟩
     · exact ⟨0, isThetaMap_zero L V W χ₁ χ₂ v σ, fun k => absurd k h', fun k => absurd k h⟩
 
-theorem exists_thetaMap' (L : LocW D X) (V W : HS D) (χ₁ χ₂ : X.Chr) (v : Pl D) {N : Type} [AddCommGroup N]
-    [Module ℂ N] (σ : Representation ℂ (L.Hloc W v) N) :
-    ∃ p : L.SchL V W v →ₗ[ℂ] N, IsThetaMap L V W χ₁ χ₂ v σ p ∧
-      ((∃ f, f ≠ 0 ∧ IsThetaMap L V W χ₁ χ₂ v σ f) → p ≠ 0) ∧
-      ((∃ f, IsThetaMap L V W χ₁ χ₂ v σ f ∧ f (L.vac V W v) ≠ 0) → p (L.vac V W v) ≠ 0) := by
-  by_cases h : ∃ f, IsThetaMap L V W χ₁ χ₂ v σ f ∧ f (L.vac V W v) ≠ 0
-  · obtain ⟨f, h1, h2⟩ := h
-    exact ⟨f, h1, fun _ e => h2 (by simp [e]), fun _ => h2⟩
-  · obtain ⟨p, h1, h2, -⟩ := exists_thetaMap L V W χ₁ χ₂ v σ 0
-    exact ⟨p, h1, h2, fun k => absurd k h⟩
 
-theorem exists_locP (L : LocW D X) (hL : PureSep L) :
-    ∃ P : LocP L, ∀ V V' W α β v,
-      (∃ f, IsThetaMap L V W β (β / α) v (P.piRep V V' W α β v) f ∧ f (L.vac V W v) ≠ 0) →
-        P.pL V V' W α β v (L.vac V W v) ≠ 0 := by
-  choose M iA iM π hπ using fun (V _V' W : HS D) (α β : X.Chr) v => exists_module L V W β (β / α) v
-  choose p hp hp0 hpv using fun (V V' W : HS D) (α β : X.Chr) v =>
-    exists_thetaMap' L V W β (β / α) v (π V V' W α β v)
-  choose q hq hq0 hqv using fun (V V' W : HS D) (α β : X.Chr) v =>
-    exists_thetaMap L V' W α (α / β) v (π V V' W α β v) (p V V' W α β v (L.vac V W v))
-  choose P hP using fun (V V' W : HS D) (α β : X.Chr) =>
-    exists_lift (L.vac V W) (L.pure V W) (hL V W) (fun v => p V V' W α β v (L.vac V W v)) (p V V' W α β)
-  choose Q hQ using fun (V V' W : HS D) (α β : X.Chr) =>
-    exists_lift (L.vac V' W) (L.pure V' W) (hL V' W) (fun v => p V V' W α β v (L.vac V W v)) (q V V' W α β)
-  exact ⟨{
-    PiT := M
-    piRep := π
-    pi_def := hπ
-    pL := p
-    pL' := q
-    pL_th := hp
-    pL'_th := hq
-    pL_ne := hp0
-    pL'_ne := hq0
-    pL'_sph := fun V V' W α β v _ h => hqv V V' W α β (Sum.inl v) h
-    PiG := fun V V' W α β => RTens fun v => p V V' W α β v (L.vac V W v)
-    purePi := fun V V' W α β => pureT fun v => p V V' W α β v (L.vac V W v)
-    purePi_mlin := fun V V' W α β ξ v c x y h => by classical exact pureT_mlin h v c x y
-    purePi_span := fun V V' W α β => pureT_span _
-    purePi_sep := fun V V' W α β l hl => pureT_sep _ l hl
-    pG := P
-    pG' := Q
-    pG_pure := hP
-    pG'_pure := hQ }, hpv⟩
 
-theorem nonempty_locP : ∀ (D : D7) (X : ThetaX D) (L : Formalism.MainNotions.KudlaSiegelWeil.LocW D X),
-    (∀ (V W : Formalism.MainNotions.KudlaSiegelWeil.HS D) (l : ∀ v, L.SchL V W v →ₗ[ℂ] ℂ), {v | l v (L.vac V W v) ≠ 1}.Finite →
-      ∃ Λ : X.Sch V W →ₗ[ℂ] ℂ, ∀ φ, Formalism.MainNotions.KudlaSiegelWeil.Restr (L.vac V W) φ →
-        Λ (L.pure V W φ) = ∏ᶠ v, l v (φ v)) → Nonempty (Formalism.MainNotions.KudlaSiegelWeil.LocP L) :=
-  fun _ _ L h => ⟨(exists_locP L h).choose⟩
 
 section Collapse
 
@@ -288,70 +240,9 @@ def collapsed (X : ThetaX D) (hX : ∀ V W, X.kfin V W = ⊥) : LocW D X where
     intros
     exact ⟨1, one_ne_zero, fun φ => by rw [one_smul]; rfl⟩
 
-theorem isIrr_one (Gp : Type) [Monoid Gp] : IsIrr (1 : Representation ℂ Gp ℂ) :=
-  ⟨inferInstance, fun N _ => eq_bot_or_eq_top N⟩
 
-theorem collapsed_small (X : ThetaX D) (hX : ∀ V W, X.kfin V W = ⊥) (V W : HS D) (χ₁ χ₂ : X.Chr) (v : Pl D) :
-    SmallTheta (collapsed X hX) V W χ₁ χ₂ v (1 : Representation ℂ _ ℂ) := by
-  refine ⟨isIrr_one _, fun N _ _ σ hσ => ⟨?_, ?_⟩⟩
-  · rintro ⟨f, h0, hf⟩
-    let f' : ℂ →ₗ[ℂ] N := f
-    have h0' : f' ≠ 0 := h0
-    have hf' : ∀ h z, σ h (f' z) = f' z := fun h z => by
-      have := hf 1 h z
-      exact ((one_smul ℂ _).symm.trans this.symm)
-    have hinj : Function.Injective f' := by
-      rw [← LinearMap.ker_eq_bot]
-      exact (eq_bot_or_eq_top _).resolve_right fun e => h0' (LinearMap.ker_eq_top.1 e)
-    have hsur : Function.Surjective f' := by
-      rw [← LinearMap.range_eq_top]
-      refine (hσ.2 _ ?_).resolve_left fun e => h0' (LinearMap.range_eq_bot.1 e)
-      rintro g _ ⟨z, rfl⟩
-      exact ⟨z, (hf' g z).symm⟩
-    refine ⟨(LinearEquiv.ofBijective f' ⟨hinj, hsur⟩).symm, fun g x => ?_⟩
-    obtain ⟨z, rfl⟩ := hsur x
-    rw [hf']
-    rfl
-  · rintro ⟨e, he⟩
-    refine ⟨(e.symm.toLinearMap : ℂ →ₗ[ℂ] N), fun h => ?_, fun g h φ => ?_⟩
-    · have h1 : e.symm 1 = 0 := LinearMap.congr_fun h (1 : ℂ)
-      simp at h1
-    · change e.symm φ = (1 : ℂ) • σ h (e.symm φ)
-      rw [one_smul]
-      apply e.injective
-      rw [he]
-      rfl
 
-theorem collapsed_isEmpty (X : ThetaX D) (hX : ∀ V W, X.kfin V W = ⊥) : IsEmpty (LocP (collapsed X hX)) := by
-  refine ⟨fun P => ?_⟩
-  let V : HS D := X.Xs 0 0
-  have hne : ∀ v, P.pL V V V 1 1 v (1 : ℂ) ≠ 0 := by
-    intro v hv
-    have hs := P.pi_def V V V 1 1 v ⟨ℂ, inferInstance, inferInstance, 1, collapsed_small X hX V V _ _ v⟩
-    have h0 := P.pL_ne V V V 1 1 v (((collapsed_small X hX V V 1 (1 / 1) v).2 _ _ hs.1).2 ?_)
-    · refine h0 (LinearMap.ext fun (z : ℂ) => ?_)
-      let f : ℂ →ₗ[ℂ] P.PiT V V V 1 1 v := P.pL V V V 1 1 v
-      have h1 : f 1 = 0 := hv
-      change f z = 0
-      rw [← mul_one z, ← smul_eq_mul, map_smul, h1, smul_zero]
-    · obtain ⟨e, he⟩ := (hs.2 ℂ 1 (isIrr_one _)).1
-        (((collapsed_small X hX V V 1 (1 / 1) v).2 ℂ 1 (isIrr_one _)).2 ⟨LinearEquiv.refl ℂ ℂ, fun _ _ => rfl⟩)
-      refine ⟨e.symm, fun g x => ?_⟩
-      obtain ⟨z, rfl⟩ := e.surjective x
-      rw [← he, e.symm_apply_apply, e.symm_apply_apply]
-  choose l hl using fun v => Module.Projective.exists_dual_eq_one ℂ (hne v)
-  obtain ⟨Λ, hΛ⟩ := P.purePi_sep V V V 1 1 l (Set.finite_empty.subset fun v hv => hv (hl v))
-  have h1 := hΛ _ (Set.finite_empty.subset fun v hv => hv rfl)
-  have h2 := P.pG_pure V V V 1 1 ((collapsed X hX).vac V V) (Set.finite_empty.subset fun v hv => hv rfl)
-  rw [← h2] at h1
-  have h3 : (collapsed X hX).pure V V ((collapsed X hX).vac V V) = 0 := rfl
-  rw [h3, map_zero, map_zero] at h1
-  exact zero_ne_one (h1.trans (finprod_eq_one_of_forall_eq_one fun v => hl v))
 
-theorem not_forall_nonempty_locP (D : D7) : ¬ ∀ (X : ThetaX D) (L : LocW D X), Nonempty (LocP L) := by
-  intro h
-  obtain ⟨X⟩ := GlobalTheory.thetaX_nonempty_provisional D
-  exact (collapsed_isEmpty { X with kfin := fun _ _ => ⊥ } fun _ _ => rfl).false (h _ _).some
 
 end Collapse
 

@@ -25,7 +25,6 @@ theorem absV_pos {x : Fv F v} (hx : x ≠ 0) : 0 < absV v x := by
   rw [dif_neg h]
   exact zpow_pos (q_pos v) _
 
-theorem absV_ne_zero {x : Fv F v} (hx : x ≠ 0) : absV v x ≠ 0 := (absV_pos v hx).ne'
 
 theorem absV_mul (x y : Fv F v) : absV v (x * y) = absV v x * absV v y := by
   by_cases hx : x = 0
@@ -62,8 +61,6 @@ theorem absV_pow (x : Fv F v) (n : ℕ) : absV v (x ^ n) = absV v x ^ n := by
   | zero => simp [absV_one]
   | succ n ih => rw [pow_succ, absV_mul, ih, pow_succ]
 
-theorem absV_div (x y : Fv F v) : absV v (x / y) = absV v x / absV v y := by
-  rw [div_eq_mul_inv, absV_mul, absV_inv, div_eq_mul_inv]
 
 theorem dV_ne_zero : dV v ≠ 0 := by
   unfold dV

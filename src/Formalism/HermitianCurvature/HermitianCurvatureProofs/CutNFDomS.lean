@@ -224,8 +224,6 @@ theorem nfApxDomAllS_of_cut (hZ : NFDomZero) (hP : NFDomPtwS) (hU : DominatedL2T
   · rw [hZ Wp Wq P p _ w c hc', norm_zero]
     exact mul_nonneg hMb (Finset.sum_nonneg fun t _ => abs_nonneg _)
 
-theorem nfDomPtwS_of_open (hL : NFLeibV) (hN : NFCoreNS) : NFDomPtwS :=
-  nfDomPtwS_of_cut unfolding_top_term_holds vector_multiplication_holds truncated_supremum_bound_holds hL hN empty_operator_list_holds
 
 end
 

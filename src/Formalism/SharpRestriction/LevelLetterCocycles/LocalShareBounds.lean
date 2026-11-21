@@ -31,29 +31,6 @@ theorem sum_wtOf_le_one (k : Fin 2) (a : MonoidAlgebra ℂ (GL (Fin D.R.r) (ZMod
   rw [← Finset.sum_div, hsum, hS0, mul_one]
   exact div_self_le_one _
 
-theorem locShare_le_one (eV : VecAt D) (CL : ℝ) (hL : lawL D eV CL) (k : Fin 2) (S : Finset (Tup D k)) :
-    locShare D eV k S ≤ 1 := by
-  classical
-  obtain ⟨L0, hL0, hsum0⟩ := D.ntypes.eSer_sum k
-  have hw0 : ∀ v f, 0 ≤ wtOf D k (eV k v) f := fun v f => (hL k v).1 f
-  have hfilt : ∑ t ∈ S.filter (fun t => ∀ v, t v ∈ L0), ∏ v, wtOf D k (eV k v) (t v) =
-      ∑ t ∈ S, ∏ v, wtOf D k (eV k v) (t v) := by
-    apply Finset.sum_filter_of_ne
-    intro t _ ht v
-    by_contra hv
-    apply ht
-    apply Finset.prod_eq_zero (Finset.mem_univ v)
-    exact wtOf_off k _ _ (fun h => hv ((hL0 _).2 h))
-  calc locShare D eV k S = ∑ t ∈ S.filter (fun t => ∀ v, t v ∈ L0), ∏ v, wtOf D k (eV k v) (t v) := by
-        unfold locShare; exact hfilt.symm
-    _ ≤ ∑ t ∈ Fintype.piFinset (fun _ : D.nd.PlG k => L0), ∏ v, wtOf D k (eV k v) (t v) :=
-        Finset.sum_le_sum_of_subset_of_nonneg
-          (fun t ht => Fintype.mem_piFinset.2 (Finset.mem_filter.1 ht).2)
-          (fun t _ _ => Finset.prod_nonneg fun v _ => hw0 v _)
-    _ = ∏ v, ∑ f ∈ L0, wtOf D k (eV k v) f :=
-        (Finset.prod_univ_sum (fun _ => L0) (fun v f => wtOf D k (eV k v) f)).symm
-    _ ≤ 1 := Finset.prod_le_one (fun v _ => Finset.sum_nonneg fun f _ => hw0 v f)
-        (fun v _ => sum_wtOf_le_one k _ L0 hsum0)
 
 def Wk (D : D7) (CL : ℝ) (k : Fin 2) : ℝ :=
   3 * (D.R.f : ℝ) / (D.host.g k : ℝ) +
@@ -218,56 +195,5 @@ theorem Wk_le (D : D7) (CL : ℝ) (k : Fin 2) (hCL : 0 ≤ CL) (hr : (100 : ℝ)
   have hB4 : 0 < Real.exp (-(1 / 5 * f / Real.log r)) := Real.exp_pos _
   linarith
 
-theorem provedLocal_of_law (hW : PropW D) {eV : VecAt D} {CL : ℝ} (hCL : 0 ≤ CL) (hL : lawL D eV CL)
-    (hA : TieAdmG D) (hr : ∀ k, (D.R.r : ℝ) ^ 2 ≤ 1 / ((CL + 1) * 2 ^ 12) * D.host.g k) :
-    LocalShareBound D eV (10 ^ 10) (1 / 5) 0 := by
-  have hlogs : ∀ i : Fin 2, 0 ≤ Real.log (D.host.g i) := fun i =>
-    Real.log_nonneg (by exact_mod_cast (D.host.g_prime i).one_lt.le)
-  have hbr : ∀ c : ℝ, Real.exp (-(c * D.R.f / Real.log D.R.r)) ≤ br2 D c 0 := by
-    intro c
-    unfold br2
-    have h1 : 0 ≤ ∑ i : Fin 2, (D.R.f : ℝ) * (D.R.r : ℝ) ^ 5 * Real.log (D.host.g i) *
-        (D.host.g i : ℝ) ^ (-(1 / 2 : ℝ)) := Finset.sum_nonneg fun i _ => by have := hlogs i; positivity
-    have h2 : (0 : ℝ) ≤ (D.R.f : ℝ) * D.R.m / ((min D.host.q D.host.d : ℕ) : ℝ) := by positivity
-    have h3 : (0 : ℝ) ≤ (D.R.r : ℝ) * (7 / 8 + 0) ^ D.R.f := by positivity
-    linarith
-  have hb0 : 0 ≤ br2 D (1 / 5) 0 := le_trans (Real.exp_pos _).le (hbr (1 / 5))
-  intro k S hS
-  by_cases hr100 : (100 : ℝ) ≤ D.R.r
-  · have hpos : (0 : ℝ) < (CL + 1) * 2 ^ 12 := by positivity
-    have h := hr k
-    have hg' : (D.R.r : ℝ) ^ 2 * ((CL + 1) * 2 ^ 12) ≤ D.host.g k := by
-      rw [one_div, inv_mul_eq_div, le_div_iff₀ hpos] at h
-      exact h
-    have hr2 : (1 : ℝ) ≤ (D.R.r : ℝ) ^ 2 := by nlinarith
-    have hg12 : (2 : ℝ) ^ 12 ≤ D.host.g k := by nlinarith
-    have hCLg : CL * (D.R.r : ℝ) ^ 2 ≤ D.host.g k := by nlinarith
-    have h100 : 100 ≤ D.R.r := by exact_mod_cast hr100
-    have hg12n : 2 ^ 12 ≤ D.host.g k := by exact_mod_cast hg12
-    have h1 := hW eV CL hCL hL hA h100 k hg12n S hS
-    have h2 := Wk_le D CL k hCL hr100 hg12 hCLg
-    linarith
-  · push_neg at hr100
-    have hrf := ranks_facts D
-    have hr6 : (6 : ℝ) ≤ D.R.r := by exact_mod_cast hrf.2.2.2
-    have hf : (D.R.f : ℝ) ≤ D.R.r := by exact_mod_cast hrf.1
-    have he1 := Real.exp_one_lt_d9
-    have hlogr : 1 ≤ Real.log D.R.r := by
-      rw [Real.le_log_iff_exp_le (by linarith)]
-      linarith
-    have hq : 1 / 5 * (D.R.f : ℝ) / Real.log D.R.r ≤ 20 := by
-      rw [div_le_iff₀ (by linarith)]
-      nlinarith
-    have he : Real.exp (-20) ≤ Real.exp (-(1 / 5 * (D.R.f : ℝ) / Real.log D.R.r)) := Real.exp_le_exp.2 (by linarith)
-    have he20 : 1 ≤ (10 : ℝ) ^ 10 * Real.exp (-20) := by
-      rw [Real.exp_neg, ← div_eq_mul_inv, le_div_iff₀ (Real.exp_pos _), one_mul]
-      have h1 : Real.exp 20 = Real.exp 1 ^ 20 := by rw [← Real.exp_nat_mul]; norm_num
-      rw [h1]
-      calc Real.exp 1 ^ 20 ≤ (2.7182818286 : ℝ) ^ 20 := pow_le_pow_left₀ (Real.exp_pos 1).le he1.le 20
-        _ ≤ 10 ^ 10 := by norm_num
-    have hb := hbr (1 / 5)
-    calc locShare D eV k S ≤ 1 := locShare_le_one eV CL hL k S
-      _ ≤ (10 : ℝ) ^ 10 * Real.exp (-20) := he20
-      _ ≤ 10 ^ 10 * br2 D (1 / 5) 0 := by nlinarith
 
 end Formalism.MainNotions.N.LocalShareBounds

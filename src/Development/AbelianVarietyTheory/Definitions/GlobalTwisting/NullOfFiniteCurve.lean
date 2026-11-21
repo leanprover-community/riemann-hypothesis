@@ -202,9 +202,6 @@ theorem nonempty_locData (ψ : AddChar (AF F) ℂ) [IsTotallyReal F] (hψ : IsCh
   choose μv νv fv g1 g2 g3 using exists_fin ψ hψ a ha hN
   exact ⟨⟨μ, ν, μv, νv, f, fv, h1, h2, g1, g2, h3, g3⟩⟩
 
-theorem locData_rat : ∃ ψ : AddChar (AF ℚ) ℂ, IsCharAF ℚ ψ ∧ Nonempty (LocData ψ (fun _ : Fin 6 => (1 : ℚ))) := by
-  obtain ⟨ψ, hψ⟩ := CharZero.exists_isCharAF ℚ
-  exact ⟨ψ, hψ, nonempty_locData ψ hψ _ (fun _ => one_ne_zero) (by norm_num)⟩
 
 theorem exists_isCov1 : ∃ ν : Measure (AF F), IsCov1 ν := by
   let Γ := (algebraMap F (AF F)).range.toAddSubgroup
@@ -285,38 +282,7 @@ example (ψ : AddChar (AF F) ℂ) [IsTotallyReal F] (hψ : IsCharAF F ψ) :
       (∀ t ∈ v.adicCompletionIntegers F, psiV F ψ v (y * t) = 1) ↔ y ∈ v.adicCompletionIntegers F :=
   (CharLoc.char_local F ψ hψ).2.1
 
-theorem rho_Ub (ψ : AddChar (AF F) ℂ) (a : Fin N → F) (b : AF F) (x y : Fin N → AF F)
-    (Φ : (Fin N → AF F) → ℂ) : rho ψ a x y (Ub ψ a b Φ) = Ub ψ a b (rho ψ a x (b • x + y) Φ) := by
-  funext u
-  have h2 : algebraMap F (AF F) (1 / 2) * 2 = 1 := by
-    rw [← map_ofNat (algebraMap F (AF F)) 2, ← map_mul]; simp
-  have hx : Bd (AF F) a x x = 2 * qd (AF F) a x := by
-    simp only [qd, Bd, Finset.mul_sum, map_mul, map_ofNat]
-    exact Finset.sum_congr rfl fun l _ => by ring
-  simp only [rho, Ub, ← mul_assoc, ← AddChar.map_add_eq_mul]
-  congr 2
-  rw [qd_add, Bd_symm _ a u (b • x + y), Bd_symm _ a x (b • x + y), Bd_add, Bd_add, Bd_smul, Bd_smul, hx,
-    Bd_symm _ a x u, Bd_symm _ a y u, Bd_symm _ a y x]
-  linear_combination (-(b * qd (AF F) a x)) * h2
 
-theorem rho_Da (ψ : AddChar (AF F) ℂ) (a : Fin N → F) (t s : AF F) (h : t * s = 1) (x y : Fin N → AF F)
-    (Φ : (Fin N → AF F) → ℂ) : rho ψ a x y (Da t Φ) = Da t (rho ψ a (t • x) (s • y) Φ) := by
-  funext u
-  have e : ∀ z, Bd (AF F) a (t • z) (s • y) = Bd (AF F) a z y := fun z => by
-    rw [Bd_smul, Bd_symm, Bd_smul, ← mul_assoc, h, one_mul, Bd_symm]
-  simp only [rho, Da, e, smul_add]
 
-theorem count_ratl (a : Fin N → F) :
-    (Measure.sum fun ξ : {ξ : Fin N → F // ξ ≠ 0} => Measure.dirac (rat (ξ : Fin N → F)))
-      {u | ¬ ∃ β : F, qd (AF F) a u = algebraMap F (AF F) β} = 0 := by
-  have hm : MeasurableSet {u : Fin N → AF F | ¬ ∃ β : F, qd (AF F) a u = algebraMap F (AF F) β} := by
-    haveI : Countable F := (Module.finBasis ℚ F).equivFun.injective.countable
-    exact ((continuous_qd (AF F) a).measurable
-      (Set.countable_range (algebraMap F (AF F))).measurableSet).compl.congr (by
-        ext u; simp [eq_comm])
-  rw [Measure.sum_apply _ hm, ENNReal.tsum_eq_zero]
-  intro ξ
-  rw [Measure.dirac_apply' _ hm, Set.indicator_of_notMem]
-  exact fun h => h ⟨qd F a ξ, by simp [qd, rat]⟩
 
 end GlobalTheory.SWQ.Model

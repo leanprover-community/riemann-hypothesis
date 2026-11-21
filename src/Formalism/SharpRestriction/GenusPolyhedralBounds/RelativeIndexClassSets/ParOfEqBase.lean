@@ -106,10 +106,6 @@ theorem levGap5_of (h1 : FactSplitG) (h2 : FactLb) (h3 : FactFMCard) (h4 : FactI
         hg' ht G kb ks tw htw
       exact absurd hg' hg
 
-theorem levGap5 : Formalism.MainNotions.Inhab.LevelGap :=
-  levGap5_of factSplitG Formalism.MainNotions.Gaps.LevGap.factLb factFMCard factIwLe Formalism.MainNotions.Gaps.LevGap.factUCompact
-    Formalism.MainNotions.Gaps.LevGap.factUOpen factClsFinite factStabTriv Formalism.MainNotions.Gaps.LevGap.factTNeG
-    Formalism.MainNotions.Gaps.LevGap.factPlacesT Formalism.MainNotions.Gaps.LevGap.factTau
 
 end Formalism.MainNotions.Gaps.LG
 

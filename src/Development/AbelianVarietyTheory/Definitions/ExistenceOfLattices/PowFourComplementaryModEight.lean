@@ -23,11 +23,6 @@ theorem perFr_add (X : Data E r) (x : Frame X.Ψ r) (v w : Fin r → E) (τ : E 
   · simp
   · simp
 
-theorem exists_isPerFr {g : ℕ} (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ))
-    (F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => relab c σ (e j).1))
-    (M : ModelsOf F r) (k : Fin F.n) : ∃ Pf, IsPerFr e F M k Pf :=
-  ⟨fun x => AddMonoidHom.mk' (fun a j => perFr (M.X k) x (M.φ k a : Fin r → E) (relab c σ (e j).1) (e j).2)
-    (fun a b => by funext j; simp [perFr_add]), fun _ _ _ => rfl⟩
 
 theorem normConst_pos {g : ℕ} (ty : Fin g → (E →+* ℂ)) {ξ₀ : E} (h : ξ₀ ≠ 0) : 0 < normConst ty ξ₀ := by
   unfold normConst
@@ -35,39 +30,8 @@ theorem normConst_pos {g : ℕ} (ty : Fin g → (E →+* ℂ)) {ξ₀ : E} (h : 
   have : ty j ξ₀ ≠ 0 := (map_ne_zero _).2 h
   positivity
 
-theorem isNormUn_ne {g : ℕ} {e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)}
-    {F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => relab c σ (e j).1)}
-    {M : ModelsOf F r} {k : Fin F.n} (T : ThetaData e F M k) (un : (M.X k).dom → FrPt Xo c (CAt σ))
-    (h : IsNormUn T un) (x : (M.X k).dom) : ∃ κ : ℂ, κ ≠ 0 ∧ IsThetaPt T (T.co.symm x.1) κ (un x) := by
-  obtain ⟨κ, h1, h2⟩ := h x
-  refine ⟨κ, fun h0 => ?_, h2⟩
-  have hd := (T.norm (T.co.symm x.1) (by simpa using x.2)).1.ne_zero
-  have hc := normConst_pos (fun j => relab c σ (e j).1) (M.X k).ξ0_ne
-  rw [h0] at h1
-  have : (normConst (fun j => relab c σ (e j).1) (M.X k).ξ0 : ℂ) ≠ 0 := by exact_mod_cast hc.ne'
-  exact mul_ne_zero this hd (by simpa using h1.symm)
 
-theorem pow_four_complementary_modEight (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
-    (∃ v : 𝓞 E, H.w0 ^ 4 + (1 - H.w0) ^ 4 = 1 + 8 * v) ∧ ∃ v : 𝓞 E, H.w0 ^ 4 * (1 - H.w0) ^ 4 = 8 * v := by
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, H.d = 16 * k + 7 := ⟨H.d / 16, by have := H.d_mod; omega⟩
-  have h1 := H.rt_sq
-  have h2 := H.two_weight_eq_one_add_root
-  rw [hk] at h1
-  push_cast at h1
-  have h4 : (4 : 𝓞 E) * (H.w0 ^ 2 - H.w0 + (4 * k + 2)) = 0 := by
-    have : H.rt = 2 * H.w0 - 1 := by linear_combination -h2
-    rw [this] at h1
-    linear_combination h1
-  have hq : H.w0 ^ 2 - H.w0 + (4 * k + 2) = 0 := (mul_eq_zero.1 h4).resolve_left (by norm_num)
-  refine ⟨⟨2 * k + 4 * k ^ 2, ?_⟩, ⟨2 * (2 * k + 1) ^ 4, ?_⟩⟩
-  · linear_combination (2 * (H.w0 ^ 2 - H.w0) + 4 - 2 * (4 * k + 2)) * hq
-  · have : H.w0 * (1 - H.w0) = 4 * k + 2 := by linear_combination -hq
-    rw [← mul_pow, this]; ring
 
-theorem sign_genus_one (t : ℂ) (ht : 0 < t.im) :
-    (hermForm (g := 1) (fun _ _ => ((t.im⁻¹ : ℝ) : ℂ)) (fun _ => 1) (fun _ => t)).im =
-      -(omegaStd (h := 1) (Pi.single (Sum.inl 0) 1) (Pi.single (Sum.inr 0) 1) : ℤ) := by
-  simp [hermForm, omegaStd, Matrix.mulVec, dotProduct, ← Complex.ofReal_inv, ht.ne']
 
 open Classical in
 
@@ -117,28 +81,5 @@ theorem models_of_latModel {g : ℕ} {ty : Fin g → (E →+* ℂ)} {σ' : KA l 
       gam := fun k γ => Iff.rfl
       domStab := fun k _ hx => ⟨fun _ hb => dom_rmul (X k) hx hb, fun _ hγ => dom_lact (X k) hx hγ.1⟩ }
 
-theorem thetaData_of {g : ℕ} (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ))
-    (F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => relab c σ (e j).1))
-    (M : ModelsOf F r) (k : Fin F.n) (Pf : Frame (M.X k).Ψ r → ((F.Di k).La →+ (Fin g → ℂ)))
-    (per : IsPerFr e F M k Pf) (m : ℕ) (co : (Fin m → ℂ) ≃L[ℂ] Frame (M.X k).Ψ r)
-    (ho : IsOpen (M.X k).dom) (hc : IsPreconnected (M.X k).dom)
-    (holPer : IsHolPeriods (F.Di k) (fun j => relab c σ (e j).1) (co ⁻¹' (M.X k).dom) (fun b => Pf (co b)))
-    (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] (F.Di k).La)
-    (sympl : ∀ a a', (F.Di k).EF (bas a) (bas a') = -omegaStd a a')
-    (adapt : (∀ i, ∃ v, H.w0 ^ 4 • bas (Pi.single (Sum.inl i) 1) = bas (Pi.single (Sum.inl i) 1) + (8 : ℕ) • v) ∧
-      ∀ i, ∃ v, H.w0 ^ 4 • bas (Pi.single (Sum.inr i) 1) = (8 : ℕ) • v)
-    (h ta : (Fin m → ℂ) → Matrix (Fin g) (Fin g) ℂ)
-    (norm : ∀ b ∈ co ⁻¹' (M.X k).dom, IsUnit (h b).det ∧ (ta b).IsSymm ∧ ((ta b).map Complex.im).PosDef ∧ ∀ i,
-      h b *ᵥ Pf (co b) (bas (Pi.single (Sum.inl i) 1)) = Pi.single i 1 ∧
-      h b *ᵥ Pf (co b) (bas (Pi.single (Sum.inr i) 1)) = ta b *ᵥ Pi.single i 1)
-    (hol : ∀ i j, DifferentiableOn ℂ (fun b => h b i j) (co ⁻¹' (M.X k).dom) ∧
-      DifferentiableOn ℂ (fun b => ta b i j) (co ⁻¹' (M.X k).dom)) :
-    Nonempty (ThetaData e F M k) := by
-  have hc' : IsPreconnected (co ⁻¹' (M.X k).dom) := co.toHomeomorph.isPreconnected_preimage.2 hc
-  obtain ⟨c₁, c₂, h1, h2, fr, f1, f2, f3, f4, f5⟩ := F.theta k m _ (fun b => Pf (co b)) bas (-1) h ta
-    (ho.preimage co.continuous) hc' holPer (fun a b => by simp [sympl])
-    (fun b hb => ⟨(norm b hb).2.2.1, (norm b hb).2.2.2⟩)
-  exact ⟨⟨Pf, per, fun x hx => by simpa using holPer.1 (co.symm x) (by simpa using hx), m, co, holPer, bas, sympl,
-    adapt, h, ta, norm, hol, c₁, c₂, h1, h2, fr, f1, f2, f3, f4, f5⟩⟩
 
 end GlobalTheory.FrameUnif.Tests

@@ -25,17 +25,6 @@ theorem unique {G : Over X} [GrpObj G] {L : LB G.left} {ξ : Spec (CommRingCat.o
   have h2 := (h'.weil x g hx hg _ i (ext i ≫ x) (ext i ≫ g) c rfl rfl).1 h1
   exact Units.ext (i.injective h2)
 
-theorem not_of_all {G : Over X} [GrpObj G] {L : LB G.left} {ξ : Spec (CommRingCat.of Ω) ⟶ X} {n : ℕ}
-    (hL : ∀ (T : Over X) (x y : T ⟶ G) (c : Γ(T.left, ⊤)ˣ), WeilIs G L n x y c)
-    (e : (Over.mk ξ ⟶ G) → (Over.mk ξ ⟶ G) → Ωˣ) : ¬ GenWeil G L ξ n e := by
-  classical
-  intro h
-  let i := algebraMap Ω (AlgebraicClosure Ω)
-  have key : ∀ c : (AlgebraicClosure Ω)ˣ, (c : AlgebraicClosure Ω) = i (e 1 1) := fun c =>
-    (h.weil 1 1 (one_pow n) (one_pow n) _ i (ext i ≫ 1) (ext i ≫ 1) c rfl rfl).1 (hL _ _ _ _)
-  obtain ⟨a, ha⟩ := Infinite.exists_notMem_finset ({0, 1} : Finset (AlgebraicClosure Ω))
-  simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at ha
-  exact ha.2 ((key (Units.mk0 a ha.1)).trans (key 1).symm)
 
 theorem unitOn_ext {k : Type} [Field k] (i : Ω →+* k) (u : Ωˣ) :
     Units.map (spMap i).appTop.hom.toMonoidHom (unitOn u) = unitOn (Units.map i.toMonoidHom u) := by
@@ -130,13 +119,6 @@ theorem nontrivial : ∃ (P : PolAV (Spec (CommRingCat.of ℂ))) (e : _),
   obtain ⟨x, hx, hne⟩ := this
   exact ⟨P, e, hP, he, x, g, hx, hg2, hne⟩
 
-theorem not_const : ∃ P : PolAV (Spec (CommRingCat.of ℂ)),
-    ¬ GenWeil P.A P.L (𝟙 (Spec (CommRingCat.of ℂ))) 2 fun _ _ => 1 := by
-  obtain ⟨P, e, -, he, x, g, hx, hg, hne⟩ := nontrivial
-  exact ⟨P, fun h => hne (unique he h hx hg)⟩
 
-theorem not_noCharts {G : Over X} [GrpObj G] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {n : ℕ}
-    (e : (Over.mk ξ ⟶ G) → (Over.mk ξ ⟶ G) → Ωˣ) : ¬ GenWeil G ⟨PEmpty, PEmpty.elim, fun i => i.elim⟩ ξ n e :=
-  not_of_all (fun _ x y c => GlobalTheory.ThetaGroupTest.weilIs_noCharts _ x y c) e
 
 end GlobalTheory.CompanionTheory.Ar.GenWeilModel

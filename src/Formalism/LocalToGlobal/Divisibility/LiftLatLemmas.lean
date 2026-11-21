@@ -918,13 +918,6 @@ open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.Col Formalism.L2.D
 
 variable (G : Type) [Group G] [Fintype G]
 
-theorem lf_mem_cmMax_rat (a : ℚ) : a ∈ cmMax ℚ := by
-  first
-  | (show ∀ σ : ℚ →+* ℂ, σ (star a) = starRingEnd ℂ (σ a)
-     intro σ
-     simp [eq_ratCast σ])
-  | (intro σ; simp [eq_ratCast σ])
-  | (intro σ; rw [star_trivial, eq_ratCast σ]; simp)
 
 def exampleB : BlockDat ℚ G Unit :=
   liftDat (regCSD ℚ G) (regAct ℚ G) Set.univ (fun i => (gaussBin 2 2 i.2 : ℚ) • 1) 1 1 (fun _ => 2)
@@ -934,24 +927,7 @@ def trivialCharacterLevel (P : Subgroup G) : Lvl ℚ G := ⟨{fun _ => 1}, P, 1�
 
 def toyX : (exampleB G).Pl × ℕ → ℚ := fun i => (gaussBin 2 2 i.2 : ℚ)
 
-theorem toy_hasBlocks_gaussBin : HasBlocks (1 + 1) (fun _ : (Set.univ : Set Unit) => 2) 1
-    [fun P : (Set.univ : Set Unit) => firstValA (fun _ : Unit => (1 : ℚˣ)) (fun _ => 1) (fun _ => 2) 1 (P : Unit)]
-    (fun i => (gaussBin 2 2 i.2 : ℚ)) := by
-  intro P
-  have h := heckePolyOf_gaussBin (L := ℚ) 2 2 1
-  simp only [one_pow, one_mul] at h
-  show ([fun P : (Set.univ : Set Unit) => firstValA (fun _ : Unit => (1 : ℚˣ)) (fun _ => 1) (fun _ => 2) 1 (P : Unit)].map
-    fun ν => blockPoly (ν P) 2 1).prod ∣ heckePolyOf (1 + 1) 2 fun i => (gaussBin 2 2 i : ℚ)
-  rw [show (1 + 1 : ℕ) = 2 from rfl, h]
-  simp only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one]
-  have e : firstValA (fun _ : Unit => (1 : ℚˣ)) (fun _ => 1) (fun _ => 2) 1 (P : Unit) = 2 := by
-    simp [firstValA]
-  rw [e, blockPoly_succ' (1 : ℚ) 2 1]
-  have e2 : (1 : ℚ) * ((2 : ℕ) : ℚ) = 2 := by norm_num
-  rw [e2]
-  exact Dvd.intro_left _ rfl
 
-theorem toyB_hasBlocks : HasBlocks (exampleB G).n (exampleB G).q (exampleB G).t (exampleB G).bl (toyX G) := toy_hasBlocks_gaussBin
 
 theorem comm1 {V : Type} [AddCommGroup V] [Module ℚ V] (a : ℚ) (g : Module.End ℚ V) :
     Commute (a • (1 : Module.End ℚ V)) g := by
@@ -962,62 +938,12 @@ theorem comm1 {V : Type} [AddCommGroup V] [Module ℚ V] (a : ℚ) (g : Module.E
      ext x
      simp)
 
-theorem toyB_ZH_eq_top : (exampleB G).ZH = ⊤ := by
-  rw [eq_top_iff]
-  refine le_trans ?_ (eigAt_le_eigSum (op := (exampleB G).op) (toyB_hasBlocks G))
-  intro f _
-  exact mem_eigAt_of_forall_apply fun i => rfl
 
-theorem toyB_ok : (exampleB G).Ok 1 where
-  good := reg_good ℚ G
-  hrat := fun _ _ => lf_mem_cmMax_rat _
-  hpos := fun v => reg_H_posDef ℚ G v (rat_isConjAt v)
-  act := regAct_good ℚ G
-  actRat := fun _ _ _ => lf_mem_cmMax_rat _
-  comm := fun i j => comm1 (V := (regCSD ℚ G).Forms) _ _
-  split := by
-    intro i
-    rw [eq_top_iff]
-    refine le_trans ?_ (le_iSup _ ((gaussBin 2 2 i.2 : ℚ)))
-    exact (Formalism.L2.NCov.maxGen_smul_one (K := ℚ) (V := (regCSD ℚ G).Forms) _).ge
-  opG := fun i g => comm1 (V := (regCSD ℚ G).Forms) _ _
-  blocks := ⟨le_rfl, List.cons_ne_nil _ _, fun ν hν P => by
-    have hν' := List.mem_singleton.1 hν
-    subst hν'
-    simp [firstValA]⟩
-  q_pos _ := show 0 < 2 by norm_num
-  pl_inj := Subtype.val_injective
 
-theorem regular_scalar_selfAdjoint (a : ℚ) (f g : (regCSD ℚ G).Forms) :
-    (regCSD ℚ G).csum (((a • (1 : Module.End ℚ (regCSD ℚ G).Forms)) f).1 : G → ℚ) (g.1 : G → ℚ) =
-      (regCSD ℚ G).csum (f.1 : G → ℚ) (((a • (1 : Module.End ℚ (regCSD ℚ G).Forms)) g).1 : G → ℚ) := by
-  rw [reg_csum, reg_csum]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  simp only [LinearMap.smul_apply, Module.End.one_apply, Submodule.coe_smul, Pi.smul_apply, smul_eq_mul,
-    star_trivial]
-  ring
 
-theorem toyB_okH : (exampleB G).OkH where
-  rat := fun _ _ _ => lf_mem_cmMax_rat _
-  adj := fun i => ⟨i, fun f g => regular_scalar_selfAdjoint G _ f g⟩
 
-theorem toyB_blockHyp (P : Subgroup G) (v0 : InfinitePlace ℚ) : BlockHyp (exampleB G) (trivialCharacterLevel G P) v0 1 where
-  conj := rat_isConjAt v0
-  irr := by
-    intro χ hχ
-    rw [show (trivialCharacterLevel G P).X = {fun _ => 1} from rfl, Finset.mem_singleton] at hχ
-    rw [hχ]
-    exact isAbsIrrChar_one ℚ _
-  ok := toyB_ok G
 
-theorem example_invariant_subspace_top (P : Subgroup G) : (exampleB G).Z0 (trivialCharacterLevel G P) (exampleB G).ZH = ⊤ := by
-  unfold BlockDat.Z0 BlockDat.inV0 BlockDat.coord
-  rw [toyB_ZH_eq_top, Submodule.map_top, LinearMap.range_eq_top.2 (LinearEquiv.surjective _), Submodule.comap_top]
 
-theorem toyB_dZ_pos (P : Subgroup G) : 0 < (exampleB G).dZ (trivialCharacterLevel G P) (exampleB G).ZH := by
-  unfold BlockDat.dZ subDim
-  rw [example_invariant_subspace_top, finrank_top, Module.finrank_fin_fun]
-  exact reg_V0dim_pos_lvl ℚ G P
 
 end Formalism.L2.DIV.LiftTest
 
@@ -1030,78 +956,10 @@ namespace BlockDat
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 : Type}
   {B : BlockDat K G Pl0} {ℓ : Lvl K G} {Z : Submodule K B.S.Forms} {v0 : InfinitePlace K} {s : ℕ}
 
-theorem tt_zE_Pq (h : BlockHyp B ℓ v0 s) (hZ : B.Z0 ℓ Z = ⊤) : B.zE ℓ Z * B.Pq ℓ Z = 1 := by
-  apply Matrix.mulVec_injective
-  funext x
-  have hr : LinearMap.range (B.zE ℓ Z).mulVecLin = ⊤ := by
-    rw [← hZ]; exact (subspace_image_spec K _ (B.Z0 ℓ Z)).2
-  obtain ⟨y, rfl⟩ := LinearMap.range_eq_top.1 hr x
-  rw [Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, Matrix.mul_assoc, (lf_z_proj (Z := Z) h).1, Matrix.mul_one,
-    Matrix.one_mulVec]
 
-theorem tt_fE_lPr (h : BlockHyp B ℓ v0 s) (hZ : B.Z0 ℓ Z = ⊤) :
-    B.fE ℓ Z * B.lPr ℓ Z = B.vProj ℓ * B.S.lvlE B.r ℓ.P ℓ.ψ := by
-  have e : B.fE ℓ Z * B.lPr ℓ Z = B.vE ℓ * (B.zE ℓ Z * B.Pq ℓ Z) * B.vPr ℓ * B.S.lvlE B.r ℓ.P ℓ.ψ := by
-    unfold fE lPr
-    simp only [Matrix.mul_assoc]
-  rw [e, tt_zE_Pq h hZ, Matrix.mul_one, (lf_v_proj h).2]
-  rfl
 
-theorem tt_fix (h : BlockHyp B ℓ v0 s) (z : Fin (B.dZ ℓ Z) → K) :
-    (B.vProj ℓ).mulVec ((B.fE ℓ Z).mulVec z) = (B.fE ℓ Z).mulVec z := by
-  have e : B.vProj ℓ * B.fE ℓ Z = B.fE ℓ Z := by
-    have h2 : B.vProj ℓ = B.vE ℓ * B.vPr ℓ := (lf_v_proj h).2.symm
-    rw [h2]
-    unfold fE
-    rw [Matrix.mul_assoc, ← Matrix.mul_assoc (B.vPr ℓ), (lf_v_proj h).1.1, Matrix.one_mul]
-  rw [Matrix.mulVec_mulVec, e]
 
-theorem tt_eta (h : BlockHyp B ℓ v0 s) (hZ : B.Z0 ℓ Z = ⊤) (N : ℕ) (hN : 0 < N)
-    (ha : ∀ y ∈ B.S.lvlNab B.r ℓ.P ℓ.ψ,
-      (N : K) • (B.vProj ℓ).mulVec ((B.S.lvlE B.r ℓ.P ℓ.ψ).mulVec y) ∈ B.S.nabLat)
-    (hb : ∀ u : Fin B.S.dim → K, (B.vProj ℓ).mulVec u = u → (N : K) • u ∈ B.S.nabLat →
-      ∃ y ∈ B.S.lvlNab B.r ℓ.P ℓ.ψ, (B.vProj ℓ).mulVec ((B.S.lvlE B.r ℓ.P ℓ.ψ).mulVec y) = u)
-    (w : HeightOneSpectrum (𝓞 K)) : (B.etaW ℓ Z w : ℤ) = (B.dZ ℓ Z : ℤ) * vw w (N : K) := by
-  have hNK : (N : K) ≠ 0 := by exact_mod_cast hN.ne'
-  have hfl : ∀ y, (B.fE ℓ Z).mulVec ((B.lPr ℓ Z).mulVec y) =
-      (B.vProj ℓ).mulVec ((B.S.lvlE B.r ℓ.P ℓ.ψ).mulVec y) := by
-    intro y
-    rw [Matrix.mulVec_mulVec, tt_fE_lPr h hZ, Matrix.mulVec_mulVec]
-  have hcut : B.cutZ ℓ Z = exponent_index_lattice.smLat (N : K) (B.Tl ℓ Z) := by
-    ext x
-    rw [exponent_index_lattice.mem_smLat]
-    constructor
-    · intro hx
-      have hx' : (B.fE ℓ Z).mulVec x ∈ B.S.nabLat := hx
-      obtain ⟨y, hy, hyu⟩ := hb ((N : K)⁻¹ • (B.fE ℓ Z).mulVec x)
-        (by rw [Matrix.mulVec_smul, tt_fix h]) (by rw [smul_smul, mul_inv_cancel₀ hNK, one_smul]; exact hx')
-      refine ⟨(B.lPr ℓ Z).mulVec y, (exponent_index_lattice.mem_matLat _ _ _).2 ⟨y, hy, rfl⟩, ?_⟩
-      apply lf_fE_inj (B := B) (ℓ := ℓ)
-      rw [Matrix.mulVecLin_apply, Matrix.mulVecLin_apply, Matrix.mulVec_smul, hfl, hyu, smul_smul,
-        mul_inv_cancel₀ hNK, one_smul]
-    · rintro ⟨z, hz, rfl⟩
-      obtain ⟨y, hy, rfl⟩ := (exponent_index_lattice.mem_matLat _ _ _).1 hz
-      show (B.fE ℓ Z).mulVec ((N : K) • (B.lPr ℓ Z).mulVec y) ∈ B.S.nabLat
-      rw [Matrix.mulVec_smul, hfl]
-      exact ha y hy
-  have hT := lf_Tl_isLattice (Z := Z) h
-  have hC := lf_cutZ_isLattice (Z := Z) h
-  have h1 := exponent_index_lattice.idx_smLat w (B.Tl ℓ Z) hT hNK
-  rw [← hcut] at h1
-  have h2 := (exponent_index_lattice.idxB w (B.Tl ℓ Z) (B.cutZ ℓ Z) (B.Tl ℓ Z) hT hC hT).2.2 (lf_cutZ_le (Z := Z) h)
-  unfold etaW
-  rw [← h2, h1]
 
-theorem tt_dZ_le_one (h : BlockHyp B ℓ v0 s) (φ : (Fin B.S.dim → K) →ₗ[K] K)
-    (hφ : ∀ u, (B.vProj ℓ).mulVec u = u → φ u = 0 → u = 0) : B.dZ ℓ Z ≤ 1 := by
-  have hinj : Function.Injective (φ ∘ₗ (B.fE ℓ Z).mulVecLin) := by
-    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-    intro z hz
-    have := hφ _ (tt_fix h z) hz
-    apply lf_fE_inj (B := B) (ℓ := ℓ)
-    rw [Matrix.mulVecLin_apply, this, map_zero]
-  have := LinearMap.finrank_le_finrank_of_injective hinj
-  simpa using this
 
 end BlockDat
 
@@ -1136,21 +994,7 @@ theorem reg_avg (x : Fin (regCSD ℚ G).dim → ℚ) (c : G) :
 theorem mem_one_iff (a : ℚ) : a ∈ (1 : Submodule (𝓞 ℚ) ℚ) ↔ ∃ n : 𝓞 ℚ, (n : ℚ) = a := by
   rw [Submodule.mem_one]
 
-theorem reg_mem_nab (x : Fin (regCSD ℚ G).dim → ℚ) :
-    x ∈ (regCSD ℚ G).nabLat ↔ ∀ c : G, ((regCSD ℚ G).I x : G → ℚ) c ∈ (1 : Submodule (𝓞 ℚ) ℚ) :=
-  mem_valLatF _ _ x
 
-theorem reg_lvlE_surj : Function.Surjective ((regCSD ℚ G).lvlE (regAct ℚ G) ⊥ 1).mulVec := by
-  have h := (image_idempotent_spec ℚ _ ((regCSD ℚ G).gaMat (regAct ℚ G) (lvlIdem (⊥ : Subgroup G) 1))).2
-  have e : (regCSD ℚ G).gaMat (regAct ℚ G) (lvlIdem (⊥ : Subgroup G) 1) = 1 := by
-    rw [lvlIdem_bot ℚ G, (group_action_matrix_hom ℚ (regCSD ℚ G) G (regAct ℚ G)).1]
-  have htop : LinearMap.range ((regCSD ℚ G).gaMat (regAct ℚ G) (lvlIdem (⊥ : Subgroup G) 1)).mulVecLin = ⊤ := by
-    rw [e]
-    exact LinearMap.range_eq_top.2 fun x => ⟨x, by simp⟩
-  have h2 := h.trans htop
-  intro x
-  obtain ⟨y, hy⟩ := LinearMap.range_eq_top.1 h2 x
-  exact ⟨y, hy⟩
 
 theorem card_ne : (Fintype.card G : ℚ) ≠ 0 := by
   exact Nat.cast_ne_zero.mpr Fintype.card_ne_zero
@@ -1162,78 +1006,13 @@ theorem reg_const (u : Fin (regCSD ℚ G).dim → ℚ) (hu : (regE G).mulVec u =
   rw [hu] at h1 h2
   rw [h1, h2]
 
-theorem reg_ha (y : Fin ((regCSD ℚ G).lvlDim (regAct ℚ G) ⊥ 1) → ℚ)
-    (hy : y ∈ (regCSD ℚ G).lvlNab (regAct ℚ G) ⊥ 1) :
-    ((Fintype.card G : ℕ) : ℚ) • (regE G).mulVec (((regCSD ℚ G).lvlE (regAct ℚ G) ⊥ 1).mulVec y) ∈
-      (regCSD ℚ G).nabLat := by
-  have hy' : ((regCSD ℚ G).lvlE (regAct ℚ G) ⊥ 1).mulVec y ∈ (regCSD ℚ G).nabLat := hy
-  rw [reg_mem_nab] at hy' ⊢
-  intro c
-  rw [map_smul]
-  show ((Fintype.card G : ℕ) : ℚ) * ((regCSD ℚ G).I ((regE G).mulVec _) : G → ℚ) c ∈ _
-  rw [reg_avg, ← mul_assoc, mul_inv_cancel₀ (card_ne G), one_mul]
-  exact Submodule.sum_mem _ fun g _ => hy' g
 
-theorem reg_hb (u : Fin (regCSD ℚ G).dim → ℚ) (hu : (regE G).mulVec u = u)
-    (hN : ((Fintype.card G : ℕ) : ℚ) • u ∈ (regCSD ℚ G).nabLat) :
-    ∃ y ∈ (regCSD ℚ G).lvlNab (regAct ℚ G) ⊥ 1,
-      (regE G).mulVec (((regCSD ℚ G).lvlE (regAct ℚ G) ⊥ 1).mulVec y) = u := by
-  classical
-  set a0 : ℚ := ((regCSD ℚ G).I u : G → ℚ) 1 with ha0
-  have hint : (Fintype.card G : ℚ) * a0 ∈ (1 : Submodule (𝓞 ℚ) ℚ) := by
-    have := (reg_mem_nab G _).1 hN 1
-    rw [map_smul] at this
-    exact this
-  let f : G → ℚ := Pi.single 1 ((Fintype.card G : ℚ) * a0)
-  obtain ⟨x, hx⟩ := ((regCSD ℚ G).I_onto f).2 (fun c γ => rfl)
-  obtain ⟨y, hy⟩ := reg_lvlE_surj G x
-  refine ⟨y, ?_, ?_⟩
-  · show ((regCSD ℚ G).lvlE (regAct ℚ G) ⊥ 1).mulVec y ∈ (regCSD ℚ G).nabLat
-    rw [hy, reg_mem_nab, hx]
-    intro c
-    by_cases hc : c = 1
-    · subst hc
-      simpa [f] using hint
-    · have : f c = 0 := by simp [f, hc]
-      rw [this]
-      exact Submodule.zero_mem _
-  · rw [hy]
-    apply (regCSD ℚ G).I_injective
-    funext c
-    rw [reg_avg, hx, reg_const G u hu c]
-    have : ∑ g : G, f g = (Fintype.card G : ℚ) * a0 := by simp [f]
-    rw [this, ← mul_assoc, inv_mul_cancel₀ (card_ne G), one_mul]
 
 def regPhi : (Fin (regCSD ℚ G).dim → ℚ) →ₗ[ℚ] ℚ :=
   (LinearMap.proj (1 : G) : (G → ℚ) →ₗ[ℚ] ℚ) ∘ₗ (regCSD ℚ G).I
 
-theorem reg_hphi (u : Fin (regCSD ℚ G).dim → ℚ) (hu : (regE G).mulVec u = u)
-    (h0 : regPhi G u = 0) : u = 0 := by
-  apply (regCSD ℚ G).I_injective
-  funext c
-  rw [map_zero]
-  exact (reg_const G u hu c).trans h0
 
-theorem toyB_dZ_eq_one (v0 : InfinitePlace ℚ) : (exampleB G).dZ (trivialCharacterLevel G ⊥) (exampleB G).ZH = 1 := by
-  have h1 : (exampleB G).dZ (trivialCharacterLevel G ⊥) (exampleB G).ZH ≤ 1 :=
-    BlockDat.tt_dZ_le_one (toyB_blockHyp G ⊥ v0) (regPhi G) (reg_hphi G)
-  have h2 := toyB_dZ_pos G ⊥
-  omega
 
-theorem toyB_etaW_eq_vw_card (w : HeightOneSpectrum (𝓞 ℚ)) :
-    ((exampleB G).etaW (trivialCharacterLevel G ⊥) (exampleB G).ZH w : ℤ) = vw w ((Fintype.card G : ℕ) : ℚ) := by
-  obtain ⟨v0⟩ : Nonempty (InfinitePlace ℚ) := inferInstance
-  have h := BlockDat.tt_eta (toyB_blockHyp G ⊥ v0) (example_invariant_subspace_top G ⊥) (Fintype.card G) Fintype.card_pos
-    (reg_ha G) (reg_hb G) w
-  rw [toyB_dZ_eq_one G v0] at h
-  simpa using h
 
-theorem toyB_JexpW_eq_zero (P : Subgroup G) (w : HeightOneSpectrum (𝓞 ℚ)) : (exampleB G).JexpW (trivialCharacterLevel G P) (exampleB G).ZH w = 0 := by
-  unfold BlockDat.JexpW expW
-  apply Nat.eq_zero_of_le_zero
-  apply Nat.sInf_le
-  intro a _ z hz
-  have hz' : z ∈ (exampleB G).delZ (trivialCharacterLevel G P) (exampleB G).ZH := hz
-  exact ⟨1, Submonoid.one_mem _, by rw [one_smul]; exact Submodule.smul_mem _ a hz'⟩
 
 end Formalism.L2.DIV.LiftTest

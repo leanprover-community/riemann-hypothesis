@@ -22,9 +22,6 @@ theorem locE_nontrivial (L : LocE F E) : Nontrivial E := by
   rw [Module.finrank_zero_of_subsingleton] at this
   omega
 
-theorem locE_cj_mem (L : LocE F E) {x : E} (hx : x ∈ L.O) : L.cj x ∈ L.O := by
-  rw [L.O_def] at hx ⊢
-  exact hx.map ((L.cj : E →ₐ[F] E).restrictScalars 𝒪[F])
 
 theorem locE_algMap_mem (L : LocE F E) [IsNonarchimedeanLocalField F] {f : F} :
     algebraMap F E f ∈ L.O ↔ f ∈ 𝒪[F] := by
@@ -42,64 +39,7 @@ theorem locE_algMap_mem (L : LocE F E) [IsNonarchimedeanLocalField F] {f : F} :
       rw [IsScalarTower.algebraMap_apply 𝒪[F] F E]; rfl
     rw [this]; exact isIntegral_algebraMap
 
-theorem locE_exists_nonF (L : LocE F E) : ∃ s : E, s ∉ Set.range (algebraMap F E) := by
-  by_contra h
-  push Not at h
-  have h1 : Module.finrank F E ≤ 1 := by
-    apply finrank_le_one (1 : E)
-    intro w
-    obtain ⟨c, hc⟩ := h w
-    exact ⟨c, by rw [Algebra.smul_def, mul_one, hc]⟩
-  have := L.rank
-  omega
 
-theorem locE_exists_delta (L : LocE F E) [IsNonarchimedeanLocalField F] :
-    ∃ δ : E, δ ∈ L.O ∧ δ ≠ 0 ∧ L.cj δ = -δ ∧ ∃ d : F, d ≠ 0 ∧ δ * δ = algebraMap F E d := by
-  haveI := locE_nontrivial L
-  haveI := L.reduced
-  obtain ⟨s, hs⟩ := locE_exists_nonF L
-  set δ0 := s - L.cj s with hδ0
-  have hcj0 : L.cj δ0 = -δ0 := by rw [hδ0, map_sub, L.cj_cj]; ring
-  have hne0 : δ0 ≠ 0 := by
-    intro h0
-    apply hs
-    have : L.cj s = s := by rw [hδ0, sub_eq_zero] at h0; exact h0.symm
-    obtain ⟨a, ha⟩ := (L.cj_fix s).mp this
-    exact ⟨a, ha⟩
-  have hfix : L.cj (δ0 * δ0) = δ0 * δ0 := by rw [map_mul, hcj0]; ring
-  obtain ⟨d0, hd0⟩ := (L.cj_fix _).mp hfix
-  have hd0ne : d0 ≠ 0 := by
-    rintro rfl
-    rw [map_zero] at hd0
-    apply hne0
-    have : IsNilpotent δ0 := ⟨2, by rw [pow_two]; exact hd0.symm⟩
-    exact this.eq_zero
-  obtain ⟨a, b, hb, hab⟩ := IsFractionRing.div_surjective (A := 𝒪[F]) d0
-  have hb0 : (b : F) ≠ 0 := by
-    intro h
-    have : b = 0 := Subtype.ext h
-    exact (nonZeroDivisors.ne_zero hb) this
-  have hmem : (b : F) * (b : F) * d0 ∈ 𝒪[F] := by
-    rw [← hab]
-    have : (b : F) * (b : F) * (algebraMap 𝒪[F] F a / algebraMap 𝒪[F] F b) = (b : F) * (a : F) := by
-      change (b : F) * (b : F) * ((a : F) / (b : F)) = (b : F) * (a : F)
-      field_simp
-    rw [this]; exact mul_mem b.2 a.2
-  refine ⟨algebraMap F E (b : F) * δ0, ?_, ?_, ?_, (b : F) * (b : F) * d0, ?_, ?_⟩
-  · rw [L.O_def]
-    apply IsIntegral.of_pow (n := 2) (by norm_num)
-    have : (algebraMap F E (b : F) * δ0) ^ 2 = algebraMap F E ((b : F) * (b : F) * d0) := by
-      rw [map_mul, map_mul, hd0]; ring
-    rw [this, ← L.O_def]
-    exact (locE_algMap_mem L).mpr hmem
-  · intro h
-    apply hne0
-    have : algebraMap F E (b : F)⁻¹ * (algebraMap F E (b : F) * δ0) = δ0 := by
-      rw [← mul_assoc, ← map_mul, inv_mul_cancel₀ hb0, map_one, one_mul]
-    rw [← this, h, mul_zero]
-  · rw [map_mul, hcj0, AlgEquiv.commutes]; ring
-  · exact mul_ne_zero (mul_ne_zero hb0 hb0) hd0ne
-  · rw [map_mul, map_mul, hd0]; ring
 
 end Alg
 
@@ -108,23 +48,6 @@ section Alg2
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 
-theorem locE_decomp (L : LocE F E) [CharZero F] {δ : E} (hcj : L.cj δ = -δ) {d : F} (hd0 : d ≠ 0)
-    (hd : δ * δ = algebraMap F E d) (x : E) :
-    ∃ a b : F, x = algebraMap F E a + algebraMap F E b * δ := by
-  have h1 : L.cj (x + L.cj x) = x + L.cj x := by rw [map_add, L.cj_cj, add_comm]
-  obtain ⟨A, hA⟩ := (L.cj_fix _).mp h1
-  have h2 : L.cj ((x - L.cj x) * δ) = (x - L.cj x) * δ := by
-    rw [map_mul, map_sub, L.cj_cj, hcj]; ring
-  obtain ⟨Bc, hB⟩ := (L.cj_fix _).mp h2
-  refine ⟨A / 2, Bc / (2 * d), ?_⟩
-  have h2ne : (2 : F) ≠ 0 := two_ne_zero
-  have hu : IsUnit (algebraMap F E (2 * d)) := (IsUnit.mk0 _ (mul_ne_zero h2ne hd0)).map _
-  apply hu.mul_left_cancel
-  rw [mul_add, ← mul_assoc, ← map_mul, ← map_mul]
-  have e1 : 2 * d * (A / 2) = d * A := by field_simp
-  have e2 : 2 * d * (Bc / (2 * d)) = Bc := by field_simp
-  rw [e1, e2, map_mul, map_mul, hA, hB, map_ofNat]
-  linear_combination (-(x - L.cj x)) * hd
 
 structure QBasis (L : LocE F E) where
   ω : E
@@ -140,91 +63,6 @@ theorem QBasis.sq {L : LocE F E} (Q : QBasis L) :
     Q.ω * Q.ω = algebraMap F E (Q.t : F) * Q.ω - algebraMap F E (Q.n : F) := by
   have := Q.hn; rw [Q.hcj] at this; rw [← this]; ring
 
-theorem locE_qbasis (L : LocE F E) [IsNonarchimedeanLocalField F] [CharZero F] : Nonempty (QBasis L) := by
-  obtain ⟨δ, hδO, hδ0, hcj, d, hd0, hd⟩ := locE_exists_delta L
-  set e : F := (2 * d)⁻¹ with he
-  have he0 : e ≠ 0 := inv_ne_zero (mul_ne_zero two_ne_zero hd0)
-  let I : Ideal 𝒪[F] :=
-    { carrier := {c | ∃ a : F, algebraMap F E a + algebraMap F E ((c : F) * e) * δ ∈ L.O}
-      add_mem' := by
-        rintro c1 c2 ⟨a1, h1⟩ ⟨a2, h2⟩
-        refine ⟨a1 + a2, ?_⟩
-        have : algebraMap F E (a1 + a2) + algebraMap F E (((c1 + c2 : 𝒪[F]) : F) * e) * δ =
-            (algebraMap F E a1 + algebraMap F E ((c1 : F) * e) * δ) +
-              (algebraMap F E a2 + algebraMap F E ((c2 : F) * e) * δ) := by
-          push_cast; simp only [map_add, add_mul, map_mul]; ring
-        rw [this]; exact add_mem h1 h2
-      zero_mem' := ⟨0, by simp⟩
-      smul_mem' := by
-        rintro c x ⟨a, h⟩
-        refine ⟨(c : F) * a, ?_⟩
-        have : algebraMap F E ((c : F) * a) + algebraMap F E (((c • x : 𝒪[F]) : F) * e) * δ =
-            algebraMap F E (c : F) * (algebraMap F E a + algebraMap F E ((x : F) * e) * δ) := by
-          simp only [smul_eq_mul]; push_cast; ring
-        rw [this]; exact mul_mem ((locE_algMap_mem L).mpr c.2) h }
-
-  have hcoord : ∀ x ∈ L.O, ∀ a b : F, x = algebraMap F E a + algebraMap F E b * δ →
-      ∃ c : 𝒪[F], c ∈ I ∧ (c : F) * e = b := by
-    intro x hx a b hxab
-    have hm : (x - L.cj x) * δ = algebraMap F E (2 * b * d) := by
-      rw [hxab, map_add, map_mul, hcj, AlgEquiv.commutes, AlgEquiv.commutes, map_mul, map_mul, ← hd,
-        map_ofNat]; ring
-    have hmem : 2 * b * d ∈ 𝒪[F] := by
-      rw [← locE_algMap_mem L, ← hm]
-      exact mul_mem (sub_mem hx (locE_cj_mem L hx)) hδO
-    refine ⟨⟨2 * b * d, hmem⟩, ⟨a, ?_⟩, ?_⟩
-    · have : (2 * b * d) * e = b := by rw [he]; field_simp
-      simp only [this]; rw [← hxab]; exact hx
-    · show 2 * b * d * e = b
-      rw [he]; field_simp
-  set c0 := Submodule.IsPrincipal.generator I with hc0
-  have hI : I = Ideal.span {c0} := (Ideal.span_singleton_generator I).symm
-  obtain ⟨a0, ha0⟩ : c0 ∈ I := Submodule.IsPrincipal.generator_mem I
-  have hc0ne : (c0 : F) ≠ 0 := by
-    intro h
-    have hc : c0 = 0 := Subtype.ext h
-    rw [← Submodule.IsPrincipal.eq_bot_iff_generator_eq_zero] at hc
-    obtain ⟨c, hcI, hce⟩ := hcoord δ hδO 0 1 (by simp)
-    rw [hc] at hcI
-    have : c = 0 := (Submodule.mem_bot _).mp hcI
-    rw [this] at hce; simp at hce
-  set ω := algebraMap F E a0 + algebraMap F E ((c0 : F) * e) * δ with hωdef
-  have hnot : ω ∉ Set.range (algebraMap F E) := by
-    rintro ⟨f, hf⟩
-    have hce : (c0 : F) * e ≠ 0 := mul_ne_zero hc0ne he0
-    have hδF : δ = algebraMap F E ((f - a0) / ((c0 : F) * e)) := by
-      have hu : IsUnit (algebraMap F E ((c0 : F) * e)) := (IsUnit.mk0 _ hce).map _
-      apply hu.mul_left_cancel
-      rw [← map_mul, mul_div_cancel₀ _ hce, map_sub, hf, hωdef]; ring
-    apply hδ0
-    have h2 : L.cj δ = δ := by rw [hδF, AlgEquiv.commutes]
-    rw [hcj] at h2
-    have : (2 : E) * δ = 0 := by linear_combination (-1 : E) * h2
-    have h2u : IsUnit (2 : E) := by
-      have := ((IsUnit.mk0 (2 : F) two_ne_zero).map (algebraMap F E)); rwa [map_ofNat] at this
-    exact (h2u.mul_right_eq_zero).mp this
-  have hfixT : L.cj (ω + L.cj ω) = ω + L.cj ω := by rw [map_add, L.cj_cj, add_comm]
-  obtain ⟨T, hT⟩ := (L.cj_fix _).mp hfixT
-  have hfixN : L.cj (ω * L.cj ω) = ω * L.cj ω := by rw [map_mul, L.cj_cj, mul_comm]
-  obtain ⟨Nn, hN⟩ := (L.cj_fix _).mp hfixN
-  have hTm : T ∈ 𝒪[F] := by rw [← locE_algMap_mem L, hT]; exact add_mem ha0 (locE_cj_mem L ha0)
-  have hNm : Nn ∈ 𝒪[F] := by rw [← locE_algMap_mem L, hN]; exact mul_mem ha0 (locE_cj_mem L ha0)
-  refine ⟨⟨ω, ha0, hnot, ⟨T, hTm⟩, ⟨Nn, hNm⟩, ?_, hN.symm, ?_⟩⟩
-  · show L.cj ω = algebraMap F E T - ω
-    rw [hT]; ring
-  · intro x hx
-    obtain ⟨a, b, hab⟩ := locE_decomp L hcj hd0 hd x
-    obtain ⟨c, hcI, hce⟩ := hcoord x hx a b hab
-    rw [hI] at hcI
-    obtain ⟨m, hm⟩ := Ideal.mem_span_singleton'.mp hcI
-    have hrest : x - algebraMap F E (m : F) * ω = algebraMap F E (a - (m : F) * a0) := by
-      rw [hab, hωdef, ← hce, ← hm]; push_cast; ring
-    have hmem : a - (m : F) * a0 ∈ 𝒪[F] := by
-      rw [← locE_algMap_mem L, ← hrest]
-      exact sub_mem hx (mul_mem ((locE_algMap_mem L).mpr m.2) ha0)
-    refine ⟨⟨_, hmem⟩, m, ?_⟩
-    show x = algebraMap F E (a - (m : F) * a0) + algebraMap F E (m : F) * ω
-    rw [← hrest]; ring
 
 end Alg2
 

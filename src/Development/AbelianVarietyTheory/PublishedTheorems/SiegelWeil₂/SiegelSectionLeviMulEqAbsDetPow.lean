@@ -68,18 +68,7 @@ theorem hasIw_of_good {V V₀ : HSp D} {r : ℕ} (d : HypDec V V₀ r) (l : Lvl 
     congrArg (fun L => levelAll D.sp.cm.sig V.gram L l.c) (frameLat_relat V l hl)
   exact ⟨⟨q.1, q.2⟩, k, e2 ▸ hk, e⟩
 
-theorem isIwasawa_of_good {V V₀ : HSp D} {r : ℕ} (d : HypDec V V₀ r) (l : Lvl V) (hl : l.Good) :
-    IsIwasawa (absDet d) l.K :=
-  haveI := hl.1
-  isIwasawa_of_isCompact (isClosed_stab d) (continuous_absDet d) (isCompact_levelAll (AdelicU.isCMExt_host D) _ _ _)
-    (hasIw_of_good d l hl)
 
-theorem siegel_section_levi_mul_eq_abs_det_pow {V V₀ : HSp D} {r : ℕ} (d : HypDec V V₀ r) (l : Lvl V) (hl : l.Good) (s : ℂ)
-    (α : GL (Fin r) (AE D)) {k : GA D V} (hk : k ∈ l.K) :
-    sphericalSectionIwasawa d l.K s (d.levi α * k) = npow (absA D (Matrix.GeneralLinearGroup.det α)) (s + rhoH V r) := by
-  have := (isIwasawa_of_good d l hl).iwAbs_mul ⟨_, levi_mem d α⟩ hk
-  rw [absDet, MonoidHom.comp_apply, MonoidHom.comp_apply, onX_levi] at this
-  exact congrArg (npow · _) this
 
 section Arch
 
@@ -287,12 +276,6 @@ theorem exists_levels : ∃ (l : Lvl V) (l₀ : Lvl V₀), l.Good ∧ l₀.Good 
 
 end Standard
 
-theorem hypotheses (D : D7) : ∃ (V V₀ : HSp D) (r : ℕ) (d : HypDec V V₀ r) (l : Lvl V) (l₀ : Lvl V₀),
-    IsAniso V₀ ∧ 0 < r ∧ l.Good ∧ l₀.Good ∧ Compat d l l₀ ∧ HasIw d l.K ∧ rhoH V r = 1 / 2 := by
-  obtain ⟨l, l₀, h⟩ := exists_levels (GlobalTheory.RegSW.Model.hypTwo D)
-  refine ⟨_, _, 1, _, l, l₀, GlobalTheory.RegSW.Model.isAniso_zero D, Nat.one_pos, h.1, h.2.1, h.2.2.1, h.2.2.2, ?_⟩
-  show ((2 : ℕ) - (1 : ℕ) : ℝ) / 2 = 1 / 2
-  norm_num
 
 end GlobalTheory.Published.SiegelSectionIwasawa
 

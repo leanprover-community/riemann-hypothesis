@@ -167,8 +167,6 @@ section Top
 
 variable [TopologicalSpace G]
 
-theorem isSmooth_iff_isSmoothRep {X : Type} [AddCommGroup X] [Module ℂ X] (ρ : Representation ℂ G X) :
-    IsSmooth ρ ↔ IsSmoothRep ρ := Iff.rfl
 
 def IsSmoothChar (χ : G →* Fˣ) : Prop := IsOpen (χ.ker : Set G)
 

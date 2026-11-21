@@ -218,10 +218,6 @@ theorem inMultiple_sum (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) (f : LetA O
     exact inMultiple_add W T c e f (hg a (Finset.mem_insert_self _ _))
       (ih fun i hi => hg i (Finset.mem_insert_of_mem hi))
 
-theorem inMultiple_mul_smul (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) (f g : LetA O n)
-    {x : W.DD T} (hx : Formalism.MainNotions.ArcLiftingSetup.InFP W T c e f x) : Formalism.MainNotions.ArcLiftingSetup.InFP W T c e (g * f) (g • x) := by
-  obtain ⟨y, hy, rfl⟩ := hx
-  exact ⟨y, hy, by rw [smul_smul]⟩
 
 theorem mem_Pp_of_inMultiple (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) {f : LetA O n} (hf : f ∈ W.AΔ)
     {x : W.DD T} (hx : Formalism.MainNotions.ArcLiftingSetup.InFP W T c e f x) : x ∈ Formalism.MainNotions.ArcLiftingSetup.Pp W T c e := by

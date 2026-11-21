@@ -171,9 +171,6 @@ theorem localSection_borelElt_mul (χ₁ χ₂ : Fˣ →* ℂˣ) (s : ℂ) (Φ :
     modPow (d : F) s * modPow (d : F) (-(2 * s)) * ((χ₁ (detU g) : ℂˣ) : ℂ) *
     modPow (detU g : F) s * localZeta (slice Φ g) (χ₁ * χ₂⁻¹) (2 * s) * h2
 
-theorem localSection_mem_principalSeries (χ₁ χ₂ : Fˣ →* ℂˣ) (s : ℂ) (Φ : (Fin 2 → F) → ℂ) :
-    localSection χ₁ χ₂ s Φ ∈ principalSeries χ₁ χ₂ s :=
-  fun a d x g ↦ localSection_borelElt_mul χ₁ χ₂ s Φ a d x g
 
 def rightTranslate (h : GL (Fin 2) F) (Φ : (Fin 2 → F) → ℂ) : (Fin 2 → F) → ℂ :=
   fun x ↦ Φ (x ᵥ* (h : Matrix (Fin 2) (Fin 2) F))
@@ -187,50 +184,8 @@ theorem localSection_mul (χ₁ χ₂ : Fˣ →* ℂˣ) (s : ℂ) (Φ : (Fin 2 �
   simp only [localSection, hs, map_mul, Units.val_mul, modPow_mul]
   ring
 
-theorem localSection_add {χ₁ χ₂ : Fˣ →* ℂˣ} (h₁ : Continuous χ₁) (h₂ : Continuous χ₂) {s : ℂ}
-    (hs : -quasiCharExponent (χ₁ * χ₂⁻¹) < 2 * s.re) {Φ Ψ : (Fin 2 → F) → ℂ}
-    (hΦ : Φ ∈ schwartzBruhat2 F) (hΨ : Ψ ∈ schwartzBruhat2 F) :
-    localSection χ₁ χ₂ s (Φ + Ψ) = localSection χ₁ χ₂ s Φ + localSection χ₁ χ₂ s Ψ := by
-  funext g
-  have hZ : localZeta (slice (Φ + Ψ) g) (χ₁ * χ₂⁻¹) (2 * s) =
-      localZeta (slice Φ g) (χ₁ * χ₂⁻¹) (2 * s) + localZeta (slice Ψ g) (χ₁ * χ₂⁻¹) (2 * s) := by
-    simp only [localZeta]
-    rw [← integral_add (integrable_localSectionIntegrand h₁ h₂ hs hΦ g)
-      (integrable_localSectionIntegrand h₁ h₂ hs hΨ g)]
-    congr 1
-    funext t
-    simp only [slice, Pi.add_apply]
-    ring
-  simp only [localSection, Pi.add_apply, hZ]
-  ring
 
-theorem localSection_smul (χ₁ χ₂ : Fˣ →* ℂˣ) (s c : ℂ) (Φ : (Fin 2 → F) → ℂ) :
-    localSection χ₁ χ₂ s (c • Φ) = c • localSection χ₁ χ₂ s Φ := by
-  funext g
-  have hZ : localZeta (slice (c • Φ) g) (χ₁ * χ₂⁻¹) (2 * s) =
-      c * localZeta (slice Φ g) (χ₁ * χ₂⁻¹) (2 * s) := by
-    simp only [localZeta]
-    rw [← integral_const_mul]
-    congr 1
-    funext t
-    simp only [slice, Pi.smul_apply, smul_eq_mul]
-    ring
-  simp only [localSection, Pi.smul_apply, smul_eq_mul, hZ]
-  ring
 
-theorem localSection_smul_arg (χ₁ χ₂ : Fˣ →* ℂˣ) (s : ℂ) (Φ : (Fin 2 → F) → ℂ) (a : Fˣ) :
-    localSection χ₁ χ₂ s (fun x ↦ Φ ((a : F) • x)) =
-      (((((χ₁ * χ₂⁻¹) a)⁻¹ : ℂˣ) : ℂ) * modPow (a : F) (-(2 * s))) • localSection χ₁ χ₂ s Φ := by
-  funext g
-  have hs : slice (fun x ↦ Φ ((a : F) • x)) g = fun t ↦ slice Φ g (t * a) := by
-    funext t
-    simp only [slice, vecMul_zero_cons]
-    congr 1
-    funext j
-    simp only [Pi.smul_apply, smul_eq_mul]
-    ring
-  simp only [localSection, hs, localZeta_mul_right, Pi.smul_apply, smul_eq_mul]
-  ring
 
 omit [MeasurableSpace F] [BorelSpace F] in
 theorem isLocallyConstant_indicator {X : Type*} [TopologicalSpace X] {S : Set X} (hS : IsClopen S)
@@ -500,33 +455,7 @@ theorem eq_sum_shells {Φ : (Fin 2 → F) → ℂ} {N M : ℤ} (hMN : M ≤ N)
     · rw [Set.indicator_of_mem h, h0]
     · rw [Set.indicator_of_notMem h]
 
-theorem localSection_finset_sum {χ₁ χ₂ : Fˣ →* ℂˣ} (h₁ : Continuous χ₁) (h₂ : Continuous χ₂)
-    {s : ℂ} (hs : -quasiCharExponent (χ₁ * χ₂⁻¹) < 2 * s.re) {ι : Type*} (t : Finset ι)
-    {Φ : ι → (Fin 2 → F) → ℂ} (hΦ : ∀ i ∈ t, Φ i ∈ schwartzBruhat2 F) :
-    localSection χ₁ χ₂ s (∑ i ∈ t, Φ i) = ∑ i ∈ t, localSection χ₁ χ₂ s (Φ i) := by
-  classical
-  induction t using Finset.induction_on with
-  | empty =>
-    simpa using localSection_smul χ₁ χ₂ s 0 (0 : (Fin 2 → F) → ℂ)
-  | insert i t hi ih =>
-    rw [Finset.sum_insert hi, Finset.sum_insert hi,
-      localSection_add h₁ h₂ hs (hΦ i (Finset.mem_insert_self i t))
-        (sum_mem fun j hj ↦ hΦ j (Finset.mem_insert_of_mem hj)),
-      ih fun j hj ↦ hΦ j (Finset.mem_insert_of_mem hj)]
 
-theorem localSection_dilate (χ₁ χ₂ : Fˣ →* ℂˣ) (s : ℂ) (Ψ : (Fin 2 → F) → ℂ) (k : ℤ) :
-    localSection χ₁ χ₂ s (fun x ↦ Ψ (((unifPow (-k) : Fˣ) : F) • x)) =
-      ((((χ₁ * χ₂⁻¹) (unifUnit F) : ℂˣ) : ℂ) ^ k * ((residueCard F : ℂ) ^ (-(2 * s))) ^ k) •
-        localSection χ₁ χ₂ s Ψ := by
-  rw [localSection_smul_arg]
-  congr 1
-  have h1 : ((((χ₁ * χ₂⁻¹) (unifPow (-k)))⁻¹ : ℂˣ) : ℂ) =
-      (((χ₁ * χ₂⁻¹) (unifUnit F) : ℂˣ) : ℂ) ^ k := by
-    rw [unifPow, map_zpow, ← _root_.zpow_neg, neg_neg, Units.val_zpow_eq_zpow_val]
-  have h2 : modPow ((unifPow (-k) : Fˣ) : F) (-(2 * s)) =
-      ((residueCard F : ℂ) ^ (-(2 * s))) ^ k := by
-    rw [modPow_units_eq_zpow, ord_unifPow, neg_neg, Complex.cpow_neg, _root_.inv_zpow']
-  rw [h1, h2]
 
 omit [MeasurableSpace F] [BorelSpace F] in
 theorem boxInd_succ (n : ℤ) :
@@ -579,20 +508,6 @@ theorem indicator_shellAt_mem {Φ : (Fin 2 → F) → ℂ} (hΦ : Φ ∈ schwart
     (shellAt F m).indicator Φ ∈ schwartzBruhat2 F :=
   indicator_mem_schwartzBruhat2 (isClopen_shellAt m) (fun _ hx ↦ hx.1) hΦ.1
 
-theorem one_sub_mul_localSection_boxInd {χ₁ χ₂ : Fˣ →* ℂˣ} (h₁ : Continuous χ₁)
-    (h₂ : Continuous χ₂) {s : ℂ} (hs : -quasiCharExponent (χ₁ * χ₂⁻¹) < 2 * s.re) (N : ℤ) :
-    (1 - (((χ₁ * χ₂⁻¹) (unifUnit F) : ℂˣ) : ℂ) * (residueCard F : ℂ) ^ (-(2 * s))) •
-        localSection χ₁ χ₂ s (boxInd F N) =
-      ((((χ₁ * χ₂⁻¹) (unifUnit F) : ℂˣ) : ℂ) ^ N * ((residueCard F : ℂ) ^ (-(2 * s))) ^ N) •
-        localSection χ₁ χ₂ s (shellInd F) := by
-  have hsplit := congrArg (localSection χ₁ χ₂ s) (boxInd_eq_add (F := F) N)
-  rw [localSection_add h₁ h₂ hs (boxInd_mem _) (indicator_mem_schwartzBruhat2 (f := 1)
-    (isClopen_shellAt N) (fun _ hx ↦ hx.1) (IsLocallyConstant.const 1))] at hsplit
-  rw [boxInd_succ, localSection_dilate, indicator_shellAt_one, localSection_dilate] at hsplit
-  simp only [zpow_one] at hsplit
-  rw [sub_smul, one_smul]
-  nth_rewrite 1 [hsplit]
-  abel
 
 omit [MeasurableSpace F] [BorelSpace F] in
 theorem shellPiece_eq_smul_shellInd {Φ : (Fin 2 → F) → ℂ} {N : ℤ}
@@ -609,95 +524,7 @@ theorem shellPiece_eq_smul_shellInd {Φ : (Fin 2 → F) → ℂ} {N : ℤ}
     exact this
   · simp [Set.indicator_of_notMem hy]
 
-theorem localSection_boxInd_of_not_isUnramified (χ₁ χ₂ : Fˣ →* ℂˣ)
-    (hμ : ¬ IsUnramifiedChar (χ₁ * χ₂⁻¹)) (s : ℂ) (N : ℤ) :
-    localSection χ₁ χ₂ s (boxInd F N) = 0 := by
-  obtain ⟨v, hv, hv1⟩ : ∃ v ∈ unitFiltrationUnits F 0, (χ₁ * χ₂⁻¹) v ≠ 1 := by
-    by_contra h
-    push Not at h
-    exact hμ fun v hv ↦ MonoidHom.mem_ker.2 (h v hv)
-  have hord : ord (v : F) = 0 := mem_unitFiltrationUnits_zero_iff_ord.1 hv
-  have hinv : (fun x ↦ boxInd F N ((v : F) • x)) = boxInd F N := by
-    funext x
-    have hiff : (v : F) • x ∈ box F N ↔ x ∈ box F N := by
-      rw [smul_mem_box_iff, hord, sub_zero]
-    by_cases hx : x ∈ box F N
-    · simp [boxInd, Set.indicator_of_mem hx, Set.indicator_of_mem (hiff.2 hx)]
-    · simp [boxInd, Set.indicator_of_notMem hx, Set.indicator_of_notMem (mt hiff.1 hx)]
-  have h := localSection_smul_arg χ₁ χ₂ s (boxInd F N) v
-  rw [hinv, modPow_units_eq_zpow, hord, zpow_zero, mul_one] at h
-  have hne : ((((χ₁ * χ₂⁻¹) v)⁻¹ : ℂˣ) : ℂ) ≠ 1 := by
-    intro h1
-    apply hv1
-    have : ((χ₁ * χ₂⁻¹) v)⁻¹ = 1 := Units.ext h1
-    exact inv_eq_one.1 this
-  funext g
-  exact eq_zero_of_eq_mul_of_ne_one hne (congrFun h g)
 
-theorem exists_localSection_eq_localLFactor_mul {χ₁ χ₂ : Fˣ →* ℂˣ} (h₁ : Continuous χ₁)
-    (h₂ : Continuous χ₂) {Φ : (Fin 2 → F) → ℂ} (hΦ : Φ ∈ schwartzBruhat2 F) :
-    ∃ (t : Finset ℤ) (Ψ : ℤ → (Fin 2 → F) → ℂ) (P : ℤ → LaurentPolynomial ℂ),
-      (∀ m, Ψ m ∈ schwartzBruhat2 F ∧ Function.support (Ψ m) ⊆ shell F) ∧
-      ∀ s : ℂ, -quasiCharExponent (χ₁ * χ₂⁻¹) < 2 * s.re →
-        localSection χ₁ χ₂ s Φ = localLFactor (χ₁ * χ₂⁻¹) (2 * s) •
-          ∑ m ∈ t, evalQpow F (P m) (2 * s) • localSection χ₁ χ₂ s (Ψ m) := by
-  obtain ⟨N, M, hMN, hinv, hsupp⟩ := exists_invariant_of_mem_schwartzBruhat2 hΦ
-  set c : ℂ := (((χ₁ * χ₂⁻¹) (unifUnit F) : ℂˣ) : ℂ) with hc
-  have hc0 : c ≠ 0 := Units.ne_zero _
-
-  have hsum : ∀ s : ℂ, -quasiCharExponent (χ₁ * χ₂⁻¹) < 2 * s.re →
-      localSection χ₁ χ₂ s Φ = (∑ m ∈ Finset.Ico M N,
-        (c ^ m * ((residueCard F : ℂ) ^ (-(2 * s))) ^ m) • localSection χ₁ χ₂ s (shellPiece Φ m)) +
-        Φ 0 • localSection χ₁ χ₂ s (boxInd F N) := by
-    intro s hs
-    conv_lhs => rw [eq_sum_shells hMN hinv hsupp]
-    rw [localSection_add h₁ h₂ hs (sum_mem fun m _ ↦ indicator_shellAt_mem hΦ m)
-      (Submodule.smul_mem _ _ (boxInd_mem N)), localSection_finset_sum h₁ h₂ hs _
-      (fun m _ ↦ indicator_shellAt_mem hΦ m), localSection_smul]
-    congr 1
-    refine Finset.sum_congr rfl fun m _ ↦ ?_
-    rw [indicator_shellAt_eq, localSection_dilate]
-  by_cases hμ : IsUnramifiedChar (χ₁ * χ₂⁻¹)
-  · refine ⟨Finset.Ico M (N + 1), shellPiece Φ, fun m ↦ if m < N then
-      LaurentPolynomial.C (c ^ m) * LaurentPolynomial.T m -
-        LaurentPolynomial.C (c ^ (m + 1)) * LaurentPolynomial.T (m + 1)
-      else LaurentPolynomial.C (c ^ N) * LaurentPolynomial.T N,
-      fun m ↦ ⟨shellPiece_mem hΦ m, support_shellPiece_subset Φ m⟩, fun s hs ↦ ?_⟩
-    set T : ℂ := (residueCard F : ℂ) ^ (-(2 * s)) with hT
-    have hT0 : T ≠ 0 := qpow_ne_zero _
-    have hne : 1 - c * T ≠ 0 :=
-      one_sub_quasiChar_unifUnit_mul_qpow_ne_zero (continuous_mul_inv h₁ h₂) (by simpa using hs)
-    have hL : localLFactor (χ₁ * χ₂⁻¹) (2 * s) = (1 - c * T)⁻¹ := localLFactor_of_isUnramified hμ _
-    have hbox := one_sub_mul_localSection_boxInd h₁ h₂ hs N
-    rw [← hc, ← hT] at hbox
-    have hbox' : localSection χ₁ χ₂ s (boxInd F N) =
-        ((1 - c * T)⁻¹ * (c ^ N * T ^ N)) • localSection χ₁ χ₂ s (shellInd F) := by
-      rw [mul_smul, ← hbox, smul_smul, inv_mul_cancel₀ hne, one_smul]
-    have hI : Finset.Ico M (N + 1) = insert N (Finset.Ico M N) := by
-      ext k; simp only [Finset.mem_Ico, Finset.mem_insert]; omega
-    rw [hsum s hs, hL, hI, Finset.sum_insert (by simp)]
-    beta_reduce
-    rw [if_neg (lt_irrefl N), evalQpow_C_mul_T,
-      ← hT, shellPiece_eq_smul_shellInd hinv, localSection_smul, hbox', smul_add]
-    conv_rhs => rw [add_comm]
-    congr 1
-    · rw [Finset.smul_sum]
-      refine Finset.sum_congr rfl fun m hm ↦ ?_
-      have hmN : m < N := (Finset.mem_Ico.1 hm).2
-      rw [if_pos hmN, evalQpow_sub, evalQpow_C_mul_T, evalQpow_C_mul_T, ← hT, smul_smul]
-      congr 1
-      rw [zpow_add₀ hc0, zpow_add₀ hT0, zpow_one, zpow_one]
-      field_simp
-    · simp only [smul_smul]
-      congr 1
-      ring
-  · refine ⟨Finset.Ico M N, shellPiece Φ,
-      fun m ↦ LaurentPolynomial.C (c ^ m) * LaurentPolynomial.T m,
-      fun m ↦ ⟨shellPiece_mem hΦ m, support_shellPiece_subset Φ m⟩, fun s hs ↦ ?_⟩
-    rw [hsum s hs, localSection_boxInd_of_not_isUnramified χ₁ χ₂ hμ, smul_zero, add_zero,
-      localLFactor_of_not_isUnramified hμ, one_smul]
-    refine Finset.sum_congr rfl fun m _ ↦ ?_
-    rw [evalQpow_C_mul_T]
 
 omit [MeasurableSpace F] [BorelSpace F] in
 theorem vecMul_mem_box {k : GL (Fin 2) F} (hk : ∀ i j, (k : Matrix (Fin 2) (Fin 2) F) i j ∈ 𝒪[F])
@@ -776,95 +603,11 @@ theorem ord_det_eq_zero {k : GL (Fin 2) F} (hk : k ∈ GLnLocal.integralGL F 2) 
   rw [hinv, Units.val_inv_eq_inv_val, ord_inv (detU k).ne_zero] at h2
   omega
 
-theorem localSection_eq_of_support_subset_shell (χ₁ χ₂ : Fˣ →* ℂˣ) (s : ℂ)
-    {Ψ : (Fin 2 → F) → ℂ} (hΨ : Function.support Ψ ⊆ shell F) {k : GL (Fin 2) F}
-    (hk : k ∈ GLnLocal.integralGL F 2) :
-    localSection χ₁ χ₂ s Ψ k = (χ₁ (detU k) : ℂ) *
-      ∫ u, slice Ψ k u * (((χ₁ * χ₂⁻¹) u : ℂˣ) : ℂ) ∂multHaar F := by
-  have hdet : modPow (detU k : F) s = 1 := by
-    rw [modPow_units_eq_zpow, ord_det_eq_zero hk, zpow_zero]
-  simp only [localSection, hdet, mul_one, localZeta]
-  congr 1
-  refine integral_congr_ae (Eventually.of_forall fun u ↦ ?_)
-  by_cases hu : slice Ψ k u = 0
-  · simp [hu]
-  · have hord : ord (u : F) = 0 :=
-      (vecMul_zero_cons_mem_shell_iff hk u).1 (hΨ hu)
-    have : ((modulus (u : F) : ℝ) : ℂ) ^ (2 * s) = 1 := by
-      rw [← modPow, modPow_units_eq_zpow, hord, zpow_zero]
-    simp only [this, mul_one]
 
-theorem localSection_flat (χ₁ χ₂ : Fˣ →* ℂˣ) (s s' : ℂ) {Ψ : (Fin 2 → F) → ℂ}
-    (hΨ : Function.support Ψ ⊆ shell F) {k : GL (Fin 2) F} (hk : k ∈ GLnLocal.integralGL F 2) :
-    localSection χ₁ χ₂ s Ψ k = localSection χ₁ χ₂ s' Ψ k := by
-  rw [localSection_eq_of_support_subset_shell χ₁ χ₂ s hΨ hk,
-    localSection_eq_of_support_subset_shell χ₁ χ₂ s' hΨ hk]
 
-theorem apply_eq_one_of_isUnramified {χ : Fˣ →* ℂˣ} (h : IsUnramifiedChar χ) {u : Fˣ}
-    (hu : ord (u : F) = 0) : χ u = 1 :=
-  isUnramifiedChar_iff.1 h u hu
 
-theorem localSection_shellInd_of_mem {χ₁ χ₂ : Fˣ →* ℂˣ} (hu₁ : IsUnramifiedChar χ₁)
-    (hu₂ : IsUnramifiedChar χ₂) (s : ℂ) {k : GL (Fin 2) F} (hk : k ∈ GLnLocal.integralGL F 2) :
-    localSection χ₁ χ₂ s (shellInd F) k = 1 := by
-  rw [localSection_eq_of_support_subset_shell χ₁ χ₂ s (Ψ := shellInd F) Set.support_indicator_subset hk,
-    apply_eq_one_of_isUnramified hu₁ (ord_det_eq_zero hk), Units.val_one, one_mul]
-  have hpt : (fun u : Fˣ ↦ slice (shellInd F) k u * (((χ₁ * χ₂⁻¹) u : ℂˣ) : ℂ)) =
-      (ordShell F 0).indicator 1 := by
-    funext u
-    by_cases hu : ord (u : F) = 0
-    · have hmem : ![0, (u : F)] ᵥ* (k : Matrix (Fin 2) (Fin 2) F) ∈ shell F :=
-        (vecMul_zero_cons_mem_shell_iff hk u).2 hu
-      have h1 : χ₁ u = 1 := apply_eq_one_of_isUnramified hu₁ hu
-      have h2 : χ₂ u = 1 := apply_eq_one_of_isUnramified hu₂ hu
-      simp [slice, shellInd, Set.indicator_of_mem hmem, h1, h2,
-        Set.indicator_of_mem (show u ∈ ordShell F 0 from hu)]
-    · have hmem : ![0, (u : F)] ᵥ* (k : Matrix (Fin 2) (Fin 2) F) ∉ shell F :=
-        fun h ↦ hu ((vecMul_zero_cons_mem_shell_iff hk u).1 h)
-      simp [slice, shellInd, Set.indicator_of_notMem hmem,
-        Set.indicator_of_notMem (show u ∉ ordShell F 0 from hu)]
-  calc ∫ u, slice (shellInd F) k u * (((χ₁ * χ₂⁻¹) u : ℂˣ) : ℂ) ∂multHaar F
-      = ∫ u, (ordShell F 0).indicator (1 : Fˣ → ℂ) u ∂multHaar F := by rw [hpt]
-    _ = 1 := by
-      rw [integral_indicator (measurableSet_ordShell 0)]
-      simp [measureReal_def, multHaar_ordShell]
 
-theorem localSection_boxInd_zero_of_mem {χ₁ χ₂ : Fˣ →* ℂˣ} (h₁ : Continuous χ₁)
-    (h₂ : Continuous χ₂) (hu₁ : IsUnramifiedChar χ₁) (hu₂ : IsUnramifiedChar χ₂) {s : ℂ}
-    (hs : -quasiCharExponent (χ₁ * χ₂⁻¹) < 2 * s.re) {k : GL (Fin 2) F}
-    (hk : k ∈ GLnLocal.integralGL F 2) :
-    localSection χ₁ χ₂ s (boxInd F 0) k = localLFactor (χ₁ * χ₂⁻¹) (2 * s) := by
-  have hμ : IsUnramifiedChar (χ₁ * χ₂⁻¹) := by
-    rw [isUnramifiedChar_iff]
-    intro u hu
-    simp [apply_eq_one_of_isUnramified hu₁ hu, apply_eq_one_of_isUnramified hu₂ hu]
-  have hne : 1 - (((χ₁ * χ₂⁻¹) (unifUnit F) : ℂˣ) : ℂ) * (residueCard F : ℂ) ^ (-(2 * s)) ≠ 0 :=
-    one_sub_quasiChar_unifUnit_mul_qpow_ne_zero (continuous_mul_inv h₁ h₂) (by simpa using hs)
-  have h := congrFun (one_sub_mul_localSection_boxInd h₁ h₂ hs 0) k
-  simp only [Pi.smul_apply, smul_eq_mul, zpow_zero, mul_one, one_mul,
-    localSection_shellInd_of_mem hu₁ hu₂ s hk] at h
-  rw [localLFactor_of_isUnramified hμ]
-  exact eq_inv_of_mul_eq_one_right h
 
-theorem localSection_boxInd_zero_mul {χ₁ χ₂ : Fˣ →* ℂˣ} (hu₁ : IsUnramifiedChar χ₁) (s : ℂ)
-    (g : GL (Fin 2) F) {k : GL (Fin 2) F} (hk : k ∈ GLnLocal.integralGL F 2) :
-    localSection χ₁ χ₂ s (boxInd F 0) (g * k) = localSection χ₁ χ₂ s (boxInd F 0) g := by
-  have hR : rightTranslate k (boxInd F 0) = boxInd F 0 := by
-    funext x
-    simp only [rightTranslate, boxInd]
-    by_cases hx : x ∈ box F 0
-    · have h' : x ᵥ* (k : Matrix (Fin 2) (Fin 2) F) ∈ (box F 0 : Set (Fin 2 → F)) :=
-        (vecMul_mem_box_iff hk 0 x).2 hx
-      rw [Set.indicator_of_mem (show x ∈ (box F 0 : Set (Fin 2 → F)) from hx),
-        Set.indicator_of_mem h']
-      rfl
-    · have h' : x ᵥ* (k : Matrix (Fin 2) (Fin 2) F) ∉ (box F 0 : Set (Fin 2 → F)) :=
-        fun h ↦ hx ((vecMul_mem_box_iff hk 0 x).1 h)
-      rw [Set.indicator_of_notMem (show x ∉ (box F 0 : Set (Fin 2 → F)) from hx),
-        Set.indicator_of_notMem h']
-  rw [localSection_mul, hR, apply_eq_one_of_isUnramified hu₁ (ord_det_eq_zero hk),
-    modPow_units_eq_zpow, ord_det_eq_zero hk]
-  simp
 
 omit [MeasurableSpace F] [BorelSpace F] in
 theorem mem_valBall_of_valuation_le {y : F} {m : ℕ}
@@ -904,43 +647,6 @@ theorem det_sub_one_mem_valBall {m : ℕ} {u : GL (Fin 2) F}
   exact sub_mem (add_mem (add_mem h00 h11) (hmm (mul_mem_valBall h00 h11)))
     (hmm (mul_mem_valBall h01 h10))
 
-theorem isSmooth_localSection {χ₁ : Fˣ →* ℂˣ} (h₁ : Continuous χ₁) (χ₂ : Fˣ →* ℂˣ) (s : ℂ)
-    {Φ : (Fin 2 → F) → ℂ} (hΦ : Φ ∈ schwartzBruhat2 F) :
-    IsSmooth (localSection χ₁ χ₂ s Φ) := by
-  obtain ⟨N, M, hMN, hinv, hsupp⟩ := exists_invariant_of_mem_schwartzBruhat2 hΦ
-  refine ⟨max (N - M).toNat (max (quasiCharConductor χ₁) 1), fun g u hu ↦ ?_⟩
-  set m := max (N - M).toNat (max (quasiCharConductor χ₁) 1) with hm
-  have hu0 : u ∈ GLnLocal.integralGL F 2 := GLnLocal.congruenceSubgroup_le F 2 m hu
-  have hR : rightTranslate u Φ = Φ := by
-    funext x
-    simp only [rightTranslate]
-    by_cases hx : x ∈ box F M
-    · set D : Matrix (Fin 2) (Fin 2) F := (u : Matrix (Fin 2) (Fin 2) F) - 1 with hD
-      have hxD : x ᵥ* D ∈ box F N := by
-        refine box_antitone (show N ≤ M + m by omega) (mem_box.2 fun j ↦ ?_)
-        simp only [Matrix.vecMul, dotProduct, Fin.sum_univ_two]
-        exact add_mem (mul_mem_valBall (mem_box.1 hx 0)
-            (sub_one_mem_valBall_of_mem_congruenceSubgroup hu 0 j))
-          (mul_mem_valBall (mem_box.1 hx 1)
-            (sub_one_mem_valBall_of_mem_congruenceSubgroup hu 1 j))
-      have he : x ᵥ* (u : Matrix (Fin 2) (Fin 2) F) = x + x ᵥ* D := by
-        rw [hD, Matrix.vecMul_sub, Matrix.vecMul_one]
-        abel
-      rw [he, hinv x _ hxD]
-    · have h0 : Φ x = 0 := by
-        by_contra h
-        exact hx (hsupp x h)
-      have h1 : Φ (x ᵥ* (u : Matrix (Fin 2) (Fin 2) F)) = 0 := by
-        by_contra h
-        exact hx ((vecMul_mem_box_iff hu0 M x).1 (hsupp _ h))
-      rw [h0, h1]
-  have hdet : χ₁ (detU u) = 1 := by
-    have hmem : detU u ∈ unitFiltrationUnits F m :=
-      (mem_unitFiltrationUnits_iff_valBall (by omega)).2 (det_sub_one_mem_valBall hu)
-    exact unitFiltrationUnits_quasiCharConductor_le_ker h₁
-      (unitFiltrationUnits_antitone (by omega) hmem)
-  rw [localSection_mul, hR, hdet, modPow_units_eq_zpow, ord_det_eq_zero hu0]
-  simp
 
 omit [MeasurableSpace F] [BorelSpace F] in
 theorem IsSmooth.mono {f : GL (Fin 2) F → ℂ} {m : ℕ}
@@ -963,10 +669,6 @@ def smoothPrincipalSeries (χ₁ χ₂ : Fˣ →* ℂˣ) (s : ℂ) : Submodule �
     obtain ⟨m, hm⟩ := h.2
     exact ⟨m, fun g u hu ↦ by simp only [Pi.smul_apply, hm g u hu]⟩
 
-theorem localSection_mem_smoothPrincipalSeries {χ₁ : Fˣ →* ℂˣ} (h₁ : Continuous χ₁)
-    (χ₂ : Fˣ →* ℂˣ) (s : ℂ) {Φ : (Fin 2 → F) → ℂ} (hΦ : Φ ∈ schwartzBruhat2 F) :
-    localSection χ₁ χ₂ s Φ ∈ smoothPrincipalSeries χ₁ χ₂ s :=
-  ⟨localSection_mem_principalSeries χ₁ χ₂ s Φ, isSmooth_localSection h₁ χ₂ s hΦ⟩
 
 end
 

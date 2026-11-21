@@ -137,7 +137,6 @@ variable (l) in
 def ainfQuot : (Ainf l ⧸ RingHom.ker (Per.θ l)) ≃+* OC l :=
   RingHom.quotientKerEquivOfSurjective (theta_onto l)
 
-theorem ainfQuot_mk (a : Ainf l) : ainfQuot l (Ideal.Quotient.mk _ a) = Per.θ l a := rfl
 
 variable (l) in
 
@@ -279,11 +278,7 @@ end IsAinf
 
 def ainfHom (K : FinExt l) (g : ↥(GK K)) : Hom (ainfObj K) (ainfObj K) := (isAinf_ainfObj K).galHom g
 
-theorem ainfHom_f (K : FinExt l) (g : ↥(GK K)) (a : Ainf l) : (ainfHom K g).f a = Per.σA (g : GQ l) a := rfl
 
-theorem exists_isAinf (K : FinExt l) : ∃ (P : Obj l ↥(OL K)) (e : P.A ≃+* Ainf l), IsAinf K P e ∧
-    ∀ g ∈ GK K, ∃ h : Hom P P, ∀ a, e (h.f a) = Per.σA g (e a) :=
-  ⟨ainfObj K, ainfId K, isAinf_ainfObj K, fun g hg => ⟨ainfHom K ⟨g, hg⟩, fun _ => rfl⟩⟩
 
 structure Realises (K : FinExt l) (E : FCrys l ↥(OL K)) (P : Obj l ↥(OL K))
     (e : P.A ≃+* Ainf l) (T : Type) [AddCommGroup T] [Module ℤ_[l] T]
@@ -536,9 +531,6 @@ theorem IsAinf.realises_unit {K : FinExt l} {P : Obj l ↥(OL K)} {e : P.A ≃+*
     congrArg (fun y : WCb l => y ⊗ₜ[ℤ_[l]] (1 : ℤ_[l]))
       ((congrArg (inclW l) (H.e_galHom g x)).trans (galW_inclW _ _).symm)
 
-theorem isRealisation_unit (K : FinExt l) :
-    IsRealisation K (FCrys.unit l ↥(OL K)) ℤ_[l] fun _ => LinearMap.id :=
-  ⟨_, (isAinf_ainfObj K).realises_unit⟩
 
 example (K : FinExt l) : unitMap (ainfObj K) (ainfId K) (1 : Ainf l) ≠ 0 := fun h => by
   have h1 : (1 : WCb l) ⊗ₜ[ℤ_[l]] (1 : ℤ_[l]) = (1 : WCb l) ⊗ₜ[ℤ_[l]] (0 : ℤ_[l]) := by

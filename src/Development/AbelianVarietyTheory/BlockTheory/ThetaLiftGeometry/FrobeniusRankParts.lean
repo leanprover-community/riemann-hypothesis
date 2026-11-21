@@ -22,11 +22,6 @@ def twistRep (ρ : Γ →* GL (Fin a) O) (ξ : Γ →* Oˣ) : Γ →* GL (Fin a)
       ((Matrix.scalar_commute (ξ h : O) (fun r => Commute.all _ r) _).eq).symm
     rw [mul_assoc, mul_assoc, ← mul_assoc (Matrix.scalar (Fin a) (ξ h : O)), ← hc, mul_assoc]
 
-theorem twistRep_val (ρ : Γ →* GL (Fin a) O) (ξ : Γ →* Oˣ) (g : Γ) :
-    ((twistRep ρ ξ g : GL (Fin a) O) : Matrix (Fin a) (Fin a) O) =
-      (ξ g : O) • ((ρ g : GL (Fin a) O) : Matrix (Fin a) (Fin a) O) := by
-  change Matrix.scalar (Fin a) (ξ g : O) * _ = _
-  rw [Matrix.scalar_apply, ← Matrix.smul_eq_diagonal_mul]
 
 end Twist
 
@@ -56,11 +51,6 @@ theorem IsRankPart.charpoly_frob {i : N.Loc} {x : N.X i} {ρ' : G H.E N.Om →* 
         ∏ c ∈ Finset.Icc 1 R.t, (X - C ((N.chi i c σ : (N.O i)ˣ) : N.O i)) := by
   rw [hr.2.2 w hw B σ hB hσ, h.2.2 w hw B σ hB hσ]
 
-theorem mem_ZgoodN_of_param (A : NAut N) {i : N.Loc} {x : N.X i} {Sig : List (Part A.CG)}
-    (hx : HasParamX N A i x Sig) (hg : goodSig N A Sig) : x ∈ ZgoodN N A i := by
-  obtain ⟨P, hP, hBC⟩ := hx
-  refine ⟨⟨P, hP, _, hBC, ?_⟩, Sig, ⟨P, hP, hBC⟩, hg⟩
-  simp [twistIso, muPart]
 
 end Local
 

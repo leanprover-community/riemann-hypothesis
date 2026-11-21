@@ -106,10 +106,5 @@ theorem std_class (n : ℕ) :
 
 end Std
 
-theorem mIClass : MIClass := by
-  intro K H k
-  letI := H.cmStar
-  haveI := H.isCMField_hostE
-  exact std_class H.E (fun φ a => NumberField.IsCMField.complexEmbedding_complexConj H.E φ a) k
 
 end Formalism.MainNotions.Gaps.MI

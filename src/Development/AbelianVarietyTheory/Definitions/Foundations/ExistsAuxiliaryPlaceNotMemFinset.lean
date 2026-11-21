@@ -207,9 +207,6 @@ theorem IsFinFamily.tensorFin_mem (h : IsFinFamily σ J L ff) : tensorFin σ J f
 theorem tensor_mem_ccAd (ha : ∀ w, fa w ∈ CcArch σ J w) (hf : IsFinFamily σ J L ff) : tensor σ J fa ff ∈ CcAd σ J :=
   by rw [tensor_eq_infFin]; exact infFin_mem_ccAd (tensorInf_mem ha) hf.tensorFin_mem
 
-theorem IsPureTensor.mem_ccAd {f : GAd σ J → ℂ} (h : IsPureTensor σ J L f) : f ∈ CcAd σ J := by
-  obtain ⟨fa, ff, ha, hf, rfl⟩ := h
-  exact tensor_mem_ccAd ha hf
 
 theorem IsFinFamily.starFn_tensor (h : IsFinFamily σ J L ff) :
     IsFinFamily σ J L (fun v => starFn (ff v)) ∧
@@ -273,8 +270,6 @@ def IsUnif {v : HeightOneSpectrum (𝓞 F)} (ϖ : (Fv F v)ˣ) : Prop := Valued.v
 def strictTorus {k : Type} [Field k] (n : ℕ) (ϖ : kˣ) : Set (Fin n → kˣ) :=
   {t | ∃ a : Fin n → ℤ, StrictAnti a ∧ t = fun i => ϖ ^ a i}
 
-theorem strictTorus_nonempty {k : Type} [Field k] (n : ℕ) (ϖ : kˣ) : (strictTorus n ϖ).Nonempty :=
-  ⟨_, fun i => -(i : ℤ), fun _ _ h => neg_lt_neg (by exact_mod_cast h), rfl⟩
 
 theorem exists_isUnif (v : HeightOneSpectrum (𝓞 F)) : ∃ ϖ : (Fv F v)ˣ, IsUnif ϖ := by
   obtain ⟨p, hp⟩ := HeightOneSpectrum.valuedAdicCompletion_surjective F v (WithZero.exp (-1 : ℤ))
@@ -378,8 +373,6 @@ theorem isCompact_iwahori : IsCompact (s.iwahori : Set (GLoc σ J v)) :=
 theorem cosetFn_mem (t : Fin n → (Fv F v)ˣ) : s.cosetFn t ∈ CcLoc σ J v :=
   indicator_mem_SB s.isOpen_iwahori.mul_left ((s.isCompact_iwahori.mul isCompact_singleton).mul s.isCompact_iwahori)
 
-theorem cosetFn_diag (t : Fin n → (Fv F v)ˣ) : s.cosetFn t (s.diag t) = 1 :=
-  indicator_of_mem (DoubleCoset.mem_doubleCoset_self _ _ _) _
 
 variable {W : Type} [AddCommGroup W] [Module ℂ W] (μ : Measure (GLoc σ J v))
   (τ : Representation ℂ (GL (Fin n) (ResF v)) W)
@@ -549,90 +542,7 @@ theorem exists_auxiliaryPlace_not_mem_finset (h : IsCMExt F E σ) (hJ : IsHermND
   obtain ⟨ϖ, hϖ⟩ := exists_isUnif u
   exact ⟨⟨u, ⟨τ, β, h, hJ, hL u, hβ⟩, ϖ, hϖ⟩, hu⟩
 
-theorem exists_testData (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hL : ∀ v, IsSelfDualAt σ J L v)
-    (μf : ∀ v, Measure (GLoc σ J v)) :
-    ∃ (T : TypeData σ J L) (U : UnitaryAuxiliaryPlaceData σ J L) (ff : ∀ v, GLoc σ J v → ℂ), T.S.Nonempty ∧ IsTestFin T U μf ff := by
-  obtain ⟨U₀, -⟩ := exists_auxiliaryPlace_not_mem_finset h hJ hL ∅
-  obtain ⟨U, hU⟩ := exists_auxiliaryPlace_not_mem_finset h hJ hL {U₀.u}
-  let T : TypeData σ J L :=
-    { S := {U₀.u}
-      frame := fun v => (Finset.mem_singleton.1 v.2).symm ▸ U₀.frame
-      W := fun _ => ℂ
-      τ := fun _ => GlobalTheory.SmGL.ofChar 1
-      irred := fun _ => GlobalTheory.SmGL.isIrreducible_ofChar 1 }
-  obtain ⟨t, ht⟩ := strictTorus_nonempty n U.ϖ
-  obtain ⟨ff, hff, -⟩ := exists_isTestFin (T := T) hU μf (fun v => unitLoc σ J L v) (fun v => unitLoc_mem v.1) ht isFinFamily_unit
-  exact ⟨T, U, ff, Finset.singleton_nonempty _, hff⟩
 
-theorem exists_isTestFn_ne_zero (h : IsCMExt F E σ) (μa : ∀ w, Measure (GArch σ (1 : Matrix (Fin n) (Fin n) E) w))
-    (μf : ∀ v, Measure (GLoc σ (1 : Matrix (Fin n) (Fin n) E) v)) [∀ w, (μa w).IsHaarMeasure]
-    [∀ v, (μf v).IsHaarMeasure] (Ψ : ∀ w : InfinitePlace F, EmbOver E w) :
-    ∃ (T : TypeData σ 1 (stdLattice E n)) (U : UnitaryAuxiliaryPlaceData σ 1 (stdLattice E n)) (f : GAd σ 1 → ℂ), T.S.Nonempty ∧
-      IsTestFn Ψ (fun _ => charRep 1) T U μa μf f ∧ f ≠ 0 := by
-  have := isLattice_stdLattice (E := E) (n := n)
-  have hJ := isHermND_one σ n
-  have hL := isSelfDualAt_stdLattice_one (n := n) σ
-  obtain ⟨U₀, -⟩ := exists_auxiliaryPlace_not_mem_finset h hJ hL ∅
-  obtain ⟨U, hU⟩ := exists_auxiliaryPlace_not_mem_finset h hJ hL {U₀.u}
-  let T : TypeData σ 1 (stdLattice E n) :=
-    { S := {U₀.u}
-      frame := fun v => (Finset.mem_singleton.1 v.2).symm ▸ U₀.frame
-      W := fun _ => ℂ
-      τ := fun _ => GlobalTheory.SmGL.ofChar 1
-      irred := fun _ => GlobalTheory.SmGL.isIrreducible_ofChar 1 }
-  obtain ⟨t, ht⟩ := strictTorus_nonempty n U.ϖ
-  obtain ⟨ff, hff, h1, h2, h3⟩ := exists_isTestFin (T := T) hU μf (fun v => unitLoc σ 1 (stdLattice E n) v)
-    (fun v => unitLoc_mem v.1) ht isFinFamily_unit
-  have hc : ∀ w, CompactSpace (GArch σ (1 : Matrix (Fin n) (Fin n) E) w) := fun w => ⟨by
-    rw [(isEmbedding_matHom _ σ _).isCompact_iff]
-    convert Frames.isCompact_UJ_one (n := n) h w using 1
-    have e : JR (F := F) w.Completion (1 : Matrix (Fin n) (Fin n) E) = 1 := by simp [JR]
-    ext x
-    exact ⟨fun ⟨g, _, hg⟩ => hg ▸ e ▸ g.2, fun hx => ⟨(⟨x, (e.symm ▸ hx :)⟩ : HR _ σ 1), trivial, rfl⟩⟩⟩
-  refine ⟨T, U, _, Finset.singleton_nonempty _, ⟨_, ff, fun w => isPseudoCoeff_char (χ := 1)
-    (continuous_archMat σ _ _) ⟨(isClosed_tsupport _).isCompact, fun _ => 1, contDiff_const, fun _ => by simp⟩,
-    hff, rfl⟩, fun h0 => ?_⟩
-  have hvol : ∀ v, ((μf v).real (stabLoc σ 1 (stdLattice E n) v) : ℂ) ≠ 0 := fun v => by
-    exact_mod_cast ENNReal.toReal_ne_zero.2 ⟨((isOpen_stabLoc σ 1 _ v).measure_pos _ ⟨1, one_mem _⟩).ne',
-      (isCompact_stabLoc σ 1 _ v).measure_ne_top⟩
-  have hconv : ∀ v (a b : ℂ), conv (μf v) (a • unitLoc σ 1 (stdLattice E n) v) (b • unitLoc σ 1 (stdLattice E n) v) =
-      (a * b * (μf v).real (stabLoc σ 1 (stdLattice E n) v)) • unitLoc σ 1 (stdLattice E n) v := fun v a b => by
-    funext y
-    have : ∀ x, (a • unitLoc σ 1 (stdLattice E n) v) x * (b • unitLoc σ 1 (stdLattice E n) v) (x⁻¹ * y) =
-        (stabLoc σ 1 (stdLattice E n) v : Set _).indicator (fun _ => a * b * unitLoc σ 1 (stdLattice E n) v y) x :=
-      fun x => by
-        by_cases hx : x ∈ stabLoc σ 1 (stdLattice E n) v
-        · by_cases hy : y ∈ stabLoc σ 1 (stdLattice E n) v <;>
-            simp [unitLoc, hx, hy, Subgroup.mul_mem_cancel_left _ (inv_mem hx)]
-        · simp [unitLoc, hx]
-    rw [conv, integral_congr_ae (.of_forall this), integral_indicator_const _ (isOpen_stabLoc σ 1 _ v).measurableSet]
-    simp only [Complex.real_smul, Pi.smul_apply, smul_eq_mul]
-    ring
-  have hid : ∀ v : T.S, T.idem μf v =
-      ((μf v).real (stabLoc σ 1 (stdLattice E n) v) : ℂ)⁻¹ • unitLoc σ 1 (stdLattice E n) v := fun v => by
-    funext g
-    by_cases hg : g ∈ stabLoc σ 1 (stdLattice E n) v
-    · refine (typeIdem_coe _ _ _ ⟨g, hg⟩).trans ?_
-      have : ∀ q, (T.τ v).character q = 1 := fun q => by
-        rw [Representation.character, show T.τ v q = LinearMap.id from LinearMap.ext fun x => one_mul x]
-        simp [T]
-      simp [this, unitLoc, hg, T]
-    · exact (typeIdem_of_notMem _ _ _ hg).trans (by simp [unitLoc, hg])
-  have h4 := congrFun h0 (emb σ 1 U.u (U.frame.diag t))
-  rw [tensor_eq_infFin] at h4
-  refine mul_ne_zero (Finset.prod_ne_zero_iff.2 fun w _ => div_ne_zero (by simp) ?_)
-    ((hff.isFinFamily.tensorFin_ne_zero_iff _).2 fun v => ?_) h4
-  · exact_mod_cast ENNReal.toReal_ne_zero.2 ⟨(isOpen_univ.measure_pos _ univ_nonempty).ne', measure_ne_top _ _⟩
-  · rw [projFinLoc_projFin]
-    by_cases hu : v = U.u
-    · subst hu
-      rw [proj_emb_self, h2, SplitAt.cosetFn_diag]
-      exact one_ne_zero
-    · rw [proj_emb_ne σ 1 hu]
-      by_cases hv : v ∈ T.S
-      · rw [h1 ⟨v, hv⟩, hid, ← one_smul ℂ (unitLoc σ 1 (stdLattice E n) v), smul_smul, hconv, hconv]
-        simp [unitLoc, hvol]
-      · simp [h3 v hv hu, unitLoc]
 
 section Cent
 
@@ -733,10 +643,6 @@ theorem exists_splitAt {v : HeightOneSpectrum (𝓞 D.host.F)} (τ : D.host.E �
   obtain ⟨β, hβ⟩ := exists_isSplitBasis τ (frameLat V) (isCMExt_host D)
   exact ⟨⟨τ, β, isCMExt_host D, isHermND_gram V, SelfDual.isSelfDualAt_frameLat D V v, hβ⟩, rfl⟩
 
-theorem exists_testDataG (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)) :
-    ∃ (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V) (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ),
-      T.S.Nonempty ∧ IsTestFin T U μf ff :=
-  exists_testData (isCMExt_host D) (isHermND_gram V) (SelfDual.isSelfDualAt_frameLat D V) μf
 
 variable {V} {S : D.what₂.Tau → SPar} (M : DSModel V S)
 
@@ -766,8 +672,6 @@ theorem frameMat_mem (ρ : D.what₂.Tau) (g : GArch D.sp.cm.sig V.gram (placeOf
 def dsRep (ρ : D.what₂.Tau) : GArch D.sp.cm.sig V.gram (placeOf D ρ) →* (M.H ρ →L[ℂ] M.H ρ) :=
   repVia (M.ds ρ).2.2.1 (frameMat M ρ) (frameMat_mem M ρ)
 
-theorem dsRep_apply (ρ : D.what₂.Tau) (g : GArch D.sp.cm.sig V.gram (placeOf D ρ)) :
-    dsRep M ρ g = M.rep ρ (matAt V ρ g) := rfl
 
 theorem isUnitaryRep_dsRep (ρ : D.what₂.Tau) : IsUnitaryRep (dsRep M ρ) :=
   isUnitaryRep_repVia _ _ ((continuous_const.mul (continuous_archMat _ _ _)).mul continuous_const)

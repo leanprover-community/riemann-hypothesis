@@ -30,8 +30,6 @@ theorem actO_inv (g : GA D S) (h : GA D T) (x : WO S T) : actO S T g h (actO S T
   unfold L2.Theta.mt
   simp
 
-theorem actO_inv' (g : GA D S) (h : GA D T) (x : WO S T) : actO S T g⁻¹ h⁻¹ (actO S T g h x) = x := by
-  simpa using actO_inv g⁻¹ h⁻¹ x
 
 end Formalism.IndefR.Eqv
 

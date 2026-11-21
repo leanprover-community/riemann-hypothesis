@@ -173,18 +173,7 @@ theorem exists_host_of_injective (R : Ranks) (hinj : Function.Injective R.h) (ho
   · show N < H.d
     omega
 
-theorem exists_host_over_cyclic_two_power (R : Ranks) (hφ : R.toFrame = Formalism.HC.cyclicFrame R.e) (he : 2 ≤ R.e)
-    (B N : ℕ) (TT : Finset R.A) :
-    ∃ H : Host R, H.splitBound = B ∧ N < H.q ∧ N < H.d ∧ H.ccK = ⊤ ∧ H.TT = TT ∧ H.QS = 2 ^ (R.e + 2) := by
-  have h : ∀ φ : Formalism.HC.Frame, ∀ e, φ = Formalism.HC.cyclicFrame e → Function.Injective φ.h ∧ φ.o = 1 := by
-    rintro _ e rfl
-    exact ⟨Formalism.HC.frameCyc_h_injective e 1, Formalism.HC.cyclicFrame_index e⟩
-  obtain ⟨h1, h2⟩ := h _ _ hφ
-  exact exists_host_of_injective R h1 (by rw [h2, one_pow]; exact Nat.one_le_two_pow) he B N TT
 
-theorem nonempty_host_over_cyclic_two_power (R : Ranks) (hφ : R.toFrame = Formalism.HC.cyclicFrame R.e) (he : 2 ≤ R.e) : Nonempty (Host R) :=
-  let ⟨H, _⟩ := exists_host_over_cyclic_two_power R hφ he 0 0 ∅
-  ⟨H⟩
 
 end UpperTheory.Host
 

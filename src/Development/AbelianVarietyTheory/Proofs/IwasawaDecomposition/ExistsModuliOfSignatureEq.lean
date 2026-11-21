@@ -146,8 +146,6 @@ structure IsTower {D D' : Datum H} (g : ℕ → D.La →ₗ[𝓞 E] D'.La) : Pro
   isom : ∀ n : ℕ, 0 < n → ∀ a b, (n : ℤ) ∣ D'.EF (g n a) (g n b) - D.EF a b
   surj : ∀ n : ℕ, 0 < n → ∀ a', ∃ a e, a' = g n a + n • e
 
-theorem isTower_id (D : Datum H) : IsTower (D := D) (D' := D) fun _ => LinearMap.id :=
-  ⟨fun _ _ _ _ _ => ⟨0, by simp⟩, fun _ _ _ _ => by simp, fun _ _ a => ⟨a, 0, by simp⟩⟩
 
 theorem inj_mod {D D' : Datum H} {n : ℕ} (hn : 0 < n) (g : D.La →ₗ[𝓞 E] D'.La)
     (hg : ∀ a b, (n : ℤ) ∣ D'.EF (g a) (g b) - D.EF a b) (a : D.La) (h : ∃ e, g a = n • e) : ∃ e, a = n • e := by
@@ -262,41 +260,7 @@ theorem eta_add_nsmul {D : Datum H} (o : Obj D l b s) (a e : D.La) : o.eta (a + 
   rw [l.prod]
   exact Ideal.mem_span_singleton_self _
 
-theorem etaA_add_nsmul {D : Datum H} (o : Obj D l b s) (a e : D.La) : o.etaA (a + l.A • e) = o.etaA a := by
-  rw [o.etaA_add, o.etaA_ker, _root_.mul_one]
 
-theorem objMap_iff {D D' : Datum H} (hp : D'.p = D.p) (hq : D'.q = D.q) {g : ℕ → D.La →ₗ[𝓞 E] D'.La}
-    {h : ℕ → D'.La →ₗ[𝓞 E] D.La} (hg : IsTower g) (hh : IsTower h)
-    (h1 : ∀ n, 0 < n → ∀ a, ∃ e, g n (h n a) = a + n • e) (h2 : ∀ n, 0 < n → ∀ a, ∃ e, h n (g n a) = a + n • e)
-    {S' : Scheme.{0}} {s' : S' ⟶ Sp B} (o : Obj D l b s') (u : Obj D' l b s) (f : S' ⟶ S) :
-    Nonempty (ObjMap o (objComp hp hq hg u) f) ↔ Nonempty (ObjMap (objComp hp.symm hq.symm hh o) u f) := by
-  have hM : 0 < l.M := lt_of_lt_of_le (by norm_num) l.three_le
-  refine ⟨fun ⟨m⟩ => ⟨⟨m.toSABMap, fun a => ?_, fun a => ?_⟩⟩, fun ⟨m⟩ => ⟨⟨m.toSABMap, fun a => ?_, fun a => ?_⟩⟩⟩
-  · obtain ⟨e, he⟩ := h1 _ hM a
-    rw [← eta_add_nsmul u a e, ← he]
-    exact m.eta _
-  · obtain ⟨e, he⟩ := h1 _ l.A_pos a
-    rw [← etaA_add_nsmul u a e, ← he]
-    exact m.etaA _
-  · obtain ⟨e, he⟩ := h2 _ hM a
-    rw [← eta_add_nsmul o a e, ← he]
-    exact m.eta _
-  · obtain ⟨e, he⟩ := h2 _ l.A_pos a
-    rw [← etaA_add_nsmul o a e, ← he]
-    exact m.etaA _
 
-theorem exists_moduli_of_signature_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
-    (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw Dw' : Datum H) (l : Level H) (Xo : Moduli Dw l), Dw.p = Dw'.p → Dw.q = Dw'.q →
-    ∃ (Xo' : Moduli Dw' l) (_ : Xo'.X = Xo.X), HEq Xo'.s Xo.s ∧ HEq Xo'.univ.t Xo.univ.t := by
-  intro E _ _ _ H D D' l Xo hp hq
-  obtain ⟨g, hg⟩ := exists_isTower D' D hp hq
-  obtain ⟨h, hh, h1, h2⟩ := hg.exists_inv
-  have hd : D'.dim = D.dim := by rw [Datum.dim, Datum.dim, hp, hq]
-  refine ⟨⟨Xo.X, Xo.s, Xo.qproj, hd ▸ Xo.smooth, objComp hp hq hg Xo.univ, fun S s' hS o => ?_, fun k _ x o m m' => ?_⟩,
-    rfl, HEq.rfl, HEq.rfl⟩
-  · simp only [objMap_iff hp hq hg hh h1 h2]
-    exact Xo.rep S s' hS _
-  · rw [objMap_iff hp hq hg hh h1 h2] at m m'
-    exact Xo.unram k x _ m m'
 
 end GlobalTheory.ModuliGenus

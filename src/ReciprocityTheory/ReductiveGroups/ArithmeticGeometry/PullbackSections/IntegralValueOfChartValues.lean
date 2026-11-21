@@ -47,22 +47,7 @@ theorem g_coprime_ram (D : D7) (k : Fin 2) (p : ℕ) (hp : p ∈ ({2, D.host.q, 
       ⟨D.host.QS * D.host.q, by ring⟩), hc]
     exact Nat.mod_eq_of_lt (by omega)
 
-theorem M_not_mem_of_ram (D : D7) (T : Top D) (h : LawsP T) (la : HeightOneSpectrum (𝓞 T.Q.c.F)) (p : ℕ)
-    (hp : p ∈ ({2, D.host.q, D.host.d} : Finset ℕ)) (hpl : (p : 𝓞 T.Q.c.F) ∈ la.asIdeal) :
-    ((T.Q.l.M : ℕ) : 𝓞 T.Q.c.F) ∉ la.asIdeal := by
-  intro hmem
-  rw [h.toLawsCore.pins.2.1.1, Nat.cast_mul] at hmem
-  rcases la.isPrime.mem_or_mem hmem with h0 | h1
-  · exact Pf.not_both_mem la (g_coprime_ram D 0 p hp) h0 hpl
-  · exact Pf.not_both_mem la (g_coprime_ram D 1 p hp) h1 hpl
 
-theorem differentExponent_nonneg (D : D7) (p : ℕ) : 0 ≤ vdP D p := by
-  unfold vdP
-  split_ifs
-  · have h1 : (2⁻¹ : ℝ) ^ D.R.e ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
-    have h2 : (0 : ℝ) ≤ D.R.e := Nat.cast_nonneg _
-    linarith
-  · norm_num
 
 theorem sum_extendByZero_le_sum {p : ℕ} (f : Fin p → ℕ) (m : ℕ) : ∑ i : Fin m, ext0 f i ≤ ∑ i, f i := by
   unfold ext0
@@ -100,33 +85,6 @@ theorem DF_wtA_le {D : D7} (T : Top D) (j : ℕ) (w : WeightFamilies.Wt D j) :
   simp only [Finset.mem_univ, if_true]
   exact add_le_add (sum_extendByZero_le_sum _ _) (sum_extendByZero_le_sum _ _)
 
-theorem ramifiedValue_of_chartValues (hVC : HarmonicValueAtIntegralPoint) (hCR : ChartValueBoundRamified) : ChartValueRamified := by
-  intro D T h j hj _ nab hnab w x P hP f hf Tc io yI e la ho hy p hp hpl _C
-  have hM := M_not_mem_of_ram D T h la p hp hpl
-  obtain ⟨T', io', e', yI', ho', hy', C, P', g, hP', hg, hval⟩ :=
-    hVC D T h j hj nab hnab w x P hP f hf Tc io yI e la ho hy hM
-  rw [hval]
-  refine le_trans ?_ (hCR D T h j hj hnab.1 T' io' yI' e' la ho' hy' p hp hpl C (T.Q.l.M ^ 2) (wtA w) w.n P' hP' g hg)
-  apply EReal.coe_le_coe_iff.2
-  have hv : (0 : ℝ) ≤ ((vLa la (p : T.Q.c.F) : ℤ) : ℝ) := by exact_mod_cast Pf.vLa_nat_nonneg la p
-  have hvd : 0 ≤ vdP D p := differentExponent_nonneg D p
-  have hdf : (Formalism.L2.Pj.DF (T.Q.Dw j) (wtA w) : ℝ) ≤ (Formalism.MainNotions.WeightAlgebra.DF w : ℝ) := by
-    exact_mod_cast DF_wtA_le T j w
-  have hvv := mul_nonneg hv hvd
-  nlinarith
 
-theorem integralValue_of_chartValues (hVC : HarmonicValueAtIntegralPoint) (hCI : ChartValueIntegralGood) : ChartValueUnramified := by
-  intro D T h j hj _ nab hnab w x P hP f hf Tc io yI e la ho hy hbad _C
-  have hM : ((T.Q.l.M : ℕ) : 𝓞 T.Q.c.F) ∉ la.asIdeal := by
-    intro hmem
-    rw [h.toLawsCore.pins.2.1.1, Nat.cast_mul] at hmem
-    rcases la.isPrime.mem_or_mem hmem with h0 | h1
-    · exact hbad (D.host.g 0) (by simp) h0
-    · exact hbad (D.host.g 1) (by simp) h1
-  obtain ⟨T', io', e', yI', ho', hy', C, P', g, hP', hg, hval⟩ :=
-    hVC D T h j hj nab hnab w x P hP f hf Tc io yI e la ho hy hM
-  rw [hval]
-  exact hCI D T h j hj hnab.1 T' io' yI' e' la ho' hy'
-    (fun p hp => hbad p (by simp only [Finset.mem_insert, Finset.mem_singleton] at hp ⊢; tauto)) C (T.Q.l.M ^ 2) (wtA w) w.n P' hP' g hg
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

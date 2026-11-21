@@ -118,8 +118,6 @@ def Bcris.t : Bcris p R := algebraMap (Acris p R) _ (Acris.t p R)
 
 theorem Bcris.t_eq_logTeich : Bcris.t p R = Bcris.logTeich (eps p R) := rfl
 
-theorem Bcris.algebraMap_alt : algebraMap (BcrisPlus p R) (Bcris p R) (BcrisPlus.t p R) =
-    Bcris.t p R := rfl
 
 instance Bcris.isLocalization_away_alt : IsLocalization.Away (BcrisPlus.t p R) (Bcris p R) :=
   (isPrimitive_eps p R).isLocalization_away
@@ -181,12 +179,6 @@ theorem PFlat.cocycle_mul (ϖ : PFlat p R) (e e' : R ≃+* R) :
     ϖ.map_eq_twist e, PFlat.twist_twist, tateModule.map_eq_padicPow, ← padicPow_mul,
     ← padicPow_add, add_comm, mul_comm]
 
-theorem Bst.map_logFlat_eq_add (e : R ≃+* R) (he : Function.Injective (e : R →+* R))
-    (ϖ : PFlat p R) :
-    Bst.map p (e : R →+* R) he (Bst.logFlat ϖ) =
-      Bst.logFlat ϖ + algebraMap (Bcris p R) _ ((ϖ.cocycle e : ℚ_[p]) • Bcris.t p R) := by
-  rw [Bst.map_logFlat, PFlat.map_eq_twist, Bst.logFlat_twist, Bcris.logTeich_padicPow, add_comm,
-    Algebra.smul_def, Bcris.t_eq_logTeich]
 
 end Good
 
@@ -217,8 +209,6 @@ def polynomialEquiv (ϖ : PFlat p R) : (Bcris p R)[X] ≃ₐ[Bcris p R] Bst p R 
       rw [toPolynomial_logFlat, map_add, aeval_C, aeval_X, ← logFlat_twist, PFlat.twist_div])))
     (Polynomial.algHom_ext (by simp [toPolynomial_logFlat]))
 
-theorem polynomialEquiv_apply (ϖ : PFlat p R) (f : (Bcris p R)[X]) :
-    polynomialEquiv ϖ f = aeval (logFlat ϖ) f := rfl
 
 @[simp] theorem polynomialEquiv_X (ϖ : PFlat p R) : polynomialEquiv ϖ X = logFlat ϖ :=
   aeval_X _
@@ -230,19 +220,7 @@ theorem monodromy_polynomialEquiv (ϖ : PFlat p R) (f : (Bcris p R)[X]) :
     monodromy p R (polynomialEquiv ϖ f) = -polynomialEquiv ϖ (derivative f) :=
   monodromy_aeval ϖ f
 
-theorem monodromy_iterate_polynomialEquiv (ϖ : PFlat p R) (f : (Bcris p R)[X]) (n : ℕ) :
-    (monodromy p R)^[n] (polynomialEquiv ϖ f) =
-      (-1) ^ n * polynomialEquiv ϖ (derivative^[n] f) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    have h : ((-1) ^ n : Bst p R) = algebraMap (Bcris p R) _ ((-1) ^ n) := by simp
-    rw [Function.iterate_succ_apply', ih, Function.iterate_succ_apply', pow_succ, h,
-      ← Algebra.smul_def, Derivation.map_smul, monodromy_polynomialEquiv, Algebra.smul_def]
-    ring
 
-theorem transcendental_logFlat (ϖ : PFlat p R) : Transcendental (Bcris p R) (logFlat ϖ) :=
-  transcendental_iff_injective.2 (polynomialEquiv ϖ).injective
 
 variable [IsAlgClosed (FractionRing R)]
 
@@ -260,23 +238,7 @@ theorem monodromy_surjective : Function.Surjective (monodromy p R) := by
   obtain ⟨g, rfl⟩ := derivative_surjective Bcris.isUnit_natCast_add_one f
   exact ⟨polynomialEquiv _ (-g), by rw [monodromy_polynomialEquiv, map_neg, map_neg, neg_neg]⟩
 
-theorem monodromy_eq_zero_iff (x : Bst p R) :
-    monodromy p R x = 0 ↔ x ∈ Set.range (algebraMap (Bcris p R) (Bst p R)) := by
-  constructor
-  · intro h
-    obtain ⟨f, rfl⟩ := (polynomialEquiv (pflat p R)).surjective x
-    rw [monodromy_polynomialEquiv, neg_eq_zero, map_eq_zero_iff _ (polynomialEquiv _).injective]
-      at h
-    rw [eq_C_of_derivative_eq_zero Bcris.isUnit_natCast_add_one h, polynomialEquiv_C]
-    exact ⟨_, rfl⟩
-  · rintro ⟨y, rfl⟩
-    exact Derivation.map_algebraMap _ y
 
-theorem exists_monodromy_iterate_eq_zero (x : Bst p R) : ∃ n, (monodromy p R)^[n] x = 0 := by
-  obtain ⟨f, rfl⟩ := (polynomialEquiv (pflat p R)).surjective x
-  exact ⟨f.natDegree + 1, by
-    rw [monodromy_iterate_polynomialEquiv, iterate_derivative_eq_zero (Nat.lt_succ_self _),
-      map_zero, mul_zero]⟩
 
 variable (p R) in
 

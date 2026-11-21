@@ -157,104 +157,15 @@ theorem integral_dens : ∫ v : V 1, 1 / Real.pi * (u v ^ 2)⁻¹ = 1 := by
 def fsLine (σ : k →+* ℂ) : Weight (CanonLB.affStr k 1) σ (LB.triv _) :=
   Weight.ofFun fun z => Real.log (u ((std σ 1).e z))
 
-theorem isCInf_fsLine : (fsLine σ).IsCInf := Weight.isCInf_ofFun fun y => by
-  refine cInfAt_of_chart isOpen_univ (std σ 1) ?_ trivial trivial
-  have hc : ContDiff ℝ ∞ u := contDiff_const.add (((Complex.reCLM.comp crd).contDiff.pow 2).add
-    ((Complex.imCLM.comp crd).contDiff.pow 2))
-  exact (hc.log fun v => (u_pos v).ne').contDiffOn.congr fun v _ =>
-    congrArg (fun w => Real.log (u w)) ((std σ 1).e.right_inv trivial)
 
-theorem chernDens_fsLine (v : V 1) : (std σ 1).chernDens (fsLine σ) ((std σ 1).e.symm v) =
-    1 / Real.pi * (u v ^ 2)⁻¹ := by
-  have e : (fun w => ((fsLine σ).φ (pick (fsLine σ).isLB ((std σ 1).e.symm v))
-      ((std σ 1).e.symm w) : ℂ)) = fun w => (Real.log (u w) : ℂ) := funext fun w =>
-    congrArg (fun w => (Real.log (u w) : ℂ)) ((std σ 1).e.right_inv trivial)
-  rw [AlgChart.chernDens, AlgChart.hess, e, (std σ 1).e.right_inv trivial, Matrix.det_unique]
-  erw [cHess_log]
-  rw [Complex.ofReal_re]
-  simp
 
-theorem chernInt_fsLine : (fsLine σ).ChernIntegrableOn 1 univ (fun _ => 1) ∧
-    (fsLine σ).chernInt 1 univ (fun _ => 1) = 1 := by
-  have : Smooth (CanonLB.affStr k 1) := SmoothOfRelativeDimension.smooth 1 _
-  have : QuasiCompact (CanonLB.affStr k 1) := inferInstance
-  have him : (std σ 1).e '' univ = univ := (std σ 1).e.image_source_eq_target
-  have hn (v : V 1) : 0 ≤ 1 / Real.pi * (u v ^ 2)⁻¹ := by have := Real.pi_pos; positivity
-  have h₁ : (fsLine σ).chernPart 1 1 univ = 1 := by
-    rw [Weight.chernPart_apply isCInf_fsLine 1 (std σ 1) .univ fun _ _ => trivial, him]
-    simp only [chernDens_fsLine, Units.val_one, Int.cast_one, one_mul, Measure.restrict_univ]
-    rw [← ofReal_integral_eq_lintegral_ofReal (Integrable.of_integral_ne_zero
-      (integral_dens.trans_ne one_ne_zero)) (.of_forall hn), integral_dens, ENNReal.ofReal_one]
-  have h₂ : (fsLine σ).chernPart 1 (-1) = 0 := by
-    rw [← Measure.measure_univ_eq_zero,
-      Weight.chernPart_apply isCInf_fsLine (-1) (std σ 1) .univ fun _ _ => trivial, him]
-    refine setLIntegral_eq_zero .univ fun v _ => ENNReal.ofReal_eq_zero.2 ?_
-    rw [chernDens_fsLine]
-    simpa using hn v
-  have : IsProbabilityMeasure ((fsLine σ).chernPart 1 1) := ⟨h₁⟩
-  refine ⟨⟨integrableOn_univ.2 (integrable_const _), h₂ ▸ integrableOn_univ.2 (integrable_const _)⟩, ?_⟩
-  simp [Weight.chernInt, h₂]
 
-theorem not_isArithVar_zmod (n : ℕ) [NeZero n] {X : Scheme.{0}} (p : X ⟶ Sp (ZMod n)) (D : ℕ) :
-    ¬ IsArithVar p D := fun h =>
-  have := h.charZero_base
-  NeZero.ne n (Nat.cast_eq_zero.1 (ZMod.natCast_self n))
 
-theorem not_isArithVar_rat {X : Scheme.{0}} (p : X ⟶ Sp ℚ) (D : ℕ) : ¬ IsArithVar p D := fun h =>
-  have := h.finite
-  Int.not_isField ((Algebra.IsIntegral.isField_iff_isField (R := ℤ) (S := ℚ)
-    Int.cast_injective).2 (Field.toIsField ℚ))
 
 def trivShift (k : Type) [CommRing k] (t : ℝ) : HermLB (𝟙 (Sp k)) :=
   (HermLB.triv _).shift (fun _ => t) fun _ => rfl
 
-theorem selfInter_trivShift [IsDomain k] [CharZero k] [Module.Finite ℤ k] (hd : ringKrullDim k = 1)
-    {t a : ℝ} (h : (trivShift k t).IsSelfInter a) : a = t * Nat.card (k →+* ℂ) := by
-  obtain ⟨f, hf, rfl⟩ := h
-  have hX := ArithBase.isArithVar_id hd
-  have := hX.isLocallyNoetherian
-  have := hX.finite_emb
-  let i := 𝟙 (Sp k)
-  have hr : IsRatSec ((trivShift k t).restr i).B fun _ => 1 := fun a b h => by
-    obtain rfl : a = b := Subsingleton.elim (α := PUnit → PUnit) _ _
-    have := congrArg (fun u : Γ(Sp k, _)ˣ => fnOf _ h.1 u.val)
-      (((trivShift k t).restr i).isLB.g_self a)
-    rw [Units.val_one, map_one] at this
-    exact (this.symm.trans (fnOf_resG _ h.1 _)).trans (mul_one _).symm
-  have h₁ (z : Sp k) : (((trivShift k t).restr i).div hr).mult z = 0 :=
-    have ⟨a, ha⟩ := exists_chart ((trivShift k t).restr i).isLB z
-    ((presents_divOfRatSec _ hr).isEqn a z ha).mult_eq.trans (unitAt_one z).ord_eq_zero
-  have h₂ (σ) (y : CxPts (i ≫ 𝟙 _) σ) :
-      logNorm (((trivShift k t).restr i).φ σ) (fun _ => 1) y = -t := by
-    have e := ratVal_fnOf (y := y) mem_ptsIn_top trivial 1
-    rw [map_one, ev_one mem_ptsIn_top] at e
-    have e' : _ = 0 + 2 * t := ((trivShift k t).φ σ).pull_φ i rfl
-      (pick (((trivShift k t).restr i).φ σ).isLB y) y
-    rw [logNorm, Units.val_one, e]
-    exact (congrArg (_ - · / 2) e').trans (by simp)
-  have h₃ (σ : k →+* ℂ) : ∑ᶠ _ : CxPts (i ≫ 𝟙 _) σ, -t = -t :=
-    finsum_eq_single _ ⟨spMap σ, by simp [i]⟩ fun y hy =>
-      absurd (Subtype.ext (by simpa [i] using y.2)) hy
-  refine (hf.point _ i hX.charZero hX.dim_eq _ hr).trans ?_
-  have := Fintype.ofFinite (k →+* ℂ)
-  simp [HermLB.curveDeg, h₁, h₂, h₃, finsum_eq_sum_of_fintype, mul_comm]
 
-theorem isNef_trivShift_iff (t : ℝ) : (ArithBase.trivShift t).IsNef 0 ↔ 0 ≤ t := by
-  rw [(ArithBase.isArithHeight_trivShift t).isNef_iff ArithBase.isArithVar_int]
-  refine ⟨fun h => ?_, fun ht => ⟨(HermLB.isNef_triv _ 0).semiPos.shift _ _, fun Z i _ _ _ => ?_⟩⟩
-  · refine (h.2 _ (𝟙 _) ArithBase.isArithVar_int.dim_eq).trans_eq (if_pos (Ideal.ext fun n => ?_))
-    exact (ArithBase.mem_asIdeal_iff (𝟙 (Sp ℤ)) n).trans
-      (have := ArithBase.isArithVar_int.charZero; Int.cast_eq_zero)
-  · split_ifs
-    · exact ht
-    · exact Real.log_natCast_nonneg _
 
-theorem mem_smallSec_trivShift (t : ℝ) (s : (trivShift k t).B.Sec) :
-    s ∈ (trivShift k t).smallSec ↔
-      ∀ σ (y : CxPts (𝟙 (Sp k)) σ), ‖ev _ σ ⊤ (s.f PUnit.unit) y‖ ≤ Real.exp t := by
-  refine forall₂_congr fun σ y => ?_
-  change ‖ev _ σ ⊤ (s.f PUnit.unit) y‖ ^ 2 * Real.exp (-(0 + 2 * t)) ≤ 1 ↔ _
-  rw [zero_add, Real.exp_neg, mul_inv_le_iff₀ (Real.exp_pos _), one_mul, two_mul, Real.exp_add, ← sq,
-    sq_le_sq₀ (norm_nonneg _) (Real.exp_pos _).le]
 
 end GlobalTheory.ArithHeightModel

@@ -41,25 +41,6 @@ theorem aPl_last_pos (i : Fin D.R.m) (τ : D.what₂.Tau) : 0 < aPl D i (D.R.k +
   rw [if_pos hn, hlam]
   omega
 
-theorem str_le_str_add_two (q : ℕ) (z : ℂ) (n : ℕ) : str q z n ≤ str q z (n + 2) := by
-  have hsub : (Multiset.range n).map Nat.succ ≤ Multiset.range (n + 2) := by
-    rw [Multiset.le_iff_subset ((Multiset.nodup_range n).map Nat.succ_injective)]
-    intro a ha
-    simp only [Multiset.mem_map, Multiset.mem_range] at ha
-    obtain ⟨b, hb, rfl⟩ := ha
-    simp only [Multiset.mem_range]
-    omega
-  unfold str
-  calc (Multiset.range n).map (fun k : ℕ => z * (q : ℂ) ^ (((n : ℂ) - 1) / 2 - (k : ℂ)))
-      = ((Multiset.range n).map Nat.succ).map
-          (fun k : ℕ => z * (q : ℂ) ^ ((((n + 2 : ℕ) : ℂ) - 1) / 2 - (k : ℂ))) := by
-        rw [Multiset.map_map]
-        refine Multiset.map_congr rfl fun k _ => ?_
-        simp only [Function.comp_apply, Nat.succ_eq_add_one]
-        congr 2
-        push_cast
-        ring
-    _ ≤ _ := Multiset.map_le_map hsub
 
 end GlobalTheory.PtStringTest
 

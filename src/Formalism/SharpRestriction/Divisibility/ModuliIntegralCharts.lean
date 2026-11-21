@@ -792,9 +792,6 @@ theorem Prov.dP_le (X : Prov D) (w : X.Dat) (p : ℕ) {Z : (X.loc w p).Mdl} (y :
     (X.loc w p).dP y ≤ 2 * D.R.f * min (X.jj w) (X.rk w - X.jj w) :=
   (X.loc w p).dP_le (X.jj_range w).1 (X.jj_range w).2 y
 
-theorem Prov.dP_le_of (X : Prov D) {w : X.Dat} {m : ℕ} (hm : min (X.jj w) (X.rk w - X.jj w) ≤ m) (p : ℕ)
-    {Z : (X.loc w p).Mdl} (y : (X.loc w p).Pt Z) : (X.loc w p).dP y ≤ 2 * D.R.f * m :=
-  (X.dP_le w p y).trans (Nat.mul_le_mul_left _ hm)
 
 def adm1 (D : Formalism.BasicNotions.D7) (X : Prov D) : Prop := ∀ w p, p.Prime → (X.ex w p).aHT
 
@@ -930,17 +927,11 @@ def KeyFormulaFamily {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ∀
 def KudlaFamilyStatement {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ∀ x (i : Fm.Ix x), Prov (Fm.D x i)) (ka : ℝ) : Prop :=
   AdmF Fm XF → ChernFormFamily Fm XF ∧ KeyFormulaFamily Fm XF ka
 
-theorem rules_family_of_uniform {𝒪 : ObjClass} {ka : ℝ} (h : UniformExportStatement 𝒪 ka) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-    (XF : ∀ x (i : Fm.Ix x), Prov (Fm.D x i)) (hO : ∀ x i, 𝒪 (XF x i)) : KudlaFamilyStatement Fm XF ka :=
-  fun a => ⟨fun x i => (h _ _ (hO x i) (a x i)).1, fun x i => (h _ _ (hO x i) (a x i)).2⟩
 
 def FamilyPacketImplication {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, Prov (Fm.D x i)) (ka : ℝ) : Prop :=
   (∀ x hx i, admitted (Fm.D x i) (XF x hx i)) →
     ∀ x hx i, familyJetConsequence (Fm.D x i) (XF x hx i) ∧ Conclusion8 (Fm.D x i) (XF x hx i) ka ∧ KeyFormulaLineBundle (Fm.D x i) (XF x hx i) ka
 
-theorem familyPacket_of_uniformPacket {𝒪 : ObjClass} {ka : ℝ} (h : UniformExportStatement 𝒪 ka) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-    (XF : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, Prov (Fm.D x i)) (hO : ∀ x hx i, 𝒪 (XF x hx i)) : FamilyPacketImplication Fm XF ka :=
-  fun a x hx i => h _ _ (hO x hx i) (a x hx i)
 
 def DerivativeStatementDesign (Fm : Formalism.MainNotions.DFamP)
     (XF : ∀ ε h0 h1 x (i : (Fm ε h0 h1).Ix x), Prov ((Fm ε h0 h1).D x i)) : Prop :=

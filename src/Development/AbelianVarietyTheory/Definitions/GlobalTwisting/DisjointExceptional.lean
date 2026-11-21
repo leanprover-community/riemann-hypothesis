@@ -98,10 +98,7 @@ def AllReq : PtProp := ReqPt.and (PrimePt.and TwPt)
 
 def ExFull (Q : PtProp) : Prop := KitEx (Q.and AllReq)
 
-theorem Pt.has_and {C : FC} (p : Pt C) (Q Q' : PtProp) : p.Has (Q.and Q') ↔ p.Has Q ∧ p.Has Q' := Iff.rfl
 
-theorem classOf_and (Q Q' : PtProp) {eps : ℝ} (Fm : FamP eps) : classOf (Q.and Q') Fm ↔ classOf Q Fm ∧ classOf Q' Fm :=
-  ⟨fun h => ⟨fun x hx i => (h x hx i).1, fun x hx i => (h x hx i).2⟩, fun h x hx i => ⟨h.1 x hx i, h.2 x hx i⟩⟩
 
 theorem KitExW.imp {la : ℝ} {Q Q' : PtProp} (h : KitExW la Q)
     (hQ : ∀ (C : FC) (cD ch : ℝ) (p : Pt C), Val C cD ch p.L → HostArith p.D.host → p.Has Q → p.Has Q') : KitExW la Q' := by
@@ -123,7 +120,6 @@ theorem KitEx.imp {Q Q' : PtProp} (h : KitEx Q)
   let ⟨la, h1, h⟩ := h
   ⟨la, h1, h.imp hQ⟩
 
-theorem ExFull.kitEx {Q : PtProp} (h : ExFull Q) : KitEx Q := KitEx.imp h fun _ _ _ _ _ _ hp => hp.1
 
 theorem Pt.Same.refl {C : FC} (p : Pt C) : p.Same p := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, fun _ => rfl, ?_, ?_, rfl, rfl, ?_, rfl, rfl, rfl⟩
@@ -157,10 +153,7 @@ theorem Kit.cover_weights {C : FC} {cD ch : ℝ} {s : Scale} (k : Kit C cD ch s)
   obtain ⟨i, hi⟩ := k.cover i0 u0 hu
   exact ⟨i, hi, (k.same i i0).weights⟩
 
-theorem Pt.disjoint_exceptional {C : FC} (p : Pt C) :
-    Disjoint (Formalism.CyclotomicNorms.BB p.D.R.r (p.D.host.g 0)) (Formalism.CyclotomicNorms.BB p.D.R.r (p.D.host.g 1)) := p.D.ntypes.BB_disj
 
-theorem Val.qdRows {C : FC} {cD ch : ℝ} {D : D7} {L : SizeData₂ D} (h : Val C cD ch L) : QDRowsW D L.sc := h.host.1
 
 theorem Val.mem_box {C : FC} {cD ch : ℝ} {D : D7} {L : SizeData₂ D} (h : Val C cD ch L) :
     G.aL L ∈ G.box D (G.winA D L.sc) ∧ G.bL L ∈ G.box D (G.winB D C.GK L.sc) := by
@@ -177,9 +170,6 @@ theorem Val.mem_box {C : FC} {cD ch : ℝ} {D : D7} {L : SizeData₂ D} (h : Val
       exact ⟨L.bT_ge ⟨t, ht⟩, h.La_eq ▸ h.bT_le ⟨t, ht⟩⟩
     · simp [G.bL, ht]
 
-theorem Pt.has_reqPt_iff {C : FC} {cD ch : ℝ} (p : Pt C) (h : Val C cD ch p.L) :
-    p.Has ReqPt ↔ AuxBlock8.WReq p.ta.Gx C.GK (G.aL p.L) (G.bL p.L) ∧ BoxesW p.D p.L.sc :=
-  ⟨fun hp => ⟨hp.1.2.2, hp.2.1⟩, fun hp => ⟨⟨h.mem_box.1, h.mem_box.2, hp.1⟩, hp.2, h.qdRows⟩⟩
 
 theorem classOf_reqPt {eps : ℝ} (Fm : FamP eps) (h : classOf ReqPt Fm) :
     (∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, AuxBlock8.admW (Fm.D x i) (Fm.L x i) (Fm.Gx x i) Fm.GK) ∧ BoxesWF Fm ∧ QDRowsWF Fm := by
@@ -193,13 +183,9 @@ theorem classOf_reqPt {eps : ℝ} (Fm : FamP eps) (h : classOf ReqPt Fm) :
     unfold QDRowsW PairWin at this
     rwa [Fm.L_x x i hx', Fm.L_eps x i, Fm.L_J x i] at this
 
-theorem BoxesWF.boxesF {eps : ℝ} {Fm : FamP eps} (h : BoxesWF Fm) (hJ : Fm.J = 1) : BoxesF Fm := h
 
-theorem QDRowsWF.qdRowsF {eps : ℝ} {Fm : FamP eps} (h : QDRowsWF Fm) (hJ : Fm.J = 1) : QDRowsF Fm := h
 
-theorem boxesWF_iff {eps : ℝ} (Fm : FamP eps) : BoxesWF Fm ↔ BoxesF Fm := Iff.rfl
 
-theorem qdRowsWF_iff {eps : ℝ} (Fm : FamP eps) : QDRowsWF Fm ↔ QDRowsF Fm := Iff.rfl
 
 theorem mod_lcm_of_mod_mul {p N : ℕ} (hN : 0 < N) (h : p % (15 * N) = 1) : p % Nat.lcm 15 N = 1 := by
   have h1 : 1 < Nat.lcm 15 N := lt_of_lt_of_le (by norm_num) (Nat.le_of_dvd (Nat.lcm_pos (by norm_num) hN) (Nat.dvd_lcm_left 15 N))

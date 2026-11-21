@@ -71,10 +71,6 @@ theorem pet_rowI (μ j) (x : D.what₂.Mult μ j) (b : HF D) : petH D (rowI D μ
   rw [inner_zero_left, add_zero]
   exact lp.inner_single_left (G := fun i : (Σ _ : D.what₂.Tup, ℕ) => D.what₂.Mult i.1 i.2) ⟨μ, j⟩ x b.1
 
-theorem pet_colI (u) (x y : D.what₂.Mu u) : petH D (colI D u x) (colI D u y) = inner ℂ x y := by
-  show inner ℂ (0 : HR D) 0 + inner ℂ (lp.single 2 u x) (lp.single 2 u y) = _
-  rw [inner_zero_left, zero_add, lp.inner_single_left (G := fun u : D.what₂.Word => D.what₂.Mu u) u x]
-  rw [lp.single_apply_self]
 
 def toTop {M : Type} [AddCommGroup M] [Module ℂ M] (f : M →ₗ[ℂ] HF D) : M →ₗ[ℂ] (⊤ : Submodule ℂ (HF D)) :=
   f.codRestrict ⊤ fun _ => Submodule.mem_top
@@ -185,9 +181,6 @@ theorem thetaFull_io : (thetaFull D).TieIo := fun μ j _ y x => by
   show petH D (rowI D μ j (D.what₂.io μ j (rowP D μ (j + 1) (rowI D μ (j + 1) y)))) (rowI D μ j x) = _
   rw [component_inclusion, pet_rowI, component_inclusion]
 
-theorem thetaFull_colIsom (u μ j) (x y : D.what₂.Mu u) :
-    (thetaFull D).pet _ (((thetaFull D).colAF u μ j x : (thetaFull D).cusp _) : (thetaFull D).AF _)
-      ((thetaFull D).colAF u μ j y) = inner ℂ x y := pet_colI D u x y
 
 theorem theta_exists : ∃ X : ThetaX D, X.TieRowIsom ∧ X.TieIo :=
   ⟨thetaFull D, thetaFull_row D, thetaFull_io D⟩

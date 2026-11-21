@@ -64,20 +64,7 @@ def twOf {R : Ranks} (H : Host R) (sc : Scale) : (@placesOf H.E _ _ H.cmStar).Pl
   fun w => decide ((((@placesOf H.E _ _ H.cmStar).resChar w : ℕ) : ℝ) ≤ sc.X'' R.n ∨
     (@placesOf H.E _ _ H.cmStar).resChar w ∈ ({H.d, H.g 0, H.g 1} : Finset ℕ))
 
-theorem resCharW_conjW {K : Type} [Field K] [NumberField K] [StarRing K] (w : HeightOneSpectrum (𝓞 K)) :
-    PlacesToy.resCharW (PlacesToy.conjW w) = PlacesToy.resCharW w :=
-  PlacesToy.prime_mem_unique (PlacesToy.conjW w) (PlacesToy.resCharW_prime _) (PlacesToy.resCharW_prime w)
-    (PlacesToy.resCharW_mem _) (by
-      have h := (PlacesToy.mem_conjW_pow w ((PlacesToy.resCharW w : ℕ) : 𝓞 K) 1).2 (by
-        rw [map_natCast, pow_one]; exact PlacesToy.resCharW_mem w)
-      rwa [pow_one] at h)
 
-theorem twOf_conj {R : Ranks} (H : Host R) (sc : Scale) (w) :
-    twOf H sc ((@placesOf H.E _ _ H.cmStar).conj w) = twOf H sc w := by
-  letI := H.cmStar
-  unfold twOf
-  have h : (placesOf H.E).resChar ((placesOf H.E).conj w) = (placesOf H.E).resChar w := resCharW_conjW w
-  rw [h]
 
 end Formalism.MainNotions.Inhab
 

@@ -131,14 +131,6 @@ theorem isType_isReal_const (t : ℝ) : IsType 0 0 (algebraMap ℂ (Alt n) t) �
     by_cases h : ∅ = S <;>
       simp [Algebra.algebraMap_eq_smul_one, ← bas_empty, Finsupp.single_apply, h, -Complex.coe_smul]
 
-theorem isReal_I_smul_sym (a : Fin n) : IsReal (Complex.I • (dz a * dzb a)) := fun S => by
-  obtain ⟨ε, h⟩ := bas_mul (S := {finSumFinEquiv (.inl a)}) (T := {finSumFinEquiv (.inr a)})
-    (Finset.disjoint_singleton.2 (finSumFinEquiv.injective.ne Sum.inl_ne_inr))
-  rw [map_smul, map_mul, (swap_dz a).1, (swap_dz a).2, dz, dzb,
-    eq_neg_of_add_eq_zero_right (ExteriorAlgebra.ι_add_mul_swap _ _), ← bas_singleton, ← bas_singleton, h,
-    Units.smul_def, ← Int.cast_smul_eq_zsmul ℂ]
-  simp only [map_smul, map_neg, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.neg_apply, Finsupp.single_apply]
-  split_ifs <;> simp
 
 theorem coefwise_smul {T : (V n → ℂ) → ℂ} (hT : T (fun _ => 0) = 0) (u : V n → ℂ) (S : Finset (Fin (n + n))) :
     coefwise T (fun x => u x • bas n S) = T u • bas n S := by
@@ -318,9 +310,6 @@ def IsSplit (T : HermSeq A r s) : Prop :=
   ∀ a, ∃ t : M → Matrix (Fin r) (Fin s) ℂ, (∀ i j, A.HolOn (T.U a) fun y => t y i j) ∧
     ∀ y ∈ T.U a, chg (fromBlocks 1 (t y) 0 1) (T.mid a y) = fromBlocks (T.sub a y) 0 0 (T.quot a y)
 
-theorem isPull_self (T : HermSeq A r s) : T.IsPull T id :=
-  ⟨T.g, T.holo, fun a b y ha hb => ⟨T.tri a b y ⟨ha, hb⟩, fun a' h => T.g_mul a' a b y ⟨⟨h, ha⟩, hb⟩,
-    fun b' h => T.g_mul a b b' y ⟨⟨ha, hb⟩, h⟩, T.trans a b y ⟨ha, hb⟩⟩⟩
 
 def ofGram (H : V n → Matrix (Fin r ⊕ Fin s) (Fin r ⊕ Fin s) ℂ) (h : IsPosFrame univ H) : HermSeq (.std n) r s where
   κ := Unit
@@ -363,7 +352,6 @@ theorem isRegVar_proj (N : ℕ) : IsRegVar (PSpace.str ℤ N) N :=
   have : Smooth (PSpace.str ℤ N) := SmoothOfRelativeDimension.smooth N _
   .of_smooth (ProjSpace.isArithVar_int N)
 
-theorem isRegVar_int : IsRegVar (𝟙 (Sp ℤ)) 0 := .of_smooth ArithBase.isArithVar_int
 
 namespace IsRegVar
 
@@ -431,10 +419,5 @@ def lineSeq : HermSeq ((isRegVar_proj 1).atlas (Int.castRingHom ℂ)) 1 1 :=
   (isRegVar_proj 1).seq (ShortComplex.Splitting.ofHasBinaryBiproduct _ _).shortExact
     (HermVB.ofLB (ProjSpace.hermitianTwistingSheaf ℤ 1)).cInf ProjSpace.hermSum.cInf (HermVB.ofLB (ProjSpace.hermitianTwistingSheaf ℤ 1)).dual.cInf _
 
-theorem isSplit_ofGram_one (n r s : ℕ) : (HermSeq.ofGram (n := n) (r := r) (s := s) (fun _ => 1)
-    ⟨isOpen_univ, fun _ _ => contDiffOn_const, fun _ _ => PosDef.one⟩).IsSplit := fun _ =>
-  ⟨0, fun _ _ _ => differentiableOn_const (0 : ℂ), fun _ _ => by
-    simp only [HermSeq.ofGram, Pi.zero_apply, fromBlocks_one, chg_one, subGram, quotGram]
-    ext (i | i) (j | j) <;> simp [toBlocks₁₁, toBlocks₂₂, toBlocks₂₁, one_apply, mul_apply]⟩
 
 end GlobalTheory.CxForm

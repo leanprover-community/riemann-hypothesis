@@ -22,13 +22,7 @@ local notation "θ" => fontaineTheta (normInteger K) p
 local notation "𝔸" => Localization.Away (p : AInf K p)
 local notation "𝔭" => Ideal.span {(p : ACris K p)}
 
-theorem logJ_eq_log {x : AInf K p} (hx : x ∈ RingHom.ker θ) (hx' : x ∈ pdIdeal K p) :
-    logJ hx' = log hx :=
-  logJ_eq_of_isAdicSum ((isAdicSum_log hx).congr fun _ => rfl)
 
-theorem logTeich_eq_periodT {η : 𝒪♭} (hη : PreTilt.untilt η = 1)
-    (hη' : PreTilt.untilt η - 1 ∈ Ideal.span {(p : 𝒪)}) : logTeich hη' = periodT hη :=
-  logJ_eq_log (mu_mem_ker hη) _
 
 variable [CharZero K]
 
@@ -58,41 +52,7 @@ theorem theta_logJ_congr {x y : AInf K p} (hx : x ∈ pdIdeal K p) (hy : y ∈ p
   refine h1.unique (h2.congr fun n => Subtype.ext ?_)
   rw [coe_theta_logTermJA, coe_theta_logTermJA, h]
 
-theorem tendsto_theta_logJ {x : AInf K p} (hx : x ∈ pdIdeal K p) :
-    Filter.Tendsto (fun N => ∑ n ∈ Finset.range N,
-        (-1) ^ n * ((θ x : 𝒪) : K) ^ (n + 1) / ((n + 1 : ℕ) : K))
-      Filter.atTop (nhds ((theta K p (logJ hx) : 𝒪) : K)) := by
-  have hs := (isAdicSum_logJ hx).map (theta K p) span_p_le_comap_theta
-  rw [Metric.tendsto_atTop]
-  intro r hr
-  obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one hr (IsPerfectoidField.norm_natCast_lt_one (K := K) (p := p))
-  obtain ⟨N, hN⟩ := hs k
-  refine ⟨N, fun M hM => ?_⟩
-  have h1 := hN M hM
-  rw [Ideal.span_singleton_pow, Ideal.mem_span_singleton'] at h1
-  obtain ⟨c, hc⟩ := h1
-  have e : ∑ n ∈ Finset.range M, (-1) ^ n * ((θ x : 𝒪) : K) ^ (n + 1) / ((n + 1 : ℕ) : K) =
-      ((∑ n ∈ Finset.range M, theta K p (logTermJA hx n) : 𝒪) : K) := by
-    rw [AddSubmonoidClass.coe_finsetSum]
-    exact Finset.sum_congr rfl fun n _ => (coe_theta_logTermJA hx n).symm
-  rw [dist_eq_norm, e, ← norm_neg, neg_sub, ← AddSubgroupClass.coe_sub, ← hc, MulMemClass.coe_mul,
-    norm_mul, SubmonoidClass.coe_pow, norm_pow]
-  calc ‖(c : K)‖ * ‖((p : 𝒪) : K)‖ ^ k ≤ 1 * ‖(p : K)‖ ^ k := by
-        gcongr
-        · exact mem_normInteger.1 c.2
-        · exact le_of_eq (by simp)
-    _ < r := by rw [one_mul]; exact hk
 
-theorem tendsto_theta_logTeich {x : 𝒪♭} (hx : PreTilt.untilt x - 1 ∈ Ideal.span {(p : 𝒪)}) :
-    Filter.Tendsto (fun N => ∑ n ∈ Finset.range N,
-        (-1) ^ n * (((PreTilt.untilt x : 𝒪) : K) - 1) ^ (n + 1) / ((n + 1 : ℕ) : K))
-      Filter.atTop (nhds ((theta K p (logTeich hx) : 𝒪) : K)) := by
-  have h := tendsto_theta_logJ (mu_mem_pdIdeal hx)
-  have hθ : ((θ (AInf.mu (K := K) x) : 𝒪) : K) = ((PreTilt.untilt x : 𝒪) : K) - 1 := by
-    rw [AInf.mu, map_sub, fontaineTheta_teichmuller, map_one, AddSubgroupClass.coe_sub,
-      OneMemClass.coe_one]
-  simp only [hθ] at h
-  exact h
 
 theorem mk_logTermJ_add_sub {x δ : AInf K p} (hx : x ∈ pdIdeal K p) (hδ : δ ∈ RingHom.ker θ)
     (hz : x + δ ∈ pdIdeal K p) (n : ℕ) :

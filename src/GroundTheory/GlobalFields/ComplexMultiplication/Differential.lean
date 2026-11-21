@@ -493,17 +493,7 @@ theorem isogenyPullback_invariantDifferential_eq_smul (φ : Isogeny E E') :
     isogenyPullback φ (invariantDifferential E') = isogCoeff φ • invariantDifferential E := by
   rw [isogenyPullback_invariantDifferential, isogCoeff, homCoeff_smul]
 
-theorem isogenyPullback_add {φ ψ χ : Isogeny E E'} (h : χ.1 = φ.1 + ψ.1) :
-    isogenyPullback χ (invariantDifferential E') =
-      isogenyPullback φ (invariantDifferential E') + isogenyPullback ψ (invariantDifferential E') := by
-  rw [isogenyPullback_invariantDifferential, isogenyPullback_invariantDifferential,
-    isogenyPullback_invariantDifferential, h, omegaAt_add]
 
-theorem isogCoeff_add {φ ψ χ : Isogeny E E'} (h : χ.1 = φ.1 + ψ.1) :
-    isogCoeff χ = isogCoeff φ + isogCoeff ψ := by
-  have e : (⟨χ.1, χ.respectsAdd⟩ : isogHom E E') = ⟨φ.1, φ.respectsAdd⟩ + ⟨ψ.1, ψ.respectsAdd⟩ :=
-    Subtype.ext h
-  rw [isogCoeff, isogCoeff, isogCoeff, e, map_add]
 
 variable (E) in
 

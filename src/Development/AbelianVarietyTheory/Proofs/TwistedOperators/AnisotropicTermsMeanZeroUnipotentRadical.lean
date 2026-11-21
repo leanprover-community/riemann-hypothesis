@@ -310,11 +310,6 @@ theorem cA_one (N : ℕ) (i j : Fin N) :
   · simp
   · rw [Matrix.one_apply_ne h, Matrix.one_apply_ne h.symm, map_zero]
 
-private theorem cA_incA_apply_eq_incA_star (e : D.host.E) : cA D (incA D e) = incA D (star e) := by
-  show Algebra.TensorProduct.map (AlgHom.id _ _) D.sp.cm.sig ((1 : AF D.host.F) ⊗ₜ[D.host.F] e) =
-    (1 : AF D.host.F) ⊗ₜ[D.host.F] star e
-  rw [Algebra.TensorProduct.map_tmul]
-  rfl
 
 set_option maxHeartbeats 1000000 in
 theorem exists_central (V : HSp D) (X : Matrix (Fin V.rank) (Fin V.rank) D.host.E) (hXX : X * X = 0)

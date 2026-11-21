@@ -576,44 +576,8 @@ theorem basisOf_of_isBasisSeries (hE : E.Dat0 i j b = Set.univ) {n : ℕ} (d : F
   · rw [← h3, Finset.coe_image, Finset.coe_univ, Set.image_univ, ← Set.range_comp]
     rfl
 
-theorem good_part_mem_basis_series {n : ℕ} (d : Fin n → Y.Dat i j b) (h : ToricLatticeDenominators.IsBasisSeries Y i j b d) (a : Y.Dat i j b) :
-    ToricLatticeDenominators.AOp Y i j b (Y.th i j b a) ∈ ToricLatticeDenominators.V0 Y i j b := by
-  rw [← h.1.2]
-  exact Submodule.subset_span ⟨_, Submodule.subset_span ⟨a, rfl⟩, rfl⟩
 
-theorem good_part_bot_of_translate {n : ℕ} (d : Fin n → Y.Dat i j b) (h : ToricLatticeDenominators.IsBasisSeries Y i j b d)
-    (g : G0g N) (hg : ∀ a, ∃ a', Y.th i j b a' = Y.actG i j b g (Y.th i j b a))
-    (u u' : Y.U) (hu : (u' : G0g N) * g = g * u) (hψ : Y.psiU i b u' ≠ Y.psiU i b u) :
-    ToricLatticeDenominators.V0 Y i j b = ⊥ := by
-  have key : ∀ a, ToricLatticeDenominators.AOp Y i j b (Y.th i j b a) = 0 := by
-    intro a
-    obtain ⟨a', ha'⟩ := hg a
-    have h1 := (mem_typePart Y i j b _).1 (good_part_mem_basis_series Y i j b d h a).2 u
-    have h2 := (mem_typePart Y i j b _).1 (good_part_mem_basis_series Y i j b d h a').2 u'
-    have h3 : ToricLatticeDenominators.AOp Y i j b (Y.th i j b a') = Y.actG i j b g (ToricLatticeDenominators.AOp Y i j b (Y.th i j b a)) := by
-      rw [ha']; simp only [ToricLatticeDenominators.AOp, LinearMap.smul_apply, eOp_comm, map_smul]
-    set x := ToricLatticeDenominators.AOp Y i j b (Y.th i j b a)
-    rw [h3, ← LinearEquiv.mul_apply, ← map_mul, hu, map_mul, LinearEquiv.mul_apply, h1, map_smul,
-      ← sub_eq_zero, ← sub_smul, smul_eq_zero, sub_eq_zero] at h2
-    rcases h2 with h2 | h2
-    · exact absurd (Units.ext h2).symm hψ
-    · exact (Y.actG i j b g).map_eq_zero_iff.1 h2
-  rw [← h.1.2, ← h.2.2]
-  simp [key]
 
-theorem good_part_bot_of_divisible {n : ℕ} (d : Fin n → Y.Dat i j b) (h : ToricLatticeDenominators.IsBasisSeries Y i j b d)
-    (c : X.O i) (hc : c ∈ IsLocalRing.maximalIdeal (X.O i))
-    (hd : ∀ a, ∃ a', c • Y.th i j b a' = Y.th i j b a) : ToricLatticeDenominators.V0 Y i j b = ⊥ := by
-  have : ToricLatticeDenominators.ATheta Y i j b = ⊥ := by
-    refine Submodule.eq_bot_of_le_smul_of_le_jacobson_bot (IsLocalRing.maximalIdeal (X.O i)) _ h.1.1 ?_
-      (IsLocalRing.maximalIdeal_le_jacobson _)
-    rw [ToricLatticeDenominators.ATheta, ToricLatticeDenominators.Theta, Submodule.map_span, Submodule.span_le]
-    rintro _ ⟨_, ⟨a, rfl⟩, rfl⟩
-    obtain ⟨a', ha'⟩ := hd a
-    rw [← ha', map_smul]
-    exact Submodule.smul_mem_smul hc (Submodule.subset_span ⟨_, ⟨a', rfl⟩, rfl⟩)
-  rw [← h.1.2, this]
-  simp
 
 end Basis
 

@@ -42,9 +42,6 @@ theorem mu_one [Fintype R.Psi] : UpperTheory.MU (fun g : R.Psi => H.emb (g : R.G
   simp only [h1]
   rw [← map_prod, prod_sigmaOf, H.der.norm_mu z hz, map_one, map_one]
 
-theorem muQ_const [Fintype R.Psi] {e : R.Psi → ℚ} {c : ℤ} (h : ∀ g, e g = c) :
-    UpperTheory.MUQ (fun g : R.Psi => H.emb (g : R.GG)) e :=
-  ⟨fun _ => c, h, (mu_one H).const c⟩
 
 end UpperTheory.Host
 

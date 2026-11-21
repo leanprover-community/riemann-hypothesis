@@ -10,13 +10,6 @@ variable {K : Type*} [Field K] [NumberField K]
   {V : Type*} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
   {V' : Type*} [AddCommGroup V'] [Module K V'] [Module (𝓞 K) V'] [IsScalarTower (𝓞 K) K V']
 
-theorem qf_im_eq_zero {n : ℕ} (F : Fin n → Fin n → ℂ) (hF : ∀ i j, starRingEnd ℂ (F i j) = F j i)
-    (c : Fin n → ℂ) : (∑ i, ∑ j, starRingEnd ℂ (c i) * c j * F i j).im = 0 := by
-  rw [← Complex.conj_eq_iff_im]
-  simp only [map_sum, map_mul, Complex.conj_conj, hF]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  ring
 
 theorem exists_append_frame {E : Submodule (𝓞 K) V} {a r : ℕ} (u0 : Fin a → V)
     (hu0 : LinearIndependent K u0) (hu0E : ∀ i, u0 i ∈ E) (w : Fin r → V) (hw : IsFrame K E w) :

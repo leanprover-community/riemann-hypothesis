@@ -57,11 +57,6 @@ def ResolutionCharZero : Prop :=
       IsBlowupSeq s ∧ Smooth (s ≫ g) ∧ IsIso (s ∣_ g.smoothLocus) ∧
         FinalTheorems.Snc (preRed s (g.smoothLocus : Set X)ᶜ g.smoothLocus.isOpen.isClosed_compl)
 
-theorem Resolution.conclusion_of_smooth {k : Type} [Field k] {X : Scheme.{0}} (g : X ⟶ Sp k) [Smooth g] :
-    IsBlowupSeq (𝟙 X) ∧ Smooth (𝟙 X ≫ g) ∧ IsIso (𝟙 X ∣_ g.smoothLocus) ∧
-      FinalTheorems.Snc (preRed (𝟙 X) (g.smoothLocus : Set X)ᶜ g.smoothLocus.isOpen.isClosed_compl) :=
-  ⟨.id, inferInstance, inferInstance, fun y => sncAt_of_not_mem _ y
-    (fun h => h (g.smoothLocus_eq_top.ge (Set.mem_univ y))) (GroundTheory.Arith.SchemeCoh.isRegularLocalRing_stalk_of_smooth_field g y)⟩
 
 theorem ResolutionCharZero.projective (h : ResolutionCharZero) {k : Type} [Field k] [CharZero k] {X : Scheme.{0}}
     (g : X ⟶ Sp k) [LocallyOfFiniteType g] [IsReduced X] (hg : IsProjOver g) :

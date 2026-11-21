@@ -165,19 +165,6 @@ theorem Pi_of_N (H : D.Hyp) {S : (n → A) →ₗ[A] (n → A)}
   rw [Pi_apply, h1, pW_apply]
   abel
 
-theorem Pi_N_part (H : D.Hyp) {S Si : (n → A) →ₗ[A] (n → A)} (hS : D.FixEZ S)
-    (hSi : D.FixEZ Si) (hUi : D.Uni Si) (hSSi : ∀ v, S (Si v) = v) (v : n → A)
-    (hv : ∀ a, D.h (D.e a) v = 0) :
-    S (D.Pi Si v) - v ∈ Submodule.span A (Set.range D.e) := by
-  have hw := isW_pW H v
-  have hpU : S (D.pU v) = D.pU v := by
-    rw [pU_apply, map_add, map_add, S_pX hS.1, pXv_apply, pz_apply, map_smul, hS.2]
-    simp [hv]
-  have key : S (D.Pi Si v) - v = -D.pX (Si (D.pW v)) := by
-    rw [Pi_apply, complement_proj_image hSi hUi hw, map_add, map_sub, hSSi, S_pX hS.1, hpU, pW_apply]
-    abel
-  rw [key]
-  exact Submodule.neg_mem _ (pX_mem_span _)
 
 end Dat
 

@@ -83,10 +83,6 @@ theorem gen_mem (hs : ∀ i, s i ∈ τ.W) {T : ℕ} (α : Fin D → ℕ) {k : �
   have h := ((τ.raises_mono hs α).mul (τ.raises_prod_alt w hw)) 0 m hm
   rwa [zero_add, hT] at h
 
-theorem gen_mem_Vpp {T a₀ : ℕ} (α : Fin D → ℕ) {k : ℕ} (w : Fin k → A)
-    (hw : ∀ i, w i ∈ τ.W) {m : A} (hm : m ∈ τ.V 0) (hT : ∑ i, α i + k = T)
-    (ha : ∑ i, α i ≤ a₀) : mono s α * (∏ i, w i) * m ∈ τ.Vpp D T a₀ s :=
-  Submodule.mem_sup_left (Submodule.subset_span ⟨α, k, w, m, hw, hm, hT, ha, rfl⟩)
 
 theorem P_le (hs : ∀ i, s i ∈ τ.W) {T : ℕ} (hDT : D ≤ T) : τ.P D T s ≤ τ.V T := by
   rw [P, Submodule.span_le]
@@ -94,11 +90,6 @@ theorem P_le (hs : ∀ i, s i ∈ τ.W) {T : ℕ} (hDT : D ≤ T) : τ.P D T s �
   have h' := τ.raises_mono hs α D h hh
   rwa [hα, Nat.add_sub_cancel' hDT] at h'
 
-theorem Vpp_le (hs : ∀ i, s i ∈ τ.W) {T a₀ : ℕ} (hDT : D ≤ T) : τ.Vpp D T a₀ s ≤ τ.V T := by
-  refine sup_le ?_ (τ.P_le hs hDT)
-  rw [Submodule.span_le]
-  rintro F ⟨α, k, w, m, hw, hm, hT, -, rfl⟩
-  exact τ.gen_mem hs α w hw hm hT
 
 end MulTower
 
@@ -110,61 +101,11 @@ noncomputable def polyTower : MulTower ℚ (MvPolynomial (Fin 2) ℚ) where
     have h := hw.mul hf
     rwa [add_comm] at h
 
-theorem polyTower_nontrivial :
-    MvPolynomial.X 0 ∈ polyTower.W ∧ (MvPolynomial.X 0 : MvPolynomial (Fin 2) ℚ) ≠ 0 ∧
-      mono (fun i => MvPolynomial.X i) (fun _ => 1) * (∏ i : Fin 0, Fin.elim0 i) * 1 ∈
-        polyTower.Vpp 2 2 2 (fun i => MvPolynomial.X i) := by
-  refine ⟨?_, MvPolynomial.X_ne_zero 0, ?_⟩
-  · show _ ∈ MvPolynomial.homogeneousSubmodule (Fin 2) ℚ 1
-    rw [MvPolynomial.mem_homogeneousSubmodule]
-    exact MvPolynomial.isHomogeneous_X ℚ 0
-  · refine polyTower.gen_mem_Vpp (fun _ => 1) (fun i => Fin.elim0 i) (fun i => Fin.elim0 i) ?_
-      (by simp) (by simp)
-    show (1 : MvPolynomial (Fin 2) ℚ) ∈ MvPolynomial.homogeneousSubmodule (Fin 2) ℚ 0
-    rw [MvPolynomial.mem_homogeneousSubmodule]
-    exact MvPolynomial.isHomogeneous_one (Fin 2) ℚ
 
 section Lift
 
 open MeasureTheory
 
-theorem lift_normSq_le_of {X ι : Type*} [MeasurableSpace X] (μ : Measure X) [Fintype ι]
-    (u Ft : ι → X → ℂ) (r G : ι → ℝ) (K B N : ℝ) (hB : 0 ≤ B)
-    (hu : ∀ i x, ‖u i x‖ ≤ r i) (hFt : ∀ i, Integrable (fun x => ‖Ft i x‖ ^ 2) μ)
-    (hL : ∀ i, ∫ x, ‖Ft i x‖ ^ 2 ∂μ ≤ K * G i ^ 2)
-    (hN : N ^ 2 ≤ B * ∫ x, ‖∑ i, u i x * Ft i x‖ ^ 2 ∂μ) :
-    N ^ 2 ≤ B * K * (Fintype.card ι) * ∑ i, r i ^ 2 * G i ^ 2 := by
-  have hpt : ∀ x, ‖∑ i, u i x * Ft i x‖ ^ 2 ≤
-      (Fintype.card ι : ℝ) * ∑ i, r i ^ 2 * ‖Ft i x‖ ^ 2 := by
-    intro x
-    have h1 : ‖∑ i, u i x * Ft i x‖ ≤ ∑ i, r i * ‖Ft i x‖ := by
-      refine (norm_sum_le _ _).trans (sum_le_sum fun i _ => ?_)
-      rw [norm_mul]
-      exact mul_le_mul_of_nonneg_right (hu i x) (norm_nonneg _)
-    have h2 := sq_sum_le_card_mul_sum_sq (s := (univ : Finset ι)) (f := fun i => r i * ‖Ft i x‖)
-    calc ‖∑ i, u i x * Ft i x‖ ^ 2 ≤ (∑ i, r i * ‖Ft i x‖) ^ 2 :=
-          pow_le_pow_left₀ (norm_nonneg _) h1 2
-      _ ≤ _ := by simpa [mul_pow, card_univ] using h2
-  have hint : Integrable (fun x => (Fintype.card ι : ℝ) * ∑ i, r i ^ 2 * ‖Ft i x‖ ^ 2) μ :=
-    (integrable_finsetSum _ fun i _ => (hFt i).const_mul (r i ^ 2)).const_mul _
-  have hI : ∫ x, ‖∑ i, u i x * Ft i x‖ ^ 2 ∂μ ≤
-      (Fintype.card ι : ℝ) * ∑ i, r i ^ 2 * (K * G i ^ 2) := by
-    calc ∫ x, ‖∑ i, u i x * Ft i x‖ ^ 2 ∂μ
-        ≤ ∫ x, (Fintype.card ι : ℝ) * ∑ i, r i ^ 2 * ‖Ft i x‖ ^ 2 ∂μ :=
-          integral_mono_of_nonneg (Filter.Eventually.of_forall fun x => by positivity) hint
-            (Filter.Eventually.of_forall hpt)
-      _ = (Fintype.card ι : ℝ) * ∑ i, r i ^ 2 * ∫ x, ‖Ft i x‖ ^ 2 ∂μ := by
-          rw [integral_const_mul, integral_finsetSum _ fun i _ => (hFt i).const_mul (r i ^ 2)]
-          simp_rw [integral_const_mul]
-      _ ≤ _ := by
-          gcongr with i
-          exact hL i
-  calc N ^ 2 ≤ B * ((Fintype.card ι : ℝ) * ∑ i, r i ^ 2 * (K * G i ^ 2)) :=
-        hN.trans (mul_le_mul_of_nonneg_left hI hB)
-    _ = B * K * (Fintype.card ι) * ∑ i, r i ^ 2 * G i ^ 2 := by
-        rw [mul_sum, mul_sum, mul_sum]
-        refine sum_congr rfl fun i _ => ?_
-        ring
 
 noncomputable def cD (D : ℕ) : ℝ := 2 ^ (D + 1) * Real.pi ^ D / (D - 1).factorial
 
@@ -181,30 +122,10 @@ theorem cD_le (D : ℕ) : cD D ≤ 2 * (2 * Real.pi) ^ D := by
         div_le_self h0 h1
     _ = 2 * (2 * Real.pi) ^ D := by rw [mul_pow, pow_succ]; ring
 
-theorem lift_normSq_le {X ι : Type*} [MeasurableSpace X] (μ : Measure X) [Fintype ι]
-    (D T : ℕ) (β r : ℝ) (hβ : 0 ≤ β) (u Ft : ι → X → ℂ) (rα G : ι → ℝ) (N : ℝ)
-    (hu : ∀ i x, ‖u i x‖ ≤ rα i) (hFt : ∀ i, Integrable (fun x => ‖Ft i x‖ ^ 2) μ)
-    (hL : ∀ i, ∫ x, ‖Ft i x‖ ^ 2 ∂μ ≤ 140 * cD D * r ^ (2 * D) * G i ^ 2)
-    (hN : N ^ 2 ≤ β ^ (T + D + 1) * ∫ x, ‖∑ i, u i x * Ft i x‖ ^ 2 ∂μ) :
-    N ^ 2 ≤ (β ^ (T + D + 1) * 140 * cD D * (Fintype.card ι) * r ^ (2 * D)) *
-      ∑ i, rα i ^ 2 * G i ^ 2 := by
-  have h := lift_normSq_le_of μ u Ft rα G (140 * cD D * r ^ (2 * D)) (β ^ (T + D + 1)) N
-    (by positivity) hu hFt hL hN
-  calc N ^ 2 ≤ _ := h
-    _ = _ := by ring
 
 theorem lift_level (D T a : ℕ) (hD : 1 ≤ D) (ha : a + D + 1 ≤ T) :
     D + 1 ≤ T - a ∧ 2 ≤ D + 1 := by omega
 
-theorem lift_hyps_inhabited :
-    (∀ (i : Fin 1) (x : Unit), ‖(fun _ _ => (1 : ℂ)) i x‖ ≤ (fun _ => (1 : ℝ)) i) ∧
-    (∀ i : Fin 1, Integrable (fun x : Unit => ‖(fun _ _ => (1 : ℂ)) i x‖ ^ 2)
-      (Measure.dirac ())) ∧
-    (∀ i : Fin 1, ∫ x : Unit, ‖(fun _ _ => (1 : ℂ)) i x‖ ^ 2 ∂(Measure.dirac ()) ≤
-      (1 : ℝ) * (fun _ => (1 : ℝ)) i ^ 2) ∧
-    ((1 : ℝ) ^ 2 ≤ 1 * ∫ x : Unit, ‖∑ i : Fin 1, (fun _ _ => (1 : ℂ)) i x *
-      (fun _ _ => (1 : ℂ)) i x‖ ^ 2 ∂(Measure.dirac ())) := by
-  refine ⟨fun _ _ => by simp, fun _ => integrable_const _, fun _ => by simp, by simp⟩
 
 end Lift
 

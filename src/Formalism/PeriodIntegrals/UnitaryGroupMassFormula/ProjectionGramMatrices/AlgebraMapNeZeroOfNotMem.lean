@@ -60,16 +60,7 @@ lemma idx_eq_zero_of_loc (hI : IdxCalc) (w : HeightOneSpectrum (𝓞 K)) {X Y : 
   simp only [Nat.cast_zero, zero_mul] at h1 h2
   linarith
 
-lemma idx_nonpos_of_loc (hI : IdxCalc) (w : HeightOneSpectrum (𝓞 K)) {X Y : Submodule (𝓞 K) V}
-    (hX : X.FG) (hY : Y.FG) (hs : Submodule.span K (X : Set V) = Submodule.span K (Y : Set V))
-    (hXY : LocLe w 0 X Y) : idxAt w X Y ≤ 0 := by
-  have h1 := (hI K V w Y X hY hX hs.symm).2.2.2.1 0 hXY
-  have h3 := idxAt_antisymm w Y X
-  simp only [Nat.cast_zero, zero_mul] at h1
-  linarith
 
-lemma vAdd_zero' (w : HeightOneSpectrum (𝓞 K)) : vAdd w (0 : K) = 0 := by
-  simp [Formalism.BasicNotions.vAdd]
 
 lemma vAdd_algebraMap_nonneg (w : HeightOneSpectrum (𝓞 K)) (r : 𝓞 K) :
     0 ≤ vAdd w (algebraMap (𝓞 K) K r) := by
@@ -84,41 +75,8 @@ lemma vAdd_algebraMap_nonneg (w : HeightOneSpectrum (𝓞 K)) (r : 𝓞 K) :
     rw [WithZero.exp_le_exp] at h2
     omega
 
-lemma vAdd_natCast_nonneg (w : HeightOneSpectrum (𝓞 K)) (n : ℕ) : 0 ≤ vAdd w ((n : ℕ) : K) := by
-  have := vAdd_algebraMap_nonneg w (n : 𝓞 K)
-  simpa using this
 
-lemma vAdd_eq_zero_iff (w : HeightOneSpectrum (𝓞 K)) {s : 𝓞 K} (hs0 : s ≠ 0) :
-    vAdd w (algebraMap (𝓞 K) K s) = 0 ↔ s ∉ w.asIdeal := by
-  unfold Formalism.BasicNotions.vAdd
-  have hne : w.valuation K (algebraMap (𝓞 K) K s) ≠ 0 := by
-    rw [Valuation.ne_zero_iff]
-    exact (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr hs0
-  have hle : w.valuation K (algebraMap (𝓞 K) K s) ≤ 1 := w.valuation_le_one s
-  rw [neg_eq_zero, ← (IsDedekindDomain.HeightOneSpectrum.valuation_lt_one_iff_mem (K := K) w s).not, not_lt]
-  constructor
-  · intro h
-    rw [← WithZero.exp_log hne, h, WithZero.exp_zero]
-  · intro h
-    rw [le_antisymm hle h, WithZero.log_one]
 
-lemma linIndep_mat {d : ℕ} {b : Fin d → V} (hb : LinearIndependent K b) (C : Matrix (Fin d) (Fin d) K)
-    (hC : C.det ≠ 0) : LinearIndependent K (fun j => ∑ i, C i j • b i) := by
-  rw [Fintype.linearIndependent_iff]
-  intro g hg
-  have h1 : ∑ i, (∑ j, C i j * g j) • b i = 0 := by
-    rw [← hg]
-    simp only [Finset.smul_sum, smul_smul, Finset.sum_smul]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
-    rw [mul_comm]
-  have h2 := (Fintype.linearIndependent_iff.mp hb) _ h1
-  have h3 : Matrix.mulVec C g = 0 := by
-    funext i
-    simpa [Matrix.mulVec, dotProduct] using h2 i
-  have h4 := Matrix.eq_zero_of_mulVec_eq_zero hC h3
-  intro j
-  simpa using congrFun h4 j
 
 end Gen
 

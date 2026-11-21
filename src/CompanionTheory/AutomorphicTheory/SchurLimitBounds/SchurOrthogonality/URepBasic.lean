@@ -159,10 +159,7 @@ def IsInvariant (V : Submodule ℂ H) : Prop := ∀ (g : G) (v : H), v ∈ V →
 
 variable {π}
 
-lemma isInvariant_bot : π.IsInvariant ⊥ := fun g v hv => by
-  rw [Submodule.mem_bot] at hv ⊢; simp [hv]
 
-lemma isInvariant_top : π.IsInvariant ⊤ := fun _ _ _ => Submodule.mem_top
 
 theorem IsInvariant.orthogonal {V : Submodule ℂ H} (hV : π.IsInvariant V) :
     π.IsInvariant Vᗮ := by
@@ -212,18 +209,12 @@ variable {σ : UnitaryRep G K} {τ : UnitaryRep G L}
 lemma mem_intertwiners {T : H →L[ℂ] K} :
     T ∈ π.intertwiners σ ↔ ∀ (g : G) (v : H), T (π g v) = σ g (T v) := Iff.rfl
 
-lemma mem_intertwiners_iff_comp {T : H →L[ℂ] K} :
-    T ∈ π.intertwiners σ ↔ ∀ g : G, T ∘L π g = σ g ∘L T := by
-  simp only [mem_intertwiners, ContinuousLinearMap.ext_iff, ContinuousLinearMap.comp_apply]
 
-lemma one_mem_intertwiners : (1 : H →L[ℂ] H) ∈ π.intertwiners π := fun _ _ => rfl
 
 lemma comp_mem_intertwiners {S : K →L[ℂ] L} {T : H →L[ℂ] K} (hS : S ∈ σ.intertwiners τ)
     (hT : T ∈ π.intertwiners σ) : S ∘L T ∈ π.intertwiners τ := fun g v => by
   simp [hT g v, hS g (T v)]
 
-lemma mul_mem_intertwiners {S T : H →L[ℂ] H} (hS : S ∈ π.intertwiners π)
-    (hT : T ∈ π.intertwiners π) : S * T ∈ π.intertwiners π := comp_mem_intertwiners hS hT
 
 theorem adjoint_mem_intertwiners {T : H →L[ℂ] K} (hT : T ∈ π.intertwiners σ) :
     adjoint T ∈ σ.intertwiners π := by

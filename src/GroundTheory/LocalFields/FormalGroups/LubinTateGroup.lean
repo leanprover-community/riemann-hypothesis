@@ -216,23 +216,7 @@ noncomputable def lubinTateEndo (hf : IsLubinTateSeries π f) :
     rw [substEach_fin_two] at this
     exact this
 
-theorem eq_lubinTateFormalGroup (hf : IsLubinTateSeries π f) (F : FormalGroup A) (φ : Hom F F)
-    (hφ : φ.toPowerSeries = f) : F = lubinTateFormalGroup hπ hf := by
-  apply FormalGroup.ext
-  refine eq_lubinTateLift hπ hf hf (![1, 1] : Fin 2 → A) ?_ ?_
-  · have h2 := two_le_order_higher F
-    have e : higher F = F.toPowerSeries - X 0 - X 1 := rfl
-    rwa [e, sub_sub, ← one_mul (X 0 : MvPowerSeries (Fin 2) A), ← one_mul (X 1 : MvPowerSeries (Fin 2) A),
-      ← map_one (C : A →+* MvPowerSeries (Fin 2) A), ← linearForm_fin_two] at h2
-  · have := φ.map_add
-    rw [hφ] at this
-    rw [substEach_fin_two]
-    exact this
 
-theorem existsUnique_formalGroup (hf : IsLubinTateSeries π f) :
-    ∃! F : FormalGroup A, ∃ φ : Hom F F, φ.toPowerSeries = f :=
-  ⟨lubinTateFormalGroup hπ hf, ⟨lubinTateEndo hπ hf, rfl⟩,
-    fun F ⟨φ, hφ⟩ => eq_lubinTateFormalGroup hπ hf F φ hφ⟩
 
 end LubinTate
 
@@ -382,8 +366,6 @@ noncomputable def lubinTateEndRingHom :
   map_zero' := lubinTateHom_zero hπ hf hf
   map_add' a b := lubinTateHom_add hπ hf hf a b
 
-theorem lubinTateEndRingHom_apply (a : A) : lubinTateEndRingHom hπ hf a = lubinTateHom hπ hf hf a :=
-  rfl
 
 noncomputable def lubinTateFormalModule : FormalModule (lubinTateFormalGroup hπ hf) where
   smul := lubinTateEndRingHom hπ hf
@@ -393,8 +375,6 @@ noncomputable def lubinTateIso (u : Aˣ) :
     Iso (lubinTateFormalGroup hπ hg) (lubinTateFormalGroup hπ hf) :=
   Iso.ofIsUnit (lubinTateHom hπ hf hg u) (by rw [coeff_one_lubinTateHom]; exact u.isUnit)
 
-theorem lubinTateIso_hom (u : Aˣ) : (lubinTateIso hπ hf hg u).hom = lubinTateHom hπ hf hg u :=
-  rfl
 
 end LubinTateHom
 

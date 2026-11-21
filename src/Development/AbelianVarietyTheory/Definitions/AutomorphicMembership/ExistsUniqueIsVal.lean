@@ -108,11 +108,6 @@ theorem GrTriv.IsVal.change {T : GrTriv Z e F} {f : Γ(F, V)} {x : Sp k ⟶ Z.X}
   simp only [mul_zpow, Finset.prod_mul_distrib]
   ring
 
-theorem GrTriv.isVal_chart (f : Γ(F, V)) {x : Sp k ⟶ Z.X} (hx : ⊤ ≤ x ⁻¹ᵁ V) (i : T.L.ι) (φ : Γ(Z.X, T.L.U i) →+* k)
-    (h : spMap φ ≫ (T.hU i).fromSpec = x) :
-    T.IsVal f x ((T.w i).bc φ) (valR x (V ⊓ T.L.U i) (GlobalTheory.LB.coord (T.iso.hom.app V f) i)) :=
-  ⟨hx, i, φ, fun _ _ => 1, h, fun σ => (diagAt_iff (tan_bc (T.int i) _ h σ) (tan_bc (T.int i) _ h σ) _).2 (Diag.refl _),
-    by simp⟩
 
 end Value
 

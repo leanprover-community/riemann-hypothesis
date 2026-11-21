@@ -73,7 +73,6 @@ def embV (F : B.Cusp j ka) : ↥(Vw X la N ka) := ⟨emb X la N (X.inc ka F), em
 
 theorem coe_embV (F : B.Cusp j ka) : (embV X la N ka F : Rp X la N) = emb X la N (X.inc ka F) := rfl
 
-theorem jW_toW (F : B.Mlat j ka) : jW X la N ka (toW X la ka F) = embV X la N ka F := rfl
 
 theorem inW_loc_eq_span (M : Submodule (𝓞 B.KO) X.Forms) (hM : M ≤ X.Msup ka) :
     T0.inW X ka la (X.loc la M) =

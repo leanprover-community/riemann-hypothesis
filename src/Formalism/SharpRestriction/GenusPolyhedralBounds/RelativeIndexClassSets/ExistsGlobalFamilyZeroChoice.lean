@@ -196,21 +196,6 @@ theorem exists_zChoice (X : PJ D B P j) (ka wL wF : WeightFamilies.Wt D j) (T : 
     simp only [map_smul, emb_smul_jF, mul_smul_comm]
     exact Submodule.smul_mem _ _ hx
 
-theorem exists_zChoice_addL (X : PJ D B P j) (wL wF : WeightFamilies.Wt D j) (T : ℕ) (hDT : WeightFamilies.dimY D j ≤ T) {N : ℕ}
-    (w : Fin N → B.Cusp j wL) (Sh : Finset (B.Cusp j (X.wF0 wL wF))) :
-    ∃ (rz : ℕ) (alz : Fin rz → Fin (WeightFamilies.dimY D j) → ℕ) (th0 : Fin rz → B.Cusp j (X.wF0 wL wF))
-      (zc : Fin rz → ((Fin (WeightFamilies.dimY D j + 1) × Fin N) →₀ ℕ) →₀ B.Cusp j (addL wF wL T)),
-      (∀ k, ∑ i, alz k i = a0 D j T) ∧ (∀ k, th0 k ∈ Sh) ∧
-      (∀ k β, X.inc _ (zc k β) = (SizeBoundsAlt.zPoly X w (alz k) (th0 k)).coeff β) ∧
-      (∃ φ : Fin rz → B.Cusp j (addL wF wL T) →ₗ[B.KO] B.KO, SizeBoundsAlt.detPoly φ zc ≠ 0) ∧
-      ∀ la : HeightOneSpectrum (𝓞 B.KO),
-        Submodule.span (Kp X la N)
-            {v | ∃ (al : Fin (WeightFamilies.dimY D j) → ℕ) (θ : B.Cusp j (X.wF0 wL wF)), ∑ i, al i = a0 D j T ∧
-              θ ∈ Submodule.span B.KO (Sh : Set (B.Cusp j (X.wF0 wL wF))) ∧
-              v = secPow X la w al * emb X la N (X.inc _ θ)} ≤
-          Submodule.span (Kp X la N)
-            (Set.range fun k => secPow X la w (alz k) * emb X la N (X.inc _ (th0 k))) :=
-  exists_zChoice X (addL wF wL T) wL wF T (iterated_weight_at_vanishingOrder X wL wF T hDT) w Sh
 
 theorem exists_global_family_zero_choice {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} (G0 : GlobalFamilyData X ka wL wF) (S : Scal B) (T : ℕ) (Gc : ℝ)
     (hwt : SizeBoundsAlt.wtIter wadd wL (X.wF0 wL wF) (a0 D j T) = ka)

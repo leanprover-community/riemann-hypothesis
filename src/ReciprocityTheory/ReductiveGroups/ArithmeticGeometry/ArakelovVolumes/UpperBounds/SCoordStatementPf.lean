@@ -78,45 +78,6 @@ variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
   {𝒜 : (c : ι) → WT → Submodule (Ω c) (A c)}
   {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-theorem SCoordStatement_holds :
-    SCoordStatement (K := K) (ι := ι) (Ω := Ω) (WT := WT) (A := A) (𝒜 := 𝒜) (E := E) := by
-  intro d c r X sg R Xa hD e t hH x hx hs hw0
-  obtain ⟨hd, -, -, ht, -⟩ := hH
-  obtain ⟨j0, jj, hj0, hJ⟩ := R.coordAt x hx
-  obtain ⟨W, hWdef⟩ : ∃ W : Fin (d.N + 1) → Frame X.Ψ r → ℂ,
-      W = fun j => R.rd ⟨d.w j c, R.w_mem j⟩ := ⟨_, rfl⟩
-  have hsW : ∀ i y, sR d c R t hD i y = ∑ j, t ((Fin.cast hD i).succ, j) * W j y := fun i y => by
-    rw [hWdef]; rfl
-  have hw0W : ∀ y, w0R d c R t y = ∑ j, t (0, j) * W j y := fun y => by rw [hWdef]; rfl
-  have hWd : ∀ j, DifferentiableOn ℂ (W j) X.dom := fun j => by
-    rw [hWdef]; exact (R.sec d.wL R.wL_mem _ (R.w_mem j) (hd.w_mem j c)).1
-  have hw0ne : d.w j0 c ≠ 0 := by
-    intro h
-    apply hj0
-    have h0 : (⟨d.w j0 c, R.w_mem j0⟩ : R.Rg) = 0 := Subtype.ext h
-    rw [h0, map_zero]
-    rfl
-  have hWu : ∀ y ∈ R.Gen, ∀ j, W j y = R.pt y (ratio (Ω := Ω c) (d.w j c) (d.w j0 c)) * W j0 y :=
-    fun y hy j => by
-      rw [hWdef]
-      exact R.ratio_rd d.wL _ (R.w_mem j) _ (R.w_mem j0) (hd.w_mem j c) (hd.w_mem j0 c) hw0ne y hy
-  have hpt : ∀ y ∈ R.Gen, (R.pt y).comp (algebraMap K (Ω c)) = sg := fun y hy => R.pt_mem y hy
-  have hx0 : W j0 x ≠ 0 := by rw [hWdef]; exact hj0
-  have hJ' : (fderiv ℂ (fun z : V (nd X) => (WithLp.toLp 2 fun k =>
-      W (jj k) (cpt X x z) / W j0 (cpt X x z) : V (nd X))) 0).det ≠ 0 := by
-    rw [hWdef]; exact hJ
-  have hfun : (fun z : V (nd X) => (WithLp.toLp 2 fun i =>
-      sR d c R t hD i (cpt X x z) / w0R d c R t (cpt X x z) : V (nd X))) =
-      fun z : V (nd X) => (WithLp.toLp 2 fun i =>
-        (∑ j, t ((Fin.cast hD i).succ, j) * W j (cpt X x z)) / (∑ j, t (0, j) * W j (cpt X x z)) :
-          V (nd X)) := by
-    funext z
-    simp only [hsW, hw0W]
-  rw [hfun]
-  exact SCoF.core hD sg (SchubertCoordinates.isOpen_dom X) R.Gen_sub R.Gen_dense R.pt hpt (hd.trdeg c) W hWd
-    (fun j => ratio (Ω := Ω c) (d.w j c) (d.w j0 c)) j0 hWu (cpt X x) (SchubertCoordinates.diff_cpt X x)
-    (SchubertCoordinates.cpt_zero X x) hx hx0 jj hJ' t ht (fun i => by rw [← hsW]; exact hs i)
-    (by rw [← hw0W]; exact hw0)
 
 end
 

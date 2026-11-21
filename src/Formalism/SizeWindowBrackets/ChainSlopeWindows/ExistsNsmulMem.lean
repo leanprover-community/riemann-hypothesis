@@ -480,17 +480,6 @@ theorem slope_formula : SlopeRelationsIndex := by
       hM1rk, hM1, muDef_fractional b X hX hM hM0 hτ, sgSum_eq]
     ring
 
-theorem slope_twisted_lattice {K V ι : Type} [Field K] [NumberField K] [StarRing K] [IsTotallyComplex K]
-    [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [Fintype ι]
-    [DecidableEq ι] (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
-    (hX : ∀ v, IsUnit (X v).det) (σ τ : FinPl K →₀ ℤ) (M : Submodule (𝓞 K) V) (hM : M.FG)
-    (hM0 : M ≠ ⊥) :
-    muDef b X (modLat σ (idealSmul ((idealPow τ : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) :
-      Submodule (𝓞 K) K) M)) = muDef b X M + sgSum σ τ := by
-  have h := (slope_formula K V ι b X hX σ τ M _ hM hM0 le_rfl
-    (rkK_idealSmul (idealPow_ne_zero τ) M)).2
-  rw [h, AddSubgroup.relIndex_self]
-  simp
 
 section Loc
 
@@ -625,23 +614,6 @@ theorem index_finsupp {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [M
   refine Finsupp.prod_congr fun w _ => ?_
   rw [Ideal.absNorm_apply, Submodule.cardQuot_apply]
 
-theorem index_eq_length : IndexLen := by
-  intro K V _ _ _ _ A B h
-  obtain ⟨k, hk, hc⟩ := index_finsupp A B h
-  refine ⟨fun w => by rw [hk]; exact ENat.natCast_ne_top _, ?_, ?_⟩
-  · refine k.support.finite_toSet.subset fun w hw => ?_
-    rw [Function.mem_support, hk] at hw
-    rw [Finset.mem_coe, Finsupp.mem_support_iff]
-    exact_mod_cast hw
-  · rw [hc, finprod_eq_prod_of_mulSupport_subset (s := k.support)]
-    · refine Finset.prod_congr rfl fun w _ => ?_
-      rw [hk, ENat.toNat_natCast]
-    · intro w hw
-      rw [Function.mem_mulSupport, hk, ENat.toNat_natCast] at hw
-      rw [Finset.mem_coe, Finsupp.mem_support_iff]
-      intro h0
-      rw [h0, pow_zero] at hw
-      exact hw rfl
 
 theorem relIndex_ne_zero {K V ι : Type} [Field K] [NumberField K] [StarRing K]
     [IsTotallyComplex K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
@@ -692,106 +664,17 @@ theorem slope_via_lengths : SlopeRelationsLength := by
     rw [h0, mul_zero] at hw
     exact hw rfl
 
-theorem slope_pair_of_slopes : SlopesHypothesisFinitePlaces := by
-  intro K _ _ _ _ J V ι _ _ _ _ _ _ b X hX σ τ M N β Sg0 dr hM hM0 hN hrk hβ hSg
-  constructor
-  · intro u
-    have := (slope_via_lengths K (V u) (ι u) (b u) (X u) (hX u) (σ u) (τ u) (M u) (N u) (β u) (hM u)
-      (hM0 u) (hN u) (hrk u) (hβ u)).2.2.1
-    rw [hSg u] at this
-    exact this
-  · intro u
-    have := (slope_via_lengths K (V u) (ι u) (b u) (X u) (hX u) (σ u) (τ u) (M u) (N u) (β u) (hM u)
-      (hM0 u) (hN u) (hrk u) (hβ u)).2.2.2
-    rw [hSg u] at this
-    exact this
 
 end Len
 
 section Span
 
-theorem length_at_span_localized {R V : Type} [CommRing R] [AddCommGroup V] [Module R V] (w : Ideal R)
-    [w.IsPrime] [Module (Localization.AtPrime w) V] [IsScalarTower R (Localization.AtPrime w) V]
-    (A B : Submodule R V) (hBA : B ≤ A) (A'' : Submodule (Localization.AtPrime w) V)
-    (hA : haveI := isLocalizedModule_id w.primeCompl V (Localization.AtPrime w)
-      A.localized' (Localization.AtPrime w) w.primeCompl LinearMap.id = A'') :
-    locLen w (A ⧸ B.comap A.subtype) = Module.length (Localization.AtPrime w)
-      (A'' ⧸ (Submodule.span (Localization.AtPrime w) (B : Set V)).comap A''.subtype) := by
-  have i0 := isLocalizedModule_id w.primeCompl V (Localization.AtPrime w)
-  subst hA
-  set f1 := A.toLocalized' (Localization.AtPrime w) w.primeCompl LinearMap.id with hf1
-  have hf1c : ∀ a : A, ((f1 a : V)) = (a : V) := fun a => rfl
-  have hB : (B.comap A.subtype).localized' (Localization.AtPrime w) w.primeCompl f1 =
-      (Submodule.span (Localization.AtPrime w) (B : Set V)).comap
-        (A.localized' (Localization.AtPrime w) w.primeCompl LinearMap.id).subtype := by
-    have hspan : Submodule.span (Localization.AtPrime w) (B : Set V) =
-        B.localized' (Localization.AtPrime w) w.primeCompl LinearMap.id := by
-      rw [Submodule.localized'_eq_span]; simp
-    rw [hspan]
-    ext x
-    rw [Submodule.mem_localized', Submodule.mem_comap, Submodule.mem_localized']
-    constructor
-    · rintro ⟨m, hm, s, hx⟩
-      refine ⟨(m : V), hm, s, ?_⟩
-      rw [IsLocalizedModule.mk'_eq_iff] at hx ⊢
-      have := congrArg Subtype.val hx
-      simpa [hf1c] using this
-    · rintro ⟨m, hm, s, hx⟩
-      refine ⟨⟨m, hBA hm⟩, hm, s, ?_⟩
-      rw [IsLocalizedModule.mk'_eq_iff] at hx ⊢
-      apply Subtype.ext
-      simpa [hf1c] using hx
-  rw [← hB]
-  exact ((IsLocalizedModule.iso w.primeCompl ((B.comap A.subtype).toLocalizedQuotient'
-    (Localization.AtPrime w) w.primeCompl f1)).extendScalarsOfIsLocalization w.primeCompl
-      (Localization.AtPrime w)).length_eq
 
-theorem length_at_span : LenAtSpan := by
-  intro K V _ _ _ _ w _ _ A B hBA
-  have := w.2.isPrime
-  have i0 := isLocalizedModule_id w.1.primeCompl V (Localization.AtPrime w.1)
-  refine length_at_span_localized w.1 A B hBA _ ?_
-  rw [Submodule.localized'_eq_span]; simp
 
 end Span
 
 section Tests
 
-theorem slope_via_lengths_ideal {K V ι : Type} [Field K] [NumberField K] [StarRing K] [IsTotallyComplex K]
-    [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [Fintype ι]
-    [DecidableEq ι] (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
-    (hX : ∀ v, IsUnit (X v).det) (τ : FinPl K →₀ ℤ) (M : Submodule (𝓞 K) V) (hM : M.FG)
-    (hM0 : M ≠ ⊥) (J : Ideal (𝓞 K)) (hJ : J ≠ ⊥) :
-    ∑ᶠ w : FinPl K, 2 * ell w * (((lenAt w (idealSmul ((idealPow τ :
-      FractionalIdeal (nonZeroDivisors (𝓞 K)) K) : Submodule (𝓞 K) K) M)
-      (J • idealSmul ((idealPow τ : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) :
-        Submodule (𝓞 K) K) M)).toNat : ℝ) / (rkK M : ℝ)) =
-      2 * Real.log (Ideal.absNorm J : ℝ) / (Module.finrank ℚ K : ℝ) := by
-  have hfd : FiniteDimensional K V := Module.Finite.of_basis b
-  have hτ := idealPow_ne_zero τ
-  set M1 := idealSmul ((idealPow τ : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) :
-    Submodule (𝓞 K) K) M with hM1
-  have hM1fg : M1.FG := idealSmul_fg _ hM
-  have hM1rk : rkK M1 = rkK M := rkK_idealSmul hτ M
-  have hrk : rkK (J • M1) = rkK M := by
-    rw [← hM1rk]; unfold rkK; rw [Formalism.HN.DualPolygon.twist_span_smul M1 J hJ]
-  have hd : (rkK M : ℝ) ≠ 0 := by exact_mod_cast (rkK_pos hM0).ne'
-  have hq : (Module.finrank ℚ K : ℝ) ≠ 0 := by
-    exact_mod_cast (Module.finrank_pos : 0 < Module.finrank ℚ K).ne'
-  have h1 := (slope_formula K V ι b X hX 0 τ M (J • M1) hM hM0 Submodule.smul_le_right hrk).2
-  have h2 := (slope_via_lengths K V ι b X hX 0 τ M (J • M1)
-    (fun w => ((lenAt w M1 (J • M1)).toNat : ℝ) / (rkK M : ℝ)) hM hM0 Submodule.smul_le_right hrk
-    (fun w => by field_simp; rfl)).2.2.2
-  rw [← hM1] at h1
-  rw [h1, Formalism.HN.DualPolygon.twist_index M1 hM1fg J hJ] at h2
-  have h3 : finrank K (Submodule.span K (M1 : Set V)) = rkK M := hM1rk
-  rw [h3, Nat.cast_pow, Real.log_pow] at h2
-  have h4 : 2 * ((rkK M : ℝ) * Real.log (Ideal.absNorm J : ℝ)) /
-      ((Module.finrank ℚ K : ℝ) * (rkK M : ℝ)) =
-      2 * Real.log (Ideal.absNorm J : ℝ) / (Module.finrank ℚ K : ℝ) := by
-    field_simp
-  rw [h4] at h2
-  linarith
 
 example : ∃ (K V ι : Type) (_ : Field K) (_ : NumberField K) (_ : StarRing K)
     (_ : IsTotallyComplex K) (_ : AddCommGroup V) (_ : Module K V) (_ : Module (𝓞 K) V)
@@ -1038,10 +921,6 @@ section Local
 variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
-theorem locScal_one (w : FinPl K) [Module (Rloc w) V] (L : Submodule (𝓞 K) V) :
-    locScal w 1 L = Submodule.span (Rloc w) (L : Set V) := by
-  unfold locScal
-  simp
 
 omit [Module K V] [IsScalarTower (𝓞 K) K V] in
 
@@ -1073,43 +952,9 @@ theorem le_of_loc [∀ w : FinPl K, Module (Rloc w) V]
   rw [Submodule.mem_colon_singleton, one_smul] at h1
   exact h1
 
-theorem length_congr_sub {R : Type} [CommRing R] [Module R V] {A1 A2 : Submodule R V}
-    (h : A1 = A2) (B : Submodule R V) :
-    Module.length R (A1 ⧸ B.comap A1.subtype) = Module.length R (A2 ⧸ B.comap A2.subtype) := by
-  subst h; rfl
 
 end Local
 
-theorem slope_local : SlopeRelationsLocal := by
-  intro K V ι _ _ _ _ _ _ _ _ _ _ _ _ b X hX ϖ hϖ σ τ M N N' β hM hM0 hrk hN hN' hβ
-  have hloc : ∀ (n : FinPl K →₀ ℤ) (L : Submodule (𝓞 K) V) (w : FinPl K),
-      Submodule.span (Rloc w) ((idealSmul ((idealPow n :
-        FractionalIdeal (nonZeroDivisors (𝓞 K)) K) : Submodule (𝓞 K) K) L :
-          Submodule (𝓞 K) V) : Set V) = locScal w (algebraMap (𝓞 K) K (ϖ w) ^ n w) L :=
-    fun n L w => local_ideal_pow K V w (ϖ w) (hϖ w).1 (hϖ w).2 n L
-  have hNle : N ≤ idealSmul ((idealPow τ : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) :
-      Submodule (𝓞 K) K) M := by
-    refine le_of_loc fun w => ?_
-    rw [hloc, ← locScal_one]
-    exact hN w
-  have hN'eq : N' = modLat σ N := by
-    unfold modLat
-    apply le_antisymm
-    · refine le_of_loc fun w => ?_
-      rw [hloc, ← locScal_one, hN' w, Finsupp.neg_apply]
-    · refine le_of_loc fun w => ?_
-      rw [hloc, ← locScal_one, hN' w, Finsupp.neg_apply]
-  have hlen : ∀ w : FinPl K, lenAt w (idealSmul ((idealPow τ :
-      FractionalIdeal (nonZeroDivisors (𝓞 K)) K) : Submodule (𝓞 K) K) M) N =
-      Module.length (Rloc w) (locScal w (algebraMap (𝓞 K) K (ϖ w) ^ τ w) M ⧸
-        (locScal w 1 N).comap (locScal w (algebraMap (𝓞 K) K (ϖ w) ^ τ w) M).subtype) := by
-    intro w
-    rw [length_at_span K V w _ N hNle, locScal_one]
-    exact length_congr_sub (hloc τ M w) _
-  have hmain := slope_via_lengths K V ι b X hX σ τ M N β hM hM0 hNle hrk
-    (fun w => by rw [hlen w]; exact hβ w)
-  rw [hN'eq]
-  exact ⟨fun w => by rw [← hlen w]; exact hmain.1 w, hmain.2⟩
 
 section LocalTest
 
@@ -1120,41 +965,8 @@ def rlocToK {K : Type} [Field K] [NumberField K] (w : FinPl K) : Rloc w →+* K 
     have : (y : 𝓞 K) = 0 := FaithfulSMul.algebraMap_injective (𝓞 K) K (by simpa using h0)
     rw [this]; exact Ideal.zero_mem _)
 
-theorem slope_local_nonvacuous {K V : Type} [Field K] [NumberField K] [AddCommGroup V]
-    [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (σ τ : FinPl K →₀ ℤ)
-    (M : Submodule (𝓞 K) V) :
-    ∃ (_ : ∀ w : FinPl K, Module (Rloc w) V) (_ : ∀ w : FinPl K, IsScalarTower (𝓞 K) (Rloc w) V)
-      (ϖ : FinPl K → 𝓞 K) (N N' : Submodule (𝓞 K) V), (∀ w, ϖ w ∈ w.1 ∧ ϖ w ∉ w.1 ^ 2) ∧
-      rkK N = rkK M ∧
-      (∀ w, locScal w 1 N ≤ locScal w (algebraMap (𝓞 K) K (ϖ w) ^ τ w) M) ∧
-      (∀ w, locScal w 1 N' = locScal w (algebraMap (𝓞 K) K (ϖ w) ^ (-σ w)) N) := by
-  let i1 : ∀ w : FinPl K, Module (Rloc w) V := fun w => Module.compHom V (rlocToK w)
-  have i2 : ∀ w : FinPl K, IsScalarTower (𝓞 K) (Rloc w) V := fun w => ⟨fun r s x => by
-    have := w.2.isPrime
-    show rlocToK w (r • s) • x = r • (rlocToK w s • x)
-    have hr : rlocToK w (algebraMap (𝓞 K) (Rloc w) r) = algebraMap (𝓞 K) K r :=
-      IsLocalization.lift_eq _ r
-    rw [Algebra.smul_def, map_mul, mul_smul, hr, algebraMap_smul]⟩
-  have hex : ∀ w : FinPl K, ∃ x : 𝓞 K, x ∈ w.1 ∧ x ∉ w.1 ^ 2 := fun w => by
-    obtain ⟨x, hx, hx'⟩ := Ideal.exists_mem_pow_notMem_pow_succ w.1 (finPl_ne_bot w) w.2.ne_top 1
-    exact ⟨x, by simpa using hx, hx'⟩
-  choose ϖ hϖ using hex
-  refine ⟨i1, i2, ϖ, idealSmul ((idealPow τ : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) :
-      Submodule (𝓞 K) K) M, modLat σ (idealSmul ((idealPow τ :
-      FractionalIdeal (nonZeroDivisors (𝓞 K)) K) : Submodule (𝓞 K) K) M), hϖ,
-      rkK_idealSmul (idealPow_ne_zero τ) M, fun w => ?_, fun w => ?_⟩
-  · rw [locScal_one]
-    exact (local_ideal_pow K V w (ϖ w) (hϖ w).1 (hϖ w).2 τ M).le
-  · rw [locScal_one, ← Finsupp.neg_apply]
-    exact local_ideal_pow K V w (ϖ w) (hϖ w).1 (hϖ w).2 (-σ) _
 
 end LocalTest
 
-theorem weighted_mean_lemma_of_slopes : LemmaUFinitePlaceFamily := by
-  intro K _ _ _ _ J _ _ V ι _ _ _ _ _ _ b X hX σ τ M N β Sg0 dr h hM hM0 hN hrk hβ hSg hdr
-  refine Formalism.LFunctionChainParameters.WeightedMeanLemmas.weighted_mean_claimU J _ _ _ _ _ h dr _ Sg0 (fun u => ?_) hdr
-    (slope_pair_of_slopes K J V ι b X hX σ τ M N β Sg0 dr hM hM0 hN hrk hβ hSg)
-  have hfd : FiniteDimensional K (V u) := Module.Finite.of_basis (b u)
-  exact_mod_cast rkK_pos (hM0 u)
 
 end Formalism.LFunctionChainParameters.slopeLatticeData

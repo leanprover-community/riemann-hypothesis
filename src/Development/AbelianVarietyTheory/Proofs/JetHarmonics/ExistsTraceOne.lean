@@ -112,22 +112,5 @@ theorem exists_trace_one (D : D7) (p : ℕ) [Fact p.Prime] (h : Formalism.L2.Ker
       push_cast
       linear_combination (T : D.host.K) ^ 2 * hn' - (T : D.host.K) ^ 2 * hθ
 
-theorem exists_isIdem : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), Formalism.L2.Ker.SplitK D p →
-    ∀ m : ℕ, ∃ ε : 𝓞 D.host.K, IsIdem D lam m ε := by
-  intro D p _ lam h m
-  obtain ⟨e, k, n, hs, hp⟩ := exists_trace_one D p h
-  have hs' := congrArg (homP D lam) hs
-  have hp' := congrArg (homP D lam) hp
-  simp only [map_add, map_mul, map_one, map_natCast, map_intCast, homP_conjK] at hs' hp'
-  have hex : ∃ e : 𝓞 D.host.K, ‖homP D lam e - 1‖ ≤ (p : ℝ)⁻¹ ∧ ‖homPbar D lam e‖ ≤ (p : ℝ)⁻¹ := by
-    rcases dichotomy _ _ k n (norm_int_le D _ e) (norm_int_le D _ e) hs' hp' with h | h
-    · exact ⟨e, h⟩
-    · exact ⟨conjO D e, by rwa [coe_conjO, homP_conjK, homPbar_conjK]⟩
-  obtain ⟨e₁, h1, h2⟩ := hex
-  obtain ⟨ε, hε⟩ := improve ((homP D lam).comp (algebraMap (𝓞 D.host.K) D.host.K))
-    ((homPbar D lam).comp (algebraMap (𝓞 D.host.K) D.host.K)) (norm_int_le D (homP D lam)) (norm_int_le D (homPbar D lam)) _ e₁ h1 h2 m
-  refine ⟨ε, (isIdem_iff D lam m ε).2 ?_⟩
-  rw [zpow_neg, zpow_natCast, ← inv_pow]
-  exact hε
 
 end GlobalTheory.ApproxIdem

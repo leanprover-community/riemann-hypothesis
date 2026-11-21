@@ -29,11 +29,6 @@ def fam5 {k : Type} [CommRing k] {B Y : Scheme.{0}} {q : B ⟶ Sp k} {p : Y ⟶ 
   ![VMetric.grLB fl 0 (H.pull π w), VMetric.grLB fl 1 (H.pull π w), A.pull π w, (VMetric.grLB flB 0 H).pull π w,
     (VMetric.grLB flB 1 H).pull π w]
 
-theorem swapSum_swap (d : ℕ) (a b : ℤ) : aeval ![X 1, X 0, X 2] (swapSum d a b) = swapSum d a b := by
-  simp only [swapSum, map_add, map_pow, lin, Fin.sum_univ_three, map_mul, aeval_C, aeval_X]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons,
-    algebraMap_eq]
-  ring
 
 end GlobalTheory.CovTest.SwapLine
 

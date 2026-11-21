@@ -31,10 +31,6 @@ theorem cut_len (S : Formalism.FourierDecayAlt.C.HidaSetting E Wp Wq) (v : Fin S
   simp only [Formalism.FourierDecayAlt.Sz.Glob.place]
   ring
 
-theorem ntop_eq (S : Formalism.FourierDecayAlt.C.HidaSetting E Wp Wq) : (S.Ntop : ℝ) = 20 * ((S.G.r : ℝ) + 1) := by
-  unfold Formalism.FourierDecayAlt.C.HidaSetting.Ntop Formalism.FourierDecayAlt.C.Kst
-  push_cast
-  ring
 
 end Cut
 
@@ -122,18 +118,6 @@ theorem long_cut_num (D : D7) (large₂ : SizeData₂ D) {C' Cl Cg cb Cu cT CT :
       nlinarith
     nlinarith
 
-theorem long_cut (D : D7) (large₂ : SizeData₂ D) {C' Cl Cg cb Cu cT CT : ℝ} (h : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT)
-    (C₆ : ℝ) (hC6 : 0 ≤ C₆) (hCl : ClCut C₆ ≤ Cl)
-    [IsCMField D.host.E] {Wp Wq : InfinitePlace D.host.E → Type}
-    [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]
-    [∀ x, NormedAddCommGroup (Wq x)] [∀ x, InnerProductSpace ℂ (Wq x)]
-    (S : Formalism.FourierDecayAlt.C.HidaSetting D.host.E Wp Wq) (hk : S.G.k = D.R.k) (hr : S.G.r = D.R.rS)
-    (hDel : S.G.Del = (D.s.Del : ℝ)) (v : Fin S.f) :
-    6 * (S.Ntop : ℝ) ^ 3 + 6 * S.Ntop ≤ S.cutHi v - S.cutLo v ∧
-    C₆ * ((S.G.k : ℝ) * S.Ntop * ((S.G.r : ℝ) + 1) ^ 2 + (S.Ntop : ℝ) ^ 2 * ((S.G.r : ℝ) + 1) ^ 2) ≤
-      S.cutHi v - S.cutLo v := by
-  rw [cut_len, ntop_eq, hk, hr, hDel]
-  exact long_cut_num D large₂ h C₆ hC6 hCl
 
 section Grids
 
@@ -207,120 +191,6 @@ theorem first_level_nodes_separated (c : Cfg) (l N : ℕ) {j j' : ℕ} (h : j < 
   have hN : 0 ≤ (N : ℝ) ^ 2 := by positivity
   nlinarith [h1.2.1, h2.1]
 
-theorem gridsAt_of (c : Cfg) (l N : ℕ) (hN : 2 ≤ N) (hlen : 6 * (N : ℝ) ^ 3 + 6 * N ≤ c.Del / 2 - 5 / 2) :
-    GridsAt c l N (gridOf c l N) (grid1Of c l N) := by
-  have hN' : (2 : ℝ) ≤ N := by exact_mod_cast hN
-  have hN0 : (0 : ℝ) < N := by linarith
-  set α : ℝ := 5 / 2 - c.v l with hα
-  set β : ℝ := c.Del / 2 - c.v l with hβ
-  have hlenab : β - α = c.Del / 2 - 5 / 2 := by rw [hα, hβ]; ring
-  set q : ℝ := (β - α) / (6 * N) with hq
-  have hq6 : β - α = 6 * N * q := by rw [hq]; field_simp
-  have hq1 : (N : ℝ) ^ 2 + 1 ≤ q := by
-    rw [hq, le_div_iff₀ (by positivity)]
-    nlinarith
-  have hq2 : (1 : ℝ) < q := by nlinarith
-  have hgL : ∀ a : ℕ, C.gridL α β N a = α + 2 * N * q + (2 * (a : ℝ) - 2) * q := by
-    intro a
-    unfold C.gridL
-    rw [← hq, hq6]
-    field_simp
-    ring
-
-  have hgrid : ∀ a, ∀ y ∈ gridOf c l N a, 1 ≤ a ∧ a ≤ N ∧ C.gridL α β N a ≤ y ∧
-      y ≤ C.gridL α β N a + q - 1 := by
-    intro a y hy
-    unfold gridOf at hy
-    split_ifs at hy with ha
-    · rw [Finset.mem_singleton] at hy
-      subst hy
-      have := pickIn_spec c (A := C.gridL α β N a) (B := C.gridL α β N a + q - 1) (by linarith [hq2])
-      exact ⟨ha.1, ha.2, this.1, this.2.1⟩
-    · simp at hy
-  have hgridP : ∀ a, ∀ y ∈ gridOf c l N a, c.P y ≠ 0 ∧ c.P (y + 1) ≠ 0 := by
-    intro a y hy
-    unfold gridOf at hy
-    split_ifs at hy with ha
-    · rw [Finset.mem_singleton] at hy
-      subst hy
-      have := pickIn_spec c (A := C.gridL α β N a) (B := C.gridL α β N a + q - 1) (by linarith [hq2])
-      exact ⟨this.2.2.1, this.2.2.2⟩
-    · simp at hy
-
-  have hgridB : ∀ a, ∀ y ∈ gridOf c l N a, α + 2 * N * q ≤ y ∧ y + 1 ≤ α + 4 * N * q := by
-    intro a y hy
-    obtain ⟨ha1, haN, hlo, hhi⟩ := hgrid a y hy
-    rw [hgL] at hlo hhi
-    have ha1' : (1 : ℝ) ≤ a := by exact_mod_cast ha1
-    have haN' : (a : ℝ) ≤ N := by exact_mod_cast haN
-    have hq0 : 0 ≤ q := by nlinarith
-    constructor <;> nlinarith
-
-  have hg1 : ∀ y ∈ grid1Of c l N, α ≤ y ∧ y + 1 ≤ α + (N : ℝ) ^ 3 - 5 / 2 ∧ c.P y ≠ 0 ∧ c.P (y + 1) ≠ 0 := by
-    intro y hy
-    unfold grid1Of at hy
-    obtain ⟨j, hj, rfl⟩ := Finset.mem_image.mp hy
-    have hs := first_level_node_spec c l N j
-    have hjN : (j : ℝ) + 1 ≤ N := by
-      have := Finset.mem_range.mp hj
-      exact_mod_cast this
-    have hj0 : (0 : ℝ) ≤ j := by positivity
-    refine ⟨by nlinarith [hs.1], ?_, hs.2.2.1, hs.2.2.2⟩
-    have : (j : ℝ) * (N : ℝ) ^ 2 ≤ ((N : ℝ) - 1) * (N : ℝ) ^ 2 := by
-      apply mul_le_mul_of_nonneg_right (by linarith) (by positivity)
-    nlinarith [hs.2.1]
-  have hlen' : 6 * (N : ℝ) ^ 3 + 6 * N ≤ 6 * N * q := by rw [← hq6, hlenab]; exact hlen
-  have hq3 : (N : ℝ) ^ 2 + 1 ≤ q := hq1
-  have hqpos : 0 < q := by nlinarith
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hlenab]; exact hlen
-  · intro a y hy
-    exact hgrid a y hy
-  · intro y hy
-    obtain ⟨h1, h2, -, -⟩ := hg1 y hy
-    simp only [Cfg.cutIntervalLong, Set.mem_ofPred_eq]
-    rw [hα] at h1 h2
-    refine ⟨⟨by linarith, by linarith⟩, by linarith, by linarith⟩
-  · intro y hy y' hy' hne e he e' he'
-    unfold grid1Of at hy hy'
-    obtain ⟨j, -, rfl⟩ := Finset.mem_image.mp hy
-    obtain ⟨j', -, rfl⟩ := Finset.mem_image.mp hy'
-    have hjj : j ≠ j' := fun h => hne (by rw [h])
-    have he1 : e = 0 ∨ e = 1 := by simpa using he
-    have he1' : e' = 0 ∨ e' = 1 := by simpa using he'
-    have hN8 : (N : ℝ) ^ 2 / 8 + 1 ≤ (N : ℝ) ^ 2 - 1 / 2 := by nlinarith
-    rcases Nat.lt_or_gt_of_ne hjj with h | h
-    · have := first_level_nodes_separated c l N h
-      rw [abs_sub_comm]
-      rcases he1 with rfl | rfl <;> rcases he1' with rfl | rfl <;>
-        · rw [abs_of_nonneg (by linarith)]; linarith
-    · have := first_level_nodes_separated c l N h
-      rcases he1 with rfl | rfl <;> rcases he1' with rfl | rfl <;>
-        · rw [abs_of_nonneg (by linarith)]; linarith
-  · intro y hy a y' hy' e he e' he'
-    obtain ⟨h1, h2, -, -⟩ := hg1 y hy
-    obtain ⟨h3, -⟩ := hgridB a y' hy'
-    have he1 : e = 0 ∨ e = 1 := by simpa using he
-    have he1' : e' = 0 ∨ e' = 1 := by simpa using he'
-    have hN3 : (N : ℝ) ^ 2 + 1 + 1 ≤ (N : ℝ) ^ 3 := by nlinarith
-    have hgap : (N : ℝ) ^ 3 + 5 / 2 ≤ 2 * N * q - (N : ℝ) ^ 3 := by nlinarith
-    rw [abs_sub_comm]
-    rcases he1 with rfl | rfl <;> rcases he1' with rfl | rfl <;>
-      · rw [abs_of_nonneg (by linarith)]; linarith
-  · intro y hy
-    have hβq : β = α + 6 * N * q := by linarith
-    simp only [Cfg.cutI, Set.mem_ofPred_eq]
-    rcases hy with ⟨a, ha⟩ | hy
-    · obtain ⟨h1, h2⟩ := hgridB a y ha
-      obtain ⟨hP1, hP2⟩ := hgridP a y ha
-      rw [hα] at h1 h2
-      rw [hβ] at hβq
-      refine ⟨⟨by linarith, by nlinarith⟩, ⟨by linarith, by nlinarith⟩, hP1, hP2⟩
-    · obtain ⟨h1, h2, hP1, hP2⟩ := hg1 y hy
-      have hN6 : (N : ℝ) ^ 3 ≤ 6 * N * q := by nlinarith
-      rw [hα] at h1 h2
-      rw [hβ] at hβq
-      refine ⟨⟨by linarith, by linarith⟩, ⟨by linarith, by linarith⟩, hP1, hP2⟩
 
 theorem grids_card (c : Cfg) (l N : ℕ) (hN : 1 ≤ N) :
     (grid1Of c l N).card = N ∧ ∀ a, 1 ≤ a → a ≤ N → (gridOf c l N a).card = 1 := by
@@ -334,25 +204,7 @@ theorem grids_card (c : Cfg) (l N : ℕ) (hN : 1 ≤ N) :
   · have := first_level_nodes_separated c l N hl; rw [h] at this; nlinarith
   · have := first_level_nodes_separated c l N hl; rw [h] at this; nlinarith
 
-theorem gridsOK_of (S : C.HidaSetting E Wp Wq) (hlen : 6 * (S.Ntop : ℝ) ^ 3 + 6 * S.Ntop ≤ S.G.Del / 2 - 5 / 2)
-    (hg : ∀ v, S.grid v = gridOf (S.G.place (S.pl v)) S.l S.Ntop)
-    (hg1 : ∀ v, S.grid1 v = grid1Of (S.G.place (S.pl v)) S.l S.Ntop) : C.GridsOK S := by
-  rw [gridsOK_iff]
-  intro v
-  rw [hg, hg1]
-  have hN : 2 ≤ S.Ntop := by unfold C.HidaSetting.Ntop C.Kst; omega
-  exact gridsAt_of _ _ _ hN hlen
 
-theorem gridsOK_hyp (D : D7) (large₂ : SizeData₂ D) {C' Cl Cg cb Cu cT CT : ℝ} (h : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT)
-    (hCl : ClCut 0 ≤ Cl) [IsCMField D.host.E] {Wp Wq : InfinitePlace D.host.E → Type}
-    [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]
-    [∀ x, NormedAddCommGroup (Wq x)] [∀ x, InnerProductSpace ℂ (Wq x)]
-    (S : C.HidaSetting D.host.E Wp Wq) (hr : S.G.r = D.R.rS) (hDel : S.G.Del = (D.s.Del : ℝ))
-    (hg : ∀ v, S.grid v = gridOf (S.G.place (S.pl v)) S.l S.Ntop)
-    (hg1 : ∀ v, S.grid1 v = grid1Of (S.G.place (S.pl v)) S.l S.Ntop) : C.GridsOK S := by
-  refine gridsOK_of S ?_ hg hg1
-  rw [ntop_eq, hr, hDel]
-  exact (long_cut_num D large₂ h 0 le_rfl hCl).1
 
 end Grids
 
@@ -364,28 +216,8 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePla
   [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]
   [∀ x, NormedAddCommGroup (Wq x)] [∀ x, InnerProductSpace ℂ (Wq x)]
 
-theorem thr_nonneg (S : C.HidaSetting E Wp Wq) (hCA : 0 ≤ S.CA) (hg : 0 < S.G.g) (hv : 0 < S.G.v) (hI : 0 < S.G.lenI) :
-    (∀ b v, 0 ≤ S.base.szD b v) ∧ (∀ b s v, 0 ≤ S.base.szL b s v) := by
-  have hM := Formalism.FourierDecayAlt.P.threshold_mono
-  refine ⟨fun b v => ?_, fun b s v => ?_⟩
-  · change 0 ≤ J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b 1 (S.pl v)
-    exact (hM _ S.G S.CA S.CA S.de S.de' S.T S.T' S.l hCA le_rfl hg hv hI b 1 (S.pl v)).1
-  · change 0 ≤ (if b + s ≤ S.G.r + 1 then J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b (s + 1) (S.pl v)
-      else 2 * J.thrP S.G S.CA S.de S.de' S.T S.T' S.l b (S.pl v))
-    have h := hM _ S.G S.CA S.CA S.de S.de' S.T S.T' S.l hCA le_rfl hg hv hI b (s + 1) (S.pl v)
-    split_ifs
-    · exact h.1
-    · linarith [h.2.2.1]
 
-theorem thresholdsWave_self (S : C.HidaSetting E Wp Wq) (hCA : 0 ≤ S.CA) (hg : 0 < S.G.g) (hv : 0 < S.G.v)
-    (hI : 0 < S.G.lenI) : JC.HidaCurvatureBarriers S (fun i v => S.base.szD i v) :=
-  fun i _ _ v => ⟨(thr_nonneg S hCA hg hv hI).1 i v, le_rfl⟩
 
-theorem thresholdsLift_self (S : C.HidaSetting E Wp Wq) (hCA : 0 ≤ S.CA) (hg : 0 < S.G.g) (hv : 0 < S.G.v)
-    (hI : 0 < S.G.lenI) :
-    JC.ThresholdsLift S (fun b s v => S.base.szL b s v) (fun b s v => S.base.szL b s v / 2) := by
-  have h := (thr_nonneg S hCA hg hv hI).2
-  refine ⟨fun b s _ _ _ v => ⟨h b s v, le_rfl⟩, fun s _ _ v => ⟨by linarith [h (S.G.r + 2 - s) s v], by ring_nf; rfl⟩⟩
 
 theorem glob_pos (D : D7) (large₂ : SizeData₂ D) {C' Cl Cg cb Cu cT CT : ℝ} (h : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT)
     (hCl : ClCut 0 ≤ Cl) (S : C.HidaSetting E Wp Wq) (hr : S.G.r = D.R.rS) (hDel : S.G.Del = (D.s.Del : ℝ))
@@ -404,7 +236,6 @@ theorem glob_pos (D : D7) (large₂ : SizeData₂ D) {C' Cl Cg cb Cu cT CT : ℝ
     have : (0 : ℝ) < 6 * (20 * ((D.R.rS : ℝ) + 1)) ^ 3 + 6 * (20 * ((D.R.rS : ℝ) + 1)) := by positivity
     linarith
 
-theorem position_bounds {k l : ℕ} (h1 : 1 ≤ l) (h2 : l + 2 ≤ k) : 1 ≤ l ∧ l ≤ k := ⟨h1, by omega⟩
 
 end TransportedAlt
 

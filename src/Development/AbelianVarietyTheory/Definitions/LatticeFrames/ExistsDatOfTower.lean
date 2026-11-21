@@ -30,65 +30,9 @@ def reOm {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE D)ˣ →*
     have e2 : π (π f) = π f := h₂ _ (h₁ f)
     simp [map_mul, e1, e2]
 
-theorem reOm_apply {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle} {om : Om S T}
-    (h : IsWeilDatumO ψ S T χS χT om) (π : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)) (h₁ h₂) (p f) :
-    reOm h π h₁ h₂ p f = om p (π f) + (f - π f) := rfl
 
-theorem reOm_theta {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle} {om : Om S T}
-    (h : IsWeilDatumO ψ S T χS χT om) (π : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)) (h₁ h₂) (p f) (hf : IsThetaFunO ψ S T f) :
-    reOm h π h₁ h₂ p f = om p f := by
-  rw [reOm_apply, h₂ f hf]; simp
 
-theorem reOm_weil {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle} {om : Om S T}
-    (h : IsWeilDatumO ψ S T χS χT om) (π : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)) (h₁ h₂) :
-    IsWeilDatumO ψ S T χS χT (reOm h π h₁ h₂) where
-  std := h.std
-  hecS := h.hecS
-  hecT := h.hecT
-  resS := h.resS
-  resT := h.resT
-  om_pres p f hf := by rw [reOm_theta h π h₁ h₂ p f hf]; exact h.om_pres p f hf
-  om_heis g k w f hf := by
-    rw [reOm_theta h π h₁ h₂ _ f hf, reOm_theta h π h₁ h₂ _ _ (GlobalTheory.ThetaClosed.isThetaFunO_heisO_all h.std hf w)]
-    exact h.om_heis g k w f hf
-  om_aut γ hγ γ' hγ' f hf := by rw [reOm_theta h π h₁ h₂ _ f hf]; exact h.om_aut γ hγ γ' hγ' f hf
-  om_cont f hf w := by
-    simp only [reOm_theta h π h₁ h₂ _ f hf]; exact h.om_cont f hf w
-  om_unit μ F a b p f hf := by rw [reOm_theta h π h₁ h₂ _ f hf]; exact h.om_unit μ F a b p f hf
-  om_split e he g k a b x y c d := by
-    obtain ⟨r, hr, H⟩ := h.om_split e he g k a b x y c d
-    exact ⟨r, hr, fun l hl f hf => by rw [reOm_theta h π h₁ h₂ _ f hf]; exact H l hl f hf⟩
 
-theorem kerDat_free {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D} {x : DefSp S} {y : DefSp T} (k : KerDat S T)
-    (hk : k.Is ψ θ x y) (N : Submodule ℂ (WO S T → ℂ)) (hN : ∀ g ∈ N, IsThetaFunO ψ S T g → g = 0)
-    (τ : N →ₗ[ℂ] (WO S T → ℂ)) (hτ : ∀ g, IsThetaFunO ψ S T (τ g)) :
-    ∃ k' : KerDat S T, k'.Is ψ θ x y ∧ k'.vac = k.vac ∧ k'.c = k.c ∧
-      (∀ p f, IsThetaFunO ψ S T f → k'.om p f = k.om p f) ∧
-      ∀ p (g : N), k'.om p g = k.om p (τ g) + (g - τ g) := by
-  obtain ⟨χS, χT, h⟩ := hk.weil
-  let U : Submodule ℂ (WO S T → ℂ) := GlobalTheory.FinWeilO.thetaSub ψ S T
-  have hd : Disjoint U N := by
-    rw [Submodule.disjoint_def]; intro g hg hg'; exact hN g hg' hg
-  obtain ⟨Q, hQ⟩ := (U ⊔ N).exists_isCompl
-  have hc : IsCompl U (N ⊔ Q) := by
-    refine ⟨?_, ?_⟩
-    · exact hd.disjoint_sup_right_of_disjoint_sup_left hQ.disjoint
-    · rw [codisjoint_iff, ← sup_assoc]; exact hQ.sup_eq_top
-  let τ' : N →ₗ[ℂ] U := τ.codRestrict U hτ
-  obtain ⟨σ, hσ⟩ := LinearMap.exists_extend (τ' ∘ₗ (Submodule.comapSubtypeEquivOfLe (le_sup_left : N ≤ N ⊔ Q)).toLinearMap)
-  let π : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ) := U.subtype ∘ₗ LinearMap.ofIsCompl hc LinearMap.id σ
-  have h₁ : ∀ f, IsThetaFunO ψ S T (π f) := fun f => (LinearMap.ofIsCompl hc LinearMap.id σ f).2
-  have h₂ : ∀ f, IsThetaFunO ψ S T f → π f = f := fun f hf => by
-    have := LinearMap.ofIsCompl_left_apply hc (φ := LinearMap.id) (ψ := σ) ⟨f, hf⟩
-    simpa [π] using congrArg Subtype.val this
-  have h₃ : ∀ g : N, π g = τ g := fun g => by
-    have a := LinearMap.ofIsCompl_right_apply hc (φ := LinearMap.id) (ψ := σ) ⟨g.1, Submodule.mem_sup_left g.2⟩
-    have b := LinearMap.congr_fun hσ ⟨⟨g.1, Submodule.mem_sup_left g.2⟩, g.2⟩
-    have c : π g = (σ ⟨g.1, Submodule.mem_sup_left g.2⟩).1 := congrArg Subtype.val a
-    rw [c]
-    exact congrArg Subtype.val b
-  exact ⟨⟨reOm h π h₁ h₂, k.vac, k.c⟩, ⟨⟨χS, χT, reOm_weil h π h₁ h₂⟩, hk.vac, hk.fin⟩, rfl, rfl,
-    fun p f hf => reOm_theta h π h₁ h₂ p f hf, fun p g => by rw [← h₃]; rfl⟩
 
 theorem exists_congr (S V : HSp D) (hS : S.SigOK) (hV : V.SigOK) (hr : S.rank = V.rank) (hs : ∀ τ, S.sig τ = V.sig τ) :
     ∃ M : Matrix (Fin V.rank) (Fin S.rank) D.host.E, Mᴴ * V.gram * M = S.gram := by
@@ -269,20 +213,7 @@ theorem exists_dat_of_tower (W : GlobalTheory.Core.Rk.Tower D) (hW : W.Is) (u : 
   · show d.toGeo.st j = _; rw [e, hg]
   · show d.toGeo.top.st = _; rw [e]; rfl
 
-theorem exists_dat_laws (W : GlobalTheory.Core.Rk.Tower D) (hW : W.Is) (u : D.what₂.Word) :
-    ∃ d : Dat D u, d.Base ∧ d.RdLaw ∧ d.Stab ∧ d.Comm ∧ ∀ j ψ y, d.rd j ψ y ≠ 0 := by
-  obtain ⟨d, hd, -, -, -, a1, a2, a3, -⟩ := exists_dat_of_tower W hW u (fun _ => ⊤) (fun _ => LinearMap.id) (fun _ _ _ _ => 1)
-  refine ⟨d, hd, fun j _ => ⟨fun _ => 1, fun ψ _ y => ?_⟩, ?_, ?_, fun j ψ y h => ?_⟩
-  · rw [a3]; exact ⟨⟨fun _ _ _ => rfl, continuous_const⟩, fun _ _ _ _ => (one_mul _).symm⟩
-  · simp [Dat.Stab, a1]
-  · refine ⟨fun j _ => ⟨1, fun ψ _ => ?_⟩, ?_, ?_⟩ <;> simp [a2]
-  · rw [a3] at h; exact one_ne_zero (congrFun h 1)
 
-theorem exists_dat_not_comm (W : GlobalTheory.Core.Rk.Tower D) (hW : W.Is) (u : D.what₂.Word) (h : (D.mem u).A.Mram ≠ ⊥) :
-    ∃ d : Dat D u, d.Base ∧ ¬ d.Comm := by
-  obtain ⟨d, hd, -, -, -, -, a2, -, -⟩ := exists_dat_of_tower W hW u (fun _ => ⊤) (fun _ => 0) (fun _ _ _ _ => 1)
-  refine ⟨d, hd, fun hc => h ((Submodule.eq_bot_iff _).2 fun ψ hψ => hc.2.2 ψ hψ ?_)⟩
-  rw [a2]; rfl
 
 end GlobalTheory.SeeSaw.Model
 

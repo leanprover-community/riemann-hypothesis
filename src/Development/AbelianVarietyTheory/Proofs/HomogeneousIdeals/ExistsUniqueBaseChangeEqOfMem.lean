@@ -75,13 +75,6 @@ theorem apply_extend (θ : N →ₗ[B] B ⊗[A] N) (x : B ⊗[A] invariants θ) 
   | add x y hx hy => simp only [map_add, hx, hy]
   | tmul b m => simp [mem_invariants.1 m.2, smul_tmul']
 
-theorem apply_extend_eq_canonical (θ : N →ₗ[B] B ⊗[A] N) (x : B ⊗[A] invariants θ) :
-    θ (extend B _ x) =
-      ((extend B (invariants θ)).restrictScalars A).lTensor B (canonical B _ x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, hx, hy]
-  | tmul b m => simp [mem_invariants.1 m.2, smul_tmul']
 
 theorem IsDescentDatum.bijective_extend [Module.Flat A B] {θ : N →ₗ[B] B ⊗[A] N}
     (h : IsDescentDatum θ) : Function.Bijective (extend B (invariants θ)) := by
@@ -165,25 +158,7 @@ theorem isCompatible_baseChange (g : M →ₗ[A] M') :
   | add x y hx hy => simp only [map_add, hx, hy]
   | tmul b m => simp
 
-theorem existsUnique_baseChange_eq_of_mem [Module.FaithfullyFlat A B]
-    (f : B ⊗[A] M →ₗ[B] B ⊗[A] M') (hf : ∀ m : M, f (1 ⊗ₜ m) ∈ invariants (canonical B M')) :
-    ∃! g : M →ₗ[A] M', g.baseChange B = f := by
-  let e := LinearEquiv.ofBijective _ (bijective_toInvariants (A := A) B M')
-  let g : M →ₗ[A] M' := e.symm.toLinearMap ∘ₗ
-    ((f.restrictScalars A) ∘ₗ TensorProduct.mk A B M 1).codRestrict _ hf
-  have hg : ∀ m, (1 : B) ⊗ₜ[A] g m = f (1 ⊗ₜ m) := fun m =>
-    congrArg Subtype.val (e.apply_symm_apply ⟨f (1 ⊗ₜ m), hf m⟩)
-  refine ⟨g, ?_, fun g' hg' => ?_⟩
-  · ext m
-    simpa using hg m
-  · ext m
-    apply Module.FaithfullyFlat.tensorProduct_mk_injective (A := A) (B := B) M'
-    simp only [TensorProduct.mk_apply, hg, ← hg', LinearMap.baseChange_tmul]
 
-theorem IsCompatible.existsUnique_baseChange_eq [Module.FaithfullyFlat A B]
-    {f : B ⊗[A] M →ₗ[B] B ⊗[A] M'} (hf : IsCompatible (canonical B M) (canonical B M') f) :
-    ∃! g : M →ₗ[A] M', g.baseChange B = f :=
-  existsUnique_baseChange_eq_of_mem f fun m => hf.map_mem (by simp)
 
 variable (B) in
 

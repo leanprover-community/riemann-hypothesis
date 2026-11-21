@@ -191,9 +191,5 @@ theorem cross_of (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o)) (hE : En
     rw [VP.mapAt_subst hA (e (1 - g)) hwZ, a1, VP.mapAt_act Y (he0 _) Y.w0 (hcomm _ _) cB, m2, VP.actAt_zero]
   rw [a1, a2, a3, pX, VP.hAt_zero_right Y cA, sub_zero]
 
-theorem valuation_eq_pair_of_projections (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o)) (H : ∀ o, (Y.raw (p o)).Hyps V)
-    (Ls : LetSys C dd) (n : ℕ) (hE : EndoLogSt Y) (hK : KillSt Y p) (hP : ∀ o, ProjSt Y (p o))
-    (hT : ∀ o, RawChart.TCoordSt (H o).cartH) : ValEqPSt Y p H Ls n :=
-  value_equation_of_projectors Y p H Ls n (projPull_of Y p hE hK hP) hT (cross_of Y p hE hK hP)
 
 end Formalism.L2.FormalSeriesBounds

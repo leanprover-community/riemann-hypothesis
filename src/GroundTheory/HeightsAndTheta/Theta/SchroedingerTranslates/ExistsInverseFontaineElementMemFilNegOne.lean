@@ -101,8 +101,6 @@ def weilForm (ξ : E) (hA : HermL F E A) (hB : HermL F E B) : LinearMap.BilinFor
       change Algebra.trace F E (ξ * (conj F E (algebraMap F E c) * _)) = _
       rw [conj_algebraMap, mul_left_comm, ← Algebra.smul_def, map_smul, smul_eq_mul])
 
-theorem weilForm_apply (ξ : E) (hA : HermL F E A) (hB : HermL F E B) (w w' : A ⊗[E] B) :
-    weilForm ξ hA hB w w' = Algebra.trace F E (ξ * tensHerm hA hB w w') := rfl
 
 end Tensor
 
@@ -154,8 +152,6 @@ def Sp (ω : LinearMap.BilinForm R W) : Subgroup (W ≃ₗ[R] W) where
     conv_rhs => rw [← a.apply_symm_apply w, ← a.apply_symm_apply w']
     rw [ha]
 
-theorem mem_Sp {ω : LinearMap.BilinForm R W} {g : W ≃ₗ[R] W} :
-    g ∈ Sp ω ↔ ∀ w w', ω (g w) (g w') = ω w w' := Iff.rfl
 
 @[ext]
 structure Heis (ω : LinearMap.BilinForm R W) where
@@ -537,34 +533,12 @@ def gaussHermL : HermL ℚ GaussQ GaussQ where
       rw [gaussFormL_apply, h, mul_comm]
       rfl
 
-theorem gaussHermL_one_one : gaussHermL.form 1 1 = 1 := by
-  show (1 : GaussQ) * conj ℚ GaussQ 1 = 1
-  rw [map_one, mul_one]
 
 def gaussI : GaussQ := ⟨0, 1⟩
 
-theorem conj_gaussI : conj ℚ GaussQ gaussI = -gaussI := by
-  ext
-  · rw [conj_gaussQ_re]; simp [gaussI]
-  · rw [conj_gaussQ_im]; simp [gaussI]
 
-theorem isUnit_gaussI : IsUnit gaussI := by
-  refine isUnit_iff_ne_zero.mpr fun h => ?_
-  have := congrArg QuadraticAlgebra.im h
-  simp [gaussI] at this
 
-theorem weilForm_gauss : weilForm gaussI gaussHermL gaussHermL (1 ⊗ₜ 1) (gaussI ⊗ₜ 1) = 2 := by
-  rw [weilForm_apply, tensHerm_tmul]
-  show Algebra.trace ℚ GaussQ
-    (gaussI * ((1 * conj ℚ GaussQ gaussI) * (1 * conj ℚ GaussQ 1))) = 2
-  rw [conj_gaussI, map_one, trace_gaussQ]
-  simp [gaussI]
 
-theorem weilForm_gauss_ne_zero : weilForm gaussI gaussHermL gaussHermL ≠ 0 := by
-  intro h
-  have := weilForm_gauss
-  rw [h] at this
-  simp at this
 
 def stdSymp (R : Type*) [CommRing R] : LinearMap.BilinForm R (R × R) :=
   LinearMap.mk₂ R (fun u v => u.1 * v.2 - u.2 * v.1)
@@ -576,80 +550,21 @@ def stdSymp (R : Type*) [CommRing R] : LinearMap.BilinForm R (R × R) :=
 theorem stdSymp_apply (R : Type*) [CommRing R] (u v : R × R) :
     stdSymp R u v = u.1 * v.2 - u.2 * v.1 := rfl
 
-theorem stdSymp_isAlt (R : Type*) [CommRing R] : (stdSymp R).IsAlt := fun u => by
-  rw [stdSymp_apply]; ring
 
-theorem stdSymp_nondegenerate (K : Type*) [Field K] : (stdSymp K).Nondegenerate := by
-  refine ⟨fun u hu => ?_, fun v hv => ?_⟩
-  · have h1 := hu (0, 1)
-    have h2 := hu (1, 0)
-    rw [stdSymp_apply] at h1 h2
-    simp only [mul_one, mul_zero, sub_zero, zero_sub, neg_eq_zero] at h1 h2
-    exact Prod.ext h1 h2
-  · have h1 := hv (0, 1)
-    have h2 := hv (1, 0)
-    rw [stdSymp_apply] at h1 h2
-    simp only [one_mul, zero_mul, sub_zero, zero_sub, neg_eq_zero] at h1 h2
-    exact Prod.ext h1 h2
 
 def stdPol (R : Type*) [CommRing R] : Polarization (stdSymp R) R R where
   e := LinearEquiv.refl R (R × R)
   isotropic_X x x' := by simp [stdSymp_apply]
   isotropic_Y y y' := by simp [stdSymp_apply]
 
-theorem heis_std_noncomm :
-    (⟨(1, 0), 0⟩ * ⟨(0, 1), 0⟩ : Heis (stdSymp ℝ)) ≠ ⟨(0, 1), 0⟩ * ⟨(1, 0), 0⟩ := by
-  intro h
-  have := congrArg Heis.t h
-  simp only [Heis.product_torus_component, stdSymp_apply] at this
-  norm_num at this
 
-theorem schr_stdPol (ψ : AddChar ℝ Circle) (a b t : ℝ) (φ : ℝ → ℂ) (x : ℝ) :
-    schr ψ (stdPol ℝ) ⟨(a, b), t⟩ φ x = (ψ (t + x * b + ⅟2 * (a * b)) : ℂ) * φ (x + a) := by
-  simp [schr, Polarization.pair, Polarization.xPart, Polarization.yPart, stdPol, stdSymp_apply]
 
-theorem real_hypotheses :
-    ¬ DiscreteTopology ℝ ∧ (stdSymp ℝ).IsAlt ∧ (stdSymp ℝ).Nondegenerate ∧
-      Continuous Real.fourierChar ∧ Real.fourierChar ≠ 1 := by
-  refine ⟨fun h => ?_, stdSymp_isAlt ℝ, stdSymp_nondegenerate ℝ, Real.continuous_fourierChar,
-    fun h => ?_⟩
-  · obtain ⟨ε, hε, hb⟩ := Metric.isOpen_iff.mp (isOpen_discrete ({0} : Set ℝ)) 0 rfl
-    have : ε / 2 ∈ Metric.ball (0 : ℝ) ε := by
-      rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_pos (half_pos hε)]
-      exact half_lt_self hε
-    have h0 : ε / 2 = 0 := hb this
-    linarith
-  · have h1 := congrArg (fun χ : AddChar ℝ Circle => ((χ (1 / 2) : Circle) : ℂ)) h
-    simp only [Real.fourierChar_apply, AddChar.one_apply, Circle.coe_one] at h1
-    rw [show ((2 * Real.pi * (1 / 2) : ℝ) : ℂ) * Complex.I = Real.pi * Complex.I by
-      push_cast; ring, Complex.exp_pi_mul_I] at h1
-    norm_num at h1
 
-theorem isSchwartzBruhat_gaussian :
-    IsSchwartzBruhat (GroundTheory.Global.gaussianSchwartz (EuclideanSpace ℝ (Fin 1)) :
-      EuclideanSpace ℝ (Fin 1) → ℂ) :=
-  Or.inr ⟨1, ContinuousAddEquiv.refl _, GroundTheory.Global.gaussianSchwartz _, fun _ => rfl⟩
 
-theorem gaussianSchwartz_ne_zero :
-    (GroundTheory.Global.gaussianSchwartz (EuclideanSpace ℝ (Fin 1)) : EuclideanSpace ℝ (Fin 1) → ℂ) ≠ 0 := by
-  intro h
-  have := congrFun h 0
-  simp [GroundTheory.Global.gaussianSchwartz_apply] at this
 
 def adelicStdPol : Polarization ((stdSymp ℚ).baseChange 𝔸[ℚ]) (AdelicPoints ℚ ℚ) (AdelicPoints ℚ ℚ) :=
   (stdPol ℚ).baseChange
 
-theorem schr_adelicStdPol_translate (ψ : AddChar 𝔸[ℚ] Circle) (q : ℚ)
-    (φ : AdelicPoints ℚ ℚ → ℂ) (x : AdelicPoints ℚ ℚ) :
-    letI := invertibleTwoAdele ℚ
-    schr ψ adelicStdPol ⟨(1 : 𝔸[ℚ]) ⊗ₜ ((q, 0) : ℚ × ℚ), 0⟩ φ x = φ (x + (1 : 𝔸[ℚ]) ⊗ₜ q) := by
-  have he : adelicStdPol.e ((1 : 𝔸[ℚ]) ⊗ₜ q, 0) = (1 : 𝔸[ℚ]) ⊗ₜ ((q, 0) : ℚ × ℚ) :=
-    adelicPolEquiv_tmul_fst (stdPol ℚ) 1 q
-  have hs : adelicStdPol.e.symm ((1 : 𝔸[ℚ]) ⊗ₜ ((q, 0) : ℚ × ℚ)) = ((1 : 𝔸[ℚ]) ⊗ₜ q, 0) := by
-    rw [← he, LinearEquiv.symm_apply_apply]
-  simp only [schr, Polarization.xPart, Polarization.yPart, Polarization.pair, hs,
-    Prod.mk_zero_zero, map_zero, mul_zero, add_zero, AddChar.map_zero_eq_one, Circle.coe_one,
-    one_mul]
 
 end Examples
 

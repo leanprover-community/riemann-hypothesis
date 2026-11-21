@@ -13,15 +13,6 @@ section WeightAlgebra
 
 variable {D : D7}
 
-theorem quadratic_statement_of_parts (large₂ : SizeData₂ D) {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} (X : WeightAlgebra.Prov D B P)
-    (K : WeightAlgebra.KAdm) (H : WeightAlgebra.KHyp) (Ch Ah Cq Aq C2 A2 CR Bx CT A : ℝ)
-    (hb : WeightFamilies.Stmt large₂ B K.CG K.AG K.CL K.AL K.CRm H.CK Ch Ah Cq Aq)
-    (h8 : WeightAlgebra.Stmt large₂ X K H Ch Ah Cq Aq C2 A2 CR Bx CT A)
-    (a1 : WeightAlgebra.adm1 B) (a2 : WeightAlgebra.adm2 large₂ X H.CA H.C1 H.A1 K.CG K.AG) (a3 : WeightAlgebra.adm3 large₂ X H.CA K.Cf K.Af)
-    (a4 : WeightAlgebra.ArchimedeanSignatureMatching large₂ X H.CA H.C1 H.A1 K.CW K.AW) (b3 : WeightFamilies.adm3 B) (bB : WeightFamilies.TransferenceTheoremCond) (bC : WeightFamilies.ChowlaSelbergPeriod large₂) :
-    WeightAlgebra.Conclusion1 large₂ X H C2 A2 CR CT ∧ WeightAlgebra.Conclusion2 large₂ X H C2 A2 CR Bx CT A := by
-  obtain ⟨p1, p2, p3⟩ := hb ⟨a1, a2.2, b3, bB, bC⟩
-  exact h8 ⟨a1, a2, a3, a4, p1, p2, p3⟩
 
 end WeightAlgebra
 

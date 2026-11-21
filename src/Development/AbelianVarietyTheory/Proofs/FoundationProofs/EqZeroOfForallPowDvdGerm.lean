@@ -66,26 +66,7 @@ theorem res_inf_injective {D : X.Opens} (hD : genericPoint X ∈ D) (W : X.Opens
   have hWD : genericPoint X ∈ W ⊓ D := ⟨hW, hD⟩
   rw [← germ_res (inf_le_left : W ⊓ D ≤ W) hWD s, ← germ_res (inf_le_left : W ⊓ D ≤ W) hWD s', hss]
 
-theorem eq_zero_of_component_eq_zero {ι : Type v} {U : ι → X.Opens}
-    (g : ∀ a b, Γ(X, U a ⊓ U b)) (s : ∀ a, Γ(X, U a))
-    (hs : ∀ a b, X.presheaf.map (homOfLE inf_le_left).op (s a) =
-      g a b * X.presheaf.map (homOfLE inf_le_right).op (s b))
-    {a : ι} {x : X} (hx : x ∈ U a) (h : s a = 0) (b : ι) : s b = 0 := by
-  have hgen : genericPoint X ∈ U a := genericPoint_mem hx
-  apply res_inf_injective hgen (U b)
-  rw [hs b a, h, map_zero, mul_zero, map_zero]
 
-theorem eq_zero_of_forall_pow_dvd_germ [IsLocallyNoetherian X] {t : Γ(X, ⊤)}
-    {ι : Type v} {U : ι → X.Opens} (g : ∀ a b, Γ(X, U a ⊓ U b)) (s : ∀ a, Γ(X, U a))
-    (hs : ∀ a b, X.presheaf.map (homOfLE inf_le_left).op (s a) =
-      g a b * X.presheaf.map (homOfLE inf_le_right).op (s b))
-    {a : ι} {x : X} (hx : x ∈ U a) (hxt : x ∉ X.basicOpen t)
-    (h : ∀ e : ℕ, X.presheaf.germ ⊤ x trivial t ^ e ∣ X.presheaf.germ (U a) x hx (s a))
-    (b : ι) : s b = 0 := by
-  have hnu : ¬ IsUnit (X.presheaf.germ ⊤ x trivial t) := fun hu => hxt ((X.mem_basicOpen_top t x).mpr hu)
-  have h0 : X.presheaf.germ (U a) x hx (s a) = 0 := GlobalTheory.PrimeElement.eq_zero_of_forall_pow_dvd hnu h
-  have hsa : s a = 0 := germ_injective_of_isIntegral X x hx (by rw [h0, map_zero])
-  exact eq_zero_of_component_eq_zero g s hs hx hsa b
 
 end Integral
 

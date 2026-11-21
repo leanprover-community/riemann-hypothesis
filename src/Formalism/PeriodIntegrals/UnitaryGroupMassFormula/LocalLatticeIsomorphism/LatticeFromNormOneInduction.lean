@@ -41,25 +41,7 @@ theorem exists_refl {K : Type} [Field K] (c : K →+* K) (hc : ∀ x, c (c x) = 
   refine ⟨mkU c σL iso, mkU_unitary c σL iso, ?_⟩
   rw [mkU_apply, hσ, ← htdef, hγ, inv_mul_cancel₀ ht0, one_smul, hw, sub_sub_cancel]
 
-theorem unimod_preimage {K : Type} [Field K] [NumberField K] (c : K →+* K) (p : ℕ) {ι : Type}
-    [Fintype ι] {σ : (ι → K) ≃ₗ[K] (ι → K)} (hσ : IsUnitary c σ) {L : Set (ι → K)}
-    (hL : Unimod K c p L) : Unimod K c p (σ ⁻¹' L) := by
-  intro v
-  constructor
-  · intro hv w hw
-    rw [← hσ]
-    exact (hL (σ v)).1 hv (σ w) hw
-  · intro h
-    show σ v ∈ L
-    rw [hL]
-    intro w hw
-    have h' := h (σ.symm w) (by show σ (σ.symm w) ∈ L; rw [LinearEquiv.apply_symm_apply]; exact hw)
-    rwa [← hσ, LinearEquiv.apply_symm_apply] at h'
 
-theorem spans_preimage {K : Type} [Field K] {ι : Type} {σ : (ι → K) ≃ₗ[K] (ι → K)}
-    {L : Set (ι → K)} (hS : Spans K L) : Spans K (σ ⁻¹' L) := fun v => by
-  obtain ⟨N, hN, h⟩ := hS (σ v)
-  exact ⟨N, hN, by show σ _ ∈ L; rw [map_smul]; exact h⟩
 
 def extL {K : Type} [Field K] {ι : Type} [DecidableEq ι] (i0 : ι) :
     ({i // i ≠ i0} → K) →ₗ[K] (ι → K) where
@@ -175,62 +157,12 @@ theorem split_step {K : Type} [Field K] [NumberField K] (c : K →+* K) (p : ℕ
     rw [decomp i0 v]
     exact add_smul_mem hL h1 he h0
 
-theorem card_ne_sub {ι : Type} [Fintype ι] [DecidableEq ι] (i0 : ι) (k : ℕ)
-    (hk : Fintype.card ι = k + 1) : Fintype.card {i // i ≠ i0} = k := by
-  rw [Fintype.card_subtype, Finset.filter_ne', Finset.card_erase_of_mem (Finset.mem_univ _),
-    Finset.card_univ, hk, Nat.add_sub_cancel]
 
-theorem latIso_card (hN : NormOne) {K : Type} [Field K] [NumberField K] (c : K →+* K) (p : ℕ)
-    (hK : Module.finrank ℚ K = 2) (hc : ∀ x, c (c x) = x) (hp : p.Prime) (hs : SplitK c p) :
-    ∀ (k : ℕ) (ι : Type) [Fintype ι], Fintype.card ι = k → ∀ L : Set (ι → K),
-      Unimod K c p L → Spans K L →
-        ∃ u : (ι → K) ≃ₗ[K] (ι → K), IsUnitary c u ∧ ∀ v, v ∈ L ↔ ∀ i, Rp K p (u v i) := by
-  intro k
-  induction k with
-  | zero =>
-    intro ι _ hk L hL _
-    have : IsEmpty ι := Fintype.card_eq_zero_iff.mp hk
-    refine ⟨LinearEquiv.refl K _, fun v w => rfl, fun v => ?_⟩
-    have h0 := zero_mem_of hL
-    constructor
-    · intro _ i
-      exact isEmptyElim i
-    · intro _
-      rwa [Subsingleton.elim v 0]
-  | succ k ih =>
-    intro ι _ hk L hL hS
-    classical
-    have : Nonempty ι := Fintype.card_pos_iff.mp (by omega)
-    obtain ⟨i0⟩ := ‹Nonempty ι›
-    obtain ⟨e, heL, hee⟩ := hN K c p ι L hK hc hp hs hL hS
-    obtain ⟨e1, he1L, he1, hne⟩ :
-        ∃ e1 ∈ L, hf c e1 e1 = 1 ∧ hf c (Pi.single i0 1) e1 ≠ 1 := by
-      by_cases h1 : hf c (Pi.single i0 1) e = 1
-      · refine ⟨-e, neg_mem_of hL heL, by rw [hf_neg_left, hf_neg_right, neg_neg, hee], ?_⟩
-        rw [hf_neg_right, h1]
-        norm_num
-      · exact ⟨e, heL, hee, h1⟩
-    obtain ⟨σ, hσ, hσe⟩ :=
-      exists_refl c hc (Pi.single i0 1) e1 (hf_single_single c i0) he1 hne
-    obtain ⟨u'', hu'', hmem''⟩ := split_step c p i0 (σ ⁻¹' L) (unimod_preimage c p hσ hL)
-      (spans_preimage hS) (by show σ _ ∈ L; rw [hσe]; exact he1L)
-      (fun L' hL' hS' => ih _ (card_ne_sub i0 k hk) L' hL' hS')
-    refine ⟨σ.symm.trans u'', unitary_trans (unitary_symm hσ) hu'', fun v => ?_⟩
-    have h := hmem'' (σ.symm v)
-    have hm : σ.symm v ∈ σ ⁻¹' L ↔ v ∈ L := by
-      show σ (σ.symm v) ∈ L ↔ v ∈ L
-      rw [LinearEquiv.apply_symm_apply]
-    rw [hm] at h
-    simpa only [LinearEquiv.trans_apply] using h
 
-theorem lattice_from_norm_one_induction : LatticeFromNormOne := by
-  intro hN K _ _ c p ι _ L hK hc hp hs hL hS
-  exact latIso_card hN c p hK hc hp hs _ ι rfl L hL hS
 
 end PI.KLW.Ind
 
 namespace PI.KLW
 
-theorem lattice_from_norm_one : LatticeFromNormOne := Ind.lattice_from_norm_one_induction
 
 end PI.KLW

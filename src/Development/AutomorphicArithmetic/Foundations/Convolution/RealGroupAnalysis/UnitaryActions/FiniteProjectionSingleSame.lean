@@ -13,9 +13,6 @@ variable {F : Type} [Field F] [NumberField F]
 variable (F) in
 
 def Cell : Set (G1 F) := {g | IsUnit (g 1 0)}
-theorem inv_mem_cell {g : G1 F} (h : g ∈ Cell F) : g⁻¹ ∈ Cell F := by
-  change IsUnit ((g⁻¹).1 1 0)
-  rw [specialLinear_inv_val]; exact IsUnit.neg h
 theorem nmwn_val (b₁ b₂ : A F) (a : (A F)ˣ) : (nU b₁ * mD a * wW F * nU b₂).1 =
     !![-(b₁ * ((a⁻¹ : (A F)ˣ) : A F)), a - b₁ * ((a⁻¹ : (A F)ˣ) : A F) * b₂;
       -((a⁻¹ : (A F)ˣ) : A F), -(((a⁻¹ : (A F)ˣ) : A F) * b₂)] := by
@@ -33,33 +30,10 @@ theorem cell_normal (g : G1 F) (c : (A F)ˣ) (hc : g 1 0 = c) :
   rw [nmwn_val]
   ext i j; fin_cases i <;> fin_cases j <;> simp [hc]
   linear_combination (-((c⁻¹ : (A F)ˣ) : A F)) * hd - g 0 1 * hu
-theorem nmwn_unique {b₁ b₂ b₁' b₂' : A F} {a a' : (A F)ˣ}
-    (h : nU b₁ * mD a * wW F * nU b₂ = nU b₁' * mD a' * wW F * nU b₂') : b₁ = b₁' ∧ a = a' ∧ b₂ = b₂' := by
-  have h' := congrArg Subtype.val h
-  rw [nmwn_val, nmwn_val] at h'
-  have h10 := congrFun (congrFun h' 1) 0
-  have h00 := congrFun (congrFun h' 0) 0
-  have h11 := congrFun (congrFun h' 1) 1
-  simp at h10 h00 h11
-  obtain rfl : a = a' := Units.ext h10
-  exact ⟨(Units.mul_left_inj _).1 h00, rfl, (Units.mul_right_inj _).1 h11⟩
 theorem mem_cell_iff (g : G1 F) : g ∈ Cell F ↔ ∃ b₁ a b₂, g = nU b₁ * mD a * wW F * nU b₂ :=
   ⟨fun h => ⟨_, _, _, cell_normal g (IsUnit.unit h) rfl⟩, by rintro ⟨b₁, a, b₂, rfl⟩; exact nmwn_mem_cell _ _ _⟩
 
-theorem lmn_normal (g : G1 F) (a : (A F)ˣ) (ha : g 0 0 = a) :
-    g = nL (g 1 0 * ((a⁻¹ : (A F)ˣ) : A F)) * mD a * nU (((a⁻¹ : (A F)ˣ) : A F) * g 0 1) := by
-  have hd := specialLinear_det_entries g
-  have hu := a.mul_inv
-  rw [ha] at hd
-  apply specialLinear_ext_entries <;> simp [Matrix.mul_apply, Fin.sum_univ_two, ha]
-  linear_combination ((a⁻¹ : (A F)ˣ) : A F) * hd - g 1 1 * hu
 
-theorem upper_normal (g : G1 F) (h : g 1 0 = 0) : ∃ b a, g = nU b * mD a := by
-  have hd := specialLinear_det_entries g
-  rw [h, mul_zero, sub_zero] at hd
-  refine ⟨g 0 1 * g 0 0, ⟨g 0 0, g 1 1, hd, by rw [mul_comm, hd]⟩, ?_⟩
-  apply specialLinear_ext_entries <;> simp [Matrix.mul_apply, Fin.sum_univ_two, h]
-  rw [mul_assoc, hd, mul_one]
 
 variable (F) in
 
@@ -72,7 +46,6 @@ def pv (v : HeightOneSpectrum (𝓞 F)) : A F →+* v.adicCompletion F :=
   (RestrictedProduct.evalRingHom (fun u : HeightOneSpectrum (𝓞 F) => u.adicCompletion F) v).comp (RingHom.snd _ _)
 theorem adeleInfiniteComponent_apply (x : A F) : p1 F x = x.1 := rfl
 theorem adele_ext_components (x : A F) : p2 F x = x.2 := rfl
-theorem pv_apply (v : HeightOneSpectrum (𝓞 F)) (x : A F) : pv v x = x.2 v := rfl
 theorem a_ext {x y : A F} (h1 : p1 F x = p1 F y) (h2 : ∀ v, pv v x = pv v y) : x = y := Prod.ext h1 (FiniteAdeleRing.ext F h2)
 theorem isUnit_adele_iff (x : A F) :
     IsUnit x ↔ (∀ w, x.1 w ≠ 0) ∧ (∀ v, x.2 v ≠ 0) ∧ ∀ᶠ v in cofinite, Valued.v (x.2 v) = 1 := by
@@ -140,13 +113,6 @@ def KG : Subgroup (G1 F) where
   mul_mem' hg hh := ⟨hg.1.mul hh.1, fun v => (hg.2 v).mul (hh.2 v)⟩
   inv_mem' hg := ⟨hg.1.inv, fun v => (hg.2 v).inv⟩
 theorem mem_KG {g : G1 F} : g ∈ KG F ↔ g ∈ KK F := Iff.rfl
-theorem wW_mem_KK : wW F ∈ KK F := by
-  refine ⟨fun i j => ?_, fun v i j => ?_⟩
-  · have : (wW F).1 * (wW F).1ᵀ = 1 := by
-      ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
-    rw [this]
-  · change pv v ((wW F).1 i j) ∈ _
-    fin_cases i <;> fin_cases j <;> simp
 
 def sv (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F) : A F :=
   (0, ⟨Pi.single (M := fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletion F) v x, by
@@ -169,11 +135,6 @@ theorem sv_add (v : HeightOneSpectrum (𝓞 F)) (x y : v.adicCompletion F) : sv 
     by_cases h : w = v
     · subst h; simp
     · simp [pv_sv_of_ne h]
-theorem eq_sv {v : HeightOneSpectrum (𝓞 F)} {b : A F} (h1 : b.1 = 0) (h2 : ∀ w ≠ v, b.2 w = 0) : b = sv v (b.2 v) :=
-  a_ext h1 fun w => by
-    by_cases h : w = v
-    · subst h; exact (pv_sv _ _).symm
-    · rw [pv_sv_of_ne h]; exact h2 w h
 variable (F) in
 
 def eInf : A F := (1, 0)

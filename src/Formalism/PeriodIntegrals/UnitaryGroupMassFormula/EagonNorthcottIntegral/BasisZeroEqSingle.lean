@@ -11,17 +11,8 @@ private def mon {D : ℕ} (α : Fin D → ℕ) : Fin D ⊕ Fin D →₀ ℕ := �
 
 private def yp {D : ℕ} (α : Fin D → ℕ) : P D := ∏ i, ys i ^ α i
 
-private lemma mon_inr {D : ℕ} (α : Fin D → ℕ) (i : Fin D) : mon α (Sum.inr i) = α i := by
-  classical
-  simp [mon, Finsupp.finsetSum_apply, Finsupp.single_apply]
 
-private lemma mon_inl {D : ℕ} (α : Fin D → ℕ) (i : Fin D) : mon α (Sum.inl i) = 0 := by
-  classical
-  simp [mon, Finsupp.finsetSum_apply]
 
-private lemma yp_eq {D : ℕ} (α : Fin D → ℕ) : yp α = monomial (mon α) (1 : ℤ) := by
-  rw [yp, mon, monomial_sum_one]
-  simp [ys, X_pow_eq_monomial]
 
 private lemma noX_iff {D : ℕ} (f : P D) : NoX f ↔ ∃ g, rename Sum.inr g = f := Iff.rfl
 
@@ -36,14 +27,6 @@ private lemma nox_smul {D : ℕ} (c : ℤ) {f : P D} (hf : NoX f) : NoX (c • f
   obtain ⟨u, rfl⟩ := (noX_iff _).1 hf
   exact (noX_iff _).2 ⟨c • u, map_smul _ _ _⟩
 
-private lemma noX_coeff {D : ℕ} {f : P D} (hf : NoX f) {m : Fin D ⊕ Fin D →₀ ℕ} (hm : m ∈ f.support)
-    (i : Fin D) : m (Sum.inl i) = 0 := by
-  classical
-  by_contra h
-  obtain ⟨g, rfl⟩ := (noX_iff _).1 hf
-  have h1 : Sum.inl i ∈ (rename Sum.inr g).vars := (mem_vars_iff_mem_support _).2 ⟨m, hm, Finsupp.mem_support_iff.2 h⟩
-  have h2 := vars_rename Sum.inr g h1
-  simp at h2
 
 private lemma yhom_zero {D a : ℕ} : YHom (D := D) a 0 := by
   intro m hm
@@ -58,22 +41,6 @@ private lemma yhom_add {D a : ℕ} {f g : P D} (hf : YHom a f) (hg : YHom a g) :
 private lemma yhom_smul {D a : ℕ} (c : ℤ) {f : P D} (hf : YHom a f) : YHom a (c • f) :=
   fun m hm => hf m (support_smul hm)
 
-private lemma memA {D a : ℕ} {f : P D} (h1 : NoX f) (h2 : YHom a f) :
-    f ∈ Submodule.span ℤ (yp '' {α : Fin D → ℕ | ∑ i, α i = a}) := by
-  classical
-  rw [f.as_sum]
-  refine Submodule.sum_mem _ fun m hm => ?_
-  have hmon : m = mon (fun i => m (Sum.inr i)) := by
-    ext v
-    rcases v with i | i
-    · rw [mon_inl, noX_coeff h1 hm i]
-    · rw [mon_inr]
-  have hmem : monomial m (1 : ℤ) ∈ yp '' {α : Fin D → ℕ | ∑ i, α i = a} :=
-    ⟨fun i => m (Sum.inr i), h2 m hm, by rw [yp_eq, ← hmon]⟩
-  have : monomial m (coeff m f) = coeff m f • monomial m (1 : ℤ) := by
-    rw [smul_monomial, smul_eq_mul, mul_one]
-  rw [this]
-  exact Submodule.smul_mem _ _ (Submodule.subset_span hmem)
 
 private lemma K_zero {D : ℕ} (t : Fin D → P D) : K t 0 = 0 := by
   funext J
@@ -115,16 +82,5 @@ private def G (D a : ℕ) : Set (W D) :=
   Set.range fun p : Finset (Fin D) × {α // α ∈ Finset.piAntidiag (Finset.univ : Finset (Fin D)) a} =>
     (Pi.single p.1 (yp p.2.1) : W D)
 
-private lemma memB {D a : ℕ} {ω : W D} (h : ∀ J, NoX (ω J) ∧ YHom a (ω J)) :
-    ω ∈ Submodule.span ℤ (G D a) := by
-  classical
-  rw [← Finset.univ_sum_single ω]
-  refine Submodule.sum_mem _ fun J _ => ?_
-  have h3 := Submodule.mem_map_of_mem (f := LinearMap.single ℤ (fun _ : Finset (Fin D) => P D) J)
-    (memA (h J).1 (h J).2)
-  rw [← Submodule.span_image] at h3
-  refine Submodule.span_mono ?_ h3
-  rintro _ ⟨_, ⟨α, hα, rfl⟩, rfl⟩
-  exact ⟨(J, ⟨α, by simpa [Finset.mem_piAntidiag] using hα⟩), by simp⟩
 
 end PI.EagonNorthcottZ

@@ -158,12 +158,6 @@ def Aθ (hx : (U.X k).IsOrtho x.1) (Wu : UnitAt W) (hθ : Differentiable ℂ Wu.
     ReciprocityTheory.ChartRestriction.G.I2.TorusAt (U.X k) x.1 :=
   { A with s := sT hU hσ W A Wu, s_mem := sT_mem hU hσ W A hx Wu hθ h4, s_ne := sT_ne hU hσ W A hx Wu }
 
-theorem torusPins_of (hx : (U.X k).IsOrtho x.1) (Wu : UnitAt W) (hθ : Differentiable ℂ Wu.θ)
-    (h4 : ∀ a, ((A.T.eps (A.φ ((W.φ k a : (U.X k).Λ) : Fin r → E)) : ℤ) : ℂ) = Wu.χl (W.Pm a)) :
-    TorusPins W Wu (Aθ hU hσ W A hx Wu hθ h4) (Lmap hU hσ W A) := by
-  refine ⟨fun a => pin1 hU hσ W A hx a, fun z z' => pin2 hU hσ W A hx Wu z z', fun z => ?_, h4⟩
-  show star (Wu.θ (star (Linv hU hσ W A (Lmap hU hσ W A z)))) = _
-  rw [Linv_Lmap hU hσ W A hx]
 
 end Sec
 

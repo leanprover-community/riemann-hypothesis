@@ -32,11 +32,6 @@ theorem diag_sv (n : ℕ) (neg : Fin n → Bool) (p q : ℕ) (c d : E) :
       simp [sv, this]
     · simp [sv, hb]
 
-theorem diag_disj (n : ℕ) (neg : Fin n → Bool) (x y : Fin n → E) (h : ∀ i, x i = 0 ∨ y i = 0) :
-    Examples₂.diagForm n neg x y = 0 := by
-  rw [Examples₂.diagForm_apply]
-  refine Finset.sum_eq_zero fun i _ => ?_
-  rcases h i with h | h <;> simp [h]
 
 def ixPos (a i : ℕ) : ℕ := a + i
 
@@ -145,19 +140,9 @@ theorem raw_zE (hc : c % 2 = 1) (pz lam : E) {i : ℕ} (hi : i < c / 2) :
   · simp only [rawE, map_add, k1, k2, add_zero]
   · simp only [rawEv, map_smul, map_sub, k1, k2, sub_zero, smul_zero]
 
-theorem sv_low (p : ℕ) (hp : a ≤ p) (x : E) (i : Fin n) (hi : (i : ℕ) < a) : sv n p x i = 0 := by
-  simp only [sv]; rw [if_neg (by omega)]
 
-theorem rawE_low (i : ℕ) (x : Fin n) (hx : (x : ℕ) < a) : rawE (E := E) n a c i x = 0 := by
-  simp only [rawE, Pi.add_apply, sv_low n a (ixPos a i) (by unfold ixPos; omega) _ x hx,
-    sv_low n a (ixNeg a c i) (by unfold ixNeg; omega) _ x hx, add_zero]
 
-theorem rawEv_low (lam : E) (i : ℕ) (x : Fin n) (hx : (x : ℕ) < a) : rawEv (E := E) n a c lam i x = 0 := by
-  simp only [rawEv, Pi.smul_apply, Pi.sub_apply, smul_eq_mul, sv_low n a (ixPos a i) (by unfold ixPos; omega) _ x hx,
-    sv_low n a (ixNeg a c i) (by unfold ixNeg; omega) _ x hx, sub_zero, smul_zero, mul_zero]
 
-theorem rawZ_low (pz : E) (x : Fin n) (hx : (x : ℕ) < a) : rawZ n a c pz x = 0 :=
-  sv_low n a (ixZ a c) (by unfold ixZ; omega) _ x hx
 
 end Vec
 
@@ -250,75 +235,15 @@ def AdaptedVectorsExistOverSpaces (R : Ranks) (host : Host R) (sp : @Spaces R ho
             else if (R.m - 1 - j) % 2 = 1 ∧ i' = (R.m - 1 - j) / 2 then z j
             else ev j (R.m - 1 - j - 1 - i'))) = 0
 
-theorem adapted_vectors_exist_iff (D : D7) : Seed.Frm.AdaptedVectorsExist D ↔ AdaptedVectorsExistOverSpaces D.R D.host D.sp := Iff.rfl
 
 section Key
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-theorem adapted_vector_pairing_formula (R : Ranks) (pz : E) (T : ℕ) (hpz : star pz * pz = (T : E)) (lam : E) (hlam : lam + star lam = 1) (j : ℕ)
-    (hjm : j < R.m) :
-    (∀ i < (R.m - 1 - j) / 2, ∀ l < (R.m - 1 - j) / 2,
-      Examples₂.diagForm (R.rankY j) (Examples₂.negTail (R.rankY j) ((R.m - j) / 2))
-          ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawE _ (R.N j) (R.m - 1 - j) i))
-          ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawEv _ (R.N j) (R.m - 1 - j) lam l)) = (if i = l then 1 else 0) ∧
-      Examples₂.diagForm (R.rankY j) (Examples₂.negTail (R.rankY j) ((R.m - j) / 2))
-          ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawE _ (R.N j) (R.m - 1 - j) i))
-          ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawE _ (R.N j) (R.m - 1 - j) l)) = 0 ∧
-      Examples₂.diagForm (R.rankY j) (Examples₂.negTail (R.rankY j) ((R.m - j) / 2))
-          ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawEv _ (R.N j) (R.m - 1 - j) lam i))
-          ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawEv _ (R.N j) (R.m - 1 - j) lam l)) = 0) ∧
-    ((R.m - 1 - j) % 2 = 1 →
-      Examples₂.diagForm (R.rankY j) (Examples₂.negTail (R.rankY j) ((R.m - j) / 2))
-          ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawZ _ (R.N j) (R.m - 1 - j) pz))
-          ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawZ _ (R.N j) (R.m - 1 - j) pz)) = -(T : E) ∧
-      ∀ i < (R.m - 1 - j) / 2,
-        Examples₂.diagForm (R.rankY j) (Examples₂.negTail (R.rankY j) ((R.m - j) / 2))
-            ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawZ _ (R.N j) (R.m - 1 - j) pz))
-            ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawE _ (R.N j) (R.m - 1 - j) i)) = 0 ∧
-        Examples₂.diagForm (R.rankY j) (Examples₂.negTail (R.rankY j) ((R.m - j) / 2))
-            ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawZ _ (R.N j) (R.m - 1 - j) pz))
-            ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm (rawEv _ (R.N j) (R.m - 1 - j) lam i)) = 0) ∧
-    ∀ x : Fin (R.N j) → E, ∀ i' < R.m - 1 - j,
-      Examples₂.diagForm (R.rankY j) (Examples₂.negTail (R.rankY j) ((R.m - j) / 2)) (Examples₂.extLE (R.N j) (R.rankY j) x)
-        ((Pi.basisFun E (Fin (R.rankY j))).equivFun.symm
-          (if i' < (R.m - 1 - j) / 2 then rawE _ (R.N j) (R.m - 1 - j) i'
-            else if (R.m - 1 - j) % 2 = 1 ∧ i' = (R.m - 1 - j) / 2 then rawZ _ (R.N j) (R.m - 1 - j) pz
-            else rawEv _ (R.N j) (R.m - 1 - j) lam (R.m - 1 - j - 1 - i'))) = 0 := by
-  simp only [Pi.basisFun_equivFun, LinearEquiv.refl_symm, LinearEquiv.refl_apply]
-  have hn : R.rankY j = R.N j + (R.m - 1 - j) := rank_sub R j hjm
-  have hneg : ∀ x : Fin (R.rankY j), Examples₂.negTail (R.rankY j) ((R.m - j) / 2) x =
-      decide (R.N j + (R.m - 1 - j) / 2 ≤ (x : ℕ)) := by
-    intro x
-    simp only [Examples₂.negTail, decide_eq_decide]
-    omega
-  refine ⟨fun i hi l hl => ⟨raw_ef _ _ _ _ hn hneg lam hlam hi hl, raw_ee _ _ _ _ hn hneg hi hl, raw_ff _ _ _ _ hn hneg lam hi hl⟩,
-    fun hc => ⟨raw_line_self_pairing _ _ _ _ hn hneg hc pz T hpz, fun i hi => raw_zE _ _ _ _ hn hc pz lam hi⟩, fun x i' _ => ?_⟩
-  refine diag_disj _ _ _ _ fun idx => ?_
-  by_cases hidx : (idx : ℕ) < R.N j
-  · right
-    split_ifs
-    · exact rawE_low _ _ _ _ idx hidx
-    · exact rawZ_low _ _ _ _ idx hidx
-    · exact rawEv_low _ _ _ lam _ idx hidx
-  · left
-    exact Examples₂.extLE_of_le _ _ x idx (by omega)
 
 end Key
 
-theorem adapted_vectors_exist_of_diagonal (D : D7) (h : IsG2 D) : Seed.Frm.AdaptedVectorsExist D := by
-  obtain ⟨hstar, cm, T, hT, pz, _, hpz, hy, lam, _, hlam, hsp⟩ := h
-  rw [adapted_vectors_exist_iff, hsp]
-  exact ⟨fun j i => rawE _ (D.R.N j) (D.R.m - 1 - j) i, fun j i => rawEv _ (D.R.N j) (D.R.m - 1 - j) lam i,
-    fun j => rawZ _ (D.R.N j) (D.R.m - 1 - j) pz, fun j _ hjm => adapted_vector_pairing_formula D.R pz T hpz lam hlam j hjm⟩
 
-theorem diagonal_condition_of_split_lattice (D : D7) (hstar : ∀ x : D.host.E, IsIntegral ℤ x → IsIntegral ℤ (star x))
-    (cm : CMData D.host.F D.host.E) (T : ℕ) (hT : T.Prime) (pz : D.host.E) (hpzI : IsIntegral ℤ pz)
-    (hpz : star pz * pz = (T : D.host.E))
-    (hy : ∃ y : D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F,
-      Formalism.UG.sigR cm.sig (FiniteAdeleRing (𝓞 D.host.F) D.host.F) y * y = -1) (lam : D.host.E) (hlamI : IsIntegral ℤ lam)
-    (hlam : lam + star lam = 1) (h : D.sp = spL D.R hstar cm T hT pz hpz hy lam hlam) : IsG2 D :=
-  ⟨hstar, cm, T, hT, pz, hpzI, hpz, hy, lam, hlamI, hlam, h⟩
 
 def StdLat {D : D7} (V : HSp D) : Prop :=
   ∀ x : Fin V.rank → D.host.E, x ∈ Formalism.MainNotions.StandardLattice.L0c D V ↔ ∀ i, IsIntegral ℤ (x i)
@@ -373,50 +298,6 @@ structure DiagonalEntries (D : D7) (pz lam : D.host.E) : Prop where
   lamcI : IsIntegral ℤ (star lam)
   hlam : lam + star lam = 1
 
-theorem diagonal_entries_exist (D : D7) (h : IsG2 D) : ∃ pz lam, DiagonalEntries D pz lam := by
-  obtain ⟨hstar, cm, T, hT, pz, hpzI, hpz, hy, lam, hlamI, hlam, hsp⟩ := h
-  refine ⟨pz, lam, hpzI, hstar pz hpzI, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, hlamI, hstar lam hlamI, hlam⟩
-  · rw [hsp]; exact hpz
-  · rw [hsp]; intro j; rfl
-  · rw [hsp]; intro j; rfl
-  · rw [hsp]; intro j; rfl
-  · rw [hsp]; intro j x y
-    show Examples₂.diagForm (D.R.rankY j) (Examples₂.negTail (D.R.rankY j) ((D.R.m - j) / 2))
-      ((Pi.basisFun D.host.E (Fin (D.R.rankY j))).equivFun.symm x) ((Pi.basisFun D.host.E (Fin (D.R.rankY j))).equivFun.symm y) = _
-    rw [Pi.basisFun_equivFun]
-    rfl
-  · rw [hsp]; rintro j (l : Fin (D.R.N j)) (r : Fin (D.R.rankY j))
-    show (Pi.basisFun D.host.E (Fin (D.R.rankY j))).repr
-      (Examples₂.extLE (D.R.N j) (D.R.rankY j) (Pi.basisFun D.host.E (Fin (D.R.N j)) l)) r = _
-    rw [Pi.basisFun_repr, Pi.basisFun_apply]
-    simp only [Examples₂.extLE, LinearMap.coe_mk, AddHom.coe_mk]
-    have hl := l.isLt
-    split_ifs with h1 h2 h2
-    · simp [Pi.single_apply, Fin.ext_iff, h2]
-    · simp [Pi.single_apply, Fin.ext_iff, h2]
-    · exfalso; change (r : ℕ) = (l : ℕ) at h2; change (l : ℕ) < D.R.N j at hl; omega
-    · rfl
-  · rw [hsp]; rintro i hi (r : Fin (D.R.rankY 0))
-    show (Pi.basisFun D.host.E (Fin (D.R.rankY 0))).repr (Examples₂.hypEv D.R ⟨i, hi⟩) r = _
-    rw [Pi.basisFun_repr]
-    simp only [Examples₂.hypEv, Pi.add_apply, Pi.single_apply, sv, Fin.ext_iff, Examples₂.ixP, Examples₂.ixN]
-  · rw [hsp]; rintro i hi (r : Fin (D.R.rankY 0))
-    show (Pi.basisFun D.host.E (Fin (D.R.rankY 0))).repr (hypFL D.R lam ⟨i, hi⟩) r = _
-    rw [Pi.basisFun_repr]
-    simp only [hypFL, Pi.smul_apply, Pi.add_apply, Pi.single_apply, sv, Fin.ext_iff, Examples₂.ixP, Examples₂.ixN, smul_eq_mul]
-    ring
-  · rw [hsp]; rintro (r : Fin (D.R.rankY 0))
-    show (Pi.basisFun D.host.E (Fin (D.R.rankY 0))).repr (Pi.single (Examples₂.ixZ D.R) pz) r = _
-    rw [Pi.basisFun_repr]
-    simp only [Pi.single_apply, sv, Fin.ext_iff, Examples₂.ixZ]
-  · rw [hsp]; rintro j (x : Fin (D.R.N j) → D.host.E) (r : Fin (D.R.rankY j)) hr
-    show (Pi.basisFun D.host.E (Fin (D.R.rankY j))).repr (Examples₂.extLE (D.R.N j) (D.R.rankY j) x) r = 0
-    rw [Pi.basisFun_repr]
-    exact Examples₂.extLE_of_le _ _ x r hr
-  · rw [hsp]; intro j x; exact stdLat_std hstar _ _ _ _ x
-  · rw [hsp]; intro x; exact stdLat_std hstar _ _ _ _ x
-  · rw [hsp]; intro j x; exact stdLat_std hstar _ _ _ _ x
-  · rw [hsp]; intro j x; exact stdLat_std hstar _ _ _ _ x
 
 section Cols
 
@@ -685,28 +566,6 @@ theorem hneg_of (D : D7) (j : ℕ) (hj : j < D.R.m) (n : ℕ) (x : Fin n) :
   simp only [decide_eq_decide]
   omega
 
-theorem adapted_relations_of_diagonal {D : D7} {pz lam : D.host.E} (hF : DiagonalEntries D pz lam) (j : ℕ) (hjm : j < D.R.m) :
-    Seed.Frm.IsHyperbolicFrameAt (eD D) (evD D lam) (zD D pz) j := by
-  have hn := hn_of hF j hjm
-  have hneg := hneg_of D j hjm (D.sp.Y j).rank
-  refine ⟨fun i hi l hl => ?_, fun hc => ?_, fun x i' hi' => ?_⟩
-  · simp only [vecY, hF.hT]
-    exact ⟨raw_ef _ _ _ _ hn hneg lam hF.hlam hi hl, raw_ee _ _ _ _ hn hneg hi hl, raw_ff _ _ _ _ hn hneg lam hi hl⟩
-  · simp only [vecY, hF.hT]
-    exact ⟨raw_line_self_pairing _ _ _ _ hn hneg hc pz _ hF.hpz, fun i hi => raw_zE _ _ _ _ hn hc pz lam hi⟩
-  · have hx : D.sp.iXY j x = vecY (D := D) j ⇑((D.sp.Y j).frame.repr (D.sp.iXY j x)) := (Seed.Frm.vecY_repr j _).symm
-    rw [hx]
-    simp only [vecY, hF.hT]
-    refine diag_disj _ _ _ _ fun idx => ?_
-    by_cases hidx : (idx : ℕ) < D.R.N j
-    · right
-      simp only [adaptedVector, eD, evD, zD]
-      split_ifs
-      · exact rawE_low _ _ _ _ idx hidx
-      · exact rawZ_low _ _ _ _ idx hidx
-      · exact rawEv_low _ _ _ lam _ idx hidx
-    · left
-      exact hF.iXYhi j x idx (by omega)
 
 theorem nfScal_one {D : D7} (j i : ℕ) : nfScal (D := D) (fun _ _ => (1 : D.host.E)) (fun _ => 1) j i = 1 := by
   induction i with
@@ -996,48 +855,8 @@ theorem lattice_frames_exist_of_diagonal {D : D7} {pz lam : D.host.E} (hF : Diag
   · intro i
     exact hVP ((i : ℕ) + 1) (by omega) (by omega) _ _ Pg (fun PP hPP PP' hc hne => (hPgc PP hPP PP' hc hne).1)
 
-theorem frames_exist_of_diagonal {D : D7} (h : IsG2 D) {T : Type} (Pg Sd : Finset (Pl D.host.E)) (Q : T → Finset (Pl D.host.E))
-    (hFP : FramePatch D) (hVP : VertexPatch D) (hT : ∀ PP ∈ Pg, ((D.sp.T : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal)
-    (hSd : ∀ PP ∈ Sd, PP ∉ Pg → ((2 : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal ∧ ((D.sp.T : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal)
-    (hQ : ∀ t, ∀ PP ∈ Q t, PP ∉ Pg → ((2 : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal ∧ ((D.sp.T : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal)
-    (hPgN : ∀ PP ∈ Pg, ((D.host.g 0 * D.host.g 1 : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal)
-    (hPgc : ∀ PP ∈ Pg, ∀ PP', Lev.IsConjPl PP PP' → PP' ≠ PP → PP' ∉ Pg ∧ PP' ∉ Sd ∧ ∀ t, PP' ∉ Q t) :
-    Seed.Frm.FramesExist D Pg Sd Q := by
-  obtain ⟨pz, lam, hF⟩ := diagonal_entries_exist D h
-  exact Seed.Frm.framesExist_of Pg Sd Q hT (eD D) (evD D lam) (zD D pz) (fun _ _ => 1) (fun _ => 1)
-    (fun j _ hj => adapted_relations_of_diagonal hF j hj) (fun _ _ _ => one_ne_zero) (fun _ _ => one_ne_zero)
-    (fun PP _ j _ _ i _ => by rw [nfScal_one]; exact map_one _)
-    (lattice_frames_exist_of_diagonal hF Pg Sd Q hFP hVP hSd hQ hPgN hPgc)
 
-theorem g_mem_of_typePlaces {D : D7} {pb : Fin 2 → 𝓞 D.host.E} {Pg : Finset (Pl D.host.E)}
-    (h : Formalism.IndefR.Lev.IsTypePlaces (D := D) D.host.g pb Pg) :
-    ∀ PP ∈ Pg, ((D.host.g 0 * D.host.g 1 : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := by
-  intro PP hPP
-  obtain ⟨hty, rfl⟩ := h
-  rw [mem_primesOf] at hPP
-  obtain ⟨_, hm⟩ := hPP
-  obtain ⟨i, hi⟩ : ∃ i, pb i ∈ PP.asIdeal := by
-    rcases PP.isPrime.mem_or_mem hm with h0 | h1
-    · exact ⟨0, h0⟩
-    · exact ⟨1, h1⟩
-  have hcard := hty.deg1 i PP hi
-  have hg : ((D.host.g i : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := by
-    have h0 : Nat.card (kP PP) • (1 : kP PP) = 0 := card_nsmul_eq_zero'
-    rw [hcard, nsmul_one] at h0
-    exact Ideal.Quotient.eq_zero_iff_mem.mp (by simpa using h0)
-  rw [Nat.cast_mul]
-  fin_cases i
-  · exact PP.asIdeal.mul_mem_right _ hg
-  · exact PP.asIdeal.mul_mem_left _ hg
 
-theorem frames_exist_of_diagonal_type_places {D : D7} (h : IsG2 D) {T : Type} {pb : Fin 2 → 𝓞 D.host.E}
-    (Pg Sd : Finset (Pl D.host.E)) (Q : T → Finset (Pl D.host.E)) (hPg : Formalism.IndefR.Lev.IsTypePlaces (D := D) D.host.g pb Pg)
-    (hFP : FramePatch D) (hVP : VertexPatch D)
-    (hSd : ∀ PP ∈ Sd, PP ∉ Pg → ((2 : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal ∧ ((D.sp.T : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal)
-    (hQ : ∀ t, ∀ PP ∈ Q t, PP ∉ Pg → ((2 : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal ∧ ((D.sp.T : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal)
-    (hPgc : ∀ PP ∈ Pg, ∀ PP', Lev.IsConjPl PP PP' → PP' ≠ PP → PP' ∉ Pg ∧ PP' ∉ Sd ∧ ∀ t, PP' ∉ Q t) :
-    Seed.Frm.FramesExist D Pg Sd Q :=
-  frames_exist_of_diagonal h Pg Sd Q hFP hVP (Seed.Frm.T_notMem_of_typePlaces hPg) hSd hQ (g_mem_of_typePlaces hPg) hPgc
 
 end Formalism.IndefR.Seed.FrmC
 

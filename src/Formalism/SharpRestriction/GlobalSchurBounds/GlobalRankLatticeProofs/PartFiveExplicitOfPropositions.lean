@@ -5,7 +5,6 @@ noncomputable section
 namespace Formalism.MainNotions.StandardLattice
 open NumberField Formalism.BasicNotions Finset
 
-theorem volumeY0EqualsMass_of_aux2v (D : D7) (h2v : VolumeEqMass₂ D) : BaseVolumeEqualsMass D := volume_eq_mass_at_rank D h2v
 
 section P3
 open Formalism.MainNotions.S MeasureTheory
@@ -46,13 +45,6 @@ theorem theorem_three_sigma_holds (D : D7) : SigmaDegreeBoundOfDiscreteSeriesBou
   rw [e, Real.rpow_natCast] at key
   exact key.2
 
-theorem family_theorem_three_sigma_holds {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : FamilySigmaStatement Fm := by
-  intro hS hA hE x i
-  have h := hA x i
-  unfold Adm3 at h
-  exact theorem_three_sigma_holds _ (hS x i).1
-    (by first | exact h.2 | exact h.2.1 | exact h.2.2 | exact h.2.2.1 | exact h.2.2.2 | exact h.2.2.2.1 | exact h.2.2.2.2)
-    (hE x i)
 
 end P3
 

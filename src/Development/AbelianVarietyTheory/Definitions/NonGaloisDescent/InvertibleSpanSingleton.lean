@@ -263,11 +263,6 @@ def Obj.crys (l : ℕ) [hl : Fact l.Prime] : Obj l ℤ_[l] where
     simp [this]⟩
   str := Ideal.Quotient.mk _
 
-theorem Obj.crys_quot_nontrivial (l : ℕ) [Fact l.Prime] :
-    Nontrivial ((Obj.crys l).A ⧸ (Obj.crys l).I) := by
-  change Nontrivial (ℤ_[l] ⧸ Ideal.span {(l : ℤ_[l])})
-  rw [← PadicInt.maximalIdeal_eq_span_p]
-  exact Ideal.Quotient.nontrivial_iff.2 (IsLocalRing.maximalIdeal.isMaximal _).ne_top
 
 theorem semiBC_self {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) : SemiBC f.toSemilinearMap := by
   intro Q _ _ v
@@ -308,12 +303,6 @@ def FCrys.unit (l : ℕ) (R : Type) [CommRing R] : FCrys l R where
     linear_combination (-(f.f d) ^ b * (d' : P'.A) ^ (a + b + j)) * ha' +
       (f.f d ^ (a + b + k) * (d' : P'.A) ^ a) * hb
 
-theorem FCrys.unit_effective (l : ℕ) (R : Type) [CommRing R] : (FCrys.unit l R).Effective := by
-  intro P x
-  refine ⟨P.D.φ x, fun d => ?_⟩
-  change LocalizedModule.mk (P.D.φ x) (1 : Submonoid.powers (d : P.A)) = LocalizedModule.mk _ _
-  congr 1
-  ext; simp
 
 def VBun.unit (l : ℕ) (R : Type) [CommRing R] : VBun l R := (FCrys.unit l R).toVBun
 

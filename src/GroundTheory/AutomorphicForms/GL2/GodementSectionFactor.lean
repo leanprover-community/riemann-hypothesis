@@ -311,10 +311,6 @@ theorem hasSum_partialLFunction (χ : HeckeCharacter K) (S : Finset (HeightOneSp
   · simp only [zero_mul, norm_zero, norm_mul, norm_inv]
     positivity
 
-theorem partialLFunction_empty (χ : HeckeCharacter K) {z : ℂ} (hz : 1 < z.re) :
-    partialLFunction χ ∅ z = χ.LFunction z := by
-  refine (hasSum_partialLFunction χ ∅ hz).unique ?_
-  simpa using χ.hasSum_LFunction hz
 
 theorem mem_units_adicCompletionIntegers_iff {v : HeightOneSpectrum (𝓞 K)}
     (x : (v.adicCompletion K)ˣ) :

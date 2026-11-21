@@ -67,14 +67,5 @@ def LamInputsClaim : Prop :=
       WeightFamilies.PP0v D large₂ C A * (1 + Real.log (n * wL.size)) ≤ P →
       LamInputs h j hG fn yP large₂ C A P wL (fun k => (w k).1) n
 
-theorem RestrDensity.genSup_pos {h : LawsCore T} {j : ℕ} {hG : GenFrEx (T.Q.Xo j) T.Q.c} {fn : FrameNorms T j}
-    {yP : GenericFrames T j} {ka : WeightFamilies.Wt D j} (H : RestrDensity h j hG fn yP ka) (F : (recB h).Cusp j ka)
-    (hF : F ∈ (recB h).Mlat j ka) (Z : Comp (T.Q.Xo j) T.Q.c) (hZ : evC hG Z F.1 ≠ 0) (σ : T.Q.c.F →+* ℂ) :
-    0 < genSup hG fn yP ka F.1 Z σ := by
-  obtain ⟨F', -, ⟨h1, -⟩, h2⟩ := H F hF Z hZ
-  refine lt_of_lt_of_le (lt_of_le_of_ne ((recB h).supN_nonneg j ka σ F') fun h0 => hZ ?_) (h2 σ)
-  have : F' = 0 := ((recB h).supN_eq_zero j ka σ F').1 h0.symm
-  rw [← h1, this]
-  exact evalAt_zero _ _ _
 
 end GlobalTheory.IndefiniteRowSideFullHecke.FrameNormRestrictedDensity

@@ -17,28 +17,7 @@ section Semi
 
 variable {K : Type} [Field K] {σ : K →+* ℂ} {U V W : Type} [AddCommGroup U] [Module K U] [AddCommGroup W] [Module ℂ W]
 
-theorem exists_semi_lift [AddCommGroup V] [Module ℂ V] (e : V →ₗ[ℂ] W) (he : Function.Injective e) (g : U →ₛₗ[σ] W)
-    (hg : ∀ u, g u ∈ LinearMap.range e) : ∃ j : U →ₛₗ[σ] V, ∀ u, e (j u) = g u := by
-  choose j hj using hg
-  refine ⟨{ toFun := j, map_add' := fun x y => he ?_, map_smul' := fun a x => he ?_ }, hj⟩
-  · rw [map_add, hj, hj, hj, map_add]
-  · rw [map_smul, hj, hj, map_smulₛₗ]
 
-theorem exists_equiv_of_range_eq [AddCommGroup V] [Module K V] (f : U →ₛₗ[σ] W) (g : V →ₛₗ[σ] W)
-    (hf : Function.Injective f) (hg : Function.Injective g) (h : Set.range g = Set.range f) :
-    ∃ e : U ≃ₗ[K] V, ∀ u, g (e u) = f u := by
-  have h1 : ∀ u, ∃ v, g v = f u := fun u => by
-    have : f u ∈ Set.range g := h ▸ ⟨u, rfl⟩
-    exact this
-  choose j hj using h1
-  let jl : U →ₗ[K] V :=
-    { toFun := j
-      map_add' := fun x y => hg (by rw [map_add, hj, hj, hj, map_add])
-      map_smul' := fun a x => hg (by rw [RingHom.id_apply, map_smulₛₗ, hj, hj, map_smulₛₗ]) }
-  refine ⟨LinearEquiv.ofBijective jl ⟨fun x y hxy => hf ?_, fun v => ?_⟩, hj⟩
-  · rw [← hj, ← hj]; exact congrArg g hxy
-  · obtain ⟨u, hu⟩ : g v ∈ Set.range f := h ▸ ⟨v, rfl⟩
-    exact ⟨u, hg ((hj u).trans hu)⟩
 
 theorem semi_injective_of_basis {ι : Type} [Fintype ι] (b : Basis ι K U) (g : U →ₛₗ[σ] W)
     (h : LinearIndependent ℂ fun i => g (b i)) : Function.Injective g := by
@@ -137,41 +116,9 @@ def goodForm : (Fin (B.nV ℓ) → K) →ₗ[K] B.S.Forms :=
 
 theorem goodForm_apply (u : Fin (B.nV ℓ) → K) : goodForm B ℓ u = B.S.basis.equivFun.symm ((B.vE ℓ).mulVec u) := rfl
 
-theorem mem_lvlForms_iff (f : B.S.Forms) :
-    f ∈ lvlForms B.S B.r ℓ.P ℓ.ψ ↔ B.S.basis.equivFun f ∈ B.S.lvlPart B.r ℓ.P ℓ.ψ := by
-  refine forall_congr' fun h => ?_
-  rw [← B.equivFun_act, ← map_smul, B.S.basis.equivFun.injective.eq_iff]
 
-theorem goodForm_range (hX : ∀ χ ∈ ℓ.X, IsAbsIrrChar χ) (f : B.S.Forms) :
-    (∃ u, goodForm B ℓ u = f) ↔ f ∈ lvlForms B.S B.r ℓ.P ℓ.ψ ∧ B.S.gaOp B.r (idemOf ℓ.X) f = f := by
-  have h1 := good_part_spec K B.S G B.r ℓ.X hX ℓ.P ℓ.ψ
-  have hid : idemOf ℓ.X * idemOf ℓ.X = idemOf ℓ.X := (idempotent_central K G ℓ.X hX).1
-  rw [mem_lvlForms_iff]
-  constructor
-  · rintro ⟨u, rfl⟩
-    have hm : (B.vE ℓ).mulVec u ∈ LinearMap.range (B.S.V0E B.r ℓ.X ℓ.P ℓ.ψ).mulVecLin := ⟨u, rfl⟩
-    rw [h1] at hm
-    obtain ⟨⟨z, hz⟩, hl⟩ := hm
-    refine ⟨by rw [goodForm_apply, LinearEquiv.apply_symm_apply]; exact hl, ?_⟩
-    apply B.S.basis.equivFun.injective
-    rw [← CSD.gaMat_mulVec_equivFun, goodForm_apply, LinearEquiv.apply_symm_apply, ← hz, Matrix.mulVecLin_apply,
-      Matrix.mulVec_mulVec, ← (group_action_matrix_hom K B.S G B.r).2, hid]
-  · rintro ⟨hl, he⟩
-    have hm : B.S.basis.equivFun f ∈ LinearMap.range (B.S.V0E B.r ℓ.X ℓ.P ℓ.ψ).mulVecLin := by
-      rw [h1]
-      exact ⟨⟨B.S.basis.equivFun f, by rw [Matrix.mulVecLin_apply, CSD.gaMat_mulVec_equivFun, he]⟩, hl⟩
-    obtain ⟨u, hu⟩ := hm
-    refine ⟨u, ?_⟩
-    rw [goodForm_apply, LinearEquiv.symm_apply_eq]
-    exact hu
 
-theorem goodForm_int (u : Fin (B.nV ℓ) → K) : goodForm B ℓ u ∈ intForms B.S ↔ u ∈ B.Mt ℓ := by
-  show _ ↔ (B.vE ℓ).mulVec u ∈ valLatF B.S.I B.S.Nab
-  rw [Formalism.L2.DIV.mem_valLatF]
-  rfl
 
-theorem goodForm_injective : Function.Injective (goodForm B ℓ) :=
-  B.S.basis.equivFun.symm.injective.comp (image_idempotent_spec K B.S.dim (B.S.gaMat B.r (goodAt ℓ.X ℓ.P ℓ.ψ))).1
 
 theorem csum_eq_dot (f g : B.S.Forms) :
     B.S.csum f g = star (B.S.basis.equivFun f) ⬝ᵥ B.S.H.mulVec (B.S.basis.equivFun g) := by

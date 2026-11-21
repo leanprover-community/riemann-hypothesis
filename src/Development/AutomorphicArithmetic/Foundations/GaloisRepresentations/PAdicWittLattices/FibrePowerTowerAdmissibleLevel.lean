@@ -143,11 +143,8 @@ theorem twFEt_holds : TwFEt := @pTwFEt @fEtBasic_holds @twGal_holds
 
 theorem sigmaFEt_holds : SigmaFEt := @pSigmaFEt
 
-theorem twMem_holds : TwMem.{u} := @pTwMem.{u} @splitsPts_holds @ptsOfSplits_holds @sigmaFEt_holds @twFEt_holds @twSplit_holds
 
-theorem sumFn_holds : SumFn.{u} := @pSumFn.{u}
 
-theorem memOp_holds : MemOp.{u} := @pMemOp.{u} @kNBasic_holds @plInv_holds.{u} @hopDeep_holds.{u} @hopEx_holds.{u} @twMem_holds.{u} @sumFn_holds.{u}
 
 theorem kSNice_holds : KSNice := @pKSNice @kNBasic_holds @powSm_holds @twFEt_holds @sigmaFEt_holds
 

@@ -46,22 +46,6 @@ def NonVanSym (m2 : ℕ) : Prop :=
 
 variable {Ch sel mu cst Λ}
 
-theorem oneIdx_clauses {m2 : ℕ} (h : OneCosetSym Ch sel mu cst Λ m2) (hn : NonVanSym Ch sel mu cst m2) :
-    (∀ i, i < m2 → ∀ (b : (oneIdx Λ (QE sel (mu : Chr X.F X.E X.K)) m2).β (i + 1)) (P : rowSG Pr sel mu),
-      ∃ al : (oneIdx Λ (QE sel (mu : Chr X.F X.E X.K)) m2).β i,
-        FiniteSumNonzeroLargeDepth Ch sel mu cst i P ((oneIdx Λ (QE sel (mu : Chr X.F X.E X.K)) m2).h i al P) ((oneIdx Λ (QE sel (mu : Chr X.F X.E X.K)) m2).h (i + 1) b P)) ∧
-    (∀ i, i < m2 → ∀ b b' : (oneIdx Λ (QE sel (mu : Chr X.F X.E X.K)) m2).β (i + 1), b = b') ∧
-    (∀ i, i < m2 → ∀ hh : rowSG Pr sel mu → AutY X R (i + 1),
-      (∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs → hh P ∈ stabL X.E _ (lamYat (Pr := Pr) (i + 1) P.1)) →
-      (∀ P : rowSG Pr sel mu, P.1 ∉ Pr.vGs → (∀ x ∈ lamYat (Pr := Pr) (R := R) (i + 1) P.1, (hh P)⁻¹ x ∈ lamYat (Pr := Pr) (R := R) (i + 1) P.1 ∧ ((qOf P.1 : X.E) ^ (i + 1)) • (hh P) x ∈ lamYat (Pr := Pr) (R := R) (i + 1) P.1)) →
-      (∀ P, ∃ al : (oneIdx Λ (QE sel (mu : Chr X.F X.E X.K)) m2).β i, FiniteSumNonzeroLargeDepth Ch sel mu cst i P ((oneIdx Λ (QE sel (mu : Chr X.F X.E X.K)) m2).h i al P) (hh P)) →
-      ∃ b : (oneIdx Λ (QE sel (mu : Chr X.F X.E X.K)) m2).β (i + 1),
-        ∀ P, SameDC (Pr := Pr) cst.sharp (i + 1) P.1 ((oneIdx Λ (QE sel (mu : Chr X.F X.E X.K)) m2).h (i + 1) b P) (hh P)) := by
-  refine ⟨fun i hi b P => ⟨(⟨(), by omega⟩ : {_u : Unit // i ≤ m2 + 1}), hn i hi P⟩,
-    fun i _ b b' => by cases b; cases b'; rfl,
-    fun i hi hh hstab _ hE => ⟨(⟨(), by omega⟩ : {_u : Unit // i + 1 ≤ m2 + 1}), h.surj i hi hh hstab fun P => ?_⟩⟩
-  obtain ⟨_, hP⟩ := hE P
-  exact hP
 
 end One
 

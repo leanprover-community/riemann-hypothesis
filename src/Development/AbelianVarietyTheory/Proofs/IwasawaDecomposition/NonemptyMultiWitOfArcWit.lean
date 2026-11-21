@@ -70,21 +70,6 @@ variable {Y : Model Xo c β} {A : Type} [CommRing A] [IsDomain A] {b : O →+* A
   {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {f : A →+* R} {R' : Type} [CommRing R'] {ι : R →+* R'}
   {y : Sp R' ⟶ Xo.XF c}
 
-theorem nonempty_multiWit_of_arcWit {u : R} {χ : Sp R ⟶ Y.X} (W : ArcWit Y a I f u χ) (hy : y ≫ Y.j = spMap ι ≫ χ) :
-    Nonempty (MultiWit Y a (fun _ : Fin 1 => a.be) I f (fun _ => u) ι y) := by
-  obtain ⟨t', ⟨m₁⟩⟩ := exists_sab (spMap ι) W.t
-  obtain ⟨m', hm'⟩ := sabComp pullCubComp E H _ _ _ _ _ _ _ _ W.m m₁
-  obtain ⟨m₂, hm₂⟩ : ∃ m₂ : SABMap t' Y.t (y ≫ Y.j), m₂.φ = m₁.φ ≫ W.m.φ := by
-    rw [hy]; exact ⟨m', hm'⟩
-  obtain ⟨s1, s2, s3, s4, s5, s6⟩ := W.spec
-  refine ⟨⟨W.t, t', m₁, m₂, W.P, W.φ, W.he, W.w, W.e, s1, s2, s3, s4, s5, fun F _ _ _ _ uF hF hu => ?_⟩⟩
-  obtain ⟨k₁, k₂⟩ := s6 F (uF 0) hF (hu 0)
-  refine ⟨fun x => by simpa only [Fin.prod_univ_one] using k₁ x,
-    fun s hs k p₀ σ hσ q₀ q x x' e₁ e₂ e₃ _ e₅ e₆ => k₂ (spMap s ≫ y) ?_ k p₀ σ hσ q₀ q x e₁ e₂
-      (fun z => by simpa only [Fin.prod_univ_one] using e₃ z) ?_⟩
-  · rw [Category.assoc, hy, ← Category.assoc, ← spMap_comp, ← Category.assoc, ← spMap_comp]
-    exact congrArg (fun q => spMap q ≫ χ) (RingHom.ext hs)
-  · rw [Category.assoc, ← e₆, hm₂, reassoc_of% e₅]
 
 variable {r : ℕ} {δ : Fin r → LinearMap.BilinForm ℤ a.D₀.X} {u : Fin r → R}
 
@@ -118,12 +103,5 @@ abbrev SerWit (Y : Model Xo c β) {K : Type} [Field K] {b : O →+* K} (a : ArcI
   MultiWit Y a δ (IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) (MvPowerSeries.C (σ := Fin r) (R := K))
     MvPowerSeries.X (algebraMap (MvPowerSeries (Fin r) K) (MultiRing K r)) y
 
-theorem exists_multiWit {Xo : ∀ l : Level H, Moduli Dw l} {p : ℕ} {W : ValuationSubring ℂ} {Y : LocalSystem Xo p W}
-    {i₀ : Idx H p} {Z : Mdl Y i₀} {F : DVF p} (t : CuspOn Z F) (hY : (Y Z.i).N4) {γ : t.Forms} (h : γ ∈ t.Dir) :
-    ∃ y, Nonempty (MultiWit (Y Z.i) (withForm t.a γ h) (fun _ : Fin 1 => γ.1) (Ideal.span {PowerSeries.X})
-      (PowerSeries.C (R := F.O)) (fun _ => PowerSeries.X) F.toLaurent y) := by
-  obtain ⟨x, v, _, ϖ, χ, Wt, -, -, -, -, hx, -, hfl⟩ := exists_isArc t hY h
-  obtain ⟨g, y, -, hy, -⟩ := exists_isFrame_of_flagAt hfl
-  exact ⟨y, nonempty_multiWit_of_arcWit Wt (hy.trans hx)⟩
 
 end GlobalTheory.LocM.FJ

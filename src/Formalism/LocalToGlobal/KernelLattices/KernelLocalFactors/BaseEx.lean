@@ -180,11 +180,7 @@ theorem conj_ideal (B : Ideal (𝓞 H.E)) (x : 𝓞 H.E) :
     rw [this]
     exact Ideal.smul_mem_pointwise_smul _ _ _ hy
 
-theorem host_selfDual : PI.KerIso.SelfDualI H.K H.conj H.AA0 :=
-  kernel_self_dual_of_different H.K H.E H.conj H.𝔟 (H.conj • H.𝔟) (isConj H) (conj_ideal H H.𝔟) H.𝔟_spec.1
 
-theorem host_splits (p : ℕ) (hp : p.Prime) (hs : p = 2 ∨ jacobiSym (-(H.d : ℤ)) p = 1) : PI.KerIso.SplitsAt H.K H.conj p :=
-  kernel_split_of_jacobi H.K H.E H.conj H.d p (bK H) (d_mod_eight_eq_seven H) (bK_mul H) (conj_b H) hp hs
 
 end Host
 
@@ -286,8 +282,6 @@ open Formalism.BasicNotions.Examples₂
 
 theorem tr_one : 0 < Algebra.trace ℚ H0.E (1 * H0.conj 1) := tr_pos H0 1 one_ne_zero
 
-theorem example_ideal_self_dual : PI.KerIso.SelfDualI H0.K H0.conj H0.AA0 := host_selfDual H0
-theorem two_splits : PI.KerIso.SplitsAt H0.K H0.conj 2 := host_splits H0 2 Nat.prime_two (Or.inl rfl)
 
 end Test
 

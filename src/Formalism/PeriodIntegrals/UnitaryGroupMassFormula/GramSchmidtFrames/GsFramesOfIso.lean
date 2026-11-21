@@ -214,68 +214,6 @@ lemma lift_unique {z z' : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hz'
 
 end aux
 
-theorem stabCore_of (hI : IsoCore) : StabCore := by
-  intro k r z z' hk hr hz hz' D0 y hy α hα β hβ hν hν' hay
-  have Wz := Formalism.FourierDecayAlt.P.weyl_subgroup_closed k r z
-  have Wz' := Formalism.FourierDecayAlt.P.weyl_subgroup_closed k r z'
-  have Gz := PI.UnitaryGroupMassFormula.DLm.unipotent_integral_closed k r z hz
-  have Gz' := PI.UnitaryGroupMassFormula.DLm.unipotent_integral_closed k r z' hz'
-  have hαi := Wz.inv_mem α hα
-  have hβu := Wz'.unit β hβ
-  have hαu := Wz.unit α hα
-  have hβν : β *ᵥ D0.nu' = D0.nu' := by
-    conv_lhs => rw [← hν']
-    rw [mulVec_mulVec, Matrix.mul_nonsing_inv _ hβu, one_mulVec]
-  have hαβ : ∀ u ∈ D0.U0, α *ᵥ (β *ᵥ u) = u := by
-    intro u hu
-    obtain ⟨⟨huW, huz⟩, huν⟩ := (D0.isotropic_subspace_eq u).1 hu
-    obtain ⟨⟨_, huz'⟩, huν'⟩ := (D0.isotropic_subspace_eq_primed u).1 hu
-    have hbW : inWb k r (β *ᵥ u) := uw_inWb hz'.1 hβ huW
-    have hbU : β *ᵥ u ∈ D0.U0 := by
-      refine (D0.isotropic_subspace_eq_primed _).2 ⟨⟨hbW, ?_⟩, ?_⟩
-      · conv_lhs => rw [← hβ.2.2]
-        rw [Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_UH hβ.1]; exact huz'
-      · conv_lhs => rw [← hβν]
-        rw [Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_UH hβ.1]; exact huν'
-    obtain ⟨⟨_, hbz⟩, _⟩ := (D0.isotropic_subspace_eq _).1 hbU
-    obtain ⟨v, hv, v', hv', e1⟩ := hy.2.2.2.2 (β *ᵥ u) hbU
-    obtain ⟨w, hw, w', hw', e2⟩ := hay.2.2.2.2 u hu
 
-    have e3 : y *ᵥ (β *ᵥ u + w') = α⁻¹ *ᵥ u + w := by
-      have h : α⁻¹ *ᵥ ((α * y * β) *ᵥ (u + w')) = α⁻¹ *ᵥ u + w := by
-        rw [e2, mulVec_add, uw_X hz.1 hαi hw]
-      rw [← h, mulVec_mulVec, ← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hαu,
-        Matrix.one_mul, ← mulVec_mulVec, Matrix.mulVec_add β u w', uw_X hz'.1 hβ hw']
-    have hx0 : w' - v' ∈ Xsp k r := Submodule.sub_mem _ hw' hv'
-    have e4 : y *ᵥ (w' - v') = (α⁻¹ *ᵥ u - β *ᵥ u) + (w - v) := by
-      have : w' - v' = (β *ᵥ u + w') - (β *ᵥ u + v') := by abel
-      rw [this, mulVec_sub, e3, e1]; abel
-    have hαiW : inWb k r (α⁻¹ *ᵥ u) := uw_inWb hz.1 hαi huW
-    have hαiz : herm (Hpk k r) (α⁻¹ *ᵥ u) z = 0 := by
-      conv_lhs => rw [← hαi.2.2]
-      rw [Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_UH hαi.1]; exact huz
-    have hdW : inWb k r (α⁻¹ *ᵥ u - β *ᵥ u) := by
-      intro i hi; simp [hαiW i hi, hbW i hi]
-    have hwv : w - v ∈ Xsp k r := Submodule.sub_mem _ hw hv
-    have hx00 : w' - v' = 0 := by
-      refine lift_unique hz hz' hy.2.1 hx0 fun a => ?_
-      rw [e4, hm_add_l]
-      unfold fvec
-      split_ifs with ha
-      · rw [herm_bvec_eI, herm_bvec_eI, (mem_Xsp_iff _).1 hwv _ (by simp [esI]; omega),
-          hdW _ (Or.inr (by simp [esI]; omega)), add_zero]
-      · rw [hm_sub_l, hαiz, hbz, sub_zero, herm_X_wb hwv hz.1, add_zero]
-    rw [hx00, mulVec_zero] at e4
-    have hd0 : α⁻¹ *ᵥ u - β *ᵥ u = 0 := by
-      have hd : α⁻¹ *ᵥ u - β *ᵥ u = -(w - v) := by rw [eq_neg_iff_add_eq_zero]; exact e4.symm
-      refine X_wb_zero ?_ hdW
-      rw [hd]; exact Submodule.neg_mem _ hwv
-    rw [← sub_eq_zero.1 hd0, mulVec_mulVec, Matrix.mul_nonsing_inv _ hαu, one_mulVec]
-  obtain ⟨m, hm, m', hm', e⟩ := hI k r z z' hk hr hz hz' D0 y hy α hα β hβ hν hν' hαβ
-  refine ⟨1, Gz.one_mem, m, hm, 1, Gz'.one_mem, m', hm', α, hα, β, hβ, ?_, e⟩
-  rw [Matrix.inv_eq_left_inv (Matrix.mul_one (1 : B.Mat k r))]
-  simp
-
-theorem gfStab_of_iso (hI : IsoCore) : GfStab := gfStab_of (stabCore_of hI)
 
 end PI.UnitaryGroupMassFormula.GsFr

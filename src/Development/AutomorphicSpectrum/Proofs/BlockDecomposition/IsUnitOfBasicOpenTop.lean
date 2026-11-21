@@ -239,26 +239,7 @@ section LT
 variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
   {Φ : PDF R C} {Λ : Type} [CommRing Λ]
 
-theorem ladder_tb (S : Sc Φ Λ) (Q : Poly Φ) (hQ : Q.Crit (fun _ => IdF.bot _) 0) :
-    (S.poly Q).Ladder (fun _ => IdF.top _) (fun _ => IdF.bot _) 0 where
-  le _ _ _ _ := trivial
-  ca _ _ _ _ := ⟨fun _ _ => trivial, fun _ => trivial⟩
-  cb _ _ T b := hQ T b
 
-theorem local_tens (S : Sc Φ Λ) (Y : Λ) (G : C' ⥤ C) (hu : ∀ T, IsUnit (S.ρ (G.obj T) Y))
-    (Q : Poly Φ) (hQ : Q.Crit (fun _ => IdF.bot _) 0) (Q₁ : Poly (Φ.res G)) (hQ₁ : Q₁.Crit (fun _ => IdF.bot _) 0)
-    {d : ℕ} (E : Frame Φ d) (E₁ : Frame (Φ.res G) d) (e : E.D ⟶ G.obj E₁.D)
-    (he : ∀ (i : Fin d) {T : C'} (s s' : E₁.D ⟶ T), E.τ i (e ≫ G.map s) (e ≫ G.map s') = E₁.τ i s s')
-    (h0 : ∀ x, (Φ.A.map e).hom x = 0 → ∃ n : ℕ, S.ρ _ Y ^ n * x = 0)
-    (h1 : ∀ y : Φ.A.obj (G.obj E₁.D), ∃ (n : ℕ) (x : Φ.A.obj E.D), (Φ.A.map e).hom x = S.ρ _ Y ^ n * y) (j : ℕ) :
-    Tens Λ (N := fun _ : Unit => Localization.Away Y) (M := fun _ => CH.H (Fs S) j)
-      (M' := CH.H (Fs (S.loc Y G hu)) j) fun _ n x => (mc S Y G hu n).pull j x := by
-  classical
-  exact GlobalTheory.CompanionTheory.LocBC.local_base_change (S.mor Y G hu) (S.poly Q) ((S.loc Y G hu).poly Q₁) (S.frame E) ((S.loc Y G hu).frame E₁) e
-    (fun i {T} s s' => he i s s') (fun _ _ _ h => h) (ι := Unit) (fun _ => Localization.Away Y)
-    (fun _ => LinearMap.id) (fun _ _ => IdF.top _) (fun _ _ => IdF.bot _) (fun _ => IdF.top _) (fun _ => IdF.bot _) 0
-    (fun _ => ladder_tb S Q hQ) (ladder_tb (S.loc Y G hu) Q₁ hQ₁) (fun _ n _ => le_top' S Y G hu n)
-    (fun _ n _ => le_bot' S Y G hu n) (fun _ _ _ => tensD S Y G hu e h0 h1) j
 end LT
 end GlobalTheory.CompanionTheory.KMVan
 
@@ -266,33 +247,6 @@ namespace GlobalTheory.CompanionTheory.KMVan
 section FV
 variable {R : Type} [CommRing R]
 
-theorem framed_vanish : ∀ (d : ℕ) {C : Type 1} [Category.{0} C] {Φ : PDF R C} (Q : Poly Φ)
-    (hQ : Q.Crit (fun _ => IdF.bot _) 0) (E : Frame Φ d) (n : ℕ), d < n →
-    Subsingleton (CH.H (sq (IdF.top Φ.A) (IdF.bot Φ.A)) n)
-  | 0, C, _, Φ, Q, hQ, E, n, hn => by
-    obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-    exact GlobalTheory.CompanionTheory.LocGr.H_succ_subsingleton _ E.initial m
-  | d + 1, C, _, Φ, Q, hQ, E, n, hn => by
-    obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-    have hT : ∀ r, Q.Crit (fun _ => IdF.top Φ.A) r := fun r T b => ⟨fun _ _ => trivial, fun _ => trivial⟩
-    have hB : ∀ r, Q.Crit (fun _ => IdF.bot Φ.A) r := fun r T b => hQ T b
-    obtain ⟨β, b1, b2, b3, -⟩ := GlobalTheory.T.filtration_critical_comparison_map Q E (fun _ => IdF.top Φ.A) (fun _ => IdF.bot Φ.A) 0
-      (fun _ T x _ => trivial) (hT _) (hT _) (hB _) (hB _)
-    obtain ⟨i1, i2, i3⟩ := CrystallineSemistableComparison.P.ses_cochains _ β b1 b2 b3
-    obtain ⟨δ, -, -, e1, -, e3⟩ := CrystallineSemistableComparison.P.les _ _ i1 i2 i3
-    have hC : ∀ j, d < j → Subsingleton (CH.H (Cut.P0 Q ⋙ Cut.U E ⋙ sq (IdF.top Φ.A) (IdF.bot Φ.A)) j) := fun j hj => by
-      haveI h0 : Subsingleton (CH.H (Cut.U E ⋙ sq (IdF.top Φ.A) (IdF.bot Φ.A)) j) :=
-        framed_vanish d (Cut.Q1 Q) (fun Y b => hQ Y.T b) (Cut.E1 E) j hj
-      exact (CrystallineSemistableComparison.P.adj (Cut.U E ⋙ sq (IdF.top Φ.A) (IdF.bot Φ.A)) (Cut.P0 Q) (Cut.inc E) (Cut.adj Q) j).2.subsingleton
-    have hP : Subsingleton (CH.H (Pt.U E ⋙ sq (IdF.top Φ.A) (IdF.bot Φ.A)) (m + 1)) := by
-      refine ⟨fun x y => ?_⟩
-      have key : ∀ z : CH.H (Pt.U E ⋙ sq (IdF.top Φ.A) (IdF.bot Φ.A)) (m + 1), z = 0 := fun z => by
-        haveI := hC (m + 1) (by omega)
-        haveI := hC m (by omega)
-        obtain ⟨w, rfl⟩ := (e3 m z).1 (Subsingleton.elim _ _)
-        rw [Subsingleton.elim w 0, map_zero]
-      rw [key x, key y]
-    exact (CrystallineSemistableComparison.P.adj (sq (IdF.top Φ.A) (IdF.bot Φ.A)) (Pt.U E) (Pt.S E) (Pt.adj E) (m + 1)).1.subsingleton
 end FV
 end GlobalTheory.CompanionTheory.KMVan
 
@@ -302,23 +256,6 @@ open CrystallineSemistableComparison.Pb.Site GlobalTheory.PDA GlobalTheory.Compa
 variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
   {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I}
 
-theorem polyS_crit (hp : p ≠ 0) (𝒱 : Set X.Opens) :
-    (polyS (γ := γ) (q := q) (κ := κ) hp 𝒱).Crit (fun _ => IdF.bot _) 0 := by
-  intro T b
-  have key := GlobalTheory.CompanionTheory.SiteTrCrit.repr_sum T.obj.δ b
-  refine ⟨fun h k => ?_, fun h => ?_⟩
-  · change _ ∈ (⊥ : Ideal _) at h
-    rw [Ideal.mem_bot] at h
-    have h1 : b = 0 := by
-      rw [← key]
-      exact (congrArg _ h).trans (map_zero _)
-    rw [h1]
-    exact Ideal.zero_mem _
-  · have h1 : b = 0 := by
-      ext k
-      exact h k
-    subst h1
-    exact Ideal.zero_mem _
 
 end PS
 
@@ -337,8 +274,6 @@ def polyRes (Q : Poly Φ) (W : ObjectProperty C) (hW : Cosieve W) : Poly (Φ.res
     exact ObjectProperty.hom_ext _ (hu ψ'.hom ⟨congrArg (fun f => f.hom) h3, h4⟩)
   span T z := Q.span T.obj z
 
-theorem polyRes_crit (Q : Poly Φ) (W : ObjectProperty C) (hW : Cosieve W) (hQ : Q.Crit (fun _ => IdF.bot _) 0) :
-    (polyRes Q W hW).Crit (fun _ => IdF.bot _) 0 := fun T b => hQ T.obj b
 
 end Res
 
@@ -479,17 +414,6 @@ theorem isUnit_of_basicOpen_top {B : Type} [CommRing B] (u : B)
   rw [basicOpen_eq_of_affine, PrimeSpectrum.mem_basicOpen] at h1
   exact h1 hum
 
-theorem inU_basicOpen_iff (T : Thick (nlFun γ p X q κ)) (f : Γ(X, ⊤)) :
-    InU (X.basicOpen f) T ↔ IsUnit (evT T f) := by
-  have e : (pt T).app ⊤ f = (Scheme.ΓSpecIso (CommRingCat.of (T.B ⧸ T.J))).inv.hom (evT T f) := by
-    change _ = (Scheme.ΓSpecIso (CommRingCat.of (T.B ⧸ T.J))).inv.hom
-      ((Scheme.ΓSpecIso (CommRingCat.of (T.B ⧸ T.J))).hom.hom ((pt T).appLE ⊤ ⊤ _ f))
-    rw [← CommRingCat.comp_apply, Iso.hom_inv_id]
-    simp [Scheme.Hom.appLE]
-  unfold InU
-  rw [Scheme.preimage_basicOpen, e]
-  refine ⟨isUnit_of_basicOpen_top _, fun h => ?_⟩
-  exact (Scheme.basicOpen_of_isUnit (Spec (CommRingCat.of (T.B ⧸ T.J))) (h.map (Scheme.ΓSpecIso (CommRingCat.of (T.B ⧸ T.J))).inv.hom)).ge
 end TAU
 end GlobalTheory.CompanionTheory.KMVan
 
@@ -545,9 +469,6 @@ def tau (n : ℕ) (f : Γ(X, ⊤)) (T : Thick (nlFun γ p X q κ)) : T.B := lftT
 theorem n_zero (T : Thick (nlFun γ p X q κ)) {n : ℕ} (hn : (n : R) = 0) : (n : T.B) = 0 := by
   rw [← map_natCast T.i, hn, map_zero]
 
-theorem mk_tau (T : Thick (nlFun γ p X q κ)) (n : ℕ) (f : Γ(X, ⊤)) :
-    Ideal.Quotient.mk T.J (tau n f T) = evT T f ^ n := by
-  rw [tau, map_pow, mk_lftT]
 
 theorem tau_nat {n : ℕ} (hn : (n : R) = 0) {T T' : Thick (nlFun γ p X q κ)} (φ : T ⟶ T') (f : Γ(X, ⊤)) :
     φ.φ (tau n f T) = tau n f T' := by
@@ -556,17 +477,6 @@ theorem tau_nat {n : ℕ} (hn : (n : R) = 0) {T T' : Thick (nlFun γ p X q κ)} 
   rw [mk_lftT, evT_nat φ f, ← mk_lftT T f]
   rfl
 
-theorem isUnit_tau {n : ℕ} (h0 : n ≠ 0) (hn : (n : R) = 0) (T : Thick (nlFun γ p X q κ)) (f : Γ(X, ⊤)) :
-    IsUnit (tau n f T) ↔ InU (X.basicOpen f) T := by
-  rw [inU_basicOpen_iff]
-  constructor
-  · intro h
-    have := h.map (Ideal.Quotient.mk T.J)
-    rw [mk_tau] at this
-    exact (isUnit_pow_iff h0).1 this
-  · intro h
-    refine (IsUnit.pow n ?_)
-    exact isUnit_of_mk T.δ h0 (n_zero T hn) (by rw [mk_lftT]; exact h)
 
 end TAU2
 end GlobalTheory.CompanionTheory.KMVan

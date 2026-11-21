@@ -109,11 +109,6 @@ theorem b_le_kl : L.sc.b ≤ ((runOf T S hZ).kl : ℝ) := by
 
 theorem b_le_ka : L.sc.b ≤ (runOf T S hZ).ka.size := (b_le_kl T S hZ).trans (runOf T S hZ).ka_size_ge
 
-theorem wL_le : (runOf T S hZ).wL.size * (T.TO : ℝ) ≤ 2 * ((D.R.f : ℝ) * D.R.r) * L.sc.b := by
-  refine (rn_of T S hZ).sL ?_
-  have h := (runOf T S hZ).wL_size_le
-  rw [eQ] at h
-  exact h
 
 theorem dF_le : (DF (runOf T S hZ).wL : ℝ) ≤ 2 * ((D.R.f : ℝ) * D.R.r) * L.sc.b := by
   refine (rn_of T S hZ).dL ?_
@@ -142,9 +137,6 @@ theorem eg0 : (g0 D : ℝ) = 1250 * D.R.r := by
   push_cast
   ring
 
-theorem growth_at_one_eq_zBase : WeightFamilies.PPv D L 1 1 = zBase L := by
-  unfold WeightFamilies.PPv
-  simp
 
 theorem third_hypothesis_of_params : H3 L (NonvanishingSectionCondition T) T.CP T.eP 2 0 (runOf T S hZ).wL T.TO := by
   have hR := rn_of T S hZ

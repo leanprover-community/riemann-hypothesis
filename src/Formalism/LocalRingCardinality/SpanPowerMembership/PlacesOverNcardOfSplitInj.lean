@@ -54,7 +54,6 @@ theorem exists_genU (k : Fin 2) : ∃ ω : (ZMod (H.g k))ˣ, orderOf ω = H.g k 
 
 def genU (k : Fin 2) : (ZMod (H.g k))ˣ := (exists_genU H k).choose
 
-theorem orderOf_genU (k : Fin 2) : orderOf (genU H k) = H.g k - 1 := (exists_genU H k).choose_spec
 
 structure NHyp (what₂ : Rows.Data R) : Prop where
   hsha : ∀ (p : ℕ) [Fact p.Prime] (e : ℕ), 0 < e → e < R.t →
@@ -147,8 +146,6 @@ def ndToy (what₂ : Rows.Data R) (h : NHyp H what₂) : NData R H what₂ where
   SQ_split i := i.elim
   restN_tameGenerator_generates i := i.elim
 
-theorem ndToy_chiT (what₂ : Rows.Data R) (h : NHyp H what₂) (k v) (j : Fin R.m) :
-    (ndToy H what₂ h).chiT k v j = genU H k ^ (2 * (j.1 + 1)) := rfl
 
 theorem conj_mem_algC {x : ℂ} (hx : x ∈ algebraicClosure ℚ ℂ) :
     starRingEnd ℂ x ∈ algebraicClosure ℚ ℂ :=
@@ -305,9 +302,6 @@ theorem chv_singleton (c : ℂ) : chv {c} = c := by
   rw [dif_pos h]
   exact (Multiset.singleton_inj.1 h.choose_spec).symm
 
-theorem placesOver_g_nonempty (h : ∀ k, (placesOver H.E (H.g k)).ncard = Module.finrank ℚ H.E)
-    (k : Fin 2) : (placesOver H.E (H.g k)).Nonempty :=
-  Set.nonempty_of_ncard_ne_zero (by rw [h k]; exact Module.finrank_pos.ne')
 
 open Ideal in
 open scoped Pointwise in
@@ -659,26 +653,6 @@ theorem placesOver_ncard_of_split (p : ℕ) [hp : Fact p.Prime] (hpm : p % H.con
     exact hmod
   rw [this, map_one]
 
-theorem placesOver_ncard_of_split_inj (hinj : Function.Injective R.h) (p : ℕ) [hp : Fact p.Prime]
-    (hpN : ¬ p ∣ H.condN) (hjq : jacobiSym (-(H.q : ℤ)) p = 1) (hjd : jacobiSym (-(H.d : ℤ)) p = 1)
-    (hpm : (p : ZMod (2 ^ (R.e + 2))) = 1 ∨ (p : ZMod (2 ^ (R.e + 2))) = -1) :
-    (placesOver H.E p).ncard = Module.finrank ℚ H.E := by
-  refine placesOver_ncard_of_frob H p hpN ?_
-  intro P _ _ σ hσ
-  obtain ⟨h1, h2, u, hu, h3⟩ := (H.der.frob p hpN P).2.2.1 σ hσ
-  rw [H.flPS.psAt_prime hp.out hpN] at h1
-  have hu1 : Formalism.FrobeniusOrbits.hcl R.e u = 1 := by
-    rcases hpm with h | h
-    · have : u = 1 := Units.ext (by rw [hu, h]; rfl)
-      rw [this]; rfl
-    · have : u = -1 := Units.ext (by rw [hu, h]; simp)
-      rw [this]; exact Formalism.FrobeniusOrbits.hcl_neg_one
-  refine Prod.ext (Prod.ext (Units.ext ?_) (Units.ext ?_)) ?_
-  · rw [h1, hjq]; rfl
-  · rw [h2, hjd]; rfl
-  · rw [hu1, R.toFrame.hH_apply] at h3
-    have h4 : R.h (R.iotaInv (H.gal σ).2) = R.h 0 := by rw [map_zero]; exact h3
-    exact (R.toFrame.iotaInv_eq_zero_iff _).1 (hinj h4)
 
 theorem g_split_of (hg : ∀ k, H.g k % H.condN = 1) :
     ∀ k, (placesOver H.E (H.g k)).ncard = Module.finrank ℚ H.E := by
@@ -686,20 +660,7 @@ theorem g_split_of (hg : ∀ k, H.g k % H.condN = 1) :
   have : Fact (H.g k).Prime := ⟨H.g_prime k⟩
   exact placesOver_ncard_of_split H (H.g k) (hg k)
 
-theorem g_split_of_inj (hinj : Function.Injective R.h)
-    (hg : ∀ k, ¬ H.g k ∣ H.condN ∧ jacobiSym (-(H.q : ℤ)) (H.g k) = 1 ∧
-      jacobiSym (-(H.d : ℤ)) (H.g k) = 1 ∧
-      ((H.g k : ZMod (2 ^ (R.e + 2))) = 1 ∨ (H.g k : ZMod (2 ^ (R.e + 2))) = -1)) :
-    ∀ k, (placesOver H.E (H.g k)).ncard = Module.finrank ℚ H.E := by
-  intro k
-  have : Fact (H.g k).Prime := ⟨H.g_prime k⟩
-  obtain ⟨h1, h2, h3, h4⟩ := hg k
-  exact placesOver_ncard_of_split_inj H hinj (H.g k) h1 h2 h3 h4
 
-theorem examplePrimes_split :
-    jacobiSym (-571) 127 = 1 ∧ jacobiSym (-599) 127 = 1 ∧ jacobiSym (-571) 337 = 1 ∧
-      jacobiSym (-599) 337 = 1 ∧ ((127 : ℕ) : ZMod 16) = -1 ∧ ((337 : ℕ) : ZMod 16) = 1 := by
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;> norm_num <;> decide
 
 set_option synthInstance.maxHeartbeats 400000 in
 

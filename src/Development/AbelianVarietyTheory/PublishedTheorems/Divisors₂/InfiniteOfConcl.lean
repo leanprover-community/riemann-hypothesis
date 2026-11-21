@@ -60,31 +60,7 @@ theorem neBot (n : ℕ) : (𝓝[{s : ℂ | ((n : ℝ) - 1) / 2 < s.re}] (((n : �
   have : ((n : ℂ) - 1) / 2 = ((((n : ℝ) - 1) / 2 : ℝ) : ℂ) := by push_cast; rfl
   rw [this]; simp only [Set.mem_setOf_eq, Complex.ofReal_re, le_refl]
 
-theorem infinite_of_concl {ι : Type} (n : ℕ) (c : ι → ℝ) (hc : ∀ i, 0 < c i) {R : ℂ} (hR : R ≠ 0)
-    (h : Tendsto (fun s : ℂ => (s - ((n : ℂ) - 1) / 2) * ∑' t : ι, (c t : ℂ) ^ (s + ((n : ℂ) - 1) / 2))
-      (𝓝[{s : ℂ | ((n : ℝ) - 1) / 2 < s.re}] (((n : ℂ) - 1) / 2)) (𝓝 R)) : Infinite ι := by
-  by_contra hi
-  haveI : Finite ι := not_infinite_iff_finite.1 hi
-  haveI := Fintype.ofFinite ι
-  haveI := neBot n
-  have hcont : Continuous fun s : ℂ => (s - ((n : ℂ) - 1) / 2) * ∑' t : ι, (c t : ℂ) ^ (s + ((n : ℂ) - 1) / 2) := by
-    simp only [tsum_fintype]
-    refine (continuous_id.sub continuous_const).mul (continuous_finset_sum _ fun t _ => ?_)
-    exact (continuous_id.add continuous_const).const_cpow (Or.inl (by exact_mod_cast (hc t).ne'))
-  have h2 := (hcont.tendsto (((n : ℂ) - 1) / 2)).mono_left
-    (nhdsWithin_le_nhds (s := {s : ℂ | ((n : ℝ) - 1) / 2 < s.re}))
-  have := tendsto_nhds_unique h h2
-  simp at this
-  exact hR this
 
-theorem eisensteinIsotropicLine_of_isWittFrame (hP : GlobalTheory.Published.EisensteinResidueLine) : ∃ (F E : Type) (_ : Field F) (_ : NumberField F) (_ : Field E)
-    (_ : NumberField E) (_ : Algebra F E) (σ : E →ₐ[F] E) (J : Matrix (Fin 2) (Fin 2) E) (x : Matrix (Fin 2) (Fin 1) E)
-    (T : Set (ratPts σ J)), (∀ γ : ratPts σ J, ∃! t, t ∈ T ∧ ∃ l : (AF F ⊗[F] E)ˣ,
-      (matHom _ σ J (γ * t⁻¹ : ratPts σ J).1).1 * adMat F x = l.1 • adMat F x) ∧ Infinite T := by
-  obtain ⟨F, E, _, _, _, _, _, σ, J, X, Y, x, L, a, h, T, hc, hu, hJ, hW, hx, hA, h1, h2, hT⟩ := hyps_inhabited
-  obtain ⟨R, hR, hl⟩ := hP F E σ hc hu 2 J hJ 0 X Y hW x hx L a hA h h1 h2 T hT
-  exact ⟨F, E, _, _, _, inferInstance, _, σ, J, x, T, hT,
-    infinite_of_concl 2 (fun t : T => h (t.1.1 * 1)) (fun _ => (GlobalTheory.EisLineModel.pos h1 h2).1 _) hR (hl 1)⟩
 
 end GlobalTheory.EisResLineModel
 

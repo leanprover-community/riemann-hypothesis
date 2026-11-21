@@ -115,8 +115,6 @@ instance (σ : Type) : NormedAddCommGroup (FockSp σ) :=
 
 instance (σ : Type) : InnerProductSpace ℂ (FockSp σ) := InnerProductSpace.ofCore (fockCore σ).toCore
 
-theorem fockSp_inner {σ : Type} (f g : FockSp σ) :
-    (inner ℂ f g : ℂ) = fockF (show MvPolynomial σ ℂ from g) (show MvPolynomial σ ℂ from f) := rfl
 
 theorem fock_cauchy_schwarz {σ : Type} (f g : MvPolynomial σ ℂ) : ‖fockF f g‖ ^ 2 ≤ (fockF f f).re * (fockF g g).re := by
   have h := inner_mul_inner_self_le (𝕜 := ℂ) (show FockSp σ from f) (show FockSp σ from g)
@@ -137,44 +135,8 @@ theorem fock_adjoint_bound {κ ι : Type} (p : MvPolynomial κ ℂ) (Y J : MvPol
     exact RCLike.re_le_norm (fockF Y J)
   nlinarith [mul_le_mul_of_nonneg_left h2 hYn, mul_self_le_mul_self hP hre, mul_nonneg hK hYn]
 
-theorem fockF_finset_sum_left {σ ι : Type} (s : Finset ι) (f : ι → MvPolynomial σ ℂ) (g : MvPolynomial σ ℂ) :
-    fockF (∑ i ∈ s, f i) g = ∑ i ∈ s, fockF (f i) g := by
-  exact map_sum (fockLin g) f s
 
-theorem fockF_finset_sum_right {σ ι : Type} (s : Finset ι) (f : MvPolynomial σ ℂ) (g : ι → MvPolynomial σ ℂ) :
-    fockF f (∑ i ∈ s, g i) = ∑ i ∈ s, fockF f (g i) := by
-  rw [fock_conj_symm (∑ i ∈ s, g i) f, fockF_finset_sum_left, star_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  exact (fock_conj_symm (g i) f).symm
 
-theorem fock_adjoint_exists {κ ι : Type} (V : Submodule ℂ (MvPolynomial κ ℂ)) [FiniteDimensional ℂ V]
-    (j : V →ₗ[ℂ] MvPolynomial ι ℂ) :
-    ∃ P : MvPolynomial ι ℂ →ₗ[ℂ] MvPolynomial κ ℂ,
-      (∀ F, P F ∈ V) ∧ ∀ F (v : V), fockF (P F) (v : MvPolynomial κ ℂ) = fockF F (j v) := by
-  classical
-  let V' : Submodule ℂ (FockSp κ) := V
-  haveI : FiniteDimensional ℂ V' := ‹FiniteDimensional ℂ V›
-  let e := stdOrthonormalBasis ℂ V'
-  let ev : Fin (Module.finrank ℂ V') → V := fun k => ⟨((e k : V') : FockSp κ), (e k).2⟩
-  refine ⟨∑ k, (fockLin (j (ev k))).smulRight ((ev k : V) : MvPolynomial κ ℂ), ?_, ?_⟩
-  · intro F
-    simp only [LinearMap.sum_apply, LinearMap.smulRight_apply]
-    exact Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (ev k).2
-  · intro F v
-    let v' : V' := ⟨v.1, v.2⟩
-    have hv : v = ∑ l, (inner ℂ (e l) v') • ev l := by
-      apply Subtype.ext
-      have h2 := congrArg (fun x : V' => (x : FockSp κ)) (e.sum_repr' v')
-      simp only [Submodule.coe_sum, Submodule.coe_smul] at h2 ⊢
-      exact h2.symm
-    conv_rhs => rw [hv]
-    rw [map_sum, fockF_finset_sum_right]
-    simp only [map_smul, fockF_smul_right_eq_star_mul, LinearMap.sum_apply, LinearMap.smulRight_apply,
-      fockF_finset_sum_left, fockF_smul_left', fockLin_apply]
-    refine Finset.sum_congr rfl fun l _ => ?_
-    rw [mul_comm]
-    congr 1
-    exact fock_conj_symm (v : MvPolynomial κ ℂ) ((ev l : V) : MvPolynomial κ ℂ)
 
 end Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 

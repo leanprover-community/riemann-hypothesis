@@ -181,16 +181,7 @@ def Explicit : Prop :=
     I.dp = 2 * (X.Ψ.card : ℝ) * I.qp ∧ I.g0h = 5 ^ 4 * r ∧
     I.a1 = (X.Ψ.card : ℝ) / (5 ^ 4 * rdE E ^ 2)
 
-theorem be_weight : 2 • ((I.i * I.g0h) • I.de2) + I.n1 • (2 • I.L - I.de2) = (2 * I.n1) • I.L := by
-  unfold n1 g0
-  module
 
-theorem constant_lt_t_mul_a : I.c1 < I.t * I.a1 := by
-  have h := I.frame_theta_weight_pos
-  have : I.t * I.a1 = I.a1 + I.c1 := by
-    unfold t
-    field_simp
-  linarith
 
 end ThetaIn
 

@@ -18,7 +18,6 @@ theorem parametersClosedForm_of_interfaceConditions {D : Formalism.BasicNotions.
 
 theorem growthBoundInterfaceConditions : GrowthBoundInterfaceConditions := ⟨restCols, restPre, restTCore⟩
 
-theorem asmRTCondition_of_adm {D : Formalism.BasicNotions.D7} (hA : admitted D) : RestAsmRT := rest_assumptions_of_three_interfaces hA restCols restPre restTCore
 
 theorem extendedClosedForm (D : Formalism.BasicNotions.D7) : ExtendedClosedForm D := extendedClosedForm_of_interfaceConditions fun _ => growthBoundInterfaceConditions
 

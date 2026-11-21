@@ -73,6 +73,5 @@ def entZero (D : D7) (Dx : DivX D) (Tw : TwForms D) (P : EntPl D)
     (h0 : ∀ u μ i, Subsingleton ((Tw.fm u μ).lat i).V) : KerEnt D Dx Tw :=
   zeroEnt D Dx Tw P.lam P.iL P.iL_lam P.iL_int h0
 
-theorem entZero_lam (D : D7) (Dx Tw P h0) : (entZero D Dx Tw P h0).lam = P.lam := rfl
 
 end Formalism.BasicNotions.Examples₂

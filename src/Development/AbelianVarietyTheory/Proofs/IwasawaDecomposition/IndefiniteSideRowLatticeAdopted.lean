@@ -161,30 +161,8 @@ def iota : A →ₗ[ℂ] B :=
 
 end Chain
 
-theorem jFrame_one_single {n : ℕ} (σ : K →+* ℂ) (i : Fin n) :
-    jFrame σ (1 : Matrix (Fin n) (Fin n) ℂ) (Pi.single i 1) = EuclideanSpace.basisFun (Fin n) ℂ i := by
-  ext k
-  simp [jFrame, EuclideanSpace.basisFun_apply, Pi.single_apply, Matrix.one_mulVec]
 
-theorem isCxBasis_jFrame_one {n : ℕ} (σ : K →+* ℂ) : IsCxBasis σ (jFrame σ (1 : Matrix (Fin n) (Fin n) ℂ)) := by
-  have h : (fun i => jFrame σ (1 : Matrix (Fin n) (Fin n) ℂ) (Pi.single i 1)) =
-      fun i => EuclideanSpace.basisFun (Fin n) ℂ i := funext (jFrame_one_single σ)
-  refine ⟨?_, ?_⟩
-  · rw [h]; exact (EuclideanSpace.basisFun (Fin n) ℂ).orthonormal.linearIndependent
-  · rw [h]
-    exact (EuclideanSpace.basisFun (Fin n) ℂ).toBasis.span_eq
 
-theorem isGramOf_jFrame_one [NumberField K] [StarRing K] {n : ℕ} (σ : K →+* ℂ)
-    (hσ : ∀ a, σ (star a) = starRingEnd ℂ (σ a)) :
-    IsGramOf σ (jFrame σ (1 : Matrix (Fin n) (Fin n) ℂ)) 1 := by
-  intro x y
-  simp only [jFrame, Formalism.DivisionValues.hform, Matrix.toLinearMapₛₗ₂'_apply]
-  simp [Matrix.one_mulVec, EuclideanSpace.inner_eq_star_dotProduct, dotProduct, map_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Finset.sum_eq_single i (fun j _ hj => by rw [Matrix.one_apply_ne (Ne.symm hj)]; simp) (by simp)]
-  rw [Matrix.one_apply_eq, map_one, mul_one, mul_comm]
-  congr 1
-  exact (hσ (x i)).symm
 
 def Chain.ofMap (f : EuclideanSpace ℂ (Fin 2) →ₗ[ℂ] EuclideanSpace ℂ (Fin 2)) :
     Chain 2 (EuclideanSpace ℂ (Fin 2)) (EuclideanSpace ℂ (Fin 2)) where
@@ -193,9 +171,6 @@ def Chain.ofMap (f : EuclideanSpace ℂ (Fin 2) →ₗ[ℂ] EuclideanSpace ℂ (
   top := LinearIsometryEquiv.refl _ _
   io := fun j => if j = 0 then f else LinearMap.id
 
-theorem Chain.iota_ofMap (f : EuclideanSpace ℂ (Fin 2) →ₗ[ℂ] EuclideanSpace ℂ (Fin 2)) :
-    (Chain.ofMap f).iota = f := by
-  exact LinearMap.ext fun x => rfl
 
 end GlobalTheory.CompanionTheory.Mem
 
@@ -266,73 +241,9 @@ private theorem rv0_projection_identities {K : Type} [Field K] {n d d0 : ℕ} (A
       _ = Pr * A * (L * E) := by rw [hE0]; simp only [Matrix.mul_assoc]
       _ = Pr * A * E := by rw [hLE]
 
-theorem projection_matrix_idempotent_commute {K : Type} [Field K] {n d d0 : ℕ} (A : Matrix (Fin n) (Fin n) K)
-    (E : Matrix (Fin n) (Fin d) K) (Pr : Matrix (Fin d) (Fin n) K)
-    (E0 : Matrix (Fin n) (Fin d0) K) (Pr0 : Matrix (Fin d0) (Fin n) K)
-    (h1 : Pr * E = 1) (h0 : Pr0 * E0 = 1) (hAA : A * A = A)
-    (hc : E * Pr * A = A * (E * Pr)) (hp : E0 * Pr0 = A * (E * Pr)) :
-    E * (Pr * E0) = E0 ∧ (Pr0 * E) * (Pr * E0) = 1 ∧
-      LinearMap.range (Pr * E0).mulVecLin = LinearMap.range (Pr * A * E).mulVecLin ∧
-      (Pr * A * E) * (Pr * E0) = Pr * E0 := by
-  have hLAL : E * Pr * (A * (E * Pr)) = A * (E * Pr) := by
-    calc E * Pr * (A * (E * Pr)) = E * Pr * A * (E * Pr) := by simp only [Matrix.mul_assoc]
-      _ = A * (E * (Pr * E) * Pr) := by rw [hc]; simp only [Matrix.mul_assoc]
-      _ = A * (E * Pr) := by rw [h1, Matrix.mul_one]
-  obtain ⟨hM1, hM2, -, -, hM5⟩ := rv0_projection_identities A (E * Pr) E Pr E0 Pr0 h1 rfl h0 hp hLAL
-  refine ⟨hM2, ?_, ?_, hM1⟩
-  · rw [Matrix.mul_assoc, hM2, h0]
-  · apply le_antisymm
-    · calc LinearMap.range (Pr * E0).mulVecLin
-          = LinearMap.range ((Pr * A * E) * (Pr * E0)).mulVecLin := by rw [hM1]
-        _ ≤ LinearMap.range (Pr * A * E).mulVecLin := by
-          rw [Matrix.mulVecLin_mul]; exact LinearMap.range_comp_le_range _ _
-    · calc LinearMap.range (Pr * A * E).mulVecLin
-          = LinearMap.range ((Pr * E0) * (Pr0 * E)).mulVecLin := by rw [hM5]
-        _ ≤ LinearMap.range (Pr * E0).mulVecLin := by
-          rw [Matrix.mulVecLin_mul]; exact LinearMap.range_comp_le_range _ _
 
-private theorem conjTranspose_form_pullback_eq_of_mul_eq {K : Type} [Field K] [StarRing K] {n d d0 : ℕ} (H : Matrix (Fin n) (Fin n) K)
-    (E : Matrix (Fin n) (Fin d) K) (Pr : Matrix (Fin d) (Fin n) K) (E0 : Matrix (Fin n) (Fin d0) K) (c : K)
-    (h : E * (Pr * E0) = E0) :
-    (Pr * E0)ᴴ * (c • (Eᴴ * H * E)) * (Pr * E0) = c • (E0ᴴ * H * E0) := by
-  rw [Matrix.mul_smul, Matrix.smul_mul]
-  congr 1
-  calc (Pr * E0)ᴴ * (Eᴴ * H * E) * (Pr * E0) = (E * (Pr * E0))ᴴ * H * (E * (Pr * E0)) := by
-        simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = E0ᴴ * H * E0 := by rw [h]
 
-private theorem cutLat_cutLat_eq_of_mul_eq {K : Type} [Field K] [NumberField K] {n d d0 : ℕ} (E : Matrix (Fin n) (Fin d) K)
-    (M : Matrix (Fin d) (Fin d0) K) (E0 : Matrix (Fin n) (Fin d0) K) (N : Submodule (𝓞 K) (Fin n → K))
-    (h : E * M = E0) : cutLat M (cutLat E N) = cutLat E0 N := by
-  ext x
-  simp only [cutLat, Submodule.mem_comap, LinearMap.coe_restrictScalars, Matrix.mulVecLin_apply,
-    Matrix.mulVec_mulVec, h]
 
-theorem positive_definite_irreducible_character : ImESpec → SubESpec → GaMatHom → GaMatAdj → LvlIdemSpec → IdemOfSpec → GoodAtSpec → CutOrthProj → LvlPartSpec → GoodPartSpec → LvlOpSpec → OrthProjExists → ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (v0 : InfinitePlace K), IsConjAt v0 → ∀ (S : CSD K), (S.H.map v0.embedding).PosDef → ∀ (G : Type) [Group G] [Fintype G] (r : Representation K G S.Forms), S.ActGood r → ∀ (X : Finset (G → K)), (∀ χ ∈ X, IsAbsIrrChar χ) → ∀ (P : Subgroup G) (ψ : P →* Kˣ), S.lvlE r P ψ * (S.lvlPr r P ψ * S.V0E r X P ψ) = S.V0E r X P ψ ∧ (S.goodPartProjection r X P ψ * S.lvlE r P ψ) * (S.lvlPr r P ψ * S.V0E r X P ψ) = 1 ∧ LinearMap.range (S.lvlPr r P ψ * S.V0E r X P ψ).mulVecLin = LinearMap.range (S.lvlOp r P ψ (idemOf X)).mulVecLin ∧ S.lvlOp r P ψ (idemOf X) * (S.lvlPr r P ψ * S.V0E r X P ψ) = S.lvlPr r P ψ * S.V0E r X P ψ ∧ (S.lvlPr r P ψ * S.V0E r X P ψ)ᴴ * S.lvlH r P ψ * (S.lvlPr r P ψ * S.V0E r X P ψ) = S.goodPartHermitianForm r X P ψ ∧ cutLat (S.lvlPr r P ψ * S.V0E r X P ψ) (S.lvlNab r P ψ) = S.Mt r X P ψ := by
-  intro hImE hSubE hGaHom hGaAdj hLvlIdem hIdemOf hGood hCut hLvlPart hV0 hLvlOp hOrth
-  intro K _ _ _ v0 hv0 S hpos G _ _ r hact X hX P ψ
-  obtain ⟨hlvl, -⟩ := hLvlIdem K v0 hv0 G P ψ
-  have hgood := hGood K v0 hv0 G X hX P ψ
-  obtain ⟨hidem, hcent⟩ := hIdemOf K v0 hv0 G X hX
-  obtain ⟨⟨h1, -⟩, hEP⟩ := hCut K v0 hv0 S hpos G r hact (lvlIdem P ψ) hlvl.idem hlvl.selfAdj
-  obtain ⟨⟨h0, -⟩, hE0P0⟩ := hCut K v0 hv0 S hpos G r hact (goodAt X P ψ) hgood.idem hgood.selfAdj
-  obtain ⟨-, hmul⟩ := hGaHom K S G r
-
-  have hAA : S.gaMat r (idemOf X) * S.gaMat r (idemOf X) = S.gaMat r (idemOf X) := by
-    rw [← hmul, hidem.idem]
-  have hc : S.cutE r (lvlIdem P ψ) * S.cutPr r (lvlIdem P ψ) * S.gaMat r (idemOf X) =
-      S.gaMat r (idemOf X) * (S.cutE r (lvlIdem P ψ) * S.cutPr r (lvlIdem P ψ)) := by
-    rw [hEP, ← hmul, hcent, hmul]
-  have hp : S.cutE r (goodAt X P ψ) * S.cutPr r (goodAt X P ψ) =
-      S.gaMat r (idemOf X) * (S.cutE r (lvlIdem P ψ) * S.cutPr r (lvlIdem P ψ)) := by
-    rw [hE0P0, hEP]
-    exact hmul _ _
-  obtain ⟨m1, m2, m3, m4⟩ := projection_matrix_idempotent_commute (S.gaMat r (idemOf X)) (S.cutE r (lvlIdem P ψ)) (S.cutPr r (lvlIdem P ψ))
-    (S.cutE r (goodAt X P ψ)) (S.cutPr r (goodAt X P ψ)) h1 h0 hAA hc hp
-  exact ⟨m1, m2, m3, m4, conjTranspose_form_pullback_eq_of_mul_eq S.H (S.cutE r (lvlIdem P ψ)) (S.cutPr r (lvlIdem P ψ))
-    (S.cutE r (goodAt X P ψ)) ((Nat.card P : K)⁻¹) m1,
-    cutLat_cutLat_eq_of_mul_eq (S.cutE r (lvlIdem P ψ)) (S.cutPr r (lvlIdem P ψ) * S.cutE r (goodAt X P ψ))
-    (S.cutE r (goodAt X P ψ)) S.nabLat m1⟩
 
 end GlobalTheory.CompanionTheory.Mem
 
@@ -693,18 +604,6 @@ private theorem exists_finset_sum_of_mem_V0_Mtilde {D : D7} {EE : Type} [NormedA
     exact ⟨hxM, hx0⟩
   · simp
 
-theorem rr_lat_of_stable : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (m : ℕ) (A : FamIn D.what₂.LL G Pl0 T m) (s : ℕ)
-    (EE : Type) [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE] (X : RowSide D EE)
-    (P : Subgroup G) (ψ : P →* D.what₂.LLˣ) (Zs : DefSub A.fam.amb) (S : IndefData (A.side P ψ Zs)) (tup : T → D.what₂.Tup)
-    (eRR : (Fin S.D → D.what₂.LL) ≃ₗ[D.what₂.LL] X.RR.V)
-    (jA : ∀ t, (Fin (rDim D A P ψ t) → D.what₂.LL) →ₛₗ[D.what₂.embLL] X.Amb (tup t)),
-    A.fam.Ok s → RowSideDef3 D A X P ψ Zs S tup eRR jA → X.RRDef → (∀ w, D.what₂.muAt w = tup (S.μ (D.plEq w))) →
-    (∀ μ (a : 𝓞 D.what₂.LL), ∀ y ∈ (X.Mtilde μ).carrier, D.what₂.embLL (a : D.what₂.LL) • y ∈ (X.Mtilde μ).carrier) →
-    X.RR.L = S.RR.map ((eRR : (Fin S.D → D.what₂.LL) →ₗ[D.what₂.LL] X.RR.V).restrictScalars (𝓞 D.what₂.LL)) := by
-  intro D G _ _ Pl0 T m A s EE _ _ _ X P ψ Zs S tup eRR jA hOk hX hRR hmu hstab
-  refine (GlobalTheory.CompanionTheory.MemQ.rr_lat_of_rowSide D G Pl0 T m A EE X P ψ Zs S tup eRR jA s hOk hX hmu ?_).mp hRR
-  intro w x hx
-  exact GlobalTheory.CompanionTheory.Twist.exists_finset_sum_of_mem_V0_Mtilde X hstab _ x hx
 
 end GlobalTheory.CompanionTheory.Twist
 

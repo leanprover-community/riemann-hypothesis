@@ -36,10 +36,6 @@ theorem gamma_mul (n : ℕ) (a x : AinfInv p R) : gamma n (a * x) = a ^ n * gamm
   simp only [gamma_eq_dpow]
   exact DividedPowers.dpow_mul _ Submodule.mem_top
 
-theorem gamma_mul_gamma (m n : ℕ) (x : AinfInv p R) :
-    gamma m x * gamma n x = (m + n).choose m * gamma (m + n) x := by
-  simp only [gamma_eq_dpow]
-  exact DividedPowers.mul_dpow _ Submodule.mem_top
 
 theorem gamma_gamma (m : ℕ) {n : ℕ} (hn : n ≠ 0) (x : AinfInv p R) :
     gamma m (gamma n x) = Nat.uniformBell m n * gamma (m * n) x := by

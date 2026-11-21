@@ -21,12 +21,6 @@ def monVal (B : Germ.FB S d O) (h : Germ.PS S 2 d) (w0 : O) (k : ℤ) (f : Germ.
   MvPowerSeries.constantCoeff
     (Germ.DmonOf (B.FK S) u α (f * Germ.FB.expS S ((k : S) • B.hL S h w0)))
 
-theorem monVal_natCast (B : Germ.FB S d O) (h : Germ.PS S 2 d) (w0 : O) (m : ℕ) (f : Germ.PS S 1 d)
-    {κ : Type} [Fintype κ] (u : κ → Fin d → S) (α : κ →₀ ℕ) :
-    monVal B h w0 (m : ℤ) f u α = B.nabVal S h w0 m f u (MvPolynomial.monomial α 1) := by
-  classical
-  nontriviality S
-  simp [monVal, Germ.FB.nabVal, Germ.DpolyOf, MvPolynomial.support_monomial]
 
 def IsBalBilin (B : Germ.FB S d O) (β : Germ.PS S 2 d) : Prop :=
   Germ.ev (n := 3) ![Germ.addOf (B.FK S) (Germ.pt S d 0) (Germ.pt S d 1), Germ.pt S d 2] β =

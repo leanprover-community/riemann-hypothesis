@@ -40,9 +40,6 @@ theorem ideleSymbol_diagonal_eq_one (S : Set ℕ) [IsCyclotomicExtension S K L] 
     obtain ⟨r, hr⟩ := IsCyclotomicExtension.exists_isPrimitiveRoot K L hm hm0
     exact ⟨r, hr, ideleSymbol_diagonal_apply_of_pow_eq_one a hm0 hr.pow_eq_one⟩
 
-theorem ideleSymbol_diagonal_eq_one_of_isCyclotomicExtension_singleton (m : ℕ)
-    [IsCyclotomicExtension {m} K L] (a : Kˣ) : ideleSymbol K L (diagonal K a) = 1 :=
-  ideleSymbol_diagonal_eq_one {m} a
 
 end Roots
 

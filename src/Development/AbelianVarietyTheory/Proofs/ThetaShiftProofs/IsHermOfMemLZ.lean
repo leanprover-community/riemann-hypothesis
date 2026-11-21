@@ -64,13 +64,6 @@ def embC (a : Fin d → E) : X.Ψ → Fin d → ℂ := fun τ i => τ.1 (a i)
 
 section Two
 
-theorem isIsoFam_two (G : Matrix (Fin r) (Fin r) E) (u : Fin 2 → Fin r → E) :
-    IsIsoFam G u ↔ IsIsoPair G u := Iff.rfl
-theorem Zb_two (u : Fin 2 → Fin r → E) : Zb X u = X.Zb u := rfl
-theorem LZ_two (g : ℕ) : LZ X 2 g = X.LZ g := rfl
-theorem isFreqZ_two (g : ℕ) : IsFreqZ (d := 2) X g = X.IsFreqZ g := rfl
-theorem fz_two (u : Fin 2 → Fin r → E) (g : ℕ) : fz X u g = X.fz u g := rfl
-theorem chiAt_two : chiAt (d := 2) X = X.chiAt := rfl
 
 end Two
 
@@ -162,10 +155,6 @@ theorem zmat_mulVec (u : Fin d → Fin r → E) (b : X.Ψ → Fin d → Fin d �
   rw [zmat_eq, Matrix.add_mulVec, Matrix.one_mulVec, ← Matrix.mulVec_mulVec, Am_mulVec]
   simp only [Cm_mulVec]
 
-theorem zmat_fix (u : Fin d → Fin r → E) (hu : ∀ i k, herm X.Gm (u i) (u k) = 0)
-    (b : X.Ψ → Fin d → Fin d → ℂ) (τ : X.Ψ) (i : Fin d) :
-    zmat X u b τ *ᵥ Data.emb τ.1 (u i) = Data.emb τ.1 (u i) := by
-  simp [zmat_mulVec, hermC_emb, hu]
 
 theorem zmat_unitary (u : Fin d → Fin r → E) (hu : ∀ i k, herm X.Gm (u i) (u k) = 0)
     (b : X.Ψ → Fin d → Fin d → ℂ) (hb : IsHerm b) (τ : X.Ψ) (v w : Fin r → ℂ) :
@@ -223,15 +212,6 @@ theorem nfac_Zb (u : Fin d → Fin r → E) (hu : ∀ i k, herm X.Gm (u i) (u k)
     X.nfac la (Zb X u b x) = X.nfac la x := by
   simp only [Data.nfac, dmin_Zb X u hu b hb]
 
-theorem continuous_Zb (u : Fin d → Fin r → E) (y : Frame X.Ψ r) :
-    Continuous fun b : X.Ψ → Fin d → Fin d → ℂ => Zb X u b y := by
-  refine continuous_pi fun τ => ?_
-  show Continuous fun b : X.Ψ → Fin d → Fin d → ℂ =>
-    (zmat X u b τ * mat y τ : Matrix (Fin r) (Fin r) ℂ)
-  refine Continuous.matrix_mul ?_ continuous_const
-  refine continuous_pi fun a => continuous_pi fun j => ?_
-  simp only [zmat, Matrix.of_apply]
-  fun_prop
 
 theorem flowV_uvec (u : Fin d → Fin r → E) (a : X.Ψ → Fin d → ℂ) (s : X.Ψ → ℂ) (x : Frame X.Ψ r) :
     X.flowV (uvec X u a) s x = Zb X u (fun τ i k => s τ * a τ i * conj (a τ k)) x := by

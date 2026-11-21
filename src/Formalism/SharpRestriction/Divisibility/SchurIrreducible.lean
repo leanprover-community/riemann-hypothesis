@@ -392,21 +392,11 @@ open Classical in
 
 def etaV (w : HeightOneSpectrum (𝓞 F)) : ℂ := if IsSplit (E := E) w then 1 else -1
 
-theorem etaV_sq (w : HeightOneSpectrum (𝓞 F)) : (etaV (E := E) w) ^ 2 = 1 := by
-  unfold etaV; split_ifs <;> norm_num
 
 def dvLoc (n M : ℕ) (w : HeightOneSpectrum (𝓞 F)) (s : ℂ) : ℂ :=
   ∏ i ∈ Finset.Icc 1 n,
     (1 - (etaV (E := E) w) ^ (M + n - i) * (qNorm w : ℂ) ^ (-(2 * s + i)))⁻¹
 
-theorem dvLoc_eq (n t : ℕ) (w : HeightOneSpectrum (𝓞 F)) (s : ℂ) :
-    dvLoc (E := E) n (n + t) w s = ∏ i ∈ Finset.Icc 1 n,
-      (1 - (etaV (E := E) w) ^ (t + i) * (qNorm w : ℂ) ^ (-(2 * s + i)))⁻¹ := by
-  unfold dvLoc
-  refine Finset.prod_congr rfl fun i hi => ?_
-  have hi' : i ≤ n := (Finset.mem_Icc.mp hi).2
-  have h : n + t + n - i = (t + i) + 2 * (n - i) := by omega
-  rw [h, pow_add, pow_mul, etaV_sq, one_pow, mul_one]
 
 end Helpers
 

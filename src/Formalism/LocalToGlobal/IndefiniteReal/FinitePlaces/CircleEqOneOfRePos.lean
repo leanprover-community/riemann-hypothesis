@@ -6,40 +6,6 @@ open Filter Topology
 
 namespace Formalism.IndefR.Fin.U1
 
-theorem circle_eq_one_of_re_pos (z : Circle) (h : ∀ n : ℕ, 0 < ((z ^ n : Circle) : ℂ).re) : z = 1 := by
-  set θ := Complex.arg (z : ℂ) with hθ
-  have hz : (z : ℂ) = Complex.exp (θ * Complex.I) := by
-    have := Complex.norm_mul_exp_arg_mul_I (z : ℂ)
-    rw [Circle.norm_coe, Complex.ofReal_one, one_mul] at this
-    exact this.symm
-  have hre : ∀ n : ℕ, ((z ^ n : Circle) : ℂ).re = Real.cos (n * θ) := by
-    intro n
-    rw [Circle.coe_pow, hz, ← Complex.exp_nat_mul, ← mul_assoc, ← Complex.ofReal_natCast, ← Complex.ofReal_mul,
-      Complex.exp_ofReal_mul_I_re]
-  by_cases h0 : θ = 0
-  · apply Circle.ext
-    rw [hz, h0, Complex.ofReal_zero, zero_mul, Complex.exp_zero, Circle.coe_one]
-  · exfalso
-    set t := |θ| with ht
-    have ht0 : 0 < t := abs_pos.mpr h0
-    have htpi : t ≤ Real.pi := Complex.abs_arg_le_pi _
-    set n := ⌈Real.pi / (2 * t)⌉₊ with hn
-    have h1 : Real.pi / 2 ≤ n * t := by
-      have := Nat.le_ceil (Real.pi / (2 * t))
-      rw [← hn] at this
-      have e : Real.pi / 2 = Real.pi / (2 * t) * t := by field_simp
-      rw [e]; exact mul_le_mul_of_nonneg_right this ht0.le
-    have h2 : (n : ℝ) * t < Real.pi / 2 + t := by
-      have := Nat.ceil_lt_add_one (div_nonneg Real.pi_pos.le (by positivity : (0 : ℝ) ≤ 2 * t))
-      rw [← hn] at this
-      have e : Real.pi / 2 + t = (Real.pi / (2 * t) + 1) * t := by field_simp
-      rw [e]; exact mul_lt_mul_of_pos_right this ht0
-    have hc : Real.cos (n * θ) = Real.cos (n * t) := by
-      rw [← Real.cos_abs (n * θ), abs_mul, Nat.abs_cast]
-    have := h n
-    rw [hre, hc] at this
-    have := Real.cos_nonpos_of_pi_div_two_le_of_le h1 (by linarith)
-    linarith
 
 section Defs
 

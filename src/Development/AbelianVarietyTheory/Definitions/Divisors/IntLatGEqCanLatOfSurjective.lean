@@ -40,39 +40,10 @@ def rangeSub : Submodule Γ(X, c.U.1) c.S where
   add_mem' := by rintro _ _ ⟨a, rfl⟩ ⟨b, rfl⟩; exact ⟨a + b, map_add _ a b⟩
   smul_mem' := by rintro r _ ⟨a, rfl⟩; exact ⟨r * a, by rw [map_mul, Algebra.smul_def]⟩
 
-theorem mem_rangeSub {x : c.S} : x ∈ rangeSub c ↔ x ∈ Set.range (algebraMap Γ(X, c.U.1) c.S) := Iff.rfl
 
-theorem mem_intLatG_of {h : HdR c.A} (hh : h ∈ canSet s c)
-    (hi : ∀ c₀, IsIntClass c c₀ → h c₀ ∈ Set.range (algebraMap Γ(X, c.U.1) c.S)) : h ∈ intLatG s c :=
-  Submodule.subset_span ⟨hh, hi⟩
 
-theorem mem_intLat_of {h : HdR c.A} (hh : h ∈ canSet s c)
-    (hi : ∀ ψ : LinearMap.BilinForm c.S (HdR c.A), IsPolForm (dp0 c.S) (𝟙 _) c.A (t.PP.L.pull c.φ) ψ →
-      ∀ w ∈ intLatG s c, ψ h w ∈ Set.range (algebraMap Γ(X, c.U.1) c.S)) : h ∈ intLat s c :=
-  Submodule.subset_span ⟨hh, hi⟩
 
-theorem intLatG_apply_mem {h : HdR c.A} (hh : h ∈ intLatG s c) {c₀ : primDR c.A} (hc : IsIntClass c c₀) :
-    h c₀ ∈ Set.range (algebraMap Γ(X, c.U.1) c.S) := by
-  induction hh using Submodule.span_induction with
-  | mem x hx => exact hx.2 c₀ hc
-  | zero => exact ⟨0, by simp⟩
-  | add x y _ _ hx hy => exact (rangeSub c).add_mem hx hy
-  | smul r x _ hx =>
-    rw [← algebraMap_smul c.S r x, LinearMap.smul_apply, smul_eq_mul]
-    obtain ⟨a, ha⟩ := hx
-    exact ⟨r * a, by rw [map_mul, ha]⟩
 
-theorem intLat_pair_mem {h : HdR c.A} (hh : h ∈ intLat s c) {ψ : LinearMap.BilinForm c.S (HdR c.A)}
-    (hψ : IsPolForm (dp0 c.S) (𝟙 _) c.A (t.PP.L.pull c.φ) ψ) {w : HdR c.A} (hw : w ∈ intLatG s c) :
-    ψ h w ∈ Set.range (algebraMap Γ(X, c.U.1) c.S) := by
-  induction hh using Submodule.span_induction with
-  | mem x hx => exact hx.2 ψ hψ w hw
-  | zero => exact ⟨0, by simp⟩
-  | add x y _ _ hx hy => rw [map_add, LinearMap.add_apply]; exact (rangeSub c).add_mem hx hy
-  | smul r x _ hx =>
-    rw [← algebraMap_smul c.S r x, map_smul, LinearMap.smul_apply, smul_eq_mul]
-    obtain ⟨a, ha⟩ := hx
-    exact ⟨r * a, by rw [map_mul, ha]⟩
 
 theorem intLatG_le_canLat : intLatG s c ≤ canLat s c := Submodule.span_mono fun _ hh => hh.1
 

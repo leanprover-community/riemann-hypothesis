@@ -622,10 +622,6 @@ theorem embedsBy_of_isPullback [UniversallyClosed A.hom] (hL : L.IsLB) (hA : Ver
 omit [GrpObj A] in
 theorem comp_topIso_inv_ι (g : Y' ⟶ S) : (g ≫ S.topIso.inv) ≫ (⊤ : S.Opens).ι = g := by simp
 
-theorem embeds_by_global_sections [IsAffine S] [UniversallyClosed A.hom] (hL : L.IsLB) (hA : VeryAmpleAt A L N)
-    {ι : Type} [Fintype ι] (t : ι → H0 L N) (ht : ∀ s, InSpan A.hom t s) : EmbedsBy A.hom t :=
-  (embedsBy_of_isPullback A hL hA (isAffineOpen_top S) (g := 𝟙 S ≫ S.topIso.inv)
-    (by rw [comp_topIso_inv_ι]; exact IsPullback.of_id_fst) (by simp) t ht).1
 
 theorem inSpan_iff_mem_span {a : ℤ} {T : Over S} {ι : Type} [Fintype ι]
     (t : ι → LB.Sec (LPow A L a T)) (s : LB.Sec (LPow A L a T)) :
@@ -682,14 +678,6 @@ theorem global_sections_power_over_top (hL : L.IsLB) (N : ℕ) :
 
 end Group
 
-theorem polarized_abelian_embeds_by_sections (hA : AmpleSt) {S : Scheme.{0}} [IsAffine S] [IsLocallyNoetherian S]
-    (P : PolAV S) {N : ℕ} (hN : 4 ≤ N) {ι : Type} [Fintype ι] (t : ι → H0 P.L N)
-    (ht : ∀ s, InSpan P.A.hom t s) : EmbedsBy P.A.hom t :=
-  have := P.isAb.proper
-  embeds_by_global_sections P.A P.isLB (hA S P N hN).2 t ht
 
-theorem exists_embedsBy_polAV {S : Scheme.{0}} (P : PolAV S) {U : S.Opens} (hU : IsAffineOpen U) :
-    ∃ N : ℕ, 1 ≤ N ∧ ∃ M : ℕ, ∃ s : Fin (M + 1) → LB.Sec (powOver P.A P.L U N),
-      EmbedsBy (P.A.hom ∣_ U) s := P.ample U hU
 
 end GlobalTheory.AmpleSpan

@@ -14,13 +14,6 @@ namespace UpperTheory.V.Af
 variable {K Ω : Type} [Field K] [NumberField K] [IsCMField K] [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω]
   {l : ℕ} [Fact l.Prime] {n : ℕ} {ι : Qbar l ≃+* ℂ} {r R : G K Ω →* GL (Fin n) (Qbar l)} {π : CuspSub K n}
 
-private theorem infOf_of_weights {m : Fin n → ℤ} {x : Multiset ℂ}
-    (h : (Finset.univ.val.map fun i => -m i).map (fun k : ℤ => (k : ℂ)) = x.map fun z => ((n : ℂ) - 1) / 2 - z) :
-    x = infOf m := by
-  have h2 := congrArg (Multiset.map fun z : ℂ => ((n : ℂ) - 1) / 2 - z) h
-  simp only [Multiset.map_map, Function.comp_def, sub_sub_cancel, Multiset.map_id'] at h2
-  rw [← h2, infOf]
-  exact Multiset.map_congr rfl fun i _ => by push_cast; ring
 
 end UpperTheory.V.Af
 

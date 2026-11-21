@@ -392,10 +392,6 @@ theorem ker_fontaineTheta_eq_span_p_sub_teichmuller {pflat : 𝒪♭}
     (isUnit_coeff_one_mul_p_sub_teichmuller (by rw [map_one]; exact isUnit_one) h')
   rwa [one_mul] at this
 
-theorem ker_fontaineTheta_eq_span_p_sub_teichmuller_ofCompatible (y : ℕ → 𝒪)
-    (hy : ∀ n, y (n + 1) ^ p = y n) (h0 : y 0 = p) :
-    RingHom.ker θ = Ideal.span {(p : 𝕎𝒪♭) - teichmuller p (ofCompatible p y hy)} :=
-  ker_fontaineTheta_eq_span_p_sub_teichmuller (by rw [untilt_ofCompatible, h0])
 
 variable (p) in
 
@@ -487,19 +483,7 @@ theorem isDomain_wittVector_preTilt : IsDomain 𝕎𝒪♭ :=
 theorem eq_zero_of_p_mul_eq_zero {x : 𝕎𝒪♭} (h : (p : 𝕎𝒪♭) * x = 0) : x = 0 :=
   WittVector.eq_zero_of_p_mul_eq_zero x (by rwa [mul_comm])
 
-theorem eq_zero_of_teichmuller_mul_eq_zero {ϖ : 𝒪♭} (hϖ : ϖ ≠ 0) {x : 𝕎𝒪♭}
-    (h : teichmuller p ϖ * x = 0) : x = 0 := by
-  have := isDomain_wittVector_preTilt K p
-  refine (mul_eq_zero.1 h).resolve_left fun h0 => hϖ ?_
-  rw [← teichmuller_coeff_zero p ϖ, h0, zero_coeff]
 
-theorem mem_nonZeroDivisors_of_isUnit_coeff_one {ξ : 𝕎𝒪♭} (h1 : IsUnit (ξ.coeff 1)) :
-    ξ ∈ nonZeroDivisors 𝕎𝒪♭ := by
-  have := isDomain_preTilt (K := K) p
-  have := isDomain_wittVector_preTilt K p
-  refine mem_nonZeroDivisors_of_ne_zero fun h => ?_
-  rw [h, zero_coeff] at h1
-  exact not_isUnit_zero h1
 
 theorem isHausdorff_span_of_isUnit_coeff_one {ξ : 𝕎𝒪♭} (hξ : ξ ∈ RingHom.ker θ)
     (h1 : IsUnit (ξ.coeff 1)) : IsHausdorff (Ideal.span {ξ}) 𝕎𝒪♭ := by

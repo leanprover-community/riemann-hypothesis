@@ -61,46 +61,7 @@ theorem natEq_of_gsEulerRatio_eq_one {K : FiniteSubfield} (S : Set (HeightOneSpe
   push_cast
   exact this
 
-theorem mem_Zn_zero_iff {R G M : Type*} [CommRing R] [Group G] [TopologicalSpace G] [AddCommGroup M]
-    [Module R M] [TopologicalSpace M] [IsTopologicalAddGroup M] [ContinuousConstSMul R M]
-    (rho : Representation R G M) (f : (Fin 0 → G) → M) :
-    f ∈ ReciprocityTheory.Gal.Zn rho 0 ↔ ∀ g, rho g (f Fin.elim0) = f Fin.elim0 := by
-  have hc : Continuous f := continuous_of_discreteTopology
-  have e : ∀ (j : Fin 1) (g' : Fin 1 → G), Fin.contractNth j (· * ·) g' = Fin.elim0 :=
-    fun _ _ => Subsingleton.elim _ _
-  have key : ∀ g' : Fin 1 → G, ReciprocityTheory.Gal.dn rho 0 f g' = rho (g' 0) (f Fin.elim0) - f Fin.elim0 := by
-    intro g'
-    rw [ReciprocityTheory.Gal.dn_apply]
-    have e1 : (fun i : Fin 0 => g' i.succ) = Fin.elim0 := Subsingleton.elim _ _
-    simp only [e1, e, Fin.sum_univ_one]
-    simp [sub_eq_add_neg]
-  constructor
-  · rintro ⟨_, hk⟩ g
-    have h1 := congrFun (LinearMap.mem_ker.1 hk) (fun _ => g)
-    rw [key] at h1
-    exact sub_eq_zero.1 h1
-  · intro h
-    refine ⟨hc, LinearMap.mem_ker.2 (funext fun g => ?_)⟩
-    rw [key, h (g 0), sub_self]
-    rfl
 
-theorem card_H0_eq_card_Hn_zero_alt {R G M : Type*} [CommRing R] [Group G] [TopologicalSpace G]
-    [AddCommGroup M] [Module R M] [TopologicalSpace M] [IsTopologicalAddGroup M]
-    [ContinuousConstSMul R M] (rho : Representation R G M) :
-    Nat.card (ReciprocityTheory.Gal.H0 rho) = Nat.card (ReciprocityTheory.Gal.Hn rho 0) := by
-  have hbot : (ReciprocityTheory.Gal.Bn rho 0).comap (ReciprocityTheory.Gal.Zn rho 0).subtype = ⊥ := by
-    show (⊥ : Submodule R _).comap _ = ⊥
-    rw [Submodule.comap_bot, Submodule.ker_subtype]
-  have e1 : ReciprocityTheory.Gal.Hn rho 0 ≃ ReciprocityTheory.Gal.Zn rho 0 :=
-    (Submodule.quotEquivOfEqBot _ hbot).toEquiv
-  rw [Nat.card_congr e1]
-  refine Nat.card_congr
-    { toFun := fun m => ⟨fun _ => m.1, (mem_Zn_zero_iff rho _).2 fun g => m.2 g⟩
-      invFun := fun f => ⟨f.1 Fin.elim0, fun g => ((mem_Zn_zero_iff rho f.1).1 f.2) g⟩
-      left_inv := fun m => rfl
-      right_inv := fun f => Subtype.ext (funext fun x => by
-        simp only
-        rw [Subsingleton.elim x Fin.elim0]) }
 
 section DictA
 

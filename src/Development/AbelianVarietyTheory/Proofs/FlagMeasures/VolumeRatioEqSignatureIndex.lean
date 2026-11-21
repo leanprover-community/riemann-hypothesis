@@ -136,10 +136,6 @@ theorem inMod_iff (m : ℕ) (S : Set I.Lf) (y : VA I) : InMod I m (Subtype.val '
   · rintro ⟨t, ht, z, hz, rfl⟩
     exact ⟨_, ⟨t, ht, rfl⟩, _, mem_mL.2 ⟨z, hz, rfl⟩, rfl⟩
 
-theorem mem_span_of_zmod {m : ℕ} {a : IntAf I.F I.E} (h : ZMod' I m a) : a ∈ Ideal.span {(m : IntAf I.F I.E)} := by
-  obtain ⟨t, ht, e⟩ := h
-  refine Ideal.mem_span_singleton.2 ⟨⟨t, ht⟩, Subtype.ext ?_⟩
-  simpa using e
 
 theorem sigI_mem {m : ℕ} {a : IntAf I.F I.E} (h : a ∈ Ideal.span {(m : IntAf I.F I.E)}) :
     sigI I a ∈ Ideal.span {(m : IntAf I.F I.E)} := by
@@ -239,34 +235,5 @@ theorem vol_ratio_frame {N f k s : ℕ} (hN : N = s + k + 1 + s) (hn : I.n = N) 
         have h := H1 ⟨s + a.1, by omega⟩ (by simp only; omega)
         rwa [(b4 _ a rfl).1, (b4 _ a rfl).2] at h
 
-theorem volume_ratio_eq_signature_index : ∀ (D : D7) (X : HidaSetting D),
-    (X.B.μf X.B.I.Kset).toReal / X.volK2 = Formalism.MainNotions.StandardLattice.idxSig D (D.host.g 0) (D.host.g 1) := by
-  intro D X
-  have hm := D.R.two_le_m
-  obtain ⟨a, ha⟩ := D.R.m_even
-  have hN : D.R.r = D.R.rS + D.R.k + 1 + D.R.rS := by unfold Ranks.r Ranks.rS; omega
-  have hE : Module.finrank ℚ D.host.E = 2 * D.R.f := by
-    rw [D.host.finrank_cmField, Ranks.f, Ranks.n]
-    ring
-  have hs := fun i => split_facts X.ιE (D.host.g_prime i) (D.nd.g_split i)
-  obtain ⟨i1, i2, i3⟩ := X.vectorsInLattice
-  obtain ⟨y, hy, ey⟩ := mem_mL.1 (X.ew_full _ i2)
-  refine vol_ratio_frame hN X.n_eq D.host.g D.host.g_prime D.host.g_ne (fun i => (hs i).2.1) (fun i => (hs i).2.2)
-    (by unfold Ranks.f Ranks.n; positivity) (fun i => (hs i).1.trans hE) X.B.g X.g_eq _ rfl ⟨X.ew, X.ew_int⟩ (Subtype.ext X.ew_idem)
-    (Subtype.ext X.ew_orth) (fun a => ⟨X.e0 a, (i1 a).1⟩) (fun a => ⟨X.f0 a, (i1 a).2⟩) ⟨X.z0, i2⟩
-    (fun i => ⟨X.bw i, (i3 i).1⟩) (fun i => ⟨X.bwd i, (i3 i).2⟩) ⟨⟨y, hy⟩, Subtype.ext ?_⟩
-    (fun a c => ⟨mem_span_of_zmod (X.gramIntegral a c).1, mem_span_of_zmod (X.gramIntegral a c).2.1, mem_span_of_zmod ?_⟩)
-    (mem_span_of_zmod X.formsAtZero.1) (fun a => ⟨mem_span_of_zmod (X.formsAtZero.2 a).1, mem_span_of_zmod (X.formsAtZero.2 a).2⟩)
-    (fun i => ⟨mem_span_of_zmod (X.weightVectorsIntegral i).1, mem_span_of_zmod (X.weightVectorsIntegral i).2.1, fun a =>
-      ⟨mem_span_of_zmod ((X.weightVectorsIntegral i).2.2 a).1, mem_span_of_zmod ((X.weightVectorsIntegral i).2.2 a).2.1,
-        mem_span_of_zmod ((X.weightVectorsIntegral i).2.2 a).2.2.1, mem_span_of_zmod ((X.weightVectorsIntegral i).2.2 a).2.2.2⟩⟩)
-    (fun i j => mem_span_of_zmod ?_) (fun i => Subtype.ext (X.bw_w i).symm) X.B.μf
-  · refine ey.trans ?_
-    show _ = (((X.B.g : ℕ) : IntAf X.B.I.F X.B.I.E) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • y
-    rw [Subring.coe_natCast]
-  · have h := (X.gramIntegral a c).2.2
-    split_ifs at h ⊢ <;> exact h
-  · have h := X.bw_dual i j
-    split_ifs at h ⊢ <;> exact h
 
 end GlobalTheory.RowIndex

@@ -10,7 +10,5 @@ open GlobalTheory.RoadU
 
 namespace GlobalTheory.Row9
 
-theorem coreAll_of_rowStarCore : Inputs → GlobalTheory.RoadW.RowStarCore → CoreAll :=
-  fun hI hR => GlobalTheory.RoadU.coreAll_of_core hI (GlobalTheory.RoadW.core_of_rowStarCore hR)
 
 end GlobalTheory.Row9

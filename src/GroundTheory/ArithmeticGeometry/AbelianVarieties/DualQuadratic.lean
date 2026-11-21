@@ -19,9 +19,6 @@ theorem homDeg_toHom (φ : Isogeny E E') : homDeg φ.toHom = φ.degree := by
 
 theorem homDeg_zero : homDeg (0 : isogHom E E') = 0 := by rw [homDeg, dif_pos rfl]
 
-theorem homDeg_pos {Q : isogHom E E'} (hQ : Q ≠ 0) : 0 < homDeg Q := by
-  rw [homDeg, dif_neg hQ]
-  exact_mod_cast (isogOfHom Q hQ).degree_pos
 
 theorem mulIsogeny_toHom (n : ℤ) (hn : n ≠ 0) :
     (mulIsogeny E n hn).toHom = n • (homId : isogEnd E) :=

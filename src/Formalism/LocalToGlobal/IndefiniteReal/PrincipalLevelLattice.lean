@@ -15,11 +15,8 @@ variable {Bs : DefBase K} {A : DefAmb Bs} (X : CxData A) {fc : DefSub A → DefF
 
 def principalHermitianLattice : Formalism.BasicNotions.HLat K := toHLat (X.XE cr b) (X.data cr b).RR
 
-theorem hermitian_lattice_space_eq : (principalHermitianLattice X cr b).V = (Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) := rfl
 
-theorem hermitian_lattice_frame_eq : (principalHermitianLattice X cr b).X = (X.XE cr b) := rfl
 
-theorem hermitian_lattice_eq_data : (principalHermitianLattice X cr b).L = (X.data cr b).RR := rfl
 
 def jEEx (σ : K →+* ℂ) : (Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) →ₛₗ[σ] X.EE :=
   (X.iC cr b Bs.μ0).comp (cptL σ _)
@@ -33,26 +30,7 @@ theorem cpt_single (σ : K →+* ℂ) {n : ℕ} (i : Fin n) : cpt σ (Pi.single 
   · subst h; simp [cpt]
   · simp [cpt, Pi.single_apply, h]
 
-theorem jEEx_injective (h2 : X.H2 cr b) (σ : K →+* ℂ) : Function.Injective (jEEx X cr b σ) := by
-  intro x y hxy
-  rw [jEEx_apply, jEEx_apply] at hxy
-  have h := h2.1 hxy
-  funext i
-  exact σ.injective (by simpa [cpt] using congrFun h i)
 
-theorem span_jEEx (h2 : X.H2 cr b) (σ : K →+* ℂ) :
-    Submodule.span ℂ (Set.range (jEEx X cr b σ)) = X.EEl b := by
-  rw [← h2.2.2]
-  apply le_antisymm
-  · rw [Submodule.span_le]
-    rintro _ ⟨x, rfl⟩
-    rw [jEEx_apply]
-    exact LinearMap.mem_range_self _ _
-  · rw [LinearMap.range_eq_map, ← (Pi.basisFun ℂ (Fin ((lv (fc X.zs) b).dQ Bs.μ0))).span_eq, Submodule.map_span,
-      Submodule.span_le]
-    rintro _ ⟨_, ⟨k, rfl⟩, rfl⟩
-    refine Submodule.subset_span ⟨Pi.single k 1, ?_⟩
-    rw [jEEx_apply, cpt_single, Pi.basisFun_apply]
 
 structure RowsId (c : ℂ →+* ℂ) (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℂ E] where
   c_cases : c = RingHom.id ℂ ∨ c = starRingEnd ℂ
@@ -135,14 +113,6 @@ theorem exists_twist (σ : K →+* ℂ) (hv : InfinitePlace.mk σ = Bs.v0) :
     rw [← h]
     simp [NumberField.ComplexEmbedding.conjugate_coe_eq]
 
-theorem mk_eq_of_twist (σ : K →+* ℂ) (hcc : c = RingHom.id ℂ ∨ c = starRingEnd ℂ) (hc : ∀ a, Bs.v0.embedding a = c (σ a)) :
-    InfinitePlace.mk σ = Bs.v0 := by
-  rcases hcc with rfl | rfl
-  · have h : Bs.v0.embedding = σ := RingHom.ext fun a => by simpa using hc a
-    rw [← h, InfinitePlace.mk_embedding]
-  · have h : Bs.v0.embedding = NumberField.ComplexEmbedding.conjugate σ :=
-      RingHom.ext fun a => by rw [hc a, NumberField.ComplexEmbedding.conjugate_coe_eq]
-    rw [← InfinitePlace.mk_conjugate_eq, ← h, InfinitePlace.mk_embedding]
 
 def jEE (h2 : X.H2 cr b) (I : RowsId X b c E) (hn : 0 < X.nP b) (σ : K →+* ℂ) (hc : ∀ a, Bs.v0.embedding a = c (σ a)) :
     (Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) →ₛₗ[σ] E where
@@ -159,11 +129,6 @@ theorem e_jEE (h2 : X.H2 cr b) (I : RowsId X b c E) (hn : 0 < X.nP b) (σ : K �
     (x : Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) : I.e (jEE X cr b h2 I hn σ hc x) = jEEx X cr b Bs.v0.embedding x := by
   rw [jEE_apply, e_rowsMap, jEEx_apply]
 
-theorem jEE_injective (h2 : X.H2 cr b) (I : RowsId X b c E) (hn : 0 < X.nP b) (σ : K →+* ℂ)
-    (hc : ∀ a, Bs.v0.embedding a = c (σ a)) : Function.Injective (jEE X cr b h2 I hn σ hc) := by
-  intro x y hxy
-  apply jEEx_injective X cr b h2 Bs.v0.embedding
-  rw [← e_jEE X cr b h2 I hn σ hc x, ← e_jEE X cr b h2 I hn σ hc y, hxy]
 
 theorem jEE_basis (h2 : X.H2 cr b) (I : RowsId X b c E) (hn : 0 < X.nP b) (σ : K →+* ℂ) (hc : ∀ a, Bs.v0.embedding a = c (σ a)) :
     LinearIndependent ℂ (fun i => jEE X cr b h2 I hn σ hc (Pi.basisFun K (Fin ((lv (fc X.zs) b).dQ Bs.μ0)) i)) ∧
@@ -230,38 +195,10 @@ theorem jEE_norm (h2 : X.H2 cr b) (I : RowsId X b c E) (hn : 0 < X.nP b) (σ : K
   rw [← Complex.ofReal_sum]
   exact (Complex.ofReal_re _).symm
 
-theorem jEE_norm_mk (h2 : X.H2 cr b) (I : RowsId X b c E) (hn : 0 < X.nP b) (σ : K →+* ℂ) (hc : ∀ a, Bs.v0.embedding a = c (σ a))
-    (x : Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) :
-    Formalism.HermitianLatticesTheory.normAt (Pi.basisFun K _) (X.XE cr b) (InfinitePlace.mk σ) x = ‖jEE X cr b h2 I hn σ hc x‖ := by
-  rw [mk_eq_of_twist σ I.c_cases hc]
-  exact jEE_norm X cr b h2 I hn σ hc x
 
-theorem embedding_norm_eq_lattice_norm (h2 : X.H2 cr b) (I : RowsId X b c E) (hn : 0 < X.nP b) (σ : K →+* ℂ) (hc : ∀ a, Bs.v0.embedding a = c (σ a))
-    (x : (principalHermitianLattice X cr b).V) :
-    Formalism.HermitianLatticesTheory.normAt (principalHermitianLattice X cr b).b (principalHermitianLattice X cr b).X (InfinitePlace.mk σ) x = ‖jEE X cr b h2 I hn σ hc x‖ :=
-  jEE_norm_mk X cr b h2 I hn σ hc x
 
-theorem embedding_of_lattice_basis_is_basis (h2 : X.H2 cr b) (I : RowsId X b c E) (hn : 0 < X.nP b) (σ : K →+* ℂ)
-    (hc : ∀ a, Bs.v0.embedding a = c (σ a)) :
-    LinearIndependent ℂ (fun i => jEE X cr b h2 I hn σ hc ((principalHermitianLattice X cr b).b i)) ∧
-      Submodule.span ℂ (Set.range (fun i => jEE X cr b h2 I hn σ hc ((principalHermitianLattice X cr b).b i))) = ⊤ :=
-  jEE_basis X cr b h2 I hn σ hc
 
-theorem majAt_off (hW : (lv (fc X.zs) b).WF) (h2 : X.H2 cr b) (hp : X.H4pos) (v : InfinitePlace K) (hv : v ≠ Bs.v0)
-    (x y : Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) :
-    Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K _) (X.XE cr b) v x y =
-      ∑ p, ((X.κ v * ∏ j, X.lam j Bs.μ0 p v : ℝ) : ℂ) *
-        Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K _) ((lv (fc X.zs) b).XQ Bs.μ0) v
-          ((partPr (lv (fc X.zs) b) Bs.μ0 p).mulVec x) ((partPr (lv (fc X.zs) b) Bs.μ0 p).mulVec y) :=
-  (rowXE_spec (Df := lv (fc X.zs) b) hW _ (X.gramE_unit cr b h2 (hp.2.2 b)) X.κ hp.1
-    (fun j p v => X.lam j Bs.μ0 p v) (fun j p v => hp.2.1 j Bs.μ0 p v)).2.2 v hv x y
 
-theorem majAt_off_part (hW : (lv (fc X.zs) b).WF) (h2 : X.H2 cr b) (hp : X.H4pos) (ho : X.PartsOrth b (fc := fc)) (v : InfinitePlace K)
-    (hv : v ≠ Bs.v0) (p : Bs.Ix) (x : Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) (hx : x ∈ (lv (fc X.zs) b).Qp Bs.μ0 p)
-    (y : Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) :
-    Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K _) (X.XE cr b) v x y =
-      ((X.κ v * ∏ j, X.lam j Bs.μ0 p v : ℝ) : ℂ) * Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K _) ((lv (fc X.zs) b).XQ Bs.μ0) v x y :=
-  rowXE_part (Df := lv (fc X.zs) b) hW _ (X.gramE_unit cr b h2 (hp.2.2 b)) X.κ hp.1 (fun j p v => X.lam j Bs.μ0 p v) (fun j p v => hp.2.1 j Bs.μ0 p v) v hv (ho v hv) p x hx y
 
 theorem RR_lattice (hW : (lv (fc X.zs) b).WF) (h0 : X.H0) (h2 : X.H2 cr b) (hr : X.RATmu cr b) :
     Submodule.IsLattice K (principalHermitianLattice X cr b).L ∧ ∀ w : HeightOneSpectrum (𝓞 K),
@@ -269,22 +206,7 @@ theorem RR_lattice (hW : (lv (fc X.zs) b).WF) (h0 : X.H0) (h2 : X.H2 cr b) (hr :
         Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (matLat (X.rowMat cr b (X.μ w)) ((lv (fc X.zs) b).abelian₂ (X.μ w))) :=
   RR_spec hW (X.data cr b) h0 (fun t => (X.rowMat_bij cr b h2 hr t).2)
 
-theorem principal_hermitian_lattice_good (hW : (lv (fc X.zs) b).WF) (h0 : X.H0) (h2 : X.H2 cr b) (hr : X.RATmu cr b) (hp : X.H4pos) :
-    (principalHermitianLattice X cr b).Good := by
-  obtain ⟨hL, -⟩ := RR_lattice X cr b hW h0 h2 hr
-  exact ⟨frames X cr b hW h2 hp, hL.fg, hL.span_eq_top⟩
 
-theorem mem_matLat_iff (h2 : X.H2 cr b) (hr : X.RATmu cr b) (t : Bs.Tup) (y : Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) :
-    y ∈ matLat (X.rowMat cr b t) ((lv (fc X.zs) b).abelian₂ t) ↔
-      jEEx X cr b Bs.v0.embedding y ∈ (fun z => X.iC cr b t (cpt Bs.v0.embedding z)) '' ((lv (fc X.zs) b).abelian₂ t) := by
-  constructor
-  · rintro ⟨z, hz, rfl⟩
-    exact ⟨z, hz, (X.key_row cr b h2 hr t z).symm⟩
-  · rintro ⟨z, hz, hzy⟩
-    refine ⟨z, hz, jEEx_injective X cr b h2 Bs.v0.embedding ?_⟩
-    show X.iC cr b Bs.μ0 (cpt Bs.v0.embedding ((X.rowMat cr b t).mulVec z)) = jEEx X cr b Bs.v0.embedding y
-    rw [X.key_row cr b h2 hr t z]
-    exact hzy
 
 theorem RR_mem (hW : (lv (fc X.zs) b).WF) (h0 : X.H0) (h2 : X.H2 cr b) (hr : X.RATmu cr b)
     (x : Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) :
@@ -323,21 +245,6 @@ theorem RR_mem (hW : (lv (fc X.zs) b).WF) (h0 : X.H0) (h2 : X.H2 cr b) (hr : X.R
     obtain ⟨s, hs, hsx⟩ := (key w _ x).1 h1
     exact hs (hIp ((hmem s).2 hsx))
 
-theorem RR_mem_span (hW : (lv (fc X.zs) b).WF) (h0 : X.H0) (h2 : X.H2 cr b) (hr : X.RATmu cr b)
-    (x : Fin ((lv (fc X.zs) b).dQ Bs.μ0) → K) :
-    x ∈ (principalHermitianLattice X cr b).L ↔ ∀ w : HeightOneSpectrum (𝓞 K), ∃ d : 𝓞 K, d ∉ w.asIdeal ∧
-      d • x ∈ Submodule.span (𝓞 K) {y | jEEx X cr b Bs.v0.embedding y ∈
-        (fun z => X.iC cr b (X.μ w) (cpt Bs.v0.embedding z)) '' ((lv (fc X.zs) b).abelian₂ (X.μ w))} := by
-  have hs : ∀ t, Submodule.span (𝓞 K) {y | jEEx X cr b Bs.v0.embedding y ∈
-      (fun z => X.iC cr b t (cpt Bs.v0.embedding z)) '' ((lv (fc X.zs) b).abelian₂ t)} =
-      matLat (X.rowMat cr b t) ((lv (fc X.zs) b).abelian₂ t) := fun t => by
-    have : {y | jEEx X cr b Bs.v0.embedding y ∈
-        (fun z => X.iC cr b t (cpt Bs.v0.embedding z)) '' ((lv (fc X.zs) b).abelian₂ t)} =
-        (matLat (X.rowMat cr b t) ((lv (fc X.zs) b).abelian₂ t) : Set _) := by
-      ext y; exact (mem_matLat_iff X cr b h2 hr t y).symm
-    rw [this, Submodule.span_eq]
-  simp only [hs]
-  exact RR_mem X cr b hW h0 h2 hr x
 
 end Formalism.IndefR.Cx.PrincipalLevelLattice
 

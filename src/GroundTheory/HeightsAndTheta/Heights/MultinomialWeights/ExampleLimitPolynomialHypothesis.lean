@@ -440,11 +440,7 @@ def HostPrimes.ex : HostPrimes Shape.ex where
     have h' : ¬ p % 4 = 1 := by simpa using h
     simp [h', conjSwap]
 
-theorem HostPrimes.ex_good_split : HostPrimes.ex.good 5 ∧ HostPrimes.ex.splits 5 = true := by
-  refine ⟨⟨by norm_num, by decide⟩, by decide⟩
 
-theorem HostPrimes.ex_good_inert : HostPrimes.ex.good 3 ∧ HostPrimes.ex.splits 3 = false := by
-  refine ⟨⟨by norm_num, by decide⟩, by decide⟩
 
 def EndData.ex : EndData Shape.ex where
   toHostPrimes := HostPrimes.ex
@@ -466,80 +462,19 @@ def EndData.ex : EndData Shape.ex where
 
 def Shape.exWeight : Shape.ex.Var → ℝ := fun v => if (v.2 : ℕ) = 0 then 1 else 0
 
-theorem Shape.exWeight_hyp : Shape.ex.WeightHyp Shape.exWeight 1 := by
-  refine ⟨by norm_num, ?_, ?_, ?_⟩
-  · intro τ a b hab
-    have ha : (a : ℕ) = 0 := by
-      have : (b : ℕ) < 2 := b.isLt
-      have : (a : ℕ) < (b : ℕ) := hab
-      omega
-    have hb : (b : ℕ) ≠ 0 := by
-      have : (a : ℕ) < (b : ℕ) := hab
-      omega
-    simp [Shape.exWeight, ha, hb]
-  · intro τ
-    simp [Shape.gapAt, Shape.exWeight, Shape.ex]
-  · intro τ i hi l hl
-    rw [show Shape.ex.small = Shape.ex.top from if_pos (by decide)] at hi
-    have hi' : (i : ℕ) < 1 := (Finset.mem_filter.mp hi).2
-    have hi0 : (i : ℕ) = 0 := by omega
-    have hl0 : (l : ℕ) ≠ 0 := by
-      intro h; exact hl (Fin.ext (by omega))
-    simp [Shape.exWeight, hi0, hl0]
 
 def Shape.exDecompQ : Fin Shape.ex.N → Fin Shape.ex.f → Shape.ex.Poly :=
   fun k τ => if (k : ℕ) = 0 then X (τ, ⟨0, by decide⟩) ^ Shape.ex.D else 0
 
-theorem Shape.exDecomp :
-    Shape.ex.IsDecomp
-      (∑ k : Fin Shape.ex.N, ∑ τ, Shape.ex.pSum ((k : ℕ) + 1) τ * Shape.exDecompQ k τ)
-      Shape.exDecompQ := by
-  refine ⟨fun k τ => ?_, rfl⟩
-  by_cases hk : (k : ℕ) = 0
-  · simp only [Shape.exDecompQ, hk, Nat.sub_zero, if_true]
-    simpa using (isHomogeneous_X ℝ (τ, (⟨0, by decide⟩ : Fin Shape.ex.N))).pow Shape.ex.D
-  · simp only [Shape.exDecompQ, hk]
-    exact isHomogeneous_zero _ _ _
 
-theorem EndData.ex_hfl : EndData.ex.HFlInput :=
-  ⟨ℝ, inferInstance, inferInstance, LinearMap.id, 0, fun _ => rfl, fun _ => by simp⟩
 
-theorem EndData.example_flag_height_vanishes : EndData.ex.FlagHeightVanishesAtWalls := by
-  refine ⟨fun u _ _ => ?_, fun u _ => ?_⟩ <;>
-    simp [EndData.ex, Shape.Fu, Shape.linForm]
 
-theorem EndData.ex_propF : EndData.ex.PropF 1 := by
-  intro τ Q _ _
-  have h3 : (0 : ℝ) ≤ Real.log (1 * 3) := Real.log_nonneg (by norm_num)
-  simp only [EndData.ex, LinearMap.zero_apply, abs_zero]
-  have : (0 : ℝ) ≤ 4 * (Shape.ex.N : ℝ) * (Real.log (1 * 3) + 1) := by positivity
-  linarith
 
-theorem EndData.ex_prop7cB (r0 : ℝ) : EndData.ex.Prop7cB r0 1 := by
-  intro A0 hA
-  have h0 : EndData.ex.aB ⌊(1 : ℝ)⌋₊ = fun _ => 0 := by
-    funext B
-    simp [EndData.aB, EndData.goodIoc, EndData.ex]
-  rw [h0] at hA
-  have : A0 = 0 := tendsto_nhds_unique hA tendsto_const_nhds
-  subst this
-  have : (0 : ℝ) ≤ Real.log 1 := by simp
-  have : (0 : ℝ) ≤ |r0| := abs_nonneg _
-  linarith
 
 def LimitData.ex : LimitData Shape.ex := ⟨fun _ _ => 0, fun _ _ => 0, 0⟩
 
-theorem LimitData.example_limit_polynomial_hypothesis (B0 : ℕ) : LimitData.ex.LimitPolynomialHypothesis EndData.ex B0 :=
-  ⟨⟨0, fun _ _ => by simp [LimitData.ex]⟩, fun _ => by simp [LimitData.ex, EndData.ex]⟩
 
-theorem LimitData.example_uniform_small_shift_bound : LimitData.ex.UniformSmallShiftDominance :=
-  fun _ => ⟨0, 1, by norm_num, fun _ _ _ _ _ _ => by simp [LimitData.ex]⟩
 
-theorem Shape.exWeight_rat : ∀ v, ∃ q : ℚ, Shape.exWeight v = q := by
-  intro v
-  by_cases h : (v.2 : ℕ) = 0
-  · exact ⟨1, by simp [Shape.exWeight, h]⟩
-  · exact ⟨0, by simp [Shape.exWeight, h]⟩
 
 end
 

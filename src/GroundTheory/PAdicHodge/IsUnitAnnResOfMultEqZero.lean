@@ -499,10 +499,6 @@ theorem list_prod_max_eq_right (l : List T.Pt) {s : ℝ} (h : ∀ P ∈ l, T.ptR
     rw [List.map_cons, List.prod_cons, max_eq_right (h P List.mem_cons_self),
       ih fun Q hQ => h Q (List.mem_cons_of_mem _ hQ), List.length_cons, pow_succ]; ring
 
-theorem list_prod_ptRad_pos (l : List T.Pt) : 0 < (l.map fun P => T.ptRad P.1).prod := by
-  induction l with
-  | nil => simp
-  | cons P l ih => rw [List.map_cons, List.prod_cons]; exact mul_pos (T.ptRad_pos' P.2) ih
 
 theorem length_le_of_prod_dvd (w : T.Ann ρ0 σ0) (hw : ∀ r, 0 < T.annNorm ρ0 σ0 r w)
     (a b c d : AnnRad ρ0 σ0) (hab : (a : ℝ) < b) (hbc : (b : ℝ) ≤ c) (hcd : (c : ℝ) < d)

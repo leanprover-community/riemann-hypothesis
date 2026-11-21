@@ -47,21 +47,6 @@ instance : ContinuousSMul ℂ (h.SmoothFrechet π) :=
 def IsSmoothContinuous (l : h.smoothVectors π →ₗ[ℂ] ℂ) : Prop :=
   ∃ (s : Finset (Σ k, Fin k → 𝔤)) (C : ℝ), ∀ v, ‖l v‖ ≤ C * ∑ Y ∈ s, ‖h.wordOp π Y.2 (v : E)‖
 
-theorem isSmoothContinuous_of_continuous (l : h.SmoothFrechet π →L[ℂ] ℂ) :
-    h.IsSmoothContinuous π (l.toLinearMap : h.smoothVectors π →ₗ[ℂ] ℂ) := by
-  set q : Seminorm ℂ (h.SmoothFrechet π) := (normSeminorm ℂ ℂ).comp l.toLinearMap with hq
-  have hqc : Continuous q := continuous_norm.comp l.continuous
-  obtain ⟨s, C, -, hC⟩ := Seminorm.bound_of_continuous (h.withSeminorms_smoothFrechet π) q hqc
-  refine ⟨s, C, fun v => ?_⟩
-  have h1 : q v ≤ (C • s.sup (h.smoothSeminormFamily π)) v := hC v
-  have h2 : (s.sup (h.smoothSeminormFamily π)) v ≤ ∑ Y ∈ s, ‖h.wordOp π Y.2 (v : E)‖ := by
-    refine Seminorm.finset_sup_apply_le (Finset.sum_nonneg fun _ _ => norm_nonneg _) fun Y hY => ?_
-    exact Finset.single_le_sum (f := fun Y : (Σ k, Fin k → 𝔤) => ‖h.wordOp π Y.2 (v : E)‖)
-      (fun _ _ => norm_nonneg _) hY
-  calc ‖(l.toLinearMap : h.smoothVectors π →ₗ[ℂ] ℂ) v‖ = q v := rfl
-    _ ≤ (C • s.sup (h.smoothSeminormFamily π)) v := h1
-    _ = C * (s.sup (h.smoothSeminormFamily π)) v := rfl
-    _ ≤ C * ∑ Y ∈ s, ‖h.wordOp π Y.2 (v : E)‖ := by gcongr
 
 end IsExpLieAlgebra
 
@@ -147,32 +132,6 @@ theorem IsSmoothContinuous.continuous_map (hπ : ∀ g, ‖π g‖ ≤ 1)
   simp_rw [e]
   exact mul_le_mul_of_nonneg_right (le_abs_self C) (Finset.sum_nonneg fun _ _ => norm_nonneg _)
 
-theorem IsSmoothContinuous.exists_norm_map_le (hπ : ∀ g, ‖π g‖ ≤ 1)
-    {l : h.smoothVectors π →ₗ[ℂ] ℂ} (hl : h.IsSmoothContinuous π l) {v : E}
-    (hv : h.IsSmoothVector π v) :
-    ∃ C N, ∀ g : G, ‖l (h.smoothMap π hv g)‖ ≤ C * (1 + ‖h.AdL g⁻¹‖) ^ N := by
-  obtain ⟨s, C, hC⟩ := hl
-  choose D hD using fun Y : (Σ k, Fin k → 𝔤) => h.exists_norm_wordOp_map_le π hπ hv Y.2
-  set N := s.sup fun Y => Y.1
-  refine ⟨|C| * ∑ Y ∈ s, |D Y|, N, fun g => ?_⟩
-  have h1 : 1 ≤ 1 + ‖h.AdL g⁻¹‖ := le_add_of_nonneg_right (by positivity)
-  have hterm : ∀ Y ∈ s, ‖h.wordOp π Y.2 (π g v)‖ ≤ |D Y| * (1 + ‖h.AdL g⁻¹‖) ^ N := by
-    intro Y hY
-    calc ‖h.wordOp π Y.2 (π g v)‖ ≤ D Y * ‖h.AdL g⁻¹‖ ^ Y.1 := hD Y g
-      _ ≤ |D Y| * ‖h.AdL g⁻¹‖ ^ Y.1 := by gcongr; exact le_abs_self _
-      _ ≤ |D Y| * (1 + ‖h.AdL g⁻¹‖) ^ Y.1 := by
-          gcongr; exact le_add_of_nonneg_left zero_le_one
-      _ ≤ |D Y| * (1 + ‖h.AdL g⁻¹‖) ^ N := by
-          gcongr
-          exact Finset.le_sup (f := fun Y : (Σ k, Fin k → 𝔤) => Y.1) hY
-  calc ‖l (h.smoothMap π hv g)‖ ≤ C * ∑ Y ∈ s, ‖h.wordOp π Y.2 (π g v)‖ := hC _
-    _ ≤ |C| * ∑ Y ∈ s, ‖h.wordOp π Y.2 (π g v)‖ :=
-        mul_le_mul_of_nonneg_right (le_abs_self C) (Finset.sum_nonneg fun _ _ => norm_nonneg _)
-    _ ≤ |C| * ∑ Y ∈ s, |D Y| * (1 + ‖h.AdL g⁻¹‖) ^ N := by
-        gcongr with Y hY
-        exact hterm Y hY
-    _ = |C| * (∑ Y ∈ s, |D Y|) * (1 + ‖h.AdL g⁻¹‖) ^ N := by
-        rw [← Finset.sum_mul]; ring
 
 end IsExpLieAlgebra
 

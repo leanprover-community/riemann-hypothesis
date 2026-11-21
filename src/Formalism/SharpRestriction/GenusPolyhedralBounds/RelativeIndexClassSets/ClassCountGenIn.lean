@@ -582,8 +582,6 @@ def wacF (E : Type) [Field E] [NumberField E] [Algebra F E] :
   (Algebra.TensorProduct.includeRight : v.adicCompletion F →ₐ[F] E ⊗[F] v.adicCompletion F).toRingHom.comp
     (v.adicCompletionIntegers F).subtype
 
-theorem wacF_apply (y : v.adicCompletionIntegers F) :
-    wacF v E y = (1 : E) ⊗ₜ[F] (y : v.adicCompletion F) := rfl
 
 theorem wac_integral (s : E ⊗[F] v.adicCompletion F)
     (hs : s ∈ tensInt (F := F) (v.adicCompletion F) (intOE E)
@@ -772,7 +770,6 @@ open Formalism.UG Formalism.MainNotions.Gaps.CC
 theorem waCore : Surj.WACore :=
   fun _ _ _ _ _ _ _ _ _ _ σ J hσσ hθ hJ hJd v g hg D hD => wac_core σ J hσσ hθ hJ hJd v g hg D hD
 
-theorem weakApprox1 : Surj.WeakApprox1 := Surj.wal_main waCore
 
 theorem genusIn {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {k : ℕ} [StarRing E] (σ : E →ₐ[F] E) (hσ : ∀ e, σ e = star e)

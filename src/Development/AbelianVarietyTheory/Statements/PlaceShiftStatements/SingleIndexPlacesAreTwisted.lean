@@ -175,31 +175,8 @@ def LowNumSt : Prop := Closed FamHyp fun Fm _ => EvPt Fm fun x _ i p =>
 
 def LamLowX : Prop := Closed FamHyp fun Fm CH => EvPt Fm fun _ _ _ p => SingleIndexPlacesAreTwisted p → ∀ C, (p.S true).L6 (p.N C CH)
 
-theorem ontoX_of_onto (h : Onto) : OntoX :=
-  Closed.imp h fun _ _ _ H hD => by
-    obtain ⟨C0, h0, x0, hx⟩ := H hD
-    exact ⟨C0, h0, x0, fun x h1 h2 i p hp _ => hx x h1 h2 i p hp⟩
 
-theorem OntoX.at_sel (h : OntoX) {𝒞 : FamClass} (h𝒞 : ∀ {eps : ℝ} (Fm : FamP eps), 𝒞 Fm → FamHyp Fm)
-    (Sel : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x), Pt Fm x hx i → Prop)
-    (hS : Closed 𝒞 fun Fm _ => EvPt Fm fun x hx i p => Sel Fm x hx i p → More p) :
-    Closed 𝒞 fun Fm CH => DIVinN Fm →
-      ∃ C0 : ℝ, 0 ≤ C0 ∧ EvPt Fm fun x hx i p => Sel Fm x hx i p → ∀ C, C0 ≤ C → (p.S false).ON (p.N C CH) := by
-  have h' : Closed 𝒞 fun Fm CH => DIVinN Fm →
-      ∃ C0 : ℝ, 0 ≤ C0 ∧ EvPt Fm fun _ _ _ p => More p → ∀ C, C0 ≤ C → (p.S false).ON (p.N C CH) := by
-    obtain ⟨a, ha, H⟩ := h
-    refine ⟨a, ha, fun e he hle => ?_⟩
-    obtain ⟨K, hK⟩ := H e he hle
-    exact ⟨K, fun Fm CH hc hL => hK Fm CH (h𝒞 Fm hc) hL⟩
-  refine (h'.and hS).imp fun Fm CH _ H hD => ?_
-  obtain ⟨C0, h0, x0, hx⟩ := H.1 hD
-  obtain ⟨x1, hx1⟩ := H.2
-  exact ⟨C0, h0, max x0 x1, fun x h1 h2 i p hp hs =>
-    hx x h1 ((le_max_left _ _).trans h2) i p hp (hx1 x h1 ((le_max_right _ _).trans h2) i p hp hs)⟩
 
-theorem lamLowX_iff : LamLowX ↔ LamLow :=
-  ⟨fun h => Closed.imp h fun _ _ _ ⟨x0, hx⟩ => ⟨x0, fun x h1 h2 i p hp => hx x h1 h2 i p hp hp.w1⟩,
-    fun h => Closed.imp h fun _ _ _ ⟨x0, hx⟩ => ⟨x0, fun x h1 h2 i p hp _ => hx x h1 h2 i p hp⟩⟩
 
 section Checks
 
@@ -220,29 +197,14 @@ def withLevel (h : ∀ u, ((ψ u : D.what₂.LLˣ) : D.what₂.LL) ∈ D.LL0) : 
     psiU := fun i b => (((sideEmb X i b).toMonoidHom.comp (smallChar U ψ h)).toHomUnits).comp
       (e.symm.toMonoidHom.subgroupComap U) }
 
-theorem levelIs_withLevel (h : ∀ u, ((ψ u : D.what₂.LLˣ) : D.what₂.LL) ∈ D.LL0) : LevelIs (withLevel Y e U ψ h) e U ψ := by
-  refine ⟨fun g => ?_, fun i b u hu => ⟨smallChar U ψ h u, rfl, ?_⟩⟩
-  · change e.symm (e g) ∈ U ↔ _
-    rw [e.symm_apply_apply]
-  · change sideEmb X i b (smallChar U ψ h ⟨e.symm (e u), _⟩) = _
-    simp only [e.symm_apply_apply]
 
 def typedData (i : X.Tw) (j : ℕ) (b : Bool) : Set (Y.Dat i j b) :=
   {a | ∀ u : Y.U, Y.actG i j b u (Y.th i j b a) =
     ((Y.psiU i b u : (FractionRing (X.O i))ˣ) : FractionRing (X.O i)) • Y.th i j b a}
 
-theorem exists_allData (D : D7) : (∃ T : ThData D, AllData D.nexp T.xd0) ∧ ∀ T : ThData D, AllData D.nexp T.xd0 →
-    ∀ i (j : Fin D.R.m) b, T.xd0 i ((j : ℕ) + 1) b = typedData D.nexp i _ b :=
-  ⟨⟨⟨typedData D.nexp, fun _ _ _ _ h => h⟩, fun _ _ _ _ h => h⟩,
-    fun T h i j b => Set.ext fun a => ⟨T.thetaBase_invariant_action i _ b a, h i j b a⟩⟩
 
 variable {Y e U ψ}
 
-theorem joint_withAll {ρ : Setup X} (hρ : ρ.Good) (rd : Rds Y ρ) (hF : ∀ i j b, Faithful (rd i j b)) (hL : ρ.LatFG)
-    (hU : ρ.LevelOf Y) (h : LevelIs Y e U ψ) :
-    Nonempty (FullTie hρ (Y := withAll hρ rd hF hL) rd) ∧ LevelIs (withAll hρ rd hF hL) e U ψ ∧
-      AllData (withAll hρ rd hF hL) (typedData _) :=
-  ⟨⟨fullTieWithAll hρ rd hF hL hU⟩, h, fun _ _ _ _ h => h⟩
 
 theorem types_of_true (C : Formalism.L2.Host.CharFrame D) (h : GlobalTheory.Mem.Top.TypesTrue D.ntypes C.P C.W) :
     GlobalTheory.DimPartsCompare.TameTie D C.W.om := (GlobalTheory.DimPartsCompare.tameTie_of_typesTrue h).2.1
@@ -288,8 +250,6 @@ variable {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst
 
 theorem RecTies.eSer (h : RecTies p) : GlobalTheory.GLq.ESerTie D := h.types.eSerTie
 
-theorem RecTies.coverField (h : RecTies p) (hc : (R2 p).Char (F2 p)) : GlobalTheory.TwistField.CoverField p.T (R2 p) :=
-  GlobalTheory.TwistField.coverField_of_containsRayField _ _ _ _ _ p.T (R2 p) p.fw.laws hc.lev p.qGuard h.rayQ
 
 theorem RecTies.psi_read (h : RecTies p) (w : D.what₂.places.Pl) (hw : D.what₂.muAt w ≠ D.what₂.mu0) (v : PlE D.host)
     (hQ : v ∉ ex.nch.Q w) (hl : v ∉ Formalism.BasicNotions.placesOver D.host.E (D.what₂.places.resChar w)) (B : ValuationSubring D.nd.Om)

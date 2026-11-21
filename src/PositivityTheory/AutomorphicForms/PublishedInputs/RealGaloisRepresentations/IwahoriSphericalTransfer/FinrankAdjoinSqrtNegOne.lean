@@ -58,7 +58,6 @@ def QCM.gauss [IsTotallyReal F] {i : Ω} (hi : i ^ 2 = -1) : QCM F Ω :=
     cm := IsCMField.ofCMExtension F _
     two := QCM.finrank_adjoin_sqrt_neg_one hi }
 
-theorem QCM.gauss_K [IsTotallyReal F] {i : Ω} (hi : i ^ 2 = -1) : (QCM.gauss (F := F) hi).K = F⟮i⟯ := rfl
 
 theorem QCM.nonempty [IsTotallyReal F] [IsAlgClosure F Ω] : Nonempty (QCM F Ω) := by
   haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed F

@@ -87,10 +87,5 @@ namespace Formalism.L2
 
 open Formalism.BasicNotions NX
 
-theorem NExpTied.uCard {D : D7} (T : NExpTied D) :
-    Nat.card D.nexp.U = (D.host.g 0 * D.host.g 1) ^ (D.R.f * (D.R.r * (D.R.r - 1) / 2)) := by
-  rw [T.U_eq, card_Uup, Fintype.prod_sigma]
-  simp only [Finset.prod_const, Finset.card_univ, D.nd.card_PlG, Fin.prod_univ_two]
-  rw [← pow_mul, ← pow_mul, ← mul_pow, mul_comm (D.R.r * (D.R.r - 1) / 2)]
 
 end Formalism.L2

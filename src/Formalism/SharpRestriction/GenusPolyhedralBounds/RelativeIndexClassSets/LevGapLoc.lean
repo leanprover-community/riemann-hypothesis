@@ -578,14 +578,6 @@ theorem iw_one_mem {T : ℕ} {pz : 𝓞 H.E} {piG : Fin 2 → 𝓞 H.E} (h : Lev
   rw [h5]
   exact sub_mem hT (add_mem (Ideal.mul_mem_right _ _ h1) h3)
 
-theorem iw_T_ne_g {T : ℕ} {pz : 𝓞 H.E} {piG : Fin 2 → 𝓞 H.E} (h : LevHyp H T pz piG) (i : Fin 2) :
-    T ≠ H.g i := by
-  intro hT
-  have hpos : 0 < {v : HeightOneSpectrum (𝓞 H.E) | ((H.g i : ℕ) : 𝓞 H.E) ∈ v.asIdeal}.ncard := by
-    rw [h.g_split i]; exact Module.finrank_pos
-  obtain ⟨w, hw⟩ := (Set.ncard_pos (Set.finite_of_ncard_pos hpos)).1 hpos
-  have hw' : ((H.g i : ℕ) : 𝓞 H.E) ∈ w.asIdeal := hw
-  exact w.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 (iw_one_mem H h i w.asIdeal hw' (hT ▸ hw')))
 
 theorem iw_T_not_mem {T : ℕ} {pz : 𝓞 H.E} {piG : Fin 2 → 𝓞 H.E} (h : LevHyp H T pz piG) (i : Fin 2)
     (v : HeightOneSpectrum (𝓞 H.F)) (hv : (H.g i : 𝓞 H.F) ∈ v.asIdeal) : (T : 𝓞 H.F) ∉ v.asIdeal := by
@@ -640,8 +632,6 @@ def fm_swap {σ : E →ₐ[F] E} {v : HeightOneSpectrum (𝓞 F)} (s : SplitCore
   int x := by
     rw [s.int x]; exact and_comm
 
-theorem fm_swap_apply {σ : E →ₐ[F] E} {v : HeightOneSpectrum (𝓞 F)} (s : SplitCore σ v)
-    (x : E ⊗[F] v.adicCompletion F) : (fm_swap s).φ x = ((s.φ x).2, (s.φ x).1) := rfl
 
 theorem fm_incl_mem (v : HeightOneSpectrum (𝓞 F)) (c : 𝓞 E) :
     inclE (F := F) (v.adicCompletion F) (c : E) ∈ intV E v := sc_left_mem v c
@@ -714,16 +704,6 @@ def fm_rho {σ : E →ₐ[F] E} {v : HeightOneSpectrum (𝓞 F)} (s : SplitCore 
     intV E v →+* IsLocalRing.ResidueField (v.adicCompletionIntegers F) :=
   (IsLocalRing.residue _).comp (fm_pr s)
 
-theorem fm_rho_surj {σ : E →ₐ[F] E} {v : HeightOneSpectrum (𝓞 F)} (s : SplitCore σ v) :
-    Function.Surjective (fm_rho s) := by
-  intro y
-  obtain ⟨c, rfl⟩ := IsLocalRing.residue_surjective y
-  refine ⟨⟨(1 : E) ⊗ₜ[F] (c : v.adicCompletion F), sc_right_mem v (c : v.adicCompletion F) c.2⟩, ?_⟩
-  show IsLocalRing.residue _ (fm_pr s _) = _
-  congr 1
-  apply Subtype.ext
-  show (s.φ ((1 : E) ⊗ₜ[F] (c : v.adicCompletion F))).1 = c
-  rw [s.alg]
 
 theorem fm_rho_eq_zero {σ : E →ₐ[F] E} {v : HeightOneSpectrum (𝓞 F)} (s : SplitCore σ v) (p : intV E v)
     (h1 : Valued.v (s.φ p).1 = WithZero.exp (-1 : ℤ)) (h2 : Valued.v (s.φ p).2 = 1) (x : intV E v) :
@@ -764,163 +744,7 @@ theorem fm_rho_eq_zero {σ : E →ₐ[F] E} {v : HeightOneSpectrum (𝓞 F)} (s 
 
 variable {k : ℕ} (P : Par F E k)
 
-theorem card_residue_of_uniformizer_valuation (hk : 0 < k) (hJ : P.J = 1) (pzc : 𝓞 E) (hc : (pzc : E) = P.σ (P.pz : E))
-    (hz : (P.pz : E) ≠ 0) (v : HeightOneSpectrum (𝓞 F)) (s : SplitCore P.σ v)
-    (h1 : Valued.v (s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).1 = WithZero.exp (-1 : ℤ))
-    (h2 : Valued.v (s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).2 = 1) :
-    Nat.card (P.fM v) = Nat.card (IsLocalRing.ResidueField (v.adicCompletionIntegers F)) := by
-  classical
-  let i0 : Fin k := ⟨0, hk⟩
-  let ι : E →+* E ⊗[F] v.adicCompletion F := inclE (F := F) (E := E) (v.adicCompletion F)
-  have hzc : P.σ (P.pz : E) ≠ 0 := (map_ne_zero _).2 hz
-  have hinv : ι (P.σ (P.pz : E)) * ι (P.σ (P.pz : E))⁻¹ = 1 := by
-    rw [← map_mul, mul_inv_cancel₀ hzc, map_one]
-  have hLb : P.LbV v = latS (F := F) (v.adicCompletion F) (intV E v)
-      (LevGap.diagLat (LevGap.vecAt i0 (P.pz : E))) := by
-    unfold Par.LbV Par.Lb; rw [LevGap.LbOf_eq_latT hk]; rfl
-  have hLd : P.LdV v = latS (F := F) (v.adicCompletion F) (intV E v)
-      (LevGap.diagLat (LevGap.vecAt i0 (P.σ (P.pz : E))⁻¹)) := by
-    unfold Par.LdV; rw [LevGap.Ld_eq hk P hJ hz]
-  have memLb : ∀ y, y ∈ P.LbV v ↔ ∀ i, ∃ c : intV E v,
-      y i = ι (LevGap.vecAt i0 (P.pz : E) i) * (c : E ⊗[F] v.adicCompletion F) := fun y => by
-    rw [hLb]; exact fm_mem_latS v _ y
-  have memLd : ∀ y, y ∈ P.LdV v ↔ ∀ i, ∃ c : intV E v,
-      y i = ι (LevGap.vecAt i0 (P.σ (P.pz : E))⁻¹ i) * (c : E ⊗[F] v.adicCompletion F) := fun y => by
-    rw [hLd]; exact fm_mem_latS v _ y
-  let sp : intV E v := ⟨ι (pzc : E), fm_incl_mem v pzc⟩
-  have hc0 : ∀ y : P.LdV v, ι (P.σ (P.pz : E)) * y.1 i0 ∈ intV E v := by
-    intro y
-    obtain ⟨c, hc'⟩ := (memLd y.1).1 y.2 i0
-    rw [hc', LevGap.vecAt_same, ← mul_assoc, hinv, one_mul]
-    exact c.2
-  let c0 : P.LdV v →ₗ[intV E v] intV E v :=
-    { toFun := fun y => ⟨ι (P.σ (P.pz : E)) * y.1 i0, hc0 y⟩
-      map_add' := fun x y => Subtype.ext (by
-        show ι (P.σ (P.pz : E)) * (x.1 i0 + y.1 i0) = ι (P.σ (P.pz : E)) * x.1 i0 + ι (P.σ (P.pz : E)) * y.1 i0
-        ring)
-      map_smul' := fun r y => Subtype.ext (by
-        show ι (P.σ (P.pz : E)) * ((r : E ⊗[F] v.adicCompletion F) * y.1 i0) =
-          (r : E ⊗[F] v.adicCompletion F) * (ι (P.σ (P.pz : E)) * y.1 i0)
-        ring) }
-  let _ : Module (intV E v) (IsLocalRing.ResidueField (v.adicCompletionIntegers F)) :=
-    Module.compHom _ (fm_rho s)
-  let ρl : intV E v →ₗ[intV E v] IsLocalRing.ResidueField (v.adicCompletionIntegers F) :=
-    { toFun := fm_rho s
-      map_add' := map_add _
-      map_smul' := fun r x => by
-        show fm_rho s (r * x) = fm_rho s r * fm_rho s x
-        exact map_mul _ _ _ }
-  let θ : P.LdV v →ₗ[intV E v] IsLocalRing.ResidueField (v.adicCompletionIntegers F) := ρl.comp c0
-  have hθ : ∀ y, θ y = fm_rho s (c0 y) := fun _ => rfl
-  have hsm : ∀ (r : intV E v) (y : P.LdV v), θ (r • y) = fm_rho s r * θ y := fun r y => by
-    rw [map_smul]; rfl
-  have hu0 : (Pi.single i0 (ι (P.σ (P.pz : E))⁻¹) : Fin k → E ⊗[F] v.adicCompletion F) ∈ P.LdV v := by
-    rw [memLd]
-    intro i
-    by_cases hi : i = i0
-    · subst hi
-      exact ⟨1, by simp⟩
-    · exact ⟨0, by simp [Pi.single_eq_of_ne hi]⟩
-  let u0 : P.LdV v := ⟨_, hu0⟩
-  have hc0u : c0 u0 = 1 := Subtype.ext (by
-    show ι (P.σ (P.pz : E)) * (Pi.single i0 (ι (P.σ (P.pz : E))⁻¹) : Fin k → E ⊗[F] v.adicCompletion F) i0 = 1
-    rw [Pi.single_eq_same, hinv])
-  have hsurj : Function.Surjective θ := by
-    intro y
-    obtain ⟨c, rfl⟩ := fm_rho_surj s y
-    refine ⟨c • u0, ?_⟩
-    rw [hsm, hθ, hc0u, map_one, mul_one]
-  have hzero := fm_rho_eq_zero s (P.pzV v) h1 h2
-  have hker : LinearMap.ker θ = P.fKer v := by
-    apply le_antisymm
-    · intro y hy
-      have hy' : fm_rho s (c0 y) = 0 := hy
-      obtain ⟨z, hz'⟩ := (hzero _).1 hy'
-      have hz'' : ι (P.σ (P.pz : E)) * y.1 i0 = ι (P.pz : E) * (z : E ⊗[F] v.adicCompletion F) :=
-        congrArg Subtype.val hz'
-      unfold Par.fKer
-      rw [Submodule.mem_sup]
-      refine ⟨y - P.pzV v • (z • u0), ?_, P.pzV v • (z • u0), ⟨z • u0, rfl⟩, sub_add_cancel _ _⟩
-      show (y - P.pzV v • (z • u0)).1 ∈ P.LbV v
-      rw [memLb]
-      intro i
-      have hcoord : (y - P.pzV v • (z • u0)).1 i = y.1 i - ι (P.pz : E) * ((z : E ⊗[F] v.adicCompletion F) *
-          (Pi.single i0 (ι (P.σ (P.pz : E))⁻¹) : Fin k → E ⊗[F] v.adicCompletion F) i) := rfl
-      rw [hcoord]
-      by_cases hi : i = i0
-      · subst hi
-        refine ⟨0, ?_⟩
-        rw [Pi.single_eq_same]
-        have : y.1 i0 = ι (P.σ (P.pz : E))⁻¹ * (ι (P.σ (P.pz : E)) * y.1 i0) := by
-          rw [← mul_assoc, mul_comm (ι (P.σ (P.pz : E))⁻¹), hinv, one_mul]
-        rw [this, hz'']
-        simp only [ZeroMemClass.coe_zero, mul_zero]
-        ring
-      · obtain ⟨c, hc'⟩ := (memLd y.1).1 y.2 i
-        refine ⟨c, ?_⟩
-        rw [Pi.single_eq_of_ne hi, mul_zero, mul_zero, sub_zero, hc', LevGap.vecAt_ne hi, LevGap.vecAt_ne hi]
-    · unfold Par.fKer
-      apply sup_le
-      · intro y hy
-        have hy' : y.1 ∈ P.LbV v := hy
-        obtain ⟨c, hc'⟩ := (memLb _).1 hy' i0
-        rw [LinearMap.mem_ker, hθ, hzero]
-        refine ⟨sp * c, Subtype.ext ?_⟩
-        show ι (P.σ (P.pz : E)) * y.1 i0 = ι (P.pz : E) * (ι (pzc : E) * (c : E ⊗[F] v.adicCompletion F))
-        rw [hc', LevGap.vecAt_same, hc]
-        ring
-      · rintro _ ⟨y, rfl⟩
-        rw [LinearMap.mem_ker]
-        show θ (P.pzV v • y) = 0
-        rw [hsm, (hzero _).2 ⟨1, (mul_one _).symm⟩, zero_mul]
-  show Nat.card (P.LdV v ⧸ P.fKer v) = _
-  rw [← hker]
-  exact Nat.card_congr (θ.quotKerEquivOfSurjective hsurj).toEquiv
 
-theorem fm_card (hk : 0 < k) (hJ : P.J = 1) (pzc : 𝓞 E) (hc : (pzc : E) = P.σ (P.pz : E))
-    (hpz : (P.pz : E) * P.σ (P.pz : E) = (P.T : E)) (hT : P.T ≠ 0) (v : HeightOneSpectrum (𝓞 F))
-    (s : SplitCore P.σ v)
-    (hval : Valued.v ((P.T : ℕ) : v.adicCompletion F) = WithZero.exp (-1 : ℤ))
-    (hcard : Nat.card (𝓞 F ⧸ v.asIdeal) = P.T) : Nat.card (P.fM v) = P.T := by
-  have hz : (P.pz : E) ≠ 0 := by
-    intro h
-    rw [h, zero_mul] at hpz
-    exact hT (by exact_mod_cast hpz.symm)
-  have hsw : s.φ ((P.σ (P.pz : E)) ⊗ₜ[F] (1 : v.adicCompletion F)) =
-      ((s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).2, (s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).1) :=
-    s.sig ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))
-  have e1 : ((P.T : ℕ) : E) ⊗ₜ[F] (1 : v.adicCompletion F) = ((P.T : ℕ) : E ⊗[F] v.adicCompletion F) :=
-    map_natCast (inclE (F := F) (E := E) (v.adicCompletion F)) P.T
-  have e2 : (1 : E) ⊗ₜ[F] ((P.T : ℕ) : v.adicCompletion F) = ((P.T : ℕ) : E ⊗[F] v.adicCompletion F) :=
-    map_natCast (Algebra.TensorProduct.includeRight : v.adicCompletion F →ₐ[F] E ⊗[F] v.adicCompletion F) P.T
-  have hprod : (s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).1 *
-      (s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).2 = ((P.T : ℕ) : v.adicCompletion F) := by
-    have h0 : ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F)) * ((P.σ (P.pz : E)) ⊗ₜ[F] (1 : v.adicCompletion F)) =
-        (1 : E) ⊗ₜ[F] ((P.T : ℕ) : v.adicCompletion F) := by
-      rw [Algebra.TensorProduct.tmul_mul_tmul, hpz, mul_one, e1, e2]
-    have h := congrArg s.φ h0
-    rw [map_mul, hsw, s.alg] at h
-    exact congrArg Prod.fst h
-  have hint := (s.int _).1 (P.pzV v).2
-  have hv1 : Valued.v (s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).1 ≤ 1 := hint.1
-  have hv2 : Valued.v (s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).2 ≤ 1 := hint.2
-  have hvp := congrArg Valued.v hprod
-  rw [map_mul, hval] at hvp
-  rw [← hcard, ← fm_card_residue v]
-  by_cases h : Valued.v (s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).1 = 1
-  · rw [h, one_mul] at hvp
-    exact card_residue_of_uniformizer_valuation P hk hJ pzc hc hz v (fm_swap s) hvp h
-  · have h1 := (Examples₂.wz_lt_one_iff _).1 (lt_of_le_of_ne hv1 h)
-    have h2 : Valued.v (s.φ ((P.pz : E) ⊗ₜ[F] (1 : v.adicCompletion F))).2 = 1 := by
-      by_contra h2
-      have h2' := (Examples₂.wz_lt_one_iff _).1 (lt_of_le_of_ne hv2 h2)
-      have : WithZero.exp (-1 : ℤ) ≤ WithZero.exp (-1 : ℤ) * WithZero.exp (-1 : ℤ) := by
-        calc WithZero.exp (-1 : ℤ) = _ := hvp.symm
-          _ ≤ _ := mul_le_mul' h1 h2'
-      rw [← WithZero.exp_add, WithZero.exp_le_exp] at this
-      omega
-    rw [h2, mul_one] at hvp
-    exact card_residue_of_uniformizer_valuation P hk hJ pzc hc hz v s hvp h2
 
 end FM
 
@@ -937,20 +761,7 @@ theorem host_core (p : ℕ) (hp : p.Prime)
 
 end Final
 
-theorem factSplitG : FactSplitG := by
-  intro R H T pz piG h i v hv
-  obtain ⟨s⟩ := host_core H (H.g i) (H.g_prime i) (h.g_split i) v hv
-  refine sc_orient s (piG i) ((H.g i : ℕ) : 𝓞 H.F) hv ?_
-  rw [Examples₂.conjF_apply, h.piG_norm i]
-  simp
 
-theorem factFMCard : FactFMCard := by
-  intro R H T pz piG h v hv
-  have hs := Formalism.MainNotions.Gaps.LevGap.T_split_of_levHyp H T pz piG h
-  obtain ⟨s⟩ := host_core H T h.T_prime hs v hv
-  obtain ⟨pzc, hpzc⟩ := Formalism.MainNotions.Gaps.LevGap.map_int_mem (H.conj : H.E →+* H.E) pz
-  exact fm_card (hostPar H T pz piG) (Formalism.MainNotions.Gaps.LevGap.k_pos R) rfl pzc hpzc h.pz_norm h.T_prime.ne_zero v s
-    (hs_val H T h.T_prime hs v hv) (hs_card H T h.T_prime hs v hv)
 
 end Formalism.MainNotions.Gaps.LG
 

@@ -279,9 +279,7 @@ theorem lowering_local_v_of_local_w (Tf : FormsTied D u) (h : RDnLocW Tf) : RDnL
   exact ⟨rlv_dnUp_latP Tf i hi v c _ _ γ' γ hl1' hl1,
     rlv_Q_of_dualP Tf i hi v c _ (γ'.1 * γ.1) (mul_mem γ'.2 γ.2) hPd, hF⟩
 
-theorem rupLocM_of_rupLocW (Tf : FormsTied D u) (h : RUpLocW Tf) : RUpLocM Tf := rupLocM_of_V Tf (raising_local_v_of_local_w Tf h)
 
-theorem rdnLocM_of_rdnLocW (Tf : FormsTied D u) (h : RDnLocW Tf) : RDnLocM Tf := rdnLocM_of_V Tf (lowering_local_v_of_local_w Tf h)
 
 end TiedW
 

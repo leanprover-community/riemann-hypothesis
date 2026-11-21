@@ -38,12 +38,6 @@ instance : IsTotallyComplex Qi :=
   haveI : IsCyclotomicExtension {4} ℚ Qi := CyclotomicField.isCyclotomicExtension 4 ℚ
   IsCyclotomicExtension.Rat.isTotallyComplex (n := 4) Qi (by norm_num)
 
-theorem card_H2_gaussian_field (h : PoitouTateTotallyComplex) (v : HeightOneSpectrum (𝓞 Qi)) :
-    Nat.card (H2 (muLoc Qi 2 2 (placeOf (AlgebraicClosure Qi) v))) = 4 := by
-  obtain ⟨ζ, hζ, -⟩ := exists_data Qi (AlgebraicClosure Qi) 2 2
-  obtain ⟨inv, hinv, -⟩ := h Qi (AlgebraicClosure Qi) 2 2 (by norm_num) ζ hζ
-  rw [Nat.card_eq_of_bijective _ (hinv.1 _ v (isPlaceOver_placeOf _ v)).1]
-  simp
 
 theorem exists_kummer {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
     [IsAlgClosure F Ω] {l : ℕ} [hl : Fact l.Prime] {r : ℕ} {ζ : Ω} (hζ : IsPrimitiveRoot ζ (l ^ r))

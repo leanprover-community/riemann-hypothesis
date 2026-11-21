@@ -1577,28 +1577,8 @@ structure Fam0 {eps : ℝ} (Fm : FamP eps) : Prop where
 
   svc1 : Ev Fm fun x i => CornerGLContinuity.ServiceLowerValuation (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (Fm.Gy x i) Fm.GK
 
-theorem family_sixth_bound_of_nonneg {eps : ℝ} (Fm : FamP eps) (hCe : 0 ≤ Fm.cX.Ce) (hf : Fam0 Fm) : Adm9F Fm := by
-  obtain ⟨x0, h⟩ := (hf.weyl.and hf.expB).and (Ev.x1 Fm)
-  exact ⟨Fm.cX.Ce, hCe, x0, fun x hx i => Joints.weyl_sandwich_of_factors _ _ _ Fm.cX.Ce hCe (Fm.ex x (h x hx i).2 i).ep_def
-    (h x hx i).1.1 (h x hx i).1.2⟩
 
-theorem family_growth_bound_of_sizes {eps : ℝ} (Fm : FamP eps) (hCe : 0 ≤ Fm.cX.Ce) (hf : Fam0 Fm) (h6 : Adm6F Fm) (h7 : Adm7F Fm) :
-    FamilyFirstGrowthBound Fm := by
-  obtain ⟨Ce, _, h9⟩ := family_sixth_bound_of_nonneg Fm hCe hf
-  obtain ⟨x0, h⟩ := ((((((((hf.unitBoundAtTwistedPlaces.and hf.gatE).and hf.p6G).and hf.gatY).and (hf.lpVV h6 h7)).and h9).and
-    (eventually_large_scale_bound Fm)).and (Ev.x1 Fm)).and hf.svc1)
-  refine ⟨x0, fun x hx i => ?_⟩
-  obtain ⟨⟨⟨⟨⟨⟨⟨⟨hU, hE⟩, hS⟩, hY⟩, hLP⟩, h9⟩, hB⟩, hx1⟩, hS1⟩ := h x hx i
-  exact TopChoiceBounds.gluing_statement_of_proof _ _ _ (TopChoiceBounds.gluing_statement_holds Fm.GK (Fm.Gx x i) (Fm.Gy x i)
-    ⟨hU, stability_of_trivial_stabilisers hE, service_statement_of_stability _ _ _ hS hE hY, hLP, TopChoiceBounds.sandwich_of_exponent_clause _ Ce (Fm.gatT x i) h9,
-      saturated_ramified_lattice _ (Fm.ex x hx1 i).cmp (Fm.ex x hx1 i).lat.vram, hB, hS1⟩).1
 
-theorem family_admitted_bounds {eps : ℝ} (Fm : FamP eps) (hCe : 0 ≤ Fm.cX.Ce) (hCN : CornerGLContinuity.FamilyWindowLogBound Fm) (hf : Fam0 Fm) (h6 : Adm6F Fm)
-    (h7 : Adm7F Fm) :
-    Adm1F Fm ∧ Adm3F Fm ∧ Adm4F Fm ∧ Adm9F Fm ∧ AdmUF Fm ∧ FamilyFirstGrowthBound Fm := by
-  obtain ⟨C₄, hO⟩ := hf.orders
-  exact ⟨family_first_lemma Fm, family_orders_first_part Fm C₄ (hf.p33i C₄) hO, family_orders_bound_of_lemma Fm hf.lemmaOrdersPartTwo hCN, family_sixth_bound_of_nonneg Fm hCe hf, hf.unitBoundAtTwistedPlaces,
-    family_growth_bound_of_sizes Fm hCe hf h6 h7⟩
 
 def LocalSystemCompletion (X : Inst D L) (Y : LatInst D) (low : D.what₂.Word → D.what₂.places.Pl → ℝ) : Prop :=
   ∀ hT : GatTies D, LatTied hT X Y → ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl)
@@ -1677,48 +1657,11 @@ structure Fam1 {eps : ℝ} (Fm : FamP eps) : Prop where
 def NumCmpF {eps : ℝ} (Fm : FamP eps) : Prop :=
   Ev Fm fun x i => FormalGroupSystem.SmallResidueCharComparison (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (Fm.Gy x i) Fm.GK
 
-theorem family_unit_bound_of_comparison {eps : ℝ} (Fm : FamP eps) (hf : Fam1 Fm) (hNum : NumCmpF Fm) (h1 : 1 ≤ Fm.GK.Pr1)
-    (h2 : 1 ≤ Fm.GK.CN) : AdmUF Fm := by
-  obtain ⟨x0, h⟩ := (hf.localSystemLowTerm.and hNum).and (Ev.x1 Fm)
-  exact ⟨x0, fun x hx i => unit_bound_low_of_local_system _ _ _ _ (hf.p05 x i) (h x hx i).1.1 (h x hx i).1.2
-    (TopChoiceBounds.hLarge_proved _ _ Fm.GK_nonneg h1 (Fm.params x (h x hx i).2 i))⟩
 
-theorem family_lattice_bound_low_term {eps : ℝ} (Fm : FamP eps) (hf : Fam1 Fm) (hNum : NumCmpF Fm) (h1 : 1 ≤ Fm.GK.Pr1) :
-    Ev Fm fun x i => CornerGLContinuity.ServiceLowerValuation (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (Fm.Gy x i) Fm.GK := by
-  obtain ⟨x0, h⟩ := (hf.localSystemSizeLowTerm.and hNum).and (Ev.x1 Fm)
-  exact ⟨x0, fun x hx i => TopChoiceBounds.bg_NP_of_Ulow _ _ _ _ (unit_bound_low_of_local_system _ _ _ _ (hf.p05 x i) (h x hx i).1.1 (h x hx i).1.2
-    (TopChoiceBounds.hLarge_proved _ _ Fm.GK_nonneg h1 (Fm.params x (h x hx i).2 i)))⟩
 
-theorem family_bounds_of_local_systems {eps : ℝ} (Fm : FamP eps) (hf : Fam1 Fm) (hNum : NumCmpF Fm) (h1 : 1 ≤ Fm.GK.Pr1)
-    (h2 : 1 ≤ Fm.GK.CN) (hCe : 1 ≤ Fm.cX.Ce) (hLa : 0 < Fm.GK.La) (hCb : Ev Fm fun x i => CbLarge Fm.GK (Fm.L x i).sc) :
-    Fam0 Fm := by
-  obtain ⟨C₅, h59⟩ := UnusedSlot33.field_lemmas_except_seven
-  obtain ⟨xm, hm⟩ := hf.model
-  obtain ⟨x1, hx1⟩ := Ev.x1 Fm
-  exact ⟨TopChoiceBounds.family_order_bound_holds Fm, TopChoiceBounds.family_band_ratio_holds Fm, hf.p6G,
-    ⟨100, fun x i => (h59 (Fm.D x i) (Fm.L x i).sc).2.2.2.1⟩, hf.gatE, hf.gatY,
-    fun h6 h7 => by
-      obtain ⟨x0, h⟩ := ((((h6.and h7).and hf.stdSub).and hf.hypI).and hf.hypII).and hCb
-      exact ⟨x0, fun x hx i => Joints.linear_programming_input_of_hypotheses _ _ _ _ _ (h x hx i).1.1.1.1.1 (h x hx i).1.1.1.1.2
-        (h x hx i).1.1.1.2 hf.lpBC (h x hx i).1.1.2 (h x hx i).1.2
-        (rho_le_rhoB _ _ _ Fm.GK_nonneg.2.1 (La_nonneg Fm.GK_nonneg.1 _) (h x hx i).2)⟩,
-    ⟨xm, fun x hx i => Joints.weylSandwich_of_model _ (hm x hx i)⟩,
-    ⟨x1, fun x hx i => Joints.expBound_of _ _ _ Fm.cX.Ce hCe (Fm.ex x (hx1 x hx i) i).ep_def (Fm.params x (hx1 x hx i) i)
-      (Fm.gatT x i)⟩,
-    family_unit_bound_of_comparison Fm hf hNum h1 h2, family_lattice_bound_low_term Fm hf hNum h1⟩
 
 end Rest
 
-theorem linkG_fam {eps : ℝ} (Fm : FamP eps) (hStmt : AuxBlock8.KudlaFamilyStatement Fm) (h14 : SecondTheoremAtFamily Fm) (h13 : FirstTheoremAtFamily Fm)
-    (hLa : 0 < Fm.GK.La) (hCe : 0 ≤ Fm.cX.Ce) (hf : Fam0 Fm) (h2 : Adm2F Fm) (hd : NPDescF Fm) (hCN : CornerGLContinuity.FamilyWindowLogBound Fm) :
-    LinkG Fm := by
-  obtain ⟨C, hC0, a1, a2, a3, a4, a5, a6, hp14⟩ := h14
-  obtain ⟨CH, C', b0, b1, b2, b3, b4, b5, b6, hp13⟩ := h13
-  have h6 := family_second_bound_of_theorem Fm C hC0 a1 a2 a3 a4 a5 a6 hp14
-  have h7 := family_kappa_bound Fm (kapIDefF Fm)
-  have h8 := family_first_bound_of_theorem Fm CH C' (kapIDefF Fm) b0 b1 b2 b3 b4 b5 b6 hp13
-  obtain ⟨h1, h3, h4, h9, hU, hG1⟩ := family_admitted_bounds Fm hCe hCN hf h6 h7
-  exact linkG_of Fm (family_statement_of_general Fm hStmt) ⟨h1, h2, h3, h4, family_sizes_bound Fm hLa, h6, h7, h8, h9, hU, hG1, hd⟩
 
 theorem second_theorem_closed_form (𝒞 : FamClass) (h14 : ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∀ D : D7, tableLineDegreeFive.aux₃ D C₀) :
     Closed 𝒞 fun Fm _ => SecondTheoremAtFamily Fm := by
@@ -1770,13 +1713,6 @@ theorem signs_closed (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => 0 < Fm.GK.La �
   have h2 : Fm.cX.Ce = 1 := Fm.fixed.2.2.2.1
   exact ⟨by linarith, by linarith⟩
 
-theorem linkG_top (𝒞 : FamClass) (h70 : ExtremalProjectorTools) (h6 : Loc6) (h8 : Loc8)
-    (h69 : Closed 𝒞 fun Fm _ => AuxBlock8.KudlaFamilyStatement Fm) (hf : Closed 𝒞 fun Fm _ => Fam0 Fm)
-    (h2 : Closed 𝒞 fun Fm _ => Adm2F Fm) (hd : Closed 𝒞 fun Fm _ => NPDescF Fm) :
-    Closed 𝒞 fun Fm _ => LinkG Fm :=
-  (((((((h69.and (second_theorem_closed_form 𝒞 (second_theorem_absolute_constant h70 h6))).and (first_theorem_closed_form 𝒞 (first_theorem_threshold_functions h70 (loc8All_of h70 h6 h8)))).and (signs_closed 𝒞)).and
-    hf).and h2).and hd).and (TopChoiceBounds.family_log_bound_closed 𝒞)).imp fun Fm _ _ h =>
-    linkG_fam Fm h.1.1.1.1.1.1.1 h.1.1.1.1.1.1.2 h.1.1.1.1.1.2 h.1.1.1.1.2.1 h.1.1.1.1.2.2 h.1.1.1.2 h.1.1.2 h.1.2 h.2
 
 theorem rG_lt_k {eps : ℝ} (Fm : FamP eps) : Ev Fm fun x i => rG (Fm.L x i).sc < (Fm.D x i).R.k := by
   obtain ⟨x1, hx1⟩ := Ev.x1 Fm
@@ -1852,12 +1788,6 @@ theorem ones_closed (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => 1 ≤ Fm.GK.Pr1 
   refine ⟨1, one_pos, fun eps _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 1⟩, fun Fm CH _ hL => ?_⟩⟩
   exact ⟨Fm.fixed.1.ge, hL.2.2.2 _ (by simp [FamP.cLast]), Fm.fixed.2.2.2.1.ge⟩
 
-theorem link_of_closed_families (𝒞 : FamClass) (h70 : ExtremalProjectorTools) (h6 : Loc6) (h8 : Loc8) (hN : FormalGroupSystem.NumericalComparisonUniform)
-    (h69 : Closed 𝒞 fun Fm _ => AuxBlock8.KudlaFamilyStatement Fm) (hf : Closed 𝒞 fun Fm _ => Fam1 Fm)
-    (h2 : Closed 𝒞 fun Fm _ => Adm2F Fm) (hd : Closed 𝒞 fun Fm _ => NPDescF Fm) :
-    Closed 𝒞 fun Fm _ => LinkG Fm :=
-  linkG_top 𝒞 h70 h6 h8 h69 (((((hf.and (num_closed 𝒞 hN)).and (ones_closed 𝒞)).and (signs_closed 𝒞)).and (cb_closed 𝒞)).imp
-    fun Fm _ _ h => family_bounds_of_local_systems Fm h.1.1.1.1 h.1.1.1.2 h.1.1.2.1 h.1.1.2.2.1 h.1.1.2.2.2 h.1.2.1 h.2) h2 hd
 
 end Formalism.MainNotions.G
 

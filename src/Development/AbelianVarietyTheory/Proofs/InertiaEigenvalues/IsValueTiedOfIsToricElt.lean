@@ -55,50 +55,11 @@ def IsGalTied : Prop :=
 
 variable {X}
 
-theorem isValueTied_of_isToricElt (h : IsToricElt X) : IsValueTied X := fun i hi =>
-  let ⟨ι, h1, h2⟩ := h i hi
-  ⟨ι, h1, fun lam s hs =>
-    let ⟨I, j, φ, κ, 𝔣, χ, _, a, b, c, _⟩ := h2 lam s hs
-    ⟨I, j, φ, κ, 𝔣, χ, a, b, c⟩⟩
 
 theorem toBar_algebraMap (i : X.Tw) (a : X.O0 i) :
     toBar X i (algebraMap (X.O0 i) _ a) = algebraMap (X.O i) (Kbar X i) (algebraMap (X.O0 i) (X.O i) a) := by
   rw [toBar, RingHom.comp_apply, IsFractionRing.lift_algebraMap]
   rfl
 
-theorem IsGalTied.isValueTied (h : IsGalTied X) : IsValueTied X := by
-  intro i hi
-  obtain ⟨e, ι, art, ha, he, hι, hl⟩ := h i hi
-  let _ : Algebra (FractionRing (X.O0 i)) (Qbar (X.l i)) := e.toAlgebra
-  let _ : Algebra (FractionRing (X.O0 i)) (Kbar X i) := (toBar X i).toAlgebra
-  have : Algebra.IsAlgebraic (FractionRing (X.O0 i)) (Qbar (X.l i)) := ⟨fun x => by
-    have h1 : IsAlgebraic ℤ_[X.l i] x :=
-      (IsFractionRing.isAlgebraic_iff ℤ_[X.l i] ℚ_[X.l i] _).2 (Algebra.IsAlgebraic.isAlgebraic x)
-    refine h1.ringHom_of_comp_eq ((algebraMap (X.O0 i) _).comp (algebraMap ℤ_[X.l i] (X.O0 i))) (RingHom.id _)
-      (fun a b hab => ?_) (RingHom.ext he)
-    have := congrArg e hab
-    rw [RingHom.comp_apply, RingHom.comp_apply, he, he] at this
-    exact Subtype.ext ((algebraMap ℚ_[X.l i] (Qbar (X.l i))).injective this)⟩
-  let J : Qbar (X.l i) →ₐ[FractionRing (X.O0 i)] Kbar X i := IsAlgClosed.lift
-  have hJ : ∀ x, J (e x) = toBar X i x := J.commutes
-  refine ⟨J.toRingHom.comp ι.symm.toRingHom, fun x => ?_, fun lam s hs => ?_⟩
-  · rw [← hι, ← hJ]
-    exact congrArg J (ι.symm_apply_apply _)
-  obtain ⟨I, _, φ, κ, 𝔣, χ, n, r, hD, h𝔣, hr, hG⟩ := hl lam s hs
-  refine ⟨I, inferInstance, φ, κ, 𝔣, χ, hD, h𝔣, fun P hP => ?_⟩
-  obtain ⟨σ, hσ⟩ := exists_isFrob (N.plOm.2 P)
-  have hu : χ.UnrAt P := by
-    have e := (hD.2.2.2.2.2.2.2.2 _ P (over_below P)).2 (Finset.notMem_empty _)
-    rwa [expIn, multiplicity_eq_zero.2 fun h => hP (h𝔣 P h), expAt_zero_iff] at e
-  have h1 := hr.frob ha (Or.inl fun h => hP (X.twistExcludedPlaces_contains_residueChar i h)) hu (N.plOm.2 P) hσ
-  have h2 : ∀ b x, atSide X b (J.toRingHom.comp ι.symm.toRingHom) (GlobalTheory.GalChar.sideIso ι b x) = J x := fun b x => by
-    cases b
-    · show J (ι.symm (starRingEnd ℂ (starRingEnd ℂ (ι x)))) = _
-      rw [Complex.conj_conj, ι.symm_apply_apply]
-    · exact congrArg J (ι.symm_apply_apply x)
-  have h3 := congrArg (atSide X (X.sideL i lam) (J.toRingHom.comp ι.symm.toRingHom)) h1
-  rw [h2, map_inv₀, GlobalTheory.GalChar.toQ, RingHom.comp_apply, hJ, toBar_algebraMap] at h3
-  rw [X.Xv_def i lam P hP σ hσ, hG]
-  exact (congrArg (· * _) h3).trans (inv_mul_cancel₀ ((map_ne_zero _).2 (Units.ne_zero _)))
 
 end GlobalTheory.ToricRational

@@ -62,42 +62,7 @@ theorem detSet_scale {n : ℕ} (M M' : Submodule (𝓞 E) (Fin n → E)) (a : E)
   · rintro ⟨_, ⟨w, hw, rfl⟩, rfl⟩
     exact ⟨fun j => a • w j, fun i => (h _).2 ⟨w i, hw i, rfl⟩, (key w).symm⟩
 
-theorem betaIs_principal {n : ℕ} (Λ : GenLat E n) (a : E) (h : ∀ v, v ∈ Λ.Ln ↔ ∃ w ∈ Λ.La, v = a • w) :
-    BetaIs (Dw := Dw) c Λ (∏ τ : E →+* ℂ, embF c τ (a ^ n) ^ Dw.mult τ) := by
-  have h1 : ∀ τ, idealAt c Λ.Ln τ = Submodule.span (𝓞 c.F) {embF c τ (a ^ n)} * idealAt c Λ.La τ := by
-    intro τ
-    unfold idealAt
-    rw [detSet_scale Λ.La Λ.Ln a h, Submodule.span_mul_span, Set.singleton_mul, Set.image_image, Set.image_image]
-    simp only [map_mul]
-  unfold BetaIs
-  simp only [h1, mul_pow, Finset.prod_mul_distrib, Submodule.span_pow, Set.singleton_pow]
-  rw [Submodule.prod_span_singleton]
 
-theorem betaIs_bot {n : ℕ} (hn : 0 < n) (τ₀ : E →+* ℂ) (h0 : Dw.mult τ₀ ≠ 0) (β : c.F) :
-    BetaIs (Dw := Dw) c (⟨⊥⟩ : GenLat E n) β := by
-  have hd : ∀ τ, idealAt c (⊥ : Submodule (𝓞 E) (Fin n → E)) τ = 0 := by
-    intro τ
-    unfold idealAt
-    rw [Submodule.zero_eq_bot, Submodule.span_eq_bot]
-    rintro _ ⟨_, ⟨v, hv, rfl⟩, rfl⟩
-    have : (Matrix.of fun i j => v j i) = 0 := by
-      ext i j; simp [(Submodule.mem_bot _).1 (hv j)]
-    have hne : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
-    rw [this, Matrix.det_zero, map_zero]
-  have hL : (⟨⊥⟩ : GenLat E n).Ln = ⊥ := bot_inf_eq _
-  unfold BetaIs
-  rw [hL]
-  have hz : ∏ τ : E →+* ℂ, idealAt c (⊥ : Submodule (𝓞 E) (Fin n → E)) τ ^ Dw.mult τ = 0 :=
-    Finset.prod_eq_zero (Finset.mem_univ τ₀) (by rw [hd, zero_pow h0])
-  rw [hz, mul_zero]
 
-theorem not_unimod_bot {n : ℕ} (hn : 0 < n) : ¬ (⟨⊥⟩ : GenLat E n).Unimod := by
-  intro h
-  have := (h (fun _ => 1)).2 (by
-    intro w hw
-    rw [(Submodule.mem_bot _).1 hw]
-    simp)
-  have h1 := congrFun ((Submodule.mem_bot _).1 this) ⟨0, hn⟩
-  simp at h1
 
 end GlobalTheory.BetaCounterexample

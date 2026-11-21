@@ -7,7 +7,3 @@ open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalS
 open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.Automorphic.Spherical
 open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.GM
 
-theorem UpperTheory.ConvolutionTheory.GM.uiwMul :
-    UiwMul := by
-  intro K _ _ n _ μ _ w ν ν' hν hν'
-  exact (UpperTheory.ConvolutionTheory.Tf.uiwPow K n μ w ν ν' hν hν').1.symm

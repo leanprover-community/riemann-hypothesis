@@ -99,19 +99,6 @@ variable {F : Type} [Field F]
 def phiDelta (δ : DeltaChar a F) (v : Vol D a) {n : ℕ} (x : Fin n → ConjCl D a.l₂) : F :=
   δ.loc⁻¹ (a.barQuot (v.det₁ x))
 
-theorem phiDelta_transform (δ : DeltaChar a F) (v : Vol D a) {n : ℕ} (k : D.La →ₗ[𝓞 E] D.La) (d : (𝓞 E ⧸ a.conj)ˣ)
-    (hd : IsDetMod D a.conj k d) (u : Fin n → D.La) :
-    phiDelta δ v (fun b => Submodule.Quotient.mk (u b)) =
-      δ.loc (a.barQuot d) * phiDelta δ v (fun b => Submodule.Quotient.mk (k (u b))) := by
-  have h : v.det₁ (fun b => (Submodule.Quotient.mk (k (u b)) : ConjCl D a.l₂)) =
-      d * v.det₁ (fun b => (Submodule.Quotient.mk (u b) : ConjCl D a.l₂)) := by
-    unfold Vol.det₁
-    split_ifs with h
-    · exact hd (v.ω.compLinearMap (Submodule.mkQ _)) fun i => u (Fin.castLE h i)
-    · rw [mul_zero]
-  have hu : IsUnit (a.barQuot d) := d.isUnit.map _
-  rw [phiDelta, phiDelta, h, map_mul, map_mul, ← _root_.mul_assoc, ← MulChar.mul_apply, mul_inv_cancel,
-    MulChar.one_apply hu, _root_.one_mul]
 
 end Datum
 

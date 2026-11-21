@@ -62,21 +62,6 @@ theorem eFirst_ge_of_uLast_nonpos {R : Ranks} (P : HCParam R) (h : uLast P ≤ 0
   unfold eFirst
   linarith
 
-theorem eFirst_ge_of_b_le {R : Ranks} (P : HCParam R)
-    (h : P.b ⟨R.m - 1, by have := m_pos R; omega⟩ ≤ 2 * P.b ⟨0, m_pos R⟩) : (R.k : ℚ) / 2 ≤ eFirst P := by
-  have hm := R.two_le_m
-  have h1 := e_ge P (R.m - 2) (by omega)
-  have h2 := P.gap_eb ⟨R.m - 2, by omega⟩ (by simp only; omega)
-  have e : (⟨R.m - 2 + 1, by omega⟩ : Fin R.m) = ⟨R.m - 1, by omega⟩ := Fin.ext (by simp only; omega)
-  simp only [e] at h2
-  have h3 := P.gap_be ⟨0, m_pos R⟩
-  have h4 : (0 : ℚ) ≤ ((R.m - 2 : ℕ) : ℚ) * ((R.t : ℚ) + 3) := by positivity
-  have h5 : (R.k : ℚ) ≤ R.t := by
-    have := R.rank_add_five_le
-    exact_mod_cast (by omega : R.k ≤ R.t)
-  have h6 : (0 : ℚ) ≤ R.t := by positivity
-  unfold eFirst at h1 ⊢
-  linarith
 
 variable {D : D7} {u : D.what₂.Word}
 
@@ -156,44 +141,12 @@ theorem uLast_le (L : SizeData₂ D) (τ : D.what₂.Tau) (hτ : τ ∈ tops D) 
     linarith
   exact_mod_cast h5
 
-theorem w''_le_eFirst (L : SizeData₂ D) (τ : D.what₂.Tau) (hτ : τ ∉ tops D) :
-    L.sc.w'' D.R.n ≤ ((eFirst (D.hc τ) : ℚ) : ℝ) := by
-  have e : wj D 1 τ = ((eFirst (D.hc τ) : ℚ) : ℝ) := by
-    unfold wj eFirst
-    rw [dif_pos (show 1 - 1 < D.R.m from m_pos _)]
-  rw [← e]
-  by_cases h : (D.eTau τ : D.R.GG) ∈ D.host.thickPlaces
-  · exact (w''_le_b L.sc _ (by unfold Ranks.n; positivity)).trans (L.win_thick 1 le_rfl (m_pos _) τ h).1
-  · exact (L.win_thin 1 le_rfl (m_pos _) τ ⟨(D.eTau τ).2, fun h' => hτ ((mem_tops τ).2 h'), h⟩).1
 
-theorem signLaw_of_le (L : SizeData₂ D) (h : (D.R.k : ℝ) ≤ 2 * L.sc.w'' D.R.n) : SignLaw D.hc (· ∈ tops D) := by
-  refine ⟨uLast_le L, fun τ => ?_⟩
-  by_cases hτ : τ ∈ tops D
-  · exact eFirst_ge_of_uLast_le _ (uLast_le L τ hτ)
-  · have h1 := w''_le_eFirst L τ hτ
-    have h2 : (((D.R.k : ℚ) / 2 : ℚ) : ℝ) ≤ ((eFirst (D.hc τ) : ℚ) : ℝ) := by
-      push_cast
-      linarith
-    exact_mod_cast h2
 
-theorem wtSigns_of_le (L : SizeData₂ D) (h : (D.R.k : ℝ) ≤ 2 * L.sc.w'' D.R.n) (X : Ch D u) : TwColumn.WtSigns X :=
-  (wtSigns_iff X).2 (signLaw_of_le L h)
 
-theorem wtSigns_of_par : ∀ (D : D7) (L : SizeData₂ D), Formalism.MainNotions.GL3Columns.WTPar D L →
-    ∀ (u : D.what₂.Word) (X : Ch D u), TwColumn.WtSigns X := fun D L h _ X =>
-  wtSigns_of_le L (by
-    have h1 := h.k4
-    have h2 : (0 : ℝ) ≤ D.R.k := by positivity
-    linarith) X
 
-theorem wtSigns_of_sizeBm (L : SizeData₂ D) (h : Formalism.MainNotions.SizeBm L) (X : Ch D u) : TwColumn.WtSigns X :=
-  (wtSigns_iff X).2 ⟨uLast_le L, fun τ => eFirst_ge_of_b_le _ (by exact_mod_cast h τ (m_pos _))⟩
 
-theorem wtSigns_of_sizesAt (L : SizeData₂ D) (h : Formalism.MainNotions.SizesAt L) (X : Ch D u) : TwColumn.WtSigns X :=
-  wtSigns_of_sizeBm L h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1 X
 
-theorem wtSigns_of_params (L : SizeData₂ D) (P : ParameterChoice' D L) (X : Ch D u) : TwColumn.WtSigns X :=
-  (wtSigns_iff X).2 ⟨uLast_le L, fun τ => eFirst_ge_of_b_le _ (P.bm_le τ (m_pos _))⟩
 
 section Chosen
 
@@ -226,17 +179,7 @@ theorem signLaw_of_inAt (C : Formalism.MainNotions.Inhab.FC) (s : Scale) {R : Ra
     rw [hu]
     linarith
 
-theorem wtSigns_of_dChosen {C : Formalism.MainNotions.Inhab.FC} {s : Scale} {a b : D.R.A → ℤ} (h : DChosen C s D a b)
-    (X : Ch D u) : TwColumn.WtSigns X := by
-  have hb : ∀ t ∈ D.host.TT, 0 ≤ b t := fun t ht => by
-    have h1 := (b'_pos s).le.trans (h.wt t ht).2.1
-    exact_mod_cast h1
-  have h1 := signLaw_of_inAt C s D.host a b (Formalism.MainNotions.wordBits D D.u₀) hb (fun τ => (D.eTau τ : D.R.GG)) D.hc
-    fun τ => by rw [← D.hcW_base]; exact h.hc D.u₀ τ
-  exact (wtSigns_iff X).2 ⟨fun τ hτ => h1.1 τ ((mem_tops τ).1 hτ), h1.2⟩
 
-theorem wtSigns_of_lChosen {C : Formalism.MainNotions.Inhab.FC} {L : SizeData₂ D} (h : LChosen C L) (X : Ch D u) : TwColumn.WtSigns X :=
-  wtSigns_of_dChosen h.d X
 
 end Chosen
 
@@ -276,16 +219,5 @@ def shift {R : Ranks} (P : HCParam R) (z : ℤ) : HCParam R where
   v_int i := (P.v_int i).elim fun y hy => ⟨y + z, by rw [hy]; push_cast; ring⟩
   b_int j := (P.b_int j).elim fun y hy => ⟨y - z, by rw [hy]; push_cast; ring⟩
 
-theorem exists_shift_not {R : Ranks} (P : HCParam R) :
-    ∃ z : ℤ, -(((R.k : ℚ) - 1) / 2) < uLast (shift P z) ∧ eFirst (shift P z) < (R.k : ℚ) / 2 := by
-  obtain ⟨z, hz⟩ := exists_int_gt (max (eFirst P) (1 - uLast P))
-  have h1 := (le_max_left _ _).trans_lt hz
-  have h2 := (le_max_right _ _).trans_lt hz
-  have h3 : (0 : ℚ) ≤ R.k := by positivity
-  refine ⟨z, ?_, ?_⟩
-  · show _ < uLast P + z
-    linarith
-  · show eFirst P - z < _
-    linarith
 
 end GlobalTheory.LvT.WtSign

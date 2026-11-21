@@ -130,23 +130,6 @@ theorem twoOver_iff (p : PlF D) :
 
 variable (X : HidaSetting D)
 
-theorem etaV_eq_etaF (hLG : LocGlobIdem) (v : HeightOneSpectrum (𝓞 X.B.I.F)) :
-    ((Formalism.L2.SG.LocVol.etaV (E := X.B.I.E) v : ℤ) : ℝ) =
-      Formalism.HermitianLattices.Ext.L3.etaF D.host.E D.host.F (plEquiv X v).asIdeal := by
-  have hjk : ∀ a : X.B.I.F, X.ιE (algebraMap X.B.I.F X.B.I.E a) =
-      algebraMap D.host.F D.host.E (Formalism.L2.GlobalTheoryTheory.AFTransport.iotaF X a) :=
-    fun a => (Formalism.L2.GlobalTheoryTheory.AFTransport.iotaF_coe X a).symm
-  have h1 := idemNT_iff (Formalism.L2.GlobalTheoryTheory.AFTransport.iotaF X) X.ιE hjk v
-  have h2 := hLG D.host.F D.host.E (plEquiv X v)
-  have hiff : IdemNT (v.adicCompletion X.B.I.F ⊗[X.B.I.F] X.B.I.E) ↔
-      ¬ ((plEquiv X v).asIdeal.map (algebraMap (𝓞 D.host.F) (𝓞 D.host.E))).IsPrime :=
-    (h1.trans h2).trans (twoOver_iff (plEquiv X v))
-  unfold Formalism.L2.SG.LocVol.etaV Formalism.HermitianLattices.Ext.L3.etaF
-  split_ifs with ha hb hb
-  · exact absurd hb (hiff.1 ha)
-  · simp
-  · simp
-  · exact absurd (hiff.2 hb) ha
 
 def EtaF : Prop :=
   ∀ v : HeightOneSpectrum (𝓞 X.B.I.F), ((Formalism.L2.SG.LocVol.etaV (E := X.B.I.E) v : ℤ) : ℝ) =
@@ -274,7 +257,5 @@ theorem t_factor_product_of_eta (hη : EtaF X) (u : D.what₂.Word) : Formalism.
 theorem fieldDict_of_eta (hη : EtaF X) (u u' : D.what₂.Word) : Formalism.L2.SG.Pf.NcVal.FieldDict X u u' :=
   Formalism.L2.SG.Pf.AlTieFD.field_dictionary_of_leaves X u u' (euler_product_of_eta X hη) (t_factor_product_of_eta X hη u) Formalism.L2.SG.Pf.AlTieFD.discriminant_sq_relation
 
-theorem fieldDict_of_locGlob (hLG : LocGlobIdem) (u u' : D.what₂.Word) : Formalism.L2.SG.Pf.NcVal.FieldDict X u u' :=
-  fieldDict_of_eta X (fun v => etaV_eq_etaF X hLG v) u u'
 
 end Formalism.L2.SG.Pf.AlTieEta

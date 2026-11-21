@@ -36,28 +36,6 @@ theorem evR_of_frMap (hW : EvalWD (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ 
   rw [dif_pos hT]
   exact hW f hf S _ _ _ _ _ _ w hT.choose_spec.choose_spec.choose_spec hy
 
-theorem rule_eq_zero_of_genSpec (hW : EvalWD (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z))
-    (hG : GenFrEx Xo c) (hA : AllTest Xo c) (hS : GenSpecSt Xo c hG) {e : Ix Dw → ℕ} {f : Rul Xo c}
-    (hf : IsNatural (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) f)
-    (hw : IsWeight (K := c.F) (fun S _ _ => FrPt Xo c S) (fun t y y' => FrBor t y y') e f)
-    (h0 : ∀ Z : Comp Xo c, evC hG Z f = 0) : f = 0 := by
-  funext p y
-  show f p y = 0
-  apply eq_of_locM (K := c.F)
-  intro m hm
-  obtain ⟨Z, q, yq, ⟨p', lam, a, μ, y', h1, h2, h3⟩, hgen⟩ := hS p y m
-  have hq : f q yq = 0 := by
-    obtain ⟨p₀, φ₀, y₀, h₀⟩ := hA (Om Z) (genFr hG Z)
-    obtain ⟨B, β, β₀, yB, y₀B, tB, Ω, _, _, κ, γ, hβ, hβ₀, hb, hc, hinj⟩ := hgen p₀ φ₀ y₀ h₀
-    have hz : φ₀ (f p₀ y₀) = 0 := by
-      rw [← evR_of_frMap hW hf h₀]
-      exact h0 Z
-    apply hinj
-    rw [map_zero, AlgHom.comp_apply, ← hf q B β yq yB hβ, hw B tB y₀B yB hb, map_mul,
-      hf p₀ B β₀ y₀ y₀B hβ₀, ← AlgHom.comp_apply γ β₀, hc, AlgHom.comp_apply, hz, map_zero, mul_zero]
-  have e1 : locM c.F m (f p y) = μ (lam (f p y)) := by
-    rw [← AlgHom.comp_apply μ lam, h3]
-  rw [e1, ← hf p p' lam y y' h1, hf q p' a yq y' h2, hq, map_zero, map_zero, map_zero]
 
 end Gen
 
@@ -65,12 +43,5 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAl
 
 variable {D : D7} {T : Top D}
 
-theorem genValInj (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c)
-    (hS : GenSpecSt (T.Q.Xo j) T.Q.c hG) : GenValInjSt h j hG := by
-  intro w g hg
-  have hC : (g : T.R j) ∈ T.C j w := cutR_le T.C j w g.2
-  have hsec := ((mem_cusp _ _ _ _ _ _).1 hC).1
-  apply Subtype.ext
-  exact rule_eq_zero_of_genSpec (h.evalWD j hj) hG (h.allTest j hj) hS hsec.1 hsec.2 hg
 
 end Formalism.L2.Pj

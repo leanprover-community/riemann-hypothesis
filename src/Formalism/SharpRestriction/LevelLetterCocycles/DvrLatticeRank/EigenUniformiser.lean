@@ -150,16 +150,6 @@ theorem piPrime_eq (D : Data O Δ) :
   · rw [map_prod]
     simp_rw [D.hv0]
 
-theorem eigen_uniformiser_props (D : Data O Δ) (hs : IsUnit (Fintype.card Δ : O)) :
-    pi1 D hs - X ∈ (Ideal.span {X ^ 2} : Ideal (PowerSeries O)) ∧
-    (∀ δ, D.ρ δ (pi1 D hs) = (D.ω δ : O) • pi1 D hs) ∧
-    (∀ f : PowerSeries O, ∃ g : PowerSeries O, f = PowerSeries.subst (pi1 D hs) g) := by
-  refine ⟨?_, rho_eigen_uniformiser D hs, subst_surjective (constantCoeff_eigen_uniformiser D hs) (isUnit_coeff_one_eigen_uniformiser D hs)⟩
-  rw [Ideal.mem_span_singleton, X_pow_dvd_iff]
-  intro m hm
-  interval_cases m
-  · rw [map_sub, coeff_zero_eigen_uniformiser, coeff_zero_X, sub_zero]
-  · rw [map_sub, coeff_one_eigen_uniformiser, coeff_one_X, sub_self]
 
 theorem invariants (D : Data O Δ) (hs : IsUnit (Fintype.card Δ : O)) :
     (∀ f : PowerSeries O, (∀ δ, D.ρ δ f = f) ↔

@@ -372,22 +372,10 @@ theorem singleAdele_at_other_place (x : v5.adicCompletion ℚ) : singleF ℚ v5 
   change Pi.single v5 x v3 = 0
   simp [place_three_ne_place_five]
 
-theorem one_mem_intAt : (1 : Kv GaussQ v5) ∈ intAt GaussQ v5 :=
-  AddSubgroup.subset_closure ⟨1, one_mem _, 1, by simp [Algebra.TensorProduct.one_def]⟩
 
-theorem trunc_empty (x : Matrix (Fin 2) (Fin 2) (AE ℚ GaussQ)) : trunc GaussQ ∅ x = 1 := by
-  ext i j; simp [trunc, restrictTo]
 
-theorem embed_one_at_five : embed GaussQ v5 (1 : Matrix (Fin 2) (Fin 2) (Kv GaussQ v5)) = 1 := by
-  ext i j; simp [embed]
 
-theorem one_mem_Cl : (1 : Matrix (Fin 2) (Fin 2) (AE ℚ GaussQ)) ∈ Cl (conj ℚ GaussQ) hypPlane :=
-  subset_closure ⟨1, one_mem_SU, by simp⟩
 
-theorem perpProjection_isotropic_self : perpProj (conj ℚ GaussQ).toRingHom hypPlane e0 f0 e0 = 0 := by
-  simp only [perpProj]
-  rw [hf_e0f0, hf_e0e0]
-  simp
 
 def g5 : Matrix (Fin 2) (Fin 2) (Kv GaussQ v5) :=
   eich (sigV (conj ℚ GaussQ) v5).toRingHom (hypPlane.map (inclV GaussQ v5)) (inclV GaussQ v5 ∘ e0) 0

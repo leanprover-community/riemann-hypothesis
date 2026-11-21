@@ -303,21 +303,6 @@ namespace Formalism.L2.SG.Pf
 
 open Formalism.L2.SG.Pf.MainEqCut
 
-theorem rowMainEqC_of_cut (hCh : PN.NGChain) (hMG : MeanAmpGen) (hc : GenCutC) : RowMainEqC := by
-  intro Cg cb Cw cT CT C0 A
-  obtain ⟨C1, C0n, Aexp, CB, CSt, Cgs, CTs, h1, h2, h3, h4, hA, C'₀, Cl₀, h⟩ := hc Cg cb Cw cT CT C0 A
-  obtain ⟨Cn, hCn, hK⟩ := rowGenJoint_of hCh hMG C1 C0n Aexp CB CSt Cgs CTs h1 h2 h3 h4 hA
-  refine ⟨Cn, hCn, C'₀, Cl₀, fun C' Cl a b D large₂ X Y u hH hT ha => ?_⟩
-  obtain ⟨P, iP, B, cSt, e1, Irat, Ire, νL, νB, ng, _, _, hG, hdd, hN, hF, hS, hIn⟩ :=
-    h C' Cl a b D large₂ X Y u hH hT
-  have hcard := Formalism.MainNotions.LatticeGluingRadicals.d_card D
-  have key := hK D.host.E (TauC Y u u) _ _ _ _ (Y.tO u u) D.R.rS D.R.k (Set (TauC Y u u)) (NuC D)
-    (NOfG Y u νL νB ng) P B large₂.sc.b (2 * D.host.v) (X.B.g : ℝ) (((Tu D u : ℕ) : ℝ) * ((Tu D u : ℕ) : ℝ))
-    cSt e1 Irat Ire
-  rw [hcard] at key
-  have r := key ha hG hN hF hS hIn
-  rw [hdd] at r
-  exact r
 
 open Formalism.L2.SG.NormCut in
 

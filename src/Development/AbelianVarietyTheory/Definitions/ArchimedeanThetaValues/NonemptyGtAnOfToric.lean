@@ -177,17 +177,7 @@ theorem dvd_be : letI := H.starRing; ∀ x y, (2 * l.M' : ℤ) ∣ Λ.A.be x y :
   rw [← Λ.be_eq]
   exact a.be_dvd _ _
 
-theorem A_dvd_be : letI := H.starRing; ∀ x y, (l.A : ℤ) ∣ Λ.A.be x y := by
-  letI := H.starRing
-  intro x y
-  have hA : l.A ∣ l.M' := Nat.dvd_lcm_right l.M l.A
-  exact dvd_trans (dvd_mul_of_dvd_right (Int.natCast_dvd_natCast.2 hA) 2) (Λ.dvd_be x y)
 
-theorem M_dvd_be : letI := H.starRing; ∀ x y, (l.M : ℤ) ∣ Λ.A.be x y := by
-  letI := H.starRing
-  intro x y
-  have hM : l.M ∣ l.M' := Nat.dvd_lcm_left l.M l.A
-  exact dvd_trans (dvd_mul_of_dvd_right (Int.natCast_dvd_natCast.2 hM) 2) (Λ.dvd_be x y)
 
 def Lifts {k : ℕ} [NeZero k] (p : Out.QkPt a.D₀ (FractionRing ℂ) k) : letI := H.starRing; Λ.A.La → Prop :=
   letI := H.starRing
@@ -208,19 +198,6 @@ theorem exists_lifts {k : ℕ} [NeZero k] (p : Out.QkPt a.D₀ (FractionRing ℂ
     rw [huniq q' hq']
     exact TorusExt.equiv_symm a.bimult (Λ.toGtDict.qk_equiv_add k la m)
 
-theorem y_of_lifts {k : ℕ} [NeZero k] (p : Out.QkPt a.D₀ (FractionRing ℂ) k) : letI := H.starRing
-    ∀ la : Λ.A.La, Λ.Lifts p la → ∃ z, p.y = Λ.y la + k • z := by
-  letI := H.starRing
-  intro la h
-  have hf : (algebraMap (FractionRing ℂ) ℂ).comp (algebraMap (FractionRing ℂ) (FractionRing ℂ)) =
-      algebraMap (FractionRing ℂ) ℂ := by
-    rw [Algebra.algebraMap_self, RingHom.comp_id]
-  obtain ⟨q, hq, -⟩ := TorusExt.existsUnique_qkExt a.bimult (algebraMap (FractionRing ℂ) ℂ) hf p
-  have hqy : q.y = p.y := by
-    rw [(TorusExt.qkExt_iff a.bimult _ hf p q).1 hq, TorusExt.qkExt, TorusExt.qkMk_y]
-  obtain ⟨z, hz, -⟩ := (TorusExt.equiv_iff a.bimult _ _).1 (h q hq)
-  refine ⟨z, ?_⟩
-  rw [← hqy, hz, Λ.toGtDict.qk_y, y_apply]
 
 end GtAn₀
 

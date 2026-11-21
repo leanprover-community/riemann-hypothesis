@@ -101,24 +101,7 @@ def ConC (c : ℝ) : Prop :=
 
 end CData
 
-theorem second_part_iff_bundles (D : Formalism.BasicNotions.D7) (n₀ : ℕ) (A C : ℝ) :
-    Conclusion2 D n₀ A C ↔ ∀ X : CData, X.HypB n₀ A → X.ConB C := by
-  constructor
-  · intro h X hX
-    exact h X.I X.b X.lam X.g X.g₀ X.e X.H X.σ X.w X.Hs X.σs X.tens X.μf X.fund X.R X.Re X.h hX.1 hX.2.1 hX.2.2
-  · intro h I b lam g g₀ e H _ _ _ σ w Hs _ _ _ σs tens μf _ fund R Re hh hS hC hG
-    exact h { I := I, b := b, lam := lam, g := g, g₀ := g₀, e := e, H := H, σ := σ, w := w, Hs := Hs, σs := σs,
-              tens := tens, μf := μf, fund := fund, R := R, Re := Re, h := hh } ⟨hS, hC, hG⟩
 
-theorem third_part_iff_bundles (D : Formalism.BasicNotions.D7) (n₀ : ℕ) (A C c cb : ℝ) :
-    PointsLemma D n₀ A C c cb ↔ ∀ X : CData, X.HypC n₀ A C cb → X.ConC c := by
-  constructor
-  · intro h X hX
-    exact h X.I X.b X.lam X.g X.g₀ X.e X.H X.σ X.w X.Hs X.σs X.tens X.μf X.fund X.R X.Re X.h hX.1.1 hX.1.2.1 hX.1.2.2
-      hX.2.1 hX.2.2.1 hX.2.2.2
-  · intro h I b lam g g₀ e H _ _ _ σ w Hs _ _ _ σs tens μf _ fund R Re hh hS hC hG h1 h2 h3
-    exact h { I := I, b := b, lam := lam, g := g, g₀ := g₀, e := e, H := H, σ := σ, w := w, Hs := Hs, σs := σs,
-              tens := tens, μf := μf, fund := fund, R := R, Re := Re, h := hh } ⟨⟨hS, hC, hG⟩, h1, h2, h3⟩
 
 namespace CData
 
@@ -141,48 +124,14 @@ theorem phOf_eq_prod (g : X.I.Ginf) :
   · push_cast; rfl
   · exact map_prod (starRingEnd ℂ) _ _
 
-theorem phOf_integrable
-    (hloc : ∀ v, Integrable (phLoc (X.I.ε v) (X.σ v) (X.w v)) (Formalism.REAL.muG (X.I.ε v))) :
-    Integrable (phOf X.I X.σ X.w) (Measure.pi fun v => Formalism.REAL.muG (X.I.ε v)) := by
-  have h := Integrable.fintype_prod_dep (μ := fun v => Formalism.REAL.muG (X.I.ε v))
-    (f := fun v => phLoc (X.I.ε v) (X.σ v) (X.w v)) hloc
-  exact h.congr (Filter.Eventually.of_forall fun g => (X.phOf_eq_prod g).symm)
 
 end CData
 
 def StepsB (n₀ : ℕ) (A C : ℝ) : Prop :=
   ∀ X : CData, X.HypB n₀ A → X.GapAboveThreeHalvesPower → X.GapAboveSquareRootThreshold C → X.ProjStep ∧ X.CountedStep ∧ X.CuspStep
 
-theorem spherical_function_integrable_of_local (D : Formalism.BasicNotions.D7) (hL : MatrixCoefficientIntegrable D) (n₀ : ℕ) (A : ℝ) (X : CData) (hX : X.HypB n₀ A)
-    (h1 : X.GapAboveThreeHalvesPower) : Integrable (phOf X.I X.σ X.w) (Measure.pi fun v => Formalism.REAL.muG (X.I.ε v)) := by
-  apply X.phOf_integrable
-  intro v
-  exact hL X.I.n (X.I.ε v) (X.lam v) (hX.1.2.2.2.2.1 v) (X.H v) (X.σ v) (hX.2.1.1 v) (X.w v) (hX.2.1.2.1 v) X.h
-    (hX.2.2 v) (h1 v)
 
-theorem hodgeTateFromSandwich_of_admissibility_implication (D : Formalism.BasicNotions.D7) (n₀ : ℕ) (A Cb : ℝ)
-    (hS : (adm1 D ∧ adm6 D ∧ adm8 D) → DiscreteSeriesDecayBound D → LocalProjectorRealPlace D → StepsB n₀ A Cb) : HodgeTateFromSandwich D n₀ A Cb := by
-  intro hadm hdec hloc
-  rw [second_part_iff_bundles]
-  intro X hX
-  refine ⟨fun h1 => ?_, fun hP T hT => ?_⟩
-  · apply X.phOf_integrable
-    intro v
-    exact (hloc X.I.n (X.I.ε v) (X.lam v) (hX.1.2.2.2.2.1 v) (X.H v) (X.σ v) (hX.2.1.1 v) (X.w v) (hX.2.1.2.1 v) X.h
-      (hX.2.2 v) (h1 v)).1
-  · obtain ⟨s1, s2, s3⟩ := hS hadm hdec hloc X hX hP.1 hP.2
-    have hp := s1 T hT
-    obtain ⟨κ, -⟩ := s2 T hT hp
-    have hfd : FiniteDimensional ℂ (X.I.eHom X.σs X.μf X.fund X.R X.Re) :=
-      hadm.2.2 X.I n₀ A X.b X.lam X.g X.g₀ X.e X.H X.σ X.w X.Hs X.σs X.tens X.μf X.fund X.R X.Re hX.1 hX.2.1
-    exact ⟨hp, Module.Finite.equiv κ, κ.finrank_eq.symm, s3 T hT hp⟩
 
-theorem closed_second_part_of_estimates
-    (hS : ∀ A : ℝ, 1 ≤ A → ∃ (n₀ : ℕ) (C₀ : ℝ), ∀ Cb ≥ C₀, ∀ D : Formalism.BasicNotions.D7,
-      (adm1 D ∧ adm6 D ∧ adm8 D) → DiscreteSeriesDecayBound D → LocalProjectorRealPlace D → StepsB n₀ A Cb) : ClosedFormProjectorBound := by
-  intro A hA
-  obtain ⟨n₀, C₀, h⟩ := hS A hA
-  exact ⟨n₀, C₀, fun Cb hCb D => hodgeTateFromSandwich_of_admissibility_implication D n₀ A Cb (h Cb hCb D)⟩
 
 namespace CData
 
@@ -361,33 +310,7 @@ theorem gap_thresholds_of_height_bound {Cb Ch : ℝ}
     exact ⟨this.1, this.2.1⟩
   exact ⟨fun v => (key v).1, fun v => (key v).2⟩
 
-theorem third_part_of_estimates (c₁ A₁ : ℝ) (hc₁ : 0 < c₁) (hA₁ : 0 ≤ A₁) :
-    ∃ c' : ℝ, 0 < c' ∧ ∃ n₁ : ℕ, ∀ Cb : ℝ, ∃ C₁ : ℝ, ∀ (D : Formalism.BasicNotions.D7) (n₀ : ℕ) (A C cb : ℝ),
-      n₁ ≤ n₀ → C₁ ≤ C → Conclusion2 D n₀ A Cb → StepsC n₀ A C cb c₁ A₁ → PointsLemma D n₀ A C c' cb := by
-  obtain ⟨c', hc', n₁, hFS⟩ := Formalism.HermitianLatticeCounting.Final.S7.finalSum c₁ A₁ hc₁ hA₁
-  refine ⟨c', hc', max n₁ 1, fun Cb => ?_⟩
-  obtain ⟨Ch, -, hH⟩ := Formalism.HermitianLatticeCounting.Final.S7.threshHead Cb
-  refine ⟨Ch, fun D n₀ A C cb hn hC hb hS => ?_⟩
-  rw [third_part_iff_bundles]
-  intro X hX
-  obtain ⟨s1, s2, s3, s4⟩ := hS X hX
-  have hthr := gap_thresholds_of_height_bound hH X (le_trans (le_max_right _ _) hn) hC hX
-  have hB := ((second_part_iff_bundles D n₀ A Cb).1 hb X hX.1).2 hthr
-  refine X.count_of_steps hFS (le_trans (le_trans (le_max_left _ _) hn) hX.1.1.1) hX.1.2.1.1
-    (fun v => (hX.1.2.1.2.1 v).1) hX.1.1.2.2.2.2.2.2.1.2.2.2.1 (fun T hT => ?_) s1 s2 s3 s4
-  obtain ⟨a, b, c, -⟩ := hB T hT
-  exact ⟨a, b, c⟩
 
-theorem third_bound_of_estimates (c₁ A₁ : ℝ) (hc₁ : 0 < c₁) (hA₁ : 0 ≤ A₁) :
-    ∃ c' : ℝ, 0 < c' ∧ ∃ n₁ : ℕ, ∀ Cb : ℝ, ∃ C₁ : ℝ, ∀ (D : Formalism.BasicNotions.D7) (Cres : ℝ) (n₀ : ℕ) (A C cb : ℝ),
-      n₁ ≤ n₀ → C₁ ≤ C →
-      ((ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D Cres ∧ adm8 D) → DiscreteSeriesDecayBound D → Conclusion2 D n₀ A Cb →
-        StepsC n₀ A C cb c₁ A₁) →
-      TowerRallisLemma D Cres n₀ A Cb C c' cb := by
-  obtain ⟨c', hc', n₁, h⟩ := third_part_of_estimates c₁ A₁ hc₁ hA₁
-  refine ⟨c', hc', n₁, fun Cb => ?_⟩
-  obtain ⟨C₁, h⟩ := h Cb
-  exact ⟨C₁, fun D Cres n₀ A C cb hn hC hS hadm hdec hb => h D n₀ A C cb hn hC hb (hS hadm hdec hb)⟩
 
 def ClosedThirdTermEstimates : Prop :=
   ∃ c₁ cb A₁ : ℝ, 0 < c₁ ∧ 0 < cb ∧ 0 ≤ A₁ ∧ ∀ Cres A Cb : ℝ, 1 ≤ A → ∃ (n₀ : ℕ) (C₀ : ℝ),
@@ -395,15 +318,6 @@ def ClosedThirdTermEstimates : Prop :=
       (ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D Cres ∧ adm8 D) → DiscreteSeriesDecayBound D → Conclusion2 D n₀' A Cb →
         StepsC n₀' A C cb c₁ A₁
 
-theorem closed_third_part_of_estimates (hS : ClosedThirdTermEstimates) : ClosedFormWordCount := by
-  obtain ⟨c₁, cb, A₁, hc₁, hcb, hA₁, hS⟩ := hS
-  obtain ⟨c', hc', n₁, h⟩ := third_bound_of_estimates c₁ A₁ hc₁ hA₁
-  refine ⟨c', cb, hc', hcb, fun Cres A Cb hA => ?_⟩
-  obtain ⟨C₁, h⟩ := h Cb
-  obtain ⟨n₀, C₀, hS⟩ := hS Cres A Cb hA
-  refine ⟨max n₀ n₁, max C₀ C₁, fun C hC D => ?_⟩
-  exact h D Cres _ A C cb (le_max_right _ _) (le_trans (le_max_right _ _) hC)
-    (hS _ (le_max_left _ _) C (le_trans (le_max_left _ _) hC) D)
 
 def cartanDistance {n : ℕ} (ε : Fin n → Bool) (g : Formalism.REAL.UJ ε) : ℝ :=
   sInf {t | ∃ k X : Matrix (Fin n) (Fin n) ℂ, k ∈ Formalism.REAL.Kset ε ∧ Formalism.REAL.inP ε X ∧
@@ -899,32 +813,7 @@ theorem StepsC_of_refined (cε C₁ c₁ A A₂ : ℝ) (hcε : 0 < cε) (hcε2 :
     have hfar := X.farPoint_of_count D hdec hX.1 hthr s4 hq hq1 hAc (by positivity) n1 n2 n3 n4 n5 hcnt
     exact X.moderate_of_near_far hM s3 hp hA₂ (by positivity) n6 hnear hfar
 
-theorem third_bound_of_refined_estimates (cε C₁ c₁ A A₂ : ℝ) (hcε : 0 < cε) (hcε2 : cε ≤ 1 / 2) (hC₁ : 1 ≤ C₁) (hc₁ : 0 < c₁)
-    (hA : 1 ≤ A) (hA₂ : 0 ≤ A₂) :
-    ∃ c' : ℝ, 0 < c' ∧ ∃ n₁ : ℕ, ∀ Cb : ℝ, ∃ C₂ : ℝ, ∀ (D : Formalism.BasicNotions.D7) (Cres : ℝ) (n₀ : ℕ) (C cb : ℝ),
-      n₁ ≤ n₀ → C₂ ≤ C →
-      ((ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D Cres ∧ adm8 D) → DiscreteSeriesDecayBound D → Conclusion2 D n₀ A Cb →
-        StepsC' n₀ A C cb c₁ A₂ cε C₁) →
-      TowerRallisLemma D Cres n₀ A Cb C c' cb := by
-  obtain ⟨c', hc', n₁, h⟩ := third_bound_of_estimates c₁ (A₂ + 1) hc₁ (by linarith)
-  obtain ⟨C₀, hR⟩ := StepsC_of_refined cε C₁ c₁ A A₂ hcε hcε2 hC₁ hc₁ hA hA₂
-  refine ⟨c', hc', max n₁ 1, fun Cb => ?_⟩
-  obtain ⟨C₁', h⟩ := h Cb
-  refine ⟨max C₁' C₀, fun D Cres n₀ C cb hn hC hS => ?_⟩
-  exact h D Cres n₀ A C cb (le_trans (le_max_left _ _) hn) (le_trans (le_max_left _ _) hC)
-    fun hadm hdec hb => hR D n₀ C cb (le_trans (le_max_right _ _) hn) (le_trans (le_max_right _ _) hC) hdec
-      (hS hadm hdec hb)
 
-theorem lowest_K_type_projector_exists (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (X : CData) {n₀ : ℕ} {A : ℝ} (hX : X.HypB n₀ A) :
-    X.LowProj := by
-  intro v
-  have hfd : FiniteDimensional ℂ (lowKSub (X.I.ε v) (X.lam v) (X.σ v)) :=
-    (h2 X.I.n (X.I.ε v) (X.lam v) (hX.1.2.2.2.2.1 v) (X.H v) (X.σ v) (hX.2.1.1 v)).1.1
-  refine ⟨(lowKSub (X.I.ε v) (X.lam v) (X.σ v)).starProjection, ?_, ?_, ?_⟩
-  · exact (lowKSub (X.I.ε v) (X.lam v) (X.σ v)).isIdempotentElem_starProjection
-  · intro x y
-    exact Submodule.inner_starProjection_left_eq_right _ x y
-  · exact Submodule.range_starProjection _
 
 theorem φ_integrable (X : CData) {n₀ : ℕ} {A : ℝ} (hX : X.HypB n₀ A)
     (hph : Integrable (phOf X.I X.σ X.w) (Measure.pi fun v => Formalism.REAL.muG (X.I.ε v))) :
@@ -938,66 +827,11 @@ def StepsU3' : Prop :=
       (ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D Cres ∧ adm8 D) → DiscreteSeriesDecayBound D → Conclusion2 D n₀' A Cb →
         StepsC' n₀' A C cb c₁ A₂ cε C₁
 
-theorem closed_third_part_of_refined (hS : StepsU3') : ClosedFormWordCount := by
-  obtain ⟨c₁, cb, A₂, cε, hc₁, hcb, hA₂, hcε, hcε2, hS⟩ := hS
-  refine closed_third_part_of_estimates ⟨c₁, cb, A₂ + 1, hc₁, hcb, by linarith, fun Cres A Cb hA => ?_⟩
-  obtain ⟨C₁, n₀, C₀, hC₁, hS⟩ := hS Cres A Cb hA
-  obtain ⟨C₂, hR⟩ := StepsC_of_refined cε C₁ c₁ A A₂ hcε hcε2 hC₁ hc₁ hA hA₂
-  refine ⟨max n₀ 1, max C₀ C₂, fun n₀' hn C hC D hadm hdec hb => ?_⟩
-  exact hR D n₀' C cb (le_trans (le_max_right _ _) hn) (le_trans (le_max_right _ _) hC) hdec
-    (hS n₀' (le_trans (le_max_left _ _) hn) C (le_trans (le_max_left _ _) hC) D hadm hdec hb)
 
-theorem third_part_of_refined_estimates (cε C₁ c₁ A A₂ : ℝ) (hcε : 0 < cε) (hcε2 : cε ≤ 1 / 2) (hC₁ : 1 ≤ C₁) (hc₁ : 0 < c₁)
-    (hA : 1 ≤ A) (hA₂ : 0 ≤ A₂) :
-    ∃ c' : ℝ, 0 < c' ∧ ∃ n₁ : ℕ, ∀ Cb : ℝ, ∃ C₂ : ℝ, ∀ (D : Formalism.BasicNotions.D7) (n₀ : ℕ) (C cb : ℝ),
-      n₁ ≤ n₀ → C₂ ≤ C → DiscreteSeriesDecayBound D → Conclusion2 D n₀ A Cb → StepsC' n₀ A C cb c₁ A₂ cε C₁ → PointsLemma D n₀ A C c' cb := by
-  obtain ⟨c', hc', n₁, h⟩ := third_part_of_estimates c₁ (A₂ + 1) hc₁ (by linarith)
-  obtain ⟨C₀, hR⟩ := StepsC_of_refined cε C₁ c₁ A A₂ hcε hcε2 hC₁ hc₁ hA hA₂
-  refine ⟨c', hc', max n₁ 1, fun Cb => ?_⟩
-  obtain ⟨C₁', h⟩ := h Cb
-  refine ⟨max C₁' C₀, fun D n₀ C cb hn hC hdec hb hS => ?_⟩
-  exact h D n₀ A C cb (le_trans (le_max_left _ _) hn) (le_trans (le_max_left _ _) hC) hb
-    (hR D n₀ C cb (le_trans (le_max_right _ _) hn) (le_trans (le_max_right _ _) hC) hdec hS)
 
-theorem full_statement_of_parts (D : Formalism.BasicNotions.D7) (Cres : ℝ) (n₀ : ℕ) (A Cb C c cb : ℝ) (i0 : HarishChandraFormulaStatement D) (i1 : IntegralityFromMetric D)
-    (i2 : IntegrabilityFromDecay D) (i3 : AbstractGroupProjectorForDatum D) (i4 : LocalProjectorFromSchur D) (i5 : HodgeTateFromSandwich D n₀ A Cb)
-    (i6 : TowerRallisLemma D Cres n₀ A Cb C c cb) : Stmt D Cres n₀ A Cb C c cb := by
-  rintro ⟨a1, a2, a3, a4, a5, a6, a7, a8⟩
-  have p0 := i0 ⟨a2, a3⟩
-  have p1 := i1 p0
-  have p2 := i2 p1
-  have p4 := i4 a1 p2 i3
-  have p5 := i5 ⟨a1, a6, a8⟩ p1 p4
-  exact ⟨p0, p1, p2, i3, p4, p5, i6 ⟨a4, a5, a6, a7, a8⟩ p1 p5⟩
 
-theorem family_full_statement_of_parts {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (Cres : ℝ) (n₀ : ℕ) (A Cb C c cb : ℝ)
-    (i0 : FamilyFormulaStatement Fm) (i1 : PeriodFamilyStatement Fm) (i2 : FamilyIntegrabilityOfDecay Fm) (i3 : FamilyAbstractProjector Fm) (i4 : FamilyLocalProjectorOfAbstractProjector Fm)
-    (i5 : DeterminantValueFamily Fm n₀ A Cb) (i6 : FlatLineDegreeFamilyStatement Fm Cres n₀ A Cb C c cb) : KudlaFamilyStatement Fm Cres n₀ A Cb C c cb := by
-  intro hA
-  have a1 : admF1 Fm := fun x i => (hA x i).1
-  have a2 : admF2 Fm := fun x i => (hA x i).2.1
-  have a3 : admF3 Fm := fun x i => (hA x i).2.2.1
-  have a4 : admF4 Fm := fun x i => (hA x i).2.2.2.1
-  have a5 : admF5 Fm := fun x i => (hA x i).2.2.2.2.1
-  have a6 : admF6 Fm := fun x i => (hA x i).2.2.2.2.2.1
-  have a7 : admF7 Fm Cres := fun x i => (hA x i).2.2.2.2.2.2.1
-  have a8 : admF8 Fm := fun x i => (hA x i).2.2.2.2.2.2.2
-  have p0 := i0 ⟨a2, a3⟩
-  have p1 := i1 p0
-  have p2 := i2 p1
-  have p4 := i4 a1 p2 i3
-  have p5 := i5 ⟨a1, a6, a8⟩ p1 p4
-  exact ⟨p0, p1, p2, i3, p4, p5, i6 ⟨a4, a5, a6, a7, a8⟩ p1 p5⟩
 
-theorem family_second_part_of_local {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (n₀ : ℕ) (A Cb : ℝ)
-    (h : ∀ x (i : Fm.Ix x), HodgeTateFromSandwich (Fm.D x i) n₀ A Cb) : DeterminantValueFamily Fm n₀ A Cb :=
-  fun ha h1 h2 x i => h x i ⟨ha.1 x i, ha.2.1 x i, ha.2.2 x i⟩ (h1 x i) (h2 x i)
 
-theorem family_third_part_of_local {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (Cres : ℝ) (n₀ : ℕ) (A Cb C c cb : ℝ) (hc : 0 < c)
-    (hcb : 0 < cb) (h : ∀ x (i : Fm.Ix x), TowerRallisLemma (Fm.D x i) Cres n₀ A Cb C c cb) :
-    FlatLineDegreeFamilyStatement Fm Cres n₀ A Cb C c cb :=
-  fun ha h1 h2 => ⟨hc, hcb, fun x i =>
-    h x i ⟨ha.1 x i, ha.2.1 x i, ha.2.2.1 x i, ha.2.2.2.1 x i, ha.2.2.2.2 x i⟩ (h1 x i) (h2 x i)⟩
 
 namespace CData
 
@@ -1007,39 +841,6 @@ def RegRep : Prop :=
   (∀ g (F : X.L2), ‖X.R g F‖ = ‖F‖) ∧
     ∀ x y : X.L2, AEStronglyMeasurable (fun g => ⟪x, X.R g y⟫_ℂ) (X.I.muA X.μf)
 
-theorem opExists_of_regRep (hR : X.RegRep) (hφ : Integrable X.φ (X.I.muA X.μf)) : X.OpExists := by
-  have hbd : ∀ (x y : X.L2) g, ‖⟪x, X.R g y⟫_ℂ‖ ≤ ‖x‖ * ‖y‖ := fun x y g => by
-    refine le_trans (norm_inner_le_norm _ _) ?_
-    rw [hR.1]
-  have hint : ∀ x y : X.L2, Integrable (fun g => X.φ g * ⟪x, X.R g y⟫_ℂ) (X.I.muA X.μf) := fun x y =>
-    hφ.mul_bdd (c := ‖x‖ * ‖y‖) (hR.2 x y) (Filter.Eventually.of_forall (hbd x y))
-  let f : X.L2 →ₗ⋆[ℂ] X.L2 →ₗ[ℂ] ℂ :=
-    LinearMap.mk₂'ₛₗ (starRingEnd ℂ) (RingHom.id ℂ) (fun x y => ∫ g, X.φ g * ⟪x, X.R g y⟫_ℂ ∂(X.I.muA X.μf))
-      (fun x x' y => by
-        simp only [inner_add_left, mul_add]
-        exact integral_add (hint x y) (hint x' y))
-      (fun c x y => by
-        simp only [inner_smul_left, smul_eq_mul]
-        rw [← integral_const_mul]
-        exact integral_congr_ae (Filter.Eventually.of_forall fun g => by ring))
-      (fun x y y' => by
-        simp only [map_add, inner_add_right, mul_add]
-        exact integral_add (hint x y) (hint x y'))
-      (fun c x y => by
-        simp only [map_smul, inner_smul_right, smul_eq_mul, RingHom.id_apply]
-        rw [← integral_const_mul]
-        exact integral_congr_ae (Filter.Eventually.of_forall fun g => by ring))
-  have hf : ∀ x y, f x y = ∫ g, X.φ g * ⟪x, X.R g y⟫_ℂ ∂(X.I.muA X.μf) := fun x y => rfl
-  have hbound : ∀ x y, ‖f x y‖ ≤ (∫ g, ‖X.φ g‖ ∂(X.I.muA X.μf)) * ‖x‖ * ‖y‖ := by
-    intro x y
-    rw [hf, mul_assoc, ← integral_mul_const]
-    refine norm_integral_le_of_norm_le (hφ.norm.mul_const _) (Filter.Eventually.of_forall fun g => ?_)
-    rw [norm_mul]
-    exact mul_le_mul_of_nonneg_left (hbd x y g) (norm_nonneg _)
-  let B : X.L2 →L⋆[ℂ] X.L2 →L[ℂ] ℂ := f.mkContinuous₂ _ hbound
-  refine ⟨ContinuousLinearMap.adjoint (InnerProductSpace.continuousLinearMapOfBilin B), hφ, fun x y => ?_⟩
-  rw [ContinuousLinearMap.adjoint_inner_right, InnerProductSpace.continuousLinearMapOfBilin_apply]
-  rfl
 
 end CData
 
@@ -1049,27 +850,7 @@ def StepsC'' (n₀ : ℕ) (A C cb c₁ A₂ cε C₁ : ℝ) : Prop :=
       X.NearStep (Formalism.HermitianLatticeCounting.S7.epsN cε X.I.n X.I.f) c₁ A₂ Mod ∧
       X.FarCount (X.Acnt C₁) (2 * (X.I.n : ℝ) ^ 2) Mod ∧ X.DeepInt (A₂ + 1) Mod
 
-theorem StepsC'_of_last : ∃ C₃ : ℝ, ∀ (D : Formalism.BasicNotions.D7) (n₀ : ℕ) (A Cb C cb c₁ A₂ cε C₁ : ℝ), 1 ≤ n₀ → C₃ ≤ C →
-    adm2 D → Conclusion2 D n₀ A Cb → StepsC'' n₀ A C cb c₁ A₂ cε C₁ → StepsC' n₀ A C cb c₁ A₂ cε C₁ := by
-  obtain ⟨Ch, -, hH⟩ := Formalism.HermitianLatticeCounting.Final.S7.threshHead 0
-  refine ⟨Ch, fun D n₀ A Cb C cb c₁ A₂ cε C₁ hn hC h2 hb hS X hX => ?_⟩
-  obtain ⟨s1, s2, s3, s4⟩ := hS X hX
-  have hthr := (gap_thresholds_of_height_bound hH X hn hC hX).1
-  have hph := ((second_part_iff_bundles D n₀ A Cb).1 hb X hX.1).1 hthr
-  exact ⟨X.opExists_of_regRep s1 (φ_integrable X hX.1 hph), s2, s3, lowest_K_type_projector_exists D h2 X hX.1, s4⟩
 
-theorem third_part_of_final_estimates (cε C₁ c₁ A A₂ : ℝ) (hcε : 0 < cε) (hcε2 : cε ≤ 1 / 2) (hC₁ : 1 ≤ C₁) (hc₁ : 0 < c₁)
-    (hA : 1 ≤ A) (hA₂ : 0 ≤ A₂) :
-    ∃ c' : ℝ, 0 < c' ∧ ∃ n₁ : ℕ, ∀ Cb : ℝ, ∃ C₂ : ℝ, ∀ (D : Formalism.BasicNotions.D7) (n₀ : ℕ) (C cb : ℝ),
-      n₁ ≤ n₀ → C₂ ≤ C → adm2 D → DiscreteSeriesDecayBound D → Conclusion2 D n₀ A Cb → StepsC'' n₀ A C cb c₁ A₂ cε C₁ →
-      PointsLemma D n₀ A C c' cb := by
-  obtain ⟨c', hc', n₁, h⟩ := third_part_of_refined_estimates cε C₁ c₁ A A₂ hcε hcε2 hC₁ hc₁ hA hA₂
-  obtain ⟨C₃, h3⟩ := StepsC'_of_last
-  refine ⟨c', hc', max n₁ 1, fun Cb => ?_⟩
-  obtain ⟨C₂, h⟩ := h Cb
-  refine ⟨max C₂ C₃, fun D n₀ C cb hn hC h2 hdec hb hS => ?_⟩
-  exact h D n₀ C cb (le_trans (le_max_left _ _) hn) (le_trans (le_max_left _ _) hC) hdec hb
-    (h3 D n₀ A Cb C cb c₁ A₂ cε C₁ (le_trans (le_max_right _ _) hn) (le_trans (le_max_right _ _) hC) h2 hb hS)
 
 end Formalism.MainNotions.BridgeLemma
 

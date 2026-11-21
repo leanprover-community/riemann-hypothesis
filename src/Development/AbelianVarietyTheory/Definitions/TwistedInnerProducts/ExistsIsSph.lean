@@ -61,10 +61,6 @@ def Growth : Prop :=
 example (x : ℝ) : blockExt ![2] ![x] 1 = x ∧ blockExt ![2] ![x] 2 = 0 := by
   constructor <;> simp [blockExt]
 
-theorem exists_isSph {ε : Fin n → Bool} {b : ℕ} {W₀ : Flag n b} (h : IsMinimalFlag ε W₀) (lam : Fin b → ℝ) :
-    ∃ φ, IsSph (ε := ε) ⊤ W₀ lam φ := by
-  obtain ⟨f, hf, h1, hK⟩ := exists_spherical h.1 (fun _ => le_rfl) (fun l => (lam l : ℂ))
-  exact ⟨f, hf, fun k hk => by simpa [h1] using hK 1 k hk.1⟩
 
 end GlobalTheory.StdCon
 

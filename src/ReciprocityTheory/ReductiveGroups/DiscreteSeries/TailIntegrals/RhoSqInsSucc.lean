@@ -15,7 +15,6 @@ def ins {p m : ℕ} (y : Yp p m) (z : ℂ) : Xp (p + 1) m := (y.1, Fin.cons z y.
 def bS {p m : ℕ} (x : Xp p m) (l : Fin (p + 1)) : ℂ :=
   ∑ j : Fin p, if l.val ≤ j.val then x.2.1 j * star (x.1 j) else 0
 
-lemma tailPt_eq {p m : ℕ} (y : Yp p m) : tailPt y = ins y 0 := rfl
 
 lemma Lsq_ins {p m : ℕ} (y : Yp p m) (z : ℂ) (l : Fin (p + 2)) :
     Lsq (ins y z) l = Lsq (tailPt y) l := rfl
@@ -69,13 +68,6 @@ lemma de_ins_succ {p m : ℕ} (y : Yp p m) (z : ℂ) (i : Fin (p + 1)) :
   unfold ReciprocityTheory.ChartRestriction.DS.Xi.de
   rw [Lsq_ins, rhoSq_ins_succ, bco_ins_succ]
 
-lemma bco_tail_zero {p m : ℕ} (y : Yp p m) : bco (tailPt y) 0 = bco (tailPt y) 1 := by
-  unfold ReciprocityTheory.ChartRestriction.DS.Xi.bco
-  congr 1
-  refine Finset.sum_congr rfl (fun j _ => ?_)
-  induction j using Fin.cases with
-  | zero => simp [ReciprocityTheory.ChartRestriction.DS.Xi.tailPt]
-  | succ k => simp
 
 lemma Lsq_ge_one {p m : ℕ} (x : Xp p m) (l : Fin (p + 1)) : 1 ≤ Lsq x l := by
   unfold ReciprocityTheory.ChartRestriction.DS.Xi.Lsq
@@ -137,11 +129,6 @@ lemma de_sq {p m : ℕ} (x : Xp p m) (l : Fin (p + 1)) :
   rw [Real.sq_sqrt hpos, Complex.sq_norm, Complex.normSq_apply, hre, him]
   ring
 
-lemma im_bco {p m : ℕ} (x : Xp p m) (l : Fin (p + 1)) : (bco x l).im = x.2.2.2 - (bS x l).im := by
-  rw [bco_eq]
-  simp only [Complex.sub_im, Complex.add_im, Complex.ofReal_re, Complex.mul_im, Complex.ofReal_im,
-    Complex.I_re, Complex.I_im]
-  ring
 
 def splitE (p m : ℕ) : Xp (p + 1) m ≃ᵐ Yp p m × ℂ :=
   ((MeasurableEquiv.refl (Fin (p + 1) → ℂ)).prodCongr

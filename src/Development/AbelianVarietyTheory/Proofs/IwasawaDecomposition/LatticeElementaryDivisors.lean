@@ -8,12 +8,6 @@ open Matrix
 
 variable {R K : Type} [CommRing R] [Field K] [Algebra R K] {n : ℕ}
 
-theorem map_mulVec_algebraMap (M : Matrix (Fin n) (Fin n) R) (z : Fin n → R) :
-    (M.map (algebraMap R K)).mulVec (fun i => algebraMap R K (z i))
-      = fun i => algebraMap R K (M.mulVec z i) := by
-  funext i
-  rw [RingHom.map_mulVec]
-  rfl
 
 theorem exists_frame [IsDomain R] [IsPrincipalIdealRing R] [IsFractionRing R K]
     (Λ : Submodule R (Fin n → K)) (hfg : Λ.FG)
@@ -59,18 +53,6 @@ theorem exists_mul_eq (Λ : Submodule R (Fin n → K)) (C : Matrix (Fin n) (Fin 
   rw [h2, Matrix.mulVec_mulVec, Matrix.mulVec_single_one] at h1
   exact h1
 
-theorem exists_mul_unit_iff (C : Matrix (Fin n) (Fin n) K) (P : Matrix (Fin n) (Fin n) R)
-    (hP : IsUnit P.det) (y : Fin n → K) :
-    (∃ z : Fin n → R, y = C.mulVec (fun i => algebraMap R K (z i))) ↔
-      ∃ z : Fin n → R,
-        y = (C * P.map (algebraMap R K)).mulVec (fun i => algebraMap R K (z i)) := by
-  constructor
-  · rintro ⟨z, rfl⟩
-    refine ⟨P⁻¹.mulVec z, ?_⟩
-    rw [← Matrix.mulVec_mulVec, map_mulVec_algebraMap, Matrix.mulVec_mulVec,
-      Matrix.mul_nonsing_inv _ hP, Matrix.one_mulVec]
-  · rintro ⟨z, rfl⟩
-    exact ⟨P.mulVec z, by rw [← Matrix.mulVec_mulVec, map_mulVec_algebraMap]⟩
 
 open IsDedekindDomain NumberField in
 open Matrix in

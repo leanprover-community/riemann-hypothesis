@@ -39,34 +39,10 @@ def dualContractionEquiv [Module.Finite R C] [Module.Projective R C] :
 @[simp] theorem dualContractionEquiv_apply [Module.Finite R C] [Module.Projective R C]
     (ρ : M →ₗ[R] M ⊗[R] C) : dualContractionEquiv R C M ρ = dualContraction ρ := rfl
 
-theorem dualContraction_of_mem_coactionWeightSpace {ρ : M →ₗ[R] M ⊗[R] C} {g : C} {m : M}
-    (hm : m ∈ coactionWeightSpace ρ g) (w : CartierDual R C) :
-    dualContraction ρ w m = w g • m := by
-  rw [dualContraction_apply, mem_coactionWeightSpace.1 hm, tensorToHom_tmul]
 
-theorem mem_coactionWeightSpace_iff_dualContraction [Module.Finite R C] [Module.Projective R C]
-    {ρ : M →ₗ[R] M ⊗[R] C} {g : C} {m : M} :
-    m ∈ coactionWeightSpace ρ g ↔ ∀ w : CartierDual R C, dualContraction ρ w m = w g • m :=
-  ⟨dualContraction_of_mem_coactionWeightSpace, fun h => eq_of_forall_tensorToHom h⟩
 
-private theorem tensorToHom_rTensor (f : M →ₗ[R] M') (x : M ⊗[R] C) (w : CartierDual R C) :
-    tensorToHom R M' C (f.rTensor C x) w = f (tensorToHom R M C x w) := by
-  induction x with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, LinearMap.add_apply, hx, hy]
-  | tmul n m => simp
 
-theorem dualContraction_map {ρ : M →ₗ[R] M ⊗[R] C} {ρ' : M' →ₗ[R] M' ⊗[R] C} {f : M →ₗ[R] M'}
-    (hf : ∀ m, ρ' (f m) = f.rTensor C (ρ m)) (w : CartierDual R C) (m : M) :
-    dualContraction ρ' w (f m) = f (dualContraction ρ w m) := by
-  rw [dualContraction_apply, hf, tensorToHom_rTensor, dualContraction_apply]
 
-theorem comm_iff_dualContraction_map [Module.Finite R C] [Module.Projective R C]
-    {ρ : M →ₗ[R] M ⊗[R] C} {ρ' : M' →ₗ[R] M' ⊗[R] C} {f : M →ₗ[R] M'} :
-    (∀ m, ρ' (f m) = f.rTensor C (ρ m)) ↔
-      ∀ (w : CartierDual R C) (m : M), dualContraction ρ' w (f m) = f (dualContraction ρ w m) :=
-  ⟨dualContraction_map, fun h m => eq_of_forall_tensorToHom fun w => by
-    rw [tensorToHom_rTensor]; exact h w m⟩
 
 variable [Coalgebra R C]
 
@@ -127,13 +103,7 @@ abbrev IsCoaction.dualModule {ρ : M →ₗ[R] M ⊗[R] C} (h : IsCoaction ρ) :
     Module (CartierDual R C) M :=
   Module.compHom M h.dualAction.toRingHom
 
-theorem IsCoaction.dualModule_smul {ρ : M →ₗ[R] M ⊗[R] C} (h : IsCoaction ρ)
-    (w : CartierDual R C) (m : M) : letI := h.dualModule; w • m = dualContraction ρ w m := rfl
 
-theorem IsCoaction.dualModule_isScalarTower {ρ : M →ₗ[R] M ⊗[R] C} (h : IsCoaction ρ) :
-    letI := h.dualModule; IsScalarTower R (CartierDual R C) M :=
-  letI := h.dualModule
-  ⟨fun r w m => congr($((dualContraction ρ).map_smul r w) m)⟩
 
 variable (R C M) in
 
@@ -151,17 +121,6 @@ def coactionEquivDualAction [Module.Finite R C] [Module.Projective R C] :
     (ρ : {ρ : M →ₗ[R] M ⊗[R] C // IsCoaction ρ}) :
     coactionEquivDualAction R C M ρ = ρ.2.dualAction := rfl
 
-theorem existsUnique_isCoaction_of_module [Module.Finite R C] [Module.Projective R C]
-    [Module (CartierDual R C) M] [IsScalarTower R (CartierDual R C) M] :
-    ∃! ρ : M →ₗ[R] M ⊗[R] C, IsCoaction ρ ∧
-      ∀ (w : CartierDual R C) (m : M), dualContraction ρ w m = w • m := by
-  let θ : CartierDual R C →ₐ[R] Module.End R M := Algebra.lsmul R R M
-  refine ⟨((coactionEquivDualAction R C M).symm θ).1,
-    ⟨((coactionEquivDualAction R C M).symm θ).2, fun w m =>
-      congr($((coactionEquivDualAction R C M).apply_symm_apply θ) w m)⟩, fun ρ hρ => ?_⟩
-  have : coactionEquivDualAction R C M ⟨ρ, hρ.1⟩ = θ :=
-    AlgHom.ext fun w => LinearMap.ext fun m => hρ.2 w m
-  rw [← this, Equiv.symm_apply_apply]
 
 end Comodule
 
@@ -184,9 +143,6 @@ theorem forall_ker_mul_eq_zero_iff (ε : D →ₐ[R] R) (Λ : D) :
     (∀ w ∈ RingHom.ker ε, w * Λ = 0) ↔ ∀ w : D, w * Λ = ε w • Λ :=
   forall_ker_smul_eq_zero_iff ε Λ
 
-theorem smul_smul_eq_of_forall_ker_mul_eq_zero {ε : D →ₐ[R] R} {Λ : D}
-    (hΛ : ∀ w ∈ RingHom.ker ε, w * Λ = 0) (m : M) (w : D) : w • Λ • m = ε w • Λ • m := by
-  rw [← mul_smul, (forall_ker_mul_eq_zero_iff ε Λ).1 hΛ, smul_assoc]
 
 end Noncommutative
 
@@ -200,52 +156,15 @@ theorem mem_annihilator_ker_iff {ε : D →ₐ[R] R} {Λ : D} :
     Λ ∈ (RingHom.ker ε).annihilator ↔ ∀ w : D, w * Λ = ε w • Λ :=
   mem_annihilator_iff_forall_mul.trans (forall_ker_mul_eq_zero_iff ε Λ)
 
-theorem smul_smul_eq_of_mem_annihilator_ker {M : Type*} [AddCommGroup M] [Module R M] [Module D M]
-    [IsScalarTower R D M] {ε : D →ₐ[R] R} {Λ : D} (hΛ : Λ ∈ (RingHom.ker ε).annihilator) (m : M)
-    (w : D) : w • Λ • m = ε w • Λ • m :=
-  smul_smul_eq_of_forall_ker_mul_eq_zero (mem_annihilator_iff_forall_mul.1 hΛ) m w
 
 theorem smul_eq_smul_of_mem_annihilator_ker {ε : D →ₐ[R] R} {Λ T : D}
     (hΛ : Λ ∈ (RingHom.ker ε).annihilator) (hT : T ∈ (RingHom.ker ε).annihilator) :
     ε Λ • T = ε T • Λ := by
   rw [← mem_annihilator_ker_iff.1 hT, ← mem_annihilator_ker_iff.1 hΛ, mul_comm]
 
-theorem map_mem_annihilator_ker_iff {ε : D →ₐ[R] R} {ε' : D' →ₐ[R] R} (e : D ≃ₐ[R] D')
-    (he : ∀ d, ε' (e d) = ε d) {Λ : D} :
-    e Λ ∈ (RingHom.ker ε').annihilator ↔ Λ ∈ (RingHom.ker ε).annihilator := by
-  simp only [mem_annihilator_ker_iff]
-  rw [e.surjective.forall]
-  refine forall_congr' fun w => ?_
-  rw [← map_mul, he, ← map_smul, e.injective.eq_iff]
 
-theorem prod_mk_zero_mem_annihilator_ker_iff {ε : D →ₐ[R] R} {Λ : D} :
-    ((Λ, 0) : D × D') ∈ (RingHom.ker (ε.comp (AlgHom.fst R D D'))).annihilator ↔
-      Λ ∈ (RingHom.ker ε).annihilator := by
-  simp [mem_annihilator_ker_iff]
 
-theorem pi_single_mem_annihilator_ker_iff {ι : Type*} [DecidableEq ι] {A : ι → Type*}
-    [∀ i, CommRing (A i)] [∀ i, Algebra R (A i)] {i : ι} {ε : A i →ₐ[R] R} {Λ : A i} :
-    Pi.single i Λ ∈ (RingHom.ker (ε.comp (Pi.evalAlgHom R A i))).annihilator ↔
-      Λ ∈ (RingHom.ker ε).annihilator := by
-  simp only [mem_annihilator_ker_iff]
-  refine ⟨fun h w => by simpa using congrFun (h (Pi.single i w)) i, fun h w => funext fun j => ?_⟩
-  by_cases hj : j = i
-  · subst hj; simpa using h (w j)
-  · simp [hj]
 
-theorem sum_mem_annihilator_ker {G : Type*} [Group G] [Fintype G] {ε : D →ₐ[R] R} (y : G →* D)
-    (hy : ∀ g, ε (y g) = 1) (hspan : Submodule.span R (Set.range y) = ⊤) :
-    ∑ g, y g ∈ (RingHom.ker ε).annihilator ∧ ε (∑ g, y g) = Fintype.card G := by
-  refine ⟨mem_annihilator_ker_iff.2 fun w => ?_, by simp [hy]⟩
-  have hw : w ∈ Submodule.span R (Set.range y) := hspan ▸ Submodule.mem_top
-  induction hw using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨g, rfl⟩ := hx
-    rw [hy, one_smul, Finset.mul_sum]
-    exact Fintype.sum_equiv (Equiv.mulLeft g) _ _ fun g' => by simp
-  | zero => simp
-  | add a b _ _ ha hb => rw [add_mul, ha, hb, map_add, add_smul]
-  | smul r a _ ha => rw [smul_mul_assoc, ha, map_smul, smul_assoc]
 
 end Augmented
 
@@ -254,36 +173,11 @@ section Invariants
 variable {R H M : Type*} [CommRing R] [Semiring H] [Bialgebra R H] [Module.Finite R H]
   [Module.Projective R H] [AddCommGroup M] [Module R M]
 
-theorem counitAlgHom_cartierDual_apply (w : CartierDual R H) :
-    counitAlgHom R (CartierDual R H) w = w 1 := rfl
 
-theorem invariant_iff_dualContraction {ρ : M →ₗ[R] M ⊗[R] H} {m : M} :
-    ρ m = m ⊗ₜ 1 ↔ ∀ w : CartierDual R H, dualContraction ρ w m = w 1 • m :=
-  mem_coactionWeightSpace_iff_dualContraction
 
-theorem IsCoaction.invariant_iff_forall_ker {ρ : M →ₗ[R] M ⊗[R] H} (h : IsCoaction ρ) {m : M} :
-    ρ m = m ⊗ₜ 1 ↔
-      ∀ w ∈ RingHom.ker (counitAlgHom R (CartierDual R H)), dualContraction ρ w m = 0 :=
-  letI := h.dualModule
-  haveI := h.dualModule_isScalarTower
-  invariant_iff_dualContraction.trans
-    (forall_ker_smul_eq_zero_iff (counitAlgHom R (CartierDual R H)) m).symm
 
-theorem IsCoaction.invariant_dualContraction {ρ : M →ₗ[R] M ⊗[R] H} (h : IsCoaction ρ)
-    {Λ : CartierDual R H} (hΛ : ∀ w ∈ RingHom.ker (counitAlgHom R (CartierDual R H)), w * Λ = 0)
-    (m : M) : ρ (dualContraction ρ Λ m) = dualContraction ρ Λ m ⊗ₜ 1 :=
-  h.invariant_iff_forall_ker.2 fun w hw => by
-    rw [← Module.End.mul_apply, ← h.dualContraction_mul, hΛ w hw, map_zero, LinearMap.zero_apply]
 
-theorem IsCoaction.invariant_dualContraction_of_mem_annihilator [IsCocomm R H]
-    {ρ : M →ₗ[R] M ⊗[R] H} (h : IsCoaction ρ) {Λ : CartierDual R H}
-    (hΛ : Λ ∈ (RingHom.ker (counitAlgHom R (CartierDual R H))).annihilator) (m : M) :
-    ρ (dualContraction ρ Λ m) = dualContraction ρ Λ m ⊗ₜ 1 :=
-  h.invariant_dualContraction (mem_annihilator_iff_forall_mul.1 hΛ) m
 
-theorem dualContraction_of_invariant {ρ : M →ₗ[R] M ⊗[R] H} {m : M} (hm : ρ m = m ⊗ₜ 1)
-    (Λ : CartierDual R H) : dualContraction ρ Λ m = Λ 1 • m :=
-  invariant_iff_dualContraction.1 hm Λ
 
 end Invariants
 
@@ -291,21 +185,12 @@ section Unramified
 
 variable {R A : Type*} [CommRing R] [CommRing A] [Algebra R A]
 
-theorem isIdempotentElem_of_mem_annihilator_ker {ε : A →ₐ[R] R} {e : A}
-    (he : e ∈ (RingHom.ker ε).annihilator) (he1 : ε e = 1) : IsIdempotentElem e := by
-  rw [IsIdempotentElem, mem_annihilator_ker_iff.1 he, he1, one_smul]
 
 theorem eq_smul_of_mem_annihilator_ker {ε : A →ₐ[R] R} {e Λ : A}
     (he : e ∈ (RingHom.ker ε).annihilator) (he1 : ε e = 1)
     (hΛ : Λ ∈ (RingHom.ker ε).annihilator) : Λ = ε Λ • e := by
   rw [← smul_eq_smul_of_mem_annihilator_ker he hΛ, he1, one_smul]
 
-theorem ker_eq_span_one_sub {ε : A →ₐ[R] R} {e : A}
-    (he : e ∈ (RingHom.ker ε).annihilator) (he1 : ε e = 1) :
-    RingHom.ker ε = Ideal.span {1 - e} := by
-  refine le_antisymm (fun w hw => Ideal.mem_span_singleton'.2 ⟨w, ?_⟩) ?_
-  · rw [mul_sub, mul_one, mem_annihilator_iff_forall_mul.1 he w hw, sub_zero]
-  · simp [Ideal.span_singleton_le_iff_mem, RingHom.mem_ker, he1]
 
 theorem annihilator_ker_eq_span {ε : A →ₐ[R] R} {e : A}
     (he : e ∈ (RingHom.ker ε).annihilator) (he1 : ε e = 1) :
@@ -314,12 +199,6 @@ theorem annihilator_ker_eq_span {ε : A →ₐ[R] R} {e : A}
     ((Ideal.span_singleton_le_iff_mem _).2 he)
   rw [← Algebra.smul_def, ← eq_smul_of_mem_annihilator_ker he he1 hΛ]
 
-theorem annihilator_ker_restrictScalars_eq_span {ε : A →ₐ[R] R} {e : A}
-    (he : e ∈ (RingHom.ker ε).annihilator) (he1 : ε e = 1) :
-    (RingHom.ker ε).annihilator.restrictScalars R = R ∙ e := by
-  refine le_antisymm (fun Λ hΛ => Submodule.mem_span_singleton.2 ⟨ε Λ, ?_⟩)
-    ((Submodule.span_singleton_le_iff_mem _ _).2 he)
-  exact (eq_smul_of_mem_annihilator_ker he he1 hΛ).symm
 
 theorem bijective_prod_quotient_of_mem_annihilator_ker {ε : A →ₐ[R] R} {e : A}
     (he : e ∈ (RingHom.ker ε).annihilator) (he1 : ε e = 1) :
@@ -356,12 +235,6 @@ theorem existsUnique_mem_annihilator_ker [Algebra.FormallyUnramified R A]
   refine ⟨_, ⟨he, he1⟩, fun e' he' => ?_⟩
   rw [eq_smul_of_mem_annihilator_ker he he1 he'.1, he'.2, one_smul]
 
-theorem finrank_annihilator_ker {K A : Type*} [Field K] [CommRing A] [Algebra K A]
-    [Algebra.FormallyUnramified K A] [Algebra.EssFiniteType K A] (ε : A →ₐ[K] K) :
-    Module.finrank K ((RingHom.ker ε).annihilator.restrictScalars K) = 1 := by
-  obtain ⟨e, ⟨he, he1⟩, -⟩ := existsUnique_mem_annihilator_ker ε
-  rw [annihilator_ker_restrictScalars_eq_span he he1]
-  exact finrank_span_singleton fun h => by simp [h] at he1
 
 end Unramified
 
@@ -378,13 +251,7 @@ def augmentationBaseChange (ε : D →ₐ[R] R) : K ⊗[R] D →ₐ[K] K :=
 
 variable {K}
 
-theorem eq_augmentationBaseChange {ε : D →ₐ[R] R} {ε' : K ⊗[R] D →ₐ[K] K}
-    (h : ∀ d, ε' (1 ⊗ₜ d) = algebraMap R K (ε d)) : ε' = augmentationBaseChange K ε :=
-  Algebra.TensorProduct.ext (Subsingleton.elim _ _) (AlgHom.ext fun d => by simpa using h d)
 
-theorem counitAlgHom_baseChange (H : Type*) [CommRing H] [Bialgebra R H] :
-    counitAlgHom K (K ⊗[R] H) = augmentationBaseChange K (counitAlgHom R H) :=
-  eq_augmentationBaseChange fun d => by simp [Algebra.smul_def]
 
 variable (K) in
 
@@ -410,16 +277,7 @@ theorem one_tmul_mem_annihilator_ker_iff (hD : Function.Injective fun d : D => (
     (by simp [RingHom.mem_ker, RingHom.mem_ker.1 hw])
   simpa using this
 
-theorem smul_eq_smul_one_tmul {ε : D →ₐ[R] R} {Λ : D} (hΛ : Λ ∈ (RingHom.ker ε).annihilator)
-    {T : K ⊗[R] D} (hT : T ∈ (RingHom.ker (augmentationBaseChange K ε)).annihilator) :
-    algebraMap R K (ε Λ) • T = augmentationBaseChange K ε T • (1 : K) ⊗ₜ[R] Λ := by
-  simpa using smul_eq_smul_of_mem_annihilator_ker (one_tmul_mem_annihilator_ker K hΛ) hT
 
-theorem eq_div_smul_one_tmul {K : Type*} [Field K] [Algebra R K] {ε : D →ₐ[R] R} {Λ : D}
-    (hΛ : Λ ∈ (RingHom.ker ε).annihilator) (h0 : algebraMap R K (ε Λ) ≠ 0)
-    {T : K ⊗[R] D} (hT : T ∈ (RingHom.ker (augmentationBaseChange K ε)).annihilator) :
-    T = (augmentationBaseChange K ε T / algebraMap R K (ε Λ)) • (1 : K) ⊗ₜ[R] Λ := by
-  rw [div_eq_inv_mul, mul_smul, ← smul_eq_smul_one_tmul hΛ hT, inv_smul_smul₀ h0]
 
 open nonZeroDivisors in
 
@@ -472,54 +330,10 @@ open CartierDual
 variable {R K H M M' : Type*} [CommRing R] [CommRing K] [Algebra R K] [AddCommGroup M] [Module R M]
   [AddCommGroup M'] [Module R M'] [Module K M'] [IsScalarTower R K M']
 
-theorem dualContraction_baseChange [AddCommMonoid H] [Module R H] {ρ : M →ₗ[R] M ⊗[R] H}
-    {ρ' : M' →ₗ[K] M' ⊗[K] (K ⊗[R] H)} {j : M →ₗ[R] M'}
-    (hj : ∀ m, AlgebraTensorModule.cancelBaseChange R K K M' H (ρ' (j m)) = j.rTensor H (ρ m))
-    (w : CartierDual R H) (m : M) :
-    dualContraction ρ' (baseChangeLinear R K H (1 ⊗ₜ w)) (j m) = j (dualContraction ρ w m) := by
-  rw [dualContraction_apply, dualContraction_apply, (LinearEquiv.eq_symm_apply _).2 (hj m)]
-  generalize ρ m = x
-  induction x with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, LinearMap.add_apply, hx, hy]
-  | tmul n h => simp
 
 variable [Semiring H] [Bialgebra R H] [Module.Finite R H] [Module.Projective R H] [IsCocomm R H]
 
-theorem baseChange_one_tmul_mem_annihilator_ker {Λ : CartierDual R H}
-    (hΛ : Λ ∈ (RingHom.ker (counitAlgHom R (CartierDual R H))).annihilator) :
-    baseChangeLinear R K H (1 ⊗ₜ Λ) ∈
-      (RingHom.ker (counitAlgHom K (CartierDual K (K ⊗[R] H)))).annihilator := by
-  refine mem_annihilator_ker_iff.2 fun w => ?_
-  obtain ⟨x, rfl⟩ := (baseChangeLinear_bijective K (R := R) (M := H)).2 w
-  rw [counitAlgHom_cartierDual_apply, ← baseChangeLinear_mul, ← map_smul]
-  congr 1
-  induction x with
-  | zero => simp
-  | add a b ha hb => rw [add_mul, ha, hb, map_add, ofConv_add, LinearMap.add_apply, add_smul]
-  | tmul k d =>
-    rw [Algebra.TensorProduct.tmul_mul_tmul, mem_annihilator_ker_iff.1 hΛ,
-      counitAlgHom_cartierDual_apply, Algebra.TensorProduct.one_def, baseChangeLinear_tmul_tmul,
-      smul_tmul', ← smul_tmul]
-    simp
 
-theorem smul_dualContraction_baseChange {ρ : M →ₗ[R] M ⊗[R] H}
-    {ρ' : M' →ₗ[K] M' ⊗[K] (K ⊗[R] H)} {j : M →ₗ[R] M'}
-    (hj : ∀ m, AlgebraTensorModule.cancelBaseChange R K K M' H (ρ' (j m)) = j.rTensor H (ρ m))
-    {Λ : CartierDual R H} (hΛ : Λ ∈ (RingHom.ker (counitAlgHom R (CartierDual R H))).annihilator)
-    {T : CartierDual K (K ⊗[R] H)}
-    (hT : T ∈ (RingHom.ker (counitAlgHom K (CartierDual K (K ⊗[R] H)))).annihilator) (m : M) :
-    Λ 1 • dualContraction ρ' T (j m) = T 1 • j (dualContraction ρ Λ m) := by
-  have h1 : baseChangeLinear R K H (1 ⊗ₜ Λ) 1 = algebraMap R K (Λ 1) := by
-    rw [Algebra.TensorProduct.one_def, baseChangeLinear_tmul_tmul]
-    simp [Algebra.smul_def]
-  have h : algebraMap R K (Λ 1) • T = T 1 • baseChangeLinear R K H (1 ⊗ₜ Λ) :=
-    h1 ▸ smul_eq_smul_of_mem_annihilator_ker (R := K) (D := CartierDual K (K ⊗[R] H))
-      (ε := counitAlgHom K (CartierDual K (K ⊗[R] H)))
-      (baseChange_one_tmul_mem_annihilator_ker (K := K) hΛ) hT
-  have h2 := congrArg (fun w => dualContraction ρ' w (j m)) h
-  simp only [map_smul, LinearMap.smul_apply, dualContraction_baseChange hj] at h2
-  rwa [algebraMap_smul] at h2
 
 end ComoduleBaseChange
 
@@ -644,49 +458,6 @@ end Cramer
 
 universe u v w
 
-theorem comodule_dual_invariants_integrals (R : Type u) [CommRing R] :
-    (∀ (H : Type v) [Semiring H] [Bialgebra R H] [Module.Finite R H] [Module.Projective R H]
-      (M : Type w) [AddCommGroup M] [Module R M],
-      (∃ e : {ρ : M →ₗ[R] M ⊗[R] H // IsCoaction ρ} ≃ (CartierDual R H →ₐ[R] Module.End R M),
-        ∀ ρ w m, e ρ w m = TensorProduct.rid R M (w.ofConv.lTensor M (ρ.1 m))) ∧
-      (∀ (ρ : M →ₗ[R] M ⊗[R] H) (h : IsCoaction ρ) (m : M),
-        (∀ w, h.dualAction w m = TensorProduct.rid R M (w.ofConv.lTensor M (ρ m))) ∧
-        (ρ m = m ⊗ₜ 1 ↔ ∀ w : CartierDual R H, h.dualAction w m = w 1 • m) ∧
-        ∀ Λ : CartierDual R H, (∀ w : CartierDual R H, w 1 = 0 → w * Λ = 0) →
-          ρ (h.dualAction Λ m) = h.dualAction Λ m ⊗ₜ 1)) ∧
-    (∀ (D : Type v) [CommRing D] [Algebra R D] (ε : D →ₐ[R] R),
-      (∀ Λ, Λ ∈ (RingHom.ker ε).annihilator ↔ ∀ w, w * Λ = ε w • Λ) ∧
-      (∀ (M : Type w) [AddCommGroup M] [Module R M] [Module D M] [IsScalarTower R D M],
-        ∀ Λ ∈ (RingHom.ker ε).annihilator, ∀ (m : M) (w : D), w • Λ • m = ε w • Λ • m) ∧
-      ∀ (K : Type w) [Field K] [Algebra R K] [Algebra.Etale K (K ⊗[R] D)],
-        ∃ e : K ⊗[R] D, IsIdempotentElem e ∧ augmentationBaseChange K ε e = 1 ∧
-          Function.Bijective
-            ((augmentationBaseChange K ε).prod (Ideal.Quotient.mkₐ K (Ideal.span {e}))) ∧
-          RingHom.ker (augmentationBaseChange K ε) = Ideal.span {1 - e} ∧
-          (RingHom.ker (augmentationBaseChange K ε)).annihilator.restrictScalars K = K ∙ e ∧
-          Module.finrank K
-            ((RingHom.ker (augmentationBaseChange K ε)).annihilator.restrictScalars K) = 1 ∧
-          ∀ Λ ∈ (RingHom.ker ε).annihilator, (1 : K) ⊗ₜ[R] Λ = algebraMap R K (ε Λ) • e) ∧
-    (∀ (σ : Type v) [Fintype σ] [DecidableEq σ] (a : Matrix σ σ (MvPowerSeries σ R))
-      (f : σ → MvPowerSeries σ R), (∀ i, f i = ∑ j, a i j * MvPowerSeries.X j) →
-      ∃ ε : (MvPowerSeries σ R ⧸ Ideal.span (Set.range f)) →ₐ[R] R,
-        (∀ g, ε (Ideal.Quotient.mk _ g) = MvPowerSeries.constantCoeff g) ∧
-        (∀ j, Ideal.Quotient.mk (Ideal.span (Set.range f)) a.det *
-          Ideal.Quotient.mk _ (MvPowerSeries.X j) = 0) ∧
-        Ideal.Quotient.mk _ a.det ∈ (RingHom.ker ε).annihilator ∧
-        ε (Ideal.Quotient.mk _ a.det) = (a.map MvPowerSeries.constantCoeff).det) := by
-  refine ⟨fun H _ _ _ _ M _ _ => ⟨⟨coactionEquivDualAction R H M, fun ρ w m =>
-      dualContraction_eq_rid ρ.1 w m⟩, fun ρ h m => ⟨fun w => dualContraction_eq_rid ρ w m,
-      invariant_iff_dualContraction, fun Λ hΛ => h.invariant_dualContraction hΛ m⟩⟩,
-    fun D _ _ ε => ⟨fun _ => mem_annihilator_ker_iff,
-      fun M _ _ _ _ Λ hΛ => smul_smul_eq_of_mem_annihilator_ker hΛ, fun K _ _ _ => ?_⟩,
-    fun σ _ _ a f hf => ⟨_, fun _ => rfl, (cramer_quotient hf).1, (cramer_quotient hf).2.1,
-      (cramer_quotient hf).2.2.1⟩⟩
-  obtain ⟨e, ⟨he, he1⟩, -⟩ := existsUnique_mem_annihilator_ker (augmentationBaseChange K ε)
-  refine ⟨e, isIdempotentElem_of_mem_annihilator_ker he he1, he1,
-    bijective_prod_quotient_of_mem_annihilator_ker he he1, ker_eq_span_one_sub he he1,
-    annihilator_ker_restrictScalars_eq_span he he1, finrank_annihilator_ker _, fun Λ hΛ => ?_⟩
-  simpa using eq_smul_of_mem_annihilator_ker he he1 (one_tmul_mem_annihilator_ker K hΛ)
 
 section Examples
 

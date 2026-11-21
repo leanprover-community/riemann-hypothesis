@@ -37,16 +37,6 @@ theorem _root_.GlobalTheory.cechClass_surjective (A : _root_.GlobalTheory.Cube.{
   (ModuleCat.epi_iff_surjective _).1
     (inferInstance : Epi ((_root_.GlobalTheory.cechCyclesIso A p).inv ≫ (_root_.GlobalTheory.cechComplex A).homologyπ p))
 
-theorem cechClass_eq_zero_iff_prev (A : Cube.{v} ι R) (q p : ℕ)
-    (h : (ComplexShape.up ℕ).prev p = q) (x : LinearMap.ker (Cube.d A (p + 1))) :
-    cechClass A p x = 0 ↔ ∃ y, ((cechComplex A).d q p).hom y = x.1 := by
-  have hex := (ShortComplex.ShortExact.moduleCat_exact_iff_function_exact _).1
-    (ShortComplex.exact_of_g_is_cokernel
-      (ShortComplex.mk _ _ ((cechComplex A).toCycles_comp_homologyπ q p))
-      ((cechComplex A).homologyIsCokernel q p h))
-  refine (hex ((cechCyclesIso A p).inv.hom x)).trans (exists_congr fun y => ?_)
-  rw [← iCycles_cechCyclesIso_inv A p x, ← (cechComplex A).toCycles_i q p]
-  exact ((ModuleCat.mono_iff_injective ((cechComplex A).iCycles p)).1 inferInstance).eq_iff.symm
 
 open CategoryTheory Limits in
 variable {ι : Type} [LinearOrder ι] {R : Type u} [Ring R] {S : Type u'} [Ring S] in
@@ -113,12 +103,6 @@ theorem _root_.GlobalTheory.cechClass_zero_bijective (A : _root_.GlobalTheory.Cu
     Function.Bijective (_root_.GlobalTheory.cechClass A 0) :=
   cechClass_zero_bijective' A
 
-theorem cechHomologyZeroIso_cechClass (A : Cube.{v} ι R) (x : LinearMap.ker (Cube.d A (0 + 1))) :
-    (cechHomologyZeroIso A).hom.hom (cechClass A 0 x) = x := by
-  have h : ((cechCyclesIso A 0).inv ≫ (cechComplex A).homologyπ 0) ≫ (cechHomologyZeroIso A).hom =
-      𝟙 _ := by
-    rw [Category.assoc, homologyπ_cechHomologyZeroIso_hom, Iso.inv_hom_id]
-  exact congr(($h).hom x)
 
 open CategoryTheory Limits in
 variable {ι : Type} [LinearOrder ι] {R : Type u} [Ring R] {S : Type u'} [Ring S] in
@@ -285,12 +269,6 @@ theorem _root_.GlobalTheory.Cube.SemiHom.homology_cechClass (p : ℕ)
   rw [e]
   rfl
 
-theorem homology_ofHom (φ : A ⟶ A') (p : ℕ) :
-    (ofHom φ).homology p = (HomologicalComplex.homologyMap (cechComplexMap φ) p).hom := by
-  ext x
-  obtain ⟨x, rfl⟩ := cechClass_surjective A p x
-  rw [homology_cechClass]
-  exact (homologyMap_cechClass φ p x _ rfl).symm
 
 open CategoryTheory Limits in
 variable {ι : Type} [LinearOrder ι] {R : Type u} [Ring R] {S : Type u'} [Ring S] in
@@ -393,9 +371,6 @@ def restrictScalars (f : R →+* S) (B : Cube.{v} ι S) :
   app s := { toFun := fun x => x, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
   app_res _ _ := rfl
 
-theorem homology_restrictScalars_bijective (f : R →+* S) (B : Cube.{v} ι S) (p : ℕ) :
-    Function.Bijective ((restrictScalars f B).homology p) :=
-  homology_bijective _ (fun _ _ => Function.bijective_id) p
 
 omit [LinearOrder ι] in
 

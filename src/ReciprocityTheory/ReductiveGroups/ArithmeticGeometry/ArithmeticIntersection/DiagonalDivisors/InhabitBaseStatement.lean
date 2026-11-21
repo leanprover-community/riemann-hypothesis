@@ -155,9 +155,6 @@ def twoXiDegY : YBlk → ℤ
   | .det => -1
   | .line => -2
 
-theorem pullDeg_twoXiDegY (j : Fin 2) : pullDeg j twoXiDegY = twoXiDeg j := by
-  funext k
-  fin_cases j <;> cases k <;> simp [pullDeg, twoXiDegY, twoXiDeg, unitDeg]
 
 end Degrees
 

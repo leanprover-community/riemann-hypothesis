@@ -160,18 +160,7 @@ lemma secVal_trivOne {T W : Over X} (k : ℤ) (t : W ⟶ T) (v : W ⟶ A) (i) (h
     secVal (trivOne k T) t v i hi = 1 :=
   map_one _
 
-lemma rigVal_trivRig (W : Over X) (i) (hi) : rigVal (trivRig A) W i hi = 1 :=
-  map_one _
 
-theorem isTranslatedPull_triv (φ : A ⟶ A) [IsMonHom φ] {N : ℕ} (hN : Odd N) {T : Over X}
-    (b : T ⟶ A) (hb : b ^ N = 1) :
-    IsTranslatedPull (trivRig A) φ N b (trivOne 1 T) (trivOne N T) := by
-  refine ⟨trivOne N T, ⟨trivIso _ _ _, ⟨trivIso_isGen _ _ _, ?_⟩, ?_⟩, hN, hb, trivIso _ _ _,
-    trivIso _ _ _, ⟨trivIso_isGen _ _ _, ?_⟩, trivIso_isGen _ _ _, ?_, ?_, ?_⟩
-  all_goals
-    intro W t
-    intros
-    simp [isoVal_trivIso, secVal_trivOne, rigVal_trivRig]
 
 end
 

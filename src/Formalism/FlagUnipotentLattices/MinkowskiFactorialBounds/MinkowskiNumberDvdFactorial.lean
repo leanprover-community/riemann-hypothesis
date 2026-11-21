@@ -128,14 +128,6 @@ theorem minkowski_number_dvd_factorial : Formalism.HermitianLatticeCounting.S6.M
         rw [Nat.mul_div_mul_left _ _ (by norm_num : 0 < 2)]
     _ ≤ (2 * N) / p ^ (1 + i) := Nat.div_le_div_left hle hpos
 
-theorem automorphism_bound_of_hyp : Formalism.HermitianLatticeCounting.S6.AutBoundAsm := by
-  intro hM hD s f G hG
-  have h1 := (hM (2 * s * f) G hG).trans (hD (2 * s * f))
-  have h2 := Nat.le_of_dvd (Nat.factorial_pos _) h1
-  have h3 := h2.trans (Nat.factorial_le_pow _)
-  have e : 2 * (2 * s * f) = 4 * s * f := by ring
-  rw [e] at h3
-  exact_mod_cast h3
 
 theorem exterior_power_bound : Formalism.HermitianLatticeCounting.S6.ExtPowerBound := by
   intro j m A A' Z hyp
@@ -617,7 +609,5 @@ theorem det_form_bound_field : Formalism.HermitianLatticeCounting.S6.DetBBoundK 
           mul_le_mul_of_nonneg_right hfin hP
       _ = _ := by ring
 
-theorem autBound_of_minkowskiBound (hM : Formalism.HermitianLatticeCounting.S6.MinkowskiBound) : Formalism.HermitianLatticeCounting.S6.AutBound :=
-  automorphism_bound_of_hyp hM minkowski_number_dvd_factorial
 
 end Formalism.HermitianLatticeCounting.P

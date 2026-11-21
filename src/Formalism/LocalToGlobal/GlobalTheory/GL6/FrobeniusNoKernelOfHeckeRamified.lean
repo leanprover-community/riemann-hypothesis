@@ -247,12 +247,6 @@ theorem gauss_sum_preserves_ramified (Tf : FormsTied D u) (i : ℕ) (hi : i ≤ 
       exact Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => by rw [hc b a]))
     rw [e, hN v', map_zero]
 
-theorem FFop_mem_MramI_of_le_m (Tf : FormsTied D u) (hL : DnDilLoc Tf)
-    (hD : ∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i) :
-    ∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i := by
-  intro i hi v φ hφ
-  rw [frobenius_eq_D_gauss_of_dilation Tf hL i hi v φ hφ]
-  exact hD i hi v _ (gauss_sum_preserves_ramified Tf i hi v φ hφ)
 
 theorem class_form_smul_left (i : ℕ) (c : ℂ) (x y : Formalism.MainNotions.product_first_zeroth_parts.Fn D u i) :
     (D.fm u).ipC i (c • x) y = starRingEnd ℂ c * (D.fm u).ipC i x y := by
@@ -339,23 +333,6 @@ theorem frobenius_class_form_similitude_of_hecke (Tf : FormsTied D u) (hL : DnDi
   simp only [map_pow, map_natCast]
   ring
 
-theorem frobenius_no_kernel_of_hecke_ramified
-    (h : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf → Formalism.MainNotions.product_first_zeroth_parts.HidaSetting D u →
-      DnDilLoc Tf ∧ ∀ i, i ≤ D.R.m → ∀ v,
-        (∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i) ∧
-        (∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-          Formalism.MainNotions.product_first_zeroth_parts.Uop D u i v (Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v φ) = ((D.mem u).A.T : ℂ) ^ (D.R.N i - 1) • φ) ∧
-        (∀ φ ∈ (D.fm u).Fi i, ∀ ψ ∈ (D.fm u).Fi i,
-          (D.fm u).ipC i (Formalism.MainNotions.product_first_zeroth_parts.Uop D u i v φ) ψ = (D.fm u).ipC i φ (Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v ψ)) ∧
-        (∀ (a : ((D.mem u).A.Fv v)ˣ), ∀ φ ∈ (D.fm u).Fi i, ∀ ψ ∈ (D.fm u).Fi i,
-          (D.fm u).ipC i (Formalism.MainNotions.product_first_zeroth_parts.dia D u i v a φ) ψ = (D.fm u).ipC i φ (Formalism.MainNotions.product_first_zeroth_parts.dia D u i v a⁻¹ ψ))) :
-    FrobeniusNoKernelFamily := by
-  intro D u hF hS
-  obtain ⟨Tf, hc⟩ := hF
-  obtain ⟨hL, hT⟩ := h D u Tf hc hS
-  exact frobenius_identities_no_kernel_of_clauses D u (frobenius_eq_D_gauss_of_dilation Tf hL) (FFop_mem_MramI_of_le_m Tf hL (fun i hi v => (hT i hi v).1))
-    (fun i hi v => frobenius_class_form_similitude_of_hecke Tf hL i hi v (hT i hi v).2.2.1 (hT i hi v).2.1 (hT i hi v).1 (hT i hi v).2.2.2)
-    (DiaMul_tied Tf)
 
 end Rest
 
@@ -418,29 +395,8 @@ theorem diamond_adjoint_class_form (Tf : FormsTied D u) (i : ℕ) (hi : i ≤ D.
   exact Equiv.sum_comp (Equiv.ofBijective _ (dilation_bijective Tf i hi v a))
     (fun c => (D.mem u).C.wt i c * (D.fm u).ipV i c (φ c) (Formalism.MainNotions.product_first_zeroth_parts.dia D u i v a⁻¹ ψ c))
 
-theorem frobenius_no_kernel_of_hecke_ramified'
-    (h : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf → Formalism.MainNotions.product_first_zeroth_parts.HidaSetting D u →
-      DnDilLoc Tf ∧ ∀ i, i ≤ D.R.m → ∀ v,
-        (∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i) ∧
-        (∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-          Formalism.MainNotions.product_first_zeroth_parts.Uop D u i v (Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v φ) = ((D.mem u).A.T : ℂ) ^ (D.R.N i - 1) • φ) ∧
-        (∀ φ ∈ (D.fm u).Fi i, ∀ ψ ∈ (D.fm u).Fi i,
-          (D.fm u).ipC i (Formalism.MainNotions.product_first_zeroth_parts.Uop D u i v φ) ψ = (D.fm u).ipC i φ (Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v ψ))) :
-    FrobeniusNoKernelFamily := by
-  apply frobenius_no_kernel_of_hecke_ramified
-  intro D u Tf hc hS
-  obtain ⟨hL, hT⟩ := h D u Tf hc hS
-  exact ⟨hL, fun i hi v => ⟨(hT i hi v).1, (hT i hi v).2.1, (hT i hi v).2.2,
-    fun a φ hφ ψ hψ => diamond_adjoint_class_form Tf i hi v a φ hφ ψ hψ⟩⟩
 
 end Adj
 
-theorem frobenius_no_kernel_of_hecke_relations (h1 : HeckeRelationsFamily) (hL : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf → DnDilLoc Tf) :
-    FrobeniusNoKernelFamily := by
-  apply frobenius_no_kernel_of_hecke_ramified'
-  intro D u Tf hc hS
-  obtain ⟨_, _, c3, _, _, _, _, _, c9⟩ := h1 D u ⟨Tf, hc⟩ hS
-  exact ⟨hL D u Tf hc, fun i hi v => ⟨fun φ hφ => (c9 i hi v φ hφ).2.1, fun φ hφ => (c9 i hi v φ hφ).2.2.2.2.2,
-    c3 i hi v⟩⟩
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases

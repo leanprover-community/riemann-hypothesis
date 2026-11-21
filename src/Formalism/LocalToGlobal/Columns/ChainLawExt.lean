@@ -55,17 +55,6 @@ theorem clL_ext_natAdd {n : ℕ} (c : ℕ) (κ : Sp E n ≃ₗ[E] Sp E n) (v : S
     clL_ext c κ v (Fin.natAdd n i) = v (Fin.natAdd n i) := by
   rw [clL_ext_apply, ciExtM_natAdd]
 
-theorem clL_ext_det {n : ℕ} (c : ℕ) (κ : Sp E n ≃ₗ[E] Sp E n) :
-    ((LinearEquiv.det (clL_ext c κ) : Eˣ) : E) = ((LinearEquiv.det κ : Eˣ) : E) := by
-  rw [LinearEquiv.coe_det, LinearEquiv.coe_det]
-  have h1 : ((clL_ext c κ : Sp E (n + c) ≃ₗ[E] Sp E (n + c)) : Sp E (n + c) →ₗ[E] Sp E (n + c)) =
-      Matrix.toLin' (ciExtM c (LinearMap.toMatrix' κ.toLinearMap)) := by
-    refine LinearMap.ext fun v => ?_
-    rw [Matrix.toLin'_apply]
-    exact clL_ext_apply c κ v
-  rw [h1, LinearMap.det_toLin', ← LinearMap.det_toMatrix' (κ : Sp E n →ₗ[E] Sp E n)]
-  unfold ciExtM
-  rw [Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₂₁, Matrix.det_one, mul_one]
 
 theorem clL_ext_symm {n : ℕ} (c : ℕ) (κ : Sp E n ≃ₗ[E] Sp E n) : (clL_ext c κ).symm = clL_ext c κ.symm := by
   refine LinearEquiv.ext fun v => ?_

@@ -23,11 +23,6 @@ section Bound
 
 variable (D : D7) (u u' : D.what₂.Word)
 
-theorem absDl_nonneg (Z : GramM D) (l : ℕ) (τ : D.what₂.Tau) : 0 ≤ Cnt.absDl D Z l τ := by
-  unfold Cnt.absDl absReal
-  refine mul_nonneg (norm_nonneg _) (Real.rpow_nonneg ?_ _)
-  unfold Formalism.BasicNotions.Host.rdE
-  exact Real.rpow_nonneg (abs_nonneg _) _
 
 theorem one_le_sizeZ (b C : ℝ) (Z : GramM D) : 1 ≤ Cnt.sizeZ D b C Z := by
   unfold Cnt.sizeZ

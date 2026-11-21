@@ -26,6 +26,5 @@ theorem classVanish : ClassVanish :=
 
 theorem unfold : Unfold := UnfoldCut.unfold_of_mahler mahler
 
-theorem ellFormula : EllFormula := ellFormula_of unfold ellTerm classVanish sizeBasic
 
 end PositivityTheory.Rg.BcB.CV

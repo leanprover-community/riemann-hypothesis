@@ -19,33 +19,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.RayEv
 
-theorem isKernel_pull {S S' : Scheme.{0}} (f : S' ⟶ S) {K G B : Over S} [GrpObj B] {i : K ⟶ G} {q : G ⟶ B}
-    (h : IsPullback i (toUnit K) q η[B]) :
-    IsPullback ((Over.pullback f).map i) (toUnit _) ((Over.pullback f).map q) η[(Over.pullback f).obj B] := by
-  have h' := h.map (Over.pullback f)
-  have e : (Over.pullback f).map (toUnit K) = toUnit _ ≫ Functor.LaxMonoidal.ε (Over.pullback f) :=
-    (cancel_mono (Functor.OplaxMonoidal.η (Over.pullback f))).1 (toUnit_unique _ _)
-  refine Diag.isPullback_toUnit_of_lift _ (h'.w.trans (by rw [e, Category.assoc]; rfl))
-    (fun {T} a b k => h'.hom_ext k ((cancel_mono (Functor.OplaxMonoidal.η (Over.pullback f))).1 (toUnit_unique _ _)))
-    fun {T} t ht => ⟨h'.lift t (toUnit _ ≫ Functor.LaxMonoidal.ε (Over.pullback f))
-      (ht.trans (Category.assoc _ _ _).symm), h'.lift_fst _ _ _⟩
 
-theorem eigMap_exact {R S O : Type} [CommRing R] [CommRing S] [CommRing O] (f : R →+* S) {K G B : Over (Sp R)}
-    [GrpObj K] [IsCommMonObj K] [GrpObj G] [IsCommMonObj G] [GrpObj B] [IsCommMonObj B] {c : OAct O K} {a : OAct O G}
-    {b : OAct O B} {i : K ⟶ G} {q : G ⟶ B} (hi : IsLinearHom c a i) (hq : IsLinearHom a b q)
-    (h : IsPullback i (toUnit K) q η[B]) (σ : O →+* S) :
-    Function.Injective (eigMap f hi σ) ∧ Function.Exact (eigMap f hi σ) (eigMap f hq σ) := by
-  haveI := hi.isMonHom
-  haveI := hq.isMonHom
-  obtain ⟨h₁, h₂⟩ : Function.Injective (lieMap f hi) ∧ Function.Exact (lieMap f hi) (lieMap f hq) :=
-    Lie.map_kernel (isKernel_pull (spMap f) h)
-  refine ⟨fun x y e => Subtype.ext (h₁ (congrArg Subtype.val e)), fun v => ⟨fun e => ?_, ?_⟩⟩
-  · obtain ⟨w, hw⟩ := (h₂ v.1).1 (congrArg Subtype.val e)
-    refine ⟨⟨w, fun x => h₁ ?_⟩, Subtype.ext hw⟩
-    rw [lieMap_act, LinearMap.map_smul, hw]
-    exact v.2 x
-  · rintro ⟨w, rfl⟩
-    exact Subtype.ext ((h₂ _).2 ⟨w.1, rfl⟩)
 
 section Contr
 
@@ -78,9 +52,6 @@ theorem contr_comp {ρ : Λ →+* Module.End O M} {ρ' : Λ →+* Module.End O M
   | add z w hz hw => simp only [map_add, LinearMap.add_apply, hz, hw]
   | tmul c m => simp [LinearMap.BilinForm.baseChange_tmul]
 
-theorem contr_of_eigen {ρ : Λ →+* Module.End O M} (ψ : LinearMap.BilinForm O M) (i : J) {x : M}
-    (hx : (1 : C) ⊗ₜ[O] x ∈ eigenSub (baseChangeAction C ρ) (σ i)) (x' : M) : contr h ρ ψ i x x' = 0 := by
-  rw [contr, eigDefect, proj_of_mem h hx, sub_self, map_zero, LinearMap.zero_apply]
 
 example {ρ : Λ →+* Module.End O M} (ψ : LinearMap.BilinForm O M) {i j : J} (hij : j ≠ i) {x : M}
     (hx : (1 : C) ⊗ₜ[O] x ∈ eigenSub (baseChangeAction C ρ) (σ j)) (x' : M) :
@@ -144,7 +115,6 @@ def natAct : Λ →+* Module.End O (NatLie hq) where
   map_add' c c' := LinearMap.ext fun z => Subtype.ext (Prod.ext (add_smul c c' z.1.1)
     (LinearMap.congr_fun (map_add (DeRham.act (dp0 O) (𝟙 _) b) c c') z.1.2))
 
-theorem natToB_equivariant : IsEquivariant (natAct hq) (DeRham.act (dp0 O) (𝟙 _) b) (natToB hq) := fun _ _ => rfl
 
 variable {L : LB B.left} (sp : PolSplit b L)
 
@@ -153,7 +123,6 @@ def natForm : LinearMap.BilinForm O (NatLie hq) := sp.ψ.compl₁₂ (natToB hq)
 def natLift (v : Lie a) : NatLie hq :=
   ⟨(v, sp.s (Lie.mapLinear hq v)), sp.lift (Lie.mapLinear hq v)⟩
 
-theorem natToLie_natLift (v : Lie a) : natToLie hq (natLift hq sp v) = v := rfl
 
 variable {C J : Type} [Field C] [Algebra O C] [DecidableEq J] {σ : J → Λ →+* C} (h : IsSplitting σ)
 
@@ -162,9 +131,6 @@ def kapAb (i : J) (u u' : Lie b) : C := contr h (DeRham.act (dp0 O) (𝟙 _) b) 
 def kapExt (i : J) (u u' : Lie a) : C :=
   contr h (natAct hq) (natForm hq sp) i (natLift hq sp u) (natLift hq sp u')
 
-theorem kapExt_eq (i : J) (u u' : Lie a) :
-    kapExt hq sp h i u u' = kapAb sp h i (Lie.mapLinear hq u) (Lie.mapLinear hq u') :=
-  contr_comp h (natToB_equivariant hq) _ i _ _
 
 example (b : OAct Λ (𝟙_ (Over (Sp O)))) (L : LB (𝟙_ (Over (Sp O))).left) (hL : ∀ i j, L.g i j = 1) :
     Nonempty (PolSplit b L) :=

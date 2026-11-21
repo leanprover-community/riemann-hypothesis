@@ -41,22 +41,6 @@ def vecE (hinj : Function.Injective (algebraMap A B)) :
   (LinearEquiv.piCongrRight fun _ : ι => (kap A B hinj).symm.toLinearEquiv) ≪≫ₗ
     (TensorProduct.piRight A B B (fun _ : ι => FractionRing A)).symm
 
-theorem vecE_single (hinj : Function.Injective (algebraMap A B)) (a : ι) :
-    vecE A B ι hinj (Pi.single a 1) = (1 : B) ⊗ₜ[A] (Pi.single a 1 : ι → FractionRing A) := by
-  unfold vecE
-  rw [LinearEquiv.trans_apply, LinearEquiv.symm_apply_eq]
-  funext j
-  rw [TensorProduct.piRight_apply, TensorProduct.piRightHom_tmul]
-  show (kap A B hinj).symm ((Pi.single a 1 : ι → FractionRing B) j) = _
-  by_cases h : j = a
-  · subst h
-    rw [Pi.single_eq_same, map_one]
-    show (1 : B ⊗[A] FractionRing A) = 1 ⊗ₜ[A] (Pi.single j 1 : ι → FractionRing A) j
-    rw [Pi.single_eq_same]
-    rfl
-  · rw [Pi.single_eq_of_ne h, map_zero]
-    show (0 : B ⊗[A] FractionRing A) = 1 ⊗ₜ[A] (Pi.single a 1 : ι → FractionRing A) j
-    rw [Pi.single_eq_of_ne h, TensorProduct.tmul_zero]
 
 theorem single_li (hB : Function.Injective (algebraMap B (FractionRing B))) :
     LinearIndependent B (fun a : ι => (Pi.single a 1 : ι → FractionRing B)) := by

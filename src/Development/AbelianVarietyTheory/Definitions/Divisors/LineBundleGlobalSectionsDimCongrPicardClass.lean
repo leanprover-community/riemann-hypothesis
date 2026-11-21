@@ -419,11 +419,6 @@ theorem IsNef.pow (h : IsNef k L) (hH : IsAmpleLB H) (n : ℕ) : IsNef k (lbPow 
   ⟨isLB_lbPow h.isLB n, fun Z hZ => (mul_nonneg (Nat.cast_nonneg n) (h.2 Z hZ)).trans_eq
     (hZ.interNumRed_lbPow hH h.isLB n).symm⟩
 
-theorem isNef_pow_iff (hH : IsAmpleLB H) (hL : L.IsLB) {n : ℕ} (hn : 1 ≤ n) :
-    IsNef k (lbPow L n) ↔ IsNef k L :=
-  ⟨fun h => ⟨hL, fun Z hZ => nonneg_of_mul_nonneg_right
-      ((h.2 Z hZ).trans_eq (hZ.interNumRed_lbPow hH hL n)) (Nat.cast_pos.2 hn)⟩,
-    fun h => h.pow hH n⟩
 
 theorem IsNef.of_cls_eq_sum {ι : Type*} (s : Finset ι) {P : ι → LB X} (hP : ∀ i, IsNef k (P i))
     (n : ι → ℕ) (hH : IsAmpleLB H) (hN : N.IsLB)
@@ -754,7 +749,6 @@ theorem isBig_twistingSheaf : IsBig k (O1 k N) := by
   gcongr
   omega
 
-theorem isPsEff_twistingSheaf : IsPsEff (O1 k N) := (isAmple_projective_O_one k N).isPsEff
 
 theorem triv_nef_not_big : IsNef k (LB.triv (PSpace k (N + 1))) ∧
     IsPsEff (LB.triv (PSpace k (N + 1))) ∧ ¬ IsBig k (LB.triv (PSpace k (N + 1))) := by
@@ -769,14 +763,6 @@ theorem triv_nef_not_big : IsNef k (LB.triv (PSpace k (N + 1))) ∧
     sectionDim_twistingSheaf_pow, zero_add, Nat.choose_self, Nat.cast_one] at h₁
   exact h₂.not_ge h₁
 
-theorem not_isPsEff_dual_twistingSheaf :
-    ¬ IsPsEff (dual (O1 k (N + 1))) ∧ ¬ IsBig k (dual (O1 k (N + 1))) := by
-  have := isNoetherian_of_isProjOver (isProjOver_str k (N + 1))
-  have h : ¬ IsPsEff (dual (O1 k (N + 1))) := fun h => by
-    obtain ⟨r, hr, hs⟩ := h.exists_of_dual (isAmple_projective_O_one k _)
-    have := ProjCoh.subsingleton_coh_zero k (N := N + 1) (by omega) (n := -r) (by omega)
-    exact not_nontrivial _ (hasNonzeroSec_iff_nontrivial.1 hs)
-  exact ⟨h, fun h' => h (h'.isPsEff (isAmple_projective_O_one k _))⟩
 
 theorem isCompleteCurve_top : IsCompleteCurve k (⊤ : Closeds (PSpace k 1)) :=
   have := isProper_str k 1
@@ -784,8 +770,6 @@ theorem isCompleteCurve_top : IsCompleteCurve k (⊤ : Closeds (PSpace k 1)) :=
     (topologicalKrullDim_eq_of_isEmbedding Topology.IsEmbedding.id Set.range_id).trans
       (topologicalKrullDim_eq k 1)⟩
 
-theorem not_isNef_dual_twistingSheaf : ¬ IsNef k (dual (O1 k 1)) :=
-  (isAmple_projective_O_one k 1).not_isNef_dual (isCompleteCurve_top k)
 
 example : lbH0 ℚ (lbPow (O1 ℚ 2) 2) = 6 := sectionDim_twistingSheaf_pow ℚ 2 2
 

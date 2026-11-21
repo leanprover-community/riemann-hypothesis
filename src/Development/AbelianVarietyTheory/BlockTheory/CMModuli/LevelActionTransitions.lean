@@ -66,10 +66,6 @@ def KMax : Subgroup (∀ n : ℕ+, LaMod D n ≃ₗ[𝓞 E] LaMod D n) where
       rw [LinearEquiv.symm_apply_eq] at ha hb
       exact (h2 n a' b' a b ha.symm hb.symm).symm
 
-theorem neg_mem_KMax : (fun n => LinearEquiv.neg (𝓞 E)) ∈ KMax D := by
-  have h1 := (KMax D).one_mem
-  refine ⟨fun n m a b h => h1.1 n m (-a) b h, fun n a b a' b' ha hb => ?_⟩
-  simpa using h1.2 n (-a) (-b) a' b' ha hb
 
 variable {D}
 
@@ -91,13 +87,6 @@ def IsNormalisation {U Z Y : Scheme.{0}} (i : U ⟶ Z) (p : Z ⟶ Y) : Prop :=
   ∃ (_ : QuasiCompact (i ≫ p)) (_ : QuasiSeparated (i ≫ p)) (e : Z ≅ (i ≫ p).normalization),
     i ≫ e.hom = (i ≫ p).toNormalization ∧ e.hom ≫ (i ≫ p).fromNormalization = p
 
-theorem isNormalisation_normalization {U Y : Scheme.{0}} (f : U ⟶ Y) [QuasiCompact f] [QuasiSeparated f] :
-    IsNormalisation f.toNormalization f.fromNormalization := by
-  have key : ∀ g : U ⟶ Y, g = f → ∃ (_ : QuasiCompact g) (_ : QuasiSeparated g) (e : f.normalization ≅ g.normalization),
-      f.toNormalization ≫ e.hom = g.toNormalization ∧ e.hom ≫ g.fromNormalization = f.fromNormalization := by
-    rintro g rfl
-    exact ⟨inferInstance, inferInstance, Iso.refl _, by simp, by simp⟩
-  exact key _ f.toNormalization_fromNormalization
 
 theorem IsNormalisation.isIntegralHom {U Z Y : Scheme.{0}} {i : U ⟶ Z} {p : Z ⟶ Y} (h : IsNormalisation i p) :
     IsIntegralHom p := by

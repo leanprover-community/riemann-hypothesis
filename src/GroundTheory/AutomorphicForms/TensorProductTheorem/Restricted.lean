@@ -45,16 +45,6 @@ theorem tprod_mem_restrictedTensor {ξ x : ∀ v, V v} (h : IsRestricted ξ x) :
     tprod ℂ x ∈ restrictedTensor ξ :=
   Submodule.subset_span ⟨x, h, rfl⟩
 
-theorem restrictedTensor_congr {ξ ξ' : ∀ v, V v} (h : ∀ᶠ v in cofinite, ξ v = ξ' v) :
-    restrictedTensor ξ = restrictedTensor ξ' := by
-  have key : ∀ {ξ ξ' : ∀ v, V v}, (∀ᶠ v in cofinite, ξ v = ξ' v) →
-      restrictedTensor ξ ≤ restrictedTensor ξ' := by
-    intro ξ ξ' h
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨x, hx, rfl⟩
-    refine tprod_mem_restrictedTensor ?_
-    filter_upwards [show ∀ᶠ v in cofinite, x v = ξ v from hx, h] with v h1 h2 using h1.trans h2
-  exact le_antisymm (key h) (key (h.mono fun v hv => hv.symm))
 
 section Lift
 
@@ -299,14 +289,6 @@ theorem finiteEmbed_tprod (ξ : ∀ v, V v) (T : Finset ι) (y : ∀ v : T, V v)
   rw [finiteEmbed, lift.tprod, MultilinearMap.domDomRestrict_apply]
   rfl
 
-theorem range_finiteEmbed_le (ξ : ∀ v, V v) (T : Finset ι) :
-    LinearMap.range (finiteEmbed ξ T) ≤ restrictedTensor ξ := by
-  rintro _ ⟨t, rfl⟩
-  induction t using PiTensorProduct.induction_on with
-  | smul_tprod c y =>
-    rw [map_smul, finiteEmbed_tprod]
-    exact Submodule.smul_mem _ _ (tprod_mem_restrictedTensor (isRestricted_extend ξ T y))
-  | add a b ha hb => rw [map_add]; exact Submodule.add_mem _ ha hb
 
 theorem extend_restrict {ξ x : ∀ v, V v} {T : Finset ι} (h : ∀ v ∉ T, x v = ξ v) :
     extend ξ T (fun v => x v) = x := by
@@ -316,40 +298,6 @@ theorem extend_restrict {ξ x : ∀ v, V v} {T : Finset ι} (h : ∀ v ∉ T, x 
   · rfl
   · exact (h v hv).symm
 
-theorem finiteEmbed_injective {ξ : ∀ v, V v} {T : Finset ι} (hξ : ∀ v ∉ T, ξ v ≠ 0) :
-    Injective (finiteEmbed ξ T) := by
-  have hex : ∀ v, ∃ f : Dual ℂ (V v), v ∉ T → f (ξ v) = 1 := by
-    intro v
-    by_cases hv : v ∈ T
-    · exact ⟨0, fun h => absurd hv h⟩
-    · obtain ⟨f, hf⟩ : ∃ f : Dual ℂ (V v), f (ξ v) ≠ 0 := by
-        by_contra hcon
-        push Not at hcon
-        exact hξ v hv ((Module.forall_dual_apply_eq_zero_iff ℂ (ξ v)).1 hcon)
-      exact ⟨(f (ξ v))⁻¹ • f, fun _ => by simp [hf]⟩
-  choose l hl using hex
-  have hl' : ∀ᶠ v in cofinite, l v (ξ v) = 1 :=
-    Filter.eventually_cofinite.2 (T.finite_toSet.subset fun v hv => by
-      by_contra hvT
-      exact hv (hl v hvT))
-  let P := lift (restrictedLift ξ T l hl' (PiTensorProduct.tprod ℂ))
-  have hP : P ∘ₗ finiteEmbed ξ T = LinearMap.id := by
-    refine PiTensorProduct.ext (MultilinearMap.ext fun y => ?_)
-    simp only [LinearMap.compMultilinearMap_apply, LinearMap.comp_apply, finiteEmbed_tprod,
-      LinearMap.id_apply, P, lift.tprod]
-    rw [restrictedLift_apply_of _ (isRestricted_extend ξ T y)]
-    have hw : weight T l (extend ξ T y) = fun _ => 1 := by
-      funext v
-      by_cases hv : v ∈ T
-      · exact weight_of_mem l _ hv
-      · rw [weight_of_notMem l _ hv]
-        simp [extend, hv, hl v hv]
-    rw [hw, finprod_one, one_smul]
-    congr 1
-    funext ⟨v, hv⟩
-    simp [extend, hv]
-  exact Function.LeftInverse.injective (g := P) fun t => by
-    simpa using congrArg (fun F => F t) hP
 
 theorem exists_mem_range_finiteEmbed {ξ : ∀ v, V v} {t : ⨂[ℂ] v, V v}
     (ht : t ∈ restrictedTensor ξ) : ∃ T₀ : Finset ι, ∀ T, T₀ ⊆ T →

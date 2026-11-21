@@ -128,10 +128,6 @@ theorem exists_basis {M : Submodule O V} (h : IsLat O K M) :
     rw [← Set.range_comp]; congr 1; ext i; simp
   rw [this, ← Submodule.map_span, c.span_eq, Submodule.map_top, Submodule.range_subtype]
 
-theorem isLat_span_basis {d : ℕ} (b : Basis (Fin d) K V) :
-    IsLat O K (Submodule.span O (Set.range b)) := by
-  refine ⟨Submodule.fg_span (Set.finite_range b), ?_⟩
-  rw [Submodule.span_span_of_tower, b.span_eq]
 
 theorem relLen_span_of_le {d : ℕ} (b : Basis (Fin d) K V) (w : Fin d → V)
     (hw : Submodule.span O (Set.range w) ≤ Submodule.span O (Set.range b))
@@ -221,14 +217,5 @@ end Lat
 
 end Idx
 
-theorem index_additive : IndexAdditive := by
-  intro O K V _ _ _ _ _ _ _ _ _ _ _ M N P hM hN hP
-  refine ⟨Idx.relLen_ne_top hM hN, ?_⟩
-  have hQ := Idx.isLat_inf (Idx.isLat_inf hM hN) hP
-  have q1 : M ⊓ N ⊓ P ≤ M := inf_le_left.trans inf_le_left
-  have q2 : M ⊓ N ⊓ P ≤ N := inf_le_left.trans inf_le_right
-  have q3 : M ⊓ N ⊓ P ≤ P := inf_le_right
-  rw [Idx.sIdx_eq_sub hM hN hQ q1 q2, Idx.sIdx_eq_sub hN hP hQ q2 q3, Idx.sIdx_eq_sub hM hP hQ q1 q3]
-  ring
 
 end Formalism.IrreducibleCountingLemmas.TW

@@ -34,28 +34,7 @@ theorem exists_isotropic : ∃ (D : D7) (V : HSp D) (μ : Measure (GA D V)) (_ :
 
 variable {D : D7} {V : HSp D} {μ : Measure (GA D V)} [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
 
-theorem RcuspOp_one {v : L2cusp V μ} (hv : (v : DividedPowerChartLift V μ) = constantOneDividedPowerChartLift V μ) {f : GA D V → ℂ} (hf : f ∈ CcGA V) :
-    RcuspOp V μ f v = (∫ g, f g ∂μ) • v := by
-  have h1 : ∀ g, Rcusp V μ g v = v := fun g => Subtype.ext (by
-    change RG V μ g (v : DividedPowerChartLift V μ) = _
-    rw [hv]
-    exact right_translate_toL2 (memL2_const (Γ := GQ V) (μ := μ) 1) g)
-  rw [(isRepOp_RcuspOp hf v).2]
-  simp only [h1]
-  exact integral_smul_const f v
 
-theorem isTraceClass_of_rank_zero (h : V.rank = 0) (f : GA D V → ℂ) : IsTraceClass (RcuspOp V μ f) := by
-  have : IsEmpty (Fin V.rank) := h ▸ inferInstanceAs (IsEmpty (Fin 0))
-  have hs : Subsingleton (GA D V) := ⟨fun a b => Subtype.ext (Units.ext (Subsingleton.elim _ _))⟩
-  have hq : Subsingleton (Quot (GQ V)) := ⟨fun a b => by
-    rw [← mk_sec a, ← mk_sec b, Subsingleton.elim (sec _ a) (sec _ b)]⟩
-  have : FiniteDimensional ℂ (DividedPowerChartLift V μ) := by
-    refine Module.Finite.of_surjective (LinearMap.toSpanSingleton ℂ _ (constantOneDividedPowerChartLift V μ)) fun F => ?_
-    refine ⟨F (mk _ 1), Lp.ext ?_⟩
-    filter_upwards [Lp.coeFn_smul (F (mk _ 1)) (constantOneDividedPowerChartLift V μ), (memL2_const (Γ := GQ V) (μ := μ) 1).coeFn_toL2] with q a b
-    rw [LinearMap.toSpanSingleton_apply, a, Pi.smul_apply, show constantOneDividedPowerChartLift V μ q = _ from b, Subsingleton.elim q (mk _ 1)]
-    simp [AutomorphicL2Unitary.descend]
-  exact isTraceClass_of_finiteDimensional _
 
 end GlobalTheory.CuspSpectrum.Model
 

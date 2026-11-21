@@ -99,52 +99,7 @@ theorem conjugation_invariant_measure : ConjInv := by
   · rw [hs_mul_unitary hk, hs_unitary_mul (unitary_conj hk)]
   · rw [← hinv]; exact (Matrix.exp_conj' k X hu).symm
 
-theorem decay_assembly_holds : DecAssembly := by
-  intro hDecay hRes hConj hGap N ep lam h Ω T _ μ _ _ κ v X A hlam hgap hκ hX hXb hres hA
-  apply hRes Ω T μ v (fun k => ∏ i ∈ Ico 1 N,
-    (lead ((κ k).conjTranspose * NormedSpace.exp X * κ k) i).re ^ (-(lam i - lam (i + 1) + 1)))
-    _ A (Real.exp_pos _).le hres ?_ hA
-  intro k
-  obtain ⟨hY, hYb, hYs, hYe⟩ := hConj N ep (κ k) X (hκ k).1 (hκ k).2 hX hXb
-  simp only [hYe]
-  generalize (κ k).conjTranspose * X * κ k = Y at *
-  have hpos : ∀ i, 0 ≤ (lead (NormedSpace.exp Y) i).re := by
-    intro i
-    by_cases hi : i ≤ N
-    · obtain ⟨w, hw0, _, hlead, _⟩ := Formalism.NuclearRankWeightBounds.P.cb_weights N Y hY i hi
-      rw [hlead, Complex.ofReal_re]
-      exact Finset.sum_nonneg fun J _ => mul_nonneg (hw0 J) (Real.exp_pos _).le
-    · simp [lead, hi]
-  rw [abs_of_nonneg (Finset.prod_nonneg fun i _ => Real.rpow_nonneg (hpos i) _)]
-  have hs0 : ∀ i, 0 ≤ (if 1 ≤ i ∧ i < N then lam i - lam (i+1) + 1 else 0) := by
-    intro i
-    split_ifs with hi
-    · have := hlam i hi.1 hi.2; linarith
-    · exact le_rfl
-  have hD := hDecay N (fun i => if 1 ≤ i ∧ i < N then lam i - lam (i+1) + 1 else 0) ep h Y hs0 hY hYb (by
-    intro a b hba hab
-    have hba' : b.val < a.val := hba
-    have hsum : ∑ i ∈ Ico (b.val+1) (a.val+1), (if 1 ≤ i ∧ i < N then lam i - lam (i+1) + 1 else 0)
-        = ∑ i ∈ Ico (b.val+1) (a.val+1), (lam i - lam (i+1) + 1) := by
-      apply Finset.sum_congr rfl; intro i hi
-      have := Finset.mem_Ico.mp hi
-      rw [if_pos ⟨by omega, by have := a.isLt; omega⟩]
-    rw [hsum, hGap lam (a.val+1) (b.val+1) (by omega)]
-    have h1 := hgap a b hba hab
-    have h2 : (b.val:ℝ) < a.val := by exact_mod_cast hba'
-    push_cast; linarith)
-  have hprod : ∏ i ∈ Ico 1 N, (lead (NormedSpace.exp Y) i).re ^ (-(lam i - lam (i+1) + 1))
-      = ∏ i ∈ Ico 1 N, (lead (NormedSpace.exp Y) i).re
-        ^ (-(if 1 ≤ i ∧ i < N then lam i - lam (i+1) + 1 else 0)) := by
-    apply Finset.prod_congr rfl; intro i hi
-    have := Finset.mem_Ico.mp hi
-    rw [if_pos ⟨this.1, this.2⟩]
-  rw [hprod]
-  refine hD.trans (le_of_eq ?_)
-  rw [hYs]; unfold decExp; congr 1; ring
 
-theorem decay_right_side_bound : DecayRightSide :=
-  decay_assembly_holds Formalism.NuclearRankWeightBounds.Top.decay resolution_norm_bound conjugation_invariant_measure gap_sum_bound
 
 noncomputable def n2 {N : ℕ} (v : Fin N → ℂ) : ℝ := Real.sqrt (∑ i, ‖v i‖ ^ 2)
 

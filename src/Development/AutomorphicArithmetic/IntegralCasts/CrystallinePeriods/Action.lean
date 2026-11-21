@@ -129,8 +129,6 @@ instance PFlat.smul : SMul G (PFlat p R) :=
 theorem tateModule.coe_smul (g : G) (η : tateModule p R) : (g • η).1 = g • η.1 := rfl
 theorem PFlat.coe_smul (g : G) (ϖ : PFlat p R) : (g • ϖ).1 = g • ϖ.1 := rfl
 
-theorem Tilt.untilt_smul (g : G) (x : Tilt p R) :
-    PreTilt.untilt (g • x) = g • PreTilt.untilt x := Tilt.untilt_map _ x
 
 omit [IsAdicComplete (span {(p : R)}) R] in
 theorem Ainf.smul_teich (g : G) (x : Tilt p R) : g • Ainf.teich p x = Ainf.teich p (g • x) :=
@@ -147,8 +145,6 @@ theorem AinfInv.smul_algebraMap (g : G) (x : Ainf p R) :
     g • algebraMap _ (AinfInv p R) x = algebraMap _ _ (g • x) := AinfInv.map_algebraMap _ x
 theorem BdRPlus.smul_algebraMap (g : G) (x : AinfInv p R) :
     g • algebraMap _ (BdRPlus p R) x = algebraMap _ _ (g • x) := BdRPlus.map_algebraMap _ x
-theorem BdRPlus.smul_algebraMap_ainf (g : G) (x : Ainf p R) :
-    g • algebraMap _ (BdRPlus p R) x = algebraMap _ _ (g • x) := BdRPlus.map_algebraMap_ainf _ x
 theorem BdR.smul_algebraMap (g : G) (x : BdRPlus p R) :
     g • algebraMap _ (BdR p R) x = algebraMap _ _ (g • x) := BdR.map_algebraMap _ x
 theorem Acris.smul_algebraMap (g : G) (x : Ainf p R) :
@@ -157,8 +153,6 @@ theorem BcrisPlus.smul_algebraMap (g : G) (x : Acris p R) :
     g • algebraMap _ (BcrisPlus p R) x = algebraMap _ _ (g • x) := BcrisPlus.map_algebraMap _ x
 theorem Bcris.smul_algebraMap (g : G) (x : BcrisPlus p R) :
     g • algebraMap _ (Bcris p R) x = algebraMap _ _ (g • x) := Bcris.map_algebraMap _ _ x
-theorem Bcris.smul_algebraMap_acris (g : G) (x : Acris p R) :
-    g • algebraMap _ (Bcris p R) x = algebraMap _ _ (g • x) := Bcris.map_algebraMap_acris _ _ x
 theorem Bst.smul_algebraMap (g : G) (x : Bcris p R) :
     g • algebraMap _ (Bst p R) x = algebraMap _ _ (g • x) := Bst.map_algebraMap _ _ x
 
@@ -194,19 +188,7 @@ theorem Bcris.smul_frob (g : G) (x : Bcris p R) : g • Bcris.frob p R x = Bcris
   Bcris.map_frob _ _ x
 theorem Bst.smul_frob (g : G) (x : Bst p R) : g • Bst.frob p R x = Bst.frob p R (g • x) :=
   Bst.map_frob _ _ x
-theorem Bst.monodromy_smul (g : G) (x : Bst p R) :
-    Bst.monodromy p R (g • x) = g • Bst.monodromy p R x := Bst.monodromy_map _ _ x
 
-theorem BdRPlus.smul_mem_fil (g : G) {n : ℕ} {x : BdRPlus p R} (hx : x ∈ BdRPlus.fil p R n) :
-    g • x ∈ BdRPlus.fil p R n := BdRPlus.map_mem_fil _ hx
-theorem BdR.smul_mem_fil (g : G) {i : ℤ} {x : BdR p R} (hx : x ∈ BdR.fil p R i) :
-    g • x ∈ BdR.fil p R i := BdR.map_mem_fil _ hx
 
-theorem Acris.smul_logTeich (g : G) (η : tateModule p R) :
-    g • Acris.logTeich η = Acris.logTeich (g • η) := Acris.map_logTeich _ η
-theorem Bcris.smul_logTeich (g : G) (η : tateModule p R) :
-    g • Bcris.logTeich η = Bcris.logTeich (g • η) := Bcris.map_logTeich _ _ η
-theorem Bst.smul_logFlat (g : G) (ϖ : PFlat p R) :
-    g • Bst.logFlat ϖ = Bst.logFlat (g • ϖ) := Bst.map_logFlat _ _ ϖ
 
 end Reformulated.AutPerF

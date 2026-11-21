@@ -27,7 +27,5 @@ theorem SectionNef.equiv :
     ⟨_root_.GroundTheory.Heights₂.Heights.Model.SectionNef.proof,
       _root_.GroundTheory.Heights₂.Heights.Model.SectionNefGenerated.proof⟩⟩
 
-theorem SectionNef.sectionNef_of_first : SectionNef.Statement :=
-  SectionNef.glueBundles_second_of_first _root_.GroundTheory.Heights₂.Heights.Model.SectionNef.proof
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model

@@ -303,15 +303,7 @@ theorem exists_good_compat {T T' : HSp D} {t : ℕ} (d : HypDec T T' t) (l' : Lv
   let ⟨c, hc, hf⟩ := exists_frame d l' h.2.2
   ⟨⟨sumLattice d l'.L, c⟩, ⟨isLattice_sumLattice d h.1, isSelfDualAt_sumLattice d h.1 h.2.1, hc⟩, mem_sumLattice d, hf⟩
 
-theorem good_iff_isLevel {V : HSp D} (l : Lvl V) : l.Good ↔ GlobalTheory.EisCont.IsLevel V l.L l.c :=
-  ⟨fun h => ⟨h.1, h.2.1, h.2.2⟩, fun h => ⟨h.1, h.2, h.3⟩⟩
 
-theorem K_eq_lev {V : HSp D} (l : Lvl V) : l.K = GlobalTheory.EisCont.lev V l.L l.c := rfl
 
-theorem levels_exist (D : D7) :
-    (∀ V : HSp D, ∃ l : Lvl V, l.Good) ∧
-    (∀ (T T' : HSp D) (t : ℕ) (d : HypDec T T' t) (l' : Lvl T'), l'.Good → ∃ l : Lvl T, l.Good ∧ Compat d l l') ∧
-    ∀ (V : HSp D) (l : Lvl V), (l.Good ↔ GlobalTheory.EisCont.IsLevel V l.L l.c) ∧ l.K = GlobalTheory.EisCont.lev V l.L l.c :=
-  ⟨exists_good, fun _ _ _ => exists_good_compat, fun _ l => ⟨good_iff_isLevel l, rfl⟩⟩
 
 end GlobalTheory.RegSch.Inhab

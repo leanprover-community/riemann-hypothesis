@@ -180,18 +180,12 @@ def thetaZero (D : D7) : ThetaX D where
   adelicDataRowMeasureScale_trivialTuple := fun _ => rfl
   mY_zero := fun _ => rfl
 
-theorem thetaZero_row (D : D7) [∀ μ j, Subsingleton (D.what₂.Mult μ j)] : (thetaZero D).TieRowIsom :=
-  fun μ j _ x y => by
-    rw [Subsingleton.elim x 0, inner_zero_left]
-    exact mul_zero _
 
 theorem thetaZero_io (D : D7) [∀ μ j, Subsingleton (D.what₂.Mult μ j)] : (thetaZero D).TieIo :=
   fun μ j _ y x => by
     rw [Subsingleton.elim x 0, inner_zero_right]
     exact mul_zero _
 
-theorem thetaZero_bm (D : D7) (h : ∀ u μ φ F, D.what₂.perCol u μ φ F = 0) : (thetaZero D).TieBm :=
-  fun u μ φ F => (h u μ φ F).trans (mul_zero _).symm
 
 end Formalism.MainNotions.Inhab
 

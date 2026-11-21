@@ -70,12 +70,6 @@ theorem del_eq (D : D7) (hk : 3 ≤ D.R.k) (w : D.what₂.Word) (τ : D.what₂.
   unfold delOf
   linarith
 
-theorem letterOf_inj (D : D7) (τ : D.what₂.Tau) : Function.Injective fun w => letterOf (D.hcW w τ) := by
-  have e : (fun w => letterOf (D.hcW w τ)) = D.s.letter := by
-    funext w l
-    exact (letter_eq D w τ l).symm
-  rw [e]
-  exact D.s.letter_inj
 
 def LocIso.refl {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {sig : E →ₐ[F] E} {p : HeightOneSpectrum (𝓞 F)} (A : Formalism.MainNotions.S.Loc.LocAt F E sig p) : LocIso A A where

@@ -20,9 +20,6 @@ theorem sgn_conj (p : ℕ) (a : Fin r) : conj (sgn p a) = sgn p a := by
   unfold sgn
   split_ifs <;> simp
 
-theorem sgn_norm (p : ℕ) (a : Fin r) : ‖sgn p a‖ = 1 := by
-  unfold sgn
-  split_ifs <;> simp
 
 theorem embVec_add (τ : K →+* ℂ) (x y : Fin r → K) : embVec τ (x + y) = embVec τ x + embVec τ y := by
   ext a

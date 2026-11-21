@@ -19,8 +19,6 @@ variable {WL : Type} [AddCommGroup WL] [Module LL WL] [Module Ks WL] [IsScalarTo
 variable {W : (LL →+* ℂ) → Type} [∀ σ, NormedAddCommGroup (W σ)] [∀ σ, InnerProductSpace ℂ (W σ)]
 variable {G G' : Type} [Group G] [Fintype G] [Group G'] [Fintype G']
 
-theorem isGoodBasis_iff (A : FormsL LL Ks WL W G) (J0 : Subgroup G) (lam0 : J0 →* LLˣ) (eC : G → LL) {d : ℕ}
-    (b : Fin d → WL) : IsGoodBasis A J0 lam0 eC b ↔ IsCoord A J0 lam0 eC b := Iff.rfl
 
 theorem mjFull_iff (A : FormsL LL Ks WL W G) (J0 : Subgroup G) (lam0 : J0 →* LLˣ) (eC : G → LL) :
     MjFull A J0 lam0 eC ↔ MjLattice A J0 lam0 eC := by

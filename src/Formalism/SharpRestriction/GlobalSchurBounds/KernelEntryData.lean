@@ -206,8 +206,6 @@ def KernelValuationBoundGains (rb : ℕ) (nu : Sh.Wt) (Th : MvPowerSeries Sh.ZV 
   ∀ TT : ∀ v, Finset (Fin (Sh.n' v)), ∀ y ∈ Sh.KG Oc rb nu Th,
     gaussGe p Oc y (∑ v, g0 p Sh.r0 Sh.r1 rb (TT v) (nu v))
 
-theorem corollary_valuation_of_theorem {rb : ℕ} {nu : Sh.Wt} {Th : MvPowerSeries Sh.ZV Kc} (h : ValuationOneKernel p Oc Sh rb nu Th) :
-    KernelValuationBoundGains p Oc Sh rb nu Th := fun TT y hy => (h TT y hy).1
 
 end Core
 
@@ -572,61 +570,9 @@ def StatementFamilyCorollaryKernel {eps : ℝ} (Fm : Formalism.MainNotions.FamP 
 def StatementFamilyValuationsAtKernels {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Prop := ∀ x (i : Fm.Ix x), ValuationStatementsAtKernels (Fm.D x i)
 def StatementFamilyValuationTheta {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Prop := ∀ x (i : Fm.Ix x), StatementValuationTheta (Fm.D x i)
 
-theorem one_top_odd_levels_gain : OneTopOddLevelsGain := by
-  intro p r0 r1 rb n' nu s
-  have h : DSet {s} s = ∅ := by
-    unfold DSet
-    rw [Finset.image_eq_empty, Finset.filter_eq_empty_iff]
-    intro x hx
-    rw [Finset.mem_singleton] at hx
-    subst hx
-    simp [OtherPar]
-  refine ⟨h, ?_⟩
-  unfold g0 gsum
-  simp [h]
 
-theorem one_parity_tops_excluded_none : OneParityTopsNoExclusion := by
-  intro p r0 r1 rb n' nu TT hT
-  unfold g0 gsum
-  congr 1
-  apply Finset.sum_congr rfl
-  intro s hs
-  have h : DSet TT s = ∅ := by
-    unfold DSet
-    rw [Finset.image_eq_empty, Finset.filter_eq_empty_iff]
-    intro x hx
-    exact hT s hs x hx
-  simp [h]
 
-theorem no_top_gain_neg_defect : NoTopGainNegDefect := by
-  intro p r0 r1 rb n' nu
-  unfold g0 gsum
-  simp
 
-theorem fact_dinj_pf : fact_dinj := by
-  intro n' s s' s'' h
-  unfold dLev at h
-  have h1 := s.isLt
-  have h2 := s'.isLt
-  have h3 := s''.isLt
-  apply Fin.ext
-  by_cases a : s.val ≤ s'.val <;> by_cases b : s.val ≤ s''.val
-  · have e1 : (s'.val + n' - s.val) % n' = s'.val - s.val := by
-      rw [show s'.val + n' - s.val = (s'.val - s.val) + n' by omega, Nat.add_mod_right, Nat.mod_eq_of_lt (by omega)]
-    have e2 : (s''.val + n' - s.val) % n' = s''.val - s.val := by
-      rw [show s''.val + n' - s.val = (s''.val - s.val) + n' by omega, Nat.add_mod_right, Nat.mod_eq_of_lt (by omega)]
-    omega
-  · have e1 : (s'.val + n' - s.val) % n' = s'.val - s.val := by
-      rw [show s'.val + n' - s.val = (s'.val - s.val) + n' by omega, Nat.add_mod_right, Nat.mod_eq_of_lt (by omega)]
-    have e2 : (s''.val + n' - s.val) % n' = s''.val + n' - s.val := Nat.mod_eq_of_lt (by omega)
-    omega
-  · have e2 : (s''.val + n' - s.val) % n' = s''.val - s.val := by
-      rw [show s''.val + n' - s.val = (s''.val - s.val) + n' by omega, Nat.add_mod_right, Nat.mod_eq_of_lt (by omega)]
-    have e1 : (s'.val + n' - s.val) % n' = s'.val + n' - s.val := Nat.mod_eq_of_lt (by omega)
-    omega
-  · have e1 : (s'.val + n' - s.val) % n' = s'.val + n' - s.val := Nat.mod_eq_of_lt (by omega)
-    have e2 : (s''.val + n' - s.val) % n' = s''.val + n' - s.val := Nat.mod_eq_of_lt (by omega)
-    omega
 
 theorem al_eq {n' k1 : ℕ} (t j : ℕ) (TT : Finset (Fin n')) (lam0 : Fin n' → Fin (k1 + 1) → ℤ) (w : ℕ → Fin n' → ℤ)
     (hk : 1 ≤ k1) (s : Fin n') : al TT (fun s i => FormalGroupSystem.nu t lam0 w j s i) s = FormalGroupSystem.al TT lam0 s := by
@@ -636,12 +582,6 @@ theorem al_eq {n' k1 : ℕ} (t j : ℕ) (TT : Finset (Fin n')) (lam0 : Fin n' �
   simp only [h1, h2, and_self, if_true]
   split_ifs <;> ring
 
-theorem corollary_notation_weights_holds : CorollaryNotationWeights := by
-  intro p n' k1 t j TT lam0 w hk
-  have ha := al_eq t j TT lam0 w hk
-  unfold g0 gsum de FormalGroupSystem.gA FormalGroupSystem.de gain low sz lg FormalGroupSystem.lsz
-  simp only [ha]
-  rfl
 
 section G
 variable {p : ℕ} [Fact p.Prime] (X : FormalGroupSystem.Sys p)
@@ -651,66 +591,10 @@ theorem colExp_zero (j : ℕ) (I : X.ColCh j) (v : X.Pl) (s : Fin (X.G.P.n' v)) 
   unfold FormalGroupSystem.Sys.colExp
   split_ifs <;> simp
 
-theorem PI_X (j : ℕ) (I : X.ColCh j) : X.PI j I (fun _ => 0) = (shX X j).PI (rbX X j) (nuX X j) I := by
-  unfold FormalGroupSystem.Sys.PI Shape.PI
-  simp only [colExp_zero, pow_zero, one_mul]
-  rfl
 
-theorem Nprime_zero {n' k1 : ℕ} (lam0 : Fin n' → Fin (k1 + 1) → ℤ) (w : ℕ → Fin n' → ℤ) (j : ℕ) :
-    FormalGroupSystem.Nprime lam0 w j 0 = 0 := by
-  unfold FormalGroupSystem.Nprime
-  simp
 
-theorem admissible_valuation_zero (D : Formalism.BasicNotions.D7) (Y : FormalGroupSystem.Pend X) (h : KernelSecondLevelBound D X Y) :
-    ∀ j < X.mm, ∀ (La : X.Lt j) (c' : X.Lv.comp (j + 1)) (L' L'' : (X.Pj (j + 1)).Tup),
-    (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup L' → (∀ v', L'' v' = L' v') →
-    ∃ φ : Y.Frm j La (c', L''), ∀ (f : MvPowerSeries (X.ZA j) Y.Kc) (g : ℝ),
-      (∀ (I : X.ColCh j) (n : X.FrI j →₀ ℕ),
-        Y.geC (MvPolynomial.coeff n (FormalGroupSystem.applyD (X.PI j I (fun _ => 0)) f)) g) →
-      ∀ G ∈ (X.Pj j).HtupW La.2, Y.inLatC (j + 1) g L'
-        ((∏ v : X.Pl, (p : X.G.Kf) ^ (FormalGroupSystem.Nprime (X.G.P.lam0 v) (X.w v) (j + 1) 0)) •
-          Y.kerF j La (c', L'') (FormalGroupSystem.linSub (Y.bc j La (c', L'') φ) f) G) := by
-  intro j hj La c' L' L'' hLa hL' hEq
-  have e : L'' = L' := funext hEq
-  subst e
-  obtain ⟨φ, hφ⟩ := h j hj La (c', L'') hLa hL'
-  refine ⟨φ, fun f g hI G hG => ?_⟩
-  simp only [Nprime_zero, zpow_zero, Finset.prod_const_one, one_smul]
-  refine hφ f g (fun I n => ?_) G hG
-  have e2 : (shX X j).PI (rbX X j) (nuX X j) I = X.PI j I (fun _ => 0) := (PI_X X j I).symm
-  rw [e2]
-  exact hI I n
 
 end G
 
-theorem fact_gam_pf : fact_gam := by
-  intro p hp
-  have hp' : (2 : ℝ) ≤ p := by exact_mod_cast hp
-  have h1 : (p : ℝ) ^ 2 - 1 ≠ 0 := by nlinarith
-  have h2 : (p : ℝ) - 1 ≠ 0 := by linarith
-  have h0 : (p : ℝ) ≠ 0 := by linarith
-  have h3 : (p : ℝ) + 1 ≠ 0 := by linarith
-  refine ⟨by unfold gam rho; ring, ?_, ?_⟩
-  · have hlt : ((p : ℝ) ^ 2)⁻¹ < 1 := by
-      apply inv_lt_one_of_one_lt₀
-      nlinarith
-    have hg := (hasSum_geometric_of_lt_one (r := ((p : ℝ) ^ 2)⁻¹) (by positivity) hlt).mul_left ((p : ℝ)⁻¹)
-    have e1 : (fun e : ℕ => ((p : ℝ) ^ (2 * e + 1))⁻¹) = fun i => (p : ℝ)⁻¹ * ((p : ℝ) ^ 2)⁻¹ ^ i := by
-      funext e
-      rw [pow_succ, pow_mul, mul_inv, inv_pow]
-      ring
-    have e2 : gam p = (p : ℝ)⁻¹ * (1 - ((p : ℝ) ^ 2)⁻¹)⁻¹ := by
-      unfold gam rho
-      have h4 : (1 - ((p : ℝ) ^ 2)⁻¹) = ((p : ℝ) ^ 2 - 1) / (p : ℝ) ^ 2 := by
-        field_simp
-      rw [h4, inv_div]
-      field_simp
-    rw [e1, e2]
-    exact hg
-  · unfold gam rho
-    have : (p : ℝ) ^ 2 - 1 = ((p : ℝ) - 1) * ((p : ℝ) + 1) := by ring
-    rw [this]
-    field_simp
-    ring
 
 end Formalism.MainNotions.KernelEntryData

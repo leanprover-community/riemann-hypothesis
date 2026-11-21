@@ -26,13 +26,7 @@ theorem IsCompleteLocalNormal.pair {R : Type} [CommRing R] [IsDomain R] [IsLocal
     (h : IsCompleteLocalNormal R) : IsAdicNormalPair R (IsLocalRing.maximalIdeal R) :=
   ⟨h.noeth, h.normal, h.complete⟩
 
-theorem isCompleteLocalNormal_padicInt (p : ℕ) [Fact p.Prime] : IsCompleteLocalNormal ℤ_[p] :=
-  ⟨inferInstance, inferInstance, inferInstance⟩
 
-theorem isAdicNormalPair_powerSeries (O : Type) [CommRing O] [IsDomain O]
-    [IsPrincipalIdealRing O] :
-    IsAdicNormalPair (PowerSeries O) (Ideal.span {PowerSeries.X}) :=
-  ⟨inferInstance, inferInstance, inferInstance⟩
 
 section Points
 
@@ -322,8 +316,6 @@ theorem τ_isGen (χ χ' : D.X) : (D.τ χ χ').IsGen := by
     (D.ψAt_trans χ (j 1) (j' 1) _ _ _ _ (w 1)) (D.ψAt_trans χ' (j 2) (j' 2) _ _ _ _ (w 2))
     (D.rigAt_trans (j 3) (j' 3) _ _ _ _ (w 3))
 
-theorem IsDeg.io_isPt {D : RawDeg R} {I : Ideal R} (h : D.IsDeg I) (y : D.X) : (D.io y).IsPt :=
-  ⟨fun χ => D.τ_isGen χ y, fun χ χ' => h.mul_left χ χ' y⟩
 
 end RawDeg
 

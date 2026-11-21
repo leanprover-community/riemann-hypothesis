@@ -78,7 +78,6 @@ def duStarH {R : Ranks} (H : Host R) {Tau : Type} [Fintype Tau] (hc : Tau → HC
   massH H R.k * (idxColLoc (H.g 0) R.k ^ R.f * idxColLoc (H.g 1) R.k ^ R.f) *
     ∏ ρ, dimV (fun i => (((hc ρ).u i : ℚ) : ℝ))
 
-theorem duStarU_eq (D : D7) (u : D.what₂.Word) : duStarU D u = duStarH D.host (D.hcW u) := rfl
 
 def GSplit {R : Ranks} (H : Host R) : Prop :=
   (∀ i, (placesOver H.E (H.g i)).ncard = Module.finrank ℚ H.E) ∧ ∀ i, 2 * R.f * R.k < H.g i - 1
@@ -102,14 +101,8 @@ def duNat (hM : MassIntegral) {R : Ranks} (H : Host R) (hH : GSplit H) {Tau : Ty
     (hc : Tau → HCParam R) : ℕ :=
   (exists_duStarH hM H hH hc).choose
 
-theorem duNat_pos (hM : MassIntegral) {R : Ranks} (H : Host R) (hH : GSplit H) {Tau : Type} [Fintype Tau]
-    (hc : Tau → HCParam R) : 0 < duNat hM H hH hc := (exists_duStarH hM H hH hc).choose_spec.1
 
-theorem duNat_eq (hM : MassIntegral) {R : Ranks} (H : Host R) (hH : GSplit H) {Tau : Type} [Fintype Tau]
-    (hc : Tau → HCParam R) : (duNat hM H hH hc : ℝ) = duStarH H hc := (exists_duStarH hM H hH hc).choose_spec.2
 
-theorem duStar_def_iff (D : D7) (u : D.what₂.Word) :
-    (((D.mem u).A.duStar : ℕ) : ℝ) = duStarU D u ↔ (((D.mem u).A.duStar : ℕ) : ℝ) = duStarH D.host (D.hcW u) := Iff.rfl
 
 theorem isRowLev_one (k rS n : ℕ) (F : Type) [Zero F] [One F] [DecidableEq (Fin n)] :
     IsRowLev k rS (1 : Matrix (Fin n) (Fin n) F) := by
@@ -130,29 +123,11 @@ theorem idxRowLoc_pos (g k m : ℕ) [NeZero g] : 0 < idxRowLoc g k m := by
 
 def idxSigR (R : Ranks) (g : Fin 2 → ℕ) : ℝ := idxRowLoc (g 0) R.k R.m ^ R.f * idxRowLoc (g 1) R.k R.m ^ R.f
 
-theorem idxSigR_pos (R : Ranks) (g : Fin 2 → ℕ) (hg : ∀ i, (g i).Prime) : 0 < idxSigR R g := by
-  have := fun i => NeZero.mk (hg i).ne_zero
-  have h0 := idxRowLoc_pos (g 0) R.k R.m
-  have h1 := idxRowLoc_pos (g 1) R.k R.m
-  unfold idxSigR
-  positivity
 
 def volFor (R : Ranks) (g : Fin 2 → ℕ) {Tau : Type} [Fintype Tau] (dsig : Tau → ℝ) (Dst : ℝ) : ℝ :=
   Dst / (idxSigR R g * ∏ ρ, dsig ρ)
 
-theorem volFor_pos (R : Ranks) (g : Fin 2 → ℕ) (hg : ∀ i, (g i).Prime) {Tau : Type} [Fintype Tau] (dsig : Tau → ℝ)
-    (hd : ∀ ρ, 0 < dsig ρ) (Dst : ℝ) (hD : 0 < Dst) : 0 < volFor R g dsig Dst :=
-  div_pos hD (mul_pos (idxSigR_pos R g hg) (Finset.prod_pos fun ρ _ => hd ρ))
 
-theorem dstar_def_of_vol (D : D7)
-    (h : letI := D.host.cmStar; D.vol (D.sp.Y 0) = volFor D.R D.host.g D.dsig D.what₂.Dstar) :
-    D.what₂.Dstar = DstarD D := by
-  have h1 : 0 < idxSigR D.R D.host.g := idxSigR_pos _ _ D.host.g_prime
-  have h2 : 0 < ∏ ρ, D.dsig ρ := Finset.prod_pos fun ρ _ => D.dsig_pos ρ
-  show D.what₂.Dstar = volY0 D * idxSigR D.R D.host.g * ∏ ρ, D.dsig ρ
-  unfold volY0
-  rw [h, volFor]
-  field_simp
 
 end Formalism.MainNotions.Inhab
 

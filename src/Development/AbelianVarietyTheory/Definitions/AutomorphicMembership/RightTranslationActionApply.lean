@@ -213,8 +213,6 @@ def toMtC : (mtildeKGSD W Ch sel mu).EqFun →ₛₗ[σ] MtC W Ch sel mu σ := t
 
 def toMtP : MtildeV W Ch sel mu P →ₛₗ[σ] MtP W Ch sel mu P σ := toCForm σ W.sgTrue _ _
 
-theorem toMtilde_apply (φ : MtildeV W Ch sel mu P) (d : RowPt Pr R sel mu) :
-    (toMtP W Ch sel mu P σ φ).1 d = MvPolynomial.map σ (φ.1 d).1 := rfl
 
 theorem toMtilde_injective : Function.Injective (toMtP W Ch sel mu P σ) := toCForm_injective σ W.sgTrue _ _
 

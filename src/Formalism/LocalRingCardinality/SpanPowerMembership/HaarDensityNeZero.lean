@@ -86,10 +86,6 @@ theorem exp_neg_mul' (X : MM P Q) : exp (-X) * exp X = 1 := by
   rw [neg_add_cancel, NormedSpace.exp_zero] at h
   exact h.symm
 
-theorem exp_mul_neg' (X : MM P Q) : exp X * exp (-X) = 1 := by
-  have h := NormedSpace.exp_add_of_commute (Commute.neg_right (Commute.refl X))
-  rw [add_neg_cancel, NormedSpace.exp_zero] at h
-  exact h.symm
 
 theorem exp_conjJ (A : MM P Q) : exp (J * A * J) = J * exp A * J := by
   let u : (MM P Q)ˣ := ⟨J, J, J_sq P Q, J_sq P Q⟩
@@ -221,6 +217,5 @@ def cdHaar : CDHaar where
       rw [scale_mul (P + Q) 0] at h
       exact h⟩
 
-theorem cdHaar_nonempty : Nonempty CDHaar := ⟨cdHaar⟩
 
 end Formalism.BasicNotions.Examples₂.CD

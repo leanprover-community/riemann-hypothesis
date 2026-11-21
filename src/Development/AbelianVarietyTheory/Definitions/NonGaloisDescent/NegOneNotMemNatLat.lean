@@ -101,24 +101,6 @@ theorem norm_absPow_val (x : ℝ) (v : HeightOneSpectrum (𝓞 E)) :
     (((GlobalTheory.HeckeGal.Model.absPow E x).val v : ℂˣ) : ℂ) = (Ideal.absNorm v.asIdeal : ℂ) ^ (-(x : ℂ)) :=
   (GlobalTheory.HeckeGal.Model.absPow_isAbsPow E x).2.1 v
 
-theorem thetaSum_ratGL_mul (φ φ' : GA E a → ℂ) (Φ : (Fin a → Cinf E) → ℂ) (N : ℕ)
-    (hφ : ∀ γ g, φ (ratGL E a γ * g) = φ g) (hφ' : ∀ γ g, φ' (ratGL E a γ * g) = φ' g)
-    (γ : GL (Fin a) E) (g : GA E a) : thetaSum φ φ' Φ N (ratGL E a γ * g) = thetaSum φ φ' Φ N g := by
-  let e : {ξ : Fin a → E // ξ ≠ 0} ≃ {ξ : Fin a → E // ξ ≠ 0} :=
-    { toFun := fun ξ => ⟨Matrix.vecMul ξ.1 (γ : Matrix (Fin a) (Fin a) E), fun h => ξ.2 (by
-        have := congrArg (fun u => Matrix.vecMul u ((γ⁻¹ : GL (Fin a) E) : Matrix (Fin a) (Fin a) E)) h
-        simpa [Matrix.vecMul_vecMul] using this)⟩
-      invFun := fun ξ => ⟨Matrix.vecMul ξ.1 ((γ⁻¹ : GL (Fin a) E) : Matrix (Fin a) (Fin a) E), fun h => ξ.2 (by
-        have := congrArg (fun u => Matrix.vecMul u (γ : Matrix (Fin a) (Fin a) E)) h
-        simpa [Matrix.vecMul_vecMul] using this)⟩
-      left_inv := fun ξ => Subtype.ext (by simp [Matrix.vecMul_vecMul])
-      right_inv := fun ξ => Subtype.ext (by simp [Matrix.vecMul_vecMul]) }
-  unfold thetaSum
-  rw [← e.tsum_eq fun ξ => Psi φ φ' Φ N g (rowAct ξ.1 g)]
-  refine tsum_congr fun ξ => ?_
-  rw [rowAct_ratGL_mul]
-  simp only [Psi, mul_assoc, hφ, hφ']
-  rfl
 
 omit [IsTotallyComplex E] in
 theorem indN_eLast (N : ℕ) : indN N (eLast (Af E) a) = 1 := by

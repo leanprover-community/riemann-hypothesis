@@ -68,8 +68,6 @@ lemma hJ_nondeg_right (y : Fin n → ℂ) (h : ∀ x, hJ ε x y = 0) : y = 0 := 
   simp only [Pi.zero_apply]
   split_ifs at h1 <;> simpa using h1
 
-lemma hJ_nondeg_left (x : Fin n → ℂ) (h : ∀ y, hJ ε x y = 0) : x = 0 :=
-  hJ_nondeg_right ε x fun y => by rw [hJ_conj, h y, star_zero]
 
 lemma hJ_unitary {g : Matrix (Fin n) (Fin n) ℂ} (hg : Formalism.REAL.inUJ ε g) (x y : Fin n → ℂ) :
     hJ ε (g *ᵥ x) (g *ᵥ y) = hJ ε x y := by

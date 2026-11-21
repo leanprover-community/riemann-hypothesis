@@ -19,8 +19,6 @@ include hE
 theorem sub_eq_top_of : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (U : Γ.G.left.Opens), Γ.IsFinOpenSub U → Γ.btOrder U = Γ.btOrder ⊤ :=
   Htat.bt_sub_eq_top_of @Htat.hens_normal hE @Htat.reg_pull
 
-theorem hopf_of : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] [IsNoetherianRing R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T), IsHopfOrder (Γ.btOrder ⊤) :=
-  Htat.bt_hopf_of @Htat.hens_normal hE @Htat.reg_pull
 
 omit hE in
 
@@ -143,9 +141,6 @@ theorem res_fin_core (Γ : QFGroup R T) {H : Type} [CommGroup H] [Finite H] (Γ�
 
 end
 
-theorem res_finite_open_bt_order : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (H : Type) [CommGroup H] [Finite H] (Γ₁ : QFGroup R H) (a : Γ₁.G ⟶ Γ.G) [IsMonHom a] (α : H →* T), (∀ h, Γ₁.pt h ≫ a = Γ.pt (α h)) → IsClosedImmersion a.left → ∀ U : Γ.G.left.Opens, Γ.IsFinOpenSub U → Γ₁.IsFinOpenSub (a.left ⁻¹ᵁ U) ∧ resOrder α (Γ.btOrder ⊤) = Γ₁.btOrder ⊤ := by
-  intro R _ _ _ T _ _ Γ H _ _ Γ₁ a _ α hα hcl U hU
-  exact res_fin_core hE Γ Γ₁ a (fun S x y => MonObj.mul_comp x y a) α hα hcl U hU
 
 theorem res_core {R : Type} [CommRing R] [IsDomain R] [IsIntegrallyClosed R] {T : Type} [CommGroup T] [Finite T]
     (Γ : QFGroup R T) {H : Type} [CommGroup H] [Finite H] (Γ₁ : QFGroup R H) (a : Γ₁.G ⟶ Γ.G)

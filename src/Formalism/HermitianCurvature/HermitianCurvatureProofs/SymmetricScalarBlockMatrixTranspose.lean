@@ -349,12 +349,8 @@ lemma kL_lt {a b : Fin p} : kL p a < kL p b ↔ a < b := by
   simp only [kL, Nat.cast_lt]; exact Fin.lt_def.symm
 lemma kU_lt {a b : Fin p} : kU p a < kU p b ↔ b < a := by
   simp only [kU, neg_lt_neg_iff, Nat.cast_lt]; exact Fin.lt_def.symm
-lemma kS_lt (σ : Equiv.Perm (Fin p)) {a b : Fin p} : kS σ a < kS σ b ↔ σ.symm a < σ.symm b := by
-  simp only [kS, Nat.cast_lt]; exact Fin.lt_def.symm
 lemma kL_inj : Function.Injective (kL p) := fun a b h => Fin.ext (by simpa [kL] using h)
 lemma kU_inj : Function.Injective (kU p) := fun a b h => Fin.ext (by simpa [kU] using h)
-lemma kS_inj (σ : Equiv.Perm (Fin p)) : Function.Injective (kS σ) := fun a b h =>
-  σ.symm.injective (Fin.ext (by simpa [kS] using h))
 
 lemma lower_iff (l : Matrix (Fin p) (Fin p) ℂ) : G.IsLowerUni l ↔ uniK (kL p) l := by
   simp only [G.IsLowerUni, G.IsUpperUni, uniK, transpose_apply, kL_lt]
@@ -555,15 +551,7 @@ lemma upper_uni (u : G.UT p → ℂ) : uniK (kU p) (G.upper u) := by
   rw [kU_lt] at hab
   simp [G.upper, G.strictUpper, not_lt.mpr hab.le, ne_of_gt hab]
 
-lemma lowW_uni (σ : Equiv.Perm (Fin p)) (v : LW σ → ℂ) : uniK (kL p) (lowW σ v) :=
-  (lower_iff _).mp ((lowWSpec p σ _).mpr ⟨v, rfl⟩).1
 
-lemma lowW_inj (σ : Equiv.Perm (Fin p)) : Function.Injective (lowW σ) := by
-  intro v1 v2 h
-  funext q
-  have := congrFun (congrFun h q.1.1) q.1.2
-  rw [lowW_apply, lowW_apply, dif_pos q.2, dif_pos q.2] at this
-  simpa using this
 
 lemma upper_inj : Function.Injective (G.upper (d := p)) := by
   intro u1 u2 h
@@ -613,56 +601,7 @@ lemma lu_unique {L1 L2 U1 U2 : Matrix (Fin p) (Fin p) ℂ} (d : Fin p → ℂ) (
       _ = (U2 * U1⁻¹) * U1 := (Matrix.mul_assoc _ _ _).symm
       _ = U1 := by rw [hX1, Matrix.one_mul]
 
-lemma headH_inj (σ : Equiv.Perm (Fin p)) (d : Fin p → ℂ) (hd : ∀ i, d i ≠ 0) {v1 v2 : LW σ → ℂ}
-    {u1 u2 : G.UT p → ℂ} (h : headH σ d v1 u1 = headH σ d v2 u2) : v1 = v2 ∧ u1 = u2 := by
-  have h' := congrArg (wP σ.symm * ·) h
-  simp only [headH, Matrix.mul_assoc] at h'
-  rw [← Matrix.mul_assoc (wP σ.symm), ← Matrix.mul_assoc (wP σ.symm), permutationMatrix_symm_mul, Matrix.one_mul,
-    Matrix.one_mul] at h'
-  simp only [← Matrix.mul_assoc] at h'
-  obtain ⟨e1, e2⟩ := lu_unique d hd (lowW_uni σ v1) (lowW_uni σ v2) (upper_uni u1) (upper_uni u2) h'
-  exact ⟨lowW_inj σ e1, upper_inj e2⟩
 
-theorem headOrbit : HeadOrbit := by
-  intro p σ d hd
-  refine ⟨fun l u hl hu => ?_, fun q => ?_⟩
-  · rw [lower_iff] at hl
-    rw [upper_iff] at hu
-    have hc : ∀ a b, (wP σ.symm * l * wP σ) a b = l (σ.symm a) (σ.symm b) := by
-      intro a b; rw [mul_wP_apply, permutationMatrix_mul_apply]
-    have hm : uniK (kS σ) (wP σ.symm * l * wP σ) :=
-      ⟨fun i => by rw [hc, hl.1], fun a b hab => by rw [hc]; exact hl.2 _ _ (kL_lt.mpr ((kS_lt σ).mp hab))⟩
-    obtain ⟨L, N, hLk, hLl, hNu, hmLN⟩ := factor (kS_inj σ) _ hm
-    obtain ⟨v, hv⟩ : ∃ v, L = lowW σ v := by
-      apply (lowWSpec p σ L).mp
-      refine ⟨(lower_iff L).mpr hLl, (lower_iff _).mpr ⟨fun i => by rw [permutationMatrix_conj_apply, hLk.1], fun a b hab => ?_⟩⟩
-      rw [permutationMatrix_conj_apply]
-      exact hLk.2 _ _ ((kS_lt σ).mpr (by simpa using kL_lt.mp hab))
-    have hconj : uniK (kU p) (diagonal (fun i => (d i)⁻¹) * N * diagonal d) := by
-      refine ⟨fun i => ?_, fun a b hab => ?_⟩
-      · rw [mul_diagonal, diagonal_mul, hNu.1]; field_simp [hd i]
-      · rw [mul_diagonal, diagonal_mul, hNu.2 a b hab]; simp
-    have hU' := uniK_mul kU_inj hconj hu
-    have hl' : l * wP σ = wP σ * (L * N) := by
-      rw [← hmLN]; simp only [← Matrix.mul_assoc, permutationMatrix_mul_symm, Matrix.one_mul]
-    have hdd : diagonal d * diagonal (fun i => (d i)⁻¹) = 1 := by
-      rw [diagonal_mul_diagonal, ← diagonal_one]; congr 1; funext i; exact mul_inv_cancel₀ (hd i)
-    have hex : l * hMat σ d * u = headH σ d v (fun q => (diagonal (fun i => (d i)⁻¹) * N * diagonal d * u) q.1.1 q.1.2) := by
-      unfold headH hMat
-      rw [← upper_eq hU', ← hv]
-      calc l * (wP σ * diagonal d) * u = (l * wP σ) * diagonal d * u := by simp [Matrix.mul_assoc]
-        _ = wP σ * (L * N) * diagonal d * u := by rw [hl']
-        _ = wP σ * L * diagonal d * (diagonal (fun i => (d i)⁻¹) * N * diagonal d * u) := by
-          simp only [Matrix.mul_assoc]
-          rw [← Matrix.mul_assoc (diagonal d) (diagonal _), hdd, Matrix.one_mul]
-    refine ⟨(v, fun q => (diagonal (fun i => (d i)⁻¹) * N * diagonal d * u) q.1.1 q.1.2), hex, fun y hy => ?_⟩
-    obtain ⟨e1, e2⟩ := headH_inj σ d hd (hy.symm.trans hex)
-    exact Prod.ext e1 e2
-  · refine ⟨wP σ * lowW σ q.1 * (wP σ)⁻¹, G.upper q.2, ((lowWSpec p σ _).mpr ⟨q.1, rfl⟩).2,
-      (upper_iff _).mpr (upper_uni q.2), ?_⟩
-    rw [permutationMatrix_inv]
-    simp only [hMat, headH, Matrix.mul_assoc]
-    rw [← Matrix.mul_assoc (wP σ.symm) (wP σ), permutationMatrix_symm_mul, Matrix.one_mul]
 
 end tri
 
@@ -774,41 +713,6 @@ theorem charBlock : CharBlock := by
       · simp
     · rw [dif_neg hps, dif_neg hps]
 
-theorem cornerInv : CornerInv := by
-  intro p s a b lh uh l u hlh hl huh hu
-  rw [lower_iff] at hlh hl
-  rw [upper_iff] at huh hu
-  obtain ⟨hlhi, -, -⟩ := lowK_inv hlh
-  obtain ⟨huhi, -, -⟩ := upK_inv huh
-  constructor
-  · unfold cornerA
-    by_cases hps : 0 < s ∧ 0 < p
-    · rw [dif_pos hps, dif_pos hps, Matrix.mul_apply, Finset.sum_eq_single ⟨p - 1, by omega⟩]
-      · rw [hlhi.1, mul_one, Matrix.mul_apply, Finset.sum_eq_single ⟨0, hps.1⟩]
-        · rw [hl.1, one_mul]; rfl
-        · intro c _ hc
-          have : 0 < c.val := by have : c.val ≠ 0 := fun e => hc (Fin.ext e); omega
-          rw [hl.2 ⟨0, hps.1⟩ c (kL_lt.mpr (Fin.lt_def.mpr this)), zero_mul]
-        · simp
-      · intro c _ hc
-        have : c.val < p - 1 := by have := c.isLt; have : c.val ≠ p - 1 := fun e => hc (Fin.ext e); omega
-        rw [hlhi.2 c ⟨p - 1, by omega⟩ (kL_lt.mpr (Fin.lt_def.mpr this)), mul_zero]
-      · simp
-    · rw [dif_neg hps, dif_neg hps]
-  · unfold cornerB
-    by_cases hps : 0 < s ∧ 0 < p
-    · rw [dif_pos hps, dif_pos hps, Matrix.mul_apply, Finset.sum_eq_single ⟨0, hps.1⟩]
-      · rw [hu.1, mul_one, Matrix.mul_apply, Finset.sum_eq_single ⟨p - 1, by omega⟩]
-        · rw [huhi.1, one_mul]; rfl
-        · intro c _ hc
-          have : c.val < p - 1 := by have := c.isLt; have : c.val ≠ p - 1 := fun e => hc (Fin.ext e); omega
-          rw [huhi.2 ⟨p - 1, by omega⟩ c (kU_lt.mpr (Fin.lt_def.mpr this)), zero_mul]
-        · simp
-      · intro c _ hc
-        have : 0 < c.val := by have : c.val ≠ 0 := fun e => hc (Fin.ext e); omega
-        rw [hu.2 c ⟨0, hps.1⟩ (kU_lt.mpr (Fin.lt_def.mpr this)), mul_zero]
-      · simp
-    · rw [dif_neg hps, dif_neg hps]
 
 end twoBlocks
 
@@ -824,10 +728,8 @@ theorem radical_parametrisation : Formalism.FourierDecayAlt.U.RadicalParam := Ux
 
 theorem low_weight_specialisation : Formalism.FourierDecayAlt.U.LowWSpec := Ux2.lowWSpec
 
-theorem head_orbit : Formalism.FourierDecayAlt.U.HeadOrbit := Ux2.headOrbit
 
 theorem character_on_blocks : Formalism.FourierDecayAlt.U.CharBlock := Ux2.charBlock
 
-theorem corner_inverse : Formalism.FourierDecayAlt.U.CornerInv := Ux2.cornerInv
 
 end Formalism.FourierDecayAlt.P

@@ -74,13 +74,6 @@ theorem labels_iff_listForm_good (D : D7) :
 theorem labels_of_listForm (D : D7) (h : Formalism.MainNotions.ArithmeticCylinders.ArchimedeanSignatureMatching D) : LabelsAndTameInertia D :=
   (labels_iff_listForm_good D).2 fun σ _ k v => h σ k v
 
-theorem listForm_iff_labels_and_bad (D : D7) :
-    Formalism.MainNotions.ArithmeticCylinders.ArchimedeanSignatureMatching D ↔
-      LabelsAndTameInertia D ∧ ∀ σ, ¬ D.nd.goodRow σ → ∀ k v, ListFormAt D σ k v := by
-  refine ⟨fun h => ⟨labels_of_listForm D h, fun σ _ k v => h σ k v⟩, fun ⟨h₁, h₂⟩ σ k v => ?_⟩
-  by_cases hσ : D.nd.goodRow σ
-  · exact (labels_iff_listForm_good D).1 h₁ σ hσ k v
-  · exact h₂ σ hσ k v
 
 theorem listForm_iff_labels (D : D7) (hD : GoodFTAll D) :
     Formalism.MainNotions.ArithmeticCylinders.ArchimedeanSignatureMatching D ↔ LabelsAndTameInertia D :=

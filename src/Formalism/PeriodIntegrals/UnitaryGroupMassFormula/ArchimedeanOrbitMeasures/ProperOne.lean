@@ -57,7 +57,5 @@ theorem properOrb_of_one (h1 : ProperOne) (hI : InvNbhd) : ProperOrb := by
   show rmulT X c (g • rmulT X b (Y0 X u')) = g • Y0 X u'
   rw [smul_rmulT, rmulT_rmulT, hbc, rmulT_one]
 
-theorem constTest_of_polar_one (hP : PolarLoc) (h1 : ProperOne) (hI : InvNbhd) : ConstTest :=
-  constTest_of_polar_prop hP (properOrb_of_one h1 hI)
 
 end PI.AprimeInfW

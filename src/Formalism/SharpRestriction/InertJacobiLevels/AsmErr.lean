@@ -56,16 +56,6 @@ theorem subset_supp_baseE (h : LedHyp D sc aT bT η Cc Ct CGam j0) (Nu : ∀ u, 
     (S1 : Finset D.what₂.places.Pl) (X : ErrX D) (K : G.Consts) (c : ErrC) : S1 ⊆ (baseE h Nu S1 X K c).supp :=
   fun _ hw => Finset.mem_union_right _ hw
 
-theorem edef_of_keeps (h : LedHyp D sc aT bT η Cc Ct CGam j0) (Nu : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V)
-    (S1 : Finset D.what₂.places.Pl) (X : ErrX D) (K : G.Consts) (c : ErrC) (L : SizeData₂ D) (h1 : L.sc = (baseE h Nu S1 X K c).sc)
-    (h2 : L.etaSz = (baseE h Nu S1 X K c).etaSz) (h3 : L.Sc = (baseE h Nu S1 X K c).Sc)
-    (h4 : L.E = (baseE h Nu S1 X K c).E) : L.EDef X K c := by
-  intro u j _ w
-  rw [h4]
-  show Eval (baseZ h Nu) X K c u j w = Eval L X K c u j w
-  unfold Eval EatG EatC EatI EatX
-  rw [h1, h2, h3]
-  rfl
 
 end Formalism.MainNotions.Inhab
 

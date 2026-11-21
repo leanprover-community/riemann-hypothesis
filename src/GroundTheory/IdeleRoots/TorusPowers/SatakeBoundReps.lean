@@ -15,14 +15,6 @@ section Group
 
 variable {G : Type} [Group G] {K : Subgroup G} {α : G} {R : Finset G}
 
-theorem isCosetRep_congr (h : IsCosetRep (K : Set G) α R) {k₁ k₂ : G} (h₁ : k₁ ∈ K) (h₂ : k₂ ∈ K) :
-    IsCosetRep (K : Set G) (k₁ * α * k₂) R := by
-  obtain ⟨hR, hx⟩ := h
-  refine ⟨fun γ hγ => ?_, fun x hx' => hx x ?_⟩
-  · obtain ⟨a, ha, b, hb, rfl⟩ := hR γ hγ
-    exact ⟨a * k₁⁻¹, K.mul_mem ha (K.inv_mem h₁), k₂⁻¹ * b, K.mul_mem (K.inv_mem h₂) hb, by group⟩
-  · obtain ⟨a, ha, b, hb, rfl⟩ := hx'
-    exact ⟨a * k₁, K.mul_mem ha h₁, k₂ * b, K.mul_mem h₂ hb, by group⟩
 
 theorem isCosetRep_map (h : IsCosetRep (K : Set G) α R) (φ : G ≃* G) (hφ : ∀ g, φ g ∈ K ↔ g ∈ K) :
     IsCosetRep (K : Set G) (φ α) (R.map φ.toEquiv.toEmbedding) := by
@@ -50,29 +42,6 @@ theorem isCosetRep_map (h : IsCosetRep (K : Set G) α R) (φ : G ≃* G) (hφ : 
       rw [this]
       rfl
 
-theorem isCosetRep_mul_central (h : IsCosetRep (K : Set G) α R) {z : G} (hz : ∀ g, z * g = g * z) :
-    IsCosetRep (K : Set G) (z * α) (R.map (Equiv.mulLeft z).toEmbedding) := by
-  classical
-  obtain ⟨hR, hx⟩ := h
-  refine ⟨fun γ hγ => ?_, fun x hx' => ?_⟩
-  · obtain ⟨γ₀, hγ₀, rfl⟩ := Finset.mem_map.1 hγ
-    obtain ⟨a, ha, b, hb, rfl⟩ := hR γ₀ hγ₀
-    refine ⟨a, ha, b, hb, ?_⟩
-    simp only [Equiv.coe_toEmbedding, Equiv.coe_mulLeft]
-    rw [← mul_assoc, ← mul_assoc, hz a, mul_assoc a z α]
-  · obtain ⟨a, ha, b, hb, rfl⟩ := hx'
-    have hy : ∃ k₁ ∈ (K : Set G), ∃ k₂ ∈ (K : Set G), z⁻¹ * (a * (z * α) * b) = k₁ * α * k₂ := by
-      refine ⟨a, ha, b, hb, ?_⟩
-      rw [← mul_assoc a z α, ← hz a, mul_assoc z a α, mul_assoc z (a * α) b, inv_mul_cancel_left]
-    obtain ⟨γ₀, ⟨hγ₀, hγK⟩, huniq⟩ := hx _ hy
-    refine ⟨z * γ₀, ⟨Finset.mem_map_of_mem (Equiv.mulLeft z).toEmbedding hγ₀, ?_⟩, ?_⟩
-    · rw [mul_inv_rev, mul_assoc]
-      exact hγK
-    · rintro γ ⟨hγ, hγK'⟩
-      obtain ⟨γ₁, hγ₁, rfl⟩ := Finset.mem_map.1 hγ
-      simp only [Equiv.coe_toEmbedding, Equiv.coe_mulLeft] at hγK' ⊢
-      rw [mul_inv_rev, mul_assoc] at hγK'
-      rw [huniq γ₁ ⟨hγ₁, hγK'⟩]
 
 end Group
 
@@ -143,39 +112,6 @@ theorem sum_reps {M : Type*} [AddCommMonoid M] (r : ℕ) (f : GL (Fin n) F → M
     obtain ⟨c', -, hc'⟩ := mem_image.1 hx'
     exact hne (mk_gMat_eq (congrArg QuotientGroup.mk hc'.symm))
 
-theorem isCosetRep_reps {r : ℕ} (hr : r ≤ n) :
-    IsCosetRep (integralGL F n : Set (GL (Fin n) F)) (torusPow F n (lamS (initSeg hr))) (reps F n r) := by
-  classical
-  have hI : (initSeg hr).card = r := card_initSeg hr
-  refine ⟨fun γ hγ => ?_, fun x hx => ?_⟩
-  · obtain ⟨S, hS, c, rfl⟩ := mem_reps.1 hγ
-    obtain ⟨P, hP, hPe⟩ := exists_torusPow_lamS_eq (F := F) (A := S) (B := initSeg hr)
-      (by rw [(mem_powersetCard.1 hS).2, hI])
-    refine ⟨unipC S c * P⁻¹, (integralGL F n).mul_mem (unipC_mem_integralGL S c)
-      ((integralGL F n).inv_mem hP), P, hP, ?_⟩
-    rw [gMat, hPe]
-    group
-  · obtain ⟨a, ha, b, hb, rfl⟩ := hx
-    let c₀ : Pairs (initSeg hr) → 𝓀[F] := fun _ => 0
-    have hα : torusPow F n (lamS (initSeg hr)) = (unipC (initSeg hr) c₀)⁻¹ * gMat (initSeg hr) c₀ := by
-      rw [gMat, inv_mul_cancel_left]
-    have hm : a * torusPow F n (lamS (initSeg hr)) * b ∈ minusculeSet F n r := by
-      have h := mul_mem_minusculeSet (gMat_mem_minusculeSet _ c₀)
-        ((integralGL F n).mul_mem ha ((integralGL F n).inv_mem (unipC_mem_integralGL _ c₀))) hb
-      rw [hI] at h
-      rw [hα, ← mul_assoc]
-      exact h
-    obtain ⟨S, hS, c, hc⟩ := exists_gMat hm
-    refine ⟨gMat S c, ⟨mem_reps.2 ⟨S, mem_powersetCard.2 ⟨subset_univ _, hS⟩, c, rfl⟩,
-      QuotientGroup.eq.1 hc⟩, ?_⟩
-    rintro γ ⟨hγ, hγK⟩
-    obtain ⟨S', -, c', rfl⟩ := mem_reps.1 hγ
-    have h' : (QuotientGroup.mk (gMat S' c') : GL (Fin n) F ⧸ integralGL F n) = QuotientGroup.mk (gMat S c) := by
-      rw [hc]
-      exact QuotientGroup.eq.2 hγK
-    have hSS := mk_gMat_eq h'
-    subst hSS
-    rw [gMat_injective _ h']
 
 end SatakeBound
 

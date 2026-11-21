@@ -16,8 +16,6 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_SemilocalFiniteRa
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3BlowUpExcessDrop.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpExcessDecreases.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpExcessDecreases.proof.{u} GroundTheory.Heights₂.Heights.NumbersDVR.ExcessPositive.full GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3ResidualCompare GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_C3ExceptionalCompare
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadStep : GroundTheory.Heights₂.Heights.Model.SpreadStep.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadStep.proof GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadIsoLoc GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadGlue
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.CutOffLimit : GroundTheory.Heights₂.Heights.CutOffLimit.Statement :=
   @GroundTheory.Heights₂.Heights.CutOffLimit.of_open GroundTheory.Heights₂.Heights.HilbertSamuel.Closed.SheetImageAreaSet GroundTheory.Heights₂.Heights.AutoClose.TubeEuclMass

@@ -90,54 +90,13 @@ def piHom : S0 R σ J P →* Hsub R σ J P where
   map_one' := Subtype.ext (piG_one hσσ hJ hP)
   map_mul' s s' := Subtype.ext (piG_mul hσσ hJ hP s.2 s'.2)
 
-theorem piHom_coe (s : S0 R σ J P) :
-    ((piHom hσσ hJ hP s : Hsub R σ J P) : HA R σ J) = piG hσσ hJ hP s s.2 := rfl
 
-theorem piHom_H (s : S0 R σ J P) (hs : (s : HA R σ J) ∈ Hsub R σ J P) :
-    ((piHom hσσ hJ hP s : Hsub R σ J P) : HA R σ J) = s := by
-  rw [piHom_coe]
-  apply HA_ext
-  show piMat (P := P) (T := T) (s : HA R σ J) = _
-  have e : (datR R σ J P T).Pi (lin R σ J s) = lin R σ J s := LinearMap.ext fun v =>
-    PG.Dat.Pi_of_fix (datR_hyp hσσ hJ hP) (stabilizer_fixes_frame_and_normal s.2) (fix_f_of_H hσσ hJ hP hs)
-      (uni_lin _) v
-  rw [piMat, e, lin_eq_toLin']
 
 theorem spanR_eq {m : ℕ} (Y : Fin m → Fin M → E) :
     spanR (F := F) R Y Set.univ = Submodule.span (R ⊗[F] E) (Set.range fun a => ratV (F := F) R (Y a)) := by
   rw [spanR, Set.image_univ]
 
-theorem piHom_N (s : S0 R σ J P) (hs : (s : HA R σ J) ∈ FrameUnipotentSubgroup R σ J P) : piHom hσσ hJ hP s = 1 := by
-  apply Subtype.ext
-  rw [piHom_coe]
-  apply HA_ext
-  show piMat (P := P) (T := T) (s : HA R σ J) = 1
-  have hN := (Subgroup.mem_inf.1 hs).1
-  have e : (datR R σ J P T).Pi (lin R σ J s) = LinearMap.id := LinearMap.ext fun v =>
-    PG.Dat.Pi_of_N (datR_hyp hσσ hJ hP) (fun w hw => by
-      have := hN.2 w hw
-      rwa [spanR_eq hσσ hJ hP] at this) v
-  rw [piMat, e, LinearMap.toMatrix'_id]
 
-theorem piHom_S (s : S0 R σ J P) :
-    (s : HA R σ J) * ((piHom hσσ hJ hP s : Hsub R σ J P) : HA R σ J)⁻¹ ∈ FrameUnipotentSubgroup R σ J P := by
-  have hinv : ((piHom hσσ hJ hP s : Hsub R σ J P) : HA R σ J)⁻¹ =
-      ((piHom hσσ hJ hP s⁻¹ : Hsub R σ J P) : HA R σ J) := by
-    rw [map_inv]; rfl
-  rw [hinv, piHom_coe]
-  have hS0 : (s : HA R σ J) * piG hσσ hJ hP (s⁻¹ : S0 R σ J P) (s⁻¹ : S0 R σ J P).2 ∈ S0 R σ J P :=
-    (S0 R σ J P).mul_mem s.2 (heisenberg_le_stabilizer R σ J P (piG_mem_H hσσ hJ hP _ _))
-  rw [FrameUnipotentSubgroup, Subgroup.mem_inf]
-  refine ⟨?_, hS0⟩
-  show UniC R σ J P.e _ ∧ ∀ v, InXperp R σ J P v → _
-  refine ⟨fun b => ?_, fun v hv => ?_⟩
-  · rw [stabilizer_fixes_frame_vector R σ J P hS0 b, sub_self]
-    exact Submodule.zero_mem _
-  · rw [lin_mul, lin_piG, spanR_eq hσσ hJ hP]
-    have hsi : ((s⁻¹ : S0 R σ J P) : HA R σ J) = (s : HA R σ J)⁻¹ := rfl
-    have := PG.Dat.Pi_N_part (datR_hyp hσσ hJ hP) (stabilizer_fixes_frame_and_normal s.2)
-      (stabilizer_fixes_frame_and_normal (s⁻¹ : S0 R σ J P).2) (uni_lin _) (fun w => by rw [hsi, lin_lin_inv]) v hv
-    exact this
 
 end R
 
@@ -154,12 +113,5 @@ def PiRat : Prop :=
     (g : HA (AF F) σ J) (hg : g ∈ S0 (AF F) σ J P),
     g ∈ HFinIn (AF F) σ J → piG hσσ hJ hP g hg ∈ HFinIn (AF F) σ J
 
-theorem projStep_of (hC : PiCont) (hR : PiRat) : ProjStep := by
-  intro F E _ _ _ _ _ σ hCM M J hJ r P T hr hP
-  have hσσ := sigma_invol hCM
-  refine ⟨piHom hσσ hJ hP, ?_, fun s hs => piHom_H hσσ hJ hP s hs,
-    fun s hs => piHom_N hσσ hJ hP s hs, fun s => piHom_S hσσ hJ hP s,
-    fun s hs => hR F E σ M J r P T hσσ hJ hP s s.2 hs⟩
-  exact (hC F E σ M J r P T hσσ hJ hP).subtype_mk _
 
 end PI.VolSemiDirect.W

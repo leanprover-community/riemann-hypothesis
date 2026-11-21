@@ -101,28 +101,7 @@ theorem isDS_detPow (n : ℕ) (s : Bool) (m : ℤ) : IsDS (fun _ : Fin n => s) (
     rw [Complex.exp_pi_mul_I] at h3
     norm_num at h3
 
-theorem holds_rank_le_one (N : ℕ) (hN : N ≤ 1) (ε : Fin N → Bool) (lam : Fin N → ℝ)
-    (h : Formalism.QuantumDeterminants.IsHCParam lam) :
-    ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H)
-      (σ : Matrix (Fin N) (Fin N) ℂ → (H →L[ℂ] H)), IsDS ε lam σ := by
-  interval_cases N
-  · have h1 : ε = fun _ => true := funext fun a => a.elim0
-    have h2 : lam = lamDet 0 0 := funext fun a => a.elim0
-    rw [h1, h2]
-    exact ⟨ℂ, _, _, _, isDS_detPow 0 true 0⟩
-  · obtain ⟨m, hm⟩ := h.2 0
-    have h1 : ε = fun _ => ε 0 := funext fun a => by rw [Subsingleton.elim a 0]
-    have h2 : lam = lamDet 1 m := funext fun a => by
-      rw [Subsingleton.elim a 0]
-      simp [lamDet, Formalism.QuantumDeterminants.rhoStd] at hm ⊢
-      exact hm
-    rw [h1, h2]
-    exact ⟨ℂ, _, _, _, isDS_detPow 1 (ε 0) m⟩
 
-theorem holds_det (N : ℕ) (s : Bool) (m : ℤ) :
-    Formalism.QuantumDeterminants.IsHCParam (lamDet N m) ∧
-    IsDS (fun _ : Fin N => s) (lamDet N m) (detPow N m) :=
-  ⟨lamDet_hc N m, isDS_detPow N s m⟩
 
 theorem card_split {N : ℕ} (ε : Fin N → Bool) (a : Fin N) :
     (((univ.filter fun b => a < b ∧ ε b = ε a).card : ℝ) + ((univ.filter fun b => b < a ∧ ε b = ε a).card : ℝ) +
@@ -138,33 +117,9 @@ theorem card_split {N : ℕ} (ε : Fin N → Bool) (a : Fin N) :
     · by_cases e : ε b = ε a <;> simp [h, h.ne, not_lt_of_gt h, e]
   simpa [Finset.sum_add_distrib, Finset.sum_sub_distrib] using h
 
-theorem lowest_integral {N : ℕ} (ε : Fin N → Bool) (lam : Fin N → ℝ)
-    (h : ∀ a, ∃ m : ℤ, lam a - ((N : ℝ) - 1) / 2 = (m : ℝ)) (a : Fin N) :
-    ∃ m : ℤ, (lam + rhoN ε - rhoC ε) a = (m : ℝ) := by
-  obtain ⟨m, hm⟩ := h a
-  have := card_split ε a
-  refine ⟨m + (univ.filter fun b => a < b ∧ ε b ≠ ε a).card + (univ.filter fun b => b < a ∧ ε b = ε a).card, ?_⟩
-  simp only [Pi.sub_apply, Pi.add_apply, rhoN, rhoC]
-  push_cast
-  linarith
 
-theorem lowest_rank_two :
-    (![1 / 2, -1 / 2] : Fin 2 → ℝ) + rhoN ![true, false] - rhoC ![true, false] = ![1, -1] := by
-  funext a
-  simp only [rhoN, rhoC, Finset.card_filter, Pi.add_apply, Pi.sub_apply, Fin.sum_univ_succ, Fin.sum_univ_zero]
-  fin_cases a <;> simp [Fin.lt_def] <;> norm_num
 
-theorem lowest_rank_three :
-    (![1, 0, -1] : Fin 3 → ℝ) + rhoN ![true, false, true] - rhoC ![true, false, true] = ![1, 0, -1] := by
-  funext a
-  simp only [rhoN, rhoC, Finset.card_filter, Pi.add_apply, Pi.sub_apply, Fin.sum_univ_succ, Fin.sum_univ_zero]
-  fin_cases a <;> simp [Fin.lt_def] <;> norm_num
 
-theorem lowest_rank_three' :
-    (![1, 0, -1] : Fin 3 → ℝ) + rhoN ![true, true, false] - rhoC ![true, true, false] = ![1, 1, -2] := by
-  funext a
-  simp only [rhoN, rhoC, Finset.card_filter, Pi.add_apply, Pi.sub_apply, Fin.sum_univ_succ, Fin.sum_univ_zero]
-  fin_cases a <;> simp [Fin.lt_def] <;> norm_num
 
 theorem diag_mem {N : ℕ} (ε : Fin N → Bool) (θ : Fin N → ℝ) :
     Matrix.diagonal (fun a => Complex.exp ((θ a : ℂ) * Complex.I)) ∈ Kset ε := by
@@ -177,42 +132,6 @@ theorem diag_mem {N : ℕ} (ε : Fin N → Bool) (θ : Fin N → ℝ) :
     Complex.norm_exp_ofReal_mul_I]
   simp
 
-theorem integral_of_isDS {N : ℕ} (ε : Fin N → Bool) (lam : Fin N → ℝ) {H : Type} [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] (σ : Matrix (Fin N) (Fin N) ℂ → (H →L[ℂ] H)) (h : IsDS ε lam σ) (a : Fin N) :
-    ∃ m : ℤ, lam a - ((N : ℝ) - 1) / 2 = (m : ℝ) := by
-  obtain ⟨S, -, -, -, ⟨v, -, hv, hw⟩, -⟩ := h.2.2.2.2.2.1
-  have h1 := hw (Pi.single a (2 * Real.pi)) (diag_mem ε _)
-  have e : Matrix.diagonal (fun b => Complex.exp (((Pi.single a (2 * Real.pi) : Fin N → ℝ) b : ℂ) * Complex.I)) = 1 := by
-    rw [← Matrix.diagonal_one]; congr 1; funext b
-    by_cases hb : b = a
-    · subst hb; simp
-    · simp [hb]
-  rw [e, h.2.2.1.1.1] at h1
-  simp only [Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true,
-    ContinuousLinearMap.one_apply] at h1
-  have h2 : Complex.exp (((Formalism.QuantumDeterminants.lowK ε lam a * (2 * Real.pi) : ℝ) : ℂ) * Complex.I) = 1 :=
-    smul_left_injective ℂ hv (h1.symm.trans (one_smul ℂ v).symm)
-  obtain ⟨k, hk⟩ := Complex.exp_eq_one_iff.1 h2
-  have h3 : Formalism.QuantumDeterminants.lowK ε lam a = k := by
-    have h4 : ((Formalism.QuantumDeterminants.lowK ε lam a : ℝ) : ℂ) * (2 * Real.pi * Complex.I) = k * (2 * Real.pi * Complex.I) := by
-      rw [← hk]; push_cast; ring
-    exact_mod_cast mul_right_cancel₀ Complex.two_pi_I_ne_zero h4
-  have := card_split ε a
-  refine ⟨k - (univ.filter fun b => a < b ∧ ε b ≠ ε a).card - (univ.filter fun b => b < a ∧ ε b = ε a).card, ?_⟩
-  simp only [Formalism.QuantumDeterminants.lowK, Pi.sub_apply, Pi.add_apply, rhoN, rhoC] at h3
-  push_cast
-  linarith
 
-theorem use_rank_two (h : DiscreteSeriesUpqExists) :
-    ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H)
-      (σ : Matrix (Fin 2) (Fin 2) ℂ → (H →L[ℂ] H)), IsSqIntOn ![true, false] σ ∧
-      ∃ S : Submodule ℂ H, IsKTypeOf ![true, false] σ ![1, -1] S := by
-  obtain ⟨H, i1, i2, σ, -, -, -, -, h5, h6, -⟩ := h 2 ![true, false] ![1 / 2, -1 / 2]
-    ⟨by intro a b hab; fin_cases a <;> fin_cases b <;> simp_all <;> norm_num,
-     by intro a; fin_cases a
-        · exact ⟨0, by norm_num⟩
-        · exact ⟨-1, by norm_num⟩⟩
-  rw [lowest_rank_two] at h6
-  exact ⟨H, i1, i2, σ, h5, h6⟩
 
 end GlobalTheory.Published.DSExistsModel

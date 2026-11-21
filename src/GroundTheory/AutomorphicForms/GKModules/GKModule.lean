@@ -25,8 +25,6 @@ def kHom (τ : Representation ℂ K W) (σ : Representation ℂ K V) : Submodule
     simp only [mem_setOf_eq] at *
     rw [LinearMap.smul_comp, LinearMap.comp_smul, hT k]
 
-theorem mem_kHom {τ : Representation ℂ K W} {σ : Representation ℂ K V} {T : W →ₗ[ℂ] V} :
-    T ∈ kHom τ σ ↔ ∀ k : K, T ∘ₗ τ k = σ k ∘ₗ T := Iff.rfl
 
 end KHom
 
@@ -205,8 +203,6 @@ theorem isKFinite_derivOp {v : E} (hv : h.IsSmoothVector π v) (hK : π.IsKFinit
 
 def gkVectors : Submodule ℂ E := h.smoothVectors π ⊓ π.kFiniteVectors K
 
-theorem mem_gkVectors {v : E} :
-    v ∈ h.gkVectors π K ↔ h.IsSmoothVector π v ∧ π.IsKFinite K v := Iff.rfl
 
 theorem map_mem_gkVectors {v : E} (hv : v ∈ h.gkVectors π K) (k : K) :
     π k v ∈ h.gkVectors π K :=
@@ -314,21 +310,6 @@ noncomputable def gkModule [CompleteSpace E] : h.GKModule K (h.gkVectors π K) w
 @[simp] theorem gkModule_ρ_apply [CompleteSpace E] (X : h.lieSubalgebra) (v : h.gkVectors π K) :
     (((h.gkModule π K).ρ X v : h.gkVectors π K) : E) = h.derivOp π (h.ofLie X) v := rfl
 
-theorem isAdmissible_gkModule [CompleteSpace E] (hπ : π.IsAdmissible K) :
-    (h.gkModule π K).IsAdmissible := by
-  intro W _ _ _ τ hirr hcont
-  haveI := hπ W τ hirr hcont
-  let f : kHom τ (h.gkModule π K).σ →ₗ[ℂ] kHom τ (π.restrict K).toRepresentation :=
-    { toFun := fun T => ⟨(h.gkVectors π K).subtype ∘ₗ T.1, fun k => by
-        ext w
-        have := congrArg Subtype.val (LinearMap.congr_fun (T.2 k) w)
-        simpa using this⟩
-      map_add' := fun S T => by ext; simp
-      map_smul' := fun c T => by ext; simp }
-  refine Module.Finite.of_injective f fun S T hST => ?_
-  ext w
-  have := LinearMap.congr_fun (congrArg Subtype.val hST) w
-  simpa [f] using this
 
 end IsExpLieAlgebra
 

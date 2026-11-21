@@ -269,35 +269,6 @@ theorem exists_unif {PP : Formalism.L2.DIV.Pl D.host.E} (h : IsIdemAt q.e PP) {�
     simp
     ring
 
-theorem exists_latFrame (S : HSp D) (L : GlobalTheory.FinPl.Lat S) (hL : IsSelfDualC S L) (Y : Type) [Fintype Y] [DecidableEq Y]
-    (e : Y ≃ Fin S.rank) : ∃ F : GlobalTheory.LocMod.Frame k S.rank Y, ∀ y : Y → k, (∀ i, y i ∈ 𝒪[k]) ↔
-      (fun i => q.sec ((F.β *ᵥ y) i)) ∈ latV S L (· = q.v) := by
-  obtain ⟨gl, h1, h2⟩ := GlobalTheory.T.exists_GL_embedding_unitaryAdelic_splitPlace_basis D k q S (Fin S.rank) 1 1 (mul_one _) (mul_one _)
-  obtain ⟨Λ, hΛ, hl, -⟩ := (GlobalTheory.T.splitPlaceHermitianFrame_properties D k q S _ ⟨1, 1, mul_one _, mul_one _, gl, h1, h2⟩).2.2.2.1 L hL
-  let b := (Module.finBasisOfFinrankEq 𝒪[k] Λ (Submodule.IsLattice.finrank_of_pi k Λ)).reindex
-    ((finCongr (Fintype.card_fin _)).trans e.symm)
-  let b' := b.extendOfIsLattice k
-  have hkey : ∀ c : Y → 𝒪[k], b'.equivFun.symm (fun i => (c i : k)) = ((∑ i, c i • b i : Λ) : _ → k) := by
-    intro c
-    rw [Module.Basis.equivFun_symm_apply, Submodule.coe_sum]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Module.Basis.extendOfIsLattice_apply]
-    rfl
-  refine ⟨⟨LinearMap.toMatrix' b'.equivFun.symm.toLinearMap, LinearMap.toMatrix' b'.equivFun.toLinearMap, ?_, ?_⟩, fun y => ?_⟩
-  · rw [← LinearMap.toMatrix'_comp]; simp
-  · rw [← LinearMap.toMatrix'_comp]; simp
-  have h3 := hl (b'.equivFun.symm y)
-  simp only [one_mulVec] at h3
-  simp only [LinearMap.toMatrix'_mulVec, LinearEquiv.coe_coe]
-  rw [← h3]
-  refine ⟨fun h => ?_, fun h => ?_⟩
-  · have h2 : b'.equivFun.symm y = _ := hkey fun i => ⟨y i, h i⟩
-    rw [h2]
-    exact Subtype.property _
-  · have h1 := hkey (b.repr ⟨_, h⟩)
-    rw [b.sum_repr] at h1
-    rw [← b'.equivFun.symm.injective h1]
-    exact fun i => (b.repr ⟨_, h⟩ i).2
 
 theorem exists_topFrame {PP : Formalism.L2.DIV.Pl D.host.E} (h : IsIdemAt q.e PP) (S : HSp D) (L : GlobalTheory.FinPl.Lat S)
     (β : GL (Fin S.rank) (Lev.EAf D)) (hβ : Formalism.L2.DIV.IsFrame β L) : ∃ B : GL (Fin S.rank) k, MovedTo (ofSplit q) S 1 β B.val ∧

@@ -20,18 +20,5 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RealGeo
 
-theorem exists_laws_at_stages : ∀ X : GlobalTheory.Mem.Stages, (∀ W, X.toD7.vol W = GlobalTheory.Mem.Vol.trueVol X.toD7.sp.cm (tauE X.toD7) X.toD7.cd W) → ∀ pb : Fin 2 → HeightOneSpectrum (𝓞 X.toD7.host.K), (∀ k, ((X.toD7.host.g k : ℕ) : 𝓞 X.toD7.host.K) ∈ (pb k).asIdeal) → VolTieG X.toD7 ∧ OKPsi X.toD7 ∧ ∃ (T : CoreJ X.toD7) (_ : Algebra T.Q.c.F X.toD7.what₂.LL), LawsJ T ∧ LawsCore T.toCore ∧ T.Q.Canon ∧ T.pb = pb ∧ AlgTie T ∧ ∀ x, X.toD7.embE x ∈ (algebraMap T.Q.c.F X.toD7.what₂.LL).range := by
-  intro X hv pb hg
-  have hV : VolTieG X.toD7 := GlobalTheory.Mem.Vol.volTieG_of_trueVol X.toD7 hv
-  refine ⟨hV, GlobalTheory.Mem.TypeNormPin.hermitianCodeWordStages_typeNorms_principal X, ?_⟩
-  obtain ⟨T, h₁, h₂, h₃, h₄⟩ := GlobalTheory.Member.CoreExist.exists_core_pb X.toD7 (GlobalTheory.Mem.hermitianCodeWordStages_ringOfIntegers_full X)
-    (GlobalTheory.Mem.hermitianCodeWordStages_has_rootOfUnity X) hV pb hg
-  have hp : T.Q.PinField := h₁.pins.2.2.1
-  letI := algTop T hp
-  have ha : AlgTie T := algTie_algTop T hp
-  refine ⟨T, algTop T hp, h₁, h₂, h₃, h₄, ha, fun x => ⟨embF T.Q.c X.toD7.host.φ₀ x, ?_⟩⟩
-  apply X.toD7.what₂.embLL.injective
-  exact (RingHom.congr_fun (res_embLL T ha hp) (embF T.Q.c X.toD7.host.φ₀ x)).trans
-    (RingHom.congr_fun X.toD7.embE_φ₀ x).symm
 
 end GlobalTheory.RealGeo

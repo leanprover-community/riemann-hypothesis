@@ -422,152 +422,16 @@ def actKK (τ : K₀ →ₐ[Qp] LL) : K₀ ⊗[Qp] K₀ →+ (V ⊗[Qp] B →ₗ
       rw [smul_assoc, smul_comm r, ← tmul_smul, ← smul_mul_assoc, Algebra.smul_def r c, map_mul,
         ← IsScalarTower.algebraMap_apply, ← Algebra.smul_def])
 
-theorem actKK_tmul (τ : K₀ →ₐ[Qp] LL) (a c : K₀) (x : V ⊗[Qp] B) :
-    actKK LL V τ (a ⊗ₜ c) x = τ a • mB LL (algebraMap K₀ B c) x := rfl
 
 theorem mem_DcrisL (ρ : Representation LL G V) (τ : K₀ →ₐ[Qp] LL) (x : V ⊗[Qp] B) :
     x ∈ DcrisL PD ρ τ ↔ x ∈ Dcris PD ρ ∧ ∀ c : K₀, mB LL (algebraMap K₀ B c) x = τ c • x := by
   simp [DcrisL, Submodule.mem_iInf, sub_eq_zero, mulVB_eq]
 
-theorem actKK_mul (τ : K₀ →ₐ[Qp] LL) (s t : K₀ ⊗[Qp] K₀) (x : V ⊗[Qp] B) :
-    actKK LL V τ (s * t) x = actKK LL V τ s (actKK LL V τ t x) := by
-  induction s using TensorProduct.induction_on with
-  | zero => simp
-  | add a c ha hc => simp only [add_mul, map_add, LinearMap.add_apply, ha, hc]
-  | tmul a c =>
-    induction t using TensorProduct.induction_on with
-    | zero => simp
-    | add a c ha hc => simp only [mul_add, map_add, LinearMap.add_apply, ha, hc]
-    | tmul a' c' => simp [actKK_tmul, mB_mul, smul_smul, mul_comm]
 
-theorem actKK_mem (ρ : Representation LL G V) (τ : K₀ →ₐ[Qp] LL) (t : K₀ ⊗[Qp] K₀)
-    (x : V ⊗[Qp] B) (hx : x ∈ Dcris PD ρ) : actKK LL V τ t x ∈ Dcris PD ρ := by
-  induction t using TensorProduct.induction_on with
-  | zero => simp
-  | add a c ha hc => rw [map_add, LinearMap.add_apply]; exact Submodule.add_mem _ ha hc
-  | tmul a c => rw [actKK_tmul]; exact Submodule.smul_mem _ _ (mK PD ρ c ⟨x, hx⟩).2
 
-theorem actKK_eigen (τ : K₀ →ₐ[Qp] LL) (t : K₀ ⊗[Qp] K₀) (x : V ⊗[Qp] B)
-    (hx : ∀ c : K₀, mB LL (algebraMap K₀ B c) x = τ c • x) :
-    actKK LL V τ t x = τ (Algebra.TensorProduct.lmul' Qp t) • x := by
-  induction t using TensorProduct.induction_on with
-  | zero => simp
-  | add a c ha hc => simp only [map_add, LinearMap.add_apply, ha, hc, add_smul]
-  | tmul a c => simp [actKK_tmul, hx, smul_smul]
 
-theorem prod_actKK_left (τ : K₀ →ₐ[Qp] LL) (t : K₀ ⊗[Qp] K₀) (x : V ⊗[Qp] B) (y : V' ⊗[Qp] B) :
-    CrystallineSubrepresentation.prodB (LL := LL) (actKK LL V τ t x ⊗ₜ[LL] y) =
-      actKK LL (V ⊗[LL] V') τ t (CrystallineSubrepresentation.prodB (x ⊗ₜ[LL] y)) := by
-  induction t using TensorProduct.induction_on with
-  | zero => simp
-  | add a c ha hc => simp only [map_add, LinearMap.add_apply, add_tmul, ha, hc]
-  | tmul a c => rw [actKK_tmul, actKK_tmul, ← smul_tmul', map_smul, prod_mB_left]
 
-theorem prod_actKK_right (τ : K₀ →ₐ[Qp] LL) (t : K₀ ⊗[Qp] K₀) (x : V ⊗[Qp] B) (y : V' ⊗[Qp] B) :
-    CrystallineSubrepresentation.prodB (LL := LL) (x ⊗ₜ[LL] actKK LL V' τ t y) =
-      actKK LL (V ⊗[LL] V') τ t (CrystallineSubrepresentation.prodB (x ⊗ₜ[LL] y)) := by
-  induction t using TensorProduct.induction_on with
-  | zero => simp
-  | add a c ha hc => simp only [map_add, LinearMap.add_apply, tmul_add, ha, hc]
-  | tmul a c => rw [actKK_tmul, actKK_tmul, tmul_smul, map_smul, prod_mB_right]
 
-theorem letter_of_ker [Algebra.IsSeparable Qp K₀]
-    {ρ : Representation LL G V} {ρ' : Representation LL G V'}
-    (hr : LinearMap.range (TensorMultiplication.mulDcris PD ρ ρ') = Dcris PD (ρ.tprod ρ'))
-    (hk : LinearMap.ker (TensorMultiplication.mulDcris PD ρ ρ') = TensorMultiplication.balK PD ρ ρ') (τ : K₀ →ₐ[Qp] LL) :
-    Function.Injective ((CrystallineSubrepresentation.prodB (LL := LL)).comp
-        (TensorProduct.map (DcrisL PD ρ τ).subtype (DcrisL PD ρ' τ).subtype)) ∧
-      LinearMap.range ((CrystallineSubrepresentation.prodB (LL := LL)).comp
-        (TensorProduct.map (DcrisL PD ρ τ).subtype (DcrisL PD ρ' τ).subtype)) =
-        DcrisL PD (ρ.tprod ρ') τ := by
-  haveI := PD.finK₀
-  haveI : Algebra.FormallyUnramified Qp K₀ := Algebra.FormallyUnramified.of_isSeparable Qp K₀
-  obtain ⟨t, ht, ht1⟩ := (Algebra.FormallyUnramified.iff_exists_tensorProduct (R := Qp)
-    (S := K₀)).1 inferInstance
-  have hE : ∀ (U : Type) [AddCommGroup U] [Module LL U] [Module Qp U] [IsScalarTower Qp LL U]
-      (x : U ⊗[Qp] B) (c : K₀),
-      mB LL (algebraMap K₀ B c) (actKK LL U τ t x) = τ c • actKK LL U τ t x := by
-    intro U _ _ _ _ x c
-    have h1 : actKK LL U τ ((1 : K₀) ⊗ₜ[Qp] c * t) x = actKK LL U τ (c ⊗ₜ[Qp] (1 : K₀) * t) x := by
-      rw [sub_eq_zero.1 ((sub_mul _ _ _).symm.trans (ht c))]
-    rw [actKK_mul, actKK_mul, actKK_tmul, actKK_tmul] at h1
-    simpa [mB_one] using h1
-  have hI : ∀ (U : Type) [AddCommGroup U] [Module LL U] [Module Qp U] [IsScalarTower Qp LL U]
-      (x : U ⊗[Qp] B), (∀ c : K₀, mB LL (algebraMap K₀ B c) x = τ c • x) →
-      actKK LL U τ t x = x := by
-    intro U _ _ _ _ x hx
-    rw [actKK_eigen τ t x hx, ht1, map_one, one_smul]
-  have hC : ∀ (U : Type) [AddCommGroup U] [Module LL U] [Module Qp U] [IsScalarTower Qp LL U]
-      (x : U ⊗[Qp] B) (c : K₀),
-      actKK LL U τ t (mB LL (algebraMap K₀ B c) x) = τ c • actKK LL U τ t x := by
-    intro U _ _ _ _ x c
-    have h1 : actKK LL U τ (t * (1 : K₀) ⊗ₜ[Qp] c) x = actKK LL U τ ((1 : K₀) ⊗ₜ[Qp] c * t) x := by
-      rw [mul_comm]
-    rw [actKK_mul, actKK_mul, actKK_tmul, actKK_tmul, hE] at h1
-    simpa using h1
-  let p : ↥(Dcris PD ρ) →ₗ[LL] ↥(DcrisL PD ρ τ) :=
-    (actKK LL V τ t).restrict fun x hx => (mem_DcrisL PD ρ τ _).2 ⟨actKK_mem PD ρ τ t x hx, hE V x⟩
-  let p' : ↥(Dcris PD ρ') →ₗ[LL] ↥(DcrisL PD ρ' τ) :=
-    (actKK LL V' τ t).restrict
-      fun x hx => (mem_DcrisL PD ρ' τ _).2 ⟨actKK_mem PD ρ' τ t x hx, hE V' x⟩
-  let i : ↥(DcrisL PD ρ τ) →ₗ[LL] ↥(Dcris PD ρ) := Submodule.inclusion inf_le_left
-  let i' : ↥(DcrisL PD ρ' τ) →ₗ[LL] ↥(Dcris PD ρ') := Submodule.inclusion inf_le_left
-  have hfac : ∀ w, ((CrystallineSubrepresentation.prodB (LL := LL)).comp
-      (TensorProduct.map (DcrisL PD ρ τ).subtype (DcrisL PD ρ' τ).subtype)) w =
-      TensorMultiplication.mulDcris PD ρ ρ' (TensorProduct.map i i' w) := by
-    intro w
-    induction w using TensorProduct.induction_on with
-    | zero => simp
-    | add a c ha hc => simp only [map_add, ha, hc]
-    | tmul x y => rfl
-  have hpi : ∀ w, TensorProduct.map p p' (TensorProduct.map i i' w) = w := by
-    intro w
-    induction w using TensorProduct.induction_on with
-    | zero => simp
-    | add a c ha hc => simp only [map_add, ha, hc]
-    | tmul x y =>
-      rw [map_tmul, map_tmul]
-      congr 1
-      · exact Subtype.ext (hI V x ((mem_DcrisL PD ρ τ _).1 x.2).2)
-      · exact Subtype.ext (hI V' y ((mem_DcrisL PD ρ' τ _).1 y.2).2)
-  have hbal : TensorMultiplication.balK PD ρ ρ' ≤ LinearMap.ker (TensorProduct.map p p') := by
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨c, x, cx, y, cy, hx, hy, rfl⟩
-    change TensorProduct.map p p' _ = 0
-    have h1 : p cx = τ c • p x := Subtype.ext (by
-      change actKK LL V τ t (cx : V ⊗[Qp] B) = τ c • actKK LL V τ t (x : V ⊗[Qp] B)
-      rw [hx, mulVB_eq, hC])
-    have h2 : p' cy = τ c • p' y := Subtype.ext (by
-      change actKK LL V' τ t (cy : V' ⊗[Qp] B) = τ c • actKK LL V' τ t (y : V' ⊗[Qp] B)
-      rw [hy, mulVB_eq, hC])
-    rw [map_sub, map_tmul, map_tmul, h1, h2, smul_tmul, sub_self]
-  refine ⟨(injective_iff_map_eq_zero _).2 fun w hw => ?_, le_antisymm ?_ fun z hz => ?_⟩
-  · rw [hfac, ← LinearMap.mem_ker, hk] at hw
-    rw [← hpi w]
-    exact hbal hw
-  · rintro _ ⟨w, rfl⟩
-    induction w using TensorProduct.induction_on with
-    | zero => simp
-    | add a c ha hc => rw [map_add]; exact Submodule.add_mem _ ha hc
-    | tmul x y =>
-      rw [mem_DcrisL]
-      refine ⟨prod_mem PD (i x) (i' y), fun c => ?_⟩
-      change mB LL _ (CrystallineSubrepresentation.prodB ((x : V ⊗[Qp] B) ⊗ₜ[LL] (y : V' ⊗[Qp] B))) =
-        τ c • CrystallineSubrepresentation.prodB ((x : V ⊗[Qp] B) ⊗ₜ[LL] (y : V' ⊗[Qp] B))
-      rw [← prod_mB_left, ((mem_DcrisL PD ρ τ _).1 x.2).2, ← smul_tmul', map_smul]
-  · obtain ⟨hz1, hz2⟩ := (mem_DcrisL PD _ τ _).1 hz
-    rw [← hr] at hz1
-    obtain ⟨w, rfl⟩ := hz1
-    refine ⟨TensorProduct.map p p' w, ?_⟩
-    rw [← hI _ _ hz2]
-    clear hz hz2
-    induction w using TensorProduct.induction_on with
-    | zero => simp
-    | add a c ha hc => simp only [map_add, ha, hc]
-    | tmul x y =>
-      change CrystallineSubrepresentation.prodB (LL := LL) (actKK LL V τ t (x : V ⊗[Qp] B) ⊗ₜ[LL]
-        actKK LL V' τ t (y : V' ⊗[Qp] B)) = _
-      rw [mulDcris_tmul, prod_actKK_left, prod_actKK_right, hI _ _ (hE _ _)]
 
 end Tools
 
@@ -575,9 +439,7 @@ theorem inv_iff : CrystallineSubrepresentation.InvariantsEq PD ↔ TensorMultipl
 
 variable (LL : Type) [Field LL] [Algebra Qp LL]
 
-theorem dimLe_iff : CrystallineSubrepresentation.DimLe PD LL ↔ TensorMultiplication.DcrisFinite PD LL ∧ FontaineLe PD LL := and_comm
 
-theorem comparison_iff : CrystallineSubrepresentation.ComparisonBij PD LL ↔ TensorMultiplication.Comparison PD LL := Iff.rfl
 
 theorem sub_iff : CrystallineSubrepresentation.SubCrys PD LL ↔ TensorMultiplication.CrysSub PD LL := Iff.rfl
 
@@ -633,46 +495,14 @@ theorem exact_iff : CrystallineSubrepresentation.DcrisExact PD LL ↔ TensorMult
       obtain ⟨x, hx, e⟩ := this
       exact ⟨⟨x, hx⟩, Subtype.ext e⟩
 
-theorem letter_iff : CrystallineSubrepresentation.LetterDim PD LL ↔ TensorMultiplication.LetterDim PD LL := by
-  refine forall_congr' fun _ => forall_congr' fun V => forall₄_congr fun _ _ _ _ =>
-    forall₃_congr fun _ ρ _ => forall_congr' fun τ => ⟨fun h => h.2, fun h => ⟨?_, h⟩⟩
-  rcases Nat.eq_zero_or_pos (finrank LL V) with h0 | h0
-  · haveI : Subsingleton V := Module.finrank_zero_iff.1 h0
-    infer_instance
-  · exact Module.finite_of_finrank_pos (h ▸ h0)
 
-theorem dcrisTensor_of_comparison (hc : CrystallineSubrepresentation.ComparisonBij PD LL) (ht : CrystallineSubrepresentation.TensorCrys PD LL) :
-    TensorMultiplication.DcrisTensor PD LL := fun V _ _ _ _ _ ρ V' _ _ _ _ _ ρ' h h' =>
-  ⟨range_eq PD (hc V ρ h) (hc V' ρ' h') (hc _ _ (ht V ρ V' ρ' h h')),
-    ker_eq PD (hc V ρ h) (hc V' ρ' h')⟩
 
-theorem dcrisTensor_letters [Algebra.IsSeparable Qp K₀] (h : TensorMultiplication.DcrisTensor PD LL) :
-    CrystallineSubrepresentation.DcrisTensor PD LL :=
-  ⟨unit_eq PD, fun V _ _ _ _ _ ρ V' _ _ _ _ _ ρ' hρ hρ' =>
-    ⟨(h V ρ V' ρ' hρ hρ').1, letter_of_ker PD (h V ρ V' ρ' hρ hρ').1 (h V ρ V' ρ' hρ hρ').2⟩⟩
 
-theorem formalism_iff : CrystallineSubrepresentation.FormalismFor PD LL ↔ TensorMultiplication.FormalismAt PD LL :=
-  ⟨fun ⟨a, b, c, d, e, f, g, h, i, j⟩ => ⟨(inv_iff PD).1 a, (dimLe_iff PD LL).1 b,
-      (comparison_iff PD LL).1 c, (sub_iff PD LL).1 d, (quot_iff PD LL).1 e, (sum_iff PD LL).1 f,
-      (tensor_iff PD LL).1 g, (dual_iff PD LL).1 h, (exact_iff PD LL).1 i,
-      dcrisTensor_of_comparison PD LL c g, (letter_iff PD LL).1 j⟩,
-    fun ⟨a, b, c, d, e, f, g, h, i, _, j⟩ => ⟨(inv_iff PD).2 a, (dimLe_iff PD LL).2 b,
-      (comparison_iff PD LL).2 c, (sub_iff PD LL).2 d, (quot_iff PD LL).2 e, (sum_iff PD LL).2 f,
-      (tensor_iff PD LL).2 g, (dual_iff PD LL).2 h, (exact_iff PD LL).2 i, (letter_iff PD LL).2 j⟩⟩
 
 end Generic
 
 variable (l : ℕ) [Fact l.Prime] (P : LocPrime l)
 
-theorem fontaineFormalism_equiv : CrystallineSubrepresentation.FontaineFormalism l P ↔ TensorMultiplication.FontaineFormalism l P :=
-  (CrystallineSubrepresentation.fontaineFormalism_iff l P).trans
-    (forall₂_congr fun K LL => formalism_iff (P.PD K) ↥LL.1)
 
-theorem fontaineFormalismTensor_equiv :
-    CrystallineSubrepresentation.FontaineFormalismTensor l P ↔ TensorMultiplication.FontaineFormalism l P :=
-  ⟨fun h => (fontaineFormalism_equiv l P).1 h.1, fun h => ⟨(fontaineFormalism_equiv l P).2 h,
-    fun K LL => by
-      haveI := (P.PD K).finK₀
-      exact dcrisTensor_letters (P.PD K) ↥LL.1 (h K LL).2.2.2.2.2.2.2.2.2.1⟩⟩
 
 end GlobalTheory.FontCmp

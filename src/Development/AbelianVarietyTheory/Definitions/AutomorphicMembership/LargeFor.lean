@@ -58,9 +58,6 @@ def fam : ShimFam D (geoTrue D.what₂.LL) (Lv (ambOf T.Q h.pins.1)) := famOf (c
 def dH (j : ℕ) : (Φ.fam.Uw j).Comp → D.what₂.Tau → ℝ :=
   Φ.d _ _ (datW D Φ.F.κg j).two_le (datW D Φ.F.κg j).j_le (datW D Φ.F.κg j).κ
 
-theorem locTie : LocTie h Φ.k := by
-  obtain ⟨I, dat, hI, iW, -, h1, h2, h3⟩ := Φ.prov
-  exact LocTie.localTie_of_provisional (cutSt _) (resSt _) h1 h2 h3
 
 def Reads (X₀ : DivX D)
     (iM : ∀ j (a : (Φ.fam.Uw j).Comp), (X₀.MjH j).V →ₗ[D.what₂.LL] (geoTrue D.what₂.LL).Fn ((Φ.fam.Uw j).alg.Yv a)) : Prop :=

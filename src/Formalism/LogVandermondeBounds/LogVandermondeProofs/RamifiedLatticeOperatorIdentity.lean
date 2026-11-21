@@ -292,10 +292,6 @@ theorem up_down_operators_adjoint : AdjointReformulated := by
 theorem down_up_composition_formula : DualCompositionReformulated :=
   fun _ _ _ _ _ _ _ hr ψ x hx => DU_formula hr ψ x hx
 
-theorem up_down_composition_formula : CompositionWithDual := by
-  intro k _ _ _ r R _ hr φ f hf
-  rw [← opU_eq_opD φ, opU_eq_opD (opU φ), nmP_eq_nmV]
-  exact DU_formula hr φ f hf
 
 lemma ram_V {k : Type*} [Field k] [Fintype k] [DecidableEq k] {r : ℕ} {R : Type*} [CommRing R]
     (ψ : (Fin r → k) → R) (h : ∀ y, y ≠ 0 → nmV ψ y = 0) :

@@ -696,13 +696,6 @@ theorem baseChange_preserves_unitary_of (hF : FiSt D u) (hM : DiaMul D u) (hX : 
       obtain ⟨y, hyS, hy⟩ := dia_S w v a x hx.1
       exact ⟨y, ⟨hyS, mem_ramSub.mpr (hy ▸ r.2.2.1 a)⟩, hy⟩
 
-theorem DiaMul_of (hF : FiSt D u) (hU : UnfAll D u) : DiaMul D u := by
-  intro i hi v φ hφ
-  obtain ⟨H⟩ := hU i hi v
-  refine ⟨H.ext_P (fun Λ f hf => ?_), fun a b => H.ext_P (fun Λ f hf => ?_)⟩
-  · rw [H.P_dia hφ Λ hf 1]; simp
-  · rw [H.P_dia hφ Λ hf (a * b), H.P_dia ((hF i hi v φ hφ).2.2 b) Λ hf a,
-      H.P_dia hφ Λ (smul_ne_zero a.ne_zero hf) b, smul_smul, Units.val_mul, mul_comm]
 
 variable (D u)
 
@@ -892,11 +885,6 @@ lemma Ul_fi (hF : FiSt D u) {i : ℕ} (hi : i ≤ D.R.m) (l : List (D.mem u).A.v
   | nil => intro φ hφ; simpa [Ul] using hφ
   | cons v l ih => intro φ hφ; exact (hF i hi v _ (ih φ hφ)).1
 
-lemma Ul_pow_fi (hF : FiSt D u) {i : ℕ} (hi : i ≤ D.R.m) (l : List (D.mem u).A.vT) (n : ℕ) :
-    ∀ φ ∈ (D.fm u).Fi i, (Ul D u i l ^ n) φ ∈ (D.fm u).Fi i := by
-  induction n with
-  | zero => intro φ hφ; simpa using hφ
-  | succ n ih => intro φ hφ; rw [pow_succ]; exact ih _ (Ul_fi hF hi l φ hφ)
 
 lemma Ul_K (hF : FiSt D u) (h : LevelChainUOperatorCommutation D u) {i : ℕ} (hi : i < D.R.m) (l : List (D.mem u).A.vT) :
     ∀ φ ∈ (D.fm u).Fi i, Ul D u (i + 1) l (KT D u i φ) =
@@ -1059,9 +1047,6 @@ lemma S_span (i : ℕ) (w : D.what₂.places.Pl) :
   rw [eq_top_iff, ← ((D.fm u).lat_good i).2.2]
   exact Submodule.span_mono (fun x hx => Submodule.subset_span hx)
 
-theorem Rat0_of_IntOffT (w : D.what₂.places.Pl) (hw : ¬ OverT D u w) (h5 : IntOffT D u) : Rat0 D u := fun v =>
-  ⟨rat_of_into w _ _ _ (h5 0 (Nat.zero_le _) w hw v).1 (S_span 0 w),
-    rat_of_into w _ _ _ (h5 0 (Nat.zero_le _) w hw v).2 (S_span 0 w)⟩
 
 theorem Rat0_of_IntAtT (w : D.what₂.places.Pl) (hw : OverT D u w) (hs : (D.fm u).seenP w = true) (h4 : IntAtT D u) :
     Rat0 D u := fun v =>
@@ -1256,9 +1241,6 @@ theorem exists_offT (D : D7) (u : D.what₂.Word) : ∃ w, ¬ OverT D u w := by
     exact_mod_cast congrArg (Int.cast : ℤ → 𝓞 D.what₂.LL) hab
   exact hPmax.ne_top ((Ideal.eq_top_iff_one P).mpr (h2 ▸ P.add_mem (P.mul_mem_left _ hpP) (P.mul_mem_left _ hTP)))
 
-theorem Rat0_of_Int (h5 : IntOffT D u) : Rat0 D u := by
-  obtain ⟨w, hw⟩ := exists_offT D u
-  exact Rat0_of_IntOffT w hw h5
 
 lemma val_unit (w : D.what₂.places.Pl) (ε : (Ow D w)ˣ) : D.what₂.places.val w ((ε : Ow D w) : D.what₂.LL) = 0 := by
   have h1 : (0 : WithTop ℤ) ≤ D.what₂.places.val w ((ε : Ow D w) : D.what₂.LL) := (ε : Ow D w).2
@@ -1902,75 +1884,14 @@ theorem ramified_length_bound (hS : HidaSetting D u) (hB : LemB D u) (h1 : Concl
     rw [Submodule.comap_subtype_self]
     simp
 
-theorem exists_overT (D : D7) (u : D.what₂.Word) : ∃ w, OverT D u w := by
-  have hp := (D.mem u).A.T_prime
-  have htop : Ideal.span {(((D.mem u).A.T : ℕ) : 𝓞 D.what₂.LL)} ≠ ⊤ := by
-    rw [Ne, Ideal.span_singleton_eq_top]; exact natCast_not_isUnit D.what₂.LL hp
-  obtain ⟨P, hPmax, hPle⟩ := Ideal.exists_le_maximal _ htop
-  have hpP : (((D.mem u).A.T : ℕ) : 𝓞 D.what₂.LL) ∈ P := hPle (Ideal.mem_span_singleton_self _)
-  have hP0 : P ≠ ⊥ := by
-    intro h0
-    rw [h0, Ideal.mem_bot] at hpP
-    exact hp.ne_zero (by exact_mod_cast hpP)
-  let Q : IsDedekindDomain.HeightOneSpectrum (𝓞 D.what₂.LL) := ⟨P, hPmax.isPrime, hP0⟩
-  refine ⟨D.plEq.symm Q, ?_⟩
-  by_contra hne
-  have hne' : D.what₂.places.resChar (D.plEq.symm Q) ≠ (D.mem u).A.T := hne
-  have h1 := D.val_resChar' (D.plEq.symm Q)
-  rw [Equiv.apply_symm_apply] at h1
-  have hqP : ((D.what₂.places.resChar (D.plEq.symm Q) : ℕ) : 𝓞 D.what₂.LL) ∈ P := by
-    have : Q.valuation D.what₂.LL (algebraMap (𝓞 D.what₂.LL) D.what₂.LL
-        ((D.what₂.places.resChar (D.plEq.symm Q) : ℕ) : 𝓞 D.what₂.LL)) < 1 := by
-      rw [h1, ← WithZero.exp_zero, WithZero.exp_lt_exp]
-      have := D.what₂.places.ramIdx_pos (D.plEq.symm Q)
-      omega
-    exact (Q.valuation_lt_one_iff_mem _).mp this
-  have hcop : IsCoprime ((D.what₂.places.resChar (D.plEq.symm Q) : ℕ) : ℤ) (((D.mem u).A.T : ℕ) : ℤ) :=
-    Nat.isCoprime_iff_coprime.mpr
-      ((Nat.coprime_primes (D.what₂.places.resChar_prime _) hp).mpr hne')
-  obtain ⟨a, b, hab⟩ := hcop
-  have h2 : (a : 𝓞 D.what₂.LL) * ((D.what₂.places.resChar (D.plEq.symm Q) : ℕ) : 𝓞 D.what₂.LL) +
-      (b : 𝓞 D.what₂.LL) * (((D.mem u).A.T : ℕ) : 𝓞 D.what₂.LL) = 1 := by
-    exact_mod_cast congrArg (Int.cast : ℤ → 𝓞 D.what₂.LL) hab
-  exact hPmax.ne_top ((Ideal.eq_top_iff_one P).mpr (h2 ▸ P.add_mem (P.mul_mem_left _ hqP) (P.mul_mem_left _ hpP)))
 
-lemma fi_of_rat {i j : ℕ} (f : Fn D u i →ₗ[ℂ] Fn D u j) (h : ∀ x, ∃ y, (D.fm u).emb j y = f ((D.fm u).emb i x)) :
-    ∀ φ ∈ (D.fm u).Fi i, f φ ∈ (D.fm u).Fi j := by
-  intro φ hφ
-  rw [← ((D.fm u).emb_basis i).2] at hφ
-  induction hφ using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨a, rfl⟩ := hx
-    obtain ⟨y, hy⟩ := h (((D.fm u).lat i).b a)
-    rw [← hy]; exact emb_mem j y
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add x y _ _ hx hy => rw [map_add]; exact Submodule.add_mem _ hx hy
-  | smul r x _ hx => rw [map_smul]; exact Submodule.smul_mem _ _ hx
 
-theorem KFi_of (C : ℝ) (h : LatticeChainWithoutLast D u C) : KFi D u := by
-  obtain ⟨w, hw⟩ := exists_overT D u
-  intro i hi
-  have hT : tpow D u (lossK D u C) ≠ 0 := pow_ne_zero _ (T_ne D u)
-  have key : ∀ φ ∈ (D.fm u).Fi i, (tpow D u (lossK D u C) • KT D u i) φ ∈ (D.fm u).Fi (i + 1) := by
-    by_cases hs : (D.fm u).seenP w = true
-    · obtain ⟨BV, _, hI⟩ := (((h w hw).1 i hi).2 hs)
-      exact fi_of_rat _ (rat_of_into w (tpow D u (lossK D u C) • KT D u i) _ _ hI (S_span i w))
-    · have hs' : (D.fm u).seenP w = false := by simpa using hs
-      exact fi_of_rat _ (rat_of_into w (tpow D u (lossK D u C) • KT D u i) _ _ (((h w hw).1 i hi).1 hs') (S_span i w))
-  intro φ hφ
-  have := Submodule.smul_mem _ (tpow D u (lossK D u C))⁻¹ (key φ hφ)
-  rwa [LinearMap.smul_apply, smul_smul, inv_mul_cancel₀ hT, one_smul] at this
 
 variable (D u) in
 
 def DiaFi : Prop :=
   ∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i, ∀ a, dia D u i v a φ ∈ (D.fm u).Fi i
 
-theorem FiSt_of (h5 : IntOffT D u) (hd : DiaFi D u) : FiSt D u := by
-  obtain ⟨w, hw⟩ := exists_offT D u
-  intro i hi v φ hφ
-  exact ⟨fi_of_rat _ (rat_of_into w _ _ _ (h5 i hi w hw v).1 (S_span i w)) φ hφ,
-    fi_of_rat _ (rat_of_into w _ _ _ (h5 i hi w hw v).2 (S_span i w)) φ hφ, hd i hi v φ hφ⟩
 
 lemma dense_embLL (D : D7) : DenseRange D.what₂.embLL := by
   have hv : (InfinitePlace.mk D.what₂.embLL).IsComplex := IsTotallyComplex.isComplex _
@@ -2056,20 +1977,6 @@ section Shift
 
 open Formalism.MainNotions.PrimeDegreeVariant
 
-theorem sqAct_wSh {n : ℕ} (l : DomWeight n) (c : ℤ) (g : GL (Fin n) ℂ)
-    (f : MvPolynomial (Fin n × Fin n) ℂ) :
-    sqAct ℂ n (wSh l c) g f = detPow ℂ n g (-c) • sqAct ℂ n l g f := by
-  rcases Nat.eq_zero_or_pos n with rfl | hn
-  · have hd : Matrix.GeneralLinearGroup.det g = 1 := by
-      apply Units.ext
-      simp [Matrix.det_isEmpty]
-    unfold sqAct detPow
-    simp [DomWeight.detShift, hd]
-  · unfold sqAct
-    rw [detShift_wSh l c hn, smul_smul]
-    congr 1
-    unfold detPow
-    rw [sub_eq_add_neg, zpow_add, Units.val_mul, mul_comm]
 
 theorem det_embGL {n N : ℕ} (h : n + 1 = N) (g : GL (Fin n) ℂ) :
     Matrix.GeneralLinearGroup.det (embGL ℂ n N h g) = Matrix.GeneralLinearGroup.det g := by
@@ -2080,91 +1987,18 @@ theorem det_embGL {n N : ℕ} (h : n + 1 = N) (g : GL (Fin n) ℂ) :
   rw [Matrix.GeneralLinearGroup.val_det_apply, e, Matrix.det_submatrix_equiv_self, Matrix.det_fromBlocks_zero₂₁]
   simp
 
-theorem det_lastGL {N : ℕ} (hN : 0 < N) (a : ℂˣ) :
-    Matrix.GeneralLinearGroup.det (lastGL ℂ N a) = a := by
-  apply Units.ext
-  simp only [lastGL, diagGL, Matrix.GeneralLinearGroup.val_det_apply, Matrix.det_diagonal]
-  rw [Finset.prod_eq_single (⟨N - 1, by omega⟩ : Fin N)]
-  · rw [if_pos (by show N - 1 + 1 = N; omega)]
-  · intro b _ hb
-    rw [if_neg]
-    · rfl
-    · intro h
-      apply hb
-      apply Fin.ext
-      show b.1 = N - 1
-      omega
-  · intro h; exact absurd (Finset.mem_univ _) h
 
-theorem degZ_wSh {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight n) (c : ℤ) :
-    degZ (wSh lam c) (wSh sg c) = degZ lam sg - c := by
-  subst h
-  unfold degZ Formalism.MainNotions.PrimeDegreeVariant.wsum wSh
-  simp only [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-  push_cast
-  ring
 
 theorem normFock_wSh {n : ℕ} (l : DomWeight n) (c : ℤ) (f g : MvPolynomial (Fin n × Fin n) ℂ) :
     normFock (wSh l c) f g = normFock l f g := by
   unfold normFock; rw [extremal_wSh]
 
-theorem brBd_wSh {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight n) (c : ℤ) :
-    brBd h (wSh lam c) (wSh sg c) = brBd h lam sg := by
-  have hs : (wSh lam c).spread = lam.spread := by
-    unfold DomWeight.spread wSh
-    split_ifs <;> simp
-  have h0 : D0 h (wSh lam c) (wSh sg c) = D0 h lam sg := by
-    unfold D0 wSh
-    exact Finset.sum_congr rfl fun i _ => by simp
-  have h1 : D1 h (wSh lam c) (wSh sg c) = D1 h lam sg := by
-    unfold D1
-    rw [h0]
-    exact Finset.sum_congr rfl fun i _ => by simp [wSh]
-  unfold brBd cBd
-  rw [hs, h1, delSq_wSh]
 
-theorem isBr_wSh {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight n) (c : ℤ)
-    (br : MvPolynomial (Fin N × Fin N) ℂ →ₗ[ℂ] MvPolynomial (Fin n × Fin n) ℂ) (H : IsBr h lam sg br) :
-    IsBr h (wSh lam c) (wSh sg c) br := by
-  obtain ⟨h1, h2, h3, h4, h5, h6⟩ := H
-  have hN : 0 < N := by omega
-  refine ⟨by simpa only [delSq_wSh] using h1, by simpa only [delSq_wSh] using h2, by simpa only [delSq_wSh] using h3,
-    fun g f hf => ?_, fun a f hf => ?_, fun f hf => ?_⟩
-  · rw [delSq_wSh] at hf
-    rw [sqAct_wSh, sqAct_wSh, map_smul, h4 g f hf]
-    unfold detPow
-    rw [det_embGL]
-  · rw [delSq_wSh] at hf
-    rw [sqAct_wSh, map_smul, h5 a f hf, degZ_wSh h, smul_smul]
-    unfold detPow
-    rw [det_lastGL hN, ← Units.val_mul, ← zpow_add]
-    congr 3
-    ring
-  · rw [delSq_wSh] at hf
-    rw [normFock_wSh, normFock_wSh, brBd_wSh]
-    exact h6 f hf
 
-theorem wSh_wSh {n : ℕ} (l : DomWeight n) (c : ℤ) : wSh (wSh l c) (-c) = l := by
-  cases l; simp [wSh]
 
-theorem admissibleBranching_iff_isBranching {D : D7} {u : D.what₂.Word} (P : Pend D u) :
-    ArchimedeanSignatureMatching P ↔ ∀ τ, IsBr (Nm_succ D.R) ((D.fm u).lam D.R.m τ) ((D.fm u).sg τ) (P.br τ) := by
-  refine ⟨fun H τ => ?_, fun H τ => isBr_wSh _ _ _ _ _ (H τ)⟩
-  have := isBr_wSh _ _ _ (-(cTw D.R)) _ (H τ)
-  unfold lamTr sgTr at this
-  rwa [wSh_wSh, wSh_wSh] at this
 
 end Shift
 
-theorem br_frames (P : Pend D u) (h4 : ArchimedeanSignatureMatching P) (τ : D.what₂.Tau) (g : GL (Fin (D.R.N D.R.m - 1)) ℂ)
-    (f : MvPolynomial (Fin (D.R.N D.R.m) × Fin (D.R.N D.R.m)) ℂ) (hf : f ∈ delSq ℂ _ (lamTr D u τ)) :
-    P.br τ (sqAct ℂ _ (lamTr D u τ) (gFull D u g) f) =
-      (((sqrtT D u) ^ ((D.fm u).deg τ) : ℂˣ) : ℂ) • sqAct ℂ _ (sgTr D u τ) g (P.br τ f) := by
-  obtain ⟨-, -, -, h4a, h5, -⟩ := h4 τ
-  unfold gFull
-  rw [(factSqActMul ℂ _ _ _ _ f).1, h4a g _ ((factSqStable ℂ _ _ _).2 f hf), h5 _ f hf, deg_eq_degZ]
-  unfold sqAct
-  rw [map_smul, smul_comm]
 
 lemma blk_IntSpan (P : Pend D u) (h4 : ArchimedeanSignatureMatching P) (w : D.what₂.places.Pl)
     (p : MvPolynomial (D.what₂.Tau × Fin (D.R.N D.R.m) × Fin (D.R.N D.R.m)) ℂ)
@@ -2265,13 +2099,7 @@ theorem ramifiedLattice_of_chain_estimates (C : ℝ) (hC : 0 ≤ C) (hS : HidaSe
     (h3 : PointsLemma D u C) (h4 : LevelChainUOperatorCommutation D u) : Conclusion5 D u C := fun w hw =>
   ⟨(ramified_length_bound hS hB h1 w hw).1, column_exponent_lattice_bound C hC hS h1.1 hKF h3 h4 w hw, (ramified_length_bound hS hB h1 w hw).2⟩
 
-theorem transportEstimate_of_admissible (hT : admT D u) (hd : DiaFi D u) (hX : CrossDia D u) (hU : UnfAll D u) (hC : UComm D u)
-    (h4 : IntAtT D u) (h5 : IntOffT D u) : Conclusion1 D u :=
-  baseChange_preserves_unitary_of (FiSt_of h5 hd) hT.2.2.2 hX hU hC h4 h5 (Rat0_of_Int h5)
 
-theorem finiteModel_of_admissible_transports (hT : admT D u) (hF : FiSt D u) (hX : CrossDia D u) (hU : UnfAll D u) (C : ℝ)
-    (h4 : Conclusion4 D u C) : division_rows_rational_lattice D u :=
-  finiteModel_of_heckeEstimate hF hT.2.2.2 hX hU C h4
 
 theorem classMap_estimate_of_admissible (hA : AdmE D u) (h : ClassMapInjectiveBijectiveNorms D u) : Conclusion6 D u := by
   obtain ⟨P, G, hA⟩ := hA
@@ -2284,29 +2112,11 @@ def Rest (C : ℝ) : Prop :=
   Nonempty (FreeT D u) ∧ SlopeLine D u ∧ LemB D u ∧
   LatticeChainWithoutLast D u C ∧ LevelChainUOperatorCommutation D u ∧ KDia D u ∧ ClassMapInjectiveBijectiveNorms D u ∧ Conclusion5Sharp D u
 
-theorem conclusion_of_rest (C : ℝ) (hC : 0 ≤ C) (hS : HidaSetting D u) (hA : AdmE D u) (h : Rest D u C) : Conclusion₂ D u (C + 1) := by
-  obtain ⟨hd, hX, hU, hUC, hI4, hI5, ⟨W⟩, hμ, hB, h3a, h4X, hKD, h6, h5S⟩ := h
-  have hC1 : 0 ≤ C + 1 := by linarith
-  have hF := FiSt_of hI5 hd
-  have hKF := KFi_of C h3a
-  have hM := DiaMul_of hF hU
-  have h1 := baseChange_preserves_unitary_of hF hM hX hU hUC hI4 hI5 (Rat0_of_Int hI5)
-  have h3 := latticeChain_succ_of_partial C hC h3a
-  have h4 := heckeValue_estimate_of_record_value (C + 1) hC1 h4X hKD hKF
-  exact ⟨h1, slopeEstimate_of_lemmaB_slopeLine hS W hμ hB h1, h3, h4, ramifiedLattice_of_chain_estimates (C + 1) hC1 hS hKF hB h1 h3 h4X, classMap_estimate_of_admissible hA h6,
-    finiteModel_of_heckeEstimate hF hM hX hU (C + 1) h4, h4X, h5S⟩
 
-theorem packetEstimate_of_remainder (C : ℝ) (hC : 0 ≤ C) (h : HidaSetting D u → AdmE D u → Rest D u C) : Stmt D u (C + 1) :=
-  fun hS hA => conclusion_of_rest C hC hS hA (h hS hA)
 
 def RestF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C : ℝ) : Prop :=
   ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (i : Fm.Ix x) (u : (Fm.D x i).what₂.Word),
     HidaSetting (Fm.D x i) u → Rest (Fm.D x i) u C
 
-theorem familyEstimate_of_remainder {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C : ℝ) (hC : 0 ≤ C) (h : RestF Fm C) : KudlaFamilyStatement Fm (C + 1) := by
-  obtain ⟨x0, h⟩ := h
-  rintro ⟨x1, hA⟩
-  exact ⟨max x0 x1, fun x hx i u hS => conclusion_of_rest C hC hS (hA x (le_trans (le_max_right _ _) hx) i u)
-    (h x (le_trans (le_max_left _ _) hx) i u hS)⟩
 
 end Formalism.MainNotions.product_first_zeroth_parts

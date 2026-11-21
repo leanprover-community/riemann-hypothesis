@@ -60,8 +60,6 @@ structure ModelO (O : Type) [CommRing O] where
   U_iff : ∀ x : Z, x ∈ U ↔ (CharZero (Z.residueField x) ∧ AbelianAt G x)
   U_dense : Dense (U : Set Z)
 
-theorem ModelO.ab_open {O : Type} [CommRing O] (M : ModelO O) : ∀ x ∈ M.U, AbelianAt M.G x :=
-  fun x hx => ((M.U_iff x).1 hx).2
 
 def ModelO.toG {O : Type} [CommRing O] [IsLocalRing O] (M : ModelO O) : ModelG O := ⟨M.Z, M.str, M.G⟩
 

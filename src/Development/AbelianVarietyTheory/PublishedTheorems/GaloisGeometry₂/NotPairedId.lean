@@ -57,18 +57,6 @@ theorem twist {π : CuspSub E a} (h : Paired π π invTOp) (χ : HChar E) : Pair
     simp only [Units.val_one, one_smul, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul]
     linear_combination e
 
-theorem not_paired_id {s : ℂ} (hs : s ≠ 0) :
-    ¬ Paired (line le_rfl (CuspRep.Model.absC E s)) (line le_rfl (CuspRep.Model.absC E s)) id := fun h => by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  have h3 := ((paired_line_iff _ _ _ _).1 h).2.2
-  have h4 : ∀ z, dchi (CuspRep.Model.absC E s) z = 0 := fun z => by
-    have := h3 fun _ _ => z
-    simp only [id, sc, opTriv, opAdd, mul_zero, zero_add, Matrix.trace, Fin.sum_univ_one, Matrix.diag,
-      Matrix.of_apply] at this
-    linear_combination this / 2
-  have := CuspRep.Model.expo_absC s τ
-  rw [expo, h4, h4] at this
-  exact hs (by simpa using this.symm)
 
 omit [IsTotallyComplex E] in
 

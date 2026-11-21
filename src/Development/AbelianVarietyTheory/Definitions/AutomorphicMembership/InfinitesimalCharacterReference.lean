@@ -15,32 +15,15 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 1000000
 
-theorem overRows_imp {p q : RowP} (h : OverRows p)
-    (hpq : ∀ K B f T w Z Wt hX z p0 Y, p K B f T w Z Wt hX z p0 Y → q K B f T w Z Wt hX z p0 Y) : OverRows q :=
-  EvG.imp h fun _ _ _ _ _ hK => large₂.imp hK fun B f T _ H kp w c Z Wt hX z p0 Y a b d e g =>
-    hpq _ B f T w Z Wt hX z p0 Y (H kp w c Z Wt hX z p0 Y a b d e g)
 
-theorem overRows_and {p q : RowP} (h : OverRows p) (h' : OverRows q) :
-    OverRows fun K B f T w Z Wt hX z p0 Y => p K B f T w Z Wt hX z p0 Y ∧ q K B f T w Z Wt hX z p0 Y :=
-  EvG.imp (EvG.inter h h') fun _ _ _ _ _ hK => large₂.imp (large₂.inter hK.1 hK.2) fun _ _ _ _ H kp w c Z Wt hX z p0 Y a b d e g =>
-    ⟨H.1 kp w c Z Wt hX z p0 Y a b d e g, H.2 kp w c Z Wt hX z p0 Y a b d e g⟩
 
-theorem overRows_atMem {hL : GlobalTheory.Published.LocalLanglandsGL} {p : RowP} (h : OverRows p) :
-    AtMem hL fun K B f T w Z Wt p0 t _ _ _ => p K B f T w Z Wt t.hX t.r.z p0 t.r.Y :=
-  EvG.imp h fun _ _ _ _ _ hK => large₂.imp hK fun _ _ _ _ H kp w Z Wt p0 t _ _ _ _ _ _ c =>
-    H kp w c Z Wt t.hX t.r.z p0 t.r.Y t.r.intersectionNumber_baseChange t.exAt t.inGeo t.grp t.grpAt
 
 theorem overRows_allSt {p : RowP} (h : OverRows p) :
     AllSt fun K B f T w P x => p K B f T w x.o.Z P.Wt P.hX x.m.z x.s.p0 x.r.Y :=
   EvG.imp h fun _ _ _ _ _ hK => large₂.imp hK fun _ _ _ _ H kp _ _ w s P x =>
     s.1.elim fun c => H kp w c x.o.Z P.Wt P.hX x.m.z x.s.p0 x.r.Y x.m.intersectionNumber_baseChange x.m.exAt x.m.inGeo x.fits.grp x.fits.grpAt
 
-theorem cenLoc_of_cenUsed {D : D7} {M : MtFam D} (h : CenUsed D M) : CenLoc D M := fun i =>
-  h _ (Or.inr ⟨D.nd.w i, (D.nd.mu_w i).trans ((D.what₂.muAt_or _).resolve_left (D.nd.w_tw i)).symm⟩) _
-    (D.nd.j_range i).1 (D.nd.j_range i).2
 
-theorem sumTw_of_sumUsed {D : D7} {M : MtFam D} (h : SumUsed D M) : SumTw D M := fun w hw j h1 h2 =>
-  h _ (Or.inr ⟨w, ((D.what₂.muAt_or w).resolve_left hw).symm⟩) j h1 h2
 
 open Classical in
 
@@ -52,36 +35,7 @@ def reset {D : D7} (Rw : RowSide D) (a : ∀ w, D.naut.LP w) : RowSide D where
 theorem one_lt_norm {D : D7} (w : PlE D.host) : (1 : ℝ) < ((Ideal.absNorm w.asIdeal : ℕ) : ℝ) := by
   exact_mod_cast NumberField.HeightOneSpectrum.one_lt_absNorm w
 
-theorem rowLoc_reset {D : D7} (Rw : RowSide D) (σ : D.what₂.FT) :
-    RowLoc D (reset Rw fun w => D.naut.lpUnr w (Multiset.replicate D.R.r 1)) σ := by
-  intro w _ hw
-  have e : (reset Rw fun w => D.naut.lpUnr w (Multiset.replicate D.R.r 1)).locR σ w = D.naut.lpUnr w (Multiset.replicate D.R.r 1) :=
-    if_neg (not_exists.2 hw)
-  have s := D.naut.lpUnr_spec w (Multiset.replicate D.R.r 1) (fun h => zero_ne_one (Multiset.eq_of_mem_replicate h))
-  rw [e, s.2.1]
-  refine ⟨s.1, fun α hα => ?_⟩
-  rw [Multiset.eq_of_mem_replicate hα, norm_one]
-  have ht : 1 < D.R.t := by have := D.R.three_m_lt_t; have := D.R.two_le_m; omega
-  have : (1 : ℝ) < D.R.t := by exact_mod_cast ht
-  exact Real.one_lt_rpow (one_lt_norm w) (by linarith)
 
-theorem not_rowLoc_reset {D : D7} (Rw : RowSide D) (σ : D.what₂.FT) (w : PlE D.host) (hs : IsSplitPl D.host w)
-    (hw : ∀ k : Fin 2, w ∉ placesOver D.host.E (D.host.g k)) :
-    ¬ RowLoc D (reset Rw fun w => D.naut.lpUnr w
-      {((((Ideal.absNorm w.asIdeal : ℕ) : ℝ) ^ (((D.R.t : ℝ) - 1) / 2) : ℝ) : ℂ)}) σ := by
-  intro h
-  have hp : 0 < ((Ideal.absNorm w.asIdeal : ℕ) : ℝ) ^ (((D.R.t : ℝ) - 1) / 2) :=
-    Real.rpow_pos_of_pos (zero_lt_one.trans (one_lt_norm w)) _
-  have e : (reset Rw fun w => D.naut.lpUnr w
-      {((((Ideal.absNorm w.asIdeal : ℕ) : ℝ) ^ (((D.R.t : ℝ) - 1) / 2) : ℝ) : ℂ)}).locR σ w = D.naut.lpUnr w
-      {((((Ideal.absNorm w.asIdeal : ℕ) : ℝ) ^ (((D.R.t : ℝ) - 1) / 2) : ℝ) : ℂ)} := if_neg (not_exists.2 hw)
-  have s := D.naut.lpUnr_spec w {((((Ideal.absNorm w.asIdeal : ℕ) : ℝ) ^ (((D.R.t : ℝ) - 1) / 2) : ℝ) : ℂ)}
-    (fun h => hp.ne' (by exact_mod_cast (Multiset.mem_singleton.1 h).symm))
-  have h2 := (h w hs hw).2
-  rw [e, s.2.1] at h2
-  have h3 := h2 _ (Multiset.mem_singleton_self _)
-  rw [Complex.norm_real, Real.norm_of_nonneg hp.le] at h3
-  exact lt_irrefl _ h3
 
 theorem isoInf_string {D : D7} (χ : D.naut.CG 1) (d : ℕ) (τ : D.host.E →+* ℂ) (s : ℂ) (h : D.naut.infG χ τ = {s}) :
     isoInf D.nd D.naut [⟨1, χ, d⟩] τ = (Multiset.range d).map fun c : ℕ => s + ((d : ℂ) - 1 - 2 * c) / 2 := by
@@ -146,46 +100,11 @@ theorem infinitesimal_character_reference {D : D7} {cf : CharFrame D} (C : CharS
   have := C.infG (C.e1.symm ⟨cf.mu0 j, (cf.isMu0 j).unitary⟩) _ (by rw [Equiv.apply_symm_apply]; exact (cf.isMu0 j).inf) (D.eTau τ)
   refine ⟨this.1.trans ?_, this.2.trans ?_⟩ <;> simp [eExp]
 
-theorem tieLab_of_parIn {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {cf : CharFrame D} {rep : D.what₂.FT → NG.FinTyp D.host.E D.R.r}
-    {Rw : RowSide D} (P : ParIn hL D cf rep Rw) : SumRepresentations.tieLab D := by
-  refine ⟨fun k v a s => ?_, fun k v a => ?_⟩
-  · haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-    rw [P.lab k v, P.lab k v, P.T.tw, GlobalTheory.WeilDeligne.WD.lab_lpTw]
-  · haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-    rw [P.lab k v, ← P.T.dim]
-    exact GlobalTheory.WeilDeligne.WD.natDegree_lab_le _ _ _
 
-theorem liftAt_int {D : D7} {Rw : RowSide D} {j : ℕ} {σ : D.what₂.FT} {π : D.nbc.AU j} {μ : D.naut.CG 1}
-    (h : LiftAt D Rw j σ π μ) (τ : D.what₂.Tau) : ∀ z ∈ D.naut.infG μ (GlobalTheory.IndefiniteRowSideFullHecke.CMTypeEmbeddings.embTau D τ), ∃ n : ℤ, z = n := by
-  obtain ⟨s, hs⟩ := Multiset.card_eq_one.1 (D.naut.infG_card μ (GlobalTheory.IndefiniteRowSideFullHecke.CMTypeEmbeddings.embTau D τ))
-  have h1 := D.naut.infG_tw μ _ _ _ (h.eta τ).1
-  rw [hs, Multiset.map_singleton] at h1
-  have h2 := (h.inf τ).1
-  rw [isoInf_string _ _ _ _ h1] at h2
-  obtain ⟨a, ha⟩ := D.R.t_odd
-  obtain ⟨b, hb⟩ : Odd D.R.r := by
-    obtain ⟨x, hx⟩ := D.R.k_even
-    obtain ⟨y, hy⟩ := D.R.m_even
-    have h2 := D.R.two_le_m
-    exact ⟨x + y - 1, by simp only [Ranks.r]; omega⟩
-  have hn : D.R.nV = D.R.r + D.R.t := rfl
-  obtain ⟨k, hk⟩ := (D.nbc.infW_alg j (D.nbc.wtAU j π) (GlobalTheory.IndefiniteRowSideFullHecke.CMTypeEmbeddings.embTau D τ)).2 (s + -(1 / 2) + ((D.R.t : ℂ) - 1 - 2 * (0 : ℕ)) / 2)
-    (by rw [h2]; exact Multiset.mem_add.2 (Or.inr (Multiset.mem_map.2 ⟨0, Multiset.mem_range.2 (by omega), rfl⟩)))
-  intro z hz
-  rw [hs, Multiset.mem_singleton] at hz
-  refine ⟨k + b + 1, ?_⟩
-  rw [hn, hb] at hk
-  push_cast at hk ⊢
-  rw [hz]
-  linear_combination hk
 
 theorem plGw_split (D : D7) (k : Fin 2) (v : D.nd.PlG k) : IsSplitPl D.host (D.naut.plGw k v) :=
   (GlobalTheory.Mem.Chr.splitsC_main D.R D.host _ (D.host.g_prime k) (D.nd.g_split k) _ (D.naut.plGw_over k v)).2.2.1
 
-theorem cancel_of_parIn {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {cf : CharFrame D} {rep : D.what₂.FT → NG.FinTyp D.host.E D.R.r}
-    {Rw : RowSide D} (P : ParIn hL D cf rep Rw) (w : PlE D.host) (a b c : D.naut.LP w)
-    (h : D.naut.lpSum a c = D.naut.lpSum b c) : a = b :=
-  (P.T.e w).injective (GlobalTheory.WeilDeligne.WD.lpSum_cancel_right _ _ _ _ _ _ _ (P.T.e w c) (by rw [← P.T.sum, ← P.T.sum, h]))
 
 theorem local_lift_at_reference {D : D7} {cf : CharFrame D} (C : CharSide D cf) (Rw : RowSide D) (j : Fin D.R.m) (σ : D.what₂.FT)
     (π : D.nbc.AU (j.1 + 1)) (hs : SphericalInertData.SphInert D.nd D.naut D.nbc (j.1 + 1) π)

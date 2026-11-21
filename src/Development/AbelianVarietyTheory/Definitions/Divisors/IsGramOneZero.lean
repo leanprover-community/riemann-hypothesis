@@ -99,39 +99,9 @@ end Index
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {K : Type} [Field K] [NumberField K]
   {ρ : 𝓞 K} {σ₁ : K →+* ℂ}
 
-theorem isGram_one_zero (X : CMObj H K ρ σ₁ 1 0) : IsGram X (fun _ _ => X.hh (Sum.inl 0)) 0 :=
-  ⟨fun a b => by
-    obtain rfl := Subsingleton.elim a 0
-    obtain rfl := Subsingleton.elim b 0
-    exact X.weil (Sum.inl 0), fun a => a.elim0⟩
 
-theorem isGram_zero_one (X : CMObj H K ρ σ₁ 0 1) : IsGram X 0 (fun _ _ => X.hh (Sum.inr 0)) :=
-  ⟨fun a => a.elim0, fun a b => by
-    obtain rfl := Subsingleton.elim a 0
-    obtain rfl := Subsingleton.elim b 0
-    exact X.weil (Sum.inr 0)⟩
 
-theorem exists_isDiffs (hU : ThetaUnifAV) (hL : Out.Laws) {p q : ℕ} (X : CMObj H K ρ σ₁ p q) :
-    ∃ (FP : GenFib (X.A true).pol) (FQ : GenFib (X.A false).pol) (FB : GenFib X.B.pol)
-      (MP : Fin p → ((Fin FP.P₀.g → K) →ₗ[K] (Fin FB.P₀.g → K)))
-      (MQ : Fin q → ((Fin FQ.P₀.g → K) →ₗ[K] (Fin FB.P₀.g → K))), IsDiffs FP FQ FB MP MQ := by
-  obtain ⟨FA, FB, -, -, M, -, -, -, hM, -⟩ := NumInh.exists_data hU hL X
-  exact ⟨FA true, FA false, FB, fun a => M (Sum.inl a), fun a => M (Sum.inr a), fun a => hM (Sum.inl a),
-    fun a => hM (Sum.inr a)⟩
 
-theorem index_one_zero (h : IdealSt) (hH : GlobalTheory.IndefiniteRowSideFullHecke.EigenvectorLieDegree.IsHostField H) (X : CMObj H K ρ σ₁ 1 0) :
-    ∃ 𝔫 : Ideal (𝓞 E), 𝔫 * 𝔫.map (H.bar : 𝓞 E →+* 𝓞 E) = Ideal.span {X.hh (Sum.inl 0)} ∧
-      ∀ (FP : GenFib (X.A true).pol) (FB : GenFib X.B.pol) (M : (Fin FP.P₀.g → K) →ₗ[K] (Fin FB.P₀.g → K)),
-        FP.IsDiffOf FB (phiP X 0) M → GenFib (X.A false).pol → ∀ τ : 𝓞 E →+* 𝓞 K, τ H.rt = ρ →
-          idx K 1 (FB.eigLat X.B.t.act τ) (subP FP FB (fun _ => M) τ) = 𝔫.map τ := by
-  obtain ⟨𝔫, h1, h2⟩ := h E H hH K ρ σ₁ 1 0 X _ _ (isGram_one_zero X)
-  refine ⟨𝔫, by
-    rw [h1, Matrix.det_isEmpty, _root_.mul_one]
-    exact congrArg (fun x => Ideal.span {x}) (Matrix.det_unique (Matrix.of fun _ _ : Fin 1 => X.hh (Sum.inl 0))), fun FP FB M hM FQ τ hτ => ?_⟩
-  have := h2 FP FQ FB (fun _ => M) (fun a => a.elim0)
-    ⟨fun a => by obtain rfl := Subsingleton.elim a 0; exact hM, fun a => a.elim0⟩ τ hτ
-  rw [idx_zero] at this
-  simpa using this
 
 end GlobalTheory.FlatCM.Model
 

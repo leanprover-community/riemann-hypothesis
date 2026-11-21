@@ -78,17 +78,6 @@ theorem reduce_up {N : ℕ} (U : Matrix (Fin N) (Fin N) D.host.E) (hU : IsUpUni 
   · rw [(hP i j).2 h]; exact mem_boxS_one D
   · rw [(hP i j).1 h]; exact mem_boxS_zero D
 
-theorem reduce_lo {N : ℕ} (L : Matrix (Fin N) (Fin N) D.host.E) (hL : IsLoUni L) :
-    ∃ A : Matrix (Fin N) (Fin N) (𝓞 D.host.E), (∀ a b, a < b → A a b = 0) ∧ (∀ a, A a a = 1) ∧
-      ∀ i j, (A.map (fun x => (x : D.host.E)) * L) i j ∈ boxS D := by
-  have hU : IsUpUni L.transpose := fun i j => ⟨fun h => (hL j i).1 h, fun h => h ▸ (hL i i).2 rfl⟩
-  obtain ⟨B, hB0, hB1, hBF⟩ := reduce_up D L.transpose hU
-  refine ⟨B.transpose, fun a b h => hB0 b a h, fun a => hB1 a, fun i j => ?_⟩
-  have e : (B.transpose.map (fun x => (x : D.host.E)) * L) =
-      (L.transpose * B.map (fun x => (x : D.host.E))).transpose := by
-    rw [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.transpose_map]
-  rw [e]
-  exact hBF j i
 
 end Formalism.MainNotions.S.Pv.HH
 

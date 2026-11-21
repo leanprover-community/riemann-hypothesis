@@ -303,17 +303,6 @@ theorem exists_cmLat : ∃ (D : Datum host) (g : ℕ) (ty : Fin g → (Cyclotomi
     · exact ⟨fun _ _ h => h, rfl⟩
     · exact j.elim0
 
-theorem exists_cmLat_neg : ∃ (D : Datum host) (g : ℕ) (ty : Fin g → (CyclotomicFieldTwentyEight →+* ℂ)) (Pe : D.La →+ (Fin g → ℂ))
-    (hP : IsPeriod D ty Pe) (Z : CMLat hP 0 1), D.p = 0 ∧ D.q = 1 ∧ ∀ j, Function.Injective (Z.f j) ∧ Z.hh j = 1 := by
-  obtain ⟨D, hp, hq⟩ := exists_datum
-  obtain ⟨g, ty, hty⟩ := PureTypeModel.exists_isTypeFn host 0 1
-  obtain ⟨Pe, hP⟩ := PeriodNonempty.exists_isPeriod CyclotomicFieldTwentyEight host (negDatum D) g ty (by
-    change IsTypeFn host D.q D.p ty
-    rw [hp, hq]; exact hty)
-  refine ⟨negDatum D, g, ty, Pe, hP, selfLatNeg hp hq hP hty, hq, hp, fun j => ?_⟩
-  rcases j with j | j
-  · exact j.elim0
-  · exact ⟨fun _ _ h => h, rfl⟩
 
 theorem logOm_quadratic {K : Type} [Field K] [NumberField K] {d : ℕ} [NeZero d] (h2 : Module.finrank ℚ K = 2)
     (hD : discr K = -d) (χ : DirichletCharacter ℂ d) :
@@ -331,20 +320,6 @@ section Mixed
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-theorem bar_hh {D : Datum H} {g : ℕ} {ty : Fin g → (E →+* ℂ)} {Pe : D.La →+ (Fin g → ℂ)} {hP : IsPeriod D ty Pe}
-    {p q : ℕ} (Z : CMLat hP p q) (j : Fin p ⊕ Fin q) : H.bar (Z.hh j) = Z.hh j := by
-  have skew : ∀ (D : Datum H) x y, D.EF x y = -D.EF y x := fun D x y => by
-    have := D.alt (x + y)
-    simp only [map_add, LinearMap.add_apply, D.alt] at this
-    linarith
-  have := (Z.D₁ j.isLeft).proj
-  have : Nontrivial (Z.D₁ j.isLeft).La :=
-    Module.nontrivial_of_finrank_pos (R := 𝓞 E) (by rw [Z.finrank_D₁]; exact one_pos)
-  obtain ⟨b, hb⟩ := exists_ne (0 : (Z.D₁ j.isLeft).La)
-  have e : H.bar (Z.hh j) • b = Z.hh j • b := (Z.D₁ j.isLeft).unimod.1 (LinearMap.ext fun a => by
-    rw [skew, ← (Z.D₁ j.isLeft).adj, ← Z.form, ← skew, Z.form])
-  rw [← sub_eq_zero, ← sub_smul, smul_eq_zero] at e
-  exact sub_eq_zero.1 (e.resolve_right hb)
 
 theorem im_mul_form_pos {D : Datum H} {g : ℕ} {ty : Fin g → (E →+* ℂ)} {Pe : D.La →+ (Fin g → ℂ)}
     (hP : IsPeriod D ty Pe) {ρ : ℂ} (hρ : ρ.im ≠ 0) {a : D.La} (ha : a ∈ PureType.lat hP ρ) (h0 : a ≠ 0) :
@@ -363,32 +338,6 @@ theorem im_mul_form_pos {D : Datum H} {g : ℕ} {ty : Fin g → (E →+* ℂ)} {
   push_cast
   linarith
 
-theorem hh_sign {D : Datum H} {g : ℕ} {ty : Fin g → (E →+* ℂ)} {Pe : D.La →+ (Fin g → ℂ)} {hP : IsPeriod D ty Pe}
-    {p q : ℕ} (Z : CMLat hP p q) (hpq : p + q = D.p + D.q) (j : Fin p ⊕ Fin q) {a : (Z.D₁ j.isLeft).La} (ha : a ≠ 0) :
-    0 < (Z.D₁ j.isLeft).EF (Z.hh j • H.w0 • a) a * (Z.D₁ j.isLeft).EF (H.w0 • a) a := by
-  have him : H.rt0.im ≠ 0 := by
-    intro h
-    have e := congrArg Complex.re H.sqrt_neg_disc_sq
-    have hd : (0 : ℝ) < H.d := Nat.cast_pos.2 H.d_prime.pos
-    simp [pow_two, h] at e
-    nlinarith [mul_self_nonneg H.rt0.re]
-  have him' : (if j.isLeft then H.rt0 else -H.rt0).im ≠ 0 := by split_ifs <;> simpa using him
-  have h1 := im_mul_form_pos hP him' (Z.pure j a) fun e => ha (Z.f_injective hpq j (e.trans (map_zero _).symm))
-  rw [← map_smul, Z.form] at h1
-  obtain ⟨g₁, ty₁, P₁, ht, hP₁⟩ := exists_type_period (Z.D₁ j.isLeft)
-  have h2 : a ∈ PureType.lat hP₁ (if j.isLeft then H.rt0 else -H.rt0) := by
-    rcases j with j | j
-    · simp only [Sum.isLeft_inl] at ht
-      rw [Z.sigP.1, Z.sigP.2] at ht
-      exact (CMLat.ofPositive Z.sigP.1 Z.sigP.2 hP₁ ht).pure (.inl 0) a
-    · simp only [Sum.isLeft_inr] at ht
-      rw [Z.sigM.1, Z.sigM.2] at ht
-      exact (CMLat.ofNegative Z.sigM.1 Z.sigM.2 hP₁ ht).pure (.inr 0) a
-  have h3 := im_mul_form_pos hP₁ him' h2 ha
-  have h4 := mul_pos h1 h3
-  have h5 := mul_self_pos.2 him'
-  rw [mul_mul_mul_comm] at h4
-  exact_mod_cast (pos_iff_pos_of_mul_pos h4).1 h5
 
 theorem exists_sum (D₁ D₂ : Datum H) {g₁ g₂ : ℕ} {t₁ : Fin g₁ → (E →+* ℂ)} {t₂ : Fin g₂ → (E →+* ℂ)}
     {P₁ : D₁.La →+ (Fin g₁ → ℂ)} {P₂ : D₂.La →+ (Fin g₂ → ℂ)} (h₁ : IsPeriod D₁ t₁ P₁) (h₂ : IsPeriod D₂ t₂ P₂)
@@ -484,71 +433,9 @@ theorem exists_sum (D₁ D₂ : Datum H) {g₁ g₂ : ℕ} {t₁ : Fin g₁ → 
       fun x y => by rw [hD]; exact he _ _⟩, fun _ => rfl⟩
   rwa [show (Q.comp e.toLinearMap.toAddMonoidHom).range = Q.range from SetLike.coe_injective hr]
 
-theorem exists_cmLat_mixed (D₀ : Datum H) (hp : D₀.p = 1) (hq : D₀.q = 0) :
-    ∃ (D : Datum H) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (Pe : D.La →+ (Fin g → ℂ)) (hP : IsPeriod D ty Pe)
-      (Z : CMLat hP 1 1), D.p = 1 ∧ D.q = 1 ∧ IsTypeFn H 1 1 ty ∧ ∀ j, Function.Injective (Z.f j) ∧ Z.hh j = 1 := by
-  obtain ⟨g₁, t₁, P₁, y₁, h₁⟩ := exists_type_period D₀
-  obtain ⟨g₂, t₂, P₂, y₂, h₂⟩ := exists_type_period (oppDatum D₀)
-  obtain ⟨D, e, P, a, b, hE, hy, hP, hv⟩ := exists_sum D₀ (oppDatum D₀) h₁ h₂ y₁ y₂
-  simp only [oppDatum_p, oppDatum_q, hp, hq] at a b y₁ y₂
-  let f₁ : D₀.La →ₗ[𝓞 E] D.La := e.symm.toLinearMap ∘ₗ LinearMap.inl _ _ _
-  let f₂ : (oppDatum D₀).La →ₗ[𝓞 E] D.La := e.symm.toLinearMap ∘ₗ LinearMap.inr _ _ _
-  have k₁ : ∀ x, e (f₁ x) = (x, 0) := fun x => by simp [f₁]
-  have k₂ : ∀ x, e (f₂ x) = (0, x) := fun x => by simp [f₂]
-  have u₁ : ∀ x, f₁ x ∈ PureType.lat hP H.rt0 := fun x i => Fin.addCases (fun i hi => by
-    have : P₁ x i = 0 := (CMLat.ofPositive hp hq h₁ y₁).pure (.inl 0) x i (by simpa using hi)
-    rw [hv, k₁]; simpa using this) (fun i _ => by rw [hv, k₁]; simp) i
-  have u₂ : ∀ x, f₂ x ∈ PureType.lat hP (-H.rt0) := fun x i => Fin.addCases (fun i _ => by rw [hv, k₂]; simp)
-    (fun i hi => by
-      have : P₂ x i = 0 := (CMLat.ofNegative (D := oppDatum D₀) hq hp h₂ y₂).pure (.inr 0) x i (by simpa using hi)
-      rw [hv, k₂]; simpa using this) i
-  have v₁ : ∀ x y, D.EF (f₁ x) (f₁ y) = D₀.EF ((1 : 𝓞 E) • x) y := fun x y => by rw [hE, k₁, k₁]; simp
-  have v₂ : ∀ x y, D.EF (f₂ x) (f₂ y) = (oppDatum D₀).EF ((1 : 𝓞 E) • x) y := fun x y => by rw [hE, k₂, k₂]; simp
-  have w : ∀ x, x = f₁ (e x).1 + f₂ (e x).2 := fun x => e.injective (by rw [map_add, k₁, k₂]; simp)
-  let Z : CMLat hP 1 1 :=
-    { D₁ := fun b => match b with
-        | true => D₀
-        | false => oppDatum D₀
-      sigP := ⟨hp, hq⟩
-      sigM := ⟨hq, hp⟩
-      f := fun j => match j with
-        | .inl _ => f₁
-        | .inr _ => f₂
-      pure := fun j x => match j, x with
-        | .inl _, x => u₁ x
-        | .inr _, x => u₂ x
-      hh := fun _ => 1
-      form := fun j x y => match j, x, y with
-        | .inl _, x, y => v₁ x y
-        | .inr _, x, y => v₂ x y
-      span := ⟨1, one_pos, fun x => ⟨fun j => match j with
-        | .inl _ => (e x).1
-        | .inr _ => (e x).2, by
-          rw [one_smul, Fintype.sum_sum_type, Fin.sum_univ_one, Fin.sum_univ_one]
-          exact w x⟩⟩ }
-  exact ⟨D, _, _, P, hP, Z, a, b, by rw [a, b] at hy; exact hy,
-    fun j => ⟨Z.f_injective (by rw [a, b]) j, rfl⟩⟩
 
-theorem exists_cmLat_mixed_cyclotomic :
-    ∃ (D : Datum CyclotomicTwentyEight.host) (g : ℕ) (ty : Fin g → (CyclotomicTwentyEight.CyclotomicFieldTwentyEight →+* ℂ)) (Pe : D.La →+ (Fin g → ℂ))
-      (hP : IsPeriod D ty Pe) (Z : CMLat hP 1 1), D.p = 1 ∧ D.q = 1 ∧ IsTypeFn CyclotomicTwentyEight.host 1 1 ty ∧
-      ∀ j, Function.Injective (Z.f j) ∧ Z.hh j = 1 := by
-  obtain ⟨D, hp, hq⟩ := CyclotomicTwentyEight.exists_datum
-  exact exists_cmLat_mixed D hp hq
 
-theorem isFam_of_isTen {R : Type} [CommRing R] {ω : R} {C : Ell H R ω} {D : Datum H} {h : D.La → D.La → OK H}
-    {T : PAT H (AlgebraicGeometry.Spec (CommRingCat.of R))} (t : IsTen C D h T) : IsFam C T h ⊤ fun a => t.ten.tmul a.1 :=
-  ⟨fun a => t.ten.isLinearHom_tmul a.1, fun a b => t.ten.tmul_add a.1 b.1, fun s a => t.lin s a.1,
-    fun a b => t.lam a.1 b.1⟩
 
-theorem isEmpty_cmLat_zero {D : Datum H} {g : ℕ} {ty : Fin g → (E →+* ℂ)} {Pe : D.La →+ (Fin g → ℂ)}
-    (hP : IsPeriod D ty Pe) [Nontrivial D.La] : IsEmpty (CMLat hP 0 0) := by
-  refine ⟨fun Z => ?_⟩
-  obtain ⟨n, hn, hs⟩ := Z.span
-  obtain ⟨a, ha⟩ := exists_ne (0 : D.La)
-  obtain ⟨x, hx⟩ := hs a
-  have e : n • Pe a = 0 := by rw [← map_nsmul, hx]; simp
-  exact ha (hP.2.1 (((smul_eq_zero.1 e).resolve_left hn.ne').trans (map_zero Pe).symm))
 
 end Mixed
 

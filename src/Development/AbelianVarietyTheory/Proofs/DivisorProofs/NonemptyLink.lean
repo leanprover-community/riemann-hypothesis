@@ -61,31 +61,5 @@ def FlagExt (z : admitted Y i₀) : Prop :=
 
 end Free
 
-theorem nonempty_link {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A} (s : FinalTheorems S κ) {p : ℕ} (hp : p.Prime)
-    {W : ValuationSubring ℂ} (hW : (p : ℂ) ∈ W.nonunits)
-    (Z : LocM.Mdl (S.sys.Y p W hp hW) ⟨κ.l, κ.c, κ.good p hp⟩) : Nonempty (Link Z s.T.Z) := by
-  obtain ⟨τ, mu, hτ⟩ := exists_isTrans (S.sys.clauses p W hp hW).1 Z.dvd Z.le
-  let b : 𝓞 κ.c.F →+* κ.c.V W := (algebraMap (𝓞 κ.c.F) κ.c.F).codRestrict (κ.c.V W) fun x => by
-    have hx : IsIntegral ℤ (x : κ.c.F) := x.2
-    have h₂ : IsIntegral (κ.c.V W) (x : κ.c.F) := hx.tower_top
-    obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.1 h₂
-    exact (show ((y : κ.c.V W) : κ.c.F) = algebraMap _ _ x from hy) ▸ y.2
-  have hb : spMap (κ.c.V W).subtype ≫ spMap b = spMap (algebraMap (𝓞 κ.c.F) κ.c.F) := (Spec.map_comp _ _).symm
-  obtain ⟨f, t, n₁, n₂, hf, hj, -⟩ := s.glob.2.1 p W hp hW b fun _ => rfl
-  let k : gen s.T.Z ⟶ pullback s.Ygl.s (spMap b) :=
-    pullback.lift (genι s.T.Z ≫ s.T.b) (genStr s.T.Z ≫ spMap (κ.c.V W).subtype) (by
-      rw [Category.assoc, s.T.b_s, Category.assoc, hb]
-      exact pullback.condition)
-  have hk : k ≫ pullback.fst _ _ = genι s.T.Z ≫ s.T.b := pullback.lift_fst _ _ _
-  obtain ⟨tg, ⟨m⟩⟩ := exists_sab k t
-  obtain ⟨m₂, -⟩ := GlobalTheory.LevelCover.sab_comp m n₂ rfl
-  obtain ⟨n, -⟩ := GlobalTheory.LevelCover.sab_comp m n₁ hk
-  obtain ⟨m₁, -⟩ := GlobalTheory.LevelCover.sab_cancel s.T.pull n (genι s.T.Z) rfl
-  refine ⟨⟨τ, mu, hτ, k ≫ f, tg, m₁, m₂, ?_, ?_⟩⟩
-  · rw [← Category.assoc]
-    refine hj _ ?_
-    rw [Category.assoc, hk, ← Category.assoc]
-    exact s.T.j_b
-  · exact (Category.assoc _ _ _).trans ((congrArg (k ≫ ·) hf).trans (pullback.lift_snd _ _ _))
 
 end GlobalTheory.GenDeg

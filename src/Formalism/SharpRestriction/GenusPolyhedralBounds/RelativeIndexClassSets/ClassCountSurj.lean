@@ -158,7 +158,6 @@ local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
 
 def inclAd : 𝔸 →+* 𝒜 := (Algebra.TensorProduct.includeRight : 𝔸 →ₐ[F] 𝒜).toRingHom
 
-theorem inclAd_apply (a : 𝔸) : inclAd (E := E) a = (1 : E) ⊗ₜ[F] a := rfl
 
 theorem sigR_inclAd (σ : E →ₐ[F] E) (a : 𝔸) : sigR σ 𝔸 (inclAd (E := E) a) = inclAd a := by
   show Algebra.TensorProduct.map σ (AlgHom.id F 𝔸) ((1 : E) ⊗ₜ[F] a) = (1 : E) ⊗ₜ[F] a

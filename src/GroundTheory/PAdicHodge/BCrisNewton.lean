@@ -124,16 +124,6 @@ theorem mem_fracBCris_of_mem_maxUnramified {k : PadicAlgCl p} (hk : k ∈ maxUnr
   rw [e]
   exact iotaB_mem_fracBCris hε hζ x
 
-theorem fixed_fracBCris_eq [FiniteDimensional ℚ_[p] K] :
-    {x : 𝔹dR | x ∈ fracBCris hε hζ ∧ ∀ σ : Gal(PadicAlgCl p/K), σ • x = x} =
-      algClToBdRField p '' (maxUnramified p K : Set (PadicAlgCl p)) := by
-  ext x
-  constructor
-  · rintro ⟨hx, hfix⟩
-    obtain ⟨k, hk, rfl⟩ := fracBCris_fixed hε hζ hx hfix
-    exact ⟨k, hk, rfl⟩
-  · rintro ⟨k, hk, rfl⟩
-    exact mem_fracBCris_of_mem_maxUnramified hε hζ hk
 
 end ACris
 

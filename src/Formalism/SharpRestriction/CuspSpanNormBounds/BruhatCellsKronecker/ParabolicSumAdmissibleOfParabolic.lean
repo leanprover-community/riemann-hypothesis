@@ -88,27 +88,6 @@ theorem jhUnit_le {W : LocW D.R.k D.R.rS} (w w' : D.what₂.Word) (A : LocS W)
           mul_le_mul_of_nonneg_right h2 (inv_nonneg.2 hpos.le)
       _ = B := by field_simp
 
-theorem stPTsum_of_stPT (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ)
-    (h : stPT D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C) : stPTsum D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C := by
-  intro h0 τ w w' hTT θ hθ W hW ι _ lams As a hl μsec hsec γ p hrel θ' hθ' νR hν
-  have hb : 0 < large₂.sc.b := Real.exp_pos _
-  set B : ℝ := large₂.sc.b ^ (C * (D.R.m : ℝ) ^ 4) *
-    (max 1 (Gf D.R.k D.R.rS W.z W.z' γ)⁻¹) ^ (C * (D.R.m : ℝ) ^ 2) with hBdef
-  have hB : 0 ≤ B := by
-    have : (0 : ℝ) < max 1 (Gf D.R.k D.R.rS W.z W.z' γ)⁻¹ := lt_of_lt_of_le one_pos (le_max_left _ _)
-    positivity
-  set wt : ℝ := ptWeight D.R.k D.R.rS (Tr D w) (Tr D w') p with hwt
-  have hi : ∀ i, wt * hsNormSq (jhUnit D w w' (As i) μsec νR γ) ≤ B := fun i =>
-    jhUnit_le D w w' (As i) μsec νR γ wt B hB
-      (h h0 τ w w' hTT θ hθ W hW (lams i) (hl i).1 (As i) (hl i).2 μsec hsec γ p hrel θ' hθ' νR hν)
-  rcases le_or_gt wt 0 with hw | hw
-  · exact le_trans (mul_nonpos_of_nonpos_of_nonneg hw (hsNormSq_nonneg _)) (by positivity)
-  · have hi' : ∀ i, hsNormSq (jhUnit D w w' (As i) μsec νR γ) ≤ B / wt := fun i => by
-      rw [le_div_iff₀ hw, mul_comm]; exact hi i
-    have := hsNormSq_sum_le a (fun i => jhUnit D w w' (As i) μsec νR γ) (B / wt) (by positivity) hi'
-    calc wt * hsNormSq (∑ i, a i • jhUnit D w w' (As i) μsec νR γ)
-        ≤ wt * (B / wt * (∑ i, ‖a i‖) ^ 2) := mul_le_mul_of_nonneg_left this hw.le
-      _ = B * (∑ i, ‖a i‖) ^ 2 := by field_simp
 
 end Rec
 
@@ -116,24 +95,10 @@ section Fam
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-theorem ptsumF_of_ptF (Cg cb Cu cT CT C0 C1 : ℝ)
-    (h : ∃ C, ∀ Cn, OwnEv Fm fun C' Cl x i => stPT (Fm.D x i) (Fm.L x i) C' Cl Cg cb Cu cT CT C0 Cn C1 C) :
-    ∃ C, ∀ Cn, OwnEv Fm fun C' Cl x i => stPTsum (Fm.D x i) (Fm.L x i) C' Cl Cg cb Cu cT CT C0 Cn C1 C := by
-  obtain ⟨C, hC⟩ := h
-  exact ⟨C, fun Cn => (hC Cn).mono (fun C' Cl x i => stPTsum_of_stPT _ _ C' Cl Cg cb Cu cT CT C0 Cn C1 C)⟩
 
-theorem PTsum_of_PT (Cg cb Cu cT CT C0 C1 : ℝ) (h : AuxiliaryNormPrimes.FamilyPlancherelOneParameter Fm Cg cb Cu cT CT C0 C1) :
-    PX.PTsum Fm Cg cb Cu cT CT C0 C1 := ptsumF_of_ptF Fm Cg cb Cu cT CT C0 C1 h
 
-theorem parabolic_sum_of_parabolic_family (Cg cb Cu cT CT C0 C1 : ℝ) (h : VanishingOnXAndXPlusBranching.admF1 Fm Cg cb Cu cT CT C0 C1) :
-    PX.PTsum Fm Cg cb Cu cT CT C0 C1 := ptsumF_of_ptF Fm Cg cb Cu cT CT C0 C1 h
 
-theorem PTsum_all (h : ∀ Cg cb Cu cT CT C0 C1, AuxiliaryNormPrimes.FamilyPlancherelOneParameter Fm Cg cb Cu cT CT C0 C1) :
-    ∀ Cg cb Cu cT CT C0 C1, PX.PTsum Fm Cg cb Cu cT CT C0 C1 :=
-  fun Cg cb Cu cT CT C0 C1 => PTsum_of_PT Fm Cg cb Cu cT CT C0 C1 (h Cg cb Cu cT CT C0 C1)
 
-theorem parabolic_sum_admissible_of_parabolic (Cg cb Cu cT CT C0 C1 : ℝ) (h : AuxiliaryNormPrimes.FamilyPlancherelOneParameter Fm Cg cb Cu cT CT C0 C1) :
-    AuxiliaryNormPrimes.FamilyPlancherelFiniteSums Fm Cg cb Cu cT CT C0 C1 := ptsumF_of_ptF Fm Cg cb Cu cT CT C0 C1 h
 
 end Fam
 

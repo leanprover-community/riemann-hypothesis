@@ -271,9 +271,6 @@ theorem isSqInt_const (c : ℂ) : IsSqInt fun _ : GA E 1 => c := by
     (fun _ => c ^ 2) continuous_const fun _ _ _ => rfl
   simpa only [HasFiniteIntegral, enorm_pow] using h.2
 
-theorem isDiscrete_const_one : ∀ (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E],
-    GlobalTheory.UnitaryBC.IsDiscrete (Submodule.span ℂ {GlobalTheory.CuspRep.oneFn E 1}) :=
-  fun E _ _ _ => isDiscrete_const fun c => isSqInt_const E (c * 1)
 
 end GlobalTheory.IdeleCovolume
 

@@ -33,7 +33,5 @@ theorem sc_pos (t : UCTrait X₁ p z₁) : 0 < t.sc := by
     rw [map_mul, map_one, hv, ← hx, mul_inv_cancel₀ h0]
   exact neg_pos.2 (Real.log_neg h1 h2)
 
-theorem uApproxAt_zero (φ : GlobalTheory.LocM.InvFun (𝓞 E)) : UApproxAt X₁ φ 0 := fun p _ z₁ t₀ e =>
-  ⟨1, by simp [val_eq_valInt], fun t => Or.inl (by simp [val_eq_valInt])⟩
 
 end GlobalTheory.UPoinc.UModel

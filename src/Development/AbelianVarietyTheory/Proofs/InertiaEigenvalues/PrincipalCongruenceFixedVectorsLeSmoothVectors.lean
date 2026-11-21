@@ -266,13 +266,6 @@ theorem isSmooth_of_fixK1 {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
   · exact absurd (le_bot_iff.1 (e ▸ principalCongruenceFixedVectors_le_smoothVectors π)) h
   · exact fun v => (e ▸ Submodule.mem_top : v ∈ PRep.smoothPart π)
 
-theorem ine_eq_of_has' (S : Sys g) (teich : Formalism.CyclotomicNorms.Fbar g → ℂ) (LP : Type) (ine : LP → ℂ[X])
-    (rec : GLRep g → LP) (h1 : SupportCompat ine rec) (h2 : DepthZeroCuspidal g) (h3 : Pinned S teich ine rec)
-    (π : GLRep g) (hπ : IsIrrRep π.2.ρ) (f : (ZMod g)[X]) (h : Has S π.2.ρ f) :
-    ine (rec π) = ((Formalism.CyclotomicNorms.rootsBar f).map fun x => X - C (teich x)).prod := by
-  refine ine_eq_of_has g S teich LP ine rec h1 h2 h3 π hπ (isSmooth_of_fixK1 hπ fun e => ?_) f h
-  obtain ⟨v, hv, hne⟩ := h
-  exact hne (by rw [(Submodule.eq_bot_iff _).1 e v hv, map_zero])
 
 theorem isSC_tameRep (χ : (ZMod g)ˣ →* ℂˣ) : IsSC (tameRep χ) ∧ fixK1 (tameRep χ).2.ρ ≠ ⊥ := by
   have hfix : fixK1 (Model.detRep 1 (Model.tame χ)) ≠ ⊥ := fun e =>
@@ -284,11 +277,5 @@ theorem isSC_tameRep (χ : (ZMod g)ˣ →* ℂˣ) : IsSC (tameRep χ) ∧ fixK1 
     simp [Matrix.mul_apply, Subsingleton.elim i 0, Subsingleton.elim j 0, mul_comm])
   exact Subgroup.mem_center_iff.2 (hc x)
 
-theorem inflates_tameRep (χ : (ZMod g)ˣ →* ℂˣ) :
-    Inflates (Model.detRep 1 (Model.tame χ))
-      (FDRep.of (Model.chRep (χ.comp (Matrix.GeneralLinearGroup.det (n := Fin 1))))) := by
-  refine ⟨LinearMap.id, fun e => one_ne_zero (LinearMap.congr_fun e (1 : ℂ)), fun k (w : ℂ) => ?_⟩
-  change Model.chRep _ _ w = Model.chRep _ _ w
-  simp [Model.tame_inc]
 
 end GlobalTheory.SerSys.TameGen

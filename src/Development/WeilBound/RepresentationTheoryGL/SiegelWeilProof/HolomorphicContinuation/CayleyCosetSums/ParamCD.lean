@@ -166,19 +166,6 @@ theorem contDiffOn_integral' (hΩ : IsOpen Ω) (ν : Measure X) [IsFiniteMeasure
     ContDiffOn ℝ ∞ (fun x => ∫ u, h u • k (x, v u) ∂ν) Ω :=
   contDiffOn_integral hΩ ν (good_of_joint hΩ k hk v hv h hh hsupp)
 
-theorem hasFDerivAt_integral' (hΩ : IsOpen Ω) (ν : Measure X) [IsFiniteMeasureOnCompacts ν] (k : F × V → E)
-    (hk : ContDiffOn ℝ ∞ k (Ω ×ˢ univ)) (v : X → V) (hv : Continuous v) (h : X → ℂ) (hh : Continuous h)
-    (hsupp : ∀ x ∈ Ω, ∃ W ∈ 𝓝 x, ∃ C : Set X, IsCompact C ∧ ∀ x' ∈ W, ∀ u ∉ C, k (x', v u) = 0) {x : F} (hx : x ∈ Ω) :
-    HasFDerivAt (fun x => ∫ u, h u • k (x, v u) ∂ν) (∫ u, h u • fderiv ℝ (fun x' => k (x', v u)) x ∂ν) x := by
-  have hG := good_of_joint hΩ k hk v hv h hh hsupp
-  have := hG.hasFDerivAt hΩ ν hx
-  convert this using 2
-  funext u
-  have hsl : ContDiffOn ℝ ∞ (fun x => k (x, v u)) Ω :=
-    hk.comp (contDiffOn_id.prodMk contDiffOn_const) fun x hx => ⟨hx, mem_univ _⟩
-  have hd : DifferentiableAt ℝ (fun x => k (x, v u)) x :=
-    (hsl.differentiableOn (by simp) x hx).differentiableAt (hΩ.mem_nhds hx)
-  exact ((hd.hasFDerivAt.const_smul (h u)).fderiv).symm
 
 end Kernel
 

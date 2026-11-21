@@ -9,8 +9,6 @@ namespace Formalism.L2.GlobalTheoryTheory.ConcN
 
 open Formalism Formalism.LFunctionChainParameters Formalism.L2.Col Formalism.L2.GlobalTheoryTheory.FamCol
 
-theorem irrAt_of_rowTr {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type} [Fintype I]
-    {C : ColObj K I} {R : RowArg C} {x ε : ℝ} (h : FamColC.RowTr C R x ε) : IrrAt R x ε := h.irr
 
 example {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type} [Fintype I]
     {C : ColObj K I} {R : RowArg C} {x ε : ℝ} :
@@ -19,23 +17,7 @@ example {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type} [Fintype I]
 example {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type} [Fintype I]
     {C : ColObj K I} {R : RowArg C} {x ε : ℝ} (h : FamColC.RowTr C R x ε) : IrrAt R x ε := FamColC.RowTr.irr h
 
-theorem irreducible_of_share : IrreducibleOfShare := by
-  intro K _ _ _ I C R x ε εC W₁ W₂ hS hN
-  unfold ShareAt at hS
-  unfold IrrAt
-  have hcard : (Fintype.card (R.κ ⊕ R.κ₁) : ℝ) = Fintype.card R.κ + Fintype.card R.κ₁ := by
-    rw [Fintype.card_sum]; push_cast; ring
-  have hle := le_trans hS hN
-  rcases (Nat.cast_nonneg (Fintype.card (R.κ ⊕ R.κ₁)) : (0 : ℝ) ≤ _).eq_or_lt with h0 | hpos
-  · rw [← h0, mul_zero]
-    exact Nat.cast_nonneg _
-  · have hb := (div_le_iff₀ hpos).mp hle
-    nlinarith [hb, hcard]
 
-theorem share_from_count_rows : ShareFromCountRows := by
-  intro hSF K _ _ _ I C R εC W₁ W₂ hC
-  obtain ⟨PP₁, PP₂, D₁, D₂, Dstar, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11⟩ := hC
-  exact hSF εC W₁ W₂ PP₁ PP₂ D₁ D₂ _ Dstar _ h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11
 
 theorem numbers_dominant_large : NumbersDominantLarge := by
   intro hND C ε hε
@@ -52,17 +34,7 @@ theorem numbers_dominant_large : NumbersDominantLarge := by
   · calc (1 + εC) / (1 - εC) * (W₁ + W₂) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hq0 hs
       _ ≤ Real.exp (-x ^ (ε / 7)) := he
 
-theorem irreducible_of_count : IrreducibleOfCount := by
-  intro hSF hND C0 ε hε
-  obtain ⟨x0, hx0⟩ := Filter.eventually_atTop.mp (numbers_dominant_large hND C0 ε hε)
-  exact ⟨x0, fun x hx K _ _ _ I C R εC W₁ W₂ hC hN =>
-    irreducible_of_share K I C R x ε εC W₁ W₂ (share_from_count_rows hSF K I C R εC W₁ W₂ hC) (hx0 x hx εC W₁ W₂ hN)⟩
 
-theorem irr_of_count :
-    ∀ C0 ε : ℝ, 0 < ε → ∃ x0 : ℝ, ∀ x ≥ x0,
-      ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (I : Type) (C : ColObj K I) (R : RowArg C)
-        (εC W₁ W₂ : ℝ), CountAt R εC W₁ W₂ → NumbersAt x ε εC C0 W₁ W₂ → IrrAt R x ε :=
-  irreducible_of_count Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.share_from_count Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.dominant_numbers_sharp_holds
 
 example {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type} {C : ColObj K I} (R : RowArg C)
     (hpos : 0 < Fintype.card (R.κ ⊕ R.κ₁)) :
@@ -90,14 +62,6 @@ example {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type} {C : ColObj
   push_cast
   nlinarith
 
-theorem wg_eq_propW (f m N g q₁ d : ℕ) :
-    Wg f m N g q₁ d = (f : ℝ) / (g : ℝ) + (2 * (f : ℝ) / (g : ℝ) +
-      23 * (f : ℝ) * Real.log (g : ℝ) / Real.sqrt (g : ℝ) +
-      2 * (f : ℝ) * (m : ℝ) * (1 / (4 * ((min q₁ d : ℕ) : ℝ)) + (1 + Real.log (N : ℝ)) / ((g : ℝ) - 1)) +
-      (N : ℝ) / 2 * (7 / 8 : ℝ) ^ f +
-      Real.exp (-(f : ℝ) / (5 * Real.log (N : ℝ)))) := by
-  unfold Wg
-  ring
 
 theorem third_fourth_terms_bound (f m P A B eu : ℝ) (hf0 : 0 ≤ f) (hm0 : 0 ≤ m) (hfP : f ≤ P) (hmP : m ≤ P) (hA0 : 0 ≤ A)
     (hB0 : 0 ≤ B) (hA : A ≤ eu) (hB : B ≤ 2 * P * eu) : 2 * f * m * (A + B) ≤ 2 * (P * P) * (eu + 2 * P * eu) := by
@@ -330,50 +294,10 @@ theorem epsilon_bound_large_x : EpsilonBoundLargeX := by
   have hp : 0 < Real.exp (-1) := Real.exp_pos _
   nlinarith
 
-theorem irreducible_of_count_sizes : IrreducibleOfCountSizes := by
-  intro hSF hND ε Cs c hε hε1 hc
-  have hW := weight_numbers_bound ε Cs hε hε1
-  have hE := epsilon_bound_large_x c hc
-  have hNm := numbers_dominant_large hND (3 * Cs + 3) ε hε
-  obtain ⟨x0, hx0⟩ := Filter.eventually_atTop.mp (hW.and (hE.and hNm))
-  refine ⟨x0, fun x hx K _ _ _ I C R f m N g₁ g₂ q₁ d hS1 hS2 hC => ?_⟩
-  obtain ⟨hw, he, hn⟩ := hx0 x hx
-  obtain ⟨-, hf1, -, -, hN1, -, -⟩ := id hS1
-  have hNA : NumbersAt x ε (epsC c N f) (3 * Cs + 3) (Wg f m N g₁ q₁ d) (Wg f m N g₂ q₁ d) :=
-    ⟨(Real.exp_pos _).le, he N f hN1 hf1, hw f m N g₁ q₁ d hS1, hw f m N g₂ q₁ d hS2⟩
-  exact irreducible_of_share K I C R x ε _ _ _ (share_from_count_rows hSF K I C R _ _ _ hC) (hn _ _ _ hNA)
 
-theorem irr_of_count_sizes :
-    ∀ ε Cs c : ℝ, 0 < ε → ε ≤ 1 → 0 < c → ∃ x0 : ℝ, ∀ x ≥ x0,
-      ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (I : Type) (C : ColObj K I) (R : RowArg C)
-        (f m N g₁ g₂ q₁ d : ℕ), SizesAt x ε Cs f m N g₁ q₁ d → SizesAt x ε Cs f m N g₂ q₁ d →
-        CountAt R (epsC c N f) (Wg f m N g₁ q₁ d) (Wg f m N g₂ q₁ d) → IrrAt R x ε :=
-  irreducible_of_count_sizes Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.share_from_count Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.dominant_numbers_sharp_holds
 
-theorem tied_count_arithmetic : CompatibleCountArithmetic := by
-  intro hB K _ _ _ I C R k _ HH _ _ _ e₁ e₂ εC W₁ W₂ hT
-  obtain ⟨h1, h2, h3, hdim, hrk, PP₁, PP₂, Dstar, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10⟩ := hT
-  refine ⟨PP₁, PP₂, (Module.finrank k (LinearMap.range e₁) : ℝ), (Module.finrank k (LinearMap.range e₂) : ℝ),
-    Dstar, a1, a2, a3, a4, a5, a6, a7, ?_, a9, a10, ?_⟩
-  · rw [← hdim]
-    exact a8
-  · rw [← hrk]
-    exact_mod_cast hB k HH e₁ e₂ h1 h2 h3
 
-theorem irreducible_of_tied_sizes : IrreducibleOfCompatibleSizes := by
-  intro hSF hB hND ε Cs c hε hε1 hc
-  obtain ⟨x0, hx0⟩ := irreducible_of_count_sizes hSF hND ε Cs c hε hε1 hc
-  exact ⟨x0, fun x hx K _ _ _ I C R k _ HH _ _ _ e₁ e₂ f m N g₁ g₂ q₁ d hS1 hS2 hT =>
-    hx0 x hx K I C R f m N g₁ g₂ q₁ d hS1 hS2 (tied_count_arithmetic hB K I C R k HH e₁ e₂ _ _ _ hT)⟩
 
-theorem irr_of_tied_sizes :
-    ∀ ε Cs c : ℝ, 0 < ε → ε ≤ 1 → 0 < c → ∃ x0 : ℝ, ∀ x ≥ x0,
-      ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (I : Type) (C : ColObj K I) (R : RowArg C)
-        (k : Type) [Field k] (HH : Type) [AddCommGroup HH] [Module k HH] [FiniteDimensional k HH]
-        (e₁ e₂ : HH →ₗ[k] HH) (f m N g₁ g₂ q₁ d : ℕ),
-        SizesAt x ε Cs f m N g₁ q₁ d → SizesAt x ε Cs f m N g₂ q₁ d →
-        CountBoundForCompatibleRows R HH e₁ e₂ (epsC c N f) (Wg f m N g₁ q₁ d) (Wg f m N g₂ q₁ d) → IrrAt R x ε :=
-  irreducible_of_tied_sizes Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.share_from_count Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.bad_rank_union_bound Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.dominant_numbers_sharp_holds
 
 example {K : Type} [Field K] [NumberField K] [StarRing K] {I : Type} {C : ColObj K I} (R : RowArg C)
     (hpos : 0 < Fintype.card (R.κ ⊕ R.κ₁)) :
@@ -403,60 +327,7 @@ section Rec
 
 open Formalism.BasicNotions Formalism.MainNotions
 
-theorem link_irreducible_tied : IrreducibleOfCompatibleForms := by
-  intro hSF hBRU hV7 eps Cs c he he1 hc Fm k _ HH _ _ _ e₁ e₂ hT
-  obtain ⟨x0, hx0⟩ := hT
-  have hez : 0 < Fm.ez := div_pos he (lt_of_lt_of_le one_pos Fm.one_le_J)
-  have hez1 : Fm.ez ≤ 1 := (div_le_self he.le Fm.one_le_J).trans he1
-  have hev := ((numbers_dominant_large hV7 (3 * Cs + 3) Fm.ez hez).and (weight_numbers_bound Fm.ez Cs hez hez1)).and (epsilon_bound_large_x c hc)
-  obtain ⟨x1, hx1⟩ := Filter.eventually_atTop.1 hev
-  refine ⟨max x0 x1, fun x hx i => ?_⟩
-  obtain ⟨hS, hC⟩ := hx0 x (le_trans (le_max_left _ _) hx) i
-  obtain ⟨⟨hnum, hw⟩, heps⟩ := hx1 x (le_trans (le_max_right _ _) hx)
-  obtain ⟨h1, h2, h12, hall, hbad, PP₁, PP₂, Dstar, h0, hlt, hD, hP1, hP1W, hP2, hP2W, hA, hc1, hc2⟩ := hC
-  have hU := hBRU k (HH x i) (e₁ x i) (e₂ x i) h1 h2 h12
-  have hsh := hSF _ _ _ PP₁ PP₂ _ _ (Module.finrank k (HH x i) : ℝ) Dstar
-    (Module.finrank k (LinearMap.range (e₁ x i + e₂ x i - e₁ x i ∘ₗ e₂ x i)) : ℝ) h0 hlt hD hP1 hP1W hP2 hP2W hA
-    hc1 hc2 (by exact_mod_cast hU)
-  have hN : NumbersAt x Fm.ez (epsC c (Fm.D x i).R.r (Fm.D x i).R.f) (3 * Cs + 3)
-      (Wg (Fm.D x i).R.f (Fm.D x i).R.m (Fm.D x i).R.r ((Fm.D x i).host.g 0) (Fm.D x i).host.q (Fm.D x i).host.d)
-      (Wg (Fm.D x i).R.f (Fm.D x i).R.m (Fm.D x i).R.r ((Fm.D x i).host.g 1) (Fm.D x i).host.q (Fm.D x i).host.d) :=
-    ⟨(Real.exp_pos _).le, heps _ _ (hS 0).2.2.2.2.1 (hS 0).2.1, hw _ _ _ _ _ _ (hS 0), hw _ _ _ _ _ _ (hS 1)⟩
-  have hle := hnum _ _ _ hN
-  set b : ℝ := (Module.finrank k (LinearMap.range (e₁ x i + e₂ x i - e₁ x i ∘ₗ e₂ x i)) : ℝ) with hb
-  set A : ℝ := (Module.finrank k (HH x i) : ℝ) with hAdef
-  have hApos : 0 < A := by
-    have := (abs_sub_le_iff.1 hA).2
-    nlinarith
-  have hbE : b ≤ LChain6.E7 x Fm.ez * A := by
-    have := hsh.trans hle
-    rwa [div_le_iff₀ hApos] at this
-  have hb0 : 0 ≤ b := by positivity
-  have hDeq := (Fm.D x i).what₂.D_eq
-  have hAll : ((Fm.D x i).what₂.Dall : ℝ) = A := by rw [hAdef, hall]
-  have hSum : ((Fm.D x i).what₂.Drows : ℝ) + b = A := by
-    rw [hb, ← hAll]; exact_mod_cast hbad
-  rw [hAll] at hDeq
-  have hdel : (Fm.D x i).what₂.delp * A = b := by linarith
-  refine ⟨?_, ?_⟩
-  · show 0 ≤ (Fm.D x i).what₂.delp
-    by_contra hneg
-    push Not at hneg
-    have : (Fm.D x i).what₂.delp * A < 0 := mul_neg_of_neg_of_pos hneg hApos
-    linarith
-  · have : (Fm.D x i).what₂.delp * A ≤ LChain6.E7 x Fm.ez * A := by rw [hdel]; exact hbE
-    exact le_of_mul_le_mul_right this hApos
 
-theorem linkIRR_of_tied :
-    ∀ (eps Cs c : ℝ), 0 < eps → eps ≤ 1 → 0 < c → ∀ (Fm : FamP eps) (k : Type) [Field k]
-      (HH : ∀ x, Fm.Ix x → Type) [∀ x i, AddCommGroup (HH x i)] [∀ x i, Module k (HH x i)]
-      [∀ x i, FiniteDimensional k (HH x i)] (e₁ e₂ : ∀ x i, HH x i →ₗ[k] HH x i),
-      (∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, SizesRec (Fm.D x i) x Fm.ez Cs ∧
-        CountBoundForCompatibleRowsRecursive (Fm.D x i) (HH x i) (e₁ x i) (e₂ x i) (epsC c (Fm.D x i).R.r (Fm.D x i).R.f)
-          (Wg (Fm.D x i).R.f (Fm.D x i).R.m (Fm.D x i).R.r ((Fm.D x i).host.g 0) (Fm.D x i).host.q (Fm.D x i).host.d)
-          (Wg (Fm.D x i).R.f (Fm.D x i).R.m (Fm.D x i).R.r ((Fm.D x i).host.g 1) (Fm.D x i).host.q (Fm.D x i).host.d)) →
-      LinkIRR Fm :=
-  link_irreducible_tied Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.share_from_count Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.bad_rank_union_bound Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.dominant_numbers_sharp_holds
 
 end Rec
 
@@ -464,25 +335,7 @@ section Inputs
 
 open Formalism.BasicNotions Formalism.MainNotions
 
-theorem link_irreducible_inputs : LinkIrreducibleInputs := by
-  intro hSF hBRU hV7 eps Cs c he he1 hc Fm k _ HH _ _ _ e₁ e₂ PP hIn
-  obtain ⟨x0, hx0⟩ := hIn
-  refine link_irreducible_tied hSF hBRU hV7 eps Cs c he he1 hc Fm k HH e₁ e₂ ⟨x0, fun x hx i => ?_⟩
-  obtain ⟨⟨h1, h2, h12, hall, hbad⟩, ⟨h0, hlt, Dstar, hD, hA, hc1, hc2⟩, hW, hS⟩ := hx0 x hx i
-  exact ⟨hS, h1, h2, h12, hall, hbad, PP x i 0, PP x i 1, Dstar, h0, hlt, hD, (hW 0).1, (hW 0).2, (hW 1).1,
-    (hW 1).2, hA, hc1, hc2⟩
 
-theorem linkIRR_of_inputs :
-    ∀ (eps Cs c : ℝ), 0 < eps → eps ≤ 1 → 0 < c → ∀ (Fm : FamP eps) (k : Type) [Field k]
-      (HH : ∀ x, Fm.Ix x → Type) [∀ x i, AddCommGroup (HH x i)] [∀ x i, Module k (HH x i)]
-      [∀ x i, FiniteDimensional k (HH x i)] (e₁ e₂ : ∀ x i, HH x i →ₗ[k] HH x i) (PP : ∀ x, Fm.Ix x → Fin 2 → ℝ),
-      (∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x,
-        AllRowsRec (Fm.D x i) (HH x i) (e₁ x i) (e₂ x i) ∧
-        CountRec (HH x i) (e₁ x i) (e₂ x i) (epsC c (Fm.D x i).R.r (Fm.D x i).R.f) (PP x i) ∧
-        WeightRec (Fm.D x i) (PP x i) ∧
-        SizesRec (Fm.D x i) x Fm.ez Cs) →
-      LinkIRR Fm :=
-  link_irreducible_inputs Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.share_from_count Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.bad_rank_union_bound Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.dominant_numbers_sharp_holds
 
 example (a b : ℕ) (hpos : 0 < a + b) :
     CountRec (k := ℚ) ((Fin b → ℚ) × (Fin a → ℚ)) ((LinearMap.inl ℚ _ _).comp (LinearMap.fst ℚ _ _)) 0 0
@@ -656,13 +509,5 @@ theorem linkIRR_of_allRows :
 
 end AllRowsIn
 
-theorem linkIRR_of_allRowsArg (eps Cs c : ℝ) (he : 0 < eps) (he1 : eps ≤ 1) (hc : 0 < c) (Fm : Formalism.MainNotions.FamP eps)
-    (A : ∀ x (i : Fm.Ix x), Formalism.MainNotions.ArithmeticCylinders.AllRows (Fm.D x i))
-    (h : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x,
-      Formalism.MainNotions.ArithmeticCylinders.LabelCountGoodInjective (A x i) ∧ CountAllRows (A x i) (epsC c (Fm.D x i).R.r (Fm.D x i).R.f) ∧
-      WeightAllRows (A x i) ∧ SizesRec (Fm.D x i) x Fm.ez Cs) :
-    Formalism.MainNotions.LinkIRR Fm := by
-  obtain ⟨x0, hx0⟩ := h
-  exact linkIRR_of_allRows eps Cs c he he1 hc Fm ⟨x0, fun x hx i => ⟨A x i, hx0 x hx i⟩⟩
 
 end Formalism.L2.GlobalTheoryTheory.ConcN

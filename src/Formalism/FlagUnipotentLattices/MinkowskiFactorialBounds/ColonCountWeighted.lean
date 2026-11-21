@@ -8,47 +8,8 @@ open NumberField
 
 namespace Formalism.HermitianLatticeCounting.P
 
-theorem embedding_dual_compatible : IotaDual := by
-  intro K U _ _ _ _ h O g L₀ L₀' ι' hg hsg hg0 hO hι hiso
-  refine ⟨?_, ?_⟩
-  · intro l' hl' x hx hxl
-    obtain ⟨l, hl, hxl⟩ := hxl
-    obtain ⟨t, ht, hiso'⟩ := hiso l' hl' x hx.2
-    have hx' : x = ι' x - g • l := by rw [← hxl]; abel
-    have h1 : h (ι' l') x = h (ι' l') (ι' x) - g * h (ι' l') l := by
-      conv_lhs => rw [hx']
-      rw [map_sub, LinearMap.map_smulₛₗ, starRingEnd_apply, hsg, smul_eq_mul]
-    have key : h (l' - ι' l') x = g * (h (ι' l') l - t) := by
-      rw [map_sub, LinearMap.sub_apply, h1]
-      linear_combination (-1 : K) * hiso'
-    rw [map_smul, LinearMap.smul_apply, key, smul_eq_mul, ← mul_assoc, inv_mul_cancel₀ hg0, one_mul]
-    exact O.sub_mem (hO _ (hι l' hl') _ hl) ht
-  · rintro l' hl' ⟨l, hl, e⟩
-    have h2 : l' - ι' l' = g • (-l) := by rw [smul_neg, ← e]; abel
-    rw [h2, smul_smul, inv_mul_cancel₀ hg0, one_smul]
-    exact L₀.neg_mem hl
 
-theorem embedding_determined_by_restriction : IotaDetermined := by
-  intro K U _ _ _ g L₀ ι₁ ι₂ l' hg0 hmem
-  refine ⟨-(g⁻¹ • (l' - ι₁ l') - g⁻¹ • (l' - ι₂ l')), L₀.neg_mem hmem, ?_⟩
-  rw [← smul_sub, smul_neg, smul_smul, mul_inv_cancel₀ hg0, one_smul]
-  abel
 
-theorem colon_ideal_scaling : ColonScale := by
-  intro E _ _ U _ _ Lam₁ y c aa aa' hc h1 h2
-  ext x
-  rw [FractionalIdeal.mem_singleton_mul, FractionalIdeal.mem_coeIdeal]
-  rw [← h1 x]
-  constructor
-  · rintro ⟨y', hy', rfl⟩
-    rw [FractionalIdeal.mem_coeIdeal, ← h2 y'] at hy'
-    rwa [smul_smul, mul_comm] at hy'
-  · intro hx
-    refine ⟨c⁻¹ * x, ?_, ?_⟩
-    · rw [FractionalIdeal.mem_coeIdeal, ← h2, smul_smul, mul_assoc, mul_comm x c, ← mul_assoc,
-        inv_mul_cancel₀ hc, one_mul]
-      exact hx
-    · rw [← mul_assoc, mul_inv_cancel₀ hc, one_mul]
 
 theorem loss_bound_holds : HLoss := by
   intro C C' r f b hb
@@ -92,21 +53,6 @@ theorem cost_bound : CostBound := by
             ≤ 2 * (C * r) * (2 * (9 * r ^ 2)) + 6 * r ^ 3 + 2 * (C * r) * 2 * (C₂ * r ^ 2) := by gcongr
           _ = (36 * C + 4 * C * C₂ + 6) * r ^ 3 := by ring
 
-theorem colon_ideal_norm : ColonNorm := by
-  intro E _ _ L _ _ Lam₁ y
-  set aa : Ideal (𝓞 E) := Lam₁.comap (LinearMap.toSpanSingleton (𝓞 E) L y) with haa
-  have hdvd : Ideal.absNorm aa ∣ Lam₁.toAddSubgroup.index := by
-    have e1 : Ideal.absNorm aa = (Submodule.toAddSubgroup aa).index := by
-      rw [Ideal.absNorm_apply, Submodule.cardQuot_apply]; rfl
-    have e2 : Submodule.toAddSubgroup aa =
-        Lam₁.toAddSubgroup.comap (LinearMap.toSpanSingleton (𝓞 E) L y).toAddMonoidHom := by
-      ext a; rfl
-    rw [e1, e2, AddSubgroup.index_comap]
-    exact AddSubgroup.relIndex_dvd_index_of_normal _ _
-  refine ⟨hdvd, fun h0 => ⟨?_, Nat.le_of_dvd (Nat.pos_of_ne_zero h0) hdvd⟩⟩
-  rcases Nat.eq_zero_or_pos (Ideal.absNorm aa) with h | h
-  · rw [h] at hdvd; exact absurd (Nat.eq_zero_of_zero_dvd hdvd) h0
-  · exact h
 
 theorem extension_generator_count : ExtGen := by
   intro R Q _ _ _ N e₁ e₂ s t hs ht
@@ -409,26 +355,7 @@ theorem quotient_card : IdealCountLe := by
   push_cast
   rw [zero_add]
 
-theorem ideal_count_le_weighted_of_hyp : IdealCountLeW' := by
-  intro hS hOm E _ _ f y hf
-  have h := DualLatticeIndexBis.count_le E (Module.finrank ℚ E) 1 y Module.finrank_pos hOm
-    (fun n hn => by
-      have h1 := hS E (𝓞 E) n hn
-      have hset : {N : Submodule (𝓞 E) (𝓞 E) | N.toAddSubgroup.index = n} =
-          {I : Ideal (𝓞 E) | Ideal.absNorm I = n} := by
-        ext I
-        have e1 : Ideal.absNorm I = (Submodule.toAddSubgroup I).index := by
-          rw [Ideal.absNorm_apply, Submodule.cardQuot_apply]; rfl
-        simp only [Set.mem_ofPred_eq, e1]
-      rw [hset, Module.finrank_self] at h1
-      exact h1)
-  rw [hf] at h
-  refine ⟨h.1, h.2.trans (le_of_eq ?_)⟩
-  push_cast
-  rfl
 
-theorem ideal_count_le_weighted : IdealCountLeW :=
-  ideal_count_le_weighted_of_hyp Formalism.SLP.Final.submoduleIndexCountO Formalism.SLP.Final.omegaPow
 
 namespace DualLatticeIndexBis
 
@@ -519,16 +446,9 @@ theorem colon_count_of_hyp : CCountAsm := by
   intro hI hT E _ _ f D hf
   exact DualLatticeIndexBis.cCount_of E f D _ (hT E f hf) (hI E f D hf)
 
-theorem colon_count_weighted_of_hyp : CCountWAsm := by
-  intro hI hT E _ _ f D hf
-  have h := DualLatticeIndexBis.cCount_of E f D _ (hT E f hf) (hI E f D hf)
-  have e : 2 * (1 + (1 + Real.logb 2 (2 * (f : ℝ)))) = 2 + 2 * (1 + Real.logb 2 (2 * (f : ℝ))) := by ring
-  rw [e] at h
-  exact h
 
 theorem colon_count_bound : CCount := colon_count_of_hyp quotient_card torsion_bound_alt
 
-theorem colon_count_weighted : CCountW := colon_count_weighted_of_hyp ideal_count_le_weighted torsion_bound_alt
 
 namespace DualLatticeIndexBis
 

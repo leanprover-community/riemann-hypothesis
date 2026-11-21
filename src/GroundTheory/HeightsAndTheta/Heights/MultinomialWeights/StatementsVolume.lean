@@ -551,11 +551,6 @@ theorem sqPoly_homogeneous : sqPoly.IsHomogeneous (d1.D + 1) := by
   rw [sqPoly_eq]
   exact ((isHomogeneous_X ℝ p0).sub (isHomogeneous_X ℝ p1)).pow 2
 
-theorem sqPoly_ne_zero : sqPoly ≠ 0 := by
-  intro h
-  have := congrArg (eval (fun p => if p = p0 then (1 : ℝ) else 0)) h
-  rw [eval_sqPoly] at this
-  simp at this
 
 def samplePoly (k : ℝ) : LamPoly d1 := C k * sqPoly
 
@@ -717,27 +712,7 @@ def sampleSystem (k : ℝ) (hk : 0 ≤ k) : VolumeSystem d1 where
     have hblk' : b.val < 1 ∨ 1 ≤ a.val := hblk
     omega
 
-theorem sampleSystem_zero (B : ℤ) : (sampleSystem 0 le_rfl).P B = 0 := by
-  show C 0 * sqPoly = 0
-  rw [C_0, zero_mul]
 
-theorem sampleSystem_two (B : ℤ) :
-    let VS := sampleSystem 2 (by norm_num)
-    VS.P B = C 2 * (antisymDelta (Fin d1.f) d1.N * sampleForm) ∧
-      VS.hFl = antisymDelta (Fin d1.f) d1.N * sampleForm ∧
-      sampleForm ∈ invForms d1 ∧ sampleForm ≠ 0 ∧ VS.P B ≠ 0 ∧ VS.RB B ≠ 0 := by
-  intro VS
-  have hform : sampleForm ≠ 0 := by
-    intro h
-    have := congrArg (eval (fun p => if p = p0 then (1 : ℝ) else 0)) h
-    simp [sampleForm, lowerSum_rankTwo, upperSum_rankTwo] at this
-  have hRB : VS.RB B = sqPoly := by
-    show C 2 * sqPoly - (1 : ℝ) • sqPoly = sqPoly
-    rw [one_smul, C_mul', two_smul, add_sub_cancel_right]
-  refine ⟨rfl, rfl, sampleForm_mem, hform, ?_, ?_⟩
-  · show C 2 * sqPoly ≠ 0
-    exact mul_ne_zero (by simp) sqPoly_ne_zero
-  · rw [hRB]; exact sqPoly_ne_zero
 
 theorem zero_mem_KSet_rankTwo_any (c0 : ℝ) : (0 : Weight d1) ∈ KSet d1 0 c0 := by
   refine ⟨by rw [norm_zero]; norm_num, by simp [gap], ?_, ?_⟩

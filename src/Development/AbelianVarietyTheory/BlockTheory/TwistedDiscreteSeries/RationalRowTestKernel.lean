@@ -105,8 +105,6 @@ theorem test_tw_iff {K E : Type} [Field K] [NormedAddCommGroup E] [InnerProductS
     obtain ⟨z, hz⟩ := hrat t x a
     exact ⟨z, (h z).trans (congrArg (cj s) hz)⟩
 
-theorem rowTest_toCx_iff (R : RealDat D A Ks) (F : Face D A) : RowTest (R.toCx F) ↔ RowTestModel R :=
-  test_tw_iff (E := R.HE.H) (twAt D.what₂.embLL A.v0) R.emb0 (ι := T) (X := fun t => A.fam.amb.FR t) fun t x => R.Th t (R.jX t x)
 
 def RowTestAlgAt (R : RealDat D A Ks) (F : Face D A) : Prop :=
   R.Char F → ∃ (n : ℕ) (ψ : Fin n → ((R.toCx F).EE →ₗ[ℂ] ℂ)), (∀ e, (∀ a, ψ a e = 0) → e = 0) ∧

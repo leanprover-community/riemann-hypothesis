@@ -83,8 +83,6 @@ theorem HodgeForm.conj (h : HodgeForm G L z v w c) : HodgeForm G L z w v ((starR
 theorem HodgeIP.conj (h : HodgeIP G L z v w c) : HodgeIP G L z w v ((starRingEnd ℂ) c) :=
   hodgeInnerProduct_iff_hodgeForm.2 (hodgeInnerProduct_iff_hodgeForm.1 h).conj
 
-theorem hodgeInnerProduct_iff_hodgeForm_conj : HodgeIP G L z v w c ↔ HodgeForm G L z v w ((starRingEnd ℂ) c) :=
-  ⟨fun h => (hodgeInnerProduct_iff_hodgeForm.1 h).conj, fun h => hodgeInnerProduct_iff_hodgeForm.2 (by simpa using h.conj)⟩
 
 theorem HodgeIP.isLB (h : HodgeIP G L z v w c) : L.IsLB := h.1
 
@@ -92,10 +90,6 @@ theorem HodgeIP.isTanAt_left (h : HodgeIP G L z v w c) : IsTanAt G z v := h.2.1
 
 theorem HodgeIP.isTanAt_right (h : HodgeIP G L z v w c) : IsTanAt G z w := h.2.2.1
 
-theorem LieModel.gramAt_iff_formGramAt (M : LieModel G ξ E) {r : ℕ} {b : Fin r → E} {Γ : Matrix (Fin r) (Fin r) ℂ} :
-    M.GramAt L z b Γ ↔ M.FormGramAt L z b Γ.transpose :=
-  ⟨fun ⟨v, hv, h⟩ => ⟨v, hv, fun p q => hodgeInnerProduct_iff_hodgeForm.1 (h q p)⟩,
-    fun ⟨v, hv, h⟩ => ⟨v, hv, fun p q => hodgeInnerProduct_iff_hodgeForm.2 (h q p)⟩⟩
 
 end Form
 
@@ -144,17 +138,6 @@ theorem LieModel.IsGrNorm.pos (h : M.IsGrNorm L V b₀ i z t ν) : 0 < ν := by
   obtain ⟨_, _, Γ, -, -, -, -, hΓ, rfl⟩ := h
   exact Real.sqrt_pos.2 (div_pos (leadMinor_pos_of_posDef hΓ i.2) (leadMinor_pos_of_posDef hΓ i.2.le))
 
-theorem LieModel.isGrNorm_iff_formGramAt : M.IsGrNorm L V b₀ i z t ν ↔
-    ∃ (h : genPt ξ ⤳ centre z) (b : Fin r → E) (Γ : Matrix (Fin r) (Fin r) ℂ),
-      (∀ s, flagStep Ω b s = flagStep Ω b₀ s) ∧ V.IsFrameAt b ⟨centre z, h⟩ ∧ b i - t • b₀ i ∈ flagStep Ω b₀ i ∧
-        M.FormGramAt L z b Γ ∧ Γ.PosDef ∧ ν = Real.sqrt (leadMinor Γ (i + 1) / leadMinor Γ i) := by
-  constructor
-  · rintro ⟨h, b, Γ, h1, h2, h3, h4, h5, rfl⟩
-    exact ⟨h, b, Γ.transpose, h1, h2, h3, M.gramAt_iff_formGramAt.1 h4, h5.transpose, by
-      rw [leadMinor_transpose, leadMinor_transpose]⟩
-  · rintro ⟨h, b, Γ, h1, h2, h3, h4, h5, rfl⟩
-    exact ⟨h, b, Γ.transpose, h1, h2, h3, M.gramAt_iff_formGramAt.2 h4, h5.transpose, by
-      rw [leadMinor_transpose, leadMinor_transpose]⟩
 
 end Gr
 
@@ -274,16 +257,6 @@ theorem SecNorm.mul (h : SecNorm ξ y A e₀ z w t ν) {f : Ω} {s : ℂ} (hf : 
     exact CxVal.mul hf hu
   · rw [_root_.mul_assoc, e, norm_mul, _root_.mul_assoc]
 
-theorem secNorm_chartMonomial (hz : genPt ξ ⤳ centre z) (he : e₀ ≠ 0) (hw : CoordsAt ξ y z w) (c : (k : K) → J k)
-    (hc : ∀ k, w ⟨k, c k⟩ ≠ 0) :
-    SecNorm ξ y A e₀ z w ((∏ k, y ⟨k, c k⟩ ^ A.a k) * e₀) ((∏ k, ‖w ⟨k, c k⟩‖ ^ A.a k) / A.h w) := by
-  have hy : (∏ k, y ⟨k, c k⟩ ^ A.a k) ≠ 0 :=
-    Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (hw.2 k (c k) (IsUnit.mk0 _ (hc k))).1
-  refine (secNorm_iff_chart he hw c hc).2 ⟨1, ?_, ?_⟩
-  · rw [div_self (mul_ne_zero hy he)]
-    exact CxVal.one hz
-  · rw [div_mul_cancel₀ _ (A.pos w fun k => ⟨c k, hc k⟩).ne']
-    simp
 
 theorem aeval_blockScale {R : Type} [CommRing R] {s : MRing J} {b : K → ℕ} (hs : IsMultiHomog s b) (κ : K → R)
     (x : (Σ k, J k) → R) :
@@ -295,28 +268,6 @@ theorem aeval_blockScale {R : Type} [CommRing R] {s : MRing J} {b : K → ℕ} (
   simp only [Finset.prod_pow_eq_pow_sum, hs m hm]
   ring
 
-theorem secNorm_form (hz : genPt ξ ⤳ centre z) (he : e₀ ≠ 0) (hw : CoordsAt ξ y z w) {s : MRing J} {b : K → ℕ}
-    (hs : IsMultiHomog s b) (hb : ∀ k, A.a k = b k) :
-    SecNorm ξ y A e₀ z w (MvPolynomial.aeval y s * e₀) (‖MvPolynomial.aeval w s‖ / A.h w) := by
-  choose c hc using hw.1
-  have hy := fun k => (hw.2 k (c k) (hc k)).1
-  choose r hr hr' using fun p : Σ k, J k => (hw.2 p.1 (c p.1) (hc p.1)).2 p.2
-  refine (secNorm_iff_chart he hw c fun k => (hc k).ne_zero).2 ⟨MvPolynomial.aeval r s, ?_, ?_⟩
-  · convert CxVal.aeval hz hr s using 1
-    have e : y = fun p => y ⟨p.1, c p.1⟩ * (y ⟨p.1, p.2⟩ / y ⟨p.1, c p.1⟩) :=
-      funext fun p => (mul_div_cancel₀ _ (hy p.1)).symm
-    have e' := aeval_blockScale hs (fun k => y ⟨k, c k⟩) fun p => y ⟨p.1, p.2⟩ / y ⟨p.1, c p.1⟩
-    rw [← e] at e'
-    have h0 : (∏ k, y ⟨k, c k⟩ ^ b k) ≠ 0 := Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (hy k)
-    simp only [hb, zpow_natCast]
-    rw [e']
-    field_simp
-  · have e : w = fun p => w ⟨p.1, c p.1⟩ * r p := funext fun p => (hr' p).trans (mul_comm _ _)
-    have e' := aeval_blockScale hs (fun k => w ⟨k, c k⟩) r
-    rw [← e] at e'
-    rw [div_mul_cancel₀ _ (A.pos w fun k => ⟨c k, (hc k).ne_zero⟩).ne', e']
-    simp only [hb, zpow_natCast, norm_mul, norm_prod, norm_pow]
-    ring
 
 example (k : K) (hk : ∀ i, w ⟨k, i⟩ = 0) : ¬ SecNorm ξ y A e₀ z w t ν ∧ ¬ SecNorm ξ y A 0 z w t ν :=
   ⟨fun h => let ⟨c, hc⟩ := h.exists_chart; hc k (hk (c k)), fun h => h.1 rfl⟩

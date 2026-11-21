@@ -51,9 +51,6 @@ noncomputable def eps : FiltrationCocycleLiftCriterion := toGL !![1, 0; 0, -1] (
 @[simp] theorem coe_eps : (((eps : FiltrationCocycleLiftCriterion) : GL (Fin 2) ℝ) : Matrix (Fin 2) (Fin 2) ℝ) =
     !![1, 0; 0, -1] := rfl
 
-theorem nMat_add (x y : ℝ) : nMat (x + y) = nMat x * nMat y := by
-  apply GL2_ext; simp only [Subgroup.coe_mul, Units.val_mul, coe_nMat]
-  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two, add_comm]
 
 theorem kMat_add (a b : ℝ) : kMat (a + b) = kMat a * kMat b := by
   apply GL2_ext; simp only [Subgroup.coe_mul, Units.val_mul, coe_kMat]
@@ -77,23 +74,10 @@ theorem eps_mul_eps : eps * eps = 1 := by
   apply GL2_ext; simp only [Subgroup.coe_mul, Units.val_mul, coe_eps, Subgroup.coe_one, Units.val_one]
   ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem eps_inv : eps⁻¹ = eps := inv_eq_of_mul_eq_one_right eps_mul_eps
 
-theorem eps_kMat_eps (θ : ℝ) : eps * kMat θ * eps = kMat (-θ) := by
-  apply GL2_ext; simp only [Subgroup.coe_mul, Units.val_mul, coe_eps, coe_kMat]
-  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem eps_nMat_eps (x : ℝ) : eps * nMat x * eps = nMat (-x) := by
-  apply GL2_ext; simp only [Subgroup.coe_mul, Units.val_mul, coe_eps, coe_nMat]
-  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem eps_aT_eps (t : ℝ) : eps * aT t * eps = aT t := by
-  apply GL2_ext; simp only [Subgroup.coe_mul, Units.val_mul, coe_eps, coe_aT]
-  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem zPos_mul_comm (s : ℝ) (g : FiltrationCocycleLiftCriterion) : zPos s * g = g * zPos s := by
-  apply GL2_ext; simp only [Subgroup.coe_mul, Units.val_mul, coe_zPos]
-  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two] <;> ring
 
 end GroundTheory.Automorphic.ArchWhittaker
 
@@ -115,10 +99,6 @@ def lW : gl2 := ⟨!![0, 1; -1, 0], Submodule.mem_top⟩
 @[simp] theorem coe_lH : ((lH : gl2) : Matrix (Fin 2) (Fin 2) ℝ) = !![1, 0; 0, -1] := rfl
 @[simp] theorem coe_lW : ((lW : gl2) : Matrix (Fin 2) (Fin 2) ℝ) = !![0, 1; -1, 0] := rfl
 
-theorem lW_eq : lW = lE - lF := by
-  apply Subtype.ext
-  simp only [coe_lW, Submodule.coe_sub, coe_lE, coe_lF]
-  ext i j; fin_cases i <;> fin_cases j <;> simp
 
 theorem exp_eq_of_hasDerivAt {X : Matrix (Fin 2) (Fin 2) ℝ} {c : ℝ → Matrix (Fin 2) (Fin 2) ℝ}
     (hc : ∀ t, HasDerivAt c (X * c t) t) (h0 : c 0 = 1) (t : ℝ) : exp (t • X) = c t := by
@@ -166,20 +146,6 @@ theorem expG_lW (θ : ℝ) : hGL2.expG (θ • lW) = kMat θ := by
   rw [exp_eq_of_hasDerivAt hc (by simp) θ]
   ext i j; fin_cases i <;> fin_cases j <;> simp
 
-theorem expG_lH (s : ℝ) : hGL2.expG (s • lH) = aT s := by
-  apply GL2_ext
-  rw [IsExpLieAlgebra.coe_expG, coe_aT, Submodule.coe_smul, coe_lH]
-  have hc : ∀ u : ℝ, HasDerivAt (fun u : ℝ => Real.exp u • (!![1, 0; 0, 0] : Matrix (Fin 2) (Fin 2) ℝ) +
-      Real.exp (-u) • !![0, 0; 0, 1])
-      (!![1, 0; 0, -1] * (Real.exp u • (!![1, 0; 0, 0] : Matrix (Fin 2) (Fin 2) ℝ) +
-        Real.exp (-u) • !![0, 0; 0, 1])) u := by
-    intro u
-    refine (((Real.hasDerivAt_exp u).smul_const (!![1, 0; 0, 0] : Matrix (Fin 2) (Fin 2) ℝ)).add
-      (((Real.hasDerivAt_exp (-u)).comp u (hasDerivAt_neg u)).smul_const
-        (!![0, 0; 0, 1] : Matrix (Fin 2) (Fin 2) ℝ))).congr_deriv ?_
-    ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
-  rw [exp_eq_of_hasDerivAt hc (by ext i j; fin_cases i <;> fin_cases j <;> simp) s]
-  ext i j; fin_cases i <;> fin_cases j <;> simp
 
 end GroundTheory.Automorphic.ArchWhittaker
 
@@ -205,10 +171,6 @@ theorem aT_inv (t : ℝ) : (aT t)⁻¹ = aT (-t) := by
 theorem kMat_inv (θ : ℝ) : (kMat θ)⁻¹ = kMat (-θ) := by
   rw [inv_eq_iff_mul_eq_one, ← kMat_add, add_neg_cancel, kMat_zero]
 
-theorem zPos_inv (s : ℝ) : (zPos s)⁻¹ = zPos (-s) := by
-  rw [inv_eq_iff_mul_eq_one]
-  apply GL2_ext; simp only [Subgroup.coe_mul, Units.val_mul, coe_zPos, Subgroup.coe_one, Units.val_one]
-  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two, ← Real.exp_add]
 
 theorem coe_Ad_GL2 (g : FiltrationCocycleLiftCriterion) (X : gl2) : ((hGL2.Ad g X : gl2) : Matrix (Fin 2) (Fin 2) ℝ) =
     ((g : GL (Fin 2) ℝ) : Matrix (Fin 2) (Fin 2) ℝ) * X *
@@ -239,29 +201,9 @@ theorem Ad_kMat_lS (θ : ℝ) :
     simp [Matrix.mul_apply, Fin.sum_univ_two, Real.cos_two_mul, Real.sin_two_mul] <;>
     nlinarith [Real.sin_sq_add_cos_sq θ]
 
-theorem Ad_eps_lH : hGL2.Ad eps lH = lH := by
-  apply Subtype.ext
-  rw [coe_Ad_GL2, eps_inv, coe_eps, coe_lH]
-  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem Ad_eps_lS : hGL2.Ad eps lS = -lS := by
-  apply Subtype.ext
-  rw [coe_Ad_GL2, eps_inv, coe_eps, Submodule.coe_neg, coe_lS]
-  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem Ad_eps_lE : hGL2.Ad eps lE = -lE := by
-  apply Subtype.ext
-  rw [coe_Ad_GL2, eps_inv, coe_eps, Submodule.coe_neg, coe_lE]
-  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem Ad_zPos (s : ℝ) (X : gl2) : hGL2.Ad (zPos s) X = X := by
-  apply Subtype.ext
-  rw [coe_Ad_GL2, zPos_inv, coe_zPos, coe_zPos]
-  have e : ∀ u : ℝ, (!![Real.exp u, 0; 0, Real.exp u] : Matrix (Fin 2) (Fin 2) ℝ) =
-      Real.exp u • (1 : Matrix (Fin 2) (Fin 2) ℝ) := fun u => by
-    ext i j; fin_cases i <;> fin_cases j <;> simp
-  rw [e, e, smul_mul_assoc, one_mul, mul_smul_comm, mul_one, smul_smul, ← Real.exp_add,
-    neg_add_cancel, Real.exp_zero, one_smul]
 
 end GroundTheory.Automorphic.ArchWhittaker
 

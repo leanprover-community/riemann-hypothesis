@@ -190,8 +190,6 @@ variable (C : CharFrame D)
 def hframe : GlobalTheory.Mem.Chr.HFrame D.host (fun j => eExp D j) :=
   ⟨C.P, C.W, C.mu0, C.eta, C.chiPsi, C.del, C.del', C.isMu0, C.isEta, C.isChi, C.isDel, C.isDel'⟩
 
-theorem muBase_eq (l : ℕ) (j : Fin D.R.m) :
-    muBase C l j = (hframe C).mu0 j * GlobalTheory.GalChar.delAt D.host (hframe C) l := rfl
 
 theorem eExp_int (j : Fin D.R.m) (τ : D.R.Psi) : ∃ z : ℤ, eExp D j τ = z := (D.hc _).e_int j
 
@@ -239,10 +237,6 @@ end Chars
 
 section Values
 
-theorem card_rowPar {R : Ranks} (P : HCParam R) : Multiset.card (rowPar P) = R.r := by
-  have h := R.m_add_three_le_k
-  simp only [rowPar, Multiset.card_add, Multiset.card_map, Finset.card_val, Finset.card_univ, Fintype.card_fin, Ranks.r]
-  omega
 
 theorem param_eq {R : Ranks} (P : HCParam R) (j : Fin R.m) :
     GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary.param P j = rowPar P + GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary.run P j := rfl
@@ -262,13 +256,7 @@ variable (μ : HChar D.host.E) (π : D.naut.CG D.R.r) (P : PlE D.host)
 
 theorem heckeVal_zero : heckeVal μ π 0 P = 1 := by simp [heckeVal, Multiset.esymm]
 
-theorem card_satake (h : D.naut.unr (D.naut.locG π P)) : Multiset.card (satake μ π P) = D.R.r := by
-  rw [satake, Multiset.card_map, D.naut.frobEig_card _ h, D.naut.locG_dim]
 
-theorem heckeVal_top (h : D.naut.unr (D.naut.locG π P)) : heckeVal μ π D.R.r P = (satake μ π P).prod := by
-  rw [heckeVal, Nat.sub_self, mul_zero, Nat.zero_div, pow_zero, one_mul, Multiset.esymm, ← card_satake μ π P h,
-    Multiset.powersetCard_self]
-  simp
 
 theorem pow_mul_heckeVal {k : ℕ} (hk : k ≤ D.R.r) :
     ((normV P : ℕ) : ℂ) ^ (k * (k - 1) / 2) * heckeVal μ π k P =

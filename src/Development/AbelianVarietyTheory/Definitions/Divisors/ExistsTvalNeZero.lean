@@ -12,10 +12,6 @@ section Adelic
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] [DecidableEq ι]
 
-theorem mem_locLat_const (g : Matrix ι ι K) (x : ι → K) :
-    x ∈ locLat (fun _ : HeightOneSpectrum (𝓞 K) => g) ↔ ∀ i, (g *ᵥ x) i ∈ (algebraMap (𝓞 K) K).range :=
-  ⟨fun h i => HeightOneSpectrum.mem_integers_of_valuation_le_one K _ fun w => h w i,
-   fun h w i => by obtain ⟨a, ha⟩ := h i; rw [← ha]; exact w.valuation_le_one a⟩
 
 theorem finite_not_le (a : K) : {w : HeightOneSpectrum (𝓞 K) | ¬ w.valuation K a ≤ 1}.Finite := by
   by_cases ha : a = 0
@@ -32,9 +28,6 @@ theorem finite_not_intAt (g : Matrix ι ι K) : {w : HeightOneSpectrum (𝓞 K) 
   obtain ⟨i, j, h⟩ := hw
   exact Set.mem_iUnion.2 ⟨(i, j), h⟩
 
-theorem isAdelic_const {g : Matrix ι ι K} (hg : g.det ≠ 0) : IsAdelic (fun _ : HeightOneSpectrum (𝓞 K) => g) :=
-  ⟨fun _ => hg, ((finite_not_intAt g).union (finite_not_intAt g⁻¹)).subset fun w hw => by
-    simp only [Set.mem_setOf_eq, Set.mem_union, not_and_or] at hw ⊢; exact hw⟩
 
 open Classical in
 
@@ -47,24 +40,9 @@ theorem isAdelic_single (v : HeightOneSpectrum (𝓞 K)) {g : Matrix ι ι K} (h
     by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
   exact hw (by simp [h', h1])
 
-theorem not_isAdelic_zero [Nonempty ι] (v : HeightOneSpectrum (𝓞 K)) :
-    ¬ IsAdelic (fun _ : HeightOneSpectrum (𝓞 K) => (0 : Matrix ι ι K)) := fun h => h.1 v (by simp)
 
-theorem detDeg_const {g : Matrix ι ι K} (hg : g.det ≠ 0) :
-    detDeg (fun _ : HeightOneSpectrum (𝓞 K) => g) (fun σ => g.map σ) = 0 := by
-  have := GlobalTheory.FlatLine.lineDeg_num hg
-  simpa only [detDeg, RingHom.map_det, RingHom.mapMatrix_apply] using this
 
-theorem matNorm_map (g : Matrix ι ι K) (σ : K →+* ℂ) (x : ι → K) :
-    matNorm (fun σ => g.map σ) σ x = matNorm (fun _ => 1) σ (g *ᵥ x) := by
-  simp only [matNorm, Matrix.one_mulVec]
-  congr 1
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [RingHom.map_mulVec]; rfl
 
-theorem detDeg_nat {n : ℕ} (hn : n ≠ 0) :
-    detDeg (fun _ : HeightOneSpectrum (𝓞 K) => !![(n : K)]) (fun _ => 1) = Real.log n := by
-  simp [detDeg, GlobalTheory.FlatLine.lineDeg, GlobalTheory.FlatLine.sum_vAdd_nat hn]
 
 theorem inv_mem {n : ℕ} (hn : n ≠ 0) :
     ![(n : K)⁻¹] ∈ locLat (fun _ : HeightOneSpectrum (𝓞 K) => !![(n : K)]) := fun w i => by
@@ -121,23 +99,8 @@ theorem kron_mul {J : T → Type} [∀ t, Fintype (J t)] {R : Type} [CommRing R]
   rw [Finset.prod_univ_sum, Fintype.piFinset_univ]
   simp [Finset.prod_mul_distrib]
 
-theorem onMat_mulVec (la : Fin n → ℕ) (f : nabla la ℂ) :
-    onMat la *ᵥ (basis la ℂ).repr f = (onBasis la).repr (toSpace la f) := by
-  funext i
-  have h := congrArg (fun f : nabla la ℂ => (onBasis la).repr (toSpace la f) i) ((basis la ℂ).sum_repr f)
-  simp only [map_sum, map_smul, WithLp.ofLp_sum, WithLp.ofLp_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at h
-  rw [← h]
-  simp only [onMat, Matrix.mulVec, dotProduct, Matrix.of_apply, mul_comm]
 
-theorem sum_sq_onMat (la : Fin n → ℕ) (X : Matrix (Fin n) (Fin n) ℂ) (f : nabla la ℂ) :
-    ∑ i, ‖((onMat la * rhoMat la X) *ᵥ (basis la ℂ).repr f) i‖ ^ 2 = normSq la (Formalism.GradedWeylDivisibility.rowAct ℂ X f.1) := by
-  have h : rhoMat la X *ᵥ (basis la ℂ).repr f = (basis la ℂ).repr (rho la ℂ Xᵀ f) :=
-    LinearMap.toMatrix_mulVec_repr _ _ _ _
-  rw [← Matrix.mulVec_mulVec, h, onMat_mulVec, ← EuclideanSpace.norm_sq_eq, LinearIsometryEquiv.norm_map,
-    norm_toSpace_sq, coe_rho, Matrix.transpose_transpose]
 
-theorem nonempty_tIdx (la : ∀ t, Fin (N t) → ℕ) (h : ∀ t, Antitone (la t)) : Nonempty (TIdx la) :=
-  ⟨fun t => (Fintype.card_pos_iff.1 (dim_eq_card (la t) ▸ dim_pos (h t))).some⟩
 
 theorem exists_tval_ne_zero (la : Fin n → ℕ) (h : Antitone la) :
     ∃ x : TIdx (fun _ : Unit => la) → ℚ, tval (fun _ : Unit => la) x (fun _ => 1) = 1 := by
@@ -147,22 +110,8 @@ theorem exists_tval_ne_zero (la : Fin n → ℕ) (h : Antitone la) :
   rw [h2, tval, ← (Equiv.funUnique Unit (Idx la)).symm.sum_comp]
   simp
 
-theorem fibA_mul (la : ∀ t, Fin (N t) → ℕ) {K : Type} [Field K] [CharZero K] (a b : K)
-    (g h : ∀ t, Matrix (Fin (N t)) (Fin (N t)) K) : fibA la a g * fibA la b h = fibA la (a * b) fun t => h t * g t := by
-  simp only [fibA, Matrix.smul_mul, Matrix.mul_smul, kron_mul, rhoMat_mul, smul_smul, mul_comm]
 
-theorem fibY_eq (la : ∀ t, Fin (N t) → ℕ) (s : ℝ) (X : ∀ t, Matrix (Fin (N t)) (Fin (N t)) ℂ) :
-    fibY la s X = fibY la s (fun _ => 1) * fibA la 1 X := by
-  simp only [fibY, fibA, rhoMat_one, Matrix.mul_one, one_smul, Matrix.smul_mul, kron_mul]
 
-theorem fibA_two : fibA (fun _ : Unit => ![1, 0]) (1 : ℚ) (fun _ => (2 : ℚ) • 1) = (2 : ℚ) • 1 := by
-  ext I J
-  simp only [fibA, kron, rhoMat_scalar, one_smul, Matrix.of_apply, Finset.univ_unique, Finset.prod_singleton,
-    Matrix.smul_apply, Matrix.one_apply, size, Fin.sum_univ_two]
-  by_cases h : I = J
-  · simp [h]
-  · have : I default ≠ J default := fun h' => h (funext fun _ => h')
-    simp [h, this]
 
 end Tensor
 

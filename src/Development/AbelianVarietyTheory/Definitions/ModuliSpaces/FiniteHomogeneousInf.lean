@@ -73,33 +73,9 @@ def vanIdeal {R σ Hh : Type} [CommRing R] (d : ℕ) (p : Hh → σ → R) : Ide
 def CutBy {K σ Hh : Type} [Field K] (I : Ideal (MvPolynomial σ K)) (Q : Polynomial ℚ) (d : ℕ) (p : Hh → σ → K) : Prop :=
   ∀ e ≥ d, (dimDeg I e : ℚ) = Q.eval (e : ℚ) ∧ ∀ F, F.IsHomogeneous e → (F ∈ I ↔ F ∈ vanIdeal d p)
 
-theorem finite_homogeneous_inf {K σ : Type} [Field K] [Finite σ] (I : Ideal (MvPolynomial σ K)) (e : ℕ) :
-    Module.Finite K ↥(MvPolynomial.homogeneousSubmodule σ K e ⊓ I.restrictScalars K) := by
-  have : Module.Finite K ↥(MvPolynomial.homogeneousSubmodule σ K e) :=
-    Module.Finite.iff_fg.2 (MvPolynomial.homogeneousSubmodule_fg (σ := σ) (R := K) e)
-  exact Submodule.finiteDimensional_inf_left _ _
 
-theorem dimDeg_eq_zero_iff {K σ : Type} [Field K] [Finite σ] (I : Ideal (MvPolynomial σ K)) (e : ℕ) :
-    dimDeg I e = 0 ↔ ∀ F ∈ I, F.IsHomogeneous e → F = 0 := by
-  haveI := finite_homogeneous_inf I e
-  unfold dimDeg
-  rw [Submodule.finrank_eq_zero, Submodule.eq_bot_iff]
-  constructor
-  · intro h F hF hd
-    exact h F ⟨(MvPolynomial.mem_homogeneousSubmodule e F).2 hd, hF⟩
-  · rintro h F ⟨hd, hF⟩
-    exact h F hF ((MvPolynomial.mem_homogeneousSubmodule e F).1 hd)
 
-theorem veryDense_primes (R : Type) [CommRing R] : VeryDense {p : Ideal R | p.IsPrime} := fun q _ hq hf => ⟨q, hq, hq, le_rfl, hf⟩
 
-theorem veryDense_maximals (R : Type) [CommRing R] [IsJacobsonRing R] : VeryDense {p : Ideal R | p.IsMaximal} := by
-  intro q f hq hf
-  by_contra hne
-  push_neg at hne
-  apply hf
-  rw [← IsJacobsonRing.out' q hq.isRadical, Ideal.jacobson, Ideal.mem_sInf]
-  rintro m ⟨hqm, hm⟩
-  exact hne m hm hm.isPrime hqm
 
 example : ¬ VeryDense {(⊥ : Ideal ℤ)} := fun h => by
   have hp : (Ideal.span {(2 : ℤ)}).IsPrime := (Ideal.span_singleton_prime two_ne_zero).2 Int.prime_two
@@ -127,12 +103,6 @@ theorem vanIdeal_unit_one (K : Type) [Field K] (d : ℕ) : vanIdeal d (fun (_ : 
   simp at h1
   rw [hF', h1, map_zero]
 
-theorem cutBy_bot (K : Type) [Field K] (d : ℕ) :
-    CutBy (⊥ : Ideal (MvPolynomial Unit K)) 0 d (fun (_ : Unit) (_ : Unit) => (1 : K)) := by
-  intro e _
-  refine ⟨?_, fun F _ => by rw [vanIdeal_unit_one]⟩
-  rw [(dimDeg_eq_zero_iff _ e).2 (fun F hF _ => Ideal.mem_bot.1 hF)]
-  simp
 
 example (K : Type) [Field K] (Q : Polynomial ℚ) (d : ℕ) :
     ¬ CutBy (⊤ : Ideal (MvPolynomial Unit K)) Q d (fun (_ : Unit) (_ : Unit) => (1 : K)) := fun h => by
@@ -226,14 +196,6 @@ theorem isQProjOver_id (R : Type) [CommRing R] : IsQProjOver (𝟙 (Sp R)) := by
 
 end OnePoint
 
-theorem projRep_point (R : Type) [CommRing R] :
-    ProjRep (⊥ : Ideal (MvPolynomial Unit R)) (𝟙 (Sp R)) (Out.Inh.trivLB _) (fun _ => OnePoint.unitSec _) := by
-  have key : ∀ {R' : Type} [CommRing R'] (v : Unit → R'), Ideal.span (Set.range v) = ⊤ ↔ IsUnit (v ()) := by
-    intro R' _ v
-    rw [Set.range_unique, Ideal.span_singleton_eq_top]
-  refine ⟨Out.Inh.trivLB_isLB _, fun R' _ β x v _ h => ⟨(key v).2 ((OnePoint.secCoord_one x v).1 h), fun F hF => by
-    rw [Ideal.mem_bot.1 hF, MvPolynomial.eval₂_zero]⟩, fun R' _ β v hv _ =>
-    ⟨spMap β, ⟨by simp, (OnePoint.secCoord_one _ v).2 ((key v).1 hv)⟩, fun y hy => by simpa using hy.1⟩⟩
 
 theorem inMM_zero_iff (n N' : ℕ) {R : Type} [CommRing R] (β : o →+* R) (v : Ix 0 (N' ^ 2) → R) (a : Ix 0 (N' ^ 2)) :
     InMM n N' (⊥ : Ideal (MvPolynomial (Ix 0 (N' ^ 2)) o)) β v ↔ IsUnit (v a) := by

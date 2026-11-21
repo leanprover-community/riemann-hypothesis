@@ -148,28 +148,7 @@ theorem thExprUniqSt_iff_top : Formalism.MainNotions.ModuliIntegralCharts.H1.ThE
   rw [thExprUniqSt_iff_span]
   exact forall₅_congr fun E _ _ _ H => forall₄_congr fun Dw l Xo c => uniqueOn_span_iff Xo c _
 
-theorem thExprUniqSt_of_nabUnique
-    (h : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H)
-      (Xo : Moduli Dw l) (c : Coeff l), NabUnique Xo c) : Formalism.MainNotions.ModuliIntegralCharts.H1.ThExprUniqSt :=
-  thExprUniqSt_iff_top.2 fun E _ _ _ H Dw l Xo c =>
-    @UniqueOn.mono E _ _ _ H Dw l Xo c (fun _ P => IsHarmonic c P) _ (@h E _ _ _ H Dw l Xo c) fun _ _ hP => hP.1
 
-theorem X_later_harmonic_not_mem_span {n : ℕ} (τ : E →+* ℂ) (i i' : Fin (Dw.mult τ)) (h : i' < i) (b : Fin n) :
-    IsHarmonic c (MvPolynomial.X ⟨τ, i, b⟩ : MvPolynomial (LtN Dw n) c.F) ∧
-      (MvPolynomial.X ⟨τ, i, b⟩ : MvPolynomial (LtN Dw n) c.F) ∉
-        Submodule.span c.F {P' : MvPolynomial (LtN Dw n) c.F | IsTopHarmonic c P'} := by
-  classical
-  constructor
-  · intro σ j j'
-    refine Finset.sum_eq_zero fun b _ => ?_
-    rw [MvPolynomial.pderiv_X, Pi.single_apply]
-    split_ifs <;> simp
-  · intro hP
-    have := LinearMap.eqOn_span (f := (rowShift Dw.mult n c.F τ i i' 1).toLinearMap) (g := LinearMap.id)
-      (fun P' hP' => hP'.2.1 τ i i' h 1) hP
-    simp only [rowShift, AlgHom.toLinearMap_apply, MvPolynomial.aeval_X, LinearMap.id_apply] at this
-    rw [if_pos ⟨b, rfl⟩] at this
-    simp at this
 
 section Reframe
 

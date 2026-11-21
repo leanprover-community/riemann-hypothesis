@@ -510,31 +510,5 @@ def Count : Prop :=
     (∀ (q s : ℕ) (f : Fin s → X), Function.Injective f → (∀ i, f i ∈ S ∧ deg (f i) = q) → (s : Cardinal) ≤ κ q) →
     (S.card : Cardinal) ≤ Cardinal.sum κ
 
-theorem borelInjC_of_steps (hD : DeRhamInj) (h1 : FrameEx) (h2 : OneReal) (h3 : HarmEx) (h4 : UnitTriv) (h5 : HarmLin)
-    (h6 : NoExact) (h7 : Indep) (h8 : Count) (hB : BorelC) : UpperTheory.V.Published.BorelInjC := by
-  intro E _ _ _ a ha U hUo hUc Ξ S hS hC
-  classical
-  obtain ⟨n, e, he⟩ := h1 E a
-  obtain ⟨r, hr⟩ := h2 E a Ξ
-  have hex : ∀ π : CuspSub E a, ∃ (q : ℕ) (ω : Herm E a [⋀^Fin q]→ₗ[ℝ] (Sm E a ⊗[ℂ] (Fin Ξ.d → ℂ))),
-      π ∈ S → ω ≠ 0 ∧ IsHarm U Ξ r e ω ∧ ∀ X, ω X ∈ tens Ξ.d π.V := fun π => by
-    by_cases h : π ∈ S
-    · obtain ⟨q, ω, hω⟩ := h3 E a ha n e he U hUc π Ξ r hr (hC π h).1 (hC π h).2
-      exact ⟨q, ω, fun _ => hω⟩
-    · exact ⟨0, 0, fun h' => absurd h' h⟩
-  choose deg w hw using hex
-  refine h8 _ S deg _ fun q s f hf hq => ?_
-  have hex2 : ∀ i, ∃ ω : Herm E a [⋀^Fin q]→ₗ[ℝ] (Sm E a ⊗[ℂ] (Fin Ξ.d → ℂ)),
-      ω ≠ 0 ∧ IsHarm U Ξ r e ω ∧ ∀ X, ω X ∈ tens Ξ.d (f i).V := fun i => by
-    obtain ⟨hi, rfl⟩ := hq i
-    exact ⟨w _, hw _ hi⟩
-  choose ω h0 hH hV using hex2
-  refine hD E a ha U hUo hUc Ξ q s ω (fun i => ⟨((h5 E a n e U Ξ r q).2 _).1 (hH i), (hH i).closed⟩) fun c hc => ?_
-  rcases Nat.eq_zero_or_pos s with rfl | hs
-  · exact Subsingleton.elim _ _
-  have hi := (hq ⟨0, hs⟩).1
-  exact h7 E a Ξ.d q s f (fun i j h => hf (hS _ (hq i).1 _ (hq j).1 h)) ω h0 hV c
-    (h6 hB E a ha n e he U hUo hUc Ξ r hr (h4 E a ha U hUo hUc _ Ξ (hC _ hi).1 (hC _ hi).2) q _
-      ((h5 E a n e U Ξ r q).1 s ω c hH) hc)
 
 end UpperTheory.V.Lit.Bor

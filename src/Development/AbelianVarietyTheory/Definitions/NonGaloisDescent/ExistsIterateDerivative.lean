@@ -82,15 +82,7 @@ variable (O ι) in
 
 def galCoef (g : GQ l) : (ι → OW l O) →ₗ[O] (ι → OW l O) := (galOW O g).toLinearMap.compLeft ι
 
-theorem galCoef_phiW {g : GQ l} (hg : g ∈ ϖ.GfieldInf a) (v : ι → OW l O) :
-    galCoef O ι g (phiW t ϖ P v) = phiW t ϖ P (galCoef O ι g v) := by
-  ext1 i
-  change galOW O g (∑ j, ϖ.iW t K _ * frobOW l O (v j)) = ∑ j, ϖ.iW t K _ * frobOW l O (galOW O g (v j))
-  simp only [map_sum, map_mul, ϖ.galOW_iW t K hg, galOW_frobOW]
 
-theorem galCoef_mem_Treal {g : GQ l} (hg : g ∈ ϖ.GfieldInf a) {v : ι → OW l O} (hv : v ∈ Treal t ϖ P) :
-    galCoef O ι g v ∈ Treal t ϖ P := by
-  rw [mem_Treal, ← galCoef_phiW t ϖ P hg, mem_Treal.1 hv]
 
 abbrev ME : Submodule (invE l e (A O K)) (Vec K a ι) := P.Mext (invE l e (A O K))
 
@@ -264,7 +256,6 @@ def homT (F : BK.Hom P Q) : Treal t ϖ P →ₗ[O] Treal t ϖ Q :=
   ((homW t ϖ F).restrictScalars O).restrict fun v hv =>
     mem_Treal.2 ((homW_phiW t ϖ F v).symm.trans (congrArg _ (mem_Treal.1 hv)))
 
-theorem coe_homT (F : BK.Hom P Q) (v : Treal t ϖ P) : (homT t ϖ F v : κ → OW l O) = homW t ϖ F v := rfl
 
 theorem homW_injective : Function.Injective (homW t ϖ : BK.Hom P Q → _) := by
   rintro ⟨F, hF, _⟩ ⟨G, hG, _⟩ h
@@ -359,7 +350,6 @@ theorem range_ofT : LinearMap.range I.ofT = Treal t ϖ P := by
 def equivT : ↥T.L.T ≃ₗ[O] Treal t ϖ P :=
   (LinearEquiv.ofInjective I.ofT I.ofT_injective).trans (LinearEquiv.ofEq _ _ I.range_ofT)
 
-theorem coe_equivT (x : ↥T.L.T) : (I.equivT x : ι → OW l O) = I.ofT x := rfl
 
 include I in
 
@@ -1008,9 +998,7 @@ section FinExt
 
 variable (LL : FinExt l) {G : Type} [Group G] [TopologicalSpace G]
 
-theorem zlLat_eq (T : LocLat G ℚ_[l] ↥LL.1 ↥(OL LL)) : zlLat T = Formalism.MainNotions.LocalSituation.zlMod LL T := rfl
 
-theorem actZ_eq (T : LocLat G ℚ_[l] ↥LL.1 ↥(OL LL)) : actZ T = fun g => Formalism.MainNotions.LocalSituation.actTZ LL T g := rfl
 
 variable (a) in
 

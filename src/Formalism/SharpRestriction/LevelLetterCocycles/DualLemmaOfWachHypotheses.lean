@@ -17,14 +17,5 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
     [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ} [NeZero n]
 
-theorem dual_lemma_of_wach_hypotheses [IsDomain O] [IsFractionRing O LL] (W : LocWach PD LL O v n)
-    (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisExactStrict PD LL) (hC : Formalism.MainNotions.RamifiedCoefficientChains.CrysSubQuot PD LL)
-    (hQ : Formalism.MainNotions.RamifiedCoefficientChains.DdREqDcris PD LL) (h5 : Formalism.MainNotions.DeltaInvariantLattices.P5W W) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W)
-    (hRu : Formalism.MainNotions.RamifiedCoefficientChains.Sh.ExpRules W) (hEC : Formalism.MainNotions.RamifiedCoefficientChains.Sh.ExpCrit W) (hDT : 11 ≤ PD.p → Formalism.MainNotions.RamifiedCoefficientChains.Sh.DetTool W)
-    (hZ : Formalism.MainNotions.RamifiedCoefficientChains.Sh.ZTool W) (hA : Formalism.MainNotions.RamifiedCoefficientChains.S9.ShB.AdaptBas W) : LemmaDN W :=
-  Formalism.MainNotions.RamifiedCoefficientChains.S9.DetS.lemmaDN_of_S1E W hZ hA
-    (Formalism.MainNotions.RamifiedCoefficientChains.S9.GM.gMem_of W hE hC hQ h5 h9 hRu hEC)
-    (Formalism.MainNotions.RamifiedCoefficientChains.S9.DetA.detAlg_of W hE hC hQ h5 h9 (Formalism.MainNotions.RamifiedCoefficientChains.Sh.basTool_of W h9) hDT
-      (Formalism.MainNotions.RamifiedCoefficientChains.S9.GCoord.gCoord_holds W))
 
 end Formalism.MainNotions.RamifiedCoefficientChains.S9.RouteD

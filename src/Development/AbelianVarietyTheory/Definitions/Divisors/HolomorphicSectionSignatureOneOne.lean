@@ -109,50 +109,15 @@ theorem weight_eq_zero_of_const {Hm x₀ : ι → Mt n} {q : ι → ℕ} (h : �
   have := HolFn.torus h hf s (u := 1) (fun τ => by show (1 : Mt n)ᴴ * _ * 1 = _; simp)
   simpa using this.symm
 
-theorem holFn_const (Hm x₀ : ι → Mt n) (q : ι → ℕ) (z : ℂ) : HolFn Hm q x₀ 0 fun _ => z :=
-  ⟨fun _ => z, ⟨differentiableOn_const _, fun _ _ _ _ => by simp⟩, fun _ _ => rfl⟩
 
 def H11 : Unit → Mt 2 := fun _ => !![1, 0; 0, -1]
 
 def x11 : Unit → Mt 2 := fun _ => !![0, 1; 1, 0]
 
-theorem orthFrame_signatureOneOne (τ : Unit) : OrthFr (H11 τ) 1 (x11 τ) := by
-  refine ⟨by norm_num, ?_⟩
-  ext a b
-  fin_cases a <;> fin_cases b <;> simp [H11, x11, sgn, Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem ne_zero_of_mem_frameDomain {x : Mt 2} (hx : x ∈ frDom (H11 ()) 1) : x 1 0 ≠ 0 := by
-  intro h0
-  have h1 := hx.2 1
-  have e : lminor (-(xᴴ * H11 () * x)) 1 = -(xᴴ * H11 () * x) 0 0 := by
-    unfold lminor
-    exact Matrix.det_fin_one _
-  rw [e] at h1
-  simp [psgn, sgn, H11, Matrix.mul_apply, Fin.sum_univ_two, h0] at h1
-  nlinarith [mul_self_nonneg (x 0 0).re, mul_self_nonneg (x 0 0).im]
 
-theorem holomorphicSection_signatureOneOne (k : ℤ) : HolSec H11 (fun _ => 1) (fun _ => ![-k, 0]) fun x => x () 1 0 ^ (-k) := by
-  refine ⟨fun x hx => ?_, fun x _ b hb => ?_⟩
-  · have h0 : x () 1 0 ≠ 0 := ne_zero_of_mem_frameDomain (hx ())
-    have h1 : DifferentiableAt ℂ (fun y : Unit → Fin 2 → Fin 2 → ℂ => y () 1 0) x := by fun_prop
-    exact (h1.zpow (Or.inl h0)).differentiableWithinAt
-  · have h10 : b () 1 0 = 0 := (hb ()).2 1 0 (by decide)
-    simp [Matrix.mul_apply, Fin.sum_univ_two, h10, Fin.prod_univ_two, mul_zpow, mul_comm]
 
-theorem holomorphicFunction_lowestVector (k : ℤ) : HolFn H11 (fun _ => 1) x11 (fun _ => ![-k, 0]) fun u => u () 1 1 ^ (-k) :=
-  ⟨_, holomorphicSection_signatureOneOne k, fun u _ => by simp [x11, Matrix.mul_apply, Fin.sum_univ_two]⟩
 
-theorem norm_lowestCoefficient_le_one (k : ℕ) {u : Unit → Mt 2} (hu : u ∈ UG H11) : ‖u () 1 1 ^ (-(k : ℤ))‖ ≤ 1 := by
-  have h : (u ())ᴴ * H11 () * u () = H11 () := hu ()
-  have h1 := congrArg Complex.re (congrFun (congrFun h 1) 1)
-  simp [H11, Matrix.mul_apply, Fin.sum_univ_two] at h1
-  have h2 : 1 ≤ ‖u () 1 1‖ := by
-    have : 1 ≤ ‖u () 1 1‖ ^ 2 := by
-      rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
-      nlinarith [mul_self_nonneg (u () 0 1).re, mul_self_nonneg (u () 0 1).im]
-    nlinarith [norm_nonneg (u () 1 1)]
-  rw [norm_zpow, _root_.zpow_neg, zpow_natCast]
-  exact inv_le_one_of_one_le₀ (one_le_pow₀ h2)
 
 theorem exp_one_one (z : ℂ) : (NormedSpace.exp (z • (1 : Mt 1)) : Mt 1) 0 0 = Complex.exp z := by
   have : z • (1 : Mt 1) = diagonal fun _ => z := by
@@ -178,25 +143,6 @@ theorem der_pow (k : ℕ) (z : ℂ) (u : Unit → Mt 1) :
   simp
   ring
 
-theorem killedFn_pow (k : ℕ) : KilledFn (fun _ : Unit => (1 : Mt 1)) (fun _ => 1) (fun _ _ => (k : ℤ)) fun v => v () 0 0 ^ k := by
-  intro τ a c _ u _
-  obtain rfl : a = 0 := Subsingleton.elim _ _
-  obtain rfl : c = 0 := Subsingleton.elim _ _
-  have e : (1 : Mt 1) * Matrix.single 0 0 1 * (1 : Mt 1)⁻¹ = 1 := by
-    ext a b
-    fin_cases a; fin_cases b; simp
-  have e1 : (1 / 2 : ℂ) • ((1 : Mt 1) + conjH 1 1) = (0 : ℂ) • (1 : Mt 1) := by simp [conjH]
-  have e2 : (1 / (2 * Complex.I)) • ((1 : Mt 1) - conjH 1 1) = (-Complex.I) • (1 : Mt 1) := by
-    ext a b
-    fin_cases a; fin_cases b
-    simp [conjH]
-    ring
-  show derC _ () ((1 : Mt 1) * Matrix.single 0 0 1 * (1 : Mt 1)⁻¹) _ u = _
-  rw [e]
-  unfold derC
-  rw [e1, e2, der_pow, der_pow, if_pos rfl]
-  simp only [Int.cast_natCast]
-  linear_combination (-(k : ℂ) * u () 0 0 ^ k) * Complex.I_mul_I
 
 end Local
 
@@ -220,24 +166,6 @@ theorem fix_iff (τ : D.host.E →+* ℂ) :
   refine Iff.trans ?_ (D.host.galE_mem_Psi_iff _).symm
   exact ⟨fun h => D.host.φ₀.injective h, fun h => congrArg D.host.φ₀ h⟩
 
-theorem orthFr_x0Mat {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) (hM : HolShape M) (τ : D.what₂.Tau) :
-    OrthFr (gramAt D V τ) (nNeg (M.ε τ)) (x0Mat M τ) := by
-  obtain ⟨-, p, hp, hε⟩ := hM τ
-  refine ⟨nNeg_le _, ?_⟩
-  have hinv : M.fr τ * (M.fr τ)⁻¹ = 1 := Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 (M.fr_unit τ))
-  have h1 : ((M.fr τ)⁻¹)ᴴ * gramAt D V τ * (M.fr τ)⁻¹ = Formalism.REAL.Jm (M.ε τ) := by
-    rw [← M.fr_gram τ]
-    calc _ = (M.fr τ * (M.fr τ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹) := by
-          simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [hinv]; simp
-  have h2 : (x0Mat M τ)ᴴ * gramAt D V τ * x0Mat M τ =
-      (((M.fr τ)⁻¹)ᴴ * gramAt D V τ * (M.fr τ)⁻¹).submatrix (arr (nNeg (M.ε τ))) (arr (nNeg (M.ε τ))) := rfl
-  rw [h2, h1, nNeg_shape hp hε]
-  ext a c
-  have ha := a.2
-  have hc := c.2
-  simp only [submatrix_apply, Formalism.REAL.Jm, diagonal_apply, hε, ReciprocityTheory.ChartRestriction.G.FD.sgn, arr, Fin.ext_iff]
-  split_ifs <;> simp_all <;> omega
 
 end Adelic
 
@@ -264,145 +192,11 @@ open Classical in
 def plOf {β : Type} (b : β) (f : D.what₂.Tau → β) (τ : D.host.E →+* ℂ) : β :=
   if h : ∃ ρ, τ = tauE D ρ then f h.choose else b
 
-theorem plOf_tauE {β : Type} (b : β) (f : D.what₂.Tau → β) (ρ : D.what₂.Tau) : plOf b f (tauE D ρ) = f ρ := by
-  have h : ∃ ρ', tauE D ρ = tauE D ρ' := ⟨ρ, rfl⟩
-  rw [plOf, dif_pos h, ← tauE_inj h.choose_spec]
 
-theorem goodDict_of_ctx {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
-    {σ : c.F →+* ℂ} {V : HSp D} (C : Ctx Xo c σ V V.rank) (hC : C.OK) {S : D.what₂.Tau → SPar} (M : DSModel V S)
-    (hM : HolShape M) (hq : ∀ ρ, nNeg (M.ε ρ) = Dw.q) (w : D.what₂.Tau → Fin V.rank → ℤ) :
-    ∃ θ dict Kf, IsLevelK V l.M Kf ∧
-      GoodDict θ M w rfl C.M.X (fun _ τ => plOf 0 w τ.1) dict (fun _ => 1) (fun _ => 1) Kf := by
-  have hΨ : ∀ k (τ : D.host.E →+* ℂ), τ ∈ (C.M.X k).Ψ ↔ ∃ ρ, τ = tauE D ρ := fun k τ => by
-    rw [(hC.base.type k).2, hC.iota.rt, hC.iota.rt0, fix_iff]
-  let C' : Ctx Xo c σ V V.rank := { C with x₀ := plOf 1 (x0Mat M) }
-  have hC' : C'.OK := by
-    refine ⟨hC.iota, hC.pos, hC.lA, hC.good, hC.base, hC.modelW, hC.inf, fun k τ hτ => ?_⟩
-    obtain ⟨ρ, rfl⟩ := (hΨ k τ).1 hτ
-    have hG : (C.M.X k).Gm = -V.gramᵀ := (hC.modelW k).1
-    show ReciprocityTheory.ChartRestriction.G.FD.gram _ (C.M.X k).Gm (plOf 1 (x0Mat M) _) = diagonal fun a : Fin V.rank => ((sgn (C.M.X k).p0 (a : ℕ) : ℝ) : ℂ)
-    rw [hG, plOf_tauE, gram_model, (orthFr_x0Mat M hM ρ).2, (hC.base.type k).1, hq, diagonal_neg, diagonal_transpose]
-    simp
-  obtain ⟨dict, hd⟩ := GlobalTheory.Member.Ctx.exists_isDict D H Dw l Xo c σ V _ C' hC'
-  have hl : 0 < l.M := lt_of_lt_of_le (by norm_num) l.three_le
-  have hK : IsLevelK V l.M (PrincLevel.levelGroup V l.M) := fun _ => Iff.rfl
-  have hfr : ∀ h k (ρ : D.what₂.Tau) (τ : (C.M.X k).Ψ), τ.1 = tauE D ρ → mat (C'.fr h k) τ =
-      Matrix.reindex (finCongr rfl) (finCongr rfl) (archM V (C.θ (tauE D ρ)) h * x0Mat M ρ) := by
-    intro h k ρ τ hτ
-    show Matrix.reindex (finCongr rfl) (finCongr rfl) (archM V (C.θ τ.1) h) * plOf 1 (x0Mat M) τ.1 = _
-    rw [hτ, plOf_tauE]
-    rfl
-  refine ⟨fun ρ => C.θ (tauE D ρ), dict, _, hK,
-    { inf := fun ρ => hC.inf _
-      base := ⟨hΨ, fun k ρ => ((hC.base.type k).1).trans (hq ρ).symm, fun h => ?_⟩
-      unif := ⟨C'.th, fun k τ => hC.inf _, GlobalTheory.MemberModel.dictIsUnif_of_isDict D H Dw l Xo c σ V _ C' hC' dict hd _ hK⟩
-      model := hC.modelW
-      muUnit := ⟨fun _ _ => (one_mul _).symm, fun _ => norm_one, fun _ _ => rfl,
-        (GlobalTheory.MemberModel.dict_invariant D H Dw l Xo c σ V _ C' hC' dict hd _ hK).2.2.2.1⟩
-      muCont := continuous_const
-      chi := fun k γ _ => hC.base.chi k _ γ
-      cNe := fun _ => one_ne_zero
-      cBdd := ⟨1, fun _ => norm_one.le⟩
-      fin := inferInstance
-      levFin := fun k hk => hk.1
-      levOpen := ?_
-      muK := fun _ _ => rfl
-      wt := ⟨0, fun _ _ => by simp, fun k ρ τ hτ a => by rw [hτ, plOf_tauE]; simp⟩ }⟩
-  · obtain ⟨γ, hm, he⟩ := hd.1 h
-    refine ⟨γ, hm.1, fun ρ τ hτ => ?_, fun u hu => ?_⟩
-    · rw [he]
-      exact hfr _ _ ρ τ hτ
-    · have hm2 := (GlobalTheory.Member.mark_move D H Dw l Xo c σ V _ C' hC' h _ γ hm).2.2.1 u hu
-      obtain ⟨δ, hδ, e⟩ := GlobalTheory.MemberModel.dict_eq_of_mark D H Dw l Xo c σ V _ C' hC' dict hd (h * u) _ γ hm2
-      refine ⟨δ, hδ, _, e, fun ρ τ hτ => ?_⟩
-      rw [mul_assoc γ h u]
-      exact hfr _ _ ρ τ hτ
-  · have : IsModuleTopology (AF D.host.F) (AF D.host.F ⊗[D.host.F] D.host.E) := ⟨rfl⟩
-    have : Module.Finite D.host.F D.host.E := Module.Finite.of_restrictScalars_finite ℚ _ _
-    have : IsTopologicalRing (AF D.host.F ⊗[D.host.F] D.host.E) :=
-      IsModuleTopology.isTopologicalRing (AF D.host.F) _
-    have : IsTopologicalGroup (GA D V) :=
-      inferInstanceAs (IsTopologicalGroup (HR (AF D.host.F) D.sp.cm.sig V.gram))
-    let U : Subgroup (GA D V) :=
-      { carrier := {k | FinCong V l.M k}
-        one_mem' := PrincLevel.finCong_one V l.M
-        mul_mem' := fun ha hb => PrincLevel.finCong_mul ha hb
-        inv_mem' := fun ha => PrincLevel.finCong_inv ha }
-    exact ⟨U, U.isOpen_of_mem_nhds (PrincLevel.finCong_mem_nhds V hl), fun k hk hf => ⟨hf, hk⟩⟩
 
-theorem exists_holModel (j : ℕ) (hj : 1 ≤ j ∧ j ≤ D.R.m) (lam : Fin (D.sp.W j).rank → ℝ) (hl : Formalism.QuantumDeterminants.IsHCParam lam)
-    (hσ : ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H) (σ : Mt (D.sp.W j).rank → (H →L[ℂ] H)),
-      IsDS (fun a => decide ((a : ℕ) < (D.R.sigW j).1)) lam σ) :
-    ∃ (S : D.what₂.Tau → SPar) (M : DSModel (D.sp.W j) S), HolShape M ∧ (∀ ρ, M.lam ρ = lam) ∧
-      ∀ ρ, nNeg (M.ε ρ) = (D.R.sigW j).2 := by
-  have hr : (D.sp.W j).rank = (D.R.sigW j).1 + (D.R.sigW j).2 := by
-    rw [D.sp.W_rank j hj.1 hj.2]
-    have := D.R.m_add_three_le_k
-    simp only [Ranks.sigW, Ranks.r]
-    omega
-  obtain ⟨H, i1, i2, σ, hσ⟩ := hσ
-  set ε : Fin (D.sp.W j).rank → Bool := fun a => decide ((a : ℕ) < (D.R.sigW j).1) with hε
-  have hp : (D.R.sigW j).1 ≤ (D.sp.W j).rank := by omega
-  have hq : nNeg ε = (D.R.sigW j).2 := by rw [nNeg_shape hp fun _ => rfl]; omega
-  have hp' : (Finset.univ.filter fun a => ε a = true).card = (D.R.sigW j).1 := by
-    have h1 := Finset.card_filter_add_card_filter_not (s := (Finset.univ : Finset (Fin (D.sp.W j).rank))) (fun a => ε a = false)
-    have h2 : (Finset.univ.filter fun a => ε a = false).card = (D.R.sigW j).2 := hq
-    simp only [Bool.not_eq_false, Finset.card_univ, Fintype.card_fin] at h1
-    omega
-  have hA : ∀ τ : D.what₂.Tau, ∃ A : Mt (D.sp.W j).rank, IsUnit A ∧ Aᴴ * Formalism.REAL.Jm ε * A = gramAt D (D.sp.W j) τ := fun τ => by
-    have h1 := D.sp.W_sig j (tauE D τ)
-    rw [D.sp.W_sigval j hj.1 hj.2] at h1
-    exact GlobalTheory.Published.exists_frame_of_hasSignature h1 ε hp' hq
-  choose A hA hG using hA
-  choose m hm using hl.2
-  let qq : Fin (D.sp.W j).rank → ℚ := fun a => (m a : ℚ) + (((D.sp.W j).rank : ℚ) - 1) / 2
-  have hE : IsEnum (Finset.univ.image fun a => (qq a, ε a)) lam ε :=
-    ⟨hl.1, qq, fun a => by have := hm a; simp only [qq]; push_cast; linarith, rfl⟩
-  exact ⟨_, @DSModel.mk D _ (fun _ => Finset.univ.image fun a => (qq a, ε a)) (fun _ => H) (fun _ => i1) (fun _ => i2)
-    (fun _ => σ) (fun _ => lam) (fun _ => ε) A (fun _ => hE) (fun _ => hσ) hA hG,
-    fun _ => ⟨hl, _, hp, fun _ => rfl⟩, fun _ => rfl, fun _ => hq⟩
 
-theorem exists_goodDict (j : ℕ) (hj : 1 ≤ j ∧ j ≤ D.R.m) (lam : Fin (D.sp.W j).rank → ℝ) (hl : Formalism.QuantumDeterminants.IsHCParam lam)
-    (hσ : ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H) (σ : Mt (D.sp.W j).rank → (H →L[ℂ] H)),
-      IsDS (fun a => decide ((a : ℕ) < (D.R.sigW j).1)) lam σ) (w : D.what₂.Tau → Fin (D.sp.W j).rank → ℤ) :
-    ∃ (S : D.what₂.Tau → SPar) (M : DSModel (D.sp.W j) S) (θ : InfFam D) (n : ℕ) (X : Fin n → Data D.host.E (D.sp.W j).rank)
-      (la : ∀ k, Wt (X k).Ψ _) (dict : _) (Kf : Subgroup (GA D (D.sp.W j))), HolShape M ∧ (∀ ρ, M.lam ρ = lam) ∧ 0 < n ∧
-        3 ≤ (D.sp.W j).rank ∧ IsLevelK (D.sp.W j) (D.host.g 0 * D.host.g 1) Kf ∧
-        GoodDict θ M w rfl X la dict (fun _ => 1) (fun _ => 1) Kf := by
-  obtain ⟨S, M, hM, hlam, hq⟩ := exists_holModel j hj lam hl hσ
-  obtain ⟨l, Xo, c, σ, C, hC, h3, hn, hl⟩ := GlobalTheory.Member.Inhab.exists_ctx_ok_at_lift D j hj
-  obtain ⟨θ, dict, Kf, hK, hG⟩ := goodDict_of_ctx C hC M hM hq w
-  exact ⟨S, M, θ, _, _, _, dict, Kf, hM, hlam, hn, h3, hl ▸ hK, hG⟩
 
-theorem exists_goodDict_last (lam : Fin (D.sp.W D.R.m).rank → ℝ) (hl : Formalism.QuantumDeterminants.IsHCParam lam)
-    (w : D.what₂.Tau → Fin (D.sp.W D.R.m).rank → ℤ) :
-    ∃ (S : D.what₂.Tau → SPar) (M : DSModel (D.sp.W D.R.m) S) (θ : InfFam D) (n : ℕ)
-      (X : Fin n → Data D.host.E (D.sp.W D.R.m).rank) (la : ∀ k, Wt (X k).Ψ _) (dict : _)
-      (Kf : Subgroup (GA D (D.sp.W D.R.m))), HolShape M ∧ (∀ ρ, M.lam ρ = lam) ∧ 0 < n ∧
-        3 ≤ (D.sp.W D.R.m).rank ∧ IsLevelK (D.sp.W D.R.m) (D.host.g 0 * D.host.g 1) Kf ∧
-        GoodDict θ M w rfl X la dict (fun _ => 1) (fun _ => 1) Kf := by
-  have hm := D.R.two_le_m
-  have hj : 1 ≤ D.R.m ∧ D.R.m ≤ D.R.m := ⟨by omega, le_rfl⟩
-  refine exists_goodDict _ hj lam hl ?_ w
-  have e : (fun a : Fin (D.sp.W D.R.m).rank => decide ((a : ℕ) < (D.R.sigW D.R.m).1)) = fun _ => true := by
-    funext a
-    have h1 := a.2
-    have h2 := D.sp.W_rank _ hj.1 hj.2
-    have := D.R.m_add_three_le_k
-    refine decide_eq_true ?_
-    show (a : ℕ) < D.R.k + D.R.m - 1
-    have h3 : (D.sp.W D.R.m).rank = D.R.k + D.R.m - 1 := h2
-    omega
-  rw [e]
-  exact GlobalTheory.CompactDS.exists_isDS_const _ true _ hl
 
-theorem exists_goodDict_of_discreteSeries (h : GlobalTheory.Published.DiscreteSeriesExists) (j : ℕ) (hj : 1 ≤ j ∧ j ≤ D.R.m)
-    (lam : Fin (D.sp.W j).rank → ℝ) (hl : Formalism.QuantumDeterminants.IsHCParam lam) (w : D.what₂.Tau → Fin (D.sp.W j).rank → ℤ) :
-    ∃ (S : D.what₂.Tau → SPar) (M : DSModel (D.sp.W j) S) (θ : InfFam D) (n : ℕ) (X : Fin n → Data D.host.E (D.sp.W j).rank)
-      (la : ∀ k, Wt (X k).Ψ _) (dict : _) (Kf : Subgroup (GA D (D.sp.W j))), HolShape M ∧ (∀ ρ, M.lam ρ = lam) ∧ 0 < n ∧
-        3 ≤ (D.sp.W j).rank ∧ IsLevelK (D.sp.W j) (D.host.g 0 * D.host.g 1) Kf ∧
-        GoodDict θ M w rfl X la dict (fun _ => 1) (fun _ => 1) Kf :=
-  exists_goodDict j hj lam hl (GlobalTheory.Published.discreteSeriesExists_iff.1 h _ _ lam hl) w
 
 end Dict
 
@@ -428,20 +222,7 @@ theorem exists_isReg (V : HSp D) {μ : Measure (GA D V)} {𝓕 : Set (GA D V)} (
   obtain ⟨ρ, a, b, c⟩ := key _ e
   exact ⟨ρ, { val := a, iso := b, cont := c }⟩
 
-theorem holForm_const (θ : InfFam D) {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) (J : Set (GA D V)) (z : ℂ) :
-    HolForm θ M 0 J (fun _ => 1) fun _ => z := by
-  classical
-  exact ⟨⟨fun _ _ _ => rfl, ⟨⊤, isOpen_univ, fun _ _ _ _ => rfl⟩, continuous_const⟩, ⟨‖z‖, fun _ => le_rfl⟩,
-    fun _ _ _ => (one_mul _).symm, fun _ => ⟨fun _ => z, holFn_const _ _ _ z, fun _ _ => rfl⟩⟩
 
-theorem mem_GG_iff (V : HSp D) (X : ReciprocityTheory.ChartRestriction.G.FD.Data D.host.E V.rank) (hX : ModelW V rfl X) (τ : X.Ψ) (ρ : D.what₂.Tau)
-    (hτ : τ.1 = tauE D ρ) (x : ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ V.rank) :
-    ReciprocityTheory.ChartRestriction.G.FD.mat x τ ∈ frDom (gramAt D V ρ) X.p0 ↔ (ReciprocityTheory.ChartRestriction.G.FD.mat x τ).det ≠ 0 ∧
-      ∀ i : Fin (V.rank + 1), 0 < ReciprocityTheory.ChartRestriction.G.FD.psgn X.p0 i * (ReciprocityTheory.ChartRestriction.G.FD.dmin X.Gm x τ i).re := by
-  have hG : X.Gm = -V.gramᵀ := hX.1
-  refine and_congr_right fun _ => forall_congr' fun i => ?_
-  rw [ReciprocityTheory.ChartRestriction.G.FD.dmin, hG, hτ, gram_model, ReciprocityTheory.ChartRestriction.G.FD.lminor, ReciprocityTheory.ChartRestriction.G.FD.lminor, ← transpose_submatrix,
-    det_transpose]
 
 end Forms
 

@@ -47,10 +47,6 @@ theorem vtf_val_lcg (φ : K → (Y ⟶ X)) (ε : K → ℤ) (p : Sp ℂ ⟶ Y) (
         exact congrArg (· ^ ε k) ((vtf_val_res (U := φ k ⁻¹ᵁ (L.U (j k) ⊓ L.U (j' k))) p _ h _).trans
           (vtf_val_pullU p (φ k) (L.U (j k) ⊓ L.U (j' k)) (L.g (j k) (j' k))))
 
-theorem vtf_val_pullGen (φ : K → (Y ⟶ X)) (ε : K → ℤ) (c : LB.Gen (LB.LinComb L φ ε)) (h : Z ⟶ Y)
-    (p : Sp ℂ ⟶ Z) (j : K → L.ι) (hp : ⊤ ≤ p ⁻¹ᵁ LB.wchart L (fun k => h ≫ φ k) j) :
-    valAt' p _ ((LB.pullGen L φ ε c h).s j).val = valAt' (p ≫ h) _ (c.s j).val := by
-  exact (vtf_val_res p _ hp _).trans (vtf_val_pullU _ _ _ _)
 
 theorem vtf_isGen_val (φ : K → (Y ⟶ X)) (ε : K → ℤ) (t : LB.Gen (LB.LinComb L φ ε)) (ht : t.IsGen)
     (p : Sp ℂ ⟶ Y) (j j' : K → L.ι) (h : ⊤ ≤ p ⁻¹ᵁ (LB.wchart L φ j ⊓ LB.wchart L φ j')) :
@@ -72,20 +68,6 @@ theorem vtf_isGen_val (φ : K → (Y ⟶ X)) (ε : K → ℤ) (t : LB.Gen (LB.Li
         rw [Units.val_mul, valAt'_mul]
     _ = _ := by rw [vtf_val_lcg L φ ε p j j' h, vtf_val_res p _ h']
 
-theorem vtf_corr_val (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ)
-    (t : LB.Gen (LB.LinComb L φ ε)) (t' : LB.Gen (LB.LinComb L φ' ε')) (hc : LB.Gen.Corr L φ ε φ' ε' t t')
-    (j : K → L.ι) (j' : K' → L.ι) (hj : LB.Coh L φ j) (hj' : LB.Coh L φ' j')
-    (hjj : ∀ k k', φ k = φ' k' → j k = j' k') (p : Sp ℂ ⟶ Y)
-    (h : ⊤ ≤ p ⁻¹ᵁ (LB.wchart L φ j ⊓ LB.wchart L φ' j')) :
-    valAt' p _ (t.s j).val = valAt' p _ (t'.s j').val := by
-  calc valAt' p _ (t.s j).val
-      = valAt' p (LB.wchart L φ j ⊓ LB.wchart L φ' j')
-          (res (inf_le_left : LB.wchart L φ j ⊓ LB.wchart L φ' j' ≤ LB.wchart L φ j) (t.s j)).val :=
-        (vtf_val_res p _ h _).symm
-    _ = valAt' p (LB.wchart L φ j ⊓ LB.wchart L φ' j')
-          (res (inf_le_right : LB.wchart L φ j ⊓ LB.wchart L φ' j' ≤ LB.wchart L φ' j') (t'.s j')).val := by
-        rw [hc j j' hj hj' hjj]
-    _ = _ := vtf_val_res p _ h _
 
 end LC
 
@@ -93,39 +75,6 @@ section Liou
 
 variable {g : ℕ}
 
-theorem vtf_liouville (lat : AddSubgroup (Fin g → ℂ)) (hspan : Submodule.span ℝ (lat : Set (Fin g → ℂ)) = ⊤)
-    (f : (Fin g → ℂ) → ℂ) (hf : Differentiable ℂ f) (hper : ∀ z, ∀ a ∈ lat, ‖f (z + a)‖ = ‖f z‖)
-    (z w : Fin g → ℂ) : f z = f w := by
-  classical
-  obtain ⟨s, hsl, hss, hli⟩ := exists_linearIndependent ℝ (lat : Set (Fin g → ℂ))
-  have hsp : ⊤ ≤ Submodule.span ℝ (Set.range ((↑) : s → Fin g → ℂ)) :=
-    le_of_eq (by rw [Subtype.range_coe, hss, hspan])
-  have hfin : s.Finite := hli.setFinite
-  haveI : Fintype s := hfin.fintype
-  let b : Module.Basis s ℝ (Fin g → ℂ) := Module.Basis.mk hli hsp
-  have hb : ∀ i, b i ∈ lat := fun i => by
-    simp only [b, Module.Basis.mk_apply]
-    exact hsl i.2
-  have hfl : ∀ x : Fin g → ℂ, (ZSpan.floor b x : Fin g → ℂ) ∈ lat := by
-    intro x
-    have h1 : Submodule.span ℤ (Set.range b) ≤ lat.toIntSubmodule := by
-      rw [Submodule.span_le]
-      rintro _ ⟨i, rfl⟩
-      exact hb i
-    exact h1 (ZSpan.floor b x).2
-  have hK : IsCompact (closure (ZSpan.fundamentalDomain b)) :=
-    (ZSpan.fundamentalDomain_isBounded b).isCompact_closure
-  obtain ⟨C, hC⟩ := (hK.image hf.continuous).isBounded.exists_norm_le
-  have hbd : Bornology.IsBounded (Set.range f) := by
-    rw [isBounded_iff_forall_norm_le]
-    refine ⟨C, ?_⟩
-    rintro _ ⟨x, rfl⟩
-    have hx : ZSpan.fract b x + (ZSpan.floor b x : Fin g → ℂ) = x := by
-      rw [ZSpan.fract_apply, sub_add_cancel]
-    calc ‖f x‖ = ‖f (ZSpan.fract b x + (ZSpan.floor b x : Fin g → ℂ))‖ := by rw [hx]
-      _ = ‖f (ZSpan.fract b x)‖ := hper _ _ (hfl x)
-      _ ≤ C := hC _ ⟨_, subset_closure (ZSpan.fract_mem_fundamentalDomain b x), rfl⟩
-  exact hf.apply_eq_apply_of_bounded hbd z w
 
 end Liou
 

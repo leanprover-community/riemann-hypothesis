@@ -29,97 +29,10 @@ def pl : Plane E 3 1 := ⟨![1, 0, 0], ![0, 0, 1], !![0; 1; 0], 1⟩
 def detA {n : ℕ} (J : Matrix (Fin n) (Fin n) E) : UA σ J →* AE F E :=
   Matrix.detMonoidHom.comp ((Units.coeHom _).comp (Subgroup.subtype _))
 
-theorem detA_apply {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (g : UA σ J) : detA J g = (mat g).det := rfl
 
-theorem detA_unip (δ : E) : ∀ u ∈ unip σ (big F δ) (pl E), detA (big F δ).J u = 1 := by
-  refine fun u hu => (Subgroup.closure_le (detA (σ := σ) (big F δ).J).ker).2 ?_ hu
-  rintro u ⟨h1, h2⟩
-  obtain ⟨a, h2⟩ := h2 ![1]
-  have a0 := congrFun h1 0
-  have a1 := congrFun h1 1
-  have a2 := congrFun h1 2
-  have b1 := congrFun h2 1
-  have b2 := congrFun h2 2
-  have c := congrFun (congrFun (show (mat u)ᵀ * incM F (big F δ).J * (mat u).map (cA σ) = incM F (big F δ).J from u.2) 2) 0
-  change (mat u).det = 1
-  generalize mat u = M at a0 a1 a2 b1 b2 c ⊢
-  simp [pl, incV, incM, Matrix.mulVec, dotProduct, Fin.sum_univ_three] at a0 a1 a2 b1 b2
-  simp [big, incM, Matrix.mul_apply, Fin.sum_univ_three, a0, a1, a2] at c
-  rw [Matrix.det_fin_three]
-  simp [a0, a1, a2, b1, b2, c]
 
-theorem detA_levi (δ : E) (h₁ : UA σ (small F δ).J) (m : UA σ (big F δ).J)
-    (hm : IsLevi (W₁ := small F δ) (pl E) 1 h₁ m) : detA (big F δ).J m = mat h₁ 0 0 := by
-  obtain ⟨h1, h2, h3⟩ := hm
-  have a0 := congrFun h1 0
-  have a1 := congrFun h1 1
-  have a2 := congrFun h1 2
-  have b0 := congrFun h2 0
-  have b1 := congrFun h2 1
-  have b2 := congrFun h2 2
-  have c1 := congrFun (congrFun h3 1) 0
-  have c2 := congrFun (congrFun h3 2) 0
-  simp [pl, incV, incM, Matrix.mulVec, dotProduct, Fin.sum_univ_three, Matrix.mul_apply] at a0 a1 a2 b0 b1 b2 c1 c2
-  rw [detA_apply, Matrix.det_fin_three]
-  simp [a0, a1, a2, b0, b1, b2, c1, c2]
 
-theorem arch_entry {n : ℕ} (J : Matrix (Fin n) (Fin n) E) {w : InfinitePlace F} (τ : EmbOver E w) (g : GAd σ J) (i j : Fin n) :
-    GlobalTheory.Orb.archMat σ J τ (projArch σ J w g) i j = piInf τ (g.1.1 i j) := rfl
 
-theorem exists_inhabitant (hσ : IsCMExt F E σ) {δ : E} (h0 : δ ≠ 0) (hδ : σ δ = -δ) :
-    ∃ (Y : Spc F E 3) (Y₁ : Spc F E 1) (H : Plane E 3 1) (ψ : UA σ Y.J → ℂ) (c : E) (h : UA σ Y.J) (g : UA σ Y₁.J → ℂ)
-      (φ₁ : GAd σ (c • Y₁.J.map σ) → ℂ),
-      (∀ i j, σ (Y.J j i) = -Y.J i j) ∧ form σ Y.J H.x H.x = 0 ∧ form σ Y.J H.y H.y = 0 ∧ form σ Y.J H.x H.y = 1 ∧
-      (∀ u, form σ Y.J (H.ι *ᵥ u) H.x = 0 ∧ form σ Y.J (H.ι *ᵥ u) H.y = 0) ∧ H.ιᵀ * Y.J * H.ι.map σ = Y₁.J ∧ Y.J.det ≠ 0 ∧
-      Y₁.J.det ≠ 0 ∧ (∀ u ∈ unip σ Y H, ∀ x, ψ (u * x) = ψ x) ∧ c ≠ 0 ∧ IsHermND σ (c • Y.J.map σ) ∧
-      IsHermND σ (c • Y₁.J.map σ) ∧
-      (∀ φ : GAd σ (c • Y.J.map σ) → ℂ, (∀ (g : UA σ Y.J) (g' : GAd σ (c • Y.J.map σ)), g.1 = g'.1 → φ g' = ψ g) →
-        GlobalTheory.UAut.IsSm σ (c • Y.J.map σ) φ ∧
-          FiniteDimensional ℂ (Submodule.span ℂ {u | ∃ z, GlobalTheory.UAut.IsCentral σ (c • Y.J.map σ) z ∧ u = GlobalTheory.UAut.dop z φ})) ∧
-      (∀ h₁ m, IsLevi (W₁ := Y₁) H 1 h₁ m → g h₁ = ψ (m * h)) ∧
-      (∀ (g₁ : UA σ Y₁.J) (g' : GAd σ (c • Y₁.J.map σ)), g₁.1 = g'.1 → φ₁ g' = g g₁) ∧ ∃ a, φ₁ a ≠ φ₁ 1 := by
-  obtain ⟨w⟩ : Nonempty (InfinitePlace F) := inferInstance
-  obtain ⟨τ⟩ : Nonempty (EmbOver E w) := inferInstance
-  refine ⟨big F δ, small F δ, pl E, fun g => piInf τ (detA _ g), δ, 1, fun g => piInf τ (mat g 0 0),
-    fun g => piInf τ (g.1.1 0 0), ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, h0, ⟨?_, ?_⟩, ⟨?_, ?_⟩, ?_, ?_, ?_, ?_⟩
-  · intro i j; fin_cases i <;> fin_cases j <;> simp [big, hδ]
-  · simp [form, big, pl, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
-  · simp [form, big, pl, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
-  · simp [form, big, pl, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
-  · intro u; simp [form, big, pl, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
-  · ext i j; fin_cases i; fin_cases j; simp [big, small, pl, Matrix.mul_apply, Fin.sum_univ_three]
-  · simp [big, Matrix.det_fin_three, h0]
-  · simp [small, h0]
-  · intro u hu x; simp only [map_mul, detA_unip δ u hu, one_mul]
-  · intro i j; fin_cases i <;> fin_cases j <;> simp [big, hδ]
-  · simp [big, Matrix.det_fin_three, h0, hδ]
-  · intro i j; fin_cases i; fin_cases j; simp [small, hδ]
-  · simp [small, h0, hδ]
-  · intro φ hφ
-    obtain rfl : φ = fun g' => piInf τ (g'.1.1.det) := funext fun g' => by
-      obtain ⟨g, hg⟩ := GlobalTheory.ThK.SmoothLev.exists_val_eq σ _ hσ h0 g'
-      rw [hφ g g' hg]
-      exact congrArg (fun x : GL (Fin 3) (AE F E) => piInf τ x.1.det) hg
-    constructor
-    · intro k γ hγ g
-      have e := fun i j => GlobalTheory.UAut.Model.isSm_entry (J := δ • (big F δ).J.map σ) hσ τ i j k γ hγ g
-      simp only [arch_entry] at e
-      simp only [Matrix.det_fin_three, map_add, map_sub, map_mul]
-      fun_prop
-    · refine Submodule.finiteDimensional_of_le (S₂ := Submodule.span ℂ
-        {fun g' : GAd σ (δ • (big F δ).J.map σ) => piInf τ (g'.1.1.det)}) (Submodule.span_le.2 ?_)
-      rintro _ ⟨z, -, rfl⟩
-      choose c hc using GlobalTheory.UAut.Model.foldr_char (φ := fun g' : GAd σ (δ • (big F δ).J.map σ) => piInf τ (g'.1.1.det))
-        fun g h => by rw [← map_mul, ← Matrix.det_mul]; rfl
-      exact Submodule.mem_span_singleton.2 ⟨z.sum fun l a => a * c l, funext fun g => by
-        simp [GlobalTheory.UAut.dop, hc, Finsupp.sum, Finset.sum_mul, mul_assoc]⟩
-  · intro h₁ m hm; simp only [mul_one, detA_levi δ h₁ m hm]
-  · intro g₁ g' e; simp only [mat, e]
-  · refine ⟨⟨-1, show _ * _ * _ = _ by
-      ext i j; fin_cases i; fin_cases j; simp [Formalism.UG.cT, Matrix.mul_apply]⟩, ?_⟩
-    change piInf τ ((-1 : Matrix (Fin 1) (Fin 1) _) 0 0) ≠ piInf τ ((1 : Matrix (Fin 1) (Fin 1) _) 0 0)
-    simp only [Matrix.neg_apply, Matrix.one_apply_eq, map_neg, map_one]
-    norm_num
 
 open Matrix GlobalTheory.LeviUnitary in
 

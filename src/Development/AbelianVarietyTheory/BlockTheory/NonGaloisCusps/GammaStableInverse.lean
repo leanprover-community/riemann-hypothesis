@@ -29,11 +29,6 @@ def invSub (a : A) (M : Submodule A D) : Submodule A D where
     rw [smul_comm]
     exact M.smul_mem _ hk
 
-theorem invSub_le {a : A} {M M' : Submodule A D} (h : M ≤ invSub a M') :
-    invSub a M ≤ invSub a M' := by
-  rintro x ⟨k, hk⟩
-  obtain ⟨j, hj⟩ := h hk
-  exact ⟨j + k, by rwa [pow_add, mul_smul]⟩
 
 end Inv
 

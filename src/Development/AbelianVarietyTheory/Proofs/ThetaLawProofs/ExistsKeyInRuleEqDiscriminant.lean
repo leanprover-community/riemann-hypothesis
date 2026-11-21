@@ -50,13 +50,5 @@ theorem value_of_normalAt (κ : KeyIn ℂ → ℂˣ)
   field_simp at h₅ ⊢
   linear_combination -h₅
 
-theorem exists_keyIn_rule_eq_discriminant :
-    ∀ (W : WeierstrassCurve ℂ) [W.IsElliptic], ∃ x : KeyIn ℂ, x.P.g = 1 ∧ ∀ κ : KeyIn ℂ → ℂˣ, (∀ (P : Out.PolAV (Sp ℂ)) (hg rig hr th hth v hv th' hth' v' hv') (a : ℂ) (M : Matrix (Fin P.g) (Fin P.g) ℂ), (∀ i, LB.Sec.f th' i = constFn P.A.hom _ a * LB.Sec.f th i) → (∀ i, IsLieComb (M i) v (v' i)) → a ^ 8 * (κ ⟨P, hg, rig, hr, th', hth', v', hv'⟩ : ℂ) = M.det ^ 4 * κ ⟨P, hg, rig, hr, th, hth, v, hv⟩) → (∀ (x : KeyIn ℂ) (u : HolUnif x.P.A x.P.L x.P.g) (τ : Matrix (Fin x.P.g) (Fin x.P.g) ℂ) (a b : Fin x.P.g → ℂ), (τ.IsSymm ∧ (τ.map Complex.im).PosDef ∧ (∀ i, a i = 0 ∨ a i = 1 / 2) ∧ (∀ i, b i = 0 ∨ b i = 1 / 2) ∧ (∀ z, z ∈ u.Λ ↔ ∃ m n : Fin x.P.g → ℤ, z = (fun i => (m i : ℂ)) + τ.mulVec (fun i => (n i : ℂ))) ∧ u.IsRig x.rig ∧ u.IsFn x.th (thetaChar τ a b) ∧ (∀ i, u.IsDiff (Pi.single i (2 * Real.pi * Complex.I)⁻¹) (x.v i))) → κ x = 1) → (κ x : ℂ) = W.Δ := by
-  intro W _
-  obtain ⟨x, hg, hx⟩ := GlobalTheory.EllipticKey.exists_keyIn_value_eq_discriminant GlobalTheory.thetaUnifAV_all ℂ W
-  refine ⟨x, hg, fun κ hH hN => ?_⟩
-  obtain ⟨τ, M, a, b, c, hab, hc, hM, hn⟩ := exists_normalAt x
-  rw [value_of_normalAt κ hH hN x τ M a b c hab hc hM hn]
-  exact hx (RingHom.id ℂ) x τ M a b c (GlobalTheory.keyPB_id ℂ x) hab hc hn
 
 end GlobalTheory.KeyTest

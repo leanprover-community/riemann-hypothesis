@@ -33,28 +33,7 @@ theorem norm_sum_sq_le (a w : n → ℂ) : ‖∑ k, a k * w k‖ ^ 2 ≤ (∑ k
   calc ‖∑ k, a k * w k‖ ^ 2 ≤ (∑ k, ‖a k‖ * ‖w k‖) ^ 2 := pow_le_pow_left₀ h0 h1 2
     _ ≤ _ := h2
 
-theorem quad_le_trace_HH (H : Matrix n n ℂ) (w : n → ℂ) :
-    (star w ⬝ᵥ (Hᴴ * H) *ᵥ w).re ≤ (Hᴴ * H).trace.re * ∑ i, ‖w i‖ ^ 2 := by
-  have e1 : star w ⬝ᵥ (Hᴴ * H) *ᵥ w = star (H *ᵥ w) ⬝ᵥ (H *ᵥ w) := by
-    rw [← mulVec_mulVec, dotProduct_mulVec, star_mulVec]
-  rw [e1, re_star_dot_self]
-  have e2 : (Hᴴ * H).trace.re = ∑ j, ∑ k, ‖H k j‖ ^ 2 := by
-    simp only [trace, diag, mul_apply, conjTranspose_apply, Complex.re_sum]
-    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
-    rw [Complex.star_def, Complex.conj_mul']; norm_cast
-  rw [e2, Finset.sum_comm, Finset.sum_mul]
-  refine Finset.sum_le_sum fun k _ => ?_
-  exact norm_sum_sq_le (fun j => H k j) w
 
-theorem quad_le_trace {b : Matrix n n ℂ} (hb : b.PosSemidef) (Y : Matrix n n ℂ) (w : n → ℂ) :
-    (star (Y *ᵥ w) ⬝ᵥ b *ᵥ (Y *ᵥ w)).re ≤ (b * (Y * Yᴴ)).trace.re * ∑ i, ‖w i‖ ^ 2 := by
-  obtain ⟨H, hH⟩ := exists_star_mul_self (hb.conjTranspose_mul_mul_same Y)
-  have e1 : star (Y *ᵥ w) ⬝ᵥ b *ᵥ (Y *ᵥ w) = star w ⬝ᵥ (Yᴴ * b * Y) *ᵥ w := by
-    rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, mulVec_mulVec, Matrix.mul_assoc]
-  have e2 : (b * (Y * Yᴴ)).trace = (Yᴴ * b * Y).trace := by
-    rw [← Matrix.mul_assoc, trace_mul_comm, Matrix.mul_assoc]
-  rw [e1, e2, hH]
-  exact quad_le_trace_HH H w
 
 theorem trace_nonneg {b : Matrix n n ℂ} (hb : b.PosSemidef) (Y : Matrix n n ℂ) :
     0 ≤ (b * (Y * Yᴴ)).trace.re := by

@@ -65,38 +65,6 @@ private theorem conj_diag {E : Type} [Field E] [NumberField E] [IsCMField E] (w 
   rw [hid] at h
   exact ⟨m, t, torusO_subset_TO w n t ht, h⟩
 
-private theorem sep_of_dcos {E : Type} [Field E] [NumberField E] [IsCMField E] (w : Pl E) (ϖ : (w.adicCompletion E)ˣ)
-    (hϖ : ordL (ϖ : w.adicCompletion E) = 1) (n : ℕ) (y : Fin n → ℤ) (hy : StrictAnti y) (δ : GLw n w)
-    (hδ : dcos n w (tdiag ϖ y) δ ≠ 0) : δ.val.charpoly.Separable := by
-  obtain ⟨m, t, ⟨hoff, hdiag⟩, h⟩ := conj_diag w ϖ hϖ n y hy δ hδ
-  let d : Fin n → w.adicCompletion E := fun i => ((ϖ ^ y i : (w.adicCompletion E)ˣ) : w.adicCompletion E) * t.val i i
-  have ht0 : ∀ i, t.val i i ≠ 0 := fun i h0 => by
-    have := hdiag i
-    rw [h0, map_zero] at this
-    exact zero_ne_one this
-  have hord : ∀ i, ordL (d i) = y i := fun i => by
-    simp only [d]
-    rw [GlobalTheory.CompanionTheory.UnitaryCorrection.ordL_mul_of_ne (Units.ne_zero _) (ht0 i),
-      GlobalTheory.CompanionTheory.UnitaryContraction.ordL_zpow, hϖ,
-      GlobalTheory.CompanionTheory.UnitaryCorrection.ordL_congr (b := (1 : w.adicCompletion E)) (by rw [hdiag i, map_one]),
-      GlobalTheory.CompanionTheory.UnitaryCorrection.ordL_one]
-    simp
-  have hinj : Function.Injective d := fun i j hij => hy.injective (by rw [← hord i, ← hord j, hij])
-  have hmat : (m⁻¹ * δ * m : GLw n w).val = Matrix.diagonal d := by
-    rw [h, Units.val_mul, tdiag, GlobalTheory.SmGL.val_diagT]
-    ext i j
-    rw [Matrix.diagonal_mul]
-    by_cases hij : i = j
-    · subst hij
-      simp [d]
-    · simp [hoff i j hij, hij]
-  have hcp : δ.val.charpoly = ∏ i, (X - C (d i)) := by
-    have h1 : (m⁻¹ * δ * m : GLw n w).val.charpoly = δ.val.charpoly := by
-      rw [Units.val_mul, Units.val_mul, Matrix.coe_units_inv]
-      exact Matrix.charpoly_units_conj' m δ.val
-    rw [← h1, hmat, Matrix.charpoly_diagonal]
-  rw [hcp]
-  exact separable_prod_X_sub_C_iff.2 hinj
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 

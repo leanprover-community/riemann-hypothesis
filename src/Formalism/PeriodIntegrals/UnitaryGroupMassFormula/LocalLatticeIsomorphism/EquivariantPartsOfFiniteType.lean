@@ -75,10 +75,6 @@ theorem Rp_finset {α : Type} (T : Finset α) (f : α → K) (h : ∀ z ∈ T, R
       rw [e]
       exact Subring.mul_mem _ (natCast_mem _ t) (hsT z hz)
 
-theorem Rp_fintype {α : Type} [Fintype α] (f : α → K) (h : ∀ z, Rp K p (f z)) :
-    ∃ s : ℕ, Nat.Coprime s p ∧ ∀ z, (s : K) * f z ∈ (algebraMap (𝓞 K) K).range := by
-  obtain ⟨s, hs, h'⟩ := Rp_finset (p := p) Finset.univ f fun z _ => h z
-  exact ⟨s, hs, fun z => h' z (Finset.mem_univ z)⟩
 
 end rp
 
@@ -89,10 +85,6 @@ theorem conjK_invol (cj : E ≃ₐ[ℚ] E) (hc : PI.KerIso.IsConj K cj) (k : K) 
     conjK cj hc.2.1 (conjK cj hc.2.1 k) = k :=
   (algebraMap K E).injective (by rw [conjK_spec, conjK_spec, hc.1])
 
-theorem splitK_of (cj : E ≃ₐ[ℚ] E) (hc : PI.KerIso.IsConj K cj) {p : ℕ}
-    (hs : PI.KerIso.SplitsAt K cj p) : SplitK (conjK cj hc.2.1) p := by
-  obtain ⟨P, hP, hpP, a, b, hab, ha, hb⟩ := hs
-  exact ⟨P, hP, hpP, a, b, (algebraMap K E).injective (by rw [conjK_spec, hab]), ha, hb⟩
 
 theorem hf_isom (cj : E ≃ₐ[ℚ] E)
     (h : ∀ k : K, ∃ k' : K, cj (algebraMap K E k) = algebraMap K E k') {n : Type} [Fintype n]

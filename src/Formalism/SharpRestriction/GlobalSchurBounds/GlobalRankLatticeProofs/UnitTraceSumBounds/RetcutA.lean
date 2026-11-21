@@ -9,10 +9,7 @@ import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.BeDiagZp
 
 namespace Formalism.MainNotions.Ext.CutA
 
-theorem simeqPd_holds : SimeqPd := simeq_pd_integral
 
-theorem biaddZp_holds : BiaddZp :=
-  fun p _ g hOk hi hb n => biadditive_zp_linear p g.l g.ex g.ph hOk.2.2.1 hOk.2.2.2 hi hb n
 
 theorem phNormOfUnits_holds : PhNormOfUnits := by
   intro p _ g S hok

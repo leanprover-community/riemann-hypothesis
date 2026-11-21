@@ -22,7 +22,6 @@ theorem endoAll : EndoAll := endoAll_of normAdjAll
 theorem jetAdditive : JetAdditive := jetAdditivity
 theorem jetOne : JetOne := jetOne'
 theorem jetAdj : JetAdj := jetAdjoint'
-theorem jetExp : JetExp := jetExp'
 
 theorem endIntFromDatum : EndIntFromDatum := integral_endomorphism_from_datum
 theorem phNormFromDatum : PhNormFromDatum := phi_norm_from_datum

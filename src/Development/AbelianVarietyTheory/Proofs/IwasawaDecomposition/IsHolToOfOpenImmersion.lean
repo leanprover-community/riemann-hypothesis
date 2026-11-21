@@ -139,20 +139,6 @@ theorem isHolTo_torPt (hU : IsUnf U) (k : U.Comp) {n : ℕ} {B : Set (Fin n → 
   simp only [ptC_fst]
   exact LocLift.isHolTo_congr h1 fun b _ => hx _
 
-theorem isHolTo_domTor [Fintype Tau] (hU : IsUnf U) (e : Dw.p = j) (T : Tau ≃ Psi H) (k : U.Comp) :
-    IsHolTo (DomFlat Tau j (r - j)) fun v => (domTor Y U hU e T k (unflat v)).1 := by
-  classical
-  let L : (Tau × Fin j × Fin (r - j) → ℂ) ≃L[ℂ] (Fin (Fintype.card (Tau × Fin j × Fin (r - j))) → ℂ) :=
-    (LinearEquiv.funCongrLeft ℂ ℂ (Fintype.equivFin _).symm).toContinuousLinearEquiv
-  have ho : IsOpen (DomFlat Tau j (r - j)) := ActionDeriv.isOpen_domFlat
-  have h := isHolTo_torPt Y hU k (ho.preimage L.symm.continuous)
-    (fun b => stdFrame (U.X k) (le_of_isUnf U hU e) (cmEquiv U hU T k) (first_index_eq_of_unfolded U hU e k) (unflat (L.symm b)))
-    fun τ a c => ((differentiable_stdMat (U.X k) (le_of_isUnf U hU e) (cmEquiv U hU T k) τ a c).comp
-      L.symm.differentiable).differentiableOn.congr fun b hb => by rw [stdFrame_val _ _ _ _ hb]; rfl
-  refine LocLift.isHolTo_congr (LocLift.isHolTo_comp h ho L.differentiableOn fun v hv => ?_) fun v _ => ?_
-  · rwa [Set.mem_preimage, L.symm_apply_apply]
-  · rw [L.symm_apply_apply]
-    rfl
 
 theorem snd_eq_of_comp_j {w : TorPts Y σ} {y : Sp ℂ ⟶ Xo.XF c} (h : y ≫ Y.j = w.1 ≫ torPr Y σ) :
     y ≫ pullback.snd _ _ = spMap σ := by
@@ -233,32 +219,5 @@ theorem exists_lift [Fintype Tau] (hU : IsUnf U) (e : Dw.p = j) (hσ : GoodEmb c
 
 end Frames
 
-theorem domTor_holo_immersion : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)) (σ : c.F →+* ℂ) (r j : ℕ) (U : Unf Xo c σ r) (hU : IsUnf U) (e : Dw.p = j) (hσ : GoodEmb c σ) (Tau : Type) [Fintype Tau] (T : Tau ≃ Psi H) (k : U.Comp), ContinuousOn (domTor Y U hU e T k) (DomI Tau j (r - j)) ∧ ∀ (ch : AlgChart (torStr Y σ) (RingHom.id ℂ) Dw.dim) (z : Pt Tau j (r - j)), z ∈ DomI Tau j (r - j) → domTor Y U hU e T k z ∈ ch.e.source → DifferentiableAt ℂ (fun v => ch.e (domTor Y U hU e T k (unflat v))) (flat z) ∧ Function.Injective (fderiv ℂ (fun v => ch.e (domTor Y U hU e T k (unflat v))) (flat z)) := by
-  intro E _ _ _ H Dw l Xo c Y σ r j U hU e hσ Tau _ T k
-  have hh := isHolTo_domTor Y hU e T k
-  refine ⟨(continuousOn_of_isHolTo (y := fun v => domTor Y U hU e T k (unflat v)) hh).comp (f := flat)
-    (continuous_pi fun i => by unfold flat; fun_prop).continuousOn fun z hz => hz, fun ch z hz hs => ?_⟩
-  have hd := differentiableAt_chart (y := fun v => domTor Y U hU e T k (unflat v)) ActionDeriv.isOpen_domFlat hh ch
-    (b := flat z) hz hs
-  refine ⟨hd, ?_⟩
-  let L := (EuclideanSpace.equiv (Fin Dw.dim) ℂ).symm
-  have ht := ch.e.map_source hs
-  obtain ⟨s, hsd, hs0, hsw⟩ := exists_lift Y hU e hσ T k (w := fun b => ch.e.symm (L b))
-    (LocLift.isHolTo_comp (isHolTo_symm ch) (ch.e.open_target.preimage L.continuous) L.differentiableOn fun _ h => h)
-    (b₀ := L.symm (ch.e (domTor Y U hU e T k z))) ht hz (ch.e.left_inv hs)
-  have h1 : (fun v => ch.e (domTor Y U hU e T k (unflat v))) ∘ s =ᶠ[nhds (L.symm (ch.e (domTor Y U hU e T k z)))] L := by
-    filter_upwards [hsw, (ch.e.open_target.preimage L.continuous).mem_nhds
-      (show L.symm (ch.e (domTor Y U hU e T k z)) ∈ _ from ht)] with b hb hb'
-    exact (congrArg ch.e hb).trans (ch.e.right_inv hb')
-  have h2 := h1.fderiv_eq (𝕜 := ℂ)
-  rw [fderiv_comp _ (hs0 ▸ hd) hsd, hs0, L.fderiv] at h2
-  have h3 : Function.Surjective (fderiv ℂ (fun v => ch.e (domTor Y U hU e T k (unflat v))) (flat z)) := fun v =>
-    ⟨_, (DFunLike.congr_fun h2 (L.symm v)).trans (L.apply_symm_apply v)⟩
-  refine (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
-    (f := (fderiv ℂ (fun v => ch.e (domTor Y U hU e T k (unflat v))) (flat z)).toLinearMap) ?_).2 h3
-  have h4 := (U.X k).card_Psi
-  rw [← Fintype.card_congr (cmEquiv U hU T k)] at h4
-  rw [finrank_euclideanSpace_fin, Module.finrank_fintype_fun_eq_card, Datum.dim, e, q_of_isUnf U hU e, ← h4]
-  simp [_root_.mul_assoc]
 
 end GlobalTheory.TrueCx.TorHolo

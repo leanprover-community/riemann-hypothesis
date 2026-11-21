@@ -9,6 +9,5 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersecti
 namespace ReciprocityTheory.ChartRestriction.G.AI
 
 theorem len2 : LocalLengthMultiplicativity := length_two_generator_quotient
-theorem fl3Test : FlatnessTestCriterion := fl3Test_thm
 
 end ReciprocityTheory.ChartRestriction.G.AI

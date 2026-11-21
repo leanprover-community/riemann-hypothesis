@@ -111,8 +111,6 @@ variable (hLL0 : ∀ x : D.what₂.LL, x ∈ D.LL0)
 def nchStd : NChoice (recN D C (Ed.toIn n) he) :=
   nchN D C (Ed.toIn n) he (embCOf D C (Ed.toIn n) he hLL0) (stdMtOf D C Ed n Z)
 
-theorem nchStd_tie : NChTie (recN D C (Ed.toIn n) he) (nchStd D C Ed n he Z hLL0) :=
-  nchN_tie D C (Ed.toIn n) he _ _
 
 def nmjStd : NMj (recN D C (Ed.toIn n) he) (divXOf D C Ed n he Z) (nchStd D C Ed n he Z hLL0) :=
   nmjN D C (Ed.toIn n) he _ _ _ (stdMjOf D C Ed n he Z)

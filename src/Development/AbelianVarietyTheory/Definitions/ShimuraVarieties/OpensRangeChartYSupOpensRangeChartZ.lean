@@ -132,9 +132,6 @@ def grading : ℕ → Submodule R (HomRing W) :=
 instance gradedAlgebra : GradedAlgebra (grading W) :=
   quotGradedAlgebra _ (isHomogeneous_cubicIdeal W)
 
-theorem mem_grading_iff {n : ℕ} {a : HomRing W} :
-    a ∈ grading W n ↔ ∃ p : MvPolynomial (Fin 3) R, p.IsHomogeneous n ∧
-      Ideal.Quotient.mk _ p = a := Iff.rfl
 
 def coord (i : Fin 3) : HomRing W := Ideal.Quotient.mk _ (MvPolynomial.X i)
 
@@ -239,7 +236,6 @@ def toSpec : scheme W ⟶ Spec (.of R) :=
 
 instance : (scheme W).Over (Spec (.of R)) := ⟨toSpec W⟩
 
-theorem over_eq_toSpec : scheme W ↘ Spec (.of R) = toSpec W := rfl
 
 abbrev schemeOver : Over (Spec (.of R)) := Over.mk (toSpec W)
 
@@ -659,9 +655,6 @@ theorem SpecMap_affineAeval_chartZ {A : Type u} [CommRing A] [Algebra R A] (a b 
 def awayEquivAffine : AwayRing W 2 ≃+* W.toAffine.CoordinateRing :=
   RingEquiv.ofBijective _ (bijective_awayEval_affine W)
 
-theorem chartZ_eq : chartZ W = Spec.map (CommRingCat.ofHom
-    (awayEquivAffine W : AwayRing W 2 →+* W.toAffine.CoordinateRing)) ≫ awayChart W 2 :=
-  ptHom_eq_awayChart W 2 _ _ (isUnimodularSol_some (equation_affineX_affineY W)) isUnit_one
 
 end ChartZ
 
@@ -678,9 +671,6 @@ theorem monic_originPolynomial : (originPolynomial W).Monic := by
   unfold originPolynomial
   monicity!
 
-theorem natDegree_originPolynomial [Nontrivial R] : (originPolynomial W).natDegree = 3 := by
-  unfold originPolynomial
-  compute_degree!
 
 abbrev OriginRing : Type u := AdjoinRoot (originPolynomial W)
 
@@ -807,9 +797,6 @@ theorem SpecMap_originAeval_chartY {A : Type u} [CommRing A] [Algebra R A] (z w 
 def awayEquivOrigin : AwayRing W 1 ≃+* OriginRing W :=
   RingEquiv.ofBijective _ (bijective_awayEval_origin W)
 
-theorem chartY_eq : chartY W = Spec.map (CommRingCat.ofHom
-    (awayEquivOrigin W : AwayRing W 1 →+* OriginRing W)) ≫ awayChart W 1 :=
-  ptHom_eq_awayChart W 1 _ _ (isUnimodularSol_origin (equation_originZ_originW W)) isUnit_one.neg
 
 def originAug : OriginRing W →ₐ[R] R :=
   originAeval W 0 0 ((equation_origin_iff _ _ _).mpr (by simp))
@@ -838,9 +825,6 @@ theorem chartY_preimage_coordOpen_two :
     chartY W ⁻¹ᵁ coordOpen W 2 = PrimeSpectrum.basicOpen (originW W) :=
   pt_preimage_coordOpen ..
 
-theorem chartZ_preimage_coordOpen_one :
-    chartZ W ⁻¹ᵁ coordOpen W 1 = PrimeSpectrum.basicOpen (affineY W) :=
-  pt_preimage_coordOpen ..
 
 theorem exists_chartY_or_chartZ (x : scheme W) :
     (∃ y, chartY W y = x) ∨ ∃ y, chartZ W y = x :=
@@ -973,12 +957,6 @@ theorem zero_mapHom : zero W' ≫ mapHom W f h = Spec.map (CommRingCat.ofHom f) 
   rw [SpecMap_zero]
   exact ptHom_mapHom W f h (RingHom.id R') ![0, 1, 0] (isUnimodularSol_zero _)
 
-theorem mapHom_id : mapHom W (RingHom.id R) W.map_id = 𝟙 _ := by
-  apply scheme_hom_ext
-  · rw [chartY, pt_eq_ptHom, ptHom_mapHom, Category.comp_id]
-    rfl
-  · rw [chartZ, pt_eq_ptHom, ptHom_mapHom, Category.comp_id]
-    rfl
 
 @[reassoc]
 theorem pt_mapHom {A : Type u} [CommRing A] [Algebra R R'] [Algebra R' A] [Algebra R A]

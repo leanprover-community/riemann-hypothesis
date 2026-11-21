@@ -78,14 +78,7 @@ namespace AdelicDecomposition
 
 variable {V : Type u} [AddCommGroup V] [Module ℂ V] {Mx : AdelicGKModule K n V}
 
-theorem nonempty_equiv_arch (D D' : AdelicDecomposition Mx) :
-    Nonempty (D.toDecomposition.π₁.rep.Equiv D'.toDecomposition.π₁.rep) :=
-  GKLModule.Decomposition.nonempty_equiv_arch _ _
 
-theorem nonempty_equiv_local (D D' : AdelicDecomposition Mx) (v : HeightOneSpectrum (𝓞 K)) :
-    Nonempty ((D.finite.π v).Equiv (D'.finite.π v)) := by
-  obtain ⟨E⟩ := GKLModule.Decomposition.nonempty_equiv_fin D.toDecomposition D'.toDecomposition
-  exact AdelicGLn.TensorDecomposition.nonempty_equiv D.finite (D'.finite.transport E) v
 
 end AdelicDecomposition
 

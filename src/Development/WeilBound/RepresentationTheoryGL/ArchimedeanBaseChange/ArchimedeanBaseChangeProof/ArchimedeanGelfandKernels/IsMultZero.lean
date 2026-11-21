@@ -92,8 +92,6 @@ def IsMult (k : Mat n → (E.V →L[ℂ] E.V)) (val : Inf n → ℂ) (T : ℝ) :
     (∀ i, IsBump (g i) T ∧ IsKer μ E (w i) (g i) (ks i)) ∧ (∀ y ∈ GLs n, k y = ∑ i, c i • ks i y) ∧
       ∀ χ, val χ = ∑ i, c i * zVal (w i) χ * coshT (g i) (cas χ)
 
-theorem isMult_zero (T : ℝ) : IsMult μ E 0 0 T :=
-  ⟨0, Fin.elim0, Fin.elim0, Fin.elim0, Fin.elim0, fun i => i.elim0, by simp, by simp⟩
 
 def conv (k k' : Mat n → (E.V →L[ℂ] E.V)) : Mat n → (E.V →L[ℂ] E.V) :=
   fun x => ∫ y : G n, k y.val * k' ((y⁻¹ : G n).val * x) ∂μ

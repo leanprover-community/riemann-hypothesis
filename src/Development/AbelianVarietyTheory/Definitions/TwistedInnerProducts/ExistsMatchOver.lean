@@ -146,9 +146,6 @@ def Guard (R : RealDat D A Ks) : Prop :=
 theorem guard_of_qGuard {R : RealDat D A Ks} (h : Formalism.IndefR.FWT.QGuard R) : Guard R := fun t PP hP h' =>
   h.2 t PP hP (by rw [Nat.cast_mul]; exact Ideal.mul_mem_left _ _ h')
 
-theorem guard_of_top (R : RealDat D A Ks) (h : D.host.ccK = ⊤) : Guard R := fun _ PP _ h' => by
-  rw [h, Ideal.absNorm_top, Nat.cast_one] at h'
-  exact PP.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h')
 
 variable {R : RealDat D A Ks}
 
@@ -223,10 +220,6 @@ theorem IsBase.c_eq (h : ch.IsBase) {i j t} (h0 : SquareNonzero ch.W ch.S.B ch.r
 
 end Choice
 
-theorem psiK_eq (a : Fin ch.n) (u : R.HE.H) : psiK ch a u =
-    Bplus ch.W ch.M (scal ch.W.θ (ch.ξ ∘ₗ (GlobalTheory.CoefModel.toHilb (LaP ch.G) (posDef_dual ch.G)).toLinearMap) (ch.Psi a))
-      (thetaChi ch.W ch.M ch.ρ (ch.Phi a) (ch.form u)) := by
-  rw [← pairVec_colOf]; rfl
 
 theorem col_mem (a : Fin ch.n) : ch.col a ∈ Cols ch.G ch.W.θ :=
   colOf_mem ch.W.θ_is (psi_left _ _ a) fun g _ hk => psi_right _ _ a g hk
@@ -271,15 +264,7 @@ theorem cTot_ne_zero_iff (t : T) : cTot ch t ≠ 0 ↔ ∀ i j, ch.c i j t ≠ 0
 theorem ratio_eq_prod (t : T) : ratio ch t = ∏ i, ∏ j, sqRatio ch i j t := by
   simp only [ratio, cTot, sqRatio, Finset.prod_div_distrib]
 
-theorem ratio_base (h : cTot ch A.μ0 ≠ 0) : ratio ch A.μ0 = 1 := div_self h
 
-theorem psiN_eq_iff (h : cTot ch A.μ0 ≠ 0) (κ : ℂˣ) (z v : ℂ) (t : T) (a : Fin ch.n) (u : R.HE.H) :
-    psiN ch κ a u = (z * ratio ch t)⁻¹ * v ↔ psiK ch a u = (z * cTot ch t)⁻¹ * κ * v := by
-  have e : (z * ratio ch t)⁻¹ * v = cTot ch A.μ0 * ((κ⁻¹ : ℂˣ) : ℂ) * ((z * cTot ch t)⁻¹ * κ * v) := by
-    have := κ.ne_zero
-    rw [ratio, Units.val_inv_eq_inv_val, mul_inv, mul_inv, inv_div, div_eq_mul_inv]
-    field_simp
-  rw [e, psiN, mul_right_inj' (mul_ne_zero h (Units.ne_zero _))]
 
 theorem vK_smul (t : T) (z : D.what₂.LL) (x : A.fam.amb.FR t) (a : Fin ch.n) :
     vK ch t (z • x) a = D.what₂.embLL z * vK ch t x a := vSum_smul _ _ _ _ t z x a

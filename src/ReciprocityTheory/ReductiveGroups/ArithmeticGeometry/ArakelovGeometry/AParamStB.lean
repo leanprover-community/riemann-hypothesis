@@ -252,28 +252,6 @@ theorem gbap_smul_mem_pts {J : Type} [Fintype J] (x : J → Ω) {z : J → ℂ}
   rw [gbap_eval_smul ((homogeneousComponent_isHomogeneous d f).map _),
     hz.2 _ (hH f hf d), mul_zero]
 
-theorem gbap_isCompact_pts_sphere {J : Type} [Fintype J] (P : Ideal (MvPolynomial J ℤ)) :
-    IsCompact (pts P ∩ Metric.sphere (0 : J → ℂ) 1) := by
-  have hZ : IsClosed {z : J → ℂ | ∀ f ∈ P, eval z (map (Int.castRingHom ℂ) f) = 0} := by
-    have : {z : J → ℂ | ∀ f ∈ P, eval z (map (Int.castRingHom ℂ) f) = 0} =
-        ⋂ f ∈ P, {z : J → ℂ | eval z (map (Int.castRingHom ℂ) f) = 0} := by
-      ext z
-      simp
-    rw [this]
-    exact isClosed_biInter fun f _ => isClosed_eq (MvPolynomial.continuous_eval _) continuous_const
-  have : pts P ∩ Metric.sphere (0 : J → ℂ) 1 =
-      {z : J → ℂ | ∀ f ∈ P, eval z (map (Int.castRingHom ℂ) f) = 0} ∩ Metric.sphere 0 1 := by
-    ext z
-    simp only [pts, conePts, Set.mem_inter_iff, Set.mem_ofPred_eq, mem_sphere_zero_iff_norm]
-    constructor
-    · rintro ⟨⟨_, h⟩, h1⟩
-      exact ⟨h, h1⟩
-    · rintro ⟨h, h1⟩
-      refine ⟨⟨fun h0 => ?_, h⟩, h1⟩
-      rw [h0, norm_zero] at h1
-      exact zero_ne_one h1
-  rw [this]
-  exact (isCompact_sphere 0 1).inter_left hZ
 
 end Pts
 

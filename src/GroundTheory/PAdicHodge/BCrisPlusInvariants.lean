@@ -129,8 +129,6 @@ def padicToBCrisPlus : ℚ_[p] →+* BCrisPlus ℂ_[p] p :=
 
 instance algebraPadicBCrisPlus : Algebra ℚ_[p] (BCrisPlus ℂ_[p] p) := padicToBCrisPlus.toAlgebra
 
-theorem algebraMap_padic_bCrisPlus : algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) = padicToBCrisPlus :=
-  rfl
 
 theorem iotaPlus_algebraMap_padic (q : ℚ_[p]) :
     iotaPlus ℂ_[p] p (algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) q) = algebraMap ℚ_[p] 𝔹 q := by
@@ -354,17 +352,6 @@ theorem exists_bCrisPlus_fixed {k : PadicAlgCl p} (hk : k ∈ maxUnramified p K)
   congr 1
   exact σ.commutes ⟨k, hk.1⟩
 
-theorem image_iotaPlus_fixedPoints :
-    iotaPlus ℂ_[p] p '' MulAction.fixedPoints Gal(PadicAlgCl p/K) (BCrisPlus ℂ_[p] p) =
-      algClToBdR p '' (maxUnramified p K : Set (PadicAlgCl p)) := by
-  ext b
-  constructor
-  · rintro ⟨x, hx, rfl⟩
-    obtain ⟨k, hk, hxk⟩ := bCrisPlus_fixed x hx
-    exact ⟨k, hk, hxk.symm⟩
-  · rintro ⟨k, hk, rfl⟩
-    obtain ⟨x, hx, hxk⟩ := exists_bCrisPlus_fixed hk
-    exact ⟨x, hx, hxk⟩
 
 end Invariants
 

@@ -472,12 +472,7 @@ theorem mapLeft_add (φ ψ : M →ₗ[O] M') :
 
 @[simp] theorem mapLeft_zero : h.mapLeft h' 0 = 1 := h.map_zero_left h' _
 
-theorem mapLeft_smul (c : O) (φ : M →ₗ[O] M') :
-    h.mapLeft h' (c • φ) = h.mapLeft h' φ ≫ b'.act c :=
-  h.map_smul_left h' c φ _
 
-theorem mapLeft_smul_id (c : O) : h.mapLeft h (c • LinearMap.id) = b.act c := by
-  rw [mapLeft_smul, mapLeft_id, Category.id_comp]
 
 def mapLeftIso (e : M ≃ₗ[O] M') : H ≅ H' where
   hom := h.mapLeft h' e
@@ -522,18 +517,8 @@ theorem tmul_mapRight {f : G ⟶ G'} (hf : IsLinearHom a a' f) (m : M) :
 
 @[simp] theorem mapRight_id : h.mapRight h (IsLinearHom.id a) = 𝟙 H := h.map_id
 
-theorem mapRight_comp {f : G ⟶ G'} (hf : IsLinearHom a a' f) {g : G' ⟶ G''}
-    (hg : IsLinearHom a' a'' g) :
-    h.mapRight h'' (hf.comp hg) = h.mapRight h' hf ≫ h'.mapRight h'' hg :=
-  h.hom_ext fun m ↦ by simp
 
-theorem mapRight_mul {f g : G ⟶ G'} (hf : IsLinearHom a a' f) (hg : IsLinearHom a a' g) :
-    h.mapRight h' (hf.mul hg) = h.mapRight h' hf * h.mapRight h' hg :=
-  h.map_mul_right h' _ hf hg
 
-theorem mapRight_act (c : O) : h.mapRight h (IsLinearHom.act a c) = b.act c := by
-  have := b.hom c
-  exact h.hom_ext fun m ↦ by simp [(h.isLinearHom_tmul m).comm]
 
 def mapRightIso (e : G ≅ G') (he : IsLinearHom a a' e.hom) : H ≅ H' where
   hom := h.mapRight h' he
@@ -655,8 +640,6 @@ theorem tmul_algAct (c : O') (m : M) : h.tmul m ≫ (h.algAct O').act c = h.tmul
   have := (h.algAct O').hom (algebraMap O O' c)
   exact h.hom_ext fun m ↦ by simp [tmul_smul]
 
-theorem isLinearHom_algAct (c : O') : IsLinearHom b b ((h.algAct O').act c) :=
-  h.isLinearHom_mapLeft h _
 
 variable (O') in
 
@@ -686,13 +669,6 @@ def algEquiv (T : Over S) : M ⊗[O] Pts a T ≃ₗ[O'] Pts (h.algAct O') T wher
 @[simp] theorem hom_algEquiv (z : M ⊗[O] Pts a T) :
     (h.algEquiv O' T z).hom = (h.equiv T z).hom := rfl
 
-theorem isLinearHom_algAct_map [Module O' M'] [IsScalarTower O O' M']
-    (h' : IsTensor H' b' G' a' M') (φ : M →ₗ[O'] M') {f : G ⟶ G'} (hf : IsLinearHom a a' f) :
-    IsLinearHom (h.algAct O') (h'.algAct O') (h.map h' (φ.restrictScalars O) hf) :=
-  ⟨inferInstance, fun c ↦ by
-    have := (h.algAct O').hom c
-    have := (h'.algAct O').hom c
-    exact h.hom_ext fun m ↦ by simp⟩
 
 def trans {K : Over S} [GrpObj K] [IsCommMonObj K] {c : OAct O' K} {N : Type} [AddCommGroup N]
     [Module O' N] [Module O N] [IsScalarTower O O' N]
@@ -1170,20 +1146,12 @@ variable (P : Summand O M) (a : OAct O G)
 
 def matrix : Matrix (Fin P.n) (Fin P.n) O := LinearMap.toMatrix' (P.incl ∘ₗ P.proj)
 
-theorem toLin'_matrix : Matrix.toLin' P.matrix = P.incl ∘ₗ P.proj := Matrix.toLin'_toMatrix' _
 
-theorem matrix_mul_self : P.matrix * P.matrix = P.matrix := by
-  rw [matrix, ← LinearMap.toMatrix'_comp, LinearMap.comp_assoc, ← LinearMap.comp_assoc _ _ P.proj,
-    P.proj_incl, LinearMap.id_comp]
 
 def idem : powObj G P.n ⟶ powObj G P.n :=
   (IsTensor.pow (powIsPowGrp G P.n) a).mapLeft (IsTensor.pow (powIsPowGrp G P.n) a)
     (P.incl ∘ₗ P.proj)
 
-theorem idem_pr (i : Fin P.n) :
-    P.idem a ≫ powPr G i = ∏ j, powPr G j ≫ a.act (P.matrix i j) := by
-  rw [idem, ← toLin'_matrix]
-  exact IsTensor.pow_mapLeft_pr _ (powIsPowGrp G P.n) a _ i
 
 instance isMonHom_idem : IsMonHom (P.idem a) := IsTensor.isMonHom_mapLeft _ _ _
 
@@ -1350,9 +1318,6 @@ theorem of_isSemiAbelian (hG : IsSemiAbelian G) :
   have := hG.geomConnected
   exact ⟨h.smooth, h.isSeparated, h.quasiCompact, h.geometricallyConnected⟩
 
-theorem abLocus_subset : abLocus G ⊆ abLocus H := fun s hs K _ _ t ht ↦ by
-  have : IsProper ((Over.pullback t).obj G).hom := hs K t ht
-  exact (h.pullback t).isProper
 
 end IsTensor
 

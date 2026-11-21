@@ -63,9 +63,6 @@ theorem Frame.lies {z : NgC g} {x : KeyIn ℂ} (h : z.Frame x) : z.Lies x := by
 theorem exists_frame (hg : 1 ≤ g) (z : NgC g) : ∃ x : KeyIn ℂ, z.Frame x :=
   KeyOfPeriod.exists_keyIn_normalAt thetaUnifAV_all torusAlgebraic_holds g z.τ z.a z.b hg z.symm z.pos z.half
 
-theorem exists_of_keyIn (x : KeyIn ℂ) : ∃ z : NgC x.P.g, z.Lies x := by
-  obtain ⟨⟨τ, M, a, b, c, hab, hc, -, hN⟩, -⟩ := KeyNormalExists.exists_normalAt thetaUnifAV_all x
-  exact ⟨⟨τ, hN.mem_siegelH.1, hN.mem_siegelH.2, a, b, hab⟩, rfl, M, c, hc, hN⟩
 
 def cubSq (z : NgC g) (w : Fin g → ℂ) : ℝ :=
   ‖thetaChar z.τ z.a z.b w‖ ^ 2 *
@@ -159,17 +156,6 @@ theorem famUnit (h : IsKF g c κ) : FamUnit κ := KeyFamUnit.famUnit κ h.funct 
 
 theorem valUnit (h : IsKF g c κ) : ValUnit κ := KeyValUnit.valUnit κ h.funct h.unitSp
 
-theorem famHomog (h : IsKF g c κ) (S : Type) [CommRing S] [IsDomain S] [CharZero S] (P : Out.PolAV (Sp S))
-    (hg rig hr th hth v hv th' hth' v' hv') (a : S) (M : Matrix (Fin P.g) (Fin P.g) S) (u u' : S) (hP : P.g = g)
-    (ha : ∀ i, LB.Sec.f th' i = constFn P.A.hom _ a * LB.Sec.f th i) (hM : ∀ i, IsLieComb (M i) v (v' i))
-    (hu : IsValue κ ⟨P, hg, rig, hr, th, hth, v, hv⟩ u) (hu' : IsValue κ ⟨P, hg, rig, hr, th', hth', v', hv'⟩ u') :
-    a ^ (2 * c) * u' = M.det ^ c * u := by
-  obtain ⟨Q, hg₁, rig₁, hr₁, th₁, hth₁, v₁, hv₁, th₁', hth₁', v₁', hv₁', M₁, h₁, h₂, ha₁, hN, hd⟩ :=
-    KeyGalDesc.exists_keyPB_pair (algebraMap S (FractionRing S)) P hg rig hr th hth v hv th' hth' v' hv' a M ha hM
-  have e := h.homog _ Q hg₁ rig₁ hr₁ th₁ hth₁ v₁ hv₁ th₁' hth₁' v₁' hv₁' _ M₁ ((KeyGalDesc.g_eq h₁).trans hP) ha₁ hN
-  rw [hu _ _ _ h₁, hu' _ _ _ h₂, hd] at e
-  apply IsFractionRing.injective S (FractionRing S)
-  simpa only [map_mul, map_pow] using e
 
 theorem value_normalAt (h : IsKF g c κ) (x : KeyIn ℂ) (hx : x.P.g = g) {τ M : Matrix (Fin x.P.g) (Fin x.P.g) ℂ}
     {a b : Fin x.P.g → ℂ} {c₀ : ℂ} (hc : c₀ ≠ 0) (hM : M.det ≠ 0) (hN : NormalAt x τ M a b c₀) (t : ℂ)
@@ -202,20 +188,6 @@ theorem ext (h : IsKF g c κ) (h' : IsKF g c κ') (f : NgC g → ℂˣ)
   apply Units.ext
   rw [h.funct K₀ K _ x₀ x hx₀, h'.funct K₀ K _ x₀ x hx₀, σ.injective e]
 
-theorem not_one (hg : 1 ≤ g) (hc : 1 ≤ c) : ¬ IsKF g c (fun _ _ _ _ => 1) := fun h => by
-  obtain ⟨z⟩ : Nonempty (NgC g) := inferInstance
-  obtain ⟨x, hx, -⟩ := z.exists_frame hg
-  choose M hM using fun i => (x.basis.2 (x.v i) (x.basis.1 i)).exists
-  obtain ⟨t, -, e, hle⟩ := exists_sec_div x.P.A.hom (mul_inv_cancel₀ (two_ne_zero (α := ℂ))) x.th
-  have e₁ := h.homog ℂ x.P x.g_pos x.rig x.rig_gen x.th x.th_ne x.v x.basis x.th x.th_ne x.v x.basis 1 (Matrix.of M) hx
-    (fun i => by rw [constFn_one, _root_.one_mul]) hM
-  have e₂ := h.homog ℂ x.P x.g_pos x.rig x.rig_gen t (fun s => (x.th_ne s).imp fun y hy => ⟨hy.1, hle hy.2⟩) x.v x.basis
-    x.th x.th_ne x.v x.basis 2 (Matrix.of M) hx e hM
-  rw [← e₁, _root_.one_pow] at e₂
-  have e₃ : (2 : ℂ) ^ (2 * c) = 1 := by simpa using e₂
-  have e₄ : (2 : ℕ) ^ (2 * c) = 1 := by exact_mod_cast e₃
-  rw [Nat.pow_eq_one] at e₄
-  omega
 
 end IsKF
 
@@ -265,48 +237,19 @@ theorem isKF : IsKF g c kf.rule := kf.ex.choose_spec.1
 theorem rule_frame {z : NgC g} {x : KeyIn ℂ} (h : z.Frame x) : kf.rule ℂ x = (kf.val z)⁻¹ :=
   kf.ex.choose_spec.2 z x h
 
-theorem rule_unique {κ : Rule} (h : IsKF g c κ) (hv : ∀ (z : NgC g) (x : KeyIn ℂ), z.Frame x → κ ℂ x = (kf.val z)⁻¹) :
-    κ = kf.rule :=
-  h.ext kf.isKF _ hv fun _ _ => kf.rule_frame
 
 @[ext] theorem ext {kf kf' : KF g c} (h : kf.val = kf'.val) : kf = kf' := by
   cases kf; cases kf'; cases h; rfl
 
-theorem rule_injective (hg : 1 ≤ g) : Function.Injective (rule : KF g c → Rule) := fun kf kf' h =>
-  ext (funext fun z => by
-    obtain ⟨x, hx⟩ := z.exists_frame hg
-    exact inv_injective ((kf.rule_frame hx).symm.trans (h ▸ kf'.rule_frame hx)))
 
 def coef (K : Type) [Field K] [CharZero K] (x : KeyIn K) : Kˣ := (kf.rule K x)⁻¹
 
 theorem coef_frame {z : NgC g} {x : KeyIn ℂ} (h : z.Frame x) : kf.coef ℂ x = kf.val z := by
   rw [coef, kf.rule_frame h, inv_inv]
 
-theorem coef_homog (K : Type) [Field K] [CharZero K] (P : Out.PolAV (Sp K)) (hg rig hr th hth v hv th' hth' v' hv')
-    (a : K) (M : Matrix (Fin P.g) (Fin P.g) K) (hP : P.g = g)
-    (ha : ∀ i, LB.Sec.f th' i = constFn P.A.hom _ a * LB.Sec.f th i) (hM : ∀ i, IsLieComb (M i) v (v' i)) :
-    M.det ^ c * (kf.coef K ⟨P, hg, rig, hr, th', hth', v', hv'⟩ : K) =
-      a ^ (2 * c) * kf.coef K ⟨P, hg, rig, hr, th, hth, v, hv⟩ := by
-  have e := kf.isKF.homog K P hg rig hr th hth v hv th' hth' v' hv' a M hP ha hM
-  simp only [coef, Units.val_inv_eq_inv_val]
-  rw [← div_eq_mul_inv, ← div_eq_mul_inv, div_eq_div_iff (Units.ne_zero _) (Units.ne_zero _), e]
 
-theorem coef_funct {K K' : Type} [Field K] [CharZero K] [Field K'] [CharZero K'] (f : K →+* K') {x : KeyIn K}
-    {x' : KeyIn K'} (h : KeyPB x' x f) : (kf.coef K' x' : K') = f (kf.coef K x) := by
-  simp only [coef, Units.val_inv_eq_inv_val, map_inv₀, kf.isKF.funct K K' f x x' h]
 
-theorem exists_unit_coef (S : Type) [CommRing S] [IsDomain S] [IsNoetherianRing S] [IsIntegrallyClosed S] [CharZero S]
-    (y : KeyIn S) : ∃ u : Sˣ, IsValue kf.coef y (u : S) := by
-  obtain ⟨u, hu⟩ := kf.isKF.famUnit S y
-  refine ⟨u⁻¹, fun K _ _ f x hx => ?_⟩
-  rw [coef, Units.val_inv_eq_inv_val, hu K f x hx]
-  exact inv_eq_of_mul_eq_one_right (by rw [← map_mul, Units.mul_inv, map_one])
 
-theorem valUnit_coef : ValUnit kf.coef := fun S V K _ _ _ _ _ _ _ _ _ f y x hx => by
-  obtain ⟨u, hu⟩ := kf.isKF.valUnit S V K f y x hx
-  refine ⟨u⁻¹, ?_⟩
-  rw [coef, Units.val_inv_eq_inv_val, hu]
-  exact inv_eq_of_mul_eq_one_right (by rw [← map_mul, Units.mul_inv, map_one])
 
 def norm (z : NgC g) : ℝ := ‖(kf.val z : ℂ)‖ / (z.thetaSq ^ c * Real.sqrt z.etaSq ^ c)
 
@@ -328,42 +271,6 @@ theorem norm_eq (z : NgC g) :
   congr 1
   ring
 
-theorem norm_eq_of_isArchNorm {z : NgC g} {x : KeyIn ℂ} (hz : z.Lies x) {nth nη : ℝ} (hn : IsArchNorm x nth nη) :
-    kf.norm z = ‖(kf.coef ℂ x : ℂ)‖ / (nth ^ c * Real.sqrt nη ^ c) := by
-  obtain ⟨hx, M, c₀, hc, hN⟩ := hz
-  subst hx
-  obtain ⟨u, Hm, W, χ, θ, Fd, h₁, h₂, h₃, h₄, h₅, h₆, h₇⟩ := hn
-  obtain ⟨u', τ', M', a', b', c', k₁, k₂, ha, hb, k₃, k₄, hc', k₅, hM', k₆, e⟩ :=
-    keyIn_normal_form_and_archimedean_constant thetaUnifAV_all x u Hm W χ θ Fd nth nη h₁ h₂ h₃ h₄ h₅ h₆ h₇
-  have p₁ : 0 ≤ nth := h₆ ▸ div_nonneg (integral_nonneg fun z => by positivity) ENNReal.toReal_nonneg
-  have p₂ : 0 ≤ nη := h₇ ▸ by positivity
-  have hv : M.det ^ 4 / c₀ ^ 8 = M'.det ^ 4 / c' ^ 8 :=
-    NormalUnique.thetaFrame_value_unique thetaUnifAV_all ThetaInversion.inversion x _ _
-      ⟨z.τ, M, z.a, z.b, c₀, z.half, hc, hN, rfl⟩ ⟨τ', M', a', b', c', ⟨ha, hb⟩, hc', ⟨u', k₁, k₂, k₃, k₄, k₅, k₆⟩, rfl⟩
-  have hM : M.det ≠ 0 := fun h0 => by
-    rw [h0] at hv
-    exact div_ne_zero (pow_ne_zero 4 hM') (pow_ne_zero 8 hc') (by rw [← hv]; simp)
-  have hκ := kf.isKF.value_normalAt x rfl hc hM hN ((kf.val z)⁻¹ : ℂˣ)
-    fun w e hw => congrArg Units.val (kf.rule_frame ⟨e, hw⟩)
-  rw [← hv, norm_div, norm_pow, norm_pow] at e
-  have q₁ : 0 < ‖M.det‖ := norm_pos_iff.2 hM
-  have q₂ : 0 < ‖c₀‖ := norm_pos_iff.2 hc
-  have hp := Real.pi_pos
-  have e' : ‖M.det‖ / ‖c₀‖ ^ 2 * (nth * Real.sqrt nη) = Real.sqrt ((2 * Real.pi) ^ x.P.g) := by
-    refine (pow_left_inj₀ (by positivity) (by positivity) (show 4 ≠ 0 by norm_num)).1 ?_
-    have s : ∀ t : ℝ, 0 ≤ t → Real.sqrt t ^ 4 = t ^ 2 := fun t ht => by
-      rw [show 4 = 2 * 2 from rfl, pow_mul, Real.sq_sqrt ht]
-    rw [mul_pow, mul_pow, s _ p₂, s _ (by positivity), ← pow_mul, mul_comm x.P.g 2, ← e, div_pow, ← pow_mul,
-      _root_.mul_assoc]
-  have hκ' := congrArg (‖·‖) hκ
-  simp only [norm_mul, norm_pow, Units.val_inv_eq_inv_val, norm_inv] at hκ'
-  have q₃ : 0 < ‖(kf.val z : ℂ)‖ := norm_pos_iff.2 (kf.val z).ne_zero
-  have q₄ : 0 < ‖(kf.rule ℂ x : ℂ)‖ := norm_pos_iff.2 (kf.rule ℂ x).ne_zero
-  have e₂ : ‖(kf.coef ℂ x : ℂ)‖ = ‖(kf.val z : ℂ)‖ / (‖M.det‖ / ‖c₀‖ ^ 2) ^ c := by
-    rw [coef, Units.val_inv_eq_inv_val, norm_inv, div_pow, ← pow_mul]
-    field_simp at hκ' ⊢
-    linarith
-  rw [norm_eq_div, ← e', e₂, div_div, ← mul_pow, ← mul_pow]
 
 def sign (s : ℤˣ) : KF g c where
   val z := Units.map (Int.castRingHom ℂ).toMonoidHom s * kf.val z
@@ -392,14 +299,6 @@ def ofRule (N : ℕ → ℕ) (κ : Rule) (hH : Homog N κ) (hF : Funct κ) (hU :
     simp⟩
   zero _ _ := Or.inl rfl
 
-theorem exists_rule_eq (hg : 1 ≤ g)
-    (H : ∀ (z : NgC g) (x x' : KeyIn ℂ), z.Frame x → z.Frame x' → KeyPB x' x (RingHom.id ℂ))
-    {κ : Rule} (h : IsKF g c κ) : ∃ kf : KF g c, kf.rule = κ := by
-  choose x hx using fun z : NgC g => z.exists_frame hg
-  have hv : ∀ (z : NgC g) (y : KeyIn ℂ), z.Frame y → κ ℂ y = ((κ ℂ (x z))⁻¹)⁻¹ := fun z y hy => by
-    rw [inv_inv]
-    exact Units.ext (h.funct ℂ ℂ _ _ _ (H z _ _ (hx z) hy))
-  exact ⟨⟨fun z => (κ ℂ (x z))⁻¹, ⟨κ, h, hv⟩, fun h0 => by omega⟩, (rule_unique _ h hv).symm⟩
 
 end KF
 
@@ -409,21 +308,13 @@ def ngTrue : Formalism.L2.Geo.NgPkg where
   KF := KF
   kfNorm kf z := kf.norm z
 
-theorem ngTrue_NgC (g : ℕ) : ngTrue.NgC g = NgC g := rfl
 
-theorem ngTrue_KF (g c : ℕ) : ngTrue.KF g c = KF g c := rfl
 
-theorem ngTrue_kfNorm {g c : ℕ} (kf : KF g c) (z : NgC g) : ngTrue.kfNorm (g := g) (c := c) kf z = kf.norm z := rfl
 
 theorem exists_kf_four (g : ℕ) : ∃ kf : KF g 4, ∀ z, kf.val z = 1 := by
   obtain ⟨κ, h₁, h₂, h₃, h₄, -⟩ := keyFormula_iff.1 keyFormula_and_keyCore.1
   exact ⟨KF.ofRule (fun _ => 1) κ h₁ h₂ h₃ h₄ g, fun _ => rfl⟩
 
-theorem ngTrue_keyFormula (g : ℕ) : ∃ c : ℕ, 1 ≤ c ∧ 4 ∣ c ∧ ∃ kf : ngTrue.KF g c,
-    ∀ z, ngTrue.kfNorm kf z = Real.exp (c * g * (-(1 / 2) * Real.log (2 * Real.pi))) := by
-  obtain ⟨kf, h⟩ := exists_kf_four g
-  refine ⟨4, by norm_num, dvd_rfl, kf, fun z => (kf.norm_eq z).trans ?_⟩
-  rw [h z, Units.val_one, norm_one, _root_.one_mul]
 
 example : NgC.base 1 0 0 ⟨fun _ => Or.inl rfl, fun _ => Or.inl rfl⟩ ≠
     NgC.base 1 (fun _ => 1 / 2) (fun _ => 1 / 2) ⟨fun _ => Or.inr rfl, fun _ => Or.inr rfl⟩ := fun h => by

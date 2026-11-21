@@ -5,7 +5,5 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CompactGelfandAverage.I
 
 namespace PI.UnitaryGroupMassFormula.GelfCpt
 
-theorem gelfCpt_of : PI.UMultOne.IntSpan → PI.UMultOne.ConvComm → PI.UMultOne.GelfandCompact :=
-  gelfCpt_of_steps avgStep mulStep
 
 end PI.UnitaryGroupMassFormula.GelfCpt

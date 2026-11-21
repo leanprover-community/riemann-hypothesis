@@ -81,11 +81,7 @@ theorem toySData_HH (Del : ℚ) (hDel hgap hlet) (loc : ∀ p, Formalism.MainNot
   show Module.finrank ℂ (EuclideanSpace ℂ (Fin 0)) = 0
   simp
 
-theorem toySData_atP (Del : ℚ) (hDel hgap hlet) (loc : ∀ p, Formalism.MainNotions.S.Loc.LocAt F E sig p) (p) :
-    (toySData sig hc Del hDel hgap hlet loc).atP p = loc p := rfl
 
-theorem toySData_Del (Del : ℚ) (hDel hgap hlet) (loc : ∀ p, Formalism.MainNotions.S.Loc.LocAt F E sig p) :
-    (toySData sig hc Del hDel hgap hlet loc).Del = Del := rfl
 
 def toySData_Cu (Del : ℚ) (hDel hgap hlet) (loc : ∀ p, Formalism.MainNotions.S.Loc.LocAt F E sig p) (u : Word)
     {V : Type} [AddCommGroup V] [Module ℂ V] (M : Submodule ℂ V) (hM : M = ⊥) :
@@ -152,9 +148,6 @@ def gAtPExample (p : ℕ) : GAtP p where
 
 instance (p : ℕ) : Unique (gAtPExample p).P.Tup := inferInstanceAs (Unique (emptyPlaces p).Tup)
 
-theorem toySignLevel_fin (p : ℕ) : (toySignLevel p).FinClasses := by
-  refine ⟨{default}, fun _ _ v => v.elim0, fun L _ => ⟨default,
-    Finset.mem_singleton_self _, 1, Subsingleton.elim _ _⟩⟩
 
 theorem toySignLevel_M (p : ℕ) : (toySignLevel p).M = ⊥ := by
   rw [eq_bot_iff]

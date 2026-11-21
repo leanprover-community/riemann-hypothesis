@@ -313,25 +313,8 @@ def exH : Matrix (Fin 3) (Fin 3) GaussQ := Matrix.diagonal ![1, -1, 1]
 
 def exX : Matrix (Fin 3) (Fin 1) GaussQ := Matrix.of fun i _ ↦ ![1, 1, 0] i
 
-theorem isHermitianFor_exH : IsHermitianFor (conjHom ℚ GaussQ) exH := by
-  refine Matrix.ext fun i j ↦ ?_
-  fin_cases i <;> fin_cases j <;>
-    simp [exH, Matrix.diagonal_apply, Matrix.transpose_apply, Matrix.map_apply]
 
-theorem isUnit_det_exH : IsUnit exH.det := by
-  rw [exH, Matrix.det_diagonal, Fin.prod_univ_three]
-  simp
 
-theorem exX_mem_ratIso : exX ∈ ratIso ℚ exH 1 := by
-  refine ⟨?_, Matrix.of fun _ j ↦ ![1, 0, 0] j, ?_⟩
-  · refine Matrix.ext fun i j ↦ ?_
-    fin_cases i
-    fin_cases j
-    simp [exX, exH, Matrix.mul_apply, Fin.sum_univ_three, Matrix.diagonal_apply]
-  · refine Matrix.ext fun i j ↦ ?_
-    fin_cases i
-    fin_cases j
-    simp [exX, Matrix.mul_apply, Fin.sum_univ_three]
 
 end Example
 

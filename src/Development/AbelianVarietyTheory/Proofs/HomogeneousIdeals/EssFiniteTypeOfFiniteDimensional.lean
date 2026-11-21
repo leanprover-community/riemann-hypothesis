@@ -199,21 +199,6 @@ theorem exists_hom_of_isIntegral {z : Fin (m + 1) → L} (hz : z ≠ 0)
   exact exists_hom_of_coords _ _ (nmPoint_str o t ht) _ (iSup_preimage_chart o t ht) hη hz c hc u
     fun i k => (valR_eq _ _ (hη i) _).trans (hu i k)
 
-theorem exists_hom_Cl_of_factor {z : Fin (m + 1) → L} (hz : z ≠ 0) {τ : Type*} (z' : τ → L)
-    (p : Fin (r + 1) ≃ Fin (m + 1) × τ) (hp : ∀ i, t i = z (p i).1 * z' (p i).2) :
-    ∃ φ : Nm o t ht ⟶ Cl o z hz, nmPoint o t ht ≫ φ = clPoint o z hz ∧
-      φ ≫ clι o z hz ≫ PSpace.str o m = str o t ht := by
-  obtain ⟨φ, h₁, h₂, -⟩ := exists_hom_of_isIntegral o t ht hz (fun i => (p i.1).1)
-    (fun i => left_ne_zero_of_mul (hp i.1 ▸ i.2)) fun i k => by
-      have : z k / z (p i.1).1 = t (p.symm (k, (p i.1).2)) / t i.1 := by
-        rw [hp, hp i.1, Equiv.apply_symm_apply,
-          mul_div_mul_right _ _ (right_ne_zero_of_mul (hp i.1 ▸ i.2))]
-      rw [this]
-      exact isIntegral_algebraMap
-        (x := (⟨_, Algebra.subset_adjoin ⟨_, rfl⟩⟩ : ratioRing o t i.1))
-  have := IsSchemeTheoreticallyDominant.of_isDominant (nmPoint o t ht)
-  refine ⟨closureLift _ φ (nmPoint o t ht) (𝟙 _) (by simpa using h₁), by simp, ?_⟩
-  rw [closureLift_imageι_assoc, h₂]
 
 def ratioField : Subfield L :=
   Subfield.closure (Set.range (algebraMap o L) ∪
@@ -403,11 +388,6 @@ theorem isProjOver_str : IsProjOver (str o t ht) := by
   obtain ⟨e, -, M, z, hz, -, -, -, ν, -, h, -⟩ := exists_iso_Cl o t ht
   exact ⟨M, ν.hom ≫ clι o z hz, inferInstance, h⟩
 
-theorem exists_pow_twist_veryAmple : ∃ (e : ℕ) (_ : 0 < e) (M : ℕ) (φ : Nm o t ht ⟶ PSpace o M),
-    IsClosedImmersion φ ∧ φ ≫ PSpace.str o M = str o t ht ∧
-      LBIso (lbPow (twist o t ht) e) ((O1 o M).pull φ) := by
-  obtain ⟨e, he, M, z, hz, -, -, -, ν, -, h, -, w, hw, -⟩ := exists_iso_Cl o t ht
-  exact ⟨e, he, M, ν.hom ≫ clι o z hz, inferInstance, h, w, hw⟩
 
 end Dedekind
 

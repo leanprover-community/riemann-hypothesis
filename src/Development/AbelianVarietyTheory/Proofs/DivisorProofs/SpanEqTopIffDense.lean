@@ -89,8 +89,6 @@ def ofModule [Module (Matrix ι ι R) N] [IsScalarTower R (Matrix ι ι R) N] : 
   sum_diag := by
     rw [← map_sum, Matrix.sum_single_one, map_one]
 
-theorem ofModule_E [Module (Matrix ι ι R) N] [IsScalarTower R (Matrix ι ι R) N] (i j : ι) (x : N) :
-    (ofModule (R := R)).E i j x = Matrix.single i j (1 : R) • x := rfl
 end GlobalTheory.Morita
 
 namespace GlobalTheory.Morita.MatrixUnits
@@ -169,9 +167,7 @@ def latIso (a : ι) : {L : Submodule R N // U.IsStable L} ≃o Submodule R (U.co
       exact fun i => h (hx i)
     · intro h y hy; exact h hy
 
-theorem latIso_apply (a : ι) (L : {L : Submodule R N // U.IsStable L}) : U.latIso a L = U.cornerPart a L.1 := rfl
 
-theorem latIso_symm_apply (a : ι) (L₀ : Submodule R (U.corner a)) : ((U.latIso a).symm L₀).1 = U.spread a L₀ := rfl
 
 theorem map_toPi {L : Submodule R N} (hL : U.IsStable L) (a : ι) :
     L.map (U.toPi a).toLinearMap = Submodule.pi Set.univ fun _ => U.cornerPart a L := by

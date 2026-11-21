@@ -77,23 +77,12 @@ theorem recX_ties (t : Ties (withTw D1 W)) : Ties (recX D1 W large₂ h0 rOf eOf
     baseField_isGalois := t.baseField_isGalois
     ft_occ := t.ft_occ }
 
-theorem recX_cover : NTw.TwCover (recX D1 W large₂ h0 rOf eOf B).ntw := W.cover
 
-theorem recX_kapDef (h : DV.KapDef D1) : DV.KapDef (recX D1 W large₂ h0 rOf eOf B) := h
 
-theorem recX_duStar (h : ∀ u, ((D1.mem u).A.duStar : ℝ) = StandardLattice.duStarU D1 u) :
-    ∀ u, (((recX D1 W large₂ h0 rOf eOf B).mem u).A.duStar : ℝ) = StandardLattice.duStarU (recX D1 W large₂ h0 rOf eOf B) u := h
 
-theorem recX_Dstar (h : D1.what₂.Dstar = StandardLattice.DstarD D1) :
-    (recX D1 W large₂ h0 rOf eOf B).what₂.Dstar = StandardLattice.DstarD (recX D1 W large₂ h0 rOf eOf B) := h
 
-theorem recX_e (u w h) : ((recX D1 W large₂ h0 rOf eOf B).gat u w h).e = eOf (D1.what₂.places.resChar w) := rfl
 
-theorem recX_epTie {L : SizeData₂ (recX D1 W large₂ h0 rOf eOf B)} (X : G.Inst (recX D1 W large₂ h0 rOf eOf B) L)
-    (h : X.ep = eOf) : EpTie X := fun u w hg => by rw [h]; rfl
 
-theorem recX_gauge (hG : GaugeGap) : GaugeExists (recX D1 W large₂ h0 rOf eOf B).host (recX D1 W large₂ h0 rOf eOf B).sp :=
-  hG _ _ _
 
 def recX_served (hS : ServedGap) (hb : Function.Bijective D1.embE) (u : (recX D1 W large₂ h0 rOf eOf B).what₂.Word)
     (w : (recX D1 W large₂ h0 rOf eOf B).what₂.places.Pl)
@@ -109,9 +98,7 @@ def recX_X (S : Shape0 D1) : DivX (recX D1 W large₂ h0 rOf eOf B) := divXExamp
 theorem recX_mjH (S : Shape0 D1) (j : ℕ) : Subsingleton ((recX_X D1 W large₂ h0 rOf eOf B S).MjH j).V :=
   inferInstanceAs (Subsingleton (zeroHLat _).V)
 
-theorem recX_kapR (S : Shape0 D1) (e) : (recX_X D1 W large₂ h0 rOf eOf B S).kapR e = 1 := rfl
 
-theorem recX_h (u) : (recX D1 W large₂ h0 rOf eOf B).div.h u = D1.div.h u := rfl
 
 set_option maxHeartbeats 2000000 in
 theorem recX_hVal (sc : Scale) (aT : D1.host.TT → ℤ) (η Sc dl C : ℝ) (u) :

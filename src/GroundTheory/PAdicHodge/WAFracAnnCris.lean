@@ -302,11 +302,7 @@ def acrisToAnn : ACris ℂ_[p] p →+* (𝓣).Ann ρ0 σ0 where
           (annNorm_awayToAnn_le_one hσ r (acrisApprox b N).2)).trans ?_
         exact (annNorm_acrisToAnnFun_sub_le hσ a (acrisApprox_spec a N) r).trans (rad_pow_le hσ r N)
 
-theorem acrisToAnn_apply (a : ACris ℂ_[p] p) : acrisToAnn hσ a = acrisToAnnFun hσ a := rfl
 
-theorem acrisToAnn_algebraMap (c : ACrisZero ℂ_[p] p) :
-    acrisToAnn hσ (algebraMap _ (ACris ℂ_[p] p) c) = awayToAnn ρ0 σ0 (c : 𝔸) :=
-  acrisToAnnFun_algebraMap hσ c
 
 theorem annNorm_acrisToAnn_sub_le (a : ACris ℂ_[p] p) {c : ACrisZero ℂ_[p] p} {N : ℕ}
     (hc : a - algebraMap _ (ACris ℂ_[p] p) c ∈ Ideal.span {(p : ACris ℂ_[p] p) ^ N})

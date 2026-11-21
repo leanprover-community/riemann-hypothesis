@@ -51,36 +51,12 @@ attribute [local irreducible] RayEv.kapGt RayEv.kapB RayEv.resB RayEv.incT RayEv
 
 variable (ct : At S κ p) (y : ct.Pt ct.Xm) (σ : PsiT D × Bool)
 
-theorem evlTrue_resB (u : RayEv.LieGt (ct.dat y) (sideEmb D σ)) :
-    (evlTrue ct).resB y σ u = RayEv.resB (ct.dat y) (sideEmb D σ) u := rfl
 
-theorem evlTrue_incT (u : RayEv.LieT (ct.dat y) (sideEmb D σ)) :
-    (evlTrue ct).incT y σ u = RayEv.incT (ct.dat y) (sideEmb D σ) u := rfl
 
-theorem evlTrue_kapGt : (evlTrue ct).kapGt y σ = RayEv.kapGt (ct.dat y) (sideEmb D σ) := rfl
 
-theorem evlTrue_kapB : (evlTrue ct).kapB y σ = RayEv.kapB (ct.dat y) (sideEmb D σ) := rfl
 
-theorem evlTrue_incT_injective : Function.Injective ((evlTrue ct).incT y σ) := fun a b h =>
-  (RayEv.incT_exact (ct.dat y) (sideEmb D σ)).1
-    ((evlTrue_incT ct y σ a).symm.trans (h.trans (evlTrue_incT ct y σ b)))
 
-theorem evlTrue_range_incT : ((evlTrue ct).incT y σ).range = ((evlTrue ct).resB y σ).ker := by
-  ext v
-  rw [AddMonoidHom.mem_range, AddMonoidHom.mem_ker]
-  have h := (RayEv.incT_exact (ct.dat y) (sideEmb D σ)).2 v
-  constructor
-  · rintro ⟨w, hw⟩
-    exact (evlTrue_resB ct y σ v).trans (h.2 ⟨w, (evlTrue_incT ct y σ w).symm.trans hw⟩)
-  · intro e
-    obtain ⟨w, hw⟩ := h.1 ((evlTrue_resB ct y σ v).symm.trans e)
-    exact ⟨w, (evlTrue_incT ct y σ w).trans hw⟩
 
-theorem evlTrue_kap (u u' : (evlTrue ct).LieGt y σ) : (evlTrue ct).kapGt y σ u u' =
-    (evlTrue ct).kapB y σ ((evlTrue ct).resB y σ u) ((evlTrue ct).resB y σ u') :=
-  (congrFun₂ (evlTrue_kapGt ct y σ) u u').trans ((RayEv.kapGt_eq (ct.dat y) (sideEmb D σ) u u').trans
-    ((congrFun₂ (evlTrue_kapB ct y σ) _ _).trans
-      (congrArg₂ _ (evlTrue_resB ct y σ u) (evlTrue_resB ct y σ u'))).symm)
 
 end Fields
 

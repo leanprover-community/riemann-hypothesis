@@ -17,8 +17,6 @@ variable [IsTotallyComplex E]
 def HasCap (φ : Sm E a) (m : (E →+* ℂ) → Multiset ℂ) : Prop :=
   ∀ t, Multiset.card (m t) = a ∧ ∀ u, cap t u φ = ((m t).map (u + ·)).prod • φ
 
-theorem hasCap_oneFn : HasCap (oneFn E a) fun _ => Finset.univ.val.map fun k : Fin a => ((a : ℂ) - 1) / 2 - (k : ℕ) :=
-  fun t => ⟨by simp, fun u => by rw [cap_oneFn, Multiset.map_map]; rfl⟩
 
 def CuspSupport : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), 1 ≤ a →

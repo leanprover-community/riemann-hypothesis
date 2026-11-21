@@ -351,11 +351,6 @@ theorem bound_one {X : ErrX D} {K : Formalism.MainNotions.G.Consts} {c : ErrC} (
   rw [hA]
   linarith
 
-theorem ramifiedLoss_sum : ∀ {eps : ℝ} (Fm : FamP eps), 0 < eps → eps < 1 / 52 → DGamSize Fm → ∃ C x0 : ℝ, ∀ x, x0 ≤ x → ∀ hx : Fm.x1 < x, ∀ i : Fm.Ix x, ∀ u, ∀ j ∈ SizeData₂.lifts (Fm.D x i), ∑ w ∈ (Fm.L x i).supp.filter (fun w => (Fm.D x i).what₂.places.resChar w = (Fm.D x i).host.d ∧ (Fm.D x i).what₂.places.resChar w ≠ ((Fm.D x i).mem u).A.T ∧ (Fm.D x i).what₂.places.resChar w ∉ (Fm.L x i).gTypes), |SizeData₂.sz w ((Fm.L x i).E u j w)| ≤ C * (Fm.L x i).B0 := by
-  intro eps Fm _ _ ⟨C, x₀, hC⟩
-  refine ⟨2 * |C| + 4, max 2 x₀, fun x hx0 hx i u j hj => ?_⟩
-  exact bound_one (Fm.ex x hx i).err.edef (Fm.sizes x hx i) (Fm.params x hx i)
-    (by rw [Fm.L_x x i hx]; exact (le_max_left _ _).trans hx0) C (hC x ((le_max_right _ _).trans hx0) i) u j hj
 
 end GlobalTheory.RamifiedLoss
 

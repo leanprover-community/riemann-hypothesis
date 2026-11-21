@@ -286,9 +286,6 @@ structure Fam {N n : ℕ} (Z : FullPre D N n) where
   gen : ∀ x : XX, CharZero (XX.residueField x) → x ∈ W
   sieg : SiegelClauseFullLevel w oX
 
-theorem siegelFinite_iff {N n : ℕ} (Z : FullPre D N n) : Z.SiegelFinite ↔ Nonempty (Fam Z) :=
-  ⟨fun ⟨XX, w, oX, u, fm, W, a, b, c, d, e, f, g, h⟩ => ⟨⟨XX, w, oX, u, fm, W, a, b, c, d, e, f, g, h⟩⟩,
-    fun ⟨F⟩ => ⟨F.XX, F.w, F.oX, F.u, F.fm, F.W, F.red, F.flat, F.overB, F.fin, F.surj, F.iso, F.gen, F.sieg⟩⟩
 
 theorem charZero_of_bot {R : Type} [CommRing R] [CharZero R] {X : Scheme.{0}} (s : X ⟶ Sp R) (x : X)
     (hx : (s x).asIdeal = ⊥) : CharZero (X.residueField x) := by

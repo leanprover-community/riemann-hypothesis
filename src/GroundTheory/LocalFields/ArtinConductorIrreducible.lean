@@ -29,22 +29,7 @@ section ConductorDiscriminant
 
 variable [IsGalois K L]
 
-theorem sum_irrChars_mul_charArtinConductor :
-    ∑ χ ∈ irrChars (L ≃ₐ[K] L), χ 1 * charArtinConductor K L χ =
-      ((residueDegree K L * differentExponent K L : ℕ) : ℂ) := by
-  classical
-  rw [← charArtinConductor_regular, ← charArtinConductor_sum]
-  congr 1
-  rw [← character_leftRegular_eq_sum]
-  funext σ
-  rw [character_leftRegular_apply, Nat.card_eq_fintype_card]
 
-theorem addVal_discr_eq_sum_irrChars {ι : Type*} [Fintype ι] [DecidableEq ι]
-    (b : Module.Basis ι 𝒪[K] 𝒪[L]) :
-    ∃ n : ℕ, IsDiscreteValuationRing.addVal 𝒪[K] (Algebra.discr 𝒪[K] b) = n ∧
-      (n : ℂ) = ∑ χ ∈ irrChars (L ≃ₐ[K] L), χ 1 * charArtinConductor K L χ := by
-  refine ⟨_, addVal_discr_eq_artinCharacter_one b, ?_⟩
-  rw [sum_irrChars_mul_charArtinConductor, artinCharacter_one, Int.toNat_natCast]
 
 end ConductorDiscriminant
 

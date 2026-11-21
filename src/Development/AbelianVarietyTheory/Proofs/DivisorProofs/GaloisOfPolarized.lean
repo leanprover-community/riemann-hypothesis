@@ -83,7 +83,6 @@ def GaloisOfPolarized : Prop :=
               ((ρ g⁻¹ : GL (Fin m) (Formalism.ConjugateSelfDual.Qbar l)) : Matrix (Fin m) (Fin m) (Formalism.ConjugateSelfDual.Qbar l)).charpoly.map
                 (ι : Formalism.ConjugateSelfDual.Qbar l →+* ℂ) = frobPoly (Formalism.ConjugateSelfDual.normV w) m (B.map fun b : ℂˣ => (b : ℂ))
 
-theorem spehInf_one (A : Multiset ℂ) : spehInf 1 A = A := by simp [spehInf]
 
 end GlobalTheory.SphGal
 

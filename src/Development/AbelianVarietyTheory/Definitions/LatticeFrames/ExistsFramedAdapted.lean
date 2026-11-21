@@ -61,13 +61,6 @@ theorem Framed.shear_eq_zero {B B' : SBes X h u ψ A} (hB : Framed B) (hB' : Fra
   have := congrArg (fun x => B.d.e'ᴴ * (D.sp.Y 0).gram * x) e1
   simpa only [← Matrix.mul_assoc, B.d.e'e, Matrix.one_mul, Matrix.mul_zero] using this
 
-theorem exists_framed_adapted (F₀ : Formalism.L2.Forms.Forms0 D u) (tr : Formalism.L2.SG.ColDict.Transport X u F₀) (hE : IdE X)
-    (hψ : IsStdChar D ψ (-1)) (μ : D.host.E) (hμ : μ ≠ 0) (vA : Vol (D.sp.X 0)) :
-    ∃ B : SBes X h u ψ (D.sp.X 0), Framed B ∧ B.Adapted tr.wt ∧
-      ∀ k, (B.d.i₀ *ᵥ vecB B.o B.ζ) k = μ * X.ιE (X.zR u (Fin.cast (rank_eq X h) k)) := by
-  obtain ⟨lam, hl, H⟩ := exists_sBes_scaled_dual D X h u ψ F₀ tr hE hψ
-  obtain ⟨B, ha, -, hz, he, he'⟩ := H μ vA hμ
-  exact ⟨B, ⟨μ, lam, hμ, hl, hz, he, he'⟩, ha, hz⟩
 
 end Frame
 
@@ -83,9 +76,6 @@ theorem Placed.adapted (h : Placed f B) : B.Adapted (W.S.tr u).wt := by
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, hb⟩ := h
   exact hb.adapted
 
-theorem Placed.levTrace (h : Placed f B) : LevTrace f B := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, hb⟩ := h
-  exact hb.trace
 
 theorem InPlace.common (h : InPlace f B) :
     ∃ (k : Type) (_ : Field k) (_ : ValuativeRel k) (_ : TopologicalSpace k) (_ : IsNonarchimedeanLocalField k) (ι : Type)

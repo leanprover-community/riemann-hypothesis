@@ -68,29 +68,6 @@ theorem valueAtZero_unique_of_stalk_reading {D : DegData V (maximalIdeal V)} {F 
   rw [val_corr hJ cτ, val_corr hJ cτ'] at B
   exact eq_of_gs_eq z c c' (mul_right_cancel₀ (Units.ne_zero _) B)
 
-theorem valAt0_unique {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
-    {H : Geo.Tor.Host E} {t : Geo.Tor.SAB H (Spec (CommRingCat.of V))}
-    (P : Geo.Tor.PELUnif (maximalIdeal V) t) (ϖ : V) (hϖ : Irreducible ϖ)
-    (v : AddValuation (FractionRing V) (WithTop ℚ)) (hv : ValOver ϖ (FractionRing V) v) {k : ℕ}
-    (F : Fam P.D.toPre (FractionRing V) k) (x x' : FractionRing V)
-    (hx : ValAt0 P.D (FractionRing V) v k F x) (hx' : ValAt0 P.D (FractionRing V) v k F x') : x = x' := by
-  classical
-  obtain ⟨x₁, h₁, s₁⟩ := hx
-  obtain ⟨x₂, h₂, s₂⟩ := hx'
-  obtain rfl : x₁ = x₂ := funext fun α => valueAtZero_unique_of_stalk_reading (h₁ α) (h₂ α)
-  by_contra hne
-  have hd : x - x' ≠ 0 := sub_ne_zero.2 hne
-  obtain ⟨r, hr⟩ := WithTop.ne_top_iff_exists.1 (fun h => hd ((AddValuation.top_iff v).1 h))
-  obtain ⟨S₁, hS₁⟩ := s₁ (r + 1)
-  obtain ⟨S₂, hS₂⟩ := s₂ (r + 1)
-  have a₁ := hS₁ (S₁ ∪ S₂) Finset.subset_union_left
-  have a₂ := hS₂ (S₁ ∪ S₂) Finset.subset_union_right
-  have key : x - x' = (x - ∑ α ∈ S₁ ∪ S₂, x₁ α) - (x' - ∑ α ∈ S₁ ∪ S₂, x₁ α) := by ring
-  have hle := AddValuation.map_sub v (x - ∑ α ∈ S₁ ∪ S₂, x₁ α) (x' - ∑ α ∈ S₁ ∪ S₂, x₁ α)
-  rw [← key, ← hr] at hle
-  have := le_trans (le_min a₁ a₂) hle
-  rw [WithTop.coe_le_coe] at this
-  linarith
 
 theorem exists_glue_ratio {Y : Scheme.{0}} {M : LB Y} (hc : ⨆ j, M.U j = ⊤) (s : LB.Sec M) (τ : LB.Gen M)
     (hτ : τ.IsGen) : ∃ a : Γ(Y, ⊤), ∀ j, s.f j = (Y.presheaf.map (homOfLE (le_top : M.U j ≤ ⊤)).op).hom a * (τ.s j).val := by
@@ -118,24 +95,5 @@ theorem exists_glue_ratio {Y : Scheme.{0}} {M : LB Y} (hc : ⨆ j, M.U j = ⊤) 
   simp only [r]
   rw [_root_.mul_assoc, ← Units.val_mul, _root_.inv_mul_cancel, Units.val_one, _root_.mul_one]
 
-theorem exists_valAtUnit {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
-    {H : Geo.Tor.Host E} {t : Geo.Tor.SAB H (Spec (CommRingCat.of V))}
-    (P : Geo.Tor.PELUnif (maximalIdeal V) t) (k : ℕ) (s : P.U.SecK k) :
-    ∃ x, ValAtUnit P k s x := by
-  have hL : P.U.LG.L.IsLB := P.U.LG.isLB
-  obtain ⟨τ, gτ, vτ⟩ := exists_gen hL (φ' := fun _ : Fin 1 => unitK ≫ gK) (ε' := fun _ => (k : ℤ))
-    (fun U _ h => by
-      have hu : (unitK : _ ⟶ pullback t.G.hom (jK V)) ≫ gK = jK V ≫ eSec t.G := pullback.lift_fst _ _ _
-      rw [Fintype.prod_unique, Fin.prod_univ_one, hu, _root_.mul_one])
-    (LB.pullGen P.U.LG.L _ _ (GeneratorPullback.powGen P.U.LG.L _ _ P.U.LG.rig k) (jK V))
-    (pullGen_isGen _ _ _ _ (powGen_isGen _ _ _ _ P.U.LG.rigGen k) _)
-  have cτ := corr_of_val hL fun y J hJ => vτ _ (𝟙 _) y J hJ
-  obtain ⟨a, ha⟩ := exists_glue_ratio (linComb_cover _ hL _ _)
-    (pullSec P.U.LG.L (fun _ : Fin 1 => gK) (fun _ => (k : ℤ)) s unitK) τ gτ
-  obtain ⟨x, hx⟩ := (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of (FractionRing V))).inv).2 a
-  refine ⟨x, τ, gτ, cτ, fun j => ?_⟩
-  have e := ha j
-  rw [← hx] at e
-  exact e
 
 end ReciprocityTheory.ChartRestriction.G.DVR.ValuationAtUnit

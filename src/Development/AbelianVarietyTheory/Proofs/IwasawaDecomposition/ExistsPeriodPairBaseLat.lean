@@ -85,18 +85,6 @@ theorem exists_periodPair_baseLat : ∃ L : PeriodPair, ∀ z, z ∈ baseLat H �
     obtain ⟨c, hc, rfl⟩ := (FractionalIdeal.mem_coeIdeal _).1 hy
     exact ⟨c, hc, rfl⟩
 
-theorem exists_int_root : ∃ a : 𝓞 H.K, (2 * H.φ₀ (((a : H.K) : H.E)) - 1) ^ 2 = -(H.d : ℂ) := by
-  have hsq := H.sqd_sq
-  let b : H.K := ⟨H.sqd, IntermediateField.mem_adjoin_simple_self ℚ _⟩
-  have hb' : b ^ 2 = -(H.d : H.K) := by
-    apply Subtype.ext
-    simpa using hsq
-  refine ⟨⟨(1 + b) / 2, GlobalTheory.NormSum.isIntegral_half_one_add _ H.hyp.2.2.2.1 b hb'⟩, ?_⟩
-  change (2 * H.φ₀ (algebraMap H.K H.E ((1 + b) / 2)) - 1) ^ 2 = _
-  have := congrArg (fun x => H.φ₀ (algebraMap H.K H.E x)) hb'
-  simp only [map_pow, map_neg, map_natCast] at this
-  rw [map_div₀, map_add, map_one, map_ofNat, map_div₀, map_add, map_one, map_ofNat, ← this]
-  ring
 
 theorem root_cases {d : ℕ} {α : ℂ} (h : (2 * α - 1) ^ 2 = -(d : ℂ)) :
     (α = (1 + Complex.I * (Real.sqrt d : ℂ)) / 2 ∧ 1 - α = (1 - Complex.I * (Real.sqrt d : ℂ)) / 2) ∨
@@ -108,61 +96,6 @@ theorem root_cases {d : ℕ} {α : ℂ} (h : (2 * α - 1) ^ 2 = -(d : ℂ)) :
   · exact .inl ⟨by linear_combination e / 2, by linear_combination -e / 2⟩
   · exact .inr ⟨by linear_combination -e / 2, by linear_combination e / 2⟩
 
-theorem isHalfPt_baseLat : IsHalfPt H.d (baseLat H) ((Ideal.absNorm H.ccK : ℕ) / 2) := by
-  have hN : Odd (Ideal.absNorm H.ccK) := Nat.coprime_two_right.1 (H.ccK_coprime 2 (by simp))
-  have hint : ∀ w ∈ baseLat H, IsIntegral ℤ w := fun w hw => by
-    obtain ⟨c, -, rfl⟩ := (mem_baseLat H w).1 hw
-    have h0 : IsIntegral ℤ (c : H.K) := c.2
-    exact h0.map (H.φ₀.comp (algebraMap H.K H.E)).toIntAlgHom
-  refine ⟨?_, fun h => ?_, fun h => ?_⟩
-  · refine (mem_baseLat H _).2 ⟨((Ideal.absNorm H.ccK : ℕ) : 𝓞 H.K), Ideal.absNorm_mem _, ?_⟩
-    simp
-    ring
-  · refine GlobalTheory.TwoTorsionPt.not_integral_half hN (hint _ h) ?_
-    simp only [map_mul, map_div₀, map_add, map_one, Complex.conj_I, Complex.conj_ofReal,
-      map_natCast, map_ofNat]
-    ring
-  · refine GlobalTheory.TwoTorsionPt.not_integral_half hN (hint _ h) ?_
-    simp only [map_mul, map_div₀, map_sub, map_one, Complex.conj_I, Complex.conj_ofReal,
-      map_natCast, map_ofNat]
-    ring
 
-theorem cm_of_isConjLat {LL : Type} [Field LL] [NumberField LL] {emb s : LL →+* ℂ} {Λ : AddSubgroup ℂ}
-    (h : IsConjLat emb s (baseLat H) Λ) :
-    (∀ z ∈ Λ, ((1 + Complex.I * (Real.sqrt H.d : ℂ)) / 2) * z ∈ Λ) ∧ ∃ t, IsHalfPt H.d Λ t := by
-  obtain ⟨L, hL⟩ := exists_periodPair_baseLat H
-  obtain ⟨⟨L', hL'⟩, -⟩ := Model.area_pos_of_isConjLat h
-  obtain ⟨-, a, ha, ha'⟩ := h
-  haveI : Countable LL := Countable.of_equiv _ (Module.finBasis ℚ LL).equivFun.toEquiv.symm
-  obtain ⟨σ, hσ⟩ := GlobalTheory.GaloisDescent.exists_complex_ringEquiv_comp_eq emb s
-  obtain ⟨c, hc⟩ := exists_int_root H
-  set α := H.φ₀ (((c : H.K) : H.E)) with hα
-  have hst : ∀ l ∈ L.lattice, α * l ∈ L.lattice := fun l hl => by
-    obtain ⟨e, he, rfl⟩ := (mem_baseLat H l).1 ((hL l).2 hl)
-    exact (hL _).1 ((mem_baseLat H _).2 ⟨c * e, H.ccK.mul_mem_left c he, by simp [hα]⟩)
-  obtain ⟨p2, pa, pb⟩ := isHalfPt_baseLat H
-  rw [hL] at p2 pa pb
-  have hj : σ (1728 * L.g₂ ^ 3 / (L.g₂ ^ 3 - 27 * L.g₃ ^ 2)) =
-      1728 * L'.g₂ ^ 3 / (L'.g₂ ^ 3 - 27 * L'.g₃ ^ 2) := by
-    unfold jLat TaylorLogMetric.discr at ha ha'
-    rw [GlobalTheory.LatticeInvariants.g2_eq hL, GlobalTheory.LatticeInvariants.lattice_invariant_g3_eq hL] at ha
-    rw [GlobalTheory.LatticeInvariants.g2_eq hL', GlobalTheory.LatticeInvariants.lattice_invariant_g3_eq hL'] at ha'
-    rw [← ha, ← ha', hσ]
-  obtain ⟨q, t, q2, qa, qb⟩ := transfer σ hj hst p2
-    (by rcases root_cases hc with e | e
-        · rw [e.1]; exact pa
-        · rw [e.2]; exact pb)
-    (by rcases root_cases hc with e | e
-        · rw [e.2]; exact pb
-        · rw [e.1]; exact pa)
-  have hc' : (2 * σ α - 1) ^ 2 = -(H.d : ℂ) := by
-    simpa [map_ofNat] using congrArg σ hc
-  unfold IsHalfPt
-  simp only [hL']
-  rcases root_cases hc' with e | e
-  · exact ⟨e.1 ▸ q, t, q2, e.1 ▸ qa, e.2 ▸ qb⟩
-  · refine ⟨fun z hz => ?_, t, q2, e.1 ▸ qb, e.2 ▸ qa⟩
-    rw [← e.1, sub_mul, one_mul]
-    exact sub_mem hz (q z hz)
 
 end GlobalTheory.Mem.Per.ConjCM

@@ -264,16 +264,6 @@ lemma finrank_ker_of_rank {n a : ℕ} (X : Matrix (Fin n) (Fin a) K) (hX : X.ran
     Module.finrank_fin_fun] at h
   omega
 
-lemma card_rank [Fintype K] (n a : ℕ) :
-    Nat.card {X : Matrix (Fin n) (Fin a) K // X.rank = a} =
-      ∏ j ∈ range a, (Fintype.card K ^ n - Fintype.card K ^ j) := by
-  have e : {X : Matrix (Fin n) (Fin a) K // X.rank = a} ≃
-      {f : (Fin a → K) →ₗ[K] (Fin n → K) // Function.Injective f} :=
-    (Matrix.toLin' (R := K) (m := Fin n) (n := Fin a)).toEquiv.subtypeEquiv
-      (p := fun X : Matrix (Fin n) (Fin a) K => X.rank = a)
-      (q := fun f : (Fin a → K) →ₗ[K] (Fin n → K) => Function.Injective f)
-      (fun X => rank_eq_iff_injective X)
-  rw [Nat.card_congr e, card_injective, Module.finrank_fin_fun, Module.finrank_fin_fun]
 
 lemma card_fibre [Fintype K] (n a : ℕ) (R : Matrix (Fin a) (Fin a) K)
     (X₁ : Matrix (Fin n) (Fin a) K) (hX : X₁.rank = a) :
@@ -313,151 +303,21 @@ end Formalism.FourierDecayAlt.P.S3x4
 namespace Formalism.FourierDecayAlt.P
 open Matrix Finset Module Formalism.FourierDecayAlt.P.S3x4
 
-theorem s3_split_frame_count : Formalism.FourierDecayAlt.S3.SplitFrameCount := by
-  intro K _ _ n a R
-  classical
-  let e : {p : Matrix (Fin n) (Fin a) K × Matrix (Fin n) (Fin a) K //
-        p.1.rank = a ∧ p.2.rank = a ∧ p.2ᵀ * p.1 = Rᵀ} ≃
-      Σ X₁ : {X : Matrix (Fin n) (Fin a) K // X.rank = a},
-        {X₂ : Matrix (Fin n) (Fin a) K // X₂.rank = a ∧ X₂ᵀ * X₁.1 = Rᵀ} :=
-    { toFun := fun p => ⟨⟨p.1.1, p.2.1⟩, ⟨p.1.2, p.2.2⟩⟩
-      invFun := fun s => ⟨(s.1.1, s.2.1), s.1.2, s.2.2⟩
-      left_inv := fun p => rfl
-      right_inv := fun s => rfl }
-  let _ : Fintype {X : Matrix (Fin n) (Fin a) K // X.rank = a} := Fintype.ofFinite _
-  rw [Nat.card_congr e, Nat.card_sigma,
-    Finset.sum_congr rfl (fun X₁ _ => card_fibre n a R X₁.1 X₁.2), Finset.sum_const,
-    Finset.card_univ, ← Nat.card_eq_fintype_card, card_rank, smul_eq_mul, mul_assoc]
 
-theorem s3_split_frame_transitive : Formalism.FourierDecayAlt.S3.SplitFrameTransitive := by
-  intro K _ _ n a X₁ X₂ Y₁ Y₂ hX₁ hX₂ hY₁ hY₂ hXY
-  obtain ⟨g₀, hg₀⟩ := exists_equiv_comp _ _ ((rank_eq_iff_injective X₁).mp hX₁)
-    ((rank_eq_iff_injective Y₁).mp hY₁)
-  set G := LinearMap.toMatrix' g₀.toLinearMap with hG
-  have hGl : Matrix.toLin' G = g₀.toLinearMap := by rw [hG, Matrix.toLin'_toMatrix']
-  have hGdet : IsUnit G.det := by
-    rw [← Matrix.isUnit_iff_isUnit_det, ← Matrix.mulVec_injective_iff_isUnit]
-    intro x y hxy
-    have : Matrix.toLin' G x = Matrix.toLin' G y := hxy
-    rw [hGl] at this
-    exact g₀.injective this
-  have hGX : G * X₁ = Y₁ := by
-    apply (Matrix.toLin' (R := K)).injective
-    rw [Matrix.toLin'_mul, hGl]
-    exact LinearMap.ext hg₀
-  have hY₂' : (Gᵀ * Y₂).rank = a := by
-    rw [Matrix.rank_mul_eq_right_of_isUnit_det _ _ (by rwa [Matrix.det_transpose]), hY₂]
-  have hjj : X₁ᵀ * X₂ = X₁ᵀ * (Gᵀ * Y₂) := by
-    rw [← Matrix.mul_assoc, ← Matrix.transpose_mul, hGX]
-    have := congrArg Matrix.transpose hXY
-    simpa [Matrix.transpose_mul] using this
-  obtain ⟨h, hinj, hπ, hh⟩ := exists_over (Matrix.toLin' X₁ᵀ) (surjective_of_rank X₁ hX₁)
-    (Matrix.toLin' X₂) (Matrix.toLin' (Gᵀ * Y₂)) ((rank_eq_iff_injective X₂).mp hX₂)
-    ((rank_eq_iff_injective _).mp hY₂') (by rw [← Matrix.toLin'_mul, ← Matrix.toLin'_mul, hjj])
-  set H := LinearMap.toMatrix' h with hH
-  have hHl : Matrix.toLin' H = h := by rw [hH, Matrix.toLin'_toMatrix']
-  have hHdet : IsUnit H.det := by
-    rw [← Matrix.isUnit_iff_isUnit_det, ← Matrix.mulVec_injective_iff_isUnit]
-    intro x y hxy
-    have : Matrix.toLin' H x = Matrix.toLin' H y := hxy
-    rw [hHl] at this
-    exact hinj this
-  have h1 : X₁ᵀ * H = X₁ᵀ := by
-    apply (Matrix.toLin' (R := K)).injective
-    rw [Matrix.toLin'_mul, hHl, hπ]
-  have h2 : H * (Gᵀ * Y₂) = X₂ := by
-    apply (Matrix.toLin' (R := K)).injective
-    rw [Matrix.toLin'_mul, hHl, hh]
-  refine ⟨G * Hᵀ, ?_, ?_, ?_⟩
-  · rw [Matrix.det_mul, Matrix.det_transpose]
-    exact hGdet.mul hHdet
-  · have h3 : Hᵀ * X₁ = X₁ := by
-      have := congrArg Matrix.transpose h1
-      simpa [Matrix.transpose_mul] using this
-    rw [Matrix.mul_assoc, h3, hGX]
-  · rw [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc, h2]
 
 end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.S3x4
 open Matrix Finset Module Formalism.FourierDecayAlt.S3
 
-lemma densityProduct_eq_zero (q : ℕ) (lo hi : ℤ) (h1 : lo ≤ 0) (h2 : 0 ≤ hi) : densP 1 q lo hi = 0 := by
-  unfold densP
-  exact Finset.prod_eq_zero (Finset.mem_Icc.mpr ⟨h1, h2⟩) (by simp)
 
-lemma densityProduct_eq_one_of_lt (q : ℕ) (lo hi : ℤ) (h : hi < lo) : densP 1 q lo hi = 1 := by
-  unfold densP
-  rw [Finset.Icc_eq_empty (by omega), Finset.prod_empty]
 
-lemma densityProduct_step (q : ℕ) (lo hi : ℤ) (h : lo ≤ hi) :
-    densP 1 q lo hi = (1 - (q : ℝ) ^ (-lo)) * densP 1 q (lo + 1) hi := by
-  unfold densP
-  rw [← Finset.insert_Icc_add_one_left_eq_Icc h, Finset.prod_insert (by simp)]
-  simp
 
-lemma prod_densP (q : ℕ) (hq : 0 < q) (m : ℕ) (hi : ℤ) (hm : (m : ℤ) ≤ hi) (k : ℕ) (hk : k ≤ m) :
-    ((∏ j ∈ range k, (q ^ m - q ^ j) : ℕ) : ℝ) * densP 1 q ((m : ℤ) + 1) hi =
-      (q : ℝ) ^ (m * k) * densP 1 q ((m : ℤ) - k + 1) hi := by
-  have hq' : (q : ℝ) ≠ 0 := by positivity
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    have ih' := ih (by omega)
-    rw [Finset.prod_range_succ, Nat.cast_mul, mul_right_comm, ih',
-      densityProduct_step q ((m : ℤ) - (k + 1 : ℕ) + 1) hi (by push_cast; omega)]
-    have e1 : ((m : ℤ) - (k + 1 : ℕ) + 1 + 1) = (m : ℤ) - k + 1 := by push_cast; ring
-    rw [e1, Nat.cast_sub (Nat.pow_le_pow_right hq (by omega))]
-    have e2 : (q : ℝ) ^ (-((m : ℤ) - (k + 1 : ℕ) + 1)) = (q : ℝ) ^ k / (q : ℝ) ^ m := by
-      have : -((m : ℤ) - (k + 1 : ℕ) + 1) = (k : ℤ) - m := by push_cast; ring
-      rw [this, zpow_sub₀ hq', zpow_natCast, zpow_natCast]
-    rw [e2]
-    push_cast
-    have hm0 : (q : ℝ) ^ m ≠ 0 := pow_ne_zero _ hq'
-    rw [Nat.mul_succ, pow_add]
-    field_simp
 
 end Formalism.FourierDecayAlt.P.S3x4
 
 namespace Formalism.FourierDecayAlt.P
 open Matrix Finset Module Formalism.FourierDecayAlt.P.S3x4 Formalism.FourierDecayAlt.S3
 
-theorem split_frame_density : Formalism.FourierDecayAlt.S3.SplitFrameDensity := by
-  intro K _ _ n a R
-  rw [s3_split_frame_count K n a R]
-  have hq : 0 < Fintype.card K := Fintype.card_pos
-  set q := Fintype.card K with hqdef
-  have hq' : (q : ℝ) ≠ 0 := by positivity
-  have hρ : R.rank ≤ a := by simpa using R.rank_le_width
-  set ρ := R.rank with hρdef
-  by_cases h1 : n < a
-  · rw [Finset.prod_eq_zero (Finset.mem_range.mpr h1) (by simp),
-      densityProduct_eq_zero q _ _ (by omega) (by omega)]
-    simp
-  rw [not_lt] at h1
-  by_cases h2 : n - a < a - ρ
-  · rw [Finset.prod_eq_zero (s := range (a - ρ)) (Finset.mem_range.mpr h2) (by simp),
-      densityProduct_eq_zero q _ _ (by omega) (by omega)]
-    simp
-  rw [not_lt] at h2
-  have g1 := prod_densP q hq n n le_rfl a h1
-  rw [densityProduct_eq_one_of_lt q _ _ (by omega), mul_one] at g1
-  have g2 := prod_densP q hq (n - a) n (by omega) (a - ρ) h2
-  have e1 : (((n - a : ℕ) : ℤ) + 1) = (n : ℤ) - a + 1 := by omega
-  have e2 : (((n - a : ℕ) : ℤ) - ((a - ρ : ℕ) : ℤ) + 1) = (n : ℤ) - a - ((a : ℤ) - ρ) + 1 := by omega
-  rw [e1, e2] at g2
-  rw [Nat.cast_mul, Nat.cast_mul, g1]
-  have : (q : ℝ) ^ (n * a) * densP 1 q ((n : ℤ) - a + 1) n * ((q ^ ((n - a) * ρ) : ℕ) : ℝ) *
-      ((∏ j ∈ range (a - ρ), (q ^ (n - a) - q ^ j) : ℕ) : ℝ) =
-      (q : ℝ) ^ (n * a) * ((q ^ ((n - a) * ρ) : ℕ) : ℝ) *
-      (((∏ j ∈ range (a - ρ), (q ^ (n - a) - q ^ j) : ℕ) : ℝ) * densP 1 q ((n : ℤ) - a + 1) n) := by
-    ring
-  rw [this, g2, ← mul_assoc]
-  congr 1
-  push_cast
-  rw [← pow_add, ← pow_add, ← zpow_natCast]
-  congr 1
-  push_cast [Nat.cast_sub h1, Nat.cast_sub hρ]
-  ring
 
 end Formalism.FourierDecayAlt.P

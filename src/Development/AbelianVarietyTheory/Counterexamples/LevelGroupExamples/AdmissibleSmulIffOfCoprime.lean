@@ -61,8 +61,6 @@ theorem half_unique (d d' : DeltaDat Xo c n) (h : d.IsLev) (h' : d'.IsLev) (e : 
   · rw [← h.2.2.2.1, ← h'.2.2.2.1, e]
   · rw [← h.2.1, ← h'.2.1, e]
 
-theorem isLev_change (d : DeltaDat Xo c n) (h : d.IsLev) (φ : (Fin n → LevQ Dw d.l₂) → c.F)
-    (nab : NabV d.Xo₂ d.c₂) : DeltaDat.IsLev { d with φδ := φ, nab₂ := nab } := h
 
 set_option autoImplicit false in
 open NumberField in

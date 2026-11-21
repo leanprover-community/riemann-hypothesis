@@ -45,21 +45,6 @@ theorem conjFn_apply {G : ι → Matrix (Fin n) (Fin n) ℂ} (hG : ∀ τ, (G τ
     funext x
     exact (congrFun (congrFun (e x.1) x.2.1) x.2.2).symm
 
-theorem conjFn_actP {G : ι → Matrix (Fin n) (Fin n) ℂ} (hG : ∀ τ, IsUnit (G τ).det) (lam : ι → DomWeight n) (g : ι → GL (Fin n) ℂ)
-    (hg : ∀ τ, (g τ : Matrix (Fin n) (Fin n) ℂ)ᴴ * G τ * g τ = G τ) (P : Pol ℂ ι n) (y y' : Frames G)
-    (h : IsTr (fun τ => (g τ : Matrix (Fin n) (Fin n) ℂ)) y' y) :
-    conjFn G (shiftOf lam) (actP lam g P) y = conjFn G (shiftOf lam) P y' := by
-  have h1 : ∀ (Q : Pol ℂ ι n) (z : Frames G),
-      conjFn G (shiftOf lam) Q z = Formalism.L2.Col.evFr G (shiftOf lam) (starRingEnd ℂ) Q (z.tr G hG) := fun Q z => by
-    rw [Formalism.L2.Col.evFr_eq_fnOf, Formalism.L2.Col.fnOf_tr (G' := G) _ 1 G _ _ z fun _ => rfl]
-    simp only [Pi.one_apply, Matrix.one_mul]
-    rfl
-  rw [h1, Formalism.L2.Col.evFr_actP, Formalism.L2.Col.fnOf_tr (G' := G) _ _ (fun τ => G τ * g τ) _ _ y' fun τ => by
-    show G τ * y.1 τ = _
-    rw [h τ, Matrix.mul_assoc]]
-  refine congrArg (fun M => fnOf G (shiftOf lam) M (MvPolynomial.map (starRingEnd ℂ) P) y') (funext fun τ => ?_)
-  rw [← Matrix.mul_assoc]
-  exact hg τ
 
 theorem conjFn_injective {G : ι → Matrix (Fin n) (Fin n) ℂ} (hG : ∀ τ, IsUnit (G τ).det) (s : ι → ℤ) :
     Function.Injective (conjFn G s) := fun _ _ h =>
@@ -85,11 +70,6 @@ theorem reGL_symm_mem {F E : Type} [Field F] [CommRing E] [Algebra F E] (σ : E 
   subst h
   exact hx
 
-theorem reGL_mem {F E : Type} [Field F] [CommRing E] [Algebra F E] (σ : E →ₐ[F] E) (R : Type) [CommRing R] [Algebra F R] {a b : ℕ}
-    (h : a = b) (J : Matrix (Fin a) (Fin a) E) {x} (hx : x ∈ Formalism.UG.UPts σ J R) :
-    reGL h _ x ∈ Formalism.UG.UPts σ (J.reindex (finCongr h) (finCongr h)) R := by
-  subst h
-  exact hx
 
 theorem exists_hasMat (x : PtX D) : ∃ h, HasMat h x.1 := by
   obtain ⟨b, hb⟩ := (GlobalTheory.Mass.swapPts (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.sp.cm.sig D.sp.X'.gram).surjective
@@ -106,27 +86,11 @@ theorem finHom_eq {h h' : GA D D.sp.X'} {y} (H : HasMat h y) (H' : HasMat h' y) 
 
 def rowPt (x : PtX D) : Bridge.Gf D.sp.X' := (finHom D.sp.X').rangeRestrict (exists_hasMat x).choose
 
-theorem rowPt_eq {h : GA D D.sp.X'} {x : PtX D} (H : HasMat h x.1) : (finHom D.sp.X').rangeRestrict h = rowPt x :=
-  Subtype.ext (finHom_eq H (exists_hasMat x).choose_spec)
 
 theorem rowPt_apply (x : PtX D) (i j) :
     Lev.swapAE D ((rowPt x).1.1 i j) = x.1.1 (finCongr (rankP D) i) (finCongr (rankP D) j) := (exists_hasMat x).choose_spec.2 i j
 
-theorem eq_rowPt {g : Bridge.Gf D.sp.X'} {x : PtX D}
-    (H : ∀ i j, Lev.swapAE D (g.1.1 i j) = x.1.1 (finCongr (rankP D) i) (finCongr (rankP D) j)) : g = rowPt x :=
-  Subtype.ext (Units.ext (Matrix.ext fun i j =>
-    (Algebra.TensorProduct.comm D.host.F _ D.host.E).injective ((H i j).trans (rowPt_apply x i j).symm)))
 
-theorem rowPt_bijective : Function.Bijective (rowPt (D := D)) := by
-  refine ⟨fun x x' h => Subtype.ext (Units.ext (Matrix.ext fun i j => ?_)), ?_⟩
-  · have h1 := rowPt_apply x ((finCongr (rankP D)).symm i) ((finCongr (rankP D)).symm j)
-    rw [h, rowPt_apply] at h1
-    exact h1.symm
-  · rintro ⟨_, κ, rfl⟩
-    obtain ⟨π, hπ, -⟩ := GlobalTheory.Mass.existsUnique_isFinProj D.sp.cm.sig D.sp.X'.gram
-    have := (GlobalTheory.Mass.swapPts (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.sp.cm.sig D.sp.X'.gram (π κ)).2
-    rw [GlobalTheory.Mass.coe_swapPts, hπ κ] at this
-    exact ⟨⟨_, reGL_mem _ _ (rankP D) _ this⟩, (eq_rowPt fun _ _ => rfl).symm⟩
 
 abbrev lamX (D : D7) : D.what₂.Tau → DomWeight D.sp.X'.rank := fun τ => Bridge.lamRdef (Ptw D) τ
 
@@ -138,23 +102,7 @@ def LevIs {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} (S : StepLevel D.host.
     (J : Set (GA D D.sp.X')) (χ : GA D D.sp.X' → ℂ) : Prop :=
   (∀ h, h ∈ J ↔ ∃ κ : S.U, HasMat h κ.1) ∧ ∀ h (κ : S.U), HasMat h κ.1 → χ h = star ((S.chi κ : ℂˣ) : ℂ)
 
-theorem levIs_iff_topLev {u : D.what₂.Word} (K : ClsPTied u) (J : Set (GA D D.sp.X')) (χ : GA D D.sp.X' → ℂ) :
-    LevIs K.lev J χ ↔ TopLev K J χ := Iff.rfl
 
-theorem adFun_ext {F E ι : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [Fintype ι] {σ : E →ₐ[F] E} {n T f : ℕ}
-    {J : Matrix (Fin n) (Fin n) E} {bad : Set (HeightOneSpectrum (𝓞 F))} {S : StepLevel F E σ J T f bad} {emb : ι → E →+* ℂ}
-    {cl : Type} {y : cl → Formalism.UG.UPts σ J (FiniteAdeleRing (𝓞 F) F)} (hy : Function.Surjective fun c => (Quotient.mk'' (y c) : Cls S))
-    {g g'} (hg : g ∈ AdFun S emb) (hg' : g' ∈ AdFun S emb) (h : ∀ c, g (y c) = g' (y c)) : g = g' := by
-  funext x s
-  obtain ⟨c, hc⟩ := hy (Quotient.mk'' x)
-  obtain ⟨a, ha, k, hk, e⟩ := (DoubleCoset.eq _ _ _ _).1 hc
-  obtain ⟨γ, hγ, ha⟩ := Subgroup.mem_map.1 (Subgroup.mem_subgroupOf.1 ha)
-  obtain ⟨s', hs⟩ := exists_isTr' emb γ s
-  have e' : x.1 = Formalism.UG.bc (Formalism.UG.inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) γ * (y c).1 * k.1 := by
-    rw [ha]
-    exact congrArg Subtype.val e
-  exact (hg γ hγ (y c) x ⟨k.1, hk⟩ e' s s' hs).trans
-    ((congrArg (fun z => _ * z s') (h c)).trans (hg' γ hγ (y c) x ⟨k.1, hk⟩ e' s s' hs).symm)
 
 section Real
 
@@ -195,10 +143,6 @@ theorem IsCoord.injective {co} (h : IsCoord R co) : Function.Injective co := fun
   rw [he, he] at hab
   rw [Subtype.ext hab]
 
-theorem conjForm_eq_model (hj : R.models_jX) (co) (t : T) (f : A.fam.amb.FR t) (x : PtX D) :
-    conjForm R co t f x = conjVal D (co ((R.HX t).e (R.jX t f) (rowPt x))) := by
-  rw [hj]
-  rfl
 
 end Real
 

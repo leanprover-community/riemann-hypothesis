@@ -238,19 +238,6 @@ theorem exists_bCrisPlus {m : ℕ} (C : Matrix (Fin m) (Fin m) (AInf ℂ_[p] p))
     congr 1
     exact iota_eq_of_ofRad_eq hρσ hρ₂ (by rw [ofRad_rep, ofRad_rep])
 
-theorem exists_bCrisPlus_iotaTilde {m : ℕ} (C : Matrix (Fin m) (Fin m) (AInf ℂ_[p] p))
-    (y : Fin m → (𝓣).RobbaTilde)
-    (hy : ∀ i, (frob ℂ_[p] p).tildeFrob (y i) =
-      ∑ j, (p : (𝓣).RobbaTilde) * ainfTilde p (C i j) * y j) :
-    (∀ i, y i ∈ tildeDom p) ∧ ∃ b : Fin m → BCrisPlus ℂ_[p] p,
-      (∀ i, iotaPlus ℂ_[p] p (b i) = iotaTildeFun p (y i)) ∧
-      ∀ i, phiPlus ℂ_[p] p (b i) = ∑ j, (p : BCrisPlus ℂ_[p] p) * ainfToBCrisPlus p (C i j) * b j := by
-  obtain ⟨hext, b, hb, hφ⟩ := exists_bCrisPlus C y hy
-  refine ⟨fun i => ?_, b, fun i => ?_, hφ⟩
-  · obtain ⟨z, hz⟩ := hext i (rhoMid p)
-    exact ⟨rhoMid p, inv_p_lt_rhoMid, z, hz⟩
-  · obtain ⟨z, hz⟩ := hext i (rhoMid p)
-    rw [hb i (rhoMid p) inv_p_lt_rhoMid z hz, ← hz, iotaTildeFun_ofRad]
 
 end WABridge
 

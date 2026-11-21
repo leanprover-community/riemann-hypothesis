@@ -14,11 +14,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
 def valZ (h : GenFrEx Xo c) (G : WTZ E) (f : Rul Xo c) : ∀ Z : Comp Xo c, AC Z :=
   fun Z => AddMonoidAlgebra.single G (evC h Z f)
 
-theorem valZ_wtZ (h : GenFrEx Xo c) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (f : Rul Xo c) :
-    valZ h (wtZ a n) f = valC h a n f := rfl
 
-theorem valZ_mem (h : GenFrEx Xo c) (G : WTZ E) (f : Rul Xo c) (Z : Comp Xo c) : valZ h G f Z ∈ AG Z G :=
-  mem_AG.2 ⟨_, rfl⟩
 
 def IsSecZ (G : WTZ E) (f : Rul Xo c) : Prop :=
   IsNatural (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) f ∧
@@ -211,14 +207,7 @@ def NeOnComps (h : GenFrEx Xo c) (f : Rul Xo c) : Prop := ∀ Z : Comp Xo c, evC
 def CBaseAll (h : GenFrEx Xo c) (yP : ∀ Z : Comp Xo c, ∀ P : Om Z →+* ℂ, FrPt Xo c (CAt (sgOf P))) : Prop :=
   ∀ Z, CBase h Z (yP Z)
 
-theorem neOnComps_iff (h : GenFrEx Xo c) (G : WTZ E) (f : Rul Xo c) :
-    NeOnComps h f ↔ ∀ Z, valZ h G f Z ≠ 0 := by
-  simp [NeOnComps, valZ]
 
-theorem neOnComps_one (h : GenFrEx Xo c) (ht : GenFromTest Xo c h) : NeOnComps h (1 : Rul Xo c) := by
-  intro Z
-  have : evC h Z (1 : Rul Xo c) = 1 := evalAt_one _ _ _ (ht Z)
-  rw [this]; exact one_ne_zero
 
 section
 variable [Fintype (Comp Xo c)] (I : Input Xo c) (h : GenFrEx Xo c)
@@ -226,26 +215,11 @@ variable [Fintype (Comp Xo c)] (I : Input Xo c) (h : GenFrEx Xo c)
     (fn : ∀ σ : c.F →+* ℂ, FrPt Xo c (CAt σ) → Ix Dw → ℝ)
     (yP : ∀ Z : Comp Xo c, ∀ P : Om Z →+* ℂ, FrPt Xo c (CAt (sgOf P)))
 
-theorem toData_ka : (I.toData h δ fn yP).ka = I.wka := rfl
 theorem toData_F₀ : (I.toData h δ fn yP).F0 = I.wF₀ := rfl
 theorem toData_G₂ : (I.toData h δ fn yP).G2 = I.wG₂ := rfl
 
-theorem toData_et_mem (Z : Comp Xo c) :
-    (I.toData h δ fn yP).et Z ∈ AG Z ((I.toData h δ fn yP).n1 • (I.toData h δ fn yP).wde) := valZ_mem h _ _ Z
 
-theorem toData_torsionSection_mem (Z : Comp Xo c) :
-    (I.toData h δ fn yP).ta1 Z ∈ AG Z ((2 : ℕ) • (I.toData h δ fn yP).G1) := valZ_mem h _ _ Z
 
-theorem toData_M_mem (x : ∀ Z : Comp Xo c, AC Z) (hx : x ∈ (I.toData h δ fn yP).M) (Z : Comp Xo c) :
-    x Z ∈ AG Z (I.toData h δ fn yP).ka := by
-  induction hx using Submodule.span_induction with
-  | mem x hx => obtain ⟨f, -, rfl⟩ := hx; exact valZ_mem h _ f Z
-  | zero => exact zero_mem _
-  | add x y _ _ hx hy => exact add_mem hx hy
-  | smul a x _ hx =>
-    have : (a • x) Z = algebraMap c.F (Om Z) (a : c.F) • x Z := by
-      rw [algebraMap_smul]; rfl
-    rw [this]; exact Submodule.smul_mem _ _ hx
 
 end
 
@@ -290,17 +264,5 @@ def ofSection (D T : ℕ) (L : WTZ E) (s : Rul Xo c) : Input Xo c where
   f := 1
   r := 1
 
-theorem ofSection_weighted (D T : ℕ) {L : WTZ E} {s : Rul Xo c} (hs : IsSecZ L s) :
-    (ofSection D T L s).Weighted where
-  Mr := by rintro f rfl; exact (hs.pow _).mul (hs.pow _)
-  w := fun _ => hs
-  thp := fun _ => hs.pow _
-  th0 := fun _ => (hs.pow _).mul (hs.pow _)
-  thk := fun _ => (hs.pow _).mul (hs.pow _)
-  et := by simpa [Input.wet, ofSection] using hs
-  ta1 := by simpa [Input.wG₁, ofSection] using (isSecZ_one (Xo := Xo) (c := c))
-  ta2 := by
-    have : (ofSection D T L s).wG₂ = 0 := sub_self _
-    rw [this]; exact isSecZ_one
 
 end GlobalTheory.IndefiniteRowSideFullHecke.ZeroWeightSections

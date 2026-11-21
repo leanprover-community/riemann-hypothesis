@@ -76,13 +76,6 @@ theorem descendVal_injective (M : Rep ℤ K.1.fixingSubgroup) :
     Function.Injective (descendVal K S M) :=
   Subtype.val_injective
 
-theorem mem_range_descendVal (M : Rep ℤ K.1.fixingSubgroup) (x : M) :
-    x ∈ LinearMap.range (descendVal K S M) ↔ ∀ g ∈ (resG K S).ker, M.ρ g x = x := by
-  constructor
-  · rintro ⟨y, rfl⟩ g hg
-    exact y.2 ⟨g, hg⟩
-  · intro h
-    exact ⟨⟨x, fun g => h g.1 g.2⟩, rfl⟩
 
 theorem descendVal_ρ (M : Rep ℤ K.1.fixingSubgroup) (g : K.1.fixingSubgroup) (x : descend K S M) :
     descendVal K S M ((descend K S M).ρ (resG K S g) x) = M.ρ g (descendVal K S M x) := by
@@ -106,9 +99,6 @@ instance isDiscreteRep_descend (M : Rep ℤ K.1.fixingSubgroup) [IsDiscreteRep M
 def descendMap {M M' : Rep ℤ K.1.fixingSubgroup} (f : M ⟶ M') : descend K S M ⟶ descend K S M' :=
   (Rep.resFunctor (liftE K S)).map ((Rep.quotientToInvariantsFunctor ℤ (resG K S).ker).map f)
 
-theorem descendVal_descendMap {M M' : Rep ℤ K.1.fixingSubgroup} (f : M ⟶ M') (x : descend K S M) :
-    descendVal K S M' ((descendMap K S f).hom x) = f.hom (descendVal K S M x) :=
-  rfl
 
 def preOpen (U : OpenSubgroup (Gs K S)) : OpenSubgroup K.1.fixingSubgroup :=
   U.comap (resG K S) (continuous_resG K S)

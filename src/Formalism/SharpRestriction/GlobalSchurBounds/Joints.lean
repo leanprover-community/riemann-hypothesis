@@ -49,35 +49,6 @@ theorem _root_.Formalism.MainNotions.ZetaZeroFreeRegion.second_hypothesis_of_lif
       rcases Int.units_eq_one_or (D.R.chQ g) with hp | hp <;>
       simp only [hc, hp] at this ⊢ <;> split_ifs at this ⊢ <;> push_cast at this ⊢ <;> linarith
 
-theorem jnt_torsionOrder_two (E : Type*) [Field E] [NumberField E]
-    (hμ : ∀ x : E, (∃ m : ℕ, 0 < m ∧ x ^ m = 1) ↔ (x = 1 ∨ x = -1)) :
-    NumberField.Units.torsionOrder E = 2 := by
-  have hne : (1 : (𝓞 E)ˣ) ≠ -1 := by
-    intro h
-    have h1 := congrArg (fun v : (𝓞 E)ˣ => ((v : 𝓞 E) : E)) h
-    push_cast at h1
-    have h2 : (2 : E) = 0 := by linear_combination h1
-    exact two_ne_zero h2
-  have hset : ((NumberField.Units.torsion E : Subgroup (𝓞 E)ˣ) : Set (𝓞 E)ˣ) = {1, -1} := by
-    ext u
-    simp only [SetLike.mem_coe, Set.mem_insert_iff, Set.mem_singleton_iff]
-    rw [NumberField.Units.torsion, CommGroup.mem_torsion]
-    constructor
-    · intro hu
-      obtain ⟨m, hm, hum⟩ := hu.exists_pow_eq_one
-      have h1 : ((u : 𝓞 E) : E) ^ m = 1 := by
-        have := congrArg (fun v : (𝓞 E)ˣ => ((v : 𝓞 E) : E)) hum
-        simpa using this
-      rcases (hμ _).mp ⟨m, hm, h1⟩ with h2 | h2
-      · left; ext; simpa using h2
-      · right; ext; simpa using h2
-    · rintro (rfl | rfl)
-      · exact isOfFinOrder_iff_pow_eq_one.mpr ⟨1, by norm_num, by simp⟩
-      · exact isOfFinOrder_iff_pow_eq_one.mpr ⟨2, by norm_num, by simp⟩
-  unfold NumberField.Units.torsionOrder
-  have : Nat.card (NumberField.Units.torsion E) = Nat.card (({1, -1} : Set (𝓞 E)ˣ)) := by
-    rw [← hset]; rfl
-  rw [this, Nat.card_coe_set_eq, Set.ncard_pair hne]
 
 theorem jnt_dvd_discr_iff_ram (D : D7) (p : ℕ) (hp : p.Prime) :
     ((p : ℤ) ∣ discr D.host.E) ↔ 1 < (Ideal.span {(p : ℤ)}).ramificationIdxIn (𝓞 D.host.E) := by
@@ -106,11 +77,7 @@ theorem _root_.Formalism.MainNotions.ZetaZeroFreeRegion.first_hypothesis_of_lift
     D.host.der.norm_mu, D.host.der.unramEF,
     fun p hp hd P hP hl h => D.host.der.decompConj p hp hd P h, hrd.symm⟩
 
-theorem jnt_coprime_pow {q : ℕ} (hq : q % 8 = 3) (e : ℕ) : Nat.Coprime q (2 ^ e) := by
-  exact Nat.Coprime.pow_right e ((Nat.Prime.coprime_iff_not_dvd Nat.prime_two).mpr (by omega)).symm
 
-theorem jnt_coprime_pow' {d : ℕ} (hd : d % 16 = 7) (e : ℕ) : Nat.Coprime d (2 ^ e) := by
-  exact Nat.Coprime.pow_right e ((Nat.Prime.coprime_iff_not_dvd Nat.prime_two).mpr (by omega)).symm
 
 theorem jnt_iner_eq (D : D7) : Formalism.MainNotions.ZetaZeroFreeRegion.iner D = (((1 : ℤˣ), (-1 : ℤˣ)), 1) := by
   rfl
@@ -322,27 +289,10 @@ theorem log_deriv_L_one_eq_of_induces (D : D7) (N : ℕ) [NeZero N] (χ : Dirich
   · simp only [Complex.ofReal_im]
     exact log_deriv_L_one_real_im_eq_zero _ (jnt_chiK_ne_one D) (jnt_chiK_real D)
 
-theorem log_deriv_L_one_eq_quadratic (D : D7) (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N)
-    (h : Induces χ (chDir D.host.d) (2 * D.host.d)) :
-    logDerivativeAtOne χ = ((dlogL D 1 : ℝ) : ℂ) := by
-  have h2 : 2 ∣ D.host.QS := (dvd_pow_self 2 (by omega)).trans D.host.tower_dvd
-  have hqd : D.host.q * D.host.d ≠ 0 := by
-    intro h0
-    have hc := D.host.QS_coprime
-    rw [h0, Nat.coprime_zero_right] at hc
-    rw [hc] at h2
-    omega
-  exact log_deriv_L_one_eq_of_induces D N χ (2 * D.host.d) (Nat.mul_ne_zero (by norm_num) (right_ne_zero_of_mul hqd)) h
 
-theorem logDerivativeAtOne_eq_of_induces (D : D7) (L : SizeData₂ D) (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N)
-    (h : Induces χ (chDir D.host.d) (2 * D.host.d)) :
-    logDerivativeAtOne χ = ((L.logDerivativeAtOne : ℝ) : ℂ) := by
-  rw [L.logDerivative_at_one_eq]
-  exact log_deriv_L_one_eq_quadratic D N χ h
 
 end DlogL
 
-theorem log_deriv_L_one_theta_eq (D : D7) : TaylorLogMetric.logDerivativeAtOne D = dlogL D 1 := rfl
 
 theorem _root_.Formalism.MainNotions.ShortIntervalPrimes.crystalline_lift_of_theorem_c (D : D7) (sc : Scale) (C0 C : ℝ)
     (h : StandardLattice.Conclusion5 D sc C0 C) (Δ : ℝ) (w : ℕ → D.what₂.Tau → ℝ) (hB : StandardLattice.DataB D sc C0 Δ w)
@@ -421,31 +371,6 @@ theorem _root_.Formalism.MainNotions.ShortIntervalPrimes.crystalline_lift_of_the
   have h6 := mul_le_mul_of_nonneg_left (add_le_add (hgi 0) (hgi 1)) hm
   linarith
 
-theorem jnt_ncard_primesOver_equiv {K₁ K₂ : Type*} [Field K₁] [NumberField K₁] [Field K₂]
-    [NumberField K₂] (e : K₁ ≃+* K₂) (p : ℤ) (hp : Prime p) :
-    (Ideal.primesOver (Ideal.span {p}) (𝓞 K₁)).ncard =
-      (Ideal.primesOver (Ideal.span {p}) (𝓞 K₂)).ncard := by
-  let f : 𝓞 K₁ ≃+* 𝓞 K₂ := NumberField.RingOfIntegers.mapRingEquiv e
-  have himg : (fun P : Ideal (𝓞 K₁) => P.map f) '' (Ideal.primesOver (Ideal.span {p}) (𝓞 K₁)) =
-      Ideal.primesOver (Ideal.span {p}) (𝓞 K₂) := by
-    ext Q
-    constructor
-    · rintro ⟨P, ⟨hP, hlo⟩, rfl⟩
-      have hPm : (P.map f).IsPrime := Ideal.map_isPrime_of_equiv f
-      refine ⟨hPm, (Ideal.liesOver_span_iff hPm.ne_top hp).mpr ?_⟩
-      have h1 : ((p : ℤ) : 𝓞 K₁) ∈ P := (Ideal.liesOver_span_iff hP.ne_top hp).mp hlo
-      have h2 := Ideal.mem_map_of_mem f h1
-      simpa using h2
-    · rintro ⟨hQ, hlo⟩
-      have h1 : ((p : ℤ) : 𝓞 K₂) ∈ Q := (Ideal.liesOver_span_iff hQ.ne_top hp).mp hlo
-      have hc : (Q.comap f).IsPrime := Ideal.comap_isPrime f Q
-      refine ⟨Q.comap f, ⟨hc, (Ideal.liesOver_span_iff hc.ne_top hp).mpr ?_⟩,
-        Ideal.map_comap_of_surjective f f.surjective Q⟩
-      rw [Ideal.mem_comap]
-      simpa using h1
-  rw [← himg]
-  exact (Set.ncard_image_of_injective _ (Function.LeftInverse.injective (g := Ideal.comap f)
-    (fun P => Ideal.comap_map_of_bijective f f.bijective))).symm
 
 def jnt_KEquiv (D : D7) : D.host.K ≃ₐ[ℚ] Kd (D.host.cycEmb D.host.sqd) :=
   (IntermediateField.equivMap D.host.K D.host.cycEmb).trans
@@ -508,35 +433,7 @@ theorem _root_.Formalism.MainNotions.flipTwoThree.integrality_of_commutation (D 
   intro u c
   exact stabZero_of D u h (hl u) c
 
-theorem jnt_one_le_v (D : D7) (_h : Formalism.MainNotions.UnusedSlot33.Conclusion1 D) : 1 ≤ D.host.v := by
-  have h1 : (4 * D.R.ord : ℝ) ≤ D.host.rdE ^ 2 := D.host.der.rd_sq_ge
-  have h2 : (1 : ℝ) ≤ D.R.ord := by exact_mod_cast D.R.ord_pos
-  have h3 : 0 ≤ D.host.rdE := Real.rpow_nonneg (abs_nonneg _) _
-  have h4 : 2 ≤ D.host.rdE := by
-    by_contra hlt
-    push Not at hlt
-    nlinarith
-  unfold Host.v
-  linarith
 
-theorem jnt_nums (D : D7) (T g1 g2 : ℕ) (Cn x b Lr b' Sc eta : ℝ) (hx : 1 ≤ x) (hv : 1 ≤ D.host.v)
-    (h : Formalism.MainNotions.flipTwoThree.Nums D T g1 g2 Cn x b Lr b' Sc eta) :
-    Real.log 2 ≤ Lr ∧ Real.log x ≤ Lr ∧ Real.log D.host.v ≤ Lr := by
-  obtain ⟨hb, hL, _, _, _, hb', hSc, heta, hsum, _, _, _, hdl, hx2, hv1, _⟩ := h
-  have hx0 : (0:ℝ) < x := by linarith
-  have hmt : (0:ℝ) ≤ D.R.m * D.R.t := by positivity
-  have h2 : 2 ≤ b' / x := by linarith
-  have hb'2 : 2 * x ≤ b' := (le_div_iff₀ hx0).mp h2
-  rw [mul_div_cancel_left₀ b hx0.ne'] at hb'
-  have hb1 : 1 ≤ b := by linarith
-  have hv0 : (0:ℝ) < D.host.v := by linarith
-  have hlog : Real.log (x * b * D.host.v) = Real.log x + Real.log b + Real.log D.host.v := by
-    rw [Real.log_mul (mul_pos hx0 hb).ne' hv0.ne', Real.log_mul hx0.ne' hb.ne']
-  have hlb : 0 ≤ Real.log b := Real.log_nonneg hb1
-  have hlv : 0 ≤ Real.log D.host.v := Real.log_nonneg hv1
-  have hlx : 0 ≤ Real.log x := Real.log_nonneg (by linarith)
-  have hl2 : Real.log 2 ≤ Real.log x := Real.log_le_log (by norm_num) hx2
-  exact ⟨by linarith, by linarith, by linarith⟩
 
 def OmLink (D : D7) (T : Formalism.MainNotions.TaylorLogMetric.Tor D) : Prop :=
   ∃ (M : IntermediateField ℚ ℂ) (_ : NumberField M), Formalism.MainNotions.TaylorLogMetric.DataIn D T M ∧
@@ -548,9 +445,6 @@ theorem jnt_logOm_eq (D : D7) (T : Formalism.MainNotions.TaylorLogMetric.Tor D) 
   rw [Formalism.MainNotions.flipTwoThree.logOm, h τ]
   exact hper M hd τ
 
-theorem omValue_of (D : D7) (T : Formalism.MainNotions.TaylorLogMetric.Tor D) (hper : Formalism.MainNotions.TaylorLogMetric.per22 D T)
-    (hl : OmLink D T) : D.gx.OmValue D.host.v (Formalism.MainNotions.TaylorLogMetric.logDerivativeAtOne D) :=
-  fun τ => jnt_logOm_eq D T hper hl τ
 
 theorem jnt_nums' (D : D7) (T g1 g2 : ℕ) (Cn x b Lr b' Sc eta : ℝ)
     (h : Formalism.MainNotions.flipTwoThree.Nums D T g1 g2 Cn x b Lr b' Sc eta) :
@@ -594,12 +488,6 @@ theorem _root_.Formalism.MainNotions.flipTwoThree.first_hypothesis_of_lifting (D
   rw [abs_le]
   constructor <;> nlinarith
 
-theorem _root_.Formalism.MainNotions.flipTwoThree.theta_norm_condition_of_theorem (D : D7) (Cn x C : ℝ)
-    (h22 : Formalism.MainNotions.TaylorLogMetric.aux₃ D C) (cc : Ideal (𝓞 D.host.K))
-    (hcc : Formalism.MainNotions.TaylorLogMetric.IsCurveIdeal D cc) (δ : ℂ) (hδ : Formalism.MainNotions.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ)
-    (hl : OmLink D (Formalism.MainNotions.TaylorLogMetric.tor0 D cc δ)) :
-    Formalism.MainNotions.flipTwoThree.adm1 D Cn (Cn + 4) x :=
-  Formalism.MainNotions.flipTwoThree.first_hypothesis_of_lifting D Cn x _ (h22 cc hcc δ hδ).1 hl
 
 def ThFree (D : D7) : Prop :=
   ∀ (u : D.what₂.Word) (i : ℕ), i < D.R.m →
@@ -654,19 +542,11 @@ def Cl22 (D : D7) (C : ℝ) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (χ : Formal
     Formalism.MainNotions.TaylorLogMetric.eq22 D (Formalism.MainNotions.TaylorLogMetric.tor0 D cc δ) χ e ∧ Formalism.MainNotions.TaylorLogMetric.int22 D (Formalism.MainNotions.TaylorLogMetric.tor0 D cc δ) e ∧
     Formalism.MainNotions.TaylorLogMetric.mom22 D cc δ e ∧ Formalism.MainNotions.TaylorLogMetric.LargerSupportMomentCondition D cc δ e ∧ Formalism.MainNotions.TaylorLogMetric.str22 D (Formalism.MainNotions.TaylorLogMetric.tor0 D cc δ) e
 
-theorem theta_theorem_iff_clauses (D : D7) (C : ℝ) : Formalism.MainNotions.TaylorLogMetric.aux₃ D C ↔
-    ∀ cc : Ideal (𝓞 D.host.K), Formalism.MainNotions.TaylorLogMetric.IsCurveIdeal D cc → ∀ δ : ℂ, Formalism.MainNotions.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ →
-      Formalism.MainNotions.TaylorLogMetric.per22 D (Formalism.MainNotions.TaylorLogMetric.tor0 D cc δ) ∧ (∃ χ, Formalism.MainNotions.TaylorLogMetric.IsChi D χ) ∧
-      ∀ χ, Formalism.MainNotions.TaylorLogMetric.IsChi D χ → ∃ e, Cl22 D C cc δ χ e := Iff.rfl
 
 def ExistsTwelfthRootCharacterThetaFamily (D : D7) (C : ℝ) : Prop :=
   ∃ δ : ℂ, Formalism.MainNotions.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D D.host.ccK δ ∧ ∃ χ, Formalism.MainNotions.TaylorLogMetric.IsChi D χ ∧
     ∃ e, Cl22 D C D.host.ccK δ χ e ∧ ThLinkLe D (Formalism.MainNotions.TaylorLogMetric.tor0 D D.host.ccK δ) e
 
-theorem _root_.Formalism.MainNotions.flipTwoThree.theta_condition_of_linked_family (D : D7) (Cn C x : ℝ) (hfree : ThFree D) (h : ExistsTwelfthRootCharacterThetaFamily D C) :
-    Formalism.MainNotions.flipTwoThree.adm2 D Cn (C * (1 + Cn)) x := by
-  obtain ⟨δ, hδ, χ, hχ, e, hcl, hl⟩ := h
-  exact Formalism.MainNotions.flipTwoThree.second_hypothesis_of_lifting D Cn C x _ e hcl.2.1 hfree hl
 
 theorem jnt_ccK_curve (D : D7) : Formalism.MainNotions.TaylorLogMetric.IsCurveIdeal D D.host.ccK :=
   ⟨D.host.ccK_ne_bot, Nat.Coprime.mul_right (D.host.ccK_coprime 2 (by simp))
@@ -763,10 +643,6 @@ theorem jnt_recip (m a : ℕ) (hm : m % 4 = 3) (ha : a % 2 = 1) :
   · rw [ZMod.χ₄_nat_three_mod_four h3, jacobiSym.quadratic_reciprocity_three_mod_four h3 hm]
     ring
 
-theorem jnt_J_pm (m a : ℕ) (h : a.Coprime m) :
-    jacobiSym (-(m : ℤ)) a = 1 ∨ jacobiSym (-(m : ℤ)) a = -1 := by
-  apply jacobiSym.eq_one_or_neg_one
-  simpa [Int.gcd] using h.symm
 
 def sU (z : ℤ) : ℤˣ := if z = -1 then -1 else 1
 
@@ -778,9 +654,6 @@ theorem sU_mul {z w : ℤ} (hz : z = 1 ∨ z = -1) (hw : w = 1 ∨ w = -1) :
     sU (z * w) = sU z * sU w := by
   rcases hz with rfl | rfl <;> rcases hw with rfl | rfl <;> first | decide | (unfold sU; simp)
 
-theorem sU_coe (s : ℤˣ) : sU (s : ℤ) = s := by
-  unfold sU
-  rcases Int.units_eq_one_or s with rfl | rfl <;> simp
 
 def hN (e a : ℕ) : HGrp e :=
   if h : Nat.Coprime a 2 then hcl e (ZMod.unitOfCoprime a (Nat.Coprime.pow_right (e + 2) h)) else 1
@@ -799,10 +672,6 @@ theorem cop2 {D : D7} {a : ℕ} (h : a.Coprime (MM D)) : a.Coprime 2 := by
     unfold MM
     exact Dvd.dvd.mul_right (Dvd.dvd.mul_right ((dvd_pow_self 2 (by omega)).trans D.host.tower_dvd) _) _
   exact Nat.Coprime.coprime_dvd_right h2 h
-theorem copq {D : D7} {a : ℕ} (h : a.Coprime (MM D)) : a.Coprime D.host.q := by
-  exact Nat.Coprime.coprime_dvd_right (by unfold MM; exact (dvd_mul_left _ _).mul_right _) h
-theorem copd {D : D7} {a : ℕ} (h : a.Coprime (MM D)) : a.Coprime D.host.d := by
-  exact Nat.Coprime.coprime_dvd_right (by unfold MM; exact dvd_mul_left _ _) h
 theorem cop_ne_zero {D : D7} {a : ℕ} (h : a.Coprime (MM D)) : a ≠ 0 := by
   rintro rfl
   have h2 := cop2 h
@@ -825,12 +694,6 @@ theorem hN_mul (e : ℕ) {a b : ℕ} (ha : a.Coprime 2) (hb : b.Coprime 2) :
   rw [hu]
   first | rfl | exact QuotientGroup.mk_mul _ _
 
-theorem hN_one (e : ℕ) : hN e 1 = 1 := by
-  unfold hN hcl
-  rw [dif_pos (Nat.coprime_one_left 2)]
-  have h1 : ZMod.unitOfCoprime 1 (Nat.Coprime.pow_right (e + 2) (Nat.coprime_one_left 2)) = 1 := Units.ext (by simp)
-  rw [h1]
-  first | rfl | simp | exact QuotientGroup.mk_one _
 
 theorem Phi_one (D : D7) : Phi D 1 = 1 := by
   rw [Phi, dif_pos (Nat.coprime_one_left _)]
@@ -923,8 +786,6 @@ theorem jnt_J_of_cast (p a : ℕ) [Fact p.Prime] (hp : p % 4 = 3) (ha : a % 2 = 
   rw [jnt_recip p a hp ha, ← jacobiSym.legendreSym.to_jacobiSym p]
   simp only [legendreSym, Int.cast_natCast, hr]
 
-theorem cop8 {D : D7} {a : ℕ} (h : a.Coprime (MM D)) : a.Coprime (8 * D.host.q * D.host.d) :=
-  Nat.Coprime.mul_right (Nat.Coprime.mul_right (Nat.Coprime.pow_right 3 (cop2 h)) (copq h)) (copd h)
 
 theorem jnt_induces_of {N M₁ : ℕ} [NeZero N] [NeZero M₁] (χ : DirichletCharacter ℂ N) (hχ : χ.IsPrimitive)
     (χ₁ : DirichletCharacter ℂ M₁) (f : ℕ → ℂ) (h1 : ∀ a : ℕ, a.Coprime M₁ → χ₁ (a : ZMod M₁) = f a)
@@ -1026,52 +887,14 @@ theorem character_bounds_of_proposition_five (D : D7) (s : Scale) (C : ℝ) (h10
   · exact B2 _ _ (jnt_induces_ch D _ (jnt_prim_reads D _ (h10 _)))
   · exact B3 _ _ (jnt_induces_chps D _ (jnt_prim_reads D _ (h10 _)))
 
-theorem jnt_sign_hom (θ : ℤˣ →* ℂˣ) :
-    (∀ s, ((θ s : ℂˣ) : ℂ) = 1) ∨ (∀ s : ℤˣ, ((θ s : ℂˣ) : ℂ) = (((s : ℤˣ) : ℤ) : ℂ)) := by
-  have h2 : ((θ (-1) : ℂˣ) : ℂ) * ((θ (-1) : ℂˣ) : ℂ) = 1 := by
-    rw [← Units.val_mul, ← map_mul]
-    simp
-  rcases mul_self_eq_one_iff.mp h2 with h | h
-  · left
-    intro s
-    rcases Int.units_eq_one_or s with rfl | rfl
-    · simp
-    · exact h
-  · right
-    intro s
-    rcases Int.units_eq_one_or s with rfl | rfl
-    · simp
-    · rw [h]
-      simp
 
-theorem tower_dvd_four_n (D : D7) : 2 ^ (D.R.e + 2) ∣ 4 * D.R.n := by
-  rw [pow_add, mul_comm]
-  exact Nat.mul_dvd_mul_left 4 D.R.two_pow_dvd_ord
 
 def xiOf (D : D7) (ψ : ZetaZeroFreeRegion.Chr D) : DirichletCharacter ℂ D.host.condN :=
   MulChar.ofUnitHom ((ψ.comp (MonoidHom.inr G0 (D.R.MA))).comp
     ((MonoidHom.snd G0 D.R.MA).comp D.host.art))
 
-theorem xiOf_even (D : D7) (ψ : ZetaZeroFreeRegion.Chr D) : (xiOf D ψ).Even := by
-  show xiOf D ψ (-1) = 1
-  have h1 : (-1 : ZMod D.host.condN) = (((-1 : (ZMod D.host.condN)ˣ)) : ZMod D.host.condN) := by simp
-  unfold xiOf
-  rw [h1, MulChar.ofUnitHom_coe]
-  simp only [MonoidHom.comp_apply]
-  rw [D.host.art_neg_one]
-  show ((ψ 1 : ℂˣ) : ℂ) = 1
-  simp
 
-theorem xiOf_apply (D : D7) (ψ : ZetaZeroFreeRegion.Chr D) {a : ℕ} (ha : a.Coprime (MM D)) :
-    xiOf D ψ (a : ZMod D.host.condN) = ((ψ ((1 : G0), (Phi D a).2) : ℂˣ) : ℂ) := by
-  unfold xiOf
-  rw [Phi_of_coprime D ha, ← ZMod.coe_unitOfCoprime a (show a.Coprime D.host.condN from ha), MulChar.ofUnitHom_coe]
-  rfl
 
-theorem cop4n {D : D7} {a : ℕ} (h : a.Coprime (D.host.QS * D.host.q * D.host.d)) :
-    a.Coprime (MM D) := by
-  unfold MM
-  exact h
 
 theorem jnt_isCharED_of_reads (D : D7) (ψ : ZetaZeroFreeRegion.Chr D) (χ : Σ N : ℕ+, DirichletCharacter ℂ N)
     (h : ZetaZeroFreeRegion.Reads D ψ χ) : IsCharED D χ.2 :=
@@ -1112,12 +935,6 @@ theorem jnt_reads_one (D : D7) (χ : Σ N : ℕ+, DirichletCharacter ℂ N)
     simp
   exact (DirichletCharacter.changeLevel_eq_one_iff hN1).mp hch
 
-theorem jnt_exists_qc (p : ℕ) [Fact p.Prime] (hp : p ≠ 2) (s : ℤˣ) :
-    ∃ r : ZMod p, quadraticChar (ZMod p) r = (s : ℤ) := by
-  rcases Int.units_eq_one_or s with rfl | rfl
-  · exact ⟨1, by simp⟩
-  · obtain ⟨a, ha⟩ := quadraticChar_exists_neg_one (F := ZMod p) (by rw [ZMod.ringChar_zmod_n]; exact hp)
-    exact ⟨a, by rw [ha]; simp⟩
 
 theorem Phi_surj (D : D7) (g : D.R.GG) : ∃ a : ℕ, a.Coprime (MM D) ∧ Phi D a = g := by
   obtain ⟨u, rfl⟩ := D.host.der.art_surj g
@@ -1145,108 +962,15 @@ section Analysis
 
 open MeasureTheory Set Filter Topology
 
-theorem jnt_lip {f : ℝ → ℂ} {a b B : ℝ} (hab : a ≤ b) (hc : ContinuousOn f (Icc a b))
-    (hd : ∀ x ∈ Ioo a b, (∀ n : ℕ, x ≠ n) → DifferentiableAt ℝ f x)
-    (hB : ∀ x ∈ Icc a b, ‖deriv f x‖ ≤ B) : ‖f b - f a‖ ≤ B * (b - a) := by
-  have hs : (Set.range (fun n : ℕ => (n : ℝ))).Countable := Set.countable_range _
-  have Hd : ∀ x ∈ Ioo a b \ Set.range (fun n : ℕ => (n : ℝ)), HasDerivAt f (deriv f x) x := by
-    intro x hx
-    exact (hd x hx.1 (fun n hn => hx.2 ⟨n, hn.symm⟩)).hasDerivAt
-  have Hi : IntervalIntegrable (deriv f) volume a b := by
-    refine IntervalIntegrable.mono_fun'
-      (intervalIntegrable_const : IntervalIntegrable (fun _ : ℝ => B) volume a b)
-      (measurable_deriv f).aestronglyMeasurable ?_
-    filter_upwards [ae_restrict_mem measurableSet_uIoc] with x hx
-    rw [uIoc_of_le hab] at hx
-    exact hB x (Ioc_subset_Icc_self hx)
-  rw [← integral_eq_of_hasDerivAt_off_countable_of_le f (deriv f) hab hs hc Hd Hi]
-  calc ‖∫ x in a..b, deriv f x‖ ≤ B * |b - a| :=
-        intervalIntegral.norm_integral_le_of_norm_le_const
-          (fun x hx => hB x (Ioc_subset_Icc_self (by rwa [uIoc_of_le hab] at hx)))
-    _ = B * (b - a) := by rw [abs_of_nonneg (by linarith)]
 
 def tM {N : ℕ} (χ : DirichletCharacter ℂ N) (M : ℕ) (t : ℝ) : ℂ :=
   ∑ n ∈ Finset.Icc 1 M, (abelian₂ n : ℂ) * χ (n : ZMod N) * ((max (t / n - 1) 0 : ℝ) : ℂ)
 
-theorem sumLamChi_eq_tM {N : ℕ} (χ : DirichletCharacter ℂ N) (M : ℕ) (t : ℝ) (ht : t ≤ M) :
-    sumLamChi χ t = tM χ M t := by
-  have hf : ⌊t⌋₊ ≤ M := by
-    simpa using Nat.floor_mono ht
-  unfold tM sumLamChi
-  apply Finset.sum_subset
-  · intro n hn
-    simp only [Finset.mem_Icc] at hn ⊢
-    omega
-  · intro n hn hn'
-    simp only [Finset.mem_Icc, not_and, not_le] at hn hn'
-    have hlt : ⌊t⌋₊ < n := hn' hn.1
-    have ht' : t < n := Nat.lt_of_floor_lt hlt
-    have hpos : (0:ℝ) < n := by exact_mod_cast (by omega : 0 < n)
-    have h2 : t / n - 1 ≤ 0 := by
-      rw [sub_nonpos, div_le_one hpos]
-      exact ht'.le
-    rw [max_eq_right h2]
-    simp
 
-theorem tM_continuous {N : ℕ} (χ : DirichletCharacter ℂ N) (M : ℕ) : Continuous (tM χ M) := by
-  unfold tM
-  apply continuous_finset_sum
-  intro n _
-  have hc : Continuous (fun t : ℝ => max (t / n - 1) 0) := Continuous.max (by fun_prop) continuous_const
-  exact continuous_const.mul (Complex.continuous_ofReal.comp hc)
 
-theorem jnt_diff_max (n : ℕ) (hn : 1 ≤ n) (x : ℝ) (hx : x ≠ n) :
-    DifferentiableAt ℝ (fun t : ℝ => ((max (t / n - 1) 0 : ℝ) : ℂ)) x := by
-  have hn' : (0:ℝ) < n := by exact_mod_cast hn
-  rcases lt_or_gt_of_ne hx with h | h
-  · have he : (fun t : ℝ => ((max (t / n - 1) 0 : ℝ) : ℂ)) =ᶠ[nhds x] fun _ => (0:ℂ) := by
-      filter_upwards [Iio_mem_nhds h] with t ht
-      have h2 : t / n - 1 ≤ 0 := by
-        rw [sub_nonpos, div_le_one hn']
-        exact (Set.mem_Iio.mp ht).le
-      simp [max_eq_right h2]
-    exact (differentiableAt_const (0:ℂ)).congr_of_eventuallyEq he
-  · have he : (fun t : ℝ => ((max (t / n - 1) 0 : ℝ) : ℂ)) =ᶠ[nhds x] fun t => ((t / n - 1 : ℝ) : ℂ) := by
-      filter_upwards [Ioi_mem_nhds h] with t ht
-      have h2 : 0 ≤ t / n - 1 := by
-        rw [sub_nonneg, one_le_div hn']
-        exact (Set.mem_Ioi.mp ht).le
-      rw [max_eq_left h2]
-    exact (((hasDerivAt_id' x).div_const (n:ℝ)).sub_const 1).ofReal_comp.differentiableAt.congr_of_eventuallyEq he
 
-theorem tM_differentiableAt {N : ℕ} (χ : DirichletCharacter ℂ N) (M : ℕ) (x : ℝ)
-    (hx : ∀ n : ℕ, x ≠ n) : DifferentiableAt ℝ (tM χ M) x := by
-  unfold tM
-  have hd : ∀ n ∈ Finset.Icc 1 M, DifferentiableAt ℝ
-      (fun t : ℝ => (abelian₂ n : ℂ) * χ (n : ZMod N) * ((max (t / n - 1) 0 : ℝ) : ℂ)) x := by
-    intro n hn
-    exact (differentiableAt_const _).mul (jnt_diff_max n (Finset.mem_Icc.mp hn).1 x (hx n))
-  first
-    | exact DifferentiableAt.fun_sum hd
-    | exact DifferentiableAt.sum hd
-    | (convert DifferentiableAt.sum hd using 1; ext t; simp [Finset.sum_apply])
 
-theorem jnt_lip_sum {N : ℕ} (χ : DirichletCharacter ℂ N) (h : ℝ → ℂ) {a b B : ℝ} (hab : a ≤ b)
-    (hc : ContinuousOn h (Icc a b)) (hd : ∀ x ∈ Ioo a b, DifferentiableAt ℝ h x)
-    (hB : ∀ x ∈ Icc a b, ‖deriv (fun t => sumLamChi χ t + h t) x‖ ≤ B) :
-    ‖(sumLamChi χ b + h b) - (sumLamChi χ a + h a)‖ ≤ B * (b - a) := by
-  have hbM : b ≤ (⌈b⌉₊ : ℝ) := Nat.le_ceil b
-  have heq : ∀ t ∈ Icc a b, sumLamChi χ t + h t = tM χ ⌈b⌉₊ t + h t := by
-    intro t ht
-    rw [sumLamChi_eq_tM χ ⌈b⌉₊ t (ht.2.trans hbM)]
-  refine jnt_lip (f := fun t => sumLamChi χ t + h t) hab ?_ ?_ hB
-  · exact ((tM_continuous χ ⌈b⌉₊).continuousOn.add hc).congr heq
-  · intro x hx hxn
-    have hev : (fun t => sumLamChi χ t + h t) =ᶠ[nhds x] fun t => tM χ ⌈b⌉₊ t + h t := by
-      filter_upwards [Iio_mem_nhds (hx.2.trans_le hbM)] with t ht
-      rw [sumLamChi_eq_tM χ ⌈b⌉₊ t (Set.mem_Iio.mp ht).le]
-    exact ((tM_differentiableAt χ ⌈b⌉₊ x hxn).add (hd x hx)).congr_of_eventuallyEq hev
 
-theorem gChi_eq_of_ne_one {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hχ : χ ≠ 1) :
-    (fun t : ℝ => gChi χ t) = fun t => sumLamChi χ t + (t : ℂ) * logDerivativeAtOne χ := by
-  funext t
-  unfold gChi
-  rw [if_neg hχ]
 
 theorem gChi_one {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hχ : χ = 1) :
     (fun t : ℝ => gChi χ t) = fun t => ((G t : ℝ) : ℂ) := by
@@ -1254,38 +978,7 @@ theorem gChi_one {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hχ : χ 
   unfold gChi
   rw [if_pos hχ]
 
-theorem G_cast (t : ℝ) : ((G t : ℝ) : ℂ) = sumLamChi (1 : DirichletCharacter ℂ 1) t +
-    (-((t * (Real.log t - 1 - Real.eulerMascheroniConstant) : ℝ) : ℂ)) := by
-  unfold G sumLamChi
-  have h1 : ∀ n : ℕ, (1 : DirichletCharacter ℂ 1) (n : ZMod 1) = 1 := by
-    intro n
-    have hu : IsUnit (n : ZMod 1) := by
-      have h2 := (ZMod.unitOfCoprime n (Nat.coprime_one_right n)).isUnit
-      rwa [ZMod.coe_unitOfCoprime] at h2
-    exact MulChar.one_apply hu
-  simp only [h1, mul_one]
-  push_cast
-  ring
 
-theorem jnt_c_int_ne {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hχ : χ ≠ 1) (C : ℝ)
-    (hc : ∀ y : ℝ, 1 ≤ y → ‖deriv (fun t : ℝ => gChi χ t) y‖ ≤ Real.log y + C + ‖logDerivativeAtOne χ‖)
-    (y₁ y₂ : ℝ) (h1 : 1 ≤ y₁) (h12 : y₁ ≤ y₂) :
-    ‖gChi χ y₂ - gChi χ y₁‖ ≤ (Real.log y₂ + C + ‖logDerivativeAtOne χ‖) * (y₂ - y₁) := by
-  have hg := gChi_eq_of_ne_one χ hχ
-  have hdl : ∀ x : ℝ, DifferentiableAt ℝ (fun t : ℝ => (t : ℂ) * logDerivativeAtOne χ) x :=
-    fun x => ((hasDerivAt_id' x).ofReal_comp.mul_const (logDerivativeAtOne χ)).differentiableAt
-  have key := jnt_lip_sum χ (fun t : ℝ => (t : ℂ) * logDerivativeAtOne χ) (B := Real.log y₂ + C + ‖logDerivativeAtOne χ‖) h12
-    (fun x _ => (hdl x).continuousAt.continuousWithinAt) (fun x _ => hdl x)
-    (fun x hx => by
-      have hx1 := hc x (h1.trans hx.1)
-      rw [hg] at hx1
-      refine hx1.trans ?_
-      have hlog : Real.log x ≤ Real.log y₂ := Real.log_le_log (by linarith [hx.1]) hx.2
-      linarith)
-  have e1 : gChi χ y₂ = sumLamChi χ y₂ + (y₂ : ℂ) * logDerivativeAtOne χ := congrFun hg y₂
-  have e2 : gChi χ y₁ = sumLamChi χ y₁ + (y₁ : ℂ) * logDerivativeAtOne χ := congrFun hg y₁
-  rw [e1, e2]
-  exact key
 
 theorem jnt_deriv_ofReal (g : ℝ → ℝ) (y : ℝ) :
     deriv (fun t : ℝ => ((g t : ℝ) : ℂ)) y = ((deriv g y : ℝ) : ℂ) := by
@@ -1298,90 +991,9 @@ theorem jnt_deriv_ofReal (g : ℝ → ℝ) (y : ℝ) :
       have h2 := Complex.reCLM.differentiableAt.comp y h
       simpa [Function.comp_def] using h2
 
-theorem jnt_c_int_one (C : ℝ) (hc : ∀ y : ℝ, 1 ≤ y → |deriv G y| ≤ C)
-    (y₁ y₂ : ℝ) (h1 : 1 ≤ y₁) (h12 : y₁ ≤ y₂) :
-    ‖((G y₂ : ℝ) : ℂ) - ((G y₁ : ℝ) : ℂ)‖ ≤ C * (y₂ - y₁) := by
-  have hdh : ∀ x : ℝ, 0 < x → DifferentiableAt ℝ
-      (fun t : ℝ => (-((t * (Real.log t - 1 - Real.eulerMascheroniConstant) : ℝ) : ℂ))) x := by
-    intro x hx
-    exact ((((hasDerivAt_id' x).mul (((Real.hasDerivAt_log hx.ne').sub_const 1).sub_const
-      Real.eulerMascheroniConstant)).ofReal_comp).neg).differentiableAt
-  have hfun : (fun t : ℝ => sumLamChi (1 : DirichletCharacter ℂ 1) t +
-      (-((t * (Real.log t - 1 - Real.eulerMascheroniConstant) : ℝ) : ℂ))) = fun t => ((G t : ℝ) : ℂ) := by
-    funext t
-    rw [G_cast]
-  have key := jnt_lip_sum (1 : DirichletCharacter ℂ 1)
-    (fun t : ℝ => (-((t * (Real.log t - 1 - Real.eulerMascheroniConstant) : ℝ) : ℂ))) (B := C) h12
-    (fun x hx => (hdh x (by linarith [hx.1])).continuousAt.continuousWithinAt)
-    (fun x hx => hdh x (by linarith [hx.1]))
-    (fun x hx => by
-      have hd1 : deriv (fun t : ℝ => sumLamChi (1 : DirichletCharacter ℂ 1) t +
-          (-((t * (Real.log t - 1 - Real.eulerMascheroniConstant) : ℝ) : ℂ))) x = ((deriv G x : ℝ) : ℂ) := by
-        rw [hfun, jnt_deriv_ofReal]
-      show ‖deriv (fun t : ℝ => sumLamChi (1 : DirichletCharacter ℂ 1) t +
-          (-((t * (Real.log t - 1 - Real.eulerMascheroniConstant) : ℝ) : ℂ))) x‖ ≤ C
-      rw [hd1]
-      simpa using hc x (h1.trans hx.1))
-  rw [G_cast y₂, G_cast y₁]
-  exact key
 
-theorem sumLamChi_eq_zero_of_le_one {N : ℕ} (χ : DirichletCharacter ℂ N) {y : ℝ} (hy : y ≤ 1) :
-    sumLamChi χ y = 0 := by
-  unfold sumLamChi
-  apply Finset.sum_eq_zero
-  intro n hn
-  rw [Finset.mem_Icc] at hn
-  have h1 : (1:ℝ) ≤ n := by exact_mod_cast hn.1
-  have h2 : y / n - 1 ≤ 0 := by
-    rw [sub_nonpos, div_le_one (by linarith)]
-    linarith
-  rw [max_eq_right h2]
-  simp
 
-theorem G_eq_of_le_one {y : ℝ} (hy : y ≤ 1) :
-    G y = -(y * (Real.log y - 1 - Real.eulerMascheroniConstant)) := by
-  unfold G
-  have hs : ∑ n ∈ Finset.Icc 1 ⌊y⌋₊, abelian₂ n * max (y / n - 1) 0 = 0 := by
-    apply Finset.sum_eq_zero
-    intro n hn
-    rw [Finset.mem_Icc] at hn
-    have h1 : (1:ℝ) ≤ n := by exact_mod_cast hn.1
-    have h2 : y / n - 1 ≤ 0 := by
-      rw [sub_nonpos, div_le_one (by linarith)]
-      linarith
-    rw [max_eq_right h2, mul_zero]
-  rw [hs, zero_sub]
 
-theorem jnt_d_large {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) {a w1 w2 : ℝ} (ha : 0 < a)
-    (h1 : a ≤ w1) (h12 : w1 ≤ w2) :
-    ‖(w2 : ℂ) * gChi χ (a / w2) - (w1 : ℂ) * gChi χ (a / w1)‖ ≤ 3 * a * Real.log (w2 / w1) := by
-  have hw1 : 0 < w1 := lt_of_lt_of_le ha h1
-  have hw2 : 0 < w2 := lt_of_lt_of_le hw1 h12
-  have hy1 : a / w1 ≤ 1 := (div_le_one hw1).mpr h1
-  have hy2 : a / w2 ≤ 1 := (div_le_one hw2).mpr (h1.trans h12)
-  have hlog : 0 ≤ Real.log (w2 / w1) := Real.log_nonneg ((one_le_div hw1).mpr h12)
-  by_cases hχ : χ = 1
-  · unfold gChi
-    rw [if_pos hχ, if_pos hχ]
-    have er : w2 * G (a / w2) - w1 * G (a / w1) = a * Real.log (w2 / w1) := by
-      rw [G_eq_of_le_one hy1, G_eq_of_le_one hy2, Real.log_div ha.ne' hw1.ne', Real.log_div ha.ne' hw2.ne',
-        Real.log_div hw2.ne' hw1.ne']
-      field_simp
-      ring
-    rw [← Complex.ofReal_mul, ← Complex.ofReal_mul, ← Complex.ofReal_sub, er, Complex.norm_real,
-      Real.norm_eq_abs, abs_of_nonneg (mul_nonneg ha.le hlog)]
-    nlinarith [mul_nonneg ha.le hlog]
-  · unfold gChi
-    rw [if_neg hχ, if_neg hχ, sumLamChi_eq_zero_of_le_one χ hy1, sumLamChi_eq_zero_of_le_one χ hy2]
-    have e0 : (w2 : ℂ) * (0 + ((a / w2 : ℝ) : ℂ) * logDerivativeAtOne χ) -
-        (w1 : ℂ) * (0 + ((a / w1 : ℝ) : ℂ) * logDerivativeAtOne χ) = 0 := by
-      have c1 : (w1 : ℂ) ≠ 0 := by exact_mod_cast hw1.ne'
-      have c2 : (w2 : ℂ) ≠ 0 := by exact_mod_cast hw2.ne'
-      push_cast
-      field_simp
-      ring
-    rw [e0, norm_zero]
-    exact mul_nonneg (by linarith) hlog
 
 end Analysis
 
@@ -1421,14 +1033,6 @@ theorem LL_ne_zero (D : D7) : LL D ≠ 0 := by
 
 instance (D : D7) : NeZero (LL D) := ⟨LL_ne_zero D⟩
 
-theorem tower_dvd_conductor (D : D7) : 2 ^ (D.R.e + 2) ∣ LL D := by
-  unfold LL
-  exact (D.host.tower_dvd.mul_right _).mul_right _
-theorem LL_dvdq (D : D7) : D.host.q ∣ LL D := by
-  exact ⟨D.host.QS * D.host.d, by unfold LL; ring⟩
-theorem LL_dvdd (D : D7) : D.host.d ∣ LL D := by
-  unfold LL
-  exact dvd_mul_left _ _
 theorem MM_dvd_LL (D : D7) : MM D ∣ LL D := by
   unfold MM LL
   exact dvd_rfl
@@ -1838,14 +1442,6 @@ theorem shintani_weight_c3_iff : StandardLattice.SW1c3 F E σ M J ↔ UnusedSlot
   refine Iff.trans (as_congrP fun ν => isDxDq_iff F E σ M J ψ β ν) ?_
   exact as_congr fun ν _ => as_swap
 
-theorem shintani_weight_b2_of_extended (h : StandardLattice.SW1b2 F E σ M J) : UnusedSlot34.SWb2 F E σ M J := by
-  intro hM β hβ d b Φ Φinf Φf Φv hmeas hpos hpure hposv hprod
-  have h1 := h hM β hβ d b (fun X => ENNReal.ofReal (Φ X).re) (fun X => ENNReal.ofReal (Φinf X).re)
-    Φf Φv (Complex.measurable_re.comp hmeas).ennreal_ofReal hpure hposv (fun X => by
-      rw [hprod X, Complex.mul_re, (hpos _).2, zero_mul, sub_zero, ENNReal.ofReal_mul (hpos _).1])
-  exact ((as_congr fun ψ _ => onH_congr F E σ M J fun μ 𝓕 =>
-    (onSD_iff F E σ M J ψ 1 _ _ _ _ _).trans (as_congr fun _ _ => as_congr fun _ _ =>
-      as_congr fun _ _ => as_congr fun _ _ => as_two)).trans (onH_swap F E σ M J)).mp h1
 
 def SchurWeightFiniteness : Prop :=
   3 ≤ M → ∀ (β : F), β ≠ 0 → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E)
@@ -1875,47 +1471,10 @@ def SchurWeightFiniteness : Prop :=
         (∫⁻ X, Φi X ∂(fi (algebraMap F (Ainf F) β))) *
           ∏' v, ∫⁻ X, ENNReal.ofReal (Φv v X).re ∂(fv v (algebraMap F (Fv F v) β))
 
-theorem jnt_finprod_real {ι : Type*} (f : ι → ℂ) (h : ∀ i, 0 ≤ (f i).re ∧ (f i).im = 0) :
-    0 ≤ (∏ᶠ i, f i).re ∧ (∏ᶠ i, f i).im = 0 := by
-  apply finprod_induction (p := fun z : ℂ => 0 ≤ z.re ∧ z.im = 0)
-  · simp
-  · rintro x y ⟨hx1, hx2⟩ ⟨hy1, hy2⟩
-    simp only [Complex.mul_re, Complex.mul_im, hx2, hy2]
-    exact ⟨by simpa using mul_nonneg hx1 hy1, by ring⟩
-  · exact h
 
-theorem schur_weight_finiteness_of_swb2 (h : UnusedSlot34.SWb2 F E σ M J) : SchurWeightFiniteness F E σ M J := by
-  intro hM β hβ d b Φ Φi Φf Φv hmeas hfin hpure hposv hprod
-  have hf : ∀ Y, 0 ≤ (Φf Y).re ∧ (Φf Y).im = 0 := fun Y => by
-    rw [hpure.2.2 Y]; exact jnt_finprod_real _ fun v => hposv v _
-  have hΦfin : ∀ X, Φ X ≠ ⊤ := fun X => by
-    rw [hprod X]; exact ENNReal.mul_ne_top (hfin _) ENNReal.ofReal_ne_top
-  have e1 : ∀ X, ENNReal.ofReal ((((Φ X).toReal : ℝ) : ℂ)).re = Φ X := fun X => by
-    rw [Complex.ofReal_re, ENNReal.ofReal_toReal (hΦfin X)]
-  have e2 : ∀ X, ENNReal.ofReal ((((Φi X).toReal : ℝ) : ℂ)).re = Φi X := fun X => by
-    rw [Complex.ofReal_re, ENNReal.ofReal_toReal (hfin X)]
-  have h1 := h hM β hβ d b (fun X => (((Φ X).toReal : ℝ) : ℂ)) (fun X => (((Φi X).toReal : ℝ) : ℂ))
-    Φf Φv (Complex.measurable_ofReal.comp hmeas.ennreal_toReal)
-    (fun X => ⟨by simp, by simp⟩) hpure hposv (fun X => by
-      show (((Φ X).toReal : ℝ) : ℂ) = (((Φi (projInf X)).toReal : ℝ) : ℂ) * Φf (projFin X)
-      rw [hprod X, ENNReal.toReal_mul, ENNReal.toReal_ofReal (hf _).1, Complex.ofReal_mul]
-      congr 1
-      exact Complex.ext (by simp) (by simp [(hf (projFin X)).2]))
-  simp only [e1, e2] at h1
-  exact ((as_congr fun ψ _ => onH_congr F E σ M J fun μ 𝓕 =>
-    (onSD_iff F E σ M J ψ 1 _ _ _ _ _).trans (as_congr fun _ _ => as_congr fun _ _ =>
-      as_congr fun _ _ => as_congr fun _ _ => as_two)).trans (onH_swap F E σ M J)).mpr h1
 
 end SW
 
-theorem _root_.Formalism.MainNotions.UnusedSlot34.conclusion_of_standardLattice (D : D7) (h : StandardLattice.Conclusion1 D) : UnusedSlot34.Conclusion₂ :=
-  ⟨fun F E _ _ _ _ _ σ hσ M J hJ => (sw1a1_iff_swa1 F E σ M J).mp (h F E σ hσ M J hJ).1,
-   fun F E _ _ _ _ _ σ hσ M J hJ => (sw1a2_iff_swa2 F E σ M J).mp (h F E σ hσ M J hJ).2.1,
-   fun F E _ _ _ _ _ σ hσ M J hJ => (sw1b1_iff_swb1 F E σ M J).mp (h F E σ hσ M J hJ).2.2.1,
-   fun F E _ _ _ _ _ σ hσ M J hJ => shintani_weight_b2_of_extended F E σ M J (h F E σ hσ M J hJ).2.2.2.1,
-   fun F E _ _ _ _ _ σ hσ M J hJ => (shintani_weight_c1_iff F E σ M J).mp (h F E σ hσ M J hJ).2.2.2.2.1,
-   fun F E _ _ _ _ _ σ hσ M J hJ => (shintani_weight_c2_iff F E σ M J).mp (h F E σ hσ M J hJ).2.2.2.2.2.1,
-   fun F E _ _ _ _ _ σ hσ M J hJ => (shintani_weight_c3_iff F E σ M J).mp (h F E σ hσ M J hJ).2.2.2.2.2.2⟩
 
 theorem _root_.Formalism.MainNotions.StandardLattice.baseChange_preserves_unitary_of (D : D7) (h : UnusedSlot34.Conclusion₂)
     (hb2 : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

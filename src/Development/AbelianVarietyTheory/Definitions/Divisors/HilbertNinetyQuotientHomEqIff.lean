@@ -262,10 +262,6 @@ theorem exists_unit_of_fixed {z : Eˣ} (hz : c z = z) : ∃ a : Rˣ, z = Units.m
   have : a * a' = 1 := h.algebraMap_injective (by rw [map_mul, ← ha, ← ha', Units.mul_inv, map_one])
   exact ⟨Units.mkOfMulEqOne a a' this, Units.ext ha⟩
 
-theorem triv_fixed {χ : Eˣ →* Circle} (hχ : ∀ a : Rˣ, χ (Units.map (algebraMap R E : R →* E) a) = 1) (z : Eˣ)
-    (hz : c z = z) : χ z = 1 := by
-  obtain ⟨a, rfl⟩ := h.exists_unit_of_fixed hz
-  exact hχ a
 
 theorem algebraMap_norm (z : E) : algebraMap R E (Algebra.norm R z) = z * c z := by
   obtain ⟨x, y, rfl⟩ := h.exists_eq z

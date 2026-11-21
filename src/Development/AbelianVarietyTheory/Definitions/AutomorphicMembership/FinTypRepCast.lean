@@ -33,11 +33,6 @@ theorem isotL_eq : @principalLevelFrame.isotL b.D = @isotLB B C a b := by
   exact (by with_unfolding_all exact ((congrArg₂ (fun (g : type_of% (@goodPart b.D)) (m : type_of% (@Mult.Mult b.D)) =>
     g θ M J χ e ⊓ principalLevelFrame.isotIn (principalLevelFrame.actM P M) (⨆ N : ℕ, m θ M (principalLevelFrame.levN P (N + 1)) fun _ => 1) π) (goodPart_eq a b) (mult_eq a b)) :))
 
-theorem finTypRep_cast {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {S S' : Set (Formalism.L2.NG.FinTyp E n)} (e : S = S')
-    (σ : Formalism.L2.Col.FinTypCls S) :
-    Formalism.L2.Col.finTypRep S σ = Formalism.L2.Col.finTypRep S' (cast (congrArg Formalism.L2.Col.FinTypCls e) σ) := by
-  subst e
-  rfl
 
 section General
 

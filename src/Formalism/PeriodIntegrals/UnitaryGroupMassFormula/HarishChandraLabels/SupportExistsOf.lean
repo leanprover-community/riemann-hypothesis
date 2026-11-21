@@ -43,12 +43,5 @@ def Jacquet : Prop :=
 
 variable {K}
 
-theorem supportExists_of (h1 : Jacquet K) (h2 : Frob K) (h3 : HCFin K) (h4 : ConstSymm) : SupportExists K := by
-  intro n τ hτ
-  obtain ⟨s, b, lam, Φ, hb, hlam, hΦ, hpar⟩ := h1 n τ hτ
-  obtain ⟨ψ, hψ, hψ0⟩ := h2 (Fin n) s b lam τ Φ hΦ hpar
-  refine ⟨s, b, lam, hb, hlam, ?_⟩
-  haveI := h3 (Fin n) s b lam
-  exact (h4 (GL (Fin n) K) τ (hcSpace K b lam) (hcRep K b lam) hτ).mpr ⟨ψ, hψ, hψ0⟩
 
 end PI.GreenHCLabel

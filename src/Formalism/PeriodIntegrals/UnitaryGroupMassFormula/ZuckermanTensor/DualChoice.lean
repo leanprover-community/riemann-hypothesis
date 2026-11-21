@@ -73,22 +73,10 @@ def DSConj : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (lam : Fin n → ℝ), IsDS ε lam σ → IsDS (revE ε) (revP lam) (sigC σ)
 
-theorem dualWeight_dualWeight {n : ℕ} (lam : Fin n → ℝ) : revP (revP lam) = lam := by
-  funext a; simp [revP]
 
 theorem revE_revE {n : ℕ} (ε : Fin n → Bool) : revE (revE ε) = ε := by
   funext a; simp [revE]
 
-theorem dsConj_of (h1 : URepConj) (h2 : IrredConj) (h3 : SqIntConj) (h4 : KTypeConj) (h5 : KTypeConjInv)
-    (h6 : LowKRev) (h7 : VNormRev) : DSConj := by
-  intro n ε H _ _ σ lam ⟨hc, hn, hu, hi, hs, ⟨S, hS⟩, hmin⟩
-  refine ⟨inferInstanceAs (CompleteSpace H), inferInstanceAs (Nontrivial H), h1 n ε H σ hu, h2 n ε H σ hi, h3 n ε H σ hs,
-    ⟨cjSub S, by rw [h6]; exact h4 n ε H σ _ S hS⟩, fun μ S' hS' => ?_⟩
-  have := hmin (revP μ) (cjSubInv S') (h5 n ε H σ μ S' hS')
-  rw [h6, h7]
-  calc vNormSq ε (lowK ε lam) ≤ vNormSq ε (revP μ) := this
-    _ = vNormSq (revE ε) (revP (revP μ)) := (h7 n ε (revP μ)).symm
-    _ = vNormSq (revE ε) μ := by rw [dualWeight_dualWeight]
 
 end PI.ZuckTensorWork
 end

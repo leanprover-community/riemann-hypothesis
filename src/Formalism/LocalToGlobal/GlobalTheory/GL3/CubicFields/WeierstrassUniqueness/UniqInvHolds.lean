@@ -25,10 +25,6 @@ theorem uniqLat_holds (Λ Λ' : AddSubgroup ℂ) (hΛ : IsLat Λ) (hΛ' : IsLat 
   apply SetLike.coe_injective
   rw [← hL, ← hL', e]
 
-theorem uniqLat : UniqLat := by
-  unfold UniqLat
-  intro Λ Λ' hΛ hΛ' h2 h3
-  exact uniqLat_holds Λ Λ' hΛ hΛ' h2 h3
 
 theorem uniqInv_holds : UniqInv := by
   unfold UniqInv

@@ -116,28 +116,12 @@ theorem IsGalU.ofN {π : CuspSub E a} {χ : HChar (maximalRealSubfield E)} {ι :
       have k := H.above P AI T w A h O Bw hj
       ⟨fun _ => k.deRham, fun _ => k.jumps, k.crys⟩⟩
 
-theorem pairOfN (h : UpperTheory.GalN.PairU) : PairU := fun E Ω _ _ _ _ _ _ l _ ι a ha π χ hr hp => by
-  obtain ⟨r, wt, HT, H⟩ := h E Ω l ι a ha π χ hr hp
-  exact ⟨r, wt, HT, .ofN H⟩
-theorem cuspOfN (h : UpperTheory.GalN.CuspU) : CuspU := fun E Ω _ _ _ _ _ _ l _ ι a ha π χ hr hp => by
-  obtain ⟨r, wt, HT, H⟩ := h E Ω l ι a ha π χ hr hp
-  exact ⟨r, wt, HT, .ofN H⟩
 theorem carOfN (h : UpperTheory.GalN.CarU) : CarU := fun E Ω _ _ _ _ _ _ l _ ι a ha π hc hr => by
   obtain ⟨r, wt, HT, H, K⟩ := h E Ω l ι a ha π hc hr
   exact ⟨r, wt, HT, .ofN H, fun P AI T w hw A h O _ _ _ Bw hj σ hσ rc hrc _ => (K P AI T w hw A h O Bw hj).2 σ hσ rc hrc⟩
 
-theorem weakP (h : GlobalTheory.Published.GaloisRepOfPolarizedPair) : PairU := pairOfN (UpperTheory.GalN.weakP h)
-theorem weakP' (h : PairU) : PairU := h
-theorem weakG (h : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) : CuspU := cuspOfN (UpperTheory.GalN.weakG h)
-theorem weakG' (h : CuspU) : CuspU := h
 theorem merge (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hL : GlobalTheory.Published.LocalLanglandsGL)
     (hG : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) (hC : GlobalTheory.GalOfCusp.LocalGlobalAboveL) : CarU :=
   carOfN (UpperTheory.GalN.merge hF hL hG hC)
-theorem merge' (_ : GlobalTheory.Published.AutomorphicFormsFiniteGL) (_ : GlobalTheory.Published.LocalLanglandsGL) (_ : CuspU) (h : CarU) : CarU := h
-theorem mergeP (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hL : GlobalTheory.Published.LocalLanglandsGL)
-    (hG : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) (hC : GlobalTheory.Published.LocalGlobalAboveL)
-    (hR : GlobalTheory.Published.RegularAlgebraicPurity) : CarU := carOfN (UpperTheory.GalN.mergeP hF hL hG hC hR)
-theorem mergeP' (_ : GlobalTheory.Published.AutomorphicFormsFiniteGL) (_ : GlobalTheory.Published.LocalLanglandsGL) (_ : CuspU) (h : CarU)
-    (_ : GlobalTheory.Published.RegularAlgebraicPurity) : CarU := h
 
 end UpperTheory.GalS

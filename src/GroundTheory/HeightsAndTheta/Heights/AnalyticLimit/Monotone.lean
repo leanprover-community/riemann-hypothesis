@@ -28,9 +28,6 @@ def RegularisedMonotone.Statement : Prop :=
       regularisedAt R ρ η κ E t x ≤
         regularisedAt R ρ η κ E t₀ x + C * (Real.log (Real.log t₀⁻¹) / Real.log t₀⁻¹)
 
-theorem regularisedMonotone_hyp : CompactSpace Unit ∧ T2Space Unit ∧ Nonempty (Mollifier 0) ∧
-    pointReg.IsCutoffFamily (fun _ _ => 0) 1 :=
-  ⟨inferInstance, inferInstance, ReciprocityTheory.AnForm.A.mollifierInhabit_thm 0, pointCutoff⟩
 
 theorem le_logLog_div {t ℓ : ℝ} (ht : 0 < t) (hℓdef : ℓ = Real.log t⁻¹) (hℓe : Real.exp 1 ≤ ℓ) :
     t ≤ Real.log ℓ / ℓ := by

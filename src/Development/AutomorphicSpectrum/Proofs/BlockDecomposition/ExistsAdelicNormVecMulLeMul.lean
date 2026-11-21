@@ -52,16 +52,6 @@ theorem exists_eq_pt (g : G2) : ∃ (x : 𝔸[ℚ]) (a z : Jd) (κ : KA), g = pt
   show b * k = uni2 _ * dg2 _ 1 * dg2 _ _ * k
   rw [← hb']
 
-theorem lower_row_pt (x : 𝔸[ℚ]) (a z : Jd) (κ : G2) :
-    (Pi.single 1 (1 : 𝔸[ℚ]) : Fin 2 → 𝔸[ℚ]) ᵥ* (pt x a z κ : Matrix (Fin 2) (Fin 2) 𝔸[ℚ]) =
-      ((z : 𝔸[ℚ]) • (Pi.single 1 (1 : 𝔸[ℚ]) : Fin 2 → 𝔸[ℚ])) ᵥ* (κ : Matrix (Fin 2) (Fin 2) 𝔸[ℚ]) := by
-  have h : (Pi.single 1 (1 : 𝔸[ℚ]) : Fin 2 → 𝔸[ℚ]) ᵥ*
-      ((uni2 x * dg2 a 1 * dg2 z z : G2) : Matrix (Fin 2) (Fin 2) 𝔸[ℚ]) =
-      (z : 𝔸[ℚ]) • (Pi.single 1 (1 : 𝔸[ℚ]) : Fin 2 → 𝔸[ℚ]) := by
-    ext1 j
-    fin_cases j <;> simp [uni2, dg2, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two]
-  rw [← h, vecMul_vecMul, ← Units.val_mul]
-  rfl
 
 theorem det_pt (x : 𝔸[ℚ]) (a z : Jd) (κ : G2) :
     GeneralLinearGroup.det (pt x a z κ) = a * z * z * GeneralLinearGroup.det κ := by
@@ -112,58 +102,5 @@ theorem real_bound {B t m A : ℝ} (hB : 1 ≤ B) (ht : 0 < t) (hm1 : B⁻¹ ≤
   · calc (B ^ 2 * T)⁻¹ ≤ B⁻¹ := inv_anti₀ hB0 hC
       _ ≤ m := hm1
 
-theorem iwasawa_coordinates_bounded :
-    ∀ h : Ad3.R.G2, ∃ C : ℝ, 1 ≤ C ∧ ∀ κ : Ad3.R.KA, ∃ (x : 𝔸[ℚ]) (a z : Ad3.R.Jd) (κ' : Ad3.R.KA),
-      κ.1 * h = Ad3.R.pt x a z κ'.1 ∧ C⁻¹ ≤ md a ∧ md a ≤ C ∧
-        C⁻¹ ≤ md z ∧ md z ≤ C := by
-  intro h
-  obtain ⟨C₁, h1, hC₁⟩ := exists_adelicNorm_vecMul_le_mul h
-  obtain ⟨C₂, h2, hC₂⟩ := exists_adelicNorm_vecMul_le_mul h⁻¹
-  set B := max C₁ C₂ with hBdef
-  have hB : 1 ≤ B := h1.trans (le_max_left _ _)
-  set t := md (GeneralLinearGroup.det h) with htdef
-  have ht : 0 < t := (IdeleGroup.ideleModule ℚ _).2
-  refine ⟨B ^ 2 * max 1 (max t t⁻¹), ?_, fun κ => ?_⟩
-  · have : (1 : ℝ) ≤ B ^ 2 := one_le_pow₀ hB
-    exact one_le_mul_of_one_le_of_one_le this (le_max_left _ _)
-  obtain ⟨x, a, z, κ', he⟩ := exists_eq_pt (κ.1 * h)
-  have hfc : HasFiniteContent (Pi.single 1 (1 : 𝔸[ℚ]) : Fin 2 → 𝔸[ℚ]) := hasFiniteContent_single_one 1
-  set y : Fin 2 → 𝔸[ℚ] := (Pi.single 1 (1 : 𝔸[ℚ]) : Fin 2 → 𝔸[ℚ]) ᵥ* (κ.1 : Matrix (Fin 2) (Fin 2) 𝔸[ℚ]) with hy
-  have hyfc : HasFiniteContent y := hfc.vecMul κ.1
-  have hy1 : adelicNorm y = 1 := by
-    rw [hy, adelicNorm_vecMul_maxCompact _ κ.2, adelicNorm_single_one]
-  have hyh : y ᵥ* (h : Matrix (Fin 2) (Fin 2) 𝔸[ℚ]) =
-      ((z : 𝔸[ℚ]) • (Pi.single 1 (1 : 𝔸[ℚ]) : Fin 2 → 𝔸[ℚ])) ᵥ* (κ'.1 : Matrix (Fin 2) (Fin 2) 𝔸[ℚ]) := by
-    rw [← lower_row_pt x a z κ'.1, ← he, hy, vecMul_vecMul, Units.val_mul]
-  have hnorm : adelicNorm (y ᵥ* (h : Matrix (Fin 2) (Fin 2) 𝔸[ℚ])) = md z := by
-    rw [hyh, adelicNorm_vecMul_maxCompact _ κ'.2, adelicNorm_smul hfc, adelicNorm_single_one, mul_one]
-    rfl
-  have hz0 : 0 < md z := (IdeleGroup.ideleModule ℚ _).2
-  have hup : md z ≤ B := by
-    have := hC₁ y hyfc
-    rw [hnorm, hy1, mul_one] at this
-    exact this.trans (le_max_left _ _)
-  have hlow : B⁻¹ ≤ md z := by
-    have := hC₂ _ (hyfc.vecMul h)
-    rw [vecMul_vecMul, ← Units.val_mul, mul_inv_cancel, Units.val_one, vecMul_one, hy1, hnorm] at this
-    have hB0 : 0 < B := by linarith
-    have h3 : 1 ≤ B * md z := this.trans (mul_le_mul_of_nonneg_right (le_max_right _ _) hz0.le)
-    rw [inv_le_iff_one_le_mul₀ hB0]
-    linarith
-  have hdet : t = md a * md z ^ 2 := by
-    have e := congrArg GeneralLinearGroup.det he
-    rw [map_mul, det_pt] at e
-    have e' := congrArg md e
-    have k1 : md (GeneralLinearGroup.det κ.1) = 1 := by
-      have := GroundTheory.Automorphic.Adele2.ideleModule_det_of_mem_maxCompact κ.2
-      simp [md, this]
-    have k2 : md (GeneralLinearGroup.det κ'.1) = 1 := by
-      have := GroundTheory.Automorphic.Adele2.ideleModule_det_of_mem_maxCompact κ'.2
-      simp [md, this]
-    rw [md_mul, md_mul, md_mul, md_mul, k1, k2] at e'
-    rw [htdef]
-    nlinarith
-  obtain ⟨b1, b2, b3, b4, -⟩ := real_bound hB ht hlow hup hdet
-  exact ⟨x, a, z, κ', he, b1, b2, b3, b4⟩
 
 end GlobalTheory.CompanionTheory.IwasawaBound

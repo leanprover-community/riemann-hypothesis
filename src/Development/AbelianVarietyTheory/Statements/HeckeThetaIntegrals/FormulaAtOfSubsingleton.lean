@@ -22,15 +22,6 @@ theorem pde_ne_q (h : HidaSetting large₂ R F) : Nat.Coprime D.host.pde (D.host
 
 theorem guard (h : HidaSetting large₂ R F) : Guard R := guard_of_qGuard h.guard
 
-theorem finite_of_tup (h1 : R.tup_mu_off) (h2 : R.tup_mu_used) : Finite T := by
-  classical
-  have : (Set.univ : Set T) ⊆ insert A.μ0 (R.mu '' (R.twPl : Set _)) := fun t _ => by
-    rcases h2 t with h | ⟨w, rfl⟩
-    · exact Or.inl h
-    · by_cases hw : w ∈ R.twPl
-      · exact Or.inr ⟨w, hw, rfl⟩
-      · exact Or.inl (h1 w hw)
-  exact Set.finite_univ_iff.1 ((((R.twPl).finite_toSet.image _).insert _).subset this)
 
 theorem big_mono {Q Q' : ChP} (h : Big Q) (hQ : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type}
     {A : FamIn D.what₂.LL Γ Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}

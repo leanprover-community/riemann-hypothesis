@@ -90,7 +90,6 @@ section
 
 variable (ho : IsOpen (cone E a)) (U : Subgroup (GL (Fin a) (Af E))) (Ξ : AlgRep E a)
 
-theorem geo_Y : (geo ho U Ξ).Y = cone E a := rfl
 
 theorem geo_ρ (γ : (⊤ : Subgroup (GL (Fin a) E))) :
     (geo ho U Ξ).ρ γ = sand (GeneralLinearGroup.map (pInf E) (ratGL E a γ.1)) := rfl

@@ -205,123 +205,14 @@ theorem weight_eq (k0 r : ℕ) (T T' : ℝ) (x : Fin (r + 1) → ℂ) (hx : x �
   unfold bcWeight
   rw [if_pos hz.le, mul_pow, h1, ← mul_assoc, h2]
 
-theorem beta_eq_lbeta (k0 r : ℕ) (hk : 0 < k0) (L : LocBessel (k0 + 1) r)
-    (μsec : ℂ → Matrix (Fin (k0 + 1 + 1)) (Fin (k0 + 1 + 1)) ℂ) (hc : L.c = cStd)
-    (F F' : Matrix (Fin (2 * r + (k0 + 1) + 1)) (Fin (2 * r + (k0 + 1) + 1)) ℂ → (L.Wq →L[ℂ] L.Wp)) :
-    L.beta μsec F F' = lbeta (levOf L μsec) (haarOf L μsec) F F' := by
-  have hJ : ∀ G : Matrix (Fin (2 * r + (k0 + 1) + 1)) (Fin (2 * r + (k0 + 1) + 1)) ℂ → (L.Wq →L[ℂ] L.Wp),
-      besselJ (k0 + 1) r L.z L.z' cStd L.π L.π' L.μW L.μN L.μW' G = L.J G := by
-    intro G; funext g; simp only [LocBessel.J, hc]
-  let e : (Fin (r + 1) → ℂ) ≃ᵐ (Fin r → ℂ) × ℂ :=
-    (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (r + 1) => ℂ) (Fin.last r)).trans MeasurableEquiv.prodComm
-  have he : MeasurePreserving e volume volume :=
-    (volume_preserving_piFinSuccAbove (fun _ : Fin (r + 1) => ℂ) (Fin.last r)).trans
-      (Measure.measurePreserving_swap (μ := (volume : Measure ℂ)) (ν := (volume : Measure (Fin r → ℂ))))
-  have hex : ∀ x, e x = (cOf x, zOf x) := by
-    intro x
-    refine Prod.ext ?_ rfl
-    funext a
-    show x ((Fin.last r).succAbove a) = x a.castSucc
-    rw [Fin.succAbove_last]
-  unfold LocBessel.beta
-  rw [← he.integral_comp' (g := fun p : (Fin r → ℂ) × ℂ =>
-    (bcWeight (k0 + 1) r (Tz (k0 + 1) r L.z) (Tz (k0 + 1) r L.z') p : ℂ) *
-      hsInner (L.J F (bigCell (k0 + 1) r p.1 (μsec p.2))) (L.J F' (bigCell (k0 + 1) r p.1 (μsec p.2))))]
-  show _ = ∫ x : Fin (r + 1) → ℂ, (((∏ a : Fin r, Complex.normSq (cOf x a))⁻¹ : ℝ) : ℂ) *
-    hsInner (Wp := L.Wp) (Wq := L.Wq)
-      (Btr (E := L.Wq →L[ℂ] L.Wp) (k0 + 1) r L.z L.z' μsec
-        (besselJ (k0 + 1) r L.z L.z' cStd L.π L.π' L.μW L.μN L.μW' F) x)
-      (Btr (E := L.Wq →L[ℂ] L.Wp) (k0 + 1) r L.z L.z' μsec
-        (besselJ (k0 + 1) r L.z L.z' cStd L.π L.π' L.μW L.μN L.μW' F') x)
-  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  simp only [hex, hJ]
-  by_cases hx : x ∈ BDom (k0 + 1) r L.z L.z'
-  · simp only [Btr, if_pos hx]
-    rw [hsInner_smul_smul, weight_eq k0 r _ _ x hx.1 hx.2]
-    push_cast
-    ring
-  · simp only [Btr, if_neg hx, hsInner_zero_left, mul_zero]
-    have hw : bcWeight (k0 + 1) r (Tz (k0 + 1) r L.z) (Tz (k0 + 1) r L.z') (cOf x, zOf x) = 0 := by
-      unfold bcWeight
-      split_ifs with h
-      · rcases h.lt_or_eq with h' | h'
-        ·
-          have hO : x ∉ OmX (r + 1) := fun hO => hx ⟨hO, h'⟩
-          simp only [OmX, Set.mem_ofPred_eq, not_forall, not_not] at hO
-          obtain ⟨l, hl⟩ := hO
-          have hTT : 0 < Tz (k0 + 1) r L.z * Tz (k0 + 1) r L.z' := mul_pos L.hz.2 L.hz'.2
-          have hl' : l ≠ Fin.last r := by
-            rintro rfl
-            have : Complex.normSq (zOf x) = 0 := by simp [zOf, hl]
-            linarith
-          obtain ⟨a, rfl⟩ : ∃ a : Fin r, a.castSucc = l := ⟨l.castPred hl', Fin.castSucc_castPred l hl'⟩
-          have : (∏ a : Fin r, ‖cOf x a‖ ^ (2 * (Mdim (k0 + 1) r a - 2))) = 0 := by
-            refine Finset.prod_eq_zero (Finset.mem_univ a) ?_
-            have : cOf x a = 0 := hl
-            rw [this, norm_zero]
-            refine zero_pow ?_
-            have := a.isLt
-            unfold Mdim; omega
-          show (∏ a : Fin r, ‖cOf x a‖ ^ (2 * (Mdim (k0 + 1) r a - 2))) * _ = 0
-          rw [this, zero_mul]
-        · show _ * (Complex.normSq (zOf x) - _) ^ (k0 + 1 - 1) = 0
-          rw [← h', sub_self, zero_pow (by omega), mul_zero]
-      · rfl
-    rw [hw]; simp
 
-theorem levOf_Std {k0 r : ℕ} (L : LocBessel (k0 + 1) r) (μsec : ℂ → Matrix (Fin (k0 + 1 + 1)) (Fin (k0 + 1 + 1)) ℂ)
-    (h : IsSection (k0 + 1) r L.z L.z' μsec) : (levOf L μsec).Std := ⟨L.hz.1, L.hz'.1, L.hz.2, L.hz'.2, h⟩
 
-theorem lemma_E_mono_constants (D : Formalism.BasicNotions.D7) {Cg Cg' CI CI' : ℝ} (h1 : Cg ≤ Cg') (h2 : CI ≤ CI') (H : Conclusion1 D Cg CI) :
-    Conclusion1 D Cg' CI' := by
-  intro k0 hk L μsec I N f χ w hS hu hu' hg hN hI
-  refine H k0 hk L μsec I N f χ w hS hu hu' ?_ hN ?_
-  · intro a b hab
-    refine le_trans ?_ (hg a b hab)
-    gcongr
-  · refine le_trans ?_ hI
-    gcongr
 
-theorem projector_bound_mono (D : Formalism.BasicNotions.D7) {C0 C0' CA CA' : ℝ} (h1 : C0 ≤ C0') (h2 : CA ≤ CA') (H : Conclusion2 D C0 CA) :
-    Conclusion2 D C0' CA' := by
-  intro k0 hk L μsec I N A p F0 χ w hS hN hA hF0 hp
-  refine H k0 hk L μsec I N A p F0 χ w hS hN ?_ hF0 ?_
-  · refine le_trans ?_ hA
-    gcongr
-  · refine le_trans ?_ hp
-    gcongr
 
-theorem Adm_of_AdmF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) {CB Co Cd Cv C1 C2 Cs c C₁ : ℝ}
-    (hA : AdmF Fm CB Co Cd Cv C1 C2 Cs c C₁) (x : ℝ) (i : Fm.Ix x) : admitted (Fm.D x i) CB Co Cd Cv C1 C2 Cs c C₁ :=
-  ⟨hA.1 x i, hA.2.1 x i, hA.2.2.1 x i, hA.2.2.2.1 x i, hA.2.2.2.2.1 x i, hA.2.2.2.2.2.1 x i, hA.2.2.2.2.2.2.1 x i,
-    hA.2.2.2.2.2.2.2.1 x i, hA.2.2.2.2.2.2.2.2.1 x i, hA.2.2.2.2.2.2.2.2.2.1 x i, hA.2.2.2.2.2.2.2.2.2.2.1 x i,
-    hA.2.2.2.2.2.2.2.2.2.2.2.1 x i, hA.2.2.2.2.2.2.2.2.2.2.2.2.1 x i, hA.2.2.2.2.2.2.2.2.2.2.2.2.2.1 x i,
-    hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1 x i, hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1 x i,
-    hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1 x i, hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2 x i⟩
 
-theorem family_statement_of_parts {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) {CB Co Cd Cv C1 C2 Cs c C₁ Cg CI C0 CA : ℝ}
-    (H : ∀ D : Formalism.BasicNotions.D7, Stmt D CB Co Cd Cv C1 C2 Cs c C₁ Cg CI C0 CA) :
-    KudlaFamilyStatement Fm CB Co Cd Cv C1 C2 Cs c C₁ Cg CI C0 CA := fun hA =>
-  ⟨fun x i => (H _ (Adm_of_AdmF Fm hA x i)).1, fun x i => (H _ (Adm_of_AdmF Fm hA x i)).2⟩
 
-theorem family_statement_of_uniform (H : UniformExportStatement) (CB Co Cd Cv C1 C2 Cs c C₁ : ℝ) :
-    ∃ Cg₀ CI₀ C0₀ CA₀ : ℝ, ∀ Cg ≥ Cg₀, ∀ CI ≥ CI₀, ∀ C0 ≥ C0₀, ∀ CA ≥ CA₀, ∀ {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps),
-      KudlaFamilyStatement Fm CB Co Cd Cv C1 C2 Cs c C₁ Cg CI C0 CA := by
-  obtain ⟨a, b, c', d, h⟩ := H CB Co Cd Cv C1 C2 Cs c C₁
-  exact ⟨a, b, c', d, fun Cg hg CI hI C0 h0 CA h1 _ Fm => family_statement_of_parts Fm (h Cg hg CI hI C0 h0 CA h1)⟩
 
-theorem closed_statement_large_constants (𝒞 : Formalism.MainNotions.FamClass) (H : UniformExportStatement) (CB Co Cd Cv C1 C2 Cs c C₁ : ℝ) :
-    Formalism.MainNotions.Closed 𝒞 (fun Fm _ => KudlaFamilyStatement Fm CB Co Cd Cv C1 C2 Cs c C₁ (sCl Fm) (sCl Fm) (sCl Fm) (sCl Fm)) := by
-  obtain ⟨a, b, c', d, h⟩ := H CB Co Cd Cv C1 C2 Cs c C₁
-  refine ⟨1, one_pos, fun eps _ _ => ⟨{ pre := 0, t := fun _ => 0, mid := fun _ => 0, last := fun _ => max (max a b) (max c' d) }, fun Fm CH _ hL => ?_⟩⟩
-  have hl : max (max a b) (max c' d) ≤ sCl Fm := (le_sC'_sCl hL).2
-  exact family_statement_of_parts Fm (fun D => h _ (le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hl)
-    _ (le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hl)
-    _ (le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hl)
-    _ (le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hl) D)
 
-theorem levOf_HC {k0 r : ℕ} (L : LocBessel (k0 + 1) r) (μsec : ℂ → Matrix (Fin (k0 + 1 + 1)) (Fin (k0 + 1 + 1)) ℂ)
-    (h : ∀ i, ∃ m : ℤ, L.u i - L.u' i = m) : (levOf L μsec).HC L.u L.u' := ⟨L.hπ, L.hπ', h⟩
 
 theorem minWeight_pos (D : Formalism.BasicNotions.D7) {k0 : ℕ} (hk : k0 + 1 = D.R.k) : 0 < k0 := by
   have h1 := D.R.m_add_three_le_k

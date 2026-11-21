@@ -40,42 +40,7 @@ section Rep
 
 variable {G Y X : Type} [Group G] [AddCommGroup Y] [Module ℂ Y] [AddCommGroup X] [Module ℂ X]
 
-private theorem fs_intw {Q : Type} (c : Q → G) (τ : Representation ℂ G Y) (τ' : Representation ℂ G X)
-    (f : Y →ₗ[ℂ] X) (hf : Function.Injective f) (h : ∀ g y, f (τ g y) = τ' g (f y)) (y : Y) :
-    f ((∑ᶠ q, τ (c q)) y) = (∑ᶠ q, τ' (c q)) (f y) := by
-  classical
-  rcases subsingleton_or_nontrivial Y with hY | hY
-  · rw [Subsingleton.elim y 0]
-    simp
-  · have hX : Nontrivial X := hf.nontrivial
-    have ne1 : ∀ g, τ g ≠ 0 := by
-      intro g hg
-      obtain ⟨v, hv⟩ := exists_ne (0 : Y)
-      have e : τ g (τ g⁻¹ v) = v := by
-        rw [← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one, Module.End.one_apply]
-      rw [hg] at e
-      exact hv (by simpa using e.symm)
-    have ne2 : ∀ g, τ' g ≠ 0 := by
-      intro g hg
-      obtain ⟨v, hv⟩ := exists_ne (0 : X)
-      have e : τ' g (τ' g⁻¹ v) = v := by
-        rw [← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one, Module.End.one_apply]
-      rw [hg] at e
-      exact hv (by simpa using e.symm)
-    by_cases hQ : Finite Q
-    · haveI := Fintype.ofFinite Q
-      rw [finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype]
-      simp [LinearMap.sum_apply, map_sum, h]
-    · haveI : Infinite Q := not_finite_iff_infinite.mp hQ
-      rw [finsum_of_infinite_support, finsum_of_infinite_support]
-      · simp
-      · exact Set.infinite_univ.mono fun q _ => ne2 (c q)
-      · exact Set.infinite_univ.mono fun q _ => ne1 (c q)
 
-private theorem uOp_intw (I : Iwa G) (τ : Representation ℂ G Y) (τ' : Representation ℂ G X)
-    (f : Y →ₗ[ℂ] X) (hf : Function.Injective f) (h : ∀ g y, f (τ g y) = τ' g (f y)) (a : G) (y : Y) :
-    f (I.uOp τ a y) = I.uOp τ' a (f y) :=
-  fs_intw _ τ τ' f hf h y
 
 end Rep
 

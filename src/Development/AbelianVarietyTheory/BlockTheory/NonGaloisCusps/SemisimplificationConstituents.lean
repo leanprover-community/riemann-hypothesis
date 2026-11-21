@@ -38,13 +38,6 @@ theorem blockSum_apply {r t : ℕ} (ρ : Γ →* Matrix (Fin r) (Fin r) k) (χ :
   · rfl
   · rfl
 
-theorem isSemisimplificationOf_self {V : Type} [AddCommGroup V] [Module k V] (ρ : Representation k Γ V)
-    (h : IsSS ρ) : IsSemisimplificationOf ρ ρ := by
-  refine ⟨h, 1, fun _ => ⊤, LinearEquiv.refl k V, fun _ _ _ _ => trivial, ?_, ?_⟩
-  · rw [DirectSum.isInternal_submodule_iff_iSupIndep_and_iSup_eq_top]
-    exact ⟨iSupIndep_subsingleton _, by simp⟩
-  · intro j g v _
-    simp
 
 end Rep
 
@@ -65,8 +58,6 @@ def redK {a : ℕ} (ρ : GE D.nd →* GL (Fin a) (D.nd.O i)) :
     Representation (kk D.nd i) (GE D.nd) (Fin a → kk D.nd i) :=
   matRep (matAlong D i (IsLocalRing.residue (D.nd.O i)) ρ)
 
-theorem repK_eq (r : RepFam D i) (x : D.nd.X i) :
-    repK D.nd i r x = matRep (matAlong D i (toK D.nd i) (r x)) := rfl
 
 def Realised : Prop := ∃ r : RepFam D i, GoodR D.nd i r
 

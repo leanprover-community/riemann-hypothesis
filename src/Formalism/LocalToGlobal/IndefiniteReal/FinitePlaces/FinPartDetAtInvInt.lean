@@ -315,17 +315,6 @@ theorem resG_orth (hε : IsIdempotentElem ε) (hε' : IsIdempotentElem ε') (h :
     rw [← map_mul, h, map_zero]
   rw [mtG_mul, mt_resG V hε, mt_resG V hε', mt_resG V (isIdem_add_orth hε hε' h), map_add, resM_add hst]
 
-theorem resG_comm (hε : IsIdempotentElem ε) (hε' : IsIdempotentElem ε') (h : ε * ε' = 0) (g g' : GA D V) :
-    resG V ε g * resG V ε' g' = resG V ε' g' * resG V ε g := by
-  apply gaExt
-  have hst : algebraMap (AF D.host.F) (AE D) ε * algebraMap (AF D.host.F) (AE D) ε' = 0 := by
-    rw [← map_mul, h, map_zero]
-  have hts : algebraMap (AF D.host.F) (AE D) ε' * algebraMap (AF D.host.F) (AE D) ε = 0 := by
-    rw [mul_comm, hst]
-  rw [mtG_mul, mtG_mul]
-  simp only [mt_resG V hε, mt_resG V hε']
-  rw [resM_orth hst, resM_orth hts]
-  abel
 
 theorem resG_compl (hε : IsIdempotentElem ε) (g : GA D V) : resG V ε g * resG V (1 - ε) g = g := by
   have h0 : ε * (1 - ε) = 0 := by rw [mul_sub, mul_one, hε.eq, sub_self]
@@ -407,37 +396,7 @@ theorem finE_resG_mem_St (hε : IsIdempotentElem ε) {g : GA D V} {β : GL (Fin 
     rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
   rw [resM_map, resM_conj _ _ _ _ hββ, hy', hsub, finE_val, mt_resG V hε, resM_map, toEAf_alg]
 
-theorem redFn_resG_zero (hε : IsIdempotentElem ε) {g : GA D V} {β : GL (Fin V.rank) (Lev.EAf D)}
-    (hg : Lev.finE V g ∈ Formalism.L2.DIV.St β) {PP : Formalism.L2.DIV.Pl D.host.E} {v : HeightOneSpectrum (𝓞 D.host.F)}
-    (hv : v.asIdeal = PP.asIdeal.comap (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)))
-    (h0 : evalV D.host.F v (sndA D.host.F ε) = 0) :
-    Formalism.L2.DIV.redFn β PP (Lev.finE V (resG V ε g)) = 1 := by
-  refine Formalism.L2.DIV.reduction_local D.host.F D.host.E V.rank β PP v hv _ (finE_resG_mem_St V hε hg) ?_
-  apply Units.ext
-  show ((Lev.finE V (resG V ε g) : GL (Fin V.rank) (Lev.EAf D)) : Matrix (Fin V.rank) (Fin V.rank) (Lev.EAf D)).map
-    (Formalism.UG.prV (E := D.host.E) v) = 1
-  rw [finE_val, mt_resG V hε, resM_map, resM_map, toEAf_alg]
-  have hp : Formalism.UG.prV (E := D.host.E) v ((1 : D.host.E) ⊗ₜ[D.host.F] sndA D.host.F ε) = 0 := by
-    show (Algebra.TensorProduct.map (AlgHom.id D.host.F D.host.E) (Formalism.UG.evalV D.host.F v))
-      ((1 : D.host.E) ⊗ₜ[D.host.F] sndA D.host.F ε) = 0
-    rw [Algebra.TensorProduct.map_tmul]
-    have : Formalism.UG.evalV D.host.F v (sndA D.host.F ε) = 0 := h0
-    rw [this, TensorProduct.tmul_zero]
-  rw [hp, resM_zero_left]
 
-theorem redFn_resG_one (hε : IsIdempotentElem ε) {g : GA D V} {β : GL (Fin V.rank) (Lev.EAf D)}
-    (hg : Lev.finE V g ∈ Formalism.L2.DIV.St β) {PP : Formalism.L2.DIV.Pl D.host.E} {v : HeightOneSpectrum (𝓞 D.host.F)}
-    (hv : v.asIdeal = PP.asIdeal.comap (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)))
-    (h1 : evalV D.host.F v (sndA D.host.F ε) = 1) :
-    Formalism.L2.DIV.redFn β PP (Lev.finE V (resG V ε g)) = Formalism.L2.DIV.redFn β PP (Lev.finE V g) := by
-  have h1' : evalV D.host.F v (sndA D.host.F (1 - ε)) = 0 := by rw [map_sub, map_one, map_sub, map_one, h1, sub_self]
-  calc Formalism.L2.DIV.redFn β PP (Lev.finE V (resG V ε g))
-        = Formalism.L2.DIV.redFn β PP (Lev.finE V (resG V ε g)) *
-          Formalism.L2.DIV.redFn β PP (Lev.finE V (resG V (1 - ε) g)) := by
-        rw [redFn_resG_zero V hε.one_sub hg hv h1', mul_one]
-    _ = Formalism.L2.DIV.redFn β PP (Lev.finE V (resG V ε g) * Lev.finE V (resG V (1 - ε) g)) :=
-        (Formalism.L2.DIV.redFn_mul (finE_resG_mem_St V hε hg) (finE_resG_mem_St V hε.one_sub hg) PP).symm
-    _ = Formalism.L2.DIV.redFn β PP (Lev.finE V g) := by rw [← map_mul, resG_compl V hε]
 
 end Fin
 
@@ -589,9 +548,6 @@ theorem resS_idemAt' {e : AE D} {PP : Formalism.L2.DIV.Pl D.host.E} (hPP : Forma
     exact comm_mem_intAE s.2
   · exact h1
 
-theorem resS_idemAt {e : AE D} {PP : Formalism.L2.DIV.Pl D.host.E} (hPP : Formalism.L2.NTheta.IsIdemAt e PP) :
-    Formalism.L2.DIV.resS D.host.F PP ⟨toEAf D e, toEAf_mem_intAf (idemAt_int hPP)⟩ = 1 :=
-  resS_idemAt' hPP _ rfl
 
 theorem idemUnit_exists {R : Type*} [CommRing R] (e' : R) (he : e' * e' = e') (d : Rˣ) :
     ∃ u : Rˣ, (u : R) = e' * d + (1 - e') := by

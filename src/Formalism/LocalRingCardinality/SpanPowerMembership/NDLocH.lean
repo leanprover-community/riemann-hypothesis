@@ -49,10 +49,6 @@ instance (l : ℕ) : NeZero (NOf H dg l) := ⟨(dg l).choose_spec.choose.ne'⟩
 
 def dOf (l : ℕ) : Formalism.ConjugateSelfDual.G H.E Ω →* Multiplicative (ZMod (NOf H dg l)) := (dg l).choose_spec.choose_spec.choose
 
-theorem dOf_spec (l : ℕ) : IsOpen ((dOf H dg l).ker : Set (Formalism.ConjugateSelfDual.G H.E Ω)) ∧ AntiHom cc (dOf H dg l) ∧
-    RamExactly (dOf H dg l) (placesOver H.E (pOf H l)) ∧
-    ∀ v ∈ placesOver H.E (pOf H l), ∀ A : ValuationSubring Ω, IsPlaceOver A v →
-      Nat.card ((Ine (F := H.E) A).map (dOf H dg l)) = 15 := (dg l).choose_spec.choose_spec.choose_spec
 
 variable (l : ℕ) [hl : Fact l.Prime]
 

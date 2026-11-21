@@ -98,14 +98,9 @@ def mulConst (a b : ct.Ylat y) : ((ct.fld y).C)ˣ :=
 
 def abDim : ℕ := (ct.dat y).U.D.toPre.P.g
 
-theorem smooth_abDim : SmoothOfRelativeDimension (ct.abDim y) (ct.dat y).U.D.toPre.P.A.hom :=
-  (ct.dat y).U.D.toPre.P.smoothDim
 
 theorem beLin_apply (a b : ct.Ylat y) : ct.beLin y a b = (ct.dat y).beta a b := rfl
 
-theorem isTauVal_tauVal (a b : ct.Ylat y) :
-    Per.IsTauVal (ct.dat y).f ((ct.evidence y).e a b) ((ct.tauVal y a (ct.phi y b) : ((ct.fld y).C)ˣ) : (ct.fld y).C) :=
-  (ct.evidence y).isVal a b
 
 theorem isTauVal_mulConst (a b : ct.Ylat y) :
     Per.IsTauVal (ct.dat y).f ((ct.evidence y).e a b) ((ct.mulConst y a b : ((ct.fld y).C)ˣ) : (ct.fld y).C) :=
@@ -170,12 +165,6 @@ theorem motTrue_psiV_half (a : ct.Ylat y) : (motTrue ct).psiV y a = (motTrue ct)
   rw [motTrue_psiV_eq_be]
   linarith
 
-theorem motTrue_psiV_eq_vPsiAt (a : ct.Ylat y) :
-    (motTrue ct).psiV y a = vPsiAt (ct.dat y).U.D.toPre (DatAtCheck.fC (ct.dat y)) p a := by
-  have h := (BetaAdd.main _ (ct.dat y).U.D _ (DatAtCheck.fC (ct.dat y)) p (ct.dat y).normal (DatAtCheck.norm_le _)
-    (DatAtCheck.coord_ne_zero _)).2 a
-  rw [motTrue_psiV_half]
-  exact (congrArg (· / 2) h).trans (mul_div_cancel_left₀ _ two_ne_zero)
 
 example (χ : ct.chX y) : (motTrue ct).tau y 0 χ = 1 := by
   have h := (motTrue ct).tau_add_left y 0 0 χ

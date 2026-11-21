@@ -19,10 +19,6 @@ section Local
 
 open Formalism.BasicNotions.Loc Polynomial
 
-theorem dickson_hom {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (x : A) (N : ℕ) :
-    (dickson 1 (1 : B) N).eval (f x) = f ((dickson 1 (1 : A) N).eval x) := by
-  have h : dickson 1 (1 : B) N = (dickson 1 (1 : A) N).map f := by rw [map_dickson, map_one]
-  rw [h, eval_map, eval₂_hom]
 
 variable {l : ℕ} [Fact l.Prime] {R : Ranks} (H : Host R) (J : H.E →+* Om l)
 

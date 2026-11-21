@@ -220,40 +220,9 @@ section Inhabitants
 
 example : IsUltrametricDist ℚ_[2] ∧ CompleteSpace ℚ_[2] := ⟨inferInstance, inferInstance⟩
 
-theorem gaussNormBasic_hyps :
-    (∀ i j, ‖(1 : Matrix (Fin 2) (Fin 2) ℚ_[2]) i j‖ ≤ 1) ∧ (∀ i, ‖(0 : Fin 2 → ℚ_[2]) i‖ ≤ 1) ∧
-    IsUnit (1 : Matrix (Fin 2) (Fin 2) ℚ_[2]).det ∧
-    (∀ i j, ‖(1 : Matrix (Fin 2) (Fin 2) ℚ_[2])⁻¹ i j‖ ≤ 1) ∧
-    (∀ y : Fin 2 → ℚ_[2], (∀ i, ‖y i‖ ≤ 1) → ∃ x : Fin 2 → ℚ_[2], (∀ k, ‖x k‖ ≤ 1) ∧
-      (1 : Matrix (Fin 2) (Fin 2) ℚ_[2]).mulVec x = y) := by
-  have h1 : ∀ i j, ‖(1 : Matrix (Fin 2) (Fin 2) ℚ_[2]) i j‖ ≤ 1 := by
-    intro i j
-    rw [Matrix.one_apply]
-    split_ifs <;> simp
-  refine ⟨h1, fun i ↦ by simp, by simp, by simp [h1], fun y hy ↦ ⟨y, hy, by simp⟩⟩
 
-theorem schwartzZippel_hyps :
-    (X 0 : MvPolynomial (Fin 2) ℤ) ≠ 0 ∧ ∀ i, (X 0 : MvPolynomial (Fin 2) ℤ).degreeOf i ≤ 1 := by
-  refine ⟨X_ne_zero _, fun i ↦ ?_⟩
-  rw [degreeOf_X]
-  split_ifs <;> simp
 
-theorem nonempty_place_rat : Nonempty (IsDedekindDomain.HeightOneSpectrum (𝓞 ℚ)) := by
-  obtain ⟨M, hM⟩ := Ideal.exists_maximal (𝓞 ℚ)
-  exact ⟨⟨M, hM.isPrime,
-    Ring.ne_bot_of_isMaximal_of_not_isField hM (NumberField.RingOfIntegers.not_isField ℚ)⟩⟩
 
-theorem rootsOfUnity_hyps :
-    Nat.Prime 2 ∧ IsPrimitiveRoot (-1 : 𝓞 ℚ) 2 ∧ (1 : 𝓞 ℚ) ^ 2 = 1 ∧ (-1 : 𝓞 ℚ) ^ 2 = 1 ∧
-      (1 : 𝓞 ℚ) ≠ -1 := by
-  have hne : (1 : 𝓞 ℚ) ≠ -1 := by
-    intro h
-    have := congrArg (fun x : 𝓞 ℚ ↦ (x : ℚ)) h
-    norm_num at this
-  refine ⟨Nat.prime_two, ?_, by simp, by simp, hne⟩
-  refine IsPrimitiveRoot.mk_of_lt (-1) (by norm_num) (by simp) fun l hl0 hl2 hl ↦ ?_
-  interval_cases l
-  exact absurd (by simpa using hl) (Ne.symm hne)
 
 theorem HermNorm.std_norm_eq {n : ℕ} (v : Fin n → ℂ) :
     (HermNorm.std n).norm v = √(∑ i, ‖v i‖ ^ 2) := by
@@ -299,12 +268,6 @@ theorem unit_one : ∑ j, ‖(Pi.single 0 1 : Fin 1 → ℂ) j‖ ^ 2 = 1 := by 
 theorem unit_two : ∑ j, ‖(Pi.single 0 1 : Fin 2 → ℂ) j‖ ^ 2 = 1 := by
   simp [Fin.sum_univ_two]
 
-theorem linear_form_hyps :
-    ((X 0 : MvPolynomial (Fin 1) ℂ) ≠ 0 ∧ (X 0 : MvPolynomial (Fin 1) ℂ).IsHomogeneous 1 ∧
-      eval (Pi.single 0 1) (X 0 : MvPolynomial (Fin 1) ℂ) ≠ 0) ∧
-    ((X 0 : MvPolynomial (Fin 2) ℂ) ≠ 0 ∧ (X 0 : MvPolynomial (Fin 2) ℂ).IsHomogeneous 1 ∧
-      eval (Pi.single 0 1) (X 0 : MvPolynomial (Fin 2) ℂ) ≠ 0) :=
-  ⟨⟨X_ne_zero _, isHomogeneous_X _ _, by simp⟩, ⟨X_ne_zero _, isHomogeneous_X _ _, by simp⟩⟩
 
 def ratPointVec : DualVec ℚ (Fin 2 → 𝓞 ℚ) ℚ where
   toFun x := (x 0 : ℚ) + 2 * (x 1 : ℚ)
@@ -314,24 +277,8 @@ def ratPointVec : DualVec ℚ (Fin 2 → 𝓞 ℚ) ℚ where
       map_mul, Algebra.algebraMap_self, RingHom.id_apply]
     ring
 
-theorem ratPointVec_apply (x : Fin 2 → 𝓞 ℚ) : ratPointVec x = (x 0 : ℚ) + 2 * (x 1 : ℚ) := rfl
 
-theorem heightOfPoint_hyps :
-    Submodule.span (𝓞 ℚ) (Set.range (Pi.basisFun (𝓞 ℚ) (Fin 2))) = ⊤ ∧ ratPointVec ≠ 0 ∧
-      ratPointVec (Pi.basisFun (𝓞 ℚ) (Fin 2) 0) ≠ 0 := by
-  have h1 : ratPointVec (Pi.single 0 1) = 1 := by
-    simp [ratPointVec_apply]
-  have h0 : ratPointVec (Pi.basisFun (𝓞 ℚ) (Fin 2) 0) = 1 := by
-    rw [Pi.basisFun_apply]; exact h1
-  refine ⟨(Pi.basisFun (𝓞 ℚ) (Fin 2)).span_eq, fun h ↦ ?_, by rw [h0]; exact one_ne_zero⟩
-  have := congrArg (fun f : DualVec ℚ (Fin 2 → 𝓞 ℚ) ℚ ↦ f (Pi.basisFun (𝓞 ℚ) (Fin 2) 0)) h
-  simp only [h0, LinearMap.zero_apply] at this
-  exact one_ne_zero this
 
-theorem heightOfCycle_hyp :
-    (X 0 + C 2 * X 1 : MvPolynomial (Fin 2) ℚ).map (algebraMap ℚ ℚ) =
-      C 1 * ∏ _q : Fin 1, ∑ k, C (ratPointVec (Pi.basisFun (𝓞 ℚ) (Fin 2) k)) * X k := by
-  simp [Fin.sum_univ_two, ratPointVec_apply]
 
 end Inhabitants
 

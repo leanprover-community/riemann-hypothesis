@@ -15,59 +15,8 @@ theorem lamX_one (I : AutInst) : lamX I (1, 1) = I.L := by
   refine le_antisymm (fun y hy => (I.L_dual y).2 fun z hz => ?_) (GlobalTheory.Count.Test.le_lamX_one I)
   exact ((GlobalTheory.PointLattice.lamX_selfDual I (1, 1)).2.2.2.1 y).1 hy z (GlobalTheory.Count.Test.le_lamX_one I hz)
 
-theorem gaussDens_definite (n : ℕ) : gaussDens (fun _ : Fin n => true) (sgn ℝ false) = 0 := by
-  have : (fun t : ℝ => ∫ y in {y : Fin n → ℂ | qEps (fun _ => true) y ≤ t}, gauss y) =ᶠ[nhds (sgn ℝ false)]
-      fun _ => 0 := by
-    have h : Set.Iio (0 : ℝ) ∈ nhds (sgn ℝ false) := Iio_mem_nhds (by simp [sgn])
-    filter_upwards [h] with t ht
-    have : {y : Fin n → ℂ | qEps (fun _ => true) y ≤ t} = ∅ := by
-      ext y
-      have : 0 ≤ qEps (fun _ => true) y := Finset.sum_nonneg fun i _ => by simp
-      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_le]
-      exact lt_of_lt_of_le ht this
-    simp [this]
-  rw [gaussDens, this.deriv_eq]; simp
 
-theorem disc_integral {t : ℝ} (ht : 0 < t) :
-    ∫ y in {y : Fin 1 → ℂ | qEps (fun _ => true) y ≤ t}, gauss y = Real.pi * (1 - Real.exp (-t)) := by
-  have h1 : ∫ y in {y : Fin 1 → ℂ | qEps (fun _ => true) y ≤ t}, gauss y =
-      ∫ z : ℂ, (Set.Iic (Real.sqrt t)).indicator (fun r => Real.exp (-r ^ 2)) ‖z‖ := by
-    have hm : MeasurableSet {y : Fin 1 → ℂ | qEps (fun _ => true) y ≤ t} := by
-      refine measurableSet_le ?_ measurable_const
-      unfold qEps; fun_prop
-    rw [← integral_indicator hm, ← (volume_preserving_funUnique (Fin 1) ℂ).integral_comp']
-    refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
-    simp only [Set.indicator, Set.mem_setOf_eq, Set.mem_Iic, qEps, gauss, Real.le_sqrt (norm_nonneg _) ht.le]
-    simp
-  rw [h1, integral_fun_norm_addHaar]
-  have h2 : ∫ y in Set.Ioi (0 : ℝ), y ^ (Module.finrank ℝ ℂ - 1) •
-      (Set.Iic (Real.sqrt t)).indicator (fun r => Real.exp (-r ^ 2)) y = (1 - Real.exp (-t)) / 2 := by
-    have : (fun y : ℝ => y ^ (Module.finrank ℝ ℂ - 1) •
-      (Set.Iic (Real.sqrt t)).indicator (fun r => Real.exp (-r ^ 2)) y) =
-        (Set.Iic (Real.sqrt t)).indicator (fun r => r * Real.exp (-r ^ 2)) := by
-      funext y; simp only [Set.indicator]; split_ifs <;> simp
-    rw [this, setIntegral_indicator measurableSet_Iic, Set.Ioi_inter_Iic,
-      ← intervalIntegral.integral_of_le (Real.sqrt_nonneg t)]
-    have hd : ∀ x ∈ Set.uIcc 0 (Real.sqrt t),
-        HasDerivAt (fun r : ℝ => -Real.exp (-r ^ 2) / 2) (x * Real.exp (-x ^ 2)) x := by
-      intro x _
-      have := (((hasDerivAt_pow 2 x).neg.exp).neg).div_const 2
-      refine HasDerivAt.congr_deriv this ?_
-      simp; ring
-    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd (by apply Continuous.intervalIntegrable; fun_prop)]
-    rw [Real.sq_sqrt ht.le]; simp; ring
-  rw [h2]
-  simp [Measure.real, Complex.volume_ball]
-  ring
 
-theorem gaussDens_circle : gaussDens (fun _ : Fin 1 => true) (sgn ℝ true) = Real.pi * Real.exp (-1) := by
-  have : (fun t : ℝ => ∫ y in {y : Fin 1 → ℂ | qEps (fun _ => true) y ≤ t}, gauss y) =ᶠ[nhds 1]
-      fun t => Real.pi * (1 - Real.exp (-t)) := by
-    filter_upwards [Ioi_mem_nhds (zero_lt_one' ℝ)] with t ht using disc_integral ht
-  have hs : sgn ℝ true = 1 := by simp [sgn]
-  rw [gaussDens, hs, this.deriv_eq]
-  have := (((hasDerivAt_id (1 : ℝ)).neg.exp).const_sub 1).const_mul Real.pi
-  simpa using this.deriv
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 
@@ -109,13 +58,6 @@ theorem exists_isPerpInst (n : ℕ) (s : Bool) :
   obtain ⟨I, -⟩ := exists_signature 0 0
   exact ⟨_, _, _, _, _, _, rfl, isPerpInst_ofSigns I.cm s (fun _ : Fin n => true)⟩
 
-theorem gaussSum_ne_zero {I I' : AutInst} {e : I'.E ≃+* I.E} {s : Bool} {x : Fin I.n → I.E}
-    {A : Matrix (Fin I.n) (Fin I'.n) I.E} {xf : I.Gf} (h : IsPerpInst I I' e s x A xf) :
-    gaussSum I (sgn I.E s) (1, xf) ≠ 0 := by
-  intro h0
-  have := ENNReal.tsum_eq_zero.1 h0 ⟨x, h.2.2.2.2.2.1, h.2.2.1⟩
-  rw [ENNReal.ofReal_eq_zero] at this
-  exact absurd this (not_le.2 (Finset.prod_pos fun v _ => gauss_pos _))
 
 theorem const_agree (E : Type) [Field E] [NumberField E] [StarRing E] (M : ℕ) (hv : 0 < Formalism.HermitianLatticesTheory.vInv E)
     (hL : Formalism.HermitianLatticesTheory.lValEta E M ≠ 0) :

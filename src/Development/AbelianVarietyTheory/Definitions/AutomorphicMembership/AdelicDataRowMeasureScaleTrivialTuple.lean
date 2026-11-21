@@ -47,8 +47,6 @@ theorem mem_ThS {ψ : AddChar (AF D.host.F) ℂ} {V W : HSp D} {f : WA V W → �
 
 theorem CuspS_le (θ : InfF D) (V : HSp D) : CuspS θ V ≤ AFs θ V := Submodule.span_mono fun _ h => h.1
 
-theorem const_mem_AFs (θ : InfF D) (V : HSp D) (c : ℂ) : (fun _ => c) ∈ AFs θ V :=
-  Submodule.subset_span (isAutFunSm_const θ V c)
 
 theorem CuspS_eq_of_aniso (θ : InfF D) {V : HSp D} (h : IsAniso V) : CuspS θ V = AFs θ V := by
   unfold CuspS AFs
@@ -246,15 +244,6 @@ theorem isAdmissibleIntegralBasisChange_one {V W : HSp D} (h : V.rank ≠ W.rank
   exact ⟨h, isHC_one D, isHC_one D, resEta_parity h0 (by rw [Nat.even_iff] at hV; omega),
     resEta_parity h0 (by rw [Nat.even_iff] at hW; omega)⟩
 
-theorem isWeilOn_rank_zero (ψ : AddChar (AF D.host.F) ℂ) {V W : HSp D} (hV : 0 < V.rank) (hW : W.rank = 0) (χ : IdC D) :
-    IsWeilOn ψ V W χ 1 1 := by
-  haveI : IsEmpty (Fin W.rank) := by rw [hW]; infer_instance
-  have hs : ∀ x y : WA V W, x = y := fun x y => Matrix.ext fun _ j => isEmptyElim j
-  refine ⟨fun g h w₀ Φ Φ' e => ?_, fun _ _ _ _ _ => rfl, fun Φ w => (continuous_const : Continuous fun _ : GA D V × GA D W => Φ.1 w), fun _ _ _ _ _ _ => rfl,
-    fun e _ g h _ _ x y _ hy => ⟨1, one_pos, fun ℓ _ Φ => ?_⟩⟩
-  · rw [hs (actHom V W g h w₀) w₀]; exact e
-  · have hy1 : y = 1 := Units.ext (by rw [hy, Matrix.det_isEmpty]; simp)
-    simp [splitFac, hy1]
 
 structure Tow (D : D7) where
   Xs : ℕ → ℕ → HSp D
@@ -412,22 +401,7 @@ theorem nonempty_realMeas (D : D7) : Nonempty (RealMeas D) := by
 def memberBes (D : D7) (u : D.what₂.Word) : BesDat (D.sp.X 0) (D.sp.Y 0) (D.sp.iXY 0) :=
   GlobalTheory.BesselCompare.toBes (GlobalTheory.IndefiniteRowSideFullHecke.BesselData.memberDatum D u)
 
-theorem memberBes_spec (D : D7) (u : D.what₂.Word) :
-    (memberBes D u).e = GlobalTheory.BesselCompare.eMat (D.sp.Y 0) D.sp.hypE ∧
-    (memberBes D u).z = GlobalTheory.BesselCompare.co (D.sp.Y 0) (D.zmOf u) ∧ (∀ i, (memberBes D u).c i = D.host.xi0) ∧
-    ((memberBes D u).y : GA D (D.sp.Y 0)) = 1 := ⟨rfl, rfl, fun _ => rfl, rfl⟩
 
-theorem memberBes_norm (D : D7) (u : D.what₂.Word) :
-    Formalism.UG.hform (D.sp.cm.sig : D.host.E →+* D.host.E) (D.sp.Y 0).gram (memberBes D u).z (memberBes D u).z =
-      -((D.mem u).A.T : D.host.E) := by
-  rw [(memberBes_spec D u).2.1, GlobalTheory.BesselCompare.hform_co]
-  unfold D7.zmOf
-  rw [map_smul, LinearMap.map_smulₛₗ (D.sp.Y 0).hT, LinearMap.smul_apply, D.sp.zm_norm, D.sp_T, ← D.cOf_eq u,
-    ← bridge_star_holds D.R D.host]
-  have hc := D.cOf_ne u
-  have hc' : star (D.cOf u) ≠ 0 := star_ne_zero.2 hc
-  simp only [smul_eq_mul, starRingEnd_apply, star_inv₀]
-  field_simp
 
 def PlaceOver (D : D7) (ε : AE D) (𝔭 : Ideal (𝓞 D.host.K)) : Prop :=
   ∀ π ∈ 𝔭, π ≠ 0 → GlobalTheory.IndefiniteRowSideFullHecke.BesselData.PlaceDivides D ε (algebraMap (𝓞 D.host.K) (𝓞 D.host.E) π)
@@ -476,9 +450,7 @@ def posSym (_ : RecFun D θ ψ) (u : D.what₂.Word) : BesDat (D.sp.X 0) (D.sp.Y
 
 def pos1 (_ : RecFun D θ ψ) (u : D.what₂.Word) : BesDat (D.sp.X 0) (D.sp.Y 0) (D.sp.iXY 0) := memberBes D u
 
-theorem firstPosition_translate_one (u) : ((Rc.pos1 u).y : GA D (D.sp.Y 0)) = 1 := rfl
 
-theorem posSym_y (u) : ((Rc.posSym u).y : GA D (D.sp.Y 0)) = 1 := rfl
 
 def petC (V : HSp D) : ℝ := petCOf D Rc.petF Rc.meas.petR V
 
@@ -717,30 +689,11 @@ theorem weilUnrTied : WeilUnramifiedCondition W := fun V V' χ χ' hr h1 h2 S u1
   rw [h.om V V' χ χ' (k, k') Φ ⟨_, mem_ThS.2 hf⟩ rfl,
     Wf.om_unr V V' _ _ ⟨hr, hc χ, hc χ', h1, h2⟩ S u1 u2 k hk k' hk' _ hΦ]
 
-theorem allTied (ht : TypAdd D) {A : ProvA} (hr : RealTied D) (hp : ProvisionCompatibility D A) : Nonempty (AllTied D X A) := by
-  obtain ⟨K, -⟩ := h.kfin
-  exact ⟨⟨T, h.afTiedSm, h.typTied ht, W, h.weilUnrTied, K, h.phiUp, B, hr, hp⟩⟩
 
 theorem petC_eq (V : HSp D) : T.petC V = Rc.petC V := by
   unfold ThetaTied.petC RecFun.petC; rw [h.petF, h.petR]
 
-theorem tieRowIsom (hi : Rc.RowIsom) : X.TieRowIsom := fun μ j hj x y => by
-  obtain ⟨⟨m, hm⟩, h2⟩ := hi μ j hj x y
-  have e := T.pet _ (D.sp.Y_sig j) m.1 m.2 hm (X.rowAF μ j x) (X.rowAF μ j y)
-  unfold ThetaX.petY
-  rw [e, (h2 m hm).2, h.row, h.row, h.mY, ← h.petC_eq]
-  simp only [ThetaTied.petC, Complex.ofReal_mul, mul_assoc]
 
-theorem tieBm (hi : Rc.TopTie) : X.TieBm := fun u μ φ F => by
-  have hι : HSpace.IsIsomEmb (D.sp.Y D.R.m) (D.sp.X D.R.m) (D.sp.iX'.comp D.sp.eYm.symm.toLinearMap) := fun x y => by
-    have h1 := D.sp.iX'_isom (D.sp.eYm.symm x) (D.sp.eYm.symm y)
-    have h2 := D.sp.eYm_isom (D.sp.eYm.symm x) (D.sp.eYm.symm y)
-    simp only [LinearEquiv.coe_coe, LinearEquiv.apply_symm_apply] at h2
-    exact h1.trans h2.symm
-  have hs := fun g => (GlobalTheory.AutFunCompare.embRel_iff _ _ _ hι _ g).2 rfl
-  obtain ⟨⟨m, hm⟩, h2⟩ := hi u μ φ F _ hs
-  rw [T.btop _ _ _ (D.sp.Y_sig _) hι m.1 m.2 hm _ hs, (h2 m hm).2]
-  simp only [T.conj, star_star, h.col, h.row, h.mY, ← h.petC_eq, ThetaTied.petC, Complex.ofReal_mul, mul_assoc]
 
 theorem carY_eq (μ s i) : T.eChr (X.carY μ s i) = Rc.carY μ s i := by
   unfold ThetaX.carY RecFun.carY

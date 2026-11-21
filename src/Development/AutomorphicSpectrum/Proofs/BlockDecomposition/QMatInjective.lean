@@ -67,8 +67,6 @@ def qAlg (ε : Fin n → Bool) (W : Flag n a) : Subalgebra ℂ (Matrix (Fin n) (
           Matrix.mul_one, Jm_mul_self]
       rw [e, e2, Matrix.smul_mulVec, Matrix.one_mulVec]; exact (W i).smul_mem _ hy
 
-theorem mem_qAlg {ε : Fin n → Bool} {W : Flag n a} {Y : Matrix (Fin n) (Fin n) ℂ} :
-    Y ∈ qAlg ε W ↔ ∀ i, ∀ y ∈ W i, Y *ᵥ y ∈ W i ∧ jAdj ε Y *ᵥ y ∈ W i := Iff.rfl
 
 theorem jAdj_mem_qAlg {ε : Fin n → Bool} {W : Flag n a} {Y : Matrix (Fin n) (Fin n) ℂ} (h : Y ∈ qAlg ε W) :
     jAdj ε Y ∈ qAlg ε W := fun i y hy => ⟨(h i y hy).2, by rw [jAdj_jAdj]; exact (h i y hy).1⟩

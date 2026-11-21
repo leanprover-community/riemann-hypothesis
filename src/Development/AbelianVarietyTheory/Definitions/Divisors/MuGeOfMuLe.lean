@@ -57,14 +57,6 @@ def SecJetsLow : Prop := ∀ g : ℕ, 0 < g → ∃ C : ℝ, ∀ (K : Type) [Fie
       JetSysLow h'' (latBC K'' F.lieLat) (fun i => algebraMap K' K'' (x i)) n (-F.falt h / 2 - C)
         fun i σ => jetBd F.P₀.g (4 * n ^ 2) i (ρ (σ.comp (algebraMap K K'')))
 
-theorem muGe_of_muLe {K : Type} [Field K] [NumberField K] {m : ℕ} {h : HermFam K (Fin m → K)}
-    {E : Submodule (𝓞 K) (Fin m → K)} {ν : ℝ} (h₁ : MuLe h E ν) (h₂ : deg h E = m * ν)
-    (h₃ : ∀ V : Submodule K (Fin m → K), latRank K (E ⊓ V.restrictScalars (𝓞 K)) = Module.finrank K V) : MuGe h E ν := by
-  intro V
-  have := h₁ (E ⊓ V.restrictScalars (𝓞 K)) inf_le_left
-  rw [h₃] at this
-  rw [h₂]
-  linarith
 
 end GlobalTheory.MBLow
 

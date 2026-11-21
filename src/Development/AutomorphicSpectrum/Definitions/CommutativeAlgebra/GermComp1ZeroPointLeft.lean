@@ -157,9 +157,6 @@ theorem rhoH_fst (B : FB R d O) (a : O) (y : (Fin d → R) × (Fin d → R)) :
     (rhoH B a y).1 = (rho B a).mulVec y.1 := by
   rw [rhoH_apply]
 
-theorem beta_inr (B : FB R d O) (p : ℕ) (φ : Fin d → R) :
-    beta B p (0, φ) = (hw B p).transpose.mulVec φ := by
-  simp [beta_apply]
 
 theorem dotProduct_beta (B : FB R d O) (p : ℕ) (u : Fin d → R) (y : (Fin d → R) × (Fin d → R)) :
     u ⬝ᵥ beta B p y = pairH B (alpha B p u) y := by
@@ -190,32 +187,8 @@ def pairHL (B : FB R d O) : ((Fin d → R) × (Fin d → R)) →ₗ[R] ((Fin d �
       simp only [pairH, Prod.smul_fst, Prod.smul_snd, smul_dotProduct, dotProduct_smul, smul_eq_mul,
         Matrix.mulVec_smul]; ring)
 
-theorem pairHL_apply (B : FB R d O) (y y' : (Fin d → R) × (Fin d → R)) : pairHL B y y' = pairH B y y' := rfl
 
-theorem pairH_inr (B : FB R d O) (y : (Fin d → R) × (Fin d → R)) (φ' : Fin d → R) :
-    pairH B y (0, φ') = φ' ⬝ᵥ y.1 := by
-  simp [pairH]
 
-theorem pairHL_bijective (B : FB R d O) : Function.Bijective (pairHL B) := by
-  constructor
-  · rw [injective_iff_map_eq_zero]
-    intro y hy
-    have h : ∀ y', pairH B y y' = 0 := fun y' => by rw [← pairHL_apply, hy]; rfl
-    have h1 : y.1 = 0 := by
-      funext i
-      simpa [pairH_inr] using h (0, Pi.single i 1)
-    have h2 : y.2 = 0 := by
-      funext i
-      simpa [pairH, h1] using h (Pi.single i 1, 0)
-    exact Prod.ext h1 h2
-  · intro f
-    let u : Fin d → R := fun i => f (0, Pi.single i 1)
-    let φ : Fin d → R := fun i => u ⬝ᵥ (bil B.sy 1 1).mulVec (Pi.single i 1) - f (Pi.single i 1, 0)
-    refine ⟨(u, φ), LinearMap.prod_ext ?_ ?_⟩
-    · refine LinearMap.pi_ext' fun i => LinearMap.ext_ring ?_
-      simp [pairHL_apply, pairH, φ]
-    · refine LinearMap.pi_ext' fun i => LinearMap.ext_ring ?_
-      simp [pairHL_apply, pairH, u]
 
 theorem bil_one_eq_zero {m : ℕ} (hm : m ≠ 0) (n : ℕ) : bil (1 : PS R 2 d) m n = 0 := by
   ext i j
@@ -235,14 +208,7 @@ theorem rho_one_eq (B : FB R d O) : rho B 1 = 1 := by
   show lin (B.A.act 1) 1 = 1
   rw [B.A.one_act, lin_pt_eq_one]
 
-theorem rhoH_one_eq (B : FB R d O) : rhoH B 1 = 1 := by
-  refine LinearMap.ext fun y => ?_
-  rw [rhoH_apply, star_one, rho_one_eq, B.ad_one, bil_one_eq_zero one_ne_zero]
-  simp
 
-theorem transH_refl : transH (pt R (n := 1) d 0) (pt R d 0) 1 = LinearMap.id := by
-  refine LinearMap.ext fun y => ?_
-  simp [transH_apply, lin_pt_eq_one, bil_one_eq_zero]
 
 theorem IsMapOf.refl (B : FB R d O) : IsMapOf (RingHom.id R) B B where
   F := fun _ => by simp
@@ -302,9 +268,6 @@ section Gauge
 
 open ReciprocityTheory.ChartRestriction.G.TB ReciprocityTheory.ChartRestriction.G.TB.WickVanishing
 
-theorem pairH_eq_betaH (B : FB R d O) (h : bil B.sy 1 1 = 0) (y y' : (Fin d → R) × (Fin d → R)) :
-    pairH B y y' = betaH R y y' := by
-  simp [pairH, h, betaH, dotProduct, Finset.sum_sub_distrib]
 
 variable (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k]
 
@@ -312,54 +275,10 @@ def toHk (h : PS k 2 d) (y : (Fin d → R) × (Fin d → R)) : (Fin d → k) × 
   (fun i => algebraMap R k (y.1 i),
     fun i => algebraMap R k (y.2 i) - (sg1 k h).mulVec (fun j => algebraMap R k (y.1 j)) i)
 
-theorem range_toHk (h : PS k 2 d) : Set.range (toHk (R := R) k h) = Hset (R := R) k h := by
-  ext ξ
-  exact ⟨fun ⟨y, e⟩ => ⟨y.1, y.2, e.symm⟩, fun ⟨u, φ, e⟩ => ⟨(u, φ), e.symm⟩⟩
 
-theorem bil_sy_gauge (B : FB R d O) (h : PS k 2 d) (hc : B.IsCanonGauge k h) (i j : Fin d) :
-    algebraMap R k (bil B.sy 1 1 i j) = sg1 k h j i - sg1 k h i j :=
-  coeff_sy_gauge k B h hc i j
 
-theorem pairH_gauge (B : FB R d O) (h : PS k 2 d) (hc : B.IsCanonGauge k h) (y y' : (Fin d → R) × (Fin d → R)) :
-    algebraMap R k (pairH B y y') = betaH k (toHk k h y) (toHk k h y') := by
-  rw [toHk, toHk, betaH_expand]
-  simp only [← bil_sy_gauge k B h hc, pairH, dotProduct, Matrix.mulVec, map_add, map_sub, map_sum, map_mul,
-    Finset.sum_sub_distrib, Finset.mul_sum]
-  congr 1
-  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
-theorem bil_ad_gauge (B : FB R d O) (h : PS k 2 d) (hc : B.IsCanonGauge k h) (a : O) (i j : Fin d) :
-    algebraMap R k (bil (B.ad a) 1 1 j i) =
-      ((dAct k B (star a)).transpose * sg1 k h - sg1 k h * dAct k B a) i j :=
-  coeff_ad_gauge k B h hc a i j
 
-theorem rhoH_gauge (B : FB R d O) (h : PS k 2 d) (hc : B.IsCanonGauge k h) (a : O)
-    (y : (Fin d → R) × (Fin d → R)) : toHk k h (rhoH B a y) = OactH k B a (toHk k h y) := by
-  have hA : ∀ b : O, (rho B b).map (algebraMap R k) = dAct k B b := fun b => by
-    ext i j
-    simp only [Matrix.map_apply, rho, lin, dAct, FB.actK, coeff_map]
-  have hM : (bil (B.ad a) 1 1).transpose.map (algebraMap R k) =
-      (dAct k B (star a)).transpose * sg1 k h - sg1 k h * dAct k B a := by
-    ext i j
-    exact bil_ad_gauge k B h hc a i j
-  have hv : ∀ (M : Matrix (Fin d) (Fin d) R) (v : Fin d → R),
-      (fun i => algebraMap R k (M.mulVec v i)) =
-        (M.map (algebraMap R k)).mulVec fun j => algebraMap R k (v j) := fun M v =>
-    funext fun i => RingHom.map_mulVec _ _ _ _
-  have h1 := hv (rho B a) y.1
-  have h2 := hv (rho B (star a)).transpose y.2
-  have h3 := hv (bil (B.ad a) 1 1).transpose y.1
-  rw [hA] at h1
-  rw [Matrix.transpose_map, hA] at h2
-  rw [hM] at h3
-  rw [rhoH_apply, toHk, toHk, OactH]
-  refine Prod.ext h1 ?_
-  funext i
-  have e : (fun i => algebraMap R k (y.2 i) - (sg1 k h).mulVec (fun j => algebraMap R k (y.1 j)) i) =
-      (fun i => algebraMap R k (y.2 i)) - (sg1 k h).mulVec (fun j => algebraMap R k (y.1 j)) := rfl
-  simp only [h1, e, Pi.sub_apply, map_sub, congrFun h2 i, congrFun h3 i, Matrix.mulVec_sub, Matrix.sub_mulVec,
-    Matrix.mulVec_mulVec]
-  ring
 
 end Gauge
 

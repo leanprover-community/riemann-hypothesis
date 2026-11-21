@@ -15,8 +15,6 @@ theorem conjC_apply (z : ℂ) : conjC z = (starRingEnd ℂ) z := rfl
 
 theorem conjCC_apply (z : ℂ × ℂ) : conjCC z = ((starRingEnd ℂ) z.1, (starRingEnd ℂ) z.2) := rfl
 
-theorem conjCC_invol (z : ℂ × ℂ) : conjCC (conjCC z) = z := by
-  simp [conjCC_apply]
 
 theorem mem_normSub_iff {k : Type} [Field k] {A : Type} [CommRing A] [Algebra k A] (c : A →ₐ[k] A)
     (a : fixU k c) :
@@ -45,21 +43,6 @@ theorem mem_normSub_iff {k : Type} [Field k] {A : Type} [CommRing A] [Algebra k 
   · intro h
     exact Subgroup.subset_closure h
 
-theorem subsingleton_complex : Subsingleton (H1 ℝ conjC) := by
-  have : normSub ℝ conjC = ⊤ := by
-    rw [eq_top_iff]
-    intro a _
-    rw [mem_normSub_iff]
-    have ha : (starRingEnd ℂ) ((a : ℂˣ) : ℂ) = ((a : ℂˣ) : ℂ) := a.2
-    have hre : (((a : ℂˣ) : ℂ).re : ℂ) = ((a : ℂˣ) : ℂ) := Complex.conj_eq_iff_re.mp ha
-    have hne : ((a : ℂˣ) : ℂ).re ≠ 0 := by
-      intro h
-      rw [h] at hre
-      exact (a : ℂˣ).ne_zero (by simpa using hre.symm)
-    exact ⟨Units.mk0 _ hne, 1, by simp [hre]⟩
-  unfold H1
-  rw [this]
-  exact QuotientGroup.subsingleton_quotient_top
 
 def u : (ℂ × ℂ)ˣ := ⟨(1, -1), (1, -1), by ext <;> simp, by ext <;> simp⟩
 
@@ -85,17 +68,5 @@ theorem nontrivial_prod : Nontrivial (H1 ℝ conjCC) := by
   unfold H1
   exact ⟨⟨QuotientGroup.mk ⟨u, u_mem⟩, 1, fun h => u_not_mem ((QuotientGroup.eq_one_iff _).mp h)⟩⟩
 
-theorem simT_ne_top : simT ℝ conjCC ≠ ⊤ := by
-  intro h
-  have hm : (⟨(1, 2), (1, 2⁻¹), by ext <;> simp, by ext <;> simp⟩ : (ℂ × ℂ)ˣ) ∈ simT ℝ conjCC := by
-    rw [h]; trivial
-  obtain ⟨t, ht⟩ := hm
-  have h' : ((1, 2) : ℂ × ℂ) * conjCC (1, 2) = algebraMap ℝ (ℂ × ℂ) t := ht
-  have h1 := congrArg (fun z : ℂ × ℂ => z.1.re) h'
-  have h2 := congrArg (fun z : ℂ × ℂ => z.2.re) h'
-  simp only [conjCC_apply, Prod.fst_mul, Prod.snd_mul, Complex.mul_conj, Prod.algebraMap_apply,
-    Complex.coe_algebraMap, Complex.ofReal_re] at h1 h2
-  simp [Complex.normSq_apply] at h1 h2
-  linarith
 
 end GlobalTheory.LKTorus.Model

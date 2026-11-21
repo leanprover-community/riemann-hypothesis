@@ -58,8 +58,6 @@ theorem ne_Zsp {V : HSp D} (h : 0 < V.rank) : V ≠ Zsp D := fun e => by
 def thG (W : HSp D) : (HG D →ₗ[ℂ] HG D) →ₗ[ℂ] (⊤ : Submodule ℂ (HG D)) →ₗ[ℂ] HG D :=
   if W = Zsp D then 0 else LinearMap.lcomp ℂ (HG D) (⊤ : Submodule ℂ (HG D)).subtype
 
-theorem thG_Z (Φ F) : thG D (Zsp D) Φ F = 0 := by
-  unfold thG; rw [if_pos rfl]; rfl
 
 theorem thG_pos {W : HSp D} (h : 0 < W.rank) (Φ F) : thG D W Φ F = Φ F := by
   unfold thG; rw [if_neg (ne_Zsp D h)]; rfl
@@ -169,14 +167,7 @@ theorem spY_pos (j : ℕ) (hj : j ≤ D.R.m) : 0 < (D.sp.Y j).rank := by
   have := rankY_pos D D.R.t j hj
   rwa [tow_rec] at this
 
-theorem spX_pos (j : ℕ) (hj : j ≤ D.R.m) : 0 < (D.sp.X j).rank := by
-  have := rankX_pos D D.R.t j hj
-  rwa [tow_rec] at this
 
-theorem thetaG_row : (thetaG D).TieRowIsom := fun μ j _ x y => by
-  unfold ThetaX.petY
-  rw [thetaG_mY, one_mul]
-  exact (inner_rowJ D μ j x (rowJ D μ j y)).trans (by rw [rowQ_rowJ])
 
 theorem thetaG_io : (thetaG D).TieIo := fun μ j hj y x => by
   unfold ThetaX.petY ThetaX.dnY
@@ -187,10 +178,7 @@ theorem thetaG_io : (thetaG D).TieIo := fun μ j hj y x => by
   show inner ℂ (rowJ D μ j (D.what₂.io μ j (rowQ D μ (j + 1) (rowJ D μ (j + 1) y)))) (rowJ D μ j x) = _
   rw [rowQ_rowJ, inner_rowJ, rowQ_rowJ]
 
-theorem thetaG_rowTyp : Formalism.MainNotions.InnerProductFormulaField.TieRowTyp (thetaG D) := fun _ _ _ _ => trivial
 
-theorem thetaG_typStable : Formalism.MainNotions.ZetaProductPairs.TypStable (thetaG D) := fun _ _ =>
-  ⟨fun _ _ _ => trivial, fun _ _ _ _ _ => trivial⟩
 
 theorem cj_ne {V : Type} [AddCommGroup V] [Module ℂ V] {v : V} (h : v ≠ 0) : cj V v ≠ 0 := fun e => h (by
   have := congrArg (cj V) e
@@ -201,39 +189,13 @@ theorem cj_ne {V : Type} [AddCommGroup V] [Module ℂ V] {v : V} (h : v ≠ 0) :
 
 theorem inner_self_ne {v : HG D} (h : v ≠ 0) : inner ℂ v v ≠ 0 := inner_self_ne_zero.mpr h
 
-theorem stableG (V : HSp D) (π : Submodule ℂ (HG D)) : (thetaG D).IsStable V π :=
-  ⟨fun _ _ h => h, fun _ _ _ _ h => h⟩
 
 def muOf (P : TPar D) (j : ℕ) : Multiplicative (D.what₂.Tau → ℚ) :=
   Multiplicative.ofAdd fun τ => if h : 1 ≤ j ∧ j ≤ D.R.m then -P.e τ ⟨j - 1, by omega⟩ else 0
 
-theorem muOf_isMu (P : TPar D) : Formalism.MainNotions.CayleySignature.IsMu (thetaG D) P (muOf D P) := fun j τ => by
-  show (if h : 1 ≤ j.1 + 1 ∧ j.1 + 1 ≤ D.R.m then -P.e τ ⟨j.1 + 1 - 1, by omega⟩ else 0) = _
-  rw [dif_pos ⟨Nat.le_add_left _ _, j.2⟩]
-  rfl
 
-theorem thetaFamily_admissible_one : Formalism.MainNotions.CayleySignature.RallisSiegelWeilFormula D (thetaG D) := fun P _ => by
-  refine ⟨muOf D P, fun _ => Submodule.span ℂ {v0 D}, muOf_isMu D P, fun j _ => ⟨⟨stableG D _ _, ?_, ?_⟩,
-    le_top, le_top⟩, fun j hj φ hφ => ?_⟩
-  · exact (nonzero_span_atom (v0 D) (v0_ne D)).1
-  · intro π' hle _
-    rcases eq_or_lt_of_le hle with h | h
-    · exact Or.inr h
-    · exact Or.inl ((nonzero_span_atom (v0 D) (v0_ne D)).2 π' h)
-  · refine ⟨1, fun _ => LinearMap.id, fun _ => ⟨φ, trivial⟩, fun _ => ⟨trivial, trivial, hφ⟩, ?_⟩
-    rw [Fin.sum_univ_one]
-    exact (thG_pos D (rankX_pos D P.t (j + 1) hj) LinearMap.id ⟨φ, trivial⟩).symm
 
-theorem thetaFamily_admissible_two : Formalism.MainNotions.CayleySignature.LiftParameterConditions D (thetaG D) := fun P _ π hπ _ => by
-  obtain ⟨φ, hφ, h0⟩ := (Submodule.ne_bot_iff π).mp hπ.2.1
-  exact ⟨φ, hφ, ⟨cj (HG D) φ, trivial⟩, trivial,
-    Or.inr ⟨rfl, inner_self_ne D (cj_ne h0)⟩⟩
 
-theorem perNZ_inner {t j : ℕ} {φ : HG D} {F : (⊤ : Submodule ℂ (HG D))}
-    (h : Formalism.MainNotions.CayleySignature.PerNZ (thetaG D) t j φ F) : inner ℂ (cj (HG D) φ) (F : HG D) ≠ 0 := by
-  rcases h with ⟨_, _, _, h⟩ | ⟨_, h⟩
-  · exact h
-  · exact h
 
 theorem cj_zero (V : Type) [AddCommGroup V] [Module ℂ V] : cj V 0 = 0 := by
   have h0 := cj_smul V 0 (0 : V)
@@ -252,30 +214,10 @@ theorem key3 (W W' : HSp D) (hW' : 0 < W'.rank) (Φ' : HG D →ₗ[ℂ] HG D) (�
   rw [inner_smul_right]
   exact mul_ne_zero (inner_self_ne D hF) (inner_self_ne D (cj_ne hφ))
 
-theorem thetaFamily_admissible_three : Formalism.MainNotions.CayleySignature.ThetaUnfoldingFreeData D (thetaG D) := fun P _ μ _ j hj φ' Φ' _ _ _ F _ hN => by
-  obtain ⟨Φ, hΦ⟩ := key3 D ((tow D P.t).Xs (j + 1)) ((tow D P.t).Ys j) (rankY_pos D P.t j hj.le) Φ' φ' F
-    (perNZ_inner D hN)
-  refine ⟨Φ, trivial, trivial, fun G hG => Or.inl ⟨hj, PUnit.unit, PUnit.unit, ?_⟩⟩
-  have hG' : (G.1 : HG D) = thG D ((tow D P.t).Ys j) Φ F := hG
-  show inner ℂ (cj (HG D) (φ'.1 : HG D)) (G.1 : HG D) ≠ 0
-  rw [hG']
-  exact hΦ
 
-theorem thetaFamily_admissible_four : Formalism.MainNotions.CayleySignature.ThetaStablePeriodVanishing D (thetaG D) := fun _ _ _ _ _ _ _ _ _ _ _ _ _ => trivial
 
-theorem thetaFamily_admissible_five : Formalism.MainNotions.CayleySignature.RealThetaLiftDiscreteSeries D (thetaG D) := fun P _ μ _ =>
-  ⟨fun _ _ _ _ _ _ _ => trivial, fun j _ i hi _ Φ F _ => by
-    obtain ⟨i, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : i ≠ 0)
-    exact thG_Z D Φ F⟩
 
-theorem thetaFamily_admissible_six : Formalism.MainNotions.CayleySignature.RealConstantNonvanishing D (thetaG D) := fun _ _ _ =>
-  ⟨fun _ _ _ => trivial, fun _ _ _ _ _ => trivial⟩
 
-theorem thetaFamily_admissible : Formalism.MainNotions.CayleySignature.AdmS D (thetaG D) :=
-  ⟨thetaFamily_admissible_one D, thetaFamily_admissible_two D, thetaFamily_admissible_three D, thetaFamily_admissible_four D, thetaFamily_admissible_five D, thetaFamily_admissible_six D⟩
 
-theorem thetaG_exists : ∃ X : ThetaX D, X.TieRowIsom ∧ X.TieIo ∧ Formalism.MainNotions.CayleySignature.AdmS D X ∧
-    Formalism.MainNotions.InnerProductFormulaField.TieRowTyp X ∧ Formalism.MainNotions.ZetaProductPairs.TypStable X :=
-  ⟨thetaG D, thetaG_row D, thetaG_io D, thetaFamily_admissible D, thetaG_rowTyp D, thetaG_typStable D⟩
 
 end Formalism.BasicNotions.Examples₂.NZ

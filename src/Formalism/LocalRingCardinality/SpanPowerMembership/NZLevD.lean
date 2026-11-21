@@ -108,13 +108,6 @@ theorem eq_of_dom {S : Type*} [Fintype S] {k : ℕ} (μ ν : S → Fin k → ℕ
 
 instance : Infinite Kf := Infinite.of_injective (Nat.cast : ℕ → Kf) Nat.cast_injective
 
-theorem bV_ne (v : Fin P.nV) (s : Fin (P.n' v)) (i : IdxV P v s) : bV P v s i ≠ 0 := by
-  unfold bV
-  generalize_proofs hh
-  intro h0
-  have h1 := (hh.choose_spec.2 i).2.1
-  rw [h0, MonomialOrder.leadingCoeff_zero] at h1
-  exact zero_ne_one h1
 
 theorem bV_dom (v : Fin P.nV) (s : Fin (P.n' v)) (i : IdxV P v s) (c : ℕ) :
     (∑ a : Fin (P.m + 1) with a.val < c, rowWt i.1 a) ≤ ∑ a : Fin (P.m + 1) with a.val < c, nuV P v s a := by

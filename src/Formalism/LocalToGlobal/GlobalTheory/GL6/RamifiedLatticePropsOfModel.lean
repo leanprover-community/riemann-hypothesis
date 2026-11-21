@@ -41,16 +41,7 @@ def LatticeInclusionLength : Prop :=
 
 end Parts
 
-theorem ramified_lattice_props_of_model (D : D7) (u : D.what₂.Word) (M : FreeRankModel (D.mem u).A) (hS : HidaSetting D u) (hd : 0 < D.duS u)
-    (hb : RamifiedSlopeFormula D u) (hl : LatticeInclusionLength D u) : Conclusion2 D u :=
-  ⟨ramified_rank_formula D u M hS, hb, ramified_max_slope_le_of_model D u M hS hd, hl⟩
 
-theorem ramified_lattice_of_free_model
-    (h : ∀ (D : D7) (u : D.what₂.Word), FormsCompatible D u → HidaSetting D u → admS D u →
-      Nonempty (FreeRankModel (D.mem u).A) ∧ 0 < D.duS u ∧ RamifiedSlopeFormula D u ∧ LatticeInclusionLength D u) : RamifiedLatticeFamily := by
-  intro D u hF hS hA
-  obtain ⟨⟨M⟩, hd, hb, hl⟩ := h D u hF hS hA
-  exact ramified_lattice_props_of_model D u M hS hd hb hl
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 

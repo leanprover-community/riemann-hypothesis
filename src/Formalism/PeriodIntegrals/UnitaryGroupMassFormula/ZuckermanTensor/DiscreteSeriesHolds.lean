@@ -9,8 +9,5 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ZuckermanTensor.SquareI
 namespace PI.ZuckTensorWork
 open PI.ZuckTensor
 
-theorem discrete_series_holds : DSConj :=
-  dsConj_of unitary_representation_holds irreducible_conjecture_holds square_integrable_conj (kTypeConj_of compact_dominant_holds) (kTypeConjInv_of compact_dominant_holds)
-    lowest_k_type_holds vector_norm_holds
 
 end PI.ZuckTensorWork

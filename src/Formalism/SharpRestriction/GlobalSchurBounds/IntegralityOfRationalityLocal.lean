@@ -40,32 +40,6 @@ def IntegralityLevelZeroUnderForms : Prop := FormsTwistCompatibilityFamily D u �
 
 variable {D u}
 
-theorem ramified_lines_of_level_zero (hF : FiSt0 D u) (hX : CrossDia0 D u) (hU : UnfAll0 D u) : LocalLatticeBases.HeckeRamifiedLevelZero D u := by
-  intro v φ hφ
-  have hφ' : φ ∈ (D.fm u).Fi 0 ∧ ∀ v', Nm D u 0 v' φ = 0 := by
-    simpa only [MramI, Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker] using hφ
-  obtain ⟨hFi, hN⟩ := hφ'
-  obtain ⟨H⟩ := hU v
-  obtain ⟨hUF, hDF⟩ := hF v φ hFi
-  have hpass : ∀ v', v' ≠ v → ∀ f : Fn D u 0 →ₗ[ℂ] Fn D u 0,
-      (∀ a, dia D u 0 v' a (f φ) = f (dia D u 0 v' a φ)) → Nm D u 0 v' (f φ) = 0 := by
-    intro v' _ f hf
-    have h : Nm D u 0 v' (f φ) = f (Nm D u 0 v' φ) := by
-      simp only [Nm, LinearMap.sum_apply, map_sum, hf]
-    rw [h, hN v', map_zero]
-  have memR : ∀ ψ, ψ ∈ (D.fm u).Fi 0 → (∀ v', Nm D u 0 v' ψ = 0) → ψ ∈ MramI D u 0 := by
-    intro ψ h1 h2
-    simp only [MramI, Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker]
-    exact ⟨h1, h2⟩
-  refine ⟨memR _ hUF fun v' => ?_, memR _ hDF fun v' => ?_, H.UD_ram hFi (hN v) hDF⟩
-  · by_cases h : v' = v
-    · subst h
-      exact H.Nm_U hFi (hN _) hUF
-    · exact hpass v' h _ fun a => (hX v v' (Ne.symm h) φ hFi a).1
-  · by_cases h : v' = v
-    · subst h
-      exact H.Nm_D hFi (hN _) hDF
-    · exact hpass v' h _ fun a => (hX v v' (Ne.symm h) φ hFi a).2
 
 theorem integrality_of_rationality_local (h : IntAtT D u) : LocalLatticeBases.HeckeIntegralLevelZero D u :=
   fun w hw hs v => h 0 (Nat.zero_le _) w hw hs v
@@ -79,13 +53,6 @@ theorem hI_tied (Fm : FamP eps) (tie : FamU Fm fun D u => FormsTwistCompatibilit
   obtain ⟨hT, hA⟩ := hx0 x hx hx1 i u hs
   exact hI _ _ hT hA hs
 
-theorem hR_tied (Fm : FamP eps) (tie : FamU Fm fun D u => FormsTwistCompatibilityFamily D u ∧ admS D u)
-    (hF : ∀ (D : D7) (u : D.what₂.Word), FiSt0T D u) (hX : ∀ (D : D7) (u : D.what₂.Word), CrossDia0T D u)
-    (hU : ∀ (D : D7) (u : D.what₂.Word), UnfAll0T D u) : FamU Fm LocalLatticeBases.HeckeRamifiedLevelZero := by
-  obtain ⟨x0, hx0⟩ := tie
-  refine ⟨x0, fun x hx hx1 i u hs => ?_⟩
-  obtain ⟨hT, hA⟩ := hx0 x hx hx1 i u hs
-  exact ramified_lines_of_level_zero (hF _ _ hT hA hs) (hX _ _ hT hA hs) (hU _ _ hT hA hs)
 
 end Formalism.MainNotions.RT
 

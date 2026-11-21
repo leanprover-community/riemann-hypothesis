@@ -31,13 +31,7 @@ theorem relLength_sup_eq_add (A B C : Submodule R V) :
     le_sup_right
   rwa [relLength_sup_left, relLength_sup_left, ← sup_assoc, relLength_sup_left] at h
 
-theorem relLength_eq_add_sup_of_le {A B : Submodule R V} (hBA : B ≤ A) (C : Submodule R V) :
-    relLength A C = relLength A (B ⊔ C) + relLength B C := by
-  rw [← relLength_sup_eq_add, sup_eq_left.mpr hBA]
 
-theorem relLength_eq_add_inf_of_le (A : Submodule R V) {B C : Submodule R V} (hCB : C ≤ B) :
-    relLength A C = relLength A B + relLength (A ⊓ B) C := by
-  rw [← relLength_inf_eq_add, inf_eq_right.mpr hCB]
 
 theorem relLength_le_add (A B C : Submodule R V) :
     relLength A C ≤ relLength A B + relLength B C :=
@@ -123,12 +117,7 @@ theorem inf_left (hAC : LengthCommensurable A C) (hBC : LengthCommensurable B C)
     LengthCommensurable (A ⊓ B) C :=
   (hAC.symm.inf_right hBC.symm).symm
 
-theorem sup_left (hAC : LengthCommensurable A C) (hBC : LengthCommensurable B C) :
-    LengthCommensurable (A ⊔ B) C :=
-  (hAC.symm.sup_right hBC.symm).symm
 
-theorem sup_inf (h : LengthCommensurable A B) : LengthCommensurable (A ⊔ B) (A ⊓ B) :=
-  ((refl A).sup_left h.symm).inf_right (h.sup_left (refl B))
 
 theorem inf (hA : LengthCommensurable A A') (hB : LengthCommensurable B B') :
     LengthCommensurable (A ⊓ B) (A' ⊓ B') :=
@@ -176,35 +165,13 @@ theorem signedLength_eq_add (hAB : LengthCommensurable A B) (hBC : LengthCommens
     hBC.signedLength_eq_toNat_sub_of_le (hAB.symm.trans hAD) hB hC]
   ring
 
-theorem signedLength_add (hAB : LengthCommensurable A B) (hBC : LengthCommensurable B C) :
-    signedLength A B + signedLength B C = signedLength A C :=
-  (hAB.signedLength_eq_add hBC).symm
 
-theorem signedLength_eq_sub_right (hAC : LengthCommensurable A C) (hBC : LengthCommensurable B C) :
-    signedLength A B = signedLength A C - signedLength B C := by
-  rw [hAC.signedLength_eq_add hBC.symm, hBC.signedLength_swap, sub_eq_add_neg]
 
-theorem signedLength_eq_sub_left (hCA : LengthCommensurable C A) (hCB : LengthCommensurable C B) :
-    signedLength A B = signedLength C B - signedLength C A := by
-  rw [hCA.symm.signedLength_eq_add hCB, hCA.signedLength_swap, neg_add_eq_sub]
 
-theorem signedLength_eq_toNat_sub_of_ge {D : Submodule R V} (h : LengthCommensurable A B)
-    (hDA : LengthCommensurable D A) (hAD : A ≤ D) (hBD : B ≤ D) :
-    signedLength A B = ((relLength D B).toNat : ℤ) - ((relLength D A).toNat : ℤ) := by
-  rw [hDA.signedLength_eq_sub_left (hDA.trans h), hDA.signedLength_of_ge hAD,
-    (hDA.trans h).signedLength_of_ge hBD]
 
 end LengthCommensurable
 
-theorem lengthCommensurable_finset_inf' {ι : Type*} {s : Finset ι} (hs : s.Nonempty)
-    {f : ι → Submodule R V} (h : ∀ i ∈ s, LengthCommensurable A (f i)) :
-    LengthCommensurable A (s.inf' hs f) :=
-  Finset.inf'_induction hs f (p := LengthCommensurable A) (fun _ h₁ _ h₂ => h₁.inf_right h₂) h
 
-theorem lengthCommensurable_finset_sup' {ι : Type*} {s : Finset ι} (hs : s.Nonempty)
-    {f : ι → Submodule R V} (h : ∀ i ∈ s, LengthCommensurable A (f i)) :
-    LengthCommensurable A (s.sup' hs f) :=
-  Finset.sup'_induction hs f (p := LengthCommensurable A) (fun _ h₁ _ h₂ => h₁.sup_right h₂) h
 
 end Commensurable
 

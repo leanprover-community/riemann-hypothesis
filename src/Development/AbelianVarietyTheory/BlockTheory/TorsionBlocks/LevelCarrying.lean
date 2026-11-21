@@ -137,14 +137,6 @@ def LevelActionAt (T : Core D) (j : ℕ) : Prop :=
 def LevelActionSt (D : D7) : Prop :=
   ∀ T : Core D, T.Q.Pins → ∀ j, InR D j → LevelActionAt T j
 
-theorem levelActionSt_of_principal (h : PrincipalLevelAction) (D : D7) : LevelActionSt D :=
-  fun _ hp _ _ => ⟨h _ _ _ _ _ _ hp.2.1.2, fun _ _ => h _ _ _ _ _ _ hp.2.1.2⟩
 
-theorem LevelActionAt.matrixGroup {T : Core D} {j : ℕ} (h : LevelActionAt T j)
-    (f : G0g D.nd →* LevelAut (T.Q.Dw j) T.Q.l) :
-    ActionLaws (fun g => levelRel (T.Q.Xo j) T.Q.c (f g) : RelFam (T.Q.Xo j) T.Q.c (G0g D.nd)) ∧
-      ∀ c' : Coeff T.Q.l, T.Q.c.F ≤ c'.F →
-        ActionLaws (fun g => levelRel (T.Q.Xo j) c' (f g) : RelFam (T.Q.Xo j) c' (G0g D.nd)) :=
-  ⟨ActionLaws.comap h.1 f, fun c' hc => ActionLaws.comap (h.2 c' hc) f⟩
 
 end GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms

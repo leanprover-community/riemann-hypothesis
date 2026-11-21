@@ -496,21 +496,6 @@ theorem exists_good_of_cover (T : Core D) (hQ : T.Q.Pins) (j : ℕ) (hj : InR D 
   obtain ⟨U, dict, Kf, h, -⟩ := exists_good_pin T hQ j hj c' hle d e a1 a2 a3 a4 a5 ι hι x hx
   exact ⟨U, dict, Kf, h⟩
 
-theorem exists_match_of_cover (T : CoreJ D) (hT : LawsJ T) (j : ℕ) (hj : InR D j) (c' : Coeff T.Q.l) (hle : T.Q.c.F ≤ c'.F)
-    (d : DeltaDat (T.Q.Xo j) c' 0) (e : ℕ) (a1 : d.pd = 15 ^ e) (a2 : d.IsLev) (a3 : d.l₂.A = 1)
-    (a4 : FnAlgClosed d.Xo₂ d.c₂) (a5 : ∀ s : ℂ ≃+* ℂ, (∀ a ∈ T.Q.c.F, s a = a) → ∀ a ∈ c'.F, s a ∈ c'.F) :
-    ∃ U dict Kf, (⟨c', hle, d, U, dict, Kf⟩ : Deep T.toCore j).Good e (fieldSz d.c₂.F) ∧
-      Deep.Match (⟨c', hle, d, U, dict, Kf⟩ : Deep T.toCore j) := by
-  have hW : (D.sp.W j).rank = D.R.r := D.sp.W_rank j hj.1 hj.2
-  let res : (d.c₂.F →+* ℂ) → (T.Q.c.F →+* ℂ) := fun σ =>
-    σ.comp ((d.eF : c'.F →+* d.c₂.F).comp (IntermediateField.inclusion hle).toRingHom)
-  have hres : ∀ σ, GoodEmb d.c₂ σ → GoodEmb T.Q.c (res σ) := fun _ h => h
-  have hι := (GlobalTheory.TupleCover.iotaOK_and_frame T hT j hj _ T.good_σ₀ _ (hT.spaceW j hj _ T.good_σ₀) hW).1
-  obtain ⟨U, dict, Kf, h, hp⟩ := exists_good_pin T.toCore hT.pins j hj c' hle d e a1 a2 a3 a4 a5 _ hι
-    (fun σ => T.x₀ j (res σ)) fun σ hσ =>
-      (GlobalTheory.Member.exists_ctx D _ _ _ d.Xo₂ d.c₂ σ (D.sp.W j) D.R.r hW _ hι (rank_pos T.toCore hT.pins j hj) a3 hσ).2.2 _
-        (GlobalTheory.TupleCover.iotaOK_and_frame T hT j hj _ (hres σ hσ) _ (hT.spaceW j hj _ (hres σ hσ)) hW).2
-  exact ⟨U, dict, Kf, h, fun σ hσ => ⟨hW, hp σ hσ⟩⟩
 
 set_option maxHeartbeats 1000000 in
 
@@ -555,12 +540,6 @@ theorem exists_good (T : Core D) (hQ : T.Q.Pins) (j : ℕ) (hj : InR D j) (s : �
   exact ⟨_, _, h, by rw [← a1]; show d.l₂.M = _; rw [a2.2.1, hQ.2.1.1],
     (GlobalTheory.GeomIrr.compNe_and_exists_fnAlgClosed _ _ _ _ d.Xo₂ d.c₂ (rank_pos T hQ j hj)).1⟩
 
-theorem exists_good_match (T : CoreJ D) (hT : LawsJ T) (j : ℕ) (hj : InR D j) (s : ℤ) (hs : (15 : ℤ) ∣ s ^ 2 + D.host.d)
-    (h15 : Nat.Coprime 15 (D.host.g 0 * D.host.g 1)) (e : ℕ) :
-    ∃ (Y : Deep T.toCore j) (o : ℝ), Y.Good e o ∧ Y.Match := by
-  obtain ⟨c', h1, d, a1, a2, a3, a4, a5⟩ := exists_cover T.toCore hT.pins j hj s hs h15 e
-  obtain ⟨U, dict, Kf, h⟩ := exists_match_of_cover T hT j hj c' h1 d e a1 a2 a3 a4 a5
-  exact ⟨_, _, h⟩
 
 theorem pull_one {T : Core D} {j : ℕ} (Y : Deep T j) : Y.Pull 1 1 := by
   intro k _ _ _ _ _ _ _ y₂ y' y _ _ _ _
@@ -568,21 +547,6 @@ theorem pull_one {T : Core D} {j : ℕ} (Y : Deep T j) : Y.Pull 1 1 := by
   exact (evalAt_one _ _ y₂ (GlobalTheory.Frames.allTest_of_secBaseChange hB _ _ _ _ _ _ k y₂)).trans
     (evalAt_one _ _ y (GlobalTheory.Frames.allTest_of_secBaseChange hB _ _ _ _ _ _ k y)).symm
 
-theorem not_pull_one_zero {T : Core D} {j : ℕ} (Y : Deep T j) {e : ℕ} {o : ℝ} (h : Y.Good e o)
-    (hpos : 1 ≤ (T.Q.Dw j).p + (T.Q.Dw j).q) : ¬ Y.Pull 1 0 := by
-  intro hp
-  have hB := GlobalTheory.abelianSchemeLaws_all.1.secBaseChange
-  obtain ⟨y'⟩ := GlobalTheory.nonempty_frPt_complex GlobalTheory.closing_of_abelianSchemeLaws GlobalTheory.abelianSchemeLaws_all.2.secTwist _ _ _ _
-    (T.Q.Xo j) Y.c' hpos Y.c'.F.val.toRingHom
-  letI : Algebra Y.c'.F ℂ := Y.c'.F.val.toRingHom.toAlgebra
-  letI : Algebra T.Q.c.F ℂ := T.Q.c.F.val.toRingHom.toAlgebra
-  letI : Algebra Y.d.c₂.F ℂ := Y.d.c₂.F.val.toRingHom.toAlgebra
-  change FrPt (T.Q.Xo j) Y.c' ℂ at y'
-  have ho : AlgOver T.Q.c Y.c' Y.hle ℂ := fun _ => rfl
-  obtain ⟨y₂, hy⟩ := h.lev.1.2.2.2.2.2.2.1 ℂ (fun _ => rfl) y'
-  have := hp ℂ ho (fun _ => rfl) y₂ y' (y'.res Y.hle ho) hy rfl rfl HEq.rfl
-  exact zero_ne_one ((evalAt_zero _ _ y₂).symm.trans (this.trans
-    (evalAt_one _ _ _ (GlobalTheory.Frames.allTest_of_secBaseChange hB _ _ _ _ _ _ _ _))))
 
 end Inhab
 

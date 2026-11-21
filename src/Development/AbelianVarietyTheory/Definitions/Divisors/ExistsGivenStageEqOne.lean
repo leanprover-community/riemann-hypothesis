@@ -353,25 +353,6 @@ theorem exists_stepFn_eq_one (j : ℕ) : ∃ x, stepFn L t w j x = 1 := by
   · exact ⟨fromBlocks 1 0 0 0, by rw [parPhi_fromBlocks _ (one_mem _) Units.val_one maxM_zero intM_zero intM_zero]; simp⟩
   · exact ⟨0, Set.indicator_of_mem intM_zero _⟩
 
-theorem exists_givenStage_eq_one (Φ : G.Datum) : ∃ x, (givenStage t w B Φ).tensor x = 1 := by
-  have h : ∀ b : Edge, ∃ x, b ∈ givenPath D.R.m → givenDatum t w B Φ b x = 1 := fun b => by
-    by_cases hb : b ∈ givenPath D.R.m
-    · simp only [givenPath, List.mem_append, List.mem_map, List.mem_reverse, List.mem_range] at hb
-      rcases hb with ⟨j, -, rfl⟩ | ⟨i, hi, rfl⟩
-      · obtain ⟨x, hx⟩ := exists_stepFn_eq_one L t w j
-        refine ⟨(x.submatrix (ixFin G t w (j + 1)).symm (ixFin G t w j).symm)ᵀ, fun _ => ?_⟩
-        simpa [givenDatum] using hx
-      · obtain ⟨y, hy⟩ := Submodule.Quotient.mk_surjective _ (Φ ⟨i, hi⟩)
-        refine ⟨B.coord t w (X := (i, 0)) (Y := (i + 1, 0)) ⟨hi.le, Nat.zero_le _⟩ ⟨hi, Nat.zero_le _⟩
-          (y.1.map (algebraMap D.host.E (Kw w))), fun _ => ?_⟩
-        rw [givenDatum, dif_pos hi]
-        refine Set.indicator_of_mem (s := cosetSet t w B hi _) ?_ _
-        exact ⟨y, hy, by rw [sub_self]; exact zero_mem _⟩
-    · exact ⟨0, fun h => absurd h hb⟩
-  choose x hx using h
-  exact ⟨x, List.prod_eq_one fun c hc => by
-    obtain ⟨b, hb, rfl⟩ := List.mem_map.1 hc
-    exact hx b hb⟩
 
 end GlobalTheory.FunObj
 

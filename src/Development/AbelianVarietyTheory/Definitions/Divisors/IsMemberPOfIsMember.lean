@@ -16,12 +16,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.GSep.MemberModel
 
-theorem exists_gSet : ∃ X₁ : GSet, X₁.S.g = 1 := by
-  obtain ⟨o, Ω, _, _, _, hb, S, ρ, hg, hB, -⟩ := GlobalTheory.RealInhabitant.exists_real_dim_one_isFractionRing
-    GlobalTheory.firstFiveLaws.1 GlobalTheory.firstFiveLaws.2.1
-  obtain ⟨M, U₀, h⟩ := GlobalTheory.ZH.ClosureExample.exists_adm o Ω S
-  exact ⟨{ o₁ := o, Ω₁ := Ω, S := S, ρ := ρ, big := hB, M := M
-           normal := (GlobalTheory.isNormalScheme_iff_pred _).2 h.1.normal, projM := h.1.proj, div := h.1.div }, hg⟩
 
 theorem exists_zhAbove (h : GlobalTheory.Published.SemistableReductionSt) : ∃ X₁ : GSet, X₁.S.g = 1 ∧ ZHAbove X₁ X₁.M (𝟙 _) := by
   obtain ⟨o, Ω, _, _, _, hb, S, ρ, M, U₀, EE, hg, hB, -, -, -, hA, hE, -, hZ, -⟩ := GlobalTheory.ZH.exists_zhOut_dim_one h
@@ -79,14 +73,6 @@ theorem nonempty_of_regular (hact : IsAct X₁ act) (hz : X₁.S.R ≤ X₁.M.O 
   · rw [_root_.mul_one]
     exact hr₀
 
-theorem exists_gMem (X₁ : GSet) (act : I → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)) (h : IsAct X₁ act) :
-    ∃ (z₁ : X₁.M.Z) (ev : X₁.M.Z.presheaf.stalk z₁ →+* X₁.Ω₁),
-      Nonempty (GMem X₁ z₁ act X₁.Ω₁ ev PUnit (fun _ => 1) (fun _ x => x)) := by
-  refine ⟨_, (Scheme.stalkClosedPointTo (R := CommRingCat.of X₁.Ω₁) X₁.M.pt).hom,
-    nonempty_of_regular h ?_ ⟨inferInstance, inferInstance, ?_, X₁.ar.char⟩ _ inferInstance _ _⟩
-  · exact le_top.trans ((congrArg X₁.M.O (X₁.M.pt_apply _)).trans X₁.M.O_genericPoint).ge
-  · rw [IsLocalRing.maximalIdeal_eq_bot]
-    infer_instance
 
 def towerSelf (X₁ : GSet) (act : I → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)) (h : IsAct X₁ act) : Tower X₁ act where
   X₂ := X₁
@@ -159,30 +145,11 @@ theorem d_pos (T : Tower X₁ act) : 0 < T.d := by
     omega
   · exact h
 
-theorem exists_all : ∃ (X₁ : GSet) (act : Bool → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)), X₁.S.g = 1 ∧ act true = 𝟙 _ ∧ act false = (𝟙 _)⁻¹ ∧
-    IsAct X₁ act ∧ Nonempty (Tower X₁ act) ∧ ∃ (z₁ : X₁.M.Z) (ev : X₁.M.Z.presheaf.stalk z₁ →+* X₁.Ω₁),
-      Nonempty (GMem X₁ z₁ act X₁.Ω₁ ev PUnit (fun _ => 1) (fun _ x => x)) := by
-  obtain ⟨X₁, hg⟩ := exists_gSet
-  haveI := X₁.ρ.P.isAb.comm
-  have h : IsAct X₁ (fun b : Bool => if b then 𝟙 _ else (𝟙 _)⁻¹) := by
-    intro b
-    cases b
-    · exact isMonHom_of_mul _ fun T x z => by
-        simp only [Bool.false_eq_true, if_false, GrpObj.comp_inv, Category.comp_id, mul_inv]
-    · exact inferInstanceAs (IsMonHom (𝟙 X₁.ρ.P.A))
-  exact ⟨X₁, _, hg, rfl, rfl, h, ⟨towerSelf X₁ _ h⟩, exists_gMem X₁ _ h⟩
 
 theorem mo_ne_zero (𝔪 : GMem X₁ z₁ act V ev L mo hL) (mu : L) : mo mu ≠ 0 :=
   let ⟨_, h⟩ := 𝔪.psi mu
   right_ne_zero_of_mul (PsiCoordLocal.ne_zero_of_coord h)
 
-theorem mo_mem (𝔪 : GMem X₁ z₁ act V ev L mo hL) {mu : L} (h : mu ≠ 0) : mo mu ∈ maximalIdeal V := by
-  haveI := 𝔪.cn.2.2.2
-  obtain ⟨u, hu⟩ := 𝔪.psi mu
-  obtain ⟨r, hr, -, hm, -⟩ := (PsiCoordLocal.main V 𝔪.D 𝔪.cn.2.1 (𝔪.e₈ mu)).1
-  obtain ⟨v, hv⟩ := PsiCoordLocal.exists_unit_of_coord hr hu
-  have : (u : V) * mo mu ∈ maximalIdeal V := hv ▸ Ideal.mul_mem_left _ _ (hm (𝔪.e₈.map_ne_zero_iff.2 h))
-  exact (Ideal.unit_mul_mem_iff_mem _ u.isUnit).1 this
 
 theorem char_eq (𝔪 : GMem X₁ z₁ act V ev L mo hL) (a : I) (E : EndU 𝔪.U.toUnifPre)
     (hE : E.aA.left ≫ 𝔪.φ = 𝔪.φ ≫ (act a).left) (mu : L) : E.h (𝔪.e₈ mu) = 𝔪.e₈ (hL a mu) := by
@@ -197,14 +164,6 @@ theorem char_eq (𝔪 : GMem X₁ z₁ act V ev L mo hL) (a : I) (E : EndU 𝔪.
   haveI := 𝔪.cn.1
   rw [(GlobalTheory.EndCalc.congr_data ⟨𝔪.cn.1, inferInstance, 𝔪.cn.2.1, 𝔪.cn.2.2.1⟩ E E' e₂).2, h]
 
-theorem char_eq_star (𝔪 : GMem X₁ z₁ act V ev L mo hL) {O : Type} [CommRing O] [StarRing O] [Module O 𝔪.D.toPre.X]
-    (ιD : 𝔪.D.toPre.OAct O) (ιA : 𝔪.A.OAct O) (ιG : RingAct 𝔪.G O) (lin : 𝔪.U.toUnifPre.OLinear O ιD ιA ιG) (a : I) (b : O)
-    (h : (ιA.act b).left ≫ 𝔪.φ = 𝔪.φ ≫ (act a).left) (mu : L) : 𝔪.e₈ (hL a mu) = star b • 𝔪.e₈ mu := by
-  haveI := 𝔪.cn.2.2.2
-  haveI := 𝔪.cn.1
-  obtain ⟨E, -, hA, -, hh, -⟩ := GlobalTheory.UT.OLinEnd.main GlobalTheory.firstFiveLaws V _
-    ⟨𝔪.cn.1, inferInstance, 𝔪.cn.2.1, 𝔪.cn.2.2.1⟩ 𝔪.D 𝔪.A 𝔪.G 𝔪.semi 𝔪.U O ιD ιA ιG lin b
-  rw [← char_eq 𝔪 a E (hA ▸ h), hh]
 
 theorem terms_sum (𝔪 : GMem X₁ z₁ act V ev L mo hL) {x₀ : X₁.S.Gam} {C : Type} {lab : C → X₁.S.Gam}
     {T : L → C → V} (h : 𝔪.Terms x₀ lab T) (c : C) :
@@ -221,38 +180,14 @@ open GlobalTheory.UPoinc
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {C : UCompact Xo c}
 
-theorem isMemberP_of_isMember {M : Scheme.{0}} {z₁ : M} (ζ : Sp (M.presheaf.stalk z₁) ⟶ pullback C.z (spMap C.b)) {N₁ : ℕ}
-    {Ψ : VSys (H.bar : 𝓞 E → 𝓞 E) (min Dw.p Dw.q) !![(1 : ℤ)] N₁ (M.presheaf.stalk z₁)} {φ : InvFun (𝓞 E)}
-    {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] {Cm : GlobalTheory.UChart.MonoFam Xo c φ V}
-    {ξ : Sp V ⟶ pullback C.z (spMap C.b)} {y : Ψ.Y} {ρ : V →+* Ψ.V y} {e : Ψ.X y ≃ₗ[𝓞 E] Cm.P.D.toPre.X}
-    {h : Fin (Ψ.m y) ≃ Fin Cm.m} (hm : GlobalTheory.USep.IsMember ζ Ψ Cm ξ y ρ e h) : IsMemberP ζ Ψ.pre N₁ Cm ξ y ρ e h :=
-  let ⟨h₁, h₂, h₃, h₄, D, p, h₅⟩ := hm
-  ⟨h₁, h₂, h₃, h₄, D, p, h₅.zero⟩
 
 def ofUSetup (Y : USetup C) (hp : IsProjOver Y.M.s) : GSet :=
   { o₁ := Y.o₁, Ω₁ := Y.Ω₁, S := Y.S, ρ := Y.ρ, big := Y.big, M := Y.M, normal := Y.normal, projM := hp, div := Y.hasDiv }
 
-theorem hasDiv_of_uLink {act : 𝓞 E → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)} {u : Sp (ratHull X₁.S.R) ⟶ Xo.XF c} {π : X₁.M.Z ⟶ C.Z}
-    (h : ULink C X₁ act u π) : X₁.M.HasDiv X₁.S.th :=
-  C.thetaInt _ _ X₁.S X₁.ρ u h.uOver h.2.2.1 X₁.M π X₁.normal h.2.2.2
 
 end
 
-theorem psi_of_isMonomial {R : Type} [CommRing R] [IsDomain R] {Dg : DegPre R} {m : ℕ} {s r : Fin m → R}
-    {β : Fin m → LinearMap.BilinForm ℤ Dg.X} (h : IsMonomial Dg s β) (hr : ∀ k, r k ^ 2 = s k) (mu : Fin 1 → Dg.X) :
-    ∃ u : Rˣ, Formalism.L2.Pj.PsiCoord Dg (mu 0) (u * mono !![(1 : ℤ)] r β mu) := by
-  obtain ⟨u, n, hn, hc⟩ := h (mu 0)
-  refine ⟨u, ?_⟩
-  convert hc using 2
-  unfold mono
-  refine Finset.prod_congr rfl fun i _ => ?_
-  have : qW !![(1 : ℤ)] (β i) mu = ((2 * n i : ℕ) : ℤ) := by simp [qW, hn i]
-  rw [this, Int.toNat_natCast, pow_mul, hr]
 
-theorem subsingleton_of_unit (𝔪 : GMem X₁ z₁ act V ev L mo hL) (h : ∀ mu, IsUnit (mo mu)) : Subsingleton L :=
-  ⟨fun a b => by
-    have k : ∀ mu : L, mu = 0 := fun mu => by_contra fun hm => (mem_maximalIdeal _).1 (mo_mem 𝔪 hm) (h mu)
-    rw [k a, k b]⟩
 
 theorem hL_add (𝔪 : GMem X₁ z₁ act V ev L mo hL) (a : I) (mu nu : L) : hL a (mu + nu) = hL a mu + hL a nu := by
   obtain ⟨E, -, h⟩ := 𝔪.equiv a
@@ -273,18 +208,7 @@ open GlobalTheory.UPoinc
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {C : UCompact Xo c}
 
-theorem hasTraitsOn_mono {M : Scheme.{0}} {z₁ : M} (ζ : Sp (M.presheaf.stalk z₁) ⟶ pullback C.z (spMap C.b))
-    (Φ : VPre (H.bar : 𝓞 E → 𝓞 E) (min Dw.p Dw.q) !![(1 : ℤ)] (M.presheaf.stalk z₁)) {U U' : M.Opens} (h : U ≤ U')
-    (h' : HasTraitsOn ζ Φ U') : HasTraitsOn ζ Φ U := fun T ev h₁ h₂ h₃ => h' T ev h₁ h₂ (h₃.trans h)
 
-theorem char_eq_smul {act : 𝓞 E → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)} {hL : 𝓞 E → L → L} (𝔪 : GMem X₁ z₁ act V ev L mo hL)
-    [Module (𝓞 E) 𝔪.D.toPre.X] (ιD : letI := H.starRing; 𝔪.D.toPre.OAct (𝓞 E)) (ιA : letI := H.starRing; 𝔪.A.OAct (𝓞 E))
-    (ιG : RingAct 𝔪.G (𝓞 E)) (lin : letI := H.starRing; 𝔪.U.toUnifPre.OLinear (𝓞 E) ιD ιA ιG) (a : 𝓞 E)
-    (h : (letI := H.starRing; (ιA.act (H.bar a)).left) ≫ 𝔪.φ = 𝔪.φ ≫ (act a).left) (mu : L) :
-    𝔪.e₈ (hL a mu) = a • 𝔪.e₈ mu := by
-  letI := H.starRing
-  rw [char_eq_star 𝔪 ιD ιA ιG lin a (H.bar a) h mu]
-  exact congrArg (· • _) (star_star a)
 
 end
 

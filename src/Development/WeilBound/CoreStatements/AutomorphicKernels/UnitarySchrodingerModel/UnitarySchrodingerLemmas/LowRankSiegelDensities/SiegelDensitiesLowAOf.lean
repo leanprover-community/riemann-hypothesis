@@ -516,10 +516,5 @@ theorem siegelDensitiesLowA_of (hE1 : OneVecBinary) (hE2 : OneVecBinaryMass) (hB
   · rw [hθ, hI]
     exact r2.symm
 
-theorem swMeas_edge_aniso (hE1 : OneVecBinary) (hE2 : OneVecBinaryMass) : ∀ (F E : Type) [Field F] [NumberField F]
-    [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ →
-    ∀ (n : ℕ) (J : Matrix (Fin (n + 1)) (Fin (n + 1)) E), IsHermND σ J → IsAnisoH σ J →
-    ∀ (T : Matrix (Fin n) (Fin n) E) (hT : ∀ a b, σ (T b a) = T a b), T.det ≠ 0 → SWMeas σ J T hT :=
-  fun F E _ _ _ _ _ σ hσ n J hJ ha T hT hd => swMeas_lt hE1 hE2 F E σ hσ n (n + 1) J hJ (by omega) (Or.inr ha) T hT hd
 
 end PositivityTheory.PfSWUS.HMass

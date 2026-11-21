@@ -17,27 +17,6 @@ def IsHodgeFrame (D : ComponentDataHodge II Ψ K ι Ω E) (τ : Ψ) (b : Fin D.N
   ∃ (c : (k : K) → ι k) (f : Ω), IsFrameOver D.y (D.W τ) c f b ∧
     Submodule.span Ω (b '' {i | (i : ℕ) < D.j}) = D.F τ
 
-theorem exists_hodgeFrame (D : ComponentDataHodge II Ψ K ι Ω E) :
-    ∃ b : ∀ τ, Fin D.N → E τ, ∀ τ, IsHodgeFrame D τ (b τ) := by
-  have hy : ∀ k, ∃ i, D.y ⟨k, i⟩ ≠ 0 := by
-    intro k
-    obtain ⟨i, hi⟩ := D.arith.2.1.2.2 k
-    refine ⟨i, fun h => hi ?_⟩
-    show mConeMap D.y (X ⟨k, i⟩) = 0
-    simp [mConeMap, h]
-  choose c hc using hy
-  have hseg : segreCoord D.y c ≠ 0 := Finset.prod_ne_zero_iff.mpr fun k _ => hc k
-  have : ∀ τ, ∃ b : Fin D.N → E τ, IsHodgeFrame D τ b := by
-    intro τ
-    obtain ⟨m, f, a, -, -, hsum, hfr⟩ := D.hodge τ c hseg
-    obtain ⟨l, hl⟩ : ∃ l, f l ≠ 0 := by
-      by_contra h
-      simp only [not_exists, not_not] at h
-      simp [h] at hsum
-    obtain ⟨b, hb, hspan⟩ := hfr l hl
-    exact ⟨b, c, f l, hb, hspan⟩
-  choose b hb using this
-  exact ⟨b, hb⟩
 
 variable [DecidableEq Ψ] {D : ComponentDataHodge II Ψ K ι Ω E}
 
@@ -60,8 +39,5 @@ def MuPointDense.Statement : Prop :=
     (b : ∀ τ, Fin D.N → E τ), (∀ τ, IsHodgeFrame D τ (b τ)) →
     PXmu P ≤ mCoordIdeal (muPointOf P b)
 
-theorem MuPointVanish.objects_line :
-    Nonempty (PlueckerData LineFlag.DL) ∧ ∃ b : Unit → Fin LineFlag.DL.N → (Fin 2 → _), ∀ τ, IsHodgeFrame LineFlag.DL τ (b τ) :=
-  ⟨⟨LineFlag.PL⟩, exists_hodgeFrame _⟩
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.LowerBoundFree

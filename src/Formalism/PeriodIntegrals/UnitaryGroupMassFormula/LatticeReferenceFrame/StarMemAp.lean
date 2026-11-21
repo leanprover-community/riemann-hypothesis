@@ -52,9 +52,6 @@ theorem hG_sum_right {ι : Type*} (s : Finset ι) (x : Fin I.n → I.E) (y : ι 
     hG I x (∑ t ∈ s, y t) = ∑ t ∈ s, hG I x (y t) := by
   exact map_sum (AddMonoidHom.mk' (hG I x) (hG_add_right I x)) y s
 
-theorem hG_sum_left {ι : Type*} (s : Finset ι) (x : ι → Fin I.n → I.E) (y : Fin I.n → I.E) :
-    hG I (∑ t ∈ s, x t) y = ∑ t ∈ s, hG I (x t) y := by
-  exact map_sum (AddMonoidHom.mk' (fun x => hG I x y) (fun a b => hG_add_left I a b y)) x s
 
 theorem J_entry (i j : Fin I.n) : star (I.J j i) = I.J i j := by
   have h : Formalism.UG.cT (starRingEnd I.E) I.J = I.J := I.J_herm

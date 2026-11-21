@@ -163,14 +163,6 @@ theorem mem_unitaryGroup_iff_adjointEquiv (g : V ≃ₗ[E] V) :
     g ∈ h.unitaryGroup ↔ h.adjointEquiv g = g⁻¹ := by
   rw [mem_unitaryGroup_iff_adjointEquiv_mul, mul_eq_one_iff_eq_inv]
 
-theorem forall_toSesq_eq_iff (g c : V ≃ₗ[E] V) :
-    (∀ x y, h.toSesq (g x) (g y) = h.toSesq (c x) y) ↔ h.adjointEquiv g * g = c := by
-  constructor
-  · intro hg
-    apply LinearEquiv.ext fun x => h.nonsingular.1 (LinearMap.ext fun y => ?_)
-    rw [← toSesq_apply_apply, hg]
-  · intro hg x y
-    rw [toSesq_apply_apply, hg]
 
 noncomputable def twist (c : V ≃ₗ[E] V) (hc : h.adjointEquiv c = c) : HermitianForm F E V where
   toSesq := h.toSesq.comp c.toLinearMap

@@ -97,22 +97,7 @@ def ExplicitPosMean : Prop :=
     AbsoluteLogMeanBounds.meanLogPos (lamOf D cc δ) M t ≤
       AbsoluteLogMeanBounds.kronBound D + (1 / 4) * Real.log (D.host.d : ℝ) + C
 
-theorem explicitPosMean_of_positivePart (h : AbsoluteLogMeanBounds.PositivePart) : ExplicitPosMean := by
-  obtain ⟨C, h⟩ := h
-  exact ⟨C, fun D cc δ M _ t hS => (h D cc δ M t hS).2⟩
 
-theorem posMean_iff : (∃ C : ℝ, 0 ≤ C ∧ ∀ D : D7, SignedLogMeans.PosMean C D) ↔ ExplicitPosMean := by
-  constructor
-  · rintro ⟨C, -, h⟩
-    refine ⟨C, fun D cc δ M _ t hS => ?_⟩
-    rw [← meanPosLog_eq]
-    exact h D cc δ M t hS
-  · rintro ⟨C, h⟩
-    refine ⟨max C 0, le_max_right _ _, fun D cc δ M _ t hS => ?_⟩
-    have a := h D cc δ M t hS
-    have := le_max_left C 0
-    rw [meanPosLog_eq, bound_eq]
-    linarith
 
 theorem core_iff :
     (SignedLogMeans.Theta0SignedMean ∧ ∃ C : ℝ, 0 ≤ C ∧ ∀ D : D7, SignedLogMeans.PosMeanLeC C D) ↔ AbsoluteLogMeanBounds.ThetaNullMean := by
@@ -120,14 +105,7 @@ theorem core_iff :
   rw [← signedMean_iff, ← absoluteMean_iff]
   tauto
 
-theorem theta0Mean_iff : SignedLogMeans.Theta0Mean ↔ AbsoluteLogMeanBounds.ThetaNullMean ∧ ExplicitPosMean := by
-  unfold SignedLogMeans.Theta0Mean SignedLogMeans.Theta0PosMean
-  rw [← core_iff, ← posMean_iff]
-  tauto
 
-theorem th0Mean_of_theta0Mean (h : SignedLogMeans.Theta0Mean) : AbsoluteLogMeanBounds.ThetaNullMean := (theta0Mean_iff.mp h).1
 
-theorem theta0Mean_of_th0Mean (h : AbsoluteLogMeanBounds.ThetaNullMean) (hp : AbsoluteLogMeanBounds.PositivePart) : SignedLogMeans.Theta0Mean :=
-  theta0Mean_iff.mpr ⟨h, explicitPosMean_of_positivePart hp⟩
 
 end GlobalTheory.Theta0MeanCompare

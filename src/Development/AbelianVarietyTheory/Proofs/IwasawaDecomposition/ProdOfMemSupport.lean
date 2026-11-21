@@ -154,15 +154,6 @@ def tieR (ha : ∀ w u μ τ, ‖a w u μ τ‖ = 1) (hB : BasOk P O B) (hC : Ca
   prS_can := (kfTieOf P O B hB hC h u μ w).prS_can
   prT_can := (kfTieOf P O B hB hC h u μ w).prT_can
 
-theorem tieR_un (ha : ∀ w u μ τ, ‖a w u μ τ‖ = 1) (hB : BasOk P O B) (hC : CanOnto P) (h : KerEntHyp P O B Dx Tw) (u : D.what₂.Word)
-    (μ : D.what₂.Tup) (hR : GL3Columns.RhoAlg (O u μ)) (w : D.what₂.places.Pl) : (tieR P O B a ha hB hC h u μ w).UnIs := by
-  intro i hi c c'
-  show _ * unC P O B u μ w i c c' = _
-  unfold unC
-  rw [if_neg (unF_ne P O B hB u μ hR w i hi c c')]
-  unfold GL3Columns.KFTie.un
-  rw [mul_assoc]
-  rfl
 
 theorem tauEmb_mem (w : D.what₂.places.Pl) (τ : D.what₂.Tau) (x : D.host.E) : ∃ y : D.what₂.LL, tauEmb D (P.lam w) τ x = P.iL w y := by
   have e : D.what₂.embLL (D.embE (D.host.sigmaOf (D.eTau τ : D.R.GG) x)) = embT D τ x := RingHom.congr_fun D.embE_φ₀ _
@@ -180,21 +171,6 @@ theorem norm_adUnit (hU : DgenUnitAd P O) (w : D.what₂.places.Pl) (u : D.what�
   · rw [norm_inv, hU w hw u μ τ, inv_one]
   · exact norm_one
 
-theorem adaptedTh_kerEntR (hU : DgenUnitAd P O) (Pm : ∀ (_ : D.what₂.places.Pl) u μ, SysFam D u μ)
-    (h1 : ∀ w u μ i, i ≤ D.R.m → ∀ c τ, GL3Columns.BasR D (P.lam w) τ ((O u μ).lat i c).1 ((Pm w u μ i c τ).map (tauEmb D (P.lam w) τ)))
-    (h2 : ∀ w u μ i, i ≤ D.R.m → ∀ c τ τ', SamePr (P.lam w) τ τ' → Pm w u μ i c τ' = Pm w u μ i c τ)
-    (h3 : ∀ w u μ i, i ≤ D.R.m → ∀ c τ τ', ConjPr (P.lam w) τ τ' → Pm w u μ i c τ' = dualM (Pm w u μ i c τ))
-    (h : KerEntHyp P O (fun u μ w i c τ => (Pm w u μ i c τ).map (tauEmb D (P.lam w) τ)) Dx Tw) :
-    AdaptedTh (kerEntR P O _ (adUnit P O) (norm_adUnit P O hU) h) O := by
-  intro w hw u μ _
-  refine ⟨Pm w u μ, h1 w u μ, h2 w u μ, h3 w u μ, fun i _ c c' => ?_⟩
-  rw [kerEntR_Th]
-  congr 1
-  funext k j
-  unfold adCoef adUnit
-  have hs : lamC (P.lam w) ((O u μ).dgen k.1) ≠ 0 := norm_ne_zero_iff.1 (by rw [hU w hw u μ k.1]; exact one_ne_zero)
-  rw [if_pos hw, inv_mul_cancel₀ hs, one_mul]
-  rfl
 
 end GlobalTheory.KerRescale
 

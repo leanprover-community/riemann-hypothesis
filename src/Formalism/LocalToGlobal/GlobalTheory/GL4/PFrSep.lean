@@ -42,24 +42,6 @@ theorem isLat_crd (S : HSpace E) (L : Submodule (𝓞 E) S.V) (h : Submodule.IsL
   rw [Submodule.span_image, h.span_eq_top, Submodule.map_top, LinearMap.range_eq_top]
   exact (crd S).surjective
 
-theorem isLattice_dual (S : HSpace E) (L : Submodule (𝓞 E) S.V) (hL : Submodule.IsLattice E L)
-    (hint : L ≤ Formalism.HermitianLatticesTheory.dual S.hT L) (T : ℕ) (hT : T ≠ 0)
-    (hTd : ∀ x ∈ Formalism.HermitianLatticesTheory.dual S.hT L, (T : E) • x ∈ L) : Submodule.IsLattice E (Formalism.HermitianLatticesTheory.dual S.hT L) := by
-  haveI : IsNoetherian (𝓞 E) L := isNoetherian_of_fg_of_noetherian _ hL.fg
-  let φ : Formalism.HermitianLatticesTheory.dual S.hT L →ₗ[𝓞 E] L :=
-    { toFun := fun x => ⟨(T : E) • (x : S.V), hTd x x.2⟩
-      map_add' := fun x y => by ext; simp [smul_add]
-      map_smul' := fun a x => by ext; simp [smul_comm (T : E) a] }
-  have hinj : Function.Injective φ := by
-    intro x y hxy
-    have h1 : (T : E) • (x : S.V) = (T : E) • (y : S.V) := congrArg Subtype.val hxy
-    have hT' : (T : E) ≠ 0 := Nat.cast_ne_zero.2 hT
-    exact Subtype.ext (smul_right_injective _ hT' h1)
-  haveI : IsNoetherian (𝓞 E) (Formalism.HermitianLatticesTheory.dual S.hT L) := isNoetherian_of_injective φ hinj
-  refine ⟨(Submodule.fg_top _).1 (IsNoetherian.noetherian ⊤), ?_⟩
-  refine eq_top_iff.2 ?_
-  rw [← hL.span_eq_top]
-  exact Submodule.span_mono hint
 
 def matOf (S : HSpace E) (γ : S.V ≃ₗ[E] S.V) : GL (Fin S.rank) E :=
   Matrix.GeneralLinearGroup.toLin.symm

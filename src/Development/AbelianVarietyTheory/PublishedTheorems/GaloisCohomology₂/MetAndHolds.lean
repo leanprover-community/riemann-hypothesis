@@ -15,25 +15,9 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace GlobalTheory.Published.CharCrysModel
 
-theorem of_above (H : HeckeLAdicCharacterAbove) : HeckeLAdicCharacterCrystalline :=
-  fun E Ω _ _ _ _ _ l _ P AI hT ι art ha χ n μ h1 h2 h3 w A h O _ _ _ Bw hj =>
-    (H E Ω l P AI hT ι art ha χ n μ h1 h2 h3 w A h O Bw hj).2.2.1
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime]
 
-theorem met_and_holds (hA : GlobalArtinReciprocity) (ι : Qbar l ≃+* ℂ) (m : ℕ) (w : HeightOneSpectrum (𝓞 E))
-    (hw : w ∈ placesOver E l) :
-    ∃ (P : LocPrime l) (AI : LocAinf l P), Nonempty (LocTied l P AI) ∧ ∃ art : Ideles E →* Gab E Ω, IsGlobalArtin art ∧
-      ∃ μ : G E Ω →* (Qbar l)ˣ, IsAlgPos (Model.absPow E m) (fun _ => (m : ℤ)) ∧ Continuous μ ∧
-      IsLAdicOf art ι (Model.absPow E m) (fun _ => (m : ℤ)) μ ∧
-      ∃ (A : ValuationSubring Ω), IsPlaceOver A w ∧ ∃ (LL : FinExt l)
-        (Bw : LocBridge l E Ω (Dec (F := E) A) ↥(OL LL)), GlobalTheory.Pst.Induces Bw ∧ (Model.absPow E m).UnrAt w ∧
-        IsCrysAt P Bw ((rk1 μ).comp (Dec (F := E) A).subtype) := by
-  obtain ⟨P, AI, hT⟩ := GlobalTheory.MemLoc.exists_locPrime_tied l
-  obtain ⟨art, ha⟩ := hA E Ω
-  obtain ⟨μ, h1, h2, h3, A, h, LL, Bw, hj, -⟩ := CharAboveModel.hypotheses_met ι art ha m w hw
-  exact ⟨P, AI, hT, art, ha, μ, h1, h2, h3, A, h, LL, Bw, hj, (Model.absPow_isAbsPow E m).1 w,
-    (CharAboveModel.conclusion_absPow P AI hT ι art ha m μ h2 h3 A _ Bw).2.2.1⟩
 
 theorem isUnram_iff (χ : HChar E) (w : HeightOneSpectrum (𝓞 E)) : IsUnram (χ.loc w) ↔ χ.UnrAt w := by
   refine forall_congr' fun x => imp_congr_left ?_

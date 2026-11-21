@@ -188,44 +188,7 @@ theorem det_gram_tupH_ne_zero (hP : P.IsStd σ J T)
     | cast c => exact coord_zero_of_row _ v hv _ _ 1 one_ne_zero (row_f σ J P T hP hT1 c)
   | right b => exact coord_zero_of_row _ v hv _ _ 1 one_ne_zero (row_e σ J P T hP b)
 
-theorem linearIndependent_frame_with_normal (hP : P.IsStd σ J T)
-    (hT1 : ∀ i j, σ (gramE σ J (tupH P) j i) = gramE σ J (tupH P) i j) :
-    LinearIndependent E (F0 P) := by
-  have h := linIndep_of_gram σ J (tupH P) (det_gram_tupH_ne_zero σ J P T hP hT1)
-  have he : F0 P = tupH P ∘ Fin.castAdd r := by
-    funext i
-    simp [tupH]
-  rw [he]
-  exact h.comp _ (Fin.castAdd_injective _ _)
 
-theorem gram_frame_with_normal_eq_diag (hP : P.IsStd σ J T)
-    (hT0 : ∀ i j, σ (gramE σ J (F0 P) j i) = gramE σ J (F0 P) i j) :
-    ∀ i j, gramE σ J (F0 P) i j =
-      if i = Fin.last r ∧ j = Fin.last r then algebraMap F E (-T) else 0 := by
-  obtain ⟨h1, h2, h3, h4, h5, h6, h7⟩ := hP
-  intro i j
-  induction i using Fin.lastCases with
-  | last =>
-    induction j using Fin.lastCases with
-    | last =>
-      simp only [gramE, frameInitialVectors_last]
-      rw [h6]
-      simp
-    | cast b =>
-      rw [← hT0]
-      simp only [gramE, frameInitialVectors_last, frameInitialVectors_castSucc]
-      rw [h4 b, map_zero]
-      simp [(Fin.castSucc_lt_last b).ne]
-  | cast a =>
-    induction j using Fin.lastCases with
-    | last =>
-      simp only [gramE, frameInitialVectors_last, frameInitialVectors_castSucc]
-      rw [h4 a]
-      simp [(Fin.castSucc_lt_last a).ne]
-    | cast b =>
-      simp only [gramE, frameInitialVectors_castSucc]
-      rw [h1 a b]
-      simp [(Fin.castSucc_lt_last a).ne]
 
 end Frames
 

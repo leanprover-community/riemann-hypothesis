@@ -39,40 +39,8 @@ theorem mem_QE (P : HeightOneSpectrum (𝓞 X.E)) :
 
 variable {sel}
 
-theorem resChar_QE_ne (hX : X.Ok) (hsel : IsSel X sel) (P : HeightOneSpectrum (𝓞 X.E)) (hP : P ∈ QE sel (mu : Chr X.F X.E X.K)) :
-    resChar (mu : Chr X.F X.E X.K) P ≠ 1 := by
-  obtain ⟨v, hv, rfl⟩ := (mem_QE sel mu P).mp hP
-  obtain ⟨⟨P1, P2, hne, hsp⟩, -, -⟩ := mu.good hv
-  have hm := (mem_tupGrp (mu : Chr X.F X.E X.K)).mp mu.2
-  have hR := residue_character_ramified X.F X.E X.K hX.rankE (mu : Chr X.F X.E X.K) hm.2.2.1 hm.2.1
-  by_cases h1 : sel v = P1
-  · rw [h1]; exact (hR v P1 P2 hne hsp).mp hv
-  · by_cases h2 : sel v = P2
-    · rw [h2]; exact (hR v P2 P1 hne.symm (by rw [hsp, mul_comm])).mp hv
-    · exact absurd (hsel v) (d_other hsp h1 h2)
 
-theorem rowTyQ_ne (R : Ranks) (hX : X.Ok) (hsel : IsSel X sel) (P : QE sel (mu : Chr X.F X.E X.K)) :
-    (rowTyQ R (mu : Chr X.F X.E X.K) (QE sel (mu : Chr X.F X.E X.K)) P).lam ≠ 1 ∧
-    (mtTyQ R (mu : Chr X.F X.E X.K) (QE sel (mu : Chr X.F X.E X.K)) P).lam ≠ 1 := by
-  have ht : 0 < R.t := by have := R.rank_add_five_le; omega
-  have hm : 0 < R.m := by have := R.two_le_m; omega
-  constructor
-  · intro h
-    exact lamQ_ne_one (Nat.mul_pos hm ht) (le_of_eq (rank_X'_eq R).symm) (resChar_QE_ne mu hX hsel P.1 P.2) (inv_eq_one.mp h)
-  · exact lamQ_ne_one ht le_rfl (resChar_QE_ne mu hX hsel P.1 P.2)
 
-theorem qdat_tied (hsel : IsSel X sel) :
-    QDat.TiedTo (⟨QE sel (mu : Chr X.F X.E X.K), fun P => resChar (mu : Chr X.F X.E X.K) P.1⟩ : QDat X) (mu : Chr X.F X.E X.K) where
-  places := by
-    intro v
-    constructor
-    · intro hv
-      exact ⟨sel v, (mem_QE sel mu _).mpr ⟨v, hv, rfl⟩, hsel v⟩
-    · rintro ⟨P, hP, e⟩
-      obtain ⟨v', hv', rfl⟩ := (mem_QE sel mu P).mp hP
-      have : v' = v := HeightOneSpectrum.ext ((hsel v').symm.trans e)
-      exact this ▸ hv'
-  res := fun _ => rfl
 
 end Sel
 

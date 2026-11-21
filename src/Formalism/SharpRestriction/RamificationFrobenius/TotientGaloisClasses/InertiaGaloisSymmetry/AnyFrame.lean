@@ -107,10 +107,6 @@ theorem frame_e : D.frame.e = D.e := rfl
 
 theorem hH_eq (a : D.frame.MA) : D.frame.hH a = D.p1 (D.iso a) := rfl
 
-theorem iso_generator : D.iso (D.frame.iota D.frame.a0) = D.gen := by
-  have h := Frame.ofGroup_generator D.e D.hA D.hA_surj (Additive.ofMul D.gen) D.hA_ker
-  show (D.isoA D.frame.a0).toMul = D.gen
-  exact congrArg Additive.toMul h
 
 theorem ord_eq : D.frame.ord = Nat.card D.R := by
   rw [frame, Frame.ofGroup_ord, ← Nat.card_eq_fintype_card]
@@ -350,7 +346,6 @@ def host : HostRaw D.frame := (D.charData hH hc he hs).toHostRaw
 theorem host_q : (D.host hH hc he hs).q = q := rfl
 theorem host_d : (D.host hH hc he hs).d = d := rfl
 theorem host_QS : (D.host hH hc he hs).QS = D.m := rfl
-theorem host_art : (D.host hH hc he hs).art = D.art hH := rfl
 
 theorem psQ : (D.host hH hc he hs).PsQ := D.art_ps hH
 

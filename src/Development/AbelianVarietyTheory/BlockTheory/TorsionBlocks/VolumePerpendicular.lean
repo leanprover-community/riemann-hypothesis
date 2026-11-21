@@ -55,29 +55,5 @@ theorem IsVol.unique (D : D7) : letI := D.host.cmStar;
   have h2 := (hall' μ hμ).2 𝓕 h𝓕
   exact (ENNReal.ofReal_eq_ofReal_iff hV.le hV'.le).1 ((h1 𝓕 h𝓕).symm.trans h2)
 
-theorem volumeComparison_of_ratio (D : D7) (h : VolumeRatio D) (ht : VolTie D) : Conclusion2 D := by
-  let _ := D.host.cmStar
-  have key : ∀ (W : HSpace D.host.E) (P Q : ℕ) (β : D.host.E) (P' Q' : ℕ), W.SigOK →
-      (∀ τ, W.sig τ = (P, Q)) → Concl D W W.rank P Q β P' Q' →
-      ∃ x : W.V, W.hT x x = β ∧
-        ∃ (W' : HSpace D.host.E) (ι : W'.V →ₗ[D.host.E] W.V),
-          HSpace.IsIsomEmb W' W ι ∧ LinearMap.range ι = LinearMap.ker (W.hT x) ∧ W'.SigOK ∧
-          (∀ τ, W'.sig τ = (P', Q')) ∧
-          D.vol W / D.vol W' = Formalism.HermitianLatticesTheory.massRatioRightSide D.host.E W.rank := by
-    intro W P Q β P' Q' hs hsig hc
-    obtain ⟨⟨x, hx⟩, hall⟩ := hc
-    obtain ⟨⟨W', ι, hp, hk⟩, hall'⟩ := hall x hx
-    obtain ⟨-, V, V', hV, hV', hr⟩ := hall' W' ι hp hk.2.1
-    have e1 : V = D.vol W := IsVol.unique D W P Q _ _ hV ⟨D.vol_pos W, ht W P Q hs hsig⟩
-    have e2 : V' = D.vol W' :=
-      IsVol.unique D W' P' Q' _ _ hV' ⟨D.vol_pos W', ht W' P' Q' hk.2.1 hk.2.2⟩
-    refine ⟨x, hx, W', ι, fun a b => hp.2.1 b a, ?_, hk.2.1, hk.2.2, by rw [← e1, ← e2, hr]⟩
-    ext y
-    exact hp.2.2 y
-  intro W P Q hs hsig h3 s hPQ
-  have hW := h W W.rank P Q ⟨rfl, hs, hsig⟩ h3
-  cases s with
-  | true => simpa using key W P Q 1 (P - 1) Q hs hsig (hW.1 (by simpa using hPQ))
-  | false => simpa using key W P Q (-1) P (Q - 1) hs hsig (hW.2 (by simpa using hPQ))
 
 end GlobalTheory.IndefiniteRowSideFullHecke.VolumePerpendicular

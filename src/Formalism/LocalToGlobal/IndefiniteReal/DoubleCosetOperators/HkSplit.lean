@@ -49,7 +49,6 @@ def extHom (ι : S →ₙ+* R) : Matrix n n S →* Matrix n n R where
 
 def extGL (ι : S →ₙ+* R) : GL n S →* GL n R := Units.map (extHom ι)
 
-theorem extGL_coe (ι : S →ₙ+* R) (g : GL n S) : ((extGL ι g : GL n R) : Matrix n n R) = extM ι g := rfl
 
 theorem extM_cT (ι : S →ₙ+* R) (σS : S →+* S) (σR : R →+* R) (hι : ∀ x, ι (σS x) = σR (ι x)) (A : Matrix n n S) :
     cT σR (extM ι A) = extM ι (cT σS A) := by
@@ -410,10 +409,6 @@ def splitEmbOn (V : HSp D) (K : Set (GA D V)) (T : Set (HeightOneSpectrum (𝓞 
     · rw [embOn_not V s hv a, mul_one, one_mul]
     · rw [embOn_not V s hv a, embOn_not V s hv' b]
 
-theorem splitEmbOn_emb (V : HSp D) (K : Set (GA D V)) (T : Set (HeightOneSpectrum (𝓞 D.host.F)))
-    (s : ∀ v ∈ T, SplitD D v) (hK : ∀ v (hv : v ∈ T), ∀ a ∈ Kv v V.rank, embV V (s v hv) a ∈ K)
-    (h1 : (1 : GA D V) ∈ K) {v : HeightOneSpectrum (𝓞 D.host.F)} (hv : v ∈ T) :
-    (splitEmbOn V K T s hK h1).emb v = embV V (s v hv) := embOn_mem V s hv
 
 end Emb
 
@@ -512,18 +507,6 @@ theorem hkGA_dosetInd_KpC (hP : LevSplitP D) (V : HSp D) (N : ℕ) (T : Set (Hei
   rw [he]
   exact (opAt_dosetInd_map (embV_inj V (s v hv)) h1 inf_le_left h3 h4 h2 hR hφ' g).2
 
-theorem hkGA_twist_KpC (hP : LevSplitP D) (V : HSp D) (N : ℕ) (T : Set (HeightOneSpectrum (𝓞 D.host.F)))
-    (s : ∀ v ∈ T, SplitD D v) (hT : GoodAt V N T s) {v : HeightOneSpectrum (𝓞 D.host.F)} (hv : v ∈ T)
-    {χ : GL (Fin V.rank) (v.adicCompletion D.host.F) →* ℂ} (hχ : ∀ κ ∈ Kv v V.rank, χ κ = 1)
-    {α : GL (Fin V.rank) (v.adicCompletion D.host.F)} {R : Finset (GL (Fin V.rank) (v.adicCompletion D.host.F))}
-    (hR : IsDCSys (Kv v V.rank) α R) {φ : GA D V → ℂ} (hφ : RightInv (Formalism.L2.NTheta.KpC V N) φ) (g : GA D V) :
-    hkGA (splitEmbKpC hP V N T s hT) v (twist χ (dosetInd ℂ (Kv v V.rank) α)) φ g =
-      χ α • ∑ γ ∈ R, φ (g * embV V (s v hv) γ) := by
-  have he : (splitEmbKpC hP V N T s hT).emb v = embV V (s v hv) := embOn_mem V s hv
-  unfold hkGA
-  rw [he]
-  exact opAt_twist_dosetInd hχ hR (fun g' x ⟨a, ha, e⟩ => e ▸ hφ g' _
-    (by rw [← he]; exact (splitEmbKpC hP V N T s hT).emb_K v a ha)) g
 
 end Level
 
@@ -531,14 +514,6 @@ section Clauses
 
 variable {G : Type} [Group G]
 
-theorem isDCSys_clauses {K : Subgroup G} {α : G} {R : Finset G} (h : IsDCSys K α R) :
-    (∀ γ ∈ R, ∃ k₁ ∈ K, ∃ k₂ ∈ K, γ = k₁ * α * k₂) ∧
-    ∀ x : G, (∃ k₁ ∈ K, ∃ k₂ ∈ K, x = k₁ * α * k₂) ↔ ∃! γ, γ ∈ R ∧ γ⁻¹ * x ∈ K := by
-  refine ⟨fun γ hγ => DoubleCoset.mem_doubleCoset.1 (h.1 γ hγ), fun x => ⟨fun hx => h.2 x
-    (DoubleCoset.mem_doubleCoset.2 hx), fun ⟨γ, ⟨hγ, hx⟩, _⟩ => ?_⟩⟩
-  obtain ⟨k₁, hk₁, k₂, hk₂, e⟩ := DoubleCoset.mem_doubleCoset.1 (h.1 γ hγ)
-  refine ⟨k₁, hk₁, k₂ * (γ⁻¹ * x), K.mul_mem hk₂ hx, ?_⟩
-  rw [← mul_assoc, ← e, mul_inv_cancel_left]
 
 end Clauses
 

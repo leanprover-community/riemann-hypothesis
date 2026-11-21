@@ -47,11 +47,6 @@ theorem range_inhabited (D : D7) :
     by rw [wittIndex_eq_one]; exact show 5 + 1 < 8 + 1 by decide⟩,
    ⟨pos D 1, pos D 2, rfl, show 1 < 2 by decide, by rw [wittIdx_pos]; exact show 1 + 0 < 2 by decide⟩⟩
 
-theorem split_excluded (A V : HSp D) (h : V.rank = A.rank) :
-    ¬ A.rank + Formalism.MainNotions.SchurIrreducible.wittIdx (dblSp V) < (dblSp V).rank := by
-  rw [wittIdx_dblSp]
-  change ¬ A.rank + V.rank < V.rank + V.rank
-  omega
 
 theorem hypotheses_inhabited (H : GlobalTheory.Published.WeilRepresentationUnitaryPair) (D : D7) :
     ∃ (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (χB : (AE D)ˣ →* Circle)
@@ -66,28 +61,8 @@ theorem hypotheses_inhabited (H : GlobalTheory.Published.WeilRepresentationUnita
   exact ⟨ψ, A, B, χ, ω, a, μ, 𝓨, m, h0, h1, h2, h3, hω, ha, hμ, hm, ⟨f, hf, hf0⟩,
     0, GlobalTheory.ThetaMean.Model.zero_vec ψ _ B ω _⟩
 
-theorem conclusion_zero (A B : HSp D) (h : A.rank < B.rank)
-    (ω : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ))
-    (a : GL (Fin A.rank) (AE D)) (μ : Measure (WO A B)) (𝓨 : Set (WO A B)) (ν : Measure (GA D B)) :
-    Eis.EisValueAt A (flat A a (swSec A B ω μ 𝓨 0) (sZero A B)) (sZero A B) (thetaMean ω ν 0) := by
-  simpa only [if_pos h, one_smul] using GlobalTheory.ThetaMean.Model.conclusion_zero A B ω a μ 𝓨 ν
 
-theorem integrable_of_weil (H : GlobalTheory.Published.WeilSiegelFormulaUnitary) {ψ : AddChar (AF D.host.F) ℂ} {A B : HSp D}
-    (h1 : A.rank < B.rank) (h2 : B.rank ≤ 2 * A.rank) (h3 : A.rank + Formalism.MainNotions.SchurIrreducible.wittIdx B < B.rank) {χ ω f}
-    (hω : IsWeilDatumO ψ (dblSp A) B 1 χ ω) (hf : IsThetaFunO ψ (dblSp A) B f) (ν : Measure (GA D B)) [ν.IsHaarMeasure]
-    (g : GA D (dblSp A)) : Integrable (AutomorphicL2Unitary.descend (GQ B) fun h => thetaKO ω g h f) (autMeasure B ν) :=
-  ((H D A B ν inferInstance (GlobalTheory.Published.one_le_of_range h1 h2) (.inr h3)).2 ψ χ ω hω f hf).1 g
 
-theorem conclusion_of_aniso (H : GlobalTheory.Published.SiegelWeilAnisotropicUnitary) {ψ : AddChar (AF D.host.F) ℂ} {A B : HSp D}
-    (h1 : A.rank < B.rank) (h2 : B.rank ≤ 2 * A.rank) (hB : IsAniso B) {χ ω f}
-    (hω : IsWeilDatumO ψ (dblSp A) B 1 χ ω) {a : GL (Fin A.rank) (AE D)} (ha : IsMaj A a)
-    (hI : HasIwasawa D.sp.cm.sig (dblSp A).gram (Khat A a)) {μ : Measure (WO A B)} {𝓨 : Set (WO A B)}
-    (hμ : IsCovolOne (ratL B A) μ 𝓨) (ν : Measure (GA D B)) [ν.IsHaarMeasure]
-    (hf : IsThetaFunO ψ (dblSp A) B f) (hK : IsKFinVec ω (Khat A a) f) :
-    Eis.EisValueAt A (flat A a (swSec A B ω μ 𝓨 f) (sZero A B)) (sZero A B) (thetaMean ω ν f) := by
-  have hA := GlobalTheory.Published.one_le_of_range h1 h2
-  simpa only [if_pos h1, one_smul] using
-    (H D ψ A B hA (hA.trans h1.le) hB χ ω hω a ha hI μ 𝓨 hμ ν inferInstance f hf hK).2
 
 theorem weilPair : GlobalTheory.Published.WeilRepresentationUnitaryPair := fun D ψ S T χS χT hψ h1 h2 h3 h4 =>
   GlobalTheory.WeilExist.exists_isWeilDatumO D ψ hψ S T χS χT

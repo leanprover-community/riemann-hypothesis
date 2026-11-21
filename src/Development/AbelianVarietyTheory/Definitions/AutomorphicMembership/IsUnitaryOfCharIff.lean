@@ -164,11 +164,6 @@ theorem isUnitary_toChar_iff (σ : CG E 1) : (toChar σ).IsUnitary ↔ σ.IsUnit
 theorem IsUnitary.tw (h : π.IsUnitary) {σ : CG E 1} (hσ : σ.IsUnitary) : (π.tw σ).IsUnitary :=
   h.twist ((isUnitary_toChar_iff σ).2 hσ)
 
-theorem IsUnitary.not_twist_absPow (ha : 1 ≤ a) (h : π.IsUnitary) {ν : HChar E} {s : ℝ} (hν : ν.IsAbsPow s) (hs : s ≠ 0) :
-    ¬ (π.twist ν).IsUnitary := fun h' =>
-  hs (exponent_unique ha h h' hν (ν' := 1) (s' := 0)
-    ⟨fun _ _ _ => rfl, fun _ => by simp [HChar.val, HChar.locK, HChar.loc], fun _ => by simp [HChar.inf]⟩
-    (twist_one _).symm)
 
 end CG
 
@@ -239,10 +234,6 @@ instance : Inhabited (CGu E 0) :=
 
 end CGu
 
-theorem exists_not_isUnitary : ∃ σ : CG E 1, ¬ σ.IsUnitary :=
-  ⟨_, (default : CGu E 1).2.not_twist_absPow le_rfl
-    (ν := ⟨GlobalTheory.Mem.Chr.CharModel.absHom E 1, (GlobalTheory.Mem.Chr.CharModel.absChar E 1).2⟩)
-    (GlobalTheory.Mem.Chr.CharModel.absChar_isAbsPow (F := E) 1) one_ne_zero⟩
 
 abbrev HostCGu {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R) (a : ℕ) : Type :=
   haveI := host_isCMField H; CGu H.E a

@@ -42,20 +42,6 @@ theorem abs_x_eq (𝔭 : Ideal (𝓞 F)) (m : ℕ) :
     |etaF K F 𝔭 ^ m * ((Ideal.absNorm 𝔭 : ℝ) ^ (m - 1))⁻¹| = ((Ideal.absNorm 𝔭 : ℝ) ^ (m - 1))⁻¹ := by
   rw [abs_mul, abs_eta_pow, one_mul, abs_of_nonneg (by positivity)]
 
-theorem abs_x_le {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {m : ℕ} (hm : 2 ≤ m) :
-    |etaF K F 𝔭 ^ m * ((Ideal.absNorm 𝔭 : ℝ) ^ (m - 1))⁻¹| ≤ 1 / 2 := by
-  rw [abs_x_eq]
-  have h1 : Ideal.absNorm 𝔭 ≠ 1 := fun h => h𝔭.ne_top (Ideal.absNorm_eq_one_iff.mp h)
-  have h0 : Ideal.absNorm 𝔭 ≠ 0 := fun h =>
-    (Ring.ne_bot_of_isMaximal_of_not_isField h𝔭 (NumberField.RingOfIntegers.not_isField F))
-      (Ideal.absNorm_eq_zero_iff.mp h)
-  have hN : (2 : ℝ) ≤ Ideal.absNorm 𝔭 := by
-    have : 2 ≤ Ideal.absNorm 𝔭 := by omega
-    exact_mod_cast this
-  have hp : (2 : ℝ) ≤ (Ideal.absNorm 𝔭 : ℝ) ^ (m - 1) :=
-    le_trans hN (le_self_pow₀ (by linarith) (by omega))
-  calc ((Ideal.absNorm 𝔭 : ℝ) ^ (m - 1))⁻¹ ≤ (2 : ℝ)⁻¹ := inv_anti₀ (by norm_num) hp
-    _ = 1 / 2 := by norm_num
 
 theorem alphaN_rank_zero (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) {L : Submodule (𝓞 K) V}
@@ -96,14 +82,6 @@ theorem alphaN_eq_of_vF_eq (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) 
       unitaryAbsoluteValueBounds.alphaN_rank_zero hK hF hs hd hL hLi h𝔭 hm hn']
   · rw [unitaryAbsoluteValueBounds.alphaN_closed hK hF hs hd hL hLi h𝔭 hv hm _ n hn rfl, unitaryAbsoluteValueBounds.alphaN_closed hK hF hs hd hL hLi h𝔭 hv hm _ n' hn' rfl, hvv]
 
-theorem alphaN_rho_bound (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
-    {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) {L : Submodule (𝓞 K) V}
-    (hL : Submodule.IsLattice K L) (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L) (hm : 2 ≤ finrank K V) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
-    (hv : vd h L 𝔭 = 0) {n : 𝓞 F} (hn : n ≠ 0) :
-    0 ≤ alphaN h L 𝔭 n / (1 - etaF K F 𝔭 ^ finrank K V * (Ideal.absNorm 𝔭 : ℝ) ^ (-(finrank K V : ℤ))) ∧ alphaN h L 𝔭 n / (1 - etaF K F 𝔭 ^ finrank K V * (Ideal.absNorm 𝔭 : ℝ) ^ (-(finrank K V : ℤ))) ≤ 4 := by
-  rw [unitaryAbsoluteValueBounds.alphaN_closed hK hF hs hd hL hLi h𝔭 hv (by omega) _ n hn rfl,
-    mul_div_cancel_left₀ _ (unitaryAbsoluteValueBounds.beta_pos h𝔭 (by omega)).ne']
-  exact unitaryAbsoluteValueBounds.geom_bound (unitaryAbsoluteValueBounds.abs_x_le h𝔭 hm) _
 
 theorem alphaN_rho_diff_bound (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) {L : Submodule (𝓞 K) V}

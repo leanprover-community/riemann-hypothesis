@@ -302,84 +302,7 @@ section Units
 
 variable {K : Type} [Field K] [NumberField K] [Algebra.IsQuadraticExtension ℚ K] {d : ℕ} {x : K}
 
-theorem eq_one_or_neg_one_of_mem_torsion (hdp : d.Prime) (hd7 : 4 < d) (hx : x ^ 2 = -(d : K))
-    {u : (𝓞 K)ˣ} (hu : u ∈ Units.torsion K) : u = 1 ∨ u = -1 := by
-  have hd := hdp.pos
-  obtain ⟨n, hn, hun⟩ := isOfFinOrder_iff_pow_eq_one.mp ((CommGroup.mem_torsion u).mp hu)
-  set y : K := (((u : 𝓞 K)) : K) with hy
-  have hyn : y ^ n = 1 := by
-    show algebraMap (𝓞 K) K (u : 𝓞 K) ^ n = 1
-    rw [← map_pow, ← Units.val_pow_eq_pow_val, hun, Units.val_one, map_one]
-  obtain ⟨a, b, hab⟩ := exists_rat hd hx y
-  have hint : IsIntegral ℤ (algebraMap ℚ K a + algebraMap ℚ K b * x) := hab ▸ (u : 𝓞 K).2
-  obtain ⟨A, B, N, hA, hB, -⟩ := coords_of_isIntegral hdp hx hint
-  set c := GroundTheory.Global.Quadratic.conj K
-  have hnorm : algebraMap ℚ K (a ^ 2 + d * b ^ 2) = y * c y := by
-    rw [hab, conj_apply hd hx, map_add, map_mul, map_pow, map_pow, map_natCast]
-    linear_combination (algebraMap ℚ K b) ^ 2 * hx
-  have h1 : (a ^ 2 + d * b ^ 2) ^ n = 1 := by
-    apply (algebraMap ℚ K).injective
-    rw [map_pow, hnorm, mul_pow, hyn, ← map_pow, hyn, map_one, one_mul, map_one]
-  have h0 : 0 ≤ a ^ 2 + d * b ^ 2 := by positivity
-  have h2 : a ^ 2 + d * b ^ 2 = 1 := (pow_eq_one_iff_of_nonneg h0 hn.ne').mp h1
-  have h3 : A ^ 2 + d * B ^ 2 = 4 := by
-    have : ((A ^ 2 + d * B ^ 2 : ℤ) : ℚ) = ((4 : ℤ) : ℚ) := by
-      push_cast
-      rw [← hA, ← hB]
-      linear_combination 4 * h2
-    exact_mod_cast this
-  have hB0 : B = 0 := by
-    by_contra hB0
-    have hB1 : 1 ≤ B ^ 2 := by
-      have := Int.one_le_abs hB0
-      nlinarith [sq_abs B]
-    have hd' : (5 : ℤ) ≤ d := by exact_mod_cast hd7
-    nlinarith [sq_nonneg A]
-  rw [hB0] at h3
-  have hA2 : A = 2 ∨ A = -2 := by
-    have : (A - 2) * (A + 2) = 0 := by linear_combination h3
-    rcases mul_eq_zero.mp this with h | h
-    · left; linarith
-    · right; linarith
-  have hb : b = 0 := by
-    have : (2 : ℚ) * b = 0 := by rw [hB, hB0]; simp
-    linarith
-  rcases hA2 with hA2 | hA2
-  · left
-    have ha : a = 1 := by
-      have : (2 : ℚ) * a = 2 := by rw [hA, hA2]; simp
-      linarith
-    apply Units.ext
-    apply RingOfIntegers.ext
-    show y = _
-    rw [hab, ha, hb]; simp
-  · right
-    have ha : a = -1 := by
-      have : (2 : ℚ) * a = -2 := by rw [hA, hA2]; simp
-      linarith
-    apply Units.ext
-    apply RingOfIntegers.ext
-    show y = _
-    rw [hab, ha, hb]; simp
 
-theorem torsionOrder_eq_two (hdp : d.Prime) (hd7 : 4 < d) (hx : x ^ 2 = -(d : K)) :
-    Units.torsionOrder K = 2 := by
-  have hneg : (-1 : (𝓞 K)ˣ) ∈ Units.torsion K :=
-    (CommGroup.mem_torsion _).mpr (isOfFinOrder_iff_pow_eq_one.mpr ⟨2, two_pos, by simp⟩)
-  rw [Units.torsionOrder, Nat.card_eq_two_iff]
-  refine ⟨1, ⟨-1, hneg⟩, ?_, ?_⟩
-  · intro h
-    have h' := congrArg (fun v : Units.torsion K => (((v : (𝓞 K)ˣ) : 𝓞 K) : K)) h
-    simp only [OneMemClass.coe_one, Units.val_one, Units.val_neg] at h'
-    have : ((1 : 𝓞 K) : K) = ((-1 : 𝓞 K) : K) := h'
-    rw [RingOfIntegers.coe_eq_algebraMap, RingOfIntegers.coe_eq_algebraMap, map_one, map_neg,
-      map_one] at this
-    norm_num at this
-  · ext v
-    simp only [Set.mem_insert_iff, Set.mem_singleton_iff, Set.mem_univ, iff_true]
-    rcases eq_one_or_neg_one_of_mem_torsion hdp hd7 hx v.2 with h | h
-    · left; exact Subtype.ext h
-    · right; exact Subtype.ext h
 
 end Units
 
@@ -404,42 +327,9 @@ end Embeddings
 
 section Character
 
-theorem legendreSym_neg_eq {p d : ℕ} [Fact p.Prime] [Fact d.Prime] (hp2 : p ≠ 2) (hd4 : d % 4 = 3) :
-    legendreSym p (-(d : ℤ)) = legendreSym d p := by
-  have hd2 : d ≠ 2 := by omega
-  rw [neg_eq_neg_one_mul, legendreSym.mul p (-1) d, legendreSym.at_neg_one hp2,
-    legendreSym.quadratic_reciprocity' hd2 hp2]
-  have hpo : p % 2 = 1 := Nat.odd_iff.mp ((Fact.out : p.Prime).odd_of_ne_two hp2)
-  have hd' : (d / 2) % 2 = 1 := by omega
-  rcases Nat.odd_mod_four_iff.mp hpo with h | h
-  · rw [ZMod.χ₄_nat_one_mod_four h]
-    have he : Even (d / 2 * (p / 2)) := by
-      rw [Nat.even_mul]; right; rw [Nat.even_iff]; omega
-    rw [he.neg_one_pow]; ring
-  · rw [ZMod.χ₄_nat_three_mod_four h]
-    have ho : Odd (d / 2 * (p / 2)) := by
-      rw [Nat.odd_mul, Nat.odd_iff, Nat.odd_iff]; omega
-    rw [ho.neg_one_pow]; ring
 
 variable {K : Type} [Field K] [NumberField K] [Algebra.IsQuadraticExtension ℚ K] {d : ℕ} {x : K}
 
-theorem LFunction_kronecker_eq [hdf : Fact d.Prime] (hd4 : d % 4 = 3) (hx : x ^ 2 = -(d : K))
-    (s : ℂ) :
-    DirichletCharacter.LFunction (GroundTheory.Global.Quadratic.kronecker K) s =
-      DirichletCharacter.LFunction (legendreCharacter d) s := by
-  have hdisc := discr_eq hdf.out hd4 hx
-  have hD : (discr K).natAbs = d := by rw [hdisc]; simp
-  have : NeZero d := ⟨hdf.out.ne_zero⟩
-  rw [← GroundTheory.Global.Quadratic.LFunction_kroneckerChar K s,
-    ← GroundTheory.Global.Quadratic.LFunction_changeLevel_of_eq hD]
-  congr 1
-  refine MulChar.ext fun a => ?_
-  obtain ⟨p, hp_gt, hpp, hpa⟩ := Nat.forall_exists_prime_gt_and_eq_mod a.isUnit (2 * d)
-  have := Fact.mk hpp
-  have hp2 : p ≠ 2 := by omega
-  rw [← hpa, GroundTheory.Global.Quadratic.changeLevel_of_eq_apply hD,
-    GroundTheory.Global.Quadratic.kroneckerChar_apply_prime K p hp2, hdisc, legendreSym_neg_eq hp2 hd4]
-  simp [legendreCharacter, MulChar.ringHomComp_apply, legendreSym]
 
 end Character
 

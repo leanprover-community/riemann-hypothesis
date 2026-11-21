@@ -305,7 +305,6 @@ theorem isoCore : IsoCore := by
         simp only [Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hβu, Matrix.mul_one]
     _ = y := hsys
 
-theorem gfStab : GfStab := gfStab_of_iso isoCore
 
 end iso2
 

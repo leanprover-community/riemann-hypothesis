@@ -24,14 +24,6 @@ theorem blockPSD_congr {α β : Type} (Y₁ : Finset α) (Y₂ : Finset β) (a a
   rcases x with p | p <;> rcases y with q | q <;>
     simp only [Finset.inl_mem_disjSum, Finset.inr_mem_disjSum] at hx hy <;> simp [*]
 
-theorem blockPSD_gram {α β : Type} (Y₁ : Finset α) (Y₂ : Finset β) (f : α → H) (g : β → H) :
-    KB.BlockPSD Y₁ Y₂ (fun p q => ⟪f p, f q⟫_ℂ) (fun p q => ⟪f p, g q⟫_ℂ) (fun p q => ⟪g p, g q⟫_ℂ) := by
-  unfold KB.BlockPSD TB.PSDOn
-  have := Matrix.posSemidef_gram ℂ (fun x : (Y₁.disjSum Y₂) => Sum.elim f g x.1)
-  convert this using 1
-  all_goals try rfl
-  ext ⟨x, hx⟩ ⟨y, hy⟩
-  rcases x with p | p <;> rcases y with q | q <;> simp [Matrix.gram_apply]
 
 end gram
 

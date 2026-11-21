@@ -83,15 +83,5 @@ theorem IsHTFrame.exists_frBor {E : Type} [Field E] [NumberField E] [IsCMField E
 
 attribute [local instance] algPadicInt algPadicField towerPadic factPadic PadicComplexHost.isAdicComplete
 
-theorem isHTFrameCp_indep : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (p : ℕ) [Fact p.Prime] [Algebra c.F ℂ_[p]] (T : CDVR) (io : c.F →+* T.Fr) (y₀ : IntFr Xo c T io) (k : letI := io.toAlgebra; T.Fr →ₐ[c.F] ℂ_[p]) (y y' : FrPt Xo c ℂ_[p]), IsHTFrameCp p y₀ k y → IsHTFrameCp p y₀ k y' → (∃ t : Ix Dw → ℂ_[p]ˣ, FrBor t y y' ∧ ∀ i, ‖(t i : ℂ_[p])‖ = 1) ∧ ∀ (e : Ix Dw → ℤ), ∀ f ∈ secZ Xo c e, ‖evR Xo c f y‖ = ‖evR Xo c f y'‖ := by
-  intro E _ _ _ H Dw l Xo c p _ _ T io y₀ k y y' h h'
-  letI := H.starRing
-  obtain ⟨t, ht, hv⟩ := IsHTFrame.exists_frBor h h'
-  have hn : ∀ i, ‖(t i : ℂ_[p])‖ = 1 := fun i => by
-    rw [PadicComplex.norm_eq_norm, Valuation.norm_def, PadicComplex.RankOne.hom_eq_embedding,
-      Valuation.embedding_restrict, hv i, NNReal.coe_one]
-  refine ⟨⟨t, ht, hn⟩, fun e f hf => ?_⟩
-  rw [FlagTan.evR_frBor hf ht, norm_mul, Units.coe_prod, norm_prod]
-  simp [norm_zpow, hn]
 
 end GlobalTheory.CompHt

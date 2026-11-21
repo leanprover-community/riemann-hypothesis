@@ -29,9 +29,6 @@ theorem conjK_conjK (c : D.host.K) : conjK D (conjK D c) = c := Subtype.ext (con
 
 theorem homP_conjK (c : D.host.K) : homP D lam (conjK D c) = homPbar D lam c := rfl
 
-theorem homPbar_conjK (c : D.host.K) : homPbar D lam (conjK D c) = homP D lam c := by
-  show homP D lam (conjK D (conjK D c)) = _
-  rw [conjK_conjK]
 
 theorem norm_int_le (ψ : D.host.K →+* ℂ_[p]) (a : 𝓞 D.host.K) : ‖ψ (a : D.host.K)‖ ≤ 1 := by
   obtain ⟨f, hf, h0'⟩ := RingOfIntegers.isIntegral_coe a

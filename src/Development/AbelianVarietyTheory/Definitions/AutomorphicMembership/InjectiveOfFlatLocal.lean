@@ -251,9 +251,5 @@ open Classical in
 def pick {X : Scheme.{0}} {t₀ : SAB H X} {x : X} (h : Nonempty (BDat t₀ x)) : BDat t₀ x :=
   if h' : ∃ A : BDat t₀ x, A.Exact then h'.choose else h.some
 
-theorem pick_exact {X : Scheme.{0}} {t₀ : SAB H X} {x : X} (h : Nonempty (BDat t₀ x)) (h' : ∃ A : BDat t₀ x, A.Exact) :
-    (pick h).Exact := by
-  rw [pick, dif_pos h']
-  exact h'.choose_spec
 
 end GlobalTheory.LocM.Bdy

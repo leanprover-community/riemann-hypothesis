@@ -134,23 +134,6 @@ abbrev thetaQuot (μ χ : kˣ →* ℂˣ) := coinv (omega a b μ⁻¹) (detChar 
 
 variable {a b}
 
-theorem twRel_omega (μ χ : kˣ →* ℂˣ) :
-    twRel ((omega a b μ⁻¹).comp (MonoidHom.inl _ _)) (detChar a χ) =
-      Submodule.span ℂ {w : SB (Matrix b a k) | ∃ (g : GL a k) (Φ : SB (Matrix b a k)),
-        w.1 = om μ g 1 Φ.1 - (χ (GeneralLinearGroup.det g) : ℂ) • Φ.1} := by
-  unfold twRel
-  refine congrArg (Submodule.span ℂ) (Set.ext fun w => ?_)
-  constructor
-  · rintro ⟨g, Φ, rfl⟩
-    refine ⟨g, Φ, ?_⟩
-    have := omega_eq_om μ⁻¹ g (1 : GL b k) Φ
-    rw [inv_inv] at this
-    exact congrArg₂ (· - ·) this rfl
-  · rintro ⟨g, Φ, h⟩
-    refine ⟨g, Φ, Subtype.ext ?_⟩
-    have := omega_eq_om μ⁻¹ g (1 : GL b k) Φ
-    rw [inv_inv] at this
-    exact h.trans (congrArg₂ (· - ·) this.symm rfl)
 
 theorem thetaQuot_mk (μ χ : kˣ →* ℂˣ) (h : GL b k) (Φ Ψ : SB (Matrix b a k)) (hΨ : Ψ.1 = om μ 1 h Φ.1) :
     thetaQuot a b μ χ h (Submodule.Quotient.mk Φ) = Submodule.Quotient.mk Ψ := by

@@ -101,7 +101,6 @@ theorem cc_ζ : cc ζ = -ζ := by
   apply φ₀.injective
   rw [IsCMField.complexEmbedding_complexConj, map_neg, conj_emb_ζ]
 
-theorem cc_ratCast (q : ℚ) : cc (q : Em) = q := map_ratCast cc q
 
 theorem cc_intCast (n : ℤ) : cc (n : Em) = n := map_intCast cc n
 
@@ -192,7 +191,6 @@ def gaussL : Submodule (𝓞 Em) (Fin 2 → Em) where
     rw [Pi.smul_apply, Algebra.smul_def]
     exact (RingOfIntegers.isIntegral_coe c).mul (hx a)
 
-theorem mem_gaussL {x : Fin 2 → Em} : x ∈ gaussL ↔ ∀ a, IsIntegral ℤ (x a) := Iff.rfl
 
 theorem single_mem (a : Fin 2) {v : Em} (hv : IsIntegral ℤ v) : Pi.single a v ∈ gaussL := by
   intro b

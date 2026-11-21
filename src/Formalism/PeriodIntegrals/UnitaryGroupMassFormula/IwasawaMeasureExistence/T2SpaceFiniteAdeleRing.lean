@@ -222,15 +222,7 @@ theorem ctsA_const (y : E ⊗[F] B) : CtsA b (fun _ : X => y) := continuous_cons
 theorem ctsA_emb {g : X → ι → B} (hg : Continuous g) : CtsA b (fun x => emb b (g x)) := by
   simpa [CtsA, coord_emb] using hg
 
-theorem ctsA_add {f g : X → E ⊗[F] B} (hf : CtsA b f) (hg : CtsA b g) : CtsA b (fun x => f x + g x) := by
-  unfold CtsA at *
-  simp only [map_add]
-  exact hf.add hg
 
-theorem ctsA_sub {f g : X → E ⊗[F] B} (hf : CtsA b f) (hg : CtsA b g) : CtsA b (fun x => f x - g x) := by
-  unfold CtsA at *
-  simp only [map_sub]
-  exact hf.sub hg
 
 theorem ctsA_sum {κ : Type*} (s : Finset κ) {f : κ → X → E ⊗[F] B} (hf : ∀ i ∈ s, CtsA b (f i)) :
     CtsA b (fun x => ∑ i ∈ s, f i x) := by
@@ -354,8 +346,6 @@ variable {b}
 theorem intC_add {x y : E ⊗[F] Af} (hx : IntC b x) (hy : IntC b y) : IntC b (x + y) := fun k => by
   rw [map_add]; exact ohat_add (hx k) (hy k)
 
-theorem intC_nsmul {x : E ⊗[F] Af} (hx : IntC b x) (m : ℕ) : IntC b (m • x) := fun k => by
-  rw [map_nsmul]; exact ohat_nsmul (hx k) m
 
 theorem intC_sum {κ : Type*} (s : Finset κ) {f : κ → E ⊗[F] Af} (hf : ∀ i ∈ s, IntC b (f i)) :
     IntC b (∑ i ∈ s, f i) := fun k => by
@@ -377,9 +367,6 @@ theorem exists_den_mul (b : Module.Basis ι F E) :
   rw [h1]
   exact ohat_mul (h (i, j, k)) (ohat_mul (hx i) (hy j))
 
-theorem intC_incl {e : E} (he : ∀ k, IntF (b.repr e k)) :
-    IntC b (Algebra.TensorProduct.includeLeftRingHom (R := F) (B := Af) e) := fun k => by
-  rw [coord_incl]; exact he k
 
 end Coord
 

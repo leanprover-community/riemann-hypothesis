@@ -107,11 +107,6 @@ def AdmissibilitySecond : Prop :=
       dotProduct (u l') ((bilinPart k (h' - h)).mulVec ((dAct k B w0).mulVec (u l)))) P = 0 →
     ∀ f : PS k 1 d, B.nabVal k h w0 m f u P = B.nabVal k h' w0 m f u P
 
-theorem isRQ_int : IsRQ (R := ℤ) ℚ := by
-  unfold IsRQ
-  refine ⟨(algebraMap ℤ ℚ).injective_int, fun y => ⟨y.num, y.den, Nat.pos_of_ne_zero y.den_nz, ?_⟩⟩
-  rw [eq_intCast]
-  exact Rat.den_mul_eq_num y
 
 def fglZero (R : Type) [CommRing R] : FGLaw R 0 where
   F := fun i => i.elim0
@@ -130,8 +125,5 @@ def oactZero (R : Type) [CommRing R] : OAct ℤ (fglZero R) where
 
 def fbZero : FB ℤ 0 ℤ := FB.triv (fglZero ℤ) (oactZero ℤ)
 
-theorem zero_mem_Hset (h : PS ℚ 2 0) : (0 : (Fin 0 → ℚ) × (Fin 0 → ℚ)) ∈ Hset (R := ℤ) ℚ h := by
-  simp only [Hset, Set.mem_setOf_eq]
-  exact ⟨0, 0, Prod.ext (funext fun i => i.elim0) (funext fun i => i.elim0)⟩
 
 end ReciprocityTheory.ChartRestriction.G.TB

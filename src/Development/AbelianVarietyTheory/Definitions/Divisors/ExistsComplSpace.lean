@@ -139,13 +139,6 @@ theorem complMet_of (D : D7) (V : HSp D) (han : IsAniso V) (t : ℕ) : ComplMet 
     T, hT, χ, hω.hecT, GlobalTheory.LFun.resEtaPow_of_resEta D.host.F D.host.E hCM.2.2.1 χ V.rank hω.resT, K, hK, hI, ⟨w, hw⟩,
     (existsUnique_isNormN hCM one_ne_zero hJ' hJ0 rfl).exists, key V hω.resT, h2⟩
 
-theorem exists_complMet : ∃ (F E : Type) (_ : Field F) (_ : NumberField F) (_ : Field E) (_ : NumberField E) (_ : Algebra F E)
-    (σ : E →ₐ[F] E), ∀ m t, ComplMet σ m t False := by
-  obtain ⟨D⟩ := GlobalTheory.Mem.nonempty_record
-  refine ⟨D.host.F, D.host.E, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance, D.sp.cm.sig,
-    fun m t => ?_⟩
-  obtain ⟨-, V, -, rfl, h⟩ := GlobalTheory.AnisoStdModel.ranks D 0 m
-  exact complMet_of D V h t
 
 end GlobalTheory.SWInt
 

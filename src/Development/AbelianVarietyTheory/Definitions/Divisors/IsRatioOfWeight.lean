@@ -141,11 +141,6 @@ theorem gens_int : Gens IntExample.pair 0 1 fun _ => 1 where
     exact (unitAt_one x).regAt
   cover z := ⟨0, fun i j _ _ => by rw [IntExample.loc_eq]; exact unitAt_one z⟩
 
-theorem gram_point : IsFam (S := Unit) (Y := fun _ => Unit) (ι := Unit) (fun _ => Measure.dirac ()) (fun _ _ _ => 1) ∧
-    gram (S := Unit) (Y := fun _ => Unit) (ι := Unit) (fun _ => Measure.dirac ()) (fun _ _ _ => 1) = 1 := by
-  refine ⟨⟨inferInstance, fun _ _ _ => integrable_const _⟩, ?_⟩
-  ext i j
-  simp [gram, finsum_unique]
 
 private theorem fderiv_half_comb_fderiv {n : ℕ} {g : ReciprocityTheory.L2DbarEstimates.V n → ℂ} {y : ReciprocityTheory.L2DbarEstimates.V n} (hD : DifferentiableAt ℝ (fderiv ℝ g) y)
     (c : ℂ) (u u' v : ReciprocityTheory.L2DbarEstimates.V n) :
@@ -244,19 +239,12 @@ def VolDens.ofWeight {σ : k →+* ℂ} {D : ℕ} {B : LB X} (φ : Weight p σ B
   pos := hp
   trans c c' _ hy hy' := c.chernDens_trans c' h hy hy'
 
-theorem VolDens.isRatio_ofWeight {σ : k →+* ℂ} {D : ℕ} {B : LB X} (φ : Weight p σ B) (h : φ.IsCInf)
-    (hp : ∀ c : AlgChart p σ D, ∀ y ∈ c.e.source, 0 < c.chernDens φ y) :
-    (VolDens.ofWeight φ h hp).IsRatio φ fun _ => 1 :=
-  ⟨continuous_const, fun _ _ _ => (one_mul _).symm⟩
 
 def volFS (k : Type) [CommRing k] (σ : k →+* ℂ) (N : ℕ) : VolDens (PSpace.str k N) σ N :=
   .ofWeight ((ProjSpace.hermitianTwistingSheaf k N).φ σ) ((ProjSpace.hermitianTwistingSheaf k N).cInf σ) fun c y hy =>
     mul_pos (by positivity) (det_cHess_pos (((ProjSpace.hermitianTwistingSheaf k N).cInf σ).contDiffAt c hy (mem_pick _ y))
       fun ξ hξ => WeightShift.strictPos_fsO1 N (AnRead.all _ σ N) _ c y ⟨hy, mem_pick _ y⟩ ξ hξ)
 
-theorem volFS_meas (k : Type) [CommRing k] (σ : k →+* ℂ) (N : ℕ) :
-    (volFS k σ N).meas = ((ProjSpace.hermitianTwistingSheaf k N).φ σ).chernPart N 1 := by
-  simp only [VolDens.meas, volFS, VolDens.ofWeight, Weight.chernPart, Units.val_one, Int.cast_one, one_mul]
 
 def SmFn.const (p : X ⟶ Sp k) (t : ℝ) : SmFn p := ⟨fun _ _ => t, fun _ y => cInfAt_const t y, fun _ _ _ _ _ _ _ => rfl⟩
 
@@ -283,61 +271,8 @@ def SmFn.ofSec (L : HermLB p) (s : L.B.Sec) : SmFn p where
     rw [(L.φ σ).nsq_eq (secVal_mem s) hi, (L.φ σ').nsq_eq (secVal_mem s) hi', L.conj σ σ' _ y y' h hi, secVal_apply,
       secVal_apply, CxPts.ev_conj h hi, RCLike.norm_conj]
 
-theorem goodFam_int : GoodFam IntExample.pair 0 1 fun _ => AddSubgroup.zmultiples ((2 : ℕ) : (Sp ℤ).functionField) where
-  le m := AddSubgroup.zmultiples_le.2 fun x i j _ _ => by
-    rw [IntExample.loc_eq]
-    exact IntExample.regAt_nat x 2
-  fg _ := ⟨{((2 : ℕ) : (Sp ℤ).functionField)}, by simp [AddSubgroup.zmultiples_eq_closure]⟩
-  small := by
-    refine ⟨1, le_rfl, fun m _ => AddSubgroup.zmultiples_le.2 (AddSubgroup.subset_closure ?_)⟩
-    refine ⟨AddSubgroup.mem_zmultiples _, fun σ y => ?_⟩
-    rw [IntExample.nu_nat, one_pow, Int.cast_one, one_mul, Real.exp_neg, Real.exp_log (by norm_num)]
-    norm_num
-  rank := by
-    have h2 : ((2 : ℕ) : (Sp ℤ).functionField) ≠ 0 := by
-      haveI := IntExample.charZero_functionField
-      exact Nat.cast_ne_zero.mpr two_ne_zero
-    have e : ℤ ≃+ AddSubgroup.zmultiples ((2 : ℕ) : (Sp ℤ).functionField) :=
-      AddEquiv.ofBijective (zmultiplesHom _ ⟨_, AddSubgroup.mem_zmultiples _⟩) ⟨fun a b hab => by
-        haveI := IntExample.charZero_functionField
-        have := congrArg Subtype.val hab
-        simp only [zmultiplesHom_apply, AddSubgroup.coe_zsmul, zsmul_eq_mul] at this
-        exact_mod_cast mul_right_cancel₀ h2 this, fun ⟨z, hz⟩ => by
-        obtain ⟨n, rfl⟩ := AddSubgroup.mem_zmultiples_iff.1 hz
-        exact ⟨n, rfl⟩⟩
-    have hr : Module.finrank ℤ (AddSubgroup.zmultiples ((2 : ℕ) : (Sp ℤ).functionField)) = 1 := by
-      rw [← e.toIntLinearEquiv.finrank_eq, Module.finrank_self]
-    simp only [hr, pow_zero, div_one, Nat.cast_one]
-    exact tendsto_const_nhds
 
-theorem gens_int' : Gens IntExample.pair 1 1 ![((2 : ℕ) : (Sp ℤ).functionField), ((3 : ℕ) : (Sp ℤ).functionField)] where
-  pos := Nat.one_pos
-  mem l x i j _ _ := by
-    rw [IntExample.loc_eq]
-    fin_cases l
-    · exact IntExample.regAt_nat x 2
-    · exact IntExample.regAt_nat x 3
-  cover z := by
-    by_cases h : UnitAt z ((2 : ℕ) : (Sp ℤ).functionField)
-    · exact ⟨0, fun i j _ _ => by rw [IntExample.loc_eq]; exact h⟩
-    · refine ⟨1, fun i j _ _ => ?_⟩
-      rw [IntExample.loc_eq]
-      obtain ⟨a, ha, ha'⟩ := zeroAt_iff.2 ⟨IntExample.regAt_nat z 2, h⟩
-      refine ⟨1 + a, ?_, ?_⟩
-      · by_contra hu
-        have h1 : (1 + a) - a ∈ IsLocalRing.maximalIdeal _ :=
-          Ideal.sub_mem _ ((IsLocalRing.mem_maximalIdeal _).2 hu) ha
-        simp at h1
-      · simp [ha']
-        norm_num
 
-theorem isCan_int : IsCan IntExample.pair (D := 1) 1 1 ![((2 : ℕ) : (Sp ℤ).functionField), ((3 : ℕ) : (Sp ℤ).functionField)] (SmFn.const _ (Real.log 13)) := by
-  intro σ y
-  rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_zero]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_succ]
-  rw [IntExample.nu_nat, IntExample.nu_nat]
-  simp only [SmFn.const]
-  norm_num
 
 end Inhabitants
 

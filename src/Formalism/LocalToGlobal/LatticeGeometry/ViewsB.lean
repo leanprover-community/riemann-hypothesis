@@ -94,13 +94,6 @@ def tieOf (X : DivX D) (levPr : X.Lev → Finset ℕ) (hlev : ∀ κ, ∀ p ∈ 
     curveHT_of (U (dat i)) (hI i) _ _ (hT.shv (dat i) (hI i)) (hHT (dat i) (hI i)) p n Z' hp hn hZ c
   curveDR p _ _ _ _ c := curveDR_of (U (dat i)) (hI i) _ _ (hT.shv (dat i) (hI i)) p c
 
-theorem tie_of_eq (X : DivX D) (levPr : X.Lev → Finset ℕ) (hlev : ∀ κ, ∀ p ∈ levPr κ, p.Prime)
-    (U : ∀ w : Dat D X.Lev, ShimU D X.geo jC ng w) (hT : CompatibleLevelPrimes X levPr hlev U)
-    (hHT : ∀ w : Dat D X.Lev, w.Indef → CurveHTDom (U w))
-    (I : Type) (dat : I → Dat D X.Lev) (hI : ∀ i, (dat i).Indef) (i : I) {S κ} (hS : (dat i).S = S)
-    (hκ : (dat i).κ = κ) : Nonempty (IntegralModelsLocalData.Comparison₂ D (indefiniteDataFamily U I dat hI) i (X.shv S κ)) := by
-  subst hS; subst hκ
-  exact ⟨tieOf X levPr hlev U hT hHT I dat hI i⟩
 
 def settingVarietiesOverData (X : DivX D) (I : Type) (dat : I → Dat D X.Lev) (hI : ∀ i, (dat i).Indef)
     (U : ∀ w : Dat D X.Lev, ShimU D X.geo jC ng w)

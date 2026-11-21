@@ -51,29 +51,5 @@ theorem galois_theorem_primitive_data : GaloisTheoremPrimitiveData := by
       (bcChar O' ε) g₀ _ (bcT O' T) D.T' D.q D.b D.π' D.ρπ D.sE D.tE D.rr (bcChar O' χ₁ g₀) hT (hFree Z) rfl hδO
       hrr hba (hv Z).symm⟩
 
-theorem galois_theorem_with_extension : GaloisTheoremWithExtension := by
-  intro ℓ _ O _ _ _ _ X _ T d _ _ Ek Ω _ _ _ _ _ r π t ht bl χ₁ ε g₀ hyp L ϖ hϖ
-  obtain ⟨eB, e₁, s, hAB, hall⟩ := galois_theorem_primitive_data ℓ O X T d Ek Ω r π t ht bl χ₁ ε g₀ hyp L ϖ hϖ
-  refine ⟨eB, e₁, s, hAB, ?_⟩
-  obtain ⟨hI, ⟨m, jj, a, hja, hs⟩, hsep⟩ := hAB
-  obtain ⟨-, b2, b3, -⟩ := bridge O X T d (Ω ≃ₐ[Ek] Ω) r π eB hI.1 hI.2.2.1 m jj a hja (ϖ ^ L)
-  rw [← hs] at b2 b3
-  let ι : O →+* FractionRing O := algebraMap O (FractionRing O)
-  have hι : Function.Injective ι := IsFractionRing.injective O (FractionRing O)
-  have hmon : ∀ x, (blockPoly (eB x) (eB x * r g₀ x * eB x + s x)).Monic := by
-    intro x
-    have hbb : eB x * eB x = eB x := congrFun hI.2.2.1 x
-    have hbs : eB x * s x = s x := congrFun b2 x
-    have hsb : s x * eB x = s x := congrFun b3 x
-    refine Polynomial.monic_of_injective hι ?_
-    rw [blockPoly_map]
-    refine (bcSplit (FractionRing O) d _ _ t ?_ ?_ ?_ (hI.2.2.2.2.2.2.1 x)).1
-    · rw [← Matrix.map_mul, hbb]
-    · rw [← Matrix.map_mul, mul_add, ← mul_assoc, ← mul_assoc, hbb, hbs]
-    · rw [← Matrix.map_mul, add_mul, mul_assoc, hbb, hsb]
-  obtain ⟨O', i1, i2, i3, i4, i5, i6, e, he, hspl⟩ := splitExt O X
-    (fun x => blockPoly (eB x) (eB x * r g₀ x * eB x + s x)) hmon
-    (fun x => by rw [blockPoly_map]; exact hsep x)
-  exact ⟨O', i1, i2, i3, i4, i5, i6, e, he, hall O' e he hspl⟩
 
 end Formalism.RepresentationBoundsCohomology.SF

@@ -55,25 +55,5 @@ theorem IsBlockRoots.le_one {F : Type} [Monoid F] {g : ℕ} {B : Multiset (ℕ �
   have h3 := Multiset.one_le_count_iff_mem.2 hx
   nlinarith
 
-theorem blockRootsAt_of_cuspidal (D : Formalism.BasicNotions.D7) (σ : D.what₂.FT) (k : Fin 2) (v : D.nd.PlG k)
-    (h : D.ntypes.cuspidal σ) : BlockRootsAt D σ k v := by
-  haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-  have hdeg : ((D.nd.lab k σ v).map (algebraMap (ZMod (D.host.g k)) (Formalism.CyclotomicNorms.Fbar (D.host.g k)))).natDegree
-      = D.R.r := by
-    rw [natDegree_map]; exact (D.nd.lab_monic k σ v).2
-  have hcard := IsAlgClosed.card_roots_eq_natDegree
-    (p := (D.nd.lab k σ v).map (algebraMap (ZMod (D.host.g k)) (Formalism.CyclotomicNorms.Fbar (D.host.g k))))
-  refine ⟨{((D.R.r, 1), labelRoots D σ k v)}, ?_, ?_, ?_⟩
-  · rw [Multiset.map_singleton]; exact h.symm
-  · intro p hp
-    rw [Multiset.mem_singleton] at hp
-    subst hp
-    refine ⟨hcard.trans hdeg, ?_⟩
-    have := roots_map_of_injective_of_card_eq_natDegree
-      (f := frobenius (Formalism.CyclotomicNorms.Fbar (D.host.g k)) (D.host.g k)) (RingHom.injective _) hcard
-    rw [Polynomial.map_map, RingHom.ext_zmod ((frobenius _ _).comp _)
-      (algebraMap (ZMod (D.host.g k)) (Formalism.CyclotomicNorms.Fbar (D.host.g k)))] at this
-    exact this
-  · simp
 
 end GlobalTheory.IndefiniteRowSideFullHecke.BlockRootsCuspidal

@@ -51,12 +51,6 @@ lemma contDiff_lead' (i : ℕ) : ContDiff ℂ ∞ (fun z : Matrix (Fin n) (Fin n
 lemma isOpen_omega : IsOpen (OmegaSet n : Set (Matrix (Fin n) (Fin n) ℂ)) := by
   exact ReciprocityTheory.ChartRestriction.DS.S7.isOpen_omega
 
-lemma contDiffOn_zpow' {f : Matrix (Fin n) (Fin n) ℂ → ℂ} {s : Set (Matrix (Fin n) (Fin n) ℂ)}
-    (hf : ContDiffOn ℂ ∞ f s) (h0 : ∀ x ∈ s, f x ≠ 0) (m : ℤ) : ContDiffOn ℂ ∞ (fun y => f y ^ m) s := by
-  rcases m with k | k
-  · simpa only [Int.ofNat_eq_coe, zpow_natCast] using hf.pow k
-  · refine ((hf.pow (k + 1)).inv (fun x hx => pow_ne_zero _ (h0 x hx))).congr fun x _ => ?_
-    exact zpow_negSucc (f x) k
 
 lemma sm_phi (μ : Fin n → ℤ) : ContDiffOn ℂ ∞ (PhiM μ) (OmegaSet n) := by
   exact phiM_contDiffOn μ

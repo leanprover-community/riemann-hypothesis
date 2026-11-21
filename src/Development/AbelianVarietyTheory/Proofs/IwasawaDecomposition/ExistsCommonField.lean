@@ -144,7 +144,6 @@ def typePlaces (B : Pre) (X : PreX B) : Finset (HeightOneSpectrum (𝓞 B.host.E
   divs (RingOfIntegers.mapRingHom (starRingEnd B.host.E) (X.piG 0)) ∪
     divs (RingOfIntegers.mapRingHom (starRingEnd B.host.E) (X.piG 1))
 
-theorem vGs_eq (B : Base) (X : PreX B.toPre) : (B.primes X).vGs = typePlaces B.toPre X := rfl
 
 section PrimesOk
 

@@ -339,8 +339,6 @@ def globalEquivSecM : Γ(toMod (LPow A L₀ a T), ⊤) ≃+ SecM A L₀ a T wher
   right_inv f := congrArg (SecM.ofSec A) ((globalEquiv _).apply_symm_apply (SecM.toSec A f))
   map_add' s t := congrArg (SecM.ofSec A) (map_add (globalEquiv _) s t)
 
-theorem globalEquivSecM_apply (s : Γ(toMod (LPow A L₀ a T), ⊤)) :
-    globalEquivSecM A L₀ a T s = SecM.ofSec A (globalEquiv _ s) := rfl
 
 theorem globalEquivSecM_smul (r : Γ(T.left, ⊤)) (s : Γ(toMod (LPow A L₀ a T), ⊤)) :
     globalEquivSecM A L₀ a T ((show Γ((T ⊗ A).left, ⊤) from (fst T A).left.appTop r) • s) =
@@ -401,11 +399,6 @@ def chartIso (hL : L.IsLB) (i : L.ι) :
     unitMod (L.U i).toScheme ≅ (toMod L).restrict (L.U i).ι :=
   Descent.freeIso (Descent.bijective_smul_stalk (bijective_smul_chartSec hL i))
 
-theorem chartIso_hom_app (hL : L.IsLB) (i : L.ι) (W : (L.U i).toScheme.Opens)
-    (a : Γ(X, (L.U i).ι ''ᵁ W)) :
-    ((chartIso hL i).hom.app W a : Γ(toMod L, (L.U i).ι ''ᵁ W)) =
-      a • (toMod L).presheaf.map (homOfLE ((L.U i).ι_image_le W)).op (chartSec hL i) :=
-  Descent.sectionHom_app _ W a
 
 set_option backward.isDefEq.respectTransparency false in
 
@@ -606,20 +599,6 @@ theorem nonempty_iso_of_lbIso (hL : L.IsLB) (hM : M.IsLB) (h : LBIso L M) :
   let ⟨w, hw⟩ := h
   ⟨isoOfGen hL hM w hw⟩
 
-theorem isoOfGen_hom_app_genSec (hL : L.IsLB) (hM : M.IsLB) (w : LB.Iso L M) (hw : w.IsGen)
-    {a : LB.Gen L} {b : LB.Gen M} (ha : a.IsGen) (hb : b.IsGen) (h : LB.Gen.Maps w a b)
-    (V : X.Opens) :
-    (isoOfGen hL hM w hw).hom.app V (ofSec (DVR.genSec a ha) V) = ofSec (DVR.genSec b hb) V :=
-  sec_ext_of_cover hL.cover fun p q => by
-    have l : V ⊓ M.U p ⊓ L.U q ≤ M.U p ⊓ L.U q := inf_le_inf_right _ inf_le_right
-    rw [coord_isoOfGen_hom_app hL hM w hw _ p q _ (inf_le_inf_right _ inf_le_left) l]
-    have e : resG X inf_le_left ((b.s p : Γ(X, M.U p))) =
-        ((show Γ(X, M.U p ⊓ L.U q)ˣ from w.s (p, q)) : Γ(X, M.U p ⊓ L.U q)) *
-          resG X inf_le_right (a.s q : Γ(X, L.U q)) := congrArg Units.val (h (p, q))
-    have := congrArg (resG X l) e
-    simp only [map_mul, resG_resG] at this
-    simp only [coord_ofSec, resG_resG]
-    exact this.symm
 
 end Hom
 
@@ -629,8 +608,6 @@ def unitHom (σ : LB.Sec L) : unitMod X ⟶ toMod L :=
       change resG X h a • ofSec σ W = (toMod L).presheaf.map (homOfLE h).op (a • ofSec σ V)
       rw [Scheme.Modules.map_smul, map_ofSec]
 
-theorem unitHom_app (σ : LB.Sec L) (V : X.Opens) (a : Γ(X, V)) :
-    (unitHom σ).app V a = a • ofSec σ V := rfl
 
 theorem bijective_smul_genSec (hL : ⨆ i, L.U i = ⊤) {t : LB.Gen L} (ht : t.IsGen) (V : X.Opens) :
     Function.Bijective fun a : Γ(X, V) => a • ofSec (DVR.genSec t ht) V := by
@@ -661,8 +638,6 @@ def unitIso (hL : L.IsLB) (t : LB.Gen L) (ht : t.IsGen) : unitMod X ≅ toMod L 
       (ConcreteCategory.isIso_iff_bijective _).2 (bijective_smul_genSec hL.cover ht V)
   asIso (unitHom (DVR.genSec t ht))
 
-theorem unitIso_hom_app (hL : L.IsLB) (t : LB.Gen L) (ht : t.IsGen) (V : X.Opens) (a : Γ(X, V)) :
-    (unitIso hL t ht).hom.app V a = a • ofSec (DVR.genSec t ht) V := rfl
 
 section Pull
 
@@ -776,10 +751,6 @@ def trivIso (X : Scheme.{0}) : unitMod X ≅ toMod (Out.Inh.trivLB X) :=
   unitIso (Out.Inh.trivLB_isLB X) ⟨fun _ => 1⟩ fun _ _ => by
     exact (one_mul _).symm
 
-theorem coord_trivIso_hom_app (V : X.Opens) (a : Γ(X, V)) (i : PUnit.{1}) :
-    coord (L := Out.Inh.trivLB X) ((trivIso X).hom.app V a) i = resG X inf_le_left a := by
-  change resG X _ a * resG X _ 1 = _
-  rw [map_one, mul_one]
 
 def twoChart (U₀ U₁ : X.Opens) (u : Γ(X, U₀ ⊓ U₁)ˣ) : LB X where
   ι := Bool

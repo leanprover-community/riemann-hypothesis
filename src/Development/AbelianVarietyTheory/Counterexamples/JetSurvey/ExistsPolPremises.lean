@@ -76,22 +76,7 @@ theorem act_unique {S S' : Scheme.{0}} {f : S' ⟶ S} {P : PolAV S} {P' : PolAV 
   subst e
   rfl
 
-theorem exists_pol_premises {S S' : Scheme.{0}} (f : S' ⟶ S) (P : PolAV S) :
-    ∃ (P' : PolAV S') (g : P'.A.left ⟶ P.A.left), P'.g = P.g ∧ IsGrpPullback P'.A P.A f g ∧ LBIso (P.L.pull g) P'.L :=
-  ⟨StrictPull.polPull P f, pullback.fst P.A.hom f, rfl, isGrpPullback_pullback P.A f,
-    PolBaseChange.lbIso_refl (pull_isLB P.isLB _)⟩
 
-theorem elliptic_instance {R : Type} [CommRing R] [IsNoetherianRing R] (W : _root_.WeierstrassCurve R) [W.IsElliptic]
-    {S' : Scheme.{0}} (f : S' ⟶ Spec (CommRingCat.of R)) :
-    ∃ (o : (WeierstrassCurve.ellPolAV W).OAct ℤ) (P' : PolAV S')
-      (g : P'.A.left ⟶ (WeierstrassCurve.ellPolAV W).A.left),
-      (∀ a : ℤ, o.act a = (𝟙 (WeierstrassCurve.ellPolAV W).A : _ ⟶ _) ^ a) ∧ P'.g = 1 ∧
-      IsGrpPullback P'.A (WeierstrassCurve.ellPolAV W).A f g ∧ LBIso ((WeierstrassCurve.ellPolAV W).L.pull g) P'.L ∧
-      ∃! o' : P'.OAct ℤ, ∀ a, (o'.act a).left ≫ g = g ≫ (o.act a).left := by
-  obtain ⟨o, ho⟩ := exists_oAct_int UU.SettingConsistentExample.cubeSt' _ (WeierstrassCurve.ellPolAV W)
-  obtain ⟨P', g, hd, hg, hL⟩ := exists_pol_premises f (WeierstrassCurve.ellPolAV W)
-  obtain ⟨o', ho'⟩ := both_hold.2 _ _ f _ P' g hg hL ℤ o
-  exact ⟨o, P', g, ho, hd, hg, hL, o', ho', fun o₁ h₁ => act_unique hg o o₁ o' h₁ ho'⟩
 
 end GlobalTheory.BaseChangeToolsTest
 

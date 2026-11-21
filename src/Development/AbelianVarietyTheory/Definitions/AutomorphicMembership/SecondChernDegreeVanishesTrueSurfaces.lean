@@ -175,10 +175,6 @@ variable {s} in
 theorem secondChern_eq_double_sum {h : VMetric s.C.str (omega s.A.P.A) s.A.P.g} (H : s.A.P.IsHodge h) {a : ℝ}
     (ha : h.IsCh2Deg a) : s.ch2 = a := H.ch2Omega_eq ha
 
-theorem degOm_eq : s.degOm =
-    (chi ℂ ((Scheme.Modules.pullback (cxFibre.fst s.C.str)).obj (omega s.A.P.A)) : ℝ) -
-      s.A.g * (chi ℂ (structureModule (cxFibre s.C.str)) : ℝ) := by
-  simp [degOm, PPAS.degOmega, cxDeg, degOfRank]
 
 end Surf
 
@@ -240,10 +236,6 @@ def ch2Q : ℚ := degCh2 (ZMod s.p) (omega s.A.P.A) s.A.g
 
 def ch2 : ℝ := s.ch2Q
 
-theorem secondChernFinite_elliptic (h : s.A.g = 1) :
-    s.ch2Q = (topSelfIntersection (ZMod s.p) (det (omega s.A.P.A) 1) 2 : ℚ) / 2 := by
-  rw [ch2Q, h]
-  exact s.surf.degCh2_rank_one (h ▸ s.A.P.isVB_omega)
 
 open IndefiniteRowSideFullHecke.GenericFiniteMaps in
 
@@ -254,21 +246,7 @@ def IsFlagCh2 (a : ℚ) : Prop :=
       HasFlag ((Scheme.Modules.pullback ρ).obj (omega s.A.P.A)) l ∧
       a = (l.map fun L => (interNum (ZMod s.p) (structureModule T) ![L, L] : ℚ) / 2).sum / m
 
-theorem secondChernFinite_eq : s.ch2Q = IndefiniteRowSideFullHecke.GenericFiniteMaps.degCh2 (ZMod s.p) (omega s.A.P.A) := by
-  rw [IndefiniteRowSideFullHecke.GenericFiniteMaps.degCh2_eq s.A.P.isVB_omega, ch2Q, degCh2, PPCode.P_g]
-  push_cast
-  ring
 
-theorem isFlagCh2_iff (H : IndefiniteRowSideFullHecke.GenericFiniteMaps.CoverStatement) {a : ℚ} : s.IsFlagCh2 a ↔ a = s.ch2Q := by
-  obtain ⟨h₁, -, h₃⟩ := H (ZMod s.p) s.C.X ⟨s.surf.1, s.surf.2.1, s.surf.2.2⟩
-  have key {a : ℚ} (h : s.IsFlagCh2 a) : a = s.ch2Q := by
-    obtain ⟨T, _, _, ρ, m, l, hT, w, hρ, hl, rfl⟩ := h
-    rw [← (H _ T hT).2.1 _ l hl, h₁ T hT ρ m w hρ _ _ s.A.P.isVB_omega, secondChernFinite_eq,
-      mul_div_cancel_left₀ _ (Nat.cast_ne_zero.2 hρ.pos.ne')]
-  refine ⟨key, fun e => ?_⟩
-  obtain ⟨T, _, _, ρ, m, l, hT, w, hρ, hl⟩ := h₃ _ _ s.A.P.isVB_omega
-  have h : s.IsFlagCh2 _ := ⟨T, _, _, ρ, m, l, hT, w, hρ, hl, rfl⟩
-  exact (e.trans (key h).symm) ▸ h
 
 end SurfFp
 
@@ -343,29 +321,10 @@ variable {D : D7} {X : DivX D}
 
 def HasTrueSurf (X : DivX D) : Prop := SurfSt.of X = surfSt
 
-theorem hasTrueSurf_put (X : DivX D) : HasTrueSurf (surfSt.put X) := rfl
 
-theorem HasTrueSurf.recordIsGeometric (h : HasTrueSurf X) : IndefiniteRowSideFullHecke.ZeroSectionBase.RecordIsGeometric D X := by
-  rw [← SurfSt.put_of X, h]
-  exact fun s : SurfFp => ⟨s.p, inferInstance, s.C.X, inferInstance, s.A.P.A, inferInstance, s.A.g,
-    s.surf, s.A.P.isAb, s.A.P.smoothDim, ⟨_, s.A.P.isPol⟩, rfl⟩
 
-theorem HasTrueSurf.secondChernDegree_vanishes_trueSurfaces (h : HasTrueSurf X) (H : IndefiniteRowSideFullHecke.ZeroSectionBase.Ch2HodgeVanishes) :
-    Formalism.MainNotions.WeightThresholdDefs.Conclusion4b X := IndefiniteRowSideFullHecke.ZeroSectionBase.recordVanishes_of H h.recordIsGeometric
 
-theorem HasTrueSurf.secondChern_eq_of_trueSurfaces (h : HasTrueSurf X) {r : ℝ}
-    (H : ∀ (S : Scheme.{0}) (p : S ⟶ Sp ℤ) [IsIntegral S], IsArithVar p 1 → ∀ P : PPAS S, 1 ≤ P.g →
-      P.ch2Omega p = r / 2 * P.degOmega p) : Formalism.MainNotions.WeightThresholdDefs.Conclusion4a X r := by
-  rw [← SurfSt.put_of X, h]
-  exact fun s : Surf => H _ _ s.arith s.A.P s.A.pos
 
-theorem HasTrueSurf.degCh2_eq_zero (h : HasTrueSurf X) (H : Formalism.MainNotions.WeightThresholdDefs.Conclusion4b X) (p : ℕ)
-    [Fact p.Prime] {T : Scheme.{0}} [Algebra (ZMod p) Γ(T, ⊤)] (hT : IsProjSurface (ZMod p) T)
-    (P : PPAS T) (hg : 1 ≤ P.g) (hP : IsProjOver (toSpZ P.A.left)) :
-    degCh2 (ZMod p) (omega P.A) P.g = 0 := by
-  rw [← SurfSt.put_of X, h] at H
-  obtain ⟨s, -, -, -, -, -, e⟩ := SurfFp.exists_iso p hT P hg hP
-  exact e ▸ Rat.cast_eq_zero.1 (H s)
 
 theorem Surf.exists_const (F : Type) [Field F] [NumberField F] (W : _root_.WeierstrassCurve (𝓞 F))
     [W.IsElliptic] : ∃ (s : Surf) (e : s.C.X ≅ PSpace (𝓞 F) 1)

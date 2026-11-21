@@ -30,26 +30,6 @@ def ChiUnitDet (D : Car) (χ : IdE D → ℂ) : Prop :=
   ∀ N (L L' : Submodule (𝓞 D.host.E) (Fin N → D.host.E)), Even N →
     IsSDLat D.host.E N L → IsSDLat D.host.E N L' → ‖χ (detId D L L')‖ = 1
 
-theorem LinkThIndep_of
-    (hI : ∀ D : Car, ∀ cc : Ideal (𝓞 D.host.K), IsCurveIdeal D cc → ∀ δ : ℂ, IsDiscriminantTwelfthRootOfIdealLattice D cc δ →
-      IopIso D (tor0 D cc δ))
-    (hC : ∀ D : Car, ∀ χ : IdE D → ℂ, IsChi D χ → ChiUnitDet D χ) :
-    LinkThIndep := by
-  intro D cc hcc δ hδ χ e hχ hvec heq N N' L₁ L₁' L₂ L₂' h1 h2
-  obtain ⟨hN, hN', hs1, hs1'⟩ := h1
-  obtain ⟨-, -, hs2, hs2'⟩ := h2
-  have hU := hC D χ hχ
-  have hIso := hI D cc hcc δ hδ
-  have hA21 : admitted D N N' L₂ L₁' := ⟨hN, hN', hs2, hs1'⟩
-  have hA11 : admitted D N N' L₁ L₁' := ⟨hN, hN', hs1, hs1'⟩
-  have hA22 : admitted D N N' L₂ L₂' := ⟨hN, hN', hs2, hs2'⟩
-  have e1 := heq.2.1 N N' ⟨L₂, hs2⟩ ⟨L₁', hs1'⟩ ⟨L₂', hs2'⟩ hN hN'
-  have e2 := heq.2.2 N N' ⟨L₁, hs1⟩ ⟨L₂, hs2⟩ ⟨L₁', hs1'⟩ hN hN'
-  dsimp only at e1 e2
-  rw [e1, normSq_const_mul, hIso N N' L₂ L₁' L₂ L₂' hA21 hA22 _ (hvec N N' L₂ L₁' hA21).1, e2,
-    normSq_const_mul, hIso N N' L₁ L₁' L₂ L₁' hA11 hA21 _ (hvec N N' L₁ L₁' hA11).1,
-    norm_zpow, hU N' L₁' L₂' hN' hs1' hs2', norm_zpow, hU N L₁ L₂ hN hs1 hs2]
-  simp
 
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity
 
@@ -291,12 +271,6 @@ theorem chi_unit_of_det_norm_one (D : Car) (hd : DetIdealsKernelNormOne D) (χ :
   intro N L L' hN hL hL'
   exact CU.norm_chi_eq_one_of_normOne D χ hχ (hd N L L' hN hL hL')
 
-theorem theta_norm_indep_of_det_norm_one
-    (hI : ∀ D : Car, ∀ cc : Ideal (𝓞 D.host.K), IsCurveIdeal D cc → ∀ δ : ℂ, IsDiscriminantTwelfthRootOfIdealLattice D cc δ →
-      IopIso D (tor0 D cc δ))
-    (hd : ∀ D : Car, DetIdealsKernelNormOne D) :
-    LinkThIndep :=
-  LinkThIndep_of hI fun D χ hχ => chi_unit_of_det_norm_one D (hd D) χ hχ
 
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity
 

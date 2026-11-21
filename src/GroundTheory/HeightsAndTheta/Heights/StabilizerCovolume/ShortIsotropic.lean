@@ -289,41 +289,9 @@ end ShortIsotropic
 
 namespace ShortIsotropic
 
-theorem gauss_isWittPoint : Gauss.gaussDatum.IsWittPoint (fun _ => 1) := fun _ => Gauss.gauss_signature
 
-theorem gauss_integralBasisBound : IntegralBasisBound Gauss.Em 1 := by
-  refine ⟨Fin 2, inferInstance, ![1, ⟨Gauss.ζ, Gauss.ζ_isIntegral⟩],
-    by rw [Fintype.card_fin, Gauss.finrank_Em], ?_, ?_⟩
-  · have he : (fun i => ((![1, ⟨Gauss.ζ, Gauss.ζ_isIntegral⟩] : Fin 2 → 𝓞 Gauss.Em) i : Gauss.Em)) =
-        ![1, Gauss.ζ] := by
-      ext i; fin_cases i <;> rfl
-    rw [he, LinearIndependent.pair_iff]
-    intro s t hst
-    simp only [Algebra.smul_def, eq_ratCast, mul_one] at hst
-    have h2 := congrArg (Algebra.trace ℚ Gauss.Em) hst
-    rw [Gauss.trace_rep, map_zero] at h2
-    have hs : s = 0 := by linarith
-    refine ⟨hs, ?_⟩
-    rw [hs, Rat.cast_zero, zero_add] at hst
-    have := (mul_eq_zero.mp hst).resolve_right (Gauss.hζ.ne_zero (by norm_num))
-    exact_mod_cast this
-  · intro i σ
-    fin_cases i
-    · simp
-    · show ‖σ Gauss.ζ‖ ≤ 1
-      rcases Gauss.emb_ζ σ with h | h <;> simp [h]
 
-theorem lineFuller_point : (fun _ => (1 : ℂ)) ∈
-    mcPts (mCoordIdeal LineFuller.lineFullerZero.y) \ LineFuller.lineFullerZero.Bd := by
-  refine ⟨⟨fun _ => ⟨0, one_ne_zero⟩, fun f hf => ?_⟩, fun h => h⟩
-  change f ∈ mCoordIdeal Line.yLine at hf
-  rw [Line.mCoordIdeal_yLine, Ideal.mem_bot] at hf
-  simp [hf]
 
-theorem lineFuller_instance :
-    LineFuller.lineFullerZero.herm.IsIso (LineFuller.lineFullerZero.herm.shortSpan
-      (LineFuller.lineFullerZero.per (fun _ => 1)) (Real.sqrt 1)⁻¹) :=
-  proof _ _ lineFuller_point 1 gauss_integralBasisBound
 
 end ShortIsotropic
 

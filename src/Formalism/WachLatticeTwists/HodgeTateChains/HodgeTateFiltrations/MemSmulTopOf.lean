@@ -42,27 +42,6 @@ def overGrp : AddSubgroup (Matrix (Fin r) (Fin r) WC) where
 
 end ovr
 
-theorem lemmaAMat : StatLemmaAMat := by
-  intro ℓ AA WC _ _ ι φ r hsat hcl hφ hstep Z S S' Y hS hS' hY hZ
-  let T : Matrix (Fin r) (Fin r) WC →+ Matrix (Fin r) (Fin r) WC :=
-    AddMonoidHom.mk' (fun M => M.map φ - S * M * S') (by
-      intro a b
-      rw [Matrix.map_add φ (map_add φ), Matrix.mul_add, Matrix.add_mul]
-      abel)
-  refine lemmaA ℓ (Matrix (Fin r) (Fin r) WC) (overGrp ι) T hsat ?_ ?_ ?_ Z ?_
-  · intro x hx
-    apply hcl
-    intro n
-    obtain ⟨a, ha, b, hab⟩ := hx n
-    exact ⟨a, b, ha, hab⟩
-  · intro a ha
-    exact (overGrp ι).sub_mem (hφ a ha) (over_mul ι (over_mul ι hS ha) hS')
-  · rintro x ⟨a, ha, b, hab⟩
-    obtain ⟨A, B, hA, hAB⟩ := hstep x S S' hS hS' ⟨a, b, ha, hab⟩
-    exact ⟨A, hA, B, hAB⟩
-  · show OverSub ι (Z.map φ - S * Z * S')
-    rw [hZ, add_sub_cancel_left]
-    exact hY
 
 lemma cancel_pow {WC : Type} [CommRing WC] (t : WC) (ht : ∀ a : WC, t * a = 0 → a = 0) (n : ℕ) {r : ℕ}
     (M M' : Matrix (Fin r) (Fin r) WC) (h : t ^ n • M = t ^ n • M') : M = M' := by
@@ -214,11 +193,5 @@ theorem genM : StatGenM := by
   unfold mOf
   ring
 
-theorem topsAtM : StatTopsAtM := by
-  intro ℓ _ u s H0 hs h2 hu
-  obtain ⟨hv, h1, h22, hsm⟩ := genM ℓ u s H0 hs h2 hu
-  refine ⟨fun U a n d D hd => ll ℓ _ _ h1 (fun _ => h22) hv U a n d D hd,
-    fun U h0U hne D => h0 ℓ _ _ h1 (fun _ => h22) hv U h0U hne D,
-    fun e d U D L K T φ ψ hd => tbFull ℓ u _ s _ e d hs h2 hsm hu hv U D L K T φ ψ hd⟩
 
 end Formalism.RepresentationBoundsCohomology.TorsionBoundCyclotomic

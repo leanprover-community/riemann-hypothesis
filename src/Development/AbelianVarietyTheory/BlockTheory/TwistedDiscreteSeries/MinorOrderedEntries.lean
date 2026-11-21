@@ -349,14 +349,6 @@ abbrev exSizes : Sizes := ⟨2, 2, 3, 1, by decide, by decide, by decide, by dec
 
 def exEntries : Entries exSizes := ⟨![23 / 2, 13 / 2, 5 / 2], ![8, 4], ![1], ![1 / 2], ![1, 5], ![3, 7]⟩
 
-theorem exEntries_good : exEntries.Good where
-  a_half l := by
-    fin_cases l
-    exacts [⟨11, by norm_num [exEntries]⟩, ⟨6, by norm_num [exEntries]⟩, ⟨2, by norm_num [exEntries]⟩]
-  u_half i := by
-    fin_cases i
-    exact ⟨0, by norm_num [exEntries]⟩
-  order := by decide +kernel
 
 example : exEntries.bigPar = [23 / 2, 17 / 2, 15 / 2, 13 / 2, 9 / 2, 7 / 2, 5 / 2, 1 / 2, -5 / 2, -7 / 2, -13 / 2, -15 / 2] ∧
     exEntries.smallPar = [9, 8, 7, 5, 4, 3, 1, -1, -3, -5, -7] := by decide +kernel

@@ -38,9 +38,6 @@ theorem evalQpow_sub (P Q : LaurentPolynomial ℂ) (s : ℂ) :
 
 theorem evalQpow_one (s : ℂ) : evalQpow K 1 s = 1 := map_one _
 
-theorem evalQpow_C (a : ℂ) (s : ℂ) : evalQpow K (LaurentPolynomial.C a) s = a := by
-  rw [evalQpow, LaurentPolynomial.eval₂_C]
-  rfl
 
 theorem evalQpow_sum {ι : Type*} (t : Finset ι) (P : ι → LaurentPolynomial ℂ) (s : ℂ) :
     evalQpow K (∑ i ∈ t, P i) s = ∑ i ∈ t, evalQpow K (P i) s := map_sum _ _ _
@@ -318,30 +315,9 @@ def localZetaRatio (f : K → ℂ) (χ : Kˣ →* ℂˣ) (s : ℂ) : ℂ :=
     evalQpow K h.choose s
   else 0
 
-theorem exists_localZetaRatio_eq (hf : f ∈ schwartzBruhat K) (hχ : Continuous χ) :
-    ∃ P : LaurentPolynomial ℂ, (∀ s : ℂ, localZetaRatio f χ s = evalQpow K P s) ∧
-      ∀ s : ℂ, -quasiCharExponent χ < s.re →
-        localZeta f χ s = localLFactor χ s * evalQpow K P s := by
-  have h := exists_localZeta_eq_mul_evalQpow hf hχ
-  exact ⟨h.choose, fun s => by rw [localZetaRatio, dif_pos h], h.choose_spec⟩
 
-theorem localZeta_eq_localLFactor_mul (hf : f ∈ schwartzBruhat K) (hχ : Continuous χ) {s : ℂ}
-    (hs : -quasiCharExponent χ < s.re) :
-    localZeta f χ s = localLFactor χ s * localZetaRatio f χ s := by
-  obtain ⟨P, hP, hZ⟩ := exists_localZetaRatio_eq hf hχ
-  rw [hP, hZ s hs]
 
-theorem localZetaRatio_eq_div (hf : f ∈ schwartzBruhat K) (hχ : Continuous χ) {s : ℂ}
-    (hs : -quasiCharExponent χ < s.re) :
-    localZetaRatio f χ s = localZeta f χ s / localLFactor χ s := by
-  rw [localZeta_eq_localLFactor_mul hf hχ hs, mul_div_cancel_left₀ _ (localLFactor_ne_zero hχ hs)]
 
-theorem differentiable_localZetaRatio (hf : f ∈ schwartzBruhat K) (hχ : Continuous χ) :
-    Differentiable ℂ (localZetaRatio f χ) := by
-  obtain ⟨P, hP, -⟩ := exists_localZetaRatio_eq hf hχ
-  have : localZetaRatio f χ = evalQpow K P := funext hP
-  rw [this]
-  exact differentiable_evalQpow P
 
 omit [MeasurableSpace K] [BorelSpace K] in
 theorem meromorphicOn_localLFactor (χ : Kˣ →* ℂˣ) : MeromorphicOn (localLFactor χ) Set.univ := by
@@ -357,13 +333,6 @@ theorem meromorphicOn_localLFactor (χ : Kˣ →* ℂˣ) : MeromorphicOn (localL
     rw [e]
     exact analyticAt_const.meromorphicAt
 
-theorem meromorphicOn_localZetaContinuation (hf : f ∈ schwartzBruhat K) (hχ : Continuous χ) :
-    MeromorphicOn (fun s => localLFactor χ s * localZetaRatio f χ s) Set.univ ∧
-      ∀ s : ℂ, -quasiCharExponent χ < s.re →
-        localZeta f χ s = localLFactor χ s * localZetaRatio f χ s := by
-  refine ⟨fun s hs => ?_, fun s hs => localZeta_eq_localLFactor_mul hf hχ hs⟩
-  exact (meromorphicOn_localLFactor χ s hs).mul
-    ((differentiable_localZetaRatio hf hχ).analyticAt s).meromorphicAt
 
 end ZetaNonvanishing₂
 

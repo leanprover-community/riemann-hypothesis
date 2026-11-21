@@ -631,52 +631,10 @@ def Chars.ofHecke (Ch : Chars X Pr R.m) (σ₀ : X.K →+* ℂ) (mu : Fin R.m �
   muVal := fun j v => if h : ∃ y : X.Kˣ, σ₀ (y : X.K) = (((mu j).val v : ℂˣ) : ℂ) then h.choose else 1
   etaVal := fun v => if h : ∃ y : X.Kˣ, σ₀ (y : X.K) = eta.valTw (1 / 2) v then h.choose else 1
 
-theorem Chars.ofHecke_ok {Ch : Chars X Pr R.m} (h : Ch.Ok) (σ₀ : X.K →+* ℂ) (mu : Fin R.m → HChar X.E) (eta : HChar X.E) :
-    (Ch.ofHecke σ₀ mu eta).Ok :=
-  ⟨h.psi_zero_nontrivial_character, h.chi_inj, h.chi_same, h.characterAgreesOnPlaces, h.chi_om⟩
 
-theorem exists_unit_of_image {σ₀ : X.K →+* ℂ} {z : ℂ} (hz : z ≠ 0) (h : ∃ y : X.K, σ₀ y = z) : ∃ y : X.Kˣ, σ₀ (y : X.K) = z := by
-  obtain ⟨y, hy⟩ := h
-  have hy0 : y ≠ 0 := by
-    rintro rfl
-    rw [map_zero] at hy
-    exact hz hy.symm
-  exact ⟨Units.mk0 y hy0, hy⟩
 
-theorem twistedValue_ne_zero (χ : HChar X.E) (s : ℝ) (v : HeightOneSpectrum (𝓞 X.E)) : χ.valTw s v ≠ 0 := by
-  unfold HChar.valTw
-  refine mul_ne_zero (Units.ne_zero _) ?_
-  have h1 : ((Ideal.absNorm v.asIdeal : ℕ) : ℂ) ≠ 0 := by
-    have : Ideal.absNorm v.asIdeal ≠ 0 := by
-      rw [Ne, Ideal.absNorm_eq_zero_iff]
-      exact v.ne_bot
-    exact_mod_cast this
-  rw [Complex.cpow_def_of_ne_zero h1]
-  exact Complex.exp_ne_zero _
 
-theorem twistedValue_zero (χ : HChar X.E) (v : HeightOneSpectrum (𝓞 X.E)) : χ.valTw 0 v = ((χ.val v : ℂˣ) : ℂ) := by
-  unfold HChar.valTw
-  simp
 
-theorem Chars.ofHecke_tied {Ch : Chars X Pr R.m} {W : Wts X Pr.Word R} {σ₀ : X.K →+* ℂ} {mu : Fin R.m → HChar X.E} {eta : HChar X.E}
-    (h1 : ∀ j, IsMu0 Ch σ₀ (fun τ => (W.row τ).e j) j (mu j)) (h2 : ∀ j, (mu j).ValuesIn 0 σ₀) (h3 : IsEtaT X σ₀ eta)
-    (h4 : eta.ValuesIn (1 / 2) σ₀) : (Ch.ofHecke σ₀ mu eta).Tied σ₀ (fun j τ => (W.row τ).e j) mu eta where
-  mu0 := fun j => ⟨(h1 j).unitary, (h1 j).triv, (h1 j).inf, (h1 j).unr, (h1 j).tame, (h1 j).atg⟩
-  muVal := fun j v hv => by
-    have hex : ∃ y : X.Kˣ, σ₀ (y : X.K) = (((mu j).val v : ℂˣ) : ℂ) := by
-      refine exists_unit_of_image (Units.ne_zero _) ?_
-      rw [← twistedValue_zero]
-      exact h2 j v ((h1 j).unr v hv)
-    have e : (Ch.ofHecke σ₀ mu eta).muVal j v = hex.choose := dif_pos hex
-    rw [e]
-    exact hex.choose_spec
-  etaT := h3
-  etaVal := fun v => by
-    have hex : ∃ y : X.Kˣ, σ₀ (y : X.K) = eta.valTw (1 / 2) v :=
-      exists_unit_of_image (twistedValue_ne_zero eta _ v) (h4 v (h3.unr v))
-    have e : (Ch.ofHecke σ₀ mu eta).etaVal v = hex.choose := dif_pos hex
-    rw [e]
-    exact hex.choose_spec
 
 end Hecke
 
@@ -841,7 +799,6 @@ theorem exampleAdditiveChars_exist : ∃ Ps : CharT (nd2X LL hLL) (toyPrimes LL 
 
 def toyCharacters : Chars (nd2X LL hLL) (toyPrimes LL hLL) Examples₂.R0.m := (exampleCharacters_exist LL hLL).choose
 
-theorem exampleCharacters_ok : (toyCharacters LL hLL).Ok := (exampleCharacters_exist LL hLL).choose_spec
 
 def toyCharacterTable : CharT (nd2X LL hLL) (toyPrimes LL hLL) := (exampleAdditiveChars_exist LL hLL).choose
 

@@ -43,88 +43,6 @@ theorem det_rel (τ : J) : (glX m R τ).det *
 
 def glS : (GlRing m R)ˣ := Units.mkOfMulEqOne _ _ (unit_rel m R)
 
-theorem frameRing_glRing : FrameRing m (glπ (K := K) m R) (glX m R) (glS m R) := by
-  refine ⟨fun τ => IsUnit.of_mul_eq_one _ (det_rel m R τ), ?_⟩
-  intro T _ _ ψ g a hg
-
-  let v : Var m → T := fun
-    | Sum.inl p => g p.1 p.2.1 p.2.2
-    | Sum.inr (Sum.inl τ) => (((hg τ).unit⁻¹ : Tˣ) : T)
-    | Sum.inr (Sum.inr true) => (a : T)
-    | Sum.inr (Sum.inr false) => ((a⁻¹ : Tˣ) : T)
-  let φ : MvPolynomial (Var m) R →ₐ[K] T :=
-    { MvPolynomial.eval₂Hom (ψ : R →+* T) v with
-      commutes' := fun r => by
-        show MvPolynomial.eval₂ (ψ : R →+* T) v (algebraMap K _ r) = algebraMap K T r
-        rw [IsScalarTower.algebraMap_apply K R (MvPolynomial (Var m) R), MvPolynomial.algebraMap_eq,
-          MvPolynomial.eval₂_C]
-        exact ψ.commutes r }
-  have hφ : ∀ p, φ p = MvPolynomial.eval₂ (ψ : R →+* T) v p := fun _ => rfl
-  have hgen : ∀ τ, (genMat m R τ).map φ = g τ := fun τ => by
-    ext i j
-    rw [Matrix.map_apply, hφ]
-    unfold genMat
-    rw [Matrix.of_apply, MvPolynomial.eval₂_X]
-
-  have hle : rel m R ≤ RingHom.ker (φ : MvPolynomial (Var m) R →+* T) := by
-    unfold rel
-    rw [Ideal.span_le]
-    rintro p (⟨τ, rfl⟩ | rfl)
-    · rw [SetLike.mem_coe, RingHom.mem_ker]
-      show φ _ = 0
-      rw [map_sub, map_mul, map_one, AlgHom.map_det, AlgHom.mapMatrix_apply, hgen τ, hφ, MvPolynomial.eval₂_X]
-      exact sub_eq_zero.2 (IsUnit.mul_val_inv (hg τ))
-    · rw [SetLike.mem_coe, RingHom.mem_ker]
-      show φ _ = 0
-      rw [map_sub, map_mul, map_one, hφ, hφ, MvPolynomial.eval₂_X, MvPolynomial.eval₂_X]
-      exact sub_eq_zero.2 (Units.mul_inv a)
-  have hI : ∀ p ∈ rel m R, φ p = 0 := fun p hp => RingHom.mem_ker.1 (hle hp)
-  have hk : ∀ p, Ideal.Quotient.liftₐ (rel m R) φ hI (Ideal.Quotient.mk (rel m R) p) =
-      MvPolynomial.eval₂ (ψ : R →+* T) v p := fun _ => rfl
-  refine ⟨Ideal.Quotient.liftₐ (rel m R) φ hI, ⟨?_, fun τ => ?_, ?_⟩, ?_⟩
-  · ext r
-    show Ideal.Quotient.liftₐ (rel m R) φ hI (Ideal.Quotient.mk (rel m R) (MvPolynomial.C r)) = ψ r
-    rw [hk, MvPolynomial.eval₂_C]
-    rfl
-  · ext i j
-    show Ideal.Quotient.liftₐ (rel m R) φ hI
-      (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inl ⟨τ, i, j⟩))) = g τ i j
-    exact (hk _).trans (MvPolynomial.eval₂_X _ _ _)
-  · show Ideal.Quotient.liftₐ (rel m R) φ hI
-      (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inr (Sum.inr true)))) = (a : T)
-    exact (hk _).trans (MvPolynomial.eval₂_X _ _ _)
-  ·
-    rintro k' ⟨h1, h2, h3⟩
-    apply Ideal.Quotient.algHom_ext
-    apply AlgHom.coe_ringHom_injective
-    apply MvPolynomial.ringHom_ext
-    · intro r
-      show k' (Ideal.Quotient.mk (rel m R) (MvPolynomial.C r)) =
-        Ideal.Quotient.liftₐ (rel m R) φ hI (Ideal.Quotient.mk (rel m R) (MvPolynomial.C r))
-      rw [hk, MvPolynomial.eval₂_C]
-      exact AlgHom.congr_fun h1 r
-    · have ht : k' (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inr (Sum.inr true)))) = a := h3
-      rintro (⟨τ, i, j⟩ | τ | _ | _)
-      · show k' (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inl ⟨τ, i, j⟩))) =
-          Ideal.Quotient.liftₐ (rel m R) φ hI (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inl ⟨τ, i, j⟩)))
-        rw [hk, MvPolynomial.eval₂_X]
-        exact congrFun (congrFun (h2 τ) i) j
-      · show k' (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inr (Sum.inl τ)))) =
-          Ideal.Quotient.liftₐ (rel m R) φ hI (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inr (Sum.inl τ))))
-        rw [hk, MvPolynomial.eval₂_X]
-        have hd := congrArg k' (det_rel m R τ)
-        rw [map_mul, map_one, AlgHom.map_det, AlgHom.mapMatrix_apply, h2 τ] at hd
-        exact (Units.inv_eq_of_mul_eq_one_right (u := (hg τ).unit) hd).symm
-      · show k' (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inr (Sum.inr false)))) =
-          Ideal.Quotient.liftₐ (rel m R) φ hI (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inr (Sum.inr false))))
-        rw [hk, MvPolynomial.eval₂_X]
-        have hu := congrArg k' (unit_rel m R)
-        rw [map_mul, map_one, ht] at hu
-        exact (Units.inv_eq_of_mul_eq_one_right hu).symm
-      · show k' (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inr (Sum.inr true)))) =
-          Ideal.Quotient.liftₐ (rel m R) φ hI (Ideal.Quotient.mk (rel m R) (MvPolynomial.X (Sum.inr (Sum.inr true))))
-        rw [hk, MvPolynomial.eval₂_X]
-        exact ht
 
 variable {m R}
 
@@ -137,21 +55,6 @@ theorem FrameRing.injective {A : Type} [CommRing A] [Algebra K A] {π : R →ₐ
   rw [AlgHom.comp_apply, AlgHom.id_apply] at e₁ e₂
   rw [← e₁, ← e₂, hr]
 
-theorem FrameRing.unit_not_mem [Nontrivial R] {A : Type} [CommRing A] [Algebra K A] {π : R →ₐ[K] A}
-    {X : ∀ τ, Matrix (Fin (m τ)) (Fin (m τ)) A} {s : Aˣ} (h : FrameRing m π X s) (r : R) : π r ≠ s := by
-
-  intro hr
-  have hε : (1 + DualNumber.eps : DualNumber R) * (1 - DualNumber.eps) = 1 := by
-    rw [mul_sub, _root_.mul_one, add_mul, _root_.one_mul, DualNumber.eps_mul_eps, add_zero, add_sub_cancel_right]
-  obtain ⟨k, ⟨hk1, -, hk3⟩, -⟩ := h.2 (DualNumber R) (TrivSqZeroExt.inlAlgHom K R R) (fun _ => 1)
-    (Units.mkOfMulEqOne _ _ hε) (fun _ => by simp)
-  have e := congrArg k hr
-  rw [hk3] at e
-  have e₁ := AlgHom.congr_fun hk1 r
-  rw [AlgHom.comp_apply] at e₁
-  rw [e₁] at e
-  have e₂ := congrArg TrivSqZeroExt.snd e
-  simp [Units.val_mkOfMulEqOne, DualNumber.snd_eps] at e₂
 
 theorem FrameRing.triRing {A : Type} [CommRing A] [Algebra K A] {π : R →ₐ[K] A}
     {X : ∀ τ, Matrix (Fin (m τ)) (Fin (m τ)) A} {s : Aˣ} (h : FrameRing m π X s) :
@@ -204,7 +107,6 @@ variable {Xo : Moduli Dw l} {c : Coeff l}
 
 theorem spMap_id (S : Type) [CommRing S] : spMap (RingHom.id S) = 𝟙 (Sp S) := Spec.map_id _
 
-theorem secGen_frPt {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) : SecGen y.x y.s := y.gen
 
 theorem chart_le {S T : Type} [CommRing S] [CommRing T] (x : Sp S ⟶ Xo.X) (x' : Sp T ⟶ Xo.X) (pm : Gx x' ⟶ Gx x)
     (h : pm ≫ (snd (Over.mk x) Xo.univ.t.G).left = (snd (Over.mk x') Xo.univ.t.G).left)
@@ -223,13 +125,6 @@ theorem scal_one {S : Type} [CommRing S] (x : Sp S ⟶ Xo.X) (i : (PPx x).ι) : 
   unfold scal Out.liftFun
   simp only [map_one]
 
-theorem frMap_iff {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c.F T] (φ : S →ₐ[c.F] T)
-    (y : FrPt Xo c S) (z : FrPt Xo c T) : FrMap φ y z ↔ z.x = spMap φ.toRingHom ≫ y.x ∧
-      (∀ τ i, z.u τ i = spMap (dualMap φ.toRingHom) ≫ y.u τ i) ∧ SecBC φ.toRingHom 1 y.x z.x y.s z.s := by
-  unfold FrMap SecBC
-  refine and_congr_right fun _ => and_congr_right fun _ => exists_congr fun pm => and_congr_right fun _ =>
-    and_congr_right fun _ => forall_congr' fun i => forall_congr' fun h => ?_
-  rw [scal_one y.x i, _root_.one_mul]
 
 theorem frBor_iff {S : Type} [CommRing S] [Algebra c.F S] (t : Ix Dw → Sˣ) (y y' : FrPt Xo c S) :
     FrBor t y y' ↔ ∃ g : ∀ τ : E →+* ℂ, Matrix (Fin (Dw.mult τ)) (Fin (Dw.mult τ)) S,

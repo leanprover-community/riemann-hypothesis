@@ -34,8 +34,6 @@ omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 
 theorem nodup_sList (S : Finset (Fin a)) : (sList S).Nodup := (List.nodup_finRange a).filter _
 
-theorem mem_sList {S : Finset (Fin a)} {c : Fin a} : c ∈ sList S ↔ c ∈ S := by
-  simp [sList]
 
 def cyc (S : Finset (Fin a)) : Equiv.Perm (Fin a) := (sList S).formPerm
 
@@ -53,7 +51,6 @@ theorem val_wS (ϖ : kˣ) (S : Finset (Fin a)) :
 def phiS (ϖ : kˣ) (S : Finset (Fin a)) : HeckeFn (iwahori k (Fin a)) :=
   HeckeFn.dc (IwahoriOnto.isOpen_iwahori k (Fin a)) (IwahoriOnto.isCompact_iwahori k (Fin a)) (wS k ϖ S)
 
-theorem phiS_toFun (ϖ : kˣ) (S : Finset (Fin a)) : (phiS k ϖ S).toFun = dcFn (iwahori k (Fin a)) (wS k ϖ S) := rfl
 
 theorem phiS_self (ϖ : kˣ) (S : Finset (Fin a)) : (phiS k ϖ S).toFun (wS k ϖ S) = 1 := dcFn_self _ _
 

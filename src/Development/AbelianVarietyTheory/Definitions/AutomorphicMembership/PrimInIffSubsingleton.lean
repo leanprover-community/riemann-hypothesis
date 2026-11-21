@@ -149,9 +149,6 @@ theorem ptOfMat_congr {Z' : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (h : ∀ w, Li
 theorem Gq_mul (T T' : E) (hv : IsLo v) (hu : IsUp u) : Gq σ T T' (v * Z * u) = Gq σ T T' Z := by
   simp only [Gq, Matrix.det_mul, lo_det hv, up_det hu, one_mul, mul_one, lead_mul_up _ hu, lead_lo_mul _ hv]
 
-theorem map_Gq (hσ : ∀ x, σ (σ x) = x) {T T' : E} (hT : σ T = T) (hT' : σ T' = T') :
-    σ (Gq σ T T' Z) = Gq σ T T' Z := by
-  simp only [Gq, map_sub, map_mul, hσ, hT, hT']; ring
 
 theorem Gq_TF {T : E} (hT : σ T = T) : Gq σ T T (TF r T) = 0 := by
   have h1 : (TF r T).det = 0 ^ r * -T := by
@@ -218,28 +215,8 @@ theorem defectAt_iff (F : Type) [Field F] [Algebra F E] (p : HeightOneSpectrum (
     exact ⟨Submodule.Quotient.mk ⟨x, h1, h2⟩, fun a ha h => h3 a ha
       ((Submodule.Quotient.mk_eq_zero (M.submoduleOf (satLat M Λ))).1 h)⟩
 
-theorem primIn_iff_subsingleton (h : M ≤ Λ) : PrimIn M Λ ↔ Subsingleton (Defect M Λ) := by
-  rw [Submodule.Quotient.subsingleton_iff, eq_top_iff]
-  exact ⟨fun k x _ => k.2 x x.2.1 x.2.2, fun k => ⟨h, fun x h1 h2 => k (x := ⟨x, h1, h2⟩) trivial⟩⟩
 
-theorem primIn_iff_defectAt (F : Type) [Field F] [NumberField F] [Algebra F E] (h : M ≤ Λ) :
-    PrimIn M Λ ↔ ∀ p, ¬ DefectAt F M Λ p := by
-  simp only [defectAt_iff]
-  refine ⟨fun k p ⟨x, h1, h2, h3⟩ => h3 1 ((Ideal.ne_top_iff_one _).1 p.isPrime.ne_top)
-    (by simpa using k.2 x h1 h2), fun k => ⟨h, fun x h1 h2 => ?_⟩⟩
-  by_contra hx
-  let I : Ideal (𝓞 F) := (M.colon {x}).comap (algebraMap (𝓞 F) (𝓞 E))
-  have hI (a : 𝓞 F) : a ∈ I ↔ algebraMap (𝓞 F) (𝓞 E) a • x ∈ M := by
-    simp [I, Submodule.mem_colon_singleton]
-  obtain ⟨m, hm, hle⟩ := Ideal.exists_le_maximal I fun e => hx (by simpa using (hI 1).1 (e ▸ trivial))
-  exact k ⟨m, hm.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hm (RingOfIntegers.not_isField F)⟩
-    ⟨x, h1, h2, fun a ha e => ha (hle ((hI a).2 e))⟩
 
-theorem defectAt_latMap (F : Type) [Field F] [Algebra F E] (hs : IsUnit s.det) (p : HeightOneSpectrum (𝓞 F)) :
-    DefectAt F (latMap s M) (latMap s Λ) p ↔ DefectAt F M Λ p := by
-  have hsur := Matrix.mulVec_surjective_iff_isUnit.2 ((Matrix.isUnit_iff_isUnit_det _).2 hs)
-  rw [defectAt_iff, defectAt_iff, hsur.exists]
-  simp only [← Matrix.mulVec_smul, mulVec_mem_latMap hs, mulVec_mem_span hs]
 
 theorem exists_UO (hP : Free P) (h : PrimIn (frameLat P) Λ) (h' : PrimIn (frameLat P) (latMap s Λ))
     (hs : InS σ J P s) : ∃ a ∈ UO E r, s * P = P * a := by

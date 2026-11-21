@@ -74,7 +74,6 @@ private theorem mem_Cl {x : K} : x ∈ Cl i ↔ ∀ ε > 0, ∃ y, ‖x - i y‖
 variable (i) in
 private def inc : S →+* Cl i := i.codRestrict _ fun y => i.range.le_topologicalClosure ⟨y, rfl⟩
 
-private theorem inc_coe (y : S) : (inc i y : K) = i y := rfl
 
 private theorem dense_inc : DenseRange (inc i) := by
   rw [Metric.denseRange_iff]

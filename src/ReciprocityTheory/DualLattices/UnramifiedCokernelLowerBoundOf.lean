@@ -31,13 +31,6 @@ def IdemGenStatement : Prop :=
     Nonempty (LinearMap.range (Matrix.mulVecLin P) ≃ₗ[R] (Fin d → R)) →
     ∃ y : Fin d → LinearMap.range (Matrix.mulVecLin Pᵀ), Submodule.span R (Set.range y) = ⊤
 
-private lemma stdJ_form'' {D : Type} [CommRing D] {g : ℕ}
-    (M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) D) (i j : Fin g ⊕ Fin g) :
-    (Mᵀ * stdJ D g * M) i j =
-      ∑ a, (M (Sum.inr a) i * M (Sum.inl a) j - M (Sum.inl a) i * M (Sum.inr a) j) := by
-  rw [Matrix.mul_assoc]
-  simp [Matrix.mul_apply, stdJ, Fintype.sum_sum_type, Matrix.one_apply, Finset.sum_sub_distrib]
-  try ring
 
 private lemma mul_eq_smul_one_comm_of_ne_zero {n : Type*} [Fintype n] [DecidableEq n] {R : Type*} [CommRing R]
     [IsDomain R] {A B : Matrix n n R} {c : R} (hc : c ≠ 0) (h : A * B = c • 1) :

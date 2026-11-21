@@ -254,33 +254,7 @@ example (hG : GlobalFnsSt) (N : ℕ) : IsAbelianScheme (𝟙_ (Over S)) ∧ CubW
   ⟨isAbelianScheme_unit S, cubWeil_triv (one_pow _) (one_pow _),
     (cubWeil_iff_weilIs hG (isAbelianScheme_unit S) (one_pow _) (one_pow _) 1).1 (cubWeil_triv (one_pow _) (one_pow _))⟩
 
-theorem mul_self_eq_one_of_weilIs_inv (hG : GlobalFnsSt) (hB : IsAbelianScheme B) {L : RigLB B} {c : CubicalStr B L}
-    {N : ℕ} {x y : T ⟶ B} {ζ : Γ(T.left, ⊤)ˣ} (h : CubWeil c N x y ζ) (h' : WeilIs B L.L N x y ζ⁻¹) : ζ * ζ = 1 :=
-  mul_eq_one_iff_eq_inv.2 (h.unique ((cubWeil_iff_weilIs hG hB h.1 h.2.1 _).2 h'))
 
-theorem exists_weilIs_not_inv (hG : GlobalFnsSt) (hW : WeilSt) (hN : WeilNondegSt) {K : Type} [Field K] [IsAlgClosed K]
-    (P : PolAV (Spec (CommRingCat.of K))) (rig : LB.Gen (P.L.pull (eSec P.A))) (hr : rig.IsGen)
-    (c : CubicalStr P.A ⟨P.L, rig, P.isLB, hr⟩) {N : ℕ} (ho : Odd N) (hK : (N : K) ≠ 0) {x : baseOver _ ⟶ P.A}
-    (hx : x ^ N = 1) (h₁ : x ≠ 1) :
-    ∃ y ζ, CubWeil c N x y ζ ∧ ζ ≠ 1 ∧ WeilIs P.A P.L N x y ζ ∧ ¬ WeilIs P.A P.L N x y ζ⁻¹ := by
-  have := mt (hN K P N hK x hx) h₁
-  push Not at this
-  obtain ⟨y, hy, hxy⟩ := this
-  obtain ⟨ζ, hζ, -⟩ := existsUnique_cubWeil c hx hy
-  have w : WeilIs P.A P.L N x y ζ := (cubWeil_iff_weilIs hG P.isAb hx hy ζ).1 hζ
-  have n : ζ ≠ 1 := fun e => hxy (e ▸ w)
-  refine ⟨y, ζ, hζ, n, w, fun h' => n ?_⟩
-  have s := mul_self_eq_one_of_weilIs_inv hG P.isAb hζ h'
-  obtain ⟨hex, hmul, -, -⟩ := hW _ P N (baseOver _)
-  obtain ⟨k, rfl⟩ := ho
-  have pw : ∀ j : ℕ, WeilIs P.A P.L (2 * k + 1 : ℕ) (x ^ (j + 1)) y (ζ ^ (j + 1)) := fun j => by
-    induction j with
-    | zero => rw [zero_add, pow_one, pow_one]; exact w
-    | succ j ih => rw [pow_succ x, pow_succ ζ]; exact hmul _ _ _ _ _ ih w
-  have a := pw (2 * k + 1)
-  rw [pow_succ x, hx, _root_.one_mul] at a
-  have b := (hex x y hx hy).unique a w
-  rwa [show 2 * k + 1 + 1 = 2 * (k + 1) by ring, pow_mul, sq, s, one_pow, eq_comm] at b
 
 end Abelian
 

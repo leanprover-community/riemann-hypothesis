@@ -33,9 +33,6 @@ theorem intCast_mem_levelIdeal {N : ℕ} {m : ℤ} (hm : (N : ℤ) ∣ m) : (m :
   obtain ⟨t, rfl⟩ := hm
   exact ⟨t, intCast_mem_integralFiniteAdeles t, by push_cast; ring⟩
 
-theorem natCast_mul_mem_levelIdeal (N : ℕ) {x : 𝔸f} (hx : x ∈ integralFiniteAdeles (𝓞 ℚ) ℚ) :
-    (N : 𝔸f) * x ∈ levelIdeal N :=
-  ⟨x, hx, rfl⟩
 
 theorem natCast_mul_mem_levelIdeal' {N m : ℕ} {x : 𝔸f} (hx : x ∈ levelIdeal N) :
     (m : 𝔸f) * x ∈ levelIdeal N :=

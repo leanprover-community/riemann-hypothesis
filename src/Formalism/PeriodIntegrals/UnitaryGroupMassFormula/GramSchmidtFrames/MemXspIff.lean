@@ -68,19 +68,6 @@ lemma mem_Xsp_iff (v : Fin (2 * r + k + 1) → ℂ) : v ∈ Xsp k r ↔ ∀ i : 
     rw [hsum]
     exact Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
 
-lemma N_Xsp {n : B.Mat k r} (hn : n ∈ Nset k r) {v : Fin (2 * r + k + 1) → ℂ} (hv : v ∈ Xsp k r) :
-    n *ᵥ v ∈ Xsp k r := by
-  rw [mem_Xsp_iff] at hv ⊢
-  intro i hi
-  simp only [Matrix.mulVec, dotProduct]
-  refine Finset.sum_eq_zero fun j _ => ?_
-  by_cases hj : r ≤ j.val
-  · rw [hv j hj, mul_zero]
-  · push_neg at hj
-    have h1 := hn.2.1 ⟨j.val, hj⟩ i (by simp only; omega)
-    have hjeq : eI k r ⟨j.val, hj⟩ = j := by ext; rfl
-    rw [hjeq] at h1
-    rw [h1, if_neg (by intro h; rw [h] at hi; omega), zero_mul]
 
 lemma N_wb {n : B.Mat k r} (hn : n ∈ Nset k r) {u : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u) :
     n *ᵥ u - u ∈ Xsp k r := by
@@ -99,35 +86,5 @@ lemma N_wb {n : B.Mat k r} (hn : n ∈ Nset k r) {u : Fin (2 * r + k + 1) → �
 
 end lemmas
 
-theorem gfSat_of (hO : SatOm) (hO' : SatOm') : GfSat := by
-  intro k r z z' hk hr hz hz' D0 y hy n hn n' hn'
-  obtain ⟨hyG, hyP, ⟨t, ht, hom⟩, ⟨t', ht', hom'⟩, hiso⟩ := hy
-  have Nc := Formalism.FourierDecayAlt.P.unipotent_radical_closed k r
-  have hSn : n ∈ Sset k r z := ⟨1, one_mem_UW z, n, hn, (one_mul n).symm⟩
-  have hSn' : n' ∈ Sset k r z' := ⟨1, one_mem_UW z', n', hn', (one_mul n').symm⟩
-  have hGV : n * y * n' ∈ B.GV k r := by
-    have h1 := Formalism.QuantumDeterminants.WeylGroupFacts.uh_mul hn.1 hyG
-    exact Formalism.QuantumDeterminants.WeylGroupFacts.uh_mul h1 hn'.1
-  have hGf : Gf k r z z' (n * y * n') = Gf k r z z' y := by
-    simp only [Gf, Formalism.QuantumDeterminants.diagonal_inverse_holds k r z z' hz.1 hz'.1 n hSn n' hSn' y]
-  refine ⟨hGV, by rw [hGf]; exact hyP, ⟨t, ht, ?_⟩, ⟨t', ht', ?_⟩, ?_⟩
-  · rw [hO k r z z' hk hr hz hz' y hyG hyP n hn n' hn']; exact hom
-  · rw [hO' k r z z' hk hr hz hz' y hyG hyP n hn n' hn']; exact hom'
-  · intro u hu
-    have hUw : inWb k r u := ((D0.isotropic_subspace_eq_primed u).1 hu).1.1
-    obtain ⟨v, hv, v', hv', he⟩ := hiso u hu
-    have hni := Nc.inv_mem n' hn'
-    have hnu := Nc.unit n' hn'
-    refine ⟨n *ᵥ (u + v) - u, ?_, n'⁻¹ *ᵥ (u + v') - u, ?_, ?_⟩
-    · have : n *ᵥ (u + v) - u = (n *ᵥ u - u) + n *ᵥ v := by rw [mulVec_add]; abel
-      rw [this]
-      exact Submodule.add_mem _ (N_wb hn hUw) (N_Xsp hn hv)
-    · have : n'⁻¹ *ᵥ (u + v') - u = (n'⁻¹ *ᵥ u - u) + n'⁻¹ *ᵥ v' := by rw [mulVec_add]; abel
-      rw [this]
-      exact Submodule.add_mem _ (N_wb hni hUw) (N_Xsp hni hv')
-    · have e1 : u + (n'⁻¹ *ᵥ (u + v') - u) = n'⁻¹ *ᵥ (u + v') := by abel
-      rw [e1, ← mulVec_mulVec, ← mulVec_mulVec,
-        show n' *ᵥ (n'⁻¹ *ᵥ (u + v')) = u + v' by rw [mulVec_mulVec, Matrix.mul_nonsing_inv _ hnu, one_mulVec], he]
-      abel
 
 end PI.UnitaryGroupMassFormula.GsFr

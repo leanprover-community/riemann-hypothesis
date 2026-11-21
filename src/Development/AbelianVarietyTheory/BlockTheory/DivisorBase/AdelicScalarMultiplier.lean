@@ -217,13 +217,5 @@ def Statement : Prop := IdeleNormStatement ∧ LevelGroupStatement
 example (K : Type) [Field K] [NumberField K] : NormUnitCond (1 : Idele K) 1 :=
   ⟨1, one_mem _, by simp⟩
 
-theorem simLevel_mono {E : Type} [Field E] [NumberField E]
-    {W : Type} [AddCommGroup W] [Module ℚ W] [Module E W] [IsScalarTower ℚ E W]
-    [Module (𝓞 E) W] (h : LinearMap.BilinMap ℚ W E) (ξ : E) (Λ : Submodule (𝓞 E) W)
-    {I J : Ideal (𝓞 E)} (hIJ : I ≤ J) : simLevel h ξ Λ I ≤ simLevel h ξ Λ J := by
-  rintro g ⟨hg, h1, h2⟩
-  refine ⟨hg, h1, fun x hx => AddSubgroup.closure_mono ?_ (h2 x hx)⟩
-  rintro t ⟨z, hz, y, hy, rfl⟩
-  exact ⟨z, hz, y, Submodule.smul_mono_left hIJ hy, rfl⟩
 
 end GlobalTheory.IndefiniteRowSideFullHecke.AdelicScalarMultiplier

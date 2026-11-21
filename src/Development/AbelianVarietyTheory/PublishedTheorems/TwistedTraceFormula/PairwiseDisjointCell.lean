@@ -34,14 +34,6 @@ theorem coe_absRatio (p : siegel k n) : (absRatio k n p : ℝ) =
       nabs k (GeneralLinearGroup.det (p : GL (n ⊕ n) k)) := by
   simp [absRatio, nabs]
 
-theorem absRatio_eq (p : siegel k n) {a d : kˣ} (ha : (a : k) = (leviMat (Equiv.refl (n ⊕ n)) p.1.1).det)
-    (hd : (d : k) = (quotMat (Equiv.refl (n ⊕ n)) p.1.1).det) : (absRatio k n p : ℝ) = nabs k a / nabs k d := by
-  have h1 : GeneralLinearGroup.det (leviGL (Equiv.refl (n ⊕ n)) p) = a := Units.ext ha.symm
-  have h2 : GeneralLinearGroup.det (p : GL (n ⊕ n) k) = a * d :=
-    Units.ext (by rw [Units.val_mul, ha, hd]; exact (mem_stabGL_diagSub.1 p.2).det_eq)
-  have := (nabs_pos' k a).ne'
-  rw [coe_absRatio, h1, h2, nabs_mul']
-  field_simp
 
 theorem nabs_det_of_mem_KO {m : Type} [Fintype m] [DecidableEq m] {g : GL m k} (hg : g ∈ KO k m) :
     nabs k (GeneralLinearGroup.det g) = 1 := by
@@ -116,11 +108,6 @@ theorem sphSection_right (s : ℂ) (h : GL (n ⊕ n) k) {κ : GL (n ⊕ n) k} (h
 theorem sphSection_one (s : ℂ) : sphSection k n s 1 = 1 := by
   rw [sphSection, isIwasawa.iwAbs_of_mem (one_mem _), one_npow]
 
-theorem eq_sphSection {s : ℂ} {Φ : GL (n ⊕ n) k → ℂ} (h1 : Φ 1 = 1)
-    (hl : ∀ (p : siegel k n) h, Φ (p * h) = npow (absRatio k n p) (s + (Fintype.card n : ℂ) / 2) * Φ h)
-    (hr : ∀ h, ∀ κ ∈ KO k (n ⊕ n), Φ (h * κ) = Φ h) : Φ = sphSection k n s := funext fun g => by
-  obtain ⟨p, κ, hκ, rfl⟩ := isIwasawa.1 g
-  rw [hr _ _ hκ, sphSection_right _ _ hκ, ← mul_one (p : GL (n ⊕ n) k), hl, sphSection_left, h1, sphSection_one]
 
 theorem sphSection_io_biinv (s : ℂ) (g : GL n k) {x y : GL n k} (hx : x ∈ KO k n) (hy : y ∈ KO k n) :
     sphSection k n s (io k n (x * g * y, 1)) = sphSection k n s (io k n (g, 1)) := by

@@ -72,16 +72,6 @@ theorem ev_some {y z} (h : Z.pt y = some z) (f) : T.ev i _ b f y = valAt YS fw j
 
 theorem ev_none {y} (h : Z.pt y = none) (f) : T.ev i _ b f y = 0 := by rw [Z.ev_eq, h]; rfl
 
-theorem ev_eq_evI {y z} (h : Z.pt y = some z) :
-    ∃ (Tc : CDVR) (io : T0.Q.c.F →+* Tc.Fr) (k : Tc.Fr →+* ℂ_[D.ntw.l i]) (_ : IsReading (embC YS (T.iC i) b) Tc io k)
-      (y₀ : IntFr (T0.Q.Xo ((j : ℕ) + 1)) T0.Q.c Tc io) (u : ℂ_[D.ntw.l i]), y₀.IsAlg ∧ ‖u‖ = 1 ∧
-      ∀ (a : NX.KB S i b) (x : NX.FmK S ((j : ℕ) + 1)),
-        T.ev i _ b ((toK YS j b).symm (a ⊗ₜ[S.Ks] x : NX.KB S i b ⊗[S.Ks] _)) y =
-          T.iC i a * (u * k (evI y₀ (cuspOf YS fw j x : T0.R ((j : ℕ) + 1)))) := by
-  obtain ⟨Tc, io, k, hk, y₀, u, hy, hu, hv⟩ := z.exists_valC (wtA (κ j)) (κ j).n
-  refine ⟨Tc, io, k, hk, y₀, u, hy, hu, fun a x => ?_⟩
-  rw [Z.ev_some h, ← hv _ (cuspOf_mem_sec YS fw j x), ← valAt_tmul]
-  exact congrArg _ ((toK YS j b).apply_symm_apply _)
 
 include Z in
 
@@ -258,11 +248,6 @@ def extLift {m : ℕ} {α : ℕ → Type} (f : ∀ n : Fin m, α ((n : ℕ) + 1)
 theorem extLift_succ {m : ℕ} {α : ℕ → Type} (f : ∀ n : Fin m, α ((n : ℕ) + 1)) (d : ∀ j, α j) (n : Fin m) :
     extLift f d ((n : ℕ) + 1) = f n := dif_pos n.2
 
-theorem extLift_off {m : ℕ} {α : ℕ → Type} (f : ∀ n : Fin m, α ((n : ℕ) + 1)) (d : ∀ j, α j) {j : ℕ}
-    (h : j ∉ Finset.Icc 1 m) : extLift f d j = d j := by
-  cases j with
-  | zero => rfl
-  | succ n => exact dif_neg fun h' => h (Finset.mem_Icc.2 ⟨Nat.le_add_left _ _, h'⟩)
 
 theorem lift_cases {m : ℕ} {p : ℕ → Prop} (h1 : ∀ n : Fin m, p ((n : ℕ) + 1)) (h2 : ∀ j, j ∉ Finset.Icc 1 m → p j) (j : ℕ) :
     p j := by
@@ -543,9 +528,6 @@ def geoTie (h : ∀ i, GeoLaws YS fw (T.iC i)) : ThetaTie YS fw (geoNTh h) where
       hk_none := fun k P hk _ _ _ => (congrArg norm (hkUnitN_succ j b k P)).trans ((h i).hkUnit_spec hk b).1 }
   isUnramified₂ _ := rfl
 
-theorem nonempty_pts_of_reading {b : Bool} {j : ℕ} {Tc : CDVR} {io : T0.Q.c.F →+* Tc.Fr} {k : Tc.Fr →+* ℂ_[D.ntw.l i]}
-    (hk : IsReading (embC YS iC b) Tc io k) (y₀ : IntFr (T0.Q.Xo j) T0.Q.c Tc io) (hy : y₀.IsAlg) : Nonempty (Pts YS iC b j) :=
-  ⟨(PtC.exists_of_reading hk y₀ hy).choose⟩
 
 end Record
 

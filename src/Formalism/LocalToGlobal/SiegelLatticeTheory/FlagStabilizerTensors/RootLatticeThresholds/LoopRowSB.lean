@@ -88,18 +88,7 @@ theorem loopRowS_of_BM (hyF : YFOK sel yF) (C1f : List ℝ → ℝ) (Uf : (List 
     ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm _ _ _ hc => tiesR sel yF hyF C1f B M Fm hc⟩⟩
     hForm
 
-theorem admissible_raise {eps : ℝ} {Fm : FamP eps} {C1 : ℝ} (y : ℝ) (h : AdmRec Fm C1) : AdmRec (Fm.raise y) C1 := by
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, h⟩ := h
-  exact ⟨a1, a2, fun x hx i => a3 x (raise_lt hx) i, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14,
-    fun x hx => a15 x (raise_lt hx), a16, h⟩
 
-theorem admissible_family_raise {eps : ℝ} {Fm : FamP eps} {C1 : ℝ} (y : ℝ)
-    (At : ∀ x, (Fm.raise y).x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
-    (Yt : ∀ x (hx : (Fm.raise y).x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word),
-      LoopTie (Fm.D x i) (Fm.L x i) (At x hx i) u u' C1)
-    (h : AdmRec Fm C1) (hV : ∀ Cg cb Cu cT CT C0 A : ℝ, VanishingOnXAndXPlus.FamilyTermVolumeSmallCellBound (Fm.raise y) C1 At Yt Cg cb Cu cT CT C0 A) :
-    VanishingOnXAndXPlus.AdmF (Fm.raise y) C1 At Yt :=
-  family_admitted_of_parts (Fm.raise y) C1 At Yt (admissible_raise y h) hV
 
 end BM
 

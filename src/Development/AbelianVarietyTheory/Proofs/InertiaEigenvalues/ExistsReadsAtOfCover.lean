@@ -161,9 +161,6 @@ theorem exists_readsAt_of_pair (hc : TwCoverPair D) {w : D.what₂.places.Pl} (h
   · exact ⟨i, true, fun x => (h x).symm.trans (mem_below w x)⟩
   · exact ⟨i, false, fun x => (h x).symm.trans (mem_below w x)⟩
 
-theorem exists_readsAt_of_cover (hc : D.ntw.TwCover) (w : D.what₂.places.Pl) : ∃ i b, ReadsAt i b w := by
-  obtain ⟨i, -, h⟩ := hc _ (D.what₂.places.resChar_prime w) (below w) (resChar_mem_below w)
-  exact ⟨i, true, fun x => (h x).symm.trans (mem_below w x)⟩
 
 theorem exists_orbitRep : ∃ o : D.what₂.places.Pl → D.what₂.places.Pl,
     ∀ w, (o w = w ∨ o w = D.what₂.places.conj w) ∧ o (D.what₂.places.conj w) = o w := by

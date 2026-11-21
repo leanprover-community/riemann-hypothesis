@@ -65,19 +65,6 @@ theorem L_le_La : R.L ≤ R.La := by
   have h2 := Real.log_nonneg R.p6
   linarith
 
-theorem log2a : 0 ≤ Real.log (2 * R.a) ∧ Real.log (2 * R.a) ≤ 2 * R.La := by
-  have ha := R.a_ge
-  have hx : 0 < R.x := R.x_pos
-  have hb : 0 < R.b := by rw [R.p4]; exact Real.exp_pos _
-  refine ⟨Real.log_nonneg (by linarith), ?_⟩
-  have e1 : Real.log (2 * R.a) = Real.log 2 + (Real.log R.x + R.L) := by
-    rw [Real.log_mul (by norm_num) (by linarith : (0 : ℝ) < R.a).ne', R.p5, Real.log_mul hx.ne' hb.ne', R.p4, Real.log_exp]
-  rw [e1, R.La_eq]
-  have h2 := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num)
-  have h3 := Real.log_nonneg (le_of_lt R.p1)
-  have h4 := Real.log_nonneg R.p6
-  have h5 := R.L_ge
-  linarith
 
 theorem unit_nonneg : 0 ≤ R.x ^ R.eps * (R.B0 + R.Nc) := by
   have hx : 0 ≤ R.x := le_of_lt R.x_pos
@@ -119,11 +106,6 @@ theorem HtNums.le_hu {R : RecNums J Pl} {Emb : Type} [Fintype Emb] [Nonempty Emb
     H.t1 H.t2 H.t3 H.t4 H.t5 H.t6 H.t7 H.t8 H.t9 H.t10.1 H.t10.2.1 H.t10.2.2 R.p34 H.t11.1 H.t11.2
     R.p1.le R.p2 R.p3 R.p4 R.p5 R.p6 R.p9 R.p13 R.p14 R.p15 R.p16 R.p17 R.p18 R.p20 H.k1 H.k2 H.k3
 
-theorem HtNums.hPn_le_hA {R : RecNums J Pl} {Emb : Type} [Fintype Emb] (H : HtNums R Emb) : H.hPn ≤ R.hA :=
-  Formalism.BranchingDeterminantCap.stepDiiiRecord Pl R.TT H.hPn R.logT H.ev R.aT H.bT H.nτ H.lam1 H.D0 H.D1 H.logc H.logxi
-    R.a R.La R.L R.m R.f R.k R.Nn R.S R.η R.b' H.CT H.Cev R.Ch H.t1 H.t2 H.t3 H.t4 H.t5 H.t6 H.t7 H.t8 H.t9
-    H.t10.1 H.t10.2.1 H.t10.2.2 R.L_le_La R.La_nonneg R.log2a.1 R.log2a.2 R.p14 (by linarith [R.p17, R.p16])
-    (by linarith [R.p16]) R.p18 R.p20 R.p34 R.p13 H.t11.1 H.t11.2 H.k1
 
 theorem RecNums.divIneq (muC mu0 Fo Lpass Eb : ℝ) (hC : muC ≤ mu0 + Lpass)
     (hM : mu0 ≤ (∑ j, ∑ ρ, R.pq j * R.w j ρ * R.logOm) + 2 * Fo + Eb)
@@ -190,50 +172,9 @@ theorem log_exp_half_sq (h : ℝ) : Real.log (Real.exp (h / 2) ^ 2) = h := by
   rw [sq, ← Real.exp_add, Real.log_exp]
   ring
 
-theorem passage_sizes {de f r g Q : ℝ} (hde : de = 8 * f * r / g) (hf : 0 ≤ f) (hr : 0 ≤ r) (hg : 0 < g) (hQ : 1 ≤ Q)
-    (hgQ : 24 * f * r * Q ≤ g) : 0 ≤ de ∧ de ≤ 1 / 3 ∧ 3 * de * Q ≤ 1 := by
-  subst hde
-  have hfr : 0 ≤ f * r := mul_nonneg hf hr
-  have hq : 24 * f * r * 1 ≤ 24 * f * r * Q := mul_le_mul_of_nonneg_left hQ (by nlinarith)
-  refine ⟨div_nonneg (by nlinarith) hg.le, ?_, ?_⟩
-  · rw [div_le_iff₀ hg]
-    nlinarith
-  · rw [show 3 * (8 * f * r / g) * Q = 24 * f * r * Q / g by ring, div_le_one hg]
-    exact hgQ
 
 end Numbers
 
-theorem complex_height_cast (hH : HeightBoundConstant) {K : Type} [Field K] [NumberField K] [StarRing K] {a n dQ D m : ℕ}
-    (c : Fin (m + 1) → ℕ) (c0 : c 0 = a) (hd : dQ = D)
-    (Xa : InfinitePlace K → Matrix (Fin a) (Fin a) ℂ)
-    (Xc : ∀ i, InfinitePlace K → Matrix (Fin (c i)) (Fin (c i)) ℂ) (hXc : ∀ i v, IsUnit (Xc i v).det)
-    (hXz : ∀ v i j, Xc 0 v i j = Xa v (Fin.cast c0 i) (Fin.cast c0 j))
-    (Kj : ∀ j : Fin m, Matrix (Fin (c j.succ)) (Fin (c j.castSucc)) K)
-    (H : Matrix (Fin n) (Fin n) K) (X0 : InfinitePlace K → Matrix (Fin n) (Fin n) ℂ)
-    (hX0 : ∀ v, IsUnit (X0 v).det ∧ ((X0 v)⁻¹).conjTranspose * (X0 v)⁻¹ = H.map v.embedding)
-    (P : Matrix (Fin dQ) (Fin n) K) (hP : Function.Surjective P.mulVec)
-    (XQ : InfinitePlace K → Matrix (Fin dQ) (Fin dQ) ℂ) (hXQ : IsQuotMetric P H XQ)
-    (XE : InfinitePlace K → Matrix (Fin D) (Fin D) ℂ) (hXE : ∀ v, IsUnit (XE v).det)
-    (ι : Matrix (Fin D) (Fin dQ) K) (hι : Function.Bijective ι.mulVec)
-    (Ix J : Type) [Fintype Ix] [Nonempty Ix] [Fintype J] (Qp : Ix → Submodule K (Fin dQ → K)) (hQp : (⨆ p, Qp p) = ⊤)
-    (κ : InfinitePlace K → ℝ) (lam : J → Ix → InfinitePlace K → ℝ) (hκ : ∀ v, 0 < κ v) (hlam : ∀ j p v, 0 < lam j p v)
-    (hsc : ∀ v p, IsScalarOn XQ XE v ι (Qp p) (κ v * ∏ j, lam j p v))
-    (Pt : (Fin (c (Fin.last m)) → K) →ₗ[K] Module.Dual K (Fin n → K))
-    (B : (Fin a → K) →ₗ[K] Module.Dual K (Fin D → K))
-    (hB : ∀ φ F, B φ (ι.mulVec (P.mulVec F)) = Pt ((chainMat Kj (Fin.last m)).mulVec fun i => φ (Fin.cast c0 i)) F)
-    (hne : B ≠ 0) (pU : InfinitePlace K → ℝ) (kU : Fin m → InfinitePlace K → ℝ)
-    (hpU : ∀ v, Formalism.HN.opNormAt (Pi.basisFun K (Fin (c (Fin.last m)))) (Xc (Fin.last m))
-      (Pi.basisFun K (Fin n)).dualBasis (Formalism.HN.dualFrame X0) v Pt ≤ pU v)
-    (hkU : ∀ j v, Formalism.HN.opNormAt (Pi.basisFun K (Fin (c j.castSucc))) (Xc j.castSucc)
-      (Pi.basisFun K (Fin (c j.succ))) (Xc j.succ) v (Matrix.mulVecLin (Kj j)) ≤ kU j v) :
-    Formalism.HN.htMap (Pi.basisFun K (Fin a)) Xa (Pi.basisFun K (Fin D)).dualBasis (Formalism.HN.dualFrame XE) B ≤
-      (1 / (Formalism.HN.nPl K : ℝ)) * ∑ v, (Real.log (pU v ^ 2) + ∑ j, Real.log (kU j v ^ 2)) -
-        (1 / (Formalism.HN.nPl K : ℝ)) * ∑ v, minOver (fun p => ∑ j, Real.log (lam j p v)) - meanLog κ := by
-  subst c0 hd
-  obtain rfl : Xc 0 = Xa := by
-    funext v; ext i j; simpa using hXz v i j
-  exact (hH K n dQ m c Xc hXc Kj H X0 hX0 P hP XQ hXQ XE hXE ι (isUnit_det_of_bij _ hι) Ix J Qp hQp κ lam lam hκ hlam
-    (fun _ _ _ => le_rfl) hsc Pt B (by simpa using hB) hne pU kU hpU hkU).2
 
 section KerChainDefs
 
@@ -304,10 +245,6 @@ def KerChain.ofCol {P : LevFam X.E X.K R.r Pr.vGs} {u : Pr.Word} {m2 : ℕ} {b :
   Y := ybCpl W sel mu cst L u m2 b hY
   cp := A.cp
 
-theorem KerChain.ofCol_col {P : LevFam X.E X.K R.r Pr.vGs} {u : Pr.Word} {m2 : ℕ} {b : L.β (m2 + 1)}
-    {hY : YbHyp (R := R) sel mu cst L u m2 b} (A : ChKer W Ch sel mu cst L P u m2 b hY)
-    (hF : ∀ j, (chF W sel mu L u j).Ok) (hE : (evGSD W Ch sel mu P u).Ok) :
-    (KerChain.ofCol W Ch sel mu cst L A hF hE).col = A.colF hF := rfl
 
 end OfCol
 
@@ -485,12 +422,8 @@ variable {hX : X.Ok} {Bs : DefBase X.K} {Df : DefSide Bs} {P : LevFam X.E X.K Rk
   {A : ∀ t x, ChKer W Ch sel (mu t) (cst t) (L t) P (wd x) m2 (b t x) (hY t x)}
   {hF : ∀ t x j, (chF W sel (mu t) (L t) (wd x) j).Ok} {ev : ∀ t, (Fin (Df.nV t) → X.K) →ₗ[X.K] V0X W Ch sel (mu t) Xg P}
 
-theorem colFace_pt (x : Mem) (t : Bs.Tup) :
-    (colFace hX Df Xg mu cst L hL hP Mem wd b hY A hF ev).Pt x t = colPer hX (hP t) Xg (A t x) (hF t x) (hL t) (ev t) := rfl
 
-theorem colFace_a (x : Mem) : (colFace hX Df Xg mu cst L hL hP Mem wd b hY A hF ev).a x = ramDim W Ch hX (wd x) := rfl
 
-theorem colFace_Xc (x : Mem) : (colFace hX Df Xg mu cst L hL hP Mem wd b hY A hF ev).Xc x = (MramH W Ch hX (wd x)).X := rfl
 
 variable (hE : ∀ x, (evGSD W Ch sel (mu Bs.μ0) P (wd x)).Ok) {x : Mem}
   {ch : ColChain (colFace hX Df Xg mu cst L hL hP Mem wd b hY A hF ev) x}
@@ -515,11 +448,6 @@ theorem colFace_fact (φ : Fin (ramDim W Ch hX (wd x)) → X.K) (F : Fin (Df.nV 
     ch.PtL ((chainMat ch.Kj (Fin.last ch.mm)).mulVec fun i => φ (Fin.cast ch.c0 i)) F =
       colPer hX (hP Bs.μ0) Xg (A Bs.μ0 x) (hF Bs.μ0 x) (hL Bs.μ0) (ev Bs.μ0) φ F := (ch.fact φ F).symm
 
-theorem LastPer.reading_tie {T : ChainTie ch (memQ (A := A) (hF := hF) hE (x := x))} (h0 : FirstCols hE T)
-    (hL' : LastPer hE T) (φ : Fin (ramDim W Ch hX (wd x)) → X.K) (F : Fin (Df.nV Bs.μ0) → X.K) :
-    (colFace hX Df Xg mu cst L hL hP Mem wd b hY A hF ev).Pt x Bs.μ0 φ F =
-      colPerL (hP Bs.μ0) Xg (wd x) (ev Bs.μ0) (colC (A Bs.μ0 x) (hF Bs.μ0 x) (hL Bs.μ0) (colOfCoord W Ch hX (wd x) φ)) F := by
-  rfl
 
 theorem FirstCols.isom {T : ChainTie ch (memQ (A := A) (hF := hF) hE (x := x))} (h0 : FirstCols hE T)
     (hN : ∀ (v : InfinitePlace X.K) (y : Fin (ch.c ⟨0, by omega⟩) → X.K),
@@ -635,55 +563,6 @@ theorem nonempty_Ix {Df : DefSide Bs} (wf : Df.WF) (hpos : Df.Pos) : Nonempty Bs
   have : Nonempty (Fin (Df.dQ Bs.μ0)) := ⟨⟨0, hpos⟩⟩
   exact bot_ne_top ht
 
-theorem height_chain {Df : DefSide Bs} {Dc : DefCols Df} {Sp : SPer Dc} [Nonempty Bs.Ix] (wf : Df.WF)
-    (S : IndefCols Df Dc Sp N) (u : Dc.Mem) (hne : S.col.B u ≠ 0)
-    (X0 : InfinitePlace K → Matrix (Fin (Df.nV Bs.μ0)) (Fin (Df.nV Bs.μ0)) ℂ)
-    (hX0 : ∀ v, IsUnit (X0 v).det ∧ ((X0 v)⁻¹).conjTranspose * (X0 v)⁻¹ = (Df.HV Bs.μ0).map v.embedding)
-    (ch : ColChain Dc u) (hP : ℝ) (hK : Bs.J → InfinitePlace K → ℝ)
-    (nP : ∀ v, Formalism.HN.opNormAt (Pi.basisFun K (Fin (ch.c (Fin.last ch.mm)))) (ch.X (Fin.last ch.mm))
-      (Pi.basisFun K (Fin (Df.nV Bs.μ0))).dualBasis (Formalism.HN.dualFrame X0) v ch.PtL ^ 2 ≤ Real.exp hP)
-    (nK : ∀ j v, Formalism.HN.opNormAt (Pi.basisFun K (Fin (ch.c j.castSucc))) (ch.X j.castSucc)
-      (Pi.basisFun K (Fin (ch.c j.succ))) (ch.X j.succ) v (Matrix.mulVecLin (ch.Kj j)) ^ 2 ≤
-        Real.exp (∑ l ∈ Finset.univ.filter (fun l => ch.lf l = j), hK l v)) :
-    Formalism.HN.htMap (Pi.basisFun K (Fin (Dc.a u))) (Dc.Xc u) (Pi.basisFun K (Fin S.D)).dualBasis
-              (Formalism.HN.dualFrame S.XE) (S.col.B u) ≤
-      hP + ∑ j, (∑ v, hK j v) / (Fintype.card (InfinitePlace K) : ℝ) - ∑ j, N.l6 j - meanLog S.κ := by
-  have hc := S.l1c
-  have hb := S.l1b
-  have hsc : ∀ v p, IsScalarOn (Df.XQ Bs.μ0) S.XE v (S.ι Bs.μ0) (Df.Qp Bs.μ0 p)
-      (S.κ v * ∏ j, S.lam j Bs.μ0 p v) := fun v p => by
-    rw [← S.toIndefRows.Qpart_base p]; exact hc.2.2.2.2.1 Bs.μ0 v (Or.inl rfl) p
-  have H := complex_height_cast height_constant_bound ch.c ch.c0 (S.toIndefRows.dQ_eq Bs.μ0) (Dc.Xc u) ch.X ch.X_unit ch.X_zero ch.Kj
-    (Df.HV Bs.μ0) X0 hX0 (Df.Pq Bs.μ0) (wf.Pq_surj _) (Df.XQ Bs.μ0) (wf.XQ_quot _) S.XE S.frames.1 (S.ι Bs.μ0) (hc.1 _)
-    Bs.Ix Bs.J (Df.Qp Bs.μ0) wf.Qp_top S.κ (fun j p v => S.lam j Bs.μ0 p v) hc.2.2.1 (fun j p v => hc.2.2.2.1 j _ p v) hsc
-    ch.PtL (S.col.B u)
-    (fun φ F => by
-      have h1 := hb.1 u Bs.μ0 φ F
-      rw [hb.2.1 u, one_mul] at h1
-      rw [← h1]; exact ch.fact φ F)
-    hne (fun _ => Real.exp (hP / 2)) (fun j v => Real.exp ((∑ l ∈ Finset.univ.filter (fun l => ch.lf l = j), hK l v) / 2))
-    (fun v => le_exp_half (nP v)) (fun j v => le_exp_half (nK j v))
-  simp only [log_exp_half_sq] at H
-  have hn : (0 : ℝ) < (Fintype.card (InfinitePlace K) : ℝ) := by
-    have : 0 < Fintype.card (InfinitePlace K) := Fintype.card_pos
-    exact_mod_cast this
-  have h2 : ∑ j, N.l6 j ≤ (1 / (Formalism.HN.nPl K : ℝ)) *
-      ∑ v, minOver (fun p => ∑ j, Real.log (S.lam j Bs.μ0 p v)) := by
-    have h3 : ∑ _v : InfinitePlace K, ∑ j, N.l6 j ≤
-        ∑ v, minOver (fun p => ∑ j, Real.log (S.lam j Bs.μ0 p v)) := Finset.sum_le_sum fun v _ => S.log_eigenvalue_sum_le_min v
-    rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul] at h3
-    rw [one_div, le_inv_mul_iff₀ (by exact hn)]
-    exact h3
-  have h4 : (1 / (Formalism.HN.nPl K : ℝ)) * ∑ v, (hP + ∑ j, ∑ l ∈ Finset.univ.filter (fun l => ch.lf l = j), hK l v) =
-      hP + ∑ j, (∑ v, hK j v) / (Fintype.card (InfinitePlace K) : ℝ) := by
-    have e1 : ∀ v, ∑ j, ∑ l ∈ Finset.univ.filter (fun l => ch.lf l = j), hK l v = ∑ j, hK j v := fun v =>
-      Finset.sum_fiberwise Finset.univ ch.lf (fun l => hK l v)
-    simp only [e1]
-    rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, Finset.sum_comm, ← Finset.sum_div]
-    show (1 / (Fintype.card (InfinitePlace K) : ℝ)) * _ = _
-    field_simp
-  rw [h4] at H
-  linarith [H, h2]
 
 theorem height_chain_at {Df : DefSide Bs} {Dc : DefCols Df} {Sp : SPer Dc} [Nonempty Bs.Ix] (wf : Df.WF)
     (S : IndefCols Df Dc Sp N) (u : Dc.Mem) (hne : S.col.B u ≠ 0)
@@ -861,21 +740,6 @@ theorem errB_of_units {Pl : Type} [Fintype Pl] [DecidableEq Pl] (Z : IndefScale 
     mul_le_mul_of_nonneg_right hce hmU
   linarith
 
-theorem bi_of_cut [IsTotallyComplex K] {Df : DefSide Bs} (wf : Df.WF) (t : Bs.Tup) {n' : ℕ}
-    (H' : Matrix (Fin n') (Fin n') K) (hH : H'ᴴ = H') (hH' : IsUnit H'.det)
-    (E : Matrix (Fin n') (Fin (Df.nV t)) K) (Pr : Matrix (Fin (Df.nV t)) (Fin n') K) (hE : IsOrthProj H' E Pr)
-    (hHV : Df.HV t = Eᴴ * H' * E) (A B : Submodule (𝓞 K) (Fin n' → K)) (hA : Submodule.IsLattice K A)
-    (hMt : Df.Mt t = cutLat E A) (s : ℕ) (hs : 0 < s) (hsA : ∀ x ∈ Formalism.HermitianLatticesTheory.dual (hform H') A, (s : 𝓞 K) • x ∈ B)
-    (G : ℕ) (hG : 0 < G) (hGB : ∀ x ∈ B, (G : 𝓞 K) • (E * Pr).mulVec x ∈ A)
-    (eb : ∀ t, HeightOneSpectrum (𝓞 K) → Fin (Df.dQ t) → Fin (Df.dQ t) → K) (y : HeightOneSpectrum (𝓞 K))
-    (heb : IsLocBasis (Df.abelian₂ t) y (eb t y)) :
-    (vw y (Df.Gm eb t y) : ℝ) ≤ (Df.dQ t : ℝ) * ((vw y (G : K) : ℝ) + (vw y (s : K) : ℝ)) := by
-  have h := boundsIVal K Bs.K0 wf.cm Bs.v0 wf.conj n' (Df.nV t) (Df.dQ t) H' hH hH' E Pr hE
-    (fun i j => hHV ▸ wf.HV_rat t i j) (fun v => hHV ▸ wf.HV_pos t v) (Df.Pq t) (wf.Pq_surj t) A B hA s hs hsA G hG hGB y
-    (eb t y) (by rw [← hMt]; exact heb)
-  rw [← hHV] at h
-  have h' : vw y (Df.Gm eb t y) ≤ (Df.dQ t : ℤ) * (vw y (G : K) + vw y (s : K)) := h
-  exact_mod_cast h'
 
 end Generic
 
@@ -944,14 +808,6 @@ abbrev kerRec {Bs : DefBase X.K} {P : LevFam X.E X.K Rk.r Pr.vGs} {m2 : ℕ} (mu
     ∀ t x, ChKer W Ch sel (mu t) (cst t) (L t) P (wd x) m2 (b t x) (hY t x) :=
   fun t x => Formalism.L2.Ker.chKerC W Ch sel (mu t) (cst t) (L t) Am (wd x) m2 (b t x) (hY t x) P (hK t x)
 
-theorem kerRec_colC {Bs : DefBase X.K} {P : LevFam X.E X.K Rk.r Pr.vGs} {m2 : ℕ} {Gc : ChGlob X Rk.m} (mu : Bs.Tup → Tup X.F X.E X.K Sg)
-    (cst : ∀ t, LocCst X (rowSG Pr sel (mu t))) (L : ∀ t, ChIdx X Pr Rk (QE sel (mu t : Chr X.F X.E X.K)))
-    (hL : ∀ t, (L t).Ok Ch sel (mu t) (cst t) Gc m2) {Mem : Type}
-    (wd : Mem → Pr.Word) (b : ∀ t, Mem → (L t).β (m2 + 1)) (hY : ∀ t x, YbHyp (R := Rk) sel (mu t) (cst t) (L t) (wd x) m2 (b t x))
-    (Am : Formalism.L2.Ker.Amb X) (hK : ∀ t x, Formalism.L2.Ker.KerEquivC W Ch sel (mu t) (cst t) (L t) Am (wd x) m2 (b t x) (hY t x) P)
-    (hF : ∀ t x j, (chF W sel (mu t) (L t) (wd x) j).Ok) (t : Bs.Tup) (x : Mem) :
-    colC (kerRec mu cst L wd b hY Am hK t x) (hF t x) (hL t) =
-      Formalism.L2.Ker.colMu W Ch sel (mu t) (cst t) (L t) Am (wd x) m2 (b t x) (hY t x) P (hK t x) (hF t x) (hL t) := rfl
 
 theorem division_height_bound_at_sizeData [IsTotallyComplex X.K] (A : FamIn X.K G Pl0 T m) {s : ℕ} (hOk : A.fam.Ok s) (hsep : A.fam.TypesSep)
     (P0 : Subgroup G) (ψ0 : P0 →* X.Kˣ) (P1 : Subgroup G) (ψ1 : P1 →* X.Kˣ) (hX : X.Ok)
@@ -1419,8 +1275,6 @@ def exampleDivisionInputs (v0 : InfinitePlace K3) : DivInputs (coreOne v0) recOn
   la_le := by show (0 : ℝ) ≤ 1; norm_num
   constant_ge_twenty_eight := by show (28 : ℝ) ≤ 36; norm_num
 
-theorem toyCoreOne_divClauses (v0 : InfinitePlace K3) : DivClauses (coreOne v0) recOne () (sl K3 1) (fun _ => 0) :=
-  divClauses_of (one.wf K3 v0 (conjAt v0)) (one.wf K3 v0 (conjAt v0)) (coreOne v0) _ () _ _ (exampleDivisionInputs v0)
 
 def tTwo (w : HeightOneSpectrum (𝓞 K3)) : ℝ :=
   lcv (scaleFrame (fun _ => (5 : ℝ)) (fr K3 1)) (sl K3 1) / ((1 : ℕ) : ℝ) + ∑ y ∈ pairSet w, lw y * (2 / ellw y ^ 2)
@@ -1527,9 +1381,6 @@ def inpTwo (v0 : InfinitePlace K3) (w : HeightOneSpectrum (𝓞 K3)) :
       have h := two_val y (decide (y ∈ pairSet w)) φ F hφ hF
       exact_mod_cast h)
 
-theorem clauses_two (v0 : InfinitePlace K3) (w : HeightOneSpectrum (𝓞 K3)) :
-    DivClauses (coreTwo v0 w) (recTwo w) () (sl K3 1) (fun _ => 0) :=
-  divClauses_of (two.wf K3 v0 (conjAt v0)) (two.wf K3 v0 (conjAt v0)) (coreTwo v0 w) _ () _ _ (inpTwo v0 w)
 
 open scoped Classical in
 
@@ -1583,36 +1434,8 @@ theorem third_hypothesis_of_params (w : HeightOneSpectrum (𝓞 K3)) (h : ((3 : 
     have := Ideal.mem_map_of_mem (cO K3) h
     rwa [map_natCast] at this
 
-theorem clauses_shift (v0 : InfinitePlace K3) : ∃ w : HeightOneSpectrum (𝓞 K3),
-    DivClauses (coreTwo v0 w) (recTwo w) () (sl K3 1) (sgf w) ∧ ∀ y ∈ pairSet w, shiftZ (sgf w) y = 1 := by
-  obtain ⟨w, hw⟩ := (Formalism.DivisionValues.lwSumPrime K3 3 Nat.prime_three).2.1
-  refine ⟨w, divClauses_of (two.wf K3 v0 (conjAt v0)) (two.wf K3 v0 (conjAt v0)) (coreTwo v0 w) _ () _ _
-    (inpShift v0 w (third_hypothesis_of_params w hw)), fun y hy => ?_⟩
-  simp [shiftZ, sgf, hy]
 
-theorem coreTwo_B_ne_zero (v0 : InfinitePlace K3) (w : HeightOneSpectrum (𝓞 K3)) : (coreTwo v0 w).cols.col.B () ≠ 0 := by
-  intro h
-  have := congrArg (fun B : (Fin 1 → K3) →ₗ[K3] Module.Dual K3 (Fin 1 → K3) => B (fun _ => 1) (fun _ => 1)) h
-  change (Pi.basisFun K3 (Fin 1)).toDual (fun _ => 1) (fun _ => 1) = 0 at this
-  rw [toDual_one] at this
-  simp at this
 
-theorem norm_smul_one (v : InfinitePlace K3) (a : K3) {t : ℝ} (ht : ‖v.embedding a‖ ^ 2 ≤ Real.exp t) :
-    Formalism.HN.opNormAt (Pi.basisFun K3 (Fin 1)) (fr K3 1) (Pi.basisFun K3 (Fin 1)) (fr K3 1) v
-      (Matrix.mulVecLin (a • (1 : Matrix (Fin 1) (Fin 1) K3))) ^ 2 ≤ Real.exp t := by
-  have hM : (fr K3 1 v)⁻¹ * (LinearMap.toMatrix (Pi.basisFun K3 (Fin 1)) (Pi.basisFun K3 (Fin 1))
-        (Matrix.mulVecLin (a • (1 : Matrix (Fin 1) (Fin 1) K3)))).map v.embedding * fr K3 1 v =
-      (v.embedding a) • (1 : Matrix (Fin 1) (Fin 1) ℂ) := by
-    ext i j; fin_cases i; fin_cases j
-    simp [fr]
-  have h1 : Formalism.HN.opNormAt (Pi.basisFun K3 (Fin 1)) (fr K3 1) (Pi.basisFun K3 (Fin 1)) (fr K3 1) v
-      (Matrix.mulVecLin (a • (1 : Matrix (Fin 1) (Fin 1) K3))) ≤ ‖v.embedding a‖ := by
-    rw [Formalism.HN.opNormAt, hM]
-    refine ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg _) fun x => ?_
-    simp [norm_smul]
-  have h0 := OperatorNormFrames.opNormAt_nonneg (Pi.basisFun K3 (Fin 1)) (fr K3 1) (Pi.basisFun K3 (Fin 1)) (fr K3 1) v
-      (Matrix.mulVecLin (a • (1 : Matrix (Fin 1) (Fin 1) K3)))
-  exact (pow_le_pow_left₀ h0 h1 2).trans ht
 
 def kk : Fin 2 → K3 := ![2, 2⁻¹]
 
@@ -1638,42 +1461,7 @@ def chThree (v0 : InfinitePlace K3) : ColChain (three.dc K3 v0) () where
       ((chainMat (R := K3) (m := 2) (c := fun _ => 1) (fun j => kk j • (1 : Matrix (Fin 1) (Fin 1) K3)) (Fin.last 2)).mulVec φ) F
     rw [chain_two, Matrix.one_mulVec]
 
-theorem fiber_id {n : ℕ} (f : Fin n → ℝ) (j : Fin n) : ∑ l ∈ Finset.univ.filter (fun l => l = j), f l = f j := by
-  simp [Finset.filter_eq']
 
-theorem height_three (v0 : InfinitePlace K3) :
-    Formalism.HN.htMap (Pi.basisFun K3 (Fin 1)) (fr K3 1) (Pi.basisFun K3 (Fin 1)).dualBasis
-              (Formalism.HN.dualFrame (three.core (K := K3) (v0 := v0) (kap := 3) (by norm_num) example_weights_pos).cols.XE)
-              ((three.core (K := K3) (v0 := v0) (kap := 3) (by norm_num) example_weights_pos).cols.col.B ()) ≤
-      0 + ∑ j : Fin 2, (∑ _v : InfinitePlace K3, (![2, -1] : Fin 2 → ℝ) j) / (Fintype.card (InfinitePlace K3) : ℝ) -
-        ∑ j, (three.num K3 v0 3 l4).l6 j - meanLog (three.core (K := K3) (v0 := v0) (kap := 3) (by norm_num) example_weights_pos).cols.κ := by
-  have : Nonempty (three.base K3 v0).Ix := ⟨(0 : Fin 2)⟩
-  refine height_chain (three.wf1 K3 v0 (conjAt v0)) (three.core (K := K3) (v0 := v0) (kap := 3) (by norm_num) example_weights_pos).cols ()
-    ?_ (fun _ => 1) (fun v => ⟨by simp, by simp [Matrix.map_one]⟩) (chThree v0) 0 (fun j _ => (![2, -1] : Fin 2 → ℝ) j)
-    (fun v => norm_toDual v) (fun j v => ?_)
-  · intro h
-    have := congrArg (fun B : (Fin 1 → K3) →ₗ[K3] Module.Dual K3 (Fin 1 → K3) => B (fun _ => 1) (fun _ => 1)) h
-    change (Pi.basisFun K3 (Fin 1)).toDual (fun _ => 1) (fun _ => 1) = 0 at this
-    rw [toDual_one] at this
-    simp at this
-  · refine le_of_le_of_eq (norm_smul_one v (kk j) (t := (![2, -1] : Fin 2 → ℝ) j) ?_) ?_
-    swap
-    · congr 1
-      exact (fiber_id (fun l => (![2, -1] : Fin 2 → ℝ) l) j).symm
-    fin_cases j
-    · show ‖v.embedding (2 : K3)‖ ^ 2 ≤ Real.exp 2
-      have := Real.quadratic_le_exp_of_nonneg (show (0 : ℝ) ≤ 2 by norm_num)
-      simp only [map_ofNat]
-      norm_num
-      linarith
-    · show ‖v.embedding ((2 : K3)⁻¹)‖ ^ 2 ≤ Real.exp (-1)
-      have h1 := Real.exp_one_lt_d9
-      have h2 : Real.exp (-1) = (Real.exp 1)⁻¹ := Real.exp_neg 1
-      have h3 : (1 / 4 : ℝ) ≤ (Real.exp 1)⁻¹ := by
-        rw [one_div]; exact inv_anti₀ (Real.exp_pos 1) (by linarith)
-      rw [h2, map_inv₀, map_ofNat]
-      norm_num
-      linarith
 
 abbrev pt : Formalism.L2.Col.GSD K3 := Formalism.L2.Col.GSD.triv K3 Unit Unit
 
@@ -1714,7 +1502,6 @@ abbrev ptQ (n : ℕ) (a : ℕ → K3) (b1 b2 : K3) : KerChain K3 where
 def ptIn : (Fin 1 → K3) →ₗ[K3] pt.EqFun :=
   LinearMap.codRestrict pt.EqFun (LinearMap.pi fun _ => LinearMap.proj 0) (fun _ _ _ => rfl)
 
-theorem ptIn_apply (x : Fin 1 → K3) (d : Unit) : (ptIn x : Unit → K3) d = x 0 := rfl
 
 def ptInF : (Fin 1 → K3) →ₗ[K3] pt.toFam.Forms := LinearMap.pi fun _ => ptIn
 
@@ -1801,61 +1588,14 @@ def tieThree (v0 : InfinitePlace K3) : ChainTie (chThree v0) (ptQ 1 (fun _ => 2)
       fun y => by rw [smul_one_mulVec, one_mul]; rfl
     exact (congrArg ptIn (h2 x)).trans h1.symm
 
-theorem tieThree_chain (v0 : InfinitePlace K3) (x : Fin 1 → K3) :
-    (tieThree v0).coL ((chainMat (chThree v0).Kj ⟨2, by show 2 < 2 + 1; omega⟩).mulVec x) =
-      (ptQ 1 (fun _ => 2) 2⁻¹ 1).col (ptInF x) := (tieThree v0).chain x
 
 theorem ptInF_eta (φ : pt.toFam.Forms) : φ = ptInF (fun _ => (φ () : Unit → K3) ()) := by
   funext b
   cases b
   exact Subtype.ext (funext fun d => by cases d; rfl)
 
-theorem not_tied_two (v0 : InfinitePlace K3) : IsEmpty (ChainTie (chOne v0) (ptQ 0 (fun _ => 1) 2 1)) := by
-  refine ⟨fun T => ?_⟩
-  let one : Fin 1 → K3 := fun _ => 1
-  let y : Fin 1 → K3 := fun _ => (T.coF 0 le_rfl one () : Unit → K3) ()
-  have e1 : T.coF 0 le_rfl one = ptInF y := ptInF_eta _
-  have hC : T.coL ((1 : Matrix (Fin 1) (Fin 1) K3).mulVec one) = ptIn (((1 : K3) * 2) • y) :=
-    (T.kerC one).trans ((congrArg (ptQ 0 (fun _ => 1) 2 1).cpl e1).trans (pt_cpl 0 (fun _ => 1) 2 1 y))
-  have hL : ((‖v0.embedding (((1 : Matrix (Fin 1) (Fin 1) K3).mulVec one) 0)‖ ^ 2 : ℝ) : ℂ) =
-      ((‖v0.embedding ((((1 : K3) * 2) • y) 0)‖ ^ 2 : ℝ) : ℂ) := by
-    have h := T.metL v0 ((1 : Matrix (Fin 1) (Fin 1) K3).mulVec one)
-    rw [hC] at h
-    exact (fr_normAt v0 _).symm.trans (h.trans (pt_ipAt pt_ok v0 _))
-  have hF : ((‖v0.embedding (one 0)‖ ^ 2 : ℝ) : ℂ) = ((‖v0.embedding (y 0)‖ ^ 2 : ℝ) : ℂ) := by
-    have h := T.metF 0 le_rfl v0 one
-    rw [e1] at h
-    exact (fr_normAt v0 _).symm.trans (h.trans (pt_famIpAt v0 y))
-  have hL' := Complex.ofReal_injective hL
-  have hF' := Complex.ofReal_injective hF
-  have h1 : ‖v0.embedding (((1 : Matrix (Fin 1) (Fin 1) K3).mulVec one) 0)‖ = 1 := by simp [Matrix.one_mulVec, one]
-  have h2 : ‖v0.embedding ((((1 : K3) * 2) • y) 0)‖ = 2 * ‖v0.embedding (y 0)‖ := by
-    rw [Pi.smul_apply, smul_eq_mul, one_mul, map_mul, norm_mul, map_ofNat]
-    norm_num
-  have h3 : ‖v0.embedding (one 0)‖ = 1 := by simp [one]
-  rw [h1, h2] at hL'
-  rw [h3] at hF'
-  nlinarith
 
-theorem chOne_isom (v0 : InfinitePlace K3) :
-    ∀ (v : InfinitePlace K3) (x : Fin ((chOne v0).c ⟨0, by omega⟩) → K3),
-      Formalism.HermitianLatticesTheory.normAt (Pi.basisFun K3 (Fin ((chOne v0).c ⟨(ptQ 0 (fun _ => 1) 1 1).n + 1, by show 0 + 1 < 1 + 1; omega⟩)))
-                ((chOne v0).X ⟨(ptQ 0 (fun _ => 1) 1 1).n + 1, by show 0 + 1 < 1 + 1; omega⟩) v
-                ((chainMat (chOne v0).Kj ⟨(ptQ 0 (fun _ => 1) 1 1).n + 1, by show 0 + 1 < 1 + 1; omega⟩).mulVec x) =
-        Formalism.HermitianLatticesTheory.normAt (Pi.basisFun K3 (Fin ((chOne v0).c ⟨0, by omega⟩))) ((chOne v0).X ⟨0, by omega⟩) v x := by
-  intro v x
-  have h : (chainMat (chOne v0).Kj ⟨(ptQ 0 (fun _ => 1) 1 1).n + 1, by show 0 + 1 < 1 + 1; omega⟩).mulVec x = x :=
-    (congrArg (fun M => Matrix.mulVec M x) chain_one).trans (Matrix.one_mulVec x)
-  rw [h]
-  rfl
 
-theorem tieOne_isom (v0 : InfinitePlace K3) (v : InfinitePlace K3) (x : Fin ((chOne v0).c 0) → K3) :
-    (ptQ 0 (fun _ => 1) 1 1).S₁.ipAt (ptQ 0 (fun _ => 1) 1 1).hS₁ v
-        ((ptQ 0 (fun _ => 1) 1 1).col ((tieOne v0).coF 0 (Nat.zero_le _) x))
-        ((ptQ 0 (fun _ => 1) 1 1).col ((tieOne v0).coF 0 (Nat.zero_le _) x)) =
-      famIpAt ((ptQ 0 (fun _ => 1) 1 1).F 0) ((ptQ 0 (fun _ => 1) 1 1).hF 0) v ((tieOne v0).coF 0 (Nat.zero_le _) x)
-        ((tieOne v0).coF 0 (Nat.zero_le _) x) := (tieOne v0).col_isom (chOne_isom v0) v x
 
-theorem tieOne_first (v0 : InfinitePlace K3) : (tieOne v0).First ptInF := fun _ => rfl
 
 end Formalism.L2.DIV.Inst

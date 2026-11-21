@@ -41,8 +41,6 @@ theorem csq_map (a : ι → K) (v : ι → V) :
 theorem cnrm_map (a : ι → K) (v : ι → V) : cnrm h σ (fun i => σ (a i)) v = h.nrm σ (∑ i, a i • v i) :=
   congrArg Real.sqrt (csq_map h σ a v)
 
-theorem cnrm_one (x : V) : cnrm h σ (fun _ : Unit => 1) (fun _ => x) = h.nrm σ x := by
-  simp [cnrm, csq, HermFam.nrm]
 
 theorem csq_comb {κ : Type*} [Fintype κ] (c : ι → ℂ) (a : ι → κ → K) (b : κ → V) :
     csq h σ c (fun i => ∑ k, a i k • b k) = csq h σ (fun k => ∑ i, c i * σ (a i k)) b := by
@@ -65,7 +63,6 @@ theorem csq_nonneg (c : ι → ℂ) (v : ι → V) : 0 ≤ csq h σ c v := by
   refine (Complex.nonneg_iff.1 this).1.trans_eq (congrArg _ ?_)
   simp [dotProduct, mulVec, Finset.mul_sum, mul_assoc, mul_comm, mul_left_comm]
 
-theorem cnrm_sq (c : ι → ℂ) (v : ι → V) : cnrm h σ c v ^ 2 = csq h σ c v := Real.sq_sqrt (csq_nonneg h σ c v)
 
 theorem nrm_pos {x : V} (hx : x ≠ 0) : 0 < h.nrm σ x := by
   have := (h.posDef σ 1 ![x] (by simpa using hx)).diag_pos (i := 0)

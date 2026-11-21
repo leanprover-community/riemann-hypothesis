@@ -155,16 +155,6 @@ def GapHyp {D : D7} (T : ThetaX D) : Prop :=
     2 * (Nfun D : ℝ) ^ 3 + D.R.t <
       ((((Formalism.MainNotions.ZetaProductPairs.parD T).b τ ⟨j + 1, h⟩ - (Formalism.MainNotions.ZetaProductPairs.parD T).b τ ⟨j, by omega⟩ : ℚ)) : ℝ)
 
-theorem GapHyp_of_params {D : D7} (T : ThetaX D) {L : SizeData₂ D} (P : ParameterChoice' D L) : GapHyp T := by
-  intro τ j h
-  have h1 := (P.nodes_gap τ j h).1
-  have h2 := P.heightBound_ge_rank_cubic
-  have hb : (Formalism.MainNotions.ZetaProductPairs.parD T).b τ = (D.hc τ).b := D.hcW_b _ _
-  rw [hb]
-  have h3 : (Nfun D : ℝ) = (D.R.k : ℝ) + D.R.m * (D.R.t + (D.R.r + 6) + 1) := by
-    unfold Nfun; push_cast; ring
-  rw [h3]
-  linarith
 
 def Hyp (D : D7) (Z : DivX D) (T : ThetaX D) : Prop :=
   Formalism.MainNotions.ZetaProductPairs.WtHyp T ∧ TieRowTyp T ∧ LamEig D ∧ DV.KapRBase Z ∧ GapHyp T
@@ -362,40 +352,12 @@ def ThetaOntoKFinite {Y : Formalism.MainNotions.ZetaProductPairs.Loc D T} (W : L
 
 def PeriodNonvanishingOnImage (Y : Formalism.MainNotions.ZetaProductPairs.Loc D T) : Prop := ∀ u, ∃ da, Y.ellT u da ≠ 0
 
-theorem period_ne_zero_of_value {Y : Formalism.MainNotions.ZetaProductPairs.Loc D T} (W : LocC Y) (h : PeriodNonvanishingOnImage Y) : LinearFormNonzero W := by
-  intro u h0
-  obtain ⟨da, hda⟩ := h u
-  apply hda
-  rw [W.ellT_eq, h0]
-  rfl
 
-theorem value_ne_zero_of_onto {Y : Formalism.MainNotions.ZetaProductPairs.Loc D T} (W : LocC Y) (hE : LinearFormNonzero W) (hT : ThetaOntoKFinite W) : PeriodNonvanishingOnImage Y := by
-  intro u
-  by_contra hcon
-  push Not at hcon
-  refine hE u (LinearMap.ext fun v => ?_)
-  refine LinearMap.ext_on (hT u) ?_
-  rintro _ ⟨da, rfl⟩
-  obtain ⟨da', h1, h2⟩ := W.v_free u v da
-  have := hcon da'
-  rw [W.ellT_eq, h1, h2] at this
-  simpa using this
 
 def RealConstantHypotheses {Y : Formalism.MainNotions.ZetaProductPairs.Loc D T} (_W : LocC Y) : Prop :=
   NonzeroBesselPeriodChain D T ∧ ParametersPolynomiallyBounded T ∧ UnfoldingAnyLevel Y
 
-theorem term_of_unf {Y : Formalism.MainNotions.ZetaProductPairs.Loc D T} (h8 : NonzeroBesselPeriodChain D T) (hP : ParametersPolynomiallyBounded T) (hU : UnfoldingAnyLevel Y) (u : D.what₂.Word) :
-    ∃ (Xp Yp : ℂ) (d0 : Y.ArchDat u), Xp ≠ 0 ∧ Y.ellT u d0 ≠ 0 ∧ ∀ da, Y.ellT u da * Xp = Y.Au u da * Yp := by
-  obtain ⟨μ, π, φ, F, Φ, pos, h1, h2, h3, h4, h5, h6, hB⟩ := h8 (T.parOf u) (hP u)
-  obtain ⟨μ', π', φ', F', Φ', pos', -, hB', n, Xp, Yp, dk, hs, hr⟩ :=
-    hU u ⟨μ, π, φ, F, Φ, pos, ⟨h1, h2, h3, h4, h5, h6⟩, hB⟩
-  rw [hs] at hB'
-  obtain ⟨k, -, hk⟩ := Finset.exists_ne_zero_of_sum_ne_zero hB'
-  exact ⟨Xp k, Yp k, dk k, left_ne_zero_of_mul hk, right_ne_zero_of_mul hk, hr k⟩
 
-theorem value_ne_zero_of_unfolding {Y : Formalism.MainNotions.ZetaProductPairs.Loc D T} (h8 : NonzeroBesselPeriodChain D T) (hP : ParametersPolynomiallyBounded T) (hU : UnfoldingAnyLevel Y) : PeriodNonvanishingOnImage Y := fun u =>
-  let ⟨_, _, d0, _, h, _⟩ := term_of_unf h8 hP hU u
-  ⟨d0, h⟩
 
 end RealConstant
 
@@ -411,9 +373,6 @@ def IdentityWithHalfPowerFactor : Prop :=
       D.what₂.iota μ (D.what₂.thetaUp μ x) =
         ((Z.kapR D.what₂.embLL * rho μ * ∏ j ∈ Icc 1 D.R.m, D.what₂.lamP μ j π : ℝ) : ℂ) • x
 
-theorem half_power_of_exact_identity (h : Conclusion2 D Z) : IdentityWithHalfPowerFactor D Z := by
-  refine ⟨fun _ => 1, rfl, fun μ => ⟨fun _ => 0, by simp⟩, fun μ π x hx => ?_⟩
-  rw [h μ π x hx, mul_one]
 
 def Loc.atLev {D : D7} (X : Loc D) (Zg : D.what₂.Tup → ℕ → D.what₂.FT → Pl D → ℂ)
     (idx : D.what₂.Tup → ℕ → Pl D → ℕ) : Loc D :=
@@ -515,10 +474,6 @@ def ConclusionL : Prop := TheoremBLocal S b ty V ∧ CorollaryALocal S b ty ∧ 
 def LiftingLemmasStatement : Prop :=
   Hyp D Z T → TieRowTypL V → admitted D Z T A X → AdmL Z X S b ty V → ConclusionL Z S b ty V
 
-theorem lattice_clause_of_level_bijection (h : LevelIotaBijective S b ty) : S.RowLatticeBoundForBasis b ty (S.kapOf ty) := by
-  refine ⟨fun μ => (h μ).1, S.kapOf_pos ty, fun _ => 1, rfl, fun _ => one_pos, DV.rhoUnit_one D, fun μ σ => ?_⟩
-  rw [mul_one]
-  exact (h μ).2 σ
 
 end Level
 
@@ -548,8 +503,6 @@ abbrev LevF (Fm : Formalism.MainNotions.FamP eps) :=
 def HypF (Fm : Formalism.MainNotions.FamP eps) : Prop :=
   ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Hyp (Fm.D x i) (Fm.X x i) (Fm.ex x hx i).th
 
-theorem GapHypF (Fm : Formalism.MainNotions.FamP eps) : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), GapHyp (Fm.ex x hx i).th :=
-  fun x hx i => GapHyp_of_params _ (Fm.params x hx i)
 
 def AdmF (Fm : Formalism.MainNotions.FamP eps) (A : TH.ProvA) (XF : LocF Fm) : Prop :=
   ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), admitted (Fm.D x i) (Fm.X x i) (Fm.ex x hx i).th A (XF x hx i)
@@ -563,8 +516,6 @@ def KudlaFamilyStatement (Fm : Formalism.MainNotions.FamP eps) (A : TH.ProvA) (X
 def ExactStatementsFamily (Fm : Formalism.MainNotions.FamP eps) (A : TH.ProvA) (XF : LocF Fm) : Prop :=
   ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Stmt (Fm.D x i) (Fm.X x i) (Fm.ex x hx i).th A (XF x hx i)
 
-theorem family_of_pointwise_statements (Fm : Formalism.MainNotions.FamP eps) (A : TH.ProvA) (XF : LocF Fm) (h : ExactStatementsFamily Fm A XF) : KudlaFamilyStatement Fm A XF :=
-  fun hH hA x hx i => h x hx i (hH x hx i) (hA x hx i)
 
 def FamilyLiftingStatement (Fm : Formalism.MainNotions.FamP eps) (A : TH.ProvA) (XF : LocF Fm) (VF : LevF Fm) : Prop :=
   ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x),

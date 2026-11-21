@@ -152,14 +152,6 @@ theorem msCount_of_frames (D : D7) (C₀ : ℝ) (hC : 3 ≤ C₀)
   msCount_of_short D C₀ hC fun u =>
     ⟨fun i hi => ⟨((h u).1 i hi).1, csAt_X D i hi, ((h u).1 i hi).2⟩, ⟨(h u).2.1, csAt_X' D, (h u).2.2⟩⟩
 
-theorem Link1F_of_frames
-    (h : ∀ (eps : ℝ) (Fm : Formalism.MainNotions.FamP eps), (∀ (x : ℝ) (i : Fm.Ix x), Formalism.L2.Herm.FullTied (Fm.D x i)) →
-      Transference → ∃ C₀ : ℝ, 3 ≤ C₀ ∧ Formalism.MainNotions.flipTwoThree.fam0 Fm fun D => ∀ u : D.what₂.Word,
-        (∀ i ≤ D.R.m, FrameCoordAt D u C₀ (D.sp.X i) (Tu D u ^ (2 * D.R.f)) (D.R.N i)) ∧
-        FrameCoordAt D u C₀ D.sp.X' 1 (D.R.N D.R.m - 1)) : Link1F :=
-  Link1F_of_count fun eps Fm hH hT => by
-    obtain ⟨C₀, hC, x0, h0⟩ := h eps Fm hH hT
-    exact ⟨C₀, by linarith, x0, fun x hx hx1 i => msCount_of_frames _ C₀ hC (h0 x hx hx1 i)⟩
 
 end CSRecord
 

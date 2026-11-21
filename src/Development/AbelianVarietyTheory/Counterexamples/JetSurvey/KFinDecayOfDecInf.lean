@@ -5,26 +5,6 @@ open Formalism.FourierDecayAlt.ThreeDimData
 
 namespace GlobalTheory.GapSizeCheck
 
-theorem gapOK_inhabited (k r : ℕ) (hk : 1 ≤ k) : ∃ h : ℝ, GapOK k r h := by
-  set B : ℝ := |2 * Mexp r * (AS k r + AG k r) + AG k r + 3| +
-    |9 * ((r : ℝ) + 1) * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 + 3 * AG k r + 3| +
-    120 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 3 with hB
-  have hs : 1 ≤ 8 * Real.sqrt (2 * ((r : ℝ) + 1)) := by
-    have : (1 : ℝ) ≤ Real.sqrt (2 * ((r : ℝ) + 1)) := by
-      rw [Real.one_le_sqrt]; have : (0 : ℝ) ≤ r := Nat.cast_nonneg r; linarith
-    linarith
-  have h1 := abs_nonneg (2 * Mexp r * (AS k r + AG k r) + AG k r + 3)
-  have h2 := abs_nonneg (9 * ((r : ℝ) + 1) * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 + 3 * AG k r + 3)
-  have h3 : (0 : ℝ) ≤ 120 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 3 := by positivity
-  have h1' := le_abs_self (2 * Mexp r * (AS k r + AG k r) + AG k r + 3)
-  have h2' := le_abs_self (9 * ((r : ℝ) + 1) * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 + 3 * AG k r + 3)
-  have hB0 : 0 ≤ B := by rw [hB]; positivity
-  have ha : aOf r (B * (8 * Real.sqrt (2 * ((r : ℝ) + 1)))) = B := by
-    unfold aOf; field_simp
-  refine ⟨B * (8 * Real.sqrt (2 * ((r : ℝ) + 1))), hk, ?_, ?_, ?_⟩
-  · nlinarith
-  · rw [ha]; linarith
-  · rw [ha]; linarith
 
 theorem thresholds (k r : ℕ) (h : ℝ) (hg : GapOK k r h) :
     AG k r < (aOf r h - 1) / 2 ∧ AS k r < (aOf r h - 1) / 2 ∧

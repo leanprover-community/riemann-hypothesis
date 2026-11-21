@@ -86,7 +86,6 @@ theorem sChart_symm_apply (i : Fin 2) (y : Fin 1 → ℂ) :
 theorem sChart_source (i : Fin 2) :
     (sChart i).source = CP.chartDomain i ∩ CP.chartCoord i ⁻¹' ball 0 2 := rfl
 
-theorem sChart_target (i : Fin 2) : (sChart i).target = ball 0 1 := rfl
 
 theorem sChart_compat (i : Fin 2) : IsCompatChart cpAtlas (sChart i) := by
   intro j
@@ -311,8 +310,6 @@ def cpR (x : CP 1) : ℝ := Real.exp 1 + Real.log (1 + ‖CP.chartCoord 1 x 0‖
 theorem chartVec_zero_one (z : Fin 1 → ℂ) : CP.chartVec 0 z 1 = z 0 :=
   CP.chartVec_succAbove 0 z 0
 
-theorem chartVec_one_zero (z : Fin 1 → ℂ) : CP.chartVec 1 z 0 = z 0 :=
-  CP.chartVec_succAbove 1 z 0
 
 theorem cp_mem_Yo (j : Fin 2) (x : CP 1) (hx : x ∈ (sChart j).source) :
     x ∈ CP.chartDomain 1 ↔ sChart j x ∉ coordDiv (cpS j) := by
@@ -472,13 +469,6 @@ theorem cpEta_hess_bound (j k : Fin 2) : ∃ M : ℝ, ∀ x ∈ cpMid j ∩ cpMi
     (f := fun y => fderiv ℝ (fderiv ℝ (cpEta j ∘ (sChart k).symm)) y) (by exact hcont.mono hKO)
   exact ⟨M, fun x hx => hM _ ⟨x, ⟨subset_closure hx.1, subset_closure hx.2⟩, rfl⟩⟩
 
-theorem sChart_norm_le_of_closure (j : Fin 2) (x : CP 1) (hx : x ∈ closure (cpMid j)) :
-    x ∈ CP.chartDomain j ∧ ‖sChart j x‖ ≤ 7 / 8 := by
-  have h := closure_region_subset j (c := 7 / 8) (by norm_num) (by norm_num) hx
-  refine ⟨h.1, ?_⟩
-  rw [norm_sChart]
-  have := h.2
-  linarith
 
 theorem cpEta_smooth (j : Fin 2) : cpAtlas.SmoothOn (cpMid j) (cpEta j) := by
   intro k
@@ -529,44 +519,9 @@ theorem cpCutoff : ∃ Cη : ℝ, cpCharts.IsCutoffFamily cpEta Cη := by
   have : 0 ≤ ‖w‖ ^ 2 := by positivity
   nlinarith
 
-theorem cpReg_trunc_zero (j : Fin cpReg.N) : cpReg.trunc 0 j = fun _ => 0 := by
-  funext y
-  have hc : (fun y => max (cpReg.u j y) (-0)) = fun _ => (0 : ℝ) :=
-    funext fun y => by simp [RegChartData.u, PotentialCharts.chartFun, cpReg, cpCharts]
-  unfold RegChartData.trunc limsupExt
-  rw [hc]
-  split_ifs
-  · exact limsup_zero_real _
-  · rfl
 
-theorem cpReg_phReg (ρ : Mollifier 1) (t : ℝ) (j : Fin cpReg.N) (x : CP 1) : cpReg.phReg ρ 0 t j x = 0 := by
-  simp only [RegChartData.phReg, RegChartData.smoothed, ReciprocityTheory.AnForm.A.molli]
-  rw [cpReg_trunc_zero]
-  simp [cpReg, cpCharts]
 
-theorem cp_glueRegularised_hyp : ∃ (ρ : Mollifier 1) (Cη : ℝ),
-    cpReg.IsCutoffFamily cpEta Cη ∧ (0 : ℝ) < 1 / 16 ∧ (0 : ℝ) < 1 ∧
-    (∀ j, ∀ x ∈ closure (cpReg.mid j), closedBall (cpReg.chart j x) (1 / 16) ⊆ (cpReg.chart j).target) ∧
-    (∀ j k, ∀ x ∈ cpReg.mid j ∩ cpReg.mid k,
-      |cpReg.phReg ρ 0 (1 / 16) j x - cpReg.phReg ρ 0 (1 / 16) k x| ≤ 1) := by
-  obtain ⟨ρ⟩ := ReciprocityTheory.AnForm.A.mollifierInhabit_thm 1
-  obtain ⟨Cη, hη⟩ := cpCutoff
-  refine ⟨ρ, Cη, hη, by norm_num, by norm_num, fun j x hx y hy => ?_, fun j k x _ => ?_⟩
-  · have h := (sChart_norm_le_of_closure j x hx).2
-    show y ∈ ball 0 1
-    rw [mem_ball_zero_iff]
-    have h1 : ‖y‖ ≤ ‖y - sChart j x‖ + ‖sChart j x‖ := norm_le_norm_sub_add y (sChart j x)
-    have h2 : ‖y - sChart j x‖ ≤ 1 / 16 := by rw [← dist_eq_norm]; exact hy
-    show ‖y‖ < 1
-    linarith
-  · rw [cpReg_phReg, cpReg_phReg]
-    norm_num
 
-theorem cp_hypotheses : CompactSpace (CP 1) ∧ T2Space (CP 1) ∧ Nonempty (RegChartData cpAtlas) ∧
-    Nonempty (BoundedPshData cpAtlas) ∧ Nonempty (Mollifier 1) ∧
-    ∃ Cη : ℝ, cpReg.IsCutoffFamily cpEta Cη :=
-  ⟨inferInstance, inferInstance, ⟨cpReg⟩, ⟨cpBounded⟩, ReciprocityTheory.AnForm.A.mollifierInhabit_thm 1,
-    cpCutoff⟩
 
 end ProjectiveLine
 

@@ -31,10 +31,6 @@ theorem cv_vanish (f : PowerSeries R) (g : ℤ → M) (hg : ∀ k < 0, g k = 0) 
   intro j hj
   rw [PowerSeries.X_pow_dvd_iff.mp hf j (Finset.mem_range.mp hj), zero_smul]
 
-theorem cv_zero_term (f : PowerSeries R) (g : ℤ → M) (hg : ∀ k < 0, g k = 0) :
-    cv f g 0 = constantCoeff f • g 0 := by
-  rw [cv_eq_sum f g 0 hg 0 1 (by omega), Finset.sum_range_one]
-  simp [PowerSeries.coeff_zero_eq_constantCoeff_apply]
 
 theorem cv_add (f : PowerSeries R) (g g' : ℤ → M) (m : ℤ) (hg : ∀ k < m, g k = 0)
     (hg' : ∀ k < m, g' k = 0) (k : ℤ) : cv f (g + g') k = cv f g k + cv f g' k := by

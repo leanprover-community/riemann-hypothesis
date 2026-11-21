@@ -62,8 +62,6 @@ def a0 : φ.A := φ.gen0
 
 def A0 : AddSubgroup φ.A := AddSubgroup.zmultiples φ.a0
 
-theorem zsmul_generator_eq_zero_of_image (k : ℤ) (hk : φ.h (k • φ.a0) = 0) : k • φ.a0 = 0 := by
-  exact φ.zsmul_generator_eq_zero_of_projection k hk
 
 def n0 : ℕ := addOrderOf φ.a0
 
@@ -71,7 +69,6 @@ def o : ℕ := φ.ord / φ.n0
 
 def dig (s : ℕ) : φ.A := s • φ.a0
 
-theorem dig_def (s : ℕ) : φ.dig s = s • φ.a0 := rfl
 
 def ofNat (u : ℕ) : φ.A := A.ofVal (u % φ.ord) (Nat.mod_lt _ φ.ord_pos)
 

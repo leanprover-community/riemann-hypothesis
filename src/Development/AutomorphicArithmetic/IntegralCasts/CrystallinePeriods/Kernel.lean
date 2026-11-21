@@ -249,9 +249,6 @@ theorem xi_ne_zero [CharZero R] (ϖ : PFlat p R) : xi ϖ ≠ 0 := by
 
 variable [ValuationRing R]
 
-theorem isUnit_iff_isUnit_theta (x : Ainf p R) : IsUnit x ↔ IsUnit (theta p R x) := by
-  rw [isUnit_iff_isUnit_coeff, Tilt.isUnit_iff_isUnit_untilt, ← Tilt.isUnit_iff_isUnit_coeff (p := p),
-    ← mk_theta, Tilt.isUnit_iff_isUnit_coeff]
 
 theorem theta_surjective [IsAlgClosed (FractionRing R)] : Function.Surjective (theta p R) := by
   intro a
@@ -315,15 +312,6 @@ theorem xi_pow_dvd_of_forall (ϖ : PFlat p R) {n : ℕ} {x : Ainf p R}
       ⟨y - xi ϖ ^ n * b, by linear_combination -e⟩
     exact ⟨a', b, mul_left_cancel₀ (xi_ne_zero ϖ) (by linear_combination e)⟩
 
-theorem mem_span_xi_pow_of_forall (ϖ : PFlat p R) {n : ℕ} {x : Ainf p R}
-    (h : ∀ k : ℕ, x ∈ span {(p : Ainf p R)} ^ k ⊔ span {xi ϖ} ^ n) : x ∈ span {xi ϖ} ^ n := by
-  rw [Ideal.span_singleton_pow, mem_span_singleton]
-  refine xi_pow_dvd_of_forall ϖ fun k => ?_
-  have := h k
-  rw [Ideal.span_singleton_pow, Ideal.span_singleton_pow, ← Ideal.span_insert,
-    Ideal.mem_span_pair] at this
-  obtain ⟨a, b, e⟩ := this
-  exact ⟨a, b, by linear_combination -e⟩
 
 theorem eq_zero_of_forall_xi_pow_dvd (ϖ : PFlat p R) {x : Ainf p R}
     (h : ∀ n : ℕ, xi ϖ ^ n ∣ x) : x = 0 := by
@@ -344,12 +332,6 @@ theorem eq_zero_of_forall_xi_pow_dvd (ϖ : PFlat p R) {x : Ainf p R}
     exact mul_dvd_mul_left _ (ih fun n =>
       xi_pow_dvd_of_dvd_p_pow_mul ϖ (k := 1) (by simpa using h n))
 
-theorem iInf_span_xi_pow (ϖ : PFlat p R) : ⨅ n : ℕ, span {xi ϖ} ^ n = ⊥ := by
-  rw [eq_bot_iff]
-  intro x hx
-  refine eq_zero_of_forall_xi_pow_dvd ϖ fun n => ?_
-  have := Ideal.mem_iInf.1 hx n
-  rwa [Ideal.span_singleton_pow, mem_span_singleton] at this
 
 end Ainf
 
@@ -416,11 +398,6 @@ theorem exists_teich_sub_one_eq (ϖ : PFlat p R) {ε : tateModule p R} (hε : Is
   rw [map_mul, map_sub, map_one, theta_teich]
   exact mul_ne_zero (u.isUnit.map _).ne_zero (sub_ne_zero.2 hε)
 
-theorem ker_theta_eq_span_omega [IsAlgClosed (FractionRing R)] {ε : tateModule p R}
-    (hε : IsPrimitive ε) : RingHom.ker (theta p R) = span {omega ε} := by
-  obtain ⟨ϖ⟩ : Nonempty (PFlat p R) := inferInstance
-  rw [ker_theta ϖ, Ideal.span_singleton_eq_span_singleton]
-  exact associated_xi_omega ϖ hε
 
 end Ainf
 
@@ -484,11 +461,6 @@ theorem algebraMap_mem_kerTheta_pow_iff (ϖ : PFlat p R) (n : ℕ) (x : Ainf p R
     map_natCast]
   ring
 
-theorem comap_kerTheta_pow (ϖ : PFlat p R) (n : ℕ) :
-    (kerTheta p R ^ n).comap (algebraMap (Ainf p R) (AinfInv p R)) = span {Ainf.xi ϖ} ^ n := by
-  ext x
-  rw [Ideal.mem_comap, algebraMap_mem_kerTheta_pow_iff ϖ, Ideal.span_singleton_pow,
-    mem_span_singleton]
 
 theorem eq_zero_of_forall_mem_kerTheta_pow (ϖ : PFlat p R) {x : AinfInv p R}
     (h : ∀ n : ℕ, x ∈ kerTheta p R ^ n) : x = 0 := by

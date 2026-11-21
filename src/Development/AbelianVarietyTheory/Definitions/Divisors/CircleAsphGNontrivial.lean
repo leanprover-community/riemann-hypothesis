@@ -126,11 +126,6 @@ def Asph.liftId {Y : Type} [TopologicalSpace Y] (K : Asph Y) : Asph.Lift K K (Co
   equiv _ _ _ := rfl
   comm _ _ := rfl
 
-theorem circleAsph_G_nontrivial : Nontrivial (Multiplicative (AddSubgroup.zmultiples (1 : ℝ))) := by
-  refine ⟨⟨1, Multiplicative.ofAdd ⟨1, AddSubgroup.mem_zmultiples 1⟩, ?_⟩⟩
-  intro h
-  have := congrArg (fun g => ((Multiplicative.toAdd g : AddSubgroup.zmultiples (1 : ℝ)) : ℝ)) h
-  norm_num at this
 
 example : Asph.Lift circleAsph circleAsph (ContinuousMap.id _) := circleAsph.liftId
 example : circleAsph.n = 1 := rfl

@@ -66,15 +66,6 @@ theorem cls_congr {n : ℕ} {x y : A.X n} (hx : A.d n x = 0) (hy : A.d n y = 0) 
   subst h
   rfl
 
-theorem d_eq_zero_of_mem_B {n : ℕ} {x : A.X n} (h : x ∈ A.B n) : A.d n x = 0 := by
-  cases n with
-  | zero =>
-    change x ∈ (⊥ : Submodule R (A.X 0)) at h
-    rw [(Submodule.mem_bot R).1 h, map_zero]
-  | succ n =>
-    change x ∈ LinearMap.range (A.d n) at h
-    obtain ⟨y, rfl⟩ := LinearMap.mem_range.1 h
-    exact A.dd n y
 
 theorem mem_B_succ {n : ℕ} {x : A.X (n + 1)} : x ∈ A.B (n + 1) ↔ ∃ y, A.d n y = x := by
   change x ∈ LinearMap.range (A.d n) ↔ _
@@ -109,16 +100,7 @@ theorem Hom.comp_H (ψ : Hom B C) (φ : Hom A B) (n : ℕ) : (ψ.comp φ).H n = 
   obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ c
   rfl
 
-theorem Hom.comp_H_apply (ψ : Hom B C) (φ : Hom A B) (n : ℕ) (c : A.H n) :
-    (ψ.comp φ).H n c = ψ.H n (φ.H n c) := by
-  rw [Hom.comp_H]
-  rfl
 
-theorem H_hom_ext {M : Type*} [AddCommGroup M] [Module R M] {n : ℕ} {f g : A.H n →ₗ[R] M}
-    (h : ∀ x hx, f (A.cls n x hx) = g (A.cls n x hx)) : f = g := by
-  refine LinearMap.ext fun c => ?_
-  obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ c
-  exact h z.1 z.2
 
 end Cx
 

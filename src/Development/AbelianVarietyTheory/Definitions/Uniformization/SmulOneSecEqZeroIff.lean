@@ -94,10 +94,6 @@ theorem value_zero : sval (0 : SecMod p (LB.LinComb L φ ε)).sec r z J = 0 := b
     (coord_zero (p := p) (N := LB.LinComb L φ ε) (fun k => J (r ≫ φ k)))).trans ?_
   exact (gs_eq r z _ (hJ.mem φ r) 0).trans (by rw [map_zero, map_zero])
 
-theorem value_add (s t : SecMod p (LB.LinComb L φ ε)) :
-    sval (s + t).sec r z J = sval s.sec r z J + sval t.sec r z J := by
-  exact (congrArg (gs r z (LB.wchart L φ fun k => J (r ≫ φ k))) (coord_add s t _)).trans
-    (gs_add _ _ _ (hJ.mem φ r) _ _)
 
 theorem value_smul (c : F) (s : SecMod p (LB.LinComb L φ ε)) :
     sval (c • s).sec r z J = gs r z ⊤ (scal p c) * sval s.sec r z J := by
@@ -105,12 +101,6 @@ theorem value_smul (c : F) (s : SecMod p (LB.LinComb L φ ε)) :
   exact (gs_mul r z _ (hJ.mem φ r) _ _).trans
     (congrArg (· * _) (gs_res r z le_top (hJ.mem φ r) _))
 
-theorem value_sum {I : Type*} (S : Finset I) (s : I → SecMod p (LB.LinComb L φ ε)) :
-    sval (∑ i ∈ S, s i).sec r z J = ∑ i ∈ S, sval (s i).sec r z J := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => rw [Finset.sum_empty, Finset.sum_empty]; exact value_zero hJ r
-  | insert a S ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, value_add hJ r, ih]
 end Val
 
 def oneSec (F : Type) [CommRing F] :

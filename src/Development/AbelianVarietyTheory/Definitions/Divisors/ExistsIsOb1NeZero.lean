@@ -13,8 +13,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Obs.Model
 
-theorem one_hom_eq {R₀ : Type} [CommRing R₀] (A : Over (Sp R₀)) [GrpObj A] :
-    lift (𝟙 A) (1 : A ⟶ A) = lift (𝟙 A) (toUnit A ≫ η[A]) := rfl
 
 section General
 
@@ -184,30 +182,7 @@ theorem theta_unique {B B₀ B' : Type} [CommRing B] [Algebra R B] [CommRing B�
 
 variable {C C' : Type} [Category.{0} C] [Category.{0} C'] {F : C ⥤ CommAlgCat.{0} R₀} {F' : C' ⥤ CommAlgCat.{0} R₀}
 
-theorem isOb2_unique (L : Pre I π F) (α : Aug I π R₁) (w : Glob1 F) {c c' : CatCoh.H2 (ext R₁ F)}
-    (h : L.IsOb2 α w c) (h' : L.IsOb2 α w c') : c = c' := by
-  obtain ⟨θ, σ, z, hθ, hσ, rfl, hz⟩ := h
-  obtain ⟨θ', σ', z', hθ', hσ', rfl, hz'⟩ := h'
-  refine congrArg _ (Subtype.ext ?_)
-  funext T T' T'' a b
-  haveI := L.smooth T''
-  refine sub_eq_zero.1 (sig_inj α (L.p T'') (L.semi _) (L.surj _) (hσ T'') ?_ ?_)
-  · exact (map_sub _ _ _).trans (by rw [(hz T T' T'' a b).1, (hz' T T' T'' a b).1, sub_zero])
-  · rw [map_sub, sig_unique α _ (L.surj _) (hσ T'') (hσ' T'') (z'.1 _ _ _ a b), (hz T T' T'' a b).2,
-      (hz' T T' T'' a b).2, theta_unique (L.surj T) (hθ T T' T'' a b) (hθ' T T' T'' a b), sub_self]
 
-theorem isOb1_unique (L : Pre I π F) (L' : Pre I π F') (n : CoefMap (RingHom.id R₀) F F')
-    (l : ∀ T : C', L.B (n.G.obj T) →ₐ[R] L'.B T) (α : Aug I π R₁) (w : Glob1 F) {c c' : CatCoh.H1 (ext R₁ F')}
-    (h : L.IsOb1 L' n l α w c) (h' : L.IsOb1 L' n l α w c') : c = c' := by
-  obtain ⟨θ, σ, z, hθ, hσ, rfl, hz⟩ := h
-  obtain ⟨θ', σ', z', hθ', hσ', rfl, hz'⟩ := h'
-  refine congrArg _ (Subtype.ext ?_)
-  funext T T' a
-  haveI := L'.smooth T'
-  refine sub_eq_zero.1 (sig_inj α (L'.p T') (L'.semi _) (L'.surj _) (hσ T') ?_ ?_)
-  · exact (map_sub _ _ _).trans (by rw [(hz T T' a).1, (hz' T T' a).1, sub_zero])
-  · rw [map_sub, sig_unique α _ (L'.surj _) (hσ T') (hσ' T') (z'.1 _ _ a), (hz T T' a).2,
-      (hz' T T' a).2, theta_unique (L.surj _) (hθ T T' a) (hθ' T T' a), sub_self]
 
 end Unique
 
@@ -268,8 +243,6 @@ theorem shPre_isFun_iff (c : ∀ T T' : C, (T ⟶ T') → I) : (shPre hs hk c).I
   · change sh (c _ _ (a ≫ b)) x = ((sh (c _ _ b)).comp (sh (c _ _ a))) x
     rw [sh_comp, h]
 
-theorem not_isFun {i : I} (hi : i ≠ 0) : ¬ (shPre (C := Discrete PUnit.{1}) hs hk fun _ _ _ ↦ i).IsFun := fun h ↦
-  hi (by simpa using (shPre_isFun_iff hs hk _).1 h (𝟙 ⟨⟨⟩⟩) (𝟙 _))
 
 def th (α : Aug I π R₁) (σ : R₁ ⊗[R₀] R₀[X] →+ R[X]) (i : I) : Ω[R₀[X]⁄R₀] →+ R[X] :=
   AddMonoidHom.mk' (fun w ↦ σ (sec α i ⊗ₜ polynomialEquiv R₀ w)) fun _ _ ↦ by
@@ -350,12 +323,5 @@ theorem exists_isOb1_ne_zero {i : I} (hi : i ≠ 0) (α : Aug I π R₁) :
 
 end Line
 
-theorem four_two : ∃ (I : Ideal (ZMod 4)) (π : ZMod 4 →+* ZMod 2), I ^ 2 = 0 ∧ Function.Surjective π ∧
-    RingHom.ker π = I ∧ ∃ i : I, i ≠ 0 := by
-  refine ⟨_, ZMod.castHom (show 2 ∣ 4 by norm_num) (ZMod 2), ?_, ZMod.ringHom_surjective _, rfl,
-    ⟨2, by rw [RingHom.mem_ker]; decide⟩, fun h ↦ absurd (congrArg Subtype.val h) (by decide)⟩
-  rw [pow_two, Ideal.zero_eq_bot, eq_bot_iff, Ideal.mul_le]
-  simp only [RingHom.mem_ker, Ideal.mem_bot]
-  decide
 
 end GlobalTheory.Obs.Model

@@ -159,10 +159,6 @@ def DimPartsThree : Prop :=
 theorem DimPartsThree.dimParts (h : DimPartsThree) : DimParts :=
   fun D h1 h2 Pg hP ψ hψ => (h D h1 h2 Pg hP ψ hψ).2.1
 
-theorem exists_isRecPlaces (D : D7) : ∃ Pg, IsRecPlaces D Pg := by
-  classical
-  letI := D.nd.finPlG
-  exact ⟨Finset.univ.image fun kv : (Σ k : Fin 2, D.nd.PlG k) => D.naut.plGw kv.1 kv.2, fun PP => by simp⟩
 
 example (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (Pg : Finset (Pl D.host.E)) (P : LevelP Pg D.R.r ℂ) :
     (datE D Pg P).P = P ∧ (datWj D j h1 h2 Pg P).P = P.conj := ⟨rfl, rfl⟩

@@ -224,20 +224,7 @@ theorem congChar_apply {Z : Type} [Group Z] (ι : R →+* A) (hι : Function.Inj
     exact Subtype.ext rfl
   exact congrArg (fun z => lam ((redGL I).subgroupComap H z)) h
 
-theorem princ_le_congPre (ι : R →+* A) (I : Ideal R) (H : Subgroup (GL n (R ⧸ I))) : princ ι I ≤ congPre ι I H :=
-  Subgroup.map_mono (Subgroup.comap_mono bot_le)
 
-theorem congChar_princ {Z : Type} [Group Z] (ι : R →+* A) (hι : Function.Injective ι) (I : Ideal R)
-    (H : Subgroup (GL n (R ⧸ I))) (lam : H →* Z) (x : congPre ι I H) (hx : (x : GL n A) ∈ princ ι I) :
-    congChar ι hι I H lam x = 1 := by
-  obtain ⟨g, hg, hgx⟩ := hx
-  have hg1 : redGL I g = 1 := hg
-  have hgH : redGL I g ∈ H := by rw [hg1]; exact H.one_mem
-  have hm : bc ι g ∈ congPre ι I H := hgx ▸ x.2
-  have hx' : x = ⟨bc ι g, hm⟩ := Subtype.ext hgx.symm
-  rw [hx', congChar_apply ι hι I H lam g hgH hm]
-  have : (⟨redGL I g, hgH⟩ : H) = 1 := Subtype.ext hg1
-  rw [this, map_one]
 
 end Cong
 

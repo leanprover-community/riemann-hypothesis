@@ -42,49 +42,13 @@ theorem cp_le (P : W.Lv) (j : ℕ) : W.CP P j ≤ W.CC j := multT_withP_le W.θ 
 
 theorem cxp_le (P : W.Lv) : W.CXP P ≤ W.CX := multT_withP_le W.θ W.MX W.βX (W.datXt ()) P
 
-theorem cxp_triv : W.CXP W.triv = W.CX := rfl
 
-theorem exists_isDn (P : W.Lv) {T} (hT : T ∈ W.CXP P) : ∃ T₀ ∈ W.CC 0, W.IsDn T T₀ :=
-  ⟨_, (W.thDn ⟨T, cxp_le W P hT⟩).2, cxp_le W P hT, rfl⟩
 
-theorem isDn_unique {T T₀ T₁} (h : W.IsDn T T₀) (h' : W.IsDn T T₁) : T₀ = T₁ := by
-  obtain ⟨_, rfl⟩ := h
-  obtain ⟨_, rfl⟩ := h'
-  rfl
 
-theorem dnLev_triv : W.DnLev W.triv := fun _ hT => exists_isDn W _ hT
 
-theorem onto_triv_iff : W.Onto W.triv ↔ W.Onto1 := by
-  constructor
-  · intro h y
-    obtain ⟨T, _, hT, e⟩ := h y.1 y.2
-    exact ⟨⟨T, hT⟩, Subtype.ext e.symm⟩
-  · intro h T₀ h₀
-    obtain ⟨x, hx⟩ := h ⟨T₀, h₀⟩
-    exact ⟨x.1, x.2, x.2, by rw [show (⟨x.1, x.2⟩ : W.CX) = x from rfl, hx]⟩
 
-theorem dnFrom_surj (n : ℕ) (h : ∀ k < n, Function.Surjective (W.ioY k)) : Function.Surjective (Lift.dnFrom W.CC W.ioY n) := by
-  induction n with
-  | zero => exact Function.surjective_id
-  | succ n ih => exact (ih fun k hk => h k (by omega)).comp (h n (by omega))
 
-theorem onto_of_surjective_descents (h : W.StepsOnto) : W.Onto1 :=
-  (dnFrom_surj W (D.R.m - 1) fun k hk => h.1 k (by omega)).comp h.2
 
-theorem onto_iff_bot (h : W.ioX = 0) (P : W.Lv) : W.Onto P ↔ W.CP P 0 = ⊥ := by
-  have h0 : W.thDn = 0 := by unfold Tower.thDn; rw [h, LinearMap.comp_zero]
-  constructor
-  · intro ho
-    rw [eq_bot_iff]
-    intro T₀ h₀
-    obtain ⟨T, _, hT, e⟩ := ho T₀ h₀
-    rw [h0] at e
-    exact e
-  · intro hb T₀ h₀
-    replace h₀ : T₀ = 0 := (Submodule.eq_bot_iff _).1 hb T₀ h₀
-    refine ⟨0, (W.CXP P).zero_mem, W.CX.zero_mem, ?_⟩
-    have e : W.thDn ⟨0, W.CX.zero_mem⟩ = 0 := W.thDn.map_zero
-    exact h₀.trans (congrArg Subtype.val e).symm
 
 theorem xi_one (h : W.Pre) : W.xiH () = 1 := h.chars.xi_base
 
@@ -94,37 +58,7 @@ theorem Q_empty (h : W.Pre) : W.Q () = ∅ := by
   rw [h.chars.xi_base] at this
   exact this (by intro; simp)
 
-theorem vX_ne (h : W.Pre) (τ : D.what₂.Tau) : W.vX ≠ 0 := by
-  intro h0
-  have hp : ∀ φ, W.ptX φ = 0 := by
-    intro φ
-    have : pureTensorO W.ψ W.θ (Yc D (D.R.m - 1)) D.sp.X' (cart (W.MY (D.R.m - 1))) (cart W.MX) (onb (W.MY (D.R.m - 1)))
-        (onb W.MX) W.vX = 0 := by
-      rw [h0]
-      unfold pureTensorO pureTensorL
-      refine (MvPolynomial.basisMonomials _ ℂ).ext fun k => ?_
-      rw [Module.Basis.constr_basis, LinearMap.zero_apply]
-      unfold opPow
-      induction (Multiset.toList (Finsupp.toMultiset k)) with
-      | nil => rfl
-      | cons a l ih =>
-        rw [List.foldr_cons, ih]
-        funext x
-        simp [aPlusAll, aPlus, crea, Datum.dRho, heisO]
-    unfold Tower.ptX
-    rw [this]; rfl
-  refine h.ItX.ne (LinearMap.ext fun φ => LinearMap.ext fun v => ?_)
-  have e := h.ItX.invg τ 0 (by simp [lieAt]) φ φ v 0 (fun z => by simp only [hp, map_zero, Pi.zero_apply]; exact hasDerivAt_const _ _)
-    (fun w => by simp only [smul_zero, map_zero]; exact hasDerivAt_const _ _)
-  simpa using e
 
-theorem dnFrom_congr (io io' : ∀ k, W.CC (k + 1) →ₗ[ℂ] W.CC k) (n : ℕ) (h : ∀ k < n, io k = io' k) :
-    Lift.dnFrom W.CC io n = Lift.dnFrom W.CC io' n := by
-  induction n with
-  | zero => rfl
-  | succ n ih =>
-    show Lift.dnFrom W.CC io n ∘ₗ io n = Lift.dnFrom W.CC io' n ∘ₗ io' n
-    rw [ih fun k hk => h k (by omega), h n (by omega)]
 
 end Laws
 
@@ -201,8 +135,6 @@ theorem ofReal_is (R : RealDat D A Ks) (hT : R.TopMult) (hl : R.toLevCh.Is A.μ0
     ioY := hc.ioY A.μ0
     ioX := isIo_ofEq (hT A.μ0).symm (hc.ioX A.μ0) }
 
-theorem exists_is_of_char (R : RealDat D A Ks) (F : Face D A) (h : R.Char F) : ∃ W : Tower D, W.Is :=
-  ⟨_, ofReal_is R (fun t => GlobalTheory.DefiniteMult.range_top R h.models.inf h.models.cX h.models.prX h.models.HX t) h.lev h.models h.chain⟩
 
 set_option maxHeartbeats 2000000 in
 

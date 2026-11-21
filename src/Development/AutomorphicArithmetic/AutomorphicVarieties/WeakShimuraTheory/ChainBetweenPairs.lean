@@ -91,7 +91,6 @@ theorem qM (h : Supp qQ P.r) : Supp nM P.r :=
 
 theorem samePs_symm (h : P.SamePs P') : P'.SamePs P := ⟨fun g => (h.1 g).symm, fun v => (h.2 v).symm⟩
 
-theorem sameAl_symm (h : P.SameAl P') : P'.SameAl P := ⟨fun g => (h.1 g).symm, fun v => (h.2 v).symm⟩
 
 end In
 

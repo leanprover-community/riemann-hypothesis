@@ -9,17 +9,6 @@ open GroundTheory.PAdicHodge Formalism Formalism.BasicNotions Formalism.BasicNot
 
 section Abstract
 
-theorem frob_root_eq {F : Type} [Field F] {a b : F} {m n : ℕ} (hm : 0 < m) (hc : m.Coprime n)
-    (ha : a ^ m = 1) (hb : b ^ m = 1) (h : a ^ n = b ^ n) : a = b := by
-  have hb0 : b ≠ 0 := by
-    rintro rfl
-    rw [zero_pow hm.ne'] at hb
-    exact zero_ne_one hb
-  have h1 : (a / b) ^ m = 1 := by rw [div_pow, ha, hb, div_one]
-  have h2 : (a / b) ^ n = 1 := by rw [div_pow, h, div_self (pow_ne_zero _ hb0)]
-  have h3 : orderOf (a / b) = 1 :=
-    Nat.eq_one_of_dvd_coprimes hc (orderOf_dvd_of_pow_eq_one h1) (orderOf_dvd_of_pow_eq_one h2)
-  exact (div_eq_one_iff_eq hb0).1 (orderOf_eq_one_iff.1 h3)
 
 theorem IsFrac.frob_injective {A B : Type} [CommRing A] [CommRing B] {f : A →+* B} {a t : A}
     (hf : IsFrac f a t) (hi : Function.Injective f) {F : B →+* B} {g : A →+* A}
@@ -120,59 +109,12 @@ theorem frob_coeff_tiltMap (xb : OCb l) (k : ℕ) (y : OC l)
   (show PreTilt.coeff k (Per6.tiltMap l xb) = Per6.modPEquiv l (PreTilt.coeff k xb) from rfl).trans
     ((congrArg (Per6.modPEquiv l) h).trans rfl)
 
-theorem frob_tilt_root {c : ℂ_[l]} {m : ℕ} (hm : 0 < m) (hc : m.Coprime l)
-    (x : PreTilt ↥(normInteger ℂ_[l]) l) (y : ℕ → ↥(normInteger ℂ_[l]))
-    (h1 : ∀ k, (y k : ℂ_[l]) ^ (l ^ k) = c) (h2 : ∀ k, y k ^ m = 1)
-    (h3 : ∀ k, PreTilt.coeff k x = Ideal.Quotient.mk _ (y k)) :
-    x ^ m = 1 ∧ ((PreTilt.untilt x : ↥(normInteger ℂ_[l])) : ℂ_[l]) = c := by
-  have h2' : ∀ k, (y k : ℂ_[l]) ^ m = 1 := fun k => by
-    have := congrArg Subtype.val (h2 k)
-    simpa using this
-  have hy : ∀ n, y (n + 1) ^ l = y n := fun n => Subtype.ext (by
-    rw [SubmonoidClass.coe_pow]
-    refine frob_root_eq hm (hc.pow_right n) ?_ (h2' n) ?_
-    · rw [← pow_mul, mul_comm, pow_mul, h2', one_pow]
-    · rw [← pow_mul, ← pow_succ', h1, h1])
-  have hx : x = IsPerfectoidField.ofCompatible l y hy := IsPerfectoidField.preTilt_ext l fun n => by
-    rw [h3, IsPerfectoidField.coeff_ofCompatible]
-  refine ⟨IsPerfectoidField.preTilt_ext l fun n => ?_, ?_⟩
-  · rw [map_pow, h3, ← map_pow, h2, map_one, map_one]
-  · rw [hx, IsPerfectoidField.untilt_ofCompatible, ← h1 0, pow_zero, pow_one]
 
-theorem frob_iota_teich {ζ : PadicAlgCl l} {m : ℕ} (hm : 0 < m) (hζ : ζ ^ m = 1)
-    (x : PreTilt ↥(normInteger ℂ_[l]) l) (hx : x ^ m = 1)
-    (hu : ((PreTilt.untilt x : ↥(normInteger ℂ_[l])) : ℂ_[l]) = (ζ : ℂ_[l])) :
-    ACris.iota ℂ_[l] l (algebraMap (AInf ℂ_[l] l) (ACris.ACris ℂ_[l] l)
-      (WittVector.teichmuller l x)) = algClToBdR l ζ := by
-  have hζ0 : (ζ : ℂ_[l]) ≠ 0 := by
-    intro h
-    have := ACris.norm_eq_one_of_pow_eq_one hm (show (ζ : ℂ_[l]) ^ m = 1 by
-      rw [PadicComplex.coe_eq, ← map_pow, hζ, map_one])
-    rw [h, norm_zero] at this
-    exact zero_ne_one this
-  apply ACris.eq_of_pow_eq_one_of_theta_eq hm
-  · rw [← map_pow, ← map_pow, ← map_pow, hx, map_one, map_one, map_one]
-  · rw [← map_pow, hζ, map_one]
-  · rw [thetaAlgHom_apply, ACris.thetaField_iota, ACris.theta_algebraMap,
-      WittVector.fontaineTheta_teichmuller, hu, thetaAlgHom_algClToBdR]
-  · rw [thetaAlgHom_algClToBdR]; exact hζ0
 
 theorem frob_ainfMap_teich (xb : OCb l) :
     Per6.ainfMap l (WittVector.teichmuller l xb) = WittVector.teichmuller l (Per6.tiltMap l xb) :=
   WittVector.map_teichmuller l _ _
 
-theorem aB_teich (c : ↥(MaximalUnramifiedExtension l)) (m : ℕ) (hm : 0 < m) (hl : ¬ l ∣ m) (hc : (c : Om l) ^ m = 1)
-    (xb : OCb l)
-    (hx : ∀ k : ℕ, ∃ y : OC l, (y : ℂ_[l]) ^ (l ^ k) = ((c : Om l) : ℂ_[l]) ∧ y ^ m = 1 ∧
-      PreTilt.coeff k xb = Ideal.Quotient.mk (Ideal.span {((l : ℕ) : OC l)}) y) :
-    Per6.aB l (WittVector.teichmuller l xb) = uB l c := by
-  choose y h1 h2 h3 using hx
-  have hco : m.Coprime l := ((Fact.out : l.Prime).coprime_iff_not_dvd.2 hl).symm
-  obtain ⟨hp, hu⟩ := frob_tilt_root hm hco (Per6.tiltMap l xb) (fun k => Per6.intEquiv l (y k)) h1
-    (fun k => by rw [← map_pow, h2, map_one]) (fun k => frob_coeff_tiltMap xb k (y k) (h3 k))
-  apply ιCD_injective
-  refine ((congrArg (ιCD l) (frob_aB_apply _)).trans (ιCD_cB _)).trans (Eq.trans ?_ (ιCD_uB c).symm)
-  rw [cD_apply, frob_oD_apply, frob_ainfMap_teich, frob_iota_teich hm hc _ hp hu]
 
 theorem frob_ainfMap_frobenius (a : Ainf l) :
     Per6.ainfMap l (WittVector.frobenius a) = WittVector.frobenius (Per6.ainfMap l a) := by

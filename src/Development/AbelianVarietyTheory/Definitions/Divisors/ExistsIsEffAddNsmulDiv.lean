@@ -484,9 +484,6 @@ def effConst (g : O) (hg : g ≠ 0) : Z.effVert :=
   effMk (.principal (Z.const g) (Z.isRegularFn_const hg))
     fun _ => inf_le_left.trans (Z.gen_le_basicOpen hg)
 
-theorem coe_effConst (g : O) (hg : g ≠ 0) : (Z.effConst g hg).1 =
-    Scheme.IdealSheafData.ofIdealTop (Ideal.span {Z.const g}) :=
-  EffCartierData.idealSheaf_principal _ _
 
 def div (g : O) (hg : g ≠ 0) : Z.VDivZ := ofEff (Z.effConst g hg)
 
@@ -887,19 +884,7 @@ namespace Model
 
 variable {O} {Z : Model O}
 
-theorem exists_isEff_add_nsmul_div (D : Z.VDivZ) {a : O} (ha : a ≠ 0) (hm : a ∈ maximalIdeal O) :
-    ∃ m : ℕ, IsEff (D + m • Z.div a ha) := by
-  obtain ⟨P, rfl⟩ := VertDiv.cls_surjective D
-  obtain ⟨m, s, h⟩ := P.exists_extends ha hm
-  exact ⟨m, h.eff (pow_ne_zero m ha), by rw [h.cls_eq (pow_ne_zero m ha), Z.div_pow ha, sub_add_cancel]⟩
 
-theorem vDeg_prod_of_add_nsmul_div {D : Z.VDivZ} {a : O} (ha : a ≠ 0) {m : ℕ} {E : Z.effVert}
-    (h : ofEff E = D + m • Z.div a ha) {L : Fin Z.relDim → LB Z.X} (hL : ∀ i, (L i).IsLB) :
-    Z.vDeg D (∏ i, c1 (L i) (hL i)) =
-      interLen O (divMod E.1) L - m * interLen O (divMod (Z.effConst a ha).1) L := by
-  rw [← sub_eq_iff_eq_add.2 h, map_sub, map_nsmul, LinearMap.sub_apply, LinearMap.smul_apply, div,
-    vDeg_ofEff_prod, vDeg_ofEff_prod]
-  simp
 
 end Model
 

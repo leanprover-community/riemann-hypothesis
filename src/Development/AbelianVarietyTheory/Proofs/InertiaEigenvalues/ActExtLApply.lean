@@ -118,10 +118,6 @@ def extRep (hz : tableLineDegreeTwo.IsCoc L X χ₁ z) (lam : O) (a : ℕ) (hX :
     intro p
     simp [actExtL_mul hz, Module.End.mul_apply]
 
-theorem extRep_mk (hz : tableLineDegreeTwo.IsCoc L X χ₁ z) (lam : O) (a : ℕ) (hX : ∀ x : X, lam ^ a • x = 0) (g : G)
-    (p : (↥L.T ⊗[O] X) × O) :
-    extRep L X χ₁ z hz lam a hX g (Submodule.Quotient.mk p) = Submodule.Quotient.mk (tableLineDegreeTwo.actExt L X χ₁ z g p) := by
-  rw [← actExtL_apply]; rfl
 
 end Ext
 end GlobalTheory.UseLoc.Cases.AdmW

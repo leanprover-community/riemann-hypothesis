@@ -21,28 +21,7 @@ theorem trW_mk {h : IsPlaceOver A v} {V : Type} [AddCommGroup V] [Module ℂ V] 
 
 def LocExt.self (h : IsPlaceOver A v) : LocExt h := ⟨K, v, h, isLocalExt_self h⟩
 
-theorem trW_of_induces_self {h : IsPlaceOver A v} {x y : WD h} (H : Induces x y) (σ : Weil h) : trW y σ = trW x σ := by
-  obtain ⟨m, n, a, b, j, rfl, rfl, hn, hj, hs⟩ := H
-  have hj' : ∀ σ u, j (a.ρ σ u) = b.ρ σ (j u) := fun σ => hj σ σ fun _ => rfl
-  have hsurj : Function.Surjective j := by
-    rw [← LinearMap.range_eq_top, eq_top_iff, ← hs, Submodule.span_le]
-    rintro _ ⟨⟨τ, u⟩, rfl⟩
-    exact ⟨_, hj' τ u⟩
-  have hmn : n = m := by simpa using hn
-  subst hmn
-  have hb : Function.Bijective j := ⟨LinearMap.injective_iff_surjective.2 hsurj, hsurj⟩
-  rw [trW_mk, trW_mk, ← LinearMap.trace_conj' (a.ρ σ) (LinearEquiv.ofBijective j hb)]
-  congr 1
-  refine LinearMap.ext fun x => ?_
-  obtain ⟨u, rfl⟩ := (LinearEquiv.ofBijective j hb).surjective x
-  rw [LinearEquiv.conj_apply_apply, LinearEquiv.symm_apply_apply]
-  exact (hj' σ u).symm
 
-theorem trW_indOf_self {h : IsPlaceOver A v} (ξ : Weil h →* ℂˣ) (hξ : GlobalTheory.WeilDeligne.IsSmooth ξ) (σ : Weil h) :
-    trW (indOf (LocExt.self h) ξ hξ) σ = trW (WD.lpOfChar h ξ hξ) σ := by
-  have hy : ∃ y : WD h, Induces (WD.lpOfChar (LocExt.self h).h' ξ hξ) y := ⟨_, induces_self _⟩
-  have e : indOf (LocExt.self h) ξ hξ = hy.choose := dif_pos hy
-  exact (congrArg (trW · σ) e).trans (trW_of_induces_self (h := h) hy.choose_spec σ)
 
 end GlobalTheory.DelEps
 end

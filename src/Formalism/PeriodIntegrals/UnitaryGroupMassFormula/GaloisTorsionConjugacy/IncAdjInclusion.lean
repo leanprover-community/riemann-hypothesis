@@ -14,8 +14,6 @@ def incAdj (M M₁ : IntermediateField ℚ ℂ) : M₁ →+* IntermediateField.a
   map_zero' := rfl
   map_add' _ _ := rfl
 
-theorem incAdj_inclusion (M M₁ : IntermediateField ℚ ℂ) (h : M ≤ M₁) (x : M) :
-    incAdj M M₁ (IntermediateField.inclusion h x) = algebraMap M _ x := Subtype.ext rfl
 
 theorem extRho : ExtRho := by
   intro M M₁ h halg ρ

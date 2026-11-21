@@ -196,26 +196,7 @@ def exampleChart : PeriodChartData 1 1 2 1 2 where
     rw [Metric.mem_ball, dist_zero_right, pi_norm_lt_iff (by norm_num)]
     intro i; norm_num
 
-theorem exampleChart_K_meets : ∃ p ∈ exampleChart.K, p.1 ∈ exampleChart.Ustar := by
-  refine ⟨((fun _ => (1 / 2 : ℂ)), (fun _ => (0 : ℂ))), rfl, ?_, ?_⟩
-  · show (fun _ => (1 / 2 : ℂ)) ∈ Metric.ball (0 : Fin 1 → ℂ) 1
-    rw [Metric.mem_ball, dist_zero_right, pi_norm_lt_iff (by norm_num)]
-    intro i; norm_num
-  · intro i; norm_num
 
-theorem exampleChart_toricBlock : ToricBlock exampleChart 1 where
-  r_le := by norm_num
-  B_support := by
-    intro i j l h
-    fin_cases j <;> fin_cases l <;> simp_all [exampleChart]
-  sum_posDef := by
-    have : ((∑ i, exampleChart.B i).submatrix (Fin.castLE (by norm_num : 1 ≤ 2))
-        (Fin.castLE (by norm_num : 1 ≤ 2))) = (1 : Matrix (Fin 1) (Fin 1) ℝ) := by
-      ext i j
-      fin_cases i; fin_cases j
-      simp [exampleChart]
-    rw [this]
-    exact PosDef.one
 
 def examplePsh : PshData 1 2 2 where
   W := Set.univ
@@ -234,7 +215,6 @@ def examplePsh : PshData 1 2 2 where
   F_analytic := fun _ _ => analyticOnNhd_const
   F_rank := fun _ _ => by simp [Matrix.rank_one]
 
-theorem posDef_one_two_blocks : (1 : Matrix (Fin 1 ⊕ Fin 1) (Fin 1 ⊕ Fin 1) ℝ).PosDef := PosDef.one
 
 end
 

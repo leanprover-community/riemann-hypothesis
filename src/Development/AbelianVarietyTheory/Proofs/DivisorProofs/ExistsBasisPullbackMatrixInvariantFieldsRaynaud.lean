@@ -30,7 +30,6 @@ def lieMap (q : G ⟶ B) [IsMonHom q] : TanM (𝟙 (Sp R)) G →ₗ[R] TanM (�
   map_add' u v := ReciprocityTheory.ChartRestriction.G.PullbackSections.tanM_ext (MonObj.mul_comp (tv u) (tv v) q)
   map_smul' a v := ReciprocityTheory.ChartRestriction.G.PullbackSections.tanM_ext (smT_comp a (tv v) q).symm
 
-theorem tv_lieMap (q : G ⟶ B) [IsMonHom q] (v : TanM (𝟙 (Sp R)) G) : tv (lieMap q v) = tv v ≫ q := rfl
 
 end Lie
 

@@ -191,34 +191,7 @@ theorem cut_signs (k0 : ℕ) (u u' : Fin (k0 + 1) → ℝ) (T T' : ℝ) (I : Set
   · rw [qPoly_re]
     exact q_pos hρ0 hρ0' l hT hT' (hc Y hY)
 
-theorem sgnCut_eq_neg_one_pow (l : Fin (k0 + 1)) : sgnCut k0 l = (-1) ^ (k0 - l.val) := by
-  unfold sgnCut
-  have h := Fin.prod_univ_eq_prod_range (fun i => if i < l.val then (1 : ℝ) else -1) k0
-  beta_reduce at h
-  rw [h, Finset.prod_ite, Finset.prod_const_one, one_mul, Finset.prod_const]
-  have hs : (Finset.range k0).filter (fun i => ¬ i < l.val) = Finset.Ico l.val k0 := by
-    ext i
-    simp only [Finset.mem_filter, Finset.mem_range, Finset.mem_Ico]
-    omega
-  rw [hs, Nat.card_Ico]
 
-theorem sCut_spec (u u' : Fin (k0 + 1) → ℝ) (I : Set ℝ) (hI : Formalism.MainNotions.S.IsCutS u u' I) :
-    (sCut u u' I = 1 ∨ sCut u u' I = -1) ∧ ∀ ρ : Fin k0 → ℝ, Interlace u ρ → Interlace u' ρ →
-      ∀ Y ∈ I, 0 < sCut u u' I * (xPoly ρ (Y : ℂ)).re := by
-  obtain ⟨l, a, b, -, -, hIab, h1, h2, h34⟩ := hI
-  have hex : ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ ρ : Fin k0 → ℝ, Interlace u ρ → Interlace u' ρ →
-      ∀ Y ∈ I, 0 < s * (xPoly ρ (Y : ℂ)).re := by
-    refine ⟨sgnCut k0 l, sgnCut_eq_one_or_neg_one l, fun ρ hu hu' Y hY => ?_⟩
-    have hY' : Y ∈ Set.Icc a b := by
-      rw [← hIab]
-      exact hY
-    rw [xPoly_re]
-    simpa using x_sign hu hu' l (cut_bounds h1 h2 hY' (h34 Y hY).1 (h34 Y hY).2) 0 (by norm_num)
-  have hs : sCut u u' I = Classical.choose hex := by
-    unfold sCut
-    exact dif_pos hex
-  rw [hs]
-  exact Classical.choose_spec hex
 
 end Cut
 
@@ -246,18 +219,7 @@ variable {m : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 def Rep (M : Op m E) (M' : Module.End ℂ (WSm m E)) : Prop :=
   ∀ f : WSm m E, M (f : (Fin m → ℂ) → E) = ((M' f : WSm m E) : (Fin m → ℂ) → E)
 
-theorem rep_opMatMul {M N : Matrix (Fin 2) (Fin 2) (Op m E)}
-    {M' N' : Matrix (Fin 2) (Fin 2) (Module.End ℂ (WSm m E))}
-    (hM : ∀ a b, Rep (M a b) (M' a b)) (hN : ∀ a b, Rep (N a b) (N' a b)) :
-    ∀ a b, Rep (opMatMul M N a b) ((M' * N') a b) := by
-  intro a b f
-  simp only [opMatMul, Matrix.mul_apply, LinearMap.sum_apply, Module.End.mul_apply, Submodule.coe_sum]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  rw [hN c b f, hM a c]
 
-theorem rep_transpose {M : Matrix (Fin 2) (Fin 2) (Op m E)}
-    {M' : Matrix (Fin 2) (Fin 2) (Module.End ℂ (WSm m E))} (hM : ∀ a b, Rep (M a b) (M' a b)) :
-    ∀ a b, Rep (M.transpose a b) (M'.transpose a b) := fun a b => hM b a
 
 theorem rep_Tmat (l : Fin m) (Y : ℂ) :
     ∀ a b, Rep (Tmat (E := E) l Y a b) (Tm Y (pEnd (E := E) l) (cEnd l) (ciEnd l) a b) := by
@@ -274,68 +236,12 @@ theorem rep_TmatV (l : Fin m) (Y : ℂ) :
   · rfl
   · rfl
 
-theorem rep_TmatStar (l : Fin m) (Y : ℂ) :
-    ∀ a b, Rep (TmatStar (E := E) l Y a b) ((Tm Y (-pbEnd (E := E) l) (cbEnd l) (cbiEnd l)).transpose a b) := by
-  intro a b f
-  fin_cases a <;> fin_cases b
-  · show Y • (f : (Fin m → ℂ) → E) - pbOp l f = Y • (f : (Fin m → ℂ) → E) + -(pbOp l f)
-    rw [sub_eq_add_neg]
-  · rfl
-  · rfl
-  · rfl
 
-theorem rep_Jop : ∀ a b, Rep (Formalism.MainNotions.S.UnitaryLevelOperators.Jop (m := m) (E := E) a b) (Formalism.YangianSpanCharacter.T.J (Module.End ℂ (WSm m E)) a b) := by
-  intro a b f
-  fin_cases a <;> fin_cases b <;> rfl
 
-theorem rep_op4Mul {M N : Formalism.MainNotions.S.UnitaryLevelOperators.Op4 m E}
-    {M' N' : Matrix (Fin 2 × Fin 2) (Fin 2 × Fin 2) (Module.End ℂ (WSm m E))}
-    (hM : ∀ p q, Rep (M p q) (M' p q)) (hN : ∀ p q, Rep (N p q) (N' p q)) :
-    ∀ p q, Rep (Formalism.MainNotions.S.UnitaryLevelOperators.op4Mul M N p q) ((M' * N') p q) := by
-  intro p q f
-  simp only [Formalism.MainNotions.S.UnitaryLevelOperators.op4Mul, Matrix.mul_apply, LinearMap.sum_apply, Module.End.mul_apply, Submodule.coe_sum]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  rw [hN c q f, hM p c]
 
-theorem rep_tens1 (l : Fin m) (Y : ℂ) :
-    ∀ p q, Rep (Formalism.MainNotions.S.UnitaryLevelOperators.tens1 (Tmat (E := E) l Y) p q) (T1 Y (pEnd (E := E) l) (cEnd l) (ciEnd l) p q) := by
-  intro p q f
-  simp only [Formalism.MainNotions.S.UnitaryLevelOperators.tens1, T1, Matrix.of_apply]
-  split_ifs
-  · exact rep_Tmat l Y _ _ f
-  · rfl
 
-theorem rep_tens2 (l : Fin m) (Y : ℂ) :
-    ∀ p q, Rep (Formalism.MainNotions.S.UnitaryLevelOperators.tens2 (Tmat (E := E) l Y) p q) (T2 Y (pEnd (E := E) l) (cEnd l) (ciEnd l) p q) := by
-  intro p q f
-  simp only [Formalism.MainNotions.S.UnitaryLevelOperators.tens2, T2, Matrix.of_apply]
-  split_ifs
-  · exact rep_Tmat l Y _ _ f
-  · rfl
 
-theorem rep_Rh (D : ℂ) : ∀ p q, Rep (Formalism.MainNotions.S.UnitaryLevelOperators.RhOp (m := m) (E := E) D p q)
-    (((D - 1)⁻¹ • (D • (1 : Matrix (Fin 2 × Fin 2) (Fin 2 × Fin 2) (Module.End ℂ (WSm m E))) -
-      Pf (Module.End ℂ (WSm m E)))) p q) := by
-  intro p q f
-  simp only [Formalism.MainNotions.S.UnitaryLevelOperators.RhOp, Matrix.smul_apply, Matrix.sub_apply, Matrix.one_apply, Pf, Matrix.of_apply]
-  split_ifs <;>
-    simp only [LinearMap.smul_apply, LinearMap.sub_apply, LinearMap.neg_apply, Submodule.coe_neg, Module.End.one_apply,
-      LinearMap.zero_apply, Submodule.coe_smul, Submodule.coe_sub, Submodule.coe_zero, smul_zero, mul_one, mul_zero,
-      sub_zero, zero_sub] <;> module
 
-theorem stLetters_of_core : Formalism.MainNotions.S.UnitaryLevelOperators.stLetters := by
-  intro m E _ _ l f hf
-  refine ⟨fun Y a b => ⟨?_, ?_⟩, fun Y Y' _ p q => ?_⟩
-  · have h := rep_opMatMul (rep_opMatMul (rep_transpose (rep_Tmat (E := E) l (Y + 1))) rep_Jop) (rep_Tmat l Y) a b ⟨f, hf⟩
-    rw [Formalism.YangianSpanCharacter.Final.B_TJTReal m E l Y] at h
-    exact h.trans (rep_Jop a b ⟨f, hf⟩).symm
-  · have h := rep_opMatMul (rep_opMatMul (rep_TmatV (E := E) l (Y + 1)) rep_Jop) (rep_TmatStar l Y) a b ⟨f, hf⟩
-    rw [Formalism.YangianSpanCharacter.Final.B_TvJTsReal m E l Y] at h
-    exact h.trans (rep_Jop a b ⟨f, hf⟩).symm
-  · have h1 := rep_op4Mul (rep_op4Mul (rep_Rh (m := m) (E := E) (Y' - Y)) (rep_tens1 l Y')) (rep_tens2 l Y) p q ⟨f, hf⟩
-    have h2 := rep_op4Mul (rep_op4Mul (rep_tens2 (E := E) l Y) (rep_tens1 l Y')) (rep_Rh (Y' - Y)) p q ⟨f, hf⟩
-    rw [Matrix.smul_mul, Matrix.smul_mul, Formalism.YangianSpanCharacter.Final.B_RTTReal m E l Y Y', ← Matrix.mul_smul] at h1
-    exact h1.trans h2.symm
 
 section PlaneWaves
 
@@ -343,128 +249,11 @@ open Formalism.QuantumDeterminants.WirtingerDerivatives
 
 variable {m : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-theorem hasFDerivAt_fs (s c : ℂ) (l : Fin m) (x : Fin m → ℂ) :
-    ∃ L : (Fin m → ℂ) →L[ℝ] ℂ, HasFDerivAt (fun y : Fin m → ℂ => c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l y) L x ∧
-      ∀ v, L v = c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x * (s * v l - star (s * v l)) := by
-  have h1 : HasFDerivAt (fun y : Fin m → ℂ => y l) (ContinuousLinearMap.proj (R := ℝ) l) x := hasFDerivAt_apply l x
-  have h2 := h1.const_mul s
-  have h3 := (Complex.conjCLE : ℂ →L[ℝ] ℂ).hasFDerivAt.comp x h2
-  have h4 := h2.sub h3
-  have h5 := (h4.cexp).const_mul c
-  refine ⟨_, h5, fun v => ?_⟩
-  simp [Formalism.MainNotions.S.UnitaryLevelOperators.fsFun]
-  ring
 
-theorem wirt_fs (s c : ℂ) (l : Fin m) {g : (Fin m → ℂ) → E} (hg : g ∈ WSm m E) {x : Fin m → ℂ} (hx : x ∈ OmX m) :
-    wirt l (fun y => (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l y) • g y) x =
-        (c * s * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • g x + (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • wirt l g x ∧
-      wirtBar l (fun y => (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l y) • g y) x =
-        (-(c * star s * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x)) • g x + (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • wirtBar l g x := by
-  obtain ⟨L, hL, hLv⟩ := hasFDerivAt_fs s c l x
-  have hgd : DifferentiableAt ℝ g x := diff_of_reg (reg_of_mem hg x hx)
-  have hI : star Complex.I = -Complex.I := Complex.conj_I
-  have k1 : Wc (Pi.single l 1) (Pi.single l Complex.I) (-Complex.I) L = c * s * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x := by
-    rw [Wc_apply, hLv, hLv]
-    simp only [Pi.single_eq_same, smul_eq_mul, mul_one, star_mul', hI]
-    linear_combination (-(c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x * s) / 2 - (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x * star s) / 2) * Complex.I_sq
-  have k2 : Wc (Pi.single l 1) (Pi.single l Complex.I) Complex.I L = -(c * star s * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) := by
-    rw [Wc_apply, hLv, hLv]
-    simp only [Pi.single_eq_same, smul_eq_mul, mul_one, star_mul', hI]
-    linear_combination ((c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x * s) / 2 + (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x * star s) / 2) * Complex.I_sq
-  constructor
-  · rw [wirt_eq l g, wirt_eq, Wc_smul hL.differentiableAt hgd, hL.fderiv, k1]
-  · rw [wirtBar_eq l g, wirtBar_eq, Wc_smul hL.differentiableAt hgd, hL.fderiv, k2]
 
-theorem Umat_inv (s : ℂ) : (Formalism.MainNotions.S.UnitaryLevelOperators.Umat s)⁻¹ = !![1, 0; s, 1] := by
-  apply Matrix.inv_eq_right_inv
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [Formalism.MainNotions.S.UnitaryLevelOperators.Umat, Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem pOp_fs (s c : ℂ) (l : Fin m) {g : (Fin m → ℂ) → E} (hg : g ∈ WSm m E) (x : Fin m → ℂ) :
-    pOp l (fun y => (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l y) • g y) x =
-      (c * s * x l * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • g x + (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • pOp l g x := by
-  by_cases hx : x ∈ OmX m
-  · simp only [pOp, hx, if_true, (wirt_fs s c l hg hx).1]
-    module
-  · simp [pOp, hx, hg.2 x hx]
 
-theorem pbOp_fs (s c : ℂ) (l : Fin m) {g : (Fin m → ℂ) → E} (hg : g ∈ WSm m E) (x : Fin m → ℂ) :
-    pbOp l (fun y => (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l y) • g y) x =
-      (-(c * star s * star (x l) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x)) • g x + (c * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • pbOp l g x := by
-  by_cases hx : x ∈ OmX m
-  · simp only [pbOp, hx, if_true, (wirt_fs s c l hg hx).2]
-    module
-  · simp [pbOp, hx, hg.2 x hx]
 
-theorem stWaveLetters_of_core : Formalism.MainNotions.S.UnitaryLevelOperators.stWaveLetters := by
-  refine ⟨fun m E _ _ l s Y f hf a b => ⟨?_, ?_⟩, fun s => ?_⟩
-  · funext x
-    rw [Umat_inv]
-    have h00 : opMatMul (Tmat (E := E) l Y) (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; s, 1]) 0 0 f x =
-        Formalism.MainNotions.S.UnitaryLevelOperators.mulAfter (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) (Tmat l Y) 0 0 f x := by
-      show (∑ c : Fin 2, Tmat (E := E) l Y 0 c (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; s, 1] c 0 f)) x = _
-      rw [Fin.sum_univ_two]
-      show Y • (((1 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x) + pOp l (fun y => ((1 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l y) • f y) x +
-        -(x l • ((s * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x)) = Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x • (Y • f x + pOp l f x)
-      rw [pOp_fs s 1 l hf x]; module
-    have h01 : opMatMul (Tmat (E := E) l Y) (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; s, 1]) 0 1 f x =
-        Formalism.MainNotions.S.UnitaryLevelOperators.mulAfter (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) (Tmat l Y) 0 1 f x := by
-      show (∑ c : Fin 2, Tmat (E := E) l Y 0 c (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; s, 1] c 1 f)) x = _
-      rw [Fin.sum_univ_two]
-      show Y • (((0 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x) + pOp l (fun y => ((0 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l y) • f y) x +
-        -(x l • (((1 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x)) = Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x • (-(x l • f x))
-      rw [pOp_fs s 0 l hf x]; module
-    have h10 : opMatMul (Tmat (E := E) l Y) (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; s, 1]) 1 0 f x =
-        Formalism.MainNotions.S.UnitaryLevelOperators.mulAfter (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) (Tmat l Y) 1 0 f x := by
-      show (∑ c : Fin 2, Tmat (E := E) l Y 1 c (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; s, 1] c 0 f)) x = _
-      rw [Fin.sum_univ_two]
-      show (x l)⁻¹ • (((1 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x) + 0 = Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x • ((x l)⁻¹ • f x)
-      module
-    have h11 : opMatMul (Tmat (E := E) l Y) (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; s, 1]) 1 1 f x =
-        Formalism.MainNotions.S.UnitaryLevelOperators.mulAfter (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) (Tmat l Y) 1 1 f x := by
-      show (∑ c : Fin 2, Tmat (E := E) l Y 1 c (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; s, 1] c 1 f)) x = _
-      rw [Fin.sum_univ_two]
-      show (x l)⁻¹ • (((0 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x) + 0 = Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x • (0 : E)
-      module
-    fin_cases a <;> fin_cases b
-    · exact h00
-    · exact h01
-    · exact h10
-    · exact h11
-  · funext x
-    rw [Umat_inv]
-    have h00 : opMatMul (TmatV (E := E) l Y) (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; star s, 1]) 0 0 f x =
-        Formalism.MainNotions.S.UnitaryLevelOperators.mulAfter (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) (TmatV l Y) 0 0 f x := by
-      show (∑ c : Fin 2, TmatV (E := E) l Y 0 c (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; star s, 1] c 0 f)) x = _
-      rw [Fin.sum_univ_two]
-      show Y • (((1 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x) - pbOp l (fun y => ((1 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l y) • f y) x +
-        -(star (x l) • ((star s * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x)) = Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x • (Y • f x - pbOp l f x)
-      rw [pbOp_fs s 1 l hf x]; module
-    have h01 : opMatMul (TmatV (E := E) l Y) (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; star s, 1]) 0 1 f x =
-        Formalism.MainNotions.S.UnitaryLevelOperators.mulAfter (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) (TmatV l Y) 0 1 f x := by
-      show (∑ c : Fin 2, TmatV (E := E) l Y 0 c (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; star s, 1] c 1 f)) x = _
-      rw [Fin.sum_univ_two]
-      show Y • (((0 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x) - pbOp l (fun y => ((0 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l y) • f y) x +
-        -(star (x l) • (((1 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x)) = Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x • (-(star (x l) • f x))
-      rw [pbOp_fs s 0 l hf x]; module
-    have h10 : opMatMul (TmatV (E := E) l Y) (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; star s, 1]) 1 0 f x =
-        Formalism.MainNotions.S.UnitaryLevelOperators.mulAfter (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) (TmatV l Y) 1 0 f x := by
-      show (∑ c : Fin 2, TmatV (E := E) l Y 1 c (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; star s, 1] c 0 f)) x = _
-      rw [Fin.sum_univ_two]
-      show (star (x l))⁻¹ • (((1 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x) + 0 = Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x • ((star (x l))⁻¹ • f x)
-      module
-    have h11 : opMatMul (TmatV (E := E) l Y) (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; star s, 1]) 1 1 f x =
-        Formalism.MainNotions.S.UnitaryLevelOperators.mulAfter (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) (TmatV l Y) 1 1 f x := by
-      show (∑ c : Fin 2, TmatV (E := E) l Y 1 c (Formalism.MainNotions.S.UnitaryLevelOperators.scalMat (Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l) !![1, 0; star s, 1] c 1 f)) x = _
-      rw [Fin.sum_univ_two]
-      show (star (x l))⁻¹ • (((0 : ℂ) * Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x) • f x) + 0 = Formalism.MainNotions.S.UnitaryLevelOperators.fsFun s l x • (0 : E)
-      module
-    fin_cases a <;> fin_cases b
-    · exact h00
-    · exact h01
-    · exact h10
-    · exact h11
-  · exact Formalism.YangianSpanCharacter.Final.T_UJU ℂ ℂ s
 
 end PlaneWaves
 
@@ -485,206 +274,29 @@ namespace Formalism.MainNotions.InterlacingSignCuts
 
 variable {m : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-theorem fderiv_hinv {h : (Fin m → ℂ) → ℝ} {x : Fin m → ℂ} (hd : DifferentiableAt ℝ h x) (h0 : h x ≠ 0) :
-    HasFDerivAt (fun y => ((h y : ℂ))⁻¹)
-      (Complex.ofRealCLM.comp ((-(h x ^ 2)⁻¹) • fderiv ℝ h x)) x := by
-  have h1 := (hasDerivAt_inv h0).comp_hasFDerivAt x hd.hasFDerivAt
-  have h2 := Complex.ofRealCLM.hasFDerivAt.comp x h1
-  have e : (fun y => ((h y : ℂ))⁻¹) = (⇑Complex.ofRealCLM ∘ (Inv.inv ∘ h)) := by
-    funext y; simp
-  rw [e]; exact h2
 
-theorem fderiv_hlog {h : (Fin m → ℂ) → ℝ} {x : Fin m → ℂ} (hd : DifferentiableAt ℝ h x) (h0 : h x ≠ 0) :
-    HasFDerivAt (fun y => ((Real.log (h y) : ℝ) : ℂ))
-      (Complex.ofRealCLM.comp ((h x)⁻¹ • fderiv ℝ h x)) x := by
-  have h1 := (Real.hasDerivAt_log h0).comp_hasFDerivAt x hd.hasFDerivAt
-  have h2 := Complex.ofRealCLM.hasFDerivAt.comp x h1
-  exact h2
 
 theorem pOp_zero (l : Fin m) : pOp l (fun _ : Fin m → ℂ => (0 : E)) = fun _ => 0 := by
   funext x; simp [pOp, wirt]
 
-theorem pbOp_zero (l : Fin m) : pbOp l (fun _ : Fin m → ℂ => (0 : E)) = fun _ => 0 := by
-  funext x; simp [pbOp, wirtBar]
 
-theorem pOp_hinv {h : (Fin m → ℂ) → ℝ} {x : Fin m → ℂ} (hx : x ∈ OmX m) (hd : DifferentiableAt ℝ h x)
-    (h0 : h x ≠ 0) {f : (Fin m → ℂ) → E} (hf : DifferentiableAt ℝ f x) (l : Fin m) :
-    pOp l (fun y => ((h y : ℂ))⁻¹ • f y) x =
-      ((h x : ℂ))⁻¹ • (pOp l f x - star (Formalism.MainNotions.S.UnitaryLevelOperators.thLog l h x) • f x) := by
-  have hi := fderiv_hinv hd h0
-  have hl := fderiv_hlog hd h0
-  simp only [pOp, hx, if_true, wirt, wirtBar, Formalism.MainNotions.S.UnitaryLevelOperators.thLog,
-    WirtingerDerivatives.fderiv_smul_apply hi.differentiableAt hf, hi.fderiv, hl.fderiv]
-  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply, Complex.ofRealCLM_apply, smul_eq_mul,
-    Complex.ofReal_mul, Complex.ofReal_neg, Complex.ofReal_inv, Complex.ofReal_pow, star_mul', star_add, star_star,
-    Complex.star_def, Complex.conj_ofReal, map_mul, map_add, map_inv₀, Complex.conj_I, map_div₀, map_one, map_ofNat,
-    Complex.conj_conj]
-  module
 
-theorem pbOp_hinv {h : (Fin m → ℂ) → ℝ} {x : Fin m → ℂ} (hx : x ∈ OmX m) (hd : DifferentiableAt ℝ h x)
-    (h0 : h x ≠ 0) {f : (Fin m → ℂ) → E} (hf : DifferentiableAt ℝ f x) (l : Fin m) :
-    pbOp l (fun y => ((h y : ℂ))⁻¹ • f y) x =
-      ((h x : ℂ))⁻¹ • (pbOp l f x - Formalism.MainNotions.S.UnitaryLevelOperators.thLog l h x • f x) := by
-  have hi := fderiv_hinv hd h0
-  have hl := fderiv_hlog hd h0
-  simp only [pbOp, hx, if_true, wirt, wirtBar, Formalism.MainNotions.S.UnitaryLevelOperators.thLog,
-    WirtingerDerivatives.fderiv_smul_apply hi.differentiableAt hf, hi.fderiv, hl.fderiv]
-  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply, Complex.ofRealCLM_apply, smul_eq_mul,
-    Complex.ofReal_mul, Complex.ofReal_neg, Complex.ofReal_inv, Complex.ofReal_pow]
-  module
 
-theorem scalMat_same (φ : (Fin m → ℂ) → ℂ) (a : Fin 2) (f : (Fin m → ℂ) → E) :
-    Formalism.MainNotions.S.UnitaryLevelOperators.scalMat φ 1 a a f = fun y => φ y • f y := by
-  funext y; simp [Formalism.MainNotions.S.UnitaryLevelOperators.scalMat]
 
-theorem scalMat_ne (φ : (Fin m → ℂ) → ℂ) {a b : Fin 2} (hab : a ≠ b) (f : (Fin m → ℂ) → E) :
-    Formalism.MainNotions.S.UnitaryLevelOperators.scalMat φ 1 a b f = fun _ => 0 := by
-  funext y; simp [Formalism.MainNotions.S.UnitaryLevelOperators.scalMat, hab]
 
-theorem stThLog_of_core : Formalism.MainNotions.S.UnitaryLevelOperators.stThLog := by
-  intro m E _ _ l h hpos hsm Y f hf a b x hx
-  have hdh : DifferentiableAt ℝ h x :=
-    (hsm.differentiableOn (by simp)).differentiableAt ((WRPres.isOpen_omX m).mem_nhds hx)
-  have hdf := WRPres.differentiableAt_of_mem hf hx
-  have h0 : h x ≠ 0 := (hpos x).ne'
-  have k1 := pOp_hinv hx hdh h0 hdf l
-  have k2 := pbOp_hinv hx hdh h0 hdf l
-  have z1 := pOp_zero (E := E) l
-  have z2 := pbOp_zero (E := E) l
-  fin_cases a <;> fin_cases b <;>
-    simp [opMatMul, Tmat, TmatV, scalMat_same, scalMat_ne, Fin.sum_univ_two, k1, k2, z1, z2, cOp, ciOp, cbOp, cbiOp,
-      smul_smul, mul_comm, smul_sub, smul_add, sub_eq_add_neg, add_assoc] <;> abel
 
-theorem isBB (B : E →L⋆[ℂ] E →L[ℂ] ℂ) : IsBoundedBilinearMap ℝ (fun p : E × E => B p.1 p.2) where
-  add_left := fun x₁ x₂ y => by simp
-  smul_left := fun c x y => by
-    have e : (c • x : E) = ((c : ℂ)) • x := (Complex.coe_smul c x).symm
-    show B (c • x) y = c • B x y
-    rw [e, map_smulₛₗ]
-    simp
-  add_right := fun x y₁ y₂ => by simp
-  smul_right := fun c x y => by
-    have e : (c • y : E) = ((c : ℂ)) • y := (Complex.coe_smul c y).symm
-    show B x (c • y) = c • B x y
-    rw [e, map_smul]
-    simp
-  bound := ⟨‖B‖ + 1, by positivity, fun x y => by
-    refine (B.le_opNorm₂ x y).trans ?_
-    have : 0 ≤ ‖x‖ * ‖y‖ := by positivity
-    nlinarith⟩
 
-theorem fderiv_B (B : E →L⋆[ℂ] E →L[ℂ] ℂ) {x z : (Fin m → ℂ) → E} {c : Fin m → ℂ}
-    (hx : DifferentiableAt ℝ x c) (hz : DifferentiableAt ℝ z c) (v : Fin m → ℂ) :
-    fderiv ℝ (fun c' => B (x c') (z c')) c v = B (fderiv ℝ x c v) (z c) + B (x c) (fderiv ℝ z c v) := by
-  have h := ((isBB B).hasFDerivAt (x c, z c)).comp c (hx.hasFDerivAt.prodMk hz.hasFDerivAt)
-  have h' : HasFDerivAt (fun c' => B (x c') (z c')) _ c := h
-  rw [h'.fderiv]
-  simp [IsBoundedBilinearMap.deriv_apply, add_comm]
 
-theorem diff_B (B : E →L⋆[ℂ] E →L[ℂ] ℂ) {x z : (Fin m → ℂ) → E} {c : Fin m → ℂ}
-    (hx : DifferentiableAt ℝ x c) (hz : DifferentiableAt ℝ z c) :
-    DifferentiableAt ℝ (fun c' => B (x c') (z c')) c := by
-  have h := ((isBB B).hasFDerivAt (x c, z c)).comp c (hx.hasFDerivAt.prodMk hz.hasFDerivAt)
-  have h' : HasFDerivAt (fun c' => B (x c') (z c')) _ c := h
-  exact h'.differentiableAt
 
-theorem wirtBar_B (B : E →L⋆[ℂ] E →L[ℂ] ℂ) {x z : (Fin m → ℂ) → E} {c : Fin m → ℂ}
-    (hx : DifferentiableAt ℝ x c) (hz : DifferentiableAt ℝ z c) (l : Fin m) :
-    wirtBar l (fun c' => B (x c') (z c')) c = B (wirt l x c) (z c) + B (x c) (wirtBar l z c) := by
-  simp only [wirt, wirtBar, fderiv_B B hx hz]
-  simp [map_ofNat (starRingEnd ℂ) 2]
-  ring
 
-theorem wirt_B (B : E →L⋆[ℂ] E →L[ℂ] ℂ) {x z : (Fin m → ℂ) → E} {c : Fin m → ℂ}
-    (hx : DifferentiableAt ℝ x c) (hz : DifferentiableAt ℝ z c) (l : Fin m) :
-    wirt l (fun c' => B (x c') (z c')) c = B (wirtBar l x c) (z c) + B (x c) (wirt l z c) := by
-  simp only [wirt, wirtBar, fderiv_B B hx hz]
-  simp [map_ofNat (starRingEnd ℂ) 2]
-  ring
 
-theorem wirtBar_inv_mul {β : (Fin m → ℂ) → ℂ} {c : Fin m → ℂ} (hβ : DifferentiableAt ℝ β c) (l : Fin m)
-    (hc : c l ≠ 0) :
-    wirtBar l (fun c' => (c' l)⁻¹ • β c') c = (c l)⁻¹ * wirtBar l β c := by
-  have hi := WirtingerDerivatives.hasFDerivAt_inv_apply l hc
-  simp only [wirtBar, WirtingerDerivatives.fderiv_smul_apply hi.differentiableAt hβ, hi.fderiv]
-  simp
-  linear_combination (-(1 / 2 : ℂ) * ((c l) ^ 2)⁻¹ * β c) * Complex.I_sq
 
-theorem wirt_conjInv_mul {β : (Fin m → ℂ) → ℂ} {c : Fin m → ℂ} (hβ : DifferentiableAt ℝ β c) (l : Fin m)
-    (hc : c l ≠ 0) :
-    wirt l (fun c' => (star (c' l))⁻¹ • β c') c = (star (c l))⁻¹ * wirt l β c := by
-  have hi : HasFDerivAt (fun c' : Fin m → ℂ => star ((c' l)⁻¹))
-      ((Complex.conjCLE : ℂ →L[ℝ] ℂ).comp
-        (((ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) (-(c l ^ 2)⁻¹)).restrictScalars ℝ).comp
-          (ContinuousLinearMap.proj l))) c :=
-    (Complex.conjCLE : ℂ →L[ℝ] ℂ).hasFDerivAt.comp c (WirtingerDerivatives.hasFDerivAt_inv_apply l hc)
-  have e : (fun c' : Fin m → ℂ => (star (c' l))⁻¹) = fun c' : Fin m → ℂ => star ((c' l)⁻¹) := by
-    funext y; simp
-  have hi' := hi
-  rw [← e] at hi'
-  simp only [wirt, WirtingerDerivatives.fderiv_smul_apply hi'.differentiableAt hβ, hi'.fderiv]
-  simp
-  linear_combination (-(1 / 2 : ℂ) * ((starRingEnd ℂ (c l)) ^ 2)⁻¹ * β c) * Complex.I_sq
 
-theorem wirtBar_neg' (l : Fin m) (g : (Fin m → ℂ) → ℂ) (c : Fin m → ℂ) :
-    wirtBar l (fun y => -g y) c = -wirtBar l g c := by
-  have h : fderiv ℝ (fun y => -g y) c = -fderiv ℝ g c := by
-    first | exact fderiv_fun_neg | exact fderiv_neg
-  simp only [wirtBar, h]
-  simp
-  ring
 
-theorem wirt_neg' (l : Fin m) (g : (Fin m → ℂ) → ℂ) (c : Fin m → ℂ) :
-    wirt l (fun y => -g y) c = -wirt l g c := by
-  have h : fderiv ℝ (fun y => -g y) c = -fderiv ℝ g c := by
-    first | exact fderiv_fun_neg | exact fderiv_neg
-  simp only [wirt, h]
-  simp
-  ring
 
 theorem normSq_c (w : ℂ) : ((Complex.normSq w : ℝ) : ℂ) = w * star w := by
   rw [Complex.star_def, Complex.mul_conj]
 
-theorem pointwise_integration_by_parts : Formalism.MainNotions.S.UnitaryLevelOperators.stIBP := by
-  intro m E _ _ B l Y x z hx hz c hc
-  have hx0 := WRPres.differentiableAt_of_mem (hx 0) hc
-  have hz0 := WRPres.differentiableAt_of_mem (hz 0) hc
-  have hcl : c l ≠ 0 := hc l
-  have hcs : star (c l) ≠ 0 := by simpa using hcl
-  have hβ := diff_B B hx0 hz0
-  have e1 : (fun c' => B (x 0 c') (opMatApply (TmatStar l (Y : ℂ)) z 1 c') / (Complex.normSq (c' l) : ℂ)) =
-      fun c' => -((c' l)⁻¹ • B (x 0 c') (z 0 c')) := by
-    funext c'
-    by_cases h0 : c' l = 0
-    · simp [h0]
-    · have h0s : (starRingEnd ℂ) (c' l) ≠ 0 := by simpa using h0
-      simp only [opMatApply, TmatStar, Fin.sum_univ_two, normSq_c]
-      simp [cbOp]
-      field_simp
-  have e2 : (fun c' => B (x 0 c') (opMatApply (Formalism.MainNotions.S.UnitaryLevelOperators.TmatVStar l (Y : ℂ)) z 1 c') /
-      (Complex.normSq (c' l) : ℂ)) = fun c' => -((star (c' l))⁻¹ • B (x 0 c') (z 0 c')) := by
-    funext c'
-    by_cases h0 : c' l = 0
-    · simp [h0]
-    · have h0s : (starRingEnd ℂ) (c' l) ≠ 0 := by simpa using h0
-      simp only [opMatApply, Formalism.MainNotions.S.UnitaryLevelOperators.TmatVStar, Fin.sum_univ_two, normSq_c]
-      simp [cOp]
-      field_simp
-  have hcs' : (starRingEnd ℂ) (c l) ≠ 0 := by simpa using hcl
-  have hY : ∀ u v : E, B (Y • u) v = (Y : ℂ) * B u v := fun u v => by
-    have h := (isBB B).smul_left Y u v
-    simpa using h
-  constructor
-  · rw [e1, wirtBar_neg', wirtBar_inv_mul hβ l hcl, wirtBar_B B hx0 hz0, normSq_c]
-    simp only [opMatApply, Tmat, TmatStar, Fin.sum_univ_two]
-    simp [pOp, pbOp, hc, cOp, ciOp, cbOp, cbiOp, hY]
-    field_simp
-    ring
-  · rw [e2, wirt_neg', wirt_conjInv_mul hβ l hcl, wirt_B B hx0 hz0, normSq_c]
-    simp only [opMatApply, TmatV, Formalism.MainNotions.S.UnitaryLevelOperators.TmatVStar, Fin.sum_univ_two]
-    simp [pOp, pbOp, hc, cOp, ciOp, cbOp, cbiOp, hY]
-    field_simp
-    ring
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -715,273 +327,23 @@ def VMarkovAt (n k : ℕ) : Prop :=
   ∀ p : ℝ[X], p.natDegree ≤ n → ∀ x ∈ Set.Icc (-1 : ℝ) 1,
     |(derivative^[k] p).eval x| ≤ vmC n k * supN p
 
-theorem stMarkov_iff : Formalism.MainNotions.S.UnitaryLevelOperators.stMarkov ↔ ∀ n k : ℕ, k ≤ n → VMarkovAt n k := by
-  unfold Formalism.MainNotions.S.UnitaryLevelOperators.stMarkov
-  constructor
-  · intro h n k hk p hp x hx
-    exact h n k p hp hk x hx
-  · intro h n k p hp hk x hx
-    exact h n k hk p hp x hx
 
-theorem vMarkovAt_zero (n : ℕ) : VMarkovAt n 0 := by
-  intro p hp x hx
-  simp only [Function.iterate_zero, id, vmC, Finset.range_zero, Finset.prod_empty, one_mul]
-  exact le_supN p hx
 
-theorem vMarkovAt_one (n : ℕ) : VMarkovAt n 1 := by
-  intro p hp x hx
-  have h := Formalism.FourierDecayAlt.P.markov_inequality p n (supN p) hp (fun y hy => le_supN p hy) x hx
-  have hc : vmC n 1 = (n : ℝ) ^ 2 := by simp [vmC]
-  rw [hc, Function.iterate_one]
-  exact h
 
-theorem markov_iter (n k : ℕ) (p : ℝ[X]) (hp : p.natDegree ≤ n) :
-    ∀ x ∈ Set.Icc (-1 : ℝ) 1, |(derivative^[k] p).eval x| ≤ ((n : ℝ) ^ 2) ^ k * supN p := by
-  induction k generalizing p with
-  | zero =>
-    intro x hx
-    simpa using le_supN p hx
-  | succ k ih =>
-    intro x hx
-    have hd : (derivative p).natDegree ≤ n := (natDegree_derivative_le p).trans ((Nat.sub_le _ _).trans hp)
-    have h1 := ih (derivative p) hd x hx
-    have h2 : supN (derivative p) ≤ (n : ℝ) ^ 2 * supN p := by
-      unfold supN
-      apply csSup_le ((Set.nonempty_Icc.2 (by norm_num)).image _)
-      rintro _ ⟨y, hy, rfl⟩
-      exact Formalism.FourierDecayAlt.P.markov_inequality p n (supN p) hp (fun z hz => le_supN p hz) y hy
-    rw [Function.iterate_succ_apply]
-    calc |(derivative^[k] (derivative p)).eval x| ≤ ((n : ℝ) ^ 2) ^ k * supN (derivative p) := h1
-      _ ≤ ((n : ℝ) ^ 2) ^ k * ((n : ℝ) ^ 2 * supN p) := mul_le_mul_of_nonneg_left h2 (by positivity)
-      _ = ((n : ℝ) ^ 2) ^ (k + 1) * supN p := by ring
 
-lemma vmC_closed (n' : ℕ) : ∀ k m : ℕ, k + m = n' + 1 →
-    vmC (n' + 1) k * (m.factorial : ℝ) * ((2 * k).factorial : ℝ) =
-      ((n' : ℝ) + 1) * ((n' + k).factorial : ℝ) * 2 ^ k * (k.factorial : ℝ) := by
-  intro k
-  induction k with
-  | zero =>
-    intro m hm
-    have : m = n' + 1 := by omega
-    subst this
-    simp [vmC, Nat.factorial_succ]
-  | succ k ih =>
-    intro m hm
-    have h := ih (m + 1) (by omega)
-    have hn : ((n' : ℝ) + 1) = (k : ℝ) + 1 + (m : ℝ) := by
-      have : ((n' + 1 : ℕ) : ℝ) = ((k + 1 + m : ℕ) : ℝ) := by rw [hm]
-      push_cast at this; linarith
-    have h2k : (2 * (k : ℝ) + 1) ≠ 0 := by positivity
-    have e1 : vmC (n' + 1) (k + 1) =
-        vmC (n' + 1) k * (((((n' + 1 : ℕ) : ℝ)) ^ 2 - (k : ℝ) ^ 2) / (2 * (k : ℝ) + 1)) := by
-      unfold vmC; rw [Finset.prod_range_succ]
-    have e2 : ((2 * (k + 1)).factorial : ℝ) = (2 * (k : ℝ) + 2) * (2 * (k : ℝ) + 1) * ((2 * k).factorial : ℝ) := by
-      have : 2 * (k + 1) = (2 * k + 1) + 1 := by ring
-      rw [this, Nat.factorial_succ, Nat.factorial_succ]; push_cast; ring
-    have e3 : ((m + 1).factorial : ℝ) = ((m : ℝ) + 1) * (m.factorial : ℝ) := by
-      rw [Nat.factorial_succ]; push_cast; ring
-    have e4 : ((n' + (k + 1)).factorial : ℝ) = ((n' : ℝ) + (k : ℝ) + 1) * ((n' + k).factorial : ℝ) := by
-      have : n' + (k + 1) = (n' + k) + 1 := by ring
-      rw [this, Nat.factorial_succ]; push_cast; ring
-    have e5 : ((k + 1).factorial : ℝ) = ((k : ℝ) + 1) * (k.factorial : ℝ) := by
-      rw [Nat.factorial_succ]; push_cast; ring
-    rw [e3] at h
-    rw [e1, e2, e4, e5]
-    push_cast
-    have hm' : (m : ℝ) + 1 = (n' : ℝ) + 1 - (k : ℝ) := by linarith
-    have key : vmC (n' + 1) k * ((((n' : ℝ) + 1) ^ 2 - (k : ℝ) ^ 2) / (2 * (k : ℝ) + 1)) * (m.factorial : ℝ) *
-        ((2 * (k : ℝ) + 2) * (2 * (k : ℝ) + 1) * ((2 * k).factorial : ℝ)) =
-        (vmC (n' + 1) k * (((m : ℝ) + 1) * (m.factorial : ℝ)) * ((2 * k).factorial : ℝ)) *
-          (((n' : ℝ) + 1 + (k : ℝ)) * (2 * (k : ℝ) + 2)) := by
-      rw [hm']; field_simp; ring
-    rw [key, h]; ring
 
-lemma vmC_self (n' : ℕ) : vmC (n' + 1) (n' + 1) = ((n' + 1).factorial : ℝ) * 2 ^ n' := by
-  have h := vmC_closed n' (n' + 1) 0 (by omega)
-  have e : ((2 * (n' + 1)).factorial : ℝ) = (2 * ((n' : ℝ) + 1)) * ((n' + (n' + 1)).factorial : ℝ) := by
-    have : 2 * (n' + 1) = (n' + (n' + 1)) + 1 := by ring
-    rw [this, Nat.factorial_succ]; push_cast; ring
-  have hf : ((n' + (n' + 1)).factorial : ℝ) ≠ 0 := by positivity
-  have hn : ((n' : ℝ) + 1) ≠ 0 := by positivity
-  rw [e] at h
-  simp only [Nat.factorial_zero, Nat.cast_one, mul_one] at h
-  have h' : vmC (n' + 1) (n' + 1) * 2 * (((n' : ℝ) + 1) * ((n' + (n' + 1)).factorial : ℝ)) =
-      (((n' + 1).factorial : ℝ) * 2 ^ n') * 2 * (((n' : ℝ) + 1) * ((n' + (n' + 1)).factorial : ℝ)) := by
-    calc _ = vmC (n' + 1) (n' + 1) * (2 * ((n' : ℝ) + 1) * ((n' + (n' + 1)).factorial : ℝ)) := by ring
-      _ = _ := by rw [h]; ring
-  have h2 := mul_right_cancel₀ (mul_ne_zero hn hf) h'
-  exact mul_right_cancel₀ (two_ne_zero) h2
 
-theorem vMarkovAt_self (n : ℕ) : VMarkovAt n n := by
-  rcases n with _ | n'
-  · exact vMarkovAt_zero 0
-  intro p hp x _
-  have hdeg : (derivative^[n' + 1] p).natDegree ≤ 0 :=
-    (natDegree_iterate_derivative p (n' + 1)).trans (by omega)
-  have hconst : (derivative^[n' + 1] p).eval x = ((n' + 1).factorial : ℝ) * p.coeff (n' + 1) := by
-    rw [eq_C_of_natDegree_le_zero hdeg, eval_C, coeff_iterate_derivative, zero_add, Nat.descFactorial_self,
-      nsmul_eq_mul]
-  have hev : ∀ y : ℝ, (∑ k : Fin (n' + 1 + 1), ((y : ℂ) ^ (k : ℕ)) • ((p.coeff (k : ℕ) : ℝ) : ℂ)) =
-      ((p.eval y : ℝ) : ℂ) := by
-    intro y
-    rw [eval_eq_sum_range' (Nat.lt_succ_of_le hp), ← Fin.sum_univ_eq_sum_range (fun i => p.coeff i * y ^ i)]
-    push_cast
-    exact Finset.sum_congr rfl fun k _ => by rw [smul_eq_mul, mul_comm]
-  have hB := Formalism.FourierDecayAlt.P.chebyshev_leading_coeff_bound ℂ (-1) 1 (n' + 1)
-    (fun k : Fin (n' + 1 + 1) => ((p.coeff (k : ℕ) : ℝ) : ℂ)) (supN p) (by norm_num) (by omega)
-    (fun j => by
-      rw [hev, Complex.norm_real, Real.norm_eq_abs]
-      refine le_supN p ?_
-      have e : Formalism.SA.C.chebPt (-1) 1 (n' + 1) j = Real.cos (Real.pi * ((j : ℕ) : ℝ) / ((n' + 1 : ℕ) : ℝ)) := by
-        unfold Formalism.SA.C.chebPt; ring
-      rw [e]
-      exact ⟨Real.neg_one_le_cos _, Real.cos_le_one _⟩)
-  have hB' : |p.coeff (n' + 1)| ≤ 2 ^ n' * supN p := by
-    have : ‖((p.coeff ((Fin.last (n' + 1) : Fin (n' + 1 + 1)) : ℕ) : ℝ) : ℂ)‖ = |p.coeff (n' + 1)| := by
-      rw [Complex.norm_real, Real.norm_eq_abs]; rfl
-    rw [← this]
-    refine hB.trans (le_of_eq ?_)
-    have : (4 : ℝ) / (1 - (-1)) = 2 := by norm_num
-    rw [this, pow_succ]; ring
-  rw [hconst, vmC_self, abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ((n' + 1).factorial : ℝ)), mul_assoc]
-  exact mul_le_mul_of_nonneg_left hB' (by positivity)
 
-theorem vmC_le (n k : ℕ) (hk : k ≤ n) : vmC n k ≤ ((n : ℝ) ^ 2) ^ k := by
-  unfold vmC
-  calc ∏ j ∈ Finset.range k, (((n : ℝ) ^ 2 - (j : ℝ) ^ 2) / (2 * (j : ℝ) + 1))
-      ≤ ∏ _j ∈ Finset.range k, ((n : ℝ) ^ 2) := by
-        apply Finset.prod_le_prod
-        · intro j hj
-          have hj' : j < k := Finset.mem_range.1 hj
-          have hjn : (j : ℝ) ≤ n := by exact_mod_cast (by omega : j ≤ n)
-          have hj0 : (0 : ℝ) ≤ j := Nat.cast_nonneg j
-          apply div_nonneg _ (by positivity)
-          nlinarith
-        · intro j _
-          have hj0 : (0 : ℝ) ≤ j := Nat.cast_nonneg j
-          rw [div_le_iff₀ (by positivity)]
-          nlinarith [mul_nonneg (sq_nonneg (n : ℝ)) hj0, sq_nonneg (j : ℝ)]
-    _ = ((n : ℝ) ^ 2) ^ k := by rw [Finset.prod_const, Finset.card_range]
 
-lemma markov_coeff_eq_chebyshev_derivative (n k : ℕ) : vmC n k = (derivative^[k] (Chebyshev.T ℝ n)).eval 1 := by
-  rw [Chebyshev.iterate_derivative_T_eval_one_eq_div]
-  unfold vmC
-  rw [Finset.prod_div_distrib]
-  push_cast
-  rfl
 
-lemma vmC_nonneg (n k : ℕ) (hk : k ≤ n) : 0 ≤ vmC n k := by
-  unfold vmC
-  apply Finset.prod_nonneg
-  intro j hj
-  have hj' : j < k := Finset.mem_range.1 hj
-  have hjn : (j : ℝ) ≤ n := by exact_mod_cast (by omega : j ≤ n)
-  have hj0 : (0 : ℝ) ≤ j := Nat.cast_nonneg j
-  apply div_nonneg _ (by positivity)
-  nlinarith
 
-lemma end_one_le (n k : ℕ) (p : ℝ[X]) (hp : p.natDegree ≤ n) :
-    (derivative^[k] p).eval 1 ≤ vmC n k * supN p := by
-  rcases (supN_nonneg p).eq_or_lt with h0 | hpos
-  · have hz : p = 0 := by
-      refine Polynomial.eq_zero_of_infinite_isRoot p
-        ((Set.Icc_infinite (by norm_num : (-1 : ℝ) < 1)).mono fun x hx => ?_)
-      have := le_supN p hx
-      rw [← h0] at this
-      exact abs_nonpos_iff.1 this
-    subst hz
-    simp [← h0]
-  · have hb : ∀ x ∈ Set.Icc (-1 : ℝ) 1, |(C (supN p)⁻¹ * p).eval x| ≤ 1 := by
-      intro x hx
-      rw [eval_mul, eval_C, abs_mul, abs_of_pos (inv_pos.2 hpos), inv_mul_le_iff₀ hpos, mul_one]
-      exact le_supN p hx
-    have hd : (C (supN p)⁻¹ * p).degree ≤ n :=
-      degree_le_of_natDegree_le ((natDegree_C_mul_le _ _).trans hp)
-    have h := Chebyshev.eval_iterate_derivative_le_of_forall_abs_le_one (k := k) (le_refl (1 : ℝ)) hd hb
-    rw [iterate_derivative_C_mul, eval_mul, eval_C, ← markov_coeff_eq_chebyshev_derivative, inv_mul_le_iff₀ hpos] at h
-    linarith [h, mul_comm (supN p) (vmC n k)]
 
-lemma supN_neg (p : ℝ[X]) : supN (-p) = supN p := by
-  unfold supN
-  simp only [eval_neg, abs_neg]
 
-lemma end_one (n k : ℕ) (p : ℝ[X]) (hp : p.natDegree ≤ n) :
-    |(derivative^[k] p).eval 1| ≤ vmC n k * supN p := by
-  refine abs_le.2 ⟨?_, end_one_le n k p hp⟩
-  have h := end_one_le n k (-p) (by rwa [natDegree_neg])
-  rw [iterate_derivative_neg, eval_neg, supN_neg] at h
-  linarith
 
-lemma iter_comp_neg (p : ℝ[X]) (k : ℕ) :
-    derivative^[k] (p.comp (-X)) = (-1) ^ k * (derivative^[k] p).comp (-X) := by
-  induction k generalizing p with
-  | zero => simp
-  | succ k ih => simp [ih (derivative p), derivative_comp, pow_succ]
 
-lemma supN_comp_neg (p : ℝ[X]) : supN (p.comp (-X)) = supN p := by
-  unfold supN
-  congr 1
-  ext t
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    exact ⟨-y, ⟨by linarith [hy.2], by linarith [hy.1]⟩, by simp⟩
-  · rintro ⟨y, hy, rfl⟩
-    exact ⟨-y, ⟨by linarith [hy.2], by linarith [hy.1]⟩, by simp⟩
 
-lemma end_neg_one (n k : ℕ) (p : ℝ[X]) (hp : p.natDegree ≤ n) :
-    |(derivative^[k] p).eval (-1)| ≤ vmC n k * supN p := by
-  have hd : (p.comp (-X)).natDegree ≤ n := by
-    refine natDegree_comp_le.trans ?_
-    simpa using hp
-  have h := end_one n k (p.comp (-X)) hd
-  rw [iter_comp_neg, supN_comp_neg, eval_mul, eval_pow, eval_neg, eval_one, abs_mul, abs_pow, abs_neg, abs_one,
-    one_pow, one_mul, eval_comp, eval_neg, eval_X] at h
-  exact h
 
-theorem vMarkovAt_pred (n : ℕ) : VMarkovAt (n + 1) n := by
-  intro p hp x hx
-  have hdeg : (derivative^[n] p).natDegree ≤ 1 :=
-    (natDegree_iterate_derivative p n).trans (by omega)
-  obtain ⟨a, b, hab⟩ := exists_eq_X_add_C_of_natDegree_le_one hdeg
-  have h1 := end_one (n + 1) n p hp
-  have h2 := end_neg_one (n + 1) n p hp
-  rw [hab] at h1 h2 ⊢
-  simp only [eval_add, eval_mul, eval_C, eval_X] at h1 h2 ⊢
-  have e : a * x + b = (1 + x) / 2 * (a * 1 + b) + (1 - x) / 2 * (a * (-1) + b) := by ring
-  rw [e]
-  have hx1 : 0 ≤ (1 + x) / 2 := by linarith [hx.1]
-  have hx2 : 0 ≤ (1 - x) / 2 := by linarith [hx.2]
-  calc |(1 + x) / 2 * (a * 1 + b) + (1 - x) / 2 * (a * (-1) + b)|
-      ≤ (1 + x) / 2 * |a * 1 + b| + (1 - x) / 2 * |a * (-1) + b| := by
-        refine (abs_add_le _ _).trans ?_
-        rw [abs_mul, abs_mul, abs_of_nonneg hx1, abs_of_nonneg hx2]
-    _ ≤ (1 + x) / 2 * (vmC (n + 1) n * supN p) + (1 - x) / 2 * (vmC (n + 1) n * supN p) :=
-        add_le_add (mul_le_mul_of_nonneg_left h1 hx1) (mul_le_mul_of_nonneg_left h2 hx2)
-    _ = vmC (n + 1) n * supN p := by ring
 
-theorem stMarkov_of_mid
-    (h : ∀ n k : ℕ, 2 ≤ k → k + 2 ≤ n → ∀ p : ℝ[X], p.natDegree ≤ n → ∀ x ∈ Set.Ioo (-1 : ℝ) 1,
-      |(derivative^[k] p).eval x| ≤ vmC n k * supN p) : Formalism.MainNotions.S.UnitaryLevelOperators.stMarkov := by
-  rw [stMarkov_iff]
-  intro n k hk p hp x hx
-  rcases Nat.lt_or_ge k 2 with hk2 | hk2
-  · interval_cases k
-    · exact vMarkovAt_zero n p hp x hx
-    · exact vMarkovAt_one n p hp x hx
-  rcases Nat.lt_or_ge (k + 1) n with hkn | hkn
-  · rcases eq_or_lt_of_le hx.1 with h1 | h1
-    · rw [← h1]
-      exact end_neg_one n k p hp
-    rcases eq_or_lt_of_le hx.2 with h2 | h2
-    · rw [h2]
-      exact end_one n k p hp
-    exact h n k hk2 (by omega) p hp x ⟨h1, h2⟩
-  · rcases eq_or_lt_of_le hk with hkn' | hkn'
-    · subst hkn'
-      exact vMarkovAt_self k p hp x hx
-    · have hn : n = k + 1 := by omega
-      subst hn
-      exact vMarkovAt_pred k p hp x hx
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -997,84 +359,12 @@ noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-lemma iter_comp_affine (a b : ℝ) (k : ℕ) : ∀ p : ℝ[X],
-    derivative^[k] (p.comp (C a * X + C b)) = C (a ^ k) * (derivative^[k] p).comp (C a * X + C b) := by
-  induction k with
-  | zero =>
-    intro p
-    simp
-  | succ k ih =>
-    intro p
-    have hq : derivative (C a * X + C b) = C a := by simp
-    rw [Function.iterate_succ_apply, Function.iterate_succ_apply, derivative_comp, hq,
-      iterate_derivative_C_mul, ih (derivative p), ← mul_assoc, ← C_mul, ← pow_succ']
 
-lemma supN_comp_affine_le (p : ℝ[X]) (a b : ℝ) (h : ∀ u ∈ Set.Icc (-1 : ℝ) 1, a * u + b ∈ Set.Icc (-1 : ℝ) 1) :
-    supN (p.comp (C a * X + C b)) ≤ supN p := by
-  unfold supN
-  apply csSup_le ((Set.nonempty_Icc.2 (by norm_num)).image _)
-  rintro _ ⟨u, hu, rfl⟩
-  have := le_supN p (h u hu)
-  simp only [eval_comp, eval_add, eval_mul, eval_C, eval_X]
-  exact this
 
-lemma natDegree_comp_affine_le (p : ℝ[X]) (a b : ℝ) : (p.comp (C a * X + C b)).natDegree ≤ p.natDegree := by
-  calc (p.comp (C a * X + C b)).natDegree ≤ p.natDegree * (C a * X + C b).natDegree := natDegree_comp_le
-    _ ≤ p.natDegree * 1 := Nat.mul_le_mul_left _ natDegree_linear_le
-    _ = p.natDegree := mul_one _
 
-lemma dilate_right (n k : ℕ) (hk : k ≤ n) (p : ℝ[X]) (hp : p.natDegree ≤ n) {x : ℝ} (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
-    ((1 + x) / 2) ^ k * |(derivative^[k] p).eval x| ≤ vmC n k * supN p := by
-  obtain ⟨hx1, hx2⟩ := hx
-  have ha : (0 : ℝ) ≤ (1 + x) / 2 := by linarith
-  have hmap : ∀ u ∈ Set.Icc (-1 : ℝ) 1, (1 + x) / 2 * u + (x - 1) / 2 ∈ Set.Icc (-1 : ℝ) 1 := by
-    rintro u ⟨hu1, hu2⟩
-    constructor <;> nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 1 + x) (by linarith : (0 : ℝ) ≤ u + 1),
-      mul_nonneg (by linarith : (0 : ℝ) ≤ 1 + x) (by linarith : (0 : ℝ) ≤ 1 - u)]
-  have h1 := end_one n k (p.comp (C ((1 + x) / 2) * X + C ((x - 1) / 2))) ((natDegree_comp_affine_le p _ _).trans hp)
-  rw [iter_comp_affine] at h1
-  simp only [eval_mul, eval_C, eval_comp, eval_add, eval_X, mul_one] at h1
-  rw [show (1 + x) / 2 + (x - 1) / 2 = x by ring, abs_mul, abs_of_nonneg (pow_nonneg ha k)] at h1
-  exact h1.trans (mul_le_mul_of_nonneg_left (supN_comp_affine_le p _ _ hmap) (vmC_nonneg n k hk))
 
-lemma dilate_left (n k : ℕ) (hk : k ≤ n) (p : ℝ[X]) (hp : p.natDegree ≤ n) {x : ℝ} (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
-    ((1 - x) / 2) ^ k * |(derivative^[k] p).eval x| ≤ vmC n k * supN p := by
-  obtain ⟨hx1, hx2⟩ := hx
-  have ha : (0 : ℝ) ≤ (1 - x) / 2 := by linarith
-  have hmap : ∀ u ∈ Set.Icc (-1 : ℝ) 1, (1 - x) / 2 * u + (x + 1) / 2 ∈ Set.Icc (-1 : ℝ) 1 := by
-    rintro u ⟨hu1, hu2⟩
-    constructor <;> nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 1 - x) (by linarith : (0 : ℝ) ≤ u + 1),
-      mul_nonneg (by linarith : (0 : ℝ) ≤ 1 - x) (by linarith : (0 : ℝ) ≤ 1 - u)]
-  have h1 := end_neg_one n k (p.comp (C ((1 - x) / 2) * X + C ((x + 1) / 2))) ((natDegree_comp_affine_le p _ _).trans hp)
-  rw [iter_comp_affine] at h1
-  simp only [eval_mul, eval_C, eval_comp, eval_add, eval_X, mul_neg, mul_one] at h1
-  rw [show -((1 - x) / 2) + (x + 1) / 2 = x by ring, abs_mul, abs_of_nonneg (pow_nonneg ha k)] at h1
-  exact h1.trans (mul_le_mul_of_nonneg_left (supN_comp_affine_le p _ _ hmap) (vmC_nonneg n k hk))
 
-theorem vMarkov_dilate (n k : ℕ) (hk : k ≤ n) (p : ℝ[X]) (hp : p.natDegree ≤ n) {x : ℝ}
-    (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
-    ((1 + |x|) / 2) ^ k * |(derivative^[k] p).eval x| ≤ vmC n k * supN p := by
-  rcases le_total 0 x with h0 | h0
-  · rw [abs_of_nonneg h0]
-    exact dilate_right n k hk p hp hx
-  · rw [abs_of_nonpos h0]
-    have := dilate_left n k hk p hp hx
-    rwa [sub_eq_add_neg] at this
 
-theorem vMarkov_two_pow (n k : ℕ) (hk : k ≤ n) (p : ℝ[X]) (hp : p.natDegree ≤ n) {x : ℝ}
-    (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
-    |(derivative^[k] p).eval x| ≤ 2 ^ k * (vmC n k * supN p) := by
-  have h := vMarkov_dilate n k hk p hp hx
-  have h1 : (1 : ℝ) ≤ 2 ^ k * ((1 + |x|) / 2) ^ k := by
-    rw [← mul_pow]
-    apply one_le_pow₀
-    have := abs_nonneg x
-    linarith
-  have hD := abs_nonneg ((derivative^[k] p).eval x)
-  calc |(derivative^[k] p).eval x| ≤ 2 ^ k * ((1 + |x|) / 2) ^ k * |(derivative^[k] p).eval x| :=
-        le_mul_of_one_le_left hD h1
-    _ = 2 ^ k * (((1 + |x|) / 2) ^ k * |(derivative^[k] p).eval x|) := by ring
-    _ ≤ 2 ^ k * (vmC n k * supN p) := mul_le_mul_of_nonneg_left h (by positivity)
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -1110,102 +400,14 @@ theorem ch_neg {d : ℕ} (n : Fin d → ℤ) (x : Tor d) : ch (-n) x = conj (ch 
 theorem ch_zero {d : ℕ} (x : Tor d) : ch (0 : Fin d → ℤ) x = 1 := by
   simp [ch, fourier_zero]
 
-theorem ch_sub {d : ℕ} (m n : Fin d → ℤ) (x : Tor d) : ch (n - m) x = ch n x * conj (ch m x) := by
-  rw [sub_eq_add_neg, ch_add, ch_neg]
 
-theorem ch_int {d : ℕ} (μ : Measure (Tor d)) [IsFiniteMeasure μ] (n : Fin d → ℤ) : Integrable (ch n) μ :=
-  (ch_cont n).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
 
-theorem posDef_of_measure {d : ℕ} (φ : (Fin d → ℤ) → ℂ) (μ : Measure (Tor d)) [IsFiniteMeasure μ]
-    (h : ∀ n, φ n = ∫ x, ch n x ∂μ) : Formalism.MainNotions.S.UnitaryLevelOperators.IsPosDefZ φ := by
-  intro a
-  have key : (∑ m ∈ a.support, ∑ n ∈ a.support, star (a m) * a n * φ (n - m)) =
-      ((∫ x, Complex.normSq (∑ n ∈ a.support, a n * ch n x) ∂μ : ℝ) : ℂ) := by
-    rw [← integral_complex_ofReal]
-    have : ∀ x : Tor d, ((Complex.normSq (∑ n ∈ a.support, a n * ch n x) : ℝ) : ℂ) =
-        ∑ m ∈ a.support, ∑ n ∈ a.support, star (a m) * a n * ch (n - m) x := by
-      intro x
-      rw [Complex.normSq_eq_conj_mul_self, map_sum, Finset.sum_mul_sum]
-      refine Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun n _ => ?_
-      rw [ch_sub, map_mul]
-      simp only [Complex.star_def]
-      ring
-    simp_rw [this]
-    rw [integral_finsetSum _ (fun m _ => integrable_finsetSum _ (fun n _ => (ch_int μ _).const_mul _))]
-    refine Finset.sum_congr rfl fun m _ => ?_
-    rw [integral_finsetSum _ (fun n _ => (ch_int μ _).const_mul _)]
-    refine Finset.sum_congr rfl fun n _ => ?_
-    rw [integral_const_mul, h]
-  rw [key]
-  refine ⟨?_, Complex.ofReal_im _⟩
-  rw [Complex.ofReal_re]
-  exact integral_nonneg fun x => Complex.normSq_nonneg _
 
-theorem posDef_finset {d : ℕ} {φ : (Fin d → ℤ) → ℂ} (h : Formalism.MainNotions.S.UnitaryLevelOperators.IsPosDefZ φ)
-    (S : Finset (Fin d → ℤ)) (c : (Fin d → ℤ) → ℂ) :
-    0 ≤ (∑ m ∈ S, ∑ n ∈ S, star (c m) * c n * φ (n - m)).re ∧
-      (∑ m ∈ S, ∑ n ∈ S, star (c m) * c n * φ (n - m)).im = 0 := by
-  classical
-  let a : (Fin d → ℤ) →₀ ℂ := Finsupp.onFinset S (fun m => if m ∈ S then c m else 0)
-    (fun m hm => by by_contra hS; simp [hS] at hm)
-  have ha : ∀ m ∈ S, a m = c m := fun m hm => by simp [a, hm]
-  have hsub : a.support ⊆ S := Finsupp.support_onFinset_subset
-  have e : (∑ m ∈ a.support, ∑ n ∈ a.support, star (a m) * a n * φ (n - m)) =
-      ∑ m ∈ S, ∑ n ∈ S, star (c m) * c n * φ (n - m) := by
-    rw [Finset.sum_subset hsub (fun m _ hm => by
-      have : a m = 0 := Finsupp.notMem_support_iff.1 hm
-      simp [this])]
-    refine Finset.sum_congr rfl fun m hm => ?_
-    rw [Finset.sum_subset hsub (fun n _ hn => by
-      have : a n = 0 := Finsupp.notMem_support_iff.1 hn
-      simp [this])]
-    exact Finset.sum_congr rfl fun n hn => by rw [ha m hm, ha n hn]
-  rw [← e]
-  exact h a
 
-theorem posDef_zero {d : ℕ} {φ : (Fin d → ℤ) → ℂ} (h : Formalism.MainNotions.S.UnitaryLevelOperators.IsPosDefZ φ) :
-    0 ≤ (φ 0).re ∧ (φ 0).im = 0 := by
-  simpa [Finsupp.support_single_ne_zero _ one_ne_zero] using h (Finsupp.single 0 1)
 
-theorem posDef_herm {d : ℕ} {φ : (Fin d → ℤ) → ℂ} (h : Formalism.MainNotions.S.UnitaryLevelOperators.IsPosDefZ φ) (n : Fin d → ℤ) :
-    φ (-n) = conj (φ n) := by
-  classical
-  have h0 := posDef_zero h
-  by_cases hn : n = 0
-  · subst hn
-    simp only [neg_zero]
-    apply Complex.ext <;> simp [h0.2]
-  have hn' : (0 : Fin d → ℤ) ≠ n := fun e => hn e.symm
-  have h1 := (posDef_finset h {0, n} (fun _ => 1)).2
-  have h2 := (posDef_finset h {0, n} (fun m => if m = 0 then 1 else Complex.I)).2
-  rw [Finset.sum_pair hn', Finset.sum_pair hn', Finset.sum_pair hn'] at h1 h2
-  simp [hn, h0.2] at h1 h2
-  apply Complex.ext
-  · simp; linarith
-  · simp; linarith
 
-theorem int_fourier (k : ℤ) : ∫ x : UnitAddCircle, fourier k x = if k = 0 then 1 else 0 := by
-  split_ifs with hk
-  · subst hk
-    simp [measureReal_def, AddCircle.measure_univ]
-  · exact integral_eq_zero_of_add_right_eq_neg (fourier_add_half_inv_index hk one_pos)
 
-theorem int_ch {d : ℕ} (n : Fin d → ℤ) : ∫ x : Tor d, ch n x = if n = 0 then 1 else 0 := by
-  unfold ch
-  rw [integral_fintype_prod_volume_eq_prod (fun j (y : UnitAddCircle) => (fourier (n j) y : ℂ))]
-  simp_rw [int_fourier]
-  rw [Finset.prod_ite_zero]
-  simp [funext_iff]
 
-theorem ch_coe {d : ℕ} (σ : Fin d → ℤ) (t : Fin d → ℝ) :
-    ch σ (fun j => ((t j : ℝ) : UnitAddCircle)) =
-      Complex.exp (2 * Real.pi * Complex.I * ∑ j, ((σ j : ℝ) : ℂ) * (t j : ℂ)) := by
-  simp only [ch, fourier_coe_apply]
-  rw [Finset.mul_sum, Complex.exp_sum]
-  refine Finset.prod_congr rfl fun j _ => ?_
-  congr 1
-  push_cast
-  ring
 
 def box (d N : ℕ) : Finset (Fin d → ℤ) := Fintype.piFinset (fun _ : Fin d => Finset.Icc (-(N : ℤ)) N)
 
@@ -1218,29 +420,11 @@ theorem fej_cont {d : ℕ} (φ : (Fin d → ℤ) → ℂ) (N : ℕ) : Continuous
   unfold fej
   exact continuous_finset_sum _ fun σ _ => continuous_const.mul (ch_cont σ)
 
-theorem fej_nonneg {d : ℕ} {φ : (Fin d → ℤ) → ℂ} (h : Formalism.MainNotions.S.UnitaryLevelOperators.IsPosDefZ φ) (N : ℕ) (x : Tor d) :
-    0 ≤ (fej φ N x).re := by
-  choose t ht using fun j => QuotientAddGroup.mk_surjective (x j)
-  have hx : x = fun j => ((t j : ℝ) : UnitAddCircle) := funext fun j => (ht j).symm
-  have hyp : ∀ (S : Finset (Fin d → ℤ)) (c : (Fin d → ℤ) → ℂ),
-      0 ≤ (∑ σ ∈ S, ∑ σ' ∈ S, (fun τ => φ (-τ)) (σ - σ') * c σ * starRingEnd ℂ (c σ')).re := by
-    intro S c
-    have := (posDef_finset h S (fun m => conj (c m))).1
-    convert this using 2
-    refine Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun n _ => ?_
-    simp only [neg_sub, Complex.star_def, Complex.conj_conj]
-    ring
-  have core := Formalism.FourierDecayAlt.P.herglotz_fejer_Zd d (fun τ => φ (-τ)) hyp N t
-  rw [hx]
-  simp only [fej, ch_coe]
-  exact core
 
 theorem mem_box {d N : ℕ} {σ : Fin d → ℤ} : σ ∈ box d N ↔ ∀ j, -(N : ℤ) ≤ σ j ∧ σ j ≤ N := by
   unfold box
   simp only [Fintype.mem_piFinset, Finset.mem_Icc]
 
-theorem fw_neg {d : ℕ} (N : ℕ) (σ : Fin d → ℤ) : fw N (-σ) = fw N σ := by
-  simp only [fw, Pi.neg_apply, Int.cast_neg, abs_neg]
 
 def fmu {d : ℕ} (φ : (Fin d → ℤ) → ℂ) (N : ℕ) : Measure (Tor d) :=
   volume.withDensity (fun x => ((Real.toNNReal (fej φ N x).re : ℝ≥0) : ℝ≥0∞))
@@ -1254,126 +438,15 @@ instance {d : ℕ} (φ : (Fin d → ℤ) → ℂ) (N : ℕ) : IsFiniteMeasure (f
     (fre_cont φ N).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   exact hi.lintegral_lt_top.ne
 
-theorem int_fej_ch {d : ℕ} (φ : (Fin d → ℤ) → ℂ) (N : ℕ) (n : Fin d → ℤ) (hn : -n ∈ box d N) :
-    ∫ x : Tor d, fej φ N x * ch n x = ((fw N n : ℝ) : ℂ) * φ n := by
-  classical
-  have e : ∀ x : Tor d, fej φ N x * ch n x = ∑ σ ∈ box d N, (((fw N σ : ℝ) : ℂ) * φ (-σ)) * ch (σ + n) x := by
-    intro x
-    rw [fej, Finset.sum_mul]
-    exact Finset.sum_congr rfl fun σ _ => by rw [ch_add]; ring
-  simp_rw [e]
-  rw [integral_finsetSum _ (fun σ _ => (ch_int _ _).const_mul _)]
-  simp_rw [integral_const_mul, int_ch]
-  have : ∀ σ : Fin d → ℤ, (σ + n = 0) ↔ (σ = -n) := fun σ => eq_neg_iff_add_eq_zero.symm
-  simp_rw [this, mul_ite, mul_one, mul_zero]
-  rw [Finset.sum_ite_eq' , if_pos hn, fw_neg, neg_neg]
 
-theorem int_conj_fej_ch {d : ℕ} (φ : (Fin d → ℤ) → ℂ) (N : ℕ) (n : Fin d → ℤ) (hn : n ∈ box d N) :
-    ∫ x : Tor d, conj (fej φ N x) * ch n x = ((fw N n : ℝ) : ℂ) * conj (φ (-n)) := by
-  classical
-  have e : ∀ x : Tor d, conj (fej φ N x) * ch n x =
-      ∑ σ ∈ box d N, (((fw N σ : ℝ) : ℂ) * conj (φ (-σ))) * ch (-σ + n) x := by
-    intro x
-    rw [fej, map_sum, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun σ _ => ?_
-    rw [ch_add, ch_neg, map_mul, map_mul, Complex.conj_ofReal]
-    ring
-  simp_rw [e]
-  rw [integral_finsetSum _ (fun σ _ => (ch_int _ _).const_mul _)]
-  simp_rw [integral_const_mul, int_ch]
-  have : ∀ σ : Fin d → ℤ, (-σ + n = 0) ↔ (σ = n) := fun σ => by
-    constructor
-    · intro h; have := eq_neg_of_add_eq_zero_right h; simpa using this.symm
-    · rintro rfl; simp
-  simp_rw [this, mul_ite, mul_one, mul_zero]
-  rw [Finset.sum_ite_eq', if_pos hn]
 
-theorem int_fmu {d : ℕ} {φ : (Fin d → ℤ) → ℂ} (h : Formalism.MainNotions.S.UnitaryLevelOperators.IsPosDefZ φ) (N : ℕ) (n : Fin d → ℤ)
-    (hn : n ∈ box d N) : ∫ x, ch n x ∂(fmu φ N) = ((fw N n : ℝ) : ℂ) * φ n := by
-  have hn' : -n ∈ box d N := by
-    rw [mem_box] at hn ⊢
-    intro j
-    have := hn j
-    simp only [Pi.neg_apply]
-    omega
-  rw [fmu, integral_withDensity_eq_integral_smul (fre_cont φ N).measurable.real_toNNReal]
-  have e : ∀ x : Tor d, (Real.toNNReal (fej φ N x).re) • ch n x =
-      (1 / 2 : ℂ) * (fej φ N x * ch n x) + (1 / 2 : ℂ) * (conj (fej φ N x) * ch n x) := by
-    intro x
-    rw [NNReal.smul_def, Real.coe_toNNReal _ (fej_nonneg h N x), Complex.real_smul, Complex.re_eq_add_conj]
-    ring
-  simp_rw [e]
-  have i1 : Integrable (fun x : Tor d => fej φ N x * ch n x) volume :=
-    ((fej_cont φ N).mul (ch_cont n)).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  have i2 : Integrable (fun x : Tor d => conj (fej φ N x) * ch n x) volume :=
-    ((Complex.continuous_conj.comp (fej_cont φ N)).mul (ch_cont n)).integrable_of_hasCompactSupport
-      (HasCompactSupport.of_compactSpace _)
-  rw [integral_add (i1.const_mul _) (i2.const_mul _), integral_const_mul, integral_const_mul,
-    int_fej_ch φ N n hn', int_conj_fej_ch φ N n hn, posDef_herm h n, Complex.conj_conj]
-  ring
 
-theorem fw_tendsto {d : ℕ} (n : Fin d → ℤ) : Tendsto (fun N : ℕ => fw N n) atTop (𝓝 1) := by
-  unfold fw
-  have hj : ∀ j, Tendsto (fun N : ℕ => (1 - |((n j : ℤ) : ℝ)| / ((N : ℝ) + 1))) atTop (𝓝 1) := by
-    intro j
-    have h0 : Tendsto (fun N : ℕ => |((n j : ℤ) : ℝ)| / ((N : ℝ) + 1)) atTop (𝓝 0) :=
-      tendsto_const_nhds.div_atTop (tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop)
-    simpa using (tendsto_const_nhds (x := (1 : ℝ))).sub h0
-  have h := tendsto_finset_prod Finset.univ (fun j _ => hj j)
-  simpa using h
 
-theorem eventually_mem_box {d : ℕ} (n : Fin d → ℤ) : ∀ᶠ N : ℕ in atTop, n ∈ box d N := by
-  refine Filter.eventually_atTop.2 ⟨∑ j, (n j).natAbs, fun N hN => mem_box.2 fun j => ?_⟩
-  have h1 : (n j).natAbs ≤ N :=
-    (Finset.single_le_sum (fun i _ => Nat.zero_le ((n i).natAbs)) (Finset.mem_univ j)).trans hN
-  have h2 : ((n j).natAbs : ℤ) ≤ N := by exact_mod_cast h1
-  rw [← Int.abs_eq_natAbs] at h2
-  exact abs_le.mp h2
 
-theorem mass_fmu {d : ℕ} {φ : (Fin d → ℤ) → ℂ} (h : Formalism.MainNotions.S.UnitaryLevelOperators.IsPosDefZ φ) (N : ℕ) :
-    (fmu φ N).real Set.univ = (φ 0).re := by
-  have h0 : (0 : Fin d → ℤ) ∈ box d N := by
-    rw [mem_box]; intro j; simp
-  have := int_fmu h N 0 h0
-  simp only [ch_zero, integral_const, fw] at this
-  have h2 := congrArg Complex.re this
-  simpa using h2
 
-theorem measure_of_posDef {d : ℕ} {φ : (Fin d → ℤ) → ℂ} (h : Formalism.MainNotions.S.UnitaryLevelOperators.IsPosDefZ φ) :
-    ∃ μ : Measure (Tor d), IsFiniteMeasure μ ∧ ∀ n, φ n = ∫ x, ch n x ∂μ := by
-  let C : ℝ≥0 := (φ 0).re.toNNReal
-  let ν : ℕ → FiniteMeasure (Tor d) := fun N => ⟨fmu φ N, inferInstance⟩
-  have hK := isCompact_setOfPred_finiteMeasure_le_of_compactSpace (Tor d) C
-  have hmem : ∀ N, ν N ∈ {μ : FiniteMeasure (Tor d) | μ.mass ≤ C} := by
-    intro N
-    show (ν N).mass ≤ C
-    rw [← NNReal.coe_le_coe, Real.coe_toNNReal _ (posDef_zero h).1, ← mass_fmu h N]
-    exact le_of_eq rfl
-  obtain ⟨μ, -, hμ⟩ := hK.ultrafilter_le_nhds ((hyperfilter ℕ).map ν)
-    (by
-      rw [le_principal_iff]
-      exact Filter.mem_map.2 (Filter.univ_mem' hmem))
-  have ht : Tendsto ν (hyperfilter ℕ : Filter ℕ) (𝓝 μ) := hμ
-  rw [FiniteMeasure.tendsto_iff_forall_integral_rclike_tendsto ℂ] at ht
-  refine ⟨μ, inferInstance, fun n => ?_⟩
-  have t1 := ht (BoundedContinuousFunction.mkOfCompact ⟨ch n, ch_cont n⟩)
-  have t2 : Tendsto (fun N => ∫ x, ch n x ∂(fmu φ N)) atTop (𝓝 (φ n)) := by
-    have a1 : Tendsto (fun N : ℕ => ((fw N n : ℝ) : ℂ) * φ n) atTop (𝓝 (((1 : ℝ) : ℂ) * φ n)) :=
-      ((Complex.continuous_ofReal.tendsto _).comp (fw_tendsto n)).mul_const _
-    rw [Complex.ofReal_one, one_mul] at a1
-    refine a1.congr' ?_
-    exact (eventually_mem_box n).mono fun N hN => (int_fmu h N n hN).symm
-  have t3 := t2.mono_left Nat.hyperfilter_le_atTop
-  exact tendsto_nhds_unique t3 t1
 
 end Hz
 
-theorem stHerglotz_of_core : Formalism.MainNotions.S.UnitaryLevelOperators.stHerglotz := by
-  intro d φ
-  constructor
-  · exact fun h => Hz.measure_of_posDef h
-  · rintro ⟨μ, hμ, h⟩
-    exact Hz.posDef_of_measure φ μ h
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -1410,8 +483,6 @@ lemma stB_eq (i : Fin d) : stB d i = EuclideanSpace.single i (1 : ℝ) := by
 lemma stB_apply (i j : Fin d) : (stB d i).ofLp j = if j = i then (1 : ℝ) else 0 := by
   rw [stB_eq]; simp [PiLp.single_apply]
 
-lemma inner_stB (x : EuclideanSpace ℝ (Fin d)) (j : Fin d) : ⟪x, stB d j⟫ = x.ofLp j := by
-  rw [stB_eq, EuclideanSpace.inner_single_right]; simp
 
 lemma stB_sum (m : Fin d → ℤ) : ∑ i, m i • stB d i = zp m := by
   ext j
@@ -1438,72 +509,14 @@ def latE : (Fin d → ℤ) ≃ stL d :=
       obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ).1 v.2
       exact ⟨c, Subtype.ext (by simp only; rw [← stB_sum, hc])⟩⟩
 
-lemma latE_apply (m : Fin d → ℤ) : ((latE d m : stL d) : EuclideanSpace ℝ (Fin d)) = zp m := rfl
 
-lemma dualVec_stB (k : Fin d → ℤ) : Formalism.H.dualVec (stB d) k = zp k := by
-  ext j
-  have h := Formalism.H.inner_dualVec_basis (stB d) k j
-  rw [inner_stB] at h
-  rw [zp_apply, h]
 
-lemma covolume_stL : ZLattice.covolume (stL d) = 1 := by
-  classical
-  have hli : LinearIndependent ℤ (stB d) := (stB d).linearIndependent.restrict_scalars' ℤ
-  rw [ZLattice.covolume_eq_det_mul_measureReal (stL d) volume (Module.Basis.span hli)
-    (EuclideanSpace.basisFun (Fin d) ℝ).toBasis]
-  have : ((↑) : stL d → EuclideanSpace ℝ (Fin d)) ∘ (Module.Basis.span hli) = stB d := by
-    funext i; exact congrArg Subtype.val (Module.Basis.span_apply hli i)
-  rw [this, Formalism.H.covolDual_vol_fd, mul_one, Module.Basis.det_self]
-  simp
 
-lemma dualEquiv_stB (k : Fin d → ℤ) :
-    ((Formalism.H.dualEquiv (stB d) k : Formalism.H.dual (stL d)) : EuclideanSpace ℝ (Fin d)) = zp k := by
-  rw [Formalism.H.dualEquiv_apply, dualVec_stB]
 
-lemma poisson_std (Ψ : 𝓢(EuclideanSpace ℝ (Fin d), ℂ)) :
-    Summable (fun k : Fin d → ℤ =>
-      (𝓕 (Ψ : EuclideanSpace ℝ (Fin d) → ℂ) : EuclideanSpace ℝ (Fin d) → ℂ) (zp k)) ∧
-    HasSum (fun l : Fin d → ℤ => Ψ (zp l))
-      (∑' k : Fin d → ℤ, (𝓕 (Ψ : EuclideanSpace ℝ (Fin d) → ℂ) : EuclideanSpace ℝ (Fin d) → ℂ) (zp k)) := by
-  obtain ⟨hs, hh⟩ := Formalism.H.poissonSchwartz (EuclideanSpace ℝ (Fin d)) (stL d) Ψ 0
-  have key : ∀ k : Fin d → ℤ,
-      (𝓕 (Ψ : EuclideanSpace ℝ (Fin d) → ℂ) : EuclideanSpace ℝ (Fin d) → ℂ)
-          ((Formalism.H.dualEquiv (stB d) k : Formalism.H.dual (stL d)) : EuclideanSpace ℝ (Fin d)) *
-        Complex.exp (2 * Real.pi * Complex.I *
-          (⟪((Formalism.H.dualEquiv (stB d) k : Formalism.H.dual (stL d)) : EuclideanSpace ℝ (Fin d)),
-            (0 : EuclideanSpace ℝ (Fin d))⟫ : ℝ)) =
-      (𝓕 (Ψ : EuclideanSpace ℝ (Fin d) → ℂ) : EuclideanSpace ℝ (Fin d) → ℂ) (zp k) := by
-    intro k
-    rw [dualEquiv_stB]; simp
-  refine ⟨?_, ?_⟩
-  · have h1 := (Equiv.summable_iff (Formalism.H.dualEquiv (stB d))).2 hs
-    simpa only [Function.comp_def, key] using h1
-  · have h2 := (Equiv.hasSum_iff (latE d)).2 hh
-    rw [covolume_stL, ← Equiv.tsum_eq (Formalism.H.dualEquiv (stB d))] at h2
-    simp only [key] at h2
-    simpa [Function.comp_def, latE_apply] using h2
 
-lemma fhat_eq (f : EuclideanSpace ℝ (Fin d) → ℂ) (w : EuclideanSpace ℝ (Fin d)) :
-    (∫ x, Complex.exp (-(2 * Real.pi * Complex.I * (inner ℝ x w : ℝ))) * f x) = (𝓕 f : _ → ℂ) w := by
-  rw [Real.fourier_eq']
-  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  simp only [smul_eq_mul]
-  congr 2
-  push_cast
-  ring
 
 end Std
 
-theorem stPoisson_of_core : Formalism.MainNotions.S.UnitaryLevelOperators.stPoisson := by
-  intro d f
-  obtain ⟨hs, hh⟩ := poisson_std f
-  have e : (fun m : Fin d → ℤ => Formalism.MainNotions.S.UnitaryLevelOperators.fhat (fun x => f x) (Formalism.MainNotions.S.UnitaryLevelOperators.zpt m)) =
-      fun k : Fin d → ℤ => (𝓕 (f : EuclideanSpace ℝ (Fin d) → ℂ) : EuclideanSpace ℝ (Fin d) → ℂ) (zp k) := by
-    funext m
-    exact fhat_eq _ _
-  refine ⟨hh.summable, ?_, ?_⟩
-  · rw [e]; exact hs
-  · rw [e]; exact hh.tsum_eq
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -2076,283 +1089,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts.SP
 
-theorem stat_phase_core (a : ℝ → ℂ) (φ : ℝ → ℝ) (x₀ : ℝ) (ha : ContDiff ℝ ∞ a) (hac : HasCompactSupport a)
-    (hφ : ContDiff ℝ ∞ φ) (h1 : deriv φ x₀ = 0) (h2 : deriv (deriv φ) x₀ ≠ 0)
-    (h3 : ∀ x ∈ tsupport a, x ≠ x₀ → deriv φ x ≠ 0) (σ μ : ℝ) (hσ : σ = 1 ∨ σ = -1) (hμ : 0 < μ)
-    (hσμ : σ * deriv (deriv φ) x₀ = μ) :
-    ∃ C : ℝ, ∀ l : ℝ, 1 ≤ l →
-      ‖Iph φ l a - cexp (I * ((l : ℂ) * (φ x₀ : ℂ))) *
-        (((√(2 * π / l) : ℝ) : ℂ) * cexp (I * (π * σ / 4))) * (a x₀ / (√μ : ℝ))‖ ≤ C / (l * √l) := by
-  have hσσ : σ * σ = 1 := by rcases hσ with rfl | rfl <;> norm_num
-
-  obtain ⟨φ₁, hφ₁, eφ₁, vφ₁⟩ := division φ hφ x₀
-  obtain ⟨h, hh, eh, -⟩ := division φ₁ hφ₁ x₀
-  have hφ' : ContDiff ℝ ∞ (deriv φ) := (contDiff_infty_iff_deriv.1 hφ).2
-  obtain ⟨φ₂, hφ₂, eφ₂, vφ₂⟩ := division (deriv φ) hφ' x₀
-  have eq1 : ∀ x, φ x = φ x₀ + (x - x₀) ^ 2 * h x := by
-    intro x
-    rw [eφ₁ x, eh x, vφ₁, h1]
-    simp only [smul_eq_mul]
-    ring
-  have eq2 : ∀ x, deriv φ x = (x - x₀) * φ₂ x := by
-    intro x
-    rw [eφ₂ x, h1]
-    simp
-  have hhd : Differentiable ℝ h := hh.differentiable (by simp)
-  have hh'c : Continuous (deriv h) := hh.continuous_deriv (by simp)
-  have eq3 : ∀ x, deriv φ x = 2 * (x - x₀) * h x + (x - x₀) ^ 2 * deriv h x := by
-    intro x
-    have a1 : HasDerivAt (fun x : ℝ => (x - x₀) ^ 2) (2 * (x - x₀)) x := by
-      have a0 : HasDerivAt (fun x : ℝ => x - x₀) 1 x := (hasDerivAt_id x).sub_const x₀
-      have hm : HasDerivAt (fun z : ℝ => (z - x₀) * (z - x₀)) (1 * (x - x₀) + (x - x₀) * 1) x := a0.mul a0
-      have e : (fun z : ℝ => (z - x₀) ^ 2) = fun z => (z - x₀) * (z - x₀) := by ext z; ring
-      have e2 : 2 * (x - x₀) = 1 * (x - x₀) + (x - x₀) * 1 := by ring
-      rw [e, e2]
-      exact hm
-    have a2 : HasDerivAt (fun x : ℝ => φ x₀ + (x - x₀) ^ 2 * h x)
-        (2 * (x - x₀) * h x + (x - x₀) ^ 2 * deriv h x) x := (a1.mul (hhd x).hasDerivAt).const_add _
-    exact (a2.congr_of_eventuallyEq (Eventually.of_forall eq1)).deriv
-  have eq4 : φ₂ = fun x => 2 * h x + (x - x₀) * deriv h x := by
-    have hc := hh.continuous
-    apply Continuous.ext_on (dense_compl_singleton x₀) hφ₂.continuous (by fun_prop)
-    intro x hx
-    have hx' : x - x₀ ≠ 0 := sub_ne_zero.2 hx
-    apply mul_left_cancel₀ hx'
-    have := (eq2 x).symm.trans (eq3 x)
-    linear_combination this
-  have vh2 : 2 * h x₀ = deriv (deriv φ) x₀ := by
-    have := congrFun eq4 x₀
-    simp only [sub_self, zero_mul, add_zero] at this
-    rw [← vφ₂, this]
-  have hk0 : 2 * σ * h x₀ = μ := by rw [← hσμ, ← vh2]; ring
-
-  have hopen : IsOpen {x : ℝ | μ / 2 < 2 * σ * h x ∧ φ₂ x ≠ 0} := by
-    have hc := hh.continuous
-    exact (isOpen_lt continuous_const (continuous_const.mul hc)).inter
-      (isOpen_ne_fun hφ₂.continuous continuous_const)
-  have hmem : x₀ ∈ {x : ℝ | μ / 2 < 2 * σ * h x ∧ φ₂ x ≠ 0} :=
-    ⟨by rw [hk0]; linarith, by rw [vφ₂]; exact h2⟩
-  obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.1 hopen x₀ hmem
-  let χ : ContDiffBump x₀ := ⟨ρ / 2, ρ, by positivity, by linarith⟩
-  set k : ℝ → ℝ := fun x => χ x * (2 * σ * h x) + (1 - χ x) * μ with hkdef
-  have hk : ContDiff ℝ ∞ k :=
-    (χ.contDiff.mul (contDiff_const.mul hh)).add ((contDiff_const.sub χ.contDiff).mul contDiff_const)
-  have hkge : ∀ x, μ / 2 ≤ k x := by
-    intro x
-    by_cases hx : x ∈ Metric.ball x₀ ρ
-    · have b1 := (hball hx).1
-      have c0 : 0 ≤ χ x := χ.nonneg
-      have c1 : χ x ≤ 1 := χ.le_one
-      simp only [hkdef]
-      nlinarith
-    · have : χ x = 0 := χ.zero_of_le_dist (by simpa [Metric.mem_ball, not_lt] using hx)
-      simp only [hkdef, this]
-      linarith
-  have hkpos : ∀ x, 0 < k x := fun x => lt_of_lt_of_le (by positivity) (hkge x)
-  have hsk : ContDiff ℝ ∞ (fun x => √(k x)) := hk.sqrt fun x => (hkpos x).ne'
-  set y : ℝ → ℝ := fun x => (x - x₀) * √(k x) with hydef
-  have hy : ContDiff ℝ ∞ y := (contDiff_id.sub contDiff_const).mul hsk
-  have hy' : ContDiff ℝ ∞ (deriv y) := (contDiff_infty_iff_deriv.1 hy).2
-  have hyd : Differentiable ℝ y := hy.differentiable (by simp)
-  have hχ1 : ∀ x, |x - x₀| ≤ ρ / 2 → χ x = 1 := fun x hx =>
-    χ.one_of_mem_closedBall (by rw [Metric.mem_closedBall, Real.dist_eq]; exact hx)
-  have hkx0 : k x₀ = μ := by
-    have : χ x₀ = 1 := hχ1 x₀ (by simp; positivity)
-    simp only [hkdef, this]
-    linarith
-  have hy'0 : deriv y x₀ = √μ := by
-    have d1 : HasDerivAt (fun x : ℝ => x - x₀) 1 x₀ := (hasDerivAt_id x₀).sub_const x₀
-    have d2 : DifferentiableAt ℝ (fun x => √(k x)) x₀ := (hsk.differentiable (by simp)) x₀
-    have := (d1.mul d2.hasDerivAt).deriv
-    simp only [sub_self, zero_mul, add_zero, one_mul, hkx0] at this
-    exact this
-  have hy0 : y x₀ = 0 := by simp [hydef]
-  have hs2 : 0 < √(μ / 2) := Real.sqrt_pos.2 (by positivity)
-  have hyabs : ∀ x, |x - x₀| * √(μ / 2) ≤ |y x| := by
-    intro x
-    simp only [hydef]
-    rw [abs_mul, abs_of_nonneg (Real.sqrt_nonneg (k x))]
-    gcongr
-    exact hkge x
-  set ε : ℝ := ρ / 2 * √(μ / 2) with hεdef
-  have hε : 0 < ε := by positivity
-  let η₀ : ContDiffBump (0 : ℝ) := ⟨ε / 2, ε, by positivity, by linarith⟩
-  set η : ℝ → ℂ := fun v => ((η₀ v : ℝ) : ℂ) with hηdef
-  have hη : ContDiff ℝ ∞ η := Complex.ofRealCLM.contDiff.comp η₀.contDiff
-  have hηc : HasCompactSupport η := η₀.hasCompactSupport.comp_left (g := fun t : ℝ => (t : ℂ)) Complex.ofReal_zero
-  have hη0 : η 0 = 1 := by
-    have : η₀ 0 = 1 := η₀.one_of_mem_closedBall (Metric.mem_closedBall_self (by positivity))
-    simp only [hηdef, this, Complex.ofReal_one]
-  have hsupp0 : ∀ v, η₀ v ≠ 0 → |v| < ε := by
-    intro v hv
-    have : v ∈ Metric.ball (0 : ℝ) ε := by
-      have := η₀.support_eq
-      rw [← this]; exact hv
-    simpa [Real.dist_eq] using this
-  have hnear : ∀ x, η₀ (y x) ≠ 0 → |x - x₀| < ρ / 2 := by
-    intro x hx
-    have := (hyabs x).trans_lt (hsupp0 _ hx)
-    exact lt_of_mul_lt_mul_right this hs2.le
-  have hphase : ∀ x, η₀ (y x) ≠ 0 → φ x = φ x₀ + σ * (y x) ^ 2 / 2 := by
-    intro x hx
-    have hkx : k x = 2 * σ * h x := by
-      simp only [hkdef, hχ1 x (hnear x hx).le]
-      ring
-    rw [eq1 x]
-    simp only [hydef]
-    rw [mul_pow, Real.sq_sqrt (hkpos x).le, hkx]
-    linear_combination (-(x - x₀) ^ 2 * h x) * hσσ
-  set p : ℝ → ℂ := fun x => η (y x) * ((deriv y x : ℝ) : ℂ) with hpdef
-  have hp : ContDiff ℝ ∞ p := (hη.comp hy).mul (Complex.ofRealCLM.contDiff.comp hy')
-  set S : Set ℝ := tsupport a ∪ Metric.closedBall x₀ (ρ / 2) with hSdef
-  have hS : IsCompact S := hac.isCompact.union (isCompact_closedBall _ _)
-  have hpS : Function.support p ⊆ S := by
-    intro x hx
-    right
-    have : η₀ (y x) ≠ 0 := by
-      intro h0
-      apply hx
-      simp [hpdef, hηdef, h0]
-    rw [Metric.mem_closedBall, Real.dist_eq]
-    exact (hnear x this).le
-  have hx0S : x₀ ∈ S := Or.inr (Metric.mem_closedBall_self (by positivity))
-  have hφ₂S : ∀ x ∈ S, φ₂ x ≠ 0 := by
-    rintro x (hx | hx)
-    · by_cases hxx : x = x₀
-      · rw [hxx, vφ₂]; exact h2
-      · intro h0
-        apply h3 x hx hxx
-        rw [eq2 x, h0, mul_zero]
-    · exact (hball (Metric.closedBall_subset_ball (by linarith) hx)).2
-  have hp0 : p x₀ = ((√μ : ℝ) : ℂ) := by
-    simp only [hpdef, hy0, hη0, hy'0, one_mul]
-  have hsμ : ((√μ : ℝ) : ℂ) ≠ 0 := by
-    exact_mod_cast (Real.sqrt_pos.2 hμ).ne'
-
-  have hsub : ∀ l : ℝ, Iph φ l p = cexp (I * ((l : ℂ) * (φ x₀ : ℂ))) *
-      ∫ v : ℝ, cexp (I * ((l : ℂ) * ((σ : ℂ) * (v : ℂ) ^ 2 / 2))) * η v := by
-    intro l
-    set G : ℝ → ℂ := fun v => cexp (I * ((l : ℂ) * ((σ : ℂ) * (v : ℂ) ^ 2 / 2))) * η v with hGdef
-    have hG : Continuous G := by
-      have := hη.continuous
-      have h5 : Continuous fun v : ℝ => (v : ℂ) := Complex.continuous_ofReal
-      fun_prop
-    have e1 : ∀ x, cexp (I * ((l : ℂ) * (φ x : ℂ))) * p x =
-        cexp (I * ((l : ℂ) * (φ x₀ : ℂ))) * (deriv y x • G (y x)) := by
-      intro x
-      by_cases hx : η₀ (y x) = 0
-      · simp [hpdef, hGdef, hηdef, hx]
-      · rw [hphase x hx]
-        simp only [hpdef, hGdef, Complex.real_smul]
-        push_cast
-        rw [show I * ((l : ℂ) * ((φ x₀ : ℂ) + (σ : ℂ) * (y x : ℂ) ^ 2 / 2)) =
-          I * ((l : ℂ) * (φ x₀ : ℂ)) + I * ((l : ℂ) * ((σ : ℂ) * (y x : ℂ) ^ 2 / 2)) by ring, Complex.exp_add]
-        ring
-    unfold Iph
-    simp_rw [e1]
-    rw [integral_const_mul]
-    congr 1
-    have s1 : Function.support (fun x => deriv y x • G (y x)) ⊆ Ioc (x₀ - ρ) (x₀ + ρ) := by
-      intro x hx
-      have : η₀ (y x) ≠ 0 := by
-        intro h0
-        apply hx
-        simp [hGdef, hηdef, h0]
-      have := hnear x this
-      rw [abs_lt] at this
-      constructor <;> linarith [this.1, this.2]
-    have y1 : 2 * ε ≤ y (x₀ + ρ) := by
-      have := hyabs (x₀ + ρ)
-      have e : x₀ + ρ - x₀ = ρ := by ring
-      have hpos : 0 ≤ y (x₀ + ρ) := by
-        simp only [hydef, e]; positivity
-      rw [e, abs_of_pos hρ, abs_of_nonneg hpos] at this
-      calc 2 * ε = ρ * √(μ / 2) := by rw [hεdef]; ring
-        _ ≤ _ := this
-    have y2 : y (x₀ - ρ) ≤ -(2 * ε) := by
-      have := hyabs (x₀ - ρ)
-      have e : x₀ - ρ - x₀ = -ρ := by ring
-      have hneg : y (x₀ - ρ) ≤ 0 := by
-        simp only [hydef, e]
-        have : 0 ≤ ρ * √(k (x₀ - ρ)) := by positivity
-        linarith
-      rw [e, abs_neg, abs_of_pos hρ, abs_of_nonpos hneg] at this
-      have e2 : 2 * ε = ρ * √(μ / 2) := by rw [hεdef]; ring
-      linarith
-    have s2 : Function.support G ⊆ Ioc (y (x₀ - ρ)) (y (x₀ + ρ)) := by
-      intro v hv
-      have : η₀ v ≠ 0 := by
-        intro h0
-        apply hv
-        simp [hGdef, hηdef, h0]
-      have := hsupp0 v this
-      rw [abs_lt] at this
-      constructor <;> linarith [this.1, this.2]
-    rw [← intervalIntegral.integral_eq_integral_of_support_subset s1,
-      ← intervalIntegral.integral_eq_integral_of_support_subset s2]
-    exact intervalIntegral.integral_deriv_smul_comp (fun x _ => (hyd x).hasDerivAt)
-      hy'.continuous.continuousOn hG
-
-  have hstep : ∀ f : ℝ → ℂ, ContDiff ℝ ∞ f → Function.support f ⊆ S → ∃ c : ℝ → ℂ, ContDiff ℝ ∞ c ∧
-      Function.support c ⊆ S ∧ ∀ x, f x = (f x₀ / (√μ : ℝ)) * p x + ((deriv φ x : ℝ) : ℂ) * c x := by
-    intro f hf hfS
-    set A : ℂ := f x₀ / (√μ : ℝ) with hA
-    set F : ℝ → ℂ := fun x => f x - A * p x with hFdef
-    have hF : ContDiff ℝ ∞ F := hf.sub (contDiff_const.mul hp)
-    have hF0 : F x₀ = 0 := by
-      simp only [hFdef, hA, hp0]
-      field_simp
-      ring
-    have hFS : ∀ x, x ∉ S → F x = 0 := by
-      intro x hxS
-      have f0 : f x = 0 := by
-        by_contra hne
-        exact hxS (hfS hne)
-      have p0 : p x = 0 := by
-        by_contra hne
-        exact hxS (hpS hne)
-      simp only [hFdef, f0, p0]
-      ring
-    obtain ⟨F₁, hF₁, eF₁, -⟩ := division F hF x₀
-    have eF : ∀ x, F x = (x - x₀) • F₁ x := by
-      intro x
-      rw [eF₁ x, hF0, zero_add]
-    have hF₁S : ∀ x, x ∉ S → F₁ x = 0 := by
-      intro x hxS
-      have hne : x ≠ x₀ := fun e => hxS (e ▸ hx0S)
-      have := eF x
-      rw [hFS x hxS] at this
-      exact (smul_eq_zero.1 this.symm).resolve_left (sub_ne_zero.2 hne)
-    refine ⟨fun x => F₁ x * (((φ₂ x : ℝ) : ℂ))⁻¹, ?_, ?_, ?_⟩
-    · rw [contDiff_iff_contDiffAt]
-      intro x
-      by_cases hx : φ₂ x = 0
-      · have hxS : x ∉ S := fun hh => hφ₂S x hh hx
-        have hev : ∀ᶠ x' in 𝓝 x, x' ∉ S := hS.isClosed.isOpen_compl.mem_nhds hxS
-        have : (fun x => F₁ x * (((φ₂ x : ℝ) : ℂ))⁻¹) =ᶠ[𝓝 x] fun _ => 0 := by
-          filter_upwards [hev] with x' hx'
-          rw [hF₁S x' hx', zero_mul]
-        exact contDiffAt_const.congr_of_eventuallyEq this
-      · have hc2 : ContDiff ℝ ∞ (fun x => ((φ₂ x : ℝ) : ℂ)) := Complex.ofRealCLM.contDiff.comp hφ₂
-        exact hF₁.contDiffAt.mul (hc2.contDiffAt.inv (by exact_mod_cast hx))
-    · intro x hx
-      by_contra hxS
-      apply hx
-      show F₁ x * (((φ₂ x : ℝ) : ℂ))⁻¹ = 0
-      rw [hF₁S x hxS, zero_mul]
-    · intro x
-      have e0 : f x = A * p x + F x := by simp only [hFdef]; ring
-      rw [e0, eq2 x, eF x]
-      congr 1
-      by_cases hx : φ₂ x = 0
-      · have hxS : x ∉ S := fun hh => hφ₂S x hh hx
-        simp [hF₁S x hxS]
-      · have hxc : ((φ₂ x : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hx
-        rw [Complex.real_smul]
-        push_cast
-        field_simp
-  exact assemble φ hφ x₀ σ μ hσ S hS p hp hpS η hη hηc hη0 hsub hstep a ha
-    ((subset_tsupport a).trans subset_union_left)
 
 end Formalism.MainNotions.InterlacingSignCuts.SP
 
@@ -2371,44 +1107,7 @@ namespace Formalism.MainNotions.InterlacingSignCuts
 
 open SP
 
-theorem rpow_neg_three_half (l : ℝ) (hl : 0 < l) : l ^ (-(3 : ℝ) / 2) = 1 / (l * √l) := by
-  rw [neg_div, Real.rpow_neg hl.le, Real.sqrt_eq_rpow, one_div]
-  congr 1
-  rw [show (3 : ℝ) / 2 = 1 + 1 / 2 by norm_num, Real.rpow_add hl, Real.rpow_one]
 
-theorem stStatPhase_of_core : Formalism.MainNotions.S.UnitaryLevelOperators.stStatPhase := by
-  intro a φ x₀ ha hac hφ h1 h2 h3
-  set d : ℝ := deriv (deriv φ) x₀ with hd
-  set σ : ℝ := ((SignType.sign d : SignType) : ℝ) with hσdef
-  have hσ : σ = 1 ∨ σ = -1 := by
-    rcases lt_or_gt_of_ne h2 with hneg | hpos
-    · right; simp [hσdef, sign_neg hneg]
-    · left; simp [hσdef, sign_pos hpos]
-  have hσμ : σ * d = |d| := by
-    rcases lt_or_gt_of_ne h2 with hneg | hpos
-    · simp [hσdef, sign_neg hneg, abs_of_neg hneg]
-    · simp [hσdef, sign_pos hpos, abs_of_pos hpos]
-  have hμ : 0 < |d| := abs_pos.2 h2
-  obtain ⟨C, hC⟩ := stat_phase_core a φ x₀ ha hac hφ h1 h2 h3 σ |d| hσ hμ hσμ
-  refine Asymptotics.IsBigO.of_bound C ?_
-  filter_upwards [eventually_ge_atTop (1 : ℝ)] with l hl
-  have hl0 : 0 < l := by linarith
-  have hb := hC l hl
-  rw [rpow_neg_three_half l hl0, Real.norm_of_nonneg (by positivity), mul_one_div]
-  refine le_of_eq_of_le ?_ hb
-  congr 1
-  unfold Iph
-  congr 1
-  have e1 : cexp (I * ((l : ℂ) * (φ x₀ : ℂ) + (π : ℂ) * (σ : ℂ) / 4)) =
-      cexp (I * ((l : ℂ) * (φ x₀ : ℂ))) * cexp (I * ((π : ℂ) * (σ : ℂ) / 4)) := by
-    rw [mul_add, Complex.exp_add]
-  have e2 : √(2 * π / (l * |d|)) = √(2 * π / l) / √|d| := by
-    rw [← Real.sqrt_div (by positivity)]
-    congr 1
-    field_simp
-  rw [e1, e2]
-  push_cast
-  ring
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -2588,33 +1287,6 @@ theorem mu_inv (k : ℕ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (hμ : μ
   refine ⟨hinv, ?_⟩
   exact Matrix.mul_nonsing_inv μ (Matrix.isUnit_det_of_left_inverse hl)
 
-theorem om'_norm (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : inWb k r z')
-    (hT' : 0 < Tz k r z') (c : Fin r → ℂ) (hc : ∀ a, c a ≠ 0) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ)
-    (hμ : μ ∈ UH (Hb k)) :
-    (herm (Hb k) (omF' k r z z' c μ) (omF' k r z z' c μ)).re = Gf k r z z' (bigCell k r c μ) / Tz k r z' := by
-  have hμ' : μᴴ * Hb k * μ = Hb k := hμ
-  have hiso : ∀ v w, herm (Hb k) v w = herm (Hb k) (μ *ᵥ v) (μ *ᵥ w) := fun v w => by
-    rw [herm_unitary, hμ']
-  have hback : μ *ᵥ (μ⁻¹ *ᵥ wbPart k r z) = wbPart k r z := by
-    rw [Matrix.mulVec_mulVec, (mu_inv k μ hμ').2, Matrix.one_mulVec]
-  have hzz := ip_self k r z' hz'
-  have hxx : herm (Hb k) (μ⁻¹ *ᵥ wbPart k r z) (μ⁻¹ *ᵥ wbPart k r z) = -((Tz k r z : ℝ) : ℂ) := by
-    rw [hiso, hback, ip_self k r z hz]
-  have hxz : herm (Hb k) (μ⁻¹ *ᵥ wbPart k r z) (wbPart k r z') =
-      starRingEnd ℂ (herm (Hb k) (μ *ᵥ wbPart k r z') (wbPart k r z)) := by
-    rw [hiso, hback, ip_conj]
-  have key := (Formalism.FourierDecayAlt.P.omega_norm_formula (Fin (k + 1) → ℂ) (herm (Hb k)) (ip_add k) (ip_smul k) (ip_conj k)
-    (wbPart k r z') (μ⁻¹ *ᵥ wbPart k r z) (Tz k r z') (Tz k r z)
-    (star (Dmin k r z z' (bigCell k r c μ) ⟨r, by omega⟩)) hT' hzz hxx).2
-  have hom : omF' k r z z' c μ = star (Dmin k r z z' (bigCell k r c μ) ⟨r, by omega⟩) •
-      (μ⁻¹ *ᵥ wbPart k r z +
-        (herm (Hb k) (μ⁻¹ *ᵥ wbPart k r z) (wbPart k r z') / ((Tz k r z' : ℝ) : ℂ)) • wbPart k r z') := by
-    unfold omF' prW
-    rw [hzz, div_neg, neg_smul, sub_neg_eq_add]
-  rw [hom, key, Complex.ofReal_re]
-  unfold Gf
-  rw [(bigCell_D k r z z' hz hz' c hc μ).2, hxz, Complex.star_def, ← map_mul, Complex.normSq_conj,
-    Complex.normSq_conj, mul_comm (Tz k r z') (Tz k r z)]
 
 def IsPolyG {n : ℕ} (a : Matrix (Fin n) (Fin n) ℂ → ℂ) : Prop :=
   ∃ P : MvPolynomial ((Fin n × Fin n) ⊕ (Fin n × Fin n)) ℂ, ∀ g, evG g P = a g
@@ -2678,78 +1350,14 @@ theorem det {m : ℕ} {M : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin m) (Fin m)
   simp only [Matrix.det_apply']
   exact sum _ fun σ => mul (const _) (prod _ fun i => h (σ i) i)
 
-theorem mulVec_right (v : Fin n → ℂ) (i : Fin n) : IsPolyG (n := n) (fun g => (g *ᵥ v) i) := by
-  simp only [Matrix.mulVec, dotProduct]
-  exact sum _ fun j => mul (entry i j) (const _)
 
-theorem mulVec_const {m m' : ℕ} (A : Matrix (Fin m') (Fin m) ℂ) {V : Matrix (Fin n) (Fin n) ℂ → Fin m → ℂ}
-    (hV : ∀ i, IsPolyG (fun g => V g i)) (i : Fin m') : IsPolyG (fun g => (A *ᵥ V g) i) := by
-  simp only [Matrix.mulVec, dotProduct]
-  exact sum _ fun j => mul (const _) (hV j)
 
-theorem herm_left {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) {V : Matrix (Fin n) (Fin n) ℂ → Fin m → ℂ}
-    (hV : ∀ i, IsPolyG (fun g => V g i)) (w : Fin m → ℂ) : IsPolyG (fun g => herm H (V g) w) := by
-  simp only [herm, dotProduct]
-  exact sum _ fun i => mul (const _) (mulVec_const H hV i)
 
-theorem prW' (k : ℕ) (zb : Fin (k + 1) → ℂ) {V : Matrix (Fin n) (Fin n) ℂ → Fin (k + 1) → ℂ}
-    (hV : ∀ i, IsPolyG (fun g => V g i)) (j : Fin (k + 1)) : IsPolyG (fun g => prW k zb (V g) j) := by
-  simp only [prW, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, div_eq_mul_inv]
-  exact sub (hV j) (mul (mul (herm_left _ hV zb) (const _)) (const _))
 
 end IsPolyG
 
-theorem isPoly_Dmin (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (l : Fin (r + 2)) :
-    IsPolyG (fun g => Dmin k r z z' g l) := by
-  unfold Dmin
-  apply IsPolyG.det
-  intro a b
-  simp only [Matrix.submatrix_apply, Zhat]
-  exact IsPolyG.herm_left _ (fun i => IsPolyG.mulVec_right _ i) _
 
-theorem bigCell_wI (k r : ℕ) (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
-    (bigCell k r c μ).submatrix (wI k r) (wI k r) = μ := by
-  ext j j'
-  have hj := j.isLt
-  have hj' := j'.isLt
-  have h1 : ¬ (wI k r j').val < r := by show ¬ (r + j'.val < r); omega
-  have h2 : (wI k r j').val ≤ r + k := by show r + j'.val ≤ r + k; omega
-  have h3 : r ≤ (wI k r j).val ∧ (wI k r j).val ≤ r + k := by
-    constructor
-    · show r ≤ r + j.val; omega
-    · show r + j.val ≤ r + k; omega
-  rw [Matrix.submatrix_apply]
-  unfold bigCell
-  rw [dif_neg h1, dif_pos h2, dif_pos h3]
-  congr 1 <;> exact Fin.ext (by show r + _ - r = _; omega)
 
-theorem stOm_of_core (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : inWb k r z')
-    (hT : 0 < Tz k r z) (hT' : 0 < Tz k r z') : Formalism.MainNotions.S.UnitaryLevelOperators.stOm k r z z' := by
-  have h1 : ∀ j : Fin (k + 1), IsPolyG (fun g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ =>
-      Dmin k r z z' g ⟨r, by omega⟩ * prW k (wbPart k r z) (wbPart k r (g *ᵥ z')) j) := fun j =>
-    IsPolyG.mul (isPoly_Dmin k r z z' _) (IsPolyG.prW' k _ (fun i => IsPolyG.mulVec_right z' (wI k r i)) j)
-  have h2 : ∀ j : Fin (k + 1), IsPolyG (fun g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ =>
-      starRingEnd ℂ (Dmin k r z z' g ⟨r, by omega⟩) * prW k (wbPart k r z')
-        (Hb k *ᵥ ((g.submatrix (wI k r) (wI k r))ᴴ *ᵥ (Hb k *ᵥ wbPart k r z))) j) := fun j =>
-    IsPolyG.mul (isPoly_Dmin k r z z' _).star (IsPolyG.prW' k _ (fun i => IsPolyG.mulVec_const _ (fun i' => by
-      simp only [Matrix.mulVec, dotProduct, Matrix.conjTranspose_apply, Matrix.submatrix_apply]
-      exact IsPolyG.sum _ fun q => IsPolyG.mul (IsPolyG.entry _ _).star (IsPolyG.const _)) i) j)
-  choose p hp using h1
-  choose p' hp' using h2
-  refine ⟨p, p', fun c hc μ hμ => ⟨?_, ?_, om_norm k r z z' hz hz' hT c hc μ hμ,
-    om'_norm k r z z' hz hz' hT' c hc μ hμ⟩⟩
-  · funext j
-    rw [hp j]
-    beta_reduce
-    rw [wbPart_bigCell k r c μ z' hz']
-    rfl
-  · funext j
-    rw [hp' j]
-    beta_reduce
-    rw [bigCell_wI]
-    unfold omF'
-    rw [(mu_inv k μ hμ).1, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
-    rfl
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -2800,108 +1408,9 @@ theorem contDiffAt_bc (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (μsec : 
         exact star_ne_zero.2 (hx.1 _)
       · exact contDiffAt_const
 
-theorem Gf_bc (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : inWb k r z')
-    (μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (hsec : IsSection k r z z' μsec)
-    (y : Fin (r + 1) → ℂ) (hy : y ∈ BDom k r z z') :
-    Gf k r z z' (bigCell k r (cOf y) (μsec (zOf y))) =
-      Complex.normSq (∏ a : Fin r with a.val < r, cOf y a) * (Complex.normSq (zOf y) - Tz k r z * Tz k r z') := by
-  have hc : ∀ a, cOf y a ≠ 0 := fun a => hy.1 a.castSucc
-  have h1 := (bigCell_D k r z z' hz hz' (cOf y) hc (μsec (zOf y))).2
-  rw [(hsec.2 (zOf y) hy.2).2] at h1
-  have h2 := (Formalism.QuantumDeterminants.bigCellMinors k r z z' (cOf y) (μsec (zOf y)) hz hz').1 (Fin.last r)
-  simp only [Fin.val_last] at h2
-  unfold Gf
-  rw [h1, h2, Complex.normSq_mul]
-  ring
 
-theorem Btr_mem_WSm {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (k r : ℕ)
-    (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : inWb k r z')
-    (μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (hsec : IsSection k r z z' μsec)
-    (J : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → E) (hJ : SmoothOnH (Hpk k r) J)
-    (ε : ℝ) (hε : 0 < ε) (hK : ∀ g, J g ≠ 0 → ε ≤ Gf k r z z' g) :
-    Btr k r z z' μsec J ∈ WSm (r + 1) E := by
-  refine ⟨?_, fun x hx => ?_⟩
-  · intro x hx
-    apply ContDiffAt.contDiffWithinAt
-    by_cases hB : x ∈ BDom k r z z'
-    · have hmem : ∀ y ∈ BDom k r z z', bigCell k r (cOf y) (μsec (zOf y)) ∈ UH (Hpk k r) := fun y hy =>
-        Formalism.QuantumDeterminants.bigCellMem k r _ _ (fun a => hy.1 a.castSucc) (hsec.2 (zOf y) hy.2).1
-      obtain ⟨U, F, hU, hxU, hF, hJF⟩ := hJ _ (hmem x hB)
-      have hβ := contDiffAt_bc k r z z' μsec hsec x hB
-      have hev : Btr k r z z' μsec J =ᶠ[𝓝 x] fun y =>
-          ((((∏ a : Fin r, ‖cOf y a‖ ^ (Mdim k r a - 1)) *
-            (Complex.normSq (zOf y) - Tz k r z * Tz k r z') ^ (((k : ℝ) - 1) / 2) : ℝ) : ℂ) •
-          F (bigCell k r (cOf y) (μsec (zOf y)))) := by
-        filter_upwards [(isOpen_BDom k r z z').mem_nhds hB,
-          hβ.continuousAt.preimage_mem_nhds (hU.mem_nhds hxU)] with y hy hyU
-        unfold Btr
-        rw [if_pos hy, hJF _ hyU (hmem y hy)]
-      refine ContDiffAt.congr_of_eventuallyEq ?_ hev
-      apply ContDiffAt.smul
-      · refine Complex.ofRealCLM.contDiff.contDiffAt.comp x (ContDiffAt.mul ?_ ?_)
-        · refine contDiffAt_prod fun a _ => ContDiffAt.pow ?_ _
-          exact ContDiffAt.norm ℝ (contDiff_apply ℝ ℂ a.castSucc).contDiffAt (hB.1 a.castSucc)
-        · refine ContDiffAt.rpow_const_of_ne ?_ (ne_of_gt (sub_pos.2 hB.2))
-          refine ContDiffAt.sub ?_ contDiffAt_const
-          simp only [Complex.normSq_eq_norm_sq]
-          exact ContDiffAt.norm_sq ℝ (contDiff_apply ℝ ℂ (Fin.last r)).contDiffAt
-      · exact (hF.contDiffAt (hU.mem_nhds hxU)).comp x hβ
-    · have hcont : Continuous fun y : Fin (r + 1) → ℂ =>
-          Complex.normSq (∏ a : Fin r with a.val < r, cOf y a) *
-            (Complex.normSq (zOf y) - Tz k r z * Tz k r z') :=
-        (Complex.continuous_normSq.comp (continuous_finsetProd _ fun a _ => continuous_apply _)).mul
-          ((Complex.continuous_normSq.comp (continuous_apply _)).sub continuous_const)
-      have hx0 : Complex.normSq (∏ a : Fin r with a.val < r, cOf x a) *
-          (Complex.normSq (zOf x) - Tz k r z * Tz k r z') < ε := by
-        have h1 : Complex.normSq (zOf x) - Tz k r z * Tz k r z' ≤ 0 := by
-          have : ¬ Tz k r z * Tz k r z' < Complex.normSq (zOf x) := fun h => hB ⟨hx, h⟩
-          linarith
-        have h2 := Complex.normSq_nonneg (∏ a : Fin r with a.val < r, cOf x a)
-        nlinarith
-      have hev : Btr k r z z' μsec J =ᶠ[𝓝 x] fun _ => (0 : E) := by
-        filter_upwards [(isOpen_lt hcont continuous_const).mem_nhds hx0] with y hy
-        unfold Btr
-        by_cases hyB : y ∈ BDom k r z z'
-        · rw [if_pos hyB]
-          have : J (bigCell k r (cOf y) (μsec (zOf y))) = 0 := by
-            by_contra hne
-            have h := hK _ hne
-            rw [Gf_bc k r z z' hz hz' μsec hsec y hyB] at h
-            exact absurd hy (not_lt.2 h)
-          rw [this, smul_zero]
-        · rw [if_neg hyB]
-      exact contDiffAt_const.congr_of_eventuallyEq hev
-  · unfold Btr
-    rw [if_neg (fun h => hx h.1)]
 
-theorem Img_subset_WSm (L : Lev) (h : L.Std) : L.Img ⊆ (WSm (L.r + 1) L.Hom : Set L.PF) := by
-  rintro φ ⟨J, ⟨hJ, ε, hε, hK⟩, rfl⟩
-  exact Btr_mem_WSm (L.k0 + 1) L.r L.z L.z' h.1 h.2.1 L.μsec h.2.2.2.2 J hJ.1 ε hε hK
 
-theorem Img_support (L : Lev) (h : L.Std) (φ : L.PF) (hφ : φ ∈ L.Img) :
-    ∃ ε : ℝ, 0 < ε ∧ ∀ x, φ x ≠ 0 → x ∈ L.BD ∧
-      ε ≤ Complex.normSq (∏ a : Fin L.r, cOf x a) * (Complex.normSq (zOf x) - L.T * L.T') := by
-  obtain ⟨J, ⟨-, ε, hε, hK⟩, rfl⟩ := hφ
-  refine ⟨ε, hε, fun x hx => ?_⟩
-  have hB : x ∈ BDom (L.k0 + 1) L.r L.z L.z' := by
-    by_contra hB
-    apply hx
-    show Btr (L.k0 + 1) L.r L.z L.z' L.μsec J x = 0
-    unfold Btr
-    rw [if_neg hB]
-  refine ⟨hB, ?_⟩
-  have hJ : J (bigCell (L.k0 + 1) L.r (cOf x) (L.μsec (zOf x))) ≠ 0 := by
-    intro h0
-    apply hx
-    show Btr (L.k0 + 1) L.r L.z L.z' L.μsec J x = 0
-    unfold Btr
-    rw [if_pos hB, h0, smul_zero]
-  have h1 := hK _ hJ
-  rw [Gf_bc (L.k0 + 1) L.r L.z L.z' h.1 h.2.1 L.μsec h.2.2.2.2 x hB] at h1
-  have h2 : (Finset.univ.filter fun a : Fin L.r => a.val < L.r) = Finset.univ :=
-    Finset.filter_true_of_mem fun a _ => a.isLt
-  rw [h2] at h1
-  exact h1
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -3082,36 +1591,9 @@ namespace Formalism.MainNotions.InterlacingSignCuts.Gm
 
 open Formalism.MainNotions.S.UnitaryLevelOperators
 
-theorem mm_zero_left {s : ℕ} (a : Msq s) : mm (0 : Msq s) a = 0 := by
-  funext i j
-  simp [mm, Matrix.mul_apply]
 
-theorem mm_zero_right {s : ℕ} (a : Msq s) : mm a (0 : Msq s) = 0 := by
-  funext i j
-  simp [mm, Matrix.mul_apply]
 
-theorem isOrbMeas_add_dirac {s : ℕ} (c : ℂ) (g : Msq s) (ν : Measure (Msq s × Msq s))
-    (hS : muStab c g Set.univ = ⊤) (h : IsOrbMeas c g ν) :
-    IsOrbMeas c g (ν + Measure.dirac ((0 : Msq s), (0 : Msq s))) := by
-  intro F hF
-  rw [h F hF]
-  set G : Msq s × Msq s → ℂ := fun p =>
-    ∫ u', F (mm p.1 (mm g (mm (minv u') (minv g))), mm u' p.2) ∂(muStab c g) with hG
-  have h0 : G ((0 : Msq s), (0 : Msq s)) = 0 := by
-    simp only [hG, mm_zero_left, mm_zero_right, integral_const, Measure.real, hS, ENNReal.toReal_top, zero_smul]
-  by_cases hi : Integrable G ν
-  · rw [integral_add_measure hi (integrable_dirac (by simp [h0])), integral_dirac, h0, add_zero]
-  · have hi' : ¬ Integrable G (ν + Measure.dirac ((0 : Msq s), (0 : Msq s))) :=
-      fun hh => hi hh.left_of_add_measure
-    rw [integral_undef hi, integral_undef hi']
 
-theorem OmG_add_dirac {s : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E] (c : ℂ) (g : Msq s)
-    (ν : Measure (Msq s × Msq s)) (Φ : Msq s → E)
-    (hi : Integrable (fun p : Msq s × Msq s => (psiLow c p.1 * psiUp c p.2) • Φ (mm (mm p.1 g) p.2)) ν) :
-    OmG c (ν + Measure.dirac ((0 : Msq s), (0 : Msq s))) Φ g = OmG c ν Φ g + Φ 0 := by
-  unfold OmG
-  rw [integral_add_measure hi (integrable_dirac (by simp)), integral_dirac]
-  simp [mm_zero_left, mm_zero_right, psiLow, psiUp, psiC]
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 
@@ -3132,9 +1614,6 @@ open Formalism.MainNotions.S.UnitaryLevelOperators Formalism.FourierDecayAlt.G F
 
 def toM {s : ℕ} (A : Matrix (Fin s) (Fin s) ℂ) : Msq s := fun i j => A i j
 
-theorem mm_toM {s : ℕ} (A B : Matrix (Fin s) (Fin s) ℂ) : mm (toM A) (toM B) = toM (A * B) := rfl
-theorem minv_toM {s : ℕ} (A : Matrix (Fin s) (Fin s) ℂ) : minv (toM A) = toM A⁻¹ := rfl
-theorem toM_of {s : ℕ} (a : Msq s) : toM (Matrix.of a) = a := rfl
 theorem of_toM {s : ℕ} (A : Matrix (Fin s) (Fin s) ℂ) : Matrix.of (toM A) = A := rfl
 
 theorem continuous_toM (s : ℕ) : Continuous (toM (s := s)) := by
@@ -3556,15 +2035,6 @@ theorem PsiB_eq (n : ℕ) (t c : ℂ) (ht : t ≠ 0) (hc : c ≠ 0) (k : UT n �
   rw [iL_coordU h1, iU_coordU h2]
   rfl
 
-theorem actB_mem (n : ℕ) (t c : ℂ) (ht : t ≠ 0) (hc : c ≠ 0) (p : Msq (n + 1) × Msq (n + 1)) (hp : p ∈ LUs (n + 1))
-    (k : UT n → ℂ) : actG (toM (ptBlock n t c)) p (kapB k) ∈ LUs (n + 1) := by
-  rw [actB_eq n t c ht hc]
-  refine ⟨?_, ?_⟩
-  · show IsUpperUni (Matrix.of p.1 * blk (wMat n * (upper k)⁻¹ * wMat n) 0 0 1)ᵀ
-    rw [Matrix.transpose_mul]
-    refine G4.upperUni_mul ?_ hp.1
-    exact (G4.lowerUni_blk_iff _ _ _ _).2 ⟨G4.lowerUni_conj (G4.upperUni_inv (G4.upperUni_upper k)), rfl, rfl⟩
-  · exact G4.upperUni_mul ((G4.upperUni_blk_iff _ _ _ _).2 ⟨G4.upperUni_upper _, rfl, rfl⟩) hp.2
 
 theorem kcB_act (n : ℕ) (t c : ℂ) (ht : t ≠ 0) (hc : c ≠ 0) (p : Msq (n + 1) × Msq (n + 1)) (hp : p ∈ LUs (n + 1))
     (k : UT n → ℂ) :
@@ -4091,9 +2561,6 @@ theorem stGerm_of_core (hSB : StabMeasBlock) (hSL : StabMeasLong) (hG : Germ) :
   refine ⟨max C 1, fun C₁ h1 C₂ h2 => hC C₁ (le_trans (le_max_left _ _) h1) C₂ (le_trans (le_max_left _ _) h2) ?_⟩
   exact orbCoordC hSB hSL C₁ C₂ (le_trans zero_le_one (le_trans (le_max_right _ _) h1)) (le_trans (le_max_right _ _) h2)
 
-theorem stGerm_of_rate (hSB : StabMeasBlock) (hSL : StabMeasLong) (hR : GermRate) :
-    ∃ C : ℝ, ∀ C₁ ≥ C, ∀ C₂ ≥ C, stGerm C₁ C₂ :=
-  stGerm_of_core hSB hSL (Formalism.FourierDecayAlt.P.germ_of_rate hR)
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 
@@ -4116,36 +2583,8 @@ attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebr
 
 def bivariateExponentMonomial (n : ℕ) : Matrix (Fin (n + 2)) (Fin (n + 2)) ℂ := Matrix.single 0 1 1
 
-theorem elementary_matrix_sq_eq_zero (n : ℕ) : bivariateExponentMonomial n * bivariateExponentMonomial n = 0 := by
-  unfold bivariateExponentMonomial
-  rw [Matrix.single_mul_single_of_ne]
-  exact (Fin.zero_ne_one (n := n)).symm
 
-theorem exp_nilpotent_elementary_matrix (n : ℕ) (a : ℂ) : NormedSpace.exp (a • bivariateExponentMonomial n) = 1 + a • bivariateExponentMonomial n := by
-  rw [NormedSpace.exp_eq_tsum ℂ]
-  simp only []
-  rw [tsum_eq_sum (s := Finset.range 2)]
-  · simp [Finset.sum_range_succ]
-  · intro k hk
-    have hk2 : 2 ≤ k := by
-      have : ¬ k < 2 := by simpa using hk
-      omega
-    obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le hk2
-    have : (a • bivariateExponentMonomial n) ^ 2 = 0 := by
-      rw [pow_two, Matrix.smul_mul, Matrix.mul_smul, elementary_matrix_sq_eq_zero]; simp
-    rw [pow_add, this]; simp
 
-theorem elementary_matrix_unipotent_upper (n : ℕ) (a : ℂ) : IsUpperUni (1 + a • bivariateExponentMonomial n) := by
-  refine ⟨fun i => ?_, fun i j hij => ?_⟩
-  · have : ¬ ((0 : Fin (n + 2)) = i ∧ (1 : Fin (n + 2)) = i) := by
-      rintro ⟨h1, h2⟩
-      exact absurd (h1.trans h2.symm) (Fin.zero_ne_one (n := n))
-    simp [bivariateExponentMonomial, Matrix.single_apply, this]
-  · have : ¬ ((0 : Fin (n + 2)) = i ∧ (1 : Fin (n + 2)) = j) := by
-      rintro ⟨h1, h2⟩
-      subst h1 h2
-      exact absurd hij (by simp)
-    simp [bivariateExponentMonomial, Matrix.single_apply, this, Matrix.one_apply, hij.ne']
 
 theorem isUpUni_iff {d : ℕ} (u : Matrix (Fin d) (Fin d) ℂ) : IsUpUni u ↔ IsUpperUni u :=
   ⟨fun h => ⟨fun i => (h i i).2 rfl, fun i j hij => (h i j).1 hij⟩,
@@ -4161,17 +2600,7 @@ theorem stabU_long {d : ℕ} (z : ℂ) (hz : z ≠ 0) (u : Matrix (Fin d) (Fin d
   rw [gZW_eq, of_toM, conjL d z hz]
   exact G4.lowerUni_conj (G4.upperUni_inv hu)
 
-theorem elementary_matrix_mem_stabilizer_lie (n : ℕ) (z : ℂ) (hz : z ≠ 0) : bivariateExponentMonomial n ∈ lieOf (stabU (gZW (n + 2) z)) := by
-  intro t
-  rw [exp_nilpotent_elementary_matrix]
-  exact stabU_long z hz _ (elementary_matrix_unipotent_upper n _)
 
-theorem lieE_nontrivial (n : ℕ) (z : ℂ) (hz : z ≠ 0) : Nontrivial (lieE (stabU (gZW (n + 2) z))) := by
-  refine ⟨⟨⟨(WithLp.equiv 2 _).symm (realifyFun (bivariateExponentMonomial n)), Submodule.subset_span ⟨bivariateExponentMonomial n, elementary_matrix_mem_stabilizer_lie n z hz, rfl⟩⟩, 0, ?_⟩⟩
-  intro h
-  have h1 := congrArg (fun x : lieE (stabU (gZW (n + 2) z)) =>
-    (x : EuclideanSpace ℝ (Fin (n + 2) × Fin (n + 2) × Bool)) ((0 : Fin (n + 2)), (1 : Fin (n + 2)), false)) h
-  simp [realifyFun, bivariateExponentMonomial] at h1
 
 theorem continuous_unrealify (m : ℕ) : Continuous (unrealify (m := m)) := by
   refine continuous_matrix fun i j => ?_
@@ -4186,29 +2615,7 @@ theorem continuous_unrealify (m : ℕ) : Continuous (unrealify (m := m)) := by
   rw [this]
   exact (Complex.continuous_ofReal.comp h1).add ((Complex.continuous_ofReal.comp h2).mul continuous_const)
 
-theorem muStab_long_top (n : ℕ) (c z : ℂ) (hc : c ≠ 0) (hz : z ≠ 0) : muStab c (gZW (n + 2) z) Set.univ = ⊤ := by
-  haveI := lieE_nontrivial n z hz
-  unfold muStab
-  have hm : Measurable (fun x : lieE (stabU (gZW (n + 2) z)) =>
-      (fun i j => NormedSpace.exp (unrealify ((x : lieE (stabU (gZW (n + 2) z))) :
-        EuclideanSpace ℝ (Fin (n + 2) × Fin (n + 2) × Bool))) i j : Msq (n + 2))) := by
-    refine Continuous.measurable ?_
-    have h1 : Continuous fun x : lieE (stabU (gZW (n + 2) z)) =>
-        NormedSpace.exp (unrealify ((x : lieE (stabU (gZW (n + 2) z))) :
-          EuclideanSpace ℝ (Fin (n + 2) × Fin (n + 2) × Bool))) :=
-      NormedSpace.exp_continuous.comp ((continuous_unrealify _).comp continuous_subtype_val)
-    exact h1
-  rw [Measure.smul_apply, Measure.map_apply hm MeasurableSet.univ, Set.preimage_univ]
-  haveI : NoncompactSpace (lieE (stabU (gZW (n + 2) z))) := NormedSpace.noncompactSpace ℝ _
-  rw [measure_univ_of_isAddLeftInvariant, smul_eq_mul, ENNReal.mul_top]
-  unfold sdScale
-  have : 0 < ‖c‖ / (2 * Real.pi) := div_pos (norm_pos_iff.2 hc) (by positivity)
-  exact (ENNReal.ofReal_pos.2 (pow_pos this _)).ne'
 
-theorem isOrbMeas_long_add_dirac (n : ℕ) (c z : ℂ) (hc : c ≠ 0) (hz : z ≠ 0)
-    (ν : Measure (Msq (n + 2) × Msq (n + 2))) (h : IsOrbMeas c (gZW (n + 2) z) ν) :
-    IsOrbMeas c (gZW (n + 2) z) (ν + Measure.dirac ((0 : Msq (n + 2)), (0 : Msq (n + 2)))) :=
-  isOrbMeas_add_dirac c _ ν (muStab_long_top n c z hc hz) h
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 
@@ -4488,8 +2895,6 @@ def JIso {e : ι → Fin s × Fin s} (he : Function.Injective e) :
       rw [h]
       exact (EuclideanSpace.basisFun (Fin s × Fin s × Bool) ℝ).orthonormal.comp _ (phiR_injective he))
 
-theorem JIso_apply {e : ι → Fin s × Fin s} (he : Function.Injective e) (y : EuclideanSpace ℝ (ι ⊕ ι)) :
-    JIso he y = JLin e y := rfl
 
 def reals (v : ι → ℂ) : EuclideanSpace ℝ (ι ⊕ ι) :=
   WithLp.toLp 2 (Sum.elim (fun k => (v k).re) (fun k => (v k).im))
@@ -4553,9 +2958,6 @@ def lieIso {e : ι → Fin s × Fin s} (he : Function.Injective e) {S : Set (Mat
     (hS : lieOf S = Set.range (emb e)) : EuclideanSpace ℝ (ι ⊕ ι) ≃ₗᵢ[ℝ] lieE S :=
   (JIso he).equivRange.trans (LinearIsometryEquiv.ofEq _ _ (lieE_eq_range he hS).symm)
 
-theorem lieIso_coe {e : ι → Fin s × Fin s} (he : Function.Injective e) {S : Set (Matrix (Fin s) (Fin s) ℂ)}
-    (hS : lieOf S = Set.range (emb e)) (y : EuclideanSpace ℝ (ι ⊕ ι)) :
-    ((lieIso he hS y : lieE S) : EuclideanSpace ℝ (Fin s × Fin s × Bool)) = JLin e y := rfl
 
 theorem finrank_lieE {e : ι → Fin s × Fin s} (he : Function.Injective e) {S : Set (Matrix (Fin s) (Fin s) ℂ)}
     (hS : lieOf S = Set.range (emb e)) : Module.finrank ℝ (lieE S) = 2 * Fintype.card ι := by
@@ -4802,24 +3204,12 @@ namespace Formalism.MainNotions.InterlacingSignCuts.Gm
 
 open Formalism.FourierDecayAlt.G Formalism.MainNotions.S.UnitaryLevelOperators
 
-theorem orbCoordC' (C₁ C₂ : ℝ) (h1 : 0 ≤ C₁) (h2 : 1 ≤ C₂) : OrbCoordC C₁ C₂ :=
-  orbCoordC stabMeasBlock stabMeasLong C₁ C₂ h1 h2
 
 theorem stGerm_of_core' (hG : Germ) : ∃ C : ℝ, ∀ C₁ ≥ C, ∀ C₂ ≥ C, stGerm C₁ C₂ :=
   stGerm_of_core stabMeasBlock stabMeasLong hG
 
-theorem stGerm_of_rate' (hR : GermRate) : ∃ C : ℝ, ∀ C₁ ≥ C, ∀ C₂ ≥ C, stGerm C₁ C₂ :=
-  stGerm_of_rate stabMeasBlock stabMeasLong hR
 
-theorem valuation_stationary_phase_of_germ_rate (hR : GermRate) :
-    ∃ C : ℝ, ∀ C₁ ≥ C, ∀ C₂ ≥ C, ∀ D : Formalism.BasicNotions.D7, Formalism.MainNotions.RadialChainStatements.adm17 D C₁ C₂ := by
-  obtain ⟨C, h⟩ := stGerm_of_rate' hR
-  exact ⟨C, fun C₁ h1 C₂ h2 _ => h C₁ h1 C₂ h2⟩
 
-theorem germ_stationary_phase_of_germ_rate (hR : GermRate) :
-    ∃ C : ℝ, ∀ C₁ ≥ C, ∀ C₂ ≥ C, ∀ D : Formalism.BasicNotions.D7, Formalism.MainNotions.BlockEstimateTheorem.adm17 D C₁ C₂ := by
-  obtain ⟨C, h⟩ := stGerm_of_rate' hR
-  exact ⟨C, fun C₁ h1 C₂ h2 _ => h C₁ h1 C₂ h2⟩
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 
@@ -4835,133 +3225,11 @@ def VMarkovMid : Prop :=
   ∀ n k : ℕ, 2 ≤ k → k + 2 ≤ n → ∀ p : ℝ[X], p.natDegree ≤ n → ∀ x ∈ Set.Ioo (-1 : ℝ) 1,
     |(derivative^[k] p).eval x| ≤ vmC n k * supN p
 
-theorem stMarkov_iff_mid : Formalism.MainNotions.S.UnitaryLevelOperators.stMarkov ↔ VMarkovMid := by
-  constructor
-  · intro h n k hk2 hkn p hp x hx
-    exact (stMarkov_iff.1 h) n k (by omega) p hp x (Set.Ioo_subset_Icc_self hx)
-  · intro h
-    exact stMarkov_of_mid h
 
-theorem stOm_of_Std (Lt : Formalism.MainNotions.S.TopsChoicePartA.Lev) (h : Lt.Std) : Formalism.MainNotions.S.UnitaryLevelOperators.stOm (Lt.k0 + 1) Lt.r Lt.z Lt.z' :=
-  stOm_of_core _ _ _ _ h.1 h.2.1 h.2.2.1 h.2.2.2.1
 
-theorem valuation_third_clause_of_known (D : Formalism.BasicNotions.D7) : RadialChainStatements.IntegralityRemainder D := by
-  first
-    | exact stA_signs_of_core
-    | exact stLetters_of_core
-    | exact stWaveLetters_of_core
-    | exact stThLog_of_core
-    | exact pointwise_integration_by_parts
-    | exact ⟨stThLog_of_core, pointwise_integration_by_parts⟩
-    | exact ⟨stLetters_of_core, stWaveLetters_of_core⟩
-    | exact stHerglotz_of_core
-    | exact stPoisson_of_core
-    | exact stStatPhase_of_core
-theorem valuation_fourth_clause_of_known (D : Formalism.BasicNotions.D7) : RadialChainStatements.ArithmeticRiemannRochThetaCond D := by
-  first
-    | exact stA_signs_of_core
-    | exact stLetters_of_core
-    | exact stWaveLetters_of_core
-    | exact stThLog_of_core
-    | exact pointwise_integration_by_parts
-    | exact ⟨stThLog_of_core, pointwise_integration_by_parts⟩
-    | exact ⟨stLetters_of_core, stWaveLetters_of_core⟩
-    | exact stHerglotz_of_core
-    | exact stPoisson_of_core
-    | exact stStatPhase_of_core
-theorem valuation_integration_by_parts_of_known (D : Formalism.BasicNotions.D7) : RadialChainStatements.IntegrationByPartsAlt D := by
-  first
-    | exact stA_signs_of_core
-    | exact stLetters_of_core
-    | exact stWaveLetters_of_core
-    | exact stThLog_of_core
-    | exact pointwise_integration_by_parts
-    | exact ⟨stThLog_of_core, pointwise_integration_by_parts⟩
-    | exact ⟨stLetters_of_core, stWaveLetters_of_core⟩
-    | exact stHerglotz_of_core
-    | exact stPoisson_of_core
-    | exact stStatPhase_of_core
-theorem valuation_theta_log_of_known (D : Formalism.BasicNotions.D7) : RadialChainStatements.LogThetaIdentity D := by
-  first
-    | exact stA_signs_of_core
-    | exact stLetters_of_core
-    | exact stWaveLetters_of_core
-    | exact stThLog_of_core
-    | exact pointwise_integration_by_parts
-    | exact ⟨stThLog_of_core, pointwise_integration_by_parts⟩
-    | exact ⟨stLetters_of_core, stWaveLetters_of_core⟩
-    | exact stHerglotz_of_core
-    | exact stPoisson_of_core
-    | exact stStatPhase_of_core
-theorem valuation_ibp_and_theta_log_of_known (D : Formalism.BasicNotions.D7) : RadialChainStatements.adm9 D := ⟨pointwise_integration_by_parts, stThLog_of_core⟩
-theorem valuation_wave_letters_of_known (D : Formalism.BasicNotions.D7) : RadialChainStatements.PlaneWaveLetters D := stWaveLetters_of_core
-theorem valuation_markov_of_middle_bound (D : Formalism.BasicNotions.D7) (h : VMarkovMid) : RadialChainStatements.adm14 D := stMarkov_of_mid h
-theorem valuation_herglotz_of_known (D : Formalism.BasicNotions.D7) : RadialChainStatements.adm15 D := by
-  first
-    | exact stA_signs_of_core
-    | exact stLetters_of_core
-    | exact stWaveLetters_of_core
-    | exact stThLog_of_core
-    | exact pointwise_integration_by_parts
-    | exact ⟨stThLog_of_core, pointwise_integration_by_parts⟩
-    | exact ⟨stLetters_of_core, stWaveLetters_of_core⟩
-    | exact stHerglotz_of_core
-    | exact stPoisson_of_core
-    | exact stStatPhase_of_core
-theorem valuation_poisson_summation_of_known (D : Formalism.BasicNotions.D7) : RadialChainStatements.adm16 D := by
-  first
-    | exact stA_signs_of_core
-    | exact stLetters_of_core
-    | exact stWaveLetters_of_core
-    | exact stThLog_of_core
-    | exact pointwise_integration_by_parts
-    | exact ⟨stThLog_of_core, pointwise_integration_by_parts⟩
-    | exact ⟨stLetters_of_core, stWaveLetters_of_core⟩
-    | exact stHerglotz_of_core
-    | exact stPoisson_of_core
-    | exact stStatPhase_of_core
-theorem valuation_family_ibp_theta_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : RadialChainStatements.admF9 Fm := fun _ _ => valuation_ibp_and_theta_log_of_known _
-theorem valuation_family_herglotz_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : RadialChainStatements.FamilyFifteenthHypothesis Fm := fun _ _ => valuation_herglotz_of_known _
-theorem valuation_family_poisson_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : RadialChainStatements.FamilySixteenthHypothesis Fm := fun _ _ => valuation_poisson_summation_of_known _
 
-theorem germ_third_clause_of_known (D : Formalism.BasicNotions.D7) : BlockEstimateTheorem.IntegralityRemainder D := stA_signs_of_core
-theorem germ_fourth_clause_of_known (D : Formalism.BasicNotions.D7) : BlockEstimateTheorem.ArithmeticRiemannRochThetaCond D := stLetters_of_core
-theorem germ_integration_by_parts_of_known (D : Formalism.BasicNotions.D7) : BlockEstimateTheorem.IntegrationByPartsAlt D := pointwise_integration_by_parts
-theorem germ_theta_log_of_known (D : Formalism.BasicNotions.D7) : BlockEstimateTheorem.LogThetaIdentity D := stThLog_of_core
-theorem germ_ibp_and_theta_log_of_known (D : Formalism.BasicNotions.D7) : BlockEstimateTheorem.adm9 D := ⟨pointwise_integration_by_parts, stThLog_of_core⟩
-theorem germ_wave_letters_of_known (D : Formalism.BasicNotions.D7) : BlockEstimateTheorem.PlaneWaveLetters D := stWaveLetters_of_core
-theorem germ_markov_of_middle_bound (D : Formalism.BasicNotions.D7) (h : VMarkovMid) : BlockEstimateTheorem.adm14 D := stMarkov_of_mid h
-theorem germ_herglotz_of_known (D : Formalism.BasicNotions.D7) : BlockEstimateTheorem.adm15 D := stHerglotz_of_core
-theorem germ_poisson_summation_of_known (D : Formalism.BasicNotions.D7) : BlockEstimateTheorem.adm16 D := stPoisson_of_core
-theorem germ_family_ibp_theta_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : BlockEstimateTheorem.admF9 Fm := fun _ _ => germ_ibp_and_theta_log_of_known _
-theorem germ_family_herglotz_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : BlockEstimateTheorem.FamilyFifteenthHypothesis Fm := fun _ _ => germ_herglotz_of_known _
-theorem germ_family_poisson_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : BlockEstimateTheorem.FamilySixteenthHypothesis Fm := fun _ _ => germ_poisson_summation_of_known _
 
-theorem germ_model_third_clause_of_known (D : Formalism.BasicNotions.D7) : HereditaryPositivity.IntegralityRemainder D := stA_signs_of_core
-theorem germ_model_fourth_clause_of_known (D : Formalism.BasicNotions.D7) : HereditaryPositivity.ArithmeticRiemannRochThetaCond D := stLetters_of_core
-theorem germ_model_integration_by_parts_of_known (D : Formalism.BasicNotions.D7) : HereditaryPositivity.IntegrationByPartsAlt D := pointwise_integration_by_parts
-theorem germ_model_theta_log_of_known (D : Formalism.BasicNotions.D7) : HereditaryPositivity.LogThetaIdentity D := stThLog_of_core
-theorem germ_model_ibp_and_theta_log_of_known (D : Formalism.BasicNotions.D7) : HereditaryPositivity.adm9 D := ⟨pointwise_integration_by_parts, stThLog_of_core⟩
-theorem germ_model_wave_letters_of_known (D : Formalism.BasicNotions.D7) : HereditaryPositivity.PlaneWaveLetters D := stWaveLetters_of_core
-theorem germ_model_markov_of_middle_bound (D : Formalism.BasicNotions.D7) (h : VMarkovMid) : HereditaryPositivity.adm14 D := stMarkov_of_mid h
-theorem germ_model_herglotz_of_known (D : Formalism.BasicNotions.D7) : HereditaryPositivity.adm15 D := stHerglotz_of_core
-theorem germ_model_poisson_summation_of_known (D : Formalism.BasicNotions.D7) : HereditaryPositivity.adm16 D := stPoisson_of_core
-theorem germ_model_family_ibp_theta_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : HereditaryPositivity.admF9 Fm := fun _ _ => germ_model_ibp_and_theta_log_of_known _
-theorem germ_model_family_herglotz_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : HereditaryPositivity.FamilyFifteenthHypothesis Fm := fun _ _ => germ_model_herglotz_of_known _
-theorem germ_model_family_poisson_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : HereditaryPositivity.FamilySixteenthHypothesis Fm := fun _ _ => germ_model_poisson_summation_of_known _
 
-theorem two_bound_third_clause_of_known (D : Formalism.BasicNotions.D7) : RadialRuleConsequences.IntegralityRemainder D := stA_signs_of_core
-theorem two_bound_fourth_clause_of_known (D : Formalism.BasicNotions.D7) : RadialRuleConsequences.ArithmeticRiemannRochThetaCond D := stLetters_of_core
-theorem two_bound_integration_by_parts_of_known (D : Formalism.BasicNotions.D7) : RadialRuleConsequences.IntegrationByPartsAlt D := pointwise_integration_by_parts
-theorem two_bound_theta_log_of_known (D : Formalism.BasicNotions.D7) : RadialRuleConsequences.LogThetaIdentity D := stThLog_of_core
-theorem two_bound_ibp_and_theta_log_of_known (D : Formalism.BasicNotions.D7) : RadialRuleConsequences.adm9 D := ⟨pointwise_integration_by_parts, stThLog_of_core⟩
-theorem two_bound_wave_letters_of_known (D : Formalism.BasicNotions.D7) : RadialRuleConsequences.PlaneWaveLetters D := stWaveLetters_of_core
-theorem two_bound_markov_of_middle_bound (D : Formalism.BasicNotions.D7) (h : VMarkovMid) : RadialRuleConsequences.adm14 D := stMarkov_of_mid h
-theorem two_bound_herglotz_of_known (D : Formalism.BasicNotions.D7) : RadialRuleConsequences.adm15 D := stHerglotz_of_core
-theorem two_bound_poisson_summation_of_known (D : Formalism.BasicNotions.D7) : RadialRuleConsequences.adm16 D := stPoisson_of_core
-theorem two_bound_family_ibp_theta_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : RadialRuleConsequences.admF9 Fm := fun _ _ => two_bound_ibp_and_theta_log_of_known _
-theorem two_bound_family_herglotz_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : RadialRuleConsequences.FamilyFifteenthHypothesis Fm := fun _ _ => two_bound_herglotz_of_known _
-theorem two_bound_family_poisson_of_known {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : RadialRuleConsequences.FamilySixteenthHypothesis Fm := fun _ _ => two_bound_poisson_summation_of_known _
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -4991,14 +3259,6 @@ def stLevelOpen (C Cv C1 C2 : ℝ) : Prop :=
         pullZ h SS ∧
       stRes (ctxR Lt u u' I hr R (Lt.down Lt.r 0 hr).Img) C1 C2 SS
 
-theorem stLevel_iff_open (C Cv C1 C2 : ℝ) : stLevel C Cv C1 C2 ↔ stLevelOpen C Cv C1 C2 := by
-  constructor
-  · intro H Lt u u' I hr h1 h2 R hR
-    obtain ⟨h, SS, a, b, c, d, e, f, -, g⟩ := H Lt u u' I hr h1 h2 R hR
-    exact ⟨h, SS, a, b, c, d, e, f, g⟩
-  · intro H Lt u u' I hr h1 h2 R hR
-    obtain ⟨h, SS, a, b, c, d, e, f, g⟩ := H Lt u u' I hr h1 h2 R hR
-    exact ⟨h, SS, a, b, c, d, e, f, stOm_of_Std Lt h1.1, g⟩
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -5010,94 +3270,35 @@ open Polynomial
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-theorem germ_model_stationary_phase_of_known (D : Formalism.BasicNotions.D7) : HereditaryPositivity.adm17 D := stStatPhase_of_core
-theorem two_bound_stationary_phase_of_known (D : Formalism.BasicNotions.D7) : RadialRuleConsequences.adm17 D := stStatPhase_of_core
 
-theorem markov_middle_bound_of_admissible (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.RadialRuleConsequences.adm14 D) : VMarkovMid := stMarkov_iff_mid.1 h
 
 def twoBoundHypotheses (D : Formalism.BasicNotions.D7) (CB Co Cd Cv C1 C2 Cs c C₁ : ℝ) : Prop :=
   RadialRuleConsequences.adm1 D CB ∧ RadialRuleConsequences.adm2 D CB ∧ (RadialRuleConsequences.adm3a D ∧ RadialRuleConsequences.adm3b D) ∧ RadialRuleConsequences.RTTRelation D ∧ RadialRuleConsequences.adm5 D ∧ RadialRuleConsequences.adm6 D CB ∧
     RadialRuleConsequences.adm7 D ∧ RadialRuleConsequences.adm8 D CB Co Cd ∧ RadialRuleConsequences.PlaneWaveIsometry D ∧ RadialRuleConsequences.adm11 D CB Cv C1 C2 ∧ RadialRuleConsequences.adm12 D CB Cs ∧
     RadialRuleConsequences.adm13 D c C₁ ∧ VMarkovMid ∧ RadialRuleConsequences.adm18 D
 
-theorem two_bound_admissible_iff_open (D : Formalism.BasicNotions.D7) (CB Co Cd Cv C1 C2 Cs c C₁ : ℝ) :
-    RadialRuleConsequences.admitted D CB Co Cd Cv C1 C2 Cs c C₁ ↔ twoBoundHypotheses D CB Co Cd Cv C1 C2 Cs c C₁ := by
-  constructor
-  · rintro ⟨a1, a2, ⟨a3a, a3b, -⟩, ⟨-, a4b⟩, a5, a6, a7, a8, -, ⟨-, a10b⟩, a11, a12, a13, a14, -, -, -, a18⟩
-    exact ⟨a1, a2, ⟨a3a, a3b⟩, a4b, a5, a6, a7, a8, a10b, a11, a12, a13, markov_middle_bound_of_admissible D a14, a18⟩
-  · rintro ⟨a1, a2, ⟨a3a, a3b⟩, a4b, a5, a6, a7, a8, a10b, a11, a12, a13, a14, a18⟩
-    exact ⟨a1, a2, ⟨a3a, a3b, two_bound_third_clause_of_known D⟩, ⟨two_bound_fourth_clause_of_known D, a4b⟩, a5, a6, a7, a8, two_bound_ibp_and_theta_log_of_known D,
-      ⟨two_bound_wave_letters_of_known D, a10b⟩, a11, a12, a13, two_bound_markov_of_middle_bound D a14, two_bound_herglotz_of_known D,
-      two_bound_poisson_summation_of_known D, stStatPhase_of_core, a18⟩
 
-theorem two_bound_statement_iff_open (D : Formalism.BasicNotions.D7) (CB Co Cd Cv C1 C2 Cs c C₁ Cg CI C0 CA : ℝ) :
-    RadialRuleConsequences.Stmt D CB Co Cd Cv C1 C2 Cs c C₁ Cg CI C0 CA ↔
-      (twoBoundHypotheses D CB Co Cd Cv C1 C2 Cs c C₁ → RadialRuleConsequences.Conclusion1 D Cg CI ∧ RadialRuleConsequences.Conclusion2 D C0 CA) := by
-  unfold RadialRuleConsequences.Stmt; rw [two_bound_admissible_iff_open]
 
 def valuationHypotheses (D : Formalism.BasicNotions.D7) (CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ : ℝ) : Prop :=
   RadialChainStatements.adm1 D CB ∧ RadialChainStatements.adm2 D CB ∧ (RadialChainStatements.adm3a D ∧ RadialChainStatements.adm3b D) ∧ RadialChainStatements.RTTRelation D ∧ RadialChainStatements.adm5 D ∧ RadialChainStatements.adm6 D CB ∧
     RadialChainStatements.adm7 D ∧ RadialChainStatements.adm8 D CB Co Cd ∧ RadialChainStatements.PlaneWaveIsometry D ∧ RadialChainStatements.adm11 D CB Cv C1 C2 ∧ (RadialChainStatements.adm12 D CB Cs ∧ RadialChainStatements.SliceBoundE D Cs) ∧
     RadialChainStatements.adm13 D c C₁ ∧ VMarkovMid ∧ RadialChainStatements.adm17 D Cg₁ Cg₂ ∧ RadialChainStatements.adm18 D
 
-theorem valuation_admissible_iff_open (D : Formalism.BasicNotions.D7) (CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ : ℝ) :
-    RadialChainStatements.admitted D CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ ↔ valuationHypotheses D CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ := by
-  constructor
-  · rintro ⟨a1, a2, ⟨a3a, a3b, -⟩, ⟨-, a4b⟩, a5, a6, a7, a8, -, ⟨-, a10b⟩, a11, a12, a13, a14, -, -, a17, a18⟩
-    exact ⟨a1, a2, ⟨a3a, a3b⟩, a4b, a5, a6, a7, a8, a10b, a11, a12, a13, markov_middle_bound_of_admissible D a14, a17, a18⟩
-  · rintro ⟨a1, a2, ⟨a3a, a3b⟩, a4b, a5, a6, a7, a8, a10b, a11, a12, a13, a14, a17, a18⟩
-    exact ⟨a1, a2, ⟨a3a, a3b, valuation_third_clause_of_known D⟩, ⟨valuation_fourth_clause_of_known D, a4b⟩, a5, a6, a7, a8, valuation_ibp_and_theta_log_of_known D,
-      ⟨valuation_wave_letters_of_known D, a10b⟩, a11, a12, a13, valuation_markov_of_middle_bound D a14, valuation_herglotz_of_known D,
-      valuation_poisson_summation_of_known D, a17, a18⟩
 
-theorem valuation_statement_iff_open (D : Formalism.BasicNotions.D7) (CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ C C' : ℝ) (Kst : ℕ)
-    (Vm : Formalism.MainNotions.S.ValMap D.R.k D.R.rS) :
-    RadialChainStatements.Stmt D CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ C C' Kst Vm ↔
-      (valuationHypotheses D CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ → RadialChainStatements.aux₃ D C C' Kst Vm) := by
-  unfold RadialChainStatements.Stmt; rw [valuation_admissible_iff_open]
 
 def germValuationHypotheses (D : Formalism.BasicNotions.D7) (CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ : ℝ) : Prop :=
   BlockEstimateTheorem.adm1 D CB ∧ BlockEstimateTheorem.adm2 D CB ∧ (BlockEstimateTheorem.adm3a D ∧ BlockEstimateTheorem.adm3b D) ∧ BlockEstimateTheorem.RTTRelation D ∧ BlockEstimateTheorem.adm5 D ∧ BlockEstimateTheorem.adm6 D CB ∧
     BlockEstimateTheorem.adm7 D ∧ BlockEstimateTheorem.adm8 D CB Co Cd ∧ BlockEstimateTheorem.PlaneWaveIsometry D ∧ BlockEstimateTheorem.adm11 D CB Cv C1 C2 ∧ BlockEstimateTheorem.adm12 D CB Cs ∧
     BlockEstimateTheorem.adm13 D c C₁ ∧ VMarkovMid ∧ BlockEstimateTheorem.adm17 D Cg₁ Cg₂ ∧ BlockEstimateTheorem.adm18 D
 
-theorem germ_first_list_iff_open (D : Formalism.BasicNotions.D7) (CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ : ℝ) :
-    BlockEstimateTheorem.AdmA D CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ ↔ germValuationHypotheses D CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ := by
-  constructor
-  · rintro ⟨a1, a2, ⟨a3a, a3b, -⟩, ⟨-, a4b⟩, a5, a6, a7, a8, -, ⟨-, a10b⟩, a11, a12, a13, a14, -, -, a17, a18⟩
-    exact ⟨a1, a2, ⟨a3a, a3b⟩, a4b, a5, a6, a7, a8, a10b, a11, a12, a13, markov_middle_bound_of_admissible D a14, a17, a18⟩
-  · rintro ⟨a1, a2, ⟨a3a, a3b⟩, a4b, a5, a6, a7, a8, a10b, a11, a12, a13, a14, a17, a18⟩
-    exact ⟨a1, a2, ⟨a3a, a3b, germ_third_clause_of_known D⟩, ⟨germ_fourth_clause_of_known D, a4b⟩, a5, a6, a7, a8, germ_ibp_and_theta_log_of_known D,
-      ⟨germ_wave_letters_of_known D, a10b⟩, a11, a12, a13, germ_markov_of_middle_bound D a14, germ_herglotz_of_known D,
-      germ_poisson_summation_of_known D, a17, a18⟩
 
-theorem germ_statement_iff_open (D : Formalism.BasicNotions.D7) (Gm : BlockEstimateTheorem.GM) (Kst : ℕ)
-    (CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ E₀ Eg E₁ E₂ E₃ C C' : ℝ) :
-    BlockEstimateTheorem.Stmt D Gm Kst CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ E₀ Eg E₁ E₂ E₃ C C' ↔
-      (germValuationHypotheses D CB Co Cd Cv C1 C2 Cs c C₁ Cg₁ Cg₂ ∧ BlockEstimateTheorem.AdmE D Gm Kst E₀ Eg E₁ E₂ E₃ →
-        BlockEstimateTheorem.aux₃ D Gm C C' Kst) := by
-  unfold BlockEstimateTheorem.Stmt BlockEstimateTheorem.admitted; rw [germ_first_list_iff_open]
 
 def germModelHypotheses (D : Formalism.BasicNotions.D7) (Gm : HereditaryPositivity.GM) (CB Co Cd Cv C1 C2 Cs c C₁ : ℝ) (Ks : ℕ) (C₀ Cg : ℝ) : Prop :=
   HereditaryPositivity.adm1 D CB ∧ HereditaryPositivity.adm2 D CB ∧ (HereditaryPositivity.adm3a D ∧ HereditaryPositivity.adm3b D) ∧ HereditaryPositivity.RTTRelation D ∧ HereditaryPositivity.adm5 D ∧ HereditaryPositivity.adm6 D CB ∧
     HereditaryPositivity.adm7 D ∧ HereditaryPositivity.adm8 D CB Co Cd ∧ HereditaryPositivity.PlaneWaveIsometry D ∧ HereditaryPositivity.adm11 D CB Cv C1 C2 ∧ HereditaryPositivity.adm12 D CB Cs ∧
     HereditaryPositivity.SliceBoundE D Gm Ks C₀ Cg ∧ HereditaryPositivity.TopLevelPlaneWave D Gm Ks C₀ Cg ∧ HereditaryPositivity.LowerLevelPositivity D Ks C₀ Cg ∧ HereditaryPositivity.adm13 D c C₁ ∧ VMarkovMid ∧ HereditaryPositivity.adm18 D
 
-theorem germ_model_admissible_iff_open (D : Formalism.BasicNotions.D7) (Gm : HereditaryPositivity.GM) (CB Co Cd Cv C1 C2 Cs c C₁ : ℝ) (Ks : ℕ) (C₀ Cg : ℝ) :
-    HereditaryPositivity.admitted D Gm CB Co Cd Cv C1 C2 Cs c C₁ Ks C₀ Cg ↔ germModelHypotheses D Gm CB Co Cd Cv C1 C2 Cs c C₁ Ks C₀ Cg := by
-  constructor
-  · rintro ⟨a1, a2, ⟨a3a, a3b, -⟩, ⟨-, a4b⟩, a5, a6, a7, a8, -, ⟨-, a10b⟩, a11, a12, a12e, a12f, a12g, a13, a14, -, -, -, a18⟩
-    exact ⟨a1, a2, ⟨a3a, a3b⟩, a4b, a5, a6, a7, a8, a10b, a11, a12, a12e, a12f, a12g, a13, markov_middle_bound_of_admissible D a14, a18⟩
-  · rintro ⟨a1, a2, ⟨a3a, a3b⟩, a4b, a5, a6, a7, a8, a10b, a11, a12, a12e, a12f, a12g, a13, a14, a18⟩
-    exact ⟨a1, a2, ⟨a3a, a3b, germ_model_third_clause_of_known D⟩, ⟨germ_model_fourth_clause_of_known D, a4b⟩, a5, a6, a7, a8, germ_model_ibp_and_theta_log_of_known D,
-      ⟨germ_model_wave_letters_of_known D, a10b⟩, a11, a12, a12e, a12f, a12g, a13, germ_model_markov_of_middle_bound D a14, germ_model_herglotz_of_known D,
-      germ_model_poisson_summation_of_known D, stStatPhase_of_core, a18⟩
 
-theorem germ_model_statement_iff_open (D : Formalism.BasicNotions.D7) (Gm : HereditaryPositivity.GM) (CB Co Cd Cv C1 C2 Cs c Cd₁ : ℝ) (Ks : ℕ)
-    (C₀ Cg C₁ C₂ C₃ : ℝ) :
-    HereditaryPositivity.Stmt D Gm CB Co Cd Cv C1 C2 Cs c Cd₁ Ks C₀ Cg C₁ C₂ C₃ ↔
-      (germModelHypotheses D Gm CB Co Cd Cv C1 C2 Cs c Cd₁ Ks C₀ Cg → HereditaryPositivity.aux₃ D Gm Ks C₀ Cg C₁ C₂ C₃) := by
-  unfold HereditaryPositivity.Stmt; rw [germ_model_admissible_iff_open]
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -5228,17 +3429,6 @@ theorem latSum_eq_of_core : ∃ C : ℝ, ∀ (D : D7) (aa : FractionalIdeal (�
   rw [card_places D, prod_infinitePlace_plInv_eq_prod D x, hEq]
   rfl
 
-theorem latSumOne_of_core (K : ℕ) (hK : 2 < K) : ∃ C : ℝ, ∀ (D : D7) (aa : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E),
-    aa ≠ 0 → ∀ (x : D.what₂.Tau → ℝ), (∀ v, 0 < x v) → ∏ v, x v ≤ nrmHalf D aa →
-      ∀ S : Finset D.host.E, (∀ l ∈ S, l ∈ aa ∧ l ≠ 0) →
-        ∑ l ∈ S, ∏ v, minFac (x v) ‖plEmb D v l‖ K ≤ C ^ D.R.f := by
-  obtain ⟨C, hC⟩ := Formalism.FourierDecayAlt.P.box_weights_sum_to_one (K : ℝ) (by exact_mod_cast hK)
-  refine ⟨C, fun D aa haa x hx hle S hS => ?_⟩
-  haveI := host_totallyComplex D
-  rw [sum_eq D x K S (fun l hl => (hS l hl).2), ← card_places D]
-  refine hC D.host.E aa haa (fun w => x (plInv D w)) (fun w => hx _) ?_ S hS
-  rw [prod_infinitePlace_plInv_eq_prod D x]
-  exact hle
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -5301,33 +3491,7 @@ theorem minFac_scale (x : ℝ) (a z : ℂ) (ha : a ≠ 0) (K : ℕ) :
   · have ha' : ‖a‖ ≠ 0 := norm_ne_zero_iff.2 ha
     rw [if_neg (mul_ne_zero ha' hz), if_neg hz, div_div]
 
-theorem latSumScaled_of_core : ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (aa : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E), aa ≠ 0 →
-    ∀ (a : D.what₂.Tau → ℂ) (x : D.what₂.Tau → ℝ) (Θ : ℝ) (K : ℕ), (∀ v, a v ≠ 0) → (∀ v, 0 < x v) → 2 < Θ → 3 ≤ K →
-      Θ ^ D.R.f ≤ nrmHalf D aa * (∏ v, ‖a v‖) / ∏ v, x v →
-      ∀ S : Finset D.host.E, (∀ l ∈ S, l ∈ aa ∧ l ≠ 0) →
-        ∑ l ∈ S, ∏ v, minFac (x v) ‖a v * plEmb D v l‖ K ≤ (C * Θ ^ (-((K : ℝ) - 5 / 2))) ^ D.R.f := by
-  obtain ⟨C, hC0, hC⟩ := latSum_of_core
-  refine ⟨C, hC0, fun D aa haa a x Θ K ha hx hΘ hK hle S hS => ?_⟩
-  have hna : ∀ v, 0 < ‖a v‖ := fun v => norm_pos_iff.2 (ha v)
-  have h1 := hC D aa haa (fun v => x v / ‖a v‖) Θ K (fun v => div_pos (hx v) (hna v)) hΘ hK (by
-    rw [Finset.prod_div_distrib]
-    have e : nrmHalf D aa / ((∏ v, x v) / ∏ v, ‖a v‖) = nrmHalf D aa * (∏ v, ‖a v‖) / ∏ v, x v := by
-      rw [div_div_eq_mul_div]
-    rw [e]; exact hle) S hS
-  refine le_trans (le_of_eq ?_) h1
-  refine Finset.sum_congr rfl fun l _ => Finset.prod_congr rfl fun v _ => ?_
-  exact minFac_scale _ _ _ (ha v) K
 
-theorem latSumTA_of_core : ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (aa : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E), aa ≠ 0 →
-    ∀ (a : D.what₂.Tau → ℂ) (x : D.what₂.Tau → ℝ) (Θ : ℝ) (K : ℕ), (∀ v, a v ≠ 0) → (∀ v, 0 < x v) → 2 < Θ → 3 ≤ K →
-      Θ ^ D.R.f ≤ nrmHalf D aa * (∏ v, ‖a v‖) / ∏ v, x v →
-      ∀ large₂ : AddSubgroup D.host.E, (∀ l ∈ large₂, l ∈ aa) →
-        Formalism.FourierDecayAlt.TA.LatSum large₂ (fun l => ∏ v, minFac (x v) ‖a v * plEmb D v l‖ K)
-          ((C * Θ ^ (-((K : ℝ) - 5 / 2))) ^ D.R.f) := by
-  obtain ⟨C, hC0, hC⟩ := latSumScaled_of_core
-  refine ⟨C, hC0, fun D aa haa a x Θ K ha hx hΘ hK hle large₂ hLg => ⟨fun l => ?_, fun S hS => ?_⟩⟩
-  · exact Finset.prod_nonneg fun v _ => minFac_nonneg _ _ (hx v).le (norm_nonneg _) K
-  · exact hC D aa haa a x Θ K ha hx hΘ hK hle S (fun l hl => ⟨hLg l (hS l hl).1, (hS l hl).2⟩)
 
 section Theta
 
@@ -5390,32 +3554,7 @@ theorem ThS_pow_le {P n : ℝ} (hP : 0 < P) (hn : 0 < n) (h : P / n ≤ ThInvF D
 
 end Theta
 
-theorem latSum_x_ThS : ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRealPlace D)
-    (L : LatticeDataWithDual D) (K i : ℕ), 1 ≤ i → i ≤ D.R.rS + 1 → L.aaV i 1 ≠ 0 →
-    (∀ v, 0 < xSz D C1 C2 N (kaV D δ v) T T' (x v) i) → 2 < ThS D C1 C2 N T T' δ x L → 3 ≤ K →
-    ∀ S : Finset D.host.E, (∀ l ∈ S, l ∈ L.aaV i 1 ∧ l ≠ 0) →
-      ∑ l ∈ S, ∏ v, minFac (xSz D C1 C2 N (kaV D δ v) T T' (x v) i) ‖plEmb D v l‖ K ≤
-        (C * ThS D C1 C2 N T T' δ x L ^ (-((K : ℝ) - 5 / 2))) ^ D.R.f := by
-  obtain ⟨C, hC0, hC⟩ := latSum_of_core
-  refine ⟨C, hC0, fun D C1 C2 N T T' δ x L K i h1 h2 haa hx hΘ hK S hS => ?_⟩
-  exact hC D _ haa _ _ K hx hΘ hK
-    (ThS_pow_le D C1 C2 N T T' δ x L (Finset.prod_pos fun v _ => hx v) (nrmHalf_pos D _ haa)
-      (x_le_ThInvF D C1 C2 N T T' δ x L i h1 h2)) S hS
 
-theorem latSum_Lam_ThS : ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRealPlace D)
-    (L : LatticeDataWithDual D) (K i s : ℕ), 1 ≤ i → 2 ≤ s → i - 1 + s ≤ D.R.rS + 1 → L.aaV i s ≠ 0 → L.aaP i (s - 1) ≠ 0 →
-    (∀ v, 0 < LamSz D C1 C2 N (kaV D δ v) T T' (x v) i s) → 2 < ThS D C1 C2 N T T' δ x L → 3 ≤ K →
-    ∀ S : Finset D.host.E, (∀ l ∈ S, l ∈ L.aaP i (s - 1) ∧ l ≠ 0) →
-      ∑ l ∈ S, ∏ v, minFac (LamSz D C1 C2 N (kaV D δ v) T T' (x v) i s) ‖plEmb D v l‖ K ≤
-        (C * ThS D C1 C2 N T T' δ x L ^ (-((K : ℝ) - 5 / 2))) ^ D.R.f := by
-  obtain ⟨C, hC0, hC⟩ := latSum_of_core
-  refine ⟨C, hC0, fun D C1 C2 N T T' δ x L K i s h1 h2 h3 haV haP hx hΘ hK S hS => ?_⟩
-  have hP : 0 < ∏ v, LamSz D C1 C2 N (kaV D δ v) T T' (x v) i s := Finset.prod_pos fun v _ => hx v
-  have hnV := nrmHalf_pos D _ haV
-  have hnP := nrmHalf_pos D _ haP
-  refine hC D _ haP _ _ K hx hΘ hK (ThS_pow_le D C1 C2 N T T' δ x L hP hnP ?_) S hS
-  refine le_trans ?_ (Lam_le_ThInvF D C1 C2 N T T' δ x L i s h1 h2 h3)
-  exact div_le_div_of_nonneg_left hP.le (lt_min hnV hnP) (min_le_right _ _)
 
 theorem local_size_product_le_half_norm (D : D7) (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRealPlace D) (L : LatticeDataWithDual D) (i s : ℕ)
     (h1 : 1 ≤ i) (h2 : 2 ≤ s) (h3 : i - 1 + s ≤ D.R.rS + 1) (haV : L.aaV i s ≠ 0) (haP : L.aaP i (s - 1) ≠ 0)
@@ -5433,20 +3572,6 @@ theorem local_size_product_le_half_norm (D : D7) (C1 C2 N T T' : ℝ) (δ : D.ho
   have h6 : 1 ≤ nrmHalf D (L.aaV i s) / ∏ v, LamSz D C1 C2 N (kaV D δ v) T T' (x v) i s := le_trans h5 h4
   rwa [one_le_div hP] at h6
 
-theorem latSum_LamP_ThS : ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRealPlace D)
-    (L : LatticeDataWithDual D) (K i : ℕ), 1 ≤ i → i ≤ D.R.rS → L.aaP i (D.R.rS + 2 - i) ≠ 0 →
-    (∀ v, 0 < LamPSz D C1 C2 N (kaV D δ v) T T' (x v) i) → 4 < ThS D C1 C2 N T T' δ x L → 3 ≤ K →
-    ∀ S : Finset D.host.E, (∀ l ∈ S, l ∈ L.aaP i (D.R.rS + 2 - i) ∧ l ≠ 0) →
-      ∑ l ∈ S, ∏ v, minFac (2 * LamPSz D C1 C2 N (kaV D δ v) T T' (x v) i) ‖plEmb D v l‖ K ≤
-        (C * (ThS D C1 C2 N T T' δ x L / 2) ^ (-((K : ℝ) - 5 / 2))) ^ D.R.f := by
-  obtain ⟨C, hC0, hC⟩ := latSum_of_core
-  refine ⟨C, hC0, fun D C1 C2 N T T' δ x L K i h1 h2 haP hx hΘ hK S hS => ?_⟩
-  have hP : 0 < ∏ v, LamPSz D C1 C2 N (kaV D δ v) T T' (x v) i := Finset.prod_pos fun v _ => hx v
-  have hnP := nrmHalf_pos D _ haP
-  refine hC D _ haP _ _ K (fun v => mul_pos two_pos (hx v)) (by linarith) hK ?_ S hS
-  have h4 := ThS_pow_le D C1 C2 N T T' δ x L hP hnP (prod_div_norm_le_sup D C1 C2 N T T' δ x L i h1 h2)
-  rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, D.what₂.card_Tau, div_pow, div_mul_eq_div_div_swap]
-  exact div_le_div_of_nonneg_right h4 (by positivity)
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -5577,78 +3702,9 @@ def taData : Formalism.FourierDecayAlt.TA.Data D.host.E where
 
 variable {D L Kd}
 
-theorem axK_of_ArithAx (h : ArithAx D L Kd) : AxK (taData D L Kd Lv) := by
-  refine ⟨h.1 _ _, fun i hi P hP => ?_⟩
-  exact pull_psd (h.2.1 i hi) P (ph i) unsw (fun x hx => unsw_ph (hP x hx))
 
-theorem axE_of_ArithAx (h : ArithAx D L Kd) : AxE (taData D L Kd Lv) := fun i h1 h2 => h.2.2.1 i h1 h2
 
-theorem arith_axiom_second_of_arith_axioms (h : ArithAx D L Kd) : KernelSupport (taData D L Kd Lv) := by
-  intro i s hs hsi hi p p' t t' hp hp' ht ht' hor
-  obtain ⟨j, rfl⟩ : ∃ j, i = j + s := ⟨i - s, by omega⟩
-  rw [Nat.add_sub_cancel] at hp hp'
-  show Kd.K (j + s) (ph (j + s) (ext p' s t')) (ph (j + s) (ext p s t)) = 0
-  rw [ph_ext D hp hs ht, ph_ext D hp' hs ht']
-  by_contra hne
-  have h2 := h.2.2.2.1 j s hs hi (ph j p') (ph j p) t' t ht' ht hne
-  by_cases htop : j + s = D.R.rS + 1 ∧ s = 1
-  · rw [if_pos htop] at h2
-    rcases hor with hor | hor
-    · apply hor
-      show _ ∈ (if j + s = D.R.rS + 1 ∧ s = 1 then (⊤ : AddSubgroup D.host.E) else _)
-      rw [if_pos htop]; exact AddSubgroup.mem_top _
-    · exact hor.2.2 h2.symm
-  · rw [if_neg htop] at h2
-    rcases hor with hor | hor
-    · apply hor
-      show _ ∈ (if j + s = D.R.rS + 1 ∧ s = 1 then (⊤ : AddSubgroup D.host.E) else _)
-      rw [if_neg htop, Nat.add_sub_cancel, Submodule.mem_toAddSubgroup]
-      have := (L.La' (j + 1) s).neg_mem h2
-      have e : 1 / t - 1 / t' = -(t'⁻¹ - t⁻¹) := by simp only [one_div]; ring
-      rw [e]; exact this
-    · exact htop ⟨hor.1, hor.2.1⟩
 
-theorem arith_axiom_thirteenth_of_arith_axioms (h : ArithAx D L Kd) : ThetaDomination (taData D L Kd Lv) := by
-  intro i s hs hsi hi
-  obtain ⟨j, rfl⟩ : ∃ j, i = j + s := ⟨i - s, by omega⟩
-  obtain ⟨hdom, hper, hpsd, hsum⟩ := h.2.2.2.2 j s hs hi
-  have e : j + s - s = j := by omega
-  refine ⟨fun t Hd hHd => ?_, fun t l hl => ?_, fun t Hd ht hHd => ?_, fun R Hd hR hHd => ?_⟩
-  · show PSDOn Hd (fun p p' => Kd.Th (j + s - s) s t (ph (j + s - s) p') (ph (j + s - s) p))
-    rw [e] at hHd ⊢
-    exact pull_psd (hpsd t) Hd (ph j) unsw (fun x hx => unsw_ph (hHd x hx))
-  · show (fun p p' => Kd.Th (j + s - s) s (t + l) (ph (j + s - s) p') (ph (j + s - s) p)) =
-      fun p p' => Kd.Th (j + s - s) s t (ph (j + s - s) p') (ph (j + s - s) p)
-    have hl' : l ∈ L.La (j + 1) s := by
-      have : l ∈ (L.La (j + s - s + 1) s).toAddSubgroup := hl
-      rwa [e, Submodule.mem_toAddSubgroup] at this
-    rw [e, hper t l hl']
-  · show PSDOn Hd (fun p p' => Kd.Th (j + s - s) s t (ph (j + s - s) p') (ph (j + s - s) p) -
-      Kd.K (j + s) (ph (j + s) (ext p' s t)) (ph (j + s) (ext p s t)))
-    rw [e] at hHd ⊢
-    have h1 := pull_psd (hdom t ht) Hd (ph j) unsw (fun x hx => unsw_ph (hHd x hx))
-    refine ⟨fun x hx y hy => ?_, fun a => ?_⟩
-    · have := h1.1 x hx y hy
-      beta_reduce at this ⊢
-      rw [ph_ext D (hHd x hx) hs ht, ph_ext D (hHd y hy) hs ht]
-      exact this
-    · have := h1.2 a
-      refine le_of_le_of_eq this ?_
-      congr 1
-      refine Finset.sum_congr rfl fun x hx => Finset.sum_congr rfl fun y hy => ?_
-      beta_reduce
-      rw [ph_ext D (hHd x hx) hs ht, ph_ext D (hHd y hy) hs ht]
-  · show PSDOn Hd (fun p p' => ((1 + Kd.e (j + s) : ℝ) : ℂ) * Kd.K (j + s - s) (ph (j + s - s) p') (ph (j + s - s) p) -
-      ∑ t ∈ R, Kd.Th (j + s - s) s t (ph (j + s - s) p') (ph (j + s - s) p))
-    have hR' : ∀ t ∈ R, ∀ t' ∈ R, t - t' ∈ L.La (j + 1) s → t = t' := fun t ht t' ht' hm => by
-      refine hR t ht t' ht' ?_
-      show t - t' ∈ (L.La (j + s - s + 1) s).toAddSubgroup
-      rw [e, Submodule.mem_toAddSubgroup]; exact hm
-    rw [e] at hHd ⊢
-    have h1 := pull_psd (hsum R hR') Hd (ph j) unsw (fun x hx => unsw_ph (hHd x hx))
-    have e2 : ((1 + Kd.e (j + s) : ℝ) : ℂ) = 1 + (Kd.e (j + s) : ℂ) := by push_cast; ring
-    rw [e2]
-    exact h1
 
 theorem rows_of_KLE {ι : Type} (c : ι → Point D.host.E (D.R.rS + 1) → ℂ)
     (h : ∀ R : Finset ι, KLE (fun p p' => ∑ ρ ∈ R, c ρ p * star (c ρ p')) (Kd.K (D.R.rS + 1)))
@@ -6094,16 +4150,6 @@ theorem PSDK.prod {α ι : Type*} (s : Finset ι) {K : ι → α → α → ℂ}
     have h1 := PSDK.mul (hK v (Finset.mem_insert_self v s)) (ih fun w hw => hK w (Finset.mem_insert_of_mem hw))
     simpa [Finset.prod_insert hv] using h1
 
-theorem exists_gram_places {α ι : Type} [Fintype ι] {β : ι → Type} (g : ∀ v, β v → β v → ℂ) (hg : ∀ v, PSDK (g v))
-    (loc : ∀ v, α → β v) (n : α → ℝ) :
-    ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H) (_ : CompleteSpace H) (V : α → H),
-      ∀ p q, inner ℂ (V p) (V q) = ((n q : ℝ) : ℂ) * ((n p : ℝ) : ℂ) * ∏ v, g v (loc v q) (loc v p) := by
-  have h1 : PSDK (fun p q : α => ((n p : ℝ) : ℂ) * conj ((n q : ℝ) : ℂ)) := PSDK.rankOne (fun p => ((n p : ℝ) : ℂ))
-  have h2 : PSDK (fun p q : α => ∏ v, g v (loc v p) (loc v q)) :=
-    PSDK.prod Finset.univ fun v _ => PSDK.comap (hg v) (loc v)
-  obtain ⟨H, i1, i2, i3, V, hV⟩ := exists_gram_transpose (PSDK.mul h1 h2)
-  refine ⟨H, i1, i2, i3, V, fun p q => ?_⟩
-  rw [hV p q, Complex.conj_ofReal]
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -6248,78 +4294,7 @@ def ptEquiv (i : ℕ) : {p : Pt E // IsPt i p} ≃ Point E i where
 
 end Points
 
-theorem rowSums_of_levelEst (K : ℕ) (hK : 4 ≤ K) (C4 : ℝ) (hC4 : 1 ≤ C4) : ∃ C0 C' C : ℝ, 1 ≤ C0 ∧
-    ∀ (D : D7) (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRealPlace D) (L : LatticeDataWithDual D) (Kd : KernelData D)
-      (Lv : ℕ → AddSubgroup D.host.E), ArithAx D L Kd → SzOK D C1 C2 N T T' δ x L Lv →
-      C' ≤ ThS D C1 C2 N T T' δ x L → (D.R.rS : ℝ) * (C0 / ThS D C1 C2 N T T' δ x L) ^ D.R.f ≤ 1 →
-      ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (Wd : Type) [Fintype Wd] (len : Wd → ℕ)
-        (Pat1 : Type) (pat1 : ℕ → D.host.E → Pat1) (pat3 : ℕ → ℕ → D.host.E → D.host.E → (D.what₂.Tau → Option Bool))
-        (Φ : ℝ → Wd → Pt D.host.E → H)
-        (tr : ℝ → ℕ → Wd → Finset (Pt D.host.E) → (Pt D.host.E → Pt D.host.E → ℂ) → D.host.E → ℂ)
-        (w0 : Wd) (jn : ℝ) (ι : Type) (c : ι → Point D.host.E (D.R.rS + 1) → ℂ) (Wv : Point D.host.E (D.R.rS + 1) → H),
-        (∀ eps : ℝ, 0 < eps → ∀ i ∈ Icc 1 (D.R.rS + 1),
-          LevelEst len K (taData D L Kd Lv) (Φ eps) (tr eps i) (pat1 i) (pat3 i) (prof1 D C1 C2 N T T' δ x K i)
-            (prof3 D C1 C2 N T T' δ x K i) (bdB D C1 C2 N T T' δ x L C4 i) i) →
-        (∀ w, len w ≤ 4 * K * (D.R.rS + 1) → Tendsto (fun eps => ‖Φ eps w []‖ ^ 2) (𝓝[>] 0) (𝓝 jn)) →
-        len w0 = 0 →
-        (∀ p, IsPt (D.R.rS + 1) p → ∀ᶠ eps in 𝓝[>] (0 : ℝ), Φ eps w0 p = Wv (ph (D.R.rS + 1) p)) →
-        (∀ R : Finset ι, KLE (fun p p' => ∑ ρ ∈ R, c ρ p * star (c ρ p')) (Kd.K (D.R.rS + 1))) →
-        (∀ ρ, Summable fun h => ‖c ρ h‖ * ‖Wv h‖) →
-        ∀ R : Finset ι, ∑ ρ ∈ R, ‖∑' h, c ρ h • Wv h‖ ^ 2 ≤
-          (1 + C * ((D.R.rS : ℝ) + 1) * (C0 / ThS D C1 C2 N T T' δ x L) ^ D.R.f) *
-            (∏ i ∈ Icc 1 (D.R.rS + 1), (1 + Kd.e i)) * jn := by
-  obtain ⟨C0, hC01, hSz⟩ := levelSizes_of_ThS K hK C4 hC4
-  obtain ⟨C', C, hTA⟩ := Formalism.FourierDecayAlt.P.theorem_a_reduction C0 hC01
-  refine ⟨C0, max C' (max C0 5), C, hC01, ?_⟩
-  intro D C1 C2 N T T' δ x L Kd Lv hAx hOK hΘ hr H _ _ _ Wd _ len Pat1 pat1 pat3 Φ tr w0 jn ι c Wv hEst hE hw0 hcut hrow hsum R
-  have hΘ1 : C' ≤ ThS D C1 C2 N T T' δ x L := le_trans (le_max_left _ _) hΘ
-  have hΘ2 : C0 ≤ ThS D C1 C2 N T T' δ x L := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hΘ
-  have hΘ3 : 4 < ThS D C1 C2 N T T' δ x L :=
-    lt_of_lt_of_le (by norm_num) (le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hΘ)
-  obtain ⟨ep1, ep3, hLS⟩ := hSz D C1 C2 N T T' δ x L Kd Lv hAx hOK hΘ2 hΘ3
-  have key := hTA D.host.E H Wd len K D.R.f (ThS D C1 C2 N T T' δ x L) (taData D L Kd Lv) Pat1 (D.what₂.Tau → Option Bool)
-    pat1 pat3 (prof1 D C1 C2 N T T' δ x K) (prof3 D C1 C2 N T T' δ x K) (fun _ => ep1) (fun _ _ => ep3)
-    (bdB D C1 C2 N T T' δ x L C4) Φ tr w0 (fun p => Wv (ph (D.R.rS + 1) p)) jn ι (fun ρ p => c ρ (ph (D.R.rS + 1) p))
-    hK (f_pos D) hΘ1 hr (axK_of_ArithAx Lv hAx) (arith_axiom_second_of_arith_axioms Lv hAx) (arith_axiom_thirteenth_of_arith_axioms Lv hAx) (axE_of_ArithAx Lv hAx)
-    hLS hEst hE hw0 hcut (fun P R hP => rows_of_KLE Lv c hrow P R hP)
-    (fun ρ => ((ptEquiv (E := D.host.E) (D.R.rS + 1)).summable_iff (f := fun h => ‖c ρ h‖ * ‖Wv h‖)).2 (hsum ρ)) R
-  refine le_of_eq_of_le ?_ key
-  refine Finset.sum_congr rfl fun ρ _ => ?_
-  congr 2
-  exact ((ptEquiv (E := D.host.E) (D.R.rS + 1)).tsum_eq (fun h => c ρ h • Wv h)).symm
 
-theorem sRowForm_of_levelEst (K : ℕ) (hK : 4 ≤ K) (C4 : ℝ) (hC4 : 1 ≤ C4) : ∃ C0 C' C : ℝ, 1 ≤ C0 ∧
-    ∀ (D : D7) (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRealPlace D) (L : LatticeDataWithDual D) (Kd : KernelData D)
-      (Lv : ℕ → AddSubgroup D.host.E), ArithAx D L Kd → SzOK D C1 C2 N T T' δ x L Lv →
-      C' ≤ ThS D C1 C2 N T T' δ x L → (D.R.rS : ℝ) * (C0 / ThS D C1 C2 N T T' δ x L) ^ D.R.f ≤ 1 →
-      ∀ (HSv : D.what₂.Tau → Type) (ip : ∀ v, HSv v → HSv v → ℂ), (∀ v, PSDK (ip v)) →
-      ∀ (n : Point D.host.E (D.R.rS + 1) → ℝ) (ι : Type) (c : ι → Point D.host.E (D.R.rS + 1) → ℂ)
-        (V : ∀ v, Point D.host.E (D.R.rS + 1) → HSv v), RowsAx HSv ip (Kd.K (D.R.rS + 1)) n c V →
-      ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (Wv : Point D.host.E (D.R.rS + 1) → H),
-        (∀ p q, ⟪Wv p, Wv q⟫_ℂ = ((Real.sqrt (n q) : ℝ) : ℂ) * ((Real.sqrt (n p) : ℝ) : ℂ) * ∏ v, ip v (V v q) (V v p)) →
-      ∀ (Wd : Type) [Fintype Wd] (len : Wd → ℕ)
-        (Pat1 : Type) (pat1 : ℕ → D.host.E → Pat1) (pat3 : ℕ → ℕ → D.host.E → D.host.E → (D.what₂.Tau → Option Bool))
-        (Φ : ℝ → Wd → Pt D.host.E → H)
-        (tr : ℝ → ℕ → Wd → Finset (Pt D.host.E) → (Pt D.host.E → Pt D.host.E → ℂ) → D.host.E → ℂ)
-        (w0 : Wd) (jn : ℝ),
-        (∀ eps : ℝ, 0 < eps → ∀ i ∈ Icc 1 (D.R.rS + 1),
-          LevelEst len K (taData D L Kd Lv) (Φ eps) (tr eps i) (pat1 i) (pat3 i) (prof1 D C1 C2 N T T' δ x K i)
-            (prof3 D C1 C2 N T T' δ x K i) (bdB D C1 C2 N T T' δ x L C4 i) i) →
-        (∀ w, len w ≤ 4 * K * (D.R.rS + 1) → Tendsto (fun eps => ‖Φ eps w []‖ ^ 2) (𝓝[>] 0) (𝓝 jn)) →
-        len w0 = 0 →
-        (∀ p, IsPt (D.R.rS + 1) p → ∀ᶠ eps in 𝓝[>] (0 : ℝ), Φ eps w0 p = Wv (ph (D.R.rS + 1) p)) →
-        SRowForm HSv ip n c V ≤ ENNReal.ofReal
-          ((1 + C * ((D.R.rS : ℝ) + 1) * (C0 / ThS D C1 C2 N T T' δ x L) ^ D.R.f) *
-            (∏ i ∈ Icc 1 (D.R.rS + 1), (1 + Kd.e i)) * jn) := by
-  obtain ⟨C0, C', C, hC01, h⟩ := rowSums_of_levelEst K hK C4 hC4
-  refine ⟨C0, C', C, hC01, ?_⟩
-  intro D C1 C2 N T T' δ x L Kd Lv hAx hOK hΘ hr HSv ip hip n ι c V hRows H _ _ _ Wv hW Wd _ len Pat1 pat1 pat3 Φ tr w0 jn
-    hEst hE hw0 hcut
-  refine sRowForm_le ip hip n c V Wv hW hRows.2 _ ?_
-  refine h D C1 C2 N T T' δ x L Kd Lv hAx hOK hΘ hr H Wd len Pat1 pat1 pat3 Φ tr w0 jn ι c Wv hEst hE hw0 hcut hRows.1 ?_
-  intro ρ
-  refine (hRows.2 ρ).congr fun p => ?_
-  rw [norm_places ip hip n V Wv hW p, mul_assoc]
 
 end Formalism.MainNotions.InterlacingSignCuts
 

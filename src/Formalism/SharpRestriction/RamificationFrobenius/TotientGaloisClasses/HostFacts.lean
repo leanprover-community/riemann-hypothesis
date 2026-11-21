@@ -85,7 +85,6 @@ theorem sixteen_dvd_QS : 16 ∣ H.QS :=
   (show 2 ^ 4 ∣ 2 ^ (φ.e + 2) from Nat.pow_dvd_pow 2 (by have := H.two_le_e; omega)).trans H.tower_dvd
 theorem two_dvd_condN : 2 ∣ H.condN := H.two_dvd_QS.trans H.QS_dvd_condN
 theorem sixteen_dvd_condN : 16 ∣ H.condN := H.sixteen_dvd_QS.trans H.QS_dvd_condN
-theorem tower_le_QS : 2 ^ (φ.e + 2) ≤ H.QS := Nat.le_of_dvd H.QS_pos H.tower_dvd
 
 theorem q_not_dvd_QS : ¬ H.q ∣ H.QS := (Nat.Prime.coprime_iff_not_dvd H.q_prime).1 H.coprime_QS_q.symm
 theorem d_not_dvd_QS : ¬ H.d ∣ H.QS := (Nat.Prime.coprime_iff_not_dvd H.d_prime).1 H.coprime_QS_d.symm
@@ -174,9 +173,6 @@ theorem psAt_of_coprime {p : ℕ} (h : Nat.Coprime p H.condN) :
   unfold HostRaw.psAt
   rw [dif_pos h]
 
-theorem psAt_of_not_coprime {p : ℕ} (h : ¬ Nat.Coprime p H.condN) : H.psAt p = 0 := by
-  unfold HostRaw.psAt
-  rw [dif_neg h]
 
 theorem psAt_eq_one_or {p : ℕ} (h : Nat.Coprime p H.condN) : H.psAt p = 1 ∨ H.psAt p = -1 := by
   rw [H.psAt_of_coprime h]
@@ -231,8 +227,6 @@ theorem finrank_K : Module.finrank ℚ H.K = 2 := by
     linarith
   omega
 
-theorem ncard_primesOver_d : (primesOver (span {(H.d : ℤ)}) (𝓞 H.K)).ncard = 1 :=
-  SplitK.ram_ncard H.d_prime H.sqd_sq
 
 theorem gal_comm (σ τ : H.E ≃ₐ[ℚ] H.E) : σ * τ = τ * σ :=
   H.gal.injective (by rw [map_mul, map_mul, mul_comm])
@@ -286,26 +280,12 @@ theorem hostClasses (p : ℕ) [Fact p.Prime] (hp : ¬ p ∣ H.condN)
     rcases Int.units_eq_one_or (H.galE σ).1.2 with h2 | h2 <;>
     simp [Prod.ext_iff, c0, h1, h2, ← ha, ← hb]
 
-theorem hostClassesQ (hP : H.PsQ) (p : ℕ) [Fact p.Prime] (hp : ¬ p ∣ H.condN)
-    (P : Ideal (𝓞 H.E)) [P.IsPrime] [P.LiesOver (span {(p : ℤ)})] (σ : H.E ≃ₐ[ℚ] H.E) (hσ : IsArithFrobAt ℤ σ P) :
-    (((H.galE σ).1 = 1 ∨ (H.galE σ).1 = (-1, 1)) ↔ jacobiSym (-(H.d : ℤ)) p = 1) ∧
-    ((H.galE σ).1 = (1, -1) ↔ (jacobiSym (-(H.d : ℤ)) p = -1 ∧ jacobiSym (-(H.q : ℤ)) p = 1)) ∧
-    ((H.galE σ).1 = c0 ↔ (jacobiSym (-(H.d : ℤ)) p = -1 ∧ jacobiSym (-(H.q : ℤ)) p = -1)) := by
-  have h := H.hostClasses p hp P σ hσ
-  rw [hP.psAt_prime Fact.out hp] at h
-  exact h
 
 theorem frob_iff (p : ℕ) [Fact p.Prime] (hp : Nat.Coprime p H.condN)
     (P : Ideal (𝓞 H.E)) [P.IsPrime] [P.LiesOver (span {(p : ℤ)})] (σ : H.E ≃ₐ[ℚ] H.E) :
     IsArithFrobAt ℤ σ P ↔ H.galE σ = H.art (ZMod.unitOfCoprime p hp) :=
   (H.der.frob p ((Nat.Prime.coprime_iff_not_dvd Fact.out).1 hp) P).2.1 σ _ (ZMod.coe_unitOfCoprime p hp)
 
-theorem frob_mem_Psi_iff (p : ℕ) [Fact p.Prime] (hp : ¬ p ∣ H.condN)
-    (P : Ideal (𝓞 H.E)) [P.IsPrime] [P.LiesOver (span {(p : ℤ)})] (σ : H.E ≃ₐ[ℚ] H.E) (hσ : IsArithFrobAt ℤ σ P) :
-    H.galE σ ∈ φ.Psi ↔ jacobiSym (-(H.d : ℤ)) p = 1 := by
-  have h3 := ((H.der.frob p hp P).2.2.1 σ hσ).2.1
-  rw [Frame.Psi, MonoidHom.mem_ker, ← h3]
-  simp [Frame.chD, Units.val_eq_one]
 
 theorem splitK_of_dvd {l : ℕ} (hl : l.Prime) (h : l ∣ H.QS * H.q) :
     (primesOver (span {(l : ℤ)}) (𝓞 H.K)).ncard = 2 := by
@@ -319,18 +299,6 @@ theorem splitK_of_dvd {l : ℕ} (hl : l.Prime) (h : l ∣ H.QS * H.q) :
   · subst h'
     exact H.hyp.2.2.2.2
 
-theorem hostSplitK :
-    (∀ p : ℕ, p.Prime →
-      ((primesOver (span {(p : ℤ)}) (𝓞 H.K)).ncard = 2 ↔ (p = 2 ∨ (p ≠ 2 ∧ jacobiSym (-(H.d : ℤ)) p = 1)))) ∧
-    (primesOver (span {(H.d : ℤ)}) (𝓞 H.K)).ncard = 1 ∧
-    (primesOver (span {(H.q : ℤ)}) (𝓞 H.K)).ncard = 2 ∧
-    ∀ (p : ℕ) [Fact p.Prime], ¬ p ∣ H.condN →
-    ∀ (P : Ideal (𝓞 H.E)) [P.IsPrime] [P.LiesOver (span {(p : ℤ)})] (σ : H.E ≃ₐ[ℚ] H.E), IsArithFrobAt ℤ σ P →
-      (H.galE σ ∈ φ.Psi ↔ (primesOver (span {(p : ℤ)}) (𝓞 H.K)).ncard = 2) := by
-  refine ⟨H.der.splitK, H.ncard_primesOver_d, H.splitK_of_dvd H.q_prime (dvd_mul_left _ _), ?_⟩
-  intro p _ hp P _ _ σ hσ
-  rw [H.frob_mem_Psi_iff p hp P σ hσ, H.der.splitK p Fact.out]
-  simp [H.ne_two_of_not_dvd hp]
 
 theorem eta_eq_neg_one_iff (h2 : φ.TwoGroup) (p : ℕ) [Fact p.Prime] (hp : ¬ p ∣ H.condN)
     (P : Ideal (𝓞 H.E)) [P.IsPrime] [P.LiesOver (span {(p : ℤ)})] (σ : H.E ≃ₐ[ℚ] H.E) (hσ : IsArithFrobAt ℤ σ P) :

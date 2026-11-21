@@ -19,34 +19,9 @@ section Val
 
 variable (p : ℕ) {Kc : Type} [Field Kc] (Oc : Subring Kc)
 
-theorem geV_zero (g : ℝ) : geV p Oc (0 : Kc) g := by
-  intro a b hb _
-  rw [zero_pow hb.ne', zero_mul]
-  exact Oc.zero_mem
 
-theorem geV_smul {c x : Kc} {g : ℝ} (hc : c ∈ Oc) (h : geV p Oc x g) : geV p Oc (c * x) g := by
-  intro a b hb hab
-  rw [mul_pow, mul_assoc]
-  exact Oc.mul_mem (Oc.pow_mem hc b) (h a b hb hab)
 
-theorem geV_neg {x : Kc} {g : ℝ} (h : geV p Oc x g) : geV p Oc (-x) g := by
-  have := geV_smul p Oc (Oc.neg_mem Oc.one_mem) h
-  simpa using this
 
-theorem geV_add (hV : ValR p Oc) {x y : Kc} {g : ℝ} (hx : geV p Oc x g) (hy : geV p Oc y g) : geV p Oc (x + y) g := by
-  intro a b hb hab
-  by_cases hy0 : y = 0
-  · subst hy0; simpa using hx a b hb hab
-  by_cases hx0 : x = 0
-  · subst hx0; simpa using hy a b hb hab
-  rcases hV.val (x / y) with h | h
-  · have e : x + y = (x / y + 1) * y := by field_simp
-    rw [e, mul_pow, mul_assoc]
-    exact Oc.mul_mem (Oc.pow_mem (Oc.add_mem h Oc.one_mem) _) (hy a b hb hab)
-  · have h' : y / x ∈ Oc := by simpa [inv_div] using h
-    have e : x + y = (1 + y / x) * x := by field_simp
-    rw [e, mul_pow, mul_assoc]
-    exact Oc.mul_mem (Oc.pow_mem (Oc.add_mem Oc.one_mem h') _) (hx a b hb hab)
 
 end Val
 

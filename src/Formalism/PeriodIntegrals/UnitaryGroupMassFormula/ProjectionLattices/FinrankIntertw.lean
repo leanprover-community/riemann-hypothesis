@@ -194,25 +194,6 @@ theorem coef_mul [CharZero K] (T : GoodSet K G) (s t : T.S) (z : G) :
     rw [mul_one, cS]
   · rw [mul_zero, map_zero, mul_zero]
 
-theorem eS_mul_eS [CharZero K] (T : GoodSet K G) (s t : T.S) :
-    eS T s * eS T t = if s = t then eS T s else 0 := by
-  have h1 : eS T s * eS T t =
-      ∑ z : G, (∑ x : G, cS T s x * cS T t (x⁻¹ * z)) • MonoidAlgebra.of K G z := by
-    rw [eS_eq, eS_eq, Finset.sum_mul_sum]
-    simp only [smul_mul_smul_comm, ← map_mul]
-    simp_rw [Finset.sum_smul]
-    conv_rhs => rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun x _ => ?_
-    exact Fintype.sum_equiv (Equiv.mulLeft x) _ _ (fun y => by simp)
-  rw [h1]
-  simp_rw [coef_mul]
-  split_ifs with h
-  · rw [eS_eq]
-  · simp
 
-theorem eG_mul_eG [CharZero K] (T : GoodSet K G) : eG T * eG T = eG T := by
-  rw [eG, Finset.sum_mul_sum]
-  simp_rw [eS_mul_eS]
-  simp
 
 end PI.Dv.GLP

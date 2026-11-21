@@ -108,7 +108,6 @@ theorem e2 : E2 := (@GlobalTheory.CompanionTheory.UnramifiedEisensteinCoefficien
 
 theorem e3 : E3 := (@GlobalTheory.CompanionTheory.EulerThree.HalfWt.adjoint_lift_twisted_euler_product : faceMap_comp_succAbove_castSucc → E3) e1b
 
-theorem eulOf : EulOf := (@GlobalTheory.CompanionTheory.HalfInt.eulOf_of_faceMap_comp_succAbove_castSucc : E1 → faceMap_comp_succAbove_castSucc → E2 → E3 → EulOf) e1 e1b e2 e3
 
 theorem anOf : AnOf := (@GlobalTheory.CompanionTheory.AdjointLift.anOf : AnOf)
 

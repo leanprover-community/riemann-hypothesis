@@ -17,18 +17,12 @@ theorem cobRules : CobRules := by
   exact coboundary_rules_hold
 theorem simeqInt : SimeqInt := by
   exact Sim.simeq_integral_series
-theorem simeqHalf : SimeqHalf := by
-  exact Sim.simeq_halving
 theorem simeqLog : SimeqLog := by
   exact Sim.simeq_formal_log
 theorem phODef : PhODef := by
   exact Ph.logSigmaPullbackSpec
 theorem phEDef : PhEDef := by
   exact Ph.logSigmaOnePullbackSpec
-theorem phOEven : PhOEven := by
-  exact Ph.logSigmaPullbackEven
-theorem phEEven : PhEEven := by
-  exact Ph.logSigmaOnePullbackEven
 theorem parEFormula : ParEFormula := by
   exact ParE.ParEFormula_of addSigma1Log
 theorem parE : ParE := by
@@ -41,8 +35,6 @@ theorem diffPh : DiffPh := by
   exact ParO.DiffPh_of sigma1Sq simeqLog
 theorem cube : Cube := by
   exact Cube_of halfExists simeqInt
-theorem diagTwo : DiagTwo := by
-  exact DiagTwo_of simeqInt
 theorem jetsThree : JetsThree := by
   exact Jets.jets_three_variables_holds
 

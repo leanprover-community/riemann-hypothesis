@@ -132,7 +132,6 @@ theorem stdSide_rrDef : (stdSide D c b).RRDef := by
   exact (iff_of_eq (congrArg (fun s => jB D.what₂.embLL b y ∈ s) e)).trans
     (jB_mem_oB D.what₂.embLL b D.what₂.OtoLL hO y)
 
-theorem stdSide_rrFull : (stdSide D c b).RRFull := (stdH_good D.what₂.LL n).2
 
 def ambOf (S : RowSide D EE) (m : D.what₂.Tup → ℕ) (bA : ∀ μ, OrthonormalBasis (Fin (m μ)) ℂ (S.Amb μ))
     (hg : ∀ μ, (S.Mtilde μ).gen = genB (bA μ)) : AmbForm D S where

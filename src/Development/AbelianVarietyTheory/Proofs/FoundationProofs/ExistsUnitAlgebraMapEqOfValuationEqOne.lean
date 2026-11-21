@@ -145,13 +145,6 @@ variable [(Ideal.span {π}).IsPrime]
   (K : Type*) [Field K] [Algebra R K] [FaithfulSMul R K]
   [Algebra A K] [IsScalarTower R A K] [Algebra S K] [IsScalarTower R S K] [IsFractionRing S K]
 
-theorem exists_unit_algebraMap_eq_of_valuation_eq_one (hπ : π ≠ 0) {y : A} (hy : IsUnit y)
-    (h : (IsDiscreteValuationRing.maximalIdeal S).valuation K (algebraMap A K y) = 1) :
-    ∃ r : R, IsUnit r ∧ algebraMap R A r = y := by
-  obtain ⟨z, hz⟩ := IsDiscreteValuationRing.exists_lift_of_le_one h.le
-  refine exists_unit_algebraMap_eq K hπ hy (z := z) ?_ hz.symm
-  rw [← hz, IsDedekindDomain.HeightOneSpectrum.valuation_eq_one_iff_notMem] at h
-  exact notMem_maximalIdeal.1 h
 
 end Valuation
 

@@ -77,10 +77,6 @@ theorem eS_orth (s t : T.S) (hst : s ≠ t) : eS T s * eS T t = 0 := by
   have hne0 : ((Module.finrank K (T.W s) : ℕ) : K) / ((Fintype.card G : ℕ) : K) ≠ 0 := div_ne_zero hdK hG0
   exact (mul_left_cancel₀ hne0 this).symm
 
-theorem eS_mul_eS (s t : T.S) : eS T s * eS T t = if s = t then eS T s else 0 := by
-  split_ifs with h
-  · subst h; exact eS_idem T s
-  · exact eS_orth T s t h
 
 end Orth
 
@@ -251,19 +247,6 @@ theorem norm_trace_tau_le {W : Type} [AddCommGroup W] [Module K W] [FiniteDimens
   (trace_end_finite_order (τ g) (Fintype.card G) Fintype.card_pos
     (by rw [← map_pow, pow_card_eq_one, map_one]) σ).1
 
-theorem intR_card_eS (T : GoodSet K G) (s : T.S) : IntR (((Fintype.card G : ℕ) : K) • eS T s) := by
-  have hG0 : ((Fintype.card G : ℕ) : K) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
-  rw [eS, Finset.smul_sum]
-  refine intR_sum _ _ fun x _ => ?_
-  rw [smul_smul]
-  refine intR_smul _ ?_ (intR_of x)
-  have : ((Fintype.card G : ℕ) : K) * (((Module.finrank K (T.W s) : ℕ) : K) / ((Fintype.card G : ℕ) : K) *
-      LinearMap.trace K (T.W s) (T.tau s x⁻¹)) =
-      ((Module.finrank K (T.W s) : ℕ) : K) * LinearMap.trace K (T.W s) (T.tau s x⁻¹) := by
-    field_simp
-  rw [this]
-  obtain ⟨u, hu⟩ := trace_tau_mem (T.tau s) x⁻¹
-  exact ⟨(Module.finrank K (T.W s) : 𝓞 K) * u, by rw [map_mul, hu, map_natCast]⟩
 
 end Integral
 

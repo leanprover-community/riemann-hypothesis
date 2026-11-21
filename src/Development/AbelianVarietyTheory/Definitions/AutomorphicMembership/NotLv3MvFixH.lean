@@ -125,8 +125,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {F F' : ∀ u, Forms0 D u}
 
-theorem SameCar_symm (h : SameCar F F') : SameCar F' F := fun u =>
-  ⟨(h u).1.symm, (h u).2.1.symm, (h u).2.2.1.symm, (h u).2.2.2.1.symm, (h u).2.2.2.2.symm⟩
 
 set_option maxHeartbeats 4000000 in
 

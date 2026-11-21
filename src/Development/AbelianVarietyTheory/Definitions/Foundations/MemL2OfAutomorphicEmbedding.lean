@@ -105,8 +105,6 @@ variable {μ} {π : GA D V →* (H →L[ℂ] H)} {π' : GA D V →* (X →L[ℂ]
 
 theorem mCusp_eq_Rcusp : mCusp V μ π = multIn π (Rcusp V μ) ⊤ := (multIn_rep (isSubrep_L2cusp V μ)).symm
 
-theorem mDisc_eq_top (hπ : IsIrrUnitary π) : mDisc V μ π = multIn π (RG V μ) ⊤ :=
-  congrArg (fun U : Submodule ℂ _ => Module.rank ℂ U) (homIn_disc hπ (isUnitaryRep_RG V μ))
 
 open Classical in
 
@@ -183,31 +181,10 @@ theorem petersson_eq_inner {F F' : DividedPowerChartLift V μ} (hφ : LeftInv (G
   obtain ⟨h', rfl⟩ := exists_toL2_eq_of_ae_eq hψ e'
   exact (h.inner_toL2_eq_theta_pairing h').symm
 
-theorem petersson_rTr_eq_be (hπ : IsIrrUnitary π) {U U' : Submodule ℂ (DividedPowerChartLift V μ)} {T T' : H →L[ℂ] DividedPowerChartLift V μ}
-    (hT : T ∈ homIn π (RG V μ) U) (hT' : T' ∈ homIn π (RG V μ) U') {x y : H} (hφ : LeftInv (GQ V) φ)
-    (hψ : LeftInv (GQ V) ψ) (e : lift (GQ V) (T x) =ᵐ[μ] φ) (e' : lift (GQ V) (T' y) =ᵐ[μ] ψ) (g : GA D V) :
-    petersson V μ (rTr V g φ) ψ = be T T' * ⟪y, π g x⟫_ℂ :=
-  (petersson_eq_inner (hφ.mul_right g) hψ ((lift_R g _).trans
-    ((measurePreserving_mul_right μ g).quasiMeasurePreserving.ae e)) e').trans
-      (inner_apply_eq_be hπ (isUnitaryRep_RG V μ) hT hT' g x y)
 
 variable {ι ι' : finVec V θ A π →ₗ[ℂ] (GA D V → ℂ)}
 
-theorem petersson_rTr_eq_beF (hπ : IsIrrUnitary π) (h : ι ∈ formHom V θ A μ π) (h' : ι' ∈ formHom V θ A μ π)
-    (g : GA D V) (x y : finVec V θ A π) : petersson V μ (rTr V g (ι x)) (ι' y) = beF μ ι ι' * ⟪(y : H), π g x⟫_ℂ := by
-  obtain ⟨h, T, hT, e⟩ := h
-  obtain ⟨h', T', hT', e'⟩ := h'
-  rw [petersson_rTr_eq_be hπ hT hT' (h x).2.2.1 (h' y).2.2.1 (e x) (e' y)]
-  rcases subsingleton_or_nontrivial (finVec V θ A π) with h0 | h0
-  · simp [Subsingleton.elim y 0]
-  · rw [beF, petersson_eq_inner (h _).2.2.1 (h' _).2.2.1 (e _) (e' _), inner_eq_be hπ (isUnitaryRep_RG V μ) hT hT',
-      ← Submodule.coe_inner, inner_self_eq_norm_sq_to_K, norm_unitVec]
-    simp
 
-theorem petersson_eq_beF (hπ : IsIrrUnitary π) (h : ι ∈ formHom V θ A μ π) (h' : ι' ∈ formHom V θ A μ π)
-    (x y : finVec V θ A π) : petersson V μ (ι x) (ι' y) = beF μ ι ι' * ⟪y, x⟫_ℂ := by
-  have e : rTr V 1 (ι x) = ι x := funext fun g => congrArg (ι x) (mul_one g)
-  simpa only [e, map_one, one_apply_eq_self, Submodule.coe_inner] using petersson_rTr_eq_beF hπ h h' 1 x y
 
 omit [μ.IsHaarMeasure] [μ.IsMulRightInvariant] in
 
@@ -220,18 +197,7 @@ section Examples
 
 variable (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
 
-theorem multIn_one_ne_zero {U : Submodule ℂ (DividedPowerChartLift V μ)} (h : (memL2_const (Γ := GQ V) (μ := μ) 1).toL2 ∈ U) :
-    multIn (charRep (1 : GA D V →* Circle)) (RG V μ) U ≠ 0 := fun e => by
-  have h1 : ContinuousLinearMap.toSpanSingleton ℂ (memL2_const (Γ := GQ V) (μ := μ) 1).toL2 ∈
-      homIn (charRep (1 : GA D V →* Circle)) (RG V μ) U :=
-    ⟨fun c => U.smul_mem c h, fun g c => by simp [charRep, right_translate_toL2]⟩
-  rw [multIn_eq_zero_iff.1 e, Submodule.mem_bot] at h1
-  exact (isIrredSubrep_const (Γ := GQ V) (μ := μ)).2.1 (Submodule.span_singleton_eq_bot.2
-    ((one_smul ℂ _).symm.trans (DFunLike.congr_fun h1 1)))
 
-theorem isDiscreteRep_one : IsDiscreteRep V μ (charRep 1) :=
-  ⟨isIrrUnitary_charRep continuous_const,
-    multIn_one_ne_zero V μ (isIrredSubrep_const.le_disc (Submodule.mem_span_singleton_self _))⟩
 
 example (v : Formalism.MainNotions.SchurIrreducible.Pl D.host.F) :
     HasCompPl D.sp.cm.sig V.gram v (charRep 1) (charRep (1 : GA D V →* Circle)) :=

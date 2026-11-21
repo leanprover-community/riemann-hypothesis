@@ -72,10 +72,6 @@ theorem ptNorm_nonneg (σ : T.Q.c.F →+* ℂ) (u : WeightFamilies.Wt D j) (F : 
     0 ≤ ptNorm h j σ u F p :=
   mul_nonneg (norm_nonneg _) (pnorm_fac_nonneg _ _ _)
 
-theorem ptNorm_le_l2Norm (σ : T.Q.c.F →+* ℂ) {wL : WeightFamilies.Wt D j} {N : ℕ} (w : Fin N → CuspAt h j wL)
-    (p : FPt (T.U j σ).X) (i : Fin N) : ptNorm h j σ wL (w i) p ≤ l2Norm h j σ w p :=
-  Real.le_sqrt_of_sq_le
-    (Finset.single_le_sum (f := fun i => ptNorm h j σ wL (w i) p ^ 2) (fun _ _ => sq_nonneg _) (Finset.mem_univ i))
 
 example (σ : T.Q.c.F →+* ℂ) (u : WeightFamilies.Wt D j) (F : CuspAt h j u) :
     supE (T.U j σ).X (laU (T.U j σ) (wtA u) u.n) (rdU (T.U j σ) (F.1 : T.R j)) =

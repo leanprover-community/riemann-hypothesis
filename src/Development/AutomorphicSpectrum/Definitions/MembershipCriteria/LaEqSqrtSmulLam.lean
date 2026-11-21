@@ -55,14 +55,8 @@ theorem ip_conj (u v : M) : (starRingEnd ℂ) (ip S u v) = ip S v u := S.B_conj 
 
 theorem ip_pos (v : M) (hv : v ≠ 0) : 0 < (ip S v v).re := S.B_pos v hv
 
-theorem ip_rho (x : X) (u v : M) : ip S (S.rho x u) (S.rho x v) = ip S u v := S.B_rho x v u
 
-theorem unitVac_iff_ip (al : X → ℂ) (Γ : AddSubgroup X) (φ : M) :
-    UnitVac S al Γ φ ↔ Law S al Γ φ ∧ ip S φ φ = 1 := Iff.rfl
 
-theorem implements_iff_ip (g : X ≃+ X) (T : M →ₗ[ℂ] M) :
-    Implements S g T ↔ (∀ x v, T (S.rho x v) = S.rho (g x) (T v)) ∧ ∀ u v, ip S (T u) (T v) = ip S u v :=
-  ⟨fun h => ⟨h.1, fun u v => h.2 v u⟩, fun h => ⟨h.1, fun u v => h.2 v u⟩⟩
 
 namespace Sys
 
@@ -77,28 +71,11 @@ theorem c_ne_zero (x y : X) : S.c x y ≠ 0 := by
   rw [h] at this
   simp at this
 
-theorem c_zero_right (x : X) : S.c x 0 = 1 := by
-  have h := S.c_add_right x 0 0
-  rw [add_zero] at h
-  exact (mul_eq_left₀ (S.c_ne_zero x 0)).1 h.symm
 
-theorem c_zero_left (x : X) : S.c 0 x = 1 := by
-  have h := S.c_mul_c_swap x 0
-  rwa [S.c_zero_right, one_mul] at h
 
-theorem c_neg_self (x : X) : S.c x (-x) = 1 := by
-  have h := S.c_add_right x x (-x)
-  rw [add_neg_cancel, S.c_zero_right, S.c_self, one_mul] at h
-  exact h.symm
 
-theorem rho_rho_neg (x : X) (v : M) : S.rho x (S.rho (-x) v) = v := by
-  rw [S.rho_rho, S.c_neg_self, add_neg_cancel, S.rho_zero, one_smul]
 
-theorem rho_neg_rho (x : X) (v : M) : S.rho (-x) (S.rho x v) = v := by
-  simpa using S.rho_rho_neg (-x) v
 
-theorem rho_bijective (x : X) : Function.Bijective (S.rho x) :=
-  Function.bijective_iff_has_inverse.2 ⟨S.rho (-x), S.rho_neg_rho x, S.rho_rho_neg x⟩
 
 theorem rho_comm (x y : X) (v : M) : S.rho x (S.rho y v) = S.c x y ^ 2 • S.rho y (S.rho x v) := by
   rw [S.rho_rho, S.rho_rho, smul_smul, add_comm y x]
@@ -158,32 +135,8 @@ theorem la_eq_sum {al : X → ℂ} {Γ Γ' : AddSubgroup X} [Fintype (Γ' ⧸ Γ
     la S al Γ' Γ φ = ∑ q, al (s q : X) • S.rho (s q : X) φ := by
   rw [la_eq_finsum h' hφ s hs, finsum_eq_sum_of_fintype]
 
-theorem la_eq_sqrt_smul_Lam (al : X → ℂ) {Γ Γ' : AddSubgroup X} (hN : Γ.relIndex Γ' ≠ 0) (φ : M) :
-    la S al Γ' Γ φ = ((Real.sqrt (Γ.relIndex Γ' : ℝ) : ℝ) : ℂ) • abelian₂ S al Γ' Γ φ := by
-  have : ((Real.sqrt (Γ.relIndex Γ' : ℝ) : ℝ) : ℂ) ≠ 0 := by
-    have : (0 : ℝ) < (Γ.relIndex Γ' : ℝ) := Nat.cast_pos.2 (Nat.pos_of_ne_zero hN)
-    exact_mod_cast (Real.sqrt_pos.2 this).ne'
-  rw [abelian₂, smul_smul, mul_inv_cancel₀ this, one_smul]
 
-theorem Lam_self {al : X → ℂ} {Γ : AddSubgroup X} (h : IsSemi S al Γ) {φ : M} (hφ : Law S al Γ φ) :
-    abelian₂ S al Γ Γ φ = φ := by
-  have hsub : Subsingleton (Γ ⧸ Γ.addSubgroupOf Γ) := by
-    rw [AddSubgroup.addSubgroupOf_self]; exact QuotientAddGroup.subsingleton_quotient_top
-  letI : Unique (Γ ⧸ Γ.addSubgroupOf Γ) := uniqueOfSubsingleton 0
-  rw [abelian₂, AddSubgroup.relIndex_self, la, finsum_unique, (h.law_iff φ).1 hφ _ (Subtype.prop _)]
-  simp
 
-theorem ip_rho_eq_zero {al : X → ℂ} {Γ : AddSubgroup X} (hΓ : SelfDual S Γ) (h : IsSemi S al Γ) {φ : M}
-    (hφ : Law S al Γ φ) {x : X} (hx : x ∉ Γ) : ip S (S.rho x φ) φ = 0 := by
-  have : ¬ ∀ γ ∈ Γ, S.c γ x ^ 2 = 1 := fun hh => hx ((hΓ x).2 hh)
-  push Not at this
-  obtain ⟨γ, hγ, hne⟩ := this
-  have e1 := ip_rho S γ (S.rho x φ) φ
-  rw [S.rho_comm γ x, hφ γ hγ, h.inv_eq hγ, map_smul (S.rho x), ip_smul_left, ip_smul_left, ip_smul_right,
-    h.conj_eq hγ] at e1
-  have : (S.c γ x ^ 2 - 1) * ip S (S.rho x φ) φ = 0 := by
-    linear_combination e1 - S.c γ x ^ 2 * ip S (S.rho x φ) φ * h.mul_self hγ
-  exact (mul_eq_zero.1 this).resolve_left (sub_ne_zero.2 hne)
 
 theorem Implements.refl : Implements S (AddEquiv.refl X) LinearMap.id := ⟨fun _ _ => rfl, fun _ _ => rfl⟩
 
@@ -199,18 +152,6 @@ theorem Implements.injective {g : X ≃+ X} {T : M →ₗ[ℂ] M} (h : Implement
   rw [← h.2, hv] at this
   simp at this
 
-theorem Implements.c_map [Nontrivial M] {g : X ≃+ X} {T : M →ₗ[ℂ] M} (h : Implements S g T) (x y : X) :
-    S.c (g x) (g y) = S.c x y := by
-  obtain ⟨v, hv⟩ := exists_ne (0 : M)
-  have e : T (S.rho x (S.rho y v)) = T (S.c x y • S.rho (x + y) v) := by rw [S.rho_rho]
-  rw [h.1, h.1, S.rho_rho, map_smul, h.1, map_add] at e
-  have hne : S.rho (g x + g y) (T v) ≠ 0 := by
-    intro h0
-    apply hv
-    apply h.injective
-    apply (S.rho_bijective (g x + g y)).1
-    rw [h0]; simp
-  exact smul_left_injective ℂ hne e
 
 theorem Implements.law {g : X ≃+ X} {T : M →ₗ[ℂ] M} (h : Implements S g T) {al : X → ℂ} {Γ : AddSubgroup X}
     (hal : ∀ γ ∈ Γ, al (g γ) = al γ) {φ : M} (hφ : Law S al Γ φ) : Law S al (Γ.map g.toAddMonoidHom) (T φ) := by
@@ -218,10 +159,6 @@ theorem Implements.law {g : X ≃+ X} {T : M →ₗ[ℂ] M} (h : Implements S g 
   change S.rho (g γ) (T φ) = (al (g γ))⁻¹ • T φ
   rw [← h.1, hφ γ hγ, map_smul, hal γ hγ]
 
-theorem Implements.unitVac {g : X ≃+ X} {T : M →ₗ[ℂ] M} (h : Implements S g T) {al : X → ℂ} {Γ : AddSubgroup X}
-    (hal : ∀ γ ∈ Γ, al (g γ) = al γ) {φ : M} (hφ : UnitVac S al Γ φ) :
-    UnitVac S al (Γ.map g.toAddMonoidHom) (T φ) :=
-  ⟨h.law hal hφ.1, by rw [h.2, hφ.2]⟩
 
 namespace Inh
 
@@ -371,8 +308,6 @@ theorem isSemi_G₂ : IsSemi sysEx alEx G₂ := by
     congr 1
     rw [mem_G₂] at hy; linear_combination x.2 * hy
 
-theorem alEx_nontrivial : ((1, 2) : ZMod 4 × ZMod 4) ∈ G₁ ∧ alEx (1, 2) = -1 ∧ alEx (1, 0) = 1 ∧ alEx (0, 2) = 1 := by
-  refine ⟨by rw [mem_G₁]; decide, ?_, ?_, ?_⟩ <;> simp [alEx, e_two, e_zero]
 
 def vac : ZMod 2 → ℂ := fun t => if t = 0 then 1 else 0
 
@@ -388,19 +323,6 @@ theorem unitVac_vac : UnitVac sysEx alEx G₂ vac := by
     rcases zmod2 t with rfl | rfl <;> simp [sysEx, rhoEx, vac, h, d0, alEx]
   · simp [sysEx, BEx_apply, vac]
 
-theorem cyclic_vac : Cyclic sysEx vac := by
-  unfold Cyclic
-  rw [eq_top_iff]
-  intro f _
-  have r0 : red 0 = 0 := by decide
-  have r1 : red 1 = 1 := by decide
-  have h11 : (1 : ZMod 2) + 1 = 0 := by decide
-  have : f = f 0 • sysEx.rho (0, 0) vac + f 1 • sysEx.rho (1, 0) vac := by
-    ext t
-    rcases zmod2 t with rfl | rfl <;> simp [sysEx, rhoEx, vac, r0, r1, h11, e_zero]
-  rw [this]
-  exact Submodule.add_mem _ (Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, rfl⟩))
-    (Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, rfl⟩))
 
 theorem relIndex_ex : G₂.relIndex G₁ = 2 := by
   rw [AddSubgroup.relIndex, AddSubgroup.index_eq_two_iff]
@@ -424,18 +346,6 @@ def TEx : (ZMod 2 → ℂ) →ₗ[ℂ] (ZMod 2 → ℂ) where
   map_add' f g := by ext t; simp [mul_add]
   map_smul' a f := by ext t; simp; ring
 
-theorem implements_ex : Implements sysEx shear TEx := by
-  refine ⟨fun x v => ?_, fun u v => ?_⟩
-  · ext t
-    obtain ⟨a, b⟩ := x
-    show e (ph t) * (e (a * b + b * dbl t) * v (t + red a))
-      = e (a * (b + a) + (b + a) * dbl t) * (e (ph (t + red a)) * v (t + red a))
-    rw [← mul_assoc, ← mul_assoc, ← e_add, ← e_add]
-    congr 2
-    revert a b t; decide
-  · show BEx _ _ = BEx _ _
-    simp only [BEx_apply, TEx, LinearMap.coe_mk, AddHom.coe_mk, map_mul]
-    linear_combination ((starRingEnd ℂ) (u 0) * v 0) * e_conj (ph 0) + ((starRingEnd ℂ) (u 1) * v 1) * e_conj (ph 1)
 
 theorem Lam_vac : abelian₂ sysEx alEx G₁ G₂ vac = fun _ => ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ := by
   have hN : G₂.relIndex G₁ ≠ 0 := by rw [relIndex_ex]; norm_num

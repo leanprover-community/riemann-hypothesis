@@ -55,20 +55,6 @@ def jj (L : PeriodPair) : ℂ := L.g₂ ^ 3 / (L.g₂ ^ 3 - 27 * L.g₃ ^ 2)
 def allWeber (K : IntermediateField ℚ ℂ) (n : ℕ) : Set ℂ :=
   {w | ∃ L : PeriodPair, Stable K L ∧ w ∈ GlobalTheory.FieldSize.weberSet L n}
 
-theorem torIso_id (K : IntermediateField ℚ ℂ) (q : ℕ) (L : PeriodPair) : TorIso K q L L id where
-  maps := fun _ h => h
-  add := fun z _ w _ => by simp
-  ker := fun _ _ => Iff.rfl
-  surj := fun w h => ⟨w, h, by simp⟩
-  lin := fun a z _ => by simp
 
-theorem transp_id (L : PeriodPair) : Transp (RingEquiv.refl ℂ) L L id where
-  g2 := rfl
-  g3 := rfl
-  add := fun z w => by simp
-  ker := fun _ => Iff.rfl
-  surj := fun w => ⟨w, by simp⟩
-  wp := fun _ _ => rfl
-  wp' := fun _ _ => rfl
 
 end GlobalTheory.CMRam

@@ -426,18 +426,7 @@ theorem twist_empty_of_tieMoved (h : TieOnAllReadings) {B : Base} {X : PreX B.to
   rw [MonoidHom.one_apply, mul_one] at e1
   exact hne (by rwa [e1, one_mul] at e2)
 
-theorem twist_empty_of_chartsEx (h : TieOnAllReadings) (h0 : ReadingsEx) {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws)
-    (Z : TC.Later B (I.cols l)) (L : SizeData₂ (I.rec7 l Z)) (hT : GatTies (I.rec7 l Z)) (Gi : G.Inst (I.rec7 l Z) L) (Gl : G.LatInst (I.rec7 l Z)) (Kc : G.Consts)
-    (Y : DivX (I.rec7 l Z)) (cX : ExtraC) (ex : Extra (I.rec7 l Z) L hT Gi Gl Kc Y cX) (t : KerEntTied ex)
-    (dt : Formalism.L2.Herm.unitaryOneFiniteAdeles (I.rec7 l Z).sp.cm →* (I.rec7 l Z).Dt) (hS : StdData I l Z t dt) (u : B.Word) (a : I.ι) : I.Q a = ∅ := by
-  obtain ⟨bad, Ch, chOf, eY, K, hs, hK⟩ := h0 I hI hP l Z u a
-  exact twist_empty_of_tieMoved h I hI hP l Z L hT Gi Gl Kc Y cX ex t dt hS u a bad Ch chOf eY K hs hK
 
-theorem not_stdData_of_tieMoved (h : TieOnAllReadings) (h0 : ReadingsEx) {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws)
-    (Z : TC.Later B (I.cols l)) (L : SizeData₂ (I.rec7 l Z)) (hT : GatTies (I.rec7 l Z)) (Gi : G.Inst (I.rec7 l Z) L) (Gl : G.LatInst (I.rec7 l Z)) (Kc : G.Consts)
-    (Y : DivX (I.rec7 l Z)) (cX : ExtraC) (ex : Extra (I.rec7 l Z) L hT Gi Gl Kc Y cX) (t : KerEntTied ex)
-    (dt : Formalism.L2.Herm.unitaryOneFiniteAdeles (I.rec7 l Z).sp.cm →* (I.rec7 l Z).Dt) : ¬ StdData I l Z t dt := fun hS =>
-  (GlobalTheory.Mem.Col2.TC.TwModel.Q_star_nonempty hI).ne_empty (twist_empty_of_chartsEx h h0 I hI hP l Z L hT Gi Gl Kc Y cX ex t dt hS B.u₀ I.muStar)
 
 end True
 
@@ -518,15 +507,6 @@ theorem chart_nonempty (i : ℕ) (hi : i ≤ D.R.m) (β : (St i hi).Ch) : ∃ c,
   let ⟨c, hc, _⟩ := exists_decomp i hi β 1
   ⟨c, hc⟩
 
-theorem not_topLev_neg {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
-    (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu))
-    (j : ℕ) (P : rowSG Pr sel mu) (z : X.K) : ¬ TopLev (R := R) Ch sel mu cst j P (LinearEquiv.neg X.E) z := by
-  rintro ⟨g', -, -, h, -⟩
-  have hN := R.N_pos j
-  have hl : R.N j - 1 < R.N j := by omega
-  have h1 := LinearMap.congr_fun h (Pi.single ⟨R.N j - 1, hl⟩ 1)
-  simp only [atNL, dif_pos hl, LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.neg_apply, LinearMap.proj_apply, Pi.neg_apply, Pi.single_eq_same] at h1
-  norm_num at h1
 
 end GlobalTheory.TwU.Rigid
 

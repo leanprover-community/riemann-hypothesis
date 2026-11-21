@@ -113,8 +113,6 @@ theorem quadChar_ne_one (H : Host E) : quadChar H ≠ 1 := by
   refine MulChar.injective_ringHomComp (f := Int.castRingHom ℂ) Int.cast_injective ?_
   simpa [quadChar, MulChar.ringHomComp_one] using h
 
-theorem LFunction_one_ne_zero (H : Host E) : (quadChar H).LFunction 1 ≠ 0 :=
-  DirichletCharacter.LFunction_apply_one_ne_zero (quadChar_ne_one H)
 
 example (k : Type) [Field k] [NumberField k] : adelicDeg k (fun _ => 1) (fun _ => 1) = 0 := by
   simp [adelicDeg]

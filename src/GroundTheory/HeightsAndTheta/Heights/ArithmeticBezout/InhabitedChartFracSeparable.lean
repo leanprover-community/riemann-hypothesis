@@ -76,15 +76,6 @@ theorem ChartFracSeparable.applies_line (h : ChartFracSeparable.Statement) (F : 
       isChowForm_line (linearFormX1_ne_zero F)
   exact hs
 
-theorem ChartFracSeparable.hypotheses_inhabited_zmod2_full :
-    IsProjPrime (⊥ : Ideal (MvPolynomial (Fin 2) (ZMod 2))) ∧
-      IsChowForm (⊥ : Ideal (MvPolynomial (Fin 2) (ZMod 2))) (1 + 1)
-        (D2 : MvPolynomial (Fin (1 + 1) × Fin 2) (ZMod 2)) ∧
-      linForm (coeffX1 (ZMod 2)) ∉ (⊥ : Ideal (MvPolynomial (Fin 2) (ZMod 2))) ∧
-      IsDomain (ChartLoc (⊥ : Ideal (MvPolynomial (Fin 2) (ZMod 2))) (coeffX1 (ZMod 2)) 1 ⊥) ∧
-      Function.Injective (algebraMap (Localization.AtPrime (⊥ : Ideal (MvPolynomial (Fin 1 × Fin 2) (ZMod 2))))
-        (ChartLoc (⊥ : Ideal (MvPolynomial (Fin 2) (ZMod 2))) (coeffX1 (ZMod 2)) 1 ⊥)) :=
-  ChartFracSeparable.hypotheses_inhabited_full (ZMod 2) ⊥
 
 end
 

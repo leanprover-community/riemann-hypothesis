@@ -90,8 +90,6 @@ theorem halfDual_span : ⊤ ≤ Submodule.span ℤ (Set.range fun _ : Unit => ha
 def halfBasis : Module.Basis Unit ℤ (dualLattice HermLattice.twiceStandardExample) :=
   Module.Basis.mk halfDual_linearIndependent halfDual_span
 
-theorem halfBasis_apply (t : Unit) : halfBasis t = halfDual := by
-  simp [halfBasis]
 
 def redTwo : 𝓞 ℚ →+* ZMod 2 := (Int.castRingHom (ZMod 2)).comp Rat.ringOfIntegersEquiv.toRingHom
 

@@ -94,39 +94,6 @@ def colsTw (B : Base) (f : Fr B.toPre) (T : TwDat B) : Cols B :=
     e0Tw := fun _ _ => LinearEquiv.refl ℂ _
     PTw := fun u _ => (ColsModel.member B.toPre u).P }
 
-theorem exists_muIs (B : Base) (hB : StagesInhab.HasLetters B.toPre) (f : Fr B.toPre) (T : TwDat B) :
-    ∃ (C : Cols B) (W : _) (V : _) (S : _) (N : _) (G : _) (xi : C.Tup → HChar B.host.E), MuIs ⟨B, C, W, V, S, N, G⟩ f T xi := by
-  classical
-  obtain ⟨Del, letter, hD, hinj, gap, hu⟩ := hB
-  let e : ℂ ≃ₗ[ℂ] (Fin 1 → ℂ) := (LinearEquiv.funUnique (Fin 1) ℂ ℂ).symm
-  obtain ⟨W₀, h1, -⟩ : ∃ W₀ : RowsRest B (colsTw B f T), W₀.Drows ≤ W₀.Dall ∧ True := by
-    have hf : ∀ u, ∃ e : RowsModel.Euc ((colsTw B f T).mem u).A.du ≃ₗ[ℂ] ((colsTw B f T).mem u).A.Mram,
-        ∀ φ ψ, inner ℂ φ ψ = ((colsTw B f T).fm u).ipC 0 (e φ).1 (e ψ).1 := fun u =>
-      haveI := RowsModel.mram_fd (colsTw B f T) u
-      RowsModel.exists_frame (RowsModel.ramCore (colsTw B f T) u (fun φ _ ψ _ => StagesInhab.ipC_conj B u φ ψ)
-        (fun φ _ h => StagesInhab.ipC_pos B u φ h))
-    choose eM heM using hf
-    let e' : ℂ ≃ₗ[ℂ] RowsModel.Euc 1 := e.trans (WithLp.linearEquiv 2 ℂ _).symm
-    exact ⟨RowsModel.model (colsTw B f T) (fun _ => 1) 1 (fun _ => e') (fun _ _ => e') eM heM, le_rfl, trivial⟩
-  let tw : B.places.Pl → (colsTw B f T).Tup := fun w => ⟨T.xiTw f w, .inr ⟨w, rfl⟩⟩
-  have htw : ∀ w, tw (B.places.conj w) = tw w := fun w => Subtype.ext ((TwFin.tw_fin B f T).2.2.1 w)
-  let W : RowsRest B (colsTw B f T) :=
-    { W₀ with
-      muAt := fun w => if B.places.resChar w ∈ T.pl then tw w else (colsTw B f T).mu0
-      muAt_conj := fun w => by rw [TwFin.resChar_conj, htw]
-      muTw := tw
-      muTw_conj := htw
-      muAt_or := fun w => by split_ifs <;> simp }
-  have hc : ∀ u i, Nonempty (((colsTw B f T).mem u).C.cls i) :=
-    fun u _ => ⟨(1 : Tau B.R → (ZMod (B.T u))ˣ)⟩
-  obtain ⟨L⟩ := locStage_inhabited
-  obtain ⟨N, -⟩ := GaloisStage.exists_nStage_adapt B _ W L
-  obtain ⟨V, -⟩ := DivInhab.exists_divStage B _ (GaloisStage.adapt W)
-  obtain ⟨S⟩ := SStageInhab.nonempty_sStage B _ (GaloisStage.adapt W) Del hD gap letter hinj hu
-    (fun u x _ y _ => (StagesInhab.ipC_conj B u y x).symm) (fun u x _ h => StagesInhab.ipC_pos B u x h) h1
-  obtain ⟨G, -, -⟩ := (GJInhab.inhabited_stage B (colsTw B f T)).2.2 (hc _ _) (hc _ _)
-  exact ⟨colsTw B f T, GaloisStage.adapt W, V, S, N, G, Subtype.val, Subtype.val_injective, Subtype.range_val, rfl, rfl, rfl,
-    fun _ => rfl, fun w hw => if_pos hw, fun w hw => if_neg hw⟩
 
 end GlobalTheory.Mem.Top.Inh
 

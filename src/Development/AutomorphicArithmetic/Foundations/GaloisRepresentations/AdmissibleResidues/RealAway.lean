@@ -17,14 +17,6 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
 
 theorem wn (k : Lev.WO ι r y) : WDN ι r y := .of_isWDOf k
 theorem woOf (k : IsWDOf ι r y) : Lev.WO ι r y := k
-theorem woConj (k : Lev.WO ι r y) (hl : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) {r' : G E Ω →* GL (Fin n) (Qbar l)}
-    (P : GL (Fin n) (Qbar l)) (hP : ∀ g : ↥(Weil h), P * r g = r' g * P) : Lev.WO ι r' y := IsWDOf.of_conj hl P hP k
-theorem woSum (hA : Gu.SumAway) {m : ℕ} {r' : G E Ω →* GL (Fin m) (Qbar l)} (hc : Continuous r) (hc' : Continuous r')
-    (hl : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) {y' : WD h} (k : Lev.WO ι r y) (k' : Lev.WO ι r' y') :
-    Lev.WO ι (Formalism.MainNotions.SumRepresentations.At.sumRep r r') (y.lpSum y') := hA E Ω l ι n m r r' hc hc' w hl A h _ _ k k'
-theorem woChar (hl : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) {r' : G E Ω →* GL (Fin n) (Qbar l)} {z : WD h} (hz : z.lpDim = 1)
-    (e : IsWDOf ι r' ((wdOf h hl ι r).lpChar z)) (k : Lev.WO ι r y) : Lev.WO ι r' (y.lpChar z) := by
-  rwa [IsWDOf.wdOf_eq hl k] at e
 theorem galEx (H : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
     (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ) (ha : 1 ≤ a) (π : CuspSub E a) (χ : HChar (maximalRealSubfield E))
     (hr : (CG.mk π).IsRegAlg) (hp : IsPolarized π χ) :
@@ -34,21 +26,7 @@ theorem galEx (H : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) (E Ω : 
   obtain ⟨r, wt, HT, k⟩ := H E Ω l ι a ha π χ hr hp
   exact ⟨r, wt, HT, .of_old k, k.away⟩
 
-theorem realAway (H : ExR) (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
-    (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (n : ℕ) [Fact (n = 2)] (hn : 1 ≤ n) (π : TR.CuspSub F n) (χ : HChar F)
-    (hreg : π.IsRegAlg) (hpol : π.Polarized χ) (r : G F Ω →* GL (Fin n) (Qbar l)) (hr : Continuous r) (hatt : AttR ι r π)
-    (v : HeightOneSpectrum (𝓞 F)) (hv : ((l : ℕ) : 𝓞 F) ∉ v.asIdeal) (A : ValuationSubring Ω) (h : IsPlaceOver A v)
-    (rc : IrrGL (v.adicCompletion F) → WD h) (hrc : IsRec h rc) (σ) (hσ : π.IsLocComp v σ) : Lev.WO ι r (rc (algNorm σ)) := by
-  obtain ⟨-, wt, HT, -, -, hG⟩ := H F Ω l ι n hn π χ hreg hpol
-  exact (hG r hr hatt).away v hv A h rc hrc σ hσ
 
-theorem realAway' (H : ExRN) (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
-    (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (n : ℕ) [Fact (n = 2)] (hn : 1 ≤ n) (π : TR.CuspSub F n) (χ : HChar F)
-    (hreg : π.IsRegAlg) (hpol : π.Polarized χ) (r : G F Ω →* GL (Fin n) (Qbar l)) (hr : Continuous r) (hatt : AttR ι r π)
-    (v : HeightOneSpectrum (𝓞 F)) (hv : ((l : ℕ) : 𝓞 F) ∉ v.asIdeal) (A : ValuationSubring Ω) (h : IsPlaceOver A v)
-    (rc : IrrGL (v.adicCompletion F) → WD h) (hrc : IsRec h rc) (σ) (hσ : π.IsLocComp v σ) : WDN ι r (rc (algNorm σ)) := by
-  obtain ⟨-, wt, HT, -, -, hG⟩ := H F Ω l ι n hn π χ hreg hpol
-  exact .of_aw hv hr ⟨((hG r hr hatt).away v hv A h rc hrc σ hσ).pol, ((hG r hr hatt).away v hv A h rc hrc σ hσ).n0⟩
 
 theorem satFrobW (P : Hypotheses₂) (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime]
     (ι : Qbar l ≃+* ℂ) (n : ℕ) (r : G F Ω →* GL (Fin n) (Qbar l)) (hc : Continuous r) (w : HeightOneSpectrum (𝓞 F))

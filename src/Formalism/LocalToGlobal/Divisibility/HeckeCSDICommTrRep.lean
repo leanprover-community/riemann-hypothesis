@@ -186,12 +186,6 @@ theorem colFam3_typesSep' (hH : ColHyp3 W Ch sel v0 TU Xg S0)
     (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).TypesSep3 :=
   colFam3_typesSep W Ch sel hX v0 TU Xg S0 xiVal trIv (hH.base.commR (mu0F TU)) hI
 
-theorem colSide3_WF (hH : ColHyp3 W Ch sel v0 TU Xg S0)
-    (hI : (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).TrISep) (P : Col.LevFam X.E X.K R.r Pr.vGs)
-    (Zs : DefSub (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).amb3) (hst : Zs.Stable) (hin : Zs.InBlock) :
-    (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P Zs).WF :=
-  (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).side_well_formed (colFam3_ok W Ch sel hX v0 TU Xg S0 xiVal trIv hH) P.grp P.chr Zs
-    hst hin (colFam3_typesSep' W Ch sel hX v0 TU Xg S0 xiVal trIv hH hI)
 
 end Inst
 

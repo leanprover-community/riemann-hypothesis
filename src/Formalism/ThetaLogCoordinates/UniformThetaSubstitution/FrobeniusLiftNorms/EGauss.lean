@@ -324,40 +324,10 @@ end EGauss
 
 open EGauss
 
-theorem gauss_a_one_of_entry (hE : EntryExcessBound) : FrameJetExcessBound := by
-  intro p _ ν r0 r1 _ u F TT colN hts hp I hp2 hu hF n
-  obtain ⟨K, instK, hult, C, u', F', ξ, e, l, sf, T, I', hyp, hco, hal, hcap, hls, -⟩ :=
-    reduce p ν r0 r1 u F TT colN hts hp I hp2 hu hF
-  have h := hE K p ν r0 r1 C u' F' TT ξ e l sf T I' hyp
-  rw [hal, hcap, hls] at h
-  exact (hco n).trans h
 
-theorem gauss_a_two_of_entry (hE : EntryCappedBound) : FrameJetCappedBound := by
-  intro p _ ν r0 r1 _ u F TT colN hts hp I hp2 hu hF n
-  obtain ⟨K, instK, hult, C, u', F', ξ, e, l, sf, T, I', hyp, hco, hal, hcap, hls, -⟩ :=
-    reduce p ν r0 r1 u F TT colN hts hp I hp2 hu hF
-  have h := hE K p ν r0 r1 C u' F' TT ξ e l sf T I' hyp
-  rw [hal, hcap, hls] at h
-  exact (hco n).trans h
 
-theorem GaussB_of (hE : EntryB) : GaussB := by
-  intro p _ ν r0 r1 i _ u F TT colN hts hp I hp2 hi hu hF n
-  obtain ⟨K, instK, hult, C, u', F', ξ, e, l, sf, T, I', hyp, hco, hal, hcap, hls, hB⟩ :=
-    reduce p ν r0 r1 u F TT colN hts hp I hp2 hu hF
-  have h := hE K p ν r0 r1 C u' F' TT ξ e l sf T I' (univ.filter (fun b : Fin r1 => b.val < i)) hyp
-  rw [hal, hcap, hls] at h
-  refine le_trans ?_ h
-  have hnp : ‖(p : K)‖ = (p : ℝ)⁻¹ := hyp.2.2.1
-  have hp0 : (0 : ℝ) < (p : ℝ)⁻¹ := inv_pos.2 (by exact_mod_cast (Fact.out : p.Prime).pos)
-  have hp1 : (p : ℝ)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (by exact_mod_cast (Fact.out : p.Prime).one_lt.le)
-  rw [norm_mul, norm_mul, norm_pow, norm_pow, hnp, norm_p_complex]
-  exact mul_le_mul (pow_le_pow_of_le_one hp0.le hp1 (hB _ i hi)) (hco n) (norm_nonneg _)
-    (pow_nonneg hp0.le _)
 
-theorem gauss_a_one_bound : FrameJetExcessBound := gauss_a_one_of_entry Top.entry_a_one
 
-theorem gauss_a_two_bound : FrameJetCappedBound := gauss_a_two_of_entry Top.entry_a_two
 
-theorem gauss_b : GaussB := GaussB_of Top.entryB
 
 end Formalism.InvariantFactorPaths.G7

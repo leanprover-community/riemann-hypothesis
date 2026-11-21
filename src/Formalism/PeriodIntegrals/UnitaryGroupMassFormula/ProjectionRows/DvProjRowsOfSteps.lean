@@ -53,9 +53,5 @@ def DegDualBound : Prop :=
     ∀ γ : HeightOneSpectrum (𝓞 K) → ℤ, (∀ w, IsValG A e h U w (γ w)) →
       degL A (lamSub A e h U) ≤ ∑ᶠ w, lw K w * (γ w : ℝ)
 
-theorem partB_of (h1 : DegDual) (h2 : DegDualBound) : PartB := by
-  intro K _ _ _ _ _ A e n h hS hP hH hC _ U hU γ hγ
-  rw [h1 K A e n h hS hP hH hC U hU]
-  exact h2 K A e n h hS hP hH hC U hU γ hγ
 
 end PI.DvRows

@@ -161,10 +161,6 @@ theorem resTied_built (hC : GlobalTheory.Published.ChebotarevDegreeOne) {hL : Gl
   exact resTied_withLoc D₀ cf jE A M C tp.tup big L Sp Au (GlobalTheory.ChebSplitDense.chebSplit hC D₀.nd) hlam hrep Rw
     fun σ w => congrFun (congrFun (eq_of_heq hRw) σ) w
 
-theorem resTied_built_of_rows (hC : GlobalTheory.Published.ChebotarevDegreeOne) {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} (b : NBuilt hL D)
-    (hlam : GlobalTheory.NRows.LamUsed D) (hA : GlobalTheory.NRows.RowsA D) (h42 : SumRepresentations.Conclusion42 D) (hρ : GlobalDatumResidualRepCondition D)
-    (hP : GlobalTheory.SplitRead.RowPoint D.nd D.naut) (Rw : RowSide D) (hRw : HEq Rw.locR b.A.row.locR) : ResTied D Rw :=
-  resTied_built hC b hlam (GlobalTheory.RowRepOcc.rowRepAtG_of_rowPoint D hA.tie0 hA.a2 hA.a5 h42 hρ hA.gsp hP) Rw hRw
 
 theorem exists_galRep_cast {D : D7} {a p q : ℕ} [Fact p.Prime] [Fact q.Prime] (h : p = q) {ι : Qbar p ≃+* ℂ} {π : D.naut.CG a}
     {r : GalE D →* GL (Fin a) (Qbar p)} (hr : IsGaloisRepOf D π p ι r) : ∃ r', IsGaloisRepOf D π q (qCast h ι) r' := by

@@ -15,28 +15,10 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.ModelWordsAssemble
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem start_matrix_is_module : Formalism.FourierDecayAlt.M.StartIsStart :=
-  start_module_assemble transfer_hermitian transfer_rtt transfer_determinant
 
-theorem start_admissible_model : Formalism.FourierDecayAlt.M.StartOK :=
-  start_assemble start_matrix_is_module lower_left_commute_model shift_scalar_relation shift_shift_relation rho_raise
 
-theorem lower_levels_same_scalar : Formalism.FourierDecayAlt.M.LowerStart :=
-  mx_lowerStart_of start_matrix_is_module
 
-theorem model_words_all_levels : Formalism.FourierDecayAlt.M.ModelWords :=
-  model_words_assemble word_statements_all_hold lower_levels_same_scalar sites_admissible_model model_chain
-    lower_commutes
 
-theorem model_frame : Formalism.FourierDecayAlt.M.ModelFrame :=
-  model_assemble interlacing_sign q_positive_interlacing q_positive_shift cPos_true c_pos_truncated
-    frame_of_admissible_word frame_eq_word_module c_diagonal level_exists_model level_star start_admissible_model
-    types_interlace realPoints_statement cut_admissible
 
-theorem model_frame_base : Formalism.FourierDecayAlt.M.ModelFrameBase :=
-  model_assemble_base interlacing_sign interlace_sign_two q_positive_interlacing q_positive_shift
-    c_pos_base c_pos_truncated_base frame_of_recursive_word admissible_rec_of_base_case frame_module_of_word c_diagonal
-    level_exists_model level_star start_admissible_model types_interlace realPoints_statement
-    cut_admissible_base
 
 end Formalism.FourierDecayAlt.P

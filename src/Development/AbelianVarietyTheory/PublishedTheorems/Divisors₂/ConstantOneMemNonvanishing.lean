@@ -207,7 +207,5 @@ theorem deg_aeval [IsIntegral X] {L : ι → HermLB p} {Φ : MvPolynomial ι ℝ
     rw [aeval_monomial, map_one, one_mul, ← hP (mem_support_iff.1 hd), Finsupp.weight_apply]
     exact SetLike.prod_mem_graded R.gr _ _ fun i _ => SetLike.pow_mem_graded _ (R.constant_one_mem_nonvanishing _)
 
-theorem deg_surjective_int (R : ArRing B isRegVar_int) : Function.Surjective R.deg := fun t =>
-  ⟨_, R.degreeFirstChernPow _ t (ArithBase.isSelfInter_trivShift t)⟩
 
 end GlobalTheory.CxForm.ArRing

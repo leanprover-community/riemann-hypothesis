@@ -4,5 +4,3 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryConjugation.Exis
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryConjugation.Transfer
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryConjugation.SubmatrixMemUnitaryGroup
 
-theorem unitary_conj_transpose : PI.UMultOne.ConjTranspose :=
-  PI.UConjT.conjTranspose_of PI.UConjT.onbReal PI.UConjT.transferStep PI.UConjT.blockStep

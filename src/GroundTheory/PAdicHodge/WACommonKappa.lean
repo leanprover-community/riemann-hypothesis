@@ -206,34 +206,10 @@ def unramifiedToWFrac : unramifiedClosure p →+* WFrac p :=
   (wittFpbarRangeEquiv p).symm.toRingHom.comp
     ((unramifiedToBCrisPlus (p := p)).toRingHom.codRestrict _ unramifiedToBCrisPlus_mem_range)
 
-theorem wittFpbarToBCrisPlus_unramifiedToWFrac (u : unramifiedClosure p) :
-    wittFpbarToBCrisPlus p (unramifiedToWFrac p u) = unramifiedToBCrisPlus u :=
-  congrArg Subtype.val ((wittFpbarRangeEquiv p).apply_symm_apply
-    ((unramifiedToBCrisPlus (p := p)).toRingHom.codRestrict _ unramifiedToBCrisPlus_mem_range u))
 
-theorem unramifiedToWFrac_eq_iff {u : unramifiedClosure p} {x : WFrac p} :
-    unramifiedToWFrac p u = x ↔ wittFpbarToBCrisPlus p x = unramifiedToBCrisPlus u :=
-  ⟨fun h => h ▸ wittFpbarToBCrisPlus_unramifiedToWFrac u,
-    fun h => wittFpbarToBCrisPlus_injective (by rw [h, wittFpbarToBCrisPlus_unramifiedToWFrac])⟩
 
-theorem unramifiedToWFrac_injective : Function.Injective (unramifiedToWFrac p) :=
-  (unramifiedToWFrac p).injective
 
-theorem toBDeRhamPlus_unramifiedToWFrac (u : unramifiedClosure p) :
-    toBDeRhamPlus (normInteger ℂ_[p]) p (wittFpbarToAway p (unramifiedToWFrac p u)) =
-      algClToBdR p u := by
-  rw [toBDeRhamPlus_wittFpbarToAway, wittFpbarToBCrisPlus_unramifiedToWFrac,
-    iotaPlus_unramifiedToBCrisPlus]
 
-theorem exists_unramifiedToWFrac_rootOfUnity {ζ : unramifiedClosure p} {m : ℕ} (hm : 0 < m)
-    (hc : m.Coprime p) (hζ : ζ ^ m = 1) :
-    ∃ a : Fpbar p, a ^ m = 1 ∧
-      unramifiedToWFrac p ζ = algebraMap W̄ (WFrac p) (teichmuller p a) := by
-  have hζ' : (ζ : PadicAlgCl p) ^ m = 1 := by rw [← IntermediateField.coe_pow, hζ]; rfl
-  obtain ⟨a, ha, hθ⟩ := exists_fpbar_rootOfUnity hm hc hζ'
-  refine ⟨a, ha, unramifiedToWFrac_eq_iff.2 (iotaPlus_injective (K := ℂ_[p]) (p := p) ?_)⟩
-  rw [iotaPlus_unramifiedToBCrisPlus, iotaPlus_wittFpbarToBCrisPlus_algebraMap, wittToAInf,
-    WittVector.map_teichmuller, ← iota_teichmuller_fpbar hm ha hθ hζ', iota_algebraMap]
 
 end Unramified
 

@@ -42,11 +42,7 @@ structure IsLevel (T : HSp D) (L : Submodule (NumberField.RingOfIntegers D.host.
 
 theorem Dominated.refl {G : Type} [Group G] (K : Subgroup G) (φ : G → ℂ) : Dominated K φ φ := fun _ h => h
 
-theorem exists_isLevel (T : HSp D) : ∃ a, IsLevel T (AdelicU.frameLat T) a :=
-  let ⟨a, ha⟩ := GlobalTheory.Doubling.exists_isMaj T
-  ⟨a, AdelicU.SelfDual.isLattice_frameLat T, AdelicU.SelfDual.isSelfDualAt_frameLat D T, ha⟩
 
-theorem lev_frameLat (T : HSp D) (a : GL (Fin T.rank) (AE D)) : lev T (AdelicU.frameLat T) a = Kmax T a := rfl
 
 theorem Dominated.const_mul {G : Type} [Group G] (K : Subgroup G) (φ : G → ℂ) (a : ℂ) :
     Dominated K φ fun g => a * φ g := fun c h g => by

@@ -115,9 +115,5 @@ theorem unit_of (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o)) (hP : Pro
   simp_rw [VP.pullback_one_var_prod]
   ring
 
-theorem valuation_eq_pair_of_pairing (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o)) (H : ∀ o, (Y.raw (p o)).Hyps V)
-    (Ls : LetSys C dd) (n : ℕ) (hP : ProjPullSt Y p) (hT : ∀ o, RawChart.TCoordSt (H o).cartH)
-    (h1 : BiaddSt Y p) (h2 : CrossSt Y p) (h3 : PairSt Y p) : ValEqPSt Y p H Ls n :=
-  valuation_eq_pair_of_unit_germ Y p H Ls n (unit_of Y p hP h1 h2 h3) (germLift_of Y p H hP hT)
 
 end Formalism.L2.FormalSeriesBounds

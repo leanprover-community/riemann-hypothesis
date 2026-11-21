@@ -143,8 +143,6 @@ theorem eOf_mul (hu : IsUp u) : eOf (P * u) = eOf P * u.submatrix Fin.castSucc F
   simp only [eOf, Matrix.submatrix_apply, Matrix.mul_apply, id, Fin.sum_univ_castSucc]
   rw [(hu _ _).1 (Fin.castSucc_lt_last j), mul_zero, add_zero]
 
-theorem up_block (hu : IsUp u) : IsUp (u.submatrix Fin.castSucc Fin.castSucc) :=
-  fun _ _ => ⟨fun h => (hu _ _).1 h, fun h => (hu _ _).2 (congrArg _ h)⟩
 
 theorem spanX_mul (hu : IsUp u) : spanX (P * u) = spanX P := by
   have k {Q : Matrix (Fin n) (Fin (r + 1)) E} {w : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (hw : IsUp w) :

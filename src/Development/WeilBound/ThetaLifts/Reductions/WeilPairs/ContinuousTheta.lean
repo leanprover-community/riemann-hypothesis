@@ -47,36 +47,7 @@ theorem continuous_theta {τ : E →+* ℂ} {θ : Ainf F ⊗[F] E →+* ℂ} (h 
   refine IsModuleTopology.continuous_of_ringHom (R := AF F) _ ?_
   exact h.2.comp (continuous_fst (X := Ainf F) (Y := Af F))
 
-theorem trace_quad {σ : E →ₐ[F] E} (h2 : Module.finrank F E = 2) (hg : IsGalois ℚ E) {ξ : E} (hξ : ξ ≠ 0)
-    (hσ : σ ξ = -ξ) (x : E) : algebraMap F E (Algebra.trace F E x) = x + σ x := by
-  haveI : FiniteDimensional F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  haveI : IsGalois F E := IsGalois.tower_top_of_isGalois ℚ F E
-  let s : E ≃ₐ[F] E := AlgEquiv.ofBijective σ σ.bijective
-  have hs : (1 : E ≃ₐ[F] E) ≠ s := by
-    intro e
-    have : ξ = σ ξ := DFunLike.congr_fun e ξ
-    rw [hσ] at this
-    exact hξ (CharZero.eq_neg_self_iff.1 this)
-  have hu : ({1, s} : Finset (E ≃ₐ[F] E)) = Finset.univ := by
-    apply Finset.eq_univ_of_card
-    rw [Finset.card_pair hs, ← Nat.card_eq_fintype_card, IsGalois.card_aut_eq_finrank, h2]
-  rw [trace_eq_sum_automorphisms, ← hu, Finset.sum_pair hs]
-  rfl
 
-theorem trace_tens {σ : E →ₐ[F] E} (ht : ∀ x, algebraMap F E (Algebra.trace F E x) = x + σ x) (y : AEF F E) :
-    (Algebra.trace (AF F) (AEF F E) y) ⊗ₜ[F] (1 : E) = y + cAF σ y := by
-  haveI : FiniteDimensional F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | tmul r x =>
-    have h1 : Algebra.trace (AF F) (AF F ⊗[F] E) ((1 : AF F) ⊗ₜ[F] x) = algebraMap F (AF F) (Algebra.trace F E x) := by
-      rw [Algebra.trace_apply, Algebra.trace_apply, ← Algebra.baseChange_lmul, LinearMap.trace_baseChange]
-    have h2 : r ⊗ₜ[F] x = r • ((1 : AF F) ⊗ₜ[F] x) := by rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
-    have e : cAF σ (r ⊗ₜ[F] x) = r ⊗ₜ[F] σ x := rfl
-    rw [e, ← TensorProduct.tmul_add, ← ht]
-    conv_lhs => rw [h2, LinearMap.map_smul, h1, smul_eq_mul, mul_comm, ← Algebra.smul_def, TensorProduct.smul_tmul]
-    rw [Algebra.algebraMap_eq_smul_one]
-  | add y y' hy hy' => simp only [map_add, TensorProduct.add_tmul, hy, hy']; abel
 
 theorem herm_map {σ : E →ₐ[F] E} {τ : E →+* ℂ} (hτ : ∀ x, τ (σ x) = star (τ x)) {n : ℕ}
     {J : Matrix (Fin n) (Fin n) E} (hJ : IsHermND σ J) : (J.map τ)ᴴ = J.map τ := by

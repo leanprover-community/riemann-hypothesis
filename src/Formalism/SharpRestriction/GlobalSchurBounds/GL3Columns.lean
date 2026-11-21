@@ -34,9 +34,7 @@ def rhoA (D : D7) (m1 : D.Dt →* ℂˣ) (N' : ℕ) : D.Dt →* ℂˣ := m1⁻¹
 
 def rhoA' (D : D7) (m1 : D.Dt →* ℂˣ) (N : ℕ) : D.Dt →* ℂˣ := m1 * D.chiD ^ (((N / 2 : ℕ) : ℤ))
 
-theorem rhoOf_eq (D : D7) (mt : ℕ → D.Dt →* ℂˣ) (i : ℕ) : rhoOf D mt i = rhoA D (mt (i + 1)) (D.R.N (i + 1)) := rfl
 
-theorem rhoOf'_eq (D : D7) (mt : ℕ → D.Dt →* ℂˣ) (i : ℕ) : rhoOf' D mt i = rhoA' D (mt (i + 1)) (D.R.N i) := rfl
 
 def dOrt (D : D7) (T : Tor D) : ℂ := ((Real.sqrt (area T.abelian₂ / Real.pi) : ℝ) : ℂ)
 
@@ -177,13 +175,6 @@ theorem kjSum_of (h : A.kjPair) : A.kjSum := by
   refine Finset.sum_congr rfl (fun c _ => ?_)
   rw [h c0 hc0 hd c c' (O.Th i c c') (ht c c') (Qc c) (hQ c).1 (φ c) y' (hQ c).2]
 
-theorem kjPair_of (h : A.kjEntry) (hd : dOrt D (tor0 D cc δ) ≠ 0) : A.kjPair := by
-  intro c0 hc0 hdef c c' G hG Qp hQ f y' hf
-  have h1 := hdef c c' Qp hQ f y' hf
-  rw [h c0 hc0 c c' G hG Qp hQ y'] at h1
-  have hne : c0 * ∏ τ, dOrt D (tor0 D cc δ) ^ A.dg τ ≠ 0 :=
-    mul_ne_zero hc0.1 (Finset.prod_ne_zero_iff.mpr fun τ _ => pow_ne_zero _ hd)
-  exact mul_left_cancel₀ hne h1
 
 end AdLift
 
@@ -364,10 +355,6 @@ def repVal (D : D7) (Q : DtAd D) (mt : ℕ → D.Dt →* ℂˣ) : Prop :=
     ∀ i < D.R.m, ‖lamC lam ((rhoOf D mt i (Q.q (dtG D g)) : ℂˣ) : ℂ)‖ = 1 ∧
       ‖lamC lam ((rhoOf' D mt i (Q.q (dtG D g)) : ℂˣ) : ℂ)‖ = 1
 
-theorem repVal_of (D : D7) (Q : DtAd D) (mt : ℕ → D.Dt →* ℂˣ) (h : valDet D Q) (hu : repUnitsOf D mt) : repVal D Q mt := by
-  intro p _ lam N g hg
-  obtain ⟨k, z, hz1, hz2⟩ := h p lam N g hg
-  exact hu p lam _ k z hz1 hz2
 
 def ThetaD.WB {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ} (Θ : ThetaD D cc δ N N') (e0 : VC D N N' → ℂ) : Prop :=
   normSq D (tor0 D cc δ) (La0 D (tor0 D cc δ) N N') (Θ.gen e0) = 1
@@ -376,35 +363,12 @@ def ThetaUnitAbsoluteValue (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) : Pr
   ∀ (N N' : ℕ), ∀ e0 ∈ TT D (tor0 D cc δ) N N', ∀ Θ : ThetaD D cc δ N N', Θ.WB e0 →
     ∃ c0 : ℂ, Θ.IsResidueClassZero c0 ∧ ‖c0‖ = (Real.sqrt (normSq D (tor0 D cc δ) (La0 D (tor0 D cc δ) N N') e0))⁻¹
 
-private lemma unit_abs_of_normalisation_lemma (D : D7) (T : Tor D) {N N' : ℕ} (La' : AddSubgroup (VC D N N')) (c : ℂ)
-    (G : VC D N N' → ℂ) : normSq D T La' (c • G) = ‖c‖ ^ 2 * normSq D T La' G := by
-  unfold Formalism.MainNotions.TaylorLogMetric.normSq
-  simp only [Pi.smul_apply, smul_eq_mul, norm_mul, mul_pow, mul_assoc, MeasureTheory.average]
-  exact MeasureTheory.integral_const_mul _ _
 
-theorem unit_abs_of_normalisation {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (h : kjOne D cc δ) : ThetaUnitAbsoluteValue D cc δ := by
-  intro N N' e0 he Θ hWB
-  obtain ⟨c0, hc0, hgen⟩ := h N N' Θ
-  refine ⟨c0, hc0, ?_⟩
-  unfold ThetaD.WB at hWB
-  rw [hgen e0 he, unit_abs_of_normalisation_lemma] at hWB
-  have hn : normSq D (tor0 D cc δ) (La0 D (tor0 D cc δ) N N') e0 = (‖c0‖⁻¹) ^ 2 := by
-    have hc : ‖c0‖ ≠ 0 := norm_ne_zero_iff.mpr hc0.1
-    field_simp
-    rw [mul_comm]
-    exact hWB
-  rw [hn, Real.sqrt_sq (inv_nonneg.mpr (norm_nonneg _)), inv_inv]
 
 def AdLift.WeightGeneratorsInLattice {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {e : FamE D} {Q : DtAd D} {u : D.what₂.Word}
     {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {O : LiftObj D C} {i : ℕ} (A : AdLift D cc δ e Q O i) : Prop :=
   A.Θ.WB (e00 D e (D.R.N i) (D.R.N (i + 1)))
 
-theorem AdLift.unit_abs_of_normalisation {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {e : FamE D} {Q : DtAd D} {u : D.what₂.Word}
-    {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {O : LiftObj D C} {i : ℕ} (A : AdLift D cc δ e Q O i) (h : kjOne D cc δ)
-    (he : e00 D e (D.R.N i) (D.R.N (i + 1)) ∈ TT D (tor0 D cc δ) (D.R.N i) (D.R.N (i + 1))) (hw : A.WeightGeneratorsInLattice) :
-    ∃ c0 : ℂ, A.Θ.IsResidueClassZero c0 ∧ ‖c0‖ = (Real.sqrt (normSq D (tor0 D cc δ) (La0 D (tor0 D cc δ) (D.R.N i) (D.R.N (i + 1)))
-      (e00 D e (D.R.N i) (D.R.N (i + 1)))))⁻¹ := by
-  exact Formalism.MainNotions.GL3Columns.unit_abs_of_normalisation h _ _ _ he A.Θ hw
 
 def scal (D : D7) : Prop :=
   ∀ (N N' : ℕ) (s s' : D.what₂.Tau → ℂ) (Qp : MvPolynomial (FrV D N) ℂ) (dg : D.what₂.Tau → ℕ), HomDeg D Qp dg →
@@ -572,11 +536,6 @@ def cK (i : ℕ) (c : (D.chTw u μ).cls i) (c' : (D.chTw u μ).cls (i + 1)) : �
 
 def UnitsLatticeIndependent : Prop := ∀ i (c₁ c₂ : (D.chTw u μ).cls i) (c₁' c₂' : (D.chTw u μ).cls (i + 1)) τ, T.c0 i c₁ c₁' τ = T.c0 i c₂ c₂' τ
 
-theorem cK_of_C0Free (h : T.UnitsLatticeIndependent) (i : ℕ) (c₁ c₂ : (D.chTw u μ).cls i) (c₁' c₂' : (D.chTw u μ).cls (i + 1)) :
-    T.cK i c₁ c₁' = T.cK i c₂ c₂' := by
-  unfold KFTie.cK
-  congr 1
-  exact Finset.prod_congr rfl fun z _ => by rw [h i c₁ c₂ c₁' c₂']
 
 def un (i : ℕ) (c : (D.chTw u μ).cls i) (c' : (D.chTw u μ).cls (i + 1)) : ℂ_[D.what₂.places.resChar w] :=
   T.cK i c c' * T.unS i c * T.unT i c'
@@ -648,15 +607,6 @@ theorem unUnit_of (idl : D.Dt ⧸ D.UO → IdE D) (hp : RelDetPinned D idl) (hb 
 def parUnit : Prop :=
   InertK D (D.what₂.places.resChar w) → D.what₂.places.resChar w ≠ 2 → ∀ i, i ≤ D.R.m → ∀ c, ‖∏ τ, (T.B i c τ).det‖ = 1
 
-theorem parUnit_of (idl : D.Dt ⧸ D.UO → IdE D) (hp : RelDetPinned D idl) (hb : brRhoOf D (D.chTw u μ) O.mt) (hd : T.detB)
-    (hχ : chiUnitInert D) (ha : PowRatAll D) : T.parUnit := by
-  intro hK h2 i hi c
-  rw [norm_prod]
-  simp_rw [hd idl hp i hi c]
-  obtain ⟨k, z, hz⟩ := ha (O.dt i c)
-  have h1 := hχ (D.what₂.places.resChar w) (E.lam w) h2 hK (O.dt i c) k z hz
-  rw [(hb idl hp _ (E.lam w) (O.dt i c)).1, Finset.prod_inv_distrib] at h1
-  exact inv_eq_one.mp h1
 
 theorem norm_un (h : T.unUnit) {i : ℕ} (hi : i < D.R.m) (c : (D.chTw u μ).cls i) (c' : (D.chTw u μ).cls (i + 1)) :
     ‖T.un i c c'‖ = 1 := by
@@ -673,17 +623,7 @@ def kf {D : D7} {Dx : DivX D} {Tw : TwForms D} (E : KerEnt D Dx Tw) (O : ∀ u �
 def kfAll {D : D7} {Dx : DivX D} {Tw : TwForms D} (E : KerEnt D Dx Tw) (O : ∀ u μ, LiftObj D (D.chTw u μ)) : Prop :=
   ∀ u μ w, LevFree Dx u μ w → ∀ T : KFTie E (O u μ) w, T.kfPair ∧ T.kfSum ∧ T.unUnit
 
-theorem kf_of_kfAll {D : D7} {Dx : DivX D} {Tw : TwForms D} {E : KerEnt D Dx Tw} {O : ∀ u μ, LiftObj D (D.chTw u μ)}
-    (h : kfAll E O) : kf E O := by
-  intro u μ w hL _ _ T
-  exact h u μ w hL T
 
-theorem unUnit_ent {D : D7} {Dx : DivX D} {Tw : TwForms D} {E : KerEnt D Dx Tw} {O : ∀ u μ, LiftObj D (D.chTw u μ)}
-    (h : kfAll E O) (hu : ∀ u μ w, LevFree Dx u μ w → ∃ T : KFTie E (O u μ) w, T.UnIs) : E.UnUnit := by
-  intro u μ w hL i hi c c'
-  obtain ⟨T, hT⟩ := hu u μ w hL
-  rw [hT i hi c c']
-  exact KFTie.norm_un T (h u μ w hL T).2.2 hi c c'
 
 def KFHyp (D : D7) {u : D.what₂.Word} {μ : D.what₂.Tup} (O : LiftObj D (D.chTw u μ)) : Prop :=
   ww D ∧ wwCB D ∧ wwInj D ∧ (∀ i < D.R.m, liftTieH D O i (dgNu D u i)) ∧ ThAlg O ∧ RhoAlg O
@@ -837,11 +777,6 @@ theorem sJ'_sub_sJ (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) (i : ℕ) 
   push_cast
   ring
 
-theorem sJ'_sub_wJ (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) (i : ℕ) :
-    sJ' D u τ i - wJ D u τ i = (i : ℚ) * ((D.R.t : ℚ) + 1) / 2 := by
-  simp only [sJ', wJ, Formalism.BasicNotions.sExp', Formalism.BasicNotions.wG, N_cast]
-  push_cast
-  ring
 
 theorem sJ_sub_wJ (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) (i : ℕ) :
     sJ D u τ i - wJ D u τ i = ((i : ℚ) + 1) * ((D.R.t : ℚ) + 1) / 2 := by
@@ -889,17 +824,6 @@ theorem lamNo_eq (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) (j : ℕ) : 
       push_cast
       linarith
 
-theorem wtI_thm (D : D7) : wtI D := by
-  intro u τ
-  refine ⟨fun i hi => ⟨fun r hr => ?_, fun r hr1 hr2 => ?_, sJ'_sub_wJ D u τ i, sJ_sub_wJ D u τ i,
-    fun r hr => ?_⟩, fun j _ => lamNo_eq D u τ j⟩
-  · simp only [lamTr, if_pos hr]
-    have h1 := sJ'_sub_sJ D u τ i
-    linarith
-  · simp only [lamTr, if_neg (not_lt.mpr hr1), if_pos hr2]
-  · simp only [nuTr, lamNo]
-    have h1 := sJ'_sub_wJ D u τ i
-    linarith
 
 theorem wtRec_thm (D : D7) : wtRec D := by
   intro u τ i hi
@@ -1040,32 +964,6 @@ theorem ClsInt.gam_ne {D : D7} {N : ℕ} (X : ClsInt D N) (g : GA D N) : X.gam g
   rw [hfun, map_zero] at hu
   exact zero_ne_one hu
 
-theorem class_sum_integral_holds (D : D7) : ClassSumIntegralAlt D := by
-  intro N X R hR f hL hJ
-  have key : f = ∑ g ∈ R, (((X.gam g : ℕ) : ℂ)⁻¹ * f g) • (fun h => ((X.cnt g h : ℕ) : ℂ)) := by
-    funext h
-    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-    obtain ⟨g0, ⟨hg0R, γ0, hγ0, hJ0⟩, huniq⟩ := hR h
-    rw [Finset.sum_eq_single g0]
-    · rw [X.cnt_eq g0 h γ0 hγ0 hJ0]
-      have hgam : ((X.gam g0 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast X.gam_ne g0
-      have hf : f h = f g0 := by
-        rw [← hL γ0 h hγ0]
-        have h1 : γ0 * h = g0 * (g0⁻¹ * (γ0 * h)) := by group
-        rw [h1, hJ g0 _ hJ0]
-      rw [hf]
-      field_simp
-    · intro g hgR hne
-      rw [X.cnt_zero g h (fun ⟨γ, hγ, hJg⟩ => hne (huniq g ⟨hgR, γ, hγ, hJg⟩)), Nat.cast_zero, mul_zero]
-    · intro hn
-      exact absurd hg0R hn
-  conv_lhs => rw [key]
-  rw [map_sum]
-  refine Finset.sum_congr rfl (fun g _ => ?_)
-  rw [map_smul, smul_eq_mul]
-  have hu := X.unf g
-  unfold ClsInt.cnt
-  rw [hu, mul_one]
 
 structure CSSet (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (N N' : ℕ) where
   posN : 0 < N
@@ -1086,10 +984,6 @@ def csI (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) : Prop :=
     ∀ (g : GA D N) (g' : GA D N'), ∀ F ∈ TT D (tor0 D cc δ) N N', ∀ P,
       Θ.Th P (S.W.Om g g' F) = c0 * applyO D (tor0 D cc δ) P (S.W.Om g g' F)
 
-theorem csI_of {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (h : kjOne D cc δ) : csI D cc δ := by
-  intro N N' S Θ
-  obtain ⟨c0, hc0, -⟩ := h N N' Θ
-  exact ⟨c0, hc0, fun g g' F hF P => hc0.2 P _ (S.W.maps g g' F hF)⟩
 
 def csII (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) : Prop :=
   letI := D.host.cmStar
@@ -1103,11 +997,6 @@ def csII (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) : Prop :=
           embT D τ (γ' : Matrix (Fin N') (Fin N') D.host.E).det ^ (-S.a' τ)) *
         pull D (tor0 D cc δ) (γ : Matrix (Fin N) (Fin N) D.host.E) (γ' : Matrix (Fin N') (Fin N') D.host.E) (S.W.Om g g' F) y
 
-theorem csII_of {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (h : oddRat D cc δ) : csII D cc δ := by
-  intro N N' S γ γ' γA γA' hγ hγ' g g' F hF
-  rw [S.W.mul _ _ _ _ F hF]
-  exact h N N' S.posN S.posN' S.ev S.e0 S.unitaryTransvection_zero_first_mem_closure S.W.nz S.W S.ep S.ep' S.a S.a' S.a_eq S.a'_eq
-    γ γ' γA γA' hγ hγ' (S.W.Om g g' F) (S.W.maps g g' F hF)
 
 def actS (D : D7) {N N' : ℕ} (γ : Matrix (Fin N) (Fin N) D.host.E) (P : MvPolynomial (Idx D N N') ℂ) : MvPolynomial (Idx D N N') ℂ :=
   MvPolynomial.aeval (fun k : Idx D N N' => ∑ a' : Fin N,
@@ -1285,15 +1174,8 @@ theorem aux₃.liftTieH {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {e : Fa
     liftTieH D O i A.dg := by
   exact liftTieH_of hi A ((hp.1.2.2.2.2.1) u C O i A hr).2.1 c0 h0 hd ht
 
-theorem unit_abs_of_proposition {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {e : FamE D} {Q : DtAd D} (hp : aux₃ D cc δ e Q) : ThetaUnitAbsoluteValue D cc δ := by
-  exact unit_abs_of_normalisation hp.1.1
 
-theorem csI_of_conditions {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {e : FamE D} {Q : DtAd D} (hp : aux₃ D cc δ e Q) : csI D cc δ := by
-  exact csI_of hp.1.1
 
-theorem csII_of_conditions {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {e : FamE D} {Q : DtAd D} (hp : aux₃ D cc δ e Q)
-    (h1 : admG1 D) (h2 : IntertwinerUnitary D) (h3 : admissible_poisson D) : csII D cc δ := by
-  exact csII_of (hp.2.2.1 h1 h2 h3)
 
 open Formalism.MainNotions.G in
 

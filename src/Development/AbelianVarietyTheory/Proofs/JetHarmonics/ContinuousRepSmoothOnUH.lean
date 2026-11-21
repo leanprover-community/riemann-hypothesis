@@ -185,38 +185,8 @@ theorem exists_contDiff {ι : Type} [Fintype ι] [DecidableEq ι] {H : Matrix (F
   show x * (y x * mat g) = mat g
   rw [← Matrix.mul_assoc, show x * y x = 1 from mul_eq_one_comm.1 (left_inv hH hxG), Matrix.one_mul]
 
-theorem exists_contDiff_entry {ι : Type} [Fintype ι] [DecidableEq ι] {H : Matrix (Fin n) (Fin n) ℂ}
-    {ρ : Matrix (Fin n) (Fin n) ℂ → Matrix ι ι ℂ} (hH : H * H = 1) (h1 : ρ 1 = 1)
-    (hmul : ∀ g ∈ PI.UpqRep.UH H, ∀ h ∈ PI.UpqRep.UH H, ρ (g * h) = ρ g * ρ h)
-    (hcont : ∀ i j, ContinuousOn (fun g => ρ g i j) (PI.UpqRep.UH H)) (i j : ι)
-    (x₀ : Matrix (Fin n) (Fin n) ℂ) :
-    ∃ (U : Set (Matrix (Fin n) (Fin n) ℂ)) (F : (Fin n → Fin n → ℂ) → ℂ), IsOpen U ∧ x₀ ∈ U ∧
-      ContDiff ℝ ∞ F ∧ ∀ x ∈ U, x ∈ PI.UpqRep.UH H → ρ x i j = F (Matrix.of.symm x) := by
-  obtain ⟨F, hF, hFe⟩ := exists_contDiff hH h1 hmul
-    (continuousOn_pi.2 fun i => continuousOn_pi.2 fun j => hcont i j) x₀
-  let A : (Fin n → Fin n → ℂ) →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ :=
-    { toFun := fun p => Matrix.of p
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  let B : Matrix ι ι ℂ →ₗ[ℝ] ℂ :=
-    { toFun := fun m => m i j
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  refine ⟨Metric.ball x₀ 1, fun p => B (F (A p)), Metric.isOpen_ball, Metric.mem_ball_self one_pos,
-    (LinearMap.toContinuousLinearMap B).contDiff.comp
-      (hF.comp (LinearMap.toContinuousLinearMap A).contDiff), fun x hx hxG => ?_⟩
-  rw [hFe x hx hxG]
-  rfl
 
 end
 
-theorem smoothOnH_of_continuousOn : ∀ (n : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]
-    (H : Matrix (Fin n) (Fin n) ℂ) (ρ : Matrix (Fin n) (Fin n) ℂ → Matrix ι ι ℂ), H * H = 1 → ρ 1 = 1 →
-    (∀ g ∈ PI.UpqRep.UH H, ∀ h ∈ PI.UpqRep.UH H, ρ (g * h) = ρ g * ρ h) →
-    (∀ i j, ContinuousOn (fun g => ρ g i j) (PI.UpqRep.UH H)) →
-    ∀ i j, PI.UpqRep.SmoothOnH H (fun g => ρ g i j) := by
-  intro n ι _ _ H ρ hH h1 hmul hcont i j x₀ _
-  obtain ⟨U, F, hU, hx, hF, hFe⟩ := exists_contDiff_entry hH h1 hmul hcont i j x₀
-  exact ⟨U, F, hU, hx, hF.contDiffOn, hFe⟩
 
 end GlobalTheory.UHContSmooth

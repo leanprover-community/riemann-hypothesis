@@ -278,7 +278,6 @@ theorem jLevi_le_KOne (e : (Σ a, m a) ≃ n) : jLevi k e ≤ KOne k n := by
   refine (redK_eq_one_iff ⟨_, leviEmb_mem_KO e h⟩).1 ?_
   rw [redK_leviEmb e ⟨g, h⟩, (redLevi_eq_one_iff _).2 hg, map_one]
 
-theorem jMinus_le_proRad (e : (Σ a, m a) ≃ n) : jMinus k e ≤ proRad k e := inf_le_right.trans (KOne_le_proRad e)
 
 theorem jLevi_le_proRad (e : (Σ a, m a) ≃ n) : jLevi k e ≤ proRad k e := (jLevi_le_KOne e).trans (KOne_le_proRad e)
 

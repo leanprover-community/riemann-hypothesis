@@ -42,7 +42,6 @@ section ProvedK
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {K : Type} [Field K] [NumberField K] [StarRing K] {S : Set ℕ}
 
-theorem tup_finOrder (ξ : Tup F E K S) : IsOfFinOrder (ξ : Chr F E K) := ((mem_tupGrp (ξ : Chr F E K)).mp ξ.2).1.2.2
 
 end ProvedK
 

@@ -177,9 +177,6 @@ noncomputable def comp (g : Hom G H) (f : Hom F G) : Hom F H :=
 theorem toPowerSeries_comp (g : Hom G H) (f : Hom F G) :
     (g.comp f).toPowerSeries = PowerSeries.subst f.toPowerSeries g.toPowerSeries := rfl
 
-theorem apply_comp (g : Hom G H) (f : Hom F G) {σ : Type*} (x : F.Point σ) :
-    (g.comp f).apply x = g.apply (f.apply x) :=
-  (substPoint_substPoint _ _ _ x).symm
 
 variable (F) in
 
@@ -269,8 +266,6 @@ noncomputable instance : SMul ℤ (Hom F G) where
 theorem toPowerSeries_add (f g : Hom F G) :
     (f + g).toPowerSeries = subst ![f.toPowerSeries, g.toPowerSeries] G.toPowerSeries := rfl
 
-theorem toPowerSeries_neg (f : Hom F G) :
-    (-f).toPowerSeries = PowerSeries.subst f.toPowerSeries (inv G) := rfl
 
 theorem toPoint_add (f g : Hom F G) : (f + g).toPoint = f.toPoint + g.toPoint := rfl
 

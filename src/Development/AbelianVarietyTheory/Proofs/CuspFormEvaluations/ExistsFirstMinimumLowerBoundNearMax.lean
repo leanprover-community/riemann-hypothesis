@@ -186,69 +186,9 @@ theorem ss_finite_dimensional (hM2 : MahlerCompactnessCriterion (E := E)) {r : �
 
 namespace CuspNet
 
-theorem span_restrict_ss_eq {r : ℕ} (X : Data E r) (la : Wt X.Ψ r) {f : X.dom → ℂ}
-    (hf : f ∈ Submodule.span ℂ ((fun P : Frame X.Ψ r → ℂ => X.dom.domRestrict P) '' X.SS la)) :
-    ∃ P ∈ X.SS la, X.dom.domRestrict P = f := by
-  obtain ⟨⟨h0, hadd, hsmul⟩, -⟩ := siegelSpaceAlgebra_holds (E := E) r X la la 0
-  induction hf using Submodule.span_induction with
-  | mem f hf => exact hf
-  | zero => exact ⟨0, h0, rfl⟩
-  | add f g _ _ hf hg =>
-    obtain ⟨P, hP, rfl⟩ := hf
-    obtain ⟨Q, hQ, rfl⟩ := hg
-    exact ⟨P + Q, hadd P hP Q hQ, rfl⟩
-  | smul a f _ hf =>
-    obtain ⟨P, hP, rfl⟩ := hf
-    exact ⟨a • P, hsmul a P hP, rfl⟩
 
-theorem rank_span_restrict_ss_le {r : ℕ} (X : Data E r) (la : Wt X.Ψ r)
-    (N : Finset (Frame X.Ψ r)) (hN : ∀ y ∈ N, y ∈ X.dom) {C : ℝ}
-    (hb : ∀ P ∈ X.SS la, ∀ x ∈ X.dom, ∃ y ∈ N, X.pnorm la P x ≤ C * X.pnorm la P y) :
-    Module.rank ℂ (Submodule.span ℂ
-      ((fun P : Frame X.Ψ r → ℂ => X.dom.domRestrict P) '' X.SS la)) ≤ N.card := by
-  set V := Submodule.span ℂ ((fun P : Frame X.Ψ r → ℂ => X.dom.domRestrict P) '' X.SS la) with hV
-  let ev : V →ₗ[ℂ] (N → ℂ) :=
-    (LinearMap.funLeft ℂ ℂ fun y : N => (⟨y.1, hN y.1 y.2⟩ : X.dom)).comp V.subtype
-  have hinj : Function.Injective ev := by
-    rw [injective_iff_map_eq_zero]
-    rintro ⟨f, hf⟩ h0
-    obtain ⟨P, hP, rfl⟩ := span_restrict_ss_eq X la hf
-    refine Subtype.ext (funext fun x => ?_)
-    obtain ⟨y, hy, hxy⟩ := hb P hP x.1 x.2
-    have hPy : P y = 0 := congrFun h0 ⟨y, hy⟩
-    have h1 : X.pnorm la P y = 0 := by simp [Data.pnorm, hPy]
-    rw [h1, mul_zero] at hxy
-    have h2 : ‖P x.1‖ * X.nfac la x.1 ≤ 0 := hxy
-    have h3 := flowTermNormDecay.nfac_pos X la x.2
-    have h4 : ‖P x.1‖ ≤ 0 := by
-      by_contra h
-      push Not at h
-      linarith [mul_pos h h3]
-    exact norm_le_zero_iff.1 h4
-  have h := LinearMap.rank_le_of_injective ev hinj
-  simpa using h
 
 end CuspNet
 
-theorem ss_card_le_of_linearIndependent (hM2 : MahlerCompactnessCriterion (E := E)) {r : ℕ} (X : DataX E r)
-    (la : Wt X.Ψ r) :
-    ∃ N : Finset (Frame X.Ψ r), (∀ y ∈ N, y ∈ X.dom) ∧
-      (∀ P ∈ X.SS la, ∀ x ∈ X.dom, ∃ y ∈ N, X.pnorm la P x ≤ 4 * X.pnorm la P y) ∧
-      (∀ (ι : Type) (P : ι → Frame X.Ψ r → ℂ), (∀ i, P i ∈ X.SS la) →
-        LinearIndependent ℂ (fun i => X.dom.domRestrict (P i)) → Cardinal.mk ι ≤ N.card) ∧
-      FiniteDimensional ℂ (Submodule.span ℂ
-        ((fun P : Frame X.Ψ r → ℂ => X.dom.domRestrict P) '' X.SS la)) ∧
-      Module.finrank ℂ (Submodule.span ℂ
-        ((fun P : Frame X.Ψ r → ℂ => X.dom.domRestrict P) '' X.SS la)) ≤ N.card := by
-  obtain ⟨N, hN, hb⟩ := ss_finite_dimensional hM2 X la
-  have hrk := CuspNet.rank_span_restrict_ss_le X.toData la N hN hb
-  refine ⟨N, hN, hb, fun ι P hP hli => ?_, ?_, Module.finrank_le_of_rank_le hrk⟩
-  · refine le_trans ?_ hrk
-    have h : LinearIndependent ℂ (fun i => (⟨X.dom.domRestrict (P i),
-        Submodule.subset_span ⟨P i, hP i, rfl⟩⟩ : Submodule.span ℂ
-          ((fun P : Frame X.Ψ r → ℂ => X.dom.domRestrict P) '' X.SS la))) :=
-      LinearIndependent.of_comp (Submodule.subtype _) hli
-    exact h.cardinal_le_rank
-  · exact Module.rank_lt_aleph0_iff.1 (hrk.trans_lt (Cardinal.natCast_lt_aleph0))
 
 end GlobalTheory

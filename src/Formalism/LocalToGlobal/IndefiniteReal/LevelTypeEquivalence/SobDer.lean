@@ -14,20 +14,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {S T : HSp D} {k : ℕ}
 
-theorem mlin_norm_le {m : ℕ} (M : ContinuousMultilinearMap ℝ (fun _ : Fin m => (Fin k → ℝ)) ℂ) :
-    ‖M‖ ≤ ∑ l : Fin m → Fin k, ‖M (fun i => ev (l i))‖ := by
-  refine M.opNorm_le_bound (Finset.sum_nonneg fun _ _ => norm_nonneg _) fun v => ?_
-  have hv : v = fun i => ∑ j, v i j • ev j := by
-    funext i
-    ext j'
-    simp [ev, Finset.sum_apply, Pi.single_apply]
-  conv_lhs => rw [hv, M.map_sum]
-  refine (norm_sum_le _ _).trans ?_
-  rw [Finset.sum_mul]
-  refine Finset.sum_le_sum fun r _ => ?_
-  rw [M.map_smul_univ, norm_smul, norm_prod, mul_comm]
-  refine mul_le_mul_of_nonneg_left (Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun i _ => ?_) (norm_nonneg _)
-  exact norm_le_pi_norm (v i) (r i)
 
 def Gf (ψ : AddChar (AF D.host.F) ℂ) (L : (Fin k → ℝ) →+ WO S T) (f : WO S T → ℂ) (x : WO S T) :
     (Fin k → ℝ) → ℂ := fun t => heisO ψ S T (L t) f x

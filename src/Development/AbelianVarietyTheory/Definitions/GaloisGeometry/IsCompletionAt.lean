@@ -99,10 +99,7 @@ namespace WPartOf
 variable {πw : WProj D b i₀} {T : Type} [CommRing T] [Algebra Ow T] {A : Over (Sp T)} [GrpObj A]
   [IsCommMonObj A] {a : Out.RingAct A D.O} {H : VarpiDivModule p Ow T}
 
-theorem iH_rH (w : WPartOf πw A a H) : w.iH ≫ w.rH = 𝟙 H.G := w.corner.2.2.2.1
 
-theorem rH_iH (w : WPartOf πw A a H) :
-    w.rH ≫ w.iH = ((w.t.ringAct a).padicExtend w.E : w.G ⟶ w.G) := w.corner.2.2.2.2.1
 
 theorem π_E (w : WPartOf πw A a H) : πw.π w.E = unitE Ow D.m := w.corner.2.1
 

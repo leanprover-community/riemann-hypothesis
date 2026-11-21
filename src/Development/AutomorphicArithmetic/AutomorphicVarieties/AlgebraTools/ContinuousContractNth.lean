@@ -23,10 +23,6 @@ def B (K : Cx A) : ∀ n : ℕ, Submodule A (K.X n)
   | 0 => ⊥
   | n + 1 => LinearMap.range (K.d n)
 
-theorem B_le_Z (K : Cx A) (n : ℕ) : K.B n ≤ K.Z n := by
-  rcases n with _ | n
-  · exact bot_le
-  · exact fun _ ⟨y, hy⟩ => hy ▸ K.dd n y
 
 abbrev H (K : Cx A) (n : ℕ) : Type := K.Z n ⧸ (K.B n).comap (K.Z n).subtype
 
@@ -77,7 +73,6 @@ def H (φ : Hom K L) (n : ℕ) : K.H n →ₗ[A] L.H n :=
 
 theorem H_cls (φ : Hom K L) {n : ℕ} (z : K.Z n) : φ.H n (K.cls z) = L.cls (φ.Z n z) := rfl
 
-theorem coe_Z (φ : Hom K L) {n : ℕ} (z : K.Z n) : (φ.Z n z).1 = φ.f n z.1 := rfl
 
 theorem H_comp (ψ : Hom L N) (φ : Hom K L) (n : ℕ) (x : K.H n) :
     (ψ.comp φ).H n x = ψ.H n (φ.H n x) :=
@@ -271,9 +266,6 @@ def IsTAdic {A : Type} [CommRing A] (t : A) (M : Type) [AddCommGroup M] [Module 
     [TopologicalSpace M] : Prop :=
   (nhds (0 : M)).HasBasis (fun _ : ℕ => True) fun k => Set.range fun m : M => t ^ k • m
 
-theorem contAct_trivial {A G M : Type} [CommRing A] [Group G] [AddCommGroup M] [Module A M]
-    [TopologicalSpace G] [TopologicalSpace M] [IsTopologicalAddGroup M] [ContinuousConstSMul A M] :
-    ContAct (Representation.trivial A G M) := continuous_snd
 
 end UpperTheory.V.AlgebraTools
 

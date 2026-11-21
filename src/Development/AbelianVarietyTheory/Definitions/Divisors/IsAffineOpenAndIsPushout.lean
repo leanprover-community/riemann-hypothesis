@@ -651,8 +651,5 @@ theorem exists_isVB_conormal [QuasiCompact e] [Smooth π] [PreconnectedSpace S] 
   obtain rfl : m = n := (hr hs hx).symm.trans (congrFun hn x)
   exact ⟨U, s, hx, hs⟩
 
-theorem isZero_conormal_id : IsZero (conormal (𝟙 S)) :=
-  (IsZero.iff_id_eq_zero _).2 ((map_id (Category.comp_id (𝟙 S)) rfl (Category.comp_id _)
-    (Category.comp_id _)).symm.trans (map_eq_zero (Category.comp_id _) _ _ _ (Category.comp_id _)))
 
 end GlobalTheory.Conormal

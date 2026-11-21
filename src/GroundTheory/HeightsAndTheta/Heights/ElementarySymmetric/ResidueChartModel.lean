@@ -73,19 +73,6 @@ theorem pointForm_fn_eq (z w : Fin pointForm.g → ℂ) : z = w :=
 
 def pointX : Fin (0 + 1) → pointForm.Fn := fun _ _ => 1
 
-theorem pointX_isBasisOf : pointForm.IsBasisOf 3 pointX := by
-  refine ⟨fun i => mem_thetaSec_siegelPtZero 3 _, ?_, ?_⟩
-  · have : Unique (Fin (0 + 1)) := inferInstanceAs (Unique (Fin 1))
-    rw [linearIndependent_unique_iff]
-    intro h
-    have := congrFun h 0
-    simp [pointX] at this
-  · refine le_antisymm (Submodule.span_le.2 ?_) fun f _ => ?_
-    · rintro _ ⟨i, rfl⟩; exact mem_thetaSec_siegelPtZero 3 _
-    · have hf : f = f 0 • pointX 0 := funext fun z => by
-        simp [pointX, pointForm_fn_eq z 0]
-      rw [hf]
-      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨0, rfl⟩)
 
 theorem polyPiece_eq_zero_of_neg {N : ℕ} {c : ℤ} (hc : c < 0) {m : Poly ℂ N}
     (hm : m ∈ polyPiece ℂ N c) : m = 0 := by
@@ -153,13 +140,6 @@ def pointChartModel : ResidueChartModel pointForm 3 0 pointX where
     · rw [pointι_apply, pointForm_fn_eq z 0]
       simp
 
-theorem pointChartModel_nontrivial :
-    Nontrivial pointChartModel.M ∧ pointChartModel.ι (1 : Poly ℂ 0) ≠ 0 := by
-  refine ⟨inferInstanceAs (Nontrivial (Poly ℂ 0)), fun h => ?_⟩
-  have := congrFun h 0
-  change pointι 1 0 = 0 at this
-  rw [pointι_apply] at this
-  simp at this
 
 end
 

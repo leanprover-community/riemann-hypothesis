@@ -212,13 +212,6 @@ def inertiaFactor (w : HeightOneSpectrum (𝓞 L)) (φ : Gal(L/K))
     (hφ : φ ∈ MulAction.stabilizer Gal(L/K) w.asIdeal) : ℂ[X] :=
   (invariantsEnd ρ (w.asIdeal.inertia Gal(L/K)) φ (inv_mul_mul_mem_inertia w hφ)).charpoly.reverse
 
-theorem inertiaFactor_eq (w w' : HeightOneSpectrum (𝓞 L)) [w.asIdeal.LiesOver v.asIdeal]
-    [w'.asIdeal.LiesOver v.asIdeal] {φ φ' : Gal(L/K)} (hφ : IsArithFrobAt (𝓞 K) φ w.asIdeal)
-    (hφ' : IsArithFrobAt (𝓞 K) φ' w'.asIdeal) :
-    inertiaFactor ρ w φ hφ.mem_stabilizer = inertiaFactor ρ w' φ' hφ'.mem_stabilizer :=
-  reverse_charpoly_eq_of_trace_pow_eq _ _ fun m _ => by
-    rw [trace_invariantsEnd_pow, trace_invariantsEnd_pow,
-      cosetAverage_inertia_eq v ρ.character (fun g h => ρ.char_conj g h) w w' hφ hφ' m]
 
 omit [IsGalois K L] in
 
@@ -236,15 +229,7 @@ def localFactor : ℂ[X] :=
   inertiaFactor ρ (placeAbove v) (arithFrobAt (𝓞 K) Gal(L/K) (placeAbove (L := L) v).asIdeal)
     (IsArithFrobAt.arithFrobAt_mem_stabilizer _ _ _)
 
-theorem localFactor_eq (w : HeightOneSpectrum (𝓞 L)) [w.asIdeal.LiesOver v.asIdeal]
-    {φ : Gal(L/K)} (hφ : IsArithFrobAt (𝓞 K) φ w.asIdeal) :
-    localFactor v ρ = inertiaFactor ρ w φ hφ.mem_stabilizer :=
-  inertiaFactor_eq v ρ _ _ (IsArithFrobAt.arithFrobAt _ _ _) hφ
 
-theorem logOf_inv_localFactor :
-    PowerSeries.logOf ((localFactor v ρ : PowerSeries ℂ)⁻¹) =
-      PowerSeries.mk fun m => if m = 0 then 0 else localAverage L v ρ.character m / m :=
-  logOf_inv_inertiaFactor ρ _ _
 
 end GaloisRepresentation
 

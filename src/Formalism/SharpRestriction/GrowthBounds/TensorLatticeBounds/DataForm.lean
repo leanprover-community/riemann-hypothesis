@@ -181,43 +181,7 @@ variable {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteVa
     [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
     {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {j : W →+* O} {w : O}
 
-theorem exists_integral_nonzero_form (h : HidaSetting p n' W Qq O Kf ι σ j w) :
-    ∃ F : (gat1 h).Fn, F ∈ (gat1 h).M ∧ F ∈ (gat1 h).Mna ∧ F ≠ 0 := by
-  have h0 : ∀ v, (gat1 h).P.lam0 v = fun _ _ => 0 := by
-    intro v
-    rfl
-  have hχ : ∀ i, ((gat1 h).lev i).χ = 1 := by
-    intro i
-    rfl
-  have hc : Nonempty (gat1 h).comp := by
-    first
-      | exact ⟨()⟩
-      | (unfold gat1; exact (rfl : 1 = 1))
-  obtain ⟨i0⟩ := hc
-  let L0 : (gat1 h).P.Tup := fun v => colSpan ((gat1 h).P.W v)
-    (1 : Matrix (Fin ((gat1 h).P.m + 1)) (Fin ((gat1 h).P.m + 1)) ((gat1 h).P.Qq v))
-  have hL0 : (gat1 h).P.IsLatTup L0 := fun v => ⟨1, by simp, rfl⟩
-  refine ⟨fun _ => oneFn (gat1 h).P, ?_, ?_, ?_⟩
-  · simp only [GAtP.M, GAtP.funMod, Submodule.mem_pi]
-    intro i _
-    exact oneFn_mem (gat1 h).P ((gat1 h).lev i) h0 (hχ i) _ (fun L => one_mem_HtupW _ h0 L)
-  · simp only [GAtP.Mna, GAtP.funMod, Submodule.mem_pi]
-    intro i _
-    exact oneFn_mem (gat1 h).P ((gat1 h).lev i) h0 (hχ i) _ (fun L => one_mem_Htup _ h0 L)
-  · intro hF
-    have h1 := congrFun (congrFun hF i0) L0
-    simp only [Pi.zero_apply] at h1
-    rw [oneFn_pos _ hL0] at h1
-    exact one_ne_zero h1
 
-theorem gat_nonempty_form (p : ℕ) (hp : p.Prime) (h5 : 5 ≤ p) :
-    ∃ G : GAtP p, 1 ≤ G.P.nV ∧ G.TrivStab ∧ G.FinClasses ∧ G.M ≠ ⊥ ∧ G.Mna ≠ ⊥ := by
-  have : Fact p.Prime := ⟨hp⟩
-  have h := Formalism.BasicNotions.Examples₂.LevelValuationRings.hidaSettingOfEven p 2 h5 le_rfl even_two
-  obtain ⟨F, h1, h2, h3⟩ := exists_integral_nonzero_form h
-  refine ⟨gat1 h, le_rfl, fun _ => level1_trivStab h, fun _ => level1_finClasses h, ?_, ?_⟩
-  · intro hb; rw [hb] at h1; exact h3 ((Submodule.mem_bot _).1 h1)
-  · intro hb; rw [hb] at h2; exact h3 ((Submodule.mem_bot _).1 h2)
 
 end Ex
 

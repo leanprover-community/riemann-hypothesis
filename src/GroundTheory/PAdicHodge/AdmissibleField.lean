@@ -53,7 +53,6 @@ variable {G F K B ρ} in
 theorem mem_DBK {x : B ⊗[F] V} : x ∈ DBK G F K B ρ ↔ ∀ g : G, baseChangeRep B ρ g x = x :=
   Iff.rfl
 
-theorem coe_DBK : (DBK G F K B ρ : Set (B ⊗[F] V)) = DB B ρ := rfl
 
 def toInvariantRing : K →+* invariantRing G F B where
   toFun k := ⟨algebraMap K B k, fun g => smul_algebraMap g k⟩
@@ -77,16 +76,6 @@ theorem toInvariantRing_bijective [Nontrivial B]
   · obtain ⟨k, hk⟩ := hK e e.2
     exact ⟨k, Subtype.ext hk⟩
 
-theorem invariantRing_eq_range
-    (hK : ∀ b : B, (∀ g : G, g • b = b) → ∃ k : K, algebraMap K B k = b) :
-    invariantRing G F B = (IsScalarTower.toAlgHom F K B).range := by
-  ext b
-  constructor
-  · intro hb
-    obtain ⟨k, hk⟩ := hK b hb
-    exact ⟨k, hk⟩
-  · rintro ⟨k, rfl⟩ g
-    exact smul_algebraMap g k
 
 theorem rank_DBK [Nontrivial B]
     (hK : ∀ b : B, (∀ g : G, g • b = b) → ∃ k : K, algebraMap K B k = b) :
@@ -120,11 +109,6 @@ theorem IsRegular.finiteDimensional_DBK (h : IsRegular G F B)
   have : Module.Free K (DBK G F K B ρ) := Module.Free.of_divisionRing K (DBK G F K B ρ)
   exact Module.rank_lt_aleph0_iff.1 (by rw [rank_DBK ρ hK]; exact Module.rank_lt_aleph0_iff.2 ‹_›)
 
-theorem IsRegular.finrank_DBK_le (h : IsRegular G F B)
-    (hK : ∀ b : B, (∀ g : G, g • b = b) → ∃ k : K, algebraMap K B k = b) [FiniteDimensional F V] :
-    finrank K (DBK G F K B ρ) ≤ finrank F V := by
-  rw [finrank_DBK ρ hK]
-  exact h.finrank_le ρ
 
 theorem isAdmissible_iff_finrank_DBK
     (hK : ∀ b : B, (∀ g : G, g • b = b) → ∃ k : K, algebraMap K B k = b) :

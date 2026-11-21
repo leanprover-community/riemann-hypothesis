@@ -288,12 +288,6 @@ theorem onePlace (h6 : Formalism.MainNotions.PrimeDegreeVariant.Conclusion6) : O
   · rw [e _ (st _ f hf), e f hf]; exact b5 a f hf
   · rw [e f hf]; exact b6 f hf
 
-theorem transposed (h6 : Formalism.MainNotions.PrimeDegreeVariant.Conclusion6) : Transposed := by
-  intro N n hN lam sg hI hS
-  obtain ⟨hc, -, hx, -, io, br, hio, hbr, hT⟩ := h6 n N hN.symm lam sg ((interlace_iff hN lam sg).1 hI)
-  refine ⟨io, hio, fun s hs f hf => ?_⟩
-  rw [brOne_eq_transpose hN hI hS hc hx hio hbr hT f hf]
-  exact hT s hs f hf
 
 theorem coeff_prod_rename {A ι : Type} [CommRing A] [Fintype ι] {n : ℕ} (b : ι → Fin n → ℕ)
     (P : ι → MvPolynomial (Unit × Fin n) A) :
@@ -474,7 +468,5 @@ theorem integrality (h6 : Formalism.MainNotions.PrimeDegreeVariant.Conclusion6) 
   rw [LinearMap.map_smul_of_tower] at h2
   exact h2
 
-theorem statement_of_branching (h6 : Formalism.MainNotions.PrimeDegreeVariant.Conclusion6) : Statement :=
-  ⟨onePlace h6, equivariance, integrality h6, homogeneity, GlobalTheory.BranchMembers.members⟩
 
 end GlobalTheory.BranchFormula

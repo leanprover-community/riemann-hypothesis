@@ -381,23 +381,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {O : Type} [CommRing O] [Algebra O LL] [TopologicalSpace LL] [IsTopologicalRing LL]
     {ψ : G →* LLˣ} (L : Lattice (O := O) (charRep ψ))
 
-theorem facts_iff (hle : HfD PD L ≤ divisibleCocycles L) (I : Subgroup G) (e d : ℕ) :
-    Facts PD L I e d ↔ ((0 < e → HfZero PD L) ∧ (e = 0 → HfUnram PD L I)) ∧
-      ∀ n, TorsLenLe PD L PD.p n ((d + 1) * n) := by
-  rw [and_comm]
-  refine and_congr Iff.rfl (and_congr (imp_congr_right fun _ => ?_) (imp_congr_right fun _ => ?_))
-  · rw [HfZero, Submodule.eq_bot_iff]
-    refine ⟨fun h x hx => ?_, fun h => le_antisymm (fun c hc => ?_) le_sup_right⟩
-    · obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-      rw [mk_mem_H1fD, h] at hx
-      exact (Submodule.Quotient.mk_eq_zero _).mpr hx
-    · exact (Submodule.Quotient.mk_eq_zero ((BD L).comap (divisibleCocycles L).subtype)).mp
-        (h _ ((mk_mem_H1fD PD ⟨c, hle hc⟩).mpr hc))
-  · refine ⟨fun h z => ?_, fun h c => ⟨fun hc => ⟨hle hc, ?_⟩, fun ⟨hc, hx⟩ => ?_⟩⟩
-    · rw [mk_mem_H1fD, h]
-      exact and_iff_right z.2
-    · exact (h ⟨c, hle hc⟩).mp ((mk_mem_H1fD PD _).mpr hc)
-    · exact (mk_mem_H1fD PD ⟨c, hc⟩).mp ((h ⟨c, hc⟩).mpr hx)
 
 omit [IsTopologicalRing LL] in
 
@@ -455,28 +438,7 @@ theorem exists_iso (hL : L.T = LinearMap.range (Algebra.linearMap O LL)) (Z : Lo
     exact Z.L.T.smul_mem a ht
   · exact (e.symm_apply_eq).mpr (one_smul LL t).symm
 
-theorem facts_line [IsDomain O] [IsFractionRing O LL]
-    (hL : L.T = LinearMap.range (Algebra.linearMap O LL)) (Z : LocLat G Qp LL O)
-    (h1 : Module.finrank LL Z.V = 1) (hψ : ∀ g x, Z.ρ g x = ((ψ g : LLˣ) : LL) • x)
-    {I : Subgroup G} {e d : ℕ} (H : Facts PD L I e d) : Facts PD Z.L I e d := by
-  obtain ⟨t, ht, hg⟩ := exists_gen Z h1
-  obtain ⟨F, F', e1, -, -⟩ := exists_iso L hL Z h1 hψ t ht hg
-  exact Facts.of_iso PD e1 H
 
-theorem push_line [IsDomain O] [IsFractionRing O LL]
-    (hL : L.T = LinearMap.range (Algebra.linearMap O LL)) (Z : LocLat G Qp LL O)
-    (h1 : Module.finrank LL Z.V = 1) (hψ : ∀ g x, Z.ρ g x = ((ψ g : LLˣ) : LL) • x)
-    {p k : ℕ} {Y : LocLat G Qp LL O} {c : G → ↥Y.L.T} (H : PushInHf PD L p k Y c)
-    (f : ↥Y.L.T →ₗ[O] (Z.V ⧸ Z.L.T)) (hf : ∀ g y, f (actT Y.L g y) = actD Z.L g (f y)) :
-    (fun g => ((p : O) ^ k) • f (c g)) ∈ HfD PD Z.L := by
-  obtain ⟨t, ht, hg⟩ := exists_gen Z h1
-  obtain ⟨F, F', e1, -, -⟩ := exists_iso L hL Z h1 hψ t ht hg
-  have h2 := qpost_HfD PD F' _
-    (H (qmap F ∘ₗ f) fun g y => (congrArg (qmap F) (hf g y)).trans (qmap_act F g _))
-  have h3 : qpost F' (fun g => (qmap F ∘ₗ f) (c g)) = fun g => f (c g) :=
-    funext fun g => qmap_inv e1 _
-  rw [map_smul, h3] at h2
-  exact h2
 
 theorem exists_unit_quot (L : Lattice (O := O) (charRep (1 : G →* LLˣ)))
     (hL : L.T = LinearMap.range (Algebra.linearMap O LL)) {Y Yt Z : LocLat G Qp LL O}
@@ -568,21 +530,10 @@ theorem resΓ_eq_one (g : ↥(GK K)) (hg : ∀ j : ℕ, (g : GQ l) (P.ζQ j) = P
   rw [map_one]
   exact h2
 
-theorem act_ringAsW (g : ↥(GK K)) (h1 : ∀ w ∈ wittFixedFrobeniusPow K, AI.actWHom (g : GQ l) w = w)
-    (h2 : ∃ u ∈ ringAs AI K s, AI.actWHom (g : GQ l) (piS AI s) = piS AI s * u) :
-    ∀ a ∈ ringAsW AI K s, AI.actWCbHom (g : GQ l) a ∈ ringAsW AI K s ∧
-      ∃ b ∈ ringAsW AI K s, AI.actWCbHom (g : GQ l) a - a = inclW l (piS AI s) * b := by
-  rintro _ ⟨a, ha, rfl⟩
-  obtain ⟨h3, b, hb, h4⟩ := GlobalTheory.T.galois_uniformizer_ring_stable l P AI K s (AI.actWHom (g : GQ l)).toRingEquiv.toRingHom h1 h2 a ha
-  rw [inclW_act]
-  exact ⟨⟨_, h3, rfl⟩, _, ⟨b, hb, rfl⟩, by rw [← map_sub, ← map_mul]; exact congrArg _ h4⟩
 
 variable (E : EtTie W (RA LL) (RW LL) (inclR LL) (φRW LL) (fun g : ↥(GK K) => AI.gRW LL (g : GQ l))
     ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] piS AI s))
 
-theorem sc_Q_pow (hs : W.s = s) (k : ℕ) :
-    sc E (W.Q ^ k) = (1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] (inclW l AI.ξ ^ k) := by
-  rw [sc_pow, sc_Q E hs, Algebra.TensorProduct.tmul_pow, one_pow]
 
 end Wach
 

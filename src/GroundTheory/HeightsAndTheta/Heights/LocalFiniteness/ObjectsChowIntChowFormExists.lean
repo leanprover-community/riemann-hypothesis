@@ -69,23 +69,13 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.ChartEnergyIntegrable : Ground
 theorem GroundTheory.Heights₂.Heights.AutoClose.RestCutStairNonzero : GroundTheory.Heights₂.Heights.RestCutStairNonzero.Statement :=
   @GroundTheory.Heights₂.Heights.RestCutStairNonzero.proof GroundTheory.Heights₂.Heights.RestTerms.CoinvariantTopDegree.full GroundTheory.Heights₂.Heights.AutoClose.RestCutFlagKillsIdeal
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.StrongApprox_SAOpenHolds : GroundTheory.Heights₂.Heights.StrongApprox.SAOpenHolds.Statement :=
-  @GroundTheory.Heights₂.Heights.StrongApprox.SAOpenHolds.proof GroundTheory.Heights₂.Heights.AutoClose.StrongApprox_SAHolds GroundTheory.Heights₂.Heights.StrongApprox.AETopologicalRing.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointInj : GroundTheory.Heights₂.Heights.Targets.CurveVertPointInj.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.CurveVertPointInj.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointChart
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.GoodChartModel : GroundTheory.Heights₂.Heights.GoodChartModel.Statement :=
   @GroundTheory.Heights₂.Heights.GoodChartModel.proof GroundTheory.Heights₂.Heights.GoodChartZeroSet.proof GroundTheory.Heights₂.Heights.AutoClose.GoodChartDim
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ProjRankTransfer : GroundTheory.Heights₂.Heights.Targets.ProjRankTransfer.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.ProjRankTransfer.of_found GroundTheory.Heights₂.Heights.Targets.ProjPotMassEq.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_ProjPotMassPos GroundTheory.Heights₂.Heights.Targets.ProjPotDensVanish.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveIndexLinear : GroundTheory.Heights₂.Heights.Targets.CurveIndexLinear.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.CurveIndexLinear.proof GroundTheory.Heights₂.Heights.Targets.CurveRingFinite.proof GroundTheory.Heights₂.Heights.Targets.CurveClosedPointChart.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_InvertibleIndexMul
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointNagata : GroundTheory.Heights₂.Heights.Targets.CurveVertPointNagata.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.CurveVertPointNagata.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointChart
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartSectionLength : GroundTheory.Heights₂.Heights.Targets.ChartSectionLength.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.ChartSectionLength.proof GroundTheory.Heights₂.Heights.Targets.ChartConeComponent.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartConeLength
@@ -105,8 +95,6 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.ChartPointSeparable : GroundTh
 theorem GroundTheory.Heights₂.Heights.AutoClose.GraphAreaFibre : GroundTheory.Heights₂.Heights.GraphAreaFibre.Statement :=
   @GroundTheory.Heights₂.Heights.GraphAreaFibre.proof GroundTheory.Heights₂.Heights.AutoClose.GraphAreaIntegral GroundTheory.Heights₂.Heights.TangentJacComp.proof GroundTheory.Heights₂.Heights.AreaMultiplicityWeight.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.ObjectsChow_IntChowFormExists : GroundTheory.Heights₂.Heights.ObjectsChow.IntChowFormExists.Statement :=
-  @GroundTheory.Heights₂.Heights.ObjectsChow.IntChowFormExists.proof GroundTheory.Heights₂.Heights.AutoClose.chow_form_of_incidence_zero_locus GroundTheory.Heights₂.Heights.ObjectsChow.GenericFibreIdeal.proof GroundTheory.Heights₂.Heights.ObjectsChow.GenericFibreDim.proof
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FsLogAverage : GroundTheory.Heights₂.Heights.FsLogAverage.Statement :=
   @GroundTheory.Heights₂.Heights.FsLogAverage.proof GroundTheory.Heights₂.Heights.BallAverageLinear.proof GroundTheory.Heights₂.Heights.FsLogPointOf.proof GroundTheory.Heights₂.Heights.AutoClose.SphereMeanLinearBall GroundTheory.Heights₂.Heights.BallVolume.proof
@@ -123,5 +111,3 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.SectionLengthSum : GroundTheor
 theorem GroundTheory.Heights₂.Heights.AutoClose.FormsThroughPoint : GroundTheory.Heights₂.Heights.FormsThroughPoint.Statement :=
   @GroundTheory.Heights₂.Heights.FormsThroughPoint.proof GroundTheory.Heights₂.Heights.IncidenceZeroLocus.proof GroundTheory.Heights₂.Heights.ThroughPointIncIdeal.proof GroundTheory.Heights₂.Heights.AutoClose.ChartZeroTrdeg GroundTheory.Heights₂.Heights.AutoClose.ThroughTwoPointsTrdeg GroundTheory.Heights₂.Heights.TrdegBaseAlgebraic.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_cech_refinement_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelCechRefine.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelCechRefine.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CechContract.proof GroundTheory.Heights₂.Heights.AutoClose.model_cech_exact_sequence_holds GroundTheory.Heights₂.Heights.AutoClose.double_cech_complex_holds

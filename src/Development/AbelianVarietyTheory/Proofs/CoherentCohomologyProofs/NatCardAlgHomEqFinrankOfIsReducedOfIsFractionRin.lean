@@ -10,67 +10,17 @@ section Index
 
 variable {R S ι : Type*} [CommRing R] [CommRing S] [Algebra R S] [Fintype ι] [DecidableEq ι]
 
-theorem discr_eq_det_toMatrix_sq_mul (e : Basis ι R S) (v : ι → S) :
-    Algebra.discr R v = (e.toMatrix v).det ^ 2 * Algebra.discr R e := by
-  rw [← Algebra.discr_of_matrix_vecMul, e.toMatrix_map_vecMul v]
 
-theorem discr_eq_basis_det_sq_mul (e : Basis ι R S) (v : ι → S) :
-    Algebra.discr R v = e.det v ^ 2 * Algebra.discr R e := by
-  rw [discr_eq_det_toMatrix_sq_mul e, Basis.det_apply]
 
-theorem basis_det_mul_left (e : Basis ι R S) (u : S) (v : ι → S) :
-    e.det (fun i => u * v i) = Algebra.norm R u * e.det v := by
-  rw [Algebra.norm_apply]
-  exact e.det_comp (LinearMap.mul R S u) v
 
-theorem discr_mul_left_of_basis (e : Basis ι R S) (u : S) (v : ι → S) :
-    Algebra.discr R (fun i => u * v i) = Algebra.norm R u ^ 2 * Algebra.discr R v := by
-  rw [discr_eq_basis_det_sq_mul e, discr_eq_basis_det_sq_mul e v, basis_det_mul_left]
-  ring
 
 variable [IsDomain R] [IsDiscreteValuationRing R]
 
-theorem addVal_discr_eq_two_mul_length_add (e : Basis ι R S) (v : ι → S) :
-    addVal R (Algebra.discr R v) =
-      2 * Module.length R (S ⧸ Submodule.span R (Set.range v)) + addVal R (Algebra.discr R e) := by
-  rw [discr_eq_basis_det_sq_mul e, addVal_mul, addVal_pow, length_quotient_span_eq_addVal_det e,
-    nsmul_eq_mul, Nat.cast_ofNat]
 
-theorem two_mul_length_le_addVal_discr (e : Basis ι R S) (v : ι → S) :
-    2 * Module.length R (S ⧸ Submodule.span R (Set.range v)) ≤ addVal R (Algebra.discr R v) := by
-  rw [addVal_discr_eq_two_mul_length_add e]
-  exact le_self_add
 
-theorem two_mul_length_le_addVal_discr_of_card [Module.Free R S] [Module.Finite R S]
-    (h : Fintype.card ι = finrank R S) (v : ι → S) :
-    2 * Module.length R (S ⧸ Submodule.span R (Set.range v)) ≤ addVal R (Algebra.discr R v) :=
-  two_mul_length_le_addVal_discr (Module.finBasisOfFinrankEq R S h.symm |>.reindex
-    (Fintype.equivFin ι).symm) v
 
-theorem length_quotient_span_ne_top_of_discr_ne_zero (e : Basis ι R S) {v : ι → S}
-    (hv : Algebra.discr R v ≠ 0) :
-    Module.length R (S ⧸ Submodule.span R (Set.range v)) ≠ ⊤ := by
-  rw [length_quotient_span_ne_top_iff e]
-  intro h
-  rw [discr_eq_basis_det_sq_mul e, h] at hv
-  simp at hv
 
-theorem addVal_discr_eq_two_mul_length_add_of_equiv {M : Type*} [AddCommGroup M] [Module R M]
-    (φ : M ≃ₗ[R] S) (e : Basis ι R S) (v : ι → M) :
-    addVal R (Algebra.discr R fun i => φ (v i)) =
-      2 * Module.length R (M ⧸ Submodule.span R (Set.range v)) + addVal R (Algebra.discr R e) := by
-  rw [addVal_discr_eq_two_mul_length_add e,
-    (Submodule.Quotient.equiv (Submodule.span R (Set.range v))
-      (Submodule.span R (Set.range fun i => φ (v i))) φ ?_).length_eq]
-  rw [Submodule.map_span, ← Set.range_comp]
-  rfl
 
-theorem two_mul_length_le_addVal_discr_of_equiv {M : Type*} [AddCommGroup M] [Module R M]
-    (φ : M ≃ₗ[R] S) (e : Basis ι R S) (v : ι → M) :
-    2 * Module.length R (M ⧸ Submodule.span R (Set.range v)) ≤
-      addVal R (Algebra.discr R fun i => φ (v i)) := by
-  rw [addVal_discr_eq_two_mul_length_add_of_equiv φ e]
-  exact le_self_add
 
 end Index
 
@@ -182,12 +132,6 @@ theorem algebraMap_trace_eq_sum_algHom_of_card (h : Fintype.card ι = finrank R 
   exact algebraMap_trace_eq_sum_algHom_of_basis
     ((Module.finBasisOfFinrankEq R S h.symm).reindex (Fintype.equivFin ι).symm) hP x
 
-theorem algebraMap_discr_eq_det_sq_of_card (h : Fintype.card ι = finrank R S)
-    {P : ι → (S →ₐ[R] L)} (hP : Function.Injective P) (v : ι → S) :
-    algebraMap R L (Algebra.discr R v) = (Matrix.of fun i j => P j (v i)).det ^ 2 := by
-  have := (algebraMap R L).domain_nontrivial
-  exact algebraMap_discr_eq_det_sq_of_basis
-    ((Module.finBasisOfFinrankEq R S h.symm).reindex (Fintype.equivFin ι).symm) hP v
 
 end Points
 
@@ -221,26 +165,7 @@ theorem natCard_algHom_eq_finrank_of_isReduced_baseChange [Module.Free R S] [Mod
   have := etale_of_isReduced_of_perfectField L (L ⊗[R] S)
   natCard_algHom_eq_finrank_of_etale_baseChange R S L
 
-theorem natCard_algHom_eq_finrank_of_etale_tower [Module.Free R S] [Module.Finite R S]
-    (K : Type*) [Field K] [Algebra R K] [Algebra K L] [IsScalarTower R K L] [IsSepClosed L]
-    [Algebra.FormallyEtale K (K ⊗[R] S)] : Nat.card (S →ₐ[R] L) = finrank R S :=
-  have : Algebra.FormallyEtale L (L ⊗[R] S) :=
-    .of_equiv (Algebra.TensorProduct.cancelBaseChange R K L L S)
-  natCard_algHom_eq_finrank_of_etale_baseChange R S L
 
-theorem natCard_algHom_eq_finrank_of_isReduced_of_isFractionRing [Module.Free R S]
-    [Module.Finite R S] [IsReduced S] (K : Type*) [Field K] [PerfectField K] [Algebra R K]
-    [IsFractionRing R K] [Algebra K L] [IsScalarTower R K L] [IsSepClosed L] :
-    Nat.card (S →ₐ[R] L) = finrank R S := by
-  have : IsReduced (K ⊗[R] S) := by
-    letI : Algebra S (K ⊗[R] S) := Algebra.TensorProduct.rightAlgebra
-    haveI := IsLocalization.tensorRight (S := S) K (nonZeroDivisors R)
-    exact isReduced_of_injective (IsLocalization.algEquiv
-      (Algebra.algebraMapSubmonoid S (nonZeroDivisors R)) (K ⊗[R] S)
-      (Localization (Algebra.algebraMapSubmonoid S (nonZeroDivisors R))))
-      (AlgEquiv.injective _)
-  have := etale_of_isReduced_of_perfectField K (K ⊗[R] S)
-  exact natCard_algHom_eq_finrank_of_etale_tower R S L K
 
 end Count
 
@@ -263,55 +188,15 @@ theorem nonempty_equiv_algHom_of_etale {ι : Type*} [Fintype ι] (h : Fintype.ca
   have := Fintype.ofFinite (S →ₐ[K] L)
   rw [← Fintype.card_eq, h, ← natCard_algHom_eq_finrank_of_etale K S L, Nat.card_eq_fintype_card]
 
-theorem algebraMap_norm_eq_prod_algHom [Fintype (S →ₐ[K] L)] (x : S) :
-    algebraMap K L (Algebra.norm K x) = ∏ P : S →ₐ[K] L, P x :=
-  have := Algebra.FormallyUnramified.finite_of_free K S
-  algebraMap_norm_eq_prod_algHom_of_card
-    (Nat.card_eq_fintype_card.symm.trans (natCard_algHom_eq_finrank_of_etale K S L))
-    Function.injective_id x
 
-theorem algebraMap_trace_eq_sum_algHom [Fintype (S →ₐ[K] L)] (x : S) :
-    algebraMap K L (Algebra.trace K S x) = ∑ P : S →ₐ[K] L, P x :=
-  have := Algebra.FormallyUnramified.finite_of_free K S
-  algebraMap_trace_eq_sum_algHom_of_card
-    (Nat.card_eq_fintype_card.symm.trans (natCard_algHom_eq_finrank_of_etale K S L))
-    Function.injective_id x
 
 variable {K L} {ι : Type*} [Fintype ι]
 
-theorem card_eq_finrank_of_equiv_algHom (P : ι ≃ (S →ₐ[K] L)) : Fintype.card ι = finrank K S := by
-  rw [← natCard_algHom_eq_finrank_of_etale K S L, ← Nat.card_congr P, Nat.card_eq_fintype_card]
 
-theorem algebraMap_norm_eq_prod_of_equiv_algHom (P : ι ≃ (S →ₐ[K] L)) (x : S) :
-    algebraMap K L (Algebra.norm K x) = ∏ j, P j x :=
-  have := Algebra.FormallyUnramified.finite_of_free K S
-  algebraMap_norm_eq_prod_algHom_of_card (card_eq_finrank_of_equiv_algHom P) P.injective x
 
-theorem algebraMap_trace_eq_sum_of_equiv_algHom (P : ι ≃ (S →ₐ[K] L)) (x : S) :
-    algebraMap K L (Algebra.trace K S x) = ∑ j, P j x :=
-  have := Algebra.FormallyUnramified.finite_of_free K S
-  algebraMap_trace_eq_sum_algHom_of_card (card_eq_finrank_of_equiv_algHom P) P.injective x
 
-theorem algebraMap_discr_eq_det_sq_of_equiv_algHom [DecidableEq ι] (P : ι ≃ (S →ₐ[K] L))
-    (v : ι → S) :
-    algebraMap K L (Algebra.discr K v) = (Matrix.of fun i j => P j (v i)).det ^ 2 :=
-  have := Algebra.FormallyUnramified.finite_of_free K S
-  algebraMap_discr_eq_det_sq_of_card (card_eq_finrank_of_equiv_algHom P) P.injective v
 
-theorem discr_basis_ne_zero_of_etale [DecidableEq ι] (e : Basis ι K S) :
-    Algebra.discr K e ≠ 0 := by
-  obtain ⟨P⟩ := nonempty_equiv_algHom_of_etale K S (AlgebraicClosure K)
-    (Module.finrank_eq_card_basis e).symm
-  intro h
-  exact algebraMap_discr_basis_ne_zero e P.injective (by rw [h, map_zero])
 
-theorem discr_norm_trace_of_etale [DecidableEq ι] (P : ι ≃ (S →ₐ[K] L)) :
-    Fintype.card ι = finrank K S ∧
-    (∀ v : ι → S, algebraMap K L (Algebra.discr K v) = (Matrix.of fun i j => P j (v i)).det ^ 2) ∧
-    (∀ x : S, algebraMap K L (Algebra.norm K x) = ∏ j, P j x) ∧
-    (∀ x : S, algebraMap K L (Algebra.trace K S x) = ∑ j, P j x) :=
-  ⟨card_eq_finrank_of_equiv_algHom P, algebraMap_discr_eq_det_sq_of_equiv_algHom P,
-    algebraMap_norm_eq_prod_of_equiv_algHom P, algebraMap_trace_eq_sum_of_equiv_algHom P⟩
 
 end Etale
 
@@ -321,14 +206,6 @@ variable {K S L ι : Type*} [Field K] [PerfectField K] [CommRing S] [Algebra K S
   [Module.Finite K S] [IsReduced S] [Field L] [Algebra K L] [IsSepClosed L] [Fintype ι]
   [DecidableEq ι]
 
-theorem discr_norm_trace_of_isReduced (P : ι ≃ (S →ₐ[K] L)) :
-    Fintype.card ι = finrank K S ∧
-    (∀ v : ι → S, algebraMap K L (Algebra.discr K v) = (Matrix.of fun i j => P j (v i)).det ^ 2) ∧
-    (∀ x : S, algebraMap K L (Algebra.norm K x) = ∏ j, P j x) ∧
-    (∀ x : S, algebraMap K L (Algebra.trace K S x) = ∑ j, P j x) :=
-  have := etale_of_isReduced_of_perfectField K S
-  ⟨card_eq_finrank_of_equiv_algHom P, algebraMap_discr_eq_det_sq_of_equiv_algHom P,
-    algebraMap_norm_eq_prod_of_equiv_algHom P, algebraMap_trace_eq_sum_of_equiv_algHom P⟩
 
 end Reduced
 
@@ -337,17 +214,6 @@ section Both
 variable {R S L ι : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [CommRing S]
   [Algebra R S] [CommRing L] [IsDomain L] [Algebra R L] [Fintype ι] [DecidableEq ι]
 
-theorem det_algHom_sq_eq_discr_and_addVal (e : Basis ι R S) {P : ι → (S →ₐ[R] L)}
-    (hP : Function.Injective P) (v : ι → S) :
-    (Matrix.of fun i j => P j (v i)).det ^ 2 = algebraMap R L (Algebra.discr R v) ∧
-    Algebra.discr R v = (e.toMatrix v).det ^ 2 * Algebra.discr R e ∧
-    Algebra.discr R e ≠ 0 ∧
-    addVal R (Algebra.discr R v) =
-      2 * Module.length R (S ⧸ Submodule.span R (Set.range v)) + addVal R (Algebra.discr R e) ∧
-    2 * Module.length R (S ⧸ Submodule.span R (Set.range v)) ≤ addVal R (Algebra.discr R v) :=
-  ⟨(algebraMap_discr_eq_det_sq_of_basis e hP v).symm, discr_eq_det_toMatrix_sq_mul e v,
-    fun h => algebraMap_discr_basis_ne_zero e hP (by rw [h, map_zero]),
-    addVal_discr_eq_two_mul_length_add e v, two_mul_length_le_addVal_discr e v⟩
 
 end Both
 

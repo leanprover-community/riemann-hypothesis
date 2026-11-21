@@ -33,8 +33,6 @@ theorem Hf_herm (T : Tor D) (x y : VC D N N') :
     ring
   · simp
 
-theorem U_eq_heis (T : Tor D) (x : VC D N N') (G : VC D N N' → ℂ) :
-    U D T x G = Formalism.HermitianLattices.WeilRepresentation.Heisenberg₂ (Hf D T) x G := rfl
 
 def cf (T : Tor D) (x y : VC D N N') : ℂ :=
   Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hf D T x y).im : ℂ)))
@@ -125,17 +123,6 @@ theorem term_out (T : Tor D) {La₁ La₂ : AddSubgroup (VC D N N')} (hS : SemiC
       al D T (a : VC D N N') * U D T (a : VC D N N') G z := term_indep T hS hG a (Quotient.out (a : La₂ ⧸ La₁.addSubgroupOf La₂))
     (Quotient.out_eq _).symm z
 
-theorem Iop_eq_section (T : Tor D) {La₁ La₂ : AddSubgroup (VC D N N')} (hS : SemiChar T La₂)
-    {G : VC D N N' → ℂ} (hG : G ∈ ThSp D T La₁) (s : La₂ ⧸ La₁.addSubgroupOf La₂ → La₂)
-    (hs : ∀ q, (s q : La₂ ⧸ La₁.addSubgroupOf La₂) = q) (z : VC D N N') :
-    Iop D T La₁ La₂ G z = ((Real.sqrt ((La₁.addSubgroupOf La₂).index : ℝ))⁻¹ : ℂ) *
-      ∑ᶠ q : La₂ ⧸ La₁.addSubgroupOf La₂,
-        al D T ((s q : La₂) : VC D N N') * U D T ((s q : La₂) : VC D N N') G z := by
-  simp only [Iop]
-  congr 1
-  apply finsum_congr
-  intro q
-  exact term_indep T hS hG _ _ (by rw [hs q]; exact (Quotient.out_eq q).symm) z
 
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
 

@@ -48,30 +48,7 @@ def nsmulHom [Module ℂ V] (N : ℕ) : V →+ V where
   map_zero' := smul_zero _
   map_add' _ _ := smul_add _ _ _
 
-theorem nsmulHom_injective [Module ℂ V] (N : ℕ) (hN : 0 < N) : Function.Injective (nsmulHom (V := V) N) := by
-  intro x y hxy
-  have hxy' : N • x = N • y := hxy
-  have h : (N : ℂ) • x = (N : ℂ) • y := by
-    rw [Nat.cast_smul_eq_nsmul, Nat.cast_smul_eq_nsmul]
-    exact hxy'
-  exact smul_right_injective V (Nat.cast_ne_zero.mpr hN.ne') h
 
-theorem relIndex_ne_zero_of_bound [Module ℂ V] (H K F : AddSubgroup V) [Module.Finite ℤ F] (N M : ℕ)
-    (hN : 0 < N) (hM : 0 < M) (hK : ∀ x ∈ K, N • x ∈ F) (hH : ∀ x ∈ F, M • x ∈ H) : H.relIndex K ≠ 0 := by
-  let g : K →+ F :=
-    { toFun := fun x => ⟨N • (x : V), hK x x.2⟩
-      map_zero' := Subtype.ext (by simp)
-      map_add' := fun x y => Subtype.ext (by simp [smul_add]) }
-  have hg : Function.Injective g := by
-    intro x y hxy
-    apply Subtype.ext
-    apply nsmulHom_injective (V := V) N hN
-    exact congrArg Subtype.val hxy
-  haveI : Module.Finite ℤ K := Module.Finite.of_injective g.toIntLinearMap hg
-  refine relIndex_ne_zero_of_nsmul_mem H K (M * N) (Nat.mul_pos hM hN) ?_
-  intro x hx
-  rw [mul_smul]
-  exact hH _ (hK x hx)
 
 end Index
 
@@ -88,12 +65,6 @@ def stdLatEquiv (L : PeriodPair) (m : Type*) : stdLat L m ≃+ (m → L.lattice)
 
 theorem stdLat_finite (L : PeriodPair) (m : Type*) [Finite m] : Module.Finite ℤ (stdLat L m) := Module.Finite.equiv (stdLatEquiv L m).symm.toIntLinearEquiv
 
-theorem mem_stdLat_fin_four_prod_iff_mem_pow4 (L : PeriodPair) (n : Type*) (x : Fin 4 × n → ℂ) :
-    x ∈ stdLat L (Fin 4 × n) ↔ x ∈ pow4 (stdLat L n) := by
-  rw [mem_stdLat]
-  show _ ↔ ∀ a, slice a x ∈ stdLat L n
-  simp only [mem_stdLat, slice]
-  exact ⟨fun h a i => h (a, i), fun h p => h p.1 p.2⟩
 
 theorem cmPair_mul_mem (a : ℕ) (b : ℤ) (d : ℕ) (ha : 0 < a) (hd : 0 < d) (k : ℂ) (hk : InK d k) :
     ∃ N : ℕ, 0 < N ∧ ∀ z ∈ (Formalism.L2.Th1.F.cmPair a b d ha hd).lattice,
@@ -168,53 +139,6 @@ theorem entries_bound (a : ℕ) (b : ℤ) (d : ℕ) (ha : 0 < a) (hd : 0 < d) (l
 
 end Lattice
 
-private theorem exists_pos_nsmul_mem_of_relIndex_ne_zero {W : Type*} [AddCommGroup W] (H K : AddSubgroup W)
-    (h : H.relIndex K ≠ 0) : ∃ N : ℕ, 0 < N ∧ ∀ x ∈ K, N • x ∈ H := by
-  refine ⟨H.relIndex K, Nat.pos_of_ne_zero h, fun x hx => ?_⟩
-  have hmem := AddSubgroup.nsmul_index_mem (H.addSubgroupOf K) ⟨x, hx⟩
-  show (H.addSubgroupOf K).index • x ∈ H
-  simpa [AddSubgroup.mem_addSubgroupOf] using hmem
 
-theorem CommensurableK_proof : CommensurableK := by
-  intro a b d ha hd lam hlam n _ _ Λ h1 h2 g hg hg'
-  unfold relIdx at *
-  obtain ⟨N₁, hN₁, hΛ₁⟩ := exists_pos_nsmul_mem_of_relIndex_ne_zero _ _ h1
-  obtain ⟨N₂, hN₂, hΛ₂⟩ := exists_pos_nsmul_mem_of_relIndex_ne_zero _ _ h2
-  obtain ⟨N₃, hN₃, hg3⟩ := entries_bound a b d ha hd lam hlam (g : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) hg
-  obtain ⟨N₄, hN₄, hg4⟩ :=
-    entries_bound a b d ha hd lam hlam (g.symm : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) hg'
-  haveI := stdLat_finite (cmL a b d ha hd lam hlam) (Fin 4 × n)
-  have hp1 : ∀ x ∈ pow4 Λ, N₁ • x ∈ stdLat (cmL a b d ha hd lam hlam) (Fin 4 × n) := by
-    intro x hx
-    have hx' : ∀ i, slice i x ∈ Λ := hx
-    rw [mem_stdLat_fin_four_prod_iff_mem_pow4]
-    show ∀ i, slice i (N₁ • x) ∈ stdLat (cmL a b d ha hd lam hlam) n
-    intro i
-    exact hΛ₁ _ (hx' i)
-  have hp2 : ∀ x ∈ stdLat (cmL a b d ha hd lam hlam) (Fin 4 × n), N₂ • x ∈ pow4 Λ := by
-    intro x hx
-    rw [mem_stdLat_fin_four_prod_iff_mem_pow4] at hx
-    have hx' : ∀ i, slice i x ∈ stdLat (cmL a b d ha hd lam hlam) n := hx
-    show ∀ i, slice i (N₂ • x) ∈ Λ
-    intro i
-    exact hΛ₂ _ (hx' i)
-  constructor
-  · refine relIndex_ne_zero_of_bound _ _ (stdLat (cmL a b d ha hd lam hlam) (Fin 4 × n)) (N₃ * N₁) 1
-      (Nat.mul_pos hN₃ hN₁) one_pos ?_ (fun x hx => by simpa using hx)
-    intro y hy
-    rw [imgLat, AddSubgroup.mem_map] at hy
-    obtain ⟨x, hx, rfl⟩ := hy
-    rw [mul_smul]
-    have := hg3 _ (hp1 x hx)
-    rw [map_nsmul] at this
-    exact this
-  · refine relIndex_ne_zero_of_bound _ _ (stdLat (cmL a b d ha hd lam hlam) (Fin 4 × n)) 1 (N₂ * N₄)
-      one_pos (Nat.mul_pos hN₂ hN₄) (fun x hx => by simpa using hx) ?_
-    intro z hz
-    rw [imgLat, AddSubgroup.mem_map]
-    refine ⟨(N₂ * N₄) • g.symm z, ?_, ?_⟩
-    · rw [mul_smul]
-      exact hp2 _ (hg4 z hz)
-    · rw [LinearMap.toAddMonoidHom_coe, map_nsmul, LinearEquiv.coe_coe, LinearEquiv.apply_symm_apply]
 
 end Formalism.L2.Th1.H

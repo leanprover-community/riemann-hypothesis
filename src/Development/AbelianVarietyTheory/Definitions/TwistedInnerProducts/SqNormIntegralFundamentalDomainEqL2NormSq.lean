@@ -273,8 +273,6 @@ theorem rapidDecSm_iff : RapidDecSm θ V φ ↔ φ ∈ allDer θ V (rapidSub V) 
 
 theorem RapidDecSm.rapidDec (h : RapidDecSm θ V φ) : RapidDec V φ := h.decay [] fun _ e => by simp at e
 
-theorem RapidDecSm.unifModGrowth (h : RapidDecSm θ V φ) : UnifModGrowth V θ φ :=
-  ⟨0, fun l hl => (h.decay l hl).bounded.imp fun _ hC g => (hC g).trans_eq (by simp)⟩
 
 theorem RapidDecSm.add (h : RapidDecSm θ V φ) (h' : RapidDecSm θ V φ') : RapidDecSm θ V (φ + φ') := by
   obtain ⟨a, U, hU, hk⟩ := rapidDecSm_iff.1 h
@@ -369,14 +367,6 @@ theorem sqNormIntegralFundamentalDomain_eq_l2Norm_sq {f : WO V W → ℂ} (h : C
   have : BorelSpace (WO V W) := ⟨rfl⟩
   rw [← ENNReal.toReal_pow, l2O_sq_eq_lintegral, nrm2, GlobalTheory.Ker.ScalarProduct.integral_normSq_eq _ h.measurable]
 
-theorem enorm_ipO_le {f f' : WO V W → ℂ} (h : Continuous f) (h' : Continuous f') :
-    ‖ipO μ 𝓕 f f'‖ₑ ≤ l2O μ 𝓕 f * l2O μ 𝓕 f' := by
-  have : BorelSpace (WO V W) := ⟨rfl⟩
-  refine (enorm_integral_le_lintegral_enorm _).trans ?_
-  rw [← eLpNorm_one_eq_lintegral_enorm]
-  have := eLpNorm_smul_le_mul_eLpNorm (μ := μ.restrict 𝓕) (p := 2) (q := 2) (r := 1) (φ := f) (f := star f')
-    h'.star.measurable.aestronglyMeasurable h.measurable.aestronglyMeasurable
-  rwa [eLpNorm_star] at this
 
 variable (V W) in
 
@@ -394,18 +384,6 @@ theorem measure_dom (hμ : μ.IsAddHaarMeasure) (h𝓕 : IsAddFundamentalDomain 
     continuous_const fun _ _ _ => rfl
   exact ⟨(hN μ 𝓕 hμ h𝓕).1, (hN μ 𝓕 hμ h𝓕).2.1⟩
 
-theorem covolOne_unique {μ' : Measure (WO V W)} {𝓕' : Set (WO V W)} (h : IsCovolOne (ratL W V) μ 𝓕)
-    (h' : IsCovolOne (ratL W V) μ' 𝓕') : μ' = μ := by
-  obtain ⟨i1, i2, i3, i4, i5, -⟩ := GlobalTheory.AdelicMatrixLattice.lattice D W V
-  have : BorelSpace (WO V W) := ⟨rfl⟩
-  have : Countable (ratL W V) := TopologicalSpace.separableSpace_iff_countable.1 inferInstance
-  obtain ⟨a1, a2, a3⟩ := h
-  obtain ⟨b1, b2, b3⟩ := h'
-  have e := Measure.isAddLeftInvariant_eq_smul μ' μ
-  have h1 : IsAddFundamentalDomain (ratL W V) 𝓕 μ' := a2.mono (by rw [e]; exact Measure.smul_absolutelyContinuous)
-  have h2 := h1.measure_eq b2
-  rw [b3, e, Measure.smul_apply, a3, ENNReal.smul_def, smul_eq_mul, mul_one, ENNReal.coe_eq_one] at h2
-  rw [e, h2, one_smul]
 
 theorem mul_conj_periodic (hψ : IsStdChar D ψ (-1)) (h : IsThetaFunO ψ V W f) (h' : IsThetaFunO ψ V W f') :
     ∀ γ ∈ ratL W V, ∀ w, f (γ + w) * conj (f' (γ + w)) = f w * conj (f' w) := by
@@ -417,13 +395,6 @@ theorem mul_conj_periodic (hψ : IsStdChar D ψ (-1)) (h : IsThetaFunO ψ V W f)
   rw [e, e', map_mul]
   linear_combination (f w * conj (f' w)) * this
 
-theorem ipO_dom_eq (hψ : IsStdChar D ψ (-1)) (hμ : μ.IsAddHaarMeasure) (h𝓕 : IsAddFundamentalDomain (ratL W V) 𝓕 μ)
-    {𝓕' : Set (WO V W)} (h𝓕' : IsAddFundamentalDomain (ratL W V) 𝓕' μ) (h : IsThetaFunO ψ V W f)
-    (h' : IsThetaFunO ψ V W f') : ipO μ 𝓕 f f' = ipO μ 𝓕' f f' := by
-  obtain ⟨i1, i2, i3, i4, i5, -⟩ := GlobalTheory.AdelicMatrixLattice.lattice D W V
-  have : BorelSpace (WO V W) := ⟨rfl⟩
-  have : Countable (ratL W V) := TopologicalSpace.separableSpace_iff_countable.1 inferInstance
-  exact h𝓕.setIntegral_eq h𝓕' (f := fun w => f w * conj (f' w)) fun γ w => mul_conj_periodic hψ h h' γ γ.2 w
 
 theorem memLp_theta (hψ : IsStdChar D ψ (-1)) (hμ : μ.IsAddHaarMeasure) (h𝓕 : IsAddFundamentalDomain (ratL W V) 𝓕 μ)
     (h : IsThetaFunO ψ V W f) : MemLp f 2 (μ.restrict 𝓕) := by
@@ -465,13 +436,6 @@ theorem ipO_self_eq_zero_iff (hψ : IsStdChar D ψ (-1)) (hμ : μ.IsAddHaarMeas
   rw [ipO_self, sqNormIntegralFundamentalDomain_eq_l2Norm_sq μ 𝓕 h.cont, ← l2O_eq_zero_iff_of_isThetaFunO hψ hμ h𝓕 h]
   simp [ENNReal.toReal_eq_zero_iff, l2NormOnFundamentalDomain_thetaFunction_ne_top hψ hμ h𝓕 h]
 
-theorem thetaL2_fundamentalDomain_indep (hψ : IsStdChar D ψ (-1)) (hμ : μ.IsAddHaarMeasure) (h𝓕 : IsAddFundamentalDomain (ratL W V) 𝓕 μ)
-    {𝓕' : Set (WO V W)} (h𝓕' : IsAddFundamentalDomain (ratL W V) 𝓕' μ) (h : IsThetaFunO ψ V W f) :
-    l2O μ 𝓕 f = l2O μ 𝓕' f := by
-  have e := ipO_dom_eq hψ hμ h𝓕 h𝓕' h h
-  rw [ipO_self, ipO_self, sqNormIntegralFundamentalDomain_eq_l2Norm_sq μ 𝓕 h.cont, sqNormIntegralFundamentalDomain_eq_l2Norm_sq μ 𝓕' h.cont, Complex.ofReal_inj,
-    pow_left_inj₀ ENNReal.toReal_nonneg ENNReal.toReal_nonneg two_ne_zero] at e
-  exact (ENNReal.toReal_eq_toReal_iff' (l2NormOnFundamentalDomain_thetaFunction_ne_top hψ hμ h𝓕 h) (l2NormOnFundamentalDomain_thetaFunction_ne_top hψ hμ h𝓕' h)).1 e
 
 theorem ipO_heisO (hψ : IsStdChar D ψ (-1)) (hμ : μ.IsAddHaarMeasure) (h𝓕 : IsAddFundamentalDomain (ratL W V) 𝓕 μ)
     (h : IsThetaFunO ψ V W f) (h' : IsThetaFunO ψ V W f') (u : WO V W) :

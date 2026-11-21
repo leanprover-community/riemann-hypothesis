@@ -46,9 +46,6 @@ def IsNabla (D : Derivation ℤ R R) (h k : HdR A) : Prop :=
 
 variable {D : Derivation ℤ R R}
 
-theorem isNabla_zero_zero (D : Derivation ℤ R R) : IsNabla D (0 : HdR A) 0 :=
-  ⟨0, fun _ ↦ (map_zero (derHom D)).symm, fun _ ↦ by
-    rw [LinearMap.zero_apply, LinearMap.zero_apply, TrivSqZeroExt.inl_zero, TrivSqZeroExt.inr_zero, add_zero]⟩
 
 theorem IsNabla.add {h k h' k' : HdR A} (e : IsNabla D h k) (e' : IsNabla D h' k') :
     IsNabla D (h + h') (k + k') := by
@@ -97,12 +94,6 @@ theorem IsNabla.eq_zero {h k : HdR A} (e : IsNabla 0 h k) : k = 0 := by
   rw [derMor_zero_pull, b] at this
   simpa [derHom_apply] using congrArg TrivSqZeroExt.snd this
 
-theorem isNabla_zero (H : (constMor A).IsBC) (h : HdR A) : IsNabla 0 h 0 := by
-  obtain ⟨d, hd⟩ := H.exists h
-  refine ⟨d, fun c ↦ ?_, fun c ↦ ?_⟩
-  · rw [derMor_zero_pull, hd c]
-    ext <;> simp [derHom_apply, TrivSqZeroExt.algebraMap_eq_inl]
-  · rw [hd c, LinearMap.zero_apply, TrivSqZeroExt.inr_zero, add_zero, TrivSqZeroExt.algebraMap_eq_inl]
 
 end Nabla
 
@@ -138,31 +129,6 @@ theorem exists_chart (t : SAB H X) (U : X.affineOpens) (h : IsAffineOpen (U.1 �
   · rw [e]; infer_instance
   · rw [e]; exact h.range_fromSpec
 
-theorem exists_chart_mem (t : SAB H X)
-    (h : ReciprocityTheory.AnForm.R.FinalTheorems.Snc (Scheme.IdealSheafData.vanishingIdeal V.compl)) (x : X) :
-    ∃ c : Chart t V, x ∈ c.U.1 := by
-  obtain ⟨-, U, hx, n, f, J, -, hI⟩ := h x
-  have e : U.1 ⊓ V = X.basicOpen (∏ i ∈ J, f i) := by
-    ext y
-    constructor
-    · rintro ⟨hU, hV⟩
-      by_contra hy
-      have : y ∈ (Scheme.IdealSheafData.vanishingIdeal V.compl).support := by
-        rw [Scheme.IdealSheafData.mem_support_iff_of_mem hU, hI, Scheme.zeroLocus_span, Scheme.zeroLocus_singleton]
-        exact hy
-      rw [← SetLike.mem_coe, Scheme.IdealSheafData.coe_support_vanishingIdeal] at this
-      exact this hV
-    · intro hy
-      have hU : y ∈ U.1 := X.basicOpen_le _ hy
-      refine ⟨hU, by_contra fun hV ↦ ?_⟩
-      have : y ∈ (Scheme.IdealSheafData.vanishingIdeal V.compl).support := by
-        rw [← SetLike.mem_coe, Scheme.IdealSheafData.coe_support_vanishingIdeal]
-        exact hV
-      rw [Scheme.IdealSheafData.mem_support_iff_of_mem hU, hI, Scheme.zeroLocus_span,
-        Scheme.zeroLocus_singleton] at this
-      exact this hy
-  obtain ⟨c, rfl⟩ := exists_chart t U (V := V) (e ▸ U.2.basicOpen _)
-  exact ⟨c, hx⟩
 
 namespace Chart
 

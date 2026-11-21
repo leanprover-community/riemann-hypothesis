@@ -200,11 +200,7 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_SemilocalIntegral
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_HomLocRingIsLocal.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.HomLocRingIsLocal.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.HomLocRingIsLocal.proof.{u} GroundTheory.Heights₂.Heights.NumbersDVR.HomLocRingMem.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_GenericProjClosureDivisor : GroundTheory.Heights₂.Heights.NumbersDVR.GenericProjClosureDivisor.Statement :=
-  @GroundTheory.Heights₂.Heights.NumbersDVR.GenericProjClosureDivisor.proof GroundTheory.Heights₂.Heights.NumbersDVR.TwistedDualGensExpress.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.joinTwoModels_holds : GroundTheory.Heights₂.Heights.NumbersDVR.JoinTwoModels.Statement :=
-  @GroundTheory.Heights₂.Heights.NumbersDVR.JoinTwoModels.proof GroundTheory.Heights₂.Heights.NumbersDVR.ConeTrdegFnField.proof
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_LocalCoeffLocal.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.LocalCoeffLocal.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.LocalCoeffLocal.proof.{u} GroundTheory.Heights₂.Heights.NumbersDVR.LocCycleSpanMul.proof GroundTheory.Heights₂.Heights.NumbersDVR.LocCyclePos.proof GroundTheory.Heights₂.Heights.NumbersDVR.MinimalPrimesSpanSingleton.proof GroundTheory.Heights₂.Heights.NumbersDVR.LocalDomainDimTwo.proof GroundTheory.Heights₂.Heights.NumbersDVR.DimTwoSumReading.proof
@@ -215,8 +211,6 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_SegreFlagClosureTrd
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_HomLocRingNoetherian.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.HomLocRingNoetherian.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.HomLocRingNoetherian.proof.{u} GroundTheory.Heights₂.Heights.NumbersDVR.HomLocRingMem.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.joinPointFlagModel_holds : GroundTheory.Heights₂.Heights.NumbersDVR.JoinPointFlagModel.Statement :=
-  @GroundTheory.Heights₂.Heights.NumbersDVR.JoinPointFlagModel.proof GroundTheory.Heights₂.Heights.NumbersDVR.FlagPairCharacterisation.proof GroundTheory.Heights₂.Heights.NumbersDVR.JoinPointModel.proof GroundTheory.Heights₂.Heights.NumbersDVR.JoinPointVerticalDivisor.proof
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_LocCycleLocalQuot.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.LocCycleLocalQuot.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.LocCycleLocalQuot.proof.{u} GroundTheory.Heights₂.Heights.NumbersDVR.LocalQuotPrimes.proof
@@ -230,32 +224,16 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_BlowUpOrderLe.{u} :
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_BlowUpHorizontalMult.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpHorizontalMult.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpHorizontalMult.proof.{u} GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpHorizontalMinimal.full GroundTheory.Heights₂.Heights.NumbersDVR.BlowUpHorizontalChartLength.full
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_PairBundleTrdeg : GroundTheory.Heights₂.Heights.NumbersDVR.PairBundleTrdeg.Statement :=
-  @GroundTheory.Heights₂.Heights.NumbersDVR.PairBundleTrdeg.proof GroundTheory.Heights₂.Heights.NumbersDVR.AdjoinTrdegAdd.proof GroundTheory.Heights₂.Heights.NumbersDVR.PairConeLinesIndep.proof GroundTheory.Heights₂.Heights.NumbersDVR.PairConeAlg.proof
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.NumbersDVR_LocalQuotFinsum.{u} : GroundTheory.Heights₂.Heights.NumbersDVR.LocalQuotFinsum.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.NumbersDVR.LocalQuotFinsum.proof.{u} GroundTheory.Heights₂.Heights.NumbersDVR.LocalQuotPrimes.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadHomInjLoc : GroundTheory.Heights₂.Heights.Model.SpreadHomInjLoc.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadHomInjLoc.proof GroundTheory.Heights₂.Heights.Model.LocSectionsInj.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_SpreadGlue : GroundTheory.Heights₂.Heights.Model.SpreadGlue.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.SpreadGlue.proof GroundTheory.Heights₂.Heights.Model.GlueTwo.proof GroundTheory.Heights₂.Heights.Model.IsoGlueTwo.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_PullInjLoc : GroundTheory.Heights₂.Heights.Model.PullInjLoc.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.PullInjLoc.proof GroundTheory.Heights₂.Heights.Model.LocSectionsInj.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_GenericPullInj : GroundTheory.Heights₂.Heights.Model.GenericPullInj.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.GenericPullInj.proof GroundTheory.Heights₂.Heights.Model.GenericSectionsInj.proof GroundTheory.Heights₂.Heights.Model.PullbackBasis.proof
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Model_BasisIsoFree.{u} : GroundTheory.Heights₂.Heights.Model.BasisIsoFree.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.Model.BasisIsoFree.proof.{u} GroundTheory.Heights₂.Heights.Model.FreeSheafBasis.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Model_ClearDenominators : GroundTheory.Heights₂.Heights.Model.ClearDenominators.Statement :=
-  @GroundTheory.Heights₂.Heights.Model.ClearDenominators.of_open GroundTheory.Heights₂.Heights.Model.PullbackBasis.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.clearDenominators_holds : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.ClearDenominators.Statement :=
-  @GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.ClearDenominators.of_open GroundTheory.Heights₂.Heights.Model.PullbackBasis.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.dominating_dvr_exists_holds : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.DominatingDVR.Statement :=
-  @GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.DominatingDVR.of_open GroundTheory.Heights₂.Heights.Model.DominatingDVRScheme.proof

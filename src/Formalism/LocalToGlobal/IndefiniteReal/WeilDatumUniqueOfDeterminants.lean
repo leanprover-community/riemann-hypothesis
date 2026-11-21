@@ -79,34 +79,7 @@ theorem scalar_unique (hΘ : ThetaNZ ψ V W) (p : GA D V × GA D W) (c c' : ℂ)
   simp only [LinearMap.smul_apply, omega_inv_apply, Submodule.coe_smul, Pi.smul_apply, smul_eq_mul] at this
   exact mul_right_cancel₀ hΦ this
 
-theorem scalar_rat (hΘ : ThetaNZ ψ V W) (hω : IsWeilDatum ψ V W χ χ' ω)
-    (hω' : IsWeilDatum ψ V W χ χ' ω') (γ : GA D V) (hγ : γ ∈ GQ V) (γ' : GA D W) (hγ' : γ' ∈ GQ W) (c : ℂ)
-    (h : ω' (γ, γ') = c • ω (γ, γ')) : c = 1 := by
-  obtain ⟨Φ, hΦ⟩ := hΘ
-  have e := congrArg (fun T : Module.End ℂ (Hth ψ V W) => ((T Φ : Hth ψ V W) : WA V W → ℂ) 0) h
-  simp only [LinearMap.smul_apply, Submodule.coe_smul, Pi.smul_apply, smul_eq_mul] at e
-  rw [hω'.om_aut γ hγ γ' hγ' Φ, hω.om_aut γ hγ γ' hγ' Φ] at e
-  have : c * (Φ : WA V W → ℂ) 0 = 1 * (Φ : WA V W → ℂ) 0 := by rw [← e, one_mul]
-  exact mul_right_cancel₀ hΦ this
 
-theorem scalar_cont (hΘ : ThetaNZ ψ V W) (hω : IsWeilDatum ψ V W χ χ' ω)
-    (hω' : IsWeilDatum ψ V W χ χ' ω') (c : GA D V × GA D W → ℂ) (hc : ∀ p, ω' p = c p • ω p) :
-    Continuous c := by
-  obtain ⟨Φ₀, hΦ₀⟩ := hΘ
-  rw [continuous_iff_continuousAt]
-  intro p₀
-  set Φ₁ := ω p₀⁻¹ Φ₀
-  let f : GA D V × GA D W → ℂ := fun p => ((ω p Φ₁ : Hth ψ V W) : WA V W → ℂ) 0
-  let g : GA D V × GA D W → ℂ := fun p => ((ω' p Φ₁ : Hth ψ V W) : WA V W → ℂ) 0
-  have hf : Continuous f := hω.om_cont Φ₁ 0
-  have hg : Continuous g := hω'.om_cont Φ₁ 0
-  have hf0 : f p₀ ≠ 0 := by simp only [f, Φ₁, omega_inv_apply]; exact hΦ₀
-  have hgf : ∀ p, g p = c p * f p := by
-    intro p; simp only [g, f, hc p, LinearMap.smul_apply, Submodule.coe_smul, Pi.smul_apply, smul_eq_mul]
-  have hev : (fun p => g p / f p) =ᶠ[nhds p₀] c := by
-    filter_upwards [hf.continuousAt.eventually_ne hf0] with p hp
-    rw [hgf p]; field_simp
-  exact (hg.continuousAt.div hf.continuousAt hf0).congr hev
 
 theorem scalar_mul (hΘ : ThetaNZ ψ V W) (c : GA D V × GA D W → ℂ) (hc : ∀ p, ω' p = c p • ω p)
     (p q : GA D V × GA D W) : c (p * q) = c p * c q := by
@@ -148,72 +121,9 @@ def toCircle {G : Type*} [Group G] (f : G → ℂ) (hf1 : ∀ g, ‖f g‖ = 1) 
 def detU (hD : DeterminantInUnitaryOne) (V : HSp D) (g : GA D V) : FirstPropositionFrame D :=
   ⟨Units.mkOfMulEqOne _ _ (hD D V g), hD D V g⟩
 
-theorem side_trivial (hD : DeterminantInUnitaryOne) (hR : RatDetP) (hSp : SplitDetP) (V : HSp D) (hCV : CharDet V)
-    (hU1 : SecondCharacterFact D) (f : GA D V → ℂ) (hf1 : ∀ g, ‖f g‖ = 1) (h1 : f 1 = 1)
-    (hmul : ∀ g g', f (g * g') = f g * f g') (hcont : Continuous f) (hrat : ∀ γ ∈ GQ V, f γ = 1)
-    (hsplit : ∀ e, IsSplitIdem D e → ∀ g, SuppAt e V g → (∃ x, IsDetAt e V g x) → f g = 1) (g : GA D V) :
-    f g = 1 := by
-  obtain ⟨lam, hlamc, hlam⟩ := hCV (toCircle f hf1 h1 hmul) (Continuous.subtype_mk hcont _)
-  have key : ∀ (g : GA D V) (x : FirstPropositionFrame D), (((x : (AE D)ˣ)) : AE D) = (mt V g).det →
-      f g = ((lam x : Circle) : ℂ) := by
-    intro g x hx
-    rw [← hlam g x hx]; rfl
-  rcases Nat.eq_zero_or_pos V.rank with hn | hn
-  · have hdet : (mt V g).det = 1 := by
-      have : IsEmpty (Fin V.rank) := by rw [hn]; infer_instance
-      exact Matrix.det_isEmpty
-    rw [key g 1 (by rw [hdet]; rfl), map_one, Circle.coe_one]
-  · have hlam1 : ∀ x, lam x = 1 := by
-      refine hU1 lam hlamc ?_ ?_
-      · intro x q hxq
-        have hq : incA D q * cA D (incA D q) = 1 := by rw [← hxq]; exact x.2
-        obtain ⟨γ, hγ, hdet⟩ := hR D V hn q hq
-        have h2 := key γ x (by rw [hdet, hxq])
-        rw [hrat γ hγ] at h2
-        exact Circle.ext (by rw [Circle.coe_one]; exact h2.symm)
-      · intro e he x hx
-        obtain ⟨g, hgS, hgD, hdet⟩ := hSp D V hn e he (x : (AE D)ˣ) x.2 hx
-        have h2 := key g x hdet.symm
-        rw [hsplit e he g hgS hgD] at h2
-        exact Circle.ext (by rw [Circle.coe_one]; exact h2.symm)
-    rw [key g (detU hD V g) rfl, hlam1, Circle.coe_one]
 
 end Side
 
-theorem weil_datum_unique_of_determinants (hD : DeterminantInUnitaryOne) (hR : RatDetP) (hSp : SplitDetP) : ConsequenceOfAdmissibleConstants := by
-  intro D ψ V W χ χ' ω ω' hS hΘ hF hCV hCW hU1 hω hω'
-  choose c hc1 hc using scalar_step ψ V W χ χ' ω ω' hS hω hω'
-  have cmul := scalar_mul ψ V W ω ω' hΘ c hc
-  have ccont := scalar_cont ψ V W χ χ' ω ω' hΘ hω hω' c hc
-  have crat : ∀ γ ∈ GQ V, ∀ γ' ∈ GQ W, c (γ, γ') = 1 := fun γ hγ γ' hγ' =>
-    scalar_rat ψ V W χ χ' ω ω' hΘ hω hω' γ hγ γ' hγ' _ (hc _)
-  have csplit : ∀ e, IsSplitIdem D e → ∀ g h, SuppAt e V g → SuppAt e W h → (∃ x, IsDetAt e V g x) →
-      (∃ y, IsDetAt e W h y) → c (g, h) = 1 := by
-    rintro e he g h hg hh ⟨x, hx⟩ ⟨y, hy⟩
-    exact scalar_split ψ V W χ χ' ω ω' hF hω hω' e he g h hg hh x y hx hy _ (hc1 _) (hc _)
-  have h11 : c (1, 1) = 1 := crat 1 (one_mem _) 1 (one_mem _)
-  have supp1 : ∀ (U : HSp D) (e : AE D), SuppAt e U (1 : GA D U) := by
-    intro U e i j; simp [mt_one']
-  have det1 : ∀ (U : HSp D) (e : AE D), IsDetAt e U (1 : GA D U) 1 := by
-    intro U e; simp only [IsDetAt, mt_one', Matrix.det_one, Units.val_one, mul_one]; ring
-  have hV : ∀ g : GA D V, c (g, 1) = 1 := by
-    refine side_trivial hD hR hSp V hCV hU1 (fun g => c (g, 1)) (fun g => hc1 _) h11 ?_ ?_ ?_ ?_
-    · intro g g'
-      rw [show ((g * g', (1 : GA D W)) : GA D V × GA D W) = (g, 1) * (g', 1) by simp, cmul]
-    · exact ccont.comp (continuous_id.prodMk continuous_const)
-    · intro γ hγ; exact crat γ hγ 1 (one_mem _)
-    · intro e he g hg hx; exact csplit e he g 1 hg (supp1 W e) hx ⟨1, det1 W e⟩
-  have hW : ∀ h : GA D W, c (1, h) = 1 := by
-    refine side_trivial hD hR hSp W hCW hU1 (fun h => c (1, h)) (fun h => hc1 _) h11 ?_ ?_ ?_ ?_
-    · intro h h'
-      rw [show (((1 : GA D V), h * h') : GA D V × GA D W) = (1, h) * (1, h') by simp, cmul]
-    · exact ccont.comp (continuous_const.prodMk continuous_id)
-    · intro γ hγ; exact crat 1 (one_mem _) γ hγ
-    · intro e he h hh hy; exact csplit e he 1 h (supp1 V e) hh ⟨1, det1 V e⟩ hy
-  refine MonoidHom.ext fun p => ?_
-  have hp : c p = 1 := by
-    rw [show p = (p.1, 1) * (1, p.2) by ext <;> simp, cmul, hV, hW, one_mul]
-  rw [hc p, hp, one_smul]
 
 end Formalism.IndefR.flipTwoThree
 

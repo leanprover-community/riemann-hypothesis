@@ -467,7 +467,6 @@ def coreOfArcIn (a : ArcIn D l β O' b) : Core D l O' :=
 def coreOfInput (x : TateUniformizationInput.ArcInput D c β O' b) : Core D l O' :=
   { P := x.P, ac := x.ac, be := x.be, eta := fun v => x.lev.eta v, etaA := x.lev.etaA }
 
-theorem core_toArcIn (x : TateUniformizationInput.ArcInput D c β O' b) : coreOfArcIn (toArcIn x) = coreOfInput x := rfl
 
 def GoodBase (β : O →+* c.F) (b : O →+* O') : Prop :=
   TateUniformizationInput.IsFracImage β ∧ (∃ r, ((β r : c.F) : ℂ) = H.rt0) ∧ (∃ z, ((β z : c.F) : ℂ) = zeta l.A) ∧
@@ -510,19 +509,6 @@ theorem goodBase_id (b : c.F →+* O') : GoodBase (RingHom.id c.F) b :=
   ⟨fun x => ⟨x, 1, one_ne_zero, _root_.mul_one x⟩, ⟨TateUniformizationInput.coeffRt c, rfl⟩, ⟨TateUniformizationInput.coeffZeta c, rfl⟩,
     (algebraMap O' _).comp b, fun _ => rfl⟩
 
-theorem differ_over_int (D : Datum H) (c : Coeff l) :
-    Nonempty (ArcIn D l (Int.castRingHom c.F) c.F (Int.castRingHom c.F)) ∧
-      IsEmpty (TateUniformizationInput.ArcInput D c (Int.castRingHom c.F) c.F (Int.castRingHom c.F)) := by
-  refine ⟨ArcInTest.nonempty_int D c, ⟨fun x => ?_⟩⟩
-  obtain ⟨a, s, hs, e⟩ := x.frac (TateUniformizationInput.coeffRt c)
-  have e' : H.rt0 * (s : ℂ) = (a : ℂ) := by simpa [TateUniformizationInput.coeffRt_val] using congrArg (fun y : c.F => (y : ℂ)) e
-  have h₁ : ((a ^ 2 : ℤ) : ℂ) = ((-(H.d : ℤ) * s ^ 2 : ℤ) : ℂ) := by
-    push_cast
-    rw [← e', mul_pow, H.sqrt_neg_disc_sq]
-  have h₂ : a ^ 2 = -(H.d : ℤ) * s ^ 2 := Int.cast_injective h₁
-  have h₃ : s ≠ 0 := fun h => hs (by rw [h, map_zero])
-  have h₄ : (0 : ℤ) < H.d := Int.natCast_pos.2 H.d_prime.pos
-  nlinarith [sq_nonneg a, mul_pos h₄ (sq_pos_of_ne_zero h₃)]
 
 end Main
 

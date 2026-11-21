@@ -82,7 +82,6 @@ def baseChange : Tuple E where
   j₀ := T.j₀
   th := GlobalTheory.chartSec (chartPullZPow (GlobalTheory.chartPullPull T.L (T.bcFst E)) T.j₀) T.th
 
-theorem U_baseChange : (T.baseChange E).U = T.bcFst E ⁻¹ᵁ T.U := rfl
 
 variable {T} in
 
@@ -213,21 +212,11 @@ theorem mulE_apply (j : ℕ) (f : H0 G.str (G.adj₂ j) ⊤) :
     G.mulE j f = Vanishing.mulE G.K G.isLB G.isLBA G.isLB₂ G.e rfl (H0.restr le_top f) :=
   (ProdChart.restr_mul _ _ _ _).trans (by rw [H0.restr_ofSec]; rfl)
 
-theorem mulE_injective (j : ℕ) : Function.Injective (G.mulE j) := fun f f' h => by
-  rw [mulE_apply, mulE_apply] at h
-  exact G.restr_injective _ ((ProdChart.bijective_mul _ fun y hy i hi => by
-    rw [H0.germ_ofSec, isUnit_ger_iff]; exact G.U_le hy).1 h)
 
 def sqInt (j : ℕ) (σ : F →+* ℂ) (f : (G.adj₂ j).ι → CxPts G.str σ → ℂ) : ℝ≥0∞ :=
   (AnRead.all G.str σ G.D).topInt G.K (G.φTw (j + G.D) σ) (assocVal f)
 
-theorem sqInt_eq (j : ℕ) {σ : F →+* ℂ} (R : AnRead G.str σ G.D) (f : (G.adj₂ j).ι → CxPts G.str σ → ℂ) :
-    G.sqInt j σ f = R.topInt G.K (G.φTw (j + G.D) σ) (assocVal f) := AnRead.topInt_eq _ _ _ _ _
 
-theorem sqInt_lt_top (j : ℕ) (σ : F →+* ℂ) {ι : Type*} [Fintype ι] (c : ι → ℂ) (f : ι → H0 G.str (G.adj₂ j) ⊤) :
-    G.sqInt j σ (∑ i, c i • cval σ (f i)) < ⊤ :=
-  AnRead.topInt_lt_top _ (G.isSmooth_φTw _ _) (assocVal_mem_holSec
-    (Submodule.sum_mem _ fun _ _ => Submodule.smul_mem _ _ (cval_mem_holSec σ _ _)))
 
 variable (s : Fin G.D → Fin G.N → F)
 
@@ -274,8 +263,6 @@ def weightOn (s : Fin G.D → Fin G.N → F) (j : ℕ) (σ : F →+* ℂ) :
 
 def IsGood.normOn (j : ℕ) : HermFam F (G.SecOn s j) := pointHerm hs.finite hs.etale (weightOn s j)
 
-theorem IsGood.nrm_normOn_sq (j : ℕ) (σ : F →+* ℂ) (g : G.SecOn s j) :
-    (hs.normOn j).nrm σ g ^ 2 = ∑ᶠ y, (weightOn s j σ).nsq (cval σ g) y := nrm_pointHerm_sq _ _ _ σ g
 
 variable (G) (E : Type) [Field E] [NumberField E] [Algebra F E]
 
@@ -555,20 +542,10 @@ theorem d_eq_finrank : X.d = Module.finrank F (X.V X.T) := (X.full _).latRank_eq
 
 theorem a₀_add : X.a₀ + X.D + 1 = X.T := by have := X.le_T; rw [a₀]; omega
 
-theorem sum_Ra : ∑ a ∈ Finset.range (X.a₀ + 1), X.Ra a = X.R := by
-  obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le' X.geom.alg.variety.one_le
-  simp only [R, ← X.a₀_add, Geo.Ra, hk, ← add_assoc, Nat.add_sub_cancel]
-  exact Nat.sum_range_add_choose _ _
 
 theorem R_pos : 0 < X.R := Nat.choose_pos (by have := X.le_T; omega)
 
-theorem d_baseChange (E : Type) [Field E] [NumberField E] [Algebra F E] : (X.baseChange E).d = X.d := by
-  rw [d_eq_finrank, d_eq_finrank]
-  exact X.finrank_V_baseChange E _
 
-theorem z_baseChange (E : Type) [Field E] [NumberField E] [Algebra F E] : (X.baseChange E).z = X.z := by
-  rw [z, z, d_baseChange, ← FieldChangeInter.del_baseChange F E _ X.geom.alg.variety.proj]
-  rfl
 
 variable {X}
 
@@ -599,23 +576,10 @@ theorem ShortFamily.mean {j : ℕ} {Λ : ℝ} (h : X.ShortFamily j Λ) : X.Short
   refine ⟨v, h₁, h₂, fun i => meanLog_const (F := F) Λ ▸ div_le_div_of_nonneg_right
     (Finset.sum_le_sum fun σ _ => Real.log_le_log (nrm_pos _ σ (h₂.ne_zero i)) (h₃ i σ)) (Nat.cast_nonneg _)⟩
 
-theorem Hyp.meanHyp (h : X.Hyp) : X.MeanHyp (fun _ => X.beta) fun _ => 1 :=
-  ⟨h.1, fun _ => one_pos.trans_le X.one_le_beta, fun _ => one_pos,
-    by rw [meanLog_const, max_eq_right (Real.log_nonneg X.one_le_beta)], h.2, h.3, h.4, h.5, h.6, h.7.mean,
-    h.8.mean, h.9⟩
 
 theorem MeanHyp.isAdelic {β κ : (F →+* ℂ) → ℝ} (h : X.MeanHyp β κ) : X.IsAdelic :=
   ⟨X.geom, h.pos.bir, X.herm, X.conj, h.shortW⟩
 
-theorem MeanHyp.two_le_theta {β κ : (F →+* ℂ) → ℝ} (h : X.MeanHyp β κ) (hd : 0 < X.del) (t : ℝ) :
-    2 ≤ X.theta t := by
-  have h₁ : (1 : ℝ) ≤ X.n := Nat.one_le_cast.2 X.one_le_n
-  have h₂ : (1 : ℝ) ≤ X.D := Nat.one_le_cast.2 X.geom.alg.variety.one_le
-  have h₃ : (1 : ℝ) ≤ X.j₀ := Nat.one_le_cast.2 h.pos.bir.one_le
-  have h₄ : (1 : ℝ) ≤ X.del := by exact_mod_cast hd
-  have h₅ := Real.log_nonneg h.shortW.one_le
-  exact (by linarith [abs_nonneg t] : 2 ≤ 2 + |t| + Real.log X.abelian₂).trans (le_mul_of_one_le_left (by positivity)
-    (one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le h₁ h₂) h₃) h₄))
 
 end Data
 

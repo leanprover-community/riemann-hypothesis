@@ -18,8 +18,6 @@ def thenTr (φ : Matrix (Fin a) (Fin b) R ≃ₗ[R] Matrix (Fin a) (Fin b) R) :
     Matrix (Fin a) (Fin b) R ≃ₗ[R] Matrix (Fin b) (Fin a) R :=
   φ.trans (Matrix.transposeLinearEquiv _ _ R R)
 
-theorem leftMul_apply (J Ji : Matrix (Fin a) (Fin a) R) (h1 : Ji * J = 1) (x : Matrix (Fin a) (Fin b) R) :
-    leftMul J Ji h1 x = Jiᵀ * x := rfl
 
 end Gen
 
@@ -38,8 +36,6 @@ def coordUp (A B : HSp D) : HeisenbergWeilMatrices.WA A B ≃ₗ[AE D] WA A B :=
 def coordDn (V W : HSp D) : HeisenbergWeilMatrices.WA W V ≃ₗ[AE D] WA V W :=
   thenTr (coordUp W V)
 
-theorem coordUp_eq (A B : HSp D) (x : HeisenbergWeilMatrices.WA A B) : coordUp A B x = HMul.hMul (HeisenbergWeilMatrices.gramInvA A)ᵀ x :=
-  leftMul_apply _ _ (gramInv_mul A) x
 
 theorem cont_up (A B : HSp D) : Continuous (coordUp A B) ∧ Continuous (coordUp A B).symm :=
   gen_cont _ _ (gramInv_mul A)

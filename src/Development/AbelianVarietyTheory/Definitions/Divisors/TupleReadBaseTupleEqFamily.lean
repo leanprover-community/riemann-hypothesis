@@ -406,16 +406,9 @@ variable {P : IndefiniteRowSideFullHecke ex} {Del h0 : ℕ} {hDel : D.s.Del = (D
   {Rc : RecT ex} {S : Formalism.L2.SG.SpectralTiesReal.STiesR Rc} {B : RealTB Rc P.toRowSideFamily Dcf Spf (P.zsc Del h0 Csz) S}
   {Qp : RealPins B.Q} {Qr : RealRec B.Q}
 
-theorem realised_ofReal (h : RealRecPins Qp Qr) : (ofReal P Del h0 hDel hh0 Dcf Spf gamDvd B Qp Qr).Realised :=
-  ⟨Rc, S, B, Qp, Qr, h, rfl⟩
 
-theorem ofReal_S (b : Bool) :
-    (ofReal P Del h0 hDel hh0 Dcf Spf gamDvd B Qp Qr).S b = (B.Q.Rl.toCx3 B.Q.F).data B.Q.F.cr b := rfl
 
-theorem ofReal_N (C CH : ℝ) : (ofReal P Del h0 hDel hh0 Dcf Spf gamDvd B Qp Qr).N C CH = B.Q.Rl.num B.Q.F C CH := rfl
 
-theorem exportRow_ofReal : (ofReal P Del h0 hDel hh0 Dcf Spf gamDvd B Qp Qr).ExportRow ↔
-    Formalism.IndefR.NX.NMjT B.Q B.Q.cG B.Q.Sx B.Q.nexp ex.nch := Iff.rfl
 
 set_option maxHeartbeats 1000000 in
 
@@ -482,10 +475,6 @@ theorem Ties.small {p : PtAt ex Csz} (h : p.Ties) : GlobalTheory.FinalJoin2.Fiel
 
 theorem Ties.eSer {p : PtAt ex Csz} (h : p.Ties) : GlobalTheory.GLq.ESerTie D := h.types.eSerTie
 
-theorem Ties.mem_xd_iff {p : PtAt ex Csz} (h : p.Ties) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool)
-    (a : D.nexp.Dat i ((j : ℕ) + 1) b) : a ∈ ex.xd.xd0 i _ b ↔ ∀ u : D.nexp.U, D.nexp.actG i _ b u (D.nexp.th i _ b a) =
-      ((D.nexp.psiU i b u : (FractionRing (D.ntw.O i))ˣ) : FractionRing (D.ntw.O i)) • D.nexp.th i _ b a :=
-  ⟨ex.xd.thetaBase_invariant_action i _ b a, h.data i j b a⟩
 
 end PtAt
 
@@ -509,9 +498,6 @@ theorem EvPt.and {eps : ℝ} {Fm : FamP eps} {Q Q' : ∀ (x : ℝ) (hx : Fm.x1 <
   let ⟨b, h'⟩ := h'
   ⟨max a b, fun x hx hle i p hp => ⟨h x hx ((le_max_left _ _).trans hle) i p hp, h' x hx ((le_max_right _ _).trans hle) i p hp⟩⟩
 
-theorem not_evPt_false {eps : ℝ} {Fm : FamP eps}
-    (h : ∀ x0, ∃ (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) (p : Pt Fm x hx i), x0 ≤ x ∧ p.Rows) : ¬ EvPt Fm fun _ _ _ _ => False :=
-  fun ⟨x0, g⟩ => let ⟨x, hx, i, p, a, b⟩ := h x0; g x hx a i p b
 
 def Covol : Prop := Closed FamHyp fun Fm CH =>
   ∃ C0 : ℝ, 0 ≤ C0 ∧ EvPt Fm fun _ _ _ p => ∀ C, C0 ≤ C → (p.S false).L3 (p.N C CH)

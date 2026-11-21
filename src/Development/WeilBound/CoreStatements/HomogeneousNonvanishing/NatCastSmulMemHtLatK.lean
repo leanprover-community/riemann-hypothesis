@@ -611,15 +611,7 @@ open GlobalTheory.CompanionTheory.Ar.HTTieK
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {G : Over X} [GrpObj G] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
   {E : Type} [AddCommGroup E] [Module Ω E]
 
-theorem htLat_le_omLatK (M : LieModel G ξ E) (N : ℕ) (p : Cpt ξ) : M.htLat N p ≤ M.omLat p :=
-  Submodule.span_le.2 fun w h => form_mem_omLat M N p w h
 
-theorem natCast_smul_mem_htLatK [IsCommMonObj G] (hξ : IsCptGen ξ) (M : LieModel G ξ E) (N : ℕ) (p : Cpt ξ)
-    [IsDomain (X.presheaf.stalk p.1)] {T : Type} [CommGroup T] [Finite T] (Γ' : QFGroup (X.presheaf.stalk p.1) T)
-    (i : Γ'.G.left ⟶ G.left) (htor : Γ'.IsTorsionAlong G (X.fromSpecStalk p.1) N i) {w : Module.Dual Ω E}
-    (hw : w ∈ M.omLat p) : (N : Ω) • w ∈ M.htLat N p :=
-  Submodule.subset_span (core_smul (hξ.inj p) (hk_stalk ξ p) M Γ' i htor
-    fun e' v a b => hw e' (Submodule.subset_span ⟨v, a, b⟩))
 
 theorem htLat_eq_htOmK [IsCommMonObj G] [IsSeparated G.hom] (hξ : IsCptGen ξ) (M : LieModel G ξ E) (L : LB G.left)
     {N : ℕ} (hN : N ≠ 0) (hfull : FullTorsion G ξ N) {e : (Over.mk ξ ⟶ G) → (Over.mk ξ ⟶ G) → Ωˣ}

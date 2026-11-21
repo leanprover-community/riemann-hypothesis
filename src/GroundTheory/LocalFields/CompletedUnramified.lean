@@ -222,10 +222,6 @@ def adicCompletionRingEquiv (θ : R ≃+* R) : 𝔅 ≃+* 𝔅 :=
       rw [adicCompletionMap_comp]
       exact adicCompletionMap_eq_id _ (by ext; simp))
 
-theorem adicCompletionRingEquiv_apply (θ : R ≃+* R) (x : 𝔅) :
-    adicCompletionRingEquiv θ x =
-      adicCompletionMap (θ : R →+* R) (maximalIdeal_le_comap_ringEquiv θ) x :=
-  rfl
 
 variable {S : Type*} [CommRing S] [Algebra S R]
 
@@ -252,17 +248,6 @@ theorem adicCompletionAlgEquiv_algebraMap (θ : R ≃ₐ[S] R) (r : R) :
     adicCompletionAlgEquiv θ (algebraMap R 𝔅 r) = algebraMap R 𝔅 (θ r) :=
   show adicCompletionMap _ _ (AdicCompletion.of _ R r) = _ from adicCompletionMap_of _ _ r
 
-theorem eq_adicCompletionAlgEquiv (θ : R ≃ₐ[S] R) {τ : 𝔅 →+* 𝔅}
-    (hτ : ∀ r, τ (algebraMap R 𝔅 r) = algebraMap R 𝔅 (θ r)) :
-    τ = (adicCompletionAlgEquiv θ : 𝔅 →+* 𝔅) := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible R
-  refine ringHom_ext_adicCompletion hϖ (fun r ↦ ?_) ?_
-  · rw [hτ]
-    exact (adicCompletionAlgEquiv_algebraMap θ r).symm
-  · rw [hτ, AdicCompletion.maximalIdeal_eq_map]
-    refine Ideal.mem_map_of_mem _ ?_
-    exact maximalIdeal_le_comap_ringEquiv θ.toRingEquiv (hϖ.maximalIdeal_eq ▸
-      Ideal.mem_span_singleton_self ϖ)
 
 end Automorphism
 
@@ -394,8 +379,6 @@ local notation "𝔹" => CompletedUnramifiedIntegers K Ω
 
 example : IsDiscreteValuationRing 𝔹 := inferInstance
 
-theorem isAdicComplete_completedUnramifiedIntegers : IsAdicComplete (maximalIdeal 𝔹) 𝔹 :=
-  inferInstance
 
 instance isScalarTower_completedUnramifiedIntegers : IsScalarTower 𝒪[K] 𝒪[𝔼] 𝔹 :=
   IsScalarTower.of_algebraMap_eq fun _ ↦ rfl
@@ -475,11 +458,6 @@ theorem completedUnramifiedAlgEquiv_algebraMap (ρ : 𝔼 ≃ₐ[K] 𝔼) (x : �
       algebraMap 𝒪[𝔼] 𝔹 (integerAlgEquivOfIsAlgebraic K 𝔼 ρ x) :=
   adicCompletionAlgEquiv_algebraMap _ x
 
-theorem eq_completedUnramifiedAlgEquiv (ρ : 𝔼 ≃ₐ[K] 𝔼) {τ : 𝔹 →+* 𝔹}
-    (hτ : ∀ x : 𝒪[𝔼], τ (algebraMap 𝒪[𝔼] 𝔹 x) =
-      algebraMap 𝒪[𝔼] 𝔹 (integerAlgEquivOfIsAlgebraic K 𝔼 ρ x)) :
-    τ = (completedUnramifiedAlgEquiv K Ω ρ : 𝔹 →+* 𝔹) :=
-  eq_adicCompletionAlgEquiv _ hτ
 
 variable [IsGalois K Ω]
 
@@ -493,11 +471,6 @@ theorem completedFrobenius_algebraMap (x : 𝒪[𝔼]) :
       (integerAlgEquivOfIsAlgebraic K 𝔼 (maximalUnramifiedExtensionFrobenius K Ω) x) :=
   completedUnramifiedAlgEquiv_algebraMap _ x
 
-theorem eq_completedFrobenius {τ : 𝔹 →+* 𝔹}
-    (hτ : ∀ x : 𝒪[𝔼], τ (algebraMap 𝒪[𝔼] 𝔹 x) = algebraMap 𝒪[𝔼] 𝔹
-      (integerAlgEquivOfIsAlgebraic K 𝔼 (maximalUnramifiedExtensionFrobenius K Ω) x)) :
-    τ = (completedFrobenius K Ω : 𝔹 →+* 𝔹) :=
-  eq_completedUnramifiedAlgEquiv _ hτ
 
 theorem residue_completedFrobenius (x : 𝔹) :
     residue 𝔹 (completedFrobenius K Ω x) = residue 𝔹 x ^ Nat.card 𝓀[K] := by
@@ -562,15 +535,7 @@ theorem integerToCompleted_injective {L : IntermediateField K Ω} (h : L ≤ �
     Function.Injective (integerToCompleted K Ω h) :=
   (algebraMap_integer_completedUnramifiedIntegers_injective K Ω).comp (integerInclusion_injective h)
 
-theorem integerToCompleted_comp_integerInclusion {L L' : IntermediateField K Ω} (h : L ≤ L')
-    (h' : L' ≤ 𝔼) :
-    (integerToCompleted K Ω h').comp (integerInclusion h) = integerToCompleted K Ω (h.trans h') :=
-  AlgHom.ext fun _ ↦ rfl
 
-theorem IsUnramifiedSubextension.injective_integerToCompleted {L : IntermediateField K Ω}
-    (hL : IsUnramifiedSubextension L) :
-    Function.Injective (integerToCompleted K Ω hL.le_maximalUnramifiedExtension) :=
-  integerToCompleted_injective _
 
 end Finite
 

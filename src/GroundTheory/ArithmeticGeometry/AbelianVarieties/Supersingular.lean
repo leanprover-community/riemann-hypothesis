@@ -48,23 +48,6 @@ theorem card_torsionBy_prime_lt :
   have h := card_torsion_lt E p
   rwa [← Nat.card_congr (Equiv.subtypeEquivRight fun P => Submodule.mem_torsionBy_iff _ _)] at h
 
-theorem card_torsionBy_prime_eq_one_or_eq :
-    Nat.card (AddSubgroup.torsionBy E.toAffine.Point (p : ℤ)) = 1 ∨
-      Nat.card (AddSubgroup.torsionBy E.toAffine.Point (p : ℤ)) = p := by
-  have := finite_torsionBy_natCast E hp.out.ne_zero
-  let _ : Module (ZMod p) (AddSubgroup.torsionBy E.toAffine.Point (p : ℕ)) :=
-    AddSubgroup.torsionBy.zmodModule
-  have _ : Fintype (AddSubgroup.torsionBy E.toAffine.Point (p : ℕ)) := Fintype.ofFinite _
-  have hc : Fintype.card (AddSubgroup.torsionBy E.toAffine.Point (p : ℕ)) =
-      p ^ Module.finrank (ZMod p) (AddSubgroup.torsionBy E.toAffine.Point (p : ℕ)) := by
-    rw [Module.card_eq_pow_finrank (K := ZMod p), ZMod.card]
-  have hlt := card_torsionBy_prime_lt E p
-  rw [Nat.card_eq_fintype_card, hc] at hlt ⊢
-  have hd : Module.finrank (ZMod p) (AddSubgroup.torsionBy E.toAffine.Point (p : ℕ)) < 2 :=
-    (Nat.pow_lt_pow_iff_right hp.out.one_lt).mp hlt
-  interval_cases Module.finrank (ZMod p) (AddSubgroup.torsionBy E.toAffine.Point (p : ℕ))
-  · left; rfl
-  · right; rw [pow_one]
 
 omit [IsAlgClosed F] [E.IsElliptic] hp [CharP F p] in
 theorem isSupersingular_iff_torsionBy_eq_bot :
@@ -90,10 +73,6 @@ theorem isSupersingular_iff_card_torsionBy_eq_one :
     have := finite_torsionBy_natCast E hp.out.ne_zero
     exact (AddSubgroup.eq_bot_iff_card _).mpr h
 
-theorem IsOrdinary.card_torsionBy_prime (h : IsOrdinary E p) :
-    Nat.card (AddSubgroup.torsionBy E.toAffine.Point (p : ℤ)) = p :=
-  (card_torsionBy_prime_eq_one_or_eq E p).resolve_left
-    (fun h1 => h ((isSupersingular_iff_card_torsionBy_eq_one E p).mpr h1))
 
 omit [IsAlgClosed F] [E.IsElliptic] hp [CharP F p] in
 
@@ -154,17 +133,6 @@ theorem card_torsionBy_pow_succ (r : ℕ) :
     AddSubgroup.card_top, card_ker_torsionPowSucc] at h
   exact h.symm
 
-theorem IsOrdinary.card_torsionBy_pow (h : IsOrdinary E p) (r : ℕ) :
-    Nat.card (AddSubgroup.torsionBy E.toAffine.Point ((p ^ r : ℕ) : ℤ)) = p ^ r := by
-  induction r with
-  | zero =>
-    have : AddSubgroup.torsionBy E.toAffine.Point ((p ^ 0 : ℕ) : ℤ) = ⊥ := by
-      rw [eq_bot_iff]
-      intro P hP
-      rw [mem_torsionBy_natCast_iff, pow_zero, one_smul] at hP
-      exact (AddSubgroup.mem_bot).mpr hP
-    rw [this, AddSubgroup.card_bot, pow_zero]
-  | succ r ih => rw [card_torsionBy_pow_succ, ih, h.card_torsionBy_prime, pow_succ, mul_comm]
 
 omit [CharP F p] in
 
@@ -182,25 +150,7 @@ theorem IsOrdinary.exists_addOrderOf_eq (h : IsOrdinary E p) (r : ℕ) :
     have hfin : p ^ (s + 1) • Q = 0 := by rw [pow_succ', ← smul_smul, hQ, hP]
     exact ⟨Q, hfin, addOrderOf_eq_prime_pow (by rw [hQ]; exact hP0) hfin⟩
 
-theorem IsOrdinary.nonempty_torsionBy_pow_addEquiv (h : IsOrdinary E p) (r : ℕ) :
-    Nonempty (AddSubgroup.torsionBy E.toAffine.Point ((p ^ r : ℕ) : ℤ) ≃+ ZMod (p ^ r)) := by
-  have := finite_torsionBy_natCast E (pow_ne_zero r hp.out.ne_zero)
-  obtain ⟨Q, hQ, hord⟩ := h.exists_addOrderOf_eq E p r
-  set G := AddSubgroup.torsionBy E.toAffine.Point ((p ^ r : ℕ) : ℤ)
-  have hcard : Nat.card G = p ^ r := h.card_torsionBy_pow E p r
-  let x : G := ⟨Q, (mem_torsionBy_natCast_iff E _ Q).mpr hQ⟩
-  have hx : addOrderOf x = Nat.card G := by
-    rw [hcard, ← hord]
-    exact AddSubgroup.addOrderOf_mk Q _
-  have hcyc : IsAddCyclic G := isAddCyclic_of_addOrderOf_eq_card x hx
-  exact ⟨(zmodAddCyclicAddEquiv hcyc).symm.trans (ZMod.ringEquivCongr hcard).toAddEquiv⟩
 
-theorem torsionBy_pow_eq_bot_or_nonempty_addEquiv (r : ℕ) :
-    AddSubgroup.torsionBy E.toAffine.Point ((p ^ r : ℕ) : ℤ) = ⊥ ∨
-      Nonempty (AddSubgroup.torsionBy E.toAffine.Point ((p ^ r : ℕ) : ℤ) ≃+ ZMod (p ^ r)) := by
-  by_cases h : IsSupersingular E p
-  · exact Or.inl (h.torsionBy_pow_eq_bot E p r)
-  · exact Or.inr (IsOrdinary.nonempty_torsionBy_pow_addEquiv E p h r)
 
 omit hp [CharP F p] in
 
@@ -250,11 +200,5 @@ theorem isSupersingular_iff_insepDeg_mulIsogeny (hn : (p : ℤ) ≠ 0) :
     rw [h] at hd
     exact (Nat.mul_eq_left hp2.ne').mp hd.symm
 
-theorem IsOrdinary.insepDeg_mulIsogeny (h : IsOrdinary E p) (hn : (p : ℤ) ≠ 0) :
-    (mulIsogeny E p hn).insepDeg = p := by
-  have hd := (mulIsogeny E p hn).degree_eq_insepDeg_mul
-  rw [degree_mulIsogeny, Int.natAbs_natCast, card_ker_mulIsogeny_natCast,
-    h.card_torsionBy_prime, sq] at hd
-  exact (Nat.eq_of_mul_eq_mul_right hp.out.pos hd).symm
 
 end GroundTheory.Arith.Abelian

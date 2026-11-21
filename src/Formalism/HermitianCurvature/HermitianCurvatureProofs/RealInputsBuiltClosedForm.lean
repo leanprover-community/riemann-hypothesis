@@ -71,63 +71,8 @@ theorem jct_parts_loc (hPA : P5.ThmPActual) (hRMF : JC.RadialModuleForm) (hPD : 
       H Vt hVt (gram_at_built_place ptPerm_spec ptG_spec relevant_points_holds hMu
         orbital_integral_cutoff_scalar E Wp Wq S T f χ ν' m₀ top A₀ hg1 hg2 hB)
 
-theorem jct_parts (hPA : P5.ThmPActual) (hRMF : JC.RadialModuleForm) (hPD : JC.PosDensityMM)
-    (hFS : JC.FormLevSesqMM) (hMA : JC.ThmPModuleOfActualMM) (hIB : JC.ThmPIntBuilt) (hMu : D.MuRHaar)
-    (C₄ C₆ : ℝ) (E : Type) [Field E] [NumberField E] [IsCMField E] (Wp Wq : InfinitePlace E → Type)
-    [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]
-    [∀ x, NormedAddCommGroup (Wq x)] [∀ x, InnerProductSpace ℂ (Wq x)]
-    [∀ x, FiniteDimensional ℂ (Wp x)] [∀ x, FiniteDimensional ℂ (Wq x)]
-    (S : C.HidaSetting E Wp Wq) (T : ∀ v : Fin S.f, D.LevTower S.G.k S.G.r (Wp (S.pl v)) (Wq (S.pl v)))
-    (f : ∀ v : Fin S.f, B.Mat S.G.k S.G.r → (Wq (S.pl v) →L[ℂ] Wp (S.pl v))) (χ : ℝ → ℝ)
-    (ν' : Fin S.f → Fin (2 * S.G.r + S.G.k + 1) → ℂ) (m₀ : Fin S.f → B.Mat S.G.k S.G.r)
-    (top : ∀ v : Fin S.f, (B.Mat S.G.k S.G.r → (Wq (S.pl v) →L[ℂ] Wp (S.pl v))) → List C.Letter → C.LPt → C.LPt → ℂ)
-    (A₀ : ℝ)
-    (L : ∀ v : Fin S.f, R.LevelData (MA.A (D.parOf S v) (MA.DQ (D.parOf S v))) (D.parOf S v).r)
-    (j : ∀ v : Fin S.f, M.Ty (D.parOf S v) → MA.SmQ (D.parOf S v).r (D.parOf S v).TT)
-    (lam : ∀ v : Fin S.f, Fin ((D.parOf S v).k + 2 * (D.parOf S v).r + 1) → ℝ) (c : LE.Cut) (Cm σ : Fin S.f → ℝ)
-    (Lw : ℕ → Fin S.f → ℝ) (Ll Ll' : ℕ → ℕ → Fin S.f → ℝ)
-    (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (Vt : TB.Pt E → H)
-    (hg1 : 0 < S.G.g1) (hg2 : 0 < S.G.g2) (hU : S6.Unram E) (hB : D.IsBuilt S T f χ ν' m₀ top A₀)
-    (hIn : JCT.BuiltInputs C₄ C₆ S T f χ ν' m₀ top L j lam c Cm σ Lw Ll Ll' Vt) :
-    C.ThmPPos S ∧ C.GridsOK S ∧ C.ThmPInt S ∧ C.PlaneWaveBoundAllPlaces S ∧ C.OffDiagonalLiftBound S ∧ C.CorollaryT S C₄ ∧
-      C.PropGram S Vt :=
-  jct_parts_loc hPA hRMF hPD hFS hMA hMu C₄ C₆ E Wp Wq S T f χ ν' m₀ top A₀ L j lam c Cm σ Lw Ll Ll' H Vt hg1 hg2 hU hB
-    (hIB E Wp Wq S T f χ ν' m₀ top A₀ hg1 hg2 hU hB) hIn
 
-theorem real_inputs_built : JCT.RealInputsBuilt := by
-  intro hPA hRMF hPD hFS hMA hIB hMu hLEM
-  obtain ⟨C₆, hC₆, hLE⟩ := lemma_E_of_model lemma_E_of_residue level_zero_holds good_of_admissible hLEM
-  refine ⟨C₆, hC₆, ?_⟩
-  intro C₄ E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top A₀ L j lam c Cm σ Lw Ll Ll' H _ _ Vt hg1 hg2 hU hB hIn
-    Kr hK0 Th e
-  obtain ⟨hPos, hGr, hInt, hP1, hP23, hT, hPG⟩ :=
-    jct_parts hPA hRMF hPD hFS hMA hIB hMu C₄ C₆ E Wp Wq S T f χ ν' m₀ top A₀ L j lam c Cm σ Lw Ll Ll' H Vt
-      hg1 hg2 hU hB hIn
-  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, hsm, hcut, hmod, -⟩ := hIn
-  have hE : C.LemmaE S (JCT.jvModel S j Cm) :=
-    hLE E Wp Wq S T f χ ν' m₀ top A₀ L j lam c Cm σ hB
-      (fun v ε hε => cutoff_smooth _ _ _ _ (T v).base χ (f v) ε hB.1 (hsm v) hε) hcut hmod
-  exact real_inputs_concrete_holds E Wp Wq S (JCT.jvModel S j Cm) H Vt C₄ hg1 hg2 hPos hGr hInt hP1 hP23 hT hE
-    hPG Kr hK0 Th e
 
-theorem theorem_A_built : JCT.TheoremABuilt := by
-  intro hPA hRMF hPD hFS hMA hIB hMu hLEM
-  obtain ⟨C₆, hC₆, hLE⟩ := lemma_E_of_model lemma_E_of_residue level_zero_holds good_of_admissible hLEM
-  refine ⟨C₆, hC₆, ?_⟩
-  intro C₁ C₄ h1 h4
-  obtain ⟨Cst, Cst', hA⟩ := concrete_bound_holds C₁ C₄ h1 h4
-  refine ⟨Cst, Cst', ?_⟩
-  intro E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top A₀ L j lam c Cm σ Lw Ll Ll' cE Kr hK0 Th e Θ H _ _ _ Vt cr
-    hf hg1 hg2 hU hB hIn hEL hΘ hCΘ hsmall hSz hKr hA2 hEB hDom hLS hA4 Rs
-  obtain ⟨hPos, hGr, hInt, hP1, hP23, hT, hPG⟩ :=
-    jct_parts hPA hRMF hPD hFS hMA hIB hMu C₄ C₆ E Wp Wq S T f χ ν' m₀ top A₀ L j lam c Cm σ Lw Ll Ll' H Vt
-      hg1 hg2 hU hB hIn
-  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, hsm, hcut, hmod, -⟩ := hIn
-  have hE : C.LemmaE S (JCT.jvModel S j Cm) :=
-    hLE E Wp Wq S T f χ ν' m₀ top A₀ L j lam c Cm σ hB
-      (fun v ε hε => cutoff_smooth _ _ _ _ (T v).base χ (f v) ε hB.1 (hsm v) hε) hcut hmod
-  exact hA E Wp Wq S (JCT.jvModel S j Cm) cE Kr hK0 Th e Θ H Vt cr hf hg1 hg2 hΘ hCΘ hsmall hSz hPos hGr hInt hP1
-    hP23 hT hE hEL hPG hKr hA2 hEB hDom hLS hA4 Rs
 
 theorem jct_isBuiltPlace_mono {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePlace E → Type}
     [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]
@@ -146,47 +91,6 @@ theorem jct_isBuiltPlace_mono {E : Type} [Field E] [NumberField E] [IsCMField E]
     exact le_trans (mul_le_mul_of_nonneg_right hc (by positivity)) (h8 v)
   · exact le_trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hc (by positivity)) (by positivity)) h12
 
-theorem real_inputs_built_closed_form : JCT.RealInputsBuiltClosed := by
-  intro hPA hRMF hPD hFS hMA hIB hMu hLEM hLA hSL hWv hLB hLT hSF hMP
-  obtain ⟨C₆, hC₆, hLE⟩ := lemma_E_of_model lemma_E_of_residue level_zero_holds good_of_admissible hLEM
-  obtain ⟨c1, hLA⟩ := hLA
-  obtain ⟨c2, hSL⟩ := hSL
-  obtain ⟨c3, hWv⟩ := hWv
-  obtain ⟨c4, hLB⟩ := hLB
-  obtain ⟨c5, hLT⟩ := hLT
-  obtain ⟨c6, C₄, hC₄, hSF⟩ := hSF
-  obtain ⟨c7, hMP⟩ := hMP
-  refine ⟨C₆, max c1 (max c2 (max c3 (max c4 (max c5 (max c6 c7))))), C₄, hC₆, hC₄, ?_⟩
-  intro E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top A₀ c H _ _ Vt hBP hSB hc hcut htop hVt
-  have m1 := jct_isBuiltPlace_mono (by simp) hBP (c := c1)
-  have m2 := jct_isBuiltPlace_mono (by simp) hBP (c := c2)
-  have m3 := jct_isBuiltPlace_mono (by simp) hBP (c := c3)
-  have m4 := jct_isBuiltPlace_mono (by simp) hBP (c := c4)
-  have m5 := jct_isBuiltPlace_mono (by simp) hBP (c := c5)
-  have m6 := jct_isBuiltPlace_mono (by simp) hBP (c := c6)
-  have m7 := jct_isBuiltPlace_mono (by simp) hBP (c := c7)
-  obtain ⟨hg1, hg2, hU, hB, hl1, hl2, hGr, -, -, hsm, -, -, -⟩ := hBP
-  choose L j lam Cm σ hmod using hMP E Wp Wq S T f χ ν' m₀ top A₀ m7 c hc
-  obtain ⟨Lw, hW, hTW⟩ := hWv E Wp Wq S T f χ ν' m₀ top A₀ m3
-  obtain ⟨Ll, hLB1, hTL1⟩ := hLB E Wp Wq S T f χ ν' m₀ top A₀ m4
-  obtain ⟨Ll', hLT1, hTL2⟩ := hLT E Wp Wq S T f χ ν' m₀ top A₀ m5
-  have hTL : JC.ThresholdsLift S Ll Ll' := by
-    unfold JC.ThresholdsLift
-    exact ⟨hTL1, hTL2⟩
-  have hIn : JCT.BuiltInputs C₄ C₆ S T f χ ν' m₀ top L j lam c Cm σ Lw Ll Ll' Vt := by
-    unfold JCT.BuiltInputs
-    exact ⟨hl1, hl2, hLA E Wp Wq S T f χ ν' m₀ top A₀ m1, hSL E Wp Wq S T f χ ν' m₀ top A₀ m2 hSB, htop, hGr, hW,
-      hTW, hLB1, hLT1, hTL, hSF E Wp Wq S T f χ ν' m₀ top A₀ m6, hsm, hcut, hmod, hVt⟩
-  refine ⟨L, j, lam, Cm, σ, hmod, ?_⟩
-  intro Kr hK0 Th e
-  obtain ⟨hPos, hGr', hInt, hP1, hP23, hT, hPG⟩ :=
-    jct_parts hPA hRMF hPD hFS hMA hIB hMu C₄ C₆ E Wp Wq S T f χ ν' m₀ top A₀ L j lam c Cm σ Lw Ll Ll' H Vt
-      hg1 hg2 hU hB hIn
-  have hE : C.LemmaE S (JCT.jvModel S j Cm) :=
-    hLE E Wp Wq S T f χ ν' m₀ top A₀ L j lam c Cm σ hB
-      (fun v ε hε => cutoff_smooth _ _ _ _ (T v).base χ (f v) ε hB.1 (hsm v) hε) hcut hmod
-  exact real_inputs_concrete_holds E Wp Wq S (JCT.jvModel S j Cm) H Vt C₄ hg1 hg2 hPos hGr' hInt hP1 hP23 hT hE
-    hPG Kr hK0 Th e
 
 theorem energy_of_built_setting : JCT.EnergyOfLemmaE := by
   intro hBC

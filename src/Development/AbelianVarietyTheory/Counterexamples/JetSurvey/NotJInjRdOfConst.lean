@@ -46,84 +46,11 @@ theorem sum_ae {m : ℕ} (b : Fin m → C) (g : Fin m → ℂ) :
   rw [e]
   exact sum_toLp_ae (muQ1 V) (fun i => jFn V σ rd dict mu (b i)) (fun i => h (b i)) g Finset.univ
 
-theorem indepToC_of_jInj (hJ : JInj V σ rd dict mu h) : IndepToC rd := by
-  intro m b hb
-  have h1 := hJ m b hb
-  rw [Fintype.linearIndependent_iff] at h1 ⊢
-  intro g hg
-  refine h1 g (Lp.eq_zero_iff_ae_eq_zero.2 ?_)
-  have := sum_ae V rd dict mu h b g
-  rw [hg, map_zero, map_zero] at this
-  exact this
 
 end General
 
-theorem jInjRd_of_jInjAt {D : D7} {T : Top D} (h : LawsP T) (j : ℕ) (hj : InR D j)
-    (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) (hd : Dom a n) (hJ : JInjAt h j hj a n hd) : JInjRd T j a n :=
-  indepToC_of_jInj _ _ _ _ _ hJ
 
-theorem jInjAt_of_aeDom {D : D7} {T : Top D} (h : LawsP T) (j : ℕ) (hj : InR D j)
-    (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) (hd : Dom a n)
-    (hae : AeDom (T.U j) T.σ₀ (T.V j T.σ₀) (T.dict j T.σ₀) (T.mu j T.σ₀)) : JInjAt h j hj a n hd := by
-  intro m b hb
-  have h1 := jInjRd_of_laws T h.toLawsCore.toLawsM hj a n m b hb
-  rw [Fintype.linearIndependent_iff] at h1 ⊢
-  intro g hg
-  refine h1 g ?_
-  have hs := sum_ae (T.V j T.σ₀) (rdC (T.U j) T.σ₀ a n) (T.dict j T.σ₀) (T.mu j T.σ₀)
-    (h.cuspidalL2Subspace j hj T.σ₀ T.good_σ₀ a n hd) b g
-  rw [hg] at hs
-  have hmem : (∑ i, g i • rdC (T.U j) T.σ₀ a n (b i)) ∈ holSub (T.U j T.σ₀).X (laU (T.U j T.σ₀) a n) :=
-    Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (rdC_mem_holSub T.good_σ₀ a n (b i))
-  have hz := hae _ _ hmem (hs.symm.trans (Lp.coeFn_zero ℂ 2 _))
-  funext k x
-  by_cases hx : x ∈ ((T.U j T.σ₀).X k).dom
-  · exact hz k x hx
-  · simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply]
-    refine Finset.sum_eq_zero fun i _ => ?_
-    have : rdC (T.U j) T.σ₀ a n (b i) k x = 0 := by
-      classical
-      exact dif_neg hx
-    rw [this, mul_zero]
 
-theorem jInjAt_of_aut {D : D7} {T : Top D} (h : LawsP T) (j : ℕ) (hj : InR D j)
-    (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) (hd : Dom a n)
-    (hA : AdelAut (T.V j T.σ₀) (T.dict j T.σ₀) (T.mu j T.σ₀))
-    (hP : ∃ p : Measure (GA D (T.V j T.σ₀)) × Set (GA D (T.V j T.σ₀)), IsVolPair D (T.V j T.σ₀) p.1 p.2) :
-    JInjAt h j hj a n hd := by
-  obtain ⟨th, hr, -, hdU⟩ := h.dictU j hj T.σ₀ T.good_σ₀
-  exact jInjAt_of_aeDom h j hj a n hd
-    (aeDom_of hA (h.finVol j hj T.σ₀ T.good_σ₀) hP (h.muUnit j hj T.σ₀ T.good_σ₀) hdU)
 
-theorem not_jInjRd_of_const {D : D7} (T : Top D) (j : ℕ) (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ)
-    (y : FrPt (T.Q.Xo j) T.Q.c (CAt T.σ₀)) (hy : ∀ k x, (T.U j T.σ₀).un k x = y)
-    (b : Fin 2 → cusp (T.Q.Xo j) T.Q.c (T.U j) a n) (hb : LinearIndependent T.Q.c.F b) :
-    ¬ JInjRd T j a n := by
-  classical
-  intro hJ
-  have h1 := hJ 2 b hb
-  rw [Fintype.linearIndependent_iff] at h1
-  let v : Fin 2 → ℂ := fun i => toC (evR (T.Q.Xo j) T.Q.c (b i).1 y)
-  have hv : ∀ i k x, rdC (T.U j) T.σ₀ a n (b i) k x =
-      if x ∈ ((T.U j T.σ₀).X k).dom then v i else 0 := by
-    intro i k x
-    by_cases hx : x ∈ ((T.U j T.σ₀).X k).dom
-    · rw [if_pos hx]
-      have := rdU_apply_dom (T.U j T.σ₀) (b i).1 k ⟨x, hx⟩
-      rw [hy] at this
-      exact this
-    · rw [if_neg hx]; exact dif_neg hx
-  have rel : ∀ g : Fin 2 → ℂ, g 0 * v 0 + g 1 * v 1 = 0 → ∀ i, g i = 0 := by
-    intro g hg
-    refine h1 g ?_
-    funext k x
-    simp only [Fin.sum_univ_two, Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply, hv]
-    split_ifs
-    · exact hg
-    · simp
-  have e := rel ![v 1, -v 0] (by simp; ring)
-  have e0 : v 0 = 0 := by simpa using e 1
-  have := rel ![1, 0] (by simp [e0]) 0
-  simp at this
 
 end GlobalTheory.ReadingIndependence

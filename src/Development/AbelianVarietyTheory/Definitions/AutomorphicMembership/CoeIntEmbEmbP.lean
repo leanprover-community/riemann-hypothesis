@@ -19,10 +19,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.RayEv
 
-theorem mapLinear_coe {R S O : Type} [CommRing R] [CommRing S] [CommRing O] (f : R →+* S) {G B : Over (Sp R)}
-    [GrpObj G] [IsCommMonObj G] [GrpObj B] [IsCommMonObj B] {a : OAct O G} {b : OAct O B} {q : G ⟶ B}
-    (hq : IsLinearHom a b q) (σ : O →+* S) (v : LieEig f a σ) :
-    Lie.mapLinear (isLinearHom_pull f hq) v.1 = (eigMap f hq σ v).1 := rfl
 
 section Point
 
@@ -41,8 +37,6 @@ def embP (τ : E →+* ℂ) : E →+* ↥C.S := P.fK.comp (embF c τ)
 
 abbrev intEmb (φ : E →+* ↥C.S) : 𝓞 E →+* ↥(intO ↥C.S) := HTLat.embO (integers C) φ
 
-theorem coe_intEmb_embP (τ : E →+* ℂ) (x : 𝓞 E) : (intEmb (embP P τ) x : ↥C.S) = P.emb τ x :=
-  HTLat.algebraMap_embO (integers C) _ x
 
 variable (A : DatAt Y P)
 
@@ -190,29 +184,13 @@ open Classical in
 
 def evGt (s : SecAt A) : ↥C.S := if h : ∃! v, Q.IsValG s v then h.choose else 1
 
-theorem evA_eq {s : SecAt A} (h : ∃! v, Q.IsValA s v) {v : ↥C.S} : Q.evA s = v ↔ Q.IsValA s v := by
-  rw [evA, dif_pos h]
-  exact ⟨fun e => e ▸ h.choose_spec.1, fun e => (h.choose_spec.2 v e).symm⟩
 
-theorem evGt_eq {s : SecAt A} (h : ∃! v, Q.IsValG s v) {v : ↥C.S} : Q.evGt s = v ↔ Q.IsValG s v := by
-  rw [evGt, dif_pos h]
-  exact ⟨fun e => e ▸ h.choose_spec.1, fun e => (h.choose_spec.2 v e).symm⟩
 
 end HarmAt
 
 variable (A)
 
-theorem incT_exact (τ : E →+* ℂ) : Function.Injective (incT A τ) ∧ Function.Exact (incT A τ) (resB A τ) :=
-  letI := H.starRing
-  eigMap_exact A.f (i_lin A) (q_lin A) (ray A).isKernel _
 
-theorem kapGt_eq (τ : E →+* ℂ) (u u' : LieGt A τ) : kapGt A τ u u' = kapB A τ (resB A τ u) (resB A τ u') := by
-  classical
-  by_cases h : Nonempty (Split A)
-  · rw [kapGt_of A h, kapB_of A h, kapExt_eq]
-    exact congrArg₂ (kapAb h.some _ _) (mapLinear_coe A.f (q_lin A) _ u) (mapLinear_coe A.f (q_lin A) _ u')
-  · have e : ∀ v v', kapB A τ v v' = 0 := fun _ _ => dif_neg h
-    exact (dif_neg h).trans (e _ _).symm
 
 end Point
 

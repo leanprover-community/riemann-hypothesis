@@ -53,10 +53,7 @@ theorem cq_map_cj {X : Formalism.L2.SG.LsDatumB.MatP D p} (hX : Cq Z p g X) : Cq
   refine ⟨(Z.M p).L.cj o, PI.LocCntLat.GC.cj_mem_O _ ho, ?_⟩
   rw [Matrix.map_apply, he, map_mul, AlgEquiv.commutes]
 
-theorem intM_map_cj {X : Formalism.L2.SG.LsDatumB.MatP D p} (hX : IntM Z p X) : IntM Z p (X.map (Z.M p).L.cj) := fun i j =>
-  PI.LocCntLat.GC.cj_mem_O _ (hX i j)
 
-theorem intM_transpose {X : Formalism.L2.SG.LsDatumB.MatP D p} (hX : IntM Z p X) : IntM Z p Xᵀ := fun i j => hX j i
 
 theorem map_cj_mul (A B : Formalism.L2.SG.LsDatumB.MatP D p) : (A * B).map (Z.M p).L.cj = A.map (Z.M p).L.cj * B.map (Z.M p).L.cj := by
   ext i j

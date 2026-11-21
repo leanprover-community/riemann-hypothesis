@@ -143,9 +143,6 @@ theorem nondeg_perp_aniso (hadd : ∀ a b : L, (a + b) ^ q = a ^ q + b ^ q)
   rw [hsplit, hf_add_right hadd, h1, hf_smul_right, hwe]
   ring
 
-theorem not_mem_perp_aniso (W : Submodule L (Fin n → L)) (e : Fin n → L)
-    (hee : hf q M e e ≠ 0) : e ∉ W ⊓ LinearMap.ker (hfL q M e) :=
-  fun h => hee (LinearMap.mem_ker.1 (Submodule.mem_inf.1 h).2)
 
 theorem hyperbolic (hadd : ∀ a b : L, (a + b) ^ q = a ^ q + b ^ q)
     (hinv : ∀ a : L, (a ^ q) ^ q = a) (hM : ∀ k l, M l k = M k l ^ q)

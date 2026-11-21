@@ -15,13 +15,7 @@ theorem key_of (hL : KeyLarge) (hS : KeySmall) : PI.TransferenceKey := by
 theorem key_of_steps (hP : PoissonBasis) (hB : DualTransport) (hG : GaussStep) (hS : KeySmall) :
     PI.TransferenceKey := key_of (hG (hB hP)) hS
 
-theorem transferenceCover_of (hP : PoissonBasis) (hB : DualTransport) (hG : GaussStep)
-    (hS : KeySmall) : PI.TransferenceCover :=
-  PI.cover_of_key (key_of_steps hP hB hG hS)
 
-theorem transferenceMinima_of (hP : PoissonBasis) (hB : DualTransport) (hG : GaussStep)
-    (hS : KeySmall) : PI.TransferenceMinima :=
-  PI.minima_of_key (key_of_steps hP hB hG hS)
 
 theorem transferenceCover_of' (hP : PoissonGauss) (hG : GaussStep) (hS : KeySmall) :
     PI.TransferenceCover := PI.cover_of_key (key_of (hG hP) hS)

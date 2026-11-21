@@ -1260,10 +1260,6 @@ theorem SameData.eq_up (r : Rest D) {ρ : Setup D.ntw} {ρ' : Setup (overD D r).
     exact (h.eG ((i)) i ((HEq.refl i)) ((j)) j ((@Eq.refl Nat (@Fin.val (overD D r).R.m j))) b).symm.trans
       (u.eG ((i)) i ((HEq.refl i)) ((j)) j ((@Eq.refl Nat (@Fin.val (overD D r).R.m j))) b)
 
-theorem CopyTw.exists_sameData {ι : D.what₂.LL →+* D'.what₂.LL} {e : ↥D'.LL0 ≃+* ↥D.LL0} (h : CopyTw D D' ι e) (ρ : Setup D.ntw) :
-    ∃ ρ' : Setup D'.ntw, SameData ρ ρ' := by
-  obtain ⟨r, rfl⟩ := h.exists_rest
-  exact ⟨setupUp r ρ, sameData_up r ρ⟩
 
 end GlobalTheory.TwInputs.Move
 

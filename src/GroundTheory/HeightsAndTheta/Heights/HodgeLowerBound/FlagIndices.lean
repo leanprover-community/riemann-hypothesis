@@ -117,18 +117,6 @@ def LowerBoundComponent.Statement : Prop :=
 
 namespace Line
 
-theorem grassmannianHeightZTwo_hypotheses :
-    2 ≤ 2 ∧ 1 ≤ 1 ∧ 1 ≤ 2 - 1 ∧ 0 < Jint Unit 2 1 (-1) ∧
-    ∀ Z : Matrix (Fin (2 - 1)) (Fin 1) ℂ, (∀ a b, ‖Z a b‖ = 1) →
-      1 / 2 * Real.log (1 + Z * Z.conjTranspose).det.re ≤ 1 / 2 * Real.log 2 := by
-  refine ⟨le_rfl, le_rfl, le_rfl, by rw [Jint_line]; norm_num, fun Z hZ => le_of_eq ?_⟩
-  have h1 : ‖Z 0 0‖ = 1 := hZ 0 0
-  have hdet : (1 + Z * Z.conjTranspose).det = 1 + Z 0 0 * starRingEnd ℂ (Z 0 0) := by
-    have h := Matrix.det_fin_one (1 + Z * Z.conjTranspose : Matrix (Fin 1) (Fin 1) ℂ)
-    refine h.trans ?_
-    simp [Matrix.mul_apply, Matrix.conjTranspose_apply]
-  rw [hdet, Complex.mul_conj, Complex.normSq_eq_norm_sq, h1]
-  norm_num
 
 variable (II : IntersectionSystem)
   (hII : ∀ W : Ideal (MRing (PBlk 2)), IsArithVar W 1 → 0 ≤ II Unit (PBlk 2) W 1 ![fsLine 2])
@@ -144,63 +132,14 @@ def projLineComponentSetting : ComponentSetting (lineData II hII) GaussianInt Ga
   rd := 1
   Lval := 0
 
-theorem projLineComponentSetting_La (B : ℕ) : (projLineComponentSetting II hII).La B = Real.log B := by
-  simp [ComponentSetting.La, projLineComponentSetting, abelian₂]
 
 theorem zero_hII : ∀ W : Ideal (MRing (PBlk 2)), IsArithVar W 1 → 0 ≤ zeroSystem Unit (PBlk 2) W 1 ![fsLine 2] :=
   fun _ _ => le_rfl
 
-theorem htInterior_line : HtInterior 1 (projLineComponentSetting zeroSystem zero_hII) := by
-  intro B p q hB _ _
-  refine ⟨1, one_pos, fun t' _ _ W _ _ _ => ?_⟩
-  have hB1 : (1 : ℝ) ≤ B := by
-    have : 1 ≤ B := le_trans (by norm_num [lineData, ComponentData.f]) hB
-    exact_mod_cast this
-  have hL : 0 ≤ Real.log B := Real.log_nonneg hB1
-  rw [projLineComponentSetting_La]
-  have h0 : htMUc (projLineComponentSetting zeroSystem zero_hII).H (projLineComponentSetting zeroSystem zero_hII).S' B p q t' W = 0 := by
-    simp [htMUc, zeroSystem]
-  rw [h0]
-  have hKA : (lineData zeroSystem zero_hII).KA = 0 := rfl
-  rw [hKA]
-  have : (0 : ℝ) ≤ 1 * ((lineData zeroSystem zero_hII).f : ℝ) * ((lineData zeroSystem zero_hII).j' : ℝ) *
-      Real.log B := by
-    have hf : ((lineData zeroSystem zero_hII).f : ℝ) = 1 := by norm_num [ComponentData.f]
-    have hj : ((lineData zeroSystem zero_hII).j' : ℝ) = 1 := by norm_num [ComponentData.j', lineData]
-    rw [hf, hj]; linarith
-  linarith
 
-theorem htBoundary_line : HtBoundary 1 (projLineComponentSetting zeroSystem zero_hII) := by
-  intro B p q hB hp hpq
-  obtain ⟨t₀, ht₀, h⟩ := htInterior_line B p q hB hp hpq
-  exact ⟨t₀, ht₀, fun t' ht0 ht1 W hW hXW _ => h t' ht0 ht1 W hW hXW fun z _ => Set.notMem_empty z⟩
 
-theorem cuspMean_line : CuspMean 1 (projLineComponentSetting II hII) := by
-  intro _ _ B hB
-  have hB1 : (1 : ℝ) ≤ B := by
-    have : 1 ≤ B := le_trans (by norm_num [lineData, ComponentData.f]) hB
-    exact_mod_cast this
-  rw [projLineComponentSetting_La]
-  have h0 : meanU (projLineComponentSetting II hII).H (projLineComponentSetting II hII).Cd = 0 := meanU_line
-  rw [h0]
-  have hf : ((lineData II hII).f : ℝ) = 1 := by norm_num [ComponentData.f]
-  have hj : ((lineData II hII).j' : ℝ) = 1 := by norm_num [ComponentData.j', lineData]
-  rw [hf, hj]
-  have := Real.log_nonneg hB1
-  linarith
 
-theorem stokesLimit_hyp_line (B : ℕ) : StokesLimit.Hyp (projLineComponentSetting zeroSystem zero_hII) B 0 := by
-  intro p q _ _
-  refine ⟨1, one_pos, fun t' _ _ => ?_⟩
-  have hKA : (lineData zeroSystem zero_hII).KA = 0 := rfl
-  have h0 : topMUc (projLineComponentSetting zeroSystem zero_hII).H (projLineComponentSetting zeroSystem zero_hII).S' B p q t' = 0 := by
-    simp [topMUc, zeroSystem]
-  rw [h0, hKA]
-  simp
 
-theorem arLimExists_line (B : ℕ) :
-    ArLimExists (projLineComponentSetting zeroSystem zero_hII).H (projLineComponentSetting zeroSystem zero_hII).S B :=
-  ⟨0, tendsto_const_nhds⟩
 
 end Line
 

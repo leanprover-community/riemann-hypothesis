@@ -30,7 +30,6 @@ def Plain (x : IrrGL k) : Prop := PlainTor x ∨ (x.IsCusp ∧ UpperTheory.Zero.
 def chars {n : ℕ} (ξ : Fin n → (kˣ →* ℂˣ)) (hξ : ∀ j, IsSmoothChar (ξ j)) : Multiset (IrrGL k) :=
   Finset.univ.val.map fun j => IrrGL.ofChar (ξ j) (hξ j)
 
-theorem unlinked_zero : Unlinked (0 : Multiset (IrrGL k)) := fun _ h => absurd h (Multiset.notMem_zero _)
 
 example (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) : Plain (IrrGL.ofChar χ hχ) :=
   Or.inr ⟨IrrGL.isCusp_ofChar χ hχ, Or.inl rfl⟩

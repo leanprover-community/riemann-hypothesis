@@ -54,8 +54,6 @@ def StatementPrimeField : Prop :=
     IsProjSurface (ZMod p) T →
       AdditiveLaw (ZMod p) T ∧ DualLaw (ZMod p) T ∧ FrobeniusLaw (ZMod p) T p
 
-theorem Statement.primeField (h : Statement) : StatementPrimeField := fun p _ T _ _ hT =>
-  ⟨(h _ T hT).1, (h _ T hT).2.1, (h _ T hT).2.2 p⟩
 
 inductive HasFlag {T : Scheme.{0}} : T.Modules → List (LB T) → Prop
 

@@ -107,49 +107,6 @@ theorem constFn_id_bijective (R : Type) [CommRing R] : Function.Bijective (const
   rw [e]
   exact ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of R)).inv
 
-theorem torus_good (N : ℕ) (q : QuadraticMap ℤ X ℝ) (hq : Filter.Tendsto q Filter.cofinite Filter.atTop)
-    {J : Type} [Fintype J] (cls : J → X) (hs : ∀ α, Short q N α ↔ α ∈ Set.range cls)
-    (hi : ∀ i j m, cls i = cls j + N • m → i = j) :
-    (torusFib k X).Good N q cls fun i => torusSec k X 1 (AddMonoidAlgebra.single (cls i) 1) := by
-  classical
-  have hinj : Function.Injective cls := fun i j h => hi i j 0 (by simpa using h)
-  have h0 : ∀ x : X, ∃ m : X, x = x + N • m := fun x => ⟨0, by simp⟩
-  have hc0 : constFn (𝟙 (Sp k)) ⊤ 0 = 0 := by simp [constFn]
-  have hsum : ∀ (a : J → k) (i₀ : J) (l), ∑ i, constFn (𝟙 (Sp k)) ⊤ (a i) *
-      (show Γ(Sp k, ⊤) from (torusFib k X).wt (torusSec k X 1 (AddMonoidAlgebra.single (cls i) 1)) (cls i₀) l) =
-        constFn (𝟙 (Sp k)) ⊤ (a i₀) := fun a i₀ l => by
-    simp only [wt_torusSec]
-    rw [Finset.sum_eq_single i₀]
-    · simp
-    · intro i _ h
-      simp [Finsupp.single_apply, hinj.ne h]
-    · simp
-  refine ⟨hq, fun i => (hs _).2 ⟨i, rfl⟩, fun i β hβ => ?_, fun α hα φ _ => ?_, fun α hα a ha h => ?_⟩
-  · obtain ⟨l, hl⟩ := hβ
-    replace hl : (AddMonoidAlgebra.single (cls i) (1 : Γ(Sp k, ⊤))).coeff β ≠ 0 :=
-      fun h => hl ((wt_torusSec k X 1 _ β l).trans h)
-    have : (β : X) = cls i := by
-      by_contra h
-      exact hl (Finsupp.single_eq_of_ne h)
-    subst this
-    exact ⟨(hs _).2 ⟨i, rfl⟩, h0 _⟩
-  · obtain ⟨i₀, rfl⟩ := (hs α).1 hα
-    obtain ⟨c, hc⟩ := (constFn_id_bijective k).2 ((torusFib k X).wt φ (cls i₀) PUnit.unit)
-    refine ⟨Pi.single i₀ c, fun i h => ?_, fun l => ?_⟩
-    · obtain rfl : i = i₀ := by
-        by_contra h'
-        exact h (Pi.single_eq_of_ne h' _)
-      exact h0 _
-    · refine Eq.trans ?_ (hsum _ i₀ l).symm
-      rw [Pi.single_eq_same, hc]
-      rfl
-  · obtain ⟨i₀, rfl⟩ := (hs α).1 hα
-    have h1 : a i₀ = 0 :=
-      (constFn_id_bijective k).1 (((hsum a i₀ PUnit.unit).symm.trans (h PUnit.unit)).trans hc0.symm)
-    funext i
-    by_contra h'
-    obtain ⟨m, hm⟩ := ha i h'
-    exact h' (hi _ _ m hm ▸ h1)
 
 end Good
 
@@ -157,12 +114,6 @@ def squareForm : QuadraticMap ℤ ℤ ℝ := QuadraticMap.linMulLin (Algebra.lin
 
 theorem squareForm_apply (x : ℤ) : squareForm x = ((x ^ 2 : ℤ) : ℝ) := by simp [squareForm, sq]
 
-theorem squareForm_tendsto : Filter.Tendsto squareForm Filter.cofinite Filter.atTop := by
-  refine Filter.tendsto_atTop.2 fun b => Filter.eventually_cofinite.2 ?_
-  refine (Set.finite_Icc (-⌈b⌉) ⌈b⌉).subset fun x hx => ?_
-  have h : ((x ^ 2 : ℤ) : ℝ) < b := by simpa [squareForm_apply] using hx
-  have h' : x ^ 2 < ⌈b⌉ := Int.lt_ceil.2 h
-  constructor <;> nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1), sq_nonneg x]
 
 theorem short_squareForm_iff (r : ℕ) (α : ℤ) : Short squareForm (2 * r + 1) α ↔ -(r : ℤ) ≤ α ∧ α ≤ r := by
   simp only [Short, squareForm_apply, Int.cast_le, nsmul_eq_mul]
@@ -188,45 +139,8 @@ theorem short_squareForm_iff (r : ℕ) (α : ℤ) : Short squareForm (2 * r + 1)
     · refine (abs_le.2 ⟨h₁, h₂⟩).trans (le_abs.2 (Or.inl ?_))
       nlinarith
 
-theorem gm_good (k : Type) [Field k] (r : ℕ) :
-    (torusFib k ℤ).Good (2 * r + 1) squareForm (J := Finset.Icc (-(r : ℤ)) r) Subtype.val
-      fun i => torusSec k ℤ 1 (AddMonoidAlgebra.single i.1 1) := by
-  refine torus_good k ℤ _ squareForm squareForm_tendsto _ (fun α => ?_) fun i j m h => Subtype.ext ?_
-  · rw [short_squareForm_iff]
-    simp
-  · obtain ⟨h₁, h₂⟩ := Finset.mem_Icc.1 i.2
-    obtain ⟨h₃, h₄⟩ := Finset.mem_Icc.1 j.2
-    simp only [nsmul_eq_mul] at h
-    push_cast at h
-    have hr : (0 : ℤ) ≤ r := Int.natCast_nonneg r
-    have : m = 0 := by
-      rcases lt_trichotomy m 0 with h' | h' | h'
-      · nlinarith
-      · exact h'
-      · nlinarith
-    simpa [this] using h
 
-theorem big_one_three_pow : Big 1 81 19683 where
-  four := by norm_num
-  lll := by
-    have : (2 : ℝ) ^ (((1 : ℕ) : ℝ) / 2) ≤ 2 ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by norm_num) (by norm_num)
-    rw [Real.rpow_one] at this
-    push_cast at this ⊢
-    linarith
-  sep := by
-    have : (2 : ℝ) ^ (((1 : ℕ) : ℝ) / 2 - 1) < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by norm_num)
-    simp only [Nat.factorial_one, pow_one]
-    push_cast at this ⊢
-    linarith
 
-theorem gm_all (k : Type) [Field k] :
-    ∃ (Φ : FibPre k) (q : QuadraticMap ℤ Φ.E.X ℝ) (J : Type) (_ : Fintype J) (cls : J → Φ.E.X)
-      (F : J → (Φ.H 1).Sec) (π : Φ.Pol 81), Φ.Good 81 q cls F ∧ Fintype.card J = 81 ∧
-        π.PB.g + Module.finrank ℤ Φ.E.X = 1 ∧ Big 1 81 19683 :=
-  ⟨torusFib k ℤ, squareForm, Finset.Icc (-((40 : ℕ) : ℤ)) (40 : ℕ), inferInstance, _, _, torusPol k ℤ 81, gm_good k 40,
-    by simp, by
-      show 0 + Module.finrank ℤ ℤ = 1
-      simp, big_one_three_pow⟩
 
 example : ¬ Short squareForm 4 3 := fun h => by have := h (-1); simp only [squareForm_apply] at this; norm_num at this
 

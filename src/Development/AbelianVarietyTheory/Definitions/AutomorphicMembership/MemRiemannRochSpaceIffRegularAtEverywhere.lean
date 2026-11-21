@@ -149,7 +149,6 @@ abbrev Fn : Type := Y.X.functionField
 
 instance algebraFn : Algebra F Y.Fn := (Cartier.constFn Y.str).toAlgebra
 
-theorem algebraMap_Fn : algebraMap F Y.Fn = Cartier.constFn Y.str := rfl
 
 instance isScalarTower_Fn : IsScalarTower F Γ(Y.X, ⊤) Y.Fn :=
   .of_algebraMap_eq fun a => congrArg (fnOf ⊤ trivial) (LB.resG_self (X := Y.X) le_top _)
@@ -208,32 +207,10 @@ def omega0 : RatForms Y.str Y.dim := baseForm Y.str Y.dim
 
 def KY : Y.Dv := canonical Y.str Y.dim
 
-theorem omega0_ne_zero : Y.omega0 ≠ 0 := baseForm_ne_zero _ _
 
-theorem isDivOfForm_KY : IsDivOfForm Y.KY Y.omega0 := isDivOfForm_canonical _ _
 
-theorem exists_frame_KY (x : Y.X) : ∃ (U : Y.X.Opens) (hx : x ∈ U)
-    (ω : TopForm.FormsOn Y.str Y.dim U) (g : Y.Fnˣ), TopForm.IsFrame ω ∧
-      Y.omega0 = (g : Y.Fn) • formOf U (gen_mem hx) ω ∧ ∀ y ∈ U, Y.KY.IsEqn y g := by
-  obtain ⟨U, ω, hx, hω⟩ := TopForm.exists_isFrame Y.str Y.dim x
-  obtain ⟨c, hc⟩ := (isFreeGen_formOf (gen_mem hx) hω).2 Y.omega0
-  have h0 : c ≠ 0 := fun e => Y.omega0_ne_zero (by rw [← hc, e]; exact zero_smul _ _)
-  exact ⟨U, hx, ω, Units.mk0 c h0, hω, hc.symm,
-    fun y hy => Y.isDivOfForm_KY U ω hω y hy _ hc.symm⟩
 
-theorem regularAt_KY_iff {U : Y.X.Opens} {x : Y.X} (hx : x ∈ U) {ω : TopForm.FormsOn Y.str Y.dim U}
-    (hω : TopForm.IsFrame ω) {f c : Y.Fn} (e : f • Y.omega0 = c • formOf U (gen_mem hx) ω) :
-    Y.KY.RegularAt x f ↔ RegAt x c := by
-  obtain ⟨g, hg⟩ := (isFreeGen_formOf (gen_mem hx) hω).2 Y.omega0
-  replace hg : g • formOf U (gen_mem hx) ω = Y.omega0 := hg
-  have h0 : g ≠ 0 := fun e => Y.omega0_ne_zero (by rw [← hg, e, zero_smul])
-  rw [← hg, smul_smul] at e
-  rw [(Y.isDivOfForm_KY U ω hω x hx (Units.mk0 g h0) hg.symm).regularAt_iff,
-    ← (isFreeGen_formOf (gen_mem hx) hω).1 e]
-  rfl
 
-theorem toPic_KY (K : CanonLB Y.str Y.dim) : toPic Y.KY = cls K.bundle K.isLB :=
-  (presents_canonical _ _).toPic_eq.trans ((cls_eq_iff _ _).2 (CanonLB.lbIso _ K))
 
 abbrev Cl : Type := Closeds Y.X
 
@@ -255,7 +232,6 @@ theorem properCl_iff (Z : Y.Cl) : Y.properCl Z ↔ genericPoint Y.X ∉ Z :=
   not_congr ⟨fun h => h.ge (Set.mem_univ _), fun h => top_le_iff.1
     (((genericPoint_spec Y.X).mem_closed_set_iff Z.isClosed).1 h)⟩
 
-theorem properCl_supp (Δ : Y.Dv) : Y.properCl (Y.supp Δ) := Δ.supp_ne_top
 
 variable {Y} in
 
@@ -282,8 +258,6 @@ abbrev sysOf {L : LB Y.X} (hL : L.IsLB) {n : ℕ} (s : Fin n → L.Sec) : LinSys
   N := n
   b := s
 
-theorem isVariety_sysOf (h : 1 ≤ Y.dim) {L : LB Y.X} (hL : L.IsLB) {n : ℕ} (s : Fin n → L.Sec) :
-    (Y.sysOf hL s).IsVariety := ⟨Y.smooth, Y.isProjOver, Y.geometricallyConnected_str, h⟩
 
 variable {Y} in
 
@@ -300,20 +274,9 @@ variable {Δ : Y.Dv} {n : ℕ} (b : Fin n → Y.H0 Δ)
 
 abbrev linSys : LinSys F := Y.sysOf (isLB_toLB Δ) fun j => sec (b j)
 
-theorem ratSet_linSys : Presents.ratSet (S := Y.linSys b) (presents_toLB Δ) =
-    Set.range fun j => (b j : Y.Fn) :=
-  congrArg Set.range (funext fun j => rat_sec (b j))
 
-theorem bpf_iff : Y.bpf Δ (Set.range fun j => (b j : Y.Fn)) ↔ (Y.linSys b).BasePointFree :=
-  Y.ratSet_linSys b ▸ Presents.basePointFree_iff (S := Y.linSys b) (presents_toLB Δ)
 
-theorem phiBir_iff : Y.phiBir Δ (Set.range fun j => (b j : Y.Fn)) ↔
-    (∃ j, (Y.linSys b).b j ≠ 0) ∧ (Y.linSys b).Birational :=
-  Y.ratSet_linSys b ▸ Presents.birational_iff (S := Y.linSys b) (presents_toLB Δ)
 
-theorem phiNoContr_iff (h : (Y.linSys b).BasePointFree) (bd : Y.Cl) :
-    Y.phiNoContr Δ (Set.range fun j => (b j : Y.Fn)) bd ↔ (Y.linSys b).NoContract bd :=
-  Y.ratSet_linSys b ▸ Presents.noContract_iff (S := Y.linSys b) (presents_toLB Δ) h bd
 
 end LinSys
 
@@ -440,28 +403,6 @@ theorem phiNoContr_hyp (bd : Y.Cl) : Y.phiNoContr (Y.hyp hi) (Set.range (Y.coord
   (Presents.noContract_iff (S := Y.coordSys) (Y.presents_hyp hi) Y.basePointFree_coordSys _).2
     (Y.noContract_coordSys _)
 
-theorem phiBir_hyp : Y.phiBir (Y.hyp hi) (Set.range (Y.coordFn hi)) := by
-  refine ⟨(Y.bpf_hyp hi).mem, (Y.bpf_hyp hi).exists_ne_zero, eq_top_iff.2 fun f _ => ?_⟩
-  have hU : IsAffineOpen (Y.ι ⁻¹ᵁ chart F Y.N i) := (isAffineOpen_chart F Y.N i).preimage _
-  have : Nonempty (Y.ι ⁻¹ᵁ chart F Y.N i :) := ⟨⟨_, hi⟩⟩
-  have := functionField_isFractionRing_of_isAffineOpen _ _ hU
-  have key (a : Γ(Y.X, Y.ι ⁻¹ᵁ chart F Y.N i)) :
-      algebraMap _ Y.Fn a ∈ ratioField F (Set.range (Y.coordFn hi)) := by
-    obtain ⟨a, rfl⟩ := Y.ι.app_surjective _ (isAffineOpen_chart F Y.N i) a
-    obtain ⟨g, rfl⟩ := aeval_ratio_surjective F Y.N i a
-    have e := Y.aeval_coordFn hi g
-    rw [chartHom, ← LB.resG_app, fnOf_resG] at e
-    refine e ▸ (?_ : aeval (Y.coordFn hi) g ∈ _)
-    clear e
-    induction g using MvPolynomial.induction_on with
-    | C a => rw [algHom_C]; exact IntermediateField.algebraMap_mem _ a
-    | add p q hp hq => rw [map_add]; exact add_mem hp hq
-    | mul_X p j hp =>
-      rw [map_mul, aeval_X]
-      exact mul_mem hp (IntermediateField.subset_adjoin _ _ ⟨_, ⟨j, rfl⟩, _, ⟨i, rfl⟩,
-        by rw [coordFn_self]; exact one_ne_zero, by rw [coordFn_self, div_one]⟩)
-  obtain ⟨a, b, -, rfl⟩ := IsFractionRing.div_surjective (A := Γ(Y.X, Y.ι ⁻¹ᵁ chart F Y.N i)) f
-  exact div_mem (key a) (key b)
 
 end Hyperplane
 
@@ -526,10 +467,6 @@ theorem finrank_riemannRoch_hyperplane : Module.finrank F ((proj F n).H0 (projHy
     ← projSys.algebraΓ_eq] at e
   exact e
 
-theorem riemannRoch_hyperplane_ne_bot : (proj F n).H0 (projHyp F n) ≠ ⊥ := fun h => by
-  have := finrank_riemannRoch_hyperplane F n
-  rw [h, finrank_bot] at this
-  omega
 
 theorem exists_nonconstant_line : ∃ f ∈ (proj F 1).H0 (projHyp F 1),
     f ∉ Set.range (algebraMap F (proj F 1).Fn) := by

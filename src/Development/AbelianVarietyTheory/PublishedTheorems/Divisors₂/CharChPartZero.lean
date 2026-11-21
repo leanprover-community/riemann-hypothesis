@@ -33,8 +33,6 @@ theorem bas_pair (a b : Fin n) : bas n {a.castAdd n, b.natAdd n} = dz a * dzb b 
   rw [bas, ExteriorAlgebra.basis_apply_ofCard _ hc, ExteriorAlgebra.ιMulti_family, ExteriorAlgebra.ιMulti_apply]
   simp [Set.powersetCard.ofFinEmbEquiv, Set.powersetCard.ofCard, e, dz, dzb, -Fin.natAdd_eq_addNat]
 
-theorem hermMat_sym (a b : Fin n) : hermMat (Complex.I • (dz a * dzb b)) a b = 1 := by
-  simp [hermMat, ← bas_pair, ← mul_assoc]
 
 end Values
 
@@ -75,9 +73,6 @@ theorem char_esymm (j : ℕ) : R.char E ⟨esymm (Fin r) ℚ j, esymm_isSymmetri
     simp only [esymm, ZeroMemClass.coe_zero]
     rw [Finset.powersetCard_eq_empty.2 (by simp; omega), Finset.sum_empty]
 
-theorem char_chPart_zero : R.char E (chPart r 0) = r := by
-  rw [← map_natCast (R.char E)]
-  exact congrArg _ (Subtype.ext (by simp [chPart, psum_zero]))
 
 theorem char_chPart_one : R.char E (chPart r 1) = R.cl E 1 := by
   rw [← char_esymm]
@@ -155,10 +150,6 @@ def dRel (π : Y ⟶ X) (W : Y.Opens) (f : Γ(Y, W)) : Γ(relCot π, W) :=
   Conormal.d (pullback.diagonal_fst π) (V := W) (W := pullback.snd π π ⁻¹ᵁ W)
     (by rw [← Scheme.Hom.comp_preimage, pullback.diagonal_snd]; exact le_rfl) ((pullback.snd π π).app W f)
 
-theorem isVB_relCot (π : Y ⟶ X) [QuasiSeparated π] (g : ℕ) [H : SmoothOfRelativeDimension g π] : IsVB (relCot π) g :=
-  have : SmoothOfRelativeDimension g (pullback.fst π π) :=
-    (smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback (IsPullback.of_hasPullback π π).flip H
-  Conormal.isVB_conormal (pullback.diagonal_fst π) g
 
 variable (q) in
 

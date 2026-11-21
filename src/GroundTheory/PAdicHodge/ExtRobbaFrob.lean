@@ -413,9 +413,6 @@ def toB : T.B ≃+* T.B :=
 theorem toB_algebraMap (x : Γ) : F.toB (algebraMap Γ T.B x) = algebraMap Γ T.B (F.φ x) :=
   F.toBHom_algebraMap x
 
-theorem toB_symm_algebraMap (x : Γ) :
-    F.toB.symm (algebraMap Γ T.B x) = algebraMap Γ T.B (F.φ.symm x) :=
-  F.toBSymmHom_algebraMap x
 
 theorem toB_mul_pow_eq {b : T.B} {x : Γ} {N : ℕ}
     (hb : b * algebraMap Γ T.B T.π ^ N = algebraMap Γ T.B x) {v : Γ} (hv : F.u * v = 1) :

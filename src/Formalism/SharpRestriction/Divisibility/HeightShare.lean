@@ -398,7 +398,6 @@ def adm9 : Prop := GloballyGeneratedNef X.geo
 
 def admitted : Prop := AdmG X.geo
 
-theorem hilbert_samuel_of_hypotheses (h : admitted D X) : adm7 D X := h.2.2.2.2.1
 
 def Stmt (C : ℝ) : Prop := ShareGeneral X.geo C
 

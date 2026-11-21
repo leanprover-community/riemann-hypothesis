@@ -134,47 +134,5 @@ theorem red_local {R K : Type*} [CommRing R] [IsDomain R] [IsPrincipalIdealRing 
     rw [h3] at this
     exact not_isUnit_zero this
 
-theorem redHomGen : RedHomGen := by
-  intro E _ _ k g hg v hv he M hM G hG _
-  obtain ⟨e⟩ := he
-  have hvbot : v ≠ ⊥ := by
-    intro h
-    apply NumberField.RingOfIntegers.not_isField E
-    rw [Ring.isField_iff_maximal_bot]
-    exact h ▸ hv
-  have hS : v.primeCompl ≤ nonZeroDivisors (𝓞 E) := Ideal.primeCompl_le_nonZeroDivisors v
-  let R : Subalgebra (𝓞 E) E := Localization.subalgebra.ofField E v.primeCompl hS
-  have hloc : IsLocalization.AtPrime R v :=
-    Localization.subalgebra.isLocalization_ofField E v.primeCompl hS
-  have hlr : IsLocalRing R := IsLocalization.AtPrime.isLocalRing R v
-  have hdvr : IsDiscreteValuationRing R :=
-    IsLocalization.AtPrime.isDiscreteValuationRing_of_dedekind_domain (𝓞 E) hvbot R
-  let φ : R →+* ZMod g :=
-    ((e : (𝓞 E ⧸ v) →+* ZMod g).comp
-      ((IsLocalization.AtPrime.equivQuotMaximalIdeal v R).symm :
-        (R ⧸ IsLocalRing.maximalIdeal R) →+* (𝓞 E ⧸ v))).comp
-      (Ideal.Quotient.mk (IsLocalRing.maximalIdeal R))
-  have hφ : ∀ x, φ x ≠ 0 → IsUnit x := by
-    intro x hx
-    by_contra hnu
-    apply hx
-    have h0 : Ideal.Quotient.mk (IsLocalRing.maximalIdeal R) x = 0 :=
-      Ideal.Quotient.eq_zero_iff_mem.2 ((IsLocalRing.mem_maximalIdeal x).2 hnu)
-    simp [φ, h0]
-  let L : Submodule R (Fin k → E) := Submodule.span R (M : Set (Fin k → E))
-  have hL : Submodule.IsLattice E L :=
-    { fg := by
-        obtain ⟨s, hs⟩ := hM.fg
-        refine ⟨s, ?_⟩
-        rw [← Submodule.span_span_of_tower (𝓞 E) R (s : Set (Fin k → E)), hs]
-      span_eq_top := by
-        rw [Submodule.span_span_of_tower R E (M : Set (Fin k → E))]
-        exact hM.span_eq_top }
-  have hGL : ∀ a ∈ G, ∀ x ∈ L, a x ∈ L := by
-    intro a ha
-    have : L ≤ L.comap (a.toLinearMap.restrictScalars R) :=
-      Submodule.span_le.2 fun x hx => Submodule.subset_span (hG a ha x hx)
-    exact fun x hx => this hx
-  exact red_local k g hg φ hφ L G hGL
 
 end Formalism.MainNotions.Gaps.MI

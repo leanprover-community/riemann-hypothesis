@@ -313,9 +313,6 @@ def torusPts : (specO O O ⟶ splitTorus (Sp O) P.Ext.X) →* (specO O O ⟶ P.G
 
 def tateTorus : Submodule ℤ_[p] P.T := LinearMap.range (Tate.map p (P.toA.comp P.torusPts))
 
-theorem tateTorus_le_tateGt : P.tateTorus ≤ P.tateGt := by
-  rintro _ ⟨t, rfl⟩
-  exact ⟨Tate.map p P.torusPts t, Tate.ext fun n => rfl⟩
 
 variable [IsAlgClosed C] [CharZero C]
 

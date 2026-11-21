@@ -15,6 +15,5 @@ theorem stableBlockSA : StableBlockSA :=
 
 theorem mult (hW : GalWeak 4) : Mult := mult_of hW (compOf' hW) stableBlockSA
 
-theorem mult_of_litN (P : GlobalTheory.Mem.LiteralAutomorphy.LitN) : Mult := mult (galWeak_of_litN P 4)
 
 end UpperTheory.V.Z.Mult

@@ -583,17 +583,6 @@ def Conclusion₂ (D : D7) (Lv : LevelData D) (sc : Scale) (C3 C0 C : ℝ) : Pro
 def Stmt (D : D7) (Lv : LevelData D) (sc : Scale) (C3 C0 C : ℝ) : Prop :=
   admitted D Lv → TiesP D → Conclusion₂ D Lv sc C3 C0 C
 
-theorem stmt_of_items (D : D7) (Lv : LevelData D) (sc : Scale) (C3 C0 C : ℝ)
-    (h1 : IntegralityFromMetric D) (h2a : AbsoluteConstantSecondPart D) (h2 : HodgeTateFromSandwich D) (h3a : TheoremThreeCompactDual D C3) (h3 : TowerRallisLemma D C3)
-    (h4 : ThetaChernBoundOfLastLine D Lv C3) (h4B : PartFourSectionBStatement D Lv sc C3 C0) (h5 : GGFromIrreducibility D sc C3 C0 C) :
-    Stmt D Lv sc C3 C0 C := by
-  rintro ⟨hA3, h17⟩ ⟨hV, hc, hd⟩
-  have p2 := h2 h1 hV
-  have p3a := h3a hA3 hc
-  have p3 := h3 p3a hA3.2.2 hd
-  have p4 := h4 p2 p3 h17
-  have p4B := h4B p4
-  exact ⟨h1, h2a h1, p2, p3a, p3, p4, p4B, h5 p2 p3 p4.1 p4.2.1 p4B⟩
 
 section Fam
 

@@ -82,34 +82,7 @@ variable {k r : ℕ}
 
 def KK (k r : ℕ) : Set (Mat k r) := GV k r ∩ (Matrix.unitaryGroup (Fin (2 * r + k + 1)) ℂ : Set _)
 
-theorem kk_closed (h : UnitaryGroupStructuralFacts) : IsClosed {x : Mt k r | (Matrix.of x : Mat k r) ∈ KK k r} := by
-  have h1 : IsClosed {x : Mt k r | (Matrix.of x : Mat k r)ᴴ * Matrix.of x = 1} :=
-    isClosed_eq ((continuous_id.matrix_conjTranspose).matrix_mul continuous_id) continuous_const
-  have e : {x : Mt k r | (Matrix.of x : Mat k r) ∈ KK k r} =
-      {y : Mt k r | (Matrix.of y : Mat k r) ∈ GV k r} ∩ {x : Mt k r | (Matrix.of x : Mat k r)ᴴ * Matrix.of x = 1} := by
-    ext x
-    exact and_congr_right fun _ => Matrix.mem_unitaryGroup_iff'
-  rw [e]
-  exact (SquareIntegrabilityOnOrbit.closed_GV h).inter h1
 
-theorem kk_sub (h : UnitaryGroupStructuralFacts) : IsClosedSubgroup (KK k r) where
-  one_mem := ⟨SquareIntegrabilityOnOrbit.gv_one', one_mem _⟩
-  mul_mem a ha b hb := ⟨gv_mul ha.1 hb.1, mul_mem ha.2 hb.2⟩
-  inv_mem a ha := by
-    refine ⟨gv_inv ha.1, ?_⟩
-    have p1 : aᴴ * a = 1 := Matrix.mem_unitaryGroup_iff'.1 ha.2
-    rw [Matrix.inv_eq_left_inv p1]
-    refine Matrix.mem_unitaryGroup_iff.2 ?_
-    show aᴴ * (aᴴ)ᴴ = 1
-    rw [Matrix.conjTranspose_conjTranspose, p1]
-  unit a ha := Matrix.isUnit_det_of_left_inverse (gv_inv_mul ha.1)
-  closed := kk_closed h
 
-theorem kk_compact (h : UnitaryGroupStructuralFacts) : IsCompact {x : Mt k r | (Matrix.of x : Mat k r) ∈ KK k r} := by
-  refine Metric.isCompact_of_isClosed_isBounded (kk_closed h) ?_
-  refine (Metric.isBounded_closedBall (x := (0 : Mt k r)) (r := 1)).subset fun x hx => ?_
-  rw [mem_closedBall_zero_iff]
-  refine (pi_norm_le_iff_of_nonneg zero_le_one).2 fun i => (pi_norm_le_iff_of_nonneg zero_le_one).2 fun j => ?_
-  exact entry_norm_bound_of_unitary hx.2 i j
 
 end ReciprocityTheory.ChartRestriction.DS.Mult1.Down.KF

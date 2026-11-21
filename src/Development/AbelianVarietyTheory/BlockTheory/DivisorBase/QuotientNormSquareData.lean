@@ -92,26 +92,7 @@ def SlopeBound [StarRing L] (hh : ℝ) : Prop :=
   ∀ K' : Submodule (𝓞 L) (ε → L), K' ≤ D.glued → K' ≠ ⊥ →
     Formalism.HN.muDef (Pi.basisFun L ε) D.XE K' ≤ hh - D.logKap
 
-theorem rowLat_fg (t : T) : (D.rowLat t).FG := by
-  have h1 : (D.M t ⊓ (D.V₀ t).restrictScalars (𝓞 L)).FG :=
-    (D.M_lattice t).fg.of_le inf_le_left
-  refine Submodule.fg_of_fg_map_injective (D.psi.mulVecLin.restrictScalars (𝓞 L))
-    D.psi_injective ?_
-  exact (h1.map _).of_le (Submodule.map_comap_le _ _)
 
-theorem glued_fg [Finite T] : D.glued.FG := by
-  have hS : (⨆ t, D.rowLat t).FG := Submodule.fg_iSup _ D.rowLat_fg
-  refine hS.of_le fun x hx => ?_
-  by_contra hne
-  let I : Ideal (𝓞 L) := (⨆ t, D.rowLat t).comap (LinearMap.toSpanSingleton (𝓞 L) _ x)
-  have hI : I ≠ ⊤ := by
-    intro h
-    have : (1 : 𝓞 L) ∈ I := h ▸ Submodule.mem_top
-    exact hne (by simpa [I] using this)
-  obtain ⟨P, hP, hle⟩ := Ideal.exists_le_maximal I hI
-  obtain ⟨s, hs, hsx⟩ := hx ⟨P, hP.isPrime,
-    Ring.ne_bot_of_isMaximal_of_not_isField hP (RingOfIntegers.not_isField L)⟩
-  exact hs (hle (show s • x ∈ ⨆ t, D.rowLat t from le_iSup D.rowLat _ hsx))
 
 end RowData
 
@@ -121,27 +102,6 @@ def RowSlopeBound {L : Type} [Field L] [NumberField L] [IsTotallyComplex L] [Sta
     [DecidableEq ε] {m : ℕ} (D : RowData L T κ τ ε C m) (x e CH : ℝ) (_hx : 0 < x) : Prop :=
   D.SlopeBound (x ^ CH * Real.exp (x ^ e))
 
-theorem RowData.slopeBound_iff [StarRing L] {T : Type} [Finite T] {κ : T → Type} [∀ t, Fintype (κ t)]
-    [∀ t, DecidableEq (κ t)] {τ ε C : Type} [Fintype ε] [DecidableEq ε] {m : ℕ}
-    (D : RowData L T κ τ ε C m) (h0 : D.glued ≠ ⊥) (hh : ℝ) :
-    D.SlopeBound hh ↔ Formalism.HN.muMaxDef (Pi.basisFun L ε) D.XE D.glued ≤ hh - D.logKap := by
-  have hl := fun N hN => Formalism.HN.plLat L (ε → L) ε (Pi.basisFun L ε) D.XE D.XE_unit N hN
-  have hc := Formalism.HN.muChar (𝓞 L) _ _ _ _ (hl _ D.glued_fg).1 h0
-  constructor
-  · intro h
-    obtain ⟨N, hN, hN0, hs⟩ := hc.2.2.1
-    have := h N hN.1 hN0
-    unfold Formalism.HN.muDef at this
-    unfold Formalism.HN.muMaxDef
-    rwa [← hs]
-  · intro h N hN hN0
-    refine le_trans ?_ h
-    have h1 := (hc.1 _).1 le_rfl
-    have hcN := Formalism.HN.muChar (𝓞 L) _ _ _ _ (hl _ (D.glued_fg.of_le hN)).1 hN0
-    have h2 := (hcN.1 _).2 fun N' hN' => h1 N' (hN'.trans hN)
-    have h3 := hcN.2.2.2.2
-    unfold Formalism.HN.muDef Formalism.HN.muMaxDef
-    linarith
 
 open Classical in
 

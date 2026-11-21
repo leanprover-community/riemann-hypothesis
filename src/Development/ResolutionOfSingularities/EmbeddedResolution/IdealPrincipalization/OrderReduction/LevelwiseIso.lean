@@ -48,8 +48,6 @@ structure BlowupSequenceData.LevelwiseIsoOver {Y₁ Y₂ : Scheme.{u}} (φ : Y�
   center_compat : ∀ (i : ℕ) (hi : i < t₁.length),
     (t₂.center i).comap (iso i hi.le).hom = t₁.center i
 
-private theorem nontrivialPart_nil {X : Scheme.{u}} :
-    MarkedIdealWithBoundary.nontrivialPart ([] : List X.IdealSheafData) = [] := rfl
 
 end FunctorialResolution.EmbeddedResolution
 

@@ -55,109 +55,20 @@ theorem Lam_sub (hg : Continuous g) (q : ℤ) {f f' : U2 → ℂ} (hf : Continuo
   rw [← integral_sub (integrable_Lam hg q hf) (integrable_Lam hg q hf')]
   congr 1; funext k; ring
 
-theorem Lam_const_mul (q : ℤ) (c : ℂ) (f : U2 → ℂ) :
-    abelian₂ g q (fun k => c * f k) = c * abelian₂ g q f := by
-  unfold abelian₂
-  rw [← integral_const_mul]
-  congr 1; funext k; ring
 
-theorem Lam_sum (hg : Continuous g) (q : ℤ) {ι : Type*} (s : Finset ι) {f : ι → U2 → ℂ}
-    (hf : ∀ i, Continuous (f i)) : abelian₂ g q (fun k => ∑ i ∈ s, f i k) = ∑ i ∈ s, abelian₂ g q (f i) := by
-  unfold abelian₂
-  rw [← integral_finset_sum s (fun i _ => integrable_Lam hg q (hf i))]
-  congr 1; funext k; rw [Finset.sum_mul, Finset.sum_mul]
 
-theorem Lam_congr (q : ℤ) {f f' : U2 → ℂ} (h : ∀ k, f k = f' k) : abelian₂ g q f = abelian₂ g q f' := by
-  unfold abelian₂; congr 1; funext k; rw [h]
 
 theorem mono_shift (α β γ δ : ℕ) (k : U2) :
     mono (α + 1) β γ (δ + 1) k - mono α (β + 1) (γ + 1) δ k = mono α β γ δ k * detU k := by
   simp only [mono, detU_eq]; ring
 
-theorem Lam_shift (hg : Continuous g) (q : ℤ) (α β γ δ : ℕ) :
-    abelian₂ g q (mono (α + 1) β γ (δ + 1)) - abelian₂ g q (mono α (β + 1) (γ + 1) δ) =
-      abelian₂ g (q + 1) (mono α β γ δ) := by
-  rw [← Lam_sub hg q (continuous_mono _ _ _ _) (continuous_mono _ _ _ _)]
-  unfold abelian₂; congr 1; funext k
-  simp only
-  rw [mono_shift, zpow_add_one₀ (detU_ne_zero k)]; ring
 
-theorem Lam_class (hg : Continuous g) {N : ℕ}
-    (hS : ∀ α β γ δ : ℕ, α + β + γ + δ < N → ∀ q : ℤ, abelian₂ g q (mono α β γ δ) = 0)
-    (q : ℤ) : ∀ (e : ℕ) (α β γ δ α' β' γ' δ' : ℕ), α + β + γ + δ = N → δ' = δ + e →
-      α + β = α' + β' → γ + δ = γ' + δ' → β + δ = β' + δ' →
-      abelian₂ g q (mono α' β' γ' δ') = abelian₂ g q (mono α β γ δ) := by
-  intro e
-  induction e with
-  | zero =>
-    intro α β γ δ α' β' γ' δ' _ he h1 h2 h3
-    have : α' = α ∧ β' = β ∧ γ' = γ ∧ δ' = δ := by omega
-    obtain ⟨rfl, rfl, rfl, rfl⟩ := this
-    rfl
-  | succ e ih =>
-    intro α β γ δ α' β' γ' δ' hN he h1 h2 h3
-    obtain ⟨a, rfl⟩ : ∃ a, α' = a + 1 := ⟨α' - 1, by omega⟩
-    obtain ⟨d, rfl⟩ : ∃ d, δ' = d + 1 := ⟨δ' - 1, by omega⟩
-    have hsh := Lam_shift hg q a β' γ' d
-    have hlow : abelian₂ g (q + 1) (mono a β' γ' d) = 0 := hS _ _ _ _ (by omega) _
-    rw [hlow, sub_eq_zero] at hsh
-    rw [hsh]
-    exact ih α β γ δ a (β' + 1) (γ' + 1) d hN (by omega) (by omega) (by omega) (by omega)
 
 noncomputable def coef (N m d : ℕ) (k : U2) : ℂ :=
   ∑ ij ∈ antidiagonal d, ((m.choose ij.1 * (N - m).choose ij.2 : ℕ) : ℂ) *
     mono (N - m - ij.2) ij.2 (m - ij.1) ij.1 k
 
-theorem Lam_class' (hg : Continuous g) {N : ℕ}
-    (hS : ∀ α β γ δ : ℕ, α + β + γ + δ < N → ∀ q : ℤ, abelian₂ g q (mono α β γ δ) = 0)
-    (q : ℤ) {α β γ δ α' β' γ' δ' : ℕ} (hN : α + β + γ + δ = N) (hN' : α' + β' + γ' + δ' = N)
-    (h1 : α + β = α' + β') (h2 : γ + δ = γ' + δ') (h3 : β + δ = β' + δ') :
-    abelian₂ g q (mono α' β' γ' δ') = abelian₂ g q (mono α β γ δ) := by
-  rcases le_total δ δ' with h | h
-  · exact Lam_class hg hS q (δ' - δ) α β γ δ α' β' γ' δ' hN (by omega) h1 h2 h3
-  · exact (Lam_class hg hS q (δ - δ') α' β' γ' δ' α β γ δ hN' (by omega) h1.symm h2.symm
-      h3.symm).symm
 
-theorem Lam_mono_eq_zero (hg : Continuous g)
-    (hcoef : ∀ (N m d : ℕ) (q : ℤ), m ≤ N → d ≤ N → abelian₂ g q (coef N m d) = 0) :
-    ∀ (N α β γ δ : ℕ), α + β + γ + δ = N → ∀ q : ℤ, abelian₂ g q (mono α β γ δ) = 0 := by
-  intro N
-  induction N using Nat.strong_induction_on with
-  | _ N ih =>
-  intro α β γ δ hN q
-  have hS : ∀ α β γ δ : ℕ, α + β + γ + δ < N → ∀ q : ℤ, abelian₂ g q (mono α β γ δ) = 0 :=
-    fun a b c d h q => ih _ h a b c d rfl q
-  set m := γ + δ with hm
-  set d := β + δ with hd
-  have hc := hcoef N m d q (by omega) (by omega)
-  have hsum : abelian₂ g q (coef N m d) = ((N.choose d : ℕ) : ℂ) * abelian₂ g q (mono α β γ δ) := by
-    unfold coef
-    rw [Lam_sum hg q (antidiagonal d) (f := fun (ij : ℕ × ℕ) k => ((m.choose ij.1 * (N - m).choose ij.2 : ℕ) : ℂ) *
-      mono (N - m - ij.2) ij.2 (m - ij.1) ij.1 k)
-      (fun ij => continuous_const.mul (continuous_mono _ _ _ _))]
-    simp_rw [Lam_const_mul]
-    have hterm : ∀ ij ∈ antidiagonal d,
-        ((m.choose ij.1 * (N - m).choose ij.2 : ℕ) : ℂ) *
-            abelian₂ g q (mono (N - m - ij.2) ij.2 (m - ij.1) ij.1) =
-          ((m.choose ij.1 * (N - m).choose ij.2 : ℕ) : ℂ) * abelian₂ g q (mono α β γ δ) := by
-      intro ij hij
-      rw [Finset.HasAntidiagonal.mem_antidiagonal] at hij
-      by_cases hv : ij.1 ≤ m ∧ ij.2 ≤ N - m
-      · rw [Lam_class' hg hS q hN (by omega) (by omega) (by omega) (by omega)]
-      · have h0 : m.choose ij.1 * (N - m).choose ij.2 = 0 := by
-          rcases not_and_or.1 hv with h | h
-          · rw [Nat.choose_eq_zero_of_lt (n := m) (k := ij.1) (by omega), zero_mul]
-          · rw [Nat.choose_eq_zero_of_lt (n := N - m) (k := ij.2) (by omega), mul_zero]
-        rw [h0]; simp
-    rw [Finset.sum_congr rfl hterm, ← Finset.sum_mul]
-    congr 1
-    have hv := Nat.add_choose_eq m (N - m) d
-    rw [show m + (N - m) = N by omega] at hv
-    rw [hv]; push_cast; rfl
-  rw [hsum] at hc
-  have hne : ((N.choose d : ℕ) : ℂ) ≠ 0 := by
-    exact_mod_cast (Nat.choose_pos (by omega)).ne'
-  exact (mul_eq_zero.1 hc).resolve_left hne
 
 theorem coeff_eq_zero_of_forall {N : ℕ} {a : ℕ → ℂ}
     (h : ∀ s : ℂ, ∑ i ∈ range (N + 1), s ^ i * a i = 0) : ∀ i ≤ N, a i = 0 := by
@@ -223,47 +134,6 @@ theorem continuous_coef (N m d : ℕ) : Continuous (coef N m d) := by
   unfold coef
   exact continuous_finset_sum _ fun ij _ => continuous_const.mul (continuous_mono _ _ _ _)
 
-theorem Lam_coef_eq_zero (hg : Continuous g)
-    (h0 : ∀ (n : ℕ) (q : ℤ) (s r : ℂ), abelian₂ g q (fun k =>
-      (ent 0 0 k + r * ent 0 1 k + s * ent 1 0 k + s * r * ent 1 1 k) ^ n) = 0) :
-    ∀ (N m d : ℕ) (q : ℤ), m ≤ N → d ≤ N → abelian₂ g q (coef N m d) = 0 := by
-  intro N m d q hm hd
-
-  have h1 : ∀ r : ℂ, abelian₂ g q (fun k => (ent 1 0 k + r * ent 1 1 k) ^ m *
-      (ent 0 0 k + r * ent 0 1 k) ^ (N - m)) = 0 := by
-    intro r
-    have hB : Continuous fun k => ent 1 0 k + r * ent 1 1 k :=
-      (continuous_ent 1 0).add (continuous_const.mul (continuous_ent 1 1))
-    have hA : Continuous fun k => ent 0 0 k + r * ent 0 1 k :=
-      (continuous_ent 0 0).add (continuous_const.mul (continuous_ent 0 1))
-    have hc : ∀ s : ℂ, ∑ j ∈ range (N + 1), s ^ j * ((N.choose j : ℂ) *
-        abelian₂ g q (fun k => (ent 1 0 k + r * ent 1 1 k) ^ j * (ent 0 0 k + r * ent 0 1 k) ^ (N - j)))
-          = 0 := by
-      intro s
-      have e : ∀ k, (ent 0 0 k + r * ent 0 1 k + s * ent 1 0 k + s * r * ent 1 1 k) ^ N =
-          ∑ j ∈ range (N + 1), s ^ j * ((N.choose j : ℂ) *
-            ((ent 1 0 k + r * ent 1 1 k) ^ j * (ent 0 0 k + r * ent 0 1 k) ^ (N - j))) := by
-        intro k
-        rw [show ent 0 0 k + r * ent 0 1 k + s * ent 1 0 k + s * r * ent 1 1 k =
-          s * (ent 1 0 k + r * ent 1 1 k) + (ent 0 0 k + r * ent 0 1 k) by ring, add_pow]
-        refine Finset.sum_congr rfl fun j _ => ?_
-        rw [mul_pow]; ring
-      have := h0 N q s r
-      rw [Lam_congr q e, Lam_sum hg q _ (f := fun (j : ℕ) k => s ^ j * ((N.choose j : ℂ) *
-            ((ent 1 0 k + r * ent 1 1 k) ^ j * (ent 0 0 k + r * ent 0 1 k) ^ (N - j))))
-        (fun j => continuous_const.mul (continuous_const.mul ((hB.pow j).mul (hA.pow _))))] at this
-      simp_rw [Lam_const_mul] at this
-      exact this
-    have h := coeff_eq_zero_of_forall hc m hm
-    have hne : (N.choose m : ℂ) ≠ 0 := by exact_mod_cast (Nat.choose_pos hm).ne'
-    exact (mul_eq_zero.1 h).resolve_left hne
-
-  refine coeff_eq_zero_of_forall (N := N) (a := fun j => abelian₂ g q (coef N m j)) (fun r => ?_) d hd
-  have := h1 r
-  rw [Lam_congr q (coef_expand N m hm r), Lam_sum hg q _ (f := fun (j : ℕ) k => r ^ j * coef N m j k)
-    (fun j => continuous_const.mul (continuous_coef N m j))] at this
-  simp_rw [Lam_const_mul] at this
-  exact this
 
 noncomputable def rowU (p q : ℂ) (h : normSq p + normSq q = 1) : U2 :=
   ⟨!![p, q; -(starRingEnd ℂ) q, (starRingEnd ℂ) p], by
@@ -287,44 +157,8 @@ noncomputable def colU (p q : ℂ) (h : normSq p + normSq q = 1) : U2 :=
       simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.star_eq_conjTranspose] <;>
       first | linear_combination h' | ring⟩
 
-theorem normSq_unit (s : ℂ) :
-    normSq ((Real.sqrt (1 + normSq s))⁻¹ : ℂ) + normSq (s * (Real.sqrt (1 + normSq s))⁻¹ : ℂ) = 1 := by
-  have hpos : 0 < 1 + normSq s := by have := normSq_nonneg s; linarith
-  have hsq : Real.sqrt (1 + normSq s) ^ 2 = 1 + normSq s := Real.sq_sqrt hpos.le
-  have hne : Real.sqrt (1 + normSq s) ≠ 0 := (Real.sqrt_pos.2 hpos).ne'
-  rw [map_mul, ← Complex.ofReal_inv, Complex.normSq_ofReal]
-  field_simp
-  nlinarith [hsq]
 
-theorem corner_rowU_mul_colU (s r : ℂ) (k : U2) :
-    (((rowU _ _ (normSq_unit s) * k * colU _ _ (normSq_unit r) : U2) : Matrix (Fin 2) (Fin 2) ℂ) 0 0) =
-      ((Real.sqrt (1 + normSq s))⁻¹ * (Real.sqrt (1 + normSq r))⁻¹ : ℂ) *
-        (ent 0 0 k + r * ent 0 1 k + s * ent 1 0 k + s * r * ent 1 1 k) := by
-  simp only [Matrix.UnitaryGroup.mul_val, rowU, colU, ent, Matrix.mul_apply, Fin.sum_univ_two]
-  simp
-  ring
 
-theorem Lam_rankOne_eq_zero (hg : Continuous g)
-    (h : ∀ (n : ℕ) (q : ℤ) (l₁ l₂ : U2), ∫ k, ((((l₁ * k * l₂ : U2) : Matrix (Fin 2) (Fin 2) ℂ) 0 0) ^ n *
-      ((k : Matrix (Fin 2) (Fin 2) ℂ).det) ^ q * g k) ∂μK = 0) :
-    ∀ (n : ℕ) (q : ℤ) (s r : ℂ), abelian₂ g q (fun k =>
-      (ent 0 0 k + r * ent 0 1 k + s * ent 1 0 k + s * r * ent 1 1 k) ^ n) = 0 := by
-  intro n q s r
-  have h1 := h n q (rowU _ _ (normSq_unit s)) (colU _ _ (normSq_unit r))
-  simp_rw [corner_rowU_mul_colU] at h1
-  set c : ℂ := ((Real.sqrt (1 + normSq s))⁻¹ * (Real.sqrt (1 + normSq r))⁻¹ : ℂ) with hc
-  have hc0 : c ≠ 0 := by
-    have h1 : 0 < 1 + normSq s := by have := normSq_nonneg s; linarith
-    have h2 : 0 < 1 + normSq r := by have := normSq_nonneg r; linarith
-    rw [hc]
-    exact mul_ne_zero (Complex.ofReal_ne_zero.2 (inv_pos.2 (Real.sqrt_pos.2 h1)).ne')
-      (Complex.ofReal_ne_zero.2 (inv_pos.2 (Real.sqrt_pos.2 h2)).ne')
-  have e : (∫ k, (c * (ent 0 0 k + r * ent 0 1 k + s * ent 1 0 k + s * r * ent 1 1 k)) ^ n *
-      ((k : Matrix (Fin 2) (Fin 2) ℂ).det) ^ q * g k ∂μK) = c ^ n * abelian₂ g q (fun k =>
-        (ent 0 0 k + r * ent 0 1 k + s * ent 1 0 k + s * r * ent 1 1 k) ^ n) := by
-    rw [← Lam_const_mul]; unfold abelian₂; congr 1; funext k; simp only [detU, mul_pow]
-  rw [e] at h1
-  exact (mul_eq_zero.1 h1).resolve_left (pow_ne_zero n hc0)
 
 theorem star_eq_adjugate (k : U2) :
     star (k : Matrix (Fin 2) (Fin 2) ℂ) = (detU k)⁻¹ • (k : Matrix (Fin 2) (Fin 2) ℂ).adjugate := by
@@ -409,22 +243,7 @@ noncomputable def monoAlg : StarSubalgebra ℂ C(U2, ℂ) :=
       | add x y _ _ hx hy => rw [star_add]; exact Submodule.add_mem _ hx hy
       | smul c x _ hx => rw [star_smul]; exact Submodule.smul_mem _ _ hx }
 
-theorem mem_monoAlg_iff {f : C(U2, ℂ)} : f ∈ monoAlg ↔ f ∈ Submodule.span ℂ monoSet := Iff.rfl
 
-theorem monoAlg_separatesPoints : (monoAlg.toSubalgebra).SeparatesPoints := by
-  intro x y hxy
-  have : ∃ a b, (x : Matrix (Fin 2) (Fin 2) ℂ) a b ≠ (y : Matrix (Fin 2) (Fin 2) ℂ) a b := by
-    by_contra hc
-    push_neg at hc
-    exact hxy (Matrix.UnitaryGroup.ext x y hc)
-  obtain ⟨a, b, hab⟩ := this
-  have hmem : ∀ (α β γ δ : ℕ), (monoDet α β γ δ 0 : C(U2, ℂ)) ∈ monoAlg := fun α β γ δ =>
-    Submodule.subset_span ⟨α, β, γ, δ, 0, rfl⟩
-  fin_cases a <;> fin_cases b
-  · exact ⟨_, ⟨monoDet 1 0 0 0 0, hmem 1 0 0 0, rfl⟩, by simpa [mono, ent] using hab⟩
-  · exact ⟨_, ⟨monoDet 0 1 0 0 0, hmem 0 1 0 0, rfl⟩, by simpa [mono, ent] using hab⟩
-  · exact ⟨_, ⟨monoDet 0 0 1 0 0, hmem 0 0 1 0, rfl⟩, by simpa [mono, ent] using hab⟩
-  · exact ⟨_, ⟨monoDet 0 0 0 1 0, hmem 0 0 0 1, rfl⟩, by simpa [mono, ent] using hab⟩
 
 theorem eq_zero_of_forall_integral_coeff {g : U2 → ℂ} (hg : Continuous g)
     (h : ∀ (n : ℕ) (q : ℤ) (l₁ l₂ : U2), ∫ k, ((((l₁ * k * l₂ : U2) : Matrix (Fin 2) (Fin 2) ℂ) 0 0) ^ n *

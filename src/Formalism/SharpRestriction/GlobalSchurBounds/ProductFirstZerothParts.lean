@@ -84,7 +84,6 @@ def KT (i : ℕ) : Fn D u i →ₗ[ℂ] Fn D u (i + 1) := (D.mem u).C.Klin i
 
 def colT : Fn D u 0 → Fn D u D.R.m := (D.mem u).C.col
 
-theorem KT_apply (i : ℕ) (φ : Fn D u i) : KT D u i φ = (D.mem u).C.K i φ := rfl
 
 abbrev Wt (τ : D.what₂.Tau) : ℕ := Wtau D u τ
 
@@ -115,16 +114,6 @@ def tL {i : ℕ} (w : D.what₂.places.Pl) (n : ℤ) (A : Submodule (Ow D w) (Vl
 
 abbrev Nlam (w : D.what₂.places.Pl) : Submodule (Ow D w) (Vl D u 0) := LT.Nlam D u w
 
-theorem ram_saturated (x : Vl D u 0) (hx : x ∈ ((D.fm u).lat 0).L) (r : 𝓞 D.what₂.LL) (hr : r ≠ 0)
-    (h : r • x ∈ (D.fm u).ramL) : x ∈ (D.fm u).ramL := by
-  rw [Formalism.BasicNotions.MemberForms.ramL, Submodule.mem_inf] at h ⊢
-  refine ⟨hx, ?_⟩
-  have h2 : r • x ∈ (D.fm u).ramSub := h.2
-  have hr' : (algebraMap (𝓞 D.what₂.LL) D.what₂.LL r) ≠ 0 := by simpa using hr
-  rw [← algebraMap_smul D.what₂.LL r x] at h2
-  have h3 := (D.fm u).ramSub.smul_mem (algebraMap (𝓞 D.what₂.LL) D.what₂.LL r)⁻¹ h2
-  rw [smul_smul, inv_mul_cancel₀ hr', one_smul] at h3
-  exact h3
 
 def Alcove : Prop :=
   ∀ j, j ≤ D.R.m → ∀ τ (a b : Fin (D.R.N j)),
@@ -538,25 +527,6 @@ def adm3 (G : Th22 D) : Prop := Formalism.MainNotions.TaylorLogMetric.mom22 D G.
 def ChiTie (G : Th22 D) : Prop :=
   ∃ idl : D.Dt ⧸ D.UO → Formalism.MainNotions.TaylorLogMetric.IdE D, Formalism.MainNotions.TaylorLogMetric.RelDetPinned D idl ∧ G.χ = Formalism.MainNotions.TaylorLogMetric.chiRec D idl
 
-theorem relative_determinant_equation_of_admissible (G : Th22 D) (h : adm1 G) (t : ChiTie G) : Formalism.MainNotions.TaylorLogMetric.RelativeDeterminantEquation D G.Tr G.e := by
-  obtain ⟨idl, hpin, hχ⟩ := t
-  unfold adm1 Formalism.MainNotions.TaylorLogMetric.eq22 at h
-  obtain ⟨-, h1, h2, h3⟩ := h
-  letI := D.host.cmStar
-  have key : ∀ N (L L' : SDLat D.host.E N),
-      G.χ (Formalism.MainNotions.TaylorLogMetric.detId D L.1 L'.1) = ((Formalism.MainNotions.TaylorLogMetric.chiQ D (D.relDet N L L') : ℂˣ) : ℂ) := by
-    intro N L L'
-    rw [hχ, ← hpin.2.2.2.2 N L L']
-    unfold Formalism.MainNotions.TaylorLogMetric.chiRec
-    have hex : ∃ x, idl x = idl (D.relDet N L L') := ⟨_, rfl⟩
-    rw [dif_pos hex]
-    exact congrArg (fun x => ((Formalism.MainNotions.TaylorLogMetric.chiQ D x : ℂˣ) : ℂ)) (hpin.1 hex.choose_spec)
-  unfold Formalism.MainNotions.TaylorLogMetric.RelativeDeterminantEquation
-  refine ⟨h1, fun N N' L L' L'' hN hN' => ?_, fun N N' L L₁ L' hN hN' => ?_⟩
-  · rw [h2 N N' L L' L'' hN hN']
-    simp only [key, Units.val_zpow_eq_zpow_val]
-  · rw [h3 N N' L L₁ L' hN hN']
-    simp only [key, Units.val_zpow_eq_zpow_val]
 
 def admitted (P : Pend D u) (G : Th22 D) : Prop :=
   UpDownIncidenceInverse D u ∧ admS D u ∧ adm1 G ∧ adm2 G ∧ adm3 G ∧ ArchimedeanSignatureMatching P ∧ admT D u ∧ admB D u
@@ -584,16 +554,7 @@ def FamilyEventuallyPointwiseAtConst {eps : ℝ} (Fm : Formalism.MainNotions.Fam
 
 def ShareFamilyAtConstant {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Prop := ∃ C : ℝ, FamilyEventuallyPointwiseAtConst Fm C
 
-theorem family_statement_of_pointwise_const {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C : ℝ) (h : FamilyEventuallyPointwiseAtConst Fm C) : KudlaFamilyStatement Fm C := by
-  rintro ⟨x1, hA⟩
-  obtain ⟨x0, hS⟩ := h
-  exact ⟨max x0 x1, fun x hx i u hs =>
-    hS x (le_trans (le_max_left _ _) hx) i u hs (hA x (le_trans (le_max_right _ _) hx) i u)⟩
 
-theorem family_statement_exists_of_pointwise {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h : ShareFamilyAtConstant Fm) : ExistsConstFamilyConclusionsOfHypotheses Fm := by
-  obtain ⟨C, hC⟩ := h
-  intro hA
-  exact ⟨C, family_statement_of_pointwise_const Fm C hC hA⟩
 
 def BudF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Prop :=
   ∃ C x0 : ℝ, ∀ x, x0 ≤ x → ∀ (i : Fm.Ix x) (u : (Fm.D x i).what₂.Word),

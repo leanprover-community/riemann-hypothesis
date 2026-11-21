@@ -98,11 +98,6 @@ def subEquiv (E : S' ⊗[S] X ≃ₗ[S'] X') (D : Submodule S X) (D' : Submodule
         rintro _ ⟨x, hx, rfl⟩
         exact ⟨1 ⊗ₜ ⟨x, hx⟩, by simp⟩)))))
 
-theorem subEquiv_one_tmul (E : S' ⊗[S] X ≃ₗ[S'] X') (D : Submodule S X) (D' : Submodule S' X')
-    (h₁ : ∀ x ∈ D, E (1 ⊗ₜ x) ∈ D')
-    (h₂ : D' ≤ Submodule.span S' ((fun x => E (1 ⊗ₜ x)) '' (D : Set X))) (x : D) :
-    (subEquiv E D D' h₁ h₂ (1 ⊗ₜ x) : X') = E (1 ⊗ₜ (x : X)) :=
-  rfl
 
 end FlatBC
 

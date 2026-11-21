@@ -483,9 +483,6 @@ theorem rs_toY {A B : X.Opens} {T T' : W.toScheme.Opens} (h : W.ι ''ᵁ T ≤ A
     rs hT (toY W h x) = toY W h' (rs hAB x) :=
   (rs_rs h (W.ι.image_mono hT) x).trans (rs_rs hAB h' x).symm
 
-theorem toY_toY {A B : X.Opens} {T : W.toScheme.Opens} (hAB : B ≤ A) (h' : W.ι ''ᵁ T ≤ B)
-    (h : W.ι ''ᵁ T ≤ A) (x : Γ(X, A)) : toY W h' (rs hAB x) = toY W h x :=
-  rs_rs hAB h' x
 
 theorem image_preimage_of_le {A : X.Opens} (h : A ≤ W) : W.ι ''ᵁ (W.ι ⁻¹ᵁ A) = A := by
   rw [Scheme.Hom.image_preimage_eq_opensRange_inf, Scheme.Opens.opensRange_ι, inf_eq_right.2 h]

@@ -171,11 +171,6 @@ theorem integrated_conv (f₁ f₂ : CompactlySupportedContinuousMap G ℂ) :
     kernelOperator_eq_contKernelOp, kernelOperator_eq_contKernelOp, quotientKernelC_conv,
     contKernelOp_comp]
 
-theorem isTraceClass_integrated_conv (f₁ f₂ : CompactlySupportedContinuousMap G ℂ) :
-    IsTraceClass ((rightRegularRep Γ μ).integrated μ (UnitaryRep.ccToL1 μ (conv μ f₁ f₂))) := by
-  rw [integrated_conv]
-  exact isTraceClass_comp (isHilbertSchmidt_integrated_rightRegularRep Γ μ f₁)
-    (isHilbertSchmidt_integrated_rightRegularRep Γ μ f₂)
 
 end Operator
 
@@ -194,50 +189,12 @@ def indicatorOne (K : OpenSubgroup G) (hK : IsCompact (K : Set G)) :
     exact (LocallyConstant.charFn ℂ K.isClopen).continuous
   hasCompactSupport' := HasCompactSupport.intro hK fun _ hx => indicator_of_notMem hx _
 
-theorem indicatorOne_apply (K : OpenSubgroup G) (hK : IsCompact (K : Set G)) (x : G) :
-    indicatorOne K hK x = (K : Set G).indicator 1 x :=
-  rfl
 
 variable (μ : Measure G) [μ.IsMulLeftInvariant] [IsFiniteMeasureOnCompacts μ]
 
-theorem conv_indicatorOne (K : OpenSubgroup G) (hK : IsCompact (K : Set G))
-    (f : CompactlySupportedContinuousMap G ℂ) (hf : ∀ g, ∀ k ∈ K, f (g * k) = f g) (x : G) :
-    conv μ f (indicatorOne K hK) x = (μ.real (K : Set G) : ℂ) * f x := by
-  rw [conv_apply]
-  have h : (fun g => f g * indicatorOne K hK (g⁻¹ * x)) =
-      (x • (K : Set G)).indicator (fun _ => f x) := by
-    funext g
-    by_cases hg : g ∈ x • (K : Set G)
-    · obtain ⟨k, hk, rfl⟩ := mem_smul_set.1 hg
-      have hk' : (x • k)⁻¹ * x ∈ (K : Set G) := by
-        rw [smul_eq_mul, mul_inv_rev, inv_mul_cancel_right]
-        exact inv_mem hk
-      rw [indicatorOne_apply, indicator_of_mem hk', indicator_of_mem hg, smul_eq_mul, hf x k hk,
-        Pi.one_apply, mul_one]
-    · have hx : g⁻¹ * x ∉ (K : Set G) := fun h => hg (mem_smul_set.2
-        ⟨(g⁻¹ * x)⁻¹, inv_mem h, by rw [smul_eq_mul, mul_inv_rev, inv_inv, mul_inv_cancel_left]⟩)
-      rw [indicatorOne_apply, indicator_of_notMem hx, indicator_of_notMem hg, mul_zero]
-  rw [h, integral_indicator_const _ ((K.isOpen.smul x).measurableSet)]
-  have hvol : μ.real (x • (K : Set G)) = μ.real (K : Set G) := by
-    simp [Measure.real, measure_smul]
-  rw [hvol, Complex.real_smul]
 
 variable [TotallyDisconnectedSpace G]
 
-theorem exists_eq_conv_of_isLocallyConstant [μ.IsOpenPosMeasure]
-    (f : CompactlySupportedContinuousMap G ℂ) (hf : IsLocallyConstant (f : G → ℂ)) :
-    ∃ f₁ f₂ : CompactlySupportedContinuousMap G ℂ, f = conv μ f₁ f₂ := by
-  have hmem : (f : G → ℂ) ∈ locallyConstantCompactSupport G ℂ ℂ := ⟨hf, f.hasCompactSupport⟩
-  obtain ⟨K, hKc, hK⟩ := exists_forall_mul_right hmem
-  have hpos : 0 < μ.real (K : Set G) :=
-    ENNReal.toReal_pos (K.isOpen.measure_pos μ ⟨1, K.one_mem⟩).ne' hKc.measure_lt_top.ne
-  set c : ℂ := (((μ.real (K : Set G))⁻¹ : ℝ) : ℂ)
-  refine ⟨c • f, indicatorOne K hKc, ?_⟩
-  ext x
-  rw [conv_indicatorOne μ K hKc (c • f) (fun g k hk => by
-    simp only [CompactlySupportedContinuousMap.smul_apply, hK g k hk]) x]
-  simp only [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, c]
-  rw [← mul_assoc, ← Complex.ofReal_mul, mul_inv_cancel₀ hpos.ne', Complex.ofReal_one, one_mul]
 
 end TotallyDisconnected
 
@@ -249,11 +206,6 @@ variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Loca
   (Γ : Subgroup G) [DiscreteTopology Γ] [CompactSpace (RightCosetSpace Γ)]
   (μ : Measure G) [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
 
-theorem isTraceClass_integrated_of_isLocallyConstant (f : CompactlySupportedContinuousMap G ℂ)
-    (hf : IsLocallyConstant (f : G → ℂ)) :
-    IsTraceClass ((rightRegularRep Γ μ).integrated μ (UnitaryRep.ccToL1 μ f)) := by
-  obtain ⟨f₁, f₂, rfl⟩ := exists_eq_conv_of_isLocallyConstant μ f hf
-  exact isTraceClass_integrated_conv Γ μ f₁ f₂
 
 end RightCosetSpace
 

@@ -5,7 +5,6 @@ namespace Formalism.L2.FormalSeriesBounds
 
 namespace RowTiePKey
 
-theorem projFB_of_eig (hE : KeyEigSt) : ProjFBSt := projFB_of_eig_res hE RowTiePKeyRes.keyRes_holds
 
 end RowTiePKey
 

@@ -180,9 +180,6 @@ theorem genMod_fg (M : ℕ) (hM : M ≠ 0) : ∀ (r : ℕ) (Λ : Submodule (𝓞
       simp only [hs, map_smul]
       abel
 
-theorem genMod (M : ℕ) (hM : M ≠ 0) {r : ℕ} (Λ : Submodule (𝓞 E) (Fin r → E)) (hΛ : Module.Finite (𝓞 E) Λ) :
-    GenMod Λ M :=
-  genMod_fg M hM r Λ (Module.Finite.iff_fg.1 hΛ)
 
 end Formalism.L2.GlobalTheoryTheory.TraceIntegrality.Fr
 

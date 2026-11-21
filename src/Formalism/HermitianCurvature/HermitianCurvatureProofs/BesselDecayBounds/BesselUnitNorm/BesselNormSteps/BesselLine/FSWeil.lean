@@ -97,15 +97,6 @@ theorem gHyp_sfinite {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   have : SFinite ν := sfinite_quot hGh.2.1 hq
   exact ⟨inferInstance, inferInstance, inferInstance, quot_map hq⟩
 
-theorem weilStep : WeilStep := by
-  intro k r H _ _ _ Wp _ _ _ _ z π μW μN μG ν σ hG F hF
-  obtain ⟨hWs, hNs, hνs, hmap⟩ := gHyp_sfinite hG
-  subst hmap
-  have hFm := hF.aestronglyMeasurable
-  have hI := (integrable_map_measure hFm measurable_psiMap.aemeasurable).1 hF
-  refine ⟨hI.prod_right_ae, hI.integral_prod_left, ?_⟩
-  rw [integral_map measurable_psiMap.aemeasurable hFm, integral_prod (fun w => F (Matrix.of (psiMap w))) hI]
-  rfl
 
 theorem nuStep : NuStep := by
   intro k r H _ _ _ Wp _ _ _ _ z π μW μN μG ν σ hG

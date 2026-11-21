@@ -55,10 +55,6 @@ def IsAutQN (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop
 section Conv
 variable {ι : Qbar l ≃+* ℂ} {r : G F Ω →* GL (Fin n) (Qbar l)}
 
-theorem mkCsd [IsCMField F] (h : AutCsd0 ι r) (_ : Continuous r → Wit ι r) : IsAutCsd ι r := h
-theorem mkCsd' [IsCMField F] (h : AutCsd0 ι r) (u : Continuous r → Wit ι r) : IsAutCsdN ι r := ⟨h, u⟩
-theorem csd0 [IsCMField F] (h : IsAutCsd ι r) : AutCsd0 ι r := h
-theorem csd0' [IsCMField F] (h : IsAutCsdN ι r) : AutCsd0 ι r := h.1
 omit [NumberField F] in
 theorem automorphicQ_of_witness (h : IsAutQ ι r) : IsAutomorphicOverImagQuad ι r := h
 omit [NumberField F] in

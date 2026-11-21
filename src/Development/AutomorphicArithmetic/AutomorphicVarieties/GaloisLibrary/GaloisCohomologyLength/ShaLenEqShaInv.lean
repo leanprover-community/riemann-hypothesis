@@ -83,9 +83,6 @@ theorem vvle_iff_shaInv (E : Type) [Field E] [NumberField E] (t : ℕ) (B : ℝ)
   · intro h Ω _ _ _ ld
     simpa only [shaLen_eq_shaInv] using h
 
-theorem vvle_congr {E E' : Type} [Field E] [NumberField E] [Field E'] [NumberField E'] (f : E ≃+* E') (t : ℕ) (B : ℝ) :
-    UpperTheory.Top.VVle E t B ↔ UpperTheory.Top.VVle E' t B := by
-  simp only [vvle_iff_shaInv, shaInv_congr f]
 
 end UpperTheory.V.LDataCardLeFinrank
 

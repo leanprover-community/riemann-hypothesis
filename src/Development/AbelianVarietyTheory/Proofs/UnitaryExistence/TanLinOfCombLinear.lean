@@ -178,65 +178,12 @@ variable {X S : Scheme.{0}} (x : S ⟶ X) (G : Over X) [GrpObj G]
 
 attribute [local instance] Functor.grpObjObj
 
-theorem exists_pullHom (T : Over X) (T₀ : Over S) (e : T₀.left ⟶ T.left) (he : e ≫ T.hom = T₀.hom ≫ x) :
-    ∃ Φ : (T ⟶ G) →* (T₀ ⟶ (Over.pullback x).obj G), ∀ u, (Φ u).left ≫ pullback.fst G.hom x = e ≫ u.left := by
-  let ψ : T₀ ⟶ (Over.pullback x).obj T := Over.homMk (pullback.lift e T₀.hom he) (pullback.lift_snd _ _ _)
-  refine ⟨{ toFun := fun u => ψ ≫ (Over.pullback x).map u
-            map_one' := by rw [Functor.map_one, MonObj.comp_one]
-            map_mul' := fun u w => by rw [Functor.map_mul, MonObj.comp_mul] }, fun u => ?_⟩
-  simp only [MonoidHom.coe_mk, OneHom.coe_mk, Over.comp_left, ψ, Over.homMk_left, Over.pullback_map_left]
-  erw [Category.assoc, pullback.lift_fst, pullback.lift_fst_assoc]
 
 end Pull
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable (Xo : Moduli Dw l) (c : Coeff l)
 
-theorem tanLin_of_combLinear (h : CombLinear) : TanLin Xo := by
-  intro S _ x m v hv m' w A N w' hw hw'
-  let _ : GrpObj ((Over.pullback x).obj Xo.univ.t.G) := Functor.grpObjObj
-  obtain ⟨Φ, hΦ⟩ := exists_pullHom x Xo.univ.t.G (tEps x) (epsOver S S) (𝟙 (Sp (DualNumber S))) (Category.id_comp _)
-  obtain ⟨Φ₀, hΦ₀⟩ := exists_pullHom x Xo.univ.t.G (Over.mk x) (ptOver S S) (𝟙 (Sp S))
-    ((Category.id_comp _).trans ((congrArg (· ≫ x) (Spec.map_id _)).trans (Category.id_comp _)).symm)
-  replace hΦ : ∀ u, (Φ u).left ≫ pullback.fst Xo.univ.t.G.hom x = u.left := fun u => (hΦ u).trans (Category.id_comp _)
-  have ext : ∀ {T : Over (Sp S)} (a b : T ⟶ (Over.pullback x).obj Xo.univ.t.G),
-      a.left ≫ pullback.fst Xo.univ.t.G.hom x = b.left ≫ pullback.fst Xo.univ.t.G.hom x → a = b := fun a b hab =>
-    Over.OverMorphism.ext (pullback.hom_ext hab ((Over.w a).trans (Over.w b).symm))
-  have key : ∀ {k : ℕ} (u : Fin k → (tEps x ⟶ Xo.univ.t.G)), (∀ j, IsTanAt x (u j).left) → ∀ (cf : Fin k → S)
-      (z : tEps x ⟶ Xo.univ.t.G), IsComb (fun j => Φ (u j)) cf (Φ z) ↔ IsCombAt x (fun j => (u j).left) cf z.left := by
-    intro k u hu cf z
-    have e : ∀ j, epsScal _ (cf j) (Φ (u j)) = Φ (Formalism.L2.PjFree.epsPt (hu j) (cf j)) := fun j => ext _ _ (by
-      rw [hΦ, Formalism.L2.PjFree.epsPt_left, ← hΦ (u j), ← Category.assoc]
-      rfl)
-    have e' : (List.ofFn fun j => epsScal _ (cf j) (Φ (u j))).prod =
-        Φ (List.ofFn fun j => Formalism.L2.PjFree.epsPt (hu j) (cf j)).prod := by
-      rw [map_list_prod, List.map_ofFn, funext e]
-      rfl
-    have hc := Formalism.L2.PjFree.isCombAt_epsPt hu cf
-    rw [isComb_iff, e']
-    constructor
-    · intro hz
-      rw [← hΦ z, hz, hΦ]
-      exact hc
-    · intro hz
-      exact congrArg Φ (Over.OverMorphism.ext (Formalism.L2.PjFree.isCombAt_unique hz hc))
-  have tw : ∀ i, IsTanAt x (w i) := fun i => isTanAt_of_isCombAt hv (hw i)
-  let v₁ : Fin m → (tEps x ⟶ Xo.univ.t.G) := fun j => Over.homMk (v j) (hv j).1
-  let w₁ : Fin m' → (tEps x ⟶ Xo.univ.t.G) := fun j => Over.homMk (w j) (tw j).1
-  let z₁ : tEps x ⟶ Xo.univ.t.G := Over.homMk w' (isTanAt_of_isCombAt tw hw').1
-  have ht : ∀ j, IsTan (Φ (v₁ j)) := fun j => by
-    refine pullback.hom_ext ?_ ?_
-    · rw [Category.assoc, hΦ, ← map_one Φ₀, hΦ₀]
-      exact (hv j).2.trans (Category.id_comp _).symm
-    · refine Eq.trans ?_ (Over.w (1 : ptOver S S ⟶ (Over.pullback x).obj Xo.univ.t.G)).symm
-      refine (Category.assoc _ _ _).trans ((congrArg _ (Over.w (Φ (v₁ j)))).trans ?_)
-      refine (Formalism.L2.PjFree.spMap_comp' _ _).trans (congrArg spMap ?_)
-      ext r
-      simp [TrivSqZeroExt.algebraMap_eq_inl]
-  have := (key v₁ hv _ z₁).1 ((h S S _ m _ ht).2.2.2 m' (fun i j => A j i) _
-    (fun i => (key v₁ hv _ (w₁ i)).2 (hw i)) N _ ((key w₁ tw _ z₁).2 hw'))
-  rwa [show (fun j => ∑ i, N i * A j i) = A.mulVec N from funext fun j => Finset.sum_congr rfl fun i _ => mul_comm _ _]
-    at this
 
 theorem spread : SpreadSt Xo c :=
   GlobalTheory.Frames.framedPoint_field_fromTest GlobalTheory.abelianSchemeLaws_all.1.secBaseChange E H Dw l Xo c
@@ -305,17 +252,5 @@ theorem claims_iff : Claims Xo c ↔
   unfold Claims
   tauto
 
-theorem reframe_compare :
-    (FrBaseChg Xo c ↔ BaseChangeField Xo c) ∧ (ReFrame Xo c ↔ ReframeIntFr Xo c) ∧
-      (ReFrame Xo c ↔ ReframeIntegral Xo c) ∧ (XoNumPt Xo c ↔ PointNumberField Xo c) ∧
-      (TanLin Xo ↔ CombLinearAt Xo c) ∧
-      (∀ (S : Type) [CommRing S] [Algebra c.F S] (a : S) (y y' : FrPt Xo c S), SClause a y y' ↔ GenScal a y y') ∧
-      (IntRebase Xo c ↔ LieRebase Xo c) ∧ (IntFrameGL Xo c ↔ IntDiagUnit Xo c) ∧ GenRatio Xo c ∧
-      (XoNumPt Xo c ↔ FramedPointNumberField Xo c) ∧ (CombLinear → TanLin Xo) ∧ CombLinear ∧
-      (Claims Xo c ↔ FrBaseChg Xo c ∧ ReFrame Xo c ∧ XoNumPt Xo c ∧ TanLin Xo ∧ IntDiagUnit Xo c ∧ CombLinear) ∧
-      (Claims Xo c ↔ FrBaseChg Xo c ∧ ReFrame Xo c ∧ XoNumPt Xo c ∧ TanLin Xo ∧ IntDiagUnit Xo c) :=
-  ⟨frBaseChg_iff Xo c, reFrame_iff Xo c, reFrame_iff_integral Xo c, xoNumPt_iff Xo c, tanLin_iff Xo c,
-    fun _ _ _ => sClause_iff, intRebase_iff Xo c, intFrameGL_iff Xo c, genRatio Xo c, xoNumPt_iff_framed Xo c,
-    tanLin_of_combLinear Xo, combLinear, claims_iff Xo c, by simp only [claims_iff, combLinear, and_true]⟩
 
 end GlobalTheory.ReframeCompare

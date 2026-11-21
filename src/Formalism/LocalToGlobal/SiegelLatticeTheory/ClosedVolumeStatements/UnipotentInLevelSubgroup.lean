@@ -38,8 +38,6 @@ theorem RatLevi_holds : Formalism.L2.SG.PoincareInHH.Cut.RatLevi X u := Formalis
 theorem KsetSplit_holds : Formalism.L2.SG.PoincareInHH.Cut.KsetSplit X u := Formalism.L2.SG.Pf.ksetSplit_holds X u
 theorem NeatKu_holds (hK : X.LevelSubgroupCharacter) : Formalism.L2.SG.PoincareInHH.Cut.NeatKu X u hK := Formalism.L2.SG.PoincareInHH.Cut.neatKu_of_gamUnipKu (X := X) (u := u) (hK := hK)
   (hL := Formalism.L2.SG.PoincareInHH.Cut.latOfLattice_holds X u) (hU := Formalism.L2.SG.PoincareInHH.Cut.gamUnipKu_holds X u hK)
-theorem LatInj_holds : Formalism.L2.SG.Pf.LatInj X u := Formalism.L2.SG.Pf.latInj X u
-theorem LatRowLat_holds : Formalism.L2.SG.Pf.LatRowLat X u := Formalism.L2.SG.Pf.latRowLat X u
 
 end Steps
 
@@ -47,7 +45,6 @@ theorem HFiniteC_holds : HFiniteC := fun _ X u => Formalism.L2.SG.Pf.hFinite_hol
 theorem nilradical_conj_level : NilradicalConjLevel := Formalism.L2.SG.Pf.nilradical_conj_level'
 theorem ChiTrivialC_holds : ChiTrivialC := Formalism.L2.SG.Pf.chiTrivialC_outright
 theorem AvgCore_holds : AvgCore := Formalism.L2.SG.TermOp.Vanish.avgCore
-theorem TRExistsC_holds : TRExistsC := Formalism.L2.SG.Pf.trExistsC_holds
 
 theorem SlabCoverC_holds : Formalism.L2.SG.Pf.Slab.SlabCoverC :=
   Formalism.L2.SG.Pf.SlabCoverPf.slab_covering_of_strong_approx Formalism.L2.SG.Pf.SlabNDensePf.nilradical_strong_approximation nilradical_conj_level
@@ -62,7 +59,6 @@ theorem PuLinearC_holds : PuLinearC := Formalism.L2.SG.Pf.puLinearC
 
 theorem FundExistsC_holds : FundExistsC := Formalism.L2.SG.Pf.fundExistsC_holds
 
-theorem ChiNIndepC_holds : ChiNIndepC := Formalism.L2.SG.NormCut.chiNIndepC_holds
 
 theorem OOFundIndepC_holds : OOFundIndepC := Formalism.L2.SG.Pf.ooFundIndepC_of_nconj Formalism.L2.SG.Pf.nilradical_conj_level'
 
@@ -84,7 +80,6 @@ theorem FoldOKC_holds (hFL : Formalism.L2.SG.Pf.FinLeviC) : FoldOKC :=
 
 theorem InHHC_holds : InHHC := Formalism.L2.SG.Pf.inHHC_holds
 
-theorem FullExists_holds (hLoc : LocC) : FullExists := Formalism.L2.SG.Pf.fullExists_of_TR_Loc TRExistsC_holds hLoc
 
 theorem NeatC_holds : Formalism.L2.SG.TermOp.IdBlocks.NeatC := fun _ X Y u => NeatKu_holds X u Y.hK
 
@@ -92,7 +87,5 @@ theorem IdCellDiagC_holds : IdCellDiagC :=
   Formalism.L2.SG.Pf.idCellDiagC_of_steps3 Formalism.L2.SG.Pf.nLamNinf_holds VolPosC_holds Formalism.L2.SG.Pf.idMeetOneC_holds
     Formalism.L2.SG.Pf.idMeetPhaseC_holds Formalism.L2.SG.Pf.idMeetVolC_holds NeatC_holds
 
-theorem IdCellOffC_holds (hC : Formalism.L2.SG.Pf.IdOffConjC) (hL : Formalism.L2.SG.Pf.IdOffLiftC) : IdCellOffC :=
-  Formalism.L2.SG.Pf.idCellOffC_of_conjLift Formalism.L2.SG.Pf.nLamNinf_holds VolPosC_holds hC hL
 
 end Formalism.L2.SG.Closed

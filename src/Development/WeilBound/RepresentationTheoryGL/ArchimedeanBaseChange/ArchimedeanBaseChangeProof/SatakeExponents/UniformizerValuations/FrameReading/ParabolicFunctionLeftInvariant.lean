@@ -106,43 +106,7 @@ theorem parabolic_function_left_invariant {n a b : ℕ} (h : a + b = n) (w : Pl 
   exact hint_mul_right_comm (intMat a b w)
     (fun Y => f (x⁻¹ * blk h w (mq⁻¹ * m) (Multiplicative.toAdd Y) * y)) (Multiplicative.ofAdd T)
 
-theorem parab_blk {n a b : ℕ} (h : a + b = n) (w : Pl E) (p : GLw n w)
-    (hp : p ∈ GlobalTheory.SmGL.parab (w.adicCompletion E) (GlobalTheory.SmGL.two (GlobalTheory.SmGL.stdSum h))) :
-    ∃ Z, p = blk h w ((GlobalTheory.SmGL.leviTwo (w.adicCompletion E) (Fin a) (Fin b)).symm
-      (GlobalTheory.SmGL.leviProj (w.adicCompletion E) (GlobalTheory.SmGL.two (GlobalTheory.SmGL.stdSum h)) ⟨p, hp⟩)) Z := by
-  set A := (GlobalTheory.SmGL.leviTwo (w.adicCompletion E) (Fin a) (Fin b)).symm
-    (GlobalTheory.SmGL.leviProj (w.adicCompletion E) (GlobalTheory.SmGL.two (GlobalTheory.SmGL.stdSum h)) ⟨p, hp⟩) with hA
-  refine ⟨(A.1⁻¹).val * (Matrix.of fun i j => p.val (CtLevel.blkEq h (Sum.inl i)) (CtLevel.blkEq h (Sum.inr j))), ?_⟩
-  apply Units.ext
-  rw [CtLevel.blk_val, ← Matrix.mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mul]
-  refine Matrix.ext fun i j => ?_
-  obtain ⟨s, rfl⟩ := (CtLevel.blkEq h).surjective i
-  obtain ⟨t, rfl⟩ := (CtLevel.blkEq h).surjective j
-  rw [reindex_apply, submatrix_apply, Equiv.symm_apply_apply, Equiv.symm_apply_apply]
-  rcases s with s | s <;> rcases t with t | t
-  · rfl
-  · rfl
-  · have h1 : GlobalTheory.SmGL.blk (GlobalTheory.SmGL.two (GlobalTheory.SmGL.stdSum h)) (CtLevel.blkEq h (Sum.inr s)) = true :=
-      GlobalTheory.SmGL.blk_apply (GlobalTheory.SmGL.two (GlobalTheory.SmGL.stdSum h)) true s
-    have h2 : GlobalTheory.SmGL.blk (GlobalTheory.SmGL.two (GlobalTheory.SmGL.stdSum h)) (CtLevel.blkEq h (Sum.inl t)) = false :=
-      GlobalTheory.SmGL.blk_apply (GlobalTheory.SmGL.two (GlobalTheory.SmGL.stdSum h)) false t
-    exact GlobalTheory.SmGL.mem_parab.1 hp (CtLevel.blkEq h (Sum.inr s)) (CtLevel.blkEq h (Sum.inl t))
-      (by rw [h1, h2]; decide)
-  · rfl
 
-theorem deltaHalf_int {a b : ℕ} (w : Pl E) (m : GLw a w × GLw b w) (h1 : m.1 ∈ GlobalTheory.LFun.KGL w a)
-    (h2 : m.2 ∈ GlobalTheory.LFun.KGL w b) :
-    (GlobalTheory.SmGL.deltaHalf (w.adicCompletion E) (GlobalTheory.SmGL.Two (Fin a) (Fin b))
-      (GlobalTheory.SmGL.leviTwo (w.adicCompletion E) (Fin a) (Fin b) m) : ℂ) = 1 := by
-  have hg : ∀ x : Bool, (GlobalTheory.SmGL.leviTwo (w.adicCompletion E) (Fin a) (Fin b) m) x ∈
-      GlobalTheory.SplitWeil.KO (w.adicCompletion E) (GlobalTheory.SmGL.Two (Fin a) (Fin b) x) := by
-    intro x
-    cases x
-    · show m.1 ∈ GlobalTheory.SplitWeil.KO (w.adicCompletion E) (Fin a)
-      rw [← GlobalTheory.CompanionTheory.IwLevels.KGL_eq_KO]; exact h1
-    · show m.2 ∈ GlobalTheory.SplitWeil.KO (w.adicCompletion E) (Fin b)
-      rw [← GlobalTheory.CompanionTheory.IwLevels.KGL_eq_KO]; exact h2
-  rw [GlobalTheory.SatInd.deltaHalf_eq_one hg, Units.val_one]
 
 end PositivityTheory.Rg.BcB.F.Tail.B
 

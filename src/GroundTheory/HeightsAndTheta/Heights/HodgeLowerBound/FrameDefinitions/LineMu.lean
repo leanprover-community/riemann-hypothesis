@@ -265,35 +265,7 @@ theorem phMu_line {z : (Σ _ : Unit, Fin 2) → ℂ} (hz : ∃ i, z ⟨(), i⟩ 
 
 end Norm
 
-theorem maDensity_eq_zero_of_eventually {φ : Fin 1 → (Fin 1 → ℂ) → ℝ} {y : Fin 1 → ℂ}
-    (h : ∀ j, φ j =ᶠ[nhds y] fun _ => 0) : maDensity φ y = 0 := by
-  have hH : ∀ j, cxHessian (φ j) y = 0 := by
-    intro j
-    have h2 : fderiv ℝ (fderiv ℝ (φ j)) y = fderiv ℝ (fderiv ℝ (fun _ : Fin 1 → ℂ => (0 : ℝ))) y :=
-      (h j).fderiv.fderiv_eq
-    ext a b
-    simp [cxHessian, h2]
-  simp [maDensity, mixedDisc, hH]
 
-theorem degMu_line : degMu (lineHodge II hII) = 0 := by
-  unfold degMu geomDeg ptsIntegral
-  rw [lineData_n]
-  split_ifs with hΨ
-  · unfold ptsIntegralAt
-    have : ∀ y : Fin 1 → ℂ, ∀ w, sheetDensity (mCoordIdeal (lineData II hII).y) hΨ.choose
-        (fun _ z => Real.log ((muLine (lineHodge II hII)).h z)) (fun _ => 1) y w = 0 := by
-      intro y w
-      unfold sheetDensity
-      split_ifs with hγ
-      · rw [maDensity_eq_zero_of_eventually, mul_zero]
-        intro j
-        filter_upwards [hγ.choose_spec.2] with y' hy'
-        rw [muLine_h (mem_mcPts_line.1 hy'.2.1), Real.log_one]
-      · rfl
-    simp [this]
-  · rfl
 
-theorem meanU_line : meanU (lineHodge II hII) (gaussCusp II hII) = 0 := by
-  rw [meanU, degMu_line, div_zero]
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree.Line

@@ -122,12 +122,6 @@ section Tower
 variable (K M N : Type*) [Field K] [NumberField K] [Field M] [NumberField M] [Algebra K M]
   [Field N] [NumberField N] [Algebra K N] [Algebra M N] [IsScalarTower K M N]
 
-theorem relDiscr_tower :
-    relDiscr K N = relDiscr K M ^ finrank M N * Ideal.relNorm (𝓞 K) (relDiscr M N) := by
-  rw [relDiscr, differentIdeal_eq_differentIdeal_mul_differentIdeal (𝓞 K) (𝓞 M) (𝓞 N), map_mul,
-    mul_comm, relDiscr, relDiscr, Ideal.relNorm_relNorm (𝓞 K) (𝓞 M),
-    ← Ideal.relNorm_relNorm (𝓞 K) (𝓞 M) (Ideal.map _ _), Ideal.relNorm_algebraMap, map_pow,
-    IsFractionRing.finrank_eq (𝓞 M) M (𝓞 N) N]
 
 end Tower
 

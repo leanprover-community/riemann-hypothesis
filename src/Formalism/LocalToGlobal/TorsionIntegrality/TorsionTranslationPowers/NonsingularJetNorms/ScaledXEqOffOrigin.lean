@@ -131,9 +131,6 @@ theorem translate_power : TransPower := by
     (by simpa using h0) hne hrec k le_rfl
   simpa using h
 
-theorem parallelogram_sum : ParSum := by
-  intro A _ _ M h Q hQ
-  exact Power.sum_zero M Q (M Q) fun P => h P Q hQ
 
 theorem parallelogram_sum_two : ParSumTwo := by
   intro A _ _ M₀ m h

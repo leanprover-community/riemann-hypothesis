@@ -47,10 +47,6 @@ theorem gramIsoEq_holds : GramIsoEq := by
 theorem phDualOfGram_holds : PhDualOfGram := by
   intro p hp g S hOk; exact PI.Final.PhDualGram.phase_dual_gram p g.l g.ex g.ph S (fglData g hOk)
 
-theorem level_restriction_of_group_law_holds : LevelRestrictionOfGroupLaw := by
-  intro p _ g S hg H1 H2 κ ι ι' _ _ _ b b' b'' hb hb' hb'' hd h1 h2
-  exact PI.Final.FglPhSplit.norm_units_of_calculation ℂ_[p] (Wp p) ⟨g.l, g.ex, g.ph⟩ S hg.2.2.1 hg.2.2.2 (ph0 g) H1 H2 κ ι ι' b b' b'' hb hb' hb''
-    hd h1 h2
 
 theorem jetsHigh_holds : JetsHigh :=
   fun p _ g hOk => jets_high p g.W g.wq g.ex g.ph hOk.1.1 hOk.1.2.1 hOk.1.2.2.1 hOk.1.2.2.2.1 hOk.1.2.2.2.2.1 hOk.2.1 hOk.2.2.1

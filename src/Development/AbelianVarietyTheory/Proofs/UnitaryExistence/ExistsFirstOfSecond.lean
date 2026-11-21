@@ -241,10 +241,6 @@ def SecondOnly : Prop :=
 
 variable {Tt j h ka lam PQ β Cl Lh gam vol thAd Pl ph ξ bad d φ w La Nc ep io hr B epF cond hw U₂ dict₂ xi}
 
-theorem laws_give (h1 : InR D j) (h2 : LawsJ T) : D.R.r = (T.Q.Dw j).p + (T.Q.Dw j).q ∧
-    LatEmb (T.V j (sig0 T.Q.c)) (iotaV _ hr (T.iota j)) ∧ ∀ g, ∃ x, IsDetRoot (T.V j (sig0 T.Q.c)) g x := by
-  obtain ⟨_, _, _, _, _, _, _, k, -⟩ := h2.adPin j h1 _ T.toCore.good_σ₀
-  exact ⟨(h2.unf j h1 _ T.toCore.good_σ₀).1, k, (h2.muVal j h1 _ T.toCore.good_σ₀).1⟩
 
 theorem Bound.nonempty (hB : Bound Tt j h ka lam PQ β Cl Lh gam vol ξ bad d φ) :
     Nonempty D.what₂.Tup ∧ ∀ t, Nonempty (Cl t) :=

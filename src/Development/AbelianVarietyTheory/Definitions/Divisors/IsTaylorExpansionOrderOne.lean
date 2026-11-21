@@ -82,9 +82,6 @@ def forgetD : CoefMap η K.Oc (K.OD η M) where
     change r • (b : S.T.C) = η r • (b : S.T.C)
     rw [Algebra.smul_def, Algebra.smul_def, S.compat]
 
-theorem forgetD_perCl (per : Λ →+ Hol F.V) :
-    (K.forgetD η M).pull1 (K.perCl per) = K.perClD η M (η.toAddMonoidHom.comp per) :=
-  congrArg (H1.mk _) (Subtype.ext (funext fun _ ↦ funext fun S' ↦ funext fun f ↦ S'.compat (per f.1.deg)))
 
 end Charts
 
@@ -183,15 +180,6 @@ theorem Charts.dualD_J_ne_bot (K : Charts F) (k : K.K) (v : I → ℂ) (p : Tot 
   have h' : (DualNumber.eps : DualNumber ℂ) = 0 := Ideal.span_singleton_eq_bot.1 h
   simpa using congrArg TrivSqZeroExt.snd h'
 
-theorem isOver_dual (v z : I → ℂ) (hz : z ∈ F.V) {X : Scheme.{0}} (s : X ⟶ Sp ℂ) :
-    IsOver (F := F) (jetAt v z hz) (Ideal.span {DualNumber.eps}) s (algebraMap ℂ (Hol F.V))
-      (Ideal.span {DualNumber.eps}) (s ≫ spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom)
-      (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom (RingHom.id (DualNumber ℂ)) where
-  w := rfl
-  mem _ h := h
-  red d := by
-    refine Ideal.mem_span_singleton'.2 ⟨TrivSqZeroExt.inl d.snd, ?_⟩
-    refine TrivSqZeroExt.ext ?_ ?_ <;> simp [jetAt]
 
 def Charts.Obj.toD {K : Charts F} (T : K.Obj) : K.DObj (RingHom.id _) ⊥ where
   T := T
@@ -225,32 +213,6 @@ def tay1 {W : Opens (Tot I g)} {W₀ : Opens (Tot Empty g)} (hW : ∀ p ∈ W₀
   map_zero' := by simp
   map_add' x y := by simp only [map_add, tmul_add]; abel
 
-theorem isTaylorExpansion_orderOne [DecidableEq I] {W : Opens (Tot I g)} {W₀ : Opens (Tot Empty g)}
-    (hW : ∀ p ∈ W₀, ((0 : I → ℂ), p.2) ∈ W) (v : I → ℂ) :
-    IsTay 1 (fun i ↦ v i • (DualNumber.eps : DualNumber ℂ)) (tay1 hW v) := by
-  intro h p hp
-  have hd : HasFDerivAt (fun z : I → ℂ ↦ h.fn (z, p.2))
-      ((fderiv ℂ h.fn (0, p.2)).comp (ContinuousLinearMap.inl ℂ _ _)) 0 :=
-    HasFDerivAt.comp (𝕜 := ℂ) (g := h.fn) (f := fun z : I → ℂ ↦ ((z, p.2) : Tot I g)) (0 : I → ℂ)
-      (h.analytic _ (hW p hp)).differentiableAt.hasFDerivAt (hasFDerivAt_prodMk_left (𝕜 := ℂ) (0 : I → ℂ) p.2)
-  have e1 : Hol.ev p hp (resFib hW h) = h.fn (0, p.2) := by rw [Hol.ev_apply]; exact Hol.fn_comap _ _ _ _ hp
-  have e2 : Hol.ev p hp (resFib hW (Hol.der (v, 0) h)) =
-      ∑ i, v i * fderiv ℂ h.fn (0, p.2) (Pi.single i 1, 0) := by
-    rw [Hol.ev_apply]
-    refine (Hol.fn_comap _ _ _ _ hp).trans ((Hol.fn_der _ _ (hW p hp)).trans ?_)
-    have : ((v, 0) : Tot I g) = ∑ i, v i • ((Pi.single i 1, 0) : Tot I g) := by
-      ext j <;> simp [Prod.fst_sum, Prod.snd_sum, Finset.sum_apply, Pi.single_apply]
-    rw [this, map_sum]; simp only [map_smul, smul_eq_mul]
-  change evT _ p hp (_ + _) = _
-  rw [map_add, Algebra.TensorProduct.lift_tmul, Algebra.TensorProduct.lift_tmul, AlgHom.comp_apply,
-    AlgHom.comp_apply, e1, e2]
-  unfold GlobalTheory.PeriodFamily.taylor
-  rw [Finset.sum_range_succ, Finset.sum_range_one]
-  congr 1
-  · simp [Algebra.ofId_apply, Algebra.algebraMap_eq_smul_one]
-  · rw [← (Equiv.funUnique (Fin 1) I).symm.sum_comp]
-    simp [iteratedFDeriv_one_apply, hd.fderiv, Algebra.ofId_apply, Algebra.algebraMap_eq_smul_one, Finset.sum_smul,
-      smul_smul, mul_comm, Finset.mul_sum]
 
 end Inhabitants
 

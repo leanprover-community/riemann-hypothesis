@@ -147,16 +147,7 @@ theorem hasDeg_zero_of_gen {e : Ω} (he : L.IsGenAt ⟨centre Γ.η, Γ.η_spec�
   ⟨e, fun _ => e, fun _ => 1, he, fun i => ⟨_, hf i⟩,
     fun _ => ⟨one_ne_zero, Γ.η_spec, 1, by rw [map_one, div_self he.1], map_one _⟩, by simp, by simp⟩
 
-theorem hasDeg_zero_of_isClosed (hc : IsClosed ({centre Γ.η} : Set X)) {e : Ω}
-    (he : L.IsGenAt ⟨centre Γ.η, Γ.η_spec⟩ e) : Γ.HasDeg L 0 :=
-  Γ.hasDeg_zero_of_gen he fun i => by
-    have h : (⟨centre (Γ.z i), Γ.z_spec i⟩ : Cpt ξ) = ⟨centre Γ.η, Γ.η_spec⟩ :=
-      Subtype.ext ((Γ.generic_centre_specializes i).mem_closed hc rfl)
-    rw [h]
-    exact he
 
-theorem not_hasDeg_bot (d : ℤ) : ¬ Γ.HasDeg (fun _ => ⊥) d := fun ⟨_, _, _, he, _⟩ =>
-  he.1 (Submodule.span_singleton_eq_bot.1 he.2.symm)
 
 def scale (n : ℕ) (hn : 0 < n) : FibreCurve ξ ϖ :=
   { Γ with
@@ -295,67 +286,8 @@ end Proj
 
 attribute [local instance] MvPolynomial.gradedAlgebra
 
-theorem exists_line_curve (o : Type) [CommRing o] [IsDomain o] (k : Type) [Field k] [Algebra o k] (ϖ : o)
-    (hϖ : algebraMap o k ϖ = 0) :
-    ∃ ξ : Spec (CommRingCat.of (FractionRing (MvPolynomial (Fin 1) o))) ⟶
-        Proj (MvPolynomial.homogeneousSubmodule (Option (Fin 1)) o), IsCptGen ξ ∧
-      ∃ Γ : FibreCurve ξ (algebraMap o _ ϖ), ∀ d : ℕ, ∃ L : Lat ξ (FractionRing (MvPolynomial (Fin 1) o)),
-        L.IsVB 1 ⊤ ∧ (∀ n : ℤ, Γ.HasDeg L n ↔ n = d) ∧ (d ≠ 0 → ¬ NumTrivMod L (algebraMap o _ ϖ)) := by
-  have hi := IsFractionRing.injective (MvPolynomial (Fin 1) o) (FractionRing (MvPolynomial (Fin 1) o))
-  have hx : ∀ c : Option (Fin 1), algebraMap (MvPolynomial (Fin 1) o)
-      (FractionRing (MvPolynomial (Fin 1) o)) (c.elim 1 MvPolynomial.X) ≠ 0 := fun c => by
-    rw [map_ne_zero_iff _ hi]
-    cases c with
-    | none => exact one_ne_zero
-    | some j => exact MvPolynomial.X_ne_zero j
-  have hinj : ∀ (d : ℕ) (g : MvPolynomial (Option (Fin 1)) o), g.IsHomogeneous d →
-      MvPolynomial.aeval (fun j : Option (Fin 1) => algebraMap (MvPolynomial (Fin 1) o)
-        (FractionRing (MvPolynomial (Fin 1) o)) (j.elim 1 MvPolynomial.X)) g = 0 → g = 0 := fun d g hg h => by
-    exact ProjCoord.eq_zero_of_dehom hg ((map_eq_zero_iff _ hi).1
-      ((MvPolynomial.aeval_algebraMap_apply _ _ g).symm.trans h))
-  obtain ⟨ξ, hT, e⟩ := coordTie_charts _ hx none hinj (fun a => by
-    have key : ∀ p : MvPolynomial (Fin 1) o, algebraMap _ (FractionRing (MvPolynomial (Fin 1) o)) p ∈
-        Algebra.adjoin o (Set.range fun j : Option (Fin 1) =>
-          algebraMap (MvPolynomial (Fin 1) o) (FractionRing (MvPolynomial (Fin 1) o))
-            (j.elim 1 MvPolynomial.X) /
-          algebraMap (MvPolynomial (Fin 1) o) (FractionRing (MvPolynomial (Fin 1) o)) 1) := by
-      intro p
-      induction p using MvPolynomial.induction_on with
-      | C r =>
-        rw [← MvPolynomial.algebraMap_eq, ← IsScalarTower.algebraMap_apply]
-        exact Subalgebra.algebraMap_mem _ r
-      | add p q hp hq =>
-        rw [map_add]
-        exact add_mem hp hq
-      | mul_X p i hp =>
-        rw [map_mul]
-        exact mul_mem hp (Algebra.subset_adjoin ⟨some i, by simp⟩)
-    obtain ⟨u, v, hv, rfl⟩ := IsFractionRing.div_surjective (A := MvPolynomial (Fin 1) o) a
-    have h0 := (map_ne_zero_iff _ hi).2 (nonZeroDivisors.ne_zero hv)
-    exact ⟨_, key u, _, key v, h0, div_mul_cancel₀ _ h0⟩)
-  obtain ⟨Γ, hΓ⟩ := line_deg _ hx hinj ξ hT.gen e k ϖ hϖ
-  refine ⟨ξ, hT.gen, Γ, fun d => ?_⟩
-  obtain ⟨L, hL⟩ := Lat.exists_line hT d
-  refine ⟨L, Lat.isVB_line hT hL, hΓ d L hL, fun hd h => hd ?_⟩
-  exact_mod_cast ((hΓ d L hL 0).1 (h Γ)).symm
 
-theorem exists_line_curve_int (p : ℕ) [Fact p.Prime] :
-    ∃ ξ : Spec (CommRingCat.of (FractionRing (MvPolynomial (Fin 1) ℤ))) ⟶
-        Proj (MvPolynomial.homogeneousSubmodule (Option (Fin 1)) ℤ), IsCptGen ξ ∧
-      ∃ Γ : FibreCurve ξ (algebraMap ℤ _ (p : ℤ)), ∀ d : ℕ, ∃ L : Lat ξ (FractionRing (MvPolynomial (Fin 1) ℤ)),
-        L.IsVB 1 ⊤ ∧ (∀ n : ℤ, Γ.HasDeg L n ↔ n = d) ∧ (d ≠ 0 → ¬ NumTrivMod L (algebraMap ℤ _ (p : ℤ))) :=
-  exists_line_curve ℤ (ZMod p) (p : ℤ) (by simp)
 
-theorem exists_fibreCurve : ∃ (X : Scheme.{0}) (Ω : Type) (_ : Field Ω) (ξ : Spec (CommRingCat.of Ω) ⟶ X) (ϖ : Ω)
-    (Γ : FibreCurve ξ ϖ), IsCptGen ξ ∧ ϖ ≠ 0 ∧ ¬ IsClosed ({centre Γ.η} : Set X) := by
-  obtain ⟨ξ, hξ, Γ, hΓ⟩ := exists_line_curve_int 2
-  refine ⟨_, _, _, ξ, _, Γ, hξ, ?_, fun hc => ?_⟩
-  · haveI : CharZero (FractionRing (MvPolynomial (Fin 1) ℤ)) :=
-      charZero_of_injective_algebraMap (IsFractionRing.injective (MvPolynomial (Fin 1) ℤ) _)
-    simp
-  · obtain ⟨L, -, hL, -⟩ := hΓ 1
-    obtain ⟨e, -, -, he, -⟩ := (hL 1).2 rfl
-    exact absurd ((hL 0).1 (Γ.hasDeg_zero_of_isClosed hc he)) (by simp)
 
 end FibLine
 

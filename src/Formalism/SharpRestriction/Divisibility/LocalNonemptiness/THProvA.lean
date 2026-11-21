@@ -217,7 +217,6 @@ def stdGrp : GrpData p q :=
           Complex.exp ((s • X).trace / 2) * Complex.exp ((t • X).trace / 2)
         rw [← Complex.exp_add, add_smul, Matrix.trace_add, add_div] }
 
-theorem nonempty_TH_GrpData : Nonempty (GrpData p q) := ⟨stdGrp p q⟩
 
 section Emb
 
@@ -427,44 +426,6 @@ theorem rai_rai (l l' : Ln p q r s) : raiB l * raiB l' = raiB l' * raiB l := by
     rw [neg_mul, mul_neg, this]
   · simp only [if_true]; exact XX l l'
 
-theorem omE_bracket (l l' m m' : Ln p q r s) :
-    omE l l' * omE m m' - omE m m' * omE l l' =
-      (if l' = m then omE l m' else 0) - (if m' = l then omE m l' else 0) := by
-  have h1 := low_rai l' m
-  have h2 := low_rai m' l
-  have h3 := rai_rai l m
-  have h4 := low_low l' m'
-  set A := raiB l
-  set B := lowB l'
-  set C := raiB m
-  set D := lowB m'
-  have key : A * B * (C * D) - C * D * (A * B) =
-      A * (if l' = m then 1 else 0) * D - C * (if m' = l then 1 else 0) * B := by
-    have e1 : A * B * (C * D) = A * (B * C) * D := by noncomm_ring
-    have e2 : C * D * (A * B) = C * (D * A) * B := by noncomm_ring
-    rw [e1, e2, h1, h2]
-    have e3 : ∀ d, A * (C * B + d) * D = (A * C) * (B * D) + A * d * D := by intro d; noncomm_ring
-    have e4 : ∀ d, C * (A * D + d) * B = (C * A) * (D * B) + C * d * B := by intro d; noncomm_ring
-    rw [e3, e4, h3, h4]; abel
-  have hc : ∀ (c : ℂ) (T : Module.End ℂ (Pol p q r s)), (c • (1 : Module.End ℂ (Pol p q r s))) * T = T * (c • 1) := by
-    intro c T; simp
-  have hk : ∀ (P : Prop) [Decidable P] (T : Module.End ℂ (Pol p q r s)),
-      (if P then (1 / 2 : ℂ) • (1 : Module.End ℂ (Pol p q r s)) else 0) * T =
-        T * (if P then (1 / 2 : ℂ) • 1 else 0) := by
-    intro P _ T; split_ifs
-    · exact hc _ T
-    · simp
-  have expand : omE l l' * omE m m' - omE m m' * omE l l' = A * B * (C * D) - C * D * (A * B) := by
-    simp only [omE]
-    rw [add_mul, mul_add, mul_add, add_mul, mul_add, mul_add, hk (l = l') (C * D), hk (m = m') (A * B),
-      hk (l = l') (if m = m' then (1 / 2 : ℂ) • 1 else 0)]
-    abel
-  rw [expand, key]
-  by_cases a : l' = m <;> by_cases b : m' = l
-  · subst a; subst b; simp [omE, A, B, C, D]
-  · simp [a, b, omE, A, D, Ne.symm b]
-  · simp [a, b, omE, C, B, Ne.symm a]
-  · simp [a, b]
 
 end Checks
 
@@ -476,21 +437,6 @@ variable {p q r s : ℕ}
 
 def fac (α : Ln p q r s →₀ ℕ) : ℂ := α.prod (fun _ k => (k.factorial : ℂ))
 
-theorem fac_succ (l : Ln p q r s) (α : Ln p q r s →₀ ℕ) :
-    fac (Finsupp.single l 1 + α) = ((α l : ℂ) + 1) * fac α := by
-  unfold fac
-  rw [Finsupp.prod_fintype _ _ (by simp), Finsupp.prod_fintype _ _ (by simp)]
-  rw [← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ l),
-    ← Finset.mul_prod_erase Finset.univ (fun i => ((α i).factorial : ℂ)) (Finset.mem_univ l)]
-  have : ∏ x ∈ Finset.univ.erase l, ((((Finsupp.single l 1 + α : Ln p q r s →₀ ℕ) x).factorial : ℕ) : ℂ) =
-      ∏ x ∈ Finset.univ.erase l, (((α x).factorial : ℕ) : ℂ) :=
-    Finset.prod_congr rfl (fun x hx => by
-      simp [(Finset.ne_of_mem_erase hx).symm])
-  rw [this]
-  have h2 : (Finsupp.single l 1 + α : Ln p q r s →₀ ℕ) l = α l + 1 := by simp [add_comm]
-  rw [h2, Nat.factorial_succ]
-  push_cast
-  ring
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ι : Pol p q r s →ₗ[ℂ] H)
 
@@ -534,35 +480,6 @@ theorem IsAdj.sum {κ : Type} (t : Finset κ) {T T' : κ → Module.End ℂ (Pol
 theorem mono_eq (α : Ln p q r s →₀ ℕ) (a : ℂ) : (monomial α a : Pol p q r s) = a • monomial α 1 := by
   simp [smul_monomial]
 
-theorem adj_XD (hIP : FockIP ι) (l : Ln p q r s) : IsAdj ι (Xm l) (Dm l) := by
-  intro P Q
-  show inner ℂ (ι (X l * P)) (ι Q) = inner ℂ (ι P) (ι (pderiv l Q))
-  induction P using MvPolynomial.induction_on' with
-  | add P₁ P₂ h₁ h₂ => simp only [mul_add, map_add, inner_add_left, h₁, h₂]
-  | monomial α a =>
-    induction Q using MvPolynomial.induction_on' with
-    | add Q₁ Q₂ h₁ h₂ => simp only [map_add, inner_add_right, h₁, h₂]
-    | monomial β b =>
-      have e1 : (X l * monomial α a : Pol p q r s) = a • monomial (Finsupp.single l 1 + α) 1 := by
-        rw [X, monomial_mul, one_mul, mono_eq]
-      rw [e1, pderiv_monomial, mono_eq β b, mono_eq α a, mono_eq (β - Finsupp.single l 1)]
-      simp only [map_smul, inner_smul_left, inner_smul_right, hIP _ _]
-      by_cases h : Finsupp.single l 1 + α = β
-      · subst h
-        rw [if_pos rfl, add_tsub_cancel_left, if_pos rfl, fac_succ]
-        simp [add_comm]
-        ring
-      · rw [if_neg h]
-        by_cases hβ : β l = 0
-        · simp [hβ]
-        · have : α ≠ β - Finsupp.single l 1 := by
-            intro e
-            apply h
-            rw [e]
-            apply add_tsub_cancel_of_le
-            rw [Finsupp.single_le_iff]
-            omega
-          rw [if_neg this]; simp
 
 def eps (l : Ln p q r s) : ℂ := if linePos l then 1 else -1
 
@@ -570,74 +487,9 @@ theorem eps_star (l : Ln p q r s) : star (eps l) = eps l := by unfold eps; split
 
 theorem eps_sq (l : Ln p q r s) : eps l * eps l = 1 := by unfold eps; split_ifs <;> simp
 
-theorem adj_rai (hIP : FockIP ι) (l : Ln p q r s) : IsAdj ι (raiB l) (eps l • lowB l) := by
-  unfold raiB lowB eps
-  cases h : linePos l
-  · simp only [Bool.false_eq_true, if_false]
-    have := ((adj_XD hIP l).symm).smul (-1)
-    simpa using this
-  · simp only [if_true, one_smul]
-    exact adj_XD hIP l
 
-theorem adj_low (hIP : FockIP ι) (l : Ln p q r s) : IsAdj ι (lowB l) (eps l • raiB l) := by
-  have := ((adj_rai hIP l).symm).smul (eps l)
-  rw [smul_smul, eps_sq, one_smul, eps_star] at this
-  exact this
 
-theorem adj_omE (hIP : FockIP ι) (l l' : Ln p q r s) :
-    IsAdj ι (omE l l') ((eps l * eps l') • omE l' l) := by
-  have h1 := (adj_rai hIP l).mul (adj_low hIP l')
-  have h2 : IsAdj ι (if l = l' then (1 / 2 : ℂ) • (1 : Module.End ℂ (Pol p q r s)) else 0)
-      (if l = l' then (1 / 2 : ℂ) • 1 else 0) := by
-    split_ifs
-    · have := (IsAdj.one (ι := ι)).smul (1 / 2 : ℂ)
-      simpa using this
-    · exact IsAdj.zero
-  have h3 := h1.add h2
-  have e : eps l' • raiB l' * eps l • lowB l + (if l = l' then (1 / 2 : ℂ) • (1 : Module.End ℂ (Pol p q r s)) else 0) =
-      (eps l * eps l') • omE l' l := by
-    unfold omE
-    rw [smul_add, smul_mul_smul_comm, mul_comm (eps l')]
-    congr 1
-    by_cases h : l = l'
-    · subst h; simp [eps_sq]
-    · simp [h, Ne.symm h]
-  rw [e] at h3
-  exact h3
 
-theorem omAct_skew (hIP : FockIP ι) {Z : Mat (p * r + q * s) (p * s + q * r)}
-    (hZ : Z ∈ upq (p * r + q * s) (p * s + q * r)) :
-    IsAdj ι (omAct p q r s (Matrix.reindex (lineEquiv p q r s).symm (lineEquiv p q r s).symm Z))
-      (-(omAct p q r s (Matrix.reindex (lineEquiv p q r s).symm (lineEquiv p q r s).symm Z))) := by
-  set e := lineEquiv p q r s
-  have hent : ∀ l l', star (Z (e l) (e l')) * (eps l * eps l') = -Z (e l') (e l) := by
-    intro l l'
-    have h0 : Zᴴ * Jm _ _ + Jm _ _ * Z = 0 := hZ
-    have h1 := congrFun (congrFun h0 (e l')) (e l)
-    simp only [Matrix.add_apply, Matrix.mul_apply, Jm_apply, Matrix.conjTranspose_apply, Matrix.zero_apply,
-      mul_ite, ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true,
-      lineEquiv_isLeft, e] at h1
-    have h2 : star (Z (e l) (e l')) * eps l + eps l' * Z (e l') (e l) = 0 := by
-      unfold eps; simpa [e] using h1
-    have h3 : star (Z (e l) (e l')) * eps l = -(eps l' * Z (e l') (e l)) := eq_neg_of_add_eq_zero_left h2
-    calc star (Z (e l) (e l')) * (eps l * eps l') = (star (Z (e l) (e l')) * eps l) * eps l' := by ring
-      _ = -((eps l' * eps l') * Z (e l') (e l)) := by rw [h3]; ring
-      _ = _ := by rw [eps_sq, one_mul]
-  rw [omAct_apply]
-  have hs : IsAdj ι (∑ l, ∑ l', (Matrix.reindex e.symm e.symm Z) l l' • omE l l')
-      (∑ l, ∑ l', star ((Matrix.reindex e.symm e.symm Z) l l') • ((eps l * eps l') • omE l' l)) :=
-    IsAdj.sum _ fun l _ => IsAdj.sum _ fun l' _ => (adj_omE hIP l l').smul _
-  have he : (∑ l, ∑ l', star ((Matrix.reindex e.symm e.symm Z) l l') • ((eps l * eps l') • omE l' l)) =
-      -(∑ l, ∑ l', (Matrix.reindex e.symm e.symm Z) l l' • omE l l') := by
-    rw [Finset.sum_comm, ← Finset.sum_neg_distrib]
-    refine Finset.sum_congr rfl fun l' _ => ?_
-    rw [← Finset.sum_neg_distrib]
-    refine Finset.sum_congr rfl fun l _ => ?_
-    rw [smul_smul, ← neg_smul]
-    congr 1
-    simpa using hent l l'
-  rw [he] at hs
-  exact hs
 
 end Skew
 
@@ -677,12 +529,7 @@ theorem unitary_of_mem (h : p = 0 ∨ q = 0) {g : GL (Ix p q) ℂ} (hg : g ∈ F
 
 def boxM (p q : ℕ) : Set (Mat p q) := Set.pi Set.univ fun _ => Set.pi Set.univ fun _ => Metric.closedBall (0 : ℂ) 1
 
-theorem boxM_compact : IsCompact (boxM p q) :=
-  isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => isCompact_closedBall _ _
 
-theorem mem_boxM_of_unitary {M : Mat p q} (h : M ∈ Matrix.unitaryGroup (Ix p q) ℂ) : M ∈ boxM p q := by
-  intro i _ j _
-  simpa using entry_norm_bound_of_unitary h i j
 
 theorem norm_sq_eq_one (h : p = 0 ∨ q = 0) (x : covSub p q) : ‖((x.1.2 : ℂˣ) : ℂ)‖ = 1 := by
   have h1 := x.2.2
@@ -694,21 +541,6 @@ theorem norm_sq_eq_one (h : p = 0 ∨ q = 0) (x : covSub p q) : ‖((x.1.2 : ℂ
   have h0 : 0 ≤ ‖((x.1.2 : ℂˣ) : ℂ)‖ := norm_nonneg _
   nlinarith [hd, h0]
 
-theorem covSub_compact (h : p = 0 ∨ q = 0) : CompactSpace (covSub p q) := by
-  have e1 : Topology.IsClosedEmbedding (Units.embedProduct (Mat p q)) := Units.isClosedEmbedding_embedProduct
-  have e2 : Topology.IsClosedEmbedding (Units.embedProduct ℂ) := Units.isClosedEmbedding_embedProduct
-  have e3 := (e1.prodMap e2).comp (covSub_closed p q).isClosedEmbedding_subtypeVal
-  have hK : IsCompact (((boxM p q) ×ˢ (MulOpposite.op '' boxM p q)) ×ˢ
-      ((Metric.closedBall (0 : ℂ) 1) ×ˢ (MulOpposite.op '' Metric.closedBall (0 : ℂ) 1))) :=
-    (boxM_compact.prod (boxM_compact.image MulOpposite.continuous_op)).prod
-      ((isCompact_closedBall _ _).prod ((isCompact_closedBall _ _).image MulOpposite.continuous_op))
-  have hpre := e3.isCompact_preimage hK
-  refine isCompact_univ_iff.1 (hpre.of_isClosed_subset isClosed_univ ?_ |>.of_isClosed_subset isClosed_univ subset_rfl)
-  intro x _
-  refine ⟨⟨mem_boxM_of_unitary (unitary_of_mem h x.2.1),
-    ⟨_, mem_boxM_of_unitary (unitary_of_mem h (x⁻¹).2.1), rfl⟩⟩, ⟨?_, ⟨_, ?_, rfl⟩⟩⟩
-  · simpa using (norm_sq_eq_one h x).le
-  · simpa using (norm_sq_eq_one h x⁻¹).le
 
 end Compact
 
@@ -745,9 +577,6 @@ def dsTriv (T : GrpData p q) [CompactSpace T.G] : DSRep T where
   der := fun X _ v => by
     exact (hasDerivAt_const (0 : ℝ) (show ℂ from v) : HasDerivAt (fun _ : ℝ => (show ℂ from v)) (0 : ℂ) 0)
 
-theorem nonempty_DSRep_definite (h : p = 0 ∨ q = 0) : Nonempty (DSRep (stdGrp p q)) :=
-  haveI : CompactSpace (stdGrp p q).G := covSub_compact h
-  ⟨dsTriv (stdGrp p q)⟩
 
 end Triv
 
@@ -758,39 +587,16 @@ def gkZero (p q : ℕ) : GKMod p q where
   kfin := fun v => ⟨⊤, inferInstance, trivial, fun _ _ _ _ => trivial⟩
   wts := fun v => by rw [Subsingleton.elim v 0]; exact zero_mem _
 
-theorem nonempty_TH_GKMod (p q : ℕ) : Nonempty (GKMod p q) := ⟨gkTriv p q⟩
 
-theorem nonempty_TH_UGKMod (p q : ℕ) : Nonempty (UGKMod p q) :=
-  ⟨{ M := gkZero p q
-     ip := 0
-     herm := fun _ _ => by simp
-     pos := fun x hx => absurd (Subsingleton.elim (α := PUnit) x 0) hx
-     adj := fun _ _ _ => by simp }⟩
 
-theorem nonempty_TH_URep {p q : ℕ} (T : GrpData p q) : Nonempty (URep T) :=
-  ⟨{ H := ℂ, π := 1, isom := fun _ _ => rfl, cont := fun _ => continuous_const }⟩
 
 def FockExists : Prop := ∀ p q r s : ℕ, Nonempty (FockCore p q r s)
 
 def DSExists : Prop := ∀ p q : ℕ, 1 ≤ p → 1 ≤ q → Nonempty (DSRep (stdGrp p q))
 
-theorem nonempty_TH_FockData (hF : FockExists) (p q r s : ℕ) :
-    Nonempty (FockData (stdGrp (p * r + q * s) (p * s + q * r)) (stdGrp p q) (stdGrp r s)) :=
-  ⟨(hF p q r s).some.toFockData⟩
 
-theorem nonempty_TH_DSRep (hD : DSExists) (p q : ℕ) : Nonempty (DSRep (stdGrp p q)) := by
-  by_cases h : p = 0 ∨ q = 0
-  · exact nonempty_DSRep_definite h
-  · exact hD p q (by omega) (by omega)
 
-theorem nonempty_TH_ProvA (hF : FockExists) (hD : DSExists) : Nonempty ProvA :=
-  ⟨{ grp := stdGrp
-     fock := fun p q r s => (nonempty_TH_FockData hF p q r s).some
-     ds := fun p q _ => (nonempty_TH_DSRep hD p q).some }⟩
 
-theorem of_ProvA (X : ProvA) : (∀ p q r s, Nonempty (FockData (X.grp (p * r + q * s) (p * s + q * r)) (X.grp p q) (X.grp r s))) ∧
-    ∀ p q, Nonempty (DSRep (X.grp p q)) :=
-  ⟨fun p q r s => ⟨X.fock p q r s⟩, fun p q => ⟨X.ds p q 0⟩⟩
 
 end Formalism.MainNotions.DIV.Inh
 

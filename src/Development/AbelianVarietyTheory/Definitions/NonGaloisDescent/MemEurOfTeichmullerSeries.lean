@@ -214,8 +214,6 @@ def actEE : ℤ_[l]ˣ →* (EE l O n →ₐ[O] EE l O n) where
     rw [actEE1_toEE, actEE1_toEE, actEE1_toEE]
     exact congrArg (toEE l O n) (funext fun i => (act_act l O c c' (a i)).symm))
 
-theorem actEE_toEE (c : ℤ_[l]ˣ) (a : LetA O n) :
-    actEE l O n c (toEE l O n a) = toEE l O n (letγ (act l O c) a) := actEE1_toEE l O n c a
 
 def toPiEE : EE l O n →+* Fon.EE l O n :=
   liftEE (algebraMap (LetA O n) (Fon.EE l O n)) (Fon.EE_isUnit_π l O n)
@@ -287,27 +285,8 @@ theorem mem_clAlg {S : Subalgebra ℤ_[l] (WCb l)} {x : WCb l} :
 theorem le_clAlg (S : Subalgebra ℤ_[l] (WCb l)) : S ≤ clAlg S :=
   fun x hx => mem_clAlg.2 fun _ => ⟨x, hx, by simp⟩
 
-theorem clAlg_clAlg (S : Subalgebra ℤ_[l] (WCb l)) : clAlg (clAlg S) = clAlg S :=
-  le_antisymm (fun x hx => mem_clAlg.2 fun k => by
-    obtain ⟨y, hy, h⟩ := mem_clAlg.1 hx k
-    obtain ⟨z, hz, h'⟩ := mem_clAlg.1 hy k
-    exact ⟨z, hz, by convert h.add h' using 1; ring⟩) (le_clAlg _)
 
-theorem map_mem_clAlg {S S' : Subalgebra ℤ_[l] (WCb l)} (σ : WCb l →+* WCb l)
-    (h : ∀ x ∈ S, σ x ∈ clAlg S') {x : WCb l} (hx : x ∈ clAlg S) : σ x ∈ clAlg S' := by
-  rw [← clAlg_clAlg]
-  refine mem_clAlg.2 fun k => ?_
-  obtain ⟨y, hy, h'⟩ := mem_clAlg.1 hx k
-  refine ⟨σ y, h y hy, ?_⟩
-  simpa using map_dvd σ h'
 
-theorem inv_mem_clAlg {S : Subalgebra ℤ_[l] (WCb l)} {r w : WCb l} (hr : r ∈ S)
-    (hw : (1 - l * r) * w = 1) : w ∈ clAlg S :=
-  mem_clAlg.2 fun k => ⟨∑ i ∈ Finset.range k, (l * r) ^ i,
-    S.sum_mem fun i _ => S.pow_mem (S.mul_mem (natCast_mem S l) hr) i, r ^ k * w, by
-      have := mul_neg_geom_sum ((l : WCb l) * r) k
-      rw [mul_pow] at this
-      linear_combination (-w) * this + (∑ i ∈ Finset.range k, ((l : WCb l) * r) ^ i) * hw⟩
 
 def IsIo (e : OCb l) (io : PowerSeries ℤ_[l] →ₐ[ℤ_[l]] Ainf l) : Prop :=
   io PowerSeries.X = WittVector.teichmuller l e - 1
@@ -374,83 +353,19 @@ def EurAlg : Subalgebra ℤ_[l] (WCb l) := Algebra.adjoin ℤ_[l] (simpleRoots i
 
 def Eur : Subalgebra ℤ_[l] (WCb l) := clAlg (EurAlg io)
 
-theorem io_mem_E0 (a : PowerSeries ℤ_[l]) : inclW l (io a) ∈ E0 io :=
-  le_clAlg _ ⟨a, 0, by rw [pow_zero, mul_one]⟩
 
-theorem inv_X_mem_E0 {w : WCb l} (hw : inclW l (io PowerSeries.X) * w = 1) : w ∈ E0 io :=
-  le_clAlg _ ⟨1, 1, by rw [pow_one, mul_comm, hw, map_one, map_one]⟩
 
-theorem clAlg_E0 : clAlg (E0 io) = E0 io := clAlg_clAlg _
 
-theorem clAlg_Eur : clAlg (Eur io) = Eur io := clAlg_clAlg _
 
 theorem simpleRoots_subset_Eur : simpleRoots io ⊆ Eur io :=
   fun _ hy => le_clAlg _ (Algebra.subset_adjoin hy)
 
-theorem E0_le_Eur : E0 io ≤ Eur io := fun a ha =>
-  simpleRoots_subset_Eur io ⟨Polynomial.X - Polynomial.C a, Polynomial.monic_X_sub_C a, fun i => by
-    have h := coeff_mem (E0 io) ha 1 0 i
-    rwa [pow_one, pow_zero, mul_one] at h,
-    by rw [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_self],
-    by rw [Polynomial.derivative_X_sub_C, Polynomial.eval_one]; exact isUnit_one⟩
 
 variable {io}
 
-theorem map_mem_E0 (σ : WCb l →+* WCb l) (f : PowerSeries ℤ_[l] → PowerSeries ℤ_[l])
-    (hσ : ∀ a, σ (inclW l (io a)) = inclW l (io (f a)))
-    (hw : ∃ w ∈ E0 io, inclW l (io (f PowerSeries.X)) * w = 1) {x : WCb l} (hx : x ∈ E0 io) :
-    σ x ∈ E0 io := by
-  obtain ⟨w, hw, hw1⟩ := hw
-  refine map_mem_clAlg σ ?_ hx
-  rintro x ⟨a, m, h⟩
-  have h1 := congrArg σ h
-  rw [map_mul, map_pow, hσ, hσ] at h1
-  have h2 : σ x = inclW l (io (f a)) * w ^ m := by rw [← h1, mul_assoc, ← mul_pow, hw1, one_pow, mul_one]
-  rw [h2]
-  exact (E0 io).mul_mem (io_mem_E0 io _) ((E0 io).pow_mem hw m)
 
-theorem map_mem_E0_act (hX : IsUnit (inclW l (io PowerSeries.X))) (σ : WCb l →+* WCb l) (c : ℤ_[l]ˣ)
-    (hσ : ∀ a, σ (inclW l (io a)) = inclW l (io (act l ℤ_[l] c a))) {x : WCb l} (hx : x ∈ E0 io) :
-    σ x ∈ E0 io := by
-  obtain ⟨v, hv, h⟩ := act_X_unit l ℤ_[l] c
-  obtain ⟨v', hv'⟩ := hv.exists_right_inv
-  obtain ⟨w, hw⟩ := hX.exists_right_inv
-  refine map_mem_E0 σ _ hσ ⟨w * inclW l (io v'),
-    (E0 io).mul_mem (inv_X_mem_E0 io hw) (io_mem_E0 io _), ?_⟩ hx
-  rw [h, map_mul, map_mul, mul_mul_mul_comm, hw, ← map_mul, ← map_mul, hv', map_one, map_one, mul_one]
 
-theorem map_mem_E0_phi (hX : IsUnit (inclW l (io PowerSeries.X))) (σ : WCb l →+* WCb l)
-    (hσ : ∀ a, σ (inclW l (io a)) = inclW l (io (phi l ℤ_[l] a))) {x : WCb l} (hx : x ∈ E0 io) :
-    σ x ∈ E0 io := by
-  obtain ⟨r, h⟩ := phi_X_mod l ℤ_[l]
-  obtain ⟨w, hw⟩ := hX.exists_right_inv
-  obtain ⟨u, hu⟩ : ∃ u, inclW l (io (phi l ℤ_[l] PowerSeries.X)) * u = 1 := by
-    rw [← hσ]; exact (hX.map σ).exists_right_inv
-  refine map_mem_E0 σ _ hσ ⟨u, ?_, hu⟩ hx
-  have hwl : inclW l (io PowerSeries.X) ^ l * w ^ l = 1 := by rw [← mul_pow, hw, one_pow]
-  simp only [h, map_add, map_mul, map_pow, map_natCast] at hu
-  have h1 : inclW l (io PowerSeries.X) ^ l * u ∈ clAlg (E0 io) :=
-    inv_mem_clAlg (r := -(inclW l (io r) * w ^ l))
-      ((E0 io).neg_mem ((E0 io).mul_mem (io_mem_E0 io _) ((E0 io).pow_mem (inv_X_mem_E0 io hw) l)))
-      (by linear_combination hu + (l : WCb l) * inclW l (io r) * u * hwl)
-  rw [clAlg_E0] at h1
-  have h2 : u = inclW l (io PowerSeries.X) ^ l * u * w ^ l := by linear_combination (-u) * hwl
-  rw [h2]
-  exact (E0 io).mul_mem h1 ((E0 io).pow_mem (inv_X_mem_E0 io hw) l)
 
-theorem map_mem_Eur (σ : WCb l →ₐ[ℤ_[l]] WCb l) (hσ : ∀ x ∈ E0 io, σ x ∈ E0 io) {x : WCb l}
-    (hx : x ∈ Eur io) : σ x ∈ Eur io := by
-  refine map_mem_clAlg (σ : WCb l →+* WCb l) (fun y hy => ?_) hx
-  refine (Algebra.adjoin_le (S := (Eur io).comap σ) ?_) hy
-  rintro y ⟨f, hf, hc, h0, hu⟩
-  refine simpleRoots_subset_Eur io ⟨f.map (σ : WCb l →+* WCb l), hf.map _, fun i => ?_, ?_, ?_⟩
-  · rw [Polynomial.coeff_map]; exact hσ _ (hc i)
-  · have := Polynomial.eval_map_apply (f := (σ : WCb l →+* WCb l)) (p := f) y
-    rw [h0, map_zero] at this
-    exact this
-  · have := Polynomial.eval_map_apply (f := (σ : WCb l →+* WCb l)) (p := f.derivative) y
-    rw [Polynomial.derivative_map]
-    exact this ▸ hu.map _
 
 variable (io)
 
@@ -469,70 +384,14 @@ theorem teichmuller_mem_Eur {a : Cb l} {d : ℕ} (hd : 0 < d) (ha : a ^ l ^ d = 
       zero_pow hd.ne', zero_mul, zero_sub]
     exact neg_ne_zero.2 one_ne_zero
 
-theorem mem_Eur_of_teichmuller_series (a : ℕ → Cb l) (ha : ∀ n, ∃ d, 0 < d ∧ a n ^ l ^ d = a n) (x : WCb l)
-    (hx : ∀ k, (l : WCb l) ^ k ∣ x - ∑ n ∈ Finset.range k, (l : WCb l) ^ n * WittVector.teichmuller l (a n)) :
-    x ∈ Eur io := by
-  rw [← clAlg_Eur]
-  refine mem_clAlg.2 fun k => ⟨_, (Eur io).sum_mem fun n _ => ?_, hx k⟩
-  obtain ⟨d, hd, h⟩ := ha n
-  exact (Eur io).mul_mem ((Eur io).pow_mem (natCast_mem _ l) n) (teichmuller_mem_Eur io hd h)
 
 end Rings
 
 section Module
 
-private theorem map_smul_gen {O R M : Type} [CommRing O] [CommRing R] [Algebra O R] [AddCommGroup M]
-    [Module O M] (f : R →ₐ[O] R) (g : M →ₗ[O] M) (r : R) (y : R ⊗[O] M) :
-    TensorProduct.map f.toLinearMap g (r • y) = f r • TensorProduct.map f.toLinearMap g y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a t => simp [TensorProduct.smul_tmul']
-  | add x y hx hy => simp only [smul_add, map_add, hx, hy]
 
-private theorem smul_mem_gen {Z O W M : Type} [CommRing Z] [CommRing O] [CommRing W] [Algebra Z O]
-    [Algebra Z W] [AddCommGroup M] [Module O M] (S : Subalgebra Z W) (o : O) {w : W} (hw : w ∈ S)
-    {z : (O ⊗[Z] W) ⊗[O] M}
-    (hz : z ∈ Submodule.span O {z | ∃ w ∈ S, ∃ t : M, z = ((1 : O) ⊗ₜ[Z] w) ⊗ₜ[O] t}) :
-    (o ⊗ₜ[Z] w : O ⊗[Z] W) • z ∈ Submodule.span O {z | ∃ w ∈ S, ∃ t : M, z = ((1 : O) ⊗ₜ[Z] w) ⊗ₜ[O] t} := by
-  induction hz using Submodule.span_induction with
-  | mem z hz =>
-    obtain ⟨w', hw', t, rfl⟩ := hz
-    have h : (o ⊗ₜ[Z] w : O ⊗[Z] W) • (((1 : O) ⊗ₜ[Z] w') ⊗ₜ[O] t) = o • (((1 : O) ⊗ₜ[Z] (w * w')) ⊗ₜ[O] t) := by
-      rw [TensorProduct.smul_tmul', TensorProduct.smul_tmul', TensorProduct.smul_tmul', smul_eq_mul,
-        smul_eq_mul, Algebra.TensorProduct.tmul_mul_tmul]
-    rw [h]
-    exact Submodule.smul_mem _ o (Submodule.subset_span ⟨_, S.mul_mem hw hw', t, rfl⟩)
-  | zero => rw [smul_zero]; exact Submodule.zero_mem _
-  | add x y _ _ hx hy => rw [smul_add]; exact Submodule.add_mem _ hx hy
-  | smul c x _ hx => rw [smul_comm]; exact Submodule.smul_mem _ c hx
 
-private theorem map_map_gen {Z O W M : Type} [CommRing Z] [CommRing O] [CommRing W] [Algebra Z O]
-    [Algebra Z W] [AddCommGroup M] [Module O M] {a b c d : W →ₐ[Z] W} {f g h k : M →ₗ[O] M}
-    (h1 : ∀ w, a (b w) = c (d w)) (h2 : ∀ t, f (g t) = h (k t)) (y : (O ⊗[Z] W) ⊗[O] M) :
-    TensorProduct.map (Algebra.TensorProduct.map (AlgHom.id O O) a).toLinearMap f
-      (TensorProduct.map (Algebra.TensorProduct.map (AlgHom.id O O) b).toLinearMap g y) =
-    TensorProduct.map (Algebra.TensorProduct.map (AlgHom.id O O) c).toLinearMap h
-      (TensorProduct.map (Algebra.TensorProduct.map (AlgHom.id O O) d).toLinearMap k y) := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, hx, hy]
-  | tmul r t =>
-    simp only [TensorProduct.map_tmul, h2]
-    congr 1
-    induction r using TensorProduct.induction_on with
-    | zero => simp
-    | add x y hx hy => simp only [map_add, hx, hy]
-    | tmul o w => simp [h1]
 
-private theorem map_comm_gen {O R M M' : Type} [CommRing O] [CommRing R] [Algebra O R] [AddCommGroup M]
-    [Module O M] [AddCommGroup M'] [Module O M'] (a : R →ₐ[O] R) (f : M →ₗ[O] M') (g : M →ₗ[O] M)
-    (g' : M' →ₗ[O] M') (h : ∀ t, f (g t) = g' (f t)) (y : R ⊗[O] M) :
-    TensorProduct.map a.toLinearMap g' (TensorProduct.map LinearMap.id f y) =
-      TensorProduct.map LinearMap.id f (TensorProduct.map a.toLinearMap g y) := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, hx, hy]
-  | tmul r t => simp [h]
 
 @[reducible] def leftModuleGen (O R M : Type) [CommRing O] [CommRing R] [Algebra O R] [AddCommGroup M]
     [Module O M] : Module R (R ⊗[O] M) := inferInstance
@@ -560,19 +419,7 @@ theorem tmul_mem_EurT {w : WCb l} (hw : w ∈ Eur io) (t : ↥T.L.T) :
     ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] w) ⊗ₜ[↥(OL LL)] t ∈ EurT LL io T :=
   Submodule.subset_span ⟨w, hw, t, rfl⟩
 
-theorem map_mem_EurT {T' : LocLat G ℚ_[l] ↥LL.1 ↥(OL LL)} (σ : WCb l →ₐ[ℤ_[l]] WCb l)
-    (hσ : ∀ x ∈ Eur io, σ x ∈ Eur io) (f : ↥T.L.T →ₗ[↥(OL LL)] ↥T'.L.T) {z : TW (RW LL) T}
-    (hz : z ∈ EurT LL io T) :
-    TensorProduct.map (Algebra.TensorProduct.map (AlgHom.id ↥(OL LL) ↥(OL LL)) σ).toLinearMap f z ∈
-      EurT LL io T' := by
-  refine (Submodule.span_le (p := (EurT LL io T').comap (TensorProduct.map
-    (Algebra.TensorProduct.map (AlgHom.id ↥(OL LL) ↥(OL LL)) σ).toLinearMap f))).2 ?_ hz
-  rintro _ ⟨w, hw, t, rfl⟩
-  exact tmul_mem_EurT (hσ w hw) (f t)
 
-theorem smul_mem_EurT (o : ↥(OL LL)) {w : WCb l} (hw : w ∈ Eur io) {z : TW (RW LL) T}
-    (hz : z ∈ EurT LL io T) : (o ⊗ₜ[ℤ_[l]] w : RW LL) • z ∈ EurT LL io T :=
-  smul_mem_gen (Eur io) o hw hz
 
 end Module
 
@@ -604,65 +451,11 @@ theorem tmul_mem_FonD {w : WCb l} (hw : w ∈ Eur io)
       (Algebra.TensorProduct.map_tmul _ _ 1 w).trans (congrArg ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] ·) (hwH g hg))
     exact (TensorProduct.map_tmul _ _ _ t).trans (congrArg₂ (· ⊗ₜ[↥(OL LL)] ·) h1 (ht g hg))⟩
 
-theorem smul_mem_FonD (o : ↥(OL LL)) {w : WCb l} (hw : w ∈ Eur io)
-    (hwH : ∀ g : ↥(GK K), P.χQ (g : GQ l) = 1 → AI.actWCbHom (g : GQ l) w = w) {z : TW (RW LL) T}
-    (hz : z ∈ FonD AI K LL io T) : (o ⊗ₜ[ℤ_[l]] w : RW LL) • z ∈ FonD AI K LL io T := by
-  refine mem_FonD.2 ⟨smul_mem_EurT o hw (mem_FonD.1 hz).1, fun g hg => ?_⟩
-  refine (map_smul_gen (AI.gRW LL (g : GQ l)) (T.actT g) _ z).trans ?_
-  have h1 : AI.gRW LL (g : GQ l) (o ⊗ₜ[ℤ_[l]] w) = o ⊗ₜ[ℤ_[l]] w :=
-    (Algebra.TensorProduct.map_tmul _ _ o w).trans (congrArg (o ⊗ₜ[ℤ_[l]] ·) (hwH g hg))
-  exact congrArg₂ (fun (r : RW LL) (y : TW (RW LL) T) => r • y) h1 ((mem_FonD.1 hz).2 g hg)
 
-theorem phi_mem_FonD (hφ : ∀ x ∈ E0 io, frobW l x ∈ E0 io) {z : TW (RW LL) T}
-    (hz : z ∈ FonD AI K LL io T) : TWmap (φRW LL) T z ∈ FonD AI K LL io T := by
-  refine mem_FonD.2 ⟨map_mem_EurT (frobW l) (fun _ => map_mem_Eur _ hφ) _ (mem_FonD.1 hz).1, fun g hg => ?_⟩
-  refine (map_map_gen (a := (AI.actWCbHom (g : GQ l)).toAlgHom) (b := frobW l) (c := frobW l)
-    (d := (AI.actWCbHom (g : GQ l)).toAlgHom) (f := T.actT g) (g := LinearMap.id) (h := LinearMap.id)
-    (k := T.actT g) (fun w => ?_) (fun _ => rfl) z).trans
-    (congrArg (TWmap (φRW LL) T) ((mem_FonD.1 hz).2 g hg))
-  ext n
-  exact map_pow (autCb l (AI.actT g)) (w.coeff n) l
 
-theorem act_mem_EurT (g : ↥(GK K)) (hg : ∀ x ∈ E0 io, AI.actWCbHom (g : GQ l) x ∈ E0 io) {z : TW (RW LL) T}
-    (hz : z ∈ EurT LL io T) : TWact (AI.gRW LL (g : GQ l)) T g z ∈ EurT LL io T :=
-  map_mem_EurT (T' := T) (AI.actWCbHom (g : GQ l)).toAlgHom
-    (fun _ hx => map_mem_Eur (AI.actWCbHom (g : GQ l)).toAlgHom hg hx) (T.actT g) hz
 
-private theorem act_act_TW {g h h' : ↥(GK K)} (e : h * g = g * h') (z : TW (RW LL) T) :
-    TWact (AI.gRW LL (h : GQ l)) T h (TWact (AI.gRW LL (g : GQ l)) T g z) =
-      TWact (AI.gRW LL (g : GQ l)) T g (TWact (AI.gRW LL (h' : GQ l)) T h' z) := by
-  have h1 : ∀ w, (AI.actWCbHom (h : GQ l)).toAlgHom ((AI.actWCbHom (g : GQ l)).toAlgHom w) =
-      (AI.actWCbHom (g : GQ l)).toAlgHom ((AI.actWCbHom (h' : GQ l)).toAlgHom w) := fun w => by
-    have e' : (h : GQ l) * g = (g : GQ l) * h' := congrArg Subtype.val e
-    have := congrArg AI.actWCbHom e'
-    rw [map_mul, map_mul] at this
-    exact congrArg (fun u : WCb l ≃ₐ[ℤ_[l]] WCb l => u w) this
-  have h2 : ∀ t, T.actT h (T.actT g t) = T.actT g (T.actT h' t) := fun t => by
-    have := congrArg T.ρ e
-    rw [map_mul, map_mul] at this
-    exact Subtype.ext (congrArg (fun u : Module.End ↥LL.1 T.V => u t) this)
-  exact map_map_gen h1 h2 z
 
-theorem act_mem_FonD (g : ↥(GK K)) (hg : ∀ x ∈ E0 io, AI.actWCbHom (g : GQ l) x ∈ E0 io) {z : TW (RW LL) T}
-    (hz : z ∈ FonD AI K LL io T) : TWact (AI.gRW LL (g : GQ l)) T g z ∈ FonD AI K LL io T := by
-  refine mem_FonD.2 ⟨act_mem_EurT g hg (mem_FonD.1 hz).1, fun h hh => ?_⟩
-  have e : h * g = g * (g⁻¹ * h * g) := by group
-  have hχ : P.χQ ((g⁻¹ * h * g : ↥(GK K)) : GQ l) = 1 := by
-    rw [Subgroup.coe_mul, Subgroup.coe_mul, map_mul, map_mul, hh, mul_one, ← map_mul, ← Subgroup.coe_mul,
-      inv_mul_cancel, Subgroup.coe_one, map_one]
-  exact (act_act_TW e z).trans (congrArg (TWact (AI.gRW LL (g : GQ l)) T g) ((mem_FonD.1 hz).2 _ hχ))
 
-theorem map_mem_FonD {T' : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)} (f : ↥T.L.T →ₗ[↥(OL LL)] ↥T'.L.T)
-    (hf : ∀ g t, f (T.actT g t) = T'.actT g (f t)) {z : TW (RW LL) T} (hz : z ∈ FonD AI K LL io T) :
-    TensorProduct.map (LinearMap.id : RW LL →ₗ[↥(OL LL)] RW LL) f z ∈ FonD AI K LL io T' := by
-  refine mem_FonD.2 ⟨?_, fun g hg => ?_⟩
-  · refine (Submodule.span_le (p := (EurT LL io T').comap (TensorProduct.map
-      (LinearMap.id : RW LL →ₗ[↥(OL LL)] RW LL) f))).2 ?_ (mem_FonD.1 hz).1
-    rintro _ ⟨w, hw, t, rfl⟩
-    exact tmul_mem_EurT hw (f t)
-  · refine Eq.trans ?_ (congrArg (TensorProduct.map (LinearMap.id : RW LL →ₗ[↥(OL LL)] RW LL) f)
-      ((mem_FonD.1 hz).2 g hg))
-    exact map_comm_gen (AI.gRW LL (g : GQ l)) f (T.actT g) (T'.actT g) (hf g) z
 
 end Fon
 

@@ -24,10 +24,6 @@ theorem rootsBar_pow (a : (ZMod g)[X]) (d : ℕ) : Formalism.CyclotomicNorms.roo
   unfold Formalism.CyclotomicNorms.rootsBar
   rw [Polynomial.map_pow, Polynomial.roots_pow]
 
-theorem rootsBar_one : Formalism.CyclotomicNorms.rootsBar (1 : (ZMod g)[X]) = 0 := by
-  unfold Formalism.CyclotomicNorms.rootsBar
-  rw [Polynomial.map_one, Polynomial.roots_one]
-  rfl
 
 theorem card_rootsBar (a : (ZMod g)[X]) : Multiset.card (Formalism.CyclotomicNorms.rootsBar a) = a.natDegree := by
   unfold Formalism.CyclotomicNorms.rootsBar
@@ -54,14 +50,6 @@ theorem rootsBar_frob (a : (ZMod g)[X]) :
 
 end Roots
 
-theorem rootsBar_list_prod {g : ℕ} [Fact g.Prime] (l : List (ZMod g)[X]) (h : ∀ a ∈ l, a ≠ 0) :
-    Formalism.CyclotomicNorms.rootsBar l.prod = (l.map Formalism.CyclotomicNorms.rootsBar).sum := by
-  induction l with
-  | nil => exact rootsBar_one
-  | cons a l ih =>
-    have hl : ∀ b ∈ l, b ≠ 0 := fun b hb => h b (List.mem_cons_of_mem _ hb)
-    rw [List.prod_cons, List.map_cons, List.sum_cons,
-      rootsBar_mul a l.prod (h a List.mem_cons_self) (List.prod_ne_zero (fun h0 => hl 0 h0 rfl)), ih hl]
 
 section Lab
 
@@ -125,37 +113,5 @@ def GlobalDatumTwistDualCondition (D : D7) : Prop :=
       ∃ φ : G D.host.E D.nd.Om,
         D.ntypes.rbar σ w (φ * D.ntypes.tg k v * φ⁻¹) = D.ntypes.rbar σ w (D.ntypes.tg k v) ^ D.host.g k)
 
-theorem archimedeanSignatureMatching_of_jointCond (D : D7) (h42 : Formalism.MainNotions.SumRepresentations.Conclusion42 D) (ha : GlobalDatumTwistCondition D) (hb : GlobalDatumTwistDualCondition D) :
-    Formalism.MainNotions.ArithmeticCylinders.ArchimedeanSignatureMatching D := by
-  intro σ k v
-  refine ⟨?_, hb σ k v⟩
-  have : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-  obtain ⟨hocc, hcsd, hTw, hdz, hsp, hreg⟩ := ha
-  obtain ⟨i, hi⟩ := hocc σ
-  obtain ⟨Sig, hSig, hBCV⟩ := (h42 i σ hi).2.1
-  have hBc : IsBcSig D i σ Sig := ⟨hi, hSig, (h42 i σ hi).1.2, hBCV⟩
-  have hlab : D.nd.lab k σ v = (Sig.map fun p =>
-      (D.naut.items₂ k (D.naut.plGw k v) (D.naut.locG p.π (D.naut.plGw k v))) ^ p.d).prod := by
-    rw [D.naut.lab_loc i k σ v, ← hSig.2.2 _ (hsp k v), inertiaCharpoly_eq_of_iso D hTw]
-  have hne : ∀ p ∈ Sig, D.naut.items₂ k (D.naut.plGw k v) (D.naut.locG p.π (D.naut.plGw k v)) ≠ 0 := by
-    intro p hp h0
-    have h1 := hdz i σ Sig hBc p hp k v
-    rw [h0, Polynomial.natDegree_zero] at h1
-    have := (hSig.1 p hp).1
-    omega
-  refine ⟨Sig.map fun p => (p.a, p.d,
-    Formalism.CyclotomicNorms.rootsBar (D.naut.items₂ k (D.naut.plGw k v) (D.naut.locG p.π (D.naut.plGw k v)))), ?_, ?_, ?_⟩
-  · rw [D.bc_tie i σ Sig hSig (hcsd i σ Sig hBc) (hreg i σ Sig hBc), List.map_map]
-    rfl
-  · intro q hq
-    obtain ⟨p, hp, rfl⟩ := List.mem_map.1 hq
-    exact ⟨by rw [card_rootsBar]; exact hdz i σ Sig hBc p hp k v, rootsBar_frob _⟩
-  · rw [hlab, rootsBar_list_prod, List.map_map, List.map_map]
-    · congr 1
-      refine List.map_congr_left fun p _ => ?_
-      exact rootsBar_pow _ _
-    · intro a ha'
-      obtain ⟨p, hp, rfl⟩ := List.mem_map.1 ha'
-      exact pow_ne_zero _ (hne p hp)
 
 end Formalism.MainNotions.N

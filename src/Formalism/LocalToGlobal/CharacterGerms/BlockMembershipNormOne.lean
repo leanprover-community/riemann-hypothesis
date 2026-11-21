@@ -101,20 +101,6 @@ def harmonicProductFamily : Set (∀ o, MvPolynomial (Fin n × WV (IIof r tau o)
 
 variable {J : Orb → Fin 2 → Type} [∀ o g, Fintype (J o g)]
 
-theorem block_membership_norm_one (h1 : NormOneHarmonic) (h2 : NormOneLineInvariant) (h3 : NormOneLineDegrees) (h4 : NormOneIntegral)
-    (X : ∀ o, RowData C V d (IIof r tau o) (J o)) (F : ∀ o, Flag (X o)) (Z : Finset Orb)
-    (ga : Orb → Fin 2 → ZMod d → ℕ → ℕ)
-    (inj : Function.Injective fun x : Orb × Fin 2 × ZMod d => tau x.1 x.2.1 x.2.2)
-    (conj : ∀ o t, cc (tau o 0 t) = tau o 1 t) (conj' : ∀ o t, cc (tau o 1 t) = tau o 0 t)
-    (hty : ∀ o g (x : IIof r tau o g), ((X o).G g).ty (Sum.inl x) = x.1)
-    (std : ∀ o g t (c : Fin ((X o).rkF g t)), ((F o).en g t c).2.val = c.val)
-    (dich : ∀ o ∈ Z, (X o).Alt ∨ ∀ t, (X o).big 0 t) (hj : ∀ o ∈ Z, (X o).j' < (X o).n)
-    (supp : ∀ o ∈ Z, ∀ g t k, ga o g t k ≠ 0 → 1 ≤ k ∧ k ≤ (X o).rkF g t) (tie : WtTie r tau Z ga a) :
-    BlockMembership X n F (harmonicProductFamily r cc isX a tau O n) Z ga := by
-  intro L off wt pl plinj
-  have H : ConjugatePairPlaceSetting r cc a tau X F Z ga n L pl := ⟨inj, conj, conj', hty, std, dich, hj, supp, off, wt, tie, plinj⟩
-  exact ⟨⟨h1 C V d T r cc a Orb tau J X F Z ga n L pl H isX, h2 C V d T r cc a Orb tau J X F Z ga n L pl H,
-    h3 C V d T r cc a Orb tau J X F Z ga n L pl H⟩, h4 C V d T r cc a Orb tau J X F Z ga n L pl H O⟩
 
 end Mem
 

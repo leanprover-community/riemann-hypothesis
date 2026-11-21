@@ -66,9 +66,6 @@ theorem inWj_C (j : ℕ) (c : O) : InWj w (C (algebraMap O (KK O) (w ^ j * c)) :
   · exact ⟨c, by rw [coeff_C, if_pos h]⟩
   · exact ⟨0, by rw [coeff_C, if_neg h]; simp⟩
 
-theorem inWj_Cw : InWj w (C (algebraMap O (KK O) w) : MvPolynomial σ (KK O)) 1 := by
-  have := inWj_C (σ := σ) (w := w) 1 1
-  simpa using this
 
 theorem inWj_Cpow (j : ℕ) : InWj w (C (algebraMap O (KK O) (w ^ j)) : MvPolynomial σ (KK O)) j := by
   have := inWj_C (σ := σ) (w := w) j 1
@@ -1780,8 +1777,6 @@ theorem bs_restRawTops (D : Formalism.BasicNotions.D7) : RawTermOnTops D := by
     (pow_mem (bs_top_Rloc Fr hV g) _)) (prod_mem fun j _ => pow_mem (bs_top_minorI Fr hV g _ _) _))
     (bs_top_DtopProd Fr hH.2.2.1 g mu)) (bs_top_hTrue Fr g τ.h hτT.2)
 
-theorem divisibility_lemma_of_order_claim (D : Formalism.BasicNotions.D7) (hL1 : Conclusion1 D) (hC : OrderClaimRemaining D) : Conclusion4 D :=
-  divisibility_lemma_of_three_orders D (symbol_order_ge_level D) (raw_term_order_ge_off_plane D hL1 (bs_restRawTops D)) hC
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders
 
@@ -1813,40 +1808,9 @@ def bd_RestCritModW (_D : Formalism.BasicNotions.D7) : Prop :=
     ∃ P ∈ XX' O r K Fr j m th o,
       MvPolynomial.map (IsLocalRing.residue O) P = plEmb (FF O) r K A * nmEmb (FF O) r K G)
 
-theorem criterion_of_mod_w_clause (D : Formalism.BasicNotions.D7) (h : bd_RestCritModW D) : SpaceCriterionModuloUniformiser D := by
-  intro p _ O _ _ _ S n' r K _ _ _ Fr j m th o
-  refine ⟨?_, h p O S n' r K Fr j m th o⟩
-  intro A G M hA hG hc ho
-  refine Submodule.mem_inf.mpr ⟨Submodule.subset_span ⟨A, G, M, hA, hG, hc, rfl⟩, ?_⟩
-  rw [MvPolynomial.mem_restrictSupport_iff]
-  intro mm hmm x hx hw
-  exact ho mm (by simpa using hmm) x hx hw
 
-theorem mod_w_clause_of_criterion (D : Formalism.BasicNotions.D7) (h : SpaceCriterionModuloUniformiser D) : bd_RestCritModW D := by
-  intro p _ O _ _ _ S n' r K _ _ _ Fr j m th o
-  exact (h p O S n' r K Fr j m th o).2
 
-theorem bd_hypII_mono {n' r : ℕ} [NeZero n'] {A B C A' B' C' : ℝ} (hA : A ≤ A') (hB : B ≤ B') (hC : C ≤ C')
-    (p : ℕ) (hp : 1 < p) (Fr : Frames n' r) (k L₁ N₁ G' : ℕ) (deg : Fin n' → ℕ) (a : ℕ) (Y : ℝ) (c0 c'' cStar : ℕ)
-    (Dd : ℝ) (h : HypII A' B' C' p Fr k L₁ N₁ G' deg a Y c0 c'' cStar Dd) :
-    HypII A B C p Fr k L₁ N₁ G' deg a Y c0 c'' cStar Dd := by
-  unfold HypII at h ⊢
-  obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10⟩ := h
-  have hla : 0 ≤ Real.log (a : ℝ) := Real.log_natCast_nonneg a
-  have hlb : 0 ≤ Real.logb (p : ℝ) (a : ℝ) := by
-    unfold Real.logb
-    exact div_nonneg hla (Real.log_natCast_nonneg p)
-  have hY : 0 ≤ Y := le_trans (Nat.cast_nonneg r) h4
-  refine ⟨h1, h2, h3, h4, le_trans ?_ h5, h6, h7, le_trans ?_ h8, h9, le_trans ?_ h10⟩
-  · gcongr
-  · gcongr
-  · gcongr
 
-theorem real_bound_monotone_constants (D : Formalism.BasicNotions.D7) {A B C A' B' C' : ℝ} (hA : A ≤ A') (hB : B ≤ B') (hC : C ≤ C')
-    (h : Conclusion6 D A B C) : Conclusion6 D A' B' C' := by
-  intro p n' r K _ _ _ _ O _ _ _ _ S hO hH Fr L₁ N₁ G' hV hT deg a Y c0 c'' cStar Dd hII
-  exact h p n' r K O S hO hH Fr L₁ N₁ G' hV hT deg a Y c0 c'' cStar Dd
-    (bd_hypII_mono hA hB hC p (by have := hH.1; omega) Fr _ L₁ N₁ G' deg a Y c0 c'' cStar Dd hII)
 
 theorem bd_goodU_pos {de : ℝ} (h : 0 < de) : 1 ≤ goodU de := by
   unfold goodU
@@ -2121,10 +2085,6 @@ theorem good_orbits_of_frames (D : Formalism.BasicNotions.D7) (hR : bd_RestOrbit
     fun y z hyz a b c d e => bd_orbit_next TT L₂ (r - 1) r de h x hn (by omega) hde h3 hg y z hyz a b c d e,
     hcnt.1, hcnt.2, fun y => bd_orbit_interval TT L₂ (r - 1) r de h x hL2n hg y⟩
 
-theorem orbit_clauses_of_lemma (D : Formalism.BasicNotions.D7) (hA : GoodOrbitPositions D) : bd_RestOrbit D := by
-  intro r h hr hh n' _ TT L₁ L₂ de x hn hL1 hL12 hde hde1 hx hLu h3 hg
-  obtain ⟨Ce, _, hC⟩ := hA r h hr hh
-  exact (hC n' TT L₁ L₂ de x hn hL1 hL12 hde hde1 hx hLu h3 hg).2.1
 
 theorem bd_letters_card {n' r : ℕ} [NeZero n'] (F : Frames n' r) (L₂ K r' : ℕ) (de h x : ℝ)
     (hGn : goodG' r' de h x ≤ n') (hg : IsGoodOrbit n' F.TT L₂ K r' de h x) (j : ℤ)
@@ -2255,25 +2215,7 @@ def bd_RestFrames (_D : Formalism.BasicNotions.D7) : Prop :=
           (F.LLset j).card < ((F.LLset j).filter (· ≤ x)).card + r) → F.GapGt L₂ j x) ∧
       (∀ j : ℤ, F.GapGt L₂ j (F.fr j 0)))
 
-theorem bd_restOrbit_of_frames (D : Formalism.BasicNotions.D7) (hR : bd_RestFrames D) : bd_RestOrbit D := by
-  intro r h hr hh n' _ TT L₁ L₂ de x hn hL1 hL12 hde hde1 hx hLu h3 hg u G' N₁ T ell
-  obtain ⟨F, hTT, v1, v2, v3, v4, v5, v6, v7, c1, c2, c3, c4, c5⟩ :=
-    hR r h hr hh n' TT L₁ L₂ de x hn hL1 hL12 hde hde1 hx hLu h3 hg
-  subst hTT
-  have hL2n : L₂ ≤ n' := by have := bd_U_le_G' r de h x; omega
-  have hI := fun y => bd_orbit_interval F.TT L₂ (r - 1) r de h x hL2n hg y
-  have hcardL := fun j => bd_letters_card F L₂ (r - 1) r de h x (by omega) hg j (c3 j)
-  have hLL : L₁ ≤ L₂ := by omega
-  exact ⟨F, rfl, ⟨v1, v2, v3, v4, v5, v6,
-      fun j => ⟨(v7 j).1, fun x hx hc => ⟨(v7 j).2 x hx hc, bd_gap_mono F hLL (c4 j x hx hc)⟩,
-        bd_gap_mono F hLL (c5 j)⟩,
-      hcardL,
-      fun j x _ hw => bd_oldest_far F L₁ L₂ (by omega) (by omega) hI j x
-        (bd_vectors_before F (by omega) v3 v4 v5 j x hw)⟩,
-    c1, c2, fun j => ⟨(c3 j).le, hcardL j⟩, c4, c5⟩
 
-theorem orbit_lemma_of_frame_construction (D : Formalism.BasicNotions.D7) (hR : bd_RestFrames D) : GoodOrbitPositions D :=
-  good_orbits_of_frames D (bd_restOrbit_of_frames D hR)
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders
 
@@ -2970,25 +2912,7 @@ theorem bf_seq (TT : Finset (Fin n')) (r u M : ℕ) (hn : Even n') (hu : 1 ≤ u
 
 end Enum3
 
-theorem bf_restFrames (D : Formalism.BasicNotions.D7) : bd_RestFrames D := by
-  intro r h hr hh n' _ TT L₁ L₂ de x hn hL1 hL12 hde hde1 hx hLu h3G hgood
-  intro u G' T ell
-  obtain ⟨_, hTiles, _⟩ := hgood
-  have hu : 1 ≤ goodU de := bd_goodU_pos hde
-  have hell : 0 < (6 * r + 1) * goodU de := Nat.mul_pos (by omega) hu
-  have hGdef : goodG' r de h x = (orbitSmallMultiplicity r h x + 5) * ((6 * r + 1) * goodU de) := rfl
-  have hMt : orbitSmallMultiplicity r h x + 1 < n' / ((6 * r + 1) * goodU de) := by
-    have h1 : (orbitSmallMultiplicity r h x + 2) * ((6 * r + 1) * goodU de) ≤ n' := by
-      have h2 : (orbitSmallMultiplicity r h x + 2) * ((6 * r + 1) * goodU de) ≤ (orbitSmallMultiplicity r h x + 5) * ((6 * r + 1) * goodU de) :=
-        Nat.mul_le_mul_right _ (by omega)
-      rw [hGdef] at h3G
-      omega
-    exact (Nat.le_div_iff_mul_le hell).2 h1
-  obtain ⟨J, B, sidx, hS⟩ := bf_seq TT r (goodU de) (orbitSmallMultiplicity r h x) hn hu hTiles hMt
-  exact bf_frames TT r (goodU de) L₂ (goodG' r de h x) (orbitSmallMultiplicity r h x) J B sidx hr hu hLu
-    (by rw [hGdef]; exact Nat.mul_le_mul_right _ (by omega)) hS
 
-theorem good_orbits_lemma (D : Formalism.BasicNotions.D7) : GoodOrbitPositions D := orbit_lemma_of_frame_construction D (bf_restFrames D)
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders
 
@@ -3062,11 +2986,6 @@ theorem residue_position_val (a : ℤ) : ((posOf n' a).val : ℤ) = a % (n' : �
   show (((a % (n' : ℤ)).toNat % n' : ℕ) : ℤ) = _
   rw [Nat.mod_eq_of_lt h2, Int.toNat_of_nonneg h0]
 
-theorem position_of_even_is_even (hn : Even n') {a : ℤ} (ha : Even a) : Even (posOf n' a).val := by
-  have h : Even ((posOf n' a).val : ℤ) := by
-    rw [residue_position_val, Int.emod_def]
-    exact ha.sub (((Int.even_coe_nat n').mpr hn).mul_right _)
-  exact (Int.even_coe_nat _).mp h
 
 theorem residue_position_of_nat (s : Fin n') : posOf n' (s.val : ℤ) = s := by
   apply Fin.ext
@@ -4747,8 +4666,6 @@ theorem bc_claim (D : Formalism.BasicNotions.D7) (hL : Conclusion2 D) (hK : Poin
 
 theorem bc_claim' (D : Formalism.BasicNotions.D7) : DifferenceClaimInCoordinates D := bc_claim D (localiser_expansion_lemma D) (keys_vanish_modulo_uniformiser D)
 
-theorem order_lemma_of_raw_on_tops (D : Formalism.BasicNotions.D7) (hT : RawTermOnTops D) : Conclusion4 D :=
-  order_lemma_of_plane_coordinates D (localiser_vanishing_off_plane D) hT (bc_claim' D)
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders
 
@@ -5216,11 +5133,6 @@ theorem slope_bounds_alt : ∃ C : ℝ, 1 ≤ C ∧
   rw [hms]
   linarith
 
-theorem pow_add_mul_mem_span_sup {O : Type} [CommRing O] {n' k : ℕ} (Dp h : MvPolynomial (TV n' k) O) (p P n c : ℕ)
-    (hP : 1 ≤ P) :
-    (Dp ^ P + (p : MvPolynomial (TV n' k) O) * h) ^ n ∈
-      Ideal.span {Dp ^ (n - c)} ⊔ Ideal.span {(p : MvPolynomial (TV n' k) O) ^ c} :=
-  Formalism.CountingSumsFrames.Top.powerSplit _ Dp h _ P n c hP
 
 theorem getD_mem_list (l : List ℤ) (r : ℕ) (hr : 1 ≤ r) (hl : 0 < l.length) : l.getD (l.length - r) 0 ∈ l := by
   have hidx : l.length - r < l.length := by omega
@@ -5448,20 +5360,6 @@ theorem segment_length_bounds_real : ∃ C : ℝ, 1 ≤ C ∧
   exact H n' r p Fr k L₁ N₁ G' deg a Y c0 c'' cStar Dd hp hr hV hII hT hX
     (rank_le_segment_length Fr L₁ N₁ hV (by omega)) hL1 hLG h7 j x hx hW
 
-theorem margin_real_bound : ∃ C : ℝ, 1 ≤ C ∧
-    ∀ (n' r : ℕ) [NeZero n'] (p : ℕ) (Fr : Frames n' r) (k L₁ N₁ G' : ℕ) (deg : Fin n' → ℕ) (a : ℕ) (Y : ℝ)
-      (c0 c'' cStar : ℕ) (Dd : ℝ), 13 ≤ p → 2 ≤ r → Fr.Valid L₁ N₁ →
-      Formalism.MainNotions.SourceCleaning.HypII C (C + 1) C p Fr k L₁ N₁ G' deg a Y c0 c'' cStar Dd → TwistBound p Fr (p ^ G') →
-      Fr.J * r ≤ Fr.TT.card →
-      ∀ j x : ℤ, x ∈ Fr.letters j → ¬ Fr.IsW j x → ∀ B' val : ℝ, B' ≤ Bo p Fr deg j x / 80 →
-        Bo p Fr deg j x / 2 - sl p Fr deg Y k j x ≤ val →
-        Bo p Fr deg j x / 4 + (mStar p Fr k N₁ (p ^ G') (cPrime n' r Fr.TT.card c0 c'' cStar) : ℝ) ≤ val - B' ∧
-          (mStar p Fr k N₁ (p ^ G') (cPrime n' r Fr.TT.card c0 c'' cStar) : ℝ) ≤ Bo p Fr deg j x / 4 := by
-  obtain ⟨C, hC, H⟩ := segment_length_bounds_real
-  refine ⟨C, hC, ?_⟩
-  intro n' r _ p Fr k L₁ N₁ G' deg a Y c0 c'' cStar Dd hp hr hV hII hT h7 j x hx hW B' val hB' hval
-  obtain ⟨h1, h2⟩ := H n' r p Fr k L₁ N₁ G' deg a Y c0 c'' cStar Dd hp hr hV hII hT h7 j x hx hW
-  exact symbol_valuation_margin p Fr deg Y k j x B' _ val (level_degree_nonneg p Fr deg j x) hB' h2 h1 hval
 
 theorem posOf_val_eq_emod (n' : ℕ) [NeZero n'] (a : ℤ) : ((posOf n' a).val : ℤ) = a % (n' : ℤ) := by
   have hn : (0 : ℤ) < n' := by exact_mod_cast NeZero.pos n'
@@ -5813,9 +5711,7 @@ theorem divisibility_of_field_lemma (D : Formalism.BasicNotions.D7) (h : LargePr
 theorem real_bound_reduced_to_symbols (D : Formalism.BasicNotions.D7) (CLa CD Csz : ℝ) (hS : SymbolRealisabilityRemaining D CLa CD Csz) : Conclusion6 D CLa CD Csz :=
   real_bound_of_term_symbols D CLa CD Csz (order_lemma_holds D) hS
 
-theorem orbit_lemma_holds (D : Formalism.BasicNotions.D7) : GoodOrbitPositions D := good_orbits_lemma D
 
-theorem criterion_of_modulo_uniformiser (D : Formalism.BasicNotions.D7) (h : bd_RestCritModW D) : SpaceCriterionModuloUniformiser D := criterion_of_mod_w_clause D h
 
 theorem stmt_of_rest (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg CLa' CD Csz : ℝ)
     (hS : SymbolRealisabilityRemaining D CLa' CD Csz) : Stmt D CLa Ck Crk Cdeg CLa' CD Csz := by

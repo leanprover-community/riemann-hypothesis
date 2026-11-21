@@ -197,11 +197,6 @@ theorem ord_norm (x : L) : ord (Algebra.norm K x) = residueDegree K L * ord x :=
   rw [Units.val_mk0, ord_norm_uniformizer hπ] at this
   rw [this, mul_comm]
 
-theorem ord_algebraMap_norm (x : L) :
-    ord (algebraMap K L (Algebra.norm K x)) = Module.finrank K L * ord x := by
-  rw [ord_algebraMap, ord_norm, ← ramificationIndex_mul_residueDegree K L]
-  push_cast
-  ring
 
 end Valuation
 

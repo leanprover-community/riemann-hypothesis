@@ -38,25 +38,7 @@ def HWExists : Prop := ∀ (a : AlgWt L n) (τ : L →+* ℂ), ∃ lam, a.HWAt �
 
 variable {L n}
 
-theorem uniR_of_uniRT {s : SplitPlace L} {r : ℕ} {h : GL (Fin n) (s.v.adicCompletion L⁺)} (hh : UniRT s r h) :
-    UniR r h := by
-  unfold UniR
-  refine ⟨?_, hh.2⟩
-  unfold ParaR
-  obtain ⟨⟨g, hg⟩, hlow⟩ := hh.1
-  refine ⟨?_, ?_, hlow⟩
-  · intro a b
-    rw [← hg]
-    exact (g.val a b).2
-  · intro a b
-    rw [← hg, ← map_inv]
-    exact (g⁻¹.val a b).2
 
-theorem uniCharMul_ng (H : UniCharMul) : UniCharMulNG L n := by
-  unfold UniCharMul at H
-  intro s r ψ₀ ξ hψ hξ g h ug uh ugh hg hh hug huh hugh
-  exact @H (s.v.adicCompletion L⁺) _ _ n r ψ₀ ξ hψ.1 hξ g h ug uh ugh (uniR_of_uniRT hg)
-    (uniR_of_uniRT hh) hug huh hugh
 
 end
 

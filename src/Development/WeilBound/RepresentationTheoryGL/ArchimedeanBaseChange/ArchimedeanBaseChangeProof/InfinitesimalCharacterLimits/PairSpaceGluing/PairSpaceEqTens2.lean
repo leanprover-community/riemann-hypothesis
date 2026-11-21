@@ -12,8 +12,6 @@ section Pair
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 
-theorem pairSpace_eq_tens2 (U₁ : Submodule ℂ (Sm E a)) (U₂ : Submodule ℂ (Sm E b)) :
-    pairSpace U₁ U₂ = tens2 U₁ U₂ := rfl
 
 end Pair
 
@@ -93,7 +91,6 @@ def trShape {E : Type} [Field E] [NumberField E] [IsCMField E] : {N : ℕ} → T
   | N, .leaf _ _ => .leaf N
   | _, .node t₁ t₂ => .node (trShape t₁) (trShape t₂)
 
-theorem shape_pos_one : (Shape.leaf 1).Pos := Nat.one_pos
 
 def ShapeSub : Prop := (∀ N : ℕ, {σ : Shape N | σ.Pos}.Finite) ∧
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) (t : ℕ → Tr E N),

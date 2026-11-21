@@ -24,8 +24,6 @@ def oneChart (X : Scheme.{0}) : LB X := ⟨PUnit, fun _ => ⊤, fun _ _ => 1⟩
 
 def sgn (R : Type) [CommRing R] (b : Bool) : Rˣ := cond b (-1) 1
 
-theorem sgn_xor (R : Type) [CommRing R] (a b : Bool) : sgn R (xor a b) = sgn R a * sgn R b := by
-  cases a <;> cases b <;> simp [sgn]
 
 theorem sgn_mul_self (R : Type) [CommRing R] (a : Bool) : sgn R a * sgn R a = 1 := by
   cases a <;> simp [sgn]
@@ -226,9 +224,6 @@ attribute [local instance] heisGrp
 def heisPt {S : Scheme.{0}} (T : Over S) : (T ⟶ heisScheme S) →* Heis Γ(T.left, ⊤) :=
   ((yonedaGrpObjIsoOfRepresentableBy _ _ (heisRepr S)).hom.app (Opposite.op T)).hom
 
-theorem heisPt_eq {S : Scheme.{0}} {T : Over S} (f : T ⟶ heisScheme S) :
-    heisPt T f = ⟨f.left.appTop (AffineSpace.coord S 0), f.left.appTop (AffineSpace.coord S 1),
-      f.left.appTop (AffineSpace.coord S 2)⟩ := rfl
 
 def heisMk {S : Scheme.{0}} (T : Over S) (a b c : Γ(T.left, ⊤)) : T ⟶ heisScheme S :=
   Over.homMk (AffineSpace.homOfVector T.hom ![a, b, c]) (AffineSpace.homOfVector_over _ _)
@@ -298,8 +293,5 @@ theorem not_weilIs_baseChange_noncomm : ¬ ∀ (S S' : Scheme.{0}) (G : Over S) 
     inferInstanceAs (IsIso ((⊤ : (Sp (ZMod 3)).Opens).ι ≫ 𝟙 _ ≫ 𝟙 _))
   exact weilIs_oneChart _ 1 _ _ unit_heis
 
-theorem not_weilIs_grpPullback_noncomm : ¬ ∀ (S S' : Scheme.{0}) (G : Over S) (G' : Over S') [GrpObj G] [GrpObj G'] (f : S' ⟶ S) (φ : G'.left ⟶ G.left) (L : LB G.left) (L' : LB G'.left), L.IsLB → L'.IsLB → IsGrpPullback G' G f φ → LBIso L' (L.pull φ) → ∀ (T : Over S') (k : ℤ) (x y : T ⟶ G') (x₀ y₀ : Over.mk (T.hom ≫ f) ⟶ G) (c : Γ(T.left, ⊤)ˣ), x₀.left = x.left ≫ φ → y₀.left = y.left ≫ φ → (Out.WeilIs G' L' k x y c ↔ Out.WeilIs G L k x₀ y₀ c) :=
-  fun H => not_weilIs_baseChange_noncomm fun S S' G G' _ _ f φ h L L' hL hL' hw _ _ t n x' y' x y c ex ey =>
-    H S S' G G' f φ L L' hL hL' h hw (Over.mk t) n x' y' x y (unitOn c) ex ey
 
 end GlobalTheory

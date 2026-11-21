@@ -266,40 +266,10 @@ theorem hostFields_f {R : Ranks} (H : Formalism.BasicNotions.Host R) (ι : Qb �
   show Fintype.card (R.Psi) = R.f
   rw [← Nat.card_eq_fintype_card, (factCardPsi R H).1]
 
-theorem hostFields_eight_dvd {R : Ranks} (H : Formalism.BasicNotions.Host R) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL]
-    (hE : H.EQ ≤ LL) : 8 ∣ (hostFields H.toHostRaw ι LL hE).f := by
-  rw [hostFields_f]
-  exact Nat.mul_dvd_mul_left 2 ((pow_dvd_pow 2 H.two_le_e).trans R.two_pow_dvd_ord)
 
-theorem hostFields_galE {φ₁ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ₁) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL]
-    (hE : H.EQ ≤ LL) : IsGalois ℚ (hostFields H ι LL hE).E := by
-  have h1 : Normal ℚ H.EQ := H.normal_EQ
-  have h2 : IsGalois ℚ H.EQ := isGalois_iff.2 ⟨inferInstance, h1⟩
-  exact h2
 
-theorem abel_EQ {R : Ranks} (H : Formalism.BasicNotions.Host R) (s t : H.EQ ≃ₐ[ℚ] H.EQ) : s * t = t * s := by
-  obtain ⟨T⟩ := Frame.exists H
-  let φ : (H.EQ ≃ₐ[ℚ] H.EQ) ≃* R.GG :=
-    (AlgEquiv.autCongr T.iso).symm.trans (H.gal)
-  apply φ.injective
-  rw [map_mul, map_mul, mul_comm]
 
-theorem hostFields_abelE {R : Ranks} (H : Formalism.BasicNotions.Host R) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL]
-    (hE : H.EQ ≤ LL) (s t : (hostFields H.toHostRaw ι LL hE).E ≃ₐ[ℚ] (hostFields H.toHostRaw ι LL hE).E) :
-    s * t = t * s :=
-  abel_EQ H s t
 
-theorem base_fields_conditions_of_unram {R : Ranks} (H : Formalism.BasicNotions.Host R) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL]
-    (hE : H.EQ ≤ LL)
-    (hun : ∀ P : HeightOneSpectrum (𝓞 (hostFields H.toHostRaw ι LL hE).E),
-      ¬ (P.asIdeal.comap (algebraMap (𝓞 (hostFields H.toHostRaw ι LL hE).F) (𝓞 (hostFields H.toHostRaw ι LL hE).E))).map
-        (algebraMap (𝓞 (hostFields H.toHostRaw ι LL hE).F) (𝓞 (hostFields H.toHostRaw ι LL hE).E)) ≤ P.asIdeal ^ 2) :
-    (hostFields H.toHostRaw ι LL hE).AbelianUnramifiedExtensionConditions where
-  ok := hostFields_ok H ι LL hE
-  eight_dvd := hostFields_eight_dvd H ι LL hE
-  galE := hostFields_galE _ ι LL hE
-  abelE := hostFields_abelE H ι LL hE
-  unram := hun
 
 theorem ram_conj_mem {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (hrank : Module.finrank F E = 2) (c : 𝓞 E →+* 𝓞 E) (hcc : ∀ x, c (c x) = x)
@@ -399,52 +369,8 @@ theorem Fields.Ok.unram_of_inertia {X : Fields} (h : X.Ok)
     ¬ (P.asIdeal.comap (algebraMap (𝓞 X.F) (𝓞 X.E))).map (algebraMap (𝓞 X.F) (𝓞 X.E)) ≤ P.asIdeal ^ 2 :=
   fun hP => hin P (h.ram_conj P hP)
 
-theorem host_inertia {R : Ranks} (H : Formalism.BasicNotions.Host R) (ι : Qb →+* ℂ) (c : 𝓞 H.EQ → 𝓞 H.EQ)
-    (hc : ∀ x, ((c x : 𝓞 H.EQ) : H.EQ) = cLL ι H.EQ (x : H.EQ))
-    (P1 : Ideal (𝓞 H.EQ)) (hP1 : P1.IsPrime) (hP0 : P1 ≠ ⊥) : ¬ ∀ x, c x - x ∈ P1 := by
-  obtain ⟨T⟩ := Frame.exists H
-  intro hall
-  let φ : 𝓞 H.E ≃+* 𝓞 H.EQ := RingOfIntegers.mapRingEquiv (T.iso : H.E ≃+* H.EQ)
-  let P0 : Ideal (𝓞 H.E) := P1.comap (φ : 𝓞 H.E →+* 𝓞 H.EQ)
-  have hprime : P0.IsPrime := Ideal.comap_isPrime _ _
-  have hne : P0 ≠ ⊥ := by
-    intro h0
-    apply hP0
-    rw [eq_bot_iff]
-    intro y hy
-    have h1 : φ.symm y ∈ P0 := by
-      show φ (φ.symm y) ∈ P1
-      rw [RingEquiv.apply_symm_apply]
-      exact hy
-    rw [h0, Ideal.mem_bot] at h1
-    have h2 : y = φ (φ.symm y) := (RingEquiv.apply_symm_apply φ y).symm
-    rw [h2, h1, map_zero]
-    exact Ideal.zero_mem _
-  refine H.der.unramEF P0 hprime hne ?_
-  intro x
-  show φ (H.conj • x - x) ∈ P1
-  have h1 : φ (H.conj • x) = c (φ x) := by
-    apply RingOfIntegers.ext
-    rw [hc]
-    show T.iso (H.conj (x : H.E)) = cLL ι H.EQ (T.iso (x : H.E))
-    apply Subtype.ext
-    rw [cLL_coe, T.iso_coe, T.iso_coe, j_conj T ι]
-  rw [map_sub, h1]
-  exact hall (φ x)
 
-theorem hostFields_inertia {R : Ranks} (H : Formalism.BasicNotions.Host R) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL]
-    (hE : H.EQ ≤ LL) (P : HeightOneSpectrum (𝓞 (hostFields H.toHostRaw ι LL hE).E)) :
-    ¬ ∀ x : 𝓞 (hostFields H.toHostRaw ι LL hE).E, (hostFields H.toHostRaw ι LL hE).conjO x - x ∈ P.asIdeal :=
-  host_inertia H ι (hostFields H.toHostRaw ι LL hE).conjO (fun _ => rfl) P.asIdeal P.isPrime P.ne_bot
 
-theorem hostFields_unram {R : Ranks} (H : Formalism.BasicNotions.Host R) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL]
-    (hE : H.EQ ≤ LL) (P : HeightOneSpectrum (𝓞 (hostFields H.toHostRaw ι LL hE).E)) :
-    ¬ (P.asIdeal.comap (algebraMap (𝓞 (hostFields H.toHostRaw ι LL hE).F) (𝓞 (hostFields H.toHostRaw ι LL hE).E))).map
-      (algebraMap (𝓞 (hostFields H.toHostRaw ι LL hE).F) (𝓞 (hostFields H.toHostRaw ι LL hE).E)) ≤ P.asIdeal ^ 2 :=
-  (hostFields_ok H ι LL hE).unram_of_inertia (hostFields_inertia H ι LL hE) P
 
-theorem base_fields_conditions {R : Ranks} (H : Formalism.BasicNotions.Host R) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL]
-    (hE : H.EQ ≤ LL) : (hostFields H.toHostRaw ι LL hE).AbelianUnramifiedExtensionConditions :=
-  base_fields_conditions_of_unram H ι LL hE (hostFields_unram H ι LL hE)
 
 end Formalism.L2.Col

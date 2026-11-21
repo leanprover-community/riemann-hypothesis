@@ -70,10 +70,6 @@ namespace LineFuller
 variable (II : IntersectionSystem)
   (hII : ∀ W : Ideal (MRing (PBlk 2)), IsArithVar W 1 → 0 ≤ II Unit (PBlk 2) W 1 ![fsLine 2])
 
-theorem one_mem_interior :
-    (fun _ => 1 : (Σ _ : Unit, Fin 2) → ℂ) ∈
-      mcPts (mCoordIdeal (lineFuller II hII).y) \ (lineFuller II hII).Bd :=
-  ⟨Line.mem_mcPts_line.2 ⟨0, one_ne_zero⟩, Set.notMem_empty _⟩
 
 end LineFuller
 

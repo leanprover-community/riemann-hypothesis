@@ -47,13 +47,6 @@ def secTrace {U : X.Opens} (hU : IsAffineOpen U) : Sec s' (f ⁻¹ᵁ U) →+ Se
   haveI := sec_etale (s := s) (s' := s') (f := f) hU
   (etTrace (Sec s U) (Sec s' (f ⁻¹ᵁ U))).toAddMonoidHom
 
-theorem secTrace_mul {U : X.Opens} (hU : IsAffineOpen U) (b : Sec s U) (b' : Sec s' (f ⁻¹ᵁ U)) :
-    secTrace s s' hU (appSec s s' f U b * b') = b * secTrace s s' hU b' := by
-  letI := secAlg s s' f U
-  haveI := sec_finite (s := s) (s' := s') (f := f) hU
-  haveI := sec_etale (s := s) (s' := s') (f := f) hU
-  change etTrace (Sec s U) (Sec s' (f ⁻¹ᵁ U)) (b • b') = b * etTrace (Sec s U) (Sec s' (f ⁻¹ᵁ U)) b'
-  exact ((etTrace (Sec s U) (Sec s' (f ⁻¹ᵁ U))).map_smul b b').trans (smul_eq_mul _ _)
 
 theorem secTrace_res {U V : X.Opens} (hU : IsAffineOpen U) (hV : IsAffineOpen V) (h : V ≤ U)
     (b' : Sec s' (f ⁻¹ᵁ U)) :
@@ -300,28 +293,7 @@ theorem nsmul_app {F G : X.Modules} (φ : F ⟶ G) (d : ℕ) (U : X.Opens) (y : 
     rw [succ_nsmul, succ_nsmul, Scheme.Modules.Hom.add_app]
     exact congrArg (· + φ.app U y) ih
 
-theorem omegaPull_omegaTrace_of_secTrace_one (hf : f ≫ s = s') (j d : ℕ)
-    (hd : ∀ (U : X.Opens) (hU : IsAffineOpen U), secTrace (f := f) s s' hU 1 = d) :
-    omegaPull hf j ≫ omegaTrace hf j = d • 𝟙 (Omega s j) := by
-  refine hom_ext_affine fun U hU y ↦ ?_
-  obtain ⟨x, rfl⟩ := toOm_surjective (s := s) (j := j) hU y
-  rw [nsmul_app, Scheme.Modules.Hom.comp_app]
-  have e := omegaPull_toOmega hf j U x
-  change (omegaTrace hf j).app U ((omegaPull hf j).val.app (op U) ((toOmega s j).app (op U) x)) = _
-  rw [e, ← one_smul (Sec s' (f ⁻¹ᵁ U)) (formPull hf U j x)]
-  erw [omegaTrace_toOm_smul_formPull hf j hU, hd U hU, Nat.cast_smul_eq_nsmul, map_nsmul]
-  rfl
 
-theorem hodgeTrace_hodgePull_of_secTrace_one (hf : f ≫ s = s') (j q d : ℕ)
-    (hd : ∀ (U : X.Opens) (hU : IsAffineOpen U), secTrace (f := f) s s' hU 1 = d) (x : hodgeH s j q) :
-    hodgeTrace hf j q (hodgePull hf j q x) = d • x := by
-  letI := algΓ s
-  have hmap : ∀ n : ℕ, cohOn.map k (n • 𝟙 (Omega s j)) ⊤ q = n • LinearMap.id := fun n ↦ by
-    induction n with
-    | zero => rw [zero_smul, zero_smul]; exact cohOn.map_zero_hom k _ _ ⊤ q
-    | succ n ih => rw [succ_nsmul, succ_nsmul, cohOn.map_add_hom, ih, cohOn.map_id]
-  rw [hodgeTrace_hodgePull, omegaPull_omegaTrace_of_secTrace_one hf j d hd, hmap]
-  rfl
 
 end Degree
 

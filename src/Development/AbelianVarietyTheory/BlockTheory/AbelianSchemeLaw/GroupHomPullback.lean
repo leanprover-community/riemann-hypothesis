@@ -95,45 +95,12 @@ lemma res_linComb_g (L : LB X) (φ : K → (Y ⟶ X)) (ε : K → ℤ) (a b : K 
   change res h (∏ k, (res (le_pre_inf L L φ a b k) (pullU (φ k) _ (L.g (a k) (b k)))) ^ ε k) = _
   simp only [map_prod, map_zpow, res_pullU, res_pr]
 
-lemma res_prod_pr (φ : K → (Y ⟶ X)) (ε : K → ℤ) {U : K → X.Opens} {V W : Y.Opens}
-    (h : ∀ k, V ≤ φ k ⁻¹ᵁ U k) (h' : W ≤ V) (a : ∀ k, Γ(X, U k)ˣ) :
-    res h' (∏ k, pr (φ k) (h k) (a k) ^ ε k) = ∏ k, pr (φ k) (h'.trans (h k)) (a k) ^ ε k := by
-  simp only [map_prod, map_zpow, res_pr]
 
-lemma isoUnit_compat {L M : LB X} {u : LB.Iso L M} (hu : u.IsGen) (j j' : M.ι) (i i' : L.ι)
-    (f : Y ⟶ X) {W : Y.Opens} (h : W ≤ f ⁻¹ᵁ (M.U j ⊓ L.U i)) (h' : W ≤ f ⁻¹ᵁ (M.U j' ⊓ L.U i'))
-    (hM : W ≤ f ⁻¹ᵁ (M.U j ⊓ M.U j')) (hL : W ≤ f ⁻¹ᵁ (L.U i ⊓ L.U i')) :
-    pr f h (isoUnit u j i) =
-      pr f hM (M.g j j') * (pr f hL (L.g i i'))⁻¹ * pr f h' (isoUnit u j' i') := by
-  have h0 : res (inf_le_left : (M.U j ⊓ L.U i) ⊓ (M.U j' ⊓ L.U i') ≤ _) (isoUnit u j i) =
-      res (le_inf (inf_le_left.trans inf_le_left) (inf_le_right.trans inf_le_left)) (M.g j j') *
-      (res (le_inf (inf_le_left.trans inf_le_right) (inf_le_right.trans inf_le_right))
-        (L.g i i'))⁻¹ * res inf_le_right (isoUnit u j' i') := hu (j, i) (j', i')
-  have hh : W ≤ f ⁻¹ᵁ ((M.U j ⊓ L.U i) ⊓ (M.U j' ⊓ L.U i')) := le_inf h h'
-  have := congrArg (pr f hh) h0
-  simpa only [map_mul, map_inv, pr_res] using this
 
 def isoLinComb {L M : LB X} (u : LB.Iso L M) (φ : K → (Y ⟶ X)) (ε : K → ℤ) :
     LB.Iso (LB.LinComb L φ ε) (LB.LinComb M φ ε) where
   s := fun p => ∏ k, (pr (φ k) (le_pre_inf M L φ p.1 p.2 k) (isoUnit u (p.1 k) (p.2 k))) ^ (ε k)
 
-theorem isoLinComb_isGen {L M : LB X} {u : LB.Iso L M} (hu : u.IsGen) (φ : K → (Y ⟶ X))
-    (ε : K → ℤ) : (isoLinComb u φ ε).IsGen := by
-  have key (j j' : K → M.ι) (i i' : K → L.ι) (W : Y.Opens)
-      (h : W ≤ LB.wchart M φ j ⊓ LB.wchart L φ i) (h' : W ≤ LB.wchart M φ j' ⊓ LB.wchart L φ i')
-      (hM : W ≤ LB.wchart M φ j ⊓ LB.wchart M φ j') (hL : W ≤ LB.wchart L φ i ⊓ LB.wchart L φ i') :
-      res h (∏ k, (pr (φ k) (le_pre_inf M L φ j i k) (isoUnit u (j k) (i k))) ^ (ε k)) =
-      res (U := LB.wchart M φ j ⊓ LB.wchart M φ j') hM ((LB.LinComb M φ ε).g j j') *
-      (res (U := LB.wchart L φ i ⊓ LB.wchart L φ i') hL ((LB.LinComb L φ ε).g i i'))⁻¹ *
-      res h' (∏ k, (pr (φ k) (le_pre_inf M L φ j' i' k) (isoUnit u (j' k) (i' k))) ^ (ε k)) := by
-    rw [res_prod_pr, res_prod_pr, res_linComb_g, res_linComb_g,
-      ← Finset.prod_inv_distrib, ← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    rw [← inv_zpow, ← mul_zpow, ← mul_zpow]
-    congr 1
-    exact isoUnit_compat hu _ _ _ _ _ _ _ _ _
-  intro p q
-  exact key p.1 q.1 p.2 q.2 _ inf_le_left inf_le_right _ _
 
 abbrev isoPull {L M : LB X} (u : LB.Iso L M) (f : Y ⟶ X) : LB.Iso (L.pull f) (M.pull f) :=
   isoLinComb u (K := PUnit) (fun _ => f) (fun _ => 1)
@@ -352,9 +319,6 @@ def pullRig (L : RigLB G) : RigLB G' where
 def pullCube (L : LB G.left) (t : LB.Gen (Theta G L)) : LB.Gen (Theta G' (L.pull f.tot)) :=
   genSquare L (φ := thφ G (x3 G)) (φ' := thφ G' (x3 G')) (h := f.cube) f.cube_sq thε t
 
-theorem pullCube_isGen (L : LB G.left) {t : LB.Gen (Theta G L)} (ht : t.IsGen) :
-    (f.pullCube L t).IsGen :=
-  genSquare_isGen L (φ := thφ G (x3 G)) (φ' := thφ G' (x3 G')) f.cube_sq thε ht
 
 end GrpHom
 

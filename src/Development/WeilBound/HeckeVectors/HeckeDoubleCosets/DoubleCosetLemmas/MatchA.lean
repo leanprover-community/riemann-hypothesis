@@ -69,11 +69,6 @@ theorem rS_apply {n c : ℕ} (g : GL (Fin c) (Cv v)) (Φ) (y) :
 theorem rT_apply {n c : ℕ} (z : GL (Fin n) (Cv v)) (Φ) (y) :
     rT v n c z Φ y = wt ((c : ℝ) / 2) z * Φ (z.1ᵀ * y) := rfl
 
-theorem rS_rT {n c : ℕ} (g : GL (Fin c) (Cv v)) (z : GL (Fin n) (Cv v)) (Φ) :
-    rS v n c g (rT v n c z Φ) = rT v n c z (rS v n c g Φ) := by
-  funext y
-  simp only [rS_apply, rT_apply, Matrix.mul_assoc]
-  ring
 
 variable (v) in
 
@@ -102,25 +97,13 @@ theorem wt_of_mem (s : ℝ) {m : ℕ} {g : GL (Fin m) (Cv v)} (h : g ∈ KGL v m
   obtain ⟨u, hu⟩ := (mem_KGL.1 h).det
   rw [wt, hu, absV_unit, Real.one_rpow, Complex.ofReal_one]
 
-theorem intM_mul_iff {n c : ℕ} {g : GL (Fin c) (Cv v)} (h : GInt 𝒪 g)
-    (y : Matrix (Fin n) (Fin c) (Cv v)) : IntM 𝒪 (y * g.1) ↔ IntM 𝒪 y :=
-  ⟨fun hy => by simpa [Matrix.mul_assoc] using hy.mul h.2, fun hy => hy.mul h.1⟩
 
 theorem intM_tr_iff {n c : ℕ} (z : Matrix (Fin n) (Fin n) (Cv v))
     (y : Matrix (Fin n) (Fin c) (Cv v)) : IntM 𝒪 (zᵀ * y) ↔ IntM 𝒪 (yᵀ * z) :=
   ⟨fun h => by simpa [Matrix.transpose_mul] using h.transpose,
     fun h => by simpa [Matrix.transpose_mul] using h.transpose⟩
 
-theorem sphericalVector_fixed_right (n c : ℕ) : phi0 v n c ∈ fixed (rS v n c) (KGL v c) :=
-  mem_fixed.2 fun k hk => funext fun y => by
-    rw [rS_apply, wt_of_mem _ hk, one_mul, characteristic_function_integral_apply, characteristic_function_integral_apply, intM_mul_iff (mem_KGL.1 hk)]
 
-theorem sphericalVector_fixed_left (n c : ℕ) : phi0 v n c ∈ fixed (rT v n c) (KGL v n) :=
-  mem_fixed.2 fun k hk => funext fun y => by
-    rw [rT_apply, wt_of_mem _ hk, one_mul, characteristic_function_integral_apply, characteristic_function_integral_apply, intM_tr_iff,
-      intM_mul_iff (mem_KGL.1 hk)]
-    classical
-    exact if_congr ⟨fun h => h.transpose, fun h => h.transpose⟩ rfl rfl
 
 theorem heckeVec_apply {G X : Type} [Group G] {J : Subgroup G} (hJ : IsCommensurated J)
     {h : G → ℂ} (hh : h ∈ Hecke ℂ J) (ρ : Representation ℂ G (X → ℂ)) (Φ : X → ℂ) (y : X) :

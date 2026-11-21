@@ -31,9 +31,6 @@ def invZ : ColData Dc Sp S where
 
 @[simp] theorem invZ_sE : C.invZ.sE = C.sE := rfl
 
-theorem invZ_invZ : C.invZ.invZ = C := by
-  cases C
-  simp only [invZ, inv_inv]
 
 def MatrixIdentityOffBase : Prop :=
   (∀ u t (φ : Fin (Dc.a u) → K) (F : Fin (Df.nV t) → K),
@@ -41,15 +38,6 @@ def MatrixIdentityOffBase : Prop :=
   (∀ u, C.ζ u Bs.μ0 = 1) ∧ (∀ u t, C.ζ u t ≠ 0) ∧
   ∀ u w, vw w (C.ζ u (S.μ w)) = 0 ∧ vw (conjPl w) (C.ζ u (S.μ w)) = 0
 
-theorem pairing_condition_of_inverse_matrix_identity (h : C.MatrixIdentityOffBase) : C.invZ.PairingFactorsThroughPeriods := by
-  obtain ⟨h1, h2, h3, h4⟩ := h
-  refine ⟨fun u t φ F => ?_, fun u => ?_, fun u t => ?_, fun u w => ?_⟩
-  · simp only [invZ_ζ, invZ_B]
-    rw [← h1 u t φ F, ← mul_assoc, inv_mul_cancel₀ (h3 u t), one_mul]
-  · simp [h2 u]
-  · simpa using h3 u t
-  · simp only [invZ_ζ]
-    rw [vw_inv, (h4 u w).1, neg_zero]
 
 theorem inverse_matrix_identity_of_pairing (h0 : S.H0) (h : C.PairingFactorsThroughPeriods) : C.invZ.MatrixIdentityOffBase := by
   obtain ⟨h1, h2, h3, h4⟩ := h
@@ -65,8 +53,6 @@ theorem inverse_matrix_identity_of_pairing (h0 : S.H0) (h : C.PairingFactorsThro
     rw [h0.1 w] at this
     rw [vw_inv, this, neg_zero]
 
-theorem pairing_iff_inverse_matrix_identity (h0 : S.H0) : C.PairingFactorsThroughPeriods ↔ C.invZ.MatrixIdentityOffBase :=
-  ⟨C.inverse_matrix_identity_of_pairing h0, fun h => by simpa only [invZ_invZ] using C.invZ.pairing_condition_of_inverse_matrix_identity h⟩
 
 end ColData
 
@@ -119,10 +105,6 @@ abbrev IndefPkg2.forget {Bs : DefBase K} {A : DefAmb Bs} {fc : DefSub A → DefF
     (P : IndefPkg2 A fc cf C CH) : IndefPkg A fc C CH :=
   P.toIndefPkg
 
-theorem conj_ne_embedding (v : InfinitePlace K) (hv : v.IsComplex) :
-    ComplexEmbedding.conjugate v.embedding ≠ v.embedding := by
-  intro h
-  exact (InfinitePlace.isComplex_iff.1 hv) (ComplexEmbedding.isReal_iff.2 h)
 
 structure IndefFace2 extends IndefFace where
 
@@ -148,54 +130,10 @@ variable {Bs : DefBase K} {A : DefAmb Bs} {fc : DefSub A → DefFace Bs} {cf : C
 theorem mi0 : P.core.cols.col.invZ.MatrixIdentityOffBase :=
   P.core.cols.col.inverse_matrix_identity_of_pairing P.core.cols.h0 P.core.cols.l1b
 
-theorem tuple_is_base_or_member : ∀ t : Bs.Tup, t = Bs.μ0 ∨ ∃ w, P.core.cols.μ w = t := by
-  intro t
-  rcases P.conv.c2 t with h | ⟨w, hw⟩
-  · exact Or.inl h
-  · exact Or.inr ⟨w, by rw [← P.core.extra.level.1]; exact hw⟩
 
-theorem base_level_log_eigenvalue_bound : P.core.base.toIndefData.L6 ((fc P.Zs).Z.num C CH) := P.core.base_level_log_eigenvalue_bound
 
-theorem fun1 (hde : 0 ≤ ((fc P.Zs).Z.num C CH).de) (hde3 : ((fc P.Zs).Z.num C CH).de ≤ 1 / 3) :
-    P.core.cols.muMaxRR ≤ ((fc P.Zs).Z.num C CH).hh - meanLog P.core.cols.κ + 14 * ((fc P.Zs).Z.num C CH).la :=
-  P.core.fun1 hde hde3
 
-theorem period_images_surjective (hD : 0 < P.core.cols.D) (z : (fc P.Zs).Sp.HH) (hz : z ∈ (fc P.Zs).Sp.Rw) :
-    ∃ y, P.core.cols.col.sE y = z :=
-  P.core.cols.col.period_images_surjective P.core.cols.l1e (P.core.cols.frames.1 Bs.v0) hD z hz
 
-theorem divCore [IsTotallyComplex K] (hM : Formalism.DivisorInequality.BoundsMu) (hS : SpecDet) (hR0 : GramDeterminantQuotientMetric)
-    (hG : LatticeGlue) (hRam : RamBasic) (hH : HeightBoundConstant) [Nonempty Bs.Ix] (wf0 : (fc P.Zs).Df0.WF)
-    (wf1 : (fc P.Zs).Df1.WF)
-    (hde : 0 ≤ ((fc P.Zs).Z.num C CH).de) (hde3 : ((fc P.Zs).Z.num C CH).de ≤ 1 / 3)
-    (eb : ∀ t, HeightOneSpectrum (𝓞 K) → Fin ((fc P.Zs).Df0.dQ t) → Fin ((fc P.Zs).Df0.dQ t) → K)
-    (heb : ∀ t w, IsLocBasis ((fc P.Zs).Df0.abelian₂ t) w (eb t w))
-    (Sy : Finset (HeightOneSpectrum (𝓞 K))) (hSy : P.core.base.Tw ⊆ Sy)
-    (hG0 : ∀ y, y ∉ Sy → vw y ((fc P.Zs).Df0.Gm eb (P.core.base.μ y) y) = 0)
-    (LG E3 : ℝ) (E2 : Bs.J → ℝ) (gy : HeightOneSpectrum (𝓞 K) → ℝ) (ηy : HeightOneSpectrum (𝓞 K) → Bs.J → ℝ)
-    (hi : ∀ y ∈ Sy, (vw y ((fc P.Zs).Df0.Gm eb (P.core.base.μ y) y) : ℝ) ≤ (P.core.base.D : ℝ) * gy y)
-    (hLG : ∑ y ∈ Sy, lw y * gy y ≤ LG)
-    (hiv : ∀ y ∈ P.core.base.Tw, ∀ j, (jw ((fc P.Zs).Df0.HT j (P.core.base.μ y)) y ((fc P.Zs).Df0.Tl j (P.core.base.μ y)) : ℝ) ≤
-      ((ramw y : ℝ) * ((fc P.Zs).Z.num C CH).J0 (P.core.base.μ y) y j) * (P.core.base.D : ℝ) + ηy y j)
-    (hE2 : ∀ j, ∑ y ∈ P.core.base.Tw, lw y * ηy y j / (P.core.base.D : ℝ) ≤ E2 j)
-    (hE3 : ∑ y ∈ Sy, lw y * (2 / ellw y ^ 2) ≤ E3)
-    (u : (fc P.Zs).Dc.Mem) (hXc : ∀ v, IsUnit (((fc P.Zs).Dc.Xc u v).det)) (hne : P.core.cols.col.B u ≠ 0)
-    (X0 : InfinitePlace K → Matrix (Fin ((fc P.Zs).Df1.nV Bs.μ0)) (Fin ((fc P.Zs).Df1.nV Bs.μ0)) ℂ)
-    (hX0 : ∀ v, IsUnit (X0 v).det ∧ ((X0 v)⁻¹).conjTranspose * (X0 v)⁻¹ = ((fc P.Zs).Df1.HV Bs.μ0).map v.embedding)
-    (pU : InfinitePlace K → ℝ)
-    (hpU : ∀ v, Formalism.HN.opNormAt (Pi.basisFun K (Fin ((fc P.Zs).Dc.a u))) ((fc P.Zs).Dc.Xc u)
-      (Pi.basisFun K (Fin ((fc P.Zs).Df1.nV Bs.μ0))).dualBasis (Formalism.HN.dualFrame X0) v ((fc P.Zs).Dc.Pt u Bs.μ0) ≤ pU v)
-    (X : ℝ)
-    (hX : X = (∑ j, ((fc P.Zs).Z.num C CH).l3 j) +
-      2 * (∑ j, ∑ y ∈ P.core.base.Tw, lw y * ((ramw y : ℝ) * ((fc P.Zs).Z.num C CH).F0 y j)) + LG +
-      (∑ j, (((fc P.Zs).Z.num C CH).E1 j + E2 j)) + E3) :
-    P.core.cols.muCC + Formalism.HN.htMap (Pi.basisFun K (Fin ((fc P.Zs).Dc.a u))) ((fc P.Zs).Dc.Xc u)
-        (Pi.basisFun K (Fin P.core.cols.D)).dualBasis (Formalism.HN.dualFrame P.core.cols.XE) (P.core.cols.col.B u) ≤
-      X + 3 * ((fc P.Zs).Z.num C CH).de * (X + ((fc P.Zs).Z.num C CH).hh + 28 * ((fc P.Zs).Z.num C CH).la) +
-        28 * ((fc P.Zs).Z.num C CH).la +
-        ((1 / (Formalism.HN.nPl K : ℝ)) * ∑ v, Real.log (pU v ^ 2) - ∑ j, ((fc P.Zs).Z.num C CH).l6 j) :=
-  P.forget.core.divCore hM hS hR0 hG hRam hH wf0 wf1 hde hde3 eb heb Sy hSy hG0 LG E3 E2 gy ηy hi hLG hiv hE2 hE3
-    u hXc hne X0 hX0 pU hpU X hX
 
 end IndefPkg2
 
@@ -415,64 +353,12 @@ variable {Bs : DefBase K} {Df0 Df1 : DefSide Bs} {Dc : DefCols Df1} {Sp : SPer D
 
 include P
 
-theorem base_level_log_eigenvalue_bound : P.base.toIndefData.L6 N := fun j p v => by
-  rw [P.extra.level.2.2]; exact P.cols.l6 j p v
 
-theorem fun1 (hde : 0 ≤ N.de) (hde3 : N.de ≤ 1 / 3) :
-    P.cols.muMaxRR ≤ N.hh - meanLog P.cols.κ + 14 * N.la := by
-  rw [← P.extra.level.2.1]; exact (P.extra.passage hde hde3 _ P.extra.fun0).1
 
-theorem tuple_is_base_or_member (h : ∀ t : Bs.Tup, t = Bs.μ0 ∨ ∃ w, P.base.μ w = t) : ∀ t : Bs.Tup, t = Bs.μ0 ∨ ∃ w, P.cols.μ w = t := by
-  intro t
-  rcases h t with h | ⟨w, hw⟩
-  · exact Or.inl h
-  · exact Or.inr ⟨w, by rw [← P.extra.level.1]; exact hw⟩
 
 end IndefCoreR
 
-theorem IndefCoreR.divCore [IsTotallyComplex K] (hM : Formalism.DivisorInequality.BoundsMu) (hS : SpecDet) (hR0 : GramDeterminantQuotientMetric)
-    (hG : LatticeGlue) (hRam : RamBasic) (hH : HeightBoundConstant) {Bs : DefBase K} {Df0 Df1 : DefSide Bs}
-    {Dc : DefCols Df1} {Sp : SPer Dc} {N : IndefNum Bs} [Nonempty Bs.Ix] (wf0 : Df0.WF) (wf1 : Df1.WF)
-    (P : IndefCoreR Df0 Df1 Dc Sp N) (hde : 0 ≤ N.de) (hde3 : N.de ≤ 1 / 3)
-    (eb : ∀ t, HeightOneSpectrum (𝓞 K) → Fin (Df0.dQ t) → Fin (Df0.dQ t) → K)
-    (heb : ∀ t w, IsLocBasis (Df0.abelian₂ t) w (eb t w))
-    (Sy : Finset (HeightOneSpectrum (𝓞 K))) (hSy : P.base.Tw ⊆ Sy)
-    (hG0 : ∀ y, y ∉ Sy → vw y (Df0.Gm eb (P.base.μ y) y) = 0)
-    (LG E3 : ℝ) (E2 : Bs.J → ℝ) (gy : HeightOneSpectrum (𝓞 K) → ℝ) (ηy : HeightOneSpectrum (𝓞 K) → Bs.J → ℝ)
-    (hi : ∀ y ∈ Sy, (vw y (Df0.Gm eb (P.base.μ y) y) : ℝ) ≤ (P.base.D : ℝ) * gy y)
-    (hLG : ∑ y ∈ Sy, lw y * gy y ≤ LG)
-    (hiv : ∀ y ∈ P.base.Tw, ∀ j, (jw (Df0.HT j (P.base.μ y)) y (Df0.Tl j (P.base.μ y)) : ℝ) ≤
-      ((ramw y : ℝ) * N.J0 (P.base.μ y) y j) * (P.base.D : ℝ) + ηy y j)
-    (hE2 : ∀ j, ∑ y ∈ P.base.Tw, lw y * ηy y j / (P.base.D : ℝ) ≤ E2 j)
-    (hE3 : ∑ y ∈ Sy, lw y * (2 / ellw y ^ 2) ≤ E3)
-    (u : Dc.Mem) (hXc : ∀ v, IsUnit (Dc.Xc u v).det) (hne : P.cols.col.B u ≠ 0)
-    (X0 : InfinitePlace K → Matrix (Fin (Df1.nV Bs.μ0)) (Fin (Df1.nV Bs.μ0)) ℂ)
-    (hX0 : ∀ v, IsUnit (X0 v).det ∧ ((X0 v)⁻¹).conjTranspose * (X0 v)⁻¹ = (Df1.HV Bs.μ0).map v.embedding)
-    (pU : InfinitePlace K → ℝ)
-    (hpU : ∀ v, Formalism.HN.opNormAt (Pi.basisFun K (Fin (Dc.a u))) (Dc.Xc u)
-      (Pi.basisFun K (Fin (Df1.nV Bs.μ0))).dualBasis (Formalism.HN.dualFrame X0) v (Dc.Pt u Bs.μ0) ≤ pU v)
-    (X : ℝ)
-    (hX : X = (∑ j, N.l3 j) + 2 * (∑ j, ∑ y ∈ P.base.Tw, lw y * ((ramw y : ℝ) * N.F0 y j)) + LG +
-      (∑ j, (N.E1 j + E2 j)) + E3) :
-    P.cols.muCC + Formalism.HN.htMap (Pi.basisFun K (Fin (Dc.a u))) (Dc.Xc u) (Pi.basisFun K (Fin P.cols.D)).dualBasis
-        (Formalism.HN.dualFrame P.cols.XE) (P.cols.col.B u) ≤
-      X + 3 * N.de * (X + N.hh + 28 * N.la) + 28 * N.la +
-        ((1 / (Formalism.HN.nPl K : ℝ)) * ∑ v, Real.log (pU v ^ 2) - ∑ j, N.l6 j) := by
-  have h0 : P.base.muCC ≤ _ :=
-    P.base.boundsMu hM hS hR0 hG hRam wf0 P.extra.untw eb heb Sy hSy hG0 LG E3 E2 gy ηy hi hLG hiv hE2 hE3
-  have hp := (P.extra.passage hde hde3 _ P.extra.fun0).2
-  have hh := P.cols.height hH wf1 u hXc hne X0 hX0 pU hpU
-  have hκ : meanLog P.cols.κ = meanLog P.base.κ := by rw [P.extra.level.2.1]
-  rw [hκ] at hh
-  have h1 : P.base.muCC - meanLog P.base.κ ≤ X := by rw [hX]; linarith [h0]
-  have h2 : 3 * N.de * (P.base.muCC + (N.hh - meanLog P.base.κ) + 28 * N.la) ≤
-      3 * N.de * (X + N.hh + 28 * N.la) :=
-    mul_le_mul_of_nonneg_left (by linarith [h1]) (by linarith [hde])
-  linarith [hp, hh, h1, h2]
 
-theorem IndefColsR.period_images_surjective {Bs : DefBase K} {Df : DefSide Bs} {Dc : DefCols Df} {Sp : SPer Dc} {N : IndefNum Bs}
-    (S : IndefColsR Df Dc Sp N) (z : Sp.HH) (hz : z ∈ Sp.Rw) : ∃ y, S.col.sE y = z :=
-  S.col.period_images_surjective S.l1e (S.frames Bs.v0) S.D_pos z hz
 
 theorem IndefColsR.mi0 {Bs : DefBase K} {Df : DefSide Bs} {Dc : DefCols Df} {Sp : SPer Dc} {N : IndefNum Bs}
     (S : IndefColsR Df Dc Sp N) : S.col.invZ.MatrixIdentityOffBase :=

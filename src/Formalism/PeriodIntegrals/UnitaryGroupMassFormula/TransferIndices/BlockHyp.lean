@@ -33,9 +33,6 @@ theorem cut_span (M : Submodule (𝓞 K) V) (hM : Submodule.span K (M : Set V) =
     rw [this]
     exact Submodule.smul_mem _ _ (Submodule.subset_span hmem)
 
-theorem rk_cut (M : Submodule (𝓞 K) V) (hM : Submodule.span K (M : Set V) = ⊤) (X : Submodule K V) :
-    Formalism.HN.rkK (M ⊓ X.restrictScalars (𝓞 K)) = Module.finrank K X := by
-  rw [Formalism.HN.rkK, cut_span M hM X]
 
 theorem fg_cut (M : Submodule (𝓞 K) V) (hM : M.FG) (X : Submodule K V) : (M ⊓ X.restrictScalars (𝓞 K)).FG :=
   Submodule.FG.of_le hM inf_le_left

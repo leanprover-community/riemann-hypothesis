@@ -42,9 +42,6 @@ theorem exists_conj_level {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fi
       ∀ (x : S'.U) (z : S.U), x.1 = b * z.1 * b⁻¹ → S'.chi x = S.chi z :=
   GlobalTheory.T.exists_stepLevel_conj_baseLatticeUnitary S b hbU hbV hbT hbO
 
-theorem qPi_of_adAt {K : Type} [Field K] {Θ : LevQFam E K n Q} (q : QLoc hc n Q Θ) (P : Q) (hP : conjPrime₂ P.1 ≠ P.1)
-    (a : AfE F E) (e : E) (h : adAt F P.1 a = algebraMap E _ e) : qPi q P a = q.phi P e :=
-  GlobalTheory.T.splitLocalLevel_firstFactor_reads_component hc n q P hP a e h
 
 theorem k_facts {π : 𝓞 E} (hB : BasePi ST π) (k : GL (Fin n) (AfE F E)) (c : DiaG E ST)
     (hk : ∃ p₀ : DecoF E n ∅ ∅ ∅, IsPtOf hc k p₀ ∧ p₀.deco.1.N = stdLat E n)

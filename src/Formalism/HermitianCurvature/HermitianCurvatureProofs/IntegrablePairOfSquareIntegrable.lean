@@ -16,9 +16,6 @@ section L2
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
-theorem hs_self_re (A : Wq →L[ℂ] Wp) : (B.hsInner A A).re = ‖B.hsVec A‖ ^ 2 := by
-  unfold B.hsInner
-  simpa using inner_self_eq_norm_sq (𝕜 := ℂ) (B.hsVec A)
 
 theorem norm_hs_le (A C : Wq →L[ℂ] Wp) : ‖B.hsInner A C‖ ≤ ‖B.hsInner A A‖ + ‖B.hsInner C C‖ := by
   unfold B.hsInner
@@ -174,12 +171,7 @@ theorem lop_mem (X : ActualOps k r z z' π π') (μ : Measure (Mt k r)) (l : Lt)
   rw [wop_append_single] at this
   exact this
 
-theorem square_integrable_slice_of_mem (X : ActualOps k r z z' π π') (μ : Measure (Mt k r)) {Φ : RadSp k r z z' π π'}
-    (hΦ : Φ ∈ TopCls X μ) {c : Fin r → ℂ} (hc : c ∈ OmX r) : SliceSquareIntegrable μ Φ c := by
-  have := (hΦ c hc).2 []
-  simpa [wop] using this
 
-theorem intOn_topCls (X : ActualOps k r z z' π π') (μ : Measure (Mt k r)) : IntOn μ (TopCls X μ) := fun c hc Φ hΦ Ψ hΨ => integrable_pair_of_square_integrable μ (square_integrable_slice_of_mem X μ hΦ hc) (square_integrable_slice_of_mem X μ hΨ hc)
 
 end Cls
 
@@ -193,42 +185,7 @@ def UpperLeftBlockAdjoint (P : M.Par) (z z' : Fin (2 * P.r + P.k + 1) → ℂ) (
   ∀ Y : ℂ, star Y = Y → ∀ c ∈ OmX P.r, ∀ Φ ∈ TopCls X μ, ∀ Ψ ∈ TopCls X μ,
     pairAt μ (X.t Y 0 0 Φ) Ψ c = pairAt μ Φ (X.t (star Y) 0 0 Ψ) c
 
-theorem QQ_mem_adjAlg_top (P : M.Par) (z z' : Fin (2 * P.r + P.k + 1) → ℂ) (π : Mx P.k P.r → (Wp →L[ℂ] Wp))
-    (π' : Mx P.k P.r → (Wq →L[ℂ] Wq)) (hP : IsPlace P z z' π π') (X : ActualOps P.k P.r z z' π π')
-    (μ : Measure (Mt P.k P.r)) (hμ : B.IsHaarOn (Glev P.k P.r (Fin.last P.r)) μ)
-    (h11 : UpperLeftBlockAdjoint P z z' π π' X μ) (Y : ℂ) (hY : star Y = Y) (a b : Fin 2) :
-    X.QQ Y a b ∈ adjAlg μ (TopCls X μ) (intOn_topCls X μ) := by
-  refine ⟨lop_mem X μ (Sum.inl (a, b, Y)), lop_mem X μ (Sum.inl (b, a, star Y)), fun c hc Φ hΦ Ψ hΨ => ?_⟩
-  show pairAt μ (X.t Y a b Φ) Ψ c = pairAt μ Φ (X.t (star Y) b a Ψ) c
-  by_cases hab : a = 0 ∧ b = 0
-  · obtain ⟨rfl, rfl⟩ := hab
-    exact h11 Y hY c hc Φ hΦ Ψ hΨ
-  · have hab' : a ≠ 0 ∨ b ≠ 0 := by
-      by_contra h
-      push_neg at h
-      exact hab h
-    obtain ⟨⟨ε1, h1, h10⟩, -⟩ := hΦ c hc
-    obtain ⟨⟨ε2, h2, h20⟩, -⟩ := hΨ c hc
-    have hm := fun (l : Lt) (Θ : RadSp P.k P.r z z' π π') (hΘ : Θ ∈ TopCls X μ) =>
-      square_integrable_slice_of_mem X μ (lop_mem X μ l Θ hΘ) hc
-    exact pairAt_t_adj_cut P z z' π π' hP X μ hμ Φ Ψ c hc (min ε1 ε2) (lt_min h1 h2)
-      (fun g hg hG => h10 g hg (lt_of_lt_of_le hG (min_le_left _ _)))
-      (fun g hg hG => h20 g hg (lt_of_lt_of_le hG (min_le_right _ _))) Y a b hab'
-      (integrable_pair_of_square_integrable μ (hm (Sum.inl (a, b, Y)) Φ hΦ) (square_integrable_slice_of_mem X μ hΨ hc))
-      (integrable_pair_of_square_integrable μ (square_integrable_slice_of_mem X μ hΦ hc) (hm (Sum.inl (b, a, star Y)) Ψ hΨ))
-      (integrable_pair_of_square_integrable μ (hm (Sum.inl (1, 1, Y)) Φ hΦ) (square_integrable_slice_of_mem X μ hΨ hc))
-      (integrable_pair_of_square_integrable μ (square_integrable_slice_of_mem X μ hΦ hc) (hm (Sum.inl (1, 1, star Y)) Ψ hΨ))
 
-theorem adjTop_topCls (P : M.Par) (z z' : Fin (2 * P.r + P.k + 1) → ℂ) (π : Mx P.k P.r → (Wp →L[ℂ] Wp))
-    (π' : Mx P.k P.r → (Wq →L[ℂ] Wq)) (X : ActualOps P.k P.r z z' π π') (μ : Measure (Mt P.k P.r))
-    (L : R.LevelData (Pr (RadSp P.k P.r z z' π π')) P.r) (st : Fr.Start (Pr (RadSp P.k P.r z z' π π')))
-    (K : Fin (P.r + 1) → Submodule ℂ (RadSp P.k P.r z z' π π')) (l0 : ℕ)
-    (hD : IsData P z z' π π' X μ L st l0) (h11 : UpperLeftBlockAdjoint P z z' π π' X μ)
-    (hK : K (Fin.last P.r) ≤ TopCls X μ) :
-    AdjTop (S := S) P z z' π π' μ L st K l0 := by
-  exact adjTop_of_tAdj (S := S) P z z' π π' X μ L st K l0 hD (TopCls X μ) (intOn_topCls X μ) hK
-    (fun j Φ hΦ => lop_mem X μ (Sum.inr j) Φ hΦ)
-    (fun Y hY a b => QQ_mem_adjAlg_top P z z' π π' hD.1 X μ hD.2.1 h11 Y hY a b)
 
 end Top
 

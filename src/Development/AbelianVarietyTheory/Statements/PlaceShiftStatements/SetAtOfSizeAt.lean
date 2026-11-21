@@ -373,7 +373,6 @@ theorem sizeAt : SizeAt :=
 
 theorem setAt : SetAt := setAt_of_sizeAt sizeAt
 
-theorem atPt_of_big {Q : ChP} (hQ : Big Q) : AtPt Q := setAt.atPt hQ
 
 end Main
 

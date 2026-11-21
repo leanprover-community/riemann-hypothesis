@@ -19,9 +19,6 @@ theorem natAct_inv_self (A : ∀ v, GL (Fin (P.m + 1)) (P.Qq v)) (x : P.Xsp) : P
   rw [h2, jd_natAct_one] at this
   exact (LinearMap.congr_fun this x).symm
 
-theorem natAct_self_inv (A : ∀ v, GL (Fin (P.m + 1)) (P.Qq v)) (x : P.Xsp) : P.natAct A (P.natAct A⁻¹ x) = x := by
-  have := natAct_inv_self P A⁻¹ x
-  rwa [inv_inv] at this
 
 include hp in
 

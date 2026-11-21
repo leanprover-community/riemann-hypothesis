@@ -93,9 +93,6 @@ theorem nsmul (m : ℕ)
   rw [NatTrans.app_nsmul, NatTrans.app_nsmul]
   exact sq_nsmul m (hα hX n)
 
-theorem cores_res : IsTateDelta (fun n => tateCores (k := k) U n ≫ tateRes V n) := by
-  intro X hX n
-  exact sq_comp (tateCores_δ U hX n) (tateRes_δ V hX n)
 
 end IsTateDelta
 
@@ -143,30 +140,7 @@ noncomputable def tateCoresLE (n : ℤ) :
     Functor.whiskerRight (coresLENatTrans h) (tateCohomologyFunctor n) ≫
     Functor.whiskerLeft (resFunctor U.subtype) (tateCores (W.subgroupOf U) n)
 
-theorem isTateDelta_tateResLE : IsTateDelta (tateResLE (k := k) h) := by
-  let _ := fintypeSubgroupOf h
-  intro X hX n
-  have hU := shortExact_map_resFunctor U hX
-  have h1 := tateRes_δ (W.subgroupOf U) hU n
-  have h2 := tateTransport_δ (Subgroup.subgroupOfEquivOfLe h).symm
-    (shortExact_map_resFunctor (W.subgroupOf U) hU) n
-  have h3 := tate_whiskerRight_δ (resLENatTrans (k := k) h)
-    (shortExact_map_resFunctor_equiv (Subgroup.subgroupOfEquivOfLe h).symm
-      (shortExact_map_resFunctor (W.subgroupOf U) hU))
-    (shortExact_map_resFunctor W hX) n
-  exact sq_comp h1 (sq_comp h2 h3)
 
-theorem isTateDelta_tateCoresLE : IsTateDelta (tateCoresLE (k := k) h) := by
-  let _ := fintypeSubgroupOf h
-  intro X hX n
-  have hW := shortExact_map_resFunctor W hX
-  have hU := shortExact_map_resFunctor U hX
-  have h1 := tateTransport_δ (Subgroup.subgroupOfEquivOfLe h) hW n
-  have h2 := tate_whiskerRight_δ (coresLENatTrans (k := k) h)
-    (shortExact_map_resFunctor_equiv (Subgroup.subgroupOfEquivOfLe h) hW)
-    (shortExact_map_resFunctor (W.subgroupOf U) hU) n
-  have h3 := tateCores_δ (W.subgroupOf U) hU n
-  exact sq_comp h1 (sq_comp h2 h3)
 
 omit [Fintype U] [Fintype W] in
 
@@ -179,22 +153,6 @@ omit [Fintype U] [Fintype W] in
 lemma coe_invariantsLE {A : Rep.{u} k G} (y : (res U.subtype A).ρ.invariants) :
     (invariantsLE h y : A) = y := rfl
 
-theorem tateResLE_tateZeroClass (A : Rep.{u} k G) (y : (res U.subtype A).ρ.invariants) :
-    ((tateResLE h 0).app A).hom (tateZeroClass (res U.subtype A) y) =
-      tateZeroClass (res W.subtype A) (invariantsLE h y) := by
-  let _ := fintypeSubgroupOf h
-  have e1 := tateRes_tateZeroClass (W.subgroupOf U) (res U.subtype A) y
-  have e2 := tateTransport_tateZeroClass (Subgroup.subgroupOfEquivOfLe h).symm
-    (res (W.subgroupOf U).subtype (res U.subtype A)) (invariantsRes (W.subgroupOf U).subtype y)
-  have e3 := tateCohomologyFunctor_map_tateZeroClass ((resLENatTrans (k := k) h).app A)
-    (invariantsTransport (Subgroup.subgroupOfEquivOfLe h).symm
-      (invariantsRes (W.subgroupOf U).subtype y))
-  refine (congrArg (fun z => ((tateCohomologyFunctor 0).map ((resLENatTrans (k := k) h).app A)).hom
-    (((tateTransport (Subgroup.subgroupOfEquivOfLe h).symm 0).app
-      (res (W.subgroupOf U).subtype (res U.subtype A))).hom z)) e1).trans ?_
-  refine (congrArg (fun z => ((tateCohomologyFunctor 0).map ((resLENatTrans (k := k) h).app A)).hom z)
-    e2).trans ?_
-  exact e3
 
 omit [Fintype U] [Fintype W] in
 variable (U) in
@@ -203,19 +161,6 @@ def invariantsSubgroupOf {A : Rep.{u} k G} (y : (res W.subtype A).ρ.invariants)
     (res (W.subgroupOf U).subtype (res U.subtype A)).ρ.invariants :=
   ⟨y, fun w => y.2 ⟨(w : U), w.2⟩⟩
 
-theorem tateCoresLE_tateZeroClass (A : Rep.{u} k G) (y : (res W.subtype A).ρ.invariants) :
-    ((tateCoresLE h 0).app A).hom (tateZeroClass (res W.subtype A) y) =
-      tateZeroClass (res U.subtype A) (transferInv (W.subgroupOf U) (invariantsSubgroupOf U y)) := by
-  let _ := fintypeSubgroupOf h
-  have e1 := tateTransport_tateZeroClass (Subgroup.subgroupOfEquivOfLe h) (res W.subtype A) y
-  have e2 := tateCohomologyFunctor_map_tateZeroClass ((coresLENatTrans (k := k) h).app A)
-    (invariantsTransport (Subgroup.subgroupOfEquivOfLe h) y)
-  have e3 := tateCores_tateZeroClass (W.subgroupOf U) (res U.subtype A) (invariantsSubgroupOf U y)
-  refine (congrArg (fun z => ((tateCores (W.subgroupOf U) 0).app (res U.subtype A)).hom
-    (((tateCohomologyFunctor 0).map ((coresLENatTrans (k := k) h).app A)).hom z)) e1).trans ?_
-  refine (congrArg (fun z => ((tateCores (W.subgroupOf U) 0).app (res U.subtype A)).hom z)
-    e2).trans ?_
-  exact e3
 
 end LE
 

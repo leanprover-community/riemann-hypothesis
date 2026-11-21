@@ -618,13 +618,6 @@ theorem finite_adjoin_range_X (ι : Type*) :
   Module.Finite.of_surjective (Algebra.linearMap _ _) fun p =>
     ⟨⟨p, by rw [adjoin_range_X]; trivial⟩, rfl⟩
 
-theorem gradedQuotHilbertPoly_mvPolynomial {ι : Type*} [Finite ι] {I : Ideal (MvPolynomial ι K)}
-    (hI : I.IsHomogeneous (homogeneousSubmodule ι K)) :
-    gradedQuotHilbertPoly (homogeneousSubmodule ι K) I = idealHilbertPoly I := by
-  apply polynomial_eq_of_eventually_eval_nat
-  filter_upwards [eventually_finrank_quotPiece hI, GradedBezout.eventually_finrank
-    (fun i => isHomogeneous_X K i) (finite_adjoin_range_X ι) hI] with n h1 h2
-  rw [← h1, ← h2, quotPiece_natCast, gradedQuotPiece_natCast]
 
 example : (⊥ : Ideal (MvPolynomial (Fin 2) K)).IsPrime ∧
     (⊥ : Ideal (MvPolynomial (Fin 2) K)).IsHomogeneous (homogeneousSubmodule (Fin 2) K) ∧

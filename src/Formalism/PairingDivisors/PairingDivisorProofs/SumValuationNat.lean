@@ -9,10 +9,6 @@ open Formalism.DivisionValues (vw lw conjPl)
 
 namespace Formalism.PairingDivisionLocalBalance
 
-theorem ratio_valuation : RatioVal := by
-  intro K _ _ _ w a a' g ha ha'
-  rw [div_eq_mul_inv, Formalism.DivisionValues.ValuationRepresentative.vw_mul w a a'⁻¹ ha (inv_ne_zero ha'), Formalism.DivisionValues.ValuationRepresentative.vw_inv]
-  ring
 
 theorem gaussValUnit : GaussUnit := by
   intro K _ _ _ w G G' q hq h hv
@@ -36,15 +32,6 @@ theorem vw_prod {K : Type} [Field K] [NumberField K] [StarRing K] (w : Pl K) {P 
         (Finset.prod_ne_zero_iff.mpr fun q hq => he q (Finset.mem_insert_of_mem hq)),
       ih fun q hq => he q (Finset.mem_insert_of_mem hq)]
 
-theorem upper_part_stays : UpperStays := by
-  intro K _ _ _ w P R y y' e B hy hyy he hB
-  have hy' : y' ≠ 0 := by intro h0; rw [h0, zero_mul] at hyy; exact hy hyy
-  have hp : ∏ q ∈ R, e q ≠ 0 := by intro h0; rw [h0, mul_zero] at hyy; exact hy hyy
-  have h1 := Formalism.DivisionValues.ValuationRepresentative.vw_mul w y' _ hy' hp
-  rw [← hyy, vw_prod w R e (fun q hq => (Finset.prod_ne_zero_iff.mp hp) q hq)] at h1
-  have h2 : 0 ≤ ∑ q ∈ R, vw w (e q) := Finset.sum_nonneg he
-  have h3 : vw w y' ≤ vw w y := by omega
-  exact le_trans (by exact_mod_cast h3) hB
 
 theorem sum_valuation_nat : SumValNat := by
   intro K _ _ _ _ n

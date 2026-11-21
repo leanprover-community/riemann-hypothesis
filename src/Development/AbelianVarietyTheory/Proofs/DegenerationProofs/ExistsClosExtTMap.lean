@@ -43,20 +43,5 @@ theorem exists_adm (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBa
     exact Module.Finite.of_surjective (Algebra.linearMap (⊤ : Subfield Ω) Ω) fun x => ⟨⟨x, trivial⟩, rfl⟩)
   exact ⟨M, U₀, h⟩
 
-theorem exists_clos_ext_tMap : GlobalTheory.UT.LL → ∃ (o Ω : Type) (_ : CommRing o) (_ : Field Ω) (_ : Algebra o Ω) (_ : ArithBase o Ω) (S : ThetaSys o Ω) (ρ : S.Real), S.g = 1 ∧ S.Big ∧ (S.HasTests → ρ.HasGeo → ∃ (M : RatModel o Ω) (U₀ : M.Z.Opens) (EE : M.Lat S.J), BaseFacts S M U₀ EE ∧ ∃ Q : Clos ρ M U₀ EE, Nonempty Q.Ext ∧ ∃ (p : ℕ) (_ : Fact p.Prime) (y : Sp (OO p) ⟶ M.Z) (y₀ : S.R →+* PadicAlgCl p) (t : ρ.GeoTest p y₀) (c : Q.Fac y t.u), Nonempty (Q.TMap t c)) := by
-  intro hL
-  obtain ⟨o, Ω, _, _, _, _, S, hg, hbig, ⟨ρ⟩⟩ := GlobalTheory.T.exists_theta_system_genus_one hL.1 hL.2.1
-  refine ⟨o, Ω, _, _, _, ‹_›, S, ρ, hg, hbig, fun hT hG => ?_⟩
-  obtain ⟨M, U₀, hA⟩ := exists_adm o Ω S
-  obtain ⟨EE, hE, -⟩ := GlobalTheory.ZH.exists_isEE_of_adm o Ω S M U₀ hT hA
-  have hB := GlobalTheory.ZH.baseFacts_of_isEE o Ω S M U₀ EE hT hA.1 hE
-  obtain ⟨Q⟩ := GlobalTheory.ZH.nonempty_clos hL o Ω S ρ M U₀ EE hB
-  obtain ⟨h1, h2⟩ := GlobalTheory.ZH.exists_geoTest_tMap_and_centre hL o Ω S ρ M U₀ EE hB Q hbig hG
-  have := hB.jac
-  obtain ⟨z, -, hz⟩ := nonempty_inter_closedPoints (X := M.Z) (Z := Set.univ) ⟨genericPoint M.Z, trivial⟩
-    isClosed_univ.isLocallyClosed
-  obtain ⟨p, hp, y, hy⟩ := h2 z hz
-  obtain ⟨y₀, t, c, hc⟩ := h1 p y hy.2
-  exact ⟨M, U₀, EE, hB, Q, GlobalTheory.ZH.ClosureLifting.nonempty_ext hL o Ω S ρ M U₀ EE hB Q, p, hp, y, y₀, t, c, hc⟩
 
 end GlobalTheory.ZH.ClosureExample

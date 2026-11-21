@@ -190,8 +190,6 @@ def Steps : Prop :=
   CentralIdemCoeff ∧ StepCentral ∧ StepCut ∧ StepDeg ∧ StepType ∧ StepPotDirect ∧ StepPotDual ∧ StepJumpDirect ∧
     StepJumpDual ∧ StepLift ∧ StepSub ∧ StepCont ∧ StepLocDirect ∧ StepLocDual ∧ StepHfChar ∧ StepRes ∧ StepGlobal
 
-theorem steps_iff : Steps ↔ StepCut ∧ StepsNoCut :=
-  ⟨fun ⟨a, b, c, d⟩ => ⟨c, a, b, d⟩, fun ⟨c, a, b, d⟩ => ⟨a, b, c, d⟩⟩
 
 end GlobalTheory.Pass
 

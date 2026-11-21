@@ -210,11 +210,7 @@ theorem conj_ideal (B : Ideal (𝓞 H.E)) (x : 𝓞 H.E) :
     rw [this]
     exact Ideal.smul_mem_pointwise_smul _ _ _ hy
 
-theorem host_selfDual : PI.KerIso.SelfDualI H.K H.conj H.AA0 :=
-  kernel_self_dual_of_different H.K H.E H.conj H.𝔟 (H.conj • H.𝔟) (isConj H) (conj_ideal H H.𝔟) H.𝔟_spec.1
 
-theorem host_splits (p : ℕ) (hp : p.Prime) (hs : p = 2 ∨ jacobiSym (-(H.d : ℤ)) p = 1) : PI.KerIso.SplitsAt H.K H.conj p :=
-  kernel_split_of_jacobi H.K H.E H.conj H.d p (bK H) (d_mod_eight_eq_seven H) (bK_mul H) (conj_b H) hp hs
 
 end Host
 
@@ -223,7 +219,6 @@ section Facts
 variable (D : Car)
 
 theorem kQuad : KQuad D := finrank_K D.host
-theorem conjOnK : ConjOnK D := isConj D.host
 theorem trPos : TrPos D := tr_pos D.host
 
 theorem cardTau : CardTau D := by
@@ -257,8 +252,6 @@ theorem latStable : LatStable D := by
 
 theorem conjIdeal : ConjIdeal D := conj_ideal D.host D.host.𝔟
 
-theorem hostFacts : HostFacts D :=
-  ⟨kQuad D, conjOnK D, trPos D, cardTau D, embInj D, embOnK D, phiNonReal D, dMod8 D, sqrtInK D, latStable D, conjIdeal D⟩
 
 end Facts
 
@@ -270,44 +263,15 @@ theorem periodExists_of (h2 : KQuad D) (hn : PhiNonReal D) : PeriodExists D :=
   fun cc δ hcc hδ =>
     exists_periodPairOfIdeal D.host.K (D.host.φ₀.comp (algebraMap D.host.K D.host.E)) cc δ h2 hn hcc hδ
 
-theorem tZeroExists_of (hP : PeriodExists D) (hd : DMod8 D) (hst : LatStable D) : TZeroExists D := by
-  intro cc δ hcc hδ
-  obtain ⟨L, hL⟩ := hP cc δ hcc hδ
-  have hmem : ∀ w : ℂ, w ∈ L.lattice ↔ w ∈ TaylorLogMetric.lamOf D cc δ := fun w => by rw [← hL]; rfl
-  obtain ⟨t, h1, h2, h3⟩ := kernel_lattice_t0_exists L D.host.d hd
-    (fun w hw => (hmem _).mpr (hst cc δ w ((hmem w).mp hw)))
-  exact ⟨t, (hmem _).mp h1, fun h => h2 ((hmem _).mpr h), fun h => h3 ((hmem _).mpr h)⟩
 
-theorem gammaZeroExists_of (h2 : KQuad D) (hc : CardTau D) (hj : ConjOnK D) (hpos : TrPos D) (hi : EmbInj D)
-    (hk : EmbOnK D) : GammaZeroExists D := by
-  obtain ⟨g, hg⟩ := kernel_four_squares D.host.K D.host.E D.host.conj D.what₂.Tau h2 hc hj hpos
-  obtain ⟨gC, hC⟩ := kernel_extension_c D.host.K D.host.E D.what₂.Tau (D.host.φ₀.comp (algebraMap D.host.K D.host.E))
-    (TaylorLogMetric.embT D) hi hk hc g
-  exact ⟨⟨g, hg⟩, gC, hC⟩
 
-theorem mmSelfDual_of (hj : ConjOnK D) (hb : ConjIdeal D) : MMSelfDual D :=
-  kernel_self_dual_of_different D.host.K D.host.E D.host.conj D.host.𝔟 (D.host.conj • D.host.𝔟) hj hb D.host.𝔟_spec.1
 
 theorem splitKSplits_of (hd : DMod8 D) (hs : SqrtInK D) : SplitKSplits D := by
   obtain ⟨s, h1, h2⟩ := hs
   exact fun p hp hsp => kernel_split_of_jacobi D.host.K D.host.E D.host.conj D.host.d p s hd h1 h2 hp hsp
 
-theorem gammaPExists_of (hLoc : PI.KerIso.LocIso) (h2 : KQuad D) (hj : ConjOnK D) (hsp : SplitKSplits D) (hsd : MMSelfDual D)
-    (h0 : GammaZeroExists D) : GammaPExists D := by
-  obtain ⟨γ₀, -, -⟩ := h0
-  intro p hp hs
-  obtain ⟨g, hg, hat⟩ := hLoc D.host.K D.host.E D.host.conj D.what₂.Tau D.host.AA0 p h2 hj hp (hsp p hp hs) hsd
-    ⟨γ₀.g, γ₀.isom⟩
-  exact ⟨⟨g, hg⟩, hat⟩
 
-theorem baseExists_of_four (hP : PeriodExists D) (hT : TZeroExists D) (h0 : GammaZeroExists D) (hp : GammaPExists D) :
-    BaseExists D :=
-  fun cc hcc δ hδ => Base.nonempty_of cc δ (hP cc δ hcc.1 hδ) (hT cc δ hcc.1 hδ) h0 hp
 
-theorem baseExists_of (hF : HostFacts D) (hp : GammaPExists D) : BaseExists D := by
-  obtain ⟨h2, hj, hpos, hc, hi, hk, hn, hd, -, hst, -⟩ := hF
-  have hP := periodExists_of h2 hn
-  exact baseExists_of_four hP (tZeroExists_of hP hd hst) (gammaZeroExists_of h2 hc hj hpos hi hk) hp
 
 end Exist
 
@@ -316,17 +280,10 @@ section Final
 variable (D : Car)
 
 theorem periodExists : PeriodExists D := periodExists_of (kQuad D) (phiNonReal D)
-theorem gammaZeroExists : GammaZeroExists D :=
-  gammaZeroExists_of (kQuad D) (cardTau D) (conjOnK D) (trPos D) (embInj D) (embOnK D)
-theorem mmSelfDual : MMSelfDual D := mmSelfDual_of (conjOnK D) (conjIdeal D)
 theorem splitKSplits : SplitKSplits D := splitKSplits_of (dMod8 D) (sqrtInK D)
 
-theorem baseExists_of_gammaP (hp : GammaPExists D) : BaseExists D := baseExists_of (hostFacts D) hp
 
-theorem gammaPExists : GammaPExists D :=
-  gammaPExists_of kernel_local_iso (kQuad D) (conjOnK D) (splitKSplits D) (mmSelfDual D) (gammaZeroExists D)
 
-theorem baseExists : BaseExists D := baseExists_of_gammaP D (gammaPExists D)
 
 end Final
 
@@ -336,8 +293,6 @@ open Formalism.BasicNotions.Examples₂
 
 theorem tr_one : 0 < Algebra.trace ℚ H0.E (1 * H0.conj 1) := tr_pos H0 1 one_ne_zero
 
-theorem example_ideal_self_dual : PI.KerIso.SelfDualI H0.K H0.conj H0.AA0 := host_selfDual H0
-theorem two_splits : PI.KerIso.SplitsAt H0.K H0.conj 2 := host_splits H0 2 Nat.prime_two (Or.inl rfl)
 
 end Test
 

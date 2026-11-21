@@ -363,10 +363,6 @@ theorem csq_pointHerm (τ : E →+* ℂ) {ι : Type*} [Fintype ι] (c : ι → �
   exact Fintype.sum_equiv ⟨fun t => (t.2.2, t.2.1, t.1), fun t => (t.2.2, t.2.1, t.1), fun _ => rfl, fun _ => rfl⟩
     _ _ fun t => by simp only [Equiv.coe_fn_mk]; ring
 
-theorem nrm_pointHerm_sq (τ : E →+* ℂ) (g : H0 q B ⊤) :
-    (pointHerm hf he φ).nrm τ g ^ 2 = ∑ᶠ y, (φ τ).nsq (cval τ g) y := by
-  rw [← cnrm_one, cnrm_sq, csq_pointHerm]
-  simp
 
 end Points
 

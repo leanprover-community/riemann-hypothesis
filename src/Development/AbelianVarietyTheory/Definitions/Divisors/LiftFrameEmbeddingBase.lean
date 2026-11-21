@@ -239,8 +239,6 @@ structure Tied (j : Fin D.R.m) (t : p.P.T) {l : ℕ} [Fact l.Prime] {N : ℕ} (F
 
   cst : ∀ i, F.cst i = 1
 
-theorem blk_op_zero (j : Fin D.R.m) (t : p.P.T) (P : (blk p j t).Pl) : (blk p j t).op (P, 0) = 1 :=
-  (p.charW.base.fam.degL j t P).1
 
 theorem isHalf_lab {l : ℕ} [Fact l.Prime] (e0 : D.what₂.LL →+* PadicAlgCl l) : IsHalf fun τ => e0.comp (Links.labLL D τ) := by
   let s : D.R.GG → (D.host.E →+* PadicAlgCl l) := fun g =>
@@ -285,10 +283,6 @@ theorem isHalf_lab {l : ℕ} [Fact l.Prime] (e0 : D.what₂.LL →+* PadicAlgCl 
 
 theorem levJ_eq (j : Fin D.R.m) (t : p.P.T) : levJ p j t = (levEnv (Vc D j) (p.R.βV j) (p.R.datVt j t)).J := rfl
 
-theorem levChi_apply (j : Fin D.R.m) (t : p.P.T) (κ : levJ p j t) :
-    levChi p j t κ = levFn (p.R.βV j) (Formalism.IndefR.Lev.flag1L (p.R.datVt j t)) (Formalism.UG.bc (Formalism.IndefR.Lev.swapAE D) κ.1.1) := by
-  unfold levChi
-  rfl
 
 omit p in
 
@@ -362,11 +356,6 @@ theorem exists_tied (j : Fin D.R.m) (t : p.P.T) {l : ℕ} [Fact l.Prime] {N : �
     rw [GlobalTheory.AdeleEv.range_embInt]
     exact ⟨hKe _, GlobalTheory.AdeleEv.norm_int_le e0 x⟩
 
-theorem nonempty_tied (j : Fin D.R.m) (t : p.P.T) {l : ℕ} [Fact l.Prime] (e0 : D.what₂.LL →+* PadicAlgCl l) :
-    ∃ (F : Frame l D.what₂.Tau (Vc D j).rank) (ix : F.I → (blk p j t).Pl × ℕ),
-      Nonempty (Tied p j t F e0 ix fun τ => e0.comp (Links.labLL D τ)) := by
-  obtain ⟨F, ix, T, -⟩ := exists_tied p j t rfl e0 _ (isHalf_lab e0) (fun _ => Or.inl rfl) 0
-  exact ⟨F, ix, ⟨T⟩⟩
 
 open Classical in
 

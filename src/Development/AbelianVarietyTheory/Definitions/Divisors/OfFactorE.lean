@@ -77,13 +77,10 @@ def PFactor.ofFactor {D D' : DegPre R} (F : Factor D D') (hF : F.Alg) (hB : D.Ta
   tau a b z J J' hJ hJ' := ((PolDeg.Wit.exists_tau D a b).choose_spec.2 _ _ z J' hJ').trans (F.tau a b z J J' hJ hJ')
   alg := hF
 
-theorem PFactor.ofFactor_e {D D' : DegPre R} (F : Factor D D') (hF : F.Alg) (hB : D.TauBimult) :
-    (PFactor.ofFactor F hF hB).e = F.e ∧ (PFactor.ofFactor F hF hB).f = F.f := ⟨rfl, rfl⟩
 
 def Wit.pfac : PFactor (PolDeg.Wit.ofDeg InhTate.tatePre InhTate.tauBimult) Wit.tate2 :=
   PFactor.ofFactor Wit.fac Wit.fac_alg InhTate.tauBimult
 
-theorem Wit.pfac_e : Wit.pfac.e ≠ 0 ∧ Wit.pfac.e ≠ 1 := Wit.fac_e
 
 example : Wit.pfac.f = (1 : ℤ × ℤ) := rfl
 

@@ -79,17 +79,6 @@ theorem idTower_isCorrOp (l : ℕ) [Fact l.Prime] (g : (HTower.idTower k).Γ) :
 example (l : ℕ) [Fact l.Prime] (g : (HTower.idTower k).Γ) :
     ∃ T, IsCorrOp l ((HTower.idTower k).sΩ Ω g) ((HTower.idTower k).tΩ Ω g) T := ⟨_, idTower_isCorrOp Ω l g⟩
 
-theorem cohomology_invariants_identity_cover (l : ℕ) [Fact l.Prime] (X : Scheme.{0}) (n i : ℤ) :
-    IsIso (Sigma.desc (fun g : Unit => pullback.lift ((fun _ : Unit => 𝟙 X) g) (𝟙 X) (by simp)) :
-      ∐ (fun _ : Unit => X) ⟶ pullback (𝟙 X) (𝟙 X)) ∧
-    (Function.Injective (pullHQ l (sch.map (𝟙 X)) n i) ∧
-      LinearMap.range (pullHQ l (sch.map (𝟙 X)) n i) =
-        ⨅ g : Unit, LinearMap.ker (pullHQ l (sch.map ((fun _ : Unit => 𝟙 X) g)) n i - LinearMap.id)) := by
-  have hid : pullHQ l (sch.map (𝟙 X)) n i = LinearMap.id := by
-    rw [CategoryTheory.Functor.map_id]; unfold pullHQ; rw [pullHl_id]; exact LinearMap.baseChange_id
-  refine ⟨(splits_self_of_iso (𝟙 X)).2, ?_⟩
-  simp only [hid, sub_self, LinearMap.ker_zero, iInf_const, LinearMap.range_id]
-  exact ⟨Function.injective_id, trivial⟩
 
 end GlobalTheory.GalV.GaloisTowerConditions
 

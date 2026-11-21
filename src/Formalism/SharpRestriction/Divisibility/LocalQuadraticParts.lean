@@ -91,29 +91,6 @@ def PlancherelDifferenceBound (D : D7) (Z : DivX D) : Prop :=
 def PeterssonMetricHypotheses (D : D7) (Z : DivX D) (A : AmbForm D (RowSide.sharp D)) : Prop :=
   PeterssonBoundFixedEmbedding D Z A ∧ (∃ E : EigIdx D Z, DivisibilityLatticeMetricCondition D Z A E ∧ EigensystemOrthogonality D Z A E ∧ DegreeNormalizationFormula D Z A E) ∧ 0 < D.what₂.Drows ∧ PlancherelDifferenceBound D Z
 
-theorem sum_between {ι κ : Type} [Fintype ι] [Finite κ] [Nonempty κ] (f : κ → ι) (a : ι → ℝ) (n : ι → ℝ) (hn : ∀ i, 0 ≤ n i)
-    (h0 : ∀ i, (∀ k, f k ≠ i) → n i = 0) (c : ℝ) (hc : 0 ≤ c) :
-    c * Real.exp (⨅ k, a (f k)) * ∑ i, n i ≤ ∑ i, c * Real.exp (a i) * n i ∧
-    ∑ i, c * Real.exp (a i) * n i ≤ c * Real.exp (⨆ k, a (f k)) * ∑ i, n i := by
-  have hfin : (Set.range fun k => a (f k)).Finite := Set.finite_range _
-  have key : ∀ i, c * Real.exp (⨅ k, a (f k)) * n i ≤ c * Real.exp (a i) * n i ∧
-      c * Real.exp (a i) * n i ≤ c * Real.exp (⨆ k, a (f k)) * n i := by
-    intro i
-    by_cases hi : ∃ k, f k = i
-    · obtain ⟨k, rfl⟩ := hi
-      have h1 : (⨅ k', a (f k')) ≤ a (f k) := ciInf_le hfin.bddBelow k
-      have h2 : a (f k) ≤ ⨆ k', a (f k') := le_ciSup hfin.bddAbove k
-      constructor
-      · exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr h1) hc) (hn _)
-      · exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr h2) hc) (hn _)
-    · push_neg at hi
-      rw [h0 i hi]
-      simp
-  constructor
-  · rw [Finset.mul_sum]
-    exact Finset.sum_le_sum fun i _ => (key i).1
-  · rw [Finset.mul_sum]
-    exact Finset.sum_le_sum fun i _ => (key i).2
 
 theorem isot_ne_bot {D : D7} (hR : Rows.IsotRank D.what₂) (hn : ∀ σ : Fin D.what₂.Drows, 0 < D.what₂.nRows0 (D.what₂.ft σ)) :
     ∀ σ : Fin D.what₂.Drows, ∀ j ∈ SizeData₂.lifts D, D.what₂.isot j (D.what₂.ft σ) ≠ ⊥ := by
@@ -124,78 +101,8 @@ theorem isot_ne_bot {D : D7} (hR : Rows.IsotRank D.what₂) (hn : ∀ σ : Fin D
   have h2 := hn σ
   omega
 
-theorem logLamC_cOf {D : D7} {Z : DivX D} (E : EigIdx D Z) {j : ℕ} (hj : j ∈ SizeData₂.lifts D) (π : D.what₂.FT)
-    (hπ : D.what₂.isot j π ≠ ⊥) (e : D.what₂.LL →+* ℂ) : logLamC E j (E.cOf π) e = Z.logLam j π e := by
-  have hex : ∃ π', E.cOf π' = E.cOf π ∧ D.what₂.isot j π' ≠ ⊥ := ⟨π, rfl, hπ⟩
-  unfold logLamC
-  rw [dif_pos hex]
-  exact E.lam_const j hj _ _ e hex.choose_spec.2 hπ hex.choose_spec.1
 
-theorem all_embeddings_of_bounds {D : D7} {Z : DivX D} {A : AmbForm D (RowSide.sharp D)}
-    (hI : ∀ σ : Fin D.what₂.Drows, ∀ j ∈ SizeData₂.lifts D, D.what₂.isot j (D.what₂.ft σ) ≠ ⊥)
-    (h : PeterssonMetricHypotheses D Z A) : PeterssonBoundAllEmbeddings D Z A := by
-  obtain ⟨h0, ⟨E, hm, ho, hd⟩, hD, hc⟩ := h
 
-  have hLC : ∀ (c : E.Pi) (e : D.what₂.LL →+* ℂ), ∀ j ∈ SizeData₂.lifts D,
-      logLamC E j c (ComplexEmbedding.conjugate e) = logLamC E j c e := by
-    intro c e j hj
-    unfold logLamC
-    by_cases hh : ∃ π, E.cOf π = c ∧ D.what₂.isot j π ≠ ⊥
-    · rw [dif_pos hh, dif_pos hh]
-      exact hc j hj _ hh.choose_spec.2 e
-    · rw [dif_neg hh, dif_neg hh]
-  intro s
-  by_cases hs : InfinitePlace.mk s = InfinitePlace.mk D.what₂.embLL
-  · rcases InfinitePlace.mk_eq_iff.mp hs with h1 | h1
-    · subst h1
-      exact h0
-    ·
-      intro x q hq hx
-      have h2 := h0 x q hq hx
-      rw [← h1, InfinitePlace.mk_conjugate_eq, Z.kapR_conj] at h2
-      have hinf : ∀ σ : Fin D.what₂.Drows,
-          (∑ j ∈ SizeData₂.lifts D, Z.logLam j (D.what₂.ft σ) (ComplexEmbedding.conjugate s)) =
-            ∑ j ∈ SizeData₂.lifts D, Z.logLam j (D.what₂.ft σ) s :=
-        fun σ => Finset.sum_congr rfl fun j hj => hc j hj _ (hI σ j hj) s
-      simp only [hinf] at h2
-      exact h2
-  · intro x q hq hx
-    obtain ⟨xs, qs, hpart, hxs, hqs, hz⟩ := hd x q hq hx
-    have hk : Z.kapR (InfinitePlace.mk s).embedding = Z.kapR s := by
-      rcases InfinitePlace.embedding_mk_eq s with he | he
-      · rw [he]
-      · rw [he]
-        exact Z.kapR_conj s
-    have hl : ∀ c, ∀ j ∈ SizeData₂.lifts D,
-        logLamC E j c (InfinitePlace.mk s).embedding = logLamC E j c s := by
-      intro c j hj
-      rcases InfinitePlace.embedding_mk_eq s with he | he
-      · rw [he]
-      · rw [he]
-        exact hLC c s j hj
-    have hmet : Formalism.HermitianLatticesTheory.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 =
-        ∑ c, Z.kapR s * Real.exp (∑ j ∈ SizeData₂.lifts D, logLamC E j c s) *
-          qn A (InfinitePlace.mk s) (qs c) ^ 2 := by
-      rw [← hxs, hm (InfinitePlace.mk s) hs xs qs (fun c => (hpart c).1.1) (fun c => (hpart c).2)
-        (fun c => by rw [(hpart c).2]; exact (hpart c).1.2), hk]
-      refine Finset.sum_congr rfl fun c _ => ?_
-      rw [Finset.sum_congr rfl (hl c)]
-      try rfl
-    have hqn : qn A (InfinitePlace.mk s) q ^ 2 = ∑ c, qn A (InfinitePlace.mk s) (qs c) ^ 2 := by
-      rw [← hqs]
-      exact ho _ qs (fun c => (hpart c).1)
-    haveI : Nonempty (Fin D.what₂.Drows) := ⟨⟨0, hD⟩⟩
-    have hsb := sum_between (ftP E) (fun c => ∑ j ∈ SizeData₂.lifts D, logLamC E j c s)
-      (fun c => qn A (InfinitePlace.mk s) (qs c) ^ 2) (fun c => sq_nonneg _)
-      (fun c hc' => by simp [hz c hc' (InfinitePlace.mk s)]) (Z.kapR s) (Z.kapR_pos s).le
-    have hI' : ∀ σ, (∑ j ∈ SizeData₂.lifts D, logLamC E j (ftP E σ) s) =
-        ∑ j ∈ SizeData₂.lifts D, Z.logLam j (D.what₂.ft σ) s :=
-      fun σ => Finset.sum_congr rfl fun j hj => logLamC_cOf E hj _ (hI σ j hj) s
-    simp only [hI'] at hsb
-    rw [hmet, hqn]
-    exact hsb
-
-theorem fixed_embedding_of_all {D : D7} {Z : DivX D} {A : AmbForm D (RowSide.sharp D)} (h : PeterssonBoundAllEmbeddings D Z A) : PeterssonBoundFixedEmbedding D Z A := h D.what₂.embLL
 
 def adm2 (D : D7) (L : SizeData₂ D) : Prop :=
   ∀ u (w : D.what₂.places.Pl) (φ : (D.div.Nu u).V), φ ∈ L.NuLat u →
@@ -275,16 +182,6 @@ def LowKernelRationality (D : D7) : Prop := ∀ u, ∀ i, i + 3 ≤ D.R.m → (D
 
 def HighKernelRationality (D : D7) : Prop := ∀ u, ∀ i < D.R.m, D.R.m < i + 3 → (D.fm u).KRat i
 
-theorem kernel_rationality_iff (D : D7) : KernelRationality D ↔ LowKernelRationality D ∧ HighKernelRationality D ∧ ∀ u, (D.fm u).PRat := by
-  unfold KernelRationality LowKernelRationality HighKernelRationality
-  constructor
-  · rintro ⟨hK, hP⟩
-    exact ⟨fun u i hi => hK u i (by omega), fun u i hi _ => hK u i hi, hP⟩
-  · rintro ⟨hL, hT, hP⟩
-    refine ⟨fun u i hi => ?_, hP⟩
-    by_cases h3 : i + 3 ≤ D.R.m
-    · exact hL u i h3
-    · exact hT u i hi (by omega)
 
 def adm8 (D : D7) (L : SizeData₂ D) (Z : DivX D) (P : BaseLevelRowSide D) (CF CT : ℝ) : Prop :=
   P.principalHermitianLattice.muMax + meanE D (fun e => Real.log (Z.kapR e)) ≤ L.sc.x ^ CF * L.sc.b + CT * D.R.m * lam0 D ∧
@@ -336,10 +233,6 @@ def TWAt (D : D7) (N : NChoice D) (T : ThData D) : Prop :=
     ∃ (N0 : D.ntw.Tw → ℕ) (S : ∀ (i' : D.ntw.Tw) (j : ℕ) (b : Bool), Finset (D.nexp.Dat i' j b)),
       Formalism.MainNotions.TwGoodAt D N ⟨Formalism.MainNotions.twEOf T, N0, S⟩
 
-theorem twAt_of_twGood {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h : Formalism.MainNotions.TwGood Fm) :
-    ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (hx : Fm.x1 < x) (i : Fm.Ix x), TWAt (Fm.D x i) (Fm.ex x hx i).nch (Fm.ex x hx i).xd := by
-  obtain ⟨x0, hx0⟩ := h
-  exact ⟨x0, fun x hx hx1 i => hx0 x hx hx1 i⟩
 
 def sExpl (D : D7) (L : SizeData₂ D) (Z : DivX D) (C : ℝ) : ℝ := sFrame D.div.Nu (hExpl6 D L Z C)
 

@@ -25,8 +25,6 @@ def SizeRowsS (CY : ℝ) (N : NumDatum) (δ : Code N) : Prop :=
     N.Sc ≤ (((N.hc z).u ⟨0, by omega⟩ - (N.hc z).v ⟨0, by omega⟩ : ℚ) : ℝ) ∧
     (((N.hc z).u ⟨0, by omega⟩ : ℚ) : ℝ) ≤ 3 * N.Sc
 
-theorem sizeRowsS_of {N : NumDatum} {δ : Code N} {T : ℕ} (h : SizeRows N δ T) : SizeRowsS 9 N δ :=
-  ⟨h.1, h.2.1, trivial, h.2.2.2⟩
 
 def HypS (CY : ℝ) {D : D7} (N : NumDatum) {X : Fields} (s : Seam D X) {Pr : Primes X} (W : Wts X Pr.Word N.R) (Ch : Chars X Pr N.R.m)
     (G : ChGlob X N.R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {Sg : Set ℕ} (mu : Tup X.F X.E X.K Sg)

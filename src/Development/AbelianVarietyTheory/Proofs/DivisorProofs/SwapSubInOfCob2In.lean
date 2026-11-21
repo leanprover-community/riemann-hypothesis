@@ -49,10 +49,6 @@ theorem mem_NS {N : Ideal B} {q : Q} : q ∈ (NS N : Submodule B Q) ↔ ∃ b �
 theorem mem_V {p : ℕ} {J : Ideal B} {q : Q} :
     q ∈ (V p J : Submodule B Q) ↔ ∃ k : ℕ, ∃ b ∈ J, (p : Q) ^ k * q = algebraMap B Q b := Iff.rfl
 
-theorem NS_le_V (p : ℕ) {N J : Ideal B} (h : N ≤ J) : (NS N : Submodule B Q) ≤ V p J := by
-  intro q hq
-  obtain ⟨b, hb, rfl⟩ := mem_NS.1 hq
-  exact ⟨0, b, h hb, by simp⟩
 
 theorem in_iff {σ : Type} {N : Ideal B} {f : MvPowerSeries σ Q} :
     In N f ↔ ∀ α, coeff α f ∈ (NS N : Submodule B Q) := by

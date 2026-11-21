@@ -83,8 +83,6 @@ def NAllC.ofAll (A : NormalizedTwistCompatibility D C I) : NAllC D C :=
 
 theorem goodCl_of_all (A : NormalizedTwistCompatibility D C I) : GoodCl D C I := A.choice.good
 
-theorem nonempty_all_iff : Nonempty (NormalizedTwistCompatibility D C I) ↔ Nonempty (NAllC D C) ∧ GoodCl D C I :=
-  ⟨fun ⟨A⟩ => ⟨⟨NAllC.ofAll A⟩, goodCl_of_all A⟩, fun ⟨⟨A⟩, h⟩ => ⟨A.toAll h⟩⟩
 
 example (A : NAllC D C) (h : GoodCl D C I) : NAllC.ofAll (A.toAll h) = A := rfl
 

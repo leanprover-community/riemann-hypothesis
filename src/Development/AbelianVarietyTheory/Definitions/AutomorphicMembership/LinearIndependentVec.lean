@@ -479,12 +479,6 @@ theorem expo_indWt (τ : PsiT D) {i : ℕ} (h₁ : 1 ≤ i) (h₂ : i ≤ N) :
   rw [expo_indWt_apply]
   exact congrArg₂ (· - ·) (if_congr (and_congr_right' e₁) rfl rfl) (if_congr (and_congr_right' e₂) rfl rfl)
 
-theorem expo_indWt_eq_zero (τ : PsiT D) {i : ℕ} (h : i = 0 ∨ N < i) : ct.expo (indWt τ i) = 0 := by
-  funext σ a
-  have := mult_le S σ
-  have := a.2
-  rw [expo_indWt_apply, if_neg (by omega), if_neg (by omega)]
-  rfl
 
 theorem expo_eq_sum (l : PsiT D → ℕ → ℤ) :
     ct.expo l = ∑ t : D.what₂.Tau, ∑ i ∈ Finset.Icc 1 N, l (D.eTau t) i • ct.expo (indWt (D.eTau t) i) := by
@@ -505,8 +499,6 @@ theorem expo_eq_sum (l : PsiT D → ℕ → ℤ) :
 
 variable {k : Type} [Field k] (c : Curve k ct.YY.X) (τ : PsiT D) {i : ℕ}
 
-theorem degPiece_eq_zero (h : i = 0 ∨ N < i) : ct.degPiece c τ i = 0 := by
-  rw [degPiece, expo_indWt_eq_zero _ _ h, neg_zero, map_zero]
 
 theorem degPiece_of_le (h₁ : 1 ≤ i) (h₂ : i ≤ j) : ct.degPiece c τ i = c.degStep ct.hasDR (embOf D τ) (i - 1) := by
   have := mult_le S (embOf D τ)

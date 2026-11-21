@@ -176,13 +176,6 @@ theorem measure_doubleCoset (μ : Measure G) [μ.IsMulLeftInvariant] {K : Subgro
 
 end DoubleCoset
 
-theorem measure_doubleCoset_diagPow [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)]
-    (μ : Measure (GL (Fin n) F)) [μ.IsMulLeftInvariant] (a : Fin n → ℤ) :
-    μ (doubleCoset (Cartan.diagPow F n a) (GLnLocal.integralGL F n : Set (GL (Fin n) F))
-        (GLnLocal.integralGL F n)) =
-      (((GLnLocal.integralGL F n).map (MulAut.conj (Cartan.diagPow F n a)).toMonoidHom).relIndex
-        (GLnLocal.integralGL F n) : ℝ≥0∞) * μ (GLnLocal.integralGL F n) :=
-  measure_doubleCoset μ (GLnLocal.isOpen_integralGL F n) (GLnLocal.isCompact_integralGL F n) _
 
 theorem inv_eq_self_GL [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)]
     (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] : μ.inv = μ := by
@@ -202,31 +195,7 @@ theorem inv_eq_self_GL [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) 
     exact_mod_cast this
   rw [e, hc, one_smul]
 
-theorem inv_doubleCoset {G : Type*} [Group G] (g : G) (K : Subgroup G) :
-    (doubleCoset g (K : Set G) K)⁻¹ = doubleCoset g⁻¹ (K : Set G) K := by
-  ext x
-  rw [Set.mem_inv, mem_doubleCoset, mem_doubleCoset]
-  constructor
-  · rintro ⟨a, ha, b, hb, h⟩
-    exact ⟨b⁻¹, K.inv_mem hb, a⁻¹, K.inv_mem ha, by rw [← inv_inv x, h]; group⟩
-  · rintro ⟨a, ha, b, hb, rfl⟩
-    exact ⟨b⁻¹, K.inv_mem hb, a⁻¹, K.inv_mem ha, by group⟩
 
-theorem relIndex_conj_eq {K : Subgroup (GL (Fin n) F)} (hKo : IsOpen (K : Set (GL (Fin n) F)))
-    (hKc : IsCompact (K : Set (GL (Fin n) F))) (g : GL (Fin n) F) :
-    (K.map (MulAut.conj g).toMonoidHom).relIndex K =
-      (K.map (MulAut.conj g⁻¹).toMonoidHom).relIndex K := by
-  borelize (GL (Fin n) F)
-  let μ : Measure (GL (Fin n) F) := Measure.haar
-  have hK0 : μ K ≠ 0 := hKo.measure_ne_zero μ ⟨1, K.one_mem⟩
-  have hKT : μ K ≠ ∞ := hKc.measure_lt_top.ne
-  have h1 := measure_doubleCoset μ hKo hKc g
-  have h3 : μ (doubleCoset g (K : Set (GL (Fin n) F)) K) =
-      μ (doubleCoset g⁻¹ (K : Set (GL (Fin n) F)) K) := by
-    conv_lhs => rw [← inv_eq_self_GL F n μ]
-    rw [Measure.inv_apply, inv_doubleCoset]
-  rw [h3, measure_doubleCoset μ hKo hKc g⁻¹] at h1
-  exact_mod_cast ((ENNReal.mul_left_inj hK0 hKT).1 h1).symm
 
 variable [MeasurableSpace F] [BorelSpace F] [MeasurableSpace (GL (Fin n) F)]
   [BorelSpace (GL (Fin n) F)]

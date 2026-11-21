@@ -48,8 +48,6 @@ theorem isWq_bridge {p : ℕ} [Fact p.Prime] {W : WeierstrassCurve ℂ_[p]} {wq 
 theorem flog_bridge {p : ℕ} [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) :
     flog W wq = PI.AddIntG.flog W wq := rfl
 
-theorem add_bridge {p : ℕ} [Fact p.Prime] {σ : Type*} (l ex : PowerSeries ℂ_[p]) (a b : MvPowerSeries σ ℂ_[p]) :
-    add l ex a b = PI.AddIntG.add l ex a b := rfl
 
 theorem inhab : ∃ (W : WeierstrassCurve ℂ_[2]) (wq ex : PowerSeries ℂ_[2]),
     IsIntP W.a₁ ∧ IsIntP W.a₂ ∧ IsIntP W.a₃ ∧ IsIntP W.a₄ ∧ IsIntP W.a₆ ∧ ‖W.Δ‖ = 1 ∧

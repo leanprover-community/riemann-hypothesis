@@ -249,28 +249,8 @@ theorem irrSm_det : IrrSm (Rep.of (Model.detRep n μ)) := by
   simp only [Model.detRep, Model.chRep_apply, MonoidHom.comp_apply]
   rw [e1, h, e2]; simp
 
-theorem isParVec_det (r t : ℕ) (v : ℂ) : IsParVec (Model.detRep (r + t) μ) r t χ v :=
-  ⟨detCharacter_mem_principalCongruenceFixedVectors h v, fun u h0 h1 h2 => by rw [det_lift h, det_rad h0 h1 h2]; simp,
-    fun y => by rw [det_lift h, det_blocks]; simp⟩
 
-theorem actsThrough_det (r t : ℕ) :
-    ActsThrough (Rep.of (Model.detRep (r + t) μ)) r t χ (⊤ : Submodule ℂ ℂ) fun a => ev χ a • LinearMap.id := by
-  refine ⟨Unit, LinearMap.pi fun _ => (⊤ : Submodule ℂ ℂ).subtype, fun x y e => Subtype.ext (congrFun e ()),
-    fun F _ => isParVec_det h r t _, fun a _ F => ⟨trivial, fun _ => ?_⟩⟩
-  change ev χ a * F.1 = actTop (Model.detRep (r + t) μ) r t a F.1
-  simp [actTop, LinearMap.sum_apply, det_lift h, det_blocks, ev, Finset.sum_mul, mul_assoc]
 
-theorem act_eq_of_actsThrough_det {r t : ℕ} {χ' : (ZMod g)ˣ →* ℂˣ} {M : Type} [AddCommGroup M] [Module ℂ M]
-    {W : Submodule ℂ M} {act : MonoidAlgebra ℂ (Gn g r) → Module.End ℂ M}
-    (H : ActsThrough (Rep.of (Model.detRep (r + t) μ)) r t χ' W act) {a : MonoidAlgebra ℂ (Gn g r)}
-    (ha : a ∈ Subalgebra.center ℂ (MonoidAlgebra ℂ (Gn g r))) {F : M} (hF : F ∈ W) : act a F = ev χ a • F := by
-  obtain ⟨J, ι, hi, -, he⟩ := H
-  obtain ⟨hm, hj⟩ := he a ha ⟨F, hF⟩
-  refine congrArg Subtype.val (hi (a₁ := ⟨_, hm⟩) (a₂ := ev χ a • ⟨F, hF⟩) (funext fun j => ?_))
-  rw [hj, map_smul, Pi.smul_apply]
-  generalize ι ⟨F, hF⟩ j = z
-  change actTop (Model.detRep (r + t) μ) r t a (z : ℂ) = ev χ a * (z : ℂ)
-  simp [actTop, LinearMap.sum_apply, det_lift h, det_blocks, ev, Finset.sum_mul, mul_assoc]
 
 end Det
 
@@ -279,17 +259,7 @@ theorem prod_linear (τ : Formalism.CyclotomicNorms.Fbar g →* ℂ) (c : ZMod g
       X - C (τ (algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g) c)) := by
   simp [Formalism.CyclotomicNorms.rootsBar]
 
-theorem exists_serParam (e : ∀ n : ℕ, (ZMod g)[X] → MonoidAlgebra ℂ (Gn g n)) (τ : Formalism.CyclotomicNorms.Fbar g →* ℂ)
-    (h : ∀ n (π : QRep g n), IrrSm π → ∀ f f', (∃ v ∈ fixK1 π.ρ, actK π.ρ (e n f) v ≠ 0) →
-      (∃ v ∈ fixK1 π.ρ, actK π.ρ (e n f') v ≠ 0) → f = f') : ∃ ine, SerParam e τ ine :=
-  ⟨fun n π => ((Formalism.CyclotomicNorms.rootsBar (Classical.epsilon fun f => ∃ v ∈ fixK1 π.ρ, actK π.ρ (e n f) v ≠ 0)).map
-      fun x => X - C (τ x)).prod,
-    fun n π hπ f hf => by
-      rw [h n π hπ f _ hf (Classical.epsilon_spec (p := fun f => ∃ v ∈ fixK1 π.ρ, actK π.ρ (e n f) v ≠ 0) ⟨f, hf⟩)]⟩
 
-theorem isClassMap_mk : IsClassMap (LP := Σ n, Quotient (CategoryTheory.isIsomorphicSetoid (QRep g n))) Sigma.fst
-    fun n π => ⟨n, Quotient.mk _ π⟩ := fun n π _ =>
-  ⟨rfl, fun π' _ => by rw [Sigma.mk.inj_iff, heq_eq_eq, Quotient.eq]; exact and_iff_right rfl⟩
 
 def coarse (g : ℕ) [Fact g.Prime] : Sys g where
   e n f := if f = (X - C 1) ^ n then 1 else 0
@@ -335,21 +305,6 @@ theorem Sys.IsOf.charIn {S : Sys g} {L : LabelDatum g} (h : S.IsOf L) {χ : (ZMo
     (hc : IsCharLab L χ c) (b : ℕ) : CharIn S χ b ((X - C c) ^ b) :=
   Loc.charIn_pow S χ ((h.charIn_one hc χ).2 rfl) b
 
-theorem Loc.not_isOf_coarse (hg : g ≠ 2) (L : LabelDatum g) : ¬ (Loc.coarse g).IsOf L := by
-  intro h
-  obtain ⟨u, hu, ho⟩ := Model.exists_gen L
-  let T : (ZMod g)ˣ →* ℂ := L.teich.comp ((algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g)).toMonoidHom.comp (Units.coeHom _))
-  have hc : IsCharLab L T.toHomUnits u := ⟨u.ne_zero, fun w hw => by rw [hu, ← hw]; rfl⟩
-  have h1 := (h.charIn_one hc _).2 rfl
-  have h2 : X - C (u : ZMod g) = (X - C 1) ^ 1 := by
-    by_contra e
-    apply h1
-    change ∑ y : Gn g 1, (if X - C (u : ZMod g) = (X - C 1) ^ 1 then (1 : MonoidAlgebra ℂ (Gn g 1)) else 0).coeff y * _ = 0
-    rw [if_neg e]; simp
-  rw [pow_one, sub_right_inj, C_inj, Units.val_eq_one] at h2
-  rw [h2, orderOf_one] at ho
-  have := (Fact.out : g.Prime).two_le
-  omega
 
 theorem LabParam.char {D : D7} {L : ∀ k, LabelDatum (D.host.g k)} {rc : Corr D} (h : LabParam D L rc) (k : Fin 2)
     (v : D.nd.PlG k) (χ : (ZMod (D.host.g k))ˣ →* ℂˣ) (u : (ZMod (D.host.g k))ˣ)

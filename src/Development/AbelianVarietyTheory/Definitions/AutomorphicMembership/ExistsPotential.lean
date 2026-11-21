@@ -126,8 +126,6 @@ variable (B : Pre)
 
 def uI : ℂˣ := Units.mk0 Complex.I Complex.I_ne_zero
 
-theorem norm_uI_zpow (a b : ℤ) : ‖((uI ^ a * uI ^ b : ℂˣ) : ℂ)‖ = 1 := by
-  simp [uI]
 
 open Classical in
 
@@ -209,7 +207,6 @@ theorem exists_cols (B : Base) : ∃ C : Cols B, (∀ u i, Nonempty ((C.mem u).C
     have := congrArg (fun x : ℂˣ => (x : ℂ).re) h'
     simp [uI] at this
 
-theorem nonempty_cols0 (B : Pre) : Nonempty (Cols0 B) := ⟨cols0 B⟩
 
 theorem T_win (C : Cols0 B) (u : B.Word) : (C.mem u).A.Tstar ≤ ((C.mem u).A.T : ℝ) ∧
     ((C.mem u).A.T : ℝ) ≤ (1 + 1 / ((B.R.f : ℝ) * B.R.k)) * (C.mem u).A.Tstar := by

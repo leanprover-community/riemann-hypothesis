@@ -53,16 +53,5 @@ def DegAt (q : QDataAt h j ka CR Tt cc)
   ∀ i, ((∑ᶠ w, s i w * logN w) - ∑ σ : InfinitePlace q.K₁, (σ.mult : ℝ) * a i σ) /
     (Module.finrank ℚ q.K₁ : ℝ) ≤ Bdeg
 
-theorem qbridge_of (large₂ : SizeData₂ D) (Ch Ah Cc Ac : ℝ) (q : QDataAt h j ka CR Tt cc)
-    (be : HeightOneSpectrum (𝓞 T.Q.c.F) → ℝ)
-    (s : Fin (WeightFamilies.rhoP (recB h) CR Tt cc j ka) → HeightOneSpectrum (𝓞 q.K₁) → ℝ)
-    (a : Fin (WeightFamilies.rhoP (recB h) CR Tt cc j ka) → InfinitePlace q.K₁ → ℝ) (Carch Bdeg : ℝ)
-    (hK : KerAt q) (hF : FinAt q large₂ Cc Ac be s) (hA : ArchAtQ q a Carch) (hD : DegAt q s a Bdeg)
-    (hconj : ∀ τ F, (recB h).supN j ka ((starRingEnd ℂ).comp τ) F = (recB h).supN j ka τ F)
-    (hroom : WeightFamilies.PPv D large₂ Ch Ah * ka.size + Carch + Bdeg +
-        Real.log (WeightFamilies.rhoP (recB h) CR Tt cc j ka : ℝ) / 2 ≤ WeightFamilies.PPv D large₂ Cc Ac * ka.size) :
-    QBridgeAt large₂ (recB h) j ka CR Ch Ah Cc Ac Tt cc :=
-  ⟨q.K₁, q.fK, q.nfK, q.alg, q.cfL, be, s, a, Carch, Bdeg, hK, hF.1, hF.2.1, hF.2.2.1, hF.2.2.2.1,
-    hF.2.2.2.2, hconj, hA, hD, hroom⟩
 
 end Formalism.L2.Pj.QAt

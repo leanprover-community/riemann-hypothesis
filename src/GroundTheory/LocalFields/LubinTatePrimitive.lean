@@ -84,16 +84,7 @@ theorem lubinTateField_mono (hf : IsLubinTateSeries π f) {m n : ℕ} (h : m ≤
   rintro _ ⟨x, hx, rfl⟩
   exact val_mem_lubinTateField hπ hf (lubinTateTorsion_mono hπ hf h hx)
 
-theorem lubinTateField_le_succ (hf : IsLubinTateSeries π f) (n : ℕ) :
-    lubinTateField Ω hπ hf n ≤ lubinTateField Ω hπ hf (n + 1) :=
-  lubinTateField_mono hπ hf n.le_succ
 
-theorem lubinTatePointEquiv_primitive_iff (hf : IsLubinTateSeries π f) (hg : IsLubinTateSeries π g)
-    (n : ℕ) (x : IdealPoint Ω (lubinTateFormalGroup hπ hg)) :
-    (lubinTatePointEquiv hf hg x ∈ lubinTateTorsion Ω hf n ∧
-        lubinTatePointEquiv hf hg x ∉ lubinTateTorsion Ω hf (n - 1)) ↔
-      (x ∈ lubinTateTorsion Ω hg n ∧ x ∉ lubinTateTorsion Ω hg (n - 1)) := by
-  rw [lubinTatePointEquiv_mem_torsion_iff, lubinTatePointEquiv_mem_torsion_iff]
 
 theorem aeval_ltEisenstein_of_primitive {k : ℕ}
     {l : IdealPoint Ω (lubinTateFormalGroup hπ (isLubinTateSeries_ltPoly π))}
@@ -262,23 +253,6 @@ theorem irreducible_of_primitive (hf : IsLubinTateSeries π f) {n : ℕ}
   rw [hxe]
   exact hassoc.irreducible hyirr
 
-theorem norm_neg_eq_uniformizer_of_primitive (hf : IsLubinTateSeries π f) {n : ℕ}
-    {l : IdealPoint Ω (lubinTateFormalGroup hπ (isLubinTateSeries_ltPoly π))}
-    (hl : l ∈ lubinTateTorsion Ω (isLubinTateSeries_ltPoly π) n)
-    (hl' : l ∉ lubinTateTorsion Ω (isLubinTateSeries_ltPoly π) (n - 1)) :
-    Algebra.norm K (-(⟨l.val, val_mem_lubinTateField_of_mem hπ hf (isLubinTateSeries_ltPoly π) hl⟩ :
-      lubinTateField Ω hπ hf n)) = (π : K) := by
-  obtain ⟨k, rfl⟩ : ∃ k, n = k + 1 := by
-    cases n with
-    | zero => exact absurd hl hl'
-    | succ k => exact ⟨k, rfl⟩
-  rw [Nat.add_sub_cancel] at hl'
-  have hE : lubinTateField Ω hπ hf (k + 1) = K⟮l.val⟯ :=
-    (lubinTateField_eq hπ hf (isLubinTateSeries_ltPoly π) _).trans
-      (lubinTateField_eq_adjoin_of_primitive hπ _ hl (by rwa [Nat.add_sub_cancel]))
-  rw [norm_neg_eq_coeff_zero hE _ (ltEisenstein_monic π k).1 ?_
-    (aeval_ltEisenstein_of_primitive hπ hl hl'), coeff_zero_ltEisenstein]
-  rw [(finrank_and_ramificationIndex_lubinTateField_succ hπ hf k).1, (ltEisenstein_monic π k).2]
 
 end Torsion
 

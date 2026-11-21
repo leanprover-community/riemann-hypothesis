@@ -355,13 +355,6 @@ theorem mem_HK {r : ℕ} {bl : List ℕ} {M : GL (Fin n) κ} :
 theorem HK_le_blockUT (n : ℕ) (κ : Type) [CommRing κ] (r : ℕ) (bl : List ℕ) : HK n κ r bl ≤ blockUT n κ r bl :=
   fun _ h => (mem_HK.mp h).1
 
-theorem HK_le_uniUT (n : ℕ) (κ : Type) [CommRing κ] (r : ℕ) (bl : List ℕ) : HK n κ r bl ≤ uniUT n κ r bl := by
-  intro M h
-  obtain ⟨h1, h2⟩ := mem_HK.mp h
-  refine mem_uniUT.mpr ⟨h1, fun i j hi hji => ?_, fun i hi => ?_⟩
-  · rw [h2 i j hi (by omega)]
-    exact Matrix.one_apply_ne fun e => by rw [e] at hji; omega
-  · rw [h2 i i hi hi, Matrix.one_apply_eq]
 
 def lamK (χ : ℕ → κˣ →* Kˣ) (n r : ℕ) (bl : List ℕ) : ↥(HK n κ r bl) →* Kˣ :=
   (detChar χ n r bl).comp (Subgroup.inclusion (HK_le_blockUT n κ r bl))

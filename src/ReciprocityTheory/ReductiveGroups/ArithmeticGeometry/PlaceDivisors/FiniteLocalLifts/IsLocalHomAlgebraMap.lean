@@ -8,21 +8,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Pdiv.FiniteLocalHoms
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {R : Type} [CommRing R] [IsLocalRing R] [Algebra O R]
 
-theorem isLocalHom_of_section (χ : R →ₐ[O] O) : IsLocalHom (χ : R →+* O) := by
-  constructor
-  intro r hr
-  by_contra hnr
-  obtain ⟨u, hu⟩ := hr
-  have hu' : χ r = ↑u := hu.symm
-  have h1 : χ (r * algebraMap O R (↑u⁻¹ : O)) = 1 := by
-    rw [map_mul, AlgHom.commutes, hu', Algebra.algebraMap_self, RingHom.id_apply, Units.mul_inv]
-  have h2 : IsUnit (1 - r * algebraMap O R (↑u⁻¹ : O)) := by
-    apply IsLocalRing.isUnit_one_sub_self_of_mem_nonunits
-    exact mul_mem_nonunits_left hnr
-  have h3 : χ (1 - r * algebraMap O R (↑u⁻¹ : O)) = 0 := by rw [map_sub, map_one, h1, sub_self]
-  have h4 := h2.map χ
-  rw [h3] at h4
-  exact not_isUnit_zero h4
 
 theorem isLocalHom_algebraMap [Module.Finite O R] : IsLocalHom (algebraMap O R) := by
   constructor

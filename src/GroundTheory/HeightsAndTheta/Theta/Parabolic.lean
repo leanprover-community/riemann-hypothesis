@@ -48,30 +48,8 @@ theorem hermPair_smul_left (x y : ι → E) (c : E) :
   rw [show (fun i => conj K E c * conj K E (x i)) = conj K E c • (fun i => conj K E (x i)) from
     rfl, smul_dotProduct, smul_eq_mul]
 
-theorem hermPair_zero_left (y : ι → E) : hermPair K H 0 y = 0 := by
-  simp [hermPair]
 
-theorem hermPair_comm (hH : IsHermitianFor (conjHom K E) H) (x y : ι → E) :
-    hermPair K H y x = conj K E (hermPair K H x y) := by
-  have hHij : ∀ i j, H j i = conj K E (H i j) := fun i j => by
-    have := congrFun (congrFun hH j) i
-    simp only [transpose_apply, map_apply, conjHom, AlgHom.toRingHom_eq_coe, RingHom.coe_coe] at this
-    exact this.symm
-  simp only [hermPair, dotProduct, mulVec, map_sum, map_mul, conj_conj, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [hHij]
-  ring
 
-theorem hermPair_eq_zero_comm (hH : IsHermitianFor (conjHom K E) H) {x y : ι → E} :
-    hermPair K H y x = 0 ↔ hermPair K H x y = 0 := by
-  rw [hermPair_comm hH]
-  constructor
-  · intro h
-    have := congrArg (conj K E) h
-    rwa [conj_conj, map_zero] at this
-  · intro h
-    rw [h, map_zero]
 
 variable (K H)
 
@@ -88,13 +66,7 @@ variable {K H}
 theorem mem_orth {W : Submodule E (ι → E)} {y : ι → E} :
     y ∈ orth K H W ↔ ∀ x ∈ W, hermPair K H x y = 0 := Iff.rfl
 
-theorem orth_antitone {W W' : Submodule E (ι → E)} (h : W ≤ W') : orth K H W' ≤ orth K H W :=
-  fun _ hy x hx => hy x (h hx)
 
-theorem orth_bot : orth K H (⊥ : Submodule E (ι → E)) = ⊤ := by
-  ext y
-  simp only [mem_orth, Submodule.mem_bot, forall_eq, Submodule.mem_top, iff_true]
-  exact hermPair_zero_left y
 
 variable (K H)
 
@@ -109,15 +81,7 @@ def wittIndex : ℕ :=
 
 variable {K H}
 
-theorem IsTotallyIsotropic.le_orth {W : Submodule E (ι → E)} (hW : IsTotallyIsotropic K H W) :
-    W ≤ orth K H W :=
-  fun y hy x hx => hW x hx y hy
 
-theorem isTotallyIsotropic_bot : IsTotallyIsotropic K H (⊥ : Submodule E (ι → E)) := by
-  intro x hx y _
-  rw [Submodule.mem_bot] at hx
-  rw [hx]
-  exact hermPair_zero_left y
 
 theorem isTotallyIsotropic_span_singleton {x : ι → E} (hx : hermPair K H x x = 0) :
     IsTotallyIsotropic K H (E ∙ x) := by
@@ -137,23 +101,6 @@ theorem finrank_le_wittIndex {W : Submodule E (ι → E)} (hW : IsTotallyIsotrop
     finrank E W ≤ wittIndex K H :=
   le_csSup bddAbove_wittIndex_set ⟨W, hW, rfl⟩
 
-theorem anisotropic_iff_wittIndex_eq_zero : IsAnisotropic K H ↔ wittIndex K H = 0 := by
-  constructor
-  · intro h
-    apply le_antisymm _ (Nat.zero_le _)
-    refine csSup_le ⟨0, ⟨⊥, isTotallyIsotropic_bot, by simp⟩⟩ ?_
-    rintro d ⟨W, hW, rfl⟩
-    have : W = ⊥ := by
-      rw [eq_bot_iff]
-      intro x hx
-      exact (Submodule.mem_bot E).2 (h x (hW x hx x hx))
-    subst this
-    simp
-  · intro h x hx
-    by_contra hne
-    have h1 := finrank_le_wittIndex (isTotallyIsotropic_span_singleton (K := K) (H := H) hx)
-    rw [h, finrank_span_singleton hne] at h1
-    exact absurd h1 (by norm_num)
 
 end Form
 
@@ -187,79 +134,19 @@ def ofIsotropicVector {x : ι → E} (hx : hermPair K H x x = 0) : IsotropicFlag
     subst hW
     exact isTotallyIsotropic_span_singleton hx
 
-theorem ofIsotropicVector_isProper {x : ι → E} (hx : hermPair K H x x = 0) (hx0 : x ≠ 0) :
-    (ofIsotropicVector hx).IsProper :=
-  ⟨E ∙ x, Finset.mem_singleton_self _, by
-    rwa [Ne, Submodule.span_singleton_eq_bot]⟩
 
 end IsotropicFlag
 
-theorem not_isProper_of_isAnisotropic (h : IsAnisotropic K H) (𝒲 : IsotropicFlag K H) :
-    ¬ 𝒲.IsProper := by
-  rintro ⟨W, hW, hne⟩
-  apply hne
-  rw [eq_bot_iff]
-  intro x hx
-  exact (Submodule.mem_bot E).2 (h x (𝒲.isotropic W hW x hx x hx))
 
-theorem exists_isProper_of_not_isAnisotropic (h : ¬ IsAnisotropic K H) :
-    ∃ 𝒲 : IsotropicFlag K H, 𝒲.IsProper := by
-  simp only [IsAnisotropic, not_forall] at h
-  obtain ⟨x, hx, hx0⟩ := h
-  exact ⟨_, IsotropicFlag.ofIsotropicVector_isProper hx hx0⟩
 
 def fullChain (𝒲 : IsotropicFlag K H) : Finset (Submodule E (ι → E)) :=
   insert ⊥ (insert ⊤ (𝒲.members ∪ 𝒲.members.image (orth K H)))
 
-theorem bot_mem_fullChain (𝒲 : IsotropicFlag K H) : ⊥ ∈ fullChain 𝒲 :=
-  Finset.mem_insert_self _ _
 
-theorem top_mem_fullChain (𝒲 : IsotropicFlag K H) : ⊤ ∈ fullChain 𝒲 :=
-  Finset.mem_insert_of_mem (Finset.mem_insert_self _ _)
 
-theorem mem_fullChain_of_mem {𝒲 : IsotropicFlag K H} {W : Submodule E (ι → E)}
-    (hW : W ∈ 𝒲.members) : W ∈ fullChain 𝒲 :=
-  Finset.mem_insert_of_mem (Finset.mem_insert_of_mem (Finset.mem_union_left _ hW))
 
-theorem orth_mem_fullChain_of_mem {𝒲 : IsotropicFlag K H} {W : Submodule E (ι → E)}
-    (hW : W ∈ 𝒲.members) : orth K H W ∈ fullChain 𝒲 :=
-  Finset.mem_insert_of_mem (Finset.mem_insert_of_mem
-    (Finset.mem_union_right _ (Finset.mem_image_of_mem _ hW)))
 
-theorem le_orth_of_mem (𝒲 : IsotropicFlag K H) {W W' : Submodule E (ι → E)}
-    (hW : W ∈ 𝒲.members) (hW' : W' ∈ 𝒲.members) : W ≤ orth K H W' := by
-  rcases eq_or_ne W W' with rfl | hne
-  · exact (𝒲.isotropic W hW).le_orth
-  rcases 𝒲.isChain hW hW' hne with h | h
-  · exact h.trans (𝒲.isotropic W' hW').le_orth
-  · exact (𝒲.isotropic W hW).le_orth.trans (orth_antitone h)
 
-theorem isChain_fullChain (𝒲 : IsotropicFlag K H) :
-    IsChain (· ≤ ·) (fullChain 𝒲 : Set (Submodule E (ι → E))) := by
-  have key : ∀ A ∈ fullChain 𝒲, ∀ B ∈ fullChain 𝒲, A ≤ B ∨ B ≤ A := by
-    intro A hA B hB
-    simp only [fullChain, Finset.mem_insert, Finset.mem_union, Finset.mem_image] at hA hB
-    rcases hA with rfl | rfl | hA | ⟨W, hW, rfl⟩
-    · exact Or.inl bot_le
-    · exact Or.inr le_top
-    · rcases hB with rfl | rfl | hB | ⟨W', hW', rfl⟩
-      · exact Or.inr bot_le
-      · exact Or.inl le_top
-      · rcases eq_or_ne A B with rfl | hne
-        · exact Or.inl le_rfl
-        · exact 𝒲.isChain hA hB hne
-      · exact Or.inl (le_orth_of_mem 𝒲 hA hW')
-    · rcases hB with rfl | rfl | hB | ⟨W', hW', rfl⟩
-      · exact Or.inr bot_le
-      · exact Or.inl le_top
-      · exact Or.inr (le_orth_of_mem 𝒲 hB hW)
-      · rcases eq_or_ne W W' with rfl | hne
-        · exact Or.inl le_rfl
-        · rcases 𝒲.isChain hW hW' hne with h | h
-          · exact Or.inr (orth_antitone h)
-          · exact Or.inl (orth_antitone h)
-  intro A hA B hB _
-  exact key A hA B hB
 
 def below (S : Finset (Submodule E (ι → E))) (B : Submodule E (ι → E)) :
     Submodule E (ι → E) :=
@@ -285,9 +172,6 @@ def extendScalars (W : Submodule E (ι → E)) : Submodule (R ⊗[K] E) (ι → 
 
 variable {K R}
 
-theorem toBase_mem_extendScalars {W : Submodule E (ι → E)} {x : ι → E} (hx : x ∈ W) :
-    toBase K R x ∈ extendScalars K R W :=
-  Submodule.subset_span ⟨x, hx, rfl⟩
 
 theorem extendScalars_mono {W W' : Submodule E (ι → E)} (h : W ≤ W') :
     extendScalars K R W ≤ extendScalars K R W' :=
@@ -371,14 +255,6 @@ theorem mem_unipotentRadical {𝒲 : IsotropicFlag K H} {g : unitaryPoints K E H
       unitaryMat g⁻¹ *ᵥ x - x ∈ extendScalars K R (below (fullChain 𝒲) B) :=
   Iff.rfl
 
-theorem unipotentRadical_le_parabolic (𝒲 : IsotropicFlag K H) :
-    unipotentRadical H R 𝒲 ≤ parabolic H R 𝒲 := by
-  intro g hg W hW x hx
-  have hB := mem_fullChain_of_mem hW
-  have hbelow := extendScalars_mono (K := K) (R := R) (below_le (fullChain 𝒲) W)
-  refine ⟨?_, ?_⟩
-  · simpa using Submodule.add_mem _ (hbelow (hg W hB x hx).1) hx
-  · simpa using Submodule.add_mem _ (hbelow (hg W hB x hx).2) hx
 
 end Groups
 

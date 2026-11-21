@@ -82,29 +82,6 @@ theorem IsSphEig.twist (hν : ¬ IsRam v ν)
   obtain ⟨a, ha, b, hb, rfl⟩ := DoubleCoset.mem_doubleCoset.1 (Set.mem_of_indicator_ne_zero hg)
   rw [map_mul, map_mul, map_mul, map_mul, nu_det_of_mem hν ha, nu_det_of_mem hν hb, one_mul, mul_one]
 
-theorem blkTwist : BlockUnramifiedTwist := by
-  intro K _ _ v r c J hJ δ ν _ _ hν z hz X _ _ ρ x B hB
-  have hl : ∀ k ∈ J, lamD v (δ * ν) k = lamD v δ k := fun k hk => by
-    have h1 := (IsPar.v_det hJ hk).2
-    have h0 : (bDD k.1).det ≠ 0 := fun h0 => by simp [h0] at h1
-    have : ν (Units.mk0 _ h0) = 1 := by
-      by_contra h
-      exact hν ⟨Units.mk0 _ h0, h1, h⟩
-    simp only [lamD, chi0, dif_neg h0, MonoidHom.mul_apply, this, mul_one]
-  refine ⟨by rw [Multiset.card_map, hB.1], fun k hk => by rw [hl k hk, hB.2.1 k hk],
-    fun ϖ hϖ d m hm lam hlam h hh => ?_⟩
-  have h1 := IsSphEig.twist hν hz hlam
-  rw [Multiset.map_map, show ((fun y => z * y) ∘ fun y => z⁻¹ * y) = id by ext y; simp,
-    Multiset.map_id] at h1
-  set u : ℂ := ((ν (GeneralLinearGroup.det m) : ℂˣ) : ℂ) with hu
-  have hu0 : u ≠ 0 := Units.ne_zero _
-  have h2 := hB.2.2 ϖ hϖ d m hm _ h1 (fun g => u * h g) ⟨fun k₁ h₁ k₂ h₂ => by
-    beta_reduce
-    rw [hh.1 k₁ h₁ k₂ h₂, hl k₁ h₁, hl k₂ h₂, lamD_blk, lamD_blk, MonoidHom.mul_apply, Units.val_mul,
-      ← hu]
-    field_simp, fun g hg => by simp only [hh.2 g hg, mul_zero]⟩
-  rw [heckeVec_smul, mul_left_comm, mul_smul] at h2
-  exact smul_right_injective X hu0 h2
 
 end CompanionTheory.D.Upq.DoubleCosetLemmas
 

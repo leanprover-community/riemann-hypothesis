@@ -36,33 +36,8 @@ theorem leviOne (u : ℂ → ℝ) (z : ℂ) :
   simp only [ReciprocityTheory.AnForm.levi, h1, h2, h3, laplacian_eq_fderiv_fderiv]
   simp [Φ, e0]
 
-theorem greenOrigin_main : GreenOriginStatement := by
-  intro u hu hc
-  obtain ⟨R, hR0, hR⟩ := exists_R_of_compact hc
-  have h := green_at hu 0 (R := R + 1) (by linarith) (fun z hz =>
-    image_eq_zero_of_notMem_tsupport fun hm => by
-      have := hR z hm; rw [sub_zero] at hz; linarith)
-  simpa using h
 
-theorem greenDdcOrigin_main : GreenDdcOriginStatement := by
-  intro u hu hc
-  obtain ⟨h1, h2⟩ := greenOrigin_main u hu hc
-  have e : (fun z : ℂ => Real.log ‖z‖ * ddcDens u z) =
-      fun z => (1 / (2 * Real.pi)) * (Real.log ‖z‖ * Δ u z) := by
-    funext z; simp only [ddcDens]; ring
-  rw [e]
-  refine ⟨h1.const_mul _, ?_⟩
-  rw [integral_const_mul, h2]
-  field_simp
 
-theorem greenPoint_main : GreenPointStatement := by
-  intro u a hu hc
-  obtain ⟨R, hR0, hR⟩ := exists_R_of_compact hc
-  exact green_at hu a (R := ‖a‖ + R + 1) (by positivity) (fun z hz =>
-    image_eq_zero_of_notMem_tsupport fun hm => by
-      have := hR z hm
-      have := norm_sub_le z a
-      linarith)
 
 theorem greenParamFiber_main : GreenParamFiberStatement := by
   intro E _ _ _ u hu hc p
@@ -185,15 +160,10 @@ theorem greenMaDens_main : GreenMaDensStatement := by
   rw [integral_const_mul, h2, hv0]
   field_simp
 
-theorem leviOneEqLaplacian_thm : LeviOneEqLaplacianStatement := leviOne
 
-theorem greenOrigin_thm : GreenOriginStatement := greenOrigin_main
 
-theorem greenDdcOrigin_thm : GreenDdcOriginStatement := greenDdcOrigin_main
 
-theorem greenPoint_thm : GreenPointStatement := greenPoint_main
 
-theorem greenParamFiber_thm : GreenParamFiberStatement := greenParamFiber_main
 
 theorem greenParam_thm : GreenParamStatement := greenParam_main
 

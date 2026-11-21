@@ -101,15 +101,6 @@ theorem HeckeTie.eq (h : HeckeTie rd) (hinj : Function.Injective rd) {k P} (hk :
     (d : ρ.IsHeckeDatum i j b k P α R z) {f g : Y.Fm i ((j : ℕ) + 1) b} (hg : HeckeAt rd k P f g) : Y.hkF i _ b k P f = g :=
   hinj ((h k P hk f ⟨g, hg⟩ α R z d).trans (hg α R z d).symm)
 
-theorem ratHecke_of_range
-    (h1 : ∀ k P, HkIdx i k P → ∀ α R z, ρ.IsHeckeDatum i j b k P α R z → ∀ f, ρ.hecke i j b k P R z (rd f) ∈ Set.range rd)
-    (h2 : ∀ k P, HkIdx i k P → ∀ α R z α' R' z', ρ.IsHeckeDatum i j b k P α R z → ρ.IsHeckeDatum i j b k P α' R' z' →
-      ∀ f, ρ.hecke i j b k P R z (rd f) = ρ.hecke i j b k P R' z' (rd f)) : RatHecke rd := fun k P hk f => by
-  by_cases h : ∃ α R z, ρ.IsHeckeDatum i j b k P α R z
-  · obtain ⟨α, R, z, d⟩ := h
-    obtain ⟨g, hg⟩ := h1 k P hk α R z d f
-    exact ⟨g, fun α' R' z' d' => hg.trans (h2 k P hk α R z α' R' z' d d' f)⟩
-  · exact ⟨0, fun α R z d => absurd ⟨α, R, z, d⟩ h⟩
 
 theorem exists_hecke (hinj : Function.Injective rd) (k : ℕ) (P : Pl D.host.E) :
     ∃ T : Module.End (FractionRing (X.O i)) (Y.Fm i ((j : ℕ) + 1) b), ∀ f, (∃ g, HeckeAt rd k P f g) → HeckeAt rd k P f (T f) := by
@@ -131,13 +122,6 @@ end Hecke
 
 section Univ
 
-theorem admQ_admissibleConjugatePairPlaces (i : X.Tw) (Q : Finset (Pl D.host.E)) (M : ℕ) : AdmQ X i (admissibleConjugatePairPlaces X i Q M) M := by
-  classical
-  refine ⟨fun P hP => ?_, fun P hP => ?_⟩
-  · obtain ⟨-, P', -, -, h⟩ := mem_admissibleConjugatePairPlaces_iff.1 hP
-    exact h.1 P (by simp)
-  · obtain ⟨-, P', -, hc, h⟩ := mem_admissibleConjugatePairPlaces_iff.1 hP
-    exact ⟨⟨P', conj_mem_admissibleConjugatePairPlaces hP hc, hc⟩, (h.2 P (by simp)).2⟩
 
 theorem InRange.twSet {i : X.Tw} {Q : Finset (Pl D.host.E)} (h : InRange X i Q) : TWSet X i Q :=
   fun v hv => ⟨h.1 v hv, fun hl => Finset.disjoint_left.1 h.2.2 hv (X.twistExcludedPlaces_contains_residueChar i hl)⟩
@@ -200,8 +184,6 @@ theorem delU_eq_spread (hQ : TWSet X i Q) {ch : Set (Pl D.host.E)} (hch : IsChoi
       spread Y i Q M ch fun P => Multiplicative.toAdd (coord Y i (admissibleConjugatePairPlaces X i Q M) M P.1 σ) :=
   funext fun v => (delU_eq_coord hY hQ σ v).trans (spread_coord Y i Q M hch σ v).symm
 
-theorem delU_eq_one (hQ : TWSet X i Q) (h0 : admissibleConjugatePairPlaces X i Q M = ∅) : Y.delU i Q M = 1 :=
-  MonoidHom.ext fun σ => Multiplicative.toAdd.injective (funext fun v => delU_off hY hQ σ v (by simp [h0]))
 
 end Univ
 
@@ -234,10 +216,6 @@ theorem heckeTie_withHecke (i j b) : HeckeTie (Y := withHecke rd hF) (rd i j b) 
   rw [← e] at h
   exact h
 
-theorem withHecke_hkF_zero (i n b P) : (withHecke rd hF).hkF i n b 0 P = Y.hkF i n b 0 P := by
-  cases n with
-  | zero => rfl
-  | succ n => exact dif_neg fun h => absurd h.2.1 (by omega)
 
 variable (hL : ρ.LatFG)
 

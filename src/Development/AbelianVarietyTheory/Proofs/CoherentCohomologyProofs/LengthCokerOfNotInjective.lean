@@ -79,18 +79,5 @@ theorem length_coker (f : M →ₗ[R] M) :
   · rw [length_coker_of_not_injective f hf, LinearMap.det_eq_zero_iff_ker_ne_bot.mpr hf]
     simp
 
-theorem relLength_map_eq_addVal_det {R : Type u_1} [CommRing R] [IsDomain R]
-    [IsDiscreteValuationRing R] {V : Type u_2} [AddCommGroup V] [Module R V] {A : Submodule R V}
-    [Module.Free R A] [Module.Finite R A] (g : V →ₗ[R] V) (hg : ∀ x ∈ A, g x ∈ A) :
-    GlobalTheory.relLength A (Submodule.map g A) =
-      IsDiscreteValuationRing.addVal R (LinearMap.det (LinearMap.restrict g hg)) := by
-  have h : (Submodule.map g A).submoduleOf A = LinearMap.range (LinearMap.restrict g hg) := by
-    ext x
-    constructor
-    · rintro ⟨y, hy, hxy⟩
-      exact ⟨⟨y, hy⟩, Subtype.ext hxy⟩
-    · rintro ⟨y, rfl⟩
-      exact ⟨y, y.2, rfl⟩
-  rw [GlobalTheory.relLength_def, h, length_coker]
 
 end GlobalTheory.LengthCokernelInjective

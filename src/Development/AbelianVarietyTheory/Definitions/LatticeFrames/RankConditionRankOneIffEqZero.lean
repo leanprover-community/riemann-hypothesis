@@ -51,13 +51,7 @@ def Pts.ofFam {ε : ℝ} (F : FamCore ε) : Pts where
       rw [dif_pos h, dif_pos h'] at e
       exact Prod.mk.inj e⟩
 
-theorem Pts.ofFam_covered {ε : ℝ} (F : FamCore ε) : (Pts.ofFam F).Covered := by
-  refine ⟨F.x1 + 1, fun x hx i₀ u₀ hu => ?_⟩
-  obtain ⟨i, h1, h2⟩ := F.coverS x (by linarith) i₀ u₀ hu
-  exact ⟨i, h1, (sameTops_iff₂ (F.L x i) (F.L x i₀) (congrArg Ranks.k (F.R_eq x i i₀))).2 h2⟩
 
-theorem Pts.ofFam_rkWin {ε : ℝ} (F : FamCore ε) (h : (Pts.ofFam F).RKAll) : (Pts.ofFam F).RKWin :=
-  h.rkWin (Pts.ofFam_covered F)
 
 namespace FamInh
 
@@ -240,10 +234,6 @@ theorem not_rankCondition_rankZero (t c N u) : ¬ RK (recd p t c N 0) u := by
   show ¬ dU _ u < 2 * _
   rw [recd_dU, columnRank_eq_zero_of_rankZero]; omega
 
-theorem recd_share (t c N u) (ρ : ℝ) : RKShare ρ (recd p t c N 1) u ↔ ρ * ((N : ℝ) + 1) ≤ 1 := by
-  unfold RKShare
-  rw [recd_dU, columnRank_eq_one_of_rankOne]
-  simp
 
 theorem recd_sameHost (t c N s p' t' c' N' s') : SameHost (recd p t c N s) (recd p' t' c' N' s') :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, fun _ _ _ => ⟨rfl, rfl⟩⟩
@@ -314,20 +304,6 @@ theorem fam_zero (N : ℝ → ℕ) (ε : ℝ) :
     obtain ⟨i, u, -, hu, -⟩ := h x₀ le_rfl ⟨(0 : R0.A)⟩
     exact absurd (columnRank_eq_zero_of_rankZero p i 0 _ u) hu.ne'
 
-theorem fam_half {ε : ℝ} (hε : 0 < ε) : (fam p (fun _ => 1) 1).RKWeak ε ∧ ¬ (fam p (fun _ => 1) 1).RKWin := by
-  constructor
-  · obtain ⟨C, h⟩ := exists_const (Real.log (xOf p)) (Real.log p.T) hε.le
-    obtain ⟨x₁, hx₁⟩ := room_le_and_share_le hε C
-    refine ⟨C, fam_someAt p _ _ (max 1 x₁) fun x hx t => ?_⟩
-    obtain ⟨h1, h2⟩ := hx₁ x (le_of_max_le_right hx)
-    obtain ⟨h3, h4⟩ := h x (le_of_max_le_left hx)
-    refine ⟨⟨le_trans (sub_le_sub_left h1 _) h3, h4⟩, (recd_share p t 0 1 () _).2 ?_⟩
-    push_cast
-    linarith
-  · intro h
-    obtain ⟨x₀, h⟩ := Pts.SomeAt.exists h
-    obtain ⟨i, u, hu⟩ := h x₀ le_rfl ⟨(0 : R0.A)⟩
-    exact absurd ((rankCondition_rankOne_iff_eq_zero p i 0 1 u).1 hu) one_ne_zero
 
 def cls (c : ℕ) (s : ℂ) : ℝ → D7 → Prop := fun _ D => ∃ t, D = recd p t c 0 s
 
@@ -336,49 +312,8 @@ theorem fam_over (p' : LvP) (s : ℂ) {ε : ℝ} (hε : 0 ≤ ε) : (fam p (fun 
   exact ⟨C, C, fam_someAt p _ _ 1 fun x hx t =>
     ⟨recd p' t 0 0 1, (), ⟨t, rfl⟩, (recd_sameWord ..).2 ⟨rfl, rfl⟩, h x hx, (rankCondition_rankOne_iff_eq_zero ..).2 rfl⟩⟩
 
-theorem fam_not_over (p' : LvP) (s : ℂ) (ε : ℝ) :
-    ¬ (fam p (fun _ => 0) s).RKRoomOver (cls p' 0 0) ε ∧ ¬ (fam p (fun _ => 0) s).RKRoomOver (cls p' 1 1) ε := by
-  constructor
-  · refine Pts.not_rkRoomOver ?_
-    rintro x D u ⟨t, rfl⟩
-    exact not_rankCondition_rankZero _ _ _ _ _
-  · rintro ⟨CR, CT, h⟩
-    obtain ⟨x₀, h⟩ := h.exists
-    obtain ⟨i, u, D', u', ⟨t, rfl⟩, h2, -⟩ := h x₀ le_rfl ⟨(0 : R0.A)⟩
-    exact absurd ((recd_sameWord p i 0 0 s u p' t 1 0 1 u').1 h2).2 zero_ne_one
 
-theorem room_used {ε : ℝ} (hε : 0 ≤ ε) :
-    (∃ (F : Pts) (Tr : ℝ → D7 → Prop), F.RKRoomOver Tr ε ∧ ¬ F.RKWin ∧ ∀ x i u D' u', Tr x D' →
-      (1 + 1 / (((F.D x i).R.f : ℝ) * (F.D x i).R.k)) * ((F.D x i).mem u).A.Xu < ((D'.mem u').A.T : ℝ)) ∧
-    (∃ (F : Pts) (Tr : ℝ → D7 → Prop), F.RKRoomOver Tr ε ∧ ¬ F.RKWin ∧ ∀ x i u D' u', Tr x D' →
-      ((D'.mem u').A.T : ℝ) < ((F.D x i).mem u).A.Tstar) := by
-  obtain ⟨p, -⟩ := exists_lvP 0
-  obtain ⟨p', hp⟩ := exists_lvP (max p.T ⌈(1 + 1 / ((R0.f : ℝ) * R0.k)) * xOf p⌉₊)
-  refine ⟨⟨fam p (fun _ => 0) 0, cls p' 0 1, fam_over p p' 0 hε, (fam_zero p _ ε).2.1, ?_⟩,
-    ⟨fam p' (fun _ => 0) 0, cls p 0 1, fam_over p' p 0 hε, (fam_zero p' _ ε).2.1, ?_⟩⟩
-  · rintro x i u D' u' ⟨t, rfl⟩
-    exact lt_of_le_of_lt (Nat.le_ceil ((1 + 1 / ((R0.f : ℝ) * R0.k)) * xOf p))
-      (show _ < (p'.T : ℝ) by exact_mod_cast lt_of_le_of_lt (le_max_right _ _) hp)
-  · rintro x i u D' u' ⟨t, rfl⟩
-    exact lt_of_lt_of_eq (show (p.T : ℝ) < p'.T by exact_mod_cast lt_of_le_of_lt (le_max_left _ _) hp)
-      (atTToy_Tstar_eq Tau0 p'.T).symm
 
-theorem not_over_of_large {ε : ℝ} (hε : ε < 1) (q : ℝ → LvP) (hq : ∀ x, Real.exp x < (q x).T) :
-    ¬ (fam p (fun _ => 0) 1).RKRoomOver (fun x => cls (q x) 0 1 x) ε := by
-  rintro ⟨CR, CT, h⟩
-  obtain ⟨x₀, h⟩ := h.exists
-  obtain ⟨x₁, hx₁⟩ := Filter.eventually_atTop.1
-    (((tendsto_rpow_atTop (by linarith : 0 < 1 - ε)).eventually_ge_atTop (CT * 2)).and (Filter.eventually_gt_atTop (0 : ℝ)))
-  obtain ⟨i, u, D', u', ⟨t, rfl⟩, -, ⟨-, h3⟩, -⟩ := h (max x₀ x₁) (le_max_left _ _) ⟨(0 : R0.A)⟩
-  obtain ⟨h1, h0⟩ := hx₁ (max x₀ x₁) (le_max_right _ _)
-  have h4 : Real.log ((q (max x₀ x₁)).T : ℝ) ≤ CT * (2 : ℕ) * (max x₀ x₁) ^ ε := h3
-  have h5 := hq (max x₀ x₁)
-  generalize max x₀ x₁ = x at h1 h0 h4 h5
-  have h6 : x < Real.log ((q x).T : ℝ) := (Real.lt_log_iff_exp_lt (lt_trans (Real.exp_pos x) h5)).2 h5
-  have e : x ^ (1 - ε) * x ^ ε = x := by rw [← Real.rpow_add h0]; simp
-  have h7 := mul_le_mul_of_nonneg_right h1 (Real.rpow_pos_of_pos h0 ε).le
-  push_cast at h4
-  linarith
 
 example : HypEx (fun _ => Pts) (fun _ F => F = fam p (fun _ => 0) 1 ∨ F = fam p (fun _ => 0) 0) (fun _ F => F)
       (fun ε F => F.RKRoom ε) ∧

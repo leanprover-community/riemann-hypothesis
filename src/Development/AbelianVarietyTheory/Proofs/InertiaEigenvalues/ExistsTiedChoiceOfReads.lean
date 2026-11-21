@@ -201,36 +201,7 @@ theorem Reading.pulls_one {i : D.ntw.Tw} {k : ℕ} {b : Bool} {w : D.what₂.pla
   rw [h, MonoidHom.one_apply, Units.val_one, Units.val_one, map_one ρ.emb, map_one (algebraMap _ ρ.Oe),
     map_one (algebraMap ρ.Oe _)]
 
-theorem exists_hasReading {p : TwPack D} {b : Bool} {w : D.what₂.places.Pl} (h : ReadsAt p.1 b w) (hv : ValuesIn p) :
-    ∃ ψ₀, HasReading p b w ψ₀ := by
-  obtain ⟨ρ⟩ := h.nonempty_reading p.2.2.1
-  obtain ⟨n, hn, ⟨z, hz⟩, hψ⟩ := hv
-  obtain ⟨ψ₀, h₀⟩ := exists_pull ρ.emb (algebraMap (D.ntw.Ok p.1 p.2.2.1) ρ.Oe) (algebraMap ρ.Oe (FractionRing ρ.Oe))
-    (BlochKatoReduction.Gen.psiAt b p.2.2.2) (D.ntw.art p.1 p.2.1) hn hz (psiAt_pow b _ hψ)
-  exact ⟨ψ₀, ρ, h₀⟩
 
-theorem exists_isCharOf (hG : IsGalois ℚ ↥D.LL0) {I : TwIn D} {t : TwPl D → TwPack D} {sd : D.what₂.places.Pl → Bool}
-    (h : GoodData I t sd) (hv : ∀ w, ValuesIn (t w)) : ∃ ψ₀, IsCharOf t sd ψ₀ := by
-  have h1 : ∀ w, ∃ ψ : G D.host.E D.nd.Om →* (D.what₂.LL)ˣ,
-      (∀ hw : TwistedAt D w, HasReading (t ⟨w, hw⟩) (sd w) w ψ) ∧ (¬ TwistedAt D w → ψ = 1) := fun w => by
-    by_cases hw : TwistedAt D w
-    · obtain ⟨ψ, hψ⟩ := exists_hasReading (h ⟨w, hw⟩).1 (hv _)
-      exact ⟨ψ, fun _ => hψ, fun h => absurd hw h⟩
-    · exact ⟨1, fun h => absurd h hw, fun _ => rfl⟩
-  choose ψ hψ hψ' using h1
-  obtain ⟨o, ho⟩ := exists_orbitRep (D := D)
-  refine ⟨fun w => ψ (o w), fun w => by simp only [(ho w).2], fun w hw => hψ' _ ?_, fun w => ?_⟩
-  · rcases (ho w).1 with h2 | h2 <;> rw [h2]
-    · exact hw
-    · rwa [twistedAt_conj]
-  · show HasReading (t w) (sd w.1) w.1 (ψ (o w.1))
-    by_cases h2 : o w.1 = w.1
-    · rw [h2]; exact hψ w.1 w.2
-    · have h3 := (ho w.1).1.resolve_left h2
-      have h4 : HasReading (t w.conj) (!sd (D.what₂.places.conj w.1)) (D.what₂.places.conj (D.what₂.places.conj w.1))
-        (ψ (D.what₂.places.conj w.1)) := (hψ _ w.conj.2).conj hG
-      rw [(h w).2.1, (h w).2.2.1 (h3 ▸ h2), Bool.not_not, D.what₂.places.conj_conj] at h4
-      rwa [h3]
 
 def RankEq (i : D.ntw.Tw) (b : Bool) (Q : Finset (PlE D.host)) (k : ℕ) (ψ : D.ntw.RCG i Q →* (D.ntw.Ok i k)ˣ)
     (w : D.what₂.places.Pl) : Prop :=
@@ -326,7 +297,6 @@ def LocsCarry (t : TwPl D → TwPack D) (sd : D.what₂.places.Pl → Bool)
 
 def ReadElsewhere (D : D7) : Prop := ∀ w, ¬ TwistedAt D w → ∃ i b, ReadsAt (D := D) i b w
 
-theorem readElsewhere_of_cover (h : D.ntw.TwCover) : ReadElsewhere D := fun w _ => exists_readsAt_of_cover h w
 
 theorem exists_choice (hc : ReadElsewhere D) {I : TwIn D} {t : TwPl D → TwPack D} {sd : D.what₂.places.Pl → Bool}
     (h : GoodData I t sd) (hr : ∀ w, RankTie (t w) (sd w.1) w.1) : ∃ C : NChoice D, Records C t sd := by
@@ -364,11 +334,6 @@ theorem exists_tied_choice_of_reads (hc : ReadElsewhere D) {t : TwPl D → TwPac
   · exact (hl a).2.1.trans ((hp _).2 (D.nd.w_tw a)).2.symm
   · exact (hl a).2.2.1.trans (congrArg (fun q : TwPack D => q.2.1) ((hp _).2 (D.nd.w_tw a)).1.symm)
 
-theorem exists_tied_choice (hc : ReadElsewhere D) {I : TwIn D} {t : TwPl D → TwPack D} {sd : D.what₂.places.Pl → Bool}
-    (h : GoodData I t sd) (hr : ∀ w, RankTie (t w) (sd w.1) w.1)
-    {ψ₀ : D.what₂.places.Pl → (G D.host.E D.nd.Om →* (D.what₂.LL)ˣ)} (hψ : IsCharOf t sd ψ₀) (hl : LocsCarry t sd ψ₀) :
-    ∃ C : NChoice D, NChTie D C ∧ Records C t sd :=
-  exists_tied_choice_of_reads hc (fun w => (h w).1) hr hψ hl
 
 def BuildsChoice (D : D7) : Prop :=
   ∀ (I : TwIn D) (t : TwPl D → TwPack D) (sd : D.what₂.places.Pl → Bool), GoodData I t sd →
@@ -378,10 +343,6 @@ def BuildsChoice (D : D7) : Prop :=
       ∀ ψ₀, IsCharOf t sd ψ₀ → LocsCarry t sd ψ₀ →
         ∃ C : NChoice D, NChTie D C ∧ Records C t sd ∧ TwConjAt D C ∧ TwGoodAt D C I)
 
-theorem buildsChoice (hG : IsGalois ℚ ↥D.LL0) : BuildsChoice D := fun _ _ _ h =>
-  ⟨exists_isCharOf hG h, fun hc hr =>
-    ⟨let ⟨C, hC⟩ := exists_choice hc h hr; ⟨C, hC, hC.good h⟩, fun _ hψ hl =>
-      let ⟨C, h1, hC⟩ := exists_tied_choice hc h hr hψ hl; ⟨C, h1, hC, hC.good h⟩⟩⟩
 
 theorem readsAt_of_tie {C : NChoice D} (h : NChTie D C) (w : D.what₂.places.Pl) : ReadsAt (C.twI w) (C.sd w) w := by
   intro x
@@ -417,16 +378,7 @@ theorem readsAt_of_tie {C : NChoice D} (h : NChTie D C) (w : D.what₂.places.Pl
     exact IsUnit.of_mul_eq_one v (IsFractionRing.injective _ (FractionRing (C.Oe w))
       (by rw [map_mul, hv, mul_inv_cancel₀ hu, map_one]))
 
-theorem readElsewhere_of_tie {C : NChoice D} (h : NChTie D C) : ReadElsewhere D := fun w _ => ⟨_, _, readsAt_of_tie h w⟩
 
-theorem rankTie_of_choice (C : NChoice D) (w : TwPl D) : RankTie (NChoicePack C w.1) (C.sd w.1) w.1 := by
-  intro j h1 h2
-  show _ = Module.finrank (FractionRing (D.ntw.Ok (C.twI w.1) (C.k' w.1))) (D.nexp.MtV (C.twI w.1) j (C.sd w.1) (C.k' w.1)
-    (C.Q w.1) ((BlochKatoReduction.Gen.psiAt (C.sd w.1) (BlochKatoReduction.Gen.psiAt (C.sd w.1) (C.psi' w.1))).comp (D.ntw.art (C.twI w.1) (C.Q w.1))))
-  rw [psiAt_psiAt, ← (baseChange_lattice (C.Oe_inj w.1) _ (D.nexp.MtLat_fg _ _ _ _ _ _) (D.nexp.MtLat_span _ _ _ _ _ _)).1]
-  obtain ⟨h3, h4⟩ := C.eMt_basis w.1 j w.2 h1 h2 (Module.Free.chooseBasis _ _)
-  rw [Module.finrank_eq_nat_card_basis (Module.Free.chooseBasis _ _),
-    Module.finrank_eq_nat_card_basis (Module.Basis.mk h3 h4.ge)]
 
 theorem tied_unique {C C' : NChoice D} (h : NChTie D C) (h' : NChTie D C') (a : D.nd.Loc) :
     C.twI (D.nd.w a) = C'.twI (D.nd.w a) ∧ C.sd (D.nd.w a) = C'.sd (D.nd.w a) ∧ C.Q (D.nd.w a) = C'.Q (D.nd.w a) :=
@@ -440,25 +392,8 @@ def MadeByExport (C : NChoice D) (E : IntegralHeckeForms.XD D) (N0 : D.ntw.Tw �
     ∀ w, TwistedAt D w → (∃ Q k ψ, TwGoodOne D ⟨E, N0, S⟩ (C.twI w) (C.sd w) Q k ψ) →
       TwGoodOne D ⟨E, N0, S⟩ (C.twI w) (C.sd w) (C.Q w) (C.k' w) (C.psi' w)
 
-theorem good_of_madeByExport {C : NChoice D} {E : IntegralHeckeForms.XD D} {N0 : D.ntw.Tw → ℕ} (hconds : IntegralHeckeForms.aux₃ D (BlochKatoReduction.bk0 D) E N0)
-    (hS : TwistedPairSettingHyps D) (hR : FullRank D E) (hT : IntegralHeckeForms.adm7 D E) (hG : IsGalois ℚ ↥D.LL0) (ht : NChTie D C)
-    (h : MadeByExport C E N0) : TwConjAt D C ∧ ∃ S, TwGoodAt D C ⟨E, N0, S⟩ := by
-  obtain ⟨h1, S, h2, h3⟩ := h
-  have hW := fun w hw => (readsAt_of_tie ht w).inW1 hG hw
-  have hI : ∀ w, D.what₂.muAt w ≠ D.what₂.mu0 → TwIn.Ok ⟨E, N0, S⟩ (C.twI w) := fun w hw =>
-    ⟨hR _ (hW w hw), fun j hj b => h2 w hw j hj b (exists_basisOf D.nexp _ j b _ (th_fg D.nexp E hT _ (hW w hw) j hj b))⟩
-  obtain ⟨Q, k, ψ, h4, -⟩ := exists_good_of_conditions D ⟨E, N0, S⟩ C.twI C.sd hconds (fun w hw => hS _ (hW w hw)) hI hW
-  exact ⟨h1, S, fun w hw => ⟨hI w hw, h3 w hw ⟨_, _, _, h4 w hw⟩⟩⟩
 
-theorem madeByExport_of_good {C : NChoice D} {E : IntegralHeckeForms.XD D} {N0 : D.ntw.Tw → ℕ} {S} (h : TwConjAt D C)
-    (h' : TwGoodAt D C ⟨E, N0, S⟩) : MadeByExport C E N0 :=
-  ⟨h, S, fun w hw j hj b _ => (h' w hw).1.2 j hj b, fun w hw _ => (h' w hw).2⟩
 
-theorem goodData_of_tied {C : NChoice D} {I : TwIn D} (ht : NChTie D C) (h : TwConjAt D C) (h' : TwGoodAt D C I) :
-    GoodData I (fun w => NChoicePack C w.1) C.sd ∧ Records C (fun w => NChoicePack C w.1) C.sd ∧ ReadElsewhere D ∧
-      ∀ w : TwPl D, RankTie (NChoicePack C w.1) (C.sd w.1) w.1 :=
-  ⟨fun w => ⟨readsAt_of_tie ht w.1, (h w.1 w.2).1, (h w.1 w.2).2, h' w.1 w.2⟩, fun _ => ⟨rfl, rfl⟩,
-    readElsewhere_of_tie ht, rankTie_of_choice C⟩
 
 def InputsAt (D : D7) (E : IntegralHeckeForms.XD D) : Prop :=
   (∀ N0, IntegralHeckeForms.adm8 D N0 → IntegralHeckeForms.aux₃ D (BlochKatoReduction.bk0 D) E N0) ∧ TwistedPairSettingHyps D ∧ FullRank D E ∧ IntegralHeckeForms.adm7 D E
@@ -474,20 +409,7 @@ def FamMade {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (hx : Fm.x1 < x) (i : Fm.Ix x),
     ∃ N0, IntegralHeckeForms.adm8 (Fm.D x i) N0 ∧ MadeByExport (Fm.ex x hx i).nch (twE Fm x hx i) N0
 
-theorem famExists {eps : ℝ} {Fm : FamP eps} (h : FamInputs Fm) : FamExists Fm := by
-  obtain ⟨x0, h⟩ := h
-  refine ⟨x0, fun x hx0 hx i => ⟨fun N0 hN => ?_, buildsChoice (Fm.ties x i).baseField_isGalois⟩⟩
-  obtain ⟨h1, h2, h3, h4⟩ := h x hx0 hx i
-  exact existsData _ N0 (h1 N0 hN) h2 h3 h4 (Fm.ties x i).tw_cover (Fm.ties x i).baseField_isGalois
 
-theorem twGood_of_made {eps : ℝ} {Fm : FamP eps} (h : FamInputs Fm) (hm : FamMade Fm) : TwGood Fm := by
-  obtain ⟨x0, h⟩ := h
-  obtain ⟨x1, hm⟩ := hm
-  refine ⟨max x0 x1, fun x hx0 hx i => ?_⟩
-  obtain ⟨h1, h2, h3, h4⟩ := h x (le_of_max_le_left hx0) hx i
-  obtain ⟨N0, hN, h5⟩ := hm x (le_of_max_le_right hx0) hx i
-  obtain ⟨h6, S, h7⟩ := good_of_madeByExport (h1 N0 hN) h2 h3 h4 (Fm.ties x i).baseField_isGalois (Fm.ex x hx i).nch_tie h5
-  exact ⟨h6, N0, S, h7⟩
 
 def PrimeTo (A : Finset ℕ) (Q : Finset (PlE D.host)) : Prop := ∀ P ∈ Q, ∀ p ∈ A, p.Prime → P ∉ placesOver D.host.E p
 
@@ -592,15 +514,6 @@ theorem Follows.trans (h : Follows D₀ E₀ D₁ E₁) (h' : Follows D₁ E₁ 
   · exact (h3 i₀ i₁ h₁ b x).trans (h3' i₁ i (h₁.symm.trans hi) b (φ x))
   · exact (h4 i₀ i₁ h₁).trans (h4' i₁ i (h₁.symm.trans hi))
 
-theorem follows_of_sameField (h : SameExport D₁ D) (h' : SameField D₁ D) (hE : HEq E₁.Dat0 E.Dat0) : Follows D₁ E₁ D E := by
-  obtain ⟨h1, -, h2, -, h3⟩ := h'.basic h.gal h.set
-  refine ⟨h, hE, h2, fun i₁ i hi => ⟨?_, ?_⟩⟩
-  · rintro ⟨w₁, h4, h5⟩
-    obtain ⟨w, hw⟩ := exists_heq h1 w₁
-    exact ⟨w, (h'.tw _ _ hw).1 h4, ((h3 _ _ hw).2.1 _ _ hi true).1 h5⟩
-  · rintro ⟨w, h4, h5⟩
-    obtain ⟨w₁, hw⟩ := exists_heq' h1 w
-    exact ⟨w₁, (h'.tw _ _ hw).2 h4, ((h3 _ _ hw).2.1 _ _ hi true).2 h5⟩
 
 theorem Follows.samePlace (h : Follows D₀ E₀ D E) {i₀ j₀ : D₀.ntw.Tw} {i j : D.ntw.Tw} (hi : HEq i₀ i) (hj : HEq j₀ j)
     (b b' : Bool) : SamePlace i₀ b j₀ b' ↔ SamePlace i b j b' := by
@@ -697,16 +610,7 @@ theorem TwoSteps.mono {𝓡 𝓡' : ∀ D₁ : D7, IntegralHeckeForms.XD D₁ �
   let ⟨D₁, E₁, h1, h2, h3, h4, h5⟩ := h U hU
   ⟨D₁, E₁, h1, h2, h3, h4, h' _ _ _ h5⟩
 
-theorem twoSteps_of_untwisted (A : Finset ℕ) (E : IntegralHeckeForms.XD D) (h : ∀ w, ¬ TwistedAt D w) (hG : IsGalois ℚ ↥D.LL0)
-    (hc : ReadElsewhere D) : TwoSteps (fun D₁ E₁ V => ReadElsewhere D₁ ∧ Rebuild (fun D' _ => D' = D) D₁ E₁ V) A D E := fun U hU =>
-  ⟨D, E, .refl D E, hG, fun _ _ _ _ ⟨w, hw, _⟩ => absurd hw (h w), fun p hp => let ⟨w, hw, _⟩ := (hU.1 p hp).1; absurd hw (h w), hc,
-    fun t sd ψ _ _ _ => ⟨D, E, t, sd, ψ, rfl, .refl D, .refl D, HEq.rfl, fun w => absurd w.2 (h _), HEq.rfl,
-      fun w => absurd w.2 (h _), fun a => absurd (D.nd.w_tw a) (h _)⟩⟩
 
-theorem rebuilt_self {C : NChoice D} (E : IntegralHeckeForms.XD D) (ht : NChTie D C) {t : TwPl D → TwPack D} {sd : D.what₂.places.Pl → Bool}
-    (h : Records C t sd) : SameExport D D ∧ SameField D D ∧ HEq E.Dat0 E.Dat0 ∧ NChTie D C ∧
-      ∀ (w₁ : TwPl D) (w : D.what₂.places.Pl), HEq w₁.1 w → HEq (t w₁) (NChoicePack C w) ∧ sd w₁.1 = C.sd w :=
-  ⟨.refl D, .refl D, HEq.rfl, ht, fun w₁ _ hw => eq_of_heq hw ▸ ⟨heq_of_eq (h w₁).1.symm, (h w₁).2.symm⟩⟩
 
 theorem exists_sides (hG : IsGalois ℚ ↥D.LL0) (t : TwPl D → TwPack D) (h : ∀ w, ∃ b, ReadsAt (t w).1 b w.1)
     (hc : ∀ w : TwPl D, t w.conj = t w) : ∃ sd, SidesOk t sd := by
@@ -752,48 +656,8 @@ theorem Follows.exists_spread (h : Follows D₀ E₀ D E) (hG : IsGalois ℚ ↥
   have h3 := hU.2.2.1 p hp p' hp' _ _ ((h.samePlace (h.fst_heq h1) (h.fst_heq h2) _ _).2 ((hb.conj hG).samePlace hb'))
   exact eq_of_heq (h2.symm.trans (h3 ▸ h1))
 
-theorem pow_eq_one_of_mem_zpowers {R : Type} [CommRing R] {z x : Rˣ} {n : ℕ} (hz : IsPrimitiveRoot (z : R) n)
-    (hx : x ∈ Subgroup.zpowers z) : x ^ n = 1 := by
-  obtain ⟨a, rfl⟩ := Subgroup.mem_zpowers_iff.1 hx
-  have h1 : z ^ n = 1 := Units.ext (by rw [Units.val_pow_eq_pow_val, hz.pow_eq_one, Units.val_one])
-  rw [← zpow_natCast, ← zpow_mul, mul_comm, zpow_mul, zpow_natCast, h1, one_zpow]
 
-theorem valuesIn_of_psiOk {p : TwPack D} {B : Finset (PlE D.host)} (h : BlochKatoReduction.Gen.PsiOk p.1 B p.2.1 p.2.2.1 p.2.2.2)
-    (hz : ∃ z : D.what₂.LL, IsPrimitiveRoot z (D.ntw.l p.1 ^ p.2.2.1)) : ValuesIn p := by
-  obtain ⟨i, Q, k, ψ⟩ := p
-  obtain ⟨-, -, -, -, -, h1, -⟩ := h
-  refine ⟨D.ntw.l i ^ k, pow_pos (D.ntw.lPrime i).out.pos _, hz, fun δ => ?_⟩
-  obtain ⟨g, hg⟩ := D.ntw.art_surj i Q δ
-  have h2 : ψ δ ∈ Subgroup.zpowers (D.ntw.zk i k) := by
-    rw [← hg]
-    exact h1 g
-  exact pow_eq_one_of_mem_zpowers (D.ntw.zk_prim i k) h2
 
-theorem exists_madeFrom {𝒬 : ∀ D : D7, NChoice D → IntegralHeckeForms.XD D → Prop} {N₀ : D₀.ntw.Tw → ℕ} {A : Finset ℕ}
-    (hI : FirstInputs D₀ E₀ N₀) (h : TwoSteps (RebuildTied 𝒬) A D₀ E₀) :
-    ∃ (D : D7) (C : NChoice D) (E : IntegralHeckeForms.XD D), 𝒬 D C E ∧ NChTie D C ∧ IsGalois ℚ ↥D.LL0 ∧ MadeFrom D₀ E₀ N₀ A D C E := by
-  obtain ⟨hs, hg⟩ := firstPass_spec hI A
-  obtain ⟨D₁, E₁, h1, hG, hc, hz, hR⟩ := h _ hs
-  obtain ⟨t, sd, ht, hsd⟩ := h1.exists_spread hG hc hs
-  obtain ⟨N, S, hN⟩ := h1.exists_good N₀ (firstPass D₀ E₀ N₀ A).1
-  have hgood : GoodData ⟨E₁, N, S⟩ t sd := fun w =>
-    let ⟨p, hp, h2⟩ := ht w
-    ⟨(hsd w).1, (hsd w).2.1, (hsd w).2.2, hN p _ h2 (hg p hp)⟩
-  obtain ⟨ψ, hψ⟩ := exists_isCharOf hG hgood fun w => by
-    obtain ⟨p, hp, h2⟩ := ht w
-    obtain ⟨-, -, -, f1, f2⟩ := same_basic h1.1.gal h1.1.set h1.1.frm
-    refine valuesIn_of_psiOk (hgood w).2.2.2.psiOk ?_
-    rw [← (f1 _ _ h2).2.2.1, ← (f2 _ _ (f1 _ _ h2).1).1]
-    exact hz p hp
-  obtain ⟨D, C, E, h2, h3, h4, h5, h6, h7⟩ := hR t sd ψ ht hsd hψ
-  obtain ⟨e1, e2, -, -, e3⟩ := h4.basic h3.gal h3.set
-  refine ⟨D, C, E, h2, h6, e2 hG, h1.trans (follows_of_sameField h3 h4 h5), fun w hw => ?_⟩
-  obtain ⟨w₁, h₁⟩ := exists_heq' e1 w
-  have hw₁ := (h4.tw _ _ h₁).2 hw
-  obtain ⟨p, hp, h8⟩ := ht ⟨w₁, hw₁⟩
-  refine ⟨⟨p, hp, h8.trans (h7 ⟨w₁, hw₁⟩ w h₁).1⟩, fun hne => ?_⟩
-  rw [← (h7 ⟨w₁, hw₁⟩ w h₁).2, ← (h7 (TwPl.conj ⟨w₁, hw₁⟩) _ (e3 _ _ h₁).1).2]
-  exact (hsd ⟨w₁, hw₁⟩).2.2 fun h => hne (eq_of_heq ((e3 _ _ h₁).1.symm.trans ((heq_of_eq h).trans h₁)))
 
 def FamBuilt {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (hx : Fm.x1 < x) (i : Fm.Ix x), ∃ (D₀ : D7) (E₀ : IntegralHeckeForms.XD D₀) (N₀ : D₀.ntw.Tw → ℕ) (A : Finset ℕ),
@@ -811,50 +675,7 @@ def Assembles (𝒞 : FamClass) (eps x0 : ℝ) (J : ℝ → Type) (𝒬 : ∀ x,
     ∃ Fm : FamP eps, 𝒞 Fm ∧ ∃ x1 : ℝ, ∀ x ≥ x1, ∀ (hx : Fm.x1 < x) (i : Fm.Ix x), ∃ h j,
       s x h j = ⟨Fm.D x i, (Fm.ex x hx i).nch, twE Fm x hx i⟩
 
-theorem exists_famBuilt {𝒞 : FamClass} {eps x0 : ℝ} {J : ℝ → Type} {𝒬 : ∀ x, J x → ∀ D : D7, NChoice D → IntegralHeckeForms.XD D → Prop}
-    (h : ∀ x, x0 ≤ x → ∀ j, ∃ (D₀ : D7) (E₀ : IntegralHeckeForms.XD D₀) (N₀ : D₀.ntw.Tw → ℕ) (A : Finset ℕ),
-      FirstInputs D₀ E₀ N₀ ∧ TwoSteps (RebuildTied (𝒬 x j)) A D₀ E₀) (h' : Assembles 𝒞 eps x0 J 𝒬) :
-    ∃ Fm : FamP eps, 𝒞 Fm ∧ FamBuilt Fm := by
-  have h1 : ∀ x, x0 ≤ x → ∀ j, ∃ s : Σ D : D7, NChoice D × IntegralHeckeForms.XD D, (𝒬 x j s.1 s.2.1 s.2.2 ∧ NChTie s.1 s.2.1) ∧
-      ∃ (D₀ : D7) (E₀ : IntegralHeckeForms.XD D₀) (N₀ : D₀.ntw.Tw → ℕ) (A : Finset ℕ),
-        FirstInputs D₀ E₀ N₀ ∧ MadeFrom D₀ E₀ N₀ A s.1 s.2.1 s.2.2 := fun x hx j => by
-    obtain ⟨D₀, E₀, N₀, A, h2, h3⟩ := h x hx j
-    obtain ⟨D, C, E, h4, h5, -, h6⟩ := exists_madeFrom h2 h3
-    exact ⟨⟨D, C, E⟩, ⟨h4, h5⟩, D₀, E₀, N₀, A, h2, h6⟩
-  choose s hs hs' using h1
-  obtain ⟨Fm, h2, x1, h3⟩ := h' s hs
-  refine ⟨Fm, h2, x1, fun x hx1 hx i => ?_⟩
-  obtain ⟨h4, j, h5⟩ := h3 x hx1 hx i
-  have h6 := hs' x h4 j
-  rw [h5] at h6
-  exact h6
 
-theorem twists_good :
-    (∀ (D₀ : D7) (E₀ : IntegralHeckeForms.XD D₀) (N₀ : D₀.ntw.Tw → ℕ) (A : Finset ℕ) (𝒬 : ∀ D : D7, IntegralHeckeForms.XD D → Prop),
-      FirstInputs D₀ E₀ N₀ → TwoSteps (fun D₁ E₁ V => ReadElsewhere D₁ ∧ Rebuild 𝒬 D₁ E₁ V) A D₀ E₀ →
-      ∃ (D : D7) (C : NChoice D) (E : IntegralHeckeForms.XD D), 𝒬 D E ∧ NChTie D C ∧ MadeFrom D₀ E₀ N₀ A D C E ∧
-        TwConjAt D C ∧ ∃ N S, TwGoodAt D C ⟨E, N, S⟩) ∧
-    (∀ (D₀ : D7) (E₀ : IntegralHeckeForms.XD D₀) (N₀ : D₀.ntw.Tw → ℕ) (A : Finset ℕ) (𝒬 : ∀ D : D7, NChoice D → IntegralHeckeForms.XD D → Prop),
-      FirstInputs D₀ E₀ N₀ → TwoSteps (RebuildTied 𝒬) A D₀ E₀ →
-      ∃ (D : D7) (C : NChoice D) (E : IntegralHeckeForms.XD D), 𝒬 D C E ∧ NChTie D C ∧ MadeFrom D₀ E₀ N₀ A D C E ∧
-        TwConjAt D C ∧ ∃ N S, TwGoodAt D C ⟨E, N, S⟩) ∧
-    (∀ (D₀ : D7) (E₀ : IntegralHeckeForms.XD D₀) (N₀ : D₀.ntw.Tw → ℕ) (A : Finset ℕ) (D : D7) (C : NChoice D) (E : IntegralHeckeForms.XD D),
-      FirstInputs D₀ E₀ N₀ → MadeFrom D₀ E₀ N₀ A D C E → NChTie D C → IsGalois ℚ ↥D.LL0 →
-      TwConjAt D C ∧ ∃ N S, TwGoodAt D C ⟨E, N, S⟩) ∧
-    (∀ (eps : ℝ) (Fm : FamP eps), FamBuilt Fm → TwGood Fm) ∧
-    (∀ 𝒞 : FamClass, Closed 𝒞 (fun Fm _ => FamBuilt Fm) → Closed 𝒞 fun Fm _ => TwGood Fm) ∧
-    ∀ (𝒞 : FamClass) (eps x0 : ℝ) (J : ℝ → Type) (𝒬 : ∀ x, J x → ∀ D : D7, NChoice D → IntegralHeckeForms.XD D → Prop),
-      (∀ x, x0 ≤ x → ∀ j, ∃ (D₀ : D7) (E₀ : IntegralHeckeForms.XD D₀) (N₀ : D₀.ntw.Tw → ℕ) (A : Finset ℕ),
-        FirstInputs D₀ E₀ N₀ ∧ TwoSteps (RebuildTied (𝒬 x j)) A D₀ E₀) → Assembles 𝒞 eps x0 J 𝒬 →
-      ∃ Fm : FamP eps, 𝒞 Fm ∧ FamBuilt Fm ∧ TwGood Fm := by
-  refine ⟨fun D₀ E₀ N₀ A 𝒬 h1 h2 => ?_, fun D₀ E₀ N₀ A 𝒬 h1 h2 => ?_, fun _ _ _ _ _ _ _ => good_of_madeFrom,
-    fun _ _ => FamBuilt.twGood, fun _ h => h.imp fun _ _ _ => FamBuilt.twGood, fun _ _ _ _ _ h h' => ?_⟩
-  · obtain ⟨D, C, E, h3, h4, h5, h6⟩ := exists_madeFrom h1 (h2.mono fun _ _ _ h => h.2.tied h.1)
-    exact ⟨D, C, E, h3, h4, h6, good_of_madeFrom h1 h6 h4 h5⟩
-  · obtain ⟨D, C, E, h3, h4, h5, h6⟩ := exists_madeFrom h1 h2
-    exact ⟨D, C, E, h3, h4, h6, good_of_madeFrom h1 h6 h4 h5⟩
-  · obtain ⟨Fm, h1, h2⟩ := exists_famBuilt h h'
-    exact ⟨Fm, h1, h2, h2.twGood⟩
 
 end GlobalTheory.TwistChoice
 

@@ -213,13 +213,6 @@ def ofConst {la : Weight Dw} {δ : HeightOneSpectrum (𝓞 c.F) → ℝ} (s : Co
   finite_hi := (hδ.union s.finite_rho).subset (Function.support_add _ _)
   pts := s.hasPts
 
-theorem degLo_ofConst {la : Weight Dw} {δ : HeightOneSpectrum (𝓞 c.F) → ℝ} (s : ConstSec U x Z la δ)
-    (hδ : (Function.support δ).Finite) (h₁ h₂) :
-    (ofConst s hδ h₁ h₂).degLo = s.deg + ∑ᶠ w, δ w * lw c.F w := by
-  have := lineDeg_mul (r := 1) (fun _ => one_pos) s.cInf_pos hδ s.finite_rho
-  rw [one_mul] at this
-  refine this.trans ?_
-  simp [lineDeg, ConstSec.deg, add_comm]
 
 variable (x) in
 
@@ -240,23 +233,6 @@ theorem const_spec (h : HasPts U Z) (a : c.F) (ha : a ≠ 0) :
 
 end TwSec
 
-theorem twSec_inhabited :
-    (1 ≤ Dw.p + Dw.q → (∀ p : ℕ, p.Prime → l.GoodAt p) → (∀ σ, GoodEmb c σ → IsUnf (U σ)) →
-      ∀ (Z : Comp Xo c) (a : c.F), a ≠ 0 → ∃ s : TwSec U x Z 0, s.sig = a • idem Z ∧ (∀ σ, s.cInf σ = ‖σ a‖) ∧
-        (∀ w, s.lo w = vAdd w a) ∧ s.degLo = 0) ∧
-    ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E)
-      (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l)
-      (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ (Dw.p + Dw.q)) (Z : Comp Xo c),
-      1 ≤ Dw.p ∧ (∀ σ, GoodEmb c σ → IsUnf (U σ)) ∧ ∀ a : c.F, a ≠ 0 →
-        ∃ s : TwSec U x Z 0, s.sig = a • idem Z ∧ (∀ σ, s.cInf σ = ‖σ a‖) ∧ (∀ w, s.lo w = vAdd w a) ∧
-          s.degLo = 0 := by
-  refine ⟨fun hpq hg hU Z a ha => ?_, ?_⟩
-  · obtain ⟨h1, h2, h3, -, h4⟩ := TwSec.const_spec (x := x) (hasPts U hpq hg hU Z) a ha
-    exact ⟨_, h1, h2, h3, h4⟩
-  · obtain ⟨E, _, _, _, H, Dw, l, Xo, c, U, Z, τ, hp, hU, ⟨s⟩⟩ := GlobalTheory.FlatLine.Definite.exists_flatSec x
-    refine ⟨E, _, _, _, H, Dw, l, Xo, c, U, Z, hp, hU, fun a ha => ?_⟩
-    obtain ⟨h1, h2, h3, -, h4⟩ := TwSec.const_spec (x := x) s.hasPts a ha
-    exact ⟨_, h1, h2, h3, h4⟩
 
 variable (Xo c) in
 

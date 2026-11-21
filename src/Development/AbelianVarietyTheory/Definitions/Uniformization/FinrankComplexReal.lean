@@ -96,18 +96,7 @@ def trivEquiv (F A : Type) [CommRing F] [CommRing A] [Algebra F A] :
       (f := (Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom) ⟨ofFun_injective, ofFun_surjective⟩
       (Scheme.ΓSpecIso (CommRingCat.of A)).symm.commRingCatIsoToRingEquiv.bijective)
 
-theorem one_ne_zero_spec [Nontrivial F] :
-    ofFun (𝟙 (Spec (CommRingCat.of F))) 1 ≠ 0 := by
-  intro h
-  have h1 : (1 : Γ(Spec (CommRingCat.of F), ⊤)) = 0 := (eq_zero_iff _).1 h PUnit.unit
-  have h2 := congrArg (Scheme.ΓSpecIso (CommRingCat.of F)).hom.hom h1
-  rw [map_one, map_zero] at h2
-  exact one_ne_zero h2
 
-theorem finrank_complex_real :
-    Module.finrank ℝ (SecMod (Spec.map (CommRingCat.ofHom (algebraMap ℝ ℂ)))
-      (Inh.trivLB (Spec (CommRingCat.of ℂ)))) = 2 := by
-  rw [← (trivEquiv ℝ ℂ).finrank_eq, Complex.finrank_real_complex]
 
 theorem conj_smul :
     (Complex.I • ofFun (Spec.map (CommRingCat.ofHom (starRingEnd ℂ))) 1) =

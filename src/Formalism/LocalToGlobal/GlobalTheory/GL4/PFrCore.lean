@@ -31,9 +31,6 @@ theorem vi_smul_int (r : 𝓞 E) (x : n → E) : vi F (r • x) = ιA (algebraMa
   funext i
   simp [vi, Algebra.smul_def, map_mul]
 
-theorem vi_sum {ι : Type} (s : Finset ι) (f : ι → n → E) : vi F (∑ j ∈ s, f j) = ∑ j ∈ s, vi F (f j) := by
-  funext i
-  simp [vi, map_sum, Finset.sum_apply]
 
 theorem incl_int_mem (r : 𝓞 E) : ιA (algebraMap (𝓞 E) E r) ∈ 𝒮 := by
   have := levelaf_tmul_mem (F := F) (E := E) r (one_mem (intAd F))

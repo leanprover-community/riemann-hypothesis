@@ -45,10 +45,6 @@ lemma inv_int_mem {c : ℤ} (h : ¬ (p : ℤ) ∣ c) : (c : K)⁻¹ ∈ pInt p K
   · rw [h2]; simpa using h1
   · rw [h2]; simpa using neg_mem h1
 
-lemma zpow_int_mem {c : ℤ} (h : ¬ (p : ℤ) ∣ c) (e : ℤ) : (c : K) ^ e ∈ pInt p K := by
-  rcases e with e | e
-  · simpa using pow_mem (intCast_mem (pInt p K) c) e
-  · rw [zpow_negSucc, ← inv_pow]; exact pow_mem (inv_int_mem h) _
 
 omit [CharZero K] in
 lemma root_zpow_mem {ζ : K} {M : ℕ} (hM : 0 < M) (h : IsPrimitiveRoot ζ M) (e : ℤ) : ζ ^ e ∈ pInt p K := by

@@ -163,8 +163,6 @@ def locNHom (T : Thick (nlFun γ p X q κ)) (a : T.B) : T ⟶ locN T a :=
 theorem locNHom_φ (T : Thick (nlFun γ p X q κ)) (a : T.B) :
     (locNHom T a).φ = algebraMap T.B (Localization.Away a) := rfl
 
-theorem locN_i (T : Thick (nlFun γ p X q κ)) (a : T.B) :
-    (locN T a).i = (algebraMap T.B (Localization.Away a)).comp T.i := rfl
 
 theorem locN_univ (T : Thick (nlFun γ p X q κ)) (a : T.B) {T'' : Thick (nlFun γ p X q κ)} (ψ : T ⟶ T'')
     (hu : IsUnit (ψ.φ a)) : ∃! χ : locN T a ⟶ T'', locNHom T a ≫ χ = ψ :=

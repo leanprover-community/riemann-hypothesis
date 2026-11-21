@@ -229,13 +229,10 @@ variable (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) {ι : Type} [Fintype ι]
 def locReg : Representation ℂ (GL ι (Fv D.host.F v)) (GA D V → ℂ) :=
   (GlobalTheory.PRep.rightReg ℂ (GA D V) ℂ).comp (locGL V τ β)
 
-theorem locReg_apply (g : GL ι (Fv D.host.F v)) (f : GA D V → ℂ) : locReg V τ β g f = rTrans (locGL V τ β g) f := rfl
 
 def locRepOn (U : Submodule ℂ (GA D V → ℂ)) (hU : IsFinStable V U) : Representation ℂ (GL ι (Fv D.host.F v)) U :=
   GlobalTheory.PRep.sub (locReg V τ β) U fun g f hf => hU _ (locGL_mem_GfC V τ β g) f hf
 
-theorem coe_locRepOn (U : Submodule ℂ (GA D V → ℂ)) (hU : IsFinStable V U) (g : GL ι (Fv D.host.F v)) (f : U) :
-    (locRepOn V τ β U hU g f : GA D V → ℂ) = locReg V τ β g f := rfl
 
 def locRep : Representation ℂ (GL ι (Fv D.host.F v)) (levelFun V) := locRepOn V τ β _ (isFinStable_levelFun V)
 
@@ -249,9 +246,6 @@ theorem isOpen_stab {f : GA D V → ℂ} (hf : f ∈ levelFun V) : IsOpen {g | l
   change locReg V τ β x f = f
   rw [← mul_inv_cancel_left g x, map_mul, Module.End.mul_apply, h2, hg]
 
-theorem isSmoothRep_locRepOn {U : Submodule ℂ (GA D V → ℂ)} (hU : IsFinStable V U) (h : U ≤ levelFun V) :
-    IsSmoothRep (locRepOn V τ β U hU) := fun f => by
-  simpa only [Subtype.ext_iff, coe_locRepOn] using isOpen_stab V τ β (h f.2)
 
 end Rep
 
@@ -266,26 +260,19 @@ variable {k : Type} [Field k] [MeasurableSpace k] {n : Type} [Fintype n] [Decida
 def downIter (q d : ℕ) : (A → ℂ) → A → ℂ :=
   Nat.rec (motive := fun _ => (A → ℂ) → A → ℂ) (fun l => l) (fun d F l => F (exDown ν (q + d) σ l)) d
 
-theorem downIter_zero (q : ℕ) (l : A → ℂ) : downIter ν σ q 0 l = l := rfl
 
 theorem downIter_succ (q d : ℕ) (l : A → ℂ) : downIter ν σ q (d + 1) l = downIter ν σ q d (exDown ν (q + d) σ l) := rfl
 
 def upIter (p d : ℕ) (l : A → ℂ) : A → ℂ :=
   Nat.rec (motive := fun _ => A → ℂ) l (fun d l' => exUp ν (p + d) σ l') d
 
-theorem upIter_zero (p : ℕ) (l : A → ℂ) : upIter ν σ p 0 l = l := rfl
 
 theorem upIter_succ (p d : ℕ) (l : A → ℂ) : upIter ν σ p (d + 1) l = exUp ν (p + d) σ (upIter ν σ p d l) := rfl
 
 def exTo (p q : ℕ) (l : A → ℂ) : A → ℂ := upIter ν σ p (q - p) (downIter ν σ q (p - q) l)
 
-theorem exTo_of_ge {p q : ℕ} (h : q ≤ p) (l : A → ℂ) : exTo ν σ p q l = downIter ν σ q (p - q) l := by
-  rw [exTo, Nat.sub_eq_zero_of_le h, upIter_zero]
 
-theorem exTo_of_le {p q : ℕ} (h : p ≤ q) (l : A → ℂ) : exTo ν σ p q l = upIter ν σ p (q - p) l := by
-  rw [exTo, Nat.sub_eq_zero_of_le h, downIter_zero]
 
-theorem exTo_self (p : ℕ) (l : A → ℂ) : exTo ν σ p p l = l := by rw [exTo_of_le ν σ le_rfl, Nat.sub_self, upIter_zero]
 
 theorem exTo_comp (σ' : Representation ℂ (GL (n ⊕ Fin c) k) A') (f : A' → A) (hf : ∀ g x, f (σ' g x) = σ g (f x))
     (z : ℂ) (p q : ℕ) (l : A → ℂ) : exTo ν σ' p q (fun x => z * l (f x)) = fun x => z * exTo ν σ p q l (f x) := by
@@ -318,33 +305,6 @@ theorem exTo_law (σ' : Representation ℂ (GL (n ⊕ Fin c) k) A') {T : A' → 
 variable [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [BorelSpace k] [ν.IsAddHaarMeasure]
   {ψ : AddChar k Circle} {σ}
 
-theorem exTo_isNEquiv (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) (hσ : IsSmoothRep σ) {p q : ℕ} (hp : 1 ≤ p) (hpc : p ≤ c)
-    (hq : 1 ≤ q) (hqc : q ≤ c) (l : A →ₗ[ℂ] ℂ) (hl : IsNEquiv ψ p σ l) :
-    ∃ l' : A →ₗ[ℂ] ℂ, ⇑l' = exTo ν σ p q l ∧ IsNEquiv ψ q σ l' := by
-  have hd (d : ℕ) : ∀ l : A →ₗ[ℂ] ℂ, q + d ≤ c → IsNEquiv ψ (q + d) σ l →
-      ∃ l' : A →ₗ[ℂ] ℂ, ⇑l' = downIter ν σ q d l ∧ IsNEquiv ψ q σ l' := by
-    induction d with
-    | zero => exact fun l _ h => ⟨l, rfl, h⟩
-    | succ d ih =>
-      intro l h1 h2
-      obtain ⟨l₁, e, h3⟩ := (Exchange.exchange_isPos k n c (q + d) (by omega) h1 ψ hψ hψ1 ν A σ hσ).2.1 l h2
-      rw [downIter_succ, ← funext e]
-      exact ih l₁ (by omega) h3
-  have hu (d : ℕ) : p + d ≤ c → ∃ l' : A →ₗ[ℂ] ℂ, ⇑l' = upIter ν σ p d l ∧ IsNEquiv ψ (p + d) σ l' := by
-    induction d with
-    | zero => exact fun _ => ⟨l, rfl, hl⟩
-    | succ d ih =>
-      intro h1
-      obtain ⟨l₁, e, h3⟩ := ih (by omega)
-      obtain ⟨l₂, e', h4⟩ := (Exchange.exchange_isPos k n c (p + d) (by omega) h1 ψ hψ hψ1 ν A σ hσ).1 l₁ h3
-      exact ⟨l₂, by rw [upIter_succ, ← e]; exact funext e', h4⟩
-  rcases le_total q p with h | h
-  · obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h
-    rw [exTo_of_ge ν σ h, Nat.add_sub_cancel_left]
-    exact hd d l hpc hl
-  · obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h
-    rw [exTo_of_le ν σ h, Nat.add_sub_cancel_left]
-    exact hu d hqc
 
 end Position
 
@@ -366,33 +326,10 @@ theorem exList_law (σ' : ∀ i, Representation ℂ (GL (n ⊕ Fin c) (k i)) A')
   | nil => exact h x
   | cons i L ih => exact exTo_law (ν i) (σ i) (σ' i) (hT i) ih _ _ x
 
-theorem exList_self (p : I → ℕ) (L : List I) (l : A → ℂ) : exList ν σ p p L l = l := by
-  induction L with
-  | nil => rfl
-  | cons i L ih => exact (exTo_self _ _ _ _).trans ih
 
 variable [∀ i, ValuativeRel (k i)] [∀ i, TopologicalSpace (k i)] [∀ i, IsNonarchimedeanLocalField (k i)]
   [∀ i, BorelSpace (k i)] [∀ i, (ν i).IsAddHaarMeasure] {ψ : ∀ i, AddChar (k i) Circle} {σ}
 
-theorem exList_isNEquiv [DecidableEq I] (hψ : ∀ i, Continuous (ψ i)) (hψ1 : ∀ i, ψ i ≠ 1) (hσ : ∀ i, IsSmoothRep (σ i))
-    (hcom : ∀ i j, i ≠ j → ∀ g h x, σ i g (σ j h x) = σ j h (σ i g x)) {p q : I → ℕ} (hp : ∀ i, 1 ≤ p i ∧ p i ≤ c)
-    (hq : ∀ i, 1 ≤ q i ∧ q i ≤ c) (l : A →ₗ[ℂ] ℂ) (hl : ∀ i, IsNEquiv (ψ i) (p i) (σ i) l) {L : List I} (hL : L.Nodup) :
-    ∃ l' : A →ₗ[ℂ] ℂ, ⇑l' = exList ν σ p q L l ∧ ∀ i, IsNEquiv (ψ i) (if i ∈ L then q i else p i) (σ i) l' := by
-  induction L with
-  | nil => exact ⟨l, rfl, by simpa using hl⟩
-  | cons j L ih =>
-    obtain ⟨hj, hL⟩ := List.nodup_cons.1 hL
-    obtain ⟨l₁, e, h1⟩ := ih hL
-    have h2 := h1 j
-    rw [if_neg hj] at h2
-    obtain ⟨l₂, e', h3⟩ := exTo_isNEquiv (ν j) (hψ j) (hψ1 j) (hσ j) (hp j).1 (hp j).2 (hq j).1 (hq j).2 l₁ h2
-    refine ⟨l₂, by rw [e', e]; rfl, fun i => ?_⟩
-    by_cases hi : i = j
-    · subst hi; simpa using h3
-    · simp only [List.mem_cons, hi, false_or]
-      intro g hg x
-      rw [e']
-      exact exTo_law (ν j) (σ j) (σ j) (fun h x => hcom i j hi g h x) (h1 i g hg) _ _ x
 
 end Positions
 

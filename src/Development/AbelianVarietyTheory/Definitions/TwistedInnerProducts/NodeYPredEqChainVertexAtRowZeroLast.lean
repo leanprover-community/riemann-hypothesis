@@ -316,14 +316,6 @@ def decRow : ∀ j, HermitianOrthogonalExtensionData (G.Xp j) (G.V D.R.m j) (D.R
   | 0 => G.decV D.R.m
   | j + 1 => G.decX j
 
-theorem th_It (t t' : T) (i j : ℕ) : (G.th t i j).It = (G.th t' i j).It := by
-  cases i with
-  | succ i => rfl
-  | zero =>
-    show (th0 R t j).It = (th0 R t' j).It
-    unfold th0
-    split_ifs
-    exacts [ArrS.cast_It_congr _ _ rfl, ArrS.cast_It_congr _ _ rfl, rfl]
 
 abbrev muAt (R : RealDat D A Ks) (t : T) (j n : ℕ) : (AE D)ˣ →* Circle := Lift.attChr (R.toLevCh.mu t j) R.eta n
 
@@ -429,7 +421,6 @@ def RealVec.vec {G : GridPre R} (r : G.RealVec) (i : ℕ) : SmT (G.V i 0).M :=
 
 theorem RealVec.vec_zero {G : GridPre R} (r : G.RealVec) : r.vec 0 = PiTensorProduct.tprod ℂ r.w := rfl
 
-theorem RealVec.vec_succ {G : GridPre R} (r : G.RealVec) (i : ℕ) : r.vec (i + 1) = (G.X i 0).It (r.pol i) (r.vec i) := rfl
 
 end GridPre
 
@@ -486,27 +477,18 @@ structure Is : Prop where
 def colLift (t : T) (j : ℕ) (f : ∀ i, WO (G.V (i + 1) j).V (G.V i j).V → ℂ) (n : ℕ) : G.CV 0 j →ₗ[ℂ] G.CV n j :=
   Nat.rec (motive := fun n => G.CV 0 j →ₗ[ℂ] G.CV n j) LinearMap.id (fun n L => G.ioX t n j (f n) ∘ₗ L) n
 
-theorem colLift_zero (t : T) (j : ℕ) (f : ∀ i, WO (G.V (i + 1) j).V (G.V i j).V → ℂ) : G.colLift t j f 0 = LinearMap.id := rfl
 
-theorem colLift_succ (t : T) (j : ℕ) (f : ∀ i, WO (G.V (i + 1) j).V (G.V i j).V → ℂ) (n : ℕ) :
-    G.colLift t j f (n + 1) = G.ioX t n j (f n) ∘ₗ G.colLift t j f n := rfl
 
 def rowLift (t : T) (i : ℕ) (f : ∀ j, WO (G.V i j).V (G.V i (j + 1)).V → ℂ) (n : ℕ) : G.CV i n →ₗ[ℂ] G.CV i 0 :=
   Nat.rec (motive := fun n => G.CV i n →ₗ[ℂ] G.CV i 0) LinearMap.id (fun n L => L ∘ₗ G.ioT t i n (f n)) n
 
-theorem rowLift_zero (t : T) (i : ℕ) (f : ∀ j, WO (G.V i j).V (G.V i (j + 1)).V → ℂ) : G.rowLift t i f 0 = LinearMap.id := rfl
 
-theorem rowLift_succ (t : T) (i : ℕ) (f : ∀ j, WO (G.V i j).V (G.V i (j + 1)).V → ℂ) (n : ℕ) :
-    G.rowLift t i f (n + 1) = G.rowLift t i f n ∘ₗ G.ioT t i n (f n) := rfl
 
 def chiLift (Φ : G.Data R) (n : ℕ) : G.CV 0 0 →ₗ[ℂ] G.CV n 0 :=
   Nat.rec (motive := fun n => G.CV 0 0 →ₗ[ℂ] G.CV n 0) LinearMap.id (fun n L => G.gridInclusionColumnZero n (G.datum Φ n) ∘ₗ L) n
 
-theorem chiLift_zero (Φ : G.Data R) : G.chiLift Φ 0 = LinearMap.id := rfl
 
-theorem chiLift_succ (Φ : G.Data R) (n : ℕ) : G.chiLift Φ (n + 1) = G.gridInclusionColumnZero n (G.datum Φ n) ∘ₗ G.chiLift Φ n := rfl
 
-theorem chiLift_eq (t : T) (Φ : G.Data R) (n : ℕ) : G.chiLift Φ n = G.colLift t 0 (G.datum Φ) n := rfl
 
 theorem IsLifts.hasLifts {G : GridDat R} (h : G.IsLifts) : G.toGridPre.HasLifts :=
   ⟨fun t i j a b f c => ⟨_, h.X t i j a b f c⟩, fun t i j a b f c => ⟨_, h.th t i j a b f c⟩,
@@ -514,32 +496,6 @@ theorem IsLifts.hasLifts {G : GridDat R} (h : G.IsLifts) : G.toGridPre.HasLifts 
 
 end GridDat
 
-theorem GridPre.exists_gridDat {R : RealDat D A Ks} (G : GridPre R) (hG : G.Is) (h : G.HasLifts) :
-    ∃ G' : GridDat R, G'.toGridPre = G ∧ G'.Is := by
-  have ex : ∀ {α : Type} [Zero α] {p : Prop} {q : α → Prop}, (p → ∃ a, q a) → ∃ a, p → q a := fun {α} _ {p} {q} H => by
-    by_cases hp : p
-    · exact (H hp).imp fun _ ha _ => ha
-    · exact ⟨0, fun h => absurd h hp⟩
-  choose x0 hx0 using fun i f => ex fun c : i < D.R.m ∧ IsFinVec R.ψ R.θ true (G.V (i + 1) 0) (G.V i 0) f =>
-    h.X A.μ0 i 0 c.1 (Nat.zero_le _) f c.2
-  choose x1 hx1 using fun t i j f =>
-    ex fun c : i < D.R.m ∧ j + 1 ≤ D.R.m ∧ IsFinVec R.ψ R.θ true (G.V (i + 1) (j + 1)) (G.V i (j + 1)) f =>
-      h.X t i (j + 1) c.1 c.2.1 f c.2.2
-  choose th hth using fun t i j f =>
-    ex fun c : i ≤ D.R.m ∧ j < D.R.m ∧ IsFinVec R.ψ R.θ false (G.V i j) (G.V i (j + 1)) f => h.th t i j c.1 c.2.1 f c.2.2
-  choose cl hcl using fun t j f =>
-    ex fun c : j < D.R.m ∧ IsFinVec R.ψ R.θ false (G.Xp j) (G.Xp (j + 1)) f => h.col t j c.1 f c.2
-  choose dn hdn using fun i f => ex fun c : i < D.R.m ∧ IsFinVec R.ψ R.θ true (G.P (i + 1)) (G.P i) f => h.dn i c.1 f c.2
-  choose up hup using fun i f => ex fun c : i < D.R.m ∧ IsFinVec R.ψ R.θ true (G.P (i + 1)) (G.P i) f => h.up i c.1 f c.2
-  refine ⟨⟨G, x0, x1, th, cl, dn, up⟩, rfl, hG, fun t i j a b f c => ?_, fun t i j a b f c => hth t i j f ⟨a, b, c⟩,
-    fun t j a f c => hcl t j f ⟨a, c⟩, fun i a f c => hdn i f ⟨a, c⟩, fun i a f c => hup i f ⟨a, c⟩⟩
-  cases j with
-  | zero =>
-    have := hx0 i f ⟨a, c⟩
-    rw [G.meas_zero] at this
-    show (G.X i 0).IsLift R.ψ R.θ true (G.meas t i 0) f (x0 i f)
-    rwa [G.meas_zero]
-  | succ j => exact hx1 t i j f ⟨a, b, c⟩
 
 example (G : GridPre R) : (G.V 0 0).V = Yc D 0 ∧ (G.V 0 0).M = R.MY 0 := ⟨rfl, rfl⟩
 

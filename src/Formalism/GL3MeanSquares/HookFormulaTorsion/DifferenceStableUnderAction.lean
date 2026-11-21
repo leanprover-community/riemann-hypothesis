@@ -56,47 +56,6 @@ end
 section
 open Formalism.HermitianLattices.FiltrationBoundaryCriterion Formalism.FrobeniusOrbits NumberField Ideal
 
-theorem congruencePowers : CongruencePowers := by
-  intro R _ I g k hg A hA m
-
-  have hmul : ∀ (a b : ℕ) (X Y : Matrix (Fin k) (Fin k) R), (∀ i j, X i j ∈ I ^ a) →
-      (∀ i j, Y i j ∈ I ^ b) → ∀ i j, (X * Y) i j ∈ I ^ (a + b) := by
-    intro a b X Y hX hY i j
-    rw [Matrix.mul_apply]
-    exact Ideal.sum_mem _ fun l _ => by rw [pow_add]; exact Ideal.mul_mem_mul (hX i l) (hY l j)
-  induction m with
-  | zero => simpa using hA
-  | succ m ih =>
-    set B := A ^ g ^ m with hB
-    have hBI : ∀ i j, (B - 1) i j ∈ I := fun i j => Ideal.pow_le_self (by omega) (ih i j)
-    have hpow : ∀ n : ℕ, ∀ i j, (B ^ n - 1) i j ∈ I := by
-      intro n
-      induction n with
-      | zero => intro i j; simp
-      | succ n ihn =>
-        intro i j
-        have : B ^ (n + 1) - 1 = (B ^ n - 1) * (B - 1) + (B ^ n - 1) + (B - 1) := by
-          rw [pow_succ]; noncomm_ring
-        rw [this]
-        refine I.add_mem (I.add_mem ?_ (ihn i j)) (hBI i j)
-        have := hmul 1 1 _ _ (by simpa using ihn) (by simpa using hBI) i j
-        exact Ideal.pow_le_self (by omega) this
-    have hgeom : B ^ g - 1 = (B - 1) * ∑ n ∈ Finset.range g, B ^ n := by
-      have := (Commute.one_right B).mul_geom_sum₂ g
-      simpa using this.symm
-    have hsum : ∀ i j, (∑ n ∈ Finset.range g, B ^ n) i j ∈ I ^ 1 := by
-      intro i j
-      have : (∑ n ∈ Finset.range g, B ^ n) = (∑ n ∈ Finset.range g, (B ^ n - 1)) + (g : R) • 1 := by
-        rw [Finset.sum_sub_distrib]; simp [Matrix.smul_one_eq_diagonal, nsmul_eq_mul]
-        ext i j; simp [Matrix.natCast_apply, Matrix.diagonal_apply]
-      rw [this, pow_one, Matrix.add_apply, Matrix.sum_apply]
-      refine I.add_mem (Ideal.sum_mem _ fun n _ => hpow n i j) ?_
-      rw [Matrix.smul_apply]
-      exact I.mul_mem_right _ hg
-    intro i j
-    have e1 : A ^ g ^ (m + 1) = B ^ g := by rw [hB, ← pow_mul, pow_succ]
-    rw [e1, hgeom]
-    exact hmul (m + 1) 1 _ _ ih hsum i j
 
 end
 
@@ -130,12 +89,6 @@ section
 open Formalism.HermitianLattices.FiltrationBoundaryCriterion Formalism.FrobeniusOrbits NumberField IsDedekindDomain
 open scoped TensorProduct
 
-theorem bc_pr_incl {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] (k : ℕ)
-    (w : HeightOneSpectrum (𝓞 F)) (γ₀ : Matrix.GeneralLinearGroup (Fin k) E) :
-    Formalism.UG.bc (Formalism.UG.prV (E := E) w) (Formalism.UG.bc (Formalism.UG.inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) γ₀) =
-      Formalism.UG.bc (Formalism.UG.inclE (F := F) (w.adicCompletion F)) γ₀ := by
-  ext i l
-  simp [Formalism.UG.bc, Formalism.UG.prV, Formalism.UG.inclE]
 
 end
 
@@ -143,6 +96,5 @@ end PfM
 
 open Formalism.FrobeniusOrbits
 
-theorem congruence_powers : CongruencePowers := PfM.congruencePowers
 
 end Formalism.HermitianLattices.FiltrationBoundaryCriterion

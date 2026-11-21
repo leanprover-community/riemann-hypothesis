@@ -657,42 +657,11 @@ def jacNorm (p : ℕ) (φ : CoefHom c io K₀) (y : IntFr Xo c T io) (s₀ : Rul
 
 variable {Φ}
 
-theorem ramIdx_spec {p : ℕ} (hp : p ≠ 0) (h : (p : T.V) ∈ IsLocalRing.maximalIdeal T.V) :
-    0 < ramIdx T p ∧ nval T.V (ramIdx T p) (p : T.Fr) = 1 := by
-  have h0 : (p : T.Fr) ≠ 0 := by
-    rw [← map_natCast (algebraMap T.V T.Fr)]
-    exact (map_ne_zero_iff _ (IsFractionRing.injective _ _)).2 (Nat.cast_ne_zero.2 hp)
-  have h1 : valV T.V (p : T.Fr) < 1 := by
-    rw [← map_natCast (algebraMap T.V T.Fr)]
-    exact (IsDedekindDomain.HeightOneSpectrum.valuation_lt_one_iff_mem _ _).2 h
-  have h2 : 0 < vV T.V (p : T.Fr) := by
-    have := (WithZero.log_lt_log (valV_ne_zero (V := T.V) h0) one_ne_zero).2 h1
-    rw [WithZero.log_one] at this
-    simpa [vV] using this
-  have h3 : ((ramIdx T p : ℕ) : ℝ) = (vV T.V (p : T.Fr) : ℝ) := by
-    rw [ramIdx, ← Int.cast_natCast, Int.toNat_of_nonneg h2.le]
-  refine ⟨by rw [ramIdx]; omega, ?_⟩
-  rw [nval_of_ne h0, h3, div_self (by exact_mod_cast h2.ne')]
-  rfl
 
-theorem normOfOrd_le_iff {p : ℕ} (hp : 1 < p) (w : EReal) (b : ℝ) :
-    normOfOrd p w ≤ ENNReal.ofReal ((p : ℝ) ^ b) ↔ ((-b : ℝ) : EReal) ≤ w := by
-  have h1 : (1 : ℝ) < p := by exact_mod_cast hp
-  have hl : 0 < Real.log p := Real.log_pos h1
-  rw [Real.rpow_def_of_pos (by linarith), ← EReal.exp_coe, normOfOrd, EReal.exp_le_exp_iff]
-  induction w with
-  | bot => rw [EReal.bot_mul_coe_of_pos hl]; simp [-EReal.coe_mul]
-  | top => rw [EReal.top_mul_coe_of_pos hl]; simp
-  | coe w =>
-    rw [← EReal.coe_mul, ← EReal.coe_neg, EReal.coe_le_coe_iff, EReal.coe_le_coe_iff]
-    constructor <;> intro h <;> nlinarith
 
 example {p : ℕ} (hp : 0 < p) : normOfOrd p 1 = ENNReal.ofReal (p : ℝ)⁻¹ := by
   rw [normOfOrd, one_mul, ← EReal.coe_neg, EReal.exp_coe, Real.exp_neg, Real.exp_log (by exact_mod_cast hp)]
 
-theorem wedgeNorm_le_iff {p : ℕ} (hp : 1 < p) (φ : CoefHom c io K₀) (y : IntFr Xo c T io) (s : ι → RulK Xo c K₀)
-    (b : ℝ) : wedgeNorm Φ p φ y s ≤ ENNReal.ofReal ((p : ℝ) ^ b) ↔ ((-b : ℝ) : EReal) ≤ wedgeOrd_vp Φ p φ y s :=
-  normOfOrd_le_iff hp _ b
 
 theorem wedgeOrd_ne_bot_iff {n : ℕ} {φ : CoefHom c io K₀} {y : IntFr Xo c T io} {s : ι → RulK Xo c K₀} :
     wedgeOrd Φ n φ y s ≠ ⊥ ↔ ∃! w, IsWedgeOrd Φ n φ y s w := by

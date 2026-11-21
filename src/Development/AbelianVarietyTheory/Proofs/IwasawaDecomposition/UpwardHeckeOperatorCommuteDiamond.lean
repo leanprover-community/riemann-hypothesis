@@ -30,11 +30,6 @@ theorem inc_dil {res : R →+* k} (hs : Function.Surjective res) {t : R} {p q : 
   · show a * p.f _ = 1
     rw [smul_comm, hp.smul _ _ hte, h4, hb, mul_one, mul_inv_cancel₀ ha]
 
-theorem inc_dil_iff {res : R →+* k} (hs : Function.Surjective res) {t : R} {p : Pr R V k} (hp : p.Ok res)
-    (q : Pr R V k) {a : k} (ha : a ≠ 0) : Pr.Inc res t (p.dil a) (q.dil a) ↔ Pr.Inc res t p q := by
-  refine ⟨fun h => ?_, fun h => inc_dil hs hp h ha⟩
-  have := inc_dil hs (hp.dil ha) h (inv_ne_zero ha)
-  rwa [Pr.dil_dil, Pr.dil_dil, inv_mul_cancel₀ ha, Pr.dil_one, Pr.dil_one] at this
 
 def dilEquiv {a : k} (ha : a ≠ 0) : Pr R V k ≃ Pr R V k where
   toFun q := q.dil a

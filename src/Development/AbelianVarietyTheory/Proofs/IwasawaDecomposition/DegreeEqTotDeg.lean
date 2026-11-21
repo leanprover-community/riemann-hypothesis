@@ -221,17 +221,6 @@ theorem finAlg_step (hL : StagesInhab.HasLetters B.toPre) {I : ColIn B X} (h : I
     rw [I.A_cD, ← hs]
     exact (Algebra.IsAlgebraic.isAlgebraic (R := ℚ) s).algHom K.val
 
-theorem exists_replace {I : ColIn B X} (h : I.Ok) (J : AmbIn B.host) (hJ : J.Ok)
-    (hr : ∀ a, ∀ Q ∈ rowSG (B.primes X) I.sel (I.tup a), ∃ ζ : B.LL, IsPrimitiveRoot ζ (qOf Q ^ (2 * B.R.m))) :
-    ∃ I' : ColIn B X, I'.Ok ∧ I'.C = I.C ∧ I'.S = I.S ∧ Set.range I'.xi = Set.range I.xi ∧ I'.J = J ∧
-      ∀ a, (I'.cst a).A = B.R.m ∧ (I'.cst a).B = B.R.m := by
-  have hX := base_fields_primes_ok B X
-  choose cst idx h1 h2 h3 h4 h5 h6 h7 using fun a => exists_chIdx hX.1 hX.2.1 I.Ch I.sel h.sel_ok h.g_mem (I.tup a) I.glob
-    (fun j τ => (B.hc τ).e j) (fun j τ => (B.hc τ).e_int j) I.C.eta h.ch_tied h.weil (h.idx_ok a).xiUnitAtPrime
-    B.R.m B.R.m B.R.m (2 * B.R.m) le_rfl le_rfl le_rfl le_rfl (fun P => ⟨_, (h.idx_ok a).cst_ok.sq_sq P⟩)
-    (fun P _ => hr a P.1 P.2)
-  exact ⟨{ I with cst := cst, idx := idx, J := J }, { h with sharp := h1, idx_ok := h6, amb_ok := hJ }, rfl, rfl, rfl, rfl,
-    fun a => ⟨h3 a, h4 a⟩⟩
 
 def amb0 {R : Ranks} (H : Host R) : AmbIn H := (exists_ambIn_ok H).choose
 
@@ -276,37 +265,6 @@ theorem allSet_subset (P : Pre) (χ : HChar P.host.E) {Ξ : Set (HChar P.host.E)
   rw [gens, dif_pos h1] at hK
   exact h1.choose_spec.2.trans (Subfield.closure_le.2 hK)
 
-theorem exists_jetsIn (hL : StagesInhab.HasLetters B.toPre) {I : ColIn B X} (h : I.Ok)
-    (hK : ∀ z ∈ gens B.toPre I.C.chiPsi (Set.range I.xi), z ∈ B.embLL.fieldRange) :
-    ∃ I' : ColIn B X, I'.Ok ∧ I'.JetsIn ∧ I'.C = I.C ∧ I'.S = I.S ∧ Set.range I'.xi = Set.range I.xi := by
-  have hall := allSet_subset B.toPre I.C.chiPsi (Set.finite_range I.xi) hK
-  obtain ⟨I', h', e1, e2, e3, e4, e5⟩ := exists_replace h (amb0 B.host) (exists_ambIn_ok B.host).choose_spec fun a Q hQ => by
-    obtain ⟨ζ, hζ⟩ := hall (Or.inr ⟨Q, rowSG_subset h a Q hQ, rfl⟩)
-    refine ⟨ζ, IsPrimitiveRoot.of_map_of_injective (f := B.embLL) ?_ B.embLL.injective⟩
-    rw [hζ]
-    exact Complex.isPrimitiveRoot_exp _ (qPow_ne_zero Q _)
-  refine ⟨I', h', I'.jetsIn_iff.2 fun a u i hi N N' c x hx e he => ?_, e1, e2, e3⟩
-  rw [← e1, ← e3] at hall
-  have hM : I'.modulus a u = (∏ Q ∈ rowSG (B.primes X) I'.sel (I'.tup a), qOf Q) ^ B.R.m *
-      (B.T u * (∏ Q ∈ rowSG (B.primes X) I'.sel (I'.tup a), qOf Q) ^ B.R.m) := by
-    unfold ColIn.modulus cAof cBof
-    rw [(e5 a).1, (e5 a).2, Finset.prod_coe_sort _ qOf]
-  have hS : stepSet B.toPre I'.C.chiPsi (u, i, I'.Sb a u, rowSG (B.primes X) I'.sel (I'.tup a)) =
-      jetSet I'.A (B.R.N i) (B.R.N (i + 1)) (I'.Sb a u) (I'.modulus a u) (totDeg B.toPre u i) := by
-    rw [hM, ColIn.A, e4]
-    exact (jetSet_amb B _ _ _ _ _ _ _).symm
-  have hpos : 0 < I'.modulus a u := by
-    rw [hM]
-    have := Finset.prod_pos fun Q (_ : Q ∈ rowSG (B.primes X) I'.sel (I'.tup a)) =>
-      Nat.pos_of_ne_zero (by simpa using qPow_ne_zero Q 1 : qOf Q ≠ 0)
-    have := (B.T_prime u).pos
-    positivity
-  refine hall (Or.inl (Set.mem_iUnion₂.2 ⟨(u, i, I'.Sb a u, rowSG (B.primes X) I'.sel (I'.tup a)),
-    ⟨⟨hi, Sb_subset h' a u, rowSG_subset h' a⟩, ?_⟩, ?_⟩))
-  · rw [hS]
-    exact finAlg_step hL h' a u _ _ _ _ hpos
-  · rw [hS]
-    exact ⟨N, N', c, x, e, hx, degree_eq_totDeg B u i e he, rfl⟩
 
 end JetEx
 

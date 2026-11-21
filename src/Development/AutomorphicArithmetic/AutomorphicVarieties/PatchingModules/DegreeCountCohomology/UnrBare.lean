@@ -11,16 +11,6 @@ section Abstract
 
 variable {R G M : Type} [CommRing R] [Group G] [AddCommGroup M] [Module R M] (ρ : Representation R G M)
 
-private theorem degree_inverse {l n : ℕ} (hn : n.Coprime l) (hl : ∀ m : M, l • m = 0) :
-    ∃ a : ℤ, ∀ m : M, a • (n • m) = m := by
-  refine ⟨Nat.gcdA n l, fun m => ?_⟩
-  have e : (1 : ℤ) = n * Nat.gcdA n l + l * Nat.gcdB n l := by
-    have := Nat.gcd_eq_gcd_ab n l
-    rwa [hn.gcd_eq_one, Nat.cast_one] at this
-  have h0 : (l : ℤ) • m = 0 := by rw [natCast_zsmul, hl]
-  calc Nat.gcdA n l • (n • m) = ((n : ℤ) * Nat.gcdA n l) • m + ((l : ℤ) * Nat.gcdB n l) • m := by
-        rw [mul_comm (l : ℤ), mul_smul (Nat.gcdB n l), h0, smul_zero, add_zero, mul_comm, mul_smul, natCast_zsmul]
-    _ = m := by rw [← add_smul, ← e, one_smul]
 
 private theorem isCoboundary_of_coprime {l : ℕ} {H C : Type} [Group H] [Group C] [Finite C] (i : H →* G) (f : H →* C)
     (hC : (Nat.card C).Coprime l) (hl : ∀ m : M, l • m = 0) (z : G → M)

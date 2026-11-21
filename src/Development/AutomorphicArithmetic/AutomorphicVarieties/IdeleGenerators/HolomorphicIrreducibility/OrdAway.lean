@@ -295,58 +295,5 @@ open UpperTheory.V.Sd UpperTheory.V.Sd.OrdinaryAwayPlaces
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem UpperTheory.V.Sd.ordAway :
-    UpperTheory.V.Af.HypothesesH → UpperTheory.V.Sd.OrdAway := by
-  intro PH F Ω _ _ _ _ _ _ l _ ι ξ s c m a π r H A hA
-  have P := PH.toClassicalTheorems
-  obtain ⟨p1, p2, p3, p4⟩ := UpperTheory.V.Base.places F Ω l A
-  have triv : (∀ g ∈ Ine (F := F) A, r g = 1) → Ine (F := F) A ≤ ξ.ker → IsDiagOn r (Ine (F := F) A) ![1, ξ] :=
-    fun h1 h2 => ⟨1, fun g hg => by
-      have h3 : ξ g = 1 := h2 hg
-      rw [h1 g hg]
-      ext i j
-      fin_cases i <;> fin_cases j <;> simp [h3]⟩
-  by_cases hT : A = ⊤
-  · rw [(p2 hT).1] at triv ⊢
-    exact triv (fun g hg => by rw [Subgroup.mem_bot.1 hg, map_one]) bot_le
-  obtain ⟨w, h⟩ := p1 hT
-  have hl : ((l : ℕ) : 𝓞 F) ∉ w.asIdeal := fun e => hA ((p3 w h).2 e)
-  obtain ⟨χ, hχ⟩ := H.pol
-  obtain ⟨-, wt, HT, -, -, hall⟩ := exR PH F Ω l ι 2 one_le_two π χ H.reg hχ
-  have hG := hall r H.cont H.att
-  obtain ⟨⟨σ, hσ⟩, hiso⟩ := locCompR P F 2 π w
-  by_cases hc : c w = 0
-  · obtain ⟨v, hv, hf⟩ := H.sph w hc
-    obtain ⟨T, hT, hTv⟩ := rep_retr σ.ρ σ.irred (π.locRep w) (hiso σ hσ).2 v hv
-    obtain ⟨B, hB⟩ := (satLoc P F 2 w σ).1 ⟨T v, hTv, fun u hu => by rw [← hT, hf u (iwahori_level_zero_eq w ▸ hu)]⟩
-    exact triv (satFrob P F Ω l ι 2 r H.cont w hl σ B hB (fun A h rc hrc => hG.away w hl A h rc hrc σ hσ) A h).1
-      ((H.ram w A h).2 (Or.inl hc))
-  obtain ⟨lam, ⟨v, hv, hf, hU⟩, hlam⟩ := H.away w hc hl
-  have hl0 : lam ≠ 0 := by
-    rintro rfl
-    simp at hlam
-  obtain ⟨T, hT, hTv⟩ := rep_retr σ.ρ σ.irred (π.locRep w) (hiso σ hσ).2 v hv
-  obtain ⟨μ₁, μ₂, L, hL, hμ, -, hlaw⟩ := jacqOfU P F w σ (c w) (Units.mk0 lam hl0) hc
-    ⟨T v, hTv, fun u hu => by rw [← hT, hf u hu], by
-      rw [Uop, ← map_dc σ.ρ (π.locRep w) T hT hTv, ← Uop, hU, map_smul, Units.val_mk0]⟩
-  obtain ⟨ψ, hψ, hs, hψ0⟩ := exists_ps σ.smooth σ.irred μ₁ μ₂ L hL hlaw
-  obtain ⟨rc, hrc⟩ := P.exists_rec h
-  refine diag_of_wd hl ι r ξ (hG.away w hl A h rc hrc σ hσ) (fun g => ?_) (fun g hg => ?_)
-    fun e => ((H.ram w A h).1 e).elim hc hl
-  · rw [rec_algNorm hrc, charPol_lpTw]
-    obtain ⟨b, hb, ε, -, hL⟩ := hrc
-    have h1 := UpperTheory.V.AlgebraTools.jqRec F Ω A w h b hb ε rc hL 2 ⟨σ.V, σ.ρ, σ.smooth, σ.irred⟩ ψ hψ hs (ineIncl h g)
-    have h2 : valuation (w.adicCompletion F) (b (ineIncl h g) : w.adicCompletion F) = 1 :=
-      ord_eq_zero_iff.1 (by rw [hb.ord_eq, deg_ineIncl, neg_zero])
-    have : (Valued.v : Valuation (w.adicCompletion F) (WithZero (Multiplicative ℤ))).Compatible :=
-      Valuation.Compatible.ofValuation _
-    rw [Fin.prod_univ_two, hψ0 _ h2, hμ _ ((isEquiv (valuation (w.adicCompletion F))
-      (Valued.v : Valuation (w.adicCompletion F) (WithZero (Multiplicative ℤ)))).eq_one_iff_eq_one.1 h2)] at h1
-    exact ⟨_, h1⟩
-  · have h1 := DFunLike.congr_fun H.det g
-    have h2 : cycZ F Ω l g = 1 := p4 hA hg
-    simp only [MonoidHom.comp_apply, MonoidHom.mul_apply, MonoidHom.zpow_apply, cycBar, h2, map_one, one_zpow,
-      one_mul] at h1
-    exact congrArg Units.val h1
 
 end

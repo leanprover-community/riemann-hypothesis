@@ -365,11 +365,9 @@ end Formalism.FourierDecayAlt.P.B1
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem seminorm_inequality : Formalism.FourierDecayAlt.B.SeminormIneq := B1.semi
 
 theorem bilinear_form_continuity : Formalism.FourierDecayAlt.B.FormCoreC := B1.coreC
 
-theorem bilinear_form_at_zero : Formalism.FourierDecayAlt.B.FormCore := B1.core0
 
 theorem fatou_lemma_in_parameter : Formalism.FourierDecayAlt.B.FatouParam := B1.fatou
 
@@ -377,6 +375,5 @@ theorem integration_by_parts_regularised : Formalism.FourierDecayAlt.B.RegIBP :=
 
 theorem test_function_decay : Formalism.FourierDecayAlt.B.TestDecay := B1.decay B1.ibp
 
-theorem integral_zero_frequency_invariant : Formalism.FourierDecayAlt.B.IntRdZeroInv := B1.intZero
 
 end Formalism.FourierDecayAlt.P

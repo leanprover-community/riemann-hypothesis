@@ -77,20 +77,5 @@ theorem not_valuation_lt_one {Ω : Type*} [Field Ω] (A : ValuationSubring Ω) {
   rw [e, map_one] at this
   exact lt_irrefl _ this
 
-theorem ine_le_fixingSubgroup :
-    ∀ (K : IntermediateField ℚ (AlgebraicClosure ℚ)) [NumberField K] (q : ℕ), q.Prime →
-      ¬ ((q : ℤ) ∣ discr K) → ∀ A : ValuationSubring (AlgebraicClosure ℚ),
-      Formalism.MainNotions.V.Lang.IsPlaceAbove ℚ A q →
-      Formalism.MainNotions.V.Lang.Ine (F := ℚ) A ≤ K.fixingSubgroup := by
-  intro K _ q hq hd A ⟨v, hv, hqv⟩ σ hσ
-  have hA : A.valuation (q : AlgebraicClosure ℚ) < 1 := by
-    simpa using (hv _).mpr hqv
-  have key := embedding_eq A (not_valuation_lt_one A hq hA hd)
-    ((σ : AlgebraicClosure ℚ →+* AlgebraicClosure ℚ).comp K.subtype) K.subtype (fun x => by
-      refine hσ.2 _ ((A.valuation_le_one_iff _).mpr (mem_of_isIntegral A ?_))
-      exact (RingOfIntegers.isIntegral_coe x).map (K.subtype.toIntAlgHom))
-  rw [IntermediateField.mem_fixingSubgroup_iff]
-  intro x hx
-  exact DFunLike.congr_fun key ⟨x, hx⟩
 
 end GlobalTheory.UnramDiscr

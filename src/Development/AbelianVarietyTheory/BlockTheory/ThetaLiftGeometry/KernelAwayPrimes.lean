@@ -108,18 +108,7 @@ def KernelEntryIdealCondition (D : D7) (Dx : DivX D) (Tw : TwForms D) (E : KerEn
     RepStd O (D.host.g ig) i → RepStd O (D.host.g ig) (i + 1) → StabTie O i →
     ValLoss E X O ig w i ∧ (LatTie E O w i → LatTie E O w (i + 1) → FormLoss Tw X u μ ig w i)
 
-theorem valInt_zero (Tw : TwForms D) {u : D.what₂.Word} {μ : D.what₂.Tup} (O : LiftObj D (D.chTw u μ)) {p : ℕ}
-    [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (i : ℕ) : ValInt Tw O lam i 0 :=
-  ⟨0, ⟨0, Fin.elim0, Fin.elim0, fun k => k.elim0, fun k => k.elim0, by simp⟩, fun y => by simp [evFr]⟩
 
-theorem formLoss_of_valLoss {Dx : DivX D} {Tw : TwForms D} (E : KerEnt D Dx Tw) (X : ErrX D) {u : D.what₂.Word}
-    {μ : D.what₂.Tup} (O : LiftObj D (D.chTw u μ)) (ig : Fin 2) (w : D.what₂.places.Pl) (i : ℕ)
-    (h : ValLoss E X O ig w i) (h0 : LatTie E O w i) (h1 : LatTie E O w (i + 1)) : FormLoss Tw X u μ ig w i := by
-  intro x hx y hy
-  refine (h1 _).2 fun c' => ?_
-  have := h _ ((h0 x).1 hx) c'
-  rw [LinearMap.map_smulₛₗ, hy]
-  exact this
 
 theorem exp_le (D : D7) (i : ℕ) (hi : i < D.R.m) :
     D.R.f * D.R.N i * D.R.N (i + 1) ≤ D.R.f * D.R.N D.R.m * (D.R.N D.R.m + D.R.t) := by

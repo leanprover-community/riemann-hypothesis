@@ -169,42 +169,8 @@ theorem ValAt.unique {X : Scheme.{0}} {Ω : Type} [Field Ω] {R : Type} [CommRin
 
 namespace CoordInhab
 
-theorem span_two_three : Ideal.span (Set.range (![2, 3] : Fin 2 → ℤ)) = ⊤ := by
-  rw [Ideal.eq_top_iff_one]
-  have h2 : (2 : ℤ) ∈ Ideal.span (Set.range (![2, 3] : Fin 2 → ℤ)) :=
-    Ideal.subset_span ⟨0, by simp⟩
-  have h3 : (3 : ℤ) ∈ Ideal.span (Set.range (![2, 3] : Fin 2 → ℤ)) :=
-    Ideal.subset_span ⟨1, by simp⟩
-  have e : (1 : ℤ) = 3 - 2 := by norm_num
-  rw [e]
-  exact Ideal.sub_mem _ h3 h2
 
-theorem coordTie_two_three :
-    CoordTie ℤ (Spec.map (CommRingCat.ofHom (algebraMap ℤ ℚ)))
-      (fun j => algebraMap ℤ ℚ ((![2, 3] : Fin 2 → ℤ) j)) :=
-  coordTie_spec ℤ ℚ ![2, 3] span_two_three
 
-theorem charts_two_three (c : Fin 2) :
-    (∃ p, InChart (Spec.map (CommRingCat.ofHom (algebraMap ℤ ℚ)))
-      (fun j => algebraMap ℤ ℚ ((![2, 3] : Fin 2 → ℤ) j)) c p) ∧
-    ∃ p, ¬ InChart (Spec.map (CommRingCat.ofHom (algebraMap ℤ ℚ)))
-      (fun j => algebraMap ℤ ℚ ((![2, 3] : Fin 2 → ℤ) j)) c p := by
-  constructor
-  · refine ⟨CptModel.self _, (inChart_iff _ span_two_three c _).2 ?_⟩
-    intro hmem
-    change _ ∈ (genPt (pt (algebraMap ℤ ℚ))).asIdeal at hmem
-    rw [genPt_asIdeal, RingHom.mem_ker] at hmem
-    fin_cases c <;> simp at hmem
-  · fin_cases c
-    · refine ⟨CptModel.two, fun hc => ?_⟩
-      apply (inChart_iff _ span_two_three _ _).1 hc
-      show _ ∈ Ideal.span {(2 : ℤ)}
-      exact Ideal.subset_span (by simp)
-    · refine ⟨⟨(⟨Ideal.span {3}, (Ideal.span_singleton_prime (by norm_num)).2 Int.prime_three⟩ :
-          PrimeSpectrum ℤ), genPt_specializes _⟩, fun hc => ?_⟩
-      apply (inChart_iff _ span_two_three _ _).1 hc
-      show _ ∈ Ideal.span {(3 : ℤ)}
-      exact Ideal.subset_span (by simp)
 
 end CoordInhab
 

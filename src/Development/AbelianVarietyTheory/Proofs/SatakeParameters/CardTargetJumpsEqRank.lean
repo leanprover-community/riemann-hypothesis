@@ -40,7 +40,5 @@ def WC : WordData 2 where
   J1 i := if i = 1 then {501, 0} else {-500, 1}
   J2 i := if i = 1 then {501, 0} else {-500, 1}
 
-theorem WC_isGreatest : IsGreatest (Set.range WC.sz) 500 :=
-  ⟨⟨0, rfl⟩, by rintro _ ⟨i, rfl⟩; exact le_rfl⟩
 
 end GlobalTheory.HTW.Model

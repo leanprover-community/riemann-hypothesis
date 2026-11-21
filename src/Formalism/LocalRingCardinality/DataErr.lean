@@ -192,9 +192,6 @@ def SizeData₂.withEval {D : D7} (L : SizeData₂ D) (X : ErrX D) (K : Consts) 
     E := fun u j w => Eval L X K c u j w
     E_supp := hs }
 
-theorem SizeData₂.withEval_EDef {D : D7} (L : SizeData₂ D) (X : ErrX D) (K : Consts) (c : ErrC)
-    (hs : ∀ u j w, w ∉ L.supp → Eval L X K c u j w = 0) : (L.withEval X K c hs).EDef X K c :=
-  fun _ _ _ _ => rfl
 
 theorem SizeData₂.EDef.zeroAbove {D : D7} {L : SizeData₂ D} {X : ErrX D} {K : Consts} {c : ErrC} (h : L.EDef X K c)
     (u : D.what₂.Word) (j : ℕ) (hj : j ∈ SizeData₂.lifts D) (w : D.what₂.places.Pl)

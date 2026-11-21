@@ -63,17 +63,7 @@ section Row
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A)
 
-theorem placeEx_of_pins (hL : R.toLevCh.Is A.μ0) (hG : R.IsGrp F) (hF : R.IsFam) (hM : R.IsModels) (i : Fin D.R.m)
-    {K' : Type} [Field K'] {jL : D.what₂.LL →+* K'} {σ' : K' →+* ℂ} {c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W}
-    (hp : CoefPins R i jL σ' c') (t : T) {Cl : Type} [Fintype Cl] (h : Cl → GA D (Vc D i)) : PlaceEx R i t h c' := by
-  obtain ⟨-, _, _, _, hT, hc⟩ := hp
-  exact GlobalTheory.RationalValues.placeEx R i jL σ' t h c' hM.jV hT hc hL hG.chiW hF.pl_onto hF.muVal
 
-theorem exists_coefPins (hF : R.fam_tie) (i : Fin D.R.m) {K' : Type} [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ)
-    (hσ : σ'.comp jL = D.what₂.embLL) : ∃ c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W, CoefPins R i jL σ' c' := by
-  obtain ⟨gramR, c0R, c0L, hT⟩ := hF
-  obtain ⟨c', hc⟩ := GlobalTheory.Mem.PlaceVal.exists_ext_VV (W := (R.cV i).W) jL σ' hσ (FWT.lamV D i) (c0L i)
-  exact ⟨c', hσ, gramR, c0R, c0L, hT, hc⟩
 
 theorem existsUnique_c0BC (i : Fin D.R.m) {K' : Type} [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ)
     (hσ : σ'.comp jL = D.what₂.embLL) (c₀ : VsV D i D.what₂.LL →ₛₗ[D.what₂.embLL] (R.cV i).W) :
@@ -94,32 +84,9 @@ theorem place_unique (i : Fin D.R.m) {K' : Type} [Field K'] {jL : D.what₂.LL �
 
 end Row
 
-theorem placeRow : PlaceRow :=
-  fun _ _ _ _ _ _ _ _ _ _ _ R F hL hG hF hM i _ _ _ _ _ hp t _ _ h _ _ _ => placeEx_of_pins R F hL hG hF hM i hp t h
 
-theorem rationalValues : RationalValues := rationalValues_iff.2 placeRow
 
-theorem placeEx_on_objects :
-    ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m)
-      (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A),
-      R.toLevCh.Is A.μ0 → R.IsGrp F → R.IsFam → R.IsModels →
-      ∀ (i : Fin D.R.m) (K' : Type) [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ), σ'.comp jL = D.what₂.embLL →
-        (∃ c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W, CoefPins R i jL σ' c') ∧
-        ∀ c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W, CoefPins R i jL σ' c' →
-          ∀ (t : T) (Cl : Type) [Fintype Cl] (h : Cl → GA D (Vc D i)),
-            PlaceEx R i t h c' ∧ ∀ x₀ : A.fam.amb.FL i t, ∃! x, Place R i t h c' (jVx R i t x₀) x := by
-  intro D G _ _ Pl0 T A Ks _ _ _ R F hL hG hF hM i K' _ jL σ' hσ
-  refine ⟨exists_coefPins R hF.tie i jL σ' hσ, fun c' hp t Cl _ h => ?_⟩
-  have H := placeEx_of_pins R F hL hG hF hM i hp t h
-  exact ⟨H, fun x₀ => (H x₀).imp fun x hx => ⟨hx, fun x' hx' => place_unique R i hp t h _ hx' hx⟩⟩
 
-theorem placeEx_of_thPinsR {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
-    {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A) (hR : R.Char F)
-    (i : Fin D.R.m) {K' : Type} [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ) {v₀ : (R.MW i (sg0 D A)).Vec}
-    {c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W} {La : Type} [AddCommGroup La] [Module (𝓞 D.host.E) La]
-    {ι : La →ₗ[𝓞 D.host.E] (Fin (Wc D i).rank → D.host.E)} {M : ℕ} {Mh : Ideal (𝓞 D.host.E)} {lev : G → La →ₗ[𝓞 D.host.E] La}
-    (hP : ThPinsR R i jL σ' v₀ c' ι M Mh lev) (t : T) {Cl : Type} [Fintype Cl] (h : Cl → GA D (Vc D i)) : PlaceEx R i t h c' :=
-  placeEx_of_pins R F hR.lev hR.grp hR.fam hR.models i (CoefPins.of_thPinsR R hP) t h
 
 end GlobalTheory.RationalValuesObj
 

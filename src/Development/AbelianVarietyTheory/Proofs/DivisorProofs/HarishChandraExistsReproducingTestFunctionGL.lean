@@ -24,21 +24,7 @@ theorem continuous_translate (φ : Sm E a) (g : GA E a) :
   rw [e]
   exact h1.comp_continuous h2 fun y => val_mem_invSet y
 
-theorem continuous_kavg [FirstCountableTopology (GL (Fin a) (Cinf E))] [LocallyCompactSpace (GL (Fin a) (Cinf E))]
-    [MeasurableSpace (Kinf E a)] [BorelSpace (Kinf E a)] [CompactSpace (Kinf E a)]
-    (ν : Measure (Kinf E a)) [IsFiniteMeasure ν] {F : GL (Fin a) (Cinf E) → ℂ} (hF : Continuous F) :
-    Continuous (kavg ν F) := by
-  have hc : Continuous (Function.uncurry fun (y : GL (Fin a) (Cinf E)) (k : Kinf E a) =>
-      F (Unitary.toUnits k * y * (Unitary.toUnits k)⁻¹)) :=
-    hF.comp (((continuous_toUnits_Kinf.comp continuous_snd).mul continuous_fst).mul
-      (continuous_toUnits_Kinf.comp continuous_snd).inv)
-  have := continuous_parametric_integral_of_continuous (μ := ν) hc (s := Set.univ) isCompact_univ
-  show Continuous fun y => ∫ k, F (Unitary.toUnits k * y * (Unitary.toUnits k)⁻¹) ∂ν
-  simpa using this
 
-theorem kavg_one [MeasurableSpace (Kinf E a)] (ν : Measure (Kinf E a)) [IsProbabilityMeasure ν]
-    (F : GL (Fin a) (Cinf E) → ℂ) : kavg ν F 1 = F 1 := by
-  simp [kavg]
 
 theorem exists_alpha : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ),
     ∀ (L : Subgroup (GL (Fin a) (Af E))), IsOpen (L : Set (GL (Fin a) (Af E))) →

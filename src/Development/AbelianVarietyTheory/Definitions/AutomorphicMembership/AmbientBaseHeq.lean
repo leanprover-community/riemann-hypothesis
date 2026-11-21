@@ -42,25 +42,10 @@ section Lemmas
 
 variable {D : D7}
 
-theorem ColLay.dGamDef {lev : LevelData D} {eX : ErrX D} (h : ColLay D lev eX) : DGamDef D := fun u μ =>
-  ⟨fun u' μ' i hi x => by
-    rw [h.one u μ, ← h.one u' μ']
-    exact (D.chTw u' μ').dvd_DGam i hi x, h.one u μ⟩
 
-theorem ColLay.ofLay {s : Scale} {C : FC} {cD : ℝ} (Y : Lay D) (hR : RecOK s C cD D) : ColLay D Y.lev Y.errX :=
-  ⟨Y.piG_lev, Y.piT_lev, Y.seen, Y.tauOf, fun u μ => (Y.dgam u μ).2, hR.mink, hR.atT⟩
 
-theorem ColLay.iff_lay (Y : Lay D) : ColLay D Y.lev Y.errX ↔ DGamChoice_at D ∧
-    ∀ u (w : D.what₂.places.Pl), D.what₂.places.resChar w = (D.mem u).A.T → ∃ n : ℕ, n ≠ 0 ∧
-      (∀ x ∈ DV.MramL D u, D.nuIn u (n • x) ∈ LT.Nlam D u w) ∧
-      ∀ x, D.nuIn u x ∈ LT.Nlam D u w → InLoc (D.plEq w) (DV.MramL D u) (n • x) :=
-  ⟨fun h => ⟨h.mink, h.atT⟩, fun h => ⟨Y.piG_lev, Y.piT_lev, Y.seen, Y.tauOf, fun u μ => (Y.dgam u μ).2, h.1, h.2⟩⟩
 
-theorem GyLay.ofLay {K : Ctx} (Y : Lay D) (hL : LedOK K.s K.C K.cD K.ch Y K.a K.b) : GyLay K D Y.gatT Y.cmp Y.Gy :=
-  ⟨Y.vram, Y.fills_all, fun L a b c X d e g h => ((hL L a b c).2 X d e g h).1⟩
 
-theorem GatNum.epTie {L : SizeData₂ D} {X : G.Inst D L} (h : GatNum L.sc D) (he : G.EpDef X 1) : EpTie X := fun u w hg =>
-  (h u w hg).2.trans (he _).symm
 
 theorem GatNum.ofTied {L : SizeData₂ D} {X : G.Inst D L} {Gt : GatTies D} {Gy : G.LatInst D} (hl : G.LatTied Gt X Gy)
     (ht : EpTie X) (he : G.EpDef X 1) : GatNum L.sc D := fun u w hg =>
@@ -69,16 +54,7 @@ theorem GatNum.ofTied {L : SizeData₂ D} {X : G.Inst D L} {Gt : GatTies D} {Gy 
 theorem GatNum.ofPt {C : FC} (hC : C.cX.Ce = 1) (p : Pt C) : GatNum p.L.sc p.D :=
   GatNum.ofTied p.ta.latTied p.xa.ex.ep_tie (hC ▸ p.xa.ex.ep_def)
 
-theorem Ctx.Ce_eq_one (K : Ctx) : K.C.cX.Ce = 1 := by
-  have := K.std.1
-  unfold FC.Fixed at this
-  tauto
 
-theorem GatNum.ofLay {K : Ctx} (Y : Lay D) (hL : LedOK K.s K.C K.cD K.ch Y K.a K.b) {L : SizeData₂ D} (hs : L.sc = K.s)
-    (hW : WtEq L K.a K.b) (hV : Val K.C K.cD K.ch L) {X : G.Inst D L} (hX : CanonInst X) (he : G.EpDef X K.C.cX.Ce)
-    (hk : G.KapIDef X K.C.GK) (hf : ∀ w, G.ParametersFill X K.C.GK w) : GatNum K.s D :=
-  have h := (hL L hs hW hV).2 X hX he hk hf
-  hs ▸ GatNum.ofTied h.1 h.2.1 (K.Ce_eq_one ▸ he)
 
 open Classical in
 

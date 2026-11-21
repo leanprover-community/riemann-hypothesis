@@ -75,15 +75,7 @@ def GfLocal : Prop :=
         ∀ g ∈ O, g ∈ B.GV k r → 0 < Gf k r z z' g →
           (Fl g).1 ∈ UWset k r z ∧ (Fl g).2 ∈ UWset k r z' ∧ (Fl g).1 * g * (Fl g).2 ∈ gfSig D0
 
-theorem gsSliceP_of_gf (hB : GfBase) (hS : GfSat) (hT : GfStab) (hL : GfLocal) : GsSliceP := by
-  intro k r z z' hk hr hz hz'
-  obtain ⟨D0⟩ := hB k r z z' hk hr hz hz'
-  exact ⟨gfSig D0, hS k r z z' hk hr hz hz' D0, hT k r z z' hk hr hz hz' D0, hL k r z z' hk hr hz hz' D0⟩
 
-theorem gramSlice_of_gf (hB : GfBase) (hS : GfSat) (hT : GfStab) (hL : GfLocal) : GramSlice :=
-  gramSlice_of_slice (gsSliceP_of_gf hB hS hT hL)
 
-theorem gsFrames_of_gf (hB : GfBase) (hS : GfSat) (hT : GfStab) (hL : GfLocal) : GsFrames :=
-  gsFrames_of_slice (gsSliceP_of_gf hB hS hT hL)
 
 end PI.UnitaryGroupMassFormula.GsFr

@@ -33,13 +33,6 @@ theorem lowK_add {n : ℕ} (ε : Fin n → Bool) (lam : Fin n → ℝ) (a : Fin 
   simp only [lowK, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
   ring
 
-theorem lowK_add_strictAnti {n : ℕ} (ε : Fin n → Bool) {lam : Fin n → ℝ} (h : StrictAnti lam) :
-    StrictAnti (lowK ε lam + (2 : ℝ) • rhoC ε) := by
-  intro a b hab
-  rw [lowK_add, lowK_add]
-  have h1 := h hab
-  have h2 : ((a : ℕ) : ℝ) < ((b : ℕ) : ℝ) := by exact_mod_cast hab
-  linarith
 
 theorem torus_mem {n : ℕ} (ε : Fin n → Bool) (θ : Fin n → ℝ) :
     Matrix.diagonal (fun a => Complex.exp ((θ a : ℂ) * Complex.I)) ∈ Kset ε := by
@@ -118,100 +111,8 @@ theorem wt_eq {ε : Fin 1 → Bool} (m : ℤ) (μ : Fin 1 → ℝ) (v : ℂ) (hv
   rw [mul_div_cancel₀ _ hne', Complex.exp_pi_mul_I] at this
   norm_num at this
 
-theorem lowK_one (ε : Fin 1 → Bool) (lam : Fin 1 → ℝ) : lowK ε lam = lam := by
-  funext a
-  obtain rfl : a = 0 := Subsingleton.elim _ _
-  simp [lowK, rhoN, rhoC, Finset.filter_singleton]
 
-theorem compact_one (ε : Fin 1 → Bool) : CompactSpace (UJ ε) := by
-  have hE := (isClosedEmbeddingMatrix 1 ε).1
-  have hc : IsCompact (Set.pi Set.univ fun _ : Fin 1 => Set.pi Set.univ fun _ : Fin 1 =>
-      Metric.closedBall (0 : ℂ) 1) :=
-    isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => isCompact_closedBall 0 1
-  refine ⟨?_⟩
-  have := hE.isCompact_preimage hc
-  convert this using 1
-  symm
-  refine Set.eq_univ_of_forall fun g i _ j _ => ?_
-  obtain rfl : i = 0 := Subsingleton.elim _ _
-  obtain rfl : j = 0 := Subsingleton.elim _ _
-  simpa using (norm_entry g.2).le
 
-theorem isDS_chi_iff (ε : Fin 1 → Bool) (m : ℤ) (lam : Fin 1 → ℝ) :
-    IsDS ε lam (chi m) ↔ lam = fun _ => (m : ℝ) := by
-  constructor
-  · rintro ⟨-, -, -, -, -, ⟨S, -, -, -, ⟨v, -, hv0, hv⟩, -⟩, -⟩
-    rw [← wt_eq m _ v hv0 hv, lowK_one]
-  rintro rfl
-  have hsub : ∀ S : Submodule ℂ ℂ, S = ⊥ ∨ S = ⊤ := fun S => eq_bot_or_eq_top S
-  have hiso : ∀ g ∈ UJset ε, ∀ v : ℂ, ‖chi m g v‖ = ‖v‖ := by
-    intro g hg v
-    simp [chi, norm_zpow, norm_entry hg]
-  refine ⟨inferInstance, inferInstance, ⟨⟨?_, ?_⟩, hiso, ?_⟩, fun S _ _ => hsub S, ?_, ⟨⊤, ?_⟩, ?_⟩
-  · ext; simp [chi]
-  · intro a _ b _
-    ext
-    simp [chi, Matrix.mul_apply, mul_zpow, mul_comm]
-  · intro v
-    simp only [chi, ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, smul_eq_mul]
-    refine ContinuousOn.mul (ContinuousOn.zpow₀ (by fun_prop) m ?_) continuousOn_const
-    intro g hg
-    left
-    intro h0
-    have := norm_entry hg
-    simp [h0] at this
-  · intro v w
-    have := compact_one ε
-    have hfin : IsFiniteMeasure (muG ε) := CompactSpace.isFiniteMeasure
-    have hc : Continuous (coefOn (ε := ε) (chi m) v w) := by
-      unfold coefOn
-      simp only [chi, ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, smul_eq_mul]
-      refine Continuous.inner continuous_const (Continuous.mul (Continuous.zpow₀ ?_ m ?_) continuous_const)
-      · exact (Units.continuous_val.comp continuous_subtype_val).matrix_elem 0 0
-      · intro g
-        left
-        intro h0
-        have := norm_entry g.2
-        simp [umat] at h0
-        simp [h0] at this
-    refine MemLp.of_bound hc.aestronglyMeasurable (‖w‖ * ‖v‖) (Filter.Eventually.of_forall fun g => ?_)
-    have := norm_inner_le_norm (𝕜 := ℂ) w (chi m (umat g) v)
-    rw [hiso _ g.2] at this
-    exact this
-  · rw [lowK_one]
-    refine ⟨inferInstance, fun _ _ _ _ => trivial, fun S _ _ => hsub S, ⟨1, trivial, one_ne_zero, ?_⟩, ?_⟩
-    · intro θ _
-      simp only [chi, Matrix.diagonal_apply_eq, Fin.sum_univ_one, ContinuousLinearMap.smul_apply,
-        ContinuousLinearMap.id_apply, smul_eq_mul, ← Complex.exp_int_mul]
-      congr 2
-      push_cast; ring
-    · intro μ v _ hv h
-      rw [wt_eq m μ v hv h]
-      exact ⟨fun _ _ => 0, by simp, by simp⟩
-  · intro μ S hS
-    obtain ⟨v, _, hv, h⟩ := hS.2.2.2.1
-    rw [wt_eq m μ v hv h, lowK_one]
 
-theorem order_needed :
-    lowK ![true, false] ![1 / 2, 7 / 2] = lowK ![false, true] ![5 / 2, 3 / 2] ∘ Equiv.swap 0 1 := by
-  have c : ∀ (ε : Fin 2 → Bool) (a : Fin 2), ε 0 ≠ ε 1 →
-      rhoN ε a - rhoC ε a = 1 / 2 - a := by
-    intro ε a h
-    have h0 : rhoC ε a = 0 := by
-      have e1 : (univ.filter fun b => a < b ∧ ε b = ε a) = ∅ := by
-        refine Finset.filter_eq_empty_iff.2 fun b _ hb => ?_
-        fin_cases a <;> fin_cases b <;> simp_all
-      have e2 : (univ.filter fun b => b < a ∧ ε b = ε a) = ∅ := by
-        refine Finset.filter_eq_empty_iff.2 fun b _ hb => ?_
-        fin_cases a <;> fin_cases b <;> simp_all
-      simp [rhoC, e1, e2]
-    have h1 := rhoN_add_rhoC ε a
-    push_cast at h1
-    linarith
-  funext a
-  have h1 := c ![true, false] a (by simp)
-  have h2 := c ![false, true] (Equiv.swap 0 1 a) (by simp)
-  simp only [lowK, Function.comp_apply, Pi.sub_apply, Pi.add_apply, add_sub_assoc, h1, h2]
-  fin_cases a <;> simp <;> norm_num
 
 end GlobalTheory.DiscreteSeriesTest

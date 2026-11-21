@@ -449,7 +449,6 @@ def Pr.lineModFour : Pr Data.lineModFour.κ Data.lineModFour.t Data.lineModFour.
 
 theorem Pr.lineModFour_ideal : Pr.lineModFour.T.J ≠ ⊥ ∧ Pr.lineModFour.T.J ≠ ⊤ := Lift.lineModFour_ideal
 
-theorem levE_eeLineModFour : LevE _ _ _ 2 eeLineModFour := isLev_sqDP (Inhab.map_sq Inhab.span_two_sq _)
 
 theorem Inhab.isFree_id {R : Type} [CommRing R] {I : Ideal R} {X : Scheme.{0}} {κ : DividedPowers I} {t : X ⟶ Sp R}
     {n : ℕ} {T : Thick κ t} (h : IsLev T.δ n) : IsFree n (𝟙 T) (Empty.elim : Empty → T.B) :=
@@ -464,28 +463,5 @@ theorem Inhab.rel_bot (R B : Type) [CommRing R] [CommRing B] [Algebra R B] : rel
   subst ha
   simp [(dp0 B).dpow_eval_zero n.succ_ne_zero]
 
-theorem Inhab.rel_dual_ne_bot : rel (ZMod 2) (divided₂ (SqExt.dual (ZMod 2)).sq) ≠ ⊥ := by
-  intro hbot
-  have hε : (TrivSqZeroExt.inr 1 : (SqExt.dual (ZMod 2)).C) ∈
-      RingHom.ker ((SqExt.dual (ZMod 2)).π : (SqExt.dual (ZMod 2)).C →+* (SqExt.dual (ZMod 2)).B) := by
-    rw [RingHom.mem_ker]
-    rfl
-  have hg : ι1 (D (ZMod 2) (SqExt.dual (ZMod 2)).C
-      ((divided₂ (SqExt.dual (ZMod 2)).sq).dpow (1 + 1) (TrivSqZeroExt.inr 1)) -
-      (divided₂ (SqExt.dual (ZMod 2)).sq).dpow 1 (TrivSqZeroExt.inr 1) •
-        D (ZMod 2) (SqExt.dual (ZMod 2)).C (TrivSqZeroExt.inr 1)) ∈
-      rel (ZMod 2) (divided₂ (SqExt.dual (ZMod 2)).sq) := Ideal.subset_span ⟨1, _, hε, rfl⟩
-  rw [hbot, Ideal.mem_bot, squareZeroDividedPowers_dpow _ (le_refl (1 + 1)), (divided₂ _).dpow_one hε, map_zero, zero_sub,
-    map_neg, neg_eq_zero, ExteriorAlgebra.ι_eq_zero_iff] at hg
-  have h2 : ∀ u v : ZMod 2, u * v + u * v = 0 := by decide
-  let d : Derivation (ZMod 2) (SqExt.dual (ZMod 2)).C (SqExt.dual (ZMod 2)).C := Derivation.mk'
-    { toFun := fun x ↦ TrivSqZeroExt.inl x.snd
-      map_add' := fun x y ↦ by ext <;> simp
-      map_smul' := fun r x ↦ by ext <;> simp }
-    (fun a b ↦ by ext <;> simp [h2, mul_comm])
-  have h3 := congrArg d.liftKaehlerDifferential hg
-  rw [map_smul, Derivation.liftKaehlerDifferential_comp_D, map_zero] at h3
-  have h4 := congrArg TrivSqZeroExt.snd h3
-  simp [d] at h4
 
 end GlobalTheory.PDForm

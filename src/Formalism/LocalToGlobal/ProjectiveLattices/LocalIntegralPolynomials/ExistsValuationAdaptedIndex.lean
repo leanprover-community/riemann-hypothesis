@@ -16,16 +16,7 @@ theorem yv_self (jc : Fin (N + 1)) (x : Fin N → Ω) : yv jc x jc = 1 := by
   unfold yv
   exact Fin.insertNth_apply_same (α := fun _ => Ω) jc 1 x
 
-theorem yv_succAbove (jc : Fin (N + 1)) (x : Fin N → Ω) (k : Fin N) : yv jc x (jc.succAbove k) = x k := by
-  unfold yv
-  exact Fin.insertNth_apply_succAbove (α := fun _ => Ω) jc 1 x k
 
-theorem sImg_self (jc : Fin (N + 1)) (x : Fin N → Ω) (i : Fin (D + 1)) :
-    sImg jc x (i, jc) = algebraMap (MvPolynomial (SVar D N) Ω) (OmS Ω D N)
-      (if i = 0 then X (Sum.inl ()) else -∑ k, X (Sum.inr (i, k)) * C (x k)) := by
-  unfold sImg
-  congr 1
-  exact Fin.insertNth_apply_same (α := fun _ => MvPolynomial (SVar D N) Ω) jc _ _
 
 theorem sImg_succAbove (jc : Fin (N + 1)) (x : Fin N → Ω) (i : Fin (D + 1)) (k : Fin N) :
     sImg jc x (i, jc.succAbove k) =
@@ -34,14 +25,6 @@ theorem sImg_succAbove (jc : Fin (N + 1)) (x : Fin N → Ω) (i : Fin (D + 1)) (
   congr 1
   exact Fin.insertNth_apply_succAbove (α := fun _ => MvPolynomial (SVar D N) Ω) jc _ _ k
 
-theorem sum_y_sImg (jc : Fin (N + 1)) (x : Fin N → Ω) {i : Fin (D + 1)} (hi : i ≠ 0) :
-    ∑ j, algebraMap Ω (OmS Ω D N) (yv jc x j) * sImg jc x (i, j) = 0 := by
-  rw [Fin.sum_univ_succAbove _ jc, yv_self, sImg_self, if_neg hi]
-  simp only [yv_succAbove, sImg_succAbove, map_one, one_mul, map_neg, map_sum, map_mul]
-  rw [neg_add_eq_zero]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [IsScalarTower.algebraMap_apply Ω (MvPolynomial (SVar D N) Ω) (OmS Ω D N),
-    MvPolynomial.algebraMap_eq, mul_comm]
 
 theorem exists_valuation_adapted_index (jc : Fin (N + 1)) (x : Fin N → Ω) (W : ValuationSubring Ω) :
     ∃ j0, yv jc x j0 ≠ 0 ∧ ∀ j, yv jc x j / yv jc x j0 ∈ W := by
@@ -68,30 +51,6 @@ def qj (jc j0 : Fin (N + 1)) (x : Fin N → Ω) (p : TVar D N) : MvPolynomial (S
 
 variable {jc j0 : Fin (N + 1)} {x : Fin N → Ω}
 
-theorem aeval_qj (hy0 : yv jc x j0 ≠ 0) (p : TVar D N) :
-    aeval (tj jc j0 x) (qj jc j0 x p) = sImg jc x p := by
-  obtain ⟨i, j⟩ := p
-  rcases Fin.eq_self_or_eq_succAbove j0 j with h | ⟨k, h⟩
-  · rw [h]
-    simp only [qj, Fin.insertNth_apply_same]
-    split_ifs with hi
-    · rw [hi, aeval_X]
-      rfl
-    · have hs := sum_y_sImg jc x hi
-      rw [Fin.sum_univ_succAbove _ j0] at hs
-      have hy : algebraMap Ω (OmS Ω D N) (yv jc x j0) ≠ 0 := (map_ne_zero _).mpr hy0
-      have key : sImg jc x (i, j0) = -(∑ k, algebraMap Ω (OmS Ω D N) (yv jc x (j0.succAbove k)) *
-          sImg jc x (i, j0.succAbove k)) / algebraMap Ω (OmS Ω D N) (yv jc x j0) := by
-        rw [eq_div_iff hy]
-        linear_combination hs
-      simp only [map_neg, map_sum, map_mul, aeval_X, aeval_C, tj, Sum.elim_inr, map_div₀]
-      rw [key, neg_div, Finset.sum_div]
-      congr 1
-      refine Finset.sum_congr rfl fun k _ => ?_
-      ring
-  · rw [h]
-    simp only [qj, Fin.insertNth_apply_succAbove, aeval_X]
-    rfl
 
 def intPoly (σ : Type) (W : Subring Ω) : Subring (MvPolynomial σ Ω) where
   carrier := {P | ∀ e, P.coeff e ∈ W}
@@ -137,29 +96,6 @@ theorem X_mem_intPoly {σ : Type} {W : Subring Ω} (s : σ) : (X s : MvPolynomia
   split_ifs
   exacts [W.one_mem, W.zero_mem]
 
-theorem aeval_mem_intPoly {σ τ : Type} {W : Subring Ω} {q : σ → MvPolynomial τ Ω}
-    (hq : ∀ s, q s ∈ intPoly τ W) {P : MvPolynomial σ Ω} (hP : P ∈ intPoly σ W) :
-    aeval q P ∈ intPoly τ W := by
-  rw [P.as_sum, map_sum]
-  refine Subring.sum_mem _ fun v _ => ?_
-  rw [aeval_monomial]
-  refine Subring.mul_mem _ ?_ ?_
-  · rw [MvPolynomial.algebraMap_eq]
-    exact C_mem_intPoly (hP v)
-  · exact Subring.prod_mem _ fun s _ => Subring.pow_mem _ (hq s) _
 
-theorem qj_mem {W : Subring Ω} (hyW : ∀ j, yv jc x j / yv jc x j0 ∈ W) (p : TVar D N) :
-    qj jc j0 x p ∈ intPoly (SVar D N) W := by
-  obtain ⟨i, j⟩ := p
-  rcases Fin.eq_self_or_eq_succAbove j0 j with h | ⟨k, h⟩
-  · rw [h]
-    simp only [qj, Fin.insertNth_apply_same]
-    split_ifs
-    · exact X_mem_intPoly _
-    · exact Subring.neg_mem _ (Subring.sum_mem _ fun k _ =>
-        Subring.mul_mem _ (C_mem_intPoly (hyW _)) (X_mem_intPoly _))
-  · rw [h]
-    simp only [qj, Fin.insertNth_apply_succAbove]
-    exact X_mem_intPoly _
 
 end Formalism.L2.Pj.LocAlg

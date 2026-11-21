@@ -107,21 +107,6 @@ def PullFrameNuZeroStatement : Prop := InWeilActionSetting fun P F _ _ _ N Q v s
 
 def TorsionFactsStatement : Prop := InWeilActionSetting fun P F _ _ α N Q v s₀ => TorsionFacts P F α N Q v s₀
 
-theorem torsionFactsStatement_iff : TorsionFactsStatement ↔
-    ConjKernelCountStatement ∧ FixingLiftsStatement ∧ PairingSeparatesStatement ∧
-      FiniteOrderLiftsStatement ∧ PullFrameNuZeroStatement := by
-  constructor
-  · intro h
-    refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;>
-      intro E _ _ _ H V _ _ _ t P hP α N h1 h2 h3 h4 ϖ h5 Q h6 F _ _ _ v h7 Dw I θ h8 s h9 <;>
-      have := h E H V t P hP α N h1 h2 h3 h4 ϖ h5 Q h6 F v h7 Dw I θ h8 s h9
-    exacts [this.1, this.2.1, this.2.2.1, this.2.2.2.1, this.2.2.2.2]
-  · rintro ⟨a, b, c, d, e⟩ E _ _ _ H V _ _ _ t P hP α N h1 h2 h3 h4 ϖ h5 Q h6 F _ _ _ v h7 Dw I θ h8 s h9
-    exact ⟨a E H V t P hP α N h1 h2 h3 h4 ϖ h5 Q h6 F v h7 Dw I θ h8 s h9,
-      b E H V t P hP α N h1 h2 h3 h4 ϖ h5 Q h6 F v h7 Dw I θ h8 s h9,
-      c E H V t P hP α N h1 h2 h3 h4 ϖ h5 Q h6 F v h7 Dw I θ h8 s h9,
-      d E H V t P hP α N h1 h2 h3 h4 ϖ h5 Q h6 F v h7 Dw I θ h8 s h9,
-      e E H V t P hP α N h1 h2 h3 h4 ϖ h5 Q h6 F v h7 Dw I θ h8 s h9⟩
 
 example {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (D : DegData V (maximalIdeal V))
     (Q : D.toPre.X → ℤ) (F : Type) [Field F] [Algebra (FractionRing V) F] (v : AddValuation F (WithTop ℚ))

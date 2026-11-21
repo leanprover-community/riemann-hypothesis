@@ -16,10 +16,6 @@ variable {D : D7}
 theorem rec_iff (large₂ : SizeData₂ D) : Rec large₂ ↔ GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup.SizeRows large₂ ∧ HostHyp D :=
   ⟨fun h => ⟨h.size, h.host⟩, fun h => ⟨h.1, h.2, rfl, h.1.2.1.2.2.2.2.2.2.1.2.2.2.2.2.1⟩⟩
 
-theorem rec_fam {eps : ℝ} (he : 0 < eps) (Fm : FamP eps) (h : GlobalTheory.BigTop.FamHyp Fm) :
-    ∃ x₀ : ℝ, ∀ x (hx : Fm.x1 < x), x₀ ≤ x → ∀ i, GlobalTheory.BigTop.Pt Fm x hx i → Rec (Fm.L x i) := by
-  obtain ⟨x₀, H⟩ := GlobalTheory.BigTop.Fun.SetAtModel.sizeRows_fam he Fm h
-  exact ⟨x₀, fun x hx h0 i p => (rec_iff _).2 ⟨H x hx h0 i, p.host⟩⟩
 
 theorem auxiliary_prime_ne_type_prime {large₂ : SizeData₂ D} (h : Rec large₂) (k : Fin 2) : q0 D ≠ D.host.g k := by
   intro e
@@ -39,14 +35,6 @@ theorem exists_grid {large₂ : SizeData₂ D} (h : Rec large₂) (C : Formalism
   obtain ⟨Pm, -⟩ := h.size.1
   exact GlobalTheory.ChiGridModel.exists_levCh_gridData C sc Pm.g_mod h1 h2 (auxiliary_prime_ne_type_prime h)
 
-theorem not_gBig_false (ε : ℝ) (H : ∀ x₀ : ℝ, ∃ (D : D7) (large₂ : SizeData₂ D), large₂.sc.eps = ε ∧ x₀ ≤ large₂.sc.x ∧ Rec large₂ ∧
-    Nonempty (Formalism.L2.Host.CharFrame D) ∧ D.host.pde % LevelStarExponents.condE D = 1 ∧ D.host.pde' % LevelStarExponents.condE D = 1) :
-    ¬ GBig fun _ _ _ _ _ => False := by
-  rintro ⟨c, hc⟩
-  obtain ⟨C0, x₀, h⟩ := hc ε c le_rfl
-  obtain ⟨D, large₂, a, b, r, ⟨C⟩, h1, h2⟩ := H x₀
-  obtain ⟨Lc, -, hL, ⟨G⟩⟩ := exists_grid r C h1 h2 ⟨1, c, large₂.sc.b⟩
-  exact h C0 le_rfl D large₂ a b r Unit Lc () hL G
 
 theorem gBig_and {Q Q' : GP} (h : GBig @Q) (h' : GBig @Q') :
     GBig fun G μ C x b => Q G μ C x b ∧ Q' G μ C x b := by

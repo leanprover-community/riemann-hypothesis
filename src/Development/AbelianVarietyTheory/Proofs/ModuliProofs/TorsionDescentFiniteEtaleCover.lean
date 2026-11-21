@@ -100,8 +100,6 @@ def spH {A A' : Type} [CommRing A] [Algebra S A] [CommRing A'] [Algebra S A'] (�
     congr 3
     exact φ.comp_algebraMap)
 
-theorem spH_left {A A' : Type} [CommRing A] [Algebra S A] [CommRing A'] [Algebra S A'] (φ : A →ₐ[S] A') :
-    (spH σ φ).left = spMap φ.toRingHom := rfl
 
 theorem spH_comp {A A' A'' : Type} [CommRing A] [Algebra S A] [CommRing A'] [Algebra S A'] [CommRing A'']
     [Algebra S A''] (φ : A →ₐ[S] A') (ψ : A' →ₐ[S] A'') : spH σ (ψ.comp φ) = spH σ ψ ≫ spH σ φ := by

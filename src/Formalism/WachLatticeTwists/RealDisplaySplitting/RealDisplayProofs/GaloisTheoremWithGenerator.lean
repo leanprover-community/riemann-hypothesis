@@ -39,20 +39,6 @@ theorem gen : StatGen := by
     have h := congrArg (algebraMap O O') hx
     simpa [bcChar] using h
 
-theorem cycBc : StatCycBc := by
-  intro ℓ Ek Ω O O' _ _ _ _ _ _ ε h g n ζ hζ
-  obtain ⟨a, h1, h2⟩ := h g n ζ hζ
-  refine ⟨a, h1, ?_⟩
-  obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 h2
-  refine Ideal.mem_span_singleton'.2 ⟨algebraMap O O' c, ?_⟩
-  have h3 := congrArg (algebraMap O O') hc
-  simpa [bcChar] using h3
 
-theorem galois_theorem_with_generator : GaloisTheoremWithGenerator := by
-  intro ℓ _ O _ _ _ _ X _ T d _ _ Ek Ω _ _ _ _ _ r π t ht bl χ₁ ε g₀ s₀ y hP hA h2 hG3 hg hcyc L ϖ hϖ
-  obtain ⟨g1, g2⟩ := gen ℓ Fact.out O _ ε g₀ s₀ y hg
-  obtain ⟨eB, e₁, s, hAB, O', i1, i2, i3, i4, i5, i6, e, he, hO⟩ := galois_theorem_with_extension ℓ O X T d Ek Ω r π t ht bl χ₁ ε g₀
-    ⟨hP, hA, h2, hG3, fun i j _ _ h => g1 i j h⟩ L ϖ hϖ
-  exact ⟨eB, e₁, s, hAB, O', i1, i2, i3, i4, i5, i6, e, he, hO, cycBc ℓ Ek Ω O O' ε hcyc, g2 O'⟩
 
 end Formalism.RepresentationBoundsCohomology.SF

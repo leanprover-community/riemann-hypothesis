@@ -147,35 +147,8 @@ theorem latTied
 
 end LatHyp
 
-theorem sizeDataLat_of_subsingleton {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (Y : G.LatInst D) (K : G.Consts)
-    (hs : ∀ u w hg, Subsingleton (D.gat u w hg).Fn) (hl : ∀ u w, L.lenMN u w = 0) (w : D.what₂.places.Pl) :
-    G.LatticeLengthsAtPlace X Y K w := by
-  refine ⟨fun _ u hg => ⟨0, ?_, by rw [hl]; simp⟩, fun u _ _ => hl u w⟩
-  have := hs u w hg
-  rw [Nat.cast_zero, Module.length_eq_zero_iff]
-  infer_instance
 
-theorem sizeDataLat_of_M_bot {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (Y : G.LatInst D) (K : G.Consts)
-    (hM : ∀ u w hg, (D.gat u w hg).M = ⊥) (hl : ∀ u w, L.lenMN u w = 0) (w : D.what₂.places.Pl) :
-    G.LatticeLengthsAtPlace X Y K w := by
-  refine ⟨fun _ u hg => ⟨0, ?_, by rw [hl]; simp⟩, fun u _ _ => hl u w⟩
-  have h1 : (D.gat u w hg).M ⊓ Y.Vram u w hg = ⊥ := by rw [hM, bot_inf_eq]
-  have h2 : Subsingleton ↥((D.gat u w hg).M ⊓ Y.Vram u w hg) := by
-    rw [h1]
-    infer_instance
-  rw [Nat.cast_zero, Module.length_eq_zero_iff]
-  infer_instance
 
-theorem sizeDataLat_of_Vram_bot {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (Y : G.LatInst D) (K : G.Consts)
-    (hV : ∀ u w hg, Y.Vram u w hg = ⊥) (hl : ∀ u w, L.lenMN u w = 0) (w : D.what₂.places.Pl) :
-    G.LatticeLengthsAtPlace X Y K w := by
-  refine ⟨fun _ u hg => ⟨0, ?_, by rw [hl]; simp⟩, fun u _ _ => hl u w⟩
-  have h1 : (D.gat u w hg).M ⊓ Y.Vram u w hg = ⊥ := by rw [hV, inf_bot_eq]
-  have h2 : Subsingleton ↥((D.gat u w hg).M ⊓ Y.Vram u w hg) := by
-    rw [h1]
-    infer_instance
-  rw [Nat.cast_zero, Module.length_eq_zero_iff]
-  infer_instance
 
 end Formalism.MainNotions.Inhab
 

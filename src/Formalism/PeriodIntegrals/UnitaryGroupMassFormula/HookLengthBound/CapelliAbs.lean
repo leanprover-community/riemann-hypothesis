@@ -31,14 +31,6 @@ theorem sum_fun_succ {M : Type} [AddCommMonoid M] {k : ℕ} (f : (Fin (k + 1) �
   rw [← (Fin.consEquiv fun _ => S).sum_comp, Fintype.sum_prod_type]
   rfl
 
-theorem x_comm_xw (x : I → S → 𝒰) (hxx : ∀ a s b t, x a s * x b t = x b t * x a s)
-    {k : ℕ} (a : I) (t : S) (r : Fin k → I) (s : Fin k → S) :
-    x a t * xw x r s = xw x r s * x a t := by
-  induction k with
-  | zero => rw [xw_zero, mul_one, one_mul]
-  | succ k ih =>
-    rw [xw_succ, ← mul_assoc, hxx a t (r 0) (s 0), mul_assoc (x (r 0) (s 0)) (x a t), ih,
-      ← mul_assoc]
 
 theorem dx_key (x d : I → S → 𝒰) (hxx : ∀ a s b t, x a s * x b t = x b t * x a s)
     (hdx : ∀ a s b t, d b t * x a s = x a s * d b t + if a = b ∧ s = t then 1 else 0) :

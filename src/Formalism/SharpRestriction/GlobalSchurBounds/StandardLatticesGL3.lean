@@ -743,30 +743,7 @@ theorem admissible_self_dual_even {D : D7} {N N' : ℕ} {L : Submodule (𝓞 D.h
   obtain ⟨hN, hN', hL, hL'⟩ := h
   exact ⟨hL, hL', hN.mul_right _⟩
 
-theorem normConj_indep (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (e : FamE D) (hc : Crv D cc δ)
-    (h0 : t0Ex D) (hn : useNorm D) (ht : natTie D cc δ e) :
-    ∀ N N' L₁ L₁' L₂ L₂', admitted D N N' L₁ L₁' → admitted D N N' L₂ L₂' →
-    ∀ (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M], DataIn D (tor0 D cc δ) M →
-      CoefIn D (e N N' L₁ L₁') M → CoefIn D (e N N' L₂ L₂') M → ∀ ρ : M →ₐ[ℚ] ℂ,
-        normSq D (torConj D (tor0 D cc δ) M ρ) (La D (torConj D (tor0 D cc δ) M ρ) L₁ L₁')
-            (fnConj D M ρ (e N N' L₁ L₁')) =
-          normSq D (torConj D (tor0 D cc δ) M ρ) (La D (torConj D (tor0 D cc δ) M ρ) L₂ L₂')
-            (fnConj D M ρ (e N N' L₂ L₂')) := by
-  intro N N' L₁ L₁' L₂ L₂' h1 h2 M _ hM hc1 hc2 ρ
-  obtain ⟨hL₁, hL₁', hE⟩ := admissible_self_dual_even h1
-  obtain ⟨hL₂, hL₂', -⟩ := admissible_self_dual_even h2
-  obtain ⟨⟨t0, ht0⟩, hconj⟩ := h0 cc δ hc
-  obtain ⟨t0', ht0'⟩ := hconj M ρ hM.2.1 hM.2.2
-  rw [(hn cc δ hc t0 ht0 N N' L₁ L₁' hL₁ hL₁' hE _ (ht t0 ht0 N N' L₁ L₁' h1) M ρ hM hc1 t0' ht0').1,
-    (hn cc δ hc t0 ht0 N N' L₂ L₂' hL₂ hL₂' hE _ (ht t0 ht0 N N' L₂ L₂' h2) M ρ hM hc2 t0' ht0').1]
 
-theorem nat_alg (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (e : FamE D) (hc : Crv D cc δ)
-    (h0 : t0Ex D) (ha : useAlg D) (ht : natTie D cc δ e) :
-    ∀ N N' L L', admitted D N N' L L' → CoefIn D (e N N' L L') Qbar := by
-  intro N N' L L' hA
-  obtain ⟨hL, hL', hE⟩ := admissible_self_dual_even hA
-  obtain ⟨⟨t0, ht0⟩, -⟩ := h0 cc δ hc
-  exact (ha cc δ hc t0 ht0 N N' L L' hL hL' hE _ (ht t0 ht0 N N' L L' hA)).1
 
 def kRat (D : D7) : Prop := ∀ u, ∀ i < D.R.m, (D.fm u).KRat i
 

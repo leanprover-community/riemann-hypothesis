@@ -190,69 +190,6 @@ theorem Deco.IsUp.bot_unique {d d₂ d₀ e₀ : Deco E n ST SG} (hd₀ : d₀.O
   have a2 := (k1.isDn he₀ hP' hq' hq2').1
   rw [a1, a2, ← h2.f_ne hne.symm, ← k2.f_ne hne.symm]
 
-theorem DecoSet.sum_up_dn {M : Type*} [AddCommMonoid M] {P P' : ST} (hP : MoveHyp ST SG P)
-    (hP' : MoveHyp ST SG P') (hne : P ≠ P') {q q' : 𝓞 E} (hq : q ∈ P.1.asIdeal) (hq2 : q ∉ P.1.asIdeal ^ 2)
-    (hq' : q' ∈ P'.1.asIdeal) (hq2' : q' ∉ P'.1.asIdeal ^ 2) (d : DecoSet E n ST SG)
-    (F : DecoSet E n ST SG → M) :
-    ∑ d₁ ∈ (DecoSet.upSet_finite d P q).toFinset, ∑ d₂ ∈ (DecoSet.dnSetA_finite d₁ P' q' 1).toFinset, F d₂ =
-      ∑ d₀ ∈ (DecoSet.dnSetA_finite d P' q' 1).toFinset, ∑ d₂ ∈ (DecoSet.upSet_finite d₀ P q).toFinset, F d₂ := by
-  classical
-  have hup : ∀ a b : DecoSet E n ST SG,
-      b ∈ (DecoSet.upSet_finite a P q).toFinset ↔ Deco.IsUp P q a.1 b.1 :=
-    fun a b => by rw [Set.Finite.mem_toFinset]; rfl
-  have hdn : ∀ a b : DecoSet E n ST SG,
-      b ∈ (DecoSet.dnSetA_finite a P' q' 1).toFinset ↔ Deco.IsUp P' q' b.1 a.1 :=
-    fun a b => by
-      rw [Set.Finite.mem_toFinset]
-      exact ⟨fun h => Deco.IsDn.isUp b.2 a.2 hP' hq' hq2' h, fun h => Deco.IsUp.isDn b.2 hP' hq' hq2' h⟩
-  rw [Finset.sum_sigma', Finset.sum_sigma']
-
-  have PB : ∀ x ∈ (DecoSet.upSet_finite d P q).toFinset.sigma
-      (fun d₁ => (DecoSet.dnSetA_finite d₁ P' q' 1).toFinset),
-      ∃ d₀ : DecoSet E n ST SG, Deco.IsUp P' q' d₀.1 d.1 ∧ Deco.IsUp P q d₀.1 x.2.1 := by
-    intro x hx
-    rw [Finset.mem_sigma, hup, hdn] at hx
-    obtain ⟨d₀, h0, h1, h2⟩ := Deco.IsUp.pullback d.2 x.2.2 hP hP' hne hq hq2 hq' hq2' hx.1 hx.2
-    exact ⟨⟨d₀, h0⟩, h1, h2⟩
-  have PO : ∀ y ∈ (DecoSet.dnSetA_finite d P' q' 1).toFinset.sigma
-      (fun d₀ => (DecoSet.upSet_finite d₀ P q).toFinset),
-      ∃ d₁ : DecoSet E n ST SG, Deco.IsUp P q d.1 d₁.1 ∧ Deco.IsUp P' q' y.2.1 d₁.1 := by
-    intro y hy
-    rw [Finset.mem_sigma, hdn, hup] at hy
-    obtain ⟨d₁, h0, h1, h2⟩ := Deco.IsUp.pushout y.1.2 hP hP' hne hq hq2 hq' hq2' hy.1 hy.2
-    exact ⟨⟨d₁, h0⟩, h1, h2⟩
-  have PBs : ∀ x hx, Deco.IsUp P' q' (PB x hx).choose.1 d.1 ∧ Deco.IsUp P q (PB x hx).choose.1 x.2.1 :=
-    fun x hx => (PB x hx).choose_spec
-  have POs : ∀ y hy, Deco.IsUp P q d.1 (PO y hy).choose.1 ∧ Deco.IsUp P' q' y.2.1 (PO y hy).choose.1 :=
-    fun y hy => (PO y hy).choose_spec
-  refine Finset.sum_bij' (fun x hx => ⟨(PB x hx).choose, x.2⟩) (fun y hy => ⟨(PO y hy).choose, y.2⟩)
-    ?_ ?_ ?_ ?_ ?_
-  · intro x hx
-    rw [Finset.mem_sigma, hdn, hup]
-    exact ⟨(PB x hx).choose_spec.1, (PB x hx).choose_spec.2⟩
-  · intro y hy
-    rw [Finset.mem_sigma, hup, hdn]
-    exact ⟨(PO y hy).choose_spec.1, (PO y hy).choose_spec.2⟩
-  · rintro ⟨x1, x2⟩ hx
-    have hx' := hx
-    rw [Finset.mem_sigma, hup, hdn] at hx'
-    have key : ∀ e : DecoSet E n ST SG, Deco.IsUp P q d.1 e.1 → Deco.IsUp P' q' x2.1 e.1 → e = x1 :=
-      fun e k1 k2 => Subtype.ext (Deco.IsUp.top_unique d.2 x2.2 e.2 x1.2 hP hP' hne k1 k2 hx'.1 hx'.2)
-    refine Sigma.ext ?_ HEq.rfl
-    apply key
-    · exact (POs _ ((Finset.mem_sigma (a := (⟨(PB ⟨x1, x2⟩ hx).choose, x2⟩ : (_ : DecoSet E n ST SG) × DecoSet E n ST SG))).mpr ⟨(hdn _ _).mpr (PBs _ hx).1, (hup _ _).mpr (PBs _ hx).2⟩)).1
-    · exact (POs _ ((Finset.mem_sigma (a := (⟨(PB ⟨x1, x2⟩ hx).choose, x2⟩ : (_ : DecoSet E n ST SG) × DecoSet E n ST SG))).mpr ⟨(hdn _ _).mpr (PBs _ hx).1, (hup _ _).mpr (PBs _ hx).2⟩)).2
-  · rintro ⟨y1, y2⟩ hy
-    have hy' := hy
-    rw [Finset.mem_sigma, hdn, hup] at hy'
-    have key : ∀ e : DecoSet E n ST SG, Deco.IsUp P' q' e.1 d.1 → Deco.IsUp P q e.1 y2.1 → e = y1 :=
-      fun e k1 k2 => Subtype.ext (Deco.IsUp.bot_unique e.2 y1.2 hP' hne hq' hq2' k1 k2 hy'.1 hy'.2)
-    refine Sigma.ext ?_ HEq.rfl
-    apply key
-    · exact (PBs _ ((Finset.mem_sigma (a := (⟨(PO ⟨y1, y2⟩ hy).choose, y2⟩ : (_ : DecoSet E n ST SG) × DecoSet E n ST SG))).mpr ⟨(hup _ _).mpr (POs _ hy).1, (hdn _ _).mpr (POs _ hy).2⟩)).1
-    · exact (PBs _ ((Finset.mem_sigma (a := (⟨(PO ⟨y1, y2⟩ hy).choose, y2⟩ : (_ : DecoSet E n ST SG) × DecoSet E n ST SG))).mpr ⟨(hup _ _).mpr (POs _ hy).1, (hdn _ _).mpr (POs _ hy).2⟩)).2
-  · intro x hx
-    rfl
 
 end Moves
 
@@ -261,14 +198,6 @@ section Ops
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet X.E n ST SG)) (Λ : LevFam X.E X.K n SG)
 
-theorem UG_DG_comm {P P' : ST} (hP : MoveHyp ST SG P) (hP' : MoveHyp ST SG P') (hne : P ≠ P') {q q' : 𝓞 X.E}
-    (hq : q ∈ P.1.asIdeal) (hq2 : q ∉ P.1.asIdeal ^ 2) (hq' : q' ∈ P'.1.asIdeal)
-    (hq2' : q' ∉ P'.1.asIdeal ^ 2) : UG C Λ P q * DG C Λ P' q' = DG C Λ P' q' * UG C Λ P q := by
-  refine LinearMap.ext fun φ => Subtype.ext (funext fun d => ?_)
-  simp only [Module.End.mul_apply, UG, DG, DaG, LocOp.op, LocOp.app, LocOp.ofNbr, LinearMap.coe_mk, AddHom.coe_mk]
-  simp only [Finsupp.sum_indicator_index, LinearMap.zero_apply, implies_true, Finset.sum_attach,
-    LinearMap.id_apply]
-  exact DecoSet.sum_up_dn hP hP' hne hq hq2 hq' hq2' d (fun e => φ.1 e)
 
 end Ops
 
@@ -276,11 +205,6 @@ section Cols
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-theorem UOp_DOp_commute (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) (j : ℕ) {P P' : {P // P ∈ Pr.vT u}} (hne : P ≠ P') :
-    Commute (UOp W Ch u j P) (DOp W Ch u j P') := by
-  have h1 := T_unif hX hPr u P
-  have h2 := T_unif hX hPr u P'
-  exact UG_DG_comm _ _ (moveHyp_of_ok hPr u P) (moveHyp_of_ok hPr u P') hne h1.1 h1.2 h2.1 h2.2
 
 end Cols
 

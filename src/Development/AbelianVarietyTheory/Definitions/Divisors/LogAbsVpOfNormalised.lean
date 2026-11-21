@@ -121,10 +121,6 @@ theorem _root_.GlobalTheory.HTLat.isSplitting_embO [IsAlgClosed C] [CharZero C] 
     exact IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) h
   · exact isUnit_iff_ne_zero.2 (Int.cast_ne_zero.2 (NumberField.discr_ne_zero E))
 
-theorem isSplitting_int (R : Type) [CommRing R] :
-    IsSplitting (fun _ : Unit => Int.castRingHom R) := by
-  rw [isSplitting_iff_isUnit_det _ (Module.Basis.singleton Unit ℤ)]
-  simp
 
 end Embeddings
 
@@ -136,22 +132,8 @@ variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
 def grLat (La : Submodule O U) (F' F : Submodule C U) : Submodule O (U ⧸ F') :=
   (La ⊓ F.restrictScalars O).map (F'.mkQ.restrictScalars O)
 
-theorem grLat_mono {La La' : Submodule O U} (h : La ≤ La') (F' F : Submodule C U) :
-    grLat La F' F ≤ grLat La' F' F := Submodule.map_mono (inf_le_inf_right _ h)
 
-theorem grLat_le (La : Submodule O U) (F' F : Submodule C U) :
-    grLat La F' F ≤ (F.map F'.mkQ).restrictScalars O := by
-  rintro _ ⟨x, hx, rfl⟩
-  exact ⟨x, hx.2, rfl⟩
 
-theorem grLat_eq_inf (La : Submodule O U) {F' F : Submodule C U} (h : F' ≤ F) :
-    grLat La F' F = La.map (F'.mkQ.restrictScalars O) ⊓ (F.map F'.mkQ).restrictScalars O := by
-  refine le_antisymm (le_inf (Submodule.map_mono inf_le_left) (grLat_le La F' F)) ?_
-  rintro _ ⟨⟨x, hx, rfl⟩, y, hy, hxy⟩
-  refine ⟨x, ⟨hx, ?_⟩, rfl⟩
-  have h1 : y - x ∈ F' := (Submodule.Quotient.eq F').1 hxy
-  have h2 := F.sub_mem hy (h h1)
-  simpa using h2
 
 def scaleLat (a : C) (La : Submodule O U) : Submodule O U :=
   La.map ((a • LinearMap.id : U →ₗ[C] U).restrictScalars O)
@@ -159,17 +141,7 @@ def scaleLat (a : C) (La : Submodule O U) : Submodule O U :=
 theorem mem_scaleLat {a : C} {La : Submodule O U} {x : U} :
     x ∈ scaleLat a La ↔ ∃ y ∈ La, a • y = x := Iff.rfl
 
-theorem scaleLat_one (La : Submodule O U) : scaleLat (1 : C) La = La := by
-  ext x; simp [mem_scaleLat]
 
-theorem grLat_scaleLat {a : C} (ha : a ≠ 0) (La : Submodule O U) (F' F : Submodule C U) :
-    grLat (scaleLat a La) F' F = scaleLat a (grLat La F' F) := by
-  ext z
-  constructor
-  · rintro ⟨_, ⟨⟨y, hy, rfl⟩, hF⟩, rfl⟩
-    exact ⟨F'.mkQ y, ⟨y, ⟨hy, (F.smul_mem_iff ha).1 hF⟩, rfl⟩, (map_smul F'.mkQ a y).symm⟩
-  · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
-    exact ⟨a • y, ⟨⟨y, hy.1, rfl⟩, F.smul_mem a hy.2⟩, map_smul F'.mkQ a y⟩
 
 variable (v : Valuation C ℝ≥0)
 
@@ -269,8 +241,6 @@ theorem _root_.GlobalTheory.HTLat.fg_inf (hv : v.Integers O) {La : Submodule O U
   rw [heq]
   exact hker.map _
 
-theorem fg_grLat (hv : v.Integers O) {La : Submodule O U} (hfg : La.FG) (F' F : Submodule C U) :
-    (grLat La F' F).FG := (fg_inf hv hfg F).map _
 
 end Graded
 
@@ -322,10 +292,6 @@ theorem map_step {U' : Type} [AddCommGroup U'] [Module C U'] (g : U →ₗ[C] U'
     (step C f i).map g = step C (g ∘ f) i := by
   rw [step, step, Submodule.map_span, Set.image_comp]
 
-theorem map_mkQ_step_succ (f : Fin N → U) (i : Fin N) :
-    (step C f (i + 1)).map (step C f i).mkQ = Submodule.span C {(step C f i).mkQ (f i)} := by
-  rw [step_succ, Submodule.map_sup, Submodule.mkQ_map_self, bot_sup_eq, Submodule.map_span,
-    Set.image_singleton]
 
 variable (C) in
 
@@ -451,9 +417,6 @@ structure AdaptedFrame (W U₁ : Submodule C U) (N j : ℕ) where
   step_j : step C f j = W
   step_N : step C f N = U₁
 
-theorem AdaptedFrame.notMem_step {W U₁ : Submodule C U} {j : ℕ} (F : AdaptedFrame W U₁ N j)
-    (i : Fin N) : F.f i ∉ step C F.f i :=
-  F.indep.notMem_span_image (by simp)
 
 theorem AdaptedFrame.finrank_step {W U₁ : Submodule C U} {j : ℕ} (F : AdaptedFrame W U₁ N j)
     {i : ℕ} (hi : i ≤ N) : Module.finrank C (step C F.f i) = i := by
@@ -471,44 +434,10 @@ def stdFrame (C : Type) [Field C] (N j : ℕ) (hj : j ≤ N) :
     have : {k : Fin N | (k : ℕ) < N} = Set.univ := Set.eq_univ_of_forall fun k => k.2
     rw [step, this, Set.image_univ, Module.Basis.span_eq]
 
-theorem nonempty_adaptedFrame {W U₁ : Submodule C U} (h : W ≤ U₁) [FiniteDimensional C U₁] :
-    Nonempty (AdaptedFrame W U₁ (Module.finrank C U₁) (Module.finrank C W)) := by
-  have : FiniteDimensional C W := Submodule.finiteDimensional_of_le h
-  obtain ⟨Q, hQ⟩ := (W.comap U₁.subtype).exists_isCompl
-  have hj : Module.finrank C (W.comap U₁.subtype) = Module.finrank C W :=
-    (Submodule.comapSubtypeEquivOfLe h).finrank_eq
-  have hN : Module.finrank C W + Module.finrank C Q = Module.finrank C U₁ := by
-    rw [← hj]; exact Submodule.finrank_add_eq_of_isCompl hQ
-  let b₁ := Module.finBasisOfFinrankEq C _ hj
-  let b₂ := Module.finBasis C Q
-  let b := ((b₁.prod b₂).map (Submodule.prodEquivOfIsCompl _ _ hQ)).reindex
-    (finSumFinEquiv.trans (finCongr hN))
-  have hb : ∀ k, (U₁.subtype ∘ b) ((finSumFinEquiv.trans (finCongr hN)) (Sum.inl k)) =
-      (U₁.subtype ∘ₗ (W.comap U₁.subtype).subtype) (b₁ k) := fun k => by simp [b]
-  refine ⟨⟨U₁.subtype ∘ b, b.linearIndependent.map' _ U₁.ker_subtype, by omega, ?_, ?_⟩⟩
-  · have h1 : (U₁.subtype ∘ b) '' {k | (k : ℕ) < Module.finrank C W} =
-        (U₁.subtype ∘ₗ (W.comap U₁.subtype).subtype) '' Set.range b₁ := by
-      ext x
-      constructor
-      · rintro ⟨k, hk, rfl⟩
-        refine ⟨_, ⟨⟨k, hk⟩, rfl⟩, ?_⟩
-        exact (hb ⟨k, hk⟩).symm.trans (congrArg (U₁.subtype ∘ b) (Fin.ext rfl))
-      · rintro ⟨_, ⟨k, rfl⟩, rfl⟩
-        exact ⟨(finSumFinEquiv.trans (finCongr hN)) (Sum.inl k), k.2, hb k⟩
-    rw [step, h1, ← Submodule.map_span, b₁.span_eq, Submodule.map_comp, Submodule.map_subtype_top,
-      Submodule.map_comap_subtype, inf_eq_right.2 h]
-  · have : {k : Fin (Module.finrank C U₁) | (k : ℕ) < Module.finrank C U₁} = Set.univ :=
-      Set.eq_univ_of_forall fun k => k.2
-    rw [← map_step, step, this, Set.image_univ, b.span_eq, Submodule.map_subtype_top]
 
 def logAbs_vp (p : ℕ) (v : Valuation C ℝ≥0) (r : ℝ≥0) : ℝ :=
   -(Real.log p * (Real.log r / Real.log (v (p : C))))
 
-theorem logAbs_vp_mul (p : ℕ) (v : Valuation C ℝ≥0) {r s : ℝ≥0} (hr : r ≠ 0) (hs : s ≠ 0) :
-    logAbs_vp p v (r * s) = logAbs_vp p v r + logAbs_vp p v s := by
-  rw [logAbs_vp, logAbs_vp, logAbs_vp, NNReal.coe_mul,
-    Real.log_mul (NNReal.coe_ne_zero.2 hr) (NNReal.coe_ne_zero.2 hs)]
-  ring
 
 theorem logAbs_vp_self (p : ℕ) (v : Valuation C ℝ≥0) (h0 : v (p : C) ≠ 0) (h1 : v (p : C) < 1) :
     logAbs_vp p v (v (p : C)) = -Real.log p := by
@@ -516,11 +445,6 @@ theorem logAbs_vp_self (p : ℕ) (v : Valuation C ℝ≥0) (h0 : v (p : C) ≠ 0
     (Real.log_neg (NNReal.coe_pos.2 (pos_iff_ne_zero.2 h0)) (by exact_mod_cast h1)).ne
   rw [logAbs_vp, div_self this, mul_one]
 
-theorem logAbs_vp_of_normalised {p : ℕ} (hp : 1 < p) (v : Valuation C ℝ≥0)
-    (h : v (p : C) = (p : ℝ≥0)⁻¹) (r : ℝ≥0) : logAbs_vp p v r = Real.log r := by
-  have : Real.log p ≠ 0 := (Real.log_pos (by exact_mod_cast hp)).ne'
-  rw [logAbs_vp, h, NNReal.coe_inv, NNReal.coe_natCast, Real.log_inv]
-  field_simp
 
 variable {U' : Type} [AddCommGroup U'] [Module C U'] [Module O U'] [IsScalarTower O C U']
 
@@ -529,19 +453,6 @@ def phiAt_vp (p : ℕ) (v : Valuation C ℝ≥0) (al : U →ₗ[C] U') (LW : Sub
   ∑ i : Fin N, lam i * logAbs_vp p v
     (if (i : ℕ) < j then grNorm v LW f i else grNorm v Lom (al ∘ f) i)
 
-theorem AdaptedFrame.map_notMem_step (al : U →ₗ[C] U') {U₁ : Submodule C U} {j : ℕ}
-    (F : AdaptedFrame (LinearMap.ker al ⊓ U₁) U₁ N j) (i : Fin N) (hi : j ≤ i) :
-    (al ∘ F.f) i ∉ step C (al ∘ F.f) i := by
-  rw [← map_step]
-  rintro ⟨y, hy, e⟩
-  have hU : ∀ k, k ≤ N → step C F.f k ≤ U₁ := fun k hk => (step_mono F.f hk).trans F.step_N.le
-  have h1 : F.f i - y ∈ step C F.f j := by
-    rw [F.step_j]
-    refine ⟨?_, U₁.sub_mem (hU _ i.2 (mem_step_succ F.f i)) (hU _ i.2.le hy)⟩
-    change al (F.f i - y) = 0
-    rw [map_sub, e]
-    exact sub_self _
-  exact F.notMem_step i (by simpa using Submodule.add_mem _ (step_mono F.f hi h1) hy)
 
 example (p : ℕ) (v : Valuation C ℝ≥0) (hv : v.Integers O) (h0 : v (p : C) ≠ 0) (h1 : v (p : C) < 1)
     (x : U) (hx : x ≠ 0) :

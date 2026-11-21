@@ -65,23 +65,6 @@ theorem character_inv {G V : Type} [Group G] [Fintype G] [AddCommGroup V] [Modul
   unfold Representation.character
   rw [trace_of_diag v (ρ g⁻¹) _ hinv, trace_of_diag v (ρ g) μ hsv, map_sum]
 
-theorem centralIdem_coeff {G V : Type} [Group G] [Fintype G] [AddCommGroup V] [Module ℂ V]
-    (ρ : Representation ℂ G V) (x : G) :
-    (centralIdem ρ).coeff x =
-      (Module.finrank ℂ V : ℂ) / (Fintype.card G : ℂ) * ρ.character x⁻¹ := by
-  classical
-  unfold centralIdem
-  rw [MonoidAlgebra.coeff_sum, Finsupp.finsetSum_apply]
-  rw [Finset.sum_eq_single x]
-  · simp [MonoidAlgebra.of_apply, MonoidAlgebra.coeff_single]
-  · intro b _ hb
-    simp [MonoidAlgebra.of_apply, MonoidAlgebra.coeff_single, hb]
-  · intro h; exact absurd (Finset.mem_univ x) h
 
-theorem central_idempotent_self_adjoint : CentralIdemSelfAdjoint := by
-  intro G V _ _ _ _ _ ρ g
-  refine ⟨character_inv ρ g, ?_⟩
-  rw [centralIdem_coeff, centralIdem_coeff, inv_inv, map_mul, character_inv ρ g, map_div₀,
-    Complex.conj_natCast, Complex.conj_natCast, Complex.conj_conj]
 
 end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility

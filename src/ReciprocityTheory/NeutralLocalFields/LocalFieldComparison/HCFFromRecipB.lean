@@ -31,13 +31,6 @@ theorem infIdele_fst_ne (w w' : InfinitePlace K) (h : w' ≠ w) (x : (w.Completi
 theorem infIdele_snd (w : InfinitePlace K) (x : (w.Completion)ˣ) (v : HeightOneSpectrum (𝓞 K)) :
     (infIdele K w x : AdeleRing (𝓞 K) K).2 v = 1 := rfl
 
-theorem infIdele_mem_rayUnits (w : InfinitePlace K) (x : (w.Completion)ˣ) :
-    infIdele K w x ∈ rayUnits K ⊤ ∅ := by
-  refine ⟨fun w' hw' => by simp at hw', fun v => ⟨?_, 0, Submodule.mem_top, ?_⟩⟩
-  · rw [infIdele_snd]
-    exact map_one _
-  · rw [infIdele_snd, sub_self]
-    simp
 
 theorem isOpen_ker (Art : IdeleClassGroup K →* Field.absoluteGaloisGroupAbelianization K)
     (hc : Continuous Art) (E : IntermediateField K (AlgebraicClosure K)) (h : IsFiniteAbelian K E) :

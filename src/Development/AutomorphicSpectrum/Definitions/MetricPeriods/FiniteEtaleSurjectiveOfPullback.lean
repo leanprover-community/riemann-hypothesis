@@ -313,23 +313,8 @@ theorem gramAt_conjTranspose {M : LieModel G ξ Li} {L : LB G.left} {z : Spec (C
   let ⟨v, hv, h'⟩ := h
   ⟨v, hv, fun p q => (h' q p).conj⟩
 
-theorem dualGram_inner {r : ℕ} {Γ Γ' : Matrix (Fin r) (Fin r) ℂ} (hΓ : Γ.IsHermitian) (h : Γ'ᵀ * Γ = 1)
-    {y y' u u' : Fin r → ℂ} (hu : ∀ x, star u ⬝ᵥ Γ *ᵥ x = y ⬝ᵥ x) (hu' : ∀ x, star u' ⬝ᵥ Γ *ᵥ x = y' ⬝ᵥ x) :
-    star y ⬝ᵥ Γ' *ᵥ y' = star u' ⬝ᵥ Γ *ᵥ u := by
-  have rep : ∀ {y u : Fin r → ℂ}, (∀ x, star u ⬝ᵥ Γ *ᵥ x = y ⬝ᵥ x) → star u ᵥ* Γ = y := fun {y u} hu =>
-    dotProduct_eq _ _ fun x => by rw [← Matrix.dotProduct_mulVec, hu]
-  have h1 : Γ' *ᵥ y' = star u' := by
-    rw [← rep hu', ← Matrix.vecMul_transpose, Matrix.vecMul_vecMul, mul_eq_one_comm.1 h, Matrix.vecMul_one]
-  have h2 : star y = Γ *ᵥ u := by
-    rw [← rep hu, Matrix.star_vecMul, star_star, hΓ.eq]
-  rw [h1, h2, dotProduct_comm]
 
-theorem dualGram_norm {r : ℕ} {Γ Γ' : Matrix (Fin r) (Fin r) ℂ} (hΓ : Γ.IsHermitian) (h : Γ'ᵀ * Γ = 1)
-    {y u : Fin r → ℂ} (hu : ∀ x, star u ⬝ᵥ Γ *ᵥ x = y ⬝ᵥ x) : star y ⬝ᵥ Γ' *ᵥ y = star u ⬝ᵥ Γ *ᵥ u :=
-  dualGram_inner hΓ h hu hu
 
-theorem dualGram_det {r : ℕ} {Γ Γ' : Matrix (Fin r) (Fin r) ℂ} (h : Γ'ᵀ * Γ = 1) : Γ'.det * Γ.det = 1 := by
-  rw [← Matrix.det_transpose Γ', ← Matrix.det_mul, h, Matrix.det_one]
 
 example : (!![2, Complex.I; -Complex.I, 1] : Matrix (Fin 2) (Fin 2) ℂ)ᵀ * !![1, Complex.I; -Complex.I, 2] = 1 := by
   ext a b

@@ -305,13 +305,7 @@ theorem exists_idem_rdU_det {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} (V : 
     (fun u hu hc => h1 u hu (det_cong_of_finCong V l.M (by have := l.three_le; omega) u hc)) h2
   exact ⟨cs, k0, k1, k2, k3, fun h γ hm a => (k4 h γ hm a).1⟩
 
-theorem hom_invariant {G A : Type} [Group G] [Group A] (κ : G →* A) {u : G} (hu : κ u = 1) (h : G) :
-    κ (h * u) = κ h ∧ κ (u * h) = κ h := by
-  simp [hu]
 
-theorem idem_mul_pow_succ {R : Type} [CommRing R] {s f : R} {m : ℕ} (hs : s * s = s) (hf : f ^ m = 1) :
-    (s * f) ^ (m + 1) = s * f := by
-  rw [mul_pow, IsIdempotentElem.pow_succ_eq m hs, pow_succ, hf, one_mul]
 
 theorem fnAlgClosed_of_iotaOK {l : Level H} (Xo : Moduli Dw l) (c : Coeff l) (V : HSp D)
     (io : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E)) (hio : IotaOK Dw V io) (hpos : 1 ≤ Dw.p + Dw.q)

@@ -5,22 +5,6 @@ namespace Formalism.FourierDecayAlt.P.WordLiftInduction
 
 open Finset Polynomial Formalism.FourierDecayAlt.F7
 
-theorem top_eq_sum {W : ℝ → ℂ} {d : ℕ} {c : ℂ} (h : IsTopCoeff W d c) (y : Fin (d + 1) → ℝ)
-    (hy : Function.Injective y) : ∑ j, ((lagCo y j : ℝ) : ℂ) * W (y j) = c := by
-  obtain ⟨P, hd, hc, hP⟩ := h
-  have hinj : Function.Injective (fun j => ((y j : ℝ) : ℂ)) :=
-    fun a b hab => hy (Complex.ofReal_injective hab)
-  have hlt : P.degree < (univ : Finset (Fin (d + 1))).card := by
-    rw [card_univ, Fintype.card_fin]
-    exact lt_of_le_of_lt degree_le_natDegree (by exact_mod_cast Nat.lt_succ_of_le hd)
-  have h := Lagrange.coeff_eq_sum (s := univ) (v := fun j => ((y j : ℝ) : ℂ)) hinj.injOn hlt
-  simp only [card_univ, Fintype.card_fin, Nat.add_sub_cancel] at h
-  rw [← hc, h]
-  refine sum_congr rfl fun i _ => ?_
-  rw [hP]
-  unfold lagCo
-  push_cast
-  rw [prod_inv_distrib, div_eq_mul_inv, mul_comm]
 
 section
 
@@ -103,13 +87,6 @@ theorem bound (Ξ : Sesq M) (d K : ℕ) (dat : Fin K → Dat R) (c : Fin K → �
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_prod]
   exact mul_le_mul_of_nonneg_left (hB j) (prod_nonneg fun _ _ => abs_nonneg _)
 
-theorem one_planeWave (Ξ : Sesq M) (n : ℕ) (D : Dat R) (x x' : M) (h : Shape n D.A D.B)
-    (hv : Shape n D.Av D.Bv) : IsTopCoeff (fun Y => one Ξ D Y x x') (2 * n) (D.s * Ξ x x') := by
-  have h1 := plane_wave_top_degree R M Ξ n D.A D.B D.Av D.Bv D.s x x' h hv
-  have hJ : ∀ Y : ℝ, pair2 Ξ (act2 (Formalism.YangianSpanCharacter.T.J R * Formalism.YangianSpanCharacter.T.Uinv (A := R) D.s) (vec D.A D.B Y x))
-      (vec D.Av D.Bv (Y + 1) x') = one Ξ D Y x x' :=
-    fun Y => j_pairing_formula R M Ξ D.A D.B D.Av D.Bv D.s Y (Y + 1) x x'
-  simpa only [hJ] using h1
 
 theorem one_lift (Ξ : Sesq M) (n s : ℕ) (D : Dat R) (A₀ A₀v : R[X]) (e t t' : ℂ) (X X' : M)
     (hs : D.s = 0) (he : e = 1 ∨ e = -1)
@@ -160,29 +137,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Finset Polynomial Formalism.FourierDecayAlt.F7
 
-theorem plane_wave_word_chebyshev_alt : Formalism.FourierDecayAlt.F7.PlaneWaveWordCheb := by
-  intro R M _ _ _ _ _ _ Ξ n K dat α β X X' B hn hαβ hsh hB
-  have hch := fun a => chebyshev_bound_sharp (α a) (β a) (2 * n) (hαβ a) (by omega)
-  exact WordLiftInduction.bound Ξ (2 * n) K dat (fun a => (dat a).s)
-    (fun a => Formalism.SA.C.chebPt (α a) (β a) (2 * n)) X X' _ B
-    (WordLiftInduction.word Ξ (2 * n) X X' K dat _ _ fun a Q Q' =>
-      WordLiftInduction.top_eq_sum (WordLiftInduction.one_planeWave Ξ n (dat a) (Q • X) (Q' • X') (hsh a).1 (hsh a).2) _
-        (hch a).1)
-    (fun a => (hch a).2) hB
 
-theorem lift_word_chebyshev : Formalism.FourierDecayAlt.F7.LiftWordCheb := by
-  intro R M _ _ _ _ _ _ Ξ n s K dat A₀ A₀v e t t' α β X X' B hs hs0 he _ hA hA₀ h1 h2 hαβ hB
-  have hch := fun a => chebyshev_bound_sharp (α a) (β a) (2 * n + s) (hαβ a) (by omega)
-  have hb := WordLiftInduction.bound Ξ (2 * n + s) K dat (fun a => e a * (1 / t a - 1 / t' a))
-    (fun a => Formalism.SA.C.chebPt (α a) (β a) (2 * n + s)) X X' _ B
-    (WordLiftInduction.word Ξ (2 * n + s) X X' K dat _ _ fun a Q Q' =>
-      WordLiftInduction.top_eq_sum (WordLiftInduction.one_lift Ξ n s (dat a) (A₀ a) (A₀v a) (e a) (t a) (t' a) X X' (hs0 a)
-        (he a) (hA a) (hA₀ a) (h1 a) (h2 a) Q Q') _ (hch a).1)
-    (fun a => (hch a).2) hB
-  have hn : ∀ a, ‖e a * (1 / t a - 1 / t' a)‖ = ‖1 / t a - 1 / t' a‖ := by
-    intro a
-    rw [norm_mul]
-    rcases he a with h | h <;> simp [h]
-  simpa only [hn] using hb
 
 end Formalism.FourierDecayAlt.P

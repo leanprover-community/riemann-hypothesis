@@ -123,28 +123,6 @@ theorem residue_continuedLFunction_ne_zero :
       (inv_ne_zero pi_pow_nrComplexPlaces_ne_zero))
       (χ.fourierConst_ne_zero χ.toFractionalIdeal_conductorDifferentIdele))
 
-theorem tendsto_sub_mul_continuedLFunction_of_forall :
-    Tendsto (fun s ↦ (s - (1 - (τ : ℂ) * I)) * χ.continuedLFunction s) (𝓝[≠] (1 - (τ : ℂ) * I))
-      (𝓝 ((χ.gammaFactor (1 - (τ : ℂ) * I))⁻¹ * (((normOneClassMeasure K univ).toReal : ℂ) *
-        ((π : ℂ) ^ nrComplexPlaces K)⁻¹ * χ.fourierConst χ.conductorDifferentIdele))) := by
-  set d : ℂ := 1 - (τ : ℂ) * I with hd
-  set h : ℂ → ℂ := fun s ↦ (χ.discrNormConductor : ℂ) ^ (-(s / 2)) * (χ.gammaFactor s)⁻¹ with hh
-  have hh' : Tendsto h (𝓝[≠] d) (𝓝 (h d)) :=
-    ((χ.differentiable_cpow_mul_gammaFactor_inv d).continuousAt.tendsto).mono_left nhdsWithin_le_nhds
-  have hA : (χ.discrNormConductor : ℂ) ^ (-(d / 2)) * (χ.discrNormConductor : ℂ) ^ (d / 2) = 1 := by
-    rw [← cpow_add _ _ (ofReal_ne_zero.2 χ.discrNormConductor_pos.ne'), neg_add_cancel, cpow_zero]
-  refine ((hh'.mul (tendsto_mul_completedLFunction_one_sub_of_forall hτ)).congr' ?_).trans
-    (le_of_eq (congrArg 𝓝 ?_))
-  · have hne : ∀ᶠ s in 𝓝[≠] d, s ≠ -((τ : ℂ) * I) :=
-      eventually_nhdsWithin_of_eventually_nhds
-        (isOpen_compl_singleton.mem_nhds neg_ne_one_sub.symm)
-    filter_upwards [hne] with s hs
-    rw [continuedLFunction_of_ne hτ hs, normalizedLFunction]
-    simp only [hh]
-    ring
-  · simp only [hh]
-    linear_combination ((χ.gammaFactor d)⁻¹ * (((normOneClassMeasure K univ).toReal : ℂ) *
-      ((π : ℂ) ^ nrComplexPlaces K)⁻¹ * χ.fourierConst χ.conductorDifferentIdele)) * hA
 
 end Trivial
 

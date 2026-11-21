@@ -126,10 +126,5 @@ def StdSt (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensio
 noncomputable example (n : ℕ) : Kernel (EuclideanSpace ℂ (Fin n)) volume :=
   Kernel.std (EuclideanSpace ℂ (Fin n)) volume 1
 
-theorem isWeakD_zero (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [MeasurableSpace E] [BorelSpace E] (μ : Measure E) [μ.IsAddHaarMeasure] (m : ℕ) (c : Fin m → ℂ) (v : Fin m → E) :
-    IsWeakD μ c v (fun _ => 0) 0 := by
-  refine ⟨fun _ => locallyIntegrable_zero, locallyIntegrable_zero, fun φ _ _ => ?_⟩
-  simp
 
 end ReciprocityTheory.L2DbarEstimates.B

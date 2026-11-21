@@ -75,8 +75,6 @@ theorem lamC_one (lam : Qbar →+* ℂ_[q]) : lamC lam 1 = 1 := by
   rw [dif_pos (one_mem _)]
   exact map_one lam
 
-theorem isIdem_zero_one (lam : Qbar →+* ℂ_[q]) : IsIdem D lam 0 (1 : 𝓞 D.host.K) := by
-  constructor <;> simp [lamC_one]
 
 theorem isIdem_mono (lam : Qbar →+* ℂ_[q]) {m m' : ℕ} (ε : 𝓞 D.host.K) (h : IsIdem D lam m ε) (hm : m' ≤ m) :
     IsIdem D lam m' ε := by
@@ -87,8 +85,6 @@ theorem isIdem_mono (lam : Qbar →+* ℂ_[q]) {m m' : ℕ} (ε : 𝓞 D.host.K)
 theorem hf_zero_right (T : Tor D) {N N' : ℕ} (z : VC D N N') : Hf D T z 0 = 0 := by
   simp [Hf]
 
-theorem kap_zero_right (T : Tor D) {N N' : ℕ} (x : VC D N N') : kap D T x 0 = 1 := by
-  simp [kap, hf_zero_right]
 
 theorem qH_zero (T : Tor D) {N N' : ℕ} : qH D T (0 : VC D N N') = 0 := by
   simp [qH, hf_zero_right]
@@ -132,15 +128,6 @@ theorem wop_zero (T : Tor D) {N N' : ℕ} (G : VC D N N' → ℂ) : Wop D T q (0
   funext z
   simp [Wop, U, wPh_zero, hf_zero_right]
 
-theorem liftY_zero {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' r : ℕ} (ε : 𝓞 D.host.K)
-    (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (yt : Fin r → Fin (q ^ 0)) :
-    liftY D (tor0 D cc δ) δ q 0 ε b yt = 0 := by
-  have hy : ∀ i, ((yt i : ℕ)) = 0 := fun i => by
-    have := (yt i).isLt
-    simp at this
-    omega
-  funext τ i j
-  simp [liftY, embV, tor0, hy]
 
 end Zero
 
@@ -150,61 +137,12 @@ variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ
   (lam : Qbar →+* ℂ_[q]) (Ω : ℂ_[q]) {N N' r : ℕ} (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
   (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (μ : Meas q r)
 
-theorem momE_of_translateJetMomentLaw (h : TranslateJetMomentLawAnyIdempotentLevel B χ lam Ω L L' b μ) : MomE B χ lam Ω L L' b μ := by
-  intro k y g hg
-  have := h 0 0 1 (isIdem_zero_one lam) le_rfl (fun _ => 0) k y g (fun a => by
-    rw [hg a, liftY_zero, kap_zero_right, lamC_one, one_mul])
-  rwa [liftY_zero, wop_zero] at this
 
-theorem firstMoment_of_idempotentLaw (h : TranslateJetMomentLawAnyIdempotentLevel B χ lam Ω L L' b μ) : TranslateJetMomentLaw B χ lam Ω L L' b μ := by
-  intro n ε hε yt k y g hg
-  exact h n (2 * n + 2) ε hε (by omega) yt k y g hg
 
-theorem secondMoment_of_idempotentLaw (h : LocallyConstantJetMomentLawAnyIdempotentLevel B χ lam Ω L L' b μ) : LocallyConstantJetMomentLaw B χ lam Ω L L' b μ := by
-  intro n ε hε Φ hΦ hF k y g hg
-  exact h n (2 * n + 2) ε hε (by omega) Φ hΦ hF k y g hg
 
-theorem momSplit_of_momBN (h : MomBN B χ lam) : MomSplit D cc δ B χ q lam := by
-  obtain ⟨Ω, hΩ, H⟩ := h
-  refine ⟨Ω, hΩ, fun N N' L L' r b hA hB => ?_⟩
-  obtain ⟨μ, hμ, h1, h2⟩ := H N N' L L' r b hA hB
-  exact ⟨μ, hμ, momE_of_translateJetMomentLaw B χ lam Ω L L' b μ h1, firstMoment_of_idempotentLaw B χ lam Ω L L' b μ h1,
-    secondMoment_of_idempotentLaw B χ lam Ω L L' b μ h2⟩
 
-theorem momB_of_momBN (h : MomBN B χ lam) : MomB B χ lam := by
-  obtain ⟨Ω, hΩ, H⟩ := h
-  refine ⟨Ω, hΩ.1, fun N N' L L' r b hA hB => ?_⟩
-  obtain ⟨μ, -, h1, h2⟩ := H N N' L L' r b hA hB
-  exact ⟨μ, h1, h2⟩
 
-theorem momBN_of_momSplit (hL : LiftIndep B χ lam) (hE : IdemEx D lam) (h : MomSplit D cc δ B χ q lam) :
-    MomBN B χ lam := by
-  obtain ⟨Ω, hΩ, H⟩ := h
-  refine ⟨Ω, hΩ, fun N N' L L' r b hA hB => ?_⟩
-  obtain ⟨μ, hμ, -, h1, h2⟩ := H N N' L L' r b hA hB
-  refine ⟨μ, hμ, ?_, ?_⟩
-  · intro n m ε hε hm yt k y g hg
-    obtain ⟨ε', hε'⟩ := hE (2 * n + 2)
-    obtain ⟨hW, hk1, -⟩ := hL N N' L L' r b hA hB n m (2 * n + 2) ε ε' hε hε' hm (by omega) yt
-    rw [hW]
-    exact h1 n ε' hε' yt k y g (fun a => by rw [hg a, hk1 a])
-  · intro n m ε hε hm Φ hΦ hF k y g hg
-    obtain ⟨ε', hε'⟩ := hE (2 * n + 2)
-    have hX : XiF D B.tor δ q n ε b Φ (B.eNat χ N N' L L') =
-        XiF D B.tor δ q n ε' b Φ (B.eNat χ N N' L L') := by
-      funext z
-      simp only [XiF]
-      refine congrArg (fun s => ((q : ℂ) ^ (n * r))⁻¹ * s) (Finset.sum_congr rfl fun a _ => ?_)
-      refine congrArg (fun s => Φ (fun i => (((a i : ℕ) : ℤ_[q]))) * s)
-        (Finset.sum_congr rfl fun yt _ => ?_)
-      obtain ⟨hW, -, hk2⟩ := hL N N' L L' r b hA hB n m (2 * n + 2) ε ε' hε hε' hm (by omega) yt
-      rw [hW, hk2 a]
-    rw [hX]
-    exact h2 n ε' hε' Φ hΦ hF k y g hg
 
-theorem momSplit_iff_momBN (hL : LiftIndep B χ lam) (hE : IdemEx D lam) :
-    MomSplit D cc δ B χ q lam ↔ MomBN B χ lam :=
-  ⟨momBN_of_momSplit B χ lam hL hE, momSplit_of_momBN B χ lam⟩
 
 end Imp
 
@@ -212,35 +150,9 @@ section Rec
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : IdE D → ℂ)
 
-theorem packetMoment_of_splitMoments
-    (h : ∀ (q : ℕ) [Fact q.Prime], JetMomA.SplitK D q → Nat.Coprime (Ideal.absNorm cc) q →
-      ∀ lam : Qbar →+* ℂ_[q], MomSplit D cc δ B χ q lam) :
-    mom22 D cc δ (B.eNat χ) := by
-  intro p _ lam hs hcop
-  obtain ⟨Ω, hΩ, H⟩ := h p hs hcop lam
-  refine ⟨Ω, hΩ, fun N N' L L' r b hA hB => ?_⟩
-  obtain ⟨μ, hμ, hE, -, h2⟩ := H N N' L L' r b hA hB
-  exact ⟨μ, hμ, hE, fun n ε Φ hε hΦ hF m y g hg => h2 n ε hε Φ hΦ hF m y g hg⟩
 
-theorem momentLawUnderBasisChange_iff_largerSupportMomentCondition :
-    (∀ (q : ℕ) [Fact q.Prime], JetMomA.SplitK D q → Nat.Coprime (Ideal.absNorm cc) q →
-      ∀ lam : Qbar →+* ℂ_[q], MomentLawUnderBasisChange B χ lam) ↔ LargerSupportMomentCondition D cc δ (B.eNat χ) := by
-  constructor
-  · intro h p _ lam hs hcop
-    exact h p hs hcop lam
-  · intro h q _ hs hcop lam
-    exact h q lam hs hcop
 
-theorem moments_of_jetMoments (h : JetMomT) (hc : IsCurveIdeal D cc) (hd : IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hχ : IsChi D χ) :
-    B.MomP χ := by
-  exact ⟨packetMoment_of_splitMoments B χ (fun q _ hs hcop lam => (h D cc δ B hc hd χ hχ q hs hcop lam).2.1),
-    (momentLawUnderBasisChange_iff_largerSupportMomentCondition B χ).mp (fun q _ hs hcop lam => (h D cc δ B hc hd χ hχ q hs hcop lam).2.2)⟩
 
-theorem splitIntegrality_of_packetIntegrality (h : int22 D B.tor (B.eNat χ)) {q : ℕ} [Fact q.Prime] (lam : Qbar →+* ℂ_[q])
-    (hs : JetMomA.SplitK D q) (hd : q ≠ D.host.d) : IntSplit D cc δ B χ q lam := by
-  intro N N' L L' hA F hF
-  obtain ⟨-, h2, h3⟩ := (h q lam N N' L L' hA).1 hd F hF
-  exact ⟨h3 hs, h2⟩
 
 end Rec
 
@@ -303,17 +215,7 @@ def JetMomR : Prop :=
     ∀ lam : Qbar →+* ℂ_[q],
       IntSplit D cc δ B χ q lam ∧ MomSplitR D cc δ B χ q lam ∧ MomentLawUnderBasisChange B χ lam
 
-theorem momSplit_of_momSplitR (h : MomSplitR D cc δ B χ q lam) : MomSplit D cc δ B χ q lam := by
-  obtain ⟨Ω, hΩ, H, -⟩ := h
-  exact ⟨Ω, hΩ, H⟩
 
-theorem jetMomT_of_jetMomR (h : JetMomR) : JetMomT := by
-  intro D cc δ B hc hd χ hχ q _ hs hcop lam
-  obtain ⟨hI, hR, hM3⟩ := h D cc δ B hc hd χ hχ q hs hcop lam
-  exact ⟨hI, momSplit_of_momSplitR D cc δ B χ q lam hR, hM3⟩
 
-theorem firstMomentVectorLaw_iff {N N' r : ℕ} (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E))
-    (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (μ : Meas q r) :
-    FirstMomentVectorLaw B lam Ω b μ (B.eNat χ N N' L L') ↔ TranslateJetMomentLaw B χ lam Ω L L' b μ := Iff.rfl
 
 end Formalism.L2.Ker.I3.JetMomEq

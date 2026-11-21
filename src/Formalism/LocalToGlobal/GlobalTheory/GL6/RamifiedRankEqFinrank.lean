@@ -101,37 +101,9 @@ theorem ramified_rank_mul (M : FreeRankModel A) :
     rw [h2] at h
     exact h
 
-theorem ramified_rank_of_model (M : FreeRankModel A) (hT : 3 ≤ A.T) :
-    haveI := A.Mu0_fd
-    (A.du : ℚ) = (Module.finrank ℂ A.Mu0 : ℚ) * (1 - 1 / ((A.T : ℚ) - 1)) ^ R.f := by
-  have := A.Mu0_fd
-  have h := ramified_rank_mul A M
-  have h1 : ((A.T - 1 : ℕ) : ℚ) = (A.T : ℚ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
-  have h2 : ((A.T - 2 : ℕ) : ℚ) = (A.T : ℚ) - 2 := by rw [Nat.cast_sub (by omega)]; simp
-  have hq : (A.T : ℚ) - 1 ≠ 0 := by
-    have : (3 : ℚ) ≤ A.T := by exact_mod_cast hT
-    linarith
-  have hc := congrArg (fun n : ℕ => (n : ℚ)) h
-  simp only [Nat.cast_mul, Nat.cast_pow, h1, h2] at hc
-  have e1 : (1 : ℚ) - 1 / ((A.T : ℚ) - 1) = ((A.T : ℚ) - 2) / ((A.T : ℚ) - 1) := by
-    field_simp; ring
-  rw [e1, div_pow, ← mul_div_assoc, eq_div_iff (pow_ne_zero _ hq), hc]
 
 end Model
 
-theorem ramified_rank_formula (D : D7) (u : D.what₂.Word) (M : FreeRankModel (D.mem u).A) (hS : Formalism.MainNotions.product_first_zeroth_parts.HidaSetting D u) :
-    ((D.mem u).A.du : ℚ) = (D.duS u : ℚ) * (1 - 1 / (((D.mem u).A.T : ℚ) - 1)) ^ D.R.f := by
-  have hT : 3 ≤ (D.mem u).A.T := by
-    have h1 : 1 ≤ D.R.f := by
-      have h0 : 0 < D.R.n := D.R.ord_pos
-      show 1 ≤ 2 * D.R.n
-      omega
-    have h2 : 1 ≤ D.R.N D.R.m := by unfold Ranks.N; have := D.R.m_add_three_le_k; omega
-    have h3 : 1 ≤ D.R.f * D.R.N D.R.m := Nat.one_le_iff_ne_zero.2 (Nat.mul_ne_zero (by omega) (by omega))
-    have := hS.1
-    have h4 : 2 * D.R.f * D.R.N D.R.m = 2 * (D.R.f * D.R.N D.R.m) := by ring
-    omega
-  exact ramified_rank_of_model (D.mem u).A M hT
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 

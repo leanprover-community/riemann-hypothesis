@@ -52,10 +52,6 @@ theorem gelPair_KL (hE : Unr E) (n : ℕ) (w : Pl E) : GelPair (KL n w) := by
   · exact gelPair_split n w hw
   · exact gelPair_inert hE n w hw
 
-theorem sphOne_uncond : PositivityTheory.Rg.BcB.F.Eig.SphOne := by
-  intro E _ _ _ hE n w σ hne hfd
-  haveI := hfd
-  exact finrank_fixed_eq_one (gelPair_KL hE n w) σ.ρ σ.irred hne
 
 theorem sphOne : PositivityTheory.Rg.BcB.F.Eig.LocAlg → PositivityTheory.Rg.BcB.F.Eig.SphOne := by
   intro _ E _ _ _ hE n w σ hne hfd

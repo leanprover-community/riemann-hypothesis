@@ -29,8 +29,6 @@ theorem ProjTie.eq_of_mem {Y : Type*} {C : Submodule ℂ N} {ip : N → N → �
     rw [hP x y, hH x (j.symm ⟨g y, hy⟩), LinearEquiv.apply_symm_apply]
   rw [h1, LinearEquiv.apply_symm_apply]
 
-theorem hilbTie_top : HilbTie (⊤ : Submodule ℂ X) (fun a b => ⟪a, b⟫_ℂ) (Submodule.topEquiv.symm) :=
-  fun _ _ => rfl
 
 end Gen
 

@@ -178,9 +178,6 @@ def quotProj (c : ℤ) : quotLaurent M₁ M₂ →+ quotLaurent M₁ M₂ :=
   QuotientAddGroup.lift _ ((quotIota M₁ M₂ c).comp (laurentCoeff M₁ c)).toAddMonoidHom
     fun _ hm => AddMonoidHom.mem_ker.mpr ((quotIota_eq_zero_iff M₁ M₂ _).mpr (hm c))
 
-theorem quotProj_mk (c : ℤ) (m : M₁.laurent) :
-    quotProj M₁ M₂ c (Submodule.Quotient.mk m) =
-      quotIota M₁ M₂ c ⟨(m : LaurentSpace x E) c, m.2 c⟩ := rfl
 
 theorem quotProj_iota_self (c : ℤ) (z : M₁.piece c) :
     quotProj M₁ M₂ c (quotIota M₁ M₂ c z) = quotIota M₁ M₂ c z := by
@@ -198,9 +195,6 @@ theorem quotProj_iota_ne {c c' : ℤ} (h : c' ≠ c) (z : M₁.piece c') :
 
 def quotPiece (c : ℤ) : Submodule S (quotLaurent M₁ M₂) := LinearMap.range (quotIota M₁ M₂ c)
 
-theorem quotProj_mem (c : ℤ) (y : quotLaurent M₁ M₂) : quotProj M₁ M₂ c y ∈ quotPiece M₁ M₂ c := by
-  obtain ⟨m, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-  exact ⟨_, (quotProj_mk M₁ M₂ c m).symm⟩
 
 theorem quotProj_coe (c : ℤ) (v : DirectSum ℤ fun c => quotPiece M₁ M₂ c) :
     quotProj M₁ M₂ c (DirectSum.coeAddMonoidHom (quotPiece M₁ M₂) v) = (v c : quotLaurent M₁ M₂) := by

@@ -64,8 +64,6 @@ theorem whittakerOne_smul (c : ℂ) (ϕ : normOneGL K n → ℂ) (x : normOneGL 
   funext X
   simp only [Pi.smul_apply, smul_eq_mul, mul_assoc]
 
-theorem whittakerOne_zero (x : normOneGL K n) : whittakerOne (0 : normOneGL K n → ℂ) x = 0 := by
-  simp [whittakerOne]
 
 theorem norm_whittakerOne_le {ϕ : normOneGL K n → ℂ} {B : ℝ} (hB : ∀ y, ‖ϕ y‖ ≤ B)
     (x : normOneGL K n) : ‖whittakerOne ϕ x‖ ≤ B := by

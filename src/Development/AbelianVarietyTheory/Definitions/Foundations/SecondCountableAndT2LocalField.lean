@@ -158,16 +158,6 @@ theorem nabs_le_one (x : kˣ) (hx : valuation k (x : k) ≤ 1) : nabs k x ≤ 1 
   rw [nabs_vol ν h, h.2] at this
   exact ENNReal.ofReal_le_one.1 this
 
-theorem volM_int (ν : Measure k) (h : IsUnitVol ν) (m n : Type*) [Fintype m] [Fintype n] :
-    volM ν m n {x | ∀ i j, x i j ∈ (𝒪[k] : Set k)} = 1 := by
-  have := h.1
-  obtain ⟨_, _⟩ := secondCountable_and_t2_local_field (k := k)
-  have : {x : Matrix m n k | ∀ i j, x i j ∈ (𝒪[k] : Set k)} =
-      (Set.univ.pi fun _ : m => Set.univ.pi fun _ : n => (𝒪[k] : Set k) : Set (m → n → k)) :=
-    Set.ext fun x => ⟨fun hx i _ j _ => hx i j, fun hx i j => hx i trivial j trivial⟩
-  rw [this]
-  erw [Measure.pi_pi]
-  simp [Measure.pi_pi, h.2]
 
 theorem measurableEmbedding_val (n : Type*) [Fintype n] [DecidableEq n] :
     MeasurableEmbedding (fun g : GL n k => g.val) := by
@@ -200,12 +190,6 @@ theorem noncompact : NoncompactSpace k := by
   open scoped Valued in
   exact NormedSpace.noncompactSpace k k
 
-theorem not_isSelfDual_one (ν : Measure k) : ¬ IsSelfDual (1 : AddChar k Circle) ν := by
-  rintro ⟨h1, h2⟩
-  obtain ⟨_, _⟩ := secondCountable_and_t2_local_field (k := k)
-  have := noncompact (k := k)
-  have h := h2 _ indicator_mem_SB
-  simp [Measure.real, measure_univ_of_isAddLeftInvariant ν, Set.indicator_of_mem (zero_mem 𝒪[k] : (0 : k) ∈ (𝒪[k] : Set k))] at h
 
 omit [MeasurableSpace k] [BorelSpace k] in
 

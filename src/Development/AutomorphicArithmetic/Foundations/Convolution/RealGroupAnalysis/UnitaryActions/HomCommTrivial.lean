@@ -11,14 +11,6 @@ namespace UpperTheory.ConvolutionTheory.R2
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem cell_generic (s : Finset (G1 F)) : ∃ t, ∀ g ∈ s, g * t ∈ Cell F := by
-  obtain ⟨x, hx⟩ := cellGeneric F s
-  exact ⟨nL x, hx⟩
-theorem isWeilCell_cell : GroundTheory.Heights₂.Theta.IsWeilCell (Cell F) where
-  inv_mem _ h := inv_mem_cell h
-  exists_mul_mem_left s := by
-    obtain ⟨t, ht⟩ := cell_generic (s.image fun g => g⁻¹)
-    exact ⟨t⁻¹, fun g hg => by simpa using inv_mem_cell (ht g⁻¹ (Finset.mem_image_of_mem _ hg))⟩
 theorem eq_top_of_nU_nL (H : Subgroup (G1 F)) (hn : ∀ b, nU b ∈ H) (hl : ∀ c, nL c ∈ H) : H = ⊤ := by
   refine eq_top_iff.2 fun g _ => ?_
   obtain ⟨x, hx⟩ := cellGeneric F {g}
@@ -27,16 +19,6 @@ theorem eq_top_of_nU_nL (H : Subgroup (G1 F)) (hn : ∀ b, nU b ∈ H) (hl : ∀
   exact mul_mem (mul_mem (hn _) (mul_mem (mul_mem (hn _) (hl _)) (hn _))) (hn _)
 theorem eq_top_of_nU_wW (H : Subgroup (G1 F)) (hn : ∀ b, nU b ∈ H) (hw : wW F ∈ H) : H = ⊤ :=
   eq_top_of_nU_nL H hn fun c => by rw [nL_eq]; exact mul_mem (mul_mem hw (hn _)) (inv_mem hw)
-theorem hom_ext_nL {M : Type*} [Monoid M] {Φ Ψ : G1 F →* M} (hn : ∀ b, Φ (nU b) = Ψ (nU b)) (hl : ∀ c, Φ (nL c) = Ψ (nL c)) :
-    Φ = Ψ := by
-  have h := eq_top_of_nU_nL (Φ.toHomUnits.eqLocus Ψ.toHomUnits) (fun b => Units.ext (hn b)) fun c => Units.ext (hl c)
-  ext g
-  exact congrArg Units.val (show g ∈ Φ.toHomUnits.eqLocus Ψ.toHomUnits from h ▸ Subgroup.mem_top g)
-theorem hom_ext_wW {M : Type*} [Monoid M] {Φ Ψ : G1 F →* M} (hn : ∀ b, Φ (nU b) = Ψ (nU b)) (hw : Φ (wW F) = Ψ (wW F)) :
-    Φ = Ψ := by
-  have h := eq_top_of_nU_wW (Φ.toHomUnits.eqLocus Ψ.toHomUnits) (fun b => Units.ext (hn b)) (Units.ext hw)
-  ext g
-  exact congrArg Units.val (show g ∈ Φ.toHomUnits.eqLocus Ψ.toHomUnits from h ▸ Subgroup.mem_top g)
 
 theorem idem_gen (e : A F) (he : e * e = e) (H : Subgroup (G1 F)) (hn : ∀ b, nU (e * b) ∈ H) (hl : ∀ c, nL (e * c) ∈ H)
     (g : G1 F) (hg : ∀ i j, (1 - e) * g i j = (1 - e) * (1 : Matrix (Fin 2) (Fin 2) (A F)) i j) : g ∈ H := by
@@ -63,10 +45,6 @@ theorem at_gen (v : HeightOneSpectrum (𝓞 F)) (H : Subgroup (G1 F)) (hn : ∀ 
     · subst h; simp
     · exact congrArg _ (hg.2 w h i j)
 
-theorem inf_gen (H : Subgroup (G1 F)) (hn : ∀ b : A F, b.2 = 0 → nU b ∈ H) (hl : ∀ b : A F, b.2 = 0 → nL b ∈ H)
-    (g : G1 F) (hg : ∀ i j, (g i j).2 = ((1 : Matrix (Fin 2) (Fin 2) (A F)) i j).2) : g ∈ H :=
-  idem_gen (eInf F) eInf_idem H (fun b => hn _ (by rw [eInf_mul])) (fun b => hl _ (by rw [eInf_mul])) g fun i j =>
-    (one_sub_eInf_mul _).trans ((congrArg (Prod.mk 0) (hg i j)).trans (one_sub_eInf_mul _).symm)
 
 theorem fin_gen (H : Subgroup (G1 F)) (hn : ∀ b : A F, b.1 = 0 → nU b ∈ H) (hl : ∀ b : A F, b.1 = 0 → nL b ∈ H)
     (g : G1 F) (hg : InfOne g) : g ∈ H :=
@@ -75,19 +53,6 @@ theorem fin_gen (H : Subgroup (G1 F)) (hn : ∀ b : A F, b.1 = 0 → nU b ∈ H)
       rw [sub_sub_cancel]
       exact (eInf_mul _).trans ((congrArg (fun x => Prod.mk x 0) (hg i j)).trans (eInf_mul _).symm)
 
-theorem hom_comm_trivial {C : Type*} [CommGroup C] (Φ : G1 F →* C) (g : G1 F) : Φ g = 1 := by
-  have hn : ∀ b, Φ (nU b) = 1 := fun b => by
-    have h := congrArg Φ (mD_mul_nU (IdeleGroup.diagonal F (Units.mk0 2 two_ne_zero)) (rt 3⁻¹ * b))
-    have e : ((IdeleGroup.diagonal F (Units.mk0 2 two_ne_zero) : (A F)ˣ) : A F) ^ 2 * (rt 3⁻¹ * b) = b + rt 3⁻¹ * b := by
-      have h3 : (algebraMap F (A F) 3⁻¹) * 3 = 1 := by
-        rw [← map_ofNat (algebraMap F (A F)) 3, ← map_mul, inv_mul_cancel₀ three_ne_zero, map_one]
-      rw [coe_diagonal, Units.val_mk0, rt, rt, map_ofNat]
-      linear_combination b * h3
-    rw [e, nU_add, map_mul, map_mul, map_mul, mul_comm, mul_left_inj] at h
-    exact (mul_eq_right.1 h.symm)
-  have h := eq_top_of_nU_nL Φ.ker hn fun c => by
-    rw [MonoidHom.mem_ker, nL_eq, map_mul, map_mul, hn, map_inv, mul_one, mul_inv_cancel]
-  exact (show g ∈ Φ.ker from h ▸ Subgroup.mem_top g)
 
 theorem Gam_le (H : Subgroup (G1 F)) (hn : ∀ b : F, nU (rt b) ∈ H) (hw : wW F ∈ H) : Gam F ≤ H := by
   have hl : ∀ c : F, nL (rt c) ∈ H := fun c => by

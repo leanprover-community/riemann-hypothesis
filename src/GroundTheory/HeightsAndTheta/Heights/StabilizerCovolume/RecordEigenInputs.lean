@@ -57,16 +57,6 @@ theorem primeSpan_ne_bot {L : Type} [Field L] [NumberField L] {q : ℕ} (hq : q.
   rw [Ne, Ideal.span_singleton_eq_bot]
   exact_mod_cast hq.ne_zero
 
-theorem count_primeFrac_of_ne {L : Type} [Field L] [NumberField L] {p q : ℕ} (hp : p.Prime) (hq : q.Prime)
-    (hpq : p ≠ q) (𝔓 : HeightOneSpectrum (𝓞 L)) (h : (p : 𝓞 L) ∈ 𝔓.asIdeal) :
-    FractionalIdeal.count L 𝔓 (primeFrac L q) = 0 := by
-  classical
-  have hJ := primeSpan_ne_bot (L := L) hq
-  rw [primeFrac, FractionalIdeal.count_coe L 𝔓 hJ, Nat.cast_eq_zero]
-  by_contra hc
-  have hd := (Associates.count_ne_zero_iff_dvd hJ 𝔓.irreducible).mp hc
-  exact natCast_notMem_of_ne hp hq hpq 𝔓 h
-    ((Ideal.dvd_iff_le.mp hd) (Ideal.subset_span (Set.mem_singleton _)))
 
 theorem primeFrac_ne_zero (L : Type) [Field L] [NumberField L] {q : ℕ} (hq : q.Prime) : primeFrac L q ≠ 0 := by
   rw [primeFrac, Ne, FractionalIdeal.coeIdeal_eq_zero]

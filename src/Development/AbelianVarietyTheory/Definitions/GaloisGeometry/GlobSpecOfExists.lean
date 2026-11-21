@@ -203,10 +203,6 @@ theorem PlTie.WtEq.unique {X : Fields} {P : Places p O Kf} {T : PlTie X P} (hp :
   have s : Fin (P.n' v) := ⟨0, lt_of_lt_of_le two_pos (P.setting v).two_le⟩
   exact add_left_cancel ((h v s 0).symm.trans (h' v s 0))
 
-theorem PlTie.wtEq_withWt {X : Fields} {P : Places p O Kf} (T : PlTie X P) (m' : ℕ) (lam : X.Tau → DomWeight (m' + 1)) (c : ℤ)
-    (dom' : ∀ v, IsDominant fun s i => (lam (T.pos ⟨v, s⟩)).w i + c) :
-    (T.withWt m' (fun v s i => (lam (T.pos ⟨v, s⟩)).w i + c) dom').WtEq (n := m' + 1) rfl lam c :=
-  fun _ _ _ => rfl
 
 example {X : Fields} {P : Places p O Kf} (T : PlTie X P) {n : ℕ} (γ : UF X.E n) : T.detTw 0 γ = 1 := zpow_zero _
 
@@ -218,21 +214,7 @@ def Comp : Type := Quot fun d d' : S.D => ∃ g : S.G, Y.Aw (g • d) d'
 
 def rep (a : Y.Comp) : S.D := Quot.out a
 
-theorem comp_mk_eq_iff (d d' : S.D) :
-    (Quot.mk _ d : Y.Comp) = Quot.mk _ d' ↔ ∃ g : S.G, Y.Aw (g • d) d' := by
-  have he : Equivalence fun d d' : S.D => ∃ g : S.G, Y.Aw (g • d) d' :=
-    ⟨fun d => ⟨1, by rw [one_smul]; exact Y.aw_equiv.refl d⟩,
-      fun ⟨g, h⟩ => ⟨g⁻¹, by
-        have h1 := Y.aw_smul g⁻¹ _ _ h
-        rw [inv_smul_smul] at h1
-        exact Y.aw_equiv.symm h1⟩,
-      fun ⟨g, h⟩ ⟨g', h'⟩ => ⟨g' * g, by
-        rw [mul_smul]
-        exact Y.aw_equiv.trans (Y.aw_smul g' _ _ h) h'⟩⟩
-  exact Quot.eq.trans he.eqvGen_iff
 
-theorem exists_aw_rep (d : S.D) : ∃ g : S.G, Y.Aw (g • d) (Y.rep (Quot.mk _ d)) :=
-  (Y.comp_mk_eq_iff _ _).1 (Quot.out_eq (Quot.mk _ d : Y.Comp)).symm
 
 def Gam (d : S.D) : Subgroup S.G where
   carrier := {g | Y.Aw (g • d) d}
@@ -292,15 +274,6 @@ def chiLift (hp : p.Prime) (c : ℤ) : Y.ChiLift T c where
   χ d := (Y.exists_chi T hp c).choose.comp (Y.Gam d).subtype
   spec _ g := (Y.exists_chi T hp c).choose_spec g.1
 
-theorem ChiLift.eq_chiLift (hp : p.Prime) {c : ℤ} (x : Y.ChiLift T c) : x = Y.chiLift T hp c := by
-  haveI := (P.setting ⟨0, T.nV_pos_of_prime hp⟩).frac_O
-  have h : x.χ = (Y.chiLift T hp c).χ := by
-    funext d
-    ext g
-    exact IsFractionRing.injective O Kf ((x.spec d g).trans ((Y.chiLift T hp c).spec d g).symm)
-  cases x
-  cases h
-  rfl
 
 def lev {c : ℤ} (x : Y.ChiLift T c) (a : Y.Comp) : Level P where
   Γ := Y.Gam (Y.rep a)
@@ -312,18 +285,7 @@ open Classical in
 def glob (a : Y.Comp) (L : P.Tup) : S.D :=
   if h : ∃ d, Y.Aw (Y.rep a) d ∧ T.tup hn (Y.N d) = L then h.choose else Y.rep a
 
-theorem glob_spec_of_exists (a : Y.Comp) (L : P.Tup) (h : ∃ d, Y.Aw (Y.rep a) d ∧ T.tup hn (Y.N d) = L) :
-    Y.Aw (Y.rep a) (Y.glob T hn a L) ∧ T.tup hn (Y.N (Y.glob T hn a L)) = L := by
-  unfold glob
-  rw [dif_pos h]
-  exact h.choose_spec
 
-theorem aw_glob (a : Y.Comp) (L : P.Tup) : Y.Aw (Y.rep a) (Y.glob T hn a L) := by
-  by_cases h : ∃ d, Y.Aw (Y.rep a) d ∧ T.tup hn (Y.N d) = L
-  · exact (Y.glob_spec_of_exists T hn a L h).1
-  · unfold glob
-    rw [dif_neg h]
-    exact Y.aw_equiv.refl _
 
 open Classical in
 
@@ -335,39 +297,8 @@ def nbr (Q : HeightOneSpectrum (𝓞 X.E)) (i : ℕ) (d : S.D) : Set S.D :=
 
 def nbrAt (v : Fin P.nV) (i : ℕ) (d : S.D) : Set S.D := Y.nbr (conjPrime₂ (T.pr v)) i d
 
-theorem nbrAt_le {v : Fin P.nV} {i : ℕ} {d d' : S.D} (h : d' ∈ Y.nbrAt T v i d) :
-    (conjPrime₂ (T.pr v)).asIdeal • Y.N d' ≤ Y.N d ∧ (T.pr v).asIdeal • Y.N d ≤ Y.N d' := by
-  refine ⟨h.2.1, ?_⟩
-  have h2 := h.2.2.1
-  rw [conjIdeal_asIdeal] at h2
-  refine le_trans (Submodule.smul_mono (fun r hr => ?_) le_rfl) h2
-  rw [mem_conjP, mem_conjP, cO_cO]
-  exact hr
 
-theorem tup_lev_smul {c : ℤ}
-    (x : Y.ChiLift T c) (a : Y.Comp) (g : Y.Gam (Y.rep a)) (d : S.D) :
-    T.tup hn (Y.N (g.1 • d)) = (Y.lev T hn x a).smul g (T.tup hn (Y.N d)) := by
-  subst hn
-  funext v
-  rw [Y.N_smul]
-  unfold Level.smul PlTie.tup gmap
-  rw [Submodule.map_span, Submodule.map_coe, Set.image_image, Set.image_image]
-  congr 1
-  refine Set.image_congr fun y _ => ?_
-  funext i
-  have h : (Y.u g.1).1 y = Matrix.mulVec ((ufGL X.E _ (Y.u g.1) : GL _ X.E) : Matrix _ _ X.E) y := by
-    change _ = Matrix.mulVec (LinearMap.toMatrix' ((Y.u g.1).1 : Sp X.E (P.m + 1) →ₗ[X.E] Sp X.E (P.m + 1))) y
-    rw [LinearMap.toMatrix'_mulVec]; rfl
-  change T.iw v ((Y.u g.1).1 y i) = ∑ k, T.iw v (((ufGL X.E _ (Y.u g.1) : GL _ X.E) : Matrix _ _ X.E) i k) * T.iw v (y k)
-  rw [h]
-  simp [Matrix.mulVec, dotProduct]
 
-theorem theta_lev_smul {c : ℤ}
-    (x : Y.ChiLift T c) (V : ValTie T hn lam c) (φ : S.EqFun) (a : Y.Comp) (g : Y.Gam (Y.rep a)) (d : S.D) :
-    V.θ (Y.eV (φ.1 (g.1 • d))) =
-      (((Y.lev T hn x a).χ g : Oˣ) : O) • (Y.lev T hn x a).actX g (V.θ (Y.eV (φ.1 d))) := by
-  rw [φ.2, Y.rho, map_smulₛₗ, V.equiv, smul_smul, ← x.spec, algebraMap_smul]
-  rfl
 
 end PSys
 

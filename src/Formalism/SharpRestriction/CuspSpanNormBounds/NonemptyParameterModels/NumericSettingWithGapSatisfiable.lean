@@ -270,25 +270,6 @@ theorem obj_isHCParam_u (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicN
     show ((P.u a : ℚ) : ℝ) - ((R.k : ℝ) - 1) / 2 = _
     rw [hz, hq]; push_cast; ring
 
-theorem obj_interlace (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicNotions.HCParam R) :
-    InterlaceS (by omega : R.k ≤ 2 * R.rS + R.k + 1) (fun i => ((P.u i : ℚ) : ℝ)) (lamSH R P) := by
-  have hm := obj_m_eq R
-  have hk3 := R.m_add_three_le_k
-  refine ⟨?_, ?_⟩
-  · intro i hi
-    rw [obj_lamSH_lo R P ⟨i, by omega⟩ (by show i < R.k - 1; omega)]
-    have a := P.u_gt_v ⟨i, by omega⟩
-    have b := P.v_gt_u ⟨i, by omega⟩
-    refine ⟨?_, ?_⟩
-    · beta_reduce; exact_mod_cast a
-    · beta_reduce; exact_mod_cast b
-  · intro h
-    rw [obj_lamSH_hi R P ⟨R.k - 1, by omega⟩ (by show ¬ R.k - 1 < R.k - 1; omega) (by show R.k - 1 - (R.k - 1) < R.m; omega)]
-    have a := P.u_last_gt h (by omega)
-    have e2 : (⟨R.k - 1 - (R.k - 1), by omega⟩ : Fin R.m) = ⟨0, by omega⟩ := by apply Fin.ext; simp
-    rw [e2]
-    beta_reduce
-    exact_mod_cast a
 
 open Formalism.MainNotions.CayleySignature in
 

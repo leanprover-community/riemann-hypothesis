@@ -983,39 +983,9 @@ lemma phi_mem {c : Fin r → ℂ} (hc : ∀ a, c a ≠ 0) {n n' : B.Mat k r} (hn
     {μ : B.Mat k 0} (hμ : μ ∈ B.GV k 0) : phi k r c n n' μ ∈ B.GV k r :=
   P.BetaSesquilinearity.gv_mul (P.BetaSesquilinearity.gv_mul (P.BetaSesquilinearity.gv_inv hn) (big_cell_mem_holds k r c (castW μ) hc (tr_castW_mem hμ))) hn'
 
-lemma tr_cd_bigCell (c : Fin r → ℂ) :
-    ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun μ : B.Mat k 0 => bigCell k r c (castW μ)) Set.univ := by
-  rw [P.Ux10.cdm_iff]
-  intro i j
-  unfold bigCell castW
-  simp only [Matrix.reindex_apply, Matrix.submatrix_apply]
-  split_ifs
-  · exact contDiffOn_const
-  · exact contDiffOn_const
-  · exact ((contDiff_apply ℝ ℂ _).comp (contDiff_apply ℝ (Fin (2 * 0 + k + 1) → ℂ) _)).contDiffOn
-  · exact contDiffOn_const
-  · exact contDiffOn_const
-  · exact contDiffOn_const
 
-lemma tr_cd_phi (c : Fin r → ℂ) (n n' : B.Mat k r) :
-    ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (phi k r c n n') Set.univ := by
-  unfold phi
-  exact P.Ux10.cdm_mul (P.Ux10.cdm_mul contDiffOn_const (tr_cd_bigCell c)) contDiffOn_const
 
-lemma continuous_phi_mu (c : Fin r → ℂ) (n n' : B.Mat k r) : Continuous (phi k r c n n') := by
-  rw [← continuousOn_univ]
-  exact (tr_cd_phi c n n').continuousOn
 
-lemma ckOn_phi {c : Fin r → ℂ} (hc : ∀ a, c a ≠ 0) {n n' : B.Mat k r} (hn : n ∈ B.GV k r) (hn' : n' ∈ B.GV k r)
-    {m : ℕ∞} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {f : B.Mat k r → E}
-    (hf : B.CkOn m (B.GV k r) f) : B.CkOn m (B.GV k 0) (fun μ => f (phi k r c n n' μ)) := by
-  intro μ₀ hμ₀
-  obtain ⟨U, f', hU, hgU, hf', hagree⟩ := hf _ (phi_mem hc hn hn' hμ₀)
-  refine ⟨phi k r c n n' ⁻¹' U, fun μ => f' (phi k r c n n' μ), hU.preimage (continuous_phi_mu c n n'), hgU, ?_, ?_⟩
-  · exact hf'.comp ((tr_cd_phi c n n').mono (Set.subset_univ _) |>.of_le (by exact_mod_cast le_top))
-      (fun μ hμ => hμ)
-  · intro μ hμ hμG
-    exact hagree _ hμ (phi_mem hc hn hn' hμG)
 
 lemma ae_mem_N {μN : Measure (Mt k r)} (hN : IsHaarOn (Nset k r) μN) :
     ∀ᵐ x ∂μN, (Matrix.of x : B.Mat k r) ∈ Nset k r :=
@@ -1219,52 +1189,9 @@ variable {k r d : ℕ} {O : Set (Fin d → ℝ)} {cx : (Fin d → ℝ) → Fin r
 def bmap (k r : ℕ) (cx : (Fin d → ℝ) → Fin r → ℂ) (μx : (Fin d → ℝ) → B.Mat k 0) (x : Fin d → ℝ) : B.Mat k r :=
   bigCell k r (cx x) (castW (μx x))
 
-lemma cd_bmap_entry_c (hcx : ContDiffOn ℝ ∞ cx O) (a : Fin r) :
-    ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x => cx x a) O :=
-  contDiffOn_pi.1 hcx a
 
-lemma cd_bmap_entry_ci (hcx : ContDiffOn ℝ ∞ cx O) (hx : ∀ x ∈ O, ∀ a, cx x a ≠ 0) (a : Fin r) :
-    ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x => (star (cx x a))⁻¹) O := by
-  have h1 : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x => star (cx x a)) O := by
-    have := (Complex.conjCLE.toContinuousLinearMap.contDiff (n := ((⊤ : ℕ∞) : WithTop ℕ∞))).comp_contDiffOn
-      (cd_bmap_entry_c hcx a)
-    refine this.congr fun x _ => ?_
-    simp
-  exact h1.inv fun x hxO => star_ne_zero.2 (hx x hxO a)
 
-lemma bmap_cd (hcx : ContDiffOn ℝ ∞ cx O) (hμx : ContDiffOn ℝ ∞ μx O) (hx : ∀ x ∈ O, ∀ a, cx x a ≠ 0) :
-    ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (bmap k r cx μx) O := by
-  rw [Formalism.FourierDecayAlt.P.Ux10.cdm_iff]
-  intro i j
-  have hμe := Formalism.FourierDecayAlt.P.Ux10.cdm_iff.1 hμx
-  unfold bmap bigCell
-  by_cases hj : j.val < r
-  · simp only [hj, dif_pos]
-    by_cases hi : i = esI k r ⟨j.val, hj⟩
-    · simp only [hi, if_true]
-      exact cd_bmap_entry_c hcx _
-    · simp only [hi, if_false]
-      exact contDiffOn_const
-  · simp only [hj, dif_neg, not_false_eq_true]
-    by_cases hj2 : j.val ≤ r + k
-    · simp only [hj2, dif_pos]
-      by_cases hi : r ≤ i.val ∧ i.val ≤ r + k
-      · simp only [hi, dif_pos, and_self]
-        unfold castW
-        simp only [Matrix.reindex_apply, Matrix.submatrix_apply]
-        exact hμe _ _
-      · simp only [hi, dif_neg, not_false_eq_true]
-        exact contDiffOn_const
-    · simp only [hj2, dif_neg, not_false_eq_true]
-      by_cases hi : i.val = 2 * r + k - j.val
-      · simp only [hi, if_true]
-        exact cd_bmap_entry_ci hcx hx _
-      · simp only [hi, if_false]
-        exact contDiffOn_const
 
-lemma bmap_mem (hx : ∀ x ∈ O, (∀ a, cx x a ≠ 0) ∧ μx x ∈ B.GV k 0) :
-    ∀ x ∈ O, bmap k r cx μx x ∈ B.GV k r := fun x hxO =>
-  big_cell_mem_holds k r (cx x) (castW (μx x)) (hx x hxO).1 (tr_castW_mem (hx x hxO).2)
 
 end cdmap
 
@@ -1272,66 +1199,7 @@ section cdmap2
 
 variable {k r d : ℕ} {O : Set (Fin d → ℝ)} {cx : (Fin d → ℝ) → Fin r → ℂ} {μx : (Fin d → ℝ) → B.Mat k 0}
 
-lemma bmap_diff (hO : IsOpen O) (hcx : ContDiffOn ℝ ∞ cx O) (hμx : ContDiffOn ℝ ∞ μx O)
-    (hx : ∀ x ∈ O, ∀ a, cx x a ≠ 0) {x : Fin d → ℝ} (hxO : x ∈ O) : DifferentiableAt ℝ (bmap k r cx μx) x :=
-  ((bmap_cd hcx hμx hx).differentiableOn (by simp)).differentiableAt (hO.mem_nhds hxO)
 
-lemma bmap_tangent (hO : IsOpen O) (hcx : ContDiffOn ℝ ∞ cx O) (hμx : ContDiffOn ℝ ∞ μx O)
-    (hx : ∀ x ∈ O, (∀ a, cx x a ≠ 0) ∧ μx x ∈ B.GV k 0) {x : Fin d → ℝ} (hxO : x ∈ O) (e : Fin d → ℝ) :
-    B.inLie k r ((bmap k r cx μx x)⁻¹ * fderiv ℝ (bmap k r cx μx) x e) := by
-  have hx1 : ∀ x ∈ O, ∀ a, cx x a ≠ 0 := fun x hxO => (hx x hxO).1
-  set c := bmap k r cx μx x with hc
-  set T := fderiv ℝ (bmap k r cx μx) x e with hT
-  have hcG : c ∈ B.GV k r := bmap_mem hx x hxO
-  have hcu : IsUnit c.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hcG
-  set γ : ℝ → B.Mat k r := fun t => bmap k r cx μx (x + t • e) with hγ
-  have hline : HasDerivAt (fun t : ℝ => x + t • e) e 0 := by
-    have h := ((hasDerivAt_id (0:ℝ)).smul_const e).const_add x
-    rw [one_smul] at h
-    exact h
-  have hγd : HasDerivAt γ T 0 :=
-    (bmap_diff hO hcx hμx hx1 hxO).hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hline (by simp)
-  have hγ0 : γ 0 = c := by simp [hγ, hc]
-  have h1 : HasDerivAt (fun t => Formalism.FourierDecayAlt.P.Ux10.cT k r (γ t)) (Formalism.FourierDecayAlt.P.Ux10.cT k r T) 0 :=
-    (Formalism.FourierDecayAlt.P.Ux10.cT k r).hasFDerivAt.comp_hasDerivAt 0 hγd
-  have h2 : HasDerivAt (fun t => Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.cT k r (γ t)) (Hpk k r))
-      (Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.cT k r (γ 0)) 0 +
-        Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.cT k r T) (Hpk k r)) 0 :=
-    ContinuousLinearMap.hasDerivAt_of_bilinear (fun _ => h1) (fun _ => hasDerivAt_const _ _)
-  have h3 : HasDerivAt (fun t => Formalism.FourierDecayAlt.P.Ux10.mulB k r
-        (Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.cT k r (γ t)) (Hpk k r)) (γ t))
-      (Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.cT k r (γ 0)) (Hpk k r)) T +
-        Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.cT k r (γ 0)) 0 +
-          Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.cT k r T) (Hpk k r)) (γ 0)) 0 :=
-    ContinuousLinearMap.hasDerivAt_of_bilinear (fun _ => h2) (fun _ => hγd)
-  have hev : ∀ᶠ t in 𝓝 (0:ℝ), x + t • e ∈ O :=
-    ((continuous_const.add (continuous_id.smul continuous_const)).continuousAt (x := (0:ℝ))).preimage_mem_nhds
-      (hO.mem_nhds (by simpa using hxO))
-  have h4 : HasDerivAt (fun t => Formalism.FourierDecayAlt.P.Ux10.mulB k r
-      (Formalism.FourierDecayAlt.P.Ux10.mulB k r (Formalism.FourierDecayAlt.P.Ux10.cT k r (γ t)) (Hpk k r)) (γ t)) 0 0 := by
-    refine (hasDerivAt_const (0:ℝ) (Hpk k r)).congr_of_eventuallyEq ?_
-    filter_upwards [hev] with t ht
-    have hm : γ t ∈ B.GV k r := bmap_mem hx _ ht
-    exact hm
-  have hz := h3.unique h4
-  simp only [Formalism.FourierDecayAlt.P.Ux10.mulB_apply, Formalism.FourierDecayAlt.P.Ux10.cT_apply, hγ0, Matrix.mul_zero, zero_add] at hz
-
-  have hH : cᴴ * Hpk k r * c = Hpk k r := hcG
-  have hci : c * c⁻¹ = 1 := Matrix.mul_nonsing_inv _ hcu
-  have hci' : (c⁻¹)ᴴ * cᴴ = 1 := by rw [← conjTranspose_mul, hci, conjTranspose_one]
-  have e1 : (c⁻¹)ᴴ * Hpk k r = Hpk k r * c := by
-    calc (c⁻¹)ᴴ * Hpk k r = (c⁻¹)ᴴ * (cᴴ * Hpk k r * c) := by rw [hH]
-      _ = ((c⁻¹)ᴴ * cᴴ) * Hpk k r * c := by simp only [Matrix.mul_assoc]
-      _ = Hpk k r * c := by rw [hci', Matrix.one_mul]
-  have e2 : Hpk k r * c⁻¹ = cᴴ * Hpk k r := by
-    calc Hpk k r * c⁻¹ = (cᴴ * Hpk k r * c) * c⁻¹ := by rw [hH]
-      _ = cᴴ * Hpk k r * (c * c⁻¹) := by simp only [Matrix.mul_assoc]
-      _ = cᴴ * Hpk k r := by rw [hci, Matrix.mul_one]
-  show (c⁻¹ * T)ᴴ * Hpk k r + Hpk k r * (c⁻¹ * T) = 0
-  rw [conjTranspose_mul, Matrix.mul_assoc, e1, ← Matrix.mul_assoc (Hpk k r), e2]
-  rw [← hz]
-  simp only [Matrix.mul_assoc]
-  abel
 
 def ebd (b : Fin d) : Fin d → ℝ := fun j => if b = j then 1 else 0
 
@@ -1354,23 +1222,6 @@ lemma aB_apply (i : Formalism.FourierDecayAlt.P.Ux10.J k r) (x e : Fin d → ℝ
     Pi.smul_apply, ContinuousLinearMap.proj_apply, smul_eq_mul]
   exact Finset.sum_congr rfl fun b _ => mul_comm _ _
 
-lemma aB_cd (hO : IsOpen O) (hcx : ContDiffOn ℝ ∞ cx O) (hμx : ContDiffOn ℝ ∞ μx O)
-    (hx : ∀ x ∈ O, (∀ a, cx x a ≠ 0) ∧ μx x ∈ B.GV k 0) (i : Formalism.FourierDecayAlt.P.Ux10.J k r) :
-    ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (aB k r cx μx i) O := by
-  have hx1 : ∀ x ∈ O, ∀ a, cx x a ≠ 0 := fun x hxO => (hx x hxO).1
-  have hb := bmap_cd (k := k) hcx hμx hx1
-  have h1 : ∀ b, ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun x => fderiv ℝ (bmap k r cx μx) x (ebd b)) O :=
-    fun b => (hb.fderiv_of_isOpen hO (by simp)).clm_apply contDiffOn_const
-  have h2 : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x => (bmap k r cx μx x)⁻¹) O :=
-    Formalism.FourierDecayAlt.P.Ux10.cdm_inv hb fun x hxO => Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh (bmap_mem hx x hxO)
-  have h3 : ∀ b, ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun x => Formalism.FourierDecayAlt.P.Ux10.kc i ((bmap k r cx μx x)⁻¹ * fderiv ℝ (bmap k r cx μx) x (ebd b))) O := by
-    intro b
-    unfold Formalism.FourierDecayAlt.P.Ux10.kc
-    exact (Formalism.FourierDecayAlt.P.Ux10.cd_co (Formalism.FourierDecayAlt.P.Ux10.cdm_mul h2 (h1 b)) i).mul contDiffOn_const
-  unfold aB
-  exact ContDiffOn.sum fun b _ => (h3 b).smul contDiffOn_const
 
 end cdmap2
 
@@ -1379,69 +1230,6 @@ section cdmap3
 variable {k r d : ℕ} {O : Set (Fin d → ℝ)} {cx : (Fin d → ℝ) → Fin r → ℂ} {μx : (Fin d → ℝ) → B.Mat k 0}
   {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-theorem hasFDeriv_slice (hO : IsOpen O) (hcx : ContDiffOn ℝ ∞ cx O) (hμx : ContDiffOn ℝ ∞ μx O)
-    (hx : ∀ x ∈ O, (∀ a, cx x a ≠ 0) ∧ μx x ∈ B.GV k 0) {H : B.Mat k r → E}
-    (hH : B.CkOn ((1 : ℕ) : ℕ∞) (B.GV k r) H) {n n' : B.Mat k r} (hn : n ∈ B.GV k r) (hn' : n' ∈ B.GV k r)
-    {x : Fin d → ℝ} (hxO : x ∈ O) :
-    HasFDerivAt (fun y => H (n⁻¹ * bmap k r cx μx y * n'))
-      (∑ i, (aB k r cx μx i x).smulRight
-        (Formalism.FourierDecayAlt.P.B4.op false (n'⁻¹ * Formalism.FourierDecayAlt.P.Ux10.Lt i * n') H (n⁻¹ * bmap k r cx μx x * n'))) x := by
-  have hx1 : ∀ x ∈ O, ∀ a, cx x a ≠ 0 := fun x hxO => (hx x hxO).1
-  set b := bmap k r cx μx x with hbdef
-  have hbG : b ∈ B.GV k r := bmap_mem hx x hxO
-  have hbu : IsUnit b.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hbG
-  have hnu : IsUnit n'.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hn'
-  set c := n⁻¹ * b * n' with hc
-  have hcG : c ∈ B.GV k r := Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_inv hn) hbG) hn'
-  have hγG : ∀ y ∈ O, n⁻¹ * bmap k r cx μx y * n' ∈ B.GV k r := fun y hy =>
-    Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_inv hn) (bmap_mem hx y hy)) hn'
-  obtain ⟨U, h', hU, hcU, hcd, hff⟩ := hH c hcG
-  have hdiff : DifferentiableAt ℝ h' c :=
-    (hcd.differentiableOn (by simp)).differentiableAt (hU.mem_nhds hcU)
-
-  set Mc : B.Mat k r →L[ℝ] B.Mat k r :=
-    (Formalism.FourierDecayAlt.P.B4.mulL (n⁻¹)).comp (Formalism.FourierDecayAlt.P.B4.mulR n') with hMc
-  have hMc_apply : ∀ M, Mc M = n⁻¹ * M * n' := by
-    intro M
-    rw [Matrix.mul_assoc]
-    rfl
-  have hbd := (bmap_diff hO hcx hμx hx1 hxO).hasFDerivAt
-  have hγd : HasFDerivAt (fun y => n⁻¹ * bmap k r cx μx y * n') (Mc.comp (fderiv ℝ (bmap k r cx μx) x)) x := by
-    have := Mc.hasFDerivAt.comp x hbd
-    refine this.congr_of_eventuallyEq (Eventually.of_forall fun y => ?_)
-    simp [hMc_apply]
-  have hcomp : HasFDerivAt (fun y => h' (n⁻¹ * bmap k r cx μx y * n'))
-      ((fderiv ℝ h' c).comp (Mc.comp (fderiv ℝ (bmap k r cx μx) x))) x :=
-    hdiff.hasFDerivAt.comp x hγd
-  have heq : (fun y => H (n⁻¹ * bmap k r cx μx y * n')) =ᶠ[𝓝 x] (fun y => h' (n⁻¹ * bmap k r cx μx y * n')) := by
-    filter_upwards [hγd.continuousAt.preimage_mem_nhds (hU.mem_nhds hcU), hO.mem_nhds hxO] with y h1 h2
-    exact hff _ h1 (hγG y h2)
-  refine (hcomp.congr_of_eventuallyEq heq).congr_fderiv ?_
-  ext1 e
-  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, _root_.sum_apply]
-  simp only [ContinuousLinearMap.smulRight_apply]
-  have hop : ∀ i, Formalism.FourierDecayAlt.P.B4.op false (n'⁻¹ * Formalism.FourierDecayAlt.P.Ux10.Lt i * n') H c =
-      fderiv ℝ h' c (c * (n'⁻¹ * Formalism.FourierDecayAlt.P.Ux10.Lt i * n')) := fun i =>
-    Formalism.FourierDecayAlt.P.B4.op_eq_op' 0 false hU (by simpa using hcd) hff
-      (Formalism.FourierDecayAlt.P.BetaSesquilinearity.lie_conj (Formalism.FourierDecayAlt.P.Ux10.Lt_unit i).1 hn') c hcU hcG
-  simp_rw [hop, ← map_smul, ← map_sum]
-  congr 1
-  set T := fderiv ℝ (bmap k r cx μx) x e with hT
-  set Xv := b⁻¹ * T with hXv
-  have hXl : B.inLie k r Xv := bmap_tangent hO hcx hμx hx hxO e
-  have hA : ∀ i, aB k r cx μx i x e = Formalism.FourierDecayAlt.P.Ux10.kc i Xv := fun i => aB_apply i x e
-  have hbX : b * Xv = T := by rw [hXv, ← Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hbu, Matrix.one_mul]
-  have hnn : n' * n'⁻¹ = 1 := Matrix.mul_nonsing_inv _ hnu
-  rw [hMc_apply]
-  calc n⁻¹ * T * n' = n⁻¹ * (b * Xv) * n' := by rw [hbX]
-    _ = n⁻¹ * (b * (∑ i, Formalism.FourierDecayAlt.P.Ux10.kc i Xv • Formalism.FourierDecayAlt.P.Ux10.Lt i)) * n' := by
-        rw [← Formalism.FourierDecayAlt.P.Ux10.expandL hXl]
-    _ = ∑ i, aB k r cx μx i x e • (c * (n'⁻¹ * Formalism.FourierDecayAlt.P.Ux10.Lt i * n')) := by
-        simp only [hA, hc, Matrix.mul_sum, Matrix.sum_mul, Matrix.mul_smul, Matrix.smul_mul]
-        refine Finset.sum_congr rfl fun i _ => ?_
-        congr 1
-        simp only [Matrix.mul_assoc]
-        rw [← Matrix.mul_assoc n' n'⁻¹, hnn, Matrix.one_mul]
 
 end cdmap3
 
@@ -1604,10 +1392,6 @@ lemma Sn_closed : IsClosed (Sn k r) := by
   have c2 : IsClosed {x : Mt k r | (Matrix.of x : B.Mat k r) ∈ Nset k r} := Formalism.FourierDecayAlt.P.B6.isClosed_Nset k r
   exact (c2.preimage continuous_fst).inter (c2.preimage continuous_snd)
 
-lemma ae_Sn {μN : Measure (Mt k r)} (hN : IsHaarOn (Nset k r) μN) : ∀ᵐ ξ ∂(μN.prod μN), ξ ∈ Sn k r := by
-  have := Formalism.FourierDecayAlt.P.B5.haar_sigmaFinite hN
-  exact (Measure.quasiMeasurePreserving_fst.ae (Formalism.FourierDecayAlt.P.B5.haar_ae hN)).and
-    (Measure.quasiMeasurePreserving_snd.ae (Formalism.FourierDecayAlt.P.B5.haar_ae hN))
 
 lemma phi_contOn (c : Fin r → ℂ) (μ : B.Mat k 0) :
     ContinuousOn (fun ξ : Mt k r × Mt k r => phi k r c (Matrix.of ξ.1) (Matrix.of ξ.2) μ) (Sn k r) :=
@@ -1654,14 +1438,6 @@ lemma hS_not {F : B.Mat k r → (Wq →L[ℂ] Wp)} {c : Fin r → ℂ} {ξ : Mt 
     hS F c ξ = 0 := by
   funext μ; unfold hS; simp [Set.indicator, hξ]
 
-lemma sliceR_eq (D : B.RealPlaceData k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ] Wp)) (c : Fin r → ℂ) :
-    sliceR D F c = fun μ => ∫ ξ, psiN D ξ • hS F c ξ μ ∂(D.μN.prod D.μN) := by
-  funext μ
-  unfold sliceR
-  refine integral_congr_ae ?_
-  filter_upwards [ae_Sn D.haarN] with ξ hξ
-  rw [hS_mem hξ]
-  rfl
 
 lemma levelEmbed_entry_bound {Y : B.Mat k 0} (hY : B.unitLie k 0 Y) : Formalism.FourierDecayAlt.P.Ux5.EB (emb0 k r Y) 1 := by
   intro i j
@@ -1746,29 +1522,11 @@ section clause12
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-lemma sizes1 (k r : ℕ) (K : Set (Fin r → ℂ)) (hK : IsCompact K) (hK0 : ∀ c ∈ K, ∀ a, c a ≠ 0) :
-    ∃ C : ℝ, 1 ≤ C ∧ ∀ c ∈ K, ∀ n ∈ Nset k r, ∀ n' ∈ Nset k r, ∀ μ ∈ B.GV k 0,
-      B.gN n ≤ C * B.gN (phi k r c n n' μ) ^ (2 * r) ∧
-      B.gN n' ≤ C * B.gN (phi k r c n n' μ) ^ (2 * r) ∧
-      B.gN μ ≤ C * B.gN (phi k r c n n' μ) ^ (r + 1) := by
-  obtain ⟨C0, -, hsz⟩ := sizes k r K hK hK0
-  refine ⟨max C0 1, le_max_right _ _, ?_⟩
-  intro c hc n hn n' hn' μ hμ
-  obtain ⟨h1, h2, h3⟩ := hsz c hc n hn n' hn' μ hμ
-  have hg : 0 ≤ B.gN (phi k r c n n' μ) := Real.sqrt_nonneg _
-  have hCC : C0 ≤ max C0 1 := le_max_left _ _
-  exact ⟨h1.trans (by gcongr), h2.trans (by gcongr), h3.trans (by gcongr)⟩
 
 def beta0 (M a : ℝ) (ξ : Mt k r × Mt k r) : ℝ :=
   M * (B.gN (Matrix.of ξ.1 : B.Mat k r) ^ (-a) * B.gN (Matrix.of ξ.2 : B.Mat k r) ^ (-a))
 
-lemma slice_weight_nonneg {M a : ℝ} (hM : 0 ≤ M) (ξ : Mt k r × Mt k r) : 0 ≤ beta0 (k := k) (r := r) M a ξ :=
-  mul_nonneg hM (mul_nonneg (Real.rpow_nonneg (Real.sqrt_nonneg _) _) (Real.rpow_nonneg (Real.sqrt_nonneg _) _))
 
-lemma integrable_slice_weight {μN : Measure (Mt k r)} (hN : IsHaarOn (Nset k r) μN) (M : ℝ) {a : ℝ} (ha : B.AB k r ≤ a) :
-    Integrable (beta0 (k := k) (r := r) M a) (μN.prod μN) := by
-  have := Formalism.FourierDecayAlt.P.B5.haar_sigmaFinite hN
-  exact (MeasureTheory.Integrable.mul_prod (intN k r μN hN a ha) (intN k r μN hN a ha)).const_mul M
 
 lemma hS_meas {F : B.Mat k r → (Wq →L[ℂ] Wp)} {m : ℕ∞} (hF : B.CkOn m (B.GV k r) F) {c : Fin r → ℂ}
     (hc : ∀ a, c a ≠ 0) (μN : Measure (Mt k r × Mt k r)) {g : B.Mat k 0} (hg : g ∈ B.GV k 0) :
@@ -1779,75 +1537,7 @@ lemma hS_meas {F : B.Mat k r → (Wq →L[ℂ] Wp)} {m : ℕ∞} (hF : B.CkOn m 
   exact (aestronglyMeasurable_indicator_iff Sn_closed.measurableSet).2
     (hcont.aestronglyMeasurable Sn_closed.measurableSet)
 
-lemma hS_ck {F : B.Mat k r → (Wq →L[ℂ] Wp)} {m : ℕ∞} (hF : B.CkOn m (B.GV k r) F) {c : Fin r → ℂ}
-    (hc : ∀ a, c a ≠ 0) (ξ : Mt k r × Mt k r) : B.CkOn m (B.GV k 0) (hS F c ξ) := by
-  by_cases hξ : ξ ∈ Sn k r
-  · rw [hS_mem hξ]; exact ckOn_phi hc (nset_gv hξ.1) (nset_gv hξ.2) hF
-  · rw [hS_not hξ]; exact Formalism.FourierDecayAlt.P.BetaSesquilinearity.CkOn_zero
 
-theorem slice_integrable_finite_class [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (D : B.RealPlaceData k r Wp Wq) {A : ℝ} {m : ℕ}
-    {F : B.Mat k r → (Wq →L[ℂ] Wp)} (hT : TransportedAlt k r A m) (hF : B.InCC A m F) {c : Fin r → ℂ} (hc : ∀ a, c a ≠ 0) :
-    (∀ μ ∈ B.GV k 0, Integrable (fun nn : Mt k r × Mt k r =>
-        F ((Matrix.of nn.1)⁻¹ * bigCell k r c (castW μ) * Matrix.of nn.2)) (D.μN.prod D.μN)) ∧
-    B.InCC (k := k) (r := 0) (Ap r A m) m (sliceR D F c) := by
-  obtain ⟨cF, hcF⟩ := hF
-  obtain ⟨hAp, hAB, -, -⟩ := thr_facts hT
-  obtain ⟨C, hC, hs⟩ := sizes1 k r {c} isCompact_singleton
-    (by intro c' hc'; rw [Set.mem_singleton_iff.1 hc']; exact hc)
-  have := Formalism.FourierDecayAlt.P.B5.haar_sigmaFinite D.haarN
-  set M := max cF 0 * (((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2) ^ m * C ^ (3 * Ap r A m) with hMdef
-  have hM : 0 ≤ M := by
-    have : (0 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2 := by positivity
-    exact mul_nonneg (mul_nonneg (le_max_right _ _) (pow_nonneg this m))
-      (Real.rpow_nonneg (le_trans zero_le_one hC) _)
-  have hβ : Integrable (beta0 (k := k) (r := r) M (Ap r A m)) (D.μN.prod D.μN) := integrable_slice_weight D.haarN M hAB
-  have hbd := integrand_bound hT hcF hC hs (Set.mem_singleton c) hc
-  have hg1 : ∀ μ ∈ B.GV k 0, B.gN μ ^ (-Ap r A m) ≤ 1 := fun μ hμ =>
-    Real.rpow_le_one_of_one_le_of_nonpos (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gN_ge_one hμ) (by linarith)
-  have hbd' : ∀ u v : List (B.Mat k 0), (∀ X ∈ u, B.unitLie k 0 X) → (∀ X ∈ v, B.unitLie k 0 X) →
-      u.length + v.length ≤ m → ∀ g ∈ B.GV k 0, ∀ ξ, ‖B.dLR u v (hS F c ξ) g‖ ≤ beta0 M (Ap r A m) ξ := by
-    intro u v hu hv hl g hg ξ
-    refine (hbd u v hu hv hl g hg ξ).trans ?_
-    calc beta0 M (Ap r A m) ξ * B.gN g ^ (-Ap r A m) ≤ beta0 M (Ap r A m) ξ * 1 :=
-          mul_le_mul_of_nonneg_left (hg1 g hg) (slice_weight_nonneg hM ξ)
-      _ = beta0 M (Ap r A m) ξ := mul_one _
-  have hψ := norm_psiN D
-  have hψm := (continuous_psiN D).aestronglyMeasurable (μ := D.μN.prod D.μN)
-  have hh := hS_ck hcF.1 hc
-  have hm : ∀ g ∈ B.GV k 0, AEStronglyMeasurable (fun ξ => hS F c ξ g) (D.μN.prod D.μN) :=
-    fun g hg => hS_meas hcF.1 hc _ hg
-  refine ⟨?_, ?_⟩
-  · intro μ hμ
-    have hI : Integrable (fun ξ => hS F c ξ μ) (D.μN.prod D.μN) := by
-      refine Integrable.mono' hβ (hm μ hμ) (Eventually.of_forall fun ξ => ?_)
-      have := hbd' [] [] (by simp) (by simp) (by simp) μ hμ ξ
-      simpa [B.dLR, B.Rw] using this
-    refine hI.congr ?_
-    filter_upwards [ae_Sn D.haarN] with ξ hξ
-    rw [hS_mem hξ]
-    rfl
-  · have hck := Formalism.FourierDecayAlt.P.Ux10.int_ck (psiN D) hψ hψm (hS F c) m hh hm _ hβ hbd'
-    have hex := Formalism.FourierDecayAlt.P.Ux10.exch_dLR (psiN D) hψ hψm (hS F c) m hh hm _ hβ hbd'
-    refine ⟨∫ ξ, beta0 M (Ap r A m) ξ ∂(D.μN.prod D.μN), ?_, ?_⟩
-    · rw [sliceR_eq]; exact hck
-    · intro u v hu hv hl g hg
-      rw [sliceR_eq, hex u v hu hv hl g hg]
-      have hgp : 0 < B.gN g := lt_of_lt_of_le one_pos (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gN_ge_one hg)
-      have hint : Integrable (fun ξ => beta0 M (Ap r A m) ξ * B.gN g ^ (-Ap r A m)) (D.μN.prod D.μN) :=
-        hβ.mul_const _
-      have hn : ‖∫ ξ, psiN D ξ • B.dLR u v (hS F c ξ) g ∂(D.μN.prod D.μN)‖ ≤
-          ∫ ξ, beta0 M (Ap r A m) ξ * B.gN g ^ (-Ap r A m) ∂(D.μN.prod D.μN) :=
-        norm_integral_le_of_norm_le hint (Eventually.of_forall fun ξ => by
-          rw [norm_smul (psiN D ξ) (B.dLR u v (hS F c ξ) g)]
-          exact (mul_le_of_le_one_left (norm_nonneg _) (hψ ξ)).trans (hbd u v hu hv hl g hg ξ))
-      rw [integral_mul_const] at hn
-      have hpow : B.gN g ^ (Ap r A m) * B.gN g ^ (-Ap r A m) = 1 := by
-        rw [Real.rpow_neg hgp.le, mul_inv_cancel₀ (Real.rpow_pos_of_pos hgp _).ne']
-      calc B.gN g ^ (Ap r A m) * ‖∫ ξ, psiN D ξ • B.dLR u v (hS F c ξ) g ∂(D.μN.prod D.μN)‖
-          ≤ B.gN g ^ (Ap r A m) * ((∫ ξ, beta0 M (Ap r A m) ξ ∂(D.μN.prod D.μN)) * B.gN g ^ (-Ap r A m)) :=
-            mul_le_mul_of_nonneg_left hn (Real.rpow_nonneg hgp.le _)
-        _ = ∫ ξ, beta0 M (Ap r A m) ξ ∂(D.μN.prod D.μN) := by
-            rw [mul_comm, mul_assoc, mul_comm (B.gN g ^ (-Ap r A m)), hpow, mul_one]
 
 end clause12
 
@@ -1864,11 +1554,6 @@ set_option linter.style.haveILetI false
 
 namespace Formalism.FourierDecayAlt.P.SliceLastLevel
 
-lemma mexp_cont (n : ℕ) : Continuous (fun X : Matrix (Fin n) (Fin n) ℂ => NormedSpace.exp X) := by
-  letI : NormedRing (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedRing
-  letI : NormedAlgebra ℂ (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedAlgebra
-  letI : NormedAlgebra ℚ (Matrix (Fin n) (Fin n) ℂ) := NormedAlgebra.restrictScalars ℚ ℂ _
-  exact NormedSpace.exp_continuous
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
@@ -1885,84 +1570,9 @@ def Gw (F : B.Mat k r → (Wq →L[ℂ] Wp)) (ξ : Mt k r × Mt k r) (w : List (
     B.Mat k r → (Wq →L[ℂ] Wp) :=
   B.Rw (w.map (adR (Matrix.of ξ.2))) F
 
-lemma adR_lie {n' : B.Mat k r} (hn' : n' ∈ B.GV k r) (i : Formalism.FourierDecayAlt.P.Ux10.J k r) : B.inLie k r (adR n' i) :=
-  Formalism.FourierDecayAlt.P.BetaSesquilinearity.lie_conj (Formalism.FourierDecayAlt.P.Ux10.Lt_unit i).1 hn'
 
-lemma adR_norm {n' : B.Mat k r} (hn' : n' ∈ B.GV k r) (i : Formalism.FourierDecayAlt.P.Ux10.J k r) :
-    ‖adR n' i‖ ≤ ((2 * r + k + 1 : ℕ) : ℝ) * B.gN n' ^ 2 := by
-  have hEB : Formalism.FourierDecayAlt.P.Ux5.EB (Formalism.FourierDecayAlt.P.Ux10.Lt i) 1 := fun a b => (Formalism.FourierDecayAlt.P.Ux10.Lt_unit i).2 a b
-  have h1 := norm_le_gN (adR n' i)
-  have h2 := gN_mul_le (n'⁻¹ * Formalism.FourierDecayAlt.P.Ux10.Lt i) n'
-  have h3 := gN_mul_le n'⁻¹ (Formalism.FourierDecayAlt.P.Ux10.Lt i)
-  have h4 : B.gN (Formalism.FourierDecayAlt.P.Ux10.Lt i) ≤ ((2 * r + k + 1 : ℕ) : ℝ) * 1 :=
-    Formalism.FourierDecayAlt.P.Ux5.gN_le_of_EB _ hEB zero_le_one
-  rw [gN_inv_GV hn'] at h3
-  have hn0 : 0 ≤ B.gN n' := le_trans zero_le_one (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gN_ge_one hn')
-  calc ‖adR n' i‖ ≤ B.gN (n'⁻¹ * Formalism.FourierDecayAlt.P.Ux10.Lt i) * B.gN n' := h1.trans h2
-    _ ≤ (B.gN n' * B.gN (Formalism.FourierDecayAlt.P.Ux10.Lt i)) * B.gN n' := by gcongr
-    _ ≤ (B.gN n' * (((2 * r + k + 1 : ℕ) : ℝ) * 1)) * B.gN n' := by gcongr
-    _ = ((2 * r + k + 1 : ℕ) : ℝ) * B.gN n' ^ 2 := by ring
 
-lemma Gw_ck {m : ℕ} {F : B.Mat k r → (Wq →L[ℂ] Wp)} (hF : B.CkOn (m : ℕ∞) (B.GV k r) F) {ξ : Mt k r × Mt k r}
-    (hn' : (Matrix.of ξ.2 : B.Mat k r) ∈ B.GV k r) (w : List (Formalism.FourierDecayAlt.P.Ux10.J k r)) (hw : w.length ≤ m) :
-    B.CkOn ((m - w.length : ℕ) : ℕ∞) (B.GV k r) (Gw F ξ w) := by
-  have hL : Formalism.FourierDecayAlt.P.B4.AllLie (Formalism.FourierDecayAlt.P.B4.lr [] (w.map (adR (Matrix.of ξ.2)))) :=
-    allLie_lr' (by simp) (by
-      intro X hX
-      obtain ⟨i, -, rfl⟩ := List.mem_map.1 hX
-      exact adR_lie hn' i)
-  have h := Formalism.FourierDecayAlt.P.B4.smooth_on_of_word_derivatives (Formalism.FourierDecayAlt.P.B4.lr [] (w.map (adR (Matrix.of ξ.2)))) hL (m - w.length)
-    (by
-      rw [Formalism.FourierDecayAlt.P.B4.length_lr]
-      simp only [List.length_nil, List.length_map, zero_add]
-      rw [Nat.sub_add_cancel hw]
-      exact hF)
-  rw [← Formalism.FourierDecayAlt.P.B4.dLR_eq] at h
-  exact h
 
-lemma Gw_meas {m : ℕ} {F : B.Mat k r → (Wq →L[ℂ] Wp)} (hF : B.CkOn (m : ℕ∞) (B.GV k r) F)
-    (μS : Measure (Mt k r × Mt k r)) :
-    ∀ w : List (Formalism.FourierDecayAlt.P.Ux10.J k r), w.length ≤ m → ∀ P : Mt k r × Mt k r → B.Mat k r,
-      ContinuousOn P (Sn k r) → (∀ ξ ∈ Sn k r, P ξ ∈ B.GV k r) →
-      AEStronglyMeasurable (fun ξ => Set.indicator (Sn k r) (fun ξ => Gw F ξ w (P ξ)) ξ) μS := by
-  intro w
-  induction w with
-  | nil =>
-    intro _ P hP hPG
-    have hc : ContinuousOn (fun ξ => Gw F ξ [] (P ξ)) (Sn k r) :=
-      (Formalism.FourierDecayAlt.P.B6.continuousOn_of_contDiffOn_group hF).comp hP hPG
-    exact (aestronglyMeasurable_indicator_iff Sn_closed.measurableSet).2
-      (hc.aestronglyMeasurable Sn_closed.measurableSet)
-  | cons i w ih =>
-    intro hl P hP hPG
-    have hl' : w.length + 1 ≤ m := by simpa using hl
-    set X : Mt k r × Mt k r → B.Mat k r := fun ξ => adR (Matrix.of ξ.2) i with hXdef
-    have hX : ContinuousOn X (Sn k r) :=
-      Formalism.FourierDecayAlt.P.B6.continuousOn_matrix_mul (Formalism.FourierDecayAlt.P.B6.continuousOn_matrix_mul
-        ((Formalism.FourierDecayAlt.P.B6.inv_continuousOn k r).comp continuous_snd.continuousOn
-          (fun ξ h => Formalism.FourierDecayAlt.P.B6.Nset_sub _ _ h.2)) continuousOn_const) continuous_snd.continuousOn
-    have hd : ∀ ξ, HasDerivAt
-        (fun t : ℝ => Set.indicator (Sn k r)
-          (fun ξ => Gw F ξ w (P ξ * NormedSpace.exp ((t : ℂ) • X ξ))) ξ)
-        (Set.indicator (Sn k r) (fun ξ => Gw F ξ (i :: w) (P ξ)) ξ) 0 := by
-      intro ξ
-      by_cases hξ : ξ ∈ Sn k r
-      · simp only [Set.indicator_of_mem hξ]
-        have hn' : (Matrix.of ξ.2 : B.Mat k r) ∈ B.GV k r := nset_gv hξ.2
-        have hck : B.CkOn (((0 : ℕ) + 1 : ℕ) : ℕ∞) (B.GV k r) (Gw F ξ w) := by
-          have := Gw_ck hF hn' w (by omega)
-          exact Formalism.FourierDecayAlt.P.B4.ckOn_mono (by omega) this
-        have hdiff := Formalism.FourierDecayAlt.P.B4.ckOn_diff 0 false hck (adR_lie hn' i) (hPG ξ hξ)
-        exact hdiff.hasDerivAt
-      · simp only [Set.indicator_of_notMem hξ]
-        exact hasDerivAt_const _ _
-    refine Formalism.FourierDecayAlt.P.Ux10.aesm_deriv hd (Eventually.of_forall fun t => ?_)
-    refine ih (by omega) (fun ξ => P ξ * NormedSpace.exp ((t : ℂ) • X ξ)) ?_ ?_
-    · exact Formalism.FourierDecayAlt.P.B6.continuousOn_matrix_mul hP
-        ((mexp_cont _).comp_continuousOn (hX.const_smul ((t : ℂ))))
-    · intro ξ hξ
-      exact Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (hPG ξ hξ)
-        (Formalism.FourierDecayAlt.P.BetaSesquilinearity.exp_mem (Formalism.FourierDecayAlt.P.BetaSesquilinearity.lie_rsmul (adR_lie (nset_gv hξ.2) i) t))
 
 end words
 
@@ -1971,51 +1581,6 @@ section clause3
 variable {k r d : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-lemma Gw_bound {A : ℝ} {m : ℕ} (hT : TransportedAlt k r A m) {F : B.Mat k r → (Wq →L[ℂ] Wp)} {cF : ℝ}
-    (hF : B.CCle A m F cF) {K : Set (Fin r → ℂ)} {C : ℝ} (hC : 1 ≤ C)
-    (hs : ∀ c ∈ K, ∀ n ∈ Nset k r, ∀ n' ∈ Nset k r, ∀ μ ∈ B.GV k 0,
-      B.gN n ≤ C * B.gN (phi k r c n n' μ) ^ (2 * r) ∧
-      B.gN n' ≤ C * B.gN (phi k r c n n' μ) ^ (2 * r) ∧
-      B.gN μ ≤ C * B.gN (phi k r c n n' μ) ^ (r + 1))
-    {c : Fin r → ℂ} (hcK : c ∈ K) (hc : ∀ a, c a ≠ 0) {ξ : Mt k r × Mt k r} (hξ : ξ ∈ Sn k r)
-    {μ : B.Mat k 0} (hμ : μ ∈ B.GV k 0) (w : List (Formalism.FourierDecayAlt.P.Ux10.J k r)) (hw : w.length ≤ m) :
-    ‖Gw F ξ w (phi k r c (Matrix.of ξ.1) (Matrix.of ξ.2) μ)‖ ≤
-      beta0 (max cF 0 * (((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2) ^ m * C ^ (3 * Ap r A m)) (Ap r A m) ξ := by
-  obtain ⟨hAp, -, -, -⟩ := thr_facts hT
-  have hκ : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by
-    have : 1 ≤ 2 * r + k + 1 := by omega
-    exact_mod_cast this
-  set n : B.Mat k r := Matrix.of ξ.1
-  set n' : B.Mat k r := Matrix.of ξ.2
-  have hn : n ∈ Nset k r := hξ.1
-  have hn' : n' ∈ Nset k r := hξ.2
-  obtain ⟨h1, h2, h3⟩ := hs c hcK n hn n' hn' μ hμ
-  have hw' := word_bound hT hF hC hκ hc hn hn' hμ h1 h2 h3 [] (w.map (adR n')) (by simp)
-    (by
-      intro X hX
-      obtain ⟨i, -, rfl⟩ := List.mem_map.1 hX
-      exact ⟨adR_lie (nset_gv hn') i, adR_norm (nset_gv hn') i⟩)
-    (by simpa using hw)
-  have hn0 : 0 ≤ B.gN n := le_trans zero_le_one (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gN_ge_one (nset_gv hn))
-  have hn0' : 0 ≤ B.gN n' := le_trans zero_le_one (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gN_ge_one (nset_gv hn'))
-  have hμ1 : 1 ≤ B.gN μ := Formalism.FourierDecayAlt.P.BetaSesquilinearity.gN_ge_one hμ
-  have hμp : B.gN μ ^ (-Ap r A m) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hμ1 (by linarith)
-  have hM : 0 ≤ max cF 0 * (((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2) ^ m * C ^ (3 * Ap r A m) := by
-    have : (0 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2 := by positivity
-    exact mul_nonneg (mul_nonneg (le_max_right _ _) (pow_nonneg this m))
-      (Real.rpow_nonneg (le_trans zero_le_one hC) _)
-  have hb0 : 0 ≤ B.gN n ^ (-Ap r A m) * B.gN n' ^ (-Ap r A m) :=
-    mul_nonneg (Real.rpow_nonneg hn0 _) (Real.rpow_nonneg hn0' _)
-  refine hw'.trans ?_
-  rw [Real.mul_rpow (mul_nonneg hn0 hn0') (le_trans zero_le_one hμ1), Real.mul_rpow hn0 hn0']
-  unfold beta0
-  calc max cF 0 * (((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2) ^ m *
-        (C ^ (3 * Ap r A m) * (B.gN n ^ (-Ap r A m) * B.gN n' ^ (-Ap r A m) * B.gN μ ^ (-Ap r A m)))
-      = (max cF 0 * (((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2) ^ m * C ^ (3 * Ap r A m)) *
-          (B.gN n ^ (-Ap r A m) * B.gN n' ^ (-Ap r A m)) * B.gN μ ^ (-Ap r A m) := by ring
-    _ ≤ (max cF 0 * (((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2) ^ m * C ^ (3 * Ap r A m)) *
-          (B.gN n ^ (-Ap r A m) * B.gN n' ^ (-Ap r A m)) * 1 := by gcongr
-    _ = _ := by rw [mul_one]
 
 def Fw (D : B.RealPlaceData k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ] Wp)) (cx : (Fin d → ℝ) → Fin r → ℂ)
     (μx : (Fin d → ℝ) → B.Mat k 0) (w : List (Formalism.FourierDecayAlt.P.Ux10.J k r)) (x : Fin d → ℝ)
@@ -2030,10 +1595,6 @@ lemma Fw_mem {D : B.RealPlaceData k r Wp Wq} {F : B.Mat k r → (Wq →L[ℂ] Wp
       psiN D ξ • Gw F ξ w ((Matrix.of ξ.1 : B.Mat k r)⁻¹ * bmap k r cx μx x * Matrix.of ξ.2) := by
   funext x; unfold Fw; rw [Set.indicator_of_mem hξ]; rfl
 
-lemma Fw_not {D : B.RealPlaceData k r Wp Wq} {F : B.Mat k r → (Wq →L[ℂ] Wp)} {cx : (Fin d → ℝ) → Fin r → ℂ}
-    {μx : (Fin d → ℝ) → B.Mat k 0} {w : List (Formalism.FourierDecayAlt.P.Ux10.J k r)} {ξ : Mt k r × Mt k r}
-    (hξ : ξ ∉ Sn k r) : (fun x => Fw D F cx μx w x ξ) = fun _ => 0 := by
-  funext x; unfold Fw; rw [Set.indicator_of_notMem hξ, smul_zero]
 
 end clause3
 
@@ -2042,178 +1603,10 @@ section clause3b
 variable {k r d : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-lemma smul_sum_smulRight {X V : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [NormedAddCommGroup V]
-    [NormedSpace ℂ V] {ι : Type*} (s : Finset ι) (a : ι → X →L[ℝ] ℝ) (v : ι → V) (z : ℂ) :
-    z • ∑ i ∈ s, (a i).smulRight (v i) = ∑ i ∈ s, (a i).smulRight (z • v i) := by
-  ext e
-  simp only [FunLike.coe_smul, Pi.smul_apply, FunLike.coe_sum, Finset.sum_apply,
-    ContinuousLinearMap.smulRight_apply, Finset.smul_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [smul_comm]
 
-theorem clause3_local [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (D : B.RealPlaceData k r Wp Wq) {A : ℝ}
-    {m : ℕ} {F : B.Mat k r → (Wq →L[ℂ] Wp)} (hT : TransportedAlt k r A m) (hF : B.InCC A m F) {O : Set (Fin d → ℝ)}
-    {cx : (Fin d → ℝ) → Fin r → ℂ} {μx : (Fin d → ℝ) → B.Mat k 0} (hO : IsOpen O)
-    (hcx : ContDiffOn ℝ ∞ cx O) (hμx : ContDiffOn ℝ ∞ μx O)
-    (hx : ∀ x ∈ O, (∀ a, cx x a ≠ 0) ∧ μx x ∈ B.GV k 0) {x₀ : Fin d → ℝ} (hx₀ : x₀ ∈ O) :
-    ∃ u, IsOpen u ∧ x₀ ∈ u ∧ ContDiffOn ℝ (m : WithTop ℕ∞) (fun x => sliceR D F (cx x) (μx x)) (O ∩ u) := by
-  obtain ⟨cF, hcF⟩ := hF
-  obtain ⟨hAp, hAB, -, -⟩ := thr_facts hT
-  obtain ⟨δ, hδ, hball⟩ : ∃ δ > 0, Metric.closedBall x₀ δ ⊆ O :=
-    Metric.nhds_basis_closedBall.mem_iff.1 (hO.mem_nhds hx₀)
-  set Ω := Metric.ball x₀ δ with hΩdef
-  have hΩO : Ω ⊆ O := Metric.ball_subset_closedBall.trans hball
-  have hKX : IsCompact (Metric.closedBall x₀ δ) := isCompact_closedBall _ _
-  set K := cx '' Metric.closedBall x₀ δ with hKdef
-  have hK : IsCompact K := hKX.image_of_continuousOn (hcx.continuousOn.mono hball)
-  have hK0 : ∀ c ∈ K, ∀ a, c a ≠ 0 := by
-    rintro c ⟨x, hxK, rfl⟩
-    exact (hx x (hball hxK)).1
-  obtain ⟨C, hC, hs⟩ := sizes1 k r K hK hK0
-  set M := max cF 0 * (((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2) ^ m * C ^ (3 * Ap r A m) with hMdef
-  have hM : 0 ≤ M := by
-    have : (0 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) * C ^ 2 := by positivity
-    exact mul_nonneg (mul_nonneg (le_max_right _ _) (pow_nonneg this m))
-      (Real.rpow_nonneg (le_trans zero_le_one hC) _)
-  have := Formalism.FourierDecayAlt.P.B5.haar_sigmaFinite D.haarN
-  have hβ : Integrable (beta0 (k := k) (r := r) M (Ap r A m)) (D.μN.prod D.μN) := integrable_slice_weight D.haarN M hAB
-  have hβ0 : ∀ ξ, 0 ≤ beta0 (k := k) (r := r) M (Ap r A m) ξ := slice_weight_nonneg hM
-
-  have hacont : ContinuousOn (fun x => ∑ i, ‖aB k r cx μx i x‖) (Metric.closedBall x₀ δ) :=
-    continuousOn_finsetSum _ fun i _ => ((aB_cd hO hcx hμx hx i).continuousOn.mono hball).norm
-  obtain ⟨Ba, hBa⟩ := hKX.exists_bound_of_continuousOn hacont
-  have hBa' : ∀ x ∈ Metric.closedBall x₀ δ, ∑ i, ‖aB k r cx μx i x‖ ≤ Ba := by
-    intro x hx'
-    have h1 := hBa x hx'
-    rwa [Real.norm_eq_abs, abs_of_nonneg (Finset.sum_nonneg fun _ _ => norm_nonneg _)] at h1
-
-  have hbd : ∀ w : List (Formalism.FourierDecayAlt.P.Ux10.J k r), w.length ≤ m → ∀ x ∈ Metric.closedBall x₀ δ, ∀ ξ,
-      ‖Fw D F cx μx w x ξ‖ ≤ beta0 M (Ap r A m) ξ := by
-    intro w hw x hxK ξ
-    by_cases hξ : ξ ∈ Sn k r
-    · have e := congrFun (Fw_mem (D := D) (F := F) (cx := cx) (μx := μx) (w := w) hξ) x
-      rw [e, norm_smul]
-      refine (mul_le_of_le_one_left (norm_nonneg _) (norm_psiN D ξ)).trans ?_
-      exact Gw_bound hT hcF hC hs ⟨x, hxK, rfl⟩ (hx x (hball hxK)).1 hξ (hx x (hball hxK)).2 w hw
-    · have e := congrFun (Fw_not (D := D) (F := F) (cx := cx) (μx := μx) (w := w) hξ) x
-      rw [e, norm_zero]
-      exact hβ0 ξ
-  have hmeas : ∀ w : List (Formalism.FourierDecayAlt.P.Ux10.J k r), w.length ≤ m → ∀ x ∈ O,
-      AEStronglyMeasurable (Fw D F cx μx w x) (D.μN.prod D.μN) := by
-    intro w hw x hxO
-    exact (continuous_psiN D).aestronglyMeasurable.smul
-      (Gw_meas hcF.1 _ w hw _ (phi_contOn (cx x) (μx x))
-        (fun ξ hξ => phi_mem (hx x hxO).1 (nset_gv hξ.1) (nset_gv hξ.2) (hx x hxO).2))
-  have hbm : ∀ x ∈ O, bmap k r cx μx x ∈ B.GV k r := bmap_mem hx
-  have hbc : ContinuousOn (bmap k r cx μx) O := (bmap_cd hcx hμx (fun x hx' => (hx x hx').1)).continuousOn
-  have hcont : ∀ w : List (Formalism.FourierDecayAlt.P.Ux10.J k r), w.length ≤ m → ∀ ξ,
-      ContinuousOn (fun x => Fw D F cx μx w x ξ) O := by
-    intro w hw ξ
-    by_cases hξ : ξ ∈ Sn k r
-    · rw [Fw_mem hξ]
-      have hn : (Matrix.of ξ.1 : B.Mat k r) ∈ B.GV k r := nset_gv hξ.1
-      have hn' : (Matrix.of ξ.2 : B.Mat k r) ∈ B.GV k r := nset_gv hξ.2
-      have hG := Formalism.FourierDecayAlt.P.B6.continuousOn_of_contDiffOn_group (Gw_ck hcF.1 hn' w hw)
-      have hγ : ContinuousOn (fun x => (Matrix.of ξ.1 : B.Mat k r)⁻¹ * bmap k r cx μx x * Matrix.of ξ.2) O :=
-        Formalism.FourierDecayAlt.P.B6.continuousOn_matrix_mul (Formalism.FourierDecayAlt.P.B6.continuousOn_matrix_mul continuousOn_const hbc)
-          continuousOn_const
-      exact (hG.comp hγ (fun x hxO => Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul
-        (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_inv hn) (hbm x hxO)) hn')).const_smul (psiN D ξ)
-    · rw [Fw_not hξ]; exact continuousOn_const
-  have hderiv : ∀ w : List (Formalism.FourierDecayAlt.P.Ux10.J k r), w.length < m → ∀ x ∈ O, ∀ ξ,
-      HasFDerivAt (fun y => Fw D F cx μx w y ξ)
-        (∑ i, (aB k r cx μx i x).smulRight (Fw D F cx μx (i :: w) x ξ)) x := by
-    intro w hw x hxO ξ
-    by_cases hξ : ξ ∈ Sn k r
-    · rw [Fw_mem hξ]
-      have hn : (Matrix.of ξ.1 : B.Mat k r) ∈ B.GV k r := nset_gv hξ.1
-      have hn' : (Matrix.of ξ.2 : B.Mat k r) ∈ B.GV k r := nset_gv hξ.2
-      have hck : B.CkOn ((1 : ℕ) : ℕ∞) (B.GV k r) (Gw F ξ w) :=
-        Formalism.FourierDecayAlt.P.B4.ckOn_mono (by omega) (Gw_ck hcF.1 hn' w hw.le)
-      have h1 := (hasFDeriv_slice hO hcx hμx hx hck hn hn' hxO).const_smul (psiN D ξ)
-      refine h1.congr_fderiv ?_
-      rw [smul_sum_smulRight]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      have e := congrFun (Fw_mem (D := D) (F := F) (cx := cx) (μx := μx) (w := i :: w) hξ) x
-      rw [e]
-      rfl
-    · rw [Fw_not hξ]
-      have : (∑ i, (aB k r cx μx i x).smulRight (Fw D F cx μx (i :: w) x ξ)) = 0 := by
-        refine Finset.sum_eq_zero fun i _ => ?_
-        have e := congrFun (Fw_not (D := D) (F := F) (cx := cx) (μx := μx) (w := i :: w) hξ) x
-        rw [e]
-        ext; simp
-      rw [this]
-      exact hasFDerivAt_const _ _
-
-  set L : List (Formalism.FourierDecayAlt.P.Ux10.J k r) → (Fin d → ℝ) → (Wq →L[ℂ] Wp) :=
-    fun w x => ∫ ξ, Fw D F cx μx w x ξ ∂(D.μN.prod D.μN) with hLdef
-  have hΩK : ∀ x ∈ Ω, x ∈ Metric.closedBall x₀ δ := fun x hx' => Metric.ball_subset_closedBall hx'
-  have hLc : ∀ w : List (Formalism.FourierDecayAlt.P.Ux10.J k r), w.length ≤ m → ContinuousOn (L w) Ω := by
-    intro w hw
-    exact continuousOn_of_dominated (bound := beta0 M (Ap r A m))
-      (fun x hxΩ => hmeas w hw x (hΩO hxΩ))
-      (fun x hxΩ => Eventually.of_forall fun ξ => hbd w hw x (hΩK x hxΩ) ξ) hβ
-      (Eventually.of_forall fun ξ => (hcont w hw ξ).mono hΩO)
-  have hLd : ∀ w : List (Formalism.FourierDecayAlt.P.Ux10.J k r), w.length < m → ∀ Y ∈ Ω,
-      HasFDerivAt (L w) (∑ i, (aB k r cx μx i Y).smulRight (L (i :: w) Y)) Y := by
-    intro w hw Y hY
-    have hYO : Y ∈ O := hΩO hY
-    have hεp : 0 < δ - dist Y x₀ := by
-      have := Metric.mem_ball.1 hY
-      linarith
-    have hsub : Metric.ball Y (δ - dist Y x₀) ⊆ Metric.closedBall x₀ δ := by
-      intro y hy
-      rw [Metric.mem_ball] at hy
-      rw [Metric.mem_closedBall]
-      calc dist y x₀ ≤ dist y Y + dist Y x₀ := dist_triangle _ _ _
-        _ ≤ δ := by linarith
-    have hw1 : (∀ i : Formalism.FourierDecayAlt.P.Ux10.J k r, (i :: w).length ≤ m) := fun i => by simpa using hw
-    have hint : ∀ i, Integrable (Fw D F cx μx (i :: w) Y) (D.μN.prod D.μN) := fun i =>
-      hβ.mono' (hmeas (i :: w) (hw1 i) Y hYO)
-        (Eventually.of_forall fun ξ => hbd (i :: w) (hw1 i) Y (hΩK Y hY) ξ)
-    have hint' : ∀ i, Integrable (fun ξ => (aB k r cx μx i Y).smulRight (Fw D F cx μx (i :: w) Y ξ))
-        (D.μN.prod D.μN) := fun i =>
-      (ContinuousLinearMap.smulRightL ℝ (Fin d → ℝ) (Wq →L[ℂ] Wp) (aB k r cx μx i Y)).integrable_comp (hint i)
-    have key := hasFDerivAt_integral_of_dominated_of_fderiv_le (μ := D.μN.prod D.μN)
-      (F := fun y ξ => Fw D F cx μx w y ξ)
-      (F' := fun y ξ => ∑ i, (aB k r cx μx i y).smulRight (Fw D F cx μx (i :: w) y ξ))
-      (bound := fun ξ => Ba * beta0 M (Ap r A m) ξ) (Metric.ball_mem_nhds Y hεp)
-      (by filter_upwards [hO.mem_nhds hYO] with y hy using hmeas w hw.le y hy)
-      (hβ.mono' (hmeas w hw.le Y hYO) (Eventually.of_forall fun ξ => hbd w hw.le Y (hΩK Y hY) ξ))
-      (Finset.aestronglyMeasurable_fun_sum _ fun i _ => (hint' i).aestronglyMeasurable)
-      (Eventually.of_forall fun ξ y hy => by
-        have hyK := hsub hy
-        refine (norm_sum_le _ _).trans ?_
-        calc ∑ i, ‖(aB k r cx μx i y).smulRight (Fw D F cx μx (i :: w) y ξ)‖
-            ≤ ∑ i, ‖aB k r cx μx i y‖ * beta0 M (Ap r A m) ξ := by
-              refine Finset.sum_le_sum fun i _ => ?_
-              rw [ContinuousLinearMap.norm_smulRight_apply]
-              exact mul_le_mul_of_nonneg_left (hbd (i :: w) (hw1 i) y hyK ξ) (norm_nonneg _)
-          _ = (∑ i, ‖aB k r cx μx i y‖) * beta0 M (Ap r A m) ξ := by rw [Finset.sum_mul]
-          _ ≤ Ba * beta0 M (Ap r A m) ξ := mul_le_mul_of_nonneg_right (hBa' y hyK) (hβ0 ξ))
-      (hβ.const_mul Ba)
-      (Eventually.of_forall fun ξ y hy => hderiv w hw y (hball (hsub hy)) ξ)
-    refine key.congr_fderiv ?_
-    rw [integral_finsetSum _ fun i _ => hint' i]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    exact ContinuousLinearMap.integral_comp_comm
-      (ContinuousLinearMap.smulRightL ℝ (Fin d → ℝ) (Wq →L[ℂ] Wp) (aB k r cx μx i Y)) (hint i)
-  have hALd := Formalism.FourierDecayAlt.P.Ux10.ALd (Ω := Ω) Metric.isOpen_ball (fun i => aB k r cx μx i)
-    (fun i => (aB_cd hO hcx hμx hx i).mono hΩO) m L hLc hLd
-  refine ⟨Ω, Metric.isOpen_ball, Metric.mem_ball_self hδ, ?_⟩
-  refine (hALd.mono Set.inter_subset_right).congr fun x _ => ?_
-  simp only [hLdef]
-  rw [sliceR_eq]
-  rfl
 
 end clause3b
 
-theorem _root_.Formalism.FourierDecayAlt.P.slice_at_last_level_diagonal : Formalism.FourierDecayAlt.JF.LastLevelDiagonalSlice := by
-  intro k r Wp Wq _ _ _ _ _ _ D A m F hT hF
-  refine ⟨fun c hc μ hμ => (slice_integrable_finite_class D hT hF hc).1 μ hμ, fun c hc => (slice_integrable_finite_class D hT hF hc).2, ?_⟩
-  intro d O cx μx hO hcx hμx hx
-  exact contDiffOn_of_locally_contDiffOn fun x₀ hx₀ => clause3_local D hT hF hO hcx hμx hx hx₀
 
 end Formalism.FourierDecayAlt.P.SliceLastLevel
 

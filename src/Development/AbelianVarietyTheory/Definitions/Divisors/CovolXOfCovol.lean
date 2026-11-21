@@ -198,9 +198,6 @@ def RowsT : Prop := p.Rows ∧ RecTied D L
 def EvTied {eps : ℝ} (Fm : FamP eps) (Q : ∀ (x : ℝ) (hx : Fm.x1 < x) (ι : Fm.Ix x), Pt Fm x hx ι → Prop) : Prop :=
   ∃ x0 : ℝ, ∀ (x : ℝ) (hx : Fm.x1 < x), x0 ≤ x → ∀ (ι : Fm.Ix x) (p : Pt Fm x hx ι), RowsT p → Q x hx ι p
 
-theorem evTied_iff {eps : ℝ} (Fm : FamP eps) (Q : ∀ (x : ℝ) (hx : Fm.x1 < x) (ι : Fm.Ix x), Pt Fm x hx ι → Prop) :
-    EvTied Fm Q ↔ EvPt Fm fun x hx ι p => RecTied (Fm.D x ι) (Fm.L x ι) → Q x hx ι p :=
-  exists_congr fun _ => ⟨fun h x hx hle ι p a b => h x hx hle ι p ⟨a, b⟩, fun h x hx hle ι p a => h x hx hle ι p a.1 a.2⟩
 
 theorem EvTied.and {eps : ℝ} {Fm : FamP eps} {Q Q' : ∀ (x : ℝ) (hx : Fm.x1 < x) (ι : Fm.Ix x), Pt Fm x hx ι → Prop}
     (h : EvTied Fm Q) (h' : EvTied Fm Q') : EvTied Fm fun x hx ι p => Q x hx ι p ∧ Q' x hx ι p := by

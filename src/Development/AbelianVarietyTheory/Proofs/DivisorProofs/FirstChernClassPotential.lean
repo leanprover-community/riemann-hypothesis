@@ -126,29 +126,6 @@ theorem mInt_update_byParts [CompactSpace X] [T2Space X] (A : FinHolAtlas e X) (
     rw [← ReciprocityTheory.AnForm.P.mInt_update_eq, ← ReciprocityTheory.AnForm.P.mInt_update_eq] at h
     convert h
 
-theorem mInt_one_pos [CompactSpace X] [T2Space X] [Nonempty X] (A : FinHolAtlas e X) (Φ : Fin e → LocPot X)
-    (hΦ : ∀ i, IsPotential A (Φ i)) (hp : ∀ i, IsPosPot A (Φ i)) : 0 < mInt A Φ fun _ => 1 := by
-  have hP := existsPartition A
-  rw [mInt, dif_pos hP, integralWith]
-  set R := hP.some
-  have hnn : ∀ j, ∀ y ∈ (A.chart j).target, 0 ≤ R.χ j ((A.chart j).symm y) * 1 * locDens A Φ j y := fun j y hy =>
-    mul_nonneg (mul_nonneg (R.nonneg _ _) zero_le_one) (locDensPos A Φ hΦ hp j y hy).le
-  obtain ⟨x⟩ := ‹Nonempty X›
-  obtain ⟨j, hj⟩ : ∃ j, R.χ j x ≠ 0 := by
-    by_contra! h
-    simpa [h] using R.sum_eq_one x
-  refine Finset.sum_pos' (fun j _ => setIntegral_nonneg (A.chart j).open_target.measurableSet (hnn j))
-    ⟨j, Finset.mem_univ _, ?_⟩
-  have hx : x ∈ (A.chart j).source := R.tsupport_subset j (subset_tsupport _ hj)
-  rw [setIntegral_pos_iff_support_of_nonneg_ae
-    ((ae_restrict_iff' (A.chart j).open_target.measurableSet).2 (ae_of_all _ (hnn j)))
-    (integrableOn_weight A R Φ (fun _ => 1) (mIntegrableCont A Φ hΦ _ continuous_const) j)]
-  have hO : IsOpen ((A.chart j).target ∩ (A.chart j).symm ⁻¹' Function.support (R.χ j)) :=
-    (A.chart j).isOpen_inter_preimage_symm (projLine_continuous_of_smooth A (R.smooth j)).isOpen_support
-  refine lt_of_lt_of_le (hO.measure_pos volume ⟨A.chart j x, (A.chart j).map_source hx, ?_⟩) (measure_mono ?_)
-  · simpa [(A.chart j).left_inv hx] using hj
-  · rintro y ⟨hy, hy'⟩
-    exact ⟨mul_ne_zero (mul_ne_zero hy' one_ne_zero) (locDensPos A Φ hΦ hp j y hy).ne', hy⟩
 
 def combPot {I : Type} [Fintype I] (P : I → LocPot X) (a : I → ℝ) (u : X → ℝ) : LocPot X where
   U x := ⋂ i, (P i).U x
@@ -448,31 +425,13 @@ def cls (i : I) : (calcOf M P hP).V := (Pi.single i 1, 0)
 
 theorem first_chern_class_potential (i : I) (σ) : ((calcOf M P hP).c1 (cls M P hP i) σ).φ = (P i σ).φ := chern_single_φ M P i σ
 
-theorem int_Om_pos (h : ∃ σ, Nonempty (M.X σ)) : 0 < M.int (fun _ => M.Om) fun _ _ => 1 := by
-  obtain ⟨σ₀, h⟩ := h
-  refine mul_pos M.κ_pos (Finset.sum_pos' (fun σ _ => ?_) ⟨σ₀, Finset.mem_univ _, ?_⟩)
-  · refine mIntNonneg _ _ (fun _ => (M.bd σ).2.2.1) (fun _ x j y hy w => ?_) _ fun _ => zero_le_one
-    by_cases hw : w = 0
-    · rw [hw, levi_zero]
-    · exact ((M.bd σ).2.2.2.1 x j y hy w hw).le
-  · exact mInt_one_pos _ _ (fun _ => (M.bd σ₀).2.2.1) fun _ => (M.bd σ₀).2.2.2.1
 
 theorem int_congr_φ {Q' Q : Fin e → M.Pot} (h : ∀ i σ, (Q' i σ).φ = (Q i σ).φ) (u : M.Fun) :
     M.int Q' u = M.int Q u :=
   congrArg (M.κ * ·) (Finset.sum_congr rfl fun σ _ => mInt_congr_φ (M.A σ) (fun i => h i σ) (u σ))
 
-theorem smooth_one : M.Smooth fun _ _ => 1 := fun _ _ => contDiffOn_const
 
-theorem num_one_pos (i : I) (hi : P i = M.Om) (h : ∃ σ, Nonempty (M.X σ)) :
-    0 < (calcOf M P hP).num (Fin.cons ((calcOf M P hP).ar fun _ _ => 1) fun _ => cls M P hP i) := by
-  rw [(calcOf M P hP).num_ar _ (smooth_one M)]
-  rw [int_congr_φ M (Q := fun _ => M.Om) (fun _ σ => by rw [first_chern_class_potential, hi])]
-  exact int_Om_pos M h
 
-theorem exists_calc (M : Man e) {I : Type} [Fintype I] (P : I → M.Pot) (hP : ∀ i σ, IsPotential (M.A σ) (P i σ)) :
-    ∃ (K : Calc M) (c : I → K.V), (∀ i σ, LeviEq (M.A σ) (K.c1 (c i) σ) (P i σ)) ∧
-      ∀ i, P i = M.Om → (∃ σ, Nonempty (M.X σ)) → 0 < K.num (Fin.cons (K.ar fun _ _ => 1) fun _ => c i) :=
-  ⟨calcOf M P hP, cls M P hP, fun i σ => leviEq_of_φ _ (first_chern_class_potential M P hP i σ), num_one_pos M P hP⟩
 
 end Calculus
 
@@ -524,13 +483,7 @@ def timesLine {e : ℕ} (M : Man e) : Man (e + 1) where
 
 def linesMan (e : ℕ) : Man e := Nat.rec (motive := fun e => Man e) pointMan (fun _ M => timesLine M) e
 
-theorem linesMan_nonempty (e : ℕ) : ∀ σ, Nonempty ((linesMan e).X σ) := by
-  induction e with
-  | zero => exact fun _ => ⟨PUnit.unit⟩
-  | succ e ih => exact fun σ => (ih σ).elim fun x => ⟨(x, OnePoint.infty)⟩
 
-theorem exists_man (e : ℕ) : ∃ M : Man e, ∀ σ, Nonempty (M.X σ) :=
-  ⟨linesMan e, linesMan_nonempty e⟩
 
 end Manifolds
 

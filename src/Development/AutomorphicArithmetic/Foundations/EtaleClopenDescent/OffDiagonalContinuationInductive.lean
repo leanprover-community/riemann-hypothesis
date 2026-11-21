@@ -419,33 +419,9 @@ theorem step [IsFiltered J] (q : ℕ) (i : ℤ) (he : ∀ j, s.app j ≫ t.app j
 private theorem mem_off {R : Type} [CommRing R] (K : Ideal R) (p : Spec (CommRingCat.of R)) :
     p ∈ off R K ↔ ¬ K ≤ (p : PrimeSpectrum R).asIdeal := Iff.rfl
 
-private theorem off_inf {r : ℕ} (y : Fin r → A) (f : A) :
-    off A (Ideal.span (Set.range fun k => y k * f)) = off A (Ideal.span (Set.range y)) ⊓ off A (Ideal.span {f}) := by
-  ext p
-  change p ∈ off A _ ↔ p ∈ off A _ ∧ p ∈ off A _
-  simp only [mem_off, Ideal.span_le, Set.range_subset_iff, Ideal.span_singleton_le_iff_mem, SetLike.mem_coe]
-  have hp := (p : PrimeSpectrum A).isPrime
-  by_cases hf : f ∈ (p : PrimeSpectrum A).asIdeal
-  · simp [hf, Ideal.mul_mem_left]
-  · simp [hf, hp.mul_mem_iff_mem_or_mem]
 
-private theorem sq_of {r : ℕ} (x : Fin (r + 1) → A) (R : Type) [CommRing R] (ψ : A →+* R) :
-    Sq (off R ((Ideal.span (Set.range fun k : Fin r => x k.castSucc)).map ψ))
-      (off R ((Ideal.span {x (Fin.last r)}).map ψ)) (off R ((Ideal.span (Set.range x)).map ψ))
-      (off R ((Ideal.span (Set.range fun k : Fin r => x k.castSucc * x (Fin.last r))).map ψ)) := by
-  rw [off_map, off_map, off_map, off_map, off_inf]
-  refine ⟨?_, rfl⟩
-  rw [range_fin_succ x, off_span_union]
-  rfl
 
 end final
 
 end UpperTheory.Cb.OffDiagonalContinuation
 
-theorem UpperTheory.Cb.off_diagonal_continuation_inductive :
-    LateralTheory.CohomologicalPurity.LeafBd → LateralTheory.CohomologicalPurity.LeafExc → LateralTheory.CohomologicalPurity.OffContBasic → LateralTheory.CohomologicalPurity.OffContStep := by
-  intro _ _ hb a1 a4 b1 _ _ _ r ih q A B _ _ φ x hq J _ _ D s t hc he n i
-  exact UpperTheory.Cb.OffDiagonalContinuation.step φ D s t q i he _ _ _ _ (UpperTheory.Cb.OffDiagonalContinuation.sq_of x)
-    (fun m => ih q φ _ hq J D s t hc he m i)
-    (fun m => hb a1 a4 b1 q φ _ hq J D s t hc he m i)
-    (fun m => ih q φ (fun k => x k.castSucc * x (Fin.last r)) hq J D s t hc he m i) n

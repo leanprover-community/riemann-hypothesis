@@ -63,9 +63,6 @@ theorem PairOne.precomp (h : PairOne c N x y) (hx : x ^ N = 1) (hy : y ^ N = 1) 
 theorem pairOne_trivCub (N : ℕ) (x y : T ⟶ G) : PairOne (GlobalTheory.UU.trivCub G) N x y := fun z J _ => by
   simp only [GlobalTheory.UU.cubV_trivCub]
 
-theorem not_pairOne_signCube :
-    ¬ PairOne GlobalTheory.UU.SignCube.cub 2 (GlobalTheory.UU.SignCube.p₁ (𝟙_ _)) (GlobalTheory.UU.SignCube.p₂ (𝟙_ _)) := fun h =>
-  GlobalTheory.UU.SignCube.not_cubWeil_one (h.cubWeil (GlobalTheory.UU.SignCube.sq_eq_one _) (GlobalTheory.UU.SignCube.sq_eq_one _))
 
 end Pairing
 
@@ -97,12 +94,6 @@ theorem AlphaPt.pt_pow_eq_one [CharP k l] {H : Over S} [GrpObj H] (α : AlphaPt 
   rw [← α.pt_natCast_mul hl B t h l (by rw [e, zero_pow hl]), ← α.pt_zero_eq_one B (zero_pow hl)]
   exact cg _ _ e _ _
 
-theorem AlphaPt.pairsTriv_iff_cubWeil [CharP k l] {L : RigLB G} (c : CubicalStr G L) (α : AlphaPt G κ l) (hl : l ≠ 0) :
-    α.PairsTriv c ↔ ∀ (B : Type) [CommRing B] [Algebra k B] [Module.Finite k B] (aug : B →ₐ[k] k),
-      (∀ b, aug b = 0 → IsNilpotent b) → ∀ (s : B) (_ : s ^ 2 = 0) (h : s ^ l = 0) (y : overAt κ B ⟶ G),
-        Formalism.L2.Pj.homAt κ aug ≫ y = 1 → y ^ l = 1 → GlobalTheory.UU.CubWeil c l (α.pt B s h) y 1 :=
-  ⟨fun H B _ _ _ aug ha s hs h y hy hyl => (H B aug ha s hs h y hy hyl).cubWeil (α.pt_pow_eq_one hl B s h) hyl,
-    fun H B _ _ _ aug ha s hs h y hy hyl => PairOne.of_cubWeil (H B aug ha s hs h y hy hyl)⟩
 
 theorem eps_pow_eq_zero_iff : (DualNumber.eps : DualNumber k) ^ l = 0 ↔ 2 ≤ l := by
   refine ⟨fun h => ?_, fun hl => pow_eq_zero_of_le hl (by rw [sq, DualNumber.eps_mul_eps])⟩
@@ -111,8 +102,6 @@ theorem eps_pow_eq_zero_iff : (DualNumber.eps : DualNumber k) ^ l = 0 ↔ 2 ≤ 
   · simp at h
   · simpa using congrArg TrivSqZeroExt.snd h
 
-theorem nonDegAt_of_le_one {L : RigLB G} (c : CubicalStr G L) (κ : Sp k ⟶ S) (hl : l ≤ 1) : NonDegAt c κ l :=
-  fun _ _ h => absurd (eps_pow_eq_zero_iff.1 h) (by omega)
 
 open GlobalTheory.IndefiniteRowSideFullHecke.SemiAbelianAxisTangent in
 

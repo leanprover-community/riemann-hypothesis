@@ -148,16 +148,7 @@ theorem heckeProjector_idempotent_compositeLift (hL : FiniteGroupLifts) (h : R.t
 
 end
 
-theorem projLiftExists_of (hA : ActPreservesMult) (hL : FiniteGroupLifts) : GlobalTheory.IndefiniteRowSideFullHecke.ProjectiveLiftExistence.ProjLiftExists := by
-  intro D G _ _ Pl0 T A Ks _ _ _ R h hr hE t
-  refine (GlobalTheory.IndefiniteRowSideFullHecke.ProjectiveLiftExistence.exists_represents_iff hE t).2 fun x => ?_
-  have h1 := thDn_mem R t x
-  rw [GlobalTheory.IndefiniteRowSideFullHecke.ProjectiveLiftExistence.projLift_apply]
-  refine (mem_goodPart _ _ _ _ _ _).2 ⟨goodProjector_levelMultiplicitySpace_mem_goodRows R hA h1, fun v => ?_⟩
-  exact heckeProjector_idempotent_compositeLift R hL h hr (GlobalTheory.hasType_of_mem_mult R.θ (R.MY 0) (R.βY 0) _ _ h1 v)
 
-theorem projLiftExists : GlobalTheory.IndefiniteRowSideFullHecke.ProjectiveLiftExistence.ProjLiftExists :=
-  projLiftExists_of GlobalTheory.T.levelMultiplicity_stable_under_action GlobalTheory.T.finite_group_lifts_to_parahoric_level
 
 end GlobalTheory.ProjLift
 

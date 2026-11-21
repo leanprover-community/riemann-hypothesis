@@ -305,42 +305,8 @@ theorem span_cut {G : Type} [Group G] [Fintype G] (A : HLat K) (ρ : Representat
     | add x y _ _ hx hy => rw [map_add]; exact Submodule.add_mem _ hx hy
     | smul a x _ hx => rw [map_smul]; exact Submodule.smul_mem _ _ hx
 
-theorem muDual_eq (A : HLat K) (hX : ∀ v, IsUnit (A.X v).det) (hF : A.L.FG)
-    (hS : Submodule.span K (A.L : Set A.V) = ⊤) (h0 : A.L ≠ ⊥) : A.muDual = - A.mu := by
-  obtain ⟨hdF, hdS, -, hsz, -⟩ := Formalism.HN.dualPl K A.V A.ι A.b A.X hX A.L hF hS
-  have hdX : ∀ v, IsUnit (Formalism.HN.dualFrame A.X v).det := by
-    intro v
-    unfold Formalism.HN.dualFrame
-    exact Matrix.isUnit_nonsing_inv_det _ (by rw [Matrix.det_transpose]; exact hX v)
-  have hd0 : Formalism.HN.dualLat A.L ≠ ⊥ := by
-    intro hb
-    obtain ⟨y, hy, hy0⟩ := (Submodule.ne_bot_iff _).1 h0
-    obtain ⟨i, hi⟩ : ∃ i, A.b.repr y i ≠ 0 := by
-      by_contra hc
-      push Not at hc
-      exact hy0 (A.b.repr.injective (by ext i; simp [hc i]))
-    have hmem : A.b.coord i ∈ Submodule.span K (Formalism.HN.dualLat A.L : Set (Module.Dual K A.V)) := by
-      rw [hdS]; trivial
-    have hz : A.b.coord i = 0 := by simpa [hb] using hmem
-    exact hi (by simpa using congrArg (fun f => f y) hz)
-  obtain ⟨-, hmuD, -⟩ := Formalism.HN.sizeMu K (Module.Dual K A.V) A.ι A.b.dualBasis (Formalism.HN.dualFrame A.X) hdX _ hdF hd0
-  obtain ⟨-, hmu, -⟩ := Formalism.HN.sizeMu K A.V A.ι A.b A.X hX A.L hF h0
-  show Formalism.HN.muDef A.b.dualBasis (Formalism.HN.dualFrame A.X) (Formalism.HN.dualLat A.L) = - Formalism.HN.muDef A.b A.X A.L
-  rw [hmuD, hmu, hsz, Real.log_inv]; ring
 
-theorem cut_mul_one {G : Type} [Group G] (A : HLat K) (ρ : Representation K G A.V)
-    (a b : MonoidAlgebra K G) (hb : ρ.asAlgebraHom b = 1) (M : Submodule (𝓞 K) A.V) :
-    cut A ρ (a * b) M = cut A ρ a M := by
-  unfold cut; rw [map_mul, hb, mul_one]
 
-theorem cut_mul_le {G : Type} [Group G] (A : HLat K) (ρ : Representation K G A.V)
-    (a b : MonoidAlgebra K G) (M : Submodule (𝓞 K) A.V) :
-    cut A ρ (a * b) M ≤ cut A ρ a M := by
-  unfold cut cutE
-  rw [map_mul]
-  refine inf_le_inf_left _ ?_
-  rintro _ ⟨y, rfl⟩
-  exact ⟨ρ.asAlgebraHom b y, rfl⟩
 
 end Level
 
@@ -435,160 +401,6 @@ attribute [local instance] Formalism.MainNotions.PrimeDegreeVariant.finiteLevelG
 
 variable {D : D7} {X : BaseLevelRowSide D}
 
-theorem scaled_lattice_bound_holds (Y : Prov D X) (C : ℝ) : GGFromIrreducibility Y C := by
-  intro h0 h51 hTT h3 h4
-  unfold Conclusion5 Formalism.BasicNotions.LemmaT
-  intro hδ HH0 hH
-  have hfrg : frg D = (D.R.f : ℝ) * D.R.r / (min (D.host.g 0) (D.host.g 1) : ℕ) := rfl
-  rw [← hfrg] at hδ ⊢
-  obtain ⟨hGL, -, heG, hL0, hLs⟩ := h51
-  obtain ⟨lab, hlab, hgood⟩ := hTT
-  have hAX : ∀ v, IsUnit (Y.RK.X v).det := hGL.1.1
-  have hAL : Y.RK.L.FG := hGL.1.2.1
-  have hM1 : M1 Y.T Y.P0 := fun s => (h3 lab hlab s (hgood s)).1
-  have hM1' : ∀ s, nS Y.T Y.P0 s = 1 := hM1
-  have hNs : ∀ s, |(nS Y.T Y.Ps s : ℝ) - nbar D| ≤ C * frg D * nbar D :=
-    fun s => (h3 lab hlab s (hgood s)).2
-  obtain ⟨hrkS, hdegS, hmaxS⟩ := h4 D.what₂.LL (G0g D.nd) Y.T Y.P0 Y.Ps hM1 Y.RK Y.rho hGL
-  obtain ⟨hrk0, hdeg0, -⟩ := h4 D.what₂.LL (G0g D.nd) Y.T Y.P0 Y.P0 hM1 Y.RK Y.rho hGL
-  simp only [cut_mul_one Y.RK Y.rho _ _ heG] at hrkS hdegS hmaxS hrk0 hdeg0
-
-  have hcard1 : (1 : ℝ) ≤ Fintype.card (G0g D.nd) := by exact_mod_cast Fintype.card_pos
-  have hlam : laG (G0g D.nd) = lam0 D := by unfold laG Formalism.BasicNotions.lam0; rw [card_tie]
-  have hlam0 : 0 ≤ lam0 D := by rw [← hlam]; exact Real.log_nonneg hcard1
-  have hlogn : ∀ n : ℕ, n ∣ Fintype.card (G0g D.nd) → Real.log n ≤ lam0 D ∧ n ≠ 0 := by
-    intro n hd
-    have hn : 0 < n := Nat.pos_of_dvd_of_pos hd Fintype.card_pos
-    refine ⟨?_, hn.ne'⟩
-    rw [← hlam]; unfold laG
-    exact Real.log_le_log (by exact_mod_cast hn) (by exact_mod_cast Nat.le_of_dvd Fintype.card_pos hd)
-  have hlogc : ∀ c : ℝ, 1 ≤ c → c ≤ Fintype.card (G0g D.nd) → Real.log c ≤ lam0 D ∧ 0 ≤ Real.log c := by
-    intro c h1 h2
-    exact ⟨by rw [← hlam]; exact Real.log_le_log (by linarith) h2, Real.log_nonneg h1⟩
-
-  obtain ⟨hj0, hr0, hjL0, ⟨n0, hn0d, hn0⟩, ⟨c0, hc01, hc0c, hcn0⟩⟩ := hL0
-  obtain ⟨hjs, hrs, hjLs, ⟨ns, hnsd, hns⟩, ⟨cs, hcs1, hcsc, hcns⟩⟩ := hLs
-  obtain ⟨hln0, hn00⟩ := hlogn n0 hn0d
-  obtain ⟨hlns, hns0⟩ := hlogn ns hnsd
-  obtain ⟨hlc0, hlc00⟩ := hlogc c0 hc01 hc0c
-  obtain ⟨hlcs, hlcs0⟩ := hlogc cs hcs1 hcsc
-  have ec0 : cut Y.RK Y.rho (eps Y.P0) Y.RK.L = cutE Y.RK (Y.rho.asAlgebraHom (eps Y.P0)) Y.RK.L := rfl
-  have ecs : cut Y.RK Y.rho (eps Y.Ps) Y.RK.L = cutE Y.RK (Y.rho.asAlgebraHom (eps Y.Ps)) Y.RK.L := rfl
-  have hR0 : X.principalHermitianLattice.L ≠ ⊥ := ne_bot_of_rkK_pos h0
-  have hcut0 : cutE Y.RK (Y.rho.asAlgebraHom (eps Y.P0)) Y.RK.L ≠ ⊥ := by
-    intro hb
-    exact map_ne_bot Y.j0 hj0 hR0 (eq_bot_iff.2 (hb ▸ map_le_cutE Y.RK X.principalHermitianLattice _ Y.j0 hr0 hjL0))
-  obtain ⟨hF0, hne0, hrkeq0, a1, a2, a3, a4⟩ :=
-    level Y.RK X.principalHermitianLattice hAX hAL X.s.RR_frames _ Y.j0 hj0 hr0 hjL0 n0 hn00 hn0 c0 hc01 hcn0 hcut0
-
-  have hrk0' : rkL Y.RK (cut Y.RK Y.rho (eps Y.P0) Y.RK.L) = ∑ s, rS Y.T Y.P0 Y.RK Y.rho s := by
-    rw [hrk0]; unfold rkT; simp only [hM1', one_mul]
-  have hRn : 0 < ∑ s, rS Y.T Y.P0 Y.RK Y.rho s := by
-    rw [← hrk0']; show 0 < Formalism.HN.rkK _; rw [ec0, ← hrkeq0]; exact h0
-  have hR : (0 : ℝ) < ∑ s, (rS Y.T Y.P0 Y.RK Y.rho s : ℝ) := by exact_mod_cast hRn
-  obtain ⟨s0, -, hs0⟩ := Finset.exists_ne_zero_of_sum_ne_zero hRn.ne'
-  have hnb := nbar_pos D
-  have hδ0 : 0 ≤ C * frg D := by
-    by_contra hneg
-    push Not at hneg
-    have := hNs s0
-    have : C * frg D * nbar D < 0 := mul_neg_of_neg_of_pos hneg hnb
-    linarith [abs_nonneg ((nS Y.T Y.Ps s0 : ℝ) - nbar D)]
-  have hNpos : ∀ s, 0 < nS Y.T Y.Ps s := by
-    intro s
-    have h1 := (abs_le.1 (hNs s)).1
-    have : (0 : ℝ) < nS Y.T Y.Ps s := by nlinarith
-    exact_mod_cast this
-  have hrkSpos : 0 < rkT Y.T Y.P0 Y.Ps Y.RK Y.rho := by
-    unfold rkT
-    exact lt_of_lt_of_le (Nat.mul_pos (hNpos s0) (Nat.pos_of_ne_zero hs0))
-      (Finset.single_le_sum (f := fun s => nS Y.T Y.Ps s * rS Y.T Y.P0 Y.RK Y.rho s)
-        (fun _ _ => Nat.zero_le _) (Finset.mem_univ s0))
-  have hcuts : cutE Y.RK (Y.rho.asAlgebraHom (eps Y.Ps)) Y.RK.L ≠ ⊥ :=
-    ne_bot_of_rkK_pos (by rw [← ecs]; show 0 < rkL _ _; rw [hrkS]; exact hrkSpos)
-  obtain ⟨hFs, hnes, hrkeqs, b1, b2, b3, b4⟩ :=
-    level Y.RK D.div.RR hAX hAL D.div_good.1 _ Y.js hjs hrs hjLs ns hns0 hns cs hcs1 hcns hcuts
-
-  have hS0 := span_top Y.RK X.principalHermitianLattice _ Y.j0 hj0 hr0 n0 hn00 hn0 (span_cut Y.RK Y.rho hGL Y.P0)
-  have hSs := span_top Y.RK D.div.RR _ Y.js hjs hrs ns hns0 hns (span_cut Y.RK Y.rho hGL Y.Ps)
-  have hD0 : X.principalHermitianLattice.muDual = - X.principalHermitianLattice.mu := muDual_eq X.principalHermitianLattice X.s.RR_frames hF0 hS0 hne0
-  have hDs : D.div.RR.muDual = - D.div.RR.mu := muDual_eq D.div.RR D.div_good.1 hFs hSs hnes
-
-  have hFG0 : (cut Y.RK Y.rho (eps Y.P0) Y.RK.L).FG := fg_of_le_fg hAL inf_le_left
-  have hd : ∀ s, degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L) ≤
-      (rS Y.T Y.P0 Y.RK Y.rho s : ℝ) * Formalism.HN.muMaxDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.P0) Y.RK.L) := by
-    intro s
-    show (Formalism.HN.rkK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L) : ℝ) *
-        Formalism.HN.muDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L) ≤
-      (Formalism.HN.rkK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L) : ℝ) *
-        Formalism.HN.muMaxDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.P0) Y.RK.L)
-    by_cases hs : Formalism.HN.rkK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L) = 0
-    · rw [hs]; simp
-    · have hle := cut_mul_le Y.RK Y.rho (eps Y.P0) (eS Y.T s) Y.RK.L
-      have hFGs := fg_of_le_fg hFG0 hle
-      have hne := ne_bot_of_rkK_pos (Nat.pos_of_ne_zero hs)
-      exact mul_le_mul_of_nonneg_left ((mu_le_muMax Y.RK.b Y.RK.X hAX _ hFGs hne).trans
-        (muMax_mono Y.RK.b Y.RK.X hAX hle hFGs hFG0 hne)) (Nat.cast_nonneg _)
-
-  have hrkr : ((rkT Y.T Y.P0 Y.Ps Y.RK Y.rho : ℕ) : ℝ) =
-      ∑ s, (nS Y.T Y.Ps s : ℝ) * (rS Y.T Y.P0 Y.RK Y.rho s : ℝ) := by
-    unfold rkT; push_cast; rfl
-  have hrkrpos : (0 : ℝ) < ∑ s, (nS Y.T Y.Ps s : ℝ) * (rS Y.T Y.P0 Y.RK Y.rho s : ℝ) := by
-    rw [← hrkr]; exact_mod_cast hrkSpos
-  have hmuS : -(Formalism.HN.muDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.Ps) Y.RK.L)) ≤
-      -(∑ s, (nS Y.T Y.Ps s : ℝ) * degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L)) /
-        (∑ s, (nS Y.T Y.Ps s : ℝ) * (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) + 10 * lam0 D := by
-    have h1 := (abs_le.1 hdegS).1
-    rw [hlam, hrkr] at h1
-    have h2 : degL Y.RK (cut Y.RK Y.rho (eps Y.Ps) Y.RK.L) =
-        (∑ s, (nS Y.T Y.Ps s : ℝ) * (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) *
-          Formalism.HN.muDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.Ps) Y.RK.L) := by
-      rw [← hrkr, ← hrkS]; rfl
-    have h3 : (∑ s, (nS Y.T Y.Ps s : ℝ) * degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L)) /
-        (∑ s, (nS Y.T Y.Ps s : ℝ) * (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) ≤
-        Formalism.HN.muDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.Ps) Y.RK.L) + 10 * lam0 D := by
-      rw [div_le_iff₀ hrkrpos]; nlinarith
-    rw [neg_div]; linarith
-
-  have hmu0 : -(∑ s, degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L)) /
-      (∑ s, (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) ≤
-      -(Formalism.HN.muDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.P0) Y.RK.L)) + 10 * lam0 D := by
-    have h1 := (abs_le.1 hdeg0).2
-    simp only [hM1', Nat.cast_one, one_mul] at h1
-    have hr : ((rkT Y.T Y.P0 Y.P0 Y.RK Y.rho : ℕ) : ℝ) = ∑ s, (rS Y.T Y.P0 Y.RK Y.rho s : ℝ) := by
-      unfold rkT; simp only [hM1', one_mul]; push_cast; rfl
-    rw [hlam, hr] at h1
-    have h2 : degL Y.RK (cut Y.RK Y.rho (eps Y.P0) Y.RK.L) =
-        (∑ s, (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) * Formalism.HN.muDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.P0) Y.RK.L) := by
-      rw [← hr, ← hrk0]; rfl
-    have h3 : Formalism.HN.muDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.P0) Y.RK.L) - 10 * lam0 D ≤
-        (∑ s, degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L)) / (∑ s, (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) := by
-      rw [le_div_iff₀ hR]; nlinarith
-    rw [neg_div]; linarith
-  have key : -(∑ s, (nS Y.T Y.Ps s : ℝ) * degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L)) /
-      (∑ s, (nS Y.T Y.Ps s : ℝ) * (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) ≤
-      -(∑ s, degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L)) / (∑ s, (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) +
-      3 * (C * frg D) * (-(∑ s, degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L)) /
-        (∑ s, (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) +
-        Formalism.HN.muMaxDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.P0) Y.RK.L)) :=
-    key_ineq (fun s => (nS Y.T Y.Ps s : ℝ)) (fun s => (rS Y.T Y.P0 Y.RK Y.rho s : ℝ))
-      (fun s => degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L)) (nbar D) (C * frg D) _ hnb hδ0 hδ
-      hNs (fun s => Nat.cast_nonneg _) hd hR
-  have hmx := hmaxS hrkSpos
-  change Formalism.HN.muMaxDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.Ps) Y.RK.L) ≤
-    Formalism.HN.muMaxDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.P0) Y.RK.L) + 10 * laG (G0g D.nd) at hmx
-  rw [hlam] at hmx
-  rw [← ec0] at a1 a2 a3 a4
-  rw [← ecs] at b1 b2 b3 b4
-  refine ⟨by linarith, ?_⟩
-  have hxM : -(∑ s, degL Y.RK (cut Y.RK Y.rho (eps Y.P0 * eS Y.T s) Y.RK.L)) /
-        (∑ s, (rS Y.T Y.P0 Y.RK Y.rho s : ℝ)) +
-        Formalism.HN.muMaxDef Y.RK.b Y.RK.X (cut Y.RK Y.rho (eps Y.P0) Y.RK.L) ≤
-      X.principalHermitianLattice.muDual + HH0 + 13 * lam0 D := by linarith
-  have h3δ : (0 : ℝ) ≤ 3 * (C * frg D) := by linarith
-  have hmul := mul_le_mul_of_nonneg_left hxM h3δ
-  have hdl : 0 ≤ C * frg D * lam0 D := mul_nonneg hδ0 hlam0
-  linarith
 
 end Main
 
@@ -598,9 +410,5 @@ namespace Formalism.MainNotions.DIV.Proofs
 
 open Formalism.MainNotions
 
-theorem family_statement_of_scaled_lemmas {ε : ℝ} (Fm : FamP ε) (YF : PrimeDegreeVariant.ProvF Fm) : PrimeDegreeVariant.FamilyPartBImplication Fm YF :=
-  PrimeDegreeVariant.stmtAtB_ofC Fm YF Formalism.MainNotions.DIV.closed_part_statement_holds
-    (fun x i => ScaledLatticeNorms.scaled_lattice_nonzero_holds (Fm.D x i))
-    (fun x hx i C => ScaledLatticeNorms.scaled_lattice_bound_holds (YF x hx i) C)
 
 end Formalism.MainNotions.DIV.Proofs

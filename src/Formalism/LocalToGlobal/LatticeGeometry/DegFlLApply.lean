@@ -138,15 +138,7 @@ theorem wtL_nonneg (D : D7) (p : ℕ) (la : PlL D p) : 0 ≤ wtL D p la := by
   exact div_nonneg (mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg _))
     (mul_nonneg (Real.log_natCast_nonneg _) (Nat.cast_nonneg _))
 
-theorem datW_indef (D : D7) {Lev : Type} (κ : Lev) {j : ℕ} (h1 : 1 ≤ j) (h2 : j < D.R.m) : (datW D κ j).Indef := by
-  have hk := D.R.m_add_three_le_k
-  refine ⟨?_, ?_⟩
-  · rw [datW_j D κ h1 h2.le]; simp only [Ranks.sigW]; omega
-  · rw [datW_j D κ h1 h2.le, datW_N]; simp only [Ranks.sigW, Ranks.r]; omega
 
-theorem datW_S (D : D7) {Lev : Type} (κ : Lev) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) :
-    (datW D κ j).S = (letI := D.host.cmStar; D.sp.W j) := by
-  simp only [datW, jcl_eq D h1 h2]
 
 theorem dat_ext (D : D7) {Lev : Type} (w w' : Dat D Lev) (hS : w.S = w'.S) (hκ : w.κ = w'.κ) : w = w' := by
   obtain ⟨S, κ, j, a, b, c, d⟩ := w

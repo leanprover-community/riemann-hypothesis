@@ -148,68 +148,11 @@ def aut_inst0 (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [
     topf_open := fun _ _ => isOpen_discrete _
     topf_basis := fun U hU => ⟨1, le_rfl, fun x _ => by rw [Subsingleton.elim x 1]; exact mem_of_mem_nhds hU⟩ }
 
-theorem aut_inst0_n (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
-    (cm : CMData F E) : (aut_inst0 F E cm).n = 0 := rfl
 
-theorem aut_rowsAut_of_rank0 (I : AutInst) (h : I.n = 0) : ∃ B : RowsAut, B.I = I := by
-  have : IsEmpty (Fin I.n) := by rw [h]; infer_instance
-  have : Subsingleton I.Gf := ⟨fun _ _ => Subtype.ext (Units.ext (Subsingleton.elim _ _))⟩
-  have : Subsingleton I.Ginf :=
-    ⟨fun _ _ => funext fun _ => Subtype.ext (Units.ext (Subsingleton.elim _ _))⟩
-  have : Subsingleton I.GA := inferInstance
-  let μ : Measure I.Gf := Measure.haar
-  have : SigmaFinite μ := inferInstance
-  have hone : (1 : I.GA) ∈ I.GFset :=
-    ⟨1, one_mem _, fun v => Subsingleton.elim _ _, Subsingleton.elim _ _⟩
-  refine ⟨{ I := I, μf := μ, fund := Set.univ
-            fund_spec := ⟨MeasurableSet.univ, fun y => ⟨1, hone, trivial⟩,
-              fun γ _ hγ => absurd (Subsingleton.elim γ 1) hγ⟩
-            lam := fun _ _ => 0
-            H := fun _ => ℂ
-            σ := fun _ _ => ContinuousLinearMap.id ℂ ℂ
-            w := fun _ => 1
-            Hs := ℂ
-            σs := fun _ => ContinuousLinearMap.id ℂ ℂ
-            tens := fun x => ∏ v, x v
-            tens_spec := ⟨fun x y => ?_, fun g x => rfl, ?_⟩
-            R := fun _ => ContinuousLinearMap.id ℂ _
-            R_spec := fun g Fv => Filter.Eventually.of_forall fun x => ?_
-            g := 1, g₀ := 1
-            e := fun _ => 0
-            e_adm := ⟨IsLocallyConstant.const 0, ?_, by simp, ?_, by simp, by simp, by simp⟩
-            Re := 0
-            Re_spec := ⟨by simp, by simp⟩ }, rfl⟩
-  · simp [RCLike.inner_apply, map_prod, Finset.prod_mul_distrib]
-  · have : Submodule.span ℂ (Set.range fun x : (InfinitePlace I.F → ℂ) => ∏ v, x v) = ⊤ := by
-      rw [eq_top_iff]
-      intro z _
-      have h1 : (1 : ℂ) ∈ Submodule.span ℂ (Set.range fun x : (InfinitePlace I.F → ℂ) => ∏ v, x v) :=
-        Submodule.subset_span ⟨fun _ => 1, by simp⟩
-      simpa using Submodule.smul_mem _ z h1
-    rw [this]
-    exact dense_univ
-  · show (Fv : I.GA → ℂ) x = (Fv : I.GA → ℂ) (I.rep Set.univ (x * g))
-    rw [Subsingleton.elim (I.rep Set.univ (x * g)) x]
-  · funext x; simp [AutInst.convF]
-  · intro m x c; simp
 
-theorem aut_autInst_nonempty_of (D : D7) : ∃ I : AutInst, I.F = D.host.F ∧ I.E = D.host.E := by
-  letI := D.host.cmStar
-  exact ⟨aut_inst0 D.host.F D.host.E D.sp.cm, rfl, rfl⟩
 
-theorem aut_rowsAut_nonempty_of (D : D7) : ∃ B : RowsAut, B.I.F = D.host.F ∧ B.I.E = D.host.E ∧ B.I.n = 0 := by
-  letI := D.host.cmStar
-  obtain ⟨B, hB⟩ := aut_rowsAut_of_rank0 (aut_inst0 D.host.F D.host.E D.sp.cm) rfl
-  exact ⟨B, congrArg (·.F) hB, congrArg (·.E) hB, congrArg (·.n) hB⟩
 
-theorem aut_autInst_nonempty : Nonempty AutInst := by
-  letI := Formalism.BasicNotions.Examples₂.H0.cmStar
-  exact ⟨aut_inst0 _ _ (Formalism.BasicNotions.Examples₂.cmData Formalism.BasicNotions.Examples₂.H0)⟩
 
-theorem aut_rowsAut_nonempty : Nonempty RowsAut := by
-  letI := Formalism.BasicNotions.Examples₂.H0.cmStar
-  obtain ⟨B, _⟩ := aut_rowsAut_of_rank0 (aut_inst0 _ _ (Formalism.BasicNotions.Examples₂.cmData Formalism.BasicNotions.Examples₂.H0)) rfl
-  exact ⟨B⟩
 
 def aut_triv (n : ℕ) : Matrix (Fin n) (Fin n) ℂ → (ℂ →L[ℂ] ℂ) := fun _ => ContinuousLinearMap.id ℂ ℂ
 
@@ -264,166 +207,25 @@ theorem aut_compact_allPos (n : ℕ) : CompactSpace (Formalism.REAL.UJ (allPos n
 
 attribute [local instance] aut_compact_allPos
 
-theorem aut_diag_mem (n : ℕ) (θ : Fin n → ℝ) :
-    Matrix.diagonal (fun a => Complex.exp ((θ a : ℂ) * Complex.I)) ∈ Formalism.REAL.Kset (allPos n) := by
-  simp only [Formalism.REAL.Kset, Set.mem_setOf_eq]
-  refine ⟨?_, by rw [aut_Jm_allPos, Matrix.mul_one, Matrix.one_mul]⟩
-  rw [Matrix.mem_unitaryGroup_iff, Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose,
-    Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  rw [Pi.star_apply, Complex.star_def, ← Complex.exp_conj, ← Complex.exp_add]
-  simp [Complex.conj_ofReal]
 
-theorem aut_wt_zero (n : ℕ) (μ : Fin n → ℝ) (v : ℂ) (hv : v ≠ 0)
-    (h : IsWtOn (Formalism.REAL.Kset (allPos n)) (aut_triv n) μ v) : μ = 0 := by
-  funext a
-  by_contra hne
-  have hne' : μ a ≠ 0 := by simpa using hne
-  have hθ := h (fun b => if b = a then Real.pi / μ a else 0) (aut_diag_mem n _)
-  simp only [aut_triv, ContinuousLinearMap.id_apply] at hθ
-  have hs : (∑ b, μ b * (if b = a then Real.pi / μ a else 0)) = Real.pi := by
-    rw [Finset.sum_eq_single a (fun b _ hb => by simp [hb]) (fun h => absurd (Finset.mem_univ a) h), if_pos rfl]
-    field_simp
-  rw [hs, Complex.exp_pi_mul_I, neg_one_smul] at hθ
-  exact hv (by linear_combination hθ / 2)
 
-theorem aut_lowK_allPos (n : ℕ) : Formalism.QuantumDeterminants.lowK (allPos n) (Formalism.REAL.rhoC (allPos n)) = 0 := by
-  funext a
-  simp [Formalism.QuantumDeterminants.lowK, Formalism.REAL.rhoN, allPos]
 
-theorem aut_kType_triv (n : ℕ) : IsKTypeOf (allPos n) (aut_triv n) 0 (⊤ : Submodule ℂ ℂ) := by
-  unfold IsKTypeOf
-  refine ⟨inferInstance, ?_, fun S' _ _ => eq_bot_or_eq_top S', ⟨1, Submodule.mem_top, one_ne_zero, ?_⟩, ?_⟩
-  · intro g _ v _
-    exact Submodule.mem_top
-  · intro θ _
-    simp [aut_triv]
-  · intro μ v _ hv hw
-    have hμ := aut_wt_zero n μ v hv hw
-    subst hμ
-    unfold CDom
-    refine ⟨fun _ _ => 0, fun a b h => absurd rfl h, ?_⟩
-    simp
 
-theorem aut_isDS_triv (n : ℕ) : IsDS (allPos n) (Formalism.REAL.rhoC (allPos n)) (aut_triv n) := by
-  unfold IsDS
-  refine ⟨inferInstance, inferInstance, ?_, ?_, ?_, ⟨⊤, ?_⟩, ?_⟩
-  · unfold IsURepOn Formalism.QuantumDeterminants.IsCRepOn
-    refine ⟨⟨rfl, fun a _ b _ => (ContinuousLinearMap.id_comp _).symm⟩, fun g _ v => rfl, fun v => ?_⟩
-    simp only [aut_triv]
-    exact continuousOn_const
-  · intro S _ _
-    exact eq_bot_or_eq_top S
-  · unfold IsSqIntOn
-    haveI : IsFiniteMeasure (Formalism.REAL.muG (allPos n)) := by
-      unfold Formalism.REAL.muG
-      infer_instance
-    intro v w
-    have e : coefOn (ε := allPos n) (aut_triv n) v w = fun _ => ⟪w, v⟫_ℂ := by
-      funext g
-      simp [coefOn, aut_triv]
-    rw [e]
-    exact memLp_const _
-  · rw [aut_lowK_allPos]
-    exact aut_kType_triv n
-  · intro μ S hS
-    obtain ⟨_, _, _, ⟨v, _, hv0, hw⟩, _⟩ := hS
-    rw [aut_wt_zero n μ v hv0 hw, aut_lowK_allPos]
 
-theorem aut_rhoC_allPos (n : ℕ) (a : Fin n) : Formalism.REAL.rhoC (allPos n) a = ((n : ℝ) - 1) / 2 - (a : ℕ) := by
-  unfold Formalism.REAL.rhoC allPos
-  simp only [and_true]
-  rw [Finset.filter_lt_eq_Ioi, Finset.filter_gt_eq_Iio, Fin.card_Ioi, Fin.card_Iio]
-  have ha := a.isLt
-  have h1 : (((n - 1 - (a : ℕ)) : ℕ) : ℝ) = (n : ℝ) - 1 - (a : ℕ) := by
-    rw [Nat.sub_sub, Nat.cast_sub (by omega)]
-    push_cast
-    ring
-  rw [h1]
-  ring
 
-theorem aut_isHCParam_rho (n : ℕ) : Formalism.QuantumDeterminants.IsHCParam (Formalism.REAL.rhoC (allPos n)) := by
-  have e : Formalism.REAL.rhoC (allPos n) = fun a : Fin n => ((n : ℝ) - 1) / 2 - (a : ℕ) :=
-    funext (aut_rhoC_allPos n)
-  rw [e]
-  refine ⟨fun a b hab => ?_, fun a => ⟨-((a : ℕ) : ℤ), by push_cast; ring⟩⟩
-  have h1 : (a : ℕ) < (b : ℕ) := hab
-  have h2 : ((a : ℕ) : ℝ) < (b : ℕ) := by exact_mod_cast h1
-  show ((n : ℝ) - 1) / 2 - ((b : ℕ) : ℝ) < ((n : ℝ) - 1) / 2 - ((a : ℕ) : ℝ)
-  linarith
 
-theorem aut_isLowUnit_triv (n : ℕ) : IsLowUnit (allPos n) (Formalism.REAL.rhoC (allPos n)) (aut_triv n) (1 : ℂ) := by
-  unfold IsLowUnit lowKSub
-  refine ⟨by simp, ?_⟩
-  have hK : (⊤ : Submodule ℂ ℂ) ∈ {S : Submodule ℂ ℂ |
-      IsKTypeOf (allPos n) (aut_triv n) (Formalism.QuantumDeterminants.lowK (allPos n) (Formalism.REAL.rhoC (allPos n))) S} := by
-    show IsKTypeOf _ _ _ _
-    rw [aut_lowK_allPos]
-    exact aut_kType_triv n
-  exact le_sSup hK Submodule.mem_top
 
-theorem aut_lowKSub_triv (n : ℕ) : lowKSub (allPos n) (Formalism.REAL.rhoC (allPos n)) (aut_triv n) = ⊤ := by
-  unfold lowKSub
-  apply eq_top_iff.mpr
-  apply le_sSup
-  show IsKTypeOf (allPos n) (aut_triv n) (Formalism.QuantumDeterminants.lowK (allPos n) (Formalism.REAL.rhoC (allPos n))) ⊤
-  rw [aut_lowK_allPos]
-  exact aut_kType_triv n
 
-theorem aut_local_bundle (n : ℕ) (h : ℝ) (hh : 0 ≤ h) :
-    Formalism.QuantumDeterminants.IsHCParam (Formalism.REAL.rhoC (allPos n)) ∧
-    IsDS (allPos n) (Formalism.REAL.rhoC (allPos n)) (aut_triv n) ∧
-    IsOrthProjOnto (ContinuousLinearMap.id ℂ ℂ) (lowKSub (allPos n) (Formalism.REAL.rhoC (allPos n)) (aut_triv n)) ∧
-    IsHighestUnit (allPos n) (Formalism.REAL.rhoC (allPos n)) (aut_triv n) (1 : ℂ) ∧
-    IsLowUnit (allPos n) (Formalism.REAL.rhoC (allPos n)) (aut_triv n) (1 : ℂ) ∧
-    Formalism.QuantumDeterminants.GapAtLeast (allPos n) (Formalism.REAL.rhoC (allPos n)) h ∧
-    120 * (n : ℝ) * ((min (Formalism.MainNotions.PlaceDegreeData.pOf (allPos n)) (Formalism.MainNotions.PlaceDegreeData.qOf (allPos n)) : ℕ) : ℝ) ^ ((3 : ℝ) / 2) ≤ h := by
-  refine ⟨aut_isHCParam_rho n, aut_isDS_triv n, ?_, ?_, aut_isLowUnit_triv n, ?_, ?_⟩
-  · unfold IsOrthProjOnto
-    refine ⟨ContinuousLinearMap.id_comp _, fun x y => rfl, ?_⟩
-    rw [aut_lowKSub_triv, ContinuousLinearMap.coe_id, LinearMap.range_id]
-  · unfold IsHighestUnit
-    refine ⟨by simp, by rw [aut_lowKSub_triv]; exact Submodule.mem_top, ?_⟩
-    rw [aut_lowK_allPos]
-    unfold IsWtOn
-    intro θ _
-    simp [aut_triv]
-  · unfold Formalism.QuantumDeterminants.GapAtLeast
-    intro a b hab
-    exact absurd rfl hab
-  · have hq : Formalism.MainNotions.PlaceDegreeData.qOf (allPos n) = 0 := by simp [Formalism.MainNotions.PlaceDegreeData.qOf, allPos]
-    rw [hq, Nat.min_zero, Nat.cast_zero, Real.zero_rpow (by norm_num), mul_zero]
-    exact hh
 
 def aut_HDS : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
     ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H)
       (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsDS ε lam σ
 
-theorem aut_exists_lowUnit {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ} {H : Type} [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (h : IsDS ε lam σ) :
-    ∃ w : H, IsLowUnit ε lam σ w := by
-  obtain ⟨_, _, _, _, _, ⟨S, hS⟩, _⟩ := h
-  obtain ⟨_, _, _, ⟨v, hvS, hv0, _⟩, _⟩ := id hS
-  refine ⟨((‖v‖ : ℂ))⁻¹ • v, ?_⟩
-  unfold IsLowUnit lowKSub
-  have hS' : S ∈ {S' : Submodule ℂ H | IsKTypeOf ε σ (Formalism.QuantumDeterminants.lowK ε lam) S'} := hS
-  exact ⟨norm_smul_inv_norm hv0, le_sSup hS' (S.smul_mem _ hvS)⟩
 
-theorem aut_local_of_HDS (h : aut_HDS) (D : D7) (τ : D.what₂.Tau) :
-    ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H)
-      (σ : Matrix (Fin D.R.r) (Fin D.R.r) ℂ → (H →L[ℂ] H)) (w : H),
-      IsDS (epsS D.R) (lamS D.R (D.hc τ)) σ ∧ IsLowUnit (epsS D.R) (lamS D.R (D.hc τ)) σ w := by
-  obtain ⟨H, i1, i2, σ, hσ⟩ := h D.R.r (epsS D.R) (lamS D.R (D.hc τ)) (aut_isHCParam_lamS D.R (D.hc τ))
-  obtain ⟨w, hw⟩ := aut_exists_lowUnit hσ
-  exact ⟨H, i1, i2, σ, w, hσ, hw⟩
 
 def aut_HRows (D : D7) : Prop := ∃ X : RowsAut, Formalism.MainNotions.PlaceDegreeData.RowsTie D X
 
-theorem aut_rowsTie_nonempty_of (D : D7) (h : aut_HRows D) : Nonempty {X : RowsAut // Formalism.MainNotions.PlaceDegreeData.RowsTie D X} := by
-  obtain ⟨X, hX⟩ := h
-  exact ⟨⟨X, hX⟩⟩
 
 section Top
 
@@ -766,48 +568,12 @@ section AtRecord
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem aut_finrank_hostF (D : D7) : Module.finrank ℚ D.host.F = D.R.f := by
-  rw [D.host.der.finrank_F]
-  rfl
 
-theorem aut_inst_of_HTop (D : D7)
-    (hT : aut_HTop D.sp.cm (aut_Jstd D.host.E (epsS D.R)) (aut_Lstd D.host.E D.R.r)) :
-    ∃ (I : AutInst) (hn : I.n = D.R.r), I.f = D.R.f ∧ I.rd = D.host.rdE ∧
-      ∀ v (i : Fin I.n), I.ε v i = epsS D.R (Fin.cast hn i) := by
-  refine ⟨aut_instStd D.sp.cm (epsS D.R) hT, rfl, aut_finrank_hostF D, ?_, fun v i => rfl⟩
-  have h1 : ((Module.finrank ℚ D.host.E : ℕ) : ℝ) = 2 * (Module.finrank ℚ D.host.F : ℕ) := by
-    rw [D.host.der.finrank_E, D.host.der.finrank_F]
-    push_cast
-    ring
-  unfold Formalism.BasicNotions.Host.rdE
-  rw [h1]
-  rfl
 
-theorem aut_two_le_rdE (D : D7) : 2 ≤ D.host.rdE := by
-  obtain ⟨-, -, h3⟩ := Formalism.BasicNotions.factRd D.R D.host
-  have hf : 2 ≤ D.R.f := le_trans D.R.two_le_m D.R.m_le_f
-  have hf' : (2 : ℝ) ≤ D.R.f := by exact_mod_cast hf
-  have h0 : 0 ≤ D.host.rdE := by
-    unfold Formalism.BasicNotions.Host.rdE
-    positivity
-  nlinarith
 
-theorem aut_inst_at (D : D7) :
-    ∃ (I : AutInst) (hn : I.n = D.R.r), I.f = D.R.f ∧ I.rd = D.host.rdE ∧
-      ∀ v (i : Fin I.n), I.ε v i = epsS D.R (Fin.cast hn i) := by
-  exact aut_inst_of_HTop D (aut_HTop_holds _ _ _ (aut_Lstd_fg _ _) (aut_Lstd_span _ _))
 
 end AtRecord
 
-theorem aut_link_consts : ∃ (ca : List ℝ → Formalism.MainNotions.AdmissibleBoundsFromSource.AdmC) (C A : List ℝ → ℝ),
-    (∀ {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps), (ca Fm.cOut).Ok (Fm.CYL + 1)) ∧
-    (∀ {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps), 0 ≤ C Fm.cOut ∧ 2 * (Fm.CYL + 1) ≤ A Fm.cOut) := by
-  refine ⟨fun l => { A5 := 1, cL := 1, cN := 1, CN := 1, CE := 1, CA := 1, CA' := 1, Ce := 1, n7 := 0, A7 := 2 * (l.getD 6 0 + 1), C7 := 1, cb7 := 1, c7 := 1, ep0 := 1 / 4, CV := 1, C1 := 1, C2 := 1, c5 := 1 },
-    fun _ => 0, fun l => 2 * (l.getD 6 0 + 1), fun Fm => ?_, fun Fm => ⟨le_rfl, le_rfl⟩⟩
-  have h6 : Fm.cOut.getD 6 0 = Fm.CYL := rfl
-  unfold Formalism.MainNotions.AdmissibleBoundsFromSource.AdmC.Ok
-  simp only [h6]
-  norm_num
 
 end Aut
 

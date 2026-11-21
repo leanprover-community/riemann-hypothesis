@@ -92,7 +92,6 @@ theorem classCount_host_of (hIn : HostGenusIn) : HostCount := by
     (Stab.massSum (conjF H) (host_sig H) (fun φ a => emb_star H φ a) (hIn H R.k) (host_genusSurj H R.k))
     (factStabTriv H T pz piG hyp) (Idx.host_relIndex_Kstd_ne_zero H T pz piG hyp S)
 
-theorem classCount_host_of_core (hc : Surj.WACore) : HostCount := classCount_host_of (hostGenusIn_of_core hc)
 
 theorem hostGenusIn : HostGenusIn := hostGenusIn_of_core WA.waCore
 

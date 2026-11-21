@@ -68,15 +68,6 @@ theorem finrank_hS (D : D7) : finrank D.host.E (hS D).V = D.R.k + 2 * D.R.rS + 1
   simp only [Ranks.rankY, Ranks.r, Ranks.rS, zero_mul, add_zero]
   omega
 
-theorem betaLUniq_of (h1 : GramNondeg) (h2 : AgreeOnH) (h3 : WAniso) (h4 : LineReduce)
-    (h5 : EigenvalueLastLineOne) : PI.BetaLUniq := by
-  intro D u u' Λ F F' F'' β₁ β₂ hF hT' hT'' hG' hG'' hP1 hP2 hs1 hs2
-  have hdim := finrank_hS D
-  have n' := h1 (hS D) Λ F F' hF.1 hF.2.2.1 hT'.1 hT'.2.2
-  have n'' := h1 (hS D) Λ F F'' hF.1 hF.2.2.1 hT''.1 hT''.2.2
-  have hH := h2 (hS D) Λ F F' F'' β₁ β₂ D.R.k hF.1 hF.2.2.1 hT''.1 hdim n' n'' hs1 hs2
-  exact h4 (hS D) Λ F F' F'' β₁ β₂ D.R.k hdim n' (h3 D u' F') hP1.1.1 hP2.1.1 hP1.2.1 hP2.2.1
-    hP1.2.2.1 hP2.2.2.1 hH (h5 D u u' Λ F F' F'' β₁ β₂ hF hT' hT'' hG' hG'' hP1 hP2 hs1 hs2)
 
 end D7
 

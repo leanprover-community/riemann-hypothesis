@@ -42,14 +42,9 @@ abbrev HCMultDS : Prop := Formalism.MainNotions.BridgeCPX.HCMultDS
 
 abbrev HCAdmDS : Prop := Formalism.MainNotions.BridgeCPX.HCAdmDS
 
-theorem hcMultDS_of_hcMult (h : HCMult) : HCMultDS := Formalism.MainNotions.BridgeCPX.HCMultDS_of_HCMult h
 
-theorem hcAdmDS_of_hcMultDS (h : HCMultDS) : HCAdmDS := Formalism.MainNotions.BridgeCPX.HCAdmDS_of_mult h
 
-theorem kFinSmooth_of_hcMultDS (h : HCMultDS) : KFinSmooth :=
-  fun _ _ _ _ _ _ _ _ _ hσ _ hv => Formalism.MainNotions.BridgeCPX.kfin_smoothVec (hcAdmDS_of_hcMultDS h) hσ hv
 
-theorem kFinSmooth_of_hcMult (h : HCMult) : KFinSmooth := kFinSmooth_of_hcMultDS (hcMultDS_of_hcMult h)
 
 end Reexports
 
@@ -79,9 +74,6 @@ def actU {n : ℕ} (ε : Fin n → Bool) {H : Type} [NormedAddCommGroup H] [Inne
   Finsupp.sum (FreeAlgebra.equivMonoidAlgebraFreeMonoid p).coeff
     fun (w : FreeMonoid (Fin n × Fin n)) (c : ℂ) => c • dsigCW ε σ (w.toList.map unitM) v
 
-theorem isDS_iff_pi {n : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ε : Fin n → Bool)
-    (lam : Fin n → ℝ) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) :
-    Formalism.MainNotions.S.IsDS ε lam σ ↔ PI.UpqRep.IsDS ε lam σ := Iff.rfl
 
 def InfCharDS : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
@@ -124,11 +116,6 @@ def BesselMultOne : Prop :=
       IsBesselMapSm (k := k) (r := r) z (psiGen k r z c) σ π B₂ →
       ∃ a b : ℂ, (a ≠ 0 ∨ b ≠ 0) ∧ ∀ v ∈ smoothVecs (k := k) (r := r) σ, a • B₁ v + b • B₂ v = 0
 
-theorem stJSZ_of_besselMultOne (h : BesselMultOne) : Formalism.MainNotions.S.UnitaryLevelOperators.stJSZ := by
-  intro k r L B₁ B₂ hc hB₁ hB₂
-  rw [psi_eq_psiGen] at hB₁ hB₂
-  exact h k r L.ε L.lam L.Hs L.σ L.z (fun _ => L.c) L.u L.Wp L.π L.hlam L.hσ L.hz.1 L.hz.2 (fun _ => hc) L.hπ
-    B₁ B₂ hB₁ hB₂
 
 end BesselMultOne
 
@@ -153,9 +140,6 @@ def BorelClassFinite : Prop :=
 
 def BorelFinite : Prop := BorelFinVol ∧ BorelClassFinite
 
-theorem finVol_of_borel (h : BorelFinVol) (X : Formalism.MainNotions.BridgeLemma.CData) (hH : X.μf.IsHaarMeasure)
-    (hF : X.I.IsFundDom (X.I.muA X.μf) X.fund) : X.FinVol :=
-  h X.I X.μf hH X.fund hF
 
 def WeilQuotient : Prop :=
   ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [T2Space G]
@@ -219,43 +203,8 @@ open Finset Matrix MeasureTheory
 
 abbrev GelfandGraev : Prop := Formalism.L2.SG.GGMirabolic.GelfandGraevMultOne
 
-theorem gg_exists_addChar_ne_one (F : Type) [Field F] [Fintype F] : ∃ ψ : AddChar F ℂ, ψ ≠ 1 := by
-  refine ⟨AddChar.FiniteField.primitiveChar_to_Complex F, fun h => ?_⟩
-  have hp := AddChar.FiniteField.primitiveChar_to_Complex_isPrimitive F
-  have h1 := hp (one_ne_zero : (1 : F) ≠ 0)
-  rw [AddChar.mulShift_one] at h1
-  exact h1 h
 
-theorem gg_needs_irreducible :
-    ¬ ∀ (F : Type) [Field F] [Fintype F] (k : ℕ) (ψ₀ : AddChar F ℂ), ψ₀ ≠ 1 →
-      ∀ (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
-        (π : Representation ℂ (GL (Fin k) F) V),
-        ∀ ℓ₁ ℓ₂ : Module.Dual ℂ V, Formalism.L2.SG.GGMirabolic.IsWhit ψ₀ π ℓ₁ → Formalism.L2.SG.GGMirabolic.IsWhit ψ₀ π ℓ₂ → ℓ₁ ≠ 0 →
-          ∃ c : ℂ, ℓ₂ = c • ℓ₁ := by
-  intro h
-  obtain ⟨ψ, hψ⟩ := gg_exists_addChar_ne_one (ZMod 2)
-  have hW : ∀ ℓ : Module.Dual ℂ (Fin 2 → ℂ),
-      Formalism.L2.SG.GGMirabolic.IsWhit ψ (Representation.trivial ℂ (GL (Fin 0) (ZMod 2)) (Fin 2 → ℂ)) ℓ := by
-    intro ℓ u _ v
-    simp [Formalism.L2.SG.GGMirabolic.psiU, Formalism.L2.SG.GGMirabolic.superdiag]
-  obtain ⟨c, hc⟩ := h (ZMod 2) 0 ψ hψ (Fin 2 → ℂ) (Representation.trivial ℂ _ _)
-    (LinearMap.proj 0) (LinearMap.proj 1) (hW _) (hW _) (by
-      intro h0
-      have := LinearMap.congr_fun h0 (Pi.single 0 1)
-      simp at this)
-  have := LinearMap.congr_fun hc (Pi.single 1 1)
-  simp at this
 
-theorem gg_trivial_isIrreducible (G : Type) [Group G] : (Representation.trivial ℂ G ℂ).IsIrreducible := by
-  refine { exists_pair_ne := ⟨⊥, ⊤, fun h => ?_⟩, eq_bot_or_eq_top := fun W => ?_ }
-  · have h1 : (1 : ℂ) ∈ (⊤ : Subrepresentation (Representation.trivial ℂ G ℂ)) := trivial
-    rw [← h] at h1
-    exact one_ne_zero ((Submodule.mem_bot ℂ).1 h1)
-  · rcases eq_bot_or_eq_top W.toSubmodule with h | h
-    · left
-      exact Subrepresentation.ext h
-    · right
-      exact Subrepresentation.ext h
 
 end FiniteGroups
 
@@ -331,69 +280,9 @@ def GapStatementAt (C : ℝ) : Prop :=
 
 def GapStatementAlt : Prop := GapStatementAt 0
 
-theorem gapStatementAt_iff (D : Formalism.BasicNotions.D7) (C : ℝ) : GapStatementAt C ↔ Formalism.MainNotions.CayleySignature.Conclusion2 D C := Iff.rfl
 
-theorem gapC_zero_of_setting {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} {c : Fin r → ℂ} {u : Fin k → ℝ}
-    {v : Fin (k - 1) → ℝ} {b : Fin (2 * r + 2) → ℝ} (h : RealPlaceNumericalSetting k r z c u v b) : GapC 0 k r b := by
-  obtain ⟨-, -, -, -, -, -, -, -, -, t, -, -, -, hg⟩ := h
-  intro j hj
-  have h1 := hg j hj
-  have h3 : (0 : ℝ) ≤ 2 * ((rk48 k r + (2 * r + 2) * t : ℕ) : ℝ) ^ 3 + (t : ℝ) + 3 := by positivity
-  rw [zero_mul]
-  linarith
 
-theorem gapStatement_iff_all : GapStatementAlt ↔ ∀ C : ℝ, GapStatementAt C := by
-  constructor
-  · intro h C k r z c u v b hS _
-    exact h k r z c u v b hS (gapC_zero_of_setting hS)
-  · intro h
-    exact h 0
 
-theorem interlaceSetting_example :
-    RealPlaceNumericalSetting 2 0 (Formalism.QuantumDeterminants.bvec (2 : Fin 3)) (fun i => i.elim0) ![3 / 2, -1 / 2] ![1] ![1, 100000000000] := by
-  refine ⟨by norm_num, ⟨1, rfl⟩, ?_, ?_, fun a => a.elim0, ?_, ?_, ?_, ?_, ?_⟩
-  · intro i hi
-    have := i.isLt
-    omega
-  · simp [Formalism.QuantumDeterminants.Tz, Formalism.QuantumDeterminants.herm, Formalism.QuantumDeterminants.Hpk, Formalism.QuantumDeterminants.bvec, dotProduct, Matrix.mulVec,
-      Fin.sum_univ_three, Pi.single_apply]
-  · refine ⟨?_, ?_⟩
-    · intro a b hab
-      fin_cases a <;> fin_cases b <;> simp_all <;> norm_num
-    · intro a
-      fin_cases a
-      · exact ⟨1, by norm_num⟩
-      · exact ⟨-1, by norm_num⟩
-  · refine ⟨?_, ?_⟩
-    · intro a b hab
-      fin_cases a <;> fin_cases b <;> simp_all [lam48] <;> norm_num
-    · intro a
-      fin_cases a
-      · exact ⟨0, by norm_num [lam48]⟩
-      · exact ⟨-2, by norm_num [lam48]⟩
-      · exact ⟨-100000000001, by norm_num [lam48]⟩
-  · refine ⟨?_, ?_⟩
-    · intro i
-      fin_cases i
-      norm_num
-    · intro _
-      norm_num
-  · intro i s
-    fin_cases i <;> fin_cases s
-    · exact ⟨0, by norm_num [lam48]⟩
-    · exact ⟨2, by norm_num [lam48]⟩
-    · exact ⟨100000000001, by norm_num [lam48]⟩
-    · exact ⟨-2, by norm_num [lam48]⟩
-    · exact ⟨0, by norm_num [lam48]⟩
-    · exact ⟨99999999999, by norm_num [lam48]⟩
-  · refine ⟨1799, by decide, by norm_num [rk48], by norm_num [rk48], ?_⟩
-    intro j hj
-    have hj0 : j = 0 := by
-      ext
-      simp at hj ⊢
-      omega
-    subst hj0
-    norm_num [rk48]
 
 end GapStatementAlt
 
@@ -423,14 +312,6 @@ def BesselNV : Prop :=
       (⟪σ x₀ w, σ (Matrix.of p.1 * Matrix.of p.2) (σ x w)⟫_ℂ * star (psiGen k r z c (Matrix.of p.2))) •
         π (Matrix.of p.1)⁻¹ ∂(μW.prod μN) ≠ 0
 
-theorem besselNV_numeric_example :
-    2 ≤ 2 ∧ Even 2 ∧ Formalism.QuantumDeterminants.inWb 2 0 (Formalism.QuantumDeterminants.bvec (2 : Fin 3)) ∧ 0 < Formalism.QuantumDeterminants.Tz 2 0 (Formalism.QuantumDeterminants.bvec (2 : Fin 3)) ∧
-      (∀ a : Fin 0, (fun i : Fin 0 => i.elim0 : Fin 0 → ℂ) a ≠ 0) ∧ Formalism.QuantumDeterminants.IsHCParam ![(3 : ℝ) / 2, -1 / 2] ∧
-      Formalism.QuantumDeterminants.IsHCParam (lam48 2 0 ![1] ![1, 100000000000]) ∧
-      InterlacingCondition 2 0 ![3 / 2, -1 / 2] ![1] ![1, 100000000000] ∧
-      HalfIntegralDifference 2 0 ![3 / 2, -1 / 2] ![1] ![1, 100000000000] := by
-  obtain ⟨-, hE, hz, hT, hc, hu, hl, hI, hH, -⟩ := interlaceSetting_example
-  exact ⟨le_refl 2, hE, hz, hT, hc, hu, hl, hI, hH⟩
 
 end BesselNVPart
 

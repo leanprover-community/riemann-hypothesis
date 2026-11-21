@@ -98,32 +98,5 @@ theorem finrank_La (D : Datum H) : Module.Free ℤ D.La ∧ Module.Finite ℤ D.
   refine ⟨GlobalTheory.datum_free_int D, Module.Finite.trans (𝓞 E) D.La, ?_⟩
   rw [GlobalTheory.finrank_int_eq_mul_of_finite (O := 𝓞 E), D.rank, RingOfIntegers.rank]
 
-theorem level_tau : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H), ∀ (X : Scheme.{0}) (t : SAB H X) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (N : ℕ), 0 < N → ∀ (z : Ωˣ) (ev : D.La → (Over.mk ξ ⟶ t.G)), IsFullLevelAt D t ξ N z ev → ∃ τ : Multiplicative (D.La ⧸ LinearMap.range (N • (LinearMap.id : D.La →ₗ[𝓞 E] D.La))) →* (Over.mk ξ ⟶ t.G), Function.Injective τ ∧ (∀ a : D.La, τ (Multiplicative.ofAdd (Submodule.Quotient.mk a)) = ev a) ∧ (∀ s, τ s ^ N = 1) ∧ (∀ (k : Type) [Field k] (i : Ω →+* k) (g : Over.mk (spMap i ≫ ξ) ⟶ t.G), g ^ N = 1 → ∃ s, g.left = spMap i ≫ (τ s).left) ∧ Nat.card (D.La ⧸ LinearMap.range (N • (LinearMap.id : D.La →ₗ[𝓞 E] D.La))) = N ^ (Module.finrank ℚ E * (D.p + D.q)) := by
-  intro E _ _ _ H D X t Ω _ ξ N hN z ev h
-  obtain ⟨-, hadd, -, hker, honto, -, -⟩ := level_props E H D X t Ω ξ N hN z ev h
-  let R := LinearMap.range (N • (LinearMap.id : D.La →ₗ[𝓞 E] D.La))
-  have hR : ∀ a, a ∈ R ↔ ∃ b, a = N • b := fun a => ⟨fun ⟨b, hb⟩ => ⟨b, hb.symm⟩, fun ⟨b, hb⟩ => ⟨b, hb.symm⟩⟩
-  have hq : ∀ a b, ev a = ev b ↔ (Submodule.Quotient.mk a : D.La ⧸ R) = Submodule.Quotient.mk b := fun a b => by
-    have e : ev a = ev (a - b) * ev b := by rw [← hadd, sub_add_cancel]
-    rw [Submodule.Quotient.eq, e, mul_eq_right, hker, hR]
-  choose s hs using Submodule.Quotient.mk_surjective R
-  have hs' : ∀ a, ev (s (Submodule.Quotient.mk a)) = ev a := fun a => (hq _ _).2 (hs _)
-  let τ : Multiplicative (D.La ⧸ R) →* (Over.mk ξ ⟶ t.G) := MonoidHom.mk' (fun y => ev (s y.toAdd)) (fun y y' => by
-    rw [← hadd, hq, hs, Submodule.Quotient.mk_add, hs, hs, toAdd_mul])
-  refine ⟨τ, fun y y' e => ?_, fun a => hs' a, fun y => (honto _).2 ⟨_, rfl⟩, fun k _ i g hg => ?_, ?_⟩
-  · have e' := (hq _ _).1 e
-    rw [hs, hs] at e'
-    exact Multiplicative.toAdd.injective e'
-  · obtain ⟨a, ha⟩ := full_desc hN h k i g hg
-    refine ⟨Multiplicative.ofAdd (Submodule.Quotient.mk a), ?_⟩
-    rw [ha, ← hs' a]
-    rfl
-  · obtain ⟨h1, h2, h3⟩ := finrank_La D
-    rw [← h3, ← AddSubgroup.index_range_nsmul D.La N]
-    have e : R.toAddSubgroup = (nsmulAddMonoidHom (α := D.La) N).range := by
-      ext a
-      exact ⟨fun ⟨b, hb⟩ => ⟨b, hb⟩, fun ⟨b, hb⟩ => ⟨b, hb⟩⟩
-    rw [← e]
-    rfl
 
 end PositivityTheory.HtPt.Mg

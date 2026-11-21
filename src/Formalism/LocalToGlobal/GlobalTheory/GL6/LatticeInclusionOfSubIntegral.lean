@@ -45,24 +45,6 @@ def BwLocGlob (Tt : FormsTied D u) : Prop :=
         fnOf _ (shiftOf (lamT u i)) (atInf (embT D) (B⁻¹ : GL (Fin (D.R.N i)) D.host.E).1) Q ((Tt.val i hi).eY z)) →
     y ∈ (D.fm u).S i w
 
-theorem bwA_bwIncl_of (Tt : FormsTied D u) (h1 : BwLocBases D u Tt) (h2 : BwSubInt D u Tt)
-    (h3 : BwLocGlob D u Tt) : BwIncl D u := by
-  intro w hw i hi hs v hv x hx
-  apply h3 w hw i hi
-  intro c
-  obtain ⟨⟨B, hB⟩, hB'⟩ := h1 i hi c
-  obtain ⟨B', hB'⟩ := hB' v
-  obtain ⟨P, hP, hxP⟩ := ((Tt.bw i hi) w hw hs v x).1 hx c B B' hB hB'
-  refine ⟨B, hB, _, h2 w hw hs v hv i hi c B B' hB hB' P hP, fun z => ?_⟩
-  rw [emb_tpow_smul, Pi.smul_apply, Pi.smul_apply, hxP z, ← bwA_N_mul, fnOf_mul, LinearMap.map_smul]
-  rfl
 
-theorem lattice_inclusion_of_sub_integral
-    (h1 : ∀ (D : D7) (u : D.what₂.Word) (Tt : FormsTied D u), BwLocBases D u Tt)
-    (h2 : ∀ (D : D7) (u : D.what₂.Word) (Tt : FormsTied D u), BwSubInt D u Tt)
-    (h3 : ∀ (D : D7) (u : D.what₂.Word) (Tt : FormsTied D u), BwLocGlob D u Tt) : WeightLatticeInclusionFamily :=
-  lattice_inclusion_family_of fun D u hT _ => by
-    obtain ⟨Tt, _⟩ := hT
-    exact bwA_bwIncl_of D u Tt (h1 D u Tt) (h2 D u Tt) (h3 D u Tt)
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases

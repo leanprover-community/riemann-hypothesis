@@ -299,18 +299,6 @@ theorem wt_ne_zero (Q : QAt v χ) : (∀ y, Q.wt (Q.s + 1) y ≠ 0) ∧ ∀ u, Q
       (Nat.cast_ne_zero.2 (card_orb_ne_zero (Q.le _ _ _) (Q.reg.2.2 _ _ _).2.1 _ _))
   · rw [Q.wt_top]; exact Nat.cast_ne_zero.2 (idx_ne_zero Q _ (by omega))
 
-theorem pin_ne_zero {t : Tup c} {w : VTup t} (h : QPin v w) :
-    (∀ j, j + 2 ≤ D.R.m → w.cQ j ≠ 0) ∧ ∀ n hn β, w.εT n hn β ≠ 0 := by
-  obtain ⟨F, h⟩ := h
-  refine ⟨fun j hj => ?_, fun n hn β => ?_⟩
-  · rw [h.cQ j hj]
-    exact Finset.prod_ne_zero_iff.2 fun i _ => inv_ne_zero (mul_ne_zero (Nat.cast_ne_zero.2 (idx_ne_zero _ _ (by omega)))
-      (Nat.cast_ne_zero.2 (idx_ne_zero _ _ (by omega))))
-  · rw [h.εT n hn β, Finsupp.single_ne_zero]
-    refine Finset.prod_ne_zero_iff.2 fun i _ => ?_
-    generalize F.eqv n β i = u
-    obtain rfl : n = (F.Q i).s + 1 + 1 := hn.trans (F.Q i).hs.symm
-    exact (wt_ne_zero _).2 u
 
 def IsSphAt (Q : QAt v χ) : Prop :=
   (∀ j d h, Q.T.Phi j d h = ind Q.k _ _) ∧ Q.T.PhiTop = ind Q.k _ _ ∧ (∀ j, Nonempty (Unique (Q.Ch j))) ∧ (∀ j, Q.idx j = 1) ∧
@@ -456,22 +444,6 @@ theorem exists_qAt (v : VCom c) (χ : ℕ → (AE D)ˣ →* Circle) (q : GlobalT
 
 end Rel
 
-theorem qpin_of_sph (Q : QAt v χ) (hQ : IsSphAt Q) {t : Tup c} [∀ j, Unique (t.Ch j)] (w : VTup t)
-    (kom : ∀ j, j < D.R.m → IsWeilDatumO c.ψ _ _ (χ j) (χ j) (t.kom j))
-    (mid : ∀ j σ h, ∃ χz : (AE D)ˣ →* Circle, (t.sBF j (σ + 1) h).χV = χ j * χz ∧ (t.sBF j (σ + 1) h).χW = χ j ∧
-      (t.sFB j σ h).χV = χ (j + 1) ∧ (t.sFB j σ h).χW = χ (j + 1) * χz)
-    (lastc : ∀ j h, (t.sBF j 0 h).χW = χ j) :
-    QPin v { w with
-      Q := {Q.q.v}, eQ := fun _ => Finsupp.single 0 1, eQT := fun _ _ => Finsupp.single 0 1, dQ := fun _ _ _ => Finsupp.single 0 1
-      ε := fun _ _ => Finsupp.single 1 1, εT := fun _ _ _ => Finsupp.single 1 1, FY := fun _ => {fun _ => 1}, cQ := fun _ => 1 } := by
-  obtain ⟨-, -, h3, h4, h5, h6, h7, h8, h9, h10⟩ := hQ
-  have := fun j => (h3 j).some
-  refine ⟨⟨χ, 1, fun _ => Q, fun j => Equiv.ofUnique _ _⟩, fun _ _ _ => Subsingleton.elim _ _, fun p => by simp [eq_comm], kom, mid, lastc,
-    fun j _ => by simp [aconv, h6, -Finsupp.single_mul], fun j h => ?_, fun j _ α γ => by simp [aconv, h5, h8, -Finsupp.single_mul], fun j ρ _ α => by simp [conv, h5, h9, -Finsupp.single_mul],
-    fun n _ β => by simp [h5], fun j _ f hf _ => by obtain rfl : f = _ := hf; exact h10 j, fun j _ => by simp [h4]⟩
-  obtain rfl : j = Q.s := by have := Q.hs; omega
-  have : Q.eT Q.s h = Q.eLT := rfl
-  simp [aconv, this, h7, -Finsupp.single_mul]
 
 theorem sum_orbits (Q : QAt v χ) (f : ((Q.X (Q.s + 1) → Q.k) ⧸ box (Q.X (Q.s + 1)) Q.c₂) → ℂ)
     (h1 : ∀ x y, SameOrb (Q.T.lev (Q.s + 1) 0 rfl).J (box _ Q.c₂) x y → f x = f y)
@@ -522,78 +494,8 @@ theorem infinite_qAt (hψ : IsStdChar D c.ψ (-1)) (v : VCom c) (χ : ℕ → (A
     (a8 _ q hq _ (Matrix.map_one _ (map_zero (Witness.prH (ofSplit q))) (map_one (Witness.prH (ofSplit q)))).symm)
   rwa [hq] at this
 
-theorem infinite_qAt_of_is (hc : c.Is) (hv : v.Is) {t : Tup c} (hW : WeilOK (t := t) v) (χ : ℕ → (AE D)ˣ →* Circle)
-    (hχ : ∀ j, j < D.R.m → Continuous (χ j)) : {x | ∃ Q : QAt v χ, Q.q.v = x ∧ IsSphAt Q}.Infinite := by
-  have h0 : D.R.m - 2 + 2 * 0 + 2 = D.R.m := by have := D.R.two_le_m; omega
-  refine infinite_qAt hc.std v χ hχ (hW.tau _ h0).1 (fun j h e => ?_) (fun j hj => (hv.sd j hj).1) hv.sdT.1
-  obtain ⟨h1, h2⟩ := hW.tau j h
-  have hx := GlobalTheory.DualPairCompare.embedding_xi_zero_ne_zero D
-  rw [e, Matrix.mul_zero, Matrix.mul_zero, eq_comm, smul_eq_zero] at h2
-  rcases h2 with h2 | h2
-  · exact mul_ne_zero hx (star_ne_zero.2 hx) (neg_eq_zero.1 h2)
-  · have hg := gram_det_ne c.Lz
-    haveI : Nonempty (Fin c.Lz.rank) := by rw [h1]; infer_instance
-    rw [h2, det_zero] at hg
-    exact hg rfl
 
-theorem infinite_qpin (hc : c.Is) (hv : v.Is) {t : Tup c} (hW : WeilOK (t := t) v) [∀ j, Unique (t.Ch j)] (w : VTup t)
-    (kom : ∀ j, j < D.R.m → IsWeilDatumO c.ψ _ _ (χ j) (χ j) (t.kom j))
-    (mid : ∀ j σ h, ∃ χz : (AE D)ˣ →* Circle, (t.sBF j (σ + 1) h).χV = χ j * χz ∧ (t.sBF j (σ + 1) h).χW = χ j ∧
-      (t.sFB j σ h).χV = χ (j + 1) ∧ (t.sFB j σ h).χW = χ (j + 1) * χz)
-    (lastc : ∀ j h, (t.sBF j 0 h).χW = χ j) :
-    {x | ∃ w' : VTup t, QPin v w' ∧ w'.Q = {x} ∧ (∀ j, w'.cQ j = 1) ∧ ∀ j, ∃ f ∈ w'.FY j, f ≠ 0}.Infinite :=
-  (infinite_qAt_of_is hc hv hW χ fun j hj => (kom j hj).hecS.1).mono (by
-    rintro _ ⟨Q, rfl, hQ⟩
-    exact ⟨_, qpin_of_sph Q hQ w kom mid lastc, rfl, fun _ => rfl, fun _ => ⟨_, rfl, fun h => one_ne_zero (congrFun h 1)⟩⟩)
 
-theorem exists_tup (hψ : IsStdChar D c.ψ (-1)) (t₀ : Tup c) (hp : ∀ j, j ≤ D.R.m → (c.X j).rank % 2 = (c.X 0).rank % 2) :
-    ∃ (χ : ℕ → (AE D)ˣ →* Circle) (t : Tup c), (∀ j, Continuous (χ j)) ∧ (∀ j, Nonempty (Unique (t.Ch j))) ∧
-      (∀ j, j < D.R.m → IsWeilDatumO c.ψ _ _ (χ j) (χ j) (t.kom j)) ∧
-      (∀ j σ h, ∃ χz : (AE D)ˣ →* Circle, (t.sBF j (σ + 1) h).χV = χ j * χz ∧ (t.sBF j (σ + 1) h).χW = χ j ∧
-        (t.sFB j σ h).χV = χ (j + 1) ∧ (t.sFB j σ h).χW = χ (j + 1) * χz) ∧ ∀ j h, (t.sBF j 0 h).χW = χ j := by
-  obtain ⟨χ, a1, a2⟩ := GlobalTheory.RawLift.exists_hecke_resEta D (c.X 0).rank
-  obtain ⟨η, b1, b2⟩ := GlobalTheory.RawLift.exists_hecke_resEta D 1
-  have c1 : IsHeckeChar D (χ * η) := ⟨a1.1.mul b1.1, fun x => by rw [MonoidHom.mul_apply, a1.2, b1.2, mul_one]⟩
-  have c2 := resEta_mul a2 b2
-  have hk : ∀ j, ∃ o : Om (c.X j) (c.X (j + 1)), j < D.R.m → IsWeilDatumO c.ψ _ _ χ χ o := fun j => by
-    by_cases hj : j < D.R.m
-    · have := hp j (by omega)
-      have := hp (j + 1) (by omega)
-      obtain ⟨o, w⟩ := Inhab.exists_weil hψ (c.X j) (c.X (j + 1)) a1 a1 (resEta_parity a2 (by omega)) (resEta_parity a2 (by omega))
-      exact ⟨o, fun _ => w⟩
-    · exact ⟨t₀.kom j, fun h => absurd h hj⟩
-  have hB : ∀ j ρ h, ∃ s : StepBF c.ψ (c.B j ρ h) (c.J j ρ h), s.χV = χ * η ∧ s.χW = χ := fun j ρ h => by
-    have := hp j (by omega)
-    have := hp (j + 1) (by omega)
-    have r1 := (c.bes j ρ h).o.rank_add
-    have r2 := (c.bes j ρ h).line.1
-    have p1 := Inhab.even_im_hermitian_sub (c.bes j ρ h).d
-    have p2 := Inhab.even_im_hermitian_sub (c.jac j ρ h).d
-    obtain ⟨o₁, w₁⟩ := Inhab.exists_weil hψ (c.V j) (c.V (j + 1)) c1 a1 (resEta_parity c2 (by omega)) (resEta_parity a2 (by omega))
-    obtain ⟨o₁', w₁'⟩ := Inhab.exists_weil hψ (c.bes j ρ h).V₀ (c.X (j + 1)) c1 a1 (resEta_parity c2 (by omega))
-      (resEta_parity a2 (by omega))
-    exact ⟨⟨_, _, o₁, o₁', w₁, w₁', (Inhab.nonempty_vol _).some, (Inhab.nonempty_volM _ _ _).some,
-      (Inhab.nonempty_volM _ _ _).some, (Inhab.nonempty_volU _ _).some⟩, rfl, rfl⟩
-  have hF : ∀ j σ h, ∃ s : StepFB c.ψ (c.J j (σ + 1) h) (c.B (j + 1 + 1) σ (idx_step h)), s.χV = χ ∧ s.χW = χ * η := fun j σ h => by
-    have := hp (j + 1) (by omega)
-    have := hp (j + 1 + 1) (by omega)
-    have r1 := (c.bes (j + 1 + 1) σ (idx_step h)).o.rank_add
-    have r2 := (c.bes (j + 1 + 1) σ (idx_step h)).line.1
-    have p1 := Inhab.even_im_hermitian_sub (c.bes (j + 1 + 1) σ (idx_step h)).d
-    have p2 := Inhab.even_im_hermitian_sub (c.jac j (σ + 1) h).d
-    obtain ⟨o₁, w₁⟩ := Inhab.exists_weil hψ (c.V (j + 1)) (c.V (j + 1 + 1)) a1 c1 (resEta_parity a2 (by omega))
-      (resEta_parity c2 (by omega))
-    obtain ⟨o₁', w₁'⟩ := Inhab.exists_weil hψ (c.X (j + 1)) (c.bes (j + 1 + 1) σ (idx_step h)).V₀ a1 c1 (resEta_parity a2 (by omega))
-      (resEta_parity c2 (by omega))
-    exact ⟨⟨_, _, o₁, o₁', w₁, w₁', (Inhab.nonempty_vol _).some, (Inhab.nonempty_volM _ _ _).some,
-      (Inhab.nonempty_volM _ _ _).some, (Inhab.nonempty_volU _ _).some⟩, rfl, rfl⟩
-  choose kom hkom using hk
-  choose sBF B1 B2 using hB
-  choose sFB F1 F2 using hF
-  exact ⟨fun _ => χ, { t₀ with
-      kom := kom, sBF := sBF, sFB := sFB, Ch := fun _ => Unit, fin := fun _ => inferInstance, dd := fun _ _ _ => 0, e := fun _ _ => 0
-      eT := fun _ _ _ => 0, rd := fun _ _ _ _ _ => 0 }, fun _ => a1.1, fun _ => ⟨(inferInstance : Unique Unit)⟩, hkom,
-    fun j σ h => ⟨η, B1 _ _ _, B2 _ _ _, F1 _ _ _, F2 _ _ _⟩, fun j h => B2 _ _ _⟩
 
 end GlobalTheory.QPl.PinTest
 end

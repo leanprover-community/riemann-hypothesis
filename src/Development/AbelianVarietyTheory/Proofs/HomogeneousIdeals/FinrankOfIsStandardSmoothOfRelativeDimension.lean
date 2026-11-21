@@ -213,11 +213,6 @@ def kaehlerEquiv : AugCot ε ≃ₗ[R] R ⊗[A] Ω[A⁄R] :=
   change _ = r • toKaehler ε h _
   rw [toKaehler_ofKaehler, smul_tmul', smul_eq_mul, mul_one]
 
-lemma isBaseChange_ofKaehler :
-    haveI := isScalarTower_of_algebraMap_eq ε h
-    IsBaseChange R (ofKaehler ε) :=
-  haveI := isScalarTower_of_algebraMap_eq ε h
-  IsBaseChange.of_equiv (kaehlerEquiv ε h).symm (fun m => by simp)
 
 end Kaehler
 
@@ -315,18 +310,6 @@ def congr (e : A ≃ₐ[R] B) (h : εB.comp e = εA) : AugCot εA ≃ₗ[R] AugC
     (congr e h).symm (d εB b) = d εA (e.symm b) := by
   rw [LinearEquiv.symm_apply_eq, congr_d, e.apply_symm_apply]
 
-lemma map_ofKaehler [Algebra A B] [IsScalarTower R A B]
-    (h : εB.comp (IsScalarTower.toAlgHom R A B) = εA) (m : Ω[A⁄R]) :
-    map _ h (ofKaehler εA m) = ofKaehler εB (KaehlerDifferential.map R R A B m) := by
-  have hm : m ∈ Submodule.span A (Set.range (KaehlerDifferential.D R A)) := by
-    rw [KaehlerDifferential.span_range_derivation]; trivial
-  induction hm using Submodule.span_induction with
-  | mem x hx => obtain ⟨a, rfl⟩ := hx; simp [KaehlerDifferential.map_D]
-  | zero => simp
-  | add x y _ _ hx hy => simp only [map_add, hx, hy]
-  | smul a x _ hx =>
-    rw [map_smul, smul_eq, map_smul, hx, map_smul, ← algebraMap_smul B a, map_smul, smul_eq, ← h]
-    rfl
 
 lemma map_surjective (φ : A →ₐ[R] B) (h : εB.comp φ = εA) (hφ : Function.Surjective φ) :
     Function.Surjective (map φ h) := by

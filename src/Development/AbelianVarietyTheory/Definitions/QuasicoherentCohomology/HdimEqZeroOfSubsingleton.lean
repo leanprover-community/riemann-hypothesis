@@ -98,8 +98,6 @@ lemma toH'_res (h : V ≤ U) (x : cohOn F U n) :
 lemma map_eq_map (S : Type t) [CommRing S] [Algebra S Γ(X, ⊤)] (φ : F ⟶ G) (x : cohOn F U n) :
     map R φ U n x = map S φ U n x := rfl
 
-lemma res_eq_res (S : Type t) [CommRing S] [Algebra S Γ(X, ⊤)] (h : V ≤ U) (x : cohOn F U n) :
-    res R F h n x = res S F h n x := rfl
 
 lemma smul_eq_map (r : R) (x : cohOn F U n) :
     r • x = map R (smulHom F (algebraMap R Γ(X, ⊤) r)) U n x := rfl
@@ -220,10 +218,6 @@ abbrev moduleOfRingHom {R : Type v} [CommRing R] (f : R →+* Γ(X, ⊤)) (F : X
   letI := f.toAlgebra
   instModule R F U n
 
-lemma moduleOfRingHom_smul {R : Type v} [CommRing R] (f : R →+* Γ(X, ⊤)) {F : X.Modules}
-    {U : X.Opens} {n : ℕ} (r : R) (x : cohOn F U n) :
-    letI := moduleOfRingHom f F U n
-    r • x = f r • x := rfl
 
 lemma subsingleton_of_isZero {F : X.Modules} (h : IsZero F) (U : X.Opens) (n : ℕ) :
     Subsingleton (cohOn F U n) :=
@@ -443,18 +437,12 @@ lemma zeroEquiv_map (φ : F ⟶ G) (x : cohOn F U 0) :
     zeroEquiv R G U (map R φ U 0 x) = sectionsOn.map R φ U (zeroEquiv R F U x) :=
   SiteCoh.zeroEquiv_map ((toAbSheaf X).map φ) U (toH' F U 0 x)
 
-lemma zeroEquiv_res (h : V ≤ U) (x : cohOn F U 0) :
-    zeroEquiv R F V (res R F h 0 x) = sectionsOn.res R F h (zeroEquiv R F U x) :=
-  SiteCoh.zeroEquiv_res ((toAbSheaf X).obj F) (homOfLE h) (toH' F U 0 x)
 
 variable (F U) in
 
 def zeroAddEquiv : cohOn F U 0 ≃+ Γ(F, U) :=
   (zeroEquiv ℤ F U).toAddEquiv.trans (sectionsOn.toΓ F U)
 
-lemma zeroAddEquiv_smul (r : R) (x : cohOn F U 0) :
-    zeroAddEquiv F U (r • x) = restrictGlobal X U (algebraMap R Γ(X, ⊤) r) • zeroAddEquiv F U x :=
-  congrArg (sectionsOn.toΓ F U) ((zeroEquiv R F U).map_smul r x)
 
 def zeroEquivSpec {A : CommRingCat.{u}} (F : (Spec A).Modules) (U : (Spec A).Opens) :
     cohOn F U 0 ≃ₗ[A] Γ(F, U) :=
@@ -583,9 +571,6 @@ variable (k : Type v) [Field k] [Algebra k Γ(X, ⊤)] {F G : X.Modules} (n : �
 
 lemma hdim_def (F : X.Modules) : hdim k F n = Module.finrank k (coh F n) := rfl
 
-lemma hdim_eq_rank [Module.Finite k (coh F n)] :
-    (hdim k F n : Cardinal) = Module.rank k (coh F n) :=
-  Module.finrank_eq_rank k _
 
 lemma hdim_eq_zero_iff [Module.Finite k (coh F n)] : hdim k F n = 0 ↔ Subsingleton (coh F n) :=
   Module.finrank_zero_iff
@@ -596,9 +581,6 @@ lemma hdim_eq_zero_of_subsingleton [Subsingleton (coh F n)] : hdim k F n = 0 :=
 lemma hdim_congr (e : F ≅ G) : hdim k F n = hdim k G n :=
   (cohOn.mapIso k ⊤ n e).finrank_eq
 
-lemma hdim_biprod [Module.Finite k (coh F n)] [Module.Finite k (coh G n)] :
-    hdim k (F ⊞ G) n = hdim k F n + hdim k G n :=
-  (cohOn.biprodEquiv k ⊤ n F G).finrank_eq.trans Module.finrank_prod
 
 lemma hdim_pi {ι : Type t} [Fintype ι] (F : ι → X.Modules) [∀ i, Module.Finite k (coh (F i) n)] :
     hdim k (∏ᶜ F) n = ∑ i, hdim k (F i) n :=

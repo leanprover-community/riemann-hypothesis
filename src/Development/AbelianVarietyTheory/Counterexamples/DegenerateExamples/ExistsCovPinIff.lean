@@ -23,20 +23,7 @@ theorem exists_trivial (hr : 1 ≤ Dw.p + Dw.q) (hA : l.A = 1) (Tup : Type) :
     ⟨dvd_rfl, le_rfl, dvd_rfl⟩ (mul_one _).symm (Nat.coprime_one_left _) (Ideal.mul_top _).symm (top_sup_eq _)
   exact ⟨d, h1, h2, hl, h3, fun _ => ⟨hlev, by rw [hl]; exact hA, hs⟩⟩
 
-theorem exists_covPin_iff (hr : 1 ≤ Dw.p + Dw.q) (Tup : Type) [Nonempty Tup] :
-    (∃ dδ : Tup → DeltaDat Xo c n, CovPin Xo c dδ) ↔ l.A = 1 := by
-  constructor
-  · rintro ⟨dδ, h⟩
-    obtain ⟨t⟩ := ‹Nonempty Tup›
-    have h1 := (h t).1.1.2.2
-    rw [(h t).2.1] at h1
-    exact Nat.dvd_one.1 h1
-  · intro hA
-    obtain ⟨d, -, -, -, -, h⟩ := exists_trivial (n := n) Xo c hr hA Tup
-    exact ⟨_, h⟩
 
-theorem covPin_comp {Tup Tup' : Type} (f : Tup' → Tup) (dδ : Tup → DeltaDat Xo c n) (h : CovPin Xo c dδ) :
-    CovPin Xo c (fun t => dδ (f t)) := fun t => h (f t)
 
 set_option synthInstance.maxHeartbeats 200000 in
 
@@ -58,19 +45,7 @@ theorem not_both {a b : ℕ} (hab : Nat.Coprime a b) {P : Ideal (𝓞 E)} (hP : 
   obtain ⟨u, v, huv⟩ : IsCoprime (a : 𝓞 E) (b : 𝓞 E) := Nat.Coprime.cast hab
   exact hP ((Ideal.eq_top_iff_one _).2 (huv ▸ P.add_mem (P.mul_mem_left _ ha) (P.mul_mem_left _ hb)))
 
-theorem level_not_mem (d : DeltaDat Xo c n) (h : d.IsLev) {P : Ideal (𝓞 E)} (hP : P ≠ ⊤) (hI : d.I ≤ P) :
-    (l.M : 𝓞 E) ∉ P := not_both h.2.2.1 hP (pd_mem d h hI)
 
-theorem split_below (d : DeltaDat Xo c n) (h : d.IsLev) {P : Ideal (𝓞 E)} (hP : P ≠ ⊤) (hI : d.I ≤ P) :
-    ∃ a ∈ Algebra.adjoin ℤ {H.w0}, a ∈ P ∧ H.bar a ∉ P := by
-  by_contra hne
-  push Not at hne
-  have h1 : d.l₂.Mb ≤ P := by rw [h.2.2.2.1]; exact Ideal.mul_le_right.trans hI
-  have h2 : d.l₂.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) ≤ P := by
-    rw [d.l₂.fromK, Ideal.map_span, Ideal.span_le]
-    rintro _ ⟨a, ⟨ha, hk⟩, rfl⟩
-    exact hne a hk (h1 ha)
-  exact hP (top_le_iff.1 (d.l₂.coprime ▸ sup_le h1 h2))
 
 theorem prime_under (d : DeltaDat Xo c n) (h : d.IsLev) {P : Ideal (𝓞 E)} (hP : P ≠ ⊤) (hI : d.I ≤ P) {q : ℕ}
     (hq : q.Prime) (hqP : (q : 𝓞 E) ∈ P) : q ∣ d.pd ∧ zeta q ∈ c.F ∧ q - 1 ≤ Module.finrank ℚ c.F := by
@@ -106,14 +81,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {C : Core D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat D A C.Q.c.F} {i : Fin D.R.m} {Tp : Type} {tup : Tp → T0}
 
-theorem pins_force (O : OMDat C R i Tp tup) {κ : WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ ι x₀} (h : O.Pins κ v₀ ι x₀) (t : Tp)
-    (PP : Formalism.L2.DIV.Pl D.host.E) (hPP : PP ∈ R.Q (tup t)) :
-    ((C.Q.l.M : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal ∧
-      (∃ a ∈ Algebra.adjoin ℤ {C.Q.H.w0}, a ∈ PP.asIdeal ∧ C.Q.H.bar a ∉ PP.asIdeal) ∧
-      ∀ q : ℕ, q.Prime → (q : 𝓞 D.host.E) ∈ PP.asIdeal → zeta q ∈ O.c'.F ∧ q - 1 ≤ Module.finrank ℚ O.c'.F :=
-  have hI := (h.tuple t).half.2.1 PP hPP
-  ⟨level_not_mem _ (h.cov t).1 PP.isPrime.ne_top hI, split_below _ (h.cov t).1 PP.isPrime.ne_top hI,
-    fun _ hq hqP => (prime_under _ (h.cov t).1 PP.isPrime.ne_top hI hq hqP).2⟩
 
 end Row
 

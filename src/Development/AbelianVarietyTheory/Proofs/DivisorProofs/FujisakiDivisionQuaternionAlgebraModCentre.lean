@@ -79,9 +79,6 @@ theorem continuous_star' : Continuous (star : ℍ[R, a, b] → ℍ[R, a, b]) := 
   refine continuous_induced_rng.2 (continuous_pi fun i => ?_)
   fin_cases i <;> simp [coords, Function.comp_def] <;> fun_prop
 
-theorem continuous_mul' : Continuous fun p : ℍ[R, a, b] × ℍ[R, a, b] => p.1 * p.2 := by
-  refine continuous_induced_rng.2 (continuous_pi fun i => ?_)
-  fin_cases i <;> simp [coords, Function.comp_def] <;> fun_prop
 
 theorem continuous_star_mul : Continuous fun p : ℍ[R, a, b] × ℍ[R, a, b] => star p.1 * p.2 := by
   refine continuous_induced_rng.2 (continuous_pi fun i => ?_)

@@ -54,9 +54,6 @@ theorem isChar_of_isCh (Y : FBChart C V OE dd) (hR : ∀ x : R, V.Ge 0 (algebraM
     rw [e] at h
     exact h
 
-theorem dlogC_toC (u : PS R 1 dd) (i : Fin dd) : dlogC (toC u) i = algebraMap R C (dl u i) := by
-  unfold dlogC dl
-  rw [MvPowerSeries.coeff_map]
 
 end Series
 

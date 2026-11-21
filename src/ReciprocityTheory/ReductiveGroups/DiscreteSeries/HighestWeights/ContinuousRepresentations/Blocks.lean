@@ -19,8 +19,6 @@ def blkE (ε : Fin n → Bool) (s : Bool) : Fin (blkP ε s) ≃ {a // ε a = s} 
 def blkSig (ε : Fin n → Bool) : (Σ s : Bool, Fin (blkP ε s)) ≃ Fin n :=
   (Equiv.sigmaCongrRight (blkE ε)).trans (Equiv.sigmaFiberEquiv ε)
 
-lemma blkSig_apply (ε : Fin n → Bool) (s : Bool) (i : Fin (blkP ε s)) :
-    blkSig ε ⟨s, i⟩ = (blkE ε s i : Fin n) := rfl
 
 lemma ε_blkSig (ε : Fin n → Bool) (s : Bool) (i : Fin (blkP ε s)) : ε (blkSig ε ⟨s, i⟩) = s :=
   (blkE ε s i).2
@@ -139,8 +137,6 @@ def blkK (ε : Fin n → Bool) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Kset
         rw [← Matrix.star_eq_conjTranspose]; exact Unitary.star_mul_self_of_mem hg.1
       rw [Matrix.mul_assoc, ← hg.2, ← Matrix.mul_assoc, h1, Matrix.one_mul]⟩, hg⟩
 
-lemma toMK_blkK (ε : Fin n → Bool) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Kset ε) :
-    toMK (blkK ε hg) = g := rfl
 
 def blkEmbed (ε : Fin n → Bool) (s : Bool) : KG (fun _ : Fin (blkP ε s) => true) →* KG ε where
   toFun h := blkK ε (embM_Kset ε s h.2)
@@ -223,7 +219,5 @@ def BlockExpCurve : Prop :=
       (∀ t : ℝ, toMK (γm t) = NormedSpace.exp ((t : ℂ) • blkRes ε false X)) →
     ∀ t : ℝ, γ t = blkEmbed ε true (γp t) * blkEmbed ε false (γm t)
 
-theorem blkCurve : BlockExpCurve :=
-  fun _ _ _ hX γ hγ γp hp γm hm t => blk_curve hX γ hγ γp hp γm hm t
 
 end ReciprocityTheory.ChartRestriction.DS.HW

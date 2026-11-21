@@ -77,26 +77,11 @@ def LowRange : Prop :=
         (((m : ℂ) - (n : ℂ)) / 2) s) g)
     (((m : ℂ) - (n : ℂ)) / 2) ((if n < m then 1 else 2 : ℂ) * ⨍ h in 𝓕, thetaSum F (om (h, g) Φ) ∂ν)
 
-theorem range_cases (n m : ℕ) : 2 * n < m ∨ (n < m ∧ m ≤ 2 * n) ∨ m ≤ n := by omega
 
-theorem weilRange_of_all (h : GlobalTheory.Published.SiegelWeilAnisotropicWitt) : WeilRange :=
-  fun F E _ _ _ _ _ σ hCM hU ψ hψ n m hn hm _ => h F E σ hCM hU ψ hψ n m hn hm
 
-theorem midRange_of_all (h : GlobalTheory.Published.SiegelWeilAnisotropicWitt) : MidRange :=
-  fun F E _ _ _ _ _ σ hCM hU ψ hψ n m hn hm _ => h F E σ hCM hU ψ hψ n m hn hm
 
-theorem lowRange_of_all (h : GlobalTheory.Published.SiegelWeilAnisotropicWitt) : LowRange :=
-  fun F E _ _ _ _ _ σ hCM hU ψ hψ n m hn hm _ => h F E σ hCM hU ψ hψ n m hn hm
 
-theorem all_of_ranges (h₁ : WeilRange) (h₂ : MidRange) (h₃ : LowRange) : GlobalTheory.Published.SiegelWeilAnisotropicWitt := by
-  intro F E _ _ _ _ _ σ hCM hU ψ hψ n m hn hm
-  rcases range_cases n m with h | h | h
-  · exact h₁ F E σ hCM hU ψ hψ n m hn hm h
-  · exact h₂ F E σ hCM hU ψ hψ n m hn hm h
-  · exact h₃ F E σ hCM hU ψ hψ n m hn hm h
 
-theorem all_iff_ranges : GlobalTheory.Published.SiegelWeilAnisotropicWitt ↔ WeilRange ∧ MidRange ∧ LowRange :=
-  ⟨fun h => ⟨weilRange_of_all h, midRange_of_all h, lowRange_of_all h⟩, fun h => all_of_ranges h.1 h.2.1 h.2.2⟩
 
 example (n m : ℕ) :
     ¬ (2 * n < m ∧ n < m ∧ m ≤ 2 * n) ∧ ¬ (2 * n < m ∧ m ≤ n) ∧ ¬ ((n < m ∧ m ≤ 2 * n) ∧ m ≤ n) := by omega

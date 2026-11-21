@@ -11,16 +11,6 @@ namespace GlobalTheory.Survey.LevelVectorSizeBounds
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7}
 
-theorem four_le_of_sizes (i : Fin D.R.m) (b : ℝ) (h : Sizes D i b) (τ : D.what₂.Tau) : 4 ≤ b := by
-  have h1 := (h.1 τ).2.2.2 i
-  have h2 := (D.hc τ).gap_be i
-  have h3 : (5 : ℚ) ≤ D.R.t := by
-    have := D.R.rank_add_five_le
-    exact_mod_cast (by omega : 5 ≤ D.R.t)
-  have h4 : (4 : ℚ) ≤ (D.hc τ).e i - (D.hc τ).b i := by linarith
-  have h5 : (4 : ℝ) ≤ (((D.hc τ).e i : ℚ) : ℝ) - (((D.hc τ).b i : ℚ) : ℝ) := by exact_mod_cast h4
-  have := (abs_le.1 h1).1
-  linarith
 
 theorem hookProd_pos (μ : YoungDiagram) : 0 < Formalism.LatticeIndexTer.hookProd μ := by
   unfold Formalism.LatticeIndexTer.hookProd
@@ -212,21 +202,6 @@ theorem delta_base (i : Fin D.R.m) : deltaAtEmb D i (sg0 D A) = RealDat.Delta i 
   · unfold aPlAt; rw [hl]
   · unfold aMiAt; rw [hl]
 
-theorem apply_base {F : Face D A} (hA : AdelicLiftScalar R F) (h : R.Char F) (i : Fin D.R.m) (b : ℝ) (hb : Sizes D i b) (t : T)
-    (ht : PrimeToHost R t) :
-    ∃ th, IsLift R i (sg0 D A) (R.ωP i t) (R.ptP i t) (R.cV i) (R.ioP i) (R.νV i t) (R.fdV i t) (R.HV i t) th ∧
-      ∀ ev, typePart R i (sg0 D A) t R.triv ev ≠ ⊥ →
-        ∃ l : ℝ, 0 < l ∧ (∀ x ∈ typePart R i (sg0 D A) t R.triv ev, th (adjLev R.triv th x) = (l : ℂ) • x) ∧
-          mainTerm D i (sg0 D A) - 8 * (D.R.f : ℝ) * (D.R.nV : ℝ) ^ 2 * Lp D b ≤ Real.log l := by
-  have hσ : IsEmbOverK D (sg0 D A) (RingEquiv.refl ℂ) := by
-    rw [show sg0 D A = D.what₂.embLL from sgAt_mk _ R.hv0]; exact isEmbOverK_base
-  have key := hA h i b hb t ht _ _ hσ R.triv (isLocal_triv R) _ _ _ (isConjChars_base R h i t) (R.ωP i t) (h.thP.ωP i t)
-    (onb (R.MW i (sg0 D A))) (fun ρ => GlobalTheory.IndefiniteRowSideFullHecke.LiftFormsMainTerm.isONBasis_onb _ ρ _ (h.models.order i ρ)) _ _ (isLevelVec_base R h i t)
-    (h.thP.pt_theta i t) (R.cV i) (h.models.cV i) (R.ioP i) (by rw [delta_base R]; exact h.thP.ioP i t)
-    (R.νV i t) (R.fdV i t) (h.models.νV i t) _ (R.B.L i t).pres.y (R.B.L i t).pres.reps (R.HV i t)
-    (by rw [chr_base R h]; exact h.models.HV i t)
-  obtain ⟨⟨th, hth⟩, h2⟩ := key
-  exact ⟨th, hth, h2 th hth⟩
 
 end GlobalTheory.Survey.LevelVectorSizeBounds
 

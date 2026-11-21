@@ -7,19 +7,6 @@ namespace Formalism.BasicNotions.Examples₂.NZ
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.Examples₂
 
-theorem ties_withTw' (D : D7) (W : TwGap D) (hcd : D.s.cdScale = CD.cdScaleOf D.cd) (hds : dsigTie D)
-    (hbu : Rows.BuDefQ D.what₂) (hgood : ∀ σ, D.nd.goodRow σ)
-    (hocc : ∀ π, (∃ σ, D.what₂.ft σ = π) ∨ ∃ σ, D.what₂.ft0 σ = π)
-    (hgal : IsGalois ℚ ↥D.LL0 := by exact Formalism.BasicNotions.Examples₂.galTop _ rfl) : Ties (withTw D W) where
-  cdScale_tie := fun n ε P Q e h1 h2 A hA => by
-    show ((D.s.cdScale n ε : ENNReal) • Formalism.REAL.muG ε) A = D.cd.cd P Q _
-    rw [hcd]
-    exact CD.cdScaleOf_tie D.cd n ε P Q e h1 h2 A hA
-  dsig_tie := hds
-  bu_def := hbu
-  tw_cover := twCoverPair_of (NTw.levelLetterCocycles_of_fact _ W.cover)
-  baseField_isGalois := hgal
-  ft_occ := hocc
 
 section Rec
 
@@ -67,9 +54,6 @@ variable (Lb : Lbl H) (hT2 : ∀ u, T u ≠ 2) (per : ∀ u : W, Bool → FK ((K
 
 local notation "DR" => (hostLevelRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat)
 
-theorem row_ties (Wg : TwGap DR) (hcd : cdS = CD.cdScaleOf G.cd) (hds : dsigTie DR)
-    (hocc : ∀ π : FT, (∃ σ, ft σ = π) ∨ ∃ σ, ft0 σ = π) : Ties (withTw DR Wg) :=
-  ties_withTw' DR _ hcd hds (row_buDef H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat) (row_goodFT H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw d Dall d0 hd FT ft ft0 Lb hT2 per NuL gat hgat) hocc
 
 end Rec
 

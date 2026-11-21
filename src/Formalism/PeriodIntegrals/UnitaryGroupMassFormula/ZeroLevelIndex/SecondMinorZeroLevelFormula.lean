@@ -36,9 +36,6 @@ theorem skipSucc : SkipSucc := fun _ i j => skip_one_eq_succAbove i j
 
 theorem skipSucc2 : SkipSucc2 := fun _ i i' j h => skip_two_succAbove_comp_alt i i' j h
 
-theorem capLZero : CapLZero := by
-  intro E _ _ k r u f
-  rfl
 
 theorem pair_sum {M : Type*} [AddCommMonoid M] {n : ℕ} (i : Fin (n + 2)) (G : Fin (n + 2) → M) :
     (∑ i' : Fin (n + 2), if i < i' then G i' else 0) =
@@ -76,12 +73,6 @@ section Ops
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {k r : ℕ}
 
-theorem qm_congr {n t : ℕ}
-    (Eop : Fin n → Fin n → (Matrix (Fin n) (Fin n) ℂ → E) → (Matrix (Fin n) (Fin n) ℂ → E))
-    (a a' b b' : Fin t → Fin n) (ha : a = a') (hb : b = b') (u : ℂ) (f : Matrix (Fin n) (Fin n) ℂ → E) :
-    qminorOp Eop a b u f = qminorOp Eop a' b' u f := by
-  subst ha hb
-  rfl
 
 theorem comp1 (i : Fin (2 * r + k + 2)) :
     (posL (k + 1) r 0 ∘ skip1 i : Fin (2 * r + k + 2 - 1) → Fin (2 * r + (k + 1) + 1)) = i.succAbove := by
@@ -105,79 +96,13 @@ def T2 (u : ℂ) (a a' β β' : Mx (k + 1) r → Fin (2 * r + k + 2) → ℂ) (f
     (a g j * a' g j' - a g j' * a' g j)) •
     qminorOp (EH (k + 1) r) (posL (k + 1) r 0 ∘ skip2 i i') (posL (k + 1) r 0 ∘ skip2 j j') u f g
 
-theorem chat_eq' (u : ℂ) (a β : Mx (k + 1) r → Fin (2 * r + k + 2) → ℂ) (f : Mx (k + 1) r → E) :
-    chatL (EH (k + 1) r) (posL (k + 1) r 0) u a β f =
-      chatOp (m := 2 * r + k + 1) (EabH (Hpk (k + 1) r)) u a β f := by
-  funext g
-  calc chatL (EH (k + 1) r) (posL (k + 1) r 0) u a β f g
-      = ∑ i : Fin (2 * r + k + 2), ∑ j : Fin (2 * r + k + 2), T1 u a β f g i j := rfl
-    _ = chatOp (m := 2 * r + k + 1) (EabH (Hpk (k + 1) r)) u a β f g := by
-      unfold chatOp minorOp
-      refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
-      exact congrArg (((-1 : ℂ) ^ ((i : ℕ) + (j : ℕ)) * β g i * a g j) • ·)
-        (congrFun (qm_congr (EH (k + 1) r) _ _ _ _ (comp1 i) (comp1 j) u f) g)
 
-theorem second_minor_zero_level_formula (u : ℂ) (a a' β β' : Mx (k + 1) r → Fin (2 * r + k + 2) → ℂ) (f : Mx (k + 1) r → E) :
-    chat2L (EH (k + 1) r) (posL (k + 1) r 0) u a a' β β' f =
-      chat2Op (m := 2 * r + k) (EabH (Hpk (k + 1) r)) u a a' β β' f := by
-  funext g
-  calc chat2L (EH (k + 1) r) (posL (k + 1) r 0) u a a' β β' f g
-      = ∑ i : Fin (2 * r + k + 2), ∑ i' : Fin (2 * r + k + 2), ∑ j : Fin (2 * r + k + 2),
-          ∑ j' : Fin (2 * r + k + 2),
-          (if i < i' ∧ j < j' then T2 u a a' β β' f g i i' j j' else 0) := rfl
-    _ = ∑ i : Fin (2 * r + k + 2), ∑ i'' : Fin (2 * r + k + 1), ∑ j : Fin (2 * r + k + 2),
-          ∑ j'' : Fin (2 * r + k + 1),
-          (if (i : ℕ) ≤ (i'' : ℕ) ∧ (j : ℕ) ≤ (j'' : ℕ) then
-            T2 u a a' β β' f g i (i.succAbove i'') j (j.succAbove j'') else 0) := quad_sum _
-    _ = chat2Op (m := 2 * r + k) (EabH (Hpk (k + 1) r)) u a a' β β' f g := by
-      unfold chat2Op minor2Op
-      refine sum_congr rfl fun i _ => sum_congr rfl fun i'' _ => sum_congr rfl fun j _ =>
-        sum_congr rfl fun j'' _ => ?_
-      split_ifs with h
-      · exact congrArg (((-1 : ℂ) ^ ((i : ℕ) + (i.succAbove i'' : ℕ) + (j : ℕ) + (j.succAbove j'' : ℕ)) *
-            (β g i * β' g (i.succAbove i'') - β g (i.succAbove i'') * β' g i) *
-            (a g j * a' g (j.succAbove j'') - a g (j.succAbove j'') * a' g j)) • ·)
-          (congrFun (qm_congr (EH (k + 1) r) _ _ _ _ (comp2 i i'' h.1) (comp2 j j'' h.2) u f) g)
-      · rfl
 
-theorem chat_eq (u : ℂ) (a β : Mx (k + 1) r → Fin (mdim (k + 1) r 0) → ℂ) (f : Mx (k + 1) r → E) :
-    chatL (EH (k + 1) r) (posL (k + 1) r 0) u a β f =
-      chatOp (m := 2 * r + k + 1) (EabH (Hpk (k + 1) r)) u a β f :=
-  chat_eq' u a β f
 
-theorem second_minor_zero_level (u : ℂ) (a a' β β' : Mx (k + 1) r → Fin (mdim (k + 1) r 0) → ℂ) (f : Mx (k + 1) r → E) :
-    chat2L (EH (k + 1) r) (posL (k + 1) r 0) u a a' β β' f =
-      chat2Op (m := 2 * r + k) (EabH (Hpk (k + 1) r)) u a a' β β' f :=
-  second_minor_zero_level_formula u a a' β β' f
 
-theorem uC_eq (k r : ℕ) (Y : ℂ) :
-    uC (k + 1) r 0 Y = Y + (((2 * r + (k + 1) + 1 : ℕ) : ℂ) / 2 - 1 / 2) := by
-  simp only [uC, mdim, Fin.val_zero, Nat.sub_zero]
-  push_cast
-  ring
 
 end Ops
 
-theorem tLZero : TLZero := by
-  intro E _ _ k r z z' Y p q f
-  have hu := uC_eq k r Y
-  fin_cases p <;> fin_cases q
-  · show capL (k + 1) r 0 (uC (k + 1) r 0 Y) f = _
-    rw [hu]
-    rfl
-  · show -(chatL (EH (k + 1) r) (posL (k + 1) r 0) (uC (k + 1) r 0 Y - 1) (fun _ => xv (k + 1) r z' 0)
-      (ybv (k + 1) r z 0) f) = _
-    rw [hu, chat_eq]
-    rfl
-  · show -(chatL (EH (k + 1) r) (posL (k + 1) r 0) (uC (k + 1) r 0 Y) (yv (k + 1) r z 0)
-      (fun _ => xbv (k + 1) r z' 0) f) = _
-    rw [hu, chat_eq]
-    rfl
-  · show -(chat2L (EH (k + 1) r) (posL (k + 1) r 0) (uC (k + 1) r 0 Y - 1) (yv (k + 1) r z 0)
-      (fun _ => xv (k + 1) r z' 0) (ybv (k + 1) r z 0) (fun _ => xbv (k + 1) r z' 0) f) = _
-    rw [hu, second_minor_zero_level]
-    rfl
 
-theorem qnZeroLevel : CapLZero ∧ TLZero := ⟨capLZero, tLZero⟩
 
 end PI.QnZeroLevelWork

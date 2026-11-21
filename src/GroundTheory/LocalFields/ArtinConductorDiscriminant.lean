@@ -66,18 +66,6 @@ theorem isGreatest_artinConductor_charRep_sub_one (ψ : (L ≃ₐ[K] L) →* ℂ
       rw [not_le] at hlt
       exact hv ((upperRamificationGroup_le_of_herbrandPhi_lt hlt).trans hj1)
 
-theorem exists_nat_swanConductor_eq_of_artinConductor_eq {V : Type*} [AddCommGroup V] [Module ℂ V]
-    [FiniteDimensional ℂ V] (ρ : Representation ℂ (L ≃ₐ[K] L) V) {n : ℕ}
-    (hn : artinConductor ρ = n) : ∃ k : ℕ, swanConductor ρ = k := by
-  have h := artinConductor_eq_codim_add_swanConductor ρ
-  have hs := swanConductor_nonneg ρ
-  rw [hn] at h
-  set c := finrank ℂ V -
-    finrank ℂ (Representation.invariants (ρ.comp (lowerRamificationGroup K L 0).subtype))
-  have hc : c ≤ n := by exact_mod_cast (show (c : ℚ) ≤ n by linarith)
-  refine ⟨n - c, ?_⟩
-  rw [Nat.cast_sub hc]
-  linarith
 
 end Jump
 

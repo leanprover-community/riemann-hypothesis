@@ -7,31 +7,6 @@ namespace Formalism.RepresentationBoundsCohomology.TorsionBoundCyclotomic
 
 open Matrix
 
-theorem wSandwich : StatWSandwich := by
-  intro ℓ _ As AA WC OC _ _ _ _ _ jA ι φ Gg _ H act r ρ πs ξ x M0 h0 W ϑ c hL hinj hx hξ hc
-  have hℓ : ℓ.Prime := Fact.out
-  obtain ⟨⟨A, hA⟩, ⟨A', hA'⟩⟩ := sandwichAA AA WC ι φ (jA x) (jA ξ) r M0 h0 W.Xx W.Xi W.P
-    (W.P1.map jA) (W.Q1.map jA) hL hx hξ W.inv1 W.inv2 W.W1 W.map_eq_xi_power_smul (by
-      rw [← Matrix.map_mul, W.product_eq_xi_power_smul_one, Matrix.map_smul' jA _ _ (map_mul jA),
-        Matrix.map_one jA (map_zero jA) (map_one jA), map_pow])
-  have hminj : Function.Injective (fun M : Matrix (Fin r) (Fin r) AA => M.map ι) := by
-    intro M M' h
-    ext i j
-    exact hinj (congrFun (congrFun h i) j)
-  have hscal : (((jA x) ^ (M0 + h0)) • (1 : Matrix (Fin r) (Fin r) AA)).map ι
-      = (ι (jA x)) ^ (M0 + h0) • (1 : Matrix (Fin r) (Fin r) WC) := by
-    rw [Matrix.map_smul' ι _ _ (map_mul ι), Matrix.map_one ι (map_zero ι) (map_one ι), map_pow]
-  have h1 : A * A' = ((jA x) ^ (M0 + h0)) • (1 : Matrix (Fin r) (Fin r) AA) := by
-    apply hminj
-    show (A * A').map ι = (((jA x) ^ (M0 + h0)) • (1 : Matrix (Fin r) (Fin r) AA)).map ι
-    rw [Matrix.map_mul, hA, hA', hscal, Matrix.smul_mul, Matrix.mul_smul, W.inv1, smul_smul, ← pow_add]
-  have h2 : A' * A = ((jA x) ^ (M0 + h0)) • (1 : Matrix (Fin r) (Fin r) AA) := by
-    apply hminj
-    show (A' * A).map ι = (((jA x) ^ (M0 + h0)) • (1 : Matrix (Fin r) (Fin r) AA)).map ι
-    rw [Matrix.map_mul, hA, hA', hscal, Matrix.smul_mul, Matrix.mul_smul, W.inv2, smul_smul, ← pow_add,
-      add_comm]
-  obtain ⟨Y', hY1, hY2⟩ := sandwichOC ℓ hℓ AA OC ϑ (jA x) c r M0 h0 A A' hc h1 h2
-  exact ⟨A, Y', hA, hY1, hY2⟩
 
 theorem unitCongruenceGivesPerturbation_statement : UnitCongruenceGivesPerturbation := by
   intro ℓ _ R _ _ Xm _ _ _ _ ϖ z z' r V g0 hzz hc hz hinj hsur hV

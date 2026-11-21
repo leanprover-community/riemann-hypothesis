@@ -59,13 +59,6 @@ lemma Pp_mono {e : ℕ → ℝ} (he : ∀ i, 0 ≤ e i) : Monotone (Pp e) := by
   rw [Pp_succ]
   exact le_mul_of_one_le_right (Pp_nonneg he n) (one_le_sqrt_e he (n+1))
 
-lemma Pp_sq {e : ℕ → ℝ} (he : ∀ i, 0 ≤ e i) (i : ℕ) :
-    Pp e i ^ 2 = ∏ l ∈ Icc 1 i, (1 + e l) := by
-  unfold Pp
-  rw [← Finset.prod_pow]
-  apply Finset.prod_congr rfl
-  intro l _
-  rw [Real.sq_sqrt (by linarith [he l])]
 
 lemma growth (r : ℕ) (a ε : ℝ) (e σ : ℕ → ℝ) (ρ : ℝ) (ha : 0 ≤ a) (ha2 : a ≤ 1/2)
     (hε : 0 ≤ ε) (he : ∀ i, 0 ≤ e i) (hσ : ∀ i, 0 ≤ σ i)
@@ -154,21 +147,5 @@ namespace Formalism.FourierDecayAlt.P
 
 open Finset Real Formalism.FourierDecayAlt.P.Rec
 
-theorem sharp_recursion : Formalism.FourierDecayAlt.RecursionSharp := by
-  refine ⟨80, ?_⟩
-  intro r a ε e σ ha ha2 hε hx he hσ hrec
-  have hg := growth r a ε e σ (1 + ε + 2 * a) ha ha2 hε he hσ hrec le_rfl (r+1) le_rfl
-  have hpb := pow_bound r a ε ha hε hx
-  have hsq := pow_le_pow_left₀ (hσ (r+1)) hg 2
-  have hPs := Pp_sq he (r+1)
-  have hσ0 : 0 ≤ σ 0 ^ 2 := sq_nonneg _
-  have hprod : 0 ≤ ∏ i ∈ Icc 1 (r + 1), (1 + e i) := by rw [← hPs]; exact sq_nonneg _
-  calc σ (r+1) ^ 2 ≤ (Pp e (r+1) * (1 + ε + 2 * a) ^ (r+1) * σ 0) ^ 2 := hsq
-    _ = ((1 + ε + 2 * a) ^ (r+1)) ^ 2 * (Pp e (r+1) ^ 2) * σ 0 ^ 2 := by ring
-    _ = ((1 + ε + 2 * a) ^ (r+1)) ^ 2 * (∏ i ∈ Icc 1 (r + 1), (1 + e i)) * σ 0 ^ 2 := by
-        rw [hPs]
-    _ ≤ (1 + 80 * ((r : ℝ) + 1) * (ε + a)) * (∏ i ∈ Icc 1 (r + 1), (1 + e i)) * σ 0 ^ 2 := by
-        apply mul_le_mul_of_nonneg_right _ hσ0
-        exact mul_le_mul_of_nonneg_right hpb hprod
 
 end Formalism.FourierDecayAlt.P

@@ -534,11 +534,8 @@ abbrev UA (hc : CMData F E) (J : Matrix (Fin n) (Fin n) E) : Subgroup (GL (Fin n
 abbrev UQ (hc : CMData F E) (J : Matrix (Fin n) (Fin n) E) : Subgroup (UA hc J) :=
   (ratPts hc.sig J (Af F)).subgroupOf (UA hc J)
 
-theorem UA_gram (hc : CMData F E) (S : HSpace E) : UA hc S.gram = UAf hc S := rfl
 
-theorem UQ_gram (hc : CMData F E) (S : HSpace E) : UQ hc S.gram = UFin hc S := rfl
 
-theorem UR_gram (hc : CMData F E) (S : HSpace E) : UR hc S.gram = UF hc S := rfl
 
 end Spaces
 

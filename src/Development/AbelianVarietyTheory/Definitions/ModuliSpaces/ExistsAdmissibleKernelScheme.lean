@@ -19,11 +19,6 @@ variable {S : Scheme.{0}} {s : S ⟶ Sp (KA l)}
 namespace IndexZero
 open GlobalTheory.HeckeKerModel
 
-theorem pointwise_iff : ToroidalHeckeCompatibility (H := H) (D := D) ↔ ∀ (l : Level H) (Xo : Moduli D l) (P : Ideal (𝓞 E)) (p i : ℕ),
-    admitted l P p → ∀ (k : Type) [Field k] [IsAlgClosed k] (y : Sp k ⟶ Xo.X) (C : Subgroup (Over.mk y ⟶ Xo.univ.t.G)),
-      Xo.univ.t.HeckeKer (Over.mk y) D P p i C → ∃! y'', PointQuot Xo p y y'' C :=
-  ⟨fun h l Xo P p i ⟨a, b, c, d, e⟩ => h l Xo P p i a b c d e,
-    fun h l Xo P p i a b c d e => h l Xo P p i ⟨a, b, c, d, e⟩⟩
 
 theorem exists_pt (X : Scheme.{0}) (g : X) :
     ∃ (k : Type) (_ : Field k) (_ : IsAlgClosed k) (x : Sp k ⟶ X), Set.range x = {g} := by
@@ -256,19 +251,6 @@ theorem exists_kerScheme (hr : 1 ≤ D.p + D.q) (l : Level H) (P : Ideal (𝓞 E
 theorem exists_adm (l : Level H) : ∃ (P : Ideal (𝓞 E)) (p : ℕ), admitted l P p :=
   GlobalTheory.exists_split_prime_outside_level E H l
 
-theorem exists_admissible_kernel_scheme (hr : 1 ≤ D.p + D.q) (l : Level H) :
-    ∃ (P : Ideal (𝓞 E)) (p : ℕ) (Xo : Moduli D l) (Z : KerScheme Xo P p 0) (z : Sp ℂ ⟶ Z.Hk) (y : Sp ℂ ⟶ Xo.X)
-      (C : Subgroup (Over.mk y ⟶ Xo.univ.t.G)), admitted l P p ∧ Z.Carries z y C ∧ C ≠ ⊥ := by
-  obtain ⟨P, p, h⟩ := exists_adm l
-  obtain ⟨Xo, Z, z, y, C, h1, h2⟩ := exists_kerScheme hr l P h.2.2.1.pos
-  refine ⟨P, p, Xo, Z, z, y, C, h, h1, fun hC => ?_⟩
-  rw [hC, Subgroup.card_bot] at h2
-  have h3 : 2 ≤ Module.finrank ℚ E := by
-    have := NumberField.IsTotallyComplex.finrank E
-    have : 0 < Module.finrank ℚ E := Module.finrank_pos
-    omega
-  have h4 : 0 < Module.finrank ℚ E / 2 * (D.p + D.q) := Nat.mul_pos (by omega) hr
-  exact (Nat.one_lt_pow (by omega) h.2.2.1.one_lt).ne h2
 
 end IndexZero
 

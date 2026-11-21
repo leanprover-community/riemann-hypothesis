@@ -897,6 +897,5 @@ end Formalism.G0.TopsWeightFunctionBounds
 
 namespace Formalism.G0
 
-theorem tops_choice_part_b : TopsChoiceSecondBound := TopsWeightFunctionBounds.main
 
 end Formalism.G0

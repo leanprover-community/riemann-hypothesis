@@ -130,36 +130,8 @@ theorem continuous_rmulQ (a : Matrix (Fin m) (Fin m) ℂ) : Continuous (rmulQ (m
 
 def onG (hG : IsMatGroup G) (μ : Measure (MtM m)) : Measure (MG G hG) := μ.comap val
 
-theorem map_onG (μ : Measure (MtM m)) (hμ : IsHaarOnM G μ) : (onG hG μ).map val = μ := by
-  rw [onG, measEmb.map_comap]
-  have hr : Set.range (val : MG G hG → MtM m) = {x | Matrix.of x ∈ G} := Subtype.range_coe
-  rw [hr]
-  apply Measure.restrict_eq_self_of_ae_mem
-  rw [ae_iff]
-  simpa using hμ.2.2.1
 
-theorem onG_left (μ : Measure (MtM m)) (hμ : IsHaarOnM G μ) : Measure.IsMulLeftInvariant (onG hG μ) := by
-  refine ⟨fun g => ?_⟩
-  have hcomp : (val ∘ (fun x : MG G hG => g * x)) = lmulQ g.toM ∘ val := funext fun x => rfl
-  have hmeasL : Measurable (lmulQ (m := m) g.toM) := (continuous_lmulQ _).measurable
-  have hmul : Measurable (fun x : MG G hG => g * x) :=
-    (measEmb (hG := hG)).measurable_comp_iff.1 (by rw [hcomp]; exact hmeasL.comp measEmb.measurable)
-  calc Measure.map (fun x => g * x) (onG hG μ)
-      = Measure.comap val (Measure.map val (Measure.map (fun x => g * x) (onG hG μ))) :=
-        (measEmb.comap_map _).symm
-    _ = Measure.comap val (Measure.map (lmulQ g.toM) (Measure.map val (onG hG μ))) := by
-        rw [Measure.map_map measEmb.measurable hmul, hcomp, ← Measure.map_map hmeasL measEmb.measurable]
-    _ = Measure.comap val μ := by rw [map_onG μ hμ, hμ.2.2.2 _ g.toM_mem]
-    _ = onG hG μ := rfl
 
-theorem onG_sigmaFinite (μ : Measure (MtM m)) (hμ : IsHaarOnM G μ) : SigmaFinite (onG hG μ) := by
-  haveI := hμ.1
-  exact SigmaFinite.of_map _ (measEmb (hG := hG)).measurable.aemeasurable (by rw [map_onG μ hμ]; exact hμ.1)
 
-theorem onG_ne_zero (μ : Measure (MtM m)) (hμ : IsHaarOnM G μ) : onG hG μ ≠ 0 := by
-  intro h
-  have e := map_onG (hG := hG) μ hμ
-  rw [h, Measure.map_zero] at e
-  exact hμ.2.1 e.symm
 
 end PI.QuotSetU.UnitaryGroupMassFormula.ModW

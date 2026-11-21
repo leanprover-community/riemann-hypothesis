@@ -27,11 +27,7 @@ open Classical in
 noncomputable def rowAddY (t : T) (a b : Fin q) (s : R) : Poly R T p q κ →ₐ[R] Poly R T p q κ :=
   bind₁ fun v => X v + ∑ k : κ, if v = yVar t b k then C s * X (yVar t a k) else 0
 
-theorem rowAddX_eq_rowAdd (t : T) (a b : Fin p) (s : R) :
-    (rowAddX t a b s : Poly R T p q κ →ₐ[R] _) = rowAdd t (Sum.inl a) (Sum.inl b) s := rfl
 
-theorem rowAddY_eq_rowAdd (t : T) (a b : Fin q) (s : R) :
-    (rowAddY t a b s : Poly R T p q κ →ₐ[R] _) = rowAdd t (Sum.inr a) (Sum.inr b) s := rfl
 
 theorem rowAdd_eq_bind₁ [DecidableEq (Var T p q κ)] (t : T) (r r' : Fin p ⊕ Fin q) (s : R) :
     (rowAdd t r r' s : Poly R T p q κ →ₐ[R] _) =
@@ -110,16 +106,6 @@ theorem rowAdd_rowForm_of_ne {t t' : T} (r : Fin p ⊕ Fin q) {r' r'' : Fin p �
   refine MvPolynomial.algHom_ext fun ⟨t', r'', k⟩ => ?_
   simp [rowAdd_X]
 
-theorem rowAdd_add (t : T) {r r' : Fin p ⊕ Fin q} (h : r ≠ r') (s s' : R) :
-    (rowAdd t r r' (s + s') : Poly R T p q κ →ₐ[R] _) =
-      (rowAdd t r r' s).comp (rowAdd t r r' s') := by
-  refine MvPolynomial.algHom_ext fun ⟨t', r'', k⟩ => ?_
-  by_cases e : t' = t ∧ r'' = r'
-  · obtain ⟨rfl, rfl⟩ := e
-    rw [AlgHom.comp_apply, rowAdd_X_self, rowAdd_X_self, map_add (rowAdd _ _ _ _), map_mul,
-      rowAdd_X_self, rowAdd_X_of_ne _ _ _ (fun e => h e.2), algHom_C, algebraMap_eq, map_add]
-    ring
-  · rw [AlgHom.comp_apply, rowAdd_X_of_ne _ _ _ e, rowAdd_X_of_ne _ _ _ e, rowAdd_X_of_ne _ _ _ e]
 
 theorem eval_rowAdd [DecidableEq T] (z : Var T p q κ → R) (t : T) (r r' : Fin p ⊕ Fin q) (s : R)
     (P : Poly R T p q κ) :
@@ -377,13 +363,7 @@ theorem mem_rowHighest_iff_rowAdd : P ∈ rowHighest R c c' ↔ IsHarmonic P ∧
 theorem isHarmonic_of_mem_rowHighest (hP : P ∈ rowHighest R c c') : IsHarmonic P :=
   (mem_rowHighest_iff.1 hP).1
 
-theorem rowAddX_eq_self_of_mem_rowHighest [IsDomain R] [CharZero R] (hP : P ∈ rowHighest R c c')
-    (t : T) {a b : Fin p} (hab : a < b) (s : R) : rowAddX t a b s P = P :=
-  (mem_rowHighest_iff_of_charZero.1 hP).2.2.2.1 t a b hab s
 
-theorem rowAddY_eq_self_of_mem_rowHighest [IsDomain R] [CharZero R] (hP : P ∈ rowHighest R c c')
-    (t : T) {a b : Fin q} (hab : a < b) (s : R) : rowAddY t a b s P = P :=
-  (mem_rowHighest_iff_of_charZero.1 hP).2.2.2.2 t a b hab s
 
 variable (R c c') in
 
@@ -512,12 +492,6 @@ theorem rowHighest_ne_bot [Nontrivial R] :
 
 end Base
 
-theorem exists_mem_rowHighest_totalDegree_eq_two :
-    ∃ P ∈ rowHighest ℤ (fun (_ : Unit) (_ : Fin 1) => 1) (fun _ (_ : Fin 1) => 1),
-      P = (X (xVar () 0 0) * X (yVar () 0 1) : Poly ℤ Unit 1 1 (Fin 2)) ∧ P.totalDegree = 2 :=
-  ⟨_, basePoly_mem_rowHighest (show 1 + 1 ≤ 2 from le_rfl) _ _,
-    by simp [basePoly, minorProd, xMinor, yMinor, baseCovec, baseVec],
-    by rw [totalDegree_basePoly]; decide⟩
 
 example : (X (xVar () 0 0) * X (yVar () 0 0) : Poly ℤ Unit 1 1 (Fin 2)) ∉
     rowHighest ℤ (fun _ _ => 1) (fun _ _ => 1) := fun hP => by

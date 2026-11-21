@@ -174,11 +174,6 @@ theorem SomeAt.exists_ge {Q : ℝ → ∀ D : D7, D.what₂.Word → Prop} (h : 
   obtain ⟨x, hx, hne⟩ := F.Ix_ne (max x₀ y)
   exact ⟨x, le_of_max_le_right hx, h x (le_of_max_le_left hx) hne⟩
 
-theorem SomeAt.covered {Q : ℝ → ∀ D : D7, D.what₂.Word → Prop} (h : F.SomeAt Q) : F.Covered := by
-  obtain ⟨x₀, h⟩ := h
-  refine ⟨x₀, fun x hx i₀ u₀ hu => ?_⟩
-  obtain ⟨i, h1, h2, -⟩ := h x hx i₀ u₀ hu
-  exact ⟨i, h1, h2⟩
 
 theorem RKAll.rkWin (h : F.RKAll) (hc : F.Covered) : F.RKWin := by
   obtain ⟨x₀, h⟩ := h
@@ -258,25 +253,11 @@ theorem T_lt_cap (D : D7) (u : D.what₂.Word) :
   exact mul_lt_of_lt_one_right (Xu_pos D u)
     (Real.rpow_lt_one_of_one_lt_of_neg (D.mem u).A.one_lt_gammaP (div_neg_of_neg_of_pos (by norm_num) hf))
 
-theorem le_log_alt (D : D7) (u : D.what₂.Word) :
-    Real.log (D.mem u).A.Xu - 2 * Real.log (D.mem u).A.GamP / ((D.R.f : ℝ) * D.R.k) ≤ Real.log ((D.mem u).A.T : ℝ) := by
-  have hG : 0 < (D.mem u).A.GamP := lt_trans one_pos (D.mem u).A.one_lt_gammaP
-  have hs : 0 < (D.mem u).A.Tstar := mul_pos (Xu_pos D u) (Real.rpow_pos_of_pos hG _)
-  refine le_trans (le_of_eq ?_) (Real.log_le_log hs (D.T_win u).1)
-  unfold ColumnsAtT.Tstar
-  rw [Real.log_mul (Xu_pos D u).ne' (Real.rpow_pos_of_pos hG _).ne', Real.log_rpow hG]
-  ring
 
 namespace Pts
 
 variable {F : Pts}
 
-theorem RKWin.rkRoom {ε : ℝ} (h : F.RKWin) (CR CT x₁ : ℝ) (hb : ∀ x, x₁ ≤ x → ∀ (i : F.Ix x) u,
-    2 * Real.log ((F.D x i).mem u).A.GamP ≤ CR * x ^ ε * (((F.D x i).R.f : ℝ) * (F.D x i).R.k) ∧
-      Real.log (((F.D x i).mem u).A.T : ℝ) ≤ CT * (F.D x i).R.m * x ^ ε) : F.RKRoom ε := by
-  refine ⟨CR, CT, SomeAt.mono h x₁ fun x hx i u h => ⟨⟨le_trans ?_ (le_log_alt _ u), (hb x hx i u).2⟩, h⟩⟩
-  have := (div_le_iff₀ (f_mul_k_pos (F.D x i).R)).2 (hb x hx i u).1
-  linarith
 
 theorem RKRoom.rkWeak {ε : ℝ} (h : F.RKRoom ε) (hε : 0 < ε) : F.RKWeak ε := by
   obtain ⟨CR, CT, h⟩ := h
@@ -284,11 +265,6 @@ theorem RKRoom.rkWeak {ε : ℝ} (h : F.RKRoom ε) (hε : 0 < ε) : F.RKWeak ε 
   exact ⟨CT, h.mono x₁ fun x hx i u h =>
     ⟨⟨le_trans (sub_le_sub_left (hx₁ x hx).1 _) h.1.1, h.1.2⟩, h.2.share (hx₁ x hx).2⟩⟩
 
-theorem RKRoomOver.rkWeakOver {ε : ℝ} {Tr : ℝ → D7 → Prop} (h : F.RKRoomOver Tr ε) (hε : 0 < ε) : F.RKWeakOver Tr ε := by
-  obtain ⟨CR, CT, h⟩ := h
-  obtain ⟨x₁, hx₁⟩ := room_le_and_share_le hε CR
-  exact ⟨CT, h.mono x₁ fun x hx i u ⟨D', u', h1, h2, h3, h4⟩ =>
-    ⟨D', u', h1, h2, ⟨le_trans (sub_le_sub_left (hx₁ x hx).1 _) h3.1, h3.2⟩, h4.share (hx₁ x hx).2⟩⟩
 
 example (D : D7) : ¬ (single fun _ => D).Covered := by
   rintro ⟨x₀, h⟩
@@ -319,10 +295,6 @@ def HypEx : Prop := ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ε < δ �
 
 def ClsInhabited : Prop := ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧ ε < 1 / 52 ∧ ∃ F : Fam ε, Cl ε F
 
-theorem hypEx_of_hypAll (h : HypAll Fam Cl pts Form) (hi : ClsInhabited Fam Cl) : HypEx Fam Cl pts Form := by
-  intro δ hδ
-  obtain ⟨ε, h0, h1, h2, F, hF⟩ := hi δ hδ
-  exact ⟨ε, h0, h1, h2, F, hF, h ε h0 h2 F hF⟩
 
 end Hyp
 

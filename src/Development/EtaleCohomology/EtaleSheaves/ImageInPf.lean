@@ -61,17 +61,6 @@ theorem image_in_red {V Y Z : Scheme.{0}} [IsReduced V] (γ : V ⟶ Y) (O : Y.Op
     exact le_rfl
   exact ⟨_, IsClosedImmersion.lift_fac t _ H⟩
 
-theorem image_in_qc {V Y Z : Scheme.{0}} (γ : V ⟶ Y) [QuasiCompact γ] (O : Y.Opens) (t : Z ⟶ O.toScheme)
-    (a : (γ ⁻¹ᵁ O).toScheme ⟶ Z) [IsClosedImmersion t] (h : a ≫ t = γ ∣_ O) :
-    ∃ b : (γ.imageι ⁻¹ᵁ O).toScheme ⟶ Z, b ≫ t = γ.imageι ∣_ O := by
-  have H : t.ker ≤ (γ.imageι ∣_ O).ker := by
-    refine (a.le_ker_comp t).trans ?_
-    rw [h]
-    intro U
-    rw [Scheme.ker_morphismRestrict_ideal, Scheme.ker_morphismRestrict_ideal, Scheme.Hom.imageι,
-      Scheme.IdealSheafData.ker_subschemeι]
-    exact le_rfl
-  exact ⟨_, IsClosedImmersion.lift_fac t _ H⟩
 
 theorem range_imageι_red {V Y : Scheme.{0}} [IsReduced V] (γ : V ⟶ Y) :
     Set.range γ.imageι ⊆ closure (Set.range γ) := by
@@ -93,9 +82,6 @@ def ImageInR : Prop := ∀ {S X₁ : Scheme.{0}} [IsReduced X₁] (p₁ : X₁ �
         IsClosedImmersion t → a ≫ t = γ ∣_ (pullback.snd p₁ q ⁻¹ᵁ (π j ⁻¹ᵁ W j)) →
         ∃ b : (γ.imageι ⁻¹ᵁ (pullback.snd p₁ q ⁻¹ᵁ (π j ⁻¹ᵁ W j))).toScheme ⟶ Z, b ≫ t = γ.imageι ∣_ (pullback.snd p₁ q ⁻¹ᵁ (π j ⁻¹ᵁ W j))
 
-theorem ImageInR_of : ImageInR := by
-  intro S X₁ _ p₁ _ n U Pj qj W e P q π _ _ _ _ _ V _ hV γ _ _ j Z t a ht hat
-  exact image_in_red γ _ t a hat
 
 theorem covered_red {S X₁ : Scheme.{0}} [IsReduced X₁] (p₁ : X₁ ⟶ S)
   (n : ℕ) (U : Fin n → X₁.Opens) (Pj : Fin n → Scheme.{0}) (qj : ∀ j, Pj j ⟶ S) (W : ∀ j, (Pj j).Opens)

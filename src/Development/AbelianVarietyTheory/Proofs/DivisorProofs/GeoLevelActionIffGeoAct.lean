@@ -428,8 +428,5 @@ theorem at_iff {T : CoreJ D} (hT : LawsJ T) {j : ℕ} (hj : InR D j) :
   · intro H hr Pg hPg β hβ χ hχ
     exact (conclusion_iff hT hj hr hPg β hβ χ).2 (H _ ((isInvTame_iff hT hj _ χ).1 hχ))
 
-theorem geoLevelAction_iff_geoAct : LatticeBasisLifts.GeoLevelAction ↔ LevelLiftConditions.GeoAct :=
-  forall_congr' fun _ => forall_congr' fun _ => forall_congr' fun hT => forall_congr' fun _ => forall_congr' fun hj =>
-    at_iff hT hj
 
 end GlobalTheory.GeoActCompare

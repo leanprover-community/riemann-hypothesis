@@ -188,16 +188,6 @@ theorem standardFlag_saturated (i : Fin 3) :
     · simp [hx1]
   · exact Submodule.mem_top
 
-theorem standardFlag_rank (i : Fin 3) :
-    (HermitianBundle.standard K 2).rank (standardFlag K i) = i := by
-  fin_cases i
-  · change Module.finrank (𝓞 K) (⊥ : Submodule (𝓞 K) (Fin 2 → 𝓞 K)) = 0
-    simp
-  · change Module.finrank (𝓞 K) (LinearMap.range (firstIncl K)) = 1
-    rw [← (LinearEquiv.ofInjective (firstIncl K) firstIncl_injective).finrank_eq,
-      Module.finrank_self]
-  · change Module.finrank (𝓞 K) (⊤ : Submodule (𝓞 K) (Fin 2 → 𝓞 K)) = 2
-    rw [finrank_top, Module.finrank_fin_fun]
 
 end
 

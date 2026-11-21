@@ -23,10 +23,6 @@ def projection_lemma_base_level (D : D7) : Prop :=
         (∀ τ, W'.sig τ = (if s then (P - 1, Q) else (P, Q - 1))) ∧
         D.vol W / D.vol W' = Formalism.HermitianLatticesTheory.massRatioRightSide D.host.E W.rank
 
-theorem mass_volume_of_all_x (D : D7) (ha : projection_sandwich_lattice D) (hE : projection_lemma_base_level D) : Conclusion2 D := by
-  intro W P Q h1 h2 h3 s hs
-  obtain ⟨x, hx⟩ := ha W P Q h1 h2 h3 s hs
-  exact ⟨x, hx, hE W P Q h1 h2 h3 s hs x hx⟩
 
 section DS
 
@@ -88,8 +84,6 @@ def DstarM (D : D7) : ℝ := DstarP D (D.host.g 0) (D.host.g 1) (massI D D.R.r) 
 
 def BaseVolumeEqualsMass (D : D7) : Prop := volY0 D = massI D D.R.r
 
-theorem DstarD_eq_DstarM (D : D7) (h : BaseVolumeEqualsMass D) : DstarD D = DstarM D := by
-  unfold DstarD DstarM; rw [h]
 
 def piN (n g : ℕ) : ℝ := ∏ i ∈ Finset.Icc 1 n, (1 - ((g : ℝ) ^ i)⁻¹)
 
@@ -351,55 +345,6 @@ open scoped InnerProductSpace ComplexOrder
 theorem lamAbs_nonneg {N : ℕ} (lam : Fin N → ℝ) : 0 ≤ lamAbs lam :=
   Real.iSup_nonneg fun _ => Real.iSup_nonneg fun _ => abs_nonneg _
 
-theorem theorem_three_of_explicit_and_compact (D : D7) (C3 : ℝ) (hC : 8192 ≤ C3) (hS : DiscreteSeriesDegreeBoundsOfGap D) (hZ : FormalDegreeComparisonCompactCase D) : RepresentationDimensionGeneral D C3 := by
-  intro N ε lam ep0 h0 H _ _ σ w p q hHC hgap he1 he2 hh hDS hw
-  by_cases hpq : (Finset.univ.filter (fun a => ε a = true)).card = 0 ∨
-      (Finset.univ.filter (fun a => ε a = false)).card = 0
-  · obtain ⟨z1, z2⟩ := hZ N ε lam ep0 H σ w hpq hHC he1 he2 hDS hw
-    refine ⟨z1, le_trans z2 ?_⟩
-    have e : p * q = 0 := by
-      rcases hpq with h | h
-      · have : p = 0 := by show ((Finset.univ.filter (fun a => ε a = true)).card : ℝ) = 0; rw [h]; simp
-        rw [this, zero_mul]
-      · have : q = 0 := by show ((Finset.univ.filter (fun a => ε a = false)).card : ℝ) = 0; rw [h]; simp
-        rw [this, mul_zero]
-    rw [e, Real.rpow_zero, mul_one]
-  · rw [not_or] at hpq
-    have hp : 1 ≤ p := by
-      show (1 : ℝ) ≤ ((Finset.univ.filter (fun a => ε a = true)).card : ℝ)
-      exact_mod_cast Nat.one_le_iff_ne_zero.2 hpq.1
-    have hq : 1 ≤ q := by
-      show (1 : ℝ) ≤ ((Finset.univ.filter (fun a => ε a = false)).card : ℝ)
-      exact_mod_cast Nat.one_le_iff_ne_zero.2 hpq.2
-    have hN : (1 : ℝ) ≤ N := by
-      have h1 : (Finset.univ.filter (fun a => ε a = true)).card ≤ N := by
-        simpa using Finset.card_filter_le (Finset.univ : Finset (Fin N)) (fun a => ε a = true)
-      have h2 : p ≤ N := by
-        show ((Finset.univ.filter (fun a => ε a = true)).card : ℝ) ≤ N
-        exact_mod_cast h1
-      linarith
-    have he : 0 < ep0 := lt_of_lt_of_le (Real.exp_pos _) he1
-    have hm : 0 ≤ min p q := le_min (by linarith) (by linarith)
-    have hl : 0 ≤ Real.log N := Real.log_nonneg hN
-    have hyp : 8192 * min p q * (p * q) ^ 3 * Real.log N / ep0 ^ 2 ≤ h0 := by
-      refine le_trans ?_ hh
-      apply div_le_div_of_nonneg_right _ (by positivity)
-      have h1 : 8192 * min p q * (p * q) ^ 3 ≤ C3 * min p q * (p * q) ^ 3 * N := by
-        have : 8192 * (min p q * (p * q) ^ 3) ≤ C3 * N * (min p q * (p * q) ^ 3) := by
-          apply mul_le_mul_of_nonneg_right _ (by positivity)
-          nlinarith
-        nlinarith
-      exact mul_le_mul_of_nonneg_right h1 hl
-    obtain ⟨s1, s2⟩ := hS N ε lam ep0 h0 H σ w hp hq hHC hgap he1 he2 hyp hDS hw
-    refine ⟨s1, le_trans s2 ?_⟩
-    have hla := lamAbs_nonneg lam
-    have hb : 3 * p * q * lamAbs lam ≤ C3 * p * q * N * lamAbs lam := by
-      have h3 : 3 ≤ C3 * N := by nlinarith
-      have : 3 * (p * q * lamAbs lam) ≤ C3 * N * (p * q * lamAbs lam) :=
-        mul_le_mul_of_nonneg_right h3 (by positivity)
-      nlinarith
-    exact mul_le_mul_of_nonneg_left
-      (Real.rpow_le_rpow (by positivity) hb (by positivity)) (by positivity)
 
 end DS
 

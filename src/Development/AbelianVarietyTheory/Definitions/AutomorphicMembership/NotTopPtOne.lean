@@ -65,14 +65,6 @@ theorem topPt_base {u : B.Word} {a : I.ι} {k : GA B (B.R.N B.R.m)} [NeZero (B.R
   have := h (DecoF.base _ _ _ _ _) 1 1 (isPtOf_base _) ⟨(Matrix.one_mul _).trans (Matrix.mul_one _).symm, Matrix.one_mulVec _⟩
   rwa [one_mul] at this
 
-theorem topPt_last (hI : I.Ok) {u : B.Word} {a : I.ι} {k : GA B (B.R.N B.R.m)} [NeZero (B.R.N B.R.m - 1)] (h : I.TopPt l Z u a k)
-    (P : I.Q a) (i : Fin (B.R.N B.R.m)) : adAt B.host.F P.1 (k.1 i (Br.iL (N_m_succ B.R))) =
-      algebraMap B.host.E _ ((Pi.single (Br.iL (N_m_succ B.R)) ((X.piT u : 𝓞 B.host.E) : B.host.E) : Fin _ → B.host.E) i) := by
-  have hPr := (base_fields_primes_ok B X).2.1
-  have h1 := (topPt_base I l Z h).fr P i (Br.iL (N_m_succ B.R))
-  have h2 := tilFr_fr_last (N_m_succ B.R) (conj_piT_notMem hPr u) (piT_notMem_vGs hPr u)
-    (fun P : I.Q a => ((TwistPrimes.twist_primes_away I hI).2 u a P.1 P.2).2.1) (DecoF.base _ _ _ _ _) P
-  exact h1.trans (congrArg (fun x => algebraMap B.host.E _ (x i)) h2)
 
 theorem exists_topPt (hI : I.Ok) (hP : TC.Pins B X) (u : B.Word) (a : I.ι) : ∃ k : GA B (B.R.N B.R.m),
     (∃ p : DecoF B.fields.E (B.R.N B.R.m) ∅ ∅ ∅, PtOf k p ∧ p.deco.1.N = stdLat B.fields.E (B.R.N B.R.m)) ∧
@@ -111,11 +103,6 @@ theorem exists_topPt (hI : I.Ok) (hP : TC.Pins B X) (u : B.Word) (a : I.ι) : �
       congrFun (congrFun e2 r) j
     exact e3 ▸ h3 P r j hr
 
-theorem not_topPt_one (hI : I.Ok) {u : B.Word} {a : I.ι} [NeZero (B.R.N B.R.m - 1)] (P : I.Q a)
-    (hpi : ((X.piT u : 𝓞 B.host.E) : B.host.E) ≠ 1) : ¬ I.TopPt l Z u a 1 := fun h => by
-  have h1 := topPt_last I l Z hI h P (Br.iL (N_m_succ B.R))
-  rw [Pi.single_eq_same, Units.val_one, Matrix.one_apply_eq, map_one] at h1
-  exact hpi ((algebraMap B.host.E _).injective (h1.symm.trans (map_one _).symm))
 
 end GlobalTheory.Mem.Col2.TopPtModel
 

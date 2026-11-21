@@ -18,12 +18,6 @@ theorem galMap_geomMap {X Y : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) (q
 
 variable (R : Type) [CommRing R] [TopologicalSpace R] [IsTopologicalRing R]
 
-theorem gal_pull {X Y : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) (q : Y ⟶ Spec (CommRingCat.of k))
-    (u : X ⟶ Y) (hu : u ≫ q = p) (σ : Ω ≃ₐ[k] Ω) (n : ℕ) (x : H R n (geom Ω q)) :
-    gal R Ω p n σ (pull R n (geomMap Ω p u hu) x) = pull R n (geomMap Ω p u hu) (gal R Ω q n σ x) := by
-  change pull R n (galMap Ω p σ) (pull R n (geomMap Ω p u hu) x) =
-    pull R n (geomMap Ω p u hu) (pull R n (galMap Ω q σ) x)
-  rw [← LinearMap.comp_apply, ← LinearMap.comp_apply, ← pull_comp, ← pull_comp, galMap_geomMap]
 
 theorem coefPre_isSheaf : Presheaf.IsSheaf Scheme.proetaleTopology.{0} (coefPre R) := by
   haveI : ReflectsLimitsOfSize.{0, 1} (forget (ModuleCat.{1} (ULift.{1} R))) :=

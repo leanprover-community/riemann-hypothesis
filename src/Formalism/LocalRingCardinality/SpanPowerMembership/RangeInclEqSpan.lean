@@ -47,19 +47,7 @@ def SigN : Type := {p : Fin (R.m + 1) × Bool // 1 ≤ p.1.1 ∧ Nonempty (I.ix 
 
 instance : Finite (SigN C I) := inferInstanceAs (Finite {p : Fin (R.m + 1) × Bool // _})
 
-theorem tmul_single_ne (A K : Type) [CommRing A] [Field K] [Algebra A K] (ι : Type) [Fintype ι] [DecidableEq ι]
-    (a : ι) : (1 : K) ⊗ₜ[A] (Pi.single a 1 : ι → A) ≠ 0 := by
-  intro h
-  have h1 := congrFun (congrArg (TensorProduct.piRight A K K (fun _ : ι => A)) h) a
-  rw [TensorProduct.piRight_apply, TensorProduct.piRightHom_tmul, map_zero] at h1
-  have h2 := congrArg (TensorProduct.rid A K) (show (1 : K) ⊗ₜ[A] (Pi.single a 1 : ι → A) a = 0 from h1)
-  rw [Pi.single_eq_same, TensorProduct.rid_tmul, map_zero, one_smul] at h2
-  exact one_ne_zero h2
 
-theorem nonempty_of_ne {ι V : Type} [Zero V] {x : ι → V} (hx : x ≠ 0) : Nonempty ι := by
-  by_contra h
-  rw [not_nonempty_iff] at h
-  exact hx (Subsingleton.elim _ _)
 
 theorem eq_one_of_smul {K V : Type} [Field K] [AddCommGroup V] [Module K V] {x : V} (hx : x ≠ 0) {c : K}
     (h : x = c • x) : (1 : K) = c := by

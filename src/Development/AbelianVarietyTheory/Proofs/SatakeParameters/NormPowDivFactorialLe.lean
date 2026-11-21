@@ -363,13 +363,6 @@ theorem algebraMap_mem_Wp {x : ℚ_[l]} (hx : ‖x‖ ≤ 1) : algebraMap ℚ_[l
     ⟨x, hx⟩ hcl (fun n => by simp)
   exact this
 
-theorem inWf_algebraMap (x : ℚ_[l]) : InWf (algebraMap ℚ_[l] ℂ_[l] x) := by
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, ‖(l : ℚ_[l]) ^ k * x‖ ≤ 1 := by
-    have ht := (tendsto_pow_atTop_nhds_zero_of_norm_lt_one (Padic.norm_p_lt_one (p := l))).mul_const x
-    rw [zero_mul] at ht
-    have := (ht.norm.eventually (gt_mem_nhds (by simp : ‖(0 : ℚ_[l])‖ < 1))).exists
-    exact this.imp fun k hk => hk.le
-  exact ⟨k, by simpa using algebraMap_mem_Wp hk⟩
 
 def serW (l : ℕ) [Fact l.Prime] (κ : Type) : Subring (MvPowerSeries κ ℂ_[l]) :=
   (MvPowerSeries.map (σ := κ) (Wp l).subtype).range
@@ -384,23 +377,7 @@ theorem _root_.GlobalTheory.BiextInhab.mem_serW {κ : Type} {F : MvPowerSeries �
   · intro h
     exact ⟨fun n => ⟨coeff n F, h n⟩, by ext n; rfl⟩
 
-theorem norm_pow_div_factorial_le (n : ℕ) : ‖((l : ℚ_[l]) ^ n / (n.factorial : ℚ_[l]))‖ ≤ 1 := by
-  have hn : (n.factorial : ℚ_[l]) ≠ 0 := Nat.cast_ne_zero.2 n.factorial_ne_zero
-  have hl0 : (l : ℚ_[l]) ≠ 0 := Nat.cast_ne_zero.2 hl.out.ne_zero
-  rw [Padic.norm_le_one_iff_val_nonneg, div_eq_mul_inv, Padic.valuation_mul (pow_ne_zero _ hl0) (inv_ne_zero hn),
-    Padic.valuation_inv, Padic.valuation_pow, Padic.valuation_p, Padic.valuation_natCast]
-  have := padicValNat_factorial_le (p := l) n
-  omega
 
-theorem integralW_expMv {κ : Type} {G : MvPowerSeries κ ℂ_[l]} (hG : G ∈ serW l κ) :
-    IntegralW (expMv ((l : MvPowerSeries κ ℂ_[l]) * G)) := by
-  intro m
-  rw [coeff_apply]
-  unfold expMv
-  refine Subring.sum_mem _ fun n _ => ?_
-  rw [mul_pow, ← Nat.cast_pow, ← nsmul_eq_mul, map_nsmul, nsmul_eq_mul, mul_div_right_comm]
-  refine Subring.mul_mem _ ?_ (mem_serW.1 (Subring.pow_mem _ hG n) m)
-  simpa using algebraMap_mem_Wp (norm_pow_div_factorial_le (l := l) n)
 
 variable [NeZero d]
 
@@ -457,63 +434,12 @@ theorem even_val_sub_two (hd : Even d) (s : ZMod d) : Even (s - 2).val ↔ Even 
   rw [Nat.even_iff, Nat.even_iff]
   omega
 
-theorem pow_pow_congr {u : ℂ_[l]} (hu : u ^ (l ^ d - 1) = 1) {a b : ℕ} (h : a ≡ b [MOD d]) :
-    u ^ (l ^ a) = u ^ (l ^ b) := by
-  have h1 : u ^ (l ^ d) = u := by
-    rw [← Nat.sub_add_cancel (Nat.one_le_pow d l hl.out.pos), pow_succ, hu, one_mul]
-  have h2 : ∀ k : ℕ, u ^ (l ^ (d * k)) = u := by
-    intro k
-    induction k with
-    | zero => simp
-    | succ k ih => rw [Nat.mul_succ, pow_add, pow_mul, ih, h1]
-  have h3 : ∀ a : ℕ, u ^ (l ^ a) = u ^ (l ^ (a % d)) := fun a => by
-    conv_lhs => rw [← Nat.div_add_mod a d, pow_add, pow_mul, h2]
-  rw [h3 a, h3 b, h]
 
 def beOf (M : ℕ) (h : ZMod d → MvPowerSeries (ZMod d) ℂ_[l]) : MvPowerSeries (ZMod d) ℂ_[l] :=
   (l : MvPowerSeries (ZMod d) ℂ_[l]) * (h 0 * h 1) ^ M
 
-theorem subst_beOf {h : ZMod d → MvPowerSeries (ZMod d) ℂ_[l]} (hh : IsInv l h) (M : ℕ) (a b : ZMod d → ℕ)
-    (ha : ∀ s, a (s - 2) = a s) (hb : ∀ s, b (s - 2) = b s) {Z : ZMod d → MvPowerSeries (Bool × ZMod d) ℂ_[l]}
-    (hZ : ∀ s, Z s = a s • laAt (fun r => (false, r)) s + b s • laAt (fun r => (true, r)) s) :
-    ∃ G ∈ serW l (Bool × ZMod d), subst Z (beOf M h) = (l : MvPowerSeries (Bool × ZMod d) ℂ_[l]) * G := by
-  obtain ⟨T, hT0, hTW, hT⟩ := exists_integral_point (l := l) a b ha hb
-  have hTZ : ∀ s, subst T (laK ℂ_[l] l d s) = Z s := fun s => (hT s).trans (hZ s).symm
-  have hZs : HasSubst Z := hasSubst_of_constantCoeff_zero fun j => by
-    rw [← hTZ]
-    exact constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero hT0) hT0 ((laK_idMod2 hl.out).1 j)
-  refine ⟨(T 0 * T 1) ^ M, Subring.pow_mem _ (Subring.mul_mem _ (hTW 0) (hTW 1)) M, ?_⟩
-  rw [beOf, ← substAlgHom_apply hZs, map_mul, map_pow, map_mul, map_natCast, substAlgHom_apply, substAlgHom_apply,
-    hh.subst_eq hl.out hT0 hTZ, hh.subst_eq hl.out hT0 hTZ]
 
-theorem rescale_beOf {h : ZMod d → MvPowerSeries (ZMod d) ℂ_[l]} (hh : IsInv l h) (M : ℕ) (w : ZMod d → ℂ_[l])
-    (hw : ∀ s, w (s - 2) ^ (l ^ 2) = w s) : rescale w (beOf M h) = (w 0 ^ M * w 1 ^ M) • beOf M h := by
-  rw [beOf, map_mul, map_pow, map_mul, map_natCast, hh.rescale_eq hl.out w hw, hh.rescale_eq hl.out w hw,
-    smul_mul_smul_comm, smul_pow, mul_smul_comm, mul_pow]
 
-theorem parDeg_ne_zero (hd : Even d) {h : ZMod d → MvPowerSeries (ZMod d) ℂ_[l]} (hh : IsInv l h) {M : ℕ} (hM : M ≠ 0)
-    (par : Bool) {n : ZMod d →₀ ℕ} (hn : coeff n (beOf M h) ≠ 0) : parDeg par n ≠ 0 := by
-  intro h0
-  have hd1 : Fact (1 < d) := ⟨by
-    obtain ⟨k, hk⟩ := hd
-    have := NeZero.ne d
-    omega⟩
-  have h1 := rescale_beOf hh M (fun s => if decide (Even s.val) = par then 0 else 1) (fun s => by
-    simp only [even_val_sub_two hd]
-    split_ifs <;> simp [hl.out.ne_zero])
-  have h2 := congrArg (coeff n) h1
-  rw [coeff_rescale, map_smul, smul_eq_mul] at h2
-  have h3 : (n.prod fun s m => (if decide (Even s.val) = par then (0 : ℂ_[l]) else 1) ^ m) = 1 := by
-    refine Finset.prod_eq_one fun s hs => ?_
-    have := (Finset.sum_eq_zero_iff.1 h0) s hs
-    by_cases hp : decide (Even s.val) = par
-    · simp only [hp, if_true] at this
-      exact absurd this (Finsupp.mem_support_iff.1 hs)
-    · simp [hp]
-  rw [h3, one_mul] at h2
-  apply hn
-  rw [h2]
-  cases par <;> simp [ZMod.val_one, hM]
 
 omit hl [NeZero d] in
 theorem parDeg_add (n : ZMod d →₀ ℕ) : parDeg true n + parDeg false n = n.degree := by
@@ -521,66 +447,6 @@ theorem parDeg_add (n : ZMod d →₀ ℕ) : parDeg true n + parDeg false n = n.
   refine Finset.sum_congr rfl fun s _ => ?_
   by_cases h : Even s.val <;> simp [h]
 
-theorem exists_isBe : ∀ (l : ℕ) [Fact l.Prime] (d : ℕ) [NeZero d], 5 ≤ l → Even d →
-    ∃ be : MvPowerSeries (ZMod d) ℂ_[l], be ≠ 0 ∧ IsBe d be := by
-  intro l hl d _ h5 hd
-  obtain ⟨h, hh⟩ := exists_isInv (l := l) (d := d)
-  have hM : 2 ≤ l ^ d - 1 := by
-    have := Nat.pow_le_pow_right hl.out.pos (Nat.one_le_iff_ne_zero.2 (NeZero.ne d))
-    rw [pow_one] at this
-    omega
-  refine ⟨beOf (l ^ d - 1) fun s => map (algebraMap ℚ_[l] ℂ_[l]) (h s), ?_, ?_, ?_, ?_, ?_⟩
-  · refine mul_ne_zero ?_ (pow_ne_zero _ (mul_ne_zero (hh.ne_zero hl.out 0) (hh.ne_zero hl.out 1)))
-    intro h0
-    have := congrArg constantCoeff h0
-    rw [map_natCast, map_zero, Nat.cast_eq_zero] at this
-    omega
-  · intro n
-    have e : (beOf (l ^ d - 1) fun s => map (algebraMap ℚ_[l] ℂ_[l]) (h s)) =
-        map (algebraMap ℚ_[l] ℂ_[l]) ((l : MvPowerSeries (ZMod d) ℚ_[l]) * (h 0 * h 1) ^ (l ^ d - 1)) := by
-      simp [beOf]
-    rw [e, coeff_map]
-    exact inWf_algebraMap _
-  · intro u hu
-    rw [rescale_beOf hh]
-    · have : ∀ s : ZMod d, (if Even s.val then u ^ (l ^ s.val) else (u ^ (l ^ s.val))⁻¹) ^ (l ^ d - 1) = 1 := by
-        intro s
-        split_ifs
-        · rw [pow_right_comm, hu, one_pow]
-        · rw [inv_pow, pow_right_comm, hu, one_pow, inv_one]
-      rw [this, this, one_mul, one_smul]
-    · intro s
-      have := pow_pow_congr hu (val_sub_two_mod s)
-      rw [pow_add, pow_mul] at this
-      simp only [even_val_sub_two hd]
-      split_ifs
-      · exact this
-      · rw [inv_pow, this]
-  · intro n hn
-    refine ⟨parDeg_ne_zero hd hh (by omega) _ hn, parDeg_ne_zero hd hh (by omega) _ hn, ?_⟩
-    rintro ⟨h1, h2⟩
-    have h3 := parDeg_add n
-    have h4 := low_mul (low_zero (l : MvPowerSeries (ZMod d) ℂ_[l]))
-      (low_mul (low_pow ((low_one_iff _).2 (hh.1 0)) (l ^ d - 1)) (low_pow ((low_one_iff _).2 (hh.1 1)) (l ^ d - 1)))
-    rw [← mul_pow] at h4
-    exact hn (h4 n (by omega))
-  · intro par
-    have hp : ∀ (x y : ℕ) (s : ZMod d), (if decide (Even (s - 2).val) = par then x else y) =
-        if decide (Even s.val) = par then x else y := fun x y s => by simp only [even_val_sub_two hd]
-    obtain ⟨G₁, h1, e1⟩ := subst_beOf hh (l ^ d - 1) (fun _ => 1) (fun s => if decide (Even s.val) = par then 1 else 0)
-      (fun _ => rfl) (hp 1 0) (Z := fun s : ZMod d => if decide (Even s.val) = par then
-      (laAt (fun r => (false, r)) s + laAt (fun r => (true, r)) s : MvPowerSeries (Bool × ZMod d) ℂ_[l])
-      else laAt (fun r => (false, r)) s) (fun s => by split_ifs <;> simp)
-    obtain ⟨G₂, h2, e2⟩ := subst_beOf hh (l ^ d - 1) (fun _ => 1) (fun _ => 0)
-      (fun _ => rfl) (fun _ => rfl)
-      (Z := fun s : ZMod d => (laAt (fun r => (false, r)) s : MvPowerSeries (Bool × ZMod d) ℂ_[l])) (fun s => by simp)
-    obtain ⟨G₃, h3, e3⟩ := subst_beOf hh (l ^ d - 1) (fun s => if decide (Even s.val) = par then 0 else 1)
-      (fun s => if decide (Even s.val) = par then 1 else 0)
-      (hp 0 1) (hp 1 0) (Z := fun s : ZMod d => if decide (Even s.val) = par then
-      (laAt (fun r => (true, r)) s : MvPowerSeries (Bool × ZMod d) ℂ_[l]) else laAt (fun r => (false, r)) s)
-      (fun s => by split_ifs <;> simp)
-    rw [cobdry, e1, e2, e3, ← mul_sub, ← mul_sub]
-    exact integralW_expMv (Subring.sub_mem _ (Subring.sub_mem _ h1 h2) h3)
 
 open MvPowerSeries in
 variable {l : ℕ} [hl : Fact l.Prime] {d : ℕ} in
@@ -640,12 +506,6 @@ theorem _root_.GlobalTheory.BiextInhab.bridge (l : ℕ) [Fact l.Prime] (d : ℕ)
     rintro rfl
     exact hm ⟨_, (hsingle e).symm⟩
 
-theorem exists_isBe_and_bridge :
-    (∀ (l : ℕ) [Fact l.Prime] (d : ℕ) [NeZero d], 5 ≤ l → Even d →
-      ∃ be : MvPowerSeries (ZMod d) ℂ_[l], be ≠ 0 ∧ IsBe d be) ∧
-    ∀ (l : ℕ) [Fact l.Prime] (d : ℕ) [NeZero d] {β : Type} (b : β) (s : ZMod d),
-      laAt (l := l) (fun r : ZMod d => (r, b)) s = jetLogG l d (s, b) :=
-  ⟨exists_isBe, bridge⟩
 
 end Main
 

@@ -129,9 +129,5 @@ theorem exists_aut (hΩ : IsClo p Ω) (T : Tower p Ω) (n : ℕ) (hn : 1 ≤ n) 
   rw [hy, hfy, pow_zero, one_mul] at k2
   exact ⟨σ, k1, k2⟩
 
-theorem gms_iff {p : ℕ} [Fact p.Prime] {Ω : Type} [Field Ω] [Algebra (O0 p) Ω] (T : Tower p Ω)
-    (m s : ℕ) (g : Gal p Ω) : g ∈ Gms T m s ↔ g (T.ζ m) = T.ζ m ∧ g (T.qq s) = T.qq s := by
-  rw [Gms, Subgroup.mem_inf, MulAction.mem_stabilizer_iff, MulAction.mem_stabilizer_iff,
-    AlgEquiv.smul_def, AlgEquiv.smul_def]
 
 end GlobalTheory.K5.TraceTower

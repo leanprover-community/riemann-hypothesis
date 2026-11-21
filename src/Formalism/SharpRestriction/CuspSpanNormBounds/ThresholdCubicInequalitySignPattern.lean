@@ -479,34 +479,14 @@ theorem AdmissibleBoundsFromSource.restriction_dimension_of_division (D : D7) (l
     AdmissibleBoundsFromSource.adm6 D large₂ C0 C' Cl Cg cb Cu cT CT A c :=
   fun hy u u' hp S hS => h u u' ⟨⟨hy.2.1, hy.1, hy.2.2⟩, hp⟩ S hS
 
-theorem AdmissibleBoundsFromSource.volume_bounds_of_source (D : D7) (large₂ : SizeData₂ D) (C0 C' Cl Cg cb Cu cT CT ep0 CV : ℝ)
-    (h : LocalBesselAndTopKernel.MidVolumeChain D large₂ ep0 CV) : AdmissibleBoundsFromSource.FilteredProjectionCriterion D large₂ C0 C' Cl Cg cb Cu cT CT ep0 :=
-  fun _ τ => (h τ).1
 
-theorem AdmissibleBoundsFromSource.volume_upper_bound_of_source (D : D7) (large₂ : SizeData₂ D) (C0 C' Cl Cg cb Cu cT CT ep0 CV : ℝ)
-    (h : LocalBesselAndTopKernel.MidVolumeChain D large₂ ep0 CV) : AdmissibleBoundsFromSource.VandermondeUpperBound D large₂ C0 C' Cl Cg cb Cu cT CT CV :=
-  fun _ τ => (h τ).2
 
 theorem AdmissibleBoundsFromSource.crystalline_lift_of_theorem_c (D : D7) (large₂ : SizeData₂ D) (C0 C' Cl Cg cb Cu cT CT CA CA' Ce : ℝ)
     (h : LocalBesselAndTopKernel.Conclusion1 D CA CA' Ce) : AdmissibleBoundsFromSource.adm9 D large₂ C0 C' Cl Cg cb Cu cT CT CA CA' Ce :=
   fun _ u u' hne => (h u u' hne).2
 
-theorem LocalBesselAndTopKernel.local_model_admissible_of_source (D : D7) (C : ℝ)
-    (hM : ∀ (F E : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing E] [Algebra F E]
-      [TopologicalSpace E] [MeasurableSpace E] (M : Formalism.MainNotions.S.Loc.Model F E), M.OK →
-      (∀ a : E, (∀ b ∈ M.R, M.psiR (a * b) = 1) ↔ a ∈ M.R) ∧
-      (∀ (m : ℕ) (ZZ : M.Mat m), (Nat.card (M.Cok ZZ) : ℝ) = (M.modK (ZZ.Z.map M.R.subtype).det)⁻¹))
-    (h : ThinScalesBound.aux₃ D C) : LocalBesselAndTopKernel.MLatticeCond := by
-  intro F E _ _ _ _ _ _ _ M hOK
-  exact ⟨(hM F E M hOK).1, (hM F E M hOK).2, (h.2.2 F E M hOK).1⟩
 
-theorem LocalBesselAndTopKernel.top_bound_of_part_T (D : D7) (C : ℝ) (h : ThinScalesBound.aux₃ D C) : LocalBesselAndTopKernel.TopKernelBoundAllLocalModels D C := h.1
 
-theorem LocalBesselAndTopKernel.theorem_A_of_source (D : D7) (C C' : ℝ) (Vm : ValMap D.R.k D.R.rS) (h : RadialChainStatements.aux₃ D C C' 5 Vm) :
-    LocalBesselAndTopKernel.admA D C C' 5 Vm := by
-  first
-    | exact h
-    | exact fun _ => h
 
 theorem dec_all {n : ℕ} (f : Fin n → ℝ) (h : ∀ (i : Fin n) (hi : i.1 + 1 < n), f ⟨i.1 + 1, hi⟩ < f i) :
     ∀ a c : Fin n, a < c → f c < f a := by
@@ -616,11 +596,6 @@ theorem epsilon_signature_eq (D : D7) : CayleySignature.eps48 D.R.k D.R.rS = eps
   funext i
   simp [CayleySignature.eps48, epsSH, epsS]
 
-theorem psiS_eq (D : D7) (z : Fin (2 * D.R.rS + D.R.k + 1) → ℂ) :
-    psiS D z = psiGen D.R.k D.R.rS z
-      (fun _ => ((2 * D.host.ka / ((D.host.g 0 : ℝ) * (D.host.g 1 : ℝ)) : ℝ) : ℂ)) := by
-  funext g
-  simp only [psiS, Formalism.QuantumDeterminants.psi, psiGen, Formalism.QuantumDeterminants.ell, ellA, Finset.mul_sum]
 
 theorem low_parameter_gap_eq_diff (D : D7) (τ : D.what₂.Tau) (j : Fin (2 * D.R.rS + 2)) (hj : j.val + 1 < 2 * D.R.rS + 2) :
     b48 D τ ⟨j.val + 1, hj⟩ - b48 D τ j = bOne D τ (j.val + 1 + 1) - bOne D τ (j.val + 1) := by
@@ -826,44 +801,7 @@ theorem numeric_setting_of_datum (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg c
     calc C * (D.R.r : ℝ) ^ 3 ≤ Cl * (D.R.r : ℝ) ^ 3 := mul_le_mul_of_nonneg_right hC hp.le
       _ < Cl * (D.R.r : ℝ) ^ 19 := mul_lt_mul_of_pos_left h3 (by linarith)
 
-theorem LocalBesselAndTopKernel.NV_core (D : D7) (large₂ : SizeData₂ D) (C0 C' Cl Cg cb Cu cT CT C : ℝ)
-    (hy : LocalBesselAndTopKernel.hyp D large₂ C0 C' Cl Cg cb Cu cT CT) (hCl : 1 ≤ Cl) (hC : C ≤ Cl) (h : CayleySignature.Conclusion2 D C)
-    (τ : D.what₂.Tau) (u : D.what₂.Word) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    (σ : Matrix (Fin (2 * D.R.rS + D.R.k + 1)) (Fin (2 * D.R.rS + D.R.k + 1)) ℂ → (H →L[ℂ] H))
-    (Wp : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-    (π : Matrix (Fin (2 * D.R.rS + D.R.k + 1)) (Fin (2 * D.R.rS + D.R.k + 1)) ℂ → (Wp →L[ℂ] Wp))
-    (z : Fin (2 * D.R.rS + D.R.k + 1) → ℂ) (w : H)
-    (μG μS ν : MeasureTheory.Measure (Formalism.QuantumDeterminants.Mt D.R.k D.R.rS))
-    (hσ : IsRowsDS D τ σ) (hπ : IsColsType D u τ z π)
-    (hz : ∀ a : Fin D.R.rS, z (Formalism.QuantumDeterminants.eI D.R.k D.R.rS a) = 0 ∧ z (Formalism.QuantumDeterminants.esI D.R.k D.R.rS a) = 0)
-    (hT : 0 < Formalism.QuantumDeterminants.Tz D.R.k D.R.rS z)
-    (hw : IsLowUnitH D.R.k D.R.rS (epsSH D.R) (lamSH D.R (D.hc τ)) σ w)
-    (hG : IsHaarOn (Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS)) μG)
-    (hS : IsHaarOn (Formalism.QuantumDeterminants.Sset D.R.k D.R.rS z) μS) (hQ : IsQuotMeas μG μS ν) :
-    ∃ W : Matrix (Fin (2 * D.R.rS + D.R.k + 1)) (Fin (2 * D.R.rS + D.R.k + 1)) ℂ → Wp,
-      MeasureTheory.AEStronglyMeasurable (fun x => W (Matrix.of x)) μG ∧
-      MeasureTheory.AEStronglyMeasurable (fun x => W (Matrix.of x)) ν ∧
-      IsSPsiEquiv (k := D.R.k) (r := D.R.rS) z (psiS D z) π W ∧ l2SG ν W < ⊤ ∧ l2SG ν W ≠ 0 ∧
-      ∀ x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS), rconv μG (eFun μG σ w) W x = W x := by
-  obtain ⟨hSet, hGap⟩ := numeric_setting_of_datum D large₂ C' Cl Cg cb Cu cT CT C hy.2.1 hCl hC τ u z hz hT
-  have hc : CompleteSpace H := by
-    obtain ⟨P, _, hDS⟩ := hσ
-    exact hDS.1
-  have hf : FiniteDimensional ℂ Wp := by
-    obtain ⟨g, _, hU⟩ := hπ
-    exact hU.2.1
-  have hσ' : IsDSHpk D.R.k D.R.rS (CayleySignature.eps48 D.R.k D.R.rS) (CayleySignature.lam48 D.R.k D.R.rS (v48 D τ) (b48 D τ)) σ := by
-    rw [lambda_highest_weight_eq, epsilon_signature_eq]; exact hσ
-  have hw' : IsLowUnitH D.R.k D.R.rS (CayleySignature.eps48 D.R.k D.R.rS) (CayleySignature.lam48 D.R.k D.R.rS (v48 D τ) (b48 D τ)) σ w := by
-    rw [lambda_highest_weight_eq, epsilon_signature_eq]; exact hw
-  have := h D.R.k D.R.rS z _ (uS D u τ) (v48 D τ) (b48 D τ) hSet hGap H σ hσ' Wp π hπ w hw' μG μS ν hG hS hQ
-  rw [psiS_eq]
-  exact this
 
-theorem LocalBesselAndTopKernel.nonvanishing_of_gap_bound (D : D7) (large₂ : SizeData₂ D) (C0 C' Cl Cg cb Cu cT CT C : ℝ)
-    (hy : LocalBesselAndTopKernel.hyp D large₂ C0 C' Cl Cg cb Cu cT CT) (hCl : 1 ≤ Cl) (hC : C ≤ Cl) (h : CayleySignature.Conclusion2 D C) : LocalBesselAndTopKernel.VolumeFromTheoremThree D := by
-  intro τ u H _ _ _ σ Wp _ _ _ π z w μG μS ν hσ hπ hz hT hw hG hS hQ
-  exact LocalBesselAndTopKernel.NV_core D large₂ C0 C' Cl Cg cb Cu cT CT C hy hCl hC h τ u H σ Wp π z w μG μS ν hσ hπ hz hT hw hG hS hQ
 
 section Size
 
@@ -1009,181 +947,11 @@ section SizeRangeProof
 
 open Formalism.MainNotions.S.ThB
 
-theorem gap_all_le {n : ℕ} (f : Fin n → ℝ) (G : ℝ) (hG : 0 ≤ G)
-    (h : ∀ (i : Fin n) (hi : i.1 + 1 < n), G ≤ f i - f ⟨i.1 + 1, hi⟩) :
-    ∀ a c : Fin n, a ≠ c → G ≤ |f a - f c| := by
-  have step : ∀ i j : Fin n, j.1 = i.1 + 1 → G ≤ f i - f j := by
-    intro i j hij
-    have hj : i.1 + 1 < n := by omega
-    have e : j = ⟨i.1 + 1, hj⟩ := Fin.ext hij
-    rw [e]
-    exact h i hj
-  have key : ∀ d : ℕ, ∀ i j : Fin n, j.1 = i.1 + d + 1 → G ≤ f i - f j := by
-    intro d
-    induction d with
-    | zero => intro i j hij; exact step i j (by omega)
-    | succ d ih =>
-      intro i j hij
-      have hm : i.1 + d + 1 < n := by omega
-      have h1 := ih i ⟨i.1 + d + 1, hm⟩ rfl
-      have h2 := step ⟨i.1 + d + 1, hm⟩ j (by show j.1 = i.1 + d + 1 + 1; omega)
-      linarith
-  have G0 : ∀ i j : Fin n, i.1 < j.1 → G ≤ f i - f j := fun i j hij =>
-    key (j.1 - i.1 - 1) i j (by omega)
-  intro a c hac
-  have hv : a.1 ≠ c.1 := fun e => hac (Fin.ext e)
-  rcases Nat.lt_or_gt_of_ne hv with hlt | hgt
-  · have h1 := G0 a c hlt
-    rw [abs_of_nonneg (show (0 : ℝ) ≤ f a - f c by linarith)]
-    exact h1
-  · have h1 := G0 c a hgt
-    rw [abs_sub_comm, abs_of_nonneg (show (0 : ℝ) ≤ f c - f a by linarith)]
-    exact h1
 
-theorem lamD_v (D : D7) (τ : D.what₂.Tau) (s : Fin (2 * D.R.rS + D.R.k + 1)) (h : s.val < D.R.k - 1) :
-    lamD D τ s = ((D.hc τ).v ⟨s.val, h⟩ : ℝ) := by
-  simp [lamD, lamSH, lamS, h]
 
-theorem lamD_b (D : D7) (τ : D.what₂.Tau) (s : Fin (2 * D.R.rS + D.R.k + 1)) (h : ¬ s.val < D.R.k - 1)
-    (h' : s.val - (D.R.k - 1) < D.R.m) : lamD D τ s = -((D.hc τ).b ⟨s.val - (D.R.k - 1), h'⟩ : ℝ) := by
-  simp [lamD, lamSH, lamS, h, h']
 
-theorem isCloud_iff (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT : ℝ) (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT)
-    (τ : D.what₂.Tau) (u : D.what₂.Word) (s : Fin (2 * D.R.rS + D.R.k + 1)) :
-    IsCloud (uS D u τ) (lamD D τ) s ↔ s.val < D.R.k - 1 := by
-  have hk := D.R.m_add_three_le_k
-  have hm2 := D.R.two_le_m
-  have hm := two_rS_add_two D
-  constructor
-  · rintro ⟨_, i, hi⟩
-    by_contra hs
-    have hanti := (lamSH_hc D large₂ C' Cl Cg cb Cu cT CT hH τ).1.antitone
-    have hle : (⟨D.R.k - 1, by omega⟩ : Fin (2 * D.R.rS + D.R.k + 1)) ≤ s := by
-      show D.R.k - 1 ≤ s.val
-      omega
-    have h1 : lamD D τ s ≤ lamD D τ ⟨D.R.k - 1, by omega⟩ := hanti hle
-    have h2 : lamD D τ ⟨D.R.k - 1, by omega⟩ = -((D.hc τ).b ⟨0, by omega⟩ : ℝ) := by
-      rw [lamD_b D τ _ (by simp) (by simp; omega)]
-      simp
-    have h3 := (D.hcW u τ).u_last_gt (by omega) (by omega)
-    rw [D.hcW_b u τ] at h3
-    have h3' : -((D.hc τ).b ⟨0, by omega⟩ : ℝ) < uS D u τ ⟨D.R.k - 1, by omega⟩ := by
-      simp only [uS]; exact_mod_cast h3
-    have h4 : uS D u τ ⟨D.R.k - 1, by omega⟩ ≤ uS D u τ i :=
-      (uS_dec D u τ).antitone (by show i.val ≤ D.R.k - 1; have := i.isLt; omega)
-    linarith
-  · intro hs
-    have h1 := (D.hcW u τ).u_gt_v ⟨s.val, hs⟩
-    have h2 := (D.hcW u τ).v_gt_u ⟨s.val, hs⟩
-    rw [D.hcW_v u τ] at h1 h2
-    rw [IsCloud, lamD_v D τ s hs]
-    exact ⟨⟨⟨s.val, by omega⟩, by simp only [uS]; exact_mod_cast h1⟩,
-      ⟨⟨s.val + 1, by omega⟩, by simp only [uS]; exact_mod_cast h2⟩⟩
 
-theorem cloudGap_ge (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT : ℝ) (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT)
-    (τ : D.what₂.Tau) (u : D.what₂.Word) : 4 * (D.s.Del : ℝ) ≤ cloudGap (uS D u τ) (lamD D τ) := by
-  have hk := D.R.m_add_three_le_k
-  have hm2 := D.R.two_le_m
-  have hDel : (0 : ℝ) < (D.s.Del : ℝ) := by exact_mod_cast D.s.Del_pos
-  have hv := gap_all_le (fun i : Fin (D.R.k - 1) => ((D.hc τ).v i : ℝ)) (4 * (D.s.Del : ℝ)) (by linarith)
-    (fun i hi => by
-      have := D.s.cloud_gap u τ i.1 hi
-      rw [D.hcW_v u τ] at this
-      have e : ((D.hc τ).v i : ℝ) - ((D.hc τ).v ⟨i.1 + 1, hi⟩ : ℝ) = 4 * (D.s.Del : ℝ) := by exact_mod_cast this
-      exact e.ge)
-  unfold cloudGap
-  refine le_csInf ?_ ?_
-  · refine ⟨_, ⟨0, by omega⟩, ⟨1, by omega⟩, by simp [Fin.ext_iff], ?_, ?_, rfl⟩
-    · exact (isCloud_iff D large₂ C' Cl Cg cb Cu cT CT hH τ u _).mpr (by show 0 < D.R.k - 1; omega)
-    · exact (isCloud_iff D large₂ C' Cl Cg cb Cu cT CT hH τ u _).mpr (by show 1 < D.R.k - 1; omega)
-  · rintro x ⟨a, b, hab, ha, hb, rfl⟩
-    have ha' := (isCloud_iff D large₂ C' Cl Cg cb Cu cT CT hH τ u a).mp ha
-    have hb' := (isCloud_iff D large₂ C' Cl Cg cb Cu cT CT hH τ u b).mp hb
-    rw [lamD_v D τ a ha', lamD_v D τ b hb']
-    exact hv ⟨a.val, ha'⟩ ⟨b.val, hb'⟩ (by
-      intro hc
-      exact hab (Fin.ext (by simpa using congrArg Fin.val hc)))
 
-theorem sizeRange_of (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 Cs Cq0 Cr : ℝ) (h0 : 0 < Cq0) (hr : 0 < Cr) :
-    SizeRange D large₂ C' Cl Cg cb Cu cT CT C0 Cs Cq0 Cr (1 / max (max Cs Cq0) (max Cr 1)) (max (max Cs Cq0) (max Cr 1)) := by
-  set Cq : ℝ := max (max Cs Cq0) (max Cr 1) with hCq
-  have hCs : Cs ≤ Cq := le_trans (le_max_left _ _) (le_max_left _ _)
-  have hC0 : Cq0 ≤ Cq := le_trans (le_max_right _ _) (le_max_left _ _)
-  have hCr : Cr ≤ Cq := le_trans (le_max_left _ _) (le_max_right _ _)
-  have hC1 : 1 ≤ Cq := le_trans (le_max_right _ _) (le_max_right _ _)
-  have hCqp : 0 < Cq := by linarith
-  intro hH τ u bv hb
-  obtain ⟨hb1, hb2, hb3⟩ := hb
-  have hk := D.R.m_add_three_le_k
-  have hm2 := D.R.two_le_m
-  have hm := two_rS_add_two D
-  have hNc := nS_cast D
-  have hN6 := six_le_n D
-  have hmR : ((2 * D.R.rS + 2 : ℕ) : ℝ) = (D.R.m : ℝ) := by exact_mod_cast hm
-  have hbv0 : 0 ≤ bv := le_trans (mul_nonneg hCqp.le (by positivity)) hb1
-  refine ⟨?_, ?_, ?_⟩
-  · rw [hNc]; exact le_trans (mul_le_mul_of_nonneg_right hCs (by positivity)) hb1
-  · intro s
-    have hs := s.isLt
-    by_cases hc : s.val < D.R.k - 1
-    · have hcl := (isCloud_iff D large₂ C' Cl Cg cb Cu cT CT hH.1 τ u s).mpr hc
-      refine ⟨fun _ => ?_, fun hn => absurd hcl hn⟩
-      have := hb2 (s.val + 1) (by omega) (by omega)
-      have e : vOne D τ (s.val + 1) = lamD D τ s := by
-        rw [lamD_v D τ s hc]
-        have h1 : 1 ≤ s.val + 1 ∧ s.val + 1 ≤ D.R.k - 1 := ⟨by omega, by omega⟩
-        simp [vOne, h1]
-      rwa [e] at this
-    · have hcl : ¬ IsCloud (uS D u τ) (lamD D τ) s := fun h =>
-        hc ((isCloud_iff D large₂ C' Cl Cg cb Cu cT CT hH.1 τ u s).mp h)
-      refine ⟨fun h => absurd h hcl, fun _ => ?_⟩
-      have hj : s.val - (D.R.k - 1) < D.R.m := by omega
-      have := hb3 (s.val - (D.R.k - 1) + 1) (by omega) (by omega)
-      have e : bOne D τ (s.val - (D.R.k - 1) + 1) = -lamD D τ s := by
-        rw [lamD_b D τ s hc hj]
-        have h1 : 1 ≤ s.val - (D.R.k - 1) + 1 ∧ s.val - (D.R.k - 1) + 1 ≤ D.R.m := ⟨by omega, by omega⟩
-        simp [bOne, h1]
-      rw [e] at this
-      constructor <;> linarith [this.1, this.2]
-  · intro q hq2 hq3
-    have hcast : (((2 * D.R.rS + 2) * q : ℕ) : ℝ) = (D.R.m : ℝ) * q := by push_cast; rw [← hmR]; push_cast; ring
-    constructor
-    · have hl1 : l1 (lamD D τ) (lamD D τ) = 0 := by simp [l1]
-      rw [hl1, zero_add, hcast]
-      refine le_trans hq2 ?_
-      have hh : 0 ≤ hNC (epsSH D.R) (lamD D τ) := by
-        unfold hNC
-        exact Real.sInf_nonneg (by rintro x ⟨a, b, _, rfl⟩; exact abs_nonneg _)
-      have hmpos : (0 : ℝ) < (D.R.m : ℝ) := by exact_mod_cast (by omega : 0 < D.R.m)
-      have hsq : (D.R.m : ℝ) ^ (-(1 / 2 : ℝ)) = 1 / Real.sqrt (D.R.m : ℝ) := by
-        rw [Real.rpow_neg hmpos.le, Real.sqrt_eq_rpow]
-        exact (one_div _).symm
-      have hsp : 0 < Real.sqrt (D.R.m : ℝ) := Real.sqrt_pos.mpr hmpos
-      have hA : 1 / Cq * NonGenericAndKTwoTheorems.hNC D τ * (D.R.m : ℝ) ^ (-(1 / 2 : ℝ)) ≤
-          hNC (epsSH D.R) (lamD D τ) / (Cq0 * Real.sqrt ((2 * D.R.rS + 2 : ℕ) : ℝ)) := by
-        rw [hmR, hsq]
-        have e1 : NonGenericAndKTwoTheorems.hNC D τ = hNC (epsSH D.R) (lamD D τ) := rfl
-        rw [e1]
-        have e2 : 1 / Cq * hNC (epsSH D.R) (lamD D τ) * (1 / Real.sqrt (D.R.m : ℝ)) =
-            hNC (epsSH D.R) (lamD D τ) / (Cq * Real.sqrt (D.R.m : ℝ)) := by field_simp
-        rw [e2]
-        exact div_le_div_of_nonneg_left hh (by positivity) (mul_le_mul_of_nonneg_right hC0 hsp.le)
-      have hB := cloudGap_ge D large₂ C' Cl Cg cb Cu cT CT hH.1 τ u
-      have hDel : (0 : ℝ) < (D.s.Del : ℝ) := by exact_mod_cast D.s.Del_pos
-      have hmin : min (1 / Cq * NonGenericAndKTwoTheorems.hNC D τ * (D.R.m : ℝ) ^ (-(1 / 2 : ℝ))) (4 * (D.s.Del : ℝ)) ≤
-          min (hNC (epsSH D.R) (lamD D τ) / (Cq0 * Real.sqrt ((2 * D.R.rS + 2 : ℕ) : ℝ)))
-            (cloudGap (uS D u τ) (lamD D τ)) := min_le_min hA hB
-      have hM0 : 0 ≤ min (hNC (epsSH D.R) (lamD D τ) / (Cq0 * Real.sqrt ((2 * D.R.rS + 2 : ℕ) : ℝ)))
-            (cloudGap (uS D u τ) (lamD D τ)) :=
-        le_min (div_nonneg hh (mul_nonneg h0.le (Real.sqrt_nonneg _))) (by linarith)
-      unfold NonGenericAndKTwoTheorems.q0 ThB.q0
-      calc _ ≤ min (hNC (epsSH D.R) (lamD D τ) / (Cq0 * Real.sqrt ((2 * D.R.rS + 2 : ℕ) : ℝ)))
-            (cloudGap (uS D u τ) (lamD D τ)) / Cq := div_le_div_of_nonneg_right hmin hCqp.le
-        _ ≤ _ := div_le_div_of_nonneg_left hM0 h0 hC0
-    · have e : (((2 * D.R.rS + 2) * q + 0 : ℕ) : ℝ) = (D.R.m : ℝ) * q := by rw [Nat.add_zero]; exact hcast
-      rw [e, hNc]
-      refine le_trans hq3 ?_
-      exact div_le_div_of_nonneg_left hbv0 (by positivity) (mul_le_mul_of_nonneg_right hCr (by positivity))
 
 end SizeRangeProof
 
@@ -1193,18 +961,6 @@ open Formalism.MainNotions.S.Bridge Formalism.MainNotions.S.ThB
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-theorem NonGenericAndKTwoTheorems.family_moment_bounds_of_source (Ch Cβ Cs Cq0 Cr C2 : ℝ) (hCh : 0 ≤ Ch) (hβ : 1 ≤ Cβ) (hq0 : 0 < Cq0) (hr : 0 < Cr)
-    (h93 : OnePlaceEstimates.FamilySubmultiplicativeNorm Fm Ch Cs Cq0 Cr C2) (bMom : PX.Mom Fm) (bHaar : PX.SHaar Fm)
-    (bStd : ∀ Cg cb Cu cT CT C0 : ℝ, PX.StdHypS Fm Cg cb Cu cT CT C0 Ch Cβ)
-    (bTF : ∀ Cg cb Cu cT CT C0 : ℝ, PX.TFrame Fm Cg cb Cu cT CT C0) : NonGenericAndKTwoTheorems.admF8 Fm := by
-  intro Cg cb Cu cT CT C0 Cθ
-  have hCq : 0 < max (max Cs Cq0) (max Cr 1) :=
-    lt_of_lt_of_le one_pos (le_trans (le_max_right _ _) (le_max_right _ _))
-  exact ⟨1 / max (max Cs Cq0) (max Cr 1), max (max Cs Cq0) (max Cr 1), Cβ * (C2 + Ch + 1), by positivity, hCq, fun C1 =>
-    OwnEv.mono (fun C' Cl x i H =>
-      NonGenericAndKTwoTheorems.lemma_M_prime_hypothesis _ _ _ _ _ _ _ _ _ _ Cθ C1 _ _ _ Ch Cs 0 Cβ Cq0 Cr C2 H.2 (bHaar x i) H.1.1 H.1.2
-        (sizeRange_of _ _ _ _ _ _ _ _ _ _ Cs Cq0 Cr hq0 hr) (h93 x i) hβ hCh le_rfl)
-      (((bStd Cg cb Cu cT CT C0 Cs 0).and (bTF Cg cb Cu cT CT C0)).and (bMom Cg cb Cu cT CT C0 0))⟩
 
 end SizeFam
 
@@ -1319,14 +1075,6 @@ theorem UniformConstantsAndStatements.family_ev_bound_of_source (C : ℝ) (h : N
     | exact h
     | exact fun _ => h
 
-theorem UniformConstantsAndStatements.family_count_bound_of_source (g : UniformConstantsAndStatements.Given) (C1 C2 A c : ℝ) (hCl : 2 < sCl Fm) (hC' : 1 ≤ sC' Fm) (hA : 1 ≤ A)
-    (h0 : 0 ≤ C1) (h1 : C1 ≤ A) (h2 : C2 ≤ A)
-    (hb : LocalBesselAndTopKernel.TheoremThreePassage Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT C1) (hc : LocalBesselAndTopKernel.FamilyLowestKType Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT C2)
-    (h : AuxiliaryNormPrimes.OrbitValuationBound Fm c) : UniformConstantsAndStatements.admF9 Fm g c := by
-  obtain ⟨x0, H⟩ := OwnEv.and (sizes3bF Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT C1 C2 A h0 h1 h2 hb hc)
-    (h.2 g.Cg g.cb g.Cu g.cT g.CT g.C0 A)
-  exact ⟨x0, fun x hx i => UniformConstantsAndStatements.crystalline_lift_of_theorem_c _ _ (g.wth (sC' Fm) (sCl Fm)) _ A c hCl hC' hA
-    (fun hy => (H x hx i).1 hy) (H x hx i).2⟩
 
 theorem LatticeIndexAndWeightTheory.norm_bound_family_of_theorem (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
     (h : ∀ Cg cb Cu cT CT C0 : ℝ, FrobeniusProjectedBounds.ConclusionF1 Fm At Cg cb Cu cT CT C0) : LatticeIndexAndWeightTheory.admF6 Fm At :=
@@ -1342,32 +1090,10 @@ theorem AdmissibleBoundsFromSource.family_ev_bound_of_source (gc : AdmissibleBou
 theorem AdmissibleBoundsFromSource.norm_bound_family_of_theorem (gc : AdmissibleBoundsFromSource.GivC) (A c : ℝ) (h : AuxiliaryNormPrimes.OrbitValuationBound Fm c) : AdmissibleBoundsFromSource.admF6 Fm gc A c :=
   OwnEv.mono (fun _ _ _ _ hh => AdmissibleBoundsFromSource.restriction_dimension_of_division _ _ _ _ _ _ _ _ _ _ _ _ hh) (h.2 gc.Cg gc.cb gc.Cu gc.cT gc.CT gc.C0 A)
 
-theorem AdmissibleBoundsFromSource.family_ev_bound_seven_of_source (g : UniformConstantsAndStatements.Given) (c C : ℝ) (h : UniformConstantsAndStatements.ConclusionF1 Fm g c C) :
-    AdmissibleBoundsFromSource.admF7 Fm ⟨g.C0, g.Cg, g.cb, g.Cu, g.cT, g.CT⟩ c C := by
-  first
-    | exact h
-    | exact fun _ => h
 
-theorem AdmissibleBoundsFromSource.family_moment_bounds_of_source (g : UniformConstantsAndStatements.Given) (C : ℝ) (h : UniformConstantsAndStatements.ConclusionF2 Fm g C) :
-    AdmissibleBoundsFromSource.admF8 Fm ⟨g.C0, g.Cg, g.cb, g.Cu, g.cT, g.CT⟩ C := by
-  first
-    | exact h
-    | exact fun _ => h
 
-theorem AdmissibleBoundsFromSource.family_count_bound_of_source (gc : AdmissibleBoundsFromSource.GivC) (CA CA' Ce : ℝ)
-    (h : LocalBesselAndTopKernel.ConclusionF1 Fm gc.C0 gc.Cg gc.cb gc.Cu gc.cT gc.CT CA CA' Ce) : AdmissibleBoundsFromSource.admF9 Fm gc CA CA' Ce := by
-  obtain ⟨x0, H⟩ := h
-  exact ⟨x0, fun x hx i hy => AdmissibleBoundsFromSource.crystalline_lift_of_theorem_c _ _ _ _ _ _ _ _ _ _ CA CA' Ce (H x hx i hy) hy⟩
 
-theorem AdmissibleBoundsFromSource.family_volume_lower_of_source (gc : AdmissibleBoundsFromSource.GivC) (ep0 CV : ℝ)
-    (h : LocalBesselAndTopKernel.FamilyTopBound Fm gc.C0 gc.Cg gc.cb gc.Cu gc.cT gc.CT ep0 CV) : AdmissibleBoundsFromSource.FamilyVandermondeLowerBound Fm gc ep0 := by
-  obtain ⟨x0, H⟩ := h
-  exact ⟨x0, fun x hx i hy => AdmissibleBoundsFromSource.volume_bounds_of_source _ _ _ _ _ _ _ _ _ _ ep0 CV (H x hx i hy) hy⟩
 
-theorem AdmissibleBoundsFromSource.family_volume_upper_of_source (gc : AdmissibleBoundsFromSource.GivC) (ep0 CV : ℝ)
-    (h : LocalBesselAndTopKernel.FamilyTopBound Fm gc.C0 gc.Cg gc.cb gc.Cu gc.cT gc.CT ep0 CV) : AdmissibleBoundsFromSource.FamilyVandermondeUpperBound Fm gc CV := by
-  obtain ⟨x0, H⟩ := h
-  exact ⟨x0, fun x hx i hy => AdmissibleBoundsFromSource.volume_upper_bound_of_source _ _ _ _ _ _ _ _ _ _ ep0 CV (H x hx i hy) hy⟩
 
 theorem AdmissibleBoundsFromSource.family_size_bounds_of_source (gc : AdmissibleBoundsFromSource.GivC) (C1 C2 c5 CA : ℝ)
     (ha : LocalBesselAndTopKernel.FamilyBesselBoundFirstPart Fm gc.C0 gc.Cg gc.cb gc.Cu gc.cT gc.CT)
@@ -1390,10 +1116,6 @@ section Assembly
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-theorem under_a {P Q : ∀ x (_ : Fm.Ix x), Prop} (h : PX.Under Fm P) (C0 Cg cb Cu cT CT : ℝ)
-    (f : ∀ x i, P x i → Q x i) :
-    OwnEv Fm fun C' Cl x i => PX.H0 (Fm.D x i) (Fm.L x i) C0 C' Cl Cg cb Cu cT CT → Q x i :=
-  OwnEv.mono (fun _ _ x i hh hy => f x i (hh hy)) (h C0 Cg cb Cu cT CT)
 
 theorem under_b {P Q : ∀ x (_ : Fm.Ix x), Prop} (h : PX.Under Fm P) (C0 Cg cb Cu cT CT : ℝ)
     (f : ∀ x i, P x i → Q x i) :
@@ -1408,29 +1130,6 @@ theorem under_bG {P Q : ∀ x, Fm.x1 < x → ∀ _ : Fm.Ix x, Prop} (h : PX.Unde
 def Sizes3bF : Prop := ∀ C0 Cg cb Cu cT CT : ℝ, ∃ A : ℝ, 1 ≤ A ∧
   OwnEv Fm fun C' Cl x i => PX.H0 (Fm.D x i) (Fm.L x i) C0 C' Cl Cg cb Cu cT CT → Sizes3b (Fm.D x i) A
 
-theorem AdmissibleBoundsFromSource.family_first_package_of_source (g : UniformConstantsAndStatements.Given) (ca : AdmissibleBoundsFromSource.AdmC)
-    (pExp : PX.ExpF Fm) (pId : PX.IdCellF Fm) (p2a : PX.TwoAF Fm) (familyVolumeLowerBound : PX.FamilyVanishingCondition Fm) (pIdG : PX.FamilyIdentityCondition Fm)
-    (familyStandingLowerBound : PX.FamilyFirstSumAtLeastOne Fm) (pAbs : PX.PairAbsF Fm)
-    (lWeyl : AdmissibleBoundsFromSource.FamilyWeylDimension Fm ⟨g.C0, g.Cg, g.cb, g.Cu, g.cT, g.CT⟩) (iMass : AdmissibleBoundsFromSource.FamilyTwelfthHypothesis)
-    (h29b : NonGenericAndKTwoTheorems.Conclusion2Family Fm) (h29c : NonGenericAndKTwoTheorems.Conclusion3Family Fm) (h28 : AuxiliaryNormPrimes.OrbitValuationBound Fm ca.cL)
-    (hN1 : UniformConstantsAndStatements.ConclusionF1 Fm g ca.cN ca.CN) (hN2 : UniformConstantsAndStatements.ConclusionF2 Fm g ca.CE)
-    (h27 : LocalBesselAndTopKernel.ConclusionF1 Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT ca.CA ca.CA' ca.Ce)
-    (h27a : LocalBesselAndTopKernel.FamilyBesselBoundFirstPart Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT) (h27b : LocalBesselAndTopKernel.TheoremThreePassage Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT ca.C1)
-    (h27c : LocalBesselAndTopKernel.FamilyLowestKType Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT ca.C2)
-    (h27f : LocalBesselAndTopKernel.FamilyLocalBesselBoundWithCharacter Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT ca.c5 ca.CA)
-    (h27g : LocalBesselAndTopKernel.FamilyTopBound Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT ca.ep0 ca.CV) :
-    AdmissibleBoundsFromSource.FirstFiltrationHypotheses Fm ⟨g.C0, g.Cg, g.cb, g.Cu, g.cT, g.CT⟩ ca :=
-  ⟨under_a Fm pExp _ _ _ _ _ _ (fun _ _ h => h), under_a Fm pId _ _ _ _ _ _ (fun _ _ h => h),
-    AdmissibleBoundsFromSource.stabiliser_family_of_definite Fm _ h29c,
-    under_a Fm p2a _ _ _ _ _ _ (fun _ _ h u u' Φ hS _ hs => h u u' Φ hS hs),
-    AdmissibleBoundsFromSource.family_ev_bound_of_source Fm _ h29b, AdmissibleBoundsFromSource.norm_bound_family_of_theorem Fm _ _ _ h28, AdmissibleBoundsFromSource.family_ev_bound_seven_of_source Fm g _ _ hN1, AdmissibleBoundsFromSource.family_moment_bounds_of_source Fm g _ hN2,
-    AdmissibleBoundsFromSource.family_count_bound_of_source Fm _ _ _ _ h27,
-    ⟨lWeyl, AdmissibleBoundsFromSource.family_volume_lower_of_source Fm _ _ _ h27g, AdmissibleBoundsFromSource.family_volume_upper_of_source Fm _ _ _ h27g⟩, iMass,
-    AdmissibleBoundsFromSource.family_size_bounds_of_source Fm _ _ _ _ _ h27a h27b h27c h27f,
-    OwnEv.mono (fun _ _ _ _ hh hy u u' => ⟨hh.1 hy u u', hh.2.1 hy u u', hh.2.2 hy u u'⟩)
-      (OwnEv.and (familyVolumeLowerBound g.C0 g.Cg g.cb g.Cu g.cT g.CT)
-        (OwnEv.and (pIdG g.C0 g.Cg g.cb g.Cu g.cT g.CT) (familyStandingLowerBound g.C0 g.Cg g.cb g.Cu g.cT g.CT))),
-    under_a Fm pAbs _ _ _ _ _ _ (fun _ _ h => h)⟩
 
 theorem FrobeniusProjectedBounds.AdmF_of (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i)) (g : UniformConstantsAndStatements.Given) (C1 C2 A cL cN CN CE c7 : ℝ)
     (hCl : 2 < sCl Fm) (hC' : 1 ≤ sC' Fm) (hA : 1 ≤ A) (h0 : 0 ≤ C1) (h1 : C1 ≤ A) (h2 : C2 ≤ A)
@@ -1448,23 +1147,7 @@ theorem FrobeniusProjectedBounds.AdmF_of (At : ∀ x, Fm.x1 < x → ∀ i : Fm.I
     under_b Fm familyVolumeLowerBound _ _ _ _ _ _ (fun _ _ h => h), under_b Fm pId _ _ _ _ _ _ (fun _ _ h => h),
     under_bG Fm pG _ _ _ _ _ _ (fun _ _ _ h u u' t ht => (h u u' t ht).1)⟩
 
-theorem UniformConstantsAndStatements.family_first_package_of_source (g : UniformConstantsAndStatements.Given) (a : UniformConstantsAndStatements.AdmC)
-    (C1 C2 A : ℝ) (hCl : 2 < sCl Fm) (hC' : 1 ≤ sC' Fm) (hA : 1 ≤ A) (h0 : 0 ≤ C1) (h1 : C1 ≤ A) (h2 : C2 ≤ A)
-    (pExp : PX.ExpF Fm) (p2a : PX.TwoAF Fm) (pMain : PX.MainF Fm g a.CM a.Ce)
-    (h29 : NonGenericAndKTwoTheorems.Conclusion1Family Fm a.CNG)
-    (hB1 : ∀ x (i : Fm.Ix x), OnePlaceEstimates.RotatedSumBound (Fm.D x i) a.Ch a.Cg a.Cb) (hB2 : ∀ x (i : Fm.Ix x), OnePlaceEstimates.PathWeightComponents (Fm.D x i) a.secondBesselConstant)
-    (hB3 : ∀ x (i : Fm.Ix x), OnePlaceEstimates.ConclusionB3 (Fm.D x i) a.Aw a.Ch a.Cgw a.Cbw)
-    (h27b : LocalBesselAndTopKernel.TheoremThreePassage Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT C1) (h27c : LocalBesselAndTopKernel.FamilyLowestKType Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT C2)
-    (h28 : AuxiliaryNormPrimes.OrbitValuationBound Fm a.cL) : UniformConstantsAndStatements.FirstFiltrationHypotheses Fm g a :=
-  ⟨under_a Fm pExp _ _ _ _ _ _ (fun _ _ h => h),
-    under_a Fm p2a _ _ _ _ _ _ (fun _ _ h u u' Φ hS _ hs => h u u' Φ hS hs),
-    h29, hB1, hB2, hB3, pMain, UniformConstantsAndStatements.family_count_bound_of_source Fm g C1 C2 A _ hCl hC' hA h0 h1 h2 h27b h27c h28⟩
 
-theorem UniformConstantsAndStatements.family_admissible_package_of_source (g : UniformConstantsAndStatements.Given) (a : UniformConstantsAndStatements.AdmC)
-    (pExp : PX.ExpF Fm) (pMain : PX.MainF Fm g a.CM a.Ce) (h29 : NonGenericAndKTwoTheorems.Conclusion1Family Fm a.CNG)
-    (hB1 : ∀ x (i : Fm.Ix x), OnePlaceEstimates.RotatedSumBound (Fm.D x i) a.Ch a.Cg a.Cb) (hB2 : ∀ x (i : Fm.Ix x), OnePlaceEstimates.PathWeightComponents (Fm.D x i) a.secondBesselConstant)
-    (hB3 : ∀ x (i : Fm.Ix x), OnePlaceEstimates.ConclusionB3 (Fm.D x i) a.Aw a.Ch a.Cgw a.Cbw) : UniformConstantsAndStatements.SecondFiltrationHypotheses Fm g a :=
-  ⟨under_a Fm pExp _ _ _ _ _ _ (fun _ _ h => h), h29, hB1, hB2, hB3, pMain⟩
 
 theorem CayleySignature.AdmF_of (c0 : ℝ) (pK : PX.KFinDecayF Fm c0) (h30F : PlaceDegreeData.FamilyLowestKTypeFormula Fm) (h30D : PlaceDegreeData.FamilyDiscreteSeriesDecay Fm)
     (l4 : CayleySignature.admF4 Fm) (l5 : CayleySignature.admF5 Fm) (l6 : CayleySignature.admF6 Fm) (l7 : CayleySignature.admF7 Fm) (l10 : CayleySignature.FamilyRowsCountHypothesis Fm) :
@@ -1483,34 +1166,8 @@ theorem AdmissibleBoundsFromSource.AdmF_of (g : UniformConstantsAndStatements.Gi
     (hCount : AdmissibleBoundsFromSource.FamilyRowsCountHypothesis Fm ca.n7 ca.A7 ca.C7 ca.cb7 ca.c7) (pFix : PX.FixedF Fm) :
     AdmissibleBoundsFromSource.AdmF Fm ⟨g.C0, g.Cg, g.cb, g.Cu, g.cT, g.CT⟩ ca := ⟨h1, hCount, pFix _⟩
 
-theorem LocalBesselAndTopKernel.family_nonvanishing_of_gap (C0 Cg cb Cu cT CT C : ℝ) (h1 : 1 ≤ sCl Fm) (hC : C ≤ sCl Fm) (h : CayleySignature.ConclusionF2 Fm C) :
-    LocalBesselAndTopKernel.FamilyVolumeSecond Fm C0 Cg cb Cu cT CT :=
-  ⟨0, fun x _ i hy => LocalBesselAndTopKernel.nonvanishing_of_gap_bound _ _ _ _ _ _ _ _ _ _ C hy h1 hC (h x i)⟩
 
-theorem LocalBesselAndTopKernel.family_first_package_of_source (X : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i)) (Cw : ℝ)
-    (Y : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) u u', LoopTie (Fm.D x i) (Fm.L x i) (X x hx i) u u' Cw)
-    (Z : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), LocalSplitGroups.TermLocs (Fm.D x i) (X x hx i))
-    (cN : ∀ x (i : Fm.Ix x), (Fm.D x i).what₂.Word → (Fm.D x i).what₂.Word → ℝ)
-    (Vm : ∀ k r, ValMap k r) (C0 Cg cb Cu cT CT Ca Cq CA CA' settingGapConstant : ℝ) (x₀ : ℝ) (i₀ : Fm.Ix x₀)
-    (h1 : 1 ≤ sCl Fm) (h48C : settingGapConstant ≤ sCl Fm)
-    (pExp : PX.ExpF Fm) (p2a : PX.TwoAF Fm) (pM : PX.ModelBasics) (pDec : PX.FamilyExpansionWithConstants Fm C0 Cg cb Cu cT CT Ca)
-    (pDens : PX.DensF Fm) (pCnt : PX.CntF Fm Z cN) (pForm : PX.FormF Fm X Cw Y Vm C0 Cg cb Cu cT CT)
-    (pArith : PX.ArithF Fm cN C0 Cg cb Cu cT CT) (pRk : PX.RanksF Fm C0 Cg cb Cu cT CT)
-    (lSchur : LocalBesselAndTopKernel.UnfoldingCount Fm) (lWitt : LocalBesselAndTopKernel.FamilySpectralWeights) (familyMassFirstBound : LocalBesselAndTopKernel.FamilyMultiplicityOneHypothesis Fm) (lWeyl : LocalBesselAndTopKernel.FirstSizeStatement)
-    (iSW : LocalBesselAndTopKernel.LocalGenericDensity Fm)
-    (h26 : ThinScalesBound.FamilyThinScalesBound Fm Cq) (h26b : JointEigenvalueBoundsFromAnyDatum.OrbitValuationBound Fm Z cN) (h07 : RadialChainStatements.OrbitValuationBound Fm CA CA' 5 Vm) (h48 : CayleySignature.ConclusionF2 Fm settingGapConstant) :
-    LocalBesselAndTopKernel.FirstFiltrationHypotheses Fm X Cw Y Z cN Vm C0 Cg cb Cu cT CT Ca Cq CA CA' :=
-  ⟨under_a Fm pExp _ _ _ _ _ _ (fun _ _ h => h),
-    under_a Fm p2a _ _ _ _ _ _ (fun _ _ h =>
-      ⟨fun u u' Φ hS _ hs => h u u' Φ hS hs, Formalism.YangianSpanCharacter.Final.E_GGRatio, Formalism.YangianSpanCharacter.Final.E_GGProd⟩),
-    LocalBesselAndTopKernel.local_model_admissible_of_source (Fm.D x₀ i₀) Cq pM (h26 x₀ i₀), fun x i => LocalBesselAndTopKernel.top_bound_of_part_T _ _ (h26 x i), lSchur, lWitt, pDec,
-    LocalBesselAndTopKernel.family_nonvanishing_of_gap Fm _ _ _ _ _ _ settingGapConstant h1 h48C h48, familyMassFirstBound,
-    fun x i => LocalBesselAndTopKernel.theorem_A_of_source _ _ _ _ (h07 x i), pDens, h26b, pCnt, pForm, pArith, iSW, lWeyl, pRk⟩
 
-theorem LocalBesselAndTopKernel.family_admissible_package_of_source (C0 Cg cb Cu cT CT C3 : ℝ) (pRk : PX.RanksF Fm C0 Cg cb Cu cT CT)
-    (lWeyl : LocalBesselAndTopKernel.FirstSizeStatement) (lDTau : LocalBesselAndTopKernel.FamilyMassTheoremTwo) (lDS : LocalBesselAndTopKernel.FamilyDecompositionSumHypothesis Fm C0 Cg cb Cu cT CT)
-    (familyMassRatio : LocalBesselAndTopKernel.SecondSizeStatement Fm) (familyMassSecondLine : LocalBesselAndTopKernel.BesselFormLine Fm) (familyTheoremThreeBound : LocalBesselAndTopKernel.FamilyThirdTheoremHypothesis Fm C3) :
-    LocalBesselAndTopKernel.SecondFiltrationHypotheses Fm C0 Cg cb Cu cT CT C3 := ⟨lWeyl, familyMassRatio, familyMassSecondLine, pRk, familyTheoremThreeBound, lDTau, lDS⟩
 
 theorem family_mass_bound_of_source (hCl : 2 < sCl Fm) (hC' : 1 ≤ sC' Fm)
     (h28b : ∀ Cg cb Cu cT CT C0 : ℝ, VanishingOnXAndXPlusMass.Conclusion1Family Fm Cg cb Cu cT CT C0 1) : NonGenericAndKTwoTheorems.FamilyRankTwoMassHyp Fm := by
@@ -1558,74 +1215,6 @@ section All
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-theorem S0.family_statements_all (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i)) (Gv : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, Cnt.GaugeVol (Fm.D x i))
-    (Cw : ℝ)
-    (Y : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) u u', LoopTie (Fm.D x i) (Fm.L x i) (At x hx i) u u' Cw)
-    (Zl : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), LocalSplitGroups.TermLocs (Fm.D x i) (At x hx i))
-    (cN : ∀ x (i : Fm.Ix x), (Fm.D x i).what₂.Word → (Fm.D x i).what₂.Word → ℝ) (Vm : ∀ k r, ValMap k r)
-    (g : UniformConstantsAndStatements.Given) (ca : AdmissibleBoundsFromSource.AdmC) (a : UniformConstantsAndStatements.AdmC) (Ca Cq C3 C3' C4 settingGapConstant Ch Cβ Cs Cq0 Cr C2 : ℝ) (x₀ : ℝ) (i₀ : Fm.Ix x₀)
-
-    (hGiv : LocalBesselAndTopKernel.GivOk g.C0 g.Cg g.cb g.Cu g.cT g.CT) (hca : ca.Ok g.Cg) (hGam : max ca.CE ca.CN + 1 ≤ Fm.CGam)
-    (hCl : 2 < sCl Fm) (hC' : 1 ≤ sC' Fm) (hC1 : 0 ≤ ca.C1) (h48C : settingGapConstant ≤ sCl Fm)
-    (hCh : 0 ≤ Ch) (hβ : 1 ≤ Cβ) (hq0 : 0 < Cq0) (hr : 0 < Cr)
-
-    (s71a : ∀ Cg cb Cu cT CT C0 : ℝ, FrobeniusProjectedBounds.FamilyGlobalDerivation Fm At Cg cb Cu cT CT C0)
-    (s71b : FrobeniusProjectedBounds.SecondPartFamily Fm At g.Cg g.cb g.Cu g.cT g.CT g.C0 ca.cL ca.cN ca.CN ca.CE)
-    (s27a : LocalBesselAndTopKernel.PeriodFamilyStatement Fm At Cw Y Zl cN Vm g.C0 g.Cg g.cb g.Cu g.cT g.CT Ca Cq ca.CA ca.CA' ca.Ce)
-    (s27b : LocalBesselAndTopKernel.DeterminantValueFamily Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT C3 ca.C1 ca.C2 C3' C4 ca.c5 ca.CA ca.ep0 ca.CV)
-    (s29n : NonGenericAndKTwoTheorems.FamilyNonGenericLocalBound Fm a.CNG) (s29k : NonGenericAndKTwoTheorems.FamilyNonIdentityTermSummabilityOfAdmissible Fm At Gv)
-    (familyGenericCountBound : UniformConstantsAndStatements.PeriodFamilyStatement Fm g a ca.cN ca.CN) (familyNongenericCountBound : UniformConstantsAndStatements.DeterminantValueFamily Fm g a ca.CE)
-    (s76 : AdmissibleBoundsFromSource.PeriodFamilyStatement Fm ⟨g.C0, g.Cg, g.cb, g.Cu, g.cT, g.CT⟩ ca) (s48 : CayleySignature.DeterminantValueFamily Fm settingGapConstant)
-
-    (h07 : RadialChainStatements.OrbitValuationBound Fm ca.CA ca.CA' 5 Vm) (h26 : ThinScalesBound.FamilyThinScalesBound Fm Cq) (h26b : JointEigenvalueBoundsFromAnyDatum.OrbitValuationBound Fm Zl cN)
-    (h30 : PlaceDegreeData.FamilyDiscreteSeriesDecay Fm)
-    (h28 : AuxiliaryNormPrimes.OrbitValuationBound Fm ca.cL) (h28' : AuxiliaryNormPrimes.OrbitValuationBound Fm a.cL)
-    (h28b1 : ∀ Cg cb Cu cT CT C0 : ℝ, VanishingOnXAndXPlusMass.Conclusion1Family Fm Cg cb Cu cT CT C0 1)
-    (h28b2 : VanishingOnXAndXPlusMass.Conclusion2Family Fm) (h28b3 : VanishingOnXAndXPlusMass.Conclusion3Family Fm)
-    (hB1 : ∀ x (i : Fm.Ix x), OnePlaceEstimates.RotatedSumBound (Fm.D x i) a.Ch a.Cg a.Cb) (hB2 : ∀ x (i : Fm.Ix x), OnePlaceEstimates.PathWeightComponents (Fm.D x i) a.secondBesselConstant)
-    (hB3 : ∀ x (i : Fm.Ix x), OnePlaceEstimates.ConclusionB3 (Fm.D x i) a.Aw a.Ch a.Cgw a.Cbw)
-    (h93 : OnePlaceEstimates.FamilySubmultiplicativeNorm Fm Ch Cs Cq0 Cr C2)
-
-    (pExp : PX.ExpF Fm) (pId : PX.IdCellF Fm) (p2a : PX.TwoAF Fm) (p2ag : PX.TwoAgF Fm) (familyVolumeLowerBound : PX.FamilyVanishingCondition Fm)
-    (pG : PX.GDrF Fm At) (pIdG : PX.FamilyIdentityCondition Fm) (familyStandingLowerBound : PX.FamilyFirstSumAtLeastOne Fm) (pAbs : PX.PairAbsF Fm) (pCells : PX.CellsF Fm At)
-    (pVol : PX.MassVolF Fm Gv) (pMain : PX.MainF Fm g a.CM a.Ce)
-    (pM : PX.ModelBasics) (pDec : PX.FamilyExpansionWithConstants Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT Ca)
-    (pDens : PX.DensF Fm) (pCnt : PX.CntF Fm Zl cN) (pForm : PX.FormF Fm At Cw Y Vm g.C0 g.Cg g.cb g.Cu g.cT g.CT)
-    (pArith : PX.ArithF Fm cN g.C0 g.Cg g.cb g.Cu g.cT g.CT) (familySettingGapBound : PX.FamilyFunctionalOrderWithConstant Fm settingGapConstant) (pRk : PX.RanksF Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT)
-
-    (bMom : PX.Mom Fm) (bHaar : PX.SHaar Fm)
-    (bStd : ∀ Cg cb Cu cT CT C0 : ℝ, PX.StdHypS Fm Cg cb Cu cT CT C0 Ch Cβ)
-    (bTF : ∀ Cg cb Cu cT CT C0 : ℝ, PX.TFrame Fm Cg cb Cu cT CT C0)
-
-    (familyWeylLawBound : AdmissibleBoundsFromSource.FamilyWeylDimension Fm ⟨g.C0, g.Cg, g.cb, g.Cu, g.cT, g.CT⟩) (familySchurOrthogonality : LocalBesselAndTopKernel.UnfoldingCount Fm) (lWitt : LocalBesselAndTopKernel.FamilySpectralWeights)
-    (familyMassFirstBound : LocalBesselAndTopKernel.FamilyMultiplicityOneHypothesis Fm) (weylLawBound : LocalBesselAndTopKernel.FirstSizeStatement) (lDTau : LocalBesselAndTopKernel.FamilyMassTheoremTwo)
-    (lDS : LocalBesselAndTopKernel.FamilyDecompositionSumHypothesis Fm g.C0 g.Cg g.cb g.Cu g.cT g.CT) (schurLemma : NonGenericAndKTwoTheorems.adm7) (lMink : NonGenericAndKTwoTheorems.adm11) (familySchurSetting : CayleySignature.admF6 Fm)
-
-    (familyMassIdentity : AdmissibleBoundsFromSource.FamilyTwelfthHypothesis) (familyMassRatio : LocalBesselAndTopKernel.SecondSizeStatement Fm) (familyMassSecondLine : LocalBesselAndTopKernel.BesselFormLine Fm) (familyTheoremThreeBound : LocalBesselAndTopKernel.FamilyThirdTheoremHypothesis Fm C3)
-    (iM1' : NonGenericAndKTwoTheorems.FamilyMassFirstHypothesis Fm) (iM2' : NonGenericAndKTwoTheorems.FamilyMassSecondHypothesis Fm) (iSW : LocalBesselAndTopKernel.LocalGenericDensity Fm) (familyMassExponential : NonGenericAndKTwoTheorems.FamilyMassLatticeBound Fm) :
-    AdmissibleBoundsFromSource.ConclusionF1 Fm ⟨g.C0, g.Cg, g.cb, g.Cu, g.cT, g.CT⟩ ∧ FrobeniusProjectedBounds.ConclusionF2 Fm g.Cg g.cb g.Cu g.cT g.CT g.C0 := by
-  have hca' : ca.Ok g.Cg := hca
-  obtain ⟨hA1, hA2, hA3, hcL, hcN, hCN, hCE, -⟩ := hca
-  have h71 : ∀ Cg cb Cu cT CT C0 : ℝ, FrobeniusProjectedBounds.ConclusionF1 Fm At Cg cb Cu cT CT C0 := fun Cg cb Cu cT CT C0 =>
-    s71a Cg cb Cu cT CT C0 ⟨under_b Fm pExp _ _ _ _ _ _ (fun _ _ h => h), under_b Fm familyVolumeLowerBound _ _ _ _ _ _ (fun _ _ h => h),
-      under_b Fm pId _ _ _ _ _ _ (fun _ _ h => h)⟩
-  obtain ⟨h27a, h27b, h27c, -, -, h27f, h27g⟩ :=
-    s27b hGiv (LocalBesselAndTopKernel.family_admissible_package_of_source Fm _ _ _ _ _ _ _ pRk weylLawBound lDTau lDS familyMassRatio familyMassSecondLine familyTheoremThreeBound)
-  obtain ⟨hK2, hK3⟩ := s29k (NonGenericAndKTwoTheorems.AdmF_of Fm At Gv hCl hC' p2ag pExp pId familyVolumeLowerBound pG pCells
-    (NonGenericAndKTwoTheorems.family_moment_bounds_of_source Fm Ch Cβ Cs Cq0 Cr C2 hCh hβ hq0 hr h93 bMom bHaar bStd bTF) pVol schurLemma lMink iM1' iM2'
-    h71 h28b1 h28b2 h28b3 familyMassExponential)
-  have hN1 := familyGenericCountBound (UniformConstantsAndStatements.family_first_package_of_source Fm g a ca.C1 ca.C2 ca.A5 hCl hC' hA1 hC1 hA2 hA3 pExp p2a pMain s29n hB1 hB2 hB3
-    h27b h27c h28')
-  have hN2 := familyNongenericCountBound (UniformConstantsAndStatements.family_admissible_package_of_source Fm g a pExp pMain s29n hB1 hB2 hB3)
-  have h27 := s27a hGiv (LocalBesselAndTopKernel.family_first_package_of_source Fm At Cw Y Zl cN Vm _ _ _ _ _ _ _ _ _ _ settingGapConstant x₀ i₀ (by linarith) h48C pExp p2a pM pDec
-    pDens pCnt pForm pArith pRk familySchurOrthogonality lWitt familyMassFirstBound weylLawBound iSW h26 h26b h07
-    (s48 familySettingGapBound (CayleySignature.theta_condition_family_of_linked Fm h30) familySchurSetting))
-  refine ⟨s76 hGiv hca' hGam (AdmissibleBoundsFromSource.family_first_package_of_source Fm g ca pExp pId p2a familyVolumeLowerBound pIdG familyStandingLowerBound pAbs familyWeylLawBound familyMassIdentity hK2 hK3 h28 hN1 hN2 h27
-    h27a h27b h27c h27f h27g), ?_⟩
-  exact s71b ⟨hcL, hcN, hCN, hCE, hGam⟩
-    ⟨under_b Fm pExp _ _ _ _ _ _ (fun _ _ h => h), under_b Fm p2a _ _ _ _ _ _ (fun _ _ h u u' Φ hS _ hs => h u u' Φ hS hs),
-      FrobeniusProjectedBounds.injectivity_family_of_theorem Fm _ _ _ _ _ _ ca.C1 ca.C2 ca.A5 ca.cL hCl hC' hA1 hC1 hA2 hA3 h27b h27c h28,
-      FrobeniusProjectedBounds.family_ev_bound_of_source Fm g _ _ hN1, FrobeniusProjectedBounds.norm_bound_family_of_theorem Fm g _ hN2⟩ (h71 _ _ _ _ _ _)
 
 end All
 

@@ -198,8 +198,6 @@ theorem ddRSpanAt : DdRSpanAt P K LL := by
   · rintro _ ⟨c, x, hx, rfl⟩
     exact mulR_mem_DdR (P.PD K) L.ρ c (ιV_mem_DdR (P.PD K) L.ρ hx)
 
-theorem ddRInjAt : DdRInjAt P K LL := fun _ _ m c x hc _ h =>
-  (tensInj T K).tensor (LL := ↥LL.1) m c hc x h
 
 theorem componentIsoAt : ComponentIsoAt P K LL := by
   intro L h τ

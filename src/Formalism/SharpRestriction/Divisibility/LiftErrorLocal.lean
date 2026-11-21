@@ -139,12 +139,6 @@ def pib {D : D7} (EX : ErrX D) (i : Fin 2) : D.host.E := D.host.conj (EX.piG i :
 def plS {D : D7} (nch : NChoice D) (w : Pl D) (b : Bool) : Pl D :=
   if b = nch.sd w then w else D.what₂.places.conj w
 
-theorem plS_self {D : D7} (nch : NChoice D) (w : Pl D) (h : D.what₂.places.conj w = w) (b : Bool) :
-    plS nch w b = w := by
-  unfold plS
-  split_ifs
-  · rfl
-  · exact h
 
 structure Run (D : D7) (B : WeightFamilies.Prov D) (j : ℕ) where
   S : WeightAlgebra.Scal B

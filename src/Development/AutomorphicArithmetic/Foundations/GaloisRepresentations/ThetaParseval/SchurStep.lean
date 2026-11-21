@@ -266,43 +266,6 @@ def ReadLift : Prop :=
       ∀ (v : Pl (maximalRealSubfield E)) (t : E →ₐ[maximalRealSubfield E] Fv (maximalRealSubfield E) v) τ τ', CompAt U (splitPrime t) τ → CompAt U' (splitPrime t) τ' →
         LocPair t χX χW τ τ'
 
-theorem tLift_of (T : Tools) (hH : HgtEx) (h1 : BrEx) (h2 : HgtFst) (h3 : RealPair) (h4 : NonVan) (h5 : LiftAut) (h6 : ProjEx)
-    (h7 : ReadLift) : TLift := by
-  intro E _ _ _ B hB n hn X hXJ hX
-  obtain ⟨⟨K, a, hK, ha, -⟩, ε, -, hε⟩ := hH _ E (cj E) B n X n 0 hB (Or.inl hX)
-  obtain ⟨t₀, ht₀⟩ := h2 _ E (cj E) B n X hB hX K a ε hK ha hε
-  obtain ⟨N, hN⟩ := exists_nat_gt (2 * t₀)
-  refine ⟨max N (2 * n), fun d hd W δ hWJ hW χX χW mX mW hχX hχW rX rW eX eW U lam hU hwt hdom => ?_⟩
-  have hd1 : 2 * n ≤ d := (le_max_right _ _).trans hd
-  have hd2 : t₀ < (d : ℝ) / 2 := by
-    have : (N : ℝ) ≤ d := by exact_mod_cast (le_max_left _ _).trans hd
-    linarith
-  have hδ : δ ≠ 0 := by
-    rintro rfl
-    obtain ⟨w⟩ : Nonempty (InfinitePlace (maximalRealSubfield E)) := inferInstance
-    obtain ⟨-, A, hA⟩ := hW.sig w
-    have := congrFun (congrFun hA (Sum.inl ⟨0, by omega⟩)) (Sum.inl ⟨0, by omega⟩)
-    simp [hWJ] at this
-  obtain ⟨⟨M, hM⟩, hom⟩ := T.pairEx _ E (cj E) B hB n d X W n 0 d 0 hX hW
-  obtain ⟨om, hP⟩ := hom χX χW hχX hχW rX rW M hM
-  obtain ⟨e, he⟩ := h1 E n X 1 one_ne_zero (by rw [hXJ, one_smul])
-  obtain ⟨e', he'⟩ := h1 E d W δ hδ hWJ
-  obtain ⟨f₀, hf₀, hf0, φ, hφ, hφ0, hS, hT⟩ := h3 E B n d X W M χX χW om hP hn e e' he he' (by omega) δ mX mW hXJ hWJ eX eW U lam hU hwt hdom
-  obtain ⟨φf, hfin, hne⟩ := h4 E B n d X W M χX χW om hP hn e e' he he' hd1 K a ε hK ha hε t₀ (ht₀ M.μ hM.haar) hd2 U hU f₀ hf₀ hf0 φ hφ0 hS
-  obtain ⟨Θ, hΘ⟩ := h5 E B n d X W M χX χW om hP hn e e' he he'
-  have hmem : pure f₀ φf ∈ PolData B M := Submodule.subset_span ⟨f₀, hf₀, φf, hfin.1, hfin.2, rfl⟩
-  obtain ⟨q1, q2, -⟩ := hΘ ⟨_, hmem⟩ φ (hU.aut φ hφ)
-  have hne' : Θ ⟨_, hmem⟩ φ ≠ 0 := by
-    rw [q1]
-    intro h0
-    apply hne
-    funext h
-    have := congrFun h0 (e'.symm h)
-    simpa using this
-  obtain ⟨U', pr, hU', hpr, hp⟩ := h6 E d _ q2 hne'
-  rw [q1] at hpr
-  obtain ⟨r1, r2⟩ := h7 E B n d X W M χX χW om hP hn e e' he he' U U' pr hU hU' hp f₀ hf₀ φ hφ φf hfin hpr
-  exact ⟨U', hU', fun w => (hT w).imp fun lam' h => ⟨r1 w lam' h.2, h.1⟩, r2⟩
 
 end UpperTheory.TP
 

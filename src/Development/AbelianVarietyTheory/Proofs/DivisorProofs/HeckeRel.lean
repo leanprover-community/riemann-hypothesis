@@ -73,9 +73,7 @@ def comp (g₁ g₂ : IntSim D p) : IntSim D p where
     rw [h₂, map_add, map_nsmul, map_nsmul, h₁]
     module
 
-theorem scalar_k (D : Datum F) (m : ℕ) (hm : m.Coprime p) : (scalar D m hm).k = m := rfl
 
-theorem scalar_c (D : Datum F) (m : ℕ) (hm : m.Coprime p) : (scalar D m hm).c = m ^ 2 := rfl
 
 end IntSim
 

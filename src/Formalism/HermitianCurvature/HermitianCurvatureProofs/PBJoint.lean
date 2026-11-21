@@ -101,16 +101,9 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt
 
-theorem jct_modelPlaceBuilt2_of (h : JCT.ModelPlaceBuilt) : JCT.ModelPlaceBuilt2 := by
-  obtain ⟨Cc, hM⟩ := h
-  exact ⟨Cc, fun E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top A₀ hB _ _ _ c hc v =>
-    hM E Wp Wq S T f χ ν' m₀ top A₀ hB c hc v⟩
 
 theorem real_inputs_closed_model_place_two : KB.RealInputsClosedAdmissibleSettings :=
   PBJoint.real_inputs_closed_model_place_two_of
 
-theorem real_inputs_closed_model_place : KB.RealInputsClosedLeadingForm := by
-  intro hPA hRMF hPD hFS hMA hMu hLEM hLA hSL hMP hTP hBB
-  exact real_inputs_closed_model_place_two hPA hRMF hPD hFS hMA hMu hLEM hLA hSL (jct_modelPlaceBuilt2_of hMP) hTP hBB
 
 end Formalism.FourierDecayAlt.P

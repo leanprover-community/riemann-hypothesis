@@ -117,10 +117,6 @@ theorem add_smul_mem {K : Type} [Field K] [NumberField K] {c : K →+* K} {p : �
     rw [hf_add_left, hf_smul_left]
     exact rp_add ((hL a).1 ha w hw) (rp_mul hr ((hL b).1 hb w hw))
 
-theorem neg_mem_of {K : Type} [Field K] [NumberField K] {c : K →+* K} {p : ℕ} {ι : Type}
-    [Fintype ι] {L : Set (ι → K)} (hL : Unimod K c p L) {b : ι → K} (hb : b ∈ L) : -b ∈ L := by
-  have h := add_smul_mem hL (zero_mem_of hL) hb (rp_neg (rp_one p))
-  rwa [zero_add, neg_one_smul] at h
 
 theorem isom_injective {K : Type} [Field K] (c : K →+* K) {ι : Type} [Fintype ι]
     (f : (ι → K) →ₗ[K] (ι → K)) (hf' : ∀ v w, hf c (f v) (f w) = hf c v w) :
@@ -148,13 +144,6 @@ theorem mkU_unitary {K : Type} [Field K] (c : K →+* K) {ι : Type} [Fintype ι
     IsUnitary c (mkU c f hf') := fun v w => by
   rw [mkU_apply, mkU_apply]; exact hf' v w
 
-theorem unitary_symm {K : Type} [Field K] {c : K →+* K} {ι : Type} [Fintype ι]
-    {u : (ι → K) ≃ₗ[K] (ι → K)} (hu : IsUnitary c u) : IsUnitary c u.symm := fun v w => by
-  rw [← hu (u.symm v) (u.symm w), LinearEquiv.apply_symm_apply, LinearEquiv.apply_symm_apply]
 
-theorem unitary_trans {K : Type} [Field K] {c : K →+* K} {ι : Type} [Fintype ι]
-    {u u' : (ι → K) ≃ₗ[K] (ι → K)} (hu : IsUnitary c u) (hu' : IsUnitary c u') :
-    IsUnitary c (u.trans u') := fun v w => by
-  rw [LinearEquiv.trans_apply, LinearEquiv.trans_apply, hu', hu]
 
 end PI.KLW.Ind

@@ -176,19 +176,6 @@ def tateModule (B : BX R₀) (p : ℕ) (O : LAlg R₀) : AddSubgroup (ℕ → B.
     exact ⟨fun n => by simp [ha n], fun n => by
       rw [Pi.neg_apply, Pi.neg_apply, smul_neg, ← ha' n]⟩
 
-theorem tateModule_ker (B : BX R₀) (p : ℕ) (O : LAlg R₀) (τ : ℕ → B.G O)
-    (hτ : τ ∈ tateModule B p O) : τ 0 = 0 ↔ ∃ τ' ∈ tateModule B p O, τ = p • τ' := by
-  constructor
-  · intro h0
-    have key : ∀ n, p ^ n • τ n = τ 0 := by
-      intro n
-      induction n with
-      | zero => simp
-      | succ n ih => rw [pow_succ, mul_smul, ← hτ.2 n, ih]
-    exact ⟨fun n => τ (n + 1), ⟨fun n => by rw [key, h0], fun n => hτ.2 (n + 1)⟩,
-      funext fun n => hτ.2 n⟩
-  · rintro ⟨τ', h', rfl⟩
-    simpa using h'.1 0
 
 structure TorsionRep (B : BX R₀) (p : ℕ) (O : ResAlg k) where
 

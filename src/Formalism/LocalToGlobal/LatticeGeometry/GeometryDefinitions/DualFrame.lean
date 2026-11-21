@@ -125,15 +125,6 @@ theorem hform_eq {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (x y : Fin n → K) :
 def IsFrame {n k : ℕ} (H : Matrix (Fin n) (Fin n) K) (g w : Fin k → Fin n → K) : Prop :=
   ∀ a b, ∑ i, g i a * ∑ c, star (w i c) * H c b = if a = b then 1 else 0
 
-theorem isFrame_of {n k : ℕ} (H : Matrix (Fin n) (Fin n) K) (g w : Fin k → Fin n → K)
-    (h : ∀ z : Fin n → K, z = ∑ i, Formalism.DivisionValues.hform H (w i) z • g i) : IsFrame H g w := by
-  intro a b
-  have key := congrFun (h (Pi.single b 1)) a
-  rw [Finset.sum_apply] at key
-  simp only [Pi.smul_apply, smul_eq_mul, hform_eq, Formalism.UG.hform, Pi.single_apply, mul_ite, mul_one,
-    mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, starRingEnd_apply] at key
-  rw [key]
-  exact Finset.sum_congr rfl fun i _ => by ring
 
 theorem IsFrame.map {n k : ℕ} {H : Matrix (Fin n) (Fin n) K} {g w : Fin k → Fin n → K} (hf : IsFrame H g w)
     {A : Type} [CommRing A] (φ : K →+* A) (σ : A →+* A) (hσ : ∀ x, σ (φ x) = φ (star x)) (z : Fin n → A) :

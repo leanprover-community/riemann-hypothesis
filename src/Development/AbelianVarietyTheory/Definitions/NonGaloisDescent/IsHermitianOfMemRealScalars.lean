@@ -85,7 +85,6 @@ def lieN : Submodule k (Matrix (Fin n) (Fin n) k) where
 
 variable {F}
 
-theorem mem_lieQ {X : Matrix (Fin n) (Fin n) k} : X ∈ F.lieQ ↔ ∀ V ∈ F.carrier, ∀ v ∈ V, X *ᵥ v ∈ V := Iff.rfl
 
 theorem mem_lieN {X : Matrix (Fin n) (Fin n) k} : X ∈ F.lieN ↔ ∀ V ∈ F.carrier, ∀ v ∈ V, X *ᵥ v ∈ F.pred V := Iff.rfl
 
@@ -126,7 +125,6 @@ def unip : Subgroup (GL (Fin n) k) where
     have : g⁻¹.val - 1 = -(g⁻¹.val * (g.val - 1)) := by rw [mul_sub, Units.inv_mul]; simp
     rw [this]; exact neg_mem (lieQ_mul_lieN hg.1.2 hg.2)⟩
 
-theorem unip_le_stab : F.unip ≤ F.stab := fun _ h => h.1
 
 variable {F}
 
@@ -158,13 +156,6 @@ theorem lieQ_triv : (triv n k).lieQ = ⊤ := by
 
 theorem stab_triv : (triv n k).stab = ⊤ := eq_top_iff.2 fun _ _ => by constructor <;> simp [lieQ_triv]
 
-theorem mem_lieQ_single {V : Submodule k (Fin n → k)} {X : Matrix (Fin n) (Fin n) k} :
-    X ∈ (single V).lieQ ↔ ∀ v ∈ V, X *ᵥ v ∈ V := by
-  refine ⟨fun h => h V (by simp [single]), fun h V' hV' v hv => ?_⟩
-  rcases hV' with rfl | rfl | rfl
-  · rw [Submodule.mem_bot] at hv ⊢; simp [hv]
-  · exact h v hv
-  · trivial
 
 end Ring
 
@@ -182,63 +173,9 @@ theorem mem_unip_iff {g : GL (Fin n) k} : g ∈ F.unip ↔ g.val - 1 ∈ F.lieN 
   refine ⟨fun h => h.2, fun h => ⟨mem_stab_iff.2 ?_, h⟩⟩
   simpa using add_mem (lieN_le_lieQ h) one_mem_lieQ
 
-theorem isNilpotent_of_mem_lieN {X : Matrix (Fin n) (Fin n) k} (hX : X ∈ F.lieN) : IsNilpotent X := by
-  have key : ∀ V : Submodule k (Fin n → k), V ∈ F.carrier → V ≤ Module.End.maxGenEigenspace (Matrix.toLin' X) 0 := by
-    intro V
-    induction V using WellFoundedLT.induction with
-    | ind V ih =>
-      intro hV v hv
-      have h1 : F.pred V ≤ Module.End.maxGenEigenspace (Matrix.toLin' X) 0 := sSup_le fun V' h => ih V' h.2 h.1
-      obtain ⟨m, hm⟩ := (Module.End.mem_maxGenEigenspace _ _ _).1 (h1 (hX V hV v hv))
-      refine (Module.End.mem_maxGenEigenspace _ _ _).2 ⟨m + 1, ?_⟩
-      simpa [pow_succ] using hm
-  have h2 : IsNilpotent (Matrix.toLin' X) := Module.End.isNilpotent_iff_of_finite.2 fun v => by
-    simpa using (Module.End.mem_maxGenEigenspace _ _ _).1 (key ⊤ F.top_mem (Submodule.mem_top (x := v)))
-  exact (IsNilpotent.map_iff (f := Matrix.toLinAlgEquiv') Matrix.toLinAlgEquiv'.injective).1 h2
 
-theorem pred_mem_and_lt {V : Submodule k (Fin n → k)} (hV : V ≠ ⊥) : F.pred V ∈ F.carrier ∧ F.pred V < V := by
-  obtain ⟨M, hM, hmax⟩ := (wellFounded_gt (α := Submodule k (Fin n → k))).has_min {V' | V' ∈ F.carrier ∧ V' < V}
-    ⟨⊥, F.bot_mem, bot_lt_iff_ne_bot.2 hV⟩
-  have : F.pred V = M := le_antisymm (sSup_le fun V' h => by
-    rcases F.chain.total h.1 hM.1 with h' | h'
-    · exact h'
-    · exact (eq_of_le_of_not_lt h' (hmax V' h)).ge) (le_sSup hM)
-  rw [this]; exact hM
 
-theorem mem_lieN_iff_trace {X : Matrix (Fin n) (Fin n) k} : X ∈ F.lieN ↔ ∀ Y ∈ F.lieQ, (X * Y).trace = 0 := by
-  refine ⟨fun hX Y hY => (isNilpotent_trace_of_isNilpotent (isNilpotent_of_mem_lieN (lieN_mul_lieQ hX hY))).eq_zero,
-    fun h V hV v hv => ?_⟩
-  by_contra hn
-  obtain ⟨l, hl, hl0⟩ := Submodule.exists_dual_map_eq_bot_of_notMem hn inferInstance
-  have hY : ∀ w, LinearMap.toMatrix' (l.smulRight v) *ᵥ w = l w • v := fun w => by
-    rw [← Matrix.toLin'_apply, Matrix.toLin'_toMatrix']; rfl
-  have h1 := h (LinearMap.toMatrix' (l.smulRight v)) fun V' hV' w hw => by
-    rw [hY]
-    rcases F.chain.total hV hV' with h' | h'
-    · exact V'.smul_mem _ (h' hv)
-    · rcases h'.eq_or_lt with rfl | h''
-      · exact V'.smul_mem _ hv
-      · have : l w = 0 := by
-          have : l w ∈ (F.pred V).map l := ⟨w, F.le_pred hV' h'' hw, rfl⟩
-          rwa [hl0, Submodule.mem_bot] at this
-        simp [this]
-  apply hl
-  rw [← h1, ← Matrix.trace_toLin'_eq, Matrix.toLin'_mul, Matrix.toLin'_toMatrix']
-  have : Matrix.toLin' X ∘ₗ l.smulRight v = l.smulRight (X *ᵥ v) := by ext; simp
-  rw [this, LinearMap.trace_smulRight]
 
-theorem mem_lieN_iff_trace_stab [Infinite k] {X : Matrix (Fin n) (Fin n) k} :
-    X ∈ F.lieN ↔ ∀ g ∈ F.stab, (X * g.val).trace = 0 := by
-  rw [mem_lieN_iff_trace]
-  refine ⟨fun h g hg => h _ hg.1, fun h Y hY => ?_⟩
-  obtain ⟨c, hc⟩ := (Matrix.finite_spectrum Y).exists_notMem
-  obtain ⟨u, hu⟩ := spectrum.notMem_iff.1 hc
-  have h1 := h u (mem_stab_iff.2 (by
-    rw [hu, Algebra.algebraMap_eq_smul_one]; exact sub_mem (F.lieQ.smul_mem c one_mem_lieQ) hY))
-  have h2 := h 1 (one_mem _)
-  rw [hu, Algebra.algebraMap_eq_smul_one, mul_sub, trace_sub, Matrix.mul_smul, trace_smul] at h1
-  rw [Units.val_one] at h2
-  rwa [h2, smul_zero, zero_sub, neg_eq_zero] at h1
 
 end Field
 
@@ -270,9 +207,6 @@ def PFlag.summand {n : ℕ} (F : PFlag n ℂ) (V : Submodule ℂ (Fin n → ℂ)
 section Perp
 variable {n : ℕ}
 
-theorem mulVec_dot_star (X : Matrix (Fin n) (Fin n) ℂ) (v w : Fin n → ℂ) :
-    (X *ᵥ v) ⬝ᵥ star w = v ⬝ᵥ star (Xᴴ *ᵥ w) := by
-  rw [star_mulVec, conjTranspose_conjTranspose, dotProduct_comm v, ← dotProduct_mulVec, dotProduct_comm]
 
 theorem dot_star_comm_zero {v w : Fin n → ℂ} (h : v ⬝ᵥ star w = 0) : w ⬝ᵥ star v = 0 := by
   have := congrArg star h
@@ -304,42 +238,10 @@ theorem perp_perp (V : Submodule ℂ (Fin n → ℂ)) : perp (perp V) = V := by
 namespace PFlag
 variable {F : PFlag n ℂ}
 
-theorem pred_sup_summand (F : PFlag n ℂ) (V : Submodule ℂ (Fin n → ℂ)) : F.pred V ⊔ F.summand V = V := by
-  rw [summand, inf_comm, ← sup_inf_assoc_of_le _ (F.pred_le V), sup_perp, top_inf_eq]
 
-theorem le_of_summand_le {U V : Submodule ℂ (Fin n → ℂ)} (hV : V ∈ F.carrier)
-    (h : ∀ V' ∈ F.carrier, V' ≤ V → F.summand V' ≤ U) : V ≤ U := by
-  induction V using WellFoundedLT.induction with
-  | ind V ih =>
-    rw [← F.pred_sup_summand V]
-    exact sup_le (sSup_le fun V' h' => ih V' h'.2 h'.1 fun V'' h1 h2 => h V'' h1 (h2.trans h'.2.le)) (h V hV le_rfl)
 
-theorem iSup_summand (F : PFlag n ℂ) : ⨆ V ∈ F.carrier, F.summand V = ⊤ :=
-  top_le_iff.1 (le_of_summand_le F.top_mem fun V hV _ => le_iSup₂_of_le V hV le_rfl)
 
-theorem summand_le_perp {V V' : Submodule ℂ (Fin n → ℂ)} (hV : V ∈ F.carrier) (h : V < V') : F.summand V' ≤ perp V :=
-  inf_le_right.trans (perp_anti (F.le_pred hV h))
 
-theorem mem_lieQ_and_star_iff {X : Matrix (Fin n) (Fin n) ℂ} :
-    X ∈ F.lieQ ∧ Xᴴ ∈ F.lieQ ↔ ∀ V ∈ F.carrier, ∀ v ∈ F.summand V, X *ᵥ v ∈ F.summand V := by
-  constructor
-  · rintro ⟨h1, h2⟩ V hV v hv
-    exact ⟨h1 V hV v hv.1, fun w hw => by rw [mulVec_dot_star]; exact hv.2 _ (mulVec_mem_pred h2 V hw)⟩
-  · intro h
-    refine ⟨fun V hV => le_of_summand_le (U := V.comap X.mulVecLin) hV fun V' hV' hle v hv => hle (h V' hV' v hv).1,
-      fun V hV v hv => ?_⟩
-    rw [← perp_perp V]
-    intro w hw
-    have h1 : ⊤ ≤ V ⊔ (perp V ⊓ (perp V).comap X.mulVecLin) := le_of_summand_le F.top_mem fun V' hV' _ => by
-      rcases F.chain.total hV' hV with h' | h'
-      · exact le_sup_of_le_left (inf_le_left.trans h')
-      · rcases h'.eq_or_lt with rfl | h''
-        · exact le_sup_of_le_left inf_le_left
-        · exact le_sup_of_le_right fun u hu => ⟨summand_le_perp hV h'' hu, summand_le_perp hV h'' (h V' hV' u hu)⟩
-    obtain ⟨y, hy, u, hu, rfl⟩ := Submodule.mem_sup.1 (h1 (Submodule.mem_top (x := w)))
-    have h2 : y = 0 := eq_zero_of_mem_perp hy (by simpa using sub_mem hw hu.1)
-    rw [h2, zero_add, mulVec_dot_star, conjTranspose_conjTranspose]
-    exact dot_star_comm_zero (hu.2 v hv)
 
 def realScalars (F : PFlag n ℂ) : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ) where
   carrier := {X | ∀ V ∈ F.carrier, ∃ c : ℝ, ∀ v ∈ F.summand V, X *ᵥ v = c • v}
@@ -352,28 +254,7 @@ def realScalars (F : PFlag n ℂ) : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ) w
     obtain ⟨c, hc⟩ := hX V hV
     exact ⟨r * c, fun v hv => by rw [smul_mulVec, hc v hv, mul_smul]⟩
 
-theorem preserves_of_mem_realScalars {X : Matrix (Fin n) (Fin n) ℂ} (hX : X ∈ F.realScalars) :
-    ∀ V ∈ F.carrier, ∀ v ∈ F.summand V, X *ᵥ v ∈ F.summand V := fun V hV v hv => by
-  obtain ⟨c, hc⟩ := hX V hV
-  rw [hc v hv]; exact (F.summand V).smul_of_tower_mem c hv
 
-theorem isHermitian_of_mem_realScalars {X : Matrix (Fin n) (Fin n) ℂ} (hX : X ∈ F.realScalars) : X.IsHermitian := by
-  have h0 := mem_lieQ_and_star_iff.2 (preserves_of_mem_realScalars hX)
-  have h1 := (mem_lieQ_and_star_iff (X := Xᴴ)).1 ⟨h0.2, by simpa using h0.1⟩
-  have h2 : ⊤ ≤ LinearMap.ker (Matrix.toLin' (Xᴴ - X)) := le_of_summand_le F.top_mem fun V hV _ v hv => by
-    obtain ⟨c, hc⟩ := hX V hV
-    have hd : (Xᴴ - X) *ᵥ v ∈ F.summand V := by
-      rw [sub_mulVec]; exact sub_mem (h1 V hV v hv) (preserves_of_mem_realScalars hX V hV v hv)
-    have h3 := hc _ hd
-    rw [LinearMap.mem_ker, Matrix.toLin'_apply]
-    set d := (Xᴴ - X) *ᵥ v with hdef
-    have h4 : d ⬝ᵥ star d = 0 := by
-      conv_lhs => enter [1]; rw [hdef]
-      rw [sub_mulVec, sub_dotProduct, mulVec_dot_star, conjTranspose_conjTranspose, h3, hc v hv]
-      simp
-    exact eq_zero_of_dot_star h4
-  rw [top_le_iff, LinearMap.ker_eq_top, map_eq_zero_iff _ Matrix.toLin'.injective, sub_eq_zero] at h2
-  exact h2
 
 end PFlag
 

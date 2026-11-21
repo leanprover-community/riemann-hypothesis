@@ -328,79 +328,8 @@ theorem large_x_eventually : LargeXEv := by
   obtain ⟨x0, hx0⟩ := Filter.eventually_atTop.1 (h1.and h2)
   exact ⟨x0, fun x hx => hx0 x hx⟩
 
-theorem error_sizes_eventually : ErrorFormsEventual := by
-  intro ε K cHH eK hε
-  obtain ⟨x0, hx0⟩ := large_x_eventually ε K cHH eK hε
-  refine ⟨x0, ?_⟩
-  intro U0 _ W _ _ Top _ m f D C Xpp h1 h2 hx hW
-  refine error_sizes D C Xpp eK K hW ?_
-  rw [h1, h2]
-  exact hx0 _ hx
 
-theorem core_lower {nT a b b' k L La B0 Nc M sA lW lk lH dI et Xpp yD yL
-    cDiv cE cH cCount cSlope cSl1 cLoss : ℝ}
-    (hyD : 0 ≤ yD) (hyL : 0 ≤ yL)
-    (hnT : 0 ≤ nT) (ha : 0 ≤ a) (hb0 : 0 ≤ b) (hM : 0 ≤ M) (hk : 0 < k)
-    (hL0 : 0 ≤ L) (hLa0 : 0 ≤ La) (hb' : 0 ≤ b') (hX0 : 0 ≤ Xpp)
-    (hsA0 : 0 ≤ sA) (hB0 : 0 ≤ B0) (hNc : 0 ≤ Nc)
-    (hlW : 0 ≤ lW) (hlk0 : 0 ≤ lk) (hlH0 : 0 ≤ lH) (hdI : 1 ≤ dI) (het : 0 ≤ et)
-    (c1 : 0 ≤ cDiv) (c2 : 0 ≤ cE) (c3 : 0 ≤ cH) (c4 : 0 ≤ cCount) (c5 : 0 ≤ cSlope)
-    (c6 : 0 ≤ cSl1) (c7 : 0 ≤ cLoss) :
-    et ≤ sA * (cCount * (La + M ^ 2 * La / k))
-      + (cDiv * nT * a * La + cDiv * M * (B0 + Nc) * yD)
-      + M * cE * B0
-      + cSlope * nT * a * La * (1 + M / k)
-      + lW
-      + cLoss * nT * M * b * yL
-      + (cSl1 * (cLoss * nT * M * b * yL) + cSl1 * nT * M * (a / k + b') * (cCount * M * L)
-          + cSl1 * Xpp + 1)
-      + dI * (4 * lH * ((cSlope * nT * a * La * (2 + M / k)
-            + (2 * M * cE * B0 + cH * (nT * a * La + M * B0) + sA * (cCount * lk))
-            + cSl1 * M * B0
-            + (cSl1 * (cLoss * nT * M * b * yL) + cSl1 * nT * M * (a / k + b') * (cCount * M * L)
-                + cSl1 * Xpp + 1)) + b) + et) := by
-  have r1 : 0 ≤ sA * (cCount * (La + M ^ 2 * La / k))
-      + (cDiv * nT * a * La + cDiv * M * (B0 + Nc) * yD)
-      + M * cE * B0
-      + cSlope * nT * a * La * (1 + M / k)
-      + lW
-      + cLoss * nT * M * b * yL
-      + (cSl1 * (cLoss * nT * M * b * yL) + cSl1 * nT * M * (a / k + b') * (cCount * M * L)
-          + cSl1 * Xpp + 1) := by positivity
-  have r2 : 0 ≤ 4 * lH * ((cSlope * nT * a * La * (2 + M / k)
-            + (2 * M * cE * B0 + cH * (nT * a * La + M * B0) + sA * (cCount * lk))
-            + cSl1 * M * B0
-            + (cSl1 * (cLoss * nT * M * b * yL) + cSl1 * nT * M * (a / k + b') * (cCount * M * L)
-                + cSl1 * Xpp + 1)) + b) := by positivity
-  have r3 := le_mul_of_one_le_left (add_nonneg r2 het) hdI
-  linarith only [r1, r2, r3]
 
-theorem error_lower_eta : TraceTermLeErrorTerm := by
-  intro U0 _ W _ _ Top _ m f D C Xpp eK K hW hdel0
-  obtain ⟨hx, hε, hε1, hb, hxb, hnT, hm, hxm, heK, hk1, hkx, hka, hL0, hL, hLa0, hLa, hb', hkb', hX0,
-    hXa, haT, hB0, hNc, hlW, hdel, heta, heB, hC⟩ := hW
-  obtain ⟨c1, c1', c2, c2', c3, c3', c4, c4', c5, c5', c6, c6', c7, c7', hD, hLs, hHH⟩ := hC
-  have hx0 : 0 < D.x := by linarith only [hx]
-  have hb0 : 0 ≤ D.b := by linarith only [hb]
-  have ha : 0 ≤ D.a := (mul_nonneg hx0.le hb0).trans hxb
-  have hk : 0 < D.k := by linarith only [hk1]
-  have hxH : 1 ≤ D.x ^ C.cHH := Real.one_le_rpow hx hHH
-  have hdI : 1 ≤ (1 - D.delBar)⁻¹ :=
-    (one_le_inv₀ (by linarith only [hdel])).2 (by linarith only [hdel0])
-  have hlW0 : 0 ≤ umean (fun u0 => Real.log (Fintype.card (W u0) : ℝ)) :=
-    div_nonneg (Finset.sum_nonneg (fun u0 _ => Real.log_natCast_nonneg _)) (Nat.cast_nonneg _)
-  have het : 0 ≤ (D.etaBar + 4 * Real.sqrt D.eBar) * (D.x ^ C.cHH * D.b) := by positivity
-  have := core_lower (nT := D.nT) (a := D.a) (b := D.b) (b' := D.b') (k := D.k) (L := D.L) (La := D.La)
-    (B0 := D.B0) (Nc := D.Nc) (M := (m : ℝ)) (sA := D.sumA)
-    (lW := umean (fun u0 => Real.log (Fintype.card (W u0) : ℝ))) (lk := Real.log D.k)
-    (lH := Real.log (1 + D.x ^ C.cHH)) (dI := (1 - D.delBar)⁻¹)
-    (et := (D.etaBar + 4 * Real.sqrt D.eBar) * (D.x ^ C.cHH * D.b)) (Xpp := Xpp)
-    (yD := D.x ^ (C.eDiv * D.ε)) (yL := D.x ^ (C.eLoss * D.ε))
-    (Real.rpow_nonneg hx0.le _) (Real.rpow_nonneg hx0.le _) (by linarith only [hnT]) ha hb0
-    (Nat.cast_nonneg m) hk hL0 hLa0 hb' hX0 (Finset.sum_nonneg (fun t _ => (haT t).1)) hB0 hNc hlW0
-    (Real.log_nonneg hk1) (Real.log_nonneg (by linarith only [hxH])) hdI het c1 c2 c3 c4 c5 c6 c7
-  unfold errorTermWith UBar5 MLo5 Data.Vvar Data.LoP
-  exact this
 
 noncomputable def modelD (η : ℝ) : Data Unit (fun _ => Unit) Unit 1 1 where
   x := 100000
@@ -445,47 +374,8 @@ noncomputable def modelD (η : ℝ) : Data Unit (fun _ => Unit) Unit 1 1 where
 
 def modelC (cHH : ℝ) : Consts := ⟨1, 1, 1, 1, 1, 1, 1, 1, 1, cHH⟩
 
-lemma model_windows0 (η cHH : ℝ) (hη : 0 ≤ η) (hc : 0 ≤ cHH) :
-    ErrWindows0 (modelD η) (modelC cHH) 3 1 1 := by
-  have hl2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
-  refine ⟨by norm_num [modelD], by norm_num [modelD], by norm_num [modelD], by norm_num [modelD],
-    by norm_num [modelD], by simp [Data.nT], by norm_num [modelD], by norm_num [modelD],
-    by norm_num, by norm_num [modelD], by norm_num [modelD], by norm_num [modelD],
-    by norm_num [modelD], by norm_num [modelD], by norm_num [modelD], by norm_num [modelD],
-    by norm_num [modelD], by norm_num [modelD], by norm_num, by norm_num [modelD],
-    fun _ => by norm_num [modelD], by norm_num [modelD], by norm_num [modelD], fun _ => ?_,
-    by norm_num [modelD], hη, by norm_num [modelD], ?_⟩
-  · simp only [Fintype.card_unit, Nat.cast_one, Real.log_one]
-    exact mul_nonneg (by norm_num [modelD]) hl2
-  · refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, hc⟩ <;> norm_num [modelC]
 
-theorem error_windows_model : ErrWindowsModel := by
-  refine ⟨modelD (1 / 100000), modelC 1, 3, 1, 1,
-    ⟨model_windows0 _ _ (by norm_num) (by norm_num), ?_⟩, ⟨?_, ?_⟩, by norm_num [modelD],
-    rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
-  · norm_num [modelD, modelC, Data.nT]
-  · have := Real.log_le_self (by norm_num : (0 : ℝ) ≤ 100000)
-    simpa [modelD] using this
-  · norm_num [modelD, modelC, KBig]
 
-theorem error_sizes_weak_false : ¬ ErrorFormsWeakWindowsFalse := by
-  intro h
-  have hw0 := model_windows0 1 10 (by norm_num) (by norm_num)
-  have hL : LargeX (modelD 1).x (modelD 1).ε 1 (modelC 10).cHH 1 := by
-    refine ⟨?_, ?_⟩
-    · have := Real.log_le_self (by norm_num : (0 : ℝ) ≤ 100000)
-      simpa [modelD] using this
-    · norm_num [modelD, modelC, KBig]
-  have h1 := h (modelD 1) (modelC 10) 3 1 1
-    ⟨hw0, by norm_num [modelD], by norm_num [modelD]⟩ hL
-  have h2 := error_lower_eta (modelD 1) (modelC 10) 3 1 1 hw0 (by norm_num [modelD])
-  have h3 := h2.trans h1
-  have e10 : (100000 : ℝ) ^ (10 : ℝ) = 100000 ^ (10 : ℕ) := by
-    rw [← Real.rpow_natCast]; norm_num
-  have e5 : (100000 : ℝ) ^ (((1 : ℝ) + 1 + 3) * 1) = 100000 ^ (5 : ℕ) := by
-    rw [← Real.rpow_natCast]; norm_num
-  simp only [modelD, modelC, CErr, ErrText, Data.nT, Real.sqrt_zero, Fintype.card_unit, e10, e5] at h3
-  norm_num at h3
 
 theorem text_sizes_windows : TextSizesWindows := by
   intro ε e hε
@@ -548,42 +438,10 @@ theorem text_sizes_windows : TextSizesWindows := by
     gcongr
     exact (mul_le_mul_of_nonneg_right hnX hX0.le).trans hXX
 
-theorem error_bound : ErrorFormsEventualUnderSizeParameters := by
-  intro ε K cHH eK hε
-  obtain ⟨x1, hx1⟩ := error_sizes_eventually ε K cHH eK hε
-  obtain ⟨x2, hx2⟩ := text_sizes_windows ε eK hε
-  refine ⟨max x1 x2, ?_⟩
-  intro U0 _ W _ _ Top _ m f D C Xpp n lrd h1 h2 hx hT
-  obtain ⟨tb, ta, tb', tX, tL, tLa, tl0, tl, tn0, tn, tε, tnT, tm, txm, teK, tk1, tkx, taT, tB0, tNc, tW,
-    td, te, teB, tet, tC⟩ := hT
-  have hk0 : 0 < D.k := by linarith only [tk1]
-  rw [h1] at tl
-  obtain ⟨w1, w2, w3, w4, w5, w6, w7, w8, w9⟩ :=
-    hx2 D.x D.k n lrd ((le_max_right _ _).trans hx) hk0 tkx tn0 tn tl
-  rw [← h1] at w2 w3 w4 w5 w6 w7 w8 w9
-  rw [← tb] at w2 w3
-  rw [← ta] at w4 w5 w7 w9
-  rw [← tb'] at w6 w7
-  rw [← tX] at w8 w9
-  have hxb : D.x * D.b ≤ D.a := by rw [ta, tb]; exact le_refl _
-  have hy0 : 0 ≤ D.x ^ D.ε := Real.rpow_nonneg (by linarith only [w1]) _
-  have ha1 : 1 ≤ D.a := by
-    refine le_trans ?_ hxb
-    exact one_le_mul_of_one_le_of_one_le w1 w2
-  refine hx1 D C Xpp h1 h2 ((le_max_left _ _).trans hx) ⟨⟨w1, by rw [h1]; exact hε, tε, w2, hxb, tnT, tm,
-    txm, teK, tk1, tkx, w5, ?_, ?_, ?_, ?_, w6, w7, w8, w9, taT, tB0, tNc, tW, td, te, teB, tC⟩, tet⟩
-  · rw [tL, w3]; exact hy0
-  · rw [tL, w3]; linarith only [hy0]
-  · rw [tLa]; exact add_nonneg (Real.log_nonneg ha1) tl0
-  · rw [tLa]; exact w4
 
 section
 open Formalism Formalism.D5 Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds
 
-theorem size_windows_of_bracket : SizeWindowsOfBracket := by
-  intro C ε x n nT nT2 m b k aE Err0 h
-  obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, -, h16⟩ := h
-  exact ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, le_refl _, h16⟩
 
 theorem joint_error_bound {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] :
     LeadingTermGrowthJoint (H := H) := by

@@ -39,13 +39,7 @@ theorem GL_two_col_ne_zero {K : Type*} [Field K] (g : GL (Fin 2) K)
 def bigCellGL2 (K : Type*) [Field K] : Set (GL (Fin 2) K) :=
   {g | (g : Matrix (Fin 2) (Fin 2) K) 1 0 ≠ 0}
 
-theorem one_notMem_bigCellGL2 (K : Type*) [Field K] : (1 : GL (Fin 2) K) ∉ bigCellGL2 K := by
-  simp [bigCellGL2]
 
-theorem exists_mem_bigCellGL2 (K : Type*) [Field K] :
-    ∃ g : GL (Fin 2) K, g ∈ bigCellGL2 K := by
-  refine ⟨Matrix.GeneralLinearGroup.mkOfDetNeZero !![0, 1; -1, 0] (by simp [Matrix.det_fin_two]), ?_⟩
-  simp [bigCellGL2]
 
 theorem isWeilCell_GL_two (K : Type*) [Field K] [Infinite K] : IsWeilCell (bigCellGL2 K) where
   inv_mem x hx := fun h => hx (GL_two_inv_one_zero x h)
@@ -185,10 +179,6 @@ theorem extend_unique (hΩ : IsWeilCell Ω) (hR : IsMulOn Ω R) (Φ : G →ₙ* 
   rw [map_mul, map_mul, hΦ x hx, hΦ y hy, hΩ.extend_apply_of_mem hR hx,
     hΩ.extend_apply_of_mem hR hy]
 
-theorem mulHom_ext (hΩ : IsWeilCell Ω) {Φ Ψ : G →ₙ* M} (h : ∀ x ∈ Ω, Φ x = Ψ x) : Φ = Ψ := by
-  ext g
-  obtain ⟨x, hx, y, hy, rfl⟩ : g ∈ Ω * Ω := by rw [hΩ.mul_self_eq_univ]; trivial
-  rw [map_mul, map_mul, h x hx, h y hy]
 
 section Monoid
 
@@ -206,29 +196,13 @@ noncomputable def extendMonoidHom (hΩ : IsWeilCell Ω) (hS : IsMulOn Ω S) {x�
   map_one' := hΩ.extend_one hS hx₀ hu
   map_mul' := map_mul (hΩ.extend hS)
 
-theorem extendMonoidHom_apply_of_mem (hΩ : IsWeilCell Ω) (hS : IsMulOn Ω S) {x₀ : G}
-    (hx₀ : x₀ ∈ Ω) (hu : IsUnit (S x₀)) {x : G} (hx : x ∈ Ω) :
-    hΩ.extendMonoidHom hS hx₀ hu x = S x :=
-  hΩ.extend_apply_of_mem hS hx
 
 theorem monoidHom_ext (hΩ : IsWeilCell Ω) {Φ Ψ : G →* N} (h : ∀ x ∈ Ω, Φ x = Ψ x) : Φ = Ψ := by
   ext g
   obtain ⟨x, hx, y, hy, rfl⟩ : g ∈ Ω * Ω := by rw [hΩ.mul_self_eq_univ]; trivial
   rw [map_mul, map_mul, h x hx, h y hy]
 
-theorem extendMonoidHom_unique (hΩ : IsWeilCell Ω) (hS : IsMulOn Ω S) {x₀ : G} (hx₀ : x₀ ∈ Ω)
-    (hu : IsUnit (S x₀)) (Φ : G →* N) (hΦ : ∀ x ∈ Ω, Φ x = S x) :
-    Φ = hΩ.extendMonoidHom hS hx₀ hu :=
-  hΩ.monoidHom_ext fun x hx => by rw [hΦ x hx, hΩ.extendMonoidHom_apply_of_mem hS hx₀ hu hx]
 
-theorem not_exists_monoidHom_zero (G : Type*) [Group G] :
-    IsWeilCell (Set.univ : Set G) ∧ IsMulOn (Set.univ : Set G) (fun _ => (0 : ℕ)) ∧
-      ¬ ∃ Φ : G →* ℕ, ∀ x ∈ (Set.univ : Set G), Φ x = 0 := by
-  refine ⟨⟨fun _ _ => trivial, fun _ => ⟨1, fun _ _ => trivial⟩⟩, fun _ _ _ _ _ => by simp, ?_⟩
-  rintro ⟨Φ, hΦ⟩
-  have := hΦ 1 trivial
-  rw [map_one] at this
-  exact one_ne_zero this
 
 end Monoid
 

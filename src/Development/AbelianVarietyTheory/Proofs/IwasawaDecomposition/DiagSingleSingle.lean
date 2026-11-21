@@ -322,9 +322,5 @@ end GlobalTheory.Mem.DiagSp
 open Formalism.BasicNotions NumberField IsDedekindDomain GlobalTheory.Mem
 open scoped TensorProduct
 
-theorem GlobalTheory.Mem.exists_spaces : ∀ (R : Ranks) (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (cm : CMData F E) (T : ℕ) (hT : T.Prime) (pz : E) (hpz : star pz * pz = T) (vn : ℕ → Bool), ∃ S : Spaces R F E, S.T = T ∧ (∀ j, j ≤ R.m → ∀ τ : E →+* ℂ, (S.Y j).sig τ = sigYD R j) ∧ S.Vneg = vn ∧ ∃ hstar : ∀ x : E, IsIntegral ℤ x → IsIntegral ℤ (star x), ∀ j, S.X j = Formalism.BasicNotions.Examples₂.posSpace hstar (R.N j) := by
-  intro R F E _ _ _ _ _ _ cm T hT pz hpz vn
-  exact ⟨DiagSp.spacesStd R cm T hT pz hpz vn, rfl, fun j _ τ => DiagSp.spY_sig R j τ, rfl,
-    Formalism.BasicNotions.Examples₂.star_isIntegral, fun _ => rfl⟩
 
 end

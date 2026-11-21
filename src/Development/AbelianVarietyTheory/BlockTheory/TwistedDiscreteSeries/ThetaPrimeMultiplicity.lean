@@ -48,9 +48,6 @@ theorem IsThetaPrimeMult.integral {R : RealDat D A Ks} {i : Fin D.R.m} {t : T}
   simp only [Lift.thetaPInt, thetaKO, e3] at e1 e2
   exact ⟨e1, (congrFun (h2 x v) g).trans e2⟩
 
-theorem isThetaPrimeMult_thF_iff (R : RealDat D A Ks) :
-    (∀ i t, IsThetaPrimeMult R i t (R.thF i t)) ↔ R.thP_thF_mem ∧ R.thP_thF :=
-  ⟨fun h => ⟨fun i t => (h i t).1, fun i t => (h i t).2⟩, fun h i t => ⟨h.1 i t, h.2 i t⟩⟩
 
 end At
 

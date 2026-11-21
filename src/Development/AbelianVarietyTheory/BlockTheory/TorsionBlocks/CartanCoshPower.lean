@@ -190,9 +190,6 @@ theorem isCartan_cartanB {p q : ℕ} (g : UpqT p q) : IsCartan g (cartanB g) := 
     Matrix.mem_unitaryGroup_iff'.mpr (by simpa [star_eq_conjTranspose] using hb.2.2.2), ?_⟩
   rw [← hkb, hLp, hk, Matrix.mul_assoc, heE, Matrix.mul_one]
 
-theorem isCartan_iff {p q : ℕ} (g : UpqT p q) (B : Matrix (Fin p) (Fin q) ℂ) :
-    IsCartan g B ↔ cartanB g = B :=
-  ⟨cartanB_eq, fun h => h ▸ isCartan_cartanB g⟩
 
 theorem coshPow_pos {p q : ℕ} (c : ℝ) (g : UpqT p q) : 0 < coshPow c g :=
   Finset.prod_pos fun _ _ => Real.rpow_pos_of_pos (Real.cosh_pos _) _

@@ -193,26 +193,6 @@ def TwoLevels.regular (X : DataX E r) (U : Type) [Group U]
   tr_mul := by intro u v c; simp
   tr_faithful := by intro u c h _; simpa using h
 
-theorem epsBound : EpsBound := by
-  intro f k D T P h2 h6 hP hT
-  have h2' : (2 : ℝ) ≤ ((f * k : ℕ) : ℝ) := by exact_mod_cast h2
-  have h6' : (6 : ℝ) ≤ D := by exact_mod_cast h6
-  have hkf : (k : ℝ) * f = ((f * k : ℕ) : ℝ) := by push_cast; ring
-  set a : ℝ := ((f * k : ℕ) : ℝ) with ha
-  have ha0 : 0 < a := by linarith
-  have h3 : a ^ 3 ≤ P ^ 3 := pow_le_pow_left₀ ha0.le hP 3
-  have hT' : a ^ 3 * ((D : ℝ) ^ 3 * a) ≤ T := by
-    calc a ^ 3 * ((D : ℝ) ^ 3 * a) ≤ P ^ 3 * ((D : ℝ) ^ 3 * a) := by gcongr
-      _ = P ^ 3 * (D : ℝ) ^ 3 * k * f := by rw [← hkf]; ring
-      _ ≤ T := hT
-  have hD : 4 * ((D : ℝ) * (D + 6)) ≤ (D : ℝ) ^ 3 * a := by
-    have : (D : ℝ) ^ 3 * 2 ≤ (D : ℝ) ^ 3 * a := by gcongr
-    nlinarith [mul_nonneg (sub_nonneg.2 h6') (sq_nonneg (D : ℝ)), sq_nonneg (D : ℝ)]
-  have hT0 : (0 : ℝ) < T := lt_of_lt_of_le (by positivity) hT'
-  rw [div_le_iff₀ hT0, inv_eq_one_div, div_div, div_mul_eq_mul_div, one_mul,
-    le_div_iff₀ (by positivity)]
-  have : a ^ 3 * (4 * ((D : ℝ) * (D + 6))) ≤ a ^ 3 * ((D : ℝ) ^ 3 * a) := by gcongr
-  linarith
 
 end
 

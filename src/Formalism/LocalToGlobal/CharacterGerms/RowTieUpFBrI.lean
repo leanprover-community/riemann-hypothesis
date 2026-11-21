@@ -168,25 +168,6 @@ theorem upChar_of_upFLaw (Y : FBChart C V OE dd) (p : PairData Y d I) (hr : (Y.r
   rw [hF i, MvPowerSeries.constantCoeff_map] at this
   rw [this, map_zero]
 
-theorem upChar_of_upF [IsDedekindDomain OE] [CharZero OE] [Module.Free ℤ OE] [Module.Finite ℤ OE]
-    (hUp : UpFSt V.l) (Y : FBChart C V OE dd) (p : PairData Y d I) (hr : (Y.raw p).RankHyp)
-    (Hc : ∀ g, (Y.raw p).CartHyp V g)
-    (vm : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C] (hT : ValTie V vm) (hv : vm.Integers R)
-    (h0 : 0 < (vm (V.l : C) : ℝ)) (h1 : (vm (V.l : C) : ℝ) < 1)
-    [Fact ¬IsUnit ((V.l : ℕ) : R)] [IsAdicComplete (Ideal.span {((V.l : ℕ) : R)}) R] [IsLocalRing R] [Algebra ℤ_[V.l] R]
-    (hMM : ∀ x : R, V.MM (algebraMap R C x) → x ∈ maximalIdeal R)
-    (T : Type) [CommRing T] [IsDomain T] [IsLocalRing T] [IsNoetherianRing T] [CharZero T]
-    [IsAdicComplete (maximalIdeal T) T] (hlT : ¬ IsUnit ((V.l : ℕ) : T))
-    (G : Over (Sp T)) [GrpObj G] [IsCommMonObj G] (aG : OE → (G ⟶ G)) (FT : Fin dd → PS T 2 dd)
-    (actT : OE → Fin dd → PS T 1 dd) (hG : GeoJ T G OE aG dd FT actT)
-    (iota : T →+* R) (hloc : IsLocalHom iota)
-    (hF : ∀ i, Y.B.G.F i = toC (MvPowerSeries.map iota (FT i)))
-    (hdisc : ¬ ((V.l : ℤ) ∣ Algebra.discr ℤ (Module.Free.chooseBasis ℤ OE)))
-    (emR : Fin 2 → ZMod d → OE →+* R) (hem : ∀ g a x, algebraMap R C (emR g a x) = p.em g a x)
-    (hPl : ∀ g, PlaceIn V.l OE R d (emR g))
-    (hEig : EigIn p R (fun a i => MvPowerSeries.map iota (actT a i)) emR) : UPCharSt Y p Hc :=
-  upChar_of_upFLaw Y p hr Hc vm R hT hv h0 h1 hMM T FT actT
-    (upFLaw_of_geoJ hUp Y.l_odd T hlT G aG FT actT hG hdisc) iota hloc hF emR hem hPl hEig
 
 end Inst
 

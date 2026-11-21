@@ -71,15 +71,6 @@ theorem classSum_of_ad (Y : R3.Read (A3 := A3) R.toRealDat F.lv2 X0) (hM : R.toR
     ⟨{1}, fun κ hκ => ⟨1, by simp, by simpa using comap_le_Umax (ad.std i) (hB i) (R.datVt i t) hκ⟩⟩ hX hFm
     hread _ hnP hip (fun _ => GlobalTheory.InvFormBdd.exists_isInvForm _ _ _)
 
-theorem classSum_twisted (Y : R3.Read (A3 := A3) R.toRealDat F.lv2 X0) (hM : R.toRealDat.IsModels)
-    (hB : ∀ i, IsBaseFrame (Vc D i) (R.βV i) (R.ΛV i) 1) {M : MtFam D} (ad : MtAd Y M) (hrat : ∀ i, RatFrame (ad.PV i))
-    {tup : D.what₂.Tup → Fin D.R.m → Formalism.L2.Host.HChar D.host.E} {Q : D.what₂.places.Pl → Finset (PlE D.host)}
-    (hin : MtInput D M tup Q) (v : D.what₂.places.Pl) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (hv : TwistedAt D v) :
-    ClassSum (M (D.what₂.muTw v) j h1 h2) := by
-  obtain ⟨k, rfl⟩ : ∃ k, j = k + 1 := ⟨j - 1, by omega⟩
-  have hμ : Used0 D (D.what₂.muTw v) := Or.inr ⟨v, ((D.what₂.muAt_or v).resolve_left hv).symm⟩
-  exact classSum_of_ad Y hM hB ad hrat _ hμ ⟨k, by omega⟩
-    ⟨{1}, fun κ hκ => ⟨1, by simp, by simpa using level_le_Umax hin v ⟨k, by omega⟩ hκ⟩⟩
 
 theorem classSum_of_std (Y : R3.Read (A3 := A3) R.toRealDat F.lv2 X0) (hM : R.toRealDat.IsModels)
     (hB : ∀ i, IsBaseFrame (Vc D i) (R.βV i) (R.ΛV i) 1) {M : MtFam D} (ad : MtAd Y M) (hV : ∀ i, GlobalTheory.StdFrame.OrthFrame (Vc D i))
@@ -128,21 +119,8 @@ theorem classSum_twisted_std (Y : R3.Read (A3 := A3) R.toRealDat F.lv2 X0) (hM :
 
 end Gen
 
-theorem classSum_mtL {D : D7} (L : LocAll (lay0 D)) (M : MtFam D) (μ : D.what₂.Tup) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m)
-    (h : ClassSum (M μ j h1 h2)) : ClassSum (mtL L M μ j h1 h2) := h
 
-theorem classSum_states : AllSt fun _ _ _ _ w P x => ∀ m : InMt x.r.Y (cfOf x) w.I.xi (QOf P), (∀ i, RatFrame (m.ad.PV i)) →
-    ∀ v j h1 h2, TwistedAt (Dof x) v → ClassSum (m.M ((Dof x).what₂.muTw v) j h1 h2) := by
-  refine GlobalTheory.Mem.Top.Bl.StepW.of_all fun K B f T w _ _ _ P x m hrat v j h1 h2 hv => ?_
-  obtain ⟨hB, hM⟩ : (∀ i, IsBaseFrame (Vc (Dof x) i) (x.m.z.R.βV i) (x.m.z.R.ΛV i) 1) ∧ x.m.z.R.toRealDat.IsModels := by
-    refine ⟨fun i => ?_, x.m.z.pins.char.base.models⟩
-    obtain ⟨c, hc⟩ := x.m.z.pins.char.base.lev.βV i
-    rwa [one_pow] at hc
-  exact classSum_twisted x.r.Y hM hB m.ad hrat m.mt v j h1 h2 hv
 
-theorem exists_std_rat {D : D7} {V : HSp D} (h : GlobalTheory.StdFrame.OrthFrame V) :
-    ∃ P : principalLevelFrame.RowPsi V V.rank, StdFrame (GlobalTheory.StdFrameModel.hostF_eq D) P ∧ RatFrame P :=
-  ⟨_, GlobalTheory.StdFrameModel.stdPsi_unitPsi h, fun g => by simpa using GlobalTheory.NJoin.Inh.rat_unit h.gram_eq g⟩
 
 theorem orthFrame_of_vStd {D : D7} (i : Fin D.R.m) (h : Formalism.IndefR.FWT.VStd D i) : GlobalTheory.StdFrame.OrthFrame (Vc D i) := by
   obtain ⟨h1, h2⟩ := (GlobalTheory.StdFrameCounterexample.vstd_iff i).1 h

@@ -24,21 +24,6 @@ theorem ϖ_ne : M.ϖ ≠ 0 := by
   apply Subtype.ext
   simp [h]
 
-theorem notMem_of_unit {x : 𝓞 E} (hx : IsUnit (M.j x)) : x ∉ Q := by
-  intro hxQ
-  obtain ⟨u, hu⟩ := hx
-  obtain ⟨y, z, hyz⟩ := M.dense (↑u⁻¹) 1
-  have hdz : ∃ z' : M.R, M.j (1 - x * y) = M.j M.ϖ ^ 1 * z' := by
-    refine ⟨M.j x * z, ?_⟩
-    have h1 : M.j y = ↑u⁻¹ - M.j M.ϖ ^ 1 * z := by rw [← hyz]; ring
-    rw [map_sub, map_one, map_mul, h1, ← hu, mul_sub, Units.mul_inv]
-    ring
-  obtain ⟨s, hs, w, hw⟩ := M.detect (1 - x * y) 1 hdz
-  apply hs
-  have hsw : s = s * x * y + M.ϖ ^ 1 * w := by linear_combination hw
-  rw [hsw]
-  refine Q.add_mem (Q.mul_mem_right _ (Q.mul_mem_left _ hxQ)) (Q.mul_mem_right _ ?_)
-  rw [pow_one]; exact M.ϖ_Q
 
 theorem exists_clear [hQ : Q.IsPrime] {ι : Type} [Fintype ι] (x : ι → E) :
     ∃ k : ℕ, ∃ t : 𝓞 E, t ∉ Q ∧ ∃ w : ι → 𝓞 E,
@@ -86,13 +71,6 @@ theorem exists_clear [hQ : Q.IsPrime] {ι : Type} [Fintype ι] (x : ι → E) :
   rw [map_mul, ha i, Algebra.smul_def, hr']
   ring
 
-theorem detect_mat {N : ℕ} (A : Matrix (Fin N) (Fin N) (𝓞 E)) (m : ℕ)
-    (Y : Matrix (Fin N) (Fin N) M.R) (h : M.j.mapMatrix A = (M.j M.ϖ ^ m) • Y) (a b : Fin N) :
-    ∃ s : 𝓞 E, s ∉ Q ∧ ∃ w : 𝓞 E, s * A a b = M.ϖ ^ m * w := by
-  apply M.detect
-  refine ⟨Y a b, ?_⟩
-  have := congrFun (congrFun h a) b
-  simpa [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.smul_apply] using this
 
 end StModel
 

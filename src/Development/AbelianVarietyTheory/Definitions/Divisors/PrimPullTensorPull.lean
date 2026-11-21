@@ -44,7 +44,6 @@ def comp (X : DRChain.{u} C n) : ∀ i : Fin (n + 1), X.M 0 →ₗ[C] X.M i :=
 @[simp] theorem comp_succ (X : DRChain.{u} C n) (i : Fin n) :
     X.comp i.succ = X.f i ∘ₗ X.comp i.castSucc := rfl
 
-theorem comp_eq_chainComp (X : DRChain.{0} C n) : X.comp = chainComp X.f := rfl
 
 def ofLMPoint {ϖ : C} [NeZero n] (P : LMPoint C ϖ n) : DRChain.{0} C n where
   M _ := Fin n → C
@@ -155,10 +154,6 @@ def pullPart {ρ : RingAct B O} {ρ' : RingAct B' O} {K : Type} [CommRing K] [Al
       rw [← hy]
       exact (LinearMap.congr_fun (primPull_tensorPull hu ε) y).symm
 
-theorem pullPart_apply {ρ : RingAct B O} {ρ' : RingAct B' O} {K : Type} [CommRing K] [Algebra K O]
-    (χ : K →+* C) (ε : C ⊗[ℤ] O) (u : B' ⟶ B) (hu : GlobalTheory.IwLevel.IsLin ρ' ρ u) (h : epsPart ρ χ ε) :
-    haveI := hu.hom
-    (pullPart χ ε u hu h : primDR B') = primPull (dp0 C) (𝟙 _) u h := rfl
 
 end GlobalTheory.DeRham
 

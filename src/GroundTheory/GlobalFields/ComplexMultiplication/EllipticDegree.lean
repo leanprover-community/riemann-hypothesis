@@ -183,9 +183,6 @@ theorem finsum_toNat_torusOrder_sub_const {f : ℂ → ℂ} (hf : IsEllipticFunc
     exact hsum
   exact_mod_cast this
 
-theorem finsum_toNat_torusOrder_eq_degree {f : ℂ → ℂ} (hf : IsEllipticFunction L f) :
-    ∑ᶠ x : Torus L, (torusOrder L f x).toNat = degree L f := by
-  simpa using finsum_toNat_torusOrder_sub_const hf 0
 
 lemma eq_zero_of_finsum_eq_zero_nat {α : Type*} {u : α → ℕ} (hu : (Function.support u).Finite)
     (h : ∑ᶠ x, u x = 0) (x : α) : u x = 0 := by

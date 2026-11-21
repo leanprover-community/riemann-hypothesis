@@ -21,13 +21,6 @@ theorem rderC_zero (τ : D.what₂.Tau) (Z : Matrix (Fin V.rank) (Fin V.rank) �
     RderC θ V τ Z (0 : GA D V → ℂ) = 0 := by
   simp [RderC, rder_zero]
 
-theorem foldr_rderC_zero (l : List (Matrix (Fin V.rank) (Fin V.rank) ℂ)) (τ : D.what₂.Tau) :
-    (l.map fun Z => RderC θ V τ Z).foldr (fun f acc => f acc) (0 : GA D V → ℂ) = 0 := by
-  induction l with
-  | nil => rfl
-  | cons Z l ih =>
-    rw [List.map_cons, List.foldr_cons, ih]
-    exact rderC_zero θ V τ Z
 
 theorem gelf_zero (τ : D.what₂.Tau) (k : ℕ) : gelf θ V τ k (0 : GA D V → ℂ) = 0 := by
   unfold gelf
@@ -159,39 +152,7 @@ theorem isMultMap_smul {M : DSModel V S} {J : Set (GA D V)} {χ : GA D V → ℂ
       exact mul_le_mul_of_nonneg_left (hC w hw) (norm_nonneg c)
     · simp only [LinearMap.smul_apply, _root_.smul_apply, Pi.smul_apply, hℓ w]
 
-theorem heckeLin_indep {D : D7} {V : HSp D} (K : Set (GA D V)) (x : GA D V) (R R' : Finset (GA D V))
-    (F : GA D V → ℂ)
-    (hinv : ∀ a ∈ K, a⁻¹ ∈ K)
-    (hK : ∀ k ∈ K, ∀ g, F (g * k) = F g) (hR : IsCosetRep V K x R) (hR' : IsCosetRep V K x R') :
-    heckeLin V R F = heckeLin V R' F := by
-  funext g
-  show ∑ γ ∈ R, F (g * γ) = ∑ γ ∈ R', F (g * γ)
-  have ex1 : ∀ γ ∈ R, ∃ γ', γ' ∈ R' ∧ γ'⁻¹ * γ ∈ K := fun γ hγ => (hR'.2 γ (hR.1 γ hγ).2).exists
-  have ex2 : ∀ γ ∈ R', ∃ γ', γ' ∈ R ∧ γ'⁻¹ * γ ∈ K := fun γ hγ => (hR.2 γ (hR'.1 γ hγ).2).exists
-  choose! i hiR hiK using ex1
-  choose! j hjR hjK using ex2
-  refine Finset.sum_nbij' i j hiR hjR ?_ ?_ ?_
-  · intro γ hγ
-    have hk := hinv _ (hiK γ hγ)
-    rw [_root_.mul_inv_rev, _root_.inv_inv] at hk
-    exact (hR.2 (i γ) (hR'.1 (i γ) (hiR γ hγ)).2).unique
-      ⟨hjR (i γ) (hiR γ hγ), hjK (i γ) (hiR γ hγ)⟩ ⟨hγ, hk⟩
-  · intro γ hγ
-    have hk := hinv _ (hjK γ hγ)
-    rw [_root_.mul_inv_rev, _root_.inv_inv] at hk
-    exact (hR'.2 (j γ) (hR.1 (j γ) (hjR γ hγ)).2).unique
-      ⟨hiR (j γ) (hjR γ hγ), hiK (j γ) (hjR γ hγ)⟩ ⟨hγ, hk⟩
-  · intro γ hγ
-    show F (g * γ) = F (g * i γ)
-    rw [← hK _ (hiK γ hγ) (g * i γ), _root_.mul_assoc, _root_.mul_inv_cancel_left]
 
-theorem heckeOn_indep {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) (K : Set (GA D V))
-    (x : GA D V) (R R' : Finset (GA D V)) (T : MMap M)
-    (hinv : ∀ a ∈ K, a⁻¹ ∈ K)
-    (hT : ∀ v, ∀ k ∈ K, ∀ g, T v (g * k) = T v g) (hR : IsCosetRep V K x R) (hR' : IsCosetRep V K x R') :
-    heckeOn M R T = heckeOn M R' T := by
-  ext v g
-  exact congrFun (heckeLin_indep K x R R' (T v) hinv (hT v) hR hR') g
 
 end Formalism.IndefR.Mult
 

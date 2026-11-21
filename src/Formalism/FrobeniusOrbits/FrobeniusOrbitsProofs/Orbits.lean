@@ -11,15 +11,7 @@ namespace Formalism.FrobeniusOrbits
 
 namespace Orbits
 
-lemma orderOf_conjugation_eq_two : orderOf c0 = 2 := by
-  unfold c0
-  apply orderOf_eq_prime
-  · ext <;> simp
-  · intro h
-    have := congrArg Prod.fst h
-    simp at this
 
-lemma chD_apply (e : ℕ) (g : GG e) : chD e g = g.1.2 := rfl
 
 lemma prim_bound {E K : Type*} [Field E] [Field K] [Algebra ℚ E] [Algebra ℚ K] [Algebra E K]
     [IsScalarTower ℚ E K] [FiniteDimensional ℚ E] [FiniteDimensional E K] (g : ℕ) (hg : g.Prime)
@@ -94,34 +86,6 @@ end Orbits
 
 open Orbits
 
-theorem hostOrbits : HostOrbits := by
-  unfold HostOrbits
-  intro e φ hφ
-  have hb : φ.1.2 = -1 := by rcases hφ with h | h <;> simp [h, c0]
-  refine ⟨fun τ hτ i => ?_, fun h0 hne => ?_⟩
-  · have hτ2 : τ.1.2 = 1 := by simpa [Psi, chD] using hτ
-    have hm : (φ ^ i * τ).1.2 = (-1) ^ i := by simp [hb, hτ2]
-    have : φ ^ i * τ ∈ Psi e ↔ (φ ^ i * τ).1.2 = 1 := by simp [Psi, chD]
-    rw [this, hm]
-    exact neg_one_pow_eq_one_iff_even (by decide)
-  ·
-    have hpow : ∀ x : HGrp e, x ^ (2 ^ (e + 1)) = 1 := by
-      intro x
-      obtain ⟨u, rfl⟩ := QuotientGroup.mk_surjective x
-      have hc : Fintype.card (ZMod (2 ^ (e + 2)))ˣ = 2 ^ (e + 1) := by
-        rw [ZMod.card_units_eq_totient, Nat.totient_prime_pow_succ Nat.prime_two]
-        simp
-      rw [← QuotientGroup.mk_pow, ← hc, pow_card_eq_one, QuotientGroup.mk_one]
-    obtain ⟨j, -, hj⟩ := (Nat.dvd_prime_pow Nat.prime_two).mp (orderOf_dvd_of_pow_eq_one (hpow φ.2))
-    have hj0 : j ≠ 0 := by
-      rintro rfl
-      exact hne (orderOf_eq_one_iff.mp (by simpa using hj))
-    have hev : Even (orderOf φ.2) := by
-      rw [hj]
-      exact (Nat.even_pow.mpr ⟨even_two, hj0⟩)
-    refine ⟨hev, ?_⟩
-    rw [Prod.orderOf, h0, orderOf_conjugation_eq_two]
-    exact Nat.lcm_eq_right (even_iff_two_dvd.mp hev)
 
 theorem hostOrbitsPlaces : HostOrbitsPlaces := by
   unfold HostOrbitsPlaces
@@ -173,7 +137,5 @@ theorem hostFiniteOrder : HostFiniteOrder := by
   have := dim_bound k g hg M hM hne
   rwa [Galois.finrank_cmField hqd h] at this
 
-theorem hostOrbitsFin : HostOrbits ∧ HostOrbitsPlaces ∧ HostOrbitCount ∧ HostFiniteOrder :=
-  ⟨hostOrbits, hostOrbitsPlaces, hostOrbitCount, hostFiniteOrder⟩
 
 end Formalism.FrobeniusOrbits

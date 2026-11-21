@@ -83,10 +83,6 @@ theorem uniq (_hL : RecTExists) {rc' : IrrGL (w.adicCompletion E) → WD h} (H :
 
 theorem abConv (_hL : RecTExists) (_hD : DepthZeroTypeInertia) (H : IsRecT h rc) : IsRecT h rc := H
 
-theorem llOf : RecTExists → LocalConverseGL → DepthZeroCuspidalLL → DepthZeroInduction →
-    BrauerDegreeZero → ChevalleyUnits → GlobalArtinReciprocity → LanglandsExhaustionGL → LanglandsMultisegments →
-    StandardCosocleGL → ZelevinskyPolynomialRing → GeometricLemma → BernsteinZelevinskyFiniteness → RecTExists :=
-  fun h _ _ _ _ _ _ _ _ _ _ _ _ => h
 
 end New
 

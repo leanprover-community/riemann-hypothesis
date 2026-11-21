@@ -10,21 +10,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.StdPar.BlockCentreModel
 
-theorem iff_isBlockEmb : GlobalTheory.Published.LeviBlockCentreFinite ↔
-    ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [IsTotallyComplex E] [Algebra F E]
-    (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J →
-    ∀ (r : ℕ) (X Y : Matrix (Fin n) (Fin r) E), IsWittFrame σ J X Y → ∀ (K : Subgroup (GAd σ J)), IsMaxCpt σ J K →
-    ∀ (S : Finset (Fin r)) (l d : ℕ) (h : l + d ≤ r) (ι : GlobalTheory.CuspRep.GA E d →* GAd σ J),
-      GlobalTheory.BlockForms.IsBlockEmb σ J X Y h ι →
-      1 ≤ d → (∀ j : Fin r, l ≤ j.val → j.val + 1 < l + d → j ∉ S) → (∃ k ∈ S, k.val + 1 = l + d) →
-      (l = 0 ∨ ∃ p ∈ S, p.val + 1 = l) →
-      ∀ (φ : GAd σ J → ℂ), GlobalTheory.StdPar.IsAutOn σ J X Y S K φ → ∀ g₀ : GAd σ J,
-        ∀ f : GlobalTheory.CuspRep.Sm E d, (∀ x, f.1 x = φ (ι x * g₀)) →
-          FiniteDimensional ℂ (Submodule.span ℂ ((fun z : Module.End ℂ (GlobalTheory.CuspRep.Sm E d) => z f) '' GlobalTheory.CuspRep.Zalg E d)) :=
-  ⟨fun H F E _ _ _ _ _ _ σ h n J hJ r X Y hW K hK S l d hl ι hι => H F E σ h n J hJ r X Y hW K hK S l d hl ι _ _ rfl rfl hι,
-    fun H F E _ _ _ _ _ _ σ h n J hJ r X Y hW K hK S l d hl ι _ _ e e' hι => by
-      subst e e'
-      exact H F E σ h n J hJ r X Y hW K hK S l d hl ι hι⟩
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
   {J : Matrix (Fin n) (Fin n) E} {r : ℕ} {X Y : Matrix (Fin n) (Fin r) E}

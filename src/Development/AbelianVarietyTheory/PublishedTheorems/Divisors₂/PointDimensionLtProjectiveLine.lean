@@ -63,18 +63,9 @@ theorem le_analyticDim_iff {A : FinHolAtlas d X} {T : Set X} {k : ℕ} :
     have h2 : k + 1 ≤ k := by exact_mod_cast h.trans this
     omega
 
-theorem analyticDim_le (A : FinHolAtlas d X) (T : Set X) : analyticDim A T ≤ (d : WithBot ℕ∞) :=
-  iSup₂_le fun n ⟨_, _, _, hψ, _⟩ => by exact_mod_cast hψ.1
 
-theorem analyticDim_empty (A : FinHolAtlas d X) : analyticDim A ∅ = ⊥ :=
-  le_bot_iff.1 (iSup₂_le fun _ ⟨_, hx⟩ => absurd hx.1 (Set.notMem_empty _))
 
-theorem analyticDim_univ [Nonempty X] (A : FinHolAtlas d X) : analyticDim A Set.univ = d :=
-  le_antisymm (analyticDim_le A _)
-    (le_analyticDim (by rw [regularLocus_univ]; exact Set.univ_nonempty))
 
-theorem singularLocus_univ (A : FinHolAtlas d X) : singularLocus A Set.univ = ∅ :=
-  Set.diff_eq_empty.2 fun x _ => Set.mem_iUnion.2 ⟨d, by rw [regularLocus_univ]; trivial⟩
 
 theorem injective_fderiv_of_comp {a b c : ℕ} {F : (Fin a → ℂ) → Fin b → ℂ}
     {G : (Fin b → ℂ) → Fin c → ℂ} {H : (Fin a → ℂ) → Fin c → ℂ} {z : Fin a → ℂ}
@@ -210,30 +201,8 @@ theorem immersedPieces (h : Published.AnalyticSetDimension) (d : ℕ) (X : Type)
       exact ⟨n, hn', hn⟩
     exact hasHoloImm_of_regularLocus (by exact_mod_cast hlt) hn
 
-theorem analyticDim_singleton_le (A : FinHolAtlas d X) (x : X) : analyticDim A {x} ≤ 0 := by
-  refine iSup₂_le fun n hn => ?_
-  obtain ⟨U, g, j, hU, ⟨z, hz⟩, hmaps, -, hinj⟩ := hasHoloImm_of_regularLocus le_rfl hn
-  have h1 : (A.chart j ∘ g) =ᶠ[𝓝 z] fun _ => A.chart j x := by
-    filter_upwards [hU.mem_nhds hz] with w hw
-    rw [Function.comp_apply, (hmaps hw).1]
-  have h2 := hinj z hz
-  rw [h1.fderiv_eq, fderiv_fun_const] at h2
-  cases n with
-  | zero => simp
-  | succ n =>
-    have := congrFun (h2 (a₁ := 0) (a₂ := 1) rfl) 0
-    simp at this
 
-theorem point_dimension_lt_projective_line (x : OnePoint ℂ) :
-    analyticDim p1 (Set.univ ∩ {x}) < analyticDim p1 Set.univ := by
-  rw [Set.univ_inter, analyticDim_univ]
-  exact (analyticDim_singleton_le p1 x).trans_lt (by exact_mod_cast Nat.zero_lt_one)
 
-theorem projective_line_dimension : IsIrreducibleAnalytic p1 Set.univ ∧ analyticDim p1 Set.univ = 1 ∧
-    analyticDim p1 (singularLocus p1 Set.univ) < analyticDim p1 Set.univ := by
-  refine ⟨AnLogRes.isIrreducibleAnalytic_univ p1, by simpa using analyticDim_univ p1, ?_⟩
-  rw [singularLocus_univ, analyticDim_empty, analyticDim_univ]
-  exact WithBot.bot_lt_coe _
 
 end AnDim
 

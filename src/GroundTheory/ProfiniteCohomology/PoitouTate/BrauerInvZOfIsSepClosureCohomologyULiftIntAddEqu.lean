@@ -198,13 +198,6 @@ def gsRootsToLocalUnits (v : S) :
           (((Additive.toMul ζ : rootsOfUnity n _) : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) :
             maxUnramifiedOutside K.1 ℚ̄ S)))⟩
 
-theorem gsRootsToLocalUnits_hom_apply (v : S)
-    (ζ : Additive (rootsOfUnity n (maxUnramifiedOutside K.1 ℚ̄ S))) :
-    ((Additive.toMul ((gsRootsToLocalUnits S ιs n v).hom ζ) :
-        (AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))ˣ) :
-      AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) =
-      ιs v (((Additive.toMul ζ : rootsOfUnity n _) : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) : ℚ̄) :=
-  rfl
 
 theorem gsRootsToLocalUnits_injective (v : S) :
     Function.Injective (gsRootsToLocalUnits S ιs n v).hom := by

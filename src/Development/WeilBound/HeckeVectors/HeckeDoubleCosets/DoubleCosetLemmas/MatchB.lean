@@ -106,29 +106,6 @@ def mtSub (c t : ℕ) : Submodule ℂ (GL (Fin (c + t)) (Cv v) → ℂ) where
     exact ⟨z * l, fun V _ _ ρ x hx => by rw [heckeVec_smul_left hK a2, l1 V ρ x hx, mul_smul],
       fun V _ _ ρ x hx => by rw [heckeVec_smul_left hK' a1, l2 V ρ x hx, mul_smul]⟩
 
-theorem conv_mem_mtSub {c t : ℕ} : ∀ f' ∈ mtSub v c t, ∀ g' ∈ mtSub v c t,
-    conv (KGL v (c + t)) f' g' ∈ mtSub v c t := by
-  rintro f' ⟨f, a1, a2, a3, a4⟩ g' ⟨g, b1, b2, b3, b4⟩
-  have hK : IsCommensurated (KGL v c) := Final.GLintComm K v c
-  have hK' : IsCommensurated (KGL v (c + t)) := Final.GLintComm K v (c + t)
-  refine ⟨conv (KGL v c) g f, Final.HeckeConvMem _ _ ℂ hK' _ a1 _ b1,
-    Final.HeckeConvMem _ _ ℂ hK _ b2 _ a2, ?_, fun B hB => ?_⟩
-  · rw [heckeVec_conv hK' a1 b1 (sphericalVector_fixed_left _ _), heckeVec_conv hK b2 a2 (sphericalVector_fixed_right _ _), b3,
-      ← a3]
-    have e1 : ∀ Ψ, heckeVec (rS v (c + t) c) (KGL v c) g
-        (heckeVec (rT v (c + t) c) (KGL v (c + t)) f' Ψ) =
-        heckeVec (rT v (c + t) c) (KGL v (c + t)) f' (heckeVec (rS v (c + t) c) (KGL v c) g Ψ) :=
-      fun Ψ => map_heckeVec hK' a1 (heckeLin hK b2 (rS v (c + t) c))
-        (fun z y => (map_heckeVec hK b2 (rT v (c + t) c z)
-          (fun g y => (rS_rT g z y).symm) y).symm) Ψ
-    rw [e1]
-  · obtain ⟨l, l1, l2⟩ := a4 B hB
-    obtain ⟨l', m1, m2⟩ := b4 B hB
-    exact ⟨l * l', fun V _ _ ρ x hx => by
-      rw [heckeVec_conv hK b2 a2 hx.2.1, l1 V ρ x hx, heckeVec_smul hK b2, m1 V ρ x hx, mul_smul],
-      fun V _ _ ρ x hx => by
-      rw [heckeVec_conv hK' a1 b1 hx.2.1, m2 V ρ x hx, heckeVec_smul hK' a1, l2 V ρ x hx,
-        mul_comm, mul_smul]⟩
 
 set_option maxHeartbeats 1000000 in
 theorem Tj_mem_mtSub {c t : ℕ} {ϖ : Cv v} (hu : IsUnifV K v ϖ) (d : ℕ) (hd : d ≤ c + t) :

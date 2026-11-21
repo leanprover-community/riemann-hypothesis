@@ -1853,8 +1853,6 @@ namespace Formalism.FourierDecayAlt.P
 theorem transfer_rtt_entries : Formalism.FourierDecayAlt.M.QQRTTEntries :=
   Mx6.entries_of shift_norm_relation shift_commute_relation shift_mixed_relation nabla_shift_relation m_curvature_proof
 
-theorem transfer_rtt_of_entries : Formalism.FourierDecayAlt.M.QQRTTOfEntries := Mx6.PC.ofEntries
 
-theorem transfer_rtt : Formalism.FourierDecayAlt.M.QQRTT := transfer_rtt_of_entries transfer_rtt_entries
 
 end Formalism.FourierDecayAlt.P

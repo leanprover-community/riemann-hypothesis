@@ -21,8 +21,6 @@ private theorem localization_mk_eq_zero_iff {A : Type u} [CommRing A] {M : Submo
 noncomputable def affineBlowup (I : Ideal R) : Scheme.{u} :=
   AlgebraicGeometry.Proj (reesGrading I)
 
-theorem affineBlowup_eq_proj (I : Ideal R) :
-    affineBlowup I = AlgebraicGeometry.Proj (reesGrading I) := rfl
 
 namespace AffineBlowup
 
@@ -128,10 +126,6 @@ theorem algebraMap_chart_eq_chartRingHom (I : Ideal R) (a : ↥I) :
         (AffineBlowup.instAlgebraChart I a) =
       chartRingHom I a := rfl
 
-theorem algebraMap_chart_apply (I : Ideal R) (a : ↥I) (r : R) :
-    @algebraMap R (HomogeneousLocalization.Away (reesGrading I) (reesGenerator I a)) _ _
-        (AffineBlowup.instAlgebraChart I a) r =
-      chartRingHom I a r := rfl
 
 theorem affineBlowupChart_comp_toSpec (I : Ideal R) (a : ↥I) :
     affineBlowupChart I a ≫ AffineBlowup.toSpec I =

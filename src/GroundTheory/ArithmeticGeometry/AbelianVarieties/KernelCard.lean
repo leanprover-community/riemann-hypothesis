@@ -161,15 +161,6 @@ private theorem wronskian_coeff {n : ℤ} (hn : (n : F) ≠ 0) (h2 : 2 ≤ n.nat
   rw [this]
   ring
 
-theorem exists_zsmul_ne_zero [IsSepClosed F] [DecidableEq F] {n : ℤ} (hn : n ≠ 0) :
-    ∃ P : W.toAffine.Point, n • P ≠ 0 := by
-  have := infinite_of_isSepClosed F
-  have hprod : W.ΨSq n * W.Ψ₂Sq ≠ 0 := mul_ne_zero (ΨSq_ne_zero_of_ne_zero W hn) (Ψ₂Sq_ne_zero W)
-  obtain ⟨x, hx⟩ := Infinite.exists_notMem_finset (W.ΨSq n * W.Ψ₂Sq).roots.toFinset
-  rw [Multiset.mem_toFinset, mem_roots hprod, IsRoot, eval_mul, mul_eq_zero, not_or] at hx
-  obtain ⟨y, hy⟩ := exists_equation_of_Ψ₂Sq_ne_zero W hx.2
-  have h : W.toAffine.Nonsingular x y := equation_iff_nonsingular.mp hy
-  exact ⟨.some x y h, fun h0 => hx.1 ((zsmul_eq_zero_iff W h n).mp h0)⟩
 
 end Count
 

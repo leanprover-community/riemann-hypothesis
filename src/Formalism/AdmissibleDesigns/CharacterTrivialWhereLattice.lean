@@ -535,25 +535,8 @@ theorem locS (hE : Ev r π Dd) (hN : RepresentationBoundsCohomology.NormAt D.nd 
   · exact locS_g i r ρ π Dd hE hN hG5 h5x c' v hv g hg
   · exact locS_pde i r ρ π Dd hE hN hG5 h5x c' v hv g hg
 
-theorem Fall_succ (F0 : ∀ w, Submodule (D.nd.O i) (H1z (resU i dc Dd 0 w))) (c' : Fin D.R.t) :
-    Fall i dc Dd F0 c'.succ = Fpos i dc Dd c'.succ := rfl
 
-theorem Fall_zero (F0 : ∀ w, Submodule (D.nd.O i) (H1z (resU i dc Dd 0 w))) :
-    Fall i dc Dd F0 0 = F0 := rfl
 
-theorem qsAll (hD : RingDef (D.nd.O i) (D.nd.T i) (RepresentationBoundsCohomology.repX D.nd r) π (chiU D.nd i 1) (epsU D.nd i) g0 eB e₁ s Dd)
-    (hN : RepresentationBoundsCohomology.NormAt D.nd r ρ π) (hAdm : LargeLevelLemmas.admitted i r ρ π) (hQP : QPow i) :
-    InertiaActsTrivially i Dd ∧ (∀ c : Fin (D.R.t + 1), c ≠ 0 → LocClause i dc Dd c) ∧ LocClause i dc Dd (c1 (D := D)) ∧
-      CoverClause i dc Dd ∧ NoFixedVectorOffZ i Dd := by
-  obtain ⟨-, -, -, -, -, -, -, hG4, -, hG5, h5x, hG6, -, -, -, -, hdec, -⟩ := hAdm
-  have hE := ev_of hD
-  have hloc : ∀ c : Fin (D.R.t + 1), c ≠ 0 → LocClause i dc Dd c := by
-    intro c hc
-    obtain ⟨c', rfl⟩ := Fin.exists_succ_eq.2 hc
-    exact locClause i dc r ρ π Dd hE hN hG4 hdec hG5 h5x hQP c' (locS i r ρ π Dd hE hN hG5 h5x c')
-  refine ⟨inertia_triviality_clause i r ρ π Dd hE hG4 hdec, hloc, hloc _ ?_, coverClause i dc Dd, no_fixed_vector_off_z i r π Dd hE hG6⟩
-  rw [c1_eq]
-  exact Fin.succ_ne_zero _
 
 end Final
 
@@ -603,10 +586,6 @@ theorem Fpos_col (c : Fin (D.R.t + 1)) (l : Col i dc) :
   unfold Fpos
   simp only [if_neg hq, if_neg hr]
 
-theorem Fpos_qs (c : Fin (D.R.t + 1)) {w : ℕ} (hw : w ∈ qsN i dc) :
-    Fpos i dc Dd c w = unrH1 (resU i dc Dd c w) (I i dc w) := by
-  unfold Fpos
-  rw [if_pos hw]
 
 end Shape
 

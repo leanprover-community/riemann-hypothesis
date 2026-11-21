@@ -50,30 +50,6 @@ example (b : o →+* R) (p : o) : ¬ IsRelParam b ![b p] := fun h =>
   (maximalIdeal.isMaximal R).ne_top ((Ideal.eq_top_iff_one _).2 (h.2 ![1] (Ideal.mem_sup_right (by
     simpa using Ideal.mem_map_of_mem b (show p ∈ (maximalIdeal R).comap b from h.1 0))) 0))
 
-theorem isRelParam_X (o : Type) [CommRing o] [IsLocalRing o] :
-    IsRelParam (PowerSeries.C (R := o)) ![(PowerSeries.X : PowerSeries o)] := by
-  have hm : ∀ f : PowerSeries o, f ∈ maximalIdeal (PowerSeries o) ↔ PowerSeries.coeff 0 f ∈ maximalIdeal o := fun f => by
-    simp [mem_maximalIdeal, mem_nonunits_iff, PowerSeries.isUnit_iff_constantCoeff]
-  refine ⟨fun i => by simp [hm], fun c hc i => ?_⟩
-  obtain rfl : i = 0 := Subsingleton.elim _ _
-  have h0 : ∀ f g : PowerSeries o, PowerSeries.coeff 0 (f * g) = PowerSeries.coeff 0 f * PowerSeries.coeff 0 g := by simp
-  have h1 : ∀ f g : PowerSeries o, PowerSeries.coeff 1 (f * g) =
-      PowerSeries.coeff 0 f * PowerSeries.coeff 1 g + PowerSeries.coeff 1 f * PowerSeries.coeff 0 g := fun f g => by
-    rw [PowerSeries.coeff_mul, Finset.Nat.antidiagonal_succ]; simp
-  let J : Ideal (PowerSeries o) :=
-    { carrier := {f | PowerSeries.coeff 0 f ∈ maximalIdeal o ∧ PowerSeries.coeff 1 f ∈ maximalIdeal o}
-      add_mem' := fun h h' => ⟨by simpa using add_mem h.1 h'.1, by simpa using add_mem h.2 h'.2⟩
-      zero_mem' := by simp
-      smul_mem' := fun f g h => ⟨h0 f g ▸ Ideal.mul_mem_left _ _ h.1,
-        h1 f g ▸ add_mem (Ideal.mul_mem_left _ _ h.2) (Ideal.mul_mem_left _ _ h.1)⟩ }
-  have hJ : maximalIdeal (PowerSeries o) ^ 2 ⊔ ((maximalIdeal (PowerSeries o)).comap PowerSeries.C).map PowerSeries.C ≤ J := by
-    refine sup_le ?_ (Ideal.map_le_iff_le_comap.2 fun a ha => ⟨by simpa [hm] using ha, by simp [PowerSeries.coeff_C]⟩)
-    rw [sq]
-    refine Ideal.mul_le.2 fun f hf g hg => ?_
-    rw [hm] at hf hg
-    exact ⟨h0 f g ▸ Ideal.mul_mem_left _ _ hg, h1 f g ▸ add_mem (Ideal.mul_mem_right _ _ hf) (Ideal.mul_mem_left _ _ hg)⟩
-  have := (hJ hc).2
-  simpa [hm, PowerSeries.coeff_succ_mul_X] using this
 
 end Param
 

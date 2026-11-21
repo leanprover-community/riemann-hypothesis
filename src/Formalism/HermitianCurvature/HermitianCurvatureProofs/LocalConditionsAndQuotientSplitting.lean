@@ -16,14 +16,7 @@ theorem lattice_facts_general : Formalism.FourierDecayAlt.S6.LatticesGeneral :=
     unramRelative twistedLatticeBetween twistedLatticeIndex dual_lattice_subset
     traceDualGe scaledIdealNorm covolumeIndex
 
-theorem lattice_facts_two_split_primes : Formalism.FourierDecayAlt.S6.TextLattices :=
-  periodLatticeFactsSplitOfGeneral lattice_facts_general
 
-theorem least_norm_and_size_quotient : Formalism.FourierDecayAlt.S6.TextLeast :=
-  ⟨least_norm_in_ideal, size_quotient_identity⟩
 
-theorem local_conditions_and_quotient_splitting : Formalism.FourierDecayAlt.S6.TextLocal :=
-  assemble_local_conditions different_power_conj_stable splitPrimeToDifferent localTwistedLattice
-    localAwayFromLevel localisation_typed_condition twistedIsRealOrderLattice local_global_principle
 
 end Formalism.FourierDecayAlt.P

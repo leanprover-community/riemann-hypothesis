@@ -33,11 +33,6 @@ lemma aF_one (oa : D.toPre.OAct O) (a : O) :
     aF D F oa a ≫ (toUnit _ ≫ η[D.toPre.P.A]) = toUnit _ ≫ η[D.toPre.P.A] := by
   rw [← Category.assoc, toUnit_unique (aF D F oa a ≫ toUnit _) (toUnit _)]
 
-lemma fsum_four_left {S' : Scheme.{0}} {T A : Over S'} [GrpObj A] [IsCommMonObj A] (x₀ x₁ x₂ x₃ : T ⟶ A) (e : Fin 4 → ℤ) :
-    fsum ![x₀.left, x₁.left, x₂.left, x₃.left] e =
-      lf (e 0 • Finsupp.single x₀ 1 + e 1 • Finsupp.single x₁ 1 + e 2 • Finsupp.single x₂ 1 +
-        e 3 • Finsupp.single x₃ 1) := by
-  simp [fsum, lf, Fin.sum_univ_four, Finsupp.mapDomain_add, Finsupp.mapDomain_smul, Finsupp.smul_single]
 
 def pullSum (oa : D.toPre.OAct O) (a : O) (k N : ℕ) (χ : D.toPre.X) :
     (DegPre.BF D.toPre F ⟶ D.toPre.P.A) →₀ ℤ :=

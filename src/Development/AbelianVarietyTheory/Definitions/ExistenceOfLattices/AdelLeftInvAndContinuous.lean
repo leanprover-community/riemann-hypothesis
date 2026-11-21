@@ -193,31 +193,11 @@ theorem exists_pkgLaws : ∀ (D : D7) (H : ReciprocityTheory.ChartRestriction.G.
     refine ⟨γ, h1, h2, h3, fun τ => ?_⟩
     exact congrFun h4 τ
 
-theorem not_iotaOK_zero {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} (Dw : Datum H) (V : HSp D)
-    (hV : 0 < V.rank) : ¬ IotaOK Dw V 0 := by
-  intro h
-  have h1 := GlobalTheory.Member.Inhab.latG_one_span V
-  rw [← h.emb.2, LinearMap.range_zero] at h1
-  have h2 : (Pi.single ⟨0, hV⟩ 1 : Fin V.rank → D.host.E) ∈
-      Submodule.span D.host.E ((⊥ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) : Set _) := by
-    rw [h1]; trivial
-  rw [Submodule.bot_coe, Submodule.span_zero_singleton, Submodule.mem_bot] at h2
-  simpa using congrFun h2 ⟨0, hV⟩
 
 theorem isRat_mul {D : D7} (V : HSp D) {a b : GA D V} {a' b' : GL (Fin V.rank) D.host.E}
     (ha : IsRat V a a') (hb : IsRat V b b') : IsRat V (a * b) (a' * b') := by
   unfold IsRat at *
   rw [map_mul, map_mul, ha, hb]
 
-theorem exists_ctx_dict_pkg (D : D7) (j : ℕ) (hj : 1 ≤ j ∧ j ≤ D.R.m) :
-    ∃ (l : Level (hostOfRecord D)) (Xo : Moduli (datumW D j hj) l) (c : Coeff l) (σ : c.F →+* ℂ)
-      (C : Ctx Xo c σ (D.sp.W j) (D.sp.W j).rank) (Kf : Subgroup (GA D (D.sp.W j))),
-      C.OK ∧ 3 ≤ (D.sp.W j).rank ∧ 0 < C.F.n ∧ IsLevelK (D.sp.W j) l.M Kf ∧
-      ∃ un dict mu, C.IsDict dict ∧ PkgLaws (D.sp.W j) C.hr C.ι Kf 1 (C.unf un) dict mu C.x₀ := by
-  obtain ⟨l, Xo, c, σ, C, hC, h3, hn, -⟩ := GlobalTheory.Member.Inhab.exists_ctx_ok_at_lift D j hj
-  obtain ⟨⟨Kf, hK⟩, -⟩ := GlobalTheory.Member.PrincLevel.exists_levelK_and_nhds D (D.sp.W j) l.M
-  obtain ⟨un, dict, mu, h1, -, h2⟩ := exists_pkgLaws D _ _ l Xo c σ _ _ C hC Kf hK 1
-    ⟨continuous_const, fun _ => rfl⟩ (fun _ => rfl)
-  exact ⟨l, Xo, c, σ, C, Kf, hC, h3, hn, hK, un, dict, mu, h1, h2⟩
 
 end GlobalTheory.MemberModel

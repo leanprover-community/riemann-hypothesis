@@ -29,8 +29,6 @@ def HasWt (lam : D.what₂.Tau → Fin N → ℤ) (f : Y → ℂ) : Prop :=
   ∀ (y y' : Y) (b : D.what₂.Tau → Matrix (Fin N) (Fin N) ℂ), (∀ τ, (b τ).BlockTriangular id) →
     (∀ τ, frm y' τ = frm y τ * b τ) → f y' = (∏ τ, ∏ k, b τ k k ^ lam τ k) * f y
 
-theorem hasWt_zero (lam : D.what₂.Tau → Fin N → ℤ) : HasWt D frm lam 0 :=
-  ⟨⟨0, 0, fun y => by simp [GL3Theta.evFr]⟩, fun _ _ _ _ _ => by simp⟩
 
 def FixedBy (k : D.what₂.Tau → Matrix (Fin N) (Fin N) ℂ) (a : ℂ) (f : Y → ℂ) : Prop :=
   ∀ y y' : Y, (∀ τ, frm y τ = k τ * frm y' τ) → f y = a * f y'
@@ -210,8 +208,6 @@ def UnfTie : Prop :=
     (D.chTw u μ).unf i c c' (fun y => GL3Theta.evFr D Q (T.O.frm i y)) y' =
       GL3Theta.applyAt0 D (GL3Theta.polD D T.O.dgen Q (T.O.frm (i + 1) y')) (T.O.Th i c c')
 
-theorem unfTie_of_liftTie (Tr : TaylorLogMetric.Tor D) (e : TaylorLogMetric.FamE D) (h : ∀ i < D.R.m, GL3Theta.liftTie D Tr e T.O i) : T.UnfTie :=
-  fun i hi => (h i hi).2
 
 def wtTrue (Tw : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (i : ℕ) (τ : D.what₂.Tau) (k : Fin (D.R.N i)) : ℤ :=
   ((Tw.fm u μ).lam i τ).w k - (i : ℤ) * (((D.R.t + 1) / 2 : ℕ) : ℤ)

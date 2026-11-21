@@ -144,10 +144,6 @@ private theorem isoA_a0_eq_ofMul_gen : D.isoA D.frame.a0 = Additive.ofMul D.gen 
     ((Fintype.equivFin (Additive D.R)).symm.symm (Additive.ofMul D.gen)) = _
   exact Equiv.apply_symm_apply _ _
 
-theorem iso_generator : D.iso (D.frame.iota D.frame.a0) = D.gen := by
-  show Additive.toMul (D.isoA D.frame.a0) = D.gen
-  rw [isoA_a0_eq_ofMul_gen]
-  rfl
 
 theorem ord_eq : D.frame.ord = Nat.card D.R := by
   show Fintype.card (Additive D.R) = Nat.card D.R
@@ -376,7 +372,6 @@ def host : HostRaw D.frame := (D.charData hH hc he hs).toHostRaw
 theorem host_q : (D.host hH hc he hs).q = q := rfl
 theorem host_d : (D.host hH hc he hs).d = d := rfl
 theorem host_QS : (D.host hH hc he hs).QS = D.m := rfl
-theorem host_art : (D.host hH hc he hs).art = D.art hH := rfl
 
 theorem psQ : (D.host hH hc he hs).PsQ := by
   intro u

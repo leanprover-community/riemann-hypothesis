@@ -100,15 +100,6 @@ theorem basesAt_spec (i : ℕ) (Lt : ((sysAt Ch std vp unif eO eO_spec dG dG_spe
   exact Classical.epsilon_spec (p := fun g : GL (Fin (((sysAt Ch std vp unif eO eO_spec dG dG_spec om).Pj (i + 1)).m + 1)) ((sysAt Ch std vp unif eO eO_spec dG dG_spec om).G.P.Qq v) => (sysAt Ch std vp unif eO eO_spec dG dG_spec om).latAt v (i + 1) Lt =
     colSpan ((sysAt Ch std vp unif eO eO_spec dG dG_spec om).G.P.W v) (g : Matrix _ _ _)) ⟨g, by rw [hg, colSpan_eq]⟩
 
-theorem ptAt_spec (I : CmpJIn Tw u μ w h Lv) (i : ℕ) (hi : i + 1 ≤ D.R.m)
-    (hG : ∀ β, LocGood (sigD D) (gramN D (i + 1) hi) ((I.at' i hi).st.loc β)) (La : (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt (i + 1)) :
-    ((I.at' i hi).st.loc ((I.at' i hi).st.eC.symm La.1).1).IsPt ((I.at' i hi).st.eC.symm La.1).2
-      (basesAt Ch std vp unif eO eO_spec dG dG_spec om (i + 1) La.2) (ptAt Ch std vp unif eO eO_spec dG dG_spec om I i hi La) ∧
-    ptAt Ch std vp unif eO eO_spec dG dG_spec om I i hi La ∈ Formalism.UG.UPts (sigD D) (gramN D (i + 1) hi) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) :=
-  Classical.epsilon_spec (p := fun x => ((I.at' i hi).st.loc ((I.at' i hi).st.eC.symm La.1).1).IsPt ((I.at' i hi).st.eC.symm La.1).2
-      (basesAt Ch std vp unif eO eO_spec dG dG_spec om (i + 1) La.2) x ∧
-    x ∈ Formalism.UG.UPts (sigD D) (gramN D (i + 1) hi) (FiniteAdeleRing (𝓞 D.host.F) D.host.F))
-    ⟨_, (hG _).isPt_sec _ _, Subgroup.mul_mem _ ((hG _).yG_mem _) (SetLike.coe_mem _)⟩
 
 end Spec
 

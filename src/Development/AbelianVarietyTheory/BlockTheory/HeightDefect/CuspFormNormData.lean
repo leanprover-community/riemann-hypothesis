@@ -32,9 +32,6 @@ def emb0 (D : D7) : Emb D := D.what₂.embLL.comp (incl D)
 
 instance (D : D7) : Algebra (KK D) ℂ := (emb0 D).toAlgebra
 
-theorem embE_int_mem (D : D7) (x : 𝓞 D.host.E) : D.embE (x : D.host.E) ∈ Kfld D := by
-  obtain ⟨y, hy⟩ := D.O_contains x
-  exact IntermediateField.subset_adjoin _ _ ⟨y, hy⟩
 
 def RingTie (D : D7) : Prop :=
   Function.Injective D.what₂.OtoLL ∧
@@ -43,9 +40,7 @@ def RingTie (D : D7) : Prop :=
 
 def nK (D : D7) : ℕ := Module.finrank ℚ (KK D)
 
-theorem nK_pos (D : D7) : 0 < nK D := Module.finrank_pos
 
-theorem nK_eq (D : D7) : nK D = Module.finrank ℤ (OO D) := (RingOfIntegers.rank (KK D)).symm
 
 theorem card_emb (D : D7) : Fintype.card (Emb D) = nK D := Embeddings.card (KK D) ℂ
 
@@ -129,17 +124,6 @@ theorem Conj.refl : c.Conj c := by
 
 def killed (c₁ : ℝ) : Set (expGroup c.X) := {χ | IsShallow c.X c₁ (χ : Herm D.host (rho j))}
 
-theorem nonempty_of_wittIndex (h : wittIndex D j = rho j) : Nonempty (CuspGeom D j) := by
-  letI := D.host.cmStar
-  obtain ⟨U, hU, hd⟩ := (wittIndexOf_isGreatest (Wsp D j)).1
-  have hr : Module.finrank D.host.E U = rho j := hd.trans h
-  let b : Module.Basis (Fin (rho j)) D.host.E U := Module.finBasisOfFinrankEq _ _ hr
-  exact ⟨{ lat := (Wsp D j).L0
-           lat_lat := (Wsp D j).standardTuple_isLattice
-           lat_unimod := (Wsp D j).baseLattice_isUnimodular
-           frame := U.subtype ∘ₗ b.equivFun.symm.toLinearMap
-           frame_inj := U.subtype_injective.comp b.equivFun.symm.injective
-           frame_iso := fun u u' => hU _ (b.equivFun.symm u).2 _ (b.equivFun.symm u').2 }⟩
 
 end CuspGeom
 
@@ -314,9 +298,6 @@ def deepC (G : ThetaWeight D j) (c₁ : ℝ) : Submodule ℂ (Φ.CuspC G) :=
 def deepK (G : ThetaWeight D j) (c₁ : ℝ) : Submodule (KK D) (Φ.Cusp j G) :=
   ((Φ.deepC G c₁).restrictScalars (KK D)).comap (TensorProduct.mk (KK D) ℂ (Φ.Cusp j G) 1)
 
-theorem mem_deepK (G : ThetaWeight D j) (c₁ : ℝ) (f : Φ.Cusp j G) : f ∈ Φ.deepK G c₁ ↔
-    ∀ (a : Φ.MaxCusp j), ∀ χ ∈ (Φ.geom a).killed c₁, Φ.fjK a G χ f = 0 := by
-  simp [deepK, deepC, fjK, Submodule.mem_iInf]
 
 def deep (G : ThetaWeight D j) (c₁ : ℝ) : Submodule (OO D) (Φ.Cusp j G) :=
   Φ.M G ⊓ (Φ.deepK G c₁).restrictScalars (OO D)
@@ -337,17 +318,7 @@ def deepRec (G : ThetaWeight D j) (T : ℕ) (c : ℝ) : Submodule (OO D) (Φ.Cus
 
 def rhoPRec (G : ThetaWeight D j) (T : ℕ) (c : ℝ) : ℕ := Φ.rhoP G (cOne D j T c)
 
-theorem mem_deepKRec (h : Φ.PositiveExponents) (G : ThetaWeight D j) (T : ℕ) (c : ℝ) (f : Φ.Cusp j G) :
-    f ∈ Φ.deepKRec G T c ↔ ∀ (a : Φ.MaxCusp j) (χ : expGroup (Φ.geom a).X),
-      (χ : Herm D.host (rho j)) ∈ shallowExponents D j T c (Φ.geom a).X → Φ.fjK a G χ f = 0 := by
-  rw [deepKRec, mem_deepK]
-  refine ⟨fun H a χ hχ => H a χ hχ.2, fun H a χ hχ => ?_⟩
-  by_contra hne
-  exact hne (H a χ ⟨⟨χ.2, h j a G χ _ hne⟩, hχ⟩)
 
-theorem deepK_eq_top (h : rho j = 0) (G : ThetaWeight D j) (c₁ : ℝ) : Φ.deepK G c₁ = ⊤ := by
-  have := Φ.no_cusp j h
-  exact eq_top_iff.2 fun f _ => (Φ.mem_deepK G c₁ f).2 fun a => isEmptyElim a
 
 def Descent : Prop := ∀ (j : Lift D.R) (G : ThetaWeight D j) (c₁ : ℝ),
   Φ.deepC G c₁ = (Φ.deepK G c₁).baseChange ℂ

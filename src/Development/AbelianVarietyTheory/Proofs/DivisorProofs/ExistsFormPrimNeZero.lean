@@ -54,8 +54,6 @@ variable {S : Scheme.{0}} {A A' : Type} [CommRing A] [CommRing A']
 def coordVal (x : Sp A ⟶ (Gm S).left) : A :=
   charVal (Over.homMk x rfl : Over.mk (x ≫ (Gm S).hom) ⟶ Gm S) (ULift.up 1)
 
-theorem coordVal_left {g : Sp A ⟶ S} (w : Over.mk g ⟶ Gm S) :
-    coordVal w.left = charVal w (ULift.up 1) := rfl
 
 theorem isUnit_coordVal (x : Sp A ⟶ (Gm S).left) : IsUnit (coordVal x) :=
   IsUnit.of_mul_eq_one _ (by
@@ -155,56 +153,7 @@ def eulerSec (R : Type) [CommRing R] : AddMonoidAlgebra R (ULift.{0} ℤ) →ₐ
       map_mul' := fun x y ↦ by
         ext1 <;> simp [single_mul_single, add_comm, single_add] }
 
-theorem eulerSec_single (x : ULift.{0} ℤ) (r : R) :
-    (eulerSec R (AddMonoidAlgebra.single x r)).fst = AddMonoidAlgebra.single x r ∧
-      (eulerSec R (AddMonoidAlgebra.single x r)).snd = AddMonoidAlgebra.single x (r * x.down) := by
-  simp [eulerSec]
 
-theorem eulerSec_spec (b : AddMonoidAlgebra R (ULift.{0} ℤ)) :
-    (eulerSec R b).fst = b ∧ (eulerSec R b).snd.coeff 0 = 0 := by
-  induction b using AddMonoidAlgebra.induction_linear with
-  | zero => simp
-  | add a b ha hb => simp [ha, hb]
-  | single x r =>
-    rw [(eulerSec_single x r).1, (eulerSec_single x r).2]
-    refine ⟨rfl, ?_⟩
-    by_cases h : x = 0
-    · subst h; simp
-    · simp [h]
 
-theorem cl_dlog_ne_zero [Nontrivial R] : Form.cl _ (dlog R) ≠ 0 := by
-  intro h
-  obtain ⟨g, hg⟩ := H1.mk_eq_zero.1 h
-  let B := AddMonoidAlgebra R (ULift.{0} ℤ)
-  let w : Over.mk (spMap (algebraMap R B)) ⟶ Gm (Sp R) := ofVal _ (AddMonoidAlgebra.of R _)
-  have hx : w.left ≫ gmStr R = spMap (algebraMap R B) := pt_w w
-  let t : B := AddMonoidAlgebra.single (ULift.up 1) 1
-  have ht : coordVal w.left = t := charVal_ofVal _ _
-  let E := SqExt.ofModule R B B
-  have hπ : ∀ b, E.π (eulerSec R b) = b := fun b ↦ (eulerSec_spec b).1
-  have c0 : unitLift (Thick.triv B _ hx) = t := (π_unitLift (Thick.triv B _ hx)).trans ht
-  have e1 := congrFun (congrFun (congrFun hg _) _) (E.secHom hx E.i E.π_i)
-  have e2 := congrFun (congrFun (congrFun hg _) _) (E.secHom hx (eulerSec R) hπ)
-  have m1 := dlogVal_mem (E.secHom hx E.i E.π_i)
-  have m2 := dlogVal_mem (E.secHom hx (eulerSec R) hπ)
-  have k1 := exp_dlogVal (E.secHom hx E.i E.π_i)
-  have k2 := exp_dlogVal (E.secHom hx (eulerSec R) hπ)
-  rw [c0] at k1 k2
-  have key : ∀ (G a₁ a₂ v : TrivSqZeroExt B B) (p : B), a₁.fst = 0 → a₂.fst = 0 →
-      G - TrivSqZeroExt.inl p = a₁ → G - eulerSec R p = a₂ → (1 + a₁) * TrivSqZeroExt.inl t = v →
-      (1 + a₂) * eulerSec R t = v → (eulerSec R p).snd = 1 := by
-    intro G a₁ a₂ v p m1 m2 e1 e2 k1 k2
-    have f1 := congrArg TrivSqZeroExt.snd e1
-    have f2 := congrArg TrivSqZeroExt.snd e2
-    have f3 := congrArg TrivSqZeroExt.snd (k1.trans k2.symm)
-    have s1 : (eulerSec R t).fst = t := (eulerSec_spec t).1
-    have s2 : (eulerSec R t).snd = t := by simpa using (eulerSec_single (ULift.up 1) (1 : R)).2
-    simp [m1, m2, s1, s2] at f1 f2 f3
-    refine (ht ▸ isUnit_coordVal w.left).mul_right_cancel ?_
-    linear_combination t * f1 - t * f2 + f3
-  have f3 := key _ _ _ _ _ m1 m2 e1 e2 ((dpExp_sqDP E.sq m1).symm ▸ k1) ((dpExp_sqDP E.sq m2).symm ▸ k2)
-  have := (eulerSec_spec (g (Thick.triv B _ hx))).2
-  rw [f3] at this
-  simp [AddMonoidAlgebra.one_def] at this
 
 end GlobalTheory.DeRham.MultGrp

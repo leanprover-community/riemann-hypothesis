@@ -64,16 +64,6 @@ def LevHyp (W : RealPack ex) : Prop :=
 def TiesRest (W : RealPack ex) : Prop :=
   (W.Q.F.fc (cxW W).zs).Df1.WF ∧ (cxW W).H2 W.Q.F.cr true ∧ (cxW W).RATmu W.Q.F.cr true ∧ (cxW W).CoordinatesInGoodPart W.Q.F.cr W.Q.F.cv true
 
-theorem cxTies_of {W : RealPack ex} (hH : HypAt W) (hLv : LevHyp W) (hR : TiesRest W) :
-    CxTies (cxW W) W.Q.F.cr W.Q.F.cv (W.Q.F.eV (cxW W).zs) := by
-  obtain ⟨-, -, -, hC, -⟩ := hH
-  obtain ⟨hok, hRZ, gE, hU, hG, h2, hl0, hl1⟩ := hLv
-  obtain ⟨s, hs⟩ := hok
-  obtain ⟨hW, h2', hr, hcv⟩ := hR
-  have hK := RealDat3.kFormR_of (R := W.Q.Rl) (F := W.Q.F) hC.models
-  have hJ := RealDat3.jIsoR_of (R := W.Q.Rl) (F := W.Q.F) hC.models
-  exact ⟨hW, h2', hr, hJ, rationality_at_level_of_equivariance hs hK hJ hRZ hU hG true, descent_of_types hs hK hJ hRZ hU hG h2 hl0 hl1 true,
-    upper_level_of_types hs hK hJ hU hG hl0 hl1 true, hcv, Formalism.IndefR.Links.EvTie.evTie_real ⟨s, hs⟩ W.Q.Rl W.Q.F⟩
 
 end GlobalTheory.MiS
 

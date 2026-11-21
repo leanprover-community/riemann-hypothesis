@@ -26,47 +26,9 @@ theorem avg_const_fun {H : Type} [Group H] (c : ℂ) : GlobalTheory.BCT.avg (fun
       exact fun x => rfl
   exact key _ htop
 
-theorem orbSum_of_twCent_eq_top (θ : G →* G) (K : Subgroup G) (δ : G) (h : GlobalTheory.BCT.twCent θ δ = ⊤) :
-    ∃ x : G, ∀ (w : G → ℝ) (f : G → ℂ), GlobalTheory.LKLoc.orbSum θ K δ w f = (w x : ℂ) * f δ := by
-  have hmem : ∀ g : G, g ∈ GlobalTheory.BCT.twCent θ δ := fun g => h ▸ Subgroup.mem_top g
-  let q0 := DoubleCoset.mk (GlobalTheory.BCT.twCent θ δ) K 1
-  have hall : ∀ q : DoubleCoset.Quotient (GlobalTheory.BCT.twCent θ δ : Set G) (K : Set G), q = q0 := by
-    intro q
-    rw [← DoubleCoset.out_eq' _ _ q]
-    exact (DoubleCoset.eq _ _ _ _).2 ⟨(Quotient.out q)⁻¹, hmem _, 1, K.one_mem, by group⟩
-  refine ⟨Quotient.out q0, fun w f => ?_⟩
-  unfold GlobalTheory.LKLoc.orbSum
-  rw [finsum_eq_single _ q0 (fun q hq => absurd (hall q) hq)]
-  have hfix : ∀ g : G, g⁻¹ * δ * θ g = δ := by
-    intro g
-    have hg' : g * δ = δ * θ g := hmem g
-    rw [mul_assoc, ← hg', inv_mul_cancel_left]
-  simp only [hfix, avg_const_fun]
 
-theorem locPart_of_normal (T K : Subgroup G) [hK : K.Normal] (x : G) : GlobalTheory.LKLoc.locPart T K x = T ⊓ K := by
-  show T ⊓ K.map (MulAut.conj x).toMonoidHom = T ⊓ K
-  congr 1
-  ext y
-  simp only [Subgroup.mem_map, MulEquiv.coe_toMonoidHom, MulAut.conj_apply]
-  constructor
-  · rintro ⟨k, hk, rfl⟩
-    exact hK.conj_mem k hk x
-  · intro hy
-    exact ⟨x⁻¹ * y * x, by simpa using hK.conj_mem y hy x⁻¹, by group⟩
 
-private lemma volRat_self' (V : Subgroup G) : GlobalTheory.LKLoc.volRat V V = 1 := by
-  unfold GlobalTheory.LKLoc.volRat
-  rw [Subgroup.relIndex_self]
-  simp
 
-theorem twOrbM_eq_twOrbU_of_normal (θ : G →* G) (K : Subgroup G) [K.Normal] (δ : G) (f : G → ℂ) :
-    GlobalTheory.LKLoc.twOrbM θ K δ f = GlobalTheory.LKLoc.twOrbU θ K δ (GlobalTheory.BCT.twCent θ δ ⊓ K) f := by
-  unfold GlobalTheory.LKLoc.twOrbM GlobalTheory.LKLoc.twOrbU
-  congr 1
-  funext x
-  rw [locPart_of_normal]
-  unfold GlobalTheory.LKLoc.maxWt
-  simp only [locPart_of_normal, volRat_self', ciSup_const]
 
 end Generic
 
@@ -189,16 +151,6 @@ theorem normal_of_gl_one {R : Type} [CommRing R] (H : Subgroup (GL (Fin 1) R)) :
     rw [gl_fin_one_mul_comm g n, mul_inv_cancel_right]
     exact hn⟩
 
-theorem TOHT_gl_one (m r : ℕ) (Kw : Fin m → IntermediateField ℚ_[p] (PadicAlgCl p)) (δ : GHT p m 1 r Kw)
-    (φ : GHT p m 1 r Kw → ℂ) :
-    TOHT p m 1 r Kw δ φ = TOHTU p m 1 r Kw δ (twCentHT p m 1 r Kw δ ⊓ KHT p m 1 r Kw) φ := by
-  have hc : ∀ a b : GHT p m 1 r Kw, a * b = b * a := fun a b =>
-    Prod.ext (gl_fin_one_mul_comm _ _) (funext fun i => gl_fin_one_mul_comm _ _)
-  have : (KHT p m 1 r Kw).Normal :=
-    ⟨fun n hn g => by
-      rw [hc g n, mul_inv_cancel_right]
-      exact hn⟩
-  exact twOrbM_eq_twOrbU_of_normal (sigHT p m 1 r Kw) (KHT p m 1 r Kw) δ φ
 
 example (δ : GL (Fin 2) (KQ p K 1)) : nrmRes p K 2 1 δ = δ := by simp [nrmRes]
 

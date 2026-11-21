@@ -611,15 +611,6 @@ theorem growthInequality {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
     ring
   rw [e]; linarith
 
-theorem proposition_joint : RiemannHypothesisOfBalanceAndGrowthData := by
-  intro hBal C ε₁ hε₁ hIn
-  apply Formalism.LFunctionChainParameters.ConditionalMainTheorem.riemann_hypothesis_of_power_bound (C + 3) ε₁ hε₁
-  intro ε hε hεl
-  obtain ⟨x₀, hx₀⟩ := hIn ε hε hεl
-  refine ⟨x₀, fun x hx => ?_⟩
-  obtain ⟨H, i1, i2, i3, D, ell, N, m, TT, T2, a, w, b, b', η, X', θ, Cd, CL, Err, k, aE, hD, hH, hS, hW⟩ := hx₀ x hx
-  have ht := growthInequality (hBal H) D hD ell N m TT T2 a w x ε b b' η X' θ Cd CL Err hH hS
-  exact proposition_size_bound C ε x (Fintype.card H) TT.card T2.card m b k aE Err (Gz x) hW ht
 
 theorem top_from_weighted_mean {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] : LeadingTermTranslateMean (H := H) := by
   intro W _ _ Top _ m f Dd D N ell TT a w eT eP E haT hw hgam hLpL hASK hle
@@ -659,8 +650,6 @@ theorem proposition_at_point : GrowthBoundAtPoint := by
     Err hH hS
   exact proposition_size_bound C ε x (Fintype.card H) TT.card T2.card m b k aE Err (Gz x) hW ht
 
-theorem proposition_final : GrowthBoundGivesRiemannHypothesis :=
-  proposition_joint (fun H _ _ _ => Formalism.LFunctionChainParameters.characterSumData.colour_balance (H := H))
 
 namespace AN
 
@@ -979,14 +968,5 @@ theorem derivative_integral_all : DerivIntAll := by
     have := le_abs_self K
     linarith
 
-theorem proposition_final_minimum : RiemannHypothesisOfReducedGrowthData := by
-  obtain ⟨Cd, hCd, hDer⟩ := derivative_integral_all
-  refine ⟨Cd, hCd, fun C ε₁ hε₁ hIn => proposition_final C ε₁ hε₁ fun ε hε hεl => ?_⟩
-  obtain ⟨x₀, hx₀⟩ := hIn ε hε hεl
-  refine ⟨x₀, fun x hx => ?_⟩
-  obtain ⟨H, i1, i2, i3, D, ell, N, m, TT, T2, a, w, b, b', η, X', θ, CL, Err, k, aE, hD,
-    ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13⟩, hS, hW⟩ := hx₀ x hx
-  exact ⟨H, i1, i2, i3, D, ell, N, m, TT, T2, a, w, b, b', η, X', θ, Cd, CL, Err, k, aE, hD,
-    ⟨h1, h2, h3, h4, h5, h6, h7, hCd, h8, h9, h10, h11, h12, lipschitz_weight_all H D ell, hDer H D ell, h13⟩, hS, hW⟩
 
 end Formalism.LFunctionChainParameters.ThickSetMeanBounds

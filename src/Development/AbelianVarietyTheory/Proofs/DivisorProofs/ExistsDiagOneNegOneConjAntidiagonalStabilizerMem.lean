@@ -116,8 +116,6 @@ def flipPt (σ : E →ₐ[F] E) {d : ℕ} (W : Spc F E d) (v : Pl F) : UD σ W :
 
 theorem matD_flipPt (σ : E →ₐ[F] E) {d : ℕ} (W : Spc F E d) (v : Pl F) : matD (flipPt σ W v) = flipAt v d := rfl
 
-theorem matD_flipPt_inv (σ : E →ₐ[F] E) {d : ℕ} (W : Spc F E d) (v : Pl F) :
-    matD (flipPt σ W v)⁻¹ = flipAt v d := rfl
 
 theorem matD_mul {σ : E →ₐ[F] E} {d : ℕ} {W : Spc F E d} (g h : UD σ W) : matD (g * h) = matD g * matD h := rfl
 

@@ -16,41 +16,7 @@ def NFTopDomAllJ : Prop :=
     NFHyp Cb Cc p f A₀ p₀ χ N → B.JF p.T.base f ∈ FFKB p → ∀ w, TBB.AdmW P p.l0 Y w → w.length ≤ N →
       NFTopDom p χ (TBBx4.fpm p f (fun _ => ContinuousLinearMap.id ℂ Wq) p₀) w
 
-theorem nfTopDomAllJ_of_cut (hZ : NFDomZero) (hP : NFDomPtwS) (hL : DominatedL2OperatorBound) (hM : NFDomMeas) : NFTopDomAllJ := by
-  intro Cb
-  obtain ⟨C1, C₁, H1⟩ := hP Cb
-  obtain ⟨C2, H2⟩ := hL Cb C₁
-  obtain ⟨C3, H3⟩ := hM Cb
-  refine ⟨max C1 (max C2 C3), ?_⟩
-  intro Wp Wq _ _ _ _ _ _ P p f A₀ p₀ χ Y N hH hJ w hw hN
-  have mono : ∀ c, c ≤ max C1 (max C2 C3) → NFHyp Cb c p f A₀ p₀ χ N := fun c hc => by
-    obtain ⟨a1, a2, a3, a4, a5, a6⟩ := hH
-    refine ⟨a1, a2, a3, a4, le_trans ?_ a5, a6⟩
-    have hX : 0 ≤ ((P.r : ℝ) + 1) ^ 4 * ((N : ℝ) * (2 * (P.r : ℝ) + P.k + 1) ^ 2 + (2 * (P.r : ℝ) + P.k + 1) ^ 3) := by
-      positivity
-    have e : ∀ x : ℝ, x * ((P.r : ℝ) + 1) ^ 4 * ((N : ℝ) * (2 * (P.r : ℝ) + P.k + 1) ^ 2 + (2 * (P.r : ℝ) + P.k + 1) ^ 3) =
-        x * (((P.r : ℝ) + 1) ^ 4 * ((N : ℝ) * (2 * (P.r : ℝ) + P.k + 1) ^ 2 + (2 * (P.r : ℝ) + P.k + 1) ^ 3)) :=
-      fun x => by ring
-    rw [e, e]
-    exact mul_le_mul_of_nonneg_right hc hX
-  obtain ⟨m, Th, Mb, hMb, hok, hb⟩ := H1 Wp Wq P p p₀ χ Y N w hw hN
-  have hb := hb f A₀ (mono C1 (le_max_left _ _)) hJ
-  refine ⟨eventually_nhdsWithin_of_forall fun ε hε =>
-      H3 Wp Wq P p f A₀ p₀ χ Y N (mono C3 (le_trans (le_max_right _ _) (le_max_right _ _))) w hw hN ε hε,
-    fun c => Mb * ∑ t, ‖TBB.Gp p (TBB.bigPt P.r c)‖ ^ (2 * p₀ - N) *
-      TBB.Ew p (fun _ => 1) (B.opApply (Th t) f) (P.r + 1) [] (TBB.bigPt P.r c), ?_, ?_⟩
-  · exact (integrable_finsetSum Finset.univ fun t _ =>
-      H2 Wp Wq P p f A₀ p₀ χ N (mono C2 (le_trans (le_max_left _ _) (le_max_right _ _))) (Th t) (hok t)).const_mul Mb
-  · refine eventually_nhdsWithin_of_forall fun ε hε => ae_of_all _ fun c => ?_
-    by_cases hc : D.IsLocPt (TBB.bigPt P.r c) (P.r + 1) ∧ 0 < TBB.Gp p (TBB.bigPt P.r c)
-    · exact hb ε hε c hc.1 hc.2
-    · rw [hZ Wp Wq P p _ w c hc, norm_zero]
-      exact mul_nonneg hMb (Finset.sum_nonneg fun t _ =>
-        mul_nonneg (pow_nonneg (norm_nonneg _) _) (TBBx4.ew_nonneg p _ _))
 
-theorem nfTopDomAllJ_of_open (hT : NFTieHatS) (hH : NFHatProdKBS) : NFTopDomAllJ :=
-  nfTopDomAllJ_of_cut domination_at_zero_holds (nfDomPtwS_of_open leibniz_vector_estimate_holds (nFCoreNS_of_open leibniz_vector_estimate_holds hT hH))
-    dominated_L2_operator_bound_holds domination_measurability_holds
 
 theorem blockGrowthBound_apx_cutF (hA : P5.ThmPActualCpt) {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]

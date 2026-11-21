@@ -595,13 +595,6 @@ theorem familyLevelSectionB_holds {eps : ℝ} (Fm : Formalism.MainNotions.FamP e
   refine ⟨x0, fun x hx hx1 i => ?_⟩
   exact hx0 (Fm.D x i) (Fm.ex x hx1 i).lev (Fm.L x i).sc (Fm.L_eps x i) (by rw [Fm.L_x x i hx1]; exact hx) (h4 x hx1 i)
 
-theorem familyLevel_of_classes {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C3 : ℝ)
-    (hfin : ∀ x (i : Fm.Ix x), Module.finrank ℚ (Fm.D x i).host.E = 2 * (Fm.D x i).R.f)
-    (hp : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Conclusion4p (Fm.D x i) (Fm.ex x hx i).lev)
-    (hn : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ClassNumberFormula₂ (Fm.D x i) (Fm.ex x hx i).lev)
-    (hg : ∀ x (i : Fm.Ix x), OrthonormalLatticeRankK (Fm.D x i)) : LiftNormFamilyStatement Fm C3 :=
-  fun h2 h3 h17 x hx i =>
-    levelStatement_of_classes (Fm.D x i) (Fm.ex x hx i).lev C3 (hfin x i) (hp x hx i) (hn x hx i) (hg x i) (h2 x i) (h3 x i) (h17 x hx i)
 
 section P3
 
@@ -1278,13 +1271,10 @@ open NumberField Formalism.BasicNotions Finset
 
 theorem volumeMass_all_of_modelMassRatio (h : SiegelMassRatioModels) : MassVolumeBoundsAll := ⟨standardMassRatio_of_modelMassRatio h, h, cmField_unramified_massIdentity⟩
 
-theorem stmt2All_of_mod (D : D7) (h : SiegelMassRatioModels) : AbsoluteConstantSecondPart D := fun _ => volumeMass_all_of_modelMassRatio h
 
 theorem volumeMass_of_definiteVolume (D : D7) (h2 : Conclusion2 D) (hv : DefiniteVolumeEqMass D) : VolumeMass D :=
   ⟨h2, volume_eq_mass_of_definite D h2 hv, massRatio_of_definiteVolume D h2 hv, massIdentity_holds D⟩
 
-theorem hostDegree_holds (D : D7) : PrimeSumLogBound D := by
-  exact hostDegree_of_finrank D (finrank_host D)
 
 theorem levelStatement_remaining (D : D7) (Lv : LevelData D) (C3 : ℝ) (hp : Conclusion4p D Lv) (hn : ClassNumberFormula₂ D Lv) (hs : LandherrSmall D) :
     ThetaChernBoundOfLastLine D Lv C3 := by
@@ -1297,11 +1287,7 @@ theorem familyLevel_remaining {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) 
   fun h2 h3 h17 x hx i =>
     levelStatement_remaining (Fm.D x i) (Fm.ex x hx i).lev C3 (hp x hx i) (hn x hx i) (hs x i) (h2 x i) (h3 x i) (h17 x hx i)
 
-theorem familyMass_of_definiteVolume {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-    (h2 : ∀ x (i : Fm.Ix x), Conclusion2 (Fm.D x i)) (hv : ∀ x (i : Fm.Ix x), DefiniteVolumeEqMass (Fm.D x i)) : DeterminantValueFamily Fm :=
-  fun _ _ x i => volumeMass_of_definiteVolume (Fm.D x i) (h2 x i) (hv x i)
 
-theorem familyMass_all_of_modelRatio {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h : SiegelMassRatioModels) : FamilyMassTheoremAll Fm := fun _ => volumeMass_all_of_modelMassRatio h
 
 end Formalism.MainNotions.StandardLattice
 
@@ -1507,8 +1493,6 @@ theorem modelMassRatio_of_standardMassRatio (hA : SiegelMassRatioCM) : SiegelMas
   rw [mass_ortho K hK M V h L ho, mass_ortho K hK (M - 1) V' h' L' ho']
   exact hA K hK M hM
 
-theorem modelMassRatio_iff_standard : SiegelMassRatioModels ↔ SiegelMassRatioCM := by
-  exact ⟨standardMassRatio_of_modelMassRatio, modelMassRatio_of_standardMassRatio⟩
 
 theorem volumeMass_all_of_standardMassRatio (h : SiegelMassRatioCM) : MassVolumeBoundsAll := by
   exact volumeMass_all_of_modelMassRatio (modelMassRatio_of_standardMassRatio h)
@@ -1544,23 +1528,6 @@ structure ColCount (D : D7) (u : D.what₂.Word) where
 
 attribute [instance] ColCount.fι ColCount.grp ColCount.fin ColCount.fY ColCount.act
 
-theorem classNumber_of_orbitCount (D : D7) (Lv : LevelData D) (hd : SmallOrderPrimeLogSumBound D Lv) (h4g : OrthonormalLatticeRankK D)
-    (X : OrthonormalLatticeRankK D → (∀ i, SplitsF D (D.host.g i)) → ∀ u : D.what₂.Word, SplitsF D (D.mem u).A.T →
-      Nonempty (ColCount D u)) :
-    ClassNumberFormula₂ D Lv := by
-  intro hg hs u hT
-  obtain ⟨X⟩ := X h4g hs u hT
-  have hz := hd hg u
-  have hfree : ∀ (i : X.ι) (y : X.Y), MulAction.stabilizer (X.Γ i) y = ⊥ := by
-    intro i y
-    have := hz (X.cls_eq.symm ⟨i, Quotient.mk'' y⟩)
-    have h2 : Subsingleton (MulAction.stabilizer (X.Γ i) y) := (X.stab_eq i y).toEquiv.subsingleton
-    exact Subgroup.eq_bot_of_subsingleton _
-  have h := Formalism.HermitianLattices.GenusMassVolumes.rank_count_bis X.ι X.Γ X.Y hfree
-  rw [Nat.card_congr X.cls_eq, Nat.card_sigma]
-  push_cast
-  rw [h, ← X.mass_eq, X.card_Y]
-  ring
 
 end Formalism.MainNotions.StandardLattice
 
@@ -1788,8 +1755,6 @@ namespace Formalism.MainNotions.StandardLattice
 
 open NumberField Formalism.BasicNotions Finset
 
-theorem mass_nonneg_alt (D : D7) (M : ℕ) : 0 ≤ massI D M := by
-  exact (massI_pos D M).le
 
 def ratioH (D : D7) (M : ℕ) : ℝ :=
   letI := D.host.cmStar
@@ -1886,10 +1851,6 @@ theorem index_ratio_bounds (D : D7) (h4a : Conclusion4a D) (hg : ∀ i, 3 ≤ D.
       (pow_pos (hgp 1) ((D.R.r ^ 2 + 3 * D.R.k + 1 + 2 * D.R.rS) / 2)).ne'
     rw [e0, e1]
 
-theorem column_param_strictAnti' (D : D7) (u : D.what₂.Word) (ρ : D.what₂.Tau) : StrictAnti (uColR D u ρ) := by
-  intro a b hab
-  have := one_le_column_param_sub D u ρ a b hab
-  linarith
 
 theorem one_le_column_sub_of_lt (D : D7) (u : D.what₂.Word) (ρ : D.what₂.Tau) (i j : ℕ) (hij : i < j) (hj : j < D.R.k) :
     1 ≤ uN D u ρ i - uN D u ρ j := by
@@ -2117,25 +2078,9 @@ namespace Formalism.MainNotions.StandardLattice
 
 open NumberField Formalism.BasicNotions Finset
 
-theorem stmt2All_of (D : D7) (h : Conclusion1 D → SiegelMassRatioCM) : AbsoluteConstantSecondPart D := fun h1 => volumeMass_all_of_standardMassRatio (h h1)
 
-theorem massStatement_of_volume (D : D7) (h : Conclusion1 D → VolTie D → Conclusion2 D ∧ DefiniteVolumeEqMass D) : HodgeTateFromSandwich D :=
-  fun h1 hV => volumeMass_of_definiteVolume D (h h1 hV).1 (h h1 hV).2
 
-theorem levelStatement_reduction (D : D7) (Lv : LevelData D) (C3 : ℝ) (hp : Conclusion4p D Lv)
-    (hn : VolumeMass D → adm17 D Lv → ClassNumberFormula₂ D Lv) (hs : LandherrSmall D) : ThetaChernBoundOfLastLine D Lv C3 :=
-  fun h2 h3 h17 => levelStatement_of_landherrSmall D Lv C3 (finrank_host D) hp (hn h2 h17) hs h2 h3 h17
 
-theorem stmt_of_open (eps C0 C3 : ℝ) (h1 : 0 < eps) (h2 : eps < 1 / 52) (hC3 : 0 ≤ C3) :
-    ∃ C x0 : ℝ, ∀ (D : D7) (Lv : LevelData D) (sc : Scale), sc.eps = eps → x0 ≤ sc.x →
-      Conclusion1 D → (Conclusion1 D → SiegelMassRatioCM) → (Conclusion1 D → VolTie D → Conclusion2 D ∧ DefiniteVolumeEqMass D) → TheoremThreeCompactDual D C3 →
-      Conclusion4p D Lv → (VolumeMass D → adm17 D Lv → ClassNumberFormula₂ D Lv) → LandherrSmall D →
-      Stmt D Lv sc C3 C0 C := by
-  obtain ⟨C, hC⟩ := weylLawStatement_eventually eps C0 C3 h1 h2 hC3
-  obtain ⟨x0, hx0⟩ := levelStatement_eventually eps C3 C0 h1
-  exact ⟨C, x0, fun D Lv sc he hx o1 o2 o3 o4 o5 o6 o7 =>
-    stmt_of_items D Lv sc C3 C0 C o1 (stmt2All_of D o2) (massStatement_of_volume D o3) o4 (formalDegreeBound_of_general D C3)
-      (levelStatement_reduction D Lv C3 o5 o6 o7) (hx0 D Lv sc he hx) (hC D sc he)⟩
 
 theorem stmtF_of_open {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C3 : ℝ) (hC3 : 0 ≤ C3)
     (o1 : PeriodFamilyStatement Fm) (o2 : FamilyPartOne Fm → SiegelMassRatioCM)
@@ -2176,26 +2121,7 @@ theorem isFormalDegree_smul_measure {n : ℕ} {H : Type*} [NormedAddCommGroup H]
   push_cast
   field_simp
 
-theorem formalDegree_pos_discreteSeries (D : D7) (hS : NonvanishingBesselPeriod D) (N : ℕ) (ε : Fin N → Bool) (lam : Fin N → ℝ)
-    (hlam : Formalism.QuantumDeterminants.IsHCParam lam) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    (σ : Matrix (Fin N) (Fin N) ℂ → (H →L[ℂ] H)) (hDS : IsDS ε lam σ) (w : H) (hw : w ≠ 0) :
-    0 < fdegOf ((D.s.cdScale N ε : ENNReal) • Formalism.REAL.muG ε) σ w := by
-  have : CompleteSpace H := hDS.1
-  obtain ⟨d, hd⟩ := hS N ε lam hlam H σ hDS
-  have h := isFormalDegree_smul_measure _ σ d (D.s.cdScale N ε) (D.s.cdScale_pos N ε) hd
-  rw [formal_degree_of_eq _ σ _ h w hw]
-  exact h.1
 
-theorem formalDegreeFactor_eq_prod {N : ℕ} (s : Fin N → Bool) (lam : Fin N → ℝ) :
-    dTau s lam = (∏ a, ∏ b ∈ univ.filter (fun b => a < b ∧ s a = s b),
-      (lam a - lam b + ((univ.filter (fun e : Fin N => a < e ∧ e < b ∧ s e ≠ s a)).card : ℝ))) /
-      ((∏ i ∈ range (nPlus s), (i.factorial : ℝ)) * ∏ i ∈ range (nMinus s), (i.factorial : ℝ)) := by
-  unfold dTau facProd
-  congr 1
-  refine Finset.prod_congr rfl (fun a _ => Finset.prod_congr rfl (fun b hb => ?_))
-  rw [Finset.mem_filter] at hb
-  rw [← rho_sub_eq_card_opposite s a b hb.2.1 hb.2.2]
-  ring
 
 theorem formalDegreeFactor_pos_of_strictAnti {N : ℕ} (s : Fin N → Bool) (lam : Fin N → ℝ) (h : StrictAnti lam) : 0 < dTau s lam := by
   unfold dTau
@@ -2214,14 +2140,7 @@ theorem formalDegreeFactor_pos_of_strictAnti {N : ℕ} (s : Fin N → Bool) (lam
 
 def cGr (p q : ℕ) : ℝ := facProd (p + q) / (Real.pi ^ (p * q) * (facProd p * facProd q))
 
-theorem grassmannVolumeConst_pos (p q : ℕ) : 0 < cGr p q := by
-  unfold cGr
-  exact div_pos (factorial_product_pos _)
-    (mul_pos (pow_pos Real.pi_pos _) (mul_pos (factorial_product_pos _) (factorial_product_pos _)))
 
-theorem inv_grassmannVolumeConst_eq (p q : ℕ) : 1 / cGr p q = Real.pi ^ (p * q) * (facProd p * facProd q) / facProd (p + q) := by
-  unfold cGr
-  rw [one_div, inv_div]
 
 def TheoremThreeHypotheses (C3 : ℝ) {N : ℕ} (ε : Fin N → Bool) (lam : Fin N → ℝ) (ep0 h0 : ℝ) : Prop :=
   Formalism.QuantumDeterminants.IsHCParam lam ∧ Formalism.QuantumDeterminants.GapAtLeast ε lam h0 ∧ Real.exp (-(N : ℝ)) ≤ ep0 ∧ ep0 < 1 / 2 ∧
@@ -2247,76 +2166,9 @@ def FormalDegreeUpperBound (D : D7) (C3 c0 : ℝ) : Prop :=
       (Module.finrank ℂ (lowKSub ε lam σ) : ℝ) ^ 2 /
         fdegOf ((D.s.cdScale N ε : ENNReal) • Formalism.REAL.muG ε) σ w
 
-theorem harishChandraAbs_pos_of_strictAnti {N : ℕ} (lam : Fin N → ℝ) (h : StrictAnti lam) (hN : 2 ≤ N) : 0 < lamAbs lam := by
-  unfold lamAbs
-  have h0 : (⟨0, by omega⟩ : Fin N) < ⟨1, by omega⟩ := Fin.lt_iff_val_lt_val.mpr (by simp)
-  have hpos : 0 < |lam ⟨0, by omega⟩ - lam ⟨1, by omega⟩| := abs_pos.mpr (sub_ne_zero.mpr (h h0).ne')
-  have hb1 : BddAbove (Set.range fun b : Fin N => |lam ⟨0, by omega⟩ - lam b|) := (Set.finite_range _).bddAbove
-  have hb2 : BddAbove (Set.range fun a : Fin N => ⨆ b : Fin N, |lam a - lam b|) := (Set.finite_range _).bddAbove
-  calc (0 : ℝ) < |lam ⟨0, by omega⟩ - lam ⟨1, by omega⟩| := hpos
-    _ ≤ ⨆ b : Fin N, |lam ⟨0, by omega⟩ - lam b| := le_ciSup hb1 ⟨1, by omega⟩
-    _ ≤ ⨆ a : Fin N, ⨆ b : Fin N, |lam a - lam b| := le_ciSup hb2 ⟨0, by omega⟩
 
-theorem formalDegreeBound_all_unitaryGroups (D : D7) (C3 c0 : ℝ) (hc0 : 0 < c0) (hC : 2 / c0 ≤ C3) (hS : NonvanishingBesselPeriod D)
-    (hT : FamilyMassLastLine D) (hL : FormalDegreeLowerBound D C3) (hU : FormalDegreeUpperBound D C3 c0) : RepresentationDimensionGeneral D C3 := by
-  intro N ε lam ep0 h0 H _ _ σ w p q hlam hgap he1 he2 hh hDS hw
-  have hdat : TheoremThreeHypotheses C3 ε lam ep0 h0 := ⟨hlam, hgap, he1, he2, hh⟩
-  have : CompleteSpace H := hDS.1
-  have hd := formalDegree_pos_discreteSeries D hS N ε lam hlam H σ hDS w hw
-  have hτ := (hT N ε lam hlam H σ hDS).2
-  have hτp : 0 < (Module.finrank ℂ (lowKSub ε lam σ) : ℝ) := by rw [hτ]; exact formalDegreeFactor_pos_of_strictAnti ε lam hlam.1
-  have hpq : nPlus ε + nMinus ε = N := count_plus_add_count_minus N ε
-  have hep : 0 < ep0 := lt_of_lt_of_le (Real.exp_pos _) he1
-  have hinv := inv_grassmannVolumeConst_eq (nPlus ε) (nMinus ε)
-  rw [hpq] at hinv
-  constructor
-  · obtain ⟨Z, hZ0, hZ1, hZ⟩ := hL N ε lam ep0 h0 H σ w hdat hDS hw
-    rw [← dimV_eq_fdegHC lam hlam.1]
-    exact Formalism.HermitianLattices.GenusMassVolumes.joint_lower_bound N lam ε _ (Module.finrank ℂ (lowKSub ε lam σ) : ℝ)
-      (cGr (nPlus ε) (nMinus ε)) ep0 Z (fun a b hab => hlam.1 hab) hd (grassmannVolumeConst_pos _ _) hep (by linarith) hZ0 hZ1
-      hinv (by rw [hτ]; exact formalDegreeFactor_eq_prod ε lam) hZ
-  · have hUU := hU N ε lam ep0 h0 H σ w hdat hDS hw
-    have hexp : p * q = ((nPlus ε * nMinus ε : ℕ) : ℝ) := by push_cast; rfl
-    rw [hexp, Real.rpow_natCast]
-    by_cases h0pq : nPlus ε * nMinus ε = 0
-    · have hc1 : cGr (nPlus ε) (nMinus ε) = 1 := by
-        have hp := factorial_product_pos N
-        rcases Nat.mul_eq_zero.1 h0pq with h | h
-        · have hq : nMinus ε = N := by omega
-          unfold cGr; rw [h, hq]; simp [facProd]; exact hp.ne'
-        · have hq : nPlus ε = N := by omega
-          unfold cGr; rw [h, hq]; simp [facProd]; exact hp.ne'
-      rw [h0pq, hc1] at hUU
-      rw [h0pq]
-      simp only [pow_zero, Nat.factorial_zero, Nat.cast_one, mul_one, div_one, one_mul] at hUU ⊢
-      rw [le_div_iff₀ hd] at hUU
-      nlinarith
-    · have hp1 : 1 ≤ nPlus ε := Nat.pos_of_ne_zero fun h => h0pq (by rw [h, Nat.zero_mul])
-      have hq1 : 1 ≤ nMinus ε := Nat.pos_of_ne_zero fun h => h0pq (by rw [h, Nat.mul_zero])
-      have hlp := harishChandraAbs_pos_of_strictAnti lam hlam.1 (by omega)
-      have hg : 1 / cGr (nPlus ε) (nMinus ε) ≤ Real.pi ^ (nPlus ε * nMinus ε) := by
-        rw [inv_grassmannVolumeConst_eq]
-        exact (Formalism.HermitianLattices.GenusMassVolumes.grassmannian_volume (nPlus ε) (nMinus ε)).2
-      have key := Formalism.HermitianLattices.GenusMassVolumes.joint_upper_bound (nPlus ε) (nMinus ε) N _
-        (Module.finrank ℂ (lowKSub ε lam σ) : ℝ) (cGr (nPlus ε) (nMinus ε)) c0 (lamAbs lam) hd hτp
-        (grassmannVolumeConst_pos _ _) hc0 hlp (by omega) hg hUU
-      refine le_trans key ?_
-      refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-      refine pow_le_pow_left₀ (by positivity) ?_ _
-      have e : C3 * p * q * (N : ℝ) * lamAbs lam = C3 * (((nPlus ε * nMinus ε : ℕ) : ℝ) * N * lamAbs lam) := by
-        rw [← hexp]; ring
-      rw [e, mul_assoc, mul_assoc]
-      rw [← mul_assoc ((nPlus ε * nMinus ε : ℕ) : ℝ)]
-      exact mul_le_mul_of_nonneg_right hC (by positivity)
 
-theorem stmt3All_of_steps (D : D7) (C3 c0 : ℝ) (hc0 : 0 < c0) (hC : 2 / c0 ≤ C3)
-    (hL : Adm3 D → cdScaleTie D → FormalDegreeLowerBound D C3) (hU : Adm3 D → cdScaleTie D → FormalDegreeUpperBound D C3 c0) : TheoremThreeCompactDual D C3 :=
-  fun hA hc => formalDegreeBound_all_unitaryGroups D C3 c0 hc0 hC hA.2.1 hA.2.2 (hL hA hc) (hU hA hc)
 
-theorem familyFormalDegree_all {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C3 c0 : ℝ) (hc0 : 0 < c0) (hC : 2 / c0 ≤ C3)
-    (hL : FamilyTheoremThreeAdmitted Fm → ∀ x (i : Fm.Ix x), FormalDegreeLowerBound (Fm.D x i) C3)
-    (hU : FamilyTheoremThreeAdmitted Fm → ∀ x (i : Fm.Ix x), FormalDegreeUpperBound (Fm.D x i) C3 c0) : FamilyTheoremThreeAll Fm C3 :=
-  fun hA x i => formalDegreeBound_all_unitaryGroups (Fm.D x i) C3 c0 hc0 hC (hA x i).2.1 (hA x i).2.2 (hL hA x i) (hU hA x i)
 
 end T3
 
