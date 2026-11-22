@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsSigma
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FormalExponentialAgree
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.PowerSeriesEmbedding
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.ExistsTorsionPointOfLattice
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.WeierstrassUniqueness.ExistsPeriodPairOfIsLat
 public import Formalism.LocalToGlobal.TorsionIntegrality.ComplexLatticeClosure.LamConjTheta0
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EllipticOnePole
@@ -15,6 +14,7 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.T
 public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.CmAll
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.HomotheticLatticeIntegralOf
 public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PadicNormTwoHundredSixteenEqOneOfFiveLe
 
 @[expose] public section
 
@@ -29,32 +29,11 @@ theorem lamC_coe {p : ℕ} [Fact p.Prime] (lam : Formalism.MainNotions.TaylorLog
   unfold Formalism.MainNotions.TaylorLogMetric.lamC
   rw [dite_eq_left a.2]
 
-theorem taylor_sgStar_map (L : PeriodPair) (a2 a3 s0 : Formalism.MainNotions.TaylorLogMetric.Qbar) (h2 : L.g₂ = a2) (h3 : L.g₃ = a3)
-    (hs : Formalism.L2.Th1.F.s2 L = s0) :
-    Formalism.L2.Th1.F.taylor0 (Formalism.L2.Th1.F.sgStar L) =
-      PowerSeries.map (algebraMap Formalism.MainNotions.TaylorLogMetric.Qbar ℂ) (Formalism.L2.Th1.B.sgStar s0 (Formalism.L2.Th1.F.pOf a2 a3)) := by
-  rw [Formalism.L2.Th1.F.taylorSgStar L, Formalism.L2.Th1.F.pOfLattice L, h2, h3, hs]
-  have hm := Formalism.L2.Th1.F.seriesMap Formalism.MainNotions.TaylorLogMetric.Qbar ℂ (algebraMap Formalism.MainNotions.TaylorLogMetric.Qbar ℂ) a2 a3 s0
-    (Formalism.L2.Th1.F.pOf a2 a3)
-  rw [hm.2.2.2.2.2, hm.2.2.1]
-  rfl
-
 theorem sgSer_eq {p : ℕ} [Fact p.Prime] (lam : Formalism.MainNotions.TaylorLogMetric.Qbar →+* ℂ_[p]) (L : PeriodPair)
     (a2 a3 s0 : Formalism.MainNotions.TaylorLogMetric.Qbar) (h2 : L.g₂ = a2) (h3 : L.g₃ = a3) (hs : Formalism.L2.Th1.F.s2 L = s0) :
     Formalism.MainNotions.TaylorLogMetric.sgSer lam L.lattice.toAddSubgroup =
-      Formalism.L2.Th1.B.sgStar (lam s0) (Formalism.L2.Th1.F.pOf (lam a2) (lam a3)) := by
-  have hT := taylor_sgStar_map L a2 a3 s0 h2 h3 hs
-  have e : Formalism.MainNotions.TaylorLogMetric.sgSer lam L.lattice.toAddSubgroup =
-      PowerSeries.map lam (Formalism.L2.Th1.B.sgStar s0 (Formalism.L2.Th1.F.pOf a2 a3)) := by
-    ext n
-    have hn := congrArg (PowerSeries.coeff n) hT
-    unfold Formalism.L2.Th1.F.taylor0 at hn
-    rw [PowerSeries.coeff_mk, PowerSeries.coeff_map] at hn
-    unfold Formalism.MainNotions.TaylorLogMetric.sgSer
-    rw [PowerSeries.coeff_mk, PowerSeries.coeff_map, Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.RestA.sgStar_eq L, hn]
-    exact lamC_coe lam _
-  have hm := Formalism.L2.Th1.F.seriesMap Formalism.MainNotions.TaylorLogMetric.Qbar ℂ_[p] lam a2 a3 s0 (Formalism.L2.Th1.F.pOf a2 a3)
-  rw [e, hm.2.2.2.2.2, hm.2.2.1]
+      Formalism.L2.Th1.B.sgStar (lam s0) (Formalism.L2.Th1.F.pOf (lam a2) (lam a3)) :=
+  GlobalTheory.CurveDictionary.sgSer_eq lam L a2 a3 s0 h2 h3 hs
 
 theorem wModel_g {p : ℕ} [Fact p.Prime] (lam : Formalism.MainNotions.TaylorLogMetric.Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ)
     (a2 a3 : Formalism.MainNotions.TaylorLogMetric.Qbar) (h2 : Formalism.MainNotions.TaylorLogMetric.g2 Λ = a2) (h3 : Formalism.MainNotions.TaylorLogMetric.g3 Λ = a3) :
