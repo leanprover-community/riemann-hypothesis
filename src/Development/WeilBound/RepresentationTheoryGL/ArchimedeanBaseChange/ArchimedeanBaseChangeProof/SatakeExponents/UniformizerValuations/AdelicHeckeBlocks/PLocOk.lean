@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Constant
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsHalfBlockDetIntegralGLInvariant
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockLevelsEqIntegralGLOfUnramified
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.BorelApproximation
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ZeroContDiffOnSupported
 
 @[expose] public section
 
@@ -150,12 +148,30 @@ section Place
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem dcos_left {m : ℕ} {w : Pl E} (t k g : GLw m w) (hk : k ∈ iwGL m w) :
-    dcos m w t (k * g) = dcos m w t g :=
-  _root_.UpperTheory.Reformulated.B.BorelApproximation.dcos_left t k g hk
+    dcos m w t (k * g) = dcos m w t g := by
+  have : (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, k * g = x * t * z) ↔
+      (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g = x * t * z) := by
+    constructor
+    · rintro ⟨x, hx, z, hz, e⟩
+      refine ⟨k⁻¹ * x, mul_mem (inv_mem hk) hx, z, hz, ?_⟩
+      calc g = k⁻¹ * (k * g) := by group
+        _ = _ := by rw [e]; simp only [mul_assoc]
+    · rintro ⟨x, hx, z, hz, e⟩
+      exact ⟨k * x, mul_mem hk hx, z, hz, by rw [e]; simp only [mul_assoc]⟩
+  simp only [dcos, this]
 
 theorem dcos_right {m : ℕ} {w : Pl E} (t k g : GLw m w) (hk : k ∈ iwGL m w) :
-    dcos m w t (g * k) = dcos m w t g :=
-  _root_.UpperTheory.Reformulated.B.H23.dcos_right t k g hk
+    dcos m w t (g * k) = dcos m w t g := by
+  have : (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g * k = x * t * z) ↔
+      (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g = x * t * z) := by
+    constructor
+    · rintro ⟨x, hx, z, hz, e⟩
+      refine ⟨x, hx, z * k⁻¹, mul_mem hz (inv_mem hk), ?_⟩
+      calc g = (g * k) * k⁻¹ := by group
+        _ = _ := by rw [e]; simp only [mul_assoc]
+    · rintro ⟨x, hx, z, hz, e⟩
+      exact ⟨x, hx, z * k, mul_mem hz hk, by rw [e]; simp only [mul_assoc]⟩
+  simp only [dcos, this]
 
 theorem isHecke_iwahori_pair_double_coset {a b : ℕ} (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (x : Fin a → ℤ) (y : Fin b → ℤ) :
     IsHecke (I2 a b w) (dc2 w ϖ x y) := by
