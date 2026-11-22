@@ -1,6 +1,7 @@
 module
 
 public import Formalism.HermitianCurvature.OperatorsCommuteTranslations
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 
 @[expose] public section
 
@@ -41,22 +42,8 @@ lemma Hpk_eq (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   simp only [Hpk, sgn, Fin.ext_iff, sig_val]
   split_ifs <;> first | rfl | (exfalso; omega)
 
-lemma Hpk_sq (k r : ℕ) : Hpk k r * Hpk k r = 1 := by
-  ext i j
-  rw [Matrix.mul_apply, Matrix.one_apply]
-  simp only [Hpk_eq]
-  rw [Finset.sum_eq_single (sig k r i)]
-  · rw [if_pos rfl, sig_sig, sgn_sig]
-    by_cases h : i = j
-    · subst h
-      rw [if_pos rfl, if_pos rfl]
-      unfold sgn
-      split_ifs <;> norm_num
-    · rw [if_neg (Ne.symm h), if_neg h, mul_zero]
-  · intro l _ hl
-    rw [if_neg hl, zero_mul]
-  · intro h
-    exact absurd (Finset.mem_univ _) h
+lemma Hpk_sq (k r : ℕ) : Hpk k r * Hpk k r = 1 :=
+  Formalism.QuantumDeterminants.GBasic.Hpk_sq k r
 
 lemma sig_eI (k r : ℕ) (a : Fin r) : sig k r (eI k r a) = esI k r a := by
   have ha := a.isLt
