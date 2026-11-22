@@ -1,8 +1,8 @@
-import Development.WeilBound.ThetaLifts.Reductions.MetaplecticDerivatives.RealMetaplecticRepresentationHolds
+import CompanionTheory.ThickeningEstimates.LieGroupReduction.MetaplecticRepresentation.RealMetaplecticRepresentationHolds
 
 namespace PositivityTheory.Stage1.PM
 
 theorem realMetaplecticRepresentation : GlobalTheory.Published.RealMetaplecticRepresentation :=
-  PositivityTheory.ThKR.realMetaplecticRepresentation_holds
+  _root_.CompanionTheory.ThKR.realMetaplecticRepresentation_holds
 
 end PositivityTheory.Stage1.PM
